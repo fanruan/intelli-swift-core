@@ -48,7 +48,7 @@ public class QueryUtils {
             FineBusinessTable fineBusinessTable = BusinessTableUtils.getTableByFieldId(fieldId);
             FineBusinessField fineBusinessField = fineBusinessTable.getFieldByFieldId(fieldId);
             DataSource baseDataSource = DataSourceFactory.transformDataSource(fineBusinessTable);
-            GroupDimension groupDimension = new GroupDimension(0, baseDataSource.getSourceKey(), new ColumnKey(fineBusinessField.getName()), GroupAdaptor.adaptGroup(dimension.getGroup()), null, null);
+            GroupDimension groupDimension = new GroupDimension(0, baseDataSource.getSourceKey(), new ColumnKey(fineBusinessField.getName()), GroupAdaptor.adaptDashboardGroup(dimension.getGroup()), null, null);
             GroupQueryInfo valueInfo = new GroupQueryInfo(new AllCursor(), id, baseDataSource.getSourceKey(), filterInfo, new Dimension[]{groupDimension}, new Metric[0], new GroupTarget[0], null);
             GroupByResultSet<int[]> valuesResultSet = (GroupByResultSet<int[]>) QueryRunnerProvider.getInstance().executeQuery(valueInfo);
             Iterator<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> it = valuesResultSet.getResultList().iterator();

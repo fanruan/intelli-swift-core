@@ -3,6 +3,7 @@ package com.fr.swift.adaptor.widget.group;
 import com.finebi.conf.constant.BICommonConstants.GROUP;
 import com.finebi.conf.constant.BIConfConstants.CONF.ADD_COLUMN.TIME;
 import com.finebi.conf.constant.BIConfConstants.CONF.ADD_COLUMN.TIME_GAP;
+import com.finebi.conf.constant.BIDesignConstants;
 import com.fr.swift.query.group.GroupType;
 
 import static com.finebi.conf.constant.BIConfConstants.CONF.GROUP.DATE;
@@ -166,4 +167,53 @@ public class GroupTypeAdaptor {
                 return null;
         }
     }
+
+
+    public static GroupType adaptDashboardGroup(int groupType) {
+        switch (groupType) {
+            case BIDesignConstants.DESIGN.GROUP.AUTO_GROUP:
+                return GroupType.AUTO;
+            case BIDesignConstants.DESIGN.GROUP.CUSTOM_GROUP:
+                return GroupType.CUSTOM;
+            case BIDesignConstants.DESIGN.GROUP.CUSTOM_NUMBER_GROUP:
+                return GroupType.CUSTOM_NUMBER;
+            case BIDesignConstants.DESIGN.GROUP.NO_GROUP:
+                return GroupType.NONE;
+            case BIDesignConstants.DESIGN.GROUP.Y:
+                return GroupType.YEAR;
+            case BIDesignConstants.DESIGN.GROUP.S:
+                return GroupType.QUARTER;
+            case BIDesignConstants.DESIGN.GROUP.M:
+                return GroupType.MONTH;
+            case BIDesignConstants.DESIGN.GROUP.D:
+                return GroupType.DAY;
+            case BIDesignConstants.DESIGN.GROUP.W:
+                return GroupType.WEEK;
+            case BIDesignConstants.DESIGN.GROUP.HOUR:
+                return GroupType.HOUR;
+            case BIDesignConstants.DESIGN.GROUP.MINUTE:
+                return GroupType.MINUTE;
+            case BIDesignConstants.DESIGN.GROUP.SECOND:
+                return GroupType.SECOND;
+            case BIDesignConstants.DESIGN.GROUP.WEEK_COUNT:
+                return GroupType.WEEK_OF_YEAR;
+            case BIDesignConstants.DESIGN.GROUP.YMDHMS:
+                return GroupType.Y_M_D_H_M_S;
+            case BIDesignConstants.DESIGN.GROUP.YMDHM:
+                return GroupType.Y_M_D_H_M;
+            case BIDesignConstants.DESIGN.GROUP.YMDH:
+                return GroupType.Y_M_D_H;
+            case BIDesignConstants.DESIGN.GROUP.YMD:
+                return GroupType.Y_M_D;
+            case BIDesignConstants.DESIGN.GROUP.YS:
+                return GroupType.Y_Q;
+            case BIDesignConstants.DESIGN.GROUP.YM:
+                return GroupType.Y_M;
+            case BIDesignConstants.DESIGN.GROUP.YW:
+                return GroupType.Y_W;
+            default:
+                return GroupType.NONE;
+        }
+    }
+
 }

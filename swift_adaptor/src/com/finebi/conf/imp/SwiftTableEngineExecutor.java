@@ -12,6 +12,7 @@ import com.finebi.conf.internalimp.basictable.previewdata.FineCirculatePreviewDa
 import com.finebi.conf.internalimp.basictable.previewdata.FineColumnTransPreviewData;
 import com.finebi.conf.internalimp.basictable.previewdata.FloorPreviewItem;
 import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
+import com.finebi.conf.internalimp.basictable.table.FineExcelBusinessTable;
 import com.finebi.conf.internalimp.service.engine.table.FineTableEngineExecutor;
 import com.finebi.conf.provider.SwiftTableManager;
 import com.finebi.conf.service.engine.table.EngineTableManager;
@@ -389,5 +390,9 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
     @Override
     public FineBusinessTable createTable(FineBusinessTable table) {
         return null;
+    }
+
+    public boolean addAdditionalExcel(FineExcelBusinessTable table, String additionalAttachId) throws Exception{
+        return false;
     }
 }

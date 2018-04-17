@@ -60,28 +60,32 @@ public class GroupAdaptor {
         }
     }
 
-    public static Group adaptGroup(FineDimensionGroup dimGroup) {
-        // TODO: 2018/3/21 anchore的锅 
+    /**
+     * nice job! foundation
+     * @param dimGroup
+     * @return
+     */
+    public static Group adaptDashboardGroup(FineDimensionGroup dimGroup) {
         if (dimGroup == null) {
             return Groups.newGroup(new NoGroupRule());
         }
-        GroupRule groupRule;
-        GroupType type = GroupTypeAdaptor.adaptGroupType(dimGroup.getType());
+        GroupType type = GroupTypeAdaptor.adaptDashboardGroup(dimGroup.getType());
+        return Groups.newGroup(adaptRule(type, dimGroup));
+    }
+
+    private static GroupRule adaptRule(GroupType type, FineDimensionGroup dimGroup){
         switch (type) {
             case AUTO:
-                groupRule = newAutoRule((NumberDimensionAutoGroup) dimGroup);
-                break;
+                return newAutoRule((NumberDimensionAutoGroup) dimGroup);
             case CUSTOM_NUMBER:
-                groupRule = newCustomNumberRule((NumberDimensionCustomGroup) dimGroup);
-                break;
+                return newCustomNumberRule((NumberDimensionCustomGroup) dimGroup);
             case CUSTOM:
-                groupRule = newCustomRule((StringDimensionCustomGroup) dimGroup);
-                break;
+                return  newCustomRule((StringDimensionCustomGroup) dimGroup);
             default:
-                groupRule = new NoGroupRule(type);
+                return new NoGroupRule(type);
         }
-        return Groups.newGroup(groupRule);
     }
+
 
     private static boolean isEmptyGroup(StringCustomDetailsBean stringGroup) {
         return stringGroup.getContent().isEmpty();

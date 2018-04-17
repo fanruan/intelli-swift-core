@@ -159,12 +159,9 @@ public class TableWidgetAdaptor {
         String columnName = SwiftEncryption.decryptFieldId(fineDim.getFieldId())[1];
         ColumnKey colKey = new ColumnKey(columnName);
 
-        Group group = GroupAdaptor.adaptGroup(fineDim.getGroup());
+        Group group = GroupAdaptor.adaptDashboardGroup(fineDim.getGroup());
 
-        List<FineFilter> fineFilters = fineDim.getFilters();
-        fineFilters = fineFilters == null ? new ArrayList<FineFilter>() : fineFilters;
-        // TODO: 2018/4/13 维度过滤的FineFilter里面没有设置fieldId，虽然FineDimension能取到，但是容易把适配的代码写得太乱
-        FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(fineFilters);
+        FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(fineDim.getFilters());
 
         return new GroupDimension(index, key, colKey, group,
                 fineDim.getSort() == null ? new AscSort(index) : adaptSort(fineDim.getSort(), index), filterInfo);
