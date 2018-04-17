@@ -222,7 +222,8 @@ public class FilterInfoFactory {
             }
             case BICommonConstants.ANALYSIS_FILTER_DATE.LESS_THAN: {
                 DateFilterBean dateFilterBean = ((DateBeforeFilterBean) bean).getFilterValue();
-                long value = DateUtils.endOfLastDay(DateUtils.dateFilterBean2Long(dateFilterBean));
+                // 在某一时刻之前。-1ms，因为DateInRangeFilter的范围是左右包含的(startTimeIncluded, endTimeIncluded)
+                long value = DateUtils.dateFilterBean2Long(dateFilterBean, false) - 1;
                 SwiftDateInRangeFilterValue filterValue = new SwiftDateInRangeFilterValue();
                 filterValue.setEnd(value);
                 return new SwiftDetailFilterInfo<SwiftDateInRangeFilterValue>(fieldName,
@@ -230,13 +231,15 @@ public class FilterInfoFactory {
             }
             case BICommonConstants.ANALYSIS_FILTER_DATE.MORE_THAN: {
                 DateFilterBean dateFilterBean = ((DateAfterFilterBean) bean).getFilterValue();
-                long value = DateUtils.startOfNextDay(DateUtils.dateFilterBean2Long(dateFilterBean));
+                // 在某一时刻之后。+1ms，因为DateInRangeFilter的范围是左右包含的(startTimeIncluded, endTimeIncluded)
+                long value = DateUtils.dateFilterBean2Long(dateFilterBean, true) + 1;
                 SwiftDateInRangeFilterValue filterValue = new SwiftDateInRangeFilterValue();
                 filterValue.setStart(value);
                 return new SwiftDetailFilterInfo<SwiftDateInRangeFilterValue>(fieldName,
                         filterValue, SwiftDetailFilterType.DATE_IN_RANGE);
             }
             case BICommonConstants.ANALYSIS_FILTER_DATE.EQUAL_TO: {
+                // 最小单位是天
                 DateFilterBean dateFilterBean = ((DateEqualFilterBean) bean).getFilterValue();
                 long value = DateUtils.dateFilterBean2Long(dateFilterBean);
                 SwiftDateInRangeFilterValue filterValue = new SwiftDateInRangeFilterValue();
@@ -246,6 +249,7 @@ public class FilterInfoFactory {
                         filterValue, SwiftDetailFilterType.DATE_IN_RANGE);
             }
             case BICommonConstants.ANALYSIS_FILTER_DATE.NOT_EQUAL_TO: {
+                // 最小单位是天
                 DateFilterBean dateFilterBean = ((DateNoEqualFilterBean) bean).getFilterValue();
                 long value = DateUtils.dateFilterBean2Long(dateFilterBean);
                 SwiftDateInRangeFilterValue filterValue = new SwiftDateInRangeFilterValue();
@@ -335,10 +339,10 @@ public class FilterInfoFactory {
     private static SwiftDateInRangeFilterValue createValue(DateRangeValueBean bean) {
         SwiftDateInRangeFilterValue value = new SwiftDateInRangeFilterValue();
         if (bean.getStart() != null) {
-            value.setStart(DateUtils.startOfDay(DateUtils.dateFilterBean2Long(bean.getStart())));
+            value.setStart(DateUtils.dateFilterBean2Long(bean.getStart(), false));
         }
         if (bean.getEnd() != null) {
-            value.setEnd(DateUtils.endOfDay(DateUtils.dateFilterBean2Long(bean.getEnd())));
+            value.setEnd(DateUtils.dateFilterBean2Long(bean.getEnd(), true));
         }
         return value;
     }
