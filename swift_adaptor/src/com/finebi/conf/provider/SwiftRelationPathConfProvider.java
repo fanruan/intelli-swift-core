@@ -89,7 +89,10 @@ public class SwiftRelationPathConfProvider extends AbstractDirectRelationPathMan
         return !relations.isEmpty();
     }
 
-
+    @Override
+    public boolean isRelationExist(String primaryTableId, String foreignTableId) {
+        return !getRelationsByTables(primaryTableId, foreignTableId).isEmpty();
+    }
 
     @Override
     public FineEngineType getEngineType() {

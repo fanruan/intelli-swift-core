@@ -21,6 +21,8 @@ public class SourceNode {
 
     private List<SourceNode> next;
 
+    private boolean hasPrev = false;
+
     public SourceNode(DataSource node) {
         this.node = node;
         this.sourceKey = node.getSourceKey();
@@ -45,5 +47,13 @@ public class SourceNode {
 
     public boolean hasNext() {
         return next != null && !next.isEmpty();
+    }
+
+    public void setHasPrev() {
+        this.hasPrev = true;
+    }
+
+    public boolean hasPrev() {
+        return hasPrev;
     }
 }
