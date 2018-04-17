@@ -61,7 +61,8 @@ public class TreeWidgetAdaptor {
         List values = getValues(widgetId, dimensions.get(dimensionIndex), fineFilters, parents, dimensions);
         for (int j = 0; j < values.size(); j++) {
             String value = values.get(j).toString();
-            String id = pId + "_" + j;
+            // 计算id的结构，前端依据id把列表转为树结构
+            String id = pId.equals("0") ? j + 1 + "" : pId + "_" + (j + 1);
             if (!value.contains(keyWord)) {
                 List<BITreeItem> childrenItems = new ArrayList<BITreeItem>();
                 if (dimensionIndex < dimensions.size() - 1) {
@@ -80,7 +81,7 @@ public class TreeWidgetAdaptor {
             }
             boolean isParent = parentArray.length < dimensions.size() - 1;
             boolean isChildrenChecked = isChildrenChecked(parents, selectedValues);
-            items.add(createItem(isParent, isChildrenChecked, value, id, getSelectedChildren(parents, selectedValues)));
+            items.add(createItem(isParent, isChildrenChecked, value, id, pId, getSelectedChildren(parents, selectedValues)));
         }
         return items;
     }
@@ -153,15 +154,17 @@ public class TreeWidgetAdaptor {
                                                     List values, Map selectedChildren) {
         List<BITreeItem> items = new ArrayList<BITreeItem>();
         for (int i = 0; i < values.size(); i++) {
-            items.add(createItem(isParent, isChildrenChecked, values.get(i).toString(), pId + "_" + i, selectedChildren));
+            items.add(createItem(isParent, isChildrenChecked, values.get(i).toString(),
+                    pId + "_" + i, pId, selectedChildren));
         }
         return items;
     }
 
     private static BITreeItem createItem(boolean isParent, boolean isChildrenChecked,
-                                         String value, String id, Map selectedChildren) {
+                                         String value, String id, String pId, Map selectedChildren) {
         BITreeItem item = new BITreeItem();
         item.setId(id);
+        item.setpId(pId);
         item.setParent(isParent);
         item.setValue(value);
         item.setText(value);

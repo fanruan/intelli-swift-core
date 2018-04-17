@@ -15,25 +15,44 @@ import java.util.Calendar;
  */
 public class DateUtils {
 
-    public static long dateFilterBean2Long(DateFilterBean bean) {
+    /**
+     * 计算日期过滤器的值
+     *
+     * @param bean 过滤器属性
+     * @param isEndOfDay 某一天最后的时刻，否则为某一天开始的时刻。如果bean为静态日期，该属性不起作用
+     * @return
+     */
+    public static long dateFilterBean2Long(DateFilterBean bean, boolean isEndOfDay) {
         int type = bean.getType();
         switch (type) {
             case BICommonConstants.DATE_TYPE.STATIC:
                 return dateStaticFilterBean2Long(((DateStaticFilterBean) bean).getValue());
             case BICommonConstants.DATE_TYPE.DYNAMIC:
-                return dateDynamicFilterBeanValue2Long(((DateDynamicFilterBean) bean).getValue());
+                // 动态时间的最小精度为天，日期的范围过滤都要转为某一天的开始或者结束时刻
+                long time = dateDynamicFilterBeanValue2Long(((DateDynamicFilterBean) bean).getValue());
+                // 比如时间范围过滤器右边选了动态日期的N天前（后），用于过滤的值是这一天的最后一毫秒的时刻
+                if (isEndOfDay) {
+                    return endOfDay(time);
+                } else {
+                    return startOfDay(time);
+                }
             default:
                 return dateStaticFilterBean2Long(((DateStaticFilterBean) bean).getValue());
         }
     }
 
-    public static long dateStaticFilterBean2Long(DateStaticFilterBeanValue value) {
+    public static long dateFilterBean2Long(DateFilterBean bean) {
+        return dateFilterBean2Long(bean, false);
+    }
+
+    private static long dateStaticFilterBean2Long(DateStaticFilterBeanValue value) {
         Calendar c = Calendar.getInstance();
         c.clear();
         c.set(Calendar.YEAR, string2Int(value.getYear()));
         // TODO: 2018/3/23 季度这个值没法理解
 //                c.set(Calendar.MONTH, getStartMonthOfQuarter(value.month2Quarter()));
-        c.set(Calendar.MONTH, string2Int(value.getMonth()));
+        // 功能的月份从1开始
+        c.set(Calendar.MONTH, string2Int(value.getMonth()) - 1);
         c.set(Calendar.DATE, string2Int(value.getDay()));
         c.set(Calendar.HOUR_OF_DAY, string2Int(value.getHour()));
         c.set(Calendar.MINUTE, string2Int(value.getMinute()));
@@ -41,7 +60,7 @@ public class DateUtils {
         return c.getTimeInMillis();
     }
 
-    public static long dateDynamicFilterBeanValue2Long(DateDynamicFilterBeanValue value) {
+    private static long dateDynamicFilterBeanValue2Long(DateDynamicFilterBeanValue value) {
         Calendar c = Calendar.getInstance();
         // workDay和其他几个属性互斥
         if (value.getWorkDay() == null) {
@@ -54,15 +73,11 @@ public class DateUtils {
             c.add(Calendar.DATE, workDayOffset2DayOffset(string2Int(value.getWorkDay())));
         }
         int position = value.getPosition();
-        if (position != 2 || position != 3) {
+        if (position != 2 && position != 3) {
             return c.getTimeInMillis();
         }
         TimeType timeType = getUnit(value, position);
         switch (timeType) {
-            case DAY_START:
-                return startOfDay(c).getTimeInMillis();
-            case DAY_END:
-                return endOfDay(c).getTimeInMillis();
             case WEEK_START:
                 return startOfWeek(c).getTimeInMillis();
             case WEEK_END:
@@ -104,16 +119,13 @@ public class DateUtils {
     }
 
     private static TimeType getUnit(DateDynamicFilterBeanValue value, int position) {
-        if (value.getWorkDay() == null) {
-            return position == 2 ? TimeType.DAY_START : TimeType.DAY_END;
-        }
-        if (value.getWeek() == null) {
+        if (value.getWeek() != null) {
             return position == 2 ? TimeType.WEEK_START : TimeType.WEEK_END;
         }
-        if (value.getMonth() == null) {
+        if (value.getMonth() != null) {
             return position == 2 ? TimeType.MONTH_START : TimeType.MONTH_END;
         }
-        if (value.getQuarter() == null) {
+        if (value.getQuarter() != null) {
             return position == 2 ? TimeType.QUARTER_START : TimeType.QUARTER_END;
         }
         return position == 2 ? TimeType.YEAR_START : TimeType.YEAR_END;
@@ -181,20 +193,6 @@ public class DateUtils {
         return endOfDay(calendar).getTimeInMillis();
     }
 
-    public static long endOfLastDay(long milliseconds) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(milliseconds);
-        calendar.add(Calendar.DATE, -1);
-        return endOfDay(calendar).getTimeInMillis();
-    }
-
-    public static long startOfNextDay(long milliseconds) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(milliseconds);
-        calendar.add(Calendar.DATE, 1);
-        return startOfDay(calendar).getTimeInMillis();
-    }
-
     private static Calendar startOfDay(Calendar c) {
         int day = c.get(Calendar.DATE);
         Calendar calendar = startOfMonth(c);
@@ -253,7 +251,6 @@ public class DateUtils {
         YEAR_START, YEAR_END,
         QUARTER_START, QUARTER_END,
         MONTH_START, MONTH_END,
-        WEEK_START, WEEK_END,
-        DAY_START, DAY_END
+        WEEK_START, WEEK_END
     }
 }

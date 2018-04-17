@@ -100,7 +100,7 @@ public class DetailWidgetAdaptor {
             FineDimension fineDimension = fineDimensions.get(i);
             String columnName = SwiftEncryption.decryptFieldId(fineDimension.getFieldId())[1];
             Sort sort = fineDimension.getSort() == null ? null : adaptSort(fineDimension.getSort(), i);
-            dimensions[i] = new DetailDimension(i, new SourceKey(fineDimension.getId()), new ColumnKey(columnName), GroupAdaptor.adaptGroup(fineDimension.getGroup()), sort, FilterInfoFactory.transformFineFilter(widget.getFilters()));
+            dimensions[i] = new DetailDimension(i, new SourceKey(fineDimension.getId()), new ColumnKey(columnName), GroupAdaptor.adaptDashboardGroup(fineDimension.getGroup()), sort, FilterInfoFactory.transformFineFilter(widget.getFilters()));
         }
         return dimensions;
     }

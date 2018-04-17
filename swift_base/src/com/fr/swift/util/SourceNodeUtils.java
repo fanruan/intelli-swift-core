@@ -5,6 +5,7 @@ import com.fr.swift.reliance.SourceReliance;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.EtlDataSource;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -30,35 +31,43 @@ public class SourceNodeUtils {
             if (dataSource instanceof EtlDataSource) {
                 calculateBaeeNode((EtlDataSource) dataSource, reliance);
             } else {
-                if (!reliance.containNode(dataSource.getSourceKey())) {
+                if (!reliance.containHeadNode(dataSource.getSourceKey())) {
                     SourceNode sourceNode = new SourceNode(dataSource);
+                    reliance.addHeadNode(sourceNode);
                     reliance.addNode(sourceNode);
                 }
             }
         }
 
+        for (SourceNode headSourceNode : new ArrayList<SourceNode>(reliance.getHeadNodes().values())) {
+            if (headSourceNode.hasPrev()) {
+                reliance.removeHeadNode(headSourceNode);
+            }
+        }
     }
 
     private static void calculateBaeeNode(EtlDataSource etlDataSource, SourceReliance reliance) {
         SourceNode sourceNode = reliance.getNode(etlDataSource.getSourceKey());
         if (sourceNode == null) {
             sourceNode = new SourceNode(etlDataSource);
+            reliance.addNode(sourceNode);
         }
         List<DataSource> baseDataSources = etlDataSource.getBasedSources();
-        boolean hasBaseNode = false;
         for (DataSource baseDataSource : baseDataSources) {
             if (reliance.containReliance(baseDataSource.getSourceKey())) {
+
                 SourceNode baseSourceNode = reliance.getNode(baseDataSource.getSourceKey());
                 if (baseSourceNode == null) {
                     baseSourceNode = new SourceNode(baseDataSource);
+                    reliance.addNode(baseSourceNode);
                 }
                 baseSourceNode.addNext(sourceNode);
-                reliance.addNode(baseSourceNode);
-                hasBaseNode = true;
+                sourceNode.setHasPrev();
+                reliance.addHeadNode(baseSourceNode);
             }
         }
-        if (hasBaseNode) {
-            reliance.removeNode(sourceNode);
+        if (sourceNode.hasPrev()) {
+            reliance.removeHeadNode(sourceNode);
         }
     }
 }
