@@ -24,7 +24,7 @@ public class GroupNodeFactory {
         Creator<GroupNode> creator = new Creator<GroupNode>() {
             @Override
             public GroupNode create(int deep, Object data) {
-                return new GroupNode(deep, data);
+                return new GroupNode(0, deep, data);
             }
         };
         ValueSetter<GroupNode, AggregatorValue[]> valueSetter = new ValueSetter<GroupNode, AggregatorValue[]>() {
