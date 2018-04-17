@@ -134,11 +134,11 @@ public class NumberInRangeFilterTest extends BaseNumberFilterTest {
         SwiftNode node = createNode(getRandomMatchedNumber());
         SwiftNode node1 = createNode(getRandomNotMatchedNumber());
         if (node.getData() == null) {
-            assertTrue(!filter.matches(node));
+            assertTrue(!filter.matches(node, 0));
         } else {
-            assertTrue(filter.matches(node));
+            assertTrue(filter.matches(node, 0));
         }
-        assertTrue(!filter.matches(node1));
+        assertTrue(!filter.matches(node1, 0));
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.fr.swift.query.filter.detail.impl.nfilter;
 
-import com.fr.swift.query.filter.detail.impl.AbstractFilter;
+import com.fr.swift.query.filter.detail.impl.AbstractDetailFilter;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
@@ -12,7 +12,7 @@ import com.fr.swift.util.Util;
 /**
  * Created by Lyon on 2017/12/4.
  */
-public class BottomNFilter extends AbstractFilter {
+public class BottomNFilter extends AbstractDetailFilter {
 
     private int bottomN;
 
@@ -31,7 +31,7 @@ public class BottomNFilter extends AbstractFilter {
     }
 
     @Override
-    public boolean matches(SwiftNode node) {
+    public boolean matches(SwiftNode node, int targetIndex) {
         int index = node.getIndex();
         int size = node.getParent().getChildrenSize();
         return size - index < bottomN;

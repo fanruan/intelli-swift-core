@@ -35,7 +35,7 @@ public class MergerGroupByTest extends TestCase {
             }
 
             @Override
-            public boolean matches(SwiftNode node) {
+            public boolean matches(SwiftNode node, int targetIndex) {
                 return false;
             }
         }, cursor, asc, true);
@@ -46,7 +46,7 @@ public class MergerGroupByTest extends TestCase {
             }
 
             @Override
-            public boolean matches(SwiftNode node) {
+            public boolean matches(SwiftNode node, int targetIndex) {
                 return false;
             }
         }, cursor, asc);
@@ -58,7 +58,7 @@ public class MergerGroupByTest extends TestCase {
             }
 
             @Override
-            public boolean matches(SwiftNode node) {
+            public boolean matches(SwiftNode node, int targetIndex) {
                 return false;
             }
         }, cursor, asc, true);
@@ -69,7 +69,7 @@ public class MergerGroupByTest extends TestCase {
             }
 
             @Override
-            public boolean matches(SwiftNode node) {
+            public boolean matches(SwiftNode node, int targetIndex) {
                 return false;
             }
         }, cursor, asc);

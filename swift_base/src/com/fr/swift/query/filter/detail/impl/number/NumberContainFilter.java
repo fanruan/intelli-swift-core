@@ -1,6 +1,6 @@
 package com.fr.swift.query.filter.detail.impl.number;
 
-import com.fr.swift.query.filter.detail.impl.AbstractFilter;
+import com.fr.swift.query.filter.detail.impl.AbstractDetailFilter;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
@@ -15,7 +15,7 @@ import java.util.Set;
 /**
  * Created by Lyon on 2017/11/28.
  */
-public class NumberContainFilter extends AbstractFilter<Number> {
+public class NumberContainFilter extends AbstractDetailFilter<Number> {
 
     private Set<Double> groups;
 
@@ -38,7 +38,7 @@ public class NumberContainFilter extends AbstractFilter<Number> {
     }
 
     @Override
-    public boolean matches(SwiftNode node) {
+    public boolean matches(SwiftNode node, int targetIndex) {
         Object data = node.getData();
         if (data == null) {
             return false;

@@ -1,6 +1,7 @@
 package com.fr.swift.query.filter.info;
 
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.core.CoreService;
 
@@ -17,4 +18,6 @@ public interface FilterInfo extends CoreService{
     boolean isMatchFilter();
 
     DetailFilter createDetailFilter(Segment segment);
+
+    MatchFilter createMatchFilter();
 }

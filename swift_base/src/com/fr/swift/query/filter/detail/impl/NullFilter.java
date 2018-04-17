@@ -9,7 +9,7 @@ import com.fr.swift.structure.iterator.RowTraversal;
 /**
  * Created by Lyon on 2017/12/5.
  */
-public class NullFilter extends AbstractFilter {
+public class NullFilter extends AbstractDetailFilter {
 
     public NullFilter(Column column) {
         this.column = column;
@@ -26,7 +26,7 @@ public class NullFilter extends AbstractFilter {
     }
 
     @Override
-    public boolean matches(SwiftNode node) {
+    public boolean matches(SwiftNode node, int targetIndex) {
         throw new UnsupportedOperationException();
     }
 }

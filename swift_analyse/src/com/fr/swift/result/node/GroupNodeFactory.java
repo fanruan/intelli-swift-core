@@ -19,6 +19,9 @@ import static com.fr.swift.cube.io.IOConstant.NULL_DOUBLE;
 public class GroupNodeFactory {
 
     public static GroupNode createNode(GroupByResultSet resultSet, int targetLength) {
+        if (resultSet instanceof GroupNode){
+            return (GroupNode) resultSet;
+        }
         List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> resultList = resultSet.getResultList();
         List<Map<Integer, Object>> dictionaries = resultSet.getRowGlobalDictionaries();
         Creator<GroupNode> creator = new Creator<GroupNode>() {

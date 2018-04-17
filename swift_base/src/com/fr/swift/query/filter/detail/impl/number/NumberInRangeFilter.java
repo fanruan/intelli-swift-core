@@ -1,7 +1,7 @@
 package com.fr.swift.query.filter.detail.impl.number;
 
 import com.fr.swift.compare.Comparators;
-import com.fr.swift.query.filter.detail.impl.AbstractFilter;
+import com.fr.swift.query.filter.detail.impl.AbstractDetailFilter;
 import com.fr.swift.query.filter.detail.impl.util.LookupFactory;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
@@ -16,7 +16,7 @@ import com.fr.swift.util.Util;
 /**
  * Created by Lyon on 2017/11/27.
  */
-public class NumberInRangeFilter extends AbstractFilter<Number> {
+public class NumberInRangeFilter extends AbstractDetailFilter<Number> {
 
     private final static int START_INDEX = DictionaryEncodedColumn.NOT_NULL_START_INDEX;
 
@@ -80,8 +80,8 @@ public class NumberInRangeFilter extends AbstractFilter<Number> {
     }
 
     @Override
-    public boolean matches(SwiftNode node) {
-        Object data = node.getData();
+    public boolean matches(SwiftNode node, int targetIndex) {
+        Object data = node.getAggregatorValue(targetIndex).calculateValue();
         if (data == null) {
             return false;
         }

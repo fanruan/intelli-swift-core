@@ -12,7 +12,7 @@ import com.fr.swift.structure.iterator.RowTraversal;
 /**
  * Created by Lyon on 2017/11/24.
  */
-public abstract class AbstractFilter<T> implements DetailFilter {
+public abstract class AbstractDetailFilter<T> implements DetailFilter {
 
     protected Column<T> column;
 
