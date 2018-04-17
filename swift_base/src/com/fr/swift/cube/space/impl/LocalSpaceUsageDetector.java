@@ -15,21 +15,35 @@ import java.net.URISyntaxException;
  */
 public class LocalSpaceUsageDetector implements SpaceUsageDetector {
     @Override
-    public SpaceUsage detect(URI uri) throws URISyntaxException {
-        File f = new File(setFileScheme(uri));
-        SpaceMeasurer measurer = new SpaceMeasurer();
-        FileUtil.walk(f, measurer);
+    public SpaceUsage detectUsage(URI uri) throws Exception {
         return new SpaceUsageImpl(
-                measurer.getSize(),
-                f.getUsableSpace(),
-                f.getTotalSpace());
+                detectUsed(uri),
+                detectUsable(uri),
+                detectTotal(uri));
     }
 
-    private URI setFileScheme(URI origin) throws URISyntaxException {
-        return new URI("file", origin.getSchemeSpecificPart(), null);
+    @Override
+    public long detectUsed(URI uri) throws Exception {
+        SpaceMeasurer measurer = new SpaceMeasurer();
+        FileUtil.walk(toFile(uri), measurer);
+        return measurer.getSize();
     }
 
-    static class SpaceMeasurer implements Consumer<File> {
+    @Override
+    public long detectUsable(URI uri) throws Exception {
+        return toFile(uri).getUsableSpace();
+    }
+
+    @Override
+    public long detectTotal(URI uri) throws Exception {
+        return toFile(uri).getTotalSpace();
+    }
+
+    private static File toFile(URI uri) throws URISyntaxException {
+        return new File(new URI("file", uri.getSchemeSpecificPart(), null));
+    }
+
+    private static class SpaceMeasurer implements Consumer<File> {
         long size;
 
         @Override

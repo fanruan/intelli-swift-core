@@ -9,9 +9,45 @@ import java.util.List;
  * @date 2018/4/13
  */
 public interface SpaceUsageService {
-    double getTableUsedSpace(SourceKey key) throws Exception;
+    /**
+     * 单表占用
+     *
+     * @param table 表key
+     * @return bytes
+     * @throws Exception 异常
+     */
+    long getTableUsedSpace(SourceKey table) throws Exception;
 
-    double getTableUsedSpace(List<SourceKey> key) throws Exception;
+    /**
+     * 多表占用
+     *
+     * @param tables 表key
+     * @return bytes
+     * @throws Exception 异常
+     */
+    long getTableUsedSpace(List<SourceKey> tables) throws Exception;
 
-    SpaceUsage getUsageOverall();
+    /**
+     * 总占用
+     *
+     * @return bytes
+     * @throws Exception 异常
+     */
+    long getUsedOverall() throws Exception;
+
+    /**
+     * 总可用
+     *
+     * @return bytes
+     * @throws Exception 异常
+     */
+    long getUsableOverall() throws Exception;
+
+    /**
+     * 总容量
+     *
+     * @return bytes
+     * @throws Exception 异常
+     */
+    long getTotalOverall() throws Exception;
 }
