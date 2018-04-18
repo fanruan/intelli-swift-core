@@ -1,6 +1,7 @@
 package com.finebi.conf.imp;
 
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.conf.constant.BICommonConstants;
 import com.finebi.conf.internalimp.bean.table.UpdatePreviewTableBean;
 import com.finebi.conf.internalimp.bean.update.UpdatePreview;
 import com.finebi.conf.internalimp.response.update.TableUpdateSetting;
@@ -15,6 +16,8 @@ import com.finebi.conf.provider.SwiftRelationPathConfProvider;
 import com.finebi.conf.provider.SwiftTableManager;
 import com.finebi.conf.service.engine.update.EngineUpdateManager;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
+import com.finebi.conf.structure.path.FineBusinessTableRelationPath;
+import com.finebi.conf.structure.relation.FineBusinessTableRelation;
 import com.fr.swift.adaptor.struct.ShowResultSet;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.transformer.RelationSourceFactory;
@@ -39,11 +42,13 @@ import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.manager.IndexStuffProvider;
 import com.fr.swift.stuff.HistoryIndexStuffImpl;
 import com.fr.swift.stuff.IndexingStuff;
+import com.fr.swift.util.RelationNodeUtils;
 import com.fr.swift.utils.RelationRelianceFactory;
 import com.fr.swift.utils.SourceRelianceFactory;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -115,6 +120,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
         SourceReliance sourceReliance = SourceRelianceFactory.generateSourceReliance(baseDataSourceList, allDataSourceList);
 
+        // FIXME 暂时传的是所有表和关联
         RelationReliance relationReliance = RelationRelianceFactory.generateRelationReliance(relationSources, allDataSourceList);
 
         RelationPathReliance relationPathReliance = RelationRelianceFactory.generateRelationPathReliance(sourcePaths, allDataSourceList);
@@ -233,9 +239,38 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         }
     }
 
+    @Override
     public String getUpdatePath() {
         return "";
     }
 
-    public void updatePath(String newPath) {}
+    @Override
+    public void updatePath(String newPath) {
+        FineBusinessTableRelationPath path = relationPathConfProvider.getPath(newPath);
+        if (null != path) {
+            try {
+                List<FineBusinessTableRelation> relations = path.getFineBusinessTableRelations();
+                List<DataSource> dataSources = new ArrayList<DataSource>();
+                for (FineBusinessTableRelation relation : relations) {
+                    if (relation.getRelationType() == BICommonConstants.RELATION_TYPE.MANY_TO_ONE) {
+                        dataSources.add(DataSourceFactory.transformDataSource(relation.getPrimaryBusinessTable()));
+                    } else {
+                        dataSources.add(DataSourceFactory.transformDataSource(relation.getForeignBusinessTable()));
+                    }
+                }
+                FineBusinessTableRelation relation = relations.get(0);
+                if (relation.getRelationType() == BICommonConstants.RELATION_TYPE.MANY_TO_ONE) {
+                    dataSources.add(DataSourceFactory.transformDataSource(relation.getForeignBusinessTable()));
+                } else {
+                    dataSources.add(DataSourceFactory.transformDataSource(relation.getPrimaryBusinessTable()));
+                }
+                RelationPathReliance relationPathReliance = new RelationPathReliance(RelationSourceFactory.transformSourcePaths(Arrays.asList(path)), dataSources);
+                RelationNodeUtils.calculateRelationPathNode(relationPathReliance);
+                // fixme 调更新
+            } catch (Exception e) {
+                LOGGER.error(e.getMessage(), e);
+            }
+
+        }
+    }
 }
