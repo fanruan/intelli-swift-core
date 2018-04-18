@@ -12,6 +12,7 @@ import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionSort;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.structure.result.table.BIGroupNode;
+import com.finebi.conf.structure.result.table.BITableResult;
 import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.adaptor.struct.node.BIGroupNodeAdaptor;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
@@ -64,7 +65,7 @@ public class TableWidgetAdaptor {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(TableWidgetAdaptor.class);
 
-    public static BIGroupNode calculate(TableWidget widget) {
+    public static BITableResult calculate(TableWidget widget) {
         BIGroupNode resultNode;
         SwiftResultSet resultSet;
         try {
@@ -77,9 +78,40 @@ public class TableWidgetAdaptor {
             resultNode = new BIGroupNodeAdaptor(new GroupNode(-1, null));
             LOGGER.error(e);
         }
-        return resultNode;
+        return new TableResult(resultNode, false, false);
     }
 
+    static class TableResult implements BITableResult{
+        private BIGroupNode node;
+        private boolean hasNextPage;
+        private boolean hasPreviousPage;
+
+        public TableResult(BIGroupNode node, boolean hasNextPage, boolean hasPreviousPage) {
+            this.node = node;
+            this.hasNextPage = hasNextPage;
+            this.hasPreviousPage = hasPreviousPage;
+        }
+
+        @Override
+        public BIGroupNode getNode() {
+            return node;
+        }
+
+        @Override
+        public boolean hasNextPage() {
+            return hasNextPage;
+        }
+
+        @Override
+        public boolean hasPreviousPage() {
+            return hasPreviousPage;
+        }
+
+        @Override
+        public ResultType getResultType() {
+            return ResultType.BIGROUP;
+        }
+    }
 
     static QueryInfo buildQueryInfo(TableWidget widget, List<Metric> metrics) throws Exception {
         Cursor cursor = null;
