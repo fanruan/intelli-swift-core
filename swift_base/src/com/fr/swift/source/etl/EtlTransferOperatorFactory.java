@@ -37,12 +37,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- *
  * @author pony
  * @date 2018/1/8
  */
 public class EtlTransferOperatorFactory {
     private static Map<String, ETLTransferCreator> extra = new ConcurrentHashMap<String, ETLTransferCreator>();
+
     public static ETLTransferOperator createTransferOperator(ETLOperator operator) {
         switch (operator.getOperatorType()) {
             case DETAIL:
@@ -77,12 +77,13 @@ public class EtlTransferOperatorFactory {
                 return transferGroupStringOperator((GroupAssignmentOperator) operator);
             case GROUP_NUM:
                 return transferGroupNumOperator((GroupNumericOperator) operator);
+            default:
         }
         ETLTransferCreator creator = extra.get(operator.getClass().getName());
         return creator == null ? null : creator.createTransferOperator(operator);
     }
 
-    public static void register(Class c,  ETLTransferCreator creator){
+    public static void register(Class c, ETLTransferCreator creator) {
         extra.put(c.getName(), creator);
     }
 
@@ -128,7 +129,7 @@ public class EtlTransferOperatorFactory {
     }
 
     private static ETLTransferOperator transferColumnRowTransOperator(ColumnRowTransOperator operator) {
-        return new ColumnRowTransferOperator(operator.getGroupName(), operator.getLcName(), operator.getColumns() , operator.getLcValue(), operator.getOtherColumnNames());
+        return new ColumnRowTransferOperator(operator.getGroupName(), operator.getLcName(), operator.getColumns(), operator.getLcValue(), operator.getOtherColumnNames());
     }
 
     private static ETLTransferOperator transferColumnFilterOperator(ColumnFilterOperator operator) {
