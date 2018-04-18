@@ -108,11 +108,6 @@ public class BICrossLeftNodeAdaptor implements BICrossLeftNode {
     }
 
     @Override
-    public ResultType getResultType() {
-        return ResultType.BICROSS;
-    }
-
-    @Override
     public void setSummaryValue(int index, Number value) {
         throw new UnsupportedOperationException();
     }

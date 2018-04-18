@@ -94,11 +94,6 @@ public class BIGroupNodeAdaptor implements BIGroupNode {
     }
 
     @Override
-    public ResultType getResultType() {
-        return ResultType.BIGROUP;
-    }
-
-    @Override
     public void setSummaryValue(int index, Number value) {
         node.setAggregatorValue(index, new DoubleAmountAggregatorValue(value.doubleValue()));
     }

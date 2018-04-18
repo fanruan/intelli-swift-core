@@ -31,8 +31,4 @@ public class BICrossNodeAdaptor implements BICrossNode {
         return false;
     }
 
-    @Override
-    public ResultType getResultType() {
-        return ResultType.BICROSS;
-    }
 }
