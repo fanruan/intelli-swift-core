@@ -12,7 +12,6 @@ import com.fr.swift.source.*;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -91,14 +90,7 @@ public class DataMiningResultSet implements SwiftResultSet {
             if (rowCursor < rowCount) {
                 row = predictTableData.get(rowCursor);
                 // 在swift引擎中得把Date数据转化为long
-                List<Object> convert = new ArrayList<Object>();
-                for (Object o : row) {
-                    if (o instanceof Date) {
-                        convert.add(((Date) o).getTime());
-                    } else {
-                        convert.add(o);
-                    }
-                }
+                List<Object> convert = AdapterUtils.convertSwiftData(row);
                 rowCursor++;
                 setRowValue(new ListBasedRow(convert));
                 return true;

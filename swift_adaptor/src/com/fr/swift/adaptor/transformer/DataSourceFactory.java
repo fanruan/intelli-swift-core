@@ -1,5 +1,6 @@
 package com.fr.swift.adaptor.transformer;
 
+import com.finebi.conf.algorithm.DMDataModel;
 import com.finebi.conf.constant.BICommonConstants;
 import com.finebi.conf.constant.ConfConstant;
 import com.finebi.conf.internalimp.analysis.bean.operator.confselect.ConfSelectBeanItem;
@@ -38,8 +39,8 @@ import com.fr.swift.source.etl.EtlSource;
 import com.fr.swift.source.etl.EtlTransferOperatorFactory;
 import com.fr.swift.source.etl.datamining.DataMiningOperator;
 import com.fr.swift.source.etl.datamining.DataMiningTransferOperator;
-import com.fr.swift.source.etl.datamining.rcompile.RCompileOperator;
-import com.fr.swift.source.etl.datamining.rcompile.RCompileTransferOperator;
+import com.fr.swift.source.etl.rcompile.RCompileOperator;
+import com.fr.swift.source.etl.rcompile.RCompileTransferOperator;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -71,10 +72,8 @@ public class DataSourceFactory {
             @Override
             public ETLTransferOperator createTransferOperator(ETLOperator operator) {
                 RCompileOperator op = (RCompileOperator) operator;
-                List dataList = op.getDataList();
-                String[] column = (String[]) dataList.get(0);
-                int[] columnType = (int[]) dataList.get(1);
-                return new RCompileTransferOperator(column, columnType, op.getDataList());
+                DMDataModel dataList = op.getDataModel();
+                return new RCompileTransferOperator(dataList);
             }
         });
 

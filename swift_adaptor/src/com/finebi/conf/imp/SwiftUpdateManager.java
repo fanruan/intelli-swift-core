@@ -215,7 +215,5 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         return "";
     }
 
-    public void updatePath(String newPath) throws Exception{
-
-    }
+    public void updatePath(String newPath) throws Exception{}
 }
