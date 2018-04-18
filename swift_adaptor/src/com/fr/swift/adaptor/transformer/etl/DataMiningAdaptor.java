@@ -1,6 +1,6 @@
 package com.fr.swift.adaptor.transformer.etl;
 
-import com.finebi.conf.algorithm.rcompile.RConnectionFactory;
+import com.finebi.conf.internalimp.service.rlink.RConnectionFactory;
 import com.finebi.conf.algorithm.rcompile.RLogEntityImp;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.DataMiningBean;
@@ -31,7 +31,7 @@ public class DataMiningAdaptor {
 
     public static RCompileOperator fromRCompileOperator(RCompileBean value, DataSource dataSource) {
         RCompileBeanValue bean = value.getValue();
-        String uuid = bean.getUUID();
+        String uuid = bean.getUuid();
         String commands = bean.getCommands();
         RConnection conn;
         try {

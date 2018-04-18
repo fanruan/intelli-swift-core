@@ -45,7 +45,6 @@ public class SwiftDataProvider implements DataProvider {
     @Override
     public List<Segment> getPreviewData(DataSource dataSource) throws Exception {
         // TODO: 2018/4/2
-        MinorSegmentManager.getInstance().clear();
         minorUpdate(dataSource);
         return MinorSegmentManager.getInstance().getSegment(dataSource.getSourceKey());
     }
