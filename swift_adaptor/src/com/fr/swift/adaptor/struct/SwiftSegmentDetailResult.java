@@ -131,6 +131,21 @@ public class SwiftSegmentDetailResult implements BIDetailTableResult {
     }
 
     @Override
+    public boolean hasNextPage() {
+        return false;
+    }
+
+    @Override
+    public boolean hasPreviousPage() {
+        return false;
+    }
+
+    @Override
+    public int totalRowSize() {
+        return rowCount;
+    }
+
+    @Override
     public ResultType getResultType() {
         return ResultType.DETAIL;
     }
