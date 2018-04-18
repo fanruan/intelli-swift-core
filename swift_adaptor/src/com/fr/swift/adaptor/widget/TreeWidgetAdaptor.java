@@ -81,7 +81,7 @@ public class TreeWidgetAdaptor {
             }
             boolean isParent = parentArray.length < dimensions.size() - 1;
             boolean isChildrenChecked = isChildrenChecked(parents, selectedValues);
-            items.add(createItem(isParent, isChildrenChecked, value, id, pId, getSelectedChildren(parents, selectedValues)));
+            items.add(createItem(isParent, isChildrenChecked, true, value, id, pId, getSelectedChildren(parents, selectedValues)));
         }
         return items;
     }
@@ -162,10 +162,16 @@ public class TreeWidgetAdaptor {
 
     private static BITreeItem createItem(boolean isParent, boolean isChildrenChecked,
                                          String value, String id, String pId, Map selectedChildren) {
+        return createItem(isParent, isChildrenChecked, false, value, id, pId, selectedChildren);
+    }
+
+    private static BITreeItem createItem(boolean isParent, boolean isChildrenChecked, boolean isOpen,
+                                         String value, String id, String pId, Map selectedChildren) {
         BITreeItem item = new BITreeItem();
         item.setId(id);
         item.setpId(pId);
         item.setParent(isParent);
+        item.setOpen(isOpen);
         item.setValue(value);
         item.setText(value);
         item.setTitle(value);
