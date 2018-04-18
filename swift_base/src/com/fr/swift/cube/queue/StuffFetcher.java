@@ -2,18 +2,26 @@ package com.fr.swift.cube.queue;
 
 import com.fr.swift.cube.task.SchedulerTask;
 import com.fr.swift.cube.task.TaskKey;
+import com.fr.swift.cube.task.impl.SchedulerTaskPool;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.reliance.AbstractRelationReliance;
+import com.fr.swift.reliance.IRelationNode;
+import com.fr.swift.reliance.RelationNode;
+import com.fr.swift.reliance.RelationPathReliance;
+import com.fr.swift.reliance.RelationReliance;
 import com.fr.swift.reliance.SourceNode;
 import com.fr.swift.reliance.SourceReliance;
+import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.manager.IndexStuffProvider;
 import com.fr.swift.structure.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -87,8 +95,32 @@ public class StuffFetcher implements Runnable {
 //            pairs.add(new Pair<TaskKey, Object>(relationTask.key(), relation));
 //        }
 
+        // 生成关联
+        RelationReliance relationReliance = stuff.getRelationReliance();
+        calRelationTask(relationReliance, pairs, end);
+        RelationPathReliance relationPathReliance = stuff.getRelationPathReliance();
+        calRelationTask(relationPathReliance, pairs, end);
+
         CubeTasks.sendTasks(pairs);
         start.triggerRun();
+    }
+
+    private static void calRelationTask(AbstractRelationReliance relationReliance, List<Pair<TaskKey, Object>> pairs, SchedulerTask end) throws SwiftMetaDataException {
+        Map<SourceKey, IRelationNode> relationNodeMap = relationReliance.getHeadNode();
+        Iterator<Map.Entry<SourceKey, IRelationNode>> relationIterator = relationNodeMap.entrySet().iterator();
+        while (relationIterator.hasNext()) {
+            IRelationNode node = relationIterator.next().getValue();
+            SchedulerTask relationTask = CubeTasks.newRelationTask(node.getNode());
+            List<DataSource> deps = node.getDepend();
+            for (DataSource dep : deps) {
+                SchedulerTask task = SchedulerTaskPool.getInstance().get(CubeTasks.newTaskKey(dep));
+                if (null != task) {
+                    task.addNext(relationTask);
+                }
+            }
+            relationTask.addNext(end);
+            pairs.add(new Pair<TaskKey, Object>(relationTask.key(), node.getNode()));
+        }
     }
 
     private static void calcBaseNode(SourceNode sourceNode, SchedulerTask prevTask, SchedulerTask endTask,

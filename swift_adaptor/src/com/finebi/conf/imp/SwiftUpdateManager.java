@@ -11,20 +11,26 @@ import com.finebi.conf.internalimp.update.TableUpdateInfo;
 import com.finebi.conf.internalimp.update.UpdateLog;
 import com.finebi.conf.internalimp.update.UpdateNeedSpace;
 import com.finebi.conf.internalimp.update.UpdateStatus;
+import com.finebi.conf.provider.SwiftRelationPathConfProvider;
 import com.finebi.conf.provider.SwiftTableManager;
 import com.finebi.conf.service.engine.update.EngineUpdateManager;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.swift.adaptor.struct.ShowResultSet;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
+import com.fr.swift.adaptor.transformer.RelationSourceFactory;
 import com.fr.swift.generate.preview.SwiftDataPreviewer;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.manager.ProviderManager;
 import com.fr.swift.provider.IndexStuffInfoProvider;
+import com.fr.swift.reliance.RelationPathReliance;
+import com.fr.swift.reliance.RelationReliance;
 import com.fr.swift.reliance.SourceReliance;
 import com.fr.swift.source.DataSource;
+import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.Row;
+import com.fr.swift.source.SourcePath;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
@@ -33,7 +39,9 @@ import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.manager.IndexStuffProvider;
 import com.fr.swift.stuff.HistoryIndexStuffImpl;
 import com.fr.swift.stuff.IndexingStuff;
+import com.fr.swift.utils.RelationRelianceFactory;
 import com.fr.swift.utils.SourceRelianceFactory;
+import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,6 +58,11 @@ import java.util.Map;
 public class SwiftUpdateManager implements EngineUpdateManager {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftUpdateManager.class);
+
+    @Autowired
+    private SwiftTableManager tableManager;
+    @Autowired
+    private SwiftRelationPathConfProvider relationPathConfProvider;
 
     @Override
     public Map<FineBusinessTable, TableUpdateInfo> getTableUpdateInfo() {
@@ -94,11 +107,20 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         DataSourceFactory.transformDataSources(infoMap, updateTableSourceKeys, updateSourceContainer, incrementMap);
 
         List<DataSource> baseDataSourceList = new ArrayList<DataSource>(updateSourceContainer.getDataSourceContainer().getAllSources());
-        List<DataSource> allDataSourceList = DataSourceFactory.transformDataSources(new SwiftTableManager().getAllTable());
+        List<DataSource> allDataSourceList = DataSourceFactory.transformDataSources(tableManager.getAllTable());
+
+        List<RelationSource> relationSources = RelationSourceFactory.transformRelationSources(relationPathConfProvider.getAllRelations());
+
+        List<SourcePath> sourcePaths = RelationSourceFactory.transformSourcePaths(relationPathConfProvider.getAllRelationPaths());
+
         SourceReliance sourceReliance = SourceRelianceFactory.generateSourceReliance(baseDataSourceList, allDataSourceList);
 
+        RelationReliance relationReliance = RelationRelianceFactory.generateRelationReliance(relationSources, allDataSourceList);
+
+        RelationPathReliance relationPathReliance = RelationRelianceFactory.generateRelationPathReliance(sourcePaths, allDataSourceList);
+
         IndexingStuff indexingStuff = new HistoryIndexStuffImpl(updateTableSourceKeys, updateRelationSourceKeys, updatePathSourceKeys);
-        IndexStuffProvider indexStuffProvider = new IndexStuffInfoProvider(indexingStuff, updateSourceContainer, incrementMap, sourceReliance);
+        IndexStuffProvider indexStuffProvider = new IndexStuffInfoProvider(indexingStuff, updateSourceContainer, incrementMap, sourceReliance, relationReliance, relationPathReliance);
         ProviderManager.getManager().registProvider(0, indexStuffProvider);
     }
 
@@ -211,9 +233,9 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         }
     }
 
-    public String getUpdatePath() throws Exception{
+    public String getUpdatePath() {
         return "";
     }
 
-    public void updatePath(String newPath) throws Exception{}
+    public void updatePath(String newPath) {}
 }

@@ -12,12 +12,9 @@ import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.path.FineBusinessTableRelationPath;
 import com.finebi.conf.structure.relation.FineBusinessTableRelation;
 import com.fr.general.ComparatorUtils;
-import com.fr.swift.adaptor.transformer.DataSourceFactory;
+import com.fr.swift.adaptor.transformer.RelationSourceFactory;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.RelationSource;
-import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.relation.RelationPathSourceImpl;
-import com.fr.swift.source.relation.RelationSourceImpl;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.utils.BusinessTableUtils;
 
@@ -82,7 +79,7 @@ class RelationAdaptor {
                 for (SelectFieldPathItem item : path) {
                     handleSelectFieldPath(relationProvider, item, targetRelations);
                 }
-                return getRelation(new FineBusinessTableRelationPathImp(targetRelations));
+                return RelationSourceFactory.transformRelationSourcesFromPath(new FineBusinessTableRelationPathImp(targetRelations));
             } catch (Exception e) {
                 SwiftLoggers.getLogger().error("Cannot find relation, use default. ", e);
             }
@@ -92,58 +89,7 @@ class RelationAdaptor {
             return Crasher.crash("invalid relation tables");
         }
         FineBusinessTableRelationPath p = relation.get(0);
-        return getRelation(p);
-    }
-
-    private static RelationSource getRelation(FineBusinessTableRelationPath path) {
-        try {
-            List<RelationSource> relationSources = pathConvert2RelationSource(path);
-            if (relationSources.isEmpty()) {
-                return null;
-            }
-            if (1 == relationSources.size()) {
-                return relationSources.get(0);
-            }
-            return new RelationPathSourceImpl(relationSources);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    private static List<RelationSource> pathConvert2RelationSource(FineBusinessTableRelationPath path) throws Exception {
-        List<FineBusinessTableRelation> relations = path.getFineBusinessTableRelations();
-        List<RelationSource> result = new ArrayList<RelationSource>();
-        for (FineBusinessTableRelation relation : relations) {
-            FineBusinessTable primaryTable;
-            FineBusinessTable foreignTable;
-            List<FineBusinessField> primaryFields;
-            List<FineBusinessField> foreignFields;
-            if (relation.getRelationType() == BICommonConstants.RELATION_TYPE.MANY_TO_ONE) {
-                primaryTable = relation.getForeignBusinessTable();
-                foreignTable = relation.getPrimaryBusinessTable();
-                primaryFields = relation.getForeignBusinessField();
-                foreignFields = relation.getPrimaryBusinessField();
-            } else {
-                primaryTable = relation.getPrimaryBusinessTable();
-                foreignTable = relation.getForeignBusinessTable();
-                primaryFields = relation.getPrimaryBusinessField();
-                foreignFields = relation.getForeignBusinessField();
-            }
-            SourceKey primary = DataSourceFactory.getDataSource(primaryTable).getSourceKey();
-            SourceKey foreign = DataSourceFactory.getDataSource(foreignTable).getSourceKey();
-            List<String> primaryKey = new ArrayList<String>();
-            List<String> foreignKey = new ArrayList<String>();
-
-            for (FineBusinessField field : primaryFields) {
-                primaryKey.add(field.getName());
-            }
-
-            for (FineBusinessField field : foreignFields) {
-                foreignKey.add(field.getName());
-            }
-            result.add(new RelationSourceImpl(primary, foreign, primaryKey, foreignKey));
-        }
-        return result;
+        return RelationSourceFactory.transformRelationSourcesFromPath(p);
     }
 
     private static void handleSelectFieldPath(SwiftRelationPathConfProvider relationProvider, SelectFieldPathItem item, List<FineBusinessTableRelation> targetRelations) throws FineEngineException {

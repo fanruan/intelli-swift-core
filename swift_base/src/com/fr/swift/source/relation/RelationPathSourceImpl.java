@@ -3,18 +3,20 @@ package com.fr.swift.source.relation;
 import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.RelationSourceType;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SourcePath;
 import com.fr.swift.source.core.Core;
 import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.core.CoreGenerator;
 import com.fr.swift.util.Util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author yee
  * @date 2018/4/3
  */
-public class RelationPathSourceImpl implements RelationSource {
+public class RelationPathSourceImpl implements SourcePath {
     private List<RelationSource> relations;
     @CoreField
     private SourceKey primarySource;
@@ -85,7 +87,56 @@ public class RelationPathSourceImpl implements RelationSource {
         return core;
     }
 
+    @Override
     public List<RelationSource> getRelations() {
         return relations;
     }
+
+    @Override
+    public SourcePath clone() {
+        return new RelationPathSourceImpl(new ArrayList<RelationSource>(relations));
+    }
+
+    @Override
+    public SourcePath addRelationAtHead(RelationSource source) {
+        if (relations.isEmpty()) {
+            relations.add(source);
+        } else {
+            relations.add(0, source);
+        }
+        RelationSource firstRelation = relations.get(0);
+        this.primarySource = firstRelation.getPrimarySource();
+        this.primaryFields = firstRelation.getPrimaryFields();
+        return this;
+    }
+
+    @Override
+    public SourcePath addRelationAtTail(RelationSource source) {
+        relations.add(source);
+        RelationSource lastRelation = relations.get(relations.size() - 1);
+        this.foreignSource = lastRelation.getForeignSource();
+        this.foreignFields = lastRelation.getForeignFields();
+        initSourceKey();
+        return this;
+    }
+
+    @Override
+    public SourcePath removeFirstRelation() {
+        relations.remove(0);
+        RelationSource firstRelation = relations.get(0);
+        this.primarySource = firstRelation.getPrimarySource();
+        this.primaryFields = firstRelation.getPrimaryFields();
+        return this;
+    }
+
+    @Override
+    public SourcePath removeLastRelation() {
+        relations.remove(relations.size() - 1);
+        RelationSource lastRelation = relations.get(relations.size() - 1);
+        this.foreignSource = lastRelation.getForeignSource();
+        this.foreignFields = lastRelation.getForeignFields();
+        initSourceKey();
+        return this;
+    }
+
 }

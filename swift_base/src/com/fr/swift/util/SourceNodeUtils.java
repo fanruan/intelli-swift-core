@@ -29,7 +29,7 @@ public class SourceNodeUtils {
         while (dataSourceIterator.hasNext()) {
             DataSource dataSource = dataSourceIterator.next();
             if (dataSource instanceof EtlDataSource) {
-                calculateBaeeNode((EtlDataSource) dataSource, reliance);
+                calculateBaseNode((EtlDataSource) dataSource, reliance);
             } else {
                 if (!reliance.containHeadNode(dataSource.getSourceKey())) {
                     SourceNode sourceNode = new SourceNode(dataSource);
@@ -46,7 +46,7 @@ public class SourceNodeUtils {
         }
     }
 
-    private static void calculateBaeeNode(EtlDataSource etlDataSource, SourceReliance reliance) {
+    private static void calculateBaseNode(EtlDataSource etlDataSource, SourceReliance reliance) {
         SourceNode sourceNode = reliance.getNode(etlDataSource.getSourceKey());
         if (sourceNode == null) {
             sourceNode = new SourceNode(etlDataSource);
