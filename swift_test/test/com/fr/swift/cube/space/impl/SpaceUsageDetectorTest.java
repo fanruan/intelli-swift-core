@@ -46,8 +46,8 @@ public class SpaceUsageDetectorTest {
     }
 
     @Test
-    public void testDetect() {
-//        assertTrue(detector.detectUsage(uri).getUsed() >= 2048);
+    public void testDetect() throws Exception {
+        assertTrue(detector.detectUsed(uri) >= 2048);
     }
 
     @After
