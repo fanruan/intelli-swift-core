@@ -85,6 +85,6 @@ public class TestPathSource implements SourcePath {
 
     @Override
     public RelationSourceType getRelationType() {
-        return null;
+        return RelationSourceType.RELATION_PATH;
     }
 }

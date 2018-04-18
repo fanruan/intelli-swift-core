@@ -2,7 +2,6 @@ package com.fr.swift.reliance;
 
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.RelationSource;
-import com.fr.swift.source.RelationSourceType;
 import com.fr.swift.source.SourceKey;
 
 import java.util.Collections;

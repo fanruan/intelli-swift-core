@@ -59,7 +59,6 @@ public class RelationNodeUtils {
             if (dataSourceList.containsKey(lastRelation.getPrimarySource())) {
                 if (pre.getRelations().size() > 1) {
                     nodes.add(new RelationPathNode(source, Arrays.asList(lastRelation, pre)));
-                    nodes.addAll(calculateRelationNode(pre, dataSourceList));
                 } else {
                     nodes.add(new RelationPathNode(source, Arrays.asList(lastRelation, pre.getRelations().get(0))));
                 }
