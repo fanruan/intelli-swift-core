@@ -1,5 +1,6 @@
 package com.fr.swift.util;
 
+import com.fr.swift.increment.Increment;
 import com.fr.swift.reliance.SourceNode;
 import com.fr.swift.reliance.SourceReliance;
 import com.fr.swift.source.DataSource;
@@ -8,6 +9,7 @@ import com.fr.swift.source.EtlDataSource;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class created on 2018/4/11
@@ -24,15 +26,15 @@ public class SourceNodeUtils {
      *
      * @param reliance
      */
-    public static void calculateSourceNode(SourceReliance reliance) {
+    public static void calculateSourceNode(SourceReliance reliance, Map<String, List<Increment>> incrementMap) {
         Iterator<DataSource> dataSourceIterator = reliance.getReliances().iterator();
         while (dataSourceIterator.hasNext()) {
             DataSource dataSource = dataSourceIterator.next();
             if (dataSource instanceof EtlDataSource) {
-                calculateBaseNode((EtlDataSource) dataSource, reliance);
+                calculateBaeeNode((EtlDataSource) dataSource, reliance, incrementMap);
             } else {
                 if (!reliance.containHeadNode(dataSource.getSourceKey())) {
-                    SourceNode sourceNode = new SourceNode(dataSource);
+                    SourceNode sourceNode = new SourceNode(dataSource, getIncrement(incrementMap, dataSource));
                     reliance.addHeadNode(sourceNode);
                     reliance.addNode(sourceNode);
                 }
@@ -46,10 +48,10 @@ public class SourceNodeUtils {
         }
     }
 
-    private static void calculateBaseNode(EtlDataSource etlDataSource, SourceReliance reliance) {
+    private static void calculateBaeeNode(EtlDataSource etlDataSource, SourceReliance reliance, Map<String, List<Increment>> incrementMap) {
         SourceNode sourceNode = reliance.getNode(etlDataSource.getSourceKey());
         if (sourceNode == null) {
-            sourceNode = new SourceNode(etlDataSource);
+            sourceNode = new SourceNode(etlDataSource, getIncrement(incrementMap, etlDataSource));
             reliance.addNode(sourceNode);
         }
         List<DataSource> baseDataSources = etlDataSource.getBasedSources();
@@ -58,7 +60,7 @@ public class SourceNodeUtils {
 
                 SourceNode baseSourceNode = reliance.getNode(baseDataSource.getSourceKey());
                 if (baseSourceNode == null) {
-                    baseSourceNode = new SourceNode(baseDataSource);
+                    baseSourceNode = new SourceNode(baseDataSource, getIncrement(incrementMap, baseDataSource));
                     reliance.addNode(baseSourceNode);
                 }
                 baseSourceNode.addNext(sourceNode);
@@ -69,5 +71,14 @@ public class SourceNodeUtils {
         if (sourceNode.hasPrev()) {
             reliance.removeHeadNode(sourceNode);
         }
+    }
+
+    //暂时只有1个increment，默认取0
+    private static Increment getIncrement(Map<String, List<Increment>> incrementMap, DataSource dataSource) {
+        List<Increment> incrementList = incrementMap.get(dataSource.getSourceKey().getId());
+        if (incrementList != null && !incrementList.isEmpty()) {
+            return incrementList.get(0);
+        }
+        return null;
     }
 }

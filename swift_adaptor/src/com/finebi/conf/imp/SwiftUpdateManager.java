@@ -40,8 +40,6 @@ import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.container.SourceContainerManager;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.manager.IndexStuffProvider;
-import com.fr.swift.stuff.HistoryIndexStuffImpl;
-import com.fr.swift.stuff.IndexingStuff;
 import com.fr.swift.util.RelationNodeUtils;
 import com.fr.swift.utils.RelationRelianceFactory;
 import com.fr.swift.utils.SourceRelianceFactory;
@@ -103,30 +101,28 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     @Override
     public void saveUpdateSetting(Map<FineBusinessTable, TableUpdateInfo> infoMap) throws Exception {
 
-        List<String> updateTableSourceKeys = new ArrayList<String>();
-        List<String> updateRelationSourceKeys = new ArrayList<String>();
-        List<String> updatePathSourceKeys = new ArrayList<String>();
         SourceContainerManager updateSourceContainer = new SourceContainerManager();
-
         Map<String, List<Increment>> incrementMap = new HashMap<String, List<Increment>>();
-        DataSourceFactory.transformDataSources(infoMap, updateTableSourceKeys, updateSourceContainer, incrementMap);
+
+        DataSourceFactory.transformDataSources(infoMap, updateSourceContainer, incrementMap);
 
         List<DataSource> baseDataSourceList = new ArrayList<DataSource>(updateSourceContainer.getDataSourceContainer().getAllSources());
+
         List<DataSource> allDataSourceList = DataSourceFactory.transformDataSources(tableManager.getAllTable());
+
+        SourceReliance sourceReliance = SourceRelianceFactory.generateSourceReliance(baseDataSourceList, allDataSourceList, incrementMap);
 
         List<RelationSource> relationSources = RelationSourceFactory.transformRelationSources(relationPathConfProvider.getAllRelations());
 
         List<SourcePath> sourcePaths = RelationSourceFactory.transformSourcePaths(relationPathConfProvider.getAllRelationPaths());
-
-        SourceReliance sourceReliance = SourceRelianceFactory.generateSourceReliance(baseDataSourceList, allDataSourceList);
 
         // FIXME 传表的责任链，只更新和表有关的关联，单表更新可能无法更新到关联
         RelationReliance relationReliance = RelationRelianceFactory.generateRelationReliance(relationSources, sourceReliance);
 
         RelationPathReliance relationPathReliance = RelationRelianceFactory.generateRelationPathReliance(sourcePaths, relationReliance);
 
-        IndexingStuff indexingStuff = new HistoryIndexStuffImpl(updateTableSourceKeys, updateRelationSourceKeys, updatePathSourceKeys);
-        IndexStuffProvider indexStuffProvider = new IndexStuffInfoProvider(indexingStuff, updateSourceContainer, incrementMap, sourceReliance, relationReliance, relationPathReliance);
+        IndexStuffProvider indexStuffProvider = new IndexStuffInfoProvider(updateSourceContainer, incrementMap, sourceReliance, relationReliance, relationPathReliance);
+
         ProviderManager.getManager().registProvider(0, indexStuffProvider);
     }
 

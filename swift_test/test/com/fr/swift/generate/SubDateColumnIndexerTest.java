@@ -44,7 +44,8 @@ public class SubDateColumnIndexerTest {
     @Before
     public void before() {
         new TableTransporter(dataSource).work();
-        new ColumnIndexer(dataSource, new ColumnKey(columnName)).work();
+        List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+        new ColumnIndexer(dataSource, new ColumnKey(columnName), segments).work();
     }
 
     @Test
@@ -55,9 +56,9 @@ public class SubDateColumnIndexerTest {
     }
 
     private void indexSubDate(GroupType type) {
-        new SubDateColumnIndexer(dataSource, new ColumnKey(columnName), type).work();
-
         List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+        new SubDateColumnIndexer(dataSource, new ColumnKey(columnName), type, segments).work();
+
         assertTrue(!segments.isEmpty());
 
         Column origin = segments.get(0).getColumn(new ColumnKey(columnName));

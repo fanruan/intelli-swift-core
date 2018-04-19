@@ -16,6 +16,7 @@ import com.fr.swift.log.SwiftLoggers;
 public class SwiftDriverRegister {
     private static SwiftDriverRegister instance;
     private static SwiftLogger logger = SwiftLoggers.getLogger(SwiftDriverRegister.class);
+    private CommonDataSourceDriverFactory driverFactory = CommonDataSourceDriverFactory.getInstance(FineEngineType.Cube);
 
     public static void registerIfNeed() {
         if (null == instance) {
@@ -29,11 +30,11 @@ public class SwiftDriverRegister {
     }
 
     public void init() {
-        CommonDataSourceDriverFactory.getInstance(FineEngineType.Cube).update(new SwiftDataSourceDriverWrapper(new CommonAnalysisDataSourceDriver(FineEngineType.Cube)));
-        CommonDataSourceDriverFactory.getInstance(FineEngineType.Cube).update(new SwiftDataSourceDriverWrapper(new CommonCircleDataSourceDriver(FineEngineType.Cube)));
-        CommonDataSourceDriverFactory.getInstance(FineEngineType.Cube).update(new SwiftDataSourceDriverWrapper(new CommonConfAnalysisDataSourceDriver(FineEngineType.Cube)));
-        CommonDataSourceDriverFactory.getInstance(FineEngineType.Cube).update(new SwiftDataSourceDriverWrapper(new CommonSqlDataSourceDriver(FineEngineType.Cube)));
-        CommonDataSourceDriverFactory.getInstance(FineEngineType.Cube).update(new SwiftDatabaseDataSourceDriver());
+        driverFactory.registerDriver(new SwiftDataSourceDriverWrapper(new CommonAnalysisDataSourceDriver(FineEngineType.Cube)));
+        driverFactory.registerDriver(new SwiftDataSourceDriverWrapper(new CommonCircleDataSourceDriver(FineEngineType.Cube)));
+        driverFactory.registerDriver(new SwiftDataSourceDriverWrapper(new CommonConfAnalysisDataSourceDriver(FineEngineType.Cube)));
+        driverFactory.registerDriver(new SwiftDataSourceDriverWrapper(new CommonSqlDataSourceDriver(FineEngineType.Cube)));
+        driverFactory.registerDriver(new SwiftDatabaseDataSourceDriver());
         logger.info("Swift drives register success");
     }
 }

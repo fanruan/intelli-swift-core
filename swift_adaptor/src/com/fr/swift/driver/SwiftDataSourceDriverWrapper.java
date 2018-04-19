@@ -1,6 +1,5 @@
 package com.fr.swift.driver;
 
-import com.finebi.base.constant.FineEngineType;
 import com.finebi.common.internalimp.config.fieldinfo.SimpleFieldPersist;
 import com.finebi.common.structure.config.driver.CommonDataSourceDriver;
 import com.finebi.common.structure.config.driver.PersistDriver;
@@ -57,13 +56,13 @@ public class SwiftDataSourceDriverWrapper implements CommonDataSourceDriver {
     }
 
     @Override
-    public EntryInfo createEntryInfo(FineBusinessTable table) {
-        return driver.createEntryInfo(table);
+    public EntryInfo createEntryInfo(FineBusinessTable fineBusinessTable) {
+        return driver.createEntryInfo(fineBusinessTable);
     }
 
     @Override
-    public FineBusinessTable createBusinessTable(EntryInfo entryInfo, FineEngineType type) {
-        return driver.createBusinessTable(entryInfo, type);
+    public FineBusinessTable createBusinessTable(EntryInfo entryInfo) {
+        return driver.createBusinessTable(entryInfo);
     }
 
     @Override
@@ -74,5 +73,10 @@ public class SwiftDataSourceDriverWrapper implements CommonDataSourceDriver {
     @Override
     public EntryInfoStoreManager getEntryInfoStoreSession() {
         return driver.getEntryInfoStoreSession();
+    }
+
+    @Override
+    public boolean isRealTimeData(EntryInfo entryInfo) {
+        return driver.isRealTimeData(entryInfo);
     }
 }

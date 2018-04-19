@@ -3,6 +3,7 @@ package com.fr.swift.generate.realtime;
 import com.fr.swift.cube.task.Task.Result;
 import com.fr.swift.cube.task.impl.BaseWorker;
 import com.fr.swift.flow.FlowRuleController;
+import com.fr.swift.generate.Transport;
 import com.fr.swift.generate.realtime.increment.DecreaseTransport;
 import com.fr.swift.generate.realtime.increment.IncreaseTransport;
 import com.fr.swift.generate.realtime.increment.IncrementTransport;
@@ -23,7 +24,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public class RealtimeDataTransporter extends BaseWorker {
+public class RealtimeDataTransporter extends BaseWorker implements Transport {
     private DataSource dataSource;
     private SwiftMetaData swiftMetaData;
     private Increment increment;
@@ -82,5 +83,9 @@ public class RealtimeDataTransporter extends BaseWorker {
             LOGGER.error(e);
             workOver(Result.FAILED);
         }
+    }
+
+    public List<String> getIndexFieldsList() {
+        return dataSource.getMetadata().getFieldNames();
     }
 }
