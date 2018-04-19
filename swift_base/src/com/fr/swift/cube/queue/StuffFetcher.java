@@ -15,6 +15,8 @@ import com.fr.swift.reliance.RelationReliance;
 import com.fr.swift.reliance.SourceNode;
 import com.fr.swift.reliance.SourceReliance;
 import com.fr.swift.source.DataSource;
+import com.fr.swift.source.RelationSource;
+import com.fr.swift.source.Source;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.manager.IndexStuffProvider;
 import com.fr.swift.structure.Pair;
@@ -111,9 +113,14 @@ public class StuffFetcher implements Runnable {
         while (relationIterator.hasNext()) {
             IRelationNode node = relationIterator.next().getValue();
             SchedulerTask relationTask = CubeTasks.newRelationTask(node.getNode());
-            List<DataSource> deps = node.getDepend();
-            for (DataSource dep : deps) {
-                SchedulerTask task = SchedulerTaskPool.getInstance().get(CubeTasks.newTaskKey(dep));
+            List<Source> deps = node.getDepend();
+            for (Source dep : deps) {
+                SchedulerTask task;
+                if (dep instanceof DataSource) {
+                    task = SchedulerTaskPool.getInstance().get(CubeTasks.newTaskKey((DataSource) dep));
+                } else {
+                    task = SchedulerTaskPool.getInstance().get(CubeTasks.newTaskKey((RelationSource) dep));
+                }
                 if (null != task) {
                     task.addNext(relationTask);
                 }

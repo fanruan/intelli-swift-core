@@ -46,7 +46,11 @@ public class RelationSourceFactory {
     public static List<RelationSource> transformRelationSources(List<FineBusinessTableRelation> relations) throws Exception {
         List<RelationSource> list = new ArrayList<RelationSource>();
         for (FineBusinessTableRelation relation : relations) {
-            list.add(transformRelationSourcesFromRelation(relation));
+            if (relation.getRelationType() == BICommonConstants.RELATION_TYPE.MANY_TO_ONE) {
+                list.add(0, transformRelationSourcesFromRelation(relation));
+            } else {
+                list.add(transformRelationSourcesFromRelation(relation));
+            }
         }
         return list;
     }
