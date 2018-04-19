@@ -20,7 +20,7 @@ public abstract class AbstractRelationReliance<T extends IRelationNode, R extend
     protected Map<SourceKey, T> headNode;
 
     protected Map<SourceKey, R> allRelationSource;
-    private Map<SourceKey, DataSource> allDataSourceList;
+    protected Map<SourceKey, DataSource> allDataSourceList;
 
     public AbstractRelationReliance(List<R> allRelationSource, SourceReliance sourceReliance) {
         handleSingleRelationSource(allRelationSource);
@@ -35,6 +35,11 @@ public abstract class AbstractRelationReliance<T extends IRelationNode, R extend
                 sourceReliance) {
             allDataSourceList.put(dataSource.getSourceKey(), dataSource);
         }
+        this.headNode = new HashMap<SourceKey, T>();
+    }
+
+    public AbstractRelationReliance(List<R> allRelationSource) {
+        handleSingleRelationSource(allRelationSource);
         this.headNode = new HashMap<SourceKey, T>();
     }
 

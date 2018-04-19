@@ -2,7 +2,6 @@ package com.fr.swift.reliance;
 
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.RelationSource;
-import com.fr.swift.source.RelationSourceType;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SourcePath;
 import com.fr.swift.source.db.TableDBSource;
@@ -40,7 +39,7 @@ public class RelationSourceGen {
                     new RelationSourceImpl(dataSources.get(1).getSourceKey(), dataSources.get(2).getSourceKey(), Arrays.asList("BC"), Arrays.asList("CB")),
                     new RelationSourceImpl(dataSources.get(0).getSourceKey(), dataSources.get(2).getSourceKey(), Arrays.asList("AC"), Arrays.asList("CA")),
                     new RelationSourceImpl(dataSources.get(1).getSourceKey(), dataSources.get(3).getSourceKey(), Arrays.asList("BD"), Arrays.asList("DB")),
-                    new RelationSourceImpl(new SourceKey("undefined"), dataSources.get(1).getSourceKey(), Arrays.asList("undefined"), Arrays.asList("BA"))
+                    new RelationSourceImpl(dataSources.get(1).getSourceKey(), new SourceKey("undefined"), Arrays.asList("BA"), Arrays.asList("undefined"))
             );
         } else {
             return Arrays.asList(
@@ -93,10 +92,14 @@ public class RelationSourceGen {
         return result;
     }
 
-    public static SourcePath genSinglePath(List<DataSource> dataSources) {
-        return new RelationPathSourceImpl(Arrays.asList(
+    public static List<RelationSource> relationSourceForSinglePath(List<DataSource> dataSources) {
+        return Arrays.asList(
                 new RelationSourceImpl(dataSources.get(0).getSourceKey(), dataSources.get(1).getSourceKey(), Arrays.asList("AB"), Arrays.asList("BA")),
                 new RelationSourceImpl(dataSources.get(1).getSourceKey(), dataSources.get(2).getSourceKey(), Arrays.asList("BC"), Arrays.asList("CB")),
-                new RelationSourceImpl(dataSources.get(2).getSourceKey(), dataSources.get(3).getSourceKey(), Arrays.asList("CD"), Arrays.asList("DC"))));
+                new RelationSourceImpl(dataSources.get(2).getSourceKey(), dataSources.get(3).getSourceKey(), Arrays.asList("CD"), Arrays.asList("DC")));
+    }
+
+    public static SourcePath genSinglePath(List<RelationSource> dataSources) {
+        return new RelationPathSourceImpl(dataSources);
     }
 }

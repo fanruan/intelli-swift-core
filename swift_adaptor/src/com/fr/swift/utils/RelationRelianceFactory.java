@@ -21,7 +21,7 @@ public class RelationRelianceFactory {
         return relationReliance;
     }
 
-    public static RelationPathReliance generateRelationPathReliance(List<SourcePath> allRelationPathSource, SourceReliance sourceReliance) {
+    public static RelationPathReliance generateRelationPathReliance(List<SourcePath> allRelationPathSource, RelationReliance sourceReliance) {
         RelationPathReliance relationPathReliance = new RelationPathReliance(allRelationPathSource, sourceReliance);
         RelationNodeUtils.calculateRelationPathNode(relationPathReliance);
         return relationPathReliance;
@@ -33,9 +33,9 @@ public class RelationRelianceFactory {
         return relationReliance;
     }
 
-    public static RelationPathReliance generateRelationPathReliance(List<SourcePath> allRelationPathSource, List<DataSource>  sourceReliance) {
-        RelationPathReliance relationPathReliance = new RelationPathReliance(allRelationPathSource, sourceReliance);
-        RelationNodeUtils.calculateRelationPathNode(relationPathReliance);
-        return relationPathReliance;
-    }
+//    public static RelationPathReliance generateRelationPathReliance(List<SourcePath> allRelationPathSource, List<DataSource>  sourceReliance) {
+//        RelationPathReliance relationPathReliance = new RelationPathReliance(allRelationPathSource, sourceReliance);
+//        RelationNodeUtils.calculateRelationPathNode(relationPathReliance);
+//        return relationPathReliance;
+//    }
 }

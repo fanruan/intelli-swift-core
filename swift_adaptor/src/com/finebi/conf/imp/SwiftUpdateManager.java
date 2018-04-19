@@ -123,7 +123,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         // FIXME 传表的责任链，只更新和表有关的关联，单表更新可能无法更新到关联
         RelationReliance relationReliance = RelationRelianceFactory.generateRelationReliance(relationSources, sourceReliance);
 
-        RelationPathReliance relationPathReliance = RelationRelianceFactory.generateRelationPathReliance(sourcePaths, sourceReliance);
+        RelationPathReliance relationPathReliance = RelationRelianceFactory.generateRelationPathReliance(sourcePaths, relationReliance);
 
         IndexingStuff indexingStuff = new HistoryIndexStuffImpl(updateTableSourceKeys, updateRelationSourceKeys, updatePathSourceKeys);
         IndexStuffProvider indexStuffProvider = new IndexStuffInfoProvider(indexingStuff, updateSourceContainer, incrementMap, sourceReliance, relationReliance, relationPathReliance);
@@ -268,7 +268,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
                 }
                 RelationReliance relationReliance = new RelationReliance(relationSources, dataSources);
                 RelationNodeUtils.calculateRelationNode(relationReliance);
-                RelationPathReliance relationPathReliance = new RelationPathReliance(RelationSourceFactory.transformSourcePaths(Arrays.asList(path)), dataSources);
+                RelationPathReliance relationPathReliance = new RelationPathReliance(RelationSourceFactory.transformSourcePaths(Arrays.asList(path)), relationReliance);
                 RelationNodeUtils.calculateRelationPathNode(relationPathReliance);
                 // fixme 调更新
             } catch (Exception e) {

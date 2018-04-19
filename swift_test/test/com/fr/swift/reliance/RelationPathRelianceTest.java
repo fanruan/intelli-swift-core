@@ -27,18 +27,20 @@ public class RelationPathRelianceTest extends TestCase {
 
     /**
      * DataSource A - G
-     * A-B, B-C, A-C, B-D, undefined-B    5个关联
-     * A-B, B-C, A-C, B-D, undefined-B    5个单路径
-     * A-B-C, A-B-D, undefined-B-C, undefined-B-D 4个多表路径
+     * A-B, B-C, A-C, B-D, B-undefined    5个关联
+     * A-B, B-C, A-C, B-D, B-undefined    5个单路径
+     * A-B-C, A-B-D, A-B-undefined 3个多表路径
      * 除去DataSource中不包含的表和单路径，还有2个Path
      */
     public void testReliance() {
         dataSources = RelationSourceGen.genDataSource();
         relationSources = RelationSourceGen.genRelationSource(dataSources, true);
         sourcePaths = RelationSourceGen.calPath(relationSources);
-        RelationPathReliance reliance = new RelationPathReliance(sourcePaths, dataSources);
+        RelationReliance relationReliance = new RelationReliance(relationSources, dataSources);
+        RelationNodeUtils.calculateRelationNode(relationReliance);
+        RelationPathReliance reliance = new RelationPathReliance(sourcePaths, relationReliance);
         RelationNodeUtils.calculateRelationPathNode(reliance);
-        assertEquals(9, sourcePaths.size());
+        assertEquals(8, sourcePaths.size());
         assertEquals(2, reliance.getHeadNode().size());
     }
     /**
@@ -52,7 +54,9 @@ public class RelationPathRelianceTest extends TestCase {
         dataSources = RelationSourceGen.genDataSource();
         relationSources = RelationSourceGen.genRelationSource(dataSources, false);
         sourcePaths = RelationSourceGen.calPath(relationSources);
-        RelationPathReliance reliance = new RelationPathReliance(sourcePaths, dataSources);
+        RelationReliance relationReliance = new RelationReliance(relationSources, dataSources);
+        RelationNodeUtils.calculateRelationNode(relationReliance);
+        RelationPathReliance reliance = new RelationPathReliance(sourcePaths, relationReliance);
         RelationNodeUtils.calculateRelationPathNode(reliance);
         assertEquals(10, sourcePaths.size());
         assertEquals(5, reliance.getHeadNode().size());
@@ -68,8 +72,11 @@ public class RelationPathRelianceTest extends TestCase {
      */
     public void testSinglePath() {
         dataSources = RelationSourceGen.genDataSource();
-        sourcePaths = Collections.singletonList(RelationSourceGen.genSinglePath(dataSources));
-        RelationPathReliance reliance = new RelationPathReliance(sourcePaths, dataSources);
+        relationSources = RelationSourceGen.relationSourceForSinglePath(dataSources);
+        sourcePaths = Collections.singletonList(RelationSourceGen.genSinglePath(relationSources));
+        RelationReliance relationReliance = new RelationReliance(relationSources, dataSources);
+        RelationNodeUtils.calculateRelationNode(relationReliance);
+        RelationPathReliance reliance = new RelationPathReliance(sourcePaths, relationReliance);
         RelationNodeUtils.calculateRelationPathNode(reliance);
         assertEquals(1, sourcePaths.size());
         assertEquals(2, reliance.getHeadNode().size());

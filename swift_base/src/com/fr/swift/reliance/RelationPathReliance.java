@@ -1,11 +1,11 @@
 package com.fr.swift.reliance;
 
-import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SourcePath;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author yee
@@ -13,12 +13,16 @@ import java.util.List;
  */
 public class RelationPathReliance extends AbstractRelationReliance<RelationPathNode, SourcePath> {
 
-    public RelationPathReliance(List<SourcePath> allRelationSource, SourceReliance sourceReliance) {
-        super(allRelationSource, sourceReliance);
+    private Map<SourceKey, RelationNode> relationNodeMap;
+
+    public RelationPathReliance(List<SourcePath> allRelationSource, RelationReliance relationReliance) {
+        super(allRelationSource);
+        this.relationNodeMap = relationReliance.getHeadNode();
+        this.allDataSourceList = relationReliance.getAllDataSourceList();
     }
 
-    public RelationPathReliance(List<SourcePath> allRelationSource, List<DataSource> sourceReliance) {
-        super(allRelationSource, sourceReliance);
+    public Map<SourceKey, RelationNode> getRelationNodeMap() {
+        return relationNodeMap;
     }
 
     @Override

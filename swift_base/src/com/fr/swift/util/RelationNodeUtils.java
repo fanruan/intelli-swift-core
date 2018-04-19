@@ -29,14 +29,19 @@ public class RelationNodeUtils {
             RelationSource source = iterator.next().getValue();
             DataSource primary = dataSourceList.get(source.getPrimarySource());
             DataSource foreign = dataSourceList.get(source.getForeignSource());
-            if (null != primary && null != foreign) {
-                relationReliance.addNode(new RelationNode(source, Arrays.asList(primary, foreign)));
+            // 更新子表时如果包含关联则尝试更新关联
+            if (null != foreign) {
+                if (null != primary) {
+                    relationReliance.addNode(new RelationNode(source, Arrays.asList(primary, foreign)));
+                } else {
+                    relationReliance.addNode(new RelationNode(source, Arrays.asList(foreign)));
+                }
             }
         }
     }
 
     public static void calculateRelationPathNode(RelationPathReliance relationReliance) {
-        Map<SourceKey, DataSource> dataSourceList = relationReliance.getAllDataSourceList();
+        Map<SourceKey, RelationNode> dataSourceList = relationReliance.getRelationNodeMap();
         Map<SourceKey, SourcePath> relationSourceMap = relationReliance.getAllRelationSource();
         Iterator<Map.Entry<SourceKey, SourcePath>> iterator = relationSourceMap.entrySet().iterator();
         List<RelationPathNode> nodes = new ArrayList<RelationPathNode>();
@@ -49,28 +54,26 @@ public class RelationNodeUtils {
         }
     }
 
-    private static Map<SourceKey, RelationPathNode> calculateRelationNode(SourcePath source, Map<SourceKey, DataSource> dataSourceList) {
+    private static Map<SourceKey, RelationPathNode> calculateRelationNode(SourcePath source, Map<SourceKey, RelationNode> dataSourceList) {
         Map<SourceKey, RelationPathNode> nodes = new HashMap<SourceKey, RelationPathNode>();
-        DataSource primary = dataSourceList.get(source.getPrimarySource());
-        DataSource foreign = dataSourceList.get(source.getForeignSource());
-        if (null != primary && null != foreign) {
-            List<RelationSource> relations = source.getRelations();
-            RelationSource lastRelation = relations.get(relations.size() - 1);
-            SourcePath pre = source.clone().removeLastRelation();
-            if (dataSourceList.containsKey(lastRelation.getPrimarySource())) {
-                if (!nodes.containsKey(source.getSourceKey())) {
-                    if (pre.getRelations().size() > 1) {
-                        nodes.put(source.getSourceKey(), new RelationPathNode(source, Arrays.asList(lastRelation, pre)));
-                        // 递归去算防止传单个路径时无法计算子依赖
-                        Map<SourceKey, RelationPathNode> map = calculateRelationNode(pre, dataSourceList);
-                        Iterator<Map.Entry<SourceKey, RelationPathNode>> iterator = map.entrySet().iterator();
-                        while (iterator.hasNext()) {
-                            Map.Entry<SourceKey, RelationPathNode> entry = iterator.next();
-                            if (!nodes.containsKey(entry.getKey())) {
-                                nodes.put(entry.getValue().getKey(), entry.getValue());
-                            }
+        List<RelationSource> relations = source.getRelations();
+        RelationSource lastRelation = relations.get(relations.size() - 1);
+        SourcePath pre = source.clone().removeLastRelation();
+        if (dataSourceList.containsKey(lastRelation.getSourceKey())) {
+            if (!nodes.containsKey(source.getSourceKey())) {
+                if (pre.getRelations().size() > 1) {
+                    nodes.put(source.getSourceKey(), new RelationPathNode(source, Arrays.asList(lastRelation, pre)));
+                    // 递归去算防止传单个路径时无法计算子依赖
+                    Map<SourceKey, RelationPathNode> map = calculateRelationNode(pre, dataSourceList);
+                    Iterator<Map.Entry<SourceKey, RelationPathNode>> iterator = map.entrySet().iterator();
+                    while (iterator.hasNext()) {
+                        Map.Entry<SourceKey, RelationPathNode> entry = iterator.next();
+                        if (!nodes.containsKey(entry.getKey())) {
+                            nodes.put(entry.getValue().getKey(), entry.getValue());
                         }
-                    } else {
+                    }
+                } else {
+                    if (dataSourceList.containsKey(pre.getSourceKey())) {
                         nodes.put(source.getSourceKey(), new RelationPathNode(source, Arrays.asList(lastRelation, pre.getRelations().get(0))));
                     }
                 }
