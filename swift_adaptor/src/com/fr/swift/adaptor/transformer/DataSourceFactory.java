@@ -89,11 +89,10 @@ public class DataSourceFactory {
         }
     }
 
-    public static void transformDataSources(Map<FineBusinessTable, TableUpdateInfo> infoMap, List<String> updateTableSourceKeys, SourceContainerManager updateSourceContainer, Map<String, List<Increment>> incrementMap) throws Exception {
+    public static void transformDataSources(Map<FineBusinessTable, TableUpdateInfo> infoMap, SourceContainerManager updateSourceContainer, Map<String, List<Increment>> incrementMap) throws Exception {
         for (Map.Entry<FineBusinessTable, TableUpdateInfo> infoEntry : infoMap.entrySet()) {
             DataSource updateDataSource = getDataSource(infoEntry.getKey());
             if (updateDataSource != null) {
-                updateTableSourceKeys.add(updateDataSource.getSourceKey().getId());
                 updateSourceContainer.getDataSourceContainer().addSource(updateDataSource);
 
                 if (updateDataSource instanceof DBDataSource && infoEntry.getValue() != null) {
@@ -104,11 +103,13 @@ public class DataSourceFactory {
                         increment = transformIncrement(infoEntry.getValue(), updateDataSource.getSourceKey(), ((TableDBSource) updateDataSource).getConnectionName());
                     }
 
-                    if (incrementMap.containsKey(updateDataSource.getSourceKey().getId())) {
-                        incrementMap.get(updateDataSource.getSourceKey().getId()).add(increment);
-                    } else {
-                        incrementMap.put(updateDataSource.getSourceKey().getId(), new ArrayList<Increment>());
-                        incrementMap.get(updateDataSource.getSourceKey().getId()).add(increment);
+                    if (increment != null) {
+                        if (incrementMap.containsKey(updateDataSource.getSourceKey().getId())) {
+                            incrementMap.get(updateDataSource.getSourceKey().getId()).add(increment);
+                        } else {
+                            incrementMap.put(updateDataSource.getSourceKey().getId(), new ArrayList<Increment>());
+                            incrementMap.get(updateDataSource.getSourceKey().getId()).add(increment);
+                        }
                     }
                 }
             }
@@ -231,8 +232,18 @@ public class DataSourceFactory {
     }
 
     private static Increment transformIncrement(TableUpdateInfo tableUpdateInfo, SourceKey sourceKey, String connectionName) {
+        if (!isIncrement(tableUpdateInfo)) {
+            return null;
+        }
         Increment increment = new IncrementImpl(tableUpdateInfo.getAddSql(), tableUpdateInfo.getDeleteSql(), tableUpdateInfo.getModifySql(), sourceKey, connectionName, adaptUpdateType(tableUpdateInfo.getUpdateType()));
         return increment;
+    }
+
+    private static boolean isIncrement(TableUpdateInfo tableUpdateInfo) {
+        if (tableUpdateInfo.getAddSql().isEmpty() && tableUpdateInfo.getDeleteSql().isEmpty() && tableUpdateInfo.getModifySql().isEmpty()) {
+            return false;
+        }
+        return true;
     }
 
     private static UpdateType adaptUpdateType(int type) {

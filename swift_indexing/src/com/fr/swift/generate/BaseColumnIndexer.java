@@ -39,20 +39,28 @@ import static com.fr.swift.source.ColumnTypeConstants.ClassType.STRING;
  * @author anchore
  * @date 2018/2/26
  */
-public abstract class BaseColumnIndexer<T> extends BaseWorker {
+public abstract class BaseColumnIndexer<T> extends BaseWorker implements SwiftColumnIndexer {
     protected DataSource dataSource;
     protected ColumnKey key;
+    protected List<Segment> segments;
 
-    public BaseColumnIndexer(DataSource dataSource, ColumnKey key) {
+    /**
+     * segments通过外部传入
+     *
+     * @param dataSource
+     * @param key
+     * @param segments
+     */
+    public BaseColumnIndexer(DataSource dataSource, ColumnKey key, List<Segment> segments) {
         this.dataSource = dataSource;
         this.key = key;
+        this.segments = segments;
     }
 
     @Override
     public void work() {
         try {
             buildIndex();
-            mergeDict();
             workOver(Result.SUCCEEDED);
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
@@ -61,30 +69,25 @@ public abstract class BaseColumnIndexer<T> extends BaseWorker {
     }
 
     private void buildIndex() throws Exception {
-        List<Segment> segments = getSegments();
         for (Segment segment : segments) {
             Column<T> column = getColumn(segment);
             buildColumnIndex(column, segment.getRowCount());
         }
     }
 
-    /**
-     * indexer 会对返回的segments的对应列进行索引
-     *
-     * @return 要索引的segments
-     */
-    protected abstract List<Segment> getSegments();
-
     protected Column<T> getColumn(Segment segment) {
         return segment.getColumn(key);
     }
 
     /**
-     * 如有必要就释放
-     *
      * @param baseColumn 基础列
      */
-    protected abstract void releaseIfNeed(Releasable baseColumn);
+    protected void releaseIfNeed(Releasable baseColumn, Column column) {
+        if (column.getLocation().getStoreType() == StoreType.FINE_IO) {
+            baseColumn.release();
+        }
+    }
+
 
     private void buildColumnIndex(Column<T> column, int rowCount) throws Exception {
         Map<T, IntList> map;
@@ -134,7 +137,7 @@ public abstract class BaseColumnIndexer<T> extends BaseWorker {
             }
         }
 
-        releaseIfNeed(detailColumn);
+        releaseIfNeed(detailColumn, column);
 
         return map;
     }
@@ -177,14 +180,9 @@ public abstract class BaseColumnIndexer<T> extends BaseWorker {
             dictColumn.putIndex(row, rowToIndex[row]);
         }
 
-        releaseIfNeed(dictColumn);
-        releaseIfNeed(indexColumn);
+        releaseIfNeed(dictColumn, column);
+        releaseIfNeed(indexColumn, column);
     }
-
-    /**
-     * 全局字典
-     */
-    protected abstract void mergeDict();
 
     private Map<T, IntList> newIntListSortedMap(Column<T> column) throws SwiftMetaDataException {
         Comparator<T> c = column.getDictionaryEncodedColumn().getComparator();

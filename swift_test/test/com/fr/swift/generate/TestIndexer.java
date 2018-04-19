@@ -1,11 +1,16 @@
 package com.fr.swift.generate;
 
 import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.generate.history.index.ColumnDictMerger;
 import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.generate.history.transport.TableTransporter;
-import com.fr.swift.generate.realtime.index.RealtimeColumnIndexer;
+import com.fr.swift.manager.LocalSegmentProvider;
+import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.DataSource;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class created on 2018/3/27
@@ -17,16 +22,30 @@ import com.fr.swift.source.DataSource;
 public class TestIndexer {
 
     public static void realtimeIndex(DataSource dataSource) throws SwiftMetaDataException {
+
+        List<Segment> allSegments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+        List<Segment> indexSegments = new ArrayList<Segment>();
+        for (Segment segment : allSegments) {
+            if (!segment.isHistory()) {
+                indexSegments.add(segment);
+            }
+        }
+
         for (String field : dataSource.getMetadata().getFieldNames()) {
-            RealtimeColumnIndexer<?> indexer = new RealtimeColumnIndexer(dataSource, new ColumnKey(field));
+            ColumnIndexer<?> indexer = new ColumnIndexer(dataSource, new ColumnKey(field), indexSegments);
             indexer.work();
+            ColumnDictMerger<?> merger = new ColumnDictMerger(dataSource, new ColumnKey(field), allSegments);
+            merger.work();
         }
     }
 
     public static void historyIndex(DataSource dataSource, TableTransporter transporter) throws SwiftMetaDataException {
+        List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
         for (String field : transporter.getIndexFieldsList()) {
-            ColumnIndexer<?> indexer = new ColumnIndexer(dataSource, new ColumnKey(field));
+            ColumnIndexer<?> indexer = new ColumnIndexer(dataSource, new ColumnKey(field), segments);
             indexer.work();
+            ColumnDictMerger<?> merger = new ColumnDictMerger(dataSource, new ColumnKey(field), segments);
+            merger.work();
         }
     }
 }

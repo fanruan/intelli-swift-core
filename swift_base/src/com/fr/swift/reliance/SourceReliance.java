@@ -14,16 +14,20 @@ import java.util.Map;
  *
  * @author Lucifer
  * @description
- * @since Advanced FineBI Analysis 1.0
+ * @since Advanced FineBI 5.0
  */
 public class SourceReliance {
 
+    //头节点
     private Map<SourceKey, SourceNode> headSourceNodes;
 
+    //所有节点
     private Map<SourceKey, SourceNode> allSourceNodes;
 
+    //所有依赖的datasource
     private Map<SourceKey, DataSource> reliances;
 
+    //原始的datasource
     private Map<SourceKey, DataSource> origins;
 
     public SourceReliance(List<DataSource> origins, List<DataSource> reliances) {
@@ -93,5 +97,13 @@ public class SourceReliance {
 
     public List<DataSource> getOrigins() {
         return new ArrayList<DataSource>(origins.values());
+    }
+
+    public DataSource getRelianceSource(SourceKey sourceKey) {
+        return reliances.get(sourceKey);
+    }
+
+    public DataSource getOriginSource(SourceKey sourceKey) {
+        return origins.get(sourceKey);
     }
 }

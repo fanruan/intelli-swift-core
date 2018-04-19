@@ -10,13 +10,15 @@ import com.fr.swift.cube.task.impl.SchedulerTaskPool;
 import com.fr.swift.cube.task.impl.WorkerTaskImpl;
 import com.fr.swift.cube.task.impl.WorkerTaskPool;
 import com.fr.swift.exception.SwiftServiceException;
+import com.fr.swift.flow.FlowRuleController;
 import com.fr.swift.generate.history.TableBuilder;
 import com.fr.swift.generate.history.index.MultiRelationIndexer;
 import com.fr.swift.generate.history.index.TablePathIndexer;
+import com.fr.swift.generate.realtime.RealtimeTableBuilder;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.relation.utils.RelationPathHelper;
-import com.fr.swift.source.DataSource;
+import com.fr.swift.reliance.SourceNode;
 import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.RelationSourceType;
 import com.fr.swift.structure.Pair;
@@ -69,10 +71,14 @@ public class ProviderTaskManager {
                 }
 
                 Object o = pair.getValue();
-                if (o instanceof DataSource) {
-                    DataSource ds = ((DataSource) o);
+                if (o instanceof SourceNode) {
+                    SourceNode sourceNode = ((SourceNode) o);
                     WorkerTask wt = new WorkerTaskImpl(taskKey);
-                    wt.setWorker(new TableBuilder(ds));
+                    if (sourceNode.isIncrement()) {
+                        wt.setWorker(new RealtimeTableBuilder(sourceNode.getNode(), sourceNode.getIncrement(), new FlowRuleController()));
+                    } else {
+                        wt.setWorker(new TableBuilder(sourceNode.getNode()));
+                    }
                     return wt;
                 } else if (o instanceof RelationSource) {
                     RelationSource source = (RelationSource) o;

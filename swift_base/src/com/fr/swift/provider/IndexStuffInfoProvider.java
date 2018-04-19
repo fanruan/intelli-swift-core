@@ -4,10 +4,10 @@ import com.fr.swift.increment.Increment;
 import com.fr.swift.reliance.SourceReliance;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.RelationSource;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SourcePath;
 import com.fr.swift.source.container.SourceContainerManager;
 import com.fr.swift.source.manager.IndexStuffProvider;
-import com.fr.swift.stuff.IndexingStuff;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,37 +18,41 @@ import java.util.Map;
  * This class created on 2017-11-28.
  *
  * @author Lucifer
- * @since Advanced FineBI Analysis 1.0
+ * @since Advanced FineBI 5.0
+ * todo fix me关联路径的获取也要改掉，sourceContainer不需要了。
  */
 public class IndexStuffInfoProvider implements IndexStuffProvider {
 
-    private IndexingStuff indexingStuff;
     private SourceContainerManager sourceContainer;
     private Map<String, List<Increment>> incrementMap;
     private SourceReliance sourceReliance;
 
-    public IndexStuffInfoProvider(IndexingStuff indexingStuff, SourceContainerManager sourceContainer) {
-        this.indexingStuff = indexingStuff;
+
+    public IndexStuffInfoProvider(SourceContainerManager sourceContainer) {
         this.sourceContainer = sourceContainer;
         this.incrementMap = new HashMap<String, List<Increment>>();
     }
 
-    public IndexStuffInfoProvider(IndexingStuff indexingStuff, SourceContainerManager sourceContainer,
+    public IndexStuffInfoProvider(SourceContainerManager sourceContainer,
                                   Map<String, List<Increment>> incrementMap, SourceReliance sourceReliance) {
-        this.indexingStuff = indexingStuff;
-        this.sourceContainer = sourceContainer;
+        this(sourceContainer);
         this.incrementMap = incrementMap;
         this.sourceReliance = sourceReliance;
     }
 
     @Override
     public DataSource getTableById(String sourceId) {
-        return sourceContainer.getDataSourceContainer().getSourceByKey(sourceId);
+        return sourceReliance.getRelianceSource(new SourceKey(sourceId));
     }
 
     @Override
     public List<DataSource> getTablesByIds(List<String> sourceIds) {
-        return new ArrayList<DataSource>(sourceContainer.getDataSourceContainer().getSourcesByKeys(sourceIds));
+        List<DataSource> dataSourceList = new ArrayList<DataSource>();
+        for (String sourceId : sourceIds) {
+            DataSource dataSource = getTableById(sourceId);
+            dataSourceList.add(dataSource);
+        }
+        return dataSourceList;
     }
 
     @Override
@@ -73,7 +77,7 @@ public class IndexStuffInfoProvider implements IndexStuffProvider {
 
     @Override
     public List<DataSource> getAllTables() {
-        return new ArrayList<DataSource>(sourceContainer.getDataSourceContainer().getAllSources());
+        return new ArrayList<DataSource>(sourceReliance.getReliances());
     }
 
     @Override

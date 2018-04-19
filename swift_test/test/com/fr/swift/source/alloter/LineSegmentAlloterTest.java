@@ -100,7 +100,7 @@ public class LineSegmentAlloterTest extends TestCase {
 
         Inserter inserter = LocalDataOperatorProvider.getInstance().getHistoryBlockSwiftInserter(dataSource);
         inserter.insertData(resultSet);
-        SwiftSourceAlloter alloter = SwiftSourceAlloterFactory.createSourceAlloter(sourceKey);
+        SwiftSourceAlloter alloter = SwiftSourceAlloterFactory.createLineSourceAlloter(sourceKey, sourceKey.getId());
         int lastIndex = -1;
         Segment segment = null;
         DetailColumn column = null;

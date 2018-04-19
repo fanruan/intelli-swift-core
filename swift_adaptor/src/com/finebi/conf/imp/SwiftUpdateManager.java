@@ -31,8 +31,6 @@ import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.container.SourceContainerManager;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.manager.IndexStuffProvider;
-import com.fr.swift.stuff.HistoryIndexStuffImpl;
-import com.fr.swift.stuff.IndexingStuff;
 import com.fr.swift.utils.SourceRelianceFactory;
 
 import java.util.ArrayList;
@@ -85,20 +83,18 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     @Override
     public void saveUpdateSetting(Map<FineBusinessTable, TableUpdateInfo> infoMap) throws Exception {
 
-        List<String> updateTableSourceKeys = new ArrayList<String>();
-        List<String> updateRelationSourceKeys = new ArrayList<String>();
-        List<String> updatePathSourceKeys = new ArrayList<String>();
         SourceContainerManager updateSourceContainer = new SourceContainerManager();
-
         Map<String, List<Increment>> incrementMap = new HashMap<String, List<Increment>>();
-        DataSourceFactory.transformDataSources(infoMap, updateTableSourceKeys, updateSourceContainer, incrementMap);
+
+        DataSourceFactory.transformDataSources(infoMap, updateSourceContainer, incrementMap);
 
         List<DataSource> baseDataSourceList = new ArrayList<DataSource>(updateSourceContainer.getDataSourceContainer().getAllSources());
         List<DataSource> allDataSourceList = DataSourceFactory.transformDataSources(new SwiftTableManager().getAllTable());
-        SourceReliance sourceReliance = SourceRelianceFactory.generateSourceReliance(baseDataSourceList, allDataSourceList);
 
-        IndexingStuff indexingStuff = new HistoryIndexStuffImpl(updateTableSourceKeys, updateRelationSourceKeys, updatePathSourceKeys);
-        IndexStuffProvider indexStuffProvider = new IndexStuffInfoProvider(indexingStuff, updateSourceContainer, incrementMap, sourceReliance);
+        SourceReliance sourceReliance = SourceRelianceFactory.generateSourceReliance(baseDataSourceList, allDataSourceList, incrementMap);
+
+        IndexStuffProvider indexStuffProvider = new IndexStuffInfoProvider(updateSourceContainer, incrementMap, sourceReliance);
+
         ProviderManager.getManager().registProvider(0, indexStuffProvider);
     }
 
@@ -211,11 +207,11 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         }
     }
 
-    public String getUpdatePath() throws Exception{
+    public String getUpdatePath() throws Exception {
         return "";
     }
 
-    public void updatePath(String newPath) throws Exception{
+    public void updatePath(String newPath) throws Exception {
 
     }
 }

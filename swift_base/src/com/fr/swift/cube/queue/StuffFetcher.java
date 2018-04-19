@@ -61,7 +61,7 @@ public class StuffFetcher implements Runnable {
             SourceNode sourceNode = entry.getValue();
             SchedulerTask headTask = CubeTasks.newTableTask(sourceNode.getNode());
             start.addNext(headTask);
-            pairMap.put(headTask.key(), new Pair<TaskKey, Object>(headTask.key(), sourceNode.getNode()));
+            pairMap.put(headTask.key(), new Pair<TaskKey, Object>(headTask.key(), sourceNode));
             taskMap.put(headTask.key(), headTask);
 
             List<SourceNode> sourceNodeList = sourceNode.next();
@@ -97,7 +97,7 @@ public class StuffFetcher implements Runnable {
         if (taskMap.containsKey(currentTask.key())) {
             currentTask = taskMap.get(currentTask.key());
         }
-        pairMap.put(currentTask.key(), new Pair<TaskKey, Object>(currentTask.key(), sourceNode.getNode()));
+        pairMap.put(currentTask.key(), new Pair<TaskKey, Object>(currentTask.key(), sourceNode));
         taskMap.put(currentTask.key(), currentTask);
 
         prevTask.addNext(currentTask);

@@ -3,9 +3,11 @@ package com.fr.swift.generate.preview;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.generate.preview.operator.MinorColumnIndexer;
+import com.fr.swift.generate.history.index.ColumnDictMerger;
+import com.fr.swift.generate.history.index.ColumnIndexer;
+import com.fr.swift.generate.history.index.SubDateColumnDictMerger;
+import com.fr.swift.generate.history.index.SubDateColumnIndexer;
 import com.fr.swift.generate.preview.operator.MinorInserter;
-import com.fr.swift.generate.preview.operator.MinorSubDateColumnIndexer;
 import com.fr.swift.generate.realtime.index.RealtimeMultiRelationIndexer;
 import com.fr.swift.generate.realtime.index.RealtimeTablePathIndexer;
 import com.fr.swift.query.group.GroupType;
@@ -89,7 +91,8 @@ public class MinorUpdater {
 
         for (String indexField : inserter.getFields()) {
             ColumnKey columnKey = new ColumnKey(indexField);
-            new MinorColumnIndexer(dataSource, columnKey, segment).work();
+            new ColumnIndexer(dataSource, columnKey, Collections.singletonList(segment)).work();
+            new ColumnDictMerger(dataSource, columnKey, Collections.singletonList(segment)).work();
             indexSubColumnIfNeed(dataSource, columnKey, segment);
         }
 
@@ -103,7 +106,8 @@ public class MinorUpdater {
             return;
         }
         for (GroupType type : SubDateColumn.TYPES_TO_GENERATE) {
-            new MinorSubDateColumnIndexer(dataSource, columnKey, type, seg).work();
+            new SubDateColumnIndexer(dataSource, columnKey, type, Collections.singletonList(seg)).work();
+            new SubDateColumnDictMerger(dataSource, columnKey, type, Collections.singletonList(seg)).work();
         }
     }
 

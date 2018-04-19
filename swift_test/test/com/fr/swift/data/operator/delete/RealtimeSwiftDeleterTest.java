@@ -5,7 +5,7 @@ import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.generate.BaseTest;
-import com.fr.swift.generate.realtime.index.RealtimeColumnIndexer;
+import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.segment.RealTimeSegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
@@ -19,6 +19,7 @@ import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.QueryDBSource;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -57,7 +58,7 @@ public class RealtimeSwiftDeleterTest extends BaseTest {
             putMetaAndSegment(dataSource, 0, location, Types.StoreType.MEMORY);
 
             for (String field : dataSource.getMetadata().getFieldNames()) {
-                RealtimeColumnIndexer<?> indexer = new RealtimeColumnIndexer<>(dataSource, new ColumnKey(field));
+                ColumnIndexer<?> indexer = new ColumnIndexer<>(dataSource, new ColumnKey(field), Collections.singletonList(segment));
                 indexer.work();
             }
 
@@ -120,7 +121,7 @@ public class RealtimeSwiftDeleterTest extends BaseTest {
             putMetaAndSegment(dataSource, 0, location, Types.StoreType.MEMORY);
 
             for (String field : dataSource.getMetadata().getFieldNames()) {
-                RealtimeColumnIndexer<?> indexer = new RealtimeColumnIndexer<>(dataSource, new ColumnKey(field));
+                ColumnIndexer<?> indexer = new ColumnIndexer<>(dataSource, new ColumnKey(field), Collections.singletonList(segment));
                 indexer.work();
             }
 

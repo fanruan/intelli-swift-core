@@ -8,8 +8,8 @@ import com.fr.swift.flow.FlowRuleController;
 import com.fr.swift.flow.RowNumberControlRule;
 import com.fr.swift.flow.TimeControlRule;
 import com.fr.swift.generate.BaseTest;
+import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.generate.realtime.RealtimeDataTransporter;
-import com.fr.swift.generate.realtime.index.RealtimeColumnIndexer;
 import com.fr.swift.increase.IncrementImpl;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.manager.LocalSegmentProvider;
@@ -60,12 +60,12 @@ public class IncreaseFlowControlTest extends BaseTest {
         RealtimeDataTransporter transport = new RealtimeDataTransporter(dataSource, increment, flowRuleController);
         transport.work();
 
+        List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
         for (int i = 1; i <= dataSource.getMetadata().getColumnCount(); i++) {
-            RealtimeColumnIndexer columnIndexer = new RealtimeColumnIndexer(dataSource, new ColumnKey(dataSource.getMetadata().getColumnName(i)));
+            ColumnIndexer columnIndexer = new ColumnIndexer(dataSource, new ColumnKey(dataSource.getMetadata().getColumnName(i)), segments);
             columnIndexer.work();
         }
 
-        List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
         Segment segment = segments.get(0);
 
         DetailColumn column = (segment.getColumn(new ColumnKey("合同ID")).getDetailColumn());

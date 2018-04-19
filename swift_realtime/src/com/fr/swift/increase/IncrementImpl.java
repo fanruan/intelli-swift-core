@@ -45,17 +45,20 @@ public class IncrementImpl implements Increment {
     }
 
     public IncrementImpl(String increaseQuery, String decreaseQuery, String modifyQuery, SourceKey targetSourceKey, String connectionName) {
-        this.increaseSource = createTempQueryDBSource(increaseQuery, connectionName);
-        this.decreaseSource = createTempQueryDBSource(decreaseQuery, connectionName);
-        this.modifySource = createTempQueryDBSource(modifyQuery, connectionName);
+        if (increaseQuery != null && !increaseQuery.isEmpty()) {
+            this.increaseSource = createTempQueryDBSource(increaseQuery, connectionName);
+        }
+        if (decreaseQuery != null && !decreaseQuery.isEmpty()) {
+            this.decreaseSource = createTempQueryDBSource(decreaseQuery, connectionName);
+        }
+        if (modifyQuery != null && !modifyQuery.isEmpty()) {
+            this.modifySource = createTempQueryDBSource(modifyQuery, connectionName);
+        }
         this.targetSourceKey = targetSourceKey;
     }
 
     public IncrementImpl(String increaseQuery, String decreaseQuery, String modifyQuery, SourceKey targetSourceKey, String connectionName, UpdateType updateType) {
-        this.increaseSource = createTempQueryDBSource(increaseQuery, connectionName);
-        this.decreaseSource = createTempQueryDBSource(decreaseQuery, connectionName);
-        this.modifySource = createTempQueryDBSource(modifyQuery, connectionName);
-        this.targetSourceKey = targetSourceKey;
+        this(increaseQuery, decreaseQuery, modifyQuery, targetSourceKey, connectionName);
         this.updateType = updateType;
     }
 
