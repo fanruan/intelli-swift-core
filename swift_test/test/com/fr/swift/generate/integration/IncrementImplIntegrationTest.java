@@ -9,7 +9,6 @@ import com.fr.swift.generate.TestIndexer;
 import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.generate.history.transport.TableTransporter;
 import com.fr.swift.generate.realtime.RealtimeDataTransporter;
-import com.fr.swift.generate.realtime.index.RealtimeColumnIndexer;
 import com.fr.swift.increase.IncrementImpl;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.manager.LocalSegmentProvider;
@@ -53,7 +52,9 @@ public class IncrementImplIntegrationTest extends BaseTest {
         //先做全量更新
         TableTransporter tableTransporter = new TableTransporter(dataSource);
         tableTransporter.transport();
-        ColumnIndexer columnIndexer = new ColumnIndexer(dataSource, new ColumnKey("记录人"));
+        List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+
+        ColumnIndexer columnIndexer = new ColumnIndexer(dataSource, new ColumnKey("记录人"), segments);
         columnIndexer.work();
         List<Segment> segmentList = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
         assertEquals(segmentList.size(), 1);

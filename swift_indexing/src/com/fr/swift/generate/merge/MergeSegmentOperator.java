@@ -57,7 +57,7 @@
 //    public MergeSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData, String cubeSourceKey) throws SQLException {
 //        this.sourceKey = sourceKey;
 //        this.metaData = metaData;
-//        this.alloter = SwiftSourceAlloterFactory.createSourceAlloter(sourceKey);
+//        this.alloter = SwiftSourceAlloterFactory.createLineSourceAlloter(sourceKey);
 //        this.cubeSourceKey = cubeSourceKey;
 //
 //        List<Segment> segmentList = LocalSegmentProvider.getInstance().getSegment(sourceKey);

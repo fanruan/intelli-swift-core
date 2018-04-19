@@ -18,6 +18,7 @@ import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.structure.IntPair;
 import com.fr.swift.structure.external.map.ExternalMap;
 import com.fr.swift.structure.external.map.intpairs.IntPairsExtMaps;
+import com.fr.swift.util.Crasher;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -30,13 +31,15 @@ import java.util.TreeMap;
  * @author anchore
  * @date 2018/2/26
  */
-public abstract class BaseColumnDictMerger<T> extends BaseWorker {
+public abstract class BaseColumnDictMerger<T> extends BaseWorker implements SwiftColumnDictMerger {
     protected DataSource dataSource;
     protected ColumnKey key;
+    protected List<Segment> segments;
 
-    public BaseColumnDictMerger(DataSource dataSource, ColumnKey key) {
+    public BaseColumnDictMerger(DataSource dataSource, ColumnKey key, List<Segment> segments) {
         this.key = key;
         this.dataSource = dataSource;
+        this.segments = segments;
     }
 
     @Override
@@ -51,7 +54,6 @@ public abstract class BaseColumnDictMerger<T> extends BaseWorker {
     }
 
     private void mergeDict() throws Exception {
-        List<Segment> segments = getSegments();
 
         if (segments.isEmpty()) {
             return;
@@ -61,8 +63,11 @@ public abstract class BaseColumnDictMerger<T> extends BaseWorker {
         Map<T, List<IntPair>> map = newIntPairsSortedMap(segments.get(0));
 
         List<DictionaryEncodedColumn<T>> dictColumns = new ArrayList<DictionaryEncodedColumn<T>>(segments.size());
+        List<Column<T>> columns = new ArrayList<Column<T>>(segments.size());
         for (int segOrder = 0, size = segments.size(); segOrder < size; segOrder++) {
+
             DictionaryEncodedColumn<T> dictColumn = getColumn(segments.get(segOrder)).getDictionaryEncodedColumn();
+            columns.add(getColumn(segments.get(segOrder)));
             dictColumns.add(dictColumn);
             extractDictOf(dictColumn, segOrder, map);
         }
@@ -79,22 +84,20 @@ public abstract class BaseColumnDictMerger<T> extends BaseWorker {
             }
             globalIndex++;
         }
-        for (DictionaryEncodedColumn<T> dictColumn : dictColumns) {
+        if (columns.size() != dictColumns.size()) {
+            Crasher.crash("mergeDict error! columns size not  not equal to dictColumns size!");
+            return;
+        }
+        for (int i = 0; i < dictColumns.size(); i++) {
+            DictionaryEncodedColumn<T> dictColumn = dictColumns.get(i);
             dictColumn.putGlobalIndex(0, 0);
             dictColumn.putGlobalSize(globalIndex);
-            releaseIfNeed(dictColumn);
+            releaseIfNeed(dictColumn, columns.get(i));
         }
 
         // 外排map释放并清除文件
         map.clear();
     }
-
-    /**
-     * merger会对返回的segments的对应列进行字典合并
-     *
-     * @return 要字典合并的segments
-     */
-    protected abstract List<Segment> getSegments();
 
     protected Column<T> getColumn(Segment segment) {
         return segment.getColumn(key);
@@ -116,7 +119,11 @@ public abstract class BaseColumnDictMerger<T> extends BaseWorker {
         }
     }
 
-    protected abstract void releaseIfNeed(Releasable baseColumn);
+    protected void releaseIfNeed(Releasable baseColumn, Column column) {
+        if (column.getLocation().getStoreType() == StoreType.FINE_IO) {
+            baseColumn.release();
+        }
+    }
 
     private static <V> Iterable<Entry<V, List<IntPair>>> toIterable(Map<V, List<IntPair>> map) {
         if (map instanceof ExternalMap) {

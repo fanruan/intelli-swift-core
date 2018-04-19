@@ -1,6 +1,6 @@
 package com.fr.swift.generate.history.index;
 
-import com.fr.swift.generate.BaseColumnIndexer;
+import com.fr.swift.generate.BaseColumnDictMerger;
 import com.fr.swift.query.group.GroupType;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
@@ -12,13 +12,18 @@ import com.fr.swift.source.DataSource;
 import java.util.List;
 
 /**
- * @author anchore
- * @date 2018/3/23
+ * This class created on 2018/4/18
+ *
+ * @author Lucifer
+ * @description
+ * @since Advanced FineBI 5.0
  */
-public class SubDateColumnIndexer<Derive> extends BaseColumnIndexer<Derive> {
+
+public class SubDateColumnDictMerger<Derive> extends BaseColumnDictMerger<Derive> {
+
     protected GroupType type;
 
-    public SubDateColumnIndexer(DataSource dataSource, ColumnKey key, GroupType type, List<Segment> segments) {
+    public SubDateColumnDictMerger(DataSource dataSource, ColumnKey key, GroupType type, List<Segment> segments) {
         super(dataSource, key, segments);
         this.type = type;
     }
@@ -27,4 +32,5 @@ public class SubDateColumnIndexer<Derive> extends BaseColumnIndexer<Derive> {
     protected Column<Derive> getColumn(Segment segment) {
         return (Column<Derive>) new SubDateColumn(((DateColumn) super.getColumn(segment)), type);
     }
+
 }

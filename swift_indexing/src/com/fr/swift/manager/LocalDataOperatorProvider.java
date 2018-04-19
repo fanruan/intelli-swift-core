@@ -2,6 +2,7 @@ package com.fr.swift.manager;
 
 import com.fr.swift.db.Table;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.generate.segment.operator.BlockInserter;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftDataOperatorProvider;
 import com.fr.swift.segment.SwiftSegmentManager;
@@ -9,7 +10,6 @@ import com.fr.swift.segment.operator.Deleter;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.delete.HistorySwiftDeleter;
 import com.fr.swift.segment.operator.delete.RealtimeSwiftDeleter;
-import com.fr.swift.segment.operator.insert.HistoryBlockSwiftInserter;
 import com.fr.swift.segment.operator.insert.HistorySwiftInserter;
 import com.fr.swift.segment.operator.insert.RealtimeBlockSwiftInserter;
 import com.fr.swift.segment.operator.insert.RealtimeSwiftInserter;
@@ -55,16 +55,16 @@ public class LocalDataOperatorProvider implements SwiftDataOperatorProvider {
     @Override
     public Inserter getHistoryBlockSwiftInserter(DataSource dataSource) {
         if (DataSourceUtils.isAddColumn(dataSource)) {
-            return new HistoryBlockSwiftInserter(dataSource.getSourceKey(), DataSourceUtils.getSwiftSourceKey(dataSource).getId(),
+            return new BlockInserter(dataSource.getSourceKey(), DataSourceUtils.getSwiftSourceKey(dataSource).getId(),
                     dataSource.getMetadata(), DataSourceUtils.getAddFields(dataSource));
         }
-        return new HistoryBlockSwiftInserter(dataSource.getSourceKey(), DataSourceUtils.getSwiftSourceKey(dataSource).getId(),
+        return new BlockInserter(dataSource.getSourceKey(), DataSourceUtils.getSwiftSourceKey(dataSource).getId(),
                 dataSource.getMetadata());
     }
 
     @Override
     public Inserter getHistoryInserter(Table table) throws SQLException {
-        return new HistoryBlockSwiftInserter(table.getSourceKey(), table.getSourceKey().getId(), table.getMeta());
+        return new BlockInserter(table.getSourceKey(), table.getSourceKey().getId(), table.getMeta());
     }
 
 
