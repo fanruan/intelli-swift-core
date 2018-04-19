@@ -34,6 +34,7 @@ import com.finebi.conf.internalimp.bean.filter.string.StringNoEndWithFilterBean;
 import com.finebi.conf.internalimp.bean.filtervalue.date.DateRangeValueBean;
 import com.finebi.conf.internalimp.bean.filtervalue.number.NumberSelectedFilterValueBean;
 import com.finebi.conf.internalimp.bean.filtervalue.number.NumberValue;
+import com.finebi.conf.internalimp.bean.filtervalue.string.StringBelongFilterValueBean;
 import com.finebi.conf.structure.bean.filter.DateFilterBean;
 import com.finebi.conf.structure.bean.filter.FilterBean;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
@@ -121,20 +122,28 @@ public class FilterInfoFactory {
         int type = bean.getFilterType();
         switch (type) {
             // string类过滤
-            case BICommonConstants.ANALYSIS_FILTER_STRING.BELONG_VALUE:
-                List<String> belongValues = ((StringBelongFilterBean) bean).getFilterValue().getValue();
+            case BICommonConstants.ANALYSIS_FILTER_STRING.BELONG_VALUE: {
+                StringBelongFilterValueBean valueBean = ((StringBelongFilterBean) bean).getFilterValue();
+                List<String> belongValues = valueBean.getValue();
                 if (belongValues == null || belongValues.size() == 0) {
                     break;
                 }
-                return new SwiftDetailFilterInfo<Set<String>>(fieldName,
-                        new HashSet<String>(belongValues), SwiftDetailFilterType.STRING_IN);
-            case BICommonConstants.ANALYSIS_FILTER_STRING.NOT_BELONG_VALUE:
-                List<String> notBelongValues = ((StringNoBelongFilterBean) bean).getFilterValue().getValue();
+                int valueType = valueBean.getType();
+                return new SwiftDetailFilterInfo<Set<String>>(fieldName, new HashSet<String>(belongValues),
+                        // 多选同filterType，否则是反选
+                        valueType == BICommonConstants.SELECTION_TYPE.MULTI ?  SwiftDetailFilterType.STRING_IN : SwiftDetailFilterType.STRING_NOT_IN);
+            }
+            case BICommonConstants.ANALYSIS_FILTER_STRING.NOT_BELONG_VALUE: {
+                StringBelongFilterValueBean valueBean = ((StringNoBelongFilterBean) bean).getFilterValue();
+                List<String> notBelongValues = valueBean.getValue();
                 if (notBelongValues == null || notBelongValues.size() == 0) {
                     break;
                 }
-                return new SwiftDetailFilterInfo<Set<String>>(fieldName,
-                        new HashSet<String>(notBelongValues), SwiftDetailFilterType.STRING_NOT_IN);
+                int valueType = valueBean.getType();
+                return new SwiftDetailFilterInfo<Set<String>>(fieldName, new HashSet<String>(notBelongValues),
+                        // 多选同filterType，否则是反选
+                        valueType == BICommonConstants.SELECTION_TYPE.MULTI ?  SwiftDetailFilterType.STRING_NOT_IN : SwiftDetailFilterType.STRING_IN);
+            }
             case BICommonConstants.ANALYSIS_FILTER_STRING.CONTAIN:
                 String contain = ((StringContainFilterBean) bean).getFilterValue();
                 if (StringUtils.isBlank(contain)) {
