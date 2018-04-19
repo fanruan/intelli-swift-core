@@ -4,14 +4,19 @@ import com.finebi.conf.internalimp.dashboard.widget.table.StringControlWidget;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.result.BIStringDetailResult;
 import com.finebi.conf.structure.result.StringControlResult;
+import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
+import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by pony on 2018/3/24.
@@ -26,6 +31,10 @@ public class StringControlWidgetAdaptor {
             String keyWords = widget.getKeywords();
             int times = widget.getTimes();
             List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
+            List<String> selectValues = widget.getSelectedValues();
+            if (selectValues != null || !selectValues.isEmpty()){
+                filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(SwiftEncryption.decryptFieldId(dimension.getFieldId())[1], new HashSet<String>(selectValues), SwiftDetailFilterType.STRING_IN));
+            }
             filterInfos.add(FilterInfoFactory.transformFineFilter(widget.getFilters()));
             filterInfos.add(FilterInfoFactory.transformFineFilter(dimension.getFilters()));
             List values = QueryUtils.getOneDimensionFilterValues(dimension, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND), widget.getWidgetId());
