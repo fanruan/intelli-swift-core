@@ -45,7 +45,7 @@ public class MultiGroupByTest extends TestCase {
             }
 
             @Override
-            public boolean matches(SwiftNode node) {
+            public boolean matches(SwiftNode node, int targetIndex) {
                 return false;
             }
         }, cursor, asc);

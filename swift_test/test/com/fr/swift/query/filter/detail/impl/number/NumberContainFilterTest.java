@@ -53,9 +53,9 @@ public class NumberContainFilterTest extends BaseNumberFilterTest {
     }
 
     public void match() {
-        assertTrue(!filter.matches(createNode(null)));
-        assertTrue(filter.matches(createNode(getRandomMatchedNumber())));
-        assertTrue(!filter.matches(createNode(getRandomNotMatchedNumber())));
+        assertTrue(!filter.matches(createNode(null), 0));
+        assertTrue(filter.matches(createNode(getRandomMatchedNumber()), 0));
+        assertTrue(!filter.matches(createNode(getRandomNotMatchedNumber()), 0));
     }
 
     @Override

@@ -3,10 +3,8 @@ package com.fr.swift.adaptor.struct.node;
 import com.finebi.conf.structure.result.table.BIGroupNode;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
-import com.fr.swift.result.ChildMap;
+import com.fr.swift.result.node.ChildMap;
 import com.fr.swift.result.node.GroupNode;
-
-import static com.fr.swift.cube.io.IOConstant.NULL_DOUBLE;
 
 /**
  * Created by Lyon on 2018/4/8.
@@ -96,11 +94,6 @@ public class BIGroupNodeAdaptor implements BIGroupNode {
     }
 
     @Override
-    public ResultType getResultType() {
-        return ResultType.BIGROUP;
-    }
-
-    @Override
     public void setSummaryValue(int index, Number value) {
         node.setAggregatorValue(index, new DoubleAmountAggregatorValue(value.doubleValue()));
     }
@@ -115,8 +108,7 @@ public class BIGroupNodeAdaptor implements BIGroupNode {
     public Number[] getSummaryValue() {
         Number[] values = new Number[node.getAggregatorValue().length];
         for (int i = 0; i < values.length; i++) {
-            Double value = node.getAggregatorValue(i).calculate();
-            values[i] = Double.isNaN(value) ? null : value ;
+            values[i] = (Double) node.getAggregatorValue(i).calculateValue();
         }
         return values;
     }

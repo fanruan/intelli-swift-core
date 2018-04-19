@@ -1,11 +1,14 @@
 package com.fr.swift.adaptor.widget.target;
 
 import com.finebi.conf.constant.BIDesignConstants;
+import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
 import com.finebi.conf.internalimp.bean.dashboard.widget.field.value.AbstractOriginValueBean;
 import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
+import com.finebi.conf.structure.bean.filter.FilterBean;
 import com.finebi.conf.structure.dashboard.widget.field.WidgetBeanFieldValue;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.fr.swift.adaptor.encrypt.SwiftEncryption;
+import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.query.adapter.metric.GroupMetric;
 import com.fr.swift.query.adapter.metric.Metric;
 import com.fr.swift.query.adapter.target.cal.CalTargetType;
@@ -16,6 +19,7 @@ import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.DummyAggregator;
 import com.fr.swift.query.aggregator.SumAggregate;
 import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SourceKey;
 
@@ -33,6 +37,7 @@ public class CalTargetParseUtils {
      * 2、所有计算指标，包括4和为了计算4而需要计算的计算指标
      * 3、要展示的聚合指标
      * 4、要展示的计算指标
+     *
      * @param widget
      * @return
      * @throws Exception
@@ -72,15 +77,15 @@ public class CalTargetParseUtils {
             }
         }
         metricFieldIds.addAll(relatedMetricFieldIds);
-        List<Metric> metrics = createMetrics(metricFieldIds);
+        List<Metric> metrics = createMetrics(metricFieldIds, widget);
         // TODO: 2018/4/11 这边需要提供targetsFowShowList对应的Aggregator，用于结果的聚合
         return new TargetInfo(metrics, calculatorInfoList, targetsForShowList, aggregatorListOfTargetsForShow);
     }
 
-    private static List<Metric> createMetrics(List<String> fieldIds) {
+    private static List<Metric> createMetrics(List<String> fieldIds, AbstractTableWidget widget) throws Exception {
         List<Metric> metrics = new ArrayList<Metric>();
         for (int i = 0; i < fieldIds.size(); i++) {
-            metrics.add(toMetric(fieldIds.get(i), i));
+            metrics.add(toMetric(fieldIds.get(i), i, widget.getTargetList()));
         }
         return metrics;
     }
@@ -152,13 +157,20 @@ public class CalTargetParseUtils {
         return new TargetCalculatorInfo(paramIndex, resultIndex, CalTargetType.ALL_SUM_OF_ALL);
     }
 
-    private static Metric toMetric(String fieldId, int index) {
+    private static Metric toMetric(String fieldId, int index, List<FineTarget> targetList) {
         SourceKey key = new SourceKey(fieldId);
         String columnName = SwiftEncryption.decryptFieldId(fieldId)[1];
         ColumnKey colKey = new ColumnKey(columnName);
 
         // TODO: 2018/3/31 指标的filter属性还没有传过来
         FilterInfo filterInfo = null;
+        WidgetBeanField beanField = targetList.get(index).getWidgetBeanField();
+        if (beanField != null){
+            FilterBean filterBean = beanField.getFilter();
+            if (filterBean != null){
+                filterInfo = FilterInfoFactory.createFilterInfo(filterBean, new ArrayList<Segment>());
+            }
+        }
         // TODO: 2018/3/21  暂时不知道targetType如何对应不同聚合类型
         Aggregator agg = new SumAggregate();
 

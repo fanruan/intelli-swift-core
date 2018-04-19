@@ -4,7 +4,7 @@ import com.fr.swift.cal.segment.AbstractSegmentQuery;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.sort.Sort;
-import com.fr.swift.result.GroupByResultSet;
+import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.segment.column.Column;
 
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by pony on 2017/12/18.
  */
-public abstract class AbstractGroupSegmentQuery extends AbstractSegmentQuery<GroupByResultSet> {
+public abstract class AbstractGroupSegmentQuery extends AbstractSegmentQuery<NodeResultSet> {
     protected List<Column> dimensions;
     protected List<Column> metrics;
     protected List<Aggregator> aggregators;

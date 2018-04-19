@@ -3,14 +3,13 @@ package com.fr.swift.result;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
 
 /**
  * Created by pony on 2017/12/8.
  */
-public abstract class AbstractSwiftNode<T extends SwiftNode> implements SwiftNode<T>, SwiftResultSet {
+public abstract class AbstractSwiftNode<T extends SwiftNode> implements SwiftNode<T> {
     protected T parent;
     protected T sibling;
     protected AggregatorValue[] aggregatorValues;

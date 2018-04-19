@@ -5,8 +5,7 @@ import com.fr.swift.query.adapter.target.GroupTarget;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.query.sort.Sort;
-import com.fr.swift.result.GroupByResultSet;
-import com.fr.swift.result.XGroupByResultSet;
+import com.fr.swift.result.NodeResultSet;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,20 +20,22 @@ public class XGroupResultQuery extends GroupResultQuery {
     private List<Sort> xIndexSorts;
     private List<MatchFilter> xDimensionMatchFilter;
 
-    public XGroupResultQuery(List<Query<GroupByResultSet>> queries, List<Aggregator> aggregators, List<GroupTarget> targets) {
+    public XGroupResultQuery(List<Query<NodeResultSet>> queries, List<Aggregator> aggregators, List<GroupTarget> targets) {
         super(queries, aggregators, targets);
     }
 
-    public XGroupResultQuery(List<Query<GroupByResultSet>> queries, List<Aggregator> aggregators, List<GroupTarget> targets, List<Sort> indexSorts, List<MatchFilter> dimensionMatchFilter) {
+    public XGroupResultQuery(List<Query<NodeResultSet>> queries, List<Aggregator> aggregators, List<GroupTarget> targets, List<Sort> indexSorts, List<MatchFilter> dimensionMatchFilter) {
         super(queries, aggregators, targets, indexSorts, dimensionMatchFilter);
     }
 
     @Override
-    public GroupByResultSet getQueryResult() throws SQLException {
-        List<XGroupByResultSet<int[]>> xGroupByResultSets = new ArrayList<XGroupByResultSet<int[]>>();
-        for (Query<GroupByResultSet> query : queryList) {
-            xGroupByResultSets.add((XGroupByResultSet<int[]>) query.getQueryResult());
+    public NodeResultSet getQueryResult() throws SQLException {
+        List<NodeResultSet> xGroupByResultSets = new ArrayList<NodeResultSet>();
+        for (Query<NodeResultSet> query : queryList) {
+            xGroupByResultSets.add(query.getQueryResult());
         }
-        return XGroupByResultSetMergingUtils.merge(xGroupByResultSets, aggregators, indexSorts, xIndexSorts);
+        return xGroupByResultSets.get(0);
+        //@lyon node merger fixme
+        //return XGroupByResultSetMergingUtils.merge(xGroupByResultSets, aggregators, indexSorts, xIndexSorts);
     }
 }

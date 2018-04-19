@@ -32,7 +32,9 @@ import com.finebi.conf.structure.result.control.time.BIYearControlResult;
 import com.finebi.conf.structure.result.control.tree.BITreeResult;
 import com.finebi.conf.structure.result.table.BIComplexGroupResult;
 import com.finebi.conf.structure.result.table.BICrossNode;
+import com.finebi.conf.structure.result.table.BICrossTableResult;
 import com.finebi.conf.structure.result.table.BIGroupNode;
+import com.finebi.conf.structure.result.table.BITableResult;
 import com.fr.swift.adaptor.widget.date.MonthControlWidgetAdaptor;
 import com.fr.swift.adaptor.widget.date.QuarterControlWidgetAdaptor;
 import com.fr.swift.adaptor.widget.date.YearControlWidgetAdaptor;
@@ -50,7 +52,7 @@ public class SwiftEngineWidgetExecutorManager implements EngineWidgetExecutorMan
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftEngineWidgetExecutorManager.class);
 
     @Override
-    public BIGroupNode visit(TableWidget tableWidget) {
+    public BITableResult visit(TableWidget tableWidget) {
         return TableWidgetAdaptor.calculate(tableWidget);
     }
 
@@ -60,7 +62,7 @@ public class SwiftEngineWidgetExecutorManager implements EngineWidgetExecutorMan
     }
 
     @Override
-    public BICrossNode visit(CrossTableWidget tableWidget) {
+    public BICrossTableResult visit(CrossTableWidget tableWidget) {
         return CrossTableWidgetAdaptor.calculate(tableWidget);
     }
 

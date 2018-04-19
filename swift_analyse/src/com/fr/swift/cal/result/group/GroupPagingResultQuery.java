@@ -4,7 +4,7 @@ import com.fr.swift.cal.Query;
 import com.fr.swift.query.adapter.target.GroupTarget;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.sort.Sort;
-import com.fr.swift.result.GroupByResultSet;
+import com.fr.swift.result.NodeResultSet;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -17,18 +17,20 @@ public class GroupPagingResultQuery extends AbstractGroupResultQuery {
 
     private List<Sort> indexSorts;
 
-    public GroupPagingResultQuery(List<Query<GroupByResultSet>> queries, List<Aggregator> aggregators, List<GroupTarget> targets) {
+    public GroupPagingResultQuery(List<Query<NodeResultSet>> queries, List<Aggregator> aggregators, List<GroupTarget> targets) {
         super(queries, aggregators, targets);
     }
 
     @Override
-    public GroupByResultSet getQueryResult() throws SQLException {
+    public NodeResultSet getQueryResult() throws SQLException {
         // 这边的分页行数问题已经在分块查询那边确定好了
         // 这边不用进行分页处理，直到功能适配那边合并出多少算多少
-        List<GroupByResultSet> groupByResultSets = new ArrayList<GroupByResultSet>();
-        for (Query<GroupByResultSet> query : queryList) {
+        List<NodeResultSet> groupByResultSets = new ArrayList<NodeResultSet>();
+        for (Query<NodeResultSet> query : queryList) {
             groupByResultSets.add(query.getQueryResult());
         }
-        return GroupByResultSetMergingUtils.merge(groupByResultSets, aggregators, indexSorts);
+        return groupByResultSets.get(0);
+        //@lyon node merger fixme
+        //return GroupByResultSetMergingUtils.merge(groupByResultSets, aggregators, indexSorts);
     }
 }

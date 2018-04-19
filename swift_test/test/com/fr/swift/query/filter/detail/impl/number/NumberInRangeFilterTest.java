@@ -4,10 +4,10 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
-import edu.emory.mathcs.backport.java.util.Arrays;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -134,11 +134,11 @@ public class NumberInRangeFilterTest extends BaseNumberFilterTest {
         SwiftNode node = createNode(getRandomMatchedNumber());
         SwiftNode node1 = createNode(getRandomNotMatchedNumber());
         if (node.getData() == null) {
-            assertTrue(!filter.matches(node));
+            assertTrue(!filter.matches(node, 0));
         } else {
-            assertTrue(filter.matches(node));
+            assertTrue(filter.matches(node, 0));
         }
-        assertTrue(!filter.matches(node1));
+        assertTrue(!filter.matches(node1, 0));
     }
 
     @Override

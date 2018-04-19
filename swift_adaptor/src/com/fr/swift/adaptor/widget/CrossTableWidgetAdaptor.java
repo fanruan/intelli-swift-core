@@ -3,6 +3,7 @@ package com.fr.swift.adaptor.widget;
 import com.finebi.conf.internalimp.dashboard.widget.table.CrossTableWidget;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.result.table.BICrossNode;
+import com.finebi.conf.structure.result.table.BICrossTableResult;
 import com.finebi.conf.utils.FineTableUtils;
 import com.fr.swift.adaptor.struct.node.BICrossNodeAdaptor;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
@@ -11,7 +12,6 @@ import com.fr.swift.adaptor.widget.target.CalTargetParseUtils;
 import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.cal.info.Expander;
 import com.fr.swift.cal.info.XGroupQueryInfo;
-import com.fr.swift.cal.info.XTableGroupQueryInfo;
 import com.fr.swift.cal.result.group.Cursor;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -38,9 +38,10 @@ import java.util.List;
  */
 public class CrossTableWidgetAdaptor {
 
+
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(CrossTableWidgetAdaptor.class);
 
-    public static BICrossNode calculate(CrossTableWidget widget) {
+    public static BICrossTableResult calculate(CrossTableWidget widget) {
         BICrossNode crossNode = null;
         XGroupByResultSet resultSet = null;
         try {
@@ -54,16 +55,62 @@ public class CrossTableWidgetAdaptor {
             crossNode = new BICrossNodeAdaptor(new XGroupNodeImpl(new XLeftNode(-1, null), new TopGroupNode(-1, null)));
             LOGGER.error(e);
         }
-        return crossNode;
+        return new CrossTableResult(crossNode, false, false, false, false);
     }
+
+    static class CrossTableResult implements BICrossTableResult {
+        private BICrossNode node;
+        private boolean hasHorizontalNextPage;
+        private boolean hasHorizontalPreviousPage;
+        private boolean hasVerticalNextPage;
+        private boolean hasVerticalPreviousPage;
+        public CrossTableResult(BICrossNode node, boolean hasHorizontalNextPage, boolean hasHorizontalPreviousPage, boolean hasVerticalNextPage, boolean hasVerticalPreviousPage) {
+            this.node = node;
+            this.hasHorizontalNextPage = hasHorizontalNextPage;
+            this.hasHorizontalPreviousPage = hasHorizontalPreviousPage;
+            this.hasVerticalNextPage = hasVerticalNextPage;
+            this.hasVerticalPreviousPage = hasVerticalPreviousPage;
+        }
+
+        @Override
+        public BICrossNode getNode() {
+            return node;
+        }
+
+        @Override
+        public boolean hasHorizontalNextPage() {
+            return hasHorizontalNextPage;
+        }
+
+        @Override
+        public boolean hasHorizontalPreviousPage() {
+            return hasHorizontalPreviousPage;
+        }
+
+        @Override
+        public boolean hasVerticalNextPage() {
+            return hasVerticalNextPage;
+        }
+
+        @Override
+        public boolean hasVerticalPreviousPage() {
+            return hasVerticalPreviousPage;
+        }
+
+        @Override
+        public ResultType getResultType() {
+            return ResultType.BICROSS;
+        }
+    }
+
 
     static QueryInfo buildQueryInfo(CrossTableWidget widget, List<Metric> metrics) throws Exception {
         Cursor cursor = null;
         String queryId = widget.getWidgetId();
         FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
 
-        List<Dimension> rowDimensions = TableWidgetAdaptor.getDimensions(widget.getDimensionList());
-        List<Dimension> colDimensions = TableWidgetAdaptor.getDimensions(widget.getColDimensionList());
+        List<Dimension> rowDimensions = TableWidgetAdaptor.getDimensions(widget.getDimensionList(), widget.getTargetList());
+        List<Dimension> colDimensions = TableWidgetAdaptor.getDimensions(widget.getColDimensionList(), widget.getTargetList());
 
         GroupTarget[] targets = TableWidgetAdaptor.getTargets(widget);
         Expander expander = null;

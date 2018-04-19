@@ -1,5 +1,6 @@
-package com.fr.swift.source.etl.datamining.rcompile;
+package com.fr.swift.source.etl.rcompile;
 
+import com.finebi.conf.algorithm.DMDataModel;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
@@ -12,18 +13,14 @@ import java.util.List;
  */
 public class RCompileTransferOperator implements ETLTransferOperator {
 
-    private String[] columns;
-    private int[] columnType;
-    private List dataList;
+    private DMDataModel dataModel;
 
-    public RCompileTransferOperator(String[] columns, int[] columnType, List dataList) {
-        this.columns = columns;
-        this.columnType = columnType;
-        this.dataList = dataList;
+    public RCompileTransferOperator(DMDataModel dataModel) {
+        this.dataModel = dataModel;
     }
 
     @Override
     public SwiftResultSet createResultSet(SwiftMetaData metaData, List<SwiftMetaData> basedMetas, List<Segment[]> basedSegments) {
-        return new RCompileResultSet(columns, columnType, dataList, metaData);
+        return new RCompileResultSet(dataModel, metaData);
     }
 }

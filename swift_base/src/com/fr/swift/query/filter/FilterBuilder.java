@@ -2,6 +2,7 @@ package com.fr.swift.query.filter;
 
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.segment.Segment;
 
 /**
@@ -12,7 +13,7 @@ public class FilterBuilder {
         return info.createDetailFilter(segment);
     }
 
-    public static DetailFilter buildMatchFilter(FilterInfo info){
-        return null;
+    public static MatchFilter buildMatchFilter(FilterInfo info){
+        return info.createMatchFilter();
     }
 }

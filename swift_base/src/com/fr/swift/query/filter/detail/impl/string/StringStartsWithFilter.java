@@ -1,7 +1,7 @@
 package com.fr.swift.query.filter.detail.impl.string;
 
 import com.fr.stable.StringUtils;
-import com.fr.swift.query.filter.detail.impl.AbstractFilter;
+import com.fr.swift.query.filter.detail.impl.AbstractDetailFilter;
 import com.fr.swift.query.filter.detail.impl.util.LookupFactory;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
@@ -16,7 +16,7 @@ import com.fr.swift.util.Util;
 /**
  * Created by Lyon on 2017/11/27.
  */
-public class StringStartsWithFilter extends AbstractFilter<String> {
+public class StringStartsWithFilter extends AbstractDetailFilter<String> {
     private String startsWith;
 
     public StringStartsWithFilter(String startsWith, Column<String> column) {
@@ -39,7 +39,7 @@ public class StringStartsWithFilter extends AbstractFilter<String> {
     }
 
     @Override
-    public boolean matches(SwiftNode node) {
+    public boolean matches(SwiftNode node, int targetIndex) {
         String data = (String) node.getData();
         return data != null && data.startsWith(startsWith);
     }

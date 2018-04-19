@@ -1,7 +1,7 @@
 package com.fr.swift.query.filter.detail.impl.string;
 
 import com.fr.stable.StringUtils;
-import com.fr.swift.query.filter.detail.impl.AbstractFilter;
+import com.fr.swift.query.filter.detail.impl.AbstractDetailFilter;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
@@ -14,7 +14,7 @@ import com.fr.swift.util.Util;
 /**
  * Created by Lyon on 2017/11/27.
  */
-public class StringLikeFilter extends AbstractFilter<String> {
+public class StringLikeFilter extends AbstractDetailFilter<String> {
 
     private String like;
 
@@ -37,7 +37,7 @@ public class StringLikeFilter extends AbstractFilter<String> {
     }
 
     @Override
-    public boolean matches(SwiftNode node) {
+    public boolean matches(SwiftNode node, int targetIndex) {
         String data = (String) node.getData();
         return data != null && data.contains(like);
     }
