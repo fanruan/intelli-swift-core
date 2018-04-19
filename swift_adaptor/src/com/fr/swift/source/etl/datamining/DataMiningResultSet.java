@@ -1,7 +1,13 @@
 package com.fr.swift.source.etl.datamining;
 
+import com.finebi.base.stable.StableManager;
 import com.finebi.conf.algorithm.*;
+import com.finebi.conf.algorithm.common.DMLogEntityImp;
+import com.finebi.conf.algorithm.common.DMLogType;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
+import com.finebi.conf.service.datamining.DMCommonLogService;
+import com.finebi.conf.structure.datamining.DMLogEntity;
+import com.fr.engine.utils.StringUtils;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
@@ -88,7 +94,19 @@ public class DataMiningResultSet implements SwiftResultSet {
         try {
             if (isFirst) {
                 isFirst = false;
-                init();
+                try {
+                    init();
+                } catch (Exception e) {
+                    // 逻辑：检查Log里面该uuid是否已经被设置了log，如果没有设置通用log返回给前端。
+                    DMCommonLogService logService = StableManager.getContext().getObject("DMCommonLogServiceImpl");
+                    String uuid = algorithmBean.getUuid();
+                    DMLogEntity log = logService.getLog(uuid);
+                    if (null == log /*&& !StringUtils.isEmpty(uuid)*/) {
+                        DMLogEntityImp newLog = new DMLogEntityImp(e.getMessage(), uuid, DMLogType.GLOBAL_CATCH_ERROR);
+                        logService.setLog(newLog);
+                    }
+                    LOGGER.error(e.getMessage(), e);
+                }
             }
             List<Object> row;
             int rowCount = predictTableData.size();
