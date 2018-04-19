@@ -1,6 +1,7 @@
 package com.fr.swift.adaptor.widget.target;
 
 import com.finebi.conf.constant.BIDesignConstants;
+import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
 import com.finebi.conf.internalimp.bean.dashboard.widget.field.value.AbstractOriginValueBean;
 import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
 import com.finebi.conf.structure.bean.filter.FilterBean;
@@ -162,8 +163,14 @@ public class CalTargetParseUtils {
         ColumnKey colKey = new ColumnKey(columnName);
 
         // TODO: 2018/3/31 指标的filter属性还没有传过来
-        FilterBean filterBean = targetList.get(index).getWidgetBeanField().getFilter();
-        FilterInfo filterInfo = filterBean == null ? null : FilterInfoFactory.createFilterInfo(filterBean, new ArrayList<Segment>());
+        FilterInfo filterInfo = null;
+        WidgetBeanField beanField = targetList.get(index).getWidgetBeanField();
+        if (beanField != null){
+            FilterBean filterBean = beanField.getFilter();
+            if (filterBean != null){
+                filterInfo = FilterInfoFactory.createFilterInfo(filterBean, new ArrayList<Segment>());
+            }
+        }
         // TODO: 2018/3/21  暂时不知道targetType如何对应不同聚合类型
         Aggregator agg = new SumAggregate();
 

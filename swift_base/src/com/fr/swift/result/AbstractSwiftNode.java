@@ -5,13 +5,11 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by pony on 2017/12/8.
  */
-public abstract class AbstractSwiftNode<T extends SwiftNode> implements SwiftNode<T>, GroupByResultSet {
+public abstract class AbstractSwiftNode<T extends SwiftNode> implements SwiftNode<T> {
     protected T parent;
     protected T sibling;
     protected AggregatorValue[] aggregatorValues;
@@ -80,20 +78,5 @@ public abstract class AbstractSwiftNode<T extends SwiftNode> implements SwiftNod
     @Override
     public Row getRowData() throws SQLException {
         return null;
-    }
-
-    @Override
-    public List<KeyValue<RowIndexKey, AggregatorValue[]>> getResultList() {
-        return null;
-    }
-
-    @Override
-    public List<Map<Integer, Object>> getRowGlobalDictionaries() {
-        return null;
-    }
-
-    @Override
-    public int rowDimensionSize() {
-        return 0;
     }
 }

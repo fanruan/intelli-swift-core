@@ -1,8 +1,8 @@
 package com.fr.swift.query.filter.detail.impl;
 
 import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.result.AbstractSwiftNode;
 import com.fr.swift.result.SwiftNode;
-import com.fr.swift.result.TargetGettingKey;
 import junit.framework.TestCase;
 
 import java.util.Comparator;
@@ -48,7 +48,7 @@ public abstract class BaseFilterTest extends TestCase {
     }
 
     protected static SwiftNode createNode(int index, int groupSize) {
-        return new SwiftNode() {
+        return new AbstractSwiftNode() {
             @Override
             public Object getData() {
                 return null;
@@ -81,7 +81,7 @@ public abstract class BaseFilterTest extends TestCase {
 
             @Override
             public SwiftNode getParent() {
-                return new SwiftNode() {
+                return new AbstractSwiftNode() {
                     @Override
                     public Object getData() {
                         return null;
@@ -138,6 +138,16 @@ public abstract class BaseFilterTest extends TestCase {
                     }
 
                     @Override
+                    public void clearChildren() {
+
+                    }
+
+                    @Override
+                    public List getChildren() {
+                        return null;
+                    }
+
+                    @Override
                     public void setAggregatorValue(int key, AggregatorValue value) {
 
                     }
@@ -180,6 +190,16 @@ public abstract class BaseFilterTest extends TestCase {
             }
 
             @Override
+            public void clearChildren() {
+
+            }
+
+            @Override
+            public List getChildren() {
+                return null;
+            }
+
+            @Override
             public void setAggregatorValue(int key, AggregatorValue value) {
 
             }
@@ -206,7 +226,7 @@ public abstract class BaseFilterTest extends TestCase {
     }
 
     protected static SwiftNode createNode(Object data, Comparator comparator) {
-        return new SwiftNode() {
+        return new AbstractSwiftNode() {
             @Override
             public Object getData() {
                 return data;
@@ -280,6 +300,16 @@ public abstract class BaseFilterTest extends TestCase {
             @Override
             public int getDeep() {
                 return 0;
+            }
+
+            @Override
+            public void clearChildren() {
+
+            }
+
+            @Override
+            public List getChildren() {
+                return null;
             }
         };
     }

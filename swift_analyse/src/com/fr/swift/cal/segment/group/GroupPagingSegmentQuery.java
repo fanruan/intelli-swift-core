@@ -5,6 +5,10 @@ import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.group.by.GroupByUtils;
 import com.fr.swift.result.GroupByResultSet;
+import com.fr.swift.result.NodeResultSet;
+import com.fr.swift.result.NodeResultSetImpl;
+import com.fr.swift.result.SwiftNode;
+import com.fr.swift.result.node.GroupNodeFactory;
 import com.fr.swift.segment.column.Column;
 
 import java.util.Arrays;
@@ -23,8 +27,10 @@ public class GroupPagingSegmentQuery extends AbstractGroupSegmentQuery {
     }
 
     @Override
-    public GroupByResultSet getQueryResult() {
-        return GroupByUtils.query(dimensions, metrics, aggregators, filter, indexSorts, createCursor(), pageSize);
+    public NodeResultSet getQueryResult() {
+        GroupByResultSet result = GroupByUtils.query(dimensions, metrics, aggregators, filter, indexSorts, createCursor(), pageSize);
+        SwiftNode node = GroupNodeFactory.createNode(result, aggregators.size());
+        return new NodeResultSetImpl(node);
     }
 
     private int[] createCursor() {

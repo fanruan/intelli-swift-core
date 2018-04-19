@@ -6,7 +6,7 @@ import com.fr.swift.cal.result.group.GroupPagingResultQuery;
 import com.fr.swift.cal.segment.group.GroupSingleURIQuery;
 import com.fr.swift.query.adapter.target.GroupTarget;
 import com.fr.swift.query.aggregator.Aggregator;
-import com.fr.swift.result.GroupByResultSet;
+import com.fr.swift.result.NodeResultSet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,12 +18,12 @@ import java.util.List;
  */
 public class LocalGroupSingleURIQueryBuilder extends AbstractLocalGroupQueryBuilder{
     @Override
-    public Query<GroupByResultSet> buildLocalQuery(GroupQueryInfo info) {
+    public Query<NodeResultSet> buildLocalQuery(GroupQueryInfo info) {
         return new GroupSingleURIQuery();
     }
 
     @Override
-    public Query<GroupByResultSet> buildResultQuery(List<Query<GroupByResultSet>> queries, GroupQueryInfo info) {
+    public Query<NodeResultSet> buildResultQuery(List<Query<NodeResultSet>> queries, GroupQueryInfo info) {
         return new GroupPagingResultQuery(queries, new ArrayList<Aggregator>(), new ArrayList<GroupTarget>());
     }
 }

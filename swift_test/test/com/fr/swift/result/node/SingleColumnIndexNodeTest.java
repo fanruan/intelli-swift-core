@@ -1,4 +1,4 @@
-package com.fr.swift.result;
+package com.fr.swift.result.node;
 
 import com.fr.swift.Temps.TempDictColumn;
 import com.fr.swift.query.aggregator.AggregatorValue;
