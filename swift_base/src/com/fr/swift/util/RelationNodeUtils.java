@@ -73,9 +73,8 @@ public class RelationNodeUtils {
                         }
                     }
                 } else {
-                    if (dataSourceList.containsKey(pre.getSourceKey())) {
-                        nodes.put(source.getSourceKey(), new RelationPathNode(source, Arrays.asList(lastRelation, pre.getRelations().get(0))));
-                    }
+                    // 如果prepath只有一个关联，直接将该关联作为依赖
+                    nodes.put(source.getSourceKey(), new RelationPathNode(source, Arrays.asList(lastRelation, pre.getRelations().get(0))));
                 }
             }
         }
