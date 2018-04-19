@@ -2,7 +2,7 @@ package com.fr.swift.adaptor.struct.node;
 
 import com.finebi.conf.structure.result.table.BICrossLeftNode;
 import com.finebi.conf.structure.result.table.BIGroupNode;
-import com.fr.swift.result.ChildMap;
+import com.fr.swift.result.node.ChildMap;
 import com.fr.swift.result.node.GroupNode;
 import com.fr.swift.result.node.xnode.XLeftNode;
 

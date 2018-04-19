@@ -1,10 +1,11 @@
-package com.fr.swift.result;
+package com.fr.swift.result.node;
 
 import com.fr.swift.util.Clearable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * node childs map
@@ -82,5 +83,9 @@ public class ChildMap<T> implements Clearable,Iterable<T> {
 
     public boolean isEmpty() {
         return list.isEmpty();
+    }
+
+    public List<T> getList(){
+        return list;
     }
 }

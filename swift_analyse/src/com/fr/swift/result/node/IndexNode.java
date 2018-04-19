@@ -1,4 +1,8 @@
-package com.fr.swift.result;
+package com.fr.swift.result.node;
+
+import com.fr.swift.result.AbstractSwiftNode;
+
+import java.util.List;
 
 /**
  * Created by pony on 2017/12/8.
@@ -33,7 +37,7 @@ public abstract class IndexNode extends AbstractSwiftNode<IndexNode> {
 
     @Override
     public void addChild(IndexNode child) {
-        getChildren().put(child.createKey(), child);
+        getChildMap().put(child.createKey(), child);
         child.setParent(this);
         if (getChildren().size() != 1) {
             // 设置兄弟节点，方便纵向遍历
@@ -52,16 +56,24 @@ public abstract class IndexNode extends AbstractSwiftNode<IndexNode> {
 
     @Override
     public int getIndex() {
-        return getParent().getChildren().getIndex(createKey());
+        return getParent().getChildMap().getIndex(createKey());
     }
 
     protected abstract Object createKey();
 
-    private ChildMap<IndexNode> getChildren(){
+    private ChildMap<IndexNode> getChildMap(){
         if (children == null){
             children = new ChildMap<IndexNode>();
         }
         return children;
     }
 
+    public List<IndexNode> getChildren(){
+        return getChildMap().getList();
+    }
+
+    @Override
+    public void clearChildren() {
+        children = new ChildMap<IndexNode>();
+    }
 }

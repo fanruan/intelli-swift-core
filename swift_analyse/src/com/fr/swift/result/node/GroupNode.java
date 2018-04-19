@@ -2,7 +2,8 @@ package com.fr.swift.result.node;
 
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.result.AbstractSwiftNode;
-import com.fr.swift.result.ChildMap;
+
+import java.util.List;
 
 /**
  * Created by Lyon on 2018/4/4.
@@ -43,6 +44,16 @@ public class GroupNode<T extends GroupNode> extends AbstractSwiftNode<T> {
     @Override
     public int getDeep() {
         return deep;
+    }
+
+    @Override
+    public void clearChildren() {
+        childMap = new ChildMap<T>();
+    }
+
+    @Override
+    public List<T> getChildren() {
+        return childMap.getList();
     }
 
     @Override
@@ -89,9 +100,5 @@ public class GroupNode<T extends GroupNode> extends AbstractSwiftNode<T> {
             result[i] = (Number) values[i].calculateValue();
         }
         return result;
-    }
-
-    public void clearChildMap(){
-        childMap = new ChildMap<T>();
     }
 }

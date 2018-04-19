@@ -15,7 +15,7 @@ import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.query.sort.Sort;
-import com.fr.swift.result.GroupByResultSet;
+import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 
@@ -29,8 +29,8 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
 
 
     @Override
-    public Query<GroupByResultSet> buildLocalQuery(GroupQueryInfo info) {
-        List<Query<GroupByResultSet>> queries = new ArrayList<Query<GroupByResultSet>>();
+    public Query<NodeResultSet> buildLocalQuery(GroupQueryInfo info) {
+        List<Query<NodeResultSet>> queries = new ArrayList<Query<NodeResultSet>>();
         QueryType type = info.getType();
             List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(info.getTable());
             for (Segment segment : segments) {
@@ -68,7 +68,7 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
     }
 
     @Override
-    public Query<GroupByResultSet> buildResultQuery(List<Query<GroupByResultSet>> queries, GroupQueryInfo info) {
+    public Query<NodeResultSet> buildResultQuery(List<Query<NodeResultSet>> queries, GroupQueryInfo info) {
         QueryType type = info.getType();
         if (type == QueryType.CROSS_GROUP) {
             return new XGroupResultQuery(queries, getAggregators(info.getMetrics()), getTargets(info.getTargets()), getIndexSorts(info.getDimensions()), getDimensionMatchFilters(info.getDimensions()));

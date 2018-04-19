@@ -1,10 +1,14 @@
 package com.fr.swift.result;
 
+import com.fr.swift.source.SwiftResultSet;
+
+import java.util.List;
+
 /**
  * Created by pony on 2017/10/10.
  * 存储聚合之后的值的树状结构
  */
-public interface SwiftNode<T extends SwiftNode> extends AggregatorValueContainer {
+public interface SwiftNode<T extends SwiftNode> extends AggregatorValueContainer,SwiftResultSet {
 
     Object getData();
 
@@ -41,4 +45,8 @@ public interface SwiftNode<T extends SwiftNode> extends AggregatorValueContainer
      * @return
      */
     int getDeep();
+
+    void clearChildren();
+
+    List<T> getChildren();
 }

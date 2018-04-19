@@ -3,7 +3,7 @@ package com.fr.swift.adaptor.struct.node;
 import com.finebi.conf.structure.result.table.BIGroupNode;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
-import com.fr.swift.result.ChildMap;
+import com.fr.swift.result.node.ChildMap;
 import com.fr.swift.result.node.GroupNode;
 
 /**

@@ -38,6 +38,7 @@ import java.util.List;
  */
 public class CrossTableWidgetAdaptor {
 
+
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(CrossTableWidgetAdaptor.class);
 
     public static BICrossTableResult calculate(CrossTableWidget widget) {

@@ -5,6 +5,10 @@ import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.group.by.GroupByUtils;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.GroupByResultSet;
+import com.fr.swift.result.NodeResultSet;
+import com.fr.swift.result.NodeResultSetImpl;
+import com.fr.swift.result.SwiftNode;
+import com.fr.swift.result.node.GroupNodeFactory;
 import com.fr.swift.segment.column.Column;
 
 import java.util.Arrays;
@@ -25,9 +29,11 @@ public class GroupAllSegmentQuery extends AbstractGroupSegmentQuery{
     }
 
     @Override
-    public GroupByResultSet getQueryResult() {
+    public NodeResultSet getQueryResult() {
         cursor = new int[dimensions.size()];
         Arrays.fill(cursor, 0);
-        return GroupByUtils.query(dimensions, metrics, aggregators, filter, indexSorts, cursor, -1);
+        GroupByResultSet resultSet = GroupByUtils.query(dimensions, metrics, aggregators, filter, indexSorts, cursor, -1);
+        SwiftNode node = GroupNodeFactory.createNode(resultSet, aggregators.size());
+        return new NodeResultSetImpl(node);
     }
 }

@@ -39,9 +39,8 @@ import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.DescSort;
 import com.fr.swift.query.sort.NoneSort;
 import com.fr.swift.query.sort.Sort;
-import com.fr.swift.result.GroupByResultSet;
+import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.node.GroupNode;
-import com.fr.swift.result.node.GroupNodeFactory;
 import com.fr.swift.result.node.cal.TargetCalculatorUtils;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
@@ -71,7 +70,7 @@ public class TableWidgetAdaptor {
         try {
             TargetInfo targetInfo = CalTargetParseUtils.parseCalTarget(widget);
             resultSet = QueryRunnerProvider.getInstance().executeQuery(buildQueryInfo(widget, targetInfo.getMetrics()));
-            GroupNode groupNode = GroupNodeFactory.createNode((GroupByResultSet) resultSet, targetInfo.getTargetLength());
+            GroupNode groupNode = (GroupNode) ((NodeResultSet) resultSet).getNode();
             TargetCalculatorUtils.calculate(groupNode, targetInfo.getTargetCalculatorInfoList(), targetInfo.getTargetsForShowList());
             resultNode = new BIGroupNodeAdaptor(groupNode);
         } catch (Exception e) {

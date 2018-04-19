@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class XLeftNodeFactory {
 
-    static XLeftNode createXLeftNode(XGroupByResultSet resultSet, int targetLength) {
+    public static XLeftNode createXLeftNode(XGroupByResultSet resultSet, int targetLength) {
         List<KeyValue<RowIndexKey<int[]>, List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>>>> xRowList =
                 resultSet.getXResultList();
         @SuppressWarnings("unchecked")

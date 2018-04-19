@@ -4,9 +4,12 @@ import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.group.by.XGroupByUtils;
 import com.fr.swift.query.sort.Sort;
-import com.fr.swift.result.GroupByResultSet;
+import com.fr.swift.result.NodeResultSet;
+import com.fr.swift.result.NodeResultSetImpl;
+import com.fr.swift.result.XGroupByResultSet;
+import com.fr.swift.result.node.xnode.XLeftNode;
+import com.fr.swift.result.node.xnode.XLeftNodeFactory;
 import com.fr.swift.segment.column.Column;
-import com.fr.swift.segment.column.DictionaryEncodedColumn;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,12 +32,14 @@ public class XGroupAllSegmentQuery extends GroupAllSegmentQuery {
     }
 
     @Override
-    public GroupByResultSet getQueryResult() {
+    public NodeResultSet getQueryResult() {
         cursor = new int[dimensions.size()];
         Arrays.fill(cursor, 0);
         xCursor = new int[colDimensions.size()];
         Arrays.fill(xCursor, 0);
-        return XGroupByUtils.query(dimensions, colDimensions, metrics, aggregators, filter, indexSorts, colIndexSorts,
+        XGroupByResultSet resultSet =  XGroupByUtils.query(dimensions, colDimensions, metrics, aggregators, filter, indexSorts, colIndexSorts,
                 cursor, xCursor, -1, -1);
+        XLeftNode node = XLeftNodeFactory.createXLeftNode(resultSet, aggregators.size());
+        return new NodeResultSetImpl(node);
     }
 }
