@@ -72,7 +72,7 @@ public abstract class BaseTablePathIndexer extends BaseWorker {
                     }
                     targetTableRelationIndex.putReverseCount(reversePos);
                 } catch (Exception e) {
-                    LOGGER.error("build path index error", e);
+                    Crasher.crash("build path index error", e);
                 } finally {
                     releaseIfNeed(preTableRelationIndex);
                     releaseIfNeed(lastRelationReader);

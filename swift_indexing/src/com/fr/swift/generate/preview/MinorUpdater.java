@@ -21,13 +21,17 @@ import com.fr.swift.source.DataSource;
 import com.fr.swift.source.EtlDataSource;
 import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.RelationSourceType;
+import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SourcePath;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.ETLOperator;
 import com.fr.swift.source.etl.OperatorType;
 import com.fr.swift.source.etl.detail.DetailOperator;
+import com.fr.swift.source.relation.RelationPathSourceImpl;
 import com.fr.swift.util.DataSourceUtils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -112,23 +116,50 @@ public class MinorUpdater {
         if (op.getOperatorType() != OperatorType.DETAIL) {
             return;
         }
+        List<SourceKey> hadBuild = new ArrayList<SourceKey>();
         // 只有选字段才生成关联
         DetailOperator detailOp = (DetailOperator) op;
 
         for (ColumnKey[] keys : detailOp.getFields()) {
             for (ColumnKey key : keys) {
                 RelationSource relation = key.getRelation();
+
                 if (relation != null) {
-                    if (relation.getRelationType() == RelationSourceType.RELATION) {
-                        new RealtimeMultiRelationIndexer(RelationPathHelper.convert2CubeRelation(relation), MinorSegmentManager.getInstance()).work();
-                    } else {
-                        new RealtimeTablePathIndexer(RelationPathHelper.convert2CubeRelationPath(relation), MinorSegmentManager.getInstance()).work();
+                    if (!hadBuild.contains(relation.getSourceKey())) {
+                        if (relation.getRelationType() == RelationSourceType.RELATION) {
+                            buildRelationIndex(relation);
+                        } else {
+                            RelationPathSourceImpl pathSource = (RelationPathSourceImpl) relation;
+                            buildPathRelationIndex(pathSource, hadBuild);
+                        }
+                        hadBuild.add(relation.getSourceKey());
                     }
                     // 只生成一次
                     break;
                 }
             }
         }
+        hadBuild.clear();
+        hadBuild = null;
+    }
+
+    private void buildRelationIndex(RelationSource relation) {
+        new RealtimeMultiRelationIndexer(RelationPathHelper.convert2CubeRelation(relation), MinorSegmentManager.getInstance()).work();
+    }
+
+    private void buildPathRelationIndex(SourcePath sourcePath, List<SourceKey> hadBuild) {
+        List<RelationSource> relationSources = sourcePath.getRelations();
+        for (RelationSource relation : relationSources) {
+            if (!hadBuild.contains(relation.getSourceKey())) {
+                if (relation.getRelationType() == RelationSourceType.RELATION) {
+                    buildRelationIndex(relation);
+                } else {
+                    buildPathRelationIndex((SourcePath) relation, hadBuild);
+                }
+                hadBuild.add(relation.getSourceKey());
+            }
+        }
+        new RealtimeTablePathIndexer(RelationPathHelper.convert2CubeRelationPath(sourcePath), MinorSegmentManager.getInstance()).work();
     }
 
     private Inserter getInserter(DataSource dataSource, Segment segment) throws Exception {

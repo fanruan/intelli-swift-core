@@ -1,6 +1,8 @@
 package com.fr.swift.provider;
 
 import com.fr.swift.increment.Increment;
+import com.fr.swift.reliance.RelationPathReliance;
+import com.fr.swift.reliance.RelationReliance;
 import com.fr.swift.reliance.SourceReliance;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.RelationSource;
@@ -26,6 +28,8 @@ public class IndexStuffInfoProvider implements IndexStuffProvider {
     private SourceContainerManager sourceContainer;
     private Map<String, List<Increment>> incrementMap;
     private SourceReliance sourceReliance;
+    private RelationReliance relationReliance;
+    private RelationPathReliance relationPathReliance;
 
     public IndexStuffInfoProvider(IndexingStuff indexingStuff, SourceContainerManager sourceContainer) {
         this.indexingStuff = indexingStuff;
@@ -34,11 +38,13 @@ public class IndexStuffInfoProvider implements IndexStuffProvider {
     }
 
     public IndexStuffInfoProvider(IndexingStuff indexingStuff, SourceContainerManager sourceContainer,
-                                  Map<String, List<Increment>> incrementMap, SourceReliance sourceReliance) {
+                                  Map<String, List<Increment>> incrementMap, SourceReliance sourceReliance, RelationReliance relationReliance, RelationPathReliance relationPathReliance) {
         this.indexingStuff = indexingStuff;
         this.sourceContainer = sourceContainer;
         this.incrementMap = incrementMap;
         this.sourceReliance = sourceReliance;
+        this.relationReliance = relationReliance;
+        this.relationPathReliance = relationPathReliance;
     }
 
     @Override
@@ -94,5 +100,15 @@ public class IndexStuffInfoProvider implements IndexStuffProvider {
     @Override
     public SourceReliance getSourceReliance() {
         return sourceReliance;
+    }
+
+    @Override
+    public RelationReliance getRelationReliance() {
+        return relationReliance;
+    }
+
+    @Override
+    public RelationPathReliance getRelationPathReliance() {
+        return relationPathReliance;
     }
 }
