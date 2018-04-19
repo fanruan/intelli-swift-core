@@ -8,7 +8,9 @@ import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.query.filter.info.GeneralFilterInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,14 +25,16 @@ public class StringControlWidgetAdaptor {
             FineDimension dimension = widget.getDimensionList().get(0);
             String keyWords = widget.getKeywords();
             int times = widget.getTimes();
-            FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
-            List values = QueryUtils.getOneDimensionFilterValues(dimension, filterInfo, widget.getWidgetId());
+            List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
+            filterInfos.add(FilterInfoFactory.transformFineFilter(widget.getFilters()));
+            filterInfos.add(FilterInfoFactory.transformFineFilter(dimension.getFilters()));
+            List values = QueryUtils.getOneDimensionFilterValues(dimension, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND), widget.getWidgetId());
             //查询记录数,等分组表那边弄好了再搞。
 //            Metric countMetric = new GroupMetric(0, baseDataSource.getSourceKey(), new ColumnKey(fineBusinessField.getName()), filterInfo, new DistinctAggregate());
 //            SingleTableGroupQueryInfo countInfo = new SingleTableGroupQueryInfo(new RowCursor(), widget.getWidgetId(), new Dimension[0], new Metric[]{countMetric}, new GroupTarget[0], filterInfo, null);
 //            Query<GroupByResultSet> countQuery = QueryBuilder.buildQuery(countInfo);
 //            GroupByResultSet countResultSet = countQuery.getQueryResult();
-            value.setHasNext(true);
+            value.setHasNext(false);
             value.setValue(values);
         } catch (Exception e) {
             LOGGER.error(e);
