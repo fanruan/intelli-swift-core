@@ -48,7 +48,7 @@ public abstract class AbstractMerger implements Merger {
     public AbstractMerger(SourceKey sourceKey, SwiftMetaData metaData, String cubeSourceKey) {
         this.sourceKey = sourceKey;
         this.metaData = metaData;
-        this.alloter = SwiftSourceAlloterFactory.createSourceAlloter(sourceKey);
+        this.alloter = SwiftSourceAlloterFactory.createLineSourceAlloter(sourceKey, cubeSourceKey);
         this.cubeSourceKey = cubeSourceKey;
 
         List<Segment> segmentList = SwiftContext.getInstance().getSegmentProvider().getSegment(sourceKey);

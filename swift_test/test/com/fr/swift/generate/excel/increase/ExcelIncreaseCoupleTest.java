@@ -2,11 +2,11 @@ package com.fr.swift.generate.excel.increase;
 
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.flow.FlowRuleController;
+import com.fr.swift.generate.TestIndexer;
 import com.fr.swift.generate.excel.BaseExcelTest;
 import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.generate.history.transport.TableTransporter;
 import com.fr.swift.generate.realtime.RealtimeDataTransporter;
-import com.fr.swift.generate.realtime.index.RealtimeColumnIndexer;
 import com.fr.swift.increase.IncrementImpl;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.manager.LocalDataOperatorProvider;
@@ -35,11 +35,12 @@ public class ExcelIncreaseCoupleTest extends BaseExcelTest {
         TableTransporter tableTransporter = new TableTransporter(dataSource);
         tableTransporter.transport();
 
+        List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
         for (int i = 1; i <= dataSource.getMetadata().getColumnCount(); i++) {
-            ColumnIndexer columnIndexer = new ColumnIndexer(dataSource, new ColumnKey(dataSource.getMetadata().getColumnName(i)));
+            ColumnIndexer columnIndexer = new ColumnIndexer(dataSource, new ColumnKey(dataSource.getMetadata().getColumnName(i)), segments);
             columnIndexer.work();
         }
-        List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+
         Segment segment = segments.get(0);
         assertEquals(segment.getRowCount(), 3);
         assertEquals(segments.size(), 1);
@@ -53,10 +54,7 @@ public class ExcelIncreaseCoupleTest extends BaseExcelTest {
         RealtimeDataTransporter transport = new RealtimeDataTransporter(dataSource, increment, new FlowRuleController());
         transport.work();
 
-        for (int i = 1; i <= dataSource.getMetadata().getColumnCount(); i++) {
-            RealtimeColumnIndexer<?> indexer = new RealtimeColumnIndexer(dataSource, new ColumnKey(dataSource.getMetadata().getColumnName(i)));
-            indexer.work();
-        }
+        TestIndexer.realtimeIndex(dataSource);
 
         segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
         assertEquals(segments.size(), 2);

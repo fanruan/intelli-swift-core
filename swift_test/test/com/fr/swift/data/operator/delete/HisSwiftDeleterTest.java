@@ -19,6 +19,7 @@ import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.QueryDBSource;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -59,7 +60,7 @@ public class HisSwiftDeleterTest extends BaseTest {
             putMetaAndSegment(dataSource, 0, location, Types.StoreType.FINE_IO);
 
             for (String field : dataSource.getMetadata().getFieldNames()) {
-                ColumnIndexer<?> indexer = new ColumnIndexer(dataSource, new ColumnKey(field));
+                ColumnIndexer<?> indexer = new ColumnIndexer(dataSource, new ColumnKey(field), Collections.singletonList(segment));
                 indexer.work();
             }
 
@@ -123,7 +124,7 @@ public class HisSwiftDeleterTest extends BaseTest {
             putMetaAndSegment(dataSource, 0, location, Types.StoreType.FINE_IO);
 
             for (String field : dataSource.getMetadata().getFieldNames()) {
-                ColumnIndexer<?> indexer = new ColumnIndexer(dataSource, new ColumnKey(field));
+                ColumnIndexer<?> indexer = new ColumnIndexer(dataSource, new ColumnKey(field), Collections.singletonList(segment));
                 indexer.work();
             }
 

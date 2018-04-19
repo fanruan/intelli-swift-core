@@ -1,5 +1,6 @@
 package com.fr.swift.segment.operator.insert;
 
+import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.config.IConfigSegment;
 import com.fr.swift.config.ISegmentKey;
 import com.fr.swift.config.conf.SegmentConfig;
@@ -31,6 +32,7 @@ import com.fr.swift.util.Crasher;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class created on 2018/3/27
@@ -69,7 +71,7 @@ public abstract class AbstractBlockInserter implements Inserter {
         this.cubeSourceKey = cubeSourceKey;
         this.swiftMetaData = swiftMetaData;
         this.fields = fields;
-        this.alloter = SwiftSourceAlloterFactory.createSourceAlloter(sourceKey);
+        this.alloter = SwiftSourceAlloterFactory.createLineSourceAlloter(sourceKey, cubeSourceKey);
         this.segments = new ArrayList<Segment>();
         this.configSegment = new SegmentUnique();
         this.configSegment.setSourceKey(sourceKey.getId());
@@ -168,6 +170,24 @@ public abstract class AbstractBlockInserter implements Inserter {
     public void release() {
         persistMeta();
         persistSegment();
+
+        for (Map.Entry<Integer, Segment> entry : segmentIndexCache.getNewSegMap().entrySet()) {
+            Segment segment = entry.getValue();
+            segment.putAllShowIndex(BitMaps.newAllShowBitMap(segmentIndexCache.getSegRowByIndex(entry.getKey())));
+            segment.putRowCount(segmentIndexCache.getSegRowByIndex(entry.getKey()));
+            if (segment.isHistory()) {
+                for (String field : fields) {
+                    segment.getColumn(new ColumnKey(field)).getBitmapIndex().putNullIndex(segmentIndexCache.getNullBySegAndField(entry.getKey(), field));
+                    segment.getColumn(new ColumnKey(field)).getBitmapIndex().release();
+                    segment.getColumn(new ColumnKey(field)).getDetailColumn().release();
+                }
+                segment.release();
+            } else {
+                for (String field : fields) {
+                    segment.getColumn(new ColumnKey(field)).getBitmapIndex().putNullIndex(segmentIndexCache.getNullBySegAndField(entry.getKey(), field));
+                }
+            }
+        }
     }
 
     protected void persistMeta() {
