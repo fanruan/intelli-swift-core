@@ -46,10 +46,9 @@ public class RelationSourceGen {
             return Arrays.asList(
                     new RelationSourceImpl(dataSources.get(0).getSourceKey(), dataSources.get(1).getSourceKey(), Arrays.asList("AB"), Arrays.asList("BA")),
                     new RelationSourceImpl(dataSources.get(1).getSourceKey(), dataSources.get(2).getSourceKey(), Arrays.asList("BC"), Arrays.asList("CB")),
-                    new RelationSourceImpl(dataSources.get(2).getSourceKey(), dataSources.get(3).getSourceKey(), Arrays.asList("XD"), Arrays.asList("DC")),
+                    new RelationSourceImpl(dataSources.get(2).getSourceKey(), dataSources.get(3).getSourceKey(), Arrays.asList("CD"), Arrays.asList("DC")),
                     new RelationSourceImpl(dataSources.get(0).getSourceKey(), dataSources.get(2).getSourceKey(), Arrays.asList("AC"), Arrays.asList("CA")),
-                    new RelationSourceImpl(dataSources.get(1).getSourceKey(), dataSources.get(3).getSourceKey(), Arrays.asList("BD"), Arrays.asList("DB")),
-                    new RelationSourceImpl(new SourceKey("undefined"), dataSources.get(1).getSourceKey(), Arrays.asList("undefined"), Arrays.asList("BA"))
+                    new RelationSourceImpl(dataSources.get(1).getSourceKey(), dataSources.get(3).getSourceKey(), Arrays.asList("BD"), Arrays.asList("DB"))
             );
         }
     }
@@ -68,6 +67,7 @@ public class RelationSourceGen {
 
     private static Map<SourceKey, SourcePath> calPath(Map<SourceKey, SourcePath> map) {
         Map<SourceKey, SourcePath> result = new HashMap<>(map);
+        int size = result.size();
 
         Iterator<Map.Entry<SourceKey, SourcePath>> mapIter = map.entrySet().iterator();
         List<RelationPathSourceImpl> pathList = new ArrayList<>();
@@ -84,15 +84,19 @@ public class RelationSourceGen {
                 }
             }
         }
-        if (pathList.isEmpty()) {
-            return result;
-        } else {
-            Map<SourceKey, SourcePath> tmp = new HashMap<>();
-            for (SourcePath path : pathList) {
-                tmp.put(path.getSourceKey(), path);
-            }
-            result.putAll(calPath(tmp));
-            return result;
+        for (SourcePath path : pathList) {
+            result.put(path.getSourceKey(), path);
         }
+        if (result.size() != size) {
+            result.putAll(calPath(result));
+        }
+        return result;
+    }
+
+    public static SourcePath genSinglePath(List<DataSource> dataSources) {
+        return new RelationPathSourceImpl(Arrays.asList(
+                new RelationSourceImpl(dataSources.get(0).getSourceKey(), dataSources.get(1).getSourceKey(), Arrays.asList("AB"), Arrays.asList("BA")),
+                new RelationSourceImpl(dataSources.get(1).getSourceKey(), dataSources.get(2).getSourceKey(), Arrays.asList("BC"), Arrays.asList("CB")),
+                new RelationSourceImpl(dataSources.get(2).getSourceKey(), dataSources.get(3).getSourceKey(), Arrays.asList("CD"), Arrays.asList("DC"))));
     }
 }

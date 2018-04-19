@@ -120,10 +120,10 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
         SourceReliance sourceReliance = SourceRelianceFactory.generateSourceReliance(baseDataSourceList, allDataSourceList);
 
-        // FIXME 暂时传的是所有表和关联
-        RelationReliance relationReliance = RelationRelianceFactory.generateRelationReliance(relationSources, allDataSourceList);
+        // FIXME 传表的责任链，只更新和表有关的关联，单表更新可能无法更新到关联
+        RelationReliance relationReliance = RelationRelianceFactory.generateRelationReliance(relationSources, sourceReliance);
 
-        RelationPathReliance relationPathReliance = RelationRelianceFactory.generateRelationPathReliance(sourcePaths, allDataSourceList);
+        RelationPathReliance relationPathReliance = RelationRelianceFactory.generateRelationPathReliance(sourcePaths, sourceReliance);
 
         IndexingStuff indexingStuff = new HistoryIndexStuffImpl(updateTableSourceKeys, updateRelationSourceKeys, updatePathSourceKeys);
         IndexStuffProvider indexStuffProvider = new IndexStuffInfoProvider(indexingStuff, updateSourceContainer, incrementMap, sourceReliance, relationReliance, relationPathReliance);
@@ -247,6 +247,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     @Override
     public void updatePath(String newPath) {
         FineBusinessTableRelationPath path = relationPathConfProvider.getPath(newPath);
+        List<RelationSource> relationSources = new ArrayList<RelationSource>();
         if (null != path) {
             try {
                 List<FineBusinessTableRelation> relations = path.getFineBusinessTableRelations();
@@ -257,6 +258,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
                     } else {
                         dataSources.add(DataSourceFactory.transformDataSource(relation.getForeignBusinessTable()));
                     }
+                    relationSources.add(RelationSourceFactory.transformRelationSourcesFromRelation(relation));
                 }
                 FineBusinessTableRelation relation = relations.get(0);
                 if (relation.getRelationType() == BICommonConstants.RELATION_TYPE.MANY_TO_ONE) {
@@ -264,6 +266,8 @@ public class SwiftUpdateManager implements EngineUpdateManager {
                 } else {
                     dataSources.add(DataSourceFactory.transformDataSource(relation.getPrimaryBusinessTable()));
                 }
+                RelationReliance relationReliance = new RelationReliance(relationSources, dataSources);
+                RelationNodeUtils.calculateRelationNode(relationReliance);
                 RelationPathReliance relationPathReliance = new RelationPathReliance(RelationSourceFactory.transformSourcePaths(Arrays.asList(path)), dataSources);
                 RelationNodeUtils.calculateRelationPathNode(relationPathReliance);
                 // fixme 调更新
