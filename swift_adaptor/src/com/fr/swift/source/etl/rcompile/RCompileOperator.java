@@ -4,16 +4,19 @@ import com.finebi.conf.algorithm.DMColMetaData;
 import com.finebi.conf.algorithm.DMDataModel;
 import com.finebi.conf.algorithm.DMRowMetaData;
 import com.finebi.conf.algorithm.DMType;
+import com.finebi.conf.algorithm.common.DMLogEntityImp;
+import com.finebi.conf.algorithm.common.DMLogType;
+import com.finebi.conf.algorithm.rcompile.RCacheElement;
+import com.finebi.conf.algorithm.rcompile.RCacheStore;
 import com.finebi.conf.algorithm.rcompile.RExecute;
-import com.fr.stable.StringUtils;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.finebi.conf.internalimp.service.datamining.RConnectionFactory;
+import com.finebi.conf.structure.datamining.DMLogEntity;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
@@ -33,9 +36,7 @@ public class RCompileOperator extends AbstractOperator {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(RCompileOperator.class);
 
     @CoreField
-    private static DMDataModel dataModel;
-    @CoreField
-    private List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
+    private DMDataModel dataModel;
     @CoreField
     private String commands;
     @CoreField
@@ -45,9 +46,8 @@ public class RCompileOperator extends AbstractOperator {
     @CoreField
     private Segment[] segments;
 
-    public RCompileOperator(String commands, RConnection conn, String uuid, Segment[] segments) {
+    public RCompileOperator(String commands, String uuid, Segment[] segments) {
         this.commands = commands;
-        this.conn = conn;
         this.uuid = uuid;
         this.segments = segments;
     }
@@ -59,55 +59,71 @@ public class RCompileOperator extends AbstractOperator {
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
 
+        List<Object> cacheList = new ArrayList<Object>();
+        List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
+        if (commands.trim().isEmpty()) {
+            return columnList;
+        }
+        // 尝试从缓存中读取
+        RCacheElement rCacheElement = RCacheStore.INSTANCE.get(uuid);
+//        if (null != rCacheElement) {
+//            cacheList = rCacheElement.<List>getObj();
+//            dataModel = (DMDataModel) cacheList.get(1);
+//            return (List<SwiftMetaDataColumn>) cacheList.get(0);
+//        }
+
+        // 读取不到计算
         try {
-            init(metaDatas);
-            if (null != this.commands) {
-                dataModel = RExecute.process(conn, commands, uuid);
-            } else {
-                SwiftMetaData metaData = metaDatas[0];
-                int count = 0;
-                ColumnKey[] columnKeys = null;
-                try {
-                    count = metaData.getColumnCount();
-                    columnKeys = new ColumnKey[count];
-                    for (int i = 0; i < count; i++) {
-                        String name = metaData.getColumnName(i + 1);
-                        int type = metaData.getColumnType(i + 1);
-                        int scale = metaData.getScale(i + 1);
-                        columnKeys[i] = new ColumnKey(name);
-                        columnList.add(new MetaDataColumn(name, name, type, ColumnTypeUtils.MAX_LONG_COLUMN_SIZE,
-                                scale, name));
-                    }
-                } catch (Exception e) {
-                    LOGGER.error("falied to get metaData's column", e);
-                }
-                dataModel = RExecute.getPreviousDataModel(conn);
-            }
-            DMRowMetaData rowMetaData = dataModel.getRowMetaData();
-            for (DMColMetaData colMetaData : rowMetaData.getColMetas()) {
-                columnList.add(new MetaDataColumn(colMetaData.getColName(), colMetaData.getColType().toSwiftInt()));
+            conn = RConnectionFactory.getRConnection();
+            if (null == conn) {
+                return columnList;
             }
         } catch (Exception e) {
-            LOGGER.error(e.getMessage());
+            DMLogEntity DMLogEntity = DMLogEntityImp.create();
+            DMLogEntity.setUuid(uuid);
+            DMLogEntity.setErrorType(DMLogType.RCOMPILE.R_CONNECT_ERROR);
+            DMLogEntity.writeLog("Cant not connect R serve!");
+            return columnList;
         }
+        // 计算R语言命令
+        try {
+            assign(metaDatas);
+            eval(metaDatas, columnList);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            return columnList;
+        }
+        cacheList.add(columnList);
+        cacheList.add(dataModel);
+        // 保存到缓存中
+        RCacheStore.INSTANCE.put(new RCacheElement(uuid, cacheList));
         return columnList;
     }
 
-    private boolean findColumnName(String columnName, SwiftMetaData metaData) {
-        try {
-            for (int i = 0; i < metaData.getColumnCount(); i++) {
-                String name = metaData.getColumnName(i + 1);
-                if (StringUtils.equals(columnName, name)) {
-                    return true;
+    private void eval(SwiftMetaData[] swiftMetaData, List<SwiftMetaDataColumn> columnList) throws Exception {
+        if (null != this.commands) {
+            dataModel = RExecute.process(conn, commands, uuid);
+        } else {
+            SwiftMetaData metaData = swiftMetaData[0];
+            int count = metaData.getColumnCount();
+            try {
+                for (int i = 0; i < count; i++) {
+                    String name = metaData.getColumnName(i + 1);
+                    int type = metaData.getColumnType(i + 1);
+                    columnList.add(new MetaDataColumn(name, type));
                 }
+            } catch (Exception e) {
+                LOGGER.error("falied to get metaData's column", e);
             }
-        } catch (SwiftMetaDataException e) {
-            LOGGER.error("failed to find field: " + columnName);
+            dataModel = RExecute.getPreviousDataModel(conn);
         }
-        return false;
+        DMRowMetaData rowMetaData = dataModel.getRowMetaData();
+        for (DMColMetaData colMetaData : rowMetaData.getColMetas()) {
+            columnList.add(new MetaDataColumn(colMetaData.getColName(), colMetaData.getColType().toSwiftInt()));
+        }
     }
 
-    private void init(SwiftMetaData[] metaData) throws Exception {
+    private void assign(SwiftMetaData[] metaData) throws Exception {
         DMDataModel dataModel = new DMDataModel();
         DMRowMetaData inputMetaData = new DMRowMetaData();
         SwiftMetaData baseMetaData = metaData[0];
