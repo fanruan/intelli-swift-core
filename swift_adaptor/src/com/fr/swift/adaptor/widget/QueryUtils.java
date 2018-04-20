@@ -1,9 +1,6 @@
 package com.fr.swift.adaptor.widget;
 
-import com.finebi.conf.structure.bean.field.FineBusinessField;
-import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
-import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.cal.info.GroupQueryInfo;
 import com.fr.swift.cal.result.group.AllCursor;
@@ -18,7 +15,7 @@ import com.fr.swift.result.NodeResultSetImpl;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
-import com.fr.swift.source.DataSource;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.utils.BusinessTableUtils;
 
 import java.util.ArrayList;
@@ -41,11 +38,10 @@ public class QueryUtils {
     public static List getOneDimensionFilterValues(FineDimension dimension, FilterInfo filterInfo, String id) {
         try {
             String fieldId = dimension.getFieldId();
-            FineBusinessTable fineBusinessTable = BusinessTableUtils.getTableByFieldId(fieldId);
-            FineBusinessField fineBusinessField = fineBusinessTable.getFieldByFieldId(fieldId);
-            DataSource baseDataSource = DataSourceFactory.transformDataSource(fineBusinessTable);
-            GroupDimension groupDimension = new GroupDimension(0, baseDataSource.getSourceKey(), new ColumnKey(fineBusinessField.getName()), GroupAdaptor.adaptDashboardGroup(dimension.getGroup()), null, null);
-            GroupQueryInfo valueInfo = new GroupQueryInfo(new AllCursor(), id, baseDataSource.getSourceKey(), filterInfo, new Dimension[]{groupDimension}, new Metric[0], new GroupTarget[0], null, 0);
+            SourceKey sourceKey = new SourceKey(BusinessTableUtils.getSourceIdByFieldId(fieldId));
+            String fieldName = BusinessTableUtils.getFieldNameByFieldId(fieldId);
+            GroupDimension groupDimension = new GroupDimension(0, sourceKey, new ColumnKey(fieldName), GroupAdaptor.adaptDashboardGroup(dimension.getGroup()), null, null);
+            GroupQueryInfo valueInfo = new GroupQueryInfo(new AllCursor(), id, sourceKey, filterInfo, new Dimension[]{groupDimension}, new Metric[0], new GroupTarget[0], null, 0);
             NodeResultSetImpl nodeResultSet = (NodeResultSetImpl) QueryRunnerProvider.getInstance().executeQuery(valueInfo);
             SwiftNode n = nodeResultSet.getNode();
             List values = new ArrayList();
