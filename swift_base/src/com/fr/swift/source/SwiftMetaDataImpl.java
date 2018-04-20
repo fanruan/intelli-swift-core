@@ -172,4 +172,9 @@ public class SwiftMetaDataImpl implements SwiftMetaData {
     public List<String> getFieldNames() {
         return fieldNames;
     }
+
+    @Override
+    public String toString() {
+        return swiftMetaDataPojo.toString();
+    }
 }

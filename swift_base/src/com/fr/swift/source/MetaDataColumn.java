@@ -87,4 +87,9 @@ public class MetaDataColumn implements SwiftMetaDataColumn {
     public String getColumnId() {
         return metaDataColumnPojo.getColumnId();
     }
+
+    @Override
+    public String toString() {
+        return metaDataColumnPojo.toString();
+    }
 }
