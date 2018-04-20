@@ -9,8 +9,10 @@ import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.dashboard.widget.FineWidget;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
+import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionDrill;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionSort;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
+import com.finebi.conf.structure.filter.FineFilter;
 import com.finebi.conf.structure.result.table.BIGroupNode;
 import com.finebi.conf.structure.result.table.BITableResult;
 import com.fr.swift.adaptor.encrypt.SwiftEncryption;
@@ -138,8 +140,27 @@ public class TableWidgetAdaptor {
 
     private static FilterInfo getFilterInfo(TableWidget widget) throws Exception {
         List<FilterInfo> filterInfoList = new ArrayList<FilterInfo>();
-        FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
-        filterInfoList.add(filterInfo);
+        dealWithWidgetFilter(filterInfoList, widget);
+        dealWithLink(filterInfoList, widget);
+        dealWithDrill(filterInfoList, widget);
+        return new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
+    }
+
+    private static void dealWithDrill(List<FilterInfo> filterInfoList, TableWidget widget) throws Exception {
+        for (FineDimension fineDimension : widget.getDimensionList()){
+            FineDimensionDrill drill = fineDimension.getDimensionDrill();
+            if (drill != null){
+                String columnName = SwiftEncryption.decryptFieldId(drill.getFromDimension().getFieldId())[1];
+                String value = drill.getFromValue();
+                Set<String> values = new HashSet<String>();
+                values.add(value);
+                filterInfoList.add(new SwiftDetailFilterInfo<Set<String>>(columnName, values, SwiftDetailFilterType.STRING_IN));
+            }
+        }
+        widget.getValue().getDrillList();
+    }
+
+    private static void dealWithLink(List<FilterInfo> filterInfoList, TableWidget widget) {
         //联动设置
         Map<String, WidgetLinkItem> linkItemMap = widget.getValue().getLinkage();
         //联动配置
@@ -163,7 +184,13 @@ public class TableWidgetAdaptor {
                 }
             }
         }
-        return new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
+    }
+
+    private static void dealWithWidgetFilter(List<FilterInfo> filterInfoList, TableWidget widget) throws Exception {
+        List<FineFilter> filters = widget.getFilters();
+        if (filters != null && !filters.isEmpty()){
+            filterInfoList.add(FilterInfoFactory.transformFineFilter(filters));
+        }
     }
 
     static List<Dimension> getDimensions(List<FineDimension> fineDims, List<FineTarget> targets) throws Exception {
