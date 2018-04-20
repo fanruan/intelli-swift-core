@@ -24,10 +24,15 @@ public class SwiftDetailTableResult implements BIDetailTableResult {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftDetailTableResult.class);
     private SwiftResultSet swiftResultSet;
     private int columnSize = -1;
+    private int totalRows = -1;
+    private int rowSize = -1;
+    private int rowCount = 0;
 
-    public SwiftDetailTableResult(SwiftResultSet swiftResultSet) throws SQLException {
+    public SwiftDetailTableResult(SwiftResultSet swiftResultSet, int totalRows) throws SQLException {
         this.swiftResultSet = swiftResultSet;
         this.columnSize = swiftResultSet.getMetaData().getColumnCount();
+        this.rowSize = swiftResultSet instanceof SwiftEmptyResult ? 0 :((DetailResultSet) swiftResultSet).getRowSize();
+        this.totalRows = Math.min(rowSize, totalRows);
     }
 
     @Override
@@ -36,12 +41,13 @@ public class SwiftDetailTableResult implements BIDetailTableResult {
 
     @Override
     public boolean hasNext() {
-        try {
-            return swiftResultSet.next();
-        } catch (SQLException e) {
-            LOGGER.error(e.getMessage(), e);
-            return false;
-        }
+        return rowCount < totalRows;
+//        try {
+//            return swiftResultSet.next();
+//        } catch (SQLException e) {
+//            LOGGER.error(e.getMessage(), e);
+//            return false;
+//        }
     }
 
     @Override
@@ -57,6 +63,7 @@ public class SwiftDetailTableResult implements BIDetailTableResult {
                 }
                 detailCellList.add(detailCell);
             }
+            rowCount ++;
             return detailCellList;
         } catch (SQLException e) {
             LOGGER.error(e.getMessage(), e);
@@ -69,7 +76,7 @@ public class SwiftDetailTableResult implements BIDetailTableResult {
 
     @Override
     public int rowSize() {
-        return swiftResultSet instanceof SwiftEmptyResult ? 0 :((DetailResultSet) swiftResultSet).getRowSize();
+        return rowSize;
     }
 
     @Override
@@ -89,7 +96,7 @@ public class SwiftDetailTableResult implements BIDetailTableResult {
 
     @Override
     public int totalRowSize() {
-        return 0;
+        return totalRows;
     }
 
     @Override
