@@ -24,10 +24,15 @@ public class SwiftDetailTableResult implements BIDetailTableResult {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftDetailTableResult.class);
     private SwiftResultSet swiftResultSet;
     private int columnSize = -1;
+    private int totalRows = -1;
+    private int rowSize = -1;
+    private int rowCount = 0;
 
-    public SwiftDetailTableResult(SwiftResultSet swiftResultSet) throws SQLException {
+    public SwiftDetailTableResult(SwiftResultSet swiftResultSet, int totalRows) throws SQLException {
         this.swiftResultSet = swiftResultSet;
         this.columnSize = swiftResultSet.getMetaData().getColumnCount();
+        this.rowSize = swiftResultSet instanceof SwiftEmptyResult ? 0 :((DetailResultSet) swiftResultSet).getRowSize();
+        this.totalRows = Math.min(rowSize, totalRows);
     }
 
     @Override
@@ -36,28 +41,33 @@ public class SwiftDetailTableResult implements BIDetailTableResult {
 
     @Override
     public boolean hasNext() {
-        try {
-            return swiftResultSet.next();
-        } catch (SQLException e) {
-            LOGGER.error(e.getMessage(), e);
-            return false;
-        }
+        return rowCount < totalRows;
+//        try {
+//            return swiftResultSet.next();
+//        } catch (SQLException e) {
+//            LOGGER.error(e.getMessage(), e);
+//            return false;
+//        }
     }
 
     @Override
     public List<BIDetailCell> next() {
         try {
-            List<BIDetailCell> detailCellList = new ArrayList<BIDetailCell>();
-            Row row = swiftResultSet.getRowData();
-            for (int i = 0; i < columnSize; i++) {
-                BIDetailCell detailCell = new SwiftDetailCell(row.getValue(i));
-                //todo 临时处理，这个应该和SwiftSegmentDetailResult一样，不处理null值吧。。
-                if (detailCell.getData() == null) {
-                    detailCell = new SwiftDetailCell("");
+            while (swiftResultSet.next()) {
+                List<BIDetailCell> detailCellList = new ArrayList<BIDetailCell>();
+                Row row = swiftResultSet.getRowData();
+                for (int i = 0; i < columnSize; i++) {
+                    BIDetailCell detailCell = new SwiftDetailCell(row.getValue(i));
+                    //todo 临时处理，这个应该和SwiftSegmentDetailResult一样，不处理null值吧。。
+                    if (detailCell.getData() == null) {
+                        detailCell = new SwiftDetailCell("");
+                    }
+                    detailCellList.add(detailCell);
                 }
-                detailCellList.add(detailCell);
+                rowCount++;
+                return detailCellList;
             }
-            return detailCellList;
+            return null;
         } catch (SQLException e) {
             LOGGER.error(e.getMessage(), e);
             return null;
@@ -69,7 +79,7 @@ public class SwiftDetailTableResult implements BIDetailTableResult {
 
     @Override
     public int rowSize() {
-        return swiftResultSet instanceof SwiftEmptyResult ? 0 :((DetailResultSet) swiftResultSet).getRowSize();
+        return rowSize;
     }
 
     @Override
@@ -89,7 +99,7 @@ public class SwiftDetailTableResult implements BIDetailTableResult {
 
     @Override
     public int totalRowSize() {
-        return 0;
+        return totalRows;
     }
 
     @Override
