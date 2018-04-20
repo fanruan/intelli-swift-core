@@ -4,6 +4,7 @@ import com.finebi.conf.internalimp.dashboard.widget.table.StringControlWidget;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.result.BIStringDetailResult;
 import com.finebi.conf.structure.result.StringControlResult;
+import com.fr.stable.StringUtils;
 import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.log.SwiftLogger;
@@ -32,11 +33,18 @@ public class StringControlWidgetAdaptor {
             int times = widget.getTimes();
             List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
             List<String> selectValues = widget.getSelectedValues();
-            if (selectValues != null || !selectValues.isEmpty()){
-                filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(SwiftEncryption.decryptFieldId(dimension.getFieldId())[1], new HashSet<String>(selectValues), SwiftDetailFilterType.STRING_IN));
+            if (!StringUtils.isEmpty(keyWords)) {
+                filterInfos.add(new SwiftDetailFilterInfo<String>(SwiftEncryption.decryptFieldId(dimension.getFieldId())[1], keyWords, SwiftDetailFilterType.STRING_LIKE));
             }
-            filterInfos.add(FilterInfoFactory.transformFineFilter(widget.getFilters()));
-            filterInfos.add(FilterInfoFactory.transformFineFilter(dimension.getFilters()));
+            if (selectValues != null && !selectValues.isEmpty()) {
+                filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(SwiftEncryption.decryptFieldId(dimension.getFieldId())[1], new HashSet<String>(selectValues), SwiftDetailFilterType.STRING_NOT_IN));
+            }
+            if (widget.getFilters() != null) {
+                filterInfos.add(FilterInfoFactory.transformFineFilter(widget.getFilters()));
+            }
+            if (dimension.getFilters() != null) {
+                filterInfos.add(FilterInfoFactory.transformFineFilter(dimension.getFilters()));
+            }
             List values = QueryUtils.getOneDimensionFilterValues(dimension, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND), widget.getWidgetId());
             //查询记录数,等分组表那边弄好了再搞。
 //            Metric countMetric = new GroupMetric(0, baseDataSource.getSourceKey(), new ColumnKey(fineBusinessField.getName()), filterInfo, new DistinctAggregate());
