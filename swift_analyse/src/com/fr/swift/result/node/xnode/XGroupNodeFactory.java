@@ -2,9 +2,9 @@ package com.fr.swift.result.node.xnode;
 
 import com.fr.swift.query.adapter.target.cal.TargetInfo;
 import com.fr.swift.query.aggregator.AggregatorValue;
-import com.fr.swift.query.group.by.paging.Filter;
-import com.fr.swift.query.group.by.paging.FilteredIterator;
-import com.fr.swift.query.group.by.paging.MapperIterator;
+import com.fr.swift.structure.iterator.Filter;
+import com.fr.swift.structure.iterator.FilteredIterator;
+import com.fr.swift.structure.iterator.MapperIterator;
 import com.fr.swift.result.KeyValue;
 import com.fr.swift.result.RowIndexKey;
 import com.fr.swift.result.XGroupByResultSet;
@@ -13,7 +13,7 @@ import com.fr.swift.result.node.GroupNodeAggregateUtils;
 import com.fr.swift.result.node.GroupNodeFactory;
 import com.fr.swift.result.node.NodeType;
 import com.fr.swift.result.node.cal.TargetCalculatorUtils;
-import com.fr.swift.result.node.iterator.IteratorUtils;
+import com.fr.swift.structure.iterator.IteratorUtils;
 import com.fr.swift.result.node.iterator.PostOrderNodeIterator;
 import com.fr.swift.util.function.Function;
 
@@ -39,8 +39,8 @@ public class XGroupNodeFactory {
         // 构建节点
         XLeftNode xLeftNode = XLeftNodeFactory.createXLeftNode(resultSet, targetInfo.getTargetLength());
         // 处理计算指标
-        xLeftNode = (XLeftNode) TargetCalculatorUtils.calculate(xLeftNode,
-                targetInfo.getTargetCalculatorInfoList(), targetInfo.getTargetsForShowList());
+//        xLeftNode = (XLeftNode) TargetCalculatorUtils.calculate(xLeftNode,
+//                targetInfo.getTargetCalculatorInfoList(), targetInfo.getTargetsForShowList());
         GroupNodeAggregateUtils.aggregate(NodeType.X_LEFT, resultSet.rowDimensionSize(), xLeftNode,
                 targetInfo.getAggregatorListOfTargetsForShow());
         // 表头groupBy的维度key

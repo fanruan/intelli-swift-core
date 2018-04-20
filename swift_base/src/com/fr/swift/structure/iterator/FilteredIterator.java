@@ -1,4 +1,4 @@
-package com.fr.swift.query.group.by.paging;
+package com.fr.swift.structure.iterator;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;

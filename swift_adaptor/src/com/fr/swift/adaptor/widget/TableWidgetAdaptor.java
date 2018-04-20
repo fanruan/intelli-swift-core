@@ -23,7 +23,7 @@ import com.fr.swift.adaptor.widget.expander.ExpanderFactory;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.adaptor.widget.target.CalTargetParseUtils;
 import com.fr.swift.cal.QueryInfo;
-import com.fr.swift.cal.info.Expander;
+import com.fr.swift.query.adapter.dimension.Expander;
 import com.fr.swift.cal.info.GroupQueryInfo;
 import com.fr.swift.cal.result.group.Cursor;
 import com.fr.swift.log.SwiftLogger;
@@ -72,9 +72,10 @@ public class TableWidgetAdaptor {
         SwiftResultSet resultSet;
         try {
             TargetInfo targetInfo = CalTargetParseUtils.parseCalTarget(widget);
-            resultSet = QueryRunnerProvider.getInstance().executeQuery(buildQueryInfo(widget, targetInfo.getMetrics()));
+            resultSet = QueryRunnerProvider.getInstance().executeQuery(buildQueryInfo(widget, targetInfo));
             GroupNode groupNode = (GroupNode) ((NodeResultSet) resultSet).getNode();
-            TargetCalculatorUtils.calculate(groupNode, targetInfo.getTargetCalculatorInfoList(), targetInfo.getTargetsForShowList());
+            // 取出实际查询的指标
+            groupNode = TargetCalculatorUtils.getShowTargetsForGroupNode(groupNode, targetInfo.getTargetsForShowList());
             resultNode = new BIGroupNodeAdaptor(groupNode);
         } catch (Exception e) {
             resultNode = new BIGroupNodeAdaptor(new GroupNode(-1, null));
@@ -115,16 +116,17 @@ public class TableWidgetAdaptor {
         }
     }
 
-    static QueryInfo buildQueryInfo(TableWidget widget, List<Metric> metrics) throws Exception {
+    private static QueryInfo buildQueryInfo(TableWidget widget, TargetInfo targetInfo) throws Exception {
         Cursor cursor = null;
         String queryId = widget.getWidgetId();
 
         List<Dimension> dimensions = getDimensions(widget.getDimensionList(), widget.getTargetList());
         FilterInfo filterInfo = getFilterInfo(widget);
 
-        GroupTarget[] targets = getTargets(widget);
+        GroupTarget[] targets = targetInfo.getGroupTargets().toArray(new GroupTarget[targetInfo.getGroupTargets().size()]);
+        List<Metric> metrics = targetInfo.getMetrics();
         Expander expander = ExpanderFactory.create(widget.isOpenRowNode(), dimensions.size(),
-                widget.getValue().getExpander().getxExpander());
+                widget.getValue().getRowExpand());
         String fieldId = widget.getDimensionList().isEmpty() ? null : widget.getDimensionList().get(0).getFieldId();
         fieldId = fieldId != null ? fieldId : metrics.isEmpty() ? null : metrics.get(0).getSourceKey().getId();
         fieldId = fieldId == null ?
@@ -135,7 +137,7 @@ public class TableWidgetAdaptor {
         return new GroupQueryInfo(cursor, queryId, baseDataSource.getSourceKey(), filterInfo,
                 dimensions.toArray(new Dimension[dimensions.size()]),
                 metrics.toArray(new Metric[metrics.size()]),
-                targets, expander);
+                targets, expander, targetInfo.getTargetLength());
     }
 
     private static FilterInfo getFilterInfo(TableWidget widget) throws Exception {

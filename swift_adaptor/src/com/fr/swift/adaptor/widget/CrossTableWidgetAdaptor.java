@@ -10,7 +10,7 @@ import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.widget.target.CalTargetParseUtils;
 import com.fr.swift.cal.QueryInfo;
-import com.fr.swift.cal.info.Expander;
+import com.fr.swift.query.adapter.dimension.Expander;
 import com.fr.swift.cal.info.XGroupQueryInfo;
 import com.fr.swift.cal.result.group.Cursor;
 import com.fr.swift.log.SwiftLogger;
@@ -58,7 +58,7 @@ public class CrossTableWidgetAdaptor {
         return new CrossTableResult(crossNode, false, false, false, false);
     }
 
-    static class CrossTableResult implements BICrossTableResult {
+    private static class CrossTableResult implements BICrossTableResult {
         private BICrossNode node;
         private boolean hasHorizontalNextPage;
         private boolean hasHorizontalPreviousPage;
@@ -104,7 +104,7 @@ public class CrossTableWidgetAdaptor {
     }
 
 
-    static QueryInfo buildQueryInfo(CrossTableWidget widget, List<Metric> metrics) throws Exception {
+    private static QueryInfo buildQueryInfo(CrossTableWidget widget, List<Metric> metrics) throws Exception {
         Cursor cursor = null;
         String queryId = widget.getWidgetId();
         FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());

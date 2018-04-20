@@ -1,10 +1,10 @@
-package com.fr.swift.result.node.iterator;
+package com.fr.swift.structure.iterator;
 
 import com.fr.swift.structure.stack.ArrayLimitedStack;
 import com.fr.swift.structure.stack.LimitedStack;
-import com.fr.swift.util.function.Supplier;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -13,33 +13,32 @@ import java.util.List;
  *
  * Created by Lyon on 2018/4/19.
  */
-public class Tree2RowIterator<E, TREE extends Supplier<E> & Iterable<TREE>> implements Iterator<List<E>> {
+public class Tree2RowIterator<TREE extends Iterable<TREE>> implements Iterator<List<TREE>> {
 
     private LimitedStack<Iterator<TREE>> iterators;
-    private LimitedStack<E> elements;
-    private TREE root;
-    private E[] next;
+    private LimitedStack<TREE> elements;
+    private Iterator<TREE> rootIt;
+    private List<TREE> next;
 
-    public Tree2RowIterator(int limitLevel, TREE root) {
-        this.root = root;
-        this.iterators = new ArrayLimitedStack<Iterator<TREE>>(limitLevel - 1);
-        this.elements = new ArrayLimitedStack<E>(limitLevel);
+    public Tree2RowIterator(int limitLevel, Iterator<TREE> rootIt) {
+        this.rootIt = rootIt;
+        this.iterators = new ArrayLimitedStack<Iterator<TREE>>(limitLevel);
+        this.elements = new ArrayLimitedStack<TREE>(limitLevel);
         init();
     }
 
     private void init() {
-        this.iterators.push(root.iterator());
-        this.elements.push(root.get());
+        this.iterators.push(rootIt);
         next = getNext();
     }
 
-    private E[] getNext() {
-        E[] ret = null;
+    private List<TREE> getNext() {
+        List<TREE> ret = null;
         while (!iterators.isEmpty()) {
             Iterator<TREE> it = iterators.peek();
             if (it.hasNext()) {
                 TREE node = it.next();
-                elements.push(node.get());
+                elements.push(node);
                 if (iterators.size() != iterators.limit() && node.iterator().hasNext()) {
                     iterators.push(node.iterator());
                     // 因为要按行返回，索引这里要继续循环，直到遇到叶子节点（普通叶子节点或者是第limitLevel层的节点）
@@ -47,11 +46,13 @@ public class Tree2RowIterator<E, TREE extends Supplier<E> & Iterable<TREE>> impl
                 }
             } else {
                 iterators.pop();
-                elements.pop();
+                if (!elements.isEmpty()) {
+                    elements.pop();
+                }
                 continue;
             }
             // 执行到这里说明找到了满足要求的叶子节点
-            ret = elements.toArray();
+            ret = Collections.unmodifiableList(Arrays.asList(elements.toArray()));
             elements.pop();
             break;
         }
@@ -64,11 +65,11 @@ public class Tree2RowIterator<E, TREE extends Supplier<E> & Iterable<TREE>> impl
     }
 
     @Override
-    public List<E> next() {
-        E[] ret = next;
+    public List<TREE> next() {
+        List<TREE> ret = next;
         next = getNext();
         // 这边要返回
-        return Arrays.asList(ret);
+        return ret;
     }
 
     @Override

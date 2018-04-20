@@ -11,9 +11,10 @@ import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.query.adapter.metric.GroupMetric;
 import com.fr.swift.query.adapter.metric.Metric;
+import com.fr.swift.query.adapter.target.GroupTarget;
 import com.fr.swift.query.adapter.target.cal.CalTargetType;
 import com.fr.swift.query.adapter.target.cal.ResultTarget;
-import com.fr.swift.query.adapter.target.cal.TargetCalculatorInfo;
+import com.fr.swift.query.adapter.target.cal.GroupTargetImpl;
 import com.fr.swift.query.adapter.target.cal.TargetInfo;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.DummyAggregator;
@@ -52,7 +53,7 @@ public class CalTargetParseUtils {
         allTargetFieldIds.addAll(calTargetFieldIds);
         List<ResultTarget> targetsForShowList = new ArrayList<ResultTarget>();
         List<Aggregator> aggregatorListOfTargetsForShow = new ArrayList<Aggregator>();
-        List<TargetCalculatorInfo> calculatorInfoList = new ArrayList<TargetCalculatorInfo>();
+        List<GroupTarget> calculatorInfoList = new ArrayList<GroupTarget>();
         List<FineTarget> targets = widget.getTargetList();
         for (int i = 0; i < targets.size(); i++) {
             String fieldId = targets.get(i).getFieldId();
@@ -64,7 +65,7 @@ public class CalTargetParseUtils {
                 // TODO: 2018/4/8 根据value的type来判断哪类配置类计算
                 String originFieldId = ((AbstractOriginValueBean) value).getOrigin();
                 int paramIndex = allTargetFieldIds.indexOf(originFieldId);
-                calculatorInfoList.add(parseCalInfo(value.getType(), paramIndex, resultIndex));
+                calculatorInfoList.add(parseCalInfo(value.getType(), i, new int[] {paramIndex}, resultIndex));
             }
 
             // TODO: 2018/4/11 指标结果合并用到的Aggregator，配置类计算的结果如何合并还没定
@@ -135,26 +136,26 @@ public class CalTargetParseUtils {
         return metrics;
     }
 
-    private static TargetCalculatorInfo parseCalInfo(int type, int paramIndex, int resultIndex) {
+    private static GroupTarget parseCalInfo(int type, int queryIndex, int[] paramIndexes, int resultIndex) {
         switch (type) {
             case BIDesignConstants.DESIGN.CAL_TARGET.FORMULA:
             case BIDesignConstants.DESIGN.CAL_TARGET.SUM_OF_ABOVE:
-                return new TargetCalculatorInfo(paramIndex, resultIndex, CalTargetType.ALL_SUM_OF_ABOVE);
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_SUM_OF_ABOVE, null, new DummyAggregator());
             case BIDesignConstants.DESIGN.CAL_TARGET.SUM_OF_ABOVE_IN_GROUP:
             case BIDesignConstants.DESIGN.CAL_TARGET.SUM_OF_ALL_SUM:
-                return new TargetCalculatorInfo(paramIndex, resultIndex, CalTargetType.ALL_SUM_OF_ALL);
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_SUM_OF_ALL, null, new DummyAggregator());
             case BIDesignConstants.DESIGN.CAL_TARGET.SUM_OF_ALL_AVG:
-                return new TargetCalculatorInfo(paramIndex, resultIndex, CalTargetType.ALL_AVG);
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_AVG, null, new DummyAggregator());
             case BIDesignConstants.DESIGN.CAL_TARGET.SUM_OF_ALL_MAX:
-                return new TargetCalculatorInfo(paramIndex, resultIndex, CalTargetType.ALL_MAX);
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_MAX, null, new DummyAggregator());
             case BIDesignConstants.DESIGN.CAL_TARGET.SUM_OF_ALL_MIN:
-                return new TargetCalculatorInfo(paramIndex, resultIndex, CalTargetType.ALL_MIN);
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_MIN, null, new DummyAggregator());
             case BIDesignConstants.DESIGN.CAL_TARGET.RANK_ASC:
-                return new TargetCalculatorInfo(paramIndex, resultIndex, CalTargetType.ALL_RANK_ASC);
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_RANK_ASC, null, new DummyAggregator());
             case BIDesignConstants.DESIGN.CAL_TARGET.RANK_DES:
-                return new TargetCalculatorInfo(paramIndex, resultIndex, CalTargetType.ALL_RANK_DEC);
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_RANK_DEC, null, new DummyAggregator());
         }
-        return new TargetCalculatorInfo(paramIndex, resultIndex, CalTargetType.ALL_SUM_OF_ALL);
+        return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_SUM_OF_ALL, null, new DummyAggregator());
     }
 
     private static Metric toMetric(String fieldId, int index, List<FineTarget> targetList) {

@@ -3,6 +3,7 @@ package com.fr.swift.cal.info;
 import com.fr.swift.cal.builder.QueryType;
 import com.fr.swift.cal.result.group.Cursor;
 import com.fr.swift.query.adapter.dimension.Dimension;
+import com.fr.swift.query.adapter.dimension.Expander;
 import com.fr.swift.query.adapter.metric.Metric;
 import com.fr.swift.query.adapter.target.GroupTarget;
 import com.fr.swift.query.filter.info.FilterInfo;
@@ -19,7 +20,7 @@ public class XGroupQueryInfo extends GroupQueryInfo {
 
     public XGroupQueryInfo(Cursor cursor, String queryID, SourceKey table, FilterInfo filterInfo, Dimension[] dimensions,
                            Dimension[] colDimensions, Metric[] metrics, GroupTarget[] targets, Expander expander) {
-        super(cursor, queryID, table, filterInfo, dimensions, metrics, targets, expander);
+        super(cursor, queryID, table, filterInfo, dimensions, metrics, targets, expander, targets.length);
         this.colDimensions = colDimensions;
     }
 

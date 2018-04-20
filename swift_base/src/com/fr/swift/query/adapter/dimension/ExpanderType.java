@@ -1,4 +1,4 @@
-package com.fr.swift.cal.info;
+package com.fr.swift.query.adapter.dimension;
 
 /**
  * Created by Lyon on 2018/4/19.

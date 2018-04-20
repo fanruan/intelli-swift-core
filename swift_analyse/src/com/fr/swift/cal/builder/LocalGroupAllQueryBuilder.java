@@ -42,10 +42,10 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
                     List<Column> colDimension = getDimensionSegments(segment, ((XGroupQueryInfo) info).getColDimensions());
                     List<Sort> colIndexSorts = getSegmentIndexSorts(((XGroupQueryInfo) info).getColDimensions());
                     queries.add(new XGroupAllSegmentQuery(dimensionSegments, colDimension, metricSegments, aggregators,
-                            FilterBuilder.buildDetailFilter(segment, info.getFilterInfo()), rowIndexSorts, colIndexSorts));
+                            FilterBuilder.buildDetailFilter(segment, info.getFilterInfo()), rowIndexSorts, colIndexSorts, null));
                 } else {
-                    queries.add(new GroupAllSegmentQuery(dimensionSegments, metricSegments, aggregators,
-                            FilterBuilder.buildDetailFilter(segment, info.getFilterInfo()), rowIndexSorts));
+                    queries.add(new GroupAllSegmentQuery(info.getTargetLength(), dimensionSegments, metricSegments, aggregators,
+                            FilterBuilder.buildDetailFilter(segment, info.getFilterInfo()), rowIndexSorts, info.getExpander()));
                 }
             }
         if (type == QueryType.CROSS_GROUP) {

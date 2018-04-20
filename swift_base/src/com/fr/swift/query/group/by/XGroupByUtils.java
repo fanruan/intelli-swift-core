@@ -3,8 +3,8 @@ package com.fr.swift.query.group.by;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.filter.detail.DetailFilter;
-import com.fr.swift.query.group.by.paging.Filter;
-import com.fr.swift.query.group.by.paging.FilteredIterator;
+import com.fr.swift.structure.iterator.Filter;
+import com.fr.swift.structure.iterator.FilteredIterator;
 import com.fr.swift.query.group.by.paging.GroupByPagingIterator;
 import com.fr.swift.query.group.by.paging.XGroupByIterator;
 import com.fr.swift.query.sort.Sort;
@@ -17,7 +17,6 @@ import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.structure.iterator.RowTraversal;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;

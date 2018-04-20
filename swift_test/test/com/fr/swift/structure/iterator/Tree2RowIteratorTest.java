@@ -1,6 +1,6 @@
-package com.fr.swift.result.node.iterator;
+package com.fr.swift.structure.iterator;
 
-import com.fr.swift.util.function.Supplier;
+import com.fr.swift.structure.iterator.Tree2RowIterator;
 import junit.framework.TestCase;
 import org.junit.Before;
 
@@ -34,15 +34,23 @@ public class Tree2RowIteratorTest extends TestCase {
     }
 
     public void test() {
-        Iterator<List<Integer>> iterator = new Tree2RowIterator<Integer, Tree>(3, root);
-        assertTrue(Arrays.equals(iterator.next().toArray(), new Integer[] {0, 1, 0}));
-        assertTrue(Arrays.equals(iterator.next().toArray(), new Integer[] {0, 1, 3}));
-        assertTrue(Arrays.equals(iterator.next().toArray(), new Integer[] {0, 2, null}));
-        assertTrue(Arrays.equals(iterator.next().toArray(), new Integer[] {0, 3, 3}));
-        assertTrue(Arrays.equals(iterator.next().toArray(), new Integer[] {0, 3, 5}));
+        Iterator<List<Tree>> iterator = new Tree2RowIterator<Tree>(3, Arrays.asList(root).iterator());
+        assertTrue(Arrays.equals(list2Array(iterator.next()), new Integer[] {0, 1, 0}));
+        assertTrue(Arrays.equals(list2Array(iterator.next()), new Integer[] {0, 1, 3}));
+        assertTrue(Arrays.equals(list2Array(iterator.next()), new Integer[] {0, 2, null}));
+        assertTrue(Arrays.equals(list2Array(iterator.next()), new Integer[] {0, 3, 3}));
+        assertTrue(Arrays.equals(list2Array(iterator.next()), new Integer[] {0, 3, 5}));
     }
 
-    private static class Tree implements Supplier<Integer>, Iterable<Tree> {
+    private static Integer[] list2Array(List<Tree> trees) {
+        Integer[] integers = new Integer[trees.size()];
+        for (int i = 0; i < trees.size(); i++) {
+            integers[i] = trees.get(i) == null ? null : trees.get(i).getValue();
+        }
+        return integers;
+    }
+
+    private static class Tree implements Iterable<Tree> {
         private int value;
         List<Tree> children = new ArrayList<>(0);
 
@@ -54,8 +62,7 @@ public class Tree2RowIteratorTest extends TestCase {
             this.children = children;
         }
 
-        @Override
-        public Integer get() {
+        public Integer getValue() {
             return value;
         }
 

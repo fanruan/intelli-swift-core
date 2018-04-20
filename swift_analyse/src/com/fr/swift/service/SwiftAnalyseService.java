@@ -1,8 +1,14 @@
 package com.fr.swift.service;
 
+import com.fr.swift.cal.Query;
 import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.cal.builder.QueryBuilder;
+import com.fr.swift.cal.builder.QueryType;
+import com.fr.swift.cal.info.GroupQueryInfo;
 import com.fr.swift.exception.SwiftServiceException;
+import com.fr.swift.result.NodeResultSet;
+import com.fr.swift.result.node.GroupNode;
+import com.fr.swift.result.node.cal.TargetCalculatorUtils;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
@@ -25,7 +31,13 @@ public class SwiftAnalyseService extends AbstractSwiftService implements QueryRu
     }
 
     @Override
-    public <T extends SwiftResultSet> T getQueryResult(QueryInfo<T> info) throws SQLException{
-        return QueryBuilder.buildQuery(info).getQueryResult();
+    public <T extends SwiftResultSet> T getQueryResult(QueryInfo<T> info) throws SQLException {
+        Query<T> query = QueryBuilder.buildQuery(info);
+        T result = query.getQueryResult();
+        if (info.getType() == QueryType.GROUP || info.getType() == QueryType.CROSS_GROUP) {
+            GroupNode root = (GroupNode) ((NodeResultSet) result).getNode();
+            TargetCalculatorUtils.calculate(root, ((GroupQueryInfo) info).getTargets());
+        }
+        return result;
     }
 }

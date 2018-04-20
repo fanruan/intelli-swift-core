@@ -3,6 +3,7 @@ package com.fr.swift.cal.info;
 import com.fr.swift.cal.builder.QueryType;
 import com.fr.swift.cal.result.group.Cursor;
 import com.fr.swift.query.adapter.dimension.Dimension;
+import com.fr.swift.query.adapter.dimension.Expander;
 import com.fr.swift.query.adapter.metric.Metric;
 import com.fr.swift.query.adapter.target.GroupTarget;
 import com.fr.swift.query.filter.info.FilterInfo;
@@ -16,7 +17,15 @@ import com.fr.swift.source.SourceKey;
  * @date 2017/12/11
  */
 public class GroupQueryInfo extends AbstractQueryInfo<GroupByResultSet> {
-    //分组表的维度
+
+    /**
+     * 计算过程中的指标长度
+     */
+    private int targetLength;
+
+    /**
+     * 分组表的维度
+     */
     private Dimension[] dimensions;
     /**
      * 分组表的聚合维度
@@ -34,12 +43,13 @@ public class GroupQueryInfo extends AbstractQueryInfo<GroupByResultSet> {
     private Expander expander;
 
     public GroupQueryInfo(Cursor cursor, String queryID, SourceKey table, FilterInfo filterInfo, Dimension[] dimensions,
-                          Metric[] metrics, GroupTarget[] targets, Expander expander) {
+                          Metric[] metrics, GroupTarget[] targets, Expander expander, int targetLength) {
         super(cursor, queryID, table, filterInfo);
         this.dimensions = dimensions;
         this.metrics = metrics;
         this.targets = targets;
         this.expander = expander;
+        this.targetLength = targetLength;
     }
 
     @Override
@@ -61,6 +71,10 @@ public class GroupQueryInfo extends AbstractQueryInfo<GroupByResultSet> {
 
     public Expander getExpander() {
         return expander;
+    }
+
+    public int getTargetLength() {
+        return targetLength;
     }
 
     /**

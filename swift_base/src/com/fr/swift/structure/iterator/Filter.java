@@ -1,4 +1,4 @@
-package com.fr.swift.query.group.by.paging;
+package com.fr.swift.structure.iterator;
 
 /**
  * Created by Lyon on 2018/4/4.

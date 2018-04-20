@@ -1,4 +1,4 @@
-package com.fr.swift.cal.info;
+package com.fr.swift.query.adapter.dimension;
 
 import com.fr.swift.result.RowIndexKey;
 

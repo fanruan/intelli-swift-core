@@ -1,13 +1,13 @@
 package com.fr.swift.adaptor.widget.expander;
 
 import com.finebi.conf.internalimp.bean.dashboard.widget.expander.ExpanderBean;
-import com.fr.swift.cal.info.Expander;
-import com.fr.swift.cal.info.ExpanderType;
-import com.fr.swift.query.group.by.paging.MapperIterator;
+import com.fr.swift.query.adapter.dimension.Expander;
+import com.fr.swift.query.adapter.dimension.ExpanderType;
+import com.fr.swift.structure.iterator.MapperIterator;
 import com.fr.swift.result.RowIndexKey;
-import com.fr.swift.result.node.iterator.Tree2RowIterator;
+import com.fr.swift.structure.iterator.IteratorUtils;
+import com.fr.swift.structure.iterator.Tree2RowIterator;
 import com.fr.swift.util.function.Function;
-import com.fr.swift.util.function.Supplier;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -20,23 +20,34 @@ import java.util.Set;
  */
 public class ExpanderFactory {
 
-    public static Expander create(boolean isOpenNode, final int dimensionSize, ExpanderBean bean) {
+    public static Expander create(boolean isOpenNode, final int dimensionSize, List<ExpanderBean> beanList) {
         ExpanderType type = isOpenNode ? ExpanderType.ALL_EXPANDER : ExpanderType.LAZY_EXPANDER;
-        Iterator<List<String>> iterator = new Tree2RowIterator<String, BeanTree>(dimensionSize, new BeanTree(bean));
-        Iterator<RowIndexKey<String>> iterator1 = new MapperIterator<List<String>, RowIndexKey<String>>(iterator, new Function<List<String>, RowIndexKey<String>>() {
+        Iterator<List<BeanTree>> iterator = new Tree2RowIterator<BeanTree>(dimensionSize, new MapperIterator<ExpanderBean, BeanTree>(beanList.iterator(), new Function<ExpanderBean, BeanTree>() {
             @Override
-            public RowIndexKey<String> apply(List<String> p) {
-                return new RowIndexKey<String>(p.toArray(new String[dimensionSize]));
+            public BeanTree apply(ExpanderBean p) {
+                return new BeanTree(p);
+            }
+        }));
+        final Function<BeanTree, String> fn = new Function<BeanTree, String>() {
+            @Override
+            public String apply(BeanTree p) {
+                return p == null ? null : p.getBean().getText();
+            }
+        };
+        Iterator<RowIndexKey<String>> keyIt = new MapperIterator<List<BeanTree>, RowIndexKey<String>>(iterator, new Function<List<BeanTree>, RowIndexKey<String>>() {
+            @Override
+            public RowIndexKey<String> apply(List<BeanTree> p) {
+                return new RowIndexKey<String>(IteratorUtils.list2Array(p, fn));
             }
         });
         Set<RowIndexKey<String>> indexKeys = new HashSet<RowIndexKey<String>>();
-        while (iterator1.hasNext()) {
-            indexKeys.add(iterator1.next());
+        while (keyIt.hasNext()) {
+            indexKeys.add(keyIt.next());
         }
         return new Expander(type, indexKeys);
     }
 
-    private static class BeanTree implements Supplier<String>, Iterable<BeanTree> {
+    private static class BeanTree implements Iterable<BeanTree> {
 
         private ExpanderBean root;
 
@@ -44,9 +55,8 @@ public class ExpanderFactory {
             this.root = root;
         }
 
-        @Override
-        public String get() {
-            return root.getText();
+        public ExpanderBean getBean() {
+            return root;
         }
 
         @Override
