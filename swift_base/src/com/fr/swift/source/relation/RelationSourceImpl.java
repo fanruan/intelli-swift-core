@@ -86,11 +86,7 @@ public class RelationSourceImpl implements RelationSource {
 
     @Override
     public String toString() {
-        return "RelationSource{" +
-                "primarySource=" + primarySource +
-                ", primaryFields=" + primaryFields +
-                ", foreignSource=" + foreignSource +
-                ", foreignFields=" + foreignFields +
-                '}';
+        return "{" + primarySource + "." + primaryFields +
+                " -> " + foreignSource + "." + foreignFields + "}";
     }
 }

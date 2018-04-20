@@ -30,10 +30,6 @@ public class BuildConf {
 
     @Override
     public String toString() {
-        return "BuildConf{" +
-                "ioType=" + ioType +
-                ", dataType=" + dataType +
-                ", writeType=" + writeType +
-                '}';
+        return "{" + ioType + ", " + dataType + ", " + writeType + "}";
     }
 }

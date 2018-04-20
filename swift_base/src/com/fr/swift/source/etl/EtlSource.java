@@ -86,6 +86,7 @@ public class EtlSource extends AbstractDataSource implements EtlDataSource {
         return basedSources;
     }
 
+    @Override
     public Map<Integer, String> getFieldsInfo() {
         return fieldsInfo;
     }
