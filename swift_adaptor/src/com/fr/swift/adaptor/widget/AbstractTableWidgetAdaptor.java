@@ -1,0 +1,25 @@
+package com.fr.swift.adaptor.widget;
+
+import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
+import com.fr.stable.StringUtils;
+import com.fr.swift.source.SourceKey;
+import com.fr.swift.util.Crasher;
+import com.fr.swift.utils.BusinessTableUtils;
+
+/**
+ * Created by pony on 2018/4/20.
+ */
+public abstract class AbstractTableWidgetAdaptor extends AbstractWidgetAdaptor {
+    protected static SourceKey getSourceKey(AbstractTableWidget widget) throws Exception {
+        String fieldId = null;
+        if (!widget.getDimensionList().isEmpty()) {
+            fieldId = widget.getDimensionList().get(0).getFieldId();
+        } else if (!widget.getTargetList().isEmpty()){
+            fieldId = widget.getTargetList().get(0).getFieldId();
+        }
+        if (StringUtils.isEmpty(fieldId)){
+            return Crasher.crash("empty widget");
+        }
+        return new SourceKey(BusinessTableUtils.getSourceIdByFieldId(fieldId));
+    }
+}

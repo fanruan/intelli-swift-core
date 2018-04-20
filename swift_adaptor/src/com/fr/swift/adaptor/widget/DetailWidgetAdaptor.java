@@ -1,17 +1,11 @@
 package com.fr.swift.adaptor.widget;
 
-import com.finebi.conf.constant.BIReportConstant.SORT;
 import com.finebi.conf.internalimp.dashboard.widget.detail.DetailWidget;
-import com.finebi.conf.provider.SwiftTableManager;
-import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
-import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionSort;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.structure.result.BIDetailTableResult;
-import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.adaptor.struct.SwiftDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftEmptyResult;
-import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.cal.QueryInfo;
@@ -23,10 +17,8 @@ import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.adapter.target.DetailFormulaTarget;
 import com.fr.swift.query.adapter.target.DetailTarget;
 import com.fr.swift.query.filter.info.FilterInfo;
-import com.fr.swift.query.sort.AscSort;
-import com.fr.swift.query.sort.DescSort;
-import com.fr.swift.query.sort.NoneSort;
 import com.fr.swift.query.sort.Sort;
+import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.SourceKey;
@@ -36,6 +28,7 @@ import com.fr.swift.source.SwiftMetaDataImpl;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
+import com.fr.swift.utils.BusinessTableUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +39,7 @@ import java.util.List;
  * @date 2017/12/21
  * 明细表
  */
-public class DetailWidgetAdaptor {
+public class DetailWidgetAdaptor extends AbstractWidgetAdaptor{
 
     public static BIDetailTableResult calculate(DetailWidget widget) {
         BIDetailTableResult result = null;
@@ -56,6 +49,8 @@ public class DetailWidgetAdaptor {
             if (resultSet == null) {
                 return new SwiftDetailTableResult(new SwiftEmptyResult());
             }
+            widget.getTotalRows();
+            ((DetailResultSet)(resultSet)).getRowSize();
             result = new SwiftDetailTableResult(resultSet);
         } catch (Exception e) {
         }
@@ -68,8 +63,7 @@ public class DetailWidgetAdaptor {
         Cursor cursor = null;
         String queryId = widget.getWidgetId();
         Dimension[] dimensions = getDimension(widget);
-        FineBusinessTable table = new SwiftTableManager().getSingleTable(widget.getTableName());
-        SourceKey target = DataSourceFactory.transformDataSource(table).getSourceKey();
+        SourceKey target = new SourceKey(BusinessTableUtils.getSourceIdByTableId(widget.getTableName()));
         SwiftMetaData swiftMetaData = MetaDataConvertUtil.getSwiftMetaDataBySourceKey(target.toString());
         SwiftMetaData metaData = getMetaData(widget, swiftMetaData);
         DetailTarget[] targets = getTargets(widget);
@@ -87,7 +81,7 @@ public class DetailWidgetAdaptor {
         List<SwiftMetaDataColumn> fields = new ArrayList<SwiftMetaDataColumn>();
         for (int i = 0, len = fineDimensions.size(); i < len; i++) {
             FineDimension fineDimension = fineDimensions.get(i);
-            String columnName = SwiftEncryption.decryptFieldId(fineDimension.getFieldId())[1];
+            String columnName = BusinessTableUtils.getFieldNameByFieldId(fineDimension.getFieldId());
             fields.add(metaData.getColumn(columnName));
         }
         return new SwiftMetaDataImpl(metaData.getTableName(), metaData.getRemark(), metaData.getSchemaName(), fields);
@@ -98,7 +92,7 @@ public class DetailWidgetAdaptor {
         Dimension[] dimensions = new Dimension[fineDimensions.size()];
         for (int i = 0, size = fineDimensions.size(); i < size; i++) {
             FineDimension fineDimension = fineDimensions.get(i);
-            String columnName = SwiftEncryption.decryptFieldId(fineDimension.getFieldId())[1];
+            String columnName = BusinessTableUtils.getFieldNameByFieldId(fineDimension.getFieldId());
             Sort sort = fineDimension.getSort() == null ? null : adaptSort(fineDimension.getSort(), i);
             dimensions[i] = new DetailDimension(i, new SourceKey(fineDimension.getId()), new ColumnKey(columnName), GroupAdaptor.adaptDashboardGroup(fineDimension.getGroup()), sort, FilterInfoFactory.transformFineFilter(widget.getFilters()));
         }
@@ -116,19 +110,6 @@ public class DetailWidgetAdaptor {
             targets[i] = new DetailFormulaTarget(i);
         }
         return targets;
-    }
-
-    private static Sort adaptSort(FineDimensionSort sort, int index) {
-        switch (sort.getType()) {
-            case SORT.ASC:
-                return new AscSort(index);
-            case SORT.DESC:
-                return new DescSort(index);
-            case SORT.NONE:
-                return new NoneSort();
-            default:
-                return null;
-        }
     }
 
 

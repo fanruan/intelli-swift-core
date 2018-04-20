@@ -7,7 +7,6 @@ import com.finebi.conf.structure.filter.FineFilter;
 import com.finebi.conf.structure.result.control.tree.BITreeItem;
 import com.finebi.conf.structure.result.control.tree.BITreeResult;
 import com.fr.stable.StringUtils;
-import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -27,7 +26,7 @@ import java.util.Set;
 /**
  * Created by Lyon on 2018/3/26.
  */
-public class TreeWidgetAdaptor {
+public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor{
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(TreeWidgetAdaptor.class);
 
@@ -142,7 +141,7 @@ public class TreeWidgetAdaptor {
         infoList.add(FilterInfoFactory.transformFineFilter(fineFilters));
         for (int i = 0; i < parents.size(); i++) {
             FineDimension dimension = dimensions.get(i);
-            String fieldName = SwiftEncryption.decryptFieldId(dimension.getFieldId())[1];
+            String fieldName = getColumnName(dimension.getFieldId());
             final String data = parents.get(i);
             infoList.add(new SwiftDetailFilterInfo<Set<String>>(fieldName,
                     new HashSet<String>() {{ add(data); }}, SwiftDetailFilterType.STRING_IN));

@@ -1,12 +1,9 @@
 package com.fr.swift.adaptor.widget;
 
 import com.finebi.conf.internalimp.dashboard.widget.table.CrossTableWidget;
-import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.result.table.BICrossNode;
 import com.finebi.conf.structure.result.table.BICrossTableResult;
-import com.finebi.conf.utils.FineTableUtils;
 import com.fr.swift.adaptor.struct.node.BICrossNodeAdaptor;
-import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.widget.target.CalTargetParseUtils;
 import com.fr.swift.cal.QueryInfo;
@@ -27,7 +24,7 @@ import com.fr.swift.result.node.xnode.XGroupNodeFactory;
 import com.fr.swift.result.node.xnode.XGroupNodeImpl;
 import com.fr.swift.result.node.xnode.XLeftNode;
 import com.fr.swift.service.QueryRunnerProvider;
-import com.fr.swift.source.DataSource;
+import com.fr.swift.source.SourceKey;
 
 import java.util.List;
 
@@ -36,7 +33,7 @@ import java.util.List;
  * @date 2018/3/6
  * 交叉表
  */
-public class CrossTableWidgetAdaptor {
+public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor{
 
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(CrossTableWidgetAdaptor.class);
@@ -108,19 +105,13 @@ public class CrossTableWidgetAdaptor {
         Cursor cursor = null;
         String queryId = widget.getWidgetId();
         FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
-
-        List<Dimension> rowDimensions = TableWidgetAdaptor.getDimensions(widget.getDimensionList(), widget.getTargetList());
-        List<Dimension> colDimensions = TableWidgetAdaptor.getDimensions(widget.getColDimensionList(), widget.getTargetList());
+        SourceKey sourceKey = getSourceKey(widget);
+        List<Dimension> rowDimensions = TableWidgetAdaptor.getDimensions(sourceKey, widget.getDimensionList(), widget.getTargetList());
+        List<Dimension> colDimensions = TableWidgetAdaptor.getDimensions(sourceKey, widget.getColDimensionList(), widget.getTargetList());
 
         GroupTarget[] targets = TableWidgetAdaptor.getTargets(widget);
         Expander expander = null;
-        String fieldId = widget.getDimensionList().isEmpty() ? null : widget.getDimensionList().get(0).getFieldId();
-        fieldId = fieldId == null ?
-                widget.getTargetList().isEmpty() ? null : widget.getTargetList().get(0).getFieldId()
-                : fieldId;
-        FineBusinessTable fineBusinessTable = FineTableUtils.getTableByFieldId(fieldId);
-        DataSource baseDataSource = DataSourceFactory.transformDataSource(fineBusinessTable);
-        return new XGroupQueryInfo(cursor, queryId, baseDataSource.getSourceKey(), filterInfo,
+        return new XGroupQueryInfo(cursor, queryId, sourceKey, filterInfo,
                 rowDimensions.toArray(new Dimension[rowDimensions.size()]),
                 colDimensions.toArray(new Dimension[colDimensions.size()]),
                 metrics.toArray(new Metric[metrics.size()]),
