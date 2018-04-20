@@ -47,11 +47,9 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor{
         try {
             resultSet = QueryRunnerProvider.getInstance().executeQuery(buildQueryInfo(widget));
             if (resultSet == null) {
-                return new SwiftDetailTableResult(new SwiftEmptyResult());
+                return new SwiftDetailTableResult(new SwiftEmptyResult(), 0);
             }
-            widget.getTotalRows();
-            ((DetailResultSet)(resultSet)).getRowSize();
-            result = new SwiftDetailTableResult(resultSet);
+            result = new SwiftDetailTableResult(resultSet, widget.getTotalRows());
         } catch (Exception e) {
         }
 

@@ -55,9 +55,6 @@ public class CubeTaskKey implements TaskKey {
 
     @Override
     public String toString() {
-        return "CubeTaskKey{" +
-                "name='" + name + '\'' +
-                ", operation=" + operation +
-                '}';
+        return "{" + name + ", " + operation + "}";
     }
 }
