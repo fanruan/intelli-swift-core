@@ -5,14 +5,11 @@ import com.fr.swift.cal.result.group.Cursor;
 import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.adapter.metric.Metric;
 import com.fr.swift.query.adapter.target.GroupTarget;
-import com.fr.swift.query.adapter.target.TargetDeep;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.GroupByResultSet;
 import com.fr.swift.source.SourceKey;
-
-import java.util.TreeSet;
 
 /**
  * @author pony
@@ -30,6 +27,7 @@ public class GroupQueryInfo extends AbstractQueryInfo<GroupByResultSet> {
      * 分组表的指标
      */
     private GroupTarget[] targets;
+
     /**
      * 展开
      */
@@ -71,7 +69,8 @@ public class GroupQueryInfo extends AbstractQueryInfo<GroupByResultSet> {
      * @return
      */
     public boolean isPagingQuery() {
-        return !hasResultSort() && !hasMatchFilter() && getMaxDeep() != TargetDeep.ALL_GROUP;
+        // TODO: 2018/4/19 判断计算指标能不能分页
+        return !hasResultSort() && !hasMatchFilter();
     }
 
     private boolean hasResultSort() {
@@ -104,19 +103,5 @@ public class GroupQueryInfo extends AbstractQueryInfo<GroupByResultSet> {
             return false;
         }
         return filter.isMatchFilter();
-    }
-
-    /**
-     * 有非行间计算的指标
-     *
-     * @return
-     */
-    private TargetDeep getMaxDeep() {
-        TreeSet<TargetDeep> set = new TreeSet<TargetDeep>();
-        for (GroupTarget target : targets) {
-            set.add(target.getTargetDeep());
-        }
-//        return set.last();
-        return set.isEmpty() ? TargetDeep.ROW : set.last();
     }
 }

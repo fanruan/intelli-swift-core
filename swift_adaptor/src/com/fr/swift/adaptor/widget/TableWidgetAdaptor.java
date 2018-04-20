@@ -17,6 +17,7 @@ import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.adaptor.struct.node.BIGroupNodeAdaptor;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
+import com.fr.swift.adaptor.widget.expander.ExpanderFactory;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.adaptor.widget.target.CalTargetParseUtils;
 import com.fr.swift.cal.QueryInfo;
@@ -120,7 +121,8 @@ public class TableWidgetAdaptor {
         FilterInfo filterInfo = getFilterInfo(widget);
 
         GroupTarget[] targets = getTargets(widget);
-        Expander expander = null;
+        Expander expander = ExpanderFactory.create(widget.isOpenRowNode(), dimensions.size(),
+                widget.getValue().getExpander().getxExpander());
         String fieldId = widget.getDimensionList().isEmpty() ? null : widget.getDimensionList().get(0).getFieldId();
         fieldId = fieldId != null ? fieldId : metrics.isEmpty() ? null : metrics.get(0).getSourceKey().getId();
         fieldId = fieldId == null ?

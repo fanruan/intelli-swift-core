@@ -9,9 +9,10 @@ import com.fr.swift.source.SourceKey;
  * Created by pony on 2017/12/25.
  */
 public class GroupMetric extends AbstractMetric {
+
     private Aggregator aggregator;
-    public GroupMetric(int index, SourceKey sourceKey, ColumnKey columnKey, FilterInfo filterInfo, Aggregator aggregator) {
-        super(index, sourceKey, columnKey, filterInfo);
+    public GroupMetric(int queryIndex, SourceKey sourceKey, ColumnKey columnKey, FilterInfo filterInfo, Aggregator aggregator) {
+        super(queryIndex, sourceKey, columnKey, filterInfo);
         this.aggregator = aggregator;
     }
 

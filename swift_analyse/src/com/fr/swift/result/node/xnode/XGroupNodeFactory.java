@@ -13,6 +13,7 @@ import com.fr.swift.result.node.GroupNodeAggregateUtils;
 import com.fr.swift.result.node.GroupNodeFactory;
 import com.fr.swift.result.node.NodeType;
 import com.fr.swift.result.node.cal.TargetCalculatorUtils;
+import com.fr.swift.result.node.iterator.IteratorUtils;
 import com.fr.swift.result.node.iterator.PostOrderNodeIterator;
 import com.fr.swift.util.function.Function;
 
@@ -64,12 +65,12 @@ public class XGroupNodeFactory {
         Iterator<TopGroupNode> topIt = new PostOrderNodeIterator<TopGroupNode>(topDimensionSize, topGroupNode);
         topIt = excludeNoShowSummaryRow(topIt);
         // topGroupNode的所有行，排除了不需要显示的汇总行
-        List<TopGroupNode> topGroupNodeList = iterator2List(topIt);
+        List<TopGroupNode> topGroupNodeList = IteratorUtils.iterator2List(topIt);
 
         Iterator<XLeftNode> xLeftIt = new PostOrderNodeIterator<XLeftNode>(rowDimensionSize, xLeftNode);
         xLeftIt = excludeNoShowSummaryRow(xLeftIt);
         // xLeftNode的所有行，排除了不需要显示的汇总行
-        List<XLeftNode> xLeftNodeList = iterator2List(xLeftIt);
+        List<XLeftNode> xLeftNodeList = IteratorUtils.iterator2List(xLeftIt);
 
         // 遍历一遍二维数组
         for (int row = 0; row < xLeftNodeList.size(); row++) {
@@ -99,7 +100,7 @@ public class XGroupNodeFactory {
                 return p.getKey();
             }
         });
-        return iterator2List(iterator);
+        return IteratorUtils.iterator2List(iterator);
     }
 
     private static TopGroupNode createTopGroupNode(int targetLength, int topDimensionSize,
@@ -127,7 +128,7 @@ public class XGroupNodeFactory {
     private static List<KeyValue<RowIndexKey<int[]>, List<AggregatorValue[]>>> getTopGroupResultSet(
             int rowDimensionSize, XLeftNode xLeftNode, List<RowIndexKey<int[]>> keys) {
         List<KeyValue<RowIndexKey<int[]>, List<AggregatorValue[]>>> resultSet;
-        resultSet = iterator2List(new MapperIterator<RowIndexKey<int[]>, KeyValue<RowIndexKey<int[]>, List<AggregatorValue[]>>>(keys.iterator(), new Function<RowIndexKey<int[]>, KeyValue<RowIndexKey<int[]>, List<AggregatorValue[]>>>() {
+        resultSet = IteratorUtils.iterator2List(new MapperIterator<RowIndexKey<int[]>, KeyValue<RowIndexKey<int[]>, List<AggregatorValue[]>>>(keys.iterator(), new Function<RowIndexKey<int[]>, KeyValue<RowIndexKey<int[]>, List<AggregatorValue[]>>>() {
             @Override
             public KeyValue<RowIndexKey<int[]>, List<AggregatorValue[]>> apply(RowIndexKey<int[]> p) {
                 return new KeyValue<RowIndexKey<int[]>, List<AggregatorValue[]>>(p, new ArrayList<AggregatorValue[]>());
@@ -158,13 +159,5 @@ public class XGroupNodeFactory {
                 return true;
             }
         });
-    }
-
-    private static <T> List<T> iterator2List(Iterator<T> iterator) {
-        List<T> list = new ArrayList<T>();
-        while (iterator.hasNext()) {
-            list.add(iterator.next());
-        }
-        return list;
     }
 }
