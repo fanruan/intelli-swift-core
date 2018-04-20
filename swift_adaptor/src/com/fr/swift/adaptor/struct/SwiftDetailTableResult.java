@@ -53,18 +53,21 @@ public class SwiftDetailTableResult implements BIDetailTableResult {
     @Override
     public List<BIDetailCell> next() {
         try {
-            List<BIDetailCell> detailCellList = new ArrayList<BIDetailCell>();
-            Row row = swiftResultSet.getRowData();
-            for (int i = 0; i < columnSize; i++) {
-                BIDetailCell detailCell = new SwiftDetailCell(row.getValue(i));
-                //todo 临时处理，这个应该和SwiftSegmentDetailResult一样，不处理null值吧。。
-                if (detailCell.getData() == null) {
-                    detailCell = new SwiftDetailCell("");
+            while (swiftResultSet.next()) {
+                List<BIDetailCell> detailCellList = new ArrayList<BIDetailCell>();
+                Row row = swiftResultSet.getRowData();
+                for (int i = 0; i < columnSize; i++) {
+                    BIDetailCell detailCell = new SwiftDetailCell(row.getValue(i));
+                    //todo 临时处理，这个应该和SwiftSegmentDetailResult一样，不处理null值吧。。
+                    if (detailCell.getData() == null) {
+                        detailCell = new SwiftDetailCell("");
+                    }
+                    detailCellList.add(detailCell);
                 }
-                detailCellList.add(detailCell);
+                rowCount++;
+                return detailCellList;
             }
-            rowCount ++;
-            return detailCellList;
+            return null;
         } catch (SQLException e) {
             LOGGER.error(e.getMessage(), e);
             return null;
