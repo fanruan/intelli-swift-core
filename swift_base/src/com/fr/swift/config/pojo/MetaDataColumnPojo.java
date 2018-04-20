@@ -92,4 +92,9 @@ public class MetaDataColumnPojo implements IMetaDataColumn {
     public void setColumnId(String columnId) {
         this.columnId = columnId;
     }
+
+    @Override
+    public String toString() {
+        return "{" + type + ", " + columnId + "}";
+    }
 }

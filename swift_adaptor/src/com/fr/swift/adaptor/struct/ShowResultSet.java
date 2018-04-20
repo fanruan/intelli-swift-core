@@ -16,7 +16,7 @@ import java.util.Set;
  * @date 2018/3/16
  * <p>
  * 用于前端展示的
- * 目前只是把日期类型long包装成了一个java.sql.Date
+ * 目前只是把日期类型long包装成了一个java.util.Date
  */
 public class ShowResultSet implements SwiftResultSet {
     private SwiftResultSet origin;
