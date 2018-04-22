@@ -1,5 +1,6 @@
 package com.fr.swift.generate;
 
+import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.task.LocalTask;
 import com.fr.swift.cube.task.Task;
 import com.fr.swift.cube.task.TaskStatusChangeListener;
@@ -64,10 +65,10 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
     protected void init() throws SwiftMetaDataException {
         final SwiftMetaData meta = dataSource.getMetadata();
         // transport worker
-        final LocalTask transportTask = new LocalTaskImpl(newPartStartTaskKey(dataSource));
+        final LocalTask transportTask = new LocalTaskImpl(CubeTasks.newPartStartTaskKey(dataSource));
         transportTask.setWorker(transporter);
 
-        final LocalTask end = new LocalTaskImpl(newPartEndTaskKey(dataSource));
+        final LocalTask end = new LocalTaskImpl(CubeTasks.newPartEndTaskKey(dataSource));
         end.setWorker(BaseWorker.nullWorker());
 
         //监听表取数任务，完成后添加字段索引任务。
@@ -110,7 +111,7 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
                     SwiftColumnDictMerger merger = new ColumnDictMerger(dataSource, new ColumnKey(indexField), allSegments);
                     LocalTask mergeTask = new LocalTaskImpl(new CubeTaskKey(
                             String.format("%s@%s.%s", meta.getTableName(), dataSource.getSourceKey(), indexField),
-                            Operation.MERGER_COLUMN));
+                            Operation.MERGE_COLUMN_DICT));
                     mergeTask.setWorker(merger);
                     // link task
                     transportTask.addNext(indexTask);
@@ -133,7 +134,7 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
 
                     LocalTask mergeSubColumnTask = new LocalTaskImpl(new CubeTaskKey(
                             String.format("%s@%s.%s.%s", meta.getTableName(), dataSource.getSourceKey(), indexField, groupType),
-                            Operation.MERGER_COLUMN));
+                            Operation.MERGE_COLUMN_DICT));
                     mergeSubColumnTask.setWorker(new SubDateColumnDictMerger(dataSource, new ColumnKey(indexField), groupType, allSegments));
 
                     mergeTask.addNext(indexSubColumnTask);
@@ -172,11 +173,4 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
         }
     }
 
-    protected static CubeTaskKey newPartStartTaskKey(DataSource ds) throws SwiftMetaDataException {
-        return new CubeTaskKey("Part start of " + ds.getMetadata().getTableName() + "@" + ds.getSourceKey().getId(), Operation.BUILD_TABLE);
-    }
-
-    protected static CubeTaskKey newPartEndTaskKey(DataSource ds) throws SwiftMetaDataException {
-        return new CubeTaskKey("Part end of " + ds.getMetadata().getTableName() + "@" + ds.getSourceKey().getId(), Operation.BUILD_TABLE);
-    }
 }

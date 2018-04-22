@@ -1,6 +1,7 @@
 package com.fr.swift.query.group;
 
 import com.fr.swift.query.group.impl.GroupImpl;
+import com.fr.swift.query.group.impl.GroupWrapper;
 
 /**
  * @author anchore
@@ -9,5 +10,9 @@ import com.fr.swift.query.group.impl.GroupImpl;
 public class Groups {
     public static Group newGroup(GroupRule groupRule) {
         return new GroupImpl(groupRule);
+    }
+
+    public static Group wrap(Group origin, GroupRule rule) {
+        return new GroupWrapper(origin, rule);
     }
 }
