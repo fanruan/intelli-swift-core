@@ -6,6 +6,7 @@ import com.finebi.conf.constant.ConfConstant;
 import com.finebi.conf.internalimp.analysis.bean.operator.confselect.ConfSelectBeanItem;
 import com.finebi.conf.internalimp.analysis.operator.confselect.ConfSelectOperator;
 import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
+import com.finebi.conf.internalimp.basictable.table.FineExcelBusinessTable;
 import com.finebi.conf.internalimp.basictable.table.FineSQLBusinessTable;
 import com.finebi.conf.internalimp.basictable.table.FineSQLTableParameter;
 import com.finebi.conf.internalimp.update.TableUpdateInfo;
@@ -41,6 +42,7 @@ import com.fr.swift.source.etl.datamining.DataMiningOperator;
 import com.fr.swift.source.etl.datamining.DataMiningTransferOperator;
 import com.fr.swift.source.etl.rcompile.RCompileOperator;
 import com.fr.swift.source.etl.rcompile.RCompileTransferOperator;
+import com.fr.swift.source.excel.ExcelDataSource;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -162,9 +164,9 @@ public class DataSourceFactory {
             case BICommonConstants.TABLE.SQL:
                 dataSource = transformQueryDBSource((FineSQLBusinessTable) table);
                 break;
-//            case BICommonConstants.TABLE.EXCEL:
-//                dataSource = transformExcelDataSource((FineExcelBusinessTable) table);
-//                break;
+            case BICommonConstants.TABLE.EXCEL:
+                dataSource = transformExcelDataSource((FineExcelBusinessTable) table);
+                break;
             case BICommonConstants.TABLE.ANALYSIS:
                 dataSource = EtlAdaptor.adaptEtlDataSource(table);
                 break;
@@ -198,6 +200,11 @@ public class DataSourceFactory {
             }
         }
         return null;
+    }
+
+    private static DataSource transformExcelDataSource(FineExcelBusinessTable table) throws Exception {
+        table.getEngineType();
+        return new EmptyDataSource();
     }
 
     private static DataSource transformQueryDBSource(FineSQLBusinessTable table) throws Exception {
