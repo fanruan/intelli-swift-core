@@ -10,6 +10,8 @@ public enum GroupType {
     CUSTOM,
     CUSTOM_NUMBER,
 
+    CUSTOM_SORT,
+
     YEAR,
     // 季度
     QUARTER,

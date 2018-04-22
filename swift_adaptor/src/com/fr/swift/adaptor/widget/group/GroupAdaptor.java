@@ -19,7 +19,10 @@ import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.string.
 import com.finebi.conf.internalimp.dashboard.widget.dimension.group.number.NumberDimensionAutoGroup;
 import com.finebi.conf.internalimp.dashboard.widget.dimension.group.number.NumberDimensionCustomGroup;
 import com.finebi.conf.internalimp.dashboard.widget.dimension.group.string.StringDimensionCustomGroup;
+import com.finebi.conf.internalimp.dashboard.widget.dimension.sort.DimensionCustomSort;
+import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionGroup;
+import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionSort;
 import com.fr.swift.query.group.Group;
 import com.fr.swift.query.group.GroupRule;
 import com.fr.swift.query.group.GroupType;
@@ -28,11 +31,13 @@ import com.fr.swift.query.group.impl.AutoNumGroupRule;
 import com.fr.swift.query.group.impl.AutoNumGroupRule.Partition;
 import com.fr.swift.query.group.impl.CustomNumGroupRule;
 import com.fr.swift.query.group.impl.CustomNumGroupRule.NumInterval;
+import com.fr.swift.query.group.impl.CustomSortGroupRule;
 import com.fr.swift.query.group.impl.CustomStrGroupRule;
 import com.fr.swift.query.group.impl.CustomStrGroupRule.StringGroup;
 import com.fr.swift.query.group.impl.NoGroupRule;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -62,6 +67,7 @@ public class GroupAdaptor {
 
     /**
      * nice job! foundation
+     *
      * @param dimGroup
      * @return
      */
@@ -73,21 +79,39 @@ public class GroupAdaptor {
         return Groups.newGroup(adaptRule(type, dimGroup));
     }
 
-    private static GroupRule adaptRule(GroupType type, FineDimensionGroup dimGroup){
+    public static Group adaptDashboardGroup(FineDimension fineDim) {
+        FineDimensionSort fineDimSort = fineDim.getSort();
+        Group originGroup = adaptDashboardGroup(fineDim.getGroup());
+        if (fineDimSort == null) {
+            return originGroup;
+        }
+        // todo 目前只看到文本的自定义排序
+        List<String> values = ((DimensionCustomSort) fineDim.getSort()).getValue().getDetails();
+        if (values == null || values.isEmpty()) {
+            return originGroup;
+        }
+        List<StringGroup> stringGroups = new ArrayList<StringGroup>();
+        for (String value : values) {
+            stringGroups.add(new StringGroup(value, Collections.singletonList(value)));
+        }
+        return Groups.wrap(originGroup, new CustomSortGroupRule(stringGroups, null));
+    }
+
+    private static GroupRule adaptRule(GroupType type, FineDimensionGroup dimGroup) {
         switch (type) {
             case AUTO:
                 return newAutoRule((NumberDimensionAutoGroup) dimGroup);
             case CUSTOM_NUMBER:
                 return newCustomNumberRule((NumberDimensionCustomGroup) dimGroup);
             case CUSTOM:
-                return  newCustomRule((StringDimensionCustomGroup) dimGroup);
+                return newCustomRule((StringDimensionCustomGroup) dimGroup);
             default:
                 return new NoGroupRule(type);
         }
     }
 
 
-    private static boolean isEmptyGroup(StringCustomDetailsBean stringGroup) {
+    private static boolean isEmptyStringGroup(StringCustomDetailsBean stringGroup) {
         return stringGroup.getContent().isEmpty();
     }
 
@@ -96,7 +120,7 @@ public class GroupAdaptor {
 
         List<StringGroup> stringGroups = new ArrayList<StringGroup>();
         for (StringCustomDetailsBean detailsBean : bean.getDetails()) {
-            if (isEmptyGroup(detailsBean)) {
+            if (isEmptyStringGroup(detailsBean)) {
                 continue;
             }
 
@@ -108,7 +132,7 @@ public class GroupAdaptor {
             stringGroups.add(new StringGroup(groupName, values));
         }
 
-        return new CustomStrGroupRule(stringGroups, bean.getUseOther());
+        return new CustomStrGroupRule((List) stringGroups, bean.getUseOther());
     }
 
     private static GroupRule newCustomNumberRule(NumberDimensionCustomGroup dimGroup) {
@@ -122,75 +146,75 @@ public class GroupAdaptor {
                     bean.getMax(), bean.isCloseMax()));
         }
 
-        return new CustomNumGroupRule(intervals, groupValue.getUseOther());
+        return new CustomNumGroupRule((List) intervals, groupValue.getUseOther());
     }
 
     private static GroupRule newAutoRule(NumberDimensionAutoGroup group) {
         NumberAutoGroupValueBean bean = group.getValue().getGroupValue();
         return new AutoNumGroupRule(new Partition(bean.getMin(), bean.getMax(), bean.getGroupInterval()));
     }
+}
 
-    /**
-     * nice job! bi-foundation
-     */
-    private static class AnotherGroupAdaptor {
-        static Group adapt(GroupCustomGroupValueBean bean) {
-            CustomGroupValueBean group = bean.getGroup();
+/**
+ * nice job! bi-foundation
+ */
+class AnotherGroupAdaptor {
+    static Group adapt(GroupCustomGroupValueBean bean) {
+        CustomGroupValueBean group = bean.getGroup();
 
-            GroupRule groupRule;
-            switch (group.getType()) {
-                case GROUP_TYPE.AUTO:
-                    groupRule = newAutoRule((com.finebi.conf.internalimp.analysis.bean.operator.group.custom.NumberAutoGroupValueBean) group);
-                    break;
-                case GROUP_TYPE.CUSTOM:
-                    groupRule = newCustomNumberRule((com.finebi.conf.internalimp.analysis.bean.operator.group.custom.NumberCustomGroupValueBean) group);
-                    break;
-                case GROUP_TYPE.CUSTOM_STRING:
-                    groupRule = newCustomRule((com.finebi.conf.internalimp.analysis.bean.operator.group.custom.StringCustomGroupValueBean) group);
-                    break;
-                default:
-                    groupRule = new NoGroupRule();
-            }
-            return Groups.newGroup(groupRule);
+        GroupRule groupRule;
+        switch (group.getType()) {
+            case GROUP_TYPE.AUTO:
+                groupRule = newAutoRule((com.finebi.conf.internalimp.analysis.bean.operator.group.custom.NumberAutoGroupValueBean) group);
+                break;
+            case GROUP_TYPE.CUSTOM:
+                groupRule = newCustomNumberRule((com.finebi.conf.internalimp.analysis.bean.operator.group.custom.NumberCustomGroupValueBean) group);
+                break;
+            case GROUP_TYPE.CUSTOM_STRING:
+                groupRule = newCustomRule((com.finebi.conf.internalimp.analysis.bean.operator.group.custom.StringCustomGroupValueBean) group);
+                break;
+            default:
+                groupRule = new NoGroupRule();
         }
+        return Groups.newGroup(groupRule);
+    }
 
-        private static boolean anotherIsEmptyGroup(CustomGroupValueContent stringGroup) {
-            return stringGroup.getContent().isEmpty();
-        }
+    private static boolean anotherIsEmptyStringGroup(CustomGroupValueContent stringGroup) {
+        return stringGroup.getContent().isEmpty();
+    }
 
-        private static GroupRule newCustomRule(com.finebi.conf.internalimp.analysis.bean.operator.group.custom.StringCustomGroupValueBean bean) {
-            List<StringGroup> stringGroups = new ArrayList<StringGroup>();
-            for (CustomGroupValueContent detailsBean : bean.getDetails()) {
-                if (anotherIsEmptyGroup(detailsBean)) {
-                    continue;
-                }
-
-                String groupName = detailsBean.getValue();
-                List<String> values = new ArrayList<String>();
-                for (CustomGroupValueItemBean itemBean : detailsBean.getContent()) {
-                    values.add(itemBean.getValue());
-                }
-                stringGroups.add(new StringGroup(groupName, values));
+    private static GroupRule newCustomRule(com.finebi.conf.internalimp.analysis.bean.operator.group.custom.StringCustomGroupValueBean bean) {
+        List<StringGroup> stringGroups = new ArrayList<StringGroup>();
+        for (CustomGroupValueContent detailsBean : bean.getDetails()) {
+            if (anotherIsEmptyStringGroup(detailsBean)) {
+                continue;
             }
 
-            return new CustomStrGroupRule(stringGroups, bean.isUseOther());
-        }
-
-        private static GroupRule newCustomNumberRule(com.finebi.conf.internalimp.analysis.bean.operator.group.custom.NumberCustomGroupValueBean groupValue) {
-            List<NumberCustomGroupValueNodeBean> beans = groupValue.getNodes();
-
-            List<NumInterval> intervals = new ArrayList<NumInterval>(beans.size());
-            for (NumberCustomGroupValueNodeBean bean : beans) {
-                intervals.add(new NumInterval(bean.getGroupName(),
-                        Double.valueOf(bean.getMin()), bean.isClosemin(),
-                        Double.valueOf(bean.getMax()), bean.isClosemax()));
+            String groupName = detailsBean.getValue();
+            List<String> values = new ArrayList<String>();
+            for (CustomGroupValueItemBean itemBean : detailsBean.getContent()) {
+                values.add(itemBean.getValue());
             }
-
-            return new CustomNumGroupRule(intervals, groupValue.getUseOther());
+            stringGroups.add(new StringGroup(groupName, values));
         }
 
-        private static GroupRule newAutoRule(com.finebi.conf.internalimp.analysis.bean.operator.group.custom.NumberAutoGroupValueBean bean) {
-            return new AutoNumGroupRule(new Partition(bean.getMin(), bean.getMax(), bean.getGroupInterval()));
+        return new CustomStrGroupRule((List) stringGroups, bean.isUseOther());
+    }
+
+    private static GroupRule newCustomNumberRule(com.finebi.conf.internalimp.analysis.bean.operator.group.custom.NumberCustomGroupValueBean groupValue) {
+        List<NumberCustomGroupValueNodeBean> beans = groupValue.getNodes();
+
+        List<NumInterval> intervals = new ArrayList<NumInterval>(beans.size());
+        for (NumberCustomGroupValueNodeBean bean : beans) {
+            intervals.add(new NumInterval(bean.getGroupName(),
+                    Double.valueOf(bean.getMin()), bean.isClosemin(),
+                    Double.valueOf(bean.getMax()), bean.isClosemax()));
         }
+
+        return new CustomNumGroupRule((List) intervals, groupValue.getUseOther());
+    }
+
+    private static GroupRule newAutoRule(com.finebi.conf.internalimp.analysis.bean.operator.group.custom.NumberAutoGroupValueBean bean) {
+        return new AutoNumGroupRule(new Partition(bean.getMin(), bean.getMax(), bean.getGroupInterval()));
     }
 }

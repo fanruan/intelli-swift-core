@@ -1,13 +1,9 @@
 package com.fr.swift.query.group.impl;
 
+import com.fr.stable.StringUtils;
 import com.fr.swift.query.group.GroupType;
-import com.fr.swift.source.core.Core;
 import com.fr.swift.source.core.CoreField;
-import com.fr.swift.source.core.CoreGenerator;
-import com.fr.swift.source.core.CoreService;
-import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.array.IntList;
-import com.fr.swift.structure.array.IntListFactory;
 
 import java.util.Comparator;
 import java.util.List;
@@ -18,64 +14,24 @@ import java.util.List;
  * <p>
  * 字符串自定义分组规则
  */
-public class CustomStrGroupRule extends BaseCustomGroupRule<String> {
-    @CoreField
-    private List<StringGroup> groups;
-
-    public CustomStrGroupRule(List<StringGroup> groups, String otherGroupName) {
-        super(otherGroupName);
-        this.groups = groups;
+public class CustomStrGroupRule extends BaseCustomGroupRule<String, String> {
+    public CustomStrGroupRule(List<CustomGroup<String, String>> groups, String otherGroupName) {
+        super(groups, otherGroupName);
     }
 
     @Override
-    void initMap() {
-        int lastIndex = groups.size() + 1;
-
-        int dictSize = dictColumn.size();
-        reverseMap = new int[dictSize];
-
-        // 0号为null
-        map.put(0, Pair.of((String) null, IntListFactory.newSingleList(0)));
-
-        for (int i = 1; i < dictSize; i++) {
-            String val = dictColumn.getValue(i);
-            int index = findIndexByValue(val);
-
-            String groupName;
-            if (index != -1) {
-                // 在区间里
-                groupName = groups.get(index - 1).name;
-            } else {
-                if (hasOtherGroup()) {
-                    // 有其他组，则全部分到其他
-                    index = lastIndex;
-                    groupName = otherGroupName;
-                } else {
-                    // 不在区间里，又没有其他分组，则单独为一组
-                    index = lastIndex++;
-                    groupName = val;
-                }
-            }
-
-            internalMap(i, index, groupName);
-        }
-
-        compactMap(lastIndex);
+    boolean hasOtherGroup() {
+        return StringUtils.isNotEmpty(otherGroupName);
     }
 
-    private int findIndexByValue(String val) {
-        for (int i = 0; i < groups.size(); i++) {
-            if (groups.get(i).values.contains(val)) {
-                // 有效字典序号从1开始
-                return i + 1;
-            }
-        }
-        return -1;
+    @Override
+    String format(String val) {
+        return val;
     }
 
     private int findIndexByName(String name) {
         for (int i = 0; i < groups.size(); i++) {
-            if (groups.get(i).name.equals(name)) {
+            if (groups.get(i).getName().equals(name)) {
                 // 有效字典序号从1开始
                 return i + 1;
             }
@@ -108,8 +64,8 @@ public class CustomStrGroupRule extends BaseCustomGroupRule<String> {
 
         // 未分组的各自一组，要算全局字典偏移
         int offset = 0;
-        for (StringGroup group : groups) {
-            List<String> values = group.values;
+        for (CustomGroup<String, String> group : groups) {
+            List<String> values = group.values();
             if (c.compare(values.get(0), val) < 0) {
                 // 新分组全部或部分在当前值的左边
                 for (String value : values) {
@@ -134,9 +90,7 @@ public class CustomStrGroupRule extends BaseCustomGroupRule<String> {
         return GroupType.CUSTOM;
     }
 
-    public static class StringGroup implements CoreService {
-        @CoreField
-        String name;
+    public static class StringGroup extends CustomGroup<String, String> {
         @CoreField
         List<String> values;
 
@@ -146,12 +100,8 @@ public class CustomStrGroupRule extends BaseCustomGroupRule<String> {
         }
 
         @Override
-        public Core fetchObjectCore() {
-            try {
-                return new CoreGenerator(this).fetchObjectCore();
-            } catch (Exception ignore) {
-                return Core.EMPTY_CORE;
-            }
+        List<String> values() {
+            return values;
         }
     }
 }

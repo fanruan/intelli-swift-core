@@ -31,15 +31,14 @@ import com.finebi.conf.structure.result.control.time.BIQuarterResult;
 import com.finebi.conf.structure.result.control.time.BIYearControlResult;
 import com.finebi.conf.structure.result.control.tree.BITreeResult;
 import com.finebi.conf.structure.result.table.BIComplexGroupResult;
-import com.finebi.conf.structure.result.table.BICrossNode;
 import com.finebi.conf.structure.result.table.BICrossTableResult;
-import com.finebi.conf.structure.result.table.BIGroupNode;
 import com.finebi.conf.structure.result.table.BITableResult;
 import com.fr.swift.adaptor.widget.date.MonthControlWidgetAdaptor;
 import com.fr.swift.adaptor.widget.date.QuarterControlWidgetAdaptor;
 import com.fr.swift.adaptor.widget.date.YearControlWidgetAdaptor;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.util.Crasher;
 
 import java.util.List;
 import java.util.Map;
@@ -48,8 +47,8 @@ import java.util.Map;
  * @author anchore
  * @date 2018/2/26
  */
-public class SwiftEngineWidgetExecutorManager implements EngineWidgetExecutorManager {
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftEngineWidgetExecutorManager.class);
+public class SwiftWidgetExecutorManager implements EngineWidgetExecutorManager {
+    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftWidgetExecutorManager.class);
 
     @Override
     public BITableResult visit(TableWidget tableWidget) {
@@ -58,7 +57,7 @@ public class SwiftEngineWidgetExecutorManager implements EngineWidgetExecutorMan
 
     @Override
     public BIComplexGroupResult visit(VanChartWidget vanChartWidget) {
-        return null;
+        return Crasher.crash("not supported");
     }
 
     @Override

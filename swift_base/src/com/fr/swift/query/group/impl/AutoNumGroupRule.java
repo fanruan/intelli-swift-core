@@ -14,7 +14,7 @@ import java.util.List;
 public class AutoNumGroupRule extends CustomNumGroupRule {
     public AutoNumGroupRule(Partition partition) {
         // 无其他组，传null
-        super(partition.toNumIntervals(), null);
+        super(partition.toGroups(), null);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class AutoNumGroupRule extends CustomNumGroupRule {
             this.interval = interval;
         }
 
-        private List<NumInterval> toNumIntervals() {
+        private List<CustomGroup<Number, String>> toGroups() {
             List<NumInterval> intervals = new ArrayList<NumInterval>();
 
             double floor = min, ceil;
@@ -43,7 +43,7 @@ public class AutoNumGroupRule extends CustomNumGroupRule {
             }
             // 最右区间边界为<=
             intervals.get(intervals.size() - 1).lessOrEq = true;
-            return intervals;
+            return (List) intervals;
         }
 
         private double border(int index) {
