@@ -61,10 +61,6 @@ abstract class BaseTask implements Task {
 
     @Override
     public String toString() {
-        return "Task{" +
-                "key=" + key +
-                ", status=" + status +
-                ", result=" + result +
-                '}';
+        return "{" + key + ", " + status + ", " + result + "}";
     }
 }

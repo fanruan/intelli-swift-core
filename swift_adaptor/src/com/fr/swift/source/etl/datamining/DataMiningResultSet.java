@@ -100,11 +100,12 @@ public class DataMiningResultSet implements SwiftResultSet {
                     // 逻辑：检查Log里面该uuid是否已经被设置了log，如果没有设置通用log返回给前端。
                     DMCommonLogService logService = StableManager.getContext().getObject("DMCommonLogServiceImpl");
                     String uuid = algorithmBean.getUuid();
-                    DMLogEntity log = logService.getLog(uuid);
-                    if (null == log /*&& !StringUtils.isEmpty(uuid)*/) {
-                        DMLogEntityImp newLog = new DMLogEntityImp(e.getMessage(), uuid, DMLogType.GLOBAL_CATCH_ERROR);
-                        logService.setLog(newLog);
-                    }
+                    DMLogEntity entity = logService.getLog(uuid);
+//                    if (null == entity /*&& !StringUtils.isEmpty(uuid)*/) {
+                    String log = e.getMessage() == null ? e.toString() : e.getMessage();
+                    DMLogEntityImp newLog = new DMLogEntityImp(log, uuid, DMLogType.GLOBAL_CATCH_ERROR);
+                    logService.setLog(newLog);
+//                    }
                     LOGGER.error(e.getMessage(), e);
                 }
             }

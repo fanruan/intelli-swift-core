@@ -65,4 +65,9 @@ public class SwiftMetaDataPojo implements IMetaData<MetaDataColumnPojo> {
     public void setFieldList(List<MetaDataColumnPojo> fieldList) {
         this.fieldList = fieldList;
     }
+
+    @Override
+    public String toString() {
+        return "{" + tableName + ", " + fieldList + "}";
+    }
 }

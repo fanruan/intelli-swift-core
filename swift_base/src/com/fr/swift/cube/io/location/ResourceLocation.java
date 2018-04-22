@@ -68,8 +68,6 @@ public class ResourceLocation implements IResourceLocation {
 
     @Override
     public String toString() {
-        return "ResourceLocation{" +
-                "path=" + uri.getPath() +
-                '}';
+        return uri.getPath();
     }
 }

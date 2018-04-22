@@ -41,7 +41,6 @@ import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.structure.filter.FineFilter;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
-import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.adaptor.transformer.cal.AvgUtils;
 import com.fr.swift.adaptor.transformer.date.DateUtils;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
@@ -53,6 +52,7 @@ import com.fr.swift.query.filter.info.value.SwiftDateInRangeFilterValue;
 import com.fr.swift.query.filter.info.value.SwiftNumberInRangeFilterValue;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.util.Crasher;
+import com.fr.swift.utils.BusinessTableUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -118,7 +118,7 @@ public class FilterInfoFactory {
         String fieldId = ((AbstractFilterBean) bean).getFieldId();
         // 分析表这边的bean暂时没有FieldId，所以还是取FieldName
         String fieldName = StringUtils.isEmpty(fieldId) ?
-                ((AbstractFilterBean) bean).getFieldName() : SwiftEncryption.decryptFieldId(fieldId)[1];
+                ((AbstractFilterBean) bean).getFieldName() : BusinessTableUtils.getFieldNameByFieldId(fieldId);
         int type = bean.getFilterType();
         switch (type) {
             // string类过滤

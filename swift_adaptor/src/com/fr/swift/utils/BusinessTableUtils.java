@@ -4,6 +4,7 @@ import com.finebi.conf.exception.FineEngineException;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.utils.FineTableUtils;
 import com.fr.swift.adaptor.encrypt.SwiftEncryption;
+import com.fr.swift.conf.business.table2source.TableToSourceConfig;
 
 /**
  * This class created on 2018/4/10
@@ -26,8 +27,16 @@ public class BusinessTableUtils {
         return FineTableUtils.getTableByName(tableName);
     }
 
-    public static String getFieldNameByFieldId(String fieldId) throws FineEngineException {
-        FineBusinessTable table = getTableByFieldId(fieldId);
-        return table != null ? table.getFieldByFieldId(fieldId).getName() : "";
+    public static String getFieldNameByFieldId(String fieldId) {
+        String[] tableInfo = SwiftEncryption.decryptFieldId(fieldId);
+        return tableInfo[1];
+    }
+
+    public static String getSourceIdByFieldId(String fieldId){
+        return TableToSourceConfig.getInstance().getConfigByTableId(SwiftEncryption.decryptFieldId(fieldId)[0]);
+    }
+
+    public static String getSourceIdByTableId(String tableId){
+        return TableToSourceConfig.getInstance().getConfigByTableId(tableId);
     }
 }

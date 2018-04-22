@@ -28,6 +28,7 @@ public class DataMiningTransferOperator implements ETLTransferOperator {
     @Override
     public SwiftResultSet createResultSet(SwiftMetaData metaData, List<SwiftMetaData> basedMetas, List<Segment[]> basedSegments) {
         switch (algorithmBean.getAlgorithmName()){
+            case EMPTY:
             case HOLT_WINTERS:
                 return new DataMiningResultSet(algorithmBean, metaData, basedMetas.get(0), basedSegments.get(0));
             default:

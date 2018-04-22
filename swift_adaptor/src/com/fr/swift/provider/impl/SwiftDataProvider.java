@@ -85,7 +85,7 @@ public class SwiftDataProvider implements DataProvider {
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         }
-        return new SwiftDetailTableResult(new SwiftEmptyResult());
+        return new SwiftDetailTableResult(new SwiftEmptyResult(), 0);
     }
 
     @Override

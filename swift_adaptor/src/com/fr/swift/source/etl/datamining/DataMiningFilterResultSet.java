@@ -69,17 +69,21 @@ public class DataMiningFilterResultSet implements SwiftResultSet {
 
         AbstractFilterBean filterBean = (AbstractFilterBean) algorithmBean;
         List<FilterBean> filter = filterBean.getFilter();
-        FilterInfo filterInfo = FilterInfoFactory.transformFilterBean(filter, Arrays.asList(basedSegment));
-        ColumnFilterOperatorResultSet resultSet = new ColumnFilterOperatorResultSet(basedSegment, selfMetaData, filterInfo);
-        while (resultSet.next()) {
-            List<Object> row = new ArrayList<Object>();
-            Row rowData = resultSet.getRowData();
-            int rowDataSize = rowData.getSize();
-            for (int i = 0; i < rowDataSize; i++) {
-                Object value = rowData.getValue(i);
-                row.add(value);
+        if (filter == null || filter.size() == 0) {
+            filterData = inputData;
+        } else {
+            FilterInfo filterInfo = FilterInfoFactory.transformFilterBean(filter, Arrays.asList(basedSegment));
+            ColumnFilterOperatorResultSet resultSet = new ColumnFilterOperatorResultSet(basedSegment, baseMetaData, filterInfo);
+            while (resultSet.next()) {
+                List<Object> row = new ArrayList<Object>();
+                Row rowData = resultSet.getRowData();
+                int rowDataSize = rowData.getSize();
+                for (int i = 0; i < rowDataSize; i++) {
+                    Object value = rowData.getValue(i);
+                    row.add(value);
+                }
+                filterData.add(row);
             }
-            filterData.add(row);
         }
 
         // MetaData 相同

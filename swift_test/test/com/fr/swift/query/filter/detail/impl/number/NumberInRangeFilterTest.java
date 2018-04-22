@@ -163,10 +163,10 @@ public class NumberInRangeFilterTest extends BaseNumberFilterTest {
             Constructor<? extends DetailFilter> c;
             if (isNot) {
                 c = filterClass.getDeclaredConstructor(parameters.toArray(new Class[6]));
-                this.filter = c.newInstance(new Object[] {details.size(), min, max, minIncluded, maxIncluded, column});
+                this.filter = c.newInstance(details.size(), min, max, minIncluded, maxIncluded, column);
             } else {
                 c = filterClass.getDeclaredConstructor(parameters.subList(1, parameters.size()).toArray(new Class[5]));
-                this.filter = c.newInstance(new Object[] {min, max, minIncluded, maxIncluded, column});
+                this.filter = c.newInstance(min, max, minIncluded, maxIncluded, column);
             }
             expectedIndexes = getExpectedIndexes();
         } catch (Exception e) {

@@ -5,7 +5,6 @@ import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.result.BIStringDetailResult;
 import com.finebi.conf.structure.result.StringControlResult;
 import com.fr.stable.StringUtils;
-import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -22,9 +21,9 @@ import java.util.Set;
 /**
  * Created by pony on 2018/3/24.
  */
-public class StringControlWidgetAdaptor {
+public class StringControlWidgetAdaptor extends AbstractTableWidgetAdaptor{
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(StringControlWidgetAdaptor.class);
-
+    private static final int PAGE_SIZE = 100;
     public static BIStringDetailResult calculate(StringControlWidget widget) {
         StringControlResult value = new StringControlResult();
         try {
@@ -34,10 +33,10 @@ public class StringControlWidgetAdaptor {
             List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
             List<String> selectValues = widget.getSelectedValues();
             if (!StringUtils.isEmpty(keyWords)) {
-                filterInfos.add(new SwiftDetailFilterInfo<String>(SwiftEncryption.decryptFieldId(dimension.getFieldId())[1], keyWords, SwiftDetailFilterType.STRING_LIKE));
+                filterInfos.add(new SwiftDetailFilterInfo<String>(getColumnName(dimension.getFieldId()), keyWords, SwiftDetailFilterType.STRING_LIKE));
             }
             if (selectValues != null && !selectValues.isEmpty()) {
-                filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(SwiftEncryption.decryptFieldId(dimension.getFieldId())[1], new HashSet<String>(selectValues), SwiftDetailFilterType.STRING_NOT_IN));
+                filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(getColumnName(dimension.getFieldId()), new HashSet<String>(selectValues), SwiftDetailFilterType.STRING_NOT_IN));
             }
             if (widget.getFilters() != null) {
                 filterInfos.add(FilterInfoFactory.transformFineFilter(widget.getFilters()));
@@ -46,12 +45,14 @@ public class StringControlWidgetAdaptor {
                 filterInfos.add(FilterInfoFactory.transformFineFilter(dimension.getFilters()));
             }
             List values = QueryUtils.getOneDimensionFilterValues(dimension, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND), widget.getWidgetId());
+
+            values = values.subList((times - 1) * PAGE_SIZE, Math.min(times * PAGE_SIZE, values.size()));
             //查询记录数,等分组表那边弄好了再搞。
 //            Metric countMetric = new GroupMetric(0, baseDataSource.getSourceKey(), new ColumnKey(fineBusinessField.getName()), filterInfo, new DistinctAggregate());
 //            SingleTableGroupQueryInfo countInfo = new SingleTableGroupQueryInfo(new RowCursor(), widget.getWidgetId(), new Dimension[0], new Metric[]{countMetric}, new GroupTarget[0], filterInfo, null);
 //            Query<GroupByResultSet> countQuery = QueryBuilder.buildQuery(countInfo);
 //            GroupByResultSet countResultSet = countQuery.getQueryResult();
-            value.setHasNext(false);
+            value.setHasNext(values.size() > (times) * PAGE_SIZE);
             value.setValue(values);
         } catch (Exception e) {
             LOGGER.error(e);
