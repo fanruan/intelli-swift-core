@@ -1,10 +1,12 @@
 package com.fr.swift.cube.io;
 
 import com.fr.swift.cube.io.Types.StoreType;
+import com.fr.swift.cube.io.impl.mem.MemIo;
 import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.Writer;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -13,83 +15,22 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2017/11/16
  */
 public class ResourceDiscoveryImpl implements ResourceDiscovery {
+
     /**
-     * resourcePath -> reader
+     * 预览memio map
+     * key: basePath
+     * field: path
+     * value: memio
      */
-    private final Map<String, Reader> readers = new ConcurrentHashMap<String, Reader>();
+    private final Map<String, Map<String, MemIo>> minorMemios = new ConcurrentHashMap<String, Map<String, MemIo>>();
+
     /**
-     * resourcePath -> writer
+     * 增量realtime memio map
+     * key: basePath
+     * field: path
+     * value: memio
      */
-    private final Map<String, Writer> writers = new ConcurrentHashMap<String, Writer>();
-
-    private static boolean isMemory(StoreType storeType) {
-        return storeType == StoreType.MEMORY;
-
-    }
-
-    private static boolean shouldCache(StoreType storeType) {
-        return storeType == StoreType.MEMORY;
-    }
-
-    private static boolean shouldShare(StoreType storeType) {
-        return storeType == StoreType.MEMORY;
-    }
-
-    @Override
-    public <R extends Reader> R getReader(IResourceLocation location, BuildConf conf) {
-        String path = location.getPath();
-        if (!isMemory(location.getStoreType())) {
-            return (R) Readers.build(location, conf);
-        } else {
-            synchronized (readers) {
-                if (!readers.containsKey(path)) {
-                    Reader reader = Readers.build(location, conf);
-                    if (shouldCache(location.getStoreType())) {
-                        readers.put(path, reader);
-                    }
-                    if (shouldShare(location.getStoreType())) {
-                        writers.put(path, (Writer) reader);
-                    }
-                    return (R) reader;
-                }
-                return (R) readers.get(path);
-            }
-        }
-    }
-
-    @Override
-    public <W extends Writer> W getWriter(IResourceLocation location, BuildConf conf) {
-        String path = location.getPath();
-        if (!isMemory(location.getStoreType())) {
-            return (W) Writers.build(location, conf);
-        } else {
-            synchronized (writers) {
-                if (!writers.containsKey(path)) {
-                    Writer writer = Writers.build(location, conf);
-                    if (shouldCache(location.getStoreType())) {
-                        writers.put(path, writer);
-                    }
-                    if (shouldShare(location.getStoreType())) {
-                        readers.put(path, (Reader) writer);
-                    }
-                    return (W) writer;
-                }
-                return (W) writers.get(path);
-            }
-        }
-    }
-
-
-    @Override
-    public boolean exists(IResourceLocation location, BuildConf conf) {
-        return getReader(location, conf).isReadable();
-    }
-
-    @Override
-    public void clear() {
-        readers.clear();
-        writers.clear();
-    }
+    private final Map<String, Map<String, MemIo>> cubeMemios = new ConcurrentHashMap<String, Map<String, MemIo>>();
 
     private static final ResourceDiscoveryImpl INSTANCE = new ResourceDiscoveryImpl();
 
@@ -98,5 +39,106 @@ public class ResourceDiscoveryImpl implements ResourceDiscovery {
 
     public static ResourceDiscovery getInstance() {
         return INSTANCE;
+    }
+
+    @Override
+    public <R extends Reader> R getReader(IResourceLocation location, BuildConf conf) {
+        String path = location.getPath();
+        String basePath = getCubeBasePath(path);
+        if (!isMemory(location.getStoreType())) {
+            return (R) Readers.build(location, conf);
+        } else {
+            if (isMinor(path)) {
+                return getReader(minorMemios, basePath, path, location, conf);
+            } else {
+                return getReader(cubeMemios, basePath, path, location, conf);
+            }
+        }
+    }
+
+    @Override
+    public <W extends Writer> W getWriter(IResourceLocation location, BuildConf conf) {
+        String path = location.getPath();
+        String basePath = getCubeBasePath(path);
+        if (!isMemory(location.getStoreType())) {
+            return (W) Writers.build(location, conf);
+        } else {
+            if (isMinor(path)) {
+                return getWriter(minorMemios, basePath, path, location, conf);
+            } else {
+                return getWriter(cubeMemios, basePath, path, location, conf);
+            }
+        }
+    }
+
+    @Override
+    public boolean exists(IResourceLocation location, BuildConf conf) {
+        return getReader(location, conf).isReadable();
+    }
+
+    private <W extends Writer> W getWriter(Map<String, Map<String, MemIo>> paramMemios, String basePath, String path, IResourceLocation location, BuildConf conf) {
+        synchronized (paramMemios) {
+            if (paramMemios.containsKey(basePath)) {
+                Map<String, MemIo> baseMemios = paramMemios.get(basePath);
+                if (!baseMemios.containsKey(path)) {
+                    MemIo reader = (MemIo) Writers.build(location, conf);
+                    baseMemios.put(path, reader);
+                }
+            } else {
+                Map<String, MemIo> baseMemios = new HashMap<String, MemIo>();
+                MemIo reader = (MemIo) Writers.build(location, conf);
+                baseMemios.put(path, reader);
+                paramMemios.put(basePath, baseMemios);
+            }
+            return (W) paramMemios.get(basePath).get(path);
+        }
+    }
+
+    private <R extends Reader> R getReader(Map<String, Map<String, MemIo>> paramMemios, String basePath, String path, IResourceLocation location, BuildConf conf) {
+        synchronized (paramMemios) {
+            if (paramMemios.containsKey(basePath)) {
+                Map<String, MemIo> baseMemios = paramMemios.get(basePath);
+                if (!baseMemios.containsKey(path)) {
+                    MemIo reader = (MemIo) Readers.build(location, conf);
+                    baseMemios.put(path, reader);
+                }
+            } else {
+                Map<String, MemIo> baseMemios = new HashMap<String, MemIo>();
+                MemIo reader = (MemIo) Readers.build(location, conf);
+                baseMemios.put(path, reader);
+                paramMemios.put(basePath, baseMemios);
+            }
+            return (R) paramMemios.get(basePath).get(path);
+        }
+    }
+
+    private static boolean isMemory(StoreType storeType) {
+        return storeType == StoreType.MEMORY;
+    }
+
+    //todo 增量的memio慎重clear!!!
+    @Override
+    public void clear() {
+        for (Map.Entry<String, Map<String, MemIo>> mapEntry : minorMemios.entrySet()) {
+            for (Map.Entry<String, MemIo> entry : mapEntry.getValue().entrySet()) {
+                entry.getValue().release();
+            }
+        }
+        minorMemios.clear();
+    }
+
+    private boolean isMinor(String path) {
+        return path.contains("minor_cubes");
+    }
+
+    //todo 路径需要单独配置，后续需要对此进行改正，现在先简单处理
+    private String getCubeBasePath(String path) {
+        if (isMinor(path)) {
+            int index = path.indexOf("minor_cubes");
+            return path.substring(0, index + 20);
+        } else {
+            int index = path.indexOf("cubes");
+            return path.substring(0, index + 14);
+        }
     }
 }
