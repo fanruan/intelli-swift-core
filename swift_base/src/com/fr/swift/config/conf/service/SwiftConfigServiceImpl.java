@@ -5,6 +5,7 @@ import com.fr.swift.config.IConfigSegment;
 import com.fr.swift.config.IMetaData;
 import com.fr.swift.config.conf.MetaDataConfig;
 import com.fr.swift.config.conf.SegmentConfig;
+import com.fr.swift.source.SourceKey;
 import com.fr.transaction.Configurations;
 import com.fr.transaction.Worker;
 
@@ -74,6 +75,11 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
     @Override
     public IMetaData getMetaDataByKey(String sourceKey) {
         return metaDataConfig.getMetaDataByKey(sourceKey);
+    }
+
+    @Override
+    public boolean containsMeta(SourceKey sourceKey) {
+        return metaDataConfig.contains(sourceKey);
     }
 
     @Override

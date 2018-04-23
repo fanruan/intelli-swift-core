@@ -2,6 +2,7 @@ package com.fr.swift.config.conf.service;
 
 import com.fr.swift.config.IConfigSegment;
 import com.fr.swift.config.IMetaData;
+import com.fr.swift.source.SourceKey;
 
 import java.util.Map;
 
@@ -55,6 +56,11 @@ public class SwiftConfigServiceProvider implements SwiftConfigService {
     @Override
     public IMetaData getMetaDataByKey(String sourceKey) {
         return service.getMetaDataByKey(sourceKey);
+    }
+
+    @Override
+    public boolean containsMeta(SourceKey sourceKey) {
+        return service.containsMeta(sourceKey);
     }
 
     @Override
