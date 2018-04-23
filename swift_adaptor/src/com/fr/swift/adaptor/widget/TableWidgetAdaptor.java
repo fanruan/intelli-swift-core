@@ -116,8 +116,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         String queryId = widget.getWidgetId();
         SourceKey sourceKey = getSourceKey(widget);
         List<Dimension> dimensions = getDimensions(sourceKey, widget.getDimensionList(), widget.getTargetList());
-        FilterInfo filterInfo = getFilterInfo(widget);
-
+        FilterInfo filterInfo = getFilterInfo(widget, dimensions);
         GroupTarget[] targets = targetInfo.getGroupTargets().toArray(new GroupTarget[targetInfo.getGroupTargets().size()]);
         List<Metric> metrics = targetInfo.getMetrics();
         Expander expander = ExpanderFactory.create(widget.isOpenRowNode(), dimensions.size(),
@@ -128,12 +127,23 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
                 targets, expander, targetInfo.getTargetLength());
     }
 
-    private static FilterInfo getFilterInfo(TableWidget widget) throws Exception {
+    private static FilterInfo getFilterInfo(TableWidget widget, List<Dimension> dimensions) throws Exception {
         List<FilterInfo> filterInfoList = new ArrayList<FilterInfo>();
         dealWithWidgetFilter(filterInfoList, widget);
         dealWithLink(filterInfoList, widget);
         dealWithDrill(filterInfoList, widget);
+        dealWithDimensionDirectFilter(filterInfoList, dimensions);
         return new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
+    }
+
+    //维度上的直接过滤，提取出来
+    private static void dealWithDimensionDirectFilter(List<FilterInfo> filterInfoList, List<Dimension> dimensions) {
+        for (Dimension dimension : dimensions) {
+            FilterInfo filter = dimension.getFilter();
+            if (filter != null && !filter.isMatchFilter()) {
+                filterInfoList.add(dimension.getFilter());
+            }
+        }
     }
 
     private static void dealWithDrill(List<FilterInfo> filterInfoList, TableWidget widget) throws Exception {
@@ -237,7 +247,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         }
     }
 
-    static List<Dimension> getDimensions(SourceKey sourceKey, List<FineDimension> fineDims, List<FineTarget> targets) throws Exception {
+    static List<Dimension> getDimensions(SourceKey sourceKey, List<FineDimension> fineDims, List<FineTarget> targets) {
         List<Dimension> dimensions = new ArrayList<Dimension>();
         for (int i = 0, size = fineDims.size(); i < size; i++) {
             FineDimension fineDim = fineDims.get(i);
@@ -257,11 +267,11 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         return targets;
     }
 
-    static Dimension toDimension(SourceKey sourceKey, FineDimension fineDim, int index, List<FineTarget> targets) {
+    private static Dimension toDimension(SourceKey sourceKey, FineDimension fineDim, int index, List<FineTarget> targets) {
         String columnName = getColumnName(fineDim.getFieldId());
         ColumnKey colKey = new ColumnKey(columnName);
 
-        Group group = GroupAdaptor.adaptDashboardGroup(fineDim.getGroup());
+        Group group = GroupAdaptor.adaptDashboardGroup(fineDim);
 
         FilterInfo filterInfo = FilterInfoFactory.transformDimensionFineFilter(fineDim.getFilters(), fineDim.getId(), targets);
 

@@ -110,4 +110,12 @@ public class CubeTasks {
             }
         });
     }
+
+    public static CubeTaskKey newPartStartTaskKey(DataSource ds) throws SwiftMetaDataException {
+        return new CubeTaskKey("Part start of " + ds.getMetadata().getTableName() + "@" + ds.getSourceKey().getId(), Operation.BUILD_TABLE);
+    }
+
+    public static CubeTaskKey newPartEndTaskKey(DataSource ds) throws SwiftMetaDataException {
+        return new CubeTaskKey("Part end of " + ds.getMetadata().getTableName() + "@" + ds.getSourceKey().getId(), Operation.BUILD_TABLE);
+    }
 }

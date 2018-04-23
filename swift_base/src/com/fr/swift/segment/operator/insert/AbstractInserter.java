@@ -25,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Lucifer
  * @description 指定数据和块insert，块必须是新块。
+ * todo 支持断点输入流式数据，也支持实时导入数据、实时查询数据功能。
  * @since Advanced FineBI Analysis 1.0
  */
 public abstract class AbstractInserter implements Inserter {

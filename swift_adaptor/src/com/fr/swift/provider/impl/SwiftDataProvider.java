@@ -134,7 +134,8 @@ public class SwiftDataProvider implements DataProvider {
                 for (Segment sg : segments) {
                     Column c = sg.getColumn(new ColumnKey(fieldName));
                     DictionaryEncodedColumn dic = c.getDictionaryEncodedColumn();
-                    for (int i = 0; i < dic.size(); i++) {
+                    //字典编码的0号恒为0(无论空值存不存在),需要判断一下
+                    for (int i = (c.getBitmapIndex().getNullIndex().isEmpty() ? 1 : 0); i < dic.size(); i++) {
                         list.add(dic.getValue(i));
                     }
                 }

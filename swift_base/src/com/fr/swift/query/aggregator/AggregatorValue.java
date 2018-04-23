@@ -17,4 +17,6 @@ public interface AggregatorValue<T> {
      * @return
      */
     T calculateValue();
+
+    Object clone();
 }

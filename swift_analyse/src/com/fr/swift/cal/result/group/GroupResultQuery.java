@@ -4,6 +4,7 @@ import com.fr.swift.cal.Query;
 import com.fr.swift.query.adapter.target.GroupTarget;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.match.MatchFilter;
+import com.fr.swift.query.filter.match.NodeAggregator;
 import com.fr.swift.query.filter.match.NodeFilter;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.NodeResultSet;
@@ -46,6 +47,7 @@ public class GroupResultQuery extends AbstractGroupResultQuery {
         NodeResultSet node = groupByResultSets.get(0);
         if (hasDimensionFilter()) {
             NodeFilter.filter(node.getNode(), dimensionMatchFilter);
+            NodeAggregator.aggregate(node.getNode(), aggregators.toArray(new Aggregator[aggregators.size()]));
         }
         return node;
     }

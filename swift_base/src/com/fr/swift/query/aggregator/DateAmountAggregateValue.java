@@ -25,4 +25,11 @@ public class DateAmountAggregateValue implements AggregatorValue<Long> {
     public Long calculateValue() {
         return value == Long.MIN_VALUE ? null : value;
     }
+
+    @Override
+    public Object clone() {
+        DateAmountAggregateValue value = new DateAmountAggregateValue();
+        value.value = this.value;
+        return value;
+    }
 }

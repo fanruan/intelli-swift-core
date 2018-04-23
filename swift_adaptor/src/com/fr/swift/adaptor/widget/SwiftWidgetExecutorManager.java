@@ -49,8 +49,8 @@ import java.util.Map;
  * @author anchore
  * @date 2018/2/26
  */
-public class SwiftEngineWidgetExecutorManager implements EngineWidgetExecutorManager {
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftEngineWidgetExecutorManager.class);
+public class SwiftWidgetExecutorManager implements EngineWidgetExecutorManager {
+    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftWidgetExecutorManager.class);
 
     @Override
     public BITableResult visit(TableWidget tableWidget) {

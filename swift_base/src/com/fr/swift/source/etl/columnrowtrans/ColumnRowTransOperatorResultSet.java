@@ -1,6 +1,6 @@
 package com.fr.swift.source.etl.columnrowtrans;
 
-import com.fr.swift.bitmap.traversal.BreakTraversalAction;
+import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.query.group.by.MergerGroupByValues;
 import com.fr.swift.result.KeyValue;
 import com.fr.swift.result.RowIndexKey;
@@ -85,20 +85,19 @@ public class ColumnRowTransOperatorResultSet implements SwiftResultSet {
             RowTraversal[] rowTraversal = rowTraversals.get(i);
             if (rowTraversal != null && rowTraversal[groupName.length] != null){
                 final int finalI = i;
-                rowTraversal[groupName.length].breakableTraversal(new BreakTraversalAction() {
+                rowTraversal[groupName.length].traversal(new TraversalAction() {
                     @Override
-                    public boolean actionPerformed(int row) {
+                    public void actionPerformed(int row) {
                         DictionaryEncodedColumn dic = segment[finalI].getColumn(new ColumnKey(lcName)).getDictionaryEncodedColumn();
                         Object value = dic.getValue(dic.getIndexByRow(row));
                         for (int j = 0; j < columns.size(); j++){
                             DictionaryEncodedColumn columnDic = segment[finalI].getColumn(new ColumnKey(columns.get(j).getKey())).getDictionaryEncodedColumn();
                             Object columnValue = columnDic.getValue(columnDic.getIndexByRow(row));
-                            Integer index = lcIndexMap.get(value);
+                            Integer index = lcIndexMap.get(value.toString());
                             if (index != null){
-                                list.set(lcIndexMap.get(value) + lcIndexMap.size() * j, columnValue);
+                                list.set(lcIndexMap.get(value.toString()) + lcIndexMap.size() * j, columnValue);
                             }
                         }
-                        return true;
                     }
                 });
             }
