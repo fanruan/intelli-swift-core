@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Created by Handsome on 2018/2/2 0002 10:32
  */
-public class CreateSegment {
+public class BaseCreateSegmentTest {
     public Segment getSegment() {
         return new Segment() {
             @Override

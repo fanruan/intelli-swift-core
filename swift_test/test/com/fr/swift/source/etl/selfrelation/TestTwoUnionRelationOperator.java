@@ -41,8 +41,8 @@ public class TestTwoUnionRelationOperator extends TestCase {
             EasyMock.expect(metaData.getColumnType(EasyMock.anyInt())).andReturn(1).anyTimes();
             EasyMock.replay(metaData);
             Segment[] segment = new Segment[1];
-            segment[0] = new CreateSegmentForSelfRelation().getSegment();
-            //segment[1] = new CreateSegmentForSelfRelation().getSegment();
+            segment[0] = new BaseCreateSegmentForSelfRelationTest().getSegment();
+            //segment[1] = new BaseCreateSegmentForSelfRelationTest().getSegment();
             List<Segment[]> list = new ArrayList<Segment[]>();
             list.add(segment);
             String[][] str = new String[][]{{"109","mmm","江西","11","11","aa"},

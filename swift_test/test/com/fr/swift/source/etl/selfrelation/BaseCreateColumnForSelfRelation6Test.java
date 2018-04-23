@@ -13,9 +13,9 @@ import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import java.util.Comparator;
 
 /**
- * Created by Handsome on 2018/1/19 0019 11:31
+ * Created by Handsome on 2018/1/19 0019 11:47
  */
-public class CreateColumnForSelfRelation3 {
+public class BaseCreateColumnForSelfRelation6Test {
     public Column getColumn() {
         return new Column() {
 
@@ -50,14 +50,14 @@ public class CreateColumnForSelfRelation3 {
         bitMaps[4] = BitSetMutableBitMap.newInstance();
         bitMaps[5] = BitSetMutableBitMap.newInstance();
         bitMaps[0].add(0);
-        bitMaps[0].add(1);
-        bitMaps[0].add(2);
-        bitMaps[1].add(3);
-        bitMaps[2].add(4);
-        bitMaps[3].add(5);
-        bitMaps[3].add(8);
-        bitMaps[4].add(6);
-        bitMaps[5].add(7);
+        bitMaps[1].add(1);
+        bitMaps[2].add(2);
+        bitMaps[3].add(3);
+        bitMaps[4].add(4);
+        bitMaps[4].add(7);
+        bitMaps[5].add(5);
+        bitMaps[5].add(6);
+        bitMaps[5].add(8);
         return new BitmapIndexedColumn() {
             @Override
             public void flush() {
@@ -96,13 +96,17 @@ public class CreateColumnForSelfRelation3 {
     }
 
     private DictionaryEncodedColumn createDicColumn() {
-        final String[] keys = {"123","333","321","","323","777"};
-        final int[] index = {0,0,0,1,2,3,4,5,3};
+        final String[] keys = {"11","22","33","1","6",""};
+        final int[] index = {0,1,2,3,4,5,5,4,5};
         return new TempDictColumn() {
-
             @Override
             public int size() {
                 return 6;
+            }
+
+            @Override
+            public void putGlobalSize(int globalSize) {
+
             }
 
             @Override
@@ -130,3 +134,4 @@ public class CreateColumnForSelfRelation3 {
         };
     }
 }
+

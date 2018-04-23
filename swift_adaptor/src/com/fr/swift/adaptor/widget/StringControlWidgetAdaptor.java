@@ -30,6 +30,7 @@ public class StringControlWidgetAdaptor extends AbstractTableWidgetAdaptor{
             FineDimension dimension = widget.getDimensionList().get(0);
             String keyWords = widget.getKeywords();
             int times = widget.getTimes();
+            times = times == 0 ? 1 : times;
             List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
             List<String> selectValues = widget.getSelectedValues();
             if (!StringUtils.isEmpty(keyWords)) {
@@ -46,14 +47,15 @@ public class StringControlWidgetAdaptor extends AbstractTableWidgetAdaptor{
             }
             List values = QueryUtils.getOneDimensionFilterValues(dimension, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND), widget.getWidgetId());
 
-            values = values.subList((times - 1) * PAGE_SIZE, Math.min(times * PAGE_SIZE, values.size()));
+            List showValues = values.subList((times - 1) * PAGE_SIZE, Math.min(times * PAGE_SIZE, values.size()));
             //查询记录数,等分组表那边弄好了再搞。
 //            Metric countMetric = new GroupMetric(0, baseDataSource.getSourceKey(), new ColumnKey(fineBusinessField.getName()), filterInfo, new DistinctAggregate());
 //            SingleTableGroupQueryInfo countInfo = new SingleTableGroupQueryInfo(new RowCursor(), widget.getWidgetId(), new Dimension[0], new Metric[]{countMetric}, new GroupTarget[0], filterInfo, null);
 //            Query<GroupByResultSet> countQuery = QueryBuilder.buildQuery(countInfo);
 //            GroupByResultSet countResultSet = countQuery.getQueryResult();
+
             value.setHasNext(values.size() > (times) * PAGE_SIZE);
-            value.setValue(values);
+            value.setValue(showValues);
         } catch (Exception e) {
             LOGGER.error(e);
         }

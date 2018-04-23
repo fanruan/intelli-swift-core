@@ -4,13 +4,16 @@ import com.fr.config.Configuration;
 import com.fr.swift.config.IConfigSegment;
 import com.fr.swift.config.IMetaData;
 import com.fr.swift.config.conf.MetaDataConfig;
+import com.fr.swift.config.conf.MetaDataConvertUtil;
 import com.fr.swift.config.conf.SegmentConfig;
-import com.fr.swift.source.SourceKey;
+import com.fr.swift.config.pojo.SwiftMetaDataPojo;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.transaction.Configurations;
 import com.fr.transaction.Worker;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author yee
@@ -20,6 +23,7 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
 
     private MetaDataConfig metaDataConfig = MetaDataConfig.getInstance();
     private SegmentConfig segmentConfig = SegmentConfig.getInstance();
+    private ConcurrentHashMap<String, SwiftMetaDataPojo> metaDataCache = new ConcurrentHashMap<String, SwiftMetaDataPojo>();
 
     @Override
     public boolean addMetaData(final String sourceKey, final IMetaData metaData) {
@@ -27,6 +31,7 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
             @Override
             public void run() {
                 metaDataConfig.addMetaData(sourceKey, metaData);
+                metaDataCache.put(sourceKey, MetaDataConvertUtil.toSwiftMetadataPojo(metaData));
             }
         });
     }
@@ -40,6 +45,7 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
                 while (iterator.hasNext()) {
                     Map.Entry<String, IMetaData> entry = iterator.next();
                     metaDataConfig.addMetaData(entry.getKey(), entry.getValue());
+                    metaDataCache.put(entry.getKey(), MetaDataConvertUtil.toSwiftMetadataPojo(entry.getValue()));
                 }
             }
         });
@@ -52,6 +58,7 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
             public void run() {
                 for (String sourceKey : sourceKeys) {
                     metaDataConfig.removeMetaData(sourceKey);
+                    metaDataCache.remove(sourceKey);
                 }
             }
         });
@@ -63,6 +70,7 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
             @Override
             public void run() {
                 metaDataConfig.modifyMetaData(sourceKey, metaData);
+                metaDataCache.put(sourceKey, MetaDataConvertUtil.toSwiftMetadataPojo(metaData));
             }
         });
     }
@@ -74,12 +82,12 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
 
     @Override
     public IMetaData getMetaDataByKey(String sourceKey) {
-        return metaDataConfig.getMetaDataByKey(sourceKey);
-    }
-
-    @Override
-    public boolean containsMeta(SourceKey sourceKey) {
-        return metaDataConfig.contains(sourceKey);
+        IMetaData metaData = metaDataCache.get(sourceKey);
+        if (null == metaData) {
+            metaData = metaDataConfig.getMetaDataByKey(sourceKey);
+            metaDataCache.put(sourceKey, MetaDataConvertUtil.toSwiftMetadataPojo(metaData));
+        }
+        return metaData;
     }
 
     @Override
