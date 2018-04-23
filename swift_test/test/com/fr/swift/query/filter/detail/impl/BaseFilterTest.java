@@ -1,6 +1,8 @@
 package com.fr.swift.query.filter.detail.impl;
 
 import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
+import com.fr.swift.query.aggregator.StringAggregateValue;
 import com.fr.swift.result.AbstractSwiftNode;
 import com.fr.swift.result.SwiftNode;
 import junit.framework.TestCase;
@@ -279,7 +281,7 @@ public abstract class BaseFilterTest extends TestCase {
 
             @Override
             public AggregatorValue getAggregatorValue(int key) {
-                return null;
+                return data == null ? new StringAggregateValue() : new DoubleAmountAggregatorValue(((Number)data).doubleValue());
             }
 
             @Override
