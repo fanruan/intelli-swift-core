@@ -73,7 +73,7 @@ class RelationAdaptor {
     }
 
     static RelationSource getRelation(List<SelectFieldPathItem> path, String baseTable, String table, SwiftRelationPathConfProvider relationProvider) {
-        if (path != null) {
+        if (path != null && !path.isEmpty()) {
             List<FineBusinessTableRelation> targetRelations = new ArrayList<FineBusinessTableRelation>();
             try {
                 for (SelectFieldPathItem item : path) {
@@ -81,7 +81,7 @@ class RelationAdaptor {
                 }
                 return RelationSourceFactory.transformRelationSourcesFromPath(new FineBusinessTableRelationPathImp(targetRelations));
             } catch (Exception e) {
-                SwiftLoggers.getLogger().error("Cannot find relation, use default. ", e);
+                SwiftLoggers.getLogger().error(e.getMessage(), e);
             }
         }
         List<FineBusinessTableRelationPath> relation = relationProvider.getRelationPaths(table, baseTable);
