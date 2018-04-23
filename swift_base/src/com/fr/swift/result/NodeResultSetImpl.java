@@ -42,6 +42,7 @@ public class NodeResultSetImpl<T extends SwiftNode> implements NodeResultSet {
     @Override
     public boolean next() throws SQLException {
         boolean next = currentChild.getSibling() != null;
+        // TODO: 2018/4/23 多层节点就错了
         currentChild = currentChild.getSibling();
         return next;
     }

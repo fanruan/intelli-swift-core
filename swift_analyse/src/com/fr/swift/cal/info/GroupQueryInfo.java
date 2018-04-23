@@ -1,11 +1,13 @@
 package com.fr.swift.cal.info;
 
 import com.fr.swift.cal.builder.QueryType;
-import com.fr.swift.cal.result.group.Cursor;
+import com.fr.swift.query.adapter.dimension.Cursor;
 import com.fr.swift.query.adapter.dimension.Dimension;
+import com.fr.swift.query.adapter.dimension.DimensionInfo;
 import com.fr.swift.query.adapter.dimension.Expander;
 import com.fr.swift.query.adapter.metric.Metric;
 import com.fr.swift.query.adapter.target.GroupTarget;
+import com.fr.swift.query.adapter.target.TargetInfo;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
@@ -18,38 +20,13 @@ import com.fr.swift.source.SourceKey;
  */
 public class GroupQueryInfo extends AbstractQueryInfo<GroupByResultSet> {
 
-    /**
-     * 计算过程中的指标长度
-     */
-    private int targetLength;
+    private DimensionInfo dimensionInfo;
+    private TargetInfo targetInfo;
 
-    /**
-     * 分组表的维度
-     */
-    private Dimension[] dimensions;
-    /**
-     * 分组表的聚合维度
-     */
-    private Metric[] metrics;
-
-    /**
-     * 分组表的指标
-     */
-    private GroupTarget[] targets;
-
-    /**
-     * 展开
-     */
-    private Expander expander;
-
-    public GroupQueryInfo(Cursor cursor, String queryID, SourceKey table, FilterInfo filterInfo, Dimension[] dimensions,
-                          Metric[] metrics, GroupTarget[] targets, Expander expander, int targetLength) {
-        super(cursor, queryID, table, filterInfo);
-        this.dimensions = dimensions;
-        this.metrics = metrics;
-        this.targets = targets;
-        this.expander = expander;
-        this.targetLength = targetLength;
+    public GroupQueryInfo(String queryID, SourceKey table, DimensionInfo dimensionInfo, TargetInfo targetInfo) {
+        super(dimensionInfo.getCursor(), queryID, table, dimensionInfo.getFilterInfo());
+        this.dimensionInfo = dimensionInfo;
+        this.targetInfo = targetInfo;
     }
 
     @Override
@@ -57,24 +34,12 @@ public class GroupQueryInfo extends AbstractQueryInfo<GroupByResultSet> {
         return QueryType.GROUP;
     }
 
-    public Dimension[] getDimensions() {
-        return dimensions;
+    public DimensionInfo getDimensionInfo() {
+        return dimensionInfo;
     }
 
-    public Metric[] getMetrics() {
-        return metrics;
-    }
-
-    public GroupTarget[] getTargets() {
-        return targets;
-    }
-
-    public Expander getExpander() {
-        return expander;
-    }
-
-    public int getTargetLength() {
-        return targetLength;
+    public TargetInfo getTargetInfo() {
+        return targetInfo;
     }
 
     /**
@@ -88,7 +53,7 @@ public class GroupQueryInfo extends AbstractQueryInfo<GroupByResultSet> {
     }
 
     private boolean hasResultSort() {
-        for (Dimension dimension : dimensions) {
+        for (Dimension dimension : dimensionInfo.getDimensions()) {
             if (isSortByResult(dimension.getSort())) {
                 return true;
             }
@@ -100,11 +65,11 @@ public class GroupQueryInfo extends AbstractQueryInfo<GroupByResultSet> {
         if (sort == null) {
             return false;
         }
-        return sort.getSortType() != SortType.NONE && sort.getTargetIndex() >= dimensions.length;
+        return sort.getSortType() != SortType.NONE && sort.getTargetIndex() >= dimensionInfo.getDimensions().length;
     }
 
     private boolean hasMatchFilter() {
-        for (Dimension dimension : dimensions) {
+        for (Dimension dimension : dimensionInfo.getDimensions()) {
             if (isMatchFilter(dimension.getFilter())) {
                 return true;
             }

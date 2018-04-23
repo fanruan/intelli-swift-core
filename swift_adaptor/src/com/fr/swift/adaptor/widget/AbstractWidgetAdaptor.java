@@ -22,7 +22,7 @@ public abstract class AbstractWidgetAdaptor {
         return BusinessTableUtils.getFieldNameByFieldId(fieldId);
     }
 
-    protected static Sort adaptSort(FineDimensionSort sort, int index) {
+    static Sort adaptSort(FineDimensionSort sort, int index) {
         switch (sort.getType()) {
             case BIReportConstant.SORT.ASC:
                 return new AscSort(index);

@@ -9,7 +9,7 @@ import com.fr.swift.adaptor.widget.target.CalTargetParseUtils;
 import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.query.adapter.dimension.Expander;
 import com.fr.swift.cal.info.XGroupQueryInfo;
-import com.fr.swift.cal.result.group.Cursor;
+import com.fr.swift.query.adapter.dimension.Cursor;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.adapter.dimension.Dimension;

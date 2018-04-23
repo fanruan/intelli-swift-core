@@ -1,22 +1,17 @@
 package com.fr.swift.query.adapter.dimension;
 
-import com.fr.swift.query.filter.detail.DetailFilter;
-import com.fr.swift.query.filter.match.MatchFilter;
-import com.fr.swift.query.sort.Sort;
-import com.fr.swift.segment.column.Column;
-
-import java.util.List;
+import com.fr.swift.query.filter.info.FilterInfo;
 
 /**
  * Created by Lyon on 2018/4/23.
  */
 public interface DimensionInfo {
 
-    List<Column> getDimensions();
+    Dimension[] getDimensions();
 
-    DetailFilter getDetailFilter();
+    FilterInfo getFilterInfo();
 
-    MatchFilter getMatchFilter();
+    Cursor getCursor();
 
-    List<Sort> getSorts();
+    Expander getExpander();
 }

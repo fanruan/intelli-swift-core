@@ -5,6 +5,8 @@ import com.fr.swift.cal.info.GroupQueryInfo;
 import com.fr.swift.cal.result.group.GroupPagingResultQuery;
 import com.fr.swift.cal.segment.group.GroupPagingSegmentQuery;
 import com.fr.swift.manager.LocalSegmentProvider;
+import com.fr.swift.query.adapter.dimension.DimensionInfo;
+import com.fr.swift.query.adapter.target.TargetInfo;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.result.NodeResultSet;
@@ -20,19 +22,22 @@ import java.util.List;
 public class LocalGroupPagingQueryBuilder extends AbstractLocalGroupQueryBuilder {
     @Override
     public Query<NodeResultSet> buildLocalQuery(GroupQueryInfo info) {
+        DimensionInfo dimensionInfo = info.getDimensionInfo();
+        TargetInfo targetInfo = info.getTargetInfo();
         List<Query<NodeResultSet>> queries = new ArrayList<Query<NodeResultSet>>();
         List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(info.getTable());
         for (Segment segment : segments) {
-            List<Column> dimensionSegments = getDimensionSegments(segment, info.getDimensions());
-            List<Column> metricSegments = getMetricSegments(segment, info.getMetrics());
-            List<Aggregator> aggregators = getAggregators(info.getMetrics());
-            queries.add(new GroupPagingSegmentQuery(dimensionSegments, metricSegments, aggregators, FilterBuilder.buildDetailFilter(segment, info.getFilterInfo()), info.getExpander()));
+            List<Column> dimensionSegments = getDimensionSegments(segment, dimensionInfo.getDimensions());
+            List<Column> metricSegments = getMetricSegments(segment, targetInfo.getMetrics());
+            List<Aggregator> aggregators = getAggregators(targetInfo.getMetrics());
+            queries.add(new GroupPagingSegmentQuery(dimensionSegments, metricSegments, aggregators, FilterBuilder.buildDetailFilter(segment, info.getFilterInfo()), dimensionInfo.getExpander()));
         }
-        return new GroupPagingResultQuery(queries, getAggregators(info.getMetrics()), getTargets(info.getTargets()));
+        return new GroupPagingResultQuery(queries, getAggregators(targetInfo.getMetrics()), getTargets(targetInfo.getGroupTargets()));
     }
 
     @Override
     public Query<NodeResultSet> buildResultQuery(List<Query<NodeResultSet>> queries, GroupQueryInfo info) {
-        return new GroupPagingResultQuery(queries, getAggregators(info.getMetrics()), getTargets(info.getTargets()));
+        TargetInfo targetInfo = info.getTargetInfo();
+        return new GroupPagingResultQuery(queries, getAggregators(targetInfo.getMetrics()), getTargets(targetInfo.getGroupTargets()));
     }
 }

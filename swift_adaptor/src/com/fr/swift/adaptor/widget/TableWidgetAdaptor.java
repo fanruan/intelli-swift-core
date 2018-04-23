@@ -20,17 +20,21 @@ import com.fr.swift.adaptor.widget.expander.ExpanderFactory;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.adaptor.widget.target.CalTargetParseUtils;
 import com.fr.swift.cal.QueryInfo;
+import com.fr.swift.query.adapter.dimension.DimensionInfo;
+import com.fr.swift.query.adapter.dimension.DimensionInfoImpl;
 import com.fr.swift.query.adapter.dimension.Expander;
 import com.fr.swift.cal.info.GroupQueryInfo;
-import com.fr.swift.cal.result.group.AllCursor;
-import com.fr.swift.cal.result.group.Cursor;
+import com.fr.swift.query.adapter.dimension.AllCursor;
+import com.fr.swift.query.adapter.dimension.Cursor;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.adapter.dimension.GroupDimension;
 import com.fr.swift.query.adapter.metric.Metric;
 import com.fr.swift.query.adapter.target.GroupTarget;
+import com.fr.swift.query.adapter.target.cal.ResultTarget;
 import com.fr.swift.query.adapter.target.cal.TargetInfoImpl;
+import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
@@ -117,14 +121,10 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         SourceKey sourceKey = getSourceKey(widget);
         List<Dimension> dimensions = getDimensions(sourceKey, widget.getDimensionList(), widget.getTargetList());
         FilterInfo filterInfo = getFilterInfo(widget, dimensions);
-        GroupTarget[] targets = targetInfo.getGroupTargets().toArray(new GroupTarget[targetInfo.getGroupTargets().size()]);
-        List<Metric> metrics = targetInfo.getMetrics();
         Expander expander = ExpanderFactory.create(widget.isOpenRowNode(), dimensions.size(),
                 widget.getValue().getRowExpand());
-        return new GroupQueryInfo(cursor, queryId, sourceKey, filterInfo,
-                dimensions.toArray(new Dimension[dimensions.size()]),
-                metrics.toArray(new Metric[metrics.size()]),
-                targets, expander, targetInfo.getTargetLength());
+        DimensionInfo dimensionInfo = new DimensionInfoImpl(cursor, filterInfo, expander, dimensions.toArray(new Dimension[dimensions.size()]));
+        return new GroupQueryInfo(queryId, sourceKey, dimensionInfo, targetInfo);
     }
 
     private static FilterInfo getFilterInfo(TableWidget widget, List<Dimension> dimensions) throws Exception {
@@ -222,8 +222,10 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
             filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(getColumnName(bean.getFieldId()), values, SwiftDetailFilterType.STRING_IN));
         }
         //分组表查询
-        GroupQueryInfo queryInfo = new GroupQueryInfo(new AllCursor(), fromWidget.getwId(), fromColumns[0].getSourceKey(),
-                new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND),fromColumns, new Metric[0], null, null, 0);
+        FilterInfo filterInfo = new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
+        GroupQueryInfo queryInfo = new GroupQueryInfo(fromWidget.getwId(), fromColumns[0].getSourceKey(),
+                new DimensionInfoImpl(new AllCursor(), filterInfo, null, fromColumns),
+                new TargetInfoImpl(new ArrayList<Metric>(0), new ArrayList<GroupTarget>(0), new ArrayList<ResultTarget>(0), new ArrayList<Aggregator>(0)));
         SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
         Set[] results = new HashSet[toColumns.length];
         for (int i = 0; i < results.length; i++){

@@ -36,7 +36,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements QueryRu
         T result = query.getQueryResult();
         if (info.getType() == QueryType.GROUP || info.getType() == QueryType.CROSS_GROUP) {
             GroupNode root = (GroupNode) ((NodeResultSet) result).getNode();
-            TargetCalculatorUtils.calculate(root, ((GroupQueryInfo) info).getTargets());
+            TargetCalculatorUtils.calculate(root, ((GroupQueryInfo) info).getTargetInfo().getGroupTargets());
         }
         return result;
     }

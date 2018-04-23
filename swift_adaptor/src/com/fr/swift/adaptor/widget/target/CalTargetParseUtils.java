@@ -52,7 +52,7 @@ public class CalTargetParseUtils {
         allTargetFieldIds.addAll(relatedMetricFieldIds);
         allTargetFieldIds.addAll(calTargetFieldIds);
         List<ResultTarget> targetsForShowList = new ArrayList<ResultTarget>();
-        List<Aggregator> aggregatorListOfTargetsForShow = new ArrayList<Aggregator>();
+        List<Aggregator> aggregatorListForResultTargetMerging = new ArrayList<Aggregator>();
         List<GroupTarget> calculatorInfoList = new ArrayList<GroupTarget>();
         List<FineTarget> targets = widget.getTargetList();
         for (int i = 0; i < targets.size(); i++) {
@@ -71,16 +71,16 @@ public class CalTargetParseUtils {
             // TODO: 2018/4/11 指标结果合并用到的Aggregator，配置类计算的结果如何合并还没定
             if (value == null) {
                 // 聚合指标，暂时都是SumAggregate
-                aggregatorListOfTargetsForShow.add(new SumAggregate());
+                aggregatorListForResultTargetMerging.add(new SumAggregate());
             } else {
                 // 配置类计算的结果指标不汇总
-                aggregatorListOfTargetsForShow.add(new DummyAggregator());
+                aggregatorListForResultTargetMerging.add(new DummyAggregator());
             }
         }
         metricFieldIds.addAll(relatedMetricFieldIds);
         List<Metric> metrics = createMetrics(metricFieldIds, widget);
         // TODO: 2018/4/11 这边需要提供targetsFowShowList对应的Aggregator，用于结果的聚合
-        return new TargetInfoImpl(metrics, calculatorInfoList, targetsForShowList, aggregatorListOfTargetsForShow);
+        return new TargetInfoImpl(metrics, calculatorInfoList, targetsForShowList, aggregatorListForResultTargetMerging);
     }
 
     private static List<Metric> createMetrics(List<String> fieldIds, AbstractTableWidget widget) throws Exception {

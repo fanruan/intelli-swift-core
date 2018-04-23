@@ -28,13 +28,13 @@ public class TargetCalculatorUtils {
      * @return 返回处理完计算指标，并去除配置计算产生的中间结果指标的node根节点
      * @throws SQLException
      */
-    public static GroupNode calculate(GroupNode root, GroupTarget[] groupTargets) throws SQLException {
-        if (groupTargets.length == 0) {
+    public static GroupNode calculate(GroupNode root, List<GroupTarget> groupTargets) throws SQLException {
+        if (groupTargets.size() == 0) {
             return root;
         }
         List<TargetCalculator> calculators = new ArrayList<TargetCalculator>();
-        for (int i = 0; i < groupTargets.length; i++) {
-            calculators.add(TargetCalculatorFactory.create(groupTargets[i], root));
+        for (int i = 0; i < groupTargets.size(); i++) {
+            calculators.add(TargetCalculatorFactory.create(groupTargets.get(i), root));
         }
         for (TargetCalculator calculator : calculators) {
             try {
