@@ -3,6 +3,8 @@ package com.fr.swift.config.conf;
 import com.fr.swift.config.IMetaData;
 import com.fr.swift.config.IMetaDataColumn;
 import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
+import com.fr.swift.config.pojo.MetaDataColumnPojo;
+import com.fr.swift.config.pojo.SwiftMetaDataPojo;
 import com.fr.swift.config.unique.MetaDataColumnUnique;
 import com.fr.swift.config.unique.SwiftMetaDataUnique;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
@@ -21,13 +23,7 @@ import java.util.List;
 public class MetaDataConvertUtil {
     public static SwiftMetaData getSwiftMetaDataBySourceKey(String sourceKey) {
         IMetaData iMetaData = SwiftConfigServiceProvider.getInstance().getMetaDataByKey(sourceKey);
-        List<IMetaDataColumn> fieldList = iMetaData.getFieldList();
-        List<SwiftMetaDataColumn> fields = new ArrayList<SwiftMetaDataColumn>();
-        for (IMetaDataColumn column : fieldList) {
-            fields.add(new MetaDataColumn(column.getName(), column.getRemark(), column.getType(),
-                    column.getPrecision(), column.getScale(), column.getColumnId()));
-        }
-        return new SwiftMetaDataImpl(iMetaData.getTableName(), iMetaData.getRemark(), iMetaData.getSchema(), fields);
+        return toSwiftMetadata(iMetaData);
     }
 
     public static IMetaData convert2ConfigMetaData(SwiftMetaData metaData) throws SwiftMetaDataException {
@@ -40,7 +36,10 @@ public class MetaDataConvertUtil {
         return new SwiftMetaDataUnique(metaData.getSchemaName(), metaData.getTableName(), metaData.getRemark(), columns);
     }
 
-    public static SwiftMetaData toSwiftMetadata(IMetaData<IMetaDataColumn> iMetaData) {
+    public static <T extends IMetaDataColumn> SwiftMetaData toSwiftMetadata(IMetaData<T> iMetaData) {
+        if (iMetaData instanceof SwiftMetaDataPojo) {
+            return new SwiftMetaDataImpl((SwiftMetaDataPojo) iMetaData);
+        }
         List<SwiftMetaDataColumn> columnMetas = new ArrayList<SwiftMetaDataColumn>();
         for (IMetaDataColumn columnMeta : iMetaData.getFieldList()) {
             columnMetas.add(new MetaDataColumn(columnMeta.getName(), columnMeta.getRemark(),
@@ -49,5 +48,19 @@ public class MetaDataConvertUtil {
             ));
         }
         return new SwiftMetaDataImpl(iMetaData.getTableName(), iMetaData.getRemark(), iMetaData.getSchema(), columnMetas);
+    }
+
+    public static <T extends IMetaDataColumn> SwiftMetaDataPojo toSwiftMetadataPojo(IMetaData<T> iMetaData) {
+        if (iMetaData instanceof SwiftMetaDataPojo) {
+            return (SwiftMetaDataPojo) iMetaData;
+        }
+        List<MetaDataColumnPojo> columnMetas = new ArrayList<MetaDataColumnPojo>();
+        for (T columnMeta : iMetaData.getFieldList()) {
+            columnMetas.add(new MetaDataColumnPojo(columnMeta.getType(), columnMeta.getName(), columnMeta.getRemark(),
+                    columnMeta.getPrecision(), columnMeta.getScale(),
+                    columnMeta.getColumnId()
+            ));
+        }
+        return new SwiftMetaDataPojo(iMetaData.getTableName(), iMetaData.getRemark(), iMetaData.getSchema(), columnMetas);
     }
 }
