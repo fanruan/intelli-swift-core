@@ -25,4 +25,11 @@ public class StandardAggregatorValue extends VarianceAggregatorValue {
     public Number calculateValue() {
         return Math.sqrt(variance.calculateValue().doubleValue());
     }
+
+    @Override
+    public Object clone() {
+        StandardAggregatorValue value = new StandardAggregatorValue();
+        value.variance = (VarianceAggregatorValue) this.variance.clone();
+        return value;
+    }
 }

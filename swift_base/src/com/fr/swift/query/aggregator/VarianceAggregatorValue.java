@@ -59,4 +59,15 @@ public class VarianceAggregatorValue implements AggregatorValue<Number> {
     public Number calculateValue() {
         return variance / count;
     }
+
+    @Override
+    public Object clone() {
+        VarianceAggregatorValue value = new VarianceAggregatorValue();
+        value.count = this.count;
+        value.squareSum = this.squareSum;
+        value.sum = this.sum;
+        value.variance = this.variance;
+        return value;
+    }
+
 }
