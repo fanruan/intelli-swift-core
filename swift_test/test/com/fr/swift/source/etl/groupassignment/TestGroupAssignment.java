@@ -4,7 +4,7 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.source.etl.CreateSegment;
+import com.fr.swift.source.etl.BaseCreateSegmentTest;
 import com.fr.swift.source.etl.group.GroupAssignmentTransferOperator;
 import com.fr.swift.source.etl.group.SingleGroup;
 import junit.framework.TestCase;
@@ -19,8 +19,8 @@ public class TestGroupAssignment extends TestCase {
     public void testGroupAssignment() {
         try {
             Segment[] segments = new Segment[2];
-            segments[0] = new CreateSegment().getSegment();
-            segments[1] = new CreateSegment().getSegment();
+            segments[0] = new BaseCreateSegmentTest().getSegment();
+            segments[1] = new BaseCreateSegmentTest().getSegment();
             List<Segment[]> list = new ArrayList<Segment[]>();
             list.add(segments);
             String column1 = "column1";

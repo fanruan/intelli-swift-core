@@ -17,7 +17,7 @@ import java.util.Comparator;
 /**
  * Created by Handsome on 2017/12/28 0028 16:19
  */
-public class CreateColumnForSum {
+public class BaseCreateColumnForSumTest {
     public Column getColumn() {
         return new Column() {
 

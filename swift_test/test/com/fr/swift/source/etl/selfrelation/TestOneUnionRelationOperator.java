@@ -6,7 +6,7 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.source.etl.CreateSegmentForColumnTrans;
+import com.fr.swift.source.etl.BaseCreateSegmentForColumnTransTest;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
@@ -43,8 +43,8 @@ public class TestOneUnionRelationOperator extends TestCase {
             EasyMock.replay(metaDataColumn);
             EasyMock.replay(metaData);
             Segment[] segments = new Segment[2];
-            segments[0] = new CreateSegmentForColumnTrans().getSegment();
-            segments[1] = new CreateSegmentForColumnTrans().getSegment();
+            segments[0] = new BaseCreateSegmentForColumnTransTest().getSegment();
+            segments[1] = new BaseCreateSegmentForColumnTransTest().getSegment();
             OneUnionRelationTransferOperator operator = new OneUnionRelationTransferOperator(columnName, showColumns, idColumnName, columnType, columns);
             List list = new ArrayList();
             list.add(segments);

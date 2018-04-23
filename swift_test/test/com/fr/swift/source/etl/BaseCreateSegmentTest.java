@@ -14,9 +14,10 @@ import com.fr.swift.segment.relation.RelationIndex;
 import com.fr.swift.source.SwiftMetaData;
 
 /**
- * Created by Handsome on 2017/12/28 0028 16:17
+ * Created by Handsome on 2017/12/26 0026 09:24
  */
-public class CreateSegmentForSum {
+public class BaseCreateSegmentTest {
+
     public Segment getSegment() {
         return new Segment() {
             @Override
@@ -49,6 +50,7 @@ public class CreateSegmentForSum {
                 return null;
             }
 
+
             @Override
             public IResourceLocation getLocation() {
                 return null;
@@ -57,9 +59,13 @@ public class CreateSegmentForSum {
             @Override
             public Column getColumn(ColumnKey key) {
                 if(key.getName().equals("column1")) {
-                    return new CreateColumn().getColumn();
+                    return new BaseCreateColumnTest().getColumn();
+                } else if(key.getName().equals("column2")) {
+                    return new BaseCreateColumnTest().getColumn();
+                }else if(key.getName().equals("column3")) {
+                    return new BaseCreateColumn2Test().getColumn();
                 } else {
-                    return new CreateColumnForSum().getColumn();
+                    return new BaseCreateColumn2Test().getColumn();
                 }
             }
 

@@ -15,8 +15,8 @@ import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftMetaDataImpl;
-import com.fr.swift.source.etl.CreateColumn;
-import com.fr.swift.source.etl.CreateColumnForSum;
+import com.fr.swift.source.etl.BaseCreateColumnTest;
+import com.fr.swift.source.etl.BaseCreateColumnForSumTest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,9 +65,9 @@ public class CreateSegment {
             @Override
             public Column getColumn(ColumnKey key) {
                 if(key.getName().equals("column1")) {
-                    return new CreateColumn().getColumn();
+                    return new BaseCreateColumnTest().getColumn();
                 } else {
-                    return new CreateColumnForSum().getColumn();
+                    return new BaseCreateColumnForSumTest().getColumn();
                 }
             }
 
