@@ -1,5 +1,6 @@
 package com.fr.swift.generate.preview;
 
+import com.fr.swift.cube.io.ResourceDiscoveryImpl;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
@@ -36,6 +37,8 @@ import com.fr.swift.util.DataSourceUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author anchore
@@ -44,6 +47,12 @@ import java.util.List;
  * 基础表每次
  */
 public class MinorUpdater {
+
+    //预览数据过期时间
+    private static Map<SourceKey, Long> segmentsExpireMap = new ConcurrentHashMap<SourceKey, Long>();
+
+    private static long expireTime = 60000l;
+
     private DataSource dataSource;
 
     private int previewRowCount = 100;
@@ -62,8 +71,16 @@ public class MinorUpdater {
         if (isEtl(dataSource)) {
             buildEtl((EtlDataSource) dataSource);
         } else {
-            MinorSegmentManager.getInstance().remove(dataSource.getSourceKey());
+//            MinorSegmentManager.getInstance().remove(dataSource.getSourceKey());
             build(dataSource);
+        }
+    }
+
+    public void clearData() {
+        synchronized (MinorSegmentManager.getInstance()) {
+            segmentsExpireMap.clear();
+            MinorSegmentManager.getInstance().clear();
+            ResourceDiscoveryImpl.getInstance().clear();
         }
     }
 
@@ -83,25 +100,39 @@ public class MinorUpdater {
     }
 
     private void build(final DataSource dataSource) throws Exception {
-        List<Segment> segmentList = MinorSegmentManager.getInstance().getSegment(dataSource.getSourceKey());
-        if (segmentList != null && !segmentList.isEmpty()) {
-            return;
+        synchronized (MinorSegmentManager.getInstance()) {
+            Long putTime = segmentsExpireMap.get(dataSource.getSourceKey());
+            if (putTime != null) {
+                long nowTime = System.currentTimeMillis();
+                if ((nowTime - putTime) > expireTime) {
+                    segmentsExpireMap.remove(dataSource.getSourceKey());
+                    MinorSegmentManager.getInstance().remove(dataSource.getSourceKey());
+                }
+            }
+
+            List<Segment> segmentList = MinorSegmentManager.getInstance().getSegment(dataSource.getSourceKey());
+            if (segmentList != null && !segmentList.isEmpty()) {
+                return;
+            }
+            SwiftResultSet swiftResultSet = SwiftDataPreviewer.createPreviewTransfer(dataSource, previewRowCount).createResultSet();
+
+            Segment segment = createSegment(dataSource);
+            Inserter inserter = getInserter(dataSource, segment);
+            inserter.insertData(swiftResultSet);
+
+            for (String indexField : inserter.getFields()) {
+                ColumnKey columnKey = new ColumnKey(indexField);
+                new ColumnIndexer(dataSource, columnKey, Collections.singletonList(segment)).work();
+                new ColumnDictMerger(dataSource, columnKey, Collections.singletonList(segment)).work();
+                indexSubColumnIfNeed(dataSource, columnKey, segment);
+            }
+
+            if (!segmentsExpireMap.containsKey(dataSource.getSourceKey())) {
+                segmentsExpireMap.put(dataSource.getSourceKey(), System.currentTimeMillis());
+            }
+            // seg基础数据生成好了才放进去
+            MinorSegmentManager.getInstance().putSegment(dataSource.getSourceKey(), Collections.singletonList(segment));
         }
-        SwiftResultSet swiftResultSet = SwiftDataPreviewer.createPreviewTransfer(dataSource, previewRowCount).createResultSet();
-
-        Segment segment = createSegment(dataSource);
-        Inserter inserter = getInserter(dataSource, segment);
-        inserter.insertData(swiftResultSet);
-
-        for (String indexField : inserter.getFields()) {
-            ColumnKey columnKey = new ColumnKey(indexField);
-            new ColumnIndexer(dataSource, columnKey, Collections.singletonList(segment)).work();
-            new ColumnDictMerger(dataSource, columnKey, Collections.singletonList(segment)).work();
-            indexSubColumnIfNeed(dataSource, columnKey, segment);
-        }
-
-        // seg基础数据生成好了才放进去
-        MinorSegmentManager.getInstance().putSegment(dataSource.getSourceKey(), Collections.singletonList(segment));
     }
 
     private void indexSubColumnIfNeed(DataSource dataSource, ColumnKey columnKey, Segment seg) throws SwiftMetaDataException {
@@ -175,7 +206,7 @@ public class MinorUpdater {
 
     private Segment createSegment(DataSource dataSource) {
         String cubeSourceKey = DataSourceUtils.getSwiftSourceKey(dataSource).getId();
-        String path = String.format("/%s/cubes/%s/minor_seg",
+        String path = String.format("/%s/minor_cubes/%s/minor_seg",
                 System.getProperty("user.dir"),
                 cubeSourceKey);
         return new RealTimeSegmentImpl(new ResourceLocation(path, Types.StoreType.MEMORY), dataSource.getMetadata());

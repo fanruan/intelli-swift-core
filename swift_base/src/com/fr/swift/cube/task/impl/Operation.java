@@ -9,7 +9,7 @@ public enum Operation {
     TRANSPORT_TABLE,
     INDEX_COLUMN, INDEX_RELATION, INDEX_PATH, INDEX_COLUMN_PATH,
     //全局字典
-    MERGER_COLUMN,
+    MERGE_COLUMN_DICT,
 
     // 取数然后索引
     BUILD_TABLE,

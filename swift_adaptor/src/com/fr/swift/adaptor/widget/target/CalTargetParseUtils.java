@@ -7,7 +7,6 @@ import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
 import com.finebi.conf.structure.bean.filter.FilterBean;
 import com.finebi.conf.structure.dashboard.widget.field.WidgetBeanFieldValue;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
-import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.query.adapter.metric.GroupMetric;
 import com.fr.swift.query.adapter.metric.Metric;
@@ -22,6 +21,7 @@ import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.utils.BusinessTableUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -159,7 +159,7 @@ public class CalTargetParseUtils {
 
     private static Metric toMetric(String fieldId, int index, List<FineTarget> targetList) {
         SourceKey key = new SourceKey(fieldId);
-        String columnName = SwiftEncryption.decryptFieldId(fieldId)[1];
+        String columnName = BusinessTableUtils.getFieldNameByFieldId(fieldId);
         ColumnKey colKey = new ColumnKey(columnName);
 
         // TODO: 2018/3/31 指标的filter属性还没有传过来

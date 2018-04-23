@@ -5,9 +5,9 @@ import com.finebi.conf.internalimp.analysis.bean.operator.trans.ColumnRowTransBe
 import com.finebi.conf.internalimp.analysis.bean.operator.trans.ColumnTransValue;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.stable.StringUtils;
-import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.source.etl.columnrowtrans.ColumnRowTransOperator;
 import com.fr.swift.structure.Pair;
+import com.fr.swift.utils.BusinessTableUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +19,8 @@ import java.util.List;
 public class ColumnRowTransAdaptor {
     public static ColumnRowTransOperator fromColumnRowTransBean(ColumnRowTransBean bean, FineBusinessTable table) {
         ColumnTransValue value = bean.getValue();
-        String groupName = SwiftEncryption.decryptFieldId(value.getAccordingField())[1];
-        String lcName = SwiftEncryption.decryptFieldId(value.getFieldId())[1];
+        String groupName = BusinessTableUtils.getFieldNameByFieldId(value.getAccordingField());
+        String lcName = BusinessTableUtils.getFieldNameByFieldId(value.getFieldId());
         List<Pair<String, String>> lcValue = new ArrayList<Pair<String, String>>();
         for (int i = 0; i < value.getValues().size(); i++) {
             ColumnInitalItem item = value.getValues().get(i);

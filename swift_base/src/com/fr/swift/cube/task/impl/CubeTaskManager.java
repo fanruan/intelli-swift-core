@@ -27,10 +27,10 @@ public class CubeTaskManager implements TaskManager {
                 transportExec.add(task);
                 break;
             case INDEX_COLUMN:
+            case MERGE_COLUMN_DICT:
             case INDEX_RELATION:
             case INDEX_PATH:
             case INDEX_COLUMN_PATH:
-            case MERGER_COLUMN:
                 indexExec.add(task);
                 break;
             // 咸鱼任务 组任务 直接run了
