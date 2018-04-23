@@ -1,15 +1,14 @@
 package com.fr.swift.source.etl.union;
 
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftMetaDataImpl;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.source.etl.CreateSegmentForUnion1;
-import com.fr.swift.source.etl.CreateSegmentForUnion2;
+import com.fr.swift.source.etl.BaseCreateSegmentForUnion1Test;
+import com.fr.swift.source.etl.BaseCreateSegmentForUnion2Test;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
@@ -25,10 +24,10 @@ public class TestUnionOperator extends TestCase {
         try {
             Segment[] lSegment = new Segment[2];
             Segment[] rSegment = new Segment[2];
-            lSegment[0] = new CreateSegmentForUnion1().getSegment();
-            lSegment[1] = new CreateSegmentForUnion1().getSegment();
-            rSegment[0] = new CreateSegmentForUnion2().getSegment();
-            rSegment[1] = new CreateSegmentForUnion2().getSegment();
+            lSegment[0] = new BaseCreateSegmentForUnion1Test().getSegment();
+            lSegment[1] = new BaseCreateSegmentForUnion1Test().getSegment();
+            rSegment[0] = new BaseCreateSegmentForUnion2Test().getSegment();
+            rSegment[1] = new BaseCreateSegmentForUnion2Test().getSegment();
             List<Segment[]> list = new ArrayList<Segment[]>();
             list.add(lSegment);
             list.add(rSegment);

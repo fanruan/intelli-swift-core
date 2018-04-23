@@ -16,7 +16,7 @@ import com.fr.swift.source.SwiftMetaData;
 /**
  * Created by Handsome on 2017/12/28 0028 10:16
  */
-public class CreateSegmentForUnion2 {
+public class BaseCreateSegmentForUnion1Test {
     public Segment getSegment() {
         return new Segment() {
             @Override
@@ -26,7 +26,7 @@ public class CreateSegmentForUnion2 {
 
             @Override
             public int getRowCount() {
-                return 3;
+                return 9;
             }
 
             @Override
@@ -56,21 +56,20 @@ public class CreateSegmentForUnion2 {
 
             @Override
             public Column getColumn(ColumnKey key) {
-                /*if(key.getName().equals("column1")) {
-                    return new CreateColumn().getColumn();
+                if(key.getName().equals("column1")) {
+                    return new BaseCreateColumnTest().getColumn();
                 } else if(key.getName().equals("column2")) {
-                    return new CreateColumn().getColumn();
-                } else if(key.getName().equals("column3")) {
-                    return new CreateColumn2().getColumn();
-                } else {
-                    return new CreateColumn2().getColumn();
-                }*/
-                if(key.getName().equals("column3")) {
-                    return new CreateColumn2().getColumn();
-                } else if(key.getName().equals("column4")) {
-                    return new CreateColumn2().getColumn();
+                    return new BaseCreateColumnTest().getColumn();
                 }
                 return null;
+
+                /*
+                * else if(key.getName().equals("column3")) {
+                    return new BaseCreateColumn2Test().getColumn();
+                } else {
+                    return new BaseCreateColumn2Test().getColumn();
+                }
+                * */
             }
 
             @Override

@@ -15,7 +15,7 @@ import java.util.Comparator;
 /**
  * Created by Handsome on 2017/12/26 0026 09:28
  */
-public class CreateColumn {
+public class BaseCreateColumnTest {
     public Column getColumn() {
         return new Column() {
 
