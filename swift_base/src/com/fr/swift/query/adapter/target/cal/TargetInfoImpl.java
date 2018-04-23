@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by Lyon on 2018/4/8.
  */
-public class TargetInfo {
+public class TargetInfoImpl {
 
     private int targetLength;
     private List<Metric> metrics;
@@ -17,8 +17,8 @@ public class TargetInfo {
     private List<ResultTarget> targetsForShowList;
     private List<Aggregator> aggregatorListOfTargetsForShow;
 
-    public TargetInfo(List<Metric> metrics, List<GroupTarget> groupTargets,
-                      List<ResultTarget> targetsForShowList, List<Aggregator> aggregatorListOfTargetsForShow) {
+    public TargetInfoImpl(List<Metric> metrics, List<GroupTarget> groupTargets,
+                          List<ResultTarget> targetsForShowList, List<Aggregator> aggregatorListOfTargetsForShow) {
         this.metrics = metrics;
         this.groupTargets = groupTargets;
         this.targetsForShowList = targetsForShowList;

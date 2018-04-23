@@ -14,7 +14,7 @@ import com.fr.swift.query.adapter.target.GroupTarget;
 import com.fr.swift.query.adapter.target.cal.CalTargetType;
 import com.fr.swift.query.adapter.target.cal.ResultTarget;
 import com.fr.swift.query.adapter.target.cal.GroupTargetImpl;
-import com.fr.swift.query.adapter.target.cal.TargetInfo;
+import com.fr.swift.query.adapter.target.cal.TargetInfoImpl;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.DummyAggregator;
 import com.fr.swift.query.aggregator.SumAggregate;
@@ -43,7 +43,7 @@ public class CalTargetParseUtils {
      * @return
      * @throws Exception
      */
-    public static TargetInfo parseCalTarget(AbstractTableWidget widget) throws Exception {
+    public static TargetInfoImpl parseCalTarget(AbstractTableWidget widget) throws Exception {
         List<String> metricFieldIds = parseMetricTargetFieldIds(widget);
         List<String> relatedMetricFieldIds = parseRelatedFieldIds(widget, metricFieldIds);
         List<String> calTargetFieldIds = parseCalTargetFieldIds(widget);
@@ -80,7 +80,7 @@ public class CalTargetParseUtils {
         metricFieldIds.addAll(relatedMetricFieldIds);
         List<Metric> metrics = createMetrics(metricFieldIds, widget);
         // TODO: 2018/4/11 这边需要提供targetsFowShowList对应的Aggregator，用于结果的聚合
-        return new TargetInfo(metrics, calculatorInfoList, targetsForShowList, aggregatorListOfTargetsForShow);
+        return new TargetInfoImpl(metrics, calculatorInfoList, targetsForShowList, aggregatorListOfTargetsForShow);
     }
 
     private static List<Metric> createMetrics(List<String> fieldIds, AbstractTableWidget widget) throws Exception {

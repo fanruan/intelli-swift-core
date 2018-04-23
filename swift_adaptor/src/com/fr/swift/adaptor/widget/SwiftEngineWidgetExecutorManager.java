@@ -31,15 +31,16 @@ import com.finebi.conf.structure.result.control.time.BIQuarterResult;
 import com.finebi.conf.structure.result.control.time.BIYearControlResult;
 import com.finebi.conf.structure.result.control.tree.BITreeResult;
 import com.finebi.conf.structure.result.table.BIComplexGroupResult;
-import com.finebi.conf.structure.result.table.BICrossNode;
 import com.finebi.conf.structure.result.table.BICrossTableResult;
 import com.finebi.conf.structure.result.table.BIGroupNode;
 import com.finebi.conf.structure.result.table.BITableResult;
+import com.fr.swift.adaptor.struct.node.BIGroupNodeAdaptor;
 import com.fr.swift.adaptor.widget.date.MonthControlWidgetAdaptor;
 import com.fr.swift.adaptor.widget.date.QuarterControlWidgetAdaptor;
 import com.fr.swift.adaptor.widget.date.YearControlWidgetAdaptor;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.result.node.GroupNode;
 
 import java.util.List;
 import java.util.Map;
@@ -58,7 +59,22 @@ public class SwiftEngineWidgetExecutorManager implements EngineWidgetExecutorMan
 
     @Override
     public BIComplexGroupResult visit(VanChartWidget vanChartWidget) {
-        return null;
+        return new BIComplexGroupResult() {
+            @Override
+            public int size() {
+                return 0;
+            }
+
+            @Override
+            public BIGroupNode getNode(int index) {
+                return new BIGroupNodeAdaptor(new GroupNode(-1, null));
+            }
+
+            @Override
+            public ResultType getResultType() {
+                return ResultType.BICOMPLEXGROUP;
+            }
+        };
     }
 
     @Override

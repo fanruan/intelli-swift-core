@@ -15,7 +15,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.adapter.metric.Metric;
 import com.fr.swift.query.adapter.target.GroupTarget;
-import com.fr.swift.query.adapter.target.cal.TargetInfo;
+import com.fr.swift.query.adapter.target.cal.TargetInfoImpl;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.result.XGroupByResultSet;
 import com.fr.swift.result.node.xnode.TopGroupNode;
@@ -42,7 +42,7 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor{
         BICrossNode crossNode = null;
         XGroupByResultSet resultSet = null;
         try {
-            TargetInfo targetInfo = CalTargetParseUtils.parseCalTarget(widget);
+            TargetInfoImpl targetInfo = CalTargetParseUtils.parseCalTarget(widget);
             QueryInfo queryInfo = buildQueryInfo(widget, targetInfo.getMetrics());
             resultSet = (XGroupByResultSet) QueryRunnerProvider.getInstance().executeQuery(queryInfo);
             // 同时处理交叉表的计算指标

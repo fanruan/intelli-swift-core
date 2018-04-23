@@ -30,7 +30,7 @@ import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.adapter.dimension.GroupDimension;
 import com.fr.swift.query.adapter.metric.Metric;
 import com.fr.swift.query.adapter.target.GroupTarget;
-import com.fr.swift.query.adapter.target.cal.TargetInfo;
+import com.fr.swift.query.adapter.target.cal.TargetInfoImpl;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
@@ -66,7 +66,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         BIGroupNode resultNode;
         SwiftResultSet resultSet;
         try {
-            TargetInfo targetInfo = CalTargetParseUtils.parseCalTarget(widget);
+            TargetInfoImpl targetInfo = CalTargetParseUtils.parseCalTarget(widget);
             resultSet = QueryRunnerProvider.getInstance().executeQuery(buildQueryInfo(widget, targetInfo));
             GroupNode groupNode = (GroupNode) ((NodeResultSet) resultSet).getNode();
             // 取出实际查询的指标
@@ -111,7 +111,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         }
     }
 
-    private static QueryInfo buildQueryInfo(TableWidget widget, TargetInfo targetInfo) throws Exception {
+    private static QueryInfo buildQueryInfo(TableWidget widget, TargetInfoImpl targetInfo) throws Exception {
         Cursor cursor = null;
         String queryId = widget.getWidgetId();
         SourceKey sourceKey = getSourceKey(widget);

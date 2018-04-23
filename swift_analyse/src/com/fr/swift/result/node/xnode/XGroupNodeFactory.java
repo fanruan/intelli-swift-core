@@ -1,6 +1,6 @@
 package com.fr.swift.result.node.xnode;
 
-import com.fr.swift.query.adapter.target.cal.TargetInfo;
+import com.fr.swift.query.adapter.target.cal.TargetInfoImpl;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.structure.iterator.Filter;
 import com.fr.swift.structure.iterator.FilteredIterator;
@@ -12,7 +12,6 @@ import com.fr.swift.result.node.GroupNode;
 import com.fr.swift.result.node.GroupNodeAggregateUtils;
 import com.fr.swift.result.node.GroupNodeFactory;
 import com.fr.swift.result.node.NodeType;
-import com.fr.swift.result.node.cal.TargetCalculatorUtils;
 import com.fr.swift.structure.iterator.IteratorUtils;
 import com.fr.swift.result.node.iterator.PostOrderNodeIterator;
 import com.fr.swift.util.function.Function;
@@ -35,7 +34,7 @@ public class XGroupNodeFactory {
      * @return 交叉表计算结果的node根节点
      * @throws Exception
      */
-    public static XGroupNode createXGroupNode(XGroupByResultSet resultSet, TargetInfo targetInfo) throws Exception {
+    public static XGroupNode createXGroupNode(XGroupByResultSet resultSet, TargetInfoImpl targetInfo) throws Exception {
         // 构建节点
         XLeftNode xLeftNode = XLeftNodeFactory.createXLeftNode(resultSet, targetInfo.getTargetLength());
         // 处理计算指标
