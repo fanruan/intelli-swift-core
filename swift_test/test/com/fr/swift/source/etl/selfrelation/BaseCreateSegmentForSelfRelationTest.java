@@ -16,7 +16,7 @@ import com.fr.swift.source.SwiftMetaData;
 /**
  * Created by Handsome on 2018/1/19 0019 11:55
  */
-public class CreateSegmentForSelfRelation {
+public class BaseCreateSegmentForSelfRelationTest {
 
     public Segment getSegment() {
         return new Segment() {
@@ -58,19 +58,19 @@ public class CreateSegmentForSelfRelation {
             @Override
             public Column getColumn(ColumnKey key) {
                 if(key.getName().equals("ID")) {
-                    return new CreateColumnForSelfRelation1().getColumn();
+                    return new BaseCreateColumnForSelfRelation1Test().getColumn();
                 } else if(key.getName().equals("NAME")) {
-                    return new CreateColumnForSelfRelation2().getColumn();
+                    return new BaseCreateColumnForSelfRelation2Test().getColumn();
                 }else if(key.getName().equals("VALUE")) {
-                    return new CreateColumnForSelfRelation3().getColumn();
+                    return new BaseCreateColumnForSelfRelation3Test().getColumn();
                 }else if(key.getName().equals("region")) {
-                    return new CreateColumnForSelfRelation4().getColumn();
+                    return new BaseCreateColumnForSelfRelation4Test().getColumn();
                 }else if(key.getName().equals("mmm")) {
-                    return new CreateColumnForSelfRelation5().getColumn();
+                    return new BaseCreateColumnForSelfRelation5Test().getColumn();
                 }else if(key.getName().equals("ddd")) {
-                    return new CreateColumnForSelfRelation6().getColumn();
+                    return new BaseCreateColumnForSelfRelation6Test().getColumn();
                 }else{
-                    return new CreateColumnForSelfRelation7().getColumn();
+                    return new BaseCreateColumnForSelfRelation7Test().getColumn();
                 }
             }
 

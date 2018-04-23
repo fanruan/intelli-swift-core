@@ -1,4 +1,4 @@
-package com.fr.swift.source.etl.rowcal.rank;
+package com.fr.swift.source.etl.selfrelation;
 
 import com.fr.swift.Temps.TempDictColumn;
 import com.fr.swift.bitmap.ImmutableBitMap;
@@ -13,9 +13,9 @@ import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import java.util.Comparator;
 
 /**
- * Created by Handsome on 2018/3/4 0004 15:04
+ * Created by Handsome on 2018/1/19 0019 11:31
  */
-public class CreateColumn1 {
+public class BaseCreateColumnForSelfRelation3Test {
     public Column getColumn() {
         return new Column() {
 
@@ -42,17 +42,22 @@ public class CreateColumn1 {
     }
 
     private BitmapIndexedColumn createBitmapColumn() {
-        final MutableBitMap[] bitMaps = new MutableBitMap[3];
+        final MutableBitMap[] bitMaps = new MutableBitMap[6];
         bitMaps[0] = BitSetMutableBitMap.newInstance();
         bitMaps[1] = BitSetMutableBitMap.newInstance();
         bitMaps[2] = BitSetMutableBitMap.newInstance();
+        bitMaps[3] = BitSetMutableBitMap.newInstance();
+        bitMaps[4] = BitSetMutableBitMap.newInstance();
+        bitMaps[5] = BitSetMutableBitMap.newInstance();
         bitMaps[0].add(0);
         bitMaps[0].add(1);
         bitMaps[0].add(2);
-        bitMaps[0].add(3);
-        bitMaps[1].add(4);
-        bitMaps[1].add(5);
-        bitMaps[2].add(6);
+        bitMaps[1].add(3);
+        bitMaps[2].add(4);
+        bitMaps[3].add(5);
+        bitMaps[3].add(8);
+        bitMaps[4].add(6);
+        bitMaps[5].add(7);
         return new BitmapIndexedColumn() {
             @Override
             public void flush() {
@@ -66,7 +71,7 @@ public class CreateColumn1 {
 
             @Override
             public ImmutableBitMap getBitMapIndex(int index) {
-                if (index < bitMaps.length) {
+                if(index < bitMaps.length) {
                     return bitMaps[index];
                 }
                 return null;
@@ -91,13 +96,13 @@ public class CreateColumn1 {
     }
 
     private DictionaryEncodedColumn createDicColumn() {
-        final int[] keys = {1, 2, 3};
-        final int[] index = {0, 0, 0, 0, 1, 1, 2};
+        final String[] keys = {"123","333","321","","323","777"};
+        final int[] index = {0,0,0,1,2,3,4,5,3};
         return new TempDictColumn() {
 
             @Override
             public int size() {
-                return 7;
+                return 6;
             }
 
             @Override
@@ -116,8 +121,8 @@ public class CreateColumn1 {
 
                     @Override
                     public int compare(Object o3, Object o4) {
-                        Integer o1 = (Integer) o3;
-                        Integer o2 = (Integer) o4;
+                        String o1 = (String)o3;
+                        String o2 = (String)o4;
                         return o1.compareTo(o2);
                     }
                 };

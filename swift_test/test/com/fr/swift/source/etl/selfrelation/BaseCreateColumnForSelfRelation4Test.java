@@ -15,7 +15,7 @@ import java.util.Comparator;
 /**
  * Created by Handsome on 2018/1/19 0019 11:38
  */
-public class CreateColumnForSelfRelation4 {
+public class BaseCreateColumnForSelfRelation4Test {
     public Column getColumn() {
         return new Column() {
 
