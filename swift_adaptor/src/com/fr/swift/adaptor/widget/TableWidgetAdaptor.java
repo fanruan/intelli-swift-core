@@ -114,7 +114,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         String queryId = widget.getWidgetId();
         SourceKey sourceKey = getSourceKey(widget);
         List<Dimension> dimensions = getDimensions(sourceKey, widget.getDimensionList(), widget.getTargetList());
-        FilterInfo filterInfo = getFilterInfo(widget);
+        FilterInfo filterInfo = getFilterInfo(widget, dimensions);
         GroupTarget[] targets = getTargets(widget);
         Expander expander = null;
         return new GroupQueryInfo(cursor, queryId, sourceKey, filterInfo,
@@ -123,12 +123,23 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
                 targets, expander);
     }
 
-    private static FilterInfo getFilterInfo(TableWidget widget) throws Exception {
+    private static FilterInfo getFilterInfo(TableWidget widget, List<Dimension> dimensions) throws Exception {
         List<FilterInfo> filterInfoList = new ArrayList<FilterInfo>();
         dealWithWidgetFilter(filterInfoList, widget);
         dealWithLink(filterInfoList, widget);
         dealWithDrill(filterInfoList, widget);
+        dealWithDimensionDirectFilter(filterInfoList, dimensions);
         return new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
+    }
+
+    //维度上的直接过滤，提取出来
+    private static void dealWithDimensionDirectFilter(List<FilterInfo> filterInfoList, List<Dimension> dimensions) {
+        for (Dimension dimension : dimensions) {
+            FilterInfo filter = dimension.getFilter();
+            if (filter != null && !filter.isMatchFilter()) {
+                filterInfoList.add(dimension.getFilter());
+            }
+        }
     }
 
     private static void dealWithDrill(List<FilterInfo> filterInfoList, TableWidget widget) throws Exception {

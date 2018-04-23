@@ -23,4 +23,11 @@ public class StringAggregateValue implements AggregatorValue<String> {
     public String calculateValue() {
         return value;
     }
+
+    @Override
+    public Object clone() {
+        StringAggregateValue value = new StringAggregateValue();
+        value.value = this.value;
+        return value;
+    }
 }
