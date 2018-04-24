@@ -2,6 +2,7 @@ package com.fr.swift.config.conf.service;
 
 import com.fr.swift.config.IConfigSegment;
 import com.fr.swift.config.IMetaData;
+import com.fr.swift.source.SourceKey;
 
 import java.util.Map;
 
@@ -52,6 +53,8 @@ public interface SwiftConfigService {
      * @return
      */
     IMetaData getMetaDataByKey(String sourceKey);
+
+    boolean containsMeta(SourceKey sourceKey);
 
     /**
      * 批量增加Segment

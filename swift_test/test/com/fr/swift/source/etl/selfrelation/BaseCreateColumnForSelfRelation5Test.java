@@ -1,5 +1,6 @@
 package com.fr.swift.source.etl.selfrelation;
 
+import com.fr.general.ComparatorUtils;
 import com.fr.swift.Temps.TempDictColumn;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
@@ -72,7 +73,7 @@ public class BaseCreateColumnForSelfRelation5Test {
 
             @Override
             public ImmutableBitMap getBitMapIndex(int index) {
-                if(index < bitMaps.length) {
+                if (index < bitMaps.length) {
                     return bitMaps[index];
                 }
                 return null;
@@ -97,8 +98,8 @@ public class BaseCreateColumnForSelfRelation5Test {
     }
 
     private DictionaryEncodedColumn createDicColumn() {
-        final String[] keys = {"11","22","33","1","6",""};
-        final int[] index = {0,1,2,3,4,5,5,4,5};
+        final String[] keys = {"11", "22", "33", "1", "6", ""};
+        final int[] index = {0, 1, 2, 3, 4, 5, 5, 4, 5};
         return new TempDictColumn() {
 
             @Override
@@ -117,13 +118,23 @@ public class BaseCreateColumnForSelfRelation5Test {
             }
 
             @Override
+            public int getIndex(Object value) {
+                for (int i = 0; i < keys.length; i++) {
+                    if (ComparatorUtils.equals(keys[i], value)) {
+                        return i;
+                    }
+                }
+                return super.getIndex(value);
+            }
+
+            @Override
             public Comparator getComparator() {
                 return new Comparator() {
 
                     @Override
                     public int compare(Object o3, Object o4) {
-                        String o1 = (String)o3;
-                        String o2 = (String)o4;
+                        String o1 = (String) o3;
+                        String o2 = (String) o4;
                         return o1.compareTo(o2);
                     }
                 };
