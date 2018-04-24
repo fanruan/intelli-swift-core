@@ -1,6 +1,7 @@
 package com.fr.swift.adaptor.widget;
 
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
+import com.fr.swift.adaptor.transformer.SortAdaptor;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.cal.info.GroupQueryInfo;
 import com.fr.swift.cal.result.group.AllCursor;
@@ -40,7 +41,7 @@ public class QueryUtils {
             String fieldId = dimension.getFieldId();
             SourceKey sourceKey = new SourceKey(BusinessTableUtils.getSourceIdByFieldId(fieldId));
             String fieldName = BusinessTableUtils.getFieldNameByFieldId(fieldId);
-            GroupDimension groupDimension = new GroupDimension(0, sourceKey, new ColumnKey(fieldName), GroupAdaptor.adaptDashboardGroup(dimension.getGroup()), null, null);
+            GroupDimension groupDimension = new GroupDimension(0, sourceKey, new ColumnKey(fieldName), GroupAdaptor.adaptDashboardGroup(dimension.getGroup()), SortAdaptor.transformDimensionSort(dimension.getSort()), null);
             GroupQueryInfo valueInfo = new GroupQueryInfo(new AllCursor(), id, sourceKey, filterInfo, new Dimension[]{groupDimension}, new Metric[0], new GroupTarget[0], null);
             NodeResultSetImpl nodeResultSet = (NodeResultSetImpl) QueryRunnerProvider.getInstance().executeQuery(valueInfo);
             SwiftNode n = nodeResultSet.getNode();
