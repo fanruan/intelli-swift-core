@@ -7,7 +7,7 @@ import com.fr.swift.config.conf.MetaDataConfig;
 import com.fr.swift.config.conf.MetaDataConvertUtil;
 import com.fr.swift.config.conf.SegmentConfig;
 import com.fr.swift.config.pojo.SwiftMetaDataPojo;
-import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SourceKey;
 import com.fr.transaction.Configurations;
 import com.fr.transaction.Worker;
 
@@ -88,6 +88,11 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
             metaDataCache.put(sourceKey, MetaDataConvertUtil.toSwiftMetadataPojo(metaData));
         }
         return metaData;
+    }
+
+    @Override
+    public boolean containsMeta(SourceKey sourceKey) {
+        return metaDataConfig.contains(sourceKey);
     }
 
     @Override

@@ -18,9 +18,9 @@ public class XGroupQueryInfo extends GroupQueryInfo {
     private Expander xExpander;
     private Dimension[] colDimensions;
 
-    public XGroupQueryInfo(Cursor cursor, String queryID, SourceKey table, FilterInfo filterInfo, Dimension[] dimensions,
+    public XGroupQueryInfo(Cursor cursor, String queryId, SourceKey table, FilterInfo filterInfo, Dimension[] dimensions,
                            Dimension[] colDimensions, Metric[] metrics, GroupTarget[] targets, Expander expander) {
-        super(queryID, table, null, null);
+        super(queryId, table, null, null);
         this.colDimensions = colDimensions;
     }
 

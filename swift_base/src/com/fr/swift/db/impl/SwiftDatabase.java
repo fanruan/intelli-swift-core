@@ -1,8 +1,9 @@
 package com.fr.swift.db.impl;
 
 import com.fr.swift.config.IMetaData;
-import com.fr.swift.config.conf.MetaDataConfig;
 import com.fr.swift.config.conf.MetaDataConvertUtil;
+import com.fr.swift.config.conf.service.SwiftConfigService;
+import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.source.SourceKey;
@@ -18,6 +19,8 @@ import java.util.Map.Entry;
  * @date 2018/3/28
  */
 public class SwiftDatabase implements Database {
+    private SwiftConfigService confSvc = SwiftConfigServiceProvider.getInstance();
+
     @Override
     public synchronized Table createTable(SourceKey tableKey, SwiftMetaData meta) throws SQLException {
         if (existsTable(tableKey)) {
@@ -25,7 +28,7 @@ public class SwiftDatabase implements Database {
         }
 
         Table table = new SwiftTable(tableKey, meta);
-        MetaDataConfig.getInstance().addMetaData(tableKey.getId(), MetaDataConvertUtil.convert2ConfigMetaData(meta));
+        confSvc.addMetaData(tableKey.getId(), MetaDataConvertUtil.convert2ConfigMetaData(meta));
         return table;
     }
 
@@ -41,7 +44,7 @@ public class SwiftDatabase implements Database {
     @Override
     public synchronized List<Table> getAllTables() {
         List<Table> tables = new ArrayList<Table>();
-        for (Entry<String, IMetaData> entry : MetaDataConfig.getInstance().getAllMetaData().entrySet()) {
+        for (Entry<String, IMetaData> entry : confSvc.getAllMetaData().entrySet()) {
             SourceKey tableKey = new SourceKey(entry.getKey());
             SwiftMetaData meta = MetaDataConvertUtil.toSwiftMetadata(entry.getValue());
             tables.add(new SwiftTable(tableKey, meta));
@@ -51,7 +54,7 @@ public class SwiftDatabase implements Database {
 
     @Override
     public synchronized boolean existsTable(SourceKey tableKey) {
-        return MetaDataConfig.getInstance().contains(tableKey);
+        return confSvc.containsMeta(tableKey);
     }
 
     @Override
@@ -59,7 +62,7 @@ public class SwiftDatabase implements Database {
         if (!existsTable(tableKey)) {
             throw new SQLException("table not exists");
         }
-        MetaDataConfig.getInstance().modifyMetaData(tableKey.getId(), MetaDataConvertUtil.convert2ConfigMetaData(meta));
+        confSvc.updateMetaData(tableKey.getId(), MetaDataConvertUtil.convert2ConfigMetaData(meta));
     }
 
     @Override
@@ -67,7 +70,7 @@ public class SwiftDatabase implements Database {
         if (!existsTable(tableKey)) {
             throw new SQLException("table not exists");
         }
-        MetaDataConfig.getInstance().removeMetaData(tableKey.getId());
+        confSvc.removeMetaDatas(tableKey.getId());
     }
 
     private static final Database INSTANCE = new SwiftDatabase();
