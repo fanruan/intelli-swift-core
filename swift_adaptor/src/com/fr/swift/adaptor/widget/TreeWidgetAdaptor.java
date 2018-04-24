@@ -14,6 +14,7 @@ import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
+import com.fr.swift.util.pinyin.BIPinyinUtils;
 import edu.emory.mathcs.backport.java.util.Arrays;
 
 import java.util.ArrayList;
@@ -80,7 +81,7 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor{
             String value = values.get(j).toString();
             // 计算id的结构，前端依据id把列表转为树结构
             String id = pId.equals("0") ? j + 1 + "" : pId + "_" + (j + 1);
-            boolean isContained = value.contains(keyWord);
+            boolean isContained = BIPinyinUtils.isMatch(keyWord, value);
             if (!isContained) {
                 List<BITreeItem> childrenItems = new ArrayList<BITreeItem>();
                 if (dimensionIndex < dimensions.size() - 1) {
