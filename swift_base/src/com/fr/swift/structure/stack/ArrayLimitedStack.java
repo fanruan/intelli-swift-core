@@ -1,5 +1,6 @@
 package com.fr.swift.structure.stack;
 
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 /**
@@ -59,5 +60,11 @@ public class ArrayLimitedStack<T> implements LimitedStack<T> {
             throw new NoSuchElementException("LimitedStack underflow");
         }
         return (T) items[size - 1];
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public T[] toArray() {
+        return (T[]) Arrays.copyOf(items, items.length);
     }
 }

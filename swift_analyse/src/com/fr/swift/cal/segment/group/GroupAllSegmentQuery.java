@@ -1,5 +1,6 @@
 package com.fr.swift.cal.segment.group;
 
+import com.fr.swift.query.adapter.dimension.Expander;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.group.by.GroupByUtils;
@@ -19,21 +20,25 @@ import java.util.List;
  */
 public class GroupAllSegmentQuery extends AbstractGroupSegmentQuery{
 
+    protected int targetLength;
     protected List<Sort> indexSorts;
     protected int[] cursor;
+    protected Expander rowExpander;
 
-    public GroupAllSegmentQuery(List<Column> dimensions, List<Column> metrics, List<Aggregator> aggregators,
-                                DetailFilter filter, List<Sort> indexSorts) {
+    public GroupAllSegmentQuery(int targetLength, List<Column> dimensions, List<Column> metrics, List<Aggregator> aggregators,
+                                DetailFilter filter, List<Sort> indexSorts, Expander rowExpander) {
         super(dimensions, metrics, aggregators, filter);
+        this.targetLength = targetLength;
         this.indexSorts = indexSorts;
+        this.rowExpander = rowExpander;
     }
 
     @Override
     public NodeResultSet getQueryResult() {
         cursor = new int[dimensions.size()];
         Arrays.fill(cursor, 0);
-        GroupByResultSet resultSet = GroupByUtils.query(dimensions, metrics, aggregators, filter, indexSorts, cursor, -1);
-        SwiftNode node = GroupNodeFactory.createNode(resultSet, aggregators.size());
-        return new NodeResultSetImpl(node);
+        GroupByResultSet resultSet = GroupByUtils.query(dimensions, metrics, aggregators, filter, indexSorts, rowExpander, cursor, -1);
+        SwiftNode node = GroupNodeFactory.createNode(resultSet, targetLength);
+        return new NodeResultSetImpl<SwiftNode>(node);
     }
 }

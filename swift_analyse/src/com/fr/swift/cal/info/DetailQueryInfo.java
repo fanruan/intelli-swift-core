@@ -1,7 +1,7 @@
 package com.fr.swift.cal.info;
 
 import com.fr.swift.cal.builder.QueryType;
-import com.fr.swift.cal.result.group.Cursor;
+import com.fr.swift.query.adapter.dimension.Cursor;
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.query.adapter.dimension.Dimension;

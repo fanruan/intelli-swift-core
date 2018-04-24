@@ -1,5 +1,6 @@
 package com.fr.swift.result.node.cal;
 
+import com.fr.swift.query.adapter.target.GroupTarget;
 import com.fr.swift.query.adapter.target.cal.CalTargetType;
 import com.fr.swift.query.adapter.target.cal.TargetCalculatorInfo;
 import com.fr.swift.query.aggregator.AggregatorValue;
@@ -17,8 +18,8 @@ import java.util.List;
  */
 public class TargetCalculatorFactory {
 
-    public static TargetCalculator create(TargetCalculatorInfo info, GroupNode groupNode) {
-        CalTargetType type = info.getType();
+    public static TargetCalculator create(GroupTarget target, GroupNode groupNode) {
+        CalTargetType type = target.type();
         Iterator<List<AggregatorValue[]>> iterator = createIterator(type, groupNode);
         switch (type) {
             case ALL_SUM_OF_ALL: {
@@ -27,26 +28,26 @@ public class TargetCalculatorFactory {
                     List<AggregatorValue[]> aggregatorValues = ((XLeftNode) groupNode).getValueArrayList();
                     values = new Double[aggregatorValues.size()];
                     for (int i = 0; i < aggregatorValues.size(); i++) {
-                        values[i] = aggregatorValues.get(i)[info.getParamIndex()].calculate();
+                        values[i] = aggregatorValues.get(i)[target.paramIndexes()[0]].calculate();
                     }
                 } else {
-                    Double value = groupNode.getAggregatorValue()[info.getParamIndex()].calculate();
+                    Double value = groupNode.getAggregatorValue()[target.paramIndexes()[0]].calculate();
                     values = new Double[] { value };
                 }
-                return new AllSumOfAllCalculator(info.getParamIndex(), info.getResultIndex(), iterator, values);
+                return new AllSumOfAllCalculator(target.paramIndexes()[0], target.resultIndex(), iterator, values);
             }
             case ALL_AVG:
-                return new AllAverageCalculator(info.getParamIndex(), info.getResultIndex(), iterator);
+                return new AllAverageCalculator(target.paramIndexes()[0], target.resultIndex(), iterator);
             case ALL_SUM_OF_ABOVE:
-                return new AllSumOfAboveCalculator(info.getParamIndex(), info.getResultIndex(), iterator);
+                return new AllSumOfAboveCalculator(target.paramIndexes()[0], target.resultIndex(), iterator);
             case ALL_MAX:
-                return new AllMaxOrMinCalculator(info.getParamIndex(), info.getResultIndex(), iterator, true);
+                return new AllMaxOrMinCalculator(target.paramIndexes()[0], target.resultIndex(), iterator, true);
             case ALL_MIN:
-                return new AllMaxOrMinCalculator(info.getParamIndex(), info.getResultIndex(), iterator, false);
+                return new AllMaxOrMinCalculator(target.paramIndexes()[0], target.resultIndex(), iterator, false);
             case ALL_RANK_ASC:
-                return new AllRankCalculator(info.getParamIndex(), info.getResultIndex(), iterator, true);
+                return new AllRankCalculator(target.paramIndexes()[0], target.resultIndex(), iterator, true);
             case ALL_RANK_DEC:
-                return new AllRankCalculator(info.getParamIndex(), info.getResultIndex(), iterator, false);
+                return new AllRankCalculator(target.paramIndexes()[0], target.resultIndex(), iterator, false);
         }
         return null;
     }

@@ -42,4 +42,10 @@ public interface LimitedStack<T> {
      * @return
      */
     T peek();
+
+    /**
+     * 长度为limit，空值用null填充
+     * @return
+     */
+    T[] toArray();
 }

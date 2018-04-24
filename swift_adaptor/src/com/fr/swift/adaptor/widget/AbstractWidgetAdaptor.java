@@ -38,19 +38,6 @@ public abstract class AbstractWidgetAdaptor {
         return BusinessTableUtils.getFieldNameByFieldId(fieldId);
     }
 
-    protected static Sort adaptSort(FineDimensionSort sort, int index) {
-        switch (sort.getType()) {
-            case BIReportConstant.SORT.ASC:
-                return new AscSort(index);
-            case BIReportConstant.SORT.DESC:
-                return new DescSort(index);
-            case BIReportConstant.SORT.NONE:
-                return new NoneSort();
-            default:
-                return null;
-        }
-    }
-
     static void setMaxMinNumValue(String queryId, String fieldId, List<FineFilter> fineFilters, NumberMaxAndMinValue value) throws Exception {
         SourceKey sourceKey = getSourceKey(fieldId);
         FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(fineFilters);

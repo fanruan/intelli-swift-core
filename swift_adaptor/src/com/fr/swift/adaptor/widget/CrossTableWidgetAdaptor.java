@@ -7,15 +7,15 @@ import com.fr.swift.adaptor.struct.node.BICrossNodeAdaptor;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.widget.target.CalTargetParseUtils;
 import com.fr.swift.cal.QueryInfo;
-import com.fr.swift.cal.info.Expander;
+import com.fr.swift.query.adapter.dimension.Expander;
 import com.fr.swift.cal.info.XGroupQueryInfo;
-import com.fr.swift.cal.result.group.Cursor;
+import com.fr.swift.query.adapter.dimension.Cursor;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.adapter.metric.Metric;
 import com.fr.swift.query.adapter.target.GroupTarget;
-import com.fr.swift.query.adapter.target.cal.TargetInfo;
+import com.fr.swift.query.adapter.target.cal.TargetInfoImpl;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.result.XGroupByResultSet;
 import com.fr.swift.result.node.xnode.TopGroupNode;
@@ -42,7 +42,7 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor{
         BICrossNode crossNode = null;
         XGroupByResultSet resultSet = null;
         try {
-            TargetInfo targetInfo = CalTargetParseUtils.parseCalTarget(widget);
+            TargetInfoImpl targetInfo = CalTargetParseUtils.parseCalTarget(widget);
             QueryInfo queryInfo = buildQueryInfo(widget, targetInfo.getMetrics());
             resultSet = (XGroupByResultSet) QueryRunnerProvider.getInstance().executeQuery(queryInfo);
             // 同时处理交叉表的计算指标
@@ -55,7 +55,7 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor{
         return new CrossTableResult(crossNode, false, false, false, false);
     }
 
-    static class CrossTableResult implements BICrossTableResult {
+    private static class CrossTableResult implements BICrossTableResult {
         private BICrossNode node;
         private boolean hasHorizontalNextPage;
         private boolean hasHorizontalPreviousPage;
@@ -101,7 +101,7 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor{
     }
 
 
-    static QueryInfo buildQueryInfo(CrossTableWidget widget, List<Metric> metrics) throws Exception {
+    private static QueryInfo buildQueryInfo(CrossTableWidget widget, List<Metric> metrics) throws Exception {
         Cursor cursor = null;
         String queryId = widget.getWidgetId();
         FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());

@@ -1,7 +1,7 @@
 package com.fr.swift.cal.info;
 
 import com.fr.swift.cal.QueryInfo;
-import com.fr.swift.cal.result.group.Cursor;
+import com.fr.swift.query.adapter.dimension.Cursor;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.source.SourceKey;
 

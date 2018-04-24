@@ -5,8 +5,10 @@ import com.finebi.conf.internalimp.dashboard.widget.control.tree.TreeListWidget;
 import com.finebi.conf.structure.result.control.tree.BITreeItem;
 import com.finebi.conf.structure.result.control.tree.BITreeListResult;
 import com.fr.stable.StringUtils;
+import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.filter.info.FilterInfo;
 
 import java.util.List;
 
@@ -21,16 +23,10 @@ public class TreeListWidgetAdaptor {
         BITreeListResult result = null;
         try {
             TreeOptionsBean bean = treeWidget.getValue().getOptions().getTreeOptions();
-            List<BITreeItem> treeItems;
-            String keyWord = bean.getKeyword();
-            if (StringUtils.isEmpty(keyWord)) {
-                treeItems = TreeWidgetAdaptor.createTreeItemList(treeWidget.getWidgetId(), bean, treeWidget.getFilters(),
-                        treeWidget.getDimensionList());
-            } else {
-                treeItems = TreeWidgetAdaptor.createSearchItemList(0, treeWidget.getWidgetId(), keyWord, "0", bean.getSelectedValues(),
-                        new String[0], treeWidget.getFilters(), treeWidget.getDimensionList());
-            }
+            FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(treeWidget.getFilters());
             // TODO: 2018/4/13 BITreeResult暂时不分页
+            List<BITreeItem> treeItems = TreeWidgetAdaptor.createTreeItemList(treeWidget.getWidgetId(), bean,
+                    filterInfo, treeWidget.getDimensionList());
             result = new TreeListResult(false, treeItems);
         } catch (Exception e) {
             LOGGER.error(e);
