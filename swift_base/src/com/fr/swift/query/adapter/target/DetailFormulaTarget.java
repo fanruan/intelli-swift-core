@@ -14,11 +14,6 @@ public class DetailFormulaTarget extends AbstractQueryColumn implements DetailTa
     }
 
     @Override
-    public FilterInfo getFilter() {
-        return null;
-    }
-
-    @Override
     public int[] paramIndexes() {
         return new int[0];
     }

@@ -11,13 +11,6 @@ import com.fr.swift.query.filter.info.FilterInfo;
 public interface Target extends QueryColumn{
 
     /**
-     * 指标的结果过滤
-     *
-     * @return
-     */
-    FilterInfo getFilter();
-
-    /**
      * 计算参数的索引
      * eg：处理的中间结果为result = [2, 3, 1, null, null]，假设当前是公式计算指标，paramIndexes = [0, 2]
      * 则result[0]和result[2]为公式计算的参数

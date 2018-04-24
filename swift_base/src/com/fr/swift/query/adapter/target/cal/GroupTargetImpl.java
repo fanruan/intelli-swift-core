@@ -13,27 +13,19 @@ public class GroupTargetImpl extends AbstractQueryColumn implements GroupTarget 
     private int resultIndex;
     private int[] paramIndexes;
     private CalTargetType type;
-    private FilterInfo filterInfo;
     private Aggregator aggregator;
 
-    public GroupTargetImpl(int queryIndex, int resultIndex, int[] paramIndexes, CalTargetType type,
-                           FilterInfo filterInfo, Aggregator aggregator) {
+    public GroupTargetImpl(int queryIndex, int resultIndex, int[] paramIndexes, CalTargetType type, Aggregator aggregator) {
         super(queryIndex);
         this.resultIndex = resultIndex;
         this.paramIndexes = paramIndexes;
         this.type = type;
-        this.filterInfo = filterInfo;
         this.aggregator = aggregator;
     }
 
     @Override
     public Aggregator getAggregator() {
         return aggregator;
-    }
-
-    @Override
-    public FilterInfo getFilter() {
-        return filterInfo;
     }
 
     @Override

@@ -140,22 +140,22 @@ public class CalTargetParseUtils {
         switch (type) {
             case BIDesignConstants.DESIGN.CAL_TARGET.FORMULA:
             case BIDesignConstants.DESIGN.CAL_TARGET.SUM_OF_ABOVE:
-                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_SUM_OF_ABOVE, null, new DummyAggregator());
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_SUM_OF_ABOVE, new DummyAggregator());
             case BIDesignConstants.DESIGN.CAL_TARGET.SUM_OF_ABOVE_IN_GROUP:
             case BIDesignConstants.DESIGN.CAL_TARGET.SUM_OF_ALL_SUM:
-                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_SUM_OF_ALL, null, new DummyAggregator());
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_SUM_OF_ALL, new DummyAggregator());
             case BIDesignConstants.DESIGN.CAL_TARGET.SUM_OF_ALL_AVG:
-                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_AVG, null, new DummyAggregator());
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_AVG, new DummyAggregator());
             case BIDesignConstants.DESIGN.CAL_TARGET.SUM_OF_ALL_MAX:
-                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_MAX, null, new DummyAggregator());
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_MAX, new DummyAggregator());
             case BIDesignConstants.DESIGN.CAL_TARGET.SUM_OF_ALL_MIN:
-                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_MIN, null, new DummyAggregator());
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_MIN, new DummyAggregator());
             case BIDesignConstants.DESIGN.CAL_TARGET.RANK_ASC:
-                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_RANK_ASC, null, new DummyAggregator());
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_RANK_ASC, new DummyAggregator());
             case BIDesignConstants.DESIGN.CAL_TARGET.RANK_DES:
-                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_RANK_DEC, null, new DummyAggregator());
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_RANK_DEC, new DummyAggregator());
         }
-        return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_SUM_OF_ALL, null, new DummyAggregator());
+        return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_SUM_OF_ALL, new DummyAggregator());
     }
 
     private static Metric toMetric(String fieldId, int index, List<FineTarget> targetList) {
