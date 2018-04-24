@@ -31,7 +31,7 @@ public abstract class AbstractQueryInfo<T> implements QueryInfo<T> {
     }
 
     @Override
-    public String getQueryID() {
+    public String getQueryId() {
         return id;
     }
 

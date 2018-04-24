@@ -11,5 +11,5 @@ public interface QueryInfo<T> {
 
     Cursor getCursor();
 
-    String getQueryID();
+    String getQueryId();
 }
