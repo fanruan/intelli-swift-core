@@ -1,4 +1,4 @@
-package com.fr.swift.source.etl.columnformula;
+package com.fr.swift.source.etl;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
@@ -11,25 +11,27 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.relation.RelationIndex;
-import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.SwiftMetaDataImpl;
-import com.fr.swift.source.etl.CreateColumn;
-import com.fr.swift.source.etl.CreateColumnForSum;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * Created by Handsome on 2018/2/2 0002 10:32
+ * Created by Handsome on 2017/11/15 0015 14:34
  */
-public class CreateSegment {
+public class BaseCreateSegmentForColumnTransTest {
     public Segment getSegment() {
         return new Segment() {
             @Override
             public void flush() {
 
+            }
+
+            @Override
+            public IResourceLocation getLocation() {
+                return null;
+            }
+
+            @Override
+            public SwiftMetaData getMetaData() {
+                return null;
             }
 
             @Override
@@ -58,23 +60,28 @@ public class CreateSegment {
             }
 
             @Override
-            public IResourceLocation getLocation() {
-                return null;
-            }
-
-            @Override
             public Column getColumn(ColumnKey key) {
-                if(key.getName().equals("column1")) {
-                    return new CreateColumn().getColumn();
+                if (key.getName().equals("column1")) {
+                    return new BaseCreateColumnTest().getColumn();
+                } else if (key.getName().equals("column2")) {
+                    return new BaseCreateColumnTest().getColumn();
                 } else {
-                    return new CreateColumnForSum().getColumn();
+                    return new BaseCreateColumnTest().getColumn();
                 }
+
+                /*
+                * else if(key.getName().equals("column3")) {
+                    return new BaseCreateColumn2Test().getColumn();
+                } else {
+                    return new BaseCreateColumn2Test().getColumn();
+                }
+                * */
             }
 
             @Override
             public ImmutableBitMap getAllShowIndex() {
                 MutableBitMap bitMap = BitSetMutableBitMap.newInstance();
-                for(int i = 0; i < getRowCount(); i++) {
+                for (int i = 0; i < getRowCount(); i++) {
                     bitMap.add(i);
                 }
                 return bitMap;
@@ -83,15 +90,6 @@ public class CreateSegment {
             @Override
             public void putAllShowIndex(ImmutableBitMap bitMap) {
 
-            }
-
-            @Override
-            public SwiftMetaData getMetaData() {
-                List<SwiftMetaDataColumn> fieldList = new ArrayList<SwiftMetaDataColumn>();
-                fieldList.add(new MetaDataColumn("column1", 31));
-                fieldList.add(new MetaDataColumn("column2", 31));
-                SwiftMetaData metaData = new SwiftMetaDataImpl("table1", fieldList);
-                return metaData;
             }
 
             @Override

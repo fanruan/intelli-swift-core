@@ -1,11 +1,5 @@
 package com.fr.swift.adaptor.widget;
 
-import com.finebi.conf.constant.BIReportConstant;
-import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionSort;
-import com.fr.swift.query.sort.AscSort;
-import com.fr.swift.query.sort.DescSort;
-import com.fr.swift.query.sort.NoneSort;
-import com.fr.swift.query.sort.Sort;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.utils.BusinessTableUtils;
 
@@ -22,6 +16,7 @@ public abstract class AbstractWidgetAdaptor {
         return BusinessTableUtils.getFieldNameByFieldId(fieldId);
     }
 
+<<<<<<< HEAD
     static Sort adaptSort(FineDimensionSort sort, int index) {
         switch (sort.getType()) {
             case BIReportConstant.SORT.ASC:
@@ -34,4 +29,6 @@ public abstract class AbstractWidgetAdaptor {
                 return null;
         }
     }
+=======
+>>>>>>> 2f11730561d1f332415cfaf91e35670202072413
 }

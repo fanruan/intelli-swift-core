@@ -6,8 +6,8 @@ import com.fr.swift.source.DataSource;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.etl.CreateSegment;
-import com.fr.swift.source.etl.CreateSegment2;
+import com.fr.swift.source.etl.BaseCreateSegmentTest;
+import com.fr.swift.source.etl.BaseCreateSegment2Test;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
@@ -34,10 +34,10 @@ public class TestJoinOperator extends TestCase {
         lColumnKey[1] = key2;
         rColumnKey[0] = key3;
         rColumnKey[1] = key4;
-        lSegment[0] = new CreateSegment().getSegment();
-        lSegment[1] = new CreateSegment().getSegment();
-        rSegment[0] = new CreateSegment2().getSegment();
-        rSegment[1] = new CreateSegment2().getSegment();
+        lSegment[0] = new BaseCreateSegmentTest().getSegment();
+        lSegment[1] = new BaseCreateSegmentTest().getSegment();
+        rSegment[0] = new BaseCreateSegment2Test().getSegment();
+        rSegment[1] = new BaseCreateSegment2Test().getSegment();
         try {
             DataSource parent1 = EasyMock.createMock(DataSource.class);
             DataSource parent2 = EasyMock.createMock(DataSource.class);

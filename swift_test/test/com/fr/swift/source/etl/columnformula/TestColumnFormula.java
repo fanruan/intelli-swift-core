@@ -17,8 +17,8 @@ public class TestColumnFormula extends TestCase {
     public void testColumnFormula() {
         try {
             Segment[] segments = new Segment[2];
-            segments[0] = new CreateSegment().getSegment();
-            segments[1] = new CreateSegment().getSegment();
+            segments[0] = new BaseCreateSegmentTest().getSegment();
+            segments[1] = new BaseCreateSegmentTest().getSegment();
             List<Segment[]> basedSegment = new ArrayList<Segment[]>();
             basedSegment.add(segments);
             String expression = "${column2} + ${column2}";

@@ -7,7 +7,7 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.source.etl.CreateSegmentForSum;
+import com.fr.swift.source.etl.BaseCreateSegmentForSumTest;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
@@ -47,8 +47,8 @@ public class TestSumByGroupOperator extends TestCase {
         dimension[0].setName("column1");
 
         Segment[] segment = new Segment[2];
-        segment[0] = new CreateSegmentForSum().getSegment();
-        segment[1] = new CreateSegmentForSum().getSegment();
+        segment[0] = new BaseCreateSegmentForSumTest().getSegment();
+        segment[1] = new BaseCreateSegmentForSumTest().getSegment();
         List<Segment[]> listOfSegment = new ArrayList<Segment[]>();
         listOfSegment.add(segment);
         try {

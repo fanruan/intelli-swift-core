@@ -56,11 +56,11 @@ public class CreateSegmentForRank {
             @Override
             public Column getColumn(ColumnKey key) {
                 if(key.getName().equals("column1")) {
-                    return new CreateColumn1().getColumn();
+                    return new BaseCreateColumn1Test().getColumn();
                 } else if (key.getName().equals("column2")){
-                    return new CreateColumn2().getColumn();
+                    return new BaseCreateColumn2Test().getColumn();
                 } else{
-                    return new CreateColumn3().getColumn();
+                    return new BaseCreateColumn3Test().getColumn();
                 }
             }
 

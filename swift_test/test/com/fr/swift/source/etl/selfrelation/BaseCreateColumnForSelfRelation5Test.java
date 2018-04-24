@@ -13,9 +13,9 @@ import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import java.util.Comparator;
 
 /**
- * Created by Handsome on 2018/1/19 0019 11:38
+ * Created by Handsome on 2018/1/19 0019 11:42
  */
-public class CreateColumnForSelfRelation4 {
+public class BaseCreateColumnForSelfRelation5Test {
     public Column getColumn() {
         return new Column() {
 
@@ -42,32 +42,31 @@ public class CreateColumnForSelfRelation4 {
     }
 
     private BitmapIndexedColumn createBitmapColumn() {
-        final MutableBitMap[] bitMaps = new MutableBitMap[8];
+        final MutableBitMap[] bitMaps = new MutableBitMap[6];
         bitMaps[0] = BitSetMutableBitMap.newInstance();
         bitMaps[1] = BitSetMutableBitMap.newInstance();
         bitMaps[2] = BitSetMutableBitMap.newInstance();
         bitMaps[3] = BitSetMutableBitMap.newInstance();
         bitMaps[4] = BitSetMutableBitMap.newInstance();
         bitMaps[5] = BitSetMutableBitMap.newInstance();
-        bitMaps[6] = BitSetMutableBitMap.newInstance();
-        bitMaps[7] = BitSetMutableBitMap.newInstance();
         bitMaps[0].add(0);
         bitMaps[1].add(1);
         bitMaps[2].add(2);
         bitMaps[3].add(3);
         bitMaps[4].add(4);
+        bitMaps[4].add(7);
         bitMaps[5].add(5);
+        bitMaps[5].add(6);
         bitMaps[5].add(8);
-        bitMaps[6].add(6);
-        bitMaps[7].add(7);
         return new BitmapIndexedColumn() {
+
             @Override
-            public void flush() {
+            public void putBitMapIndex(int index, ImmutableBitMap bitmap) {
 
             }
 
             @Override
-            public void putBitMapIndex(int index, ImmutableBitMap bitmap) {
+            public void flush() {
 
             }
 
@@ -98,13 +97,13 @@ public class CreateColumnForSelfRelation4 {
     }
 
     private DictionaryEncodedColumn createDicColumn() {
-        final String[] keys = {"江西","江苏","河南","湖北","福建","","安徽","四川"};
-        final int[] index = {0,1,2,3,4,5,6,7,5};
+        final String[] keys = {"11","22","33","1","6",""};
+        final int[] index = {0,1,2,3,4,5,5,4,5};
         return new TempDictColumn() {
 
             @Override
             public int size() {
-                return 8;
+                return 6;
             }
 
             @Override
@@ -132,3 +131,4 @@ public class CreateColumnForSelfRelation4 {
         };
     }
 }
+

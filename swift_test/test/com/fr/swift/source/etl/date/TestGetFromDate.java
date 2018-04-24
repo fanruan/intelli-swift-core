@@ -6,7 +6,7 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.source.etl.CreateSegmentForSum;
+import com.fr.swift.source.etl.BaseCreateSegmentForSumTest;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
@@ -22,8 +22,8 @@ public class TestGetFromDate extends TestCase {
     public void testGetDate() {
         try {
             Segment[] segments = new Segment[2];
-            segments[0] = new CreateSegmentForSum().getSegment();
-            segments[1] = new CreateSegmentForSum().getSegment();
+            segments[0] = new BaseCreateSegmentForSumTest().getSegment();
+            segments[1] = new BaseCreateSegmentForSumTest().getSegment();
             List<Segment[]> list = new ArrayList<Segment[]>();
             list.add(segments);
             String column1 = "column2";
