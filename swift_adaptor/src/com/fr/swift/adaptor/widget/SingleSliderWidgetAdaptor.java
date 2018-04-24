@@ -10,7 +10,8 @@ import com.fr.swift.log.SwiftLoggers;
 import java.util.List;
 
 /**
- * Created by pony on 2018/3/22.
+ * @author pony
+ * @date 2018/3/22
  */
 public class SingleSliderWidgetAdaptor extends AbstractTableWidgetAdaptor {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SingleSliderWidgetAdaptor.class);

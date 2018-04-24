@@ -1,18 +1,14 @@
 package com.fr.swift.adaptor.widget;
 
-import com.finebi.conf.constant.BIReportConstant;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.group.custom.number.NumberMaxAndMinValue;
-import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionSort;
 import com.finebi.conf.structure.filter.FineFilter;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.cal.info.DetailQueryInfo;
-import com.fr.swift.cal.result.group.AllCursor;
+import com.fr.swift.query.adapter.dimension.AllCursor;
 import com.fr.swift.query.adapter.dimension.DetailDimension;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.DescSort;
-import com.fr.swift.query.sort.NoneSort;
-import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;

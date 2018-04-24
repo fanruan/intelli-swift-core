@@ -1,12 +1,8 @@
 package com.fr.swift.cal.info;
 
 import com.fr.swift.cal.builder.QueryType;
-import com.fr.swift.query.adapter.dimension.Cursor;
 import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.adapter.dimension.DimensionInfo;
-import com.fr.swift.query.adapter.dimension.Expander;
-import com.fr.swift.query.adapter.metric.Metric;
-import com.fr.swift.query.adapter.target.GroupTarget;
 import com.fr.swift.query.adapter.target.TargetInfo;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.sort.Sort;
@@ -23,8 +19,8 @@ public class GroupQueryInfo extends AbstractQueryInfo<GroupByResultSet> {
     private DimensionInfo dimensionInfo;
     private TargetInfo targetInfo;
 
-    public GroupQueryInfo(String queryID, SourceKey table, DimensionInfo dimensionInfo, TargetInfo targetInfo) {
-        super(dimensionInfo.getCursor(), queryID, table, dimensionInfo.getFilterInfo());
+    public GroupQueryInfo(String queryId, SourceKey table, DimensionInfo dimensionInfo, TargetInfo targetInfo) {
+        super(dimensionInfo.getCursor(), queryId, table, dimensionInfo.getFilterInfo());
         this.dimensionInfo = dimensionInfo;
         this.targetInfo = targetInfo;
     }
