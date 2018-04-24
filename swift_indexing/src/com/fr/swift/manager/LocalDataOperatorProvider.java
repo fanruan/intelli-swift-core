@@ -2,7 +2,7 @@ package com.fr.swift.manager;
 
 import com.fr.swift.db.Table;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.generate.segment.operator.BlockInserter;
+import com.fr.swift.generate.segment.operator.inserter.BlockInserter;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftDataOperatorProvider;
 import com.fr.swift.segment.SwiftSegmentManager;

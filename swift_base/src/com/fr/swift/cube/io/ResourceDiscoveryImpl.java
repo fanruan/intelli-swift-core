@@ -4,6 +4,7 @@ import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.impl.mem.MemIo;
 import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.cube.io.location.IResourceLocation;
+import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.cube.io.output.Writer;
 
 import java.util.HashMap;
@@ -140,5 +141,15 @@ public class ResourceDiscoveryImpl implements ResourceDiscovery {
             int index = path.indexOf("cubes");
             return path.substring(0, index + 14);
         }
+    }
+
+    @Override
+    public boolean isCubeResourceEmpty() {
+        return cubeMemios.isEmpty();
+    }
+
+    @Override
+    public Map<String, MemIo> removeCubeResource(String basePath) {
+        return cubeMemios.remove(new ResourceLocation(basePath).getPath());
     }
 }
