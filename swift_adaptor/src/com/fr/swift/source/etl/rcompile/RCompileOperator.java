@@ -74,9 +74,7 @@ public class RCompileOperator extends AbstractOperator {
 
         // 读取不到计算
         try {
-            if(null == conn) {
-                conn = RConnectionFactory.getRConnection();
-            }
+            conn = RConnectionFactory.getRConnection();
             if (null == conn) {
                 return columnList;
             }
