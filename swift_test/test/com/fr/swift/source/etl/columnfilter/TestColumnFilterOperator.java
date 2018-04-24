@@ -1,11 +1,18 @@
 package com.fr.swift.source.etl.columnfilter;
 
+import com.fr.swift.bitmap.MutableBitMap;
+import com.fr.swift.bitmap.impl.RoaringMutableBitMap;
+import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.BaseCreateSegmentTest;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.easymock.IMocksControl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,35 +22,34 @@ import java.util.List;
  */
 public class TestColumnFilterOperator extends TestCase {
 
-    public void testColumnFilter () {
-        try {
-            //FilterInfo filterInfo = EasyMock.createMock(DetailFilterInfo.class);
-            SwiftMetaData metaData = EasyMock.createMock(SwiftMetaData.class);
-            SwiftMetaDataColumn metaDataColumn = EasyMock.createMock(SwiftMetaDataColumn.class);
-            EasyMock.expect(metaData.getColumnCount()).andReturn(2).anyTimes();
-            EasyMock.expect(metaData.getColumn(EasyMock.anyInt())).andReturn(metaDataColumn).anyTimes();
-            EasyMock.expect(metaDataColumn.getName()).andReturn("column1").times(1).andReturn("column2").times(1);
-            //EasyMock.replay(filterInfo);
-            EasyMock.replay(metaData);
-            EasyMock.replay(metaDataColumn);
-            Segment[] segment = new Segment[2];
-            segment[0] = new BaseCreateSegmentTest().getSegment();
-            segment[1] = new BaseCreateSegmentTest().getSegment();
-            List<Segment[]> list = new ArrayList<Segment[]>();
-            list.add(segment);
-            //ColumnFilterTransferOperator operator = new ColumnFilterTransferOperator(filterInfo);
-            //SwiftResultSet rs = operator.createResultSet(metaData, null, list);
-            /*while(rs.next()) {
-                Row row = rs.getRowData();
-                for(int i = 0; i < 2; i++) {
-                    System.out.print(row.getValue(i) + "、");
-                }
-                System.out.println();
-            }*/
-        } catch(Exception e) {
-            e.printStackTrace();
+    public void testColumnFilter() throws Exception {
+        IMocksControl control = EasyMock.createControl();
+        FilterInfo filterInfo = control.createMock(FilterInfo.class);
+        SwiftMetaData metaData = control.createMock(SwiftMetaData.class);
+        SwiftMetaDataColumn metaDataColumn = control.createMock(SwiftMetaDataColumn.class);
+        DetailFilter detailFilter = control.createMock(DetailFilter.class);
+        EasyMock.expect(metaData.getColumnCount()).andReturn(1).anyTimes();
+        EasyMock.expect(metaData.getColumn(EasyMock.anyInt())).andReturn(metaDataColumn).anyTimes();
+        EasyMock.expect(metaDataColumn.getName()).andReturn("column1").anyTimes();
+        EasyMock.expect(filterInfo.createDetailFilter(EasyMock.anyObject())).andReturn(detailFilter).anyTimes();
+        MutableBitMap bitMap = RoaringMutableBitMap.newInstance();
+        bitMap.add(0);
+        EasyMock.expect(detailFilter.createFilterIndex()).andReturn(bitMap).anyTimes();
+        control.replay();
+        Segment[] segment = new Segment[2];
+        segment[0] = new BaseCreateSegmentTest().getSegment();
+        segment[1] = new BaseCreateSegmentTest().getSegment();
+        List<Segment[]> list = new ArrayList<Segment[]>();
+        list.add(segment);
+        ColumnFilterTransferOperator operator = new ColumnFilterTransferOperator(filterInfo);
+        SwiftResultSet rs = operator.createResultSet(metaData, null, list);
+        int rowCount = 0;
+        while (rs.next()) {
+            Row row = rs.getRowData();
+            assertEquals(row.getValue(0), "A");
+            rowCount++;
         }
-
+        assertEquals(rowCount, 2);
 
     }
 }

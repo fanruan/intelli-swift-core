@@ -12,6 +12,7 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.utils.MergerGroupByValuesFactory;
 import com.fr.swift.structure.iterator.RowTraversal;
+import com.fr.swift.util.function.Function;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class SumByGroupOperatorResultSet implements SwiftResultSet {
 
     private SumByGroupTarget[] targets;
     private SumByGroupDimension[] dimensions;
+    private Function[] convertors;
     private Segment[] segments;
     private MergerGroupByValues mergerGroupByValues;
     private SwiftMetaData metaData;
@@ -42,9 +44,11 @@ public class SumByGroupOperatorResultSet implements SwiftResultSet {
         Arrays.fill(asc, true);
         ColumnKey[] columnKeys = new ColumnKey[dimensions.length];
         Group[] groups = new Group[dimensions.length];
+        convertors = new Function[dimensions.length];
         for (int i = 0; i < dimensions.length; i++){
             columnKeys[i] = new ColumnKey(dimensions[i].getName());
             groups[i] = dimensions[i].getGroup();
+            convertors[i] = dimensions[i].createConvertor();
         }
         mergerGroupByValues = MergerGroupByValuesFactory.createMergerGroupBy(segments, columnKeys, groups,  asc);
     }
@@ -71,7 +75,7 @@ public class SumByGroupOperatorResultSet implements SwiftResultSet {
         List valueList = new ArrayList();
         Object[] dimensionsValues = kv.getKey().getKey();
         for (int i = 0; i < dimensionsValues.length; i++) {
-            valueList.add(dimensionsValues[i]);
+            valueList.add(convertors[i].apply(dimensionsValues[i]));
         }
         List<RowTraversal[]> traversals =kv.getValue();
         RowTraversal[] traversal = new RowTraversal[traversals.size()];
