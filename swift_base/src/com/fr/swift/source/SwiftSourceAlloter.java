@@ -15,5 +15,10 @@ public interface SwiftSourceAlloter {
      */
     int allot(long row, String keyColumn, Object data);
 
+    /**
+     * 单块最大行数
+     *
+     * @return
+     */
     int getAllotStep();
 }
