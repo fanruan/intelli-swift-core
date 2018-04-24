@@ -15,20 +15,5 @@ public abstract class AbstractWidgetAdaptor {
     protected static String getColumnName(String fieldId){
         return BusinessTableUtils.getFieldNameByFieldId(fieldId);
     }
-
-<<<<<<< HEAD
-    static Sort adaptSort(FineDimensionSort sort, int index) {
-        switch (sort.getType()) {
-            case BIReportConstant.SORT.ASC:
-                return new AscSort(index);
-            case BIReportConstant.SORT.DESC:
-                return new DescSort(index);
-            case BIReportConstant.SORT.NONE:
-                return new NoneSort();
-            default:
-                return null;
-        }
-    }
-=======
->>>>>>> 2f11730561d1f332415cfaf91e35670202072413
+    
 }
