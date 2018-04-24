@@ -65,9 +65,8 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor{
         assert parents.size() == 1;
         Map selectedValues = bean.getSelectedValues();
         selectedValues = selectedValues == null ? new LinkedHashMap() : (Map) selectedValues.get(parents.get(0));
-        FilterInfo filterInfo = parents2FilterInfo(filter, null, parents, dimensions);
         return createSearchItemList(0, widgetId, keyWord, bean.getId(), selectedValues, new String[0],
-                filterInfo, dimensions.subList(parents.size(), dimensions.size()));
+                filter, dimensions.subList(parents.size(), dimensions.size()));
     }
 
     private static List<BITreeItem> createSearchItemList(int dimensionIndex, String widgetId, String keyWord, String pId,
@@ -162,9 +161,6 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor{
     private static FilterInfo parents2FilterInfo(FilterInfo filterInfo, FilterInfo currentDimensionFilter, List<String> parents, List<FineDimension> dimensions) {
         List<FilterInfo> infoList = new ArrayList<FilterInfo>();
         infoList.add(filterInfo);
-        if (currentDimensionFilter != null) {
-            infoList.add(currentDimensionFilter);
-        }
         for (int i = 0; i < parents.size(); i++) {
             FineDimension dimension = dimensions.get(i);
             String fieldName = getColumnName(dimension.getFieldId());
