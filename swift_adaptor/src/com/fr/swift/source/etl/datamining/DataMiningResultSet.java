@@ -1,20 +1,29 @@
 package com.fr.swift.source.etl.datamining;
 
 import com.finebi.base.stable.StableManager;
-import com.finebi.conf.algorithm.*;
+import com.finebi.conf.algorithm.DMAbstractAlgorithm;
+import com.finebi.conf.algorithm.DMAlgorithmFactory;
+import com.finebi.conf.algorithm.DMColMetaData;
+import com.finebi.conf.algorithm.DMDataModel;
+import com.finebi.conf.algorithm.DMRowMetaData;
+import com.finebi.conf.algorithm.DMType;
+import com.finebi.conf.algorithm.EmptyAlgorithm;
 import com.finebi.conf.algorithm.common.DMLogEntityImp;
 import com.finebi.conf.algorithm.common.DMLogType;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
 import com.finebi.conf.service.datamining.DMCommonLogService;
 import com.finebi.conf.structure.datamining.DMLogEntity;
-import com.fr.engine.utils.StringUtils;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.swift.source.*;
+import com.fr.swift.source.ListBasedRow;
+import com.fr.swift.source.Row;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

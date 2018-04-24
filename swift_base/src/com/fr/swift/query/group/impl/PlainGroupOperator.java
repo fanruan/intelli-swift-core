@@ -6,6 +6,7 @@ import com.fr.swift.query.group.GroupRule;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.impl.DateColumn;
 import com.fr.swift.segment.column.impl.SubDateColumn;
+import com.fr.swift.util.Crasher;
 
 /**
  * @author anchore
@@ -24,6 +25,7 @@ class PlainGroupOperator<Base, Derive> implements GroupOperator<Base, Derive> {
             case AUTO:
             case CUSTOM_NUMBER:
             case CUSTOM:
+            case CUSTOM_SORT:
                 return new CustomGroupColumn<Base, Derive>(column, (CustomGroupRule<Base, Derive>) rule);
             case Y_M_D_H_M_S:
             case Y_M_D_H_M:
@@ -48,7 +50,7 @@ class PlainGroupOperator<Base, Derive> implements GroupOperator<Base, Derive> {
             case NONE:
                 return (Column<Derive>) column;
             default:
-                return null;
+                return Crasher.crash("no type fits");
         }
     }
 }

@@ -26,7 +26,7 @@ public class DateUtils {
         int type = bean.getType();
         switch (type) {
             case BICommonConstants.DATE_TYPE.STATIC:
-                return dateStaticFilterBean2Long(((DateStaticFilterBean) bean).getValue());
+                return dateStaticFilterBean2Calendar(((DateStaticFilterBean) bean).getValue()).getTimeInMillis();
             case BICommonConstants.DATE_TYPE.DYNAMIC:
                 // 动态时间的最小精度为天，日期的范围过滤都要转为某一天的开始或者结束时刻
                 long time = dateDynamicFilterBeanValue2Long(((DateDynamicFilterBean) bean).getValue());
@@ -37,41 +37,103 @@ public class DateUtils {
                     return startOfDay(time);
                 }
             default:
-                return dateStaticFilterBean2Long(((DateStaticFilterBean) bean).getValue());
+                return dateStaticFilterBean2Calendar(((DateStaticFilterBean) bean).getValue()).getTimeInMillis();
         }
     }
 
-    public static long dateFilterBean2Long(DateFilterBean bean) {
-        return dateFilterBean2Long(bean, false);
+    /**
+     * 日期的等于过滤器转为范围过滤
+     * long[] = { 当前时间精度的开始时刻，当前时间精度的结束时刻 }
+     * @param bean
+     * @return
+     */
+    public static long[] dateEqualFilterBean2Long(DateFilterBean bean) {
+        TimePrecision precision;
+        Calendar c;
+        int type = bean.getType();
+        if (type == BICommonConstants.DATE_TYPE.STATIC) {
+            precision = timePrecisionOfStaticValue(((DateStaticFilterBean) bean).getValue());
+            c = dateStaticFilterBean2Calendar(((DateStaticFilterBean) bean).getValue());
+        } else {
+            precision = timePrecisionOfDynamicValue(((DateDynamicFilterBean) bean).getValue());
+            c = dateDynamicFilterBeanValue2Calendar(((DateDynamicFilterBean) bean).getValue());
+        }
+        long[] range = new long[2];
+        switch (precision) {
+            case DAY:
+                range[0] = startOfDay(c).getTimeInMillis();
+                range[1] = endOfDay(c).getTimeInMillis();
+                break;
+            case WEEK:
+                range[0] = startOfWeek(c).getTimeInMillis();
+                range[1] = endOfWeek(c).getTimeInMillis();
+                break;
+            case MONTH:
+                range[0] = startOfMonth(c).getTimeInMillis();
+                range[1] = endOfMonth(c).getTimeInMillis();
+                break;
+            case QUARTER:
+                range[0] = startOfQuarter(c).getTimeInMillis();
+                range[1] = endOfQuarter(c).getTimeInMillis();
+                break;
+            case YEAR:
+                range[0] = startOfYear(c).getTimeInMillis();
+                range[1] = endOfYear(c).getTimeInMillis();
+        }
+        return range;
     }
 
-    private static long dateStaticFilterBean2Long(DateStaticFilterBeanValue value) {
+    @SuppressWarnings("Duplicates")
+    private static TimePrecision timePrecisionOfStaticValue(DateStaticFilterBeanValue value) {
+        if (value.getDay() != null) {
+            return TimePrecision.DAY;
+        } else if (value.getMonth() != null) {
+            return TimePrecision.MONTH;
+        } else if (value.getQuarter() != null) {
+            return TimePrecision.QUARTER;
+        } else {
+            return TimePrecision.YEAR;
+        }
+    }
+
+    @SuppressWarnings("Duplicates")
+    private static TimePrecision timePrecisionOfDynamicValue(DateDynamicFilterBeanValue value) {
+        if (value.getWorkDay() != null) {
+            return TimePrecision.DAY;
+        } else if (value.getDay() != null) {
+            return TimePrecision.DAY;
+        } else if (value.getMonth() != null) {
+            return TimePrecision.MONTH;
+        } else if (value.getQuarter() != null) {
+            return TimePrecision.QUARTER;
+        } else {
+            int position = value.getPosition();
+            if (position == 1 || position == 2 || position == 3) {
+                // 当天、初、末都精确到天
+                return TimePrecision.DAY;
+            }
+            // 这个情况是dashboard的年份过滤（不能选position的，position为默认值0）
+            return TimePrecision.YEAR;
+        }
+    }
+
+    private static Calendar dateStaticFilterBean2Calendar(DateStaticFilterBeanValue value) {
         Calendar c = Calendar.getInstance();
         c.clear();
         c.set(Calendar.YEAR, string2Int(value.getYear()));
-        // TODO: 2018/3/23 季度这个值没法理解
-//                c.set(Calendar.MONTH, getStartMonthOfQuarter(value.month2Quarter()));
+        c.set(Calendar.MONTH, value.getQuarter() == null ? 0 : getStartMonthOfQuarter(string2Int(value.getQuarter())));
         // 功能的月份从1开始
-        c.set(Calendar.MONTH, string2Int(value.getMonth()) - 1);
-        c.set(Calendar.DATE, string2Int(value.getDay()));
+        c.set(Calendar.MONTH, value.getMonth() == null ? c.get(Calendar.MONTH) : string2Int(value.getMonth()) - 1);
+        // Calendar.DATE中月的第一天为1
+        c.set(Calendar.DATE, value.getDay() == null ? 1 : string2Int(value.getDay()));
         c.set(Calendar.HOUR_OF_DAY, string2Int(value.getHour()));
         c.set(Calendar.MINUTE, string2Int(value.getMinute()));
         c.set(Calendar.SECOND, string2Int(value.getSecond()));
-        return c.getTimeInMillis();
+        return c;
     }
 
     private static long dateDynamicFilterBeanValue2Long(DateDynamicFilterBeanValue value) {
-        Calendar c = Calendar.getInstance();
-        // workDay和其他几个属性互斥
-        if (value.getWorkDay() == null) {
-            c.add(Calendar.YEAR, string2Int(value.getYear()));
-            c.add(Calendar.MONTH, string2Int(value.getMonth()));
-            c.add(Calendar.MONTH, string2Int(value.getQuarter()) * 3);
-            c.add(Calendar.DATE, string2Int(value.getWeek()) * 7);
-            c.add(Calendar.DATE, string2Int(value.getDay()));
-        } else {
-            c.add(Calendar.DATE, workDayOffset2DayOffset(string2Int(value.getWorkDay())));
-        }
+        Calendar c = dateDynamicFilterBeanValue2Calendar(value);
         int position = value.getPosition();
         if (position != 2 && position != 3) {
             return c.getTimeInMillis();
@@ -97,6 +159,21 @@ public class DateUtils {
             default:
                 return c.getTimeInMillis();
         }
+    }
+
+    private static Calendar dateDynamicFilterBeanValue2Calendar(DateDynamicFilterBeanValue value) {
+        Calendar c = Calendar.getInstance();
+        // workDay和其他几个属性互斥
+        if (value.getWorkDay() == null) {
+            c.add(Calendar.YEAR, string2Int(value.getYear()));
+            c.add(Calendar.MONTH, string2Int(value.getMonth()));
+            c.add(Calendar.MONTH, string2Int(value.getQuarter()) * 3);
+            c.add(Calendar.DATE, string2Int(value.getWeek()) * 7);
+            c.add(Calendar.DATE, string2Int(value.getDay()));
+        } else {
+            c.add(Calendar.DATE, workDayOffset2DayOffset(string2Int(value.getWorkDay())));
+        }
+        return c;
     }
 
     // 一周工作日的起始日和结束日，没有功能文档，和测试同学统一的
@@ -181,13 +258,13 @@ public class DateUtils {
         return endOfDay(c);
     }
 
-    public static long startOfDay(long milliseconds) {
+    private static long startOfDay(long milliseconds) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(milliseconds);
         return startOfDay(calendar).getTimeInMillis();
     }
 
-    public static long endOfDay(long milliseconds) {
+    private static long endOfDay(long milliseconds) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(milliseconds);
         return endOfDay(calendar).getTimeInMillis();
@@ -252,5 +329,9 @@ public class DateUtils {
         QUARTER_START, QUARTER_END,
         MONTH_START, MONTH_END,
         WEEK_START, WEEK_END
+    }
+
+    private enum TimePrecision {
+        YEAR, QUARTER, MONTH, WEEK, DAY
     }
 }

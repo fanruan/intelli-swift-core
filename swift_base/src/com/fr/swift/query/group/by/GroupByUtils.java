@@ -1,5 +1,6 @@
 package com.fr.swift.query.group.by;
 
+import com.fr.swift.query.adapter.dimension.Expander;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.filter.detail.DetailFilter;
@@ -27,9 +28,12 @@ import java.util.Map;
  */
 public class GroupByUtils {
 
+    // TODO: 2018/4/20 这边的参数数量有点爆炸了，有必要把相关的参数组合成新的对象作为参数来减少参数个数
     public static GroupByResultSet query(List<Column> dimensions, List<Column> metrics, List<Aggregator> aggregators,
-                                         DetailFilter filter, List<Sort> indexSorts, int[] cursor, int pageSize) {
+                                         DetailFilter filter, List<Sort> indexSorts, Expander rowExpander,
+                                         int[] cursor, int pageSize) {
         boolean[] asc = getSorts(indexSorts, dimensions.size());
+        // TODO: 2018/4/20 expander过滤groupBy
         Iterator<KeyValue<RowIndexKey<int[]>, RowTraversal>> groupByIterator = new MultiDimensionGroupBy(dimensions, filter, cursor, asc);
         if (pageSize != -1) {
             // 分页的情况

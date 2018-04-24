@@ -1,6 +1,6 @@
 package com.fr.swift.cal.segment.group;
 
-import com.fr.swift.cal.info.Expander;
+import com.fr.swift.query.adapter.dimension.Expander;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.group.by.GroupByUtils;
@@ -28,7 +28,7 @@ public class GroupPagingSegmentQuery extends AbstractGroupSegmentQuery {
 
     @Override
     public NodeResultSet getQueryResult() {
-        GroupByResultSet result = GroupByUtils.query(dimensions, metrics, aggregators, filter, indexSorts, createCursor(), pageSize);
+        GroupByResultSet result = GroupByUtils.query(dimensions, metrics, aggregators, filter, indexSorts, null, createCursor(), pageSize);
         SwiftNode node = GroupNodeFactory.createNode(result, aggregators.size());
         return new NodeResultSetImpl(node);
     }

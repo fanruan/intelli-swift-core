@@ -6,7 +6,7 @@ package com.fr.swift.query.aggregator;
 
 public class DoubleAmountAggregatorValue implements AggregatorValue<Double> {
 
-    private Double value;
+    private double value;
 
     public DoubleAmountAggregatorValue(double value) {
         this.value = value;
@@ -29,6 +29,13 @@ public class DoubleAmountAggregatorValue implements AggregatorValue<Double> {
 
     @Override
     public Double calculateValue() {
+        return value;
+    }
+
+    @Override
+    public Object clone() {
+        DoubleAmountAggregatorValue value = new DoubleAmountAggregatorValue();
+        value.value = this.value;
         return value;
     }
 }

@@ -1,5 +1,6 @@
 package com.fr.swift.query.aggregator;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -44,5 +45,15 @@ public class MedianAggregatorValue implements AggregatorValue<Number> {
     @Override
     public Double calculateValue() {
         return median;
+    }
+
+    @Override
+    public Object clone() {
+        MedianAggregatorValue value = new MedianAggregatorValue();
+        value.count = this.count;
+        value.median = this.median;
+        value.values = new HashMap<Double, Integer>();
+        value.values.putAll(this.values);
+        return value;
     }
 }

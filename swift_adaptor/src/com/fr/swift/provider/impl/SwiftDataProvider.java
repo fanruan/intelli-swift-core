@@ -13,7 +13,7 @@ import com.fr.swift.adaptor.struct.SwiftDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftEmptyResult;
 import com.fr.swift.adaptor.struct.SwiftSegmentDetailResult;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
-import com.fr.swift.adaptor.transformer.SortFactory;
+import com.fr.swift.adaptor.transformer.SortAdaptor;
 import com.fr.swift.generate.preview.MinorSegmentManager;
 import com.fr.swift.generate.preview.MinorUpdater;
 import com.fr.swift.log.SwiftLoggers;
@@ -71,7 +71,7 @@ public class SwiftDataProvider implements DataProvider {
                 //可能有些字段排序的后来被删了
                 try {
                     sortIndex.add(dataSource.getMetadata().getColumnIndex(sortBeanItem.getName()));
-                    sorts.add(SortFactory.transformSort(sortBeanItem.getSortType()).getSortType());
+                    sorts.add(SortAdaptor.transformSort(sortBeanItem.getSortType()).getSortType());
                 } catch (Exception ignore) {
                 }
             }
@@ -134,7 +134,8 @@ public class SwiftDataProvider implements DataProvider {
                 for (Segment sg : segments) {
                     Column c = sg.getColumn(new ColumnKey(fieldName));
                     DictionaryEncodedColumn dic = c.getDictionaryEncodedColumn();
-                    for (int i = 0; i < dic.size(); i++) {
+                    //字典编码的0号恒为0(无论空值存不存在),需要判断一下
+                    for (int i = (c.getBitmapIndex().getNullIndex().isEmpty() ? 1 : 0); i < dic.size(); i++) {
                         list.add(dic.getValue(i));
                     }
                 }
