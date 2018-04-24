@@ -34,10 +34,14 @@ public class ColumnRowTransAdaptor {
             ColumnInitalItem item = value.getInitialFields().get(i);
             if (item.isSelected()) {
                 columns.add(Pair.of(item.getOldValue(), StringUtils.isEmpty(item.getNewValue()) ? item.getOldValue() : item.getNewValue()));
-            } else {
+            } else if(!isGroupOrLcName(lcName, groupName, item.getOldValue())){
                 otherColumnNames.add(Pair.of(item.getOldValue(), StringUtils.isEmpty(item.getNewValue()) ? item.getOldValue() : item.getNewValue()));
             }
         }
         return new ColumnRowTransOperator(groupName, lcName, lcValue, columns, otherColumnNames);
+    }
+    private static boolean isGroupOrLcName(String lcnName, String groupName, String columnName) {
+        return columnName.equals(lcnName) || columnName.equals(groupName);
+
     }
 }

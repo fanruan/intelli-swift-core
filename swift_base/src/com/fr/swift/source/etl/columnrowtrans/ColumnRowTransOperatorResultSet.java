@@ -98,6 +98,13 @@ public class ColumnRowTransOperatorResultSet implements SwiftResultSet {
                                 list.set(lcIndexMap.get(value.toString()) + lcIndexMap.size() * j, columnValue);
                             }
                         }
+                        for(int j = 0; j < otherColumnNames.size(); j++ ) {
+                            DictionaryEncodedColumn columnDic = segment[finalI].getColumn(new ColumnKey(otherColumnNames.get(j).getKey())).getDictionaryEncodedColumn();
+                            Object columnValue = columnDic.getValue(columnDic.getIndexByRow(row));
+                            if(columnValue != null) {
+                                list.set(lcIndexMap.size() * columns.size() + j + 1, columnValue);
+                            }
+                        }
                     }
                 });
             }
