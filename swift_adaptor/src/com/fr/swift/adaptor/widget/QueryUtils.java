@@ -41,7 +41,7 @@ public class QueryUtils {
             String fieldId = dimension.getFieldId();
             SourceKey sourceKey = new SourceKey(BusinessTableUtils.getSourceIdByFieldId(fieldId));
             String fieldName = BusinessTableUtils.getFieldNameByFieldId(fieldId);
-            GroupDimension groupDimension = new GroupDimension(0, sourceKey, new ColumnKey(fieldName), GroupAdaptor.adaptDashboardGroup(dimension.getGroup()), SortAdaptor.transformDimensionSort(dimension.getSort()), null);
+            GroupDimension groupDimension = new GroupDimension(0, sourceKey, new ColumnKey(fieldName), GroupAdaptor.adaptDashboardGroup(dimension.getGroup()), SortAdaptor.adaptorDimensionSort(dimension.getSort(), 0), null);
             GroupQueryInfo valueInfo = new GroupQueryInfo(new AllCursor(), id, sourceKey, filterInfo, new Dimension[]{groupDimension}, new Metric[0], new GroupTarget[0], null);
             NodeResultSetImpl nodeResultSet = (NodeResultSetImpl) QueryRunnerProvider.getInstance().executeQuery(valueInfo);
             SwiftNode n = nodeResultSet.getNode();

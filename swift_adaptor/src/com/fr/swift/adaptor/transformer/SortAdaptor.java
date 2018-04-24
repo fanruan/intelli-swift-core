@@ -20,15 +20,15 @@ public class SortAdaptor {
         }
     }
 
-    public static Sort transformDimensionSort(FineDimensionSort dimensionSort) {
+    public static Sort adaptorDimensionSort(FineDimensionSort dimensionSort, int index) {
         if (dimensionSort == null){
-            return new AscSort(0);
+            return new AscSort(index);
         }
         switch (dimensionSort.getType()) {
             case BIDesignConstants.DESIGN.SORT.ASC:
-                return new AscSort(0);
+                return new AscSort(index);
             default:
-                return new DescSort(0);
+                return new DescSort(index);
         }
     }
 }

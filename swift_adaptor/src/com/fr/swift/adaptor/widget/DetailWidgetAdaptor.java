@@ -7,6 +7,7 @@ import com.finebi.conf.structure.result.BIDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftEmptyResult;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
+import com.fr.swift.adaptor.transformer.SortAdaptor;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.cal.info.DetailQueryInfo;
@@ -18,7 +19,6 @@ import com.fr.swift.query.adapter.target.DetailFormulaTarget;
 import com.fr.swift.query.adapter.target.DetailTarget;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.sort.Sort;
-import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.SourceKey;
@@ -39,7 +39,7 @@ import java.util.List;
  * @date 2017/12/21
  * 明细表
  */
-public class DetailWidgetAdaptor extends AbstractWidgetAdaptor{
+public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
 
     public static BIDetailTableResult calculate(DetailWidget widget) {
         BIDetailTableResult result = null;
@@ -91,7 +91,7 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor{
         for (int i = 0, size = fineDimensions.size(); i < size; i++) {
             FineDimension fineDimension = fineDimensions.get(i);
             String columnName = BusinessTableUtils.getFieldNameByFieldId(fineDimension.getFieldId());
-            Sort sort = fineDimension.getSort() == null ? null : adaptSort(fineDimension.getSort(), i);
+            Sort sort = SortAdaptor.adaptorDimensionSort(fineDimension.getSort(), i);
             dimensions[i] = new DetailDimension(i, new SourceKey(fineDimension.getId()), new ColumnKey(columnName), GroupAdaptor.adaptDashboardGroup(fineDimension.getGroup()), sort, FilterInfoFactory.transformFineFilter(widget.getFilters()));
         }
         return dimensions;

@@ -16,6 +16,7 @@ import com.finebi.conf.structure.result.table.BIGroupNode;
 import com.finebi.conf.structure.result.table.BITableResult;
 import com.fr.swift.adaptor.struct.node.BIGroupNodeAdaptor;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
+import com.fr.swift.adaptor.transformer.SortAdaptor;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.adaptor.widget.target.CalTargetParseUtils;
 import com.fr.swift.cal.QueryInfo;
@@ -35,7 +36,6 @@ import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.group.Group;
-import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.node.GroupNode;
 import com.fr.swift.result.node.cal.TargetCalculatorUtils;
@@ -271,7 +271,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
 
         FilterInfo filterInfo = FilterInfoFactory.transformDimensionFineFilter(fineDim.getFilters(), fineDim.getId(), targets);
 
-        return new GroupDimension(index, sourceKey, colKey, group,
-                fineDim.getSort() == null ? new AscSort(index) : adaptSort(fineDim.getSort(), index), filterInfo);
+        return new GroupDimension(index, sourceKey, colKey, group, SortAdaptor.adaptorDimensionSort(fineDim.getSort(), index),
+                filterInfo);
     }
 }
