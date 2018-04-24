@@ -1,4 +1,4 @@
-package com.fr.swift.cal.result.group;
+package com.fr.swift.query.adapter.dimension;
 
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 

@@ -83,7 +83,7 @@ public class GroupResultQueryTest extends TestCase {
         List<List<Column>> dimensions = new ArrayList<>();
         for (int i = 0; i < segmentCount; i++) {
             CubeData cubeData = new CubeData(dimensionCount, metricCount, rowCount);
-            GroupAllSegmentQuery query = new GroupAllSegmentQuery(cubeData.getDimensions(), cubeData.getMetrics(),
+            GroupAllSegmentQuery query = new GroupAllSegmentQuery(aggregators.size(), cubeData.getDimensions(), cubeData.getMetrics(),
                     cubeData.getAggregators(), new DetailFilter() {
                 @Override
                 public ImmutableBitMap createFilterIndex() {
@@ -94,7 +94,7 @@ public class GroupResultQueryTest extends TestCase {
                 public boolean matches(SwiftNode node, int targetIndex) {
                     return false;
                 }
-            }, new ArrayList<>());
+            }, new ArrayList<>(), null);
             queryList.add(query);
             aggregators = cubeData.getAggregators();
             expectedResultList.add(cubeData.getAggregationResult());

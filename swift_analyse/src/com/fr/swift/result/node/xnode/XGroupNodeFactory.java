@@ -1,10 +1,10 @@
 package com.fr.swift.result.node.xnode;
 
-import com.fr.swift.query.adapter.target.cal.TargetInfo;
+import com.fr.swift.query.adapter.target.cal.TargetInfoImpl;
 import com.fr.swift.query.aggregator.AggregatorValue;
-import com.fr.swift.query.group.by.paging.Filter;
-import com.fr.swift.query.group.by.paging.FilteredIterator;
-import com.fr.swift.query.group.by.paging.MapperIterator;
+import com.fr.swift.structure.iterator.Filter;
+import com.fr.swift.structure.iterator.FilteredIterator;
+import com.fr.swift.structure.iterator.MapperIterator;
 import com.fr.swift.result.KeyValue;
 import com.fr.swift.result.RowIndexKey;
 import com.fr.swift.result.XGroupByResultSet;
@@ -12,7 +12,7 @@ import com.fr.swift.result.node.GroupNode;
 import com.fr.swift.result.node.GroupNodeAggregateUtils;
 import com.fr.swift.result.node.GroupNodeFactory;
 import com.fr.swift.result.node.NodeType;
-import com.fr.swift.result.node.cal.TargetCalculatorUtils;
+import com.fr.swift.structure.iterator.IteratorUtils;
 import com.fr.swift.result.node.iterator.PostOrderNodeIterator;
 import com.fr.swift.util.function.Function;
 
@@ -34,14 +34,14 @@ public class XGroupNodeFactory {
      * @return 交叉表计算结果的node根节点
      * @throws Exception
      */
-    public static XGroupNode createXGroupNode(XGroupByResultSet resultSet, TargetInfo targetInfo) throws Exception {
+    public static XGroupNode createXGroupNode(XGroupByResultSet resultSet, TargetInfoImpl targetInfo) throws Exception {
         // 构建节点
         XLeftNode xLeftNode = XLeftNodeFactory.createXLeftNode(resultSet, targetInfo.getTargetLength());
         // 处理计算指标
-        xLeftNode = (XLeftNode) TargetCalculatorUtils.calculate(xLeftNode,
-                targetInfo.getTargetCalculatorInfoList(), targetInfo.getTargetsForShowList());
+//        xLeftNode = (XLeftNode) TargetCalculatorUtils.calculate(xLeftNode,
+//                targetInfo.getTargetCalculatorInfoList(), targetInfo.getTargetsForShowList());
         GroupNodeAggregateUtils.aggregate(NodeType.X_LEFT, resultSet.rowDimensionSize(), xLeftNode,
-                targetInfo.getAggregatorListOfTargetsForShow());
+                targetInfo.getAggregatorListForResultMerging());
         // 表头groupBy的维度key
         List<RowIndexKey<int[]>> keys = getTopDimensionKeys(resultSet);
         // 表头groupBy的行结果集
@@ -52,7 +52,7 @@ public class XGroupNodeFactory {
                 topResultSet, resultSet.getColGlobalDictionaries());
         // 通过topGroupNode来做列向汇总
         GroupNodeAggregateUtils.aggregate(NodeType.TOP_GROUP, resultSet.colDimensionSize(), topGroupNode,
-                targetInfo.getAggregatorListOfTargetsForShow());
+                targetInfo.getAggregatorListForResultMerging());
         // 给xLeftNode重新设置value，增加了列向汇总值
         setValues2XLeftNode(resultSet.colDimensionSize(), resultSet.rowDimensionSize(), topGroupNode, xLeftNode);
         // TODO: 2018/4/11 topGroupNode是不是要清理一下引用呢？
@@ -64,12 +64,12 @@ public class XGroupNodeFactory {
         Iterator<TopGroupNode> topIt = new PostOrderNodeIterator<TopGroupNode>(topDimensionSize, topGroupNode);
         topIt = excludeNoShowSummaryRow(topIt);
         // topGroupNode的所有行，排除了不需要显示的汇总行
-        List<TopGroupNode> topGroupNodeList = iterator2List(topIt);
+        List<TopGroupNode> topGroupNodeList = IteratorUtils.iterator2List(topIt);
 
         Iterator<XLeftNode> xLeftIt = new PostOrderNodeIterator<XLeftNode>(rowDimensionSize, xLeftNode);
         xLeftIt = excludeNoShowSummaryRow(xLeftIt);
         // xLeftNode的所有行，排除了不需要显示的汇总行
-        List<XLeftNode> xLeftNodeList = iterator2List(xLeftIt);
+        List<XLeftNode> xLeftNodeList = IteratorUtils.iterator2List(xLeftIt);
 
         // 遍历一遍二维数组
         for (int row = 0; row < xLeftNodeList.size(); row++) {
@@ -99,7 +99,7 @@ public class XGroupNodeFactory {
                 return p.getKey();
             }
         });
-        return iterator2List(iterator);
+        return IteratorUtils.iterator2List(iterator);
     }
 
     private static TopGroupNode createTopGroupNode(int targetLength, int topDimensionSize,
@@ -127,7 +127,7 @@ public class XGroupNodeFactory {
     private static List<KeyValue<RowIndexKey<int[]>, List<AggregatorValue[]>>> getTopGroupResultSet(
             int rowDimensionSize, XLeftNode xLeftNode, List<RowIndexKey<int[]>> keys) {
         List<KeyValue<RowIndexKey<int[]>, List<AggregatorValue[]>>> resultSet;
-        resultSet = iterator2List(new MapperIterator<RowIndexKey<int[]>, KeyValue<RowIndexKey<int[]>, List<AggregatorValue[]>>>(keys.iterator(), new Function<RowIndexKey<int[]>, KeyValue<RowIndexKey<int[]>, List<AggregatorValue[]>>>() {
+        resultSet = IteratorUtils.iterator2List(new MapperIterator<RowIndexKey<int[]>, KeyValue<RowIndexKey<int[]>, List<AggregatorValue[]>>>(keys.iterator(), new Function<RowIndexKey<int[]>, KeyValue<RowIndexKey<int[]>, List<AggregatorValue[]>>>() {
             @Override
             public KeyValue<RowIndexKey<int[]>, List<AggregatorValue[]>> apply(RowIndexKey<int[]> p) {
                 return new KeyValue<RowIndexKey<int[]>, List<AggregatorValue[]>>(p, new ArrayList<AggregatorValue[]>());
@@ -158,13 +158,5 @@ public class XGroupNodeFactory {
                 return true;
             }
         });
-    }
-
-    private static <T> List<T> iterator2List(Iterator<T> iterator) {
-        List<T> list = new ArrayList<T>();
-        while (iterator.hasNext()) {
-            list.add(iterator.next());
-        }
-        return list;
     }
 }

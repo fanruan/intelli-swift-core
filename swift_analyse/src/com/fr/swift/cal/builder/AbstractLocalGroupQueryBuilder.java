@@ -33,7 +33,7 @@ public abstract class AbstractLocalGroupQueryBuilder implements LocalGroupQueryB
         return dimensionColumns;
     }
 
-    protected List<Column> getMetricSegments(Segment segment, Metric[] metrics) {
+    protected List<Column> getMetricSegments(Segment segment, List<Metric> metrics) {
         List<Column> metricColumns = new ArrayList<Column>();
         for (Metric metric : metrics){
             Column column = segment.getColumn(metric.getColumnKey());
@@ -42,7 +42,7 @@ public abstract class AbstractLocalGroupQueryBuilder implements LocalGroupQueryB
         return metricColumns;
     }
 
-    protected List<Aggregator> getAggregators(Metric[] metrics) {
+    protected List<Aggregator> getAggregators(List<Metric> metrics) {
         List<Aggregator> aggregators = new ArrayList<Aggregator>();
         for (Metric metric : metrics){
             aggregators.add(metric.getAggregator());
@@ -50,7 +50,7 @@ public abstract class AbstractLocalGroupQueryBuilder implements LocalGroupQueryB
         return aggregators;
     }
 
-    protected List<GroupTarget> getTargets(GroupTarget[] targets) {
+    protected List<GroupTarget> getTargets(List<GroupTarget> targets) {
         List<GroupTarget> targetList = new ArrayList<GroupTarget>();
         if (targets != null){
             for (GroupTarget target : targets){

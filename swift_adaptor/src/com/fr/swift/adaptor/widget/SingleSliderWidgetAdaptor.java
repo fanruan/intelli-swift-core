@@ -6,7 +6,7 @@ import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.result.control.number.BISingleSliderResult;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.cal.info.DetailQueryInfo;
-import com.fr.swift.cal.result.group.AllCursor;
+import com.fr.swift.query.adapter.dimension.AllCursor;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.adapter.dimension.DetailDimension;

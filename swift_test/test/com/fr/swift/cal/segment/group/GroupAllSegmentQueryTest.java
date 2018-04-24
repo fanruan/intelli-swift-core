@@ -58,17 +58,17 @@ public class GroupAllSegmentQueryTest extends TestCase {
         expectedResult = cubeData.getAggregationResult();
         aggregators = cubeData.getAggregators();
         rowCount = cubeData.getRowCount();
-        GroupAllSegmentQuery query = new GroupAllSegmentQuery(dimensions, metrics, aggregators, new DetailFilter() {
-            @Override
-            public ImmutableBitMap createFilterIndex() {
-                return BitMaps.newAllShowBitMap(rowCount);
-            }
-
-            @Override
-            public boolean matches(SwiftNode node, int targetIndex) {
-                return false;
-            }
-        }, new ArrayList<>());
+//        GroupAllSegmentQuery query = new GroupAllSegmentQuery(dimensions, metrics, aggregators, new DetailFilter() {
+//            @Override
+//            public ImmutableBitMap createFilterIndex() {
+//                return BitMaps.newAllShowBitMap(rowCount);
+//            }
+//
+//            @Override
+//            public boolean matches(SwiftNode node, int targetIndex) {
+//                return false;
+//            }
+//        }, new ArrayList<>());
 //        GroupByResultSet collector = null;
 //        try {
 //            collector = query.getQueryResult();
