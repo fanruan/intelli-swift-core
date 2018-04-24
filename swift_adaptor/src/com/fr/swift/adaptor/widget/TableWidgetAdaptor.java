@@ -234,7 +234,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
 
     private static TableWidgetBean handleClickItem(WidgetBean widgetBean, List<ClickValueItem> clickedList, List<FilterInfo> filterInfos) {
         if (!(widgetBean instanceof TableWidgetBean)) {
-            Crasher.crash("WidgetBean must instance of " + TableWidgetBean.class.getName() + " but got: " + widgetBean.getClass().getName());
+            Crasher.crash("WidgetBean must instance of " + TableWidgetBean.class.getName() + " but got " + widgetBean.getClass().getName());
         }
         TableWidgetBean fromWidget = (TableWidgetBean) widgetBean;
         if (null != clickedList) {
