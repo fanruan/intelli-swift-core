@@ -1,9 +1,9 @@
 package com.fr.swift.result.node.iterator;
 
 import com.fr.swift.query.aggregator.AggregatorValue;
-import com.fr.swift.query.group.by.paging.Filter;
-import com.fr.swift.query.group.by.paging.FilteredIterator;
-import com.fr.swift.query.group.by.paging.MapperIterator;
+import com.fr.swift.structure.iterator.Filter;
+import com.fr.swift.structure.iterator.FilteredIterator;
+import com.fr.swift.structure.iterator.MapperIterator;
 import com.fr.swift.result.node.GroupNode;
 import com.fr.swift.util.function.Function;
 

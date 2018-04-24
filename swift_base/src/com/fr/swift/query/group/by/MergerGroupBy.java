@@ -1,6 +1,6 @@
 package com.fr.swift.query.group.by;
 
-import com.fr.swift.query.group.by.paging.MapperIterator;
+import com.fr.swift.structure.iterator.MapperIterator;
 import com.fr.swift.result.KeyValue;
 import com.fr.swift.result.RowIndexKey;
 import com.fr.swift.structure.iterator.RowTraversal;

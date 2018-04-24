@@ -8,7 +8,7 @@ import java.util.List;
  * Created by pony on 2017/10/10.
  * 存储聚合之后的值的树状结构
  */
-public interface SwiftNode<T extends SwiftNode> extends AggregatorValueContainer,SwiftResultSet {
+public interface SwiftNode<T extends SwiftNode> extends AggregatorValueContainer, SwiftResultSet {
 
     Object getData();
 

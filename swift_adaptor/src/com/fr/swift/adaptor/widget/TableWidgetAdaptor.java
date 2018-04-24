@@ -17,26 +17,31 @@ import com.finebi.conf.structure.result.table.BIGroupNode;
 import com.finebi.conf.structure.result.table.BITableResult;
 import com.fr.swift.adaptor.struct.node.BIGroupNodeAdaptor;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
+import com.fr.swift.adaptor.transformer.SortAdaptor;
+import com.fr.swift.adaptor.widget.expander.ExpanderFactory;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.adaptor.widget.target.CalTargetParseUtils;
 import com.fr.swift.cal.QueryInfo;
-import com.fr.swift.cal.info.Expander;
 import com.fr.swift.cal.info.GroupQueryInfo;
-import com.fr.swift.cal.result.group.AllCursor;
-import com.fr.swift.cal.result.group.Cursor;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.adapter.dimension.AllCursor;
+import com.fr.swift.query.adapter.dimension.Cursor;
 import com.fr.swift.query.adapter.dimension.Dimension;
+import com.fr.swift.query.adapter.dimension.DimensionInfo;
+import com.fr.swift.query.adapter.dimension.DimensionInfoImpl;
+import com.fr.swift.query.adapter.dimension.Expander;
 import com.fr.swift.query.adapter.dimension.GroupDimension;
 import com.fr.swift.query.adapter.metric.Metric;
 import com.fr.swift.query.adapter.target.GroupTarget;
-import com.fr.swift.query.adapter.target.cal.TargetInfo;
+import com.fr.swift.query.adapter.target.cal.ResultTarget;
+import com.fr.swift.query.adapter.target.cal.TargetInfoImpl;
+import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.group.Group;
-import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.node.GroupNode;
 import com.fr.swift.result.node.cal.TargetCalculatorUtils;
@@ -67,10 +72,11 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         BIGroupNode resultNode;
         SwiftResultSet resultSet;
         try {
-            TargetInfo targetInfo = CalTargetParseUtils.parseCalTarget(widget);
-            resultSet = QueryRunnerProvider.getInstance().executeQuery(buildQueryInfo(widget, targetInfo.getMetrics()));
+            TargetInfoImpl targetInfo = CalTargetParseUtils.parseCalTarget(widget);
+            resultSet = QueryRunnerProvider.getInstance().executeQuery(buildQueryInfo(widget, targetInfo));
             GroupNode groupNode = (GroupNode) ((NodeResultSet) resultSet).getNode();
-            TargetCalculatorUtils.calculate(groupNode, targetInfo.getTargetCalculatorInfoList(), targetInfo.getTargetsForShowList());
+            // 取出实际查询的指标
+            groupNode = TargetCalculatorUtils.getShowTargetsForGroupNode(groupNode, targetInfo.getTargetsForShowList());
             resultNode = new BIGroupNodeAdaptor(groupNode);
         } catch (Exception e) {
             resultNode = new BIGroupNodeAdaptor(new GroupNode(-1, null));
@@ -111,18 +117,16 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         }
     }
 
-    static QueryInfo buildQueryInfo(TableWidget widget, List<Metric> metrics) throws Exception {
+    private static QueryInfo buildQueryInfo(TableWidget widget, TargetInfoImpl targetInfo) throws Exception {
         Cursor cursor = null;
         String queryId = widget.getWidgetId();
         SourceKey sourceKey = getSourceKey(widget);
         List<Dimension> dimensions = getDimensions(sourceKey, widget.getDimensionList(), widget.getTargetList());
         FilterInfo filterInfo = getFilterInfo(widget, dimensions);
-        GroupTarget[] targets = getTargets(widget);
-        Expander expander = null;
-        return new GroupQueryInfo(cursor, queryId, sourceKey, filterInfo,
-                dimensions.toArray(new Dimension[dimensions.size()]),
-                metrics.toArray(new Metric[metrics.size()]),
-                targets, expander);
+        Expander expander = ExpanderFactory.create(widget.isOpenRowNode(), dimensions.size(),
+                widget.getValue().getRowExpand());
+        DimensionInfo dimensionInfo = new DimensionInfoImpl(cursor, filterInfo, expander, dimensions.toArray(new Dimension[dimensions.size()]));
+        return new GroupQueryInfo(queryId, sourceKey, dimensionInfo, targetInfo);
     }
 
     private static FilterInfo getFilterInfo(TableWidget widget, List<Dimension> dimensions) throws Exception {
@@ -208,8 +212,10 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         WidgetBean widgetBean = widgetLinkItem.getWidget();
         TableWidgetBean fromWidget = handleClickItem(widgetBean, clickedList, filterInfos);
         //分组表查询
-        GroupQueryInfo queryInfo = new GroupQueryInfo(new AllCursor(), fromWidget.getwId(), fromColumns[0].getSourceKey(),
-                new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND),fromColumns, new Metric[0], null, null );
+        FilterInfo filterInfo = new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
+        GroupQueryInfo queryInfo = new GroupQueryInfo(fromWidget.getwId(), fromColumns[0].getSourceKey(),
+                new DimensionInfoImpl(new AllCursor(), filterInfo, null, fromColumns),
+                new TargetInfoImpl(new ArrayList<Metric>(0), new ArrayList<GroupTarget>(0), new ArrayList<ResultTarget>(0), new ArrayList<Aggregator>(0)));
         SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
         Set[] results = new HashSet[toColumns.length];
         for (int i = 0; i < results.length; i++){
@@ -278,7 +284,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
 
         FilterInfo filterInfo = FilterInfoFactory.transformDimensionFineFilter(fineDim.getFilters(), fineDim.getId(), targets);
 
-        return new GroupDimension(index, sourceKey, colKey, group,
-                fineDim.getSort() == null ? new AscSort(index) : adaptSort(fineDim.getSort(), index), filterInfo);
+        return new GroupDimension(index, sourceKey, colKey, group, SortAdaptor.adaptorDimensionSort(fineDim.getSort(), index),
+                filterInfo);
     }
 }
