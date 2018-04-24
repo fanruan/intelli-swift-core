@@ -17,7 +17,12 @@ import com.fr.swift.source.SwiftMetaData;
  * Created by Handsome on 2017/12/28 0028 16:17
  */
 public class BaseCreateSegmentForSumTest {
-    public Segment getSegment() {
+
+    public Segment getSegment(){
+        return getSegment(null);
+    }
+
+    public Segment getSegment(SwiftMetaData metaData) {
         return new Segment() {
             @Override
             public void flush() {
@@ -79,7 +84,7 @@ public class BaseCreateSegmentForSumTest {
 
             @Override
             public SwiftMetaData getMetaData() {
-                return null;
+                return metaData;
             }
 
             @Override
