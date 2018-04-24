@@ -15,5 +15,5 @@ public abstract class AbstractWidgetAdaptor {
     protected static String getColumnName(String fieldId){
         return BusinessTableUtils.getFieldNameByFieldId(fieldId);
     }
-    
+
 }
