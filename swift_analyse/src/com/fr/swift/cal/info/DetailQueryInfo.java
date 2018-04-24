@@ -38,10 +38,10 @@ public class DetailQueryInfo extends AbstractQueryInfo<DetailResultSet> {
      */
     private DetailTarget[] targets;
 
-    SwiftMetaData metaData;
+    private SwiftMetaData metaData;
 
-    public DetailQueryInfo(Cursor cursor, String queryID, Dimension[] dimensions, SourceKey table, DetailTarget[] targets, IntList sortIndex, FilterInfo filterInfo, SwiftMetaData metaData) {
-        super(cursor, queryID, table, filterInfo);
+    public DetailQueryInfo(Cursor cursor, String queryId, Dimension[] dimensions, SourceKey table, DetailTarget[] targets, IntList sortIndex, FilterInfo filterInfo, SwiftMetaData metaData) {
+        super(cursor, queryId, table, filterInfo);
         this.dimensions = dimensions;
         this.sortIndex = sortIndex;
         this.targets = targets;

@@ -136,10 +136,9 @@ public class SwiftWidgetExecutorManager implements EngineWidgetExecutorManager {
     }
 
     @Override
-    public NumberMaxAndMinValue getFieldMaxAndMinValueByFieldId(String fieldId) {
-        return null;
+    public NumberMaxAndMinValue getFieldMaxAndMinValueByFieldId(String fieldId) throws Exception {
+        return AbstractWidgetAdaptor.getMaxMinNumValue(fieldId);
     }
-
 
     @Override
     public Map<String, Object> getClickValue(FineWidget widget, Map clicked, List<String> fieldsId) {

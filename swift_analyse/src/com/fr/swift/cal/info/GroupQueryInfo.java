@@ -19,7 +19,9 @@ import java.util.TreeSet;
  * @date 2017/12/11
  */
 public class GroupQueryInfo extends AbstractQueryInfo<GroupByResultSet> {
-    //分组表的维度
+    /**
+     * 分组表的维度
+     */
     private Dimension[] dimensions;
     /**
      * 分组表的聚合维度
@@ -35,9 +37,9 @@ public class GroupQueryInfo extends AbstractQueryInfo<GroupByResultSet> {
      */
     private Expander expander;
 
-    public GroupQueryInfo(Cursor cursor, String queryID, SourceKey table, FilterInfo filterInfo, Dimension[] dimensions,
+    public GroupQueryInfo(Cursor cursor, String queryId, SourceKey table, FilterInfo filterInfo, Dimension[] dimensions,
                           Metric[] metrics, GroupTarget[] targets, Expander expander) {
-        super(cursor, queryID, table, filterInfo);
+        super(cursor, queryId, table, filterInfo);
         this.dimensions = dimensions;
         this.metrics = metrics;
         this.targets = targets;

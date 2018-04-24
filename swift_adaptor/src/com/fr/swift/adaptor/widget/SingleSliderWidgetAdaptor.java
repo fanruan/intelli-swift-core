@@ -4,28 +4,15 @@ import com.finebi.conf.internalimp.analysis.bean.operator.add.group.custom.numbe
 import com.finebi.conf.internalimp.dashboard.widget.control.number.SingleSliderWidget;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.result.control.number.BISingleSliderResult;
-import com.fr.swift.adaptor.transformer.FilterInfoFactory;
-import com.fr.swift.cal.info.DetailQueryInfo;
-import com.fr.swift.cal.result.group.AllCursor;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.query.adapter.dimension.DetailDimension;
-import com.fr.swift.query.filter.info.FilterInfo;
-import com.fr.swift.query.sort.AscSort;
-import com.fr.swift.query.sort.DescSort;
-import com.fr.swift.result.DetailResultSet;
-import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.service.QueryRunnerProvider;
-import com.fr.swift.source.SourceKey;
-import com.fr.swift.structure.array.IntList;
-import com.fr.swift.structure.array.IntListFactory;
 
 import java.util.List;
 
 /**
  * Created by pony on 2018/3/22.
  */
-public class SingleSliderWidgetAdaptor extends AbstractTableWidgetAdaptor{
+public class SingleSliderWidgetAdaptor extends AbstractTableWidgetAdaptor {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SingleSliderWidgetAdaptor.class);
 
     public static BISingleSliderResult calculate(SingleSliderWidget widget) {
@@ -33,27 +20,7 @@ public class SingleSliderWidgetAdaptor extends AbstractTableWidgetAdaptor{
         try {
             List<FineDimension> dimensions = widget.getDimensionList();
             for (FineDimension dimension : dimensions) {
-                String fieldId = dimension.getFieldId();
-                SourceKey sourceKey = getSourceKey(widget);
-                FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
-                //先通过明细表排序查最小
-                DetailDimension ascDimension = new DetailDimension(0, sourceKey, new ColumnKey(getColumnName(fieldId)),
-                        null, new AscSort(0), filterInfo);
-                IntList sortIndex = IntListFactory.createHeapIntList(1);
-                sortIndex.add(0);
-                DetailQueryInfo minQueryInfo = new DetailQueryInfo(new AllCursor(), widget.getWidgetId(), new DetailDimension[]{ascDimension}, sourceKey, null, sortIndex, null, null);
-                DetailResultSet minResultSet = QueryRunnerProvider.getInstance().executeQuery(minQueryInfo);
-                minResultSet.next();
-                Number min = minResultSet.getRowData().getValue(0);
-                value.setMin(Math.min(value.getMin(), min.doubleValue()));
-                //再通过明细表排序差最大
-                DetailDimension descDimension = new DetailDimension(0, sourceKey, new ColumnKey(getColumnName(fieldId)),
-                        null, new DescSort(0), filterInfo);
-                DetailQueryInfo maxQueryInfo = new DetailQueryInfo(new AllCursor(), widget.getWidgetId(), new DetailDimension[]{descDimension}, sourceKey, null, sortIndex, null, null);
-                DetailResultSet maxResultSet = QueryRunnerProvider.getInstance().executeQuery(maxQueryInfo);
-                maxResultSet.next();
-                Number max = maxResultSet.getRowData().getValue(0);
-                value.setMax(Math.max(value.getMax(), max.doubleValue()));
+                setMaxMinNumValue(widget.getWidgetId(), dimension.getFieldId(), widget.getFilters(), value);
             }
         } catch (Exception e) {
             LOGGER.error(e);

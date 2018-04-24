@@ -9,7 +9,8 @@ import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.source.SourceKey;
 
 /**
- * Created by Lyon on 2018/4/1.
+ * @author Lyon
+ * @date 2018/4/1
  */
 public class XGroupQueryInfo extends GroupQueryInfo {
 
@@ -17,9 +18,9 @@ public class XGroupQueryInfo extends GroupQueryInfo {
     private Expander xExpander;
     private Dimension[] colDimensions;
 
-    public XGroupQueryInfo(Cursor cursor, String queryID, SourceKey table, FilterInfo filterInfo, Dimension[] dimensions,
+    public XGroupQueryInfo(Cursor cursor, String queryId, SourceKey table, FilterInfo filterInfo, Dimension[] dimensions,
                            Dimension[] colDimensions, Metric[] metrics, GroupTarget[] targets, Expander expander) {
-        super(cursor, queryID, table, filterInfo, dimensions, metrics, targets, expander);
+        super(cursor, queryId, table, filterInfo, dimensions, metrics, targets, expander);
         this.colDimensions = colDimensions;
     }
 
