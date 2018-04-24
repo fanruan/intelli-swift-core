@@ -97,6 +97,7 @@ public class RCompileOperator extends AbstractOperator {
         cacheList.add(dataModel);
         // 保存到缓存中
         RCacheStore.INSTANCE.put(new RCacheElement(uuid, cacheList));
+        conn.close();
         return columnList;
     }
 

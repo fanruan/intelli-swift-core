@@ -33,4 +33,13 @@ public class DoubleAverageAggregatorValue implements AggregatorValue<Double> {
     public Double calculateValue() {
         return value / rowCount;
     }
+
+    @Override
+    public Object clone() {
+        DoubleAverageAggregatorValue value = new DoubleAverageAggregatorValue();
+        value.rowCount = this.rowCount;
+        value.value = this.value;
+        return value;
+    }
+
 }

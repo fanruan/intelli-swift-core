@@ -1,5 +1,6 @@
 package com.fr.swift.cal.segment.group;
 
+import com.fr.swift.query.adapter.dimension.Expander;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.group.by.XGroupByUtils;
@@ -22,13 +23,15 @@ public class XGroupAllSegmentQuery extends GroupAllSegmentQuery {
     private List<Column> colDimensions;
     private List<Sort> colIndexSorts;
     private int[] xCursor;
+    private Expander colExpander;
 
     public XGroupAllSegmentQuery(List<Column> rowDimensions, List<Column> colDimensions, List<Column> metrics,
                                  List<Aggregator> aggregators, DetailFilter filter,
-                                 List<Sort> rowIndexSorts, List<Sort> colIndexSorts) {
-        super(rowDimensions, metrics, aggregators, filter, rowIndexSorts);
+                                 List<Sort> rowIndexSorts, List<Sort> colIndexSorts, Expander colExpander) {
+        super(aggregators.size(), rowDimensions, metrics, aggregators, filter, rowIndexSorts, null);
         this.colDimensions = colDimensions;
         this.colIndexSorts = colIndexSorts;
+        this.colExpander = colExpander;
     }
 
     @Override

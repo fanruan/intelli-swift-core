@@ -46,6 +46,17 @@ public class SwiftMetaDataImpl implements SwiftMetaData {
         this.fieldList = fieldList;
     }
 
+    public SwiftMetaDataImpl(SwiftMetaDataPojo swiftMetaDataPojo) {
+        this.swiftMetaDataPojo = swiftMetaDataPojo;
+        List<MetaDataColumnPojo> fieldPojoList = swiftMetaDataPojo.getFieldList();
+        this.fieldList = new ArrayList<SwiftMetaDataColumn>();
+        for (MetaDataColumnPojo column : fieldPojoList) {
+            fieldList.add(new MetaDataColumn(column.getName(), column.getRemark(), column.getType(), column.getPrecision(), column.getScale(), column.getColumnId()));
+            fieldNames.add(column.getName());
+        }
+
+    }
+
     @Override
     public String getSchemaName() {
         return swiftMetaDataPojo.getSchema();

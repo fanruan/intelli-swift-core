@@ -4,11 +4,12 @@ import com.fr.general.ComparatorUtils;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.group.Group;
-import com.fr.swift.source.ColumnTypeConstants.ColumnType;
+import com.fr.swift.query.group.GroupType;
 import com.fr.swift.source.core.Core;
 import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.core.CoreGenerator;
 import com.fr.swift.source.core.CoreService;
+import com.fr.swift.util.function.Function;
 
 import java.io.Serializable;
 
@@ -30,9 +31,6 @@ public class SumByGroupDimension implements CoreService, Serializable {
      * 改名之后的字段，不需要算md5
      */
     private String nameText;
-
-    @CoreField
-    private ColumnType columnType;
 
     public String getName() {
         return name;
@@ -98,12 +96,11 @@ public class SumByGroupDimension implements CoreService, Serializable {
     }
 
 
-    public ColumnType getColumnType() {
-        return columnType;
+    //维度dic的值要做转化
+    public Function createConvertor() {
+        if (group.getGroupType() == GroupType.YEAR) {
+            return new YearConvertor();
+        }
+        return new NoneConvertor();
     }
-
-    public void setColumnType(ColumnType columnType) {
-        this.columnType = columnType;
-    }
-
 }

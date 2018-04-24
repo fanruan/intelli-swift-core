@@ -86,7 +86,10 @@ public class GroupAdaptor {
             return originGroup;
         }
         // todo 目前只看到文本的自定义排序
-        List<String> values = ((DimensionCustomSort) fineDim.getSort()).getValue().getDetails();
+        List<String> values = null;
+        if (fineDim.getSort().getType() == GROUP_TYPE.CUSTOM) {
+            values = ((DimensionCustomSort) fineDim.getSort()).getValue().getDetails();
+        }
         if (values == null || values.isEmpty()) {
             return originGroup;
         }

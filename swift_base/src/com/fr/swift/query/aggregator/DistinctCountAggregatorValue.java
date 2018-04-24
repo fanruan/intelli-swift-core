@@ -30,4 +30,12 @@ public class DistinctCountAggregatorValue implements AggregatorValue<Double> {
     public Double calculateValue() {
         return Double.valueOf(bitMap.getCardinality());
     }
+
+    @Override
+    public Object clone() {
+        DistinctCountAggregatorValue value = new DistinctCountAggregatorValue();
+        value.bitMap = (RoaringMutableBitMap) RoaringMutableBitMap.newInstance();
+        value.bitMap.or(this.bitMap);
+        return value;
+    }
 }

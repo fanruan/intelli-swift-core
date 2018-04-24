@@ -13,7 +13,7 @@ import com.fr.swift.adaptor.struct.SwiftDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftEmptyResult;
 import com.fr.swift.adaptor.struct.SwiftSegmentDetailResult;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
-import com.fr.swift.adaptor.transformer.SortFactory;
+import com.fr.swift.adaptor.transformer.SortAdaptor;
 import com.fr.swift.generate.preview.MinorSegmentManager;
 import com.fr.swift.generate.preview.MinorUpdater;
 import com.fr.swift.log.SwiftLoggers;
@@ -71,7 +71,7 @@ public class SwiftDataProvider implements DataProvider {
                 //可能有些字段排序的后来被删了
                 try {
                     sortIndex.add(dataSource.getMetadata().getColumnIndex(sortBeanItem.getName()));
-                    sorts.add(SortFactory.transformSort(sortBeanItem.getSortType()).getSortType());
+                    sorts.add(SortAdaptor.transformSort(sortBeanItem.getSortType()).getSortType());
                 } catch (Exception ignore) {
                 }
             }

@@ -1,7 +1,8 @@
 package com.fr.swift.cube.space.impl;
 
 import com.fr.swift.config.ISegmentKey;
-import com.fr.swift.config.conf.SegmentConfig;
+import com.fr.swift.config.conf.service.SwiftConfigService;
+import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
 import com.fr.swift.cube.space.SpaceUsageDetector;
 import com.fr.swift.cube.space.SpaceUsageService;
 import com.fr.swift.source.SourceKey;
@@ -16,11 +17,11 @@ import java.util.List;
 public class SpaceUsageServiceImpl implements SpaceUsageService {
     private SpaceUsageDetector detector = new LocalSpaceUsageDetector();
 
-    private SegmentConfig segConf = SegmentConfig.getInstance();
+    private SwiftConfigService confSvc = SwiftConfigServiceProvider.getInstance();
 
     @Override
     public long getTableUsedSpace(SourceKey table) throws Exception {
-        List<ISegmentKey> segs = segConf.getSegmentByKey(table.getId()).getSegments();
+        List<ISegmentKey> segs = confSvc.getSegmentByKey(table.getId()).getSegments();
 
         long size = 0;
         for (ISegmentKey seg : segs) {

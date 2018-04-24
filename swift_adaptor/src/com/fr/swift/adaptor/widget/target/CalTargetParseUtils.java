@@ -10,10 +10,11 @@ import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.query.adapter.metric.GroupMetric;
 import com.fr.swift.query.adapter.metric.Metric;
+import com.fr.swift.query.adapter.target.GroupTarget;
 import com.fr.swift.query.adapter.target.cal.CalTargetType;
 import com.fr.swift.query.adapter.target.cal.ResultTarget;
-import com.fr.swift.query.adapter.target.cal.TargetCalculatorInfo;
-import com.fr.swift.query.adapter.target.cal.TargetInfo;
+import com.fr.swift.query.adapter.target.cal.GroupTargetImpl;
+import com.fr.swift.query.adapter.target.cal.TargetInfoImpl;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.DummyAggregator;
 import com.fr.swift.query.aggregator.SumAggregate;
@@ -42,7 +43,7 @@ public class CalTargetParseUtils {
      * @return
      * @throws Exception
      */
-    public static TargetInfo parseCalTarget(AbstractTableWidget widget) throws Exception {
+    public static TargetInfoImpl parseCalTarget(AbstractTableWidget widget) throws Exception {
         List<String> metricFieldIds = parseMetricTargetFieldIds(widget);
         List<String> relatedMetricFieldIds = parseRelatedFieldIds(widget, metricFieldIds);
         List<String> calTargetFieldIds = parseCalTargetFieldIds(widget);
@@ -51,8 +52,8 @@ public class CalTargetParseUtils {
         allTargetFieldIds.addAll(relatedMetricFieldIds);
         allTargetFieldIds.addAll(calTargetFieldIds);
         List<ResultTarget> targetsForShowList = new ArrayList<ResultTarget>();
-        List<Aggregator> aggregatorListOfTargetsForShow = new ArrayList<Aggregator>();
-        List<TargetCalculatorInfo> calculatorInfoList = new ArrayList<TargetCalculatorInfo>();
+        List<Aggregator> aggregatorListForResultTargetMerging = new ArrayList<Aggregator>();
+        List<GroupTarget> calculatorInfoList = new ArrayList<GroupTarget>();
         List<FineTarget> targets = widget.getTargetList();
         for (int i = 0; i < targets.size(); i++) {
             String fieldId = targets.get(i).getFieldId();
@@ -64,22 +65,22 @@ public class CalTargetParseUtils {
                 // TODO: 2018/4/8 根据value的type来判断哪类配置类计算
                 String originFieldId = ((AbstractOriginValueBean) value).getOrigin();
                 int paramIndex = allTargetFieldIds.indexOf(originFieldId);
-                calculatorInfoList.add(parseCalInfo(value.getType(), paramIndex, resultIndex));
+                calculatorInfoList.add(parseCalInfo(value.getType(), i, new int[] {paramIndex}, resultIndex));
             }
 
             // TODO: 2018/4/11 指标结果合并用到的Aggregator，配置类计算的结果如何合并还没定
             if (value == null) {
                 // 聚合指标，暂时都是SumAggregate
-                aggregatorListOfTargetsForShow.add(new SumAggregate());
+                aggregatorListForResultTargetMerging.add(new SumAggregate());
             } else {
                 // 配置类计算的结果指标不汇总
-                aggregatorListOfTargetsForShow.add(new DummyAggregator());
+                aggregatorListForResultTargetMerging.add(new DummyAggregator());
             }
         }
         metricFieldIds.addAll(relatedMetricFieldIds);
         List<Metric> metrics = createMetrics(metricFieldIds, widget);
         // TODO: 2018/4/11 这边需要提供targetsFowShowList对应的Aggregator，用于结果的聚合
-        return new TargetInfo(metrics, calculatorInfoList, targetsForShowList, aggregatorListOfTargetsForShow);
+        return new TargetInfoImpl(metrics, calculatorInfoList, targetsForShowList, aggregatorListForResultTargetMerging);
     }
 
     private static List<Metric> createMetrics(List<String> fieldIds, AbstractTableWidget widget) throws Exception {
@@ -135,26 +136,26 @@ public class CalTargetParseUtils {
         return metrics;
     }
 
-    private static TargetCalculatorInfo parseCalInfo(int type, int paramIndex, int resultIndex) {
+    private static GroupTarget parseCalInfo(int type, int queryIndex, int[] paramIndexes, int resultIndex) {
         switch (type) {
             case BIDesignConstants.DESIGN.CAL_TARGET.FORMULA:
             case BIDesignConstants.DESIGN.CAL_TARGET.SUM_OF_ABOVE:
-                return new TargetCalculatorInfo(paramIndex, resultIndex, CalTargetType.ALL_SUM_OF_ABOVE);
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_SUM_OF_ABOVE, new DummyAggregator());
             case BIDesignConstants.DESIGN.CAL_TARGET.SUM_OF_ABOVE_IN_GROUP:
             case BIDesignConstants.DESIGN.CAL_TARGET.SUM_OF_ALL_SUM:
-                return new TargetCalculatorInfo(paramIndex, resultIndex, CalTargetType.ALL_SUM_OF_ALL);
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_SUM_OF_ALL, new DummyAggregator());
             case BIDesignConstants.DESIGN.CAL_TARGET.SUM_OF_ALL_AVG:
-                return new TargetCalculatorInfo(paramIndex, resultIndex, CalTargetType.ALL_AVG);
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_AVG, new DummyAggregator());
             case BIDesignConstants.DESIGN.CAL_TARGET.SUM_OF_ALL_MAX:
-                return new TargetCalculatorInfo(paramIndex, resultIndex, CalTargetType.ALL_MAX);
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_MAX, new DummyAggregator());
             case BIDesignConstants.DESIGN.CAL_TARGET.SUM_OF_ALL_MIN:
-                return new TargetCalculatorInfo(paramIndex, resultIndex, CalTargetType.ALL_MIN);
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_MIN, new DummyAggregator());
             case BIDesignConstants.DESIGN.CAL_TARGET.RANK_ASC:
-                return new TargetCalculatorInfo(paramIndex, resultIndex, CalTargetType.ALL_RANK_ASC);
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_RANK_ASC, new DummyAggregator());
             case BIDesignConstants.DESIGN.CAL_TARGET.RANK_DES:
-                return new TargetCalculatorInfo(paramIndex, resultIndex, CalTargetType.ALL_RANK_DEC);
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_RANK_DEC, new DummyAggregator());
         }
-        return new TargetCalculatorInfo(paramIndex, resultIndex, CalTargetType.ALL_SUM_OF_ALL);
+        return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_SUM_OF_ALL, new DummyAggregator());
     }
 
     private static Metric toMetric(String fieldId, int index, List<FineTarget> targetList) {
