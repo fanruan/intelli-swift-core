@@ -7,6 +7,7 @@ import com.finebi.conf.internalimp.dashboard.widget.filter.ClickValueItem;
 import com.finebi.conf.internalimp.dashboard.widget.filter.CustomLinkConfItem;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
 import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
+import com.finebi.conf.structure.bean.dashboard.widget.WidgetBean;
 import com.finebi.conf.structure.dashboard.widget.FineWidget;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionDrill;
@@ -44,6 +45,7 @@ import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.util.Crasher;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -178,14 +180,8 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         //根据点击的值，创建过滤条件
         ClickValue clickValue = widgetLinkItem.getClicked();
         List<ClickValueItem> clickedList = clickValue.getValue();
-        TableWidgetBean fromWidget = (TableWidgetBean) widgetLinkItem.getWidget();
-        for (ClickValueItem clickValueItem : clickedList) {
-            String value = clickValueItem.getText();
-            Set<String> values = new HashSet<String>();
-            values.add(value);
-            WidgetDimensionBean bean = fromWidget.getDimensions().get(clickValueItem.getdId());
-            filterInfoList.add(new SwiftDetailFilterInfo<Set<String>>(getColumnName(bean.getFieldId()), values, SwiftDetailFilterType.STRING_IN));
-        }
+        WidgetBean widgetBean = widgetLinkItem.getWidget();
+        handleClickItem(widgetBean, clickedList, filterInfoList);
     }
 
     /**
@@ -209,14 +205,8 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
         ClickValue clickValue = widgetLinkItem.getClicked();
         List<ClickValueItem> clickedList = clickValue.getValue();
-        TableWidgetBean fromWidget = (TableWidgetBean) widgetLinkItem.getWidget();
-        for (ClickValueItem clickValueItem : clickedList) {
-            String value = clickValueItem.getText();
-            Set<String> values = new HashSet<String>();
-            values.add(value);
-            WidgetDimensionBean bean = fromWidget.getDimensions().get(clickValueItem.getdId());
-            filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(getColumnName(bean.getFieldId()), values, SwiftDetailFilterType.STRING_IN));
-        }
+        WidgetBean widgetBean = widgetLinkItem.getWidget();
+        TableWidgetBean fromWidget = handleClickItem(widgetBean, clickedList, filterInfos);
         //分组表查询
         GroupQueryInfo queryInfo = new GroupQueryInfo(new AllCursor(), fromWidget.getwId(), fromColumns[0].getSourceKey(),
                 new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND),fromColumns, new Metric[0], null, null );
@@ -234,6 +224,23 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         for (int i = 0; i < toColumns.length; i++){
             filterInfoList.add(new SwiftDetailFilterInfo(toColumns[i], results[i], SwiftDetailFilterType.STRING_IN));
         }
+    }
+
+    private static TableWidgetBean handleClickItem(WidgetBean widgetBean, List<ClickValueItem> clickedList, List<FilterInfo> filterInfos) {
+        if (!(widgetBean instanceof TableWidgetBean)) {
+            Crasher.crash("WidgetBean must instance of " + TableWidgetBean.class.getName() + " but got: " + widgetBean.getClass().getName());
+        }
+        TableWidgetBean fromWidget = (TableWidgetBean) widgetBean;
+        if (null != clickedList) {
+            for (ClickValueItem clickValueItem : clickedList) {
+                String value = clickValueItem.getText();
+                Set<String> values = new HashSet<String>();
+                values.add(value);
+                WidgetDimensionBean bean = fromWidget.getDimensions().get(clickValueItem.getdId());
+                filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(getColumnName(bean.getFieldId()), values, SwiftDetailFilterType.STRING_IN));
+            }
+        }
+        return fromWidget;
     }
 
     private static void dealWithWidgetFilter(List<FilterInfo> filterInfoList, TableWidget widget) throws Exception {
