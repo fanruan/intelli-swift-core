@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by Handsome on 2018/2/2 0002 10:24
  */
-public class TestColumnFormula extends TestCase {
+public class ColumnFormulaOperatorTest extends TestCase {
     public void testColumnFormula() {
         try {
             Segment[] segments = new Segment[2];

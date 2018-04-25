@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by Handsome on 2018/1/17 0017 11:18
  */
-public class TestUnionOperator extends TestCase {
+public class UnionOperatorTest extends TestCase {
 
     public void testUnionOperator() {
         try {
@@ -56,6 +56,7 @@ public class TestUnionOperator extends TestCase {
             EasyMock.expect(parent1.getMetadata()).andReturn(metaData1).anyTimes();
             EasyMock.expect(metaData1.getColumn(EasyMock.isA(String.class))).andReturn(column1).anyTimes();
             EasyMock.expect(column1.getType()).andReturn(16).anyTimes();
+            EasyMock.expect(column1.getScale()).andReturn(0).anyTimes();
             EasyMock.expect(column1.getPrecision()).andReturn(255).anyTimes();
             EasyMock.replay(parent1);
             EasyMock.replay(metaData1);

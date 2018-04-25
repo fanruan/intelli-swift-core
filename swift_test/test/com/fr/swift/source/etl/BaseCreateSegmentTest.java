@@ -18,7 +18,11 @@ import com.fr.swift.source.SwiftMetaData;
  */
 public class BaseCreateSegmentTest {
 
-    public Segment getSegment() {
+    public Segment getSegment(){
+        return getSegment(null);
+    }
+
+    public Segment getSegment(SwiftMetaData metaData) {
         return new Segment() {
             @Override
             public void flush() {
@@ -85,7 +89,7 @@ public class BaseCreateSegmentTest {
 
             @Override
             public SwiftMetaData getMetaData() {
-                return null;
+                return metaData;
             }
 
             @Override

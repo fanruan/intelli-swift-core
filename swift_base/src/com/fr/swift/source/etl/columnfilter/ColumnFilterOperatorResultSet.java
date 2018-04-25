@@ -88,6 +88,7 @@ public class ColumnFilterOperatorResultSet implements SwiftResultSet {
             }
             if(isBitMapInit) {
                 this.isBitMapInit = false;
+
                 this.bitMap.traversal(new TraversalAction() {
                     @Override
                     public void actionPerformed(int row) {

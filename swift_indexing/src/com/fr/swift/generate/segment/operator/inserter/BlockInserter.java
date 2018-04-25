@@ -1,4 +1,4 @@
-package com.fr.swift.generate.segment.operator;
+package com.fr.swift.generate.segment.operator.inserter;
 
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.context.SwiftContext;

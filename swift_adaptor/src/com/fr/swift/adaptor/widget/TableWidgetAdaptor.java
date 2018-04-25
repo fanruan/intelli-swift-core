@@ -1,9 +1,6 @@
 package com.fr.swift.adaptor.widget;
 
-import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.WidgetDimensionBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
-import com.finebi.conf.internalimp.dashboard.widget.filter.ClickValue;
-import com.finebi.conf.internalimp.dashboard.widget.filter.ClickValueItem;
 import com.finebi.conf.internalimp.dashboard.widget.filter.CustomLinkConfItem;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
 import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
@@ -180,16 +177,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
 
     private static void dealWithAutoLink(List<FilterInfo> filterInfoList, WidgetLinkItem widgetLinkItem) {
         //根据点击的值，创建过滤条件
-        ClickValue clickValue = widgetLinkItem.getClicked();
-        List<ClickValueItem> clickedList = clickValue.getValue();
-        TableWidgetBean fromWidget = (TableWidgetBean) widgetLinkItem.getWidget();
-        for (ClickValueItem clickValueItem : clickedList) {
-            String value = clickValueItem.getText();
-            Set<String> values = new HashSet<String>();
-            values.add(value);
-            WidgetDimensionBean bean = fromWidget.getDimensions().get(clickValueItem.getdId());
-            filterInfoList.add(new SwiftDetailFilterInfo<Set<String>>(getColumnName(bean.getFieldId()), values, SwiftDetailFilterType.STRING_IN));
-        }
+        handleClickItem(widgetLinkItem, filterInfoList);
     }
 
     /**
@@ -211,16 +199,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         }
         //根据点击的值，创建过滤条件
         List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
-        ClickValue clickValue = widgetLinkItem.getClicked();
-        List<ClickValueItem> clickedList = clickValue.getValue();
-        TableWidgetBean fromWidget = (TableWidgetBean) widgetLinkItem.getWidget();
-        for (ClickValueItem clickValueItem : clickedList) {
-            String value = clickValueItem.getText();
-            Set<String> values = new HashSet<String>();
-            values.add(value);
-            WidgetDimensionBean bean = fromWidget.getDimensions().get(clickValueItem.getdId());
-            filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(getColumnName(bean.getFieldId()), values, SwiftDetailFilterType.STRING_IN));
-        }
+        TableWidgetBean fromWidget = handleClickItem(widgetLinkItem, filterInfos);
         //分组表查询
         FilterInfo filterInfo = new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
         GroupQueryInfo queryInfo = new GroupQueryInfo(fromWidget.getwId(), fromColumns[0].getSourceKey(),
@@ -241,6 +220,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
             filterInfoList.add(new SwiftDetailFilterInfo(toColumns[i], results[i], SwiftDetailFilterType.STRING_IN));
         }
     }
+
 
     private static void dealWithWidgetFilter(List<FilterInfo> filterInfoList, TableWidget widget) throws Exception {
         List<FineFilter> filters = widget.getFilters();
