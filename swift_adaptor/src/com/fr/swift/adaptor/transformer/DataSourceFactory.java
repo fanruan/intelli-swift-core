@@ -42,6 +42,7 @@ import com.fr.swift.source.etl.datamining.DataMiningOperator;
 import com.fr.swift.source.etl.datamining.DataMiningTransferOperator;
 import com.fr.swift.source.etl.rcompile.RCompileOperator;
 import com.fr.swift.source.etl.rcompile.RCompileTransferOperator;
+import com.fr.swift.source.excel.ExcelDataModel;
 import com.fr.swift.source.excel.ExcelDataSource;
 
 import java.util.ArrayList;
@@ -203,8 +204,12 @@ public class DataSourceFactory {
     }
 
     private static DataSource transformExcelDataSource(FineExcelBusinessTable table) throws Exception {
-        table.getEngineType();
-        return new EmptyDataSource();
+        String path = "D:\\bi-workspace\\5.0\\env\\app\\WEB-INF\\assets\\temp_attach\\MapCache1524621776100_14.xlsx";
+        ExcelDataModel excelDataModel = new ExcelDataModel(path);
+        String[] columnNames = excelDataModel.onlyGetColumnNames();
+        ColumnType[] columnTypes = excelDataModel.onlyGetColumnTypes();
+        ExcelDataSource excelDataSource = new ExcelDataSource(path, columnNames, columnTypes);
+        return excelDataSource;
     }
 
     private static DataSource transformQueryDBSource(FineSQLBusinessTable table) throws Exception {

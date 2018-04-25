@@ -60,6 +60,7 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
             }
             result = new SwiftDetailTableResult(resultSet, widget.getTotalRows());
         } catch (Exception e) {
+            LOGGER.error(e);
         }
 
         return result;
