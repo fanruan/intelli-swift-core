@@ -1,28 +1,23 @@
 package com.fr.swift.adaptor.widget;
 
+import com.finebi.conf.internalimp.analysis.bean.operator.add.group.custom.number.NumberMaxAndMinValue;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.WidgetDimensionBean;
+import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
 import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
 import com.finebi.conf.internalimp.dashboard.widget.filter.ClickValue;
 import com.finebi.conf.internalimp.dashboard.widget.filter.ClickValueItem;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
 import com.finebi.conf.structure.bean.dashboard.widget.WidgetBean;
-import com.fr.swift.query.filter.SwiftDetailFilterType;
-import com.fr.swift.query.filter.info.FilterInfo;
-import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
-import com.fr.swift.source.SourceKey;
-import com.fr.swift.util.Crasher;
-import com.fr.swift.utils.BusinessTableUtils;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import com.finebi.conf.internalimp.analysis.bean.operator.add.group.custom.number.NumberMaxAndMinValue;
+import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.filter.FineFilter;
+import com.fr.stable.StringUtils;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.cal.info.DetailQueryInfo;
 import com.fr.swift.query.adapter.dimension.AllCursor;
 import com.fr.swift.query.adapter.dimension.DetailDimension;
+import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.DescSort;
 import com.fr.swift.result.DetailResultSet;
@@ -31,10 +26,13 @@ import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
+import com.fr.swift.util.Crasher;
 import com.fr.swift.utils.BusinessTableUtils;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author pony
@@ -44,6 +42,21 @@ public abstract class AbstractWidgetAdaptor {
 
     protected static SourceKey getSourceKey(String fieldId) {
         return new SourceKey(BusinessTableUtils.getSourceIdByFieldId(fieldId));
+    }
+
+    protected static String getFieldId(FineDimension dimension) {
+        String fieldId;
+        if (dimension.getWidgetBeanField() != null) {
+            WidgetBeanField field = dimension.getWidgetBeanField();
+            fieldId = StringUtils.isEmpty(field.getSource()) ? field.getId() : field.getSource();
+        } else {
+            fieldId = dimension.getFieldId();
+        }
+        return fieldId;
+    }
+
+    protected static String getColumnName(FineDimension dimension) {
+        return BusinessTableUtils.getFieldNameByFieldId(getFieldId(dimension));
     }
 
     protected static String getColumnName(String fieldId) {

@@ -1,6 +1,7 @@
 package com.fr.swift.adaptor.transformer;
 
 import com.finebi.conf.constant.BICommonConstants;
+import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
 import com.finebi.conf.internalimp.bean.filter.AbstractFilterBean;
 import com.finebi.conf.internalimp.bean.filter.FormulaFilterBean;
 import com.finebi.conf.internalimp.bean.filter.GeneraAndFilterBean;
@@ -43,6 +44,7 @@ import com.finebi.conf.internalimp.bean.filtervalue.number.NumberValue;
 import com.finebi.conf.internalimp.bean.filtervalue.string.StringBelongFilterValueBean;
 import com.finebi.conf.structure.bean.filter.DateFilterBean;
 import com.finebi.conf.structure.bean.filter.FilterBean;
+import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.structure.filter.FineFilter;
 import com.fr.general.ComparatorUtils;
@@ -80,21 +82,37 @@ public class FilterInfoFactory {
         return transformFilterBean(beans, new ArrayList<Segment>());
     }
 
-    public static FilterInfo transformDimensionFineFilter(List<FineFilter> filters, String dimId, List<FineTarget> targets) {
+    public static FilterInfo transformDimensionFineFilter(FineDimension dimension){
+        return transformDimensionFineFilter(dimension, null);
+    }
+
+    public static FilterInfo transformDimensionFineFilter(FineDimension dimension, List<FineTarget> targets) {
+        List<FineFilter> filters = dimension.getFilters();
+        String dimId = dimension.getId();
         if (filters == null) {
             return null;
         }
         List<FilterBean> beans = new ArrayList<FilterBean>();
         for (FineFilter filter : filters) {
+            //nice job! foundation 维度过滤没id，要从维度上设置一下
             if (filter.getValue() != null) {
-                beans.add((FilterBean) filter.getValue());
+                AbstractFilterBean bean = (AbstractFilterBean) filter.getValue();
+                String fieldId;
+                if (dimension.getWidgetBeanField() != null){
+                    WidgetBeanField field = dimension.getWidgetBeanField();
+                    fieldId = StringUtils.isEmpty(field.getSource()) ? field.getId(): field.getSource();
+                } else {
+                    fieldId = dimension.getFieldId();
+                }
+                bean.setFieldId(fieldId);
+                beans.add(bean);
             }
         }
         List<FilterInfo> filterInfoList = new ArrayList<FilterInfo>();
         for (FilterBean bean : beans) {
             AbstractFilterBean filterBean = (AbstractFilterBean) bean;
             FilterInfo info = createFilterInfo(filterBean, new ArrayList<Segment>());
-            if (!ComparatorUtils.equals(filterBean.getTargetId(), dimId)) {
+            if (!ComparatorUtils.equals(filterBean.getTargetId(), dimId) && targets != null) {
                 filterInfoList.add(new MatchFilterInfo(info, getIndex(filterBean.getTargetId(), targets)));
             } else {
                 filterInfoList.add(info);

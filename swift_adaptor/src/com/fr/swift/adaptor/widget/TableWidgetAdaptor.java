@@ -250,12 +250,12 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
     }
 
     private static Dimension toDimension(SourceKey sourceKey, FineDimension fineDim, int index, List<FineTarget> targets) {
-        String columnName = getColumnName(fineDim.getFieldId());
+        String columnName = getColumnName(fineDim);
         ColumnKey colKey = new ColumnKey(columnName);
 
         Group group = GroupAdaptor.adaptDashboardGroup(fineDim);
 
-        FilterInfo filterInfo = FilterInfoFactory.transformDimensionFineFilter(fineDim.getFilters(), fineDim.getId(), targets);
+        FilterInfo filterInfo = FilterInfoFactory.transformDimensionFineFilter(fineDim, targets);
 
         return new GroupDimension(index, sourceKey, colKey, group, SortAdaptor.adaptorDimensionSort(fineDim.getSort(), index),
                 filterInfo);

@@ -43,7 +43,7 @@ public class StringControlWidgetAdaptor extends AbstractTableWidgetAdaptor{
                 filterInfos.add(FilterInfoFactory.transformFineFilter(widget.getFilters()));
             }
             if (dimension.getFilters() != null) {
-                filterInfos.add(FilterInfoFactory.transformFineFilter(dimension.getFilters()));
+                filterInfos.add(FilterInfoFactory.transformDimensionFineFilter(dimension));
             }
             List values = QueryUtils.getOneDimensionFilterValues(dimension, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND), widget.getWidgetId());
 
