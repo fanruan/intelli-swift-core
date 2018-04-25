@@ -7,7 +7,6 @@ import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.core.CoreField;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,10 +19,10 @@ public abstract class AbstractOuterDataSource extends AbstractDataSource impleme
 
     /**
      * 保存使用的字段与columnType类型,空或者null表示没变
-     * 强制要求linkhashmap，保存顺序
+     * 无序，生成metatada的时候按照outermetadata的顺序来
      */
     @CoreField
-    protected LinkedHashMap<String, ColumnType> fieldColumnTypes;
+    protected Map<String, ColumnType> fieldColumnTypes;
 
     /**
      * 外部数据源的meta
@@ -33,7 +32,7 @@ public abstract class AbstractOuterDataSource extends AbstractDataSource impleme
     public AbstractOuterDataSource() {
     }
 
-    public AbstractOuterDataSource(LinkedHashMap<String, ColumnType> fieldColumnTypes) {
+    public AbstractOuterDataSource(Map<String, ColumnType> fieldColumnTypes) {
         this.fieldColumnTypes = fieldColumnTypes;
     }
 
@@ -60,14 +59,19 @@ public abstract class AbstractOuterDataSource extends AbstractDataSource impleme
         } else {
             List<SwiftMetaDataColumn> columns = new ArrayList<SwiftMetaDataColumn>();
             try {
-                for (Map.Entry<String, ColumnType> entry : fieldColumnTypes.entrySet()) {
-                    SwiftMetaDataColumn outerColumn = outerMetadata.getColumn(entry.getKey());
-                    SwiftMetaDataColumn column = outerColumn;
-                    ColumnType outerColumnType = ColumnTypeUtils.getColumnType(outerColumn);
-                    if (outerColumnType != entry.getValue()) {
-                        column = ColumnTypeUtils.convertColumn(entry.getValue(), outerColumn);
+                for (int i = 0; i < outerMetadata.getColumnCount(); i++){
+                    int columnIndex = i + 1;
+                    SwiftMetaDataColumn outerColumn = outerMetadata.getColumn(columnIndex);
+                    String fieldName = outerColumn.getName();
+                    if (fieldColumnTypes.containsKey(fieldName)){
+                        ColumnType type = fieldColumnTypes.get(fieldName);
+                        SwiftMetaDataColumn column = outerColumn;
+                        ColumnType outerColumnType = ColumnTypeUtils.getColumnType(outerColumn);
+                        if (outerColumnType != type) {
+                            column = ColumnTypeUtils.convertColumn(type, outerColumn);
+                        }
+                        columns.add(column);
                     }
-                    columns.add(column);
                 }
                 metaData = new SwiftMetaDataImpl(outerMetadata.getTableName(), columns);
             } catch (SwiftMetaDataException e) {
