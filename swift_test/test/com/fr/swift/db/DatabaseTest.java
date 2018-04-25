@@ -57,7 +57,7 @@ public class DatabaseTest {
         db.alterTable(tableKey, changedMeta);
         assertTrue(equals(changedMeta, db.getTable(tableKey).getMeta()));
 
-       // assertEquals(1, db.getAllTables().size());
+        // assertEquals(1, db.getAllTables().size());
 
         db.dropTable(tableKey);
         assertFalse(db.existsTable(tableKey));
