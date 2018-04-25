@@ -20,8 +20,10 @@ import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.conf.business.field.FieldInfoHelper;
 import com.fr.swift.conf.business.relation.TableRelationReader;
+import com.fr.swift.conf.business.table2source.TableToSource;
 import com.fr.swift.conf.business.table2source.dao.TableToSourceConfigDao;
 import com.fr.swift.conf.business.table2source.dao.TableToSourceConfigDaoImpl;
+import com.fr.swift.conf.business.table2source.unique.TableToSourceUnique;
 import com.fr.swift.driver.SwiftDriverRegister;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -99,6 +101,8 @@ public class SwiftTableManager extends AbstractEngineTableManager {
 
             while(iterator.hasNext()) {
                 FineBusinessTable table = (FineBusinessTable)iterator.next();
+                TableToSource tableToSource = new TableToSourceUnique(table.getId(), DataSourceFactory.transformDataSource(table).getSourceKey().getId());
+                tableToSourceConfigDao.updateConfig(tableToSource);
                 EntryInfo entryInfo = this.createEntryInfo(table);
                 this.updateEntryInfo(entryInfo);
                 this.saveFieldInfo(FieldInfoHelper.createFieldInfo(entryInfo, table));

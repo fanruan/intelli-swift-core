@@ -11,8 +11,10 @@ import com.fr.swift.adaptor.transformer.SortAdaptor;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.cal.info.DetailQueryInfo;
-import com.fr.swift.query.adapter.dimension.Cursor;
 import com.fr.swift.config.conf.MetaDataConvertUtil;
+import com.fr.swift.log.SwiftLogger;
+import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.adapter.dimension.Cursor;
 import com.fr.swift.query.adapter.dimension.DetailDimension;
 import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.adapter.target.DetailFormulaTarget;
@@ -41,6 +43,8 @@ import java.util.List;
  */
 public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
 
+    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(DetailWidgetAdaptor.class);
+
     public static BIDetailTableResult calculate(DetailWidget widget) {
         BIDetailTableResult result = null;
         SwiftResultSet resultSet;
@@ -51,6 +55,7 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
             }
             result = new SwiftDetailTableResult(resultSet, widget.getTotalRows());
         } catch (Exception e) {
+            LOGGER.error(e);
         }
 
         return result;
