@@ -15,7 +15,7 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,8 +36,8 @@ public abstract class AbstractInserter implements Inserter {
     protected Map<String, MutableBitMap> nullMap = new ConcurrentHashMap<String, MutableBitMap>();
     private int row = 0;
     private ImmutableBitMap allShowIndex;
-    List<Column> columnList = new ArrayList<Column>();
-    List<ColumnTypeConstants.ClassType> classTypeList = new ArrayList<ColumnTypeConstants.ClassType>();
+    private Map<String, Column> columnMap = new HashMap<String, Column>();
+    private Map<String, ColumnTypeConstants.ClassType> classTypeMap = new HashMap<String, ColumnTypeConstants.ClassType>();
 
 
     public AbstractInserter(Segment segment) throws Exception {
@@ -60,8 +60,8 @@ public abstract class AbstractInserter implements Inserter {
             ColumnTypeConstants.ClassType clazz = ColumnTypeUtils.getClassType(metaDataColumn);
             ColumnKey columnKey = new ColumnKey(metaDataColumn.getName());
             Column column = segment.getColumn(columnKey);
-            columnList.add(column);
-            classTypeList.add(clazz);
+            columnMap.put(metaDataColumn.getName(), column);
+            classTypeMap.put(metaDataColumn.getName(), clazz);
             nullMap.put(metaDataColumn.getName(), BitMaps.newRoaringMutable());
         }
     }
@@ -71,11 +71,16 @@ public abstract class AbstractInserter implements Inserter {
         allShowIndex = BitMaps.newAllShowBitMap(rowList.size());
         for (Row rowData : rowList) {
             for (int i = 0; i < fields.size(); i++) {
-                if (InserterUtils.isBusinessNullValue(rowData.getValue(i))) {
-                    columnList.get(i).getDetailColumn().put(row, InserterUtils.getNullValue(classTypeList.get(i)));
-                    InserterUtils.setNullIndex(fields.get(i), row, nullMap);
-                } else {
-                    columnList.get(i).getDetailColumn().put(row, rowData.getValue(i));
+                Column column = columnMap.get(fields.get(i));
+                if (null != column) {
+                    ColumnTypeConstants.ClassType type = classTypeMap.get(fields.get(i));
+                    Object value = rowData.getValue(i);
+                    if (InserterUtils.isBusinessNullValue(value)) {
+                        column.getDetailColumn().put(row, InserterUtils.getNullValue(type));
+                        InserterUtils.setNullIndex(fields.get(i), row, nullMap);
+                    } else {
+                        column.getDetailColumn().put(row, value);
+                    }
                 }
             }
             row++;
@@ -92,11 +97,16 @@ public abstract class AbstractInserter implements Inserter {
             while (swiftResultSet.next()) {
                 Row rowData = swiftResultSet.getRowData();
                 for (int i = 0; i < fields.size(); i++) {
-                    if (InserterUtils.isBusinessNullValue(rowData.getValue(i))) {
-                        columnList.get(i).getDetailColumn().put(row, InserterUtils.getNullValue(classTypeList.get(i)));
-                        InserterUtils.setNullIndex(fields.get(i), row, nullMap);
-                    } else {
-                        columnList.get(i).getDetailColumn().put(row, rowData.getValue(i));
+                    Column column = columnMap.get(fields.get(i));
+                    if (null != column) {
+                        ColumnTypeConstants.ClassType type = classTypeMap.get(fields.get(i));
+                        Object value = rowData.getValue(i);
+                        if (InserterUtils.isBusinessNullValue(value)) {
+                            column.getDetailColumn().put(row, InserterUtils.getNullValue(type));
+                            InserterUtils.setNullIndex(fields.get(i), row, nullMap);
+                        } else {
+                            column.getDetailColumn().put(row, value);
+                        }
                     }
                 }
                 row++;
