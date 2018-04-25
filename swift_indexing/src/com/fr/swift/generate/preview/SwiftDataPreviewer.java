@@ -28,7 +28,7 @@ public final class SwiftDataPreviewer {
         SwiftSourceTransfer transfer = null;
         if (dataSource instanceof TableDBSource) {
             transfer = new TableDbSourcePreviewTransfer(ConnectionManager.getInstance().getConnectionInfo(((TableDBSource) dataSource).getConnectionName()),
-                    ((TableDBSource) dataSource).getFieldColumnTypes(), rowCount, ((TableDBSource) dataSource).getDBTableName());
+                    ((TableDBSource) dataSource).getFieldColumnTypes(), dataSource.getMetadata(), rowCount, ((TableDBSource) dataSource).getDBTableName());
         } else if (dataSource instanceof QueryDBSource) {
             transfer = new QuerySourcePreviewTransfer(ConnectionManager.getInstance().getConnectionInfo(((QueryDBSource) dataSource).getConnectionName()),
                     ((QueryDBSource) dataSource).getFieldColumnTypes(), rowCount, ((QueryDBSource) dataSource).getQuery());
