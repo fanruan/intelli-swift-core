@@ -3,7 +3,7 @@ package com.fr.swift.segment.operator.insert;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.config.IConfigSegment;
 import com.fr.swift.config.ISegmentKey;
-import com.fr.swift.config.conf.SegmentConfig;
+import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
 import com.fr.swift.config.unique.SegmentKeyUnique;
 import com.fr.swift.config.unique.SegmentUnique;
 import com.fr.swift.context.SwiftContext;
@@ -202,7 +202,7 @@ public abstract class AbstractBlockInserter implements Inserter {
     }
 
     protected void persistSegment() {
-        SegmentConfig.getInstance().putSegment(configSegment);
+        SwiftConfigServiceProvider.getInstance().addSegments(configSegment);
     }
 
     @Override

@@ -96,6 +96,9 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
         DetailWidgetBean bean = widget.getValue();
         if (null != bean) {
             Map<String, WidgetLinkItem> map = bean.getLinkage();
+            if (null == map) {
+                return fineFilters;
+            }
             Iterator<Map.Entry<String, WidgetLinkItem>> iterator = map.entrySet().iterator();
             while (iterator.hasNext()) {
                 WidgetLinkItem item = iterator.next().getValue();

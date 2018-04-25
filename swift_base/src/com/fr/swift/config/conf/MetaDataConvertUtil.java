@@ -61,6 +61,6 @@ public class MetaDataConvertUtil {
                     columnMeta.getColumnId()
             ));
         }
-        return new SwiftMetaDataPojo(iMetaData.getTableName(), iMetaData.getRemark(), iMetaData.getSchema(), columnMetas);
+        return new SwiftMetaDataPojo(iMetaData.getSchema(), iMetaData.getTableName(), iMetaData.getRemark(), columnMetas);
     }
 }
