@@ -3,7 +3,6 @@ package com.fr.swift.adaptor.widget;
 import com.finebi.conf.internalimp.bean.dashboard.widget.control.tree.TreeOptionsBean;
 import com.finebi.conf.internalimp.dashboard.widget.control.tree.TreeWidget;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
-import com.finebi.conf.structure.filter.FineFilter;
 import com.finebi.conf.structure.result.control.tree.BITreeItem;
 import com.finebi.conf.structure.result.control.tree.BITreeResult;
 import com.fr.stable.StringUtils;
@@ -109,7 +108,7 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor{
     private static List getValues(String widgetId, FineDimension dimension, FilterInfo filter,
                                   List<String> parents, List<FineDimension> dimensions) {
         // 树控件这边的维度字段的过滤只作用于当前维度，不同于分组表那边作用于指标的明细
-        FilterInfo currentDimensionFilter = FilterInfoFactory.transformFineFilter(dimension.getFilters() == null ? new ArrayList<FineFilter>() : dimension.getFilters());
+        FilterInfo currentDimensionFilter = FilterInfoFactory.transformDimensionFineFilter(dimension);
         FilterInfo filterInfo = parents2FilterInfo(filter, currentDimensionFilter, parents, dimensions);
         List values = QueryUtils.getOneDimensionFilterValues(dimension, filterInfo, widgetId);
         return values;
