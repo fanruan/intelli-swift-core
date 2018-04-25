@@ -7,7 +7,9 @@ import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.query.filter.info.GeneralFilterInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,8 +21,15 @@ public class ListLabelWidgetAdaptor {
     public static BIListLabelResult calculate(ListLabelWidget widget) {
         try {
             FineDimension dimension = widget.getDimensionList().get(0);
-            FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
-            List values = QueryUtils.getOneDimensionFilterValues(dimension, filterInfo, widget.getWidgetId());
+
+            List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
+            if (widget.getFilters() != null) {
+                filterInfos.add(FilterInfoFactory.transformFineFilter(widget.getFilters()));
+            }
+            if (dimension.getFilters() != null) {
+                filterInfos.add(FilterInfoFactory.transformFineFilter(dimension.getFilters()));
+            }
+            List values = QueryUtils.getOneDimensionFilterValues(dimension, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND), widget.getWidgetId());
             return new ListLabelResult(true, values);
         } catch (Exception e) {
             LOGGER.error(e);

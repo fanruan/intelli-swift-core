@@ -1,6 +1,8 @@
 package com.fr.swift.adaptor.widget;
 
+import com.finebi.conf.internalimp.bean.dashboard.widget.detail.DetailWidgetBean;
 import com.finebi.conf.internalimp.dashboard.widget.detail.DetailWidget;
+import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.structure.result.BIDetailTableResult;
@@ -20,6 +22,7 @@ import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.adapter.target.DetailFormulaTarget;
 import com.fr.swift.query.adapter.target.DetailTarget;
 import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
@@ -33,7 +36,9 @@ import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.utils.BusinessTableUtils;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -75,8 +80,37 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
         for (int i = 0; i < dimensions.length; i++) {
             sortIndex.add(i);
         }
-        FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
-        return new DetailQueryInfo(cursor, queryId, dimensions, target, targets, sortIndex, filterInfo, metaData);
+        List<FilterInfo> filterInfos = handleLinkageFilterList(widget);
+        filterInfos.add(FilterInfoFactory.transformFineFilter(widget.getFilters()));
+//        FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
+        return new DetailQueryInfo(cursor, queryId, dimensions, target, targets, sortIndex, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND), metaData);
+    }
+
+    /**
+     * 计算被联动过滤条件
+     *
+     * @param widget
+     * @return
+     */
+    private static List<FilterInfo> handleLinkageFilterList(DetailWidget widget) {
+        List<FilterInfo> fineFilters = new ArrayList<FilterInfo>();
+        DetailWidgetBean bean = widget.getValue();
+        if (null != bean) {
+            Map<String, WidgetLinkItem> map = bean.getLinkage();
+            if (null == map) {
+                return fineFilters;
+            }
+            Iterator<Map.Entry<String, WidgetLinkItem>> iterator = map.entrySet().iterator();
+            while (iterator.hasNext()) {
+                WidgetLinkItem item = iterator.next().getValue();
+                try {
+                    handleClickItem(item, fineFilters);
+                } catch (Exception ignore) {
+                    LOGGER.error(ignore.getMessage());
+                }
+            }
+        }
+        return fineFilters;
     }
 
     private static SwiftMetaData getMetaData(DetailWidget widget, SwiftMetaData metaData) throws Exception {
