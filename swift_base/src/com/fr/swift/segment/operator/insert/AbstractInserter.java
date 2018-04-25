@@ -60,8 +60,8 @@ public abstract class AbstractInserter implements Inserter {
             ColumnTypeConstants.ClassType clazz = ColumnTypeUtils.getClassType(metaDataColumn);
             ColumnKey columnKey = new ColumnKey(metaDataColumn.getName());
             Column column = segment.getColumn(columnKey);
-            columnMap.put(metaDataColumn.getName(), column);
-            classTypeMap.put(metaDataColumn.getName(), clazz);
+            columnMap.put(fields.get(i), column);
+            classTypeMap.put(fields.get(i), clazz);
             nullMap.put(metaDataColumn.getName(), BitMaps.newRoaringMutable());
         }
     }
