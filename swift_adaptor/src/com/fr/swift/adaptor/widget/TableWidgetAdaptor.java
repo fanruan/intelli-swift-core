@@ -1,5 +1,6 @@
 package com.fr.swift.adaptor.widget;
 
+import com.finebi.conf.internalimp.bean.dashboard.widget.expander.ExpanderBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
 import com.finebi.conf.internalimp.dashboard.widget.filter.CustomLinkConfItem;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
@@ -49,6 +50,7 @@ import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -118,8 +120,9 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         SourceKey sourceKey = getSourceKey(widget);
         List<Dimension> dimensions = getDimensions(sourceKey, widget.getDimensionList(), widget.getTargetList());
         FilterInfo filterInfo = getFilterInfo(widget, dimensions);
+        List<ExpanderBean> rowExpand = widget.getValue().getRowExpand();
         Expander expander = ExpanderFactory.create(widget.isOpenRowNode(), dimensions.size(),
-                widget.getValue().getRowExpand());
+                rowExpand == null ? Collections.<ExpanderBean>emptyList() : rowExpand);
         DimensionInfo dimensionInfo = new DimensionInfoImpl(cursor, filterInfo, expander, dimensions.toArray(new Dimension[dimensions.size()]));
         return new GroupQueryInfo(queryId, sourceKey, dimensionInfo, targetInfo);
     }
@@ -133,8 +136,8 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         return new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
     }
 
-    //维度上的直接过滤，提取出来
     private static void dealWithDimensionDirectFilter(List<FilterInfo> filterInfoList, List<Dimension> dimensions) {
+        // 维度上的直接过滤，提取出来
         for (Dimension dimension : dimensions) {
             FilterInfo filter = dimension.getFilter();
             if (filter != null && !filter.isMatchFilter()) {
@@ -207,16 +210,16 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
                 new TargetInfoImpl(new ArrayList<Metric>(0), new ArrayList<GroupTarget>(0), new ArrayList<ResultTarget>(0), new ArrayList<Aggregator>(0)));
         SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
         Set[] results = new HashSet[toColumns.length];
-        for (int i = 0; i < results.length; i++){
+        for (int i = 0; i < results.length; i++) {
             results[i] = new HashSet();
         }
-        while (resultSet.next()){
+        while (resultSet.next()) {
             Row row = resultSet.getRowData();
-            for (int i = 0; i < row.getSize(); i++){
+            for (int i = 0; i < row.getSize(); i++) {
                 results[i].add(row.getValue(i));
             }
         }
-        for (int i = 0; i < toColumns.length; i++){
+        for (int i = 0; i < toColumns.length; i++) {
             filterInfoList.add(new SwiftDetailFilterInfo(toColumns[i], results[i], SwiftDetailFilterType.STRING_IN));
         }
     }
