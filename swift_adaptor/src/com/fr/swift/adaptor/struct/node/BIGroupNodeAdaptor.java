@@ -108,7 +108,8 @@ public class BIGroupNodeAdaptor implements BIGroupNode {
     public Number[] getSummaryValue() {
         Number[] values = new Number[node.getAggregatorValue().length];
         for (int i = 0; i < values.length; i++) {
-            values[i] = (Double) node.getAggregatorValue(i).calculateValue();
+            Double value = node.getAggregatorValue(i).calculate();
+            values[i] = Double.isNaN(value) ? null : value;
         }
         return values;
     }

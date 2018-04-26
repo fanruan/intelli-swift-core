@@ -3,6 +3,7 @@ package com.fr.swift.query.group.by;
 import com.fr.swift.query.adapter.dimension.Cursor;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
 import com.fr.swift.query.group.by.paging.GroupByPagingIterator;
 import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.query.group.info.MetricInfo;
@@ -22,6 +23,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import static com.fr.swift.cube.io.IOConstant.NULL_DOUBLE;
 
 /**
  * 这边group by作用于cube的分块数据（segment）
@@ -117,6 +120,11 @@ public class GroupByUtils {
                                                   List<Aggregator> aggregators) {
         AggregatorValue[] values = new AggregatorValue[metrics.size()];
         for (int i = 0; i < metrics.size(); i++) {
+            if (traversal.isEmpty()) {
+                // 索引为空跳过
+                values[i] = new DoubleAmountAggregatorValue(NULL_DOUBLE);
+                continue;
+            }
             // 如果指标比较多，这边也可以增加多线程计算
             values[i] = aggregators.get(i).aggregate(traversal, metrics.get(i));
         }
