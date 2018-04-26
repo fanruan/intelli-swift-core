@@ -49,7 +49,6 @@ import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -119,7 +118,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         FilterInfo filterInfo = getFilterInfo(widget, dimensions);
         List<ExpanderBean> rowExpand = widget.getValue().getRowExpand();
         Expander expander = ExpanderFactory.create(widget.isOpenRowNode(), dimensions.size(),
-                rowExpand == null ? Collections.emptyList() : rowExpand);
+                rowExpand == null ? new ArrayList<ExpanderBean>() : rowExpand);
         DimensionInfo dimensionInfo = new DimensionInfoImpl(cursor, filterInfo, expander, dimensions.toArray(new Dimension[dimensions.size()]));
         return new GroupQueryInfo(queryId, sourceKey, dimensionInfo, targetInfo);
     }
