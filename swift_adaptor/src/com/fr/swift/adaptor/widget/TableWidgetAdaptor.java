@@ -236,7 +236,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         List<Dimension> dimensions = new ArrayList<Dimension>();
         for (int i = 0, size = fineDims.size(); i < size; i++) {
             FineDimension fineDim = fineDims.get(i);
-            dimensions.add(toDimension(sourceKey, fineDim, i, targets));
+            dimensions.add(toDimension(sourceKey, fineDim, i, size, targets));
         }
         return dimensions;
     }
@@ -252,13 +252,13 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         return targets;
     }
 
-    private static Dimension toDimension(SourceKey sourceKey, FineDimension fineDim, int index, List<FineTarget> targets) {
+    private static Dimension toDimension(SourceKey sourceKey, FineDimension fineDim, int index, int size, List<FineTarget> targets) {
         String columnName = getColumnName(fineDim);
         ColumnKey colKey = new ColumnKey(columnName);
 
         Group group = GroupAdaptor.adaptDashboardGroup(fineDim);
 
-        FilterInfo filterInfo = FilterInfoFactory.transformDimensionFineFilter(fineDim, targets);
+        FilterInfo filterInfo = FilterInfoFactory.transformDimensionFineFilter(fineDim, index == size - 1, targets);
 
         return new GroupDimension(index, sourceKey, colKey, group, SortAdaptor.adaptorDimensionSort(fineDim.getSort(), index),
                 filterInfo);

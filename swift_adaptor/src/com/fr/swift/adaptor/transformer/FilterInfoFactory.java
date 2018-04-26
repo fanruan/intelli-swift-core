@@ -82,30 +82,36 @@ public class FilterInfoFactory {
         return transformFilterBean(beans, new ArrayList<Segment>());
     }
 
-    public static FilterInfo transformDimensionFineFilter(FineDimension dimension){
-        return transformDimensionFineFilter(dimension, null);
+    public static FilterInfo transformDimensionFineFilter(FineDimension dimension) {
+        return transformDimensionFineFilter(dimension, false, null);
     }
 
-    public static FilterInfo transformDimensionFineFilter(FineDimension dimension, List<FineTarget> targets) {
+
+    /**
+     * @param dimension
+     * @param attachTargetFilters 最后一个维度上面要加上指标的过滤
+     * @param targets
+     * @return
+     */
+    public static FilterInfo transformDimensionFineFilter(FineDimension dimension, boolean attachTargetFilters, List<FineTarget> targets) {
         List<FineFilter> filters = dimension.getFilters();
         String dimId = dimension.getId();
-        if (filters == null) {
-            return null;
-        }
         List<FilterBean> beans = new ArrayList<FilterBean>();
-        for (FineFilter filter : filters) {
-            //nice job! foundation 维度过滤没id，要从维度上设置一下
-            if (filter.getValue() != null) {
-                AbstractFilterBean bean = (AbstractFilterBean) filter.getValue();
-                String fieldId;
-                if (dimension.getWidgetBeanField() != null){
-                    WidgetBeanField field = dimension.getWidgetBeanField();
-                    fieldId = StringUtils.isEmpty(field.getSource()) ? field.getId(): field.getSource();
-                } else {
-                    fieldId = dimension.getFieldId();
+        if (filters != null){
+            for (FineFilter filter : filters) {
+                //nice job! foundation 维度过滤没id，要从维度上设置一下
+                if (filter.getValue() != null) {
+                    AbstractFilterBean bean = (AbstractFilterBean) filter.getValue();
+                    String fieldId;
+                    if (dimension.getWidgetBeanField() != null) {
+                        WidgetBeanField field = dimension.getWidgetBeanField();
+                        fieldId = StringUtils.isEmpty(field.getSource()) ? field.getId() : field.getSource();
+                    } else {
+                        fieldId = dimension.getFieldId();
+                    }
+                    bean.setFieldId(fieldId);
+                    beans.add(bean);
                 }
-                bean.setFieldId(fieldId);
-                beans.add(bean);
             }
         }
         List<FilterInfo> filterInfoList = new ArrayList<FilterInfo>();
@@ -116,6 +122,18 @@ public class FilterInfoFactory {
                 filterInfoList.add(new MatchFilterInfo(info, getIndex(filterBean.getTargetId(), targets)));
             } else {
                 filterInfoList.add(info);
+            }
+        }
+        if (attachTargetFilters && targets != null) {
+            for (int i = 0; i < targets.size(); i++) {
+                FineTarget target = targets.get(i);
+                List<FineFilter> targetFilters = target.getFilters();
+                if (targetFilters != null) {
+                    for (FineFilter filter : targetFilters){
+                        FilterInfo targetFilterInfo = createFilterInfo((AbstractFilterBean)filter.getValue(), new ArrayList<Segment>());
+                        filterInfoList.add(new MatchFilterInfo(targetFilterInfo, i));
+                    }
+                }
             }
         }
         return new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
@@ -155,7 +173,7 @@ public class FilterInfoFactory {
                 int valueType = valueBean.getType();
                 return new SwiftDetailFilterInfo<Set<String>>(fieldName, new HashSet<String>(belongValues),
                         // 多选同filterType，否则是反选
-                        valueType == BICommonConstants.SELECTION_TYPE.MULTI ?  SwiftDetailFilterType.STRING_IN : SwiftDetailFilterType.STRING_NOT_IN);
+                        valueType == BICommonConstants.SELECTION_TYPE.MULTI ? SwiftDetailFilterType.STRING_IN : SwiftDetailFilterType.STRING_NOT_IN);
             }
             case BICommonConstants.ANALYSIS_FILTER_STRING.NOT_BELONG_VALUE: {
                 StringBelongFilterValueBean valueBean = ((StringNoBelongFilterBean) bean).getFilterValue();
@@ -166,7 +184,7 @@ public class FilterInfoFactory {
                 int valueType = valueBean.getType();
                 return new SwiftDetailFilterInfo<Set<String>>(fieldName, new HashSet<String>(notBelongValues),
                         // 多选同filterType，否则是反选
-                        valueType == BICommonConstants.SELECTION_TYPE.MULTI ?  SwiftDetailFilterType.STRING_NOT_IN : SwiftDetailFilterType.STRING_IN);
+                        valueType == BICommonConstants.SELECTION_TYPE.MULTI ? SwiftDetailFilterType.STRING_NOT_IN : SwiftDetailFilterType.STRING_IN);
             }
             case BICommonConstants.ANALYSIS_FILTER_STRING.CONTAIN:
                 String contain = ((StringContainFilterBean) bean).getFilterValue();
