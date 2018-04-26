@@ -41,7 +41,6 @@ import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.group.Group;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.node.GroupNode;
-import com.fr.swift.result.node.cal.TargetCalculatorUtils;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.Row;
@@ -72,8 +71,6 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
             TargetInfoImpl targetInfo = CalTargetParseUtils.parseCalTarget(widget);
             resultSet = QueryRunnerProvider.getInstance().executeQuery(buildQueryInfo(widget, targetInfo));
             GroupNode groupNode = (GroupNode) ((NodeResultSet) resultSet).getNode();
-            // 取出实际查询的指标
-            groupNode = TargetCalculatorUtils.getShowTargetsForGroupNode(groupNode, targetInfo.getTargetsForShowList());
             resultNode = new BIGroupNodeAdaptor(groupNode);
         } catch (Exception e) {
             resultNode = new BIGroupNodeAdaptor(new GroupNode(-1, null));

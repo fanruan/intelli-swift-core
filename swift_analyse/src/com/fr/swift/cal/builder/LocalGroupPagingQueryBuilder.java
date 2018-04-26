@@ -2,8 +2,10 @@ package com.fr.swift.cal.builder;
 
 import com.fr.swift.cal.Query;
 import com.fr.swift.cal.info.GroupQueryInfo;
+import com.fr.swift.cal.result.ResultQuery;
 import com.fr.swift.cal.result.group.GroupPagingResultQuery;
 import com.fr.swift.cal.segment.group.GroupPagingSegmentQuery;
+import com.fr.swift.cal.targetcal.group.GroupTargetCalQuery;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.query.adapter.dimension.AllCursor;
 import com.fr.swift.query.adapter.dimension.DimensionInfo;
@@ -27,8 +29,14 @@ import java.util.List;
  * Created by pony on 2017/12/15.
  */
 public class LocalGroupPagingQueryBuilder extends AbstractLocalGroupQueryBuilder {
+
     @Override
-    public Query<NodeResultSet> buildLocalQuery(GroupQueryInfo info) {
+    public Query<NodeResultSet> buildTargetCalQuery(ResultQuery<NodeResultSet> query, GroupQueryInfo info) {
+        return new GroupTargetCalQuery(query, info);
+    }
+
+    @Override
+    public ResultQuery<NodeResultSet> buildLocalQuery(GroupQueryInfo info) {
         DimensionInfo dimensionInfo = info.getDimensionInfo();
         TargetInfo targetInfo = info.getTargetInfo();
         List<Query<NodeResultSet>> queries = new ArrayList<Query<NodeResultSet>>();
@@ -47,7 +55,7 @@ public class LocalGroupPagingQueryBuilder extends AbstractLocalGroupQueryBuilder
     }
 
     @Override
-    public Query<NodeResultSet> buildResultQuery(List<Query<NodeResultSet>> queries, GroupQueryInfo info) {
+    public ResultQuery<NodeResultSet> buildResultQuery(List<Query<NodeResultSet>> queries, GroupQueryInfo info) {
         TargetInfo targetInfo = info.getTargetInfo();
         return new GroupPagingResultQuery(queries, getAggregators(targetInfo.getMetrics()), getTargets(targetInfo.getGroupTargets()));
     }

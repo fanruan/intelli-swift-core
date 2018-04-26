@@ -3,10 +3,12 @@ package com.fr.swift.cal.builder;
 import com.fr.swift.cal.Query;
 import com.fr.swift.cal.info.GroupQueryInfo;
 import com.fr.swift.cal.info.XGroupQueryInfo;
+import com.fr.swift.cal.result.ResultQuery;
 import com.fr.swift.cal.result.group.GroupResultQuery;
 import com.fr.swift.cal.result.group.XGroupResultQuery;
 import com.fr.swift.cal.segment.group.GroupAllSegmentQuery;
 import com.fr.swift.cal.segment.group.XGroupAllSegmentQuery;
+import com.fr.swift.cal.targetcal.group.GroupTargetCalQuery;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.adapter.dimension.DimensionInfo;
@@ -15,8 +17,6 @@ import com.fr.swift.query.adapter.target.TargetInfo;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.detail.DetailFilter;
-import com.fr.swift.query.filter.info.FilterInfo;
-import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.query.group.info.GroupByInfoImpl;
 import com.fr.swift.query.group.info.MetricInfo;
@@ -34,9 +34,13 @@ import java.util.List;
  */
 public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
 
+    @Override
+    public Query<NodeResultSet> buildTargetCalQuery(ResultQuery<NodeResultSet> query, GroupQueryInfo info) {
+        return new GroupTargetCalQuery(query, info);
+    }
 
     @Override
-    public Query<NodeResultSet> buildLocalQuery(GroupQueryInfo info) {
+    public ResultQuery<NodeResultSet> buildLocalQuery(GroupQueryInfo info) {
         DimensionInfo rowDimensionInfo = info.getDimensionInfo();
         TargetInfo targetInfo = info.getTargetInfo();
         List<Query<NodeResultSet>> queries = new ArrayList<Query<NodeResultSet>>();
@@ -81,18 +85,15 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
     }
 
     @Override
-    public Query<NodeResultSet> buildResultQuery(List<Query<NodeResultSet>> queries, GroupQueryInfo info) {
-        DimensionInfo rowDimensionInfo = info.getDimensionInfo();
+    public ResultQuery<NodeResultSet> buildResultQuery(List<Query<NodeResultSet>> queries, GroupQueryInfo info) {
         TargetInfo targetInfo = info.getTargetInfo();
         QueryType type = info.getType();
         if (type == QueryType.CROSS_GROUP) {
             return new XGroupResultQuery(queries, getAggregators(targetInfo.getMetrics()),
-                    getTargets(targetInfo.getGroupTargets()), getIndexSorts(rowDimensionInfo.getDimensions()),
-                    getDimensionMatchFilters(rowDimensionInfo.getDimensions()));
+                    getTargets(targetInfo.getGroupTargets()));
         }
         return new GroupResultQuery(queries, getAggregators(targetInfo.getMetrics()),
-                getTargets(targetInfo.getGroupTargets()), getIndexSorts(rowDimensionInfo.getDimensions()),
-                getDimensionMatchFilters(rowDimensionInfo.getDimensions()));
+                getTargets(targetInfo.getGroupTargets()));
     }
 
     /**
@@ -121,16 +122,5 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
             }
         }
         return indexSorts;
-    }
-
-    public List<MatchFilter> getDimensionMatchFilters(Dimension[] dimensions) {
-        List<MatchFilter> matchFilters = new ArrayList<MatchFilter>(dimensions.length);
-        for (Dimension dimension : dimensions) {
-            FilterInfo filter = dimension.getFilter();
-            if (filter != null && filter.isMatchFilter()) {
-                matchFilters.add(FilterBuilder.buildMatchFilter(filter));
-            }
-        }
-        return matchFilters;
     }
 }
