@@ -46,7 +46,7 @@ public class TableDbSourcePreviewTransferTest extends TestCase {
         TableDBSource source = new TableDBSource("DEMO_CAPITAL_RETURN", "demo");
         Map<String, ColumnType> fieldClassTypes = new HashMap<String, ColumnType>();
         fieldClassTypes.put("付款金额", ColumnType.STRING);
-        TableDbSourcePreviewTransfer transfer = new TableDbSourcePreviewTransfer(connectionInfo, fieldClassTypes, 10, source.getDBTableName());
+        TableDbSourcePreviewTransfer transfer = new TableDbSourcePreviewTransfer(connectionInfo, fieldClassTypes, source.getMetadata(), 10, source.getDBTableName());
         SwiftResultSet resultSet = transfer.createResultSet();
         int index = 0;
         while (resultSet.next()) {
