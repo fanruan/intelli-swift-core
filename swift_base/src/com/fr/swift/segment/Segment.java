@@ -18,9 +18,6 @@ import com.fr.swift.source.SwiftMetaData;
  * 表示cube中一张表的一个分块,可以取得各个列
  */
 public interface Segment extends Releasable, Flushable {
-    String ROW_COUNT = "row_count";
-    String ALL_SHOW_INDEX = "all_show_index";
-
     /**
      * 获取该分片的总行数
      *

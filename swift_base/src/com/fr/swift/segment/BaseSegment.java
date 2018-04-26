@@ -38,6 +38,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class BaseSegment implements Segment {
     private static final ResourceDiscovery DISCOVERY = ResourceDiscoveryImpl.getInstance();
 
+    private static final String ROW_COUNT = "row_count";
+
+    private static final String ALL_SHOW_INDEX = "all_show_index";
+
     protected SwiftMetaData meta;
     protected IResourceLocation parent;
 

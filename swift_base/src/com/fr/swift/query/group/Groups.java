@@ -12,7 +12,7 @@ public class Groups {
         return new GroupImpl(groupRule);
     }
 
-    public static Group wrap(Group origin, GroupRule rule) {
-        return new GroupWrapper(origin, rule);
+    public static <Old, New> Group<Old, New> wrap(Group<Old, New> origin, GroupRule rule) {
+        return new GroupWrapper<Old, New>(origin, rule);
     }
 }
