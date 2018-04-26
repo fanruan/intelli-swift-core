@@ -144,7 +144,7 @@ public class SwiftWidgetExecutorManager implements EngineWidgetExecutorManager {
 
     @Override
     public BIResult visit(StringListControlWidget stringListControlWidget) {
-        return null;
+        return StringControlWidgetAdaptor.calculate(stringListControlWidget);
     }
 
     @Override

@@ -14,6 +14,7 @@ import com.fr.swift.source.etl.ETLTransferOperator;
 import com.fr.swift.source.etl.EtlTransfer;
 import com.fr.swift.source.etl.EtlTransferOperatorFactory;
 import com.fr.swift.source.excel.ExcelDataSource;
+import com.fr.swift.source.excel.ExcelTransfer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +28,13 @@ public final class SwiftDataPreviewer {
         SwiftSourceTransfer transfer = null;
         if (dataSource instanceof TableDBSource) {
             transfer = new TableDbSourcePreviewTransfer(ConnectionManager.getInstance().getConnectionInfo(((TableDBSource) dataSource).getConnectionName()),
-                    ((TableDBSource) dataSource).getFieldColumnTypes(), rowCount, ((TableDBSource) dataSource).getDBTableName());
+                    ((TableDBSource) dataSource).getFieldColumnTypes(), dataSource.getMetadata(), rowCount, ((TableDBSource) dataSource).getDBTableName());
         } else if (dataSource instanceof QueryDBSource) {
             transfer = new QuerySourcePreviewTransfer(ConnectionManager.getInstance().getConnectionInfo(((QueryDBSource) dataSource).getConnectionName()),
                     ((QueryDBSource) dataSource).getFieldColumnTypes(), rowCount, ((QueryDBSource) dataSource).getQuery());
         } else if (dataSource instanceof ServerDBSource) {
         } else if (dataSource instanceof ExcelDataSource) {
+            transfer = new ExcelTransfer(((ExcelDataSource) dataSource).getAllPaths(),dataSource.getMetadata(),((ExcelDataSource) dataSource).getOuterMetadata());
         } else if (dataSource instanceof EtlDataSource) {
             transfer = createMinorEtlTransfer((EtlDataSource) dataSource);
         }

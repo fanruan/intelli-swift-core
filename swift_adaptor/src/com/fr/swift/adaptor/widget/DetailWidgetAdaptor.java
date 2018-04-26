@@ -60,6 +60,7 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
             }
             result = new SwiftDetailTableResult(resultSet, widget.getTotalRows());
         } catch (Exception e) {
+            LOGGER.error(e);
         }
 
         return result;
@@ -96,6 +97,9 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
         DetailWidgetBean bean = widget.getValue();
         if (null != bean) {
             Map<String, WidgetLinkItem> map = bean.getLinkage();
+            if (null == map) {
+                return fineFilters;
+            }
             Iterator<Map.Entry<String, WidgetLinkItem>> iterator = map.entrySet().iterator();
             while (iterator.hasNext()) {
                 WidgetLinkItem item = iterator.next().getValue();

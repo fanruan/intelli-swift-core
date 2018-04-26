@@ -5,7 +5,8 @@ import com.fr.swift.source.SwiftMetaData;
 import junit.framework.TestCase;
 
 import java.sql.Types;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by pony on 2017/12/29.
@@ -16,7 +17,7 @@ public class TableDBSourceTest extends TestCase {
     public void setUp() throws Exception{
         ConnectionInfo connectionInfo = TestConnectionProvider.createConnection();
         source = new TableDBSource("DEMO_CAPITAL_RETURN", "demo");
-        LinkedHashMap<String, ColumnType> fields = new LinkedHashMap<>();
+        Map<String, ColumnType> fields = new HashMap<>();
         fields.put("合同ID", ColumnType.NUMBER);
         partSource = new TableDBSource("DEMO_CAPITAL_RETURN", "demo", fields);
     }

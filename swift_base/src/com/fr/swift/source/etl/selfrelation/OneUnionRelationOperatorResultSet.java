@@ -111,21 +111,18 @@ public class OneUnionRelationOperatorResultSet implements SwiftResultSet {
 
     }
 
+    /**
+     * 这边直接返回新增的列就好了，不用把表原有的列也算进去
+     *
+     * @return
+     * @throws SQLException
+     */
     @Override
     public boolean next() throws SQLException {
         if (segCursor < segments.length && rowCursor < rowCount) {
             rowCount = segments[segCursor].getRowCount();
             int index = 0;
-            Object[] res = new Object[metaData.getColumnCount()];
-            for (int m = 0; m < metaData.getColumnCount(); m++) {
-                if (gts[segCursor][m] != null) {
-                    int indexByRow = gts[segCursor][m].getIndexByRow(rowCursor);
-                    res[index++] = gts[segCursor][m].getValue(indexByRow);
-                } else {
-                    res[index++] = null;
-                }
-            }
-            index = 0;
+            Object[] res = new Object[showColumns.size() * columns.size()];
             DictionaryEncodedColumn getter = segments[segCursor].getColumn(new ColumnKey(idColumnName)).getDictionaryEncodedColumn();
             int indexByRow = getter.getIndexByRow(rowCursor);
             Object ob = getter.getValue(indexByRow);

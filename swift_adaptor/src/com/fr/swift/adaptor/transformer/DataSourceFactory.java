@@ -42,10 +42,11 @@ import com.fr.swift.source.etl.datamining.DataMiningOperator;
 import com.fr.swift.source.etl.datamining.DataMiningTransferOperator;
 import com.fr.swift.source.etl.rcompile.RCompileOperator;
 import com.fr.swift.source.etl.rcompile.RCompileTransferOperator;
+import com.fr.swift.source.excel.ExcelDataModel;
 import com.fr.swift.source.excel.ExcelDataSource;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -179,18 +180,18 @@ public class DataSourceFactory {
 
     private static DataSource transformTableDBSource(FineDBBusinessTable table) throws Exception {
         String connectionName = table.getConnName();
-        LinkedHashMap<String, ColumnType> fieldColumnTypes = checkFieldTypes(table.getOperators());
+        Map<String, ColumnType> fieldColumnTypes = checkFieldTypes(table.getOperators());
         TableDBSource tableDBSource = fieldColumnTypes == null ?
                 new TableDBSource(table.getTableName(), connectionName) : new TableDBSource(table.getTableName(), connectionName, fieldColumnTypes);
         return checkETL(tableDBSource, table);
     }
 
-    private static LinkedHashMap<String, ColumnType> checkFieldTypes(List<FineOperator> operators) {
+    private static Map<String, ColumnType> checkFieldTypes(List<FineOperator> operators) {
         if (operators != null && !operators.isEmpty()) {
             FineOperator op = operators.get(0);
             if (op.getType() == ConfConstant.AnalysisType.CONF_SELECT) {
                 List<ConfSelectBeanItem> items = ((ConfSelectOperator) op).getFields();
-                LinkedHashMap<String, ColumnType> fieldsTypes = new LinkedHashMap<String, ColumnType>();
+                Map<String, ColumnType> fieldsTypes = new HashMap<String, ColumnType>();
                 for (ConfSelectBeanItem item : items) {
                     if (item.isUsable()) {
                         fieldsTypes.put(item.getName(), FieldFactory.transformBIColumnType2SwiftColumnType(item.getType()));
@@ -203,13 +204,17 @@ public class DataSourceFactory {
     }
 
     private static DataSource transformExcelDataSource(FineExcelBusinessTable table) throws Exception {
-        table.getEngineType();
-        return new EmptyDataSource();
+        String path = "D:\\bi-workspace\\5.0\\env\\app\\WEB-INF\\assets\\temp_attach\\MapCache1524621776100_14.xlsx";
+        ExcelDataModel excelDataModel = new ExcelDataModel(path);
+        String[] columnNames = excelDataModel.onlyGetColumnNames();
+        ColumnType[] columnTypes = excelDataModel.onlyGetColumnTypes();
+        ExcelDataSource excelDataSource = new ExcelDataSource(path, columnNames, columnTypes);
+        return excelDataSource;
     }
 
     private static DataSource transformQueryDBSource(FineSQLBusinessTable table) throws Exception {
 
-        LinkedHashMap<String, ColumnType> fieldColumnTypes = checkFieldTypes(table.getOperators());
+        Map<String, ColumnType> fieldColumnTypes = checkFieldTypes(table.getOperators());
 
         String sql = table.getSql();
         List<FineSQLTableParameter> sqlTableParameters = table.getParamSetting();

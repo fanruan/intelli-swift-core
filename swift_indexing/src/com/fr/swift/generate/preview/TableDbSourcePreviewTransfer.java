@@ -4,9 +4,11 @@ import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dml.Table;
 import com.fr.stable.StringUtils;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.db.AbstractPreviewQueryTransfer;
 import com.fr.swift.source.db.ConnectionInfo;
 
+import java.sql.SQLException;
 import java.util.Map;
 
 /**
@@ -15,6 +17,7 @@ import java.util.Map;
  */
 class TableDbSourcePreviewTransfer extends AbstractPreviewQueryTransfer {
     private String tableName;
+    private SwiftMetaData metaData;
 
     public TableDbSourcePreviewTransfer(ConnectionInfo connectionInfo, int row, String tableName) {
         super(connectionInfo, row);
@@ -22,20 +25,21 @@ class TableDbSourcePreviewTransfer extends AbstractPreviewQueryTransfer {
     }
 
 
-    public TableDbSourcePreviewTransfer(ConnectionInfo connectionInfo, Map<String, ColumnType> fieldClassTypes, int row, String tableName) {
+    public TableDbSourcePreviewTransfer(ConnectionInfo connectionInfo, Map<String, ColumnType> fieldClassTypes, SwiftMetaData metadata, int row, String tableName) {
         super(connectionInfo, fieldClassTypes, row);
         this.tableName = tableName;
+        this.metaData = metadata;
     }
 
     @Override
-    protected String getQuery(Dialect dialect) {
+    protected String getQuery(Dialect dialect) throws SQLException{
         String columns;
         StringBuilder sb = new StringBuilder();
-        if (fieldClassTypes == null || fieldClassTypes.isEmpty()) {
+        if (metaData == null) {
             columns = null;
         } else {
-            for (String fieldName : fieldClassTypes.keySet()) {
-                sb.append(dialect.column2SQL(fieldName));
+            for (int i = 0; i < metaData.getColumnCount(); i++) {
+                sb.append(dialect.column2SQL(metaData.getColumnName(i + 1)));
                 sb.append(",");
             }
             sb.delete(sb.length() - 1, sb.length());

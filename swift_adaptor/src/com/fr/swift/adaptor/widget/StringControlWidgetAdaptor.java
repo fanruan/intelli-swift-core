@@ -1,6 +1,8 @@
 package com.fr.swift.adaptor.widget;
 
+import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
 import com.finebi.conf.internalimp.dashboard.widget.table.StringControlWidget;
+import com.finebi.conf.internalimp.dashboard.widget.table.StringListControlWidget;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.result.BIStringDetailResult;
 import com.finebi.conf.structure.result.StringControlResult;
@@ -21,18 +23,24 @@ import java.util.Set;
 /**
  * Created by pony on 2018/3/24.
  */
-public class StringControlWidgetAdaptor extends AbstractTableWidgetAdaptor{
+public class StringControlWidgetAdaptor extends AbstractTableWidgetAdaptor {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(StringControlWidgetAdaptor.class);
     private static final int PAGE_SIZE = 100;
+
     public static BIStringDetailResult calculate(StringControlWidget widget) {
+        return calculate(widget, widget.getKeywords(), widget.getTimes(), widget.getSelectedValues());
+    }
+
+    public static BIStringDetailResult calculate(StringListControlWidget widget) {
+        return calculate(widget, widget.getKeywords(), widget.getTimes(), widget.getSelectedValues());
+    }
+
+    private static BIStringDetailResult calculate(AbstractTableWidget widget, String keyWords, int times, List<String> selectValues) {
         StringControlResult value = new StringControlResult();
         try {
             FineDimension dimension = widget.getDimensionList().get(0);
-            String keyWords = widget.getKeywords();
-            int times = widget.getTimes();
             times = times == 0 ? 1 : times;
             List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
-            List<String> selectValues = widget.getSelectedValues();
             if (!StringUtils.isEmpty(keyWords)) {
                 filterInfos.add(new SwiftDetailFilterInfo<String>(getColumnName(dimension.getFieldId()), keyWords, SwiftDetailFilterType.STRING_LIKE));
             }
@@ -43,7 +51,7 @@ public class StringControlWidgetAdaptor extends AbstractTableWidgetAdaptor{
                 filterInfos.add(FilterInfoFactory.transformFineFilter(widget.getFilters()));
             }
             if (dimension.getFilters() != null) {
-                filterInfos.add(FilterInfoFactory.transformFineFilter(dimension.getFilters()));
+                filterInfos.add(FilterInfoFactory.transformDimensionFineFilter(dimension));
             }
             List values = QueryUtils.getOneDimensionFilterValues(dimension, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND), widget.getWidgetId());
 
@@ -61,6 +69,7 @@ public class StringControlWidgetAdaptor extends AbstractTableWidgetAdaptor{
         }
         return new StringDetailResult(value);
     }
+
 
     static class StringDetailResult implements BIStringDetailResult {
 
