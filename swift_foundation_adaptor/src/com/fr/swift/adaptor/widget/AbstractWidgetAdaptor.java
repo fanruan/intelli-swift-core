@@ -121,7 +121,7 @@ public abstract class AbstractWidgetAdaptor {
 
     static NumberMaxAndMinValue getMaxMinNumValue(String fieldId) throws Exception {
         NumberMaxAndMinValue val = new NumberMaxAndMinValue();
-        setMaxMinNumValue(fieldId, fieldId, Collections.<FineFilter>emptyList(), val);
+        setMaxMinNumValue(fieldId, fieldId, Collections.emptyList(), val);
         return val;
     }
 }

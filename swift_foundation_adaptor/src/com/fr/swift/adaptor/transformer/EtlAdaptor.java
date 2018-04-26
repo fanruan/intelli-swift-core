@@ -1,15 +1,8 @@
 package com.fr.swift.adaptor.transformer;
 
 import com.finebi.conf.constant.ConfConstant.AnalysisType;
-import com.finebi.conf.internalimp.analysis.bean.operator.add.AddNewColumnBean;
-import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateOneFieldBean;
-import com.finebi.conf.internalimp.analysis.bean.operator.datamining.DataMiningBean;
-import com.finebi.conf.internalimp.analysis.bean.operator.datamining.rcompile.RCompileBean;
-import com.finebi.conf.internalimp.analysis.bean.operator.filter.FilterOperatorBean;
-import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinBeanValue;
-import com.finebi.conf.internalimp.analysis.bean.operator.trans.ColumnRowTransBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.union.UnionBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.union.UnionBeanValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.union.UnionBeanValueTable;
@@ -111,26 +104,26 @@ public class EtlAdaptor {
     static ETLOperator adaptEtlOperator(FineOperator op, FineBusinessTable table) throws Exception {
         switch (op.getType()) {
             case AnalysisType.JOIN:
-                return JoinAdaptor.fromJoinBean(op.<JoinBean>getValue());
+                return JoinAdaptor.fromJoinBean(op.getValue());
             case AnalysisType.UNION:
-                return UnionAdaptor.fromUnionBean(op.<UnionBean>getValue());
+                return UnionAdaptor.fromUnionBean(op.getValue());
             case AnalysisType.FILTER:
-                return ColumnFilterAdaptor.fromColumnFilterBean(op.<FilterOperatorBean>getValue(), table);
+                return ColumnFilterAdaptor.fromColumnFilterBean(op.getValue(), table);
             case AnalysisType.CIRCLE_ONE_FIELD_CALCULATE:
-                return SelfCirculateAdaptor.fromOneUnionRelationBean(op.<CirculateOneFieldBean>getValue(), table);
+                return SelfCirculateAdaptor.fromOneUnionRelationBean(op.getValue(), table);
             case AnalysisType.CIRCLE_TWO_FIELD_CALCULATE:
-                return SelfCirculateAdaptor.fromTwoUnionRelationBean(op.<CirculateOneFieldBean>getValue(), table);
+                return SelfCirculateAdaptor.fromTwoUnionRelationBean(op.getValue(), table);
             case AnalysisType.COLUMN_ROW_TRANS:
-                return ColumnRowTransAdaptor.fromColumnRowTransBean(op.<ColumnRowTransBean>getValue(), table);
+                return ColumnRowTransAdaptor.fromColumnRowTransBean(op.getValue(), table);
             case AnalysisType.ADD_COLUMN:
-                return AddColumnAdaptor.fromAddNewColumnBean(op.<AddNewColumnBean>getValue(), table);
+                return AddColumnAdaptor.fromAddNewColumnBean(op.getValue(), table);
             case AnalysisType.GROUP:
-                return GroupSumAdaptor.fromSumByGroupBean(op.<GroupBean>getValue());
+                return GroupSumAdaptor.fromSumByGroupBean(op.getValue());
             case AnalysisType.DATA_MINING:
-                return DataMiningAdaptor.fromDataMiningBean(op.<DataMiningBean>getValue());
+                return DataMiningAdaptor.fromDataMiningBean(op.getValue());
             case AnalysisType.R_COMPILE: {
                 DataSource source = adaptEtlDataSource(((FineAnalysisTableImpl) table).getBaseTable());
-                return DataMiningAdaptor.fromRCompileOperator(op.<RCompileBean>getValue(), source);
+                return DataMiningAdaptor.fromRCompileOperator(op.getValue(), source);
             }
             default:
         }

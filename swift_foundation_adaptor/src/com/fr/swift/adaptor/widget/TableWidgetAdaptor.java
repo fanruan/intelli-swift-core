@@ -119,7 +119,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         FilterInfo filterInfo = getFilterInfo(widget, dimensions);
         List<ExpanderBean> rowExpand = widget.getValue().getRowExpand();
         Expander expander = ExpanderFactory.create(widget.isOpenRowNode(), dimensions.size(),
-                rowExpand == null ? Collections.<ExpanderBean>emptyList() : rowExpand);
+                rowExpand == null ? Collections.emptyList() : rowExpand);
         DimensionInfo dimensionInfo = new DimensionInfoImpl(cursor, filterInfo, expander, dimensions.toArray(new Dimension[dimensions.size()]));
         return new GroupQueryInfo(queryId, sourceKey, dimensionInfo, targetInfo);
     }
