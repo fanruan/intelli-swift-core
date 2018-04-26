@@ -30,14 +30,14 @@ public class GroupQueryBuilder {
 
     /**
      * 如果uris.size() == 0，那么只有一个子节点负责查询，同时这个子节点应该负责计算计算指标
-     * 当前根据处理查询数据的方式，query分为两类：SegmentQuery和ResultQuery
+     * 之前根据处理查询数据的方式，query分为两类：SegmentQuery和ResultQuery
      * 查询的计算主要分三类：明细聚合(SegmentQuery)、聚合结果合并、依赖结果的计算(ResultQuery同时负责后两者)
      * query的嵌套方式为：ResultQuery(ResultQuery(SegmentQuery, ...), ...)
      * 为了确认结果计算分给哪层的ResultQuery做，以及保证外层ResultQuery不会重复做结果计算
      * 在解析QueryInfo的时候将Query分三类，分别对应三个计算类型
-     * SegmentQuery、ResultQuery、ResultCalQuery
-     * 1、外层节点负责结果计算ResultCalQuery(ResultQuery(SegmentQuery, ...), ...)
-     * 2、子节点负责结果计算ResultQuery(ResultCalQuery(SegmentQuery, ...))
+     * SegmentQuery、ResultQuery、TargetCalQuery
+     * 1、外层节点负责结果计算TargetCalQuery(ResultQuery(ResultQuery(SegmentQuery, ...), ...))，这个TargetCalQuery在合并多个节点结果的机器上
+     * 2、子节点负责结果计算TargetCalQuery(ResultCalQuery(SegmentQuery, ...))，这个TargetCalQuery在拥有全部数据的节点上
      *
      * @param uris    数据在节点上的分布情况
      * @param info    查询信息
