@@ -54,6 +54,6 @@ public class GeneralFilterInfo extends AbstractFilterInfo {
                 matchFilters.add(info.createMatchFilter());
             }
         }
-        return type == OR ? new GeneralAndMatchFilter(matchFilters) : new GeneralOrMatchFilter(matchFilters);
+        return type == AND ? new GeneralAndMatchFilter(matchFilters) : new GeneralOrMatchFilter(matchFilters);
     }
 }
