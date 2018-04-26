@@ -29,7 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by pony on 2018/3/24.
+ * @author pony
+ * @date 2018/3/24
  */
 public class QueryUtils {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(QueryUtils.class);
@@ -47,15 +48,15 @@ public class QueryUtils {
             String fieldId = dimension.getFieldId();
             SourceKey sourceKey = new SourceKey(BusinessTableUtils.getSourceIdByFieldId(fieldId));
             String fieldName = BusinessTableUtils.getFieldNameByFieldId(fieldId);
-            GroupDimension groupDimension = new GroupDimension(0, sourceKey, new ColumnKey(fieldName), GroupAdaptor.adaptDashboardGroup(dimension.getGroup()), SortAdaptor.adaptorDimensionSort(dimension.getSort(), 0), null);
+            GroupDimension groupDimension = new GroupDimension(0, sourceKey, new ColumnKey(fieldName), GroupAdaptor.adaptDashboardGroup(dimension), SortAdaptor.adaptorDimensionSort(dimension.getSort(), 0), null);
             TargetInfo targetInfo = new TargetInfoImpl(new ArrayList<Metric>(0), new ArrayList<GroupTarget>(0), new ArrayList<ResultTarget>(0), new ArrayList<Aggregator>(0));
             DimensionInfo dimensionInfo = new DimensionInfoImpl(new AllCursor(), filterInfo, null, new Dimension[]{groupDimension});
             GroupQueryInfo valueInfo = new GroupQueryInfo(id, sourceKey, dimensionInfo, targetInfo);
             NodeResultSetImpl nodeResultSet = (NodeResultSetImpl) QueryRunnerProvider.getInstance().executeQuery(valueInfo);
             SwiftNode n = nodeResultSet.getNode();
             List values = new ArrayList();
-            for (int i = 0; i < n.getChildrenSize(); i++){
-                if (n.getChild(i).getData() != null){
+            for (int i = 0; i < n.getChildrenSize(); i++) {
+                if (n.getChild(i).getData() != null) {
                     values.add(n.getChild(i).getData());
                 }
             }

@@ -82,7 +82,6 @@ public class SumByGroupOperator extends AbstractOperator {
     private int convertGroupType(GroupType groupType) {
         int type;
         switch (groupType) {
-            case YEAR:
             case QUARTER:
             case MONTH:
             case WEEK:
@@ -93,6 +92,7 @@ public class SumByGroupOperator extends AbstractOperator {
             case SECOND:
                 type = Types.INTEGER;
                 break;
+            case YEAR:
             case Y_M_D_H_M_S:
             case Y_M_D_H_M:
             case Y_M_D_H:

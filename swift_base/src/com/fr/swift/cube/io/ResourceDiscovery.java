@@ -1,9 +1,12 @@
 package com.fr.swift.cube.io;
 
+import com.fr.swift.cube.io.impl.mem.MemIo;
 import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.Writer;
 import com.fr.swift.util.Clearable;
+
+import java.util.Map;
 
 /**
  * This class created on 2016/3/10.
@@ -27,4 +30,8 @@ public interface ResourceDiscovery extends Clearable {
      */
     @Override
     void clear();
+
+    boolean isCubeResourceEmpty();
+
+    Map<String, MemIo> removeCubeResource(String basePath);
 }

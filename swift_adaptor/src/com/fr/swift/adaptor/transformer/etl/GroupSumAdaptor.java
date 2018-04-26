@@ -49,7 +49,6 @@ public class GroupSumAdaptor {
             DimensionSrcValue srcValue = tempBean.getSrc();
             List<DimensionSelectValue> value = tempBean.getValue();
             SumByGroupDimension sumByGroupDimension = new SumByGroupDimension();
-            sumByGroupDimension.setColumnType(ColumnTypeAdaptor.adaptColumnType(tempBean.getFieldType()));
             sumByGroupDimension.setGroup(GroupAdaptor.adaptGroup(value.get(0)));
             sumByGroupDimension.setName(srcValue.getFieldName());
             sumByGroupDimension.setNameText(tempBean.getName());
