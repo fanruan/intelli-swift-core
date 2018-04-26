@@ -14,8 +14,13 @@ import com.fr.swift.query.adapter.metric.Metric;
 import com.fr.swift.query.adapter.target.TargetInfo;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.FilterBuilder;
+import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.match.MatchFilter;
+import com.fr.swift.query.group.info.GroupByInfo;
+import com.fr.swift.query.group.info.GroupByInfoImpl;
+import com.fr.swift.query.group.info.MetricInfo;
+import com.fr.swift.query.group.info.MetricInfoImpl;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.segment.Segment;
@@ -32,26 +37,30 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
 
     @Override
     public Query<NodeResultSet> buildLocalQuery(GroupQueryInfo info) {
-        DimensionInfo dimensionInfo = info.getDimensionInfo();
+        DimensionInfo rowDimensionInfo = info.getDimensionInfo();
         TargetInfo targetInfo = info.getTargetInfo();
         List<Query<NodeResultSet>> queries = new ArrayList<Query<NodeResultSet>>();
         QueryType type = info.getType();
-            List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(info.getTable());
-            for (Segment segment : segments) {
-                List<Column> dimensionSegments = getDimensionSegments(segment, dimensionInfo.getDimensions());
-                List<Column> metricSegments = getMetricSegments(segment, targetInfo.getMetrics());
-                List<Aggregator> aggregators = getFilterAggregators(targetInfo.getMetrics(), segment);
-                List<Sort> rowIndexSorts = getSegmentIndexSorts(dimensionInfo.getDimensions());
-                if (type == QueryType.CROSS_GROUP) {
-                    List<Column> colDimension = getDimensionSegments(segment, ((XGroupQueryInfo) info).getColDimensions());
-                    List<Sort> colIndexSorts = getSegmentIndexSorts(((XGroupQueryInfo) info).getColDimensions());
-                    queries.add(new XGroupAllSegmentQuery(dimensionSegments, colDimension, metricSegments, aggregators,
-                            FilterBuilder.buildDetailFilter(segment, info.getFilterInfo()), rowIndexSorts, colIndexSorts, null));
-                } else {
-                    queries.add(new GroupAllSegmentQuery(targetInfo.getTargetLength(), dimensionSegments, metricSegments, aggregators,
-                            FilterBuilder.buildDetailFilter(segment, info.getFilterInfo()), rowIndexSorts, dimensionInfo.getExpander()));
-                }
+        List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(info.getTable());
+        for (Segment segment : segments) {
+            List<Column> rowDimensions = getDimensionSegments(segment, rowDimensionInfo.getDimensions());
+            List<Column> metrics = getMetricSegments(segment, targetInfo.getMetrics());
+            List<Aggregator> aggregators = getFilterAggregators(targetInfo.getMetrics(), segment);
+            List<Sort> rowIndexSorts = getSegmentIndexSorts(rowDimensionInfo.getDimensions());
+            DetailFilter rowDetailFilter = FilterBuilder.buildDetailFilter(segment, rowDimensionInfo.getFilterInfo());
+            GroupByInfo rowGroupByInfo = new GroupByInfoImpl(rowDimensions, rowDetailFilter, rowIndexSorts, rowDimensionInfo.getExpander());
+            MetricInfo metricInfo = new MetricInfoImpl(metrics, aggregators, targetInfo.getTargetLength());
+            if (type == QueryType.CROSS_GROUP) {
+                DimensionInfo colDimensionInfo = ((XGroupQueryInfo) info).getColDimensionInfo();
+                List<Column> colDimensions = getDimensionSegments(segment, colDimensionInfo.getDimensions());
+                List<Sort> colIndexSorts = getSegmentIndexSorts(colDimensionInfo.getDimensions());
+                DetailFilter colDetailFilter = FilterBuilder.buildDetailFilter(segment, colDimensionInfo.getFilterInfo());
+                GroupByInfo colGroupByInfo = new GroupByInfoImpl(colDimensions, colDetailFilter, colIndexSorts, colDimensionInfo.getExpander());
+                queries.add(new XGroupAllSegmentQuery(rowGroupByInfo, colGroupByInfo, metricInfo));
+            } else {
+                queries.add(new GroupAllSegmentQuery(rowGroupByInfo, metricInfo));
             }
+        }
         if (type == QueryType.CROSS_GROUP) {
             return new XGroupResultQuery(queries, getAggregators(targetInfo.getMetrics()), getTargets(targetInfo.getGroupTargets()));
         }
@@ -63,7 +72,7 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
         List<Aggregator> aggregators = new ArrayList<Aggregator>();
         for (Metric metric : metrics){
             if (metric.getFilter() != null){
-                aggregators.add(new MetricFilterAggregator(metric.getAggregator(), FilterBuilder.buildDetailFilter(segment, metric.getFilter()).createFilterIndex()));
+                aggregators.add(new MetricFilterAggregator(metric.getAggregator(), FilterBuilder.buildDetailFilter(segment, metric.getFilter())));
             } else {
                 aggregators.add(metric.getAggregator());
             }
@@ -89,7 +98,7 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
     /**
      * 维度的明细排序，按照维度值的字典排序
      */
-    private List<Sort> getSegmentIndexSorts(Dimension[] dimensions) {
+    static List<Sort> getSegmentIndexSorts(Dimension[] dimensions) {
         List<Sort> indexSorts = new ArrayList<Sort>();
         for (Dimension dimension : dimensions) {
             Sort sort = dimension.getSort();

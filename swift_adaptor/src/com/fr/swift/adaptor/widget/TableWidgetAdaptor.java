@@ -6,8 +6,8 @@ import com.finebi.conf.internalimp.dashboard.widget.filter.ClickValue;
 import com.finebi.conf.internalimp.dashboard.widget.filter.ClickValueItem;
 import com.finebi.conf.internalimp.dashboard.widget.filter.CustomLinkConfItem;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
+import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
 import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
-import com.finebi.conf.structure.dashboard.widget.FineWidget;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionDrill;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
@@ -127,7 +127,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         return new GroupQueryInfo(queryId, sourceKey, dimensionInfo, targetInfo);
     }
 
-    private static FilterInfo getFilterInfo(TableWidget widget, List<Dimension> dimensions) throws Exception {
+    static FilterInfo getFilterInfo(AbstractTableWidget widget, List<Dimension> dimensions) throws Exception {
         List<FilterInfo> filterInfoList = new ArrayList<FilterInfo>();
         dealWithWidgetFilter(filterInfoList, widget);
         dealWithLink(filterInfoList, widget);
@@ -146,7 +146,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         }
     }
 
-    private static void dealWithDrill(List<FilterInfo> filterInfoList, TableWidget widget) throws Exception {
+    private static void dealWithDrill(List<FilterInfo> filterInfoList, AbstractTableWidget widget) throws Exception {
         for (FineDimension fineDimension : widget.getDimensionList()) {
             FineDimensionDrill drill = fineDimension.getDimensionDrill();
             if (drill != null) {
@@ -160,7 +160,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         widget.getValue().getDrillList();
     }
 
-    private static void dealWithLink(List<FilterInfo> filterInfoList, TableWidget widget) throws SQLException {
+    private static void dealWithLink(List<FilterInfo> filterInfoList, AbstractTableWidget widget) throws SQLException {
         //联动设置
         Map<String, WidgetLinkItem> linkItemMap = widget.getValue().getLinkage();
         //手动联动配置
@@ -242,7 +242,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         }
     }
 
-    private static void dealWithWidgetFilter(List<FilterInfo> filterInfoList, TableWidget widget) throws Exception {
+    private static void dealWithWidgetFilter(List<FilterInfo> filterInfoList, AbstractTableWidget widget) throws Exception {
         List<FineFilter> filters = widget.getFilters();
         if (filters != null && !filters.isEmpty()) {
             filterInfoList.add(FilterInfoFactory.transformFineFilter(filters));
@@ -256,17 +256,6 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
             dimensions.add(toDimension(sourceKey, fineDim, i, targets));
         }
         return dimensions;
-    }
-
-    static GroupTarget[] getTargets(FineWidget widget) throws Exception {
-        List<FineTarget> fineTargets = widget.getTargetList();
-        fineTargets = fineTargets == null ? new ArrayList<FineTarget>() : fineTargets;
-        GroupTarget[] targets = new GroupTarget[0];
-        //先注释掉，加进来挂了
-//        for (int i = 0, size = fineTargets.size(); i < size; i++) {
-//            targets[i] = new GroupFormulaTarget(i);
-//        }
-        return targets;
     }
 
     private static Dimension toDimension(SourceKey sourceKey, FineDimension fineDim, int index, List<FineTarget> targets) {

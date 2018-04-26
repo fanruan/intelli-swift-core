@@ -1,10 +1,11 @@
 package com.fr.swift.query.group.by;
 
-import com.fr.swift.query.adapter.dimension.Expander;
+import com.fr.swift.query.adapter.dimension.Cursor;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
-import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.group.by.paging.GroupByPagingIterator;
+import com.fr.swift.query.group.info.GroupByInfo;
+import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.GroupByResultSet;
@@ -28,13 +29,12 @@ import java.util.Map;
  */
 public class GroupByUtils {
 
-    // TODO: 2018/4/20 这边的参数数量有点爆炸了，有必要把相关的参数组合成新的对象作为参数来减少参数个数
-    public static GroupByResultSet query(List<Column> dimensions, List<Column> metrics, List<Aggregator> aggregators,
-                                         DetailFilter filter, List<Sort> indexSorts, Expander rowExpander,
-                                         int[] cursor, int pageSize) {
-        boolean[] asc = getSorts(indexSorts, dimensions.size());
+    public static GroupByResultSet query(GroupByInfo groupByInfo, MetricInfo metricInfo, int pageSize) {
+        boolean[] asc = getSorts(groupByInfo.getSorts(), groupByInfo.getDimensions().size());
         // TODO: 2018/4/20 expander过滤groupBy
-        Iterator<KeyValue<RowIndexKey<int[]>, RowTraversal>> groupByIterator = new MultiDimensionGroupBy(dimensions, filter, cursor, asc);
+        List<Column> dimensions = groupByInfo.getDimensions();
+        Iterator<KeyValue<RowIndexKey<int[]>, RowTraversal>> groupByIterator = new MultiDimensionGroupBy(
+                dimensions, groupByInfo.getDetailFilter(), getCursor(null, dimensions), asc);
         if (pageSize != -1) {
             // 分页的情况
             groupByIterator = new GroupByPagingIterator(pageSize, groupByIterator);
@@ -45,11 +45,18 @@ public class GroupByUtils {
         while (groupByIterator.hasNext()) {
             KeyValue<RowIndexKey<int[]>, RowTraversal> keyValue = groupByIterator.next();
             int[] key = keyValue.getKey().getKey();
-            AggregatorValue[] values = aggregateRow(keyValue.getValue(), metrics, aggregators);
+            AggregatorValue[] values = aggregateRow(keyValue.getValue(), metricInfo.getMetrics(), metricInfo.getAggregators());
             rowResult.add(new KeyValue<RowIndexKey<int[]>, AggregatorValue[]>(toGlobalIndex(key, dictionaries), values));
             updateGlobalDictionaries(key, globalDictionaries, dictionaries);
         }
         return new GroupByResultSetImpl(rowResult, globalDictionaries, dimensions.size());
+    }
+
+    static int[] getCursor(Cursor cursor, List<Column> dimensions) {
+        if (cursor != null) {
+            return cursor.createCursorIndex(getDictionaries(dimensions));
+        }
+        return new int[dimensions.size()];
     }
 
     static boolean[] getSorts(List<Sort> sorts, int dimensionSize) {

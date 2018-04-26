@@ -34,6 +34,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements QueryRu
     public <T extends SwiftResultSet> T getQueryResult(QueryInfo<T> info) throws SQLException {
         Query<T> query = QueryBuilder.buildQuery(info);
         T result = query.getQueryResult();
+        // TODO: 2018/4/25 每个节点上面都有service，如何判断是不是请求进来的最外层节点呢？
         if (info.getType() == QueryType.GROUP || info.getType() == QueryType.CROSS_GROUP) {
             GroupNode root = (GroupNode) ((NodeResultSet) result).getNode();
             TargetCalculatorUtils.calculate(root, ((GroupQueryInfo) info).getTargetInfo().getGroupTargets());

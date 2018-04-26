@@ -16,8 +16,21 @@ public interface LocalGroupQueryBuilder {
 
     LocalGroupQueryBuilder ALL = new LocalGroupAllQueryBuilder();
 
-
+    /**
+     * 构建本地的结果查询Query
+     * 这个方法应该叫做buildLocalResultQuery比较合适
+     *
+     * @param info 查询信息
+     * @return
+     */
     Query<NodeResultSet> buildLocalQuery(GroupQueryInfo info);
 
+    /**
+     * 构建合并一组结果Query的查询Query
+     *
+     * @param queries 一组结果Query
+     * @param info    查询信息
+     * @return
+     */
     Query<NodeResultSet> buildResultQuery(List<Query<NodeResultSet>> queries, GroupQueryInfo info);
 }

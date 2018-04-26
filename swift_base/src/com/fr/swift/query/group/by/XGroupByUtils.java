@@ -1,12 +1,11 @@
 package com.fr.swift.query.group.by;
 
-import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.filter.detail.DetailFilter;
-import com.fr.swift.structure.iterator.Filter;
-import com.fr.swift.structure.iterator.FilteredIterator;
 import com.fr.swift.query.group.by.paging.GroupByPagingIterator;
 import com.fr.swift.query.group.by.paging.XGroupByIterator;
+import com.fr.swift.query.group.info.GroupByInfo;
+import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.KeyValue;
 import com.fr.swift.result.RowIndexKey;
@@ -14,6 +13,8 @@ import com.fr.swift.result.XGroupByResultSet;
 import com.fr.swift.result.XGroupByResultSetImpl;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.structure.iterator.Filter;
+import com.fr.swift.structure.iterator.FilteredIterator;
 import com.fr.swift.structure.iterator.RowTraversal;
 
 import java.util.ArrayList;
@@ -26,17 +27,17 @@ import java.util.Map;
  */
 public class XGroupByUtils {
 
-    public static XGroupByResultSet<int[]> query(List<Column> rowDimensions, List<Column> colDimensions,
-                                                 List<Column> metrics, List<Aggregator> aggregators, DetailFilter filter,
-                                                 List<Sort> sorts, List<Sort> colSorts, int[] cursor, int[] xCursor, int pageSize,
-                                                 int xPageSize) {
-        Iterator<KeyValue<RowIndexKey<int[]>, RowTraversal>> rowIt = createIterator(rowDimensions, filter, cursor, sorts);
-        Iterator<KeyValue<RowIndexKey<int[]>, RowTraversal>> colIt = createIterator(colDimensions, filter, xCursor, colSorts);
-        if (pageSize != -1) {
-            rowIt = new GroupByPagingIterator(pageSize, rowIt);
+    public static XGroupByResultSet<int[]> query(GroupByInfo rowGroupByInfo, GroupByInfo colGroupByInfo,
+                                                 MetricInfo metricInfo, int rowPageSize, int colPageSize) {
+        List<Column> rowDimensions = rowGroupByInfo.getDimensions();
+        List<Column> colDimensions = colGroupByInfo.getDimensions();
+        Iterator<KeyValue<RowIndexKey<int[]>, RowTraversal>> rowIt = createIterator(rowDimensions, rowGroupByInfo.getDetailFilter(), GroupByUtils.getCursor(null, rowDimensions), rowGroupByInfo.getSorts());
+        Iterator<KeyValue<RowIndexKey<int[]>, RowTraversal>> colIt = createIterator(colDimensions, colGroupByInfo.getDetailFilter(), GroupByUtils.getCursor(null, colDimensions), colGroupByInfo.getSorts());
+        if (rowPageSize != -1) {
+            rowIt = new GroupByPagingIterator(rowPageSize, rowIt);
         }
-        if (xPageSize != -1) {
-            colIt = new GroupByPagingIterator(xPageSize, colIt);
+        if (colPageSize != -1) {
+            colIt = new GroupByPagingIterator(colPageSize, colIt);
         }
         List<KeyValue<RowIndexKey<int[]>, List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>>>> resultList = new ArrayList<KeyValue<RowIndexKey<int[]>, List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>>>>();
         // 行表头的全局字典和字典列
@@ -54,7 +55,7 @@ public class XGroupByUtils {
             for (KeyValue<RowIndexKey<int[]>, RowTraversal> keyValue : keyValues) {
                 list.add(new KeyValue<RowIndexKey<int[]>, AggregatorValue[]>(
                         GroupByUtils.toGlobalIndex(keyValue.getKey().getKey(), xDictionaries),
-                        GroupByUtils.aggregateRow(keyValue.getValue(), metrics, aggregators)));
+                        GroupByUtils.aggregateRow(keyValue.getValue(), metricInfo.getMetrics(), metricInfo.getAggregators())));
                 // 更新列表头的全局字典
                 GroupByUtils.updateGlobalDictionaries(keyValue.getKey().getKey(), xGlobalDictionaries, xDictionaries);
             }
@@ -78,10 +79,7 @@ public class XGroupByUtils {
             public boolean accept(KeyValue<RowIndexKey<int[]>, RowTraversal> kv) {
                 int[] index = kv.getKey().getKey();
                 // 过滤掉除了根节点的汇总行
-                if (index.length > 1 && index[0] != -1 && index[index.length -1] == -1) {
-                    return false;
-                }
-                return true;
+                return index.length <= 1 || index[0] == -1 || index[index.length - 1] != -1;
             }
         });
         return iterator;
