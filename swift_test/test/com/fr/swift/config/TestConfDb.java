@@ -1,5 +1,6 @@
 package com.fr.swift.config;
 
+import com.fr.base.FRContext;
 import com.fr.config.DBEnv;
 import com.fr.config.dao.DaoContext;
 import com.fr.config.dao.impl.HibernateClassHelperDao;
@@ -8,8 +9,11 @@ import com.fr.config.dao.impl.HibernateXmlEnityDao;
 import com.fr.config.entity.ClassHelper;
 import com.fr.config.entity.Entity;
 import com.fr.config.entity.XmlEntity;
+import com.fr.dav.LocalEnv;
 import com.fr.stable.db.DBContext;
 import com.fr.stable.db.option.DBOption;
+import com.fr.transaction.Configurations;
+import com.fr.transaction.FineConfigurationHelper;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,6 +26,7 @@ public class TestConfDb {
     private static final Path PATH = Paths.get(System.getProperty("user.dir") + "/config");
 
     public static void setConfDb() throws Exception {
+        FRContext.setCurrentEnv(new LocalEnv());
         DBOption dbOption = new DBOption();
         dbOption.setUrl("jdbc:h2:" + PATH.toString());
         dbOption.setUsername("sa");
@@ -39,5 +44,6 @@ public class TestConfDb {
         DaoContext.setClassHelperDao(new HibernateClassHelperDao());
         DaoContext.setXmlEntityDao(new HibernateXmlEnityDao());
         DaoContext.setEntityDao(new HibernateEntityDao());
+        Configurations.setHelper(new FineConfigurationHelper());
     }
 }
