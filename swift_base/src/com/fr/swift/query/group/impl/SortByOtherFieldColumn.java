@@ -8,20 +8,26 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 
+import java.util.Comparator;
+
 public class SortByOtherFieldColumn implements Column {
 
+    //根据的字段列
     private Column sortByColumn;
+    //待排序的字段列
+    private Column originColumn;
     private SortType sortType;
 
-    public SortByOtherFieldColumn(Column sortByColumn, SortType type) {
+    public SortByOtherFieldColumn(Column sortByColumn, Column originColumn, SortType type) {
         this.sortByColumn = sortByColumn;
+        this.originColumn = originColumn;
         this.sortType = type;
         //    initDescBitmap();
     }
 
     @Override
     public DictionaryEncodedColumn getDictionaryEncodedColumn() {
-        throw new UnsupportedOperationException();
+        return new DicColumn();
     }
 
     @Override
@@ -73,4 +79,90 @@ public class SortByOtherFieldColumn implements Column {
             throw new UnsupportedOperationException();
         }
     }
+
+    private class DicColumn implements DictionaryEncodedColumn {
+
+        DictionaryEncodedColumn originDict = originColumn.getDictionaryEncodedColumn();
+
+        @Override
+        public void putSize(int size) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int size() {
+            return sortByColumn.getDictionaryEncodedColumn().size();
+        }
+
+        @Override
+        public void putGlobalSize(int globalSize) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int globalSize() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void putValue(int index, Object val) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Object getValue(int index) {
+            return originDict.getValue(index);
+        }
+
+        @Override
+        public int getIndex(Object value) {
+            return originDict.getIndex(value);
+        }
+
+        @Override
+        public void putIndex(int row, int index) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int getIndexByRow(int row) {
+            return originDict.getIndexByRow(row);
+        }
+
+        @Override
+        public void putGlobalIndex(int index, int globalIndex) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int getGlobalIndexByIndex(int index) {
+            return originDict.getGlobalIndexByIndex(index);
+        }
+
+        @Override
+        public int getGlobalIndexByRow(int row) {
+            return originDict.getGlobalIndexByRow(row);
+        }
+
+        @Override
+        public Comparator getComparator() {
+            return originDict.getComparator();
+        }
+
+        @Override
+        public Object convertValue(Object value) {
+            return originDict.convertValue(value);
+        }
+
+        @Override
+        public void flush() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void release() {
+            throw new UnsupportedOperationException();
+        }
+    }
+
 }
