@@ -21,6 +21,9 @@ class Converters {
                 return new UnaryOperator<Object>() {
                     @Override
                     public Object apply(Object p) {
+                        if (p instanceof Boolean) {
+                            return ((Boolean) p) ? 1L : 0L;
+                        }
                         return ((Number) p).longValue();
                     }
                 };

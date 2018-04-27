@@ -21,7 +21,7 @@ public class RowAdaptorTest {
 
     @Test
     public void applyRowToLog() throws Exception {
-        Row row = new ListBasedRow(Arrays.<Object>asList(10L, 100L, 1000D, -100D, "qwe", System.currentTimeMillis(), System.currentTimeMillis()));
+        Row row = new ListBasedRow(Arrays.<Object>asList(10L, 100L, 1000D, -100D, "qwe", System.currentTimeMillis(), System.currentTimeMillis(), 0L));
 
         Function<Row, Object> adapter = new DecisionRowAdaptor(A.class);
         A a = (A) adapter.apply(row);
@@ -32,6 +32,7 @@ public class RowAdaptorTest {
         assertEquals(row.getValue(4), a.str);
         assertEquals(new Date((Long) row.getValue(5)), a.utilDate);
         assertEquals(new java.sql.Date((Long) row.getValue(6)), a.sqlDate);
+        assertEquals(((Long) row.getValue(7)) != 0L, a.b);
 
         row = new ListBasedRow(Collections.<Object>singletonList(1D));
         adapter = new DecisionRowAdaptor(ConvertType.class);
@@ -44,7 +45,7 @@ public class RowAdaptorTest {
         A a = new A();
         Function<Object, Row> adapter = new SwiftRowAdaptor(A.class);
         Row row = adapter.apply(a);
-        assertEquals(7, row.getSize());
+        assertEquals(8, row.getSize());
         assertEquals(((long) a.s), row.getValue(0));
         assertEquals(a.l, row.getValue(1));
         assertEquals(a.d1, row.getValue(2));
@@ -52,6 +53,7 @@ public class RowAdaptorTest {
         assertEquals(a.str, row.getValue(4));
         assertEquals(a.utilDate.getTime(), row.getValue(5));
         assertEquals(a.sqlDate.getTime(), row.getValue(6));
+        assertEquals(a.b ? 1L : 0L, row.getValue(7));
 
         ConvertType convertType = new ConvertType();
         convertType.o = new Object();

@@ -7,7 +7,7 @@ import com.fr.swift.structure.lru.LRUHashMap;
  * 音标操作
  * Created by GUY on 2015/3/31.
  */
-public class BIPinyinUtils {
+public class PinyinUtils {
 
     private static int CACHE_SIZE = 2048;
     private static LRUHashMap<String, String> pyMap = new LRUHashMap<String, String>(CACHE_SIZE);
@@ -35,10 +35,7 @@ public class BIPinyinUtils {
     public static boolean isMatch(String keyword, String value) {
 
         String py = getPingYin(value);
-        if (keyword == null || value.toUpperCase().contains(keyword.toUpperCase())
-                || py.toUpperCase().contains(keyword.toUpperCase())) {
-            return true;
-        }
-        return false;
+        return keyword == null || value.toUpperCase().contains(keyword.toUpperCase())
+                || py.toUpperCase().contains(keyword.toUpperCase());
     }
 }
