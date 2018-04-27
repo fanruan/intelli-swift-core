@@ -8,7 +8,6 @@ import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -155,28 +154,6 @@ public class SwiftMetaDataImpl implements SwiftMetaData {
             }
         }
         throw new SwiftMetaDataColumnAbsentException(columnName);
-    }
-
-    @Override
-    public Iterator<SwiftMetaDataColumn> iterator() {
-        return new Iterator<SwiftMetaDataColumn>() {
-            int index = 0;
-
-            @Override
-            public boolean hasNext() {
-                return index < fieldList.size();
-            }
-
-            @Override
-            public SwiftMetaDataColumn next() {
-                return fieldList.get(index++);
-            }
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
-        };
     }
 
     @Override
