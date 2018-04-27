@@ -4,8 +4,8 @@ import com.fr.general.ComparatorUtils;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
-import com.fr.swift.source.excel.pack.ExcelDataModelCreator;
-import com.fr.swift.source.excel.pack.IExcelDataModel;
+import com.fr.swift.source.excel.data.ExcelDataModelCreator;
+import com.fr.swift.source.excel.data.IExcelDataModel;
 
 import java.io.InputStream;
 

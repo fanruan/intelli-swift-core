@@ -8,7 +8,7 @@ import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftMetaDataImpl;
 import com.fr.swift.source.core.CoreField;
-import com.fr.swift.source.excel.pack.IExcelDataModel;
+import com.fr.swift.source.excel.data.IExcelDataModel;
 import com.fr.swift.util.Util;
 
 import java.util.ArrayList;

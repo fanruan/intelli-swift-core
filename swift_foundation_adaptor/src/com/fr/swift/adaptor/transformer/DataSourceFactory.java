@@ -43,8 +43,8 @@ import com.fr.swift.source.etl.datamining.DataMiningTransferOperator;
 import com.fr.swift.source.etl.rcompile.RCompileOperator;
 import com.fr.swift.source.etl.rcompile.RCompileTransferOperator;
 import com.fr.swift.source.excel.ExcelDataSource;
-import com.fr.swift.source.excel.pack.ExcelDataModelCreator;
-import com.fr.swift.source.excel.pack.IExcelDataModel;
+import com.fr.swift.source.excel.data.ExcelDataModelCreator;
+import com.fr.swift.source.excel.data.IExcelDataModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;

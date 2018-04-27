@@ -1,4 +1,4 @@
-package com.fr.swift.source.excel.pack;
+package com.fr.swift.source.excel.data;
 
 import com.fr.general.data.DataModel;
 import com.fr.swift.source.ColumnTypeConstants;

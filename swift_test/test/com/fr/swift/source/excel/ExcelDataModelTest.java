@@ -1,10 +1,10 @@
 package com.fr.swift.source.excel;
 
 import com.fr.general.data.TableDataException;
-import com.fr.swift.source.excel.pack.CSVDataModel;
-import com.fr.swift.source.excel.pack.ExcelDataModel;
-import com.fr.swift.source.excel.pack.ExcelDataModelCreator;
-import com.fr.swift.source.excel.pack.IExcelDataModel;
+import com.fr.swift.source.excel.data.CSVDataModel;
+import com.fr.swift.source.excel.data.ExcelDataModel;
+import com.fr.swift.source.excel.data.ExcelDataModelCreator;
+import com.fr.swift.source.excel.data.IExcelDataModel;
 import junit.framework.TestCase;
 
 import java.io.IOException;
@@ -60,7 +60,7 @@ public class ExcelDataModelTest extends TestCase {
     private void excelPathTest(String path) throws TableDataException {
         long start = System.currentTimeMillis();
         IExcelDataModel dataModel = ExcelDataModelCreator.createDataModel(path);
-        assertTrue(dataModel instanceof com.fr.swift.source.excel.pack.ExcelDataModel);
+        assertTrue(dataModel instanceof com.fr.swift.source.excel.data.ExcelDataModel);
         String[] names = dataModel.onlyGetColumnNames();
         System.out.println(System.currentTimeMillis() - start);
         assertEquals(dataModel.getRowCount(), 10000);
