@@ -67,11 +67,11 @@ public class MultiGroupByNodeIterator implements Iterator<GroupNode[]> {
         Expander expander = groupByInfo.getExpander();
         Set<RowIndexKey<int[]>> indexKeys = strKey2IntKey(expander.getStringIndexKeys(), dictionaries);
         ExpanderType type = expander.getType();
-        if (type == ExpanderType.LAZY_EXPANDER) {
-            return new NodeLazyExpanderController(indexKeys);
-        } else {
+//        if (type == ExpanderType.LAZY_EXPANDER) {
+//            return new NodeLazyExpanderController(indexKeys);
+//        } else {
             return new NodeAllExpanderController(indexKeys);
-        }
+//        }
     }
 
     private static Set<RowIndexKey<int[]>> strKey2IntKey(Set<RowIndexKey<String[]>> strKeys,

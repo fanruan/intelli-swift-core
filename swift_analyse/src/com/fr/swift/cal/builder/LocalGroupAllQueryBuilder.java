@@ -9,6 +9,7 @@ import com.fr.swift.cal.result.group.XGroupResultQuery;
 import com.fr.swift.cal.segment.group.GroupAllSegmentQuery;
 import com.fr.swift.cal.segment.group.XGroupAllSegmentQuery;
 import com.fr.swift.cal.targetcal.group.GroupTargetCalQuery;
+import com.fr.swift.compare.Comparators;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.adapter.dimension.DimensionInfo;
@@ -22,11 +23,13 @@ import com.fr.swift.query.group.info.GroupByInfoImpl;
 import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.query.group.info.MetricInfoImpl;
 import com.fr.swift.query.sort.Sort;
+import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -68,7 +71,8 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
         if (type == QueryType.CROSS_GROUP) {
             return new XGroupResultQuery(queries, getAggregators(targetInfo.getMetrics()), getTargets(targetInfo.getGroupTargets()));
         }
-        return new GroupResultQuery(queries, getAggregators(targetInfo.getMetrics()), getTargets(targetInfo.getGroupTargets()));
+        return new GroupResultQuery(queries, getAggregators(targetInfo.getMetrics()),
+                getComparatorsForMerge(rowDimensionInfo.getDimensions()));
 
     }
 
@@ -93,7 +97,7 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
                     getTargets(targetInfo.getGroupTargets()));
         }
         return new GroupResultQuery(queries, getAggregators(targetInfo.getMetrics()),
-                getTargets(targetInfo.getGroupTargets()));
+                getComparatorsForMerge(info.getDimensionInfo().getDimensions()));
     }
 
     /**
@@ -110,17 +114,19 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
         return indexSorts;
     }
 
-    /**
-     * 维度根据结果（比如聚合之后的指标）排序
-     */
-    private List<Sort> getIndexSorts(Dimension[] dimensions) {
-        List<Sort> indexSorts = new ArrayList<Sort>();
+    private static List<Comparator<Integer>> getComparatorsForMerge(Dimension[] dimensions) {
+        List<Comparator<Integer>> comparators = new ArrayList<Comparator<Integer>>(dimensions.length);
         for (Dimension dimension : dimensions) {
             Sort sort = dimension.getSort();
-            if (sort != null && sort.getTargetIndex() != dimension.getIndex()) {
-                indexSorts.add(sort);
+            if (sort != null && sort.getTargetIndex() == dimension.getIndex()) {
+                if (sort.getSortType() == SortType.ASC) {
+                    comparators.add(Comparators.<Integer>asc());
+                } else {
+                    comparators.add(Comparators.<Integer>desc());
+                }
             }
+            comparators.add(Comparators.<Integer>asc());
         }
-        return indexSorts;
+        return comparators;
     }
 }

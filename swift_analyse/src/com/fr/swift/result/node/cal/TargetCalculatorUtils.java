@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Lyon on 2018/4/8.
@@ -75,7 +76,9 @@ public class TargetCalculatorUtils {
         return root;
     }
 
-    public static GroupNode getShowTargetsForGroupNode(GroupNode root, final List<ResultTarget> targetsForShowList) {
+    public static GroupNode getShowTargetsForGroupNodeAndSetNodeData(GroupNode root,
+                                                                     final List<ResultTarget> targetsForShowList,
+                                                                     final List<Map<Integer, Object>> dictionaries) {
         // 从计算结果中提取要展示的结果集
         Iterator<GroupNode> iterator = new MapperIterator<GroupNode, GroupNode>(new BFTGroupNodeIterator(root), new Function<GroupNode, GroupNode>() {
             @Override
@@ -86,6 +89,10 @@ public class TargetCalculatorUtils {
                     showValues[i] = allValues[targetsForShowList.get(i).getResultFetchIndex()];
                 }
                 p.setAggregatorValue(showValues);
+                // 设置节点的data
+                if (p.getDeep() != -1) {
+                    p.setData(dictionaries.get(p.getDeep()).get(p.getDictionaryIndex()));
+                }
                 return p;
             }
         });

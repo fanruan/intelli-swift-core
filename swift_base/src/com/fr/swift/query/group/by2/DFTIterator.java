@@ -15,7 +15,6 @@ public class DFTIterator implements Iterator<GroupByEntry>, PopUpCallback {
 
     private LimitedStack<Iterator<GroupByEntry>> iterators;
     private IteratorCreator<GroupByEntry> creator;
-    private GroupByEntry next;
 
     public DFTIterator(int limit, IteratorCreator<GroupByEntry> creator) {
         this.creator = creator;
@@ -26,7 +25,6 @@ public class DFTIterator implements Iterator<GroupByEntry>, PopUpCallback {
     private void init() {
         Iterator<GroupByEntry> iterator = creator.createIterator(0, null);
         iterators.push(iterator);
-        next = getNext();
     }
 
     private GroupByEntry getNext() {
@@ -49,14 +47,20 @@ public class DFTIterator implements Iterator<GroupByEntry>, PopUpCallback {
 
     @Override
     public boolean hasNext() {
-        return next != null;
+        if (iterators.isEmpty()) {
+            return false;
+        }
+        if (iterators.peek().hasNext()) {
+            return true;
+        } else {
+            iterators.pop();
+            return hasNext();
+        }
     }
 
     @Override
     public GroupByEntry next() {
-        GroupByEntry ret = next;
-        next = getNext();
-        return ret;
+        return getNext();
     }
 
     @Override
@@ -68,6 +72,7 @@ public class DFTIterator implements Iterator<GroupByEntry>, PopUpCallback {
     public void pop() {
         // 通过被控制器调用的出栈方式，用于控制groupBy的展开方式
         if (iterators.size() > 1) {
+            // LAZY_EXPANDER至少展开一个维度
             iterators.pop();
         }
     }

@@ -9,6 +9,10 @@ import java.util.Iterator;
 /**
  * 尝试对多维GroupBy的逻辑做进一步拆分
  *
+ * 当前存在的问题：
+ * 1、逻辑分散了，改动过程中稍不留神就会顾此失彼
+ * 2、把树迭代器iterator和itemsStack对象暴露给调用的接口破坏了封装
+ *
  * Created by Lyon on 2018/4/20.
  */
 public class MultiGroupByV2<T> implements Iterator<T[]> {

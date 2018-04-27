@@ -20,6 +20,7 @@ import java.util.Map;
 /**
  * Created by Lyon on 2018/4/1.
  */
+@Deprecated
 public class GroupByResultSetMergingUtils {
 
     /**

@@ -10,7 +10,9 @@ import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.query.filter.match.NodeAggregator;
 import com.fr.swift.query.filter.match.NodeFilter;
+import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.GroupNode;
+import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.node.cal.TargetCalculatorUtils;
 import com.fr.swift.structure.Pair;
@@ -48,9 +50,11 @@ public class GroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> {
         } else if (hasDifferentResultAggregator(aggregators, resultAggregators)) {
             NodeAggregator.aggregate(mergeResult.getNode(), getDifferentAggregator(aggregators, resultAggregators));
         }
+//        GroupNodeAggregateUtils.aggregate(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
+//                (GroupNode) mergeResult.getNode(), info.getTargetInfo().getAggregatorListForResultMerging());
         // 取出查询最后要返回的结果
-        TargetCalculatorUtils.getShowTargetsForGroupNode(((GroupNode) mergeResult.getNode()),
-                info.getTargetInfo().getTargetsForShowList());
+        TargetCalculatorUtils.getShowTargetsForGroupNodeAndSetNodeData(((GroupNode) mergeResult.getNode()),
+                info.getTargetInfo().getTargetsForShowList(), ((NodeMergeResultSet) mergeResult).getRowGlobalDictionaries());
         return mergeResult;
     }
 
@@ -109,5 +113,19 @@ public class GroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> {
             }
         }
         return matchFilters;
+    }
+
+    /**
+     * 维度根据结果（比如聚合之后的指标）排序
+     */
+    private List<Sort> getIndexSorts(Dimension[] dimensions) {
+        List<Sort> indexSorts = new ArrayList<Sort>();
+        for (Dimension dimension : dimensions) {
+            Sort sort = dimension.getSort();
+            if (sort != null && sort.getTargetIndex() != dimension.getIndex()) {
+                indexSorts.add(sort);
+            }
+        }
+        return indexSorts;
     }
 }

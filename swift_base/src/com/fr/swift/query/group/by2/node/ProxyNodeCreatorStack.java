@@ -39,6 +39,7 @@ public class ProxyNodeCreatorStack<Node extends SwiftNode> implements LimitedSta
     public void push(Node item) {
         // 无需查找比较
         Node parent = nodeStack.peek();
+        // TODO: 2018/4/27 如果push近来的是兄弟节点也是addChild吗？
         parent.addChild(item);
         nodeStack.push(item);
     }

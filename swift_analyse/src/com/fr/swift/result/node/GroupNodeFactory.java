@@ -17,6 +17,7 @@ import static com.fr.swift.cube.io.IOConstant.NULL_DOUBLE;
 /**
  * Created by Lyon on 2018/4/4.
  */
+@Deprecated
 public class GroupNodeFactory {
 
     public static GroupNode createNode(GroupByResultSet resultSet, int targetLength) {

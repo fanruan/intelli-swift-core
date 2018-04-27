@@ -27,6 +27,11 @@ public class GroupNodeAggregateUtils {
      * @return
      */
     public static GroupNode aggregate(NodeType type, int dimensionSize, GroupNode root, List<Aggregator> aggregators) {
+        if (type == NodeType.GROUP) {
+            mergeChildNode(root, aggregators);
+        } else {
+            mergeChildNode(type, root, aggregators);
+        }
         if (dimensionSize <= 1) {
             return root;
         }

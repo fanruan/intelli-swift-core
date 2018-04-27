@@ -15,7 +15,7 @@ import java.util.List;
 public class XGroupResultQuery extends GroupResultQuery {
 
     public XGroupResultQuery(List<Query<NodeResultSet>> queries, List<Aggregator> aggregators, List<GroupTarget> targets) {
-        super(queries, aggregators, targets);
+        super(queries, aggregators, null);
     }
 
     @Override

@@ -20,9 +20,6 @@ public class GroupAllSegmentQuery extends AbstractGroupSegmentQuery{
     public NodeResultSet getQueryResult() {
         int[] cursor = new int[groupByInfo.getDimensions().size()];
         Arrays.fill(cursor, 0);
-//        GroupByResultSet resultSet = GroupByUtils.query(groupByInfo, metricInfo, -1);
-//        SwiftNode node = GroupNodeFactory.createNode(resultSet, metricInfo.getTargetLength());
         return NodeGroupByUtils.groupBy(groupByInfo, metricInfo);
-//        return new NodeResultSetImpl<SwiftNode>(node);
     }
 }
