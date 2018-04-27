@@ -71,33 +71,37 @@ public class RCompileOperator extends AbstractOperator {
 //            dataModel = (DMDataModel) cacheList.get(1);
 //            return (List<SwiftMetaDataColumn>) cacheList.get(0);
 //        }
-
-        // 读取不到计算
         try {
-            conn = RConnectionFactory.getRConnection();
-            if (null == conn) {
+            // 读取不到计算
+            try {
+                conn = RConnectionFactory.getRConnection();
+                if (null == conn) {
+                    return columnList;
+                }
+            } catch (Exception e) {
+                DMLogEntity DMLogEntity = DMLogEntityImp.create();
+                DMLogEntity.setUuid(uuid);
+                DMLogEntity.setErrorType(DMLogType.RCOMPILE.R_CONNECT_ERROR);
+                DMLogEntity.writeLog("Cant not connect R serve!");
                 return columnList;
             }
-        } catch (Exception e) {
-            DMLogEntity DMLogEntity = DMLogEntityImp.create();
-            DMLogEntity.setUuid(uuid);
-            DMLogEntity.setErrorType(DMLogType.RCOMPILE.R_CONNECT_ERROR);
-            DMLogEntity.writeLog("Cant not connect R serve!");
-            return columnList;
+            // 计算R语言命令
+            try {
+                assign(metaDatas);
+                eval(metaDatas, columnList);
+            } catch (Exception e) {
+                LOGGER.error(e.getMessage(), e);
+                return columnList;
+            }
+            cacheList.add(columnList);
+            cacheList.add(dataModel);
+            // 保存到缓存中
+            RCacheStore.INSTANCE.put(new RCacheElement(uuid, cacheList));
+        } finally {
+            if(null != conn) {
+                conn.close();
+            }
         }
-        // 计算R语言命令
-        try {
-            assign(metaDatas);
-            eval(metaDatas, columnList);
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return columnList;
-        }
-        cacheList.add(columnList);
-        cacheList.add(dataModel);
-        // 保存到缓存中
-        RCacheStore.INSTANCE.put(new RCacheElement(uuid, cacheList));
-        conn.close();
         return columnList;
     }
 
