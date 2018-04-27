@@ -23,7 +23,9 @@ public class RCompileResultSet implements SwiftResultSet {
     public RCompileResultSet(DMDataModel dataModel, SwiftMetaData metaData) {
         this.metaData = metaData;
         this.dataModel = dataModel;
-        rowCount = dataModel.getRowSize();
+        if(null != dataModel) {
+            rowCount = dataModel.getRowSize();
+        }
         rowCursor = 0;
     }
 

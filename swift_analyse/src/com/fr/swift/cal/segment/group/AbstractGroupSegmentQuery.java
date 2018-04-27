@@ -1,30 +1,21 @@
 package com.fr.swift.cal.segment.group;
 
 import com.fr.swift.cal.segment.AbstractSegmentQuery;
-import com.fr.swift.query.aggregator.Aggregator;
-import com.fr.swift.query.filter.detail.DetailFilter;
-import com.fr.swift.query.sort.Sort;
+import com.fr.swift.query.group.info.GroupByInfo;
+import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.result.NodeResultSet;
-import com.fr.swift.segment.column.Column;
-
-import java.util.List;
 
 /**
  * Created by pony on 2017/12/18.
  */
 public abstract class AbstractGroupSegmentQuery extends AbstractSegmentQuery<NodeResultSet> {
-    protected List<Column> dimensions;
-    protected List<Column> metrics;
-    protected List<Aggregator> aggregators;
-    protected DetailFilter filter;
-    // 这边要加一个维度排序
-    protected List<Sort> indexSorts;
 
-    public AbstractGroupSegmentQuery(List<Column> dimensions, List<Column> metrics, List<Aggregator> aggregators, DetailFilter filter) {
-        this.dimensions = dimensions;
-        this.metrics = metrics;
-        this.aggregators = aggregators;
-        this.filter = filter;
+    protected GroupByInfo groupByInfo;
+    protected MetricInfo metricInfo;
+
+    public AbstractGroupSegmentQuery(GroupByInfo groupByInfo, MetricInfo metricInfo) {
+        this.groupByInfo = groupByInfo;
+        this.metricInfo = metricInfo;
     }
 
 }

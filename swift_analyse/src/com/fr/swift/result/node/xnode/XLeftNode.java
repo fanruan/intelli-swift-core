@@ -13,14 +13,14 @@ public class XLeftNode extends GroupNode<XLeftNode> {
 
     /**
      * 交叉表的行结构
-     * targetLength 指标的个数
+     * getTargetLength 指标的个数
      * topGroupByRowCount 表头维度groupBy结果的行数，包括汇总行
-     * xValues为AggregatorValue[targetLength][topGroupByRowCount]
+     * xValues为AggregatorValue[getTargetLength][topGroupByRowCount]
      */
     private AggregatorValue[][] xValues;
 
     /**
-     * valueArrayList为List<AggregatorValue[targetLength]>
+     * valueArrayList为List<AggregatorValue[getTargetLength]>
      * 用于保存临时结果valueArrayList.size() = topGroupByRowCount
      */
     private List<AggregatorValue[]> valueArrayList;
@@ -77,7 +77,7 @@ public class XLeftNode extends GroupNode<XLeftNode> {
     }
 
     public static Number[][] toNumber2DArray(AggregatorValue[][] values) {
-        Number[][] result = new Number[values.length][];
+        Number[][] result = new Number[values == null ? 0 : values.length][];
         for (int i = 0; i < result.length; i++) {
             result[i] = toNumberArray(values[i]);
         }

@@ -24,7 +24,7 @@ public class TableToSourceConfigTest {
     private TableToSourceConfigDao config;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         TestConfDb.setConfDb();
     }
 

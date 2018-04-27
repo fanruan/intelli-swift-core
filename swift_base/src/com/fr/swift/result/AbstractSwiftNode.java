@@ -1,10 +1,6 @@
 package com.fr.swift.result;
 
 import com.fr.swift.query.aggregator.AggregatorValue;
-import com.fr.swift.source.Row;
-import com.fr.swift.source.SwiftMetaData;
-
-import java.sql.SQLException;
 
 /**
  * Created by pony on 2017/12/8.
@@ -58,25 +54,5 @@ public abstract class AbstractSwiftNode<T extends SwiftNode> implements SwiftNod
     @Override
     public void setAggregatorValue(AggregatorValue[] aggregatorValues) {
         this.aggregatorValues = aggregatorValues;
-    }
-
-    @Override
-    public void close() throws SQLException {
-
-    }
-
-    @Override
-    public boolean next() throws SQLException {
-        return false;
-    }
-
-    @Override
-    public SwiftMetaData getMetaData() throws SQLException {
-        return null;
-    }
-
-    @Override
-    public Row getRowData() throws SQLException {
-        return null;
     }
 }

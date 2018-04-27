@@ -4,8 +4,8 @@ import com.finebi.conf.internalimp.bean.dashboard.widget.expander.ExpanderBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
 import com.finebi.conf.internalimp.dashboard.widget.filter.CustomLinkConfItem;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
+import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
 import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
-import com.finebi.conf.structure.dashboard.widget.FineWidget;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionDrill;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
@@ -41,7 +41,6 @@ import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.group.Group;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.node.GroupNode;
-import com.fr.swift.result.node.cal.TargetCalculatorUtils;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.Row;
@@ -50,7 +49,6 @@ import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -72,8 +70,6 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
             TargetInfoImpl targetInfo = CalTargetParseUtils.parseCalTarget(widget);
             resultSet = QueryRunnerProvider.getInstance().executeQuery(buildQueryInfo(widget, targetInfo));
             GroupNode groupNode = (GroupNode) ((NodeResultSet) resultSet).getNode();
-            // 取出实际查询的指标
-            groupNode = TargetCalculatorUtils.getShowTargetsForGroupNode(groupNode, targetInfo.getTargetsForShowList());
             resultNode = new BIGroupNodeAdaptor(groupNode);
         } catch (Exception e) {
             resultNode = new BIGroupNodeAdaptor(new GroupNode(-1, null));
@@ -122,12 +118,12 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         FilterInfo filterInfo = getFilterInfo(widget, dimensions);
         List<ExpanderBean> rowExpand = widget.getValue().getRowExpand();
         Expander expander = ExpanderFactory.create(widget.isOpenRowNode(), dimensions.size(),
-                rowExpand == null ? Collections.<ExpanderBean>emptyList() : rowExpand);
+                rowExpand == null ? new ArrayList<ExpanderBean>() : rowExpand);
         DimensionInfo dimensionInfo = new DimensionInfoImpl(cursor, filterInfo, expander, dimensions.toArray(new Dimension[dimensions.size()]));
         return new GroupQueryInfo(queryId, sourceKey, dimensionInfo, targetInfo);
     }
 
-    private static FilterInfo getFilterInfo(TableWidget widget, List<Dimension> dimensions) throws Exception {
+    static FilterInfo getFilterInfo(AbstractTableWidget widget, List<Dimension> dimensions) throws Exception {
         List<FilterInfo> filterInfoList = new ArrayList<FilterInfo>();
         dealWithWidgetFilter(filterInfoList, widget);
         dealWithLink(filterInfoList, widget);
@@ -146,7 +142,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         }
     }
 
-    private static void dealWithDrill(List<FilterInfo> filterInfoList, TableWidget widget) throws Exception {
+    private static void dealWithDrill(List<FilterInfo> filterInfoList, AbstractTableWidget widget) throws Exception {
         for (FineDimension fineDimension : widget.getDimensionList()) {
             FineDimensionDrill drill = fineDimension.getDimensionDrill();
             if (drill != null) {
@@ -160,7 +156,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         widget.getValue().getDrillList();
     }
 
-    private static void dealWithLink(List<FilterInfo> filterInfoList, TableWidget widget) throws SQLException {
+    private static void dealWithLink(List<FilterInfo> filterInfoList, AbstractTableWidget widget) throws SQLException {
         //联动设置
         Map<String, WidgetLinkItem> linkItemMap = widget.getValue().getLinkage();
         //手动联动配置
@@ -224,8 +220,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         }
     }
 
-
-    private static void dealWithWidgetFilter(List<FilterInfo> filterInfoList, TableWidget widget) throws Exception {
+    private static void dealWithWidgetFilter(List<FilterInfo> filterInfoList, AbstractTableWidget widget) throws Exception {
         List<FineFilter> filters = widget.getFilters();
         if (filters != null && !filters.isEmpty()) {
             filterInfoList.add(FilterInfoFactory.transformFineFilter(filters));
@@ -239,17 +234,6 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
             dimensions.add(toDimension(sourceKey, fineDim, i, size, targets));
         }
         return dimensions;
-    }
-
-    static GroupTarget[] getTargets(FineWidget widget) throws Exception {
-        List<FineTarget> fineTargets = widget.getTargetList();
-        fineTargets = fineTargets == null ? new ArrayList<FineTarget>() : fineTargets;
-        GroupTarget[] targets = new GroupTarget[0];
-        //先注释掉，加进来挂了
-//        for (int i = 0, size = fineTargets.size(); i < size; i++) {
-//            targets[i] = new GroupFormulaTarget(i);
-//        }
-        return targets;
     }
 
     private static Dimension toDimension(SourceKey sourceKey, FineDimension fineDim, int index, int size, List<FineTarget> targets) {

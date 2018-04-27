@@ -32,7 +32,7 @@ class TableDbSourcePreviewTransfer extends AbstractPreviewQueryTransfer {
     }
 
     @Override
-    protected String getQuery(Dialect dialect) throws SQLException{
+    protected String getQuery(Dialect dialect) throws SQLException {
         String columns;
         StringBuilder sb = new StringBuilder();
         if (metaData == null) {

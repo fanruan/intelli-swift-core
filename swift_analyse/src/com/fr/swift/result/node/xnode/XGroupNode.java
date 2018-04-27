@@ -9,7 +9,7 @@ public interface XGroupNode {
 
     /**
      * 交叉表行表头groupBy结果。
-     * 包含指标值xValues[targetLength][topGroupByRowCount]
+     * 包含指标值xValues[getTargetLength][topGroupByRowCount]
      * targetLength为指标的个数，topGroupByRowCount为表头维度groupBy结果的行数，包括汇总行
      *
      * @return
