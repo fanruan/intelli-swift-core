@@ -59,7 +59,7 @@ public class ColumnRowTransOperatorTest extends TestCase {
         SwiftMetaDataImpl basicMeta = new SwiftMetaDataImpl("aaa", columnList);
         ColumnRowTransferOperator operator = new ColumnRowTransferOperator("column1", "column1", column, lc_value, transOperator.getOtherColumnNames());
         SwiftResultSet set = operator.createResultSet(basicMeta, null, segments);
-        String[][] str = new String[][]{{"A", "A", null, null, null}, {"B", null, "B", null, null}, {"C", null, null, "C", null}};
+        String[][] str = new String[][]{{"A", "A", null, null, "A"}, {"B", null, "B", null, "B"}, {"C", null, null, "C", "C"}};
         int j = 0;
         while (set.next()) {
             Row row = set.getRowData();

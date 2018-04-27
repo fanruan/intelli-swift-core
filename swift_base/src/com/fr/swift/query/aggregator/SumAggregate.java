@@ -110,4 +110,5 @@ public class SumAggregate extends AbstractAggregator<DoubleAmountAggregatorValue
     public void combine(DoubleAmountAggregatorValue value, DoubleAmountAggregatorValue other) {
         value.setValue(value.getValue() + other.getValue());
     }
+
 }

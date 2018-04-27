@@ -115,4 +115,13 @@ public class MedianAggregate extends AbstractAggregator<MedianAggregatorValue> {
         }
     }
 
+    @Override
+    public MedianAggregatorValue createAggregatorValue(AggregatorValue value) {
+        MedianAggregatorValue medianAggregatorValue = new MedianAggregatorValue();
+        medianAggregatorValue.setCount(1);
+        Map<Double, Integer> values = new TreeMap<Double, Integer>();
+        values.put(value.calculate(), 1);
+        medianAggregatorValue.setValues(values);
+        return super.createAggregatorValue(value);
+    }
 }
