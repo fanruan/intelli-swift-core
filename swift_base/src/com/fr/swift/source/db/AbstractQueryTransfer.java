@@ -198,7 +198,7 @@ public abstract class AbstractQueryTransfer implements SwiftSourceTransfer {
     private DBDealer getDealerByColumn(int precision, int scale, int rsColumn, ColumnType columnType) {
         if (scale == 0 && ColumnTypeUtils.isLongType(precision)){
             //没有小数点，并且判断为long类型（长度小于19，或者强制设置成数值类型），都去取long再转化，否则一律getdouble
-            return getNumberConvertDealer(new DoubleDealer(rsColumn), columnType);
+            return getNumberConvertDealer(new LongDealer(rsColumn), columnType);
         } else {
             return getNumberConvertDealer(new DoubleDealer(rsColumn), columnType);
         }
