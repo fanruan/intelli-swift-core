@@ -139,17 +139,17 @@ public abstract class AbstractQueryTransfer implements SwiftSourceTransfer {
      * @param needCharSetConvert
      * @param originalCharSetName
      * @param newCharSetName
-     * @param metaData            ���ؽ����metadata
-     * @param outerMeta           ʵ��ִ�е�sql��metadata��sql�����source��outermetadata����Ҫ�ر�ע�⣬���ݿ��ʹ�ò����ֶ�֮����Ҫ��ԭ����outermetadata����
+     * @param metaData           swift保存的metadata
+     * @param sqlMeta            发往数据库的metadata
      * @return
      * @throws SQLException
      */
     protected DBDealer[] createDBDealer(boolean needCharSetConvert, String originalCharSetName,
-                                        String newCharSetName, SwiftMetaData metaData, SwiftMetaData outerMeta) throws SQLException {
+                                        String newCharSetName, SwiftMetaData metaData, SwiftMetaData sqlMeta) throws SQLException {
         List<DBDealer> res = new ArrayList<DBDealer>();
-        for (int i = 0; i < outerMeta.getColumnCount(); i++) {
+        for (int i = 0; i < sqlMeta.getColumnCount(); i++) {
             int rsColumn = i + 1;
-            String name = outerMeta.getColumnName(rsColumn);
+            String name = sqlMeta.getColumnName(rsColumn);
             SwiftMetaDataColumn column = null;
             try {
                 column = metaData.getColumn(name);
@@ -157,15 +157,15 @@ public abstract class AbstractQueryTransfer implements SwiftSourceTransfer {
                 //do nothing
             }
             if (column != null) {
-                DBDealer dealer = getDbDealer(needCharSetConvert, originalCharSetName, newCharSetName, column, outerMeta, rsColumn);
+                DBDealer dealer = getDbDealer(needCharSetConvert, originalCharSetName, newCharSetName, column, sqlMeta, rsColumn);
                 res.add(dealer);
             }
         }
         return res.toArray(new DBDealer[res.size()]);
     }
 
-    private DBDealer getDbDealer(boolean needCharSetConvert, String originalCharSetName, String newCharSetName, SwiftMetaDataColumn column, SwiftMetaData outerMeta, int rsColumn) throws SwiftMetaDataException {
-        int outerSqlType = outerMeta.getColumnType(rsColumn);
+    private DBDealer getDbDealer(boolean needCharSetConvert, String originalCharSetName, String newCharSetName, SwiftMetaDataColumn column, SwiftMetaData sqlMeta, int rsColumn) throws SwiftMetaDataException {
+        int outerSqlType = sqlMeta.getColumnType(rsColumn);
         ColumnType columnType = ColumnTypeUtils.sqlTypeToColumnType(column.getType(), column.getPrecision(), column.getScale());
         switch (outerSqlType) {
             case java.sql.Types.DECIMAL:
@@ -173,7 +173,7 @@ public abstract class AbstractQueryTransfer implements SwiftSourceTransfer {
             case java.sql.Types.REAL:
             case java.sql.Types.DOUBLE:
             case java.sql.Types.FLOAT:
-                return getDealerByColumn(outerMeta.getPrecision(rsColumn), outerMeta.getScale(rsColumn), rsColumn, columnType);
+                return getDealerByColumn(sqlMeta.getPrecision(rsColumn), sqlMeta.getScale(rsColumn), rsColumn, columnType);
             case java.sql.Types.BIT:
             case java.sql.Types.TINYINT:
             case java.sql.Types.SMALLINT:
@@ -196,14 +196,11 @@ public abstract class AbstractQueryTransfer implements SwiftSourceTransfer {
     }
 
     private DBDealer getDealerByColumn(int precision, int scale, int rsColumn, ColumnType columnType) {
-        if (scale != 0) {
-            //有小数点一定是double类型
-            return getNumberConvertDealer(new DoubleDealer(rsColumn), columnType);
-        } else if (ColumnTypeUtils.isLongType(precision) || columnType != ColumnType.STRING) {
-            //没有小数点，并且判断为long类型的，只要不转文本，都是long类型
+        if (scale == 0 && ColumnTypeUtils.isLongType(precision)){
+            //没有小数点，并且判断为long类型（长度小于19，或者强制设置成数值类型），都去取long再转化，否则一律getdouble
             return getNumberConvertDealer(new LongDealer(rsColumn), columnType);
         } else {
-            return getStringConvertDealer(new StringDealer(rsColumn), columnType);
+            return getNumberConvertDealer(new DoubleDealer(rsColumn), columnType);
         }
     }
 
