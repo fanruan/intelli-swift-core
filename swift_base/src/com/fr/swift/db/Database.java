@@ -44,7 +44,7 @@ public interface Database {
      * @param tableKey 表key
      * @return 是否存在
      */
-    boolean existsTable(SourceKey tableKey);
+    boolean existsTable(SourceKey tableKey) throws SQLException;
 
     /**
      * 拿表

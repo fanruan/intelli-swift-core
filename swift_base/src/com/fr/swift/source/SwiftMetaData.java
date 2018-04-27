@@ -10,7 +10,7 @@ import java.util.List;
  * 先实现一些基本的功能，以后如果需要兼容jdbc，可扩展为ResultSetMetadata
  * column 从1开始
  */
-public interface SwiftMetaData extends Iterable<SwiftMetaDataColumn> {
+public interface SwiftMetaData {
     String getSchemaName() throws SwiftMetaDataException;
 
     String getTableName() throws SwiftMetaDataException;

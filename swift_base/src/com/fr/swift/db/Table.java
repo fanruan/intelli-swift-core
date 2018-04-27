@@ -30,6 +30,7 @@ public interface Table extends Source {
 
     /**
      * 增：插入
+     * 加到内存，达到一定量进行合并写入
      *
      * @param rowSet 结果集
      * @throws SQLException 异常
@@ -38,6 +39,7 @@ public interface Table extends Source {
 
     /**
      * 增：导入
+     * 直接写入，适用于大量数据
      *
      * @param rowSet 结果及
      * @throws SQLException 异常
