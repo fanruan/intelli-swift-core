@@ -9,7 +9,6 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.reliance.AbstractRelationReliance;
 import com.fr.swift.reliance.IRelationNode;
-import com.fr.swift.reliance.RelationNode;
 import com.fr.swift.reliance.RelationPathReliance;
 import com.fr.swift.reliance.RelationReliance;
 import com.fr.swift.reliance.SourceNode;
@@ -75,8 +74,12 @@ public class StuffFetcher implements Runnable {
             taskMap.put(headTask.key(), headTask);
 
             List<SourceNode> sourceNodeList = sourceNode.next();
-            for (SourceNode nextSourceNode : sourceNodeList) {
-                calcBaseNode(nextSourceNode, headTask, end, pairMap, taskMap);
+            if (sourceNodeList.isEmpty()) {
+                headTask.addNext(end);
+            } else {
+                for (SourceNode nextSourceNode : sourceNodeList) {
+                    calcBaseNode(nextSourceNode, headTask, end, pairMap, taskMap);
+                }
             }
 
         }
