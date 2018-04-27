@@ -106,7 +106,7 @@ public class GroupResultQueryTest extends TestCase {
         expectedDictionaries = getGlobalDictionaries(dimensions);
         expectedResult = mergeResult(expectedResultList);
         updateGlobalIndex(dimensions, expectedDictionaries);
-        GroupResultQuery groupResultQuery = new GroupResultQuery(queryList, aggregators, null, indexSorts, null);
+        GroupResultQuery groupResultQuery = new GroupResultQuery(queryList, aggregators, null, indexSorts, null, aggregators);
 //        try {
 //            collector = groupResultQuery.getQueryResult();
 //        } catch (SQLException e) {

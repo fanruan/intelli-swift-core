@@ -7,6 +7,7 @@ import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
 import com.finebi.conf.structure.bean.filter.FilterBean;
 import com.finebi.conf.structure.dashboard.widget.field.WidgetBeanFieldValue;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
+import com.fr.swift.adaptor.transformer.AggregatorAdaptor;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.query.adapter.metric.GroupMetric;
 import com.fr.swift.query.adapter.metric.Metric;
@@ -16,6 +17,8 @@ import com.fr.swift.query.adapter.target.cal.GroupTargetImpl;
 import com.fr.swift.query.adapter.target.cal.ResultTarget;
 import com.fr.swift.query.adapter.target.cal.TargetInfoImpl;
 import com.fr.swift.query.aggregator.Aggregator;
+import com.fr.swift.query.aggregator.AggregatorFactory;
+import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.aggregator.DummyAggregator;
 import com.fr.swift.query.aggregator.SumAggregate;
 import com.fr.swift.query.filter.info.FilterInfo;
@@ -70,8 +73,9 @@ public class CalTargetParseUtils {
 
             // TODO: 2018/4/11 指标结果合并用到的Aggregator，配置类计算的结果如何合并还没定
             if (value == null) {
-                // 聚合指标，暂时都是SumAggregate
-                aggregatorListForResultTargetMerging.add(new SumAggregate());
+                AggregatorType type = AggregatorAdaptor.adaptorDashBoard(targets.get(i).getMetric());
+                Aggregator aggregator = type == null ? null : AggregatorFactory.createAggregator(type);
+                aggregatorListForResultTargetMerging.add(aggregator);
             } else {
                 // 配置类计算的结果指标不汇总
                 aggregatorListForResultTargetMerging.add(new DummyAggregator());

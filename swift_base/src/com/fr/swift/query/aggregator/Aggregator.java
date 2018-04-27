@@ -16,4 +16,11 @@ public interface Aggregator<T extends AggregatorValue> extends Combiner<T> {
      * @return
      */
     T aggregate(RowTraversal traversal, Column column);
+
+    /**
+     * 根据已有的值创建新的aggregatorvalue，主要用于切换合计方式
+     * @param value
+     * @return
+     */
+    T createAggregatorValue(AggregatorValue value);
 }

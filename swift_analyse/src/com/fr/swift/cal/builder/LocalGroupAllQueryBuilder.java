@@ -79,11 +79,11 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
         if (type == QueryType.CROSS_GROUP) {
             return new XGroupResultQuery(queries, getAggregators(targetInfo.getMetrics()),
                     getTargets(targetInfo.getGroupTargets()), getIndexSorts(rowDimensionInfo.getDimensions()),
-                    getDimensionMatchFilters(rowDimensionInfo.getDimensions()));
+                    getDimensionMatchFilters(rowDimensionInfo.getDimensions()), info.getTargetInfo().getAggregatorListForResultMerging());
         }
         return new GroupResultQuery(queries, getAggregators(targetInfo.getMetrics()),
                 getTargets(targetInfo.getGroupTargets()), getIndexSorts(rowDimensionInfo.getDimensions()),
-                getDimensionMatchFilters(rowDimensionInfo.getDimensions()));
+                getDimensionMatchFilters(rowDimensionInfo.getDimensions()), info.getTargetInfo().getAggregatorListForResultMerging());
     }
 
     /**

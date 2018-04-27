@@ -24,8 +24,8 @@ public class XGroupResultQuery extends GroupResultQuery {
         super(queries, aggregators, targets);
     }
 
-    public XGroupResultQuery(List<Query<NodeResultSet>> queries, List<Aggregator> aggregators, List<GroupTarget> targets, List<Sort> indexSorts, List<MatchFilter> dimensionMatchFilter) {
-        super(queries, aggregators, targets, indexSorts, dimensionMatchFilter);
+    public XGroupResultQuery(List<Query<NodeResultSet>> queries, List<Aggregator> aggregators, List<GroupTarget> targets, List<Sort> indexSorts, List<MatchFilter> dimensionMatchFilter, List<Aggregator> resultAggregators) {
+        super(queries, aggregators, targets, indexSorts, dimensionMatchFilter, resultAggregators);
     }
 
     @Override

@@ -24,6 +24,11 @@ public class MetricFilterAggregator implements Aggregator {
     }
 
     @Override
+    public AggregatorValue createAggregatorValue(AggregatorValue value) {
+        return aggregator.createAggregatorValue(value);
+    }
+
+    @Override
     public void combine(Object current, Object other) {
         aggregator.combine(current, other);
     }
