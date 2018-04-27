@@ -24,8 +24,6 @@ import java.util.List;
  */
 public class SwiftMetaAdaptor {
     public static SwiftMetaData adapt(Class<?> c) {
-        Table table = c.getAnnotation(Table.class);
-
         List<SwiftMetaDataColumn> columnMetas = new ArrayList<SwiftMetaDataColumn>();
         for (Field field : c.getDeclaredFields()) {
             if (!field.isAnnotationPresent(Column.class)) {
@@ -35,10 +33,14 @@ public class SwiftMetaAdaptor {
             SwiftMetaDataColumn columnMeta = new MetaDataColumn(column.name(), getStoreType(field));
             columnMetas.add(columnMeta);
         }
-        return new SwiftMetaDataImpl(table.name(), columnMetas);
+        return new SwiftMetaDataImpl(getTableName(c), columnMetas);
     }
 
-    private static int getStoreType(Field field) {
+    public static String getTableName(Class<?> c) {
+        return c.getAnnotation(Table.class).name();
+    }
+
+    static int getStoreType(Field field) {
         if (!field.isAnnotationPresent(Convert.class)) {
             return toSqlType(field.getType());
         }
@@ -85,7 +87,7 @@ public class SwiftMetaAdaptor {
         return Crasher.crash(String.format("type unsupported: %s", field));
     }
 
-    private static final Class<?>[] AS_LONG = {
+    static final Class<?>[] AS_LONG = {
             boolean.class, Boolean.class,
             byte.class, Byte.class,
             short.class, Short.class,
@@ -93,16 +95,16 @@ public class SwiftMetaAdaptor {
             long.class, Long.class
     };
 
-    private static final Class<?>[] AS_DOUBLE = {
+    static final Class<?>[] AS_DOUBLE = {
             float.class, Float.class,
             double.class, Double.class
     };
 
-    private static final Class<?>[] AS_STRING = {
+    static final Class<?>[] AS_STRING = {
             char.class, Character.class, String.class
     };
 
-    private static final Class<?>[] AS_DATE = {
+    static final Class<?>[] AS_DATE = {
             Date.class
     };
 }

@@ -34,21 +34,21 @@ public class SwiftMetaAdaptorTest {
     }
 
     @Table(name = "A")
-    private static class A {
+    static class A {
         @Column(name = "s")
-        short s;
+        short s = -1;
         @Column(name = "l")
-        Long l;
+        Long l = 1L;
         @Column(name = "d1")
-        double d1;
+        double d1 = 1;
         @Column(name = "d2")
-        Double d2;
+        Double d2 = 1.;
         @Column(name = "str")
-        String str;
+        String str = "asd";
         @Column(name = "utilDate")
-        java.util.Date utilDate;
+        java.util.Date utilDate = new java.util.Date();
         @Column(name = "sqlDate")
-        java.sql.Date sqlDate;
+        java.sql.Date sqlDate = new java.sql.Date(1);
     }
 
     @Test(expected = RuntimeException.class)
@@ -71,15 +71,15 @@ public class SwiftMetaAdaptorTest {
     }
 
     @Table(name = "ConvertType")
-    private static class ConvertType {
+    static class ConvertType {
         @Column(name = "o")
         @Convert(converter = X.class)
-        Object o;
+        Object o = new Object();
 
         static class X implements AttributeConverter<Object, Integer> {
             @Override
             public Integer convertToDatabaseColumn(Object o) {
-                return null;
+                return o.hashCode();
             }
 
             @Override
