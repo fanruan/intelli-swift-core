@@ -8,7 +8,6 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 
-import java.util.Comparator;
 
 public class SortByOtherFieldColumn implements Column {
 
@@ -37,7 +36,7 @@ public class SortByOtherFieldColumn implements Column {
 
     @Override
     public DetailColumn getDetailColumn() {
-        throw new UnsupportedOperationException();
+        return originColumn.getDetailColumn();
     }
 
     @Override
