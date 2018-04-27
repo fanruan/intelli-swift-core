@@ -26,7 +26,7 @@ public class FieldSettingAdaptor {
         FineOperator op = analysis.getOperator();
         List<FieldSettingOperator> fieldSettingOperatorList = new ArrayList<FieldSettingOperator>();
         while (op.getType() == AnalysisType.FIELD_SETTING) {
-            fieldSettingOperatorList.add((FieldSettingOperator) analysis.getOperator());
+            fieldSettingOperatorList.add(analysis.<FieldSettingOperator>getOperator());
             analysis = analysis.getBaseTable();
             op = analysis.getOperator();
             if (op.getType() == AnalysisType.SELECT_FIELD) {

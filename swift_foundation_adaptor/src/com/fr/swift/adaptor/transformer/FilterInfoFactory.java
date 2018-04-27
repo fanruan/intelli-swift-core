@@ -97,7 +97,7 @@ public class FilterInfoFactory {
         List<FineFilter> filters = dimension.getFilters();
         String dimId = dimension.getId();
         List<FilterBean> beans = new ArrayList<FilterBean>();
-        if (filters != null){
+        if (filters != null) {
             for (FineFilter filter : filters) {
                 //nice job! foundation 维度过滤没id，要从维度上设置一下
                 if (filter.getValue() != null) {
@@ -129,8 +129,8 @@ public class FilterInfoFactory {
                 FineTarget target = targets.get(i);
                 List<FineFilter> targetFilters = target.getFilters();
                 if (targetFilters != null) {
-                    for (FineFilter filter : targetFilters){
-                        FilterInfo targetFilterInfo = createFilterInfo((AbstractFilterBean)filter.getValue(), new ArrayList<Segment>());
+                    for (FineFilter filter : targetFilters) {
+                        FilterInfo targetFilterInfo = createFilterInfo((AbstractFilterBean) filter.getValue(), new ArrayList<Segment>());
                         filterInfoList.add(new MatchFilterInfo(targetFilterInfo, i));
                     }
                 }

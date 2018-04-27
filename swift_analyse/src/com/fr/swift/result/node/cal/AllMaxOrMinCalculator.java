@@ -23,7 +23,7 @@ public class AllMaxOrMinCalculator extends AbstractTargetCalculator {
     }
 
     @Override
-    public Object call() throws Exception {
+    public Object call() {
         List<List<AggregatorValue[]>> rows = new ArrayList<List<AggregatorValue[]>>();
         Double[] values = null;
         while (iterator.hasNext()) {
@@ -34,6 +34,10 @@ public class AllMaxOrMinCalculator extends AbstractTargetCalculator {
             }
             for (int i = 0; i < row.size(); i++) {
                 Double v = row.get(i)[paramIndex].calculate();
+                // 跳过空值
+                if (Double.isNaN(v)) {
+                    continue;
+                }
                 if (values[i] == null) {
                     values[i] = v;
                     continue;

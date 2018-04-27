@@ -1,12 +1,8 @@
 package com.fr.swift.cal.info;
 
 import com.fr.swift.cal.builder.QueryType;
-import com.fr.swift.query.adapter.dimension.Cursor;
-import com.fr.swift.query.adapter.dimension.Dimension;
-import com.fr.swift.query.adapter.dimension.Expander;
-import com.fr.swift.query.adapter.metric.Metric;
-import com.fr.swift.query.adapter.target.GroupTarget;
-import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.query.adapter.dimension.DimensionInfo;
+import com.fr.swift.query.adapter.target.TargetInfo;
 import com.fr.swift.source.SourceKey;
 
 /**
@@ -14,18 +10,16 @@ import com.fr.swift.source.SourceKey;
  */
 public class XGroupQueryInfo extends GroupQueryInfo {
 
-    // TODO: 2018/4/1 占坑
-    private Expander xExpander;
-    private Dimension[] colDimensions;
+    private DimensionInfo colDimensionInfo;
 
-    public XGroupQueryInfo(Cursor cursor, String queryId, SourceKey table, FilterInfo filterInfo, Dimension[] dimensions,
-                           Dimension[] colDimensions, Metric[] metrics, GroupTarget[] targets, Expander expander) {
-        super(queryId, table, null, null);
-        this.colDimensions = colDimensions;
+    public XGroupQueryInfo(String queryId, SourceKey table, DimensionInfo rowDimensionInfo,
+                           DimensionInfo colDimensionInfo, TargetInfo targetInfo) {
+        super(queryId, table, rowDimensionInfo, targetInfo);
+        this.colDimensionInfo = colDimensionInfo;
     }
 
-    public Dimension[] getColDimensions() {
-        return colDimensions;
+    public DimensionInfo getColDimensionInfo() {
+        return colDimensionInfo;
     }
 
     @Override
