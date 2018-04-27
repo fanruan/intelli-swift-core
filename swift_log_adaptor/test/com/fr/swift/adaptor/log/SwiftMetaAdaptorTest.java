@@ -41,6 +41,9 @@ public class SwiftMetaAdaptorTest {
         Long l = 1L;
         @Column(name = "d1")
         double d1 = 1;
+
+        private Object dontRecordThis;
+
         @Column(name = "d2")
         Double d2 = 1.;
         @Column(name = "str")
@@ -73,18 +76,18 @@ public class SwiftMetaAdaptorTest {
     @Table(name = "ConvertType")
     static class ConvertType {
         @Column(name = "o")
-        @Convert(converter = X.class)
-        Object o = new Object();
+        @Convert(converter = Converter.class)
+        Object o;
 
-        static class X implements AttributeConverter<Object, Integer> {
+        static class Converter implements AttributeConverter<Object, Integer> {
             @Override
             public Integer convertToDatabaseColumn(Object o) {
-                return o.hashCode();
+                return 1;
             }
 
             @Override
             public Object convertToEntityAttribute(Integer integer) {
-                return null;
+                return 1D;
             }
         }
     }

@@ -61,7 +61,9 @@ public class LogOperatorTest {
         initTables();
         A a = new A();
         logOperator.recordInfo(a);
-        logOperator.recordInfo(new ConvertType());
+        ConvertType convertType = new ConvertType();
+        convertType.o = new Object();
+        logOperator.recordInfo(convertType);
         SwiftSegmentManager segmentManager = SwiftContext.getInstance().getSegmentProvider();
         List<Segment> segs = segmentManager.getSegment(new SourceKey("A"));
         Segment seg = segs.get(segs.size() - 1);

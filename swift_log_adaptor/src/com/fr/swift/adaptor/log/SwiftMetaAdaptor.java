@@ -22,27 +22,27 @@ import java.util.List;
  * @author anchore
  * @date 2018/4/25
  */
-public class SwiftMetaAdaptor {
-    public static SwiftMetaData adapt(Class<?> c) {
+class SwiftMetaAdaptor {
+    static SwiftMetaData adapt(Class<?> c) {
         List<SwiftMetaDataColumn> columnMetas = new ArrayList<SwiftMetaDataColumn>();
         for (Field field : c.getDeclaredFields()) {
             if (!field.isAnnotationPresent(Column.class)) {
                 continue;
             }
             Column column = field.getAnnotation(Column.class);
-            SwiftMetaDataColumn columnMeta = new MetaDataColumn(column.name(), getStoreType(field));
+            SwiftMetaDataColumn columnMeta = new MetaDataColumn(column.name(), getSqlType(getClassType(field)));
             columnMetas.add(columnMeta);
         }
         return new SwiftMetaDataImpl(getTableName(c), columnMetas);
     }
 
-    public static String getTableName(Class<?> c) {
+    static String getTableName(Class<?> c) {
         return c.getAnnotation(Table.class).name();
     }
 
-    static int getStoreType(Field field) {
+    static Class<?> getClassType(Field field) {
         if (!field.isAnnotationPresent(Convert.class)) {
-            return toSqlType(field.getType());
+            return field.getType();
         }
 
         Type[] types = field.getAnnotation(Convert.class).converter().getGenericInterfaces();
@@ -57,54 +57,64 @@ public class SwiftMetaAdaptor {
             }
             Type secondType = pt.getActualTypeArguments()[1];
             if (secondType instanceof Class) {
-                return toSqlType((Class<?>) secondType);
+                return (Class<?>) secondType;
             }
         }
         return Crasher.crash("cannot find the second generic parameter type of AttributeConverter");
     }
 
-    private static int toSqlType(Class<?> field) {
-        for (Class<?> c : AS_LONG) {
-            if (c.isAssignableFrom(field)) {
-                return Types.BIGINT;
-            }
+    static int getSqlType(Class<?> field) {
+        if (boolean.class == field || Boolean.class == field) {
+            return Types.BOOLEAN;
         }
-        for (Class<?> c : AS_DOUBLE) {
-            if (c.isAssignableFrom(field)) {
-                return Types.DOUBLE;
-            }
+        if (byte.class == field || Byte.class == field) {
+            return Types.TINYINT;
         }
-        for (Class<?> c : AS_STRING) {
-            if (c.isAssignableFrom(field)) {
-                return Types.VARCHAR;
-            }
+        if (short.class == field || Short.class == field) {
+            return Types.SMALLINT;
         }
-        for (Class<?> c : AS_DATE) {
-            if (c.isAssignableFrom(field)) {
-                return Types.DATE;
-            }
+        if (int.class == field || Integer.class == field) {
+            return Types.INTEGER;
+        }
+        if (long.class == field || Long.class == field) {
+            return Types.BIGINT;
+        }
+        if (float.class == field || Float.class == field) {
+            return Types.FLOAT;
+        }
+        if (double.class == field || Double.class == field) {
+            return Types.DOUBLE;
+        }
+        if (char.class == field || Character.class == field) {
+            return Types.CHAR;
+        }
+        if (String.class == field) {
+            return Types.VARCHAR;
+        }
+        if (Date.class.isAssignableFrom(field)) {
+            return Types.DATE;
         }
         return Crasher.crash(String.format("type unsupported: %s", field));
     }
 
-    static final Class<?>[] AS_LONG = {
-            boolean.class, Boolean.class,
-            byte.class, Byte.class,
-            short.class, Short.class,
-            int.class, Integer.class,
-            long.class, Long.class
-    };
-
-    static final Class<?>[] AS_DOUBLE = {
-            float.class, Float.class,
-            double.class, Double.class
-    };
-
-    static final Class<?>[] AS_STRING = {
-            char.class, Character.class, String.class
-    };
-
-    static final Class<?>[] AS_DATE = {
-            Date.class
-    };
+    static int getStoreSqlType(Class<?> field) {
+        switch (getSqlType(field)) {
+            case Types.BOOLEAN:
+            case Types.TINYINT:
+            case Types.SMALLINT:
+            case Types.INTEGER:
+            case Types.BIGINT:
+                return Types.BIGINT;
+            case Types.FLOAT:
+            case Types.DOUBLE:
+                return Types.DOUBLE;
+            case Types.CHAR:
+            case Types.VARCHAR:
+                return Types.VARCHAR;
+            case Types.DATE:
+                return Types.DATE;
+            default:
+                return Crasher.crash(String.format("type unsupported: %s", field));
+        }
+    }
 }

@@ -1,7 +1,6 @@
 package com.fr.swift.adaptor.log;
 
-import com.fr.swift.adaptor.log.Converters.DatumConverter;
-import com.fr.swift.source.ListBasedRow;
+import com.fr.swift.adaptor.log.Converters.ReverseDatumConverter;
 import com.fr.swift.source.Row;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.function.Function;
@@ -11,52 +10,52 @@ import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Convert;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 /**
  * @author anchore
- * @date 2018/4/26
- *
- * fr log -> swift row
+ * @date 2018/4/27
+ * <p>
+ * swift row -> fr log
  */
-public class SwiftRowAdaptor implements Function<Object, Row> {
+public class DecisionRowAdaptor implements Function<Row, Object> {
+    private Class<?> table;
     private Map<Field, UnaryOperator<Object>> converters = new LinkedHashMap<Field, UnaryOperator<Object>>();
 
-    SwiftRowAdaptor(Class<?> table) throws Exception {
-        init(table.getDeclaredFields());
+    DecisionRowAdaptor(Class<?> table) throws Exception {
+        this.table = table;
+        init();
     }
 
-    private void init(Field[] fields) throws Exception {
-        for (Field field : fields) {
+    private void init() throws Exception {
+        for (Field field : table.getDeclaredFields()) {
             if (!field.isAnnotationPresent(Column.class)) {
                 continue;
             }
             field.setAccessible(true);
             if (field.isAnnotationPresent(Convert.class)) {
                 AttributeConverter<Object, Object> converter = (AttributeConverter<Object, Object>) field.getAnnotation(Convert.class).converter().newInstance();
-                UnaryOperator<Object> baseConverter = Converters.getConverter(SwiftMetaAdaptor.getClassType(field));
-                converters.put(field, new DatumConverter(converter, baseConverter));
+                UnaryOperator<Object> baseConverter = Converters.getReverseConverter(SwiftMetaAdaptor.getClassType(field));
+                converters.put(field, new ReverseDatumConverter(converter, baseConverter));
             } else {
-                converters.put(field, Converters.getConverter(field.getType()));
+                converters.put(field, Converters.getReverseConverter((field.getType())));
             }
         }
     }
 
     @Override
-    public Row apply(Object data) {
-        List<Object> row = new ArrayList<Object>();
+    public Object apply(Row row) {
         try {
+            Object data = table.newInstance();
+            int index = 0;
             for (Entry<Field, UnaryOperator<Object>> entry : converters.entrySet()) {
-                row.add(entry.getValue().apply(entry.getKey().get(data)));
+                entry.getKey().set(data, entry.getValue().apply(row.getValue(index++)));
             }
-            return new ListBasedRow(row);
-        } catch (IllegalAccessException e) {
+            return data;
+        } catch (Exception e) {
             return Crasher.crash(e);
         }
     }
-
 }
