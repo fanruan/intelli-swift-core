@@ -25,7 +25,7 @@ public class AllRankCalculator extends AbstractTargetCalculator {
     }
 
     @Override
-    public Object call() throws Exception {
+    public Object call() {
         List<Map<Double, Integer>> maps = null;
         List<List<AggregatorValue[]>> rows = new ArrayList<List<AggregatorValue[]>>();
         while (iterator.hasNext()) {
@@ -36,6 +36,10 @@ public class AllRankCalculator extends AbstractTargetCalculator {
             }
             for (int i = 0; i < row.size(); i++) {
                 Double key = row.get(i)[paramIndex].calculate();
+                // 跳过空值
+                if (Double.isNaN(key)) {
+                    continue;
+                }
                 Integer count = maps.get(i).get(key);
                 // 首先用map统计个数并排序
                 if (count == null) {
@@ -56,6 +60,10 @@ public class AllRankCalculator extends AbstractTargetCalculator {
         }
         for (List<AggregatorValue[]> row : rows) {
             for (int i = 0; i < row.size(); i++) {
+                if (maps.get(i).isEmpty()) {
+                    // 跳过没有值的情况
+                    continue;
+                }
                 // 设置排名
                 row.get(i)[resultIndex] = new DoubleAmountAggregatorValue(maps.get(i).get(row.get(i)[paramIndex].calculate()));
             }
