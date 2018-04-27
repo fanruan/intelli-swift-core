@@ -157,16 +157,16 @@ public abstract class AbstractQueryTransfer implements SwiftSourceTransfer {
                 //do nothing
             }
             if (column != null) {
-                DBDealer dealer = getDbDealer(needCharSetConvert, originalCharSetName, newCharSetName, metaData, outerMeta, rsColumn);
+                DBDealer dealer = getDbDealer(needCharSetConvert, originalCharSetName, newCharSetName, column, outerMeta, rsColumn);
                 res.add(dealer);
             }
         }
         return res.toArray(new DBDealer[res.size()]);
     }
 
-    private DBDealer getDbDealer(boolean needCharSetConvert, String originalCharSetName, String newCharSetName, SwiftMetaData metaData, SwiftMetaData outerMeta, int rsColumn) throws SwiftMetaDataException {
+    private DBDealer getDbDealer(boolean needCharSetConvert, String originalCharSetName, String newCharSetName, SwiftMetaDataColumn column, SwiftMetaData outerMeta, int rsColumn) throws SwiftMetaDataException {
         int outerSqlType = outerMeta.getColumnType(rsColumn);
-        ColumnType columnType = ColumnTypeUtils.sqlTypeToColumnType(metaData.getColumnType(rsColumn), metaData.getPrecision(rsColumn), metaData.getScale(rsColumn));
+        ColumnType columnType = ColumnTypeUtils.sqlTypeToColumnType(column.getType(), column.getPrecision(), column.getScale());
         switch (outerSqlType) {
             case java.sql.Types.DECIMAL:
             case java.sql.Types.NUMERIC:
