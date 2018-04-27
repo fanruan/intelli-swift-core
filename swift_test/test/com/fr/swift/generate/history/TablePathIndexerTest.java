@@ -1,6 +1,5 @@
 package com.fr.swift.generate.history;
 
-import com.fr.general.ComparatorUtils;
 import com.fr.swift.config.TestConfDb;
 import com.fr.swift.cube.nio.NIOConstant;
 import com.fr.swift.cube.queue.CubeTasks;
@@ -14,6 +13,7 @@ import com.fr.swift.cube.task.impl.Operation;
 import com.fr.swift.cube.task.impl.SchedulerTaskPool;
 import com.fr.swift.cube.task.impl.WorkerTaskImpl;
 import com.fr.swift.cube.task.impl.WorkerTaskPool;
+import com.fr.swift.generate.BaseConfigTest;
 import com.fr.swift.generate.history.index.MultiRelationIndexer;
 import com.fr.swift.generate.history.index.RelationIndexHelper;
 import com.fr.swift.generate.history.index.TablePathIndexer;
@@ -34,7 +34,6 @@ import com.fr.swift.source.db.TestConnectionProvider;
 import com.fr.swift.source.relation.RelationSourceImpl;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.array.LongArray;
-import junit.framework.TestCase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +43,7 @@ import java.util.concurrent.CountDownLatch;
  * @author yee
  * @date 2018/2/8
  */
-public class TablePathIndexerTest extends TestCase {
+public class TablePathIndexerTest extends BaseConfigTest {
 
     CountDownLatch latch = new CountDownLatch(1);
     DataSource dataSource = null;
@@ -52,6 +51,7 @@ public class TablePathIndexerTest extends TestCase {
     DataSource customer = null;
     @Override
     protected void setUp() throws Exception {
+        super.setUp();
         new LocalSwiftServerService().start();
         TestConnectionProvider.createConnection();
         SchedulerTaskPool.getInstance().initListener();

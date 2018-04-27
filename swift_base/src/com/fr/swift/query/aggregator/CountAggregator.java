@@ -18,6 +18,11 @@ public class CountAggregator implements Aggregator<DoubleAmountAggregatorValue> 
     }
 
     @Override
+    public DoubleAmountAggregatorValue createAggregatorValue(AggregatorValue value) {
+        return new DoubleAmountAggregatorValue(value.calculate());
+    }
+
+    @Override
     public void combine(DoubleAmountAggregatorValue value, DoubleAmountAggregatorValue other) {
         value.setValue(value.getValue() + other.getValue());
     }

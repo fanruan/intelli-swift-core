@@ -55,6 +55,8 @@ public class JoinOperatorTest extends TestCase {
         EasyMock.expect(metaData2.getColumn("column4")).andReturn(metaDataColumn).anyTimes();
         EasyMock.expect(metaDataColumn.getName()).andReturn("column1").times(1).andReturn("column2").times(1).andReturn("column3").times(1).andReturn("column4").times(1);
         EasyMock.expect(metaDataColumn.getType()).andReturn(16).anyTimes();
+        EasyMock.expect(metaDataColumn.getPrecision()).andReturn(8).anyTimes();
+        EasyMock.expect(metaDataColumn.getScale()).andReturn(0).anyTimes();
         EasyMock.replay(parent1);
         EasyMock.replay(parent2);
         EasyMock.replay(metaData1);
@@ -103,18 +105,18 @@ public class JoinOperatorTest extends TestCase {
     }
 
     public void testInnerJoin() {
-        String[][] str = new String[][]{{"A", "A", "A", "A"}, {"A", "A", "A", "A"}, {"A", "A", "A", "A"}, {"A", "A", "A", "A"},
-                {"A", "A", "A", "A"}, {"A", "A", "A", "A"}, {"A", "A", "A", "A"}, {"A", "A", "A", "A"}};
+        String[][] str = new String[][]{{"A", "A", null, null}, {"A", "A", null, null}, {"A", "A", null, null},
+                {"A", "A", null, null}, {"B", "B", null, null}, {"B", "B", null, null}, {"B", "B", null, null}, {"B", "B", null, null}, {"B", "B", null, null}, {"B", "B", null, null}
+                , {"B", "B", null, null}, {"B", "B", null, null}, {"C", "C", null, null}, {"C", "C", null, null}, {"C", "C", null, null}, {"C", "C", null, null}, {"C", "C", null, null}, {"C", "C", null, null}
+        };
         JoinOperatorResultSet rs = new JoinOperatorResultSet(joinList, lColumnKey, null, rColumnKey, lSegment, rSegment, true, false);
         try {
             int index = 0;
             while (rs.next()) {
                 Row row = rs.getRowData();
                 for (int i = 0; i < 4; i++) {
-                    System.out.print(row.getValue(i) + "、");
                     assertEquals(row.getValue(i), str[index][i]);
                 }
-                System.out.println();
                 index++;
             }
         } catch (Exception e) {
@@ -122,8 +124,10 @@ public class JoinOperatorTest extends TestCase {
     }
 
     public void testRightJoin() {
-        String[][] str = new String[][]{{null, null, "1", "1"}, {null, null, "1", "1"}, {null, null, "E", "E"}, {null, null, "E", "E"}, {"A", "A", "A", "A"},
-                {"A", "A", "A", "A"}, {"A", "A", "A", "A"}, {"A", "A", "A", "A"}, {"A", "A", "A", "A"}, {"A", "A", "A", "A"}, {"A", "A", "A", "A"}, {"A", "A", "A", "A"}};
+        String[][] str = new String[][]{{null, null, "1", "1"}, {null, null, "1", "1"}, {"A", "A", null, null}, {"A", "A", null, null}, {"A", "A", null, null},
+                {"A", "A", null, null}, {"B", "B", null, null}, {"B", "B", null, null}, {"B", "B", null, null}, {"B", "B", null, null}, {"B", "B", null, null}, {"B", "B", null, null}
+                , {"B", "B", null, null}, {"B", "B", null, null}, {"C", "C", null, null}, {"C", "C", null, null}, {"C", "C", null, null}, {"C", "C", null, null}, {"C", "C", null, null}, {"C", "C", null, null}
+                , {null, null, "E", "E"}, {null, null, "A", "A"}, {null, null, "E", "E"}, {null, null, "A", "A"}};
         JoinOperatorResultSet rs = new JoinOperatorResultSet(joinList, lColumnKey, null, rColumnKey, lSegment, rSegment, true, true);
         try {
             int index = 0;
@@ -140,11 +144,7 @@ public class JoinOperatorTest extends TestCase {
     }
 
     public void testOutterJoin() {
-        String[][] str = new String[][]{{"A", "A", "A", "A"}, {"A", "A", "A", "A"}, {"A", "A", "A", "A"}, {"A", "A", "A", "A"}, {"A", "A", "A", "A"},
-                {"A", "A", "A", "A"}, {"A", "A", "A", "A"}, {"A", "A", "A", "A"}, {"B", "B", null, null}, {"B", "B", null, null}, {"B", "B", null, null},
-                {"B", "B", null, null}, {"B", "B", null, null}, {"B", "B", null, null}, {"B", "B", null, null}, {"B", "B", null, null}, {"C", "C", null, null},
-                {"C", "C", null, null}, {"C", "C", null, null}, {"C", "C", null, null}, {"C", "C", null, null}, {"C", "C", null, null}, {null, null, "1", "1"},
-                {null, null, "1", "1"}, {null, null, "E", "E"}, {null, null, "E", "E"}};
+        String[][] str = new String[][]{{null, null, "1", "1"}, {null, null, "1", "1"}, {null, null, "E", "E"}, {null, null, "A", "A"}, {null, null, "E", "E"}, {null, null, "A", "A"}};
         JoinOperatorResultSet rs = new JoinOperatorResultSet(joinList, lColumnKey, null, rColumnKey, lSegment, rSegment, false, true);
         try {
             int index = 0;

@@ -49,13 +49,13 @@ public class OneUnionRelationOperatorTest extends TestCase {
         list.add(segments);
         List parents = new ArrayList();
         parents.add(source);
-        String[][] str = new String[][]{{"A", "A", "A", null, "A", null}, {"B", "B", "B", null, "B", null}, {"C", "C", "C", null, "C", null}, {"B", "B", "B", null, "B", null},
-                {"C", "C", "C", null, "C", null}, {"B", "B", "B", null, "B", null}, {"A", "A", "A", null, "A", null}, {"C", "C", "C", null, "C", null}, {"B", "B", "B", null, "B", null}};
+        String[][] str = new String[][]{{null, "A", null}, {null, "B", null}, {null, "C", null}, {null, "B", null},
+                {null, "C", null}, {null, "B", null}, {null, "A", null}, {null, "C", null}, {null, "B", null}};
         SwiftResultSet rs = operator.createResultSet(metaData, parents, list);
         int k = 0;
         while (rs.next()) {
             Row row = rs.getRowData();
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < 3; i++) {
                 assertEquals(str[k][i], row.getValue(i));
             }
             k++;

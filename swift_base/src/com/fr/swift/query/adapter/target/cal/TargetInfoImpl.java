@@ -5,6 +5,7 @@ import com.fr.swift.query.adapter.target.GroupTarget;
 import com.fr.swift.query.adapter.target.TargetInfo;
 import com.fr.swift.query.aggregator.Aggregator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,7 +40,11 @@ public class TargetInfoImpl implements TargetInfo {
 
     @Override
     public List<Aggregator> getAggregatorListOfMetrics() {
-        return null;
+        List<Aggregator> aggregators = new ArrayList<Aggregator>();
+        for (Metric metric : metrics){
+            aggregators.add(metric.getAggregator());
+        }
+        return aggregators;
     }
 
     @Override

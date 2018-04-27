@@ -1,5 +1,6 @@
 package com.fr.swift.generate.trans;
 
+import com.fr.swift.config.TestConfDb;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.task.SchedulerTask;
 import com.fr.swift.cube.task.Task.Status;
@@ -11,6 +12,7 @@ import com.fr.swift.cube.task.impl.Operation;
 import com.fr.swift.cube.task.impl.SchedulerTaskPool;
 import com.fr.swift.cube.task.impl.WorkerTaskImpl;
 import com.fr.swift.cube.task.impl.WorkerTaskPool;
+import com.fr.swift.generate.BaseConfigTest;
 import com.fr.swift.generate.history.TableBuilder;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.HistorySegmentImpl;
@@ -22,7 +24,6 @@ import com.fr.swift.source.DataSource;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.db.TestConnectionProvider;
 import com.fr.swift.structure.Pair;
-import junit.framework.TestCase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,12 +33,14 @@ import java.util.concurrent.CountDownLatch;
  * @author anchore
  * @date 2018/1/9
  */
-public class TransAndIndexTest extends TestCase {
+public class TransAndIndexTest extends BaseConfigTest {
     CountDownLatch latch = new CountDownLatch(1);
     @Override
-    protected void setUp() {
+    protected void setUp() throws Exception{
+        super.setUp();
         new LocalSwiftServerService().start();
         TestConnectionProvider.createConnection();
+        TestConfDb.setConfDb();
     }
 
     /**

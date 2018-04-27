@@ -95,7 +95,7 @@ public class GroupNode<T extends GroupNode> extends AbstractSwiftNode<T> {
 
     @Override
     public int getChildrenSize() {
-        return childMap.size();
+        return childMap == null ? 0 : childMap.size();
     }
 
     @Override

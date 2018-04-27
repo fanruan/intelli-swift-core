@@ -14,6 +14,11 @@ public class DummyAggregator implements Aggregator<AggregatorValue> {
     }
 
     @Override
+    public AggregatorValue createAggregatorValue(AggregatorValue value) {
+        return null;
+    }
+
+    @Override
     public void combine(AggregatorValue current, AggregatorValue other) {
         // 啥都不做
     }
