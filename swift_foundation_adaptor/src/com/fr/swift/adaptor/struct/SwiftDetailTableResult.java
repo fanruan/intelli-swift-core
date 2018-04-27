@@ -25,10 +25,13 @@ public class SwiftDetailTableResult implements BIDetailTableResult {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftDetailTableResult.class);
     private SwiftResultSet swiftResultSet;
     private int columnSize = -1;
+    //这些参数之后合成一个paging类，pagesize是是功能传过来的
     private int totalRows = -1;
     private int rowSize = -1;
     private int rowCount = 0;
     private int currentPage = 1;
+    private int startRow;
+    private int endRow;
     private final int pageSize = 100;
 //    private Paging paging = null;
 
@@ -42,8 +45,10 @@ public class SwiftDetailTableResult implements BIDetailTableResult {
     }
 
     public void init() {
+        startRow = (currentPage - 1) * pageSize;
         totalRows = Math.min(swiftResultSet instanceof SwiftEmptyResult ? 0 : ((DetailResultSet) swiftResultSet).getRowSize(), totalRows);
-        rowSize = totalRows - (currentPage - 1) * pageSize >= pageSize ? pageSize : totalRows - (currentPage - 1) * pageSize;
+        rowSize = totalRows - startRow >= pageSize ? pageSize : totalRows - startRow;
+        endRow = startRow + rowSize;
     }
 
     @Override
@@ -61,7 +66,7 @@ public class SwiftDetailTableResult implements BIDetailTableResult {
                 rowCount++;
             }
             //       return swiftResultSet.next();
-            return ++rowCount <= ((currentPage - 1) * pageSize + rowSize);
+            return ++rowCount <= endRow;
         } catch (SQLException e) {
             LOGGER.error(e.getMessage(), e);
             return false;
@@ -69,10 +74,10 @@ public class SwiftDetailTableResult implements BIDetailTableResult {
     }
 
     private Boolean checkPage(int row) {
-        if (row < (currentPage - 1) * pageSize) {
+        if (row < startRow) {
             return true;
         }
-        if (row >= (currentPage - 1) * pageSize + rowSize) {
+        if (row >= endRow) {
             return false;
         }
         return null;
