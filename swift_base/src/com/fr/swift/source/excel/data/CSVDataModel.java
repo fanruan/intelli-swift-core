@@ -137,7 +137,7 @@ public class CSVDataModel extends AbstractDataModel implements IExcelDataModel {
         if (null == columnTypes) {
             onlyGetColumnTypes();
         }
-        return i < columnTypes.length ? columnTypes[i] : ColumnTypeConstants.ColumnType.STRING;
+        return columnTypes[i];
     }
 
     private void initData() {
