@@ -52,6 +52,8 @@ public class SwiftMetaAdaptorTest {
         java.util.Date utilDate = new java.util.Date();
         @Column(name = "sqlDate")
         java.sql.Date sqlDate = new java.sql.Date(1);
+        @Column(name = "b")
+        boolean b = true;
     }
 
     @Test(expected = RuntimeException.class)
