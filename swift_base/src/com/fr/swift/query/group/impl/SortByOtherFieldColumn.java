@@ -27,7 +27,7 @@ public class SortByOtherFieldColumn implements Column {
 
     @Override
     public DictionaryEncodedColumn getDictionaryEncodedColumn() {
-        return new DicColumn();
+        return originColumn.getDictionaryEncodedColumn();
     }
 
     @Override
@@ -80,89 +80,89 @@ public class SortByOtherFieldColumn implements Column {
         }
     }
 
-    private class DicColumn implements DictionaryEncodedColumn {
-
-        DictionaryEncodedColumn originDict = originColumn.getDictionaryEncodedColumn();
-
-        @Override
-        public void putSize(int size) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public int size() {
-            return sortByColumn.getDictionaryEncodedColumn().size();
-        }
-
-        @Override
-        public void putGlobalSize(int globalSize) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public int globalSize() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void putValue(int index, Object val) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public Object getValue(int index) {
-            return originDict.getValue(index);
-        }
-
-        @Override
-        public int getIndex(Object value) {
-            return originDict.getIndex(value);
-        }
-
-        @Override
-        public void putIndex(int row, int index) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public int getIndexByRow(int row) {
-            return originDict.getIndexByRow(row);
-        }
-
-        @Override
-        public void putGlobalIndex(int index, int globalIndex) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public int getGlobalIndexByIndex(int index) {
-            return originDict.getGlobalIndexByIndex(index);
-        }
-
-        @Override
-        public int getGlobalIndexByRow(int row) {
-            return originDict.getGlobalIndexByRow(row);
-        }
-
-        @Override
-        public Comparator getComparator() {
-            return originDict.getComparator();
-        }
-
-        @Override
-        public Object convertValue(Object value) {
-            return originDict.convertValue(value);
-        }
-
-        @Override
-        public void flush() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void release() {
-            throw new UnsupportedOperationException();
-        }
-    }
+//    private class DicColumn implements DictionaryEncodedColumn {
+//
+//        DictionaryEncodedColumn originDict = originColumn.getDictionaryEncodedColumn();
+//
+//        @Override
+//        public void putSize(int size) {
+//            throw new UnsupportedOperationException();
+//        }
+//
+//        @Override
+//        public int size() {
+//            return sortByColumn.getDictionaryEncodedColumn().size();
+//        }
+//
+//        @Override
+//        public void putGlobalSize(int globalSize) {
+//            throw new UnsupportedOperationException();
+//        }
+//
+//        @Override
+//        public int globalSize() {
+//            throw new UnsupportedOperationException();
+//        }
+//
+//        @Override
+//        public void putValue(int index, Object val) {
+//            throw new UnsupportedOperationException();
+//        }
+//
+//        @Override
+//        public Object getValue(int index) {
+//            return originDict.getValue(index);
+//        }
+//
+//        @Override
+//        public int getIndex(Object value) {
+//            return originDict.getIndex(value);
+//        }
+//
+//        @Override
+//        public void putIndex(int row, int index) {
+//            throw new UnsupportedOperationException();
+//        }
+//
+//        @Override
+//        public int getIndexByRow(int row) {
+//            return originDict.getIndexByRow(row);
+//        }
+//
+//        @Override
+//        public void putGlobalIndex(int index, int globalIndex) {
+//            throw new UnsupportedOperationException();
+//        }
+//
+//        @Override
+//        public int getGlobalIndexByIndex(int index) {
+//            return originDict.getGlobalIndexByIndex(index);
+//        }
+//
+//        @Override
+//        public int getGlobalIndexByRow(int row) {
+//            return originDict.getGlobalIndexByRow(row);
+//        }
+//
+//        @Override
+//        public Comparator getComparator() {
+//            return originDict.getComparator();
+//        }
+//
+//        @Override
+//        public Object convertValue(Object value) {
+//            return originDict.convertValue(value);
+//        }
+//
+//        @Override
+//        public void flush() {
+//            throw new UnsupportedOperationException();
+//        }
+//
+//        @Override
+//        public void release() {
+//            throw new UnsupportedOperationException();
+//        }
+//    }
 
 }
