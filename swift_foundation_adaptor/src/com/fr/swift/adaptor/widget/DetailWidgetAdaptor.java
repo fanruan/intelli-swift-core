@@ -8,6 +8,8 @@ import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.structure.result.BIDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftEmptyResult;
+//import com.fr.swift.adaptor.struct.paging.Paging;
+//import com.fr.swift.adaptor.struct.paging.PagingFactory;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.transformer.SortAdaptor;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
@@ -56,9 +58,11 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
         try {
             resultSet = QueryRunnerProvider.getInstance().executeQuery(buildQueryInfo(widget));
             if (resultSet == null) {
-                return new SwiftDetailTableResult(new SwiftEmptyResult(), 0);
+                return new SwiftDetailTableResult(new SwiftEmptyResult(), 0, -1);
             }
-            result = new SwiftDetailTableResult(resultSet, widget.getTotalRows());
+            result = new SwiftDetailTableResult(resultSet, widget.getTotalRows(), widget.getPage());
+//            result = new SwiftDetailTableResult(resultSet, paging);
+
         } catch (Exception e) {
             LOGGER.error(e);
         }
