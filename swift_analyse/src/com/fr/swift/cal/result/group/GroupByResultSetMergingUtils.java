@@ -5,10 +5,10 @@ import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.Combiner;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
-import com.fr.swift.result.GroupByResultSet;
-import com.fr.swift.result.GroupByResultSetImpl;
 import com.fr.swift.result.KeyValue;
-import com.fr.swift.result.RowIndexKey;
+import com.fr.swift.result.row.GroupByResultSet;
+import com.fr.swift.result.row.GroupByResultSetImpl;
+import com.fr.swift.result.row.RowIndexKey;
 import com.fr.swift.structure.queue.SortedListMergingUtils;
 
 import java.util.ArrayList;

@@ -5,9 +5,9 @@ import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.Combiner;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.KeyValue;
-import com.fr.swift.result.RowIndexKey;
-import com.fr.swift.result.XGroupByResultSet;
-import com.fr.swift.result.XGroupByResultSetImpl;
+import com.fr.swift.result.row.RowIndexKey;
+import com.fr.swift.result.row.XGroupByResultSet;
+import com.fr.swift.result.row.XGroupByResultSetImpl;
 import com.fr.swift.structure.queue.SortedListMergingUtils;
 
 import java.util.ArrayList;

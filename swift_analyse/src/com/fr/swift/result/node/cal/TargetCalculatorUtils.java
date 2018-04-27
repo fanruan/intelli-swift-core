@@ -3,7 +3,7 @@ package com.fr.swift.result.node.cal;
 import com.fr.swift.query.adapter.target.GroupTarget;
 import com.fr.swift.query.adapter.target.cal.ResultTarget;
 import com.fr.swift.query.aggregator.AggregatorValue;
-import com.fr.swift.result.node.GroupNode;
+import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.node.iterator.BFTGroupNodeIterator;
 import com.fr.swift.result.node.xnode.XLeftNode;
 import com.fr.swift.structure.iterator.MapperIterator;

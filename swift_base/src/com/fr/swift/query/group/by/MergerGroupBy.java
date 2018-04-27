@@ -1,8 +1,8 @@
 package com.fr.swift.query.group.by;
 
-import com.fr.swift.structure.iterator.MapperIterator;
 import com.fr.swift.result.KeyValue;
-import com.fr.swift.result.RowIndexKey;
+import com.fr.swift.result.row.RowIndexKey;
+import com.fr.swift.structure.iterator.MapperIterator;
 import com.fr.swift.structure.iterator.RowTraversal;
 import com.fr.swift.structure.queue.SortedListMergingUtils;
 import com.fr.swift.util.Util;

@@ -10,8 +10,8 @@ import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.query.filter.match.NodeAggregator;
 import com.fr.swift.query.filter.match.NodeFilter;
+import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeResultSet;
-import com.fr.swift.result.node.GroupNode;
 import com.fr.swift.result.node.cal.TargetCalculatorUtils;
 
 import java.sql.SQLException;

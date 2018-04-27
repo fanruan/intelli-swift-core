@@ -1,11 +1,11 @@
 package com.fr.swift.query.group.by2;
 
-import com.fr.swift.query.group.by.GroupByEntry;
+import java.util.List;
 
 /**
  * Created by Lyon on 2018/4/23.
  */
-public interface GroupByController {
+public interface GroupByController<T> {
 
     /**
      * expander控制groupBy的接口
@@ -14,5 +14,5 @@ public interface GroupByController {
      * @param entries
      * @return
      */
-    boolean isRow(GroupByEntry[] entries, PopUpCallback callback);
+    boolean isRow(List<T> entries, PopUpCallback callback);
 }

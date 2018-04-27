@@ -1,4 +1,4 @@
-package com.fr.swift.result;
+package com.fr.swift.result.row;
 
 import com.fr.swift.util.Util;
 

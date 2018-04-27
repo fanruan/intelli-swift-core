@@ -40,7 +40,7 @@ import com.fr.swift.adaptor.widget.date.QuarterControlWidgetAdaptor;
 import com.fr.swift.adaptor.widget.date.YearControlWidgetAdaptor;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.result.node.GroupNode;
+import com.fr.swift.result.GroupNode;
 
 import java.util.List;
 import java.util.Map;

@@ -1,7 +1,7 @@
 package com.fr.swift.result.node.xnode;
 
 import com.fr.swift.query.aggregator.AggregatorValue;
-import com.fr.swift.result.node.GroupNode;
+import com.fr.swift.result.GroupNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +26,7 @@ public class XLeftNode extends GroupNode<XLeftNode> {
     private List<AggregatorValue[]> valueArrayList;
 
     public XLeftNode(int deep, Object data) {
-        this.deep = deep;
-        this.data = data;
+        super(deep, data);
     }
 
     public AggregatorValue[][] getXValue() {

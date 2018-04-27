@@ -1,6 +1,6 @@
 package com.fr.swift.result.node.xnode;
 
-import com.fr.swift.result.node.GroupNode;
+import com.fr.swift.result.GroupNode;
 
 /**
  * Created by Lyon on 2018/4/9.

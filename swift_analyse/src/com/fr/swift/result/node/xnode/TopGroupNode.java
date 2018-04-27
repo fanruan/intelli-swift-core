@@ -1,7 +1,7 @@
 package com.fr.swift.result.node.xnode;
 
 import com.fr.swift.query.aggregator.AggregatorValue;
-import com.fr.swift.result.node.GroupNode;
+import com.fr.swift.result.GroupNode;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public class TopGroupNode extends GroupNode<TopGroupNode> {
     private List<AggregatorValue[]> topGroupValues;
 
     public TopGroupNode(int deep, Object data) {
-        super(0, deep, data);
+        super(deep, data);
     }
 
     public List<AggregatorValue[]> getTopGroupValues() {

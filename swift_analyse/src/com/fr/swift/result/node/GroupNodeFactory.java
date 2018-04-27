@@ -2,9 +2,10 @@ package com.fr.swift.result.node;
 
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
-import com.fr.swift.result.GroupByResultSet;
+import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.KeyValue;
-import com.fr.swift.result.RowIndexKey;
+import com.fr.swift.result.row.GroupByResultSet;
+import com.fr.swift.result.row.RowIndexKey;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -27,7 +28,7 @@ public class GroupNodeFactory {
         Creator<GroupNode> creator = new Creator<GroupNode>() {
             @Override
             public GroupNode create(int deep, Object data) {
-                return new GroupNode(0, deep, data);
+                return new GroupNode(deep, data);
             }
         };
         ValueSetter<GroupNode, AggregatorValue[]> valueSetter = new ValueSetter<GroupNode, AggregatorValue[]>() {

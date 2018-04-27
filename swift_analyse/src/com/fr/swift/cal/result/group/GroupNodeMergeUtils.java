@@ -2,7 +2,7 @@ package com.fr.swift.cal.result.group;
 
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.Combiner;
-import com.fr.swift.result.node.GroupNode;
+import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.node.iterator.ChildIterator;
 import com.fr.swift.structure.queue.SortedListMergingUtils;
 
@@ -18,7 +18,7 @@ public class GroupNodeMergeUtils {
 
     public static GroupNode merge(List<GroupNode> roots, List<Comparator<GroupNode>> nodeComparators,
                                   List<Aggregator> aggregators) {
-        GroupNode mergeRoot = new GroupNode(0, -1, null);
+        GroupNode mergeRoot = new GroupNode(-1, null);
         List<Iterator<GroupNode>> iterators = new ArrayList<Iterator<GroupNode>>();
         for (GroupNode node : roots) {
             iterators.add(new ChildIterator(node));

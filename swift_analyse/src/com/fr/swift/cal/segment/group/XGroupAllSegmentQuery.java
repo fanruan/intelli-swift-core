@@ -5,9 +5,9 @@ import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.NodeResultSetImpl;
-import com.fr.swift.result.XGroupByResultSet;
 import com.fr.swift.result.node.xnode.XLeftNode;
 import com.fr.swift.result.node.xnode.XLeftNodeFactory;
+import com.fr.swift.result.row.XGroupByResultSet;
 
 /**
  * Created by Lyon on 2018/4/1.
