@@ -4,7 +4,7 @@ import com.finebi.conf.structure.result.table.BICrossLeftNode;
 import com.finebi.conf.structure.result.table.BIGroupNode;
 import com.fr.swift.result.ChildMap;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.node.xnode.XLeftNode;
+import com.fr.swift.result.XLeftNode;
 
 /**
  * Created by Lyon on 2018/4/9.

@@ -18,13 +18,13 @@ import static com.fr.swift.cube.io.IOConstant.NULL_DOUBLE;
 /**
  * Created by Lyon on 2018/4/27.
  */
-public class NodeRowMapper implements Function2<GroupByEntry, LimitedStack<GroupNode>, GroupNode[]> {
+public class GroupNodeRowMapper implements Function2<GroupByEntry, LimitedStack<GroupNode>, GroupNode[]> {
 
     private int targetLength;
     private List<Column> metrics;
     private List<Aggregator> aggregators;
 
-    public NodeRowMapper(MetricInfo metricInfo) {
+    public GroupNodeRowMapper(MetricInfo metricInfo) {
         this.targetLength = metricInfo.getTargetLength();
         this.metrics = metricInfo.getMetrics();
         this.aggregators = metricInfo.getAggregators();
@@ -33,12 +33,13 @@ public class NodeRowMapper implements Function2<GroupByEntry, LimitedStack<Group
     @Override
     public GroupNode[] apply(GroupByEntry groupByEntry, LimitedStack<GroupNode> groupNodeLimitedStack) {
         GroupNode node = groupNodeLimitedStack.peek();
-        AggregatorValue[] values = aggregateRow(groupByEntry.getTraversal());
+        AggregatorValue[] values = aggregateRow(groupByEntry.getTraversal(), targetLength, metrics, aggregators);
         node.setAggregatorValue(values);
         return groupNodeLimitedStack.toList().toArray(new GroupNode[groupNodeLimitedStack.limit()]);
     }
 
-    private AggregatorValue[] aggregateRow(RowTraversal traversal) {
+    static AggregatorValue[] aggregateRow(RowTraversal traversal, int targetLength,
+                                          List<Column> metrics, List<Aggregator> aggregators) {
         AggregatorValue[] values = new AggregatorValue[targetLength];
         for (int i = 0; i < metrics.size(); i++) {
             if (traversal.isEmpty()) {

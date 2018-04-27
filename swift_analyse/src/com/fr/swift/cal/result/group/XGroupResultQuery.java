@@ -1,12 +1,12 @@
 package com.fr.swift.cal.result.group;
 
 import com.fr.swift.cal.Query;
-import com.fr.swift.query.adapter.target.GroupTarget;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.result.NodeResultSet;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -14,8 +14,12 @@ import java.util.List;
  */
 public class XGroupResultQuery extends GroupResultQuery {
 
-    public XGroupResultQuery(List<Query<NodeResultSet>> queries, List<Aggregator> aggregators, List<GroupTarget> targets) {
-        super(queries, aggregators, null);
+    private List<Comparator<Integer>> colComparators;
+
+    public XGroupResultQuery(List<Query<NodeResultSet>> queries, List<Aggregator> aggregators,
+                             List<Comparator<Integer>> rowComparators, List<Comparator<Integer>> colComparators) {
+        super(queries, aggregators, rowComparators);
+        this.colComparators = colComparators;
     }
 
     @Override

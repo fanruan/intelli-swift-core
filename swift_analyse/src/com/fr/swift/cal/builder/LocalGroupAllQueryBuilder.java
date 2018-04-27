@@ -69,7 +69,7 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
             }
         }
         if (type == QueryType.CROSS_GROUP) {
-            return new XGroupResultQuery(queries, getAggregators(targetInfo.getMetrics()), getTargets(targetInfo.getGroupTargets()));
+            return new XGroupResultQuery(queries, getAggregators(targetInfo.getMetrics()), null, null);
         }
         return new GroupResultQuery(queries, getAggregators(targetInfo.getMetrics()),
                 getComparatorsForMerge(rowDimensionInfo.getDimensions()));
@@ -93,8 +93,7 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
         TargetInfo targetInfo = info.getTargetInfo();
         QueryType type = info.getType();
         if (type == QueryType.CROSS_GROUP) {
-            return new XGroupResultQuery(queries, getAggregators(targetInfo.getMetrics()),
-                    getTargets(targetInfo.getGroupTargets()));
+            return new XGroupResultQuery(queries, getAggregators(targetInfo.getMetrics()), null, null);
         }
         return new GroupResultQuery(queries, getAggregators(targetInfo.getMetrics()),
                 getComparatorsForMerge(info.getDimensionInfo().getDimensions()));

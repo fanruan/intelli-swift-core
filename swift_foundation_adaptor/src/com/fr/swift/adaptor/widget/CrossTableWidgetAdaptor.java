@@ -19,11 +19,11 @@ import com.fr.swift.query.adapter.target.TargetInfo;
 import com.fr.swift.query.adapter.target.cal.TargetInfoImpl;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.result.NodeResultSet;
-import com.fr.swift.result.node.xnode.TopGroupNode;
+import com.fr.swift.result.TopGroupNode;
+import com.fr.swift.result.XLeftNode;
 import com.fr.swift.result.node.xnode.XGroupNode;
 import com.fr.swift.result.node.xnode.XGroupNodeFactory;
 import com.fr.swift.result.node.xnode.XGroupNodeImpl;
-import com.fr.swift.result.node.xnode.XLeftNode;
 import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.SourceKey;
 

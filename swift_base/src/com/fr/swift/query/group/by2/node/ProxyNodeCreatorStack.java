@@ -14,10 +14,12 @@ import java.util.List;
 public class ProxyNodeCreatorStack<Node extends SwiftNode> implements LimitedStack<Node> {
 
     private LimitedStack<Node> nodeStack;
+    private Node parent;
 
     public ProxyNodeCreatorStack(int limit, Node root) {
         this.nodeStack = new ArrayLimitedStack<Node>(limit + 1);
         nodeStack.push(root);
+        parent = root;
     }
 
     @Override
@@ -38,15 +40,16 @@ public class ProxyNodeCreatorStack<Node extends SwiftNode> implements LimitedSta
     @Override
     public void push(Node item) {
         // 无需查找比较
-        Node parent = nodeStack.peek();
-        // TODO: 2018/4/27 如果push近来的是兄弟节点也是addChild吗？
         parent.addChild(item);
         nodeStack.push(item);
+        parent = item;
     }
 
     @Override
     public Node pop() {
-        return nodeStack.pop();
+        Node ret = nodeStack.pop();
+        parent = nodeStack.peek();
+        return ret;
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.fr.swift.result.node.xnode;
 
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.result.KeyValue;
+import com.fr.swift.result.XLeftNode;
 import com.fr.swift.result.node.GroupNodeFactory;
 import com.fr.swift.result.row.RowIndexKey;
 import com.fr.swift.result.row.XGroupByResultSet;

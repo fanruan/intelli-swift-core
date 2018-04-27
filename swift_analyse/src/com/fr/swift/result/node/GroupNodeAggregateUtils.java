@@ -3,10 +3,10 @@ package com.fr.swift.result.node;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.result.GroupNode;
+import com.fr.swift.result.TopGroupNode;
+import com.fr.swift.result.XLeftNode;
 import com.fr.swift.result.node.iterator.ChildIterator;
 import com.fr.swift.result.node.iterator.NLevelGroupNodeIterator;
-import com.fr.swift.result.node.xnode.TopGroupNode;
-import com.fr.swift.result.node.xnode.XLeftNode;
 
 import java.util.Iterator;
 import java.util.List;

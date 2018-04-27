@@ -27,17 +27,20 @@ import java.util.Set;
 /**
  * Created by Lyon on 2018/4/27.
  */
-public class MultiGroupByNodeIterator implements Iterator<GroupNode[]> {
+public class GroupNodeIterator<Node extends GroupNode> implements Iterator<Node[]> {
 
     private GroupByInfo groupByInfo;
-    private GroupNode root;
-    private Function2<GroupByEntry, LimitedStack<GroupNode>, GroupNode[]> rowMapper;
-    private Iterator<GroupNode[]> iterator;
+    private Node root;
+    private Function2<Integer, GroupByEntry, Node> itemMapper;
+    private Function2<GroupByEntry, LimitedStack<Node>, Node[]> rowMapper;
+    private Iterator<Node[]> iterator;
 
-    public MultiGroupByNodeIterator(GroupByInfo groupByInfo, GroupNode root,
-                                    Function2<GroupByEntry, LimitedStack<GroupNode>, GroupNode[]> rowMapper) {
+    public GroupNodeIterator(GroupByInfo groupByInfo, Node root,
+                             Function2<Integer, GroupByEntry, Node> itemMapper,
+                             Function2<GroupByEntry, LimitedStack<Node>, Node[]> rowMapper) {
         this.groupByInfo = groupByInfo;
         this.root = root;
+        this.itemMapper = itemMapper;
         this.rowMapper = rowMapper;
         init();
     }
@@ -51,16 +54,10 @@ public class MultiGroupByNodeIterator implements Iterator<GroupNode[]> {
             }
         }));
         DFTIterator dftIterator = new DFTIterator(dimensions.size(), new ItCreator(groupByInfo));
-        LimitedStack<GroupNode> proxyStack = new ProxyNodeCreatorStack<GroupNode>(dimensions.size(), root);
+        LimitedStack<Node> proxyStack = new ProxyNodeCreatorStack<Node>(dimensions.size(), root);
         GroupByController controller = createController(dictionaries);
-        Function2<Integer, GroupByEntry, GroupNode> itemMapper = new Function2<Integer, GroupByEntry, GroupNode>() {
-            @Override
-            public GroupNode apply(Integer deep, GroupByEntry groupByEntry) {
-                // 这边先存segment的字典序号吧
-                return new GroupNode((int) deep, groupByEntry.getIndex());
-            }
-        };
-        iterator = new MultiGroupByV2<GroupNode>(dftIterator, proxyStack, controller, itemMapper, rowMapper);
+
+        iterator = new MultiGroupByV2<Node>(dftIterator, proxyStack, controller, itemMapper, rowMapper);
     }
 
     private GroupByController<GroupNode> createController(List<DictionaryEncodedColumn> dictionaries) {
@@ -106,7 +103,7 @@ public class MultiGroupByNodeIterator implements Iterator<GroupNode[]> {
     }
 
     @Override
-    public GroupNode[] next() {
+    public Node[] next() {
         return iterator.next();
     }
 

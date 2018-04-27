@@ -4,8 +4,8 @@ import com.fr.swift.query.adapter.target.GroupTarget;
 import com.fr.swift.query.adapter.target.cal.ResultTarget;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.result.GroupNode;
+import com.fr.swift.result.XLeftNode;
 import com.fr.swift.result.node.iterator.BFTGroupNodeIterator;
-import com.fr.swift.result.node.xnode.XLeftNode;
 import com.fr.swift.structure.iterator.MapperIterator;
 import com.fr.swift.util.function.Function;
 
@@ -51,7 +51,9 @@ public class TargetCalculatorUtils {
         return root;
     }
 
-    private static GroupNode getShowTargetsForGroupNode(XLeftNode root, final List<ResultTarget> targetsForShowList) {
+    public static GroupNode getShowTargetsForXLeftNodeAndSetNodeData(XLeftNode root,
+                                                                     final List<ResultTarget> targetsForShowList,
+                                                                     final List<Map<Integer, Object>> dictionaries) {
         // 从计算结果中提取要展示的结果集
         Iterator<GroupNode> iterator = new MapperIterator<GroupNode, GroupNode>(new BFTGroupNodeIterator(root), new Function<GroupNode, GroupNode>() {
             @Override
@@ -66,6 +68,10 @@ public class TargetCalculatorUtils {
                     for (int j = 0; j < values.length; j++) {
                         showValues.get(i)[j] = allValues.get(i)[targetsForShowList.get(j).getResultFetchIndex()];
                     }
+                }
+                // 设置节点的data
+                if (p.getDeep() != -1) {
+                    p.setData(dictionaries.get(p.getDeep()).get(p.getDictionaryIndex()));
                 }
                 return p;
             }
