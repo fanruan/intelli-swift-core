@@ -1,6 +1,5 @@
 package com.fr.swift.source.excel;
 
-import com.fr.swift.resource.ResourceUtils;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.SwiftMetaData;
 import junit.framework.TestCase;
@@ -16,25 +15,25 @@ public class ExcelDataSourceTest extends TestCase {
     private ExcelDataSource partSource;
 
     public void setUp() throws Exception {
-        String path = ResourceUtils.getFileAbsolutePath("com/fr/swift/resource/excel/test.xlsx");
-        String[] names = {"A", "B"};
-        ColumnType[] types = {ColumnType.STRING, ColumnType.NUMBER};
-        dataSource = new ExcelDataSource(path, names, types);
+        dataSource = new ExcelDataSource(ExcelInfo.getUrl2007(), ExcelInfo.getColumnNames(), ExcelInfo.getColumnTypes());
         LinkedHashMap<String, ColumnType> fields = new LinkedHashMap<>();
-        fields.put("B", ColumnType.STRING);
-        partSource = new ExcelDataSource(path, names, types, fields);
+        fields.put("zssalegp", ColumnType.STRING);
+        partSource = new ExcelDataSource(ExcelInfo.getUrl2007(), ExcelInfo.getColumnNames(), ExcelInfo.getColumnTypes(), fields);
     }
 
-    public void testGetMetadata() throws Exception{
+    public void testGetMetadata() throws Exception {
         SwiftMetaData metaData = dataSource.getMetadata();
-        assertEquals(metaData.getColumnCount(), 2);
-        assertEquals(metaData.getColumnName(1), "A");
-        assertEquals(metaData.getColumnName(2), "B");
-        assertEquals(metaData.getColumnType(1), Types.VARCHAR);
-        assertEquals(metaData.getColumnType(2), Types.DOUBLE);
+        assertEquals(metaData.getColumnCount(), 9);
+        String[] columnNames = ExcelInfo.getColumnNames();
+        int sqlType[] = ExcelInfo.getSqlType();
+        for (int i = 1; i <= columnNames.length; i++) {
+            assertEquals(metaData.getColumnName(i), columnNames[i - 1]);
+            assertEquals(metaData.getColumnType(i), sqlType[i - 1]);
+        }
+
         SwiftMetaData partMetaData = partSource.getMetadata();
         assertEquals(partMetaData.getColumnCount(), 1);
-        assertEquals(partMetaData.getColumnName(1), "B");
+        assertEquals(partMetaData.getColumnName(1), "zssalegp");
         assertEquals(partMetaData.getColumnType(1), Types.VARCHAR);
 
     }

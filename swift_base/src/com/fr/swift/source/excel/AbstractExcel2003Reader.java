@@ -43,6 +43,7 @@ import static com.fr.swift.source.excel.ExcelConstant.NUMBER_REG;
 /**
  * Created by zcf on 2016/11/23.
  */
+@Deprecated
 public abstract class AbstractExcel2003Reader extends AbstractExcelReader implements HSSFListener {
     protected String[] columnNames;
     private ColumnType[] columnTypes;

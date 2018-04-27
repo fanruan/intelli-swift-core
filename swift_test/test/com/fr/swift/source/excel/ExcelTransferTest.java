@@ -1,6 +1,5 @@
 package com.fr.swift.source.excel;
 
-import com.fr.swift.resource.ResourceUtils;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
@@ -18,13 +17,14 @@ public class ExcelTransferTest extends TestCase {
     @Test
     public void testCreateResultSet() throws Exception {
         List<String> paths = new ArrayList<String>();
-        String path = ResourceUtils.getFileAbsolutePath("com/fr/swift/resource/excel/test.xlsx");
-        paths.add(path);
-        paths.add(ResourceUtils.getFileAbsolutePath("com/fr/swift/resource/excel/test1.xlsx"));
-        paths.add(ResourceUtils.getFileAbsolutePath("com/fr/swift/resource/excel/test2.xlsx"));
-        String[] names = {"A", "B"};
-        ColumnType[] types = {ColumnType.STRING, ColumnType.NUMBER};
-        ExcelDataSource source = new ExcelDataSource(path, names, types);
+//        String path = ResourceUtils.getFileAbsolutePath("com/fr/swift/resource/excel/test.xlsx");
+        paths.add(ExcelInfo.getUrl2003());
+        paths.add(ExcelInfo.getUrl2007());
+//        paths.add(ResourceUtils.getFileAbsolutePath("com/fr/swift/resource/excel/test1.xlsx"));
+//        paths.add(ResourceUtils.getFileAbsolutePath("com/fr/swift/resource/excel/test2.xlsx"));
+        String[] names = ExcelInfo.getColumnNames();
+        ColumnType[] types = ExcelInfo.getColumnTypes();
+        ExcelDataSource source = new ExcelDataSource(ExcelInfo.getUrl2003(), names, types);
         ExcelTransfer excelTransfer = new ExcelTransfer(paths, source.getMetadata(), source.getOuterMetadata());
         SwiftResultSet resultSet = excelTransfer.createResultSet();
         List<Row> list = new ArrayList<Row>();
@@ -32,10 +32,10 @@ public class ExcelTransferTest extends TestCase {
             list.add(resultSet.getRowData());
         }
         resultSet.close();
-        assertEquals(list.size(), 9);
+        assertEquals(list.size(), 20000);
         LinkedHashMap<String, ColumnType> fields = new LinkedHashMap<>();
-        fields.put("B", ColumnType.STRING);
-        ExcelDataSource partSource = new ExcelDataSource(path, names, types, fields);
+        fields.put("zssalegp", ColumnType.STRING);
+        ExcelDataSource partSource = new ExcelDataSource(ExcelInfo.getUrl2003(), names, types, fields);
         ExcelTransfer excelPartTransfer = new ExcelTransfer(paths, partSource.getMetadata(), partSource.getOuterMetadata());
         SwiftResultSet partResultSet = excelPartTransfer.createResultSet();
         partResultSet.next();
