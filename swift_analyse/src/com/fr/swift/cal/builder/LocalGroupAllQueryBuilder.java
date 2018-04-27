@@ -88,13 +88,12 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
     public ResultQuery<NodeResultSet> buildResultQuery(List<Query<NodeResultSet>> queries, GroupQueryInfo info) {
         TargetInfo targetInfo = info.getTargetInfo();
         QueryType type = info.getType();
-        DimensionInfo rowDimensionInfo = info.getDimensionInfo();
         if (type == QueryType.CROSS_GROUP) {
             return new XGroupResultQuery(queries, getAggregators(targetInfo.getMetrics()),
-                    getTargets(targetInfo.getGroupTargets()), getIndexSorts(rowDimensionInfo.getDimensions()));
+                    getTargets(targetInfo.getGroupTargets()));
         }
         return new GroupResultQuery(queries, getAggregators(targetInfo.getMetrics()),
-                getTargets(targetInfo.getGroupTargets()), getIndexSorts(rowDimensionInfo.getDimensions()));
+                getTargets(targetInfo.getGroupTargets()));
     }
 
     /**

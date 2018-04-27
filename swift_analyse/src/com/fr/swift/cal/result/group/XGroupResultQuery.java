@@ -3,8 +3,6 @@ package com.fr.swift.cal.result.group;
 import com.fr.swift.cal.Query;
 import com.fr.swift.query.adapter.target.GroupTarget;
 import com.fr.swift.query.aggregator.Aggregator;
-import com.fr.swift.query.filter.match.MatchFilter;
-import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.NodeResultSet;
 
 import java.sql.SQLException;
@@ -18,10 +16,6 @@ public class XGroupResultQuery extends GroupResultQuery {
 
     public XGroupResultQuery(List<Query<NodeResultSet>> queries, List<Aggregator> aggregators, List<GroupTarget> targets) {
         super(queries, aggregators, targets);
-    }
-
-    public XGroupResultQuery(List<Query<NodeResultSet>> queries, List<Aggregator> aggregators, List<GroupTarget> targets, List<Sort> indexSorts) {
-        super(queries, aggregators, targets, indexSorts);
     }
 
     @Override
