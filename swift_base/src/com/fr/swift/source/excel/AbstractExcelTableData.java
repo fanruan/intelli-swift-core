@@ -7,6 +7,7 @@ import com.fr.script.Calculator;
 import com.fr.stable.ParameterProvider;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
@@ -18,6 +19,7 @@ public abstract class AbstractExcelTableData extends AbstractTableData {
     protected boolean needColumnName = true;
     protected String[] columnNames;
     protected ColumnType[] columnTypes;
+    protected InputStream inputStream;
 
     public AbstractExcelTableData(String filePath) {
         this.filePath = filePath;
@@ -27,7 +29,19 @@ public abstract class AbstractExcelTableData extends AbstractTableData {
         this.filePath = filePath;
         this.columnNames = columnNames;
         this.columnTypes = columnTypes;
-}
+    }
+
+    public AbstractExcelTableData(String filePath, InputStream inputStream) {
+        this.filePath = filePath;
+        this.inputStream = inputStream;
+    }
+
+    public AbstractExcelTableData(String filePath, InputStream inputStream, String[] columnNames, ColumnType[] columnTypes) {
+        this.filePath = filePath;
+        this.inputStream = inputStream;
+        this.columnNames = columnNames;
+        this.columnTypes = columnTypes;
+    }
 
     /**
      * 创建数据表格

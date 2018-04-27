@@ -38,6 +38,7 @@ import java.util.Map;
 /**
  * Created by zcf on 2016/11/21.
  */
+@Deprecated
 public abstract class AbstractExcel2007Reader extends AbstractExcelReader {
     public boolean isEmpty = false;
     protected String[] columnNames = new String[0];
