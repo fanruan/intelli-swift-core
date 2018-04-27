@@ -7,10 +7,16 @@ import com.fr.stable.StringUtils;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.query.filter.info.GeneralFilterInfo;
+import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
+import com.fr.swift.utils.BusinessTableUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Lyon on 2018/3/27.
@@ -19,14 +25,22 @@ public class TreeLabelWidgetAdaptor {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(TreeLabelWidgetAdaptor.class);
 
+    // 功能传过来的神秘代码
+    private static final String EMPTY_SELECTED_VALUE = "_*_";
+
     public static BITreeLabelResult calculate(TreeLabelWidget labelWidget) {
         try {
-            // TODO: 2018/3/27 分页怎么做？times这个属性是用来翻页的吗？有待继续猜
             FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(labelWidget.getFilters());
             List<List<String>> items = new ArrayList<List<String>>();
             List<FineDimension> fineDimensions = labelWidget.getDimensionList();
-            for (FineDimension fineDimension : fineDimensions) {
-                List values = QueryUtils.getOneDimensionFilterValues(fineDimension, filterInfo, labelWidget.getWidgetId());
+            List<List<String>> selectedValues = labelWidget.getSelectedValues();
+            for (int i = 0; i < fineDimensions.size(); i++) {
+                // 树标签要根据上一层维度选择的值进行过滤
+                if (i > 0 && !selectedValues.get(i - 1).isEmpty() && !StringUtils.equals(selectedValues.get(i - 1).get(0), EMPTY_SELECTED_VALUE)) {
+                    filterInfo = selectedValues2FilterInfo(BusinessTableUtils.getFieldNameByFieldId(fineDimensions.get(i - 1).getFieldId()),
+                            selectedValues.get(i - 1), filterInfo);
+                }
+                List values = QueryUtils.getOneDimensionFilterValues(fineDimensions.get(i), filterInfo, labelWidget.getWidgetId());
                 items.add(toStringList(values));
             }
             return new TreeLabelResult(items, labelWidget.getValue().getOptions().getTreeOptions().getSelectedValues());
@@ -34,6 +48,14 @@ public class TreeLabelWidgetAdaptor {
             LOGGER.error(e);
         }
         return null;
+    }
+
+    private static FilterInfo selectedValues2FilterInfo(String fieldName, List<String> selectedValues, FilterInfo filterInfo) {
+        List<FilterInfo> filterInfoList = new ArrayList<FilterInfo>();
+        filterInfoList.add(filterInfo);
+        filterInfoList.add(new SwiftDetailFilterInfo<Set<String>>(fieldName, new HashSet<String>(selectedValues),
+                SwiftDetailFilterType.STRING_IN));
+        return new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
     }
 
     private static List<String> toStringList(List values) {

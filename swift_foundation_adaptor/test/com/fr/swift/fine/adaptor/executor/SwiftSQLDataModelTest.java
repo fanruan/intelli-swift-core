@@ -48,7 +48,7 @@ public class SwiftSQLDataModelTest extends TestCase {
                 "from DEMO_CONTRACT";
     }
 
-    public void testSwiftSQLDataModelGetFields() throws Exception {
+    public void testSwiftSQLDataModelGetFields() {
         SwiftTableEngineExecutor dataModel = new SwiftTableEngineExecutor();
         FineBusinessTable fineBusinessTable = new FineSQLBusinessTable("A", "local", FineEngineType.Cube, sql);
 

@@ -16,13 +16,18 @@ public class AllSumOfAboveCalculator extends AbstractTargetCalculator {
     }
 
     @Override
-    public Object call() throws Exception {
+    public Object call() {
         List<AggregatorValue[]> lastRow = null;
         while (iterator.hasNext()) {
             List<AggregatorValue[]> row = iterator.next();
             for (int i = 0; i < row.size(); i++) {
                 Double lastSum = lastRow == null ? 0 : lastRow.get(i)[resultIndex].calculate();
-                row.get(i)[resultIndex] = new DoubleAmountAggregatorValue(lastSum + row.get(i)[paramIndex].calculate());
+                Double value = row.get(i)[paramIndex].calculate();
+                // 跳过空值
+                if (Double.isNaN(value)) {
+                    continue;
+                }
+                row.get(i)[resultIndex] = new DoubleAmountAggregatorValue(lastSum + value);
             }
             lastRow = row;
         }

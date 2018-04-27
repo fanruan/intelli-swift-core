@@ -17,7 +17,7 @@ public class AllAverageCalculator extends AbstractTargetCalculator {
     }
 
     @Override
-    public Object call() throws Exception {
+    public Object call() {
         List<List<AggregatorValue[]>> rows = new ArrayList<List<AggregatorValue[]>>();
         // 交叉表的一行，一个配置计算要计算row.size()次
         Double[] sum = null;
@@ -29,6 +29,7 @@ public class AllAverageCalculator extends AbstractTargetCalculator {
             }
             for (int i = 0; i < row.size(); i++) {
                 sum[i] = sum[i] == null ? .0 : sum[i];
+                // 空值怎么处理呢？
                 sum[i] += row.get(i)[paramIndex].calculate();
             }
         }

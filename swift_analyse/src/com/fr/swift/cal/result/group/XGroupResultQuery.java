@@ -16,16 +16,12 @@ import java.util.List;
  */
 public class XGroupResultQuery extends GroupResultQuery {
 
-    // TODO: 2018/4/1 占坑
-    private List<Sort> xIndexSorts;
-    private List<MatchFilter> xDimensionMatchFilter;
-
     public XGroupResultQuery(List<Query<NodeResultSet>> queries, List<Aggregator> aggregators, List<GroupTarget> targets) {
         super(queries, aggregators, targets);
     }
 
-    public XGroupResultQuery(List<Query<NodeResultSet>> queries, List<Aggregator> aggregators, List<GroupTarget> targets, List<Sort> indexSorts, List<MatchFilter> dimensionMatchFilter, List<Aggregator> resultAggregators) {
-        super(queries, aggregators, targets, indexSorts, dimensionMatchFilter, resultAggregators);
+    public XGroupResultQuery(List<Query<NodeResultSet>> queries, List<Aggregator> aggregators, List<GroupTarget> targets, List<Sort> indexSorts) {
+        super(queries, aggregators, targets, indexSorts);
     }
 
     @Override

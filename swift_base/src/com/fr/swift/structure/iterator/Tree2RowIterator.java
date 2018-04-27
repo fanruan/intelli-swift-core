@@ -24,10 +24,13 @@ public class Tree2RowIterator<TREE extends Iterable<TREE>> implements Iterator<L
         this.rootIt = rootIt;
         this.iterators = new ArrayLimitedStack<Iterator<TREE>>(limitLevel);
         this.elements = new ArrayLimitedStack<TREE>(limitLevel);
-        init();
+        init(limitLevel);
     }
 
-    private void init() {
+    private void init(int limitLevel) {
+        if (limitLevel <= 0) {
+            return;
+        }
         this.iterators.push(rootIt);
         next = getNext();
     }
