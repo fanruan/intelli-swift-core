@@ -43,6 +43,7 @@ public interface Database {
      *
      * @param tableKey 表key
      * @return 是否存在
+     * @throws SQLException 异常
      */
     boolean existsTable(SourceKey tableKey) throws SQLException;
 
