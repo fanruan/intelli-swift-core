@@ -1,12 +1,11 @@
 package com.fr.swift.generate.excel;
 
-import com.fr.swift.generate.BaseTest;
+import com.fr.swift.generate.BaseConfigTest;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.resource.ResourceUtils;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.excel.ExcelDataSource;
-import junit.framework.TestCase;
 
 /**
  * This class created on 2018/3/19
@@ -15,7 +14,7 @@ import junit.framework.TestCase;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public abstract class BaseExcelTest extends TestCase {
+public abstract class BaseExcelTest extends BaseConfigTest {
 
     protected static final SwiftLogger LOGGER = SwiftLoggers.getLogger(BaseExcelTest.class);
 

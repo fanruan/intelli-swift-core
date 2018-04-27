@@ -21,6 +21,14 @@ public class AverageAggregate implements Aggregator <DoubleAverageAggregatorValu
     }
 
     @Override
+    public DoubleAverageAggregatorValue createAggregatorValue(AggregatorValue value) {
+        DoubleAverageAggregatorValue averageAggregatorValue = new DoubleAverageAggregatorValue();
+        averageAggregatorValue.setRowCount(1);
+        averageAggregatorValue.setValue(value.calculate());
+        return averageAggregatorValue;
+    }
+
+    @Override
     public void combine(DoubleAverageAggregatorValue value, DoubleAverageAggregatorValue other) {
         value.setRowCount(value.getRowCount() + other.getRowCount());
         value.setValue(value.getValue() + other.getValue());

@@ -132,4 +132,13 @@ public class VarianceAggregate extends AbstractAggregator<VarianceAggregatorValu
         value.setVariance(variance);
     }
 
+    @Override
+    public VarianceAggregatorValue createAggregatorValue(AggregatorValue value) {
+        VarianceAggregatorValue varianceAggregatorValue = new VarianceAggregatorValue();
+        varianceAggregatorValue.setCount(1);
+        varianceAggregatorValue.setSum(value.calculate());
+        varianceAggregatorValue.setSquareSum(value.calculate() * value.calculate());
+        varianceAggregatorValue.setVariance(0);
+        return varianceAggregatorValue;
+    }
 }
