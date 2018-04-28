@@ -6,6 +6,7 @@ import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.structure.result.BIDetailTableResult;
+import com.fr.swift.adaptor.linkage.LinkageAdaptor;
 import com.fr.swift.adaptor.struct.SwiftDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftEmptyResult;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
@@ -95,6 +96,7 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
     private static List<FilterInfo> handleLinkageFilterList(DetailWidget widget) {
         List<FilterInfo> fineFilters = new ArrayList<FilterInfo>();
         DetailWidgetBean bean = widget.getValue();
+        widget.getTableName();
         if (null != bean) {
             Map<String, WidgetLinkItem> map = bean.getLinkage();
             if (null == map) {
@@ -104,7 +106,7 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
             while (iterator.hasNext()) {
                 WidgetLinkItem item = iterator.next().getValue();
                 try {
-                    handleClickItem(item, fineFilters);
+                    LinkageAdaptor.handleClickItem(widget.getTableName(), item, fineFilters);
                 } catch (Exception ignore) {
                     LOGGER.error(ignore.getMessage());
                 }

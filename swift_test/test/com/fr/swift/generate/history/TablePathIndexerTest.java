@@ -213,7 +213,7 @@ public class TablePathIndexerTest extends BaseConfigTest {
                 if (NIOConstant.LONG.NULL_VALUE != value) {
                     int[] result = RelationIndexHelper.reverse2SegAndRow(value);
                     int[] secondInfo = lastColumn.getPrimarySegAndRow(result[1]);
-                    Object p2 = firstColumn.getValue(secondInfo[1]);
+                    Object p2 = firstColumn.getPrimaryValue(secondInfo[1]);
                     assertEquals(p1, p2);
                 }
             }

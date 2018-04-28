@@ -1,6 +1,5 @@
 package com.fr.swift.segment.relation;
 
-import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.cube.io.Flushable;
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.structure.array.LongArray;
