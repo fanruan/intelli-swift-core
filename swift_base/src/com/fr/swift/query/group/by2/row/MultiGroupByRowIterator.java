@@ -5,6 +5,7 @@ import com.fr.swift.query.group.by2.DFTIterator;
 import com.fr.swift.query.group.by2.GroupByController;
 import com.fr.swift.query.group.by2.ItCreator;
 import com.fr.swift.query.group.by2.MultiGroupByV2;
+import com.fr.swift.query.group.by2.PopUpCallback;
 import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.structure.stack.ArrayLimitedStack;
@@ -29,7 +30,11 @@ public class MultiGroupByRowIterator implements Iterator<GroupByEntry[]> {
 
     private void init() {
         List<Column> dimensions = groupByInfo.getDimensions();
-        DFTIterator iterator = new DFTIterator(dimensions.size(), new ItCreator(groupByInfo));
+        DFTIterator iterator = new DFTIterator(dimensions.size(), new ItCreator(groupByInfo), new PopUpCallback() {
+            @Override
+            public void popUp() {
+            }
+        });
         LimitedStack<GroupByEntry> itemsStack = new ArrayLimitedStack<GroupByEntry>(dimensions.size());
         GroupByController<GroupByEntry> controller = new ExpandAllController();
         Function2<Integer, GroupByEntry, GroupByEntry> idFn = new Function2<Integer, GroupByEntry, GroupByEntry>() {

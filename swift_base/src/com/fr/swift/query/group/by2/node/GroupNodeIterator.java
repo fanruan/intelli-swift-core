@@ -53,8 +53,8 @@ public class GroupNodeIterator<Node extends GroupNode> implements Iterator<Node[
                 return p.getDictionaryEncodedColumn();
             }
         }));
-        DFTIterator dftIterator = new DFTIterator(dimensions.size(), new ItCreator(groupByInfo));
-        LimitedStack<Node> proxyStack = new ProxyNodeCreatorStack<Node>(dimensions.size(), root);
+        ProxyNodeCreatorStack<Node> proxyStack = new ProxyNodeCreatorStack<Node>(dimensions.size(), root);
+        DFTIterator dftIterator = new DFTIterator(dimensions.size(), new ItCreator(groupByInfo), proxyStack);
         GroupByController controller = createController(dictionaries);
 
         iterator = new MultiGroupByV2<Node>(dftIterator, proxyStack, controller, itemMapper, rowMapper);

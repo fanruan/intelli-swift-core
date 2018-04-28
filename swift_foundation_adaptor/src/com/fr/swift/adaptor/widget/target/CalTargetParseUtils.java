@@ -12,6 +12,7 @@ import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.query.adapter.metric.GroupMetric;
 import com.fr.swift.query.adapter.metric.Metric;
 import com.fr.swift.query.adapter.target.GroupTarget;
+import com.fr.swift.query.adapter.target.TargetInfo;
 import com.fr.swift.query.adapter.target.cal.CalTargetType;
 import com.fr.swift.query.adapter.target.cal.GroupTargetImpl;
 import com.fr.swift.query.adapter.target.cal.ResultTarget;
@@ -20,7 +21,6 @@ import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorFactory;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.aggregator.DummyAggregator;
-import com.fr.swift.query.aggregator.SumAggregate;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
@@ -46,22 +46,29 @@ public class CalTargetParseUtils {
      * @return
      * @throws Exception
      */
-    public static TargetInfoImpl parseCalTarget(AbstractTableWidget widget) throws Exception {
+    public static TargetInfo parseCalTarget(AbstractTableWidget widget) throws Exception {
+        // 当前查询涉及到的所有度量列（数值列）
         List<String> metricFieldIds = parseMetricTargetFieldIds(widget);
+        // 计算指标依赖的度量列（数值列）
         List<String> relatedMetricFieldIds = parseRelatedFieldIds(widget, metricFieldIds);
+        // 所有计算指标
         List<String> calTargetFieldIds = parseCalTargetFieldIds(widget);
         List<String> allTargetFieldIds = new ArrayList<String>();
         allTargetFieldIds.addAll(metricFieldIds);
         allTargetFieldIds.addAll(relatedMetricFieldIds);
         allTargetFieldIds.addAll(calTargetFieldIds);
+        // 查询结果中展示的指标
         List<ResultTarget> targetsForShowList = new ArrayList<ResultTarget>();
+        // 最后一步结果计算（结果汇总）用到的聚合器
         List<Aggregator> aggregatorListForResultTargetMerging = new ArrayList<Aggregator>();
+        // 计算指标信息
         List<GroupTarget> calculatorInfoList = new ArrayList<GroupTarget>();
         List<FineTarget> targets = widget.getTargetList();
         for (int i = 0; i < targets.size(); i++) {
             String fieldId = targets.get(i).getFieldId();
             int resultIndex = allTargetFieldIds.indexOf(fieldId);
             // TODO: 2018/4/9 ResultTarget的queryColumnIndex没有加上维度的个数
+            // TODO: 2018/4/28 关于计算指标依赖另一个计算指标的情况，根据依赖的这个target#getWidgetBeanField是否为null来确定是否为最基础的计算指标
             targetsForShowList.add(new ResultTarget(i, resultIndex));
             WidgetBeanFieldValue value = widget.getFieldByFieldId(fieldId).getCalculate();
             if (value != null) {
@@ -74,7 +81,7 @@ public class CalTargetParseUtils {
             // TODO: 2018/4/11 指标结果合并用到的Aggregator，配置类计算的结果如何合并还没定
             if (value == null) {
                 AggregatorType type = AggregatorAdaptor.adaptorDashBoard(targets.get(i).getMetric());
-                Aggregator aggregator = type == null ? null : AggregatorFactory.createAggregator(type);
+                Aggregator aggregator = type == null ? new DummyAggregator() : AggregatorFactory.createAggregator(type);
                 aggregatorListForResultTargetMerging.add(aggregator);
             } else {
                 // 配置类计算的结果指标不汇总
@@ -90,7 +97,7 @@ public class CalTargetParseUtils {
     private static List<Metric> createMetrics(List<String> fieldIds, AbstractTableWidget widget) throws Exception {
         List<Metric> metrics = new ArrayList<Metric>();
         for (int i = 0; i < fieldIds.size(); i++) {
-            metrics.add(toMetric(fieldIds.get(i), i, widget.getTargetList()));
+            metrics.add(toMetric(fieldIds.get(i), i, widget.getTargetList().get(i)));
         }
         return metrics;
     }
@@ -131,9 +138,12 @@ public class CalTargetParseUtils {
         List<FineTarget> targets = widget.getTargetList();
         for (int i = 0; i < targets.size(); i++) {
             String fieldId = targets.get(i).getFieldId();
-            WidgetBeanFieldValue value = widget.getFieldByFieldId(fieldId).getCalculate();
-            if (value == null) {
-                // TODO: 2018/4/8 说明是普通聚合指标或者是快速计算指标，暂时不管快速计算指标的处理！
+            int type = targets.get(i).getType();
+            if (type == BIDesignConstants.DESIGN.DIMENSION_TYPE.NUMBER) {
+                // 可能设置了快速计算
+                metrics.add(fieldId);
+            } else if (type == BIDesignConstants.DESIGN.DIMENSION_TYPE.CAL_TARGET) {
+                // TODO: 2018/4/28
                 metrics.add(fieldId);
             }
         }
@@ -162,23 +172,23 @@ public class CalTargetParseUtils {
         return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_SUM_OF_ALL, new DummyAggregator());
     }
 
-    private static Metric toMetric(String fieldId, int index, List<FineTarget> targetList) {
+    private static Metric toMetric(String fieldId, int index, FineTarget target) {
         SourceKey key = new SourceKey(fieldId);
         String columnName = BusinessTableUtils.getFieldNameByFieldId(fieldId);
         ColumnKey colKey = new ColumnKey(columnName);
 
         // TODO: 2018/3/31 指标的filter属性还没有传过来
         FilterInfo filterInfo = null;
-        WidgetBeanField beanField = targetList.get(index).getWidgetBeanField();
+        WidgetBeanField beanField = target.getWidgetBeanField();
         if (beanField != null){
             FilterBean filterBean = beanField.getFilter();
             if (filterBean != null){
                 filterInfo = FilterInfoFactory.createFilterInfo(filterBean, new ArrayList<Segment>());
             }
         }
-        // TODO: 2018/3/21  暂时不知道targetType如何对应不同聚合类型
-        Aggregator agg = new SumAggregate();
-
-        return new GroupMetric(index, key, colKey, filterInfo, agg);
+        // 快速计算的类型，默认是汇总
+        AggregatorType type = AggregatorAdaptor.adaptorDashBoard(target.getMetric());
+        Aggregator aggregator = AggregatorFactory.createAggregator(type);
+        return new GroupMetric(index, key, colKey, filterInfo, aggregator);
     }
 }

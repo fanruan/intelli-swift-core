@@ -30,7 +30,7 @@ public class NodeAllExpanderController implements GroupByController<GroupNode> {
         int[] indexes = getRowIndex(entries);
         if (indexKeys.contains(new RowIndexKey<int[]>(indexes))) {
             // 遇到一个收起的节点
-            callback.pop();
+            callback.popUp();
             return true;
         }
         return false;

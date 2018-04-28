@@ -43,7 +43,7 @@ public class NodeLazyExpanderController implements GroupByController<GroupNode> 
             // 当前行要继续展开，不是完整的一行
             return false;
         }
-        callback.pop();
+        callback.popUp();
         return true;
     }
 }

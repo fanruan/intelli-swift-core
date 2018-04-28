@@ -94,6 +94,7 @@ public class AggregatorAdaptor {
      */
     public static AggregatorType adaptorDashBoard(int metricType){
         switch (metricType){
+            case BIDesignConstants.DESIGN.METRIC_TYPE.AUTO:
             case BIDesignConstants.DESIGN.METRIC_TYPE.SUM:
                 return AggregatorType.SUM;
             case BIDesignConstants.DESIGN.METRIC_TYPE.AVERAGE:

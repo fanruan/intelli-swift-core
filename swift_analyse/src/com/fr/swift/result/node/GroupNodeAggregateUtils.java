@@ -27,11 +27,6 @@ public class GroupNodeAggregateUtils {
      * @return
      */
     public static GroupNode aggregate(NodeType type, int dimensionSize, GroupNode root, List<Aggregator> aggregators) {
-        if (type == NodeType.GROUP) {
-            mergeChildNode(root, aggregators);
-        } else {
-            mergeChildNode(type, root, aggregators);
-        }
         if (dimensionSize <= 1) {
             return root;
         }
@@ -100,6 +95,10 @@ public class GroupNodeAggregateUtils {
         }
         Iterator<GroupNode> iterator = new ChildIterator(groupNode);
         AggregatorValue[] valuesOfParent = groupNode.getAggregatorValue();
+        if (valuesOfParent.length == 0) {
+            // 父节点为空，先拷贝把第一个子节点的值拷贝过来
+            valuesOfParent = createAggregateValues(iterator.next().getAggregatorValue(), aggregators);
+        }
         // aggregator的个数和values的长度要想等，不管是哪种类型的value，都要有个对应的aggregator
         assert aggregators.size() == valuesOfParent.length;
         while (iterator.hasNext()) {
@@ -108,5 +107,14 @@ public class GroupNodeAggregateUtils {
                 aggregators.get(i).combine(valuesOfParent[i], valuesOfChild[i]);
             }
         }
+        groupNode.setAggregatorValue(valuesOfParent);
+    }
+
+    private static AggregatorValue[] createAggregateValues(AggregatorValue[] valuesOfFirstChild, List<Aggregator> aggregators) {
+        AggregatorValue[] values = new AggregatorValue[valuesOfFirstChild.length];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = aggregators.get(i).createAggregatorValue(valuesOfFirstChild[i]);
+        }
+        return values;
     }
 }

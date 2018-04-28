@@ -9,7 +9,7 @@ public interface GroupByController<T> {
 
     /**
      * expander控制groupBy的接口
-     * 检查是否为groupBy的一行，如果必要，通过回调方法PopUpCallback#pop()控制groupBy迭代器
+     * 检查是否为groupBy的一行，如果必要，通过回调方法PopUpCallback#popUp()控制groupBy迭代器
      *
      * @param entries
      * @return

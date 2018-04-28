@@ -92,6 +92,10 @@ public class TargetCalculatorUtils {
                 AggregatorValue[] showValues = new AggregatorValue[targetsForShowList.size()];
                 AggregatorValue[] allValues = p.getAggregatorValue();
                 for (int i = 0; i < showValues.length; i++) {
+                    if (allValues.length == 0) {
+                        // TODO: 2018/4/28 父节点汇总为空问题
+                        break;
+                    }
                     showValues[i] = allValues[targetsForShowList.get(i).getResultFetchIndex()];
                 }
                 p.setAggregatorValue(showValues);

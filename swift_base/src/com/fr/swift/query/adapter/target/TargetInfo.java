@@ -26,7 +26,7 @@ public interface TargetInfo {
     List<Metric> getMetrics();
 
     /**
-     * 聚合指标用到的聚合器
+     * 聚合指标用到的聚合器，合并SegmentGroupQuery与SegmentGroupQuery、GroupResultQuery与GroupResultQuery之间的结果
      *
      * @return
      */

@@ -1,5 +1,6 @@
 package com.fr.swift.query.group.by2.node;
 
+import com.fr.swift.query.group.by2.PopUpCallback;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.structure.stack.ArrayLimitedStack;
 import com.fr.swift.structure.stack.LimitedStack;
@@ -11,7 +12,7 @@ import java.util.List;
  * <p>
  * Created by Lyon on 2018/4/26.
  */
-public class ProxyNodeCreatorStack<Node extends SwiftNode> implements LimitedStack<Node> {
+public class ProxyNodeCreatorStack<Node extends SwiftNode> implements LimitedStack<Node>, PopUpCallback {
 
     private LimitedStack<Node> nodeStack;
     private Node parent;
@@ -39,16 +40,21 @@ public class ProxyNodeCreatorStack<Node extends SwiftNode> implements LimitedSta
 
     @Override
     public void push(Node item) {
-        // 无需查找比较
+        // 无需查找比较。也因为这个搞得好恶心！
         parent.addChild(item);
         nodeStack.push(item);
-        parent = item;
+        if (nodeStack.size() != nodeStack.limit()) {
+            // 说明当前item可能作为父节点
+            parent = item;
+        }
     }
 
     @Override
     public Node pop() {
         Node ret = nodeStack.pop();
-        parent = nodeStack.peek();
+        if (!nodeStack.isEmpty()) {
+            parent = nodeStack.peek();
+        }
         return ret;
     }
 
@@ -60,5 +66,10 @@ public class ProxyNodeCreatorStack<Node extends SwiftNode> implements LimitedSta
     @Override
     public List<Node> toList() {
         return nodeStack.toList().subList(1, nodeStack.limit());
+    }
+
+    @Override
+    public void popUp() {
+        pop();
     }
 }

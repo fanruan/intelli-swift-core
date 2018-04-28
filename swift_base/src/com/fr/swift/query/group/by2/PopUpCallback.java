@@ -8,5 +8,5 @@ public interface PopUpCallback {
     /**
      * 调用DFT迭代器的stack的pop方法
      */
-    void pop();
+    void popUp();
 }

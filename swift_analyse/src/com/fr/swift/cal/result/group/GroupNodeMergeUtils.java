@@ -30,7 +30,14 @@ public class GroupNodeMergeUtils {
         }
         List<Iterator<GroupNode>> iterators = new ArrayList<Iterator<GroupNode>>();
         for (GroupNode node : roots) {
+            if (node.getChildrenSize() == 0) {
+                // 跳过为空的root
+                continue;
+            }
             iterators.add(new ChildIterator(node));
+        }
+        if (iterators.isEmpty()) {
+            return mergeRoot;
         }
         Iterator<GroupNode> iterator = SortedListMergingUtils.mergeIterator(iterators, nodeComparators.get(0),
                 new NodeCombiner(1, aggregators, nodeComparators));

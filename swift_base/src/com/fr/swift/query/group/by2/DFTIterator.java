@@ -7,7 +7,7 @@ import com.fr.swift.structure.stack.LimitedStack;
 import java.util.Iterator;
 
 /**
- * 这个迭代器的默认行为是深度优先，但不排除GroupByController通过调用PopUpCallback#pop()跳过（过滤）一些节点
+ * 这个迭代器的默认行为是深度优先，但不排除GroupByController通过调用PopUpCallback#popUp()跳过（过滤）一些节点
  *
  * Created by Lyon on 2018/4/23.
  */
@@ -15,10 +15,12 @@ public class DFTIterator implements Iterator<GroupByEntry>, PopUpCallback {
 
     private LimitedStack<Iterator<GroupByEntry>> iterators;
     private IteratorCreator<GroupByEntry> creator;
+    private PopUpCallback itemPopUp;
 
-    public DFTIterator(int limit, IteratorCreator<GroupByEntry> creator) {
+    public DFTIterator(int limit, IteratorCreator<GroupByEntry> creator, PopUpCallback itemPopUp) {
         this.creator = creator;
         this.iterators = new ArrayLimitedStack<Iterator<GroupByEntry>>(limit);
+        this.itemPopUp = itemPopUp;
         init();
     }
 
@@ -54,6 +56,8 @@ public class DFTIterator implements Iterator<GroupByEntry>, PopUpCallback {
             return true;
         } else {
             iterators.pop();
+            // 好恶心啊！ 这里也要让items的stack出栈。比如[a, a5]到[b, null]的过程
+            itemPopUp.popUp();
             return hasNext();
         }
     }
@@ -69,7 +73,7 @@ public class DFTIterator implements Iterator<GroupByEntry>, PopUpCallback {
     }
 
     @Override
-    public void pop() {
+    public void popUp() {
         // 通过被控制器调用的出栈方式，用于控制groupBy的展开方式
         if (iterators.size() > 1) {
             // LAZY_EXPANDER至少展开一个维度
