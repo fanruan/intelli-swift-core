@@ -1,8 +1,6 @@
 package com.fr.swift.data.operator.merger;
 
 import com.fr.annotation.Test;
-import com.fr.base.FRContext;
-import com.fr.dav.LocalEnv;
 import com.fr.swift.cube.io.ResourceDiscoveryImpl;
 import com.fr.swift.flow.FlowRuleController;
 import com.fr.swift.generate.BaseTest;
@@ -23,7 +21,6 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.db.QueryDBSource;
-import com.fr.swift.source.db.TestConnectionProvider;
 import com.fr.swift.util.DataSourceUtils;
 
 import java.util.Collections;
@@ -43,9 +40,6 @@ public class SwiftMergerTest extends BaseTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir") + "\\" + System.currentTimeMillis()));
-        TestConnectionProvider.createConnection();
-
         dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "SwiftMergerTest");
     }
 
