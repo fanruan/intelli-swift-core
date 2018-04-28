@@ -17,11 +17,11 @@ public class GeneralOrMatchFilter extends AbstractGeneralMatchFilter {
     public boolean matches(SwiftNode node) {
         if (children != null) {
             for (MatchFilter filter : children) {
-                if (!filter.matches(node)) {
-                    return false;
+                if (filter.matches(node)) {
+                    return true;
                 }
             }
         }
-        return children != null || !children.isEmpty();
+        return children == null || children.isEmpty();
     }
 }
