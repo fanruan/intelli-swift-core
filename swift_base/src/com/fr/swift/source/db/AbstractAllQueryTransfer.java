@@ -25,6 +25,7 @@ public abstract class AbstractAllQueryTransfer extends AbstractQueryTransfer {
 
     /**
      * 获取执行的sql的metadata
+     *
      * @return
      * @throws SQLException
      */

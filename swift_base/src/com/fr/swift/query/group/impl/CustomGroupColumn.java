@@ -121,14 +121,12 @@ class CustomGroupColumn<Base, Derive> implements Column<Derive> {
 
         @Override
         public int getGlobalIndexByIndex(int index) {
-            // TODO: 2018/3/21 anchore的锅
-            return originDict.getGlobalIndexByIndex(index);
+            return groupRule.getGlobalIndexByIndex(index);
         }
 
         @Override
         public int getGlobalIndexByRow(int row) {
-            // TODO: 2018/3/21 同上
-            return originDict.getGlobalIndexByRow(row);
+            return getGlobalIndexByIndex(getIndexByRow(row));
         }
 
         @Override
@@ -139,11 +137,6 @@ class CustomGroupColumn<Base, Derive> implements Column<Derive> {
                     return getIndex(o1) - getIndex(o2);
                 }
             };
-        }
-
-        @Override
-        public Derive convertValue(Object value) {
-            throw new UnsupportedOperationException();
         }
 
         @Override

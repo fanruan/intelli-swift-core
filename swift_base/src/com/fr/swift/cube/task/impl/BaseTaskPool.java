@@ -39,6 +39,11 @@ abstract class BaseTaskPool<T extends Task> implements TaskPool<T> {
     }
 
     @Override
+    public void remove(TaskKey key) {
+        tasks.remove(key);
+    }
+
+    @Override
     public Set<TaskKey> tasksOf(Status status) {
         Set<TaskKey> specTasks = new HashSet<TaskKey>();
         for (Entry<TaskKey, T> entry : tasks.entrySet()) {

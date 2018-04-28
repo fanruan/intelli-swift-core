@@ -140,7 +140,7 @@ public class QueryConditionAdaptor {
                     orFilters.addAll(adaptFilters(childRestriction));
                 }
                 filterInfos.add(new GeneralFilterInfo(orFilters, GeneralFilterInfo.OR));
-
+            default:
         }
         return filterInfos;
     }

@@ -1,5 +1,6 @@
 package com.fr.swift.query.filter.detail.impl;
 
+import com.fr.swift.Temps.TempDictColumn;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
@@ -42,7 +43,7 @@ public abstract class BaseColumnImplTest<T> implements Column {
         IntStream.range(0, list.size()).forEach(i -> indexes.get(list.get(i)).add(i));
         groups = new ArrayList<>();
         groups.addAll(indexes.keySet());
-        dict = new DictionaryEncodedColumn<T>() {
+        dict = new TempDictColumn<T>() {
 
             private ArrayLookupHelper.Lookup<T> lookup = new ArrayLookupHelper.Lookup<T>() {
                 @Override
@@ -68,18 +69,8 @@ public abstract class BaseColumnImplTest<T> implements Column {
             };
 
             @Override
-            public void flush() {
-
-            }
-
-            @Override
             public int size() {
                 return groups.size();
-            }
-
-            @Override
-            public void putGlobalSize(int globalSize) {
-
             }
 
             @Override
@@ -88,18 +79,8 @@ public abstract class BaseColumnImplTest<T> implements Column {
             }
 
             @Override
-            public void putSize(int size) {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
             public T getValue(int index) {
                 return groups.get(index);
-            }
-
-            @Override
-            public void putValue(int index, T val) {
-                throw new UnsupportedOperationException();
             }
 
             @Override
@@ -108,20 +89,9 @@ public abstract class BaseColumnImplTest<T> implements Column {
             }
 
             @Override
-            public void putIndex(int row, int index) {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
             public int getIndexByRow(int row) {
                 return 0;
             }
-
-            @Override
-            public void putGlobalIndex(int index, int globalIndex) {
-
-            }
-
             @Override
             public int getGlobalIndexByRow(int row) {
                 return 0;
@@ -135,16 +105,6 @@ public abstract class BaseColumnImplTest<T> implements Column {
             @Override
             public Comparator<T> getComparator() {
                 return comparator;
-            }
-
-            @Override
-            public T convertValue(Object value) {
-                return BaseColumnImplTest.this.convertValue(value);
-            }
-
-            @Override
-            public void release() {
-
             }
         };
     }
