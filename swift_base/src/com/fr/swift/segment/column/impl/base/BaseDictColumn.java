@@ -104,8 +104,18 @@ abstract class BaseDictColumn<T> implements DictionaryEncodedColumn<T> {
 
     @Override
     public int getIndex(Object value) {
-        return ArrayLookupHelper.lookup((T[]) new Object[]{ convertValue(value) }, lookup)[0];
+        return ArrayLookupHelper.lookup((T[]) new Object[]{convertValue(value)}, lookup)[0];
     }
+
+    /**
+     * 用于不同数值类型之间转换。
+     * ArrayLookupHelper.binarySearch(Lookup<T> lookup, T value | T[] values)用到的比较器要求类型一致。
+     * 把要查找的值类型转化为lookup用到的字典类型参数类型，可以减少数值类过滤器处理不同类型的代码。
+     *
+     * @param value
+     * @return
+     */
+    abstract T convertValue(Object value);
 
     @Override
     public Comparator<T> getComparator() {

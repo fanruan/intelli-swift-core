@@ -12,6 +12,7 @@ import com.fr.config.entity.XmlEntity;
 import com.fr.dav.LocalEnv;
 import com.fr.stable.db.DBContext;
 import com.fr.stable.db.option.DBOption;
+import com.fr.swift.util.FileUtil;
 import com.fr.transaction.Configurations;
 import com.fr.transaction.FineConfigurationHelper;
 
@@ -27,6 +28,8 @@ public class TestConfDb {
 
     public static void setConfDb() throws Exception {
         FRContext.setCurrentEnv(new LocalEnv());
+        FileUtil.delete(PATH + ".mv.db");
+        FileUtil.delete(PATH + ".trace.db");
         DBOption dbOption = new DBOption();
         dbOption.setUrl("jdbc:h2:" + PATH.toString());
         dbOption.setUsername("sa");
