@@ -2,7 +2,6 @@ package com.fr.swift.query.group.impl;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.cube.io.location.IResourceLocation;
-import com.fr.swift.query.sort.SortType;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
@@ -15,13 +14,12 @@ public class SortByOtherFieldColumn implements Column {
     private Column sortByColumn;
     //待排序的字段列
     private Column originColumn;
-    private SortType sortType;
+    //private SortType sortType;
 
-    public SortByOtherFieldColumn(Column sortByColumn, Column originColumn, SortType type) {
+    public SortByOtherFieldColumn(Column sortByColumn, Column originColumn) {
         this.sortByColumn = sortByColumn;
         this.originColumn = originColumn;
-        this.sortType = type;
-        //    initDescBitmap();
+        //this.sortType = type;
     }
 
     @Override
@@ -53,9 +51,9 @@ public class SortByOtherFieldColumn implements Column {
 
         @Override
         public ImmutableBitMap getBitMapIndex(int index) {
-            if (sortType == SortType.DESC) {
-                return sortByColumn.getBitmapIndex().getBitMapIndex(sortByColumn.getDictionaryEncodedColumn().size() - index - 1);
-            }
+//            if (sortType == SortType.DESC) {
+//                return sortByColumn.getBitmapIndex().getBitMapIndex(sortByColumn.getDictionaryEncodedColumn().size() - index - 1);
+//            }
             return sortByColumn.getBitmapIndex().getBitMapIndex(index);
         }
 
