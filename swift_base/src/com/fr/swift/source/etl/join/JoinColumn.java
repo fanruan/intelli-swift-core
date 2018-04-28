@@ -46,7 +46,7 @@ public class JoinColumn implements CoreService {
     private String columnName;
 
     @Override
-    public Object clone() throws CloneNotSupportedException {
+    public Object clone() {
         return null;
     }
 
