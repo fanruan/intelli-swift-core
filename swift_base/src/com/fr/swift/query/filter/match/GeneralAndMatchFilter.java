@@ -16,8 +16,8 @@ public class GeneralAndMatchFilter extends AbstractGeneralMatchFilter {
     public boolean matches(SwiftNode node) {
         if (children != null){
             for (MatchFilter filter : children){
-                if (filter.matches(node)){
-                    return true;
+                if (!filter.matches(node)){
+                    return false;
                 }
             }
         }
