@@ -13,7 +13,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
 
 import static com.fr.swift.cube.task.Task.Status.DONE;
-import static com.fr.swift.cube.task.Task.Status.RUNNING;
 
 /**
  * @author anchore
@@ -64,7 +63,7 @@ public class CubeTaskExecutor implements TaskExecutor {
         TaskStatusChangeListener listener = new TaskStatusChangeListener() {
             @Override
             public void onChange(Status prev, Status now) {
-                if (prev == RUNNING && now == DONE) {
+                if (now == DONE) {
                     ranSemaphore.release();
                 }
             }

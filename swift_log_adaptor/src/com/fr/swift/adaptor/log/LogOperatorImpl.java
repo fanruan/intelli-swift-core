@@ -3,14 +3,20 @@ package com.fr.swift.adaptor.log;
 import com.fr.general.DataList;
 import com.fr.general.LogOperator;
 import com.fr.stable.query.condition.QueryCondition;
+import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.log.SwiftLogger;
+import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.service.QueryRunnerProvider;
+import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,9 +29,29 @@ public class LogOperatorImpl implements LogOperator {
 
     private static final int USE_IMPORT_THRESHOLD = 100000;
 
+    static final SwiftLogger LOGGER = SwiftLoggers.getLogger(LogOperatorImpl.class);
+
     @Override
     public <T> DataList<T> find(Class<T> aClass, QueryCondition queryCondition) {
-        return null;
+        DataList<T> dataList = new DataList<T>();
+        try {
+            Table table = db.getTable(new SourceKey(SwiftMetaAdaptor.getTableName(aClass)));
+            QueryInfo queryInfo = QueryConditionAdaptor.adaptorCondition(queryCondition, table);
+            SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
+
+            List<T> tList = new ArrayList<T>();
+            while (resultSet.next()) {
+                Row row = resultSet.getRowData();
+                DecisionRowAdaptor adaptor = new DecisionRowAdaptor(aClass);
+                T t = (T) adaptor.apply(row);
+                tList.add(t);
+            }
+            dataList.list(tList);
+            dataList.setTotalCount(tList.size());
+        } catch (Exception e) {
+            LOGGER.error(e);
+        }
+        return dataList;
     }
 
     @Override
