@@ -18,5 +18,7 @@ public interface TaskPool<T extends Task> {
 
     Collection<TaskKey> allTasks();
 
+    void remove(TaskKey key);
+
     Set<TaskKey> tasksOf(Status status);
 }

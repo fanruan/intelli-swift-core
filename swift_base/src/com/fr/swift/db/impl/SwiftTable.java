@@ -9,6 +9,7 @@ import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.source.core.Core;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -90,5 +91,16 @@ class SwiftTable implements Table {
     @Override
     public SourceKey getSourceKey() {
         return key;
+    }
+
+    @Override
+    public SwiftMetaData getMetadata() {
+        return meta;
+    }
+
+
+    @Override
+    public Core fetchObjectCore() {
+        return null;
     }
 }
