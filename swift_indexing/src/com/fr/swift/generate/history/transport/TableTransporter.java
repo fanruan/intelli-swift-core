@@ -38,7 +38,7 @@ public class TableTransporter extends BaseWorker implements Transport {
             transport();
             workOver(Result.SUCCEEDED);
         } catch (Exception e) {
-            LOGGER.error(e);
+            LOGGER.error("Datasource:" + dataSource.getSourceKey().getId() + " transport failed", e);
             workOver(Result.FAILED);
         }
     }
