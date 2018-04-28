@@ -130,6 +130,9 @@ public class FilterInfoFactory {
                 List<FineFilter> targetFilters = target.getFilters();
                 if (targetFilters != null) {
                     for (FineFilter filter : targetFilters) {
+                        if (filter.getFilterType() == BICommonConstants.ANALYSIS_FILTER_TYPE.EMPTY_CONDITION) {
+                            continue;
+                        }
                         FilterInfo targetFilterInfo = createFilterInfo((AbstractFilterBean) filter.getValue(), new ArrayList<Segment>());
                         filterInfoList.add(new MatchFilterInfo(targetFilterInfo, i));
                     }
