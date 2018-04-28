@@ -7,6 +7,7 @@ import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 /**
  * Created by sheldon on 14-8-8.
  */
+@Deprecated
 public class ExcelDataModel extends AbstractExcelDataModel {
 
     public ExcelDataModel(String filePath, String[] columnNames, ColumnType[] columnTypes) {

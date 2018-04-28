@@ -42,8 +42,9 @@ import com.fr.swift.source.etl.datamining.DataMiningOperator;
 import com.fr.swift.source.etl.datamining.DataMiningTransferOperator;
 import com.fr.swift.source.etl.rcompile.RCompileOperator;
 import com.fr.swift.source.etl.rcompile.RCompileTransferOperator;
-import com.fr.swift.source.excel.ExcelDataModel;
 import com.fr.swift.source.excel.ExcelDataSource;
+import com.fr.swift.source.excel.data.ExcelDataModelCreator;
+import com.fr.swift.source.excel.data.IExcelDataModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -204,8 +205,8 @@ public class DataSourceFactory {
     }
 
     private static DataSource transformExcelDataSource(FineExcelBusinessTable table) {
-        String path = "D:\\bi-workspace\\5.0\\env\\app\\WEB-INF\\assets\\temp_attach\\MapCache1524621776100_14.xlsx";
-        ExcelDataModel excelDataModel = new ExcelDataModel(path);
+        String path = "http://resin.zyee.me:8080/1w.csv";
+        IExcelDataModel excelDataModel = ExcelDataModelCreator.createDataModel(path);
         String[] columnNames = excelDataModel.onlyGetColumnNames();
         ColumnType[] columnTypes = excelDataModel.onlyGetColumnTypes();
         ExcelDataSource excelDataSource = new ExcelDataSource(path, columnNames, columnTypes);
