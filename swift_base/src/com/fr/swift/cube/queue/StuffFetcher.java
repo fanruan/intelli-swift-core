@@ -68,20 +68,7 @@ public class StuffFetcher implements Runnable {
         //根据表依赖和顺序添加更新任务
         for (Map.Entry<SourceKey, SourceNode> entry : sourceReliance.getHeadNodes().entrySet()) {
             SourceNode sourceNode = entry.getValue();
-            SchedulerTask headTask = CubeTasks.newTableTask(sourceNode.getNode());
-            start.addNext(headTask);
-            pairMap.put(headTask.key(), new Pair<TaskKey, Object>(headTask.key(), sourceNode));
-            taskMap.put(headTask.key(), headTask);
-
-            List<SourceNode> sourceNodeList = sourceNode.next();
-            if (sourceNodeList.isEmpty()) {
-                headTask.addNext(end);
-            } else {
-                for (SourceNode nextSourceNode : sourceNodeList) {
-                    calcBaseNode(nextSourceNode, headTask, end, pairMap, taskMap);
-                }
-            }
-
+            calcBaseNode(sourceNode, start, end, pairMap, taskMap);
         }
         pairs.addAll(pairMap.values());
 

@@ -8,6 +8,7 @@ import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftMetaDataImpl;
 import com.fr.swift.source.core.CoreField;
+import com.fr.swift.source.excel.data.IExcelDataModel;
 import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
@@ -83,7 +84,7 @@ public class ExcelDataSource extends AbstractOuterDataSource {
 
     @Override
     protected void initOuterMetaData() {
-        ExcelDataModel dm = null;
+        IExcelDataModel dm = null;
         try {
             dm = new ExcelTableData(fullFileName, columnNames, columnTypes).createDataModel();
             int cols = dm.getColumnCount();

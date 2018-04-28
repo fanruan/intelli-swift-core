@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 /**
  * Created by Young's on 2015/7/3.
  */
+@Deprecated
 public class Excel2003Reader extends AbstractExcel2003Reader {
 
     public Excel2003Reader(String filename) throws IOException {

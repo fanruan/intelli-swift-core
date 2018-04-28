@@ -4,6 +4,10 @@ import com.fr.general.ComparatorUtils;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
+import com.fr.swift.source.excel.data.ExcelDataModelCreator;
+import com.fr.swift.source.excel.data.IExcelDataModel;
+
+import java.io.InputStream;
 
 /**
  * Created by sheldon on 14-8-8.
@@ -18,13 +22,26 @@ public class ExcelTableData extends AbstractExcelTableData {
         super(filePath, columnNames, columnTypes);
     }
 
+    public ExcelTableData(String filePath, InputStream inputStream) {
+        super(filePath, inputStream);
+    }
+
+    public ExcelTableData(String filePath, InputStream inputStream, String[] columnNames, ColumnType[] columnTypes) {
+        super(filePath, inputStream, columnNames, columnTypes);
+    }
+
     /**
      * 创建数据表格
      */
     @Override
-    public ExcelDataModel createDataModel() {
-        return new ExcelDataModel(filePath,
-                columnNames, columnTypes);
+    public IExcelDataModel createDataModel() {
+        if (null == inputStream) {
+            return ExcelDataModelCreator.createDataModel(filePath, columnNames, columnTypes);
+        } else {
+            return ExcelDataModelCreator.createDataModel(inputStream, filePath, columnNames, columnTypes);
+        }
+//        return new ExcelDataModel(filePath,
+//                columnNames, columnTypes);
     }
 
     /**
