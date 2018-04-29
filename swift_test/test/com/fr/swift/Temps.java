@@ -83,11 +83,6 @@ public final class Temps {
         }
 
         @Override
-        public T convertValue(Object value) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
         public void flush() {
             throw new UnsupportedOperationException();
         }

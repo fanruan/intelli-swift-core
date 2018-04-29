@@ -1,9 +1,14 @@
 package com.fr.swift.source.etl.join;
 
+import com.fr.swift.source.core.Core;
+import com.fr.swift.source.core.CoreField;
+import com.fr.swift.source.core.CoreGenerator;
+import com.fr.swift.source.core.CoreService;
+
 /**
  * Created by Handsome on 2017/12/8 0008 11:39
  */
-public class JoinColumn {
+public class JoinColumn implements CoreService {
 
 
     public JoinColumn(String name, boolean isLeft, String columnName) {
@@ -15,7 +20,7 @@ public class JoinColumn {
     public JoinColumn() {
 
     }
-	
+
 
     public String getName() {
         return name;
@@ -30,15 +35,28 @@ public class JoinColumn {
     }
 
     //etl之后的字段名
+    @CoreField
     private String name;
 
+    @CoreField
     private boolean isLeft;
 
     //父表字段名
+    @CoreField
     private String columnName;
 
     @Override
-    public Object clone() throws CloneNotSupportedException {
+    public Object clone() {
         return null;
+    }
+
+    private Core core;
+
+    @Override
+    public Core fetchObjectCore() {
+        if (core == null) {
+            core = new CoreGenerator(this).fetchObjectCore();
+        }
+        return core;
     }
 }

@@ -26,6 +26,10 @@ public class SwiftContext {
 
     private SwiftSegmentManager minorSegmentManager;
 
+    public String getLocalCubePath() {
+        return System.getProperty("user.dir") + "/cubes";
+    }
+
     public void registerSegmentProvider(SwiftSegmentManager segmentProvider) {
         this.segmentProvider = segmentProvider;
     }

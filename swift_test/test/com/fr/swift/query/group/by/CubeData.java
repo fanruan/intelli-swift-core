@@ -174,16 +174,6 @@ public class CubeData {
                         public Comparator getComparator() {
                             return Comparator.<String>naturalOrder();
                         }
-
-                        @Override
-                        public Object convertValue(Object value) {
-                            return value;
-                        }
-
-                        @Override
-                        public void release() {
-
-                        }
                     };
                 }
 
