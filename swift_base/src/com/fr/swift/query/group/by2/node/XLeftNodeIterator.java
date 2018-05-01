@@ -23,6 +23,7 @@ public class XLeftNodeIterator implements Iterator<XLeftNode[]> {
         this.rowGroupByInfo = rowGroupByInfo;
         this.root = root;
         this.rowMapper = rowMapper;
+        init();
     }
 
     private void init() {

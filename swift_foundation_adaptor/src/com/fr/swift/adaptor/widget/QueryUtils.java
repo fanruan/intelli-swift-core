@@ -18,7 +18,7 @@ import com.fr.swift.query.adapter.target.cal.ResultTarget;
 import com.fr.swift.query.adapter.target.cal.TargetInfoImpl;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.info.FilterInfo;
-import com.fr.swift.result.NodeResultSetImpl;
+import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
@@ -52,7 +52,7 @@ public class QueryUtils {
             TargetInfo targetInfo = new TargetInfoImpl(0, new ArrayList<Metric>(0), new ArrayList<GroupTarget>(0), new ArrayList<ResultTarget>(0), new ArrayList<Aggregator>(0));
             DimensionInfo dimensionInfo = new DimensionInfoImpl(new AllCursor(), filterInfo, null, new Dimension[]{groupDimension});
             GroupQueryInfo valueInfo = new GroupQueryInfo(id, sourceKey, dimensionInfo, targetInfo);
-            NodeResultSetImpl nodeResultSet = (NodeResultSetImpl) QueryRunnerProvider.getInstance().executeQuery(valueInfo);
+            NodeResultSet nodeResultSet = (NodeResultSet) QueryRunnerProvider.getInstance().executeQuery(valueInfo);
             SwiftNode n = nodeResultSet.getNode();
             List values = new ArrayList();
             for (int i = 0; i < n.getChildrenSize(); i++) {
