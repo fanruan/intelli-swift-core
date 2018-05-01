@@ -49,7 +49,7 @@ public class QueryUtils {
             SourceKey sourceKey = new SourceKey(BusinessTableUtils.getSourceIdByFieldId(fieldId));
             String fieldName = BusinessTableUtils.getFieldNameByFieldId(fieldId);
             GroupDimension groupDimension = new GroupDimension(0, sourceKey, new ColumnKey(fieldName), GroupAdaptor.adaptDashboardGroup(dimension), SortAdaptor.adaptorDimensionSort(dimension.getSort(), 0), null);
-            TargetInfo targetInfo = new TargetInfoImpl(new ArrayList<Metric>(0), new ArrayList<GroupTarget>(0), new ArrayList<ResultTarget>(0), new ArrayList<Aggregator>(0));
+            TargetInfo targetInfo = new TargetInfoImpl(0, new ArrayList<Metric>(0), new ArrayList<GroupTarget>(0), new ArrayList<ResultTarget>(0), new ArrayList<Aggregator>(0));
             DimensionInfo dimensionInfo = new DimensionInfoImpl(new AllCursor(), filterInfo, null, new Dimension[]{groupDimension});
             GroupQueryInfo valueInfo = new GroupQueryInfo(id, sourceKey, dimensionInfo, targetInfo);
             NodeResultSetImpl nodeResultSet = (NodeResultSetImpl) QueryRunnerProvider.getInstance().executeQuery(valueInfo);

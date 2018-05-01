@@ -75,7 +75,7 @@ public class GroupNodeIterator<Node extends GroupNode> implements Iterator<Node[
                                                          List<DictionaryEncodedColumn> dictionaries) {
         Set<RowIndexKey<int[]>> indexKeys = new HashSet<RowIndexKey<int[]>>();
         for (RowIndexKey<String[]> strKey : strKeys) {
-            String[] keys = strKey.getKey();
+            Object[] keys = strKey.getKey();
             int[] indexes = new int[keys.length];
             Arrays.fill(indexes, -1);
             for (int i = 0; i < keys.length; i++) {

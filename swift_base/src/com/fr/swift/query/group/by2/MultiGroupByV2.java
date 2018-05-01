@@ -45,7 +45,7 @@ public class MultiGroupByV2<T> implements Iterator<T[]> {
         T[] ret = null;
         while (iterator.hasNext()) {
             GroupByEntry entry = iterator.next();
-            // itemsStack.size()为节点的深度，第一个维度深度为0
+            // itemsStack.size()为当前entry属于第几个维度（节点的深度，第一个维度深度为0）
             itemsStack.push(itemMapper.apply(itemsStack.size(), entry));
             // 判断是否为满足要求的一行
             if (controller.isRow(itemsStack.toList(), iterator)) {

@@ -49,17 +49,18 @@ public class DFTIterator implements Iterator<GroupByEntry>, PopUpCallback {
 
     @Override
     public boolean hasNext() {
-        if (iterators.isEmpty()) {
-            return false;
+        boolean hasNext = false;
+        while (!iterators.isEmpty()) {
+            if (!iterators.peek().hasNext()) {
+                iterators.pop();
+                // 好恶心啊！ 这里也要让items的stack出栈。比如[a, a5]到[b, null]的过程
+                itemPopUp.popUp();
+                continue;
+            }
+            hasNext = true;
+            break;
         }
-        if (iterators.peek().hasNext()) {
-            return true;
-        } else {
-            iterators.pop();
-            // 好恶心啊！ 这里也要让items的stack出栈。比如[a, a5]到[b, null]的过程
-            itemPopUp.popUp();
-            return hasNext();
-        }
+        return hasNext;
     }
 
     @Override

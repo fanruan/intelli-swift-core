@@ -42,19 +42,19 @@ public class GroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> {
         TargetCalculatorUtils.calculate(((GroupNode) mergeResult.getNode()), info.getTargetInfo().getGroupTargets());
         // 进行结果过滤
         List<MatchFilter> dimensionMatchFilter = getDimensionMatchFilters(info.getDimensionInfo().getDimensions());
-        List<Aggregator> aggregators = info.getTargetInfo().getAggregatorListOfMetrics();
-        List<Aggregator> resultAggregators = info.getTargetInfo().getAggregatorListForResultMerging();
+        List<Aggregator> resultAggregators = info.getTargetInfo().getResultAggregators();
 //        if (hasDimensionFilter(dimensionMatchFilter)) {
 //            NodeFilter.filter(mergeResult.getNode(), dimensionMatchFilter);
 //            NodeAggregator.aggregate(mergeResult.getNode(), getCombinedAggregators(aggregators, resultAggregators));
 //        } else if (hasDifferentResultAggregator(aggregators, resultAggregators)) {
 //            NodeAggregator.aggregate(mergeResult.getNode(), getDifferentAggregator(aggregators, resultAggregators));
 //        }
-        GroupNodeAggregateUtils.aggregate(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
-                (GroupNode) mergeResult.getNode(), info.getTargetInfo().getAggregatorListForResultMerging());
         // 取出查询最后要返回的结果
         TargetCalculatorUtils.getShowTargetsForGroupNodeAndSetNodeData(((GroupNode) mergeResult.getNode()),
                 info.getTargetInfo().getTargetsForShowList(), ((NodeMergeResultSet) mergeResult).getRowGlobalDictionaries());
+        // 取出要展示的结果和过滤之后再汇总
+        GroupNodeAggregateUtils.aggregate(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
+                (GroupNode) mergeResult.getNode(), info.getTargetInfo().getResultAggregators());
         return mergeResult;
     }
 

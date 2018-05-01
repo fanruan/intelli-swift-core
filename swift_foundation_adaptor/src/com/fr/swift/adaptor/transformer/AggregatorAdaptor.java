@@ -112,4 +112,34 @@ public class AggregatorAdaptor {
         }
         return null;
     }
+
+    public static AggregatorType adaptorRapidCal(int rapidType) {
+        switch (rapidType) {
+            case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.NONE:
+            case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.SUM_OF_ALL:
+                return AggregatorType.SUM;
+        }
+        return null;
+    }
+
+    /**
+     * 计算指标这边只有四种聚合类型
+     *
+     * @param calTargetType
+     * @return
+     */
+    public static AggregatorType adaptorCalTarget(int calTargetType) {
+        switch (calTargetType) {
+            case BIDesignConstants.DESIGN.CAL_TARGET.SUM_OF_ALL_MAX:
+                return AggregatorType.MAX;
+            case BIDesignConstants.DESIGN.CAL_TARGET.SUM_OF_ALL_MIN:
+                return AggregatorType.MIN;
+            case BIDesignConstants.DESIGN.CAL_TARGET.SUM_OF_ALL_AVG:
+                return AggregatorType.AVERAGE;
+            case BIDesignConstants.DESIGN.CAL_TARGET.SUM_OF_ALL_SUM:
+                return AggregatorType.SUM;
+
+        }
+        return null;
+    }
 }

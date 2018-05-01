@@ -69,7 +69,6 @@ public class Tree2RowIterator<TREE extends Iterable<TREE>> implements Iterator<L
     public List<TREE> next() {
         List<TREE> ret = next;
         next = getNext();
-        // 这边要返回
         return ret;
     }
 

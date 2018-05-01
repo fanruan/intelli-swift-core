@@ -42,7 +42,7 @@ public class XGroupNodeFactory {
 //        xLeftNode = (XLeftNode) TargetCalculatorUtils.calculate(xLeftNode,
 //                targetInfo.getTargetCalculatorInfoList(), targetInfo.getTargetsForShowList());
         GroupNodeAggregateUtils.aggregate(NodeType.X_LEFT, resultSet.rowDimensionSize(), xLeftNode,
-                targetInfo.getAggregatorListForResultMerging());
+                targetInfo.getResultAggregators());
         // 表头groupBy的维度key
         List<RowIndexKey<int[]>> keys = getTopDimensionKeys(resultSet);
         // 表头groupBy的行结果集
@@ -53,7 +53,7 @@ public class XGroupNodeFactory {
                 topResultSet, resultSet.getColGlobalDictionaries());
         // 通过topGroupNode来做列向汇总
         GroupNodeAggregateUtils.aggregate(NodeType.TOP_GROUP, resultSet.colDimensionSize(), topGroupNode,
-                targetInfo.getAggregatorListForResultMerging());
+                targetInfo.getResultAggregators());
         // 给xLeftNode重新设置value，增加了列向汇总值
         setValues2XLeftNode(resultSet.colDimensionSize(), resultSet.rowDimensionSize(), topGroupNode, xLeftNode);
         // TODO: 2018/4/11 topGroupNode是不是要清理一下引用呢？

@@ -83,7 +83,7 @@ class IntKey extends RowIndexKey {
     }
 }
 
-class ObjectKey extends RowIndexKey {
+class ObjectKey extends RowIndexKey<Object[]> {
 
     private Object[] key;
 
@@ -92,7 +92,7 @@ class ObjectKey extends RowIndexKey {
     }
 
     @Override
-    public Object getKey() {
+    public Object[] getKey() {
         return key;
     }
 

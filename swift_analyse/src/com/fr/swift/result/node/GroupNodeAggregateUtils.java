@@ -90,7 +90,12 @@ public class GroupNodeAggregateUtils {
      */
     private static void mergeChildNode(GroupNode groupNode, List<Aggregator> aggregators) {
         // >= 两个子节点才汇总
-        if (groupNode.getChildrenSize() <= 1) {
+        if (groupNode.getChildrenSize() == 0) {
+            return;
+        }
+        if (groupNode.getChildrenSize() == 1) {
+            // 把子节点的values复制过来
+            groupNode.setAggregatorValue(createAggregateValues(groupNode.getChild(0).getAggregatorValue(), aggregators));
             return;
         }
         Iterator<GroupNode> iterator = new ChildIterator(groupNode);
@@ -104,7 +109,11 @@ public class GroupNodeAggregateUtils {
         while (iterator.hasNext()) {
             AggregatorValue[] valuesOfChild = iterator.next().getAggregatorValue();
             for (int i = 0; i < valuesOfParent.length; i++) {
-                aggregators.get(i).combine(valuesOfParent[i], valuesOfChild[i]);
+                if (valuesOfParent[i] == null) {
+                    valuesOfParent[i] = aggregators.get(i).createAggregatorValue(valuesOfChild[i]);
+                } else {
+                    aggregators.get(i).combine(valuesOfParent[i], valuesOfChild[i]);
+                }
             }
         }
         groupNode.setAggregatorValue(valuesOfParent);
