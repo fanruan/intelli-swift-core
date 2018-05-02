@@ -2,7 +2,6 @@ package com.fr.swift.structure.graph;
 
 import com.fr.swift.structure.stack.ArrayLimitedStack;
 import com.fr.swift.structure.stack.LimitedStack;
-import com.sun.istack.internal.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,7 +41,7 @@ public class DigraphImpl<Vertex> implements Digraph<Vertex> {
     }
 
     @Override
-    public void addEdge(@NotNull Vertex v, Vertex w) {
+    public void addEdge(Vertex v, Vertex w) {
         vertices.add(v);
         if (w != null) {
             vertices.add(w);
