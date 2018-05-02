@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Created by Handsome on 2018/1/24 0024 16:46
  */
-public class TestColumnFilterOperator extends TestCase {
+public class ColumnFilterOperatorTest extends TestCase {
 
     public void testColumnFilter() throws Exception {
         IMocksControl control = EasyMock.createControl();
