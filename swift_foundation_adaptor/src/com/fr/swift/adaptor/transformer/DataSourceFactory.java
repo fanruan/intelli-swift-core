@@ -9,10 +9,14 @@ import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
 import com.finebi.conf.internalimp.basictable.table.FineExcelBusinessTable;
 import com.finebi.conf.internalimp.basictable.table.FineSQLBusinessTable;
 import com.finebi.conf.internalimp.basictable.table.FineSQLTableParameter;
+import com.finebi.conf.internalimp.bean.table.FineAttachment;
 import com.finebi.conf.internalimp.update.TableUpdateInfo;
 import com.finebi.conf.structure.analysis.operator.FineOperator;
 import com.finebi.conf.structure.bean.table.AbstractFineTable;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
+import com.fr.base.FRContext;
+import com.fr.cache.Attachment;
+import com.fr.cache.AttachmentSource;
 import com.fr.swift.cache.SourceCache;
 import com.fr.swift.increase.IncrementImpl;
 import com.fr.swift.increment.Increment;
@@ -42,9 +46,11 @@ import com.fr.swift.source.etl.datamining.DataMiningOperator;
 import com.fr.swift.source.etl.datamining.DataMiningTransferOperator;
 import com.fr.swift.source.etl.rcompile.RCompileOperator;
 import com.fr.swift.source.etl.rcompile.RCompileTransferOperator;
-import com.fr.swift.source.excel.ExcelDataModel;
 import com.fr.swift.source.excel.ExcelDataSource;
+import com.fr.swift.source.excel.data.ExcelDataModelCreator;
+import com.fr.swift.source.excel.data.IExcelDataModel;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -204,11 +210,22 @@ public class DataSourceFactory {
     }
 
     private static DataSource transformExcelDataSource(FineExcelBusinessTable table) {
-        String path = "D:\\bi-workspace\\5.0\\env\\app\\WEB-INF\\assets\\temp_attach\\MapCache1524621776100_14.xlsx";
-        ExcelDataModel excelDataModel = new ExcelDataModel(path);
+        Attachment baseAttachment = AttachmentSource.getAttachment(table.getBaseAttach().getId());
+        String path = FRContext.getCurrentEnv().getPath() + File.separator + baseAttachment.getPath();
+        IExcelDataModel excelDataModel = ExcelDataModelCreator.createDataModel(path);
         String[] columnNames = excelDataModel.onlyGetColumnNames();
         ColumnType[] columnTypes = excelDataModel.onlyGetColumnTypes();
-        ExcelDataSource excelDataSource = new ExcelDataSource(path, columnNames, columnTypes);
+
+        List<FineAttachment> additionAttachments = table.getAdditionalAttach();
+        List<String> additionPaths = new ArrayList<String>();
+        if (additionAttachments != null && !additionAttachments.isEmpty()) {
+            for (FineAttachment additionAttachment : additionAttachments) {
+                Attachment attachment = AttachmentSource.getAttachment(additionAttachment.getId());
+                String additionPath = FRContext.getCurrentEnv().getPath() + File.separator + attachment.getPath();
+                additionPaths.add(additionPath);
+            }
+        }
+        ExcelDataSource excelDataSource = new ExcelDataSource(path, columnNames, columnTypes, additionPaths);
         return excelDataSource;
     }
 

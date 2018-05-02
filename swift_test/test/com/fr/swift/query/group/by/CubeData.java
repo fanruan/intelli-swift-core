@@ -7,7 +7,7 @@ import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.SumAggregate;
-import com.fr.swift.result.RowIndexKey;
+import com.fr.swift.result.row.RowIndexKey;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
@@ -173,16 +173,6 @@ public class CubeData {
                         @Override
                         public Comparator getComparator() {
                             return Comparator.<String>naturalOrder();
-                        }
-
-                        @Override
-                        public Object convertValue(Object value) {
-                            return value;
-                        }
-
-                        @Override
-                        public void release() {
-
                         }
                     };
                 }

@@ -14,7 +14,9 @@ public abstract class AbstractSwiftNode<T extends SwiftNode> implements SwiftNod
         this.aggregatorValues = new AggregatorValue[sumLength];
     }
 
-    protected AbstractSwiftNode() {}
+    protected AbstractSwiftNode() {
+        this.aggregatorValues = new AggregatorValue[0];
+    }
 
     @Override
     public T getSibling() {

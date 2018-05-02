@@ -13,7 +13,7 @@ import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
-import com.fr.swift.util.pinyin.BIPinyinUtils;
+import com.fr.swift.util.pinyin.PinyinUtils;
 import edu.emory.mathcs.backport.java.util.Arrays;
 
 import java.util.ArrayList;
@@ -51,7 +51,8 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor{
         if (StringUtils.isEmpty(keyWord)) {
             treeItems = createTreeItemListWithoutSearch(widId, bean, filterInfo, dimensions);
         } else if (StringUtils.isNotEmpty(keyWord) && StringUtils.isNotEmpty(bean.getId())) {
-            treeItems = createChildSearchItemList(widId, keyWord, bean, filterInfo, dimensions);
+            // 因为功能要求子节点展开全部子节点，所以不传搜索的keyWord了
+            treeItems = createChildNoSearchItemList(widId, "", bean, filterInfo, dimensions);
         } else {
             treeItems = createSearchItemList(0, widId, keyWord, "0", bean.getSelectedValues(),
                     new String[0], filterInfo, dimensions);
@@ -59,8 +60,8 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor{
         return treeItems;
     }
 
-    private static List<BITreeItem> createChildSearchItemList(String widgetId, String keyWord, TreeOptionsBean bean,
-                                                      FilterInfo filter, List<FineDimension> dimensions) {
+    private static List<BITreeItem> createChildNoSearchItemList(String widgetId, String keyWord, TreeOptionsBean bean,
+                                                                FilterInfo filter, List<FineDimension> dimensions) {
         List<String> parents = bean.getParentValues();
         assert parents.size() == 1;
         Map selectedValues = bean.getSelectedValues();
@@ -80,7 +81,7 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor{
             String value = values.get(j).toString();
             // 计算id的结构，前端依据id把列表转为树结构
             String id = pId.equals("0") ? j + 1 + "" : pId + "_" + (j + 1);
-            boolean isContained = BIPinyinUtils.isMatch(keyWord, value);
+            boolean isContained = PinyinUtils.isMatch(keyWord, value);
             if (!isContained) {
                 List<BITreeItem> childrenItems = new ArrayList<BITreeItem>();
                 if (dimensionIndex < dimensions.size() - 1) {
@@ -161,6 +162,7 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor{
     private static FilterInfo parents2FilterInfo(FilterInfo filterInfo, FilterInfo currentDimensionFilter, List<String> parents, List<FineDimension> dimensions) {
         List<FilterInfo> infoList = new ArrayList<FilterInfo>();
         infoList.add(filterInfo);
+        infoList.add(currentDimensionFilter);
         for (int i = 0; i < parents.size(); i++) {
             FineDimension dimension = dimensions.get(i);
             String fieldName = getColumnName(dimension.getFieldId());

@@ -1,17 +1,12 @@
 package com.fr.swift.cal.segment.group;
 
-import com.fr.swift.bitmap.BitMaps;
-import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.query.aggregator.Aggregator;
-import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.group.by.CubeData;
-import com.fr.swift.result.GroupByResultSet;
-import com.fr.swift.result.RowIndexKey;
-import com.fr.swift.result.SwiftNode;
+import com.fr.swift.result.row.GroupByResultSet;
+import com.fr.swift.result.row.RowIndexKey;
 import com.fr.swift.segment.column.Column;
 import junit.framework.TestCase;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 

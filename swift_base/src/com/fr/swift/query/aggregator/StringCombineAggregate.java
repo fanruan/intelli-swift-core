@@ -32,6 +32,11 @@ public class StringCombineAggregate implements Aggregator<StringAggregateValue> 
     }
 
     @Override
+    public StringAggregateValue createAggregatorValue(AggregatorValue value) {
+        return new StringAggregateValue();
+    }
+
+    @Override
     public void combine(StringAggregateValue value, StringAggregateValue other) {
         value.setValue(value.getValue() + TAG + other.getValue());
     }

@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 /**
  * Created by Young on 2015/7/3.
  */
+@Deprecated
 public class Excel2007Reader extends AbstractExcel2007Reader {
 
     public Excel2007Reader(String filePath, boolean preview) throws Exception {

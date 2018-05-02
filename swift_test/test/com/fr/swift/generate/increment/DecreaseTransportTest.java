@@ -3,7 +3,9 @@ package com.fr.swift.generate.increment;
 import com.fr.base.FRContext;
 import com.fr.dav.LocalEnv;
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.config.TestConfDb;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.generate.BaseConfigTest;
 import com.fr.swift.generate.TestIndexer;
 import com.fr.swift.generate.TestTransport;
 import com.fr.swift.generate.realtime.RealtimeDataTransporter;
@@ -15,7 +17,6 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.db.TestConnectionProvider;
-import junit.framework.TestCase;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public class DecreaseTransportTest extends TestCase {
+public class DecreaseTransportTest extends BaseConfigTest {
 
     private DataSource dataSource;
 
@@ -35,6 +36,7 @@ public class DecreaseTransportTest extends TestCase {
         super.setUp();
         FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir") + "\\" + System.currentTimeMillis()));
         TestConnectionProvider.createConnection();
+        TestConfDb.setConfDb();
         dataSource = new QueryDBSource("select 记录人 from DEMO_CAPITAL_RETURN", "DecreaseTest");
     }
 

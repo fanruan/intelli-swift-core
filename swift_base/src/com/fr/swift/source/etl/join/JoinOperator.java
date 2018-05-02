@@ -20,6 +20,7 @@ import java.util.List;
 public class JoinOperator extends AbstractOperator {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(JoinOperator.class);
 
+    @CoreField
     private List<JoinColumn> columns;
     @CoreField
     private ColumnKey[] lKey;

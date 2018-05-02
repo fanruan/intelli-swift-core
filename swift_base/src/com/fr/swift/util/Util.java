@@ -6,7 +6,7 @@ import java.util.Collection;
  * @author anchore
  */
 public final class Util {
-    public static boolean in(Object check, Object... os) {
+    public static <T> boolean in(T check, T[] os) {
         if (check == null) {
             return false;
         }
@@ -16,6 +16,10 @@ public final class Util {
             }
         }
         return false;
+    }
+
+    public static <T> T[] toArray(T... os) {
+        return os;
     }
 
     public static void requireNonNull(Object o, String err) {

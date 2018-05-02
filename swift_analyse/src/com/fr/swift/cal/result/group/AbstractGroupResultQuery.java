@@ -2,10 +2,10 @@ package com.fr.swift.cal.result.group;
 
 import com.fr.swift.cal.Query;
 import com.fr.swift.cal.result.AbstractResultQuery;
-import com.fr.swift.query.adapter.target.GroupTarget;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.result.NodeResultSet;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -14,11 +14,12 @@ import java.util.List;
 public abstract class AbstractGroupResultQuery extends AbstractResultQuery<NodeResultSet> {
 
     protected List<Aggregator> aggregators;
-    protected List<GroupTarget> targets;
+    protected List<Comparator<Integer>> comparators;
 
-    public AbstractGroupResultQuery(List<Query<NodeResultSet>> queries, List<Aggregator> aggregators, List<GroupTarget> targets) {
+    public AbstractGroupResultQuery(List<Query<NodeResultSet>> queries, List<Aggregator> aggregators,
+                                    List<Comparator<Integer>> comparators) {
         super(queries);
         this.aggregators = aggregators;
-        this.targets = targets;
+        this.comparators = comparators;
     }
 }

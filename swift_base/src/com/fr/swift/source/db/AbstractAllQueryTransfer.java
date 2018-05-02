@@ -23,6 +23,12 @@ public abstract class AbstractAllQueryTransfer extends AbstractQueryTransfer {
         this.outerMeta = outerMeta;
     }
 
+    /**
+     * 获取执行的sql的metadata
+     *
+     * @return
+     * @throws SQLException
+     */
     protected abstract SwiftMetaData getSqlMeta() throws SQLException;
 
     @Override

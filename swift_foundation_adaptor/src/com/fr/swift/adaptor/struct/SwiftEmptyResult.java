@@ -5,7 +5,6 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -84,11 +83,6 @@ public class SwiftEmptyResult implements SwiftResultSet{
             @Override
             public int getColumnIndex(String columnName) {
                 return 0;
-            }
-
-            @Override
-            public Iterator<SwiftMetaDataColumn> iterator() {
-                return null;
             }
 
             @Override

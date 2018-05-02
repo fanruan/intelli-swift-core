@@ -2,6 +2,7 @@ package com.fr.swift.adaptor.transformer;
 
 import com.finebi.conf.constant.BICommonConstants;
 import com.finebi.conf.constant.BIConfConstants;
+import com.finebi.conf.constant.BIDesignConstants;
 import com.fr.swift.query.aggregator.AggregatorType;
 
 /**
@@ -84,5 +85,61 @@ public class AggregatorAdaptor {
             default:
                 return AggregatorType.COUNT;
         }
+    }
+
+    /**
+     * nice job ! foundation
+     * @param metricType
+     * @return
+     */
+    public static AggregatorType adaptorDashBoard(int metricType){
+        switch (metricType){
+            case BIDesignConstants.DESIGN.METRIC_TYPE.AUTO:
+            case BIDesignConstants.DESIGN.METRIC_TYPE.SUM:
+                return AggregatorType.SUM;
+            case BIDesignConstants.DESIGN.METRIC_TYPE.AVERAGE:
+                return AggregatorType.AVERAGE;
+            case BIDesignConstants.DESIGN.METRIC_TYPE.MAX:
+                return AggregatorType.MAX;
+            case BIDesignConstants.DESIGN.METRIC_TYPE.MIN:
+                return AggregatorType.MIN;
+            case BIDesignConstants.DESIGN.METRIC_TYPE.MEDIAN:
+                return AggregatorType.MEDIAN;
+            case BIDesignConstants.DESIGN.METRIC_TYPE.VARIANCE:
+                return AggregatorType.VARIANCE;
+            case BIDesignConstants.DESIGN.METRIC_TYPE.STANDARD_DEVIATION:
+                return AggregatorType.STANDARD_DEVIATION;
+        }
+        return null;
+    }
+
+    public static AggregatorType adaptorRapidCal(int rapidType) {
+        switch (rapidType) {
+            case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.NONE:
+            case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.SUM_OF_ALL:
+                return AggregatorType.SUM;
+        }
+        return null;
+    }
+
+    /**
+     * 计算指标这边只有四种聚合类型
+     *
+     * @param calTargetType
+     * @return
+     */
+    public static AggregatorType adaptorCalTarget(int calTargetType) {
+        switch (calTargetType) {
+            case BIDesignConstants.DESIGN.CAL_TARGET.SUM_OF_ALL_MAX:
+                return AggregatorType.MAX;
+            case BIDesignConstants.DESIGN.CAL_TARGET.SUM_OF_ALL_MIN:
+                return AggregatorType.MIN;
+            case BIDesignConstants.DESIGN.CAL_TARGET.SUM_OF_ALL_AVG:
+                return AggregatorType.AVERAGE;
+            case BIDesignConstants.DESIGN.CAL_TARGET.SUM_OF_ALL_SUM:
+                return AggregatorType.SUM;
+
+        }
+        return null;
     }
 }

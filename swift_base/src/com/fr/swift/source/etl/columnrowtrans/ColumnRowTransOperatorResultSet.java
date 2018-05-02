@@ -3,7 +3,7 @@ package com.fr.swift.source.etl.columnrowtrans;
 import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.query.group.by.MergerGroupByValues;
 import com.fr.swift.result.KeyValue;
-import com.fr.swift.result.RowIndexKey;
+import com.fr.swift.result.row.RowIndexKey;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;

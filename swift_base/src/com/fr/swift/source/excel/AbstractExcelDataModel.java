@@ -13,6 +13,7 @@ import java.util.Map;
 /**
  * Created by zcf on 2016/11/21.
  */
+@Deprecated
 public abstract class AbstractExcelDataModel extends AbstractDataModel {
     public final static int EXCEL_TYPE_XLS = 1;
     public final static int EXCEL_TYPE_XLSX = 2;

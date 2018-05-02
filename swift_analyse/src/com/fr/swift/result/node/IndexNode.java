@@ -1,6 +1,7 @@
 package com.fr.swift.result.node;
 
 import com.fr.swift.result.AbstractSwiftNode;
+import com.fr.swift.result.ChildMap;
 
 import java.util.List;
 

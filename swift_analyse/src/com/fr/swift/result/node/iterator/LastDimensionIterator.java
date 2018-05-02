@@ -1,10 +1,10 @@
 package com.fr.swift.result.node.iterator;
 
 import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.result.GroupNode;
 import com.fr.swift.structure.iterator.Filter;
 import com.fr.swift.structure.iterator.FilteredIterator;
 import com.fr.swift.structure.iterator.MapperIterator;
-import com.fr.swift.result.node.GroupNode;
 import com.fr.swift.util.function.Function;
 
 import java.util.Iterator;

@@ -15,4 +15,9 @@ public abstract class AbstractAggregator<T extends AggregatorValue> implements A
         }
         return traversal;
     }
+
+    @Override
+    public T createAggregatorValue(AggregatorValue value) {
+        return (T) new DoubleAmountAggregatorValue(value.calculate());
+    }
 }

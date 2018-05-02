@@ -7,7 +7,7 @@ import com.fr.swift.query.adapter.target.TargetInfo;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
-import com.fr.swift.result.GroupByResultSet;
+import com.fr.swift.result.row.GroupByResultSet;
 import com.fr.swift.source.SourceKey;
 
 /**

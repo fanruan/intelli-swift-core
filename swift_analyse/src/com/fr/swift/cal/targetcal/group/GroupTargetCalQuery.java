@@ -8,11 +8,14 @@ import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.match.MatchFilter;
-import com.fr.swift.query.filter.match.NodeAggregator;
-import com.fr.swift.query.filter.match.NodeFilter;
+import com.fr.swift.query.sort.Sort;
+import com.fr.swift.result.GroupNode;
+import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.NodeResultSet;
-import com.fr.swift.result.node.GroupNode;
+import com.fr.swift.result.node.GroupNodeAggregateUtils;
+import com.fr.swift.result.node.NodeType;
 import com.fr.swift.result.node.cal.TargetCalculatorUtils;
+import com.fr.swift.structure.Pair;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -39,15 +42,54 @@ public class GroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> {
         TargetCalculatorUtils.calculate(((GroupNode) mergeResult.getNode()), info.getTargetInfo().getGroupTargets());
         // 进行结果过滤
         List<MatchFilter> dimensionMatchFilter = getDimensionMatchFilters(info.getDimensionInfo().getDimensions());
-        if (hasDimensionFilter(dimensionMatchFilter)) {
-            NodeFilter.filter(mergeResult.getNode(), dimensionMatchFilter);
-            List<Aggregator> aggregators = info.getTargetInfo().getAggregatorListForResultMerging();
-            NodeAggregator.aggregate(mergeResult.getNode(), aggregators.toArray(new Aggregator[aggregators.size()]));
-        }
+        List<Aggregator> resultAggregators = info.getTargetInfo().getResultAggregators();
+//        if (hasDimensionFilter(dimensionMatchFilter)) {
+//            NodeFilter.filter(mergeResult.getNode(), dimensionMatchFilter);
+//            NodeAggregator.aggregate(mergeResult.getNode(), getCombinedAggregators(aggregators, resultAggregators));
+//        } else if (hasDifferentResultAggregator(aggregators, resultAggregators)) {
+//            NodeAggregator.aggregate(mergeResult.getNode(), getDifferentAggregator(aggregators, resultAggregators));
+//        }
         // 取出查询最后要返回的结果
-        TargetCalculatorUtils.getShowTargetsForGroupNode(((GroupNode) mergeResult.getNode()),
-                info.getTargetInfo().getTargetsForShowList());
+        TargetCalculatorUtils.getShowTargetsForGroupNodeAndSetNodeData(((GroupNode) mergeResult.getNode()),
+                info.getTargetInfo().getTargetsForShowList(), ((NodeMergeResultSet) mergeResult).getRowGlobalDictionaries());
+        // 取出要展示的结果和过滤之后再汇总
+        GroupNodeAggregateUtils.aggregate(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
+                (GroupNode) mergeResult.getNode(), info.getTargetInfo().getResultAggregators());
         return mergeResult;
+    }
+
+    private Pair<Aggregator, Boolean>[] getCombinedAggregators(List<Aggregator> aggregators, List<Aggregator> resultAggregators) {
+        Pair<Aggregator, Boolean>[] combinedAggregators = new Pair[aggregators.size()];
+        for (int i = 0; i < aggregators.size(); i++) {
+            if (resultAggregators != null && resultAggregators.get(i) != null && resultAggregators.get(i) != aggregators.get(i)) {
+                combinedAggregators[i] = Pair.of(resultAggregators.get(i), true);
+            } else {
+                combinedAggregators[i] = Pair.of(aggregators.get(i), false);
+            }
+        }
+        return combinedAggregators;
+    }
+
+    private Pair<Aggregator, Boolean>[] getDifferentAggregator(List<Aggregator> aggregators, List<Aggregator> resultAggregators) {
+        Pair<Aggregator, Boolean>[] combinedAggregators = new Pair[aggregators.size()];
+        for (int i = 0; i < aggregators.size(); i++) {
+            if (resultAggregators != null && resultAggregators.get(i) != null && resultAggregators.get(i) != aggregators.get(i)) {
+                combinedAggregators[i] = Pair.of(resultAggregators.get(i), true);
+            }
+        }
+        return combinedAggregators;
+    }
+
+    private boolean hasDifferentResultAggregator(List<Aggregator> aggregators, List<Aggregator> resultAggregators) {
+        if (resultAggregators == null || resultAggregators.isEmpty()) {
+            return false;
+        }
+        for (int i = 0; i < resultAggregators.size(); i++) {
+            if (resultAggregators.get(i) != null && resultAggregators.get(i) != aggregators.get(i)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean hasDimensionFilter(List<MatchFilter> dimensionMatchFilter) {
@@ -71,5 +113,19 @@ public class GroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> {
             }
         }
         return matchFilters;
+    }
+
+    /**
+     * 维度根据结果（比如聚合之后的指标）排序
+     */
+    private List<Sort> getIndexSorts(Dimension[] dimensions) {
+        List<Sort> indexSorts = new ArrayList<Sort>();
+        for (Dimension dimension : dimensions) {
+            Sort sort = dimension.getSort();
+            if (sort != null && sort.getTargetIndex() != dimension.getIndex()) {
+                indexSorts.add(sort);
+            }
+        }
+        return indexSorts;
     }
 }

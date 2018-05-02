@@ -5,6 +5,7 @@ import com.fr.general.DateUtils;
 import com.fr.general.Inter;
 import com.fr.stable.ColumnRow;
 import com.fr.stable.StringUtils;
+import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 
@@ -12,11 +13,16 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,6 +40,8 @@ public class ExcelCSVReader extends AbstractExcelReader {
     private List<Object[]> tempRowDataList = new ArrayList<Object[]>();
     private BufferedReader reader;
     private boolean end = false;
+    private ExecutorService readThread = Executors.newSingleThreadExecutor();
+    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(ExcelCSVReader.class);
 
     @Override
     public String[] getColumnNames() {
@@ -64,7 +72,7 @@ public class ExcelCSVReader extends AbstractExcelReader {
 
     @Override
     public List<Object[]> getRowDataList() {
-        return rowDataList;
+        return Collections.unmodifiableList(rowDataList);
     }
 
     public void setRowDataList(List<Object[]> rowDataList) {
@@ -88,16 +96,26 @@ public class ExcelCSVReader extends AbstractExcelReader {
         return currentRowData.toArray();
     }
 
-    public ExcelCSVReader(String filePath, boolean isPreview) throws Exception {
+    private void readCsv(InputStream inputStream, String filePath, boolean isPreview) throws Exception {
+        if (null == inputStream) {
+            if (-1 != filePath.indexOf("http")) {
+                URL url = new URL(filePath);
+                inputStream = url.openConnection().getInputStream();
+            } else {
+                inputStream = new FileInputStream(filePath);
+            }
+        }
         if (!isPreview) {
-            reader = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), codeString(filePath)));
+            reader = new BufferedReader(new InputStreamReader(inputStream, codeString(filePath)));
+            // 第一行是columnNames
+            read();
             return;
         }
         Object lock = ExcelFileLockUtils.getImageLock(filePath);
         synchronized (lock) {
             BufferedReader r = null;
             try {
-                r = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), codeString(filePath)));
+                r = new BufferedReader(new InputStreamReader(inputStream, codeString(filePath)));
                 int row = 0;
                 while (true) {
                     String ln = r.readLine();
@@ -124,6 +142,18 @@ public class ExcelCSVReader extends AbstractExcelReader {
             }
         }
         dealWithSomething();
+    }
+
+    public ExcelCSVReader(InputStream inputStream, String filePath, boolean isPreview) throws Exception {
+        try {
+            readCsv(inputStream, filePath, isPreview);
+        } catch (Exception e) {
+            readCsv(null, filePath, isPreview);
+        }
+    }
+
+    public ExcelCSVReader(String filePath, boolean isPreview) throws Exception {
+        this(null, filePath, isPreview);
     }
 
     private void createDistinctColumnNames() {
@@ -203,8 +233,13 @@ public class ExcelCSVReader extends AbstractExcelReader {
     }
 
     public static String codeString(String filePath) throws Exception {
-
-        BufferedInputStream bin = new BufferedInputStream(new FileInputStream(filePath));
+        InputStream inputStream = null;
+        if (filePath.startsWith("http")) {
+            inputStream = new URL(filePath).openStream();
+        } else {
+            inputStream = new FileInputStream(filePath);
+        }
+        BufferedInputStream bin = new BufferedInputStream(inputStream);
         int p = (bin.read() << READLENGTH) + bin.read();
         String code = null;
         //其中的 0xefbb、0xfffe、0xfeff、0x5c75这些都是这个文件的前面两个字节的16进制数

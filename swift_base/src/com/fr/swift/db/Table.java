@@ -1,5 +1,6 @@
 package com.fr.swift.db;
 
+import com.fr.swift.source.DataSource;
 import com.fr.swift.source.Source;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
@@ -10,7 +11,7 @@ import java.sql.SQLException;
  * @author anchore
  * @date 2018/3/26
  */
-public interface Table extends Source {
+public interface Table extends Source, DataSource {
     /**
      * 元数据
      *
@@ -30,6 +31,7 @@ public interface Table extends Source {
 
     /**
      * 增：插入
+     * 加到内存，达到一定量进行合并写入
      *
      * @param rowSet 结果集
      * @throws SQLException 异常
@@ -38,6 +40,7 @@ public interface Table extends Source {
 
     /**
      * 增：导入
+     * 直接写入，适用于大量数据
      *
      * @param rowSet 结果及
      * @throws SQLException 异常

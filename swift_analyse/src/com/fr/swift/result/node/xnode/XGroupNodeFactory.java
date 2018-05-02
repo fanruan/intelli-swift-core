@@ -1,19 +1,21 @@
 package com.fr.swift.result.node.xnode;
 
-import com.fr.swift.query.adapter.target.cal.TargetInfoImpl;
+import com.fr.swift.query.adapter.target.TargetInfo;
 import com.fr.swift.query.aggregator.AggregatorValue;
-import com.fr.swift.structure.iterator.Filter;
-import com.fr.swift.structure.iterator.FilteredIterator;
-import com.fr.swift.structure.iterator.MapperIterator;
+import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.KeyValue;
-import com.fr.swift.result.RowIndexKey;
-import com.fr.swift.result.XGroupByResultSet;
-import com.fr.swift.result.node.GroupNode;
+import com.fr.swift.result.TopGroupNode;
+import com.fr.swift.result.XLeftNode;
 import com.fr.swift.result.node.GroupNodeAggregateUtils;
 import com.fr.swift.result.node.GroupNodeFactory;
 import com.fr.swift.result.node.NodeType;
-import com.fr.swift.structure.iterator.IteratorUtils;
 import com.fr.swift.result.node.iterator.PostOrderNodeIterator;
+import com.fr.swift.result.row.RowIndexKey;
+import com.fr.swift.result.row.XGroupByResultSet;
+import com.fr.swift.structure.iterator.Filter;
+import com.fr.swift.structure.iterator.FilteredIterator;
+import com.fr.swift.structure.iterator.IteratorUtils;
+import com.fr.swift.structure.iterator.MapperIterator;
 import com.fr.swift.util.function.Function;
 
 import java.util.ArrayList;
@@ -32,16 +34,15 @@ public class XGroupNodeFactory {
      * @param resultSet 交叉表聚合的行结果集
      * @param targetInfo 交叉表计算指标相关属性
      * @return 交叉表计算结果的node根节点
-     * @throws Exception
      */
-    public static XGroupNode createXGroupNode(XGroupByResultSet resultSet, TargetInfoImpl targetInfo) throws Exception {
+    public static XGroupNode createXGroupNode(XGroupByResultSet resultSet, TargetInfo targetInfo) {
         // 构建节点
         XLeftNode xLeftNode = XLeftNodeFactory.createXLeftNode(resultSet, targetInfo.getTargetLength());
         // 处理计算指标
 //        xLeftNode = (XLeftNode) TargetCalculatorUtils.calculate(xLeftNode,
 //                targetInfo.getTargetCalculatorInfoList(), targetInfo.getTargetsForShowList());
         GroupNodeAggregateUtils.aggregate(NodeType.X_LEFT, resultSet.rowDimensionSize(), xLeftNode,
-                targetInfo.getAggregatorListForResultMerging());
+                targetInfo.getResultAggregators());
         // 表头groupBy的维度key
         List<RowIndexKey<int[]>> keys = getTopDimensionKeys(resultSet);
         // 表头groupBy的行结果集
@@ -52,7 +53,7 @@ public class XGroupNodeFactory {
                 topResultSet, resultSet.getColGlobalDictionaries());
         // 通过topGroupNode来做列向汇总
         GroupNodeAggregateUtils.aggregate(NodeType.TOP_GROUP, resultSet.colDimensionSize(), topGroupNode,
-                targetInfo.getAggregatorListForResultMerging());
+                targetInfo.getResultAggregators());
         // 给xLeftNode重新设置value，增加了列向汇总值
         setValues2XLeftNode(resultSet.colDimensionSize(), resultSet.rowDimensionSize(), topGroupNode, xLeftNode);
         // TODO: 2018/4/11 topGroupNode是不是要清理一下引用呢？
@@ -152,10 +153,7 @@ public class XGroupNodeFactory {
             @Override
             public boolean accept(N n) {
                 // 过滤掉不用显示的汇总行
-                if (n.getChildrenSize() == 1) {
-                    return false;
-                }
-                return true;
+                return n.getChildrenSize() != 1;
             }
         });
     }

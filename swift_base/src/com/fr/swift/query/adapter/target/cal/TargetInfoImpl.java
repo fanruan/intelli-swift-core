@@ -16,15 +16,15 @@ public class TargetInfoImpl implements TargetInfo {
     private List<Metric> metrics;
     private List<GroupTarget> groupTargets;
     private List<ResultTarget> targetsForShowList;
-    private List<Aggregator> aggregatorListForResultTargetMerging;
+    private List<Aggregator> resultAggregators;
 
-    public TargetInfoImpl(List<Metric> metrics, List<GroupTarget> groupTargets,
-                          List<ResultTarget> targetsForShowList, List<Aggregator> aggregatorListForResultTargetMerging) {
+    public TargetInfoImpl(int targetLength, List<Metric> metrics, List<GroupTarget> groupTargets,
+                          List<ResultTarget> targetsForShowList, List<Aggregator> resultAggregators) {
+        this.targetLength = targetLength;
         this.metrics = metrics;
         this.groupTargets = groupTargets;
         this.targetsForShowList = targetsForShowList;
-        this.aggregatorListForResultTargetMerging = aggregatorListForResultTargetMerging;
-        this.targetLength = metrics.size() + groupTargets.size();
+        this.resultAggregators = resultAggregators;
     }
 
     @Override
@@ -38,18 +38,13 @@ public class TargetInfoImpl implements TargetInfo {
     }
 
     @Override
-    public List<Aggregator> getAggregatorListOfMetrics() {
-        return null;
-    }
-
-    @Override
     public List<GroupTarget> getGroupTargets() {
         return groupTargets;
     }
 
     @Override
-    public List<Aggregator> getAggregatorListForResultMerging() {
-        return aggregatorListForResultTargetMerging;
+    public List<Aggregator> getResultAggregators() {
+        return resultAggregators;
     }
 
     @Override

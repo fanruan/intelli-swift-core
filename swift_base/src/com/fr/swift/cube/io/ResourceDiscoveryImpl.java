@@ -135,11 +135,11 @@ public class ResourceDiscoveryImpl implements ResourceDiscovery {
     //todo 路径需要单独配置，后续需要对此进行改正，现在先简单处理
     private String getCubeBasePath(String path) {
         if (isMinor(path)) {
-            int index = path.indexOf("minor_cubes");
-            return path.substring(0, index + 20);
+            int index = path.indexOf("minor_cubes/");
+            return path.substring(0, index + "minor_cubes/".length() + 8);
         } else {
-            int index = path.indexOf("cubes");
-            return path.substring(0, index + 14);
+            int index = path.indexOf("cubes/");
+            return path.substring(0, index + "cubes/".length() + 8);
         }
     }
 
