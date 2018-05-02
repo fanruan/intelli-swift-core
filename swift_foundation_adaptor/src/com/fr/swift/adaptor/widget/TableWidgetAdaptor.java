@@ -31,6 +31,7 @@ import com.fr.swift.query.adapter.dimension.Expander;
 import com.fr.swift.query.adapter.dimension.GroupDimension;
 import com.fr.swift.query.adapter.metric.Metric;
 import com.fr.swift.query.adapter.target.GroupTarget;
+import com.fr.swift.query.adapter.target.TargetInfo;
 import com.fr.swift.query.adapter.target.cal.ResultTarget;
 import com.fr.swift.query.adapter.target.cal.TargetInfoImpl;
 import com.fr.swift.query.aggregator.Aggregator;
@@ -39,8 +40,8 @@ import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.group.Group;
+import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeResultSet;
-import com.fr.swift.result.node.GroupNode;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.Row;
@@ -67,7 +68,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         BIGroupNode resultNode;
         SwiftResultSet resultSet;
         try {
-            TargetInfoImpl targetInfo = CalTargetParseUtils.parseCalTarget(widget);
+            TargetInfo targetInfo = CalTargetParseUtils.parseCalTarget(widget);
             resultSet = QueryRunnerProvider.getInstance().executeQuery(buildQueryInfo(widget, targetInfo));
             GroupNode groupNode = (GroupNode) ((NodeResultSet) resultSet).getNode();
             resultNode = new BIGroupNodeAdaptor(groupNode);
@@ -110,7 +111,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         }
     }
 
-    private static QueryInfo buildQueryInfo(TableWidget widget, TargetInfoImpl targetInfo) throws Exception {
+    private static QueryInfo buildQueryInfo(TableWidget widget, TargetInfo targetInfo) throws Exception {
         Cursor cursor = null;
         String queryId = widget.getWidgetId();
         SourceKey sourceKey = getSourceKey(widget);
@@ -203,7 +204,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         FilterInfo filterInfo = new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
         GroupQueryInfo queryInfo = new GroupQueryInfo(fromWidget.getwId(), fromColumns[0].getSourceKey(),
                 new DimensionInfoImpl(new AllCursor(), filterInfo, null, fromColumns),
-                new TargetInfoImpl(new ArrayList<Metric>(0), new ArrayList<GroupTarget>(0), new ArrayList<ResultTarget>(0), new ArrayList<Aggregator>(0)));
+                new TargetInfoImpl(0, new ArrayList<Metric>(0), new ArrayList<GroupTarget>(0), new ArrayList<ResultTarget>(0), new ArrayList<Aggregator>(0)));
         SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
         Set[] results = new HashSet[toColumns.length];
         for (int i = 0; i < results.length; i++) {

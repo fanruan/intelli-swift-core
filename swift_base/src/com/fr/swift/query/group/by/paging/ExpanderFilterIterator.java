@@ -2,7 +2,7 @@ package com.fr.swift.query.group.by.paging;
 
 import com.fr.swift.query.adapter.dimension.Expander;
 import com.fr.swift.result.KeyValue;
-import com.fr.swift.result.RowIndexKey;
+import com.fr.swift.result.row.RowIndexKey;
 import com.fr.swift.structure.iterator.Filter;
 import com.fr.swift.structure.iterator.FilteredIterator;
 import com.fr.swift.structure.iterator.RowTraversal;

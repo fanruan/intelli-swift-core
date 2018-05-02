@@ -2,9 +2,8 @@ package com.fr.swift.query.group.by;
 
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.result.KeyValue;
-import com.fr.swift.result.RowIndexKey;
+import com.fr.swift.result.row.RowIndexKey;
 import com.fr.swift.segment.column.Column;
-import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.structure.iterator.RowTraversal;
 import com.fr.swift.structure.stack.ArrayLimitedStack;
 import com.fr.swift.structure.stack.LimitedStack;

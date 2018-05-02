@@ -1,7 +1,7 @@
 package com.fr.swift.result.node.iterator;
 
+import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.KeyValue;
-import com.fr.swift.result.node.GroupNode;
 import com.fr.swift.structure.stack.ArrayLimitedStack;
 import com.fr.swift.structure.stack.LimitedStack;
 

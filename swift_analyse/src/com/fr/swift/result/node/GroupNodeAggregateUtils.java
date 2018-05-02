@@ -2,10 +2,11 @@ package com.fr.swift.result.node;
 
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.result.GroupNode;
+import com.fr.swift.result.TopGroupNode;
+import com.fr.swift.result.XLeftNode;
 import com.fr.swift.result.node.iterator.ChildIterator;
 import com.fr.swift.result.node.iterator.NLevelGroupNodeIterator;
-import com.fr.swift.result.node.xnode.TopGroupNode;
-import com.fr.swift.result.node.xnode.XLeftNode;
 
 import java.util.Iterator;
 import java.util.List;
@@ -89,18 +90,40 @@ public class GroupNodeAggregateUtils {
      */
     private static void mergeChildNode(GroupNode groupNode, List<Aggregator> aggregators) {
         // >= 两个子节点才汇总
-        if (groupNode.getChildrenSize() <= 1) {
+        if (groupNode.getChildrenSize() == 0) {
+            return;
+        }
+        if (groupNode.getChildrenSize() == 1) {
+            // 把子节点的values复制过来
+            groupNode.setAggregatorValue(createAggregateValues(groupNode.getChild(0).getAggregatorValue(), aggregators));
             return;
         }
         Iterator<GroupNode> iterator = new ChildIterator(groupNode);
         AggregatorValue[] valuesOfParent = groupNode.getAggregatorValue();
+        if (valuesOfParent.length == 0) {
+            // 父节点为空，先拷贝把第一个子节点的值拷贝过来
+            valuesOfParent = createAggregateValues(iterator.next().getAggregatorValue(), aggregators);
+        }
         // aggregator的个数和values的长度要想等，不管是哪种类型的value，都要有个对应的aggregator
         assert aggregators.size() == valuesOfParent.length;
         while (iterator.hasNext()) {
             AggregatorValue[] valuesOfChild = iterator.next().getAggregatorValue();
             for (int i = 0; i < valuesOfParent.length; i++) {
-                aggregators.get(i).combine(valuesOfParent[i], valuesOfChild[i]);
+                if (valuesOfParent[i] == null) {
+                    valuesOfParent[i] = aggregators.get(i).createAggregatorValue(valuesOfChild[i]);
+                } else {
+                    aggregators.get(i).combine(valuesOfParent[i], valuesOfChild[i]);
+                }
             }
         }
+        groupNode.setAggregatorValue(valuesOfParent);
+    }
+
+    private static AggregatorValue[] createAggregateValues(AggregatorValue[] valuesOfFirstChild, List<Aggregator> aggregators) {
+        AggregatorValue[] values = new AggregatorValue[valuesOfFirstChild.length];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = aggregators.get(i).createAggregatorValue(valuesOfFirstChild[i]);
+        }
+        return values;
     }
 }

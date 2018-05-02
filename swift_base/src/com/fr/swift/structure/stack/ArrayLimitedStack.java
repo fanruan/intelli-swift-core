@@ -1,6 +1,7 @@
 package com.fr.swift.structure.stack;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
@@ -64,7 +65,11 @@ public class ArrayLimitedStack<T> implements LimitedStack<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public T[] toArray() {
-        return (T[]) Arrays.copyOf(items, items.length);
+    public List<T> toList() {
+        List<T> copy = new ArrayList<T>();
+        for (int i = 0; i < limit; i++) {
+            copy.add((T) items[i]);
+        }
+        return copy;
     }
 }

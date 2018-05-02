@@ -1,5 +1,7 @@
 package com.fr.swift.structure.stack;
 
+import java.util.List;
+
 /**
  * Created by Lyon on 2018/3/1.
  *
@@ -44,8 +46,8 @@ public interface LimitedStack<T> {
     T peek();
 
     /**
-     * 长度为limit，空值用null填充
+     * 长度为limit，空值用null填充的list，浅拷贝
      * @return
      */
-    T[] toArray();
+    List<T> toList();
 }
