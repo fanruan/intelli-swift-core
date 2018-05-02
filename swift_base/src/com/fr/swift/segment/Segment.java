@@ -4,7 +4,6 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.cube.io.Flushable;
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.cube.io.location.IResourceLocation;
-import com.fr.swift.relation.CubeLogicColumnKey;
 import com.fr.swift.relation.CubeMultiRelation;
 import com.fr.swift.relation.CubeMultiRelationPath;
 import com.fr.swift.segment.column.Column;
@@ -43,7 +42,7 @@ public interface Segment extends Releasable, Flushable {
 
     RelationIndex getRelation(CubeMultiRelationPath f);
 
-    RelationIndex getRelation(CubeLogicColumnKey f);
+    RelationIndex getRelation(ColumnKey f, CubeMultiRelationPath relationPath);
 
     /**
      * 获取未被删除的索引

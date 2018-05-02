@@ -14,6 +14,7 @@ import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
+import com.fr.swift.segment.column.ColumnKey;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -42,10 +43,10 @@ public class StringControlWidgetAdaptor extends AbstractTableWidgetAdaptor {
             times = times == 0 ? 1 : times;
             List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
             if (!StringUtils.isEmpty(keyWords)) {
-                filterInfos.add(new SwiftDetailFilterInfo<String>(getColumnName(dimension.getFieldId()), keyWords, SwiftDetailFilterType.STRING_LIKE));
+                filterInfos.add(new SwiftDetailFilterInfo<String>(new ColumnKey(getColumnName(dimension.getFieldId())), keyWords, SwiftDetailFilterType.STRING_LIKE));
             }
             if (selectValues != null && !selectValues.isEmpty()) {
-                filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(getColumnName(dimension.getFieldId()), new HashSet<String>(selectValues), SwiftDetailFilterType.STRING_NOT_IN));
+                filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(getColumnName(dimension.getFieldId())), new HashSet<String>(selectValues), SwiftDetailFilterType.STRING_NOT_IN));
             }
             if (widget.getFilters() != null) {
                 filterInfos.add(FilterInfoFactory.transformFineFilter(widget.getFilters()));

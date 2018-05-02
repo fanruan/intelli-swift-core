@@ -8,6 +8,7 @@ import com.fr.swift.source.etl.EtlSource;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +26,7 @@ public abstract class AbstractRelationReliance<T extends IRelationNode, R extend
     public AbstractRelationReliance(List<R> allRelationSource, SourceReliance sourceReliance) {
         handleSingleRelationSource(allRelationSource);
         handleDataSource(sourceReliance);
-        this.headNode = new HashMap<SourceKey, T>();
+        this.headNode = new LinkedHashMap<SourceKey, T>();
     }
 
     public AbstractRelationReliance(List<R> allRelationSource, List<DataSource> sourceReliance) {
@@ -35,12 +36,12 @@ public abstract class AbstractRelationReliance<T extends IRelationNode, R extend
                 sourceReliance) {
             allDataSourceList.put(dataSource.getSourceKey(), dataSource);
         }
-        this.headNode = new HashMap<SourceKey, T>();
+        this.headNode = new LinkedHashMap<SourceKey, T>();
     }
 
     public AbstractRelationReliance(List<R> allRelationSource) {
         handleSingleRelationSource(allRelationSource);
-        this.headNode = new HashMap<SourceKey, T>();
+        this.headNode = new LinkedHashMap<SourceKey, T>();
     }
 
     private void handleDataSource(SourceReliance reliance) {

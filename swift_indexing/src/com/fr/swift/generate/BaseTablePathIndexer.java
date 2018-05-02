@@ -52,7 +52,10 @@ public abstract class BaseTablePathIndexer extends BaseWorker {
             List<Segment> pre = getPreTableSegments();
             List<Segment> target = getTargetTableSegments();
             int primaryPos = 0;
-            for (Segment segment : primary) {
+            int[] segPos = new int[primary.size()];
+            for (int i = 0; i < segPos.length; i++) {
+                Segment segment = primary.get(i);
+                segPos[i] = primaryPos;
                 primaryPos += segment.getRowCount();
                 releaseIfNeed(segment);
             }
@@ -71,6 +74,9 @@ public abstract class BaseTablePathIndexer extends BaseWorker {
                         reversePos = buildIndexPerSegment(preTableRelationIndex, targetTableRelationIndex, lastRelationReader, tSegment.getRowCount(), primaryPos, reversePos);
                     }
                     targetTableRelationIndex.putReverseCount(reversePos);
+                    for (int j = 0; j < segPos.length; j++) {
+                        targetTableRelationIndex.putSegStartPos(j, segPos[j]);
+                    }
                 } catch (Exception e) {
                     Crasher.crash("build path index error", e);
                 } finally {

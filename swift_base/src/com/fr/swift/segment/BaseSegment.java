@@ -12,7 +12,6 @@ import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.BitMapWriter;
 import com.fr.swift.cube.io.output.IntWriter;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.relation.CubeLogicColumnKey;
 import com.fr.swift.relation.CubeMultiRelation;
 import com.fr.swift.relation.CubeMultiRelationPath;
 import com.fr.swift.segment.column.Column;
@@ -117,8 +116,8 @@ public abstract class BaseSegment implements Segment {
     }
 
     @Override
-    public RelationIndex getRelation(CubeLogicColumnKey f) {
-        return RelationIndexImpl.newFieldRelationIndex(getLocation(), f.belongTo().getId(), f.getKey());
+    public RelationIndex getRelation(ColumnKey f, CubeMultiRelationPath relationPath) {
+        return RelationIndexImpl.newFieldRelationIndex(getLocation(), relationPath.getStartTable().getId(), f.getName());
     }
 
     @Override

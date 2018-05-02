@@ -11,6 +11,7 @@ import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
+import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.utils.BusinessTableUtils;
 
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ public class TreeLabelWidgetAdaptor {
     private static FilterInfo selectedValues2FilterInfo(String fieldName, List<String> selectedValues, FilterInfo filterInfo) {
         List<FilterInfo> filterInfoList = new ArrayList<FilterInfo>();
         filterInfoList.add(filterInfo);
-        filterInfoList.add(new SwiftDetailFilterInfo<Set<String>>(fieldName, new HashSet<String>(selectedValues),
+        filterInfoList.add(new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(fieldName), new HashSet<String>(selectedValues),
                 SwiftDetailFilterType.STRING_IN));
         return new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
     }

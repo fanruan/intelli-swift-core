@@ -66,6 +66,7 @@ public abstract class BaseMultiRelationIndexer extends BaseWorker {
             int reversePos = 0;
             try {
                 for (int i = 0; i < primarySegments.size(); i++) {
+                    relationIndex.putSegStartPos(i, currentPos - 1);
                     LOGGER.info("start build relation primary segment: " + i + " to foreign segment: " + j);
                     int[] result = buildRelationIndex(primarySegments.get(i), foreignSegments.get(j), relationIndex, i, currentPos, reversePos);
                     currentPos = result[0];

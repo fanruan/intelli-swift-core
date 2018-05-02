@@ -4,6 +4,7 @@ import com.fr.swift.query.filter.DetailFilterFactory;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.core.CoreField;
 
 /**
@@ -19,10 +20,16 @@ public class SwiftDetailFilterInfo<T> extends AbstractDetailFilterInfo {
     @CoreField
     private SwiftDetailFilterType type;
 
-    public SwiftDetailFilterInfo(String fieldName, T filterValue, SwiftDetailFilterType type) {
-        this.fieldName = fieldName;
+    @CoreField
+    private ColumnKey columnKey;
+
+    public SwiftDetailFilterInfo(ColumnKey columnKey, T filterValue, SwiftDetailFilterType type) {
         this.filterValue = filterValue;
         this.type = type;
+        this.columnKey = columnKey;
+        if (null != columnKey) {
+            this.fieldName = columnKey.getName();
+        }
     }
 
     public String getFieldName() {
@@ -31,6 +38,10 @@ public class SwiftDetailFilterInfo<T> extends AbstractDetailFilterInfo {
 
     public T getFilterValue() {
         return filterValue;
+    }
+
+    public ColumnKey getColumnKey() {
+        return columnKey;
     }
 
     public SwiftDetailFilterType getType() {

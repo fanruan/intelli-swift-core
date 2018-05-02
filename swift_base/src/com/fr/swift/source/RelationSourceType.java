@@ -5,5 +5,5 @@ package com.fr.swift.source;
  * @date 2018/3/29
  */
 public enum RelationSourceType {
-    RELATION, RELATION_PATH
+    RELATION, RELATION_PATH, FIELD_RELATION
 }

@@ -81,7 +81,8 @@ public class LinkageAdaptor {
                 Set<String> values = new HashSet<String>();
                 values.add(value);
                 WidgetDimensionBean bean = fromWidget.getDimensions().get(clickValueItem.getdId());
-                filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(BusinessTableUtils.getFieldNameByFieldId(bean.getFieldId()), values, SwiftDetailFilterType.STRING_IN));
+                ColumnKey columnKey = new ColumnKey(BusinessTableUtils.getFieldNameByFieldId(bean.getFieldId()));
+                filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(columnKey, values, SwiftDetailFilterType.STRING_IN));
             }
         }
     }
@@ -100,22 +101,15 @@ public class LinkageAdaptor {
                 Crasher.crash(String.format("can not find relation paths between %s and %s!", table, fromWidget.getTableName()));
             }
             RelationSource relationSource = RelationSourceFactory.transformRelationSourcesFromPath(relationPaths.get(0));
-            boolean isPrimary = true;
             for (int i = 0; i < clickedList.size(); i++) {
                 ClickValueItem clickValueItem = clickedList.get(i);
                 String value = clickValueItem.getText();
                 Set<String> values = new HashSet<String>();
                 values.add(value);
                 WidgetDimensionBean bean = fromWidget.getDimensions().get(clickValueItem.getdId());
-                if (i == 0) {
-                    String fromTableSource = BusinessTableUtils.getSourceIdByFieldId(bean.getFieldId());
-                    isPrimary = ComparatorUtils.equals(relationSource.getPrimarySource().getId(), fromTableSource);
-                }
-                if (isPrimary) {
-                    handlePrimaryValues(relationSource, BusinessTableUtils.getFieldNameByFieldId(bean.getFieldId()), values, filterInfos);
-                } else {
-                    handleForeignValues(relationSource, BusinessTableUtils.getFieldNameByFieldId(bean.getFieldId()), values, filterInfos);
-                }
+                ColumnKey columnKey = new ColumnKey(BusinessTableUtils.getFieldNameByFieldId(bean.getFieldId()));
+                columnKey.setRelation(relationSource);
+                filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(columnKey, values, SwiftDetailFilterType.STRING_IN));
             }
         }
     }
@@ -142,7 +136,7 @@ public class LinkageAdaptor {
             for (RelationColumn.KeyRow row : rows) {
                 set.add(row.getData()[i].toString());
             }
-            filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(foreignFields.get(i), set, SwiftDetailFilterType.STRING_IN));
+            filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(foreignFields.get(i)), set, SwiftDetailFilterType.STRING_IN));
         }
 
     }
@@ -191,7 +185,7 @@ public class LinkageAdaptor {
             dicColumn.release();
         }
         for (int i = 0; i < size; i++) {
-            filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(primaryFields.get(i), filterSet[i], SwiftDetailFilterType.STRING_IN));
+            filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(primaryFields.get(i)), filterSet[i], SwiftDetailFilterType.STRING_IN));
         }
     }
 }

@@ -4,7 +4,6 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
 import com.fr.swift.cube.io.location.IResourceLocation;
-import com.fr.swift.relation.CubeLogicColumnKey;
 import com.fr.swift.relation.CubeMultiRelation;
 import com.fr.swift.relation.CubeMultiRelationPath;
 import com.fr.swift.segment.Segment;
@@ -45,7 +44,7 @@ public class BaseCreateSegmentForUnion2Test {
             }
 
             @Override
-            public RelationIndex getRelation(CubeLogicColumnKey f) {
+            public RelationIndex getRelation(ColumnKey f, CubeMultiRelationPath relationPath) {
                 return null;
             }
 
@@ -65,9 +64,9 @@ public class BaseCreateSegmentForUnion2Test {
                 } else {
                     return new BaseCreateColumn2Test().getColumn();
                 }*/
-                if(key.getName().equals("column3")) {
+                if (key.getName().equals("column3")) {
                     return new BaseCreateColumn2Test().getColumn();
-                } else if(key.getName().equals("column4")) {
+                } else if (key.getName().equals("column4")) {
                     return new BaseCreateColumn2Test().getColumn();
                 }
                 return null;
@@ -76,7 +75,7 @@ public class BaseCreateSegmentForUnion2Test {
             @Override
             public ImmutableBitMap getAllShowIndex() {
                 MutableBitMap bitMap = BitSetMutableBitMap.newInstance();
-                for(int i = 0; i < getRowCount(); i++) {
+                for (int i = 0; i < getRowCount(); i++) {
                     bitMap.add(i);
                 }
                 return bitMap;

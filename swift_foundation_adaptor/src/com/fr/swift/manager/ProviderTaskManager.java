@@ -12,6 +12,7 @@ import com.fr.swift.cube.task.impl.WorkerTaskPool;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.flow.FlowRuleController;
 import com.fr.swift.generate.history.TableBuilder;
+import com.fr.swift.generate.history.index.FieldPathIndexer;
 import com.fr.swift.generate.history.index.MultiRelationIndexer;
 import com.fr.swift.generate.history.index.TablePathIndexer;
 import com.fr.swift.generate.realtime.RealtimeTableBuilder;
@@ -20,7 +21,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.relation.utils.RelationPathHelper;
 import com.fr.swift.reliance.SourceNode;
 import com.fr.swift.source.RelationSource;
-import com.fr.swift.source.RelationSourceType;
+import com.fr.swift.source.relation.FieldRelationSource;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.function.Function;
 
@@ -83,10 +84,17 @@ public class ProviderTaskManager {
                 } else if (o instanceof RelationSource) {
                     RelationSource source = (RelationSource) o;
                     WorkerTask wt = new WorkerTaskImpl(taskKey);
-                    if (source.getRelationType() == RelationSourceType.RELATION) {
-                        wt.setWorker(new MultiRelationIndexer(RelationPathHelper.convert2CubeRelation(source), LocalSegmentProvider.getInstance()));
-                    } else {
-                        wt.setWorker(new TablePathIndexer(RelationPathHelper.convert2CubeRelationPath(source), LocalSegmentProvider.getInstance()));
+                    switch (source.getRelationType()) {
+                        case RELATION:
+                            wt.setWorker(new MultiRelationIndexer(RelationPathHelper.convert2CubeRelation(source), LocalSegmentProvider.getInstance()));
+                            break;
+                        case RELATION_PATH:
+                            wt.setWorker(new TablePathIndexer(RelationPathHelper.convert2CubeRelationPath(source), LocalSegmentProvider.getInstance()));
+                            break;
+                        case FIELD_RELATION:
+                            FieldRelationSource fieldRelationSource = (FieldRelationSource) source;
+                            wt.setWorker(new FieldPathIndexer(RelationPathHelper.convert2CubeRelationPath(fieldRelationSource.getRelationSource()), fieldRelationSource.getColumnKey(), LocalSegmentProvider.getInstance()));
+                            break;
                     }
                     return wt;
                 } else {

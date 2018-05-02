@@ -151,7 +151,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
                 String value = drill.getFromValue();
                 Set<String> values = new HashSet<String>();
                 values.add(value);
-                filterInfoList.add(new SwiftDetailFilterInfo<Set<String>>(columnName, values, SwiftDetailFilterType.STRING_IN));
+                filterInfoList.add(new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(columnName), values, SwiftDetailFilterType.STRING_IN));
             }
         }
         widget.getValue().getDrillList();
@@ -217,7 +217,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
             }
         }
         for (int i = 0; i < toColumns.length; i++) {
-            filterInfoList.add(new SwiftDetailFilterInfo(toColumns[i], results[i], SwiftDetailFilterType.STRING_IN));
+            filterInfoList.add(new SwiftDetailFilterInfo(new ColumnKey(toColumns[i]), results[i], SwiftDetailFilterType.STRING_IN));
         }
     }
 
