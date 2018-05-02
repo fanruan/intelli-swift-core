@@ -1,6 +1,9 @@
 package com.fr.swift.query.adapter.dimension;
 
 import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.result.row.RowIndexKey;
+
+import java.util.HashSet;
 
 /**
  * Created by Lyon on 2018/4/23.
@@ -15,7 +18,8 @@ public class DimensionInfoImpl implements DimensionInfo {
     public DimensionInfoImpl(Cursor cursor, FilterInfo filterInfo, Expander expander, Dimension[] dimensions) {
         this.cursor = cursor;
         this.filterInfo = filterInfo;
-        this.expander = expander;
+        this.expander = expander == null ?
+                new ExpanderImpl(ExpanderType.ALL_EXPANDER, new HashSet<RowIndexKey<String[]>>()) : expander;
         this.dimensions = dimensions;
     }
 

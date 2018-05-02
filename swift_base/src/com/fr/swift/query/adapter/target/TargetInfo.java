@@ -19,18 +19,12 @@ public interface TargetInfo {
     int getTargetLength();
 
     /**
-     * 需要聚合的指标
+     * 需要聚合的指标，Metric里面包含Aggregator的信息
+     * 明细过滤也是在解析SegmentGroupQuery的时候加到Aggregator里面去的
      *
      * @return
      */
     List<Metric> getMetrics();
-
-    /**
-     * 聚合指标用到的聚合器
-     *
-     * @return
-     */
-    List<Aggregator> getAggregatorListOfMetrics();
 
     /**
      * 要根据聚合结果或者已经计算好的计算指标来计算的计算指标
@@ -40,14 +34,14 @@ public interface TargetInfo {
     List<GroupTarget> getGroupTargets();
 
     /**
-     * 用于结果合并的聚合器，这是的结果是metrics + groupTargets
+     * 用于结果合并的聚合器，对应最后一步计算的中间结果[metrics + groupTargets]，他们的顺序和对应关系在解析查询信息的就确定好了
      *
      * @return
      */
-    List<Aggregator> getAggregatorListForResultMerging();
+    List<Aggregator> getResultAggregators();
 
     /**
-     * 所有计算结果Number[targetLength]里面要展示的指标的索引
+     * 用于从最后一步计算的中间结果([metrics + groupTargets])中取出查询最后返回的结果
      *
      * @return
      */

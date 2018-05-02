@@ -1,6 +1,7 @@
-package com.fr.swift.result;
+package com.fr.swift.result.row;
 
 import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.result.KeyValue;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.util.List;

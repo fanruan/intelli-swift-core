@@ -1,6 +1,6 @@
 package com.fr.swift.result.node.iterator;
 
-import com.fr.swift.result.node.GroupNode;
+import com.fr.swift.result.GroupNode;
 import junit.framework.TestCase;
 
 import java.util.Iterator;
@@ -16,12 +16,12 @@ public class PostOrderNodeIteratorTest extends TestCase {
     public void setUp() throws Exception {
         // 定义 T = { key, C }, C = {T1, T2, ...}, Ti E T
         // node = {'a', {{'b', {}}, {'c', {'e', {}}}, {'d', {}}}}
-        node = new GroupNode(0, -1, 'a');
-        node.addChild(new GroupNode(0, 1, 'b'));
-        GroupNode n = new GroupNode(0, 1, 'c');
-        n.addChild(new GroupNode(0, 2, 'e'));
+        node = new GroupNode(-1, 'a');
+        node.addChild(new GroupNode(1, 'b'));
+        GroupNode n = new GroupNode(1, 'c');
+        n.addChild(new GroupNode(2, 'e'));
         node.addChild(n);
-        node.addChild(new GroupNode(0, 1, 'd'));
+        node.addChild(new GroupNode(1, 'd'));
     }
 
     public void test() {

@@ -18,7 +18,7 @@ public class GroupPagingResultQuery extends AbstractGroupResultQuery {
     private List<Sort> indexSorts;
 
     public GroupPagingResultQuery(List<Query<NodeResultSet>> queries, List<Aggregator> aggregators, List<GroupTarget> targets) {
-        super(queries, aggregators, targets);
+        super(queries, aggregators, null);
     }
 
     @Override

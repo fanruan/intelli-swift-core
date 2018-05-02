@@ -11,5 +11,7 @@ public enum CalTargetType {
     ALL_MIN,
     ALL_MAX,
     ALL_RANK_ASC,
-    ALL_RANK_DEC
+    ALL_RANK_DEC,
+
+
 }

@@ -1,6 +1,6 @@
 package com.fr.swift.result.node.iterator;
 
-import com.fr.swift.result.node.GroupNode;
+import com.fr.swift.result.GroupNode;
 
 import java.util.Iterator;
 
