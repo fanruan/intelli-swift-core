@@ -86,6 +86,18 @@ public class XLeftNode extends GroupNode<XLeftNode> {
         return result;
     }
 
+    public static Number[] toNumberArray(AggregatorValue[] values) {
+        Number[] result = new Number[values.length];
+        for (int i = 0; i < result.length; i++) {
+            if (values[i] == null) {
+                result[i] = null;
+            } else {
+                result[i] = (Number) values[i].calculateValue();
+            }
+        }
+        return result;
+    }
+
     private static AggregatorValue[][] create2DArrayValue(List<AggregatorValue[]> valueArrayList) {
         int targetLength = valueArrayList.isEmpty() ? 0 : valueArrayList.get(0).length;
         AggregatorValue[][] result = new AggregatorValue[targetLength][];

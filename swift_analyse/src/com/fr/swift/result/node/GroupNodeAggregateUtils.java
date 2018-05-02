@@ -2,12 +2,14 @@ package com.fr.swift.result.node;
 
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.query.aggregator.AggregatorValueUtils;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.TopGroupNode;
 import com.fr.swift.result.XLeftNode;
 import com.fr.swift.result.node.iterator.ChildIterator;
 import com.fr.swift.result.node.iterator.NLevelGroupNodeIterator;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -27,17 +29,13 @@ public class GroupNodeAggregateUtils {
      * @return
      */
     public static GroupNode aggregate(NodeType type, int dimensionSize, GroupNode root, List<Aggregator> aggregators) {
-        if (dimensionSize <= 1) {
-            return root;
-        }
-        // 从倒数第二个维度的节点开始汇总
-        int second2LastLevel = dimensionSize - 1;
-        for (int nthLevel = second2LastLevel; nthLevel > 0; nthLevel--) {
+        // 从第n个维度到第0个维度进行汇总
+        for (int nthLevel = dimensionSize; nthLevel >= 0; nthLevel--) {
             Iterator<GroupNode> iterator = new NLevelGroupNodeIterator(nthLevel, root);
             while (iterator.hasNext()) {
                 GroupNode node = iterator.next();
                 if (type == NodeType.GROUP) {
-                    mergeChildNode(node, aggregators);
+                    mergeChildGroupNode(node, aggregators);
                 } else  {
                     mergeChildNode(type, node, aggregators);
                 }
@@ -54,8 +52,9 @@ public class GroupNodeAggregateUtils {
      * @param aggregators
      */
     private static void mergeChildNode(NodeType type, GroupNode groupNode, List<Aggregator> aggregators) {
-        // >= 两个子节点才汇总
-        if (groupNode.getChildrenSize() <= 1) {
+        // 大于0个子节点才汇总
+        // 子节点的数量为1则把子节点的值复制过来，方便做更上一个维度的汇总
+        if (groupNode.getChildrenSize() == 0) {
             return;
         }
         Iterator<GroupNode> iterator = new ChildIterator(groupNode);
@@ -72,13 +71,23 @@ public class GroupNodeAggregateUtils {
             } else {
                 valuesListOfChild = ((TopGroupNode) iterator.next()).getTopGroupValues();
             }
+            if (valuesListOfParent == null || valuesListOfParent.isEmpty()) {
+                // 父节点为空的情况，先把子节点复制过来
+                valuesListOfParent = createXAggregateValues(valuesListOfChild, aggregators);
+                continue;
+            }
             for (int i = 0; i < valuesListOfParent.size(); i++) {
                 AggregatorValue[] valuesOfChild = valuesListOfChild.get(i);
                 AggregatorValue[] valuesOfParent = valuesListOfParent.get(i);
                 for (int j = 0; j < valuesOfParent.length; j++) {
-                    aggregators.get(j).combine(valuesOfParent[j], valuesOfChild[j]);
+                    valuesOfParent[j] = AggregatorValueUtils.combine(valuesOfParent[j], valuesOfChild[j], aggregators.get(j));
                 }
             }
+        }
+        if (type == NodeType.X_LEFT) {
+            ((XLeftNode) groupNode).setValueArrayList(valuesListOfParent);
+        } else {
+            ((TopGroupNode) groupNode).setTopGroupValues(valuesListOfParent);
         }
     }
 
@@ -88,7 +97,7 @@ public class GroupNodeAggregateUtils {
      * @param groupNode
      * @param aggregators
      */
-    private static void mergeChildNode(GroupNode groupNode, List<Aggregator> aggregators) {
+    private static void mergeChildGroupNode(GroupNode groupNode, List<Aggregator> aggregators) {
         // >= 两个子节点才汇总
         if (groupNode.getChildrenSize() == 0) {
             return;
@@ -112,17 +121,26 @@ public class GroupNodeAggregateUtils {
                 if (valuesOfParent[i] == null) {
                     valuesOfParent[i] = aggregators.get(i).createAggregatorValue(valuesOfChild[i]);
                 } else {
-                    aggregators.get(i).combine(valuesOfParent[i], valuesOfChild[i]);
+                    valuesOfParent[i] = AggregatorValueUtils.combine(valuesOfParent[i], valuesOfChild[i], aggregators.get(i));
                 }
             }
         }
         groupNode.setAggregatorValue(valuesOfParent);
     }
 
+    private static List<AggregatorValue[]> createXAggregateValues(List<AggregatorValue[]> valuesOfFirstChild,
+                                                                  List<Aggregator> aggregators) {
+        List<AggregatorValue[]> values = new ArrayList<AggregatorValue[]>();
+        for (AggregatorValue[] value : valuesOfFirstChild) {
+            values.add(createAggregateValues(value, aggregators));
+        }
+        return values;
+    }
+
     private static AggregatorValue[] createAggregateValues(AggregatorValue[] valuesOfFirstChild, List<Aggregator> aggregators) {
         AggregatorValue[] values = new AggregatorValue[valuesOfFirstChild.length];
         for (int i = 0; i < values.length; i++) {
-            values[i] = aggregators.get(i).createAggregatorValue(valuesOfFirstChild[i]);
+            values[i] = valuesOfFirstChild[i] == null ? null : aggregators.get(i).createAggregatorValue(valuesOfFirstChild[i]);
         }
         return values;
     }

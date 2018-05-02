@@ -2,6 +2,7 @@ package com.fr.swift.adaptor.transformer.cal;
 
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.query.aggregator.AggregatorValueUtils;
 import com.fr.swift.query.aggregator.AverageAggregate;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
@@ -33,7 +34,7 @@ public class AvgUtils {
         AggregatorValue value = values.get(0);
         Aggregator aggregator = new AverageAggregate();
         for (int i = 1; i < values.size(); i++) {
-            aggregator.combine(value, values.get(i));
+            value = AggregatorValueUtils.combine(value, values.get(i), aggregator);
         }
         return value.calculate();
     }

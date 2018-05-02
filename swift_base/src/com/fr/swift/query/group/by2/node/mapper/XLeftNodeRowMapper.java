@@ -1,4 +1,4 @@
-package com.fr.swift.query.group.by2.node;
+package com.fr.swift.query.group.by2.node.mapper;
 
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
