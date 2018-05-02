@@ -6,7 +6,6 @@ import com.finebi.conf.internalimp.dashboard.widget.table.StringListControlWidge
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.result.BIStringDetailResult;
 import com.finebi.conf.structure.result.StringControlResult;
-import com.fr.stable.StringUtils;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -36,14 +35,17 @@ public class StringControlWidgetAdaptor extends AbstractTableWidgetAdaptor {
         return calculate(widget, widget.getKeywords(), widget.getTimes(), widget.getSelectedValues());
     }
 
-    private static BIStringDetailResult calculate(AbstractTableWidget widget, String keyWords, int times, List<String> selectValues) {
+    private static BIStringDetailResult calculate(AbstractTableWidget widget, List<String> keyWords, int times, List<String> selectValues) {
         StringControlResult value = new StringControlResult();
         try {
             FineDimension dimension = widget.getDimensionList().get(0);
             times = times == 0 ? 1 : times;
             List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
-            if (!StringUtils.isEmpty(keyWords)) {
-                filterInfos.add(new SwiftDetailFilterInfo<String>(new ColumnKey(getColumnName(dimension.getFieldId())), keyWords, SwiftDetailFilterType.STRING_LIKE));
+            if (!keyWords.isEmpty()) {
+                for (String keyWord :
+                        keyWords) {
+                    filterInfos.add(new SwiftDetailFilterInfo<String>(new ColumnKey(getColumnName(dimension.getFieldId())), keyWord, SwiftDetailFilterType.STRING_LIKE));
+                }
             }
             if (selectValues != null && !selectValues.isEmpty()) {
                 filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(getColumnName(dimension.getFieldId())), new HashSet<String>(selectValues), SwiftDetailFilterType.STRING_NOT_IN));
