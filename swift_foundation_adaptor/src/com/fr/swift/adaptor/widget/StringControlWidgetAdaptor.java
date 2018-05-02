@@ -35,14 +35,18 @@ public class StringControlWidgetAdaptor extends AbstractTableWidgetAdaptor {
         return calculate(widget, widget.getKeywords(), widget.getTimes(), widget.getSelectedValues());
     }
 
-    private static BIStringDetailResult calculate(AbstractTableWidget widget, String keyWords, int times, List<String> selectValues) {
+    private static BIStringDetailResult calculate(AbstractTableWidget widget, List<String> keyWords, int times, List<String> selectValues) {
         StringControlResult value = new StringControlResult();
         try {
             FineDimension dimension = widget.getDimensionList().get(0);
             times = times == 0 ? 1 : times;
             List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
-            if (!StringUtils.isEmpty(keyWords)) {
-                filterInfos.add(new SwiftDetailFilterInfo<String>(getColumnName(dimension.getFieldId()), keyWords, SwiftDetailFilterType.STRING_LIKE));
+            if (keyWords != null && !keyWords.isEmpty()){
+                for (String keyWord : keyWords){
+                    if (!StringUtils.isEmpty(keyWord)) {
+                        filterInfos.add(new SwiftDetailFilterInfo<String>(getColumnName(dimension.getFieldId()), keyWord, SwiftDetailFilterType.STRING_LIKE));
+                    }
+                }
             }
             if (selectValues != null && !selectValues.isEmpty()) {
                 filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(getColumnName(dimension.getFieldId()), new HashSet<String>(selectValues), SwiftDetailFilterType.STRING_NOT_IN));
