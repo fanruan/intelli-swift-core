@@ -1,8 +1,10 @@
 package com.fr.swift.adaptor.widget;
 
 import com.finebi.conf.internalimp.bean.dashboard.widget.detail.DetailWidgetBean;
+import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
 import com.finebi.conf.internalimp.dashboard.widget.detail.DetailWidget;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
+import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.structure.result.BIDetailTableResult;
@@ -94,7 +96,7 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
      */
     private static List<FilterInfo> handleLinkageFilterList(DetailWidget widget) {
         List<FilterInfo> fineFilters = new ArrayList<FilterInfo>();
-        DetailWidgetBean bean = widget.getValue();
+        TableWidgetBean bean = widget.getValue();
         if (null != bean) {
             Map<String, WidgetLinkItem> map = bean.getLinkage();
             if (null == map) {
