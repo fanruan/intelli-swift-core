@@ -139,7 +139,7 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
     }
 
 
-    private static DetailTarget[] getTargets(DetailWidget widget) {
+    private static DetailTarget[] getTargets(DetailWidget widget) throws Exception{
         List<FineTarget> fineTargets = widget.getTargetList();
         if (fineTargets == null) {
             return null;
