@@ -4,7 +4,6 @@ import com.finebi.conf.internalimp.bean.dashboard.widget.detail.DetailWidgetBean
 import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
 import com.finebi.conf.internalimp.dashboard.widget.detail.DetailWidget;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
-import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.structure.result.BIDetailTableResult;
@@ -12,7 +11,6 @@ import com.fr.swift.adaptor.struct.SwiftDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftEmptyResult;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.transformer.SortAdaptor;
-import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.cal.info.DetailQueryInfo;
 import com.fr.swift.config.conf.MetaDataConvertUtil;
@@ -58,9 +56,9 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
         try {
             resultSet = QueryRunnerProvider.getInstance().executeQuery(buildQueryInfo(widget));
             if (resultSet == null) {
-                return new SwiftDetailTableResult(new SwiftEmptyResult(), 0);
+                return new SwiftDetailTableResult(new SwiftEmptyResult(), 0, -1);
             }
-            result = new SwiftDetailTableResult(resultSet, widget.getTotalRows());
+            result = new SwiftDetailTableResult(resultSet, widget.getTotalRows(), widget.getPage());
         } catch (Exception e) {
             LOGGER.error(e);
         }
@@ -133,7 +131,8 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
             FineDimension fineDimension = fineDimensions.get(i);
             String columnName = BusinessTableUtils.getFieldNameByFieldId(fineDimension.getFieldId());
             Sort sort = SortAdaptor.adaptorDimensionSort(fineDimension.getSort(), i);
-            dimensions[i] = new DetailDimension(i, new SourceKey(fineDimension.getId()), new ColumnKey(columnName), GroupAdaptor.adaptDashboardGroup(fineDimension.getGroup()), sort, FilterInfoFactory.transformFineFilter(widget.getFilters()));
+            //暂时先不管明细表自定义分组
+            dimensions[i] = new DetailDimension(i, new SourceKey(fineDimension.getId()), new ColumnKey(columnName), null, sort, FilterInfoFactory.transformFineFilter(widget.getFilters()));
         }
         return dimensions;
     }

@@ -2,6 +2,7 @@ package com.fr.swift.adaptor.struct;
 
 import com.finebi.conf.structure.result.BIDetailCell;
 import com.finebi.conf.structure.result.BIDetailTableResult;
+//import com.fr.swift.adaptor.struct.paging.Paging;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.result.DetailResultSet;
@@ -24,15 +25,30 @@ public class SwiftDetailTableResult implements BIDetailTableResult {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftDetailTableResult.class);
     private SwiftResultSet swiftResultSet;
     private int columnSize = -1;
+    //这些参数之后合成一个paging类，pagesize是是功能传过来的
     private int totalRows = -1;
     private int rowSize = -1;
     private int rowCount = 0;
+    private int currentPage = 1;
+    private int startRow;
+    private int endRow;
+    private final int pageSize = 100;
+//    private Paging paging = null;
 
-    public SwiftDetailTableResult(SwiftResultSet swiftResultSet, int totalRows) throws SQLException {
+    public SwiftDetailTableResult(SwiftResultSet swiftResultSet, int totalRows, int currentPage) throws SQLException {
         this.swiftResultSet = swiftResultSet;
         this.columnSize = swiftResultSet.getMetaData().getColumnCount();
-        this.rowSize = swiftResultSet instanceof SwiftEmptyResult ? 0 :((DetailResultSet) swiftResultSet).getRowSize();
-        this.totalRows = Math.min(rowSize, totalRows);
+        this.currentPage = currentPage;
+        this.totalRows = totalRows;
+        init();
+
+    }
+
+    public void init() {
+        startRow = (currentPage - 1) * pageSize;
+        totalRows = Math.min(swiftResultSet instanceof SwiftEmptyResult ? 0 : ((DetailResultSet) swiftResultSet).getRowSize(), totalRows);
+        rowSize = totalRows - startRow >= pageSize ? pageSize : totalRows - startRow;
+        endRow = startRow + rowSize;
     }
 
     @Override
@@ -41,33 +57,48 @@ public class SwiftDetailTableResult implements BIDetailTableResult {
 
     @Override
     public boolean hasNext() {
-        return rowCount < totalRows;
-//        try {
-//            return swiftResultSet.next();
-//        } catch (SQLException e) {
-//            LOGGER.error(e.getMessage(), e);
-//            return false;
-//        }
+        try {
+            while (swiftResultSet.next()) {
+                if (checkPage(rowCount) == null) {
+                    break;
+                }
+                swiftResultSet.getRowData();
+                rowCount++;
+            }
+            //       return swiftResultSet.next();
+            return ++rowCount <= endRow;
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage(), e);
+            return false;
+        }
+    }
+
+    private Boolean checkPage(int row) {
+        if (row < startRow) {
+            return true;
+        }
+        if (row >= endRow) {
+            return false;
+        }
+        return null;
     }
 
     @Override
     public List<BIDetailCell> next() {
         try {
-            while (swiftResultSet.next()) {
+//            while (swiftResultSet.next()) {
                 List<BIDetailCell> detailCellList = new ArrayList<BIDetailCell>();
                 Row row = swiftResultSet.getRowData();
                 for (int i = 0; i < columnSize; i++) {
                     BIDetailCell detailCell = new SwiftDetailCell(row.getValue(i));
-                    //todo 临时处理，这个应该和SwiftSegmentDetailResult一样，不处理null值吧。。
                     if (detailCell.getData() == null) {
                         detailCell = new SwiftDetailCell("");
                     }
                     detailCellList.add(detailCell);
                 }
-                rowCount++;
                 return detailCellList;
-            }
-            return null;
+//            }
+//            return null;
         } catch (SQLException e) {
             LOGGER.error(e.getMessage(), e);
             return null;
@@ -89,12 +120,13 @@ public class SwiftDetailTableResult implements BIDetailTableResult {
 
     @Override
     public boolean hasNextPage() {
-        return false;
+        return totalRows - currentPage * pageSize > 0;
+//        return false;
     }
 
     @Override
     public boolean hasPreviousPage() {
-        return false;
+        return currentPage > 1;
     }
 
     @Override
