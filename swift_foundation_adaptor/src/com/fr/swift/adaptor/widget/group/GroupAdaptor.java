@@ -145,7 +145,7 @@ public class GroupAdaptor {
             stringGroups.add(new StringGroup(groupName, values));
         }
 
-        return new CustomStrGroupRule((List) stringGroups, bean.getUseOther());
+        return new CustomStrGroupRule(stringGroups, bean.getUseOther());
     }
 
     private static GroupRule newCustomNumberRule(NumberDimensionCustomGroup dimGroup) {
@@ -159,7 +159,7 @@ public class GroupAdaptor {
                     bean.getMax(), bean.isCloseMax()));
         }
 
-        return new CustomNumGroupRule((List) intervals, groupValue.getUseOther());
+        return new CustomNumGroupRule(intervals, groupValue.getUseOther());
     }
 
     private static GroupRule newAutoRule(NumberDimensionAutoGroup group) {

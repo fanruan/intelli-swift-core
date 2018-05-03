@@ -38,7 +38,7 @@ public interface CustomGroupRule<Base, Derive> extends GroupRule {
      * @param originIndex 旧值序号
      * @return 新值序号
      */
-    int reverseMap(int originIndex);
+    IntList reverseMap(int originIndex);
 
     /**
      * @return 新分组大小

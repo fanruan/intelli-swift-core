@@ -15,7 +15,7 @@ import java.util.List;
  * 字符串自定义分组规则
  */
 public class CustomStrGroupRule extends BaseCustomGroupRule<String, String> {
-    public CustomStrGroupRule(List<CustomGroup<String, String>> groups, String otherGroupName) {
+    public CustomStrGroupRule(List<? extends CustomGroup<String, String>> groups, String otherGroupName) {
         super(groups, otherGroupName);
     }
 

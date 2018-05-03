@@ -25,11 +25,13 @@ public class YearControlWidgetAdaptor {
     public static BIYearControlResult calculate(YearControlWidget widget) {
         try {
             FineDimension dimension = widget.getDimensionList().get(0);
+
             DimensionTypeGroup typeGroup = new DimensionTypeGroup();
             typeGroup.setType(DATE.YEAR);
             TypeGroupBean bean = new TypeGroupBean();
-            bean.setType(typeGroup.getType());
+            bean.setType(DATE.YEAR);
             typeGroup.setValue(bean);
+
             //设置下年分组
             dimension.setGroup(typeGroup);
             FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());

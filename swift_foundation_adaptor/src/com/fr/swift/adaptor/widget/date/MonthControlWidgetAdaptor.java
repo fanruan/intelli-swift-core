@@ -30,8 +30,8 @@ public class MonthControlWidgetAdaptor {
             DimensionTypeGroup yearGroup = new DimensionTypeGroup();
             yearGroup.setType(DATE.YEAR);
             TypeGroupBean yearBean = new TypeGroupBean();
-            yearBean.setType(yearGroup.getType());
             yearGroup.setValue(yearBean);
+            yearBean.setType(DATE.YEAR);
             dimension.setGroup(yearGroup);
 
             FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
@@ -45,8 +45,8 @@ public class MonthControlWidgetAdaptor {
             DimensionTypeGroup monthGroup = new DimensionTypeGroup();
             monthGroup.setType(DATE.MONTH);
             TypeGroupBean monthBean = new TypeGroupBean();
-            monthBean.setType(monthGroup.getType());
             monthGroup.setValue(monthBean);
+            monthBean.setType(DATE.MONTH);
             dimension.setGroup(monthGroup);
 
             List<Long> monthValues = QueryUtils.getOneDimensionFilterValues(dimension, filterInfo, widget.getWidgetId());
