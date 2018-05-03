@@ -232,7 +232,8 @@ public class CalTargetParseUtils {
                     paramIndexes[i] = baseMetricList.indexOf(pairs.get(i));
                 }
                 // TODO: 2018/5/3 公式还要加其他信息，比如表达式字符串
-                GroupTarget calTarget = GroupTargetFactory.createFromCalTarget(calTargetType, 0, paramIndexes, resultIndex);
+                GroupTarget calTarget = GroupTargetFactory.createFromCalTarget(calTargetType, 0,
+                        paramIndexes, resultIndex, field.getCalculate());
                 return Pair.of(field.getId(), calTarget);
             }
         } else {
@@ -254,7 +255,8 @@ public class CalTargetParseUtils {
             }
             int paramIndex = addedTargetIdList.indexOf(field.getTargetIds().get(0)) + baseMetricList.size();
             // TODO: 2018/5/3 公式还要加其他信息，比如表达式字符串
-            GroupTarget calTarget = GroupTargetFactory.createFromCalTarget(calTargetType, 0, new int[]{paramIndex}, resultIndex);
+            GroupTarget calTarget = GroupTargetFactory.createFromCalTarget(calTargetType, 0,
+                    new int[]{paramIndex}, resultIndex, field.getCalculate());
             return Pair.of(field.getId(), calTarget);
         }
         return null;

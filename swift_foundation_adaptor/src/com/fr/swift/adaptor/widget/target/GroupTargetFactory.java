@@ -1,8 +1,11 @@
 package com.fr.swift.adaptor.widget.target;
 
 import com.finebi.conf.constant.BIDesignConstants;
+import com.finebi.conf.internalimp.bean.dashboard.widget.field.value.FormulaValueBean;
+import com.finebi.conf.structure.dashboard.widget.field.WidgetBeanFieldValue;
 import com.fr.swift.query.adapter.target.GroupTarget;
 import com.fr.swift.query.adapter.target.cal.CalTargetType;
+import com.fr.swift.query.adapter.target.cal.GroupFormulaTarget;
 import com.fr.swift.query.adapter.target.cal.GroupTargetImpl;
 
 /**
@@ -10,9 +13,13 @@ import com.fr.swift.query.adapter.target.cal.GroupTargetImpl;
  */
 public class GroupTargetFactory {
 
-    public static GroupTarget createFromCalTarget(int calTargetType, int queryIndex, int[] paramIndexes, int resultIndex) {
+    public static GroupTarget createFromCalTarget(int calTargetType, int queryIndex, int[] paramIndexes,
+                                                  int resultIndex, WidgetBeanFieldValue value) {
         switch (calTargetType) {
-            case BIDesignConstants.DESIGN.CAL_TARGET.FORMULA:
+            case BIDesignConstants.DESIGN.CAL_TARGET.FORMULA: {
+                String formula = ((FormulaValueBean) value).getValue();
+                return new GroupFormulaTarget(queryIndex, resultIndex, paramIndexes, CalTargetType.FORMULA, formula);
+            }
             case BIDesignConstants.DESIGN.CAL_TARGET.SUM_OF_ABOVE:
                 return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_SUM_OF_ABOVE);
             case BIDesignConstants.DESIGN.CAL_TARGET.SUM_OF_ABOVE_IN_GROUP:
