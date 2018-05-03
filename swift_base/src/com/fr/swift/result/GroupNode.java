@@ -1,13 +1,12 @@
 package com.fr.swift.result;
 
-import com.fr.swift.query.aggregator.AggregatorValue;
-
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * Created by Lyon on 2018/4/4.
  */
-public class GroupNode<T extends GroupNode> extends AbstractSwiftNode<T> {
+public class GroupNode<T extends GroupNode> extends AbstractSwiftNode<T> implements Iterable<T> {
 
     protected int deep;
     protected Object data;
@@ -17,7 +16,7 @@ public class GroupNode<T extends GroupNode> extends AbstractSwiftNode<T> {
 
     public GroupNode(int deep, Object data) {
         this.deep = deep;
-        this.data = data == null ? "" : data;
+        this.data = data;
     }
 
     public GroupNode(int deep, int segmentIndex) {
@@ -103,11 +102,8 @@ public class GroupNode<T extends GroupNode> extends AbstractSwiftNode<T> {
         return 0;
     }
 
-    public static Number[] toNumberArray(AggregatorValue[] values) {
-        Number[] result = new Number[values.length];
-        for (int i = 0; i < result.length; i++) {
-            result[i] = (Number) values[i].calculateValue();
-        }
-        return result;
+    @Override
+    public Iterator<T> iterator() {
+        return getChildren().iterator();
     }
 }

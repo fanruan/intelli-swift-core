@@ -66,7 +66,7 @@ public class ArrayLimitedStack<T> implements LimitedStack<T> {
     @Override
     @SuppressWarnings("unchecked")
     public List<T> toList() {
-        List<T> copy = new ArrayList<T>();
+        List<T> copy = new ArrayList<T>(limit);
         for (int i = 0; i < limit; i++) {
             copy.add((T) items[i]);
         }

@@ -1,0 +1,91 @@
+package com.fr.swift.result.node.xnode;
+
+import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.query.group.by2.node.XNodeGroupByUtils;
+import com.fr.swift.result.GroupNode;
+import com.fr.swift.result.TopGroupNode;
+import com.fr.swift.result.XLeftNode;
+import com.fr.swift.result.node.iterator.BFTGroupNodeIterator;
+import com.fr.swift.result.node.iterator.PostOrderNodeIterator;
+import com.fr.swift.structure.iterator.Filter;
+import com.fr.swift.structure.iterator.FilteredIterator;
+import com.fr.swift.structure.iterator.IteratorUtils;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+/**
+ * Created by Lyon on 2018/4/9.
+ */
+public class XNodeUtils {
+
+    /**
+     * @param topDimensionSize
+     * @param rowDimensionSize
+     * @param topGroupNode
+     * @param xLeftNode
+     */
+    public static void setValues2XLeftNode(int topDimensionSize, int rowDimensionSize,
+                                           TopGroupNode topGroupNode, XLeftNode xLeftNode) {
+        Iterator<TopGroupNode> topIt = new PostOrderNodeIterator<TopGroupNode>(topDimensionSize, topGroupNode);
+        topIt = excludeNoShowSummaryRow(topIt);
+        // topGroupNode的所有行，排除了不需要显示的汇总行
+        List<TopGroupNode> topGroupNodeList = IteratorUtils.iterator2List(topIt);
+
+        Iterator<XLeftNode> xLeftIt = new PostOrderNodeIterator<XLeftNode>(rowDimensionSize, xLeftNode);
+        xLeftIt = excludeNoShowSummaryRow(xLeftIt);
+        // xLeftNode的所有行，排除了不需要显示的汇总行
+        List<XLeftNode> xLeftNodeList = IteratorUtils.iterator2List(xLeftIt);
+
+        // 遍历一遍二维数组
+        for (int row = 0; row < xLeftNodeList.size(); row++) {
+            List<AggregatorValue[]> rowValues = new ArrayList<AggregatorValue[]>();
+            for (int col = 0; col < topGroupNodeList.size(); col++) {
+                List<AggregatorValue[]> colValues = topGroupNodeList.get(col).getTopGroupValues();
+                // colValues对应xLeftNode在对应列所有行的值
+                assert colValues.size() == xLeftNodeList.size();
+                // 取出xLeftNode在坐标(row, col)的值
+                rowValues.add(colValues.get(row));
+            }
+            // 给xLeftNode对应行设置值
+            xLeftNodeList.get(row).setXValues(rowValues);
+            // 同时清理一下保存中间结果的List
+            xLeftNodeList.get(row).setValueArrayList(null);
+        }
+        // 清理TopGroupNode中的topGroupNodeValues
+        Iterator<GroupNode> iterator = new BFTGroupNodeIterator(topGroupNode);
+        while (iterator.hasNext()) {
+            ((TopGroupNode) iterator.next()).setTopGroupValues(null);
+        }
+    }
+
+    /**
+     * 更新TopGroupNode#topGroupValues，用于做列向汇总
+     *
+     * @param topDimensionSize
+     * @param rowDimensionSize
+     * @param topGroupNode
+     * @param xLeftNode
+     */
+    public static void updateTopGroupNodeValues(int topDimensionSize, int rowDimensionSize,
+                                                TopGroupNode topGroupNode, XLeftNode xLeftNode) {
+        Iterator<XLeftNode> xLeftIt = new PostOrderNodeIterator<XLeftNode>(rowDimensionSize, xLeftNode);
+        xLeftIt = excludeNoShowSummaryRow(xLeftIt);
+        // xLeftNode的所有行，排除了不需要显示的汇总行
+        List<XLeftNode> xLeftNodeList = IteratorUtils.iterator2List(xLeftIt);
+        // topGroupNode的子节点
+        List<TopGroupNode> topGroupNodeList = XNodeGroupByUtils.getLeafNodes(topDimensionSize, topGroupNode);
+        XNodeGroupByUtils.updateValues2TopGroupNode(xLeftNodeList, topGroupNodeList);
+    }
+
+    private static <N extends GroupNode> Iterator<N> excludeNoShowSummaryRow(Iterator<N> iterator) {
+        return new FilteredIterator<N>(iterator, new Filter<N>() {
+            @Override
+            public boolean accept(N n) {
+                // 过滤掉不用显示的汇总行
+                return n.getChildrenSize() != 1;
+            }
+        });
+    }
+}

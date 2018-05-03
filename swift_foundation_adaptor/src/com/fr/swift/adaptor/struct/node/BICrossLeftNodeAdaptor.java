@@ -3,7 +3,6 @@ package com.fr.swift.adaptor.struct.node;
 import com.finebi.conf.structure.result.table.BICrossLeftNode;
 import com.finebi.conf.structure.result.table.BIGroupNode;
 import com.fr.swift.result.ChildMap;
-import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.XLeftNode;
 
 /**
@@ -26,7 +25,7 @@ public class BICrossLeftNodeAdaptor implements BICrossLeftNode {
 
     @Override
     public Number[] getSubValues(int index) {
-        return GroupNode.toNumberArray(xLeftNode.getValuesByTopGroupByRow(index));
+        return XLeftNode.toNumberArray(xLeftNode.getValuesByTopGroupByRow(index));
     }
 
     @Override

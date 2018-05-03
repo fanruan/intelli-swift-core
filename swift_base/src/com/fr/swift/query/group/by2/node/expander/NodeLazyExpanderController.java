@@ -1,4 +1,4 @@
-package com.fr.swift.query.group.by2.node;
+package com.fr.swift.query.group.by2.node.expander;
 
 import com.fr.swift.query.group.by2.GroupByController;
 import com.fr.swift.query.group.by2.PopUpCallback;

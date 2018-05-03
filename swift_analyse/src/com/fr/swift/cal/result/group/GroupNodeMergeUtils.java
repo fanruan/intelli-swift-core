@@ -2,6 +2,7 @@ package com.fr.swift.cal.result.group;
 
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.query.aggregator.AggregatorValueUtils;
 import com.fr.swift.query.aggregator.Combiner;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.node.iterator.ChildIterator;
@@ -26,8 +27,10 @@ public class GroupNodeMergeUtils {
         AggregatorValue[] mergeRootValues = mergeRoot.getAggregatorValue();
         for (int i = 1; i < roots.size(); i++) {
             AggregatorValue[] values = roots.get(i).getAggregatorValue();
-            aggregateValues(aggregators, mergeRootValues, values);
+            mergeRootValues = aggregateValues(aggregators, mergeRootValues, values);
         }
+        // 从新设置一下值
+        mergeRoot.setAggregatorValue(mergeRootValues);
         List<Iterator<GroupNode>> iterators = new ArrayList<Iterator<GroupNode>>();
         for (GroupNode node : roots) {
             if (node.getChildrenSize() == 0) {
@@ -48,12 +51,12 @@ public class GroupNodeMergeUtils {
         return mergeRoot;
     }
 
-    private static void aggregateValues(List<Aggregator> aggregators, AggregatorValue[] current, AggregatorValue[] other) {
+    private static AggregatorValue[] aggregateValues(List<Aggregator> aggregators, AggregatorValue[] current, AggregatorValue[] other) {
+        AggregatorValue[] result = new AggregatorValue[aggregators.size()];
         for (int i = 0; i < current.length; i++) {
-            if (current[i] != null) {
-                aggregators.get(i).combine(current[i], other[i]);
-            }
+            result[i] = AggregatorValueUtils.combine(current[i], other[i], aggregators.get(i));
         }
+        return result;
     }
 
     private static class NodeCombiner implements Combiner<GroupNode> {
@@ -70,10 +73,10 @@ public class GroupNodeMergeUtils {
 
         @Override
         public void combine(GroupNode current, GroupNode other) {
-            // 合并两个节点
             AggregatorValue[] currentValues = current.getAggregatorValue();
             AggregatorValue[] otherValues = other.getAggregatorValue();
-            aggregateValues(aggregators, currentValues, otherValues);
+            // 合并两个节点，并把合并结果设置到current节点
+            current.setAggregatorValue(aggregateValues(aggregators, currentValues, otherValues));
             if (current.getChildrenSize() == 0 && other.getChildrenSize() == 0) {
                 // 子节点为空，返回
                 return;
