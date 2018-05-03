@@ -214,6 +214,7 @@ public class FilterInfoFactory {
                 paths.addAll(relationPathManager.getRelationPaths(primaryTable, tableName));
             } catch (FineEngineException ignore) {
                 SwiftLoggers.getLogger().info("Cannot find relation! ");
+                return new SwiftDetailFilterInfo(columnKey, null, SwiftDetailFilterType.ALL_SHOW);
             }
             if (!paths.isEmpty()) {
                 RelationSource relationSource = RelationSourceFactory.transformRelationSourcesFromPath(paths.get(0));
