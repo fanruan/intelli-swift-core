@@ -2,11 +2,8 @@ package com.fr.swift.generate;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.impl.BitMapOrHelper;
-import com.fr.swift.bitmap.traversal.BreakTraversalAction;
-import com.fr.swift.cube.nio.NIOConstant;
 import com.fr.swift.cube.task.Task;
 import com.fr.swift.generate.history.index.RelationIndexHelper;
-import com.fr.swift.relation.CubeLogicColumnKey;
 import com.fr.swift.relation.CubeMultiRelationPath;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
@@ -14,21 +11,18 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.relation.RelationIndex;
-import com.fr.swift.structure.array.LongArray;
-import com.fr.swift.structure.array.LongListFactory;
 import com.fr.swift.util.Crasher;
 
 import java.util.List;
 
 /**
- * TODO NullIndex
  * @author yee
  * @date 2018/1/17
  */
 public abstract class BaseFieldPathIndexer extends BaseTablePathIndexer {
-    private CubeLogicColumnKey logicColumnKey;
+    private ColumnKey logicColumnKey;
 
-    public BaseFieldPathIndexer(CubeMultiRelationPath relationPath, CubeLogicColumnKey logicColumnKey, SwiftSegmentManager provider) {
+    public BaseFieldPathIndexer(CubeMultiRelationPath relationPath, ColumnKey logicColumnKey, SwiftSegmentManager provider) {
         super(relationPath, provider);
         this.logicColumnKey = logicColumnKey;
     }
@@ -36,15 +30,15 @@ public abstract class BaseFieldPathIndexer extends BaseTablePathIndexer {
     @Override
     public void work() {
         try {
+            LOGGER.info(String.format("start build FieldRelationIndex: %s -> %s", logicColumnKey.getName(), relationPath.getKey()));
             List<Segment> primarySegment = getPrimaryTableSegments();
             List<Segment> targetSegment = getTargetTableSegments();
             for (Segment target : targetSegment) {
-                int pos = 1;
                 RelationIndex targetReader = getTargetReadIndex(target);
                 RelationIndex targetWriter = getTargetWriteIndex(target);
                 try {
                     for (int i = 0; i < primarySegment.size(); i++) {
-                        buildIndexPerSegment(targetReader, targetWriter, primarySegment.get(i), i, pos);
+                        buildIndexPerSegment(targetReader, targetWriter, primarySegment.get(i), i, target.getRowCount());
                     }
                 } catch (Exception e) {
                     Crasher.crash(e);
@@ -55,6 +49,7 @@ public abstract class BaseFieldPathIndexer extends BaseTablePathIndexer {
                 }
             }
             workOver(Task.Result.SUCCEEDED);
+            LOGGER.info(String.format("build FieldRelationIndex: %s -> %s finished", logicColumnKey.getName(), relationPath.getKey()));
         } catch (Exception e) {
             LOGGER.error("Build field path index error", e);
             workOver(Task.Result.FAILED);
@@ -63,49 +58,38 @@ public abstract class BaseFieldPathIndexer extends BaseTablePathIndexer {
     }
 
     /**
-     * TODO NullIndex暂时没想好
      * @param targetReader
      * @param targetWriter
      * @param primary
      * @param primarySegIndex
-     * @param pos
+     * @param targetRowCount
      */
-    private void buildIndexPerSegment(RelationIndex targetReader, RelationIndex targetWriter, Segment primary, int primarySegIndex, int pos) {
+    private void buildIndexPerSegment(RelationIndex targetReader, RelationIndex targetWriter, Segment primary, int primarySegIndex, int targetRowCount) {
         try {
-            List<ColumnKey> columnKeys = logicColumnKey.getKeyFields();
             ImmutableBitMap allShow = primary.getAllShowIndex();
             RelationIndexHelper indexHelper = new RelationIndexHelper();
-            for (ColumnKey columnKey : columnKeys) {
-                Column primaryColumn = primary.getColumn(columnKey);
-                DictionaryEncodedColumn dicColumn = primaryColumn.getDictionaryEncodedColumn();
-                int size = dicColumn.size();
-                LongArray[] index = new LongArray[size - 1];
-//                BitMapOrHelper helper = new BitMapOrHelper();
-                for (int i = 1; i < size; i++) {
-                    ImmutableBitMap primaryIndex = primaryColumn.getBitmapIndex().getBitMapIndex(i);
-                    primaryIndex = primaryIndex.getAnd(allShow);
-                    index[i - 1] = buildIndexPerColumn(targetReader, primaryIndex, primarySegIndex, primary.getRowCount());
-                }
+            Column primaryColumn = primary.getColumn(logicColumnKey);
+            DictionaryEncodedColumn dicColumn = primaryColumn.getDictionaryEncodedColumn();
+            int size = dicColumn.size();
+            ImmutableBitMap[] index = new ImmutableBitMap[size - 1];
+            BitMapOrHelper helper = new BitMapOrHelper();
+            for (int i = 1; i < size; i++) {
+                ImmutableBitMap primaryIndex = primaryColumn.getBitmapIndex().getBitMapIndex(i);
+                primaryIndex = primaryIndex.getAnd(allShow);
+                index[i - 1] = buildIndexPerColumn(targetReader, helper, primaryIndex, primarySegIndex);
                 indexHelper.addIndex(index);
-//                indexHelper.addNullIndex(helper.compute().getNot(targetRowCount));
+                indexHelper.addNullIndex(helper.compute().getNot(targetRowCount));
             }
-            writeTargetIndex(targetWriter, indexHelper, pos);
+            writeTargetIndex(targetWriter, indexHelper, primarySegIndex);
             targetWriter.putNullIndex(0, indexHelper.getNullIndex());
         } finally {
             releaseIfNeed(primary);
         }
     }
 
-    private LongArray buildIndexPerColumn(RelationIndex targetReader, ImmutableBitMap index, final int primarySegIndex, int primaryRowCount) {
-        final LongArray primaryArray = LongListFactory.createLongArray(primaryRowCount, NIOConstant.LONG.NULL_VALUE);
-        index.breakableTraversal(new BreakTraversalAction() {
-            @Override
-            public boolean actionPerformed(int row) {
-                primaryArray.put(row, RelationIndexHelper.merge2Long(primarySegIndex, row));
-                return false;
-            }
-        });
-        LongArray result = getTableLinkedOrGVI(primaryArray, targetReader);
+    private ImmutableBitMap buildIndexPerColumn(RelationIndex targetReader, BitMapOrHelper helper, ImmutableBitMap index, int primarySegIndex) {
+        ImmutableBitMap result = getTableLinkedOrGVI(index, targetReader, primarySegIndex);
+        helper.add(result);
         return result;
     }
 
@@ -114,13 +98,13 @@ public abstract class BaseFieldPathIndexer extends BaseTablePathIndexer {
     }
 
     private RelationIndex getTargetWriteIndex(Segment targetSegment) {
-        return targetSegment.getRelation(logicColumnKey);
+        return targetSegment.getRelation(logicColumnKey, relationPath);
     }
 
-    private void writeTargetIndex(RelationIndex targetWriter, RelationIndexHelper helper, int pos) {
-        LongArray[] targetIndex = helper.getIndex();
-        for (int i = 0, len = targetIndex.length; i < len; i++, pos++) {
-            targetWriter.putIndex(pos, targetIndex[i]);
+    private void writeTargetIndex(RelationIndex targetWriter, RelationIndexHelper helper, int primaryIndex) {
+        ImmutableBitMap[] targetIndex = helper.getIndex();
+        for (int i = 0, len = targetIndex.length; i < len; i++) {
+            targetWriter.putIndex(primaryIndex, i + 1, targetIndex[i]);
         }
     }
 }

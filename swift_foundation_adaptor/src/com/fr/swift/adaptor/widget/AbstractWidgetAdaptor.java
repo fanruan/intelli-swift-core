@@ -1,13 +1,7 @@
 package com.fr.swift.adaptor.widget;
 
 import com.finebi.conf.internalimp.analysis.bean.operator.add.group.custom.number.NumberMaxAndMinValue;
-import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.WidgetDimensionBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
-import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
-import com.finebi.conf.internalimp.dashboard.widget.filter.ClickValue;
-import com.finebi.conf.internalimp.dashboard.widget.filter.ClickValueItem;
-import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
-import com.finebi.conf.structure.bean.dashboard.widget.WidgetBean;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.filter.FineFilter;
 import com.fr.stable.StringUtils;
@@ -15,9 +9,7 @@ import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.cal.info.DetailQueryInfo;
 import com.fr.swift.query.adapter.dimension.AllCursor;
 import com.fr.swift.query.adapter.dimension.DetailDimension;
-import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
-import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.DescSort;
 import com.fr.swift.result.DetailResultSet;
@@ -26,13 +18,10 @@ import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
-import com.fr.swift.util.Crasher;
 import com.fr.swift.utils.BusinessTableUtils;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author pony
@@ -61,37 +50,6 @@ public abstract class AbstractWidgetAdaptor {
 
     protected static String getColumnName(String fieldId) {
         return BusinessTableUtils.getFieldNameByFieldId(fieldId);
-    }
-
-    /**
-     * 计算被联动过滤信息
-     *
-     * @param filterInfos
-     * @return
-     */
-    protected static TableWidgetBean handleClickItem(WidgetLinkItem widgetLinkItem, List<FilterInfo> filterInfos) {
-        WidgetBean widgetBean = widgetLinkItem.getWidget();
-        if (null == widgetBean) {
-            return null;
-        }
-        if (!(widgetBean instanceof TableWidgetBean)) {
-            Crasher.crash("WidgetBean must instance of " + TableWidgetBean.class.getName() + " but got " + widgetBean.getClass().getName());
-        }
-        TableWidgetBean fromWidget = (TableWidgetBean) widgetBean;
-        ClickValue clickValue = widgetLinkItem.getClicked();
-        if (null != clickValue) {
-            List<ClickValueItem> clickedList = widgetLinkItem.getClicked().getValue();
-            if (null != clickedList) {
-                for (ClickValueItem clickValueItem : clickedList) {
-                    String value = clickValueItem.getText();
-                    Set<String> values = new HashSet<String>();
-                    values.add(value);
-                    WidgetDimensionBean bean = fromWidget.getDimensions().get(clickValueItem.getdId());
-                    filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(getColumnName(bean.getFieldId()), values, SwiftDetailFilterType.STRING_IN));
-                }
-            }
-        }
-        return fromWidget;
     }
 
     static void setMaxMinNumValue(String queryId, String fieldId, List<FineFilter> fineFilters, NumberMaxAndMinValue value) throws Exception {

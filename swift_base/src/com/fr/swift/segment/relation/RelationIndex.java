@@ -3,7 +3,7 @@ package com.fr.swift.segment.relation;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.cube.io.Flushable;
 import com.fr.swift.cube.io.Releasable;
-import com.fr.swift.structure.array.LongArray;
+import com.fr.swift.cube.io.location.IResourceLocation;
 
 /**
  * @author anchore
@@ -15,10 +15,13 @@ public interface RelationIndex extends Releasable, Flushable {
     /**
      * 主表行号 -> 外表所有匹配行号
      *
+     * @param segIndex 主Segment号
      * @param pos    主表行号
      * @param bitmap 外表所有匹配行号索引
      */
-    void putIndex(int pos, LongArray rows);
+//    void putIndex(int pos, LongArray rows);m
+//
+    void putIndex(int segIndex, int pos, ImmutableBitMap bitmap);
 
     /**
      * 正向关联
@@ -26,20 +29,22 @@ public interface RelationIndex extends Releasable, Flushable {
      * @param pos
      * @return
      */
-    LongArray getIndex(int pos);
+//    LongArray getIndex(int pos);
+
+    ImmutableBitMap getIndex(int segIndex, int pos);
 
     /**
      * @param pos 块号
      * @param bitmap 主表所有未匹配行号索引
      */
-    void putNullIndex(int pos, LongArray bitmap);
+    void putNullIndex(int pos, ImmutableBitMap bitmap);
 
     /**
      * 获取空索引
      * @param pos 块号
      * @return 返回空索引
      */
-    LongArray getNullIndex(int pos);
+    ImmutableBitMap getNullIndex(int pos);
 
     /**
      * 反向关联
@@ -67,4 +72,5 @@ public interface RelationIndex extends Releasable, Flushable {
      */
     void putReverseCount(int count);
 
+    IResourceLocation getBaseLocation();
 }

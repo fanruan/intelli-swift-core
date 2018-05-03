@@ -4,7 +4,6 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
 import com.fr.swift.cube.io.location.IResourceLocation;
-import com.fr.swift.relation.CubeLogicColumnKey;
 import com.fr.swift.relation.CubeMultiRelation;
 import com.fr.swift.relation.CubeMultiRelationPath;
 import com.fr.swift.segment.Segment;
@@ -18,7 +17,7 @@ import com.fr.swift.source.SwiftMetaData;
  */
 public class BaseCreateSegmentForSumTest {
 
-    public Segment getSegment(){
+    public Segment getSegment() {
         return getSegment(null);
     }
 
@@ -50,7 +49,7 @@ public class BaseCreateSegmentForSumTest {
             }
 
             @Override
-            public RelationIndex getRelation(CubeLogicColumnKey f) {
+            public RelationIndex getRelation(ColumnKey f, CubeMultiRelationPath relationPath) {
                 return null;
             }
 
@@ -61,7 +60,7 @@ public class BaseCreateSegmentForSumTest {
 
             @Override
             public Column getColumn(ColumnKey key) {
-                if(key.getName().equals("column1")) {
+                if (key.getName().equals("column1")) {
                     return new BaseCreateColumnTest().getColumn();
                 } else {
                     return new BaseCreateColumnForSumTest().getColumn();
@@ -71,7 +70,7 @@ public class BaseCreateSegmentForSumTest {
             @Override
             public ImmutableBitMap getAllShowIndex() {
                 MutableBitMap bitMap = BitSetMutableBitMap.newInstance();
-                for(int i = 0; i < getRowCount(); i++) {
+                for (int i = 0; i < getRowCount(); i++) {
                     bitMap.add(i);
                 }
                 return bitMap;
