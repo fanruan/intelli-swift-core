@@ -57,4 +57,24 @@ public class SwiftDetailFilterInfo<T> extends AbstractDetailFilterInfo {
     public DetailFilter createDetailFilter(Segment segment) {
         return DetailFilterFactory.createFilter(segment, this);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SwiftDetailFilterInfo<?> that = (SwiftDetailFilterInfo<?>) o;
+
+        if (fieldName != null ? !fieldName.equals(that.fieldName) : that.fieldName != null) return false;
+        if (filterValue != null ? !filterValue.equals(that.filterValue) : that.filterValue != null) return false;
+        return type == that.type;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = fieldName != null ? fieldName.hashCode() : 0;
+        result = 31 * result + (filterValue != null ? filterValue.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        return result;
+    }
 }

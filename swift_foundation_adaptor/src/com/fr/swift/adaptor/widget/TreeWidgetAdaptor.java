@@ -6,6 +6,7 @@ import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.result.control.tree.BITreeItem;
 import com.finebi.conf.structure.result.control.tree.BITreeResult;
 import com.fr.stable.StringUtils;
+import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -20,6 +21,7 @@ import edu.emory.mathcs.backport.java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -52,7 +54,8 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor{
         if (StringUtils.isEmpty(keyWord)) {
             treeItems = createTreeItemListWithoutSearch(widId, bean, filterInfo, dimensions);
         } else if (StringUtils.isNotEmpty(keyWord) && StringUtils.isNotEmpty(bean.getId())) {
-            treeItems = createChildSearchItemList(widId, keyWord, bean, filterInfo, dimensions);
+            // 因为功能要求子节点展开全部子节点，所以不传搜索的keyWord了
+            treeItems = createChildNoSearchItemList(widId, "", bean, filterInfo, dimensions);
         } else {
             treeItems = createSearchItemList(0, widId, keyWord, "0", bean.getSelectedValues(),
                     new String[0], filterInfo, dimensions);
@@ -60,8 +63,8 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor{
         return treeItems;
     }
 
-    private static List<BITreeItem> createChildSearchItemList(String widgetId, String keyWord, TreeOptionsBean bean,
-                                                      FilterInfo filter, List<FineDimension> dimensions) {
+    private static List<BITreeItem> createChildNoSearchItemList(String widgetId, String keyWord, TreeOptionsBean bean,
+                                                                FilterInfo filter, List<FineDimension> dimensions) {
         List<String> parents = bean.getParentValues();
         assert parents.size() == 1;
         Map selectedValues = bean.getSelectedValues();
@@ -76,7 +79,8 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor{
         List<BITreeItem> items = new ArrayList<BITreeItem>();
         List<String> parents = Arrays.asList(Arrays.copyOf(parentArray, parentArray.length));
         selectedValues = selectedValues == null ? new LinkedHashMap() : selectedValues;
-        List values = getValues(widgetId, dimensions.get(dimensionIndex), filterInfo, parents, dimensions);
+        List values = getValues(widgetId, dimensions.get(dimensionIndex), filterInfo,
+                selectedValues2FilterInfo(dimensionIndex, dimensions, selectedValues), parents, dimensions);
         for (int j = 0; j < values.size(); j++) {
             String value = values.get(j).toString();
             // 计算id的结构，前端依据id把列表转为树结构
@@ -106,11 +110,15 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor{
         return items;
     }
 
-    private static List getValues(String widgetId, FineDimension dimension, FilterInfo filter,
+    private static List getValues(String widgetId, FineDimension dimension, FilterInfo filter, FilterInfo selectedValues,
                                   List<String> parents, List<FineDimension> dimensions) {
         // 树控件这边的维度字段的过滤只作用于当前维度，不同于分组表那边作用于指标的明细
         FilterInfo currentDimensionFilter = FilterInfoFactory.transformDimensionFineFilter(dimension);
         FilterInfo filterInfo = parents2FilterInfo(filter, currentDimensionFilter, parents, dimensions);
+        List<FilterInfo> or = new ArrayList<FilterInfo>();
+        or.add(filterInfo);
+        or.add(selectedValues);
+        filterInfo = new GeneralFilterInfo(or, GeneralFilterInfo.OR);
         List values = QueryUtils.getOneDimensionFilterValues(dimension, filterInfo, widgetId);
         return values;
     }
@@ -123,13 +131,39 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor{
         selectedValues = selectedValues == null ? new LinkedHashMap() : selectedValues;
         // 根据有多少个父节点来判断要加载哪个维度的子节点
         FineDimension dimension = dimensions.get(parents.size());
-        List values = getValues(widgetId, dimension, filter, parents, dimensions);
+        List values = getValues(widgetId, dimension, filter,
+                selectedValues2FilterInfo(parents.size(), dimensions, selectedValues), parents, dimensions);
         boolean isParent = parents.size() < bean.getFloors() - 1;
         // 父节点是否被选中，如果被选中，则有的子节点可能被选中，否则所有子节点没有被选中
         // 父节点被选中同时selectedChildren.size() == 0，说明子节点被全选
         boolean isChildrenChecked = isChildrenChecked(parents, selectedValues);
         Map selectedChildren = getSelectedChildren(parents, selectedValues);
         return createTreeItemListFromValues(isParent, isChildrenChecked, "0", values, selectedChildren);
+    }
+
+    /**
+     * selectedValues的结构为LinkedHashMap<String, LinkedHashMap>
+     *
+     * @param dimensionIndex
+     * @param dimensions
+     * @param selectedValues
+     * @return
+     */
+    private static FilterInfo selectedValues2FilterInfo(int dimensionIndex, List<FineDimension> dimensions,
+                                                        Map selectedValues) {
+        List<Map> maps = new ArrayList<Map>();
+        maps.add(selectedValues);
+        Set<String> values = new LinkedHashSet<String>();
+        for (int i = 0; i < dimensionIndex + 1; i++) {
+            List<Map> subMaps = new ArrayList<Map>();
+            for (Map map : maps) {
+                values.addAll(map.keySet());
+                subMaps.addAll(map.values());
+            }
+            maps = subMaps;
+        }
+        String fieldName = SwiftEncryption.decryptFieldId(dimensions.get(dimensionIndex).getFieldId())[1];
+        return new SwiftDetailFilterInfo<Set<String>>(fieldName, values, SwiftDetailFilterType.STRING_IN);
     }
 
     private static Map getSelectedChildren(List<String> parents, Map selectedValues) {
@@ -162,6 +196,7 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor{
     private static FilterInfo parents2FilterInfo(FilterInfo filterInfo, FilterInfo currentDimensionFilter, List<String> parents, List<FineDimension> dimensions) {
         List<FilterInfo> infoList = new ArrayList<FilterInfo>();
         infoList.add(filterInfo);
+        infoList.add(currentDimensionFilter);
         for (int i = 0; i < parents.size(); i++) {
             FineDimension dimension = dimensions.get(i);
             String fieldName = getColumnName(dimension.getFieldId());

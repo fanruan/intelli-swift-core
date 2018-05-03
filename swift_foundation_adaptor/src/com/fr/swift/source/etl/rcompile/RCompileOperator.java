@@ -1,5 +1,6 @@
 package com.fr.swift.source.etl.rcompile;
 
+import com.finebi.base.stable.StableManager;
 import com.finebi.conf.algorithm.DMColMetaData;
 import com.finebi.conf.algorithm.DMDataModel;
 import com.finebi.conf.algorithm.DMRowMetaData;
@@ -10,6 +11,7 @@ import com.finebi.conf.algorithm.rcompile.RCacheElement;
 import com.finebi.conf.algorithm.rcompile.RCacheStore;
 import com.finebi.conf.algorithm.rcompile.RExecute;
 import com.finebi.conf.internalimp.service.datamining.RConnectionFactory;
+import com.finebi.conf.service.datamining.DMCommonLogService;
 import com.finebi.conf.structure.datamining.DMLogEntity;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -79,10 +81,12 @@ public class RCompileOperator extends AbstractOperator {
                     return columnList;
                 }
             } catch (Exception e) {
-                DMLogEntity DMLogEntity = DMLogEntityImp.create();
-                DMLogEntity.setUuid(uuid);
-                DMLogEntity.setErrorType(DMLogType.RCOMPILE.R_CONNECT_ERROR);
-                DMLogEntity.writeLog("Cant not connect R serve!");
+                DMCommonLogService service = StableManager.getContext().getObject("DMCommonLogServiceImpl");
+                DMLogEntity logEntity = DMLogEntityImp.create();
+                logEntity.setUuid(uuid);
+                logEntity.setErrorType(DMLogType.RCOMPILE.R_CONNECT_ERROR);
+                logEntity.writeLog("Cant not connect R serve!");
+                service.setLog(logEntity);
                 return columnList;
             }
             // 计算R语言命令

@@ -11,7 +11,6 @@ import com.fr.swift.adaptor.struct.SwiftDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftEmptyResult;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.transformer.SortAdaptor;
-import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.cal.info.DetailQueryInfo;
 import com.fr.swift.config.conf.MetaDataConvertUtil;
@@ -57,9 +56,9 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
         try {
             resultSet = QueryRunnerProvider.getInstance().executeQuery(buildQueryInfo(widget));
             if (resultSet == null) {
-                return new SwiftDetailTableResult(new SwiftEmptyResult(), 0);
+                return new SwiftDetailTableResult(new SwiftEmptyResult(), 0, -1);
             }
-            result = new SwiftDetailTableResult(resultSet, widget.getTotalRows());
+            result = new SwiftDetailTableResult(resultSet, widget.getTotalRows(), widget.getPage());
         } catch (Exception e) {
             LOGGER.error(e);
         }
@@ -96,7 +95,7 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
     private static List<FilterInfo> handleLinkageFilterList(DetailWidget widget) {
         List<FilterInfo> fineFilters = new ArrayList<FilterInfo>();
         TableWidgetBean bean = widget.getValue();
-        widget.getTableName();
+        String tableName = widget.getTableName();
         if (null != bean) {
             Map<String, WidgetLinkItem> map = bean.getLinkage();
             if (null == map) {
@@ -106,7 +105,7 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
             while (iterator.hasNext()) {
                 WidgetLinkItem item = iterator.next().getValue();
                 try {
-                    LinkageAdaptor.handleClickItem(widget.getTableName(), item, fineFilters);
+                    LinkageAdaptor.handleClickItem(tableName, item, fineFilters);
                 } catch (Exception ignore) {
                     LOGGER.error(ignore.getMessage());
                 }
@@ -133,13 +132,14 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
             FineDimension fineDimension = fineDimensions.get(i);
             String columnName = BusinessTableUtils.getFieldNameByFieldId(fineDimension.getFieldId());
             Sort sort = SortAdaptor.adaptorDimensionSort(fineDimension.getSort(), i);
-            dimensions[i] = new DetailDimension(i, new SourceKey(fineDimension.getId()), new ColumnKey(columnName), GroupAdaptor.adaptDashboardGroup(fineDimension.getGroup()), sort, FilterInfoFactory.transformFineFilter(widget.getFilters()));
+            //暂时先不管明细表自定义分组
+            dimensions[i] = new DetailDimension(i, new SourceKey(fineDimension.getId()), new ColumnKey(columnName), null, sort, FilterInfoFactory.transformFineFilter(widget.getFilters()));
         }
         return dimensions;
     }
 
 
-    private static DetailTarget[] getTargets(DetailWidget widget) throws Exception {
+    private static DetailTarget[] getTargets(DetailWidget widget) throws Exception{
         List<FineTarget> fineTargets = widget.getTargetList();
         if (fineTargets == null) {
             return null;

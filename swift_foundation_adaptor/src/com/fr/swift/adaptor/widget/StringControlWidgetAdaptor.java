@@ -6,6 +6,7 @@ import com.finebi.conf.internalimp.dashboard.widget.table.StringListControlWidge
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.result.BIStringDetailResult;
 import com.finebi.conf.structure.result.StringControlResult;
+import com.fr.stable.StringUtils;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -41,10 +42,11 @@ public class StringControlWidgetAdaptor extends AbstractTableWidgetAdaptor {
             FineDimension dimension = widget.getDimensionList().get(0);
             times = times == 0 ? 1 : times;
             List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
-            if (!keyWords.isEmpty()) {
-                for (String keyWord :
-                        keyWords) {
-                    filterInfos.add(new SwiftDetailFilterInfo<String>(new ColumnKey(getColumnName(dimension.getFieldId())), keyWord, SwiftDetailFilterType.STRING_LIKE));
+            if (keyWords != null && !keyWords.isEmpty()) {
+                for (String keyWord : keyWords) {
+                    if (!StringUtils.isEmpty(keyWord)) {
+                        filterInfos.add(new SwiftDetailFilterInfo<String>(new ColumnKey(getColumnName(dimension.getFieldId())), keyWord, SwiftDetailFilterType.KEY_WORDS));
+                    }
                 }
             }
             if (selectValues != null && !selectValues.isEmpty()) {

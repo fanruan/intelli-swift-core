@@ -26,12 +26,14 @@ import com.finebi.conf.internalimp.bean.filter.number.NumberSmallOrEqualFilterBe
 import com.finebi.conf.internalimp.bean.filter.number.NumberTopNFilterBean;
 import com.finebi.conf.internalimp.bean.filter.string.StringBeginWithFilterBean;
 import com.finebi.conf.internalimp.bean.filter.string.StringBelongFilterBean;
+import com.finebi.conf.internalimp.bean.filter.string.StringBottomNFilterBean;
 import com.finebi.conf.internalimp.bean.filter.string.StringContainFilterBean;
 import com.finebi.conf.internalimp.bean.filter.string.StringEndWithFilterBean;
 import com.finebi.conf.internalimp.bean.filter.string.StringNoBeginWithFilterBean;
 import com.finebi.conf.internalimp.bean.filter.string.StringNoBelongFilterBean;
 import com.finebi.conf.internalimp.bean.filter.string.StringNoContainFilterBean;
 import com.finebi.conf.internalimp.bean.filter.string.StringNoEndWithFilterBean;
+import com.finebi.conf.internalimp.bean.filter.string.StringTopNFilterBean;
 import com.finebi.conf.internalimp.bean.filtervalue.date.DateRangeValueBean;
 import com.finebi.conf.internalimp.bean.filtervalue.number.NumberSelectedFilterValueBean;
 import com.finebi.conf.internalimp.bean.filtervalue.number.NumberValue;
@@ -94,7 +96,7 @@ public class FilterInfoFactory {
         List<FilterBean> beans = new ArrayList<FilterBean>();
         if (filters != null) {
             for (FineFilter filter : filters) {
-                //nice job! foundation 维度过滤没id，要从维度上设置一下
+                //nice job! foundation 维度过滤没id，要从维度上设置一下。
                 if (filter.getValue() != null) {
                     AbstractFilterBean bean = (AbstractFilterBean) filter.getValue();
                     String fieldId;
@@ -104,7 +106,8 @@ public class FilterInfoFactory {
                     } else {
                         fieldId = dimension.getFieldId();
                     }
-                    bean.setFieldId(fieldId);
+                    // 如果是generalBean还要递归地设置一下，坑爹！
+                    deepSettingFieldId(bean, fieldId);
                     beans.add(bean);
                 }
             }
@@ -135,6 +138,22 @@ public class FilterInfoFactory {
             }
         }
         return new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
+    }
+
+    private static void deepSettingFieldId(AbstractFilterBean bean, String fieldId) {
+        List<FilterBean> filterBeans = null;
+        if (bean instanceof GeneraAndFilterBean) {
+            filterBeans = ((GeneraAndFilterBean) bean).getFilterValue();
+        } else if (bean instanceof GeneraOrFilterBean) {
+            filterBeans = ((GeneraOrFilterBean) bean).getFilterValue();
+        }
+        if (filterBeans != null) {
+            for (FilterBean b : filterBeans) {
+                deepSettingFieldId((AbstractFilterBean) b, fieldId);
+            }
+        } else {
+            bean.setFieldId(fieldId);
+        }
     }
 
     private static int getIndex(String targetId, List<FineTarget> targets) {
@@ -230,6 +249,15 @@ public class FilterInfoFactory {
                 return new SwiftDetailFilterInfo<Object>(columnKey, null, SwiftDetailFilterType.NULL);
             case BICommonConstants.ANALYSIS_FILTER_STRING.NOT_NULL:
                 return new SwiftDetailFilterInfo<Object>(columnKey, null, SwiftDetailFilterType.NOT_NULL);
+            case BICommonConstants.ANALYSIS_FILTER_STRING.TOP_N: {
+                int n = ((StringTopNFilterBean) bean).getFilterValue().intValue();
+                return new SwiftDetailFilterInfo<Integer>(columnKey, n, SwiftDetailFilterType.TOP_N);
+            }
+            case BICommonConstants.ANALYSIS_FILTER_STRING.BOTTOM_N: {
+                int n = ((StringBottomNFilterBean) bean).getFilterValue().intValue();
+                return new SwiftDetailFilterInfo<Integer>(columnKey, n, SwiftDetailFilterType.BOTTOM_N);
+            }
+
 
             // 数值类过滤
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.BELONG_VALUE: {

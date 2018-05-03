@@ -8,10 +8,12 @@ import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.match.MatchFilter;
-import com.fr.swift.query.filter.match.NodeAggregator;
-import com.fr.swift.query.filter.match.NodeFilter;
+import com.fr.swift.query.sort.Sort;
+import com.fr.swift.result.GroupNode;
+import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.NodeResultSet;
-import com.fr.swift.result.node.GroupNode;
+import com.fr.swift.result.node.GroupNodeAggregateUtils;
+import com.fr.swift.result.node.NodeType;
 import com.fr.swift.result.node.cal.TargetCalculatorUtils;
 import com.fr.swift.structure.Pair;
 
@@ -40,17 +42,19 @@ public class GroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> {
         TargetCalculatorUtils.calculate(((GroupNode) mergeResult.getNode()), info.getTargetInfo().getGroupTargets());
         // 进行结果过滤
         List<MatchFilter> dimensionMatchFilter = getDimensionMatchFilters(info.getDimensionInfo().getDimensions());
-        List<Aggregator> aggregators = info.getTargetInfo().getAggregatorListOfMetrics();
-        List<Aggregator> resultAggregators = info.getTargetInfo().getAggregatorListForResultMerging();
-        if (hasDimensionFilter(dimensionMatchFilter)) {
-            NodeFilter.filter(mergeResult.getNode(), dimensionMatchFilter);
-            NodeAggregator.aggregate(mergeResult.getNode(), getCombinedAggregators(aggregators, resultAggregators));
-        } else if (hasDifferentResultAggregator(aggregators, resultAggregators)) {
-            NodeAggregator.aggregate(mergeResult.getNode(), getDifferentAggregator(aggregators, resultAggregators));
-        }
+        List<Aggregator> resultAggregators = info.getTargetInfo().getResultAggregators();
+//        if (hasDimensionFilter(dimensionMatchFilter)) {
+//            NodeFilter.filter(mergeResult.getNode(), dimensionMatchFilter);
+//            NodeAggregator.aggregate(mergeResult.getNode(), getCombinedAggregators(aggregators, resultAggregators));
+//        } else if (hasDifferentResultAggregator(aggregators, resultAggregators)) {
+//            NodeAggregator.aggregate(mergeResult.getNode(), getDifferentAggregator(aggregators, resultAggregators));
+//        }
         // 取出查询最后要返回的结果
-        TargetCalculatorUtils.getShowTargetsForGroupNode(((GroupNode) mergeResult.getNode()),
-                info.getTargetInfo().getTargetsForShowList());
+        TargetCalculatorUtils.getShowTargetsForGroupNodeAndSetNodeData(((GroupNode) mergeResult.getNode()),
+                info.getTargetInfo().getTargetsForShowList(), ((NodeMergeResultSet) mergeResult).getRowGlobalDictionaries());
+        // 取出要展示的结果和过滤之后再汇总
+        GroupNodeAggregateUtils.aggregate(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
+                (GroupNode) mergeResult.getNode(), info.getTargetInfo().getResultAggregators());
         return mergeResult;
     }
 
@@ -109,5 +113,19 @@ public class GroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> {
             }
         }
         return matchFilters;
+    }
+
+    /**
+     * 维度根据结果（比如聚合之后的指标）排序
+     */
+    private List<Sort> getIndexSorts(Dimension[] dimensions) {
+        List<Sort> indexSorts = new ArrayList<Sort>();
+        for (Dimension dimension : dimensions) {
+            Sort sort = dimension.getSort();
+            if (sort != null && sort.getTargetIndex() != dimension.getIndex()) {
+                indexSorts.add(sort);
+            }
+        }
+        return indexSorts;
     }
 }

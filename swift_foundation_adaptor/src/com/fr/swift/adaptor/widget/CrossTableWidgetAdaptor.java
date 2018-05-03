@@ -16,14 +16,11 @@ import com.fr.swift.query.adapter.dimension.DimensionInfo;
 import com.fr.swift.query.adapter.dimension.DimensionInfoImpl;
 import com.fr.swift.query.adapter.dimension.Expander;
 import com.fr.swift.query.adapter.target.TargetInfo;
-import com.fr.swift.query.adapter.target.cal.TargetInfoImpl;
 import com.fr.swift.query.filter.info.FilterInfo;
-import com.fr.swift.result.NodeResultSet;
-import com.fr.swift.result.node.xnode.TopGroupNode;
-import com.fr.swift.result.node.xnode.XGroupNode;
-import com.fr.swift.result.node.xnode.XGroupNodeFactory;
+import com.fr.swift.result.TopGroupNode;
+import com.fr.swift.result.XLeftNode;
+import com.fr.swift.result.XNodeMergeResultSet;
 import com.fr.swift.result.node.xnode.XGroupNodeImpl;
-import com.fr.swift.result.node.xnode.XLeftNode;
 import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.SourceKey;
 
@@ -41,15 +38,14 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor{
 
     public static BICrossTableResult calculate(CrossTableWidget widget) {
         BICrossNode crossNode = null;
-        NodeResultSet resultSet = null;
+        XNodeMergeResultSet resultSet = null;
         try {
-            TargetInfoImpl targetInfo = CalTargetParseUtils.parseCalTarget(widget);
+            TargetInfo targetInfo = CalTargetParseUtils.parseCalTarget(widget);
             QueryInfo queryInfo = buildQueryInfo(widget, targetInfo);
-            resultSet = (NodeResultSet) QueryRunnerProvider.getInstance().executeQuery(queryInfo);
+            resultSet = (XNodeMergeResultSet) QueryRunnerProvider.getInstance().executeQuery(queryInfo);
             // 同时处理交叉表的计算指标
             // TODO: 2018/4/25 交叉表结果合并
-            XGroupNode xGroupNode = XGroupNodeFactory.createXGroupNode(null, targetInfo);
-            crossNode = new BICrossNodeAdaptor(xGroupNode);
+            crossNode = new BICrossNodeAdaptor(new XGroupNodeImpl((XLeftNode) resultSet.getNode(), resultSet.getTopGroupNode()));
         } catch (Exception e) {
             crossNode = new BICrossNodeAdaptor(new XGroupNodeImpl(new XLeftNode(-1, null), new TopGroupNode(-1, null)));
             LOGGER.error(e);

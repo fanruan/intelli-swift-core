@@ -42,9 +42,6 @@ import com.fr.swift.source.etl.datamining.DataMiningOperator;
 import com.fr.swift.source.etl.datamining.DataMiningTransferOperator;
 import com.fr.swift.source.etl.rcompile.RCompileOperator;
 import com.fr.swift.source.etl.rcompile.RCompileTransferOperator;
-import com.fr.swift.source.excel.ExcelDataSource;
-import com.fr.swift.source.excel.data.ExcelDataModelCreator;
-import com.fr.swift.source.excel.data.IExcelDataModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -205,12 +202,24 @@ public class DataSourceFactory {
     }
 
     private static DataSource transformExcelDataSource(FineExcelBusinessTable table) {
-        String path = "http://resin.zyee.me:8080/1w.csv";
-        IExcelDataModel excelDataModel = ExcelDataModelCreator.createDataModel(path);
-        String[] columnNames = excelDataModel.onlyGetColumnNames();
-        ColumnType[] columnTypes = excelDataModel.onlyGetColumnTypes();
-        ExcelDataSource excelDataSource = new ExcelDataSource(path, columnNames, columnTypes);
-        return excelDataSource;
+//        Attachment baseAttachment = AttachmentSource.getAttachment(table.getBaseAttach().getId());
+//        String path = FRContext.getCurrentEnv().getPath() + File.separator + baseAttachment.getPath();
+//        IExcelDataModel excelDataModel = ExcelDataModelCreator.createDataModel(path);
+//        String[] columnNames = excelDataModel.onlyGetColumnNames();
+//        ColumnType[] columnTypes = excelDataModel.onlyGetColumnTypes();
+//
+//        List<FineAttachment> additionAttachments = table.getAdditionalAttach();
+//        List<String> additionPaths = new ArrayList<String>();
+//        if (additionAttachments != null && !additionAttachments.isEmpty()) {
+//            for (FineAttachment additionAttachment : additionAttachments) {
+//                Attachment attachment = AttachmentSource.getAttachment(additionAttachment.getId());
+//                String additionPath = FRContext.getCurrentEnv().getPath() + File.separator + attachment.getPath();
+//                additionPaths.add(additionPath);
+//            }
+//        }
+//        ExcelDataSource excelDataSource = new ExcelDataSource(path, columnNames, columnTypes, additionPaths);
+//        return excelDataSource;
+        return null;
     }
 
     private static DataSource transformQueryDBSource(FineSQLBusinessTable table) throws Exception {

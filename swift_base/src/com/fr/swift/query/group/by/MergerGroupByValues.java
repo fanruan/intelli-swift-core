@@ -1,7 +1,7 @@
 package com.fr.swift.query.group.by;
 
 import com.fr.swift.result.KeyValue;
-import com.fr.swift.result.RowIndexKey;
+import com.fr.swift.result.row.RowIndexKey;
 
 import java.util.Comparator;
 

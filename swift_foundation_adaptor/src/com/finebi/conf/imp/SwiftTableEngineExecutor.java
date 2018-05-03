@@ -83,7 +83,7 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }
-        return new SwiftDetailTableResult(new SwiftEmptyResult(), 0);
+        return new SwiftDetailTableResult(new SwiftEmptyResult(), 0, -1);
     }
 
     @Override

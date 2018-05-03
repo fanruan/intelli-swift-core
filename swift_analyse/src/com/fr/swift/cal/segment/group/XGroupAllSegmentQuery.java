@@ -1,13 +1,9 @@
 package com.fr.swift.cal.segment.group;
 
-import com.fr.swift.query.group.by.XGroupByUtils;
+import com.fr.swift.query.group.by2.node.XNodeGroupByUtils;
 import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.result.NodeResultSet;
-import com.fr.swift.result.NodeResultSetImpl;
-import com.fr.swift.result.XGroupByResultSet;
-import com.fr.swift.result.node.xnode.XLeftNode;
-import com.fr.swift.result.node.xnode.XLeftNodeFactory;
 
 /**
  * Created by Lyon on 2018/4/1.
@@ -23,8 +19,6 @@ public class XGroupAllSegmentQuery extends GroupAllSegmentQuery {
 
     @Override
     public NodeResultSet getQueryResult() {
-        XGroupByResultSet resultSet = XGroupByUtils.query(groupByInfo, colGroupByInfo, metricInfo, -1, -1);
-        XLeftNode node = XLeftNodeFactory.createXLeftNode(resultSet, metricInfo.getTargetLength());
-        return new NodeResultSetImpl(node);
+        return XNodeGroupByUtils.groupBy(groupByInfo, colGroupByInfo, metricInfo);
     }
 }

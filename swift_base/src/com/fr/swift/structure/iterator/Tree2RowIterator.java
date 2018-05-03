@@ -3,8 +3,6 @@ package com.fr.swift.structure.iterator;
 import com.fr.swift.structure.stack.ArrayLimitedStack;
 import com.fr.swift.structure.stack.LimitedStack;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -55,7 +53,7 @@ public class Tree2RowIterator<TREE extends Iterable<TREE>> implements Iterator<L
                 continue;
             }
             // 执行到这里说明找到了满足要求的叶子节点
-            ret = Collections.unmodifiableList(Arrays.asList(elements.toArray()));
+            ret = elements.toList();
             elements.pop();
             break;
         }
@@ -71,7 +69,6 @@ public class Tree2RowIterator<TREE extends Iterable<TREE>> implements Iterator<L
     public List<TREE> next() {
         List<TREE> ret = next;
         next = getNext();
-        // 这边要返回
         return ret;
     }
 

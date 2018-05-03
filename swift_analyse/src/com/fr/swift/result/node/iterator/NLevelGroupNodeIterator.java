@@ -1,9 +1,9 @@
 package com.fr.swift.result.node.iterator;
 
+import com.fr.swift.result.GroupNode;
+import com.fr.swift.result.KeyValue;
 import com.fr.swift.structure.iterator.Filter;
 import com.fr.swift.structure.iterator.FilteredIterator;
-import com.fr.swift.result.KeyValue;
-import com.fr.swift.result.node.GroupNode;
 
 import java.util.Iterator;
 
@@ -16,6 +16,12 @@ public class NLevelGroupNodeIterator implements Iterator<GroupNode> {
 
     private Iterator<KeyValue<Integer, GroupNode>> iterator;
 
+    /**
+     * 第0层为根节点，依次类推
+     *
+     * @param nthLevel
+     * @param root
+     */
     public NLevelGroupNodeIterator(final int nthLevel, GroupNode root) {
         this.iterator = new FilteredIterator<KeyValue<Integer, GroupNode>>(new DFTGroupNodeIterator(nthLevel, root), new Filter<KeyValue<Integer, GroupNode>>() {
             @Override

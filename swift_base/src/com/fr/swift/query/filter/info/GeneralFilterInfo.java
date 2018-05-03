@@ -56,4 +56,22 @@ public class GeneralFilterInfo extends AbstractFilterInfo {
         }
         return type == AND ? new GeneralAndMatchFilter(matchFilters) : new GeneralOrMatchFilter(matchFilters);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GeneralFilterInfo that = (GeneralFilterInfo) o;
+
+        if (type != that.type) return false;
+        return children != null ? children.equals(that.children) : that.children == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = children != null ? children.hashCode() : 0;
+        result = 31 * result + type;
+        return result;
+    }
 }

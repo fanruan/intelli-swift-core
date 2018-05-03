@@ -1,31 +1,39 @@
-package com.fr.swift.result.node;
+package com.fr.swift.result;
 
-import com.fr.swift.query.aggregator.AggregatorValue;
-import com.fr.swift.result.AbstractSwiftNode;
-
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * Created by Lyon on 2018/4/4.
  */
-public class GroupNode<T extends GroupNode> extends AbstractSwiftNode<T> {
+public class GroupNode<T extends GroupNode> extends AbstractSwiftNode<T> implements Iterable<T> {
 
     protected int deep;
     protected Object data;
     protected ChildMap<T> childMap = new ChildMap<T>();
-
-    public GroupNode(int sumLength, int deep, Object data) {
-        super(sumLength);
-        this.deep = deep;
-        this.data = data == null ? "" : data;
-    }
+    protected int dictionaryIndex = -1;
+    private boolean isGlobalIndexUpdated = false;
 
     public GroupNode(int deep, Object data) {
         this.deep = deep;
-        this.data = data == null ? "" : data;
+        this.data = data;
     }
 
-    protected GroupNode() {}
+    public GroupNode(int deep, int segmentIndex) {
+        this.deep = deep;
+        this.dictionaryIndex = segmentIndex;
+    }
+
+    public void setGlobalIndex(int globalIndex) {
+        if (!isGlobalIndexUpdated) {
+            this.dictionaryIndex = globalIndex;
+            isGlobalIndexUpdated = true;
+        }
+    }
+
+    public int getDictionaryIndex() {
+        return dictionaryIndex;
+    }
 
     public ChildMap<T> getChildMap() {
         return childMap;
@@ -94,11 +102,8 @@ public class GroupNode<T extends GroupNode> extends AbstractSwiftNode<T> {
         return 0;
     }
 
-    public static Number[] toNumberArray(AggregatorValue[] values) {
-        Number[] result = new Number[values.length];
-        for (int i = 0; i < result.length; i++) {
-            result[i] = (Number) values[i].calculateValue();
-        }
-        return result;
+    @Override
+    public Iterator<T> iterator() {
+        return getChildren().iterator();
     }
 }

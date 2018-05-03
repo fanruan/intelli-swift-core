@@ -3,9 +3,10 @@ package com.fr.swift.result.node.cal;
 import com.fr.swift.query.adapter.target.GroupTarget;
 import com.fr.swift.query.adapter.target.cal.ResultTarget;
 import com.fr.swift.query.aggregator.AggregatorValue;
-import com.fr.swift.result.node.GroupNode;
+import com.fr.swift.result.GroupNode;
+import com.fr.swift.result.TopGroupNode;
+import com.fr.swift.result.XLeftNode;
 import com.fr.swift.result.node.iterator.BFTGroupNodeIterator;
-import com.fr.swift.result.node.xnode.XLeftNode;
 import com.fr.swift.structure.iterator.MapperIterator;
 import com.fr.swift.util.function.Function;
 
@@ -13,6 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Lyon on 2018/4/8.
@@ -43,19 +45,41 @@ public class TargetCalculatorUtils {
                 throw new SQLException(e);
             }
         }
-//        if (root instanceof XLeftNode) {
-//            return getShowTargetsForGroupNode((XLeftNode) root, targetsForShowList);
-//        }
-//        return getShowTargetsForGroupNode(root, targetsForShowList);
         return root;
     }
 
-    private static GroupNode getShowTargetsForGroupNode(XLeftNode root, final List<ResultTarget> targetsForShowList) {
+    public static void setTopGroupNodeData(TopGroupNode root, final List<Map<Integer, Object>> dictionaries) {
+        Iterator<GroupNode> iterator = new MapperIterator<GroupNode, GroupNode>(new BFTGroupNodeIterator(root), new Function<GroupNode, GroupNode>() {
+            @Override
+            public GroupNode apply(GroupNode p) {
+                if (p.getDeep() != -1) {
+                    p.setData(dictionaries.get(p.getDeep()).get(p.getDictionaryIndex()));
+                }
+                return p;
+            }
+        });
+        while (iterator.hasNext()) {
+            iterator.next();
+        }
+    }
+
+    public static void getShowTargetsForXLeftNodeAndSetNodeData(XLeftNode root,
+                                                                     final List<ResultTarget> targetsForShowList,
+                                                                     final List<Map<Integer, Object>> dictionaries) {
         // 从计算结果中提取要展示的结果集
         Iterator<GroupNode> iterator = new MapperIterator<GroupNode, GroupNode>(new BFTGroupNodeIterator(root), new Function<GroupNode, GroupNode>() {
             @Override
             public GroupNode apply(GroupNode p) {
+                // 设置节点的data
+                if (p.getDeep() != -1) {
+                    p.setData(dictionaries.get(p.getDeep()).get(p.getDictionaryIndex()));
+                }
                 List<AggregatorValue[]> allValues = ((XLeftNode) p).getValueArrayList();
+                if (allValues == null) {
+                    // 非叶子节点可能为空
+                    ((XLeftNode) p).setValueArrayList(new ArrayList<AggregatorValue[]>(0));
+                    return p;
+                }
                 List<AggregatorValue[]> showValues = new ArrayList<AggregatorValue[]>();
                 for (int i = 0; i < allValues.size(); i++) {
                     showValues.add(new AggregatorValue[targetsForShowList.size()]);
@@ -72,10 +96,11 @@ public class TargetCalculatorUtils {
         while (iterator.hasNext()) {
             iterator.next();
         }
-        return root;
     }
 
-    public static GroupNode getShowTargetsForGroupNode(GroupNode root, final List<ResultTarget> targetsForShowList) {
+    public static void getShowTargetsForGroupNodeAndSetNodeData(GroupNode root,
+                                                                final List<ResultTarget> targetsForShowList,
+                                                                final List<Map<Integer, Object>> dictionaries) {
         // 从计算结果中提取要展示的结果集
         Iterator<GroupNode> iterator = new MapperIterator<GroupNode, GroupNode>(new BFTGroupNodeIterator(root), new Function<GroupNode, GroupNode>() {
             @Override
@@ -83,15 +108,22 @@ public class TargetCalculatorUtils {
                 AggregatorValue[] showValues = new AggregatorValue[targetsForShowList.size()];
                 AggregatorValue[] allValues = p.getAggregatorValue();
                 for (int i = 0; i < showValues.length; i++) {
+                    if (allValues.length == 0) {
+                        // TODO: 2018/4/28 父节点汇总为空问题
+                        break;
+                    }
                     showValues[i] = allValues[targetsForShowList.get(i).getResultFetchIndex()];
                 }
                 p.setAggregatorValue(showValues);
+                // 设置节点的data
+                if (p.getDeep() != -1) {
+                    p.setData(dictionaries.get(p.getDeep()).get(p.getDictionaryIndex()));
+                }
                 return p;
             }
         });
         while (iterator.hasNext()) {
             iterator.next();
         }
-        return root;
     }
 }

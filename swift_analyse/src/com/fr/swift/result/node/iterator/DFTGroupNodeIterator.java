@@ -1,7 +1,7 @@
 package com.fr.swift.result.node.iterator;
 
+import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.KeyValue;
-import com.fr.swift.result.node.GroupNode;
 import com.fr.swift.structure.stack.ArrayLimitedStack;
 import com.fr.swift.structure.stack.LimitedStack;
 
@@ -18,6 +18,12 @@ public class DFTGroupNodeIterator implements Iterator<KeyValue<Integer, GroupNod
     private LimitedStack<ChildIterator> iterators;
     private KeyValue<Integer, GroupNode> next;
 
+    /**
+     * 根节点为第0层
+     *
+     * @param nthLevel
+     * @param root
+     */
     public DFTGroupNodeIterator(int nthLevel, GroupNode root) {
         this.root = root;
         this.iterators = new ArrayLimitedStack<ChildIterator>(nthLevel);
@@ -25,7 +31,10 @@ public class DFTGroupNodeIterator implements Iterator<KeyValue<Integer, GroupNod
     }
 
     private void init() {
-        iterators.push(new ChildIterator(root));
+        if (iterators.limit() != 0) {
+            // 第0层只有根节点
+            iterators.push(new ChildIterator(root));
+        }
         next = new KeyValue<Integer, GroupNode>(0, root);
     }
 
