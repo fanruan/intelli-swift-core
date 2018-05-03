@@ -33,18 +33,23 @@ public class StringKeyWordFilter extends AbstractDetailFilter<String> {
 
     @Override
     protected RowTraversal getIntIterator(DictionaryEncodedColumn<String> dict) {
-
-        IntList intList = IntListFactory.createIntList();
-        for (int i = 0, size = dict.size(); i < size; i++) {
-            String data = dict.getValue(i);
-            if (data != null) {
-                boolean isMatch = PinyinUtils.isMatch(keyword, data);
-                if (isMatch) {
-                    intList.add(i);
+        //分组小于等于500000模糊搜索。否则stratwith
+        if (dict.globalSize() <= KEY_WORD_MAX) {
+            IntList intList = IntListFactory.createIntList();
+            for (int i = 0, size = dict.size(); i < size; i++) {
+                String data = dict.getValue(i);
+                if (data != null) {
+                    boolean isMatch = PinyinUtils.isMatch(keyword, data);
+                    if (isMatch) {
+                        intList.add(i);
+                    }
                 }
             }
+            return new IntListRowTraversal(intList);
+        } else {
+            StringStartsWithFilter stringStartsWithFilter = new StringStartsWithFilter(keyword, column);
+            return stringStartsWithFilter.getIntIterator(dict);
         }
-        return new IntListRowTraversal(intList);
     }
 
     @Override

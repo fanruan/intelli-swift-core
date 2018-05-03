@@ -96,12 +96,7 @@ public class DetailFilterFactory {
             case FORMULA:
                 return new FormulaFilter((String) filterInfo.getFilterValue(), segment);
             case KEY_WORDS:
-                //分组小于等于500000模糊搜索。大于则stratwith
-                if (column.getDictionaryEncodedColumn().globalSize() <= StringKeyWordFilter.KEY_WORD_MAX) {
-                    return new StringKeyWordFilter((String) filterInfo.getFilterValue(), column);
-                } else {
-                    return new StringEndsWithFilter((String) filterInfo.getFilterValue(), column);
-                }
+                return new StringKeyWordFilter((String) filterInfo.getFilterValue(), column);
             default:
                 return new AllShowDetailFilter(segment);
         }
