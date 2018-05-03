@@ -11,6 +11,7 @@ import com.finebi.conf.internalimp.bean.filter.GeneraAndFilterBean;
 import com.finebi.conf.internalimp.bean.filter.GeneraOrFilterBean;
 import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
 import com.finebi.conf.internalimp.filter.GeneraAndFilter;
+import com.finebi.conf.internalimp.filter.GeneraOrFilter;
 import com.finebi.conf.internalimp.service.pack.FineConfManageCenter;
 import com.finebi.conf.service.engine.relation.EngineRelationPathManager;
 import com.finebi.conf.structure.bean.filter.FilterBean;
@@ -129,11 +130,11 @@ public abstract class AbstractWidgetAdaptor {
                     }
                     break;
                 case BICommonConstants.ANALYSIS_FILTER_TYPE.OR:
-                    List<FineFilter> orFilters = dealWithTargetFilter(widget, ((GeneraAndFilter) filter).getFilters());
+                    List<FineFilter> orFilters = dealWithTargetFilter(widget, ((GeneraOrFilter) filter).getFilters());
                     if (!orFilters.isEmpty()) {
-                        GeneraAndFilter orFilter = new GeneraAndFilter();
+                        GeneraOrFilter orFilter = new GeneraOrFilter();
                         orFilter.setFilters(orFilters);
-                        orFilter.setValue((GeneraAndFilterBean) dealWithFilterBean(bean, orFilters));
+                        orFilter.setValue((GeneraOrFilterBean) dealWithFilterBean(bean, orFilters));
                         target.add(orFilter);
                     }
                     break;
