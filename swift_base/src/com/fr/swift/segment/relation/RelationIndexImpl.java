@@ -28,7 +28,6 @@ public class RelationIndexImpl implements RelationIndex {
     private static final String REVERSE = "reverse";
     private static final String RELATIONS_KEY = "relations";
     private static final String REVERSE_COUNT = "reverse_count";
-    private static final String SEG_START_POS = "seg";
 
     private static final ResourceDiscovery DISCOVERY = ResourceDiscoveryImpl.getInstance();
 
@@ -40,8 +39,6 @@ public class RelationIndexImpl implements RelationIndex {
     private LongReader reverseIndexReader;
     private IntWriter reverseCountWriter;
     private IntReader reverseCountReader;
-    private IntWriter segStartWriter;
-    private IntReader segStartReader;
 
     private List<BitMapReader> indexReaders;
     private List<BitMapWriter> indexWriters;
@@ -130,22 +127,6 @@ public class RelationIndexImpl implements RelationIndex {
     }
 
     @Override
-    public void putSegStartPos(int segIndex, int startPos) {
-        if (segStartWriter == null) {
-            segStartWriter = DISCOVERY.getWriter(location.buildChildLocation(SEG_START_POS), new BuildConf(IoType.WRITE, DataType.INT));
-        }
-        segStartWriter.put(segIndex, startPos);
-    }
-
-    @Override
-    public int getSegStartPos(int segIndex) {
-        if (segStartReader == null) {
-            segStartReader = DISCOVERY.getReader(location.buildChildLocation(SEG_START_POS), new BuildConf(IoType.READ, DataType.INT));
-        }
-        return segStartReader.get(segIndex);
-    }
-
-    @Override
     public IResourceLocation getBaseLocation() {
         return baseLocation;
     }
@@ -186,15 +167,6 @@ public class RelationIndexImpl implements RelationIndex {
         if (nullIndexReader != null) {
             nullIndexReader.release();
             nullIndexReader = null;
-        }
-
-        if (segStartWriter != null) {
-            segStartWriter.release();
-            segStartWriter = null;
-        }
-        if (segStartReader != null) {
-            segStartReader.release();
-            segStartReader = null;
         }
 
         for (BitMapReader read : indexReaders) {

@@ -57,15 +57,6 @@ public abstract class BaseTablePathIndexer extends BaseWorker {
             List<Segment> primary = getPrimaryTableSegments();
             List<Segment> pre = getPreTableSegments();
             List<Segment> target = getTargetTableSegments();
-            int primaryPos = 0;
-//            int[] segPos = new int[primary.size()];
-//            for (int i = 0; i < segPos.length; i++) {
-//                Segment segment = primary.get(i);
-//                segPos[i] = primaryPos;
-//                primaryPos += segment.getRowCount();
-//                releaseIfNeed(segment);
-//            }
-//            primaryPos += primary.size();
             for (int i = 0; i < target.size(); i++) {
                 Segment tSegment = target.get(i);
                 RelationIndex lastRelationReader = tSegment.getRelation(relationPath.getLastRelation());

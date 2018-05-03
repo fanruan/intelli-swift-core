@@ -72,9 +72,5 @@ public interface RelationIndex extends Releasable, Flushable {
      */
     void putReverseCount(int count);
 
-    void putSegStartPos(int segIndex, int startPos);
-
-    int getSegStartPos(int segIndex);
-
     IResourceLocation getBaseLocation();
 }
