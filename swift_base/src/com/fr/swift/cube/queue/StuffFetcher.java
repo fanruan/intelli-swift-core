@@ -1,5 +1,6 @@
 package com.fr.swift.cube.queue;
 
+import com.fr.general.DateUtils;
 import com.fr.swift.cube.task.SchedulerTask;
 import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.cube.task.impl.SchedulerTaskPool;
@@ -42,7 +43,9 @@ public class StuffFetcher implements Runnable {
             while (true) {
                 try {
                     IndexStuffProvider provider = StuffProviderQueue.getQueue().take();
+                    long t = System.currentTimeMillis();
                     update(provider);
+                    LOGGER.info("build cost " + DateUtils.timeCostFrom(t));
                 } catch (Exception e) {
 
                 }
