@@ -19,12 +19,12 @@ public class AggregatorValueUtils {
             return null;
         }
         if (value == null) {
-            return aggregator.createAggregatorValue(otherValue);
+            return (T) otherValue.clone();
         }
         if (otherValue == null) {
-            return aggregator.createAggregatorValue(value);
+            return (T) value.clone();
         }
         aggregator.combine(value, otherValue);
-        return aggregator.createAggregatorValue(value);
+        return (T) value.clone();
     }
 }
