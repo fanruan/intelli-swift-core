@@ -1,4 +1,4 @@
-package com.fr.swift.query.group.by2.node;
+package com.fr.swift.query.group.by2.node.iterator;
 
 import com.fr.swift.query.adapter.dimension.Expander;
 import com.fr.swift.query.adapter.dimension.ExpanderType;
@@ -7,6 +7,8 @@ import com.fr.swift.query.group.by2.DFTIterator;
 import com.fr.swift.query.group.by2.GroupByController;
 import com.fr.swift.query.group.by2.ItCreator;
 import com.fr.swift.query.group.by2.MultiGroupByV2;
+import com.fr.swift.query.group.by2.node.ProxyNodeCreatorStack;
+import com.fr.swift.query.group.by2.node.expander.NodeAllExpanderController;
 import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.row.RowIndexKey;

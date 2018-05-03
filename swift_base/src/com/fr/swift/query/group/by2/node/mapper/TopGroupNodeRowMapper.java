@@ -1,4 +1,4 @@
-package com.fr.swift.query.group.by2.node;
+package com.fr.swift.query.group.by2.node.mapper;
 
 import com.fr.swift.query.group.by.GroupByEntry;
 import com.fr.swift.result.TopGroupNode;

@@ -40,7 +40,8 @@ public class TreeLabelWidgetAdaptor {
                     filterInfo = selectedValues2FilterInfo(BusinessTableUtils.getFieldNameByFieldId(fineDimensions.get(i - 1).getFieldId()),
                             selectedValues.get(i - 1), filterInfo);
                 }
-                List values = QueryUtils.getOneDimensionFilterValues(fineDimensions.get(i), filterInfo, labelWidget.getWidgetId());
+                List values = QueryUtils.getOneDimensionFilterValues(fineDimensions.get(i),
+                        addDimensionFilter(filterInfo, fineDimensions.get(i)), labelWidget.getWidgetId());
                 items.add(toStringList(values));
             }
             return new TreeLabelResult(items, labelWidget.getValue().getOptions().getTreeOptions().getSelectedValues());
@@ -48,6 +49,13 @@ public class TreeLabelWidgetAdaptor {
             LOGGER.error(e);
         }
         return null;
+    }
+
+    private static FilterInfo addDimensionFilter(FilterInfo filterInfo, FineDimension dimension) {
+        List<FilterInfo> filterInfoList = new ArrayList<FilterInfo>();
+        filterInfoList.add(filterInfo);
+        filterInfoList.add(FilterInfoFactory.transformDimensionFineFilter(dimension));
+        return new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
     }
 
     private static FilterInfo selectedValues2FilterInfo(String fieldName, List<String> selectedValues, FilterInfo filterInfo) {
