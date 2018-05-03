@@ -4,7 +4,6 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.impl.RoaringMutableBitMap;
 import com.fr.swift.cube.nio.NIOConstant;
 import com.fr.swift.structure.array.LongArray;
-import com.fr.swift.structure.array.LongListFactory;
 import com.fr.swift.util.Crasher;
 
 import java.util.ArrayList;
@@ -15,14 +14,14 @@ import java.util.List;
  * @date 2018/1/30
  */
 public class RelationIndexHelper {
-    private List<LongArray[]> index;
+    private List<ImmutableBitMap[]> index;
     private List<LongArray> revert;
-    private List<LongArray> nullIndex;
+    private List<ImmutableBitMap> nullIndex;
 
     public RelationIndexHelper() {
-        this.index = new ArrayList<LongArray[]>();
+        this.index = new ArrayList<ImmutableBitMap[]>();
         this.revert = new ArrayList<LongArray>();
-        this.nullIndex = new ArrayList<LongArray>();
+        this.nullIndex = new ArrayList<ImmutableBitMap>();
     }
 
     public void addIndex(byte[][] index) {
@@ -31,10 +30,10 @@ public class RelationIndexHelper {
         for (int i = 0; i < length; i++) {
             target[i] = RoaringMutableBitMap.fromBytes(index[i]);
         }
-//        this.index.add(target);
+        this.index.add(target);
     }
 
-    public void addIndex(LongArray[] index) {
+    public void addIndex(ImmutableBitMap[] index) {
         this.index.add(index);
     }
 
@@ -42,38 +41,22 @@ public class RelationIndexHelper {
         this.revert.add(revert);
     }
 
-    public void addNullIndex(LongArray nullIndex) {
+    public void addNullIndex(ImmutableBitMap nullIndex) {
         this.nullIndex.add(nullIndex);
     }
 
-    public LongArray[] getIndex() {
+    public ImmutableBitMap[] getIndex() {
         if (index.isEmpty()) {
             Crasher.crash("index is empty");
         }
-        LongArray[] result = index.get(0);
+        ImmutableBitMap[] result = index.get(0);
         for (int i = 1, size = index.size(); i < size; i++) {
-            LongArray[] tmp = index.get(i);
+            ImmutableBitMap[] tmp = index.get(i);
             for (int j = 0, len = result.length; j < len; j++) {
-                LongArray targetValue = result[j];
-                LongArray arrayValue = tmp[j];
-                result[j] = match(arrayValue, targetValue);
+                result[j] = result[j].getAnd(tmp[j]);
             }
         }
         return result;
-    }
-
-    private LongArray match(LongArray array, LongArray target) {
-        List<Long> list = new ArrayList<Long>();
-        for (int i = 0; i < target.size(); i++) {
-            long targetValue = target.get(i);
-            for (int j = 0; j < array.size(); j++) {
-                long arrayValue = array.get(j);
-                if (targetValue == arrayValue && targetValue != NIOConstant.LONG.NULL_VALUE && !list.contains(targetValue)) {
-                    list.add(targetValue);
-                }
-            }
-        }
-        return LongListFactory.fromList(list);
     }
 
     public LongArray getRevert() {
@@ -92,18 +75,16 @@ public class RelationIndexHelper {
         return target;
     }
 
-    public LongArray getNullIndex() {
-        List<Long> longList = new ArrayList<Long>();
+    public ImmutableBitMap getNullIndex() {
+        ImmutableBitMap result = null;
         for (int i = 0, size = nullIndex.size(); i < size; i++) {
-            LongArray array = nullIndex.get(i);
-            for (int j = 0; j < array.size(); j++) {
-                Long value = array.get(j);
-                if (!longList.contains(value)) {
-                    longList.add(value);
-                }
+            if (null == result) {
+                result = nullIndex.get(i);
+            } else {
+                result = result.getOr(nullIndex.get(i));
             }
         }
-        return LongListFactory.fromList(longList);
+        return result;
     }
 
     /**

@@ -31,7 +31,6 @@ import com.fr.swift.query.filter.info.value.SwiftNumberInRangeFilterValue;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.source.RelationSource;
 
 import java.util.List;
 import java.util.Set;
@@ -48,13 +47,7 @@ public class DetailFilterFactory {
         if (null == columnKey || StringUtils.isEmpty(columnKey.getName())) {
             column = null;
         } else {
-            RelationSource relationSource = columnKey.getRelation();
-            if (null == relationSource) {
-                column = segment == null ? null : segment.getColumn(columnKey);
-            } else {
-                //TODO 有关联怎么办
-                column = null;
-            }
+            column = segment == null ? null : segment.getColumn(columnKey);
         }
         final int rowCount = segment == null ? 0 : segment.getRowCount();
         switch (filterInfo.getType()) {

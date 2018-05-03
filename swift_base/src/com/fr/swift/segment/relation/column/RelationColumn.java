@@ -2,7 +2,10 @@ package com.fr.swift.segment.relation.column;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.traversal.TraversalAction;
+import com.fr.swift.context.SwiftContext;
+import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.nio.NIOConstant;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
@@ -10,11 +13,14 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.relation.RelationIndex;
 import com.fr.swift.source.RelationSource;
+import com.fr.swift.util.Crasher;
+import com.fr.swift.util.Util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.lang.reflect.Constructor;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author yee
@@ -25,7 +31,6 @@ public class RelationColumn {
     private Segment[] segments;
     private ColumnKey columnKey;
     private DictionaryEncodedColumn[] columns;
-    private BitmapIndexedColumn[] bitmapIndexedColumns;
     private RelationSource relationSource;
     private int reverseCount;
 
@@ -41,7 +46,6 @@ public class RelationColumn {
         this.columns = new DictionaryEncodedColumn[segments.length];
         this.reverseCount = relationIndex.getReverseCount();
         this.relationSource = columnKey.getRelation();
-        this.bitmapIndexedColumns = new BitmapIndexedColumn[segments.length];
     }
 
     public RelationColumn(RelationIndex relationIndex, List<Segment> segments, ColumnKey columnKey) {
@@ -52,20 +56,24 @@ public class RelationColumn {
         this.columns = new DictionaryEncodedColumn[segments.size()];
         this.reverseCount = relationIndex.getReverseCount();
         this.relationSource = columnKey.getRelation();
-        this.bitmapIndexedColumns = new BitmapIndexedColumn[segments.size()];
     }
 
-    public RelationColumn(RelationIndex relationIndex, Segment[] segments, RelationSource relationSource) {
-        this.relationIndex = relationIndex;
-        this.segments = segments;
-        this.relationSource = relationSource;
-    }
-
-    public RelationColumn(RelationIndex relationIndex, List<Segment> segments, RelationSource relationSource) {
-        this.relationIndex = relationIndex;
+    public RelationColumn(RelationIndex relationIndex, ColumnKey columnKey) {
+        Util.requireNonNull(relationIndex, columnKey);
+        this.relationSource = columnKey.getRelation();
+        Util.requireNonNull(relationSource);
+        List<Segment> segments = SwiftContext.getInstance().getSegmentProvider().getSegment(relationSource.getPrimarySource());
+        Util.requireNonEmpty(segments);
         this.segments = new Segment[segments.size()];
         this.segments = segments.toArray(this.segments);
-        this.relationSource = relationSource;
+        this.relationIndex = relationIndex;
+        this.columnKey = columnKey;
+        this.columns = new DictionaryEncodedColumn[segments.size()];
+        try {
+            this.reverseCount = relationIndex.getReverseCount();
+        } catch (Exception ignore) {
+            this.reverseCount = 0;
+        }
     }
 
     /**
@@ -85,60 +93,73 @@ public class RelationColumn {
         return null;
     }
 
-    public List<KeyRow> getRows(Set<String> values) {
-        final List<String> primaryFields = relationSource.getPrimaryFields();
+    public Column buildRelationColumn() {
+        IResourceLocation baseLocation = relationIndex.getBaseLocation().buildChildLocation("field").buildChildLocation(columnKey.getName());
 
-        final List<KeyRow> result = new ArrayList<KeyRow>();
-        for (int i = 0; i < segments.length; i++) {
-            for (String value : values) {
-                if (columns[i] == null) {
-                    columns[i] = segments[i].getColumn(columnKey).getDictionaryEncodedColumn();
-                }
-                if (bitmapIndexedColumns[i] == null) {
-                    bitmapIndexedColumns[i] = segments[i].getColumn(columnKey).getBitmapIndex();
-                }
-                int index = columns[i].getIndex(value);
-                if (0 != index) {
-                    ImmutableBitMap bitMap = bitmapIndexedColumns[i].getBitMapIndex(index);
-                    final int finalI = i;
-                    bitMap.traversal(new TraversalAction() {
-                        @Override
-                        public void actionPerformed(int row) {
-                            Object[] data = new Object[primaryFields.size()];
-                            for (int f = 0; f < primaryFields.size(); f++) {
-                                String field = primaryFields.get(f);
-                                Column primaryColumn = segments[finalI].getColumn(new ColumnKey(field));
-                                DictionaryEncodedColumn dicColumn = primaryColumn.getDictionaryEncodedColumn();
-                                data[f] = dicColumn.getValue(dicColumn.getIndexByRow(row));
-                                dicColumn.release();
-                            }
-                            KeyRow rowData = new KeyRow(data);
-                            if (!result.contains(rowData)) {
-                                result.add(rowData);
-                            }
-                        }
-                    });
-
-                }
-            }
+        Column column = segments[0].getColumn(columnKey);
+        Column targetColumn = createColumn(column.getClass(), baseLocation);
+        DictionaryEncodedColumn targetDicColumn = targetColumn.getDictionaryEncodedColumn();
+        BitmapIndexedColumn bitmapIndexedColumn = targetColumn.getBitmapIndex();
+        try {
+            targetDicColumn.size();
+        } catch (Exception ignore) {
+            SwiftLoggers.getLogger(RelationColumn.class).error("Column do not exists! start build this column");
+            buildTargetColumn(targetDicColumn, bitmapIndexedColumn);
         }
-        return result;
+
+        return targetColumn;
     }
 
-    public KeyRow getPrimaryRows(int row) {
-        List<String> primaryFields = relationSource.getPrimaryFields();
-        int[] segAndRow = getPrimarySegAndRow(row);
-        if (null != segAndRow) {
-            Object[] data = new Object[primaryFields.size()];
-            for (int i = 0; i < primaryFields.size(); i++) {
-                String field = primaryFields.get(i);
-                Column primaryColumn = segments[i].getColumn(new ColumnKey(field));
-                DictionaryEncodedColumn dicColumn = primaryColumn.getDictionaryEncodedColumn();
-                data[i] = dicColumn.getValue(dicColumn.getIndexByRow(segAndRow[1]));
+    private void buildTargetColumn(DictionaryEncodedColumn targetDicColumn, BitmapIndexedColumn bitmapIndexedColumn) {
+        int index = 1;
+        Set<Integer> globalSet = new HashSet<Integer>();
+        for (int i = 0; i < segments.length; i++) {
+            if (columns[i] == null) {
+                columns[i] = segments[i].getColumn(columnKey).getDictionaryEncodedColumn();
             }
-            return new KeyRow(data);
+            int size = columns[i].size();
+
+            for (int j = 1; j < size; j++) {
+                int global = columns[i].getGlobalIndexByIndex(j);
+                if (!globalSet.contains(global)) {
+                    try {
+                        ImmutableBitMap bitMap = relationIndex.getIndex(i, j);
+                        Object value = columns[i].getValue(j);
+                        handleDicAndIndex(bitMap, index, targetDicColumn, bitmapIndexedColumn, value);
+                        index++;
+                    } catch (Exception ignore) {
+                    }
+                }
+            }
         }
-        return null;
+        targetDicColumn.putSize(index);
+        targetDicColumn.release();
+        bitmapIndexedColumn.release();
+    }
+
+    private void handleDicAndIndex(ImmutableBitMap bitMap, final int index, final DictionaryEncodedColumn dic, BitmapIndexedColumn indexedColumn, Object dicValue) {
+        final AtomicBoolean traversal = new AtomicBoolean(false);
+        bitMap.traversal(new TraversalAction() {
+            @Override
+            public void actionPerformed(int row) {
+                traversal.set(true);
+                dic.putIndex(row, index);
+            }
+        });
+        if (traversal.get()) {
+            dic.putValue(index, dicValue);
+            indexedColumn.putBitMapIndex(index, bitMap);
+        }
+    }
+
+    private <T extends Column> T createColumn(Class<T> clazz, IResourceLocation location) {
+        try {
+            Constructor<T> constructor = clazz.getDeclaredConstructor(IResourceLocation.class);
+            constructor.setAccessible(true);
+            return constructor.newInstance(location);
+        } catch (Exception e) {
+            return Crasher.crash(e.getMessage(), e);
+        }
     }
 
     public int[] getPrimarySegAndRow(int row) {
@@ -172,39 +193,4 @@ public class RelationColumn {
         return result;
     }
 
-    public class KeyRow {
-        private Object[] data;
-
-        public KeyRow(Object[] data) {
-            this.data = data;
-        }
-
-        public Object[] getData() {
-            return data;
-        }
-
-        public void setData(Object[] data) {
-            this.data = data;
-        }
-
-        public int getColumnCount() {
-            return null == data ? 0 : data.length;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            KeyRow keyRow = (KeyRow) o;
-
-            // Probably incorrect - comparing Object[] arrays with Arrays.equals
-            return Arrays.equals(data, keyRow.data);
-        }
-
-        @Override
-        public int hashCode() {
-            return Arrays.hashCode(data);
-        }
-    }
 }
