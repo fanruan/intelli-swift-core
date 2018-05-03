@@ -163,7 +163,7 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor{
             maps = subMaps;
         }
         String fieldName = SwiftEncryption.decryptFieldId(dimensions.get(dimensionIndex).getFieldId())[1];
-        return new SwiftDetailFilterInfo<Set<String>>(fieldName, values, SwiftDetailFilterType.STRING_IN);
+        return new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(fieldName), values, SwiftDetailFilterType.STRING_IN);
     }
 
     private static Map getSelectedChildren(List<String> parents, Map selectedValues) {
