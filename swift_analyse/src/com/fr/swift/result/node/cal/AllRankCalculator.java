@@ -35,6 +35,7 @@ public class AllRankCalculator extends AbstractTargetCalculator {
                 maps = row.isEmpty() ? null : initMaps(row.size(), asc ? Comparators.<Double>asc() : Comparators.<Double>desc());
             }
             for (int i = 0; i < row.size(); i++) {
+                // TODO: 2018/5/2 空值问题处理
                 Double key = row.get(i)[paramIndex].calculate();
                 // 跳过空值
                 if (Double.isNaN(key)) {

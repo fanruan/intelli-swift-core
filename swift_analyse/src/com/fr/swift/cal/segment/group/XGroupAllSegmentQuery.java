@@ -19,6 +19,6 @@ public class XGroupAllSegmentQuery extends GroupAllSegmentQuery {
 
     @Override
     public NodeResultSet getQueryResult() {
-        return XNodeGroupByUtils.groupBy(colGroupByInfo, colGroupByInfo, metricInfo);
+        return XNodeGroupByUtils.groupBy(groupByInfo, colGroupByInfo, metricInfo);
     }
 }

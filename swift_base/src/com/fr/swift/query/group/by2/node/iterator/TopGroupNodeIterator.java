@@ -1,4 +1,4 @@
-package com.fr.swift.query.group.by2.node;
+package com.fr.swift.query.group.by2.node.iterator;
 
 import com.fr.swift.query.group.by.GroupByEntry;
 import com.fr.swift.query.group.info.GroupByInfo;

@@ -9,6 +9,7 @@ import com.fr.swift.cal.result.group.XGroupResultQuery;
 import com.fr.swift.cal.segment.group.GroupAllSegmentQuery;
 import com.fr.swift.cal.segment.group.XGroupAllSegmentQuery;
 import com.fr.swift.cal.targetcal.group.GroupTargetCalQuery;
+import com.fr.swift.cal.targetcal.group.XGroupTargetCalQuery;
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.query.adapter.dimension.Dimension;
@@ -39,7 +40,10 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
 
     @Override
     public Query<NodeResultSet> buildTargetCalQuery(ResultQuery<NodeResultSet> query, GroupQueryInfo info) {
-        return new GroupTargetCalQuery(query, info);
+        if (info.getType() == QueryType.GROUP) {
+            return new GroupTargetCalQuery(query, info);
+        }
+        return new XGroupTargetCalQuery(query, (XGroupQueryInfo) info);
     }
 
     @Override

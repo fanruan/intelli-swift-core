@@ -2,6 +2,8 @@ package com.fr.swift.query.group.by2.node;
 
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.group.by.GroupByEntry;
+import com.fr.swift.query.group.by2.node.iterator.GroupNodeIterator;
+import com.fr.swift.query.group.by2.node.mapper.GroupNodeRowMapper;
 import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.result.GroupNode;
@@ -35,9 +37,9 @@ public class NodeGroupByUtils {
                 return p.getDictionaryEncodedColumn();
             }
         }));
-        aggregateRoot(root, groupByInfo.getDetailFilter().createFilterIndex(), metricInfo);
         if (groupByInfo.getDimensions().isEmpty()) {
             // 只有指标的情况
+            aggregateRoot(root, groupByInfo.getDetailFilter().createFilterIndex(), metricInfo);
             return new NodeMergeResultSetImpl<GroupNode>(root, rowGlobalDictionaries);
         }
         GroupNodeRowMapper rowMapper = new GroupNodeRowMapper(metricInfo);

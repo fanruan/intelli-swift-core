@@ -34,7 +34,7 @@ public interface TargetInfo {
     List<GroupTarget> getGroupTargets();
 
     /**
-     * 用于结果合并的聚合器，对应最后一步计算的中间结果[metrics + groupTargets]，他们的顺序和对应关系在解析查询信息的就确定好了
+     * 最后一步结果汇总的聚合器，对List<ResultTarget>取出来的结果进行汇总，他们的顺序和对应关系在解析查询信息的就确定好了
      *
      * @return
      */

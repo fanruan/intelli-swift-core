@@ -100,17 +100,17 @@ public class BIGroupNodeAdaptor implements BIGroupNode {
 
     @Override
     public Number getSummaryValue(int index) {
-        Double value = node.getAggregatorValue(index).calculate();
-        return Double.isNaN(value) ? null : value;
+        AggregatorValue value = node.getAggregatorValue(index);
+        return value == null ? null : (Number) value.calculateValue();
     }
 
     @Override
     public Number[] getSummaryValue() {
         Number[] values = new Number[node.getAggregatorValue().length];
+        AggregatorValue[] aggregatorValues = node.getAggregatorValue();
         for (int i = 0; i < values.length; i++) {
-            AggregatorValue[] aggregatorValues = node.getAggregatorValue();
-            Double value = aggregatorValues.length == 0 || aggregatorValues[i] == null ? Double.NaN : aggregatorValues[i].calculate();
-            values[i] = Double.isNaN(value) ? null : value;
+            AggregatorValue value = aggregatorValues[i];
+            values[i] = value == null ? null : (Number) value.calculateValue();
         }
         return values;
     }
