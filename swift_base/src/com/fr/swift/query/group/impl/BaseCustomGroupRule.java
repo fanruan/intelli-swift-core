@@ -11,9 +11,11 @@ import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * @author anchore
@@ -24,17 +26,17 @@ abstract class BaseCustomGroupRule<Base, Derive> extends BaseGroupRule implement
     @CoreField
     Derive otherGroupName;
     @CoreField
-    List<CustomGroup<Base, Derive>> groups;
+    List<? extends CustomGroup<Base, Derive>> groups;
     /**
      * 新分组序号 -> (新分组值, 旧分组序号)
      */
     private Map<Integer, Pair<Derive, IntList>> map = new HashMap<Integer, Pair<Derive, IntList>>();
     /**
-     * 旧值序号 -> 新值序号
+     * 旧值序号 -> 新值序号集合
      */
-    private int[] reverseMap;
+    private Map<Integer, IntList> reverseMap = new HashMap<Integer, IntList>();
 
-    BaseCustomGroupRule(List<CustomGroup<Base, Derive>> groups, Derive otherGroupName) {
+    BaseCustomGroupRule(List<? extends CustomGroup<Base, Derive>> groups, Derive otherGroupName) {
         this.otherGroupName = otherGroupName;
         this.groups = groups;
     }
@@ -46,45 +48,47 @@ abstract class BaseCustomGroupRule<Base, Derive> extends BaseGroupRule implement
         int lastIndex = groups.size() + 1;
 
         int dictSize = dictColumn.size();
-        reverseMap = new int[dictSize];
 
         // 0号为null
         map.put(0, Pair.of((Derive) null, IntListFactory.newSingleList(0)));
 
         for (int i = 1; i < dictSize; i++) {
             Base val = dictColumn.getValue(i);
-            int index = findIndexByValue(val);
+            IntList indices = findIndexByValue(val);
 
-            Derive groupName;
-            if (index != -1) {
+            List<Derive> groupNames = new ArrayList<Derive>();
+            if (indices.size() > 0) {
                 // 在区间里
-                groupName = groups.get(index - 1).getName();
+                for (int j = 0; j < indices.size(); j++) {
+                    groupNames.add(groups.get(indices.get(j) - 1).getName());
+                }
             } else {
                 if (hasOtherGroup()) {
                     // 有其他组，则全部分到其他
-                    index = lastIndex;
-                    groupName = otherGroupName;
+                    indices.add(lastIndex);
+                    groupNames.add(otherGroupName);
                 } else {
                     // 不在区间里，又没有其他分组，则单独为一组
-                    index = lastIndex++;
-                    groupName = format(val);
+                    indices.add(lastIndex++);
+                    groupNames.add(format(val));
                 }
             }
 
-            internalMap(i, index, groupName);
+            internalMap(i, indices, groupNames);
         }
 
         compactMap(lastIndex);
     }
 
-    private int findIndexByValue(Base val) {
+    private IntList findIndexByValue(Base val) {
+        IntList ints = IntListFactory.createHeapIntList();
         for (int i = 0; i < groups.size(); i++) {
             if (groups.get(i).contains(val)) {
                 // 有效字典序号从1开始
-                return i + 1;
+                ints.add(i + 1);
             }
         }
-        return -1;
+        return ints;
     }
 
     @Override
@@ -114,8 +118,8 @@ abstract class BaseCustomGroupRule<Base, Derive> extends BaseGroupRule implement
     }
 
     @Override
-    public int reverseMap(int originIndex) {
-        return reverseMap[originIndex];
+    public IntList reverseMap(int originIndex) {
+        return reverseMap.get(originIndex);
     }
 
     @Override
@@ -130,16 +134,21 @@ abstract class BaseCustomGroupRule<Base, Derive> extends BaseGroupRule implement
      */
     abstract boolean hasOtherGroup();
 
-    private void internalMap(int oldIndex, int newIndex, Derive groupName) {
-        if (map.containsKey(newIndex)) {
-            map.get(newIndex).getValue().add(oldIndex);
-        } else {
-            IntList indices = IntListFactory.createIntList();
-            indices.add(oldIndex);
-            map.put(newIndex, Pair.of(groupName, indices));
-        }
+    private void internalMap(int oldIndex, IntList newIndices, List<Derive> groupNames) {
+        for (int i = 0; i < newIndices.size(); i++) {
+            if (map.containsKey(newIndices.get(i))) {
+                map.get(newIndices.get(i)).getValue().add(oldIndex);
+            } else {
+                IntList indices = IntListFactory.createIntList();
+                indices.add(oldIndex);
+                map.put(newIndices.get(i), Pair.of(groupNames.get(i), indices));
+            }
 
-        reverseMap[oldIndex] = newIndex;
+            if (!reverseMap.containsKey(oldIndex)) {
+                reverseMap.put(oldIndex, IntListFactory.createIntList());
+            }
+            reverseMap.get(oldIndex).add(newIndices.get(i));
+        }
     }
 
     private void compactMap(int oldSize) {
@@ -163,9 +172,12 @@ abstract class BaseCustomGroupRule<Base, Derive> extends BaseGroupRule implement
         if (oldIndex == newIndex) {
             return;
         }
-        for (int i = 0; i < reverseMap.length; i++) {
-            if (reverseMap[i] == oldIndex) {
-                reverseMap[i] = newIndex;
+
+        for (Entry<Integer, IntList> entry : reverseMap.entrySet()) {
+            for (int i = 0; i < entry.getValue().size(); i++) {
+                if (entry.getValue().get(i) == oldIndex) {
+                    entry.getValue().set(i, newIndex);
+                }
             }
         }
     }

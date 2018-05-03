@@ -9,7 +9,7 @@ import java.util.List;
  * @date 2018/4/22
  */
 public class CustomSortGroupRule<Base> extends BaseCustomGroupRule<Base, Base> {
-    public CustomSortGroupRule(List<CustomGroup<Base, Base>> customGroups, Base otherGroupName) {
+    public CustomSortGroupRule(List<? extends CustomGroup<Base, Base>> customGroups, Base otherGroupName) {
         super(customGroups, otherGroupName);
     }
 
