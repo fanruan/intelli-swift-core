@@ -53,6 +53,7 @@ import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
 import com.fr.swift.adaptor.transformer.cal.AvgUtils;
 import com.fr.swift.adaptor.transformer.date.DateUtils;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
@@ -211,8 +212,8 @@ public class FilterInfoFactory {
             List<FineBusinessTableRelationPath> paths = new ArrayList<FineBusinessTableRelationPath>();
             try {
                 paths.addAll(relationPathManager.getRelationPaths(primaryTable, tableName));
-            } catch (FineEngineException e) {
-                e.printStackTrace();
+            } catch (FineEngineException ignore) {
+                SwiftLoggers.getLogger().info("Cannot find relation! ");
             }
             if (!paths.isEmpty()) {
                 RelationSource relationSource = RelationSourceFactory.transformRelationSourcesFromPath(paths.get(0));
