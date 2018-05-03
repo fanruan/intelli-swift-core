@@ -17,6 +17,7 @@ import com.fr.swift.query.filter.detail.impl.number.not.NumberNotContainFilter;
 import com.fr.swift.query.filter.detail.impl.number.not.NumberNotInRangeFilter;
 import com.fr.swift.query.filter.detail.impl.string.StringEndsWithFilter;
 import com.fr.swift.query.filter.detail.impl.string.StringInFilter;
+import com.fr.swift.query.filter.detail.impl.string.StringKeyWordFilter;
 import com.fr.swift.query.filter.detail.impl.string.StringLikeFilter;
 import com.fr.swift.query.filter.detail.impl.string.StringStartsWithFilter;
 import com.fr.swift.query.filter.detail.impl.string.not.StringNotEndsWithFilter;
@@ -94,6 +95,13 @@ public class DetailFilterFactory {
                 return new GeneralOrFilter((List<FilterInfo>) filterInfo.getFilterValue(), segment);
             case FORMULA:
                 return new FormulaFilter((String) filterInfo.getFilterValue(), segment);
+            case KEY_WORDS:
+                //分组小于等于500000模糊搜索。大于则stratwith
+                if (column.getDictionaryEncodedColumn().globalSize() <= StringKeyWordFilter.KEY_WORD_MAX) {
+                    return new StringKeyWordFilter((String) filterInfo.getFilterValue(), column);
+                } else {
+                    return new StringEndsWithFilter((String) filterInfo.getFilterValue(), column);
+                }
             default:
                 return new AllShowDetailFilter(segment);
         }
