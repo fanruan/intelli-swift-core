@@ -41,10 +41,10 @@ public class StringControlWidgetAdaptor extends AbstractTableWidgetAdaptor {
             FineDimension dimension = widget.getDimensionList().get(0);
             times = times == 0 ? 1 : times;
             List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
-            if (keyWords != null && !keyWords.isEmpty()){
-                for (String keyWord : keyWords){
+            if (keyWords != null && !keyWords.isEmpty()) {
+                for (String keyWord : keyWords) {
                     if (!StringUtils.isEmpty(keyWord)) {
-                        filterInfos.add(new SwiftDetailFilterInfo<String>(getColumnName(dimension.getFieldId()), keyWord, SwiftDetailFilterType.STRING_LIKE));
+                        filterInfos.add(new SwiftDetailFilterInfo<String>(getColumnName(dimension.getFieldId()), keyWord, SwiftDetailFilterType.KEY_WORDS));
                     }
                 }
             }
