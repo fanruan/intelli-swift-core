@@ -14,8 +14,6 @@ import com.fr.swift.source.core.CoreField;
 public class SwiftDetailFilterInfo<T> extends AbstractDetailFilterInfo {
 
     @CoreField
-    private String fieldName;
-    @CoreField
     private T filterValue;
     @CoreField
     private SwiftDetailFilterType type;
@@ -27,14 +25,8 @@ public class SwiftDetailFilterInfo<T> extends AbstractDetailFilterInfo {
         this.filterValue = filterValue;
         this.type = type;
         this.columnKey = columnKey;
-        if (null != columnKey) {
-            this.fieldName = columnKey.getName();
-        }
     }
 
-    public String getFieldName() {
-        return fieldName;
-    }
 
     public T getFilterValue() {
         return filterValue;
@@ -65,16 +57,16 @@ public class SwiftDetailFilterInfo<T> extends AbstractDetailFilterInfo {
 
         SwiftDetailFilterInfo<?> that = (SwiftDetailFilterInfo<?>) o;
 
-        if (fieldName != null ? !fieldName.equals(that.fieldName) : that.fieldName != null) return false;
         if (filterValue != null ? !filterValue.equals(that.filterValue) : that.filterValue != null) return false;
-        return type == that.type;
+        if (type != that.type) return false;
+        return columnKey != null ? columnKey.equals(that.columnKey) : that.columnKey == null;
     }
 
     @Override
     public int hashCode() {
-        int result = fieldName != null ? fieldName.hashCode() : 0;
-        result = 31 * result + (filterValue != null ? filterValue.hashCode() : 0);
+        int result = filterValue != null ? filterValue.hashCode() : 0;
         result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (columnKey != null ? columnKey.hashCode() : 0);
         return result;
     }
 }

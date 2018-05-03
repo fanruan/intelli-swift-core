@@ -207,7 +207,7 @@ public class CalTargetParseUtils {
     private static Pair<String, Pair<AggregatorType, FilterInfo>> parseMetricFromField(WidgetBeanField field) {
         AggregatorType aggregatorType = AggregatorAdaptor.adaptorCalTarget(field.getCalculate().getType());
         aggregatorType = aggregatorType == null ? AggregatorType.SUM : aggregatorType;
-        FilterInfo filterInfo = field.getFilter() == null ? null : FilterInfoFactory.createFilterInfo(field.getFilter(), new ArrayList<Segment>());
+        FilterInfo filterInfo = field.getFilter() == null ? null : FilterInfoFactory.createFilterInfo(null, field.getFilter(), new ArrayList<Segment>());
         // TODO: 2018/5/1 公式的情况另外处理吧
         return Pair.of(field.getTargetIds().get(0), Pair.of(aggregatorType, filterInfo));
     }
@@ -348,7 +348,7 @@ public class CalTargetParseUtils {
             beanField = widget.getFieldByFieldId(target.getFieldId());
         }
         if (beanField != null && beanField.getFilter() != null) {
-            filterInfo = FilterInfoFactory.createFilterInfo(beanField.getFilter(), new ArrayList<Segment>());
+            filterInfo = FilterInfoFactory.createFilterInfo(widget.getTableName(), beanField.getFilter(), new ArrayList<Segment>());
         }
         return filterInfo;
     }

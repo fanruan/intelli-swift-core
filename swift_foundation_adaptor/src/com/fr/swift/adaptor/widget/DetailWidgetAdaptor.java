@@ -81,7 +81,7 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
             sortIndex.add(i);
         }
         List<FilterInfo> filterInfos = handleLinkageFilterList(widget);
-        filterInfos.add(FilterInfoFactory.transformFineFilter(widget.getFilters()));
+        filterInfos.add(FilterInfoFactory.transformFineFilter(widget.getTableName(), widget.getFilters()));
 //        FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
         return new DetailQueryInfo(cursor, queryId, dimensions, target, targets, sortIndex, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND), metaData);
     }
@@ -133,7 +133,7 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
             String columnName = BusinessTableUtils.getFieldNameByFieldId(fineDimension.getFieldId());
             Sort sort = SortAdaptor.adaptorDimensionSort(fineDimension.getSort(), i);
             //暂时先不管明细表自定义分组
-            dimensions[i] = new DetailDimension(i, new SourceKey(fineDimension.getId()), new ColumnKey(columnName), null, sort, FilterInfoFactory.transformFineFilter(widget.getFilters()));
+            dimensions[i] = new DetailDimension(i, new SourceKey(fineDimension.getId()), new ColumnKey(columnName), null, sort, FilterInfoFactory.transformFineFilter(widget.getTableName(), widget.getFilters()));
         }
         return dimensions;
     }

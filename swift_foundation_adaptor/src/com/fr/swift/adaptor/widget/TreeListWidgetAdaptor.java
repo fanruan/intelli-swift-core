@@ -22,7 +22,7 @@ public class TreeListWidgetAdaptor {
         BITreeListResult result = null;
         try {
             TreeOptionsBean bean = treeWidget.getValue().getOptions().getTreeOptions();
-            FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(treeWidget.getFilters());
+            FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(null, treeWidget.getFilters());
             // TODO: 2018/4/13 BITreeResult暂时不分页
             List<BITreeItem> treeItems = TreeWidgetAdaptor.createTreeItemList(treeWidget.getWidgetId(), bean,
                     filterInfo, treeWidget.getDimensionList());

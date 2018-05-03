@@ -53,7 +53,7 @@ public class StringControlWidgetAdaptor extends AbstractTableWidgetAdaptor {
                 filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(getColumnName(dimension.getFieldId())), new HashSet<String>(selectValues), SwiftDetailFilterType.STRING_NOT_IN));
             }
             if (widget.getFilters() != null) {
-                filterInfos.add(FilterInfoFactory.transformFineFilter(widget.getFilters()));
+                filterInfos.add(FilterInfoFactory.transformFineFilter(widget.getTableName(), widget.getFilters()));
             }
             if (dimension.getFilters() != null) {
                 filterInfos.add(FilterInfoFactory.transformDimensionFineFilter(dimension));

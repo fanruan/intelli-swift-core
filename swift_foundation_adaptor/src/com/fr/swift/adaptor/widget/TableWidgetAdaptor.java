@@ -225,7 +225,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
     private static void dealWithWidgetFilter(List<FilterInfo> filterInfoList, AbstractTableWidget widget) throws Exception {
         List<FineFilter> filters = widget.getFilters();
         if (filters != null && !filters.isEmpty()) {
-            filterInfoList.add(FilterInfoFactory.transformFineFilter(filters));
+            filterInfoList.add(FilterInfoFactory.transformFineFilter(widget.getTableName(), filters));
         }
     }
 
@@ -240,11 +240,12 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
 
     private static Dimension toDimension(SourceKey sourceKey, FineDimension fineDim, int index, int size, List<FineTarget> targets) {
         String columnName = getColumnName(fineDim);
+        String tableName = getTableName(fineDim.getFieldId());
         ColumnKey colKey = new ColumnKey(columnName);
 
         Group group = GroupAdaptor.adaptDashboardGroup(fineDim);
 
-        FilterInfo filterInfo = FilterInfoFactory.transformDimensionFineFilter(fineDim, index == size - 1, targets);
+        FilterInfo filterInfo = FilterInfoFactory.transformDimensionFineFilter(tableName, fineDim, index == size - 1, targets);
 
         return new GroupDimension(index, sourceKey, colKey, group, SortAdaptor.adaptorDimensionSort(fineDim.getSort(), index),
                 filterInfo);

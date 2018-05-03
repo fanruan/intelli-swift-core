@@ -1,5 +1,6 @@
 package com.fr.swift.adaptor.widget;
 
+import com.finebi.conf.exception.FineEngineException;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.group.custom.number.NumberMaxAndMinValue;
 import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
@@ -52,9 +53,17 @@ public abstract class AbstractWidgetAdaptor {
         return BusinessTableUtils.getFieldNameByFieldId(fieldId);
     }
 
+    protected static String getTableName(String fieldId) {
+        try {
+            return BusinessTableUtils.getTableByFieldId(fieldId).getName();
+        } catch (FineEngineException e) {
+            return StringUtils.EMPTY;
+        }
+    }
+
     static void setMaxMinNumValue(String queryId, String fieldId, List<FineFilter> fineFilters, NumberMaxAndMinValue value) throws Exception {
         SourceKey sourceKey = getSourceKey(fieldId);
-        FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(fineFilters);
+        FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(getTableName(fieldId), fineFilters);
 
         //先通过明细表排序查最小
         DetailDimension ascDimension = new DetailDimension(0, sourceKey, new ColumnKey(getColumnName(fieldId)),

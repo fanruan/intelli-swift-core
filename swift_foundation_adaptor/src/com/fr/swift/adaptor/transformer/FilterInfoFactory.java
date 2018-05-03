@@ -1,6 +1,9 @@
 package com.fr.swift.adaptor.transformer;
 
+import com.finebi.base.constant.FineEngineType;
+import com.finebi.base.stable.StableManager;
 import com.finebi.conf.constant.BICommonConstants;
+import com.finebi.conf.exception.FineEngineException;
 import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
 import com.finebi.conf.internalimp.bean.filter.AbstractFilterBean;
 import com.finebi.conf.internalimp.bean.filter.FormulaFilterBean;
@@ -38,11 +41,14 @@ import com.finebi.conf.internalimp.bean.filtervalue.date.DateRangeValueBean;
 import com.finebi.conf.internalimp.bean.filtervalue.number.NumberSelectedFilterValueBean;
 import com.finebi.conf.internalimp.bean.filtervalue.number.NumberValue;
 import com.finebi.conf.internalimp.bean.filtervalue.string.StringBelongFilterValueBean;
+import com.finebi.conf.internalimp.service.pack.FineConfManageCenter;
+import com.finebi.conf.service.engine.relation.EngineRelationPathManager;
 import com.finebi.conf.structure.bean.filter.DateFilterBean;
 import com.finebi.conf.structure.bean.filter.FilterBean;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.structure.filter.FineFilter;
+import com.finebi.conf.structure.path.FineBusinessTableRelationPath;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
 import com.fr.swift.adaptor.transformer.cal.AvgUtils;
@@ -56,6 +62,7 @@ import com.fr.swift.query.filter.info.value.SwiftDateInRangeFilterValue;
 import com.fr.swift.query.filter.info.value.SwiftNumberInRangeFilterValue;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.source.RelationSource;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.utils.BusinessTableUtils;
 
@@ -68,29 +75,37 @@ import java.util.Set;
  * Created by pony on 2017/12/21.
  */
 public class FilterInfoFactory {
+    private static final FineConfManageCenter fineConfManageCenter = StableManager.getContext().getObject("fineConfManageCenter");
+    private static final EngineRelationPathManager relationPathManager = fineConfManageCenter.getRelationPathProvider().get(FineEngineType.Cube);
 
-    public static FilterInfo transformFineFilter(List<FineFilter> filters) {
+    /**
+     * @param tableName widget自身的表名，没表名直接传null
+     * @param filters
+     * @return
+     */
+    public static FilterInfo transformFineFilter(String tableName, List<FineFilter> filters) {
         List<FilterBean> beans = new ArrayList<FilterBean>();
         for (FineFilter filter : filters) {
             if (filter.getValue() != null) {
                 beans.add((FilterBean) filter.getValue());
             }
         }
-        return transformFilterBean(beans, new ArrayList<Segment>());
+        return transformFilterBean(tableName, beans, new ArrayList<Segment>());
     }
 
     public static FilterInfo transformDimensionFineFilter(FineDimension dimension) {
-        return transformDimensionFineFilter(dimension, false, null);
+        return transformDimensionFineFilter(null, dimension, false, null);
     }
 
 
     /**
+     * @param tableName 控件的表名，没表名传null或者空字符串
      * @param dimension
      * @param attachTargetFilters 最后一个维度上面要加上指标的过滤
      * @param targets
      * @return
      */
-    public static FilterInfo transformDimensionFineFilter(FineDimension dimension, boolean attachTargetFilters, List<FineTarget> targets) {
+    public static FilterInfo transformDimensionFineFilter(String tableName, FineDimension dimension, boolean attachTargetFilters, List<FineTarget> targets) {
         List<FineFilter> filters = dimension.getFilters();
         String dimId = dimension.getId();
         List<FilterBean> beans = new ArrayList<FilterBean>();
@@ -115,7 +130,7 @@ public class FilterInfoFactory {
         List<FilterInfo> filterInfoList = new ArrayList<FilterInfo>();
         for (FilterBean bean : beans) {
             AbstractFilterBean filterBean = (AbstractFilterBean) bean;
-            FilterInfo info = createFilterInfo(filterBean, new ArrayList<Segment>());
+            FilterInfo info = createFilterInfo(tableName, filterBean, new ArrayList<Segment>());
             if (!ComparatorUtils.equals(filterBean.getTargetId(), dimId) && targets != null) {
                 filterInfoList.add(new MatchFilterInfo(info, getIndex(filterBean.getTargetId(), targets)));
             } else {
@@ -131,7 +146,7 @@ public class FilterInfoFactory {
                         if (filter.getFilterType() == BICommonConstants.ANALYSIS_FILTER_TYPE.EMPTY_CONDITION) {
                             continue;
                         }
-                        FilterInfo targetFilterInfo = createFilterInfo((AbstractFilterBean) filter.getValue(), new ArrayList<Segment>());
+                        FilterInfo targetFilterInfo = createFilterInfo(tableName, (AbstractFilterBean) filter.getValue(), new ArrayList<Segment>());
                         filterInfoList.add(new MatchFilterInfo(targetFilterInfo, i));
                     }
                 }
@@ -165,21 +180,45 @@ public class FilterInfoFactory {
         return Crasher.crash("invalid target filter id :" + targetId);
     }
 
-    public static FilterInfo transformFilterBean(List<FilterBean> beans, List<Segment> segments) {
+    public static FilterInfo transformFilterBean(String tableName, List<FilterBean> beans, List<Segment> segments) {
         List<FilterInfo> filterInfoList = new ArrayList<FilterInfo>();
         for (FilterBean bean : beans) {
-            filterInfoList.add(createFilterInfo(bean, segments));
+            filterInfoList.add(createFilterInfo(tableName, bean, segments));
         }
         return new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
     }
 
-    public static SwiftDetailFilterInfo createFilterInfo(FilterBean bean, List<Segment> segments) {
+    /**
+     * @param tableName 控件的表名，没表名传null或者空字符串
+     * @param bean
+     * @param segments
+     * @return
+     */
+    public static SwiftDetailFilterInfo createFilterInfo(String tableName, FilterBean bean, List<Segment> segments) {
         String fieldId = ((AbstractFilterBean) bean).getFieldId();
         // 分析表这边的bean暂时没有FieldId，所以还是取FieldName
         String fieldName = StringUtils.isEmpty(fieldId) ?
                 ((AbstractFilterBean) bean).getFieldName() : BusinessTableUtils.getFieldNameByFieldId(fieldId);
         int type = bean.getFilterType();
         ColumnKey columnKey = new ColumnKey(fieldName);
+        String primaryTable = null;
+        try {
+            primaryTable = BusinessTableUtils.getTableByFieldId(((AbstractFilterBean) bean).getFieldId()).getName();
+        } catch (Exception e) {
+            primaryTable = StringUtils.EMPTY;
+        }
+        if (StringUtils.isNotEmpty(tableName) && StringUtils.isNotEmpty(primaryTable) && !ComparatorUtils.equals(primaryTable, tableName)) {
+            List<FineBusinessTableRelationPath> paths = new ArrayList<FineBusinessTableRelationPath>();
+            try {
+                paths.addAll(relationPathManager.getRelationPaths(primaryTable, tableName));
+            } catch (FineEngineException e) {
+                e.printStackTrace();
+            }
+            if (!paths.isEmpty()) {
+                RelationSource relationSource = RelationSourceFactory.transformRelationSourcesFromPath(paths.get(0));
+                columnKey.setRelation(relationSource);
+            }
+        }
         switch (type) {
             // string类过滤
             case BICommonConstants.ANALYSIS_FILTER_STRING.BELONG_VALUE: {
@@ -409,13 +448,13 @@ public class FilterInfoFactory {
             }
             case BICommonConstants.ANALYSIS_FILTER_TYPE.AND: {
                 List<FilterBean> beans = ((GeneraAndFilterBean) bean).getFilterValue();
-                List<SwiftDetailFilterInfo> filterValues = createFilterInfoList(beans, segments);
+                List<SwiftDetailFilterInfo> filterValues = createFilterInfoList(tableName, beans, segments);
                 return new SwiftDetailFilterInfo<List<SwiftDetailFilterInfo>>(columnKey,
                         filterValues, SwiftDetailFilterType.AND);
             }
             case BICommonConstants.ANALYSIS_FILTER_TYPE.OR: {
                 List<FilterBean> beans = ((GeneraOrFilterBean) bean).getFilterValue();
-                List<SwiftDetailFilterInfo> filterValues = createFilterInfoList(beans, segments);
+                List<SwiftDetailFilterInfo> filterValues = createFilterInfoList(tableName, beans, segments);
                 return new SwiftDetailFilterInfo<List<SwiftDetailFilterInfo>>(columnKey,
                         filterValues, SwiftDetailFilterType.OR);
             }
@@ -452,10 +491,10 @@ public class FilterInfoFactory {
         return filterValue;
     }
 
-    private static List<SwiftDetailFilterInfo> createFilterInfoList(List<FilterBean> beans, List<Segment> segments) {
+    private static List<SwiftDetailFilterInfo> createFilterInfoList(String tableName, List<FilterBean> beans, List<Segment> segments) {
         List<SwiftDetailFilterInfo> filterInfoList = new ArrayList<SwiftDetailFilterInfo>();
         for (FilterBean bean : beans) {
-            filterInfoList.add(createFilterInfo(bean, segments));
+            filterInfoList.add(createFilterInfo(tableName, bean, segments));
         }
         return filterInfoList;
     }

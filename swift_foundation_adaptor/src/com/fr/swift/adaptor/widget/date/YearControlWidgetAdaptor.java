@@ -34,7 +34,7 @@ public class YearControlWidgetAdaptor {
 
             //设置下年分组
             dimension.setGroup(typeGroup);
-            FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
+            FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getTableName(), widget.getFilters());
             List<Long> values = QueryUtils.getOneDimensionFilterValues(dimension, filterInfo, widget.getWidgetId());
             List<Integer> years = new ArrayList<Integer>();
             for (Long v : values) {

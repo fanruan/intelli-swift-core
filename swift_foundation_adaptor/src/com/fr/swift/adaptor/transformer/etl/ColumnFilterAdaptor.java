@@ -29,7 +29,7 @@ public class ColumnFilterAdaptor {
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         }
-        FilterInfo filterInfo = FilterInfoFactory.transformFilterBean(bean.getValue(), segments);
+        FilterInfo filterInfo = FilterInfoFactory.transformFilterBean(table.getName(), bean.getValue(), segments);
         return new ColumnFilterOperator(filterInfo);
     }
 }
