@@ -303,7 +303,6 @@ public class CalTargetParseUtils {
         // 找到配置生成的计算字段中的明细过滤信息
         FilterInfo filterInfo = getDetailFilterInfoOfField(field);
         // 因为这个计算指标字段只能依赖原始字段，所以field#getTargetIds()对应的原始字段的fieldId集合
-        // TODO: 2018/5/3 公式可能依赖多个原始字段，或者基础计算指标字段
         Set<Pair<String, Pair<AggregatorType, FilterInfo>>> pairs = new HashSet<Pair<String, Pair<AggregatorType, FilterInfo>>>();
         for (String fieldId : field.getTargetIds()) {
             if (widget.getFieldByFieldId(fieldId).getCalculate() == null) {
