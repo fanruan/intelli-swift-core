@@ -3,7 +3,6 @@ package com.fr.swift.generate.realtime;
 import com.fr.swift.cube.task.Task.Result;
 import com.fr.swift.cube.task.impl.BaseWorker;
 import com.fr.swift.flow.FlowRuleController;
-import com.fr.swift.generate.Transport;
 import com.fr.swift.generate.realtime.increment.DecreaseTransport;
 import com.fr.swift.generate.realtime.increment.IncreaseTransport;
 import com.fr.swift.generate.realtime.increment.IncrementTransport;
@@ -11,6 +10,7 @@ import com.fr.swift.generate.realtime.increment.ModifyTransport;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.segment.operator.Transporter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
 
@@ -24,7 +24,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public class RealtimeDataTransporter extends BaseWorker implements Transport {
+public class RealtimeDataTransporter extends BaseWorker implements Transporter {
     private DataSource dataSource;
     private SwiftMetaData swiftMetaData;
     private Increment increment;
@@ -75,9 +75,7 @@ public class RealtimeDataTransporter extends BaseWorker implements Transport {
     @Override
     public void work() {
         try {
-            for (IncrementTransport incrementTransport : incrementTransportList) {
-                incrementTransport.doIncrementTransport();
-            }
+            transport();
             workOver(Result.SUCCEEDED);
         } catch (Exception e) {
             LOGGER.error(e);
@@ -85,6 +83,14 @@ public class RealtimeDataTransporter extends BaseWorker implements Transport {
         }
     }
 
+    @Override
+    public void transport() throws Exception {
+        for (IncrementTransport incrementTransport : incrementTransportList) {
+            incrementTransport.doIncrementTransport();
+        }
+    }
+
+    @Override
     public List<String> getIndexFieldsList() {
         return dataSource.getMetadata().getFieldNames();
     }

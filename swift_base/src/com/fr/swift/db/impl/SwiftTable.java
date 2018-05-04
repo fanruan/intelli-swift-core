@@ -4,6 +4,8 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SwiftDataOperatorProvider;
+import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.operator.Deleter;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.SourceKey;
@@ -19,7 +21,9 @@ import java.util.List;
  * @date 2018/3/28
  */
 class SwiftTable implements Table {
+    private final SwiftDataOperatorProvider operators = SwiftContext.getInstance().getSwiftDataOperatorProvider();
     private SourceKey key;
+
     private SwiftMetaData meta;
 
     SwiftTable(SourceKey key, SwiftMetaData meta) {
@@ -40,8 +44,12 @@ class SwiftTable implements Table {
     @Override
     public void insert(SwiftResultSet rowSet) throws SQLException {
         try {
-            Inserter inserter = SwiftContext.getInstance().getSwiftDataOperatorProvider().getRealtimeInserter(this);
-            inserter.insertData(rowSet);
+            Inserter inserter = operators.getRealtimeBlockSwiftInserter(this);
+            List<Segment> segments = inserter.insertData(rowSet);
+            for (String field : inserter.getFields()) {
+                operators.getColumnIndexer(this, new ColumnKey(field), segments).buildIndex();
+                operators.getColumnDictMerger(this, new ColumnKey(field), segments).mergeDict();
+            }
         } catch (Exception e) {
             throw new SQLException(e);
         } finally {
@@ -52,8 +60,13 @@ class SwiftTable implements Table {
     @Override
     public void importFrom(SwiftResultSet rowSet) throws SQLException {
         try {
-            Inserter inserter = SwiftContext.getInstance().getSwiftDataOperatorProvider().getHistoryInserter(this);
-            inserter.insertData(rowSet);
+            // 调流程
+            Inserter inserter = operators.getHistoryBlockSwiftInserter(this);
+            List<Segment> segments = inserter.insertData(rowSet);
+            for (String field : inserter.getFields()) {
+                operators.getColumnIndexer(this, new ColumnKey(field), segments).buildIndex();
+                operators.getColumnDictMerger(this, new ColumnKey(field), segments).mergeDict();
+            }
         } catch (Exception e) {
             throw new SQLException(e);
         } finally {
@@ -68,7 +81,7 @@ class SwiftTable implements Table {
         try {
             List<Segment> segments = SwiftContext.getInstance().getSegmentProvider().getSegment(key);
             // fixme 应传入整个segments
-            Deleter deleter = SwiftContext.getInstance().getSwiftDataOperatorProvider().getSwiftDeleter(segments.get(0));
+            Deleter deleter = operators.getSwiftDeleter(segments.get(0));
             deleter.deleteData(rowSet);
         } catch (Exception e) {
             throw new SQLException(e);
@@ -97,7 +110,6 @@ class SwiftTable implements Table {
     public SwiftMetaData getMetadata() {
         return meta;
     }
-
 
     @Override
     public Core fetchObjectCore() {

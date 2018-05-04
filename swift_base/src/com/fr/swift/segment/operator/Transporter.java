@@ -1,4 +1,4 @@
-package com.fr.swift.generate;
+package com.fr.swift.segment.operator;
 
 import com.fr.swift.cube.task.WorkerTask;
 
@@ -11,6 +11,8 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
-public interface Transport extends WorkerTask.Worker {
+public interface Transporter extends WorkerTask.Worker {
+    void transport() throws Exception;
+
     List<String> getIndexFieldsList();
 }

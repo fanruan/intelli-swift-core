@@ -23,9 +23,9 @@ import java.util.List;
  * @date 2018/4/25
  */
 class SwiftMetaAdaptor {
-    static SwiftMetaData adapt(Class<?> c) {
+    static SwiftMetaData adapt(Class<?> entity) {
         List<SwiftMetaDataColumn> columnMetas = new ArrayList<SwiftMetaDataColumn>();
-        for (Field field : c.getDeclaredFields()) {
+        for (Field field : entity.getDeclaredFields()) {
             if (!field.isAnnotationPresent(Column.class)) {
                 continue;
             }
@@ -33,11 +33,11 @@ class SwiftMetaAdaptor {
             SwiftMetaDataColumn columnMeta = new MetaDataColumn(column.name(), getSqlType(getClassType(field)));
             columnMetas.add(columnMeta);
         }
-        return new SwiftMetaDataImpl(getTableName(c), columnMetas);
+        return new SwiftMetaDataImpl(getTableName(entity), columnMetas);
     }
 
-    static String getTableName(Class<?> c) {
-        return c.getAnnotation(Table.class).name();
+    static String getTableName(Class<?> entity) {
+        return entity.getAnnotation(Table.class).name();
     }
 
     static Class<?> getClassType(Field field) {

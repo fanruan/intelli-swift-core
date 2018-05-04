@@ -20,8 +20,7 @@ import java.util.List;
  */
 
 public class SubDateColumnDictMerger<Derive> extends BaseColumnDictMerger<Derive> {
-
-    protected GroupType type;
+    private GroupType type;
 
     public SubDateColumnDictMerger(DataSource dataSource, ColumnKey key, GroupType type, List<Segment> segments) {
         super(dataSource, key, segments);

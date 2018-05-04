@@ -1,13 +1,17 @@
 package com.fr.swift.manager;
 
-import com.fr.swift.db.Table;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.generate.history.index.ColumnDictMerger;
+import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.generate.segment.operator.inserter.BlockInserter;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftDataOperatorProvider;
 import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.operator.Deleter;
 import com.fr.swift.segment.operator.Inserter;
+import com.fr.swift.segment.operator.SwiftColumnDictMerger;
+import com.fr.swift.segment.operator.SwiftColumnIndexer;
 import com.fr.swift.segment.operator.delete.HistorySwiftDeleter;
 import com.fr.swift.segment.operator.delete.RealtimeSwiftDeleter;
 import com.fr.swift.segment.operator.insert.HistorySwiftInserter;
@@ -16,7 +20,7 @@ import com.fr.swift.segment.operator.insert.RealtimeSwiftInserter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.util.DataSourceUtils;
 
-import java.sql.SQLException;
+import java.util.List;
 
 public class LocalDataOperatorProvider implements SwiftDataOperatorProvider {
 
@@ -63,23 +67,10 @@ public class LocalDataOperatorProvider implements SwiftDataOperatorProvider {
     }
 
     @Override
-    public Inserter getHistoryInserter(Table table) throws SQLException {
-        return new BlockInserter(table.getSourceKey(), table.getSourceKey().getId(), table.getMeta());
-    }
-
-
-    @Override
     public Inserter getRealtimeBlockSwiftInserter(DataSource dataSource) {
         return new RealtimeBlockSwiftInserter(new LineSegmentManager().getSegment(dataSource.getSourceKey()),
                 dataSource.getSourceKey(), DataSourceUtils.getSwiftSourceKey(dataSource).getId(),
                 dataSource.getMetadata());
-    }
-
-    @Override
-    public Inserter getRealtimeInserter(Table table) throws SQLException {
-        return new RealtimeBlockSwiftInserter(
-                new LineSegmentManager().getSegment(table.getSourceKey()),
-                table.getSourceKey(), table.getSourceKey().getId(), table.getMeta());
     }
 
     @Override
@@ -89,5 +80,15 @@ public class LocalDataOperatorProvider implements SwiftDataOperatorProvider {
         } else {
             return new RealtimeSwiftDeleter(segment);
         }
+    }
+
+    @Override
+    public SwiftColumnIndexer getColumnIndexer(DataSource ds, ColumnKey columnKey, List<Segment> segments) {
+        return new ColumnIndexer(ds, columnKey, segments);
+    }
+
+    @Override
+    public SwiftColumnDictMerger getColumnDictMerger(DataSource ds, ColumnKey columnKey, List<Segment> segments) {
+        return new ColumnDictMerger(ds, columnKey, segments);
     }
 }

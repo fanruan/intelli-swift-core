@@ -3,10 +3,10 @@ package com.fr.swift.generate.history.transport;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.task.Task.Result;
 import com.fr.swift.cube.task.impl.BaseWorker;
-import com.fr.swift.generate.Transport;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.operator.Inserter;
+import com.fr.swift.segment.operator.Transporter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
@@ -21,7 +21,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public class TableTransporter extends BaseWorker implements Transport {
+public class TableTransporter extends BaseWorker implements Transporter {
     private DataSource dataSource;
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(TableTransporter.class);
@@ -43,6 +43,7 @@ public class TableTransporter extends BaseWorker implements Transport {
         }
     }
 
+    @Override
     public void transport() throws Exception {
         SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
         SwiftResultSet resultSet = transfer.createResultSet();
@@ -51,6 +52,7 @@ public class TableTransporter extends BaseWorker implements Transport {
         inserter.insertData(resultSet);
     }
 
+    @Override
     public List<String> getIndexFieldsList() {
         return indexFieldsList;
     }

@@ -21,6 +21,10 @@ import com.fr.swift.query.group.GroupType;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.impl.SubDateColumn;
+import com.fr.swift.segment.operator.SwiftColumnDictMerger;
+import com.fr.swift.segment.operator.SwiftColumnIndexer;
+import com.fr.swift.segment.operator.SwiftTableBuilder;
+import com.fr.swift.segment.operator.Transporter;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.DataSource;
@@ -49,7 +53,7 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
 
     protected LocalTaskGroup taskGroup;
 
-    protected Transport transporter;
+    protected Transporter transporter;
 
     private boolean isRealtime = false;
 
@@ -163,10 +167,15 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
     }
 
     @Override
+    public void build() throws Exception {
+        init();
+        taskGroup.run();
+    }
+
+    @Override
     public void work() {
         try {
-            init();
-            taskGroup.run();
+            build();
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
             workOver(Task.Result.FAILED);
