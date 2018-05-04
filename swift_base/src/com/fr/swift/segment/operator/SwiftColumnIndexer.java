@@ -1,4 +1,4 @@
-package com.fr.swift.generate;
+package com.fr.swift.segment.operator;
 
 import com.fr.swift.cube.task.WorkerTask;
 
@@ -9,5 +9,6 @@ import com.fr.swift.cube.task.WorkerTask;
  * @description
  * @since Advanced FineBI 5.0
  */
-public interface SwiftColumnIndexer<T> extends WorkerTask.Worker {
+public interface SwiftColumnIndexer extends WorkerTask.Worker {
+    void buildIndex() throws Exception;
 }

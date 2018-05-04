@@ -33,8 +33,8 @@ public class SwiftSourceTransferFactory {
 
         } else if (dataSource instanceof ExcelDataSource) {
             transfer = new ExcelTransfer(((ExcelDataSource) dataSource).getAllPaths(), dataSource.getMetadata(), ((ExcelDataSource) dataSource).getOuterMetadata());
-        } else if (dataSource instanceof EtlSource) {
-            transfer = EtlTransferFactory.createTransfer((EtlSource) dataSource);
+        } else if (dataSource instanceof EtlDataSource) {
+            transfer = EtlTransferFactory.createTransfer((EtlDataSource) dataSource);
         }
         return transfer;
     }

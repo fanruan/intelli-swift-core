@@ -23,10 +23,10 @@ public class LogRowSet implements SwiftResultSet {
 
     private int cursor = 0;
 
-    public LogRowSet(SwiftMetaData meta, List<Object> rows, Function<Object, Row> converter) {
+    public LogRowSet(SwiftMetaData meta, List<Object> rows, Class<?> entity) throws Exception {
         this.meta = meta;
         this.rows = rows;
-        this.converter = converter;
+        this.converter = new SwiftRowAdaptor(entity, meta);
     }
 
     @Override

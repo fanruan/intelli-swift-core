@@ -4,6 +4,7 @@ import com.fr.swift.generate.BaseColumnDictMerger;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.DataSource;
+import com.fr.swift.source.SwiftMetaData;
 
 import java.util.List;
 
@@ -19,4 +20,7 @@ public class ColumnDictMerger<T> extends BaseColumnDictMerger<T> {
         super(dataSource, key, segments);
     }
 
+    public ColumnDictMerger(SwiftMetaData meta, ColumnKey key, List<Segment> segments) {
+        super(meta, key, segments);
+    }
 }
