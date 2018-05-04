@@ -128,10 +128,16 @@ public class SwiftDataProvider implements DataProvider {
     public List<Object> getGroupPreviewByFields(DataSource dataSource, String fieldName) {
         try {
             if (dataSource != null) {
-                List<Segment> segments = this.getPreviewData(dataSource);
-
+                //todo 这个接口还是List啊。还需要返回所有值。要有几百几千万的话。。
+                List<Segment> segmentList = null;
+                if (isSwiftAvailable(dataSource)) {
+                    segmentList = getRealData(dataSource);
+                }
+                if (segmentList == null || segmentList.isEmpty()) {
+                    segmentList = this.getPreviewData(dataSource);
+                }
                 List<Object> list = new ArrayList<Object>();
-                for (Segment sg : segments) {
+                for (Segment sg : segmentList) {
                     Column c = sg.getColumn(new ColumnKey(fieldName));
                     DictionaryEncodedColumn dic = c.getDictionaryEncodedColumn();
                     //字典编码的0号恒为0(无论空值存不存在),需要判断一下
