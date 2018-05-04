@@ -211,7 +211,7 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor{
                                                     List values, Map selectedChildren) {
         List<BITreeItem> items = new ArrayList<BITreeItem>();
         for (int i = 0; i < values.size(); i++) {
-            items.add(createItem(isParent, isChildrenChecked, values.get(i).toString(),
+            items.add(createItem(isParent, isChildrenChecked, values.get(i) == null ? "" : values.get(i).toString(),
                     pId + "_" + i, pId, selectedChildren));
         }
         return items;
