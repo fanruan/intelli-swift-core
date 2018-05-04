@@ -11,6 +11,11 @@ import com.fr.swift.cube.io.input.IntReader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.BitMapWriter;
 import com.fr.swift.cube.io.output.IntWriter;
+import com.fr.swift.cube.queue.CubeTasks;
+import com.fr.swift.cube.task.SchedulerTask;
+import com.fr.swift.cube.task.Task;
+import com.fr.swift.cube.task.TaskKey;
+import com.fr.swift.cube.task.TaskStatusChangeListener;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.relation.CubeMultiRelation;
 import com.fr.swift.relation.CubeMultiRelationPath;
@@ -29,9 +34,14 @@ import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.relation.FieldRelationSource;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * @author anchore
@@ -80,12 +90,7 @@ public abstract class BaseSegment implements Segment {
                 return (Column<T>) column;
             }
         } catch (Exception e) {
-            RelationSource source = key.getRelation();
-            if (null == source) {
-                return null;
-            }
-            RelationIndex index = getRelation(key, RelationPathHelper.convert2CubeRelationPath(source));
-            return new RelationColumn(index, key).buildRelationColumn();
+            return createRelationColumn(key);
         }
     }
 
@@ -214,5 +219,44 @@ public abstract class BaseSegment implements Segment {
             bitMapReader.release();
             bitMapReader = null;
         }
+    }
+
+    private Column createRelationColumn(ColumnKey key) {
+        RelationSource source = key.getRelation();
+        if (null == source) {
+            return null;
+        }
+        RelationIndex index = getRelation(key, RelationPathHelper.convert2CubeRelationPath(source));
+        try {
+            index.getIndex(0, 1);
+        } catch (Exception ignore) {
+            final CountDownLatch latch = new CountDownLatch(1);
+            List<Pair<TaskKey, Object>> pairs = new ArrayList<Pair<TaskKey, Object>>();
+            FieldRelationSource relationSource = new FieldRelationSource(key);
+            SchedulerTask relationTask = CubeTasks.newRelationTask(relationSource);
+            SchedulerTask start = CubeTasks.newStartTask(),
+                    end = CubeTasks.newEndTask();
+            end.addStatusChangeListener(new TaskStatusChangeListener() {
+                public void onChange(Task.Status prev, Task.Status now) {
+                    if (now == Task.Status.DONE) {
+                        latch.countDown();
+                    }
+                }
+            });
+            pairs.add(Pair.of(start.key(), null));
+            pairs.add(Pair.of(end.key(), null));
+            start.addNext(relationTask);
+            relationTask.addNext(end);
+            pairs.add(new Pair<TaskKey, Object>(relationTask.key(), relationSource));
+            try {
+                CubeTasks.sendTasks(pairs);
+                start.triggerRun();
+                latch.await();
+                index = getRelation(key, RelationPathHelper.convert2CubeRelationPath(source));
+            } catch (Exception e1) {
+                return null;
+            }
+        }
+        return new RelationColumn(index, key).buildRelationColumn();
     }
 }

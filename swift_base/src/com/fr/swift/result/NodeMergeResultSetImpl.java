@@ -1,5 +1,6 @@
 package com.fr.swift.result;
 
+import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 
@@ -14,15 +15,23 @@ public class NodeMergeResultSetImpl<T extends GroupNode> implements NodeMergeRes
 
     private GroupNode<T> root;
     private List<Map<Integer, Object>> rowGlobalDictionaries;
+    private List<Aggregator> aggregators;
 
-    public NodeMergeResultSetImpl(GroupNode<T> root, List<Map<Integer, Object>> rowGlobalDictionaries) {
+    public NodeMergeResultSetImpl(GroupNode<T> root, List<Map<Integer, Object>> rowGlobalDictionaries,
+                                  List<Aggregator> aggregators) {
         this.root = root;
         this.rowGlobalDictionaries = rowGlobalDictionaries;
+        this.aggregators = aggregators;
     }
 
     @Override
     public List<Map<Integer, Object>> getRowGlobalDictionaries() {
         return rowGlobalDictionaries;
+    }
+
+    @Override
+    public List<Aggregator> getAggregators() {
+        return aggregators;
     }
 
     @Override

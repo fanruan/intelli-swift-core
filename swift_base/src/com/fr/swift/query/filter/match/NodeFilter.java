@@ -9,6 +9,7 @@ import java.util.List;
  * Created by pony on 2018/4/18.
  */
 public class NodeFilter {
+
     private static void filter(SwiftNode node, int deep, List<MatchFilter> matchFilters) {
         if (deep < matchFilters.size()) {
             MatchFilter filter = matchFilters.get(deep);

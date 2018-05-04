@@ -21,10 +21,11 @@ import java.util.List;
 public class XNodeUtils {
 
     /**
-     * @param topDimensionSize
-     * @param rowDimensionSize
-     * @param topGroupNode
-     * @param xLeftNode
+     * 将交叉表的结果集转为功能
+     * @param topDimensionSize 表头维度个数
+     * @param rowDimensionSize 行维度个数
+     * @param topGroupNode 表头GroupBy结果
+     * @param xLeftNode 行GroupBy结果
      */
     public static void setValues2XLeftNode(int topDimensionSize, int rowDimensionSize,
                                            TopGroupNode topGroupNode, XLeftNode xLeftNode) {
@@ -61,12 +62,12 @@ public class XNodeUtils {
     }
 
     /**
-     * 更新TopGroupNode#topGroupValues，用于做列向汇总
+     * 更新TopGroupNode#topGroupValues，包含横向的汇总行，用于做列向汇总
      *
-     * @param topDimensionSize
-     * @param rowDimensionSize
-     * @param topGroupNode
-     * @param xLeftNode
+     * @param topDimensionSize 表头维度个数
+     * @param rowDimensionSize 行维度个数
+     * @param topGroupNode 表头GroupBy结果
+     * @param xLeftNode 行GroupBy结果
      */
     public static void updateTopGroupNodeValues(int topDimensionSize, int rowDimensionSize,
                                                 TopGroupNode topGroupNode, XLeftNode xLeftNode) {

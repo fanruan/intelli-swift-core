@@ -40,7 +40,8 @@ public class GroupResultQuery extends AbstractGroupResultQuery {
             addDictionaries(((NodeMergeResultSet) resultSet).getRowGlobalDictionaries(), totalDictionaries);
         }
         GroupNode mergeNode = GroupNodeMergeUtils.merge(roots, nodeComparators(), aggregators);
-        return new NodeMergeResultSetImpl(mergeNode, totalDictionaries);
+        return new NodeMergeResultSetImpl<GroupNode>(mergeNode, totalDictionaries,
+                ((NodeMergeResultSet) groupByResultSets.get(0)).getAggregators());
     }
 
     static void addDictionaries(List<Map<Integer, Object>> dictionaries,
