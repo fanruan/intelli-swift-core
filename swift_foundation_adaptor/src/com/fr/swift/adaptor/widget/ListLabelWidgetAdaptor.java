@@ -24,7 +24,7 @@ public class ListLabelWidgetAdaptor {
 
             List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
             if (widget.getFilters() != null) {
-                filterInfos.add(FilterInfoFactory.transformFineFilter(widget.getFilters()));
+                filterInfos.add(FilterInfoFactory.transformFineFilter(widget.getTableName(), widget.getFilters()));
             }
             if (dimension.getFilters() != null) {
                 filterInfos.add(FilterInfoFactory.transformDimensionFineFilter(dimension));

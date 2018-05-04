@@ -80,7 +80,7 @@ public class DataMiningFilterResultSet implements SwiftResultSet {
         if (filter == null || filter.size() == 0) {
             filterData = inputData;
         } else {
-            FilterInfo filterInfo = FilterInfoFactory.transformFilterBean(filter, Arrays.asList(basedSegment));
+            FilterInfo filterInfo = FilterInfoFactory.transformFilterBean(null, filter, Arrays.asList(basedSegment));
             ColumnFilterOperatorResultSet resultSet = new ColumnFilterOperatorResultSet(basedSegment, baseMetaData, filterInfo);
             while (resultSet.next()) {
                 List<Object> row = new ArrayList<Object>();
