@@ -86,7 +86,7 @@ public abstract class AbstractWidgetAdaptor {
 
         //先通过明细表排序查最小
         DetailDimension ascDimension = new DetailDimension(0, sourceKey, new ColumnKey(getColumnName(fieldId)),
-                null, new AscSort(0, null), filterInfo);
+                null, new AscSort(0), filterInfo);
         IntList sortIndex = IntListFactory.createHeapIntList(1);
         sortIndex.add(0);
         DetailQueryInfo minQueryInfo = new DetailQueryInfo(new AllCursor(), queryId, new DetailDimension[]{ascDimension}, sourceKey, null, sortIndex, null, null);
@@ -97,7 +97,7 @@ public abstract class AbstractWidgetAdaptor {
 
         //再通过明细表排序查最大
         DetailDimension descDimension = new DetailDimension(0, sourceKey, new ColumnKey(getColumnName(fieldId)),
-                null, new DescSort(0, null), filterInfo);
+                null, new DescSort(0), filterInfo);
         DetailQueryInfo maxQueryInfo = new DetailQueryInfo(new AllCursor(), queryId, new DetailDimension[]{descDimension}, sourceKey, null, sortIndex, null, null);
         DetailResultSet maxResultSet = QueryRunnerProvider.getInstance().executeQuery(maxQueryInfo);
         maxResultSet.next();

@@ -63,9 +63,9 @@ public class QueryConditionAdaptor {
             Sort sort = new NoneSort();
             if (sortItem != null) {
                 if (sortItem.isDesc()) {
-                    sort = new DescSort(i, null);
+                    sort = new DescSort(i);
                 } else {
-                    sort = new AscSort(i, null);
+                    sort = new AscSort(i);
                 }
             }
             dimensions[i] = new DetailDimension(i, sourceKey, new ColumnKey(metaData.getColumnName(i + 1)), null, sort, null);

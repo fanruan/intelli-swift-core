@@ -8,6 +8,9 @@ abstract class AbstractSort implements Sort {
     private int targetIndex;
 
     private String targetFieldId;
+    AbstractSort(int targetIndex) {
+        this.targetIndex = targetIndex;
+    }
     AbstractSort(int targetIndex, String targetFieldId) {
         this.targetIndex = targetIndex;
         this.targetFieldId = targetFieldId;

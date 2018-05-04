@@ -17,27 +17,27 @@ public class SortAdaptor {
     public static Sort transformSort(int sortType) {
         switch (sortType) {
             case ConfConstant.SortType.ASC:
-                return new AscSort(0, null);
+                return new AscSort(0);
             default:
-                return new DescSort(0, null);
+                return new DescSort(0);
         }
     }
 
     public static Sort adaptorDimensionSort(FineDimensionSort dimensionSort, int index) {
         if (dimensionSort == null) {
-            return new AscSort(index, null);
+            return new AscSort(index);
         }
         switch (dimensionSort.getType()) {
             case SORT.ASC:
             case SORT.NUMBER_ASC:
-                return new AscSort(index, null);
+                return new AscSort(index);
             case SORT.FILTER_ASC: {
                 String fieldId = ((DimensionFilterASCSort)dimensionSort).getValue().getTargetFieldId();
                 return new AscSort(index, fieldId);
             }
             case SORT.DESC:
             case SORT.NUMBER_DESC:
-                return new DescSort(index, null);
+                return new DescSort(index);
             case SORT.FILTER_DESC: {
                 String fieldId = ((DimensionFilterDESCSort)dimensionSort).getValue().getTargetFieldId();
                 return new DescSort(index, fieldId);
