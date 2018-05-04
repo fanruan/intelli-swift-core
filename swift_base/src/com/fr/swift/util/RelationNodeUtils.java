@@ -1,20 +1,14 @@
 package com.fr.swift.util;
 
-import com.fr.swift.config.IMetaData;
-import com.fr.swift.config.IMetaDataColumn;
-import com.fr.swift.config.conf.service.SwiftConfigService;
-import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
 import com.fr.swift.reliance.RelationNode;
 import com.fr.swift.reliance.RelationPathNode;
 import com.fr.swift.reliance.RelationPathReliance;
 import com.fr.swift.reliance.RelationReliance;
-import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.Source;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SourcePath;
-import com.fr.swift.source.relation.FieldRelationSource;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,7 +23,6 @@ import java.util.Map;
  */
 public class RelationNodeUtils {
     public static void calculateRelationNode(RelationReliance relationReliance) {
-        SwiftConfigService service = SwiftConfigServiceProvider.getInstance();
         Map<SourceKey, DataSource> dataSourceList = relationReliance.getAllDataSourceList();
         Map<SourceKey, RelationSource> relationSourceMap = relationReliance.getAllRelationSource();
         Iterator<Map.Entry<SourceKey, RelationSource>> iterator = relationSourceMap.entrySet().iterator();
@@ -44,19 +37,11 @@ public class RelationNodeUtils {
                 } else {
                     relationReliance.addNode(new RelationNode(source, Arrays.<Source>asList(foreign)));
                 }
-                IMetaData metaData = service.getMetaDataByKey(source.getPrimarySource().getId());
-                List<IMetaDataColumn> columns = metaData.getFieldList();
-                for (IMetaDataColumn column : columns) {
-                    ColumnKey columnKey = new ColumnKey(column.getName());
-                    columnKey.setRelation(source);
-                    relationReliance.addNode(new RelationNode(new FieldRelationSource(columnKey), Arrays.<Source>asList(source)));
-                }
             }
         }
     }
 
     public static void calculateRelationPathNode(RelationPathReliance relationReliance) {
-        SwiftConfigService service = SwiftConfigServiceProvider.getInstance();
         Map<SourceKey, RelationNode> dataSourceList = relationReliance.getRelationNodeMap();
         Map<SourceKey, SourcePath> relationSourceMap = relationReliance.getAllRelationSource();
         Iterator<Map.Entry<SourceKey, SourcePath>> iterator = relationSourceMap.entrySet().iterator();
@@ -67,14 +52,6 @@ public class RelationNodeUtils {
         }
         for (RelationPathNode node : nodes) {
             relationReliance.addNode(node);
-            RelationSource path = node.getNode();
-            IMetaData metaData = service.getMetaDataByKey(path.getPrimarySource().getId());
-            List<IMetaDataColumn> columns = metaData.getFieldList();
-            for (IMetaDataColumn column : columns) {
-                ColumnKey columnKey = new ColumnKey(column.getName());
-                columnKey.setRelation(path);
-                relationReliance.addNode(new RelationPathNode(new FieldRelationSource(columnKey), Arrays.asList(path)));
-            }
         }
     }
 
