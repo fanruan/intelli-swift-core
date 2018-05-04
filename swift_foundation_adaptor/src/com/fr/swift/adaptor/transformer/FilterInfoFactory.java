@@ -226,7 +226,7 @@ public class FilterInfoFactory {
             case BICommonConstants.ANALYSIS_FILTER_STRING.BELONG_VALUE: {
                 StringBelongFilterValueBean valueBean = ((StringBelongFilterBean) bean).getFilterValue();
                 List<String> belongValues = valueBean.getValue();
-                if (belongValues == null || belongValues.size() == 0) {
+                if (belongValues == null) {
                     break;
                 }
                 int valueType = valueBean.getType();
@@ -237,7 +237,7 @@ public class FilterInfoFactory {
             case BICommonConstants.ANALYSIS_FILTER_STRING.NOT_BELONG_VALUE: {
                 StringBelongFilterValueBean valueBean = ((StringNoBelongFilterBean) bean).getFilterValue();
                 List<String> notBelongValues = valueBean.getValue();
-                if (notBelongValues == null || notBelongValues.size() == 0) {
+                if (notBelongValues == null) {
                     break;
                 }
                 int valueType = valueBean.getType();
@@ -292,11 +292,13 @@ public class FilterInfoFactory {
                 return new SwiftDetailFilterInfo<Object>(columnKey, null, SwiftDetailFilterType.NOT_NULL);
             case BICommonConstants.ANALYSIS_FILTER_STRING.TOP_N: {
                 int n = ((StringTopNFilterBean) bean).getFilterValue().intValue();
-                return new SwiftDetailFilterInfo<Integer>(columnKey, n, SwiftDetailFilterType.TOP_N);
+                // 功能的前N个对应字典排序中最小的N个
+                return new SwiftDetailFilterInfo<Integer>(columnKey, n, SwiftDetailFilterType.BOTTOM_N);
             }
             case BICommonConstants.ANALYSIS_FILTER_STRING.BOTTOM_N: {
                 int n = ((StringBottomNFilterBean) bean).getFilterValue().intValue();
-                return new SwiftDetailFilterInfo<Integer>(columnKey, n, SwiftDetailFilterType.BOTTOM_N);
+                // 功能的后N个对应字典排序中最大的N个
+                return new SwiftDetailFilterInfo<Integer>(columnKey, n, SwiftDetailFilterType.TOP_N);
             }
 
 
