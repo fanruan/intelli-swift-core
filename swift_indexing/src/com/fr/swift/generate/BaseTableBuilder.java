@@ -23,8 +23,6 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.impl.SubDateColumn;
 import com.fr.swift.segment.operator.SwiftColumnDictMerger;
 import com.fr.swift.segment.operator.SwiftColumnIndexer;
-import com.fr.swift.segment.operator.SwiftTableBuilder;
-import com.fr.swift.segment.operator.Transporter;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.DataSource;

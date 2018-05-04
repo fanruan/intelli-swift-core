@@ -1,4 +1,4 @@
-package com.fr.swift.segment.operator;
+package com.fr.swift.generate;
 
 import com.fr.swift.cube.task.WorkerTask;
 

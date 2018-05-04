@@ -192,10 +192,7 @@ public class DataSourceUtils {
                 return result;
             }
         } else {
-            if (ComparatorUtils.equals(dataSource.getSourceKey(), baseSourceKey)) {
-                return true;
-            }
-            return false;
+            return ComparatorUtils.equals(dataSource.getSourceKey(), baseSourceKey);
         }
     }
 }
