@@ -9,6 +9,7 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.utils.InserterUtils;
 import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
@@ -16,6 +17,7 @@ import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,8 +38,8 @@ public abstract class AbstractInserter implements Inserter {
     protected Map<String, MutableBitMap> nullMap = new ConcurrentHashMap<String, MutableBitMap>();
     private int row = 0;
     private ImmutableBitMap allShowIndex;
-    List<Column> columnList = new ArrayList<Column>();
-    List<ColumnTypeConstants.ClassType> classTypeList = new ArrayList<ColumnTypeConstants.ClassType>();
+    private List<Column> columnList = new ArrayList<Column>();
+    private List<ColumnTypeConstants.ClassType> classTypeList = new ArrayList<ColumnTypeConstants.ClassType>();
 
 
     public AbstractInserter(Segment segment) throws Exception {
@@ -55,9 +57,9 @@ public abstract class AbstractInserter implements Inserter {
         this.fields = fields;
         this.segment = segment;
         SwiftMetaData metaData = segment.getMetaData();
-        for (int i = 0; i < fields.size(); i++) {
-            SwiftMetaDataColumn metaDataColumn = metaData.getColumn(fields.get(i));
-            ColumnTypeConstants.ClassType clazz = ColumnTypeUtils.getClassType(metaDataColumn);
+        for (String field : fields) {
+            SwiftMetaDataColumn metaDataColumn = metaData.getColumn(field);
+            ClassType clazz = ColumnTypeUtils.getClassType(metaDataColumn);
             ColumnKey columnKey = new ColumnKey(metaDataColumn.getName());
             Column column = segment.getColumn(columnKey);
             columnList.add(column);
@@ -67,38 +69,35 @@ public abstract class AbstractInserter implements Inserter {
     }
 
     @Override
-    public boolean insertData(List<Row> rowList) {
+    public List<Segment> insertData(List<Row> rowList) {
         allShowIndex = BitMaps.newAllShowBitMap(rowList.size());
         for (Row rowData : rowList) {
-            for (int i = 0; i < fields.size(); i++) {
-                if (InserterUtils.isBusinessNullValue(rowData.getValue(i))) {
-                    columnList.get(i).getDetailColumn().put(row, InserterUtils.getNullValue(classTypeList.get(i)));
-                    InserterUtils.setNullIndex(fields.get(i), row, nullMap);
-                } else {
-                    columnList.get(i).getDetailColumn().put(row, rowData.getValue(i));
-                }
-            }
+            putRow(rowData);
             row++;
         }
         segment.putRowCount(row);
         segment.putAllShowIndex(allShowIndex);
         release();
-        return true;
+        return Collections.singletonList(segment);
+    }
+
+    private void putRow(Row rowData) {
+        for (int i = 0; i < fields.size(); i++) {
+            if (InserterUtils.isBusinessNullValue(rowData.getValue(i))) {
+                columnList.get(i).getDetailColumn().put(row, InserterUtils.getNullValue(classTypeList.get(i)));
+                InserterUtils.setNullIndex(fields.get(i), row, nullMap);
+            } else {
+                columnList.get(i).getDetailColumn().put(row, rowData.getValue(i));
+            }
+        }
     }
 
     @Override
-    public boolean insertData(SwiftResultSet swiftResultSet) throws Exception {
+    public List<Segment> insertData(SwiftResultSet swiftResultSet) throws Exception {
         try {
             while (swiftResultSet.next()) {
                 Row rowData = swiftResultSet.getRowData();
-                for (int i = 0; i < fields.size(); i++) {
-                    if (InserterUtils.isBusinessNullValue(rowData.getValue(i))) {
-                        columnList.get(i).getDetailColumn().put(row, InserterUtils.getNullValue(classTypeList.get(i)));
-                        InserterUtils.setNullIndex(fields.get(i), row, nullMap);
-                    } else {
-                        columnList.get(i).getDetailColumn().put(row, rowData.getValue(i));
-                    }
-                }
+                putRow(rowData);
                 row++;
             }
         } finally {
@@ -109,7 +108,7 @@ public abstract class AbstractInserter implements Inserter {
         segment.putRowCount(row);
         segment.putAllShowIndex(allShowIndex);
         release();
-        return true;
+        return Collections.singletonList(segment);
     }
 
     public abstract void release();

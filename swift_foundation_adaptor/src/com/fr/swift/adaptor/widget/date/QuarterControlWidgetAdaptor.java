@@ -30,11 +30,11 @@ public class QuarterControlWidgetAdaptor {
             DimensionTypeGroup yearGroup = new DimensionTypeGroup();
             yearGroup.setType(DATE.YEAR);
             TypeGroupBean yearBean = new TypeGroupBean();
-            yearBean.setType(yearGroup.getType());
             yearGroup.setValue(yearBean);
+            yearBean.setType(DATE.YEAR);
             dimension.setGroup(yearGroup);
 
-            FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
+            FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getTableName(), widget.getFilters());
             List<Long> yearValues = QueryUtils.getOneDimensionFilterValues(dimension, filterInfo, widget.getWidgetId());
             List<Integer> years = new ArrayList<Integer>();
             for (Long v : yearValues) {
@@ -45,8 +45,8 @@ public class QuarterControlWidgetAdaptor {
             DimensionTypeGroup quarterGroup = new DimensionTypeGroup();
             quarterGroup.setType(DATE.QUARTER);
             TypeGroupBean quarterBean = new TypeGroupBean();
-            quarterBean.setType(quarterGroup.getType());
             quarterGroup.setValue(quarterBean);
+            quarterBean.setType(DATE.QUARTER);
             dimension.setGroup(quarterGroup);
 
             List<Long> values = QueryUtils.getOneDimensionFilterValues(dimension, filterInfo, widget.getWidgetId());

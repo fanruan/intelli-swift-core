@@ -16,7 +16,7 @@ import java.util.List;
 public class CustomNumGroupRule extends BaseCustomGroupRule<Number, String> {
     static final Format FORMATTER = new DecimalFormat("#.##");
 
-    public CustomNumGroupRule(List<CustomGroup<Number, String>> groups, String otherGroupName) {
+    public CustomNumGroupRule(List<? extends CustomGroup<Number, String>> groups, String otherGroupName) {
         super(groups, otherGroupName);
     }
 

@@ -4,6 +4,7 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.exception.SegmentAbsentException;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.DataSource;
+import com.fr.swift.source.EtlDataSource;
 import com.fr.swift.source.SwiftMetaData;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import java.util.List;
  * @date 2018/1/8
  */
 public class EtlTransferFactory {
-    public static EtlTransfer createTransfer(EtlSource source) throws SegmentAbsentException {
+    public static EtlTransfer createTransfer(EtlDataSource source) throws SegmentAbsentException {
         SwiftMetaData metaData = source.getMetadata();
         ETLOperator operator = source.getOperator();
         ETLTransferOperator transferOperator = EtlTransferOperatorFactory.createTransferOperator(operator);
@@ -33,10 +34,4 @@ public class EtlTransferFactory {
         }
         return new EtlTransfer(transferOperator, metaData, basedMetas, basedSegments, source.getFieldsInfo());
     }
-
-//    public static SwiftSourceTransfer createBaseTableMinorTransfer(ETLSource source) throws Exception{
-//        SwiftContext.getInstance().getMinorSegmentManager().update(source);
-//        return null;
-//    }
-
 }

@@ -6,6 +6,7 @@ import com.fr.swift.reliance.RelationPathReliance;
 import com.fr.swift.reliance.RelationReliance;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.RelationSource;
+import com.fr.swift.source.Source;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SourcePath;
 
@@ -32,9 +33,9 @@ public class RelationNodeUtils {
             // 更新子表时如果包含关联则尝试更新关联
             if (null != foreign) {
                 if (null != primary) {
-                    relationReliance.addNode(new RelationNode(source, Arrays.asList(primary, foreign)));
+                    relationReliance.addNode(new RelationNode(source, Arrays.<Source>asList(primary, foreign)));
                 } else {
-                    relationReliance.addNode(new RelationNode(source, Arrays.asList(foreign)));
+                    relationReliance.addNode(new RelationNode(source, Arrays.<Source>asList(foreign)));
                 }
             }
         }

@@ -54,7 +54,8 @@ public class XNodeGroupByUtils {
         // 表头的叶子节点对应列的所有聚合值，用于交叉表XLeftNode行合并的基础上继续进行列向的合并
         setValues2topGroupNodeAndClearCachedIndex(rowGroupByInfo.getDimensions().size(), colGroupByInfo.getDimensions().size(),
                 xLeftRoot, topNodeRoot);
-        return new XNodeMergeResultSetImpl(xLeftRoot, topNodeRoot, rowGlobalDictionaries, topItCreator.getColGlobalDictionaries());
+        return new XNodeMergeResultSetImpl(xLeftRoot, topNodeRoot, rowGlobalDictionaries,
+                topItCreator.getColGlobalDictionaries(), metricInfo.getAggregators());
     }
 
     private static void setValues2topGroupNodeAndClearCachedIndex(int rowDimensionSize, int colDimensionSize,

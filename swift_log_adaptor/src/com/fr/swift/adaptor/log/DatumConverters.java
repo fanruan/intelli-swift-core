@@ -10,9 +10,9 @@ import java.util.Date;
  * @author anchore
  * @date 2018/4/26
  */
-class Converters {
-    static UnaryOperator<Object> getConverter(Class<?> type) {
-        return getConverter(SwiftMetaAdaptor.getStoreSqlType(type));
+class DatumConverters {
+    static UnaryOperator<Object> getConverter(Class<?> field) {
+        return getConverter(SwiftMetaAdaptor.getStoreSqlType(field));
     }
 
     private static UnaryOperator<Object> getConverter(int sqlType) {
@@ -53,8 +53,8 @@ class Converters {
         }
     }
 
-    static UnaryOperator<Object> getReverseConverter(final Class<?> type) {
-        switch (SwiftMetaAdaptor.getSqlType(type)) {
+    static UnaryOperator<Object> getReverseConverter(final Class<?> field) {
+        switch (SwiftMetaAdaptor.getSqlType(field)) {
             case Types.BOOLEAN:
                 return new UnaryOperator<Object>() {
                     @Override
@@ -110,7 +110,7 @@ class Converters {
                     @Override
                     public Object apply(Object p) {
                         try {
-                            return type.getConstructor(long.class).newInstance(((Long) p));
+                            return field.getConstructor(long.class).newInstance(((Long) p));
                         } catch (Exception e) {
                             return null;
                         }

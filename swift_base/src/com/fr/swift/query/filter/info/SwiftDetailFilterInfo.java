@@ -4,6 +4,7 @@ import com.fr.swift.query.filter.DetailFilterFactory;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.core.CoreField;
 
 /**
@@ -13,24 +14,26 @@ import com.fr.swift.source.core.CoreField;
 public class SwiftDetailFilterInfo<T> extends AbstractDetailFilterInfo {
 
     @CoreField
-    private String fieldName;
-    @CoreField
     private T filterValue;
     @CoreField
     private SwiftDetailFilterType type;
 
-    public SwiftDetailFilterInfo(String fieldName, T filterValue, SwiftDetailFilterType type) {
-        this.fieldName = fieldName;
+    @CoreField
+    private ColumnKey columnKey;
+
+    public SwiftDetailFilterInfo(ColumnKey columnKey, T filterValue, SwiftDetailFilterType type) {
         this.filterValue = filterValue;
         this.type = type;
+        this.columnKey = columnKey;
     }
 
-    public String getFieldName() {
-        return fieldName;
-    }
 
     public T getFilterValue() {
         return filterValue;
+    }
+
+    public ColumnKey getColumnKey() {
+        return columnKey;
     }
 
     public SwiftDetailFilterType getType() {
@@ -54,16 +57,16 @@ public class SwiftDetailFilterInfo<T> extends AbstractDetailFilterInfo {
 
         SwiftDetailFilterInfo<?> that = (SwiftDetailFilterInfo<?>) o;
 
-        if (fieldName != null ? !fieldName.equals(that.fieldName) : that.fieldName != null) return false;
         if (filterValue != null ? !filterValue.equals(that.filterValue) : that.filterValue != null) return false;
-        return type == that.type;
+        if (type != that.type) return false;
+        return columnKey != null ? columnKey.equals(that.columnKey) : that.columnKey == null;
     }
 
     @Override
     public int hashCode() {
-        int result = fieldName != null ? fieldName.hashCode() : 0;
-        result = 31 * result + (filterValue != null ? filterValue.hashCode() : 0);
+        int result = filterValue != null ? filterValue.hashCode() : 0;
         result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (columnKey != null ? columnKey.hashCode() : 0);
         return result;
     }
 }

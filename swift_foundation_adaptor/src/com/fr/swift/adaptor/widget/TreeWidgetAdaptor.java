@@ -14,6 +14,7 @@ import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
+import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.util.pinyin.PinyinUtils;
 import edu.emory.mathcs.backport.java.util.Arrays;
 
@@ -36,7 +37,7 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor{
         BITreeResult result = null;
         try {
             TreeOptionsBean bean = treeWidget.getValue().getOptions().getTreeOptions();
-            FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(treeWidget.getFilters());
+            FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(null, treeWidget.getFilters());
             // TODO: 2018/4/13 BITreeResult暂时不分页
             List<BITreeItem> treeItems = createTreeItemList(treeWidget.getWidgetId(), bean, filterInfo, treeWidget.getDimensionList());
             result = new TreeResult(false, treeItems);
@@ -162,7 +163,7 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor{
             maps = subMaps;
         }
         String fieldName = SwiftEncryption.decryptFieldId(dimensions.get(dimensionIndex).getFieldId())[1];
-        return new SwiftDetailFilterInfo<Set<String>>(fieldName, values, SwiftDetailFilterType.STRING_IN);
+        return new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(fieldName), values, SwiftDetailFilterType.STRING_IN);
     }
 
     private static Map getSelectedChildren(List<String> parents, Map selectedValues) {
@@ -200,7 +201,7 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor{
             FineDimension dimension = dimensions.get(i);
             String fieldName = getColumnName(dimension.getFieldId());
             final String data = parents.get(i);
-            infoList.add(new SwiftDetailFilterInfo<Set<String>>(fieldName,
+            infoList.add(new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(fieldName),
                     new HashSet<String>() {{ add(data); }}, SwiftDetailFilterType.STRING_IN));
         }
         return new GeneralFilterInfo(infoList, GeneralFilterInfo.AND);
