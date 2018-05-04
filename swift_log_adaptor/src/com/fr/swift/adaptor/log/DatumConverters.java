@@ -11,8 +11,8 @@ import java.util.Date;
  * @date 2018/4/26
  */
 class DatumConverters {
-    static UnaryOperator<Object> getConverter(Class<?> entity) {
-        return getConverter(SwiftMetaAdaptor.getStoreSqlType(entity));
+    static UnaryOperator<Object> getConverter(Class<?> field) {
+        return getConverter(SwiftMetaAdaptor.getStoreSqlType(field));
     }
 
     private static UnaryOperator<Object> getConverter(int sqlType) {
@@ -53,8 +53,8 @@ class DatumConverters {
         }
     }
 
-    static UnaryOperator<Object> getReverseConverter(final Class<?> entity) {
-        switch (SwiftMetaAdaptor.getSqlType(entity)) {
+    static UnaryOperator<Object> getReverseConverter(final Class<?> field) {
+        switch (SwiftMetaAdaptor.getSqlType(field)) {
             case Types.BOOLEAN:
                 return new UnaryOperator<Object>() {
                     @Override
@@ -110,7 +110,7 @@ class DatumConverters {
                     @Override
                     public Object apply(Object p) {
                         try {
-                            return entity.getConstructor(long.class).newInstance(((Long) p));
+                            return field.getConstructor(long.class).newInstance(((Long) p));
                         } catch (Exception e) {
                             return null;
                         }
