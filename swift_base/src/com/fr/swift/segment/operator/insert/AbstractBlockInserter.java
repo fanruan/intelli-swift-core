@@ -31,6 +31,7 @@ import com.fr.swift.util.Crasher;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -49,9 +50,9 @@ public abstract class AbstractBlockInserter implements Inserter {
     protected SwiftMetaData swiftMetaData;
     protected List<String> fields;
     protected List<Segment> segments;
-    protected IConfigSegment configSegment;
-    protected SwiftSourceAlloter alloter;
-    protected SegmentIndexCache segmentIndexCache;
+    private IConfigSegment configSegment;
+    private SwiftSourceAlloter alloter;
+    private SegmentIndexCache segmentIndexCache;
     private int startSegIndex;
 
     public AbstractBlockInserter(SourceKey sourceKey, String cubeSourceKey, SwiftMetaData swiftMetaData) {
@@ -88,12 +89,12 @@ public abstract class AbstractBlockInserter implements Inserter {
     }
 
     @Override
-    public boolean insertData(List<Row> rowList) {
-        return false;
+    public List<Segment> insertData(List<Row> rowList) {
+        return Collections.emptyList();
     }
 
     @Override
-    public boolean insertData(SwiftResultSet swiftResultSet) throws Exception {
+    public List<Segment> insertData(SwiftResultSet swiftResultSet) throws Exception {
         if (!fields.isEmpty()) {
             try {
                 long count = 0;
@@ -132,15 +133,17 @@ public abstract class AbstractBlockInserter implements Inserter {
             } finally {
                 swiftResultSet.close();
             }
+            release();
+            return segments;
         } else {
             List<Segment> cubeSourceSegments = SwiftContext.getInstance().getSegmentProvider().getSegment(new SourceKey(cubeSourceKey));
             for (int i = 0; i < cubeSourceSegments.size(); i++) {
                 Segment segment = cubeSourceSegments.get(i);
                 createSegment(i, segment.isHistory() ? Types.StoreType.FINE_IO : Types.StoreType.MEMORY);
             }
+            release();
+            return Collections.emptyList();
         }
-        release();
-        return true;
     }
 
     protected abstract Segment createSegment(int order);
@@ -190,7 +193,7 @@ public abstract class AbstractBlockInserter implements Inserter {
         }
     }
 
-    protected void persistMeta() {
+    private void persistMeta() {
         try {
             if (!SwiftDatabase.getInstance().existsTable(sourceKey)) {
                 SwiftDatabase.getInstance().createTable(sourceKey, swiftMetaData);
@@ -201,7 +204,7 @@ public abstract class AbstractBlockInserter implements Inserter {
         }
     }
 
-    protected void persistSegment() {
+    private void persistSegment() {
         SwiftConfigServiceProvider.getInstance().addSegments(configSegment);
     }
 

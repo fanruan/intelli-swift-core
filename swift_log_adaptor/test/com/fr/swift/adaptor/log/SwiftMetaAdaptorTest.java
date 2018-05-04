@@ -35,12 +35,12 @@ public class SwiftMetaAdaptorTest {
 
     @Table(name = "A")
     static class A {
+        @Column(name = "d1")
+        double d1 = 1;
         @Column(name = "s")
         short s = -1;
         @Column(name = "l")
         Long l = 1L;
-        @Column(name = "d1")
-        double d1 = 1;
 
         private Object dontRecordThis;
 

@@ -16,10 +16,12 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.segment.operator.SwiftColumnIndexer;
 import com.fr.swift.setting.PerformancePlugManager;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.DataSource;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
@@ -40,9 +42,9 @@ import static com.fr.swift.source.ColumnTypeConstants.ClassType.STRING;
  * @date 2018/2/26
  */
 public abstract class BaseColumnIndexer<T> extends BaseWorker implements SwiftColumnIndexer {
-    protected DataSource dataSource;
-    protected ColumnKey key;
-    protected List<Segment> segments;
+    private SwiftMetaData meta;
+    private ColumnKey key;
+    private List<Segment> segments;
 
     /**
      * segments通过外部传入
@@ -52,7 +54,11 @@ public abstract class BaseColumnIndexer<T> extends BaseWorker implements SwiftCo
      * @param segments
      */
     public BaseColumnIndexer(DataSource dataSource, ColumnKey key, List<Segment> segments) {
-        this.dataSource = dataSource;
+        this(dataSource.getMetadata(), key, segments);
+    }
+
+    public BaseColumnIndexer(SwiftMetaData meta, ColumnKey key, List<Segment> segments) {
+        this.meta = meta;
         this.key = key;
         this.segments = segments;
     }
@@ -68,7 +74,8 @@ public abstract class BaseColumnIndexer<T> extends BaseWorker implements SwiftCo
         }
     }
 
-    private void buildIndex() throws Exception {
+    @Override
+    public void buildIndex() throws Exception {
         for (Segment segment : segments) {
             Column<T> column = getColumn(segment);
             buildColumnIndex(column, segment.getRowCount());
@@ -93,7 +100,7 @@ public abstract class BaseColumnIndexer<T> extends BaseWorker implements SwiftCo
         Map<T, IntList> map;
         IResourceLocation location = column.getLocation();
 
-        SwiftMetaDataColumn columnMeta = dataSource.getMetadata().getColumn(key.getName());
+        SwiftMetaDataColumn columnMeta = meta.getColumn(key.getName());
         if (isDetailInExternal(ColumnTypeUtils.getClassType(columnMeta),
                 location.getStoreType())) {
             ExternalMap<T, IntList> extMap = newIntListExternalMap(
@@ -192,7 +199,7 @@ public abstract class BaseColumnIndexer<T> extends BaseWorker implements SwiftCo
     }
 
     private ExternalMap<T, IntList> newIntListExternalMap(Comparator<T> c, String path) throws SwiftMetaDataException {
-        SwiftMetaDataColumn columnMeta = dataSource.getMetadata().getColumn(key.getName());
+        SwiftMetaDataColumn columnMeta = meta.getColumn(key.getName());
         return IntListExternalMapFactory.getIntListExternalMap(ColumnTypeUtils.getClassType(columnMeta), c, path, true);
     }
 

@@ -14,7 +14,6 @@ import com.fr.swift.source.DataSource;
  * fixme copy过来的，实现改成realtime的
  */
 public class RealtimeTableBuilder extends BaseTableBuilder {
-
     public RealtimeTableBuilder(DataSource dataSource, Increment increment, FlowRuleController flowRuleController) {
         super(dataSource, true);
         this.transporter = new RealtimeDataTransporter(dataSource, increment, flowRuleController);
