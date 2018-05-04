@@ -8,6 +8,7 @@ import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.match.MatchFilter;
+import com.fr.swift.query.filter.match.NodeSorter;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
@@ -49,6 +50,9 @@ public class GroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> {
 //        } else if (hasDifferentResultAggregator(aggregators, resultAggregators)) {
 //            NodeAggregator.aggregate(mergeResult.getNode(), getDifferentAggregator(aggregators, resultAggregators));
 //        }
+        if (hasDimensionTargetSorts()) {
+            NodeSorter.sort(mergeResult.getNode(), getDimensionTargetSorts());
+        }
         // 取出查询最后要返回的结果
         TargetCalculatorUtils.getShowTargetsForGroupNodeAndSetNodeData(((GroupNode) mergeResult.getNode()),
                 info.getTargetInfo().getTargetsForShowList(), ((NodeMergeResultSet) mergeResult).getRowGlobalDictionaries());
@@ -56,6 +60,16 @@ public class GroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> {
         GroupNodeAggregateUtils.aggregate(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
                 (GroupNode) mergeResult.getNode(), info.getTargetInfo().getResultAggregators());
         return mergeResult;
+    }
+
+    private boolean hasDimensionTargetSorts() {
+        for (Dimension dimension : info.getDimensionInfo().getDimensions()) {
+            Sort sort = dimension.getSort();
+            if (sort != null && sort.getTargetIndex() != dimension.getIndex()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private Pair<Aggregator, Boolean>[] getCombinedAggregators(List<Aggregator> aggregators, List<Aggregator> resultAggregators) {
@@ -115,15 +129,18 @@ public class GroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> {
         return matchFilters;
     }
 
+
     /**
      * 维度根据结果（比如聚合之后的指标）排序
      */
-    private List<Sort> getIndexSorts(Dimension[] dimensions) {
+    public List<Sort> getDimensionTargetSorts() {
         List<Sort> indexSorts = new ArrayList<Sort>();
-        for (Dimension dimension : dimensions) {
+        for (Dimension dimension : info.getDimensionInfo().getDimensions()) {
             Sort sort = dimension.getSort();
             if (sort != null && sort.getTargetIndex() != dimension.getIndex()) {
                 indexSorts.add(sort);
+            } else {
+                indexSorts.add(null);
             }
         }
         return indexSorts;

@@ -55,7 +55,7 @@ public class MinorUpdater {
 
     private DataSource dataSource;
 
-    private int previewRowCount = 100;
+    private int previewRowCount = 200;
 
     public MinorUpdater(DataSource dataSource) {
         this.dataSource = dataSource;
