@@ -296,12 +296,11 @@ public class CalTargetParseUtils {
      */
     private static Set<Pair<String, Pair<AggregatorType, FilterInfo>>> parseMetricFromBaseCalTargetField(
             WidgetBeanField field, AbstractTableWidget widget) {
-        // 找到计算指标字段对应的聚合类型
         AggregatorType aggregatorType = AggregatorAdaptor.adaptorCalTarget(field.getCalculate().getType());
         // 其他类型的计算指标默认是求和的基础是做的
         aggregatorType = aggregatorType == null ? AggregatorType.SUM : aggregatorType;
         // 找到配置生成的计算字段中的明细过滤信息
-        FilterInfo filterInfo = getDetailFilterInfoOfField(field);
+        FilterInfo filterInfo = getDetailFilterInfoOfField(widget, field);
         // 因为这个计算指标字段只能依赖原始字段，所以field#getTargetIds()对应的原始字段的fieldId集合
         Set<Pair<String, Pair<AggregatorType, FilterInfo>>> pairs = new HashSet<Pair<String, Pair<AggregatorType, FilterInfo>>>();
         for (String fieldId : field.getTargetIds()) {
@@ -325,7 +324,7 @@ public class CalTargetParseUtils {
     private static Pair<String, Pair<AggregatorType, FilterInfo>> parseMetricFromBaseTargetOfBaseField(FineTarget target, AbstractTableWidget widget) {
         // 原始字段生成的指标，id为原始字段的FieldId
         AggregatorType aggregatorType = AggregatorAdaptor.adaptorDashBoard(target.getMetric());
-        FilterInfo filterInfo = getDetailFilterInfoOfField(widget.getFieldByFieldId(target.getFieldId()));
+        FilterInfo filterInfo = getDetailFilterInfoOfField(widget, widget.getFieldByFieldId(target.getFieldId()));
         return Pair.of(target.getFieldId(), Pair.of(aggregatorType, filterInfo));
     }
 
@@ -432,10 +431,10 @@ public class CalTargetParseUtils {
      * @param field
      * @return
      */
-    private static FilterInfo getDetailFilterInfoOfField(WidgetBeanField field) {
+    private static FilterInfo getDetailFilterInfoOfField(AbstractTableWidget widget, WidgetBeanField field) {
         FilterInfo filterInfo = null;
         if (field != null && field.getFilter() != null) {
-            filterInfo = FilterInfoFactory.createFilterInfo(field.getFilter(), new ArrayList<Segment>());
+            filterInfo = FilterInfoFactory.createFilterInfo(widget.getTableName(), field.getFilter(), new ArrayList<Segment>());
         }
         return filterInfo;
     }

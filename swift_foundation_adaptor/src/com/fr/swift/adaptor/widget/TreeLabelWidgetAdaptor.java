@@ -31,7 +31,7 @@ public class TreeLabelWidgetAdaptor {
 
     public static BITreeLabelResult calculate(TreeLabelWidget labelWidget) {
         try {
-            FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(labelWidget.getFilters());
+            FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(StringUtils.EMPTY, labelWidget.getFilters());
             List<List<String>> items = new ArrayList<List<String>>();
             List<FineDimension> fineDimensions = labelWidget.getDimensionList();
             List<List<String>> selectedValues = labelWidget.getSelectedValues();

@@ -37,7 +37,7 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor{
         BITreeResult result = null;
         try {
             TreeOptionsBean bean = treeWidget.getValue().getOptions().getTreeOptions();
-            FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(treeWidget.getFilters());
+            FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(null, treeWidget.getFilters());
             // TODO: 2018/4/13 BITreeResult暂时不分页
             List<BITreeItem> treeItems = createTreeItemList(treeWidget.getWidgetId(), bean, filterInfo, treeWidget.getDimensionList());
             result = new TreeResult(false, treeItems);

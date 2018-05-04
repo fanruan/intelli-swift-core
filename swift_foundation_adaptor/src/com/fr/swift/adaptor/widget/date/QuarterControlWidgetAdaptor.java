@@ -34,7 +34,7 @@ public class QuarterControlWidgetAdaptor {
             yearBean.setType(DATE.YEAR);
             dimension.setGroup(yearGroup);
 
-            FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
+            FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getTableName(), widget.getFilters());
             List<Long> yearValues = QueryUtils.getOneDimensionFilterValues(dimension, filterInfo, widget.getWidgetId());
             List<Integer> years = new ArrayList<Integer>();
             for (Long v : yearValues) {
