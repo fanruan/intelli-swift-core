@@ -10,7 +10,7 @@ import com.fr.swift.util.Crasher;
  */
 public class LineSourceAlloter implements SwiftSourceAlloter {
 
-    private static final int DEFAULT_STEP = 100000;
+    private static final int DEFAULT_STEP = 10000000;
 
     private int allotStep;
 

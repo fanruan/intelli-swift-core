@@ -19,30 +19,40 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author anchore
  * @date 2018/4/26
  */
 public class LogOperatorImpl implements LogOperator {
-    private Database db = SwiftDatabase.getInstance();
-
     private static final int USE_IMPORT_THRESHOLD = 100000;
 
-    static final SwiftLogger LOGGER = SwiftLoggers.getLogger(LogOperatorImpl.class);
+    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(LogOperatorImpl.class);
+
+    private Database db = SwiftDatabase.getInstance();
+
+    private Map<Class<?>, List<Object>> dataMap = new ConcurrentHashMap<Class<?>, List<Object>>();
+
+    private static final int FLUSH_INTERVAL_THRESHOLD = 1000000;
+
+    private static final int FLUSH_SIZE_THRESHOLD = 10000;
+
+    private long lastFlushTime = System.currentTimeMillis();
 
     @Override
-    public <T> DataList<T> find(Class<T> aClass, QueryCondition queryCondition) {
+    public <T> DataList<T> find(Class<T> entity, QueryCondition queryCondition) {
         DataList<T> dataList = new DataList<T>();
         try {
-            Table table = db.getTable(new SourceKey(SwiftMetaAdaptor.getTableName(aClass)));
-            QueryInfo queryInfo = QueryConditionAdaptor.adaptorCondition(queryCondition, table);
+            Table table = db.getTable(new SourceKey(SwiftMetaAdaptor.getTableName(entity)));
+            QueryInfo queryInfo = QueryConditionAdaptor.adaptCondition(queryCondition, table);
             SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
 
             List<T> tList = new ArrayList<T>();
             while (resultSet.next()) {
                 Row row = resultSet.getRowData();
-                DecisionRowAdaptor adaptor = new DecisionRowAdaptor(aClass);
+                DecisionRowAdaptor adaptor = new DecisionRowAdaptor(entity, table.getMeta());
                 T t = (T) adaptor.apply(row);
                 tList.add(t);
             }
@@ -55,7 +65,7 @@ public class LogOperatorImpl implements LogOperator {
     }
 
     @Override
-    public <T> DataList<T> find(Class<T> aClass, QueryCondition queryCondition, String s) {
+    public <T> DataList<T> find(Class<T> entity, QueryCondition queryCondition, String s) {
         return null;
     }
 
@@ -64,8 +74,34 @@ public class LogOperatorImpl implements LogOperator {
         if (o == null) {
             return;
         }
-        Table table = db.getTable(new SourceKey(SwiftMetaAdaptor.getTableName(o.getClass())));
-        table.insert(new LogRowSet(table.getMeta(), Collections.singletonList(o), new SwiftRowAdaptor(o.getClass())));
+
+        record(Collections.singletonList(o));
+    }
+
+    private synchronized void record(List<Object> data) throws Exception {
+        Object first = data.get(0);
+        Class<?> entity = first.getClass();
+        if (!dataMap.containsKey(entity)) {
+            dataMap.put(entity, new ArrayList<Object>());
+        }
+        List<Object> curData = dataMap.get(entity);
+        curData.addAll(data);
+
+        if (curData.size() < FLUSH_SIZE_THRESHOLD || System.currentTimeMillis() - lastFlushTime < FLUSH_INTERVAL_THRESHOLD) {
+            return;
+        }
+
+        Table table = db.getTable(new SourceKey(SwiftMetaAdaptor.getTableName(entity)));
+        SwiftResultSet rowSet = new LogRowSet(table.getMeta(), curData, entity);
+
+//        if (curData.size() < USE_IMPORT_THRESHOLD) {
+            table.insert(rowSet);
+//        } else {
+//            table.importFrom(rowSet);
+//        }
+
+        curData.clear();
+        lastFlushTime = System.currentTimeMillis();
     }
 
     @Override
@@ -73,14 +109,8 @@ public class LogOperatorImpl implements LogOperator {
         if (list == null || list.isEmpty()) {
             return;
         }
-        Object first = list.get(0);
-        Table table = db.getTable(new SourceKey(SwiftMetaAdaptor.getTableName(first.getClass())));
-        SwiftResultSet rowSet = new LogRowSet(table.getMeta(), list, new SwiftRowAdaptor(first.getClass()));
-        if (list.size() < USE_IMPORT_THRESHOLD) {
-            table.insert(rowSet);
-        } else {
-            table.importFrom(rowSet);
-        }
+
+        record(list);
     }
 
     @Override

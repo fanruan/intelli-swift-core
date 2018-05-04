@@ -1,5 +1,6 @@
 package com.fr.swift.query.filter;
 
+import com.fr.stable.StringUtils;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.filter.detail.impl.AllShowDetailFilter;
 import com.fr.swift.query.filter.detail.impl.FormulaFilter;
@@ -42,7 +43,13 @@ public class DetailFilterFactory {
 
     public static DetailFilter createFilter(Segment segment, SwiftDetailFilterInfo filterInfo) {
         // 通用过滤器没有fieldName
-        Column column = filterInfo.getFieldName() == null || segment == null ? null : segment.getColumn(new ColumnKey(filterInfo.getFieldName()));
+        ColumnKey columnKey = filterInfo.getColumnKey();
+        Column column;
+        if (null == columnKey || StringUtils.isEmpty(columnKey.getName())) {
+            column = null;
+        } else {
+            column = segment == null ? null : segment.getColumn(columnKey);
+        }
         final int rowCount = segment == null ? 0 : segment.getRowCount();
         switch (filterInfo.getType()) {
             case STRING_IN:

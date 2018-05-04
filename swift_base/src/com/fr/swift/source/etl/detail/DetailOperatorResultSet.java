@@ -81,7 +81,7 @@ public class DetailOperatorResultSet implements SwiftResultSet {
         for (RelationColumn column : columns) {
             Object v = null;
             try {
-                v = column.getValue(currentRow);
+                v = column.getPrimaryValue(currentRow);
             } catch (Exception ignore){
             }
             list.add(v);

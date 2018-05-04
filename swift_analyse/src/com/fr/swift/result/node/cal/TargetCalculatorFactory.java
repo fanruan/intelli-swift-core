@@ -2,6 +2,7 @@ package com.fr.swift.result.node.cal;
 
 import com.fr.swift.query.adapter.target.GroupTarget;
 import com.fr.swift.query.adapter.target.cal.CalTargetType;
+import com.fr.swift.query.adapter.target.cal.GroupFormulaTarget;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.XLeftNode;
@@ -47,6 +48,9 @@ public class TargetCalculatorFactory {
                 return new AllRankCalculator(target.paramIndexes()[0], target.resultIndex(), iterator, true);
             case ALL_RANK_DEC:
                 return new AllRankCalculator(target.paramIndexes()[0], target.resultIndex(), iterator, false);
+            case FORMULA:
+                return new GroupFormulaCalculator(target.paramIndexes(), target.resultIndex(),
+                        ((GroupFormulaTarget) target).getFormula(), iterator);
         }
         return null;
     }

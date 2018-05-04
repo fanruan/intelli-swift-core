@@ -4,7 +4,6 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
 import com.fr.swift.cube.io.location.IResourceLocation;
-import com.fr.swift.relation.CubeLogicColumnKey;
 import com.fr.swift.relation.CubeMultiRelation;
 import com.fr.swift.relation.CubeMultiRelationPath;
 import com.fr.swift.segment.Segment;
@@ -44,7 +43,7 @@ public class CreateSegmentForRank {
             }
 
             @Override
-            public RelationIndex getRelation(CubeLogicColumnKey f) {
+            public RelationIndex getRelation(ColumnKey f, CubeMultiRelationPath relationPath) {
                 return null;
             }
 

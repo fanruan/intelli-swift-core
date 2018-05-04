@@ -1,4 +1,4 @@
-package com.fr.swift.generate;
+package com.fr.swift.segment.operator;
 
 import com.fr.swift.cube.task.WorkerTask;
 
@@ -10,4 +10,5 @@ import com.fr.swift.cube.task.WorkerTask;
  * @since Advanced FineBI 5.0
  */
 public interface SwiftColumnDictMerger extends WorkerTask.Worker {
+    void mergeDict() throws Exception;
 }

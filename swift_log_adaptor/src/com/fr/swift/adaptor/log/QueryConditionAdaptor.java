@@ -42,7 +42,7 @@ import java.util.Set;
  */
 public class QueryConditionAdaptor {
 
-    public static QueryInfo adaptorCondition(QueryCondition condition, Table swiftTable) throws SQLException {
+    public static QueryInfo adaptCondition(QueryCondition condition, Table swiftTable) throws SQLException {
         SwiftMetaData metaData = swiftTable.getMeta();
         SourceKey sourceKey = swiftTable.getSourceKey();
 
@@ -85,47 +85,47 @@ public class QueryConditionAdaptor {
 
         switch (restriction.getType()) {
             case EQ:
-                filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(columnName, (Set) Collections.singleton(value), SwiftDetailFilterType.STRING_IN));
+                filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(columnName), (Set) Collections.singleton(value), SwiftDetailFilterType.STRING_IN));
                 break;
             case NEQ:
-                filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(columnName, (Set) Collections.singleton(value), SwiftDetailFilterType.STRING_NOT_IN));
+                filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(columnName), (Set) Collections.singleton(value), SwiftDetailFilterType.STRING_NOT_IN));
                 break;
             case GT:
                 SwiftNumberInRangeFilterValue gtValue = new SwiftNumberInRangeFilterValue();
                 gtValue.setMin((Double.parseDouble(String.valueOf(value))));
-                filterInfos.add(new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(columnName, gtValue, SwiftDetailFilterType.NUMBER_IN_RANGE));
+                filterInfos.add(new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(new ColumnKey(columnName), gtValue, SwiftDetailFilterType.NUMBER_IN_RANGE));
                 break;
             case GTE:
                 SwiftNumberInRangeFilterValue gteValue = new SwiftNumberInRangeFilterValue();
                 gteValue.setMin((Double.parseDouble(String.valueOf(value))));
                 gteValue.setMinIncluded(true);
-                filterInfos.add(new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(columnName, gteValue, SwiftDetailFilterType.NUMBER_IN_RANGE));
+                filterInfos.add(new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(new ColumnKey(columnName), gteValue, SwiftDetailFilterType.NUMBER_IN_RANGE));
                 break;
             case LT:
                 SwiftNumberInRangeFilterValue ltValue = new SwiftNumberInRangeFilterValue();
                 ltValue.setMax((Double.parseDouble(String.valueOf(value))));
-                filterInfos.add(new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(columnName, ltValue, SwiftDetailFilterType.NUMBER_IN_RANGE));
+                filterInfos.add(new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(new ColumnKey(columnName), ltValue, SwiftDetailFilterType.NUMBER_IN_RANGE));
                 break;
             case LTE:
                 SwiftNumberInRangeFilterValue lteValue = new SwiftNumberInRangeFilterValue();
                 lteValue.setMax((Double.parseDouble(String.valueOf(value))));
                 lteValue.setMaxIncluded(true);
-                filterInfos.add(new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(columnName, lteValue, SwiftDetailFilterType.NUMBER_IN_RANGE));
+                filterInfos.add(new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(new ColumnKey(columnName), lteValue, SwiftDetailFilterType.NUMBER_IN_RANGE));
                 break;
             case IN:
-                filterInfos.add(new SwiftDetailFilterInfo<Set<Object>>(columnName, values, SwiftDetailFilterType.STRING_IN));
+                filterInfos.add(new SwiftDetailFilterInfo<Set<Object>>(new ColumnKey(columnName), values, SwiftDetailFilterType.STRING_IN));
                 break;
             case NIN:
-                filterInfos.add(new SwiftDetailFilterInfo<Set<Object>>(columnName, values, SwiftDetailFilterType.STRING_NOT_IN));
+                filterInfos.add(new SwiftDetailFilterInfo<Set<Object>>(new ColumnKey(columnName), values, SwiftDetailFilterType.STRING_NOT_IN));
                 break;
             case LIKE:
-                filterInfos.add(new SwiftDetailFilterInfo<String>(columnName, (String) value, SwiftDetailFilterType.STRING_LIKE));
+                filterInfos.add(new SwiftDetailFilterInfo<String>(new ColumnKey(columnName), (String) value, SwiftDetailFilterType.STRING_LIKE));
                 break;
             case STARTWITH:
-                filterInfos.add(new SwiftDetailFilterInfo<String>(columnName, (String) value, SwiftDetailFilterType.STRING_STARTS_WITH));
+                filterInfos.add(new SwiftDetailFilterInfo<String>(new ColumnKey(columnName), (String) value, SwiftDetailFilterType.STRING_STARTS_WITH));
                 break;
             case ENDWITH:
-                filterInfos.add(new SwiftDetailFilterInfo<String>(columnName, (String) value, SwiftDetailFilterType.STRING_ENDS_WITH));
+                filterInfos.add(new SwiftDetailFilterInfo<String>(new ColumnKey(columnName), (String) value, SwiftDetailFilterType.STRING_ENDS_WITH));
                 break;
             case AND:
                 List<FilterInfo> andFilters = new ArrayList<FilterInfo>();

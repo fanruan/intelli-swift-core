@@ -1,6 +1,11 @@
 package com.fr.swift.generate;
 
 
+import com.fr.swift.bitmap.BitMaps;
+import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.bitmap.impl.BitMapOrHelper;
+import com.fr.swift.bitmap.traversal.BreakTraversalAction;
+import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.cube.nio.NIOConstant;
 import com.fr.swift.cube.task.Task;
@@ -17,6 +22,7 @@ import com.fr.swift.structure.array.LongArray;
 import com.fr.swift.structure.array.LongListFactory;
 import com.fr.swift.util.Crasher;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -51,12 +57,6 @@ public abstract class BaseTablePathIndexer extends BaseWorker {
             List<Segment> primary = getPrimaryTableSegments();
             List<Segment> pre = getPreTableSegments();
             List<Segment> target = getTargetTableSegments();
-            int primaryPos = 0;
-            for (Segment segment : primary) {
-                primaryPos += segment.getRowCount();
-                releaseIfNeed(segment);
-            }
-//            primaryPos += primary.size();
             for (int i = 0; i < target.size(); i++) {
                 Segment tSegment = target.get(i);
                 RelationIndex lastRelationReader = tSegment.getRelation(relationPath.getLastRelation());
@@ -68,7 +68,11 @@ public abstract class BaseTablePathIndexer extends BaseWorker {
                     for (int j = 0; j < pre.size(); j++) {
                         preSegment = pre.get(j);
                         preTableRelationIndex = preSegment.getRelation(getPrePath());
-                        reversePos = buildIndexPerSegment(preTableRelationIndex, targetTableRelationIndex, lastRelationReader, tSegment.getRowCount(), primaryPos, reversePos);
+                        for (int k = 0; k < primary.size(); k++) {
+                            Segment pSegment = primary.get(k);
+                            reversePos = buildIndexPerSegment(preTableRelationIndex, targetTableRelationIndex, lastRelationReader, tSegment.getRowCount(), pSegment.getRowCount(), reversePos, k);
+                            releaseIfNeed(pSegment);
+                        }
                     }
                     targetTableRelationIndex.putReverseCount(reversePos);
                 } catch (Exception e) {
@@ -120,7 +124,6 @@ public abstract class BaseTablePathIndexer extends BaseWorker {
     }
 
     /**
-     * TODO NullIndex暂时没想好
      * @param preTableRelationIndex
      * @param targetTableRelationIndex
      * @param lastRelationReader
@@ -129,22 +132,21 @@ public abstract class BaseTablePathIndexer extends BaseWorker {
      * @param reversePos
      * @return
      */
-    private int buildIndexPerSegment(RelationIndex preTableRelationIndex, RelationIndex targetTableRelationIndex, RelationIndex lastRelationReader, int reverseSize, int totalPos, int reversePos) {
+    private int buildIndexPerSegment(RelationIndex preTableRelationIndex, RelationIndex targetTableRelationIndex, RelationIndex lastRelationReader, int reverseSize, int totalPos, int reversePos, int primaryIndex) {
 
         try {
             LongArray reverse = LongListFactory.createLongArray(reverseSize, NIOConstant.LONG.NULL_VALUE);
-//            BitMapOrHelper helper = new BitMapOrHelper();
+            BitMapOrHelper helper = new BitMapOrHelper();
             for (int i = 0; i < totalPos; i++) {
-                LongArray preTableIndex = preTableRelationIndex.getIndex(i + 1);
-                LongArray resultIndex = getTableLinkedOrGVI(preTableIndex, lastRelationReader);
-//                helper.add(resultIndex);
-                targetTableRelationIndex.putIndex(i + 1, resultIndex);
-                initReverse(reverse, i, resultIndex);
+                ImmutableBitMap preTableIndex = preTableRelationIndex.getIndex(primaryIndex, i + 1);
+                ImmutableBitMap resultIndex = getTableLinkedOrGVI(preTableIndex, lastRelationReader, primaryIndex);
+                helper.add(resultIndex);
+                targetTableRelationIndex.putIndex(primaryIndex, i + 1, resultIndex);
+                initReverse(reverse, i, resultIndex, primaryIndex);
             }
+            targetTableRelationIndex.putNullIndex(primaryIndex, helper.compute().getNot(reverse.size()));
             return buildReverseIndex(targetTableRelationIndex, reverse, reversePos);
-//            targetTableRelationIndex.putNullIndex(0, helper.compute().getNot(reverse.size()));
         } catch (Exception e) {
-            e.printStackTrace();
             return Crasher.crash(e);
         }
     }
@@ -156,32 +158,35 @@ public abstract class BaseTablePathIndexer extends BaseWorker {
         return reversePos;
     }
 
-    LongArray getTableLinkedOrGVI(LongArray currentIndex, final RelationIndex relationIndex) {
-        RelationIndexHelper helper = new RelationIndexHelper();
+    ImmutableBitMap getTableLinkedOrGVI(ImmutableBitMap currentIndex, final RelationIndex relationIndex, final int primaryIndex) {
         if (null != currentIndex) {
-            for (int i = 0; i < currentIndex.size(); i++) {
-                long value = currentIndex.get(i);
-                if (value != NIOConstant.LONG.NULL_VALUE) {
-                    int[] result = RelationIndexHelper.reverse2SegAndRow(value);
+            final List<ImmutableBitMap> bitMaps = new ArrayList<ImmutableBitMap>();
+            currentIndex.breakableTraversal(new BreakTraversalAction() {
+                @Override
+                public boolean actionPerformed(int row) {
                     try {
-                        helper.addNullIndex(relationIndex.getIndex(result[1] + 1));
+                        bitMaps.add(relationIndex.getIndex(primaryIndex, row + 1));
                     } catch (Exception ignore) {
-                        helper.addNullIndex(LongListFactory.createLongArray(1, NIOConstant.LONG.NULL_VALUE));
+                        bitMaps.add(BitMaps.EMPTY_IMMUTABLE);
                     }
+                    return false;
                 }
+            });
+            ImmutableBitMap result = BitMaps.newRoaringMutable();
+            for (ImmutableBitMap bitMap : bitMaps) {
+                result = result.getOr(bitMap);
             }
-            return helper.getNullIndex();
+            return result;
         }
-        return LongListFactory.createLongArray(1, NIOConstant.LONG.NULL_VALUE);
+        return null;
     }
 
-    private void initReverse(final LongArray reverse, final int indexRow, LongArray index) {
-        for (int i = 0; i < index.size(); i++) {
-            long value = index.get(i);
-            if (value != NIOConstant.LONG.NULL_VALUE) {
-                int[] result = RelationIndexHelper.reverse2SegAndRow(value);
-                reverse.put(result[1], RelationIndexHelper.merge2Long(result[0], indexRow));
+    private void initReverse(final LongArray reverse, final int indexRow, ImmutableBitMap index, final int primaryIndex) {
+        index.traversal(new TraversalAction() {
+            @Override
+            public void actionPerformed(int row) {
+                reverse.put(row, RelationIndexHelper.merge2Long(primaryIndex, indexRow));
             }
-        }
+        });
     }
 }

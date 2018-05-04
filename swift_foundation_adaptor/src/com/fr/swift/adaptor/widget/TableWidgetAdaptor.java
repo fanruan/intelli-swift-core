@@ -12,6 +12,7 @@ import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.structure.filter.FineFilter;
 import com.finebi.conf.structure.result.table.BIGroupNode;
 import com.finebi.conf.structure.result.table.BITableResult;
+import com.fr.swift.adaptor.linkage.LinkageAdaptor;
 import com.fr.swift.adaptor.struct.node.BIGroupNodeAdaptor;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.transformer.SortAdaptor;
@@ -151,7 +152,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
                 String value = drill.getFromValue();
                 Set<String> values = new HashSet<String>();
                 values.add(value);
-                filterInfoList.add(new SwiftDetailFilterInfo<Set<String>>(columnName, values, SwiftDetailFilterType.STRING_IN));
+                filterInfoList.add(new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(columnName), values, SwiftDetailFilterType.STRING_IN));
             }
         }
         widget.getValue().getDrillList();
@@ -167,17 +168,17 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
                 WidgetLinkItem widgetLinkItem = entry.getValue();
                 String id = entry.getKey();
                 if (customLinkConf != null && customLinkConf.containsKey(id)) {
-                    dealWithCustomLink(filterInfoList, widgetLinkItem, customLinkConf.get(id));
+                    dealWithCustomLink(widget.getTableName(), filterInfoList, widgetLinkItem, customLinkConf.get(id));
                 } else {
-                    dealWithAutoLink(filterInfoList, widgetLinkItem);
+                    dealWithAutoLink(widget.getTableName(), filterInfoList, widgetLinkItem);
                 }
             }
         }
     }
 
-    private static void dealWithAutoLink(List<FilterInfo> filterInfoList, WidgetLinkItem widgetLinkItem) {
+    private static void dealWithAutoLink(String tableName, List<FilterInfo> filterInfoList, WidgetLinkItem widgetLinkItem) {
         //根据点击的值，创建过滤条件
-        handleClickItem(widgetLinkItem, filterInfoList);
+        LinkageAdaptor.handleClickItem(tableName, widgetLinkItem, filterInfoList);
     }
 
     /**
@@ -187,7 +188,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
      * @param widgetLinkItem
      * @param customLinkConfItems
      */
-    private static void dealWithCustomLink(List<FilterInfo> filterInfoList, WidgetLinkItem widgetLinkItem, List<CustomLinkConfItem> customLinkConfItems) throws SQLException {
+    private static void dealWithCustomLink(String tableName, List<FilterInfo> filterInfoList, WidgetLinkItem widgetLinkItem, List<CustomLinkConfItem> customLinkConfItems) throws SQLException {
         //自定义设置的维度
         Dimension[] fromColumns = new Dimension[customLinkConfItems.size()];
         //要过滤的维度
@@ -199,7 +200,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         }
         //根据点击的值，创建过滤条件
         List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
-        TableWidgetBean fromWidget = handleClickItem(widgetLinkItem, filterInfos);
+        TableWidgetBean fromWidget = LinkageAdaptor.handleClickItem(tableName, widgetLinkItem, filterInfos);
         //分组表查询
         FilterInfo filterInfo = new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
         GroupQueryInfo queryInfo = new GroupQueryInfo(fromWidget.getwId(), fromColumns[0].getSourceKey(),
@@ -217,7 +218,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
             }
         }
         for (int i = 0; i < toColumns.length; i++) {
-            filterInfoList.add(new SwiftDetailFilterInfo(toColumns[i], results[i], SwiftDetailFilterType.STRING_IN));
+            filterInfoList.add(new SwiftDetailFilterInfo(new ColumnKey(toColumns[i]), results[i], SwiftDetailFilterType.STRING_IN));
         }
     }
 

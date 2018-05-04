@@ -13,5 +13,5 @@ public enum CalTargetType {
     ALL_RANK_ASC,
     ALL_RANK_DEC,
 
-
+    FORMULA
 }

@@ -3,7 +3,6 @@ package com.fr.swift.generate.preview;
 import com.fr.swift.cube.io.ResourceDiscoveryImpl;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.generate.history.index.ColumnDictMerger;
 import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.generate.history.index.SubDateColumnDictMerger;
@@ -47,11 +46,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * 基础表每次
  */
 public class MinorUpdater {
-
-    //预览数据过期时间
+    /**
+     * 预览数据过期时间
+     */
     private static Map<SourceKey, Long> segmentsExpireMap = new ConcurrentHashMap<SourceKey, Long>();
 
-    private static long expireTime = 60000l;
+    private static long expireTime = 60000L;
 
     private DataSource dataSource;
 
@@ -122,8 +122,8 @@ public class MinorUpdater {
 
             for (String indexField : inserter.getFields()) {
                 ColumnKey columnKey = new ColumnKey(indexField);
-                new ColumnIndexer(dataSource, columnKey, Collections.singletonList(segment)).work();
-                new ColumnDictMerger(dataSource, columnKey, Collections.singletonList(segment)).work();
+                new ColumnIndexer(dataSource, columnKey, Collections.singletonList(segment)).buildIndex();
+                new ColumnDictMerger(dataSource, columnKey, Collections.singletonList(segment)).mergeDict();
                 indexSubColumnIfNeed(dataSource, columnKey, segment);
             }
 
@@ -135,14 +135,14 @@ public class MinorUpdater {
         }
     }
 
-    private void indexSubColumnIfNeed(DataSource dataSource, ColumnKey columnKey, Segment seg) throws SwiftMetaDataException {
+    private void indexSubColumnIfNeed(DataSource dataSource, ColumnKey columnKey, Segment seg) throws Exception {
         SwiftMetaDataColumn columnMeta = dataSource.getMetadata().getColumn(columnKey.getName());
         if (ColumnTypeUtils.getClassType(columnMeta) != ClassType.DATE) {
             return;
         }
         for (GroupType type : SubDateColumn.TYPES_TO_GENERATE) {
-            new SubDateColumnIndexer(dataSource, columnKey, type, Collections.singletonList(seg)).work();
-            new SubDateColumnDictMerger(dataSource, columnKey, type, Collections.singletonList(seg)).work();
+            new SubDateColumnIndexer(dataSource, columnKey, type, Collections.singletonList(seg)).buildIndex();
+            new SubDateColumnDictMerger(dataSource, columnKey, type, Collections.singletonList(seg)).mergeDict();
         }
     }
 

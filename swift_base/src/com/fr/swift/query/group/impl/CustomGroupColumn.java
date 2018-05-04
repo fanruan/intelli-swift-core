@@ -111,7 +111,8 @@ class CustomGroupColumn<Base, Derive> implements Column<Derive> {
         @Override
         public int getIndexByRow(int row) {
             int originIndex = originDict.getIndexByRow(row);
-            return groupRule.reverseMap(originIndex);
+            // fixme 一个值可以在多个分组 nb
+            return groupRule.reverseMap(originIndex).get(0);
         }
 
         @Override
