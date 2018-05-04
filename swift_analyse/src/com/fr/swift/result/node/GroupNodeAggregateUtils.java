@@ -108,11 +108,9 @@ public class GroupNodeAggregateUtils {
             return;
         }
         Iterator<GroupNode> iterator = new ChildIterator(groupNode);
-        AggregatorValue[] valuesOfParent = groupNode.getAggregatorValue();
-        if (valuesOfParent.length == 0) {
-            // 父节点为空，先拷贝把第一个子节点的值拷贝过来
-            valuesOfParent = createAggregateValues(iterator.next().getAggregatorValue(), aggregators);
-        }
+        // 默认清空父节点的值。
+        // FIXME: 2018/5/4 多个segment同时有expander的情况下父节点有可能不为空的，这时就有bug了！
+        AggregatorValue[] valuesOfParent = createAggregateValues(iterator.next().getAggregatorValue(), aggregators);
         // aggregator的个数和values的长度要想等，不管是哪种类型的value，都要有个对应的aggregator
         assert aggregators.size() == valuesOfParent.length;
         while (iterator.hasNext()) {
