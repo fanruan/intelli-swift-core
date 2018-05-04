@@ -5,20 +5,22 @@ import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.query.group.GroupType;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
+import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.structure.Pair;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeSet;
 
 
+
 public class BaseSortByOtherDimensionGroupRule<Base, Derive> extends BaseGroupRule {
     DictionaryEncodedColumn<Base> dictColumn;
+    Column<Base> sortByColumn;
 //    @CoreField
 //    List<SortByOtherDimensionGroup<Base, Derive>> groups;
-    BitmapIndexedColumn otherBitmapIndexedColumn;
+    BitmapIndexedColumn sortByBitmapIndexedColumn;
     /**
      * 新分组序号 -> (新分组值, 旧分组序号)
      */
@@ -30,7 +32,7 @@ public class BaseSortByOtherDimensionGroupRule<Base, Derive> extends BaseGroupRu
 
     private SortType sortType;
 
-
+    private int[] indexArray;
     public BaseSortByOtherDimensionGroupRule(SortType sortType) {
         this.sortType = sortType;
     }
@@ -40,9 +42,8 @@ public class BaseSortByOtherDimensionGroupRule<Base, Derive> extends BaseGroupRu
     private void initMap() {
         try {
             int dictSize = dictColumn.size();
-            Comparator comparator;
             reverseMap = new int[dictSize];
-
+            indexArray = new int[dictSize];
             // 0号为null
             map.put(0, Pair.of((Base) null, 0));
             if(sortType == SortType.ASC) {
@@ -58,34 +59,51 @@ public class BaseSortByOtherDimensionGroupRule<Base, Derive> extends BaseGroupRu
     }
 
     private void ASCMap(int size) {
-        for(int i = 1; i < size ;) {
-            TreeSet<Base> set = new TreeSet<Base>(dictColumn.getComparator());
-            otherBitmapIndexedColumn.getBitMapIndex(i).traversal(new TraversalAction() {
+        for(int i = 1, j = 1; j < size; i++) {
+            final TreeSet<Base> set = new TreeSet<Base>(dictColumn.getComparator());
+            sortByBitmapIndexedColumn.getBitMapIndex(i).traversal(new TraversalAction() {
                 @Override
                 public void actionPerformed(int row) {
                     int oldIndex = dictColumn.getIndexByRow(row);
-                    set.add(dictColumn.getValue(oldIndex));
+                    if(!findIndex(oldIndex)) {
+                        if(dictColumn.getValue(oldIndex) != null) {
+                            set.add(dictColumn.getValue(oldIndex));
+                        }
+                        indexArray[oldIndex] = 1;
+                    }
                 }
             });
-            internalMap(i, set);
-            i += set.size();
+            internalMap(j, set);
+            j += set.size();
         }
     }
 
     private void DESCMap(int size) {
-        for(int i = size - 1; i > 0;) {
-            TreeSet<Base> set = new TreeSet<Base>(dictColumn.getComparator());
-            otherBitmapIndexedColumn.getBitMapIndex(i).traversal(new TraversalAction() {
+        for(int i = sortByColumn.getDictionaryEncodedColumn().size() - 1, j = size; j > 1; i --) {
+            final TreeSet<Base> set = new TreeSet<Base>(dictColumn.getComparator());
+            sortByBitmapIndexedColumn.getBitMapIndex(i).traversal(new TraversalAction() {
                 @Override
                 public void actionPerformed(int row) {
                     int oldIndex = dictColumn.getIndexByRow(row);
-                    set.add(dictColumn.getValue(oldIndex));
+                    if(!findIndex(oldIndex)) {
+                        indexArray[oldIndex] = 1;
+                        if(dictColumn.getValue(oldIndex) != null) {
+                            set.add(dictColumn.getValue(oldIndex));
+                        }
+                    }
                 }
             });
-            i -= set.size();
-            internalMap(i + 1, set);
 
+            j -= set.size();
+            internalMap(j, set);
         }
+    }
+
+    private boolean findIndex(int oldIndex) {
+        if(indexArray[oldIndex] == 1) {
+            return true;
+        }
+        return false;
     }
 
     private void internalMap (int index, TreeSet<Base> set) {
@@ -95,9 +113,10 @@ public class BaseSortByOtherDimensionGroupRule<Base, Derive> extends BaseGroupRu
             index ++;
         }
     }
-    public void setOriginDictAndByBitMapColumn(DictionaryEncodedColumn<Base> dict, BitmapIndexedColumn bitmapIndexedColumn) {
+    public void setOriginDictAndByBitMapColumn(DictionaryEncodedColumn<Base> dict, Column column) {
         this.dictColumn = dict;
-        this.otherBitmapIndexedColumn  = bitmapIndexedColumn;
+        this.sortByColumn = column;
+        this.sortByBitmapIndexedColumn = column.getBitmapIndex();
         initMap();
     }
 

@@ -25,7 +25,7 @@ public class SortByOtherDimensionColumn <Base, Derive> implements Column<Derive>
         this.originColumn = columnList.get(0);
         this.sortByColumn = columnList.get(1);
         this.groupRule = groupRule;
-        groupRule.setOriginDictAndByBitMapColumn(originColumn.getDictionaryEncodedColumn(), sortByColumn.getBitmapIndex());
+        groupRule.setOriginDictAndByBitMapColumn(originColumn.getDictionaryEncodedColumn(), sortByColumn);
         //this.sortType = type;
     }
 
