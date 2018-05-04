@@ -24,10 +24,15 @@ import com.fr.swift.query.group.Group;
 import com.fr.swift.query.group.GroupRule;
 import com.fr.swift.query.group.GroupType;
 import com.fr.swift.query.group.Groups;
-import com.fr.swift.query.group.impl.*;
+import com.fr.swift.query.group.impl.BaseSortByOtherDimensionGroupRule;
+import com.fr.swift.query.group.impl.CustomSortGroupRule;
+import com.fr.swift.query.group.impl.CustomNumGroupRule;
 import com.fr.swift.query.group.impl.AutoNumGroupRule.Partition;
 import com.fr.swift.query.group.impl.CustomNumGroupRule.NumInterval;
 import com.fr.swift.query.group.impl.CustomStrGroupRule.StringGroup;
+import com.fr.swift.query.group.impl.NoGroupRule;
+import com.fr.swift.query.group.impl.CustomStrGroupRule;
+import com.fr.swift.query.group.impl.AutoNumGroupRule;
 import com.fr.swift.query.sort.SortType;
 
 import java.util.ArrayList;
