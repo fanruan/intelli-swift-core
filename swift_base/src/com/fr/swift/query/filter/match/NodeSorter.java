@@ -16,7 +16,7 @@ public class NodeSorter {
         sort(node, 0, dimensionSorts);
     }
 
-    private static void sort(SwiftNode node, int deep, List<Sort> dimensionSorts) {
+    private static void sort(SwiftNode node, int deep, final List<Sort> dimensionSorts) {
 
         if (deep < dimensionSorts.size()) {
             final Sort sort = dimensionSorts.get(deep);
@@ -27,8 +27,8 @@ public class NodeSorter {
                     @Override
                     public int compare(SwiftNode o1, SwiftNode o2) {
 
-                        Number v1 = (Number) o1.getAggregatorValue(sort.getTargetIndex()).calculateValue();
-                        Number v2 = (Number) o2.getAggregatorValue(sort.getTargetIndex()).calculateValue();
+                        Number v1 = (Number) o1.getAggregatorValue(sort.getTargetIndex() - dimensionSorts.size()).calculateValue();
+                        Number v2 = (Number) o2.getAggregatorValue(sort.getTargetIndex() - dimensionSorts.size()).calculateValue();
                         if (v1 == v2) {
                             return 0;
                         }
