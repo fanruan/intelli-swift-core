@@ -7,7 +7,6 @@ import com.fr.swift.source.DataSource;
 import com.fr.swift.source.EtlDataSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.etl.ETLOperator;
-import com.fr.swift.source.etl.EtlSource;
 import com.fr.swift.source.etl.OperatorType;
 
 import java.util.ArrayList;
@@ -33,8 +32,8 @@ public class DataSourceUtils {
      */
     public static SourceKey getSwiftSourceKey(DataSource dataSource) {
         try {
-            if (dataSource instanceof EtlSource) {
-                EtlSource etlSource = (EtlSource) dataSource;
+            if (dataSource instanceof EtlDataSource) {
+                EtlDataSource etlSource = (EtlDataSource) dataSource;
                 if (etlSource.getOperator().getOperatorType().isAddColumn()) {
                     assert etlSource.getBasedSources().size() == 1;
                     DataSource baseDataSource = etlSource.getBasedSources().get(0);
@@ -50,8 +49,8 @@ public class DataSourceUtils {
 
     public static boolean isAddColumn(DataSource dataSource) {
         try {
-            if (dataSource instanceof EtlSource) {
-                EtlSource etlSource = (EtlSource) dataSource;
+            if (dataSource instanceof EtlDataSource) {
+                EtlDataSource etlSource = (EtlDataSource) dataSource;
                 return etlSource.getOperator().getOperatorType().isAddColumn();
             }
             return false;
@@ -70,8 +69,8 @@ public class DataSourceUtils {
     public static List<String> getAddFields(DataSource dataSource) {
         List<String> fields = new ArrayList<String>();
         try {
-            if (dataSource instanceof EtlSource) {
-                EtlSource etlSource = (EtlSource) dataSource;
+            if (dataSource instanceof EtlDataSource) {
+                EtlDataSource etlSource = (EtlDataSource) dataSource;
                 ETLOperator etlOperator = etlSource.getOperator();
                 OperatorType type = etlOperator.getOperatorType();
                 if (type.isAddColumn()) {
