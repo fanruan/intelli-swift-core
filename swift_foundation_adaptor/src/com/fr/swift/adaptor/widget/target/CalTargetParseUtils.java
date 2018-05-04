@@ -102,7 +102,7 @@ public class CalTargetParseUtils {
             AggregatorType aggregatorType = AggregatorAdaptor.adaptorDashBoard(target.getMetric());
             Aggregator aggregator = AggregatorFactory.createAggregator(aggregatorType);
             aggregators.add(aggregator);
-            if (target.getWidgetBeanField() == null) {
+            if (isBaseFieldTarget(target)) {
                 // 原始字段生成的指标
                 if (target.getCalculation() == null
                         || target.getCalculation().getType() == BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.NONE) {
@@ -145,7 +145,7 @@ public class CalTargetParseUtils {
             if (widget.getTargetByTargetId(id) != null) {
                 // id对应分组表的指标，可能是原始指标生成的指标，也可能是计算指标生成的指标
                 FineTarget target = widget.getTargetByTargetId(id);
-                if (target.getWidgetBeanField() != null) {
+                if (!isBaseFieldTarget(target)) {
                     // 计算指标生成的指标
                     // 如果BIDesignConstants.DESIGN.CAL_TARGET为求和、最大值、最小值、平均值，则不要额外的计算指标
                     // 其他BIDesignConstants.DESIGN.CAL_TARGET则需要再求和的基础上加一个计算指标
@@ -181,6 +181,10 @@ public class CalTargetParseUtils {
         return Pair.of(calTargets, addedTargetIdList);
     }
 
+    private static boolean isBaseFieldTarget(FineTarget target) {
+        return target.getWidgetBeanField() == null || target.getWidgetBeanField().getTargetIds() == null;
+    }
+
     /**
      * 从指标的快速计算配置中解析计算指标
      */
@@ -188,7 +192,7 @@ public class CalTargetParseUtils {
             FineTarget target, List<Pair<String, Pair<AggregatorType, FilterInfo>>> baseMetricList,
             List<String> addedTargetIdList, AbstractTableWidget widget) {
         int resultIndex = baseMetricList.size() + addedTargetIdList.size();
-        if (target.getWidgetBeanField() == null) {
+        if (isBaseFieldTarget(target)) {
             // 原始字段生成的指标
             int paramIndex = baseMetricList.indexOf(parseMetricFromBaseTargetOfBaseField(target, widget));
             int rapidCalTargetType = target.getCalculation().getType();
@@ -274,10 +278,10 @@ public class CalTargetParseUtils {
             }
             // 分组表用到的指标或者是分组表间接用到的指标，统计汇总指标
             FineTarget target = widget.getTargetByTargetId(id);
-            if (target != null && target.getWidgetBeanField() == null) {
+            if (target != null && isBaseFieldTarget(target)) {
                 // 分组表中原始字段生成的指标
                 pairs.add(parseMetricFromBaseTargetOfBaseField(target, widget));
-            } else if (target != null) {
+            } else if (target != null && !isBaseFieldTarget(target)) {
                 // 分组表的基础指标，但是由计算指标字段生成
                 pairs.addAll(parseMetricFromBaseCalTargetField(target.getWidgetBeanField(), widget));
             } else {
@@ -338,7 +342,7 @@ public class CalTargetParseUtils {
             return field.getCalculate() == null || !isCalTargetFieldDependedOnOtherCalTargetField(field, widget);
         } else {
             FineTarget target = widget.getTargetByTargetId(id);
-            if (target.getWidgetBeanField() != null) {
+            if (!isBaseFieldTarget(target)) {
                 // 说明target是一个计算指标字段生成的指标。原始字段生成的指标的widgetBeanField为null
                 // 检查target有没有依赖其他计算指标
                 return !isCalTargetFieldDependedOnOtherCalTargetField(target.getWidgetBeanField(), widget);
@@ -377,7 +381,7 @@ public class CalTargetParseUtils {
         List<FineTarget> targets = widget.getTargetList();
         for (FineTarget target : targets) {
             digraph.addEdge(target.getId(), null);
-            if (target.getWidgetBeanField() == null) {
+            if (isBaseFieldTarget(target)) {
                 continue;
             }
             parseRelationOfCalTargetField(digraph, target.getId(), target.getWidgetBeanField(), widget);
