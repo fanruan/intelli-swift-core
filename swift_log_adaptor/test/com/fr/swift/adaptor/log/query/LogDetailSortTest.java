@@ -38,7 +38,7 @@ public class LogDetailSortTest extends LogBaseTest {
 
             QueryCondition sortQueryCondition = QueryFactory.create().addSort("总金额");
 
-            QueryInfo sortQueryInfo = QueryConditionAdaptor.adaptorCondition(sortQueryCondition, table);
+            QueryInfo sortQueryInfo = QueryConditionAdaptor.adaptCondition(sortQueryCondition, table);
             SwiftResultSet sortResultSet = QueryRunnerProvider.getInstance().executeQuery(sortQueryInfo);
             int sortindex = table.getMeta().getColumnIndex("总金额");
             List<Double> dataList = new ArrayList<Double>();
@@ -67,7 +67,7 @@ public class LogDetailSortTest extends LogBaseTest {
 
             QueryCondition sortQueryCondition = QueryFactory.create().addSort("总金额", true);
 
-            QueryInfo sortQueryInfo = QueryConditionAdaptor.adaptorCondition(sortQueryCondition, table);
+            QueryInfo sortQueryInfo = QueryConditionAdaptor.adaptCondition(sortQueryCondition, table);
             SwiftResultSet sortResultSet = QueryRunnerProvider.getInstance().executeQuery(sortQueryInfo);
             int sortindex = table.getMeta().getColumnIndex("总金额");
             List<Double> dataList = new ArrayList<Double>();

@@ -10,4 +10,5 @@ import com.fr.swift.cube.task.WorkerTask;
  * @since Advanced FineBI 5.0
  */
 public interface SwiftTableBuilder extends WorkerTask.Worker {
+    void build() throws Exception;
 }

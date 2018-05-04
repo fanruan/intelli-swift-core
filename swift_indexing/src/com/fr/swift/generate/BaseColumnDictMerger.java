@@ -11,9 +11,11 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.segment.operator.SwiftColumnDictMerger;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.DataSource;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.structure.IntPair;
 import com.fr.swift.structure.external.map.ExternalMap;
@@ -32,13 +34,17 @@ import java.util.TreeMap;
  * @date 2018/2/26
  */
 public abstract class BaseColumnDictMerger<T> extends BaseWorker implements SwiftColumnDictMerger {
-    protected DataSource dataSource;
+    private SwiftMetaData meta;
     protected ColumnKey key;
     protected List<Segment> segments;
 
     public BaseColumnDictMerger(DataSource dataSource, ColumnKey key, List<Segment> segments) {
+        this(dataSource.getMetadata(), key, segments);
+    }
+
+    public BaseColumnDictMerger(SwiftMetaData meta, ColumnKey key, List<Segment> segments) {
+        this.meta = meta;
         this.key = key;
-        this.dataSource = dataSource;
         this.segments = segments;
     }
 
@@ -53,8 +59,8 @@ public abstract class BaseColumnDictMerger<T> extends BaseWorker implements Swif
         }
     }
 
-    private void mergeDict() throws Exception {
-
+    @Override
+    public void mergeDict() throws Exception {
         if (segments.isEmpty()) {
             return;
         }
@@ -155,7 +161,7 @@ public abstract class BaseColumnDictMerger<T> extends BaseWorker implements Swif
             return new TreeMap<T, List<IntPair>>(c);
         }
 
-        SwiftMetaDataColumn columnMeta = dataSource.getMetadata().getColumn(key.getName());
+        SwiftMetaDataColumn columnMeta = meta.getColumn(key.getName());
         ClassType classType = ColumnTypeUtils.getClassType(columnMeta);
         return IntPairsExtMaps.newExternalMap(classType, c, path.getPath());
     }

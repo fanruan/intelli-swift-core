@@ -1,7 +1,9 @@
 package com.fr.swift.adaptor.log;
 
-import com.fr.swift.adaptor.log.Converters.ReverseDatumConverter;
+import com.fr.swift.adaptor.log.DatumConverters.ReverseDatumConverter;
 import com.fr.swift.source.Row;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.function.Function;
 import com.fr.swift.util.function.UnaryOperator;
@@ -10,9 +12,9 @@ import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Convert;
 
 import java.lang.reflect.Field;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 /**
  * @author anchore
@@ -21,26 +23,32 @@ import java.util.Map.Entry;
  * swift row -> fr log
  */
 public class DecisionRowAdaptor implements Function<Row, Object> {
-    private Class<?> table;
-    private Map<Field, UnaryOperator<Object>> converters = new LinkedHashMap<Field, UnaryOperator<Object>>();
+    private Class<?> entity;
 
-    DecisionRowAdaptor(Class<?> table) throws Exception {
-        this.table = table;
-        init();
+    /**
+     * columnIndex -> (field, converter)
+     */
+    private Map<Integer, Pair<Field, UnaryOperator<Object>>> converters = new TreeMap<Integer, Pair<Field, UnaryOperator<Object>>>();
+
+    DecisionRowAdaptor(Class<?> entity, SwiftMetaData meta) throws Exception {
+        this.entity = entity;
+        init(meta);
     }
 
-    private void init() throws Exception {
-        for (Field field : table.getDeclaredFields()) {
+    private void init(SwiftMetaData meta) throws Exception {
+        for (Field field : entity.getDeclaredFields()) {
             if (!field.isAnnotationPresent(Column.class)) {
                 continue;
             }
             field.setAccessible(true);
+            String columnName = field.getAnnotation(Column.class).name();
+            int columnIndex = meta.getColumnIndex(columnName);
             if (field.isAnnotationPresent(Convert.class)) {
                 AttributeConverter<Object, Object> converter = (AttributeConverter<Object, Object>) field.getAnnotation(Convert.class).converter().newInstance();
-                UnaryOperator<Object> baseConverter = Converters.getReverseConverter(SwiftMetaAdaptor.getClassType(field));
-                converters.put(field, new ReverseDatumConverter(converter, baseConverter));
+                UnaryOperator<Object> baseConverter = DatumConverters.getReverseConverter(SwiftMetaAdaptor.getClassType(field));
+                converters.put(columnIndex, Pair.of(field, (UnaryOperator<Object>) new ReverseDatumConverter(converter, baseConverter)));
             } else {
-                converters.put(field, Converters.getReverseConverter((field.getType())));
+                converters.put(columnIndex, Pair.of(field, DatumConverters.getReverseConverter(field.getType())));
             }
         }
     }
@@ -48,10 +56,10 @@ public class DecisionRowAdaptor implements Function<Row, Object> {
     @Override
     public Object apply(Row row) {
         try {
-            Object data = table.newInstance();
-            int index = 0;
-            for (Entry<Field, UnaryOperator<Object>> entry : converters.entrySet()) {
-                entry.getKey().set(data, entry.getValue().apply(row.getValue(index++)));
+            Object data = entity.newInstance();
+            for (Entry<Integer, Pair<Field, UnaryOperator<Object>>> entry : converters.entrySet()) {
+                Pair<Field, UnaryOperator<Object>> pair = entry.getValue();
+                pair.getKey().set(data, pair.getValue().apply(row.getValue(entry.getKey())));
             }
             return data;
         } catch (Exception e) {

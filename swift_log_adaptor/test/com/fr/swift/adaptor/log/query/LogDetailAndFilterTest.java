@@ -40,7 +40,7 @@ public class LogDetailAndFilterTest extends LogBaseTest {
             QueryCondition eqQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.eq("合同类型", "购买合同"))
                     .addRestriction(RestrictionFactory.gte("总金额", 1000000)).addRestriction(RestrictionFactory.lte("总金额", 2000000));
 
-            QueryInfo eqQueryInfo = QueryConditionAdaptor.adaptorCondition(eqQueryCondition, table);
+            QueryInfo eqQueryInfo = QueryConditionAdaptor.adaptCondition(eqQueryCondition, table);
             SwiftResultSet eqResultSet = QueryRunnerProvider.getInstance().executeQuery(eqQueryInfo);
             int index1 = table.getMeta().getColumnIndex("合同类型");
             int index2 = table.getMeta().getColumnIndex("总金额");
@@ -72,7 +72,7 @@ public class LogDetailAndFilterTest extends LogBaseTest {
             restrictions.add(RestrictionFactory.eq("合同类型", "长期协议"));
             QueryCondition eqQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.or(restrictions));
 
-            QueryInfo eqQueryInfo = QueryConditionAdaptor.adaptorCondition(eqQueryCondition, table);
+            QueryInfo eqQueryInfo = QueryConditionAdaptor.adaptCondition(eqQueryCondition, table);
             SwiftResultSet eqResultSet = QueryRunnerProvider.getInstance().executeQuery(eqQueryInfo);
             int index1 = table.getMeta().getColumnIndex("合同类型");
             int count1 = 0, count2 = 0, count3 = 0;
