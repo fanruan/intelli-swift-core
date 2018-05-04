@@ -40,7 +40,7 @@ public class NodeGroupByUtils {
         if (groupByInfo.getDimensions().isEmpty()) {
             // 只有指标的情况
             aggregateRoot(root, groupByInfo.getDetailFilter().createFilterIndex(), metricInfo);
-            return new NodeMergeResultSetImpl<GroupNode>(root, rowGlobalDictionaries);
+            return new NodeMergeResultSetImpl<GroupNode>(root, rowGlobalDictionaries, metricInfo.getAggregators());
         }
         GroupNodeRowMapper rowMapper = new GroupNodeRowMapper(metricInfo);
         Function2<Integer, GroupByEntry, GroupNode> itemMapper = new Function2<Integer, GroupByEntry, GroupNode>() {
@@ -55,7 +55,7 @@ public class NodeGroupByUtils {
             GroupNode[] row = iterator.next();
             updateGlobalDictionariesAndGlobalIndex(row, rowGlobalDictionaries, dictionaries);
         }
-        return new NodeMergeResultSetImpl<GroupNode>(root, rowGlobalDictionaries);
+        return new NodeMergeResultSetImpl<GroupNode>(root, rowGlobalDictionaries, metricInfo.getAggregators());
     }
 
     private static void aggregateRoot(GroupNode root, RowTraversal traversal, MetricInfo metricInfo) {

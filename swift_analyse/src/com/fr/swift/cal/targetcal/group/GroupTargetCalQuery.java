@@ -8,6 +8,7 @@ import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.match.MatchFilter;
+import com.fr.swift.query.filter.match.NodeFilter;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
@@ -37,22 +38,21 @@ public class GroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> {
     @Override
     public NodeResultSet getQueryResult() throws SQLException {
         // 合并后的结果
-        NodeResultSet mergeResult = mergeQuery.getQueryResult();
+        NodeMergeResultSet<GroupNode> mergeResult = (NodeMergeResultSet<GroupNode>) mergeQuery.getQueryResult();
         // 根据合并后的结果处理计算指标的计算
         TargetCalculatorUtils.calculate(((GroupNode) mergeResult.getNode()), info.getTargetInfo().getGroupTargets());
-        // 进行结果过滤
-        List<MatchFilter> dimensionMatchFilter = getDimensionMatchFilters(info.getDimensionInfo().getDimensions());
-        List<Aggregator> resultAggregators = info.getTargetInfo().getResultAggregators();
-//        if (hasDimensionFilter(dimensionMatchFilter)) {
-//            NodeFilter.filter(mergeResult.getNode(), dimensionMatchFilter);
-//            NodeAggregator.aggregate(mergeResult.getNode(), getCombinedAggregators(aggregators, resultAggregators));
-//        } else if (hasDifferentResultAggregator(aggregators, resultAggregators)) {
-//            NodeAggregator.aggregate(mergeResult.getNode(), getDifferentAggregator(aggregators, resultAggregators));
-//        }
         // 取出查询最后要返回的结果
         TargetCalculatorUtils.getShowTargetsForGroupNodeAndSetNodeData(((GroupNode) mergeResult.getNode()),
-                info.getTargetInfo().getTargetsForShowList(), ((NodeMergeResultSet) mergeResult).getRowGlobalDictionaries());
-        // 取出要展示的结果和过滤之后再汇总
+                info.getTargetInfo().getTargetsForShowList(), mergeResult.getRowGlobalDictionaries());
+        // 进行结果过滤
+        List<MatchFilter> dimensionMatchFilter = getDimensionMatchFilters(info.getDimensionInfo().getDimensions());
+        if (hasDimensionFilter(dimensionMatchFilter)) {
+            // 产品确定结果过滤在明细汇总方式的基础上进行，不用考虑切换汇总方式的情况了
+            GroupNodeAggregateUtils.aggregate(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
+                    (GroupNode) mergeResult.getNode(), mergeResult.getAggregators());
+            NodeFilter.filter(mergeResult.getNode(), dimensionMatchFilter);
+        }
+        // 使用结果汇总聚合器汇总，相对于明细的汇总方式，可能一样也可能不一样。这边可以通过细分做进一步优化。
         GroupNodeAggregateUtils.aggregate(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
                 (GroupNode) mergeResult.getNode(), info.getTargetInfo().getResultAggregators());
         return mergeResult;
@@ -110,6 +110,9 @@ public class GroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> {
             FilterInfo filter = dimension.getFilter();
             if (filter != null && filter.isMatchFilter()) {
                 matchFilters.add(FilterBuilder.buildMatchFilter(filter));
+            } else {
+                // 其他情况用null占位，表示不过滤
+                matchFilters.add(null);
             }
         }
         return matchFilters;
