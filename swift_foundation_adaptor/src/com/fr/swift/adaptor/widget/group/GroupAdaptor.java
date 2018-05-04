@@ -24,14 +24,11 @@ import com.fr.swift.query.group.Group;
 import com.fr.swift.query.group.GroupRule;
 import com.fr.swift.query.group.GroupType;
 import com.fr.swift.query.group.Groups;
-import com.fr.swift.query.group.impl.AutoNumGroupRule;
+import com.fr.swift.query.group.impl.*;
 import com.fr.swift.query.group.impl.AutoNumGroupRule.Partition;
-import com.fr.swift.query.group.impl.CustomNumGroupRule;
 import com.fr.swift.query.group.impl.CustomNumGroupRule.NumInterval;
-import com.fr.swift.query.group.impl.CustomSortGroupRule;
-import com.fr.swift.query.group.impl.CustomStrGroupRule;
 import com.fr.swift.query.group.impl.CustomStrGroupRule.StringGroup;
-import com.fr.swift.query.group.impl.NoGroupRule;
+import com.fr.swift.query.sort.SortType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -106,6 +103,10 @@ public class GroupAdaptor {
                 }
                 return Groups.wrap(originGroup, new CustomSortGroupRule(stringGroups, null));
             }
+            case SORT.FILTER_ASC:
+                return Groups.wrap(originGroup, new BaseSortByOtherDimensionGroupRule(SortType.ASC));
+            case SORT.FILTER_DESC:
+                return Groups.wrap(originGroup, new BaseSortByOtherDimensionGroupRule(SortType.DESC));
             default:
                 return originGroup;
         }

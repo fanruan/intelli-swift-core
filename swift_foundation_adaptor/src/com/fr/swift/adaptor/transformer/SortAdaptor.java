@@ -2,6 +2,8 @@ package com.fr.swift.adaptor.transformer;
 
 import com.finebi.conf.constant.BIDesignConstants.DESIGN.SORT;
 import com.finebi.conf.constant.ConfConstant;
+import com.finebi.conf.internalimp.dashboard.widget.dimension.sort.DimensionFilterASCSort;
+import com.finebi.conf.internalimp.dashboard.widget.dimension.sort.DimensionFilterDESCSort;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionSort;
 import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.DescSort;
@@ -15,25 +17,31 @@ public class SortAdaptor {
     public static Sort transformSort(int sortType) {
         switch (sortType) {
             case ConfConstant.SortType.ASC:
-                return new AscSort(0);
+                return new AscSort(0, null);
             default:
-                return new DescSort(0);
+                return new DescSort(0, null);
         }
     }
 
     public static Sort adaptorDimensionSort(FineDimensionSort dimensionSort, int index) {
         if (dimensionSort == null) {
-            return new AscSort(index);
+            return new AscSort(index, null);
         }
         switch (dimensionSort.getType()) {
             case SORT.ASC:
-            case SORT.FILTER_ASC:
             case SORT.NUMBER_ASC:
-                return new AscSort(index);
+                return new AscSort(index, null);
+            case SORT.FILTER_ASC: {
+                String fieldId = ((DimensionFilterASCSort)dimensionSort).getValue().getTargetFieldId();
+                return new AscSort(index, fieldId);
+            }
             case SORT.DESC:
-            case SORT.FILTER_DESC:
             case SORT.NUMBER_DESC:
-                return new DescSort(index);
+                return new DescSort(index, null);
+            case SORT.FILTER_DESC: {
+                String fieldId = ((DimensionFilterDESCSort)dimensionSort).getValue().getTargetFieldId();
+                return new DescSort(index, fieldId);
+            }
             default:
                 return new NoneSort();
         }
