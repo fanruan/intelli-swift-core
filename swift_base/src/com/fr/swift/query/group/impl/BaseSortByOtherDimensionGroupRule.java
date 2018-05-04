@@ -27,10 +27,6 @@ public class BaseSortByOtherDimensionGroupRule<Base, Derive> extends BaseGroupRu
      * 旧值序号 -> 新值序号
      */
     private int[] reverseMap;
-    /**
-     * 新值序号 -> 旧值序号
-     */
-    private int[] reReverseMap;
 
     private SortType sortType;
 
@@ -46,7 +42,6 @@ public class BaseSortByOtherDimensionGroupRule<Base, Derive> extends BaseGroupRu
             int dictSize = dictColumn.size();
             Comparator comparator;
             reverseMap = new int[dictSize];
-            reReverseMap = new int[dictSize];
 
             // 0号为null
             map.put(0, Pair.of((Base) null, 0));
@@ -97,7 +92,6 @@ public class BaseSortByOtherDimensionGroupRule<Base, Derive> extends BaseGroupRu
         for(Base value : set) {
             map.put(index, Pair.of(value, dictColumn.getIndex(value)));
             reverseMap[dictColumn.getIndex(value)] = index;
-            reReverseMap[index] = dictColumn.getIndex(value);
             index ++;
         }
     }
@@ -124,8 +118,8 @@ public class BaseSortByOtherDimensionGroupRule<Base, Derive> extends BaseGroupRu
         return reverseMap[originIndex];
     }
 
-    public int reReverseMap(int newIndex) {
-        return reReverseMap[newIndex];
+    public int map(int newIndex) {
+        return map.get(newIndex).getValue();
     }
 
     @Override

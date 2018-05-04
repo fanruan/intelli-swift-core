@@ -58,7 +58,7 @@ public class SortByOtherDimensionColumn <Base, Derive> implements Column<Derive>
 
         @Override
         public ImmutableBitMap getBitMapIndex(int index) {
-            return originColumn.getBitmapIndex().getBitMapIndex(groupRule.reReverseMap(index));
+            return originColumn.getBitmapIndex().getBitMapIndex(groupRule.map(index));
         }
 
         @Override
@@ -137,11 +137,13 @@ public class SortByOtherDimensionColumn <Base, Derive> implements Column<Derive>
 
         @Override
         public int getGlobalIndexByIndex(int index) {
+            //需要考虑全局字典
             return originDict.getGlobalIndexByIndex(index);
         }
 
         @Override
         public int getGlobalIndexByRow(int row) {
+            //需要考虑全局字典
             return originDict.getGlobalIndexByRow(row);
         }
 
