@@ -2,16 +2,19 @@ package com.fr.swift.adaptor.widget;
 
 import com.finebi.conf.internalimp.bean.dashboard.widget.expander.ExpanderBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
+import com.finebi.conf.internalimp.dashboard.widget.dimension.sort.DimensionTargetSort;
 import com.finebi.conf.internalimp.dashboard.widget.filter.CustomLinkConfItem;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
 import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
 import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionDrill;
+import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionSort;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.structure.filter.FineFilter;
 import com.finebi.conf.structure.result.table.BIGroupNode;
 import com.finebi.conf.structure.result.table.BITableResult;
+import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.linkage.LinkageAdaptor;
 import com.fr.swift.adaptor.struct.node.BIGroupNodeAdaptor;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
@@ -247,7 +250,19 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
 
         FilterInfo filterInfo = FilterInfoFactory.transformDimensionFineFilter(tableName, fineDim, index == size - 1, targets);
 
-        return new GroupDimension(index, sourceKey, colKey, group, SortAdaptor.adaptorDimensionSort(fineDim.getSort(), index),
+        return new GroupDimension(index, sourceKey, colKey, group, SortAdaptor.adaptorDimensionSort(fineDim.getSort(), getSortIndex(fineDim.getSort(), index, targets, size)),
                 filterInfo);
+    }
+
+    private static int getSortIndex(FineDimensionSort sort, int index, List<FineTarget> targets, int size){
+        if (sort instanceof DimensionTargetSort){
+            String targetId = ((DimensionTargetSort) sort).getTargetId();
+            for (int i = 0; i < targets.size(); i++){
+                if (ComparatorUtils.equals(targets.get(i).getId(), targetId)){
+                    return i + size;
+                }
+            }
+        }
+        return index;
     }
 }
