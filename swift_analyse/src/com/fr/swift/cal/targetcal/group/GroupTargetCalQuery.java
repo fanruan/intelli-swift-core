@@ -57,14 +57,14 @@ public class GroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> {
         GroupNodeAggregateUtils.aggregate(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
                 (GroupNode) mergeResult.getNode(), info.getTargetInfo().getResultAggregators());
         // 维度上的指标排序
-        if (hasDimensionTargetSorts()) {
-            NodeSorter.sort(mergeResult.getNode(), getDimensionTargetSorts());
+        if (hasDimensionTargetSorts(info.getDimensionInfo().getDimensions())) {
+            NodeSorter.sort(mergeResult.getNode(), getDimensionTargetSorts(info.getDimensionInfo().getDimensions()));
         }
         return mergeResult;
     }
 
-    private boolean hasDimensionTargetSorts() {
-        for (Dimension dimension : info.getDimensionInfo().getDimensions()) {
+    static boolean hasDimensionTargetSorts(Dimension[] dimensions) {
+        for (Dimension dimension : dimensions) {
             Sort sort = dimension.getSort();
             if (sort != null && sort.getTargetIndex() != dimension.getIndex()) {
                 return true;
@@ -137,9 +137,9 @@ public class GroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> {
     /**
      * 维度根据结果（比如聚合之后的指标）排序
      */
-    public List<Sort> getDimensionTargetSorts() {
+    static List<Sort> getDimensionTargetSorts(Dimension[] dimensions) {
         List<Sort> indexSorts = new ArrayList<Sort>();
-        for (Dimension dimension : info.getDimensionInfo().getDimensions()) {
+        for (Dimension dimension : dimensions) {
             Sort sort = dimension.getSort();
             if (sort != null && sort.getTargetIndex() != dimension.getIndex()) {
                 indexSorts.add(sort);

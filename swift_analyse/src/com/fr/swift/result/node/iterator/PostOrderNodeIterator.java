@@ -14,13 +14,13 @@ import java.util.Iterator;
 public class PostOrderNodeIterator<N extends GroupNode> implements Iterator<N> {
 
     private LimitedStack<N> parentNodes;
-    private LimitedStack<ChildIterator> iterators;
+    private LimitedStack<Iterator<N>> iterators;
     private N root;
     private N next = null;
 
     public PostOrderNodeIterator(int dimensionSize, N root) {
         parentNodes = new ArrayLimitedStack<N>(dimensionSize);
-        iterators = new ArrayLimitedStack<ChildIterator>(dimensionSize);
+        iterators = new ArrayLimitedStack<Iterator<N>>(dimensionSize);
         this.root = root;
         init();
     }
@@ -32,18 +32,18 @@ public class PostOrderNodeIterator<N extends GroupNode> implements Iterator<N> {
             return;
         }
         parentNodes.push(root);
-        iterators.push(new ChildIterator(root));
+        iterators.push(root.getChildren().iterator());
         next = getNext();
     }
 
     private N getNext() {
         N n = null;
         while (!iterators.isEmpty()) {
-            ChildIterator it = iterators.peek();
+            Iterator<N> it = iterators.peek();
             if (it.hasNext()) {
-                N node = (N) it.next();
+                N node = it.next();
                 if (iterators.size() != iterators.limit()) {
-                    iterators.push(new ChildIterator(node));
+                    iterators.push(node.getChildren().iterator());
                     parentNodes.push(node);
                 } else {
                     // 此时node为叶子节点

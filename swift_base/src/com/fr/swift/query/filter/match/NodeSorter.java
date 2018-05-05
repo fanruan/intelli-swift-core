@@ -49,6 +49,7 @@ public class NodeSorter {
             List<SwiftNode> children = node.getChildren();
             for (SwiftNode n : children) {
                 sort(n, deep + 1, dimensionSorts);
+                // 避免潜在的死循环
                 n.setSibling(null);
             }
         }

@@ -57,7 +57,7 @@ public class GroupNodeAggregateUtils {
         if (groupNode.getChildrenSize() == 0) {
             return;
         }
-        Iterator<GroupNode> iterator = new ChildIterator(groupNode);
+        Iterator<GroupNode> iterator = groupNode.getChildren().iterator();
         List<AggregatorValue[]> valuesListOfParent;
         if (type == NodeType.X_LEFT) {
             valuesListOfParent = ((XLeftNode) groupNode).getValueArrayList();
