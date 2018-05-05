@@ -5,7 +5,6 @@ import com.finebi.conf.constant.ConfConstant;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionSort;
 import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.DescSort;
-import com.fr.swift.query.sort.NoneSort;
 import com.fr.swift.query.sort.Sort;
 
 /**
@@ -35,7 +34,7 @@ public class SortAdaptor {
             case SORT.NUMBER_DESC:
                 return new DescSort(index);
             default:
-                return new NoneSort();
+                return new AscSort(index);
         }
     }
 }

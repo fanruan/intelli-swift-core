@@ -194,6 +194,10 @@ abstract class BaseCustomGroupRule<Base, Derive> extends BaseGroupRule implement
         @CoreField
         Derive name;
 
+        CustomGroup(Derive name) {
+            this.name = name;
+        }
+
         Derive getName() {
             return name;
         }

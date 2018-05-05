@@ -20,6 +20,7 @@ import com.finebi.conf.internalimp.dashboard.widget.dimension.sort.DimensionFilt
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionGroup;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionSort;
+import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.query.group.Group;
 import com.fr.swift.query.group.GroupRule;
 import com.fr.swift.query.group.GroupType;
@@ -29,10 +30,17 @@ import com.fr.swift.query.group.impl.AutoNumGroupRule.Partition;
 import com.fr.swift.query.group.impl.CustomNumGroupRule;
 import com.fr.swift.query.group.impl.CustomNumGroupRule.NumInterval;
 import com.fr.swift.query.group.impl.CustomSortGroupRule;
+import com.fr.swift.query.group.impl.CustomSortGroupRule.NumGroup;
 import com.fr.swift.query.group.impl.CustomStrGroupRule;
 import com.fr.swift.query.group.impl.CustomStrGroupRule.StringGroup;
 import com.fr.swift.query.group.impl.NoGroupRule;
+import com.fr.swift.source.ColumnTypeConstants.ClassType;
+import com.fr.swift.source.ColumnTypeUtils;
+import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.utils.BusinessTableUtils;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -76,7 +84,7 @@ public class GroupAdaptor {
         return Groups.newGroup(adaptRule(type, dimGroup));
     }
 
-    public static Group adaptDashboardGroup(FineDimension fineDim) {
+    public static Group adaptDashboardGroup(FineDimension fineDim) throws SQLException {
         FineDimensionSort fineDimSort = fineDim.getSort();
         Group originGroup = adaptDashboardGroup(fineDim.getGroup());
         if (fineDimSort == null) {
@@ -85,30 +93,54 @@ public class GroupAdaptor {
         switch (fineDimSort.getType()) {
             case SORT.CUSTOM: {
                 List<String> values = ((DimensionCustomSort) fineDimSort).getValue().getDetails();
-                if (values == null || values.isEmpty()) {
-                    return originGroup;
-                }
-                List<StringGroup> stringGroups = new ArrayList<StringGroup>();
-                for (String value : values) {
-                    stringGroups.add(new StringGroup(value, Collections.singletonList(value)));
-                }
-                return Groups.wrap(originGroup, new CustomSortGroupRule(stringGroups, null));
+                return getCustomSortGroup(originGroup, getClassType(fineDim), values);
             }
             case SORT.FILTER_CUSTOM: {
                 List<String> values = ((DimensionFilterCustomSort) fineDimSort).getValue().getDetails();
-                if (values == null || values.isEmpty()) {
-                    return originGroup;
-                }
-
-                List<StringGroup> stringGroups = new ArrayList<StringGroup>();
-                for (String value : values) {
-                    stringGroups.add(new StringGroup(value, Collections.singletonList(value)));
-                }
-                return Groups.wrap(originGroup, new CustomSortGroupRule(stringGroups, null));
+                return getCustomSortGroup(originGroup, getClassType(fineDim), values);
             }
             default:
                 return originGroup;
         }
+    }
+
+    private static Group getCustomSortGroup(Group originGroup, ClassType classType, List<String> values) {
+        if (values == null || values.isEmpty()) {
+            return originGroup;
+        }
+        switch (classType) {
+            case INTEGER:
+            case LONG: {
+                List<NumGroup> groups = new ArrayList<NumGroup>();
+                for (String value : values) {
+                    groups.add(new NumGroup(Long.valueOf(value)));
+                }
+                return Groups.wrap(originGroup, new CustomSortGroupRule(groups));
+            }
+            case DOUBLE: {
+                List<NumGroup> groups = new ArrayList<NumGroup>();
+                for (String value : values) {
+                    groups.add(new NumGroup(Double.valueOf(value)));
+                }
+                return Groups.wrap(originGroup, new CustomSortGroupRule(groups));
+            }
+            case STRING: {
+                List<StringGroup> groups = new ArrayList<StringGroup>();
+                for (String value : values) {
+                    groups.add(new StringGroup(value, Collections.singletonList(value)));
+                }
+                return Groups.wrap(originGroup, new CustomSortGroupRule(groups));
+            }
+            default:
+                return null;
+        }
+    }
+
+    private static ClassType getClassType(FineDimension fineDim) throws SQLException {
+        String fieldId = fineDim.getFieldId();
+        SourceKey tableKey = new SourceKey(BusinessTableUtils.getSourceIdByFieldId(fieldId));
+        SwiftMetaData meta = SwiftDatabase.getInstance().getTable(tableKey).getMetadata();
+        return ColumnTypeUtils.getClassType(meta.getColumn(BusinessTableUtils.getFieldNameByFieldId(fieldId)));
     }
 
     private static GroupRule adaptRule(GroupType type, FineDimensionGroup dimGroup) {

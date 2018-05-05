@@ -33,7 +33,7 @@ class SwiftTable implements Table {
 
     @Override
     public SwiftMetaData getMeta() {
-        return meta;
+        return getMetadata();
     }
 
     @Override

@@ -232,7 +232,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         }
     }
 
-    static List<Dimension> getDimensions(SourceKey sourceKey, List<FineDimension> fineDims, List<FineTarget> targets) {
+    static List<Dimension> getDimensions(SourceKey sourceKey, List<FineDimension> fineDims, List<FineTarget> targets) throws SQLException {
         List<Dimension> dimensions = new ArrayList<Dimension>();
         for (int i = 0, size = fineDims.size(); i < size; i++) {
             FineDimension fineDim = fineDims.get(i);
@@ -241,7 +241,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         return dimensions;
     }
 
-    private static Dimension toDimension(SourceKey sourceKey, FineDimension fineDim, int index, int size, List<FineTarget> targets) {
+    private static Dimension toDimension(SourceKey sourceKey, FineDimension fineDim, int index, int size, List<FineTarget> targets) throws SQLException {
         String columnName = getColumnName(fineDim);
         String tableName = getTableName(fineDim.getFieldId());
         ColumnKey colKey = new ColumnKey(columnName);

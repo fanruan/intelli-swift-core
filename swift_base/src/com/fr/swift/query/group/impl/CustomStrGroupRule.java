@@ -95,7 +95,7 @@ public class CustomStrGroupRule extends BaseCustomGroupRule<String, String> {
         List<String> values;
 
         public StringGroup(String name, List<String> values) {
-            this.name = name;
+            super(name);
             this.values = values;
         }
 
