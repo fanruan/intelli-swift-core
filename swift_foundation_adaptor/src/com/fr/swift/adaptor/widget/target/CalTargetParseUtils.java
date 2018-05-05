@@ -343,7 +343,7 @@ public class CalTargetParseUtils {
      */
     private static boolean isIdOfBaseTargetOrBaseCalTargetField(String id, AbstractTableWidget widget) throws Exception {
         if (widget.getTargetByTargetId(id) == null) {
-            // 通过计算指标配置面板生成的计算指标字段field，或者是原始字段field
+            // 通过计算指标配置面板生成的计算指标字段field，或者是原始字段field。还有可能是组件的field。。
             WidgetBeanField field = widget.getFieldByFieldId(id);
             return field.getCalculate() == null || !isCalTargetFieldDependedOnOtherCalTargetField(field, widget);
         } else {

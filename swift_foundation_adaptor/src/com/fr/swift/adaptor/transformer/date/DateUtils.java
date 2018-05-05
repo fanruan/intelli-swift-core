@@ -16,6 +16,13 @@ import java.util.Calendar;
  */
 public class DateUtils {
 
+    // 某个日期单位时间段的某一天
+    private static final int POSITION_DAY = 1;
+    // 某个日期单位时间段的起始时刻，年初、月初等
+    private static final int POSITION_START = 2;
+    // 某个日期单位时间段的结束时刻，年末、月末等
+    private static final int POSITION_END = 3;
+
     /**
      * 计算日期过滤器的值
      *
@@ -81,12 +88,26 @@ public class DateUtils {
                 range[0] = startOfYear(c).getTimeInMillis();
                 range[1] = endOfYear(c).getTimeInMillis();
         }
-        if (type == BICommonConstants.DATE_TYPE.DYNAMIC && ((DateDynamicFilterBean) bean).getValue().getPosition() != 0) {
-            // 当天、初、末的时间精度都是DAY
+        if (type == BICommonConstants.DATE_TYPE.DYNAMIC) {
+            int position = ((DateDynamicFilterBean) bean).getValue().getPosition();
+            // 当天
+            if (position != POSITION_START && position != POSITION_END) {
+                return range;
+            }
+            // 初、末的时间精度都是DAY
             Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(range[0]);
-            range[0] = startOfDay(calendar).getTimeInMillis();
-            range[1] = endOfDay(calendar).getTimeInMillis();
+            if (position == POSITION_START) {
+                calendar.setTimeInMillis(range[0]);
+                range[0] = startOfDay(calendar).getTimeInMillis();
+                range[1] = endOfDay(calendar).getTimeInMillis();
+                return range;
+            } else {
+                calendar.setTimeInMillis(range[1]);
+                range[0] = startOfDay(calendar).getTimeInMillis();
+                range[1] = endOfDay(calendar).getTimeInMillis();
+                return range;
+            }
+
         }
         return range;
     }
@@ -116,14 +137,13 @@ public class DateUtils {
     private static TimePrecision timePrecisionOfDynamicValue(DateDynamicFilterBeanValue value) {
         if (value.getWorkDay() != null) {
             return TimePrecision.DAY;
-        } else if (value.getDay() != null) {
+        } else if (value.getDay() != null || value.getPosition() == POSITION_DAY) {
             return TimePrecision.DAY;
         } else if (value.getMonth() != null) {
             return TimePrecision.MONTH;
         } else if (value.getQuarter() != null) {
             return TimePrecision.QUARTER;
         } else {
-            // 这个情况是dashboard的年份过滤（不能选position的，position为默认值0）
             return TimePrecision.YEAR;
         }
     }
@@ -146,7 +166,7 @@ public class DateUtils {
     private static long dateDynamicFilterBeanValue2Long(DateDynamicFilterBeanValue value) {
         Calendar c = dateDynamicFilterBeanValue2Calendar(value);
         int position = value.getPosition();
-        if (position != 2 && position != 3) {
+        if (position != POSITION_START && position != POSITION_END) {
             return c.getTimeInMillis();
         }
         TimeType timeType = getUnit(value, position);
@@ -208,15 +228,15 @@ public class DateUtils {
 
     private static TimeType getUnit(DateDynamicFilterBeanValue value, int position) {
         if (value.getWeek() != null) {
-            return position == 2 ? TimeType.WEEK_START : TimeType.WEEK_END;
+            return position == POSITION_START ? TimeType.WEEK_START : TimeType.WEEK_END;
         }
         if (value.getMonth() != null) {
-            return position == 2 ? TimeType.MONTH_START : TimeType.MONTH_END;
+            return position == POSITION_START ? TimeType.MONTH_START : TimeType.MONTH_END;
         }
         if (value.getQuarter() != null) {
-            return position == 2 ? TimeType.QUARTER_START : TimeType.QUARTER_END;
+            return position == POSITION_START ? TimeType.QUARTER_START : TimeType.QUARTER_END;
         }
-        return position == 2 ? TimeType.YEAR_START : TimeType.YEAR_END;
+        return position == POSITION_START ? TimeType.YEAR_START : TimeType.YEAR_END;
     }
 
     private static Calendar startOfYear(Calendar c) {
