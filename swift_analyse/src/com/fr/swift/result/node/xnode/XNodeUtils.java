@@ -35,8 +35,7 @@ public class XNodeUtils {
         List<TopGroupNode> topGroupNodeList = IteratorUtils.iterator2List(topIt);
 
         Iterator<XLeftNode> xLeftIt = new PostOrderNodeIterator<XLeftNode>(rowDimensionSize, xLeftNode);
-        xLeftIt = excludeNoShowSummaryRow(xLeftIt);
-        // xLeftNode的所有行，排除了不需要显示的汇总行
+        // xLeftNode的所有行，包括了不需要显示的汇总行
         List<XLeftNode> xLeftNodeList = IteratorUtils.iterator2List(xLeftIt);
 
         // 遍历一遍二维数组
@@ -71,16 +70,15 @@ public class XNodeUtils {
      */
     public static void updateTopGroupNodeValues(int topDimensionSize, int rowDimensionSize,
                                                 TopGroupNode topGroupNode, XLeftNode xLeftNode) {
+        // 这边包括了不需要显示汇总行的XLeftNode
         Iterator<XLeftNode> xLeftIt = new PostOrderNodeIterator<XLeftNode>(rowDimensionSize, xLeftNode);
-        xLeftIt = excludeNoShowSummaryRow(xLeftIt);
-        // xLeftNode的所有行，排除了不需要显示的汇总行
         List<XLeftNode> xLeftNodeList = IteratorUtils.iterator2List(xLeftIt);
         // topGroupNode的子节点
         List<TopGroupNode> topGroupNodeList = XNodeGroupByUtils.getLeafNodes(topDimensionSize, topGroupNode);
         XNodeGroupByUtils.updateValues2TopGroupNode(xLeftNodeList, topGroupNodeList);
     }
 
-    private static <N extends GroupNode> Iterator<N> excludeNoShowSummaryRow(Iterator<N> iterator) {
+    public static <N extends GroupNode> Iterator<N> excludeNoShowSummaryRow(Iterator<N> iterator) {
         return new FilteredIterator<N>(iterator, new Filter<N>() {
             @Override
             public boolean accept(N n) {

@@ -5,8 +5,10 @@ import com.fr.swift.result.GroupNode;
 import java.util.Iterator;
 
 /**
+ * SwiftNode接口能直接拿到List了
  * Created by Lyon on 2018/4/4.
  */
+@Deprecated
 public class ChildIterator implements Iterator<GroupNode> {
 
     private GroupNode next;

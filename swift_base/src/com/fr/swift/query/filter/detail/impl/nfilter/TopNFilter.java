@@ -10,6 +10,7 @@ import com.fr.swift.structure.iterator.RowTraversal;
 import com.fr.swift.util.Util;
 
 /**
+ * 取字典排序中最大的N个
  * Created by Lyon on 2017/12/4.
  */
 public class TopNFilter extends AbstractDetailFilter {

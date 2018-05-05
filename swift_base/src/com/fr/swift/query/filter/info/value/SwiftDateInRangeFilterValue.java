@@ -25,6 +25,24 @@ public class SwiftDateInRangeFilterValue {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SwiftDateInRangeFilterValue that = (SwiftDateInRangeFilterValue) o;
+
+        if (startIncluded != that.startIncluded) return false;
+        return endIncluded == that.endIncluded;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (startIncluded ^ (startIncluded >>> 32));
+        result = 31 * result + (int) (endIncluded ^ (endIncluded >>> 32));
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "SwiftDateInRangeFilterValue{" +
                 "startIncluded=" + startIncluded +
