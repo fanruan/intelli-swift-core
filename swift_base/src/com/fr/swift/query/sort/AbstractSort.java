@@ -1,5 +1,7 @@
 package com.fr.swift.query.sort;
 
+import com.fr.swift.segment.column.ColumnKey;
+
 /**
  * @author pony
  * @date 2018/1/23
@@ -7,13 +9,13 @@ package com.fr.swift.query.sort;
 abstract class AbstractSort implements Sort {
     private int targetIndex;
 
-    private String targetFieldId;
+    private ColumnKey columnKey;
     AbstractSort(int targetIndex) {
         this.targetIndex = targetIndex;
     }
-    AbstractSort(int targetIndex, String targetFieldId) {
+    AbstractSort(int targetIndex, ColumnKey columnKey) {
         this.targetIndex = targetIndex;
-        this.targetFieldId = targetFieldId;
+        this.columnKey = columnKey;
     }
 
     @Override
@@ -22,7 +24,7 @@ abstract class AbstractSort implements Sort {
     }
 
     @Override
-    public String getTargetFieldId() {
-        return targetFieldId;
+    public ColumnKey getColumnKey() {
+        return columnKey;
     }
 }

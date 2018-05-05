@@ -9,7 +9,6 @@ import com.fr.swift.query.group.GroupOperator;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.utils.BusinessTableUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +26,9 @@ public abstract class AbstractLocalGroupQueryBuilder implements LocalGroupQueryB
             columnList.add(column);
             Group group = dimension.getGroup();
             GroupOperator operator = null;
-            String fieldId = dimension.getSort().getTargetFieldId();
-            if(fieldId != null) {
-                columnList.add(segment.getColumn(new ColumnKey(BusinessTableUtils.getFieldNameByFieldId(fieldId))));
+            ColumnKey sortByColumnKey = dimension.getSort().getColumnKey();
+            if(sortByColumnKey != null) {
+                columnList.add(segment.getColumn(sortByColumnKey));
             }
             if (group != null) {
                 operator = group.getGroupOperator();
