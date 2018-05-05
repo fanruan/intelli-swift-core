@@ -73,7 +73,7 @@ public class BICrossLeftNodeAdaptor implements BICrossLeftNode {
 
     @Override
     public int getDeep() {
-        return xLeftNode.getDeep();
+        return xLeftNode.getDepth();
     }
 
     @Override

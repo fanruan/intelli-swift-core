@@ -32,11 +32,11 @@ public class BusinessTableUtils {
         return tableInfo[1];
     }
 
-    public static String getSourceIdByFieldId(String fieldId){
+    public static String getSourceIdByFieldId(String fieldId) {
         return TableToSourceConfig.getInstance().getConfigByTableId(SwiftEncryption.decryptFieldId(fieldId)[0]);
     }
 
-    public static String getSourceIdByTableId(String tableId){
+    public static String getSourceIdByTableId(String tableId) {
         return TableToSourceConfig.getInstance().getConfigByTableId(tableId);
     }
 }
