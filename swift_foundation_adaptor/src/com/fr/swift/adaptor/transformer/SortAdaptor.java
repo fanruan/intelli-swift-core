@@ -9,6 +9,8 @@ import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.DescSort;
 import com.fr.swift.query.sort.NoneSort;
 import com.fr.swift.query.sort.Sort;
+import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.utils.BusinessTableUtils;
 
 /**
  * Created by pony on 2017/12/21.
@@ -33,14 +35,14 @@ public class SortAdaptor {
                 return new AscSort(index);
             case SORT.FILTER_ASC: {
                 String fieldId = ((DimensionFilterASCSort)dimensionSort).getValue().getTargetFieldId();
-                return new AscSort(index, fieldId);
+                return new AscSort(index, new ColumnKey(BusinessTableUtils.getFieldNameByFieldId(fieldId)));
             }
             case SORT.DESC:
             case SORT.NUMBER_DESC:
                 return new DescSort(index);
             case SORT.FILTER_DESC: {
                 String fieldId = ((DimensionFilterDESCSort)dimensionSort).getValue().getTargetFieldId();
-                return new DescSort(index, fieldId);
+                return new DescSort(index, new ColumnKey(BusinessTableUtils.getFieldNameByFieldId(fieldId)));
             }
             default:
                 return new NoneSort();
