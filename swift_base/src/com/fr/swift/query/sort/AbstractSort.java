@@ -7,12 +7,22 @@ package com.fr.swift.query.sort;
 abstract class AbstractSort implements Sort {
     private int targetIndex;
 
+    private String targetFieldId;
     AbstractSort(int targetIndex) {
         this.targetIndex = targetIndex;
+    }
+    AbstractSort(int targetIndex, String targetFieldId) {
+        this.targetIndex = targetIndex;
+        this.targetFieldId = targetFieldId;
     }
 
     @Override
     public int getTargetIndex() {
         return targetIndex;
+    }
+
+    @Override
+    public String getTargetFieldId() {
+        return targetFieldId;
     }
 }

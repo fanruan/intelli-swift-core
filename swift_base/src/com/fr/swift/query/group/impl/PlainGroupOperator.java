@@ -8,6 +8,8 @@ import com.fr.swift.segment.column.impl.DateColumn;
 import com.fr.swift.segment.column.impl.SubDateColumn;
 import com.fr.swift.util.Crasher;
 
+import java.util.List;
+
 /**
  * @author anchore
  * @date 2018/1/26
@@ -51,6 +53,16 @@ class PlainGroupOperator<Base, Derive> implements GroupOperator<Base, Derive> {
                 return (Column<Derive>) column;
             default:
                 return Crasher.crash("no type fits");
+        }
+    }
+
+    @Override
+    public Column<Derive> group(List<Column<Base>> columnList) {
+        switch (rule.getGroupType()) {
+            case OTHER_DIMENSION_SORT:
+                return new SortByOtherDimensionColumn<Base, Derive>(columnList, (BaseSortByOtherDimensionGroupRule<Base, Derive>) rule);
+            default:
+                return group(columnList.get(0));
         }
     }
 }

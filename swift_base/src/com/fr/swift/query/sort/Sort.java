@@ -18,4 +18,6 @@ public interface Sort {
      * @return
      */
     int getTargetIndex();
+
+    String getTargetFieldId();
 }

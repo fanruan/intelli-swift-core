@@ -11,6 +11,7 @@ public enum GroupType {
     CUSTOM_NUMBER,
 
     CUSTOM_SORT,
+    OTHER_DIMENSION_SORT,
 
     YEAR,
     // 季度
