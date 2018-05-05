@@ -1,5 +1,6 @@
 package com.fr.swift.adaptor.widget;
 
+import com.finebi.conf.internalimp.bean.dashboard.widget.control.tree.TreeLabelWidgetBean;
 import com.finebi.conf.internalimp.dashboard.widget.control.tree.TreeLabelWidget;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.result.control.tree.BITreeLabelResult;
@@ -45,7 +46,7 @@ public class TreeLabelWidgetAdaptor {
                         addDimensionFilter(filterInfo, fineDimensions.get(i)), labelWidget.getWidgetId());
                 items.add(toStringList(values));
             }
-            return new TreeLabelResult(items, labelWidget.getValue().getOptions().getTreeOptions().getSelectedValues());
+            return new TreeLabelResult(items, ((TreeLabelWidgetBean) labelWidget.getValue()).getOptions().getTreeOptions().getSelectedValues());
         } catch (Exception e) {
             LOGGER.error(e);
         }
