@@ -328,7 +328,10 @@ public class CalTargetParseUtils {
     private static Pair<String, Pair<AggregatorType, FilterInfo>> parseMetricFromBaseTargetOfBaseField(FineTarget target, AbstractTableWidget widget) {
         // 原始字段生成的指标，id为原始字段的FieldId
         AggregatorType aggregatorType = AggregatorAdaptor.adaptorDashBoard(target.getMetric());
-        FilterInfo filterInfo = getDetailFilterInfoOfField(widget, widget.getFieldByFieldId(target.getFieldId()));
+        // TODO: 2018/5/4 target里面的field和widget里面原来的那个field突然间就分裂了，明细过滤再target的field里面！太随性了！
+        WidgetBeanField field = target.getWidgetBeanField();
+        field = field != null ? field : widget.getFieldByFieldId(target.getFieldId());
+        FilterInfo filterInfo = getDetailFilterInfoOfField(widget, field);
         return Pair.of(target.getFieldId(), Pair.of(aggregatorType, filterInfo));
     }
 
