@@ -1,6 +1,7 @@
 package com.fr.swift.adaptor.transformer.date;
 
 import com.finebi.conf.constant.BICommonConstants;
+import com.finebi.conf.internalimp.bean.filtervalue.date.DateRangeOffset;
 import com.finebi.conf.internalimp.bean.filtervalue.date.single.DateDynamicFilterBean;
 import com.finebi.conf.internalimp.bean.filtervalue.date.single.DateDynamicFilterBeanValue;
 import com.finebi.conf.internalimp.bean.filtervalue.date.single.DateStaticFilterBean;
@@ -80,7 +81,22 @@ public class DateUtils {
                 range[0] = startOfYear(c).getTimeInMillis();
                 range[1] = endOfYear(c).getTimeInMillis();
         }
+        if (type == BICommonConstants.DATE_TYPE.DYNAMIC && ((DateDynamicFilterBean) bean).getValue().getPosition() != 0) {
+            // 当天、初、末的时间精度都是DAY
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(range[0]);
+            range[0] = startOfDay(calendar).getTimeInMillis();
+            range[1] = endOfDay(calendar).getTimeInMillis();
+        }
         return range;
+    }
+
+    public static long[] dateOffset2Range(long time, DateRangeOffset offset) {
+        return null;
+    }
+
+    private static TimePrecision timePrecisionOfDateRangeOffset(DateRangeOffset offset) {
+        return null;
     }
 
     @SuppressWarnings("Duplicates")
@@ -107,11 +123,6 @@ public class DateUtils {
         } else if (value.getQuarter() != null) {
             return TimePrecision.QUARTER;
         } else {
-            int position = value.getPosition();
-            if (position == 1 || position == 2 || position == 3) {
-                // 当天、初、末都精确到天
-                return TimePrecision.DAY;
-            }
             // 这个情况是dashboard的年份过滤（不能选position的，position为默认值0）
             return TimePrecision.YEAR;
         }
