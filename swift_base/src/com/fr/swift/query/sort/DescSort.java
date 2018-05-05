@@ -9,6 +9,10 @@ public class DescSort extends AbstractSort {
         super(targetIndex);
     }
 
+    public DescSort(int targetIndex, String targetFieldId) {
+        super(targetIndex, targetFieldId);
+    }
+
     @Override
     public SortType getSortType() {
         return SortType.DESC;

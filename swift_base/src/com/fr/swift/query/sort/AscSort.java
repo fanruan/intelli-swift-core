@@ -9,6 +9,10 @@ public class AscSort extends AbstractSort {
         super(targetIndex);
     }
 
+    public AscSort(int targetIndex, String targetFieldId) {
+        super(targetIndex, targetFieldId);
+    }
+
     @Override
     public SortType getSortType() {
         return SortType.ASC;

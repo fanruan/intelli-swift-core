@@ -14,4 +14,9 @@ public class NoneSort implements Sort {
     public int getTargetIndex() {
         return 0;
     }
+
+    @Override
+    public String getTargetFieldId() {
+        return null;
+    }
 }
