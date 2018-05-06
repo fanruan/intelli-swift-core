@@ -19,15 +19,17 @@ import com.fr.swift.structure.Pair;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author anchore
  * @date 2018/2/7
  */
 public class CubeTasks {
-    public static SchedulerTask newTableTask(DataSource ds) throws SwiftMetaDataException {
-        return new SchedulerTaskImpl(newTaskKey(ds));
-    }
+    /**
+     * 第几次更新
+     */
+    private static final AtomicInteger COUNTER = new AtomicInteger(0);
 
     // newEtlTask(etl, prevTask) return e
     //                           prevTask
@@ -45,6 +47,7 @@ public class CubeTasks {
      * @return etl task 如上图，返回的是E
      * @throws SwiftMetaDataException 异常
      */
+    @Deprecated
     static SchedulerTask newEtlTask(EtlDataSource etl, SchedulerTask prevTask) throws SwiftMetaDataException {
         List<SchedulerTask> dependTasks = new ArrayList<SchedulerTask>();
 
@@ -57,44 +60,23 @@ public class CubeTasks {
             if (dataSource instanceof EtlDataSource) {
                 task = newEtlTask(((EtlDataSource) dataSource), prevTask);
             } else {
-                task = newTableTask(dataSource);
+                task = new SchedulerTaskImpl(newBuildTableTaskKey(dataSource));
                 prevTask.addNext(task);
             }
 
             dependTasks.add(task);
         }
 
-        SchedulerTask etlTask = newTableTask(etl);
+        SchedulerTask etlTask = new SchedulerTaskImpl(newBuildTableTaskKey(etl));
         for (SchedulerTask dependTask : dependTasks) {
             dependTask.addNext(etlTask);
         }
         return etlTask;
     }
 
-    public static SchedulerTask newRelationTask(RelationSource relation) {
-        return new SchedulerTaskImpl(newTaskKey(relation));
-    }
-
+    @Deprecated
     private static boolean isReadable(DataSource dataSource) {
         return SwiftContext.getInstance().getSegmentProvider().isSegmentsExist(dataSource.getSourceKey());
-    }
-
-    public static TaskKey newTaskKey(DataSource ds) throws SwiftMetaDataException {
-        return new CubeTaskKey(ds.getMetadata().getTableName() + "@" + ds.getSourceKey().getId(),
-                Operation.BUILD_TABLE);
-    }
-
-    public static TaskKey newTaskKey(RelationSource relation) {
-        return new CubeTaskKey(relation + "@" + relation.getSourceKey().getId(),
-                Operation.INDEX_RELATION);
-    }
-
-    public static SchedulerTask newStartTask() {
-        return new SchedulerTaskImpl(new CubeTaskKey("start of all@" + Long.toHexString(System.nanoTime())));
-    }
-
-    public static SchedulerTask newEndTask() {
-        return new SchedulerTaskImpl(new CubeTaskKey("end of all@" + Long.toHexString(System.nanoTime())));
     }
 
     public static void sendTasks(final Collection<Pair<TaskKey, Object>> tasks) throws SwiftServiceException {
@@ -111,11 +93,56 @@ public class CubeTasks {
         });
     }
 
-    public static CubeTaskKey newPartStartTaskKey(DataSource ds) throws SwiftMetaDataException {
-        return new CubeTaskKey("Part start of " + ds.getMetadata().getTableName() + "@" + ds.getSourceKey().getId(), Operation.BUILD_TABLE);
+    private static String newTableName(DataSource ds) throws SwiftMetaDataException {
+        return String.format("%s@%s", ds.getMetadata().getTableName(), ds.getSourceKey().getId());
     }
 
-    public static CubeTaskKey newPartEndTaskKey(DataSource ds) throws SwiftMetaDataException {
-        return new CubeTaskKey("Part end of " + ds.getMetadata().getTableName() + "@" + ds.getSourceKey().getId(), Operation.BUILD_TABLE);
+    private static String newColumnName(DataSource ds, String columnName) throws SwiftMetaDataException {
+        return String.format("%s.%s", newTableName(ds), columnName);
+    }
+
+    private static String newRelationName(RelationSource rs) {
+        return String.format("%s@%s", rs, rs.getSourceKey().getId());
+    }
+
+    public static TaskKey newBuildTableTaskKey(DataSource ds) throws SwiftMetaDataException {
+        return new CubeTaskKey(mask(newTableName(ds)), Operation.BUILD_TABLE);
+    }
+
+    public static TaskKey newTableBuildEndTaskKey(DataSource ds) throws SwiftMetaDataException {
+        return new CubeTaskKey(mask("End of build table " + newTableName(ds)), Operation.BUILD_TABLE);
+    }
+
+    public static TaskKey newTransportTaskKey(DataSource ds) throws SwiftMetaDataException {
+        return new CubeTaskKey(mask(newTableName(ds)), Operation.TRANSPORT_TABLE);
+    }
+
+    public static TaskKey newIndexRelationTaskKey(RelationSource relation) {
+        return new CubeTaskKey(mask(newRelationName(relation)), Operation.INDEX_RELATION);
+    }
+
+    public static TaskKey newIndexColumnTaskKey(DataSource ds, String columnName) throws SwiftMetaDataException {
+        return new CubeTaskKey(mask(newColumnName(ds, columnName)), Operation.INDEX_COLUMN);
+    }
+
+    public static TaskKey newMergeColumnDictTaskKey(DataSource ds, String columnName) throws SwiftMetaDataException {
+        return new CubeTaskKey(mask(newColumnName(ds, columnName)), Operation.MERGE_COLUMN_DICT);
+    }
+
+    public static SchedulerTask newStartTask() {
+        return new SchedulerTaskImpl(new CubeTaskKey(mask("Start of all")));
+    }
+
+    public static SchedulerTask newEndTask() {
+        return new SchedulerTaskImpl(new CubeTaskKey(mask("End of all")));
+    }
+
+
+    private static String mask(String s) {
+        return String.format("%d# %s", COUNTER.get(), s);
+    }
+
+    static void countUp() {
+        COUNTER.getAndIncrement();
     }
 }
