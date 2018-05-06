@@ -45,6 +45,7 @@ import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.group.Group;
+import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.segment.column.ColumnKey;
@@ -200,7 +201,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         String[] toColumns = new String[customLinkConfItems.size()];
         for (int i = 0; i < customLinkConfItems.size(); i++) {
             CustomLinkConfItem confItem = customLinkConfItems.get(i);
-            fromColumns[i] = (new GroupDimension(i, getSourceKey(confItem.getFrom()), new ColumnKey(getColumnName(confItem.getFrom())), null, null, null));
+            fromColumns[i] = (new GroupDimension(i, getSourceKey(confItem.getFrom()), new ColumnKey(getColumnName(confItem.getFrom())), null, new AscSort(i, new ColumnKey(getColumnName(confItem.getFrom()))), null));
             toColumns[i] = getColumnName(confItem.getTo());
         }
         //根据点击的值，创建过滤条件

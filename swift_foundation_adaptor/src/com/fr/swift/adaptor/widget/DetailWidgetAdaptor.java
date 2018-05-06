@@ -27,6 +27,7 @@ import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
+import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
@@ -170,7 +171,7 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
         String[] toColumns = new String[customLinkConfItems.size()];
         for (int i = 0; i < customLinkConfItems.size(); i++) {
             CustomLinkConfItem confItem = customLinkConfItems.get(i);
-            fromColumns[i] = (new DetailDimension(i, getSourceKey(confItem.getFrom()), new ColumnKey(getColumnName(confItem.getFrom())), null, null, null));
+            fromColumns[i] = (new DetailDimension(i, getSourceKey(confItem.getFrom()), new ColumnKey(getColumnName(confItem.getFrom())), null, new AscSort(i, new ColumnKey(getColumnName(confItem.getFrom()))), null));
             toColumns[i] = getColumnName(confItem.getTo());
         }
         //根据点击的值，创建过滤条件
