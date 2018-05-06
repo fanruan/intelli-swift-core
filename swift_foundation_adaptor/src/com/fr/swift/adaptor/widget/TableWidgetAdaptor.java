@@ -2,6 +2,7 @@ package com.fr.swift.adaptor.widget;
 
 import com.finebi.conf.internalimp.bean.dashboard.widget.expander.ExpanderBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
+import com.finebi.conf.internalimp.dashboard.widget.dimension.FineDimensionImpl;
 import com.finebi.conf.internalimp.dashboard.widget.dimension.sort.DimensionTargetSort;
 import com.finebi.conf.internalimp.dashboard.widget.filter.CustomLinkConfItem;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
@@ -153,9 +154,10 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
             if (drill != null) {
                 String columnName = getColumnName(drill.getFromDimension().getFieldId());
                 String value = drill.getFromValue();
-                Set<String> values = new HashSet<String>();
-                values.add(value);
-                filterInfoList.add(new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(columnName), values, SwiftDetailFilterType.STRING_IN));
+//                Set<String> values = new HashSet<String>();
+                filterInfoList.add(LinkageAdaptor.dealFilterInfo(new ColumnKey(columnName), value, ((FineDimensionImpl) fineDimension).getValue()));
+//                values.add(value);
+//                filterInfoList.add(new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(columnName), values, SwiftDetailFilterType.STRING_IN));
             }
         }
         widget.getValue().getDrillList();
@@ -205,7 +207,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
         TableWidgetBean fromWidget = LinkageAdaptor.handleClickItem(tableName, widgetLinkItem, filterInfos);
         //分组表查询
-        FilterInfo filterInfo = new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
+        FilterInfo filterInfo = new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND);
         GroupQueryInfo queryInfo = new GroupQueryInfo(fromWidget.getwId(), fromColumns[0].getSourceKey(),
                 new DimensionInfoImpl(new AllCursor(), filterInfo, null, fromColumns),
                 new TargetInfoImpl(0, new ArrayList<Metric>(0), new ArrayList<GroupTarget>(0), new ArrayList<ResultTarget>(0), new ArrayList<Aggregator>(0)));
