@@ -104,6 +104,9 @@ abstract class BaseDictColumn<T> implements DictionaryEncodedColumn<T> {
 
     @Override
     public int getIndex(Object value) {
+        if (value == null) {
+            return 0;
+        }
         return ArrayLookupHelper.lookup((T[]) new Object[]{convertValue(value)}, lookup)[0];
     }
 

@@ -114,29 +114,45 @@ public class GroupAdaptor {
         if (values == null || values.isEmpty()) {
             return originGroup;
         }
-        switch (classType) {
-            case INTEGER:
-            case LONG: {
-                List<NumGroup> groups = new ArrayList<NumGroup>();
-                for (String value : values) {
-                    groups.add(new NumGroup(Long.valueOf(value)));
-                }
-                return Groups.wrap(originGroup, new CustomSortGroupRule(groups));
-            }
-            case DOUBLE: {
-                List<NumGroup> groups = new ArrayList<NumGroup>();
-                for (String value : values) {
-                    groups.add(new NumGroup(Double.valueOf(value)));
-                }
-                return Groups.wrap(originGroup, new CustomSortGroupRule(groups));
-            }
-            case STRING: {
+
+        switch (originGroup.getGroupType()) {
+            // 原始分组若为自定义，则一律视为文本类型
+            case CUSTOM:
+            case CUSTOM_NUMBER: {
                 List<StringGroup> groups = new ArrayList<StringGroup>();
                 for (String value : values) {
                     groups.add(new StringGroup(value, Collections.singletonList(value)));
                 }
                 return Groups.wrap(originGroup, new CustomSortGroupRule(groups));
             }
+            // 原始未分组，则根据类型装填group
+            case NONE:
+                switch (classType) {
+                    case INTEGER:
+                    case LONG: {
+                        List<NumGroup> groups = new ArrayList<NumGroup>();
+                        for (String value : values) {
+                            groups.add(new NumGroup(Long.valueOf(value)));
+                        }
+                        return Groups.wrap(originGroup, new CustomSortGroupRule(groups));
+                    }
+                    case DOUBLE: {
+                        List<NumGroup> groups = new ArrayList<NumGroup>();
+                        for (String value : values) {
+                            groups.add(new NumGroup(Double.valueOf(value)));
+                        }
+                        return Groups.wrap(originGroup, new CustomSortGroupRule(groups));
+                    }
+                    case STRING: {
+                        List<StringGroup> groups = new ArrayList<StringGroup>();
+                        for (String value : values) {
+                            groups.add(new StringGroup(value, Collections.singletonList(value)));
+                        }
+                        return Groups.wrap(originGroup, new CustomSortGroupRule(groups));
+                    }
+                    default:
+                        return null;
+                }
             default:
                 return null;
         }
