@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author anchore
  * @date 2018/4/27
  * <p>
- * 线程池的factory
+ * 线程池线程的factory
  */
 public class PoolThreadFactory extends BaseThreadFactory {
     private static final AtomicInteger POOL_NUMBER = new AtomicInteger(1);
