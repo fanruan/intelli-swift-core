@@ -1,8 +1,12 @@
 package com.fr.swift.adaptor.widget;
 
+import com.finebi.conf.constant.BICommonConstants;
+import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.WidgetDimensionBean;
+import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.date.DateWidgetDimensionBean;
+import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.TypeGroupBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.expander.ExpanderBean;
+import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
 import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
-import com.finebi.conf.internalimp.dashboard.widget.dimension.FineDimensionImpl;
 import com.finebi.conf.internalimp.dashboard.widget.dimension.sort.DimensionTargetSort;
 import com.finebi.conf.internalimp.dashboard.widget.filter.CustomLinkConfItem;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
@@ -155,8 +159,18 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
             if (drill != null) {
                 String columnName = getColumnName(drill.getFromDimension().getFieldId());
                 String value = drill.getFromValue();
+                WidgetBeanField field = widget.getFieldByFieldId(drill.getFromDimension().getFieldId());
+                WidgetDimensionBean bean;
+                if (field.getType() == BICommonConstants.COLUMN.DATE) {
+                    bean = new DateWidgetDimensionBean();
+                    TypeGroupBean groupBean = new TypeGroupBean();
+                    groupBean.setType(BICommonConstants.GROUP.YMD);
+                    bean.setGroup(groupBean);
+                } else {
+                    bean = new WidgetDimensionBean();
+                }
 //                Set<String> values = new HashSet<String>();
-                filterInfoList.add(LinkageAdaptor.dealFilterInfo(new ColumnKey(columnName), value, ((FineDimensionImpl) fineDimension).getValue()));
+                filterInfoList.add(LinkageAdaptor.dealFilterInfo(new ColumnKey(columnName), value, bean));
 //                values.add(value);
 //                filterInfoList.add(new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(columnName), values, SwiftDetailFilterType.STRING_IN));
             }
