@@ -4,9 +4,11 @@ import com.finebi.conf.constant.BIDesignConstants;
 import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
 import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
+import com.fr.stable.StringUtils;
 import com.fr.swift.adaptor.transformer.AggregatorAdaptor;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.widget.target.exception.TargetCircularDependencyException;
+import com.fr.swift.query.adapter.metric.CounterMetric;
 import com.fr.swift.query.adapter.metric.GroupMetric;
 import com.fr.swift.query.adapter.metric.Metric;
 import com.fr.swift.query.adapter.target.GroupTarget;
@@ -182,7 +184,8 @@ public class CalTargetParseUtils {
     }
 
     private static boolean isBaseFieldTarget(FineTarget target) {
-        return target.getWidgetBeanField() == null || target.getWidgetBeanField().getTargetIds() == null;
+        return target.getType() == BIDesignConstants.DESIGN.DIMENSION_TYPE.COUNTER
+                || target.getWidgetBeanField() == null || target.getWidgetBeanField().getTargetIds() == null;
     }
 
     /**
@@ -340,7 +343,7 @@ public class CalTargetParseUtils {
      */
     private static boolean isIdOfBaseTargetOrBaseCalTargetField(String id, AbstractTableWidget widget) throws Exception {
         if (widget.getTargetByTargetId(id) == null) {
-            // 通过计算指标配置面板生成的计算指标字段field，或者是原始字段field
+            // 通过计算指标配置面板生成的计算指标字段field，或者是原始字段field。还有可能是组件的field。。
             WidgetBeanField field = widget.getFieldByFieldId(id);
             return field.getCalculate() == null || !isCalTargetFieldDependedOnOtherCalTargetField(field, widget);
         } else {
@@ -426,10 +429,17 @@ public class CalTargetParseUtils {
 
     private static Metric toMetric(int metricIndex, String fieldId, Pair<AggregatorType, FilterInfo> pair) {
         SourceKey key = new SourceKey(fieldId);
+        if (isCounterField(fieldId)) {
+            return new CounterMetric(metricIndex, key, new ColumnKey(fieldId), pair.getValue());
+        }
         String columnName = BusinessTableUtils.getFieldNameByFieldId(fieldId);
         ColumnKey colKey = new ColumnKey(columnName);
         Aggregator aggregator = AggregatorFactory.createAggregator(pair.getKey());
         return new GroupMetric(metricIndex, key, colKey, pair.getValue(), aggregator);
+    }
+
+    private static boolean isCounterField(String fieldId) {
+        return StringUtils.isNotEmpty(fieldId) && fieldId.endsWith("__count_field_id__");
     }
 
     /**

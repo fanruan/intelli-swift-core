@@ -25,15 +25,19 @@ import com.fr.swift.query.group.Group;
 import com.fr.swift.query.group.GroupRule;
 import com.fr.swift.query.group.GroupType;
 import com.fr.swift.query.group.Groups;
-import com.fr.swift.query.group.impl.AutoNumGroupRule;
-import com.fr.swift.query.group.impl.AutoNumGroupRule.Partition;
+import com.fr.swift.query.group.impl.BaseSortByOtherDimensionGroupRule;
+import com.fr.swift.query.group.impl.CustomSortGroupRule;
 import com.fr.swift.query.group.impl.CustomNumGroupRule;
+import com.fr.swift.query.group.impl.AutoNumGroupRule.Partition;
 import com.fr.swift.query.group.impl.CustomNumGroupRule.NumInterval;
 import com.fr.swift.query.group.impl.CustomSortGroupRule;
 import com.fr.swift.query.group.impl.CustomSortGroupRule.NumGroup;
 import com.fr.swift.query.group.impl.CustomStrGroupRule;
 import com.fr.swift.query.group.impl.CustomStrGroupRule.StringGroup;
 import com.fr.swift.query.group.impl.NoGroupRule;
+import com.fr.swift.query.group.impl.CustomStrGroupRule;
+import com.fr.swift.query.group.impl.AutoNumGroupRule;
+import com.fr.swift.query.sort.SortType;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.SourceKey;
@@ -131,6 +135,10 @@ public class GroupAdaptor {
                 }
                 return Groups.wrap(originGroup, new CustomSortGroupRule(groups));
             }
+            case SORT.FILTER_ASC:
+                return Groups.wrap(originGroup, new BaseSortByOtherDimensionGroupRule(SortType.ASC));
+            case SORT.FILTER_DESC:
+                return Groups.wrap(originGroup, new BaseSortByOtherDimensionGroupRule(SortType.DESC));
             default:
                 return null;
         }

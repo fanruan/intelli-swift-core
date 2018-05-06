@@ -8,6 +8,7 @@ import com.fr.swift.query.group.Group;
 import com.fr.swift.query.group.GroupOperator;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
+import com.fr.swift.segment.column.ColumnKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,14 +21,20 @@ public abstract class AbstractLocalGroupQueryBuilder implements LocalGroupQueryB
     protected List<Column> getDimensionSegments(Segment segment, Dimension[] dimensions) {
         List<Column> dimensionColumns = new ArrayList<Column>();
         for (Dimension dimension : dimensions) {
+            List<Column> columnList = new ArrayList<Column>();
             Column column = segment.getColumn(dimension.getColumnKey());
+            columnList.add(column);
             Group group = dimension.getGroup();
             GroupOperator operator = null;
+            ColumnKey sortByColumnKey = dimension.getSort().getColumnKey();
+            if(sortByColumnKey != null) {
+                columnList.add(segment.getColumn(sortByColumnKey));
+            }
             if (group != null) {
                 operator = group.getGroupOperator();
             }
             if (operator != null) {
-                column = operator.group(column);
+                column = operator.group(columnList);
             }
             dimensionColumns.add(column);
         }

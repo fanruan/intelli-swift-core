@@ -1,5 +1,7 @@
 package com.fr.swift.query.sort;
 
+import com.fr.swift.segment.column.ColumnKey;
+
 /**
  * @author pony
  * @date 2017/12/11
@@ -18,4 +20,11 @@ public interface Sort {
      * @return
      */
     int getTargetIndex();
+
+    /**
+     * 依据字段ColumnKey
+     *
+     * @return
+     */
+    ColumnKey getColumnKey();
 }

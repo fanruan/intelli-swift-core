@@ -86,7 +86,7 @@ public class GroupResultQueryTest extends TestCase {
             dimensions.add(cubeData.getDimensions());
         }
         for (int i = 0; i < dimensionCount; i++) {
-            indexSorts.add(new AscSort(i));
+            indexSorts.add(new AscSort(i, null));
         }
         expectedDictionaries = getGlobalDictionaries(dimensions);
         expectedResult = mergeResult(expectedResultList);

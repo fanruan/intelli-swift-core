@@ -43,6 +43,32 @@ public class SwiftNumberInRangeFilterValue {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SwiftNumberInRangeFilterValue that = (SwiftNumberInRangeFilterValue) o;
+
+        if (Double.compare(that.min, min) != 0) return false;
+        if (Double.compare(that.max, max) != 0) return false;
+        if (minIncluded != that.minIncluded) return false;
+        return maxIncluded == that.maxIncluded;
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        temp = Double.doubleToLongBits(min);
+        result = (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(max);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (minIncluded ? 1 : 0);
+        result = 31 * result + (maxIncluded ? 1 : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "SwiftNumberInRangeFilterValue{" +
                 "min=" + min +
