@@ -135,7 +135,7 @@ public abstract class BaseFilterTest extends TestCase {
                     }
 
                     @Override
-                    public int getDeep() {
+                    public int getDepth() {
                         return 0;
                     }
 
@@ -187,7 +187,7 @@ public abstract class BaseFilterTest extends TestCase {
             }
 
             @Override
-            public int getDeep() {
+            public int getDepth() {
                 return 0;
             }
 
@@ -300,7 +300,7 @@ public abstract class BaseFilterTest extends TestCase {
             }
 
             @Override
-            public int getDeep() {
+            public int getDepth() {
                 return 0;
             }
 

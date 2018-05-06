@@ -96,11 +96,11 @@ public class CustomNumGroupRule extends BaseCustomGroupRule<Number, String> {
         private double ceil;
 
         public NumInterval(String name, double floor, boolean greaterOrEq, double ceil, boolean lessOrEq) {
+            super(name);
             this.greaterOrEq = greaterOrEq;
             this.floor = floor;
             this.lessOrEq = lessOrEq;
             this.ceil = ceil;
-            this.name = name;
         }
 
         @Override

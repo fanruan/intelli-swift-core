@@ -20,8 +20,6 @@ public interface WorkerTask extends Task, Runnable {
      */
     void done(Result result);
 
-    void setWorker(Worker worker);
-
     /**
      * WorkerTask需要有一个Worker
      * 但是一个Worker不一定要附在WorkerTask上

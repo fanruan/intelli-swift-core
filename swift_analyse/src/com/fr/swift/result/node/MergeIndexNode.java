@@ -28,7 +28,7 @@ public class MergeIndexNode extends IndexNode {
     }
 
     @Override
-    public int getDeep() {
+    public int getDepth() {
         return 0;
     }
 }

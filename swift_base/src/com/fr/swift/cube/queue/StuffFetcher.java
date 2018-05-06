@@ -2,7 +2,10 @@ package com.fr.swift.cube.queue;
 
 import com.fr.general.DateUtils;
 import com.fr.swift.cube.task.SchedulerTask;
+import com.fr.swift.cube.task.Task.Status;
 import com.fr.swift.cube.task.TaskKey;
+import com.fr.swift.cube.task.TaskStatusChangeListener;
+import com.fr.swift.cube.task.impl.SchedulerTaskImpl;
 import com.fr.swift.cube.task.impl.SchedulerTaskPool;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
@@ -23,9 +26,9 @@ import com.fr.swift.structure.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * This class created on 2018-1-16 15:57:05
@@ -43,9 +46,7 @@ public class StuffFetcher implements Runnable {
             while (true) {
                 try {
                     IndexStuffProvider provider = StuffProviderQueue.getQueue().take();
-                    long t = System.currentTimeMillis();
                     update(provider);
-                    LOGGER.info("build cost " + DateUtils.timeCostFrom(t));
                 } catch (Exception e) {
 
                 }
@@ -56,12 +57,15 @@ public class StuffFetcher implements Runnable {
     }
 
     public static void update(IndexStuffProvider stuff) throws SwiftMetaDataException, SwiftServiceException {
+        final long t = System.currentTimeMillis();
+        CubeTasks.countUp();
+
         List<Pair<TaskKey, Object>> pairs = new ArrayList<Pair<TaskKey, Object>>();
 
         Map<TaskKey, Pair<TaskKey, Object>> pairMap = new HashMap<TaskKey, Pair<TaskKey, Object>>();
         Map<TaskKey, SchedulerTask> taskMap = new HashMap<TaskKey, SchedulerTask>();
 
-        SchedulerTask start = CubeTasks.newStartTask(),
+        final SchedulerTask start = CubeTasks.newStartTask(),
                 end = CubeTasks.newEndTask();
 
         pairs.add(Pair.of(start.key(), null));
@@ -98,21 +102,31 @@ public class StuffFetcher implements Runnable {
 
         CubeTasks.sendTasks(pairs);
         start.triggerRun();
+
+        end.addStatusChangeListener(new TaskStatusChangeListener() {
+            @Override
+            public void onChange(Status prev, Status now) {
+                if (now == Status.DONE) {
+                    LOGGER.info("build cost " + DateUtils.timeCostFrom(t));
+                    LOGGER.info("build " + end.result());
+                }
+            }
+        });
+
     }
 
     private static void calRelationTask(AbstractRelationReliance relationReliance, List<Pair<TaskKey, Object>> pairs, SchedulerTask end) throws SwiftMetaDataException {
         Map<SourceKey, IRelationNode> relationNodeMap = relationReliance.getHeadNode();
-        Iterator<Map.Entry<SourceKey, IRelationNode>> relationIterator = relationNodeMap.entrySet().iterator();
-        while (relationIterator.hasNext()) {
-            IRelationNode node = relationIterator.next().getValue();
-            SchedulerTask relationTask = CubeTasks.newRelationTask(node.getNode());
+        for (Entry<SourceKey, IRelationNode> entry : relationNodeMap.entrySet()) {
+            IRelationNode node = entry.getValue();
+            SchedulerTask relationTask = new SchedulerTaskImpl(CubeTasks.newIndexRelationTaskKey(node.getNode()));
             List<Source> deps = node.getDepend();
             for (Source dep : deps) {
                 SchedulerTask task;
                 if (dep instanceof DataSource) {
-                    task = SchedulerTaskPool.getInstance().get(CubeTasks.newTaskKey((DataSource) dep));
+                    task = SchedulerTaskPool.getInstance().get(CubeTasks.newBuildTableTaskKey((DataSource) dep));
                 } else {
-                    task = SchedulerTaskPool.getInstance().get(CubeTasks.newTaskKey((RelationSource) dep));
+                    task = SchedulerTaskPool.getInstance().get(CubeTasks.newIndexRelationTaskKey((RelationSource) dep));
                 }
                 if (null != task) {
                     task.addNext(relationTask);
@@ -125,7 +139,7 @@ public class StuffFetcher implements Runnable {
 
     private static void calcBaseNode(SourceNode sourceNode, SchedulerTask prevTask, SchedulerTask endTask,
                                      Map<TaskKey, Pair<TaskKey, Object>> pairMap, Map<TaskKey, SchedulerTask> taskMap) throws SwiftMetaDataException {
-        SchedulerTask currentTask = CubeTasks.newTableTask(sourceNode.getNode());
+        SchedulerTask currentTask = new SchedulerTaskImpl(CubeTasks.newBuildTableTaskKey(sourceNode.getNode()));
         if (taskMap.containsKey(currentTask.key())) {
             currentTask = taskMap.get(currentTask.key());
         }

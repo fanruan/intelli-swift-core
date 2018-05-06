@@ -24,7 +24,7 @@ public class SingleColumnIndexNode extends IndexNode {
     }
 
     @Override
-    public int getDeep() {
+    public int getDepth() {
         return 0;
     }
 }
