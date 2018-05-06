@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ThreadFactory;
 
 /**
  * Created by FineSoft on 2015/6/23.
@@ -42,7 +43,7 @@ public abstract class ExternalMap<K, V> implements Map<K, V>, Iterable<Map.Entry
      */
     private static final int EXTERNAL_READ_COUNT = 1;
 
-    private static final SingleThreadFactory THREADS = new SingleThreadFactory("Swift-ExternalMap-WriteFile");
+    private static final ThreadFactory THREADS = new SingleThreadFactory("Swift-ExternalMap-WriteFile");
 
     public static boolean DEBUG = false;
     public static boolean VERBOSE = false;
