@@ -151,10 +151,10 @@ public class GroupAdaptor {
                         return Groups.wrap(originGroup, new CustomSortGroupRule(groups));
                     }
                     default:
-                        return null;
+                        return originGroup;
                 }
             default:
-                return null;
+                return originGroup;
         }
     }
 
