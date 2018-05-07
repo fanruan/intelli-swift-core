@@ -6,9 +6,9 @@ import com.fr.swift.query.adapter.target.GroupTarget;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.group.Group;
 import com.fr.swift.query.group.GroupOperator;
+import com.fr.swift.query.sort.Sort;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
-import com.fr.swift.segment.column.ColumnKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +26,9 @@ public abstract class AbstractLocalGroupQueryBuilder implements LocalGroupQueryB
             columnList.add(column);
             Group group = dimension.getGroup();
             GroupOperator operator = null;
-            ColumnKey sortByColumnKey = dimension.getSort().getColumnKey();
-            if(sortByColumnKey != null) {
-                columnList.add(segment.getColumn(sortByColumnKey));
+            Sort sort = dimension.getSort();
+            if(sort != null && sort.getColumnKey() != null) {
+                columnList.add(segment.getColumn(sort.getColumnKey()));
             }
             if (group != null) {
                 operator = group.getGroupOperator();
