@@ -1,6 +1,11 @@
 package com.fr.swift.adaptor.widget;
 
+import com.finebi.conf.constant.BICommonConstants;
+import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.WidgetDimensionBean;
+import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.date.DateWidgetDimensionBean;
+import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.TypeGroupBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.expander.ExpanderBean;
+import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
 import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
 import com.finebi.conf.internalimp.dashboard.widget.dimension.sort.DimensionTargetSort;
 import com.finebi.conf.internalimp.dashboard.widget.filter.CustomLinkConfItem;
@@ -44,6 +49,7 @@ import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.group.Group;
+import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.segment.column.ColumnKey;
@@ -153,9 +159,20 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
             if (drill != null) {
                 String columnName = getColumnName(drill.getFromDimension().getFieldId());
                 String value = drill.getFromValue();
-                Set<String> values = new HashSet<String>();
-                values.add(value);
-                filterInfoList.add(new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(columnName), values, SwiftDetailFilterType.STRING_IN));
+                WidgetBeanField field = widget.getFieldByFieldId(drill.getFromDimension().getFieldId());
+                WidgetDimensionBean bean;
+                if (field.getType() == BICommonConstants.COLUMN.DATE) {
+                    bean = new DateWidgetDimensionBean();
+                    TypeGroupBean groupBean = new TypeGroupBean();
+                    groupBean.setType(BICommonConstants.GROUP.YMD);
+                    bean.setGroup(groupBean);
+                } else {
+                    bean = new WidgetDimensionBean();
+                }
+//                Set<String> values = new HashSet<String>();
+                filterInfoList.add(LinkageAdaptor.dealFilterInfo(new ColumnKey(columnName), value, bean));
+//                values.add(value);
+//                filterInfoList.add(new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(columnName), values, SwiftDetailFilterType.STRING_IN));
             }
         }
         widget.getValue().getDrillList();
@@ -198,14 +215,14 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         String[] toColumns = new String[customLinkConfItems.size()];
         for (int i = 0; i < customLinkConfItems.size(); i++) {
             CustomLinkConfItem confItem = customLinkConfItems.get(i);
-            fromColumns[i] = (new GroupDimension(i, getSourceKey(confItem.getFrom()), new ColumnKey(getColumnName(confItem.getFrom())), null, null, null));
+            fromColumns[i] = (new GroupDimension(i, getSourceKey(confItem.getFrom()), new ColumnKey(getColumnName(confItem.getFrom())), null, new AscSort(i, new ColumnKey(getColumnName(confItem.getFrom()))), null));
             toColumns[i] = getColumnName(confItem.getTo());
         }
         //根据点击的值，创建过滤条件
         List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
         TableWidgetBean fromWidget = LinkageAdaptor.handleClickItem(tableName, widgetLinkItem, filterInfos);
         //分组表查询
-        FilterInfo filterInfo = new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
+        FilterInfo filterInfo = new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND);
         GroupQueryInfo queryInfo = new GroupQueryInfo(fromWidget.getwId(), fromColumns[0].getSourceKey(),
                 new DimensionInfoImpl(new AllCursor(), filterInfo, null, fromColumns),
                 new TargetInfoImpl(0, new ArrayList<Metric>(0), new ArrayList<GroupTarget>(0), new ArrayList<ResultTarget>(0), new ArrayList<Aggregator>(0)));
