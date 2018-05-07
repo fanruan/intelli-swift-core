@@ -32,7 +32,6 @@ import java.util.Map;
 public class SelectFieldAdaptor {
     /**
      * 选字段
-     * fixme 多表选择路径有问题
      *
      * @param analysis
      * @return
@@ -51,9 +50,10 @@ public class SelectFieldAdaptor {
             FineBusinessField fineBusinessField = fineBusinessTable.getFieldByFieldId(selectFieldBeanItem.getField());
             DataSource baseDataSource = DataSourceFactory.getDataSource(fineBusinessTable);
             List<SelectFieldPathItem> path = selectFieldBeanItem.getPath();
+            handleSelectPath(path, sourceKeyDataSourceMap);
             ColumnKey columnKey = new ColumnKey(fineBusinessField.getName());
             if (baseTable != null && !ComparatorUtils.equals(baseTable, fineBusinessTable.getId())) {
-                columnKey.setRelation(RelationAdaptor.getRelation(selectFieldBeanItem.getPath(), baseTable, fineBusinessTable.getId(), relationProvider));
+                columnKey.setRelation(RelationAdaptor.getRelation(path, baseTable, fineBusinessTable.getId(), relationProvider));
             }
             if (sourceKeyColumnMap.containsKey(baseDataSource.getSourceKey().getId())) {
                 sourceKeyColumnMap.get(baseDataSource.getSourceKey().getId()).add(columnKey);
@@ -102,5 +102,26 @@ public class SelectFieldAdaptor {
         }
         ETLOperator operator = new DetailOperator(fields, baseFields, swiftMetaDatas);
         return new EtlSource(baseDatas, operator);
+    }
+
+    private static void handleSelectPath(List<SelectFieldPathItem> path, Map<String, DataSource> sourceKeyDataSourceMap) throws Exception {
+        if (path != null && !path.isEmpty()) {
+            for (SelectFieldPathItem item : path) {
+                FineBusinessTable table = BusinessTableUtils.getTableByFieldId(item.getRelationship().getFrom().get(0));
+                dealSourceWithSelectPath(table, item.getTable(), sourceKeyDataSourceMap);
+                table = BusinessTableUtils.getTableByFieldId(item.getRelationship().getTo().get(0));
+                dealSourceWithSelectPath(table, item.getTable(), sourceKeyDataSourceMap);
+            }
+        }
+    }
+
+    private static void dealSourceWithSelectPath(FineBusinessTable table, String tableName, Map<String, DataSource> sourceKeyDataSourceMap) throws Exception {
+        if (ComparatorUtils.equals(table.getName(), tableName)) {
+            DataSource dataSource = DataSourceFactory.getDataSource(table);
+            String sourceKey = dataSource.getSourceKey().getId();
+            if (!sourceKeyDataSourceMap.containsKey(sourceKey)) {
+                sourceKeyDataSourceMap.put(sourceKey, dataSource);
+            }
+        }
     }
 }
