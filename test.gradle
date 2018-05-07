@@ -124,7 +124,7 @@ task test_jar(dependsOn: compileJava) << {
             structure(name: "jacoco") {
                 classfiles {
                     fileset(dir: "build/classes/main") {
-                        include(name: "**/*.class")
+                        include(name: "**/*Test.class")
                     }
                 }
                 sourcefiles {
