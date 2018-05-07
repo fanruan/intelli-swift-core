@@ -125,8 +125,7 @@ public class RelationColumn {
                     try {
                         ImmutableBitMap bitMap = relationIndex.getIndex(i, j);
                         Object value = columns[i].getValue(j);
-                        handleDicAndIndex(bitMap, index, targetDicColumn, bitmapIndexedColumn, value);
-                        index++;
+                        index = handleDicAndIndex(bitMap, index, targetDicColumn, bitmapIndexedColumn, value);
                     } catch (Exception ignore) {
                     }
                 }
@@ -137,7 +136,7 @@ public class RelationColumn {
         bitmapIndexedColumn.release();
     }
 
-    private void handleDicAndIndex(ImmutableBitMap bitMap, final int index, final DictionaryEncodedColumn dic, BitmapIndexedColumn indexedColumn, Object dicValue) {
+    private int handleDicAndIndex(ImmutableBitMap bitMap, final int index, final DictionaryEncodedColumn dic, BitmapIndexedColumn indexedColumn, Object dicValue) {
         final AtomicBoolean traversal = new AtomicBoolean(false);
         bitMap.traversal(new TraversalAction() {
             @Override
@@ -149,7 +148,9 @@ public class RelationColumn {
         if (traversal.get()) {
             dic.putValue(index, dicValue);
             indexedColumn.putBitMapIndex(index, bitMap);
+            return index + 1;
         }
+        return index;
     }
 
     private <T extends Column> T createColumn(Class<T> clazz, IResourceLocation location) {
