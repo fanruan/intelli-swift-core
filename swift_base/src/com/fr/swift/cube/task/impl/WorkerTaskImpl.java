@@ -15,8 +15,10 @@ import com.fr.swift.structure.Pair;
 public class WorkerTaskImpl extends BaseTask implements WorkerTask {
     private Worker worker;
 
-    public WorkerTaskImpl(TaskKey key) {
+    public WorkerTaskImpl(TaskKey key, Worker worker) {
         super(key);
+        this.worker = worker;
+        worker.setOwner(this);
         status = Status.RUNNABLE;
     }
 
@@ -57,11 +59,5 @@ public class WorkerTaskImpl extends BaseTask implements WorkerTask {
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         }
-    }
-
-    @Override
-    public void setWorker(Worker worker) {
-        this.worker = worker;
-        worker.setOwner(this);
     }
 }

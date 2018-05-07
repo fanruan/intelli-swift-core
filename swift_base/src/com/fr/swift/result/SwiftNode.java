@@ -42,7 +42,7 @@ public interface SwiftNode<T extends SwiftNode> extends AggregatorValueContainer
      * 节点的深度
      * @return
      */
-    int getDeep();
+    int getDepth();
 
     void clearChildren();
 

@@ -2,6 +2,8 @@ package com.fr.swift.segment.column.impl.base;
 
 import com.fr.swift.cube.io.location.ResourceLocation;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * @author anchore
  * @date 2017/11/10

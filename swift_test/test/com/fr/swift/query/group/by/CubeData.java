@@ -22,7 +22,7 @@ import org.easymock.EasyMock;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -38,13 +38,13 @@ public class CubeData {
     private int metricCount = 5;
     private int rowCount = 100;
     private Random random = new Random(23435);
-    List<Column> dimensionColumns = new ArrayList<>();
-    List<Column> metricColumns = new ArrayList<>();
-    Map<RowIndexKey<int[]>, RowTraversal> bitMapGroup;
-    String[][] dimensions;
-    int[][] metrics;
-    Map<RowIndexKey, double[]> aggregationResult;
-    List<Aggregator> aggregators;
+    private List<Column> dimensionColumns = new ArrayList<>();
+    private List<Column> metricColumns = new ArrayList<>();
+    private Map<RowIndexKey<int[]>, RowTraversal> bitMapGroup;
+    private String[][] dimensions;
+    private int[][] metrics;
+    private Map<RowIndexKey<int[]>, double[]> aggregationResult;
+    private List<Aggregator> aggregators;
 
     public CubeData() {
         init();
@@ -80,7 +80,7 @@ public class CubeData {
         return bitMapGroup;
     }
 
-    public Map<RowIndexKey, double[]> getAggregationResult() {
+    public Map<RowIndexKey<int[]>, double[]> getAggregationResult() {
         return aggregationResult;
     }
 
@@ -138,7 +138,7 @@ public class CubeData {
                 public DictionaryEncodedColumn getDictionaryEncodedColumn() {
                     return new TempDictColumn() {
 
-                        private Map<Integer, Integer> globalIndexMap = new HashMap<>();
+                        private Map<Integer, Integer> globalIndexMap = new LinkedHashMap<>();
 
                         @Override
                         public int size() {
@@ -288,7 +288,7 @@ public class CubeData {
         for (int i = 0; i < dict.size(); i++) {
             groupValues.add(new ArrayList<>(dict.get(i).keySet()));
         }
-        Map<RowIndexKey, IntList> map = new HashMap<>();
+        Map<RowIndexKey, IntList> map = new LinkedHashMap<>();
         IntStream.range(0, rowCount).forEach(i -> {
             int[] indexes = new int[dimensionCount];
             for (int n = 0; n < dimensionCount; n++) {
@@ -300,14 +300,14 @@ public class CubeData {
             }
             map.get(key).add(i);
         });
-        bitMapGroup = new HashMap<>();
+        bitMapGroup = new LinkedHashMap<>();
         for (Map.Entry<RowIndexKey, IntList> entry : map.entrySet()) {
             bitMapGroup.put(entry.getKey(), new IntListRowTraversal(entry.getValue()));
         }
     }
 
     private void prepareAggregationResult() {
-        aggregationResult = new HashMap<>();
+        aggregationResult = new LinkedHashMap<>();
         for (RowIndexKey key : bitMapGroup.keySet()) {
             RowTraversal traversal = bitMapGroup.get(key);
             double[] sum = new double[metricCount];

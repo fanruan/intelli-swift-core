@@ -4,6 +4,7 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.FileUtil;
+import com.fr.swift.util.concurrent.SingleThreadFactory;
 
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
@@ -27,6 +28,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ThreadFactory;
 
 /**
  * Created by FineSoft on 2015/6/23.
@@ -40,6 +42,8 @@ public abstract class ExternalMap<K, V> implements Map<K, V>, Iterable<Map.Entry
      * 进行外排的时候,每一次读入的个数
      */
     private static final int EXTERNAL_READ_COUNT = 1;
+
+    private static final ThreadFactory THREADS = new SingleThreadFactory("Swift-ExternalMap-WriteFile");
 
     public static boolean DEBUG = false;
     public static boolean VERBOSE = false;
@@ -676,7 +680,7 @@ public abstract class ExternalMap<K, V> implements Map<K, V>, Iterable<Map.Entry
         private BlockingQueue<Map<K, V>> buffer = new ArrayBlockingQueue<Map<K, V>>(1);
 
         WriteFile() {
-            writeThread = new Thread(this, "Swift-ExternalMap-WriteFile");
+            writeThread = THREADS.newThread(this);
             writeThread.start();
         }
 

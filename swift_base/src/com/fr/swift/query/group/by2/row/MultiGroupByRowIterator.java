@@ -30,12 +30,16 @@ public class MultiGroupByRowIterator implements Iterator<GroupByEntry[]> {
 
     private void init() {
         List<Column> dimensions = groupByInfo.getDimensions();
+        final LimitedStack<GroupByEntry> itemsStack = new ArrayLimitedStack<GroupByEntry>(dimensions.size());
         DFTIterator iterator = new DFTIterator(dimensions.size(), new ItCreator(groupByInfo), new PopUpCallback() {
             @Override
             public void popUp() {
+                if (!itemsStack.isEmpty()) {
+                    // 这个闭包比较恶心了
+                    itemsStack.pop();
+                }
             }
         });
-        LimitedStack<GroupByEntry> itemsStack = new ArrayLimitedStack<GroupByEntry>(dimensions.size());
         GroupByController<GroupByEntry> controller = new ExpandAllController();
         Function2<Integer, GroupByEntry, GroupByEntry> idFn = new Function2<Integer, GroupByEntry, GroupByEntry>() {
             @Override

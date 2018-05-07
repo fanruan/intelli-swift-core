@@ -69,6 +69,7 @@ public abstract class IndexNode extends AbstractSwiftNode<IndexNode> {
         return children;
     }
 
+    @Override
     public List<IndexNode> getChildren(){
         return getChildMap().getList();
     }

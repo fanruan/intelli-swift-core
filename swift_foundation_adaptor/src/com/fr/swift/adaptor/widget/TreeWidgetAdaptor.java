@@ -1,7 +1,6 @@
 package com.fr.swift.adaptor.widget;
 
 import com.finebi.conf.internalimp.bean.dashboard.widget.control.tree.TreeOptionsBean;
-import com.finebi.conf.internalimp.bean.dashboard.widget.control.tree.TreeWidgetBean;
 import com.finebi.conf.internalimp.dashboard.widget.control.tree.TreeWidget;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.result.control.tree.BITreeItem;
@@ -37,7 +36,7 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor {
     public static BITreeResult calculate(TreeWidget treeWidget) {
         BITreeResult result = null;
         try {
-            TreeOptionsBean bean = ((TreeWidgetBean) treeWidget.getValue()).getOptions().getTreeOptions();
+            TreeOptionsBean bean = treeWidget.getValue().getOptions().getTreeOptions();
             FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(null, treeWidget.getFilters());
             // TODO: 2018/4/13 BITreeResult暂时不分页
             List<BITreeItem> treeItems = createTreeItemList(treeWidget.getWidgetId(), bean, filterInfo, treeWidget.getDimensionList());

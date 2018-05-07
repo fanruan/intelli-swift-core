@@ -50,7 +50,7 @@ public class GroupNode<T extends GroupNode> extends AbstractSwiftNode<T> impleme
     }
 
     @Override
-    public int getDeep() {
+    public int getDepth() {
         return deep;
     }
 

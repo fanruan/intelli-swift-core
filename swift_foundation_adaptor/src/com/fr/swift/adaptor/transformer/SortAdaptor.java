@@ -7,7 +7,6 @@ import com.finebi.conf.internalimp.dashboard.widget.dimension.sort.DimensionFilt
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionSort;
 import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.DescSort;
-import com.fr.swift.query.sort.NoneSort;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.utils.BusinessTableUtils;
@@ -45,7 +44,7 @@ public class SortAdaptor {
                 return new DescSort(index, new ColumnKey(BusinessTableUtils.getFieldNameByFieldId(fieldId)));
             }
             default:
-                return new NoneSort();
+                return new AscSort(index);
         }
     }
 }

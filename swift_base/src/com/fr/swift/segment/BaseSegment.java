@@ -13,9 +13,10 @@ import com.fr.swift.cube.io.output.BitMapWriter;
 import com.fr.swift.cube.io.output.IntWriter;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.task.SchedulerTask;
-import com.fr.swift.cube.task.Task;
+import com.fr.swift.cube.task.Task.Status;
 import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.cube.task.TaskStatusChangeListener;
+import com.fr.swift.cube.task.impl.SchedulerTaskImpl;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.relation.CubeMultiRelation;
 import com.fr.swift.relation.CubeMultiRelationPath;
@@ -233,12 +234,13 @@ public abstract class BaseSegment implements Segment {
             final CountDownLatch latch = new CountDownLatch(1);
             List<Pair<TaskKey, Object>> pairs = new ArrayList<Pair<TaskKey, Object>>();
             FieldRelationSource relationSource = new FieldRelationSource(key);
-            SchedulerTask relationTask = CubeTasks.newRelationTask(relationSource);
+            SchedulerTask relationTask = new SchedulerTaskImpl(CubeTasks.newIndexRelationTaskKey(relationSource));
             SchedulerTask start = CubeTasks.newStartTask(),
                     end = CubeTasks.newEndTask();
             end.addStatusChangeListener(new TaskStatusChangeListener() {
-                public void onChange(Task.Status prev, Task.Status now) {
-                    if (now == Task.Status.DONE) {
+                @Override
+                public void onChange(Status prev, Status now) {
+                    if (now == Status.DONE) {
                         latch.countDown();
                     }
                 }

@@ -23,6 +23,7 @@ import com.fr.swift.reliance.SourceNode;
 import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.relation.FieldRelationSource;
 import com.fr.swift.structure.Pair;
+import com.fr.swift.util.concurrent.SingleThreadFactory;
 import com.fr.swift.util.function.Function;
 
 /**
@@ -66,35 +67,34 @@ public class ProviderTaskManager {
             public WorkerTask apply(Pair<TaskKey, Object> pair) {
                 TaskKey taskKey = pair.getKey();
                 if (taskKey.operation() == Operation.NULL) {
-                    WorkerTask wt = new WorkerTaskImpl(taskKey);
-                    wt.setWorker(BaseWorker.nullWorker());
-                    return wt;
+                    return new WorkerTaskImpl(taskKey, BaseWorker.nullWorker());
                 }
 
                 Object o = pair.getValue();
                 if (o instanceof SourceNode) {
                     SourceNode sourceNode = ((SourceNode) o);
-                    WorkerTask wt = new WorkerTaskImpl(taskKey);
+                    WorkerTask wt;
                     if (sourceNode.isIncrement()) {
-                        wt.setWorker(new RealtimeTableBuilder(sourceNode.getNode(), sourceNode.getIncrement(), new FlowRuleController()));
+                        wt = new WorkerTaskImpl(taskKey, new RealtimeTableBuilder(sourceNode.getNode(), sourceNode.getIncrement(), new FlowRuleController()));
                     } else {
-                        wt.setWorker(new TableBuilder(sourceNode.getNode()));
+                        wt = new WorkerTaskImpl(taskKey, new TableBuilder(sourceNode.getNode()));
                     }
                     return wt;
                 } else if (o instanceof RelationSource) {
                     RelationSource source = (RelationSource) o;
-                    WorkerTask wt = new WorkerTaskImpl(taskKey);
+                    WorkerTask wt = null;
                     switch (source.getRelationType()) {
                         case RELATION:
-                            wt.setWorker(new MultiRelationIndexer(RelationPathHelper.convert2CubeRelation(source), LocalSegmentProvider.getInstance()));
+                            wt = new WorkerTaskImpl(taskKey, new MultiRelationIndexer(RelationPathHelper.convert2CubeRelation(source), LocalSegmentProvider.getInstance()));
                             break;
                         case RELATION_PATH:
-                            wt.setWorker(new TablePathIndexer(RelationPathHelper.convert2CubeRelationPath(source), LocalSegmentProvider.getInstance()));
+                            wt = new WorkerTaskImpl(taskKey, new TablePathIndexer(RelationPathHelper.convert2CubeRelationPath(source), LocalSegmentProvider.getInstance()));
                             break;
                         case FIELD_RELATION:
                             FieldRelationSource fieldRelationSource = (FieldRelationSource) source;
-                            wt.setWorker(new FieldPathIndexer(RelationPathHelper.convert2CubeRelationPath(fieldRelationSource.getRelationSource()), fieldRelationSource.getColumnKey(), LocalSegmentProvider.getInstance()));
+                            wt = new WorkerTaskImpl(taskKey, new FieldPathIndexer(RelationPathHelper.convert2CubeRelationPath(fieldRelationSource.getRelationSource()), fieldRelationSource.getColumnKey(), LocalSegmentProvider.getInstance()));
                             break;
+                        default:
                     }
                     return wt;
                 } else {
@@ -106,6 +106,6 @@ public class ProviderTaskManager {
     }
 
     private void initTaskFetchThread() {
-        new Thread(new StuffFetcher(), "StuffFetcher").start();
+        new SingleThreadFactory("StuffFetcher").newThread(new StuffFetcher()).start();
     }
 }

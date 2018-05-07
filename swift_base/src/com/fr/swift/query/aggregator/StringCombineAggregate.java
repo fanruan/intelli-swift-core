@@ -10,7 +10,7 @@ import com.fr.swift.structure.iterator.RowTraversal;
  */
 public class StringCombineAggregate implements Aggregator<StringAggregateValue> {
     protected static final Aggregator INSTANCE = new StringCombineAggregate();
-    private static final char TAG = ',';
+    private static final char TAG = '/';
 
     @Override
     public StringAggregateValue aggregate(RowTraversal traversal, final Column column) {

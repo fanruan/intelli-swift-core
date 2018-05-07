@@ -1,7 +1,6 @@
 package com.fr.swift.cube.task.impl;
 
 import com.fr.swift.cube.task.PrevOneDoneHandler;
-import com.fr.swift.cube.task.PrevOneDoneHandler.DefaultHandler;
 import com.fr.swift.cube.task.SchedulerTask;
 import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.log.SwiftLoggers;
@@ -18,6 +17,7 @@ import java.util.List;
  */
 public class SchedulerTaskImpl extends BaseTask implements SchedulerTask {
     private List<TaskKey> prevTasks = new ArrayList<TaskKey>();
+
     private List<TaskKey> nextTasks = new ArrayList<TaskKey>();
 
     private final PrevOneDoneHandler prevOneDoneHandler;

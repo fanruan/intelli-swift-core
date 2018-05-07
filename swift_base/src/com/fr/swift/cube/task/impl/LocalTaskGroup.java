@@ -31,11 +31,6 @@ public class LocalTaskGroup extends BaseTask implements WorkerTask {
     }
 
     @Override
-    public void setWorker(Worker worker) {
-        // no need for worker
-    }
-
-    @Override
     public void run() {
         setStatus(Status.RUNNING);
         start.triggerRun();

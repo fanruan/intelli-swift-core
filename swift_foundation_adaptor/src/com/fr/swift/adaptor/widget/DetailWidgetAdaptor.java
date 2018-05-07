@@ -2,6 +2,7 @@ package com.fr.swift.adaptor.widget;
 
 import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
 import com.finebi.conf.internalimp.dashboard.widget.detail.DetailWidget;
+import com.finebi.conf.internalimp.dashboard.widget.filter.CustomLinkConfItem;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
@@ -16,16 +17,21 @@ import com.fr.swift.cal.info.DetailQueryInfo;
 import com.fr.swift.config.conf.MetaDataConvertUtil;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.adapter.dimension.AllCursor;
 import com.fr.swift.query.adapter.dimension.Cursor;
 import com.fr.swift.query.adapter.dimension.DetailDimension;
 import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.adapter.target.DetailFormulaTarget;
 import com.fr.swift.query.adapter.target.DetailTarget;
+import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
+import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
+import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
+import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
@@ -36,9 +42,11 @@ import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.utils.BusinessTableUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -97,14 +105,19 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
         String tableName = widget.getTableName();
         if (null != bean) {
             Map<String, WidgetLinkItem> map = bean.getLinkage();
-            if (null == map) {
-                return fineFilters;
-            }
+            Map<String, List<CustomLinkConfItem>> custLinkConf = bean.getCustomLinkConf();
             Iterator<Map.Entry<String, WidgetLinkItem>> iterator = map.entrySet().iterator();
             while (iterator.hasNext()) {
-                WidgetLinkItem item = iterator.next().getValue();
+                Map.Entry<String, WidgetLinkItem> entry = iterator.next();
+                WidgetLinkItem item = entry.getValue();
+                String id = entry.getKey();
+
                 try {
-                    LinkageAdaptor.handleClickItem(tableName, item, fineFilters);
+                    if (null != custLinkConf && custLinkConf.containsKey(id)) {
+                        dealWithCustomLinkConf(widget, fineFilters, item, custLinkConf.get(id));
+                    } else {
+                        LinkageAdaptor.handleClickItem(tableName, item, fineFilters);
+                    }
                 } catch (Exception ignore) {
                     LOGGER.error(ignore.getMessage());
                 }
@@ -138,7 +151,7 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
     }
 
 
-    private static DetailTarget[] getTargets(DetailWidget widget) throws Exception{
+    private static DetailTarget[] getTargets(DetailWidget widget) throws Exception {
         List<FineTarget> fineTargets = widget.getTargetList();
         if (fineTargets == null) {
             return null;
@@ -150,5 +163,47 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
         return targets;
     }
 
+
+    private static void dealWithCustomLinkConf(DetailWidget detailWidget, List<FilterInfo> filterInfoList, WidgetLinkItem widgetLinkItem, List<CustomLinkConfItem> customLinkConfItems) throws Exception {
+        //自定义设置的维度
+        Dimension[] fromColumns = new Dimension[customLinkConfItems.size()];
+        //要过滤的维度
+        String[] toColumns = new String[customLinkConfItems.size()];
+        for (int i = 0; i < customLinkConfItems.size(); i++) {
+            CustomLinkConfItem confItem = customLinkConfItems.get(i);
+            fromColumns[i] = (new DetailDimension(i, getSourceKey(confItem.getFrom()), new ColumnKey(getColumnName(confItem.getFrom())), null, new AscSort(i, new ColumnKey(getColumnName(confItem.getFrom()))), null));
+            toColumns[i] = getColumnName(confItem.getTo());
+        }
+        //根据点击的值，创建过滤条件
+        List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
+        TableWidgetBean fromWidget = LinkageAdaptor.handleClickItem(detailWidget.getTableName(), widgetLinkItem, filterInfos);
+        //明细表查询
+        FilterInfo filterInfo = new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND);
+        String queryId = fromWidget.getwId();
+        SourceKey target = new SourceKey(BusinessTableUtils.getSourceIdByTableId(detailWidget.getTableName()));
+        SwiftMetaData swiftMetaData = MetaDataConvertUtil.getSwiftMetaDataBySourceKey(target.getId());
+        SwiftMetaData metaData = getMetaData(detailWidget, swiftMetaData);
+        DetailTarget[] targets = getTargets(detailWidget);
+        //没传进来排序顺序
+        IntList sortIndex = IntListFactory.createHeapIntList();
+        for (int i = 0; i < fromColumns.length; i++) {
+            sortIndex.add(i);
+        }
+        DetailQueryInfo info = new DetailQueryInfo(new AllCursor(), queryId, fromColumns, target, targets, sortIndex, filterInfo, metaData);
+        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(info);
+        Set[] results = new HashSet[toColumns.length];
+        for (int i = 0; i < results.length; i++) {
+            results[i] = new HashSet();
+        }
+        while (resultSet.next()) {
+            Row row = resultSet.getRowData();
+            for (int i = 0; i < row.getSize(); i++) {
+                results[i].add(row.getValue(i));
+            }
+        }
+        for (int i = 0; i < toColumns.length; i++) {
+            filterInfoList.add(new SwiftDetailFilterInfo(new ColumnKey(toColumns[i]), results[i], SwiftDetailFilterType.STRING_IN));
+        }
+    }
 
 }
