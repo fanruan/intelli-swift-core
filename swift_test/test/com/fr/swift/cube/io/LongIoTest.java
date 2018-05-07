@@ -9,6 +9,8 @@ import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.cube.io.output.LongWriter;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * @author anchore
  * @date 2017/11/6

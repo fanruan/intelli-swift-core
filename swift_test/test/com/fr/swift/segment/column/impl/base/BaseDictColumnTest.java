@@ -2,18 +2,19 @@ package com.fr.swift.segment.column.impl.base;
 
 import com.fr.swift.cube.io.ResourceDiscoveryImpl;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.util.Comparator;
 import java.util.Random;
 
 import static com.fr.swift.cube.io.BaseIoTest.CUBES_PATH;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author anchore
  * @date 2017/11/10
  */
-public abstract class BaseDictColumnTest<T> extends TestCase {
+public abstract class BaseDictColumnTest<T> {
 
     static final String BASE_PATH = CUBES_PATH;
     Random r = new Random();
@@ -22,6 +23,7 @@ public abstract class BaseDictColumnTest<T> extends TestCase {
 
     abstract DictionaryEncodedColumn<T> getDictColumn();
 
+    @Test
     public void testPutValueThenGet() {
         DictionaryEncodedColumn<T> dictColumn = getDictColumn();
         for (int i = 1; i < values.length; i++) {
