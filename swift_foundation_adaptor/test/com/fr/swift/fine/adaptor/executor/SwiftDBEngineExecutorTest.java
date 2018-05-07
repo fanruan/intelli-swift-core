@@ -29,7 +29,7 @@ public class SwiftDBEngineExecutorTest extends TestCase {
 
     private ConnectionInfo connectionInfo;
 
-    private FineDBBusinessTable fineDBBusinessTable = new FineDBBusinessTable("DEMO_CONTRACT", FineEngineType.Cube, "local", "DEMO_CONTRACT");
+    private FineDBBusinessTable fineDBBusinessTable = new FineDBBusinessTable("DEMO_CONTRACT", FineEngineType.Cube, "local", "DEMO_CONTRACT", "DEMO_CONTRACT");
 
     @Override
     public void setUp() throws Exception {
