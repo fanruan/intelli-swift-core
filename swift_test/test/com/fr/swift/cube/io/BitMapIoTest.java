@@ -14,6 +14,9 @@ import com.fr.swift.cube.io.output.BitMapWriter;
 
 import java.util.stream.IntStream;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 /**
  * @author anchore
  * @date 2017/11/6
