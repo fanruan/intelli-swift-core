@@ -28,7 +28,7 @@ import java.util.stream.IntStream;
 public class GroupResultQueryTest extends TestCase {
 
     private GroupByResultSet collector;
-    private Map<RowIndexKey, double[]> expectedResult;
+    private Map<RowIndexKey<int[]>, double[]> expectedResult;
     private List<List<String>> expectedDictionaries;
 
     public GroupResultQueryTest() {
@@ -42,7 +42,7 @@ public class GroupResultQueryTest extends TestCase {
         return collector;
     }
 
-    public Map<RowIndexKey, double[]> getExpectedResult() {
+    public Map<RowIndexKey<int[]>, double[]> getExpectedResult() {
         return expectedResult;
     }
 
@@ -75,7 +75,7 @@ public class GroupResultQueryTest extends TestCase {
         List<Query<NodeResultSet>> queryList = new ArrayList<>();
         List<Aggregator> aggregators = new ArrayList<>();
         List<Sort> indexSorts = new ArrayList<>();
-        List<Map<RowIndexKey, double[]>> expectedResultList = new ArrayList<>();
+        List<Map<RowIndexKey<int[]>, double[]>> expectedResultList = new ArrayList<>();
         List<List<Column>> dimensions = new ArrayList<>();
         for (int i = 0; i < segmentCount; i++) {
             CubeData cubeData = new CubeData(dimensionCount, metricCount, rowCount);
@@ -127,10 +127,10 @@ public class GroupResultQueryTest extends TestCase {
         return result;
     }
 
-    private static Map<RowIndexKey, double[]> mergeResult(List<Map<RowIndexKey, double[]>> expectedResultList) {
-        Map<RowIndexKey, double[]> result = new HashMap<>();
-        for (Map<RowIndexKey, double[]> map : expectedResultList) {
-            for (RowIndexKey key : map.keySet()) {
+    private static Map<RowIndexKey<int[]>, double[]> mergeResult(List<Map<RowIndexKey<int[]>, double[]>> expectedResultList) {
+        Map<RowIndexKey<int[]>, double[]> result = new HashMap<>();
+        for (Map<RowIndexKey<int[]>, double[]> map : expectedResultList) {
+            for (RowIndexKey<int[]> key : map.keySet()) {
                 double[] values = map.get(key);
                 if (!result.containsKey(key)) {
                     double[] sum = new double[values.length];

@@ -119,6 +119,7 @@ public class GroupNodeAggregateUtils {
                 if (valuesOfParent[i] == null) {
                     valuesOfParent[i] = valuesOfChild[i] == null ? null : aggregators.get(i).createAggregatorValue(valuesOfChild[i]);
                 } else {
+                    // TODO: 2018/5/7 如果没有切换汇总方式，用明细的方式合计还是在明细汇总的基础上合计？
                     valuesOfParent[i] = AggregatorValueUtils.combine(valuesOfParent[i], valuesOfChild[i], aggregators.get(i));
                 }
             }

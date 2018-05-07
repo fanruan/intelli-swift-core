@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class GroupAllSegmentQueryTest extends TestCase {
 
-    private Map<RowIndexKey, double[]> expectedResult;
+    private Map<RowIndexKey<int[]>, double[]> expectedResult;
     private List<Column> dimensions;
     private List<Column> metrics;
     private List<Aggregator> aggregators;
