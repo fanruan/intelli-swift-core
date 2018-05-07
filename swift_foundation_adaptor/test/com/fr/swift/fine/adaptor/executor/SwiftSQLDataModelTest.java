@@ -50,7 +50,7 @@ public class SwiftSQLDataModelTest extends TestCase {
 
     public void testSwiftSQLDataModelGetFields() {
         SwiftTableEngineExecutor dataModel = new SwiftTableEngineExecutor();
-        FineBusinessTable fineBusinessTable = new FineSQLBusinessTable("A", "local", FineEngineType.Cube, sql);
+        FineBusinessTable fineBusinessTable = new FineSQLBusinessTable("A", "local", FineEngineType.Cube, sql, "A");
 
         List<FineBusinessField> list = dataModel.getFieldList(fineBusinessTable);
         assertEquals(list.size(), 9);
@@ -60,7 +60,7 @@ public class SwiftSQLDataModelTest extends TestCase {
     public void testSwiftSQLDataModelPreviewDBTable() throws Exception {
         SwiftTableEngineExecutor dataModel = new SwiftTableEngineExecutor();
 
-        FineBusinessTable fineBusinessTable = new FineSQLBusinessTable("A", "local", FineEngineType.Cube, sql);
+        FineBusinessTable fineBusinessTable = new FineSQLBusinessTable("A", "local", FineEngineType.Cube, sql, "A");
 
 
         BIDetailTableResult detailTableResult = dataModel.getPreviewData(fineBusinessTable, 250);

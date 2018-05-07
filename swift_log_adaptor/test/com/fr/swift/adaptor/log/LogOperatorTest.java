@@ -17,6 +17,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,7 +47,6 @@ public class LogOperatorTest {
         if (db.existsTable(new SourceKey("ConvertType"))) {
             db.dropTable(new SourceKey("ConvertType"));
         }
-
     }
 
     @Test
@@ -59,21 +59,25 @@ public class LogOperatorTest {
     @Test
     public void recordInfo() throws Exception {
         initTables();
-        A a = new A();
-        logOperator.recordInfo(a);
-        ConvertType convertType = new ConvertType();
-        convertType.o = new Object();
-        logOperator.recordInfo(convertType);
+        List<Object> as = new ArrayList<Object>();
+        for (int i = 0; i <= LogOperatorImpl.FLUSH_SIZE_THRESHOLD; i++) {
+            as.add(new A());
+        }
+        Thread.sleep(LogOperatorImpl.FLUSH_INTERVAL_THRESHOLD + 1);
+        logOperator.recordInfo(as);
         SwiftSegmentManager segmentManager = SwiftContext.getInstance().getSegmentProvider();
         List<Segment> segs = segmentManager.getSegment(new SourceKey("A"));
         Segment seg = segs.get(segs.size() - 1);
-        assertEquals(((long) a.s), seg.getColumn(new ColumnKey("s")).getDetailColumn().get(0));
+        A a = (A) as.get(0);
+        assertEquals((long) a.s, seg.getColumn(new ColumnKey("s")).getDetailColumn().get(0));
         assertEquals(a.l, seg.getColumn(new ColumnKey("l")).getDetailColumn().get(0));
         assertEquals(a.d1, seg.getColumn(new ColumnKey("d1")).getDetailColumn().get(0));
         assertEquals(a.d2, seg.getColumn(new ColumnKey("d2")).getDetailColumn().get(0));
         assertEquals(a.str, seg.getColumn(new ColumnKey("str")).getDetailColumn().get(0));
         assertEquals(a.utilDate.getTime(), seg.getColumn(new ColumnKey("utilDate")).getDetailColumn().get(0));
         assertEquals(a.sqlDate.getTime(), seg.getColumn(new ColumnKey("sqlDate")).getDetailColumn().get(0));
+        assertEquals((long) a.i, seg.getColumn(new ColumnKey("i")).getDetailColumn().get(0));
+        assertEquals(a.b ? 1L : 0L, seg.getColumn(new ColumnKey("b")).getDetailColumn().get(0));
     }
 
     @Test

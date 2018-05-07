@@ -5,6 +5,7 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.third.javax.persistence.AttributeConverter;
 import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Convert;
+import com.fr.third.javax.persistence.MappedSuperclass;
 import com.fr.third.javax.persistence.Table;
 import org.junit.Test;
 
@@ -23,18 +24,28 @@ public class SwiftMetaAdaptorTest {
     public void adapt() throws SwiftMetaDataException {
         SwiftMetaData meta = SwiftMetaAdaptor.adapt(A.class);
         assertEquals("A", meta.getTableName());
-        assertEquals(7, meta.getColumnCount());
-        assertEquals(Types.BIGINT, meta.getColumnType(1));
-        assertEquals(Types.BIGINT, meta.getColumnType(2));
-        assertEquals(Types.DOUBLE, meta.getColumnType(3));
-        assertEquals(Types.DOUBLE, meta.getColumnType(4));
-        assertEquals(Types.VARCHAR, meta.getColumnType(5));
-        assertEquals(Types.DATE, meta.getColumnType(6));
-        assertEquals(Types.DATE, meta.getColumnType(7));
+        assertEquals(9, meta.getColumnCount());
+        assertEquals(Types.SMALLINT, meta.getColumn("s").getType());
+        assertEquals(Types.BIGINT, meta.getColumn("l").getType());
+        assertEquals(Types.DOUBLE, meta.getColumn("d1").getType());
+        assertEquals(Types.DOUBLE, meta.getColumn("d2").getType());
+        assertEquals(Types.VARCHAR, meta.getColumn("str").getType());
+        assertEquals(Types.DATE, meta.getColumn("sqlDate").getType());
+        assertEquals(Types.DATE, meta.getColumn("utilDate").getType());
+        assertEquals(Types.BOOLEAN, meta.getColumn("b").getType());
+        assertEquals(Types.INTEGER, meta.getColumn("i").getType());
+    }
+
+    @MappedSuperclass
+    static class SuperA {
+        @Column(name = "i")
+        int i = 192;
+
+        Byte by = -99;
     }
 
     @Table(name = "A")
-    static class A {
+    static class A extends SuperA {
         @Column(name = "d1")
         double d1 = 1;
         @Column(name = "s")
@@ -72,7 +83,7 @@ public class SwiftMetaAdaptorTest {
         SwiftMetaData meta = SwiftMetaAdaptor.adapt(ConvertType.class);
         assertEquals("ConvertType", meta.getTableName());
         assertEquals(1, meta.getColumnCount());
-        assertEquals(Types.BIGINT, meta.getColumnType(1));
+        assertEquals(Types.INTEGER, meta.getColumnType(1));
     }
 
     @Table(name = "ConvertType")

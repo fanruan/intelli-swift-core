@@ -1,5 +1,6 @@
 package com.fr.swift.segment.column.impl.base;
 
+import com.fr.stable.StringUtils;
 import com.fr.swift.cube.io.BuildConf;
 import com.fr.swift.cube.io.Types.DataType;
 import com.fr.swift.cube.io.Types.IoType;
@@ -35,6 +36,14 @@ public class StringDictColumn extends BaseDictColumn<String> {
         }
         IResourceLocation keyLocation = parent.buildChildLocation(KEY);
         keyReader = DISCOVERY.getReader(keyLocation, new BuildConf(IoType.READ, DataType.STRING));
+    }
+
+    @Override
+    public int getIndex(Object value) {
+        if (value == null || StringUtils.isBlank(convertValue(value))) {
+            return 0;
+        }
+        return super.getIndex(value);
     }
 
     @Override

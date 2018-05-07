@@ -28,11 +28,11 @@ public class BusinessTableProviderTest extends TestCase {
         provider.removeTable(tableIdList);
         assertEquals(provider.getAllTable().size(), 0);
 
-        FineBusinessTable fineBusinessTableA = new FineDBBusinessTable("A", FineEngineType.Cube, "local", "A");
-        FineBusinessTable fineBusinessTableB = new FineDBBusinessTable("B", FineEngineType.Cube, "local", "B");
-        FineBusinessTable fineBusinessTableC = new FineDBBusinessTable("C", FineEngineType.Cube, "local", "C");
-        FineBusinessTable fineBusinessTableD = new FineDBBusinessTable("D", FineEngineType.Cube, "local", "D");
-        FineBusinessTable fineBusinessTableE = new FineDBBusinessTable("E", FineEngineType.Cube, "local", "E");
+        FineBusinessTable fineBusinessTableA = new FineDBBusinessTable("A", FineEngineType.Cube, "local", "A", "A");
+        FineBusinessTable fineBusinessTableB = new FineDBBusinessTable("B", FineEngineType.Cube, "local", "B", "B");
+        FineBusinessTable fineBusinessTableC = new FineDBBusinessTable("C", FineEngineType.Cube, "local", "C", "C");
+        FineBusinessTable fineBusinessTableD = new FineDBBusinessTable("D", FineEngineType.Cube, "local", "D", "D");
+        FineBusinessTable fineBusinessTableE = new FineDBBusinessTable("E", FineEngineType.Cube, "local", "E", "E");
 
         List<FineBusinessTable> tableList = new ArrayList<FineBusinessTable>();
         tableList.add(fineBusinessTableA);

@@ -36,6 +36,7 @@ public class ColumnTypeUtils {
             case Types.FLOAT:
                 return getClassTypeByColumn(columnSize, scale);
             case Types.BIT:
+            case Types.BOOLEAN:
             case Types.TINYINT:
             case Types.SMALLINT:
             case Types.INTEGER:

@@ -17,8 +17,8 @@ import com.fr.swift.util.Crasher;
  * @date 2017/12/8
  */
 public class CubeTaskManager implements TaskManager {
-    private TaskExecutor indexExec = new CubeTaskExecutor("Indexer", 10);
     private TaskExecutor transportExec = new CubeTaskExecutor("Transporter", 4);
+    private TaskExecutor indexExec = new CubeTaskExecutor("Indexer", 10);
 
     @Override
     public void run(WorkerTask task) {

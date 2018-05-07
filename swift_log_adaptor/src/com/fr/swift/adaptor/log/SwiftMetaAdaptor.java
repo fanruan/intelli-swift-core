@@ -8,6 +8,7 @@ import com.fr.swift.util.Crasher;
 import com.fr.third.javax.persistence.AttributeConverter;
 import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Convert;
+import com.fr.third.javax.persistence.MappedSuperclass;
 import com.fr.third.javax.persistence.Table;
 
 import java.lang.reflect.Field;
@@ -25,15 +26,28 @@ import java.util.List;
 class SwiftMetaAdaptor {
     static SwiftMetaData adapt(Class<?> entity) {
         List<SwiftMetaDataColumn> columnMetas = new ArrayList<SwiftMetaDataColumn>();
+        for (Field field : getFields(entity)) {
+            SwiftMetaDataColumn columnMeta = new MetaDataColumn(
+                    field.getAnnotation(Column.class).name(),
+                    getSqlType(getClassType(field)));
+            columnMetas.add(columnMeta);
+        }
+        return new SwiftMetaDataImpl(getTableName(entity), columnMetas);
+    }
+
+    static List<Field> getFields(Class<?> entity) {
+        List<Field> fields = new ArrayList<Field>();
+        Class<?> superEntity = entity.getSuperclass();
+        if (superEntity != null && superEntity.isAnnotationPresent(MappedSuperclass.class)) {
+            fields.addAll(getFields(superEntity));
+        }
         for (Field field : entity.getDeclaredFields()) {
             if (!field.isAnnotationPresent(Column.class)) {
                 continue;
             }
-            Column column = field.getAnnotation(Column.class);
-            SwiftMetaDataColumn columnMeta = new MetaDataColumn(column.name(), getSqlType(getClassType(field)));
-            columnMetas.add(columnMeta);
+            fields.add(field);
         }
-        return new SwiftMetaDataImpl(getTableName(entity), columnMetas);
+        return fields;
     }
 
     static String getTableName(Class<?> entity) {
