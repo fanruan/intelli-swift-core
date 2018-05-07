@@ -3,6 +3,7 @@ package com.fr.swift.adaptor.transformer;
 import com.finebi.conf.constant.BICommonConstants;
 import com.finebi.conf.constant.BIConfConstants;
 import com.finebi.conf.constant.BIDesignConstants;
+import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionGroup;
 import com.fr.swift.query.aggregator.AggregatorType;
 
 /**
@@ -87,30 +88,33 @@ public class AggregatorAdaptor {
         }
     }
 
+
+
     /**
      * nice job ! foundation
-     * @param metricType
+     * @param group
      * @return
      */
-    public static AggregatorType adaptorDashBoard(int metricType){
-        switch (metricType){
-            case BIDesignConstants.DESIGN.METRIC_TYPE.AUTO:
-            case BIDesignConstants.DESIGN.METRIC_TYPE.SUM:
+    public static AggregatorType adaptorDashBoard(FineDimensionGroup group){
+        switch (group.getType()){
+            case BIDesignConstants.DESIGN.SUMMARY_TYPE.SUM:
                 return AggregatorType.SUM;
-            case BIDesignConstants.DESIGN.METRIC_TYPE.AVERAGE:
+            case BIDesignConstants.DESIGN.SUMMARY_TYPE.AVG:
                 return AggregatorType.AVERAGE;
-            case BIDesignConstants.DESIGN.METRIC_TYPE.MAX:
+            case BIDesignConstants.DESIGN.SUMMARY_TYPE.MAX:
                 return AggregatorType.MAX;
-            case BIDesignConstants.DESIGN.METRIC_TYPE.MIN:
+            case BIDesignConstants.DESIGN.SUMMARY_TYPE.MIN:
                 return AggregatorType.MIN;
-            case BIDesignConstants.DESIGN.METRIC_TYPE.MEDIAN:
+            case BIDesignConstants.DESIGN.SUMMARY_TYPE.MIDDLE_VALUE:
                 return AggregatorType.MEDIAN;
-            case BIDesignConstants.DESIGN.METRIC_TYPE.VARIANCE:
+            case BIDesignConstants.DESIGN.SUMMARY_TYPE.VARIANCE:
                 return AggregatorType.VARIANCE;
-            case BIDesignConstants.DESIGN.METRIC_TYPE.STANDARD_DEVIATION:
+            case BIDesignConstants.DESIGN.SUMMARY_TYPE.STANDARD_DEVIATION:
                 return AggregatorType.STANDARD_DEVIATION;
+            case BIDesignConstants.DESIGN.SUMMARY_TYPE.DISTINCT_COUNT:
+                return AggregatorType.DISTINCT;
         }
-        return null;
+        return AggregatorType.COUNT;
     }
 
     public static AggregatorType adaptorRapidCal(int rapidType) {
