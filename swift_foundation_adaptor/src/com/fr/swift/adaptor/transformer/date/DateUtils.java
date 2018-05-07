@@ -113,11 +113,58 @@ public class DateUtils {
     }
 
     public static long[] dateOffset2Range(long time, DateRangeOffset offset) {
-        return null;
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(time);
+        c = setOffset2Calendar(c, offset);
+        TimePrecision precision = timePrecisionOfDateRangeOffset(offset);
+        long[] range = new long[2];
+        switch (precision) {
+            case DAY:
+                range[0] = startOfDay(c).getTimeInMillis();
+                range[1] = endOfDay(c).getTimeInMillis();
+                break;
+            case WEEK:
+                range[0] = startOfWeek(c).getTimeInMillis();
+                range[1] = endOfWeek(c).getTimeInMillis();
+                break;
+            case MONTH:
+                range[0] = startOfMonth(c).getTimeInMillis();
+                range[1] = endOfMonth(c).getTimeInMillis();
+                break;
+            case QUARTER:
+                range[0] = startOfQuarter(c).getTimeInMillis();
+                range[1] = endOfQuarter(c).getTimeInMillis();
+                break;
+            case YEAR:
+                range[0] = startOfYear(c).getTimeInMillis();
+                range[1] = endOfYear(c).getTimeInMillis();
+                break;
+        }
+        return range;
     }
 
+    private static Calendar setOffset2Calendar(Calendar c, DateRangeOffset offset) {
+        c.add(Calendar.YEAR, string2Int(offset.getYear()));
+        c.add(Calendar.MONTH, string2Int(offset.getMonth()));
+        c.add(Calendar.MONTH, string2Int(offset.getQuarter()) * 3);
+        c.add(Calendar.DATE, string2Int(offset.getWeek()) * 7);
+        c.add(Calendar.DATE, string2Int(offset.getDay()));
+        return c;
+    }
+
+    @SuppressWarnings("Duplicates")
     private static TimePrecision timePrecisionOfDateRangeOffset(DateRangeOffset offset) {
-        return null;
+        if (offset.getDay() != null) {
+            return TimePrecision.DAY;
+        } else if (offset.getWeek() != null) {
+            return TimePrecision.WEEK;
+        } else if (offset.getMonth() != null) {
+            return TimePrecision.MONTH;
+        } else if (offset.getQuarter() != null) {
+            return TimePrecision.QUARTER;
+        } else {
+            return TimePrecision.YEAR;
+        }
     }
 
     @SuppressWarnings("Duplicates")

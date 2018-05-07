@@ -529,10 +529,13 @@ public class FilterInfoFactory {
     private static SwiftDateInRangeFilterValue createDateInRangeFilterValue(DateWidgetBean bean) {
         DateWidgetBeanValue beanValue = bean.getWidget();
         DateRangeOffset offset = bean.getOffset();
-        // TODO: 2018/5/4 功能那边的时间区间过滤挂了，这个offset要等挂了的控件好了在一起适配一下
         if (offset != null) {
             long staticTime = DateUtils.dateFilterBean2Long(((DateWidgetPanel) beanValue).getValue(), false);
-
+            long[] range = DateUtils.dateOffset2Range(staticTime, offset);
+            SwiftDateInRangeFilterValue value = new SwiftDateInRangeFilterValue();
+            value.setStart(range[0]);
+            value.setEnd(range[1]);
+            return value;
         }
         int beanValueType = beanValue.getType();
         if (beanValueType == BIDesignConstants.DESIGN.WIDGET.DATE_INTERVAL) {
