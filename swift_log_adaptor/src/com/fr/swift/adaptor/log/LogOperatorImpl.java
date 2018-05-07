@@ -35,7 +35,7 @@ public class LogOperatorImpl implements LogOperator {
 
     private Map<Class<?>, List<Object>> dataMap = new ConcurrentHashMap<Class<?>, List<Object>>();
 
-    private static final int FLUSH_INTERVAL_THRESHOLD = 1000000;
+    public static final int FLUSH_INTERVAL_THRESHOLD = 60000;
 
     public static final int FLUSH_SIZE_THRESHOLD = 10000;
 

@@ -59,11 +59,12 @@ public class LogOperatorTest {
     @Test
     public void recordInfo() throws Exception {
         initTables();
-        A a = new A();
-        logOperator.recordInfo(a);
-        ConvertType convertType = new ConvertType();
-        convertType.o = new Object();
-        logOperator.recordInfo(convertType);
+        List<Object> as = new ArrayList<Object>();
+        for (int i = 0; i <= LogOperatorImpl.FLUSH_SIZE_THRESHOLD; i++) {
+            as.add(new A());
+        }
+        Thread.sleep(LogOperatorImpl.FLUSH_INTERVAL_THRESHOLD + 1);
+        logOperator.recordInfo(as);
         SwiftSegmentManager segmentManager = SwiftContext.getInstance().getSegmentProvider();
         List<Segment> segs = segmentManager.getSegment(new SourceKey("A"));
         Segment seg = segs.get(segs.size() - 1);

@@ -32,10 +32,10 @@ public class SwiftRowAdaptor implements Function<Object, Row> {
     private Map<Integer, Pair<Field, UnaryOperator<Object>>> converters = new TreeMap<Integer, Pair<Field, UnaryOperator<Object>>>();
 
     SwiftRowAdaptor(Class<?> entity, SwiftMetaData meta) throws Exception {
-        init(entity.getDeclaredFields(), meta);
+        init(SwiftMetaAdaptor.getFields(entity), meta);
     }
 
-    private void init(Field[] fields, SwiftMetaData meta) throws Exception {
+    private void init(List<Field> fields, SwiftMetaData meta) throws Exception {
         for (Field field : fields) {
             if (!field.isAnnotationPresent(Column.class)) {
                 continue;
