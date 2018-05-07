@@ -7,6 +7,7 @@ import com.finebi.conf.structure.path.FineBusinessTableRelationPath;
 import com.finebi.conf.structure.relation.FineBusinessTableRelation;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.driver.SwiftDriverRegister;
+import com.fr.swift.util.Crasher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,21 +29,9 @@ public class SwiftRelationPathConfProvider extends AbstractDirectRelationPathMan
         List<FineBusinessTableRelationPath> configs = getAllRelationPaths();
         List<FineBusinessTableRelationPath> target = new ArrayList<FineBusinessTableRelationPath>();
         for (FineBusinessTableRelationPath path : configs) {
-            String firstTable;
-            String lastTable;
-            List<FineBusinessTableRelation> relations = path.getFineBusinessTableRelations();
-            FineBusinessTableRelation firstRelation = relations.get(0);
-            FineBusinessTableRelation lastRelation = relations.get(relations.size() - 1);
-            if (firstRelation.getRelationType() == BICommonConstants.RELATION_TYPE.MANY_TO_ONE) {
-                firstTable = firstRelation.getForeignBusinessTable().getName();
-            } else {
-                firstTable = firstRelation.getPrimaryBusinessTable().getName();
-            }
-            if (lastRelation.getRelationType() == BICommonConstants.RELATION_TYPE.MANY_TO_ONE) {
-                lastTable = firstRelation.getPrimaryBusinessTable().getName();
-            } else {
-                lastTable = firstRelation.getForeignBusinessTable().getName();
-            }
+            List<FineBusinessTableRelation> relations = sortRelations(path);
+            String firstTable = getPrimaryTableName(relations);
+            String lastTable = getForeignTableName(relations);
             if (firstTable.equals(fromTable) && lastTable.equals(toTable)) {
                 target.add(path);
             }
@@ -97,5 +86,33 @@ public class SwiftRelationPathConfProvider extends AbstractDirectRelationPathMan
     @Override
     public FineEngineType getEngineType() {
         return FineEngineType.Cube;
+    }
+
+    private String getPrimaryTableName(List<FineBusinessTableRelation> relations) {
+        FineBusinessTableRelation firstRelation = relations.get(0);
+        return ComparatorUtils.equals(firstRelation.getRelationType(), BICommonConstants.RELATION_TYPE.MANY_TO_ONE) ?
+                firstRelation.getForeignBusinessTable().getName() : firstRelation.getPrimaryBusinessTable().getName();
+    }
+
+    private String getForeignTableName(List<FineBusinessTableRelation> relations) {
+        FineBusinessTableRelation firstRelation = relations.get(relations.size() - 1);
+        return ComparatorUtils.equals(firstRelation.getRelationType(), BICommonConstants.RELATION_TYPE.MANY_TO_ONE) ?
+                firstRelation.getPrimaryBusinessTable().getName() : firstRelation.getForeignBusinessTable().getName();
+    }
+
+    private List<FineBusinessTableRelation> sortRelations(FineBusinessTableRelationPath path) {
+        List<FineBusinessTableRelation> relations = path.getFineBusinessTableRelations();
+        if (relations.isEmpty()) {
+            Crasher.crash(String.format("Path %s don't contain any relations!", path.getPathName()));
+        }
+        List<FineBusinessTableRelation> result = new ArrayList<FineBusinessTableRelation>();
+        for (FineBusinessTableRelation relation : relations) {
+            if (ComparatorUtils.equals(relation.getRelationType(), BICommonConstants.RELATION_TYPE.MANY_TO_ONE)) {
+                result.add(0, relation);
+            } else {
+                result.add(relation);
+            }
+        }
+        return result;
     }
 }
