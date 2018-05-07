@@ -7,7 +7,7 @@ tasks.withType(JavaCompile) {
 
 repositories {
     mavenCentral();
-    maven {url  "http://mvn.finedevelop.com/repository/maven-public/"};
+    maven { url "http://mvn.finedevelop.com/repository/maven-public/" };
 }
 
 //指定构建的jdk版本
@@ -37,7 +37,7 @@ dependencies {
     compile fileTree(dir: "../lib-core", include: '**/*.jar')
     compile fileTree(dir: "../lib-other", include: '**/*.jar')
     compile fileTree(dir: "build/libs", include: "**/*.jar")
-    compile group:"com.fineio",name:"fineio",version:"1.0"
+    compile group: "com.fineio", name: "fineio", version: "1.0"
     testCompile "junit:junit:4.12"
 }
 
@@ -61,7 +61,7 @@ task test_jar(dependsOn: compileJava) << {
             classpath() {
                 pathelement(path: "../lib-other/test/ant-junit.jar")
                 pathelement(path: "../lib-other/test/junit-4.12.jar")
-                pathelement(path: "../lib-other/test/objenesis-2.6.jar") 
+                pathelement(path: "../lib-other/test/objenesis-2.6.jar")
                 pathelement(path: "../lib-other/driver/h2-1.4.189.jar")
 
 
@@ -91,7 +91,7 @@ task test_jar(dependsOn: compileJava) << {
         jacocoCoverage(destfile: "reports/jacoco/jacoco.exec", append: "true") {
             junit(printsummary: "on", fork: "true", haltonfailure: "false", failureproperty: "tests.failed", showoutput: "true") {
                 classpath() {
-                    pathelement(path:configurations.compile.asPath)
+                    pathelement(path: configurations.compile.asPath)
                     fileset(dir: ".") {
                         include(name: "build/libs/*.jar")
 
@@ -107,8 +107,7 @@ task test_jar(dependsOn: compileJava) << {
                 formatter(type: "xml")
                 batchtest(todir: "test_result") {
                     fileset(dir: "build/classes/test") {
-                        include(name: "**/*Test.class")
-                        exclude(name: "**/Base*Test.class")
+                        include(name: "**/*.class")
                     }
                 }
             }
