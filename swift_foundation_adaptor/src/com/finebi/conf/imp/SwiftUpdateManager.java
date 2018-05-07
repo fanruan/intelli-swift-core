@@ -1,7 +1,6 @@
 package com.finebi.conf.imp;
 
 import com.finebi.base.constant.FineEngineType;
-import com.finebi.conf.constant.BICommonConstants;
 import com.finebi.conf.internalimp.bean.table.UpdatePreviewTableBean;
 import com.finebi.conf.internalimp.bean.update.UpdatePreview;
 import com.finebi.conf.internalimp.response.update.TableUpdateSetting;
@@ -15,12 +14,12 @@ import com.finebi.conf.internalimp.update.UpdateStatus;
 import com.finebi.conf.provider.SwiftRelationPathConfProvider;
 import com.finebi.conf.provider.SwiftTableManager;
 import com.finebi.conf.service.engine.update.EngineUpdateManager;
+import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
-import com.finebi.conf.structure.path.FineBusinessTableRelationPath;
-import com.finebi.conf.structure.relation.FineBusinessTableRelation;
 import com.fr.swift.adaptor.struct.ShowResultSet;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.transformer.RelationSourceFactory;
+import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.generate.preview.SwiftDataPreviewer;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.log.SwiftLogger;
@@ -40,13 +39,11 @@ import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.container.SourceContainerManager;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.manager.IndexStuffProvider;
-import com.fr.swift.util.RelationNodeUtils;
 import com.fr.swift.utils.RelationRelianceFactory;
 import com.fr.swift.utils.SourceRelianceFactory;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -166,7 +163,21 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
     @Override
     public void triggerAllUpdate(TableUpdateInfo info) {
-
+        Map<FineBusinessTable, TableUpdateInfo> infoMap = new HashMap<FineBusinessTable, TableUpdateInfo>();
+        for (FineBusinessTable fineBusinessTable : tableManager.getAllTable()) {
+            if (!(fineBusinessTable instanceof FineAnalysisTable)) {
+                infoMap.put(fineBusinessTable, new TableUpdateInfo());
+            }
+        }
+        if (!infoMap.isEmpty()) {
+            try {
+                saveUpdateSetting(infoMap);
+            } catch (Exception e) {
+                LOGGER.error(e);
+            }
+        } else {
+            LOGGER.info("No table need to be updated!");
+        }
     }
 
     @Override
@@ -176,17 +187,17 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
     @Override
     public void updateAll(GlobalUpdateSetting info) {
-
     }
 
     @Override
     public GlobalUpdateInfo checkGlobalUpdateInfo() {
-        return null;
+        return new GlobalUpdateInfo();
     }
 
     @Override
     public GlobalUpdateLog getGlobalUpdateLog() {
-        return null;
+        GlobalUpdateLog globalUpdateLog = new GlobalUpdateLog();
+        return globalUpdateLog;
     }
 
     @Override
@@ -237,40 +248,43 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
     @Override
     public String getUpdatePath() {
-        return "";
+        return ResourceDiscovery.getInstance().getCubePath();
     }
 
     @Override
     public void updatePath(String newPath) {
-        FineBusinessTableRelationPath path = relationPathConfProvider.getPath(newPath);
-        List<RelationSource> relationSources = new ArrayList<RelationSource>();
-        if (null != path) {
-            try {
-                List<FineBusinessTableRelation> relations = path.getFineBusinessTableRelations();
-                List<DataSource> dataSources = new ArrayList<DataSource>();
-                for (FineBusinessTableRelation relation : relations) {
-                    if (relation.getRelationType() == BICommonConstants.RELATION_TYPE.MANY_TO_ONE) {
-                        dataSources.add(DataSourceFactory.transformDataSource(relation.getPrimaryBusinessTable()));
-                    } else {
-                        dataSources.add(DataSourceFactory.transformDataSource(relation.getForeignBusinessTable()));
-                    }
-                    relationSources.add(RelationSourceFactory.transformRelationSourcesFromRelation(relation));
-                }
-                FineBusinessTableRelation relation = relations.get(0);
-                if (relation.getRelationType() == BICommonConstants.RELATION_TYPE.MANY_TO_ONE) {
-                    dataSources.add(DataSourceFactory.transformDataSource(relation.getForeignBusinessTable()));
-                } else {
-                    dataSources.add(DataSourceFactory.transformDataSource(relation.getPrimaryBusinessTable()));
-                }
-                RelationReliance relationReliance = new RelationReliance(relationSources, dataSources);
-                RelationNodeUtils.calculateRelationNode(relationReliance);
-                RelationPathReliance relationPathReliance = new RelationPathReliance(RelationSourceFactory.transformSourcePaths(Arrays.asList(path)), relationReliance);
-                RelationNodeUtils.calculateRelationPathNode(relationPathReliance);
-                // fixme 调更新
-            } catch (Exception e) {
-                LOGGER.error(e.getMessage(), e);
-            }
-
+        if (ResourceDiscovery.getInstance().checkCubePath(newPath)) {
+            ResourceDiscovery.getInstance().setCubePath(newPath);
         }
+//        FineBusinessTableRelationPath path = relationPathConfProvider.getPath(newPath);
+//        List<RelationSource> relationSources = new ArrayList<RelationSource>();
+//        if (null != path) {
+//            try {
+//                List<FineBusinessTableRelation> relations = path.getFineBusinessTableRelations();
+//                List<DataSource> dataSources = new ArrayList<DataSource>();
+//                for (FineBusinessTableRelation relation : relations) {
+//                    if (relation.getRelationType() == BICommonConstants.RELATION_TYPE.MANY_TO_ONE) {
+//                        dataSources.add(DataSourceFactory.transformDataSource(relation.getPrimaryBusinessTable()));
+//                    } else {
+//                        dataSources.add(DataSourceFactory.transformDataSource(relation.getForeignBusinessTable()));
+//                    }
+//                    relationSources.add(RelationSourceFactory.transformRelationSourcesFromRelation(relation));
+//                }
+//                FineBusinessTableRelation relation = relations.get(0);
+//                if (relation.getRelationType() == BICommonConstants.RELATION_TYPE.MANY_TO_ONE) {
+//                    dataSources.add(DataSourceFactory.transformDataSource(relation.getForeignBusinessTable()));
+//                } else {
+//                    dataSources.add(DataSourceFactory.transformDataSource(relation.getPrimaryBusinessTable()));
+//                }
+//                RelationReliance relationReliance = new RelationReliance(relationSources, dataSources);
+//                RelationNodeUtils.calculateRelationNode(relationReliance);
+//                RelationPathReliance relationPathReliance = new RelationPathReliance(RelationSourceFactory.transformSourcePaths(Arrays.asList(path)), relationReliance);
+//                RelationNodeUtils.calculateRelationPathNode(relationPathReliance);
+//                // fixme 调更新
+//            } catch (Exception e) {
+//                LOGGER.error(e.getMessage(), e);
+//            }
+//
+//        }
     }
 }

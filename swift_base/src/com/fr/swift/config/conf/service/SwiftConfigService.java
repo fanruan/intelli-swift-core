@@ -13,6 +13,7 @@ import java.util.Map;
 public interface SwiftConfigService {
     /**
      * 增加MetaData
+     *
      * @param sourceKey
      * @param metaData
      * @return
@@ -21,6 +22,7 @@ public interface SwiftConfigService {
 
     /**
      * 批量增加MetaData
+     *
      * @param metaDatas
      * @return
      */
@@ -28,6 +30,7 @@ public interface SwiftConfigService {
 
     /**
      * 批量删除MetaData
+     *
      * @param sourceKey
      * @return
      */
@@ -35,6 +38,7 @@ public interface SwiftConfigService {
 
     /**
      * 更新MetaData
+     *
      * @param sourceKey
      * @param metaData
      * @return
@@ -43,12 +47,14 @@ public interface SwiftConfigService {
 
     /**
      * 获取所有MetaData
+     *
      * @return
      */
     Map<String, IMetaData> getAllMetaData();
 
     /**
      * 根据SourceKey获取MetaData
+     *
      * @param sourceKey
      * @return
      */
@@ -58,6 +64,7 @@ public interface SwiftConfigService {
 
     /**
      * 批量增加Segment
+     *
      * @param segments
      * @return
      */
@@ -65,6 +72,7 @@ public interface SwiftConfigService {
 
     /**
      * 批量删除Segment
+     *
      * @param sourceKey
      * @return
      */
@@ -72,6 +80,7 @@ public interface SwiftConfigService {
 
     /**
      * 批量更新Segment
+     *
      * @param segments
      * @return
      */
@@ -79,14 +88,30 @@ public interface SwiftConfigService {
 
     /**
      * 获取所有Segment
+     *
      * @return
      */
     Map<String, IConfigSegment> getAllSegments();
 
     /**
      * 根据SourceKey获取Segment
+     *
      * @param sourceKey
      * @return
      */
     IConfigSegment getSegmentByKey(String sourceKey);
+
+    /**
+     * 设置cube更新路径
+     *
+     * @param path
+     */
+    boolean setSwiftPath(String path);
+
+    /**
+     * 获取cube更新路径
+     *
+     * @return
+     */
+    String getSwiftPath();
 }

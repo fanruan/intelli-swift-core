@@ -1,8 +1,8 @@
 package com.fr.swift.segment.column.impl.base;
 
 import com.fr.swift.cube.io.BuildConf;
+import com.fr.swift.cube.io.IResourceDiscovery;
 import com.fr.swift.cube.io.ResourceDiscovery;
-import com.fr.swift.cube.io.ResourceDiscoveryImpl;
 import com.fr.swift.cube.io.Types.DataType;
 import com.fr.swift.cube.io.Types.IoType;
 import com.fr.swift.cube.io.input.IntReader;
@@ -26,7 +26,7 @@ abstract class BaseDictColumn<T> implements DictionaryEncodedColumn<T> {
     private static final String GLOBAL_INDEX = "global_dict_index";
     private static final String GLOBAL_SIZE = "global_dict_size";
 
-    static final ResourceDiscovery DISCOVERY = ResourceDiscoveryImpl.getInstance();
+    static final IResourceDiscovery DISCOVERY = ResourceDiscovery.getInstance();
 
     IResourceLocation parent;
 

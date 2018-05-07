@@ -6,6 +6,7 @@ import com.fr.swift.config.IMetaData;
 import com.fr.swift.config.conf.MetaDataConfig;
 import com.fr.swift.config.conf.MetaDataConvertUtil;
 import com.fr.swift.config.conf.SegmentConfig;
+import com.fr.swift.config.conf.SwiftPathConfig;
 import com.fr.swift.config.pojo.SwiftMetaDataPojo;
 import com.fr.swift.source.SourceKey;
 import com.fr.transaction.Configurations;
@@ -23,6 +24,8 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
 
     private MetaDataConfig metaDataConfig = MetaDataConfig.getInstance();
     private SegmentConfig segmentConfig = SegmentConfig.getInstance();
+    private SwiftPathConfig swiftPathConfig = SwiftPathConfig.getInstance();
+
     private ConcurrentHashMap<String, SwiftMetaDataPojo> metaDataCache = new ConcurrentHashMap<String, SwiftMetaDataPojo>();
 
     @Override
@@ -141,11 +144,26 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
         return segmentConfig.getSegmentByKey(sourceKey);
     }
 
+    @Override
+    public boolean setSwiftPath(final String path) {
+        return Configurations.update(new SwiftPathConfigWorker() {
+            @Override
+            public void run() {
+                swiftPathConfig.setPath(path);
+            }
+        });
+    }
+
+    @Override
+    public String getSwiftPath() {
+        return this.swiftPathConfig.getPath();
+    }
+
     private abstract class MetaDataConfigWorker implements Worker {
 
         @Override
         public Class<? extends Configuration>[] targets() {
-            return new Class[] {MetaDataConfig.class};
+            return new Class[]{MetaDataConfig.class};
         }
     }
 
@@ -153,7 +171,14 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
 
         @Override
         public Class<? extends Configuration>[] targets() {
-            return new Class[] {SegmentConfig.class};
+            return new Class[]{SegmentConfig.class};
+        }
+    }
+
+    private abstract class SwiftPathConfigWorker implements Worker {
+        @Override
+        public Class<? extends Configuration>[] targets() {
+            return new Class[]{SwiftPathConfig.class};
         }
     }
 }

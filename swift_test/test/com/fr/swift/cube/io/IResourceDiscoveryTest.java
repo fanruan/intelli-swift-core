@@ -22,8 +22,8 @@ import static com.fr.swift.cube.io.BaseIoTest.CUBES_PATH;
  * @author anchore
  * @date 2017/11/21
  */
-public class ResourceDiscoveryTest extends TestCase {
-    private static final ResourceDiscovery DISCOVERY = ResourceDiscoveryImpl.getInstance();
+public class IResourceDiscoveryTest extends TestCase {
+    private static final IResourceDiscovery DISCOVERY = ResourceDiscovery.getInstance();
     private ExecutorService exec = Executors.newFixedThreadPool(8);
 
     public void testGetReader() throws ExecutionException, InterruptedException {

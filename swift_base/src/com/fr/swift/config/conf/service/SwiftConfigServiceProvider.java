@@ -87,4 +87,14 @@ public class SwiftConfigServiceProvider implements SwiftConfigService {
     public IConfigSegment getSegmentByKey(String sourceKey) {
         return service.getSegmentByKey(sourceKey);
     }
+
+    @Override
+    public boolean setSwiftPath(String path) {
+        return service.setSwiftPath(path);
+    }
+
+    @Override
+    public String getSwiftPath() {
+        return service.getSwiftPath();
+    }
 }

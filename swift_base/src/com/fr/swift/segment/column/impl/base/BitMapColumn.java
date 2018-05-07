@@ -2,8 +2,8 @@ package com.fr.swift.segment.column.impl.base;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.cube.io.BuildConf;
+import com.fr.swift.cube.io.IResourceDiscovery;
 import com.fr.swift.cube.io.ResourceDiscovery;
-import com.fr.swift.cube.io.ResourceDiscoveryImpl;
 import com.fr.swift.cube.io.Types.DataType;
 import com.fr.swift.cube.io.Types.IoType;
 import com.fr.swift.cube.io.Types.WriteType;
@@ -19,7 +19,7 @@ import com.fr.swift.segment.column.BitmapIndexedColumn;
 public class BitMapColumn implements BitmapIndexedColumn {
     private static final String INDEX = "index";
 
-    private static final ResourceDiscovery DISCOVERY = ResourceDiscoveryImpl.getInstance();
+    private static final IResourceDiscovery DISCOVERY = ResourceDiscovery.getInstance();
 
     private BitMapWriter indexWriter;
     private BitMapReader indexReader;

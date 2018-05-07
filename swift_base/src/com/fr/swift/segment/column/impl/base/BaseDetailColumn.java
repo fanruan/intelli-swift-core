@@ -1,7 +1,7 @@
 package com.fr.swift.segment.column.impl.base;
 
+import com.fr.swift.cube.io.IResourceDiscovery;
 import com.fr.swift.cube.io.ResourceDiscovery;
-import com.fr.swift.cube.io.ResourceDiscoveryImpl;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.util.Crasher;
@@ -15,7 +15,7 @@ abstract class BaseDetailColumn<T> implements DetailColumn<T> {
 
     IResourceLocation location;
 
-    static final ResourceDiscovery DISCOVERY = ResourceDiscoveryImpl.getInstance();
+    static final IResourceDiscovery DISCOVERY = ResourceDiscovery.getInstance();
 
     BaseDetailColumn(IResourceLocation parent) {
         location = parent.buildChildLocation(DETAIL);

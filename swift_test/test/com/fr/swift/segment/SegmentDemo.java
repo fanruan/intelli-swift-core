@@ -1,7 +1,7 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.bitmap.BitMaps;
-import com.fr.swift.cube.io.ResourceDiscoveryImpl;
+import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.segment.column.Column;
@@ -116,6 +116,6 @@ public class SegmentDemo extends TestCase {
     }
 
     private void clear() {
-        ResourceDiscoveryImpl.getInstance().clear();
+        ResourceDiscovery.getInstance().clear();
     }
 }

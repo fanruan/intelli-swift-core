@@ -2,8 +2,8 @@ package com.fr.swift.segment;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.cube.io.BuildConf;
+import com.fr.swift.cube.io.IResourceDiscovery;
 import com.fr.swift.cube.io.ResourceDiscovery;
-import com.fr.swift.cube.io.ResourceDiscoveryImpl;
 import com.fr.swift.cube.io.Types.DataType;
 import com.fr.swift.cube.io.Types.IoType;
 import com.fr.swift.cube.io.input.BitMapReader;
@@ -49,7 +49,7 @@ import java.util.concurrent.CountDownLatch;
  * @date 2018/1/17
  */
 public abstract class BaseSegment implements Segment {
-    private static final ResourceDiscovery DISCOVERY = ResourceDiscoveryImpl.getInstance();
+    private static final IResourceDiscovery DISCOVERY = ResourceDiscovery.getInstance();
 
     private static final String ROW_COUNT = "row_count";
 

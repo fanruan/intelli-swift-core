@@ -1,6 +1,6 @@
 package com.fr.swift.generate.preview;
 
-import com.fr.swift.cube.io.ResourceDiscoveryImpl;
+import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.generate.history.index.ColumnDictMerger;
@@ -80,7 +80,7 @@ public class MinorUpdater {
         synchronized (MinorSegmentManager.getInstance()) {
             segmentsExpireMap.clear();
             MinorSegmentManager.getInstance().clear();
-            ResourceDiscoveryImpl.getInstance().clear();
+            ResourceDiscovery.getInstance().clear();
         }
     }
 
@@ -207,7 +207,7 @@ public class MinorUpdater {
     private Segment createSegment(DataSource dataSource) {
         String cubeSourceKey = DataSourceUtils.getSwiftSourceKey(dataSource).getId();
         String path = String.format("/%s/minor_cubes/%s/minor_seg",
-                System.getProperty("user.dir"),
+                ResourceDiscovery.getInstance().getCubePath(),
                 cubeSourceKey);
         return new RealTimeSegmentImpl(new ResourceLocation(path, Types.StoreType.MEMORY), dataSource.getMetadata());
     }

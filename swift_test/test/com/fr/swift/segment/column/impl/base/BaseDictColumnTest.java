@@ -1,6 +1,6 @@
 package com.fr.swift.segment.column.impl.base;
 
-import com.fr.swift.cube.io.ResourceDiscoveryImpl;
+import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import org.junit.Test;
 
@@ -69,7 +69,7 @@ public abstract class BaseDictColumnTest<T> {
      */
     private static <T> void reset(DictionaryEncodedColumn<T> column) {
         column.release();
-        ResourceDiscoveryImpl.getInstance().clear();
+        ResourceDiscovery.getInstance().clear();
     }
 
 }
