@@ -5,12 +5,15 @@ import com.fr.swift.cube.task.TaskExecutor;
 import com.fr.swift.cube.task.TaskStatusChangeListener;
 import com.fr.swift.cube.task.WorkerTask;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.util.concurrent.PoolThreadFactory;
+import com.fr.swift.util.concurrent.SingleThreadFactory;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import static com.fr.swift.cube.task.Task.Status.DONE;
 
@@ -19,39 +22,43 @@ import static com.fr.swift.cube.task.Task.Status.DONE;
  * @date 2017/12/8
  */
 public class CubeTaskExecutor implements TaskExecutor {
-    private BlockingQueue<WorkerTask> runnableTasks = new LinkedBlockingQueue<WorkerTask>();
+    private BlockingQueue<WorkerTask> tasks = new LinkedBlockingQueue<WorkerTask>();
     private Poller poller;
 
     CubeTaskExecutor(String name, int threadNum) {
-        poller = new Poller(threadNum);
-        new Thread(poller, name).start();
+        poller = new Poller(name, threadNum);
+        new SingleThreadFactory(name + "-Poller").newThread(poller).start();
     }
 
     @Override
     public void add(WorkerTask task) {
         task.addStatusChangeListener(poller.listener);
-        runnableTasks.add(task);
+        tasks.add(task);
     }
 
     private class Poller implements Runnable {
         Executor exec;
-        Semaphore ranSemaphore;
+        Semaphore ticket;
 
-        Poller(int threadNum) {
-            exec = Executors.newFixedThreadPool(threadNum);
-            ranSemaphore = new Semaphore(threadNum);
+        Poller(String name, int threadNum) {
+            exec = new ThreadPoolExecutor(threadNum, threadNum,
+                    0L, TimeUnit.MILLISECONDS,
+                    new LinkedBlockingQueue<Runnable>(), new PoolThreadFactory(name));
+            ticket = new Semaphore(threadNum);
         }
 
         @Override
         public void run() {
             try {
                 while (true) {
-                    ranSemaphore.acquire();
-                    WorkerTask task = runnableTasks.take();
+                    ticket.acquire();
+                    WorkerTask task = tasks.take();
                     synchronized (task) {
                         if (task.status() == Status.RUNNABLE) {
                             task.setStatus(Status.RUNNING);
                             exec.execute(task);
+                        } else {
+                            ticket.release();
                         }
                     }
                 }
@@ -64,7 +71,7 @@ public class CubeTaskExecutor implements TaskExecutor {
             @Override
             public void onChange(Status prev, Status now) {
                 if (now == DONE) {
-                    ranSemaphore.release();
+                    ticket.release();
                 }
             }
         };

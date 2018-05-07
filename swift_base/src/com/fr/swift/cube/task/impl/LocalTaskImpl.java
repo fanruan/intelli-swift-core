@@ -2,7 +2,6 @@ package com.fr.swift.cube.task.impl;
 
 import com.fr.swift.cube.task.LocalTask;
 import com.fr.swift.cube.task.PrevOneDoneHandler;
-import com.fr.swift.cube.task.PrevOneDoneHandler.DefaultLocalHandler;
 import com.fr.swift.cube.task.SchedulerTask;
 import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.log.SwiftLoggers;
@@ -21,13 +20,15 @@ public class LocalTaskImpl extends BaseTask implements LocalTask {
     private List<TaskKey> prevTasks = new ArrayList<TaskKey>();
     private List<TaskKey> nextTasks = new ArrayList<TaskKey>();
 
-    public LocalTaskImpl(TaskKey key) {
-        this(key, new DefaultLocalHandler());
+    public LocalTaskImpl(TaskKey key, Worker worker) {
+        this(key, worker, new DefaultLocalHandler());
     }
 
-    public LocalTaskImpl(final TaskKey key, PrevOneDoneHandler prevOneDoneHandler) {
+    public LocalTaskImpl(final TaskKey key, Worker worker, PrevOneDoneHandler prevOneDoneHandler) {
         super(key);
         this.prevOneDoneHandler = prevOneDoneHandler;
+        this.worker = worker;
+        worker.setOwner(this);
 
         LocalTaskPool.getInstance().add(this);
     }
@@ -128,11 +129,5 @@ public class LocalTaskImpl extends BaseTask implements LocalTask {
 
     private static LocalTask from(TaskKey taskKey) {
         return LocalTaskPool.getInstance().get(taskKey);
-    }
-
-    @Override
-    public void setWorker(Worker worker) {
-        this.worker = worker;
-        worker.setOwner(this);
     }
 }

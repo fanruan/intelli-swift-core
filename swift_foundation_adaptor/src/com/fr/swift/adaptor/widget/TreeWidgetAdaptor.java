@@ -29,7 +29,7 @@ import java.util.Set;
 /**
  * Created by Lyon on 2018/3/26.
  */
-public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor{
+public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(TreeWidgetAdaptor.class);
 
@@ -48,7 +48,7 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor{
     }
 
     static List<BITreeItem> createTreeItemList(String widId, TreeOptionsBean bean, FilterInfo filterInfo,
-                                                      List<FineDimension> dimensions) {
+                                               List<FineDimension> dimensions) {
         List<BITreeItem> treeItems;
         String keyWord = bean.getKeyword();
         if (StringUtils.isEmpty(keyWord)) {
@@ -74,8 +74,8 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor{
     }
 
     private static List<BITreeItem> createSearchItemList(int dimensionIndex, String widgetId, String keyWord, String pId,
-                                                 Map selectedValues, String[] parentArray,
-                                                 FilterInfo filterInfo, List<FineDimension> dimensions) {
+                                                         Map selectedValues, String[] parentArray,
+                                                         FilterInfo filterInfo, List<FineDimension> dimensions) {
         List<BITreeItem> items = new ArrayList<BITreeItem>();
         List<String> parents = Arrays.asList(Arrays.copyOf(parentArray, parentArray.length));
         selectedValues = selectedValues == null ? new LinkedHashMap() : selectedValues;
@@ -124,7 +124,7 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor{
     }
 
     private static List<BITreeItem> createTreeItemListWithoutSearch(String widgetId, TreeOptionsBean bean, FilterInfo filter,
-                                               List<FineDimension> dimensions) {
+                                                                    List<FineDimension> dimensions) {
         List<String> parents = bean.getParentValues();
         parents = parents == null ? new ArrayList<String>() : parents;
         Map selectedValues = bean.getSelectedValues();
@@ -202,16 +202,18 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor{
             String fieldName = getColumnName(dimension.getFieldId());
             final String data = parents.get(i);
             infoList.add(new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(fieldName),
-                    new HashSet<String>() {{ add(data); }}, SwiftDetailFilterType.STRING_IN));
+                    new HashSet<String>() {{
+                        add(data);
+                    }}, SwiftDetailFilterType.STRING_IN));
         }
         return new GeneralFilterInfo(infoList, GeneralFilterInfo.AND);
     }
 
     private static List<BITreeItem> createTreeItemListFromValues(boolean isParent, boolean isChildrenChecked, String pId,
-                                                    List values, Map selectedChildren) {
+                                                                 List values, Map selectedChildren) {
         List<BITreeItem> items = new ArrayList<BITreeItem>();
         for (int i = 0; i < values.size(); i++) {
-            items.add(createItem(isParent, isChildrenChecked, values.get(i).toString(),
+            items.add(createItem(isParent, isChildrenChecked, values.get(i) == null ? "" : values.get(i).toString(),
                     pId + "_" + i, pId, selectedChildren));
         }
         return items;

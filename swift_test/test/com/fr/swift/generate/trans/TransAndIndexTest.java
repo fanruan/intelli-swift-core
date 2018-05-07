@@ -5,10 +5,10 @@ import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.task.SchedulerTask;
 import com.fr.swift.cube.task.Task.Status;
 import com.fr.swift.cube.task.TaskKey;
-import com.fr.swift.cube.task.WorkerTask;
 import com.fr.swift.cube.task.impl.BaseWorker;
 import com.fr.swift.cube.task.impl.CubeTaskManager;
 import com.fr.swift.cube.task.impl.Operation;
+import com.fr.swift.cube.task.impl.SchedulerTaskImpl;
 import com.fr.swift.cube.task.impl.SchedulerTaskPool;
 import com.fr.swift.cube.task.impl.WorkerTaskImpl;
 import com.fr.swift.cube.task.impl.WorkerTaskPool;
@@ -56,17 +56,13 @@ public class TransAndIndexTest extends BaseConfigTest {
         WorkerTaskPool.getInstance().setGenerator(pair -> {
             TaskKey taskKey = pair.getKey();
             if (taskKey.operation() == Operation.NULL) {
-                WorkerTask wt = new WorkerTaskImpl(taskKey);
-                wt.setWorker(BaseWorker.nullWorker());
-                return wt;
+                return new WorkerTaskImpl(taskKey, BaseWorker.nullWorker());
             }
 
             Object o = pair.getValue();
             if (o instanceof DataSource) {
                 DataSource ds = ((DataSource) o);
-                WorkerTask wt = new WorkerTaskImpl(taskKey);
-                wt.setWorker(new TableBuilder(ds));
-                return wt;
+                return new WorkerTaskImpl(taskKey, new TableBuilder(ds));
             } else {
                 return null;
             }
@@ -84,7 +80,7 @@ public class TransAndIndexTest extends BaseConfigTest {
         l.add(new Pair<>(end.key(), null));
 
         for (DataSource updateDataSource : dataSources) {
-            SchedulerTask task = CubeTasks.newTableTask(updateDataSource);
+            SchedulerTask task = new SchedulerTaskImpl(CubeTasks.newBuildTableTaskKey(updateDataSource));
             start.addNext(task);
             task.addNext(end);
 

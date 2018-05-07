@@ -3,7 +3,6 @@ package com.fr.swift.generate.etl.formula;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.task.SchedulerTask;
 import com.fr.swift.cube.task.TaskKey;
-import com.fr.swift.cube.task.WorkerTask;
 import com.fr.swift.cube.task.impl.BaseWorker;
 import com.fr.swift.cube.task.impl.CubeTaskKey;
 import com.fr.swift.cube.task.impl.CubeTaskManager;
@@ -36,17 +35,13 @@ public class TableBuildTestUtil {
         WorkerTaskPool.getInstance().setGenerator(pair -> {
             TaskKey taskKey = pair.getKey();
             if (taskKey.operation() == Operation.NULL) {
-                WorkerTask wt = new WorkerTaskImpl(taskKey);
-                wt.setWorker(BaseWorker.nullWorker());
-                return wt;
+                return new WorkerTaskImpl(taskKey, BaseWorker.nullWorker());
             }
 
             Object o = pair.getValue();
 //            if (!(o instanceof ETLSource)) {
             DataSource ds = ((DataSource) o);
-            WorkerTask wt = new WorkerTaskImpl(taskKey);
-            wt.setWorker(new TableBuilder(ds));
-            return wt;
+            return new WorkerTaskImpl(taskKey, new TableBuilder(ds));
 //            } else {
 //                ETLSource etlSource = ((ETLSource) o);
 //                WorkerTask wt = new WorkerTaskImpl(taskKey);

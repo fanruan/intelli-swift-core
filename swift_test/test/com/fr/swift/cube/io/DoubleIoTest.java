@@ -6,6 +6,8 @@ import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.cube.io.output.DoubleWriter;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * @author anchore
  * @date 2017/11/6
@@ -25,7 +27,7 @@ public class DoubleIoTest extends BaseIoTest {
 
         DoubleReader reader = (DoubleReader) Readers.build(location, new BuildConf(Types.IoType.READ, Types.DataType.DOUBLE));
 
-        assertEquals(val, reader.get(pos));
+        assertEquals(val, reader.get(pos), 0);
         reader.release();
     }
 
@@ -43,8 +45,8 @@ public class DoubleIoTest extends BaseIoTest {
 
         DoubleReader reader = (DoubleReader) Readers.build(location, new BuildConf(Types.IoType.READ, Types.DataType.DOUBLE));
 
-        assertEquals(val, reader.get(pos));
-        assertEquals(val, reader.get(pos + 1));
+        assertEquals(val, reader.get(pos), 0);
+        assertEquals(val, reader.get(pos + 1), 0);
         reader.release();
     }
 
@@ -53,7 +55,7 @@ public class DoubleIoTest extends BaseIoTest {
         DoubleMemIo doubleMemIo = new DoubleMemIo();
         doubleMemIo.put(pos, val);
 
-        assertEquals(val, doubleMemIo.get(pos));
+        assertEquals(val, doubleMemIo.get(pos), 0);
         doubleMemIo.release();
     }
 

@@ -52,8 +52,8 @@ public class TargetCalculatorUtils {
         Iterator<GroupNode> iterator = new MapperIterator<GroupNode, GroupNode>(new BFTGroupNodeIterator(root), new Function<GroupNode, GroupNode>() {
             @Override
             public GroupNode apply(GroupNode p) {
-                if (p.getDeep() != -1) {
-                    p.setData(dictionaries.get(p.getDeep()).get(p.getDictionaryIndex()));
+                if (p.getDepth() != -1) {
+                    p.setData(dictionaries.get(p.getDepth()).get(p.getDictionaryIndex()));
                 }
                 return p;
             }
@@ -71,8 +71,8 @@ public class TargetCalculatorUtils {
             @Override
             public GroupNode apply(GroupNode p) {
                 // 设置节点的data
-                if (p.getDeep() != -1) {
-                    p.setData(dictionaries.get(p.getDeep()).get(p.getDictionaryIndex()));
+                if (p.getDepth() != -1) {
+                    p.setData(dictionaries.get(p.getDepth()).get(p.getDictionaryIndex()));
                 }
                 List<AggregatorValue[]> allValues = ((XLeftNode) p).getValueArrayList();
                 if (allValues == null) {
@@ -116,8 +116,8 @@ public class TargetCalculatorUtils {
                 }
                 p.setAggregatorValue(showValues);
                 // 设置节点的data
-                if (p.getDeep() != -1) {
-                    p.setData(dictionaries.get(p.getDeep()).get(p.getDictionaryIndex()));
+                if (p.getDepth() != -1) {
+                    p.setData(dictionaries.get(p.getDepth()).get(p.getDictionaryIndex()));
                 }
                 return p;
             }

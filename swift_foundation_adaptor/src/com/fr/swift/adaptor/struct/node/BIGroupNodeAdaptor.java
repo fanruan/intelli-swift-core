@@ -60,7 +60,7 @@ public class BIGroupNodeAdaptor implements BIGroupNode {
 
     @Override
     public int getDeep() {
-        return node.getDeep();
+        return node.getDepth();
     }
 
     @Override

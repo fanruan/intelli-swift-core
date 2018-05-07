@@ -4,9 +4,11 @@ import com.finebi.conf.constant.BIDesignConstants;
 import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
 import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
+import com.fr.stable.StringUtils;
 import com.fr.swift.adaptor.transformer.AggregatorAdaptor;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.widget.target.exception.TargetCircularDependencyException;
+import com.fr.swift.query.adapter.metric.CounterMetric;
 import com.fr.swift.query.adapter.metric.GroupMetric;
 import com.fr.swift.query.adapter.metric.Metric;
 import com.fr.swift.query.adapter.target.GroupTarget;
@@ -99,7 +101,7 @@ public class CalTargetParseUtils {
         List<ResultTarget> resultTargets = new ArrayList<ResultTarget>();
         for (int i = 0; i < targets.size(); i++) {
             FineTarget target = targets.get(i);
-            AggregatorType aggregatorType = AggregatorAdaptor.adaptorDashBoard(target.getMetric());
+            AggregatorType aggregatorType = AggregatorAdaptor.adaptorDashBoard(target.getGroup());
             Aggregator aggregator = AggregatorFactory.createAggregator(aggregatorType);
             aggregators.add(aggregator);
             if (isBaseFieldTarget(target)) {
@@ -182,7 +184,8 @@ public class CalTargetParseUtils {
     }
 
     private static boolean isBaseFieldTarget(FineTarget target) {
-        return target.getWidgetBeanField() == null || target.getWidgetBeanField().getTargetIds() == null;
+        return target.getType() == BIDesignConstants.DESIGN.DIMENSION_TYPE.COUNTER
+                || target.getWidgetBeanField() == null || target.getWidgetBeanField().getTargetIds() == null;
     }
 
     /**
@@ -327,8 +330,11 @@ public class CalTargetParseUtils {
      */
     private static Pair<String, Pair<AggregatorType, FilterInfo>> parseMetricFromBaseTargetOfBaseField(FineTarget target, AbstractTableWidget widget) {
         // 原始字段生成的指标，id为原始字段的FieldId
-        AggregatorType aggregatorType = AggregatorAdaptor.adaptorDashBoard(target.getMetric());
-        FilterInfo filterInfo = getDetailFilterInfoOfField(widget, widget.getFieldByFieldId(target.getFieldId()));
+        AggregatorType aggregatorType = AggregatorAdaptor.adaptorDashBoard(target.getGroup());
+        // TODO: 2018/5/4 target里面的field和widget里面原来的那个field突然间就分裂了，明细过滤再target的field里面！太随性了！
+        WidgetBeanField field = target.getWidgetBeanField();
+        field = field != null ? field : widget.getFieldByFieldId(target.getFieldId());
+        FilterInfo filterInfo = getDetailFilterInfoOfField(widget, field);
         return Pair.of(target.getFieldId(), Pair.of(aggregatorType, filterInfo));
     }
 
@@ -337,7 +343,7 @@ public class CalTargetParseUtils {
      */
     private static boolean isIdOfBaseTargetOrBaseCalTargetField(String id, AbstractTableWidget widget) throws Exception {
         if (widget.getTargetByTargetId(id) == null) {
-            // 通过计算指标配置面板生成的计算指标字段field，或者是原始字段field
+            // 通过计算指标配置面板生成的计算指标字段field，或者是原始字段field。还有可能是组件的field。。
             WidgetBeanField field = widget.getFieldByFieldId(id);
             return field.getCalculate() == null || !isCalTargetFieldDependedOnOtherCalTargetField(field, widget);
         } else {
@@ -423,10 +429,17 @@ public class CalTargetParseUtils {
 
     private static Metric toMetric(int metricIndex, String fieldId, Pair<AggregatorType, FilterInfo> pair) {
         SourceKey key = new SourceKey(fieldId);
+        if (isCounterField(fieldId)) {
+            return new CounterMetric(metricIndex, key, new ColumnKey(fieldId), pair.getValue());
+        }
         String columnName = BusinessTableUtils.getFieldNameByFieldId(fieldId);
         ColumnKey colKey = new ColumnKey(columnName);
         Aggregator aggregator = AggregatorFactory.createAggregator(pair.getKey());
         return new GroupMetric(metricIndex, key, colKey, pair.getValue(), aggregator);
+    }
+
+    private static boolean isCounterField(String fieldId) {
+        return StringUtils.isNotEmpty(fieldId) && fieldId.endsWith("__count_field_id__");
     }
 
     /**

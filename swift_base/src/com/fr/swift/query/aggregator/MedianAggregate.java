@@ -122,6 +122,6 @@ public class MedianAggregate extends AbstractAggregator<MedianAggregatorValue> {
         Map<Double, Integer> values = new TreeMap<Double, Integer>();
         values.put(value.calculate(), 1);
         medianAggregatorValue.setValues(values);
-        return super.createAggregatorValue(value);
+        return medianAggregatorValue;
     }
 }

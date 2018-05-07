@@ -17,7 +17,7 @@ abstract class BaseTask implements Task {
     volatile Status status = Status.WAITING;
     private List<TaskStatusChangeListener> listeners = new ArrayList<TaskStatusChangeListener>(1);
 
-    Result result;
+    volatile Result result;
 
     BaseTask(TaskKey key) {
         this.key = key;

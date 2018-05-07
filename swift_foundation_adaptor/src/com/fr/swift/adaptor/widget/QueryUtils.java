@@ -56,9 +56,8 @@ public class QueryUtils {
             SwiftNode n = nodeResultSet.getNode();
             List values = new ArrayList();
             for (int i = 0; i < n.getChildrenSize(); i++) {
-                if (n.getChild(i).getData() != null) {
-                    values.add(n.getChild(i).getData());
-                }
+                // 如果有空值，这边把空值也一起加进来了
+                values.add(n.getChild(i).getData());
             }
             return values;
         } catch (Exception e) {

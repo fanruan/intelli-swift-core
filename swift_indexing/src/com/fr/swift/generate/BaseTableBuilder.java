@@ -21,8 +21,6 @@ import com.fr.swift.query.group.GroupType;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.impl.SubDateColumn;
-import com.fr.swift.segment.operator.SwiftColumnDictMerger;
-import com.fr.swift.segment.operator.SwiftColumnIndexer;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.DataSource;
@@ -67,11 +65,11 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
     protected void init() throws SwiftMetaDataException {
         final SwiftMetaData meta = dataSource.getMetadata();
         // transport worker
-        final LocalTask transportTask = new LocalTaskImpl(CubeTasks.newPartStartTaskKey(dataSource));
-        transportTask.setWorker(transporter);
+        final LocalTask transportTask = new LocalTaskImpl(
+                CubeTasks.newTransportTaskKey(dataSource), transporter);
 
-        final LocalTask end = new LocalTaskImpl(CubeTasks.newPartEndTaskKey(dataSource));
-        end.setWorker(BaseWorker.nullWorker());
+        final LocalTask end = new LocalTaskImpl(
+                CubeTasks.newTableBuildEndTaskKey(dataSource), BaseWorker.nullWorker());
 
         //监听表取数任务，完成后添加字段索引任务。
         transportTask.addStatusChangeListener(new TaskStatusChangeListener() {
@@ -103,18 +101,13 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
                 }
 
                 for (String indexField : transporter.getIndexFieldsList()) {
+                    LocalTask indexTask = new LocalTaskImpl(
+                            CubeTasks.newIndexColumnTaskKey(dataSource, indexField),
+                            new ColumnIndexer(dataSource, new ColumnKey(indexField), indexSegments));
 
-                    SwiftColumnIndexer indexer = new ColumnIndexer(dataSource, new ColumnKey(indexField), indexSegments);
-                    LocalTask indexTask = new LocalTaskImpl(new CubeTaskKey(
-                            String.format("%s@%s.%s", meta.getTableName(), dataSource.getSourceKey(), indexField),
-                            Operation.INDEX_COLUMN));
-                    indexTask.setWorker(indexer);
-
-                    SwiftColumnDictMerger merger = new ColumnDictMerger(dataSource, new ColumnKey(indexField), allSegments);
-                    LocalTask mergeTask = new LocalTaskImpl(new CubeTaskKey(
-                            String.format("%s@%s.%s", meta.getTableName(), dataSource.getSourceKey(), indexField),
-                            Operation.MERGE_COLUMN_DICT));
-                    mergeTask.setWorker(merger);
+                    LocalTask mergeTask = new LocalTaskImpl(
+                            CubeTasks.newMergeColumnDictTaskKey(dataSource, indexField),
+                            new ColumnDictMerger(dataSource, new ColumnKey(indexField), allSegments));
                     // link task
                     transportTask.addNext(indexTask);
                     indexTask.addNext(mergeTask);
@@ -129,15 +122,13 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
                     return;
                 }
                 for (GroupType groupType : SubDateColumn.TYPES_TO_GENERATE) {
-                    LocalTask indexSubColumnTask = new LocalTaskImpl(new CubeTaskKey(
-                            String.format("%s@%s.%s.%s", meta.getTableName(), dataSource.getSourceKey(), indexField, groupType),
-                            Operation.INDEX_COLUMN));
-                    indexSubColumnTask.setWorker(new SubDateColumnIndexer(dataSource, new ColumnKey(indexField), groupType, indexSegments));
+                    LocalTask indexSubColumnTask = new LocalTaskImpl(
+                            CubeTasks.newIndexColumnTaskKey(dataSource, indexField + "." + groupType),
+                            new SubDateColumnIndexer(dataSource, new ColumnKey(indexField), groupType, indexSegments));
 
-                    LocalTask mergeSubColumnTask = new LocalTaskImpl(new CubeTaskKey(
-                            String.format("%s@%s.%s.%s", meta.getTableName(), dataSource.getSourceKey(), indexField, groupType),
-                            Operation.MERGE_COLUMN_DICT));
-                    mergeSubColumnTask.setWorker(new SubDateColumnDictMerger(dataSource, new ColumnKey(indexField), groupType, allSegments));
+                    LocalTask mergeSubColumnTask = new LocalTaskImpl(
+                            CubeTasks.newMergeColumnDictTaskKey(dataSource, indexField + "." + groupType),
+                            new SubDateColumnDictMerger(dataSource, new ColumnKey(indexField), groupType, allSegments));
 
                     mergeTask.addNext(indexSubColumnTask);
                     indexSubColumnTask.addNext(mergeSubColumnTask);
