@@ -73,26 +73,14 @@ public class StuffFetcher implements Runnable {
 
         SourceReliance sourceReliance = stuff.getSourceReliance();
         //根据表依赖和顺序添加更新任务
+        if (sourceReliance.getHeadNodes().isEmpty()) {
+            start.addNext(end);
+        }
         for (Map.Entry<SourceKey, SourceNode> entry : sourceReliance.getHeadNodes().entrySet()) {
             SourceNode sourceNode = entry.getValue();
             calcBaseNode(sourceNode, start, end, pairMap, taskMap);
         }
         pairs.addAll(pairMap.values());
-
-        // 所有关联
-//        for (RelationSource relation : stuff.getAllRelations()) {
-//            DataSource primary = stuff.getTableById(relation.getPrimarySource().getId());
-//            DataSource foreign = stuff.getTableById(relation.getForeignSource().getId());
-//
-//            SchedulerTask relationTask = CubeTasks.newRelationTask(relation);
-//            SchedulerTask primaryTask = SchedulerTaskPool.getInstance().get(CubeTasks.newTaskKey(primary)),
-//                    foreignTask = SchedulerTaskPool.getInstance().get(CubeTasks.newTaskKey(foreign));
-//            primaryTask.addNext(relationTask);
-//            foreignTask.addNext(relationTask);
-//
-//            relationTask.addNext(end);
-//            pairs.add(new Pair<TaskKey, Object>(relationTask.key(), relation));
-//        }
 
         // 生成关联
         RelationReliance relationReliance = stuff.getRelationReliance();

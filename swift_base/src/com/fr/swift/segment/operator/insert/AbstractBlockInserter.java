@@ -7,6 +7,7 @@ import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
 import com.fr.swift.config.unique.SegmentKeyUnique;
 import com.fr.swift.config.unique.SegmentUnique;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
@@ -157,7 +158,7 @@ public abstract class AbstractBlockInserter implements Inserter {
      * @throws Exception
      */
     protected Segment createSegment(int order, Types.StoreType storeType) {
-        String cubePath = System.getProperty("user.dir") + "/cubes/" + cubeSourceKey + "/seg" + order;
+        String cubePath = ResourceDiscovery.getInstance().getCubePath() + "/" + cubeSourceKey + "/seg" + order;
         IResourceLocation location = new ResourceLocation(cubePath, storeType);
         ISegmentKey segmentKey = new SegmentKeyUnique();
         segmentKey.setSegmentOrder(order);

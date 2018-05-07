@@ -1,7 +1,7 @@
 package com.fr.swift.data.operator.merger;
 
 import com.fr.annotation.Test;
-import com.fr.swift.cube.io.ResourceDiscoveryImpl;
+import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.flow.FlowRuleController;
 import com.fr.swift.generate.BaseTest;
 import com.fr.swift.generate.TestIndexer;
@@ -109,10 +109,10 @@ public class SwiftMergerTest extends BaseTest {
             RealtimeMerger realtimeMerger = new RealtimeMerger(dataSource.getSourceKey(),
                     dataSource.getMetadata(), DataSourceUtils.getSwiftSourceKey(dataSource).getId());
             //合并前是不为空
-            assertEquals(ResourceDiscoveryImpl.getInstance().isCubeResourceEmpty(), false);
+            assertEquals(ResourceDiscovery.getInstance().isCubeResourceEmpty(), false);
             realtimeMerger.merge();
             //合并清除为空
-            assertEquals(ResourceDiscoveryImpl.getInstance().isCubeResourceEmpty(), true);
+            assertEquals(ResourceDiscovery.getInstance().isCubeResourceEmpty(), true);
 
 
             segmentList = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());

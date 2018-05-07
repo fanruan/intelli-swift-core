@@ -7,7 +7,7 @@ import com.fr.swift.config.conf.SegmentConfig;
 import com.fr.swift.config.unique.SegmentKeyUnique;
 import com.fr.swift.config.unique.SegmentUnique;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.cube.io.ResourceDiscoveryImpl;
+import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
@@ -95,7 +95,7 @@ public class RealtimeMerger implements Merger {
 
 
     protected Segment createSegment(int order) {
-        String cubePath = System.getProperty("user.dir") + "/cubes/" + cubeSourceKey + "/seg" + order;
+        String cubePath = ResourceDiscovery.getInstance().getCubePath() + "/" + cubeSourceKey + "/seg" + order;
         IResourceLocation location = new ResourceLocation(cubePath);
         ISegmentKey segmentKey = new SegmentKeyUnique();
         segmentKey.setSegmentOrder(order);
@@ -109,8 +109,7 @@ public class RealtimeMerger implements Merger {
     public void release() {
         persistMeta();
         persistSegment();
-        //todo 路径统一改
-        ResourceDiscoveryImpl.getInstance().removeCubeResource(System.getProperty("user.dir") + "/cubes/" + sourceKey.getId());
+        ResourceDiscovery.getInstance().removeCubeResource(ResourceDiscovery.getInstance().getCubePath() + "/" + sourceKey.getId());
     }
 
     protected void persistMeta() {

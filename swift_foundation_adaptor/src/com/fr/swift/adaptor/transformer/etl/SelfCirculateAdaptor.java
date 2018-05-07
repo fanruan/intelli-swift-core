@@ -43,6 +43,7 @@ public class SelfCirculateAdaptor {
             String tempName = item.getName();
             try {
                 tempName = fields.get(findFieldName(fields, item.getName())).getName();
+            } catch (ArrayIndexOutOfBoundsException ignore) {
             } catch (Exception e) {
                 SwiftLoggers.getLogger().error(e);
             }

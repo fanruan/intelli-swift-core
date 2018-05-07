@@ -3,8 +3,8 @@ package com.fr.swift.segment.relation;
 import com.fr.stable.StringUtils;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.cube.io.BuildConf;
+import com.fr.swift.cube.io.IResourceDiscovery;
 import com.fr.swift.cube.io.ResourceDiscovery;
-import com.fr.swift.cube.io.ResourceDiscoveryImpl;
 import com.fr.swift.cube.io.Types.DataType;
 import com.fr.swift.cube.io.Types.IoType;
 import com.fr.swift.cube.io.input.BitMapReader;
@@ -29,7 +29,7 @@ public class RelationIndexImpl implements RelationIndex {
     private static final String RELATIONS_KEY = "relations";
     private static final String REVERSE_COUNT = "reverse_count";
 
-    private static final ResourceDiscovery DISCOVERY = ResourceDiscoveryImpl.getInstance();
+    private static final IResourceDiscovery DISCOVERY = ResourceDiscovery.getInstance();
 
     private IResourceLocation location;
     private IResourceLocation baseLocation;
