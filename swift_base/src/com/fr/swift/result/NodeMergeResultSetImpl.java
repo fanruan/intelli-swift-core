@@ -27,7 +27,7 @@ public class NodeMergeResultSetImpl<T extends GroupNode> implements NodeMergeRes
         this.root = root;
         this.rowGlobalDictionaries = rowGlobalDictionaries;
         this.aggregators = aggregators;
-        tree2RowIterator = new Tree2RowIterator(rowGlobalDictionaries.size(), root.getChildren().iterator());
+        this.tree2RowIterator = new Tree2RowIterator(rowGlobalDictionaries.size(), root.getChildren().iterator());
     }
 
     @Override
