@@ -13,17 +13,16 @@ import com.fr.swift.structure.iterator.RowTraversal;
 public class MetricFilterAggregator implements Aggregator {
 
     private Aggregator aggregator;
-    private DetailFilter filter;
+    // FIXME: 2018/5/7 Aggregator在结果合并过程中传递是要清理一下这边的索引。每次调用聚合都过滤一次明显有性能问题
+    private ImmutableBitMap bitMap;
 
     public MetricFilterAggregator(Aggregator aggregator, DetailFilter filter) {
         this.aggregator = aggregator;
-        this.filter = filter;
+        this.bitMap = filter.createFilterIndex();
     }
 
     @Override
     public AggregatorValue aggregate(RowTraversal traversal, Column column) {
-        // 这边调用聚合方法的时候才加载明细索引比较好，不然Aggregator可能在合并结果过程中继续使用，而索引却没有释放
-        ImmutableBitMap bitMap = filter == null ? null : filter.createFilterIndex();
         traversal = bitMap == null ? traversal : bitMap.getAnd(traversal.toBitMap());
         return aggregator.aggregate(traversal, column);
     }
