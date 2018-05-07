@@ -2,15 +2,19 @@ package com.fr.swift.bitmap.impl;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.util.Random;
 import java.util.stream.IntStream;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 /**
  * @author anchore
  */
-public class BaseRoaringTest extends TestCase {
+public class BaseRoaringTest {
     private final Random r = new Random();
     private static final int BOUND = 1000000;
 
@@ -22,7 +26,7 @@ public class BaseRoaringTest extends TestCase {
         return RoaringImmutableBitMap.newInstance();
     }
 
-    int[] prepare(MutableBitMap m) {
+    private int[] prepare(MutableBitMap m) {
         int[] a = new int[BOUND];
         for (int i = 0; i < a.length / 2; i++) {
             int ri = r.nextInt(a.length);
@@ -32,6 +36,7 @@ public class BaseRoaringTest extends TestCase {
         return a;
     }
 
+    @Test
     public void testContains() {
         MutableBitMap m = getMutableBitMap();
         int[] a = prepare(m);
@@ -43,12 +48,13 @@ public class BaseRoaringTest extends TestCase {
         });
 
         for (int i = 0; i < a.length; i++) {
-            if (a[i] == 1 ? !m.contains(i) : m.contains(i)) {
+            if ((a[i] == 1) != m.contains(i)) {
                 fail();
             }
         }
     }
 
+    @Test
     public void testIsEmpty() {
         ImmutableBitMap im = getImmutableBitMap();
         assertTrue(im.isEmpty());
@@ -67,6 +73,7 @@ public class BaseRoaringTest extends TestCase {
         assertTrue(m.isEmpty());
     }
 
+    @Test
     public void testTraversal() {
         MutableBitMap m = getMutableBitMap();
         final int[] a = prepare(m);
@@ -78,6 +85,7 @@ public class BaseRoaringTest extends TestCase {
         });
     }
 
+    @Test
     public void testBreakableTraversal() {
         MutableBitMap m = getMutableBitMap();
         int[] a = prepare(m);
@@ -93,24 +101,26 @@ public class BaseRoaringTest extends TestCase {
         })) {
             assertTrue(rowWrap[0] != -1 && rowWrap[0] == breakIndex);
         } else {
-            assertTrue(rowWrap[0] == -1);
+            assertEquals(rowWrap[0], -1);
         }
     }
 
+    @Test
     public void testGetCardinality() {
         MutableBitMap m = getMutableBitMap();
         final int[] a = prepare(m);
 
-        assertTrue((IntStream.of(a).sum()) == m.getCardinality());
+        assertEquals((IntStream.of(a).sum()), m.getCardinality());
     }
 
+    @Test
     public void testToBytes() {
         MutableBitMap m = getMutableBitMap();
         int[] a = prepare(m);
         byte[] bytes = m.toBytes();
         MutableBitMap m1 = RoaringMutableBitMap.fromBytes(bytes);
         for (int i = 0; i < a.length; i++) {
-            if (a[i] == 1 ? !m1.contains(i) : m1.contains(i)) {
+            if ((a[i] == 1) != m1.contains(i)) {
                 fail();
             }
         }
@@ -119,7 +129,7 @@ public class BaseRoaringTest extends TestCase {
         bytes = im.toBytes();
         ImmutableBitMap m2 = RoaringImmutableBitMap.fromBytes(bytes);
         for (int i = 0; i < a.length; i++) {
-            if (a[i] == 1 ? !m2.contains(i) : m2.contains(i)) {
+            if ((a[i] == 1) != m2.contains(i)) {
                 fail();
             }
         }
