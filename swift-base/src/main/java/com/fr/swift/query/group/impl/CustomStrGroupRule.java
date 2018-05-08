@@ -1,6 +1,5 @@
 package com.fr.swift.query.group.impl;
 
-import com.fr.stable.StringUtils;
 import com.fr.swift.query.group.GroupType;
 import com.fr.swift.source.core.CoreField;
 import com.fr.swift.structure.array.IntList;
@@ -14,14 +13,9 @@ import java.util.List;
  * <p>
  * 字符串自定义分组规则
  */
-public class CustomStrGroupRule extends BaseCustomGroupRule<String, String> {
-    public CustomStrGroupRule(List<? extends CustomGroup<String, String>> groups, String otherGroupName) {
-        super(groups, otherGroupName);
-    }
-
-    @Override
-    boolean hasOtherGroup() {
-        return StringUtils.isNotEmpty(otherGroupName);
+public class CustomStrGroupRule extends BaseCustomStrGroupRule<String> {
+    public CustomStrGroupRule(List<? extends CustomGroup<String, String>> groups, String otherGroupName, boolean sorted) {
+        super(groups, otherGroupName, sorted);
     }
 
     @Override

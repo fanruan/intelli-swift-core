@@ -63,7 +63,7 @@ class AnotherGroupAdaptor {
             stringGroups.add(new StringGroup(groupName, values));
         }
 
-        return new CustomStrGroupRule((List) stringGroups, bean.isUseOther());
+        return new CustomStrGroupRule(stringGroups, bean.isUseOther(), false);
     }
 
     private static GroupRule newCustomNumberRule(com.finebi.conf.internalimp.analysis.bean.operator.group.custom.NumberCustomGroupValueBean groupValue) {
@@ -76,10 +76,10 @@ class AnotherGroupAdaptor {
                     Double.valueOf(bean.getMax()), bean.isClosemax()));
         }
 
-        return new CustomNumGroupRule((List) intervals, groupValue.getUseOther());
+        return new CustomNumGroupRule(intervals, groupValue.getUseOther(), false);
     }
 
     private static GroupRule newAutoRule(com.finebi.conf.internalimp.analysis.bean.operator.group.custom.NumberAutoGroupValueBean bean) {
-        return new AutoNumGroupRule(new Partition(bean.getMin(), bean.getMax(), bean.getGroupInterval()));
+        return new AutoNumGroupRule(new Partition(bean.getMin(), bean.getMax(), bean.getGroupInterval()), false);
     }
 }
