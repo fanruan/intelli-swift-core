@@ -51,5 +51,6 @@ fabric.properties
 *.tar.gz
 *.rar
 hs_err_pid*
+project/.idea/*.xml
 .idea/
 *.iml
