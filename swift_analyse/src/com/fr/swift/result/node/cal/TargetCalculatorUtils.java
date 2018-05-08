@@ -63,9 +63,10 @@ public class TargetCalculatorUtils {
         }
     }
 
-    public static void getShowTargetsForXLeftNodeAndSetNodeData(XLeftNode root,
-                                                                     final List<ResultTarget> targetsForShowList,
-                                                                     final List<Map<Integer, Object>> dictionaries) {
+    public static void getShowTargetsForXLeftNodeAndSetNodeDataAndSetNodeIndex(XLeftNode root,
+                                                                               final List<ResultTarget> targetsForShowList,
+                                                                               final List<Map<Integer, Object>> dictionaries) {
+        final IndexCounter indexCounter = new IndexCounter();
         // 从计算结果中提取要展示的结果集
         Iterator<GroupNode> iterator = new MapperIterator<GroupNode, GroupNode>(new BFTGroupNodeIterator(root), new Function<GroupNode, GroupNode>() {
             @Override
@@ -74,6 +75,8 @@ public class TargetCalculatorUtils {
                 if (p.getDepth() != -1) {
                     p.setData(dictionaries.get(p.getDepth()).get(p.getDictionaryIndex()));
                 }
+                // 设置节点的index，这个比较猥琐了
+                p.setIndex(indexCounter.index(p.getDepth()));
                 List<AggregatorValue[]> allValues = ((XLeftNode) p).getValueArrayList();
                 if (allValues == null) {
                     // 非叶子节点可能为空
@@ -98,9 +101,10 @@ public class TargetCalculatorUtils {
         }
     }
 
-    public static void getShowTargetsForGroupNodeAndSetNodeData(GroupNode root,
-                                                                final List<ResultTarget> targetsForShowList,
-                                                                final List<Map<Integer, Object>> dictionaries) {
+    public static void getShowTargetsForGroupNodeAndSetNodeDataAndSetNodeIndex(GroupNode root,
+                                                                               final List<ResultTarget> targetsForShowList,
+                                                                               final List<Map<Integer, Object>> dictionaries) {
+        final IndexCounter indexCounter = new IndexCounter();
         // 从计算结果中提取要展示的结果集
         Iterator<GroupNode> iterator = new MapperIterator<GroupNode, GroupNode>(new BFTGroupNodeIterator(root), new Function<GroupNode, GroupNode>() {
             @Override
@@ -119,11 +123,28 @@ public class TargetCalculatorUtils {
                 if (p.getDepth() != -1) {
                     p.setData(dictionaries.get(p.getDepth()).get(p.getDictionaryIndex()));
                 }
+                // 设置节点的index，这个比较猥琐了
+                p.setIndex(indexCounter.index(p.getDepth()));
                 return p;
             }
         });
         while (iterator.hasNext()) {
             iterator.next();
+        }
+    }
+
+    private static class IndexCounter {
+        private int currentDeep = -1;
+        private int siblingCounter = 0;
+
+        public int index(int deep) {
+            if (currentDeep == deep) {
+                return siblingCounter++;
+            }
+            // BFTGroupNodeIterator迭代器的维度切换了
+            currentDeep = deep;
+            siblingCounter = 0;
+            return siblingCounter++;
         }
     }
 }

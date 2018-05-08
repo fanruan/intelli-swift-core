@@ -33,7 +33,13 @@ public class TopNFilter extends AbstractDetailFilter {
 
     @Override
     public boolean matches(SwiftNode node, int targetIndex) {
-        int index = node.getIndex();
-        return index < topN;
+        // 对接点本身的前几个过滤
+        if (targetIndex == -1) {
+            int index = node.getIndex();
+            int size = node.getParent().getChildrenSize();
+            return (size - index) < topN;
+        }
+        // TODO: 2018/5/8 对节点的AggregatorValues[targetIndex]对应的指标的前几个的排序
+        return true;
     }
 }

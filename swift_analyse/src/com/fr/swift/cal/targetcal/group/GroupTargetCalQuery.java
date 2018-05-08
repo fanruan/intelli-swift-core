@@ -43,7 +43,7 @@ public class GroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> {
         // 根据合并后的结果处理计算指标的计算
         TargetCalculatorUtils.calculate(((GroupNode) mergeResult.getNode()), info.getTargetInfo().getGroupTargets());
         // 取出查询最后要返回的结果
-        TargetCalculatorUtils.getShowTargetsForGroupNodeAndSetNodeData(((GroupNode) mergeResult.getNode()),
+        TargetCalculatorUtils.getShowTargetsForGroupNodeAndSetNodeDataAndSetNodeIndex(((GroupNode) mergeResult.getNode()),
                 info.getTargetInfo().getTargetsForShowList(), mergeResult.getRowGlobalDictionaries());
         // 进行结果过滤
         List<MatchFilter> dimensionMatchFilter = getDimensionMatchFilters(info.getDimensionInfo().getDimensions());

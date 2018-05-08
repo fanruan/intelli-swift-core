@@ -113,8 +113,8 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor {
     private static List getValues(String widgetId, FineDimension dimension, FilterInfo filter, FilterInfo selectedValues,
                                   List<String> parents, List<FineDimension> dimensions) {
         // 树控件这边的维度字段的过滤只作用于当前维度，不同于分组表那边作用于指标的明细
-        FilterInfo currentDimensionFilter = FilterInfoFactory.transformDimensionFineFilter(dimension);
-        FilterInfo filterInfo = parents2FilterInfo(filter, currentDimensionFilter, parents, dimensions);
+
+        FilterInfo filterInfo = parents2FilterInfo(filter, parents, dimensions);
         List<FilterInfo> or = new ArrayList<FilterInfo>();
         or.add(filterInfo);
         or.add(selectedValues);
@@ -193,10 +193,9 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor {
         return tmpMap.isEmpty();
     }
 
-    private static FilterInfo parents2FilterInfo(FilterInfo filterInfo, FilterInfo currentDimensionFilter, List<String> parents, List<FineDimension> dimensions) {
+    private static FilterInfo parents2FilterInfo(FilterInfo filterInfo, List<String> parents, List<FineDimension> dimensions) {
         List<FilterInfo> infoList = new ArrayList<FilterInfo>();
         infoList.add(filterInfo);
-        infoList.add(currentDimensionFilter);
         for (int i = 0; i < parents.size(); i++) {
             FineDimension dimension = dimensions.get(i);
             String fieldName = getColumnName(dimension.getFieldId());
