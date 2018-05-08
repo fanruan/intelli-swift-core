@@ -3,7 +3,6 @@ package com.fr.swift.adaptor.widget;
 import com.finebi.conf.internalimp.bean.dashboard.widget.control.tree.TreeOptionsBean;
 import com.finebi.conf.internalimp.dashboard.widget.control.tree.TreeWidget;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
-import com.finebi.conf.structure.filter.FineFilter;
 import com.finebi.conf.structure.result.control.tree.BITreeItem;
 import com.finebi.conf.structure.result.control.tree.BITreeResult;
 import com.fr.stable.StringUtils;
@@ -11,7 +10,6 @@ import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
@@ -39,7 +37,7 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor {
         BITreeResult result = null;
         try {
             TreeOptionsBean bean = treeWidget.getValue().getOptions().getTreeOptions();
-            FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(treeWidget.getTableName(), treeWidget.getFilters());
+            FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(null, treeWidget.getFilters());
             // TODO: 2018/4/13 BITreeResult暂时不分页
             List<BITreeItem> treeItems = createTreeItemList(treeWidget.getWidgetId(), bean, filterInfo, treeWidget.getDimensionList());
             result = new TreeResult(false, treeItems);
@@ -63,22 +61,6 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor {
                     new String[0], filterInfo, dimensions);
         }
         return treeItems;
-    }
-
-    private static FilterInfo createFilterInfo(String tableName, List<FineDimension> dimensions) {
-
-        List<FineFilter> fineFilters = new ArrayList<FineFilter>();
-        for (FineDimension dimension : dimensions) {
-            List<FineFilter> filters = dimension.getFilters();
-            List<FineFilter> detailFilters = dimension.getDetailFilters();
-            if (null != filters) {
-                fineFilters.addAll(filters);
-            }
-            if (null != detailFilters) {
-                fineFilters.addAll(detailFilters);
-            }
-        }
-        return FilterInfoFactory.transformFineFilter(tableName, fineFilters);
     }
 
     private static List<BITreeItem> createChildNoSearchItemList(String widgetId, String keyWord, TreeOptionsBean bean,
