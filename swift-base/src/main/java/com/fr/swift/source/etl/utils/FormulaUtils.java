@@ -87,7 +87,7 @@ public class FormulaUtils {
 
     public static Map<String, ColumnKey> createColumnIndexMap(String formular, Segment segment) {
         Map<String, ColumnKey> columnIndexMap = new HashMap<String, ColumnKey>();
-        String[] parameters = getRelatedParaNames(formular);
+        String[] parameters = segment.isHistory() ? getHistoryRelatedParaNames(formular):getRealRelatedParaNames(formular);
         for (int i = 0; i < parameters.length; i++) {
             String columnName = parameters[i];
             Column column = segment.getColumn(new ColumnKey(columnName));
@@ -100,8 +100,24 @@ public class FormulaUtils {
         return columnIndexMap;
     }
 
+    public static String[] getRealRelatedParaNames(String formular) {
 
-    public static String[] getRelatedParaNames(String formular) {
+        ArrayList<String> nameList = new ArrayList<String>();
+        Pattern pat = Pattern.compile("\\$[\\{][^\\}]*[\\}]");
+        Matcher matcher = pat.matcher(formular);
+        while (matcher.find()) {
+            String matchStr = matcher.group(0);
+            nameList.add(matchStr.substring(2, matchStr.length() - 1));
+        }
+        String[] names = new String[nameList.size()];
+        for (int i = 0; i < nameList.size(); i++) {
+            names[i] = nameList.get(i);
+        }
+        return names;
+    }
+
+
+    public static String[] getHistoryRelatedParaNames(String formular) {
         int headStart = 0;
         int headEnd = 4;
         ArrayList<String> nameList = new ArrayList<String>();
@@ -125,7 +141,7 @@ public class FormulaUtils {
     public static ColumnType getColumnType(SwiftMetaData metadata, String expression) {
         Calculator c = Calculator.createCalculator();
         String formula = getParameterIndexEncodedFormula(expression);
-        String[] parameters = getRelatedParaNames(expression);
+        String[] parameters = getRealRelatedParaNames(expression);
         int index = 0;
         for (String parameter : parameters) {
             c.set(toParameterFormat(index++ + ""), getParameterDefaultValue(metadata, parameter));
