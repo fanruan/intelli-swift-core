@@ -11,6 +11,7 @@ import com.finebi.conf.internalimp.update.TableUpdateInfo;
 import com.finebi.conf.internalimp.update.UpdateLog;
 import com.finebi.conf.internalimp.update.UpdateNeedSpace;
 import com.finebi.conf.internalimp.update.UpdateStatus;
+import com.finebi.conf.provider.SwiftPackageConfProvider;
 import com.finebi.conf.provider.SwiftRelationPathConfProvider;
 import com.finebi.conf.provider.SwiftTableManager;
 import com.finebi.conf.service.engine.update.EngineUpdateManager;
@@ -80,7 +81,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
     @Override
     public TableUpdateInfo getPackageUpdateInfo(String packageId) {
-        return null;
+        return new TableUpdateInfo();
     }
 
     @Override
@@ -133,11 +134,20 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
     @Override
     public void savePackageUpdateSetting(String packId, TableUpdateInfo info) {
+        try {
+            List<FineBusinessTable> tables = tableManager.getAllTableByPackId(packId);
+            Map<FineBusinessTable, TableUpdateInfo> infoMap = new HashMap<FineBusinessTable, TableUpdateInfo>();
+            for (FineBusinessTable table : tables) {
+                infoMap.put(table, info);
+            }
+            saveUpdateSetting(infoMap);
+        } catch (Exception e) {
+            LOGGER.error(e);
+        }
     }
 
     @Override
     public void triggerPackageUpdate(String packId) {
-
     }
 
     @Override
@@ -152,7 +162,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
     @Override
     public UpdateStatus getPackUpdateStatus(String packId) {
-        return null;
+        return new UpdateStatus();
     }
 
     @Override
