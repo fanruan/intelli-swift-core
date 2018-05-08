@@ -6,7 +6,9 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.rowcal.rank.CreateSegmentForRank;
-import junit.framework.TestCase;
+import com.fr.swift.test.TestIo;
+import org.junit.Assert;
+import org.junit.Test;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -15,7 +17,8 @@ import java.util.List;
 /**
  * Created by Handsome on 2018/2/24 0024 16:38
  */
-public class AllDataRowCalculatorTest extends TestCase {
+public class AllDataRowCalculatorTest extends TestIo {
+    @Test
     public void testAllDataRow() throws SQLException {
         Segment[] lSegment = new Segment[2];
         lSegment[0] = new CreateSegmentForRank().getSegment();
@@ -37,7 +40,7 @@ public class AllDataRowCalculatorTest extends TestCase {
             while (rs.next()) {
                 Row row = rs.getRowData();
                 for (int i = 0; i < 1; i++) {
-                    assertEquals(row.getValue(i).toString(), str[index++]);
+                    Assert.assertEquals(row.getValue(i).toString(), str[index++]);
                 }
             }
         }

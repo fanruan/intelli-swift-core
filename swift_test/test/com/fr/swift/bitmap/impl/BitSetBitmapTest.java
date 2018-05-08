@@ -6,7 +6,7 @@ import com.fr.swift.bitmap.MutableBitMap;
 /**
  * @author anchore
  */
-public class BaseBitSetTest extends BaseRoaringTest {
+public class BitSetBitmapTest extends RoaringBitmapTest {
     @Override
     MutableBitMap getMutableBitMap() {
         return BitSetMutableBitMap.newInstance();
