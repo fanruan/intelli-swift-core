@@ -1,0 +1,957 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="swift:war exploded" />
+    </artifacts-to-build>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="a65198e1-d19d-4485-a6a0-b62859128891" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/../build.swift.gradle" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../clean.gradle" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/artifacts/swift_war_exploded.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/vcs.xml" beforeDir="false" />
+    </list>
+    <ignored path="$PROJECT_DIR$/target/" />
+    <ignored path="$PROJECT_DIR$/swift-base/target/" />
+    <ignored path="$PROJECT_DIR$/swift-analyse/target/" />
+    <ignored path="$PROJECT_DIR$/swift-history/target/" />
+    <ignored path="$PROJECT_DIR$/swift-indexing/target/" />
+    <ignored path="$PROJECT_DIR$/swift-realtime/target/" />
+    <ignored path="$PROJECT_DIR$/swift-server/target/" />
+    <ignored path="$PROJECT_DIR$/swift-fundation-adaptor/target/" />
+    <ignored path="$PROJECT_DIR$/swift-log-adaptor/target/" />
+    <ignored path="$PROJECT_DIR$/swift-test/target/" />
+    <ignored path="$PROJECT_DIR$/fine-engine-swift/target/" />
+    <ignored path="$PROJECT_DIR$/../target/" />
+    <ignored path="$PROJECT_DIR$/../swift-server/target/" />
+    <ignored path="$PROJECT_DIR$/../swift-history/target/" />
+    <ignored path="$PROJECT_DIR$/../swift-indexing/target/" />
+    <ignored path="$PROJECT_DIR$/../swift-base/target/" />
+    <ignored path="$PROJECT_DIR$/../swift-log-adaptor/target/" />
+    <ignored path="$PROJECT_DIR$/../swift-analyse/target/" />
+    <ignored path="$PROJECT_DIR$/../swift-test/target/" />
+    <ignored path="$PROJECT_DIR$/../swift-realtime/target/" />
+    <ignored path="$PROJECT_DIR$/../swift-fundation-adaptor/target/" />
+    <ignored path="$PROJECT_DIR$/../fine-engine-swift/target/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand />
+    <select />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="Properties.java" pinned="false" current-in-tab="true">
+        <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_151.jdk/Contents/Home/src.zip!/java/util/Properties.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="333">
+              <caret line="426" column="37" lean-forward="true" selection-start-line="426" selection-start-column="37" selection-end-line="426" selection-end-column="37" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PriorityQueue.java" pinned="false" current-in-tab="false">
+        <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_151.jdk/Contents/Home/src.zip!/java/util/PriorityQueue.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1495">
+              <caret line="89" column="7" selection-start-line="89" selection-start-column="7" selection-end-line="89" selection-end-column="7" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FineAnalysisTableServiceImpl.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180507.083608-38.jar!/com/finebi/conf/internalimp/analysis/service/FineAnalysisTableServiceImpl.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1978">
+              <caret line="129" selection-start-line="129" selection-end-line="129" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BITableResult.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180507.000702-33.jar!/com/finebi/conf/structure/result/table/BITableResult.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="161">
+              <caret line="10" column="19" selection-start-line="10" selection-start-column="19" selection-end-line="10" selection-end-column="19" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BIGroupNode.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180507.000702-33.jar!/com/finebi/conf/structure/result/table/BIGroupNode.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="138">
+              <caret line="9" column="69" selection-start-line="9" selection-start-column="69" selection-end-line="9" selection-end-column="69" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FineGroupNode.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180507.000702-33.jar!/com/finebi/conf/internalimp/dashboard/widget/result/table/FineGroupNode.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="161">
+              <caret line="15" column="24" selection-start-line="15" selection-start-column="24" selection-end-line="15" selection-end-column="24" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GroupNodeSummaryContainer.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180507.000702-33.jar!/com/finebi/conf/structure/result/table/GroupNodeSummaryContainer.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="92">
+              <caret line="7" column="17" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="17" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TableWidget.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180507.083608-38.jar!/com/finebi/conf/internalimp/dashboard/widget/table/TableWidget.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="828">
+              <caret line="55" selection-start-line="55" selection-end-line="55" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BIComplexGroupResult.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180507.000702-33.jar!/com/finebi/conf/structure/result/table/BIComplexGroupResult.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="207">
+              <caret line="12" column="19" selection-start-line="12" selection-start-column="19" selection-end-line="12" selection-end-column="19" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TableWidget.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180507.000702-33.jar!/com/finebi/conf/internalimp/dashboard/widget/table/TableWidget.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="828">
+              <caret line="55" selection-start-line="55" selection-end-line="55" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>5</find>
+      <find>3</find>
+      <find>Group</find>
+      <find>48</find>
+    </findStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/swift-analyse/pom.xml" />
+        <option value="$PROJECT_DIR$/swift-indexing/pom.xml" />
+        <option value="$PROJECT_DIR$/swift-realtime/pom.xml" />
+        <option value="$PROJECT_DIR$/swift-server/pom.xml" />
+        <option value="$PROJECT_DIR$/swift-base/src/main/java/com/fr/swift/segment/column/impl/base/DoubleDictColumn.java" />
+        <option value="$PROJECT_DIR$/out/artifacts/swift_war_exploded/WEB-INF/ReportServer-servlet.xml" />
+        <option value="$PROJECT_DIR$/src/main/webapp/WEB-INF/ReportServer-servlet.xml" />
+        <option value="$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/linkage/LinkageAdaptor.java" />
+        <option value="$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/widget/DetailWidgetAdaptor.java" />
+        <option value="$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/widget/TableWidgetAdaptor.java" />
+        <option value="$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/finebi/conf/provider/SwiftRelationPathConfProvider.java" />
+        <option value="$PROJECT_DIR$/swift-base/src/main/java/com/fr/swift/segment/relation/column/RelationColumn.java" />
+        <option value="$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/widget/target/CalTargetParseUtils.java" />
+        <option value="$PROJECT_DIR$/swift-base/src/main/java/com/fr/swift/result/NodeMergeResultSetImpl.java" />
+        <option value="$PROJECT_DIR$/swift-indexing/src/main/java/com/fr/swift/generate/preview/MinorUpdater.java" />
+        <option value="$PROJECT_DIR$/swift-base/src/main/java/com/fr/swift/source/etl/EtlSource.java" />
+        <option value="$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/transformer/etl/SelectFieldAdaptor.java" />
+        <option value="$PROJECT_DIR$/swift-log-adaptor/src/test/java/com/fr/swift/adaptor/log/LogOperatorTest.java" />
+        <option value="$PROJECT_DIR$/swift-fundation-adaptor/src/test/java/com/fr/swift/fine/adaptor/etl/formula/FormulaPreviewTest.java" />
+        <option value="$PROJECT_DIR$/swift-test/pom.xml" />
+        <option value="$PROJECT_DIR$/swift-fundation-adaptor/src/test/java/com/finebi/conf/pack/BusinessPackageProviderTest.java" />
+        <option value="$PROJECT_DIR$/swift-fundation-adaptor/pom.xml" />
+        <option value="$PROJECT_DIR$/swift-log-adaptor/pom.xml" />
+        <option value="$PROJECT_DIR$/swift-history/pom.xml" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/fine-engine-swift/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="LogFilters">
+    <option name="FILTER_ERRORS" value="false" />
+    <option name="FILTER_WARNINGS" value="false" />
+    <option name="FILTER_INFO" value="true" />
+    <option name="FILTER_DEBUG" value="true" />
+    <option name="CUSTOM_FILTER" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="$USER_HOME$/maven" />
+        <option name="userSettingsFile" value="$USER_HOME$/maven/conf/settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="importAutomatically" value="true" />
+      </MavenImportingSettings>
+    </option>
+  </component>
+  <component name="MavenProjectNavigator">
+    <treeState>
+      <expand>
+        <path>
+          <item name="" type="16c1761:MavenProjectsStructure$RootNode" />
+          <item name="swift" type="9519ce18:MavenProjectsStructure$ProjectNode" />
+        </path>
+        <path>
+          <item name="" type="16c1761:MavenProjectsStructure$RootNode" />
+          <item name="swift" type="9519ce18:MavenProjectsStructure$ProjectNode" />
+          <item name="Lifecycle" type="58874e2:MavenProjectsStructure$LifecycleNode" />
+        </path>
+        <path>
+          <item name="" type="16c1761:MavenProjectsStructure$RootNode" />
+          <item name="swift-fundation-adaptor" type="9519ce18:MavenProjectsStructure$ProjectNode" />
+        </path>
+        <path>
+          <item name="" type="16c1761:MavenProjectsStructure$RootNode" />
+          <item name="swift-fundation-adaptor" type="9519ce18:MavenProjectsStructure$ProjectNode" />
+          <item name="Dependencies" type="f4be9f2a:MavenProjectsStructure$DependenciesNode" />
+        </path>
+      </expand>
+      <select />
+    </treeState>
+  </component>
+  <component name="NodePackageJsonFileManager">
+    <packageJsonPaths />
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="y" value="24" />
+    <option name="width" value="1680" />
+    <option name="height" value="958" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="AndroidView" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="nuclear-core" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="nuclear-core" type="462c0819:PsiDirectoryNode" />
+              <item name=".idea" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="PackagesPane" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="SearchEverywhereHistoryKey" value="BaseTest&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-test/src/test/java/com/fr/swift/generate/BaseTest.java&#10;TestConfDb&#9;PSI&#9;JAVA://com.fr.swift.config.TestConfDb&#10;ResourceUtils&#9;PSI&#9;JAVA://com.fr.swift.resource.ResourceUtils&#10;TestConnectionProvider&#9;PSI&#9;JAVA://com.fr.swift.source.db.TestConnectionProvider&#10;DbNameConnectionCreator&#9;PSI&#9;JAVA://com.fr.engine.bi.connection.DbNameConnectionCreator&#10;TableW&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/widget/TableWidgetAdaptor.java&#10;Node&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-base/src/main/java/com/fr/swift/result/NodeMergeResultSetImpl.java&#10;Table&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/widget/TableWidgetAdaptor.java&#10;BaseField&#9;PSI&#9;JAVA://com.fr.swift.generate.BaseFieldPathIndexer&#10;BaseSe&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-base/src/main/java/com/fr/swift/segment/BaseSegment.java&#10;StringF&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-base/src/main/java/com/fr/swift/query/filter/detail/impl/string/StringInFilter.java&#10;RelationCol&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-base/src/main/java/com/fr/swift/segment/relation/column/RelationColumn.java&#10;Relation&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-fundation-adaptor/src/main/java/com/finebi/conf/provider/SwiftRelationPathConfProvider.java&#10;RelationSourceFa&#9;PSI&#9;JAVA://com.fr.swift.adaptor.transformer.RelationSourceFactory&#10;NodeMer&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-base/src/main/java/com/fr/swift/result/NodeMergeResultSetImpl.java&#10;RelationC&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-base/src/main/java/com/fr/swift/segment/relation/column/RelationColumn.java&#10;Relat&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-base/src/main/java/com/fr/swift/segment/relation/column/RelationColumn.java&#10;ByteAr&#9;PSI&#9;JAVA://com.fr.swift.cube.io.impl.fineio.input.ByteArrayFineIoReader&#10;StringInF&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-base/src/main/java/com/fr/swift/query/filter/detail/impl/string/StringInFilter.java&#10;RelationCo&#9;PSI&#9;JAVA://com.fr.swift.segment.relation.column.RelationColumn&#10;NodeM&#9;PSI&#9;JAVA://com.fr.swift.result.NodeMergeResultSetImpl&#10;Bitmapcol&#9;PSI&#9;JAVA://com.fr.swift.segment.column.BitmapIndexedColumn&#10;Abstract&#9;FILE&#9;jar:///Users/yee/.m2/repository/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180506.000537-30.jar!/com/finebi/conf/internalimp/bean/dashboard/widget/dimension/group/AbstractDimensionGroupBean.class&#10;BIComm&#9;PSI&#9;JAVA://com.finebi.conf.constant.BICommonConstants&#10;Deta&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/widget/DetailWidgetAdaptor.java&#10;CustomGroupR&#9;PSI&#9;JAVA://com.fr.swift.query.group.CustomGroupRule&#10;NoG&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-base/src/main/java/com/fr/swift/query/group/impl/NoGroupRule.java&#10;Group&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-base/src/main/java/com/fr/swift/query/group/impl/NoGroupRule.java&#10;AbstractFineDimension&#9;FILE&#9;jar:///Users/yee/.m2/repository/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180506.000537-30.jar!/com/finebi/conf/internalimp/dashboard/widget/dimension/AbstractFineDimension.class&#10;AbstractDimensionAndTarget&#9;FILE&#9;jar:///Users/yee/.m2/repository/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180506.000537-30.jar!/com/finebi/conf/internalimp/dashboard/widget/AbstractDimensionAndTarget.class&#10;TableWid&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/widget/TableWidgetAdaptor.java&#10;DetailW&#9;PSI&#9;JAVA://com.fr.swift.adaptor.widget.DetailWidgetAdaptor&#10;FilterInfoF&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/transformer/FilterInfoFactory.java&#10;DateU&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/transformer/date/DateUtils.java&#10;BIC&#9;FILE&#9;jar:///Users/yee/.m2/repository/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180505.080446-27.jar!/com/finebi/conf/constant/BICommonConstants.class&#10;Linka&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/linkage/LinkageAdaptor.java&#10;DateSt&#9;FILE&#9;jar:///Users/yee/.m2/repository/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180505.080446-27.jar!/com/finebi/conf/internalimp/bean/filtervalue/date/single/DateStaticFilterBean.class&#10;BIConsta&#9;PSI&#9;JAVA://com.finebi.conf.constant.BICommonConstants&#10;DateStaticFilterBean&#9;PSI&#9;JAVA://com.finebi.conf.internalimp.bean.filtervalue.date.single.DateStaticFilterBean&#10;tree2rowiterator&#9;PSI&#9;JAVA://com.fr.swift.structure.iterator.Tree2RowIterator&#10;TableWidget&#9;PSI&#9;JAVA://com.fr.swift.adaptor.widget.TableWidgetAdaptor" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="project.structure.last.edited" value="Artifacts" />
+    <property name="project.structure.proportion" value="0.14245014" />
+    <property name="project.structure.side.proportion" value="0.20273349" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/out/artifacts/swift_war_exploded/WEB-INF" />
+      <recent name="$PROJECT_DIR$/out/artifacts" />
+      <recent name="$PROJECT_DIR$/swift-fundation-adaptor/src/main/java" />
+      <recent name="$PROJECT_DIR$/swift-fundation-adaptor/src" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="com.fr.swift.config" />
+      <recent name="com.fr.swift.resource" />
+      <recent name="com.fr.swift.source.db" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/resources" />
+      <recent name="$PROJECT_DIR$/src/main/webapp/WEB-INF/lib" />
+      <recent name="$PROJECT_DIR$/src/main/webapp/WEB-INF" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Tomcat Server.feature5.0">
+    <configuration default="true" type="Application" factoryName="Application">
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    </configuration>
+    <configuration name="All in swift-fundation-adaptor" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="swift-fundation-adaptor" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="package" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <patterns />
+    </configuration>
+    <configuration name="All in swift-test" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="swift-test" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="package" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <patterns />
+    </configuration>
+    <configuration name="BusinessPackageProviderTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="swift-fundation-adaptor" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.finebi.conf.pack.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="com.finebi.conf.pack" />
+      <option name="MAIN_CLASS_NAME" value="com.finebi.conf.pack.BusinessPackageProviderTest" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <patterns />
+    </configuration>
+    <configuration name="HisSwiftDeleterTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="swift-test" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.fr.swift.data.operator.delete.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="com.fr.swift.data.operator.delete" />
+      <option name="MAIN_CLASS_NAME" value="com.fr.swift.data.operator.delete.HisSwiftDeleterTest" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <patterns />
+    </configuration>
+    <configuration name="SpaceUsageDetectorTest.testDetect" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="swift-test" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.fr.swift.cube.space.impl.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="com.fr.swift.cube.space.impl" />
+      <option name="MAIN_CLASS_NAME" value="com.fr.swift.cube.space.impl.SpaceUsageDetectorTest" />
+      <option name="METHOD_NAME" value="testDetect" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <patterns />
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <patterns />
+    </configuration>
+    <configuration default="true" type="TestNG" factoryName="TestNG">
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SUITE_NAME" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="GROUP_NAME" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="OUTPUT_DIRECTORY" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <option name="USE_DEFAULT_REPORTERS" value="false" />
+      <option name="PROPERTIES_FILE" />
+      <properties />
+      <listeners />
+    </configuration>
+    <configuration name="feature5.0" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 8.5.23" ALTERNATIVE_JRE_ENABLED="false">
+      <option name="OPEN_IN_BROWSER_URL" value="http://localhost:8080/app" />
+      <option name="BROWSER_ID" value="98ca6316-2f89-46d9-a9e5-fa9e2b0625b3" />
+      <option name="UPDATING_POLICY" value="restart-server" />
+      <deployment>
+        <artifact name="swift:war exploded">
+          <settings>
+            <option name="CONTEXT_PATH" value="/app" />
+          </settings>
+        </artifact>
+      </deployment>
+      <server-settings>
+        <option name="BASE_DIRECTORY_NAME" value="Unnamed_swift" />
+      </server-settings>
+      <predefined_log_file id="Tomcat" enabled="true" />
+      <predefined_log_file id="Tomcat Catalina" enabled="true" />
+      <predefined_log_file id="Tomcat Manager" enabled="false" />
+      <predefined_log_file id="Tomcat Host Manager" enabled="false" />
+      <predefined_log_file id="Tomcat Localhost Access" enabled="false" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="53405" />
+      </RunnerSettings>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Debug">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Run">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <method>
+        <option name="BuildArtifacts" enabled="true">
+          <artifact name="swift:war exploded" />
+        </option>
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Tomcat Server.feature5.0" />
+      <item itemvalue="JUnit.All in swift-test" />
+      <item itemvalue="JUnit.HisSwiftDeleterTest" />
+      <item itemvalue="JUnit.SpaceUsageDetectorTest.testDetect" />
+      <item itemvalue="JUnit.All in swift-fundation-adaptor" />
+      <item itemvalue="JUnit.BusinessPackageProviderTest" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.BusinessPackageProviderTest" />
+        <item itemvalue="JUnit.All in swift-fundation-adaptor" />
+        <item itemvalue="JUnit.All in swift-test" />
+        <item itemvalue="JUnit.SpaceUsageDetectorTest.testDetect" />
+        <item itemvalue="JUnit.HisSwiftDeleterTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a65198e1-d19d-4485-a6a0-b62859128891" name="Default" comment="" />
+      <created>1525505851651</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1525505851651</updated>
+      <workItem from="1525505853275" duration="6425000" />
+      <workItem from="1525514279868" duration="705000" />
+      <workItem from="1525515380722" duration="20777000" />
+      <workItem from="1525572187497" duration="13476000" />
+      <workItem from="1525651010435" duration="24416000" />
+      <workItem from="1525700550908" duration="8976000" />
+      <workItem from="1525740643533" duration="8146000" />
+      <workItem from="1525758056360" duration="483000" />
+      <workItem from="1525758881020" duration="513000" />
+      <workItem from="1525759545506" duration="290000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TestHistory">
+    <history-entry file="All_in_swift-test - 2018.05.08 at 13h 07m 19s.xml">
+      <configuration name="All in swift-test" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="HisSwiftDeleterTest - 2018.05.08 at 13h 07m 25s.xml">
+      <configuration name="HisSwiftDeleterTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="HisSwiftDeleterTest - 2018.05.08 at 13h 09m 01s.xml">
+      <configuration name="HisSwiftDeleterTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="All_in_swift-test - 2018.05.08 at 13h 10m 09s.xml">
+      <configuration name="All in swift-test" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="SpaceUsageDetectorTest_testDetect - 2018.05.08 at 13h 10m 22s.xml">
+      <configuration name="SpaceUsageDetectorTest.testDetect" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="All_in_swift-test - 2018.05.08 at 13h 11m 34s.xml">
+      <configuration name="All in swift-test" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="All_in_swift-fundation-adaptor - 2018.05.08 at 13h 12m 15s.xml">
+      <configuration name="All in swift-fundation-adaptor" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="All_in_swift-fundation-adaptor - 2018.05.08 at 13h 13m 01s.xml">
+      <configuration name="All in swift-fundation-adaptor" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="BusinessPackageProviderTest - 2018.05.08 at 13h 13m 58s.xml">
+      <configuration name="BusinessPackageProviderTest" configurationId="JUnit" />
+    </history-entry>
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="84207000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="0" y="24" width="1680" height="958" extended-state="0" />
+    <layout>
+      <window_info anchor="right" id="Palette" order="3" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Messages" order="7" weight="0.3293556" />
+      <window_info anchor="right" id="Palette&#9;" order="3" />
+      <window_info id="Image Layers" order="2" />
+      <window_info anchor="right" id="Capture Analysis" order="3" />
+      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.50061053" side_tool="true" weight="0.39976135" />
+      <window_info anchor="bottom" id="Application Servers" order="7" weight="0.3293556" />
+      <window_info anchor="right" id="Maven Projects" order="3" weight="0.32967034" />
+      <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.5477327" />
+      <window_info anchor="bottom" id="Version Control" order="7" />
+      <window_info anchor="bottom" id="Terminal" order="7" weight="0.3293556" />
+      <window_info id="Capture Tool" order="2" />
+      <window_info id="Designer" order="2" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4970179" visible="true" weight="0.2741148" />
+      <window_info anchor="right" id="Database" order="3" weight="0.32967034" />
+      <window_info id="Structure" order="1" sideWeight="0.5029821" side_tool="true" weight="0.26190478" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info id="UI Designer" order="2" />
+      <window_info anchor="right" id="Theme Preview" order="3" />
+      <window_info active="true" anchor="bottom" id="Debug" order="3" sideWeight="0.4993895" visible="true" weight="0.50119334" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info id="Web" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="bottom" id="Java Enterprise" order="7" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$" />
+    </ignored-roots>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints-dialog>
+        <breakpoints-dialog />
+      </breakpoints-dialog>
+      <option name="time" value="156" />
+    </breakpoint-manager>
+  </component>
+  <component name="debuggerHistoryManager">
+    <expressions id="evaluateCodeFragment">
+      <expression>
+        <expression-string>widget.getFieldByFieldId(&quot;&quot;)</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>for (int i = 0; i &lt; dict.size(); i++) {
+    System.out.println(dict.getValue(i));
+}</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>for (int i = 0; i &lt; dict.size(); i++) {
+    System.out.println(i + &quot; &quot; + dict.getValue(i));
+}</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>for (int i = 1; i &lt; dict.size(); i++) {
+    System.out.println(i + &quot; &quot; + dict.getValue(i));
+}</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>ArrayLookupHelper.lookup((T[]) new Object[]{convertValue(value)}, lookup)[0]</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>for (int i = 1; i &lt; dict.size(); i++)
+    System.out.println(i + &quot; &quot; + dict.getValue(i));</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>for(int i = 1; i &lt; dict.size(); i++)
+    System.out.println(dict.getValue(i));</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>int size = dict.size();
+for (int i = 1; i &lt; size; i++) {
+    System.out.println(i + &quot;  &quot; +dict.getValue(i));
+}</expression-string>
+        <language-id>JAVA</language-id>
+        <custom-info>java.util.List,java.util.ArrayList,java.lang.String</custom-info>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>int size = dict.size();
+for (int i = 1; i &lt; size; i++) {
+    System.out.println(dict.getValue(i));
+}</expression-string>
+        <language-id>JAVA</language-id>
+        <custom-info>java.util.List,java.util.ArrayList,java.lang.String</custom-info>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>int size = dict.size();
+List&lt;String&gt; list = new ArrayList&lt;String&gt;();
+for (int i = 1; i &lt; size; i++) {
+    list.add(dict.getValue(i));
+}
+System.out.println(((ArrayList&lt;String&gt;) list).size);</expression-string>
+        <language-id>JAVA</language-id>
+        <custom-info>java.util.List,java.util.ArrayList,java.lang.String</custom-info>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+    </expressions>
+    <expressions id="breakpointCondition">
+      <expression>
+        <expression-string>columnKey.getName().equals(&quot;城市&quot;)</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+    </expressions>
+    <expressions id="evaluateExpression">
+      <expression>
+        <expression-string>source.getSourceKey()</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>widget.getFieldByFieldId(&quot;0013DEMO_CONTRACT合同ID&quot;)</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>manager.getAllRelationPaths()</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>manager.getRelationPaths(table, fromWidget.getTableName())</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>manager.getRelationPaths(fromWidget.getTableName(), table)</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>((NodeMergeResultSetImpl) resultSet).aggregators</expression-string>
+        <language-id>JAVA</language-id>
+        <custom-info>com.fr.swift.result.NodeMergeResultSetImpl</custom-info>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>((NodeMergeResultSetImpl) resultSet).rowGlobalDictionaries</expression-string>
+        <language-id>JAVA</language-id>
+        <custom-info>com.fr.swift.result.NodeMergeResultSetImpl</custom-info>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>resultSet.getMetaData()</expression-string>
+        <language-id>JAVA</language-id>
+        <custom-info>com.fr.swift.result.NodeMergeResultSetImpl</custom-info>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>((NodeMergeResultSetImpl) resultSet).getNode()</expression-string>
+        <language-id>JAVA</language-id>
+        <custom-info>com.fr.swift.result.NodeMergeResultSetImpl</custom-info>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+    </expressions>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180507.000702-33.jar!/com/finebi/conf/internalimp/dashboard/widget/table/TableWidget.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="828">
+          <caret line="55" selection-start-line="55" selection-end-line="55" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/swift-indexing/src/main/java/com/fr/swift/generate/preview/MinorUpdater.java" />
+    <entry file="file://$PROJECT_DIR$/swift-base/src/main/java/com/fr/swift/source/SourceKey.java" />
+    <entry file="file://$PROJECT_DIR$/swift-base/src/main/java/com/fr/swift/query/adapter/dimension/Dimension.java" />
+    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/connection/SwiftConnectionAdaptor.java" />
+    <entry file="jar://$PROJECT_DIR$/src/main/webapp/WEB-INF/lib/fine-bi-connector-5.0.jar!/com/fr/engine/bi/connection/ConnectionAdapter.class" />
+    <entry file="jar://$PROJECT_DIR$/src/main/webapp/WEB-INF/lib/fine-bi-connector-5.0.jar!/com/fr/engine/bi/connection/DbNameConnectionCreator.class" />
+    <entry file="jar://$PROJECT_DIR$/src/main/webapp/WEB-INF/lib/fine-bi-connector-5.0.jar!/com/fr/engine/datasource/ConnectionCreator.class" />
+    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/transformer/etl/SelectFieldAdaptor.java" />
+    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_151.jdk/Contents/Home/src.zip!/java/util/Properties.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="333">
+          <caret line="426" column="37" lean-forward="true" selection-start-line="426" selection-start-column="37" selection-end-line="426" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/swift-base/src/main/java/com/fr/swift/query/adapter/dimension/DetailDimension.java" />
+    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_151.jdk/Contents/Home/src.zip!/java/util/PriorityQueue.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1495">
+          <caret line="89" column="7" selection-start-line="89" selection-start-column="7" selection-end-line="89" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/log4j.properties" />
+    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/struct/SwiftDetailTableResult.java" />
+    <entry file="file://$PROJECT_DIR$/swift-test/src/test/java/com/fr/swift/generate/flow/IncreaseFlowControlTest.java" />
+    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/widget/DetailWidgetAdaptor.java" />
+    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/transformer/FilterInfoFactory.java" />
+    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/transformer/RelationSourceFactory.java" />
+    <entry file="file://$PROJECT_DIR$/swift-test/src/main/java/com/fr/swift/source/db/TestConnectionProvider.java" />
+    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/linkage/LinkageAdaptor.java" />
+    <entry file="file://$PROJECT_DIR$/swift-log-adaptor/src/test/java/com/fr/swift/adaptor/log/query/LogBaseTest.java" />
+    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/finebi/conf/provider/SwiftRelationPathConfProvider.java" />
+    <entry file="file://$PROJECT_DIR$/swift-log-adaptor/src/test/java/com/fr/swift/adaptor/log/LogOperatorTest.java" />
+    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/widget/AbstractTableWidgetAdaptor.java" />
+    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/test/java/com/fr/swift/fine/adaptor/executor/SwiftSQLDataModelTest.java" />
+    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/widget/group/GroupTypeAdaptor.java" />
+    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/widget/target/CalTargetParseUtils.java" />
+    <entry file="file://$PROJECT_DIR$/swift-test/src/test/java/com/fr/swift/generate/BaseTest.java" />
+    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/test/java/com/fr/swift/fine/adaptor/etl/formula/FormulaPreviewTest.java" />
+    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/finebi/conf/imp/SwiftUpdateManager.java" />
+    <entry file="file://$PROJECT_DIR$/swift-test/src/main/java/com/fr/swift/resource/ResourceUtils.java" />
+    <entry file="file://$PROJECT_DIR$/swift-test/src/test/java/com/fr/swift/generate/BaseConfigTest.java" />
+    <entry file="file://$PROJECT_DIR$/swift-test/src/main/java/com/fr/swift/config/TestConfDb.java" />
+    <entry file="file://$PROJECT_DIR$/swift-base/src/main/java/com/fr/swift/query/group/GroupType.java" />
+    <entry file="file://$PROJECT_DIR$/swift-base/src/main/java/com/fr/swift/cube/space/impl/LocalSpaceUsageDetector.java" />
+    <entry file="file://$PROJECT_DIR$/swift-base/src/main/java/com/fr/swift/segment/BaseSegment.java" />
+    <entry file="file://$PROJECT_DIR$/swift-test/src/test/java/com/fr/swift/cube/space/impl/SpaceUsageDetectorTest.java" />
+    <entry file="file://$PROJECT_DIR$/swift-test/pom.xml" />
+    <entry file="file://$PROJECT_DIR$/swift-base/src/main/java/com/fr/swift/source/etl/groupsum/SumByGroupOperator.java" />
+    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/test/java/com/finebi/conf/pack/BusinessPackageProviderTest.java" />
+    <entry file="file://$PROJECT_DIR$/swift-base/src/main/java/com/fr/swift/cube/io/ResourceDiscovery.java" />
+    <entry file="file://$PROJECT_DIR$/swift-log-adaptor/pom.xml" />
+    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/widget/TableWidgetAdaptor.java" />
+    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/pom.xml" />
+    <entry file="file://$PROJECT_DIR$/swift-history/pom.xml" />
+    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/finebi/conf/imp/SwiftAnalysisTableManager.java" />
+    <entry file="file://$PROJECT_DIR$/swift-base/src/main/java/com/fr/swift/source/etl/EtlSource.java" />
+    <entry file="file://$PROJECT_DIR$/swift-server/pom.xml" />
+    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/fr/swift/provider/impl/SwiftDataProvider.java" />
+    <entry file="file://$PROJECT_DIR$/fine-engine-swift/pom.xml" />
+    <entry file="file://$PROJECT_DIR$/pom.xml" />
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <last-edited>swift:war exploded</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.20273349" />
+                <option value="0.5" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <last-edited>No facets are configured</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.20273349" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <last-edited>1.8</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <last-edited>fine-engine-swift</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.20273349" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <last-edited>Maven: com.fineio:fineio:1.0</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.20273349" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>
