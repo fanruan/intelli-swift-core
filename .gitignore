@@ -49,7 +49,6 @@ fabric.properties
 *.tar.gz
 *.rar
 hs_err_pid*
-project/.idea/compiler.xml
-project/.idea/misc.xml
-project/.idea/ui*.xml
+project/.idea/*.xml
 *.iml
+project/.idea/libraries/*.xml
