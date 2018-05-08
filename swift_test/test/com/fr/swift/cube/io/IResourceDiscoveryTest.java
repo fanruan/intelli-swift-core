@@ -7,7 +7,9 @@ import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.cube.io.output.Writer;
-import junit.framework.TestCase;
+import com.fr.swift.test.TestIo;
+import org.junit.After;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,15 +19,17 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import static com.fr.swift.cube.io.BaseIoTest.CUBES_PATH;
+import static org.junit.Assert.fail;
 
 /**
  * @author anchore
  * @date 2017/11/21
  */
-public class IResourceDiscoveryTest extends TestCase {
+public class IResourceDiscoveryTest extends TestIo {
     private static final IResourceDiscovery DISCOVERY = ResourceDiscovery.getInstance();
     private ExecutorService exec = Executors.newFixedThreadPool(8);
 
+    @Test
     public void testGetReader() throws ExecutionException, InterruptedException {
         List<Future<Reader>> readers = new ArrayList<>();
         IResourceLocation location = new ResourceLocation(CUBES_PATH + "/int/child", StoreType.MEMORY);
@@ -40,6 +44,7 @@ public class IResourceDiscoveryTest extends TestCase {
         }
     }
 
+    @Test
     public void testGetWriter() throws ExecutionException, InterruptedException {
         List<Future<Writer>> writers = new ArrayList<>();
         IResourceLocation location = new ResourceLocation(CUBES_PATH + "/int/child", StoreType.MEMORY);
@@ -53,8 +58,8 @@ public class IResourceDiscoveryTest extends TestCase {
         }
     }
 
-    @Override
-    protected void tearDown() {
+    @After
+    public void tearDown() {
         exec.shutdown();
     }
 }

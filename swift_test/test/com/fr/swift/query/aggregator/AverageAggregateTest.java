@@ -8,15 +8,17 @@ import com.fr.swift.segment.column.impl.base.DoubleDetailColumn;
 import com.fr.swift.segment.column.impl.base.IntDetailColumn;
 import com.fr.swift.segment.column.impl.base.LongDetailColumn;
 import com.fr.swift.structure.iterator.RowTraversal;
-import junit.framework.TestCase;
+import com.fr.swift.test.TestIo;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
+import org.junit.Assert;
+import org.junit.Test;
 
-import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 
-public class AverageAggregateTest extends TestCase {
+public class AverageAggregateTest extends TestIo {
 
+    @Test
     public void testAggregateInt() {
         RowTraversal bitMap = AllShowBitMap.newInstance(4);
         IMocksControl control = EasyMock.createControl();
@@ -31,16 +33,17 @@ public class AverageAggregateTest extends TestCase {
         control.replay();
 
         double sum = 17.0;
-        AverageAggregate avg = (AverageAggregate)AverageAggregate.INSTANCE;
+        AverageAggregate avg = (AverageAggregate) AverageAggregate.INSTANCE;
         DoubleAverageAggregatorValue an = avg.aggregate(bitMap, mockColumn);
-        assertEquals(sum, an.getValue());
-        assertEquals(4, an.getRowCount());
-        assertEquals(sum/4, an.calculate());
+        Assert.assertEquals(sum, an.getValue(), 0);
+        Assert.assertEquals(4, an.getRowCount(), 0);
+        Assert.assertEquals(sum / 4, an.calculate(), 0);
         control.verify();
 
 
     }
 
+    @Test
     public void testAggregateLong() {
         RowTraversal bitMap = AllShowBitMap.newInstance(4);
         IMocksControl control = EasyMock.createControl();
@@ -55,16 +58,17 @@ public class AverageAggregateTest extends TestCase {
         control.replay();
 
         double sum = 9.0;
-        AverageAggregate avg = (AverageAggregate)AverageAggregate.INSTANCE;
+        AverageAggregate avg = (AverageAggregate) AverageAggregate.INSTANCE;
         DoubleAverageAggregatorValue an = avg.aggregate(bitMap, mockColumn);
-        assertEquals(sum, an.getValue());
-        assertEquals(4, an.getRowCount());
-        assertEquals(sum/4, an.calculate());
+        Assert.assertEquals(sum, an.getValue(), 0);
+        Assert.assertEquals(4, an.getRowCount());
+        Assert.assertEquals(sum / 4, an.calculate(), 0);
         control.verify();
 
 
     }
 
+    @Test
     public void testAggregateDouble() {
         RowTraversal bitMap = AllShowBitMap.newInstance(4);
         IMocksControl control = EasyMock.createControl();
@@ -79,17 +83,18 @@ public class AverageAggregateTest extends TestCase {
         control.replay();
 
         double sum = 19.0;
-        AverageAggregate avg = (AverageAggregate)AverageAggregate.INSTANCE;
+        AverageAggregate avg = (AverageAggregate) AverageAggregate.INSTANCE;
         DoubleAverageAggregatorValue an = avg.aggregate(bitMap, mockColumn);
-        assertEquals(sum, an.getValue());
-        assertEquals(4, an.getRowCount());
-        assertEquals(sum/4, an.calculate());
+        Assert.assertEquals(sum, an.getValue(), 0);
+        Assert.assertEquals(4, an.getRowCount());
+        Assert.assertEquals(sum / 4, an.calculate(), 0);
         control.verify();
 
 
     }
 
 
+    @Test
     public void testCombine() {
         DoubleAverageAggregatorValue valueTest1 = new DoubleAverageAggregatorValue();
         DoubleAverageAggregatorValue otherTest1 = new DoubleAverageAggregatorValue();
@@ -105,14 +110,14 @@ public class AverageAggregateTest extends TestCase {
         otherTest2.setValue(0);
         otherTest2.setRowCount(2);
 
-        AverageAggregate avg = (AverageAggregate)AverageAggregate.INSTANCE;
+        AverageAggregate avg = (AverageAggregate) AverageAggregate.INSTANCE;
         avg.combine(valueTest1, otherTest1);
         avg.combine(valueTest2, otherTest2);
 
-        assertEquals(3.200000000000001, valueTest1.getValue());
-        assertEquals(22, valueTest1.getRowCount());
-        assertEquals(10.4, valueTest2.getValue());
-        assertEquals(4, valueTest2.getRowCount());
+        Assert.assertEquals(3.200000000000001, valueTest1.getValue(), 0);
+        Assert.assertEquals(22, valueTest1.getRowCount());
+        Assert.assertEquals(10.4, valueTest2.getValue(), 0);
+        Assert.assertEquals(4, valueTest2.getRowCount(), 0);
     }
 
 }

@@ -2,19 +2,20 @@ package com.fr.swift.segment.column.impl.base;
 
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.test.TestIo;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Comparator;
 import java.util.Random;
 
 import static com.fr.swift.cube.io.BaseIoTest.CUBES_PATH;
-import static org.junit.Assert.assertEquals;
 
 /**
  * @author anchore
  * @date 2017/11/10
  */
-public abstract class BaseDictColumnTest<T> {
+public abstract class BaseDictColumnTest<T> extends TestIo {
 
     static final String BASE_PATH = CUBES_PATH;
     Random r = new Random();
@@ -34,11 +35,12 @@ public abstract class BaseDictColumnTest<T> {
 
         dictColumn = getDictColumn();
         for (int i = 1; i < values.length; i++) {
-            assertEquals(i, dictColumn.getIndex(values[i]));
-            assertEquals(values[i], dictColumn.getValue(i));
+            Assert.assertEquals(i, dictColumn.getIndex(values[i]));
+            Assert.assertEquals(values[i], dictColumn.getValue(i));
         }
     }
 
+    @Test
     public void testPutSizeThenGet() {
         DictionaryEncodedColumn<T> dictColumn = getDictColumn();
         int size = r.nextInt(1000000000);
@@ -46,9 +48,10 @@ public abstract class BaseDictColumnTest<T> {
         reset(dictColumn);
 
         dictColumn = getDictColumn();
-        assertEquals(size, dictColumn.size());
+        Assert.assertEquals(size, dictColumn.size());
     }
 
+    @Test
     public void testPutIndexThenGet() {
         int size = 100000;
         DictionaryEncodedColumn<T> dictColumn = getDictColumn();
@@ -60,7 +63,7 @@ public abstract class BaseDictColumnTest<T> {
 
         dictColumn = getDictColumn();
         for (int i = 0; i < indices.length; i++) {
-            assertEquals(indices[i], dictColumn.getIndexByRow(i));
+            Assert.assertEquals(indices[i], dictColumn.getIndexByRow(i));
         }
     }
 

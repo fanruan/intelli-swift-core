@@ -3,6 +3,8 @@ package com.fr.swift.query.filter.info;
 import com.fr.swift.query.filter.DetailFilterFactory;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.filter.match.DetailBasedMatchFilter;
+import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.core.CoreField;
@@ -68,5 +70,10 @@ public class SwiftDetailFilterInfo<T> extends AbstractDetailFilterInfo {
         result = 31 * result + (type != null ? type.hashCode() : 0);
         result = 31 * result + (columnKey != null ? columnKey.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public MatchFilter createMatchFilter() {
+        return new DetailBasedMatchFilter(-1, this.createDetailFilter(null));
     }
 }

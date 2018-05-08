@@ -14,7 +14,7 @@ import static org.junit.Assert.fail;
 /**
  * @author anchore
  */
-public class BaseRoaringTest {
+public class RoaringBitmapTest {
     private final Random r = new Random();
     private static final int BOUND = 1000000;
 

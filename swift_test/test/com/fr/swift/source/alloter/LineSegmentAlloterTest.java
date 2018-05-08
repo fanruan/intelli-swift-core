@@ -19,7 +19,10 @@ import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceAlloter;
 import com.fr.swift.source.SwiftSourceAlloterFactory;
 import com.fr.swift.source.core.Core;
-import junit.framework.TestCase;
+import com.fr.swift.test.TestIo;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.sql.Types;
 import java.util.ArrayList;
@@ -30,12 +33,12 @@ import java.util.List;
  * @author yee
  * @date 2017/12/19
  */
-public class LineSegmentAlloterTest extends TestCase {
+public class LineSegmentAlloterTest extends TestIo {
     SwiftResultSet resultSet;
     int count;
 
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         List<Row> datas = new ArrayList<>();
         count = (int) (Math.random() * 1000000);
         System.err.println(count);
@@ -74,6 +77,7 @@ public class LineSegmentAlloterTest extends TestCase {
 
     }
 
+    @Test
     public void testAlloc() throws Exception {
         SourceKey sourceKey = new SourceKey("A");
 
@@ -112,7 +116,7 @@ public class LineSegmentAlloterTest extends TestCase {
                 segment = new HistorySegmentImpl(location, resultSet.getMetaData());
                 column = segment.getColumn(new ColumnKey("long")).getDetailColumn();
             }
-            assertEquals(column.getLong(i % 100000), (long) i);
+            Assert.assertEquals(column.getLong(i % 100000), (long) i);
         }
     }
 }

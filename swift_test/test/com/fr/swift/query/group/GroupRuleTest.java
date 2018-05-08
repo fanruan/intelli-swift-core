@@ -71,17 +71,17 @@ public class GroupRuleTest {
         assertEquals(9, rule.map(3).get(3));
         assertEquals(10, rule.map(3).get(4));
 
-        assertEquals(0, rule.reverseMap(0));
-        assertEquals(1, rule.reverseMap(1));
-        assertEquals(1, rule.reverseMap(2));
-        assertEquals(1, rule.reverseMap(3));
-        assertEquals(3, rule.reverseMap(4));
-        assertEquals(2, rule.reverseMap(5));
-        assertEquals(2, rule.reverseMap(6));
-        assertEquals(3, rule.reverseMap(7));
-        assertEquals(3, rule.reverseMap(8));
-        assertEquals(3, rule.reverseMap(9));
-        assertEquals(3, rule.reverseMap(10));
+        assertEquals(0, rule.reverseMap(0).get(0));
+        assertEquals(1, rule.reverseMap(1).get(0));
+        assertEquals(1, rule.reverseMap(2).get(0));
+        assertEquals(1, rule.reverseMap(3).get(0));
+        assertEquals(3, rule.reverseMap(4).get(0));
+        assertEquals(2, rule.reverseMap(5).get(0));
+        assertEquals(2, rule.reverseMap(6).get(0));
+        assertEquals(3, rule.reverseMap(7).get(0));
+        assertEquals(3, rule.reverseMap(8).get(0));
+        assertEquals(3, rule.reverseMap(9).get(0));
+        assertEquals(3, rule.reverseMap(10).get(0));
     }
 
     @Test
@@ -139,17 +139,17 @@ public class GroupRuleTest {
         assertEquals(1, l3.size());
         assertEquals(10, l3.get(0));
 
-        assertEquals(0, rule.reverseMap(0));
-        assertEquals(1, rule.reverseMap(1));
-        assertEquals(1, rule.reverseMap(2));
-        assertEquals(1, rule.reverseMap(3));
-        assertEquals(3, rule.reverseMap(4));
-        assertEquals(2, rule.reverseMap(5));
-        assertEquals(2, rule.reverseMap(6));
-        assertEquals(2, rule.reverseMap(7));
-        assertEquals(2, rule.reverseMap(8));
-        assertEquals(2, rule.reverseMap(9));
-        assertEquals(4, rule.reverseMap(10));
+        assertEquals(0, rule.reverseMap(0).get(0));
+        assertEquals(1, rule.reverseMap(1).get(0));
+        assertEquals(1, rule.reverseMap(2).get(0));
+        assertEquals(1, rule.reverseMap(3).get(0));
+        assertEquals(3, rule.reverseMap(4).get(0));
+        assertEquals(2, rule.reverseMap(5).get(0));
+        assertEquals(2, rule.reverseMap(6).get(0));
+        assertEquals(2, rule.reverseMap(7).get(0));
+        assertEquals(2, rule.reverseMap(8).get(0));
+        assertEquals(2, rule.reverseMap(9).get(0));
+        assertEquals(4, rule.reverseMap(10).get(0));
     }
 
     @Test
@@ -207,17 +207,17 @@ public class GroupRuleTest {
         assertEquals(6, l3.get(1));
         assertEquals(10, l3.get(2));
 
-        assertEquals(0, rule.reverseMap(0));
-        assertEquals(1, rule.reverseMap(1));
-        assertEquals(1, rule.reverseMap(2));
-        assertEquals(4, rule.reverseMap(3));
-        assertEquals(2, rule.reverseMap(4));
-        assertEquals(2, rule.reverseMap(5));
-        assertEquals(4, rule.reverseMap(6));
-        assertEquals(3, rule.reverseMap(7));
-        assertEquals(3, rule.reverseMap(8));
-        assertEquals(3, rule.reverseMap(9));
-        assertEquals(4, rule.reverseMap(10));
+        assertEquals(0, rule.reverseMap(0).get(0));
+        assertEquals(1, rule.reverseMap(1).get(0));
+        assertEquals(1, rule.reverseMap(2).get(0));
+        assertEquals(4, rule.reverseMap(3).get(0));
+        assertEquals(2, rule.reverseMap(4).get(0));
+        assertEquals(2, rule.reverseMap(5).get(0));
+        assertEquals(4, rule.reverseMap(6).get(0));
+        assertEquals(3, rule.reverseMap(7).get(0));
+        assertEquals(3, rule.reverseMap(8).get(0));
+        assertEquals(3, rule.reverseMap(9).get(0));
+        assertEquals(4, rule.reverseMap(10).get(0));
     }
 
     @Test
@@ -280,17 +280,17 @@ public class GroupRuleTest {
         assertEquals(1, l4.size());
         assertEquals(10, l4.get(0));
 
-        assertEquals(0, rule.reverseMap(0));
-        assertEquals(1, rule.reverseMap(1));
-        assertEquals(1, rule.reverseMap(2));
-        assertEquals(4, rule.reverseMap(3));
-        assertEquals(2, rule.reverseMap(4));
-        assertEquals(2, rule.reverseMap(5));
-        assertEquals(2, rule.reverseMap(6));
-        assertEquals(3, rule.reverseMap(7));
-        assertEquals(3, rule.reverseMap(8));
-        assertEquals(3, rule.reverseMap(9));
-        assertEquals(5, rule.reverseMap(10));
+        assertEquals(0, rule.reverseMap(0).get(0));
+        assertEquals(1, rule.reverseMap(1).get(0));
+        assertEquals(1, rule.reverseMap(2).get(0));
+        assertEquals(4, rule.reverseMap(3).get(0));
+        assertEquals(2, rule.reverseMap(4).get(0));
+        assertEquals(2, rule.reverseMap(5).get(0));
+        assertEquals(2, rule.reverseMap(6).get(0));
+        assertEquals(3, rule.reverseMap(7).get(0));
+        assertEquals(3, rule.reverseMap(8).get(0));
+        assertEquals(3, rule.reverseMap(9).get(0));
+        assertEquals(5, rule.reverseMap(10).get(0));
     }
 
     @Test
@@ -339,17 +339,17 @@ public class GroupRuleTest {
         assertEquals(9, l2.get(0));
         assertEquals(10, l2.get(1));
 
-        assertEquals(0, rule.reverseMap(0));
-        assertEquals(1, rule.reverseMap(1));
-        assertEquals(1, rule.reverseMap(2));
-        assertEquals(1, rule.reverseMap(3));
-        assertEquals(1, rule.reverseMap(4));
-        assertEquals(2, rule.reverseMap(5));
-        assertEquals(2, rule.reverseMap(6));
-        assertEquals(2, rule.reverseMap(7));
-        assertEquals(2, rule.reverseMap(8));
-        assertEquals(3, rule.reverseMap(9));
-        assertEquals(3, rule.reverseMap(10));
+        assertEquals(0, rule.reverseMap(0).get(0));
+        assertEquals(1, rule.reverseMap(1).get(0));
+        assertEquals(1, rule.reverseMap(2).get(0));
+        assertEquals(1, rule.reverseMap(3).get(0));
+        assertEquals(1, rule.reverseMap(4).get(0));
+        assertEquals(2, rule.reverseMap(5).get(0));
+        assertEquals(2, rule.reverseMap(6).get(0));
+        assertEquals(2, rule.reverseMap(7).get(0));
+        assertEquals(2, rule.reverseMap(8).get(0));
+        assertEquals(3, rule.reverseMap(9).get(0));
+        assertEquals(3, rule.reverseMap(10).get(0));
     }
 
     @Test
