@@ -75,38 +75,47 @@ public class GroupAdaptor {
     /**
      * nice job! foundation
      *
-     * @param dimGroup
-     * @return
+     * @param dimGroup group
+     * @return group
      */
-    public static Group adaptDashboardGroup(FineDimensionGroup dimGroup) {
+    private static Group adaptDashboardGroup(FineDimensionGroup dimGroup, boolean sorted) {
         if (dimGroup == null) {
             return Groups.newGroup(new NoGroupRule());
         }
         GroupType type = GroupTypeAdaptor.adaptDashboardGroup(dimGroup.getType());
-        return Groups.newGroup(adaptRule(type, dimGroup));
+        return Groups.newGroup(adaptRule(type, dimGroup, sorted));
     }
 
     public static Group adaptDashboardGroup(FineDimension fineDim) throws SQLException {
         FineDimensionSort fineDimSort = fineDim.getSort();
-        Group originGroup = adaptDashboardGroup(fineDim.getGroup());
+        FineDimensionGroup fineDimGroup = fineDim.getGroup();
         if (fineDimSort == null) {
-            return originGroup;
+            return adaptDashboardGroup(fineDimGroup, false);
         }
         switch (fineDimSort.getType()) {
             case SORT.CUSTOM: {
                 List<String> values = ((DimensionCustomSort) fineDimSort).getValue().getDetails();
+                Group originGroup = adaptDashboardGroup(fineDimGroup, false);
                 return toCustomSortGroup(originGroup, getClassType(fineDim), values);
             }
             case SORT.FILTER_CUSTOM: {
                 List<String> values = ((DimensionFilterCustomSort) fineDimSort).getValue().getDetails();
+                Group originGroup = adaptDashboardGroup(fineDimGroup, false);
                 return toCustomSortGroup(originGroup, getClassType(fineDim), values);
             }
-            case SORT.FILTER_ASC:
+            case SORT.FILTER_ASC: {
+                Group originGroup = adaptDashboardGroup(fineDimGroup, false);
                 return Groups.wrap(originGroup, new BaseSortByOtherDimensionGroupRule(SortType.ASC));
-            case SORT.FILTER_DESC:
+            }
+            case SORT.FILTER_DESC: {
+                Group originGroup = adaptDashboardGroup(fineDimGroup, false);
                 return Groups.wrap(originGroup, new BaseSortByOtherDimensionGroupRule(SortType.DESC));
+            }
+            case SORT.ASC:
+            case SORT.DESC:
+                return adaptDashboardGroup(fineDimGroup, true);
             default:
-                return originGroup;
+                return adaptDashboardGroup(fineDimGroup, false);
         }
     }
 
@@ -134,21 +143,21 @@ public class GroupAdaptor {
                         for (String value : values) {
                             groups.add(new NumGroup(Long.valueOf(value)));
                         }
-                        return Groups.wrap(originGroup, new CustomSortGroupRule(groups));
+                        return Groups.wrap(originGroup, new CustomSortGroupRule<Number>(groups));
                     }
                     case DOUBLE: {
                         List<NumGroup> groups = new ArrayList<NumGroup>();
                         for (String value : values) {
                             groups.add(new NumGroup(Double.valueOf(value)));
                         }
-                        return Groups.wrap(originGroup, new CustomSortGroupRule(groups));
+                        return Groups.wrap(originGroup, new CustomSortGroupRule<Number>(groups));
                     }
                     case STRING: {
                         List<StringGroup> groups = new ArrayList<StringGroup>();
                         for (String value : values) {
                             groups.add(new StringGroup(value, Collections.singletonList(value)));
                         }
-                        return Groups.wrap(originGroup, new CustomSortGroupRule(groups));
+                        return Groups.wrap(originGroup, new CustomSortGroupRule<String>(groups));
                     }
                     default:
                         return originGroup;
@@ -165,14 +174,14 @@ public class GroupAdaptor {
         return ColumnTypeUtils.getClassType(meta.getColumn(BusinessTableUtils.getFieldNameByFieldId(fieldId)));
     }
 
-    private static GroupRule adaptRule(GroupType type, FineDimensionGroup dimGroup) {
+    private static GroupRule adaptRule(GroupType type, FineDimensionGroup dimGroup, boolean sorted) {
         switch (type) {
             case AUTO:
-                return newAutoRule((NumberDimensionAutoGroup) dimGroup);
+                return newAutoRule((NumberDimensionAutoGroup) dimGroup, sorted);
             case CUSTOM_NUMBER:
-                return newCustomNumberRule((NumberDimensionCustomGroup) dimGroup);
+                return newCustomNumberRule((NumberDimensionCustomGroup) dimGroup, sorted);
             case CUSTOM:
-                return newCustomRule((StringDimensionCustomGroup) dimGroup);
+                return newCustomRule((StringDimensionCustomGroup) dimGroup, sorted);
             default:
                 return new NoGroupRule(type);
         }
@@ -182,7 +191,7 @@ public class GroupAdaptor {
         return stringGroup.getContent().isEmpty();
     }
 
-    private static GroupRule newCustomRule(StringDimensionCustomGroup dimGroup) {
+    private static GroupRule newCustomRule(StringDimensionCustomGroup dimGroup, boolean sorted) {
         StringCustomGroupValueBean bean = dimGroup.getValue().getValue();
 
         List<StringGroup> stringGroups = new ArrayList<StringGroup>();
@@ -199,10 +208,10 @@ public class GroupAdaptor {
             stringGroups.add(new StringGroup(groupName, values));
         }
 
-        return new CustomStrGroupRule(stringGroups, bean.getUseOther());
+        return new CustomStrGroupRule(stringGroups, bean.getUseOther(), sorted);
     }
 
-    private static GroupRule newCustomNumberRule(NumberDimensionCustomGroup dimGroup) {
+    private static GroupRule newCustomNumberRule(NumberDimensionCustomGroup dimGroup, boolean sorted) {
         NumberCustomGroupValueBean groupValue = dimGroup.getValue().getGroupValue();
         List<NumberCustomGroupNodeBean> beans = groupValue.getGroupNodes();
 
@@ -213,11 +222,11 @@ public class GroupAdaptor {
                     bean.getMax(), bean.isCloseMax()));
         }
 
-        return new CustomNumGroupRule(intervals, groupValue.getUseOther());
+        return new CustomNumGroupRule(intervals, groupValue.getUseOther(), sorted);
     }
 
-    private static GroupRule newAutoRule(NumberDimensionAutoGroup group) {
+    private static GroupRule newAutoRule(NumberDimensionAutoGroup group, boolean sorted) {
         NumberAutoGroupValueBean bean = group.getValue().getGroupValue();
-        return new AutoNumGroupRule(new Partition(bean.getMin(), bean.getMax(), bean.getGroupInterval()));
+        return new AutoNumGroupRule(new Partition(bean.getMin(), bean.getMax(), bean.getGroupInterval()), sorted);
     }
 }

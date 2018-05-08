@@ -27,7 +27,7 @@ public class GroupRuleTest {
         CustomGroupRule rule = new CustomStrGroupRule(Arrays.asList(
                 new StringGroup("g0", Arrays.asList("1", "2", "3")),
                 new StringGroup("g1", Arrays.asList("5", "6"))
-        ), "ungrouped");
+        ), "ungrouped", false);
         rule.setOriginDict(new TempDictColumn<String>() {
             String[] values = {null, "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
 
@@ -89,7 +89,7 @@ public class GroupRuleTest {
         CustomGroupRule rule = new CustomStrGroupRule(Arrays.asList(
                 new StringGroup("g0", Arrays.asList("1", "2", "3")),
                 new StringGroup("g1", Arrays.asList("5", "6", "7", "8", "9"))
-        ), null);
+        ), null, false);
         rule.setOriginDict(new TempDictColumn<String>() {
             String[] values = {null, "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
 
@@ -158,7 +158,7 @@ public class GroupRuleTest {
                 new NumInterval("g0", 0, true, 2.1, false),
                 new NumInterval("g1", 4, true, 6, false),
                 new NumInterval("g2", 7, true, 10, false)
-        ), "ungrouped");
+        ), "ungrouped", false);
         rule.setOriginDict(new TempDictColumn<Number>() {
             Number[] numbers = {null, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
@@ -226,7 +226,7 @@ public class GroupRuleTest {
                 new NumInterval("g0", 0, true, 2.1, false),
                 new NumInterval("g1", 4, true, 7, false),
                 new NumInterval("g2", 7, true, 10, false)
-        ), null);
+        ), null, false);
         rule.setOriginDict(new TempDictColumn<Number>() {
             Number[] numbers = {null, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
@@ -295,7 +295,7 @@ public class GroupRuleTest {
 
     @Test
     public void testAutoGroupRule() {
-        CustomGroupRule rule = new AutoNumGroupRule(new Partition(1, 10, 4));
+        CustomGroupRule rule = new AutoNumGroupRule(new Partition(1, 10, 4), false);
         rule.setOriginDict(new TempDictColumn<Number>() {
             Number[] numbers = {null, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
@@ -358,7 +358,7 @@ public class GroupRuleTest {
                 new NumInterval("g0", 0, true, 2.1, false),
                 new NumInterval("g1", 4, true, 6, false),
                 new NumInterval("g2", 7, true, 10, false)
-        ), null);
+        ), null, false);
         rule.setOriginDict(new TempDictColumn<Number>() {
             Number[] numbers = {null, 3.0, 6.1};
 
@@ -399,7 +399,7 @@ public class GroupRuleTest {
                 new StringGroup("g0", Arrays.asList("1", "2")),
                 new StringGroup("g1", Arrays.asList("3", "4", "6", "7")),
                 new StringGroup("g2", Arrays.asList("8", "9"))
-        ), null);
+        ), null, false);
         rule.setOriginDict(new TempDictColumn<String>() {
             String[] values = {null, "5"};
             int[] globalIndices = {0, 5};
