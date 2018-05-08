@@ -7,6 +7,12 @@ import com.fr.swift.result.SwiftNode;
  * 处理聚合之后结果的过滤
  */
 public interface MatchFilter {
-    // 只有对聚合之后的数值进行过滤才是结果过滤，其他都应该是明细过滤。
+
+    /**
+     * 结果过滤，可能包装了明细过滤器
+     *
+     * @param node
+     * @return
+     */
     boolean matches(SwiftNode node);
 }

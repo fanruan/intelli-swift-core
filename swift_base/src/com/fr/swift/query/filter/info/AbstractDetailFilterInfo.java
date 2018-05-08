@@ -1,5 +1,6 @@
 package com.fr.swift.query.filter.info;
 
+import com.fr.swift.query.filter.match.DetailBasedMatchFilter;
 import com.fr.swift.query.filter.match.MatchFilter;
 
 /**
@@ -13,6 +14,8 @@ public abstract class AbstractDetailFilterInfo extends AbstractFilterInfo{
 
     @Override
     public MatchFilter createMatchFilter() {
-        return null;
+        // 这边默认是对节点本身进行过滤的，而不是根据指标进行过滤
+        // 为什么呢？因为依赖于指标的结果过滤在解析的时候直接解析为MatchFilter了
+        return new DetailBasedMatchFilter(-1, this.createDetailFilter(null));
     }
 }

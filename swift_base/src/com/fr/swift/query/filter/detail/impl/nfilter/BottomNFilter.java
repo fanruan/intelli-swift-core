@@ -33,8 +33,11 @@ public class BottomNFilter extends AbstractDetailFilter {
 
     @Override
     public boolean matches(SwiftNode node, int targetIndex) {
-        int index = node.getIndex();
-        int size = node.getParent().getChildrenSize();
-        return size - index < bottomN;
+        if (targetIndex == -1) {
+            int index = node.getIndex();
+            return index < bottomN;
+        }
+        // TODO: 2018/5/8 依据指标的过滤
+        return true;
     }
 }

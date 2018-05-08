@@ -42,7 +42,7 @@ public class SwiftDetailFilterInfo<T> extends AbstractDetailFilterInfo {
 
     @Override
     public boolean isMatchFilter() {
-        return false;
+        return type == SwiftDetailFilterType.BOTTOM_N || type == SwiftDetailFilterType.TOP_N;
     }
 
     @Override

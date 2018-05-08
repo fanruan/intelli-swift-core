@@ -48,7 +48,7 @@ public class XGroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> 
 
         // 下面设置字典、取出要返回的结果指标、对结果指标做横向和列向汇总、结果指标转为二维数组
         TargetCalculatorUtils.setTopGroupNodeData(resultSet.getTopGroupNode(), resultSet.getColGlobalDictionaries());
-        TargetCalculatorUtils.getShowTargetsForXLeftNodeAndSetNodeData((XLeftNode) resultSet.getNode(),
+        TargetCalculatorUtils.getShowTargetsForXLeftNodeAndSetNodeDataAndSetNodeIndex((XLeftNode) resultSet.getNode(),
                 info.getTargetInfo().getTargetsForShowList(), resultSet.getRowGlobalDictionaries());
         // 对最后结果进行汇总
         int rowDimensionSize = info.getDimensionInfo().getDimensions().length;

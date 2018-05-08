@@ -9,6 +9,7 @@ import java.util.List;
 public class GroupNode<T extends GroupNode> extends AbstractSwiftNode<T> implements Iterable<T> {
 
     protected int deep;
+    protected int nodeIndex;
     protected Object data;
     protected ChildMap<T> childMap = new ChildMap<T>();
     protected int dictionaryIndex = -1;
@@ -24,6 +25,9 @@ public class GroupNode<T extends GroupNode> extends AbstractSwiftNode<T> impleme
         this.dictionaryIndex = segmentIndex;
     }
 
+    public GroupNode() {
+    }
+
     public void setGlobalIndex(int globalIndex) {
         if (!isGlobalIndexUpdated) {
             this.dictionaryIndex = globalIndex;
@@ -37,6 +41,10 @@ public class GroupNode<T extends GroupNode> extends AbstractSwiftNode<T> impleme
 
     public ChildMap<T> getChildMap() {
         return childMap;
+    }
+
+    public void setIndex(int nodeIndex) {
+        this.nodeIndex = nodeIndex;
     }
 
     @Override
@@ -99,7 +107,7 @@ public class GroupNode<T extends GroupNode> extends AbstractSwiftNode<T> impleme
 
     @Override
     public int getIndex() {
-        return 0;
+        return nodeIndex;
     }
 
     @Override
