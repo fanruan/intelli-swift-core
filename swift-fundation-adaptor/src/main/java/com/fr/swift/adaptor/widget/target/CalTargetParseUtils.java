@@ -128,7 +128,7 @@ public class CalTargetParseUtils {
                 if (target.getCalculation() == null
                         || target.getCalculation().getType() == BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.NONE) {
                     // 没有设置快速计算指标
-                    int resultFetchIndex = baseMetricList.indexOf(parseMetricFromBaseTargetOfBaseField(target, widget));
+                    int resultFetchIndex = baseMetricList.indexOf(parseMetricFromBaseFieldOfBaseTarget(target, widget));
                     resultTargets.add(new ResultTarget(i, resultFetchIndex));
                 } else {
                     // 设置了快速计算指标的情况，取快速计算指标为结果
@@ -173,7 +173,7 @@ public class CalTargetParseUtils {
                     // 感觉计算指标和快速计算两者的功能重复了，计算指标字段依赖于另一个计算指标字段进行汇总和二次计算一样的
                     Pair<String, GroupTarget> pair = parseTargetCalInfoFromCalTargetField(target.getWidgetBeanField(), id,
                             baseMetricList, addedTargetIdList, widget);
-                    if (pair != null) {
+                    if (pair != null && !addedTargetIdList.contains(pair.getKey())) {
                         calTargets.add(pair.getValue());
                         addedTargetIdList.add(pair.getKey());
                     }
@@ -193,7 +193,7 @@ public class CalTargetParseUtils {
                 // 分组表指标依赖的计算指标字段
                 Pair<String, GroupTarget> pair = parseTargetCalInfoFromCalTargetField(getBeanFieldByFieldId(id, widget), id,
                         baseMetricList, addedTargetIdList, widget);
-                if (pair != null) {
+                if (pair != null && !addedTargetIdList.contains(pair.getKey())) {
                     calTargets.add(pair.getValue());
                     addedTargetIdList.add(pair.getKey());
                 }
@@ -216,7 +216,7 @@ public class CalTargetParseUtils {
         int resultIndex = baseMetricList.size() + addedTargetIdList.size();
         if (isBaseFieldTarget(target)) {
             // 原始字段生成的指标
-            int paramIndex = baseMetricList.indexOf(parseMetricFromBaseTargetOfBaseField(target, widget));
+            int paramIndex = baseMetricList.indexOf(parseMetricFromBaseFieldOfBaseTarget(target, widget));
             int rapidCalTargetType = target.getCalculation().getType();
             GroupTarget calTarget = GroupTargetFactory.createFromRapidTarget(rapidCalTargetType, 0,
                     new int[]{paramIndex}, resultIndex);
@@ -271,16 +271,15 @@ public class CalTargetParseUtils {
                 // 先假设为计算指标字段，先从已经添加的计算指标列表中找到
                 int index = addedTargetIdList.indexOf(fieldIds.get(i));
                 if (index != -1) {
-                    paramIndexes[i] = index + addedTargetIdList.size();
+                    paramIndexes[i] = index + baseMetricList.size();
                     continue;
                 }
-                // 否则当前fieldId对应的字段唯一的聚合指标
+                // 否则当前fieldId对应的字段唯一的聚合指标，fieldIds.get(i)只能对应原始字段的id？可能有的场景没考虑到有bug
                 WidgetBeanField subField = getBeanFieldByFieldId(fieldIds.get(i), widget);
-                paramIndexes[i] = baseMetricList.indexOf(parseMetricFromBaseCalTargetField(subField, widget).toArray()[0]);
+                paramIndexes[i] = baseMetricList.indexOf(parseMetricFromBaseFieldOfCalTargetField(subField, widget));
             }
-            int paramIndex = addedTargetIdList.indexOf(field.getTargetIds().get(0)) + baseMetricList.size();
             GroupTarget calTarget = GroupTargetFactory.createFromCalTarget(calTargetType, 0,
-                    new int[]{paramIndex}, resultIndex, field.getCalculate());
+                    paramIndexes, resultIndex, field.getCalculate());
             return Pair.of(field.getId(), calTarget);
         }
         return null;
@@ -302,7 +301,7 @@ public class CalTargetParseUtils {
             FineTarget target = widget.getTargetByTargetId(id);
             if (target != null && isBaseFieldTarget(target)) {
                 // 分组表中原始字段生成的指标
-                pairs.add(parseMetricFromBaseTargetOfBaseField(target, widget));
+                pairs.add(parseMetricFromBaseFieldOfBaseTarget(target, widget));
             } else if (target != null && !isBaseFieldTarget(target)) {
                 // 分组表的基础指标，但是由计算指标字段生成
                 pairs.addAll(parseMetricFromBaseCalTargetField(target.getWidgetBeanField(), widget));
@@ -348,7 +347,7 @@ public class CalTargetParseUtils {
      * @param widget
      * @return
      */
-    private static Pair<String, Pair<AggregatorType, FilterInfo>> parseMetricFromBaseTargetOfBaseField(FineTarget target, AbstractTableWidget widget) {
+    private static Pair<String, Pair<AggregatorType, FilterInfo>> parseMetricFromBaseFieldOfBaseTarget(FineTarget target, AbstractTableWidget widget) {
         // 原始字段生成的指标，id为原始字段的FieldId
         AggregatorType aggregatorType = AggregatorAdaptor.adaptorDashBoard(target.getGroup());
         // TODO: 2018/5/4 target里面的field和widget里面原来的那个field突然间就分裂了，明细过滤再target的field里面！太随性了！
@@ -356,6 +355,13 @@ public class CalTargetParseUtils {
         field = field != null ? field : getBeanFieldByFieldId(target.getFieldId(), widget);
         FilterInfo filterInfo = getDetailFilterInfoOfField(widget, field);
         return Pair.of(target.getFieldId(), Pair.of(aggregatorType, filterInfo));
+    }
+
+    private static Pair<String, Pair<AggregatorType, FilterInfo>> parseMetricFromBaseFieldOfCalTargetField(
+            WidgetBeanField field, AbstractTableWidget widget) {
+        FilterInfo filterInfo = getDetailFilterInfoOfField(widget, field);
+        // 这边默认的聚合方式是SUM
+        return Pair.of(field.getId(), Pair.of(AggregatorType.SUM, filterInfo));
     }
 
     /**
@@ -369,7 +375,7 @@ public class CalTargetParseUtils {
         } else {
             FineTarget target = widget.getTargetByTargetId(id);
             if (!isBaseFieldTarget(target)) {
-                // 说明target是一个计算指标字段生成的指标。原始字段生成的指标的widgetBeanField为null
+                // 说明target是一个计算指标字段生成的指标。
                 // 检查target有没有依赖其他计算指标
                 return !isCalTargetFieldDependedOnOtherCalTargetField(target.getWidgetBeanField(), widget);
             } else {
@@ -383,12 +389,12 @@ public class CalTargetParseUtils {
         List<String> relatedTargetIds = field.getTargetIds();
         // 检查相关的targetId中有没有计算指标
         for (String targetId : relatedTargetIds) {
-            if (getBeanFieldByFieldId(targetId, widget).getCalculate() == null) {
-                // targetId对应计算指标的beanFieldId，说明不依赖于其他计算指标
-                return false;
+            if (getBeanFieldByFieldId(targetId, widget).getCalculate() != null) {
+                // targetId对应计算指标的beanFieldId，说明依赖于其他计算指标
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     /**
@@ -420,14 +426,14 @@ public class CalTargetParseUtils {
      * 解析计算指标字段的依赖关系。如果是基础计算指标字段，则没有额外依赖
      */
     private static void parseRelationOfCalTargetField(Digraph<String> digraph, String previousId,
-                                                      WidgetBeanField field, AbstractTableWidget widget) throws Exception {
+                                                      WidgetBeanField field, AbstractTableWidget widget) {
         if (digraph.hasCycle()) {
             return;
         }
         // field.getTargetIds()得到的是fieldIdList，原始字段的fieldId或者是生成的计算指标字段的fieldId
         for (String id : field.getTargetIds()) {
-            if (isIdOfBaseTargetOrBaseCalTargetField(id, widget)) {
-                // 当前id已经是最基础的计算指标，不会依赖其他计算指标了
+            if (isBaseFieldId(id, widget)) {
+                // 当前id已经是最基础的原始字段，不会依赖其他计算指标了
                 continue;
             }
             if (getBeanFieldByFieldId(id, widget).getCalculate() != null) {
@@ -437,6 +443,11 @@ public class CalTargetParseUtils {
                 parseRelationOfCalTargetField(digraph, id, widget.getWidgetBeanField(id), widget);
             }
         }
+    }
+
+    private static boolean isBaseFieldId(String id, AbstractTableWidget widget) {
+        WidgetBeanField field = getBeanFieldByFieldId(id, widget);
+        return field.getCalculate() == null || field.getTargetIds() == null;
     }
 
     private static List<Metric> createMetrics(List<Pair<String, Pair<AggregatorType, FilterInfo>>> metricPairs) {
