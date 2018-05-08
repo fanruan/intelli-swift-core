@@ -16,8 +16,11 @@ import com.fr.swift.query.group.info.MetricInfoImpl;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.row.RowIndexKey;
+import com.fr.swift.test.TestIo;
 import com.fr.swift.util.function.Function2;
-import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,13 +31,13 @@ import java.util.Map;
 /**
  * Created by Lyon on 2018/5/7.
  */
-public class GroupNodeIteratorTest extends TestCase {
+public class GroupNodeIteratorTest extends TestIo {
 
     private GroupByInfo groupByInfo;
     private Iterator<GroupNode[]> iterator;
     private CubeData cubeData;
 
-    @Override
+    @Before
     public void setUp() throws Exception {
         cubeData = new CubeData();
         groupByInfo = new GroupByInfoImpl(cubeData.getDimensions(), new DetailFilter() {
@@ -59,14 +62,15 @@ public class GroupNodeIteratorTest extends TestCase {
         iterator = new GroupNodeIterator<GroupNode>(groupByInfo, new GroupNode(-1, null), itemMapper, rowMapper);
     }
 
+    @Test
     public void test() {
         Map<RowIndexKey<int[]>, double[]> result = cubeData.getAggregationResult();
         while (iterator.hasNext()) {
             GroupNode[] row = iterator.next();
             RowIndexKey<int[]> key = getKey(row);
-            assertTrue(result.containsKey(key));
+            Assert.assertTrue(result.containsKey(key));
             double[] values = getValues(row);
-            assertTrue(Arrays.equals(values, result.get(key)));
+            Assert.assertTrue(Arrays.equals(values, result.get(key)));
         }
     }
 

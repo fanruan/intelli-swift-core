@@ -35,7 +35,7 @@ public class IntListFactory {
         return new EmptyIntList();
     }
 
-    public static IntList newSingleList(int onlyOne) {
+    public static IntList newSingletonList(int onlyOne) {
         return createRangeIntList(onlyOne, onlyOne);
     }
 }

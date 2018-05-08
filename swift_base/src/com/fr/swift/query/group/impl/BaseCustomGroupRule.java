@@ -50,7 +50,8 @@ abstract class BaseCustomGroupRule<Base, Derive> extends BaseGroupRule implement
         int dictSize = dictColumn.size();
 
         // 0号为null
-        map.put(0, Pair.of((Derive) null, IntListFactory.newSingleList(0)));
+        map.put(0, Pair.of((Derive) null, IntListFactory.newSingletonList(0)));
+        reverseMap.put(0, IntListFactory.newSingletonList(0));
 
         for (int i = 1; i < dictSize; i++) {
             Base val = dictColumn.getValue(i);

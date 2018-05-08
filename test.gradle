@@ -108,6 +108,7 @@ task test_jar(dependsOn: compileJava) << {
                 batchtest(todir: "test_result") {
                     fileset(dir: "build/classes/test") {
                         include(name: "**/*Test.class")
+                        exclude(name: "**/Base*Test.class")
                     }
                 }
             }
