@@ -22,6 +22,7 @@ import com.fr.swift.conf.business.table2source.unique.TableToSourceUnique;
 import com.fr.swift.driver.SwiftDriverRegister;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.source.DataSource;
 import com.fr.swift.util.Crasher;
 
 import java.util.ArrayList;
@@ -76,10 +77,11 @@ public class SwiftTableManager extends AbstractEngineTableManager {
         try {
             while (iterator.hasNext()) {
                 FineBusinessTable table = (FineBusinessTable) iterator.next();
-                tableToSourceConfigDao.addConfig(table.getId(), DataSourceFactory.transformDataSource(table).getSourceKey().getId());
+                DataSource dataSource = DataSourceFactory.transformDataSource(table);
+                tableToSourceConfigDao.addConfig(table.getId(), dataSource.getSourceKey().getId());
                 EntryInfo entryInfo = this.createEntryInfo(table);
                 this.addEntryInfo(entryInfo, entry.getKey());
-                this.saveFieldInfo(FieldInfoHelper.createFieldInfo(entryInfo, table));
+                this.saveFieldInfo(FieldInfoHelper.createFieldInfo(entryInfo, dataSource.getMetadata()));
                 List<Relation> relationList = this.developDatabaseRelations(entryInfo, entry.getKey());
                 this.updateFineTableResponed(responed, entryInfo, relationList);
             }
@@ -96,11 +98,12 @@ public class SwiftTableManager extends AbstractEngineTableManager {
 
             while(iterator.hasNext()) {
                 FineBusinessTable table = (FineBusinessTable)iterator.next();
-                TableToSource tableToSource = new TableToSourceUnique(table.getId(), DataSourceFactory.transformDataSource(table).getSourceKey().getId());
+                DataSource dataSource = DataSourceFactory.transformDataSource(table);
+                TableToSource tableToSource = new TableToSourceUnique(table.getId(), dataSource.getSourceKey().getId());
                 tableToSourceConfigDao.updateConfig(tableToSource);
                 EntryInfo entryInfo = this.createEntryInfo(table);
                 this.updateEntryInfo(entryInfo);
-                this.saveFieldInfo(FieldInfoHelper.createFieldInfo(entryInfo, table));
+                this.saveFieldInfo(FieldInfoHelper.createFieldInfo(entryInfo, dataSource.getMetadata()));
             }
 
             return true;
