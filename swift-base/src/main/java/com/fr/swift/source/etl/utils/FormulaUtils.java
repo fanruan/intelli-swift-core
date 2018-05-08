@@ -102,7 +102,8 @@ public class FormulaUtils {
 
 
     public static String[] getRelatedParaNames(String formular) {
-
+        int headStart = 0;
+        int headEnd = 4;
         ArrayList<String> nameList = new ArrayList<String>();
         Pattern pat = Pattern.compile("\\$[\\{][^\\}]*[\\}]");
         Matcher matcher = pat.matcher(formular);
@@ -112,7 +113,9 @@ public class FormulaUtils {
         }
         String[] names = new String[nameList.size()];
         for (int i = 0; i < nameList.size(); i++) {
-            names[i] = nameList.get(i);
+            String fieldId = nameList.get(i);
+            int tableIdLength = Integer.valueOf(fieldId.substring(headStart, headEnd));
+            names[i] = fieldId.substring(headEnd + tableIdLength, fieldId.length());
         }
         return names;
     }
