@@ -53,3 +53,4 @@ project/.idea/compiler.xml
 project/.idea/misc.xml
 project/.idea/ui*.xml
 *.iml
+project/.idea/libraries/*.xml
