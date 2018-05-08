@@ -36,8 +36,8 @@
           <element id="library" level="project" name="Maven: com.finebi.spider:fine-bi-foundation:5.0-FEATURE-SNAPSHOT" />
           <element id="library" level="project" name="Maven: com.finebi.foundation:nuclear-foundation-connector:5.0-FEATURE-SNAPSHOT" />
         </element>
-        <element id="file-copy" path="$PROJECT_DIR$/src/main/webapp/WEB-INF/ReportServer-servlet.xml" />
-        <element id="file-copy" path="$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml" />
+        <element id="file-copy" path="$PROJECT_DIR$/../src/main/webapp/WEB-INF/ReportServer-servlet.xml" />
+        <element id="file-copy" path="$PROJECT_DIR$/../src/main/webapp/WEB-INF/web.xml" />
       </element>
     </root>
   </artifact>

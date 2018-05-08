@@ -1,0 +1,10 @@
+
+apply plugin: 'java'
+
+
+task clean {
+	ant{
+		delete(dir:"build")
+	}
+}
+
