@@ -1,0 +1,44 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" build-on-make="true" name="swift:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/swift_war_exploded</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="swift" />
+          <element id="module-output" name="swift-analyse" />
+          <element id="module-output" name="swift-base" />
+          <element id="module-output" name="swift-history" />
+          <element id="module-output" name="swift-indexing" />
+          <element id="module-output" name="swift-realtime" />
+          <element id="module-output" name="swift-server" />
+          <element id="module-output" name="swift-fundation-adaptor" />
+          <element id="module-output" name="swift-log-adaptor" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Maven: com.fineio:fineio:1.0" />
+          <element id="library" level="project" name="Maven: com.fr.core:fine-core:10.0-FEATURE-SNAPSHOT" />
+          <element id="library" level="project" name="Maven: com.fr.datamining:timeseriesForecasting:1.1.25" />
+          <element id="library" level="project" name="Maven: com.fr.datasource:fine-datasource:10.0-FEATURE-SNAPSHOT" />
+          <element id="library" level="project" name="Maven: com.fr.decision:fine-decision:10.0-FEATURE-SNAPSHOT" />
+          <element id="library" level="project" name="Maven: com.fr.schedule:fine-schedule:10.0-FEATURE-SNAPSHOT" />
+          <element id="library" level="project" name="Maven: com.fr.third:fine-third:10.0-FEATURE-SNAPSHOT" />
+          <element id="library" level="project" name="Maven: com.fr.webui:fine-webui:10.0-FEATURE-SNAPSHOT" />
+          <element id="library" level="project" name="Maven: io.netty:netty-all:4.1.22" />
+          <element id="library" level="project" name="Maven: log4j:log4j:1.2.17" />
+          <element id="library" level="project" name="Maven: nz.ac.waikato.cms.weka:weka-stable:3.8.2" />
+          <element id="library" level="project" name="Maven: org.rosuda.REngine:REngine:2.1.0" />
+          <element id="library" level="project" name="Maven: org.rosuda.REngine:Rserve:1.8.1" />
+          <element id="library" level="project" name="Maven: org.slf4j:slf4j-log4j12:1.7.21" />
+          <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.21" />
+          <element id="library" level="project" name="Maven: com.fr.activator:fine-activator:10.0-FEATURE-SNAPSHOT" />
+          <element id="library" level="project" name="Maven: com.fr.report:fine-report-engine:10.0-FEATURE-SNAPSHOT" />
+          <element id="library" level="project" name="Maven: com.finebi.foundation:fine-bi-foundation:5.0-FEATURE-SNAPSHOT" />
+          <element id="library" level="project" name="Maven: com.finebi.spider:fine-bi-foundation:5.0-FEATURE-SNAPSHOT" />
+          <element id="library" level="project" name="Maven: com.finebi.foundation:nuclear-foundation-connector:5.0-FEATURE-SNAPSHOT" />
+        </element>
+        <element id="file-copy" path="$PROJECT_DIR$/../src/main/webapp/WEB-INF/ReportServer-servlet.xml" />
+        <element id="file-copy" path="$PROJECT_DIR$/../src/main/webapp/WEB-INF/web.xml" />
+      </element>
+    </root>
+  </artifact>
+</component>
