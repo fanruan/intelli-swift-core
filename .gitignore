@@ -3,6 +3,8 @@ target/classes/
 target/generated-sources/
 target/maven-archiver/
 target/maven-status/
+target/**/*.xml
+target/**/*.lst
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
