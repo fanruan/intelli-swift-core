@@ -1,5 +1,8 @@
 # Created by .ignore support plugin (hsz.mobi)
-target/
+target/classes/
+target/generated-sources/
+target/maven-archiver/
+target/maven-status/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
@@ -46,5 +49,7 @@ fabric.properties
 *.tar.gz
 *.rar
 hs_err_pid*
-project/.idea/*.xml
+project/.idea/compiler.xml
+project/.idea/misc.xml
+project/.idea/ui*.xml
 *.iml
