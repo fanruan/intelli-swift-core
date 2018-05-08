@@ -6,15 +6,781 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a65198e1-d19d-4485-a6a0-b62859128891" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/../build.swift.gradle" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../clean.gradle" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/artifacts/swift_war_exploded.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/vcs.xml" beforeDir="false" />
+    <list default="true" id="a65198e1-d19d-4485-a6a0-b62859128891" name="Default" comment="漏">
+      <change afterPath="$PROJECT_DIR$/../fine-engine-swift/target/maven-archiver/pom.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fine-engine-swift/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fine-engine-swift/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-analyse/target/maven-archiver/pom.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-analyse/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-analyse/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-analyse/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-base/target/maven-archiver/pom.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-base/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-base/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-base/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-fundation-adaptor/target/classes/cube.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-history/target/maven-archiver/pom.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-history/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-history/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-history/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-indexing/target/maven-archiver/pom.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-indexing/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-indexing/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-indexing/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-log-adaptor/target/generated-test-sources/test-annotations/com/fr/swift/adaptor/log/query/ContractBean_.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-log-adaptor/target/maven-archiver/pom.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-log-adaptor/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-log-adaptor/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-log-adaptor/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-log-adaptor/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-realtime/target/maven-archiver/pom.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-realtime/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-realtime/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-realtime/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-server/target/maven-archiver/pom.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-server/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-server/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-server/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-test/target/maven-archiver/pom.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-test/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-test/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-test/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-test/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-test/target/test-classes/com/fr/swift/resource/excel/test.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-test/target/test-classes/com/fr/swift/resource/excel/test1.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-test/target/test-classes/com/fr/swift/resource/excel/test2.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../swift-test/target/test-classes/com/fr/swift/resource/h2/test.mv.db" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../target/classes/log4j.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/all_show_index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/all_show_index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/all_show_index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/all_show_index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/all_show_index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/all_show_index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/all_show_index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/all_show_index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/row_count/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/row_count/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同ID/external_string/externalData/0_key" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同ID/external_string/externalData/0_key_index" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同ID/external_string/externalData/0_key_size" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同ID/external_string/externalData/0_value" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同ID/external_string/externalData/count" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同ID/external_string/externalData/serialMap" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同ID/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同ID/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同ID/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同ID/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同ID/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同ID/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同ID/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同ID/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同付款类型/external_string/externalData/0_key" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同付款类型/external_string/externalData/0_key_index" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同付款类型/external_string/externalData/0_key_size" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同付款类型/external_string/externalData/0_value" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同付款类型/external_string/externalData/count" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同付款类型/external_string/externalData/serialMap" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同付款类型/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同付款类型/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同付款类型/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同付款类型/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同付款类型/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同付款类型/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同付款类型/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同付款类型/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同签约时间/detail/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同签约时间/detail/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同签约时间/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同签约时间/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同签约时间/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同签约时间/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同签约时间/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同签约时间/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同签约时间/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同签约时间/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同类型/external_string/externalData/0_key" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同类型/external_string/externalData/0_key_index" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同类型/external_string/externalData/0_key_size" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同类型/external_string/externalData/0_value" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同类型/external_string/externalData/count" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同类型/external_string/externalData/serialMap" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同类型/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同类型/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同类型/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同类型/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同类型/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同类型/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同类型/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/合同类型/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/客户ID/external_string/externalData/0_key" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/客户ID/external_string/externalData/0_key_index" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/客户ID/external_string/externalData/0_key_size" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/客户ID/external_string/externalData/0_value" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/客户ID/external_string/externalData/count" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/客户ID/external_string/externalData/serialMap" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/客户ID/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/客户ID/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/客户ID/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/客户ID/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/客户ID/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/客户ID/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/客户ID/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/客户ID/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/总金额/detail/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/总金额/detail/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/总金额/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/总金额/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/总金额/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/总金额/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/总金额/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/总金额/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/总金额/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/总金额/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/是否已经交货/external_string/externalData/0_key" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/是否已经交货/external_string/externalData/0_key_index" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/是否已经交货/external_string/externalData/0_key_size" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/是否已经交货/external_string/externalData/0_value" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/是否已经交货/external_string/externalData/count" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/是否已经交货/external_string/externalData/serialMap" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/是否已经交货/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/是否已经交货/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/是否已经交货/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/是否已经交货/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/是否已经交货/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/是否已经交货/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/是否已经交货/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/是否已经交货/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/注册时间/detail/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/注册时间/detail/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/注册时间/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/注册时间/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/注册时间/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/注册时间/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/注册时间/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/注册时间/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/注册时间/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/注册时间/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/购买数量/detail/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/购买数量/detail/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/购买数量/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/购买数量/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/购买数量/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/购买数量/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/购买数量/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/购买数量/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/购买数量/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/购买数量/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/购买的产品/detail/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/购买的产品/detail/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/购买的产品/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/购买的产品/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/购买的产品/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/购买的产品/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/购买的产品/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/购买的产品/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/购买的产品/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg0/购买的产品/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/all_show_index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/all_show_index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/all_show_index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/all_show_index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/all_show_index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/all_show_index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/all_show_index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/all_show_index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/row_count/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/row_count/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同ID/external_string/externalData/0_key" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同ID/external_string/externalData/0_key_index" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同ID/external_string/externalData/0_key_size" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同ID/external_string/externalData/0_value" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同ID/external_string/externalData/count" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同ID/external_string/externalData/serialMap" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同ID/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同ID/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同ID/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同ID/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同ID/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同ID/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同ID/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同ID/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同付款类型/external_string/externalData/0_key" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同付款类型/external_string/externalData/0_key_index" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同付款类型/external_string/externalData/0_key_size" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同付款类型/external_string/externalData/0_value" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同付款类型/external_string/externalData/count" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同付款类型/external_string/externalData/serialMap" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同付款类型/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同付款类型/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同付款类型/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同付款类型/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同付款类型/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同付款类型/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同付款类型/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同付款类型/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同签约时间/detail/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同签约时间/detail/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同签约时间/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同签约时间/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同签约时间/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同签约时间/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同签约时间/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同签约时间/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同签约时间/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同签约时间/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同类型/external_string/externalData/0_key" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同类型/external_string/externalData/0_key_index" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同类型/external_string/externalData/0_key_size" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同类型/external_string/externalData/0_value" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同类型/external_string/externalData/count" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同类型/external_string/externalData/serialMap" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同类型/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同类型/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同类型/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同类型/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同类型/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同类型/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同类型/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/合同类型/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/客户ID/external_string/externalData/0_key" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/客户ID/external_string/externalData/0_key_index" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/客户ID/external_string/externalData/0_key_size" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/客户ID/external_string/externalData/0_value" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/客户ID/external_string/externalData/count" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/客户ID/external_string/externalData/serialMap" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/客户ID/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/客户ID/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/客户ID/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/客户ID/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/客户ID/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/客户ID/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/客户ID/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/客户ID/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/总金额/detail/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/总金额/detail/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/总金额/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/总金额/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/总金额/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/总金额/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/总金额/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/总金额/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/总金额/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/总金额/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/是否已经交货/external_string/externalData/0_key" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/是否已经交货/external_string/externalData/0_key_index" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/是否已经交货/external_string/externalData/0_key_size" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/是否已经交货/external_string/externalData/0_value" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/是否已经交货/external_string/externalData/count" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/是否已经交货/external_string/externalData/serialMap" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/是否已经交货/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/是否已经交货/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/是否已经交货/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/是否已经交货/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/是否已经交货/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/是否已经交货/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/是否已经交货/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/是否已经交货/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/注册时间/detail/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/注册时间/detail/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/注册时间/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/注册时间/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/注册时间/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/注册时间/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/注册时间/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/注册时间/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/注册时间/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/注册时间/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/购买数量/detail/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/购买数量/detail/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/购买数量/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/购买数量/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/购买数量/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/购买数量/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/购买数量/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/购买数量/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/购买数量/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/购买数量/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/购买的产品/detail/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/购买的产品/detail/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/购买的产品/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/购买的产品/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/购买的产品/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/购买的产品/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/购买的产品/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/购买的产品/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/购买的产品/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/8011adca/seg1/购买的产品/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/all_show_index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/all_show_index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/all_show_index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/all_show_index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/all_show_index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/all_show_index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/all_show_index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/all_show_index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/row_count/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/row_count/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同ID/dict_index/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同ID/dict_index/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同ID/dict_key/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同ID/dict_key/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同ID/dict_key/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同ID/dict_key/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同ID/dict_key/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同ID/dict_key/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同ID/dict_key/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同ID/dict_key/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同ID/dict_size/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同ID/dict_size/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同ID/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同ID/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同ID/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同ID/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同ID/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同ID/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同ID/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同ID/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同付款类型/dict_index/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同付款类型/dict_index/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同付款类型/dict_key/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同付款类型/dict_key/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同付款类型/dict_key/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同付款类型/dict_key/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同付款类型/dict_key/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同付款类型/dict_key/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同付款类型/dict_key/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同付款类型/dict_key/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同付款类型/dict_size/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同付款类型/dict_size/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同付款类型/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同付款类型/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同付款类型/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同付款类型/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同付款类型/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同付款类型/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同付款类型/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同付款类型/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同签约时间/detail/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同签约时间/detail/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同签约时间/dict_index/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同签约时间/dict_index/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同签约时间/dict_key/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同签约时间/dict_key/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同签约时间/dict_size/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同签约时间/dict_size/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同签约时间/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同签约时间/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同签约时间/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同签约时间/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同签约时间/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同签约时间/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同签约时间/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同签约时间/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同类型/dict_index/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同类型/dict_index/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同类型/dict_key/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同类型/dict_key/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同类型/dict_key/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同类型/dict_key/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同类型/dict_key/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同类型/dict_key/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同类型/dict_key/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同类型/dict_key/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同类型/dict_size/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同类型/dict_size/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同类型/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同类型/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同类型/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同类型/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同类型/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同类型/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同类型/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/合同类型/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/客户ID/dict_index/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/客户ID/dict_index/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/客户ID/dict_key/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/客户ID/dict_key/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/客户ID/dict_key/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/客户ID/dict_key/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/客户ID/dict_key/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/客户ID/dict_key/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/客户ID/dict_key/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/客户ID/dict_key/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/客户ID/dict_size/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/客户ID/dict_size/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/客户ID/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/客户ID/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/客户ID/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/客户ID/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/客户ID/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/客户ID/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/客户ID/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/客户ID/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/总金额/detail/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/总金额/detail/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/总金额/dict_index/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/总金额/dict_index/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/总金额/dict_key/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/总金额/dict_key/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/总金额/dict_size/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/总金额/dict_size/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/总金额/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/总金额/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/总金额/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/总金额/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/总金额/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/总金额/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/总金额/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/总金额/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/是否已经交货/dict_index/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/是否已经交货/dict_index/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/是否已经交货/dict_key/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/是否已经交货/dict_key/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/是否已经交货/dict_key/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/是否已经交货/dict_key/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/是否已经交货/dict_key/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/是否已经交货/dict_key/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/是否已经交货/dict_key/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/是否已经交货/dict_key/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/是否已经交货/dict_size/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/是否已经交货/dict_size/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/是否已经交货/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/是否已经交货/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/是否已经交货/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/是否已经交货/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/是否已经交货/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/是否已经交货/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/是否已经交货/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/是否已经交货/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/注册时间/detail/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/注册时间/detail/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/注册时间/dict_index/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/注册时间/dict_index/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/注册时间/dict_key/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/注册时间/dict_key/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/注册时间/dict_size/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/注册时间/dict_size/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/注册时间/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/注册时间/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/注册时间/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/注册时间/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/注册时间/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/注册时间/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/注册时间/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/注册时间/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买数量/detail/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买数量/detail/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买数量/dict_index/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买数量/dict_index/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买数量/dict_key/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买数量/dict_key/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买数量/dict_size/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买数量/dict_size/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买数量/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买数量/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买数量/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买数量/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买数量/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买数量/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买数量/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买数量/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买的产品/detail/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买的产品/detail/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买的产品/dict_index/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买的产品/dict_index/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买的产品/dict_key/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买的产品/dict_key/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买的产品/dict_size/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买的产品/dict_size/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买的产品/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买的产品/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买的产品/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买的产品/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买的产品/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买的产品/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买的产品/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg0/购买的产品/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/all_show_index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/all_show_index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/all_show_index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/all_show_index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/all_show_index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/all_show_index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/all_show_index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/all_show_index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/row_count/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/row_count/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同ID/dict_index/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同ID/dict_index/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同ID/dict_key/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同ID/dict_key/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同ID/dict_key/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同ID/dict_key/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同ID/dict_key/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同ID/dict_key/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同ID/dict_key/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同ID/dict_key/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同ID/dict_size/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同ID/dict_size/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同ID/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同ID/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同ID/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同ID/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同ID/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同ID/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同ID/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同ID/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同付款类型/dict_index/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同付款类型/dict_index/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同付款类型/dict_key/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同付款类型/dict_key/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同付款类型/dict_key/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同付款类型/dict_key/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同付款类型/dict_key/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同付款类型/dict_key/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同付款类型/dict_key/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同付款类型/dict_key/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同付款类型/dict_size/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同付款类型/dict_size/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同付款类型/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同付款类型/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同付款类型/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同付款类型/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同付款类型/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同付款类型/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同付款类型/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同付款类型/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同签约时间/detail/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同签约时间/detail/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同签约时间/dict_index/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同签约时间/dict_index/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同签约时间/dict_key/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同签约时间/dict_key/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同签约时间/dict_size/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同签约时间/dict_size/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同签约时间/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同签约时间/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同签约时间/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同签约时间/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同签约时间/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同签约时间/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同签约时间/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同签约时间/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同类型/dict_index/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同类型/dict_index/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同类型/dict_key/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同类型/dict_key/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同类型/dict_key/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同类型/dict_key/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同类型/dict_key/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同类型/dict_key/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同类型/dict_key/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同类型/dict_key/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同类型/dict_size/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同类型/dict_size/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同类型/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同类型/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同类型/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同类型/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同类型/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同类型/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同类型/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/合同类型/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/客户ID/dict_index/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/客户ID/dict_index/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/客户ID/dict_key/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/客户ID/dict_key/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/客户ID/dict_key/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/客户ID/dict_key/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/客户ID/dict_key/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/客户ID/dict_key/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/客户ID/dict_key/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/客户ID/dict_key/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/客户ID/dict_size/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/客户ID/dict_size/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/客户ID/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/客户ID/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/客户ID/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/客户ID/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/客户ID/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/客户ID/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/客户ID/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/客户ID/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/总金额/detail/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/总金额/detail/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/总金额/dict_index/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/总金额/dict_index/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/总金额/dict_key/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/总金额/dict_key/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/总金额/dict_size/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/总金额/dict_size/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/总金额/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/总金额/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/总金额/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/总金额/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/总金额/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/总金额/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/总金额/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/总金额/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/是否已经交货/dict_index/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/是否已经交货/dict_index/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/是否已经交货/dict_key/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/是否已经交货/dict_key/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/是否已经交货/dict_key/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/是否已经交货/dict_key/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/是否已经交货/dict_key/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/是否已经交货/dict_key/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/是否已经交货/dict_key/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/是否已经交货/dict_key/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/是否已经交货/dict_size/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/是否已经交货/dict_size/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/是否已经交货/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/是否已经交货/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/是否已经交货/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/是否已经交货/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/是否已经交货/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/是否已经交货/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/是否已经交货/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/是否已经交货/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/注册时间/detail/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/注册时间/detail/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/注册时间/dict_index/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/注册时间/dict_index/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/注册时间/dict_key/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/注册时间/dict_key/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/注册时间/dict_size/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/注册时间/dict_size/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/注册时间/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/注册时间/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/注册时间/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/注册时间/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/注册时间/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/注册时间/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/注册时间/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/注册时间/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买数量/detail/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买数量/detail/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买数量/dict_index/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买数量/dict_index/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买数量/dict_key/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买数量/dict_key/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买数量/dict_size/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买数量/dict_size/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买数量/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买数量/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买数量/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买数量/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买数量/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买数量/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买数量/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买数量/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买的产品/detail/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买的产品/detail/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买的产品/dict_index/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买的产品/dict_index/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买的产品/dict_key/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买的产品/dict_key/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买的产品/dict_size/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买的产品/dict_size/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买的产品/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买的产品/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买的产品/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买的产品/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买的产品/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买的产品/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买的产品/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/89a64d88/seg1/购买的产品/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/97f3183d/seg0/USER_NUMBER/external_string/externalData/0_key" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/97f3183d/seg0/USER_NUMBER/external_string/externalData/0_key_index" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/97f3183d/seg0/USER_NUMBER/external_string/externalData/0_key_size" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/97f3183d/seg0/USER_NUMBER/external_string/externalData/0_value" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/97f3183d/seg0/USER_NUMBER/external_string/externalData/count" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/97f3183d/seg0/USER_NUMBER/external_string/externalData/serialMap" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/97f3183d/seg0/USER_NUMBER/index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/97f3183d/seg0/USER_NUMBER/index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/97f3183d/seg0/USER_NUMBER/index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/97f3183d/seg0/USER_NUMBER/index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/97f3183d/seg0/USER_NUMBER/index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/97f3183d/seg0/USER_NUMBER/index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/97f3183d/seg0/USER_NUMBER/index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/97f3183d/seg0/USER_NUMBER/index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/97f3183d/seg0/all_show_index/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/97f3183d/seg0/all_show_index/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/97f3183d/seg0/all_show_index/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/97f3183d/seg0/all_show_index/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/97f3183d/seg0/all_show_index/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/97f3183d/seg0/all_show_index/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/97f3183d/seg0/all_show_index/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/97f3183d/seg0/all_show_index/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/97f3183d/seg0/row_count/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/97f3183d/seg0/row_count/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bitmap/child/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bitmap/child/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bitmap/child/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bitmap/child/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bitmap/child/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bitmap/child/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bitmap/child/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bitmap/child/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bitmap/child_overwrite/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bitmap/child_overwrite/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bitmap/child_overwrite/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bitmap/child_overwrite/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bitmap/child_overwrite/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bitmap/child_overwrite/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bitmap/child_overwrite/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bitmap/child_overwrite/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/byte/child/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/byte/child/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/byte/child_overwrite/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/byte/child_overwrite/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bytearray/child/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bytearray/child/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bytearray/child/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bytearray/child/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bytearray/child/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bytearray/child/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bytearray/child/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bytearray/child/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bytearray/child_overwrite/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bytearray/child_overwrite/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bytearray/child_overwrite/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bytearray/child_overwrite/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bytearray/child_overwrite/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bytearray/child_overwrite/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bytearray/child_overwrite/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/bytearray/child_overwrite/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/double/child/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/double/child/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/double/child_overwrite/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/double/child_overwrite/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/int/child/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/int/child/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/int/child_overwrite/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/int/child_overwrite/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/long/child/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/long/child/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/long/child_overwrite/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/long/child_overwrite/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/string/child-overwrite/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/string/child-overwrite/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/string/child-overwrite/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/string/child-overwrite/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/string/child-overwrite/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/string/child-overwrite/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/string/child-overwrite/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/string/child-overwrite/position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/string/child/content/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/string/child/content/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/string/child/last_position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/string/child/last_position/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/string/child/length/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/string/child/length/head" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/string/child/position/0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../swift-test/cubes/string/child/position/head" beforeDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <ignored path="$PROJECT_DIR$/swift-base/target/" />
@@ -61,11 +827,99 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Properties.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Properties.java" pinned="false" current-in-tab="false">
         <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_151.jdk/Contents/Home/src.zip!/java/util/Properties.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="333">
-              <caret line="426" column="37" lean-forward="true" selection-start-line="426" selection-start-column="37" selection-end-line="426" selection-end-column="37" />
+            <state relative-caret-position="195">
+              <caret line="420" column="31" selection-start-line="420" selection-start-column="31" selection-end-line="420" selection-end-column="31" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TargetInfo.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../swift-base/src/main/java/com/fr/swift/query/adapter/target/TargetInfo.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="253">
+              <caret line="11" column="23" selection-start-line="11" selection-start-column="23" selection-end-line="11" selection-end-column="23" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TargetDeep.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../swift-base/src/main/java/com/fr/swift/query/adapter/target/TargetDeep.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="115">
+              <caret line="5" column="12" selection-start-line="5" selection-start-column="12" selection-end-line="5" selection-end-column="12" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Target.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../swift-base/src/main/java/com/fr/swift/query/adapter/target/Target.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="632">
+              <caret line="34" column="25" selection-start-line="34" selection-start-column="25" selection-end-line="34" selection-end-column="25" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/../.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="115">
+              <caret line="5" column="22" lean-forward="true" selection-start-line="5" selection-start-column="22" selection-end-line="5" selection-end-column="22" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DetailFormulaTarget.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../swift-base/src/main/java/com/fr/swift/query/adapter/target/DetailFormulaTarget.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="253">
+              <caret line="15" column="13" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
+              <folding>
+                <element signature="e#611#612#0" expanded="true" />
+                <element signature="e#638#639#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TargetInfoImpl.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../swift-base/src/main/java/com/fr/swift/query/adapter/target/cal/TargetInfoImpl.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="23">
+              <caret line="1" selection-start-line="1" selection-end-line="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CalTargetType.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../swift-base/src/main/java/com/fr/swift/query/adapter/target/cal/CalTargetType.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="368">
+              <caret line="16" column="1" selection-start-line="16" selection-start-column="1" selection-end-line="16" selection-end-column="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DetailTarget.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../swift-base/src/main/java/com/fr/swift/query/adapter/target/DetailTarget.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="138">
+              <caret line="6" column="17" selection-start-line="6" selection-start-column="17" selection-end-line="6" selection-end-column="17" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GroupTarget.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../swift-base/src/main/java/com/fr/swift/query/adapter/target/GroupTarget.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="161">
+              <caret line="7" column="17" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="17" />
             </state>
           </provider>
         </entry>
@@ -151,6 +1005,252 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="pom.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../pom.xml">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file leaf-file-name="pom.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../swift-analyse/pom.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-3">
+              <caret line="6" column="26" selection-start-line="6" selection-start-column="26" selection-end-line="6" selection-end-column="26" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="pom.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../fine-engine-swift/pom.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="51">
+              <caret line="65" selection-start-line="65" selection-end-line="65" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FineBusinessTableRelationIml.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180508.040526-48.jar!/com/finebi/conf/internalimp/relation/FineBusinessTableRelationIml.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="274">
+              <caret line="68" selection-start-line="68" selection-end-line="68" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DirectRelationPathManagerUtils.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/spider/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180508.040521-12.jar!/com/finebi/common/service/engine/relation/DirectRelationPathManagerUtils.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="123">
+              <caret line="164" selection-start-line="164" selection-end-line="164" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AbstractDirectRelationPathManager.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/spider/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180508.040521-12.jar!/com/finebi/common/service/engine/relation/AbstractDirectRelationPathManager.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="215">
+              <caret line="226" column="31" selection-start-line="226" selection-start-column="31" selection-end-line="226" selection-end-column="31" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FineRelationServiceImp.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180508.040526-48.jar!/com/finebi/conf/internalimp/service/relation/FineRelationServiceImp.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="139">
+              <caret line="185" selection-start-line="185" selection-end-line="185" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FineRelationUtils.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180508.040526-48.jar!/com/finebi/conf/utils/FineRelationUtils.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="123">
+              <caret line="129" column="38" selection-start-line="129" selection-start-column="38" selection-end-line="129" selection-end-column="38" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SwiftRelationPathConfProvider.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../swift-fundation-adaptor/src/main/java/com/finebi/conf/provider/SwiftRelationPathConfProvider.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="220">
+              <caret line="31" column="29" selection-start-line="31" selection-start-column="29" selection-end-line="31" selection-end-column="29" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SwiftTableManager.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../swift-fundation-adaptor/src/main/java/com/finebi/conf/provider/SwiftTableManager.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="69">
+              <caret line="31" lean-forward="true" selection-start-line="31" selection-end-line="31" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FieldInfoHelper.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../swift-fundation-adaptor/src/main/java/com/fr/swift/conf/business/field/FieldInfoHelper.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="69">
+              <caret line="3" column="39" selection-start-line="3" selection-start-column="39" selection-end-line="3" selection-end-column="39" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Type.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/foundation/nuclear-foundation-connector/5.0-FEATURE-SNAPSHOT/nuclear-foundation-connector-5.0-FEATURE-20180508.040514-2.jar!/com/fr/engine/constant/Type.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="138">
+              <caret line="14" column="12" selection-start-line="14" selection-start-column="12" selection-end-line="14" selection-end-column="12" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SwiftMetaDataColumn.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../swift-base/src/main/java/com/fr/swift/source/SwiftMetaDataColumn.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="161">
+              <caret line="7" column="17" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="17" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Types.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../swift-base/src/main/java/com/fr/swift/cube/io/Types.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="161">
+              <caret line="7" column="24" selection-start-line="7" selection-start-column="19" selection-end-line="7" selection-end-column="24" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ColumnTypeConstants.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../swift-base/src/main/java/com/fr/swift/source/ColumnTypeConstants.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="276">
+              <caret line="12" column="16" selection-start-line="12" selection-start-column="16" selection-end-line="12" selection-end-column="16" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ColumnTypeUtils.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../swift-base/src/main/java/com/fr/swift/source/ColumnTypeUtils.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="709">
+              <caret line="164" column="42" selection-start-line="164" selection-start-column="29" selection-end-line="164" selection-end-column="42" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BICommonConstants.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180508.040526-48.jar!/com/finebi/conf/constant/BICommonConstants.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="371">
+              <caret line="271" column="26" selection-start-line="271" selection-start-column="26" selection-end-line="271" selection-end-column="26" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SimpleField.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/foundation/nuclear-foundation-connector/5.0-FEATURE-SNAPSHOT/nuclear-foundation-connector-5.0-FEATURE-20180508.040514-2.jar!/com/fr/engine/bi/config/SimpleField.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="279">
+              <caret line="16" column="11" selection-start-line="16" selection-start-column="11" selection-end-line="16" selection-end-column="11" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AbstractEngineTableManager.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/spider/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180508.040521-12.jar!/com/finebi/common/service/engine/table/AbstractEngineTableManager.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="307">
+              <caret line="272" selection-start-line="272" selection-end-line="272" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CommonDataSourceDriver.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/spider/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180508.040521-12.jar!/com/finebi/common/structure/config/driver/CommonDataSourceDriver.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="138">
+              <caret line="16" column="17" selection-start-line="16" selection-start-column="17" selection-end-line="16" selection-end-column="17" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SwiftDataSourceDriverWrapper.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../swift-fundation-adaptor/src/main/java/com/fr/swift/driver/SwiftDataSourceDriverWrapper.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-56">
+              <caret line="19" column="13" selection-start-line="19" selection-start-column="13" selection-end-line="19" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CommonDBDataSourceDriver.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/spider/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180508.040521-12.jar!/com/finebi/common/structure/config/driver/CommonDBDataSourceDriver.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="185">
+              <caret line="15" column="19" selection-start-line="15" selection-start-column="19" selection-end-line="15" selection-end-column="19" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SwiftDatabaseDataSourceDriver.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../swift-fundation-adaptor/src/main/java/com/fr/swift/driver/SwiftDatabaseDataSourceDriver.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="155">
+              <caret line="73" selection-start-line="73" selection-end-line="73" />
+              <folding>
+                <element signature="e#2101#2117#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TableRelationReader.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../swift-fundation-adaptor/src/main/java/com/fr/swift/conf/business/relation/TableRelationReader.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="132">
+              <caret line="71" selection-start-line="71" selection-end-line="71" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="InvocableHandlerMethod.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/com/fr/third/fine-third/10.0-FEATURE-SNAPSHOT/fine-third-10.0-FEATURE-20180508.034056-84.jar!/com/fr/third/springframework/web/method/support/InvocableHandlerMethod.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="139">
+              <caret line="139" selection-start-line="139" selection-end-line="139" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DispatcherServlet.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/com/fr/third/fine-third/10.0-FEATURE-SNAPSHOT/fine-third-10.0-FEATURE-20180508.034056-84.jar!/com/fr/third/springframework/web/servlet/DispatcherServlet.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="139">
+              <caret line="454" selection-start-line="454" selection-end-line="454" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MetaDataColumn.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../swift-base/src/main/java/com/fr/swift/source/MetaDataColumn.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="471">
+              <caret line="53" column="22" selection-start-line="53" selection-start-column="15" selection-end-line="53" selection-end-column="22" />
+              <folding>
+                <element signature="e#1819#1820#0" expanded="true" />
+                <element signature="e#1870#1871#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
     </leaf>
   </component>
   <component name="FindInProjectRecents">
@@ -193,6 +1293,12 @@
         <option value="$PROJECT_DIR$/swift-history/pom.xml" />
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/fine-engine-swift/pom.xml" />
+        <option value="$PROJECT_DIR$/../swift-base/src/main/java/com/fr/swift/query/adapter/target/Target.java" />
+        <option value="$PROJECT_DIR$/../swift-base/src/main/java/com/fr/swift/query/adapter/target/DetailFormulaTarget.java" />
+        <option value="$PROJECT_DIR$/../swift-fundation-adaptor/src/main/java/com/fr/swift/conf/business/relation/TableRelationReader.java" />
+        <option value="$PROJECT_DIR$/../swift-fundation-adaptor/src/main/java/com/finebi/conf/provider/SwiftTableManager.java" />
+        <option value="$PROJECT_DIR$/../swift-fundation-adaptor/src/main/java/com/fr/swift/conf/business/field/FieldInfoHelper.java" />
+        <option value="$PROJECT_DIR$/../.gitignore" />
       </list>
     </option>
   </component>
@@ -275,7 +1381,7 @@
             <path>
               <item name="project" type="b2602c69:ProjectViewProjectNode" />
               <item name="nuclear-core" type="462c0819:PsiDirectoryNode" />
-              <item name=".idea" type="462c0819:PsiDirectoryNode" />
+              <item name="swift-test" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -285,7 +1391,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="SearchEverywhereHistoryKey" value="BaseTest&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-test/src/test/java/com/fr/swift/generate/BaseTest.java&#10;TestConfDb&#9;PSI&#9;JAVA://com.fr.swift.config.TestConfDb&#10;ResourceUtils&#9;PSI&#9;JAVA://com.fr.swift.resource.ResourceUtils&#10;TestConnectionProvider&#9;PSI&#9;JAVA://com.fr.swift.source.db.TestConnectionProvider&#10;DbNameConnectionCreator&#9;PSI&#9;JAVA://com.fr.engine.bi.connection.DbNameConnectionCreator&#10;TableW&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/widget/TableWidgetAdaptor.java&#10;Node&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-base/src/main/java/com/fr/swift/result/NodeMergeResultSetImpl.java&#10;Table&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/widget/TableWidgetAdaptor.java&#10;BaseField&#9;PSI&#9;JAVA://com.fr.swift.generate.BaseFieldPathIndexer&#10;BaseSe&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-base/src/main/java/com/fr/swift/segment/BaseSegment.java&#10;StringF&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-base/src/main/java/com/fr/swift/query/filter/detail/impl/string/StringInFilter.java&#10;RelationCol&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-base/src/main/java/com/fr/swift/segment/relation/column/RelationColumn.java&#10;Relation&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-fundation-adaptor/src/main/java/com/finebi/conf/provider/SwiftRelationPathConfProvider.java&#10;RelationSourceFa&#9;PSI&#9;JAVA://com.fr.swift.adaptor.transformer.RelationSourceFactory&#10;NodeMer&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-base/src/main/java/com/fr/swift/result/NodeMergeResultSetImpl.java&#10;RelationC&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-base/src/main/java/com/fr/swift/segment/relation/column/RelationColumn.java&#10;Relat&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-base/src/main/java/com/fr/swift/segment/relation/column/RelationColumn.java&#10;ByteAr&#9;PSI&#9;JAVA://com.fr.swift.cube.io.impl.fineio.input.ByteArrayFineIoReader&#10;StringInF&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-base/src/main/java/com/fr/swift/query/filter/detail/impl/string/StringInFilter.java&#10;RelationCo&#9;PSI&#9;JAVA://com.fr.swift.segment.relation.column.RelationColumn&#10;NodeM&#9;PSI&#9;JAVA://com.fr.swift.result.NodeMergeResultSetImpl&#10;Bitmapcol&#9;PSI&#9;JAVA://com.fr.swift.segment.column.BitmapIndexedColumn&#10;Abstract&#9;FILE&#9;jar:///Users/yee/.m2/repository/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180506.000537-30.jar!/com/finebi/conf/internalimp/bean/dashboard/widget/dimension/group/AbstractDimensionGroupBean.class&#10;BIComm&#9;PSI&#9;JAVA://com.finebi.conf.constant.BICommonConstants&#10;Deta&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/widget/DetailWidgetAdaptor.java&#10;CustomGroupR&#9;PSI&#9;JAVA://com.fr.swift.query.group.CustomGroupRule&#10;NoG&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-base/src/main/java/com/fr/swift/query/group/impl/NoGroupRule.java&#10;Group&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-base/src/main/java/com/fr/swift/query/group/impl/NoGroupRule.java&#10;AbstractFineDimension&#9;FILE&#9;jar:///Users/yee/.m2/repository/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180506.000537-30.jar!/com/finebi/conf/internalimp/dashboard/widget/dimension/AbstractFineDimension.class&#10;AbstractDimensionAndTarget&#9;FILE&#9;jar:///Users/yee/.m2/repository/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180506.000537-30.jar!/com/finebi/conf/internalimp/dashboard/widget/AbstractDimensionAndTarget.class&#10;TableWid&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/widget/TableWidgetAdaptor.java&#10;DetailW&#9;PSI&#9;JAVA://com.fr.swift.adaptor.widget.DetailWidgetAdaptor&#10;FilterInfoF&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/transformer/FilterInfoFactory.java&#10;DateU&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/transformer/date/DateUtils.java&#10;BIC&#9;FILE&#9;jar:///Users/yee/.m2/repository/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180505.080446-27.jar!/com/finebi/conf/constant/BICommonConstants.class&#10;Linka&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/linkage/LinkageAdaptor.java&#10;DateSt&#9;FILE&#9;jar:///Users/yee/.m2/repository/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180505.080446-27.jar!/com/finebi/conf/internalimp/bean/filtervalue/date/single/DateStaticFilterBean.class&#10;BIConsta&#9;PSI&#9;JAVA://com.finebi.conf.constant.BICommonConstants&#10;DateStaticFilterBean&#9;PSI&#9;JAVA://com.finebi.conf.internalimp.bean.filtervalue.date.single.DateStaticFilterBean&#10;tree2rowiterator&#9;PSI&#9;JAVA://com.fr.swift.structure.iterator.Tree2RowIterator&#10;TableWidget&#9;PSI&#9;JAVA://com.fr.swift.adaptor.widget.TableWidgetAdaptor" />
+    <property name="SearchEverywhereHistoryKey" value="ColumnTypeU&#9;PSI&#9;JAVA://com.fr.swift.source.ColumnTypeUtils&#10;ColumnTypeC&#9;PSI&#9;JAVA://com.fr.swift.source.ColumnTypeConstants&#10;Types&#9;PSI&#9;JAVA://com.fr.swift.cube.io.Types&#10;Sw&#9;FILE&#9;file:///Users/yee/work/bi/swift/nuclear-core/swift-fundation-adaptor/src/main/java/com/finebi/conf/provider/SwiftRelationPathConfProvider.java&#10;TargetI&#9;PSI&#9;JAVA://com.fr.swift.query.adapter.target.TargetInfo&#10;BaseTest&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-test/src/test/java/com/fr/swift/generate/BaseTest.java&#10;TestConfDb&#9;PSI&#9;JAVA://com.fr.swift.config.TestConfDb&#10;ResourceUtils&#9;PSI&#9;JAVA://com.fr.swift.resource.ResourceUtils&#10;TestConnectionProvider&#9;PSI&#9;JAVA://com.fr.swift.source.db.TestConnectionProvider&#10;DbNameConnectionCreator&#9;PSI&#9;JAVA://com.fr.engine.bi.connection.DbNameConnectionCreator&#10;TableW&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/widget/TableWidgetAdaptor.java&#10;Node&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-base/src/main/java/com/fr/swift/result/NodeMergeResultSetImpl.java&#10;Table&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/widget/TableWidgetAdaptor.java&#10;BaseField&#9;PSI&#9;JAVA://com.fr.swift.generate.BaseFieldPathIndexer&#10;BaseSe&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-base/src/main/java/com/fr/swift/segment/BaseSegment.java&#10;StringF&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-base/src/main/java/com/fr/swift/query/filter/detail/impl/string/StringInFilter.java&#10;RelationCol&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-base/src/main/java/com/fr/swift/segment/relation/column/RelationColumn.java&#10;Relation&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-fundation-adaptor/src/main/java/com/finebi/conf/provider/SwiftRelationPathConfProvider.java&#10;RelationSourceFa&#9;PSI&#9;JAVA://com.fr.swift.adaptor.transformer.RelationSourceFactory&#10;NodeMer&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-base/src/main/java/com/fr/swift/result/NodeMergeResultSetImpl.java&#10;RelationC&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-base/src/main/java/com/fr/swift/segment/relation/column/RelationColumn.java&#10;Relat&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-base/src/main/java/com/fr/swift/segment/relation/column/RelationColumn.java&#10;ByteAr&#9;PSI&#9;JAVA://com.fr.swift.cube.io.impl.fineio.input.ByteArrayFineIoReader&#10;StringInF&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-base/src/main/java/com/fr/swift/query/filter/detail/impl/string/StringInFilter.java&#10;RelationCo&#9;PSI&#9;JAVA://com.fr.swift.segment.relation.column.RelationColumn&#10;NodeM&#9;PSI&#9;JAVA://com.fr.swift.result.NodeMergeResultSetImpl&#10;Bitmapcol&#9;PSI&#9;JAVA://com.fr.swift.segment.column.BitmapIndexedColumn&#10;Abstract&#9;FILE&#9;jar:///Users/yee/.m2/repository/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180506.000537-30.jar!/com/finebi/conf/internalimp/bean/dashboard/widget/dimension/group/AbstractDimensionGroupBean.class&#10;BIComm&#9;PSI&#9;JAVA://com.finebi.conf.constant.BICommonConstants&#10;Deta&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/widget/DetailWidgetAdaptor.java&#10;CustomGroupR&#9;PSI&#9;JAVA://com.fr.swift.query.group.CustomGroupRule&#10;NoG&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-base/src/main/java/com/fr/swift/query/group/impl/NoGroupRule.java&#10;Group&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-base/src/main/java/com/fr/swift/query/group/impl/NoGroupRule.java&#10;AbstractFineDimension&#9;FILE&#9;jar:///Users/yee/.m2/repository/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180506.000537-30.jar!/com/finebi/conf/internalimp/dashboard/widget/dimension/AbstractFineDimension.class&#10;AbstractDimensionAndTarget&#9;FILE&#9;jar:///Users/yee/.m2/repository/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180506.000537-30.jar!/com/finebi/conf/internalimp/dashboard/widget/AbstractDimensionAndTarget.class&#10;TableWid&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/widget/TableWidgetAdaptor.java&#10;DetailW&#9;PSI&#9;JAVA://com.fr.swift.adaptor.widget.DetailWidgetAdaptor&#10;FilterInfoF&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/transformer/FilterInfoFactory.java&#10;DateU&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/transformer/date/DateUtils.java&#10;BIC&#9;FILE&#9;jar:///Users/yee/.m2/repository/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180505.080446-27.jar!/com/finebi/conf/constant/BICommonConstants.class&#10;Linka&#9;FILE&#9;file:///Users/yee/IdeaProjects/swift/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/linkage/LinkageAdaptor.java&#10;DateSt&#9;FILE&#9;jar:///Users/yee/.m2/repository/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180505.080446-27.jar!/com/finebi/conf/internalimp/bean/filtervalue/date/single/DateStaticFilterBean.class&#10;BIConsta&#9;PSI&#9;JAVA://com.finebi.conf.constant.BICommonConstants&#10;DateStaticFilterBean&#9;PSI&#9;JAVA://com.finebi.conf.internalimp.bean.filtervalue.date.single.DateStaticFilterBean&#10;tree2rowiterator&#9;PSI&#9;JAVA://com.fr.swift.structure.iterator.Tree2RowIterator&#10;TableWidget&#9;PSI&#9;JAVA://com.fr.swift.adaptor.widget.TableWidgetAdaptor" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
@@ -581,8 +1687,23 @@
       <workItem from="1525740643533" duration="8146000" />
       <workItem from="1525758056360" duration="483000" />
       <workItem from="1525758881020" duration="513000" />
-      <workItem from="1525759545506" duration="290000" />
+      <workItem from="1525759545506" duration="9397000" />
     </task>
+    <task id="LOCAL-00001" summary="漏">
+      <created>1525764512322</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1525764512322</updated>
+    </task>
+    <task id="LOCAL-00002" summary="自动读读不成功关联失败，FineBusinessTable.getFields返回空的列表所以读不出来">
+      <created>1525770064898</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1525770064898</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -615,10 +1736,11 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="84207000" />
+    <option name="totallyTimeSpent" value="93314000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="24" width="1680" height="958" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -631,17 +1753,17 @@
       <window_info anchor="right" id="Maven Projects" order="3" weight="0.32967034" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.5477327" />
-      <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info anchor="bottom" id="Terminal" order="7" weight="0.3293556" />
+      <window_info anchor="bottom" id="Version Control" order="7" weight="0.3293556" />
+      <window_info anchor="bottom" id="Terminal" order="7" visible="true" weight="0.3293556" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="2" />
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4970179" visible="true" weight="0.2741148" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49642006" visible="true" weight="0.2741148" />
       <window_info anchor="right" id="Database" order="3" weight="0.32967034" />
-      <window_info id="Structure" order="1" sideWeight="0.5029821" side_tool="true" weight="0.26190478" />
+      <window_info id="Structure" order="1" sideWeight="0.50358" side_tool="true" weight="0.2741148" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info id="UI Designer" order="2" />
       <window_info anchor="right" id="Theme Preview" order="3" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" sideWeight="0.4993895" visible="true" weight="0.50119334" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.4993895" weight="0.50119334" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info id="Web" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -656,6 +1778,32 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="RECENTLY_FILTERED_USER_GROUPS">
+                <collection />
+              </option>
+              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+                <collection />
+              </option>
+              <option name="COLUMN_ORDER">
+                <list>
+                  <option value="0" />
+                  <option value="1" />
+                  <option value="2" />
+                  <option value="3" />
+                </list>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
@@ -663,13 +1811,24 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
+    <MESSAGE value="漏" />
+    <MESSAGE value="自动读读不成功关联失败，FineBusinessTable.getFields返回空的列表所以读不出来" />
+    <option name="LAST_COMMIT_MESSAGE" value="自动读读不成功关联失败，FineBusinessTable.getFields返回空的列表所以读不出来" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/../swift-fundation-adaptor/src/main/java/com/fr/swift/conf/business/relation/TableRelationReader.java</url>
+          <line>117</line>
+          <properties />
+          <option name="timeStamp" value="167" />
+        </line-breakpoint>
+      </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="156" />
+      <option name="time" value="168" />
     </breakpoint-manager>
   </component>
   <component name="debuggerHistoryManager">
@@ -756,6 +1915,26 @@ System.out.println(((ArrayList&lt;String&gt;) list).size);</expression-string>
     </expressions>
     <expressions id="evaluateExpression">
       <expression>
+        <expression-string>table.getColumn(19)</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>table.getColumn(0)</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>FieldInfoHelper.createFieldInfo(entryInfo, table)</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>relation.getPrimaryTableId()</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
         <expression-string>source.getSourceKey()</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
@@ -780,87 +1959,9 @@ System.out.println(((ArrayList&lt;String&gt;) list).size);</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
-      <expression>
-        <expression-string>((NodeMergeResultSetImpl) resultSet).aggregators</expression-string>
-        <language-id>JAVA</language-id>
-        <custom-info>com.fr.swift.result.NodeMergeResultSetImpl</custom-info>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>((NodeMergeResultSetImpl) resultSet).rowGlobalDictionaries</expression-string>
-        <language-id>JAVA</language-id>
-        <custom-info>com.fr.swift.result.NodeMergeResultSetImpl</custom-info>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>resultSet.getMetaData()</expression-string>
-        <language-id>JAVA</language-id>
-        <custom-info>com.fr.swift.result.NodeMergeResultSetImpl</custom-info>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>((NodeMergeResultSetImpl) resultSet).getNode()</expression-string>
-        <language-id>JAVA</language-id>
-        <custom-info>com.fr.swift.result.NodeMergeResultSetImpl</custom-info>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180507.000702-33.jar!/com/finebi/conf/internalimp/dashboard/widget/table/TableWidget.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="828">
-          <caret line="55" selection-start-line="55" selection-end-line="55" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/swift-indexing/src/main/java/com/fr/swift/generate/preview/MinorUpdater.java" />
-    <entry file="file://$PROJECT_DIR$/swift-base/src/main/java/com/fr/swift/source/SourceKey.java" />
-    <entry file="file://$PROJECT_DIR$/swift-base/src/main/java/com/fr/swift/query/adapter/dimension/Dimension.java" />
-    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/connection/SwiftConnectionAdaptor.java" />
-    <entry file="jar://$PROJECT_DIR$/src/main/webapp/WEB-INF/lib/fine-bi-connector-5.0.jar!/com/fr/engine/bi/connection/ConnectionAdapter.class" />
-    <entry file="jar://$PROJECT_DIR$/src/main/webapp/WEB-INF/lib/fine-bi-connector-5.0.jar!/com/fr/engine/bi/connection/DbNameConnectionCreator.class" />
-    <entry file="jar://$PROJECT_DIR$/src/main/webapp/WEB-INF/lib/fine-bi-connector-5.0.jar!/com/fr/engine/datasource/ConnectionCreator.class" />
-    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/transformer/etl/SelectFieldAdaptor.java" />
-    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_151.jdk/Contents/Home/src.zip!/java/util/Properties.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="333">
-          <caret line="426" column="37" lean-forward="true" selection-start-line="426" selection-start-column="37" selection-end-line="426" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/swift-base/src/main/java/com/fr/swift/query/adapter/dimension/DetailDimension.java" />
-    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_151.jdk/Contents/Home/src.zip!/java/util/PriorityQueue.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1495">
-          <caret line="89" column="7" selection-start-line="89" selection-start-column="7" selection-end-line="89" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/log4j.properties" />
-    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/struct/SwiftDetailTableResult.java" />
-    <entry file="file://$PROJECT_DIR$/swift-test/src/test/java/com/fr/swift/generate/flow/IncreaseFlowControlTest.java" />
-    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/widget/DetailWidgetAdaptor.java" />
-    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/transformer/FilterInfoFactory.java" />
-    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/transformer/RelationSourceFactory.java" />
-    <entry file="file://$PROJECT_DIR$/swift-test/src/main/java/com/fr/swift/source/db/TestConnectionProvider.java" />
-    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/linkage/LinkageAdaptor.java" />
-    <entry file="file://$PROJECT_DIR$/swift-log-adaptor/src/test/java/com/fr/swift/adaptor/log/query/LogBaseTest.java" />
-    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/finebi/conf/provider/SwiftRelationPathConfProvider.java" />
-    <entry file="file://$PROJECT_DIR$/swift-log-adaptor/src/test/java/com/fr/swift/adaptor/log/LogOperatorTest.java" />
-    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/widget/AbstractTableWidgetAdaptor.java" />
-    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/test/java/com/fr/swift/fine/adaptor/executor/SwiftSQLDataModelTest.java" />
-    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/widget/group/GroupTypeAdaptor.java" />
-    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/fr/swift/adaptor/widget/target/CalTargetParseUtils.java" />
-    <entry file="file://$PROJECT_DIR$/swift-test/src/test/java/com/fr/swift/generate/BaseTest.java" />
-    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/test/java/com/fr/swift/fine/adaptor/etl/formula/FormulaPreviewTest.java" />
-    <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/finebi/conf/imp/SwiftUpdateManager.java" />
-    <entry file="file://$PROJECT_DIR$/swift-test/src/main/java/com/fr/swift/resource/ResourceUtils.java" />
-    <entry file="file://$PROJECT_DIR$/swift-test/src/test/java/com/fr/swift/generate/BaseConfigTest.java" />
-    <entry file="file://$PROJECT_DIR$/swift-test/src/main/java/com/fr/swift/config/TestConfDb.java" />
-    <entry file="file://$PROJECT_DIR$/swift-base/src/main/java/com/fr/swift/query/group/GroupType.java" />
-    <entry file="file://$PROJECT_DIR$/swift-base/src/main/java/com/fr/swift/cube/space/impl/LocalSpaceUsageDetector.java" />
-    <entry file="file://$PROJECT_DIR$/swift-base/src/main/java/com/fr/swift/segment/BaseSegment.java" />
     <entry file="file://$PROJECT_DIR$/swift-test/src/test/java/com/fr/swift/cube/space/impl/SpaceUsageDetectorTest.java" />
     <entry file="file://$PROJECT_DIR$/swift-test/pom.xml" />
     <entry file="file://$PROJECT_DIR$/swift-base/src/main/java/com/fr/swift/source/etl/groupsum/SumByGroupOperator.java" />
@@ -876,6 +1977,268 @@ System.out.println(((ArrayList&lt;String&gt;) list).size);</expression-string>
     <entry file="file://$PROJECT_DIR$/swift-fundation-adaptor/src/main/java/com/fr/swift/provider/impl/SwiftDataProvider.java" />
     <entry file="file://$PROJECT_DIR$/fine-engine-swift/pom.xml" />
     <entry file="file://$PROJECT_DIR$/pom.xml" />
+    <entry file="file://$PROJECT_DIR$/../swift-base/src/main/java/com/fr/swift/query/adapter/target/TargetDeep.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="115">
+          <caret line="5" column="12" selection-start-line="5" selection-start-column="12" selection-end-line="5" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../swift-base/src/main/java/com/fr/swift/query/adapter/target/TargetInfo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="253">
+          <caret line="11" column="23" selection-start-line="11" selection-start-column="23" selection-end-line="11" selection-end-column="23" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../swift-base/src/main/java/com/fr/swift/query/adapter/target/Target.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="632">
+          <caret line="34" column="25" selection-start-line="34" selection-start-column="25" selection-end-line="34" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../swift-base/src/main/java/com/fr/swift/query/adapter/target/GroupTarget.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="161">
+          <caret line="7" column="17" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../swift-base/src/main/java/com/fr/swift/query/adapter/target/DetailTarget.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="138">
+          <caret line="6" column="17" selection-start-line="6" selection-start-column="17" selection-end-line="6" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../swift-base/src/main/java/com/fr/swift/query/adapter/target/cal/CalTargetType.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="368">
+          <caret line="16" column="1" selection-start-line="16" selection-start-column="1" selection-end-line="16" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../swift-base/src/main/java/com/fr/swift/query/adapter/target/DetailFormulaTarget.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="253">
+          <caret line="15" column="13" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
+          <folding>
+            <element signature="e#611#612#0" expanded="true" />
+            <element signature="e#638#639#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../swift-base/src/main/java/com/fr/swift/query/adapter/target/cal/TargetInfoImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="23">
+          <caret line="1" selection-start-line="1" selection-end-line="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../pom.xml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../swift-analyse/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-3">
+          <caret line="6" column="26" selection-start-line="6" selection-start-column="26" selection-end-line="6" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../fine-engine-swift/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="65" selection-start-line="65" selection-end-line="65" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180508.040526-48.jar!/com/finebi/conf/internalimp/service/relation/FineRelationServiceImp.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="139">
+          <caret line="185" selection-start-line="185" selection-end-line="185" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180508.040526-48.jar!/com/finebi/conf/utils/FineRelationUtils.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="123">
+          <caret line="129" column="38" selection-start-line="129" selection-start-column="38" selection-end-line="129" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../swift-fundation-adaptor/src/main/java/com/finebi/conf/provider/SwiftRelationPathConfProvider.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="31" column="29" selection-start-line="31" selection-start-column="29" selection-end-line="31" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/spider/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180508.040521-12.jar!/com/finebi/common/structure/config/driver/CommonDataSourceDriver.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="138">
+          <caret line="16" column="17" selection-start-line="16" selection-start-column="17" selection-end-line="16" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../swift-fundation-adaptor/src/main/java/com/fr/swift/driver/SwiftDataSourceDriverWrapper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-56">
+          <caret line="19" column="13" selection-start-line="19" selection-start-column="13" selection-end-line="19" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/spider/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180508.040521-12.jar!/com/finebi/common/service/engine/relation/DirectRelationPathManagerUtils.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="123">
+          <caret line="164" selection-start-line="164" selection-end-line="164" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180508.040526-48.jar!/com/finebi/conf/internalimp/relation/FineBusinessTableRelationIml.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="274">
+          <caret line="68" selection-start-line="68" selection-end-line="68" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/com/fr/third/fine-third/10.0-FEATURE-SNAPSHOT/fine-third-10.0-FEATURE-20180508.034056-84.jar!/com/fr/third/springframework/web/method/support/InvocableHandlerMethod.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="139">
+          <caret line="139" selection-start-line="139" selection-end-line="139" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/com/fr/third/fine-third/10.0-FEATURE-SNAPSHOT/fine-third-10.0-FEATURE-20180508.034056-84.jar!/com/fr/third/springframework/web/servlet/DispatcherServlet.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="139">
+          <caret line="454" selection-start-line="454" selection-end-line="454" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/foundation/nuclear-foundation-connector/5.0-FEATURE-SNAPSHOT/nuclear-foundation-connector-5.0-FEATURE-20180508.040514-2.jar!/com/fr/engine/bi/config/SimpleField.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="279">
+          <caret line="16" column="11" selection-start-line="16" selection-start-column="11" selection-end-line="16" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/spider/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180508.040521-12.jar!/com/finebi/common/service/engine/relation/AbstractDirectRelationPathManager.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="215">
+          <caret line="226" column="31" selection-start-line="226" selection-start-column="31" selection-end-line="226" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/spider/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180508.040521-12.jar!/com/finebi/common/structure/config/driver/CommonDBDataSourceDriver.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="185">
+          <caret line="15" column="19" selection-start-line="15" selection-start-column="19" selection-end-line="15" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../swift-fundation-adaptor/src/main/java/com/fr/swift/conf/business/relation/TableRelationReader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="132">
+          <caret line="71" selection-start-line="71" selection-end-line="71" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../swift-fundation-adaptor/src/main/java/com/fr/swift/driver/SwiftDatabaseDataSourceDriver.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="155">
+          <caret line="73" selection-start-line="73" selection-end-line="73" />
+          <folding>
+            <element signature="e#2101#2117#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/spider/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180508.040521-12.jar!/com/finebi/common/service/engine/table/AbstractEngineTableManager.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="307">
+          <caret line="272" selection-start-line="272" selection-end-line="272" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/foundation/fine-bi-foundation/5.0-FEATURE-SNAPSHOT/fine-bi-foundation-5.0-FEATURE-20180508.040526-48.jar!/com/finebi/conf/constant/BICommonConstants.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="371">
+          <caret line="271" column="26" selection-start-line="271" selection-start-column="26" selection-end-line="271" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../swift-base/src/main/java/com/fr/swift/source/MetaDataColumn.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="471">
+          <caret line="53" column="22" selection-start-line="53" selection-start-column="15" selection-end-line="53" selection-end-column="22" />
+          <folding>
+            <element signature="e#1819#1820#0" expanded="true" />
+            <element signature="e#1870#1871#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../swift-base/src/main/java/com/fr/swift/source/SwiftMetaDataColumn.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="161">
+          <caret line="7" column="17" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../swift-base/src/main/java/com/fr/swift/cube/io/Types.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="161">
+          <caret line="7" column="24" selection-start-line="7" selection-start-column="19" selection-end-line="7" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../swift-base/src/main/java/com/fr/swift/source/ColumnTypeUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="709">
+          <caret line="164" column="42" selection-start-line="164" selection-start-column="29" selection-end-line="164" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../swift-base/src/main/java/com/fr/swift/source/ColumnTypeConstants.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="276">
+          <caret line="12" column="16" selection-start-line="12" selection-start-column="16" selection-end-line="12" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/com/finebi/foundation/nuclear-foundation-connector/5.0-FEATURE-SNAPSHOT/nuclear-foundation-connector-5.0-FEATURE-20180508.040514-2.jar!/com/fr/engine/constant/Type.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="138">
+          <caret line="14" column="12" selection-start-line="14" selection-start-column="12" selection-end-line="14" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../swift-fundation-adaptor/src/main/java/com/fr/swift/conf/business/field/FieldInfoHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="69">
+          <caret line="3" column="39" selection-start-line="3" selection-start-column="39" selection-end-line="3" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../swift-fundation-adaptor/src/main/java/com/finebi/conf/provider/SwiftTableManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="69">
+          <caret line="31" lean-forward="true" selection-start-line="31" selection-end-line="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="115">
+          <caret line="5" column="22" lean-forward="true" selection-start-line="5" selection-start-column="22" selection-end-line="5" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
   </component>
   <component name="masterDetails">
     <states>
