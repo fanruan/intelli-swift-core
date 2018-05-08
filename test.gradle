@@ -107,7 +107,7 @@ task test_jar(dependsOn: compileJava) << {
                 formatter(type: "xml")
                 batchtest(todir: "test_result") {
                     fileset(dir: "build/classes/test") {
-                        include(name: "**/*.class")
+                        include(name: "**/*Test.class")
                     }
                 }
             }
@@ -124,7 +124,7 @@ task test_jar(dependsOn: compileJava) << {
             structure(name: "jacoco") {
                 classfiles {
                     fileset(dir: "build/classes/main") {
-                        include(name: "**/*Test.class")
+                        include(name: "**/*.class")
                     }
                 }
                 sourcefiles {
