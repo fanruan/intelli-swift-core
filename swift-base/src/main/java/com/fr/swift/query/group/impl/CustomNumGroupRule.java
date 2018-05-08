@@ -1,6 +1,5 @@
 package com.fr.swift.query.group.impl;
 
-import com.fr.stable.StringUtils;
 import com.fr.swift.query.group.GroupType;
 import com.fr.swift.source.core.CoreField;
 import com.fr.swift.structure.array.IntList;
@@ -13,16 +12,11 @@ import java.util.List;
  * @author anchore
  * @date 2018/2/28
  */
-public class CustomNumGroupRule extends BaseCustomGroupRule<Number, String> {
+public class CustomNumGroupRule extends BaseCustomStrGroupRule<Number> {
     static final Format FORMATTER = new DecimalFormat("#.##");
 
-    public CustomNumGroupRule(List<? extends CustomGroup<Number, String>> groups, String otherGroupName) {
-        super(groups, otherGroupName);
-    }
-
-    @Override
-    boolean hasOtherGroup() {
-        return StringUtils.isNotEmpty(otherGroupName);
+    public CustomNumGroupRule(List<? extends CustomGroup<Number, String>> groups, String otherGroupName, boolean sorted) {
+        super(groups, otherGroupName, sorted);
     }
 
     @Override

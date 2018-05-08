@@ -12,6 +12,8 @@ import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,14 +25,17 @@ import java.util.Map.Entry;
  */
 abstract class BaseCustomGroupRule<Base, Derive> extends BaseGroupRule implements CustomGroupRule<Base, Derive> {
     DictionaryEncodedColumn<Base> dictColumn;
+
     @CoreField
     Derive otherGroupName;
+
     @CoreField
     List<? extends CustomGroup<Base, Derive>> groups;
     /**
      * 新分组序号 -> (新分组值, 旧分组序号)
      */
     private Map<Integer, Pair<Derive, IntList>> map = new HashMap<Integer, Pair<Derive, IntList>>();
+
     /**
      * 旧值序号 -> 新值序号集合
      */
@@ -51,7 +56,6 @@ abstract class BaseCustomGroupRule<Base, Derive> extends BaseGroupRule implement
 
         // 0号为null
         map.put(0, Pair.of((Derive) null, IntListFactory.newSingletonList(0)));
-        reverseMap.put(0, IntListFactory.newSingletonList(0));
 
         for (int i = 1; i < dictSize; i++) {
             Base val = dictColumn.getValue(i);
@@ -78,7 +82,38 @@ abstract class BaseCustomGroupRule<Base, Derive> extends BaseGroupRule implement
             internalMap(i, indices, groupNames);
         }
 
-        compactMap(lastIndex);
+        toFinalMappings();
+    }
+
+    private void toFinalMappings() {
+        List<Entry<Integer, Pair<Derive, IntList>>> mappings = new ArrayList<Entry<Integer, Pair<Derive, IntList>>>(map.entrySet());
+        Collections.sort(mappings, getComparator());
+
+        map.clear();
+
+        for (int i = 0; i < mappings.size(); i++) {
+            map.put(i, mappings.get(i).getValue());
+        }
+
+        for (Entry<Integer, Pair<Derive, IntList>> entry : map.entrySet()) {
+            IntList oldIndices = entry.getValue().getValue();
+            for (int i = 0; i < oldIndices.size(); i++) {
+                int oldIndex = oldIndices.get(i);
+                if (!reverseMap.containsKey(oldIndex)) {
+                    reverseMap.put(oldIndex, IntListFactory.createIntList(1));
+                }
+                reverseMap.get(oldIndex).add(entry.getKey());
+            }
+        }
+    }
+
+    Comparator<Entry<Integer, Pair<Derive, IntList>>> getComparator() {
+        return new Comparator<Entry<Integer, Pair<Derive, IntList>>>() {
+            @Override
+            public int compare(Entry<Integer, Pair<Derive, IntList>> o1, Entry<Integer, Pair<Derive, IntList>> o2) {
+                return o1.getKey().compareTo(o2.getKey());
+            }
+        };
     }
 
     private IntList findIndexByValue(Base val) {
@@ -143,42 +178,6 @@ abstract class BaseCustomGroupRule<Base, Derive> extends BaseGroupRule implement
                 IntList indices = IntListFactory.createIntList();
                 indices.add(oldIndex);
                 map.put(newIndices.get(i), Pair.of(groupNames.get(i), indices));
-            }
-
-            if (!reverseMap.containsKey(oldIndex)) {
-                reverseMap.put(oldIndex, IntListFactory.createIntList());
-            }
-            reverseMap.get(oldIndex).add(newIndices.get(i));
-        }
-    }
-
-    private void compactMap(int oldSize) {
-        // 压缩map，没分到值的分组要去掉
-        for (int i = 1, j = 1; i < oldSize; i++, j++) {
-            while (!map.containsKey(i)) {
-                i++;
-            }
-            if (i == j) {
-                continue;
-            }
-            map.put(j, map.get(i));
-            updateReverseMap(i, j);
-            if (i > j) {
-                map.remove(i);
-            }
-        }
-    }
-
-    private void updateReverseMap(int oldIndex, int newIndex) {
-        if (oldIndex == newIndex) {
-            return;
-        }
-
-        for (Entry<Integer, IntList> entry : reverseMap.entrySet()) {
-            for (int i = 0; i < entry.getValue().size(); i++) {
-                if (entry.getValue().get(i) == oldIndex) {
-                    entry.getValue().set(i, newIndex);
-                }
             }
         }
     }

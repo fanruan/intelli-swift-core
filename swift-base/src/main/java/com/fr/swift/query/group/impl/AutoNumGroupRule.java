@@ -12,9 +12,9 @@ import java.util.List;
  * 数字自动分组规则
  */
 public class AutoNumGroupRule extends CustomNumGroupRule {
-    public AutoNumGroupRule(Partition partition) {
+    public AutoNumGroupRule(Partition partition, boolean sorted) {
         // 无其他组，传null
-        super(partition.toGroups(), null);
+        super(partition.toGroups(), null, sorted);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class AutoNumGroupRule extends CustomNumGroupRule {
             this.interval = interval;
         }
 
-        private List<CustomGroup<Number, String>> toGroups() {
+        private List<? extends CustomGroup<Number, String>> toGroups() {
             List<NumInterval> intervals = new ArrayList<NumInterval>();
 
             double floor = min, ceil;
@@ -43,7 +43,7 @@ public class AutoNumGroupRule extends CustomNumGroupRule {
             }
             // 最右区间边界为<=
             intervals.get(intervals.size() - 1).lessOrEq = true;
-            return (List) intervals;
+            return intervals;
         }
 
         private double border(int index) {
