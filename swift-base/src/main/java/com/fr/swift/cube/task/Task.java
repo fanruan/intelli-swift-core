@@ -15,7 +15,11 @@ public interface Task {
 
     Result result();
 
-    long getCostTime();
+    Long getStartTime();
+
+    Long getEndTime();
+
+    Long getCostTime();
 
     /**
      * @author anchore
