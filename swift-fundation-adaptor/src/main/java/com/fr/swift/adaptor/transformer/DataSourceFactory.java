@@ -1,6 +1,5 @@
 package com.fr.swift.adaptor.transformer;
 
-import com.finebi.conf.algorithm.DMDataModel;
 import com.finebi.conf.constant.BICommonConstants;
 import com.finebi.conf.constant.ConfConstant;
 import com.finebi.conf.internalimp.analysis.bean.operator.confselect.ConfSelectBeanItem;
@@ -23,29 +22,15 @@ import com.fr.swift.increment.Increment;
 import com.fr.swift.increment.Increment.UpdateType;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.manager.ConnectionProvider;
-import com.fr.swift.service.LocalSwiftServerService;
-import com.fr.swift.service.SwiftAnalyseService;
-import com.fr.swift.service.SwiftHistoryService;
-import com.fr.swift.service.SwiftIndexingService;
-import com.fr.swift.service.SwiftRealTimeService;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.DBDataSource;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.container.SourceContainerManager;
-import com.fr.swift.source.db.ConnectionManager;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.db.TableDBSource;
 import com.fr.swift.source.empty.EmptyDataSource;
-import com.fr.swift.source.etl.ETLOperator;
-import com.fr.swift.source.etl.ETLTransferOperator;
 import com.fr.swift.source.etl.EtlSource;
-import com.fr.swift.source.etl.EtlTransferOperatorFactory;
-import com.fr.swift.source.etl.datamining.DataMiningOperator;
-import com.fr.swift.source.etl.datamining.DataMiningTransferOperator;
-import com.fr.swift.source.etl.rcompile.RCompileOperator;
-import com.fr.swift.source.etl.rcompile.RCompileTransferOperator;
 import com.fr.swift.source.excel.ExcelDataSource;
 import com.fr.swift.source.excel.data.ExcelDataModelCreator;
 import com.fr.swift.source.excel.data.IExcelDataModel;
@@ -66,36 +51,6 @@ import java.util.Map;
 public class DataSourceFactory {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger();
-
-    static {
-        ConnectionManager.getInstance().registerProvider(new ConnectionProvider());
-        EtlTransferOperatorFactory.register(DataMiningOperator.class, new EtlTransferOperatorFactory.ETLTransferCreator() {
-
-            @Override
-            public ETLTransferOperator createTransferOperator(ETLOperator operator) {
-                return new DataMiningTransferOperator(((DataMiningOperator) operator).getAlgorithmBean());
-            }
-        });
-        EtlTransferOperatorFactory.register(RCompileOperator.class, new EtlTransferOperatorFactory.ETLTransferCreator() {
-
-            @Override
-            public ETLTransferOperator createTransferOperator(ETLOperator operator) {
-                RCompileOperator op = (RCompileOperator) operator;
-                DMDataModel dataList = op.getDataModel();
-                return new RCompileTransferOperator(dataList);
-            }
-        });
-
-        try {
-            new LocalSwiftServerService().start();
-            new SwiftAnalyseService().start();
-            new SwiftHistoryService().start();
-            new SwiftIndexingService().start();
-            new SwiftRealTimeService().start();
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-        }
-    }
 
     public static void transformDataSources(Map<FineBusinessTable, TableUpdateInfo> infoMap, SourceContainerManager updateSourceContainer, Map<String, List<Increment>> incrementMap) throws Exception {
         for (Map.Entry<FineBusinessTable, TableUpdateInfo> infoEntry : infoMap.entrySet()) {
