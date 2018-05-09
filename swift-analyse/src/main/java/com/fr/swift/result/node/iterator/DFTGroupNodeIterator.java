@@ -15,7 +15,7 @@ import java.util.Iterator;
 public class DFTGroupNodeIterator implements Iterator<KeyValue<Integer, GroupNode>> {
 
     private GroupNode root;
-    private LimitedStack<ChildIterator> iterators;
+    private LimitedStack<Iterator<GroupNode>> iterators;
     private KeyValue<Integer, GroupNode> next;
 
     /**
@@ -26,14 +26,14 @@ public class DFTGroupNodeIterator implements Iterator<KeyValue<Integer, GroupNod
      */
     public DFTGroupNodeIterator(int nthLevel, GroupNode root) {
         this.root = root;
-        this.iterators = new ArrayLimitedStack<ChildIterator>(nthLevel);
+        this.iterators = new ArrayLimitedStack<Iterator<GroupNode>>(nthLevel);
         init();
     }
 
     private void init() {
         if (iterators.limit() != 0) {
             // 第0层只有根节点
-            iterators.push(new ChildIterator(root));
+            iterators.push(root.getChildren().iterator());
         }
         next = new KeyValue<Integer, GroupNode>(0, root);
     }
@@ -47,12 +47,12 @@ public class DFTGroupNodeIterator implements Iterator<KeyValue<Integer, GroupNod
     public KeyValue<Integer, GroupNode> next() {
         KeyValue<Integer, GroupNode> ret = next;
         while (!iterators.isEmpty()) {
-            ChildIterator it = iterators.peek();
+            Iterator<GroupNode> it = iterators.peek();
             if (it.hasNext()) {
                 GroupNode node = it.next();
                 next = new KeyValue<Integer, GroupNode>(iterators.size(), node);
                 if (iterators.size() != iterators.limit()) {
-                    iterators.push(new ChildIterator(node));
+                    iterators.push(node.getChildren().iterator());
                 }
                 break;
             } else {
