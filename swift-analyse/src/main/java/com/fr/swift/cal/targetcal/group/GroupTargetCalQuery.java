@@ -52,6 +52,7 @@ public class GroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> {
             GroupNodeAggregateUtils.aggregate(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
                     (GroupNode) mergeResult.getNode(), mergeResult.getAggregators());
             NodeFilter.filter(mergeResult.getNode(), dimensionMatchFilter);
+
         }
         // 使用结果汇总聚合器汇总，相对于明细的汇总方式，可能一样也可能不一样。这边可以通过细分做进一步优化。
         GroupNodeAggregateUtils.aggregate(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
