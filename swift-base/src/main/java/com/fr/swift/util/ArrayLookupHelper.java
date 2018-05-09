@@ -141,6 +141,9 @@ public class ArrayLookupHelper {
     }
 
     private static <T> MatchAndIndex binarySearch(Lookup<T> lookup, int start, int end, T value) {
+        if (start > end) {
+            return new MatchAndIndex(false, -1);
+        }
         int mid = ((start + end) >> 1);
         int result = lookup.compare(lookup.lookupByIndex(mid), value);
         if (result == 0) {
@@ -157,13 +160,13 @@ public class ArrayLookupHelper {
         }
     }
 
-    public static interface Lookup<T> {
-        public int minIndex();
+    public interface Lookup<T> {
+        int minIndex();
 
-        public int maxIndex();
+        int maxIndex();
 
-        public T lookupByIndex(int index);
+        T lookupByIndex(int index);
 
-        public int compare(T t1, T t2);
+        int compare(T t1, T t2);
     }
 }

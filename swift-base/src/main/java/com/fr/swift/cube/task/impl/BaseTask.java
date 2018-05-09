@@ -19,6 +19,8 @@ abstract class BaseTask implements Task {
 
     volatile Result result;
 
+    volatile long start = -1, end = -1;
+
     BaseTask(TaskKey key) {
         this.key = key;
     }
@@ -60,7 +62,12 @@ abstract class BaseTask implements Task {
     }
 
     @Override
+    public long getCostTime() {
+        return end - start;
+    }
+
+    @Override
     public String toString() {
-        return "{" + key + ", " + status + ", " + result + "}";
+        return String.format("{%s, %s, %s}", key, status, result);
     }
 }

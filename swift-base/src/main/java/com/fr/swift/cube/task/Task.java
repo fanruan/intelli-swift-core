@@ -15,6 +15,8 @@ public interface Task {
 
     Result result();
 
+    long getCostTime();
+
     /**
      * @author anchore
      * @date 2017/12/15
