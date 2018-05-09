@@ -5,7 +5,6 @@ import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.AggregatorValueUtils;
 import com.fr.swift.query.aggregator.Combiner;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.node.iterator.ChildIterator;
 import com.fr.swift.structure.queue.SortedListMergingUtils;
 
 import java.util.ArrayList;
@@ -37,7 +36,7 @@ public class GroupNodeMergeUtils {
                 // 跳过为空的root
                 continue;
             }
-            iterators.add(new ChildIterator(node));
+            iterators.add(node.getChildren().iterator());
         }
         if (iterators.isEmpty()) {
             return mergeRoot;
@@ -83,8 +82,8 @@ public class GroupNodeMergeUtils {
             }
             // 合并两个节点的子节点
             List<Iterator<GroupNode>> iterators = new ArrayList<Iterator<GroupNode>>();
-            iterators.add(new ChildIterator(current));
-            iterators.add(new ChildIterator(other));
+            iterators.add(current.getChildren().iterator());
+            iterators.add(other.getChildren().iterator());
             Iterator<GroupNode> iterator = SortedListMergingUtils.mergeIterator(iterators, comparators.get(childrenDimensionIndex),
                     new NodeCombiner(childrenDimensionIndex + 1, aggregators, comparators));
             current.clearChildren();
