@@ -28,8 +28,10 @@ public class AggregatorFactory {
                 return VarianceAggregate.INSTANCE;
             case STANDARD_DEVIATION:
                 return StandarDeviationAggregate.INSTANCE;
-            default:
+            case COUNT:
                 return CountAggregator.INSTANCE;
+            default:
+                return DummyAggregator.INSTANCE;
         }
     }
 }
