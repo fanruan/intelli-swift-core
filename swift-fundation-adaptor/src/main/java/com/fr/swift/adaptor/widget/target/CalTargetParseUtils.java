@@ -18,6 +18,7 @@ import com.fr.swift.query.adapter.target.cal.TargetInfoImpl;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorFactory;
 import com.fr.swift.query.aggregator.AggregatorType;
+import com.fr.swift.query.aggregator.WrappedAggregator;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
@@ -120,13 +121,15 @@ public class CalTargetParseUtils {
         List<ResultTarget> resultTargets = new ArrayList<ResultTarget>();
         for (int i = 0; i < targets.size(); i++) {
             FineTarget target = targets.get(i);
-            AggregatorType aggregatorType = AggregatorAdaptor.adaptorDashBoard(target.getGroup());
+            AggregatorType aggregatorType = AggregatorAdaptor.adaptorDashBoard(target.getGroup().getType());
             Aggregator aggregator = AggregatorFactory.createAggregator(aggregatorType);
-            aggregators.add(aggregator);
+            // TODO: 2018/5/9 判断汇总方式有没有改变，现在只判断了原始字段指标的情况
+            AggregatorType metricType = aggregatorType;
             if (isBaseFieldTarget(target)) {
                 // 原始字段生成的指标
                 if (target.getCalculation() == null
                         || target.getCalculation().getType() == BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.NONE) {
+                    metricType = AggregatorAdaptor.adaptorDashBoard(target.getMetric());
                     // 没有设置快速计算指标
                     int resultFetchIndex = baseMetricList.indexOf(parseMetricFromBaseFieldOfBaseTarget(target, widget));
                     resultTargets.add(new ResultTarget(i, resultFetchIndex));
@@ -151,6 +154,11 @@ public class CalTargetParseUtils {
                     int resultFetchIndex = calTargetIdList.indexOf(target.getId()) + baseMetricList.size();
                     resultTargets.add(new ResultTarget(i, resultFetchIndex));
                 }
+            }
+            if (metricType == AggregatorType.DUMMY || metricType == aggregatorType) {
+                aggregators.add(new WrappedAggregator(false, aggregator));
+            } else {
+                aggregators.add(new WrappedAggregator(true, aggregator));
             }
         }
         return Pair.of(aggregators, resultTargets);
@@ -349,7 +357,7 @@ public class CalTargetParseUtils {
      */
     private static Pair<String, Pair<AggregatorType, FilterInfo>> parseMetricFromBaseFieldOfBaseTarget(FineTarget target, AbstractTableWidget widget) {
         // 原始字段生成的指标，id为原始字段的FieldId
-        AggregatorType aggregatorType = AggregatorAdaptor.adaptorDashBoard(target.getGroup());
+        AggregatorType aggregatorType = AggregatorAdaptor.adaptorDashBoard(target.getGroup().getType());
         // TODO: 2018/5/4 target里面的field和widget里面原来的那个field突然间就分裂了，明细过滤再target的field里面！太随性了！
         WidgetBeanField field = target.getWidgetBeanField();
         field = field != null ? field : getBeanFieldByFieldId(target.getFieldId(), widget);

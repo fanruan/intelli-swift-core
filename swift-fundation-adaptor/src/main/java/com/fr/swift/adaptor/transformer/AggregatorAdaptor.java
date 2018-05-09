@@ -3,7 +3,6 @@ package com.fr.swift.adaptor.transformer;
 import com.finebi.conf.constant.BICommonConstants;
 import com.finebi.conf.constant.BIConfConstants;
 import com.finebi.conf.constant.BIDesignConstants;
-import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionGroup;
 import com.fr.swift.query.aggregator.AggregatorType;
 
 /**
@@ -88,15 +87,13 @@ public class AggregatorAdaptor {
         }
     }
 
-
-
     /**
      * nice job ! foundation
-     * @param group
+     * @param type
      * @return
      */
-    public static AggregatorType adaptorDashBoard(FineDimensionGroup group){
-        switch (group.getType()){
+    public static AggregatorType adaptorDashBoard(int type) {
+        switch (type) {
             case BIDesignConstants.DESIGN.SUMMARY_TYPE.SUM:
                 return AggregatorType.SUM;
             case BIDesignConstants.DESIGN.SUMMARY_TYPE.AVG:
@@ -114,7 +111,7 @@ public class AggregatorAdaptor {
             case BIDesignConstants.DESIGN.SUMMARY_TYPE.DISTINCT_COUNT:
                 return AggregatorType.DISTINCT;
         }
-        return AggregatorType.COUNT;
+        return AggregatorType.DUMMY;
     }
 
     public static AggregatorType adaptorRapidCal(int rapidType) {
