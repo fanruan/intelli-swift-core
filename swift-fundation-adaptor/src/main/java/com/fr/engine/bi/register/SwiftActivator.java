@@ -25,7 +25,6 @@ import com.fr.swift.util.Crasher;
 public class SwiftActivator extends Activator {
     @Override
     public void start() {
-        startSwift();
         StableManager.addClass("swiftTableEngineExecutor", com.finebi.conf.imp.SwiftTableEngineExecutor.class);
         StableManager.addClass("swiftAnalysisTableManager", com.finebi.conf.imp.SwiftAnalysisTableManager.class);
         StableManager.addClass("swiftEngineWidgetExecutorManager", com.fr.swift.adaptor.widget.SwiftWidgetExecutorManager.class);
@@ -36,6 +35,7 @@ public class SwiftActivator extends Activator {
         StableManager.addClass("swiftTableManager", com.finebi.conf.provider.SwiftTableManager.class);
         StableManager.addClass("swiftRelationPathConfProvider", com.finebi.conf.provider.SwiftRelationPathConfProvider.class);
         StableManager.addClass("swiftSpaceManager", com.fr.swift.adaptor.space.SwiftSpaceManager.class);
+        startSwift();
     }
 
     private void startSwift() {
@@ -67,6 +67,8 @@ public class SwiftActivator extends Activator {
             Crasher.crash("swift service start failed", e);
         }
     }
+
+
 
     @Override
     public void stop() {
