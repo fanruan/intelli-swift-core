@@ -8,6 +8,8 @@ import com.fr.swift.structure.iterator.RowTraversal;
  */
 public class DummyAggregator implements Aggregator<AggregatorValue> {
 
+    protected static final Aggregator INSTANCE = new SumAggregate();
+
     @Override
     public AggregatorValue aggregate(RowTraversal traversal, Column column) {
         throw new UnsupportedOperationException();
