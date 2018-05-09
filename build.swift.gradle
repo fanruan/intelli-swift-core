@@ -40,12 +40,12 @@ jar{
 	baseName='fine-bi-engine-swift'
 }
 def list=[
-		"swift_base/src",
-		"swift_history/src",
-		"swift_realtime/src",
-		"swift_indexing/src",
-		"swift_analyse/src",
-		"swift_server/src"
+		"swift-base/src/main/java",
+		"swift-history/src/main/java",
+		"swift-realtime/src/main/java",
+		"swift-indexing/src/main/java",
+		"swift-analyse/src/main/java",
+		"swift-server/src/main/java"
 	]
 
 //指定源码所在位置：
