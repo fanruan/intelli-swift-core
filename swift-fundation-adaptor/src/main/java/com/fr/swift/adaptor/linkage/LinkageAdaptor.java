@@ -124,7 +124,7 @@ public class LinkageAdaptor {
         }
         DateFilterBean bean = createStaticDateBean(calendar, groupType, value);
         SwiftDateInRangeFilterValue filterValue = new SwiftDateInRangeFilterValue();
-        long[] range = DateUtils.dateEqualFilterBean2Long(bean);
+        long[] range = DateUtils.rangeOfDateFilterBean(bean);
         filterValue.setStart(range[0]);
         filterValue.setEnd(range[1]);
         return new SwiftDetailFilterInfo<SwiftDateInRangeFilterValue>(columnKey, filterValue, SwiftDetailFilterType.DATE_IN_RANGE);
