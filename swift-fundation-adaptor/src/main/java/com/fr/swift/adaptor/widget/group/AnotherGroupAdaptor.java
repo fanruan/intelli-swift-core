@@ -63,7 +63,7 @@ class AnotherGroupAdaptor {
             stringGroups.add(new StringGroup(groupName, values));
         }
 
-        return new CustomStrGroupRule(stringGroups, bean.isUseOther(), false);
+        return new CustomStrGroupRule(stringGroups, bean.getUseOther(), false);
     }
 
     private static GroupRule newCustomNumberRule(com.finebi.conf.internalimp.analysis.bean.operator.group.custom.NumberCustomGroupValueBean groupValue) {
