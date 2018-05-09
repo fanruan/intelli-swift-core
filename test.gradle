@@ -6,8 +6,8 @@ tasks.withType(JavaCompile) {
 }
 
 repositories {
-    mavenCentral();
-    maven { url "http://mvn.finedevelop.com/repository/maven-public/" };
+    mavenCentral()
+    maven { url "http://mvn.finedevelop.com/repository/maven-public/" }
 }
 
 //指定构建的jdk版本
@@ -107,7 +107,8 @@ task test_jar(dependsOn: compileJava) << {
                 formatter(type: "xml")
                 batchtest(todir: "test_result") {
                     fileset(dir: "build/classes/test") {
-                        include(name: "**/*.class")
+                        include(name: "**/*Test.class")
+                        exclude(name: "**/Base*Test.class")
                     }
                 }
             }
@@ -124,7 +125,7 @@ task test_jar(dependsOn: compileJava) << {
             structure(name: "jacoco") {
                 classfiles {
                     fileset(dir: "build/classes/main") {
-                        include(name: "**/*Test.class")
+                        include(name: "**/*.class")
                     }
                 }
                 sourcefiles {
