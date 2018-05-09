@@ -24,7 +24,7 @@ public class TreeListWidgetAdaptor {
             TreeOptionsBean bean = treeWidget.getValue().getOptions().getTreeOptions();
             FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(null, treeWidget.getFilters());
             // TODO: 2018/4/13 BITreeResult暂时不分页
-            List<BITreeItem> treeItems = TreeWidgetAdaptor.createTreeItemList(treeWidget.getWidgetId(), bean,
+            List<BITreeItem> treeItems = TreeWidgetAdaptor.createTreeItemList(treeWidget, bean,
                     filterInfo, treeWidget.getDimensionList());
             result = new TreeListResult(false, treeItems);
         } catch (Exception e) {
