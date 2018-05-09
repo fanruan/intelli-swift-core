@@ -1,19 +1,18 @@
-apply plugin:'java'
+apply plugin: 'java'
 
 //应用jacoco plugin
-apply plugin : 'jacoco'
-tasks.withType(JavaCompile){
-	options.encoding = 'UTF-8'
+apply plugin: 'jacoco'
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
 }
 
 
 repositories {
-    mavenCentral();
-    maven {url  "http://mvn.finedevelop.com/repository/maven-public/"};
+    mavenCentral()
+    maven { url "http://mvn.finedevelop.com/repository/maven-public/" }
 }
 
 //sourceCompatibility=1.5
-
 
 //===============
 
@@ -22,40 +21,40 @@ repositories {
 // fine-bi-engine-spider-5.0.jar（spider引擎包，依赖fine-bi-foundation-5.0.jar）
 //===============
 
-def jarname='fine-bi-engine-swift-1.0.jar'
+def jarname = 'fine-bi-engine-swift-1.0.jar'
 //指定生成的jar包版本
-version='1.0'
+version = '1.0'
 
 def libDir = "../lib-core"
 
 //每次构建前先删掉build目录和reports目录
-ant.delete(dir:"build")
-ant.delete(dir:"reports")
+ant.delete(dir: "build")
+ant.delete(dir: "reports")
 
 
 
 
-jar{
+jar {
 //指定生成jar包的名称
-	baseName='fine-bi-engine-swift'
+    baseName = 'fine-bi-engine-swift'
 }
-def list=[
-		"swift_base/src",
-		"swift_history/src",
-		"swift_realtime/src",
-		"swift_indexing/src",
-		"swift_analyse/src",
-		"swift_server/src"
-	]
+def list = [
+        "swift-base/src/main/java",
+        "swift-history/src/main/java",
+        "swift-realtime/src/main/java",
+        "swift-indexing/src/main/java",
+        "swift-analyse/src/main/java",
+        "swift-server/src/main/java"
+]
 
 //指定源码所在位置：
-sourceSets{
-	main.java.srcDirs=list
+sourceSets {
+    main.java.srcDirs = list
 
 }
 
-configurations{
-	ftpAntTask
+configurations {
+    ftpAntTask
 }
 //添加ftp依赖
 dependencies {
@@ -67,128 +66,124 @@ dependencies {
 }
 
 test {
-	//这条很重要，设置忽略fail掉的测试用例。否则会导致项目构建失败
-	ignoreFailures = true
-	jacoco {
-		append = true
-		//二进制代码覆盖测试报告文件存放路径
-		destinationFile = file("reports/jacoco/jacoco.exec")
-	}
+    //这条很重要，设置忽略fail掉的测试用例。否则会导致项目构建失败
+    ignoreFailures = true
+    jacoco {
+        append = true
+        //二进制代码覆盖测试报告文件存放路径
+        destinationFile = file("reports/jacoco/jacoco.exec")
+    }
 }
 //声明外部依赖
-dependencies{
-	compile fileTree(dir:"${libDir}",include:'**/*.jar')
-	compile group:"com.fineio",name:"fineio",version:"1.0"
-	testCompile 'junit:junit:4.12'
+dependencies {
+    compile fileTree(dir: "${libDir}", include: '**/*.jar')
+    compile group: "com.fineio", name: "fineio", version: "1.0"
+    testCompile 'junit:junit:4.12'
 }
 //指明无法编译文件所在路径
-def dataContent ={def dir ->
-		copySpec{
-			from ("${dir}"){
-				exclude '**/.setting/**',
-				'.classpath',
-				'.project',
-				'**/*.java',
-				'**/*.db',
-				'**/*.g',
-				'**/package.html',
-				'**/*.less',
-				'**/cross/demo/**'
-			}
-		}
+def dataContent = { def dir ->
+    copySpec {
+        from("${dir}") {
+            exclude '**/.setting/**',
+                    '.classpath',
+                    '.project',
+                    '**/*.java',
+                    '**/*.db',
+                    '**/*.g',
+                    '**/package.html',
+                    '**/*.less',
+                    '**/cross/demo/**'
+        }
+    }
 }
 
-task updateTime(dependsOn:compileJava){
-	// ant.mkdir(dir:"temp")
- //        InputStream is = new FileInputStream(new File("fbi_base/src/com/finebi/build.properties"));
- //        OutputStream out = new FileOutputStream(new File("temp/build.properties"));
- //        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(out));
- //        BufferedReader br = new BufferedReader(new InputStreamReader(is));
- //        String s = br.readLine();
- //        while (s!=null) {
- //            StringBuilder sb = new StringBuilder();
- //            if(s.startsWith("RELEASE=")){
- //                sb.append("RELEASE=");
- //                sb.append(new Date().format("yyyy-MM-dd"));
- //            }else{
- //                sb.append(s);
- //            }
- //            bw.write(sb.toString());
- //            bw.newLine();
- //            s=br.readLine();
- //        }
- //        br.close();
- //        bw.close();
-	// ant.copy(todir:"fbi_base/src/com/finebi/"){
-	// 	fileset(file:"temp/build.properties")
-	// }
-	// ant.delete(dir:"temp")
+task updateTime(dependsOn: compileJava) {
+    // ant.mkdir(dir:"temp")
+    //        InputStream is = new FileInputStream(new File("fbi_base/src/com/finebi/build.properties"));
+    //        OutputStream out = new FileOutputStream(new File("temp/build.properties"));
+    //        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(out));
+    //        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+    //        String s = br.readLine();
+    //        while (s!=null) {
+    //            StringBuilder sb = new StringBuilder();
+    //            if(s.startsWith("RELEASE=")){
+    //                sb.append("RELEASE=");
+    //                sb.append(new Date().format("yyyy-MM-dd"));
+    //            }else{
+    //                sb.append(s);
+    //            }
+    //            bw.write(sb.toString());
+    //            bw.newLine();
+    //            s=br.readLine();
+    //        }
+    //        br.close();
+    //        bw.close();
+    // ant.copy(todir:"fbi_base/src/com/finebi/"){
+    // 	fileset(file:"temp/build.properties")
+    // }
+    // ant.delete(dir:"temp")
 }
 
 //将非.java文件复制到classes文件夹下 参与打包
-task copyFile(type:Copy,dependsOn:updateTime){
-	list.each{ def srcDir->
-		copy{
-			with dataContent.call("${srcDir}") 
-			into ('build/classes/main')
-		}
-	}
+task copyFile(type: Copy, dependsOn: updateTime) {
+    list.each { def srcDir ->
+        copy {
+            with dataContent.call("${srcDir}")
+            into('build/classes/main')
+        }
+    }
 }
 
 //添加打包时间
-task addTime(dependsOn:'compressJS'){
-	ant.delete(file:"bibuild.txt")
-	def date = new Date()
-	def formattedDate = date.format('yyyy.MM.dd.HH.mm.ss.S')
-	File file =file(new File('bibuild.txt'))
-	FileWriter fw=new FileWriter(file)
-	fw.write(formattedDate)
-	fw.close()
-	ant.copy(todir:"build/classes/main/"){
-		fileset(file:"bibuild.txt")
-	}			
+task addTime(dependsOn: 'compressJS') {
+    ant.delete(file: "bibuild.txt")
+    def date = new Date()
+    def formattedDate = date.format('yyyy.MM.dd.HH.mm.ss.S')
+    File file = file(new File('bibuild.txt'))
+    FileWriter fw = new FileWriter(file)
+    fw.write(formattedDate)
+    fw.close()
+    ant.copy(todir: "build/classes/main/") {
+        fileset(file: "bibuild.txt")
+    }
 }
 
 //混淆代码
-task obfuse(dependsOn:'build')<<{
-	ant.delete(dir:"JAR/tmp/1.8")
-	ant.mkdir(dir:"JAR/tmp/1.8")
-	ant.taskdef(name:'yguard',classname:'com.yworks.yguard.YGuardTask',classpath:"${BI_HOME}/lib4build/yguard.jar")
-	ant.yguard(){
-		inoutpair(in:"build/libs/${jarname}",out:"JAR/tmp/1.8/${jarname}")
-		rename(){
-		keep{
-			method(name:'void main(String[])'){
-				patternset(id:'datapatternset'){
-					include (name:'**.*')
-				}
-			}
-			method(name:'void readObject(java.io.ObjectInputStream)'){
-				patternset(refid:'datapatternset')
-			}
-			method(name:'void writeObject(java.io.ObjectOutputStream)'){
-				patternset(refid:'datapatternset')				
-			}
-			field(name:'serialVersionUID'){
-				patternset(refid:'datapatternset')				
-			}
-			'class'(methods:'private',fields:'private'){
-				patternset{
-					include(name:'**.*')
-					exclude(name:'com.fr.report.core.cal.**.*')
-					exclude(name:'com.fr.base.core.util.vt.**.*')
-					exclude(name:'com.fr.web.core.service.**.*')
-				}
-			}
-		}
-		}
-	}
-	ant.delete(file:'yguardlog.xml')
+task obfuse(dependsOn: 'build') << {
+    ant.delete(dir: "JAR/tmp/1.8")
+    ant.mkdir(dir: "JAR/tmp/1.8")
+    ant.taskdef(name: 'yguard', classname: 'com.yworks.yguard.YGuardTask', classpath: "${BI_HOME}/lib4build/yguard.jar")
+    ant.yguard() {
+        inoutpair(in: "build/libs/${jarname}", out: "JAR/tmp/1.8/${jarname}")
+        rename() {
+            keep {
+                method(name: 'void main(String[])') {
+                    patternset(id: 'datapatternset') {
+                        include(name: '**.*')
+                    }
+                }
+                method(name: 'void readObject(java.io.ObjectInputStream)') {
+                    patternset(refid: 'datapatternset')
+                }
+                method(name: 'void writeObject(java.io.ObjectOutputStream)') {
+                    patternset(refid: 'datapatternset')
+                }
+                field(name: 'serialVersionUID') {
+                    patternset(refid: 'datapatternset')
+                }
+                'class'(methods: 'private', fields: 'private') {
+                    patternset {
+                        include(name: '**.*')
+                        exclude(name: 'com.fr.report.core.cal.**.*')
+                        exclude(name: 'com.fr.base.core.util.vt.**.*')
+                        exclude(name: 'com.fr.web.core.service.**.*')
+                    }
+                }
+            }
+        }
+    }
+    ant.delete(file: 'yguardlog.xml')
 }
-
-
-
-
 
 //def ftpPath = "E:/ftp/share/finebi/5.0/feature"
 
