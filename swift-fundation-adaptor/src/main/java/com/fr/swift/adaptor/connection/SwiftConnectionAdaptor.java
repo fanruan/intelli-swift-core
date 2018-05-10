@@ -14,11 +14,12 @@ import java.sql.Connection;
  * @date 2018/4/9
  */
 public class SwiftConnectionAdaptor implements ConnectionAdapter {
-    FineConnectionService fineConnectionService = (FineConnectionService) StableManager.getContext().getObject("fineConnectionService");
+
+    private FineConnectionService fineConnectionService;
 
     @Override
     public Connection getConnection(String dbName) throws Exception {
-        com.fr.data.impl.Connection fineConnection = fineConnectionService.getConnectionByName(dbName);
+        com.fr.data.impl.Connection fineConnection = getFineConnectionService().getConnectionByName(dbName);
         if (Null.isNull(fineConnection)) {
             throw new FineConnectRejectException(dbName);
         }
@@ -27,7 +28,14 @@ public class SwiftConnectionAdaptor implements ConnectionAdapter {
 
     @Override
     public String getSchema(String dbName) throws Exception{
-        com.fr.data.impl.Connection fineConnection = fineConnectionService.getConnectionByName(dbName);
+        com.fr.data.impl.Connection fineConnection = getFineConnectionService().getConnectionByName(dbName);
         return ((JDBCDatabaseConnection)fineConnection).getSchema();
+    }
+
+    private FineConnectionService getFineConnectionService() {
+        if (null == fineConnectionService) {
+            fineConnectionService = StableManager.getContext().getObject("fineConnectionService");
+        }
+        return fineConnectionService;
     }
 }
