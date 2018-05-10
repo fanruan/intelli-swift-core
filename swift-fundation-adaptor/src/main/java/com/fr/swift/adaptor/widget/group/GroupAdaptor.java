@@ -30,6 +30,7 @@ import com.fr.swift.query.group.impl.AutoNumGroupRule.Partition;
 import com.fr.swift.query.group.impl.BaseSortByOtherDimensionGroupRule;
 import com.fr.swift.query.group.impl.CustomNumGroupRule;
 import com.fr.swift.query.group.impl.CustomNumGroupRule.NumInterval;
+import com.fr.swift.query.group.impl.CustomNumGroupRule.NumIntervals;
 import com.fr.swift.query.group.impl.CustomSortGroupRule;
 import com.fr.swift.query.group.impl.CustomSortGroupRule.NumGroup;
 import com.fr.swift.query.group.impl.CustomStrGroupRule;
@@ -45,7 +46,9 @@ import com.fr.swift.utils.BusinessTableUtils;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author pony
@@ -215,14 +218,19 @@ public class GroupAdaptor {
         NumberCustomGroupValueBean groupValue = dimGroup.getValue().getGroupValue();
         List<NumberCustomGroupNodeBean> beans = groupValue.getGroupNodes();
 
-        List<NumInterval> intervals = new ArrayList<NumInterval>(beans.size());
+        Map<String, NumIntervals> map = new LinkedHashMap<String, NumIntervals>();
         for (NumberCustomGroupNodeBean bean : beans) {
-            intervals.add(new NumInterval(bean.getGroupName(),
+            NumInterval numInterval = new NumInterval(
                     bean.getMin(), bean.isCloseMin(),
-                    bean.getMax(), bean.isCloseMax()));
+                    bean.getMax(), bean.isCloseMax());
+            String groupName = bean.getGroupName();
+            if (!map.containsKey(groupName)) {
+                map.put(groupName, new NumIntervals(groupName));
+            }
+            map.get(groupName).addInterval(numInterval);
         }
 
-        return new CustomNumGroupRule(intervals, groupValue.getUseOther(), sorted);
+        return new CustomNumGroupRule(new ArrayList<NumIntervals>(map.values()), groupValue.getUseOther(), sorted);
     }
 
     private static GroupRule newAutoRule(NumberDimensionAutoGroup group, boolean sorted) {
