@@ -1,4 +1,4 @@
-package com.finebi.conf.imp;
+package com.finebi.conf.impl;
 
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.conf.internalimp.bean.table.UpdatePreviewTableBean;
@@ -11,7 +11,6 @@ import com.finebi.conf.internalimp.update.TableUpdateInfo;
 import com.finebi.conf.internalimp.update.UpdateLog;
 import com.finebi.conf.internalimp.update.UpdateNeedSpace;
 import com.finebi.conf.internalimp.update.UpdateStatus;
-import com.finebi.conf.provider.SwiftPackageConfProvider;
 import com.finebi.conf.provider.SwiftRelationPathConfProvider;
 import com.finebi.conf.provider.SwiftTableManager;
 import com.finebi.conf.service.engine.update.EngineUpdateManager;

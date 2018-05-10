@@ -58,7 +58,7 @@ public class StuffFetcher implements Runnable {
 
     public static void update(IndexStuffProvider stuff) throws SwiftMetaDataException, SwiftServiceException {
         final long t = System.currentTimeMillis();
-        CubeTasks.countUp();
+        CubeTasks.nextRound();
 
         List<Pair<TaskKey, Object>> pairs = new ArrayList<Pair<TaskKey, Object>>();
 

@@ -61,6 +61,8 @@ public class SchedulerTaskImpl extends BaseTask implements SchedulerTask {
 
     @Override
     public void triggerRun() {
+        start = System.currentTimeMillis();
+
         setStatus(Status.RUNNABLE);
         try {
             SwiftServiceListenerManager.getInstance().triggerEvent(new SwiftServiceEvent<TaskKey>() {
@@ -88,6 +90,8 @@ public class SchedulerTaskImpl extends BaseTask implements SchedulerTask {
             this.result = result;
             setStatus(Status.DONE);
         }
+
+        end = System.currentTimeMillis();
 
         SwiftLoggers.getLogger().info(String.format("%s %s", key, result));
 
