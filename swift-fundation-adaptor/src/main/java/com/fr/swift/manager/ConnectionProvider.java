@@ -29,7 +29,7 @@ public class ConnectionProvider implements IConnectionProvider {
 
     public FineConnectionService getConnectionService() {
         //这个不能static，再启动模块的时候会调用，然而引擎比功能先启动
-        if (connectionService == null){
+        if (connectionService == null) {
             connectionService = StableManager.getContext().getObject("fineConnectionService");
         }
         return connectionService;

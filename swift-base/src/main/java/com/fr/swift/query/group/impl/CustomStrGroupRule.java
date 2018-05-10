@@ -35,6 +35,7 @@ public class CustomStrGroupRule extends BaseCustomStrGroupRule<String> {
 
     @Override
     public int getGlobalIndexByIndex(int index) {
+        // fixme 支持分组排序后，数据不准确了，要加个query查下
         if (index == 0) {
             return 0;
         }
