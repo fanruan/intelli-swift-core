@@ -176,7 +176,7 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
         }
         //根据点击的值，创建过滤条件
         List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
-        TableWidgetBean fromWidget = LinkageAdaptor.handleClickItem(detailWidget.getTableName(), widgetLinkItem, filterInfos);
+        TableWidgetBean fromWidget = LinkageAdaptor.handleClickItem(detailWidget.getTableName(), widgetLinkItem, filterInfos, fromColumns, toColumns);
         //明细表查询
         FilterInfo filterInfo = new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND);
         String queryId = fromWidget.getwId();

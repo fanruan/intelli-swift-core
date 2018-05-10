@@ -4,6 +4,7 @@ import com.finebi.base.stable.StableManager;
 import com.finebi.conf.algorithm.DMDataModel;
 import com.fr.module.Activator;
 import com.fr.swift.manager.ConnectionProvider;
+import com.fr.swift.manager.ProviderTaskManager;
 import com.fr.swift.service.LocalSwiftServerService;
 import com.fr.swift.service.SwiftAnalyseService;
 import com.fr.swift.service.SwiftHistoryService;
@@ -63,6 +64,7 @@ public class SwiftActivator extends Activator {
             new SwiftHistoryService().start();
             new SwiftIndexingService().start();
             new SwiftRealTimeService().start();
+            ProviderTaskManager.start();
         } catch (Exception e) {
             Crasher.crash("swift service start failed", e);
         }

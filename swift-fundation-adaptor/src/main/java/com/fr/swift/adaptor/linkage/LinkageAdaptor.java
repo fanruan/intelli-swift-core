@@ -13,26 +13,32 @@ import com.finebi.conf.internalimp.dashboard.widget.filter.ClickValueItem;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
 import com.finebi.conf.internalimp.service.pack.FineConfManageCenter;
 import com.finebi.conf.service.engine.relation.EngineRelationPathManager;
+import com.finebi.conf.service.engine.table.EngineTableManager;
 import com.finebi.conf.structure.bean.dashboard.widget.WidgetBean;
 import com.finebi.conf.structure.bean.filter.DateFilterBean;
 import com.finebi.conf.structure.path.FineBusinessTableRelationPath;
 import com.fr.general.ComparatorUtils;
+import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.transformer.RelationSourceFactory;
 import com.fr.swift.adaptor.transformer.date.DateUtils;
+import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.filter.info.value.SwiftDateInRangeFilterValue;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.RelationSource;
+import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.relation.RelationSourceImpl;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.utils.BusinessTableUtils;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.HashSet;
+import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @author yee
@@ -47,7 +53,7 @@ public class LinkageAdaptor {
      * @param filterInfos
      * @return
      */
-    public static TableWidgetBean handleClickItem(String tableName, WidgetLinkItem widgetLinkItem, List<FilterInfo> filterInfos) {
+    public static TableWidgetBean handleClickItem(String tableName, WidgetLinkItem widgetLinkItem, List<FilterInfo> filterInfos, Dimension[] primary, String[] foreign) {
         WidgetBean widgetBean = widgetLinkItem.getWidget();
         if (null == widgetBean) {
             return null;
@@ -64,10 +70,14 @@ public class LinkageAdaptor {
             if (ComparatorUtils.equals(fromTableName, tableName)) {
                 handleOneTableFilter(fromWidget, clickedList, filterInfos);
             } else {
-                handleRelationFilter(tableName, fromWidget, clickedList, filterInfos);
+                handleRelationFilter(tableName, fromWidget, clickedList, filterInfos, primary, foreign);
             }
         }
         return fromWidget;
+    }
+
+    public static TableWidgetBean handleClickItem(String tableName, WidgetLinkItem widgetLinkItem, List<FilterInfo> filterInfos) {
+        return handleClickItem(tableName, widgetLinkItem, filterInfos, null, null);
     }
 
     private static void handleOneTableFilter(TableWidgetBean fromWidget, List<ClickValueItem> clickedList, List<FilterInfo> filterInfos) {
@@ -82,9 +92,22 @@ public class LinkageAdaptor {
         }
     }
 
-    private static void handleRelationFilter(String table, TableWidgetBean fromWidget, List<ClickValueItem> clickedList, List<FilterInfo> filterInfos) {
+    public static RelationSource dealWithCustomRelation(String primaryTable, String foreignTable, Dimension[] primary, String[] foreign) throws Exception {
+        EngineTableManager tableManager = fineConfManageCenter.getTableProvider().get(FineEngineType.Cube);
+        SourceKey primarySource = DataSourceFactory.getDataSource(tableManager.getSingleTable(primaryTable)).getSourceKey();
+        SourceKey foreignSource = DataSourceFactory.getDataSource(tableManager.getSingleTable(foreignTable)).getSourceKey();
+        List<String> primaryFields = new ArrayList<String>();
+        for (Dimension dimension : primary) {
+            primaryFields.add(dimension.getColumnKey().getName());
+        }
+        List<String> foreignFields = Arrays.asList(foreign);
+        return new RelationSourceImpl(primarySource, foreignSource, primaryFields, foreignFields);
+    }
+
+    private static void handleRelationFilter(String table, TableWidgetBean fromWidget, List<ClickValueItem> clickedList, List<FilterInfo> filterInfos, Dimension[] primary, String[] foreign) {
         if (null != clickedList) {
             EngineRelationPathManager manager = fineConfManageCenter.getRelationPathProvider().get(FineEngineType.Cube);
+
             List<FineBusinessTableRelationPath> relationPaths = new ArrayList<FineBusinessTableRelationPath>();
             try {
                 relationPaths.addAll(manager.getRelationPaths(fromWidget.getTableName(), table));
@@ -92,10 +115,19 @@ public class LinkageAdaptor {
             } catch (FineEngineException e) {
                 Crasher.crash("get relation paths error: ", e);
             }
+            RelationSource relationSource = null;
             if (relationPaths.isEmpty()) {
-                Crasher.crash(String.format("can not find relation paths between %s and %s!", table, fromWidget.getTableName()));
+                if (null == primary || null == foreign) {
+                    Crasher.crash(String.format("can not find relation paths between %s and %s!", table, fromWidget.getTableName()));
+                }
+                try {
+                    relationSource = dealWithCustomRelation(fromWidget.getTableName(), table, primary, foreign);
+                } catch (Exception e) {
+                    Crasher.crash(String.format("create  relation between %s and %s error!", table, fromWidget.getTableName()), e);
+                }
+            } else {
+                relationSource = RelationSourceFactory.transformRelationSourcesFromPath(relationPaths.get(0));
             }
-            RelationSource relationSource = RelationSourceFactory.transformRelationSourcesFromPath(relationPaths.get(0));
             for (int i = 0; i < clickedList.size(); i++) {
                 ClickValueItem clickValueItem = clickedList.get(i);
                 String value = clickValueItem.getText();
