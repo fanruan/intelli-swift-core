@@ -60,7 +60,7 @@ public class DateTransformTest {
         c1.setTimeInMillis(millis);
         assertEquals(c.getTimeInMillis(), MixDateType.Y_Q.from(c1));
 
-        c.set(year, month, 7, 0, 0, 0);
+        c.set(year, month, 8, 0, 0, 0);
         c.set(Calendar.MILLISECOND, 0);
         c1.setTimeInMillis(millis);
         assertEquals(c.getTimeInMillis(), MixDateType.Y_W.from(c1));

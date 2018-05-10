@@ -48,9 +48,9 @@ public enum MixDateType {
         @Override
         public long from(Calendar c) {
             int year = DateType.YEAR.from(c);
-            int week = c.get(Calendar.DAY_OF_WEEK);
+            int week = DateType.WEEK.from(c);
 
-            c.add(Calendar.DAY_OF_WEEK, Calendar.SUNDAY - week);
+            c.add(Calendar.DAY_OF_WEEK, 1 - week);
             c.set(Calendar.HOUR_OF_DAY, 0);
             c.set(Calendar.MINUTE, 0);
             c.set(Calendar.SECOND, 0);
