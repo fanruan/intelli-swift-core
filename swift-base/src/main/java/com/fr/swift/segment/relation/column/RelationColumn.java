@@ -88,7 +88,7 @@ public class RelationColumn {
             if (columns[result[0]] == null) {
                 columns[result[0]] = segments[result[0]].getColumn(columnKey).getDictionaryEncodedColumn();
             }
-            return columns[result[0]].getValue(columns[result[0]].getIndexByRow(result[1]));
+            return columns[result[0]].getValueByRow(result[1]);
         }
         return null;
     }
