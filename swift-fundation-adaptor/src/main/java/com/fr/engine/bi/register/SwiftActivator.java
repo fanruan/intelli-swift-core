@@ -26,10 +26,10 @@ import com.fr.swift.util.Crasher;
 public class SwiftActivator extends Activator {
     @Override
     public void start() {
-        StableManager.addClass("swiftTableEngineExecutor", com.finebi.conf.imp.SwiftTableEngineExecutor.class);
-        StableManager.addClass("swiftAnalysisTableManager", com.finebi.conf.imp.SwiftAnalysisTableManager.class);
+        StableManager.addClass("swiftTableEngineExecutor", com.finebi.conf.impl.SwiftTableEngineExecutor.class);
+        StableManager.addClass("swiftAnalysisTableManager", com.finebi.conf.impl.SwiftAnalysisTableManager.class);
         StableManager.addClass("swiftEngineWidgetExecutorManager", com.fr.swift.adaptor.widget.SwiftWidgetExecutorManager.class);
-        StableManager.addClass("swiftUpdateManager", com.finebi.conf.imp.SwiftUpdateManager.class);
+        StableManager.addClass("swiftUpdateManager", com.finebi.conf.impl.SwiftUpdateManager.class);
         StableManager.addClass("swiftAnalysisConfManager", com.finebi.conf.provider.SwiftAnalysisConfManager.class);
         StableManager.addClass("swiftAnalysisRelationPathManager", com.finebi.conf.provider.SwiftAnalysisRelationPathManager.class);
         StableManager.addClass("swiftPackageConfProvider", com.finebi.conf.provider.SwiftPackageConfProvider.class);
@@ -69,8 +69,6 @@ public class SwiftActivator extends Activator {
             Crasher.crash("swift service start failed", e);
         }
     }
-
-
 
     @Override
     public void stop() {

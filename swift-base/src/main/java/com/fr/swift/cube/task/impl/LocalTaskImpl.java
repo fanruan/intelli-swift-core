@@ -54,6 +54,8 @@ public class LocalTaskImpl extends BaseTask implements LocalTask {
 
     @Override
     public void triggerRun() {
+        start = System.currentTimeMillis();
+
         setStatus(Status.RUNNABLE);
         CubeTaskManager.getInstance().run(this);
     }
@@ -77,6 +79,8 @@ public class LocalTaskImpl extends BaseTask implements LocalTask {
             this.result = result;
             setStatus(Status.DONE);
         }
+
+        end = System.currentTimeMillis();
 
         SwiftLoggers.getLogger().info(String.format("%s %s", key, result));
 
