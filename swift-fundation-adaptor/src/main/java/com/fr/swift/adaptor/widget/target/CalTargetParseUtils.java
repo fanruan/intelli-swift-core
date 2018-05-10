@@ -2,6 +2,7 @@ package com.fr.swift.adaptor.widget.target;
 
 import com.finebi.conf.constant.BIDesignConstants;
 import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
+import com.finebi.conf.internalimp.dashboard.widget.dimension.group.DimensionTypeGroup;
 import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.fr.stable.StringUtils;
@@ -42,7 +43,7 @@ public class CalTargetParseUtils {
 
     /**
      * 功能上把计算指标依赖计算指标的场景去掉了，所以以下90%都是废话:)
-     *
+     * <p>
      * 解析过程中要区分的几个概念：
      * 1、原始数值字段，业务包表中的数值类字段
      * 2、计算指标字段，通过计算指标配置面板生成的计算指标字段
@@ -51,15 +52,15 @@ public class CalTargetParseUtils {
      * 5、计算指标，通过对4或者5的结果再进行相关计算的得到
      * 6、基础计算指标字段，不依赖于其他计算指标字段的计算指标字段
      * 7、基础分组表指标，由1或者6拖到分组表中生成的指标，这类指标的特点是不依赖于其他计算指标字段
-     *
+     * <p>
      * 分组表的指标可以分为两类：
      * 1、原始数值字段生成的指标（下面简称：Type1）
      * 2、配置生成的计算指标字段生成的指标（下面简称：Type2）
-     *
+     * <p>
      * 分组表的计算指标从哪里解析出来：
      * 1、Type1设置了快速计算会生成0个或1个计算指标
      * 2、Type2对应的计算指标字段会生成0个或者多个，同时Type2设置了快速计算会生成0个或1个计算指标
-     *
+     * <p>
      * 通过计算配置面板生成新的计算指标字段的时候，计算指标字段之间的可以相互依赖。
      * 使用有向图进行解析的步骤：
      * 1、从分组表的指标（最上层）开始递归解析，上层计算指标 -> 基础计算指标
@@ -360,6 +361,14 @@ public class CalTargetParseUtils {
     private static Pair<String, Pair<AggregatorType, FilterInfo>> parseMetricFromBaseFieldOfBaseTarget(FineTarget target, AbstractTableWidget widget) {
         // 原始字段生成的指标，id为原始字段的FieldId
         AggregatorType aggregatorType = AggregatorAdaptor.adaptorDashBoard(target.getGroup().getType());
+        if (aggregatorType == AggregatorType.COUNT && target.getGroup() instanceof DimensionTypeGroup) {
+            DimensionTypeGroup group = (DimensionTypeGroup) target.getGroup();
+            String fieldId = group.getValue().getId();
+            if (!StringUtils.isEmpty(fieldId)){
+                aggregatorType = AggregatorType.DISTINCT;
+                target.setFieldId(fieldId);
+            }
+        }
         // TODO: 2018/5/4 target里面的field和widget里面原来的那个field突然间就分裂了，明细过滤再target的field里面！太随性了！
         WidgetBeanField field = target.getWidgetBeanField();
         field = field != null ? field : getBeanFieldByFieldId(target.getFieldId(), widget);
