@@ -16,12 +16,15 @@ import com.fr.swift.query.group.impl.AutoNumGroupRule;
 import com.fr.swift.query.group.impl.AutoNumGroupRule.Partition;
 import com.fr.swift.query.group.impl.CustomNumGroupRule;
 import com.fr.swift.query.group.impl.CustomNumGroupRule.NumInterval;
+import com.fr.swift.query.group.impl.CustomNumGroupRule.NumIntervals;
 import com.fr.swift.query.group.impl.CustomStrGroupRule;
 import com.fr.swift.query.group.impl.CustomStrGroupRule.StringGroup;
 import com.fr.swift.query.group.impl.NoGroupRule;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * nice job! bi-foundation
@@ -72,14 +75,19 @@ class AnotherGroupAdaptor {
     private static GroupRule newCustomNumberRule(NumberCustomGroupValueBean groupValue) {
         List<NumberCustomGroupValueNodeBean> beans = groupValue.getNodes();
 
-        List<NumInterval> intervals = new ArrayList<NumInterval>(beans.size());
+        Map<String, NumIntervals> map = new LinkedHashMap<String, NumIntervals>();
         for (NumberCustomGroupValueNodeBean bean : beans) {
-            intervals.add(new NumInterval(bean.getGroupName(),
+            NumInterval numInterval = new NumInterval(
                     Double.valueOf(bean.getMin()), bean.isClosemin(),
-                    Double.valueOf(bean.getMax()), bean.isClosemax()));
+                    Double.valueOf(bean.getMax()), bean.isClosemax());
+            String groupName = bean.getGroupName();
+            if (!map.containsKey(groupName)) {
+                map.put(groupName, new NumIntervals(groupName));
+            }
+            map.get(groupName).addInterval(numInterval);
         }
 
-        return new CustomNumGroupRule(intervals, groupValue.getUseOther(), false);
+        return new CustomNumGroupRule(new ArrayList<NumIntervals>(map.values()), groupValue.getUseOther(), false);
     }
 
     private static GroupRule newAutoRule(NumberAutoGroupValueBean bean) {
