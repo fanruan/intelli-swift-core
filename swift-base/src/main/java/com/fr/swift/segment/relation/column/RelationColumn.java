@@ -23,7 +23,6 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.relation.RelationIndex;
-import com.fr.swift.source.DataSource;
 import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.RelationSourceType;
 import com.fr.swift.source.Source;
@@ -33,9 +32,14 @@ import com.fr.swift.util.Crasher;
 import com.fr.swift.util.Util;
 
 import java.lang.reflect.Constructor;
-import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * @author yee
