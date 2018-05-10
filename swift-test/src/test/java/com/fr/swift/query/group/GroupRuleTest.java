@@ -7,12 +7,14 @@ import com.fr.swift.query.group.impl.AutoNumGroupRule;
 import com.fr.swift.query.group.impl.AutoNumGroupRule.Partition;
 import com.fr.swift.query.group.impl.CustomNumGroupRule;
 import com.fr.swift.query.group.impl.CustomNumGroupRule.NumInterval;
+import com.fr.swift.query.group.impl.CustomNumGroupRule.NumIntervals;
 import com.fr.swift.query.group.impl.CustomStrGroupRule;
 import com.fr.swift.query.group.impl.CustomStrGroupRule.StringGroup;
 import com.fr.swift.structure.array.IntList;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 
 import static org.junit.Assert.assertEquals;
@@ -154,11 +156,12 @@ public class GroupRuleTest {
 
     @Test
     public void testCustomNumGroupRule() {
-        CustomGroupRule rule = new CustomNumGroupRule(Arrays.asList(
-                new NumInterval("g0", 0, true, 2.1, false),
-                new NumInterval("g1", 4, true, 6, false),
-                new NumInterval("g2", 7, true, 10, false)
-        ), "ungrouped", false);
+        CustomGroupRule rule = new CustomNumGroupRule(
+                Arrays.asList(
+                        new NumIntervals("g0", Collections.singletonList(new NumInterval(0, true, 2.1, false))),
+                        new NumIntervals("g1", Collections.singletonList(new NumInterval(4, true, 6, false))),
+                        new NumIntervals("g2", Collections.singletonList(new NumInterval(7, true, 10, false)))
+                ), "ungrouped", false);
         rule.setOriginDict(new TempDictColumn<Number>() {
             Number[] numbers = {null, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
@@ -222,11 +225,12 @@ public class GroupRuleTest {
 
     @Test
     public void testCustomNumGroupRuleWithNoOtherGroup() {
-        CustomGroupRule rule = new CustomNumGroupRule(Arrays.asList(
-                new NumInterval("g0", 0, true, 2.1, false),
-                new NumInterval("g1", 4, true, 7, false),
-                new NumInterval("g2", 7, true, 10, false)
-        ), null, false);
+        CustomGroupRule rule = new CustomNumGroupRule(
+                Arrays.asList(
+                        new NumIntervals("g0", Collections.singletonList(new NumInterval(0, true, 2.1, false))),
+                        new NumIntervals("g1", Collections.singletonList(new NumInterval(4, true, 7, false))),
+                        new NumIntervals("g2", Collections.singletonList(new NumInterval(7, true, 10, false)))
+                ), null, false);
         rule.setOriginDict(new TempDictColumn<Number>() {
             Number[] numbers = {null, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
@@ -354,11 +358,12 @@ public class GroupRuleTest {
 
     @Test
     public void testNumGlobalIndex() {
-        CustomGroupRule rule = new CustomNumGroupRule(Arrays.asList(
-                new NumInterval("g0", 0, true, 2.1, false),
-                new NumInterval("g1", 4, true, 6, false),
-                new NumInterval("g2", 7, true, 10, false)
-        ), null, false);
+        CustomGroupRule rule = new CustomNumGroupRule(
+                Arrays.asList(
+                        new NumIntervals("g0", Collections.singletonList(new NumInterval(0, true, 2.1, false))),
+                        new NumIntervals("g1", Collections.singletonList(new NumInterval(4, true, 6, false))),
+                        new NumIntervals("g2", Collections.singletonList(new NumInterval(7, true, 10, false)))
+                ), null, false);
         rule.setOriginDict(new TempDictColumn<Number>() {
             Number[] numbers = {null, 3.0, 6.1};
 
