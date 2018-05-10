@@ -59,7 +59,7 @@ public class BaseSortByOtherDimensionGroupRule<Base, Derive> extends BaseGroupRu
     }
 
     private void ASCMap(int size) {
-        for(int i = 1, j = 1; j < size; i++) {
+        for(int i = 0, j = 1; j < size; i++) {
             final TreeSet<Base> set = new TreeSet<Base>(dictColumn.getComparator());
             sortByBitmapIndexedColumn.getBitMapIndex(i).traversal(new TraversalAction() {
                 @Override
