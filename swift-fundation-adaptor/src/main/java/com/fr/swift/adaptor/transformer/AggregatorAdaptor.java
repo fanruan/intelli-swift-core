@@ -110,6 +110,8 @@ public class AggregatorAdaptor {
                 return AggregatorType.STANDARD_DEVIATION;
             case BIDesignConstants.DESIGN.SUMMARY_TYPE.DISTINCT_COUNT:
                 return AggregatorType.DISTINCT;
+            case BIDesignConstants.DESIGN.SUMMARY_TYPE.RECORD_COUNT:
+                return AggregatorType.COUNT;
         }
         return AggregatorType.DUMMY;
     }
