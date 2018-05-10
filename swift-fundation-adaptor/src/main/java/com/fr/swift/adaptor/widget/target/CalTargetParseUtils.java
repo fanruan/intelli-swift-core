@@ -2,9 +2,9 @@ package com.fr.swift.adaptor.widget.target;
 
 import com.finebi.conf.constant.BIDesignConstants;
 import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
-import com.finebi.conf.internalimp.dashboard.widget.dimension.group.DimensionTypeGroup;
 import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
+import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
 import com.fr.swift.adaptor.transformer.AggregatorAdaptor;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
@@ -125,6 +125,13 @@ public class CalTargetParseUtils {
         for (int i = 0; i < targets.size(); i++) {
             FineTarget target = targets.get(i);
             AggregatorType aggregatorType = AggregatorAdaptor.adaptorDashBoard(target.getGroup().getType());
+            // TODO: @lyon 2018/5/10 这边不用再判断一次了，能不能直接传过来之前的aggtype
+            if (aggregatorType == AggregatorType.COUNT) {
+                String countDep = target.getCounterDep();
+                if (!ComparatorUtils.equals(countDep, BIDesignConstants.COUNTER_DEP.TOTAL_ROWS)){
+                    aggregatorType = AggregatorType.DISTINCT;
+                }
+            }
             Aggregator aggregator = AggregatorFactory.createAggregator(aggregatorType);
             // TODO: 2018/5/9 判断汇总方式有没有改变，现在只判断了原始字段指标的情况
             AggregatorType metricType = aggregatorType;
@@ -361,12 +368,11 @@ public class CalTargetParseUtils {
     private static Pair<String, Pair<AggregatorType, FilterInfo>> parseMetricFromBaseFieldOfBaseTarget(FineTarget target, AbstractTableWidget widget) {
         // 原始字段生成的指标，id为原始字段的FieldId
         AggregatorType aggregatorType = AggregatorAdaptor.adaptorDashBoard(target.getGroup().getType());
-        if (aggregatorType == AggregatorType.COUNT && target.getGroup() instanceof DimensionTypeGroup) {
-            DimensionTypeGroup group = (DimensionTypeGroup) target.getGroup();
-            String fieldId = group.getValue().getId();
-            if (!StringUtils.isEmpty(fieldId)){
+        if (aggregatorType == AggregatorType.COUNT) {
+            String countDep = target.getCounterDep();
+            if (!ComparatorUtils.equals(countDep, BIDesignConstants.COUNTER_DEP.TOTAL_ROWS)){
                 aggregatorType = AggregatorType.DISTINCT;
-                target.setFieldId(fieldId);
+                target.setFieldId(countDep);
             }
         }
         // TODO: 2018/5/4 target里面的field和widget里面原来的那个field突然间就分裂了，明细过滤再target的field里面！太随性了！
