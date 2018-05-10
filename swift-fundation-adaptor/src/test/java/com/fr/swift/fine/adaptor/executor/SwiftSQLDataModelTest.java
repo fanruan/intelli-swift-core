@@ -1,7 +1,7 @@
 package com.fr.swift.fine.adaptor.executor;
 
 import com.finebi.base.constant.FineEngineType;
-import com.finebi.conf.imp.SwiftTableEngineExecutor;
+import com.finebi.conf.impl.SwiftTableEngineExecutor;
 import com.finebi.conf.internalimp.basictable.table.FineSQLBusinessTable;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;

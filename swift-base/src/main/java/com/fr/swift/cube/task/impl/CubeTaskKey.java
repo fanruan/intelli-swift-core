@@ -1,5 +1,6 @@
 package com.fr.swift.cube.task.impl;
 
+import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.task.TaskKey;
 
 /**
@@ -7,6 +8,7 @@ import com.fr.swift.cube.task.TaskKey;
  * @date 2017/12/13
  */
 public class CubeTaskKey implements TaskKey {
+    private int round;
     private String name;
     private Operation operation;
 
@@ -15,8 +17,18 @@ public class CubeTaskKey implements TaskKey {
     }
 
     public CubeTaskKey(String name, Operation operation) {
+        this(CubeTasks.getCurrentRound(), name, operation);
+    }
+
+    public CubeTaskKey(int round, String name, Operation operation) {
+        this.round = round;
         this.name = name;
         this.operation = operation;
+    }
+
+    @Override
+    public int getRound() {
+        return round;
     }
 
     @Override
@@ -40,6 +52,9 @@ public class CubeTaskKey implements TaskKey {
 
         CubeTaskKey that = (CubeTaskKey) o;
 
+        if (round != that.round) {
+            return false;
+        }
         if (name != null ? !name.equals(that.name) : that.name != null) {
             return false;
         }
@@ -48,13 +63,14 @@ public class CubeTaskKey implements TaskKey {
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
+        int result = round;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (operation != null ? operation.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        return "{" + name + ", " + operation + "}";
+        return String.format("{%d# %s, %s}", round, name, operation);
     }
 }

@@ -1,4 +1,4 @@
-package com.finebi.conf.imp;
+package com.finebi.conf.impl;
 
 import com.finebi.base.common.resource.FineResourceItem;
 import com.finebi.base.constant.FineEngineType;

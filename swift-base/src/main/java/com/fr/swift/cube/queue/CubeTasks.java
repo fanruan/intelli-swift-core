@@ -106,43 +106,42 @@ public class CubeTasks {
     }
 
     public static TaskKey newBuildTableTaskKey(DataSource ds) throws SwiftMetaDataException {
-        return new CubeTaskKey(mask(newTableName(ds)), Operation.BUILD_TABLE);
+        return new CubeTaskKey(newTableName(ds), Operation.BUILD_TABLE);
     }
 
     public static TaskKey newTableBuildEndTaskKey(DataSource ds) throws SwiftMetaDataException {
-        return new CubeTaskKey(mask("End of build table " + newTableName(ds)), Operation.BUILD_TABLE);
+        return new CubeTaskKey("End of build table " + newTableName(ds), Operation.BUILD_TABLE);
     }
 
     public static TaskKey newTransportTaskKey(DataSource ds) throws SwiftMetaDataException {
-        return new CubeTaskKey(mask(newTableName(ds)), Operation.TRANSPORT_TABLE);
-    }
-
-    public static TaskKey newIndexRelationTaskKey(RelationSource relation) {
-        return new CubeTaskKey(mask(newRelationName(relation)), Operation.INDEX_RELATION);
+        return new CubeTaskKey(newTableName(ds), Operation.TRANSPORT_TABLE);
     }
 
     public static TaskKey newIndexColumnTaskKey(DataSource ds, String columnName) throws SwiftMetaDataException {
-        return new CubeTaskKey(mask(newColumnName(ds, columnName)), Operation.INDEX_COLUMN);
+        return new CubeTaskKey(newColumnName(ds, columnName), Operation.INDEX_COLUMN);
     }
 
     public static TaskKey newMergeColumnDictTaskKey(DataSource ds, String columnName) throws SwiftMetaDataException {
-        return new CubeTaskKey(mask(newColumnName(ds, columnName)), Operation.MERGE_COLUMN_DICT);
+        return new CubeTaskKey(newColumnName(ds, columnName), Operation.MERGE_COLUMN_DICT);
+    }
+
+    public static TaskKey newIndexRelationTaskKey(RelationSource relation) {
+        return new CubeTaskKey(newRelationName(relation), Operation.INDEX_RELATION);
     }
 
     public static SchedulerTask newStartTask() {
-        return new SchedulerTaskImpl(new CubeTaskKey(mask("Start of all")));
+        return new SchedulerTaskImpl(new CubeTaskKey("Start of building Cube"));
     }
 
     public static SchedulerTask newEndTask() {
-        return new SchedulerTaskImpl(new CubeTaskKey(mask("End of all")));
+        return new SchedulerTaskImpl(new CubeTaskKey("End of building Cube"));
     }
 
-
-    private static String mask(String s) {
-        return String.format("%d# %s", COUNTER.get(), s);
-    }
-
-    static void countUp() {
+    static void nextRound() {
         COUNTER.getAndIncrement();
+    }
+
+    public static int getCurrentRound() {
+        return COUNTER.get();
     }
 }
