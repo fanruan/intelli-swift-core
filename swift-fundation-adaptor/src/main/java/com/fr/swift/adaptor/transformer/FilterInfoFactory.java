@@ -235,7 +235,7 @@ public class FilterInfoFactory {
             case BICommonConstants.ANALYSIS_FILTER_STRING.BELONG_VALUE: {
                 StringBelongFilterValueBean valueBean = ((StringBelongFilterBean) bean).getFilterValue();
                 List<String> belongValues = valueBean.getValue();
-                if (belongValues == null) {
+                if (belongValues == null || belongValues.isEmpty()) {
                     break;
                 }
                 int valueType = valueBean.getType();
@@ -246,7 +246,7 @@ public class FilterInfoFactory {
             case BICommonConstants.ANALYSIS_FILTER_STRING.NOT_BELONG_VALUE: {
                 StringBelongFilterValueBean valueBean = ((StringNoBelongFilterBean) bean).getFilterValue();
                 List<String> notBelongValues = valueBean.getValue();
-                if (notBelongValues == null) {
+                if (notBelongValues == null || notBelongValues.isEmpty()) {
                     break;
                 }
                 int valueType = valueBean.getType();

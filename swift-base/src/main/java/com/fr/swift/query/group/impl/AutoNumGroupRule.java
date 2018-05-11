@@ -3,6 +3,7 @@ package com.fr.swift.query.group.impl;
 import com.fr.swift.query.group.GroupType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -32,17 +33,18 @@ public class AutoNumGroupRule extends CustomNumGroupRule {
         }
 
         private List<? extends CustomGroup<Number, String>> toGroups() {
-            List<NumInterval> intervals = new ArrayList<NumInterval>();
+            List<NumIntervals> intervals = new ArrayList<NumIntervals>();
 
             double floor = min, ceil;
             for (int i = 1; floor < max; i++) {
                 ceil = border(i);
-                intervals.add(new NumInterval(getIntervalName(floor, ceil),
-                        floor, true, ceil, false));
+                intervals.add(new NumIntervals(getIntervalName(floor, ceil),
+                        Collections.singletonList(new NumInterval(floor, true, ceil, false)))
+                );
                 floor = ceil;
             }
             // 最右区间边界为<=
-            intervals.get(intervals.size() - 1).lessOrEq = true;
+            intervals.get(intervals.size() - 1).intervals.get(0).lessOrEq = true;
             return intervals;
         }
 

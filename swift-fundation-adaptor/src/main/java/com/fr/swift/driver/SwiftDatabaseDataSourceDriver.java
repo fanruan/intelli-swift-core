@@ -10,13 +10,13 @@ import com.finebi.common.structure.config.fieldinfo.FieldInfoPersist;
 import com.finebi.common.structure.config.relation.Relation;
 import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
-import com.fr.engine.bi.connection.DbNameConnectionCreator;
 import com.fr.engine.utils.SecurityUtil;
 import com.fr.engine.utils.StringUtils;
-import com.fr.swift.adaptor.connection.SwiftConnectionAdaptor;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.conf.business.relation.TableRelationReader;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.db.ConnectionInfo;
+import com.fr.swift.source.db.ConnectionManager;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +27,6 @@ import java.util.Map;
  * @date 2018/4/10
  */
 public class SwiftDatabaseDataSourceDriver extends CommonDatabaseDataSourceDriver implements CommonDBDataSourceDriver {
-    private SwiftConnectionAdaptor adaptor = new SwiftConnectionAdaptor();
 
     public SwiftDatabaseDataSourceDriver() {
         super(FineEngineType.Cube);
@@ -64,8 +63,11 @@ public class SwiftDatabaseDataSourceDriver extends CommonDatabaseDataSourceDrive
     }
 
     private String getSchemaFromConnName(String connName) {
-        DbNameConnectionCreator creator = new DbNameConnectionCreator(connName, adaptor);
-        return creator.getScehma();
+        ConnectionInfo info = ConnectionManager.getInstance().getConnectionInfo(connName);
+        if (null != info) {
+            return info.getSchema();
+        }
+        return StringUtils.EMPTY;
     }
 
 

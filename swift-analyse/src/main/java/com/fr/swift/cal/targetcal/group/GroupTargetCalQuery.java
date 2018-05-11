@@ -52,7 +52,6 @@ public class GroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> {
             GroupNodeAggregateUtils.aggregate(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
                     (GroupNode) mergeResult.getNode(), mergeResult.getAggregators());
             NodeFilter.filter(mergeResult.getNode(), dimensionMatchFilter);
-
         }
         // 使用结果汇总聚合器汇总，相对于明细的汇总方式，可能一样也可能不一样。这边可以通过细分做进一步优化。
         GroupNodeAggregateUtils.aggregate(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
@@ -60,6 +59,8 @@ public class GroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> {
         // 维度上的指标排序
         if (hasDimensionTargetSorts(info.getDimensionInfo().getDimensions())) {
             NodeSorter.sort(mergeResult.getNode(), getDimensionTargetSorts(info.getDimensionInfo().getDimensions()));
+            // 在遍历一遍node，更新一下nodeIndex用于分页
+            TargetCalculatorUtils.updateNodeIndexAfterSort((GroupNode) mergeResult.getNode());
         }
         return mergeResult;
     }

@@ -39,10 +39,24 @@ public class GroupTargetFactory {
         return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_SUM_OF_ALL);
     }
 
+    // TODO: 2018/5/11 切换汇总方式之后，AggregatorValue转换gg了
     public static GroupTarget createFromRapidTarget(int rapidCalTargetType, int queryIndex,
                                                     int[] paramIndexes, int resultIndex) {
         switch (rapidCalTargetType) {
-
+            case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.RANK_ASC:
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_RANK_ASC);
+            case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.RANK_DES:
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_RANK_DEC);
+            case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.SUM_OF_ALL_SUM:
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_SUM_OF_ALL);
+            case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.SUM_OF_ABOVE:
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_SUM_OF_ABOVE);
+            case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.SUM_OF_ALL_AVG:
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_AVG);
+            case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.SUM_OF_ALL_MAX:
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_MAX);
+            case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.SUM_OF_ALL_MIN:
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_MIN);
         }
         return null;
     }

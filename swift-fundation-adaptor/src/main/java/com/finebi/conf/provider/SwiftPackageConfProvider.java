@@ -2,7 +2,6 @@ package com.finebi.conf.provider;
 
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.common.service.engine.pack.AbstractEnginePackageManager;
-import com.fr.swift.driver.SwiftDriverRegister;
 
 /**
  * This class created on 2018-1-23 13:58:01
@@ -13,10 +12,6 @@ import com.fr.swift.driver.SwiftDriverRegister;
  */
 
 public class SwiftPackageConfProvider extends AbstractEnginePackageManager {
-
-    public SwiftPackageConfProvider() {
-        SwiftDriverRegister.registerIfNeed();
-    }
 
     @Override
     public FineEngineType getEngineType() {

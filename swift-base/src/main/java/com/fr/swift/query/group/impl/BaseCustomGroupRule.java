@@ -190,7 +190,7 @@ abstract class BaseCustomGroupRule<Base, Derive> extends BaseGroupRule implement
      */
     abstract Derive format(Base val);
 
-    public abstract static class CustomGroup<Base, Derive> implements CoreService {
+    abstract static class CustomGroup<Base, Derive> implements CoreService {
         @CoreField
         Derive name;
 

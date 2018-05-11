@@ -5,7 +5,18 @@ import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.nio.NIOConstant;
+import com.fr.swift.cube.queue.CubeTasks;
+import com.fr.swift.cube.task.SchedulerTask;
+import com.fr.swift.cube.task.Task;
+import com.fr.swift.cube.task.TaskKey;
+import com.fr.swift.cube.task.TaskStatusChangeListener;
+import com.fr.swift.cube.task.impl.SchedulerTaskImpl;
+import com.fr.swift.cube.task.impl.SchedulerTaskPool;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.relation.utils.RelationPathHelper;
+import com.fr.swift.reliance.IRelationNode;
+import com.fr.swift.reliance.RelationNode;
+import com.fr.swift.reliance.RelationPathNode;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
@@ -13,13 +24,21 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.relation.RelationIndex;
 import com.fr.swift.source.RelationSource;
+import com.fr.swift.source.RelationSourceType;
+import com.fr.swift.source.Source;
+import com.fr.swift.source.relation.FieldRelationSource;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.Util;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -58,22 +77,16 @@ public class RelationColumn {
         this.relationSource = columnKey.getRelation();
     }
 
-    public RelationColumn(RelationIndex relationIndex, ColumnKey columnKey) {
-        Util.requireNonNull(relationIndex, columnKey);
+    public RelationColumn(ColumnKey columnKey) {
+        Util.requireNonNull(columnKey);
         this.relationSource = columnKey.getRelation();
         Util.requireNonNull(relationSource);
         List<Segment> segments = SwiftContext.getInstance().getSegmentProvider().getSegment(relationSource.getPrimarySource());
         Util.requireNonEmpty(segments);
         this.segments = new Segment[segments.size()];
         this.segments = segments.toArray(this.segments);
-        this.relationIndex = relationIndex;
         this.columnKey = columnKey;
         this.columns = new DictionaryEncodedColumn[segments.size()];
-        try {
-            this.reverseCount = relationIndex.getReverseCount();
-        } catch (Exception ignore) {
-            this.reverseCount = 0;
-        }
     }
 
     /**
@@ -93,7 +106,10 @@ public class RelationColumn {
         return null;
     }
 
-    public Column buildRelationColumn() {
+    public Column buildRelationColumn(Segment segment) {
+        if (null == relationIndex) {
+            buildRelation(segment);
+        }
         IResourceLocation baseLocation = relationIndex.getBaseLocation().buildChildLocation("field").buildChildLocation(columnKey.getName());
 
         Column column = segments[0].getColumn(columnKey);
@@ -108,6 +124,71 @@ public class RelationColumn {
         }
 
         return targetColumn;
+    }
+
+    private void buildRelation(Segment segment) {
+        List<IRelationNode> nodes = new ArrayList<IRelationNode>();
+        dealRelationNode(segment.getRelation(RelationPathHelper.convert2CubeRelationPath(relationSource)), nodes, relationSource, null);
+        RelationSource dep = null;
+        if (!nodes.isEmpty()) {
+            dep = relationSource;
+        }
+        dealRelationNode(segment.getRelation(columnKey, RelationPathHelper.convert2CubeRelationPath(relationSource)), nodes, new FieldRelationSource(columnKey), dep);
+
+        if (!nodes.isEmpty()) {
+            List<Pair<TaskKey, Object>> pairs = new ArrayList<Pair<TaskKey, Object>>();
+            SchedulerTask start = CubeTasks.newStartTask(),
+                    end = CubeTasks.newEndTask();
+
+            for (IRelationNode node : nodes) {
+                SchedulerTask relationTask = new SchedulerTaskImpl(CubeTasks.newIndexRelationTaskKey(node.getNode()));
+                List<Source> deps = node.getDepend();
+                for (Source d : deps) {
+                    SchedulerTask task = SchedulerTaskPool.getInstance().get(CubeTasks.newIndexRelationTaskKey((RelationSource) d));
+                    if (null != task) {
+                        task.addNext(relationTask);
+                    }
+                }
+                start.addNext(relationTask);
+                relationTask.addNext(end);
+                pairs.add(new Pair<TaskKey, Object>(relationTask.key(), node.getNode()));
+            }
+            final CountDownLatch latch = new CountDownLatch(1);
+            end.addStatusChangeListener(new TaskStatusChangeListener() {
+                @Override
+                public void onChange(Task.Status prev, Task.Status now) {
+                    if (now == Task.Status.DONE) {
+                        latch.countDown();
+                    }
+                }
+            });
+            pairs.add(Pair.of(start.key(), null));
+            pairs.add(Pair.of(end.key(), null));
+            try {
+                CubeTasks.sendTasks(pairs);
+                start.triggerRun();
+                latch.await();
+            } catch (Exception e) {
+                Crasher.crash(e);
+            }
+        }
+        relationIndex = segment.getRelation(columnKey, RelationPathHelper.convert2CubeRelationPath(relationSource));
+    }
+
+    private void dealRelationNode(RelationIndex index, List<IRelationNode> nodes, RelationSource relation, RelationSource dep) {
+        try {
+            index.getIndex(0, 1);
+        } catch (Exception e) {
+            if (relation.getRelationType() == RelationSourceType.RELATION) {
+                nodes.add(new RelationNode(relation, Collections.EMPTY_LIST));
+            } else {
+                if (null != dep) {
+                    nodes.add(new RelationPathNode(relation, Arrays.asList(dep)));
+                } else {
+                    nodes.add(new RelationPathNode(relation, Collections.EMPTY_LIST));
+                }
+            }
+        }
     }
 
     private void buildTargetColumn(DictionaryEncodedColumn targetDicColumn, BitmapIndexedColumn bitmapIndexedColumn) {
@@ -127,6 +208,7 @@ public class RelationColumn {
                         Object value = columns[i].getValue(j);
                         index = handleDicAndIndex(bitMap, index, targetDicColumn, bitmapIndexedColumn, value);
                     } catch (Exception ignore) {
+                        SwiftLoggers.getLogger(RelationColumn.class).error(ignore);
                     }
                 }
             }
