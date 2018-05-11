@@ -19,6 +19,7 @@ import com.fr.swift.conf.business.table2source.TableToSource;
 import com.fr.swift.conf.business.table2source.dao.TableToSourceConfigDao;
 import com.fr.swift.conf.business.table2source.dao.TableToSourceConfigDaoImpl;
 import com.fr.swift.conf.business.table2source.unique.TableToSourceUnique;
+import com.fr.swift.conf.updateInfo.TableUpdateInfoConfigService;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.DataSource;
@@ -37,10 +38,12 @@ import java.util.Map;
  */
 public class SwiftTableManager extends AbstractEngineTableManager {
     private TableToSourceConfigDao tableToSourceConfigDao;
+    private TableUpdateInfoConfigService updateInfoConfigService;
     private SwiftLogger logger = SwiftLoggers.getLogger(SwiftTableManager.class);
 
     public SwiftTableManager() {
         tableToSourceConfigDao = new TableToSourceConfigDaoImpl();
+        updateInfoConfigService = TableUpdateInfoConfigService.getService();
     }
 
     @Override
@@ -108,6 +111,23 @@ public class SwiftTableManager extends AbstractEngineTableManager {
         } catch (Exception var5) {
             throw new FineTableAbsentException();
         }
+    }
+
+    public boolean removeTable(List<String> tableNames) {
+        boolean success = false;
+        try {
+            for (String tableName : tableNames) {
+                EntryInfo entryInfo = this.getEntryInfoByName(tableName);
+                this.deleteEntryInfo(entryInfo);
+            }
+            success = true;
+        } catch (Exception e) {
+            success = false;
+        }
+        if (success) {
+            return updateInfoConfigService.removeUpdateInfo(tableNames);
+        }
+        return false;
     }
 
     @Override
