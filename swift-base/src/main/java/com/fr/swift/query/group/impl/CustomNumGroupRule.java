@@ -6,6 +6,7 @@ import com.fr.swift.structure.array.IntList;
 
 import java.text.DecimalFormat;
 import java.text.Format;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -68,7 +69,40 @@ public class CustomNumGroupRule extends BaseCustomStrGroupRule<Number> {
         return GroupType.CUSTOM_NUMBER;
     }
 
-    public static class NumInterval extends CustomGroup<Number, String> {
+    public static class NumIntervals extends CustomGroup<Number, String> {
+        @CoreField
+        List<NumInterval> intervals = new ArrayList<NumInterval>(1);
+
+        public NumIntervals(String name, List<NumInterval> intervals) {
+            super(name);
+            this.intervals = intervals;
+        }
+
+        public NumIntervals(String name) {
+            super(name);
+        }
+
+        @Override
+        public boolean contains(Number value) {
+            for (NumInterval interval : intervals) {
+                if (interval.contains(value)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public void addInterval(NumInterval interval) {
+            intervals.add(interval);
+        }
+
+        @Override
+        List<Number> values() {
+            return null;
+        }
+    }
+
+    public static class NumInterval {
         /**
          * 是否为大于等于
          */
@@ -90,20 +124,13 @@ public class CustomNumGroupRule extends BaseCustomStrGroupRule<Number> {
         @CoreField
         private double ceil;
 
-        public NumInterval(String name, double floor, boolean greaterOrEq, double ceil, boolean lessOrEq) {
-            super(name);
+        public NumInterval(double floor, boolean greaterOrEq, double ceil, boolean lessOrEq) {
             this.greaterOrEq = greaterOrEq;
             this.floor = floor;
             this.lessOrEq = lessOrEq;
             this.ceil = ceil;
         }
 
-        @Override
-        public List<Number> values() {
-            return null;
-        }
-
-        @Override
         public boolean contains(Number value) {
             double val = value.doubleValue();
             if (Double.compare(val, floor) == 0 && greaterOrEq) {

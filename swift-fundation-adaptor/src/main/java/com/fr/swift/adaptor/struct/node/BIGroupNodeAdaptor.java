@@ -3,20 +3,19 @@ package com.fr.swift.adaptor.struct.node;
 import com.finebi.conf.structure.result.table.BIGroupNode;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
-import com.fr.swift.result.ChildMap;
 import com.fr.swift.result.GroupNode;
+
+import java.util.Iterator;
 
 /**
  * Created by Lyon on 2018/4/8.
  */
-public class BIGroupNodeAdaptor implements BIGroupNode {
+public class BIGroupNodeAdaptor implements BIGroupNode, Iterable<BIGroupNodeAdaptor> {
 
     private GroupNode node;
-    private ChildMap<GroupNode> childMap;
 
     public BIGroupNodeAdaptor(GroupNode node) {
         this.node = node;
-        this.childMap = node.getChildMap() == null ? new ChildMap<GroupNode>() : node.getChildMap();
     }
 
     @Override
@@ -26,25 +25,26 @@ public class BIGroupNodeAdaptor implements BIGroupNode {
 
     @Override
     public BIGroupNode getChild(Object value) {
-        GroupNode n = childMap.get(value);
+        // TODO: 2018/5/10 这个接口要是在功能那边确认没用，可以去掉了
+        GroupNode n = (GroupNode) node.getChildMap().get(value);
         return n == null ? null : new BIGroupNodeAdaptor(n);
     }
 
     @Override
     public BIGroupNode getLastChild() {
-        GroupNode n = childMap.size() == 0 ? null : childMap.get(childMap.size() - 1);
+        GroupNode n = node.getChildrenSize() == 0 ? null : node.getChild(node.getChildrenSize() - 1);
         return n == null ? null : new BIGroupNodeAdaptor(n);
     }
 
     @Override
     public BIGroupNode getFirstChild() {
-        GroupNode n = childMap.size() == 0 ? null : childMap.get(0);
+        GroupNode n = node.getChildrenSize() == 0 ? null : node.getChild(0);
         return n == null ? null : new BIGroupNodeAdaptor(n);
     }
 
     @Override
     public int getChildLength() {
-        return childMap.size();
+        return node.getChildrenSize();
     }
 
     @Override
@@ -66,10 +66,9 @@ public class BIGroupNodeAdaptor implements BIGroupNode {
     @Override
     public int getTotalLength() {
         int count = 1;
-        for (int i = 0; i < childMap.size(); i++) {
-            GroupNode node = childMap.get(i);
-            BIGroupNodeAdaptor adaptor = new BIGroupNodeAdaptor(node);
-            count += adaptor.getTotalLength();
+        for (int i = 0; i < getChildLength(); i++) {
+            BIGroupNode node = getChild(i);
+            count += node.getTotalLength();
         }
         return Math.max(count, 1);
     }
@@ -77,10 +76,9 @@ public class BIGroupNodeAdaptor implements BIGroupNode {
     @Override
     public int getTotalLengthWithSummary() {
         int count = 1;
-        for (int i = 0; i < childMap.size(); i++) {
-            GroupNode node = childMap.get(i);
-            BIGroupNodeAdaptor adaptor = new BIGroupNodeAdaptor(node);
-            count += adaptor.getTotalLengthWithSummary();
+        for (int i = 0; i < getChildLength(); i++) {
+            BIGroupNode node = getChild(i);
+            count += node.getTotalLengthWithSummary();
         }
         if (getChildLength() <= 1) {
             count -= 1;
@@ -121,5 +119,10 @@ public class BIGroupNodeAdaptor implements BIGroupNode {
         for (int i = 0; i < values.length; i++) {
             values[i] = new DoubleAmountAggregatorValue(summaryValue[i].doubleValue());
         }
+    }
+
+    @Override
+    public Iterator<BIGroupNodeAdaptor> iterator() {
+        return null;
     }
 }

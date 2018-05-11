@@ -1,5 +1,6 @@
 package com.fr.swift.result.node.cal;
 
+import com.fr.general.ComparatorUtils;
 import com.fr.swift.query.adapter.target.GroupTarget;
 import com.fr.swift.query.adapter.target.cal.ResultTarget;
 import com.fr.swift.query.aggregator.AggregatorValue;
@@ -76,7 +77,7 @@ public class TargetCalculatorUtils {
                     p.setData(dictionaries.get(p.getDepth()).get(p.getDictionaryIndex()));
                 }
                 // 设置节点的index，这个比较猥琐了
-                p.setIndex(indexCounter.index(p.getDepth()));
+                p.setIndex(indexCounter.index(p));
                 List<AggregatorValue[]> allValues = ((XLeftNode) p).getValueArrayList();
                 if (allValues == null) {
                     // 非叶子节点可能为空
@@ -124,7 +125,7 @@ public class TargetCalculatorUtils {
                     p.setData(dictionaries.get(p.getDepth()).get(p.getDictionaryIndex()));
                 }
                 // 设置节点的index，这个比较猥琐了
-                p.setIndex(indexCounter.index(p.getDepth()));
+                p.setIndex(indexCounter.index(p));
                 return p;
             }
         });
@@ -133,16 +134,35 @@ public class TargetCalculatorUtils {
         }
     }
 
+    public static void updateNodeIndexAfterSort(GroupNode root) {
+        final IndexCounter indexCounter = new IndexCounter();
+        Iterator<GroupNode> iterator = new MapperIterator<GroupNode, GroupNode>(new BFTGroupNodeIterator(root), new Function<GroupNode, GroupNode>() {
+            @Override
+            public GroupNode apply(GroupNode p) {
+                p.setIndex(indexCounter.index(p));
+                return null;
+            }
+        });
+        while (iterator.hasNext()) {
+            iterator.next();
+        }
+    }
+
     private static class IndexCounter {
-        private int currentDeep = -1;
+        private Object parent = null;
         private int siblingCounter = 0;
 
-        public int index(int deep) {
-            if (currentDeep == deep) {
+        public int index(GroupNode node) {
+            if (node.getParent() == null) {
+                // 根节点
+                return -1;
+            }
+            if (ComparatorUtils.equals(parent, node.getParent().getData())) {
+                // 兄弟节点
                 return siblingCounter++;
             }
             // BFTGroupNodeIterator迭代器的维度切换了
-            currentDeep = deep;
+            parent = node.getParent().getData();
             siblingCounter = 0;
             return siblingCounter++;
         }

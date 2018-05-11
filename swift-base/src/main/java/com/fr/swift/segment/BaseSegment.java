@@ -223,42 +223,6 @@ public abstract class BaseSegment implements Segment {
     }
 
     private Column createRelationColumn(ColumnKey key) {
-        RelationSource source = key.getRelation();
-        if (null == source) {
-            return null;
-        }
-        RelationIndex index = getRelation(key, RelationPathHelper.convert2CubeRelationPath(source));
-        try {
-            index.getIndex(0, 1);
-        } catch (Exception ignore) {
-            final CountDownLatch latch = new CountDownLatch(1);
-            List<Pair<TaskKey, Object>> pairs = new ArrayList<Pair<TaskKey, Object>>();
-            FieldRelationSource relationSource = new FieldRelationSource(key);
-            SchedulerTask relationTask = new SchedulerTaskImpl(CubeTasks.newIndexRelationTaskKey(relationSource));
-            SchedulerTask start = CubeTasks.newStartTask(),
-                    end = CubeTasks.newEndTask();
-            end.addStatusChangeListener(new TaskStatusChangeListener() {
-                @Override
-                public void onChange(Status prev, Status now) {
-                    if (now == Status.DONE) {
-                        latch.countDown();
-                    }
-                }
-            });
-            pairs.add(Pair.of(start.key(), null));
-            pairs.add(Pair.of(end.key(), null));
-            start.addNext(relationTask);
-            relationTask.addNext(end);
-            pairs.add(new Pair<TaskKey, Object>(relationTask.key(), relationSource));
-            try {
-                CubeTasks.sendTasks(pairs);
-                start.triggerRun();
-                latch.await();
-                index = getRelation(key, RelationPathHelper.convert2CubeRelationPath(source));
-            } catch (Exception e1) {
-                return null;
-            }
-        }
-        return new RelationColumn(index, key).buildRelationColumn();
+        return new RelationColumn(key).buildRelationColumn(this);
     }
 }
