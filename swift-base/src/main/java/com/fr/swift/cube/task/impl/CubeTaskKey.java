@@ -11,6 +11,7 @@ public class CubeTaskKey implements TaskKey {
     private int round;
     private String name;
     private Operation operation;
+    private String info;
 
     public CubeTaskKey(String name) {
         this(name, Operation.NULL);
@@ -26,6 +27,21 @@ public class CubeTaskKey implements TaskKey {
         this.operation = operation;
     }
 
+    public CubeTaskKey(String name, String info) {
+        this(name);
+        this.info = info;
+    }
+
+    public CubeTaskKey(String name, Operation operation, String info) {
+        this(name, operation);
+        this.info = info;
+    }
+
+    public CubeTaskKey(int round, String name, Operation operation, String info) {
+        this(round, name, operation);
+        this.info = info;
+    }
+
     @Override
     public int getRound() {
         return round;
@@ -39,6 +55,11 @@ public class CubeTaskKey implements TaskKey {
     @Override
     public Operation operation() {
         return operation;
+    }
+
+    @Override
+    public String info() {
+        return info;
     }
 
     @Override
