@@ -99,6 +99,11 @@ class CustomGroupColumn<Base, Derive> implements Column<Derive> {
         }
 
         @Override
+        public Derive getValueByRow(int row) {
+            return getValue(getIndexByRow(row));
+        }
+
+        @Override
         public int getIndex(Object value) {
             return groupRule.getIndex(value);
         }

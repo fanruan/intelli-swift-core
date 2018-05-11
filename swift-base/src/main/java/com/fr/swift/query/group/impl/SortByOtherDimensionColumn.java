@@ -116,6 +116,11 @@ public class SortByOtherDimensionColumn <Base, Derive> implements Column<Derive>
         }
 
         @Override
+        public Object getValueByRow(int row) {
+            return getValue(getIndexByRow(row));
+        }
+
+        @Override
         public int getIndex(Object value) {
             return groupRule.getIndex(value);
         }

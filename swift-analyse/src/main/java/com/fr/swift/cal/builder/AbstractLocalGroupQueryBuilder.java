@@ -44,7 +44,7 @@ public abstract class AbstractLocalGroupQueryBuilder implements LocalGroupQueryB
     protected List<Column> getMetricSegments(Segment segment, List<Metric> metrics) {
         List<Column> metricColumns = new ArrayList<Column>();
         for (Metric metric : metrics) {
-            Column column = segment.getColumn(metric.getColumnKey());
+            Column column = metric.getColumn(segment);
             metricColumns.add(column);
         }
         return metricColumns;

@@ -33,7 +33,7 @@ public class LocalDetailNormalQueryBuilder implements LocalDetailQueryBuilder {
             Dimension[] dimensions = info.getDimensions();
             List<Column> columns = new ArrayList<Column>();
             for (Dimension dimension : dimensions) {
-                columns.add(segment.getColumn(dimension.getColumnKey()));
+                columns.add(dimension.getColumn(segment));
                 if (dimension.getFilter() != null) {
                     filterInfos.add(dimension.getFilter());
                 }

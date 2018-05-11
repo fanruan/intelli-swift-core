@@ -10,6 +10,9 @@ import java.util.List;
  */
 public class XLeftNode extends GroupNode<XLeftNode> {
 
+    public XLeftNode() {
+    }
+
     /**
      * 交叉表的行结构
      * getTargetLength 指标的个数
