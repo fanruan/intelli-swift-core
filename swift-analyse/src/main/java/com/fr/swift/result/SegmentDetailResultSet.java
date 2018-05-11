@@ -51,7 +51,7 @@ public class SegmentDetailResultSet extends DetailResultSet {
         }
         for (int i = 0; i < columnList.size(); i++) {
             DictionaryEncodedColumn column = columnList.get(i).getDictionaryEncodedColumn();
-            Object val = column.getValue(column.getIndexByRow(row));
+            Object val = column.getValueByRow(row);
             values.add(val);
         }
         return new ListBasedRow(values);

@@ -50,6 +50,11 @@ abstract class BaseDictColumn<T> implements DictionaryEncodedColumn<T> {
     }
 
     @Override
+    public T getValueByRow(int row) {
+        return getValue(getIndexByRow(row));
+    }
+
+    @Override
     public int size() {
         initSizeReader();
         return sizeReader.get(0);

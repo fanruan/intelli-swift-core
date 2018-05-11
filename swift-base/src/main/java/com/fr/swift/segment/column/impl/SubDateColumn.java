@@ -86,7 +86,7 @@ public class SubDateColumn extends BaseColumn<Long> {
 
         @Override
         public Long get(int pos) {
-            Long originVal = baseDict.getValue(baseDict.getIndexByRow(pos));
+            Long originVal = baseDict.getValueByRow(pos);
             return originVal == null ? null : deriver.apply(originVal);
         }
 
