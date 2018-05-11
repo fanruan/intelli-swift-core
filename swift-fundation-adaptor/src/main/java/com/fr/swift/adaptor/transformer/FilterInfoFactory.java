@@ -141,7 +141,7 @@ public class FilterInfoFactory {
         for (FilterBean bean : beans) {
             AbstractFilterBean filterBean = (AbstractFilterBean) bean;
             FilterInfo info = createFilterInfo(tableName, filterBean, new ArrayList<Segment>());
-            if (!ComparatorUtils.equals(filterBean.getTargetId(), dimId) && targets != null) {
+            if (!ComparatorUtils.equals(filterBean.getTargetId(), dimId) && targets != null && targets.size() != 0) {
                 filterInfoList.add(new MatchFilterInfo(info, getIndex(filterBean.getTargetId(), targets)));
             } else {
                 filterInfoList.add(info);
