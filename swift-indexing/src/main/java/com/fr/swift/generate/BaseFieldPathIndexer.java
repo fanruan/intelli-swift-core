@@ -1,6 +1,7 @@
 package com.fr.swift.generate;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.BitMapOrHelper;
 import com.fr.swift.cube.task.Task;
 import com.fr.swift.generate.history.index.RelationIndexHelper;
@@ -71,15 +72,15 @@ public abstract class BaseFieldPathIndexer extends BaseTablePathIndexer {
             Column primaryColumn = primary.getColumn(logicColumnKey);
             DictionaryEncodedColumn dicColumn = primaryColumn.getDictionaryEncodedColumn();
             int size = dicColumn.size();
-            ImmutableBitMap[] index = new ImmutableBitMap[size - 1];
+            MutableBitMap[] index = new MutableBitMap[size - 1];
             BitMapOrHelper helper = new BitMapOrHelper();
             for (int i = 1; i < size; i++) {
-                ImmutableBitMap primaryIndex = primaryColumn.getBitmapIndex().getBitMapIndex(i);
-                primaryIndex = primaryIndex.getAnd(allShow);
+                MutableBitMap primaryIndex = (MutableBitMap) primaryColumn.getBitmapIndex().getBitMapIndex(i);
+                primaryIndex.and(allShow);
                 index[i - 1] = buildIndexPerColumn(targetReader, helper, primaryIndex, primarySegIndex);
-                indexHelper.addIndex(index);
                 indexHelper.addNullIndex(helper.compute().getNot(targetRowCount));
             }
+            indexHelper.addIndex(index);
             writeTargetIndex(targetWriter, indexHelper, primarySegIndex);
             targetWriter.putNullIndex(0, indexHelper.getNullIndex());
         } finally {
@@ -87,8 +88,8 @@ public abstract class BaseFieldPathIndexer extends BaseTablePathIndexer {
         }
     }
 
-    private ImmutableBitMap buildIndexPerColumn(RelationIndex targetReader, BitMapOrHelper helper, ImmutableBitMap index, int primarySegIndex) {
-        ImmutableBitMap result = getTableLinkedOrGVI(index, targetReader, primarySegIndex);
+    private MutableBitMap buildIndexPerColumn(RelationIndex targetReader, BitMapOrHelper helper, ImmutableBitMap index, int primarySegIndex) {
+        MutableBitMap result = getTableLinkedOrGVI(index, targetReader, primarySegIndex);
         helper.add(result);
         return result;
     }
