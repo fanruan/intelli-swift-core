@@ -2,6 +2,8 @@ package com.fr.swift.query.adapter.metric;
 
 import com.fr.swift.query.adapter.AbstractQueryColumn;
 import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SourceKey;
 
@@ -34,5 +36,10 @@ public abstract class AbstractMetric extends AbstractQueryColumn implements Metr
     @Override
     public ColumnKey getColumnKey() {
         return columnKey;
+    }
+
+    @Override
+    public Column getColumn(Segment segment) {
+        return segment.getColumn(getColumnKey());
     }
 }

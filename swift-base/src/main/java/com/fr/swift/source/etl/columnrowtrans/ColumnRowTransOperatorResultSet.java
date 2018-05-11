@@ -89,10 +89,10 @@ public class ColumnRowTransOperatorResultSet implements SwiftResultSet {
                     @Override
                     public void actionPerformed(int row) {
                         DictionaryEncodedColumn dic = segment[finalI].getColumn(new ColumnKey(lcName)).getDictionaryEncodedColumn();
-                        Object value = dic.getValue(dic.getIndexByRow(row));
+                        Object value = dic.getValueByRow(row);
                         for (int j = 0; j < columns.size(); j++){
                             DictionaryEncodedColumn columnDic = segment[finalI].getColumn(new ColumnKey(columns.get(j).getKey())).getDictionaryEncodedColumn();
-                            Object columnValue = columnDic.getValue(columnDic.getIndexByRow(row));
+                            Object columnValue = columnDic.getValueByRow(row);
                             Integer index = lcIndexMap.get(value.toString());
                             if (index != null){
                                 list.set(lcIndexMap.get(value.toString()) + lcIndexMap.size() * j, columnValue);
@@ -100,7 +100,7 @@ public class ColumnRowTransOperatorResultSet implements SwiftResultSet {
                         }
                         for(int j = 0; j < otherColumnNames.size(); j++ ) {
                             DictionaryEncodedColumn columnDic = segment[finalI].getColumn(new ColumnKey(otherColumnNames.get(j).getKey())).getDictionaryEncodedColumn();
-                            Object columnValue = columnDic.getValue(columnDic.getIndexByRow(row));
+                            Object columnValue = columnDic.getValueByRow(row);
                             if(columnValue != null) {
                                 list.set(lcIndexMap.size() * columns.size() + j + 1, columnValue);
                             }

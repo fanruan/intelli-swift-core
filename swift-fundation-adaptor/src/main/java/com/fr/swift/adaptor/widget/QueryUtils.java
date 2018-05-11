@@ -19,6 +19,7 @@ import com.fr.swift.query.adapter.target.cal.ResultTarget;
 import com.fr.swift.query.adapter.target.cal.TargetInfoImpl;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.ColumnKey;
@@ -27,6 +28,7 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.utils.BusinessTableUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -54,7 +56,11 @@ public class QueryUtils {
                     GroupAdaptor.adaptDashboardGroup(dimension),
                     SortAdaptor.adaptorDimensionSort(dimension.getSort(), 0), currentDimensionFilter);
             TargetInfo targetInfo = new TargetInfoImpl(0, new ArrayList<Metric>(0), new ArrayList<GroupTarget>(0), new ArrayList<ResultTarget>(0), new ArrayList<Aggregator>(0));
-            DimensionInfo dimensionInfo = new DimensionInfoImpl(new AllCursor(), filterInfo, null, new Dimension[]{groupDimension});
+            DimensionInfo dimensionInfo = new DimensionInfoImpl(
+                    new AllCursor(),
+                    new GeneralFilterInfo(Arrays.asList(filterInfo, currentDimensionFilter), GeneralFilterInfo.AND),
+                    null, new Dimension[]{groupDimension}
+            );
             GroupQueryInfo valueInfo = new GroupQueryInfo(id, sourceKey, dimensionInfo, targetInfo);
             NodeResultSet nodeResultSet = (NodeResultSet) QueryRunnerProvider.getInstance().executeQuery(valueInfo);
             SwiftNode n = nodeResultSet.getNode();

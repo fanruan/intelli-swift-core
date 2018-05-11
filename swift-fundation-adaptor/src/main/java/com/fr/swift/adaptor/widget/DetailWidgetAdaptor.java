@@ -1,5 +1,6 @@
 package com.fr.swift.adaptor.widget;
 
+import com.finebi.conf.constant.BIDesignConstants;
 import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
 import com.finebi.conf.internalimp.dashboard.widget.detail.DetailWidget;
 import com.finebi.conf.internalimp.dashboard.widget.filter.CustomLinkConfItem;
@@ -20,6 +21,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.adapter.dimension.AllCursor;
 import com.fr.swift.query.adapter.dimension.Cursor;
 import com.fr.swift.query.adapter.dimension.DetailDimension;
+import com.fr.swift.query.adapter.dimension.DetailFormulaDimension;
 import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.adapter.target.DetailFormulaTarget;
 import com.fr.swift.query.adapter.target.DetailTarget;
@@ -31,6 +33,7 @@ import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
+import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
@@ -41,6 +44,7 @@ import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.utils.BusinessTableUtils;
 
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -131,8 +135,8 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
         List<SwiftMetaDataColumn> fields = new ArrayList<SwiftMetaDataColumn>();
         for (int i = 0, len = fineDimensions.size(); i < len; i++) {
             FineDimension fineDimension = fineDimensions.get(i);
-            String columnName = BusinessTableUtils.getFieldNameByFieldId(fineDimension.getFieldId());
-            fields.add(metaData.getColumn(columnName));
+            String columnName = fineDimension.getText();
+            fields.add(new MetaDataColumn(columnName, Types.VARCHAR));
         }
         return new SwiftMetaDataImpl(metaData.getTableName(), metaData.getRemark(), metaData.getSchemaName(), fields);
     }
@@ -142,10 +146,15 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
         Dimension[] dimensions = new Dimension[fineDimensions.size()];
         for (int i = 0, size = fineDimensions.size(); i < size; i++) {
             FineDimension fineDimension = fineDimensions.get(i);
-            String columnName = BusinessTableUtils.getFieldNameByFieldId(fineDimension.getFieldId());
-            Sort sort = SortAdaptor.adaptorDimensionSort(fineDimension.getSort(), i);
-            //暂时先不管明细表自定义分组
-            dimensions[i] = new DetailDimension(i, new SourceKey(fineDimension.getId()), new ColumnKey(columnName), null, sort, FilterInfoFactory.transformFineFilter(widget.getTableName(), dealWithTargetFilter(widget, widget.getFilters())));
+            if (fineDimension.getType() == BIDesignConstants.DESIGN.DIMENSION_TYPE.CAL_TARGET){
+                dimensions[i] = new DetailFormulaDimension(i, new SourceKey(fineDimension.getId()),
+                        FilterInfoFactory.transformFineFilter(widget.getTableName(), dealWithTargetFilter(widget, widget.getFilters())), getFormula(fineDimension.getFieldId(), widget));
+            } else {
+                String columnName = BusinessTableUtils.getFieldNameByFieldId(fineDimension.getFieldId());
+                Sort sort = SortAdaptor.adaptorDimensionSort(fineDimension.getSort(), i);
+                //暂时先不管明细表自定义分组
+                dimensions[i] = new DetailDimension(i, new SourceKey(fineDimension.getId()), new ColumnKey(columnName), null, sort, FilterInfoFactory.transformFineFilter(widget.getTableName(), dealWithTargetFilter(widget, widget.getFilters())));
+            }
         }
         return dimensions;
     }

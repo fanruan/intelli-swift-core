@@ -20,7 +20,7 @@ public class StringCombineAggregate implements Aggregator<StringAggregateValue> 
         traversal.traversal(new TraversalAction() {
             @Override
             public void actionPerformed(int row) {
-                Object v = dic.getValue(dic.getIndexByRow(row));
+                Object v = dic.getValueByRow(row);
                 if (v != null){
                     sb.append(v).append(TAG);
                 }

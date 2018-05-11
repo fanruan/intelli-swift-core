@@ -48,6 +48,8 @@ public interface DictionaryEncodedColumn<T> extends Releasable, Flushable {
 
     T getValue(int index);
 
+    T getValueByRow(int row);
+
     /**
      * 获取值对应的字典序号
      *
