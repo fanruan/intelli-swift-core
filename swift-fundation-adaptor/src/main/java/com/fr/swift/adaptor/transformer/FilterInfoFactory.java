@@ -73,6 +73,7 @@ import com.fr.swift.query.filter.info.value.SwiftNumberInRangeFilterValue;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.RelationSource;
+import com.fr.swift.source.etl.utils.FormulaUtils;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.utils.BusinessTableUtils;
 
@@ -109,7 +110,7 @@ public class FilterInfoFactory {
 
 
     /**
-     * @param tableName 控件的表名，没表名传null或者空字符串
+     * @param tableName           控件的表名，没表名传null或者空字符串
      * @param dimension
      * @param attachTargetFilters 最后一个维度上面要加上指标的过滤
      * @param targets
@@ -140,9 +141,14 @@ public class FilterInfoFactory {
         List<FilterInfo> filterInfoList = new ArrayList<FilterInfo>();
         for (FilterBean bean : beans) {
             AbstractFilterBean filterBean = (AbstractFilterBean) bean;
-            FilterInfo info = createFilterInfo(tableName, filterBean, new ArrayList<Segment>());
+            SwiftDetailFilterInfo info = createFilterInfo(tableName, filterBean, new ArrayList<Segment>());
             if (!ComparatorUtils.equals(filterBean.getTargetId(), dimId) && targets != null) {
-                filterInfoList.add(new MatchFilterInfo(info, getIndex(filterBean.getTargetId(), targets)));
+                if (info.getType() == SwiftDetailFilterType.FORMULA) {
+                    info = new SwiftDetailFilterInfo(info.getColumnKey(), transformTargetMatchFormula(info.getFilterValue(), targets), info.getType());
+                    filterInfoList.add(new MatchFilterInfo(info, 0));
+                } else {
+                    filterInfoList.add(new MatchFilterInfo(info, getIndex(filterBean.getTargetId(), targets)));
+                }
             } else {
                 filterInfoList.add(info);
             }
@@ -163,6 +169,17 @@ public class FilterInfoFactory {
             }
         }
         return new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
+    }
+
+    private static Object transformTargetMatchFormula(Object value, List<FineTarget> targets) {
+        if (value == null) {
+            return value;
+        }
+        String formula = value.toString();
+        for (String targetId : FormulaUtils.getRealRelatedParaNames(formula)) {
+            formula = formula.replace(targetId, String.valueOf(getIndex(targetId, targets)));
+        }
+        return formula;
     }
 
     private static void deepSettingFieldId(AbstractFilterBean bean, String fieldId) {

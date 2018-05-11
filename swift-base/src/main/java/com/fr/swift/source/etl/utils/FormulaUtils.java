@@ -6,6 +6,7 @@ import com.fr.stable.UtilEvalError;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
@@ -197,5 +198,29 @@ public class FormulaUtils {
     private static String toParameterFormat(String name) {
 
         return "$" + name;
+    }
+
+
+    public static Map<String, Integer> createColumnIndexMap(String formula) {
+        Map<String, Integer> columnIndexMap = new HashMap<String, Integer>();
+        String[] parameters = getRealRelatedParaNames(formula);
+        for (int i = 0; i < parameters.length; i++) {
+            columnIndexMap.put(toParameterFormat(String.valueOf(i)), Integer.valueOf(parameters[i]));
+        }
+        return columnIndexMap;
+    }
+
+    public static Object getCalculatorValue(Calculator c, String formula, SwiftNode node, Map<String, Integer> columnIndexMap) {
+        for (Map.Entry<String, Integer> entry : columnIndexMap.entrySet()){
+            c.set(entry.getKey(), node.getAggregatorValue(entry.getValue()).calculateValue());
+        }
+        try {
+            Object ob = c.eval(formula);
+            return ob == Primitive.NULL ? null : ob;
+        } catch (UtilEvalError e) {
+            LOGGER.error("incorrect formula");
+            LOGGER.error("The formula:" + formula);
+            return null;
+        }
     }
 }
