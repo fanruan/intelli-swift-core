@@ -202,7 +202,7 @@ public abstract class AbstractWidgetAdaptor {
         for (String targetId : field.getTargetIds()) {
             String subFormula = getFiledFormula(fieldId, widget);
             if (subFormula != null){
-                formula = formula.replace(toParameter(targetId), getFiledFormula(targetId, widget));
+                formula = formula.replace(toParameter(targetId), subFormula);
             }
         }
         return formula;
