@@ -20,13 +20,16 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by Lyon on 2018/3/27.
+ * @author Lyon
+ * @date 2018/3/27
  */
 public class TreeLabelWidgetAdaptor {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(TreeLabelWidgetAdaptor.class);
 
-    // 功能传过来的神秘代码
+    /**
+     * 功能传过来的神秘代码
+     */
     private static final String EMPTY_SELECTED_VALUE = "_*_";
 
     public static BITreeLabelResult calculate(TreeLabelWidget labelWidget) {
