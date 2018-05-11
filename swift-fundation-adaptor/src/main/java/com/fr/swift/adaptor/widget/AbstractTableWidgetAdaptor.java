@@ -1,6 +1,8 @@
 package com.fr.swift.adaptor.widget;
 
 import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
+import com.finebi.conf.internalimp.dashboard.widget.table.CrossTableWidget;
+import com.fr.stable.StringUtils;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.utils.BusinessTableUtils;
 
