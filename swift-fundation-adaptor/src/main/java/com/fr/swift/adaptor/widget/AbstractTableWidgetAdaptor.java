@@ -1,6 +1,7 @@
 package com.fr.swift.adaptor.widget;
 
 import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
+import com.finebi.conf.internalimp.dashboard.widget.table.CrossTableWidget;
 import com.fr.stable.StringUtils;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.Crasher;
@@ -17,6 +18,8 @@ public abstract class AbstractTableWidgetAdaptor extends AbstractWidgetAdaptor {
             fieldId = getFieldId(widget.getDimensionList().get(0));
         } else if (!widget.getTargetList().isEmpty()) {
             fieldId = widget.getTargetList().get(0).getFieldId();
+        } else if (widget instanceof CrossTableWidget && !((CrossTableWidget) widget).getColDimensionList().isEmpty()) {
+            fieldId = ((CrossTableWidget) widget).getColDimensionList().get(0).getFieldId();
         }
         if (StringUtils.isEmpty(fieldId)) {
             return Crasher.crash("empty widget");

@@ -2,7 +2,6 @@ package com.fr.swift.adaptor.struct.node;
 
 import com.finebi.conf.structure.result.table.BICrossLeftNode;
 import com.finebi.conf.structure.result.table.BIGroupNode;
-import com.fr.swift.result.ChildMap;
 import com.fr.swift.result.XLeftNode;
 
 /**
@@ -11,11 +10,9 @@ import com.fr.swift.result.XLeftNode;
 public class BICrossLeftNodeAdaptor implements BICrossLeftNode {
 
     private XLeftNode xLeftNode;
-    private ChildMap<XLeftNode> childMap;
 
     public BICrossLeftNodeAdaptor(XLeftNode xLeftNode) {
         this.xLeftNode = xLeftNode;
-        this.childMap = xLeftNode.getChildMap();
     }
 
     @Override
@@ -40,13 +37,13 @@ public class BICrossLeftNodeAdaptor implements BICrossLeftNode {
 
     @Override
     public BIGroupNode getChild(Object value) {
-        return new BICrossLeftNodeAdaptor(childMap.get(value));
+        return new BICrossLeftNodeAdaptor(xLeftNode.getChildMap().get(value));
     }
 
     @Override
     public BIGroupNode getLastChild() {
         int size = xLeftNode.getChildrenSize();
-        return size == 0 ? null : new BICrossLeftNodeAdaptor(childMap.get(size - 1));
+        return size == 0 ? null : new BICrossLeftNodeAdaptor(xLeftNode.getChild(size - 1));
     }
 
     @Override
@@ -79,8 +76,8 @@ public class BICrossLeftNodeAdaptor implements BICrossLeftNode {
     @Override
     public int getTotalLength() {
         int count = 1;
-        for (int i = 0; i < childMap.size(); i++) {
-            XLeftNode node = childMap.get(i);
+        for (int i = 0; i < xLeftNode.getChildrenSize(); i++) {
+            XLeftNode node = xLeftNode.getChild(i);
             BICrossLeftNodeAdaptor adaptor = new BICrossLeftNodeAdaptor(node);
             count += adaptor.getTotalLength();
         }
@@ -90,8 +87,8 @@ public class BICrossLeftNodeAdaptor implements BICrossLeftNode {
     @Override
     public int getTotalLengthWithSummary() {
         int count = 1;
-        for (int i = 0; i < childMap.size(); i++) {
-            XLeftNode node = childMap.get(i);
+        for (int i = 0; i < xLeftNode.getChildrenSize(); i++) {
+            XLeftNode node = xLeftNode.getChild(i);
             BICrossLeftNodeAdaptor adaptor = new BICrossLeftNodeAdaptor(node);
             count += adaptor.getTotalLengthWithSummary();
         }
