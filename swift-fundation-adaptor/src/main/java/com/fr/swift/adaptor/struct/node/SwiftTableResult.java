@@ -34,6 +34,9 @@ public class SwiftTableResult implements BITableResult {
      */
     @Override
     public BIGroupNode getNode() {
+        if (rows.isEmpty()) {
+            return new BIGroupNodeAdaptor(root);
+        }
         if (page != 0) {
             List<GroupNode> startRow = rows.get(page * PAGE_SIZE);
             for (int i = 0; i < startRow.size(); i++) {
