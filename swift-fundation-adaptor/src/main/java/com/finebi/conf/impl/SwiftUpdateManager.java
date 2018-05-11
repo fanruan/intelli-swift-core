@@ -1,6 +1,7 @@
 package com.finebi.conf.impl;
 
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.conf.exception.FineTableAbsentException;
 import com.finebi.conf.internalimp.bean.table.UpdatePreviewTableBean;
 import com.finebi.conf.internalimp.bean.update.UpdatePreview;
 import com.finebi.conf.internalimp.response.update.TableUpdateSetting;
@@ -19,6 +20,7 @@ import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.swift.adaptor.struct.ShowResultSet;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.transformer.RelationSourceFactory;
+import com.fr.swift.conf.updateInfo.TableUpdateInfoConfigService;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.generate.preview.SwiftDataPreviewer;
 import com.fr.swift.increment.Increment;
@@ -44,7 +46,9 @@ import com.fr.swift.utils.SourceRelianceFactory;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -58,6 +62,7 @@ import java.util.Map;
 public class SwiftUpdateManager implements EngineUpdateManager {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftUpdateManager.class);
+    private static final TableUpdateInfoConfigService updateInfoConfigService = TableUpdateInfoConfigService.getService();
 
     @Autowired
     private SwiftTableManager tableManager;
@@ -66,15 +71,30 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
     @Override
     public Map<FineBusinessTable, TableUpdateInfo> getTableUpdateInfo() {
-        return null;
+        Map<String, TableUpdateInfo> infoMap = updateInfoConfigService.getAllTableUpdateInfo();
+        Map<FineBusinessTable, TableUpdateInfo> result = new HashMap<FineBusinessTable, TableUpdateInfo>();
+        Iterator<Map.Entry<String, TableUpdateInfo>> iterator = infoMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, TableUpdateInfo> entry = iterator.next();
+            try {
+                FineBusinessTable table = tableManager.getSingleTable(entry.getKey());
+                result.put(table, entry.getValue());
+            } catch (FineTableAbsentException e) {
+                LOGGER.error(e);
+            }
+        }
+        return Collections.unmodifiableMap(result);
     }
 
     @Override
     public List<TableUpdateInfo> getTableUpdateInfo(FineBusinessTable table) {
-        TableUpdateInfo tableUpdateInfo = new TableUpdateInfo();
-        tableUpdateInfo.setTableName(table.getName());
+        TableUpdateInfo info = updateInfoConfigService.getTableUpdateInfo(table.getName());
+        if (null == info) {
+            info = new TableUpdateInfo();
+            info.setTableName(table.getName());
+        }
         List<TableUpdateInfo> tableUpdateInfoList = new ArrayList<TableUpdateInfo>();
-        tableUpdateInfoList.add(tableUpdateInfo);
+        tableUpdateInfoList.add(info);
         return tableUpdateInfoList;
     }
 
@@ -97,7 +117,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
     @Override
     public void saveUpdateSetting(Map<FineBusinessTable, TableUpdateInfo> infoMap) throws Exception {
-
+        updateInfoConfigService.addOrUpdateInfo(infoMap);
         SourceContainerManager updateSourceContainer = new SourceContainerManager();
         Map<String, List<Increment>> incrementMap = new HashMap<String, List<Increment>>();
 
@@ -191,11 +211,16 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
     @Override
     public GlobalUpdateSetting getUpdateInfo() {
-        return null;
+        GlobalUpdateSetting setting = updateInfoConfigService.getGlobalUpdateSettings();
+        if (null == setting) {
+            setting = new GlobalUpdateSetting();
+        }
+        return setting;
     }
 
     @Override
     public void updateAll(GlobalUpdateSetting info) {
+        updateInfoConfigService.addOrUpdateGlobalUpdateSettings(info);
     }
 
     @Override
@@ -265,35 +290,5 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         if (ResourceDiscovery.getInstance().checkCubePath(newPath)) {
             ResourceDiscovery.getInstance().setCubePath(newPath);
         }
-//        FineBusinessTableRelationPath path = relationPathConfProvider.getPath(newPath);
-//        List<RelationSource> relationSources = new ArrayList<RelationSource>();
-//        if (null != path) {
-//            try {
-//                List<FineBusinessTableRelation> relations = path.getFineBusinessTableRelations();
-//                List<DataSource> dataSources = new ArrayList<DataSource>();
-//                for (FineBusinessTableRelation relation : relations) {
-//                    if (relation.getRelationType() == BICommonConstants.RELATION_TYPE.MANY_TO_ONE) {
-//                        dataSources.add(DataSourceFactory.transformDataSource(relation.getPrimaryBusinessTable()));
-//                    } else {
-//                        dataSources.add(DataSourceFactory.transformDataSource(relation.getForeignBusinessTable()));
-//                    }
-//                    relationSources.add(RelationSourceFactory.transformRelationSourcesFromRelation(relation));
-//                }
-//                FineBusinessTableRelation relation = relations.get(0);
-//                if (relation.getRelationType() == BICommonConstants.RELATION_TYPE.MANY_TO_ONE) {
-//                    dataSources.add(DataSourceFactory.transformDataSource(relation.getForeignBusinessTable()));
-//                } else {
-//                    dataSources.add(DataSourceFactory.transformDataSource(relation.getPrimaryBusinessTable()));
-//                }
-//                RelationReliance relationReliance = new RelationReliance(relationSources, dataSources);
-//                RelationNodeUtils.calculateRelationNode(relationReliance);
-//                RelationPathReliance relationPathReliance = new RelationPathReliance(RelationSourceFactory.transformSourcePaths(Arrays.asList(path)), relationReliance);
-//                RelationNodeUtils.calculateRelationPathNode(relationPathReliance);
-//                // fixme 调更新
-//            } catch (Exception e) {
-//                LOGGER.error(e.getMessage(), e);
-//            }
-//
-//        }
     }
 }
