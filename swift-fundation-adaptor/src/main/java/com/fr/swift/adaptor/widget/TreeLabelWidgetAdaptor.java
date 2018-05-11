@@ -40,7 +40,7 @@ public class TreeLabelWidgetAdaptor {
             List<List<String>> selectedValues = labelWidget.getSelectedValues();
             for (int i = 0; i < fineDimensions.size(); i++) {
                 // 树标签要根据上一层维度选择的值进行过滤
-                if (i > 0 && !selectedValues.get(i - 1).isEmpty() && !StringUtils.equals(selectedValues.get(i - 1).get(0), EMPTY_SELECTED_VALUE)) {
+                if (i > 0 && hasSelectedValues(i, selectedValues)) {
                     filterInfo = selectedValues2FilterInfo(BusinessTableUtils.getFieldNameByFieldId(fineDimensions.get(i - 1).getFieldId()),
                             selectedValues.get(i - 1), filterInfo);
                 }
@@ -53,6 +53,13 @@ public class TreeLabelWidgetAdaptor {
             LOGGER.error(e);
         }
         return null;
+    }
+
+    private static boolean hasSelectedValues(int dimensionIndex, List<List<String>> selectedValues) {
+        return !selectedValues.isEmpty()
+                && selectedValues.size() >= dimensionIndex
+                && !selectedValues.get(dimensionIndex - 1).isEmpty()
+                && !StringUtils.equals(selectedValues.get(dimensionIndex - 1).get(0), EMPTY_SELECTED_VALUE);
     }
 
     private static FilterInfo selectedValues2FilterInfo(String fieldName, List<String> selectedValues, FilterInfo filterInfo) {
