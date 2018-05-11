@@ -14,6 +14,7 @@ import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
+import com.fr.swift.adaptor.transformer.FieldFactory;
 import com.fr.swift.conf.business.field.FieldInfoHelper;
 import com.fr.swift.conf.business.table2source.TableToSource;
 import com.fr.swift.conf.business.table2source.dao.TableToSourceConfigDao;
@@ -82,7 +83,8 @@ public class SwiftTableManager extends AbstractEngineTableManager {
                 tableToSourceConfigDao.addConfig(table.getId(), dataSource.getSourceKey().getId());
                 EntryInfo entryInfo = this.createEntryInfo(table);
                 this.addEntryInfo(entryInfo, entry.getKey());
-                this.saveFieldInfo(FieldInfoHelper.createFieldInfo(entryInfo, dataSource.getMetadata()));
+                table.setFields(FieldFactory.transformColumns2Fields(dataSource.getMetadata(), table.getId()));
+                this.saveFieldInfo(FieldInfoHelper.createFieldInfo(entryInfo, table));
                 List<Relation> relationList = this.developDatabaseRelations(entryInfo, entry.getKey());
                 this.updateFineTableResponed(responed, entryInfo, relationList);
             }
@@ -104,7 +106,8 @@ public class SwiftTableManager extends AbstractEngineTableManager {
                 tableToSourceConfigDao.updateConfig(tableToSource);
                 EntryInfo entryInfo = this.createEntryInfo(table);
                 this.updateEntryInfo(entryInfo);
-                this.saveFieldInfo(FieldInfoHelper.createFieldInfo(entryInfo, dataSource.getMetadata()));
+                table.setFields(FieldFactory.transformColumns2Fields(dataSource.getMetadata(), table.getId()));
+                this.saveFieldInfo(FieldInfoHelper.createFieldInfo(entryInfo, table));
             }
 
             return true;
