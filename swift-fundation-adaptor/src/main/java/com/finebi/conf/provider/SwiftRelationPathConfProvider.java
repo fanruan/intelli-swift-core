@@ -6,7 +6,6 @@ import com.finebi.conf.constant.BICommonConstants;
 import com.finebi.conf.structure.path.FineBusinessTableRelationPath;
 import com.finebi.conf.structure.relation.FineBusinessTableRelation;
 import com.fr.general.ComparatorUtils;
-import com.fr.swift.driver.SwiftDriverRegister;
 import com.fr.swift.util.Crasher;
 
 import java.util.ArrayList;
@@ -18,11 +17,6 @@ import java.util.List;
  * @description
  */
 public class SwiftRelationPathConfProvider extends AbstractDirectRelationPathManager {
-
-
-    public SwiftRelationPathConfProvider() {
-        SwiftDriverRegister.registerIfNeed();
-    }
 
     @Override
     public List<FineBusinessTableRelationPath> getRelationPaths(String fromTable, String toTable) {

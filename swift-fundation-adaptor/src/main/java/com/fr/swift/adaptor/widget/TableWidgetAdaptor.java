@@ -17,11 +17,10 @@ import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionDrill;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionSort;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.structure.filter.FineFilter;
-import com.finebi.conf.structure.result.table.BIGroupNode;
 import com.finebi.conf.structure.result.table.BITableResult;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.linkage.LinkageAdaptor;
-import com.fr.swift.adaptor.struct.node.BIGroupNodeAdaptor;
+import com.fr.swift.adaptor.struct.node.SwiftTableResult;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.transformer.SortAdaptor;
 import com.fr.swift.adaptor.widget.expander.ExpanderFactory;
@@ -75,50 +74,18 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(TableWidgetAdaptor.class);
 
     public static BITableResult calculate(TableWidget widget) {
-        BIGroupNode resultNode;
-        SwiftResultSet resultSet;
+        GroupNode groupNode = null;
+        int dimensionSize = 0;
         try {
+            dimensionSize = widget.getDimensionList().size();
             TargetInfo targetInfo = CalTargetParseUtils.parseCalTarget(widget);
-            resultSet = QueryRunnerProvider.getInstance().executeQuery(buildQueryInfo(widget, targetInfo));
-            GroupNode groupNode = (GroupNode) ((NodeResultSet) resultSet).getNode();
-            resultNode = new BIGroupNodeAdaptor(groupNode);
+            SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(buildQueryInfo(widget, targetInfo));
+            groupNode = (GroupNode) ((NodeResultSet) resultSet).getNode();
         } catch (Exception e) {
-            resultNode = new BIGroupNodeAdaptor(new GroupNode(-1, null));
+            groupNode = new GroupNode(-1, null);
             LOGGER.error(e);
         }
-        return new TableResult(resultNode, false, false);
-    }
-
-    static class TableResult implements BITableResult {
-        private BIGroupNode node;
-        private boolean hasNextPage;
-        private boolean hasPreviousPage;
-
-        public TableResult(BIGroupNode node, boolean hasNextPage, boolean hasPreviousPage) {
-            this.node = node;
-            this.hasNextPage = hasNextPage;
-            this.hasPreviousPage = hasPreviousPage;
-        }
-
-        @Override
-        public BIGroupNode getNode() {
-            return node;
-        }
-
-        @Override
-        public boolean hasNextPage() {
-            return hasNextPage;
-        }
-
-        @Override
-        public boolean hasPreviousPage() {
-            return hasPreviousPage;
-        }
-
-        @Override
-        public ResultType getResultType() {
-            return ResultType.BIGROUP;
-        }
+        return new SwiftTableResult(dimensionSize, groupNode, widget.getPage());
     }
 
     private static QueryInfo buildQueryInfo(TableWidget widget, TargetInfo targetInfo) throws Exception {
@@ -220,7 +187,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         }
         //根据点击的值，创建过滤条件
         List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
-        TableWidgetBean fromWidget = LinkageAdaptor.handleClickItem(tableName, widgetLinkItem, filterInfos);
+        TableWidgetBean fromWidget = LinkageAdaptor.handleClickItem(tableName, widgetLinkItem, filterInfos, fromColumns, toColumns);
         //分组表查询
         FilterInfo filterInfo = new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND);
         GroupQueryInfo queryInfo = new GroupQueryInfo(fromWidget.getwId(), fromColumns[0].getSourceKey(),

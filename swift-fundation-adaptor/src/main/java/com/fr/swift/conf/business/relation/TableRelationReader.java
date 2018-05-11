@@ -9,8 +9,6 @@ import com.finebi.common.structure.config.entryinfo.EntryInfo;
 import com.finebi.common.structure.config.relation.Relation;
 import com.finebi.common.structure.config.relation.visitor.RelationFieldId;
 import com.fr.data.core.db.DBUtils;
-import com.fr.engine.bi.connection.ConnectionAdapter;
-import com.fr.engine.bi.connection.DbNameConnectionCreator;
 import com.fr.engine.constant.Null;
 import com.fr.engine.criterion.entity.DatabaseEntity;
 import com.fr.engine.exception.IllegalArgumentEngineException;
@@ -18,9 +16,10 @@ import com.fr.engine.exception.SqlEngineException;
 import com.fr.engine.utils.EqualsUtils;
 import com.fr.engine.utils.StringUtils;
 import com.fr.general.ComparatorUtils;
-import com.fr.swift.adaptor.connection.SwiftConnectionAdaptor;
 import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.source.db.ConnectionInfo;
+import com.fr.swift.source.db.ConnectionManager;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -44,7 +43,6 @@ public class TableRelationReader {
     private String schema;
     private String tableId;
     private DatabaseEntryInfo currentEntryInfo;
-    private ConnectionAdapter adapter;
 
     private TableRelationReader(String packageId, DatabaseEntryInfo info) {
         this.packageId = packageId;
@@ -53,7 +51,6 @@ public class TableRelationReader {
         this.schema = info.getSchema();
         this.tableId = info.getID();
         this.currentEntryInfo = info;
-        this.adapter = new SwiftConnectionAdaptor();
     }
 
     public static TableRelationReader create(String packageId, EntryInfo entryInfo) {
@@ -67,9 +64,12 @@ public class TableRelationReader {
     public List<Relation> build() {
         Connection connection = null;
         try {
-            connection = new DbNameConnectionCreator(this.dbLinkName, adapter).create();
-            if (null != connection) {
-                return readRelation(connection, getExistTableMapByPackageIdAndDataLinkName());
+            ConnectionInfo info = ConnectionManager.getInstance().getConnectionInfo(this.dbLinkName);
+            if (null != info) {
+                connection = info.getFrConnection().createConnection();
+                if (null != connection) {
+                    return readRelation(connection, getExistTableMapByPackageIdAndDataLinkName());
+                }
             }
             return new ArrayList<Relation>();
         } catch (Exception e) {
