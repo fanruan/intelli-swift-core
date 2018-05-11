@@ -6,6 +6,7 @@ import com.finebi.conf.constant.BICommonConstants;
 import com.finebi.conf.exception.FineEngineException;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.group.custom.number.NumberMaxAndMinValue;
 import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
+import com.finebi.conf.internalimp.bean.dashboard.widget.field.value.FormulaValueBean;
 import com.finebi.conf.internalimp.bean.filter.AbstractFilterBean;
 import com.finebi.conf.internalimp.bean.filter.GeneraAndFilterBean;
 import com.finebi.conf.internalimp.bean.filter.GeneraOrFilterBean;
@@ -14,8 +15,10 @@ import com.finebi.conf.internalimp.filter.GeneraAndFilter;
 import com.finebi.conf.internalimp.filter.GeneraOrFilter;
 import com.finebi.conf.internalimp.service.pack.FineConfManageCenter;
 import com.finebi.conf.service.engine.relation.EngineRelationPathManager;
+import com.finebi.conf.structure.bean.dashboard.widget.WidgetBean;
 import com.finebi.conf.structure.bean.filter.FilterBean;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
+import com.finebi.conf.structure.dashboard.widget.field.WidgetBeanFieldValue;
 import com.finebi.conf.structure.filter.FineFilter;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
@@ -31,6 +34,7 @@ import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.etl.utils.FormulaUtils;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.utils.BusinessTableUtils;
@@ -38,6 +42,7 @@ import com.fr.swift.utils.BusinessTableUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author pony
@@ -182,5 +187,51 @@ public abstract class AbstractWidgetAdaptor {
             default:
                 return bean;
         }
+    }
+
+    protected static String getFormula(String fieldId, AbstractTableWidget widget) {
+        WidgetBeanField field = widget.getFieldByFieldId(fieldId);
+        FormulaValueBean calculate = (FormulaValueBean) field.getCalculate();
+        String formula = calculate.getValue();
+        Map<String, WidgetBean> dateWidgetIdValueMap = widget.getValue().getDateWidgetIdValueMap();
+        for (String dateWidgetId : FormulaUtils.getRealRelatedParaNames(formula)){
+            if (dateWidgetIdValueMap.containsKey(dateWidgetId)){
+                formula = formula.replace(toParameter(dateWidgetId), getWidgetBeanValue(dateWidgetIdValueMap.get(dateWidgetId)));
+            }
+        }
+        for (String targetId : field.getTargetIds()) {
+            String subFormula = getFiledFormula(fieldId, widget);
+            if (subFormula != null){
+                formula = formula.replace(toParameter(targetId), subFormula);
+            }
+        }
+        return formula;
+    }
+
+    private static String getWidgetBeanValue(WidgetBean widgetBean) {
+        return "2018";
+    }
+
+    protected static String getFiledFormula(String fieldId, AbstractTableWidget widget) {
+        WidgetBeanField field = widget.getFieldByFieldId(fieldId);
+        WidgetBeanFieldValue widgetBeanFieldValue = field.getCalculate();
+        if (widgetBeanFieldValue!= null){
+            FormulaValueBean calculate = (FormulaValueBean) field.getCalculate();
+            String formula = calculate.getValue();
+            for (String targetId : field.getTargetIds()) {
+                String subFormula = getFiledFormula(targetId, widget);
+                if (subFormula != null){
+                    formula = formula.replace(toParameter(targetId), subFormula);
+                }
+            }
+            return formula;
+        } else {
+            return null;
+        }
+
+    }
+
+    private static String toParameter(String targetId) {
+        return "${" + targetId + "}";
     }
 }

@@ -12,4 +12,6 @@ public interface TaskKey {
     String name();
 
     Operation operation();
+
+    String info();
 }

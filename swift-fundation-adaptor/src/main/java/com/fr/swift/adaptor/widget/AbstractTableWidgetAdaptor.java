@@ -4,7 +4,6 @@ import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
 import com.finebi.conf.internalimp.dashboard.widget.table.CrossTableWidget;
 import com.fr.stable.StringUtils;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.util.Crasher;
 import com.fr.swift.utils.BusinessTableUtils;
 
 /**
@@ -13,18 +12,8 @@ import com.fr.swift.utils.BusinessTableUtils;
  */
 public abstract class AbstractTableWidgetAdaptor extends AbstractWidgetAdaptor {
     protected static SourceKey getSourceKey(AbstractTableWidget widget) throws Exception {
-        String fieldId = null;
-        if (!widget.getDimensionList().isEmpty()) {
-            fieldId = getFieldId(widget.getDimensionList().get(0));
-        } else if (!widget.getTargetList().isEmpty()) {
-            fieldId = widget.getTargetList().get(0).getFieldId();
-        } else if (widget instanceof CrossTableWidget && !((CrossTableWidget) widget).getColDimensionList().isEmpty()) {
-            fieldId = ((CrossTableWidget) widget).getColDimensionList().get(0).getFieldId();
-        }
-        if (StringUtils.isEmpty(fieldId)) {
-            return Crasher.crash("empty widget");
-        }
-        return new SourceKey(BusinessTableUtils.getSourceIdByFieldId(fieldId));
+        String tableName = widget.getValue().getTableName();
+        return new SourceKey(BusinessTableUtils.getSourceIdByTableId(tableName));
     }
 
 }
