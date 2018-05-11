@@ -48,7 +48,7 @@ public class StuffFetcher implements Runnable {
                     IndexStuffProvider provider = StuffProviderQueue.getQueue().take();
                     update(provider);
                 } catch (Exception e) {
-
+                    LOGGER.error(e);
                 }
             }
         } catch (Throwable e) {

@@ -106,7 +106,11 @@ public class CubeTasks {
     }
 
     public static TaskKey newBuildTableTaskKey(DataSource ds) throws SwiftMetaDataException {
-        return new CubeTaskKey(newTableName(ds), Operation.BUILD_TABLE);
+        return new CubeTaskKey(newTableName(ds), Operation.BUILD_TABLE, ds.getMetadata().getTableName());
+    }
+
+    public static TaskKey newBuildTableTaskKey(DataSource ds, int round) throws SwiftMetaDataException {
+        return new CubeTaskKey(round, newTableName(ds), Operation.BUILD_TABLE, ds.getMetadata().getTableName());
     }
 
     public static TaskKey newTableBuildEndTaskKey(DataSource ds) throws SwiftMetaDataException {
@@ -114,15 +118,15 @@ public class CubeTasks {
     }
 
     public static TaskKey newTransportTaskKey(DataSource ds) throws SwiftMetaDataException {
-        return new CubeTaskKey(newTableName(ds), Operation.TRANSPORT_TABLE);
+        return new CubeTaskKey(newTableName(ds), Operation.TRANSPORT_TABLE, ds.getMetadata().getTableName());
     }
 
     public static TaskKey newIndexColumnTaskKey(DataSource ds, String columnName) throws SwiftMetaDataException {
-        return new CubeTaskKey(newColumnName(ds, columnName), Operation.INDEX_COLUMN);
+        return new CubeTaskKey(newColumnName(ds, columnName), Operation.INDEX_COLUMN, ds.getMetadata().getTableName() + "." + columnName);
     }
 
     public static TaskKey newMergeColumnDictTaskKey(DataSource ds, String columnName) throws SwiftMetaDataException {
-        return new CubeTaskKey(newColumnName(ds, columnName), Operation.MERGE_COLUMN_DICT);
+        return new CubeTaskKey(newColumnName(ds, columnName), Operation.MERGE_COLUMN_DICT, ds.getMetadata().getTableName() + "." + columnName);
     }
 
     public static TaskKey newIndexRelationTaskKey(RelationSource relation) {
