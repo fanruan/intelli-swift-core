@@ -8,7 +8,7 @@ import com.fr.swift.source.SourceKey;
 /**
  * @author pony
  * @date 2017/12/11
- * swift中已经有的列
+ * swift中已经有的列,或者可以通过公式算出明细的列
  */
 public interface SwiftColumnProvider extends QueryColumn {
     SourceKey getSourceKey();

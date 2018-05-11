@@ -52,7 +52,7 @@ public class DetailFormulaDicColumn implements DictionaryEncodedColumn {
 
     @Override
     public Object getValue(int index) {
-        return  Crasher.crash("unsupported");
+        return Crasher.crash("unsupported");
     }
 
     @Override
