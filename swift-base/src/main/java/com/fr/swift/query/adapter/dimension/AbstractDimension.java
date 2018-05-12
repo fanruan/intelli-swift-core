@@ -49,13 +49,12 @@ public abstract class AbstractDimension extends AbstractQueryColumn implements D
         return sourceKey;
     }
 
-    @Override
     public ColumnKey getColumnKey() {
         return columnKey;
     }
 
     @Override
     public Column getColumn(Segment segment) {
-        return segment.getColumn(getColumnKey());
+        return segment.getColumn(columnKey);
     }
 }
