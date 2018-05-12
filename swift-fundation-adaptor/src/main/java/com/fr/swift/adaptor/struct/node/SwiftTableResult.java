@@ -34,7 +34,8 @@ public class SwiftTableResult implements BITableResult {
      */
     @Override
     public BIGroupNode getNode() {
-        if (rows.isEmpty()) {
+        //-1取全部
+        if (rows.isEmpty() || page == -1) {
             return new BIGroupNodeAdaptor(root);
         }
         if (page != 0) {

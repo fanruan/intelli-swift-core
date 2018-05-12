@@ -128,7 +128,7 @@ public class CalTargetParseUtils {
             // TODO: @lyon 2018/5/10 这边不用再判断一次了，能不能直接传过来之前的aggtype
             if (aggregatorType == AggregatorType.COUNT) {
                 String countDep = target.getCounterDep();
-                if (!ComparatorUtils.equals(countDep, BIDesignConstants.COUNTER_DEP.TOTAL_ROWS)){
+                if (StringUtils.isNotEmpty(countDep) && !ComparatorUtils.equals(countDep, BIDesignConstants.COUNTER_DEP.TOTAL_ROWS)){
                     aggregatorType = AggregatorType.DISTINCT;
                 }
             }
@@ -370,7 +370,7 @@ public class CalTargetParseUtils {
         AggregatorType aggregatorType = AggregatorAdaptor.adaptorDashBoard(target.getGroup().getType());
         if (aggregatorType == AggregatorType.COUNT) {
             String countDep = target.getCounterDep();
-            if (!ComparatorUtils.equals(countDep, BIDesignConstants.COUNTER_DEP.TOTAL_ROWS)){
+            if (StringUtils.isNotEmpty(countDep) && !ComparatorUtils.equals(countDep, BIDesignConstants.COUNTER_DEP.TOTAL_ROWS)){
                 aggregatorType = AggregatorType.DISTINCT;
                 target.setFieldId(countDep);
             }
