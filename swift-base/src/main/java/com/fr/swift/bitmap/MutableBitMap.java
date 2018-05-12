@@ -6,11 +6,11 @@ package com.fr.swift.bitmap;
  * 可改变自身的位图索引
  */
 public interface MutableBitMap extends ImmutableBitMap {
-    void or(MutableBitMap index);
+    void or(ImmutableBitMap index);
 
-    void and(MutableBitMap index);
+    void and(ImmutableBitMap index);
 
-    void andNot(MutableBitMap index);
+    void andNot(ImmutableBitMap index);
 
     void add(int index);
 

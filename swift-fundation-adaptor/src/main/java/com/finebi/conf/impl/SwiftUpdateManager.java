@@ -55,9 +55,9 @@ import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -120,7 +120,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     public void saveUpdateSetting(TableUpdateInfo updateInfo, FineBusinessTable table) throws Exception {
         Map<FineBusinessTable, TableUpdateInfo> infoMap = new HashMap<FineBusinessTable, TableUpdateInfo>();
         infoMap.put(table, updateInfo);
-        saveUpdateSetting(infoMap);
+        this.saveUpdateSetting(infoMap);
     }
 
     @Override
@@ -172,7 +172,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
             for (FineBusinessTable table : tables) {
                 infoMap.put(table, info);
             }
-            saveUpdateSetting(infoMap);
+            this.saveUpdateSetting(infoMap);
         } catch (Exception e) {
             LOGGER.error(e);
         }
@@ -232,7 +232,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         }
         if (!infoMap.isEmpty()) {
             try {
-                saveUpdateSetting(infoMap);
+                this.saveUpdateSetting(infoMap);
             } catch (Exception e) {
                 LOGGER.error(e);
             }

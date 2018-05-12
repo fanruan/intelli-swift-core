@@ -76,7 +76,7 @@ public class SwiftDataProvider implements DataProvider {
                 }
             }
             if (dataSource != null) {
-                List<Segment> segments = this.getPreviewData(dataSource);
+                 List<Segment> segments = this.getPreviewData(dataSource);
 
                 SwiftMetaData swiftMetaData = dataSource.getMetadata();
                 BIDetailTableResult realDetailResult = new SwiftSegmentDetailResult(segments, swiftMetaData, sortIndex, sorts);

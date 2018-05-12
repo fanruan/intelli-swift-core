@@ -1,6 +1,7 @@
 package com.fr.swift.generate.history.index;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.RoaringMutableBitMap;
 import com.fr.swift.cube.nio.NIOConstant;
 import com.fr.swift.structure.array.LongArray;
@@ -14,26 +15,26 @@ import java.util.List;
  * @date 2018/1/30
  */
 public class RelationIndexHelper {
-    private List<ImmutableBitMap[]> index;
+    private List<MutableBitMap[]> index;
     private List<LongArray> revert;
     private List<ImmutableBitMap> nullIndex;
 
     public RelationIndexHelper() {
-        this.index = new ArrayList<ImmutableBitMap[]>();
+        this.index = new ArrayList<MutableBitMap[]>();
         this.revert = new ArrayList<LongArray>();
         this.nullIndex = new ArrayList<ImmutableBitMap>();
     }
 
     public void addIndex(byte[][] index) {
         int length = index.length;
-        ImmutableBitMap[] target = new ImmutableBitMap[length];
+        MutableBitMap[] target = new MutableBitMap[length];
         for (int i = 0; i < length; i++) {
             target[i] = RoaringMutableBitMap.fromBytes(index[i]);
         }
         this.index.add(target);
     }
 
-    public void addIndex(ImmutableBitMap[] index) {
+    public void addIndex(MutableBitMap[] index) {
         this.index.add(index);
     }
 
@@ -49,11 +50,11 @@ public class RelationIndexHelper {
         if (index.isEmpty()) {
             Crasher.crash("index is empty");
         }
-        ImmutableBitMap[] result = index.get(0);
+        MutableBitMap[] result = index.get(0);
         for (int i = 1, size = index.size(); i < size; i++) {
             ImmutableBitMap[] tmp = index.get(i);
             for (int j = 0, len = result.length; j < len; j++) {
-                result[j] = result[j].getAnd(tmp[j]);
+                result[j].and(tmp[j]);
             }
         }
         return result;
