@@ -110,15 +110,6 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         return new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
     }
 
-    private static void dealWithDimensionDirectFilter(List<FilterInfo> filterInfoList, List<Dimension> dimensions) {
-        // 维度上的直接过滤，提取出来
-        for (Dimension dimension : dimensions) {
-            FilterInfo filter = dimension.getFilter();
-            if (filter != null && !filter.isMatchFilter()) {
-                filterInfoList.add(dimension.getFilter());
-            }
-        }
-    }
 
     private static void dealWithDrill(List<FilterInfo> filterInfoList, AbstractTableWidget widget) throws Exception {
         for (FineDimension fineDimension : widget.getDimensionList()) {
@@ -209,12 +200,6 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         }
     }
 
-    private static void dealWithWidgetFilter(List<FilterInfo> filterInfoList, AbstractTableWidget widget) throws Exception {
-        List<FineFilter> filters = dealWithTargetFilter(widget, widget.getFilters());
-        if (filters != null && !filters.isEmpty()) {
-            filterInfoList.add(FilterInfoFactory.transformFineFilter(widget.getTableName(), filters));
-        }
-    }
 
     static List<Dimension> getDimensions(SourceKey sourceKey, List<FineDimension> fineDims, List<FineTarget> targets) throws SQLException {
         List<Dimension> dimensions = new ArrayList<Dimension>();

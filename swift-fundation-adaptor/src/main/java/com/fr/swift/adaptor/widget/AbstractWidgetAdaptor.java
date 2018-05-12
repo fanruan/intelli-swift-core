@@ -27,6 +27,7 @@ import com.fr.swift.cal.info.DetailQueryInfo;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.adapter.dimension.AllCursor;
 import com.fr.swift.query.adapter.dimension.DetailDimension;
+import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.DescSort;
@@ -116,7 +117,27 @@ public abstract class AbstractWidgetAdaptor {
         return val;
     }
 
+    static void dealWithWidgetFilter(List<FilterInfo> filterInfoList, AbstractTableWidget widget) throws Exception {
+        List<FineFilter> filters = dealWithTargetFilter(widget, widget.getFilters());
+        if (filters != null && !filters.isEmpty()) {
+            filterInfoList.add(FilterInfoFactory.transformFineFilter(widget.getTableName(), filters));
+        }
+    }
+
+    static void dealWithDimensionDirectFilter(List<FilterInfo> filterInfoList, List<Dimension> dimensions) {
+        // 维度上的直接过滤，提取出来
+        for (Dimension dimension : dimensions) {
+            FilterInfo filter = dimension.getFilter();
+            if (filter != null && !filter.isMatchFilter()) {
+                filterInfoList.add(dimension.getFilter());
+            }
+        }
+    }
+
     protected static List<FineFilter> dealWithTargetFilter(AbstractTableWidget widget, List<FineFilter> fineFilters) {
+        if (fineFilters == null) {
+            return new ArrayList<FineFilter>();
+        }
         List<FineFilter> target = new ArrayList<FineFilter>();
         String tableName = widget.getTableName();
         if (StringUtils.isEmpty(tableName)) {
