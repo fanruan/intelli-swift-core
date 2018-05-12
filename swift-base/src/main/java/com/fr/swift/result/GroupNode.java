@@ -130,16 +130,17 @@ public class GroupNode<T extends GroupNode> extends AbstractSwiftNode<T> impleme
 
     @Override
     public int getChildrenSize() {
-        if (nodeRange == null) {
-            return childMap == null ? 0 : childMap.size();
-        }
-        if (nodeRange.getStartIndexIncluded() == NodeRange.UNDEFINED) {
-            return nodeRange.getEndIndexIncluded() + 1;
-        }
-        if (nodeRange.getEndIndexIncluded() == NodeRange.UNDEFINED) {
-            return childMap.size() - nodeRange.getStartIndexIncluded();
-        }
-        return nodeRange.getEndIndexIncluded() - nodeRange.getStartIndexIncluded() + 1;
+//        if (nodeRange == null) {
+//            return childMap == null ? 0 : childMap.size();
+//        }
+//        if (nodeRange.getStartIndexIncluded() == NodeRange.UNDEFINED) {
+//            return nodeRange.getEndIndexIncluded() + 1;
+//        }
+//        if (nodeRange.getEndIndexIncluded() == NodeRange.UNDEFINED) {
+//            return childMap.size() - nodeRange.getStartIndexIncluded();
+//        }
+//        return nodeRange.getEndIndexIncluded() - nodeRange.getStartIndexIncluded() + 1;
+        return childMap.size();
     }
 
     @Override
