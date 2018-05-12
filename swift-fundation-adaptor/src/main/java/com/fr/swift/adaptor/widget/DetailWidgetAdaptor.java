@@ -31,6 +31,7 @@ import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.Sort;
+import com.fr.swift.query.sort.SortType;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.MetaDataColumn;
@@ -90,7 +91,9 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
         //没传进来排序顺序
         IntList sortIndex = IntListFactory.createHeapIntList();
         for (int i = 0; i < dimensions.length; i++) {
-            sortIndex.add(i);
+            if (dimensions[i].getSort() != null && dimensions[i].getSort().getSortType() != SortType.NONE){
+                sortIndex.add(i);
+            }
         }
         List<FilterInfo> filterInfos = handleLinkageFilterList(widget);
         filterInfos.add(FilterInfoFactory.transformFineFilter(metaData.getTableName(), dealWithTargetFilter(widget, widget.getFilters())));
@@ -151,7 +154,7 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
                         FilterInfoFactory.transformFineFilter(widget.getTableName(), dealWithTargetFilter(widget, widget.getFilters())), getFormula(fineDimension.getFieldId(), widget));
             } else {
                 String columnName = BusinessTableUtils.getFieldNameByFieldId(fineDimension.getFieldId());
-                Sort sort = SortAdaptor.adaptorDimensionSort(fineDimension.getSort(), i);
+                Sort sort = SortAdaptor.adaptorDetailDimensionSort(fineDimension.getSort(), i);
                 //暂时先不管明细表自定义分组
                 dimensions[i] = new DetailDimension(i, new SourceKey(fineDimension.getId()), new ColumnKey(columnName), null, sort, FilterInfoFactory.transformFineFilter(widget.getTableName(), dealWithTargetFilter(widget, widget.getFilters())));
             }

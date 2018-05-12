@@ -39,7 +39,7 @@ public class NumberContainFilter extends AbstractDetailFilter<Number> {
 
     @Override
     public boolean matches(SwiftNode node, int targetIndex) {
-        Object data = node.getData();
+        Object data = node.getAggregatorValue(targetIndex).calculateValue();
         if (data == null) {
             return false;
         }
