@@ -28,12 +28,19 @@ public class SourceRelianceFactory {
         for (DataSource baseDataSource : baseDataSources) {
             baseSourceKeys.add(baseDataSource.getSourceKey());
             if (baseDataSource instanceof EtlDataSource) {
-                if (etlIsBaseTable((EtlDataSource) baseDataSource)) {
-                    DataSource dataSource = ((EtlDataSource) baseDataSource).getBasedSources().get(0);
-                    allDataSourceList.add(dataSource);
-                    baseSourceKeys.add(dataSource.getSourceKey());
-                    baseSources.add(dataSource);
+                List<DataSource> need2AddList = getAllSourceNotGenerate(baseDataSource);
+                baseSources.addAll(need2AddList);
+                for (DataSource need2Add : need2AddList) {
+                    baseSourceKeys.add(need2Add.getSourceKey());
                 }
+//                if (etlIsBaseTable((EtlDataSource) baseDataSource)) {
+//                    DataSource dataSource = ((EtlDataSource) baseDataSource).getBasedSources().get(0);
+//                    allDataSourceList.add(dataSource);
+//                    baseSourceKeys.add(dataSource.getSourceKey());
+//                    baseSources.add(dataSource);
+//                } else {
+//
+//                }
             }
         }
         baseDataSources.addAll(baseSources);
@@ -51,5 +58,18 @@ public class SourceRelianceFactory {
             return true;
         }
         return false;
+    }
+
+    //别的分析表，递归算父表，并判断父表存不存在，存在的话，就不管，不存在加入baseSource
+    public static List<DataSource> getAllSourceNotGenerate(DataSource dataSource) {
+        List<DataSource> dataSourceList = new ArrayList<DataSource>();
+        dataSourceList.add(dataSource);
+        if (dataSource instanceof EtlDataSource) {
+            List<DataSource> baseDataSources = ((EtlDataSource) dataSource).getBasedSources();
+            for (DataSource baseDataSource : baseDataSources) {
+                dataSourceList.addAll(getAllSourceNotGenerate(baseDataSource));
+            }
+        }
+        return dataSourceList;
     }
 }
