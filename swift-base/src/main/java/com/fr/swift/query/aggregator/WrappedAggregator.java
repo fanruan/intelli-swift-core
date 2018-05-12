@@ -9,12 +9,16 @@ import com.fr.swift.structure.iterator.RowTraversal;
  */
 public class WrappedAggregator<T extends AggregatorValue> implements Aggregator<T> {
 
-    private boolean isAggregatorTypeChanged;
-    private Aggregator aggregator;
+    private Aggregator metricAgg;
+    private Aggregator changedAgg;
 
-    public WrappedAggregator(boolean isAggregatorTypeChanged, Aggregator aggregator) {
-        this.isAggregatorTypeChanged = isAggregatorTypeChanged;
-        this.aggregator = aggregator;
+    public WrappedAggregator(Aggregator metricAgg) {
+        this.metricAgg = metricAgg;
+    }
+
+    public WrappedAggregator(Aggregator metricAgg, Aggregator changedAgg) {
+        this.metricAgg = metricAgg;
+        this.changedAgg = changedAgg;
     }
 
     @Override
@@ -24,11 +28,15 @@ public class WrappedAggregator<T extends AggregatorValue> implements Aggregator<
 
     @Override
     public T createAggregatorValue(AggregatorValue value) {
-        return (T) (isAggregatorTypeChanged ? aggregator.createAggregatorValue(value) : value.clone());
+        return (T) (changedAgg != null ? changedAgg.createAggregatorValue(value) : value.clone());
     }
 
     @Override
     public void combine(T current, T other) {
-        aggregator.combine(current, other);
+        if (changedAgg == null) {
+            metricAgg.combine(current, other);
+        } else {
+            changedAgg.combine(current, changedAgg.createAggregatorValue(other));
+        }
     }
 }

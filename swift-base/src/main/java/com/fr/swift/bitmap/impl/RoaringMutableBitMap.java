@@ -60,17 +60,17 @@ public class RoaringMutableBitMap extends BaseRoaringBitMap implements MutableBi
     }
 
     @Override
-    public void or(MutableBitMap index) {
+    public void or(ImmutableBitMap index) {
         bitmap.or(extract(index));
     }
 
     @Override
-    public void and(MutableBitMap index) {
+    public void and(ImmutableBitMap index) {
         bitmap.and(extract(index));
     }
 
     @Override
-    public void andNot(MutableBitMap index) {
+    public void andNot(ImmutableBitMap index) {
         bitmap.andNot(extract(index));
     }
 
