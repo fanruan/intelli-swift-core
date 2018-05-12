@@ -47,7 +47,7 @@ public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
             List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
             filterInfos.add(new SwiftDetailFilterInfo<Object>(null, null, SwiftDetailFilterType.ALL_SHOW));
             for (Dimension dimension : dimensions) {
-                columns.add(segment.getColumn(dimension.getColumnKey()));
+                columns.add(dimension.getColumn(segment));
                 if (dimension.getFilter() != null) {
                     filterInfos.add(dimension.getFilter());
                 }

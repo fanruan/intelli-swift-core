@@ -27,6 +27,9 @@ public class NullFilter extends AbstractDetailFilter {
 
     @Override
     public boolean matches(SwiftNode node, int targetIndex) {
-        throw new UnsupportedOperationException();
+        if (targetIndex == -1){
+            return node.getData() == null;
+        }
+        return node.getAggregatorValue(targetIndex).calculateValue() == null;
     }
 }
