@@ -3,6 +3,7 @@ package com.fr.swift.generate;
 
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.BitMapOrHelper;
 import com.fr.swift.bitmap.traversal.BreakTraversalAction;
 import com.fr.swift.bitmap.traversal.TraversalAction;
@@ -158,7 +159,7 @@ public abstract class BaseTablePathIndexer extends BaseWorker {
         return reversePos;
     }
 
-    ImmutableBitMap getTableLinkedOrGVI(ImmutableBitMap currentIndex, final RelationIndex relationIndex, final int primaryIndex) {
+    MutableBitMap getTableLinkedOrGVI(ImmutableBitMap currentIndex, final RelationIndex relationIndex, final int primaryIndex) {
         if (null != currentIndex) {
             final List<ImmutableBitMap> bitMaps = new ArrayList<ImmutableBitMap>();
             currentIndex.breakableTraversal(new BreakTraversalAction() {
@@ -167,14 +168,14 @@ public abstract class BaseTablePathIndexer extends BaseWorker {
                     try {
                         bitMaps.add(relationIndex.getIndex(primaryIndex, row + 1));
                     } catch (Exception ignore) {
-                        bitMaps.add(BitMaps.EMPTY_IMMUTABLE);
+                        bitMaps.add(BitMaps.newRoaringMutable());
                     }
                     return false;
                 }
             });
-            ImmutableBitMap result = BitMaps.newRoaringMutable();
+            MutableBitMap result = BitMaps.newRoaringMutable();
             for (ImmutableBitMap bitMap : bitMaps) {
-                result = result.getOr(bitMap);
+                result.or(bitMap);
             }
             return result;
         }

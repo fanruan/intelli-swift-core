@@ -3,6 +3,7 @@ package com.fr.swift.adaptor.linkage;
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.base.stable.StableManager;
 import com.finebi.conf.constant.BICommonConstants;
+import com.finebi.conf.constant.BIDesignConstants;
 import com.finebi.conf.exception.FineEngineException;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.WidgetDimensionBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
@@ -33,12 +34,12 @@ import com.fr.swift.source.relation.RelationSourceImpl;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.utils.BusinessTableUtils;
 
-import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Calendar;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author yee
@@ -140,13 +141,25 @@ public class LinkageAdaptor {
     }
 
     public static FilterInfo dealFilterInfo(ColumnKey columnKey, String value, WidgetDimensionBean bean) {
-        if (bean.getType() == BICommonConstants.FORMULA_GENERATE_TYPE.DATE) {
-            return createDateFilter(columnKey, value, bean.getGroup().getType());
-        } else {
-            Set<String> values = new HashSet<String>();
-            values.add(value);
-            return new SwiftDetailFilterInfo<Set<String>>(columnKey, values, SwiftDetailFilterType.STRING_IN);
+
+        switch (bean.getType()) {
+            case BIDesignConstants.DESIGN.DIMENSION_TYPE.DATE:
+                return createDateFilter(columnKey, value, bean.getGroup().getType());
+            case BIDesignConstants.DESIGN.DIMENSION_TYPE.NUMBER:
+            case BIDesignConstants.DESIGN.DIMENSION_TYPE.TRANSFORM_FROM_NUMBER:
+                return createNumberFilter(columnKey, value);
+            default:
+                Set<String> values = new HashSet<String>();
+                values.add(value);
+                return new SwiftDetailFilterInfo<Set<String>>(columnKey, values, SwiftDetailFilterType.STRING_IN);
         }
+
+    }
+
+    private static FilterInfo createNumberFilter(ColumnKey columnKey, String value) {
+        Set<Double> values = new HashSet<Double>();
+        values.add(Double.parseDouble(value));
+        return new SwiftDetailFilterInfo<Set<Double>>(columnKey, values, SwiftDetailFilterType.NUMBER_CONTAIN);
     }
 
     private static FilterInfo createDateFilter(ColumnKey columnKey, String value, int groupType) {
