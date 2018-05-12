@@ -1,6 +1,7 @@
 package com.fr.swift.adaptor.widget.expander;
 
 import com.finebi.conf.internalimp.bean.dashboard.widget.expander.ExpanderBean;
+import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.fr.swift.query.adapter.dimension.Expander;
 import com.fr.swift.query.adapter.dimension.ExpanderImpl;
 import com.fr.swift.query.adapter.dimension.ExpanderType;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -21,9 +23,11 @@ import java.util.Set;
  */
 public class ExpanderFactory {
 
-    public static Expander create(boolean isOpenNode, final int dimensionSize, List<ExpanderBean> beanList) {
+    public static Expander create(boolean isOpenNode, List<FineDimension> dimensions,
+                                  List<ExpanderBean> beanList, Map<String, Boolean> headerExpander) {
         ExpanderType type = isOpenNode ? ExpanderType.ALL_EXPANDER : ExpanderType.LAZY_EXPANDER;
-        Iterator<List<BeanTree>> iterator = new Tree2RowIterator<BeanTree>(dimensionSize, new MapperIterator<ExpanderBean, BeanTree>(beanList.iterator(), new Function<ExpanderBean, BeanTree>() {
+        type = headerExpander == null || headerExpander.isEmpty() ? type : ExpanderType.N_LEVEL_EXPANDER;
+        Iterator<List<BeanTree>> iterator = new Tree2RowIterator<BeanTree>(dimensions.size(), new MapperIterator<ExpanderBean, BeanTree>(beanList.iterator(), new Function<ExpanderBean, BeanTree>() {
             @Override
             public BeanTree apply(ExpanderBean p) {
                 return new BeanTree(p);
@@ -45,7 +49,28 @@ public class ExpanderFactory {
         while (keyIt.hasNext()) {
             indexKeys.add(keyIt.next());
         }
+        if (type == ExpanderType.N_LEVEL_EXPANDER) {
+            int level = getLevel(dimensions, headerExpander);
+            if (level == 0) {
+                type = ExpanderType.LAZY_EXPANDER;
+            } else if (level == dimensions.size() - 1) {
+                type = ExpanderType.ALL_EXPANDER;
+            } else {
+                return new ExpanderImpl(level, type, indexKeys);
+            }
+        }
         return new ExpanderImpl(type, indexKeys);
+    }
+
+    private static int getLevel(List<FineDimension> dimensions, Map<String, Boolean> headerExpander) {
+        int level = 0;
+        for (int i = 0; i < dimensions.size(); i++) {
+            String id = dimensions.get(i).getId();
+            if (headerExpander.containsKey(id) && headerExpander.get(id)) {
+                level = i + 1;
+            }
+        }
+        return level;
     }
 
     private static class BeanTree implements Iterable<BeanTree> {

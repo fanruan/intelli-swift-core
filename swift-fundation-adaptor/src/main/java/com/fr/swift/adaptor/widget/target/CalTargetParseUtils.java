@@ -127,6 +127,10 @@ public class CalTargetParseUtils {
         for (int i = 0; i < targets.size(); i++) {
             FineTarget target = targets.get(i);
             AggregatorType aggregatorType = AggregatorAdaptor.adaptorDashBoard(target.getGroup().getType());
+            if (aggregatorType == AggregatorType.DUMMY) {
+                // 和明细的agg相同
+                aggregatorType = parseMetricFromBaseFieldOfBaseTarget(target, widget).getValue().getKey();
+            }
             // TODO: @lyon 2018/5/10 这边不用再判断一次了，能不能直接传过来之前的aggtype
             if (aggregatorType == AggregatorType.COUNT) {
                 String countDep = target.getCounterDep();
@@ -141,7 +145,7 @@ public class CalTargetParseUtils {
                 // 原始字段生成的指标
                 if (target.getCalculation() == null
                         || target.getCalculation().getType() == BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.NONE) {
-                    metricType = AggregatorAdaptor.adaptorDashBoard(target.getMetric());
+                    metricType = AggregatorAdaptor.adaptorMetric(target.getMetric());
                     // 没有设置快速计算指标
                     int resultFetchIndex = baseMetricList.indexOf(parseMetricFromBaseFieldOfBaseTarget(target, widget));
                     resultTargets.add(new ResultTarget(i, resultFetchIndex));
@@ -168,9 +172,9 @@ public class CalTargetParseUtils {
                 }
             }
             if (metricType == AggregatorType.DUMMY || metricType == aggregatorType) {
-                aggregators.add(new WrappedAggregator(false, aggregator));
+                aggregators.add(new WrappedAggregator(aggregator));
             } else {
-                aggregators.add(new WrappedAggregator(true, aggregator));
+                aggregators.add(new WrappedAggregator(aggregator, AggregatorFactory.createAggregator(metricType)));
             }
         }
         return Pair.of(aggregators, resultTargets);
@@ -487,7 +491,7 @@ public class CalTargetParseUtils {
     private static Metric toMetric(int metricIndex, String fieldId, Pair<AggregatorType, FilterInfo> pair, AbstractTableWidget widget) {
         WidgetBeanField field = widget.getFieldByFieldId(fieldId);
         Aggregator aggregator = AggregatorFactory.createAggregator(pair.getKey());
-        if (field.getCalculate().getType() == BIDesignConstants.DESIGN.CAL_TARGET.FORMULA){
+        if (field.getCalculate() != null && field.getCalculate().getType() == BIDesignConstants.DESIGN.CAL_TARGET.FORMULA) {
             return new FormulaMetric(metricIndex, new SourceKey(field.getName()), pair.getValue(), aggregator, AbstractWidgetAdaptor.getFormula(fieldId, widget));
         }
         SourceKey key = new SourceKey(fieldId);
