@@ -27,7 +27,7 @@ public class FormulaMetricColumn implements Column {
 
     @Override
     public BitmapIndexedColumn getBitmapIndex() {
-        return Crasher.crash("unsupported");
+        return new FormulaIndexColumn();
     }
 
     @Override
