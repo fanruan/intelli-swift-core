@@ -1,6 +1,6 @@
 package com.fr.swift.query.filter.detail.impl.nfilter;
 
-import com.fr.swift.query.filter.detail.impl.AbstractDetailFilter;
+import com.fr.swift.compare.Comparators;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
@@ -13,7 +13,7 @@ import com.fr.swift.util.Util;
  * 取字典排序最小的N个
  * Created by Lyon on 2017/12/4.
  */
-public class BottomNFilter extends AbstractDetailFilter {
+public class BottomNFilter extends AbstractNFilter {
 
     private int bottomN;
 
@@ -36,8 +36,14 @@ public class BottomNFilter extends AbstractDetailFilter {
         if (targetIndex == -1) {
             int index = node.getIndex();
             return index < bottomN;
+        }else {
+            Double value = getValue(node, targetIndex);
+            return node.getAggregatorValue(targetIndex).calculate() <= value;
         }
-        // TODO: 2018/5/8 依据指标的过滤
-        return true;
+    }
+
+    @Override
+    public NTree<Double> getNTree() {
+        return new NTree<Double>(Comparators.<Double>asc(), bottomN);
     }
 }

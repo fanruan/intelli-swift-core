@@ -22,7 +22,7 @@ public abstract class AbstractLocalGroupQueryBuilder implements LocalGroupQueryB
         List<Column> dimensionColumns = new ArrayList<Column>();
         for (Dimension dimension : dimensions) {
             List<Column> columnList = new ArrayList<Column>();
-            Column column = segment.getColumn(dimension.getColumnKey());
+            Column column = dimension.getColumn(segment);
             columnList.add(column);
             Group group = dimension.getGroup();
             GroupOperator operator = null;

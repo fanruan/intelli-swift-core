@@ -1,6 +1,6 @@
 package com.fr.swift.query.filter.detail.impl.nfilter;
 
-import com.fr.swift.query.filter.detail.impl.AbstractDetailFilter;
+import com.fr.swift.compare.Comparators;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
@@ -13,7 +13,7 @@ import com.fr.swift.util.Util;
  * 取字典排序中最大的N个
  * Created by Lyon on 2017/12/4.
  */
-public class TopNFilter extends AbstractDetailFilter {
+public class TopNFilter extends AbstractNFilter {
 
     private int topN;
 
@@ -38,8 +38,14 @@ public class TopNFilter extends AbstractDetailFilter {
             int index = node.getIndex();
             int size = node.getParent().getChildrenSize();
             return (size - index) < topN;
+        } else {
+            Double value = getValue(node, targetIndex);
+            return node.getAggregatorValue(targetIndex).calculate() >= value;
         }
-        // TODO: 2018/5/8 对节点的AggregatorValues[targetIndex]对应的指标的前几个的排序
-        return true;
+    }
+
+    @Override
+    public NTree<Double> getNTree() {
+        return new NTree<Double>(Comparators.<Double>desc(), topN);
     }
 }

@@ -8,8 +8,10 @@ import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
 import com.fr.swift.adaptor.transformer.AggregatorAdaptor;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
+import com.fr.swift.adaptor.widget.AbstractWidgetAdaptor;
 import com.fr.swift.adaptor.widget.target.exception.TargetCircularDependencyException;
 import com.fr.swift.query.adapter.metric.CounterMetric;
+import com.fr.swift.query.adapter.metric.FormulaMetric;
 import com.fr.swift.query.adapter.metric.GroupMetric;
 import com.fr.swift.query.adapter.metric.Metric;
 import com.fr.swift.query.adapter.target.GroupTarget;
@@ -91,7 +93,7 @@ public class CalTargetParseUtils {
         // 从widget#getTargetList中解析出从中间结果中取出查询结果的ResultTarget和对查询结果做最后一步汇总的聚合器
         Pair<List<Aggregator>, List<ResultTarget>> resultInfoPair = parseResultAggregatorAndResultTarget(widget,
                 calTargetInfoPair.getValue(), baseMetricList);
-        List<Metric> metrics = createMetrics(baseMetricList);
+        List<Metric> metrics = createMetrics(baseMetricList, widget);
         List<GroupTarget> groupTargets = calTargetInfoPair.getKey();
         int targetLength = baseMetricList.size() + groupTargets.size();
         return new TargetInfoImpl(targetLength, metrics, groupTargets, resultInfoPair.getValue(), resultInfoPair.getKey());
@@ -125,10 +127,14 @@ public class CalTargetParseUtils {
         for (int i = 0; i < targets.size(); i++) {
             FineTarget target = targets.get(i);
             AggregatorType aggregatorType = AggregatorAdaptor.adaptorDashBoard(target.getGroup().getType());
+            if (aggregatorType == AggregatorType.DUMMY) {
+                // 和明细的agg相同
+                aggregatorType = parseMetricFromBaseFieldOfBaseTarget(target, widget).getValue().getKey();
+            }
             // TODO: @lyon 2018/5/10 这边不用再判断一次了，能不能直接传过来之前的aggtype
             if (aggregatorType == AggregatorType.COUNT) {
                 String countDep = target.getCounterDep();
-                if (!ComparatorUtils.equals(countDep, BIDesignConstants.COUNTER_DEP.TOTAL_ROWS)){
+                if (StringUtils.isNotEmpty(countDep) && !ComparatorUtils.equals(countDep, BIDesignConstants.COUNTER_DEP.TOTAL_ROWS)) {
                     aggregatorType = AggregatorType.DISTINCT;
                 }
             }
@@ -139,7 +145,7 @@ public class CalTargetParseUtils {
                 // 原始字段生成的指标
                 if (target.getCalculation() == null
                         || target.getCalculation().getType() == BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.NONE) {
-                    metricType = AggregatorAdaptor.adaptorDashBoard(target.getMetric());
+                    metricType = AggregatorAdaptor.adaptorMetric(target.getMetric());
                     // 没有设置快速计算指标
                     int resultFetchIndex = baseMetricList.indexOf(parseMetricFromBaseFieldOfBaseTarget(target, widget));
                     resultTargets.add(new ResultTarget(i, resultFetchIndex));
@@ -166,9 +172,9 @@ public class CalTargetParseUtils {
                 }
             }
             if (metricType == AggregatorType.DUMMY || metricType == aggregatorType) {
-                aggregators.add(new WrappedAggregator(false, aggregator));
+                aggregators.add(new WrappedAggregator(aggregator));
             } else {
-                aggregators.add(new WrappedAggregator(true, aggregator));
+                aggregators.add(new WrappedAggregator(aggregator, AggregatorFactory.createAggregator(metricType)));
             }
         }
         return Pair.of(aggregators, resultTargets);
@@ -221,8 +227,7 @@ public class CalTargetParseUtils {
     }
 
     private static boolean isBaseFieldTarget(FineTarget target) {
-        return target.getType() == BIDesignConstants.DESIGN.DIMENSION_TYPE.COUNTER
-                || target.getWidgetBeanField() == null || target.getWidgetBeanField().getTargetIds() == null;
+        return target.getCalculation()== null || target.getCalculation().getType() == BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.NONE;
     }
 
     /**
@@ -370,7 +375,7 @@ public class CalTargetParseUtils {
         AggregatorType aggregatorType = AggregatorAdaptor.adaptorDashBoard(target.getGroup().getType());
         if (aggregatorType == AggregatorType.COUNT) {
             String countDep = target.getCounterDep();
-            if (!ComparatorUtils.equals(countDep, BIDesignConstants.COUNTER_DEP.TOTAL_ROWS)){
+            if (StringUtils.isNotEmpty(countDep) && !ComparatorUtils.equals(countDep, BIDesignConstants.COUNTER_DEP.TOTAL_ROWS)) {
                 aggregatorType = AggregatorType.DISTINCT;
                 target.setFieldId(countDep);
             }
@@ -475,22 +480,26 @@ public class CalTargetParseUtils {
         return field.getCalculate() == null || field.getTargetIds() == null;
     }
 
-    private static List<Metric> createMetrics(List<Pair<String, Pair<AggregatorType, FilterInfo>>> metricPairs) {
+    private static List<Metric> createMetrics(List<Pair<String, Pair<AggregatorType, FilterInfo>>> metricPairs, AbstractTableWidget widget) {
         List<Metric> metrics = new ArrayList<Metric>();
         for (int i = 0; i < metricPairs.size(); i++) {
-            metrics.add(toMetric(i, metricPairs.get(i).getKey(), metricPairs.get(i).getValue()));
+            metrics.add(toMetric(i, metricPairs.get(i).getKey(), metricPairs.get(i).getValue(), widget));
         }
         return metrics;
     }
 
-    private static Metric toMetric(int metricIndex, String fieldId, Pair<AggregatorType, FilterInfo> pair) {
+    private static Metric toMetric(int metricIndex, String fieldId, Pair<AggregatorType, FilterInfo> pair, AbstractTableWidget widget) {
+        WidgetBeanField field = widget.getFieldByFieldId(fieldId);
+        Aggregator aggregator = AggregatorFactory.createAggregator(pair.getKey());
+        if (field.getCalculate() != null && field.getCalculate().getType() == BIDesignConstants.DESIGN.CAL_TARGET.FORMULA) {
+            return new FormulaMetric(metricIndex, new SourceKey(field.getName()), pair.getValue(), aggregator, AbstractWidgetAdaptor.getFormula(fieldId, widget));
+        }
         SourceKey key = new SourceKey(fieldId);
         if (isCounterField(fieldId)) {
             return new CounterMetric(metricIndex, key, new ColumnKey(fieldId), pair.getValue());
         }
         String columnName = BusinessTableUtils.getFieldNameByFieldId(fieldId);
         ColumnKey colKey = new ColumnKey(columnName);
-        Aggregator aggregator = AggregatorFactory.createAggregator(pair.getKey());
         return new GroupMetric(metricIndex, key, colKey, pair.getValue(), aggregator);
     }
 

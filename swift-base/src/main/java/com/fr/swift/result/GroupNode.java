@@ -85,6 +85,8 @@ public class GroupNode<T extends GroupNode> extends AbstractSwiftNode<T> impleme
             lastChild.sibling = child;
             // 在构造的时候设置这个没啥用，但是过滤之后，重新把节点添加进来的时候就有用了
             child.nodeIndex = lastChild.nodeIndex + 1;
+        } else {
+            child.nodeIndex = 0;
         }
         childMap.put(child.getData(), child);
         child.parent = this;

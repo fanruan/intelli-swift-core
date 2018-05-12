@@ -1,4 +1,5 @@
 # Created by .ignore support plugin (hsz.mobi)
+classes/
 target/classes/
 target/generated-sources/
 target/maven-archiver/
