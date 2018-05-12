@@ -5,6 +5,7 @@ import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
 import com.finebi.conf.internalimp.dashboard.widget.detail.DetailWidget;
 import com.finebi.conf.internalimp.dashboard.widget.filter.CustomLinkConfItem;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
+import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.structure.result.BIDetailTableResult;
@@ -31,6 +32,7 @@ import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.Sort;
+import com.fr.swift.query.sort.SortType;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.MetaDataColumn;
@@ -82,31 +84,42 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
 
         Cursor cursor = null;
         String queryId = widget.getWidgetId();
-        Dimension[] dimensions = getDimension(widget);
+        List<Dimension> dimensions = getDimension(widget);
         SourceKey target = new SourceKey(BusinessTableUtils.getSourceIdByTableId(widget.getTableName()));
         SwiftMetaData swiftMetaData = MetaDataConvertUtil.getSwiftMetaDataBySourceKey(target.toString());
         SwiftMetaData metaData = getMetaData(widget, swiftMetaData);
         DetailTarget[] targets = getTargets(widget);
         //没传进来排序顺序
         IntList sortIndex = IntListFactory.createHeapIntList();
-        for (int i = 0; i < dimensions.length; i++) {
-            if (dimensions[i].getSort() != null && dimensions[i].getSort().getSortType() != SortType.NONE){
+        for (int i = 0; i < dimensions.size(); i++) {
+            if (dimensions.get(i).getSort() != null && dimensions.get(i).getSort().getSortType() != SortType.NONE) {
                 sortIndex.add(i);
             }
         }
-        List<FilterInfo> filterInfos = handleLinkageFilterList(widget);
-        filterInfos.add(FilterInfoFactory.transformFineFilter(metaData.getTableName(), dealWithTargetFilter(widget, widget.getFilters())));
-        return new DetailQueryInfo(cursor, queryId, dimensions, target, targets, sortIndex, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND), metaData);
+        FilterInfo filterInfos = getFilterInfo(widget, dimensions);
+        return new DetailQueryInfo(cursor, queryId, dimensions.toArray(new Dimension[dimensions.size()]), target, targets, sortIndex, filterInfos, metaData);
     }
 
+    /**
+     * 计算过滤条件
+     *
+     * @param widget
+     * @return
+     */
+    static FilterInfo getFilterInfo(AbstractTableWidget widget, List<Dimension> dimensions) throws Exception {
+        List<FilterInfo> filterInfoList = new ArrayList<FilterInfo>();
+        dealWithWidgetFilter(filterInfoList, widget);
+        dealWithLink(filterInfoList, widget);
+        dealWithDimensionDirectFilter(filterInfoList, dimensions);
+        return new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
+    }
     /**
      * 计算被联动过滤条件
      *
      * @param widget
      * @return
      */
-    private static List<FilterInfo> handleLinkageFilterList(DetailWidget widget) {
-        List<FilterInfo> fineFilters = new ArrayList<FilterInfo>();
+    private static void dealWithLink(List<FilterInfo> filterInfoList, AbstractTableWidget widget) {
         TableWidgetBean bean = widget.getValue();
         String tableName = widget.getTableName();
         if (null != bean) {
@@ -120,19 +133,18 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
 
                 try {
                     if (null != custLinkConf && custLinkConf.containsKey(id)) {
-                        dealWithCustomLinkConf(widget, fineFilters, item, custLinkConf.get(id));
+                        dealWithCustomLinkConf(widget, filterInfoList, item, custLinkConf.get(id));
                     } else {
-                        LinkageAdaptor.handleClickItem(tableName, item, fineFilters);
+                        LinkageAdaptor.handleClickItem(tableName, item, filterInfoList);
                     }
                 } catch (Exception ignore) {
                     LOGGER.error(ignore.getMessage());
                 }
             }
         }
-        return fineFilters;
     }
 
-    private static SwiftMetaData getMetaData(DetailWidget widget, SwiftMetaData metaData) throws Exception {
+    private static SwiftMetaData getMetaData(AbstractTableWidget widget, SwiftMetaData metaData) throws Exception {
         final List<FineDimension> fineDimensions = widget.getDimensionList();
         List<SwiftMetaDataColumn> fields = new ArrayList<SwiftMetaDataColumn>();
         for (int i = 0, len = fineDimensions.size(); i < len; i++) {
@@ -143,26 +155,26 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
         return new SwiftMetaDataImpl(metaData.getTableName(), metaData.getRemark(), metaData.getSchemaName(), fields);
     }
 
-    private static Dimension[] getDimension(DetailWidget widget) throws Exception {
+    private static List<Dimension> getDimension(AbstractTableWidget widget) throws Exception {
         final List<FineDimension> fineDimensions = widget.getDimensionList();
-        Dimension[] dimensions = new Dimension[fineDimensions.size()];
+        ArrayList<Dimension> dimensions = new ArrayList<Dimension>();
         for (int i = 0, size = fineDimensions.size(); i < size; i++) {
             FineDimension fineDimension = fineDimensions.get(i);
             if (fineDimension.getType() == BIDesignConstants.DESIGN.DIMENSION_TYPE.CAL_TARGET){
-                dimensions[i] = new DetailFormulaDimension(i, new SourceKey(fineDimension.getId()),
-                        FilterInfoFactory.transformFineFilter(widget.getTableName(), dealWithTargetFilter(widget, widget.getFilters())), getFormula(fineDimension.getFieldId(), widget));
+                dimensions.add(new DetailFormulaDimension(i, new SourceKey(fineDimension.getId()),
+                        FilterInfoFactory.transformFineFilter(widget.getTableName(), dealWithTargetFilter(widget, fineDimension.getFilters())), getFormula(fineDimension.getFieldId(), widget)));
             } else {
                 String columnName = BusinessTableUtils.getFieldNameByFieldId(fineDimension.getFieldId());
                 Sort sort = SortAdaptor.adaptorDetailDimensionSort(fineDimension.getSort(), i);
                 //暂时先不管明细表自定义分组
-                dimensions[i] = new DetailDimension(i, new SourceKey(fineDimension.getId()), new ColumnKey(columnName), null, sort, FilterInfoFactory.transformFineFilter(widget.getTableName(), dealWithTargetFilter(widget, widget.getFilters())));
+                dimensions.add(new DetailDimension(i, new SourceKey(fineDimension.getId()), new ColumnKey(columnName), null, sort, FilterInfoFactory.transformFineFilter(widget.getTableName(), dealWithTargetFilter(widget, fineDimension.getFilters()))));
             }
         }
         return dimensions;
     }
 
 
-    private static DetailTarget[] getTargets(DetailWidget widget) throws Exception {
+    private static DetailTarget[] getTargets(AbstractTableWidget widget) throws Exception {
         List<FineTarget> fineTargets = widget.getTargetList();
         if (fineTargets == null) {
             return null;
@@ -175,7 +187,7 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
     }
 
 
-    private static void dealWithCustomLinkConf(DetailWidget detailWidget, List<FilterInfo> filterInfoList, WidgetLinkItem widgetLinkItem, List<CustomLinkConfItem> customLinkConfItems) throws Exception {
+    private static void dealWithCustomLinkConf(AbstractTableWidget detailWidget, List<FilterInfo> filterInfoList, WidgetLinkItem widgetLinkItem, List<CustomLinkConfItem> customLinkConfItems) throws Exception {
         //自定义设置的维度
         Dimension[] fromColumns = new Dimension[customLinkConfItems.size()];
         //要过滤的维度
