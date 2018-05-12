@@ -189,7 +189,7 @@ public abstract class AbstractWidgetAdaptor {
         }
     }
 
-    protected static String getFormula(String fieldId, AbstractTableWidget widget) {
+    public static String getFormula(String fieldId, AbstractTableWidget widget) {
         WidgetBeanField field = widget.getFieldByFieldId(fieldId);
         FormulaValueBean calculate = (FormulaValueBean) field.getCalculate();
         String formula = calculate.getValue();
@@ -200,7 +200,7 @@ public abstract class AbstractWidgetAdaptor {
             }
         }
         for (String targetId : field.getTargetIds()) {
-            String subFormula = getFiledFormula(fieldId, widget);
+            String subFormula = getFiledFormula(targetId, widget);
             if (subFormula != null){
                 formula = formula.replace(toParameter(targetId), subFormula);
             }

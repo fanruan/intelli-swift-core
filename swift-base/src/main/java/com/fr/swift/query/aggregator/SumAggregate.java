@@ -3,6 +3,7 @@ package com.fr.swift.query.aggregator;
 
 import com.fr.swift.bitmap.traversal.CalculatorTraversalAction;
 import com.fr.swift.bitmap.traversal.TraversalAction;
+import com.fr.swift.query.adapter.metric.FormulaDetailColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.impl.base.DoubleDetailColumn;
@@ -35,7 +36,7 @@ public class SumAggregate extends AbstractAggregator<DoubleAmountAggregatorValue
         TraversalAction ss;
         if (detailColumn instanceof LongDetailColumn) {
             return aggregateLong(notNullTraversal, detailColumn);
-        } else if (detailColumn instanceof DoubleDetailColumn) {
+        } else if (detailColumn instanceof DoubleDetailColumn || detailColumn instanceof FormulaDetailColumn) {
             return aggregateDouble(notNullTraversal, detailColumn);
         } else {
             final IntDetailColumn idc = (IntDetailColumn) detailColumn;
@@ -85,9 +86,8 @@ public class SumAggregate extends AbstractAggregator<DoubleAmountAggregatorValue
         return valueAmount;
     }
 
-    private DoubleAmountAggregatorValue aggregateDouble(RowTraversal traversal, DetailColumn detailColumn) {
+    private DoubleAmountAggregatorValue aggregateDouble(RowTraversal traversal, final DetailColumn detailColumn) {
         final DoubleAmountAggregatorValue valueAmount = new DoubleAmountAggregatorValue();
-        final DoubleDetailColumn ldc = (DoubleDetailColumn) detailColumn;
         CalculatorTraversalAction ss;
         if (traversal.isEmpty()) {
             valueAmount.setValue(NULL_DOUBLE);
@@ -101,7 +101,7 @@ public class SumAggregate extends AbstractAggregator<DoubleAmountAggregatorValue
 
             @Override
             public void actionPerformed(int row) {
-                result += ldc.getDouble(row);
+                result += detailColumn.getDouble(row);
             }
         };
         traversal.traversal(ss);
