@@ -24,17 +24,17 @@ public class BitSetMutableBitMap extends BaseBitSetBitMap implements MutableBitM
     }
 
     @Override
-    public void or(MutableBitMap index) {
+    public void or(ImmutableBitMap index) {
         bitset.or(extract(index));
     }
 
     @Override
-    public void and(MutableBitMap index) {
+    public void and(ImmutableBitMap index) {
         bitset.and(extract(index));
     }
 
     @Override
-    public void andNot(MutableBitMap index) {
+    public void andNot(ImmutableBitMap index) {
         bitset.andNot(extract(index));
     }
 
