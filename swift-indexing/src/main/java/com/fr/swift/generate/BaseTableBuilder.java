@@ -6,10 +6,8 @@ import com.fr.swift.cube.task.Task;
 import com.fr.swift.cube.task.TaskResult.Type;
 import com.fr.swift.cube.task.TaskStatusChangeListener;
 import com.fr.swift.cube.task.impl.BaseWorker;
-import com.fr.swift.cube.task.impl.CubeTaskKey;
 import com.fr.swift.cube.task.impl.LocalTaskGroup;
 import com.fr.swift.cube.task.impl.LocalTaskImpl;
-import com.fr.swift.cube.task.impl.Operation;
 import com.fr.swift.cube.task.impl.TaskResultImpl;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.generate.history.index.ColumnDictMerger;
@@ -144,8 +142,7 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
             }
         });
 
-        taskGroup = new LocalTaskGroup(new CubeTaskKey(meta.getTableName(), Operation.NULL),
-                transportTask, end);
+        taskGroup = new LocalTaskGroup(transportTask, end);
 
         taskGroup.addStatusChangeListener(new TaskStatusChangeListener() {
             @Override

@@ -1,7 +1,6 @@
 package com.fr.swift.cube.task.impl;
 
 import com.fr.swift.cube.task.LocalTask;
-import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.cube.task.TaskResult;
 import com.fr.swift.cube.task.TaskStatusChangeListener;
 import com.fr.swift.cube.task.WorkerTask;
@@ -16,8 +15,8 @@ import com.fr.swift.cube.task.WorkerTask;
 public class LocalTaskGroup extends BaseTask implements WorkerTask {
     private LocalTask start;
 
-    public LocalTaskGroup(TaskKey key, LocalTask start, LocalTask end) {
-        super(key);
+    public LocalTaskGroup(LocalTask start, LocalTask end) {
+        super(null);
         wrap(start, end);
     }
 
