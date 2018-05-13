@@ -45,10 +45,7 @@ public class LocalTaskImpl extends BaseTask implements LocalTask {
     public void triggerRun() {
         start = System.currentTimeMillis();
 
-        if (status.order() <= Status.RUNNABLE.order()) {
-            setStatus(Status.RUNNABLE);
-            CubeTaskManager.getInstance().run(this);
-        }
+        CubeTaskManager.getInstance().run(this);
     }
 
     @Override
