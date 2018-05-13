@@ -3,12 +3,14 @@ package com.fr.swift.generate;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.task.LocalTask;
 import com.fr.swift.cube.task.Task;
+import com.fr.swift.cube.task.TaskResult.Type;
 import com.fr.swift.cube.task.TaskStatusChangeListener;
 import com.fr.swift.cube.task.impl.BaseWorker;
 import com.fr.swift.cube.task.impl.CubeTaskKey;
 import com.fr.swift.cube.task.impl.LocalTaskGroup;
 import com.fr.swift.cube.task.impl.LocalTaskImpl;
 import com.fr.swift.cube.task.impl.Operation;
+import com.fr.swift.cube.task.impl.TaskResultImpl;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.generate.history.index.ColumnDictMerger;
 import com.fr.swift.generate.history.index.ColumnIndexer;
@@ -30,7 +32,7 @@ import com.fr.swift.source.SwiftMetaDataColumn;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.fr.swift.cube.task.Task.Result.SUCCEEDED;
+import static com.fr.swift.cube.task.TaskResult.Type.SUCCEEDED;
 
 /**
  * @Author: Lucifer
@@ -75,7 +77,7 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
         transportTask.addStatusChangeListener(new TaskStatusChangeListener() {
             @Override
             public void onChange(Task.Status prev, Task.Status now) {
-                if (now == Task.Status.DONE && transportTask.result() == SUCCEEDED) {
+                if (now == Task.Status.DONE && transportTask.result().getType() == SUCCEEDED) {
                     try {
                         initColumnIndexTask();
                     } catch (Exception e) {
@@ -142,8 +144,8 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
             }
         });
 
-        taskGroup = new LocalTaskGroup(new CubeTaskKey(meta.getTableName(), Operation.NULL));
-        taskGroup.wrap(transportTask, end);
+        taskGroup = new LocalTaskGroup(new CubeTaskKey(meta.getTableName(), Operation.NULL),
+                transportTask, end);
 
         taskGroup.addStatusChangeListener(new TaskStatusChangeListener() {
             @Override
@@ -167,7 +169,7 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
             build();
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
-            workOver(Task.Result.FAILED);
+            workOver(new TaskResultImpl(Type.FAILED, e));
         }
     }
 

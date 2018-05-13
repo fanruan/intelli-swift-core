@@ -8,9 +8,9 @@ import com.fr.swift.cube.task.TaskKey;
  * @date 2017/12/13
  */
 public class CubeTaskKey implements TaskKey {
-    private int round;
-    private String name;
-    private Operation operation;
+    private final int round;
+    private final String name;
+    private final Operation operation;
     private String info;
 
     public CubeTaskKey(String name) {

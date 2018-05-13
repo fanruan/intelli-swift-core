@@ -13,7 +13,7 @@ public interface Task {
 
     void addStatusChangeListener(TaskStatusChangeListener listener);
 
-    Result result();
+    TaskResult result();
 
     Long getStartTime();
 
@@ -46,12 +46,4 @@ public interface Task {
         }
     }
 
-    /**
-     * @author anchore
-     * @date 2017/12/15
-     */
-    enum Result {
-        // 结果
-        SUCCEEDED, FAILED, CANCELLED
-    }
 }

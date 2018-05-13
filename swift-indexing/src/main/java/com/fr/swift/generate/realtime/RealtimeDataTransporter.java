@@ -1,7 +1,8 @@
 package com.fr.swift.generate.realtime;
 
-import com.fr.swift.cube.task.Task.Result;
+import com.fr.swift.cube.task.TaskResult.Type;
 import com.fr.swift.cube.task.impl.BaseWorker;
+import com.fr.swift.cube.task.impl.TaskResultImpl;
 import com.fr.swift.flow.FlowRuleController;
 import com.fr.swift.generate.Transporter;
 import com.fr.swift.generate.realtime.increment.DecreaseTransport;
@@ -76,10 +77,10 @@ public class RealtimeDataTransporter extends BaseWorker implements Transporter {
     public void work() {
         try {
             transport();
-            workOver(Result.SUCCEEDED);
+            workOver(new TaskResultImpl(Type.SUCCEEDED));
         } catch (Exception e) {
             LOGGER.error(e);
-            workOver(Result.FAILED);
+            workOver(new TaskResultImpl(Type.FAILED, e));
         }
     }
 

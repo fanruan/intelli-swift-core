@@ -2,6 +2,7 @@ package com.fr.swift.cube.task.impl;
 
 import com.fr.swift.cube.task.Task;
 import com.fr.swift.cube.task.TaskKey;
+import com.fr.swift.cube.task.TaskResult;
 import com.fr.swift.cube.task.TaskStatusChangeListener;
 
 import java.util.ArrayList;
@@ -12,12 +13,12 @@ import java.util.List;
  * @date 2017/12/28
  */
 abstract class BaseTask implements Task {
-    TaskKey key;
+    final TaskKey key;
 
     volatile Status status = Status.WAITING;
     private List<TaskStatusChangeListener> listeners = new ArrayList<TaskStatusChangeListener>(1);
 
-    volatile Result result;
+    volatile TaskResult result;
 
     volatile Long start, end;
 
@@ -57,7 +58,7 @@ abstract class BaseTask implements Task {
     }
 
     @Override
-    public Result result() {
+    public TaskResult result() {
         return result;
     }
 
