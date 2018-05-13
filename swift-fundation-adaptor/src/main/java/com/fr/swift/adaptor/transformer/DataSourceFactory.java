@@ -83,9 +83,13 @@ public class DataSourceFactory {
         List<DataSource> dataSourceList = new ArrayList<DataSource>();
         if (tables != null) {
             for (FineBusinessTable table : tables) {
-                DataSource updateDataSource = getDataSource(table);
-                if (updateDataSource != null) {
-                    dataSourceList.add(updateDataSource);
+                try {
+                    DataSource updateDataSource = getDataSource(table);
+                    if (updateDataSource != null) {
+                        dataSourceList.add(updateDataSource);
+                    }
+                } catch (Exception e) {
+                    LOGGER.error(e);
                 }
             }
         }

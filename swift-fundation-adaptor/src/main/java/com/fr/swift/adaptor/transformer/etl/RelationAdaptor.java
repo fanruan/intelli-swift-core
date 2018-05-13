@@ -28,7 +28,7 @@ import java.util.Set;
  * @date 2018/4/11
  */
 class RelationAdaptor {
-    static String getBaseTable(SwiftRelationPathConfProvider relationProvider, List<SelectFieldBeanItem> selectFieldBeanItemList) {
+    static String getBaseTable(SwiftRelationPathConfProvider relationProvider, List<SelectFieldBeanItem> selectFieldBeanItemList) throws Exception {
         Set<String> tables = new HashSet<String>();
         for (SelectFieldBeanItem selectFieldBeanItem : selectFieldBeanItemList) {
             tables.add(selectFieldBeanItem.getTableName());
@@ -67,7 +67,9 @@ class RelationAdaptor {
             }
         }
         if (tables.size() != 1) {
-            return Crasher.crash("wrong relation, foreign table size is" + tables.size());
+            //todo 这里crash的话，就会影响更新..但是有的错的表其实是不是应该中断的，不crash的话，就会错误的走下去？
+            throw new Exception("wrong relation, foreign table size is" + tables.size());
+//            return Crasher.crash("wrong relation, foreign table size is" + tables.size());
         }
         return tables.iterator().next();
     }
