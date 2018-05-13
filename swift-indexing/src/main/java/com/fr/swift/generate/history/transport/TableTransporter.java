@@ -1,8 +1,9 @@
 package com.fr.swift.generate.history.transport;
 
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.cube.task.Task.Result;
+import com.fr.swift.cube.task.TaskResult.Type;
 import com.fr.swift.cube.task.impl.BaseWorker;
+import com.fr.swift.cube.task.impl.TaskResultImpl;
 import com.fr.swift.generate.Transporter;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -36,10 +37,10 @@ public class TableTransporter extends BaseWorker implements Transporter {
     public void work() {
         try {
             transport();
-            workOver(Result.SUCCEEDED);
+            workOver(new TaskResultImpl(Type.SUCCEEDED));
         } catch (Exception e) {
             LOGGER.error("Datasource:" + dataSource.getSourceKey().getId() + " transport failed", e);
-            workOver(Result.FAILED);
+            workOver(new TaskResultImpl(Type.FAILED, e));
         }
     }
 

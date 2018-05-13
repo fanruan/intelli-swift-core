@@ -6,8 +6,9 @@ import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
-import com.fr.swift.cube.task.Task.Result;
+import com.fr.swift.cube.task.TaskResult.Type;
 import com.fr.swift.cube.task.impl.BaseWorker;
+import com.fr.swift.cube.task.impl.TaskResultImpl;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
@@ -67,10 +68,10 @@ public abstract class BaseColumnIndexer<T> extends BaseWorker implements SwiftCo
     public void work() {
         try {
             buildIndex();
-            workOver(Result.SUCCEEDED);
+            workOver(new TaskResultImpl(Type.SUCCEEDED));
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
-            workOver(Result.FAILED);
+            workOver(new TaskResultImpl(Type.FAILED, e));
         }
     }
 

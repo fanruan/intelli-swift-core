@@ -1,6 +1,8 @@
 package com.fr.swift.cube.task.impl;
 
 import com.fr.swift.cube.task.TaskKey;
+import com.fr.swift.cube.task.TaskResult;
+import com.fr.swift.cube.task.TaskResult.Type;
 import com.fr.swift.cube.task.WorkerTask;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.service.SwiftServiceEvent;
@@ -19,13 +21,12 @@ public class WorkerTaskImpl extends BaseTask implements WorkerTask {
         super(key);
         this.worker = worker;
         worker.setOwner(this);
-        status = Status.RUNNABLE;
     }
 
     @Override
     public void onCancel() {
         if (status.order() < Status.RUNNING.order()) {
-            done(Result.CANCELLED);
+            done(new TaskResultImpl(Type.CANCELLED));
         }
     }
 
@@ -35,19 +36,21 @@ public class WorkerTaskImpl extends BaseTask implements WorkerTask {
     }
 
     @Override
-    public void done(final Result result) {
-        synchronized (this) {
-            if (status == Status.DONE) {
-                return;
-            }
-            this.result = result;
-            setStatus(Status.DONE);
+    public void done(final TaskResult result) {
+        if (status == Status.DONE) {
+            return;
         }
+        this.result = result;
+        setStatus(Status.DONE);
 
+        triggerDoneEvent(result);
+    }
+
+    private void triggerDoneEvent(final TaskResult result) {
         try {
-            SwiftServiceListenerManager.getInstance().triggerEvent(new SwiftServiceEvent<Pair<TaskKey, Result>>() {
+            SwiftServiceListenerManager.getInstance().triggerEvent(new SwiftServiceEvent<Pair<TaskKey, TaskResult>>() {
                 @Override
-                public Pair<TaskKey, Result> getContent() {
+                public Pair<TaskKey, TaskResult> getContent() {
                     return Pair.of(key, result);
                 }
 

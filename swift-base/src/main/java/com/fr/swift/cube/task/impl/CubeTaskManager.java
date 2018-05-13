@@ -1,5 +1,6 @@
 package com.fr.swift.cube.task.impl;
 
+import com.fr.swift.cube.task.Task.Status;
 import com.fr.swift.cube.task.TaskExecutor;
 import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.cube.task.TaskManager;
@@ -22,6 +23,11 @@ public class CubeTaskManager implements TaskManager {
 
     @Override
     public void run(WorkerTask task) {
+        if (task.status().order() > Status.RUNNABLE.order()) {
+            return;
+        }
+
+        task.setStatus(Status.RUNNABLE);
         switch (task.key().operation()) {
             case TRANSPORT_TABLE:
                 transportExec.add(task);
