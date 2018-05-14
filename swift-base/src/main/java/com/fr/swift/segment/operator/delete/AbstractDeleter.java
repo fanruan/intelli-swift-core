@@ -40,7 +40,7 @@ public abstract class AbstractDeleter implements Deleter {
     public boolean deleteData(List<Row> rowList) throws Exception {
         for (Row row : rowList) {
             int decreaseIndex = dictionaryEncodedColumn.getIndex(row.getValue(0));
-            if (allShowIndex.contains(decreaseIndex)) {
+            if (decreaseIndex != -1) {
                 ImmutableBitMap bitMap = bitmapIndexedColumn.getBitMapIndex(decreaseIndex);
                 allShowIndex = allShowIndex.getAndNot(bitMap);
                 segment.putAllShowIndex(allShowIndex);
@@ -55,7 +55,7 @@ public abstract class AbstractDeleter implements Deleter {
         while (swiftResultSet.next()) {
             Row row = swiftResultSet.getRowData();
             int decreaseIndex = dictionaryEncodedColumn.getIndex(row.getValue(0));
-            if (allShowIndex.contains(decreaseIndex)) {
+            if (decreaseIndex != -1) {
                 ImmutableBitMap bitMap = bitmapIndexedColumn.getBitMapIndex(decreaseIndex);
                 allShowIndex = allShowIndex.getAndNot(bitMap);
                 segment.putAllShowIndex(allShowIndex);
