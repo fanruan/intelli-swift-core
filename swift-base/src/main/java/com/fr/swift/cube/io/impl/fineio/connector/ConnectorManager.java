@@ -1,6 +1,5 @@
 package com.fr.swift.cube.io.impl.fineio.connector;
 
-import com.fineio.FineIO;
 import com.fineio.storage.Connector;
 import com.fr.plugin.context.PluginContext;
 import com.fr.plugin.manage.PluginFilter;
@@ -25,7 +24,6 @@ import com.fr.swift.util.Crasher;
 public class ConnectorManager {
     private volatile static ConnectorManager instance;
     private static Connector connector;
-    private static final long CACHE_TIME = 24 * 60 * 60 * 1000L;
 
     public static ConnectorManager getInstance() {
         if (null != instance) {
@@ -66,7 +64,7 @@ public class ConnectorManager {
                 return connector;
             }
 //            long cacheTimer = ZipUriConf.getInstance().getCacheTimer();
-            FineIO.setMemoryCheckSchedule(CACHE_TIME);
+//            FineIO.setMemoryCheckSchedule(cacheTimer);
             ExtraClassManagerProvider pluginProvider = StableFactory.getMarkedObject(ExtraClassManagerProvider.XML_TAG, ExtraClassManagerProvider.class);
             if (null == pluginProvider) {
                 connector = ZipConnector.newInstance();
