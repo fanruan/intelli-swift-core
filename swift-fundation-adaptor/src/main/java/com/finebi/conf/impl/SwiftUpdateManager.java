@@ -12,6 +12,7 @@ import com.finebi.conf.internalimp.update.TableUpdateInfo;
 import com.finebi.conf.internalimp.update.UpdateLog;
 import com.finebi.conf.internalimp.update.UpdateNeedSpace;
 import com.finebi.conf.internalimp.update.UpdateStatus;
+import com.finebi.conf.provider.SwiftPackageConfProvider;
 import com.finebi.conf.provider.SwiftRelationPathConfProvider;
 import com.finebi.conf.provider.SwiftTableManager;
 import com.finebi.conf.service.engine.update.EngineUpdateManager;
@@ -37,6 +38,7 @@ import com.fr.swift.provider.IndexStuffInfoProvider;
 import com.fr.swift.reliance.RelationPathReliance;
 import com.fr.swift.reliance.RelationReliance;
 import com.fr.swift.reliance.SourceReliance;
+import com.fr.swift.schedule.SwiftTimeScheduleService;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.Row;
@@ -81,6 +83,8 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     private SwiftRelationPathConfProvider relationPathConfProvider;
     @Autowired
     private SwiftSpaceManager spaceManager;
+    @Autowired
+    private SwiftPackageConfProvider packageManager;
 
     @Override
     public Map<FineBusinessTable, TableUpdateInfo> getTableUpdateInfo() {
@@ -113,24 +117,41 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
     @Override
     public TableUpdateInfo getPackageUpdateInfo(String packageId) {
-        return new TableUpdateInfo();
+        TableUpdateInfo packageInfo = updateInfoConfigService.getPackageUpdateInfo(packageId);
+        if (packageInfo == null) {
+            packageInfo = new TableUpdateInfo();
+            packageInfo.setTableName(packageId);
+        }
+        return packageInfo;
     }
 
     @Override
     public void saveUpdateSetting(TableUpdateInfo updateInfo, FineBusinessTable table) throws Exception {
         Map<FineBusinessTable, TableUpdateInfo> infoMap = new HashMap<FineBusinessTable, TableUpdateInfo>();
         infoMap.put(table, updateInfo);
-        this.saveUpdateSetting(infoMap);
+        updateInfoConfigService.addOrUpdateInfo(infoMap);
+        SwiftTimeScheduleService.getInstance().resetAllSchedule();
     }
 
     @Override
-    public void triggerTableUpdate(TableUpdateInfo updateInfo, FineBusinessTable table) {
-
+    public void triggerTableUpdate(TableUpdateInfo updateInfo, FineBusinessTable table) throws Exception {
+        Map<FineBusinessTable, TableUpdateInfo> infoMap = new HashMap<FineBusinessTable, TableUpdateInfo>();
+        infoMap.put(table, updateInfo);
+        this.triggerUpdate(infoMap);
     }
 
     @Override
     public void saveUpdateSetting(Map<FineBusinessTable, TableUpdateInfo> infoMap) throws Exception {
-        updateInfoConfigService.addOrUpdateInfo(infoMap);
+        return;
+    }
+
+    /**
+     * 触发更新动作
+     *
+     * @param infoMap
+     * @throws Exception
+     */
+    private void triggerUpdate(Map<FineBusinessTable, TableUpdateInfo> infoMap) throws Exception {
         SourceContainerManager updateSourceContainer = new SourceContainerManager();
         Map<String, List<Increment>> incrementMap = new HashMap<String, List<Increment>>();
 
@@ -161,25 +182,34 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         FineBusinessTable fineBusinessTable = new SwiftTableManager().getSingleTable(tableUpdateSetting.getTableName());
         Map<FineBusinessTable, TableUpdateInfo> infoMap = new HashMap<FineBusinessTable, TableUpdateInfo>();
         infoMap.put(fineBusinessTable, tableUpdateSetting.getSettings().get(tableUpdateSetting.getTableName()));
-        this.saveUpdateSetting(infoMap);
+        updateInfoConfigService.addOrUpdateInfo(infoMap);
+        SwiftTimeScheduleService.getInstance().resetAllSchedule();
     }
 
     @Override
-    public void savePackageUpdateSetting(String packId, TableUpdateInfo info) {
+    public void savePackageUpdateSetting(String packId, TableUpdateInfo info) throws Exception {
+        updateInfoConfigService.addOrUpdatPackageInfo(packId, info);
+        SwiftTimeScheduleService.getInstance().resetAllSchedule();
+    }
+
+    @Override
+    public void triggerPackageUpdate(String packId) {
         try {
+            TableUpdateInfo info = updateInfoConfigService.getPackageUpdateInfo(packId);
+            if (info == null) {
+                info = new TableUpdateInfo();
+            }
             List<FineBusinessTable> tables = tableManager.getAllTableByPackId(packId);
             Map<FineBusinessTable, TableUpdateInfo> infoMap = new HashMap<FineBusinessTable, TableUpdateInfo>();
             for (FineBusinessTable table : tables) {
                 infoMap.put(table, info);
             }
-            this.saveUpdateSetting(infoMap);
+            this.triggerUpdate(infoMap);
         } catch (Exception e) {
             LOGGER.error(e);
         }
-    }
 
-    @Override
-    public void triggerPackageUpdate(String packId) {
+
     }
 
     @Override
@@ -232,7 +262,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         }
         if (!infoMap.isEmpty()) {
             try {
-                this.saveUpdateSetting(infoMap);
+                this.triggerUpdate(infoMap);
             } catch (Exception e) {
                 LOGGER.error(e);
             }
@@ -251,8 +281,9 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     }
 
     @Override
-    public void updateAll(GlobalUpdateSetting info) {
+    public void updateAll(GlobalUpdateSetting info) throws Exception {
         updateInfoConfigService.addOrUpdateGlobalUpdateSettings(info);
+        SwiftTimeScheduleService.getInstance().resetAllSchedule();
     }
 
     @Override
