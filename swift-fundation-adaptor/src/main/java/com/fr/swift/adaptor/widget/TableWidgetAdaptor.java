@@ -227,9 +227,8 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
 
     private static Dimension toDimension(SourceKey sourceKey, FineDimension fineDim, int index, int size, List<FineTarget> targets) throws SQLException {
         String columnName = getColumnName(fineDim);
-        String tableName = getTableName(fineDim.getFieldId());
+        String tableName = getTableName(getFieldId(fineDim));
         ColumnKey colKey = new ColumnKey(columnName);
-
         Group group = GroupAdaptor.adaptDashboardGroup(fineDim);
 
         FilterInfo filterInfo = FilterInfoFactory.transformDimensionFineFilter(tableName, fineDim, index == size - 1, targets);

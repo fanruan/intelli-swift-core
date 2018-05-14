@@ -14,6 +14,7 @@ import com.fr.swift.generate.history.index.ColumnDictMerger;
 import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.generate.history.index.SubDateColumnDictMerger;
 import com.fr.swift.generate.history.index.SubDateColumnIndexer;
+import com.fr.swift.generate.segment.operator.merger.RealtimeMerger;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.manager.LocalSegmentProvider;
@@ -21,11 +22,13 @@ import com.fr.swift.query.group.GroupType;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.impl.SubDateColumn;
+import com.fr.swift.segment.operator.Merger;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.util.DataSourceUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,16 +87,31 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
                 }
             }
 
-            private void initColumnIndexTask() throws SwiftMetaDataException {
+            private void initColumnIndexTask() throws Exception {
                 if (transporter.getIndexFieldsList().isEmpty()) {
                     transportTask.addNext(end);
                 }
                 List<Segment> allSegments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
                 List<Segment> indexSegments = new ArrayList<Segment>();
                 if (isRealtime) {
-                    for (Segment segment : allSegments) {
-                        if (!segment.isHistory()) {
-                            indexSegments.add(segment);
+//                    for (Segment segment : allSegments) {
+//                        if (!segment.isHistory()) {
+//                            indexSegments.add(segment);
+//                        }
+//                    }
+                    //todo 目前增量更新临时每次都会合并到磁盘。要在考虑下合并的规则和场景
+                    int hisSegCount = 0;
+                    for (int i = 0; i < allSegments.size(); i++) {
+                        if (allSegments.get(i).isHistory()) {
+                            hisSegCount++;
+                        }
+                    }
+                    if (hisSegCount != allSegments.size()) {
+                        Merger realtimeMerger = new RealtimeMerger(dataSource.getSourceKey(), dataSource.getMetadata(), DataSourceUtils.getSwiftSourceKey(dataSource).getId());
+                        realtimeMerger.merge();
+                        allSegments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+                        for (int i = hisSegCount; i < allSegments.size(); i++) {
+                            indexSegments.add(allSegments.get(i));
                         }
                     }
                 } else {
