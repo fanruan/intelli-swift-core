@@ -39,7 +39,6 @@ import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.etl.utils.FormulaUtils;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.utils.BusinessTableUtils;
@@ -200,17 +199,7 @@ public abstract class AbstractWidgetAdaptor {
         WidgetBeanField field = widget.getFieldByFieldId(fieldId);
         FormulaValueBean calculate = (FormulaValueBean) field.getCalculate();
         String formula = calculate.getValue();
-        Map<String, WidgetBean> dateWidgetIdValueMap = widget.getValue().getDateWidgetIdValueMap();
-        for (String dateWidgetId : FormulaUtils.getRealRelatedParaNames(formula)){
-            if (dateWidgetIdValueMap.containsKey(dateWidgetId)){
-                formula = formula.replace(toParameter(dateWidgetId), getWidgetBeanValue(dateWidgetIdValueMap.get(dateWidgetId)));
-            }
-        }
         for (String targetId : field.getTargetIds()) {
-            if (dateWidgetIdValueMap.containsKey(targetId)) {
-                // 跳过日期空间的值
-                continue;
-            }
             String subFormula = getFiledFormula(targetId, widget);
             if (subFormula != null){
                 formula = formula.replace(toParameter(targetId), subFormula);
@@ -249,6 +238,10 @@ public abstract class AbstractWidgetAdaptor {
     }
 
     protected static String getFiledFormula(String fieldId, AbstractTableWidget widget) {
+        Map<String, WidgetBean> dateWidgetIdValueMap = widget.getValue().getDateWidgetIdValueMap();
+        if (dateWidgetIdValueMap != null && dateWidgetIdValueMap.containsKey(fieldId)){
+            return getWidgetBeanValue(dateWidgetIdValueMap.get(fieldId));
+        }
         WidgetBeanField field = widget.getFieldByFieldId(fieldId);
         WidgetBeanFieldValue widgetBeanFieldValue = field.getCalculate();
         if (widgetBeanFieldValue!= null){
