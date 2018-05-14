@@ -87,7 +87,7 @@ public class RealtimeMerger implements Merger {
 
             Inserter inserter = new MergerInserter(segment);
             inserter.insertData(resultSet);
-            resultSet.close();
+//            resultSet.close();
         }
         release();
         return mergeSegments;
