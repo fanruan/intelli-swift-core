@@ -155,9 +155,13 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor {
         infoList.add(filter);
         infoList.add(parent);
         infoList.add(createFilterInfo(widget, dimensions));
+        // 当前维度里面包含的明细过滤
+        FilterInfo currentDimensionFilter = FilterInfoFactory.transformDimensionFineFilter(dimension);
+        infoList.add(currentDimensionFilter);
         FilterInfo filterInfo = new GeneralFilterInfo(infoList, GeneralFilterInfo.AND);
         List<FilterInfo> or = new ArrayList<FilterInfo>();
         or.add(filterInfo);
+        // 明细过滤的最后一层要or一下已经勾选的数据
         or.add(selectedValues);
         filterInfo = new GeneralFilterInfo(or, GeneralFilterInfo.OR);
         List values = QueryUtils.getOneDimensionFilterValues(dimension, filterInfo, widget.getWidgetId());

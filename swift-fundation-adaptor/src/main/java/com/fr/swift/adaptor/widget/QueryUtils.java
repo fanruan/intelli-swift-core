@@ -19,7 +19,6 @@ import com.fr.swift.query.adapter.target.cal.ResultTarget;
 import com.fr.swift.query.adapter.target.cal.TargetInfoImpl;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.info.FilterInfo;
-import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.ColumnKey;
@@ -28,7 +27,6 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.utils.BusinessTableUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -42,7 +40,7 @@ public class QueryUtils {
      * 获取一个维度过滤之后的值，各种控件都会用到
      *
      * @param dimension
-     * @param filterInfo
+     * @param filterInfo 已经包含了dimension里面的明细过滤了
      * @param id
      * @return
      */
@@ -58,7 +56,7 @@ public class QueryUtils {
             TargetInfo targetInfo = new TargetInfoImpl(0, new ArrayList<Metric>(0), new ArrayList<GroupTarget>(0), new ArrayList<ResultTarget>(0), new ArrayList<Aggregator>(0));
             DimensionInfo dimensionInfo = new DimensionInfoImpl(
                     new AllCursor(),
-                    new GeneralFilterInfo(Arrays.asList(filterInfo, currentDimensionFilter), GeneralFilterInfo.AND),
+                    filterInfo,
                     null, new Dimension[]{groupDimension}
             );
             GroupQueryInfo valueInfo = new GroupQueryInfo(id, sourceKey, dimensionInfo, targetInfo);

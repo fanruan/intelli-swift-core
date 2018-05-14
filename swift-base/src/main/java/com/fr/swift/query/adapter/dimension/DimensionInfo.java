@@ -17,7 +17,7 @@ public interface DimensionInfo {
     Dimension[] getDimensions();
 
     /**
-     * 和维度相关的过滤器，包含明细过滤和结果过滤
+     * 和维度相关的过滤器，包含明细过滤和结果过滤，但是调用buildDetailFilter的时候只取明细过滤
      *
      * @return
      */
