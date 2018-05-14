@@ -6,9 +6,12 @@ import com.finebi.conf.constant.BICommonConstants;
 import com.finebi.conf.constant.BIDesignConstants;
 import com.finebi.conf.exception.FineEngineException;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.WidgetDimensionBean;
+import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.number.custom.NumberCustomGroupBean;
+import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.number.custom.NumberCustomGroupValueBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
 import com.finebi.conf.internalimp.bean.filtervalue.date.single.DateStaticFilterBean;
 import com.finebi.conf.internalimp.bean.filtervalue.date.single.DateStaticFilterBeanValue;
+import com.finebi.conf.internalimp.bean.filtervalue.number.NumberValue;
 import com.finebi.conf.internalimp.dashboard.widget.filter.ClickValue;
 import com.finebi.conf.internalimp.dashboard.widget.filter.ClickValueItem;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
@@ -88,7 +91,11 @@ public class LinkageAdaptor {
 
                 WidgetDimensionBean bean = fromWidget.getDimensions().get(clickValueItem.getdId());
                 ColumnKey columnKey = new ColumnKey(BusinessTableUtils.getFieldNameByFieldId(bean.getFieldId()));
-                filterInfos.add(dealFilterInfo(columnKey, value, bean));
+                FilterInfo info = dealFilterInfo(columnKey, value, bean);
+                if (null != info) {
+                    filterInfos.add(info);
+                }
+
             }
         }
     }
@@ -135,7 +142,10 @@ public class LinkageAdaptor {
                 WidgetDimensionBean bean = fromWidget.getDimensions().get(clickValueItem.getdId());
                 ColumnKey columnKey = new ColumnKey(BusinessTableUtils.getFieldNameByFieldId(bean.getFieldId()));
                 columnKey.setRelation(relationSource);
-                filterInfos.add(dealFilterInfo(columnKey, value, bean));
+                FilterInfo info = dealFilterInfo(columnKey, value, bean);
+                if (null != info) {
+                    filterInfos.add(info);
+                }
             }
         }
     }
@@ -147,7 +157,7 @@ public class LinkageAdaptor {
                 return createDateFilter(columnKey, value, bean.getGroup().getType());
             case BIDesignConstants.DESIGN.DIMENSION_TYPE.NUMBER:
             case BIDesignConstants.DESIGN.DIMENSION_TYPE.TRANSFORM_FROM_NUMBER:
-                return createNumberFilter(columnKey, value);
+                return createNumberFilter(columnKey, bean, value);
             default:
                 Set<String> values = new HashSet<String>();
                 values.add(value);
@@ -156,10 +166,25 @@ public class LinkageAdaptor {
 
     }
 
-    private static FilterInfo createNumberFilter(ColumnKey columnKey, String value) {
-        Set<Double> values = new HashSet<Double>();
-        values.add(Double.parseDouble(value));
-        return new SwiftDetailFilterInfo<Set<Double>>(columnKey, values, SwiftDetailFilterType.NUMBER_CONTAIN);
+    private static FilterInfo createNumberFilter(ColumnKey columnKey, WidgetDimensionBean bean, String value) {
+        switch (bean.getGroup().getType()) {
+            case BIDesignConstants.DESIGN.GROUP.CUSTOM_NUMBER_GROUP:
+                NumberCustomGroupValueBean valueBean = ((NumberCustomGroupBean) bean.getGroup()).getGroupValue();
+                if (null != valueBean) {
+                    NumberValue numberValue = new NumberValue();
+                    numberValue.setMax(valueBean.getMax());
+                    numberValue.setMin(valueBean.getMin());
+                    numberValue.setClosemax(false);
+                    numberValue.setClosemin(true);
+                    return new SwiftDetailFilterInfo<NumberValue>(columnKey, numberValue, SwiftDetailFilterType.NUMBER_IN_RANGE);
+                }
+                break;
+            default:
+                Set<Double> values = new HashSet<Double>();
+                values.add(Double.parseDouble(value));
+                return new SwiftDetailFilterInfo<Set<Double>>(columnKey, values, SwiftDetailFilterType.NUMBER_CONTAIN);
+        }
+        return null;
     }
 
     private static FilterInfo createDateFilter(ColumnKey columnKey, String value, int groupType) {

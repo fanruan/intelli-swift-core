@@ -137,7 +137,10 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
                     bean = new WidgetDimensionBean();
                 }
 //                Set<String> values = new HashSet<String>();
-                filterInfoList.add(LinkageAdaptor.dealFilterInfo(new ColumnKey(columnName), value, bean));
+                FilterInfo info = LinkageAdaptor.dealFilterInfo(new ColumnKey(columnName), value, bean);
+                if (null != info) {
+                    filterInfoList.add(info);
+                }
 //                values.add(value);
 //                filterInfoList.add(new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(columnName), values, SwiftDetailFilterType.STRING_IN));
             }
