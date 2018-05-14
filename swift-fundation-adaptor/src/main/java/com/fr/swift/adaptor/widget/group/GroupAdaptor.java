@@ -20,6 +20,7 @@ import com.finebi.conf.internalimp.dashboard.widget.dimension.sort.DimensionFilt
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionGroup;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionSort;
+import com.fr.swift.adaptor.widget.AbstractTableWidgetAdaptor;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.query.group.Group;
 import com.fr.swift.query.group.GroupRule;
@@ -171,7 +172,7 @@ public class GroupAdaptor {
     }
 
     private static ClassType getClassType(FineDimension fineDim) throws SQLException {
-        String fieldId = fineDim.getFieldId();
+        String fieldId = AbstractTableWidgetAdaptor.getFieldId(fineDim);
         SourceKey tableKey = new SourceKey(BusinessTableUtils.getSourceIdByFieldId(fieldId));
         SwiftMetaData meta = SwiftDatabase.getInstance().getTable(tableKey).getMetadata();
         return ColumnTypeUtils.getClassType(meta.getColumn(BusinessTableUtils.getFieldNameByFieldId(fieldId)));
