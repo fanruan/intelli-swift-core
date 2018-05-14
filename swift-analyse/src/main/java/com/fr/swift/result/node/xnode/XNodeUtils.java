@@ -22,16 +22,24 @@ public class XNodeUtils {
 
     /**
      * 将交叉表的结果集转为功能
+     * @param isColShowSum 是否显示列向汇总值
      * @param topDimensionSize 表头维度个数
      * @param rowDimensionSize 行维度个数
      * @param topGroupNode 表头GroupBy结果
      * @param xLeftNode 行GroupBy结果
      */
-    public static void setValues2XLeftNode(int topDimensionSize, int rowDimensionSize,
+    public static void setValues2XLeftNode(boolean isColShowSum, int topDimensionSize, int rowDimensionSize,
                                            TopGroupNode topGroupNode, XLeftNode xLeftNode) {
         Iterator<TopGroupNode> topIt = new PostOrderNodeIterator<TopGroupNode>(topDimensionSize, topGroupNode);
-        topIt = excludeNoShowSummaryRow(topIt);
+
         // topGroupNode的所有行，排除了不需要显示的汇总行
+        if (isColShowSum) {
+            // 显示列向汇总
+            topIt = excludeNoShowSummaryRow(topIt);
+        } else {
+            // 不显示列现汇总
+            topIt = excludeAllSummaryRow(topIt);
+        }
         List<TopGroupNode> topGroupNodeList = IteratorUtils.iterator2List(topIt);
 
         Iterator<XLeftNode> xLeftIt = new PostOrderNodeIterator<XLeftNode>(rowDimensionSize, xLeftNode);
@@ -84,6 +92,16 @@ public class XNodeUtils {
             public boolean accept(N n) {
                 // 过滤掉不用显示的汇总行
                 return n.getChildrenSize() != 1;
+            }
+        });
+    }
+
+    public static <N extends GroupNode> Iterator<N> excludeAllSummaryRow(Iterator<N> iterator) {
+        return new FilteredIterator<N>(iterator, new Filter<N>() {
+            @Override
+            public boolean accept(N n) {
+                // 过滤掉不用显示的汇总行
+                return n.getChildrenSize() == 0;
             }
         });
     }
