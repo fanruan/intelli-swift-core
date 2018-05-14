@@ -65,7 +65,7 @@ public class BIGroupNodeAdaptor implements BIGroupNode, Iterable<BIGroupNodeAdap
 
     @Override
     public int getTotalLength() {
-        int count = 1;
+        int count = 0;
         for (int i = 0; i < getChildLength(); i++) {
             BIGroupNode node = getChild(i);
             count += node.getTotalLength();

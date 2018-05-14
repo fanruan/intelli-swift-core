@@ -36,4 +36,11 @@ public interface DimensionInfo {
      * @return
      */
     Expander getExpander();
+
+    /**
+     * 是否显示汇总值
+     *
+     * @return
+     */
+    boolean isShowSum();
 }
