@@ -152,6 +152,20 @@ public class SwiftUpdateManager implements EngineUpdateManager {
      * @throws Exception
      */
     private void triggerUpdate(Map<FineBusinessTable, TableUpdateInfo> infoMap) throws Exception {
+        Map<FineBusinessTable, TableUpdateInfo> infoMap2 = new HashMap<FineBusinessTable, TableUpdateInfo>();
+        for (Map.Entry<FineBusinessTable, TableUpdateInfo> entry : infoMap.entrySet()) {
+            if (entry.getValue().getUpdateType() == 1) {//全量
+                infoMap2.put(entry.getKey(), entry.getValue());
+            } else { //增量
+                TableUpdateInfo tableUpdateInfo = updateInfoConfigService.getTableUpdateInfo(entry.getKey().getName());
+                if (tableUpdateInfo == null) {
+                    tableUpdateInfo = new TableUpdateInfo();
+                }
+                infoMap2.put(entry.getKey(), tableUpdateInfo);
+            }
+        }
+        infoMap = infoMap2;
+
         SourceContainerManager updateSourceContainer = new SourceContainerManager();
         Map<String, List<Increment>> incrementMap = new HashMap<String, List<Increment>>();
 

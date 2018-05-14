@@ -8,15 +8,11 @@ import com.fr.swift.generate.Transporter;
 import com.fr.swift.generate.realtime.increment.DecreaseTransport;
 import com.fr.swift.generate.realtime.increment.IncreaseTransport;
 import com.fr.swift.generate.realtime.increment.IncrementTransport;
-import com.fr.swift.generate.realtime.increment.ModifyTransport;
-import com.fr.swift.generate.segment.operator.merger.RealtimeMerger;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.segment.operator.Merger;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.util.DataSourceUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,15 +60,22 @@ public class RealtimeDataTransporter extends BaseWorker implements Transporter {
             incrementTransportList.add(desreaseTransport);
         }
 
+        if (increment.getModifySource() != null) {
+            IncrementTransport modifyTransport = new DecreaseTransport(dataSource, increment.getModifySource(), swiftMetaData);
+            IncrementTransport increaseTransport = new IncreaseTransport(dataSource, increment.getModifySource(), swiftMetaData, flowRuleController);
+            incrementTransportList.add(modifyTransport);
+            incrementTransportList.add(increaseTransport);
+        }
+
         if (increment.getIncreaseSource() != null) {
             IncrementTransport increaseTransport = new IncreaseTransport(dataSource, increment.getIncreaseSource(), swiftMetaData, flowRuleController);
             incrementTransportList.add(increaseTransport);
         }
 
-        if (increment.getModifySource() != null) {
-            IncrementTransport modifyTransport = new ModifyTransport(dataSource, increment.getDecreaseSource(), swiftMetaData, flowRuleController);
-            incrementTransportList.add(modifyTransport);
-        }
+//        if (increment.getModifySource() != null) {
+//            IncrementTransport modifyTransport = new ModifyTransport(dataSource, increment.getModifySource(), swiftMetaData, flowRuleController);
+//            incrementTransportList.add(modifyTransport);
+//        }
 
         if (increment.getIncreaseExcelSource() != null) {
             IncreaseTransport increaseTransport = new IncreaseTransport(dataSource, increment.getIncreaseExcelSource(), swiftMetaData, flowRuleController);
