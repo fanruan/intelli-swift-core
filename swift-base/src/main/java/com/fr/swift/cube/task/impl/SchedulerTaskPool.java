@@ -2,6 +2,7 @@ package com.fr.swift.cube.task.impl;
 
 import com.fr.swift.cube.task.SchedulerTask;
 import com.fr.swift.cube.task.TaskKey;
+import com.fr.swift.cube.task.TaskResult;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.service.SwiftServiceEvent;
 import com.fr.swift.service.listener.EventOrder;
@@ -18,10 +19,10 @@ import java.util.HashMap;
  */
 public class SchedulerTaskPool extends BaseTaskPool<SchedulerTask> {
     public void initListener() throws SwiftServiceException {
-        SwiftServiceListenerManager.getInstance().addListener(new SwiftServiceListener<Pair<TaskKey, TaskResultImpl>>() {
+        SwiftServiceListenerManager.getInstance().addListener(new SwiftServiceListener<Pair<TaskKey, TaskResult>>() {
             @Override
-            public void handle(SwiftServiceEvent<Pair<TaskKey, TaskResultImpl>> event) {
-                Pair<TaskKey, TaskResultImpl> pair = event.getContent();
+            public void handle(SwiftServiceEvent<Pair<TaskKey, TaskResult>> event) {
+                Pair<TaskKey, TaskResult> pair = event.getContent();
                 get(pair.getKey()).onDone(pair.getValue());
             }
 
