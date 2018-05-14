@@ -24,11 +24,13 @@ public class ModifyTransport implements IncrementTransport {
         this.swiftMetaData = swiftMetaData;
         this.flowRuleController = flowRuleController;
 
-//        increaseProcessor = new IncreaseTransport(this.dataSource, this.modifyDataSource, this.swiftMetaData, this.flowRuleController);
-//        desreaseProcessor = new DecreaseTransport(this.dataSource, this.modifyDataSource, this.swiftMetaData);
     }
 
     @Override
-    public void doIncrementTransport() {
+    public void doIncrementTransport() throws Exception {
+        IncrementTransport decreaseTransport = new DecreaseTransport(dataSource, modifyDataSource, swiftMetaData);
+        IncrementTransport increaseTransport = new IncreaseTransport(dataSource, modifyDataSource, swiftMetaData, flowRuleController);
+        decreaseTransport.doIncrementTransport();
+        increaseTransport.doIncrementTransport();
     }
 }

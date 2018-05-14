@@ -1,5 +1,6 @@
 package com.fr.swift.generate.segment.operator.merger;
 
+import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
@@ -38,12 +39,21 @@ class MergerResultSet implements SwiftResultSet {
         List<String> fieldNames = swiftMetaData.getFieldNames();
         rowList = new ArrayList<Row>();
         for (Segment segment : segmentList) {
+            ImmutableBitMap allShowIndex = segment.getAllShowIndex();
             int rowCount = segment.getRowCount();
             for (int i = 0; i < rowCount; i++) {
+                //过滤掉不在allshowindex中的项，比如增量删除的项
+                if (!allShowIndex.contains(i)) {
+                    continue;
+                }
                 List<Object> values = new ArrayList<Object>();
                 for (int j = 0; j < fieldNames.size(); j++) {
                     Column column = segment.getColumn(new ColumnKey(fieldNames.get(j)));
-                    values.add(column.getDetailColumn().get(i));
+                    if (column.getBitmapIndex().getNullIndex().contains(i)) {
+                        values.add(null);
+                    } else {
+                        values.add(column.getDetailColumn().get(i));
+                    }
                 }
                 Row row = new ListBasedRow(values);
                 rowList.add(row);

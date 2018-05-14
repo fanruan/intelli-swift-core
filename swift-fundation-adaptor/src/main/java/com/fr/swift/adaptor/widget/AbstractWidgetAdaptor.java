@@ -65,7 +65,7 @@ public abstract class AbstractWidgetAdaptor {
         return new SourceKey(BusinessTableUtils.getSourceIdByFieldId(fieldId));
     }
 
-    protected static String getFieldId(FineDimension dimension) {
+    public static String getFieldId(FineDimension dimension) {
         String fieldId;
         if (dimension.getWidgetBeanField() != null) {
             WidgetBeanField field = dimension.getWidgetBeanField();
