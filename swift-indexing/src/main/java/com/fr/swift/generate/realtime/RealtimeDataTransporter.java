@@ -9,11 +9,14 @@ import com.fr.swift.generate.realtime.increment.DecreaseTransport;
 import com.fr.swift.generate.realtime.increment.IncreaseTransport;
 import com.fr.swift.generate.realtime.increment.IncrementTransport;
 import com.fr.swift.generate.realtime.increment.ModifyTransport;
+import com.fr.swift.generate.segment.operator.merger.RealtimeMerger;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.segment.operator.Merger;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.util.DataSourceUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,15 +56,19 @@ public class RealtimeDataTransporter extends BaseWorker implements Transporter {
 
 
     private void initProcessors() {
+
         incrementTransportList = new ArrayList<IncrementTransport>();
-        if (increment.getIncreaseSource() != null) {
-            IncrementTransport increaseTransport = new IncreaseTransport(dataSource, increment.getIncreaseSource(), swiftMetaData, flowRuleController);
-            incrementTransportList.add(increaseTransport);
-        }
+
         if (increment.getDecreaseSource() != null) {
             IncrementTransport desreaseTransport = new DecreaseTransport(dataSource, increment.getDecreaseSource(), swiftMetaData);
             incrementTransportList.add(desreaseTransport);
         }
+
+        if (increment.getIncreaseSource() != null) {
+            IncrementTransport increaseTransport = new IncreaseTransport(dataSource, increment.getIncreaseSource(), swiftMetaData, flowRuleController);
+            incrementTransportList.add(increaseTransport);
+        }
+
         if (increment.getModifySource() != null) {
             IncrementTransport modifyTransport = new ModifyTransport(dataSource, increment.getDecreaseSource(), swiftMetaData, flowRuleController);
             incrementTransportList.add(modifyTransport);
