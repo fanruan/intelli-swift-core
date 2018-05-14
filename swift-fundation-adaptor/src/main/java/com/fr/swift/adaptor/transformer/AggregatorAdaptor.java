@@ -116,6 +116,32 @@ public class AggregatorAdaptor {
         return AggregatorType.DUMMY;
     }
 
+    /**
+     * 合计方式
+     *
+     * @param type
+     * @return
+     */
+    public static AggregatorType adaptorMetric(int type) {
+        switch (type) {
+            case BIDesignConstants.DESIGN.METRIC_TYPE.SUM:
+                return AggregatorType.SUM;
+            case BIDesignConstants.DESIGN.METRIC_TYPE.AVERAGE:
+                return AggregatorType.AVERAGE;
+            case BIDesignConstants.DESIGN.METRIC_TYPE.MAX:
+                return AggregatorType.MAX;
+            case BIDesignConstants.DESIGN.METRIC_TYPE.MIN:
+                return AggregatorType.MIN;
+            case BIDesignConstants.DESIGN.METRIC_TYPE.MEDIAN:
+                return AggregatorType.MEDIAN;
+            case BIDesignConstants.DESIGN.METRIC_TYPE.VARIANCE:
+                return AggregatorType.VARIANCE;
+            case BIDesignConstants.DESIGN.METRIC_TYPE.STANDARD_DEVIATION:
+                return AggregatorType.STANDARD_DEVIATION;
+        }
+        return AggregatorType.DUMMY;
+    }
+
     public static AggregatorType adaptorRapidCal(int rapidType) {
         switch (rapidType) {
             case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.NONE:

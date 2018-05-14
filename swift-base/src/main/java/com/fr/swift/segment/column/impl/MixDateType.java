@@ -59,7 +59,7 @@ public enum MixDateType {
             if (DateType.YEAR.from(c) != year) {
                 // 一周跨两年，设为周一可能跑到去年了 重新改为本年第一天
                 DateType.YEAR.set(c, year);
-                DateType.MONTH.set(c, Calendar.JANUARY);
+                DateType.MONTH.set(c, 1);
                 DateType.DAY.set(c, 1);
             }
             return c.getTimeInMillis();

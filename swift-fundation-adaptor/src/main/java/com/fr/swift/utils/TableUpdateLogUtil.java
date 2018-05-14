@@ -83,7 +83,8 @@ public class TableUpdateLogUtil {
                     IndexUpdateItem item = new IndexUpdateItem();
                     item.setIndex(finishCount);
                     item.setTableName(entry.getKey().info());
-                    item.setTime(entry.getValue().getCostTime());
+                    Long costTime = entry.getValue().getCostTime();
+                    item.setTime(costTime == null ? 0 : costTime);
                     item.setPackNames(packName);
                     items.add(item);
                 }

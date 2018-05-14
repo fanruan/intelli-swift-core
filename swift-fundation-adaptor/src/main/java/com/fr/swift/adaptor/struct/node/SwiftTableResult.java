@@ -41,6 +41,9 @@ public class SwiftTableResult implements BITableResult {
         if (page != 0) {
             List<GroupNode> startRow = rows.get(page * PAGE_SIZE);
             for (int i = 0; i < startRow.size(); i++) {
+                if (startRow.get(i) == null) {
+                    continue;
+                }
                 NodeRange range = new NodeRange();
                 range.setStartIndexIncluded(startRow.get(i).getIndex());
                 if (i == 0) {
@@ -53,6 +56,9 @@ public class SwiftTableResult implements BITableResult {
         int endIndex = Math.min((page + 1) * PAGE_SIZE - 1, rows.size() - 1);
         List<GroupNode> endRow = rows.get(endIndex);
         for (int i = 0; i < endRow.size(); i++) {
+            if (endRow.get(i) == null) {
+                continue;
+            }
             NodeRange range = new NodeRange();
             range.setEndIndexIncluded(endRow.get(i).getIndex());
             if (i == 0) {

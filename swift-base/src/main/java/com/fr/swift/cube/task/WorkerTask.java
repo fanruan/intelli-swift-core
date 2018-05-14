@@ -18,7 +18,7 @@ public interface WorkerTask extends Task, Runnable {
      *
      * @param result 结果
      */
-    void done(Result result);
+    void done(TaskResult result);
 
     /**
      * WorkerTask需要有一个Worker
@@ -32,6 +32,6 @@ public interface WorkerTask extends Task, Runnable {
          */
         void work();
 
-        void workOver(Result result);
+        void workOver(TaskResult result);
     }
 }

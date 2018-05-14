@@ -3,7 +3,8 @@ package com.fr.swift.generate;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.BitMapOrHelper;
-import com.fr.swift.cube.task.Task;
+import com.fr.swift.cube.task.TaskResult.Type;
+import com.fr.swift.cube.task.impl.TaskResultImpl;
 import com.fr.swift.relation.CubeMultiRelationPath;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
@@ -30,31 +31,35 @@ public abstract class BaseFieldPathIndexer extends BaseTablePathIndexer {
     @Override
     public void work() {
         try {
-            LOGGER.info(String.format("start build FieldRelationIndex: %s -> %s", logicColumnKey.getName(), relationPath.getKey()));
-            List<Segment> primarySegment = getPrimaryTableSegments();
-            List<Segment> targetSegment = getTargetTableSegments();
-            for (Segment target : targetSegment) {
-                RelationIndex targetReader = getTargetReadIndex(target);
-                RelationIndex targetWriter = getTargetWriteIndex(target);
-                try {
-                    for (int i = 0; i < primarySegment.size(); i++) {
-                        buildIndexPerSegment(targetReader, targetWriter, primarySegment.get(i), i, target.getRowCount());
-                    }
-                } catch (Exception e) {
-                    Crasher.crash(e);
-                } finally {
-                    releaseIfNeed(targetReader);
-                    releaseIfNeed(targetWriter);
-                    releaseIfNeed(target);
-                }
-            }
-            workOver(Task.Result.SUCCEEDED);
-            LOGGER.info(String.format("build FieldRelationIndex: %s -> %s finished", logicColumnKey.getName(), relationPath.getKey()));
+            buildFieldPath();
+            workOver(new TaskResultImpl(Type.SUCCEEDED));
         } catch (Exception e) {
             LOGGER.error("Build field path index error", e);
-            workOver(Task.Result.FAILED);
+            workOver(new TaskResultImpl(Type.FAILED, e));
         }
 
+    }
+
+    private void buildFieldPath() {
+        LOGGER.info(String.format("start build FieldRelationIndex: %s -> %s", logicColumnKey.getName(), relationPath.getKey()));
+        List<Segment> primarySegment = getPrimaryTableSegments();
+        List<Segment> targetSegment = getTargetTableSegments();
+        for (Segment target : targetSegment) {
+            RelationIndex targetReader = getTargetReadIndex(target);
+            RelationIndex targetWriter = getTargetWriteIndex(target);
+            try {
+                for (int i = 0; i < primarySegment.size(); i++) {
+                    buildIndexPerSegment(targetReader, targetWriter, primarySegment.get(i), i, target.getRowCount());
+                }
+            } catch (Exception e) {
+                Crasher.crash(e);
+            } finally {
+                releaseIfNeed(targetReader);
+                releaseIfNeed(targetWriter);
+                releaseIfNeed(target);
+            }
+        }
+        LOGGER.info(String.format("build FieldRelationIndex: %s -> %s finished", logicColumnKey.getName(), relationPath.getKey()));
     }
 
     /**
