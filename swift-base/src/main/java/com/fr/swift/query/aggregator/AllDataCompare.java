@@ -2,6 +2,7 @@ package com.fr.swift.query.aggregator;
 
 
 import com.fr.swift.bitmap.traversal.CalculatorTraversalAction;
+import com.fr.swift.query.adapter.metric.FormulaDetailColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.impl.base.DoubleDetailColumn;
@@ -30,7 +31,7 @@ public abstract class AllDataCompare extends AbstractAggregator<DoubleAmountAggr
         CalculatorTraversalAction ss;
         if (getter instanceof LongDetailColumn) {
             return aggregateLongSum(notNullTraversal, getter);
-        } else if (getter instanceof DoubleDetailColumn) {
+        } else if (getter instanceof DoubleDetailColumn || getter instanceof FormulaDetailColumn) {
             return aggregateDoubleSum(notNullTraversal, getter);
         } else {
             ss = new CalculatorTraversalAction() {
@@ -95,7 +96,6 @@ public abstract class AllDataCompare extends AbstractAggregator<DoubleAmountAggr
     private DoubleAmountAggregatorValue aggregateDoubleSum(RowTraversal bitMap, final DetailColumn getter) {
 
         final DoubleAmountAggregatorValue minOrMaxValue = new DoubleAmountAggregatorValue();
-        final DoubleDetailColumn g = (DoubleDetailColumn) getter;
         CalculatorTraversalAction ss;
         ss = new CalculatorTraversalAction() {
 
@@ -110,7 +110,7 @@ public abstract class AllDataCompare extends AbstractAggregator<DoubleAmountAggr
             @Override
             public void actionPerformed(int row) {
 
-                double value = g.getDouble(row);
+                double value = getter.getDouble(row);
                 sum = compare(value, sum);
             }
         };
