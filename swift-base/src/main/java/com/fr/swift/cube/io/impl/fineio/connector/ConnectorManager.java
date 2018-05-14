@@ -67,17 +67,17 @@ public class ConnectorManager {
 //            FineIO.setMemoryCheckSchedule(cacheTimer);
             ExtraClassManagerProvider pluginProvider = StableFactory.getMarkedObject(ExtraClassManagerProvider.XML_TAG, ExtraClassManagerProvider.class);
             if (null == pluginProvider) {
-                connector = FileConnector.newInstance();
+                connector = ZipConnector.newInstance();
                 return connector;
             }
             ConnectorProcessor connectorProcessor = pluginProvider.getSingle(ConnectorProcessor.MARK_STRING);
             if (null == connectorProcessor) {
-                connector = FileConnector.newInstance();
+                connector = ZipConnector.newInstance();
                 return connector;
             }
             connector = connectorProcessor.createConnector();
             if (null == connector) {
-                connector = FileConnector.newInstance();
+                connector = ZipConnector.newInstance();
             }
             return connector;
         }
