@@ -9,9 +9,11 @@ import com.finebi.common.structure.config.entryinfo.EntryInfo;
 import com.finebi.common.structure.config.fieldinfo.FieldInfoPersist;
 import com.finebi.common.structure.config.relation.Relation;
 import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
+import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.engine.utils.SecurityUtil;
 import com.fr.engine.utils.StringUtils;
+import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.conf.business.relation.TableRelationReader;
 import com.fr.swift.source.SwiftMetaData;
@@ -34,7 +36,7 @@ public class SwiftDatabaseDataSourceDriver extends CommonDatabaseDataSourceDrive
 
     @Override
     public EntryInfo createEntryInfoWithTranslations(FineBusinessTable table) {
-        FineDBBusinessTable dbBusinessTable = (FineDBBusinessTable)table;
+        FineDBBusinessTable dbBusinessTable = (FineDBBusinessTable) table;
         DatabaseEntryInfo entryInfo = new DatabaseEntryInfo();
         entryInfo.setDbTableName(dbBusinessTable.getTableName());
         entryInfo.setDbName(dbBusinessTable.getConnName());
@@ -51,6 +53,11 @@ public class SwiftDatabaseDataSourceDriver extends CommonDatabaseDataSourceDrive
             int columnCount = metaData.getColumnCount();
             for (int i = 1; i <= columnCount; i++) {
                 String columnRemark = metaData.getColumnRemark(i);
+                for (FineBusinessField fineBusinessField : table.getFields()) {
+                    if (ComparatorUtils.equals(fineBusinessField.getName(), metaData.getColumnName(i))) {
+                        columnRemark = fineBusinessField.getTransferName();
+                    }
+                }
                 if (!StringUtils.isEmpty(columnRemark)) {
                     escapeMap.put(metaData.getColumnName(i), columnRemark);
                 }

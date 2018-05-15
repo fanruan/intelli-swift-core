@@ -2,6 +2,7 @@ package com.finebi.conf.impl;
 
 import com.finebi.base.common.resource.FineResourceItem;
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.common.internalimp.config.session.CommonConfigManager;
 import com.finebi.conf.exception.FineEngineException;
 import com.finebi.conf.internalimp.analysis.operator.circulate.CirculateOneFieldOperator;
 import com.finebi.conf.internalimp.analysis.operator.circulate.CirculateTwoFieldOperator;
@@ -48,11 +49,13 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.db.ConnectionInfo;
 import com.fr.swift.source.db.ConnectionManager;
+import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -69,6 +72,7 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
 
     private DataProvider dataProvider;
 
+    @Autowired
     private EngineTableManager tableManager;
 
     public SwiftTableEngineExecutor() {
@@ -96,8 +100,9 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
     @Override
     public List<FineBusinessField> getFieldList(FineBusinessTable table) {
         try {
+            Map<String, String> escapeMap = CommonConfigManager.getEntryInfoSession(getEngineType()).findByName(table.getName()).getEscapeMap();
             DataSource dataSource = DataSourceFactory.transformDataSource(table);
-            List<FineBusinessField> fieldsList = FieldFactory.transformColumns2Fields(dataSource.getMetadata(), table.getId());
+            List<FineBusinessField> fieldsList = FieldFactory.transformColumns2Fields(dataSource.getMetadata(), table.getId(), escapeMap);
             return fieldsList;
         } catch (Exception e) {
             LOGGER.error(e);
@@ -224,13 +229,13 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
                 dataList.add(iter.next().toString());
             }
             // TODO length
-            if(iterator.hasNext()) {
+            if (iterator.hasNext()) {
                 FloorItem floorItem = iterator.next();
                 previewData.add(new FloorPreviewItem((floorItem.getName()), dataList, 0));
             } else {
                 previewData.add(new FloorPreviewItem((tempName + k), dataList, 0));
             }
-            k ++;
+            k++;
         }
         FineCirculatePreviewData engineConfProduceData = new FineCirculatePreviewData();
         engineConfProduceData.setPreviewData(previewData);
