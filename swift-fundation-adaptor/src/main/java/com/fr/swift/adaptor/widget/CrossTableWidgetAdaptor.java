@@ -1,12 +1,16 @@
 package com.fr.swift.adaptor.widget;
 
+import com.finebi.conf.algorithm.AlgorithmNameEnum;
+import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
 import com.finebi.conf.internalimp.dashboard.widget.table.CrossTableWidget;
 import com.finebi.conf.structure.result.table.BICrossNode;
 import com.finebi.conf.structure.result.table.BICrossTableResult;
 import com.fr.swift.adaptor.struct.node.BICrossNodeAdaptor;
+import com.fr.swift.adaptor.widget.datamining.CrossTableToDMResultVisitor;
 import com.fr.swift.adaptor.widget.expander.ExpanderFactory;
 import com.fr.swift.adaptor.widget.target.CalTargetParseUtils;
 import com.fr.swift.cal.QueryInfo;
+import com.fr.swift.cal.info.GroupQueryInfo;
 import com.fr.swift.cal.info.XGroupQueryInfo;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -17,6 +21,7 @@ import com.fr.swift.query.adapter.dimension.DimensionInfoImpl;
 import com.fr.swift.query.adapter.dimension.Expander;
 import com.fr.swift.query.adapter.target.TargetInfo;
 import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.TopGroupNode;
 import com.fr.swift.result.XLeftNode;
 import com.fr.swift.result.XNodeMergeResultSet;
@@ -43,6 +48,15 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor{
             TargetInfo targetInfo = CalTargetParseUtils.parseCalTarget(widget);
             QueryInfo queryInfo = buildQueryInfo(widget, targetInfo);
             resultSet = (XNodeMergeResultSet) QueryRunnerProvider.getInstance().executeQuery(queryInfo);
+
+            // 挖掘模块处理
+            AlgorithmBean dmBean = widget.getValue().getDataMining();
+            if (dmBean != null && dmBean.getAlgorithmName() != AlgorithmNameEnum.EMPTY) {
+                CrossTableToDMResultVisitor visitor = new CrossTableToDMResultVisitor(resultSet, widget, (XGroupQueryInfo) queryInfo);
+                resultSet = (XNodeMergeResultSet) dmBean.accept(visitor);
+            }
+
+
             // 同时处理交叉表的计算指标
             // TODO: 2018/4/25 交叉表结果合并
             crossNode = new BICrossNodeAdaptor(new XGroupNodeImpl((XLeftNode) resultSet.getNode(), resultSet.getTopGroupNode()));

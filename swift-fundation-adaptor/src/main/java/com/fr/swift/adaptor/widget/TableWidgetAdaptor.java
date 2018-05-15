@@ -1,6 +1,8 @@
 package com.fr.swift.adaptor.widget;
 
+import com.finebi.conf.algorithm.AlgorithmNameEnum;
 import com.finebi.conf.constant.BICommonConstants;
+import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.WidgetDimensionBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.date.DateWidgetDimensionBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.TypeGroupBean;
@@ -23,6 +25,7 @@ import com.fr.swift.adaptor.linkage.LinkageAdaptor;
 import com.fr.swift.adaptor.struct.node.SwiftTableResult;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.transformer.SortAdaptor;
+import com.fr.swift.adaptor.widget.datamining.GroupTableToDMResultVisitor;
 import com.fr.swift.adaptor.widget.expander.ExpanderFactory;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.adaptor.widget.target.CalTargetParseUtils;
@@ -79,7 +82,16 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         try {
             dimensionSize = widget.getDimensionList().size();
             TargetInfo targetInfo = CalTargetParseUtils.parseCalTarget(widget);
-            SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(buildQueryInfo(widget, targetInfo));
+            QueryInfo info = buildQueryInfo(widget, targetInfo);
+            SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(info);
+
+            // 添加挖掘相关
+            AlgorithmBean dmBean = widget.getValue().getDataMining();
+            if (dmBean != null && dmBean.getAlgorithmName() != AlgorithmNameEnum.EMPTY) {
+                GroupTableToDMResultVisitor visitor = new GroupTableToDMResultVisitor((NodeResultSet) resultSet, widget, (GroupQueryInfo) info);
+                resultSet = dmBean.accept(visitor);
+            }
+
             groupNode = (GroupNode) ((NodeResultSet) resultSet).getNode();
         } catch (Exception e) {
             groupNode = new GroupNode(-1, null);
@@ -238,11 +250,11 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
                 filterInfo);
     }
 
-    private static int getSortIndex(FineDimensionSort sort, int index, List<FineTarget> targets, int size){
-        if (sort instanceof DimensionTargetSort){
+    private static int getSortIndex(FineDimensionSort sort, int index, List<FineTarget> targets, int size) {
+        if (sort instanceof DimensionTargetSort) {
             String targetId = ((DimensionTargetSort) sort).getTargetId();
-            for (int i = 0; i < targets.size(); i++){
-                if (ComparatorUtils.equals(targets.get(i).getId(), targetId)){
+            for (int i = 0; i < targets.size(); i++) {
+                if (ComparatorUtils.equals(targets.get(i).getId(), targetId)) {
                     return i + size;
                 }
             }
