@@ -9,6 +9,9 @@ import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
 import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
 import com.finebi.conf.internalimp.dashboard.widget.dimension.sort.DimensionTargetSort;
 import com.finebi.conf.internalimp.dashboard.widget.filter.CustomLinkConfItem;
+import com.finebi.conf.internalimp.dashboard.widget.filter.JumpItemBean;
+import com.finebi.conf.internalimp.dashboard.widget.filter.JumpSourceTargetFieldBean;
+import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetGlobalFilterBean;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
 import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
 import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
@@ -145,21 +148,39 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         widget.getValue().getDrillList();
     }
 
-    private static void dealWithLink(List<FilterInfo> filterInfoList, AbstractTableWidget widget) throws SQLException {
-        //联动设置
-        Map<String, WidgetLinkItem> linkItemMap = widget.getValue().getLinkage();
-        //手动联动配置
-        Map<String, List<CustomLinkConfItem>> customLinkConf = widget.getValue().getCustomLinkConf();
+    private static void dealWithLink(List<FilterInfo> filterInfos, AbstractTableWidget widget) throws SQLException {
+        // 联动设置
+        TableWidgetBean bean = widget.getValue();
+        Map<String, WidgetLinkItem> linkItemMap = bean.getLinkage();
+
+        // 手动联动配置
+        Map<String, List<CustomLinkConfItem>> customLinkConf = bean.getCustomLinkConf();
         if (linkItemMap != null) {
             for (Map.Entry<String, WidgetLinkItem> entry : linkItemMap.entrySet()) {
                 WidgetLinkItem widgetLinkItem = entry.getValue();
                 String id = entry.getKey();
                 if (customLinkConf != null && customLinkConf.containsKey(id)) {
-                    dealWithCustomLink(widget.getTableName(), filterInfoList, widgetLinkItem, customLinkConf.get(id));
+                    dealWithCustomLink(widget.getTableName(), filterInfos, widgetLinkItem, customLinkConf.get(id));
                 } else {
-                    dealWithAutoLink(widget.getTableName(), filterInfoList, widgetLinkItem);
+                    dealWithAutoLink(widget.getTableName(), filterInfos, widgetLinkItem);
                 }
             }
+        }
+
+        // 跨模板联动
+        WidgetGlobalFilterBean globalFilter = bean.getGlobalFilter();
+        if (globalFilter == null) {
+            return;
+        }
+        List<JumpItemBean> jumps = globalFilter.getLinkedWidget().getJump();
+        if (jumps == null || jumps.isEmpty()) {
+            // 联动过滤
+            LinkageAdaptor.handleCrossTempletClick(widget.getTableName(), globalFilter, filterInfos);
+            return;
+        }
+        for (JumpItemBean jump : jumps) {
+            // 值过滤
+            handleCrossTempletCustomLink(widget.getTableName(), globalFilter, jump, filterInfos);
         }
     }
 
@@ -209,6 +230,45 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         }
     }
 
+    private static void handleCrossTempletCustomLink(String tableName, WidgetGlobalFilterBean globalBean, JumpItemBean jump, List<FilterInfo> filterInfos) throws SQLException {
+        // todo 提炼公共部分 或者这边widget可以进行实例化的重构，减少参数传来传去
+        List<JumpSourceTargetFieldBean> sourceTargetFields = jump.getSourceTargetFields();
+        // 自定义设置的维度
+        Dimension[] fromColumns = new Dimension[sourceTargetFields.size()];
+        // 要过滤的维度
+        String[] toColumns = new String[sourceTargetFields.size()];
+        for (int i = 0; i < sourceTargetFields.size(); i++) {
+            JumpSourceTargetFieldBean bean = sourceTargetFields.get(i);
+            String from = bean.getSourceFieldId();
+            ColumnKey fromKey = new ColumnKey(getColumnName(from));
+            fromColumns[i] = (new GroupDimension(i, getSourceKey(from), fromKey, null, new AscSort(i, fromKey), null));
+            toColumns[i] = getColumnName(bean.getTargetFieldId());
+        }
+
+        // 根据点击的值，创建过滤条件
+        List<FilterInfo> filters = new ArrayList<FilterInfo>();
+        TableWidgetBean fromWidget = LinkageAdaptor.handleCrossTempletClick(tableName, globalBean, filters, fromColumns, toColumns);
+        // 分组表查询
+        FilterInfo filterInfo = new GeneralFilterInfo(filters, GeneralFilterInfo.AND);
+        GroupQueryInfo queryInfo = new GroupQueryInfo(fromWidget.getwId(), fromColumns[0].getSourceKey(),
+                new DimensionInfoImpl(new AllCursor(), filterInfo, null, fromColumns),
+                new TargetInfoImpl(0, new ArrayList<Metric>(0), new ArrayList<GroupTarget>(0), new ArrayList<ResultTarget>(0), new ArrayList<Aggregator>(0)));
+        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
+        Set[] results = new HashSet[toColumns.length];
+        for (int i = 0; i < results.length; i++) {
+            results[i] = new HashSet();
+        }
+        while (resultSet.next()) {
+            Row row = resultSet.getRowData();
+            for (int i = 0; i < row.getSize(); i++) {
+                results[i].add(row.getValue(i));
+            }
+        }
+        for (int i = 0; i < toColumns.length; i++) {
+            filterInfos.add(new SwiftDetailFilterInfo(new ColumnKey(toColumns[i]), results[i], SwiftDetailFilterType.STRING_IN));
+        }
+    }
+
     private static void dealWithWidgetFilter(List<FilterInfo> filterInfoList, AbstractTableWidget widget) throws Exception {
         List<FineFilter> filters = dealWithTargetFilter(widget, widget.getFilters());
         if (filters != null && !filters.isEmpty()) {
@@ -237,11 +297,11 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
                 filterInfo);
     }
 
-    private static int getSortIndex(FineDimensionSort sort, int index, List<FineTarget> targets, int size){
-        if (sort instanceof DimensionTargetSort){
+    private static int getSortIndex(FineDimensionSort sort, int index, List<FineTarget> targets, int size) {
+        if (sort instanceof DimensionTargetSort) {
             String targetId = ((DimensionTargetSort) sort).getTargetId();
-            for (int i = 0; i < targets.size(); i++){
-                if (ComparatorUtils.equals(targets.get(i).getId(), targetId)){
+            for (int i = 0; i < targets.size(); i++) {
+                if (ComparatorUtils.equals(targets.get(i).getId(), targetId)) {
                     return i + size;
                 }
             }

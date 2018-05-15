@@ -11,6 +11,8 @@ import com.finebi.conf.internalimp.bean.filtervalue.date.single.DateStaticFilter
 import com.finebi.conf.internalimp.bean.filtervalue.date.single.DateStaticFilterBeanValue;
 import com.finebi.conf.internalimp.dashboard.widget.filter.ClickValue;
 import com.finebi.conf.internalimp.dashboard.widget.filter.ClickValueItem;
+import com.finebi.conf.internalimp.dashboard.widget.filter.TableJumpClickValue;
+import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetGlobalFilterBean;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
 import com.finebi.conf.internalimp.service.pack.FineConfManageCenter;
 import com.finebi.conf.service.engine.relation.EngineRelationPathManager;
@@ -54,8 +56,7 @@ public class LinkageAdaptor {
      * @param filterInfos
      * @return
      */
-    public static TableWidgetBean handleClickItem(String tableName, WidgetLinkItem widgetLinkItem, List<FilterInfo> filterInfos, Dimension[] primary, String[] foreign) {
-        WidgetBean widgetBean = widgetLinkItem.getWidget();
+    private static TableWidgetBean handleClickItem(String tableName, WidgetBean widgetBean, List<ClickValueItem> clickValueItems, List<FilterInfo> filterInfos, Dimension[] primary, String[] foreign) {
         if (null == widgetBean) {
             return null;
         }
@@ -65,20 +66,37 @@ public class LinkageAdaptor {
         TableWidgetBean fromWidget = (TableWidgetBean) widgetBean;
         String fromTableName = fromWidget.getTableName();
 
-        ClickValue clickValue = widgetLinkItem.getClicked();
-        if (null != clickValue) {
-            List<ClickValueItem> clickedList = clickValue.getValue();
-            if (ComparatorUtils.equals(fromTableName, tableName)) {
-                handleOneTableFilter(fromWidget, clickedList, filterInfos);
-            } else {
-                handleRelationFilter(tableName, fromWidget, clickedList, filterInfos, primary, foreign);
-            }
+        if (ComparatorUtils.equals(fromTableName, tableName)) {
+            handleOneTableFilter(fromWidget, clickValueItems, filterInfos);
+        } else {
+            handleRelationFilter(tableName, fromWidget, clickValueItems, filterInfos, primary, foreign);
         }
         return fromWidget;
     }
 
     public static TableWidgetBean handleClickItem(String tableName, WidgetLinkItem widgetLinkItem, List<FilterInfo> filterInfos) {
         return handleClickItem(tableName, widgetLinkItem, filterInfos, null, null);
+    }
+
+    public static TableWidgetBean handleClickItem(String tableName, WidgetLinkItem widgetLinkItem, List<FilterInfo> filterInfos, Dimension[] primary, String[] foreign) {
+        ClickValue clicked = widgetLinkItem.getClicked();
+        if (clicked == null) {
+            return null;
+        }
+        return handleClickItem(tableName, widgetLinkItem.getWidget(), clicked.getValue(), filterInfos, primary, foreign);
+    }
+
+    public static TableWidgetBean handleCrossTempletClick(String tableName, WidgetGlobalFilterBean globalBean, List<FilterInfo> filterInfos) {
+        return handleCrossTempletClick(tableName, globalBean, filterInfos, null, null);
+    }
+
+    public static TableWidgetBean handleCrossTempletClick(String tableName, WidgetGlobalFilterBean globalBean, List<FilterInfo> filterInfos, Dimension[] primary, String[] foreign) {
+        // 跨模板联动
+        TableJumpClickValue clicked = (TableJumpClickValue) globalBean.getClicked();
+        if (clicked == null) {
+            return null;
+        }
+        return handleClickItem(tableName, globalBean.getLinkedWidget(), clicked.getValue(), filterInfos, primary, foreign);
     }
 
     private static void handleOneTableFilter(TableWidgetBean fromWidget, List<ClickValueItem> clickedList, List<FilterInfo> filterInfos) {
@@ -93,7 +111,7 @@ public class LinkageAdaptor {
         }
     }
 
-    public static RelationSource dealWithCustomRelation(String primaryTable, String foreignTable, Dimension[] primary, String[] foreign) throws Exception {
+    private static RelationSource dealWithCustomRelation(String primaryTable, String foreignTable, Dimension[] primary, String[] foreign) throws Exception {
         EngineTableManager tableManager = fineConfManageCenter.getTableProvider().get(FineEngineType.Cube);
         SourceKey primarySource = DataSourceFactory.getDataSource(tableManager.getSingleTable(primaryTable)).getSourceKey();
         SourceKey foreignSource = DataSourceFactory.getDataSource(tableManager.getSingleTable(foreignTable)).getSourceKey();
@@ -129,8 +147,7 @@ public class LinkageAdaptor {
             } else {
                 relationSource = RelationSourceFactory.transformRelationSourcesFromPath(relationPaths.get(0));
             }
-            for (int i = 0; i < clickedList.size(); i++) {
-                ClickValueItem clickValueItem = clickedList.get(i);
+            for (ClickValueItem clickValueItem : clickedList) {
                 String value = clickValueItem.getText();
                 WidgetDimensionBean bean = fromWidget.getDimensions().get(clickValueItem.getdId());
                 ColumnKey columnKey = new ColumnKey(BusinessTableUtils.getFieldNameByFieldId(bean.getFieldId()));
