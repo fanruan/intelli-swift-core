@@ -53,7 +53,7 @@ public class EtlTransfer implements SwiftSourceTransfer {
         private int[] indices;
         public RowShiftSwiftResultSet(SwiftResultSet resultSet, int[] indexes) {
            this.resultSet = resultSet;
-           this.indexex = indexes;
+            this.indices = indexes;
         }
 
         @Override

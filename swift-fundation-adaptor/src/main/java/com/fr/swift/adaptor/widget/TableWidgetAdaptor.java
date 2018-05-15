@@ -263,7 +263,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         }
     }
 
-    private static void dealWithWidgetFilter(List<FilterInfo> filterInfoList, AbstractTableWidget widget) throws Exception {
+    static void dealWithWidgetFilter(List<FilterInfo> filterInfoList, AbstractTableWidget widget) throws Exception {
         List<FineFilter> filters = dealWithTargetFilter(widget, widget.getFilters());
         if (filters != null && !filters.isEmpty()) {
             filterInfoList.add(FilterInfoFactory.transformFineFilter(widget.getTableName(), filters));

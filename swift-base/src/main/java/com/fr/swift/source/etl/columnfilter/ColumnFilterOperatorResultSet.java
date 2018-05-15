@@ -24,10 +24,14 @@ import java.util.List;
  * Created by Handsome on 2018/1/24 0024 15:34
  */
 public class ColumnFilterOperatorResultSet implements SwiftResultSet {
-
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(ColumnFilterOperatorResultSet.class);
+
     private Segment[] segment;
+
     private SwiftMetaData metaData;
+
+    private SwiftMetaData baseMeta;
+
     private FilterInfo filterInfo;
     private int segCursor;
     private int rowCursor;
@@ -39,8 +43,9 @@ public class ColumnFilterOperatorResultSet implements SwiftResultSet {
     private List<Integer> rowList;
 
 
-    public ColumnFilterOperatorResultSet(Segment[] segment, SwiftMetaData metaData, FilterInfo filterInfo) {
+    public ColumnFilterOperatorResultSet(Segment[] segment, SwiftMetaData baseMeta, SwiftMetaData metaData, FilterInfo filterInfo) {
         this.segment = segment;
+        this.baseMeta = baseMeta;
         this.metaData = metaData;
         this.filterInfo = filterInfo;
         init();
@@ -55,12 +60,12 @@ public class ColumnFilterOperatorResultSet implements SwiftResultSet {
         rowList = new ArrayList<Integer>();
         try {
             getters = new DictionaryEncodedColumn[this.metaData.getColumnCount()];
-            metaDataColumn = new SwiftMetaDataColumn[this.metaData.getColumnCount()];
-            for(int i = 0; i < this.metaData.getColumnCount(); i++) {
+            SwiftMetaDataColumn[] metaDataColumn = new SwiftMetaDataColumn[this.metaData.getColumnCount()];
+            for (int i = 0; i < this.metaData.getColumnCount(); i++) {
                 metaDataColumn[i] = this.metaData.getColumn(i + 1);
                 getters[i] = this.segment[segCursor].getColumn(new ColumnKey(metaDataColumn[i].getName())).getDictionaryEncodedColumn();
             }
-        } catch(SwiftMetaDataException e) {
+        } catch (SwiftMetaDataException e) {
             LOGGER.error("getting meta's column information failed", e);
         }
     }
@@ -76,17 +81,17 @@ public class ColumnFilterOperatorResultSet implements SwiftResultSet {
 
     @Override
     public boolean next() {
-        if(segCursor < segment.length && rowCursor < bitMap.getCardinality()) {
-            for(; segCursor < segment.length; segCursor++) {
+        if (segCursor < segment.length && rowCursor < bitMap.getCardinality()) {
+            for (; segCursor < segment.length; segCursor++) {
                 bitMap = createFilter(this.segment[segCursor], this.filterInfo);
-                if(bitMap != null && bitMap.getCardinality() > 0) {
+                if (bitMap != null && bitMap.getCardinality() > 0) {
                     break;
                 }
             }
-            if(segCursor == segment.length) {
+            if (segCursor == segment.length) {
                 return false;
             }
-            if(isBitMapInit) {
+            if (isBitMapInit) {
                 this.isBitMapInit = false;
 
                 this.bitMap.traversal(new TraversalAction() {
@@ -97,16 +102,16 @@ public class ColumnFilterOperatorResultSet implements SwiftResultSet {
                 });
             }
             List list = new ArrayList();
-            for(int i = 0; i < metaDataColumn.length; i++) {
+            for (int i = 0; i < metaDataColumn.length; i++) {
                 list.add(getters[i].getValueByRow(rowList.get(rowCursor)));
             }
             ListBasedRow basedRow = new ListBasedRow(list);
             tempValue.setRow(basedRow);
-            if(rowCursor < rowList.size() - 1) {
-                rowCursor ++;
+            if (rowCursor < rowList.size() - 1) {
+                rowCursor++;
             } else {
-                if(segCursor < segment.length) {
-                    segCursor ++;
+                if (segCursor < segment.length) {
+                    segCursor++;
                     rowCursor = 0;
                     rowList = new ArrayList<Integer>();
                     this.isBitMapInit = true;
