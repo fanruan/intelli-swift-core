@@ -33,7 +33,6 @@ public class SwiftDetailTableResult implements BIDetailTableResult {
     private int startRow;
     private int endRow;
     private final int pageSize = 100;
-//    private Paging paging = null;
 
     public SwiftDetailTableResult(SwiftResultSet swiftResultSet, int totalRows, int currentPage) throws SQLException {
         this.swiftResultSet = swiftResultSet;
