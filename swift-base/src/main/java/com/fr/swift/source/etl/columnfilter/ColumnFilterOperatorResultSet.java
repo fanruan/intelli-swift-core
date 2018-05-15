@@ -43,7 +43,7 @@ public class ColumnFilterOperatorResultSet implements SwiftResultSet {
     private List<Integer> rowList;
 
 
-    public ColumnFilterOperatorResultSet(Segment[] segment, SwiftMetaData baseMeta, SwiftMetaData metaData, FilterInfo filterInfo) {
+    public ColumnFilterOperatorResultSet(Segment[] segment/*, SwiftMetaData baseMeta*/, SwiftMetaData metaData, FilterInfo filterInfo) {
         this.segment = segment;
         this.baseMeta = baseMeta;
         this.metaData = metaData;
