@@ -53,7 +53,7 @@ public final class SwiftDataPreviewer {
         List<Segment[]> basedSegments = new ArrayList<Segment[]>();
         for (DataSource dataSource : baseDataSourceList) {
             List<Segment> segments = MinorSegmentManager.getInstance().getSegment(dataSource.getSourceKey());
-            basedSegments.add(segments.toArray(new Segment[segments.size()]));
+            basedSegments.add(segments.toArray(new Segment[0]));
         }
         if (baseDataSourceList.isEmpty()) {
             basedSegments.add(new Segment[0]);
