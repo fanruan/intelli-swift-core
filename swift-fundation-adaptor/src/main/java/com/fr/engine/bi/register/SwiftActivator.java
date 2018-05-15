@@ -38,7 +38,6 @@ public class SwiftActivator extends Activator {
         StableManager.addClass("swiftTableManager", com.finebi.conf.provider.SwiftTableManager.class);
         StableManager.addClass("swiftRelationPathConfProvider", com.finebi.conf.provider.SwiftRelationPathConfProvider.class);
         StableManager.addClass("swiftSpaceManager", com.fr.swift.adaptor.space.SwiftSpaceManager.class);
-        AttachmentCacheManagerImpl.register();
         startSwift();
     }
 
