@@ -2,7 +2,6 @@ package com.fr.engine.bi.register;
 
 import com.finebi.base.stable.StableManager;
 import com.finebi.conf.algorithm.DMDataModel;
-import com.fr.data.cache.AttachmentCacheManagerImpl;
 import com.fr.module.Activator;
 import com.fr.swift.driver.SwiftDriverRegister;
 import com.fr.swift.manager.ConnectionProvider;
