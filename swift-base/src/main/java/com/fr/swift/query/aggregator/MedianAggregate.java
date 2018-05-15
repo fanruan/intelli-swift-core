@@ -115,8 +115,9 @@ public class MedianAggregate extends AbstractAggregator<MedianAggregatorValue> {
                 if (vMap.containsKey(key)) {
                     Integer count = vMap.get(key) + oMap.get(key);
                     vMap.put((Double) key, count);
+                } else {
+                    vMap.put((Double) key, oMap.get(key));
                 }
-                vMap.put((Double) key, oMap.get(key));
             }
         }
     }
