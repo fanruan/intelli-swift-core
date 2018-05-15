@@ -113,15 +113,6 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         return new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
     }
 
-    private static void dealWithDimensionDirectFilter(List<FilterInfo> filterInfoList, List<Dimension> dimensions) {
-        // 维度上的直接过滤，提取出来
-        for (Dimension dimension : dimensions) {
-            FilterInfo filter = dimension.getFilter();
-            if (filter != null && !filter.isMatchFilter()) {
-                filterInfoList.add(dimension.getFilter());
-            }
-        }
-    }
 
     private static void dealWithDrill(List<FilterInfo> filterInfoList, AbstractTableWidget widget) throws Exception {
         for (FineDimension fineDimension : widget.getDimensionList()) {
@@ -140,7 +131,10 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
                     bean = new WidgetDimensionBean();
                 }
 //                Set<String> values = new HashSet<String>();
-                filterInfoList.add(LinkageAdaptor.dealFilterInfo(new ColumnKey(columnName), value, bean));
+                FilterInfo info = LinkageAdaptor.dealFilterInfo(new ColumnKey(columnName), value, bean);
+                if (null != info) {
+                    filterInfoList.add(info);
+                }
 //                values.add(value);
 //                filterInfoList.add(new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(columnName), values, SwiftDetailFilterType.STRING_IN));
             }
