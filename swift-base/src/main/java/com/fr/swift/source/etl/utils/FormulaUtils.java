@@ -161,6 +161,29 @@ public class FormulaUtils {
         }
     }
 
+    //取得字段原本的类型
+    public static ColumnType getHistoryColumnType(SwiftMetaData metadata, String expression) {
+        Calculator c = Calculator.createCalculator();
+        String formula = getParameterIndexEncodedFormula(expression);
+        String[] parameters = getHistoryRelatedParaNames(expression);
+        int index = 0;
+        for (String parameter : parameters) {
+            c.set(toParameterFormat(index++ + ""), getParameterDefaultValue(metadata, parameter));
+        }
+        try {
+            Object ob = c.eval(formula);
+            if (ob instanceof Date) {
+                return ColumnType.DATE;
+            } else if (ob instanceof Number) {
+                return ColumnType.NUMBER;
+            } else {
+                return ColumnType.STRING;
+            }
+        } catch (UtilEvalError utilEvalError) {
+            return ColumnType.STRING;
+        }
+    }
+
     /**
      * 参数转成自增长id，避免字段名字带特殊字符
      *

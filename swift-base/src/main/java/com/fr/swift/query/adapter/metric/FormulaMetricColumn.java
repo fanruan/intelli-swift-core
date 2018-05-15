@@ -1,6 +1,7 @@
 package com.fr.swift.query.adapter.metric;
 
 import com.fr.swift.cube.io.location.IResourceLocation;
+import com.fr.swift.query.adapter.dimension.DetailFormulaDicColumn;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
@@ -22,12 +23,12 @@ public class FormulaMetricColumn implements Column {
 
     @Override
     public DictionaryEncodedColumn getDictionaryEncodedColumn() {
-        return Crasher.crash("unsupported");
+        return new DetailFormulaDicColumn(formula, segment);
     }
 
     @Override
     public BitmapIndexedColumn getBitmapIndex() {
-        return new FormulaIndexColumn();
+        return new FormulaIndexColumn(formula, segment);
     }
 
     @Override

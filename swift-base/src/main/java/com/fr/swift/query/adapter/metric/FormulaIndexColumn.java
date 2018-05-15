@@ -1,13 +1,25 @@
 package com.fr.swift.query.adapter.metric;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.bitmap.impl.AllShowBitMap;
+import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
+import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.etl.utils.FormulaUtils;
 import com.fr.swift.util.Crasher;
 
 /**
  * Created by pony on 2018/5/12.
  */
 public class FormulaIndexColumn implements BitmapIndexedColumn {
+    private ImmutableBitMap nullIndex;
+    public FormulaIndexColumn(String formula, Segment segment) {
+        ColumnTypeConstants.ColumnType type = FormulaUtils.getHistoryColumnType(segment.getMetaData(), formula);
+        if (type != ColumnTypeConstants.ColumnType.NUMBER){
+            nullIndex = AllShowBitMap.newInstance(segment.getRowCount());
+        }
+    }
+
     @Override
     public void putBitMapIndex(int index, ImmutableBitMap bitmap) {
         Crasher.crash("unsupported");
@@ -25,7 +37,7 @@ public class FormulaIndexColumn implements BitmapIndexedColumn {
 
     @Override
     public ImmutableBitMap getNullIndex() {
-        return null;
+        return nullIndex;
     }
 
     @Override

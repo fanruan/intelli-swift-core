@@ -10,6 +10,7 @@ import java.util.HashSet;
  */
 public class DimensionInfoImpl implements DimensionInfo {
 
+    private boolean isShowSum = true;
     private Cursor cursor;
     private FilterInfo filterInfo;
     private Expander expander;
@@ -21,6 +22,11 @@ public class DimensionInfoImpl implements DimensionInfo {
         this.expander = expander == null ?
                 new ExpanderImpl(ExpanderType.ALL_EXPANDER, new HashSet<RowIndexKey<String[]>>()) : expander;
         this.dimensions = dimensions;
+    }
+
+    public DimensionInfoImpl(boolean isShowSum, Cursor cursor, FilterInfo filterInfo, Expander expander, Dimension[] dimensions) {
+        this(cursor, filterInfo, expander, dimensions);
+        this.isShowSum = isShowSum;
     }
 
     @Override
@@ -41,5 +47,10 @@ public class DimensionInfoImpl implements DimensionInfo {
     @Override
     public Expander getExpander() {
         return expander;
+    }
+
+    @Override
+    public boolean isShowSum() {
+        return isShowSum;
     }
 }

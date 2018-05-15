@@ -81,7 +81,7 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor{
         FilterInfo rowFilterInfo = TableWidgetAdaptor.getFilterInfo(widget, rowDimensions);
         FilterInfo colFilterInfo = TableWidgetAdaptor.getFilterInfo(widget, colDimensions);
         DimensionInfo rowDimensionInfo = new DimensionInfoImpl(new AllCursor(), rowFilterInfo, rowExpander, rowDimensions.toArray(new Dimension[rowDimensions.size()]));
-        DimensionInfo colDimensionInfo = new DimensionInfoImpl(new AllCursor(), colFilterInfo, colExpander, colDimensions.toArray(new Dimension[colDimensions.size()]));
+        DimensionInfo colDimensionInfo = new DimensionInfoImpl(widget.isShowColSum(), new AllCursor(), colFilterInfo, colExpander, colDimensions.toArray(new Dimension[colDimensions.size()]));
         return new XGroupQueryInfo(queryId, sourceKey, rowDimensionInfo, colDimensionInfo, targetInfo);
     }
 
