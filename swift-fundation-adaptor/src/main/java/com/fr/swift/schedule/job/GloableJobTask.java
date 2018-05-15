@@ -1,6 +1,5 @@
 package com.fr.swift.schedule.job;
 
-import com.finebi.conf.internalimp.update.TableUpdateInfo;
 import com.fr.third.org.quartz.JobExecutionContext;
 import com.fr.third.org.quartz.JobExecutionException;
 
@@ -16,7 +15,7 @@ public class GloableJobTask extends JobTask {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         try {
-            updateManager.triggerAllUpdate(new TableUpdateInfo());
+            updateManager.triggerAllUpdate(null);
         } catch (Exception e) {
             LOGGER.error(e);
         }

@@ -83,7 +83,6 @@ public class SwiftTimeScheduleService implements TimeScheduleService {
         nameAndTaskNameMap.clear();
         LOGGER.info("=============Remove all schedule end!!!=============");
         LOGGER.info("=============Reset all schedule begin!!!=============");
-
         Map<String, TableUpdateInfo> infoMap = updateInfoConfigService.getAllTableUpdateInfo();
         for (Map.Entry<String, TableUpdateInfo> infoEntry : infoMap.entrySet()) {
             FineBusinessTable fineBusinessTable = tableManager.getSingleTable(infoEntry.getKey());
@@ -96,6 +95,8 @@ public class SwiftTimeScheduleService implements TimeScheduleService {
                         String taskName = infoEntry.getKey() + "-" + updateTimeItem.getCron();
                         Map<String, String> taskParams = new HashMap<String, String>();
                         taskParams.put("tableName", infoEntry.getKey());
+                        taskParams.put("timingType", String.valueOf(updateTimeItem.getSetting().getFrequency().getType()));
+                        taskParams.put("updateType", String.valueOf(updateTimeItem.getType()));
                         ScheduleEntity entity = new ScheduleEntity(taskName, TableJobTask.class, updateTimeItem.getCron(), taskParams,
                                 new Date(updateTimeItem.getStartTime()), new Date(updateTimeItem.getEndTime()));
                         addScheduleTimeTask(entity);
@@ -115,6 +116,7 @@ public class SwiftTimeScheduleService implements TimeScheduleService {
                             String taskName = infoEntry.getKey() + "-" + updateTimeItem.getCron();
                             Map<String, String> taskParams = new HashMap<String, String>();
                             taskParams.put("packageId", infoEntry.getKey());
+                            taskParams.put("timingType", String.valueOf(updateTimeItem.getSetting().getFrequency().getType()));
                             ScheduleEntity entity = new ScheduleEntity(taskName, PackageJobTask.class, updateTimeItem.getCron(), taskParams,
                                     new Date(updateTimeItem.getStartTime()), new Date(updateTimeItem.getEndTime()));
                             addScheduleTimeTask(entity);
@@ -132,8 +134,10 @@ public class SwiftTimeScheduleService implements TimeScheduleService {
             List<String> taskNameList = new ArrayList<String>();
             for (UpdateTimeItem updateTimeItem : globalUpdateSetting.getSettings()) {
                 String taskName = TableUpdateInfoConfigService.GLOABAL_KEY + "-" + updateTimeItem.getCron();
+                Map<String, String> taskParams = new HashMap<String, String>();
+                taskParams.put("timingType", String.valueOf(updateTimeItem.getSetting().getFrequency().getType()));
                 ScheduleEntity entity = new ScheduleEntity(taskName, GloableJobTask.class, updateTimeItem.getCron(),
-                        new HashMap<String, String>(), new Date(updateTimeItem.getStartTime()), new Date(updateTimeItem.getEndTime()));
+                        taskParams, new Date(updateTimeItem.getStartTime()), new Date(updateTimeItem.getEndTime()));
                 addScheduleTimeTask(entity);
                 LOGGER.info("Add timer schedule :" + taskName);
                 taskNameList.add(taskName);

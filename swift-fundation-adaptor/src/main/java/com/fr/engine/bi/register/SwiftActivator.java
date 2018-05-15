@@ -2,6 +2,7 @@ package com.fr.engine.bi.register;
 
 import com.finebi.base.stable.StableManager;
 import com.finebi.conf.algorithm.DMDataModel;
+import com.fr.data.cache.AttachmentCacheManagerImpl;
 import com.fr.module.Activator;
 import com.fr.swift.driver.SwiftDriverRegister;
 import com.fr.swift.manager.ConnectionProvider;
@@ -37,6 +38,7 @@ public class SwiftActivator extends Activator {
         StableManager.addClass("swiftTableManager", com.finebi.conf.provider.SwiftTableManager.class);
         StableManager.addClass("swiftRelationPathConfProvider", com.finebi.conf.provider.SwiftRelationPathConfProvider.class);
         StableManager.addClass("swiftSpaceManager", com.fr.swift.adaptor.space.SwiftSpaceManager.class);
+        AttachmentCacheManagerImpl.register();
         startSwift();
     }
 

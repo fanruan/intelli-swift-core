@@ -52,7 +52,9 @@ import com.fr.swift.source.manager.IndexStuffProvider;
 import com.fr.swift.utils.RelationRelianceFactory;
 import com.fr.swift.utils.SourceRelianceFactory;
 import com.fr.swift.utils.TableUpdateLogUtil;
+import com.fr.swift.utils.UpdateConstants;
 import com.fr.swift.utils.UpdateSpaceInfoUtil;
+import com.fr.swift.utils.UpdateTriggerUtils;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -108,6 +110,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         TableUpdateInfo info = updateInfoConfigService.getTableUpdateInfo(table.getName());
         if (null == info) {
             info = new TableUpdateInfo();
+            info.setUpdateType(UpdateConstants.UpdateType.ALL);
             info.setTableName(table.getName());
         }
         List<TableUpdateInfo> tableUpdateInfoList = new ArrayList<TableUpdateInfo>();
@@ -137,7 +140,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     public void triggerTableUpdate(TableUpdateInfo updateInfo, FineBusinessTable table) throws Exception {
         Map<FineBusinessTable, TableUpdateInfo> infoMap = new HashMap<FineBusinessTable, TableUpdateInfo>();
         infoMap.put(table, updateInfo);
-        this.triggerUpdate(infoMap);
+        this.triggerUpdate(infoMap, true, false);
     }
 
     @Override
@@ -149,45 +152,57 @@ public class SwiftUpdateManager implements EngineUpdateManager {
      * 触发更新动作
      *
      * @param infoMap
+     * @param isActive 是否主动触发
+     * @param isBatch  是否批量更新
+     *                 批量更新，直接去判断是否是全量、增量、从不更新
+     *                 不是批量，则去判断是否主动触发，是则取传入的方式更新
      * @throws Exception
      */
-    private void triggerUpdate(Map<FineBusinessTable, TableUpdateInfo> infoMap) throws Exception {
+    public void triggerUpdate(Map<FineBusinessTable, TableUpdateInfo> infoMap, boolean isActive, boolean isBatch) throws Exception {
+
         Map<FineBusinessTable, TableUpdateInfo> infoMap2 = new HashMap<FineBusinessTable, TableUpdateInfo>();
-        for (Map.Entry<FineBusinessTable, TableUpdateInfo> entry : infoMap.entrySet()) {
-            if (entry.getValue().getUpdateType() == 1) {//全量
-                infoMap2.put(entry.getKey(), entry.getValue());
-            } else { //增量
+        if (isBatch) {
+            for (Map.Entry<FineBusinessTable, TableUpdateInfo> entry : infoMap.entrySet()) {
                 TableUpdateInfo tableUpdateInfo = updateInfoConfigService.getTableUpdateInfo(entry.getKey().getName());
                 if (tableUpdateInfo == null) {
                     tableUpdateInfo = new TableUpdateInfo();
+                    tableUpdateInfo.setUpdateType(UpdateConstants.UpdateType.ALL);
                 }
-                infoMap2.put(entry.getKey(), tableUpdateInfo);
+                TableUpdateInfo resultUpdateInfo = UpdateTriggerUtils.checkUpdateInfo(entry.getValue(), entry.getKey());
+                if (resultUpdateInfo != null) {
+                    infoMap2.put(entry.getKey(), resultUpdateInfo);
+                } else {
+                    LOGGER.info("Table '" + entry.getKey().getName() + "''s update type is never!");
+                }
+            }
+        } else {
+            for (Map.Entry<FineBusinessTable, TableUpdateInfo> entry : infoMap.entrySet()) {
+                TableUpdateInfo tableUpdateInfo = null;
+                if (entry.getValue().getUpdateType() == UpdateConstants.UpdateType.INCREMENT) {
+                    tableUpdateInfo = updateInfoConfigService.getTableUpdateInfo(entry.getKey().getName());
+                }
+                infoMap2.put(entry.getKey(), tableUpdateInfo != null ? tableUpdateInfo : entry.getValue());
             }
         }
-        infoMap = infoMap2;
 
+        infoMap = infoMap2;
+        LOGGER.info((isActive ? "Active" : "Passive") + " trigger update!");
+        triggerUpdate(infoMap);
+    }
+
+    private void triggerUpdate(Map<FineBusinessTable, TableUpdateInfo> infoMap) throws Exception {
         SourceContainerManager updateSourceContainer = new SourceContainerManager();
         Map<String, List<Increment>> incrementMap = new HashMap<String, List<Increment>>();
-
         DataSourceFactory.transformDataSources(infoMap, updateSourceContainer, incrementMap);
-
         List<DataSource> baseDataSourceList = new ArrayList<DataSource>(updateSourceContainer.getDataSourceContainer().getAllSources());
-
         List<DataSource> allDataSourceList = DataSourceFactory.transformDataSources(tableManager.getAllTable());
-
         SourceReliance sourceReliance = SourceRelianceFactory.generateSourceReliance(baseDataSourceList, allDataSourceList, incrementMap);
-
         List<RelationSource> relationSources = RelationSourceFactory.transformRelationSources(relationPathConfProvider.getAllRelations());
-
         List<SourcePath> sourcePaths = RelationSourceFactory.transformSourcePaths(relationPathConfProvider.getAllRelationPaths());
-
         // FIXME 传表的责任链，只更新和表有关的关联，单表更新可能无法更新到关联
         RelationReliance relationReliance = RelationRelianceFactory.generateRelationReliance(relationSources, sourceReliance);
-
         RelationPathReliance relationPathReliance = RelationRelianceFactory.generateRelationPathReliance(sourcePaths, relationReliance);
-
         IndexStuffProvider indexStuffProvider = new IndexStuffInfoProvider(updateSourceContainer, incrementMap, sourceReliance, relationReliance, relationPathReliance);
-
         ProviderManager.getManager().registProvider(0, indexStuffProvider);
     }
 
@@ -207,23 +222,18 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     }
 
     @Override
-    public void triggerPackageUpdate(String packId) {
-        try {
-            TableUpdateInfo info = updateInfoConfigService.getPackageUpdateInfo(packId);
-            if (info == null) {
-                info = new TableUpdateInfo();
-            }
-            List<FineBusinessTable> tables = tableManager.getAllTableByPackId(packId);
-            Map<FineBusinessTable, TableUpdateInfo> infoMap = new HashMap<FineBusinessTable, TableUpdateInfo>();
-            for (FineBusinessTable table : tables) {
-                infoMap.put(table, info);
-            }
-            this.triggerUpdate(infoMap);
-        } catch (Exception e) {
-            LOGGER.error(e);
+    public void triggerPackageUpdate(String packId) throws Exception {
+        TableUpdateInfo info = updateInfoConfigService.getPackageUpdateInfo(packId);
+        if (info == null) {
+            info = new TableUpdateInfo();
+            info.setUpdateType(UpdateConstants.UpdateType.ALL);
         }
-
-
+        List<FineBusinessTable> tables = tableManager.getAllTableByPackId(packId);
+        Map<FineBusinessTable, TableUpdateInfo> infoMap = new HashMap<FineBusinessTable, TableUpdateInfo>();
+        for (FineBusinessTable table : tables) {
+            infoMap.put(table, info);
+        }
+        this.triggerUpdate(infoMap, true, true);
     }
 
     @Override
@@ -242,27 +252,22 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     }
 
     @Override
-    public List<UpdateLog> getTableUpdateLog(FineBusinessTable table) {
-        try {
-            DataSource dataSource = DataSourceFactory.getDataSource(table);
-            List<UpdateLog> updateLogs = new ArrayList<UpdateLog>();
-            int round = CubeTasks.getCurrentRound();
-            for (int i = 1; i <= round; i++) {
-                TaskKey taskKey = CubeTasks.newBuildTableTaskKey(dataSource, i);
+    public List<UpdateLog> getTableUpdateLog(FineBusinessTable table) throws Exception {
+        DataSource dataSource = DataSourceFactory.getDataSource(table);
+        List<UpdateLog> updateLogs = new ArrayList<UpdateLog>();
+        int round = CubeTasks.getCurrentRound();
+        for (int i = 1; i <= round; i++) {
+            TaskKey taskKey = CubeTasks.newBuildTableTaskKey(dataSource, i);
 
-                Task task = SchedulerTaskPool.getInstance().get(taskKey);
-                if (task != null) {
-                    UpdateLog updateLog = new UpdateLog();
-                    updateLog.setName(table.getName());
-                    updateLog.setEndTime(task.getEndTime());
-                    updateLogs.add(updateLog);
-                }
+            Task task = SchedulerTaskPool.getInstance().get(taskKey);
+            if (task != null) {
+                UpdateLog updateLog = new UpdateLog();
+                updateLog.setName(table.getName());
+                updateLog.setEndTime(task.getEndTime());
+                updateLogs.add(updateLog);
             }
-            return updateLogs;
-        } catch (Exception e) {
-            LOGGER.error(e);
-            return null;
         }
+        return updateLogs;
     }
 
 
@@ -271,12 +276,17 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         Map<FineBusinessTable, TableUpdateInfo> infoMap = new HashMap<FineBusinessTable, TableUpdateInfo>();
         for (FineBusinessTable fineBusinessTable : tableManager.getAllTable()) {
             if (!(fineBusinessTable instanceof FineAnalysisTable)) {
-                infoMap.put(fineBusinessTable, new TableUpdateInfo());
+                TableUpdateInfo tableUpdateInfo = updateInfoConfigService.getTableUpdateInfo(fineBusinessTable.getName());
+                if (tableUpdateInfo == null) {
+                    tableUpdateInfo = new TableUpdateInfo();
+                    tableUpdateInfo.setUpdateType(UpdateConstants.UpdateType.ALL);
+                }
+                infoMap.put(fineBusinessTable, tableUpdateInfo);
             }
         }
         if (!infoMap.isEmpty()) {
             try {
-                this.triggerUpdate(infoMap);
+                this.triggerUpdate(infoMap, true, true);
             } catch (Exception e) {
                 LOGGER.error(e);
             }
