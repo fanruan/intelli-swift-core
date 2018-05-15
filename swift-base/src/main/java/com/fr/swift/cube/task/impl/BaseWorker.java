@@ -1,6 +1,7 @@
 package com.fr.swift.cube.task.impl;
 
-import com.fr.swift.cube.task.Task.Result;
+import com.fr.swift.cube.task.TaskResult;
+import com.fr.swift.cube.task.TaskResult.Type;
 import com.fr.swift.cube.task.WorkerTask;
 import com.fr.swift.cube.task.WorkerTask.Worker;
 
@@ -17,7 +18,7 @@ public abstract class BaseWorker implements Worker {
     }
 
     @Override
-    public final void workOver(Result result) {
+    public final void workOver(TaskResult result) {
         if (owner != null) {
             owner.done(result);
         }
@@ -28,7 +29,7 @@ public abstract class BaseWorker implements Worker {
             @Override
             public void work() {
                 // do nothing
-                workOver(Result.SUCCEEDED);
+                workOver(new TaskResultImpl(Type.SUCCEEDED));
             }
         };
     }

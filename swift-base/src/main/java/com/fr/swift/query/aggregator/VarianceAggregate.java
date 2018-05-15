@@ -1,6 +1,7 @@
 package com.fr.swift.query.aggregator;
 
 import com.fr.swift.bitmap.traversal.CalculatorTraversalAction;
+import com.fr.swift.query.adapter.metric.FormulaDetailColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.impl.base.DoubleDetailColumn;
@@ -35,7 +36,7 @@ public class VarianceAggregate extends AbstractAggregator<VarianceAggregatorValu
         CalculatorTraversalAction ss;
         if (detailColumn instanceof LongDetailColumn) {
             return aggregateLong(notNullTraversal, detailColumn, average);
-        } else if (detailColumn instanceof DoubleDetailColumn) {
+        } else if (detailColumn instanceof DoubleDetailColumn || detailColumn instanceof FormulaDetailColumn) {
             return aggregateDouble(notNullTraversal, detailColumn, average);
         } else {
             final IntDetailColumn idc = (IntDetailColumn) detailColumn;
@@ -93,9 +94,8 @@ public class VarianceAggregate extends AbstractAggregator<VarianceAggregatorValu
         return varianceValue;
     }
 
-    private VarianceAggregatorValue aggregateDouble(RowTraversal traversal, DetailColumn detailColumn, final double average) {
+    private VarianceAggregatorValue aggregateDouble(RowTraversal traversal, final DetailColumn detailColumn, final double average) {
         final VarianceAggregatorValue varianceValue = new VarianceAggregatorValue();
-        final DoubleDetailColumn ddc = (DoubleDetailColumn) detailColumn;
         final double[] sum = new double[2];
         Arrays.fill(sum, 0);
         CalculatorTraversalAction ss;
@@ -107,7 +107,7 @@ public class VarianceAggregate extends AbstractAggregator<VarianceAggregatorValu
 
             @Override
             public void actionPerformed(int row) {
-                double source = ddc.getDouble(row);
+                double source = detailColumn.getDouble(row);
                 sum[0] += source;
                 sum[1] += source * source;
                 result += ((source - average) * (source - average));

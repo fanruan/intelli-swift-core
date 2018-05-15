@@ -1,15 +1,15 @@
 package com.fr.swift.cube.task.impl;
 
 import com.fr.swift.cube.task.Task;
-import com.fr.swift.cube.task.Task.Status;
 import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.cube.task.TaskPool;
+import com.fr.swift.util.function.Predicate;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  * @author anchore
@@ -44,10 +44,10 @@ abstract class BaseTaskPool<T extends Task> implements TaskPool<T> {
     }
 
     @Override
-    public Set<TaskKey> tasksOf(Status status) {
-        Set<TaskKey> specTasks = new HashSet<TaskKey>();
+    public List<TaskKey> taskOf(Predicate<T> predicate) {
+        List<TaskKey> specTasks = new ArrayList<TaskKey>();
         for (Entry<TaskKey, T> entry : tasks.entrySet()) {
-            if (entry.getValue().status() == status) {
+            if (predicate.test(entry.getValue())) {
                 specTasks.add(entry.getKey());
             }
         }

@@ -1,14 +1,15 @@
 package com.fr.swift.cube.task.impl;
 
-import com.fr.swift.cube.task.PrevOneDoneHandler;
 import com.fr.swift.cube.task.SchedulerTask;
 import com.fr.swift.cube.task.TaskKey;
+import com.fr.swift.cube.task.TaskResult;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.service.SwiftServiceEvent;
 import com.fr.swift.service.listener.EventType;
 import com.fr.swift.service.listener.SwiftServiceListenerManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -20,84 +21,40 @@ public class SchedulerTaskImpl extends BaseTask implements SchedulerTask {
 
     private List<TaskKey> nextTasks = new ArrayList<TaskKey>();
 
-    private final PrevOneDoneHandler prevOneDoneHandler;
-
     public SchedulerTaskImpl(TaskKey key) {
-        this(key, new DefaultHandler());
-    }
-
-    public SchedulerTaskImpl(final TaskKey key, PrevOneDoneHandler prevOneDoneHandler) {
         super(key);
-        this.prevOneDoneHandler = prevOneDoneHandler;
 
         SchedulerTaskPool.getInstance().add(this);
     }
 
     @Override
-    public void onPrevOneDone(TaskKey prevDoneOne) {
-        synchronized (prevOneDoneHandler) {
-            prevOneDoneHandler.handle(key, prevDoneOne);
-        }
-    }
-
-    @Override
     public void cancel() {
-        try {
-            SwiftServiceListenerManager.getInstance().triggerEvent(new SwiftServiceEvent<TaskKey>() {
-                @Override
-                public TaskKey getContent() {
-                    return key;
-                }
-
-                @Override
-                public EventType getEventType() {
-                    return EventType.CANCEL_TASK;
-                }
-            });
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().error(e);
-        }
+        triggerEvent(EventType.CANCEL_TASK);
     }
 
     @Override
     public void triggerRun() {
         start = System.currentTimeMillis();
 
-        setStatus(Status.RUNNABLE);
-        try {
-            SwiftServiceListenerManager.getInstance().triggerEvent(new SwiftServiceEvent<TaskKey>() {
-                @Override
-                public TaskKey getContent() {
-                    return key;
-                }
-
-                @Override
-                public EventType getEventType() {
-                    return EventType.RUN_TASK;
-                }
-            });
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().error(e);
+        if (status.order() <= Status.RUNNABLE.order()) {
+            setStatus(Status.RUNNABLE);
+            triggerEvent(EventType.RUN_TASK);
         }
     }
 
     @Override
-    public void onDone(Result result) {
-        synchronized (this) {
-            if (status == Status.DONE) {
-                return;
-            }
-            this.result = result;
-            setStatus(Status.DONE);
+    public void onDone(TaskResult result) {
+        if (status == Status.DONE) {
+            return;
         }
+        this.result = result;
+        setStatus(Status.DONE);
 
         end = System.currentTimeMillis();
 
         SwiftLoggers.getLogger().info(String.format("%s %s", key, result));
 
-        for (TaskKey next : nextTasks) {
-            from(next).onPrevOneDone(key);
-        }
+        SchedulerTaskTomb.getTomb().add(this);
     }
 
 
@@ -135,15 +92,33 @@ public class SchedulerTaskImpl extends BaseTask implements SchedulerTask {
 
     @Override
     public List<TaskKey> prevAll() {
-        return prevTasks;
+        return Collections.unmodifiableList(prevTasks);
     }
 
     @Override
     public List<TaskKey> nextAll() {
-        return nextTasks;
+        return Collections.unmodifiableList(nextTasks);
     }
 
     private static SchedulerTask from(TaskKey taskKey) {
         return SchedulerTaskPool.getInstance().get(taskKey);
+    }
+
+    private void triggerEvent(final EventType eventType) {
+        try {
+            SwiftServiceListenerManager.getInstance().triggerEvent(new SwiftServiceEvent<TaskKey>() {
+                @Override
+                public TaskKey getContent() {
+                    return key;
+                }
+
+                @Override
+                public EventType getEventType() {
+                    return eventType;
+                }
+            });
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
+        }
     }
 }

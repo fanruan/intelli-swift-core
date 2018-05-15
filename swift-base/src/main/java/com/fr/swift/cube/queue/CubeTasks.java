@@ -114,7 +114,7 @@ public class CubeTasks {
     }
 
     public static TaskKey newTableBuildEndTaskKey(DataSource ds) throws SwiftMetaDataException {
-        return new CubeTaskKey("End of build table " + newTableName(ds), Operation.BUILD_TABLE);
+        return new CubeTaskKey("End of building table " + newTableName(ds), Operation.BUILD_TABLE);
     }
 
     public static TaskKey newTransportTaskKey(DataSource ds) throws SwiftMetaDataException {

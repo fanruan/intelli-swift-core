@@ -128,7 +128,10 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
                     bean = new WidgetDimensionBean();
                 }
 //                Set<String> values = new HashSet<String>();
-                filterInfoList.add(LinkageAdaptor.dealFilterInfo(new ColumnKey(columnName), value, bean));
+                FilterInfo info = LinkageAdaptor.dealFilterInfo(new ColumnKey(columnName), value, bean);
+                if (null != info) {
+                    filterInfoList.add(info);
+                }
 //                values.add(value);
 //                filterInfoList.add(new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(columnName), values, SwiftDetailFilterType.STRING_IN));
             }
@@ -212,9 +215,8 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
 
     private static Dimension toDimension(SourceKey sourceKey, FineDimension fineDim, int index, int size, List<FineTarget> targets) throws SQLException {
         String columnName = getColumnName(fineDim);
-        String tableName = getTableName(fineDim.getFieldId());
+        String tableName = getTableName(getFieldId(fineDim));
         ColumnKey colKey = new ColumnKey(columnName);
-
         Group group = GroupAdaptor.adaptDashboardGroup(fineDim);
 
         FilterInfo filterInfo = FilterInfoFactory.transformDimensionFineFilter(tableName, fineDim, index == size - 1, targets);

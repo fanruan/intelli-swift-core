@@ -15,5 +15,10 @@ public interface Dimension extends SwiftColumnProvider {
 
     Group getGroup();
 
+    /**
+     * 这边只用来取结果过滤器。维度里面的明细过滤要在适配层各个组件分别解析
+     *
+     * @return
+     */
     FilterInfo getFilter();
 }

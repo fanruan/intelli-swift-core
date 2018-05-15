@@ -31,7 +31,8 @@ public class SumAggregate extends AbstractAggregator<DoubleAmountAggregatorValue
         final DetailColumn detailColumn = column.getDetailColumn();
         RowTraversal notNullTraversal = getNotNullTraversal(traversal, column);
         if (notNullTraversal.isEmpty()){
-            return new DoubleAmountAggregatorValue();
+            valueAmount.setValue(NULL_DOUBLE);
+            return valueAmount;
         }
         TraversalAction ss;
         if (detailColumn instanceof LongDetailColumn) {

@@ -1,12 +1,14 @@
 package com.fr.swift.cube.task.impl;
 
 import com.fr.swift.cube.task.LocalTask;
-import com.fr.swift.cube.task.PrevOneDoneHandler;
 import com.fr.swift.cube.task.SchedulerTask;
 import com.fr.swift.cube.task.TaskKey;
+import com.fr.swift.cube.task.TaskResult;
+import com.fr.swift.cube.task.TaskResult.Type;
 import com.fr.swift.log.SwiftLoggers;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -15,29 +17,16 @@ import java.util.List;
  */
 public class LocalTaskImpl extends BaseTask implements LocalTask {
     private Worker worker;
-    private final PrevOneDoneHandler prevOneDoneHandler;
 
     private List<TaskKey> prevTasks = new ArrayList<TaskKey>();
     private List<TaskKey> nextTasks = new ArrayList<TaskKey>();
 
-    public LocalTaskImpl(TaskKey key, Worker worker) {
-        this(key, worker, new DefaultLocalHandler());
-    }
-
-    public LocalTaskImpl(final TaskKey key, Worker worker, PrevOneDoneHandler prevOneDoneHandler) {
+    public LocalTaskImpl(final TaskKey key, Worker worker) {
         super(key);
-        this.prevOneDoneHandler = prevOneDoneHandler;
         this.worker = worker;
         worker.setOwner(this);
 
         LocalTaskPool.getInstance().add(this);
-    }
-
-    @Override
-    public void onPrevOneDone(TaskKey prevDoneOne) {
-        synchronized (prevOneDoneHandler) {
-            prevOneDoneHandler.handle(key, prevDoneOne);
-        }
     }
 
     @Override
@@ -48,7 +37,7 @@ public class LocalTaskImpl extends BaseTask implements LocalTask {
     @Override
     public void onCancel() {
         if (status.order() < Status.RUNNING.order()) {
-            done(Result.CANCELLED);
+            done(new TaskResultImpl(Type.CANCELLED));
         }
     }
 
@@ -56,7 +45,6 @@ public class LocalTaskImpl extends BaseTask implements LocalTask {
     public void triggerRun() {
         start = System.currentTimeMillis();
 
-        setStatus(Status.RUNNABLE);
         CubeTaskManager.getInstance().run(this);
     }
 
@@ -66,27 +54,23 @@ public class LocalTaskImpl extends BaseTask implements LocalTask {
     }
 
     @Override
-    public void done(final Result result) {
+    public void done(final TaskResult result) {
         onDone(result);
     }
 
     @Override
-    public void onDone(Result result) {
-        synchronized (this) {
-            if (status == Status.DONE) {
-                return;
-            }
-            this.result = result;
-            setStatus(Status.DONE);
+    public void onDone(TaskResult result) {
+        if (status == Status.DONE) {
+            return;
         }
+        this.result = result;
+        setStatus(Status.DONE);
 
         end = System.currentTimeMillis();
 
         SwiftLoggers.getLogger().info(String.format("%s %s", key, result));
 
-        for (TaskKey next : nextTasks) {
-            from(next).onPrevOneDone(key);
-        }
+        LocalTaskTomb.getTomb().add(this);
     }
 
     @Override
@@ -123,12 +107,12 @@ public class LocalTaskImpl extends BaseTask implements LocalTask {
 
     @Override
     public List<TaskKey> prevAll() {
-        return prevTasks;
+        return Collections.unmodifiableList(prevTasks);
     }
 
     @Override
     public List<TaskKey> nextAll() {
-        return nextTasks;
+        return Collections.unmodifiableList(nextTasks);
     }
 
     private static LocalTask from(TaskKey taskKey) {

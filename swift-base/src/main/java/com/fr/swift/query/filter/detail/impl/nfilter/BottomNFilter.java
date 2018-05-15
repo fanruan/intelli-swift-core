@@ -25,10 +25,13 @@ public class BottomNFilter extends AbstractNFilter {
 
     @Override
     protected RowTraversal getIntIterator(DictionaryEncodedColumn dict) {
-        int endIndex = dict.globalSize() >= bottomN ? bottomN : dict.globalSize();
+        int globalSize = dict.globalSize();
+        int globalEnd = globalSize > bottomN ? bottomN : globalSize - 1;
+        int localStart = DictionaryEncodedColumn.NOT_NULL_START_INDEX;
+        int localEnd = getLocalIndex(dict, localStart, dict.size() - 1, globalEnd);
         // TODO: 2018/3/26 同topN
         return new IntListRowTraversal(
-                IntListFactory.createRangeIntList(DictionaryEncodedColumn.NOT_NULL_START_INDEX, endIndex));
+                IntListFactory.createRangeIntList(localStart, localEnd));
     }
 
     @Override
@@ -36,7 +39,7 @@ public class BottomNFilter extends AbstractNFilter {
         if (targetIndex == -1) {
             int index = node.getIndex();
             return index < bottomN;
-        }else {
+        } else {
             Double value = getValue(node, targetIndex);
             return node.getAggregatorValue(targetIndex).calculate() <= value;
         }

@@ -97,6 +97,7 @@ public abstract class AbstractBlockInserter implements Inserter {
     @Override
     public List<Segment> insertData(SwiftResultSet swiftResultSet) throws Exception {
         if (!fields.isEmpty()) {
+            List<Segment> newSegments = new ArrayList<Segment>();
             try {
                 long count = 0;
                 String allotColumn = fields.get(0);
@@ -109,7 +110,9 @@ public abstract class AbstractBlockInserter implements Inserter {
                     if (index >= size) {
                         for (int i = size; i <= index; i++) {
                             segmentIndexCache.putSegRow(i, 0);
-                            segments.add(createSegment(i));
+                            Segment newSegment = createSegment(i);
+                            segments.add(newSegment);
+                            newSegments.add(newSegment);
                         }
                     } else if (index == -1) {
                         index = segments.size() - 1;
@@ -135,7 +138,7 @@ public abstract class AbstractBlockInserter implements Inserter {
                 swiftResultSet.close();
             }
             release();
-            return segments;
+            return newSegments;
         } else {
             List<Segment> cubeSourceSegments = SwiftContext.getInstance().getSegmentProvider().getSegment(new SourceKey(cubeSourceKey));
             for (int i = 0; i < cubeSourceSegments.size(); i++) {

@@ -10,8 +10,6 @@ import java.util.List;
  * 不关心任务具体的执行，具体的执行在WorkerTask里做
  */
 public interface SchedulerTask extends Task {
-    void onPrevOneDone(TaskKey prevDoneOne);
-
     /**
      * 这里要与执行节点通信，取消任务
      */
@@ -27,7 +25,7 @@ public interface SchedulerTask extends Task {
      *
      * @param result 结果
      */
-    void onDone(Result result);
+    void onDone(TaskResult result);
 
     void addPrev(TaskKey prevKey);
 

@@ -1,13 +1,13 @@
 package com.fr.swift.generate.realtime;
 
-import com.fr.swift.cube.task.Task.Result;
+import com.fr.swift.cube.task.TaskResult.Type;
 import com.fr.swift.cube.task.impl.BaseWorker;
+import com.fr.swift.cube.task.impl.TaskResultImpl;
 import com.fr.swift.flow.FlowRuleController;
 import com.fr.swift.generate.Transporter;
 import com.fr.swift.generate.realtime.increment.DecreaseTransport;
 import com.fr.swift.generate.realtime.increment.IncreaseTransport;
 import com.fr.swift.generate.realtime.increment.IncrementTransport;
-import com.fr.swift.generate.realtime.increment.ModifyTransport;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -52,19 +52,30 @@ public class RealtimeDataTransporter extends BaseWorker implements Transporter {
 
 
     private void initProcessors() {
+
         incrementTransportList = new ArrayList<IncrementTransport>();
-        if (increment.getIncreaseSource() != null) {
-            IncrementTransport increaseTransport = new IncreaseTransport(dataSource, increment.getIncreaseSource(), swiftMetaData, flowRuleController);
-            incrementTransportList.add(increaseTransport);
-        }
+
         if (increment.getDecreaseSource() != null) {
             IncrementTransport desreaseTransport = new DecreaseTransport(dataSource, increment.getDecreaseSource(), swiftMetaData);
             incrementTransportList.add(desreaseTransport);
         }
+
         if (increment.getModifySource() != null) {
-            IncrementTransport modifyTransport = new ModifyTransport(dataSource, increment.getDecreaseSource(), swiftMetaData, flowRuleController);
+            IncrementTransport modifyTransport = new DecreaseTransport(dataSource, increment.getModifySource(), swiftMetaData);
+            IncrementTransport increaseTransport = new IncreaseTransport(dataSource, increment.getModifySource(), swiftMetaData, flowRuleController);
             incrementTransportList.add(modifyTransport);
+            incrementTransportList.add(increaseTransport);
         }
+
+        if (increment.getIncreaseSource() != null) {
+            IncrementTransport increaseTransport = new IncreaseTransport(dataSource, increment.getIncreaseSource(), swiftMetaData, flowRuleController);
+            incrementTransportList.add(increaseTransport);
+        }
+
+//        if (increment.getModifySource() != null) {
+//            IncrementTransport modifyTransport = new ModifyTransport(dataSource, increment.getModifySource(), swiftMetaData, flowRuleController);
+//            incrementTransportList.add(modifyTransport);
+//        }
 
         if (increment.getIncreaseExcelSource() != null) {
             IncreaseTransport increaseTransport = new IncreaseTransport(dataSource, increment.getIncreaseExcelSource(), swiftMetaData, flowRuleController);
@@ -76,10 +87,10 @@ public class RealtimeDataTransporter extends BaseWorker implements Transporter {
     public void work() {
         try {
             transport();
-            workOver(Result.SUCCEEDED);
+            workOver(new TaskResultImpl(Type.SUCCEEDED));
         } catch (Exception e) {
             LOGGER.error(e);
-            workOver(Result.FAILED);
+            workOver(new TaskResultImpl(Type.FAILED, e));
         }
     }
 

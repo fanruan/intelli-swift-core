@@ -16,6 +16,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import static com.fr.swift.cube.task.Task.Status.DONE;
+import static com.fr.swift.cube.task.Task.Status.RUNNING;
 
 /**
  * @author anchore
@@ -53,13 +54,11 @@ public class CubeTaskExecutor implements TaskExecutor {
                 while (true) {
                     ticket.acquire();
                     WorkerTask task = tasks.take();
-                    synchronized (task) {
-                        if (task.status() == Status.RUNNABLE) {
-                            task.setStatus(Status.RUNNING);
-                            exec.execute(task);
-                        } else {
-                            ticket.release();
-                        }
+                    if (task.status() == Status.RUNNABLE) {
+                        task.setStatus(RUNNING);
+                        exec.execute(task);
+                    } else {
+                        ticket.release();
                     }
                 }
             } catch (InterruptedException e) {
@@ -70,7 +69,7 @@ public class CubeTaskExecutor implements TaskExecutor {
         TaskStatusChangeListener listener = new TaskStatusChangeListener() {
             @Override
             public void onChange(Status prev, Status now) {
-                if (now == DONE) {
+                if (prev == RUNNING && now == DONE) {
                     ticket.release();
                 }
             }
