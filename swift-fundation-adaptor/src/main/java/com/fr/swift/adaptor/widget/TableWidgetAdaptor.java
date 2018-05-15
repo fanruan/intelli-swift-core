@@ -10,7 +10,6 @@ import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
 import com.finebi.conf.internalimp.dashboard.widget.dimension.sort.DimensionTargetSort;
 import com.finebi.conf.internalimp.dashboard.widget.filter.CustomLinkConfItem;
 import com.finebi.conf.internalimp.dashboard.widget.filter.JumpItemBean;
-import com.finebi.conf.internalimp.dashboard.widget.filter.JumpSourceTargetFieldBean;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetGlobalFilterBean;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
 import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
@@ -77,7 +76,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(TableWidgetAdaptor.class);
 
     public static BITableResult calculate(TableWidget widget) {
-        GroupNode groupNode = null;
+        GroupNode groupNode;
         int dimensionSize = 0;
         try {
             dimensionSize = widget.getDimensionList().size();
@@ -100,7 +99,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         List<ExpanderBean> rowExpand = widget.getValue().getRowExpand();
         Expander expander = ExpanderFactory.create(widget.isOpenRowNode(), widget.getDimensionList(),
                 rowExpand == null ? new ArrayList<ExpanderBean>() : rowExpand, widget.getHeaderExpand());
-        DimensionInfo dimensionInfo = new DimensionInfoImpl(cursor, filterInfo, expander, dimensions.toArray(new Dimension[dimensions.size()]));
+        DimensionInfo dimensionInfo = new DimensionInfoImpl(cursor, filterInfo, expander, dimensions.toArray(new Dimension[0]));
         return new GroupQueryInfo(queryId, sourceKey, dimensionInfo, targetInfo);
     }
 
@@ -221,45 +220,6 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         }
         for (int i = 0; i < toColumns.length; i++) {
             filterInfoList.add(new SwiftDetailFilterInfo(new ColumnKey(toColumns[i]), results[i], SwiftDetailFilterType.STRING_IN));
-        }
-    }
-
-    private static void handleCrossTempletCustomLink(String tableName, WidgetGlobalFilterBean globalBean, JumpItemBean jump, List<FilterInfo> filterInfos) throws SQLException {
-        // todo 提炼公共部分 或者这边widget可以进行实例化的重构，减少参数传来传去
-        List<JumpSourceTargetFieldBean> sourceTargetFields = jump.getSourceTargetFields();
-        // 自定义设置的维度
-        Dimension[] fromColumns = new Dimension[sourceTargetFields.size()];
-        // 要过滤的维度
-        String[] toColumns = new String[sourceTargetFields.size()];
-        for (int i = 0; i < sourceTargetFields.size(); i++) {
-            JumpSourceTargetFieldBean bean = sourceTargetFields.get(i);
-            String from = bean.getSourceFieldId();
-            ColumnKey fromKey = new ColumnKey(getColumnName(from));
-            fromColumns[i] = (new GroupDimension(i, getSourceKey(from), fromKey, null, new AscSort(i, fromKey), null));
-            toColumns[i] = getColumnName(bean.getTargetFieldId());
-        }
-
-        // 根据点击的值，创建过滤条件
-        List<FilterInfo> filters = new ArrayList<FilterInfo>();
-        TableWidgetBean fromWidget = LinkageAdaptor.handleCrossTempletClick(tableName, globalBean, filters, fromColumns, toColumns);
-        // 分组表查询
-        FilterInfo filterInfo = new GeneralFilterInfo(filters, GeneralFilterInfo.AND);
-        GroupQueryInfo queryInfo = new GroupQueryInfo(fromWidget.getwId(), fromColumns[0].getSourceKey(),
-                new DimensionInfoImpl(new AllCursor(), filterInfo, null, fromColumns),
-                new TargetInfoImpl(0, new ArrayList<Metric>(0), new ArrayList<GroupTarget>(0), new ArrayList<ResultTarget>(0), new ArrayList<Aggregator>(0)));
-        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
-        Set[] results = new HashSet[toColumns.length];
-        for (int i = 0; i < results.length; i++) {
-            results[i] = new HashSet();
-        }
-        while (resultSet.next()) {
-            Row row = resultSet.getRowData();
-            for (int i = 0; i < row.getSize(); i++) {
-                results[i].add(row.getValue(i));
-            }
-        }
-        for (int i = 0; i < toColumns.length; i++) {
-            filterInfos.add(new SwiftDetailFilterInfo(new ColumnKey(toColumns[i]), results[i], SwiftDetailFilterType.STRING_IN));
         }
     }
 
