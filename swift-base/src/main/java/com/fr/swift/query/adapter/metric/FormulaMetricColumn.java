@@ -28,7 +28,7 @@ public class FormulaMetricColumn implements Column {
 
     @Override
     public BitmapIndexedColumn getBitmapIndex() {
-        return new FormulaIndexColumn();
+        return new FormulaIndexColumn(formula, segment);
     }
 
     @Override
