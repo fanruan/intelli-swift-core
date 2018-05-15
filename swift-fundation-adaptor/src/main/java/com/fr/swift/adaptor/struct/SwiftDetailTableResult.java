@@ -24,12 +24,12 @@ public class SwiftDetailTableResult implements BIDetailTableResult {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftDetailTableResult.class);
     private SwiftResultSet swiftResultSet;
-    private int columnSize = -1;
+    private int columnSize;
     //这些参数之后合成一个paging类，pagesize是是功能传过来的
-    private int totalRows = -1;
-    private int rowSize = -1;
+    private int totalRows;
+    private int rowSize;
     private int rowCount = 0;
-    private int currentPage = 1;
+    private int currentPage;
     private int startRow;
     private int endRow;
     private final int pageSize = 100;
@@ -58,6 +58,9 @@ public class SwiftDetailTableResult implements BIDetailTableResult {
     @Override
     public boolean hasNext() {
         try {
+            if (currentPage == -1) {
+                return swiftResultSet.next();
+            }
             while (swiftResultSet.next()) {
                 if (checkPage(rowCount) == null) {
                     break;
@@ -65,7 +68,6 @@ public class SwiftDetailTableResult implements BIDetailTableResult {
                 swiftResultSet.getRowData();
                 rowCount++;
             }
-            //       return swiftResultSet.next();
             return ++rowCount <= endRow;
         } catch (SQLException e) {
             LOGGER.error(e.getMessage(), e);
@@ -86,7 +88,6 @@ public class SwiftDetailTableResult implements BIDetailTableResult {
     @Override
     public List<BIDetailCell> next() {
         try {
-//            while (swiftResultSet.next()) {
                 List<BIDetailCell> detailCellList = new ArrayList<BIDetailCell>();
                 Row row = swiftResultSet.getRowData();
                 for (int i = 0; i < columnSize; i++) {
@@ -97,8 +98,6 @@ public class SwiftDetailTableResult implements BIDetailTableResult {
                     detailCellList.add(detailCell);
                 }
                 return detailCellList;
-//            }
-//            return null;
         } catch (SQLException e) {
             LOGGER.error(e.getMessage(), e);
             return null;
@@ -121,7 +120,6 @@ public class SwiftDetailTableResult implements BIDetailTableResult {
     @Override
     public boolean hasNextPage() {
         return totalRows - currentPage * pageSize > 0;
-//        return false;
     }
 
     @Override
