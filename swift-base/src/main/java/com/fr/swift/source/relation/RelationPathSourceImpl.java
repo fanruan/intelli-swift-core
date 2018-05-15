@@ -139,4 +139,9 @@ public class RelationPathSourceImpl implements SourcePath {
         return this;
     }
 
+    @Override
+    public String toString() {
+        return "{" + primarySource + "." + primaryFields +
+                " -> " + foreignSource + "." + foreignFields + "}";
+    }
 }

@@ -4,6 +4,8 @@ import com.fr.swift.query.adapter.AbstractQueryColumn;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.group.Group;
 import com.fr.swift.query.sort.Sort;
+import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SourceKey;
 
@@ -47,8 +49,12 @@ public abstract class AbstractDimension extends AbstractQueryColumn implements D
         return sourceKey;
     }
 
-    @Override
     public ColumnKey getColumnKey() {
         return columnKey;
+    }
+
+    @Override
+    public Column getColumn(Segment segment) {
+        return segment.getColumn(columnKey);
     }
 }

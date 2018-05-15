@@ -32,14 +32,14 @@ import com.fr.swift.util.Crasher;
 import com.fr.swift.util.Util;
 
 import java.lang.reflect.Constructor;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author yee
@@ -101,7 +101,7 @@ public class RelationColumn {
             if (columns[result[0]] == null) {
                 columns[result[0]] = segments[result[0]].getColumn(columnKey).getDictionaryEncodedColumn();
             }
-            return columns[result[0]].getValue(columns[result[0]].getIndexByRow(result[1]));
+            return columns[result[0]].getValueByRow(result[1]);
         }
         return null;
     }
@@ -208,6 +208,7 @@ public class RelationColumn {
                         Object value = columns[i].getValue(j);
                         index = handleDicAndIndex(bitMap, index, targetDicColumn, bitmapIndexedColumn, value);
                     } catch (Exception ignore) {
+                        SwiftLoggers.getLogger(RelationColumn.class).error(ignore);
                     }
                 }
             }

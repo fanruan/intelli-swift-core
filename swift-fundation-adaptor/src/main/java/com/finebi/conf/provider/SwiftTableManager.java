@@ -14,11 +14,13 @@ import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
+import com.fr.swift.adaptor.transformer.FieldFactory;
 import com.fr.swift.conf.business.field.FieldInfoHelper;
 import com.fr.swift.conf.business.table2source.TableToSource;
 import com.fr.swift.conf.business.table2source.dao.TableToSourceConfigDao;
 import com.fr.swift.conf.business.table2source.dao.TableToSourceConfigDaoImpl;
 import com.fr.swift.conf.business.table2source.unique.TableToSourceUnique;
+import com.fr.swift.conf.updateInfo.TableUpdateInfoConfigService;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.DataSource;
@@ -37,10 +39,12 @@ import java.util.Map;
  */
 public class SwiftTableManager extends AbstractEngineTableManager {
     private TableToSourceConfigDao tableToSourceConfigDao;
+    private TableUpdateInfoConfigService updateInfoConfigService;
     private SwiftLogger logger = SwiftLoggers.getLogger(SwiftTableManager.class);
 
     public SwiftTableManager() {
         tableToSourceConfigDao = new TableToSourceConfigDaoImpl();
+        updateInfoConfigService = TableUpdateInfoConfigService.getService();
     }
 
     @Override
@@ -79,7 +83,8 @@ public class SwiftTableManager extends AbstractEngineTableManager {
                 tableToSourceConfigDao.addConfig(table.getId(), dataSource.getSourceKey().getId());
                 EntryInfo entryInfo = this.createEntryInfo(table);
                 this.addEntryInfo(entryInfo, entry.getKey());
-                this.saveFieldInfo(FieldInfoHelper.createFieldInfo(entryInfo, dataSource.getMetadata()));
+                table.setFields(FieldFactory.transformColumns2Fields(dataSource.getMetadata(), table.getId()));
+                this.saveFieldInfo(FieldInfoHelper.createFieldInfo(entryInfo, table));
                 List<Relation> relationList = this.developDatabaseRelations(entryInfo, entry.getKey());
                 this.updateFineTableResponed(responed, entryInfo, relationList);
             }
@@ -101,13 +106,31 @@ public class SwiftTableManager extends AbstractEngineTableManager {
                 tableToSourceConfigDao.updateConfig(tableToSource);
                 EntryInfo entryInfo = this.createEntryInfo(table);
                 this.updateEntryInfo(entryInfo);
-                this.saveFieldInfo(FieldInfoHelper.createFieldInfo(entryInfo, dataSource.getMetadata()));
+                table.setFields(FieldFactory.transformColumns2Fields(dataSource.getMetadata(), table.getId()));
+                this.saveFieldInfo(FieldInfoHelper.createFieldInfo(entryInfo, table));
             }
 
             return true;
         } catch (Exception var5) {
             throw new FineTableAbsentException();
         }
+    }
+
+    public boolean removeTable(List<String> tableNames) {
+        boolean success = false;
+        try {
+            for (String tableName : tableNames) {
+                EntryInfo entryInfo = this.getEntryInfoByName(tableName);
+                this.deleteEntryInfo(entryInfo);
+            }
+            success = true;
+        } catch (Exception e) {
+            success = false;
+        }
+        if (success) {
+            return updateInfoConfigService.removeUpdateInfo(tableNames);
+        }
+        return false;
     }
 
     @Override

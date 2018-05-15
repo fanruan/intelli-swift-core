@@ -84,7 +84,26 @@ public enum DateType {
         }
     },
 
-    WEEK_OF_YEAR(Calendar.WEEK_OF_YEAR);
+    WEEK_OF_YEAR(Calendar.WEEK_OF_YEAR) {
+        @Override
+        public int from(Calendar c) {
+            long t = c.getTimeInMillis();
+            int weekOfYear = super.from(c);
+            int year = c.get(Calendar.YEAR);
+
+            // 回到上周，如果还在本年，但是周数变大了，说明本周算到下一年了
+            c.add(Calendar.DAY_OF_MONTH, -7);
+            int lastWeekOfYear = c.get(Calendar.WEEK_OF_YEAR);
+            if (year == c.get(Calendar.YEAR) && weekOfYear < lastWeekOfYear) {
+                return lastWeekOfYear + 1;
+            }
+
+            c.setFirstDayOfWeek(Calendar.MONDAY);
+            c.setMinimalDaysInFirstWeek(1);
+            c.setTimeInMillis(t);
+            return c.get(Calendar.WEEK_OF_YEAR);
+        }
+    };
 
     private static final int UNDEF = -1;
     private final int type;

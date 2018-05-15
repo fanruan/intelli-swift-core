@@ -1,9 +1,9 @@
 package com.fr.swift.cube.task;
 
-import com.fr.swift.cube.task.Task.Status;
+import com.fr.swift.util.function.Predicate;
 
 import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 
 /**
  * @author anchore
@@ -20,5 +20,5 @@ public interface TaskPool<T extends Task> {
 
     void remove(TaskKey key);
 
-    Set<TaskKey> tasksOf(Status status);
+    List<TaskKey> taskOf(Predicate<T> predicate);
 }

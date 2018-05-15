@@ -1,9 +1,10 @@
 package com.fr.swift.generate;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.BitMapOrHelper;
-import com.fr.swift.cube.task.Task;
-import com.fr.swift.generate.history.index.RelationIndexHelper;
+import com.fr.swift.cube.task.TaskResult.Type;
+import com.fr.swift.cube.task.impl.TaskResultImpl;
 import com.fr.swift.relation.CubeMultiRelationPath;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
@@ -30,31 +31,35 @@ public abstract class BaseFieldPathIndexer extends BaseTablePathIndexer {
     @Override
     public void work() {
         try {
-            LOGGER.info(String.format("start build FieldRelationIndex: %s -> %s", logicColumnKey.getName(), relationPath.getKey()));
-            List<Segment> primarySegment = getPrimaryTableSegments();
-            List<Segment> targetSegment = getTargetTableSegments();
-            for (Segment target : targetSegment) {
-                RelationIndex targetReader = getTargetReadIndex(target);
-                RelationIndex targetWriter = getTargetWriteIndex(target);
-                try {
-                    for (int i = 0; i < primarySegment.size(); i++) {
-                        buildIndexPerSegment(targetReader, targetWriter, primarySegment.get(i), i, target.getRowCount());
-                    }
-                } catch (Exception e) {
-                    Crasher.crash(e);
-                } finally {
-                    releaseIfNeed(targetReader);
-                    releaseIfNeed(targetWriter);
-                    releaseIfNeed(target);
-                }
-            }
-            workOver(Task.Result.SUCCEEDED);
-            LOGGER.info(String.format("build FieldRelationIndex: %s -> %s finished", logicColumnKey.getName(), relationPath.getKey()));
+            buildFieldPath();
+            workOver(new TaskResultImpl(Type.SUCCEEDED));
         } catch (Exception e) {
             LOGGER.error("Build field path index error", e);
-            workOver(Task.Result.FAILED);
+            workOver(new TaskResultImpl(Type.FAILED, e));
         }
 
+    }
+
+    private void buildFieldPath() {
+        LOGGER.info(String.format("start build FieldRelationIndex: %s -> %s", logicColumnKey.getName(), relationPath.getKey()));
+        List<Segment> primarySegment = getPrimaryTableSegments();
+        List<Segment> targetSegment = getTargetTableSegments();
+        for (Segment target : targetSegment) {
+            RelationIndex targetReader = getTargetReadIndex(target);
+            RelationIndex targetWriter = getTargetWriteIndex(target);
+            try {
+                for (int i = 0; i < primarySegment.size(); i++) {
+                    buildIndexPerSegment(targetReader, targetWriter, primarySegment.get(i), i, target.getRowCount());
+                }
+            } catch (Exception e) {
+                Crasher.crash(e);
+            } finally {
+                releaseIfNeed(targetReader);
+                releaseIfNeed(targetWriter);
+                releaseIfNeed(target);
+            }
+        }
+        LOGGER.info(String.format("build FieldRelationIndex: %s -> %s finished", logicColumnKey.getName(), relationPath.getKey()));
     }
 
     /**
@@ -67,30 +72,22 @@ public abstract class BaseFieldPathIndexer extends BaseTablePathIndexer {
     private void buildIndexPerSegment(RelationIndex targetReader, RelationIndex targetWriter, Segment primary, int primarySegIndex, int targetRowCount) {
         try {
             ImmutableBitMap allShow = primary.getAllShowIndex();
-            RelationIndexHelper indexHelper = new RelationIndexHelper();
             Column primaryColumn = primary.getColumn(logicColumnKey);
             DictionaryEncodedColumn dicColumn = primaryColumn.getDictionaryEncodedColumn();
             int size = dicColumn.size();
-            ImmutableBitMap[] index = new ImmutableBitMap[size - 1];
+            MutableBitMap[] index = new MutableBitMap[size - 1];
             BitMapOrHelper helper = new BitMapOrHelper();
             for (int i = 1; i < size; i++) {
-                ImmutableBitMap primaryIndex = primaryColumn.getBitmapIndex().getBitMapIndex(i);
-                primaryIndex = primaryIndex.getAnd(allShow);
-                index[i - 1] = buildIndexPerColumn(targetReader, helper, primaryIndex, primarySegIndex);
-                indexHelper.addIndex(index);
-                indexHelper.addNullIndex(helper.compute().getNot(targetRowCount));
+                MutableBitMap primaryIndex = (MutableBitMap) primaryColumn.getBitmapIndex().getBitMapIndex(i);
+                primaryIndex.and(allShow);
+                index[i - 1] = getTableLinkedOrGVI(primaryIndex, targetReader, primarySegIndex);
+                helper.add(index[i - 1]);
             }
-            writeTargetIndex(targetWriter, indexHelper, primarySegIndex);
-            targetWriter.putNullIndex(0, indexHelper.getNullIndex());
+            writeTargetIndex(targetWriter, index, primarySegIndex);
+            targetWriter.putNullIndex(0, helper.compute().getNot(targetRowCount));
         } finally {
             releaseIfNeed(primary);
         }
-    }
-
-    private ImmutableBitMap buildIndexPerColumn(RelationIndex targetReader, BitMapOrHelper helper, ImmutableBitMap index, int primarySegIndex) {
-        ImmutableBitMap result = getTableLinkedOrGVI(index, targetReader, primarySegIndex);
-        helper.add(result);
-        return result;
     }
 
     private RelationIndex getTargetReadIndex(Segment targetSegment) {
@@ -101,8 +98,7 @@ public abstract class BaseFieldPathIndexer extends BaseTablePathIndexer {
         return targetSegment.getRelation(logicColumnKey, relationPath);
     }
 
-    private void writeTargetIndex(RelationIndex targetWriter, RelationIndexHelper helper, int primaryIndex) {
-        ImmutableBitMap[] targetIndex = helper.getIndex();
+    private void writeTargetIndex(RelationIndex targetWriter, ImmutableBitMap[] targetIndex, int primaryIndex) {
         for (int i = 0, len = targetIndex.length; i < len; i++) {
             targetWriter.putIndex(primaryIndex, i + 1, targetIndex[i]);
         }

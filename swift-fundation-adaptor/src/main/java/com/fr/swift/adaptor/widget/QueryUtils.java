@@ -40,7 +40,7 @@ public class QueryUtils {
      * 获取一个维度过滤之后的值，各种控件都会用到
      *
      * @param dimension
-     * @param filterInfo
+     * @param filterInfo 已经包含了dimension里面的明细过滤了
      * @param id
      * @return
      */
@@ -54,7 +54,11 @@ public class QueryUtils {
                     GroupAdaptor.adaptDashboardGroup(dimension),
                     SortAdaptor.adaptorDimensionSort(dimension.getSort(), 0), currentDimensionFilter);
             TargetInfo targetInfo = new TargetInfoImpl(0, new ArrayList<Metric>(0), new ArrayList<GroupTarget>(0), new ArrayList<ResultTarget>(0), new ArrayList<Aggregator>(0));
-            DimensionInfo dimensionInfo = new DimensionInfoImpl(new AllCursor(), filterInfo, null, new Dimension[]{groupDimension});
+            DimensionInfo dimensionInfo = new DimensionInfoImpl(
+                    new AllCursor(),
+                    filterInfo,
+                    null, new Dimension[]{groupDimension}
+            );
             GroupQueryInfo valueInfo = new GroupQueryInfo(id, sourceKey, dimensionInfo, targetInfo);
             NodeResultSet nodeResultSet = (NodeResultSet) QueryRunnerProvider.getInstance().executeQuery(valueInfo);
             SwiftNode n = nodeResultSet.getNode();

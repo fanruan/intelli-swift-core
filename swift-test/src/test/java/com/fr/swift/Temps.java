@@ -48,6 +48,11 @@ public final class Temps {
         }
 
         @Override
+        public T getValueByRow(int row) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
         public int getIndex(Object value) {
             throw new UnsupportedOperationException();
         }

@@ -1,6 +1,7 @@
 package com.finebi.conf.impl;
 
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.conf.exception.FineTableAbsentException;
 import com.finebi.conf.internalimp.bean.table.UpdatePreviewTableBean;
 import com.finebi.conf.internalimp.bean.update.UpdatePreview;
 import com.finebi.conf.internalimp.response.update.TableUpdateSetting;
@@ -16,10 +17,17 @@ import com.finebi.conf.provider.SwiftTableManager;
 import com.finebi.conf.service.engine.update.EngineUpdateManager;
 import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
+import com.fr.swift.adaptor.space.SwiftSpaceManager;
 import com.fr.swift.adaptor.struct.ShowResultSet;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.transformer.RelationSourceFactory;
+import com.fr.swift.conf.updateInfo.TableUpdateInfoConfigService;
 import com.fr.swift.cube.io.ResourceDiscovery;
+import com.fr.swift.cube.queue.CubeTasks;
+import com.fr.swift.cube.task.Task;
+import com.fr.swift.cube.task.TaskKey;
+import com.fr.swift.cube.task.impl.LocalTaskPool;
+import com.fr.swift.cube.task.impl.SchedulerTaskPool;
 import com.fr.swift.generate.preview.SwiftDataPreviewer;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.log.SwiftLogger;
@@ -41,12 +49,19 @@ import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.manager.IndexStuffProvider;
 import com.fr.swift.utils.RelationRelianceFactory;
 import com.fr.swift.utils.SourceRelianceFactory;
+import com.fr.swift.utils.TableUpdateLogUtil;
+import com.fr.swift.utils.UpdateSpaceInfoUtil;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This class created on 2018-1-12 14:17:13
@@ -58,23 +73,41 @@ import java.util.Map;
 public class SwiftUpdateManager implements EngineUpdateManager {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftUpdateManager.class);
+    private static final TableUpdateInfoConfigService updateInfoConfigService = TableUpdateInfoConfigService.getService();
 
     @Autowired
     private SwiftTableManager tableManager;
     @Autowired
     private SwiftRelationPathConfProvider relationPathConfProvider;
+    @Autowired
+    private SwiftSpaceManager spaceManager;
 
     @Override
     public Map<FineBusinessTable, TableUpdateInfo> getTableUpdateInfo() {
-        return null;
+        Map<String, TableUpdateInfo> infoMap = updateInfoConfigService.getAllTableUpdateInfo();
+        Map<FineBusinessTable, TableUpdateInfo> result = new HashMap<FineBusinessTable, TableUpdateInfo>();
+        Iterator<Map.Entry<String, TableUpdateInfo>> iterator = infoMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, TableUpdateInfo> entry = iterator.next();
+            try {
+                FineBusinessTable table = tableManager.getSingleTable(entry.getKey());
+                result.put(table, entry.getValue());
+            } catch (FineTableAbsentException e) {
+                LOGGER.error(e);
+            }
+        }
+        return Collections.unmodifiableMap(result);
     }
 
     @Override
     public List<TableUpdateInfo> getTableUpdateInfo(FineBusinessTable table) {
-        TableUpdateInfo tableUpdateInfo = new TableUpdateInfo();
-        tableUpdateInfo.setTableName(table.getName());
+        TableUpdateInfo info = updateInfoConfigService.getTableUpdateInfo(table.getName());
+        if (null == info) {
+            info = new TableUpdateInfo();
+            info.setTableName(table.getName());
+        }
         List<TableUpdateInfo> tableUpdateInfoList = new ArrayList<TableUpdateInfo>();
-        tableUpdateInfoList.add(tableUpdateInfo);
+        tableUpdateInfoList.add(info);
         return tableUpdateInfoList;
     }
 
@@ -87,7 +120,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     public void saveUpdateSetting(TableUpdateInfo updateInfo, FineBusinessTable table) throws Exception {
         Map<FineBusinessTable, TableUpdateInfo> infoMap = new HashMap<FineBusinessTable, TableUpdateInfo>();
         infoMap.put(table, updateInfo);
-        saveUpdateSetting(infoMap);
+        this.saveUpdateSetting(infoMap);
     }
 
     @Override
@@ -97,7 +130,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
     @Override
     public void saveUpdateSetting(Map<FineBusinessTable, TableUpdateInfo> infoMap) throws Exception {
-
+        updateInfoConfigService.addOrUpdateInfo(infoMap);
         SourceContainerManager updateSourceContainer = new SourceContainerManager();
         Map<String, List<Increment>> incrementMap = new HashMap<String, List<Increment>>();
 
@@ -139,7 +172,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
             for (FineBusinessTable table : tables) {
                 infoMap.put(table, info);
             }
-            saveUpdateSetting(infoMap);
+            this.saveUpdateSetting(infoMap);
         } catch (Exception e) {
             LOGGER.error(e);
         }
@@ -166,7 +199,26 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
     @Override
     public List<UpdateLog> getTableUpdateLog(FineBusinessTable table) {
-        return null;
+        try {
+            DataSource dataSource = DataSourceFactory.getDataSource(table);
+            List<UpdateLog> updateLogs = new ArrayList<UpdateLog>();
+            int round = CubeTasks.getCurrentRound();
+            for (int i = 1; i <= round; i++) {
+                TaskKey taskKey = CubeTasks.newBuildTableTaskKey(dataSource, i);
+
+                Task task = SchedulerTaskPool.getInstance().get(taskKey);
+                if (task != null) {
+                    UpdateLog updateLog = new UpdateLog();
+                    updateLog.setName(table.getName());
+                    updateLog.setEndTime(task.getEndTime());
+                    updateLogs.add(updateLog);
+                }
+            }
+            return updateLogs;
+        } catch (Exception e) {
+            LOGGER.error(e);
+            return null;
+        }
     }
 
 
@@ -180,7 +232,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         }
         if (!infoMap.isEmpty()) {
             try {
-                saveUpdateSetting(infoMap);
+                this.saveUpdateSetting(infoMap);
             } catch (Exception e) {
                 LOGGER.error(e);
             }
@@ -191,23 +243,76 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
     @Override
     public GlobalUpdateSetting getUpdateInfo() {
-        return null;
+        GlobalUpdateSetting setting = updateInfoConfigService.getGlobalUpdateSettings();
+        if (null == setting) {
+            setting = new GlobalUpdateSetting();
+        }
+        return setting;
     }
 
     @Override
     public void updateAll(GlobalUpdateSetting info) {
+        updateInfoConfigService.addOrUpdateGlobalUpdateSettings(info);
     }
 
     @Override
     public GlobalUpdateInfo checkGlobalUpdateInfo() {
-        return new GlobalUpdateInfo();
+        GlobalUpdateInfo globalUpdateInfo = new GlobalUpdateInfo();
+        globalUpdateInfo.setHaskTask(TableUpdateLogUtil.hasTask());
+        return globalUpdateInfo;
     }
 
+    //todo 临时处理，最好再改下task的结构和逻辑
+    //todo 现在拿的都是metadata的表和字段，没有去拿业务表，更没有去拿业务包
     @Override
     public GlobalUpdateLog getGlobalUpdateLog() {
         GlobalUpdateLog globalUpdateLog = new GlobalUpdateLog();
+        boolean hasTask = TableUpdateLogUtil.hasTask();
+        globalUpdateLog.setHasTask(hasTask);
+        Set<Integer> rounds = new HashSet<Integer>();
+        if (!hasTask) {
+            int round = CubeTasks.getCurrentRound();
+            rounds.add(round);
+        } else {
+            rounds.addAll(TableUpdateLogUtil.getRunningRounds());
+        }
+        Collection<TaskKey> allTaskKey = LocalTaskPool.getInstance().allTasks();
+
+        Map<TaskKey, Task> transportTaskMap = new HashMap<TaskKey, Task>();
+        Map<TaskKey, Task> indexTaskMap = new HashMap<TaskKey, Task>();
+        Map<TaskKey, Task> mergeTaskMap = new HashMap<TaskKey, Task>();
+
+        for (TaskKey taskKey : allTaskKey) {
+            if (rounds.contains(taskKey.getRound())) {
+                Task task = LocalTaskPool.getInstance().get(taskKey);
+                switch (taskKey.operation()) {
+                    case TRANSPORT_TABLE:
+                        transportTaskMap.put(taskKey, task);
+                        break;
+                    case INDEX_COLUMN:
+                        indexTaskMap.put(taskKey, task);
+                        break;
+                    case MERGE_COLUMN_DICT:
+                        mergeTaskMap.put(taskKey, task);
+                        break;
+                    default:
+                }
+            }
+        }
+        globalUpdateLog.setTransportInfo(TableUpdateLogUtil.getTranSportInfo(transportTaskMap));
+        globalUpdateLog.setIndexInfo(TableUpdateLogUtil.getIndexInfo(indexTaskMap, mergeTaskMap));
+
+        globalUpdateLog.setProcess(TableUpdateLogUtil.getProcess(globalUpdateLog));
+
+        try {
+            globalUpdateLog.setSpace(UpdateSpaceInfoUtil.getUpdateSpaceInfo(spaceManager));
+        } catch (Exception e) {
+            LOGGER.error("Calculate space failed!", e);
+        }
+
         return globalUpdateLog;
     }
+
 
     @Override
     public UpdateNeedSpace getUpdateNeedSpace() {
@@ -265,35 +370,5 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         if (ResourceDiscovery.getInstance().checkCubePath(newPath)) {
             ResourceDiscovery.getInstance().setCubePath(newPath);
         }
-//        FineBusinessTableRelationPath path = relationPathConfProvider.getPath(newPath);
-//        List<RelationSource> relationSources = new ArrayList<RelationSource>();
-//        if (null != path) {
-//            try {
-//                List<FineBusinessTableRelation> relations = path.getFineBusinessTableRelations();
-//                List<DataSource> dataSources = new ArrayList<DataSource>();
-//                for (FineBusinessTableRelation relation : relations) {
-//                    if (relation.getRelationType() == BICommonConstants.RELATION_TYPE.MANY_TO_ONE) {
-//                        dataSources.add(DataSourceFactory.transformDataSource(relation.getPrimaryBusinessTable()));
-//                    } else {
-//                        dataSources.add(DataSourceFactory.transformDataSource(relation.getForeignBusinessTable()));
-//                    }
-//                    relationSources.add(RelationSourceFactory.transformRelationSourcesFromRelation(relation));
-//                }
-//                FineBusinessTableRelation relation = relations.get(0);
-//                if (relation.getRelationType() == BICommonConstants.RELATION_TYPE.MANY_TO_ONE) {
-//                    dataSources.add(DataSourceFactory.transformDataSource(relation.getForeignBusinessTable()));
-//                } else {
-//                    dataSources.add(DataSourceFactory.transformDataSource(relation.getPrimaryBusinessTable()));
-//                }
-//                RelationReliance relationReliance = new RelationReliance(relationSources, dataSources);
-//                RelationNodeUtils.calculateRelationNode(relationReliance);
-//                RelationPathReliance relationPathReliance = new RelationPathReliance(RelationSourceFactory.transformSourcePaths(Arrays.asList(path)), relationReliance);
-//                RelationNodeUtils.calculateRelationPathNode(relationPathReliance);
-//                // fixme 调更新
-//            } catch (Exception e) {
-//                LOGGER.error(e.getMessage(), e);
-//            }
-//
-//        }
     }
 }

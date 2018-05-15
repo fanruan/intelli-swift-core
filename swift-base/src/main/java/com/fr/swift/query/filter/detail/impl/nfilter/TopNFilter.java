@@ -1,6 +1,6 @@
 package com.fr.swift.query.filter.detail.impl.nfilter;
 
-import com.fr.swift.query.filter.detail.impl.AbstractDetailFilter;
+import com.fr.swift.compare.Comparators;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
@@ -13,7 +13,7 @@ import com.fr.swift.util.Util;
  * 取字典排序中最大的N个
  * Created by Lyon on 2017/12/4.
  */
-public class TopNFilter extends AbstractDetailFilter {
+public class TopNFilter extends AbstractNFilter {
 
     private int topN;
 
@@ -25,10 +25,12 @@ public class TopNFilter extends AbstractDetailFilter {
 
     @Override
     protected RowTraversal getIntIterator(DictionaryEncodedColumn dict) {
-        int size = dict.globalSize();
-        int startIndex = size >= topN ? size - topN : DictionaryEncodedColumn.NOT_NULL_START_INDEX;
+        int globalSize = dict.globalSize();
+        int globalStart = globalSize > topN ? globalSize - topN : DictionaryEncodedColumn.NOT_NULL_START_INDEX;
+        int localEnd = dict.size() - 1;
+        int localStart = getLocalIndex(dict, DictionaryEncodedColumn.NOT_NULL_START_INDEX, localEnd, globalStart);
         // TODO: 2018/3/26 当前只能保证单块计算准确。要根据是否有全局字典来决定如何计算topN
-        return new IntListRowTraversal(IntListFactory.createRangeIntList(startIndex, dict.size() - 1));
+        return new IntListRowTraversal(IntListFactory.createRangeIntList(localStart, localEnd));
     }
 
     @Override
@@ -37,9 +39,15 @@ public class TopNFilter extends AbstractDetailFilter {
         if (targetIndex == -1) {
             int index = node.getIndex();
             int size = node.getParent().getChildrenSize();
-            return (size - index) < topN;
+            return (size - index) <= topN;
+        } else {
+            Double value = getValue(node, targetIndex);
+            return node.getAggregatorValue(targetIndex).calculate() >= value;
         }
-        // TODO: 2018/5/8 对节点的AggregatorValues[targetIndex]对应的指标的前几个的排序
-        return true;
+    }
+
+    @Override
+    public NTree<Double> getNTree() {
+        return new NTree<Double>(Comparators.<Double>desc(), topN);
     }
 }

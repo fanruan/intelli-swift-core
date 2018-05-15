@@ -90,7 +90,7 @@ public class DetailQueryInfo extends AbstractQueryInfo<DetailResultSet> {
             List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(getTable());
             if(segments.size() > 0) {
                 for (int i = 0; i < dimensions.length; i++) {
-                    columns.add(segments.get(0).getColumn(dimensions[i].getColumnKey()));
+                    columns.add(dimensions[i].getColumn(segments.get(0)));
                 }
             }
         }

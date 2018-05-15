@@ -6,6 +6,7 @@ import com.fr.stable.UtilEvalError;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
@@ -160,6 +161,29 @@ public class FormulaUtils {
         }
     }
 
+    //取得字段原本的类型
+    public static ColumnType getHistoryColumnType(SwiftMetaData metadata, String expression) {
+        Calculator c = Calculator.createCalculator();
+        String formula = getParameterIndexEncodedFormula(expression);
+        String[] parameters = getHistoryRelatedParaNames(expression);
+        int index = 0;
+        for (String parameter : parameters) {
+            c.set(toParameterFormat(index++ + ""), getParameterDefaultValue(metadata, parameter));
+        }
+        try {
+            Object ob = c.eval(formula);
+            if (ob instanceof Date) {
+                return ColumnType.DATE;
+            } else if (ob instanceof Number) {
+                return ColumnType.NUMBER;
+            } else {
+                return ColumnType.STRING;
+            }
+        } catch (UtilEvalError utilEvalError) {
+            return ColumnType.STRING;
+        }
+    }
+
     /**
      * 参数转成自增长id，避免字段名字带特殊字符
      *
@@ -197,5 +221,29 @@ public class FormulaUtils {
     private static String toParameterFormat(String name) {
 
         return "$" + name;
+    }
+
+
+    public static Map<String, Integer> createColumnIndexMap(String formula) {
+        Map<String, Integer> columnIndexMap = new HashMap<String, Integer>();
+        String[] parameters = getRealRelatedParaNames(formula);
+        for (int i = 0; i < parameters.length; i++) {
+            columnIndexMap.put(toParameterFormat(String.valueOf(i)), Integer.valueOf(parameters[i]));
+        }
+        return columnIndexMap;
+    }
+
+    public static Object getCalculatorValue(Calculator c, String formula, SwiftNode node, Map<String, Integer> columnIndexMap) {
+        for (Map.Entry<String, Integer> entry : columnIndexMap.entrySet()){
+            c.set(entry.getKey(), node.getAggregatorValue(entry.getValue()).calculateValue());
+        }
+        try {
+            Object ob = c.eval(formula);
+            return ob == Primitive.NULL ? null : ob;
+        } catch (UtilEvalError e) {
+            LOGGER.error("incorrect formula");
+            LOGGER.error("The formula:" + formula);
+            return null;
+        }
     }
 }

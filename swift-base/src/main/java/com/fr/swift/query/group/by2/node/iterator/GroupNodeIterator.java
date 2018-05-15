@@ -9,6 +9,8 @@ import com.fr.swift.query.group.by2.ItCreator;
 import com.fr.swift.query.group.by2.MultiGroupByV2;
 import com.fr.swift.query.group.by2.node.ProxyNodeCreatorStack;
 import com.fr.swift.query.group.by2.node.expander.NodeAllExpanderController;
+import com.fr.swift.query.group.by2.node.expander.NodeLazyExpanderController;
+import com.fr.swift.query.group.by2.node.expander.NodeNLevelExpanderController;
 import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.row.RowIndexKey;
@@ -66,11 +68,13 @@ public class GroupNodeIterator<Node extends GroupNode> implements Iterator<Node[
         Expander expander = groupByInfo.getExpander();
         Set<RowIndexKey<int[]>> indexKeys = strKey2IntKey(expander.getStringIndexKeys(), dictionaries);
         ExpanderType type = expander.getType();
-//        if (type == ExpanderType.LAZY_EXPANDER) {
-//            return new NodeLazyExpanderController(indexKeys);
-//        } else {
+        if (type == ExpanderType.LAZY_EXPANDER) {
+            return new NodeLazyExpanderController(indexKeys);
+        } else if (type == ExpanderType.N_LEVEL_EXPANDER) {
+            return new NodeNLevelExpanderController(expander.getNLevel());
+        } else {
             return new NodeAllExpanderController(indexKeys);
-//        }
+        }
     }
 
     private static Set<RowIndexKey<int[]>> strKey2IntKey(Set<RowIndexKey<String[]>> strKeys,

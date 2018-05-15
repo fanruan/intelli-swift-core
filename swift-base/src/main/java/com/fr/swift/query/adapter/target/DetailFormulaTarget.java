@@ -2,7 +2,6 @@ package com.fr.swift.query.adapter.target;
 
 import com.fr.swift.query.adapter.AbstractQueryColumn;
 import com.fr.swift.query.adapter.target.cal.CalTargetType;
-import com.fr.swift.query.filter.info.FilterInfo;
 
 /**
  * Created by pony on 2017/12/22.
@@ -25,6 +24,6 @@ public class DetailFormulaTarget extends AbstractQueryColumn implements DetailTa
 
     @Override
     public CalTargetType type() {
-        return null;
+        return CalTargetType.FORMULA;
     }
 }

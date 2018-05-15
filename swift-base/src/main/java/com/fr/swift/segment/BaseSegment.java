@@ -11,16 +11,9 @@ import com.fr.swift.cube.io.input.IntReader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.BitMapWriter;
 import com.fr.swift.cube.io.output.IntWriter;
-import com.fr.swift.cube.queue.CubeTasks;
-import com.fr.swift.cube.task.SchedulerTask;
-import com.fr.swift.cube.task.Task.Status;
-import com.fr.swift.cube.task.TaskKey;
-import com.fr.swift.cube.task.TaskStatusChangeListener;
-import com.fr.swift.cube.task.impl.SchedulerTaskImpl;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.relation.CubeMultiRelation;
 import com.fr.swift.relation.CubeMultiRelationPath;
-import com.fr.swift.relation.utils.RelationPathHelper;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.impl.DateColumn;
@@ -32,17 +25,11 @@ import com.fr.swift.segment.relation.RelationIndexImpl;
 import com.fr.swift.segment.relation.column.RelationColumn;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.ColumnTypeUtils;
-import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.relation.FieldRelationSource;
-import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * @author anchore
@@ -91,7 +78,10 @@ public abstract class BaseSegment implements Segment {
                 return (Column<T>) column;
             }
         } catch (Exception e) {
-            return createRelationColumn(key);
+            if (key.getRelation() != null){
+                return createRelationColumn(key);
+            }
+            return null;
         }
     }
 

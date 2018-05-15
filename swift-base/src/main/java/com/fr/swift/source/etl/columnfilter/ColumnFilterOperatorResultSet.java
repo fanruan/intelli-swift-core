@@ -98,7 +98,7 @@ public class ColumnFilterOperatorResultSet implements SwiftResultSet {
             }
             List list = new ArrayList();
             for(int i = 0; i < metaDataColumn.length; i++) {
-                list.add(getters[i].getValue(getters[i].getIndexByRow(rowList.get(rowCursor))));
+                list.add(getters[i].getValueByRow(rowList.get(rowCursor)));
             }
             ListBasedRow basedRow = new ListBasedRow(list);
             tempValue.setRow(basedRow);

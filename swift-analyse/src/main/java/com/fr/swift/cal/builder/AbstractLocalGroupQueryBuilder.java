@@ -22,7 +22,7 @@ public abstract class AbstractLocalGroupQueryBuilder implements LocalGroupQueryB
         List<Column> dimensionColumns = new ArrayList<Column>();
         for (Dimension dimension : dimensions) {
             List<Column> columnList = new ArrayList<Column>();
-            Column column = segment.getColumn(dimension.getColumnKey());
+            Column column = dimension.getColumn(segment);
             columnList.add(column);
             Group group = dimension.getGroup();
             GroupOperator operator = null;
@@ -44,7 +44,7 @@ public abstract class AbstractLocalGroupQueryBuilder implements LocalGroupQueryB
     protected List<Column> getMetricSegments(Segment segment, List<Metric> metrics) {
         List<Column> metricColumns = new ArrayList<Column>();
         for (Metric metric : metrics) {
-            Column column = segment.getColumn(metric.getColumnKey());
+            Column column = metric.getColumn(segment);
             metricColumns.add(column);
         }
         return metricColumns;

@@ -17,6 +17,9 @@ import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.structure.iterator.Filter;
+import com.fr.swift.structure.iterator.FilteredIterator;
+import com.fr.swift.structure.iterator.IteratorUtils;
 import com.fr.swift.util.pinyin.PinyinUtils;
 import edu.emory.mathcs.backport.java.util.Arrays;
 
@@ -34,6 +37,8 @@ import java.util.Set;
 public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(TreeWidgetAdaptor.class);
+    private static final int SELECTED_VALUES_OPTION = 4;
+    private static final String INIT_PID = "0";
 
     public static BITreeResult calculate(TreeWidget treeWidget) {
         BITreeResult result = null;
@@ -53,13 +58,23 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor {
                                                List<FineDimension> dimensions) {
         List<BITreeItem> treeItems;
         String keyWord = bean.getKeyword();
-        if (StringUtils.isEmpty(keyWord)) {
+        int treeOptionType = bean.getType();
+        if (treeOptionType == SELECTED_VALUES_OPTION) {
+            // TODO: 2018/5/11 做不动了，留个坑
+            treeItems = createTreeItemListWithoutSearch(widget, bean, filterInfo, dimensions);
+            treeItems = IteratorUtils.iterator2List(new FilteredIterator<BITreeItem>(treeItems.iterator(), new Filter<BITreeItem>() {
+                @Override
+                public boolean accept(BITreeItem biTreeItem) {
+                    return biTreeItem.isChecked() || biTreeItem.isHalfCheck();
+                }
+            }));
+        } else if (StringUtils.isEmpty(keyWord)) {
             treeItems = createTreeItemListWithoutSearch(widget, bean, filterInfo, dimensions);
         } else if (StringUtils.isNotEmpty(keyWord) && StringUtils.isNotEmpty(bean.getId())) {
             // 因为功能要求子节点展开全部子节点，所以不传搜索的keyWord了
             treeItems = createChildNoSearchItemList(widget, "", bean, filterInfo, dimensions);
         } else {
-            treeItems = createSearchItemList(0, widget, keyWord, "0", bean.getSelectedValues(),
+            treeItems = createSearchItemList(0, widget, keyWord, INIT_PID, bean.getSelectedValues(),
                     new String[0], filterInfo, dimensions);
         }
         return treeItems;
@@ -86,7 +101,7 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor {
         for (int j = 0; j < values.size(); j++) {
             String value = values.get(j).toString();
             // 计算id的结构，前端依据id把列表转为树结构
-            String id = pId.equals("0") ? j + 1 + "" : pId + "_" + (j + 1);
+            String id = pId.equals(INIT_PID) ? j + 1 + "" : pId + "_" + (j + 1);
             boolean isContained = PinyinUtils.isMatch(keyWord, value);
             if (!isContained) {
                 List<BITreeItem> childrenItems = new ArrayList<BITreeItem>();
@@ -140,9 +155,13 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor {
         infoList.add(filter);
         infoList.add(parent);
         infoList.add(createFilterInfo(widget, dimensions));
+        // 当前维度里面包含的明细过滤
+        FilterInfo currentDimensionFilter = FilterInfoFactory.transformDimensionFineFilter(dimension);
+        infoList.add(currentDimensionFilter);
         FilterInfo filterInfo = new GeneralFilterInfo(infoList, GeneralFilterInfo.AND);
         List<FilterInfo> or = new ArrayList<FilterInfo>();
         or.add(filterInfo);
+        // 明细过滤的最后一层要or一下已经勾选的数据
         or.add(selectedValues);
         filterInfo = new GeneralFilterInfo(or, GeneralFilterInfo.OR);
         List values = QueryUtils.getOneDimensionFilterValues(dimension, filterInfo, widget.getWidgetId());
@@ -164,7 +183,7 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor {
         // 父节点被选中同时selectedChildren.size() == 0，说明子节点被全选
         boolean isChildrenChecked = isChildrenChecked(parents, selectedValues);
         Map selectedChildren = getSelectedChildren(parents, selectedValues);
-        return createTreeItemListFromValues(isParent, isChildrenChecked, "0", values, selectedChildren);
+        return createTreeItemListFromValues(isParent, isChildrenChecked, INIT_PID, values, selectedChildren);
     }
 
     /**
@@ -247,6 +266,19 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor {
     private static BITreeItem createItem(boolean isParent, boolean isChildrenChecked,
                                          String value, String id, String pId, Map selectedChildren) {
         return createItem(isParent, isChildrenChecked, false, value, id, pId, selectedChildren);
+    }
+
+    private static BITreeItem createSelectedItem(boolean isParent, String value, String id, String pId) {
+        BITreeItem item = new BITreeItem();
+        item.setId(id);
+        item.setpId(pId);
+        item.setParent(isParent);
+        item.setOpen(true);
+        item.setValue(value);
+        item.setText(value);
+        item.setTitle(value);
+        item.setTimes(1);
+        return item;
     }
 
     private static BITreeItem createItem(boolean isParent, boolean isChildrenChecked, boolean isOpen,

@@ -42,6 +42,13 @@ public class FormulaFilter implements DetailFilter {
 
     @Override
     public boolean matches(SwiftNode node, int targetIndex) {
+        Calculator calculator = Calculator.createCalculator();
+        String formula = FormulaUtils.getParameterIndexEncodedFormula(expression);
+        Map<String, Integer> map = FormulaUtils.createColumnIndexMap(expression);
+        Object value = FormulaUtils.getCalculatorValue(calculator, formula, node, map);
+        if (value instanceof Boolean && (Boolean) value) {
+            return true;
+        }
         return false;
     }
 }

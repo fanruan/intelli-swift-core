@@ -3,13 +3,15 @@ package com.fr.swift.generate;
 
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.BitMapOrHelper;
 import com.fr.swift.bitmap.traversal.BreakTraversalAction;
 import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.cube.nio.NIOConstant;
-import com.fr.swift.cube.task.Task;
+import com.fr.swift.cube.task.TaskResult.Type;
 import com.fr.swift.cube.task.impl.BaseWorker;
+import com.fr.swift.cube.task.impl.TaskResultImpl;
 import com.fr.swift.generate.history.index.RelationIndexHelper;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -44,10 +46,10 @@ public abstract class BaseTablePathIndexer extends BaseWorker {
     public void work() {
         try {
             build();
-            workOver(Task.Result.SUCCEEDED);
+            workOver(new TaskResultImpl(Type.SUCCEEDED));
         } catch (Exception e) {
             LOGGER.error("Build index error with exception!", e);
-            workOver(Task.Result.FAILED);
+            workOver(new TaskResultImpl(Type.FAILED, e));
         }
     }
 
@@ -158,7 +160,7 @@ public abstract class BaseTablePathIndexer extends BaseWorker {
         return reversePos;
     }
 
-    ImmutableBitMap getTableLinkedOrGVI(ImmutableBitMap currentIndex, final RelationIndex relationIndex, final int primaryIndex) {
+    MutableBitMap getTableLinkedOrGVI(ImmutableBitMap currentIndex, final RelationIndex relationIndex, final int primaryIndex) {
         if (null != currentIndex) {
             final List<ImmutableBitMap> bitMaps = new ArrayList<ImmutableBitMap>();
             currentIndex.breakableTraversal(new BreakTraversalAction() {
@@ -167,14 +169,14 @@ public abstract class BaseTablePathIndexer extends BaseWorker {
                     try {
                         bitMaps.add(relationIndex.getIndex(primaryIndex, row + 1));
                     } catch (Exception ignore) {
-                        bitMaps.add(BitMaps.EMPTY_IMMUTABLE);
+                        bitMaps.add(BitMaps.newRoaringMutable());
                     }
                     return false;
                 }
             });
-            ImmutableBitMap result = BitMaps.newRoaringMutable();
+            MutableBitMap result = BitMaps.newRoaringMutable();
             for (ImmutableBitMap bitMap : bitMaps) {
-                result = result.getOr(bitMap);
+                result.or(bitMap);
             }
             return result;
         }

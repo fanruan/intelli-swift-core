@@ -5,8 +5,9 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.traversal.BreakTraversalAction;
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.cube.nio.NIOConstant;
-import com.fr.swift.cube.task.Task;
+import com.fr.swift.cube.task.TaskResult.Type;
 import com.fr.swift.cube.task.impl.BaseWorker;
+import com.fr.swift.cube.task.impl.TaskResultImpl;
 import com.fr.swift.generate.history.index.RelationIndexHelper;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -46,11 +47,11 @@ public abstract class BaseMultiRelationIndexer extends BaseWorker {
     public void work() {
         try {
             buildRelationIndex();
-            workOver(Task.Result.SUCCEEDED);
+            workOver(new TaskResultImpl(Type.SUCCEEDED));
             LOGGER.info("generate relation: " + relation.getKey() + " success");
         } catch (Exception e) {
             LOGGER.error("generate relation: " + relation.getKey() + " failed because [" + e.getMessage() + "]", e);
-            workOver(Task.Result.FAILED);
+            workOver(new TaskResultImpl(Type.FAILED, e));
         }
     }
 
