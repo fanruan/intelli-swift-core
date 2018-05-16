@@ -1,10 +1,13 @@
 package com.fr.swift.adaptor.widget;
 
+import com.finebi.conf.algorithm.common.DMUtils;
+import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
 import com.finebi.conf.internalimp.dashboard.widget.table.CrossTableWidget;
 import com.finebi.conf.structure.result.table.BICrossNode;
 import com.finebi.conf.structure.result.table.BICrossTableResult;
 import com.fr.swift.adaptor.struct.node.BICrossNodeAdaptor;
 import com.fr.swift.adaptor.struct.node.GroupNode2XLeftNodeAdaptor;
+import com.fr.swift.adaptor.widget.datamining.CrossTableToDMResultVisitor;
 import com.fr.swift.adaptor.widget.expander.ExpanderFactory;
 import com.fr.swift.adaptor.widget.target.CalTargetParseUtils;
 import com.fr.swift.cal.info.GroupQueryInfo;
@@ -21,6 +24,7 @@ import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
+import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.TopGroupNode;
 import com.fr.swift.result.XLeftNode;
 import com.fr.swift.result.XNodeMergeResultSet;
@@ -41,7 +45,7 @@ import java.util.List;
  * @date 2018/3/6
  * 交叉表
  */
-public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor{
+public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor {
 
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(CrossTableWidgetAdaptor.class);
@@ -57,12 +61,20 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor{
                 GroupQueryInfo groupQueryInfo = new GroupQueryInfo(queryInfo.getQueryId(), queryInfo.getTable(),
                         queryInfo.getDimensionInfo(), queryInfo.getTargetInfo());
                 NodeMergeResultSet result = (NodeMergeResultSet) QueryRunnerProvider.getInstance().executeQuery(groupQueryInfo);
+
+                // 添加挖掘相关
+                result = processDataMining(result, widget, queryInfo);
+
                 crossNode = new BICrossNodeAdaptor(new XGroupNodeImpl(new GroupNode2XLeftNodeAdaptor((GroupNode) result.getNode()), new GroupNode()));
             } else if (queryInfo.getDimensionInfo().getDimensions().length == 0) {
                 // 行表头为空
                 GroupQueryInfo groupQueryInfo = new GroupQueryInfo(queryInfo.getQueryId(), queryInfo.getTable(),
                         queryInfo.getColDimensionInfo(), queryInfo.getTargetInfo());
                 NodeMergeResultSet result = (NodeMergeResultSet) QueryRunnerProvider.getInstance().executeQuery(groupQueryInfo);
+
+                // 添加挖掘相关
+                result = processDataMining(result, widget, queryInfo);
+
                 GroupNode groupNode = (GroupNode) result.getNode();
                 XLeftNode xLeftNode = topGroupNode2XLeftNode(queryInfo.getColDimensionInfo().isShowSum(),
                         groupQueryInfo.getDimensionInfo().getDimensions().length, groupNode);
@@ -70,6 +82,10 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor{
             } else {
                 // 行列表头都不为空
                 resultSet = (XNodeMergeResultSet) QueryRunnerProvider.getInstance().executeQuery(queryInfo);
+
+                // 添加挖掘相关
+                resultSet = processDataMining(resultSet, widget, queryInfo);
+
                 crossNode = new BICrossNodeAdaptor(new XGroupNodeImpl((XLeftNode) resultSet.getNode(), resultSet.getTopGroupNode()));
             }
         } catch (Exception e) {
@@ -77,6 +93,17 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor{
             LOGGER.error(e);
         }
         return new CrossTableResult(crossNode, false, false, false, false);
+    }
+
+    private static <T extends NodeResultSet> T processDataMining(T result, CrossTableWidget widget, XGroupQueryInfo info) throws Exception {
+        // 挖掘模块处理
+        AlgorithmBean dmBean = widget.getValue().getDataMining();
+        T resultSet = result;
+        if (!DMUtils.isEmptyAlgorithm(dmBean)) {
+            CrossTableToDMResultVisitor crossVisitor = new CrossTableToDMResultVisitor(result, widget, info);
+            resultSet = (T) dmBean.accept(crossVisitor);
+        }
+        return resultSet;
     }
 
     private static XLeftNode topGroupNode2XLeftNode(boolean isShowColSum, int dimensionSize, GroupNode node) {
