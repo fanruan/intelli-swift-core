@@ -90,24 +90,13 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         return new CrossTableResult(crossNode, false, false, false, false);
     }
 
-    private static <T extends SwiftResultSet> T processDataMining(T result, CrossTableWidget widget, QueryInfo info) throws Exception {
+    private static <T extends SwiftResultSet> T processDataMining(T result, CrossTableWidget widget, XGroupQueryInfo info) throws Exception {
         // 挖掘模块处理
         AlgorithmBean dmBean = widget.getValue().getDataMining();
         T resultSet = result;
-        boolean isEmptyAlgorithm = DMUtils.isEmptyAlgorithm(dmBean);
-        if (!isEmptyAlgorithm) {
-            if (info instanceof GroupQueryInfo){
-                // 当做分组表处理
-                TableWidget tableWidget = new TableWidget(widget.getValue());
-                GroupQueryInfo groupQueryInfo = (GroupQueryInfo) info;
-                GroupTableToDMResultVisitor visitor = new GroupTableToDMResultVisitor((NodeResultSet) result, tableWidget, groupQueryInfo);
-                resultSet = (T) dmBean.accept(visitor);
-            }else{
-                // 当做交叉表处理
-                XGroupQueryInfo xGroupQueryInfo = (XGroupQueryInfo) info;
-                CrossTableToDMResultVisitor visitor = new CrossTableToDMResultVisitor((XNodeMergeResultSet) result, widget, xGroupQueryInfo);
-                resultSet = (T) dmBean.accept(visitor);
-            }
+        if (!DMUtils.isEmptyAlgorithm(dmBean)) {
+            CrossTableToDMResultVisitor crossVisitor = new CrossTableToDMResultVisitor(result, widget, info);
+            resultSet = (T) dmBean.accept(crossVisitor);
         }
         return resultSet;
     }

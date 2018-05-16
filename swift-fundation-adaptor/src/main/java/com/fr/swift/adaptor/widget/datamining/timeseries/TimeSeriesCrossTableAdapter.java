@@ -10,9 +10,40 @@ import com.fr.swift.source.SwiftResultSet;
 /**
  * Created by Jonas on 2018/5/15.
  */
-public class TimeSeriesCrossTableAdapter implements SwiftAlgorithmResultAdapter<HoltWintersBean, CrossTableWidget, XNodeMergeResultSet, XGroupQueryInfo> {
+public class TimeSeriesCrossTableAdapter implements SwiftAlgorithmResultAdapter<HoltWintersBean, CrossTableWidget, SwiftResultSet, XGroupQueryInfo> {
+
+    private HoltWintersBean bean;
+    private CrossTableWidget widget;
+    private SwiftResultSet result;
+    private XGroupQueryInfo info;
+
     @Override
-    public SwiftResultSet getResult(HoltWintersBean bean, CrossTableWidget widget, XNodeMergeResultSet result, XGroupQueryInfo info) throws Exception {
+    public SwiftResultSet getResult(HoltWintersBean bean, CrossTableWidget widget, SwiftResultSet result, XGroupQueryInfo info) throws Exception {
+        this.bean = bean;
+        this.widget = widget;
+        this.result = result;
+        this.info = info;
+        if (info.getColDimensionInfo().getDimensions().length == 0) {
+            // 列表头为空
+            return handleVertical();
+        } else if (info.getDimensionInfo().getDimensions().length == 0) {
+            // 行表头为空
+            return handleHorizontal();
+        } else {
+            // 行列表头都不为空
+            return handleCrossTable();
+        }
+    }
+
+    private SwiftResultSet handleVertical() {
+        return result;
+    }
+
+    private SwiftResultSet handleHorizontal() {
+        return result;
+    }
+
+    private SwiftResultSet handleCrossTable() {
         return result;
     }
 }

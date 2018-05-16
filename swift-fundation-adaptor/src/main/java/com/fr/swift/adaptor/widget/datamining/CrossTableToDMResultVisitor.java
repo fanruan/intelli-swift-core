@@ -13,14 +13,15 @@ import com.fr.swift.result.XNodeMergeResultSet;
 import com.fr.swift.source.SwiftResultSet;
 
 /**
+ * 这个地方有点特殊，如果只有行维度或者只有列维度，返回一个分组表结构。
  * Created by Jonas on 2018/5/14.
  */
 public class CrossTableToDMResultVisitor implements DMBeanVisitor<SwiftResultSet> {
-    private XNodeMergeResultSet result;
+    private SwiftResultSet result;
     private CrossTableWidget widget;
     private XGroupQueryInfo info;
 
-    public CrossTableToDMResultVisitor(XNodeMergeResultSet result, CrossTableWidget widget, XGroupQueryInfo info) {
+    public CrossTableToDMResultVisitor(SwiftResultSet result, CrossTableWidget widget, XGroupQueryInfo info) {
         this.result = result;
         this.widget = widget;
         this.info = info;
