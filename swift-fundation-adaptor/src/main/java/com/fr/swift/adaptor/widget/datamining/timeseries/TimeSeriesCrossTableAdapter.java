@@ -5,7 +5,6 @@ import com.finebi.conf.internalimp.dashboard.widget.table.CrossTableWidget;
 import com.fr.swift.adaptor.widget.datamining.SwiftAlgorithmResultAdapter;
 import com.fr.swift.cal.info.XGroupQueryInfo;
 import com.fr.swift.result.NodeResultSet;
-import com.fr.swift.result.XNodeMergeResultSet;
 import com.fr.swift.source.SwiftResultSet;
 
 /**
@@ -19,7 +18,7 @@ public class TimeSeriesCrossTableAdapter implements SwiftAlgorithmResultAdapter<
     private XGroupQueryInfo info;
 
     @Override
-    public SwiftResultSet getResult(HoltWintersBean bean, CrossTableWidget widget, NodeResultSet result, XGroupQueryInfo info) throws Exception {
+    public SwiftResultSet getResult(HoltWintersBean bean, CrossTableWidget widget, NodeResultSet result, XGroupQueryInfo info) {
         this.bean = bean;
         this.widget = widget;
         this.result = result;

@@ -27,28 +27,28 @@ public class GroupTableToDMResultVisitor implements DMBeanVisitor<SwiftResultSet
     }
 
     @Override
-    public SwiftResultSet visit(HoltWintersBean bean) throws Exception {
+    public SwiftResultSet visit(HoltWintersBean bean) {
         TimeSeriesGroupTableAdapter adapter = new TimeSeriesGroupTableAdapter();
         return adapter.getResult(bean, widget, result, info);
     }
 
     @Override
-    public SwiftResultSet visit(KmeansBean bean) throws Exception {
+    public SwiftResultSet visit(KmeansBean bean) {
         return result;
     }
 
     @Override
-    public SwiftResultSet visit(NeuralNetworkBean bean) throws Exception {
+    public SwiftResultSet visit(NeuralNetworkBean bean) {
         return result;
     }
 
     @Override
-    public SwiftResultSet visit(DecisionTreeBean bean) throws Exception {
+    public SwiftResultSet visit(DecisionTreeBean bean) {
         return result;
     }
 
     @Override
-    public SwiftResultSet visit(EmptyAlgorithmBean bean) throws Exception {
+    public SwiftResultSet visit(EmptyAlgorithmBean bean) {
         return result;
     }
 }

@@ -14,7 +14,6 @@ import com.finebi.conf.internalimp.analysis.bean.operator.datamining.timeseries.
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.WidgetDimensionBean;
 import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
 import com.finebi.conf.internalimp.dashboard.widget.table.CrossTableWidget;
-import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
 import com.finebi.conf.internalimp.dashboard.widget.target.FineTargetImpl;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
@@ -24,7 +23,6 @@ import com.fr.swift.adaptor.widget.datamining.SwiftAlgorithmResultAdapter;
 import com.fr.swift.cal.info.GroupQueryInfo;
 import com.fr.swift.cal.info.XGroupQueryInfo;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.query.adapter.metric.Metric;
 import com.fr.swift.query.adapter.target.TargetInfo;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;

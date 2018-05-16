@@ -10,7 +10,6 @@ import com.finebi.conf.structure.analysis.vistor.DMBeanVisitor;
 import com.fr.swift.adaptor.widget.datamining.timeseries.TimeSeriesCrossTableAdapter;
 import com.fr.swift.cal.info.XGroupQueryInfo;
 import com.fr.swift.result.NodeResultSet;
-import com.fr.swift.result.XNodeMergeResultSet;
 import com.fr.swift.source.SwiftResultSet;
 
 /**
@@ -29,28 +28,28 @@ public class CrossTableToDMResultVisitor implements DMBeanVisitor<SwiftResultSet
     }
 
     @Override
-    public SwiftResultSet visit(HoltWintersBean bean) throws Exception {
+    public SwiftResultSet visit(HoltWintersBean bean) {
         TimeSeriesCrossTableAdapter adapter = new TimeSeriesCrossTableAdapter();
         return adapter.getResult(bean, widget, result, info);
     }
 
     @Override
-    public SwiftResultSet visit(KmeansBean bean) throws Exception {
+    public SwiftResultSet visit(KmeansBean bean) {
         return result;
     }
 
     @Override
-    public SwiftResultSet visit(NeuralNetworkBean bean) throws Exception {
+    public SwiftResultSet visit(NeuralNetworkBean bean) {
         return result;
     }
 
     @Override
-    public SwiftResultSet visit(DecisionTreeBean bean) throws Exception {
+    public SwiftResultSet visit(DecisionTreeBean bean) {
         return result;
     }
 
     @Override
-    public SwiftResultSet visit(EmptyAlgorithmBean bean) throws Exception {
+    public SwiftResultSet visit(EmptyAlgorithmBean bean) {
         return result;
     }
 }

@@ -17,7 +17,7 @@ public class SumOfAboveCalculator extends AbstractTargetCalculator {
 
     @Override
     public Object call() {
-        while (iterators.hasNext()){
+        while (iterators.hasNext()) {
             Iterator<List<AggregatorValue[]>> iterator = iterators.next();
             List<AggregatorValue[]> lastRow = null;
             while (iterator.hasNext()) {
