@@ -9,6 +9,7 @@ import com.finebi.conf.internalimp.dashboard.widget.table.CrossTableWidget;
 import com.finebi.conf.structure.analysis.vistor.DMBeanVisitor;
 import com.fr.swift.adaptor.widget.datamining.timeseries.TimeSeriesCrossTableAdapter;
 import com.fr.swift.cal.info.XGroupQueryInfo;
+import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.XNodeMergeResultSet;
 import com.fr.swift.source.SwiftResultSet;
 
@@ -17,11 +18,11 @@ import com.fr.swift.source.SwiftResultSet;
  * Created by Jonas on 2018/5/14.
  */
 public class CrossTableToDMResultVisitor implements DMBeanVisitor<SwiftResultSet> {
-    private SwiftResultSet result;
+    private NodeResultSet result;
     private CrossTableWidget widget;
     private XGroupQueryInfo info;
 
-    public CrossTableToDMResultVisitor(SwiftResultSet result, CrossTableWidget widget, XGroupQueryInfo info) {
+    public CrossTableToDMResultVisitor(NodeResultSet result, CrossTableWidget widget, XGroupQueryInfo info) {
         this.result = result;
         this.widget = widget;
         this.info = info;

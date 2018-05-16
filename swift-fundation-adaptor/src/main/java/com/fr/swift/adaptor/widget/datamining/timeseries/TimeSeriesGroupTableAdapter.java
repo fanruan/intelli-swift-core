@@ -12,6 +12,8 @@ import com.finebi.conf.algorithm.timeseries.TimeSeriesUtils;
 import com.finebi.conf.constant.BIDesignConstants;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.timeseries.HoltWintersBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.WidgetDimensionBean;
+import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
+import com.finebi.conf.internalimp.dashboard.widget.table.CrossTableWidget;
 import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
 import com.finebi.conf.internalimp.dashboard.widget.target.FineTargetImpl;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
@@ -20,6 +22,7 @@ import com.finebi.conf.utils.transform.FineDataTransformUtils;
 import com.finebi.log.BILoggerFactory;
 import com.fr.swift.adaptor.widget.datamining.SwiftAlgorithmResultAdapter;
 import com.fr.swift.cal.info.GroupQueryInfo;
+import com.fr.swift.cal.info.XGroupQueryInfo;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.adapter.metric.Metric;
 import com.fr.swift.query.adapter.target.TargetInfo;
@@ -47,7 +50,7 @@ import java.util.Map;
 /**
  * Created by Jonas on 2018/5/9.
  */
-public class TimeSeriesGroupTableAdapter implements SwiftAlgorithmResultAdapter<HoltWintersBean, TableWidget, NodeResultSet, GroupQueryInfo> {
+public class TimeSeriesGroupTableAdapter implements SwiftAlgorithmResultAdapter<HoltWintersBean, AbstractTableWidget, NodeResultSet, GroupQueryInfo> {
 
     private double[][] confidence;
     private boolean isCalculateConfidence = false;
@@ -65,23 +68,39 @@ public class TimeSeriesGroupTableAdapter implements SwiftAlgorithmResultAdapter<
     }
 
     @Override
-    public SwiftResultSet getResult(HoltWintersBean bean, TableWidget widget, NodeResultSet result, GroupQueryInfo info) {
+    public SwiftResultSet getResult(HoltWintersBean bean, AbstractTableWidget widget, NodeResultSet result, GroupQueryInfo info) {
 
         GroupNode rootNode = (GroupNode) result.getNode();
         this.info = info;
 
-        TargetInfo targetInfo = info.getTargetInfo();
 
         try {
+            List<FineDimension> dimensionList = new ArrayList<FineDimension>();
+
+            boolean isCrossTable = widget.getType() == BIDesignConstants.DESIGN.WIDGET.CROSS_TABLE;
+            if (isCrossTable) {
+                CrossTableWidget crossTableWidget = (CrossTableWidget) widget;
+                XGroupQueryInfo xGroupQueryInfo = (XGroupQueryInfo) info;
+                if (xGroupQueryInfo.getColDimensionInfo().getDimensions().length != 0) {
+                    dimensionList = crossTableWidget.getColDimensionList();
+                } else if (info.getDimensionInfo().getDimensions().length != 0) {
+                    dimensionList = widget.getDimensionList();
+                }
+            } else {
+                dimensionList = widget.getDimensionList();
+            }
+
+            TargetInfo targetInfo = info.getTargetInfo();
+
             isCalculateConfidence = bean.isCalculateConfidenceInterval();
 
-            List<FineDimension> dimensionList = widget.getDimensionList();
             List<FineTarget> targetList = widget.getTargetList();
-            FineDimension dateDimension = dimensionList.get(0);
             // 维度是时间列，目标列,且维度个数必须为一个
-            if (dateDimension.getType() != BIDesignConstants.DESIGN.DIMENSION_TYPE.DATE || dimensionList.size() != 1) {
+            if (dimensionList.size() != 1 || dimensionList.get(0).getType() != BIDesignConstants.DESIGN.DIMENSION_TYPE.DATE) {
                 throw new Exception("The dimension must have only one time dimension.");
             }
+
+            FineDimension dateDimension = dimensionList.get(0);
 
             // 把指标长度设置成两倍
             List<FineTarget> fineTargets = new ArrayList<FineTarget>();
@@ -105,7 +124,7 @@ public class TimeSeriesGroupTableAdapter implements SwiftAlgorithmResultAdapter<
 
             boolean isDesc = dateDimension.getSort() == null || dateDimension.getSort().getType() == 0;
             int periodicity;
-            int groupType = widget.getDimensionList().get(0).getGroup().getType();
+            int groupType = dateDimension.getGroup().getType();
             int childLength = rootNode.getChildrenSize();
             double[] missValue = null;
             SimpleDateFormat format = new SimpleDateFormat("yyyy");
@@ -307,9 +326,11 @@ public class TimeSeriesGroupTableAdapter implements SwiftAlgorithmResultAdapter<
                 Aggregator aggregator = aggregators.get(i);
                 if (aggregator instanceof WrappedAggregator) {
                     try {
-                        Field field = aggregator.getClass().getDeclaredField("isAggregatorTypeChanged");
-                        field.setAccessible(true);
-                        field.set(aggregator, true);
+                        Field changedAgg = aggregator.getClass().getDeclaredField("changedAgg");
+                        Field metricAgg = aggregator.getClass().getDeclaredField("metricAgg");
+                        changedAgg.setAccessible(true);
+                        metricAgg.setAccessible(true);
+                        changedAgg.set(aggregator, metricAgg.get(aggregator));
                     } catch (Exception e) {
                         SwiftLoggers.getLogger().error(e.getMessage(), e);
                     }

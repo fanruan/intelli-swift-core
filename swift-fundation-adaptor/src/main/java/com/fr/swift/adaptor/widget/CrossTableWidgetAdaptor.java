@@ -24,6 +24,7 @@ import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
+import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.TopGroupNode;
 import com.fr.swift.result.XLeftNode;
 import com.fr.swift.result.XNodeMergeResultSet;
@@ -32,7 +33,6 @@ import com.fr.swift.result.node.xnode.XGroupNodeImpl;
 import com.fr.swift.result.node.xnode.XNodeUtils;
 import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.iterator.IteratorUtils;
 import com.fr.swift.structure.iterator.MapperIterator;
 import com.fr.swift.util.function.Function;
@@ -95,7 +95,7 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         return new CrossTableResult(crossNode, false, false, false, false);
     }
 
-    private static <T extends SwiftResultSet> T processDataMining(T result, CrossTableWidget widget, XGroupQueryInfo info) throws Exception {
+    private static <T extends NodeResultSet> T processDataMining(T result, CrossTableWidget widget, XGroupQueryInfo info) throws Exception {
         // 挖掘模块处理
         AlgorithmBean dmBean = widget.getValue().getDataMining();
         T resultSet = result;
