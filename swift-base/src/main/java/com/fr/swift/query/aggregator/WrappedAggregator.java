@@ -29,7 +29,6 @@ public class WrappedAggregator<T extends AggregatorValue> implements Aggregator<
     @Override
     public T createAggregatorValue(AggregatorValue value) {
         return (T) (changedAgg != null ? changedAgg.createAggregatorValue(value) : value.clone());
-//        return (T) (changedAgg != null ? changedAgg.createAggregatorValue(value) : metricAgg.createAggregatorValue(value));
     }
 
     @Override

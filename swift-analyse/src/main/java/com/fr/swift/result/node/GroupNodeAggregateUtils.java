@@ -115,7 +115,6 @@ public class GroupNodeAggregateUtils {
         while (iterator.hasNext()) {
             AggregatorValue[] valuesOfChild = iterator.next().getAggregatorValue();
             for (int i = 0; i < valuesOfParent.length; i++) {
-//                AggregatorValue agg = valuesOfChild[i] == null ? null : aggregators.get(i).createAggregatorValue(valuesOfChild[i]);
                 if (valuesOfParent[i] == null) {
                     valuesOfParent[i] = valuesOfChild[i] == null ? null : aggregators.get(i).createAggregatorValue(valuesOfChild[i]);
                 } else {
