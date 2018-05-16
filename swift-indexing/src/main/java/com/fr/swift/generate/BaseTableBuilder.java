@@ -114,10 +114,10 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
                             indexSegments.add(allSegments.get(i));
                         }
                     }
-                    LOGGER.info("Update type:realtime! Table :'" + dataSource.getMetadata().getTableName() + "' will do history tranport!");
+                    LOGGER.info("Update type:realtime! Table :'" + dataSource.getMetadata().getTableName() + "' will do realtime tranport!");
                 } else {
                     indexSegments.addAll(allSegments);
-                    LOGGER.info("Update type:history! Table :'" + dataSource.getMetadata().getTableName() + "' will do realtime tranport!");
+                    LOGGER.info("Update type:history! Table :'" + dataSource.getMetadata().getTableName() + "' will do history tranport!");
                 }
 
                 for (String indexField : transporter.getIndexFieldsList()) {
