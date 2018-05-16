@@ -28,6 +28,12 @@ public class StandarDeviationAggregate  implements Aggregator<StandardAggregator
         standardAggregatorValue.setSum(value.calculate());
         standardAggregatorValue.setSquareSum(value.calculate() * value.calculate());
         standardAggregatorValue.setVariance(0);
+        VarianceAggregatorValue varianceAggregatorValue = new VarianceAggregatorValue();
+        varianceAggregatorValue.setCount(1);
+        varianceAggregatorValue.setSum(value.calculate());
+        varianceAggregatorValue.setSquareSum(value.calculate() * value.calculate());
+        varianceAggregatorValue.setVariance(0);
+        standardAggregatorValue.setVariance(varianceAggregatorValue);
         return standardAggregatorValue;
     }
 
