@@ -17,6 +17,7 @@ import com.finebi.conf.provider.SwiftRelationPathConfProvider;
 import com.finebi.conf.provider.SwiftTableManager;
 import com.finebi.conf.service.engine.update.EngineUpdateManager;
 import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
+import com.finebi.conf.structure.bean.pack.FineBusinessPackage;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.swift.adaptor.space.SwiftSpaceManager;
 import com.fr.swift.adaptor.struct.ShowResultSet;
@@ -110,7 +111,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         TableUpdateInfo info = updateInfoConfigService.getTableUpdateInfo(table.getName());
         if (null == info) {
             info = new TableUpdateInfo();
-            info.setUpdateType(UpdateConstants.UpdateType.ALL);
+            info.setUpdateType(UpdateConstants.TableUpdateType.ALL);
             info.setTableName(table.getName());
         }
         List<TableUpdateInfo> tableUpdateInfoList = new ArrayList<TableUpdateInfo>();
@@ -166,7 +167,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
                 TableUpdateInfo tableUpdateInfo = updateInfoConfigService.getTableUpdateInfo(entry.getKey().getName());
                 if (tableUpdateInfo == null) {
                     tableUpdateInfo = new TableUpdateInfo();
-                    tableUpdateInfo.setUpdateType(UpdateConstants.UpdateType.ALL);
+                    tableUpdateInfo.setUpdateType(UpdateConstants.TableUpdateType.ALL);
                 }
                 TableUpdateInfo resultUpdateInfo = UpdateTriggerUtils.checkUpdateInfo(entry.getValue(), entry.getKey());
                 if (resultUpdateInfo != null) {
@@ -178,15 +179,15 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         } else {
             for (Map.Entry<FineBusinessTable, TableUpdateInfo> entry : infoMap.entrySet()) {
                 TableUpdateInfo tableUpdateInfo = null;
-                if (entry.getValue().getUpdateType() == UpdateConstants.UpdateType.INCREMENT) {
+                if (entry.getValue().getUpdateType() == UpdateConstants.TableUpdateType.INCREMENT) {
                     tableUpdateInfo = updateInfoConfigService.getTableUpdateInfo(entry.getKey().getName());
                 }
                 infoMap2.put(entry.getKey(), tableUpdateInfo != null ? tableUpdateInfo : entry.getValue());
             }
         }
-
         infoMap = infoMap2;
         LOGGER.info((isActive ? "Active" : "Passive") + " trigger update!");
+
         triggerUpdate(infoMap);
     }
 
@@ -226,12 +227,19 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         TableUpdateInfo info = updateInfoConfigService.getPackageUpdateInfo(packId);
         if (info == null) {
             info = new TableUpdateInfo();
-            info.setUpdateType(UpdateConstants.UpdateType.ALL);
+            info.setUpdateType(UpdateConstants.TableUpdateType.ALL);
         }
         List<FineBusinessTable> tables = tableManager.getAllTableByPackId(packId);
         Map<FineBusinessTable, TableUpdateInfo> infoMap = new HashMap<FineBusinessTable, TableUpdateInfo>();
         for (FineBusinessTable table : tables) {
-            infoMap.put(table, info);
+            if (!(table instanceof FineAnalysisTable)) {
+                TableUpdateInfo tableUpdateInfo = updateInfoConfigService.getTableUpdateInfo(table.getName());
+                if (tableUpdateInfo == null) {
+                    tableUpdateInfo = new TableUpdateInfo();
+                    tableUpdateInfo.setUpdateType(UpdateConstants.TableUpdateType.ALL);
+                }
+                infoMap.put(table, tableUpdateInfo);
+            }
         }
         this.triggerUpdate(infoMap, true, true);
     }
@@ -274,14 +282,24 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     @Override
     public void triggerAllUpdate(TableUpdateInfo info) {
         Map<FineBusinessTable, TableUpdateInfo> infoMap = new HashMap<FineBusinessTable, TableUpdateInfo>();
+        //先判断业务的更新与否
+        List<String> notUpdateTableList = new ArrayList<String>();
+        for (FineBusinessPackage businessPackage : packageManager.getAllPackage()) {
+            TableUpdateInfo packageInfo = updateInfoConfigService.getPackageUpdateInfo(businessPackage.getId());
+            if (packageInfo != null && packageInfo.getUpdateType() == UpdateConstants.PackageUpdateType.NOT_UPDATE) {
+                notUpdateTableList.addAll(businessPackage.getTables());
+            }
+        }
         for (FineBusinessTable fineBusinessTable : tableManager.getAllTable()) {
             if (!(fineBusinessTable instanceof FineAnalysisTable)) {
-                TableUpdateInfo tableUpdateInfo = updateInfoConfigService.getTableUpdateInfo(fineBusinessTable.getName());
-                if (tableUpdateInfo == null) {
-                    tableUpdateInfo = new TableUpdateInfo();
-                    tableUpdateInfo.setUpdateType(UpdateConstants.UpdateType.ALL);
+                if (!notUpdateTableList.contains(fineBusinessTable.getName())) {
+                    TableUpdateInfo tableUpdateInfo = updateInfoConfigService.getTableUpdateInfo(fineBusinessTable.getName());
+                    if (tableUpdateInfo == null) {
+                        tableUpdateInfo = new TableUpdateInfo();
+                        tableUpdateInfo.setUpdateType(UpdateConstants.TableUpdateType.ALL);
+                    }
+                    infoMap.put(fineBusinessTable, tableUpdateInfo);
                 }
-                infoMap.put(fineBusinessTable, tableUpdateInfo);
             }
         }
         if (!infoMap.isEmpty()) {

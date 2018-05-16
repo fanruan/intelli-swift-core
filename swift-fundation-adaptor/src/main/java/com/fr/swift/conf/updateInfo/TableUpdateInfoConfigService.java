@@ -29,7 +29,7 @@ public class TableUpdateInfoConfigService {
     private TableUpdateInfoConfig config;
     private ObjectMapper objectMapper;
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(TableUpdateInfoConfigService.class);
-    public static final String GLOABAL_KEY = GlobalUpdateSetting.class.getName() + ".swiftGlobal";
+    public static final String GLOABAL_KEY = (GlobalUpdateSetting.class.getName() + ".swiftGlobal").replaceAll("[.]", "_");
 
     private TableUpdateInfoConfigService() {
         this.config = TableUpdateInfoConfig.getInstance();
