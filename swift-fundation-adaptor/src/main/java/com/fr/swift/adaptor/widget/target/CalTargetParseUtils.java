@@ -171,7 +171,7 @@ public class CalTargetParseUtils {
                     resultTargets.add(new ResultTarget(i, resultFetchIndex));
                 }
             }
-            if (metricType == AggregatorType.DUMMY || metricType == aggregatorType) {
+            if (metricType == AggregatorType.DUMMY) {
                 aggregators.add(new WrappedAggregator(aggregator));
             } else {
                 aggregators.add(new WrappedAggregator(aggregator, AggregatorFactory.createAggregator(metricType)));
