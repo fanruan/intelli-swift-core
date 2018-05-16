@@ -93,8 +93,14 @@ public class CubeTasks {
         });
     }
 
+    private static String newId(String name, String id) {
+        return name.equals(id) ?
+                String.format("%s", id) :
+                String.format("%s@%s", name, id);
+    }
+
     private static String newTableName(DataSource ds) throws SwiftMetaDataException {
-        return String.format("%s@%s", ds.getMetadata().getTableName(), ds.getSourceKey().getId());
+        return newId(ds.getMetadata().getTableName(), ds.getSourceKey().getId());
     }
 
     private static String newColumnName(DataSource ds, String columnName) throws SwiftMetaDataException {
@@ -102,7 +108,7 @@ public class CubeTasks {
     }
 
     private static String newRelationName(RelationSource rs) {
-        return String.format("%s@%s", rs, rs.getSourceKey().getId());
+        return newId(rs.toString(), rs.getSourceKey().getId());
     }
 
     public static TaskKey newBuildTableTaskKey(DataSource ds) throws SwiftMetaDataException {
