@@ -358,14 +358,14 @@ public class FilterInfoFactory {
                 SwiftNumberInRangeFilterValue filterValue = new SwiftNumberInRangeFilterValue();
                 filterValue.setMin(createValue(numberBean, segments, fieldName));
                 return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(columnKey, filterValue,
-                        SwiftDetailFilterType.NUMBER_IN_RANGE);
+                        isAverage(numberBean) ? SwiftDetailFilterType.NUMBER_AVERAGE : SwiftDetailFilterType.NUMBER_IN_RANGE);
             }
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.SMALL: {
                 NumberSelectedFilterValueBean numberBean = ((NumberSmallFilterBean) bean).getFilterValue();
                 SwiftNumberInRangeFilterValue value = new SwiftNumberInRangeFilterValue();
                 value.setMax(createValue(numberBean, segments, fieldName));
                 return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(columnKey, value,
-                        SwiftDetailFilterType.NUMBER_IN_RANGE);
+                        isAverage(numberBean) ? SwiftDetailFilterType.NUMBER_AVERAGE : SwiftDetailFilterType.NUMBER_IN_RANGE);
             }
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.LARGE_OR_EQUAL: {
                 NumberSelectedFilterValueBean numberBean = ((NumberLargeOrEqualFilterBean) bean).getFilterValue();
@@ -373,7 +373,7 @@ public class FilterInfoFactory {
                 value.setMin(createValue(numberBean, segments, fieldName));
                 value.setMinIncluded(true);
                 return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(columnKey, value,
-                        SwiftDetailFilterType.NUMBER_IN_RANGE);
+                        isAverage(numberBean) ? SwiftDetailFilterType.NUMBER_AVERAGE : SwiftDetailFilterType.NUMBER_IN_RANGE);
             }
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.SMALL_OR_EQUAL: {
                 NumberSelectedFilterValueBean numberBean = ((NumberSmallOrEqualFilterBean) bean).getFilterValue();
@@ -381,7 +381,7 @@ public class FilterInfoFactory {
                 value.setMax(createValue(numberBean, segments, fieldName));
                 value.setMaxIncluded(true);
                 return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(columnKey, value,
-                        SwiftDetailFilterType.NUMBER_IN_RANGE);
+                        isAverage(numberBean) ? SwiftDetailFilterType.NUMBER_AVERAGE : SwiftDetailFilterType.NUMBER_IN_RANGE);
             }
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.TOP_N: {
                 int n = ((NumberTopNFilterBean) bean).getFilterValue().intValue();
@@ -532,6 +532,10 @@ public class FilterInfoFactory {
             min = bean.getValue();
         }
         return min;
+    }
+
+    private static boolean isAverage(NumberSelectedFilterValueBean bean) {
+        return bean.getType() == BICommonConstants.ANALYSIS_FILTER_NUMBER_VALUE.AVG;
     }
 
     private static SwiftNumberInRangeFilterValue createValue(NumberValue nv) {
