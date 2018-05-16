@@ -8,6 +8,7 @@ import com.finebi.conf.structure.result.BIStringDetailResult;
 import com.finebi.conf.structure.result.StringControlResult;
 import com.fr.stable.StringUtils;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
+import com.fr.swift.adaptor.transformer.filter.dimension.DimensionFilterAdaptor;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
@@ -56,7 +57,7 @@ public class StringControlWidgetAdaptor extends AbstractTableWidgetAdaptor {
                 filterInfos.add(FilterInfoFactory.transformFineFilter(widget.getTableName(), widget.getFilters()));
             }
             if (dimension.getFilters() != null) {
-                filterInfos.add(FilterInfoFactory.transformDimensionFineFilter(dimension));
+                filterInfos.add(DimensionFilterAdaptor.transformDimensionFineFilter(dimension));
             }
             List values = QueryUtils.getOneDimensionFilterValues(dimension, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND), widget.getWidgetId());
 

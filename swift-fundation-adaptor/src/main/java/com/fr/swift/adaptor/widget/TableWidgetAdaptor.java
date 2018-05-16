@@ -23,6 +23,7 @@ import com.fr.swift.adaptor.linkage.LinkageAdaptor;
 import com.fr.swift.adaptor.struct.node.SwiftTableResult;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.transformer.SortAdaptor;
+import com.fr.swift.adaptor.transformer.filter.dimension.DimensionFilterAdaptor;
 import com.fr.swift.adaptor.widget.expander.ExpanderFactory;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.adaptor.widget.target.CalTargetParseUtils;
@@ -229,7 +230,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         ColumnKey colKey = new ColumnKey(columnName);
         Group group = GroupAdaptor.adaptDashboardGroup(fineDim);
 
-        FilterInfo filterInfo = FilterInfoFactory.transformDimensionFineFilter(tableName, fineDim, index == size - 1, targets);
+        FilterInfo filterInfo = DimensionFilterAdaptor.transformDimensionFineFilter(tableName, fineDim, index == size - 1, targets);
 
         return new GroupDimension(index, sourceKey, colKey, group, SortAdaptor.adaptorDimensionSort(fineDim.getSort(), getSortIndex(fineDim.getSort(), index, targets, size)),
                 filterInfo);

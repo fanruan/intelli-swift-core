@@ -4,6 +4,7 @@ import com.finebi.conf.internalimp.dashboard.widget.control.string.ListLabelWidg
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.result.control.string.BIListLabelResult;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
+import com.fr.swift.adaptor.transformer.filter.dimension.DimensionFilterAdaptor;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.filter.info.FilterInfo;
@@ -27,7 +28,7 @@ public class ListLabelWidgetAdaptor {
                 filterInfos.add(FilterInfoFactory.transformFineFilter(widget.getTableName(), widget.getFilters()));
             }
             if (dimension.getFilters() != null) {
-                filterInfos.add(FilterInfoFactory.transformDimensionFineFilter(dimension));
+                filterInfos.add(DimensionFilterAdaptor.transformDimensionFineFilter(dimension));
             }
             List values = QueryUtils.getOneDimensionFilterValues(dimension, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND), widget.getWidgetId());
             return new ListLabelResult(true, values);
