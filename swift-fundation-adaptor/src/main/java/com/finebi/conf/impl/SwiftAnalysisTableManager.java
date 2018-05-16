@@ -1,6 +1,7 @@
 package com.finebi.conf.impl;
 
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.common.internalimp.config.session.CommonConfigManager;
 import com.finebi.conf.constant.BIConfConstants;
 import com.finebi.conf.constant.ConfConstant;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.AddNewColumnBean;
@@ -86,12 +87,13 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
     public List<FineBusinessField> getFields(FineAnalysisTable table) {
         //nice job foundation
         //字段设置居然要返回上一层的结果
+        Map<String, String> escapeMap = CommonConfigManager.getEntryInfoSession(getEngineType()).findByName(table.getName()).getEscapeMap();
         try {
             Map<String, Integer> groupMap = checkGroupByOperator(table);
             List<FineBusinessField> fields;
             if (table.getOperator() != null && table.getOperator().getType() == ConfConstant.AnalysisType.FIELD_SETTING) {
                 List<FieldSettingBeanItem> fieldSettings = ((FieldSettingOperator) table.getOperator()).getValue().getValue();
-                fields = FieldFactory.transformColumns2Fields(DataSourceFactory.transformDataSource(table.getBaseTable()).getMetadata(), table.getId());
+                fields = FieldFactory.transformColumns2Fields(DataSourceFactory.transformDataSource(table.getBaseTable()).getMetadata(), table.getId(), escapeMap);
                 for (int i = 0; i < fields.size(); i++) {
                     if (!fieldSettings.isEmpty()) {
                         ((FineBusinessFieldImp) (fields.get(i))).setEnable(fieldSettings.get(i).isUsed());
@@ -100,7 +102,7 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
                     }
                 }
             } else {
-                fields = FieldFactory.transformColumns2Fields(DataSourceFactory.transformDataSource(table).getMetadata(), table.getId());
+                fields = FieldFactory.transformColumns2Fields(DataSourceFactory.transformDataSource(table).getMetadata(), table.getId(), escapeMap);
             }
             if (!groupMap.isEmpty()) {
                 for (FineBusinessField field : fields) {
@@ -155,8 +157,8 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
             }
             if (op.getType() == ConfConstant.AnalysisType.FIELD_SETTING) {
                 List<FieldSettingBeanItem> fieldSettings = ((FieldSettingOperator) op).getValue().getValue();
-                for (FieldSettingBeanItem item: fieldSettings){
-                    if (groupMap.containsKey(item.getoName())){
+                for (FieldSettingBeanItem item : fieldSettings) {
+                    if (groupMap.containsKey(item.getoName())) {
                         groupMap.put(item.getName(), groupMap.get(item.getoName()));
                         groupMap.remove(item.getoName());
                     }

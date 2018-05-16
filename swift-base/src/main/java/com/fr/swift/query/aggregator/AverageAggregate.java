@@ -7,7 +7,7 @@ import com.fr.swift.structure.iterator.RowTraversal;
 /**
  * @author Xiaolei.liu
  */
-public class AverageAggregate implements Aggregator <DoubleAverageAggregatorValue>{
+public class AverageAggregate extends AbstractAggregator<DoubleAverageAggregatorValue> {
 
     protected static final Aggregator INSTANCE = new AverageAggregate();
 

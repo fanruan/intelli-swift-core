@@ -6,11 +6,16 @@ import com.finebi.conf.constant.BICommonConstants;
 import com.finebi.conf.constant.BIDesignConstants;
 import com.finebi.conf.exception.FineEngineException;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.WidgetDimensionBean;
+import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.number.custom.NumberCustomGroupBean;
+import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.number.custom.NumberCustomGroupValueBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
 import com.finebi.conf.internalimp.bean.filtervalue.date.single.DateStaticFilterBean;
 import com.finebi.conf.internalimp.bean.filtervalue.date.single.DateStaticFilterBeanValue;
+import com.finebi.conf.internalimp.bean.filtervalue.number.NumberValue;
 import com.finebi.conf.internalimp.dashboard.widget.filter.ClickValue;
 import com.finebi.conf.internalimp.dashboard.widget.filter.ClickValueItem;
+import com.finebi.conf.internalimp.dashboard.widget.filter.TableJumpClickValue;
+import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetGlobalFilterBean;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
 import com.finebi.conf.internalimp.service.pack.FineConfManageCenter;
 import com.finebi.conf.service.engine.relation.EngineRelationPathManager;
@@ -54,8 +59,7 @@ public class LinkageAdaptor {
      * @param filterInfos
      * @return
      */
-    public static TableWidgetBean handleClickItem(String tableName, WidgetLinkItem widgetLinkItem, List<FilterInfo> filterInfos, Dimension[] primary, String[] foreign) {
-        WidgetBean widgetBean = widgetLinkItem.getWidget();
+    private static TableWidgetBean handleClickItem(String tableName, WidgetBean widgetBean, List<ClickValueItem> clickValueItems, List<FilterInfo> filterInfos, Dimension[] primary, String[] foreign) {
         if (null == widgetBean) {
             return null;
         }
@@ -65,20 +69,37 @@ public class LinkageAdaptor {
         TableWidgetBean fromWidget = (TableWidgetBean) widgetBean;
         String fromTableName = fromWidget.getTableName();
 
-        ClickValue clickValue = widgetLinkItem.getClicked();
-        if (null != clickValue) {
-            List<ClickValueItem> clickedList = clickValue.getValue();
-            if (ComparatorUtils.equals(fromTableName, tableName)) {
-                handleOneTableFilter(fromWidget, clickedList, filterInfos);
-            } else {
-                handleRelationFilter(tableName, fromWidget, clickedList, filterInfos, primary, foreign);
-            }
+        if (ComparatorUtils.equals(fromTableName, tableName)) {
+            handleOneTableFilter(fromWidget, clickValueItems, filterInfos);
+        } else {
+            handleRelationFilter(tableName, fromWidget, clickValueItems, filterInfos, primary, foreign);
         }
         return fromWidget;
     }
 
     public static TableWidgetBean handleClickItem(String tableName, WidgetLinkItem widgetLinkItem, List<FilterInfo> filterInfos) {
         return handleClickItem(tableName, widgetLinkItem, filterInfos, null, null);
+    }
+
+    public static TableWidgetBean handleClickItem(String tableName, WidgetLinkItem widgetLinkItem, List<FilterInfo> filterInfos, Dimension[] primary, String[] foreign) {
+        ClickValue clicked = widgetLinkItem.getClicked();
+        if (clicked == null) {
+            return null;
+        }
+        return handleClickItem(tableName, widgetLinkItem.getWidget(), clicked.getValue(), filterInfos, primary, foreign);
+    }
+
+    public static TableWidgetBean handleCrossTempletClick(String tableName, WidgetGlobalFilterBean globalBean, List<FilterInfo> filterInfos) {
+        return handleCrossTempletClick(tableName, globalBean, filterInfos, null, null);
+    }
+
+    public static TableWidgetBean handleCrossTempletClick(String tableName, WidgetGlobalFilterBean globalBean, List<FilterInfo> filterInfos, Dimension[] primary, String[] foreign) {
+        // 跨模板联动
+        TableJumpClickValue clicked = (TableJumpClickValue) globalBean.getClicked();
+        if (clicked == null) {
+            return null;
+        }
+        return handleClickItem(tableName, globalBean.getLinkedWidget(), clicked.getValue(), filterInfos, primary, foreign);
     }
 
     private static void handleOneTableFilter(TableWidgetBean fromWidget, List<ClickValueItem> clickedList, List<FilterInfo> filterInfos) {
@@ -88,12 +109,16 @@ public class LinkageAdaptor {
 
                 WidgetDimensionBean bean = fromWidget.getDimensions().get(clickValueItem.getdId());
                 ColumnKey columnKey = new ColumnKey(BusinessTableUtils.getFieldNameByFieldId(bean.getFieldId()));
-                filterInfos.add(dealFilterInfo(columnKey, value, bean));
+                FilterInfo info = dealFilterInfo(columnKey, value, bean);
+                if (null != info) {
+                    filterInfos.add(info);
+                }
+
             }
         }
     }
 
-    public static RelationSource dealWithCustomRelation(String primaryTable, String foreignTable, Dimension[] primary, String[] foreign) throws Exception {
+    private static RelationSource dealWithCustomRelation(String primaryTable, String foreignTable, Dimension[] primary, String[] foreign) throws Exception {
         EngineTableManager tableManager = fineConfManageCenter.getTableProvider().get(FineEngineType.Cube);
         SourceKey primarySource = DataSourceFactory.getDataSource(tableManager.getSingleTable(primaryTable)).getSourceKey();
         SourceKey foreignSource = DataSourceFactory.getDataSource(tableManager.getSingleTable(foreignTable)).getSourceKey();
@@ -129,13 +154,15 @@ public class LinkageAdaptor {
             } else {
                 relationSource = RelationSourceFactory.transformRelationSourcesFromPath(relationPaths.get(0));
             }
-            for (int i = 0; i < clickedList.size(); i++) {
-                ClickValueItem clickValueItem = clickedList.get(i);
+            for (ClickValueItem clickValueItem : clickedList) {
                 String value = clickValueItem.getText();
                 WidgetDimensionBean bean = fromWidget.getDimensions().get(clickValueItem.getdId());
                 ColumnKey columnKey = new ColumnKey(BusinessTableUtils.getFieldNameByFieldId(bean.getFieldId()));
                 columnKey.setRelation(relationSource);
-                filterInfos.add(dealFilterInfo(columnKey, value, bean));
+                FilterInfo info = dealFilterInfo(columnKey, value, bean);
+                if (null != info) {
+                    filterInfos.add(info);
+                }
             }
         }
     }
@@ -147,7 +174,7 @@ public class LinkageAdaptor {
                 return createDateFilter(columnKey, value, bean.getGroup().getType());
             case BIDesignConstants.DESIGN.DIMENSION_TYPE.NUMBER:
             case BIDesignConstants.DESIGN.DIMENSION_TYPE.TRANSFORM_FROM_NUMBER:
-                return createNumberFilter(columnKey, value);
+                return createNumberFilter(columnKey, bean, value);
             default:
                 Set<String> values = new HashSet<String>();
                 values.add(value);
@@ -156,10 +183,25 @@ public class LinkageAdaptor {
 
     }
 
-    private static FilterInfo createNumberFilter(ColumnKey columnKey, String value) {
-        Set<Double> values = new HashSet<Double>();
-        values.add(Double.parseDouble(value));
-        return new SwiftDetailFilterInfo<Set<Double>>(columnKey, values, SwiftDetailFilterType.NUMBER_CONTAIN);
+    private static FilterInfo createNumberFilter(ColumnKey columnKey, WidgetDimensionBean bean, String value) {
+        switch (bean.getGroup().getType()) {
+            case BIDesignConstants.DESIGN.GROUP.CUSTOM_NUMBER_GROUP:
+                NumberCustomGroupValueBean valueBean = ((NumberCustomGroupBean) bean.getGroup()).getGroupValue();
+                if (null != valueBean) {
+                    NumberValue numberValue = new NumberValue();
+                    numberValue.setMax(valueBean.getMax());
+                    numberValue.setMin(valueBean.getMin());
+                    numberValue.setClosemax(false);
+                    numberValue.setClosemin(true);
+                    return new SwiftDetailFilterInfo<NumberValue>(columnKey, numberValue, SwiftDetailFilterType.NUMBER_IN_RANGE);
+                }
+                break;
+            default:
+                Set<Double> values = new HashSet<Double>();
+                values.add(Double.parseDouble(value));
+                return new SwiftDetailFilterInfo<Set<Double>>(columnKey, values, SwiftDetailFilterType.NUMBER_CONTAIN);
+        }
+        return null;
     }
 
     private static FilterInfo createDateFilter(ColumnKey columnKey, String value, int groupType) {

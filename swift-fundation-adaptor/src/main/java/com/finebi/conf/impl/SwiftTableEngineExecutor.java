@@ -2,6 +2,7 @@ package com.finebi.conf.impl;
 
 import com.finebi.base.common.resource.FineResourceItem;
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.common.internalimp.config.session.CommonConfigManager;
 import com.finebi.conf.exception.FineEngineException;
 import com.finebi.conf.internalimp.analysis.operator.circulate.CirculateOneFieldOperator;
 import com.finebi.conf.internalimp.analysis.operator.circulate.CirculateTwoFieldOperator;
@@ -15,7 +16,6 @@ import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
 import com.finebi.conf.internalimp.basictable.table.FineExcelBusinessTable;
 import com.finebi.conf.internalimp.service.engine.table.FineTableEngineExecutor;
 import com.finebi.conf.provider.SwiftTableManager;
-import com.finebi.conf.service.engine.table.EngineTableManager;
 import com.finebi.conf.structure.analysis.operator.FineOperator;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.AbstractFineTable;
@@ -48,11 +48,13 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.db.ConnectionInfo;
 import com.fr.swift.source.db.ConnectionManager;
+import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -69,11 +71,11 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
 
     private DataProvider dataProvider;
 
-    private EngineTableManager tableManager;
+    @Autowired
+    private SwiftTableManager tableManager;
 
     public SwiftTableEngineExecutor() {
         this.dataProvider = new SwiftDataProvider();
-        this.tableManager = new SwiftTableManager();
     }
 
     @Override
@@ -96,8 +98,9 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
     @Override
     public List<FineBusinessField> getFieldList(FineBusinessTable table) {
         try {
+            Map<String, String> escapeMap = CommonConfigManager.getEntryInfoSession(getEngineType()).findByName(table.getName()).getEscapeMap();
             DataSource dataSource = DataSourceFactory.transformDataSource(table);
-            List<FineBusinessField> fieldsList = FieldFactory.transformColumns2Fields(dataSource.getMetadata(), table.getId());
+            List<FineBusinessField> fieldsList = FieldFactory.transformColumns2Fields(dataSource.getMetadata(), table.getId(), escapeMap);
             return fieldsList;
         } catch (Exception e) {
             LOGGER.error(e);
@@ -224,13 +227,13 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
                 dataList.add(iter.next().toString());
             }
             // TODO length
-            if(iterator.hasNext()) {
+            if (iterator.hasNext()) {
                 FloorItem floorItem = iterator.next();
                 previewData.add(new FloorPreviewItem((floorItem.getName()), dataList, 0));
             } else {
                 previewData.add(new FloorPreviewItem((tempName + k), dataList, 0));
             }
-            k ++;
+            k++;
         }
         FineCirculatePreviewData engineConfProduceData = new FineCirculatePreviewData();
         engineConfProduceData.setPreviewData(previewData);
@@ -271,7 +274,7 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
             Integer[] len = (Integer[]) lengthSet.toArray(new Integer[lengthSet.size()]);
             int[] lenArray = new int[len.length];
             for (int i = 0; i < len.length; i++) {
-                lenArray[i] = len[i].intValue();
+                lenArray[i] = len[i];
             }
             engineConfProduceData.setPreviewData(parseDataMode(set, lenArray, false, 0));
             return engineConfProduceData;
@@ -369,8 +372,8 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
     }
 
 
-    // 该字段是否已经自循环列了
     private boolean isFieldCircleExisted(List<FineBusinessField> fields, String idFieldName) {
+        // 该字段是否已经自循环列了
         FineBusinessField field = null;
         for (FineBusinessField fieldSource : fields) {
             if (ComparatorUtils.equals(fieldSource.getId(), idFieldName)) {
@@ -384,12 +387,12 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
         return false;
     }
 
-
     @Override
     public FineBusinessTable createTable(FineBusinessTable table) {
         return null;
     }
 
+    @Override
     public boolean addAdditionalExcel(FineExcelBusinessTable table, String additionalAttachId) {
         return false;
     }

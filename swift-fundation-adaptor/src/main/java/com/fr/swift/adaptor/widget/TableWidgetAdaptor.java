@@ -74,7 +74,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(TableWidgetAdaptor.class);
 
     public static BITableResult calculate(TableWidget widget) {
-        GroupNode groupNode = null;
+        GroupNode groupNode;
         int dimensionSize = 0;
         try {
             dimensionSize = widget.getDimensionList().size();
@@ -97,7 +97,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         List<ExpanderBean> rowExpand = widget.getValue().getRowExpand();
         Expander expander = ExpanderFactory.create(widget.isOpenRowNode(), widget.getDimensionList(),
                 rowExpand == null ? new ArrayList<ExpanderBean>() : rowExpand, widget.getHeaderExpand());
-        DimensionInfo dimensionInfo = new DimensionInfoImpl(cursor, filterInfo, expander, dimensions.toArray(new Dimension[dimensions.size()]));
+        DimensionInfo dimensionInfo = new DimensionInfoImpl(cursor, filterInfo, expander, dimensions.toArray(new Dimension[0]));
         return new GroupQueryInfo(queryId, sourceKey, dimensionInfo, targetInfo);
     }
 
@@ -110,15 +110,6 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         return new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
     }
 
-    private static void dealWithDimensionDirectFilter(List<FilterInfo> filterInfoList, List<Dimension> dimensions) {
-        // 维度上的直接过滤，提取出来
-        for (Dimension dimension : dimensions) {
-            FilterInfo filter = dimension.getFilter();
-            if (filter != null && !filter.isMatchFilter()) {
-                filterInfoList.add(dimension.getFilter());
-            }
-        }
-    }
 
     private static void dealWithDrill(List<FilterInfo> filterInfoList, AbstractTableWidget widget) throws Exception {
         for (FineDimension fineDimension : widget.getDimensionList()) {
@@ -137,7 +128,10 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
                     bean = new WidgetDimensionBean();
                 }
 //                Set<String> values = new HashSet<String>();
-                filterInfoList.add(LinkageAdaptor.dealFilterInfo(new ColumnKey(columnName), value, bean));
+                FilterInfo info = LinkageAdaptor.dealFilterInfo(new ColumnKey(columnName), value, bean);
+                if (null != info) {
+                    filterInfoList.add(info);
+                }
 //                values.add(value);
 //                filterInfoList.add(new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(columnName), values, SwiftDetailFilterType.STRING_IN));
             }
@@ -145,22 +139,26 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         widget.getValue().getDrillList();
     }
 
-    private static void dealWithLink(List<FilterInfo> filterInfoList, AbstractTableWidget widget) throws SQLException {
-        //联动设置
-        Map<String, WidgetLinkItem> linkItemMap = widget.getValue().getLinkage();
-        //手动联动配置
-        Map<String, List<CustomLinkConfItem>> customLinkConf = widget.getValue().getCustomLinkConf();
+    private static void dealWithLink(List<FilterInfo> filterInfos, AbstractTableWidget widget) throws SQLException {
+        // 联动设置
+        TableWidgetBean bean = widget.getValue();
+        Map<String, WidgetLinkItem> linkItemMap = bean.getLinkage();
+
+        // 手动联动配置
+        Map<String, List<CustomLinkConfItem>> customLinkConf = bean.getCustomLinkConf();
         if (linkItemMap != null) {
             for (Map.Entry<String, WidgetLinkItem> entry : linkItemMap.entrySet()) {
                 WidgetLinkItem widgetLinkItem = entry.getValue();
                 String id = entry.getKey();
                 if (customLinkConf != null && customLinkConf.containsKey(id)) {
-                    dealWithCustomLink(widget.getTableName(), filterInfoList, widgetLinkItem, customLinkConf.get(id));
+                    dealWithCustomLink(widget.getTableName(), filterInfos, widgetLinkItem, customLinkConf.get(id));
                 } else {
-                    dealWithAutoLink(widget.getTableName(), filterInfoList, widgetLinkItem);
+                    dealWithAutoLink(widget.getTableName(), filterInfos, widgetLinkItem);
                 }
             }
         }
+
+        handleCrossTempletLink(filterInfos, widget);
     }
 
     private static void dealWithAutoLink(String tableName, List<FilterInfo> filterInfoList, WidgetLinkItem widgetLinkItem) {
@@ -209,7 +207,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         }
     }
 
-    private static void dealWithWidgetFilter(List<FilterInfo> filterInfoList, AbstractTableWidget widget) throws Exception {
+    static void dealWithWidgetFilter(List<FilterInfo> filterInfoList, AbstractTableWidget widget) throws Exception {
         List<FineFilter> filters = dealWithTargetFilter(widget, widget.getFilters());
         if (filters != null && !filters.isEmpty()) {
             filterInfoList.add(FilterInfoFactory.transformFineFilter(widget.getTableName(), filters));
@@ -237,11 +235,11 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
                 filterInfo);
     }
 
-    private static int getSortIndex(FineDimensionSort sort, int index, List<FineTarget> targets, int size){
-        if (sort instanceof DimensionTargetSort){
+    private static int getSortIndex(FineDimensionSort sort, int index, List<FineTarget> targets, int size) {
+        if (sort instanceof DimensionTargetSort) {
             String targetId = ((DimensionTargetSort) sort).getTargetId();
-            for (int i = 0; i < targets.size(); i++){
-                if (ComparatorUtils.equals(targets.get(i).getId(), targetId)){
+            for (int i = 0; i < targets.size(); i++) {
+                if (ComparatorUtils.equals(targets.get(i).getId(), targetId)) {
                     return i + size;
                 }
             }

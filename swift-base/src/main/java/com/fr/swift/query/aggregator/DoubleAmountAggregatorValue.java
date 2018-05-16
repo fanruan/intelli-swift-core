@@ -29,7 +29,7 @@ public class DoubleAmountAggregatorValue implements AggregatorValue<Double> {
 
     @Override
     public Double calculateValue() {
-        return value;
+        return Double.isNaN(value) ? null : value;
     }
 
     @Override
