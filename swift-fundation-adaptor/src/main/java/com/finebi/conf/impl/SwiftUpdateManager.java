@@ -125,6 +125,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         if (packageInfo == null) {
             packageInfo = new TableUpdateInfo();
             packageInfo.setTableName(packageId);
+            packageInfo.setUpdateType(UpdateConstants.PackageUpdateType.UPDATE);
         }
         return packageInfo;
     }
