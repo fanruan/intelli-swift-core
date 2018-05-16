@@ -227,7 +227,7 @@ public class CalTargetParseUtils {
     }
 
     private static boolean isBaseFieldTarget(FineTarget target) {
-        return target.getCalculation() == null || target.getCalculation().getType() == BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.NONE;
+        return target.getCalculation() == null || target.getWidgetBeanField() == null;
     }
 
     /**
@@ -494,8 +494,6 @@ public class CalTargetParseUtils {
         if (field.getCalculate() != null && field.getCalculate().getType() == BIDesignConstants.DESIGN.CAL_TARGET.FORMULA) {
             return new FormulaMetric(metricIndex, new SourceKey(field.getName()), pair.getValue(), aggregator, AbstractWidgetAdaptor.getFormula(fieldId, widget));
         }
-        //复制的fieldid不对，要取source
-        fieldId = StringUtils.isEmpty(field.getSource()) ? fieldId : field.getSource();
         SourceKey key = new SourceKey(fieldId);
         if (isCounterField(fieldId)) {
             return new CounterMetric(metricIndex, key, new ColumnKey(fieldId), pair.getValue());
