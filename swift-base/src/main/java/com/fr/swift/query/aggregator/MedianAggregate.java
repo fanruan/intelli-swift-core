@@ -26,12 +26,12 @@ public class MedianAggregate extends AbstractAggregator<MedianAggregatorValue> {
         final DictionaryEncodedColumn diColumn = column.getDictionaryEncodedColumn();
         final int[] groupIndex = new int[diColumn.size()];
         TreeMap<Double, Integer> values = new TreeMap<Double, Integer>();
-        valueAmount.setCount(traversal.getCardinality());
         Arrays.fill(groupIndex, 0);
         RowTraversal notNullTraversal = getNotNullTraversal(traversal, column);
         if (notNullTraversal.isEmpty()) {
             return new MedianAggregatorValue();
         }
+        valueAmount.setCount(notNullTraversal.getCardinality());
         notNullTraversal.traversal(new CalculatorTraversalAction() {
 
             @Override
@@ -129,6 +129,7 @@ public class MedianAggregate extends AbstractAggregator<MedianAggregatorValue> {
         TreeMap<Double, Integer> values = new TreeMap<Double, Integer>();
         values.put(value.calculate(), 1);
         medianAggregatorValue.setValues(values);
+        medianAggregatorValue.setMedian(value.calculate());
         return medianAggregatorValue;
     }
 }

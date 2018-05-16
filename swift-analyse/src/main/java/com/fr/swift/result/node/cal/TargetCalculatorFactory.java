@@ -2,10 +2,10 @@ package com.fr.swift.result.node.cal;
 
 import com.fr.swift.query.adapter.target.GroupTarget;
 import com.fr.swift.query.adapter.target.cal.CalTargetType;
-import com.fr.swift.query.adapter.target.cal.GroupFormulaTarget;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.XLeftNode;
+import com.fr.swift.result.node.iterator.CurrentDimensionIterator;
 import com.fr.swift.result.node.iterator.LastDimensionIterator;
 import com.fr.swift.util.function.Function;
 
@@ -20,9 +20,10 @@ public class TargetCalculatorFactory {
 
     public static TargetCalculator create(GroupTarget target, GroupNode groupNode) {
         CalTargetType type = target.type();
-        Iterator<List<AggregatorValue[]>> iterator = createIterator(type, groupNode);
+        Iterator<Iterator<List<AggregatorValue[]>>> iterator = createIterator(type, groupNode);
         switch (type) {
-            case ALL_SUM_OF_ALL: {
+            case ALL_SUM_OF_ALL:
+            case GROUP_SUM_OF_ALL:{
                 Double[] values;
                 if (groupNode instanceof XLeftNode) {
                     List<AggregatorValue[]> aggregatorValues = ((XLeftNode) groupNode).getValueArrayList();
@@ -31,31 +32,35 @@ public class TargetCalculatorFactory {
                         values[i] = aggregatorValues.get(i)[target.paramIndexes()[0]].calculate();
                     }
                 } else {
-                    Double value = groupNode.getAggregatorValue()[target.paramIndexes()[0]].calculate();
-                    values = new Double[] { value };
+                   // Double value = groupNode.getAggregatorValue()[target.paramIndexes()[0]].calculate();
+                    values = new Double[] { null };
                 }
-                return new AllSumOfAllCalculator(target.paramIndexes()[0], target.resultIndex(), iterator, values);
+                return new SumOfAllCalculator(target.paramIndexes()[0], target.resultIndex(), iterator, values);
             }
             case ALL_AVG:
-                return new AllAverageCalculator(target.paramIndexes()[0], target.resultIndex(), iterator);
+            case GROUP_AVG:
+                return new AverageCalculator(target.paramIndexes()[0], target.resultIndex(), iterator);
             case ALL_SUM_OF_ABOVE:
-                return new AllSumOfAboveCalculator(target.paramIndexes()[0], target.resultIndex(), iterator);
+            case GROUP_SUM_OF_ABOVE:
+                return new SumOfAboveCalculator(target.paramIndexes()[0], target.resultIndex(), iterator);
             case ALL_MAX:
-                return new AllMaxOrMinCalculator(target.paramIndexes()[0], target.resultIndex(), iterator, true);
+            case GROUP_MAX:
+                return new MaxOrMinCalculator(target.paramIndexes()[0], target.resultIndex(), iterator, true);
             case ALL_MIN:
-                return new AllMaxOrMinCalculator(target.paramIndexes()[0], target.resultIndex(), iterator, false);
+            case GROUP_MIN:
+                return new MaxOrMinCalculator(target.paramIndexes()[0], target.resultIndex(), iterator, false);
             case ALL_RANK_ASC:
-                return new AllRankCalculator(target.paramIndexes()[0], target.resultIndex(), iterator, true);
+            case GROUP_RANK_ASC:
+                return new RankCalculator(target.paramIndexes()[0], target.resultIndex(), iterator, true);
             case ALL_RANK_DEC:
-                return new AllRankCalculator(target.paramIndexes()[0], target.resultIndex(), iterator, false);
-            case FORMULA:
-                return new GroupFormulaCalculator(target.paramIndexes(), target.resultIndex(),
-                        ((GroupFormulaTarget) target).getFormula(), iterator);
+            case GROUP_RANK_DEC:
+                return new RankCalculator(target.paramIndexes()[0], target.resultIndex(), iterator, false);
         }
         return null;
     }
 
-    private static Iterator<List<AggregatorValue[]>> createIterator(CalTargetType type, GroupNode root) {
+    private static Iterator<Iterator<List<AggregatorValue[]>>> createIterator(CalTargetType type, GroupNode root) {
+        Function<GroupNode, List<AggregatorValue[]>> function = root instanceof XLeftNode ? xLeftNodeMapper() : groupNodeMapper();
         switch (type) {
             case ALL_SUM_OF_ALL:
             case ALL_AVG:
@@ -63,14 +68,81 @@ public class TargetCalculatorFactory {
             case ALL_MAX:
             case ALL_MIN:
             case ALL_RANK_ASC:
-            case ALL_RANK_DEC: {
-                if (root instanceof XLeftNode) {
-                    return new LastDimensionIterator(root, xLeftNodeMapper());
-                }
-                return new LastDimensionIterator(root, groupNodeMapper());
-            }
+            case ALL_RANK_DEC:
+                return new RootIterator(root, function);
+            case GROUP_SUM_OF_ALL:
+            case GROUP_AVG:
+            case GROUP_SUM_OF_ABOVE:
+            case GROUP_MAX:
+            case GROUP_MIN:
+            case GROUP_RANK_ASC:
+            case GROUP_RANK_DEC:
+                return new GroupIterator(root, function);
         }
-        return new LastDimensionIterator(root, groupNodeMapper());
+        return new RootIterator(root, function);
+    }
+
+
+    private static class RootIterator implements Iterator<Iterator<List<AggregatorValue[]>>>{
+        private Function<GroupNode, List<AggregatorValue[]>> function;
+        private GroupNode root;
+        private boolean hasNext = true;
+
+        private RootIterator(GroupNode root, Function<GroupNode, List<AggregatorValue[]>> function) {
+            this.root = root;
+            this.function = function;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return hasNext;
+        }
+
+        @Override
+        public Iterator<List<AggregatorValue[]>> next() {
+            hasNext = false;
+            return new LastDimensionIterator(root, function);
+        }
+
+        @Override
+        public void remove() {
+
+        }
+    }
+
+    private static class GroupIterator implements Iterator<Iterator<List<AggregatorValue[]>>>{
+        private GroupNode current;
+        private Function<GroupNode, List<AggregatorValue[]>> function;
+
+        private GroupIterator(GroupNode root, Function<GroupNode, List<AggregatorValue[]>> function) {
+            initCurrent(root);
+            this.function = function;
+        }
+
+        private void initCurrent(GroupNode root) {
+            current = root;
+            while (current.getChildrenSize() != 0){
+                current = current.getChild(0);
+            }
+            current = current.getParent();
+        }
+
+        @Override
+        public boolean hasNext() {
+            return current != null;
+        }
+
+        @Override
+        public Iterator<List<AggregatorValue[]>> next() {
+            GroupNode node = current;
+            current = current.getSibling();
+            return new CurrentDimensionIterator(node, function);
+        }
+
+        @Override
+        public void remove() {
+
+        }
     }
 
     private static Function<GroupNode, List<AggregatorValue[]>> groupNodeMapper() {
