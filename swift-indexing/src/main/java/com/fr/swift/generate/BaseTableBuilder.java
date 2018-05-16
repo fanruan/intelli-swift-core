@@ -82,7 +82,7 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
                     try {
                         initColumnIndexTask();
                     } catch (Exception e) {
-                        LOGGER.error("Table :" + dataSource.getSourceKey() + " add field index task failed!", e);
+                        LOGGER.error("Table :'" + dataSource.getSourceKey() + "' add field index task failed!", e);
                     }
                 }
             }
@@ -114,8 +114,10 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
                             indexSegments.add(allSegments.get(i));
                         }
                     }
+                    LOGGER.info("Update type:realtime! Table :'" + dataSource.getMetadata().getTableName() + "' will do realtime tranport!");
                 } else {
                     indexSegments.addAll(allSegments);
+                    LOGGER.info("Update type:history! Table :'" + dataSource.getMetadata().getTableName() + "' will do history tranport!");
                 }
 
                 for (String indexField : transporter.getIndexFieldsList()) {

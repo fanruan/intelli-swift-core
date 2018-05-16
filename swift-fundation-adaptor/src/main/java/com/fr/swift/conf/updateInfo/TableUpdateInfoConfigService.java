@@ -4,6 +4,7 @@ import com.finebi.conf.internalimp.update.GlobalUpdateSetting;
 import com.finebi.conf.internalimp.update.TableUpdateInfo;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.config.Configuration;
+import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -28,7 +29,7 @@ public class TableUpdateInfoConfigService {
     private TableUpdateInfoConfig config;
     private ObjectMapper objectMapper;
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(TableUpdateInfoConfigService.class);
-    private static final String GLOABAL_KEY = GlobalUpdateSetting.class.getName() + ".swiftGlobal";
+    public static final String GLOABAL_KEY = (GlobalUpdateSetting.class.getName() + ".swiftGlobal").replaceAll("[.]", "_");
 
     private TableUpdateInfoConfigService() {
         this.config = TableUpdateInfoConfig.getInstance();
@@ -43,6 +44,7 @@ public class TableUpdateInfoConfigService {
         return SingletonHolder.INSTANCE;
     }
 
+    //table
     public boolean addOrUpdateInfo(final Map<FineBusinessTable, TableUpdateInfo> updateInfoMap) {
         return Configurations.update(new TableUpdateWorker() {
             @Override
@@ -70,10 +72,12 @@ public class TableUpdateInfoConfigService {
             Map.Entry<String, String> target = iterator.next();
             String key = target.getKey();
             String value = target.getValue();
-            try {
-                result.put(key, objectMapper.readValue(value, TableUpdateInfo.class));
-            } catch (IOException e) {
-                LOGGER.error(e);
+            if (!ComparatorUtils.equals(key, GLOABAL_KEY)) {
+                try {
+                    result.put(key, objectMapper.readValue(value, TableUpdateInfo.class));
+                } catch (IOException e) {
+                    LOGGER.error(e);
+                }
             }
         }
         return Collections.unmodifiableMap(result);
@@ -102,6 +106,50 @@ public class TableUpdateInfoConfigService {
         });
     }
 
+    //package
+    public boolean addOrUpdatPackageInfo(final String packId, final TableUpdateInfo info) {
+
+        return Configurations.update(new TableUpdateWorker() {
+            @Override
+            public void run() {
+                try {
+                    config.addOrUpdateInfo(packId, objectMapper.writeValueAsString(info));
+                } catch (JsonProcessingException e) {
+                    Crasher.crash(e);
+                }
+            }
+        });
+    }
+
+    public Map<String, TableUpdateInfo> getAllPackageUpdateInfo() {
+        return this.getAllTableUpdateInfo();
+    }
+
+    public TableUpdateInfo getPackageUpdateInfo(String packageId) {
+        String value = config.getUpdateInfo(packageId);
+        if (StringUtils.isEmpty(value)) {
+            return null;
+        }
+        try {
+            return objectMapper.readValue(value, TableUpdateInfo.class);
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    public boolean removePackageInfo(final List<String> packageIds) {
+        return Configurations.update(new TableUpdateWorker() {
+            @Override
+            public void run() {
+                for (String table : packageIds) {
+                    config.removeUpdateInfo(table);
+                }
+            }
+        });
+    }
+
+
+    //gloable
     public boolean addOrUpdateGlobalUpdateSettings(final GlobalUpdateSetting setting) {
         return Configurations.update(new TableUpdateWorker() {
             @Override

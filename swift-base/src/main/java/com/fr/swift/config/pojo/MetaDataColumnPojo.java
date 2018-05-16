@@ -95,6 +95,6 @@ public class MetaDataColumnPojo implements IMetaDataColumn {
 
     @Override
     public String toString() {
-        return "{" + type + ", " + columnId + "}";
+        return "{" + type + ", " + name + "}";
     }
 }

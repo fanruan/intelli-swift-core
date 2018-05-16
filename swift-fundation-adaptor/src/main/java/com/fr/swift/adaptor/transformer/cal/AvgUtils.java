@@ -4,6 +4,7 @@ import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.AggregatorValueUtils;
 import com.fr.swift.query.aggregator.AverageAggregate;
+import com.fr.swift.query.filter.detail.impl.number.NumberAverageFilter;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
@@ -19,8 +20,9 @@ import java.util.List;
 public class AvgUtils {
 
     public static double average(List<Segment> segments, String fieldName) {
-        if (segments.size() < 1) {
-            throw new IllegalArgumentException();
+        if (segments.isEmpty()) {
+            // 说明是结果的平均值过滤，明细过滤没用，这边返回设置平均值的标识。怪怪的
+            return NumberAverageFilter.AVG_HOLDER;
         }
         List<AggregatorValue> values = new ArrayList<AggregatorValue>();
         for (Segment segment : segments) {

@@ -83,7 +83,7 @@ public class SwiftTableManager extends AbstractEngineTableManager {
                 tableToSourceConfigDao.addConfig(table.getId(), dataSource.getSourceKey().getId());
                 EntryInfo entryInfo = this.createEntryInfo(table);
                 this.addEntryInfo(entryInfo, entry.getKey());
-                table.setFields(FieldFactory.transformColumns2Fields(dataSource.getMetadata(), table.getId()));
+                table.setFields(FieldFactory.transformColumns2Fields(dataSource.getMetadata(), table.getId(), entryInfo.getEscapeMap()));
                 this.saveFieldInfo(FieldInfoHelper.createFieldInfo(entryInfo, table));
                 List<Relation> relationList = this.developDatabaseRelations(entryInfo, entry.getKey());
                 this.updateFineTableResponed(responed, entryInfo, relationList);
@@ -99,14 +99,14 @@ public class SwiftTableManager extends AbstractEngineTableManager {
         try {
             Iterator iterator = needUpdateTables.iterator();
 
-            while(iterator.hasNext()) {
-                FineBusinessTable table = (FineBusinessTable)iterator.next();
+            while (iterator.hasNext()) {
+                FineBusinessTable table = (FineBusinessTable) iterator.next();
                 DataSource dataSource = DataSourceFactory.transformDataSource(table);
                 TableToSource tableToSource = new TableToSourceUnique(table.getId(), dataSource.getSourceKey().getId());
                 tableToSourceConfigDao.updateConfig(tableToSource);
                 EntryInfo entryInfo = this.createEntryInfo(table);
                 this.updateEntryInfo(entryInfo);
-                table.setFields(FieldFactory.transformColumns2Fields(dataSource.getMetadata(), table.getId()));
+                table.setFields(FieldFactory.transformColumns2Fields(dataSource.getMetadata(), table.getId(), entryInfo.getEscapeMap()));
                 this.saveFieldInfo(FieldInfoHelper.createFieldInfo(entryInfo, table));
             }
 

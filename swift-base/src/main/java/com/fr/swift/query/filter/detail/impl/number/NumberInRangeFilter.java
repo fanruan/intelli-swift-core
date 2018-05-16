@@ -11,7 +11,6 @@ import com.fr.swift.structure.iterator.IntListRowTraversal;
 import com.fr.swift.structure.iterator.RowTraversal;
 import com.fr.swift.util.ArrayLookupHelper;
 import com.fr.swift.util.MatchAndIndex;
-import com.fr.swift.util.Util;
 
 /**
  * Created by Lyon on 2017/11/27.
@@ -26,12 +25,18 @@ public class NumberInRangeFilter extends AbstractDetailFilter<Number> {
     protected final boolean maxIncluded;
 
     public NumberInRangeFilter(Double min, Double max, boolean minIncluded, boolean maxIncluded, Column<Number> column) {
-        Util.requireNotGreater(min, max);
         this.min = min;
         this.max = max;
         this.minIncluded = minIncluded;
         this.maxIncluded = maxIncluded;
         this.column = column;
+    }
+
+    protected NumberInRangeFilter(NumberInRangeFilter filter) {
+        this.max = filter.max;
+        this.min = filter.min;
+        this.minIncluded = filter.minIncluded;
+        this.maxIncluded = filter.maxIncluded;
     }
 
     @Override

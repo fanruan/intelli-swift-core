@@ -59,7 +59,8 @@ public class VarianceAggregate extends AbstractAggregator<VarianceAggregatorValu
         notNullTraversal.traversal(ss);
         varianceValue.setSum(sum[0]);
         varianceValue.setSquareSum(sum[1]);
-        varianceValue.setCount(traversal.getCardinality());
+        //求方差时要不要把空值的个数也加上？
+        varianceValue.setCount(notNullTraversal.getCardinality());
         varianceValue.setVariance(ss.getCalculatorValue());
         return varianceValue;
     }
