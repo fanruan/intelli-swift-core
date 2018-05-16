@@ -17,16 +17,23 @@ import com.fr.swift.query.adapter.dimension.DimensionInfo;
 import com.fr.swift.query.adapter.dimension.DimensionInfoImpl;
 import com.fr.swift.query.adapter.dimension.Expander;
 import com.fr.swift.query.adapter.target.TargetInfo;
+import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.TopGroupNode;
 import com.fr.swift.result.XLeftNode;
 import com.fr.swift.result.XNodeMergeResultSet;
+import com.fr.swift.result.node.iterator.PostOrderNodeIterator;
 import com.fr.swift.result.node.xnode.XGroupNodeImpl;
+import com.fr.swift.result.node.xnode.XNodeUtils;
 import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.structure.iterator.IteratorUtils;
+import com.fr.swift.structure.iterator.MapperIterator;
+import com.fr.swift.util.function.Function;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -56,7 +63,10 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor{
                 GroupQueryInfo groupQueryInfo = new GroupQueryInfo(queryInfo.getQueryId(), queryInfo.getTable(),
                         queryInfo.getColDimensionInfo(), queryInfo.getTargetInfo());
                 NodeMergeResultSet result = (NodeMergeResultSet) QueryRunnerProvider.getInstance().executeQuery(groupQueryInfo);
-                crossNode = new BICrossNodeAdaptor(new XGroupNodeImpl(new XLeftNode(), (GroupNode) result.getNode()));
+                GroupNode groupNode = (GroupNode) result.getNode();
+                XLeftNode xLeftNode = topGroupNode2XLeftNode(queryInfo.getColDimensionInfo().isShowSum(),
+                        groupQueryInfo.getDimensionInfo().getDimensions().length, groupNode);
+                crossNode = new BICrossNodeAdaptor(new XGroupNodeImpl(xLeftNode, groupNode));
             } else {
                 // 行列表头都不为空
                 resultSet = (XNodeMergeResultSet) QueryRunnerProvider.getInstance().executeQuery(queryInfo);
@@ -67,6 +77,24 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor{
             LOGGER.error(e);
         }
         return new CrossTableResult(crossNode, false, false, false, false);
+    }
+
+    private static XLeftNode topGroupNode2XLeftNode(boolean isShowColSum, int dimensionSize, GroupNode node) {
+        Iterator<GroupNode> iterator = new PostOrderNodeIterator<GroupNode>(dimensionSize, node);
+        if (isShowColSum) {
+            iterator = XNodeUtils.excludeNoShowSummaryRow(iterator);
+        } else {
+            iterator = XNodeUtils.excludeAllSummaryRow(iterator);
+        }
+        List<AggregatorValue[]> values = IteratorUtils.iterator2List(new MapperIterator<GroupNode, AggregatorValue[]>(iterator, new Function<GroupNode, AggregatorValue[]>() {
+            @Override
+            public AggregatorValue[] apply(GroupNode p) {
+                return p.getAggregatorValue();
+            }
+        }));
+        XLeftNode xLeftNode = new XLeftNode();
+        xLeftNode.setXValues(values);
+        return xLeftNode;
     }
 
     private static XGroupQueryInfo buildQueryInfo(CrossTableWidget widget, TargetInfo targetInfo) throws Exception {
