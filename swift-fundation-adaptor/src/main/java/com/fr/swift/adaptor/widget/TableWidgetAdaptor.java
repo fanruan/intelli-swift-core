@@ -9,8 +9,6 @@ import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
 import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
 import com.finebi.conf.internalimp.dashboard.widget.dimension.sort.DimensionTargetSort;
 import com.finebi.conf.internalimp.dashboard.widget.filter.CustomLinkConfItem;
-import com.finebi.conf.internalimp.dashboard.widget.filter.JumpItemBean;
-import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetGlobalFilterBean;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
 import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
 import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
@@ -160,21 +158,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
             }
         }
 
-        // 跨模板联动
-        WidgetGlobalFilterBean globalFilter = bean.getGlobalFilter();
-        if (globalFilter == null) {
-            return;
-        }
-        List<JumpItemBean> jumps = globalFilter.getLinkedWidget().getJump();
-        if (jumps == null || jumps.isEmpty()) {
-            // 联动过滤
-            LinkageAdaptor.handleCrossTempletClick(widget.getTableName(), globalFilter, filterInfos);
-            return;
-        }
-        for (JumpItemBean jump : jumps) {
-            // 值过滤
-            handleCrossTempletCustomLink(widget.getTableName(), globalFilter, jump, filterInfos);
-        }
+        handleCrossTempletLink(filterInfos, widget);
     }
 
     private static void dealWithAutoLink(String tableName, List<FilterInfo> filterInfoList, WidgetLinkItem widgetLinkItem) {

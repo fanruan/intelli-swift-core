@@ -345,4 +345,25 @@ public abstract class AbstractWidgetAdaptor {
             filterInfos.add(new SwiftDetailFilterInfo(new ColumnKey(toColumns[i]), results[i], SwiftDetailFilterType.STRING_IN));
         }
     }
+
+    static void handleCrossTempletLink(List<FilterInfo> filterInfos, AbstractTableWidget widget) throws SQLException {
+        // 跨模板联动
+        WidgetGlobalFilterBean globalFilter = widget.getValue().getGlobalFilter();
+        if (globalFilter == null) {
+            return;
+        }
+        List<JumpItemBean> jumps = globalFilter.getLinkedWidget().getJump();
+        if (jumps == null || jumps.isEmpty()) {
+            // 联动过滤
+            LinkageAdaptor.handleCrossTempletClick(widget.getTableName(), globalFilter, filterInfos);
+            return;
+        }
+        JumpItemBean jump = jumps.get(0);
+        if (jump.isPassValue()) {
+            // 值过滤
+            handleCrossTempletCustomLink(widget.getTableName(), globalFilter, jump, filterInfos);
+        } else {
+            LinkageAdaptor.handleCrossTempletClick(widget.getTableName(), globalFilter, filterInfos);
+        }
+    }
 }

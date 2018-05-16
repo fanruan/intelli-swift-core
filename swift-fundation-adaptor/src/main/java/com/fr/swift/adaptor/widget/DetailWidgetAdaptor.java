@@ -4,8 +4,6 @@ import com.finebi.conf.constant.BIDesignConstants;
 import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
 import com.finebi.conf.internalimp.dashboard.widget.detail.DetailWidget;
 import com.finebi.conf.internalimp.dashboard.widget.filter.CustomLinkConfItem;
-import com.finebi.conf.internalimp.dashboard.widget.filter.JumpItemBean;
-import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetGlobalFilterBean;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
 import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
@@ -146,21 +144,7 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
             }
         }
 
-        // 跨模板联动
-        WidgetGlobalFilterBean globalFilter = bean.getGlobalFilter();
-        if (globalFilter == null) {
-            return;
-        }
-        List<JumpItemBean> jumps = globalFilter.getLinkedWidget().getJump();
-        if (jumps == null || jumps.isEmpty()) {
-            // 联动过滤
-            LinkageAdaptor.handleCrossTempletClick(widget.getTableName(), globalFilter, filterInfos);
-            return;
-        }
-        for (JumpItemBean jump : jumps) {
-            // 值过滤
-            AbstractWidgetAdaptor.handleCrossTempletCustomLink(widget.getTableName(), globalFilter, jump, filterInfos);
-        }
+        handleCrossTempletLink(filterInfos, widget);
     }
 
     private static SwiftMetaData getMetaData(AbstractTableWidget widget, SwiftMetaData metaData) throws Exception {
