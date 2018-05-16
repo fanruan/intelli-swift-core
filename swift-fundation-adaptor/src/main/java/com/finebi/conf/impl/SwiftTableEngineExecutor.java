@@ -16,7 +16,6 @@ import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
 import com.finebi.conf.internalimp.basictable.table.FineExcelBusinessTable;
 import com.finebi.conf.internalimp.service.engine.table.FineTableEngineExecutor;
 import com.finebi.conf.provider.SwiftTableManager;
-import com.finebi.conf.service.engine.table.EngineTableManager;
 import com.finebi.conf.structure.analysis.operator.FineOperator;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.AbstractFineTable;
@@ -73,11 +72,10 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
     private DataProvider dataProvider;
 
     @Autowired
-    private EngineTableManager tableManager;
+    private SwiftTableManager tableManager;
 
     public SwiftTableEngineExecutor() {
         this.dataProvider = new SwiftDataProvider();
-        this.tableManager = new SwiftTableManager();
     }
 
     @Override
@@ -276,7 +274,7 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
             Integer[] len = (Integer[]) lengthSet.toArray(new Integer[lengthSet.size()]);
             int[] lenArray = new int[len.length];
             for (int i = 0; i < len.length; i++) {
-                lenArray[i] = len[i].intValue();
+                lenArray[i] = len[i];
             }
             engineConfProduceData.setPreviewData(parseDataMode(set, lenArray, false, 0));
             return engineConfProduceData;
@@ -374,8 +372,8 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
     }
 
 
-    // 该字段是否已经自循环列了
     private boolean isFieldCircleExisted(List<FineBusinessField> fields, String idFieldName) {
+        // 该字段是否已经自循环列了
         FineBusinessField field = null;
         for (FineBusinessField fieldSource : fields) {
             if (ComparatorUtils.equals(fieldSource.getId(), idFieldName)) {
@@ -389,12 +387,12 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
         return false;
     }
 
-
     @Override
     public FineBusinessTable createTable(FineBusinessTable table) {
         return null;
     }
 
+    @Override
     public boolean addAdditionalExcel(FineExcelBusinessTable table, String additionalAttachId) {
         return false;
     }

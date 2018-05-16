@@ -50,10 +50,10 @@ public class EtlTransfer implements SwiftSourceTransfer {
 
     private class RowShiftSwiftResultSet implements SwiftResultSet{
         private SwiftResultSet resultSet;
-        private int[] indexex;
+        private int[] indices;
         public RowShiftSwiftResultSet(SwiftResultSet resultSet, int[] indexes) {
            this.resultSet = resultSet;
-           this.indexex = indexes;
+            this.indices = indexes;
         }
 
         @Override
@@ -73,7 +73,7 @@ public class EtlTransfer implements SwiftSourceTransfer {
 
         @Override
         public Row getRowData() throws SQLException {
-            return new ShiftRow(resultSet.getRowData(), indexex);
+            return new ShiftRow(resultSet.getRowData(), indices);
         }
     }
 

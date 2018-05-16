@@ -25,6 +25,7 @@ public class MedianAggregateTest extends TestCase {
         Column mockColumn = control.createMock(Column.class);
         DictionaryEncodedColumn dic = control.createMock(DictionaryEncodedColumn.class);
         IntDetailColumn detailColumn = new TempIntDetailColumn(new ResourceLocation("liu"));
+//        IntDetailColumn detailColumn = control.createMock(IntDetailColumn.class);
         BitMapColumn bitMapColumn = control.createMock(BitMapColumn.class);
 
         EasyMock.expect(mockColumn.getBitmapIndex()).andReturn(bitMapColumn).anyTimes();
@@ -72,8 +73,8 @@ public class MedianAggregateTest extends TestCase {
 
 
     public void testCombine() {
-        Map<Double, Integer> value = new TreeMap<Double, Integer>();
-        Map<Double, Integer> other = new TreeMap<Double, Integer>();
+        TreeMap<Double, Integer> value = new TreeMap<Double, Integer>();
+        TreeMap<Double, Integer> other = new TreeMap<Double, Integer>();
         value.put(12.0, 3);
         value.put(2.0, 2);
         other.put(3.0, 4);

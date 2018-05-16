@@ -25,7 +25,7 @@ public class MedianAggregate extends AbstractAggregator<MedianAggregatorValue> {
         final MedianAggregatorValue valueAmount = new MedianAggregatorValue();
         final DictionaryEncodedColumn diColumn = column.getDictionaryEncodedColumn();
         final int[] groupIndex = new int[diColumn.size()];
-        Map<Double, Integer> values = new TreeMap<Double, Integer>();
+        TreeMap<Double, Integer> values = new TreeMap<Double, Integer>();
         valueAmount.setCount(traversal.getCardinality());
         Arrays.fill(groupIndex, 0);
         RowTraversal notNullTraversal = getNotNullTraversal(traversal, column);
@@ -45,7 +45,8 @@ public class MedianAggregate extends AbstractAggregator<MedianAggregatorValue> {
                 groupIndex[groupRow]++;
             }
         });
-        setMedian(values, diColumn, traversal.getCardinality(), groupIndex, valueAmount);
+        //求中位数除去空值
+        setMedian(values, diColumn, notNullTraversal.getCardinality(), groupIndex, valueAmount);
         valueAmount.setValues(values);
         return valueAmount;
     }
@@ -55,8 +56,8 @@ public class MedianAggregate extends AbstractAggregator<MedianAggregatorValue> {
     public void combine(MedianAggregatorValue value, MedianAggregatorValue other) {
         int totalCount = value.getCount() + other.getCount();
         int mid = totalCount / 2 + 1;
-        Map<Double, Integer> vMap = value.getValues();
-        Map<Double, Integer> oMap = other.getValues();
+        TreeMap<Double, Integer> vMap = value.getValues();
+        TreeMap<Double, Integer> oMap = other.getValues();
         mergeMap(vMap, oMap);
         //偶数时中间两数的前一个值
         double tempMid = NULL_DOUBLE;
@@ -67,8 +68,7 @@ public class MedianAggregate extends AbstractAggregator<MedianAggregatorValue> {
                 break;
             }
             mid -= (Integer) entry.getValue();
-//            mid -= Integer.parseInt(entry.getValue().toString());
-            if (mid < 0) {
+            if (mid <= 0) {
                 value.setMedian((Double) entry.getKey());
                 break;
             }
@@ -85,10 +85,11 @@ public class MedianAggregate extends AbstractAggregator<MedianAggregatorValue> {
         boolean getMedian = false;
         int mid = count / 2 + 1;
         for (int i = 1; i < diColumn.size(); i++) {
-            mid -= groupIndex[i];
-            if (groupIndex[i] > 0) {
-                values.put(((Number)diColumn.getValue(i)).doubleValue(), groupIndex[i]);
+            if (groupIndex[i] <= 0) {
+                continue;
             }
+            values.put(((Number) diColumn.getValue(i)).doubleValue(), groupIndex[i]);
+            mid -= groupIndex[i];
             if (!getMedian && Double.compare(tempMid, NULL_DOUBLE) != 0) {
                 valueAmount.setMedian((((Number)diColumn.getValue(i)).doubleValue() + tempMid) / 2);
                 getMedian = true;
@@ -104,14 +105,20 @@ public class MedianAggregate extends AbstractAggregator<MedianAggregatorValue> {
     }
 
     private void mergeMap(Map<Double, Integer> vMap, Map<Double, Integer> oMap) {
-        for (Object o : oMap.entrySet()) {
-            Map.Entry entry = (Map.Entry) o;
-            Object key = entry.getKey();
-            if (vMap.containsKey(key)) {
-                Integer count = vMap.get(key) + oMap.get(key);
-                vMap.put((Double) key, count);
+        if (vMap == null) {
+            vMap = oMap;
+        }
+        if (oMap != null) {
+            for (Object o : oMap.entrySet()) {
+                Map.Entry entry = (Map.Entry) o;
+                Object key = entry.getKey();
+                if (vMap.containsKey(key)) {
+                    Integer count = vMap.get(key) + oMap.get(key);
+                    vMap.put((Double) key, count);
+                } else {
+                    vMap.put((Double) key, oMap.get(key));
+                }
             }
-            vMap.put((Double) key, oMap.get(key));
         }
     }
 
@@ -119,7 +126,7 @@ public class MedianAggregate extends AbstractAggregator<MedianAggregatorValue> {
     public MedianAggregatorValue createAggregatorValue(AggregatorValue value) {
         MedianAggregatorValue medianAggregatorValue = new MedianAggregatorValue();
         medianAggregatorValue.setCount(1);
-        Map<Double, Integer> values = new TreeMap<Double, Integer>();
+        TreeMap<Double, Integer> values = new TreeMap<Double, Integer>();
         values.put(value.calculate(), 1);
         medianAggregatorValue.setValues(values);
         return medianAggregatorValue;

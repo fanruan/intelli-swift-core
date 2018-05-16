@@ -11,6 +11,7 @@ import com.fr.swift.cube.io.input.IntReader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.BitMapWriter;
 import com.fr.swift.cube.io.output.IntWriter;
+import com.fr.swift.exception.meta.SwiftMetaDataColumnAbsentException;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.relation.CubeMultiRelation;
 import com.fr.swift.relation.CubeMultiRelationPath;
@@ -29,6 +30,7 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Crasher;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -51,7 +53,7 @@ public abstract class BaseSegment implements Segment {
     private BitMapWriter bitMapWriter;
     private BitMapReader bitMapReader;
 
-    private final ConcurrentHashMap<ColumnKey, Column<?>> columns = new ConcurrentHashMap<ColumnKey, Column<?>>();
+    private final Map<ColumnKey, Column<?>> columns = new ConcurrentHashMap<ColumnKey, Column<?>>();
 
     public BaseSegment(IResourceLocation parent, SwiftMetaData meta) {
         this.parent = parent;
@@ -77,10 +79,12 @@ public abstract class BaseSegment implements Segment {
                 columns.put(key, column);
                 return (Column<T>) column;
             }
-        } catch (Exception e) {
-            if (key.getRelation() != null){
+        } catch (SwiftMetaDataColumnAbsentException e) {
+            if (key.getRelation() != null) {
                 return createRelationColumn(key);
             }
+            return null;
+        } catch (Exception e) {
             return null;
         }
     }
