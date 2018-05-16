@@ -28,8 +28,8 @@ public class WrappedAggregator<T extends AggregatorValue> implements Aggregator<
 
     @Override
     public T createAggregatorValue(AggregatorValue value) {
-        // return (T) (changedAgg != null ? changedAgg.createAggregatorValue(value) : value.clone());
-        return (T) (changedAgg != null ? changedAgg.createAggregatorValue(value) : metricAgg.createAggregatorValue(value));
+        return (T) (changedAgg != null ? changedAgg.createAggregatorValue(value) : value.clone());
+//        return (T) (changedAgg != null ? changedAgg.createAggregatorValue(value) : metricAgg.createAggregatorValue(value));
     }
 
     @Override
@@ -37,7 +37,7 @@ public class WrappedAggregator<T extends AggregatorValue> implements Aggregator<
         if (changedAgg == null) {
             metricAgg.combine(current, other);
         } else {
-            changedAgg.combine(current, other);
+            changedAgg.combine(current, changedAgg.createAggregatorValue(other));
         }
     }
 }
