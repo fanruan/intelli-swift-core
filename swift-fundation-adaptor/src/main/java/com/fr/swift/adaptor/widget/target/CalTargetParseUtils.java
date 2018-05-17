@@ -227,7 +227,8 @@ public class CalTargetParseUtils {
     }
 
     private static boolean isBaseFieldTarget(FineTarget target) {
-        return target.getCalculation() == null || target.getWidgetBeanField() == null;
+        return target.getCalculation() == null || target.getWidgetBeanField() == null
+                || (target.getWidgetBeanField() != null && target.getWidgetBeanField().getTargetIds() == null);
     }
 
     /**
@@ -497,6 +498,10 @@ public class CalTargetParseUtils {
         SourceKey key = new SourceKey(fieldId);
         if (isCounterField(fieldId)) {
             return new CounterMetric(metricIndex, key, new ColumnKey(fieldId), pair.getValue());
+        }
+        if (field.getSource() != null) {
+            // 说明是复制字段
+            fieldId = field.getSource();
         }
         String columnName = BusinessTableUtils.getFieldNameByFieldId(fieldId);
         ColumnKey colKey = new ColumnKey(columnName);
