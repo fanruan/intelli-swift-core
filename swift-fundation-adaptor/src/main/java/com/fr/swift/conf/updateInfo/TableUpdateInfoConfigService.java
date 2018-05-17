@@ -29,7 +29,7 @@ public class TableUpdateInfoConfigService {
     private TableUpdateInfoConfig config;
     private ObjectMapper objectMapper;
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(TableUpdateInfoConfigService.class);
-    public static final String GLOABAL_KEY = (GlobalUpdateSetting.class.getName() + ".swiftGlobal").replaceAll("[.]", "_");
+    public static final String GLOBAL_KEY = (GlobalUpdateSetting.class.getName() + ".swiftGlobal").replaceAll("[.]", "_");
 
     private TableUpdateInfoConfigService() {
         this.config = TableUpdateInfoConfig.getInstance();
@@ -72,7 +72,7 @@ public class TableUpdateInfoConfigService {
             Map.Entry<String, String> target = iterator.next();
             String key = target.getKey();
             String value = target.getValue();
-            if (!ComparatorUtils.equals(key, GLOABAL_KEY)) {
+            if (!ComparatorUtils.equals(key, GLOBAL_KEY)) {
                 try {
                     result.put(key, objectMapper.readValue(value, TableUpdateInfo.class));
                 } catch (IOException e) {
@@ -155,7 +155,7 @@ public class TableUpdateInfoConfigService {
             @Override
             public void run() {
                 try {
-                    config.addOrUpdateInfo(GLOABAL_KEY, objectMapper.writeValueAsString(setting));
+                    config.addOrUpdateInfo(GLOBAL_KEY, objectMapper.writeValueAsString(setting));
                 } catch (JsonProcessingException e) {
                     Crasher.crash(e);
                 }
@@ -164,7 +164,7 @@ public class TableUpdateInfoConfigService {
     }
 
     public GlobalUpdateSetting getGlobalUpdateSettings() {
-        String value = config.getUpdateInfo(GLOABAL_KEY);
+        String value = config.getUpdateInfo(GLOBAL_KEY);
         if (StringUtils.isEmpty(value)) {
             return null;
         }
