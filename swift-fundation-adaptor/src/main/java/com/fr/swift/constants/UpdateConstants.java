@@ -1,4 +1,4 @@
-package com.fr.swift.utils;
+package com.fr.swift.constants;
 
 /**
  * This class created on 2018/5/15

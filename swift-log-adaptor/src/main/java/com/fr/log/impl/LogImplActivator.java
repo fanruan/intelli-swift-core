@@ -1,21 +1,29 @@
 package com.fr.log.impl;
 
+import com.fr.cluster.entry.ClusterTicketKey;
 import com.fr.general.LogOperatorFactory;
 import com.fr.module.Activator;
-import com.fr.swift.adaptor.log.LogOperatorImpl;
+import com.fr.module.extension.Prepare;
+import com.fr.swift.adaptor.log.LogOperatorProxy;
+import com.fr.swift.cluster.SwiftClusterTicket;
 
 /**
  * @author anchore
  * @date 2018/4/26
  */
-public class LogImplActivator extends Activator {
+public class LogImplActivator extends Activator implements Prepare {
     @Override
     public void start() {
-        LogOperatorFactory.registerLogOperatorProvider(LogOperatorImpl.getInstance());
+        LogOperatorFactory.registerLogOperatorProvider(LogOperatorProxy.getInstance());
     }
 
     @Override
     public void stop() {
         LogOperatorFactory.registerLogOperatorProvider(null);
+    }
+
+    @Override
+    public void prepare() {
+        addMutable(ClusterTicketKey.KEY, SwiftClusterTicket.getInstance());
     }
 }
