@@ -3,6 +3,7 @@ package com.fr.swift.utils;
 import com.finebi.conf.internalimp.update.TableUpdateInfo;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
+import com.fr.swift.constants.UpdateConstants;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.manager.LocalSegmentProvider;

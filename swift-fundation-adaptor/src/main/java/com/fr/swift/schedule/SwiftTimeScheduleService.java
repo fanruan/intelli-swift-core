@@ -16,7 +16,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.schedule.job.GloableJobTask;
 import com.fr.swift.schedule.job.PackageJobTask;
 import com.fr.swift.schedule.job.TableJobTask;
-import com.fr.swift.utils.UpdateConstants;
+import com.fr.swift.constants.UpdateConstants;
 import com.fr.third.org.quartz.CronExpression;
 import com.fr.third.org.quartz.CronTrigger;
 import com.fr.third.org.quartz.Job;

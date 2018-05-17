@@ -2,7 +2,7 @@ package com.fr.swift.schedule.job;
 
 import com.finebi.conf.internalimp.update.TableUpdateInfo;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
-import com.fr.swift.utils.UpdateConstants;
+import com.fr.swift.constants.UpdateConstants;
 import com.fr.third.org.quartz.JobDataMap;
 import com.fr.third.org.quartz.JobExecutionContext;
 

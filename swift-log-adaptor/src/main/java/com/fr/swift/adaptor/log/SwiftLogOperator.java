@@ -26,10 +26,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author anchore
  * @date 2018/4/26
  */
-public class LogOperatorImpl implements LogOperator {
+public class SwiftLogOperator implements LogOperator {
     private static final int USE_IMPORT_THRESHOLD = 100000;
 
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(LogOperatorImpl.class);
+    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftLogOperator.class);
 
     private final Database db = SwiftDatabase.getInstance();
 
@@ -66,7 +66,7 @@ public class LogOperatorImpl implements LogOperator {
 
     @Override
     public <T> DataList<T> find(Class<T> entity, QueryCondition queryCondition, String s) {
-        return null;
+        return find(entity, queryCondition);
     }
 
     @Override
@@ -74,7 +74,6 @@ public class LogOperatorImpl implements LogOperator {
         if (o == null) {
             return;
         }
-
         record(Collections.singletonList(o));
     }
 
@@ -95,7 +94,7 @@ public class LogOperatorImpl implements LogOperator {
         SwiftResultSet rowSet = new LogRowSet(table.getMeta(), curData, entity);
 
 //        if (curData.size() < USE_IMPORT_THRESHOLD) {
-            table.insert(rowSet);
+        table.insert(rowSet);
 //        } else {
 //            table.importFrom(rowSet);
 //        }
@@ -124,14 +123,5 @@ public class LogOperatorImpl implements LogOperator {
                 }
             }
         }
-    }
-
-    private static final LogOperator INSTANCE = new LogOperatorImpl();
-
-    private LogOperatorImpl() {
-    }
-
-    public static LogOperator getInstance() {
-        return INSTANCE;
     }
 }
