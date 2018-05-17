@@ -31,7 +31,7 @@ public class LogOperatorImpl implements LogOperator {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(LogOperatorImpl.class);
 
-    private Database db = SwiftDatabase.getInstance();
+    private final Database db = SwiftDatabase.getInstance();
 
     private Map<Class<?>, List<Object>> dataMap = new ConcurrentHashMap<Class<?>, List<Object>>();
 
@@ -118,8 +118,10 @@ public class LogOperatorImpl implements LogOperator {
         for (Class table : list) {
             SwiftMetaData meta = SwiftMetaAdaptor.adapt(table);
             SourceKey tableKey = new SourceKey(meta.getTableName());
-            if (!db.existsTable(tableKey)) {
-                db.createTable(tableKey, meta);
+            synchronized (db) {
+                if (!db.existsTable(tableKey)) {
+                    db.createTable(tableKey, meta);
+                }
             }
         }
     }
