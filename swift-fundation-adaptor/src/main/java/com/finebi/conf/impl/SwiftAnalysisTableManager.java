@@ -3,6 +3,8 @@ package com.finebi.conf.impl;
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.common.internalimp.config.session.CommonConfigManager;
 import com.finebi.common.structure.config.entryinfo.EntryInfo;
+import com.finebi.conf.constant.BIConfConstants;
+import com.finebi.common.structure.config.entryinfo.EntryInfo;
 import com.finebi.conf.constant.BIConfConstants.CONF.ADD_COLUMN.TIME;
 import com.finebi.conf.constant.BIConfConstants.CONF.GROUP.TYPE;
 import com.finebi.conf.constant.ConfConstant;
@@ -215,5 +217,4 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
     public FineEngineType getEngineType() {
         return FineEngineType.Cube;
     }
-
 }
