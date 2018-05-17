@@ -36,6 +36,8 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.manager.ProviderManager;
 import com.fr.swift.provider.IndexStuffInfoProvider;
+import com.fr.swift.provider.IndexStuffMedium;
+import com.fr.swift.provider.IndexStuffType;
 import com.fr.swift.reliance.RelationPathReliance;
 import com.fr.swift.reliance.RelationReliance;
 import com.fr.swift.reliance.SourceReliance;
@@ -142,7 +144,8 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     public void triggerTableUpdate(TableUpdateInfo updateInfo, FineBusinessTable table) throws Exception {
         Map<FineBusinessTable, TableUpdateInfo> infoMap = new HashMap<FineBusinessTable, TableUpdateInfo>();
         infoMap.put(table, updateInfo);
-        this.triggerUpdate(infoMap, true, false);
+        LOGGER.info("Table " + table.getName() + " update trigger!");
+        this.triggerUpdate(infoMap, true, false, new IndexStuffMedium(IndexStuffType.TABLE, table.getName()));
     }
 
     @Override
@@ -160,7 +163,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
      *                 不是批量，则去判断是否主动触发，是则取传入的方式更新
      * @throws Exception
      */
-    public void triggerUpdate(Map<FineBusinessTable, TableUpdateInfo> infoMap, boolean isActive, boolean isBatch) throws Exception {
+    public void triggerUpdate(Map<FineBusinessTable, TableUpdateInfo> infoMap, boolean isActive, boolean isBatch, IndexStuffMedium indexStuffMedium) throws Exception {
 
         Map<FineBusinessTable, TableUpdateInfo> infoMap2 = new HashMap<FineBusinessTable, TableUpdateInfo>();
         if (isBatch) {
@@ -188,11 +191,10 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         }
         infoMap = infoMap2;
         LOGGER.info((isActive ? "Active" : "Passive") + " trigger update!");
-
-        triggerUpdate(infoMap);
+        triggerUpdate(infoMap, indexStuffMedium);
     }
 
-    private void triggerUpdate(Map<FineBusinessTable, TableUpdateInfo> infoMap) throws Exception {
+    private void triggerUpdate(Map<FineBusinessTable, TableUpdateInfo> infoMap, IndexStuffMedium indexStuffMedium) throws Exception {
         SourceContainerManager updateSourceContainer = new SourceContainerManager();
         Map<String, List<Increment>> incrementMap = new HashMap<String, List<Increment>>();
         DataSourceFactory.transformDataSources(infoMap, updateSourceContainer, incrementMap);
@@ -204,7 +206,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         // FIXME 传表的责任链，只更新和表有关的关联，单表更新可能无法更新到关联
         RelationReliance relationReliance = RelationRelianceFactory.generateRelationReliance(relationSources, sourceReliance);
         RelationPathReliance relationPathReliance = RelationRelianceFactory.generateRelationPathReliance(sourcePaths, relationReliance);
-        IndexStuffProvider indexStuffProvider = new IndexStuffInfoProvider(updateSourceContainer, incrementMap, sourceReliance, relationReliance, relationPathReliance);
+        IndexStuffProvider indexStuffProvider = new IndexStuffInfoProvider(updateSourceContainer, incrementMap, sourceReliance, relationReliance, relationPathReliance, indexStuffMedium);
         ProviderManager.getManager().registProvider(0, indexStuffProvider);
     }
 
@@ -230,6 +232,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
             info = new TableUpdateInfo();
             info.setUpdateType(UpdateConstants.TableUpdateType.ALL);
         }
+        String packageName = packageManager.getSinglePackage(packId).getName();
         List<FineBusinessTable> tables = tableManager.getAllTableByPackId(packId);
         Map<FineBusinessTable, TableUpdateInfo> infoMap = new HashMap<FineBusinessTable, TableUpdateInfo>();
         for (FineBusinessTable table : tables) {
@@ -242,22 +245,28 @@ public class SwiftUpdateManager implements EngineUpdateManager {
                 infoMap.put(table, tableUpdateInfo);
             }
         }
-        this.triggerUpdate(infoMap, true, true);
+        Map<String, String> packageIdName = new HashMap<String, String>();
+        packageIdName.put(packId, packageName);
+        LOGGER.info("Package " + packageName + " update trigger!");
+        this.triggerUpdate(infoMap, true, true, new IndexStuffMedium(IndexStuffType.PACKAGE, packageIdName));
     }
 
     @Override
     public Map<String, UpdateStatus> getTableUpdateStatus(FineBusinessTable table) {
-        return null;
+        UpdateStatus status = this.getTableUpdateState(table.getName());
+        Map<String, UpdateStatus> statusMap = new HashMap<String, UpdateStatus>();
+        statusMap.put(table.getName(), status);
+        return statusMap;
     }
 
     @Override
     public UpdateStatus getTableUpdateState(String tableName) {
-        return null;
+        return TableUpdateLogUtil.getUpdateStatus(tableName);
     }
 
     @Override
     public UpdateStatus getPackUpdateStatus(String packId) {
-        return new UpdateStatus();
+        return TableUpdateLogUtil.getUpdateStatus(packId);
     }
 
     @Override
@@ -285,10 +294,13 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         Map<FineBusinessTable, TableUpdateInfo> infoMap = new HashMap<FineBusinessTable, TableUpdateInfo>();
         //先判断业务的更新与否
         List<String> notUpdateTableList = new ArrayList<String>();
+        Map<String, String> packageIdName = new HashMap<String, String>();
         for (FineBusinessPackage businessPackage : packageManager.getAllPackage()) {
             TableUpdateInfo packageInfo = updateInfoConfigService.getPackageUpdateInfo(businessPackage.getId());
             if (packageInfo != null && packageInfo.getUpdateType() == UpdateConstants.PackageUpdateType.NOT_UPDATE) {
                 notUpdateTableList.addAll(businessPackage.getTables());
+            } else {
+                packageIdName.put(businessPackage.getId(), businessPackage.getName());
             }
         }
         for (FineBusinessTable fineBusinessTable : tableManager.getAllTable()) {
@@ -305,7 +317,8 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         }
         if (!infoMap.isEmpty()) {
             try {
-                this.triggerUpdate(infoMap, true, true);
+                LOGGER.info("Gloable update trigger!");
+                this.triggerUpdate(infoMap, true, true, new IndexStuffMedium(IndexStuffType.GLOABLE, packageIdName));
             } catch (Exception e) {
                 LOGGER.error(e);
             }
@@ -375,9 +388,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         }
         globalUpdateLog.setTransportInfo(TableUpdateLogUtil.getTranSportInfo(transportTaskMap));
         globalUpdateLog.setIndexInfo(TableUpdateLogUtil.getIndexInfo(indexTaskMap, mergeTaskMap));
-
         globalUpdateLog.setProcess(TableUpdateLogUtil.getProcess(globalUpdateLog));
-
         try {
             globalUpdateLog.setSpace(UpdateSpaceInfoUtil.getUpdateSpaceInfo(spaceManager));
         } catch (Exception e) {

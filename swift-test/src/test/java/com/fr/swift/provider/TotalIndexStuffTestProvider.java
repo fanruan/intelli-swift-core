@@ -125,4 +125,9 @@ public class TotalIndexStuffTestProvider implements IndexStuffProvider {
     public RelationPathReliance getRelationPathReliance() {
         return null;
     }
+
+    @Override
+    public IndexStuffMedium getIndexStuffMedium() {
+        return null;
+    }
 }

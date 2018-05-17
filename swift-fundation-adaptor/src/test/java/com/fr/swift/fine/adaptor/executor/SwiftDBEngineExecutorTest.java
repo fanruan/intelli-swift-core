@@ -43,7 +43,7 @@ public class SwiftDBEngineExecutorTest extends TestCase {
 
 
     @Test
-    public void testSwiftDBDataModelGetFields() {
+    public void testSwiftDBDataModelGetFields() throws Exception {
         SwiftTableEngineExecutor dataModel = new SwiftTableEngineExecutor();
         List<FineBusinessField> list = dataModel.getFieldList(fineDBBusinessTable);
         assertEquals(list.size(), 10);
