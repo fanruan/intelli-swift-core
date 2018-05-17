@@ -31,7 +31,7 @@ public class LogOperatorImpl implements LogOperator {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(LogOperatorImpl.class);
 
-    private Database db = SwiftDatabase.getInstance();
+    private final Database db = SwiftDatabase.getInstance();
 
     private Map<Class<?>, List<Object>> dataMap = new ConcurrentHashMap<Class<?>, List<Object>>();
 
@@ -87,7 +87,7 @@ public class LogOperatorImpl implements LogOperator {
         List<Object> curData = dataMap.get(entity);
         curData.addAll(data);
 
-        if (curData.size() < FLUSH_SIZE_THRESHOLD || System.currentTimeMillis() - lastFlushTime < FLUSH_INTERVAL_THRESHOLD) {
+        if (curData.size() < FLUSH_SIZE_THRESHOLD && System.currentTimeMillis() - lastFlushTime < FLUSH_INTERVAL_THRESHOLD) {
             return;
         }
 
@@ -117,7 +117,12 @@ public class LogOperatorImpl implements LogOperator {
     public void initTables(List<Class> list) throws SQLException {
         for (Class table : list) {
             SwiftMetaData meta = SwiftMetaAdaptor.adapt(table);
-            db.createTable(new SourceKey(meta.getTableName()), meta);
+            SourceKey tableKey = new SourceKey(meta.getTableName());
+            synchronized (db) {
+                if (!db.existsTable(tableKey)) {
+                    db.createTable(tableKey, meta);
+                }
+            }
         }
     }
 
