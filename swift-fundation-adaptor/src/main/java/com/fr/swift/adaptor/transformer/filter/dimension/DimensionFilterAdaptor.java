@@ -1,0 +1,297 @@
+package com.fr.swift.adaptor.transformer.filter.dimension;
+
+import com.finebi.conf.constant.BICommonConstants;
+import com.finebi.conf.constant.BIDesignConstants;
+import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.WidgetDimensionBean;
+import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
+import com.finebi.conf.internalimp.bean.filter.AbstractFilterBean;
+import com.finebi.conf.internalimp.bean.filter.GeneraAndFilterBean;
+import com.finebi.conf.internalimp.bean.filter.GeneraOrFilterBean;
+import com.finebi.conf.structure.bean.filter.FilterBean;
+import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
+import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
+import com.finebi.conf.structure.filter.FineFilter;
+import com.fr.general.ComparatorUtils;
+import com.fr.stable.StringUtils;
+import com.fr.swift.adaptor.linkage.LinkageAdaptor;
+import com.fr.swift.adaptor.transformer.FilterInfoFactory;
+import com.fr.swift.query.filter.SwiftDetailFilterType;
+import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.query.filter.info.GeneralFilterInfo;
+import com.fr.swift.query.filter.info.MatchFilterInfo;
+import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
+import com.fr.swift.query.filter.info.value.SwiftDateInRangeFilterValue;
+import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.source.etl.utils.FormulaUtils;
+import com.fr.swift.util.Crasher;
+import com.fr.swift.util.function.Function2;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by Lyon on 2018/5/16.
+ */
+public class DimensionFilterAdaptor {
+
+    public static FilterInfo transformDimensionFineFilter(FineDimension dimension) {
+        return transformDimensionFineFilter(null, dimension, false, null);
+    }
+
+    /**
+     * @param tableName           控件的表名，没表名传null或者空字符串
+     * @param dimension
+     * @param attachTargetFilters 最后一个维度上面要加上指标的过滤
+     * @param targets
+     * @return
+     */
+    public static FilterInfo transformDimensionFineFilter(String tableName, FineDimension dimension, boolean attachTargetFilters, List<FineTarget> targets) {
+        String dimId = dimension.getId();
+        List<FilterBean> beans = setFieldIdAndGetFilterBeans(dimension);
+        List<FilterInfo> filterInfoList = new ArrayList<FilterInfo>();
+        for (FilterBean bean : beans) {
+            AbstractFilterBean filterBean = (AbstractFilterBean) bean;
+            // 因为前端不区分明细过滤和结果过滤，直接用通用过滤器平拼在一起的，所以分别取出明细过滤bean和结果过滤bean
+            FilterBean resultBean = getFilterBean(dimId, filterBean, resultBeanFilter);
+            if (resultBean != null && targets != null) {
+                filterInfoList.add(getResultFilterInfo(tableName, (AbstractFilterBean) resultBean, targets));
+            }
+            FilterBean detailBean = getFilterBean(dimId, filterBean, detailBeanFilter);
+            if (detailBean != null) {
+                filterInfoList.add(getDetailFilterInfo(tableName, (AbstractFilterBean) detailBean, dimension));
+            }
+        }
+        if (attachTargetFilters && targets != null) {
+            for (int i = 0; i < targets.size(); i++) {
+                FineTarget target = targets.get(i);
+                List<FineFilter> targetFilters = target.getFilters();
+                if (targetFilters != null) {
+                    for (FineFilter filter : targetFilters) {
+                        if (filter.getFilterType() == BICommonConstants.ANALYSIS_FILTER_TYPE.EMPTY_CONDITION) {
+                            continue;
+                        }
+                        FilterInfo targetFilterInfo = FilterInfoFactory.createFilterInfo(tableName, (AbstractFilterBean) filter.getValue(), new ArrayList<Segment>());
+                        filterInfoList.add(new MatchFilterInfo(targetFilterInfo, i));
+                    }
+                }
+            }
+        }
+        return new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
+    }
+
+    private static FilterInfo getDetailFilterInfo(String tableName, AbstractFilterBean filterBean, FineDimension dimension) {
+        FilterInfo info = FilterInfoFactory.createFilterInfo(tableName, filterBean, new ArrayList<Segment>());
+        if (!isConvertedDimension(dimension)) {
+            return info;
+        }
+        return getFilterInfoFromConvertedDimension(info, dimension);
+    }
+
+    /**
+     * 日期、数值转换过来的维度上面的过滤要转换一下，这边调用yee在联动那边做的转换
+     * 这边只加了日期属于不属于的过滤，其他的功能那边也还没好
+     *
+     * @param filterInfo 要做转换的过滤属性
+     * @param dimension
+     * @return
+     */
+    private static FilterInfo getFilterInfoFromConvertedDimension(FilterInfo filterInfo, FineDimension dimension) {
+        if (filterInfo instanceof GeneralFilterInfo) {
+            List<FilterInfo> infoList = ((GeneralFilterInfo) filterInfo).getChildren();
+            List<FilterInfo> convertedInfoList = new ArrayList<FilterInfo>();
+            for (FilterInfo info : infoList) {
+                FilterInfo converted = getFilterInfoFromConvertedDimension(info, dimension);
+                if (converted != null) {
+                    convertedInfoList.add(converted);
+                }
+            }
+            return new GeneralFilterInfo(convertedInfoList, ((GeneralFilterInfo) filterInfo).getType());
+        }
+        SwiftDetailFilterType type = ((SwiftDetailFilterInfo) filterInfo).getType();
+        SwiftDetailFilterInfo detailFilterInfo = (SwiftDetailFilterInfo) filterInfo;
+        switch (type) {
+            case TMP_DATE_BELONG_STRING: {
+                List<String> dates = (List<String>) detailFilterInfo.getFilterValue();
+                List<SwiftDetailFilterInfo> filterInfoList = new ArrayList<SwiftDetailFilterInfo>();
+                ColumnKey key = detailFilterInfo.getColumnKey();
+                WidgetDimensionBean dimensionBean = (WidgetDimensionBean) dimension.getValue();
+                for (String date : dates) {
+                    filterInfoList.add((SwiftDetailFilterInfo) LinkageAdaptor.dealFilterInfo(key, date, dimensionBean));
+                }
+                return new SwiftDetailFilterInfo<List<SwiftDetailFilterInfo>>(key, filterInfoList, SwiftDetailFilterType.OR);
+            }
+            case TMP_DATE_NOT_BELONG_STRING: {
+                List<String> dates = (List<String>) detailFilterInfo.getFilterValue();
+                List<SwiftDetailFilterInfo> filterInfoList = new ArrayList<SwiftDetailFilterInfo>();
+                ColumnKey key = detailFilterInfo.getColumnKey();
+                WidgetDimensionBean dimensionBean = (WidgetDimensionBean) dimension.getValue();
+                for (String date : dates) {
+                    SwiftDetailFilterInfo info = (SwiftDetailFilterInfo) LinkageAdaptor.dealFilterInfo(key, date, dimensionBean);
+                    info = new SwiftDetailFilterInfo<SwiftDateInRangeFilterValue>(key, (SwiftDateInRangeFilterValue) info.getFilterValue(),
+                            SwiftDetailFilterType.DATE_NOT_IN_RANGE);
+                    filterInfoList.add(info);
+                }
+                return new SwiftDetailFilterInfo<List<SwiftDetailFilterInfo>>(key, filterInfoList, SwiftDetailFilterType.OR);
+            }
+            // TODO: 2018/5/16 维度上面其他要二次转换到的过滤类型，比如日期前端现在只加了属于和不属于
+        }
+        return null;
+    }
+
+    private static FilterInfo getResultFilterInfo(String tableName, AbstractFilterBean filterBean, List<FineTarget> targets) {
+        int type = filterBean.getFilterType();
+        if (type == BICommonConstants.ANALYSIS_FILTER_TYPE.OR || type == BICommonConstants.ANALYSIS_FILTER_TYPE.AND) {
+            List<FilterBean> beans = type == BICommonConstants.ANALYSIS_FILTER_TYPE.AND ?
+                    ((GeneraAndFilterBean) filterBean).getFilterValue() : ((GeneraOrFilterBean) filterBean).getFilterValue();
+            List<FilterInfo> children = new ArrayList<FilterInfo>();
+            for (FilterBean bean : beans) {
+                FilterInfo info = getResultFilterInfo(tableName, (AbstractFilterBean) bean, targets);
+                if (info != null) {
+                    children.add(info);
+                }
+            }
+            return new GeneralFilterInfo(children, type == BICommonConstants.ANALYSIS_FILTER_TYPE.AND ?
+                    GeneralFilterInfo.AND : GeneralFilterInfo.OR);
+
+        }
+        SwiftDetailFilterInfo info = (SwiftDetailFilterInfo) FilterInfoFactory.createFilterInfo(tableName, filterBean, new ArrayList<Segment>());
+        if (info.getType() == SwiftDetailFilterType.FORMULA) {
+            info = new SwiftDetailFilterInfo<Object>(info.getColumnKey(), transformTargetMatchFormula(info.getFilterValue(), targets), info.getType());
+            return new MatchFilterInfo(info, 0);
+        } else {
+            return new MatchFilterInfo(info, getIndex(filterBean.getTargetId(), targets));
+        }
+    }
+
+    /**
+     * 结果过滤bean的过滤函数
+     */
+    private static Function2<String, AbstractFilterBean, Boolean> resultBeanFilter = new Function2<String, AbstractFilterBean, Boolean>() {
+        @Override
+        public Boolean apply(String dimId, AbstractFilterBean bean) {
+            return bean.getTargetId() != null && !ComparatorUtils.equals(bean.getTargetId(), dimId);
+        }
+    };
+
+    /**
+     * 明细过滤bean的过滤函数
+     */
+    private static Function2<String, AbstractFilterBean, Boolean> detailBeanFilter = new Function2<String, AbstractFilterBean, Boolean>() {
+        @Override
+        public Boolean apply(String s, AbstractFilterBean bean) {
+            return !resultBeanFilter.apply(s, bean);
+        }
+    };
+
+    /**
+     * 取出FilterBean中的明细过滤或者结果过滤
+     *
+     * @param dimId      维度id
+     * @param bean
+     * @param beanFilter
+     * @return
+     */
+    private static FilterBean getFilterBean(String dimId, AbstractFilterBean bean,
+                                            Function2<String, AbstractFilterBean, Boolean> beanFilter) {
+        int type = bean.getFilterType();
+        switch (type) {
+            case BICommonConstants.ANALYSIS_FILTER_TYPE.OR: {
+                List<FilterBean> beans = ((GeneraOrFilterBean) bean).getFilterValue();
+                List<FilterBean> children = new ArrayList<FilterBean>();
+                for (FilterBean b : beans) {
+                    FilterBean bean1 = getFilterBean(dimId, (AbstractFilterBean) b, beanFilter);
+                    if (bean1 != null) {
+                        children.add(bean1);
+                    }
+                }
+                GeneraOrFilterBean or = new GeneraOrFilterBean();
+                or.setFilterValue(children);
+                return or.getFilterValue().isEmpty() ? null : or;
+            }
+            case BICommonConstants.ANALYSIS_FILTER_TYPE.AND: {
+                List<FilterBean> beans = ((GeneraAndFilterBean) bean).getFilterValue();
+                List<FilterBean> children = new ArrayList<FilterBean>();
+                for (FilterBean b : beans) {
+                    FilterBean bean1 = getFilterBean(dimId, (AbstractFilterBean) b, beanFilter);
+                    if (bean1 != null) {
+                        children.add(bean1);
+                    }
+                }
+                GeneraAndFilterBean and = new GeneraAndFilterBean();
+                and.setFilterValue(children);
+                return and.getFilterValue().isEmpty() ? null : and;
+            }
+        }
+        if (beanFilter.apply(dimId, bean)) {
+            return bean;
+        }
+        return null;
+    }
+
+    private static List<FilterBean> setFieldIdAndGetFilterBeans(FineDimension dimension) {
+        List<FineFilter> filters = dimension.getFilters();
+        List<FilterBean> beans = new ArrayList<FilterBean>();
+        if (filters != null) {
+            for (FineFilter filter : filters) {
+                //nice job! foundation 维度过滤没id，要从维度上设置一下。
+                if (filter.getValue() != null) {
+                    AbstractFilterBean bean = (AbstractFilterBean) filter.getValue();
+                    String fieldId;
+                    if (dimension.getWidgetBeanField() != null) {
+                        WidgetBeanField field = dimension.getWidgetBeanField();
+                        fieldId = StringUtils.isEmpty(field.getSource()) ? field.getId() : field.getSource();
+                    } else {
+                        fieldId = dimension.getFieldId();
+                    }
+                    // 如果是generalBean还要递归地设置一下，坑爹！
+                    deepSettingFieldId(bean, fieldId);
+                    beans.add(bean);
+                }
+            }
+        }
+        return beans;
+    }
+
+    private static Object transformTargetMatchFormula(Object value, List<FineTarget> targets) {
+        if (value == null) {
+            return value;
+        }
+        String formula = value.toString();
+        for (String targetId : FormulaUtils.getRealRelatedParaNames(formula)) {
+            formula = formula.replace(targetId, String.valueOf(getIndex(targetId, targets)));
+        }
+        return formula;
+    }
+
+    private static void deepSettingFieldId(AbstractFilterBean bean, String fieldId) {
+        List<FilterBean> filterBeans = null;
+        if (bean instanceof GeneraAndFilterBean) {
+            filterBeans = ((GeneraAndFilterBean) bean).getFilterValue();
+        } else if (bean instanceof GeneraOrFilterBean) {
+            filterBeans = ((GeneraOrFilterBean) bean).getFilterValue();
+        }
+        if (filterBeans != null) {
+            for (FilterBean b : filterBeans) {
+                deepSettingFieldId((AbstractFilterBean) b, fieldId);
+            }
+        } else {
+            bean.setFieldId(fieldId);
+        }
+    }
+
+    private static int getIndex(String targetId, List<FineTarget> targets) {
+        for (int i = 0; i < targets.size(); i++) {
+            if (ComparatorUtils.equals(targetId, targets.get(i).getId())) {
+                return i;
+            }
+        }
+        return Crasher.crash("invalid target filter id :" + targetId);
+    }
+
+    private static boolean isConvertedDimension(FineDimension dimension) {
+        int type = ((WidgetDimensionBean) dimension.getValue()).getType();
+        return type == BIDesignConstants.DESIGN.DIMENSION_TYPE.DATE
+                || type == BIDesignConstants.DESIGN.DIMENSION_TYPE.TRANSFORM_FROM_NUMBER;
+    }
+}

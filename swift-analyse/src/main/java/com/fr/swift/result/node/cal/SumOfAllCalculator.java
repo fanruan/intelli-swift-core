@@ -22,7 +22,7 @@ public class SumOfAllCalculator extends AbstractTargetCalculator {
     }
 
     @Override
-    public Object call() throws Exception {
+    public Object call() {
         while (iterators.hasNext()) {
             Iterator<List<AggregatorValue[]>> iterator = iterators.next();
             List<List<AggregatorValue[]>> rows = new ArrayList<List<AggregatorValue[]>>();

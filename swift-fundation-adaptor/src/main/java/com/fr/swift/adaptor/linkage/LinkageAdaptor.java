@@ -26,7 +26,7 @@ import com.finebi.conf.structure.path.FineBusinessTableRelationPath;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.transformer.RelationSourceFactory;
-import com.fr.swift.adaptor.transformer.date.DateUtils;
+import com.fr.swift.adaptor.transformer.filter.date.DateUtils;
 import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
