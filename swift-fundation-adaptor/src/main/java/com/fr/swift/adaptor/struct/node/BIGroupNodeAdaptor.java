@@ -5,12 +5,10 @@ import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
 import com.fr.swift.result.GroupNode;
 
-import java.util.Iterator;
-
 /**
  * Created by Lyon on 2018/4/8.
  */
-public class BIGroupNodeAdaptor implements BIGroupNode, Iterable<BIGroupNodeAdaptor> {
+public class BIGroupNodeAdaptor implements BIGroupNode {
 
     private GroupNode node;
 
@@ -119,10 +117,5 @@ public class BIGroupNodeAdaptor implements BIGroupNode, Iterable<BIGroupNodeAdap
         for (int i = 0; i < values.length; i++) {
             values[i] = new DoubleAmountAggregatorValue(summaryValue[i].doubleValue());
         }
-    }
-
-    @Override
-    public Iterator<BIGroupNodeAdaptor> iterator() {
-        return null;
     }
 }

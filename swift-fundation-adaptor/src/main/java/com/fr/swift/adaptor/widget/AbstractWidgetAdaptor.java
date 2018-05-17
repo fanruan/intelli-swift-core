@@ -9,10 +9,14 @@ import com.finebi.conf.internalimp.analysis.bean.operator.add.group.custom.numbe
 import com.finebi.conf.internalimp.bean.dashboard.widget.control.time.AbstractTimeControlBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
 import com.finebi.conf.internalimp.bean.dashboard.widget.field.value.FormulaValueBean;
+import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
 import com.finebi.conf.internalimp.bean.filter.AbstractFilterBean;
 import com.finebi.conf.internalimp.bean.filter.GeneraAndFilterBean;
 import com.finebi.conf.internalimp.bean.filter.GeneraOrFilterBean;
 import com.finebi.conf.internalimp.bean.filtervalue.date.DateRangeValueBean;
+import com.finebi.conf.internalimp.dashboard.widget.filter.JumpItemBean;
+import com.finebi.conf.internalimp.dashboard.widget.filter.JumpSourceTargetFieldBean;
+import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetGlobalFilterBean;
 import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
 import com.finebi.conf.internalimp.filter.GeneraAndFilter;
 import com.finebi.conf.internalimp.filter.GeneraOrFilter;
@@ -26,30 +30,47 @@ import com.finebi.conf.structure.dashboard.widget.field.WidgetBeanFieldValue;
 import com.finebi.conf.structure.filter.FineFilter;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
+import com.fr.swift.adaptor.linkage.LinkageAdaptor;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
-import com.fr.swift.adaptor.transformer.date.DateUtils;
+import com.fr.swift.adaptor.transformer.filter.date.DateUtils;
 import com.fr.swift.cal.info.DetailQueryInfo;
+import com.fr.swift.cal.info.GroupQueryInfo;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.adapter.dimension.AllCursor;
 import com.fr.swift.query.adapter.dimension.DetailDimension;
 import com.fr.swift.query.adapter.dimension.Dimension;
+import com.fr.swift.query.adapter.dimension.DimensionInfoImpl;
+import com.fr.swift.query.adapter.dimension.GroupDimension;
+import com.fr.swift.query.adapter.metric.Metric;
+import com.fr.swift.query.adapter.target.GroupTarget;
+import com.fr.swift.query.adapter.target.cal.ResultTarget;
+import com.fr.swift.query.adapter.target.cal.TargetInfoImpl;
+import com.fr.swift.query.aggregator.Aggregator;
+import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.query.filter.info.GeneralFilterInfo;
+import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.DescSort;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
+import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.utils.BusinessTableUtils;
 
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author pony
@@ -222,7 +243,7 @@ public abstract class AbstractWidgetAdaptor {
         String formula = calculate.getValue();
         for (String targetId : field.getTargetIds()) {
             String subFormula = getFiledFormula(targetId, widget);
-            if (subFormula != null){
+            if (subFormula != null) {
                 formula = formula.replace(toParameter(targetId), subFormula);
             }
         }
@@ -249,8 +270,9 @@ public abstract class AbstractWidgetAdaptor {
                 long time = DateUtils.dateFilterBean2Long(dateFilterBean, true);
                 return formatDate(time);
             }
+            default:
+                return formatDate(System.currentTimeMillis());
         }
-        return formatDate(new Date().getTime());
     }
 
     private static String formatDate(long time) {
@@ -258,19 +280,19 @@ public abstract class AbstractWidgetAdaptor {
         return "\"" + format.format(new Date(time)) + "\"";
     }
 
-    protected static String getFiledFormula(String fieldId, AbstractTableWidget widget) {
+    private static String getFiledFormula(String fieldId, AbstractTableWidget widget) {
         Map<String, WidgetBean> dateWidgetIdValueMap = widget.getValue().getDateWidgetIdValueMap();
-        if (dateWidgetIdValueMap != null && dateWidgetIdValueMap.containsKey(fieldId)){
+        if (dateWidgetIdValueMap != null && dateWidgetIdValueMap.containsKey(fieldId)) {
             return getWidgetBeanValue(dateWidgetIdValueMap.get(fieldId));
         }
         WidgetBeanField field = widget.getFieldByFieldId(fieldId);
         WidgetBeanFieldValue widgetBeanFieldValue = field.getCalculate();
-        if (widgetBeanFieldValue!= null){
+        if (widgetBeanFieldValue != null) {
             FormulaValueBean calculate = (FormulaValueBean) field.getCalculate();
             String formula = calculate.getValue();
             for (String targetId : field.getTargetIds()) {
                 String subFormula = getFiledFormula(targetId, widget);
-                if (subFormula != null){
+                if (subFormula != null) {
                     formula = formula.replace(toParameter(targetId), subFormula);
                 }
             }
@@ -283,5 +305,65 @@ public abstract class AbstractWidgetAdaptor {
 
     private static String toParameter(String targetId) {
         return "${" + targetId + "}";
+    }
+
+    static void handleCrossTempletCustomLink(String tableName, WidgetGlobalFilterBean globalBean, JumpItemBean jump, List<FilterInfo> filterInfos) throws SQLException {
+        // todo 提炼公共部分 或者这边widget可以进行实例化的重构，减少参数传来传去
+        List<JumpSourceTargetFieldBean> sourceTargetFields = jump.getSourceTargetFields();
+        // 自定义设置的维度
+        Dimension[] fromColumns = new Dimension[sourceTargetFields.size()];
+        // 要过滤的维度
+        String[] toColumns = new String[sourceTargetFields.size()];
+        for (int i = 0; i < sourceTargetFields.size(); i++) {
+            JumpSourceTargetFieldBean bean = sourceTargetFields.get(i);
+            String from = bean.getSourceFieldId();
+            ColumnKey fromKey = new ColumnKey(getColumnName(from));
+            fromColumns[i] = (new GroupDimension(i, getSourceKey(from), fromKey, null, new AscSort(i, fromKey), null));
+            toColumns[i] = getColumnName(bean.getTargetFieldId());
+        }
+
+        // 根据点击的值，创建过滤条件
+        List<FilterInfo> filters = new ArrayList<FilterInfo>();
+        TableWidgetBean fromWidget = LinkageAdaptor.handleCrossTempletClick(tableName, globalBean, filters, fromColumns, toColumns);
+        // 分组表查询
+        FilterInfo filterInfo = new GeneralFilterInfo(filters, GeneralFilterInfo.AND);
+        GroupQueryInfo queryInfo = new GroupQueryInfo(fromWidget.getwId(), fromColumns[0].getSourceKey(),
+                new DimensionInfoImpl(new AllCursor(), filterInfo, null, fromColumns),
+                new TargetInfoImpl(0, new ArrayList<Metric>(0), new ArrayList<GroupTarget>(0), new ArrayList<ResultTarget>(0), new ArrayList<Aggregator>(0)));
+        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
+        Set[] results = new HashSet[toColumns.length];
+        for (int i = 0; i < results.length; i++) {
+            results[i] = new HashSet();
+        }
+        while (resultSet.next()) {
+            Row row = resultSet.getRowData();
+            for (int i = 0; i < row.getSize(); i++) {
+                results[i].add(row.getValue(i));
+            }
+        }
+        for (int i = 0; i < toColumns.length; i++) {
+            filterInfos.add(new SwiftDetailFilterInfo(new ColumnKey(toColumns[i]), results[i], SwiftDetailFilterType.STRING_IN));
+        }
+    }
+
+    static void handleCrossTempletLink(List<FilterInfo> filterInfos, AbstractTableWidget widget) throws SQLException {
+        // 跨模板联动
+        WidgetGlobalFilterBean globalFilter = widget.getValue().getGlobalFilter();
+        if (globalFilter == null) {
+            return;
+        }
+        List<JumpItemBean> jumps = globalFilter.getLinkedWidget().getJump();
+        if (jumps == null || jumps.isEmpty()) {
+            // 联动过滤
+            LinkageAdaptor.handleCrossTempletClick(widget.getTableName(), globalFilter, filterInfos);
+            return;
+        }
+        JumpItemBean jump = jumps.get(0);
+        if (jump.isPassValue()) {
+            // 值过滤
+            handleCrossTempletCustomLink(widget.getTableName(), globalFilter, jump, filterInfos);
+        } else {
+            LinkageAdaptor.handleCrossTempletClick(widget.getTableName(), globalFilter, filterInfos);
+        }
     }
 }

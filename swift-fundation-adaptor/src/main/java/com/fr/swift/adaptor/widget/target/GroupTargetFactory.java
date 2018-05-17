@@ -55,8 +55,20 @@ public class GroupTargetFactory {
                 return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_AVG);
             case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.SUM_OF_ALL_MAX:
                 return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_MAX);
-            case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.SUM_OF_ALL_MIN:
-                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_MIN);
+            case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.RANK_IN_GROUP_ASC:
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.GROUP_RANK_ASC);
+            case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.RANK_IN_GROUP_DES:
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.GROUP_RANK_DEC);
+            case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.SUM_OF_ALL_IN_GROUP_SUM:
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.GROUP_SUM_OF_ALL);
+            case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.SUM_OF_ALL_IN_GROUP_AVG:
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.GROUP_AVG);
+            case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.SUM_OF_ALL_IN_GROUP_MAX:
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.GROUP_MAX);
+            case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.SUM_OF_ALL_IN_GROUP_MIN:
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.GROUP_MIN);
+            case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.SUM_OF_ABOVE_IN_GROUP:
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.GROUP_SUM_OF_ABOVE);
         }
         return null;
     }

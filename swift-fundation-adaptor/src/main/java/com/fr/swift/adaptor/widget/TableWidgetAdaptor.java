@@ -1,6 +1,8 @@
 package com.fr.swift.adaptor.widget;
 
+import com.finebi.conf.algorithm.AlgorithmNameEnum;
 import com.finebi.conf.constant.BICommonConstants;
+import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.WidgetDimensionBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.date.DateWidgetDimensionBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.TypeGroupBean;
@@ -9,9 +11,6 @@ import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
 import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
 import com.finebi.conf.internalimp.dashboard.widget.dimension.sort.DimensionTargetSort;
 import com.finebi.conf.internalimp.dashboard.widget.filter.CustomLinkConfItem;
-import com.finebi.conf.internalimp.dashboard.widget.filter.JumpItemBean;
-import com.finebi.conf.internalimp.dashboard.widget.filter.JumpSourceTargetFieldBean;
-import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetGlobalFilterBean;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
 import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
 import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
@@ -26,6 +25,8 @@ import com.fr.swift.adaptor.linkage.LinkageAdaptor;
 import com.fr.swift.adaptor.struct.node.SwiftTableResult;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.transformer.SortAdaptor;
+import com.fr.swift.adaptor.transformer.filter.dimension.DimensionFilterAdaptor;
+import com.fr.swift.adaptor.widget.datamining.GroupTableToDMResultVisitor;
 import com.fr.swift.adaptor.widget.expander.ExpanderFactory;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.adaptor.widget.target.CalTargetParseUtils;
@@ -77,12 +78,21 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(TableWidgetAdaptor.class);
 
     public static BITableResult calculate(TableWidget widget) {
-        GroupNode groupNode = null;
+        GroupNode groupNode;
         int dimensionSize = 0;
         try {
             dimensionSize = widget.getDimensionList().size();
             TargetInfo targetInfo = CalTargetParseUtils.parseCalTarget(widget);
-            SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(buildQueryInfo(widget, targetInfo));
+            QueryInfo info = buildQueryInfo(widget, targetInfo);
+            SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(info);
+
+            // 添加挖掘相关
+            AlgorithmBean dmBean = widget.getValue().getDataMining();
+            if (dmBean != null && dmBean.getAlgorithmName() != AlgorithmNameEnum.EMPTY) {
+                GroupTableToDMResultVisitor visitor = new GroupTableToDMResultVisitor((NodeResultSet) resultSet, widget, (GroupQueryInfo) info);
+                resultSet = dmBean.accept(visitor);
+            }
+
             groupNode = (GroupNode) ((NodeResultSet) resultSet).getNode();
         } catch (Exception e) {
             groupNode = new GroupNode(-1, null);
@@ -100,7 +110,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         List<ExpanderBean> rowExpand = widget.getValue().getRowExpand();
         Expander expander = ExpanderFactory.create(widget.isOpenRowNode(), widget.getDimensionList(),
                 rowExpand == null ? new ArrayList<ExpanderBean>() : rowExpand, widget.getHeaderExpand());
-        DimensionInfo dimensionInfo = new DimensionInfoImpl(cursor, filterInfo, expander, dimensions.toArray(new Dimension[dimensions.size()]));
+        DimensionInfo dimensionInfo = new DimensionInfoImpl(cursor, filterInfo, expander, dimensions.toArray(new Dimension[0]));
         return new GroupQueryInfo(queryId, sourceKey, dimensionInfo, targetInfo);
     }
 
@@ -161,21 +171,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
             }
         }
 
-        // 跨模板联动
-        WidgetGlobalFilterBean globalFilter = bean.getGlobalFilter();
-        if (globalFilter == null) {
-            return;
-        }
-        List<JumpItemBean> jumps = globalFilter.getLinkedWidget().getJump();
-        if (jumps == null || jumps.isEmpty()) {
-            // 联动过滤
-            LinkageAdaptor.handleCrossTempletClick(widget.getTableName(), globalFilter, filterInfos);
-            return;
-        }
-        for (JumpItemBean jump : jumps) {
-            // 值过滤
-            handleCrossTempletCustomLink(widget.getTableName(), globalFilter, jump, filterInfos);
-        }
+        handleCrossTempletLink(filterInfos, widget);
     }
 
     private static void dealWithAutoLink(String tableName, List<FilterInfo> filterInfoList, WidgetLinkItem widgetLinkItem) {
@@ -224,45 +220,6 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         }
     }
 
-    private static void handleCrossTempletCustomLink(String tableName, WidgetGlobalFilterBean globalBean, JumpItemBean jump, List<FilterInfo> filterInfos) throws SQLException {
-        // todo 提炼公共部分 或者这边widget可以进行实例化的重构，减少参数传来传去
-        List<JumpSourceTargetFieldBean> sourceTargetFields = jump.getSourceTargetFields();
-        // 自定义设置的维度
-        Dimension[] fromColumns = new Dimension[sourceTargetFields.size()];
-        // 要过滤的维度
-        String[] toColumns = new String[sourceTargetFields.size()];
-        for (int i = 0; i < sourceTargetFields.size(); i++) {
-            JumpSourceTargetFieldBean bean = sourceTargetFields.get(i);
-            String from = bean.getSourceFieldId();
-            ColumnKey fromKey = new ColumnKey(getColumnName(from));
-            fromColumns[i] = (new GroupDimension(i, getSourceKey(from), fromKey, null, new AscSort(i, fromKey), null));
-            toColumns[i] = getColumnName(bean.getTargetFieldId());
-        }
-
-        // 根据点击的值，创建过滤条件
-        List<FilterInfo> filters = new ArrayList<FilterInfo>();
-        TableWidgetBean fromWidget = LinkageAdaptor.handleCrossTempletClick(tableName, globalBean, filters, fromColumns, toColumns);
-        // 分组表查询
-        FilterInfo filterInfo = new GeneralFilterInfo(filters, GeneralFilterInfo.AND);
-        GroupQueryInfo queryInfo = new GroupQueryInfo(fromWidget.getwId(), fromColumns[0].getSourceKey(),
-                new DimensionInfoImpl(new AllCursor(), filterInfo, null, fromColumns),
-                new TargetInfoImpl(0, new ArrayList<Metric>(0), new ArrayList<GroupTarget>(0), new ArrayList<ResultTarget>(0), new ArrayList<Aggregator>(0)));
-        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
-        Set[] results = new HashSet[toColumns.length];
-        for (int i = 0; i < results.length; i++) {
-            results[i] = new HashSet();
-        }
-        while (resultSet.next()) {
-            Row row = resultSet.getRowData();
-            for (int i = 0; i < row.getSize(); i++) {
-                results[i].add(row.getValue(i));
-            }
-        }
-        for (int i = 0; i < toColumns.length; i++) {
-            filterInfos.add(new SwiftDetailFilterInfo(new ColumnKey(toColumns[i]), results[i], SwiftDetailFilterType.STRING_IN));
-        }
-    }
-
     static void dealWithWidgetFilter(List<FilterInfo> filterInfoList, AbstractTableWidget widget) throws Exception {
         List<FineFilter> filters = dealWithTargetFilter(widget, widget.getFilters());
         if (filters != null && !filters.isEmpty()) {
@@ -285,7 +242,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         ColumnKey colKey = new ColumnKey(columnName);
         Group group = GroupAdaptor.adaptDashboardGroup(fineDim);
 
-        FilterInfo filterInfo = FilterInfoFactory.transformDimensionFineFilter(tableName, fineDim, index == size - 1, targets);
+        FilterInfo filterInfo = DimensionFilterAdaptor.transformDimensionFineFilter(tableName, fineDim, index == size - 1, targets);
 
         return new GroupDimension(index, sourceKey, colKey, group, SortAdaptor.adaptorDimensionSort(fineDim.getSort(), getSortIndex(fineDim.getSort(), index, targets, size)),
                 filterInfo);

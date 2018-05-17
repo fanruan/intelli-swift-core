@@ -12,6 +12,7 @@ import com.fr.swift.query.filter.detail.impl.date.DateInRangeFilter;
 import com.fr.swift.query.filter.detail.impl.date.not.DateNotInRangeFilter;
 import com.fr.swift.query.filter.detail.impl.nfilter.BottomNFilter;
 import com.fr.swift.query.filter.detail.impl.nfilter.TopNFilter;
+import com.fr.swift.query.filter.detail.impl.number.NumberAverageFilter;
 import com.fr.swift.query.filter.detail.impl.number.NumberContainFilter;
 import com.fr.swift.query.filter.detail.impl.number.NumberInRangeFilter;
 import com.fr.swift.query.filter.detail.impl.number.not.NumberNotContainFilter;
@@ -71,16 +72,23 @@ public class DetailFilterFactory {
 
             case NUMBER_CONTAIN:
                 return new NumberContainFilter((Set<Double>) filterInfo.getFilterValue(), column);
-            case NUMBER_IN_RANGE:
+            case NUMBER_IN_RANGE: {
                 SwiftNumberInRangeFilterValue value = (SwiftNumberInRangeFilterValue) filterInfo.getFilterValue();
                 return new NumberInRangeFilter(value.getMin(), value.getMax(),
                         value.isMinIncluded(), value.isMaxIncluded(), column);
+            }
             case NUMBER_NOT_CONTAIN:
                 return new NumberNotContainFilter(rowCount, (Set<Double>) filterInfo.getFilterValue(), column);
-            case NUMBER_NOT_IN_RANGE:
-                SwiftNumberInRangeFilterValue value1 = (SwiftNumberInRangeFilterValue) filterInfo.getFilterValue();
-                return new NumberNotInRangeFilter(rowCount, value1.getMin(), value1.getMax(), value1.isMinIncluded(),
-                        value1.isMaxIncluded(), column);
+            case NUMBER_NOT_IN_RANGE: {
+                SwiftNumberInRangeFilterValue value = (SwiftNumberInRangeFilterValue) filterInfo.getFilterValue();
+                return new NumberNotInRangeFilter(rowCount, value.getMin(), value.getMax(), value.isMinIncluded(),
+                        value.isMaxIncluded(), column);
+            }
+            case NUMBER_AVERAGE: {
+                SwiftNumberInRangeFilterValue value = (SwiftNumberInRangeFilterValue) filterInfo.getFilterValue();
+                return new NumberAverageFilter(new NumberInRangeFilter(value.getMin(), value.getMax(),
+                        value.isMinIncluded(), value.isMaxIncluded(), column));
+            }
 
             case DATE_IN_RANGE:
                 SwiftDateInRangeFilterValue value2 = (SwiftDateInRangeFilterValue) filterInfo.getFilterValue();
