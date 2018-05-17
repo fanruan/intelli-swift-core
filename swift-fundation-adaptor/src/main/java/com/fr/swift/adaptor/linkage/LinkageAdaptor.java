@@ -7,8 +7,10 @@ import com.finebi.conf.constant.BIDesignConstants;
 import com.finebi.conf.exception.FineEngineException;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.WidgetDimensionBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.number.custom.NumberCustomGroupBean;
+import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.number.custom.NumberCustomGroupNodeBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.number.custom.NumberCustomGroupValueBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
+import com.finebi.conf.internalimp.bean.dashboard.widget.visitor.WidgetBeanToFineWidgetVisitor;
 import com.finebi.conf.internalimp.bean.filtervalue.date.single.DateStaticFilterBean;
 import com.finebi.conf.internalimp.bean.filtervalue.date.single.DateStaticFilterBeanValue;
 import com.finebi.conf.internalimp.bean.filtervalue.number.NumberValue;
@@ -32,6 +34,7 @@ import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.filter.info.value.SwiftDateInRangeFilterValue;
+import com.fr.swift.query.filter.info.value.SwiftNumberInRangeFilterValue;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.SourceKey;
@@ -52,21 +55,21 @@ import java.util.Set;
  */
 public class LinkageAdaptor {
     private static final FineConfManageCenter fineConfManageCenter = StableManager.getContext().getObject("fineConfManageCenter");
-
+    private static final WidgetBeanToFineWidgetVisitor VISITOR = new WidgetBeanToFineWidgetVisitor();
     /**
      * 计算被联动过滤信息
      *
      * @param filterInfos
      * @return
      */
-    private static TableWidgetBean handleClickItem(String tableName, WidgetBean widgetBean, List<ClickValueItem> clickValueItems, List<FilterInfo> filterInfos, Dimension[] primary, String[] foreign) {
+    private static TableWidgetBean handleClickItem(String tableName, WidgetBean widgetBean, List<ClickValueItem> clickValueItems, List<FilterInfo> filterInfos, Dimension[] primary, String[] foreign) throws Exception {
         if (null == widgetBean) {
             return null;
         }
         if (!(widgetBean instanceof TableWidgetBean)) {
             Crasher.crash("WidgetBean must instance of " + TableWidgetBean.class.getName() + " but got " + widgetBean.getClass().getName());
         }
-        TableWidgetBean fromWidget = (TableWidgetBean) widgetBean;
+        TableWidgetBean fromWidget = VISITOR.visit((TableWidgetBean) widgetBean).getValue();
         String fromTableName = fromWidget.getTableName();
 
         if (ComparatorUtils.equals(fromTableName, tableName)) {
@@ -77,11 +80,11 @@ public class LinkageAdaptor {
         return fromWidget;
     }
 
-    public static TableWidgetBean handleClickItem(String tableName, WidgetLinkItem widgetLinkItem, List<FilterInfo> filterInfos) {
+    public static TableWidgetBean handleClickItem(String tableName, WidgetLinkItem widgetLinkItem, List<FilterInfo> filterInfos) throws Exception {
         return handleClickItem(tableName, widgetLinkItem, filterInfos, null, null);
     }
 
-    public static TableWidgetBean handleClickItem(String tableName, WidgetLinkItem widgetLinkItem, List<FilterInfo> filterInfos, Dimension[] primary, String[] foreign) {
+    public static TableWidgetBean handleClickItem(String tableName, WidgetLinkItem widgetLinkItem, List<FilterInfo> filterInfos, Dimension[] primary, String[] foreign) throws Exception {
         ClickValue clicked = widgetLinkItem.getClicked();
         if (clicked == null) {
             return null;
@@ -89,11 +92,11 @@ public class LinkageAdaptor {
         return handleClickItem(tableName, widgetLinkItem.getWidget(), clicked.getValue(), filterInfos, primary, foreign);
     }
 
-    public static TableWidgetBean handleCrossTempletClick(String tableName, WidgetGlobalFilterBean globalBean, List<FilterInfo> filterInfos) {
+    public static TableWidgetBean handleCrossTempletClick(String tableName, WidgetGlobalFilterBean globalBean, List<FilterInfo> filterInfos) throws Exception {
         return handleCrossTempletClick(tableName, globalBean, filterInfos, null, null);
     }
 
-    public static TableWidgetBean handleCrossTempletClick(String tableName, WidgetGlobalFilterBean globalBean, List<FilterInfo> filterInfos, Dimension[] primary, String[] foreign) {
+    public static TableWidgetBean handleCrossTempletClick(String tableName, WidgetGlobalFilterBean globalBean, List<FilterInfo> filterInfos, Dimension[] primary, String[] foreign) throws Exception {
         // 跨模板联动
         TableJumpClickValue clicked = (TableJumpClickValue) globalBean.getClicked();
         if (clicked == null) {
@@ -188,12 +191,27 @@ public class LinkageAdaptor {
             case BIDesignConstants.DESIGN.GROUP.CUSTOM_NUMBER_GROUP:
                 NumberCustomGroupValueBean valueBean = ((NumberCustomGroupBean) bean.getGroup()).getGroupValue();
                 if (null != valueBean) {
-                    NumberValue numberValue = new NumberValue();
-                    numberValue.setMax(valueBean.getMax());
-                    numberValue.setMin(valueBean.getMin());
-                    numberValue.setClosemax(false);
-                    numberValue.setClosemin(true);
-                    return new SwiftDetailFilterInfo<NumberValue>(columnKey, numberValue, SwiftDetailFilterType.NUMBER_IN_RANGE);
+                    List<NumberCustomGroupNodeBean> nodeBeans = valueBean.getGroupNodes();
+                    NumberCustomGroupNodeBean filterNode = null;
+                    for (NumberCustomGroupNodeBean node : nodeBeans) {
+                        if (ComparatorUtils.equals(node.getGroupName(), value)) {
+                            filterNode = node;
+                            break;
+                        }
+                    }
+                    SwiftNumberInRangeFilterValue numberValue = new SwiftNumberInRangeFilterValue();
+                    if (null != filterNode) {
+                        numberValue.setMax(filterNode.getMax());
+                        numberValue.setMin(filterNode.getMin());
+                        numberValue.setMaxIncluded(filterNode.isCloseMax());
+                        numberValue.setMinIncluded(filterNode.isCloseMin());
+                    } else {
+                        numberValue.setMax(valueBean.getMax());
+                        numberValue.setMin(valueBean.getMin());
+                        numberValue.setMinIncluded(true);
+                        numberValue.setMaxIncluded(true);
+                    }
+                    return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(columnKey, numberValue, SwiftDetailFilterType.NUMBER_IN_RANGE);
                 }
                 break;
             default:
