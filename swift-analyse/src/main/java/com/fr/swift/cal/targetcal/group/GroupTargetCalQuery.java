@@ -53,7 +53,8 @@ public class GroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> {
                     (GroupNode) mergeResult.getNode(), mergeResult.getAggregators());
             NodeFilter.filter(mergeResult.getNode(), dimensionMatchFilter);
         }
-        // 使用结果汇总聚合器汇总，相对于明细的汇总方式，可能一样也可能不一样。这边可以通过细分做进一步优化。
+        // TODO: 2018/5/15 是否选了二次计算的问题。应该在过滤之前做一次汇总，然后根据是否选了二次计算决定是否进行再汇总。
+        // 使用结果汇总聚合器汇总，这边不用管汇总方式的切换了，解析的时候包装了聚合器。
         GroupNodeAggregateUtils.aggregate(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
                 (GroupNode) mergeResult.getNode(), info.getTargetInfo().getResultAggregators());
         // 维度上的指标排序

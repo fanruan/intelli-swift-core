@@ -72,7 +72,7 @@ public class SwiftTimeScheduleService implements TimeScheduleService {
         }
     }
 
-    public void resetAllSchedule() throws FineTableAbsentException, FinePackageAbsentException, SchedulerException {
+    public void resetAllSchedule() throws SchedulerException {
         LOGGER.info("=============Remove all schedule begin!!!=============");
         for (Map.Entry<String, List<String>> taskNameEntry : nameAndTaskNameMap.entrySet()) {
             for (String taskName : taskNameEntry.getValue()) {
@@ -85,8 +85,9 @@ public class SwiftTimeScheduleService implements TimeScheduleService {
         LOGGER.info("=============Reset all schedule begin!!!=============");
         Map<String, TableUpdateInfo> infoMap = updateInfoConfigService.getAllTableUpdateInfo();
         for (Map.Entry<String, TableUpdateInfo> infoEntry : infoMap.entrySet()) {
-            FineBusinessTable fineBusinessTable = tableManager.getSingleTable(infoEntry.getKey());
-            if (fineBusinessTable != null) {
+
+            try {
+                FineBusinessTable fineBusinessTable = tableManager.getSingleTable(infoEntry.getKey());
                 TableUpdateInfo tableUpdateInfo = infoEntry.getValue();
                 List<UpdateTimeItem> updateInfoTimeList = tableUpdateInfo.getTimeList();
                 if (updateInfoTimeList != null) {
@@ -97,6 +98,8 @@ public class SwiftTimeScheduleService implements TimeScheduleService {
                         taskParams.put("tableName", infoEntry.getKey());
                         taskParams.put("timingType", String.valueOf(updateTimeItem.getSetting().getFrequency().getType()));
                         taskParams.put("updateType", String.valueOf(updateTimeItem.getType()));
+//                        ScheduleEntity entity = new ScheduleEntity(taskName, TableJobTask.class, updateTimeItem.getCron(), taskParams,
+//                                new Date(updateTimeItem.getStartTime() - 2678400000l), new Date(updateTimeItem.getEndTime()));
                         ScheduleEntity entity = new ScheduleEntity(taskName, TableJobTask.class, updateTimeItem.getCron(), taskParams,
                                 new Date(updateTimeItem.getStartTime()), new Date(updateTimeItem.getEndTime()));
                         addScheduleTimeTask(entity);
@@ -105,26 +108,31 @@ public class SwiftTimeScheduleService implements TimeScheduleService {
                     }
                     nameAndTaskNameMap.put(infoEntry.getKey(), taskNameList);
                 }
-            } else {
-                FineBusinessPackage fineBusinessPackage = packageManager.getSinglePackage(infoEntry.getKey());
-                if (fineBusinessPackage != null) {
-                    TableUpdateInfo packageUpdateInfo = infoEntry.getValue();
-                    List<UpdateTimeItem> updateInfoTimeList = packageUpdateInfo.getTimeList();
-                    if (updateInfoTimeList != null) {
-                        List<String> taskNameList = new ArrayList<String>();
-                        for (UpdateTimeItem updateTimeItem : updateInfoTimeList) {
-                            String taskName = infoEntry.getKey() + "-" + updateTimeItem.getCron();
-                            Map<String, String> taskParams = new HashMap<String, String>();
-                            taskParams.put("packageId", infoEntry.getKey());
-                            taskParams.put("timingType", String.valueOf(updateTimeItem.getSetting().getFrequency().getType()));
-                            ScheduleEntity entity = new ScheduleEntity(taskName, PackageJobTask.class, updateTimeItem.getCron(), taskParams,
-                                    new Date(updateTimeItem.getStartTime()), new Date(updateTimeItem.getEndTime()));
-                            addScheduleTimeTask(entity);
-                            LOGGER.info("Add timer schedule :" + taskName);
-                            taskNameList.add(taskName);
+            } catch (FineTableAbsentException e) {
+                try {
+                    FineBusinessPackage fineBusinessPackage = packageManager.getSinglePackage(infoEntry.getKey());
+                    if (fineBusinessPackage != null) {
+                        TableUpdateInfo packageUpdateInfo = infoEntry.getValue();
+                        List<UpdateTimeItem> updateInfoTimeList = packageUpdateInfo.getTimeList();
+                        if (updateInfoTimeList != null) {
+                            List<String> taskNameList = new ArrayList<String>();
+                            for (UpdateTimeItem updateTimeItem : updateInfoTimeList) {
+                                String taskName = infoEntry.getKey() + "-" + updateTimeItem.getCron();
+                                Map<String, String> taskParams = new HashMap<String, String>();
+                                taskParams.put("packageId", infoEntry.getKey());
+                                taskParams.put("timingType", String.valueOf(updateTimeItem.getSetting().getFrequency().getType()));
+//                                ScheduleEntity entity = new ScheduleEntity(taskName, PackageJobTask.class, updateTimeItem.getCron(), taskParams,
+//                                        new Date(updateTimeItem.getStartTime() - 2678400000l), new Date(updateTimeItem.getEndTime()));
+                                ScheduleEntity entity = new ScheduleEntity(taskName, PackageJobTask.class, updateTimeItem.getCron(), taskParams,
+                                        new Date(updateTimeItem.getStartTime()), new Date(updateTimeItem.getEndTime()));
+                                addScheduleTimeTask(entity);
+                                LOGGER.info("Add timer schedule :" + taskName);
+                                taskNameList.add(taskName);
+                            }
+                            nameAndTaskNameMap.put(infoEntry.getKey(), taskNameList);
                         }
-                        nameAndTaskNameMap.put(infoEntry.getKey(), taskNameList);
                     }
+                } catch (FinePackageAbsentException ignore) {
                 }
             }
         }
@@ -136,6 +144,8 @@ public class SwiftTimeScheduleService implements TimeScheduleService {
                 String taskName = TableUpdateInfoConfigService.GLOABAL_KEY + "-" + updateTimeItem.getCron();
                 Map<String, String> taskParams = new HashMap<String, String>();
                 taskParams.put("timingType", String.valueOf(updateTimeItem.getSetting().getFrequency().getType()));
+//                ScheduleEntity entity = new ScheduleEntity(taskName, GloableJobTask.class, updateTimeItem.getCron(),
+//                        taskParams, new Date(updateTimeItem.getStartTime() - 2678400000l), new Date(updateTimeItem.getEndTime()));
                 ScheduleEntity entity = new ScheduleEntity(taskName, GloableJobTask.class, updateTimeItem.getCron(),
                         taskParams, new Date(updateTimeItem.getStartTime()), new Date(updateTimeItem.getEndTime()));
                 addScheduleTimeTask(entity);
@@ -184,7 +194,7 @@ public class SwiftTimeScheduleService implements TimeScheduleService {
             }
             LOGGER.info("Task scheduled with cronExpression :" + cronExpression + " startTime: " + starTime + " and taskName " + taskName + " added successfully");
         } catch (Exception e) {
-            LOGGER.warn("Task scheduled with cronExpression :" + cronExpression + " startTime: " + starTime + " and taskName " + taskName + " failed due to " + e.getMessage());
+            LOGGER.warn("Task scheduled with cronExpression :" + cronExpression + " startTime: " + starTime + " and taskName " + taskName + " failed due to ", e);
         }
     }
 

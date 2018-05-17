@@ -27,9 +27,9 @@ public class TableJobTask extends JobTask {
 
             TableUpdateInfo tableUpdateInfo = updateInfoConfigService.getTableUpdateInfo(tableName);
 
-            if (updateType != UpdateConstants.UpdateType.INCREMENT) {
+            if (updateType != UpdateConstants.TableUpdateType.INCREMENT) {
                 tableUpdateInfo = new TableUpdateInfo();
-                tableUpdateInfo.setUpdateType(UpdateConstants.UpdateType.ALL);
+                tableUpdateInfo.setUpdateType(UpdateConstants.TableUpdateType.ALL);
             }
             if (fineBusinessTable == null || tableUpdateInfo == null) {
                 LOGGER.error("BusinessTable " + tableName + " is not exist or tableUpdateInfo is not exist!!");

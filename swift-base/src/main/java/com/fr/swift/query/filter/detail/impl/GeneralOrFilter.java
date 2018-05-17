@@ -15,23 +15,28 @@ import java.util.List;
  */
 public class GeneralOrFilter implements DetailFilter {
 
-    private List<FilterInfo> filterInfoList;
+    private List<DetailFilter> filters;
     private Segment segment;
 
     public GeneralOrFilter(List<FilterInfo> filterInfoList, Segment segment) {
-        this.filterInfoList = filterInfoList;
         this.segment = segment;
+        this.filters = init(filterInfoList);
+    }
+
+    private List<DetailFilter> init(List<FilterInfo> filterInfoList) {
+        List<DetailFilter> detailFilters = new ArrayList<DetailFilter>();
+        if (filterInfoList.size() == 0) {
+            detailFilters.add(new AllShowDetailFilter(segment));
+            return detailFilters;
+        }
+        for (FilterInfo filterInfo : filterInfoList) {
+            detailFilters.add(filterInfo.createDetailFilter(segment));
+        }
+        return detailFilters;
     }
 
     @Override
     public ImmutableBitMap createFilterIndex() {
-        if (filterInfoList.size() == 0) {
-            return new AllShowDetailFilter(segment).createFilterIndex();
-        }
-        final List<DetailFilter> filters = new ArrayList<DetailFilter>();
-        for (FilterInfo filterInfo : filterInfoList) {
-            filters.add(filterInfo.createDetailFilter(segment));
-        }
         final BitMapOrHelper bitMapOrHelper = new BitMapOrHelper();
         for (DetailFilter filter : filters) {
             bitMapOrHelper.add(filter.createFilterIndex());
@@ -41,6 +46,11 @@ public class GeneralOrFilter implements DetailFilter {
 
     @Override
     public boolean matches(SwiftNode node, int targetIndex) {
+        for (DetailFilter filter : filters) {
+            if (filter.matches(node, targetIndex)) {
+                return true;
+            }
+        }
         return false;
     }
 }

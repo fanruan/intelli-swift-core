@@ -9,9 +9,15 @@ package com.fr.swift.utils;
  */
 public class UpdateConstants {
 
-    public static class UpdateType {
+    public static class TableUpdateType {
         public static final int ALL = 1;
         public static final int INCREMENT = 2;
         public static final int NEVER = 3;
     }
+
+    public static class PackageUpdateType {
+        public static final int UPDATE = 1;
+        public static final int NOT_UPDATE = 2;
+    }
+
 }

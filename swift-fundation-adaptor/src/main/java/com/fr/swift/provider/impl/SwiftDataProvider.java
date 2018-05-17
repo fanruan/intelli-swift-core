@@ -26,6 +26,7 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.empty.EmptyDataSource;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 
@@ -63,6 +64,9 @@ public class SwiftDataProvider implements DataProvider {
     public BIDetailTableResult getDetailPreviewByFields(FineBusinessTable table, int rowCount) throws SQLException {
         try {
             DataSource dataSource = DataSourceFactory.transformDataSource(table);
+            if (dataSource instanceof EmptyDataSource) {
+                return new SwiftDetailTableResult(new SwiftEmptyResult(), 0, -1);
+            }
             IntList sortIndex = IntListFactory.createHeapIntList();
             List<SortType> sorts = new ArrayList<SortType>();
             //分析表排序加上属性
@@ -76,7 +80,7 @@ public class SwiftDataProvider implements DataProvider {
                 }
             }
             if (dataSource != null) {
-                 List<Segment> segments = this.getPreviewData(dataSource);
+                List<Segment> segments = this.getPreviewData(dataSource);
 
                 SwiftMetaData swiftMetaData = dataSource.getMetadata();
                 BIDetailTableResult realDetailResult = new SwiftSegmentDetailResult(segments, swiftMetaData, sortIndex, sorts);

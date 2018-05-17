@@ -32,7 +32,7 @@ import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
 import com.fr.swift.adaptor.linkage.LinkageAdaptor;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
-import com.fr.swift.adaptor.transformer.date.DateUtils;
+import com.fr.swift.adaptor.transformer.filter.date.DateUtils;
 import com.fr.swift.cal.info.DetailQueryInfo;
 import com.fr.swift.cal.info.GroupQueryInfo;
 import com.fr.swift.log.SwiftLoggers;

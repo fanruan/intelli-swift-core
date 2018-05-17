@@ -12,11 +12,11 @@ abstract class AbstractTargetCalculator implements TargetCalculator {
 
     protected int paramIndex;
     protected int resultIndex;
-    protected Iterator<List<AggregatorValue[]>> iterator;
+    protected Iterator<Iterator<List<AggregatorValue[]>>> iterators;
 
-    public AbstractTargetCalculator(int paramIndex, int resultIndex, Iterator<List<AggregatorValue[]>> iterator) {
+    public AbstractTargetCalculator(int paramIndex, int resultIndex, Iterator<Iterator<List<AggregatorValue[]>>> iterators) {
         this.paramIndex = paramIndex;
         this.resultIndex = resultIndex;
-        this.iterator = iterator;
+        this.iterators = iterators;
     }
 }

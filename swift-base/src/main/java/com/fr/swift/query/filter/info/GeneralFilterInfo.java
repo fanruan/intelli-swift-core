@@ -28,6 +28,14 @@ public class GeneralFilterInfo extends AbstractFilterInfo {
         this.type = type;
     }
 
+    public List<FilterInfo> getChildren() {
+        return children;
+    }
+
+    public int getType() {
+        return type;
+    }
+
     @Override
     public boolean isMatchFilter() {
         if (children == null) {

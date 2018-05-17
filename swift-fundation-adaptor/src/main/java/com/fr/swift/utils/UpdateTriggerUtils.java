@@ -31,18 +31,18 @@ public class UpdateTriggerUtils {
      */
     public static TableUpdateInfo checkUpdateInfo(TableUpdateInfo tableUpdateInfo, FineBusinessTable fineBusinessTable) throws Exception {
         switch (tableUpdateInfo.getUpdateType()) {
-            case UpdateConstants.UpdateType.ALL:
+            case UpdateConstants.TableUpdateType.ALL:
                 return tableUpdateInfo;
-            case UpdateConstants.UpdateType.INCREMENT:
+            case UpdateConstants.TableUpdateType.INCREMENT:
                 DataSource incrementDataSource = DataSourceFactory.getDataSource(fineBusinessTable);
                 if (LocalSegmentProvider.getInstance().isSegmentsExist(incrementDataSource.getSourceKey())) {
                     return tableUpdateInfo;
                 } else {
                     TableUpdateInfo result = new TableUpdateInfo();
-                    result.setUpdateType(UpdateConstants.UpdateType.ALL);
+                    result.setUpdateType(UpdateConstants.TableUpdateType.ALL);
                     return result;
                 }
-            case UpdateConstants.UpdateType.NEVER:
+            case UpdateConstants.TableUpdateType.NEVER:
                 DataSource neverDataSource = DataSourceFactory.getDataSource(fineBusinessTable);
                 if (!LocalSegmentProvider.getInstance().isSegmentsExist(neverDataSource.getSourceKey())) {
                     return tableUpdateInfo;

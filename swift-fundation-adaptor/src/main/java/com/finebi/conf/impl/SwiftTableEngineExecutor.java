@@ -2,6 +2,7 @@ package com.finebi.conf.impl;
 
 import com.finebi.base.common.resource.FineResourceItem;
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.common.internalimp.config.session.CommonConfigManager;
 import com.finebi.conf.exception.FineEngineException;
 import com.finebi.conf.internalimp.analysis.operator.circulate.CirculateOneFieldOperator;
 import com.finebi.conf.internalimp.analysis.operator.circulate.CirculateTwoFieldOperator;
@@ -53,6 +54,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -96,8 +98,10 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
     @Override
     public List<FineBusinessField> getFieldList(FineBusinessTable table) {
         try {
+            Map<String, String> escapeMap = CommonConfigManager.getEntryInfoSession(getEngineType()).findByName(table.getName()).getEscapeMap();
             DataSource dataSource = DataSourceFactory.transformDataSource(table);
-            return FieldFactory.transformColumns2Fields(dataSource.getMetadata(), table.getId());
+            List<FineBusinessField> fieldsList = FieldFactory.transformColumns2Fields(dataSource.getMetadata(), table.getId(), escapeMap);
+            return fieldsList;
         } catch (Exception e) {
             LOGGER.error(e);
             return new ArrayList<FineBusinessField>();

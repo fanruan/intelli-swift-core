@@ -6,6 +6,7 @@ import com.finebi.conf.structure.result.control.tree.BITreeLabelResult;
 import com.fr.stable.StringUtils;
 import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
+import com.fr.swift.adaptor.transformer.filter.dimension.DimensionFilterAdaptor;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
@@ -63,7 +64,7 @@ public class TreeLabelWidgetAdaptor {
     private static FilterInfo currentDimensionSelectedValues2FilterInfo(FineDimension dimension,
                                                                         List<String> selectedValues,
                                                                         FilterInfo filterInfo) {
-        FilterInfo currentDimensionFilter = FilterInfoFactory.transformDimensionFineFilter(dimension);
+        FilterInfo currentDimensionFilter = DimensionFilterAdaptor.transformDimensionFineFilter(dimension);
         List<FilterInfo> andList = new ArrayList<FilterInfo>();
         andList.add(filterInfo);
         andList.add(currentDimensionFilter);

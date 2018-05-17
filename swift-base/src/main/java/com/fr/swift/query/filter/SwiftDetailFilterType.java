@@ -18,6 +18,7 @@ public enum SwiftDetailFilterType {
     NUMBER_IN_RANGE,
     NUMBER_NOT_CONTAIN,
     NUMBER_NOT_IN_RANGE,
+    NUMBER_AVERAGE,
 
     DATE_IN_RANGE,
     DATE_NOT_IN_RANGE,
@@ -34,5 +35,11 @@ public enum SwiftDetailFilterType {
     FORMULA,
 
     ALL_SHOW,
-    KEY_WORDS
+    KEY_WORDS,
+
+    /**
+     * 需要再次转换的临时类型
+     */
+    TMP_DATE_BELONG_STRING,
+    TMP_DATE_NOT_BELONG_STRING
 }
