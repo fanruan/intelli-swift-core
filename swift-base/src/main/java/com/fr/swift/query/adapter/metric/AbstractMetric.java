@@ -42,4 +42,24 @@ public abstract class AbstractMetric extends AbstractQueryColumn implements Metr
     public Column getColumn(Segment segment) {
         return segment.getColumn(getColumnKey());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AbstractMetric that = (AbstractMetric) o;
+
+        if (sourceKey != null ? !sourceKey.equals(that.sourceKey) : that.sourceKey != null) return false;
+        if (columnKey != null ? !columnKey.equals(that.columnKey) : that.columnKey != null) return false;
+        return filterInfo != null ? filterInfo.equals(that.filterInfo) : that.filterInfo == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = sourceKey != null ? sourceKey.hashCode() : 0;
+        result = 31 * result + (columnKey != null ? columnKey.hashCode() : 0);
+        result = 31 * result + (filterInfo != null ? filterInfo.hashCode() : 0);
+        return result;
+    }
 }

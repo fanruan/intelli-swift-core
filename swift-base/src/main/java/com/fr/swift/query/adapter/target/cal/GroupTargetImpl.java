@@ -3,6 +3,8 @@ package com.fr.swift.query.adapter.target.cal;
 import com.fr.swift.query.adapter.AbstractQueryColumn;
 import com.fr.swift.query.adapter.target.GroupTarget;
 
+import java.util.Arrays;
+
 /**
  * Created by Lyon on 2018/4/19.
  */
@@ -32,5 +34,23 @@ public class GroupTargetImpl extends AbstractQueryColumn implements GroupTarget 
     @Override
     public CalTargetType type() {
         return type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GroupTargetImpl that = (GroupTargetImpl) o;
+        // 这边特意忽略resultIndex字段的比较
+        if (!Arrays.equals(paramIndexes, that.paramIndexes)) return false;
+        return type == that.type;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Arrays.hashCode(paramIndexes);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        return result;
     }
 }

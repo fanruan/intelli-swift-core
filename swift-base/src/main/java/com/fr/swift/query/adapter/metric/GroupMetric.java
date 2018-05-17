@@ -20,4 +20,22 @@ public class GroupMetric extends AbstractMetric {
     public Aggregator getAggregator() {
         return aggregator;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        GroupMetric metric = (GroupMetric) o;
+        // aggregator是单例的，直接比较引用应该没问题吧
+        return aggregator != null ? aggregator.equals(metric.aggregator) : metric.aggregator == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (aggregator != null ? aggregator.hashCode() : 0);
+        return result;
+    }
 }
