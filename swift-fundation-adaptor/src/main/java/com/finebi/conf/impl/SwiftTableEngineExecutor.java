@@ -98,7 +98,7 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
     }
 
     @Override
-    public List<FineBusinessField> getFieldList(FineBusinessTable table) {
+    public List<FineBusinessField> getFieldList(FineBusinessTable table) throws Exception {
         try {
             EntryInfo entryInfo = CommonConfigManager.getEntryInfoSession(getEngineType()).findByName(table.getName());
             Map<String, String> escapeMap = entryInfo != null ? entryInfo.getEscapeMap() : new HashMap<String, String>();
@@ -106,9 +106,12 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
             DataSource dataSource = DataSourceFactory.transformDataSource(table);
             List<FineBusinessField> fieldsList = FieldFactory.transformColumns2Fields(dataSource.getMetadata(), table.getId(), escapeMap);
             return fieldsList;
+        } catch (RuntimeException run) {
+            LOGGER.error(run.getCause());
+            throw (Exception) run.getCause();
         } catch (Exception e) {
             LOGGER.error(e);
-            return new ArrayList<FineBusinessField>();
+            throw e;
         }
     }
 
