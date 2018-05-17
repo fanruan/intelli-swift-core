@@ -121,7 +121,7 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
      * @param widget
      * @return
      */
-    private static void dealWithLink(List<FilterInfo> filterInfos, AbstractTableWidget widget) throws SQLException {
+    private static void dealWithLink(List<FilterInfo> filterInfos, AbstractTableWidget widget) throws Exception {
         TableWidgetBean bean = widget.getValue();
         String tableName = widget.getTableName();
         if (null == bean) {
