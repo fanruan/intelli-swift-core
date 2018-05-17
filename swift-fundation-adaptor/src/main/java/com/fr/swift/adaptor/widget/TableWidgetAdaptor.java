@@ -29,7 +29,7 @@ import com.fr.swift.adaptor.transformer.filter.dimension.DimensionFilterAdaptor;
 import com.fr.swift.adaptor.widget.datamining.GroupTableToDMResultVisitor;
 import com.fr.swift.adaptor.widget.expander.ExpanderFactory;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
-import com.fr.swift.adaptor.widget.target.CalTargetParseUtils;
+import com.fr.swift.adaptor.widget.target.TargetInfoUtils;
 import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.cal.info.GroupQueryInfo;
 import com.fr.swift.log.SwiftLogger;
@@ -82,7 +82,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         int dimensionSize = 0;
         try {
             dimensionSize = widget.getDimensionList().size();
-            TargetInfo targetInfo = CalTargetParseUtils.parseCalTarget(widget);
+            TargetInfo targetInfo = TargetInfoUtils.parse(widget);
             QueryInfo info = buildQueryInfo(widget, targetInfo);
             SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(info);
 

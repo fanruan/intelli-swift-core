@@ -9,7 +9,7 @@ import com.fr.swift.adaptor.struct.node.BICrossNodeAdaptor;
 import com.fr.swift.adaptor.struct.node.GroupNode2XLeftNodeAdaptor;
 import com.fr.swift.adaptor.widget.datamining.CrossTableToDMResultVisitor;
 import com.fr.swift.adaptor.widget.expander.ExpanderFactory;
-import com.fr.swift.adaptor.widget.target.CalTargetParseUtils;
+import com.fr.swift.adaptor.widget.target.TargetInfoUtils;
 import com.fr.swift.cal.info.GroupQueryInfo;
 import com.fr.swift.cal.info.XGroupQueryInfo;
 import com.fr.swift.log.SwiftLogger;
@@ -54,7 +54,7 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         BICrossNode crossNode = null;
         XNodeMergeResultSet resultSet = null;
         try {
-            TargetInfo targetInfo = CalTargetParseUtils.parseCalTarget(widget);
+            TargetInfo targetInfo = TargetInfoUtils.parse(widget);
             XGroupQueryInfo queryInfo = buildQueryInfo(widget, targetInfo);
             if (queryInfo.getColDimensionInfo().getDimensions().length == 0) {
                 // 列表头为空
