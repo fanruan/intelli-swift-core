@@ -18,7 +18,7 @@ public class AverageCalculator extends AbstractTargetCalculator {
 
     @Override
     public Object call() {
-        while (iterators.hasNext()){
+        while (iterators.hasNext()) {
             Iterator<List<AggregatorValue[]>> iterator = iterators.next();
             List<List<AggregatorValue[]>> rows = new ArrayList<List<AggregatorValue[]>>();
             // 交叉表的一行，一个配置计算要计算row.size()次

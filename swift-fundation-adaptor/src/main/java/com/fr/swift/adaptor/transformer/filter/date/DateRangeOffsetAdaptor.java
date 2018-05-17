@@ -1,4 +1,4 @@
-package com.fr.swift.adaptor.transformer.date;
+package com.fr.swift.adaptor.transformer.filter.date;
 
 import com.finebi.conf.internalimp.bean.filtervalue.date.DateRangeOffset;
 import com.fr.swift.query.filter.info.value.SwiftDateInRangeFilterValue;

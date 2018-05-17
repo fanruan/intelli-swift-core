@@ -23,7 +23,7 @@ public class TargetCalculatorFactory {
         Iterator<Iterator<List<AggregatorValue[]>>> iterator = createIterator(type, groupNode);
         switch (type) {
             case ALL_SUM_OF_ALL:
-            case GROUP_SUM_OF_ALL:{
+            case GROUP_SUM_OF_ALL: {
                 Double[] values;
                 if (groupNode instanceof XLeftNode) {
                     List<AggregatorValue[]> aggregatorValues = ((XLeftNode) groupNode).getValueArrayList();
@@ -32,8 +32,8 @@ public class TargetCalculatorFactory {
                         values[i] = aggregatorValues.get(i)[target.paramIndexes()[0]].calculate();
                     }
                 } else {
-                   // Double value = groupNode.getAggregatorValue()[target.paramIndexes()[0]].calculate();
-                    values = new Double[] { null };
+                    // Double value = groupNode.getAggregatorValue()[target.paramIndexes()[0]].calculate();
+                    values = new Double[]{null};
                 }
                 return new SumOfAllCalculator(target.paramIndexes()[0], target.resultIndex(), iterator, values);
             }
@@ -83,7 +83,7 @@ public class TargetCalculatorFactory {
     }
 
 
-    private static class RootIterator implements Iterator<Iterator<List<AggregatorValue[]>>>{
+    private static class RootIterator implements Iterator<Iterator<List<AggregatorValue[]>>> {
         private Function<GroupNode, List<AggregatorValue[]>> function;
         private GroupNode root;
         private boolean hasNext = true;
@@ -110,7 +110,7 @@ public class TargetCalculatorFactory {
         }
     }
 
-    private static class GroupIterator implements Iterator<Iterator<List<AggregatorValue[]>>>{
+    private static class GroupIterator implements Iterator<Iterator<List<AggregatorValue[]>>> {
         private GroupNode current;
         private Function<GroupNode, List<AggregatorValue[]>> function;
 
@@ -121,7 +121,7 @@ public class TargetCalculatorFactory {
 
         private void initCurrent(GroupNode root) {
             current = root;
-            while (current.getChildrenSize() != 0){
+            while (current.getChildrenSize() != 0) {
                 current = current.getChild(0);
             }
             current = current.getParent();

@@ -10,6 +10,7 @@ import com.finebi.conf.structure.result.control.tree.BITreeResult;
 import com.fr.stable.StringUtils;
 import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
+import com.fr.swift.adaptor.transformer.filter.dimension.DimensionFilterAdaptor;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
@@ -156,7 +157,7 @@ public class TreeWidgetAdaptor extends AbstractTableWidgetAdaptor {
         infoList.add(parent);
         infoList.add(createFilterInfo(widget, dimensions));
         // 当前维度里面包含的明细过滤
-        FilterInfo currentDimensionFilter = FilterInfoFactory.transformDimensionFineFilter(dimension);
+        FilterInfo currentDimensionFilter = DimensionFilterAdaptor.transformDimensionFineFilter(dimension);
         infoList.add(currentDimensionFilter);
         FilterInfo filterInfo = new GeneralFilterInfo(infoList, GeneralFilterInfo.AND);
         List<FilterInfo> or = new ArrayList<FilterInfo>();

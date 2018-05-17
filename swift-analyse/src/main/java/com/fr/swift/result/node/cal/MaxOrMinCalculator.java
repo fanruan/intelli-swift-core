@@ -24,7 +24,7 @@ public class MaxOrMinCalculator extends AbstractTargetCalculator {
 
     @Override
     public Object call() {
-        while (iterators.hasNext()){
+        while (iterators.hasNext()) {
             Iterator<List<AggregatorValue[]>> iterator = iterators.next();
             List<List<AggregatorValue[]>> rows = new ArrayList<List<AggregatorValue[]>>();
             Double[] values = null;
