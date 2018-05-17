@@ -43,7 +43,7 @@ public class XGroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> 
     public NodeResultSet getQueryResult() throws SQLException {
         XNodeMergeResultSet resultSet = (XNodeMergeResultSet) mergeQuery.getQueryResult();
         // 处理计算指标
-        TargetCalculatorUtils.calculate(((GroupNode) resultSet.getNode()), info.getTargetInfo().getGroupTargets());
+        TargetCalculatorUtils.calculate(((GroupNode) resultSet.getNode()), resultSet.getRowGlobalDictionaries(), info.getTargetInfo().getGroupTargets());
         // TODO: 2018/5/2 结果过滤
 
         // 下面设置字典、取出要返回的结果指标、对结果指标做横向和列向汇总、结果指标转为二维数组

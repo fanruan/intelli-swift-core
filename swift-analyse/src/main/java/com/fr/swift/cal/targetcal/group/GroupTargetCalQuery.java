@@ -41,7 +41,7 @@ public class GroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> {
         // 合并后的结果
         NodeMergeResultSet<GroupNode> mergeResult = (NodeMergeResultSet<GroupNode>) mergeQuery.getQueryResult();
         // 根据合并后的结果处理计算指标的计算
-        TargetCalculatorUtils.calculate(((GroupNode) mergeResult.getNode()), info.getTargetInfo().getGroupTargets());
+        TargetCalculatorUtils.calculate(((GroupNode) mergeResult.getNode()), mergeResult.getRowGlobalDictionaries(), info.getTargetInfo().getGroupTargets());
         // 取出查询最后要返回的结果
         TargetCalculatorUtils.getShowTargetsForGroupNodeAndSetNodeDataAndSetNodeIndex(((GroupNode) mergeResult.getNode()),
                 info.getTargetInfo().getTargetsForShowList(), mergeResult.getRowGlobalDictionaries());
