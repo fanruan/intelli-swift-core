@@ -29,7 +29,7 @@ import static org.junit.Assert.assertTrue;
  * @date 2018/4/26
  */
 public class LogOperatorTest {
-    private LogOperator logOperator = LogOperatorImpl.getInstance();
+    private LogOperator logOperator = LogOperatorProxy.getInstance();
     private Database db = SwiftDatabase.getInstance();
 
     @BeforeClass
@@ -60,10 +60,10 @@ public class LogOperatorTest {
     public void recordInfo() throws Exception {
         initTables();
         List<Object> as = new ArrayList<Object>();
-        for (int i = 0; i <= LogOperatorImpl.FLUSH_SIZE_THRESHOLD; i++) {
+        for (int i = 0; i <= SwiftLogOperator.FLUSH_SIZE_THRESHOLD; i++) {
             as.add(new A());
         }
-        Thread.sleep(LogOperatorImpl.FLUSH_INTERVAL_THRESHOLD + 1);
+        Thread.sleep(SwiftLogOperator.FLUSH_INTERVAL_THRESHOLD + 1);
         logOperator.recordInfo(as);
         SwiftSegmentManager segmentManager = SwiftContext.getInstance().getSegmentProvider();
         List<Segment> segs = segmentManager.getSegment(new SourceKey("A"));
