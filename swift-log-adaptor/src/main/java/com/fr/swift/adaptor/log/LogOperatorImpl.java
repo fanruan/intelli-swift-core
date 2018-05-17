@@ -87,7 +87,7 @@ public class LogOperatorImpl implements LogOperator {
         List<Object> curData = dataMap.get(entity);
         curData.addAll(data);
 
-        if (curData.size() < FLUSH_SIZE_THRESHOLD || System.currentTimeMillis() - lastFlushTime < FLUSH_INTERVAL_THRESHOLD) {
+        if (curData.size() < FLUSH_SIZE_THRESHOLD && System.currentTimeMillis() - lastFlushTime < FLUSH_INTERVAL_THRESHOLD) {
             return;
         }
 
