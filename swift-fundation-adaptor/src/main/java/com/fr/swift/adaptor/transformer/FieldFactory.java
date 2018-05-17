@@ -36,6 +36,9 @@ public class FieldFactory {
             if (escapeMap != null && escapeMap.containsKey(columnName)) {
                 columnRemark = escapeMap.get(columnName);
             }
+            if (columnRemark == null) {
+                columnRemark = columnName;
+            }
             String tableId = businessTableId == null ? swiftMetaData.getTableName() : businessTableId;
             FineBusinessFieldImp fineBusinessField = new FineBusinessFieldImp(SwiftEncryption.encryptFieldId(tableId, columnName), columnName, columnRemark);
             fineBusinessField.setEngineType(FineEngineType.Cube);
