@@ -1,5 +1,6 @@
 package com.fr.swift.generate.history.index;
 
+import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.generate.BaseColumnDictMerger;
 import com.fr.swift.query.group.GroupType;
 import com.fr.swift.segment.Segment;
@@ -32,4 +33,10 @@ public class SubDateColumnDictMerger<Derive> extends BaseColumnDictMerger<Derive
         return (Column<Derive>) new SubDateColumn(((DateColumn) super.getColumn(segment)), type);
     }
 
+    @Override
+    protected IResourceLocation calExternalLocation(Segment oneOfSegments) {
+        return oneOfSegments.getLocation().getParent().
+                buildChildLocation("external_global_dict").
+                buildChildLocation(key.getName() + "_" + type);
+    }
 }
