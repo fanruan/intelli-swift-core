@@ -3,12 +3,14 @@ package com.fr.swift.adaptor.widget.target;
 import com.finebi.conf.constant.BIDesignConstants;
 import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
 import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
+import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
 import com.fr.swift.adaptor.transformer.AggregatorAdaptor;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.widget.AbstractWidgetAdaptor;
+import com.fr.swift.adaptor.widget.group.GroupTypeAdaptor;
 import com.fr.swift.adaptor.widget.target.exception.TargetCircularDependencyException;
 import com.fr.swift.query.adapter.metric.CounterMetric;
 import com.fr.swift.query.adapter.metric.FormulaMetric;
@@ -23,6 +25,7 @@ import com.fr.swift.query.aggregator.AggregatorFactory;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.aggregator.WrappedAggregator;
 import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.query.group.GroupType;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SourceKey;
@@ -30,6 +33,7 @@ import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.graph.Digraph;
 import com.fr.swift.structure.graph.DigraphImpl;
 import com.fr.swift.structure.graph.DigraphUtils;
+import com.fr.swift.util.Crasher;
 import com.fr.swift.utils.BusinessTableUtils;
 
 import java.util.ArrayList;
@@ -227,7 +231,8 @@ public class CalTargetParseUtils {
     }
 
     private static boolean isBaseFieldTarget(FineTarget target) {
-        return target.getCalculation() == null || target.getWidgetBeanField() == null;
+        return target.getCalculation() == null || target.getWidgetBeanField() == null
+                || (target.getWidgetBeanField() != null && target.getWidgetBeanField().getTargetIds() == null);
     }
 
     /**
@@ -242,7 +247,7 @@ public class CalTargetParseUtils {
             int paramIndex = baseMetricList.indexOf(parseMetricFromBaseFieldOfBaseTarget(target, widget));
             int rapidCalTargetType = target.getCalculation().getType();
             GroupTarget calTarget = GroupTargetFactory.createFromRapidTarget(rapidCalTargetType, 0,
-                    new int[]{paramIndex}, resultIndex);
+                    new int[]{paramIndex}, resultIndex, getDateDimensionIndexTypePair(widget));
             return Pair.of(target.getId(), calTarget);
         } else {
             // 计算指标字段生成的指标
@@ -254,9 +259,32 @@ public class CalTargetParseUtils {
             }
             int rapidCalTargetType = target.getCalculation().getType();
             GroupTarget calTarget = GroupTargetFactory.createFromRapidTarget(rapidCalTargetType, 0,
-                    new int[]{paramIndex}, resultIndex);
+                    new int[]{paramIndex}, resultIndex, getDateDimensionIndexTypePair(widget));
             return Pair.of(target.getId(), calTarget);
         }
+    }
+
+    private static List<Pair<Integer, GroupType>> getDateDimensionIndexTypePair(AbstractTableWidget widget) {
+        List<Pair<Integer, GroupType>> dateDimension = new ArrayList<Pair<Integer, GroupType>>();
+        try {
+            String dateFieldId = null;
+            List<FineDimension> dimensionList = widget.getDimensionList();
+            for (int i = 0; i < dimensionList.size(); i++){
+                FineDimension dimension = dimensionList.get(i);
+                if (dimension.getType() == BIDesignConstants.DESIGN.DIMENSION_TYPE.DATE){
+                    if (dateFieldId == null){
+                        dateFieldId = dimension.getFieldId();
+                    }
+                    if (ComparatorUtils.equals(dateFieldId, dimension.getFieldId())){
+                        GroupType groupType = GroupTypeAdaptor.adaptDashboardGroup(dimension.getGroup().getType());
+                        dateDimension.add(new Pair<Integer, GroupType>(i, groupType));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            return Crasher.crash("get dimension failed", e);
+        }
+        return dateDimension;
     }
 
     /**
@@ -494,9 +522,15 @@ public class CalTargetParseUtils {
         if (field.getCalculate() != null && field.getCalculate().getType() == BIDesignConstants.DESIGN.CAL_TARGET.FORMULA) {
             return new FormulaMetric(metricIndex, new SourceKey(field.getName()), pair.getValue(), aggregator, AbstractWidgetAdaptor.getFormula(fieldId, widget));
         }
+        //复制的fieldid不对，要取source
+        fieldId = StringUtils.isEmpty(field.getSource()) ? fieldId : field.getSource();
         SourceKey key = new SourceKey(fieldId);
         if (isCounterField(fieldId)) {
             return new CounterMetric(metricIndex, key, new ColumnKey(fieldId), pair.getValue());
+        }
+        if (field.getSource() != null) {
+            // 说明是复制字段
+            fieldId = field.getSource();
         }
         String columnName = BusinessTableUtils.getFieldNameByFieldId(fieldId);
         ColumnKey colKey = new ColumnKey(columnName);

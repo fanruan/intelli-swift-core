@@ -4,9 +4,14 @@ import com.finebi.conf.constant.BIDesignConstants;
 import com.finebi.conf.internalimp.bean.dashboard.widget.field.value.FormulaValueBean;
 import com.finebi.conf.structure.dashboard.widget.field.WidgetBeanFieldValue;
 import com.fr.swift.query.adapter.target.GroupTarget;
+import com.fr.swift.query.adapter.target.cal.BrotherGroupTarget;
 import com.fr.swift.query.adapter.target.cal.CalTargetType;
 import com.fr.swift.query.adapter.target.cal.GroupFormulaTarget;
 import com.fr.swift.query.adapter.target.cal.GroupTargetImpl;
+import com.fr.swift.query.group.GroupType;
+import com.fr.swift.structure.Pair;
+
+import java.util.List;
 
 /**
  * Created by Lyon on 2018/5/3.
@@ -41,7 +46,7 @@ public class GroupTargetFactory {
 
     // TODO: 2018/5/11 切换汇总方式之后，AggregatorValue转换gg了
     public static GroupTarget createFromRapidTarget(int rapidCalTargetType, int queryIndex,
-                                                    int[] paramIndexes, int resultIndex) {
+                                                    int[] paramIndexes, int resultIndex, List<Pair<Integer, GroupType>> brotherIndexGroup) {
         switch (rapidCalTargetType) {
             case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.RANK_ASC:
                 return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_RANK_ASC);
@@ -69,6 +74,19 @@ public class GroupTargetFactory {
                 return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.GROUP_MIN);
             case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.SUM_OF_ABOVE_IN_GROUP:
                 return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.GROUP_SUM_OF_ABOVE);
+            case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.YEAR_ON_YEAR_VALUE:
+                return new BrotherGroupTarget(queryIndex, resultIndex, paramIndexes, CalTargetType.COUSIN_VALUE, brotherIndexGroup);
+            case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.YEAR_ON_YEAR_RATE:
+                return new BrotherGroupTarget(queryIndex, resultIndex, paramIndexes, CalTargetType.COUSIN_RATE, brotherIndexGroup);
+            case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.MONTH_ON_MONTH_VALUE:
+                return new BrotherGroupTarget(queryIndex, resultIndex, paramIndexes, CalTargetType.BROTHER_VALUE, brotherIndexGroup);
+            case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.MONTH_ON_MONTH_RATE:
+                return new BrotherGroupTarget(queryIndex, resultIndex, paramIndexes, CalTargetType.COUSIN_VALUE, brotherIndexGroup);
+            case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.CURRENT_DIMENSION_PERCENT:
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.DIMENSION_PERCENT);
+            case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.CURRENT_TARGET_PERCENT:
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.TARGET_PERCENT);
+
         }
         return null;
     }

@@ -43,7 +43,7 @@ public class XGroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> 
     public NodeResultSet getQueryResult() throws SQLException {
         XNodeMergeResultSet resultSet = (XNodeMergeResultSet) mergeQuery.getQueryResult();
         // 处理计算指标
-        TargetCalculatorUtils.calculate(((GroupNode) resultSet.getNode()), info.getTargetInfo().getGroupTargets());
+        TargetCalculatorUtils.calculate(((GroupNode) resultSet.getNode()), resultSet.getRowGlobalDictionaries(), info.getTargetInfo().getGroupTargets());
         // TODO: 2018/5/2 结果过滤
 
         // 下面设置字典、取出要返回的结果指标、对结果指标做横向和列向汇总、结果指标转为二维数组
@@ -63,14 +63,19 @@ public class XGroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> 
         // 指标排序，处理的思路是利用横向和纵向汇总的得到的根节点汇总值，转为两个分组表的排序来处理
         // 暂时先这么实现，后面再分析一下能不能优化
         if (GroupTargetCalQuery.hasDimensionTargetSorts(info.getDimensionInfo().getDimensions())) {
-            // 指标排序，列向节点和横向节点同时进行？
-            sort(rowDimensionSize, colDimensionSize, resultSet);
+            // 行表头排序
+            sortXLeftNode(rowDimensionSize, colDimensionSize, resultSet);
+        }
+        if (GroupTargetCalQuery.hasDimensionTargetSorts(info.getColDimensionInfo().getDimensions())) {
+            // 列表头排序
+            sortTopGroupNode(rowDimensionSize, colDimensionSize, resultSet);
         }
         if (isEmpty(resultSet)) {
             return resultSet;
         }
         // 最后一步将xLeftNode的List<AggregatorValue[]> valueArrayList转为二维数组
-        if (GroupTargetCalQuery.hasDimensionTargetSorts(info.getDimensionInfo().getDimensions())) {
+        if (GroupTargetCalQuery.hasDimensionTargetSorts(info.getDimensionInfo().getDimensions())
+                || GroupTargetCalQuery.hasDimensionTargetSorts(info.getColDimensionInfo().getDimensions())) {
             // 从排序结果中处理XLeftNode的最后结果xValues数组
             setValues2XLeftNodeFromSortResult(rowDimensionSize, colDimensionSize, resultSet);
         } else {
@@ -115,27 +120,16 @@ public class XGroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> 
         }
     }
 
-    private void sort(int rowDimensionSize, int colDimensionSize, XNodeMergeResultSet resultSet) {
-        sortXLeftNode(rowDimensionSize, colDimensionSize, resultSet);
-        sortTopGroupNode(rowDimensionSize, colDimensionSize, resultSet);
-    }
-
     private void sortTopGroupNode(int rowDimensionSize, int colDimensionSize, XNodeMergeResultSet resultSet) {
         List<Sort> colSorts = GroupTargetCalQuery.getDimensionTargetSorts(info.getColDimensionInfo().getDimensions());
         // 这边XLeftNode根节点的汇总值已经包括了所有列向节点的汇总值
         List<AggregatorValue[]> values = ((XLeftNode) resultSet.getNode()).getValueArrayList();
         setSumValues2Node(colDimensionSize, resultSet.getTopGroupNode(), values);
-        List<TopGroupNode> topGroupNodes = IteratorUtils.iterator2List(new PostOrderNodeIterator<TopGroupNode>(colDimensionSize, resultSet.getTopGroupNode()));
-        List<XLeftNode> xLeftNodes = IteratorUtils.iterator2List(new PostOrderNodeIterator<XLeftNode>(rowDimensionSize, (XLeftNode) resultSet.getNode()));
         // 先更新一下topGroupNode#topGroupValues（包含xLeftNode所有行的某一列）
-        for (int col = 0; col < topGroupNodes.size(); col++) {
-            List<AggregatorValue[]> colValues = new ArrayList<AggregatorValue[]>();
-            for (int row = 0; row < xLeftNodes.size(); row++) {
-                colValues.add(xLeftNodes.get(row).getValueArrayList().get(col));
-            }
-            topGroupNodes.get(col).setTopGroupValues(colValues);
-        }
+        updateTopGroupValues(rowDimensionSize, colDimensionSize, resultSet);
         NodeSorter.sort(resultSet.getTopGroupNode(), colSorts);
+        // 再更新一下xLeftNode#valueArrayList（包含topGroupNode所有列的某一行）
+        updateXLeftNode(rowDimensionSize, colDimensionSize, resultSet);
     }
 
     private void sortXLeftNode(int rowDimensionSize, int colDimensionSize, XNodeMergeResultSet resultSet) {
@@ -143,9 +137,16 @@ public class XGroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> 
         // 这边topGroupNode的根节点的汇总值已经包括了所有横向节点的汇总值
         List<AggregatorValue[]> values = resultSet.getTopGroupNode().getTopGroupValues();
         setSumValues2Node(rowDimensionSize, (GroupNode) resultSet.getNode(), values);
+        // 先更新一下xLeftNode#valueArrayList（包含topGroupNode所有列的某一行）
+        updateXLeftNode(rowDimensionSize, colDimensionSize, resultSet);
+        NodeSorter.sort(resultSet.getNode(), rowSorts);
+        // 再更新一下topGroupNode#topGroupValues（包含xLeftNode所有行的某一列）
+        updateTopGroupValues(rowDimensionSize, colDimensionSize, resultSet);
+    }
+
+    private static void updateXLeftNode(int rowDimensionSize, int colDimensionSize, XNodeMergeResultSet resultSet) {
         List<TopGroupNode> topGroupNodes = IteratorUtils.iterator2List(new PostOrderNodeIterator<TopGroupNode>(colDimensionSize, resultSet.getTopGroupNode()));
         List<XLeftNode> xLeftNodes = IteratorUtils.iterator2List(new PostOrderNodeIterator<XLeftNode>(rowDimensionSize, (XLeftNode) resultSet.getNode()));
-        // 先更新一下xLeftNode#valueArrayList（包含topGroupNode所有列的某一行）
         for (int row = 0; row < xLeftNodes.size(); row++) {
             List<AggregatorValue[]> rowValues = new ArrayList<AggregatorValue[]>();
             for (int col = 0; col < topGroupNodes.size(); col++) {
@@ -154,7 +155,18 @@ public class XGroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> 
             // 每个XLeftNode包含了列向汇总行
             xLeftNodes.get(row).setValueArrayList(rowValues);
         }
-        NodeSorter.sort(resultSet.getNode(), rowSorts);
+    }
+
+    private static void updateTopGroupValues(int rowDimensionSize, int colDimensionSize, XNodeMergeResultSet resultSet) {
+        List<TopGroupNode> topGroupNodes = IteratorUtils.iterator2List(new PostOrderNodeIterator<TopGroupNode>(colDimensionSize, resultSet.getTopGroupNode()));
+        List<XLeftNode> xLeftNodes = IteratorUtils.iterator2List(new PostOrderNodeIterator<XLeftNode>(rowDimensionSize, (XLeftNode) resultSet.getNode()));
+        for (int col = 0; col < topGroupNodes.size(); col++) {
+            List<AggregatorValue[]> colValues = new ArrayList<AggregatorValue[]>();
+            for (int row = 0; row < xLeftNodes.size(); row++) {
+                colValues.add(xLeftNodes.get(row).getValueArrayList().get(col));
+            }
+            topGroupNodes.get(col).setTopGroupValues(colValues);
+        }
     }
 
     /**

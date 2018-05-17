@@ -89,7 +89,7 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
         //nice job foundation
         //字段设置居然要返回上一层的结果
         EntryInfo entryInfo = CommonConfigManager.getEntryInfoSession(getEngineType()).findByName(table.getName());
-        Map<String, String> escapeMap = entryInfo != null ? entryInfo.getEscapeMap() : new HashMap<String, String>();
+        Map<String, String> escapeMap = entryInfo == null ? null : entryInfo.getEscapeMap();
         try {
             Map<String, Integer> groupMap = checkGroupByOperator(table);
             List<FineBusinessField> fields;
