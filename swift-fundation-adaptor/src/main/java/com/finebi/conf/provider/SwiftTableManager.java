@@ -1,10 +1,13 @@
 package com.finebi.conf.provider;
 
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.common.internalimp.config.intercept.InterceptModelImpl;
+import com.finebi.common.internalimp.config.session.CommonConfigManager;
 import com.finebi.common.service.engine.table.AbstractEngineTableManager;
 import com.finebi.common.structure.config.entryinfo.EntryInfo;
 import com.finebi.common.structure.config.fieldinfo.FieldInfo;
 import com.finebi.common.structure.config.relation.Relation;
+import com.finebi.common.structure.config.session.InterceptSession;
 import com.finebi.conf.constant.BICommonConstants;
 import com.finebi.conf.exception.FineEngineException;
 import com.finebi.conf.exception.FineTableAbsentException;
@@ -40,11 +43,13 @@ import java.util.Map;
 public class SwiftTableManager extends AbstractEngineTableManager {
     private TableToSourceConfigDao tableToSourceConfigDao;
     private TableUpdateInfoConfigService updateInfoConfigService;
+    private InterceptSession interceptSession;
     private SwiftLogger logger = SwiftLoggers.getLogger(SwiftTableManager.class);
 
     public SwiftTableManager() {
         tableToSourceConfigDao = new TableToSourceConfigDaoImpl();
         updateInfoConfigService = TableUpdateInfoConfigService.getService();
+        interceptSession = CommonConfigManager.getInterceptSession(FineEngineType.Cube);
     }
 
     @Override
@@ -82,6 +87,7 @@ public class SwiftTableManager extends AbstractEngineTableManager {
                 DataSource dataSource = DataSourceFactory.transformDataSource(table);
                 tableToSourceConfigDao.addConfig(table.getId(), dataSource.getSourceKey().getId());
                 EntryInfo entryInfo = this.createEntryInfo(table);
+                setRealTime(table, entryInfo);
                 this.addEntryInfo(entryInfo, entry.getKey());
                 table.setFields(FieldFactory.transformColumns2Fields(dataSource.getMetadata(), table.getId(), entryInfo.getEscapeMap()));
                 this.saveFieldInfo(FieldInfoHelper.createFieldInfo(entryInfo, table));
@@ -105,6 +111,7 @@ public class SwiftTableManager extends AbstractEngineTableManager {
                 TableToSource tableToSource = new TableToSourceUnique(table.getId(), dataSource.getSourceKey().getId());
                 tableToSourceConfigDao.updateConfig(tableToSource);
                 EntryInfo entryInfo = this.createEntryInfo(table);
+                setRealTime(table, entryInfo);
                 this.updateEntryInfo(entryInfo);
                 table.setFields(FieldFactory.transformColumns2Fields(dataSource.getMetadata(), table.getId(), entryInfo.getEscapeMap()));
                 this.saveFieldInfo(FieldInfoHelper.createFieldInfo(entryInfo, table));
@@ -136,5 +143,17 @@ public class SwiftTableManager extends AbstractEngineTableManager {
     @Override
     public boolean updateField(String tableName, FineBusinessField field) throws FineTableAbsentException {
         return super.updateField(tableName, field);
+    }
+
+    private void setRealTime(FineBusinessTable table, EntryInfo entryInfo) {
+        if (!table.isRealTimeData()) {
+            if (!interceptSession.hasModel(entryInfo.getID())) {
+                interceptSession.put(new InterceptModelImpl(entryInfo.getID()));
+            }
+        } else {
+            if (interceptSession.hasModel(entryInfo.getID())) {
+                interceptSession.delete(entryInfo.getID());
+            }
+        }
     }
 }

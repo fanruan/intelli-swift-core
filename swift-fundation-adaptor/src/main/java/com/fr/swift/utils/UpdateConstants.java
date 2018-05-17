@@ -9,6 +9,8 @@ package com.fr.swift.utils;
  */
 public class UpdateConstants {
 
+    public static final String GLOBAL_KEY = "SWIFT_GLOBAL_UPDATE_SETTING_KEY";
+
     public static class TableUpdateType {
         public static final int ALL = 1;
         public static final int INCREMENT = 2;

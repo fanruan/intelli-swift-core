@@ -9,6 +9,7 @@ import com.fr.general.ComparatorUtils;
 import com.fr.swift.util.Crasher;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -95,7 +96,7 @@ public class SwiftRelationPathConfProvider extends AbstractDirectRelationPathMan
     }
 
     private List<FineBusinessTableRelation> sortRelations(FineBusinessTableRelationPath path) {
-        List<FineBusinessTableRelation> relations = path.getFineBusinessTableRelations();
+        List<FineBusinessTableRelation> relations = Collections.unmodifiableList(path.getFineBusinessTableRelations());
         if (relations.isEmpty()) {
             Crasher.crash(String.format("Path %s don't contain any relations!", path.getPathName()));
         }
