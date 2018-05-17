@@ -36,37 +36,42 @@ public class LocalTaskImpl extends BaseTask implements LocalTask {
 
     @Override
     public void onCancel() {
-        if (status.order() < Status.RUNNING.order()) {
-            done(new TaskResultImpl(Type.CANCELLED));
+        synchronized (this) {
+            if (status.order() >= Status.RUNNING.order()) {
+                return;
+            }
         }
+        done(new TaskResultImpl(Type.CANCELLED));
     }
 
     @Override
     public void triggerRun() {
-        start = System.currentTimeMillis();
-
         CubeTaskManager.getInstance().run(this);
     }
 
     @Override
     public void run() {
+        start = System.currentTimeMillis();
+
         worker.work();
+
+        end = System.currentTimeMillis();
     }
 
     @Override
-    public void done(final TaskResult result) {
+    public void done(TaskResult result) {
         onDone(result);
     }
 
     @Override
-    public void onDone(TaskResult result) {
-        if (status == Status.DONE) {
-            return;
+    public synchronized void onDone(TaskResult result) {
+        synchronized (this) {
+            if (status == Status.DONE) {
+                return;
+            }
         }
         this.result = result;
         setStatus(Status.DONE);
-
-        end = System.currentTimeMillis();
 
         SwiftLoggers.getLogger().info(String.format("%s %s", key, result));
 
