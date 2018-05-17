@@ -4,6 +4,7 @@ import com.finebi.base.constant.FineEngineType;
 import com.finebi.base.stable.StableManager;
 import com.finebi.conf.constant.BICommonConstants;
 import com.finebi.conf.constant.BIDesignConstants;
+import com.finebi.conf.constant.BIDesignConstants.DESIGN;
 import com.finebi.conf.exception.FineEngineException;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.WidgetDimensionBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.number.custom.NumberCustomGroupBean;
@@ -14,6 +15,8 @@ import com.finebi.conf.internalimp.bean.filtervalue.date.single.DateStaticFilter
 import com.finebi.conf.internalimp.bean.filtervalue.number.NumberValue;
 import com.finebi.conf.internalimp.dashboard.widget.filter.ClickValue;
 import com.finebi.conf.internalimp.dashboard.widget.filter.ClickValueItem;
+import com.finebi.conf.internalimp.dashboard.widget.filter.DetailJumpClickValue;
+import com.finebi.conf.internalimp.dashboard.widget.filter.JumpClickValue;
 import com.finebi.conf.internalimp.dashboard.widget.filter.TableJumpClickValue;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetGlobalFilterBean;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
@@ -27,18 +30,26 @@ import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.transformer.RelationSourceFactory;
 import com.fr.swift.adaptor.transformer.filter.date.DateUtils;
+import com.fr.swift.cal.QueryInfo;
+import com.fr.swift.cal.info.DetailQueryInfo;
+import com.fr.swift.query.adapter.dimension.AllCursor;
+import com.fr.swift.query.adapter.dimension.DetailDimension;
 import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.filter.info.value.SwiftDateInRangeFilterValue;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.RelationSource;
+import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.relation.RelationSourceImpl;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.utils.BusinessTableUtils;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -89,17 +100,54 @@ public class LinkageAdaptor {
         return handleClickItem(tableName, widgetLinkItem.getWidget(), clicked.getValue(), filterInfos, primary, foreign);
     }
 
-    public static TableWidgetBean handleCrossTempletClick(String tableName, WidgetGlobalFilterBean globalBean, List<FilterInfo> filterInfos) {
+    public static TableWidgetBean handleCrossTempletClick(String tableName, WidgetGlobalFilterBean globalBean, List<FilterInfo> filterInfos) throws SQLException {
         return handleCrossTempletClick(tableName, globalBean, filterInfos, null, null);
     }
 
-    public static TableWidgetBean handleCrossTempletClick(String tableName, WidgetGlobalFilterBean globalBean, List<FilterInfo> filterInfos, Dimension[] primary, String[] foreign) {
-        // 跨模板联动
-        TableJumpClickValue clicked = (TableJumpClickValue) globalBean.getClicked();
-        if (clicked == null) {
+    public static TableWidgetBean handleCrossTempletClick(String tableName, WidgetGlobalFilterBean globalBean, List<FilterInfo> filterInfos, Dimension[] primary, String[] foreign) throws SQLException {
+        JumpClickValue click = globalBean.getClicked();
+        if (click == null) {
             return null;
         }
-        return handleClickItem(tableName, globalBean.getLinkedWidget(), clicked.getValue(), filterInfos, primary, foreign);
+        TableWidgetBean srcWidget = globalBean.getLinkedWidget();
+
+        switch (click.getType()) {
+            case 1:
+                List<ClickValueItem> clicks = ((TableJumpClickValue) click).getValue();
+                return handleClickItem(tableName, srcWidget, clicks, filterInfos, primary, foreign);
+            case 4:
+                DetailJumpClickValue detailClick = (DetailJumpClickValue) click;
+                int rowCount = (detailClick.getPageCount() - 1) * DESIGN.DEFAULT_PAGE_ROW_SIZE + detailClick.getRowIndex();
+
+                List<WidgetDimensionBean> dimensionBeans = new ArrayList<WidgetDimensionBean>(srcWidget.getDimensions().values());
+                Dimension[] dims = new DetailDimension[dimensionBeans.size()];
+                int i = 0;
+                SourceKey sourceKey = null;
+                for (WidgetDimensionBean dimensionBean : dimensionBeans) {
+                    String fieldId = dimensionBean.getFieldId();
+                    if (sourceKey == null) {
+                        sourceKey = new SourceKey(BusinessTableUtils.getSourceIdByFieldId(fieldId));
+                    }
+                    dims[i] = new DetailDimension(i, sourceKey, new ColumnKey(BusinessTableUtils.getFieldNameByFieldId(fieldId)), null, null, null);
+                    i++;
+                }
+                QueryInfo queryInfo = new DetailQueryInfo(new AllCursor(), click.getdId(), dims, sourceKey, null, null, null, null);
+                SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
+                int cursor = 0;
+                while (resultSet.next()) {
+                    Row row = resultSet.getRowData();
+                    if (cursor++ < rowCount) {
+                        continue;
+                    }
+                    for (int j = 0; j < dims.length; j++) {
+                        filterInfos.add(dealFilterInfo(dims[j].getColumnKey(), row.getValue(j).toString(), dimensionBeans.get(j)));
+                    }
+                    break;
+                }
+                return null;
+            default:
+                return null;
+        }
     }
 
     private static void handleOneTableFilter(TableWidgetBean fromWidget, List<ClickValueItem> clickedList, List<FilterInfo> filterInfos) {
