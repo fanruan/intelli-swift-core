@@ -1,6 +1,7 @@
 package com.fr.swift.result.node.cal;
 
 import com.fr.swift.query.adapter.target.GroupTarget;
+import com.fr.swift.query.adapter.target.cal.BrotherGroupTarget;
 import com.fr.swift.query.adapter.target.cal.CalTargetType;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.result.GroupNode;
@@ -12,13 +13,14 @@ import com.fr.swift.util.function.Function;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Lyon on 2018/4/8.
  */
 public class TargetCalculatorFactory {
 
-    public static TargetCalculator create(GroupTarget target, GroupNode groupNode) {
+    public static TargetCalculator create(GroupTarget target, GroupNode groupNode, List<Map<Integer, Object>> dic) {
         CalTargetType type = target.type();
         Iterator<Iterator<List<AggregatorValue[]>>> iterator = createIterator(type, groupNode);
         switch (type) {
@@ -55,12 +57,27 @@ public class TargetCalculatorFactory {
             case ALL_RANK_DEC:
             case GROUP_RANK_DEC:
                 return new RankCalculator(target.paramIndexes()[0], target.resultIndex(), iterator, false);
+            case DIMENSION_PERCENT:
+                return new DimensionPercentCalculator(target.paramIndexes()[0], target.resultIndex(), iterator);
+            case TARGET_PERCENT:
+                return new TargetPercentCalculator(target.paramIndexes()[0], target.resultIndex(), iterator);
+            case BROTHER_VALUE:
+                return new BrotherValueTargetCalculator(target.paramIndexes(), target.resultIndex(), groupNode, dic, getFunctionByNodeType(groupNode), ((BrotherGroupTarget) target).getBrotherGroupIndex());
+            case BROTHER_RATE:
+                return new BrotherRateTargetCalculator(target.paramIndexes(), target.resultIndex(), groupNode, dic, getFunctionByNodeType(groupNode), ((BrotherGroupTarget) target).getBrotherGroupIndex());
+            case COUSIN_VALUE:
+                return new CousinValueTargetCalculator(target.paramIndexes(), target.resultIndex(), groupNode, dic, getFunctionByNodeType(groupNode), ((BrotherGroupTarget) target).getBrotherGroupIndex());
+            case COUSIN_RATE:
+                return new CousinRateTargetCalculator(target.paramIndexes(), target.resultIndex(), groupNode, dic, getFunctionByNodeType(groupNode), ((BrotherGroupTarget) target).getBrotherGroupIndex());
         }
         return null;
     }
 
+    private static Function<GroupNode, List<AggregatorValue[]>> getFunctionByNodeType(GroupNode groupNode) {
+        return groupNode instanceof XLeftNode ? xLeftNodeMapper() : groupNodeMapper();
+    }
+
     private static Iterator<Iterator<List<AggregatorValue[]>>> createIterator(CalTargetType type, GroupNode root) {
-        Function<GroupNode, List<AggregatorValue[]>> function = root instanceof XLeftNode ? xLeftNodeMapper() : groupNodeMapper();
         switch (type) {
             case ALL_SUM_OF_ALL:
             case ALL_AVG:
@@ -69,7 +86,9 @@ public class TargetCalculatorFactory {
             case ALL_MIN:
             case ALL_RANK_ASC:
             case ALL_RANK_DEC:
-                return new RootIterator(root, function);
+            case TARGET_PERCENT:
+            case DIMENSION_PERCENT:
+                return new RootIterator(root, getFunctionByNodeType(root));
             case GROUP_SUM_OF_ALL:
             case GROUP_AVG:
             case GROUP_SUM_OF_ABOVE:
@@ -77,9 +96,9 @@ public class TargetCalculatorFactory {
             case GROUP_MIN:
             case GROUP_RANK_ASC:
             case GROUP_RANK_DEC:
-                return new GroupIterator(root, function);
+                return new GroupIterator(root, getFunctionByNodeType(root));
         }
-        return new RootIterator(root, function);
+        return new RootIterator(root, getFunctionByNodeType(root));
     }
 
 
