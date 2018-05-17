@@ -16,6 +16,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.schedule.job.GloableJobTask;
 import com.fr.swift.schedule.job.PackageJobTask;
 import com.fr.swift.schedule.job.TableJobTask;
+import com.fr.swift.utils.UpdateConstants;
 import com.fr.third.org.quartz.CronExpression;
 import com.fr.third.org.quartz.CronTrigger;
 import com.fr.third.org.quartz.Job;
@@ -141,7 +142,7 @@ public class SwiftTimeScheduleService implements TimeScheduleService {
         if (globalUpdateSetting != null && globalUpdateSetting.getSettings() != null) {
             List<String> taskNameList = new ArrayList<String>();
             for (UpdateTimeItem updateTimeItem : globalUpdateSetting.getSettings()) {
-                String taskName = TableUpdateInfoConfigService.GLOBAL_KEY + "-" + updateTimeItem.getCron();
+                String taskName = UpdateConstants.GLOBAL_KEY + "-" + updateTimeItem.getCron();
                 Map<String, String> taskParams = new HashMap<String, String>();
                 taskParams.put("timingType", String.valueOf(updateTimeItem.getSetting().getFrequency().getType()));
 //                ScheduleEntity entity = new ScheduleEntity(taskName, GloableJobTask.class, updateTimeItem.getCron(),
@@ -152,7 +153,7 @@ public class SwiftTimeScheduleService implements TimeScheduleService {
                 LOGGER.info("Add timer schedule :" + taskName);
                 taskNameList.add(taskName);
             }
-            nameAndTaskNameMap.put(TableUpdateInfoConfigService.GLOBAL_KEY, taskNameList);
+            nameAndTaskNameMap.put(UpdateConstants.GLOBAL_KEY, taskNameList);
         }
         LOGGER.info("=============Reset all schedule end!!!=============");
     }
