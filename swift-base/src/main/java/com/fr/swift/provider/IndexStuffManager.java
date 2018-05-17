@@ -91,7 +91,7 @@ public class IndexStuffManager implements IndexStuffProvider {
     }
 
     @Override
-    public IndexStuffType getIndexStuffType() {
-        return provider.getIndexStuffType();
+    public IndexStuffMedium getIndexStuffMedium() {
+        return provider.getIndexStuffMedium();
     }
 }

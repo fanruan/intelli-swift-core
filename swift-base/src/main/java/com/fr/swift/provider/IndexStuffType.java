@@ -11,15 +11,4 @@ public enum IndexStuffType {
     TABLE,
     PACKAGE,
     GLOABLE;
-
-    private Object data;
-
-    public IndexStuffType setData(Object data) {
-        this.data = data;
-        return this;
-    }
-
-    public Object getData() {
-        return data;
-    }
 }

@@ -61,7 +61,7 @@ public class StuffFetcher implements Runnable {
         final long t = System.currentTimeMillis();
         CubeTasks.nextRound();
         int currentRound = CubeTasks.getCurrentRound();
-        LocalTaskPool.getInstance().putIndexStuffType(currentRound, stuff.getIndexStuffType());
+        LocalTaskPool.getInstance().putIndexStuffMedium(currentRound, stuff.getIndexStuffMedium());
 
         List<Pair<TaskKey, Object>> pairs = new ArrayList<Pair<TaskKey, Object>>();
         Map<TaskKey, Pair<TaskKey, Object>> pairMap = new HashMap<TaskKey, Pair<TaskKey, Object>>();

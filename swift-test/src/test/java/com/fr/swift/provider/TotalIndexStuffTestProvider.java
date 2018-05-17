@@ -127,7 +127,7 @@ public class TotalIndexStuffTestProvider implements IndexStuffProvider {
     }
 
     @Override
-    public IndexStuffType getIndexStuffType() {
+    public IndexStuffMedium getIndexStuffMedium() {
         return null;
     }
 }

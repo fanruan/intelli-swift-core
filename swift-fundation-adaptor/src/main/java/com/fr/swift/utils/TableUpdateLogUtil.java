@@ -11,7 +11,7 @@ import com.fr.swift.cube.task.Task;
 import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.cube.task.impl.LocalTaskPool;
 import com.fr.swift.cube.task.impl.SchedulerTaskPool;
-import com.fr.swift.provider.IndexStuffType;
+import com.fr.swift.provider.IndexStuffMedium;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,16 +36,16 @@ public class TableUpdateLogUtil {
         Set<Integer> waitingRounds = TableUpdateLogUtil.getWaitingRounds();
 
         for (int waitingRound : waitingRounds) {
-            IndexStuffType indexStuffType = LocalTaskPool.getInstance().getIndexStuffType(waitingRound);
-            if (IndexStuffTypeUtils.isEqual(indexStuffType, key)) {
+            IndexStuffMedium indexStuffMedium = LocalTaskPool.getInstance().getIndexStuffMedium(waitingRound);
+            if (IndexStuffMediumUtils.isEqual(indexStuffMedium, key)) {
                 waiting = true;
                 break;
             }
         }
         Set<Integer> runningRounds = TableUpdateLogUtil.getRunningRounds();
         for (int runningRound : runningRounds) {
-            IndexStuffType indexStuffType = LocalTaskPool.getInstance().getIndexStuffType(runningRound);
-            if (IndexStuffTypeUtils.isEqual(indexStuffType, key)) {
+            IndexStuffMedium indexStuffMedium = LocalTaskPool.getInstance().getIndexStuffMedium(runningRound);
+            if (IndexStuffMediumUtils.isEqual(indexStuffMedium, key)) {
                 hasTask = true;
                 break;
             }

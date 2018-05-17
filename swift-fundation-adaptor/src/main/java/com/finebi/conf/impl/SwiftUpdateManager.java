@@ -36,6 +36,7 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.manager.ProviderManager;
 import com.fr.swift.provider.IndexStuffInfoProvider;
+import com.fr.swift.provider.IndexStuffMedium;
 import com.fr.swift.provider.IndexStuffType;
 import com.fr.swift.reliance.RelationPathReliance;
 import com.fr.swift.reliance.RelationReliance;
@@ -51,7 +52,6 @@ import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.container.SourceContainerManager;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.manager.IndexStuffProvider;
-import com.fr.swift.utils.IndexStuffTypeUtils;
 import com.fr.swift.utils.RelationRelianceFactory;
 import com.fr.swift.utils.SourceRelianceFactory;
 import com.fr.swift.utils.TableUpdateLogUtil;
@@ -145,7 +145,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         Map<FineBusinessTable, TableUpdateInfo> infoMap = new HashMap<FineBusinessTable, TableUpdateInfo>();
         infoMap.put(table, updateInfo);
         LOGGER.info("Table " + table.getName() + " update trigger!");
-        this.triggerUpdate(infoMap, true, false, IndexStuffTypeUtils.tableType(table.getName()));
+        this.triggerUpdate(infoMap, true, false, new IndexStuffMedium(IndexStuffType.TABLE, table.getName()));
     }
 
     @Override
@@ -163,7 +163,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
      *                 不是批量，则去判断是否主动触发，是则取传入的方式更新
      * @throws Exception
      */
-    public void triggerUpdate(Map<FineBusinessTable, TableUpdateInfo> infoMap, boolean isActive, boolean isBatch, IndexStuffType indexStuffType) throws Exception {
+    public void triggerUpdate(Map<FineBusinessTable, TableUpdateInfo> infoMap, boolean isActive, boolean isBatch, IndexStuffMedium indexStuffMedium) throws Exception {
 
         Map<FineBusinessTable, TableUpdateInfo> infoMap2 = new HashMap<FineBusinessTable, TableUpdateInfo>();
         if (isBatch) {
@@ -191,10 +191,10 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         }
         infoMap = infoMap2;
         LOGGER.info((isActive ? "Active" : "Passive") + " trigger update!");
-        triggerUpdate(infoMap, indexStuffType);
+        triggerUpdate(infoMap, indexStuffMedium);
     }
 
-    private void triggerUpdate(Map<FineBusinessTable, TableUpdateInfo> infoMap, IndexStuffType indexStuffType) throws Exception {
+    private void triggerUpdate(Map<FineBusinessTable, TableUpdateInfo> infoMap, IndexStuffMedium indexStuffMedium) throws Exception {
         SourceContainerManager updateSourceContainer = new SourceContainerManager();
         Map<String, List<Increment>> incrementMap = new HashMap<String, List<Increment>>();
         DataSourceFactory.transformDataSources(infoMap, updateSourceContainer, incrementMap);
@@ -206,7 +206,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         // FIXME 传表的责任链，只更新和表有关的关联，单表更新可能无法更新到关联
         RelationReliance relationReliance = RelationRelianceFactory.generateRelationReliance(relationSources, sourceReliance);
         RelationPathReliance relationPathReliance = RelationRelianceFactory.generateRelationPathReliance(sourcePaths, relationReliance);
-        IndexStuffProvider indexStuffProvider = new IndexStuffInfoProvider(updateSourceContainer, incrementMap, sourceReliance, relationReliance, relationPathReliance, indexStuffType);
+        IndexStuffProvider indexStuffProvider = new IndexStuffInfoProvider(updateSourceContainer, incrementMap, sourceReliance, relationReliance, relationPathReliance, indexStuffMedium);
         ProviderManager.getManager().registProvider(0, indexStuffProvider);
     }
 
@@ -248,7 +248,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         Map<String, String> packageIdName = new HashMap<String, String>();
         packageIdName.put(packId, packageName);
         LOGGER.info("Package " + packageName + " update trigger!");
-        this.triggerUpdate(infoMap, true, true, IndexStuffTypeUtils.packageType(packageIdName));
+        this.triggerUpdate(infoMap, true, true, new IndexStuffMedium(IndexStuffType.PACKAGE, packageIdName));
     }
 
     @Override
@@ -318,7 +318,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         if (!infoMap.isEmpty()) {
             try {
                 LOGGER.info("Gloable update trigger!");
-                this.triggerUpdate(infoMap, true, true, IndexStuffTypeUtils.gloableType(packageIdName));
+                this.triggerUpdate(infoMap, true, true, new IndexStuffMedium(IndexStuffType.GLOABLE, packageIdName));
             } catch (Exception e) {
                 LOGGER.error(e);
             }
