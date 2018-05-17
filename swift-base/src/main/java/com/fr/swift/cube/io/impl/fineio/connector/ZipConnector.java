@@ -31,14 +31,16 @@ public class ZipConnector extends AbstractConnector {
     }
 
     public InputStream read(FileBlock file) throws IOException {
-        ZipFile zipFile = new ZipFile(toFile(file, false));
-        return zipFile.getInputStream(zipFile.getEntry("0"));
+        File toFile = toFile(file, false);
+        ZipFile zipFile = new ZipFile(toFile);
+        return zipFile.getInputStream(zipFile.getEntry(toFile.getAbsolutePath()));
     }
 
     public void write(FileBlock file, InputStream inputStream) {
         try {
-            ZipOutputStream zipOutputStream = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(toFile(file, true))));
-            zipOutputStream.putNextEntry(new ZipEntry("0"));
+            File toFile = toFile(file, true);
+            ZipOutputStream zipOutputStream = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(toFile)));
+            zipOutputStream.putNextEntry(new ZipEntry(toFile.getAbsolutePath()));
             int len;
             byte[] by = new byte[1024];
             while ((len = inputStream.read(by)) != -1) {

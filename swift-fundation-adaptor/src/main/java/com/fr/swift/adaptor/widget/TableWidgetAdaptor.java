@@ -29,7 +29,7 @@ import com.fr.swift.adaptor.transformer.filter.dimension.DimensionFilterAdaptor;
 import com.fr.swift.adaptor.widget.datamining.GroupTableToDMResultVisitor;
 import com.fr.swift.adaptor.widget.expander.ExpanderFactory;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
-import com.fr.swift.adaptor.widget.target.CalTargetParseUtils;
+import com.fr.swift.adaptor.widget.target.TargetInfoUtils;
 import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.cal.info.GroupQueryInfo;
 import com.fr.swift.log.SwiftLogger;
@@ -82,7 +82,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         int dimensionSize = 0;
         try {
             dimensionSize = widget.getDimensionList().size();
-            TargetInfo targetInfo = CalTargetParseUtils.parseCalTarget(widget);
+            TargetInfo targetInfo = TargetInfoUtils.parse(widget);
             QueryInfo info = buildQueryInfo(widget, targetInfo);
             SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(info);
 
@@ -152,7 +152,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         widget.getValue().getDrillList();
     }
 
-    private static void dealWithLink(List<FilterInfo> filterInfos, AbstractTableWidget widget) throws SQLException {
+    private static void dealWithLink(List<FilterInfo> filterInfos, AbstractTableWidget widget) throws Exception {
         // 联动设置
         TableWidgetBean bean = widget.getValue();
         Map<String, WidgetLinkItem> linkItemMap = bean.getLinkage();
@@ -174,7 +174,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         handleCrossTempletLink(filterInfos, widget);
     }
 
-    private static void dealWithAutoLink(String tableName, List<FilterInfo> filterInfoList, WidgetLinkItem widgetLinkItem) {
+    private static void dealWithAutoLink(String tableName, List<FilterInfo> filterInfoList, WidgetLinkItem widgetLinkItem) throws Exception {
         //根据点击的值，创建过滤条件
         LinkageAdaptor.handleClickItem(tableName, widgetLinkItem, filterInfoList);
     }
@@ -186,7 +186,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
      * @param widgetLinkItem
      * @param customLinkConfItems
      */
-    private static void dealWithCustomLink(String tableName, List<FilterInfo> filterInfoList, WidgetLinkItem widgetLinkItem, List<CustomLinkConfItem> customLinkConfItems) throws SQLException {
+    private static void dealWithCustomLink(String tableName, List<FilterInfo> filterInfoList, WidgetLinkItem widgetLinkItem, List<CustomLinkConfItem> customLinkConfItems) throws Exception {
         //自定义设置的维度
         Dimension[] fromColumns = new Dimension[customLinkConfItems.size()];
         //要过滤的维度

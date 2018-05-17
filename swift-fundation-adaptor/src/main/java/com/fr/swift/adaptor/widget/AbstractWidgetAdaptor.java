@@ -306,7 +306,7 @@ public abstract class AbstractWidgetAdaptor {
         return "${" + targetId + "}";
     }
 
-    private static void handleCrossTempletCustomLink(String tableName, WidgetGlobalFilterBean globalBean, JumpItemBean jump, List<FilterInfo> filterInfos) throws SQLException {
+    private static void handleCrossTempletCustomLink(String tableName, WidgetGlobalFilterBean globalBean, JumpItemBean jump, List<FilterInfo> filterInfos) throws Exception {
         // todo 提炼公共部分 或者这边widget可以进行实例化的重构，减少参数传来传去
         List<JumpSourceTargetFieldBean> sourceTargetFields = jump.getSourceTargetFields();
         // 自定义设置的维度
@@ -345,7 +345,7 @@ public abstract class AbstractWidgetAdaptor {
         }
     }
 
-    static void handleCrossTempletLink(List<FilterInfo> filterInfos, AbstractTableWidget widget) throws SQLException {
+    static void handleCrossTempletLink(List<FilterInfo> filterInfos, AbstractTableWidget widget) throws Exception {
         // 跨模板联动
         WidgetGlobalFilterBean globalFilter = widget.getValue().getGlobalFilter();
         if (globalFilter == null) {

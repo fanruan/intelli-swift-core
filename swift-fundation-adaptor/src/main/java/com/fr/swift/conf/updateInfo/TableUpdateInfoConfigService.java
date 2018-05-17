@@ -9,7 +9,7 @@ import com.fr.stable.StringUtils;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Crasher;
-import com.fr.swift.utils.UpdateConstants;
+import com.fr.swift.constants.UpdateConstants;
 import com.fr.third.fasterxml.jackson.core.JsonProcessingException;
 import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
 import com.fr.transaction.Configurations;

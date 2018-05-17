@@ -89,7 +89,7 @@ public class AggregatorAdaptor {
 
     /**
      * nice job ! foundation
-     * @param type
+     * @param type target#getGroup()#getType()
      * @return
      */
     public static AggregatorType adaptorDashBoard(int type) {
@@ -119,7 +119,7 @@ public class AggregatorAdaptor {
     /**
      * 合计方式
      *
-     * @param type
+     * @param type target#getMetric()
      * @return
      */
     public static AggregatorType adaptorMetric(int type) {

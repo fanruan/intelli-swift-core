@@ -55,7 +55,7 @@ import com.fr.swift.source.manager.IndexStuffProvider;
 import com.fr.swift.utils.RelationRelianceFactory;
 import com.fr.swift.utils.SourceRelianceFactory;
 import com.fr.swift.utils.TableUpdateLogUtil;
-import com.fr.swift.utils.UpdateConstants;
+import com.fr.swift.constants.UpdateConstants;
 import com.fr.swift.utils.UpdateSpaceInfoUtil;
 import com.fr.swift.utils.UpdateTriggerUtils;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;

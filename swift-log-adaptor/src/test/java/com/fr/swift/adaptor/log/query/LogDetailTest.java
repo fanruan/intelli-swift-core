@@ -3,7 +3,7 @@ package com.fr.swift.adaptor.log.query;
 import com.fr.general.DataList;
 import com.fr.stable.query.QueryFactory;
 import com.fr.stable.query.condition.QueryCondition;
-import com.fr.swift.adaptor.log.LogOperatorImpl;
+import com.fr.swift.adaptor.log.LogOperatorProxy;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.source.DataSource;
@@ -29,7 +29,7 @@ public class LogDetailTest extends LogBaseTest {
             transportAndIndex(dataSource, table);
 
             QueryCondition sortQueryCondition = QueryFactory.create();
-            DataList dataList = LogOperatorImpl.getInstance().find(ContractBean.class, sortQueryCondition);
+            DataList dataList = LogOperatorProxy.getInstance().find(ContractBean.class, sortQueryCondition);
             assertTrue(!dataList.getList().isEmpty());
         } catch (Exception e) {
             LOGGER.error(e);

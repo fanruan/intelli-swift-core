@@ -44,7 +44,6 @@ public class GroupTargetFactory {
         return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_SUM_OF_ALL);
     }
 
-    // TODO: 2018/5/11 切换汇总方式之后，AggregatorValue转换gg了
     public static GroupTarget createFromRapidTarget(int rapidCalTargetType, int queryIndex,
                                                     int[] paramIndexes, int resultIndex, List<Pair<Integer, GroupType>> brotherIndexGroup) {
         switch (rapidCalTargetType) {

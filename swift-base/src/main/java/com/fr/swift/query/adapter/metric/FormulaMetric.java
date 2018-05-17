@@ -20,4 +20,22 @@ public class FormulaMetric extends GroupMetric{
     public Column getColumn(Segment segment) {
         return new FormulaMetricColumn(formula, segment);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        FormulaMetric that = (FormulaMetric) o;
+
+        return formula != null ? formula.equals(that.formula) : that.formula == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (formula != null ? formula.hashCode() : 0);
+        return result;
+    }
 }
