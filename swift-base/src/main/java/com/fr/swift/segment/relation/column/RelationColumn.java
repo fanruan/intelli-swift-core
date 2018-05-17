@@ -205,8 +205,9 @@ public class RelationColumn {
                 if (!globalSet.contains(global)) {
                     try {
                         ImmutableBitMap bitMap = relationIndex.getIndex(i, j);
-                        Object value = columns[i].getValue(j);
-                        index = handleDicAndIndex(bitMap, index, targetDicColumn, bitmapIndexedColumn, value);
+                        if (!bitMap.isEmpty()) {
+                            index = handleDicAndIndex(bitMap, index, targetDicColumn, bitmapIndexedColumn, columns[i].getValue(j));
+                        }
                     } catch (Exception ignore) {
                         SwiftLoggers.getLogger(RelationColumn.class).error(ignore);
                     }
