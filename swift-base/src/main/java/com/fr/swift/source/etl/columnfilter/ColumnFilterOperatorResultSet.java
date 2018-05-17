@@ -1,5 +1,6 @@
 package com.fr.swift.source.etl.columnfilter;
 
+import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
@@ -14,10 +15,10 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.structure.iterator.RowTraversal;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -30,44 +31,43 @@ public class ColumnFilterOperatorResultSet implements SwiftResultSet {
 
     private SwiftMetaData metaData;
 
-    private SwiftMetaData baseMeta;
-
     private FilterInfo filterInfo;
-    private int segCursor;
-    private int rowCursor;
-    private RowTraversal bitMap;
-    private TempValue tempValue;
-    private boolean isBitMapInit;
-    private DictionaryEncodedColumn[] getters;
-    private SwiftMetaDataColumn[] metaDataColumn;
-    private List<Integer> rowList;
+    private int segCursor = 0;
+    private DictionaryEncodedColumn[] dics;
+    private Iterator<Integer> currentSegRowIter;
 
 
-    public ColumnFilterOperatorResultSet(Segment[] segment/*, SwiftMetaData baseMeta*/, SwiftMetaData metaData, FilterInfo filterInfo) {
+    public ColumnFilterOperatorResultSet(Segment[] segment,SwiftMetaData metaData, FilterInfo filterInfo) {
         this.segment = segment;
-        this.baseMeta = baseMeta;
         this.metaData = metaData;
         this.filterInfo = filterInfo;
-        init();
+        moveNextSegment();
     }
 
-    private void init() {
-        this.segCursor = 0;
-        this.rowCursor = 0;
-        this.bitMap = this.segment[0].getAllShowIndex();
-        this.isBitMapInit = true;
-        tempValue = new TempValue();
-        rowList = new ArrayList<Integer>();
+    private void moveNextSegment() {
+        final List<Integer> rows = new ArrayList<Integer>();
+        if (segCursor >= segment.length){
+            currentSegRowIter = null;
+            return;
+        }
         try {
-            getters = new DictionaryEncodedColumn[this.metaData.getColumnCount()];
+            dics = new DictionaryEncodedColumn[this.metaData.getColumnCount()];
             SwiftMetaDataColumn[] metaDataColumn = new SwiftMetaDataColumn[this.metaData.getColumnCount()];
             for (int i = 0; i < this.metaData.getColumnCount(); i++) {
                 metaDataColumn[i] = this.metaData.getColumn(i + 1);
-                getters[i] = this.segment[segCursor].getColumn(new ColumnKey(metaDataColumn[i].getName())).getDictionaryEncodedColumn();
+                dics[i] = this.segment[segCursor].getColumn(new ColumnKey(metaDataColumn[i].getName())).getDictionaryEncodedColumn();
             }
+            segment[segCursor].getAllShowIndex().getAnd(createFilter(segment[segCursor])).traversal(new TraversalAction() {
+                @Override
+                public void actionPerformed(int row) {
+                    rows.add(row);
+                }
+            });
+            currentSegRowIter = rows.iterator();
         } catch (SwiftMetaDataException e) {
             LOGGER.error("getting meta's column information failed", e);
         }
+        segCursor++;
     }
 
     @Override
@@ -75,53 +75,16 @@ public class ColumnFilterOperatorResultSet implements SwiftResultSet {
 
     }
 
-    private RowTraversal createFilter(Segment segment, FilterInfo filterInfo) {
+    private ImmutableBitMap createFilter(Segment segment) {
         return FilterBuilder.buildDetailFilter(segment, filterInfo).createFilterIndex();
     }
 
     @Override
     public boolean next() {
-        if (segCursor < segment.length && rowCursor < bitMap.getCardinality()) {
-            for (; segCursor < segment.length; segCursor++) {
-                bitMap = createFilter(this.segment[segCursor], this.filterInfo);
-                if (bitMap != null && bitMap.getCardinality() > 0) {
-                    break;
-                }
-            }
-            if (segCursor == segment.length) {
-                return false;
-            }
-            if (isBitMapInit) {
-                this.isBitMapInit = false;
-
-                this.bitMap.traversal(new TraversalAction() {
-                    @Override
-                    public void actionPerformed(int row) {
-                        rowList.add(row);
-                    }
-                });
-            }
-            List list = new ArrayList();
-            for (int i = 0; i < metaDataColumn.length; i++) {
-                list.add(getters[i].getValueByRow(rowList.get(rowCursor)));
-            }
-            ListBasedRow basedRow = new ListBasedRow(list);
-            tempValue.setRow(basedRow);
-            if (rowCursor < rowList.size() - 1) {
-                rowCursor++;
-            } else {
-                if (segCursor < segment.length) {
-                    segCursor++;
-                    rowCursor = 0;
-                    rowList = new ArrayList<Integer>();
-                    this.isBitMapInit = true;
-                } else {
-                    return false;
-                }
-            }
-            return true;
+        while (currentSegRowIter != null && !currentSegRowIter.hasNext()){
+            moveNextSegment();
         }
-        return false;
+        return currentSegRowIter != null && currentSegRowIter.hasNext();
     }
 
     @Override
@@ -131,20 +94,12 @@ public class ColumnFilterOperatorResultSet implements SwiftResultSet {
 
     @Override
     public Row getRowData() throws SQLException {
-        return this.tempValue.getRow();
-    }
-
-    private class TempValue {
-
-        private ListBasedRow row;
-
-        public ListBasedRow getRow() {
-            return row;
+        List list = new ArrayList();
+        int row = currentSegRowIter.next();
+        for (int i = 0; i < dics.length; i++) {
+            list.add(dics[i].getValueByRow(row));
         }
-
-        public void setRow(ListBasedRow row) {
-            this.row = row;
-        }
+        return new ListBasedRow(list);
     }
 
 }
