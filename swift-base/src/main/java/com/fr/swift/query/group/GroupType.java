@@ -13,17 +13,20 @@ public enum GroupType {
     CUSTOM_SORT,
     OTHER_DIMENSION_SORT,
 
+    //单值的顺序不要动啊，用来排序
+
     YEAR,
     // 季度
     QUARTER,
     MONTH,
+    // 周数 一年中第几周
+    WEEK_OF_YEAR,
+    //DAY_OF_WEEK
     WEEK,
     DAY,
     HOUR,
     MINUTE,
     SECOND,
-    // 周数 一年中第几周
-    WEEK_OF_YEAR,
     // 年 月 日 时 分 秒
     Y_M_D_H_M_S,
     // 年 月 日 时 分
@@ -38,7 +41,7 @@ public enum GroupType {
     Y_M,
     // 年 日
     Y_D,
-    // 年 周几
+    // 年 周数
     Y_W,
     // 月 日
     M_D

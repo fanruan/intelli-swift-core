@@ -2,8 +2,13 @@ package com.finebi.conf.impl;
 
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.common.internalimp.config.session.CommonConfigManager;
+import com.finebi.common.structure.config.entryinfo.EntryInfo;
 import com.finebi.conf.constant.BIConfConstants;
+import com.finebi.common.structure.config.entryinfo.EntryInfo;
+import com.finebi.conf.constant.BIConfConstants.CONF.ADD_COLUMN.TIME;
+import com.finebi.conf.constant.BIConfConstants.CONF.GROUP.TYPE;
 import com.finebi.conf.constant.ConfConstant;
+import com.finebi.conf.constant.ConfConstant.AnalysisType;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.AddNewColumnBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.AddNewColumnValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.gettime.GetFieldTimeValueBean;
@@ -13,6 +18,7 @@ import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionSelectV
 import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupDoubleValueBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupSingleValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.ViewBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.setting.FieldSettingBeanItem;
@@ -87,7 +93,8 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
     public List<FineBusinessField> getFields(FineAnalysisTable table) {
         //nice job foundation
         //字段设置居然要返回上一层的结果
-        Map<String, String> escapeMap = CommonConfigManager.getEntryInfoSession(getEngineType()).findByName(table.getName()).getEscapeMap();
+        EntryInfo entryInfo = CommonConfigManager.getEntryInfoSession(getEngineType()).findByName(table.getName());
+        Map<String, String> escapeMap = entryInfo != null ? entryInfo.getEscapeMap() : new HashMap<String, String>();
         try {
             Map<String, Integer> groupMap = checkGroupByOperator(table);
             List<FineBusinessField> fields;
@@ -127,42 +134,48 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
     private Map<String, Integer> checkGroupByOperator(FineAnalysisTable table) {
         Map<String, Integer> groupMap = new HashMap<String, Integer>();
         List<FineOperator> operators = table.getOperators();
-        for (int i = 0; i < operators.size(); i++) {
-            FineOperator op = operators.get(i);
-            if (op.getType() == ConfConstant.AnalysisType.GROUP) {
-                GroupBean bean = op.getValue();
-                GroupValueBean valueBean = bean.getValue();
-                Map<String, DimensionValueBean> dimensionBean = valueBean.getDimensions();
-                ViewBean viewBean = valueBean.getView();
-                List<String> dimensions = viewBean.getDimension();
-                if (!dimensionBean.isEmpty() && dimensions != null) {
-                    for (int j = 0; j < dimensions.size(); j++) {
-                        DimensionValueBean tempBean = dimensionBean.get(dimensions.get(j));
-                        List<DimensionSelectValue> value = tempBean.getValue();
-                        DimensionSelectValue selectValue = value.get(0);
-                        if (selectValue.getType() == BIConfConstants.CONF.GROUP.TYPE.DOUBLE) {
-                            groupMap.put(tempBean.getName(), ((GroupDoubleValueBean) selectValue).getChildValue());
+        for (FineOperator op : operators) {
+            switch (op.getType()) {
+                case AnalysisType.GROUP: {
+                    GroupBean bean = op.getValue();
+                    GroupValueBean valueBean = bean.getValue();
+                    Map<String, DimensionValueBean> dimensionBean = valueBean.getDimensions();
+                    ViewBean viewBean = valueBean.getView();
+                    List<String> dimensions = viewBean.getDimension();
+                    if (!dimensionBean.isEmpty() && dimensions != null) {
+                        for (String dimension : dimensions) {
+                            DimensionValueBean tempBean = dimensionBean.get(dimension);
+                            DimensionSelectValue selectValue = tempBean.getValue().get(0);
+                            int type = selectValue.getType();
+                            if (type == TYPE.SINGLE) {
+                                groupMap.put(tempBean.getName(), ((GroupSingleValueBean) selectValue).getValue());
+                            } else if (type == TYPE.DOUBLE) {
+                                groupMap.put(tempBean.getName(), ((GroupDoubleValueBean) selectValue).getChildValue());
+                            }
                         }
                     }
                 }
-
-            }
-            if (op.getType() == ConfConstant.AnalysisType.ADD_COLUMN) {
-                AddNewColumnBean bean = op.getValue();
-                AddNewColumnValueBean value = bean.getValue();
-                if (value.getType() == BIConfConstants.CONF.ADD_COLUMN.TIME.TYPE) {
-                    GetFieldTimeValueItem tempBean = ((GetFieldTimeValueBean) value).getValue();
-                    groupMap.put(value.getName(), tempBean.getUnit());
-                }
-            }
-            if (op.getType() == ConfConstant.AnalysisType.FIELD_SETTING) {
-                List<FieldSettingBeanItem> fieldSettings = ((FieldSettingOperator) op).getValue().getValue();
-                for (FieldSettingBeanItem item : fieldSettings) {
-                    if (groupMap.containsKey(item.getoName())) {
-                        groupMap.put(item.getName(), groupMap.get(item.getoName()));
-                        groupMap.remove(item.getoName());
+                break;
+                case AnalysisType.ADD_COLUMN: {
+                    AddNewColumnBean bean = op.getValue();
+                    AddNewColumnValueBean value = bean.getValue();
+                    if (value.getType() == TIME.TYPE) {
+                        GetFieldTimeValueItem tempBean = ((GetFieldTimeValueBean) value).getValue();
+                        groupMap.put(value.getName(), tempBean.getUnit());
                     }
                 }
+                break;
+                case AnalysisType.FIELD_SETTING: {
+                    List<FieldSettingBeanItem> fieldSettings = ((FieldSettingOperator) op).getValue().getValue();
+                    for (FieldSettingBeanItem item : fieldSettings) {
+                        if (groupMap.containsKey(item.getoName())) {
+                            groupMap.put(item.getName(), groupMap.get(item.getoName()));
+                            groupMap.remove(item.getoName());
+                        }
+                    }
+                }
+                break;
+                default:
             }
         }
         return groupMap;
@@ -204,5 +217,4 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
     public FineEngineType getEngineType() {
         return FineEngineType.Cube;
     }
-
 }

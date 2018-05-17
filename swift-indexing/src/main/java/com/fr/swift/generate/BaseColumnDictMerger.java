@@ -147,7 +147,7 @@ public abstract class BaseColumnDictMerger<T> extends BaseWorker implements Swif
      * @param oneOfSegments 其中一块segment
      * @return extMap位置
      */
-    private IResourceLocation calExternalLocation(Segment oneOfSegments) {
+    protected IResourceLocation calExternalLocation(Segment oneOfSegments) {
         return oneOfSegments.getLocation().getParent().
                 buildChildLocation("external_global_dict").
                 buildChildLocation(key.getName());

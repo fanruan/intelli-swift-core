@@ -20,5 +20,13 @@ public enum CalTargetType {
     GROUP_MAX,
     GROUP_SUM_OF_ABOVE,
 
+    DIMENSION_PERCENT,
+    TARGET_PERCENT,
+
+    BROTHER_VALUE,
+    BROTHER_RATE,
+    COUSIN_VALUE,
+    COUSIN_RATE,
+
     FORMULA
 }

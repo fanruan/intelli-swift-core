@@ -5,6 +5,7 @@ import com.fr.swift.query.adapter.target.GroupTarget;
 import com.fr.swift.query.adapter.target.cal.ResultTarget;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.result.GroupNode;
+import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.TopGroupNode;
 import com.fr.swift.result.XLeftNode;
 import com.fr.swift.result.node.iterator.BFTGroupNodeIterator;
@@ -31,13 +32,13 @@ public class TargetCalculatorUtils {
      * @return 返回处理完计算指标，并去除配置计算产生的中间结果指标的node根节点
      * @throws SQLException
      */
-    public static GroupNode calculate(GroupNode root, List<GroupTarget> groupTargets) throws SQLException {
+    public static GroupNode calculate(GroupNode root, List<Map<Integer, Object>> dic, List<GroupTarget> groupTargets) throws SQLException {
         if (groupTargets.size() == 0) {
             return root;
         }
         List<TargetCalculator> calculators = new ArrayList<TargetCalculator>();
         for (int i = 0; i < groupTargets.size(); i++) {
-            calculators.add(TargetCalculatorFactory.create(groupTargets.get(i), root));
+            calculators.add(TargetCalculatorFactory.create(groupTargets.get(i), root, dic));
         }
         for (TargetCalculator calculator : calculators) {
             try {

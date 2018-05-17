@@ -8,21 +8,15 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * 所有值的汇总值的计算指标。感觉这个计算指标有点多余。显示汇总行已经汇总值了。
- * Created by Lyon on 2018/4/4.
+ * Created by pony on 2018/5/16.
  */
-public class SumOfAllCalculator extends AbstractTargetCalculator {
-
-    private Double[] summaryValue;
-
-    public SumOfAllCalculator(int paramIndex, int resultIndex,
-                              Iterator<Iterator<List<AggregatorValue[]>>> iterators, Double[] summaryValue) {
+public class TargetPercentCalculator extends AbstractTargetCalculator{
+    public TargetPercentCalculator(int paramIndex, int resultIndex, Iterator<Iterator<List<AggregatorValue[]>>> iterators) {
         super(paramIndex, resultIndex, iterators);
-        this.summaryValue = summaryValue;
     }
 
     @Override
-    public Object call() {
+    public Object call() throws Exception {
         while (iterators.hasNext()) {
             Iterator<List<AggregatorValue[]>> iterator = iterators.next();
             List<List<AggregatorValue[]>> rows = new ArrayList<List<AggregatorValue[]>>();
@@ -48,7 +42,11 @@ public class SumOfAllCalculator extends AbstractTargetCalculator {
             }
             for (List<AggregatorValue[]> row : rows) {
                 for (int i = 0; i < row.size(); i++) {
-                    row.get(i)[resultIndex] = new DoubleAmountAggregatorValue(values[i]);
+                    Double v = row.get(i)[paramIndex].calculate();
+                    if (Double.isNaN(v)) {
+                        continue;
+                    }
+                    row.get(i)[resultIndex] = new DoubleAmountAggregatorValue(v / values[i]);
                 }
             }
         }
