@@ -21,10 +21,11 @@ import java.util.List;
  * Created by Handsome on 2018/1/22 0022 14:02
  */
 public class SumByGroupOperator extends AbstractOperator {
-
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SumByGroupOperator.class);
+
     @CoreField
     private SumByGroupTarget[] targets;
+
     @CoreField
     private SumByGroupDimension[] dimensions;
 
@@ -43,8 +44,7 @@ public class SumByGroupOperator extends AbstractOperator {
 
     @Override
     public List<String> getNewAddedName() {
-        List<String> addColumnNames = new ArrayList<String>();
-        return addColumnNames;
+        return new ArrayList<String>();
     }
 
     @Override
@@ -53,23 +53,24 @@ public class SumByGroupOperator extends AbstractOperator {
         for (SwiftMetaData parent : tables) {
             try {
                 if (null != dimensions) {
-                    for (int i = 0; i < this.dimensions.length; i++) {
-                        int sqlType = parent.getColumn(this.dimensions[i].getName()).getType();
-                        int columnSize = parent.getColumn(this.dimensions[i].getName()).getPrecision();
-                        int scale = parent.getColumn(this.dimensions[i].getName()).getScale();
-                        if (ColumnTypeUtils.sqlTypeToColumnType(sqlType, columnSize, scale) == ColumnType.DATE) {
-                            columns.add(new MetaDataColumn(this.dimensions[i].getNameText(), convertGroupType(this.dimensions[i].getGroup().getGroupType()), 30));
-                        } else if (ColumnTypeUtils.sqlTypeToColumnType(sqlType, columnSize, scale) == ColumnType.NUMBER) {
-                            SwiftMetaDataColumn singleColumn = parent.getColumn(this.dimensions[i].getName());
-                            columns.add(generateSumNumberGroup(this.dimensions[i], singleColumn));
-                        } else {
-                            columns.add(new MetaDataColumn(this.dimensions[i].getNameText(), parent.getColumn(this.dimensions[i].getName()).getType(), parent.getColumn(this.dimensions[i].getName()).getPrecision()));
+                    for (SumByGroupDimension dimension : this.dimensions) {
+                        ColumnType columnType = ColumnTypeUtils.getColumnType(parent.getColumn(dimension.getName()));
+                        switch (columnType) {
+                            case DATE:
+                                columns.add(new MetaDataColumn(dimension.getNameText(), getSqlType(dimension.getGroup().getGroupType())));
+                                break;
+                            case NUMBER:
+                                SwiftMetaDataColumn singleColumn = parent.getColumn(dimension.getName());
+                                columns.add(generateSumNumberGroup(dimension, singleColumn));
+                                break;
+                            default:
+                                columns.add(new MetaDataColumn(dimension.getNameText(), parent.getColumn(dimension.getName()).getType(), parent.getColumn(dimension.getName()).getPrecision()));
                         }
                     }
                 }
                 if (null != targets) {
-                    for (int j = 0; j < this.targets.length; j++) {
-                        columns.add(new MetaDataColumn(this.targets[j].getNameText(), ColumnTypeUtils.columnTypeToSqlType(targets[j].getColumnType()), parent.getColumn(this.targets[j].getName()).getPrecision()));
+                    for (SumByGroupTarget target : this.targets) {
+                        columns.add(new MetaDataColumn(target.getNameText(), ColumnTypeUtils.columnTypeToSqlType(target.getColumnType()), parent.getColumn(target.getName()).getPrecision()));
                     }
                 }
             } catch (SwiftMetaDataException e) {
@@ -79,8 +80,7 @@ public class SumByGroupOperator extends AbstractOperator {
         return columns;
     }
 
-    private int convertGroupType(GroupType groupType) {
-        int type;
+    private int getSqlType(GroupType groupType) {
         switch (groupType) {
             case QUARTER:
             case MONTH:
@@ -90,8 +90,7 @@ public class SumByGroupOperator extends AbstractOperator {
             case HOUR:
             case MINUTE:
             case SECOND:
-                type = Types.INTEGER;
-                break;
+                return Types.INTEGER;
             case YEAR:
             case Y_M_D_H_M_S:
             case Y_M_D_H_M:
@@ -102,19 +101,16 @@ public class SumByGroupOperator extends AbstractOperator {
             case Y_W:
             case Y_D:
             case M_D:
-                type = Types.DATE;
-                break;
+                return Types.DATE;
             default:
-                type = Types.DATE;
+                return Types.DATE;
         }
-        return type;
     }
 
     @Override
     public OperatorType getOperatorType() {
         return OperatorType.GROUP_SUM;
     }
-
 
     private SwiftMetaDataColumn generateSumNumberGroup(SumByGroupDimension sum, SwiftMetaDataColumn parentColumn) {
         int sqlType;
