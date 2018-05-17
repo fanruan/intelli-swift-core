@@ -106,6 +106,6 @@ public class ProviderTaskManager {
     }
 
     private void initTaskFetchThread() {
-        new SingleThreadFactory(getClass().getSimpleName()).newThread(new StuffFetcher()).start();
+        new SingleThreadFactory("StuffFetcher").newThread(new StuffFetcher()).start();
     }
 }
