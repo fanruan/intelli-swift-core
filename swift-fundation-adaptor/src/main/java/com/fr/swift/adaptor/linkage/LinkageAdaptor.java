@@ -3,6 +3,8 @@ package com.fr.swift.adaptor.linkage;
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.base.stable.StableManager;
 import com.finebi.conf.constant.BICommonConstants;
+import com.finebi.conf.constant.BICommonConstants.GROUP;
+import com.finebi.conf.constant.BIConfConstants.CONF.COLUMN;
 import com.finebi.conf.constant.BIDesignConstants;
 import com.finebi.conf.constant.BIDesignConstants.DESIGN;
 import com.finebi.conf.exception.FineEngineException;
@@ -100,21 +102,22 @@ public class LinkageAdaptor {
         return handleClickItem(tableName, widgetLinkItem.getWidget(), clicked.getValue(), filterInfos, primary, foreign);
     }
 
-    public static TableWidgetBean handleCrossTempletClick(String tableName, WidgetGlobalFilterBean globalBean, List<FilterInfo> filterInfos) throws SQLException {
-        return handleCrossTempletClick(tableName, globalBean, filterInfos, null, null);
+    public static void handleCrossTempletClick(String tableName, WidgetGlobalFilterBean globalBean, List<FilterInfo> filterInfos) throws SQLException {
+        handleCrossTempletClick(tableName, globalBean, filterInfos, null, null);
     }
 
-    public static TableWidgetBean handleCrossTempletClick(String tableName, WidgetGlobalFilterBean globalBean, List<FilterInfo> filterInfos, Dimension[] primary, String[] foreign) throws SQLException {
+    public static void handleCrossTempletClick(String tableName, WidgetGlobalFilterBean globalBean, List<FilterInfo> filterInfos, Dimension[] primary, String[] foreign) throws SQLException {
         JumpClickValue click = globalBean.getClicked();
         if (click == null) {
-            return null;
+            return;
         }
         TableWidgetBean srcWidget = globalBean.getLinkedWidget();
 
         switch (click.getType()) {
             case 1:
                 List<ClickValueItem> clicks = ((TableJumpClickValue) click).getValue();
-                return handleClickItem(tableName, srcWidget, clicks, filterInfos, primary, foreign);
+                handleClickItem(tableName, srcWidget, clicks, filterInfos, primary, foreign);
+                return;
             case 4:
                 DetailJumpClickValue detailClick = (DetailJumpClickValue) click;
                 int rowCount = (detailClick.getPageCount() - 1) * DESIGN.DEFAULT_PAGE_ROW_SIZE + detailClick.getRowIndex();
@@ -142,11 +145,9 @@ public class LinkageAdaptor {
                     for (int j = 0; j < dims.length; j++) {
                         filterInfos.add(dealFilterInfo(dims[j].getColumnKey(), row.getValue(j).toString(), dimensionBeans.get(j)));
                     }
-                    break;
+                    return;
                 }
-                return null;
             default:
-                return null;
         }
     }
 
@@ -211,6 +212,25 @@ public class LinkageAdaptor {
                 if (null != info) {
                     filterInfos.add(info);
                 }
+            }
+        }
+    }
+
+
+    public static FilterInfo dealFilterInfo(ColumnKey columnKey, String value, int columnType) {
+        switch (columnType) {
+            case COLUMN.DATE: {
+                return createDateFilter(columnKey, value, GROUP.YMD);
+            }
+            case COLUMN.NUMBER: {
+                Set<Double> values = new HashSet<Double>();
+                values.add(Double.parseDouble(value));
+                return new SwiftDetailFilterInfo<Set<Double>>(columnKey, values, SwiftDetailFilterType.NUMBER_CONTAIN);
+            }
+            default: {
+                Set<String> values = new HashSet<String>();
+                values.add(value);
+                return new SwiftDetailFilterInfo<Set<String>>(columnKey, values, SwiftDetailFilterType.STRING_IN);
             }
         }
     }
