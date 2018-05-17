@@ -18,4 +18,22 @@ public class BrotherGroupTarget extends GroupTargetImpl {
     public List<Pair<Integer, GroupType>> getBrotherGroupIndex() {
         return brotherGroupIndex;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        BrotherGroupTarget that = (BrotherGroupTarget) o;
+
+        return brotherGroupIndex != null ? brotherGroupIndex.equals(that.brotherGroupIndex) : that.brotherGroupIndex == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (brotherGroupIndex != null ? brotherGroupIndex.hashCode() : 0);
+        return result;
+    }
 }
