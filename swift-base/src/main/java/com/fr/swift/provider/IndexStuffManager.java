@@ -89,4 +89,9 @@ public class IndexStuffManager implements IndexStuffProvider {
     public RelationPathReliance getRelationPathReliance() {
         return provider.getRelationPathReliance();
     }
+
+    @Override
+    public IndexStuffType getIndexStuffType() {
+        return provider.getIndexStuffType();
+    }
 }

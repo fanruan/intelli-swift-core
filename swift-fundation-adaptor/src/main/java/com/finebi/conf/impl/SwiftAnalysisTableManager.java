@@ -2,6 +2,7 @@ package com.finebi.conf.impl;
 
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.common.internalimp.config.session.CommonConfigManager;
+import com.finebi.common.structure.config.entryinfo.EntryInfo;
 import com.finebi.conf.constant.BIConfConstants;
 import com.finebi.conf.constant.ConfConstant;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.AddNewColumnBean;
@@ -87,7 +88,8 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
     public List<FineBusinessField> getFields(FineAnalysisTable table) {
         //nice job foundation
         //字段设置居然要返回上一层的结果
-        Map<String, String> escapeMap = CommonConfigManager.getEntryInfoSession(getEngineType()).findByName(table.getName()).getEscapeMap();
+        EntryInfo entryInfo = CommonConfigManager.getEntryInfoSession(getEngineType()).findByName(table.getName());
+        Map<String, String> escapeMap = entryInfo != null ? entryInfo.getEscapeMap() : new HashMap<String, String>();
         try {
             Map<String, Integer> groupMap = checkGroupByOperator(table);
             List<FineBusinessField> fields;

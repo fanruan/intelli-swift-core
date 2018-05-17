@@ -6,9 +6,12 @@ import com.finebi.conf.internalimp.update.IndexUpdateInfo;
 import com.finebi.conf.internalimp.update.IndexUpdateItem;
 import com.finebi.conf.internalimp.update.RelationProcessInfo;
 import com.finebi.conf.internalimp.update.TranSportInfo;
+import com.finebi.conf.internalimp.update.UpdateStatus;
 import com.fr.swift.cube.task.Task;
 import com.fr.swift.cube.task.TaskKey;
+import com.fr.swift.cube.task.impl.LocalTaskPool;
 import com.fr.swift.cube.task.impl.SchedulerTaskPool;
+import com.fr.swift.provider.IndexStuffType;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,6 +28,33 @@ import java.util.Set;
  * @since Advanced FineBI 5.0
  */
 public class TableUpdateLogUtil {
+
+    public static UpdateStatus getUpdateStatus(String key) {
+        boolean hasTask = false;
+        boolean waiting = false;
+
+        Set<Integer> waitingRounds = TableUpdateLogUtil.getWaitingRounds();
+
+        for (int waitingRound : waitingRounds) {
+            IndexStuffType indexStuffType = LocalTaskPool.getInstance().getIndexStuffType(waitingRound);
+            if (IndexStuffTypeUtils.isEqual(indexStuffType, key)) {
+                waiting = true;
+                break;
+            }
+        }
+        Set<Integer> runningRounds = TableUpdateLogUtil.getRunningRounds();
+        for (int runningRound : runningRounds) {
+            IndexStuffType indexStuffType = LocalTaskPool.getInstance().getIndexStuffType(runningRound);
+            if (IndexStuffTypeUtils.isEqual(indexStuffType, key)) {
+                hasTask = true;
+                break;
+            }
+        }
+        UpdateStatus status = new UpdateStatus();
+        status.setHasTask(hasTask);
+        status.setWaiting(waiting);
+        return status;
+    }
 
     /**
      * transport的进度、日志
@@ -116,7 +146,7 @@ public class TableUpdateLogUtil {
     }
 
     /**
-     * 获取所有正在running或者runnable的轮数
+     * 获取所有正在running和Runnable的轮数
      *
      * @return
      */
@@ -126,6 +156,23 @@ public class TableUpdateLogUtil {
         for (TaskKey taskKey : allTaskKey) {
             Task task = SchedulerTaskPool.getInstance().get(taskKey);
             if (task.status() == Task.Status.RUNNING || task.status() == Task.Status.RUNNABLE) {
+                rounds.add(taskKey.getRound());
+            }
+        }
+        return rounds;
+    }
+
+    /**
+     * 获取所有正在的轮数
+     *
+     * @return
+     */
+    public static Set<Integer> getWaitingRounds() {
+        Collection<TaskKey> allTaskKey = SchedulerTaskPool.getInstance().allTasks();
+        Set<Integer> rounds = new HashSet<Integer>();
+        for (TaskKey taskKey : allTaskKey) {
+            Task task = SchedulerTaskPool.getInstance().get(taskKey);
+            if (task.status() == Task.Status.WAITING) {
                 rounds.add(taskKey.getRound());
             }
         }

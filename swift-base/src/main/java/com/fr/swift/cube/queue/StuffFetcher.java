@@ -5,6 +5,7 @@ import com.fr.swift.cube.task.SchedulerTask;
 import com.fr.swift.cube.task.Task.Status;
 import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.cube.task.TaskStatusChangeListener;
+import com.fr.swift.cube.task.impl.LocalTaskPool;
 import com.fr.swift.cube.task.impl.SchedulerTaskImpl;
 import com.fr.swift.cube.task.impl.SchedulerTaskPool;
 import com.fr.swift.exception.SwiftServiceException;
@@ -56,12 +57,13 @@ public class StuffFetcher implements Runnable {
         }
     }
 
-    public static void update(IndexStuffProvider stuff) throws SwiftMetaDataException, SwiftServiceException {
+    public synchronized static void update(IndexStuffProvider stuff) throws SwiftMetaDataException, SwiftServiceException {
         final long t = System.currentTimeMillis();
         CubeTasks.nextRound();
+        int currentRound = CubeTasks.getCurrentRound();
+        LocalTaskPool.getInstance().putIndexStuffType(currentRound, stuff.getIndexStuffType());
 
         List<Pair<TaskKey, Object>> pairs = new ArrayList<Pair<TaskKey, Object>>();
-
         Map<TaskKey, Pair<TaskKey, Object>> pairMap = new HashMap<TaskKey, Pair<TaskKey, Object>>();
         Map<TaskKey, SchedulerTask> taskMap = new HashMap<TaskKey, SchedulerTask>();
 
@@ -127,9 +129,13 @@ public class StuffFetcher implements Runnable {
 
     private static void calcBaseNode(SourceNode sourceNode, SchedulerTask prevTask, SchedulerTask endTask,
                                      Map<TaskKey, Pair<TaskKey, Object>> pairMap, Map<TaskKey, SchedulerTask> taskMap) throws SwiftMetaDataException {
-        SchedulerTask currentTask = new SchedulerTaskImpl(CubeTasks.newBuildTableTaskKey(sourceNode.getNode()));
-        if (taskMap.containsKey(currentTask.key())) {
-            currentTask = taskMap.get(currentTask.key());
+
+        TaskKey taskKey = CubeTasks.newBuildTableTaskKey(sourceNode.getNode());
+        SchedulerTask currentTask = null;
+        if (taskMap.containsKey(taskKey)) {
+            currentTask = taskMap.get(taskKey);
+        } else {
+            currentTask = new SchedulerTaskImpl(taskKey);
         }
         pairMap.put(currentTask.key(), new Pair<TaskKey, Object>(currentTask.key(), sourceNode));
         taskMap.put(currentTask.key(), currentTask);

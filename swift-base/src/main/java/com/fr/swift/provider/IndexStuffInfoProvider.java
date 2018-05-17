@@ -31,19 +31,22 @@ public class IndexStuffInfoProvider implements IndexStuffProvider {
     private RelationReliance relationReliance;
     private RelationPathReliance relationPathReliance;
 
+    private IndexStuffType indexStuffType;
 
-    public IndexStuffInfoProvider(SourceContainerManager sourceContainer) {
+    public IndexStuffInfoProvider(SourceContainerManager sourceContainer, IndexStuffType indexStuffType) {
         this.sourceContainer = sourceContainer;
         this.incrementMap = new HashMap<String, List<Increment>>();
+        this.indexStuffType = indexStuffType;
     }
 
     public IndexStuffInfoProvider(SourceContainerManager sourceContainer,
-                                  Map<String, List<Increment>> incrementMap, SourceReliance sourceReliance, RelationReliance relationReliance, RelationPathReliance relationPathReliance) {
+                                  Map<String, List<Increment>> incrementMap, SourceReliance sourceReliance, RelationReliance relationReliance, RelationPathReliance relationPathReliance, IndexStuffType indexStuffType) {
         this.sourceContainer = sourceContainer;
         this.incrementMap = incrementMap;
         this.sourceReliance = sourceReliance;
         this.relationReliance = relationReliance;
         this.relationPathReliance = relationPathReliance;
+        this.indexStuffType = indexStuffType;
     }
 
     @Override
@@ -114,5 +117,10 @@ public class IndexStuffInfoProvider implements IndexStuffProvider {
     @Override
     public RelationPathReliance getRelationPathReliance() {
         return relationPathReliance;
+    }
+
+    @Override
+    public IndexStuffType getIndexStuffType() {
+        return indexStuffType;
     }
 }

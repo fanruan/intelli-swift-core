@@ -6,9 +6,6 @@ import com.fr.swift.utils.UpdateConstants;
 import com.fr.third.org.quartz.JobDataMap;
 import com.fr.third.org.quartz.JobExecutionContext;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * This class created on 2018/5/14
  *
@@ -34,10 +31,7 @@ public class TableJobTask extends JobTask {
             if (fineBusinessTable == null || tableUpdateInfo == null) {
                 LOGGER.error("BusinessTable " + tableName + " is not exist or tableUpdateInfo is not exist!!");
             } else {
-
-                Map<FineBusinessTable, TableUpdateInfo> infoMap = new HashMap<FineBusinessTable, TableUpdateInfo>();
-                infoMap.put(fineBusinessTable, tableUpdateInfo);
-                updateManager.triggerUpdate(infoMap, false, false);
+                updateManager.triggerTableUpdate(tableUpdateInfo, fineBusinessTable);
             }
         } catch (Exception e) {
             LOGGER.error(e);

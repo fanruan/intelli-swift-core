@@ -1,6 +1,7 @@
 package com.fr.swift.source.manager;
 
 import com.fr.swift.increment.Increment;
+import com.fr.swift.provider.IndexStuffType;
 import com.fr.swift.reliance.RelationPathReliance;
 import com.fr.swift.reliance.RelationReliance;
 import com.fr.swift.reliance.SourceReliance;
@@ -44,5 +45,5 @@ public interface IndexStuffProvider {
 
     RelationPathReliance getRelationPathReliance();
 
-
+    IndexStuffType getIndexStuffType();
 }
