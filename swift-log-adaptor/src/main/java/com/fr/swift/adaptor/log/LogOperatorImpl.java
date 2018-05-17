@@ -117,7 +117,10 @@ public class LogOperatorImpl implements LogOperator {
     public void initTables(List<Class> list) throws SQLException {
         for (Class table : list) {
             SwiftMetaData meta = SwiftMetaAdaptor.adapt(table);
-            db.createTable(new SourceKey(meta.getTableName()), meta);
+            SourceKey tableKey = new SourceKey(meta.getTableName());
+            if (!db.existsTable(tableKey)) {
+                db.createTable(tableKey, meta);
+            }
         }
     }
 
