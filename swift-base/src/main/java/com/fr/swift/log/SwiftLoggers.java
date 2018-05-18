@@ -2,6 +2,7 @@ package com.fr.swift.log;
 
 import com.fr.base.Env;
 import com.fr.base.FRContext;
+import com.fr.third.apache.log4j.Level;
 import com.fr.third.apache.log4j.Logger;
 import com.fr.third.apache.log4j.PropertyConfigurator;
 
@@ -52,7 +53,9 @@ public final class SwiftLoggers {
             if (LOGGERS.containsKey(cls)) {
                 return LOGGERS.get(cls);
             }
-            SwiftLogger sl = new SwiftLogger(Logger.getLogger(cls));
+            Logger logger = Logger.getLogger(cls);
+            logger.setLevel(Level.INFO);
+            SwiftLogger sl = new SwiftLogger(logger);
             LOGGERS.put(cls, sl);
             return sl;
         }
