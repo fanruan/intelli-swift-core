@@ -22,11 +22,7 @@ abstract class BaseTaskTomb implements Runnable {
     }
 
     public void add(SchedulerTask task) {
-        try {
-            tasks.put(task);
-        } catch (InterruptedException e) {
-            SwiftLoggers.getLogger().error(e);
-        }
+        tasks.add(task);
     }
 
     @Override
@@ -37,7 +33,7 @@ abstract class BaseTaskTomb implements Runnable {
                 for (TaskKey next : self.nextAll()) {
                     handle(next, self.key());
                 }
-            } catch (InterruptedException e) {
+            } catch (Exception e) {
                 SwiftLoggers.getLogger().error(e);
             }
         }

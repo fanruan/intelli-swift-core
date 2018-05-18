@@ -147,7 +147,7 @@ public class CubeTasks {
         return new SchedulerTaskImpl(new CubeTaskKey("End of building Cube"));
     }
 
-    static int nextRound() {
+    public static int nextRound() {
         return COUNTER.getAndIncrement();
     }
 
