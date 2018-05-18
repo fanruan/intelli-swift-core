@@ -21,7 +21,7 @@ public class LocalTaskImpl extends BaseTask implements LocalTask {
     private List<TaskKey> prevTasks = new ArrayList<TaskKey>();
     private List<TaskKey> nextTasks = new ArrayList<TaskKey>();
 
-    public LocalTaskImpl(final TaskKey key, Worker worker) {
+    public LocalTaskImpl(TaskKey key, Worker worker) {
         super(key);
         this.worker = worker;
         worker.setOwner(this);

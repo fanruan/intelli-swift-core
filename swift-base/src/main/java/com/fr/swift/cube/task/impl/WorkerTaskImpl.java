@@ -43,7 +43,7 @@ public class WorkerTaskImpl extends BaseTask implements WorkerTask {
     }
 
     @Override
-    public void done(final TaskResult result) {
+    public void done(TaskResult result) {
         synchronized (this) {
             if (status == Status.DONE) {
                 return;
