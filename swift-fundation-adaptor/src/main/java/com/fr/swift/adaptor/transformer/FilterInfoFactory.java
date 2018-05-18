@@ -165,6 +165,26 @@ public class FilterInfoFactory {
                         // 多选同filterType，否则是反选
                         valueType == BICommonConstants.SELECTION_TYPE.MULTI ? SwiftDetailFilterType.STRING_NOT_IN : SwiftDetailFilterType.STRING_IN);
             }
+            case BICommonConstants.ANALYSIS_FILTER_DATE.BELONG_STRING_VALUE: {
+                StringBelongFilterValueBean filterValueBean = ((DateBelongStringFilterBean) bean).getFilterValue();
+                List<String> dates = filterValueBean.getValue();
+                if (dates == null || dates.isEmpty()) {
+                    break;
+                }
+                int valueType = filterValueBean.getType();
+                return new SwiftDetailFilterInfo<List<String>>(columnKey, dates,
+                        valueType == BICommonConstants.SELECTION_TYPE.MULTI ? SwiftDetailFilterType.TMP_DATE_BELONG_STRING : SwiftDetailFilterType.TMP_DATE_NOT_BELONG_STRING);
+            }
+            case BICommonConstants.ANALYSIS_FILTER_DATE.NOT_BELONG_STRING_VALUE: {
+                StringBelongFilterValueBean filterValueBean = ((DateNoBelongStringFilterBean) bean).getFilterValue();
+                List<String> dates = filterValueBean.getValue();
+                if (dates == null || dates.isEmpty()) {
+                    break;
+                }
+                int valueType = filterValueBean.getType();
+                return new SwiftDetailFilterInfo<List<String>>(columnKey, dates,
+                        valueType == BICommonConstants.SELECTION_TYPE.MULTI ? SwiftDetailFilterType.TMP_DATE_NOT_BELONG_STRING : SwiftDetailFilterType.TMP_DATE_BELONG_STRING);
+            }
             case BICommonConstants.ANALYSIS_FILTER_STRING.CONTAIN:
                 String contain = ((StringContainFilterBean) bean).getFilterValue();
                 if (StringUtils.isBlank(contain)) {
@@ -300,18 +320,6 @@ public class FilterInfoFactory {
                 DateRangeValueBean dateValueBean = ((DateNoBelongFilterBean) bean).getFilterValue();
                 return new SwiftDetailFilterInfo<SwiftDateInRangeFilterValue>(columnKey,
                         DateRangeValueBeanAdaptor.create(dateValueBean), SwiftDetailFilterType.DATE_NOT_IN_RANGE);
-            }
-            case BICommonConstants.ANALYSIS_FILTER_DATE.BELONG_STRING_VALUE: {
-                StringBelongFilterValueBean filterValueBean = ((DateBelongStringFilterBean) bean).getFilterValue();
-                List<String> dates = filterValueBean.getValue();
-                return new SwiftDetailFilterInfo<List<String>>(columnKey, dates,
-                        SwiftDetailFilterType.TMP_DATE_BELONG_STRING);
-            }
-            case BICommonConstants.ANALYSIS_FILTER_DATE.NOT_BELONG_STRING_VALUE: {
-                StringBelongFilterValueBean filterValueBean = ((DateNoBelongStringFilterBean) bean).getFilterValue();
-                List<String> dates = filterValueBean.getValue();
-                return new SwiftDetailFilterInfo<List<String>>(columnKey, dates,
-                        SwiftDetailFilterType.TMP_DATE_NOT_BELONG_STRING);
             }
             case BICommonConstants.ANALYSIS_FILTER_DATE.LESS_THAN: {
                 DateFilterBean dateFilterBean = ((DateBeforeFilterBean) bean).getFilterValue();

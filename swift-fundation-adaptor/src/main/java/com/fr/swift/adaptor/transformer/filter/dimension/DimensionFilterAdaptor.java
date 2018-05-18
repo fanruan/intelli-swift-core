@@ -136,7 +136,7 @@ public class DimensionFilterAdaptor {
             }
             // TODO: 2018/5/16 维度上面其他要二次转换到的过滤类型，比如日期前端现在只加了属于和不属于
         }
-        return null;
+        return filterInfo;
     }
 
     private static FilterInfo getResultFilterInfo(String tableName, AbstractFilterBean filterBean, List<FineTarget> targets) {
