@@ -24,8 +24,6 @@ import com.fr.swift.query.filter.info.value.SwiftDateInRangeFilterValue;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.etl.utils.FormulaUtils;
-import com.fr.swift.util.Crasher;
-import com.fr.swift.util.function.Function2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,19 +45,14 @@ public class DimensionFilterAdaptor {
      * @return
      */
     public static FilterInfo transformDimensionFineFilter(String tableName, FineDimension dimension, boolean attachTargetFilters, List<FineTarget> targets) {
-        String dimId = dimension.getId();
         List<FilterBean> beans = setFieldIdAndGetFilterBeans(dimension);
         List<FilterInfo> filterInfoList = new ArrayList<FilterInfo>();
         for (FilterBean bean : beans) {
             AbstractFilterBean filterBean = (AbstractFilterBean) bean;
-            // 因为前端不区分明细过滤和结果过滤，直接用通用过滤器平拼在一起的，所以分别取出明细过滤bean和结果过滤bean
-            FilterBean resultBean = getFilterBean(dimId, filterBean, resultBeanFilter);
-            if (resultBean != null && targets != null) {
-                filterInfoList.add(getResultFilterInfo(tableName, (AbstractFilterBean) resultBean, targets));
-            }
-            FilterBean detailBean = getFilterBean(dimId, filterBean, detailBeanFilter);
-            if (detailBean != null) {
-                filterInfoList.add(getDetailFilterInfo(tableName, (AbstractFilterBean) detailBean, dimension));
+            // 因为前端不区分明细过滤和结果过滤，直接用通用过滤器平拼在一起的
+            if (filterBean != null && targets != null) {
+                // 暂时全部是matchFilter
+                filterInfoList.add(getResultFilterInfo(tableName, filterBean, dimension, targets));
             }
         }
         if (attachTargetFilters && targets != null) {
@@ -78,14 +71,6 @@ public class DimensionFilterAdaptor {
             }
         }
         return new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
-    }
-
-    private static FilterInfo getDetailFilterInfo(String tableName, AbstractFilterBean filterBean, FineDimension dimension) {
-        FilterInfo info = FilterInfoFactory.createFilterInfo(tableName, filterBean, new ArrayList<Segment>());
-        if (!isConvertedDimension(dimension)) {
-            return info;
-        }
-        return getFilterInfoFromConvertedDimension(info, dimension);
     }
 
     /**
@@ -136,17 +121,18 @@ public class DimensionFilterAdaptor {
             }
             // TODO: 2018/5/16 维度上面其他要二次转换到的过滤类型，比如日期前端现在只加了属于和不属于
         }
-        return null;
+        return filterInfo;
     }
 
-    private static FilterInfo getResultFilterInfo(String tableName, AbstractFilterBean filterBean, List<FineTarget> targets) {
+    private static FilterInfo getResultFilterInfo(String tableName, AbstractFilterBean filterBean,
+                                                  FineDimension dimension, List<FineTarget> targets) {
         int type = filterBean.getFilterType();
         if (type == BICommonConstants.ANALYSIS_FILTER_TYPE.OR || type == BICommonConstants.ANALYSIS_FILTER_TYPE.AND) {
             List<FilterBean> beans = type == BICommonConstants.ANALYSIS_FILTER_TYPE.AND ?
                     ((GeneraAndFilterBean) filterBean).getFilterValue() : ((GeneraOrFilterBean) filterBean).getFilterValue();
             List<FilterInfo> children = new ArrayList<FilterInfo>();
             for (FilterBean bean : beans) {
-                FilterInfo info = getResultFilterInfo(tableName, (AbstractFilterBean) bean, targets);
+                FilterInfo info = getResultFilterInfo(tableName, (AbstractFilterBean) bean, dimension, targets);
                 if (info != null) {
                     children.add(info);
                 }
@@ -160,73 +146,12 @@ public class DimensionFilterAdaptor {
             info = new SwiftDetailFilterInfo<Object>(info.getColumnKey(), transformTargetMatchFormula(info.getFilterValue(), targets), info.getType());
             return new MatchFilterInfo(info, 0);
         } else {
-            return new MatchFilterInfo(info, getIndex(filterBean.getTargetId(), targets));
-        }
-    }
-
-    /**
-     * 结果过滤bean的过滤函数
-     */
-    private static Function2<String, AbstractFilterBean, Boolean> resultBeanFilter = new Function2<String, AbstractFilterBean, Boolean>() {
-        @Override
-        public Boolean apply(String dimId, AbstractFilterBean bean) {
-            return bean.getTargetId() != null && !ComparatorUtils.equals(bean.getTargetId(), dimId);
-        }
-    };
-
-    /**
-     * 明细过滤bean的过滤函数
-     */
-    private static Function2<String, AbstractFilterBean, Boolean> detailBeanFilter = new Function2<String, AbstractFilterBean, Boolean>() {
-        @Override
-        public Boolean apply(String s, AbstractFilterBean bean) {
-            return !resultBeanFilter.apply(s, bean);
-        }
-    };
-
-    /**
-     * 取出FilterBean中的明细过滤或者结果过滤
-     *
-     * @param dimId      维度id
-     * @param bean
-     * @param beanFilter
-     * @return
-     */
-    private static FilterBean getFilterBean(String dimId, AbstractFilterBean bean,
-                                            Function2<String, AbstractFilterBean, Boolean> beanFilter) {
-        int type = bean.getFilterType();
-        switch (type) {
-            case BICommonConstants.ANALYSIS_FILTER_TYPE.OR: {
-                List<FilterBean> beans = ((GeneraOrFilterBean) bean).getFilterValue();
-                List<FilterBean> children = new ArrayList<FilterBean>();
-                for (FilterBean b : beans) {
-                    FilterBean bean1 = getFilterBean(dimId, (AbstractFilterBean) b, beanFilter);
-                    if (bean1 != null) {
-                        children.add(bean1);
-                    }
-                }
-                GeneraOrFilterBean or = new GeneraOrFilterBean();
-                or.setFilterValue(children);
-                return or.getFilterValue().isEmpty() ? null : or;
+            FilterInfo filterInfo = info;
+            if (isConvertedDimension(dimension)) {
+                filterInfo = getFilterInfoFromConvertedDimension(info, dimension);
             }
-            case BICommonConstants.ANALYSIS_FILTER_TYPE.AND: {
-                List<FilterBean> beans = ((GeneraAndFilterBean) bean).getFilterValue();
-                List<FilterBean> children = new ArrayList<FilterBean>();
-                for (FilterBean b : beans) {
-                    FilterBean bean1 = getFilterBean(dimId, (AbstractFilterBean) b, beanFilter);
-                    if (bean1 != null) {
-                        children.add(bean1);
-                    }
-                }
-                GeneraAndFilterBean and = new GeneraAndFilterBean();
-                and.setFilterValue(children);
-                return and.getFilterValue().isEmpty() ? null : and;
-            }
+            return new MatchFilterInfo(filterInfo, getIndex(filterBean.getTargetId(), targets));
         }
-        if (beanFilter.apply(dimId, bean)) {
-            return bean;
-        }
-        return null;
     }
 
     private static List<FilterBean> setFieldIdAndGetFilterBeans(FineDimension dimension) {
@@ -286,7 +211,7 @@ public class DimensionFilterAdaptor {
                 return i;
             }
         }
-        return Crasher.crash("invalid target filter id :" + targetId);
+        return -1;
     }
 
     private static boolean isConvertedDimension(FineDimension dimension) {
