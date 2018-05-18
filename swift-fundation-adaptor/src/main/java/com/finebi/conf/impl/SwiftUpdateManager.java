@@ -24,6 +24,7 @@ import com.fr.swift.adaptor.struct.ShowResultSet;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.transformer.RelationSourceFactory;
 import com.fr.swift.conf.updateInfo.TableUpdateInfoConfigService;
+import com.fr.swift.constants.UpdateConstants;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.task.Task;
@@ -55,7 +56,6 @@ import com.fr.swift.source.manager.IndexStuffProvider;
 import com.fr.swift.utils.RelationRelianceFactory;
 import com.fr.swift.utils.SourceRelianceFactory;
 import com.fr.swift.utils.TableUpdateLogUtil;
-import com.fr.swift.constants.UpdateConstants;
 import com.fr.swift.utils.UpdateSpaceInfoUtil;
 import com.fr.swift.utils.UpdateTriggerUtils;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
@@ -185,6 +185,10 @@ public class SwiftUpdateManager implements EngineUpdateManager {
                 TableUpdateInfo tableUpdateInfo = null;
                 if (entry.getValue().getUpdateType() == UpdateConstants.TableUpdateType.INCREMENT) {
                     tableUpdateInfo = updateInfoConfigService.getTableUpdateInfo(entry.getKey().getName());
+                    if (!DataSourceFactory.isIncrement(tableUpdateInfo)) {
+                        LOGGER.info("Table " + entry.getKey().getName() + " is increment but has no sql!");
+                        break;
+                    }
                 }
                 infoMap2.put(entry.getKey(), tableUpdateInfo != null ? tableUpdateInfo : entry.getValue());
             }
