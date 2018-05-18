@@ -50,6 +50,7 @@ public abstract class AbstractRelationTargetCalculator extends AbstractTargetCal
             case WEEK:
             case DAY:
                 decreaser = new SingleDecreaser();
+                break;
             default:
                 decreaser = decType == GroupType.QUARTER ? new SeasonDecreaser() :new DateDecreaser(getUnit());
         }
