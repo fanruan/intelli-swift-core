@@ -30,7 +30,10 @@ public class GeneralAndFilter implements DetailFilter {
             return detailFilters;
         }
         for (FilterInfo filterInfo : filterInfoList) {
+//            filterInfo可能为空
+//            if(filterInfo != null) {
             detailFilters.add(filterInfo.createDetailFilter(segment));
+//            }
         }
         return detailFilters;
     }
