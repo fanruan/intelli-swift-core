@@ -37,6 +37,7 @@ public class NumberInRangeFilter extends AbstractDetailFilter<Number> {
         this.min = filter.min;
         this.minIncluded = filter.minIncluded;
         this.maxIncluded = filter.maxIncluded;
+        this.column = filter.column;
     }
 
     @Override

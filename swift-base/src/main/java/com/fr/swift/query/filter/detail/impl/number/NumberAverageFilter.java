@@ -13,7 +13,7 @@ import java.util.Map;
 public class NumberAverageFilter extends NumberInRangeFilter {
 
     // 用来标识是否为平均值
-    public static final Double AVG_HOLDER = Double.NaN;
+    public static final Double AVG_HOLDER = Double.MIN_VALUE;
 
     private Map<List, Double> cacheMap;
 
@@ -40,8 +40,8 @@ public class NumberAverageFilter extends NumberInRangeFilter {
             return false;
         }
         double value = ((Number) data).doubleValue();
-        double minValue = Double.isNaN(min) ? cacheMap.get(valueList) : min;
-        double maxValue = Double.isNaN(max) ? cacheMap.get(valueList) : max;
+        double minValue = min != Double.NEGATIVE_INFINITY ? cacheMap.get(valueList) : min;
+        double maxValue = max != Double.POSITIVE_INFINITY ? cacheMap.get(valueList) : max;
         return (minIncluded ? value >= minValue : value > minValue) &&
                 (maxIncluded ? value <= maxValue : value < maxValue);
     }

@@ -36,19 +36,34 @@
     </properties>
 
     <dependencies>
+        <!--<dependency>-->
+        <!--<groupId>com.finebi</groupId>-->
+        <!--<artifactId>foundation-sdk</artifactId>-->
+        <!--<version>${foundation.version}</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+        <!--<groupId>com.finebi</groupId>-->
+        <!--<artifactId>foundation-adapter-sdk</artifactId>-->
+        <!--<version>5.0-FEATURE-SNAPSHOT</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+        <!--<groupId>com.finebi</groupId>-->
+        <!--<artifactId>foundation-connector-sdk</artifactId>-->
+        <!--<version>${foundation.version}</version>-->
+        <!--</dependency>-->
         <dependency>
-            <groupId>com.finebi</groupId>
-            <artifactId>foundation-sdk</artifactId>
+            <groupId>com.finebi.foundation</groupId>
+            <artifactId>fine-bi-foundation</artifactId>
             <version>${foundation.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.finebi</groupId>
-            <artifactId>foundation-adapter-sdk</artifactId>
-            <version>5.0-FEATURE-SNAPSHOT</version>
+            <groupId>com.finebi.foundation</groupId>
+            <artifactId>nuclear-foundation-connector</artifactId>
+            <version>${foundation.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.finebi</groupId>
-            <artifactId>foundation-connector-sdk</artifactId>
+            <groupId>com.finebi.spider</groupId>
+            <artifactId>fine-bi-foundation</artifactId>
             <version>${foundation.version}</version>
         </dependency>
         <dependency>

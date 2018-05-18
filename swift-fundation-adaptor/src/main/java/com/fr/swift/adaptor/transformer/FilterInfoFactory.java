@@ -63,6 +63,7 @@ import com.fr.swift.adaptor.transformer.filter.date.DateUtils;
 import com.fr.swift.adaptor.transformer.filter.date.DateWidgetBeanAdaptor;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
+import com.fr.swift.query.filter.detail.impl.number.NumberAverageFilter;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
@@ -249,21 +250,21 @@ public class FilterInfoFactory {
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.LARGE: {
                 NumberSelectedFilterValueBean numberBean = ((NumberLargeFilterBean) bean).getFilterValue();
                 SwiftNumberInRangeFilterValue filterValue = new SwiftNumberInRangeFilterValue();
-                filterValue.setMin(createValue(numberBean, segments, fieldName));
+                filterValue.setMin(createValue(numberBean, segments, fieldName, fieldId, tableName));
                 return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(columnKey, filterValue,
                         isAverage(numberBean) ? SwiftDetailFilterType.NUMBER_AVERAGE : SwiftDetailFilterType.NUMBER_IN_RANGE);
             }
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.SMALL: {
                 NumberSelectedFilterValueBean numberBean = ((NumberSmallFilterBean) bean).getFilterValue();
                 SwiftNumberInRangeFilterValue value = new SwiftNumberInRangeFilterValue();
-                value.setMax(createValue(numberBean, segments, fieldName));
+                value.setMax(createValue(numberBean, segments, fieldName, fieldId, tableName));
                 return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(columnKey, value,
                         isAverage(numberBean) ? SwiftDetailFilterType.NUMBER_AVERAGE : SwiftDetailFilterType.NUMBER_IN_RANGE);
             }
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.LARGE_OR_EQUAL: {
                 NumberSelectedFilterValueBean numberBean = ((NumberLargeOrEqualFilterBean) bean).getFilterValue();
                 SwiftNumberInRangeFilterValue value = new SwiftNumberInRangeFilterValue();
-                value.setMin(createValue(numberBean, segments, fieldName));
+                value.setMin(createValue(numberBean, segments, fieldName, fieldId, tableName));
                 value.setMinIncluded(true);
                 return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(columnKey, value,
                         isAverage(numberBean) ? SwiftDetailFilterType.NUMBER_AVERAGE : SwiftDetailFilterType.NUMBER_IN_RANGE);
@@ -271,7 +272,7 @@ public class FilterInfoFactory {
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.SMALL_OR_EQUAL: {
                 NumberSelectedFilterValueBean numberBean = ((NumberSmallOrEqualFilterBean) bean).getFilterValue();
                 SwiftNumberInRangeFilterValue value = new SwiftNumberInRangeFilterValue();
-                value.setMax(createValue(numberBean, segments, fieldName));
+                value.setMax(createValue(numberBean, segments, fieldName, fieldId, tableName));
                 value.setMaxIncluded(true);
                 return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(columnKey, value,
                         isAverage(numberBean) ? SwiftDetailFilterType.NUMBER_AVERAGE : SwiftDetailFilterType.NUMBER_IN_RANGE);
@@ -426,15 +427,20 @@ public class FilterInfoFactory {
         return filterInfoList;
     }
 
-    private static double createValue(NumberSelectedFilterValueBean bean, List<Segment> segments, String fieldName) {
+    private static double createValue(NumberSelectedFilterValueBean bean, List<Segment> segments,
+                                      String fieldName, String fieldId, String tableName) {
         int valueType = bean.getType();
-        Double min;
+        Double value;
         if (valueType == BICommonConstants.ANALYSIS_FILTER_NUMBER_VALUE.AVG) {
-            min = AvgUtils.average(segments, fieldName);
+            value = AvgUtils.average(segments, fieldName);
+            // FIXME: 2018/5/18 明细表（包括分析表）中的这类依赖聚合结果的过滤怎么处理比较好呢？
+            if (value.equals(NumberAverageFilter.AVG_HOLDER)) {
+                value = AvgUtils.average(fieldId, tableName);
+            }
         } else {
-            min = bean.getValue();
+            value = bean.getValue();
         }
-        return min;
+        return value;
     }
 
     private static boolean isAverage(NumberSelectedFilterValueBean bean) {
