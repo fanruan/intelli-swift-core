@@ -60,8 +60,9 @@ public abstract class AbstractDataSource implements DataSource {
     }
 
     protected String createNewName(Set<String> names, String name){
+        int i = 0;
         while (names.contains(name)){
-            name = name + 1;
+            name = name + ++i;
         }
         return name;
     }
