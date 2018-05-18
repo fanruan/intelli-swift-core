@@ -11,6 +11,7 @@ import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -32,17 +33,16 @@ public class ColumnFilterOperator extends AbstractOperator {
 
     @Override
     public List<String> getNewAddedName() {
-        List<String> addColumnNames = new ArrayList<String>();
-        return addColumnNames;
+        return Collections.emptyList();
     }
 
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
         try {
-            for (int i = 0; i < metaDatas.length; i++) {
-                for (int j = 0; j < metaDatas[i].getColumnCount(); j++) {
-                    columnList.add(metaDatas[i].getColumn(j + 1));
+            for (SwiftMetaData metaData : metaDatas) {
+                for (int j = 0; j < metaData.getColumnCount(); j++) {
+                    columnList.add(metaData.getColumn(j + 1));
                 }
             }
         } catch (SwiftMetaDataException e) {
