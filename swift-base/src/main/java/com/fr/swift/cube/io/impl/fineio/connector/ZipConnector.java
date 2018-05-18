@@ -29,7 +29,7 @@ public class ZipConnector extends AbstractConnector {
     }
 
     public InputStream read(FileBlock block) throws IOException {
-        FileInputStream fis = new FileInputStream(this.getPathForRead(block));
+        FileInputStream fis = new FileInputStream(this.getPath(block, false));
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         byte[] bytes = new byte[1024];
 
@@ -48,15 +48,15 @@ public class ZipConnector extends AbstractConnector {
 
     public void write(FileBlock block, InputStream is) throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        byte[] var6 = new byte[1024];
+        byte[] bytes = new byte[1024];
 
         int len;
-        while ((len = is.read(var6, 0, 1024)) > 0) {
-            bos.write(var6, 0, len);
+        while ((len = is.read(bytes, 0, 1024)) > 0) {
+            bos.write(bytes, 0, len);
         }
 
         byte[] data = this.compress(bos.toByteArray());
-        FileOutputStream fos = new FileOutputStream(this.getPath(block));
+        FileOutputStream fos = new FileOutputStream(this.getPath(block, true));
         fos.write(data);
         if (is != null) {
             is.close();
@@ -84,12 +84,12 @@ public class ZipConnector extends AbstractConnector {
             }
 
             data = bos.toByteArray();
-        } catch (Exception var15) {
+        } catch (Exception e) {
             data = ready4Decompress;
         } finally {
             try {
                 bos.close();
-            } catch (IOException var14) {
+            } catch (IOException e) {
             }
         }
         inflater.end();
@@ -114,12 +114,12 @@ public class ZipConnector extends AbstractConnector {
             }
 
             data = bos.toByteArray();
-        } catch (Exception var15) {
+        } catch (Exception e) {
             data = ready4Compress;
         } finally {
             try {
                 bos.close();
-            } catch (IOException var14) {
+            } catch (IOException e) {
             }
 
         }
@@ -128,57 +128,36 @@ public class ZipConnector extends AbstractConnector {
         return data;
     }
 
-    public boolean delete(FileBlock var1) {
-        return this.getPath(var1).delete();
+    public boolean delete(FileBlock block) {
+        return this.getPath(block, false).delete();
     }
 
-    public boolean exists(FileBlock var1) {
-        File var2 = this.getPath(var1);
-        return var2.exists() && var2.length() > 0L;
+    public boolean exists(FileBlock block) {
+        File file = this.getPath(block, false);
+        return file.exists() && file.length() > 0L;
     }
 
-    private void deleteDir(File var1) {
-        File[] var2 = var1.listFiles();
-        int var3 = var2.length;
-
-        for (int var4 = 0; var4 < var3; ++var4) {
-            File var5 = var2[var4];
-            if (var5.isDirectory()) {
-                this.deleteDir(var5);
-                if (var5.listFiles().length == 0) {
-                    var5.delete();
-                }
-            }
-        }
-
-    }
-
-    public boolean copy(FileBlock var1, FileBlock var2) throws IOException {
-        if (this.exists(var1) && !this.exists(var2)) {
-            File var3 = this.getPath(var1);
-            File var4 = this.getPath(var2);
-            FileUtils.copyFile(var3, var4);
+    public boolean copy(FileBlock src, FileBlock dest) throws IOException {
+        if (this.exists(src) && !this.exists(dest)) {
+            File srcFile = this.getPath(src, false);
+            File destFile = this.getPath(dest, false);
+            FileUtils.copyFile(srcFile, destFile);
             return true;
         } else {
             return false;
         }
     }
 
-    private File getFolderPath(FileBlock var1) {
-        return new File(var1.getParentUri().getPath());
+    private File getFolderPath(FileBlock block) {
+        return new File(block.getParentUri().getPath());
     }
 
-    private File getPathForRead(FileBlock var1) {
-        File var2 = this.getFolderPath(var1);
-        return new File(var2, var1.getFileName());
-    }
-
-    private File getPath(FileBlock var1) {
-        File var2 = this.getFolderPath(var1);
-        if (!var2.exists()) {
-            var2.mkdirs();
+    private File getPath(FileBlock block, boolean mkdir) {
+        File parent = this.getFolderPath(block);
+        if (!parent.exists() && mkdir) {
+            parent.mkdirs();
         }
 
-        return new File(var2, var1.getFileName());
+        return new File(parent, block.getFileName());
     }
 }
