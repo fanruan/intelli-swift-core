@@ -11,7 +11,6 @@ import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -29,11 +28,6 @@ public class ColumnFilterOperator extends AbstractOperator {
 
     public FilterInfo getFilterInfo() {
         return this.filterInfo;
-    }
-
-    @Override
-    public List<String> getNewAddedName() {
-        return Collections.emptyList();
     }
 
     @Override

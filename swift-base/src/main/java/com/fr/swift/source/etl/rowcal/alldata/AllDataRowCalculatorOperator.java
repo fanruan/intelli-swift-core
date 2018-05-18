@@ -12,6 +12,7 @@ import com.fr.swift.source.etl.OperatorType;
 
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -63,9 +64,7 @@ public class AllDataRowCalculatorOperator extends AbstractOperator {
 
     @Override
     public List<String> getNewAddedName() {
-        List<String> addColumnNames = new ArrayList<String>();
-        addColumnNames.add(addedColumnName);
-        return addColumnNames;
+        return Collections.singletonList(addedColumnName);
     }
 
     @Override
