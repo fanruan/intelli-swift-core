@@ -4,6 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>com.finebi.project</groupId>
+        <artifactId>nuclear-swift-project</artifactId>
+        <version>5.0-FEATURE-SNAPSHOT</version>
+        <relativePath>../nuclear-settings/nuclear-swift-project/pom.xml</relativePath>
+    </parent>
     <groupId>com.finebi</groupId>
     <artifactId>nuclear-swift</artifactId>
     <packaging>pom</packaging>
@@ -35,6 +41,7 @@
     </properties>
 
     <build>
+        <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -96,9 +103,10 @@
             <version>${datamining.version}</version>
         </dependency>
         <dependency>
-            <groupId>nz.ac.waikato.cms.weka</groupId>
-            <artifactId>weka-stable</artifactId>
-            <version>${weka.version}</version>
+            <groupId>com.fr.datamining</groupId>
+            <artifactId>weka</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fineio</groupId>
@@ -106,9 +114,16 @@
             <version>${fineio.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.rosuda.REngine</groupId>
+            <groupId>com.fr.datamining</groupId>
+            <artifactId>REngine</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.datamining</groupId>
             <artifactId>Rserve</artifactId>
-            <version>${rengine.version}</version>
+            <version>1.0</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
