@@ -61,7 +61,6 @@ import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.utils.BusinessTableUtils;
 
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -146,7 +145,7 @@ public abstract class AbstractWidgetAdaptor {
     static void dealWithWidgetFilter(List<FilterInfo> filterInfoList, AbstractTableWidget widget) throws Exception {
         List<FineFilter> filters = dealWithTargetFilter(widget, widget.getFilters());
         if (filters != null && !filters.isEmpty()) {
-            filterInfoList.add(FilterInfoFactory.transformFineFilter(widget.getTableName(), filters));
+            filterInfoList.add(FilterInfoFactory.transformFineFilter(widget.getTableName(), filters, widget.getDateWidgetIdValueMap()));
         }
     }
 
