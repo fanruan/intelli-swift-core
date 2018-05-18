@@ -226,7 +226,7 @@ public class DataSourceFactory {
         return increment;
     }
 
-    private static boolean isIncrement(TableUpdateInfo tableUpdateInfo) {
+    public static boolean isIncrement(TableUpdateInfo tableUpdateInfo) {
         return !tableUpdateInfo.getAddSql().isEmpty() || !tableUpdateInfo.getDeleteSql().isEmpty() || !tableUpdateInfo.getModifySql().isEmpty();
     }
 

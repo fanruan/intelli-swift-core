@@ -10,6 +10,7 @@ import com.fr.swift.source.etl.OperatorType;
 
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -46,9 +47,7 @@ public class GroupAssignmentOperator extends AbstractOperator {
 
     @Override
     public List<String> getNewAddedName() {
-        List<String> addColumnNames = new ArrayList<String>();
-        addColumnNames.add(columnName);
-        return addColumnNames;
+        return Collections.singletonList(columnName);
     }
 
     public String getOtherName() {

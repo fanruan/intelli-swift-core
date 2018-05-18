@@ -10,10 +10,9 @@ import com.fr.swift.util.concurrent.SingleThreadFactory;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import static com.fr.swift.cube.task.Task.Status.DONE;
 import static com.fr.swift.cube.task.Task.Status.RUNNING;
@@ -42,9 +41,7 @@ public class CubeTaskExecutor implements TaskExecutor {
         Semaphore ticket;
 
         Poller(String name, int threadNum) {
-            exec = new ThreadPoolExecutor(threadNum, threadNum,
-                    0L, TimeUnit.MILLISECONDS,
-                    new LinkedBlockingQueue<Runnable>(), new PoolThreadFactory(name));
+            exec = Executors.newFixedThreadPool(threadNum, new PoolThreadFactory(name));
             ticket = new Semaphore(threadNum);
         }
 

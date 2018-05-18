@@ -11,7 +11,7 @@ public class MedianAggregatorValue implements AggregatorValue<Number> {
     private double median;
     private int count;
     //取值和值的个数作为map保存下来，数据量大且重复值少时会有些问题
-    private TreeMap<Double, Integer> values;
+    private TreeMap<Double, Integer> values = new TreeMap<Double, Integer>();
 
     public int getCount() {
         return count;
