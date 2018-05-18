@@ -64,7 +64,7 @@ public class LocalTaskImpl extends BaseTask implements LocalTask {
     }
 
     @Override
-    public synchronized void onDone(TaskResult result) {
+    public void onDone(TaskResult result) {
         synchronized (this) {
             if (status == Status.DONE) {
                 return;
