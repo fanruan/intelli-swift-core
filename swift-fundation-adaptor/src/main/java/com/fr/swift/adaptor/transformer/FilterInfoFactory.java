@@ -223,7 +223,7 @@ public class FilterInfoFactory {
                 if (filterValue == null) {
                     break;
                 }
-                int n = ((StringBottomNFilterBean) bean).getFilterValue().intValue();
+                int n = filterValue.intValue();
                 // 功能的后N个对应字典排序中最大的N个
                 return new SwiftDetailFilterInfo<Integer>(columnKey, n, SwiftDetailFilterType.TOP_N);
             }
