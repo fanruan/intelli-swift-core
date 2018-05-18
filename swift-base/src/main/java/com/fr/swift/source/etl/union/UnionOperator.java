@@ -91,10 +91,4 @@ public class UnionOperator extends AbstractOperator {
     public OperatorType getOperatorType() {
         return OperatorType.UNION;
     }
-
-    @Override
-    public List<String> getNewAddedName() {
-        List<String> addColumnNames = new ArrayList<String>();
-        return addColumnNames;
-    }
 }

@@ -52,12 +52,12 @@ public class VarianceAggregatorValue implements AggregatorValue<Number> {
 
     @Override
     public double calculate() {
-        return variance / count;
+        return (count != 0 ? variance / count : 0);
     }
 
     @Override
     public Number calculateValue() {
-        return variance / count;
+        return (count != 0 ? variance / count : 0);
     }
 
     @Override

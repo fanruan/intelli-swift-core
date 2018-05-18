@@ -19,21 +19,30 @@ import java.util.List;
  * Created by Handsome on 2018/1/23 0023 14:14
  */
 public class ColumnRowTransOperator extends AbstractOperator {
-
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(ColumnRowTransOperator.class);
-    //分组名
+    /**
+     * 分组名
+     */
     @CoreField
     private String groupName;
-    //栏次字段名
+    /**
+     * 栏次字段名
+     */
     @CoreField
     private String lcName;
-    //栏次值
+    /**
+     * 栏次值
+     */
     @CoreField
     private List<Pair<String, String>> lcValue;
-    //行列转化的指标名称
+    /**
+     * 行列转化的指标名称
+     */
     @CoreField
     private List<Pair<String, String>> columns;
-    //其他指标名
+    /**
+     * 其他指标名
+     */
     @CoreField
     private List<Pair<String, String>> otherColumnNames;
 
@@ -63,12 +72,6 @@ public class ColumnRowTransOperator extends AbstractOperator {
 
     public List<Pair<String, String>> getOtherColumnNames() {
         return this.otherColumnNames;
-    }
-
-    @Override
-    public List<String> getNewAddedName() {
-        List<String> addColumnNames = new ArrayList<String>();
-        return addColumnNames;
     }
 
     @Override

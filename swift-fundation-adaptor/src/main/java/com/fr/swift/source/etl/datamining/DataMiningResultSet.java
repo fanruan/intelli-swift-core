@@ -5,6 +5,7 @@ import com.finebi.conf.algorithm.DMAbstractAlgorithm;
 import com.finebi.conf.algorithm.DMAlgorithmFactory;
 import com.finebi.conf.algorithm.DMColMetaData;
 import com.finebi.conf.algorithm.DMDataModel;
+import com.finebi.conf.algorithm.DMModel;
 import com.finebi.conf.algorithm.DMRowMetaData;
 import com.finebi.conf.algorithm.DMType;
 import com.finebi.conf.algorithm.EmptyAlgorithm;
@@ -82,7 +83,7 @@ public class DataMiningResultSet implements SwiftResultSet {
         DMDataModel inputDataModel = new DMDataModel(inputData, inputMetaData);
 
         DMAbstractAlgorithm algorithm = DMAlgorithmFactory.create(algorithmBean.getAlgorithmName());
-        DMDataModel outputData;
+        DMModel outputData;
         // 如果为Empty则返回上一个表的数据
         if (algorithm instanceof EmptyAlgorithm) {
             outputData = inputDataModel;

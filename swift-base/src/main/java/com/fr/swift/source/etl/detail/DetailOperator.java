@@ -92,8 +92,7 @@ public class DetailOperator extends AbstractOperator {
     @Override
     public List<String> getNewAddedName() {
         List<String> addColumnNames = new ArrayList<String>();
-        for (int i = 0; i < fields.size(); i++) {
-            ColumnKey[] columnKeys = fields.get(i);
+        for (ColumnKey[] columnKeys : fields) {
             Util.requireNonNull(columnKeys);
             for (ColumnKey columnKey : columnKeys) {
                 addColumnNames.add(columnKey.getName());
