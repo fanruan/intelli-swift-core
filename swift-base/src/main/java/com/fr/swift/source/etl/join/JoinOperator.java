@@ -53,12 +53,6 @@ public class JoinOperator extends AbstractOperator {
     }
 
     @Override
-    public List<String> getNewAddedName() {
-        List<String> addColumnNames = new ArrayList<String>();
-        return addColumnNames;
-    }
-
-    @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] tables) {
 
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();

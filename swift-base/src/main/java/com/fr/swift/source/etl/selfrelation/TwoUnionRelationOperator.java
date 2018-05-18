@@ -10,13 +10,14 @@ import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.core.MD5Utils;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
-import edu.emory.mathcs.backport.java.util.Arrays;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Created by Handsome on 2018/1/19 0019 09:59
@@ -27,9 +28,9 @@ public class TwoUnionRelationOperator extends AbstractOperator {
     @CoreField
     private String idColumnName;
     @CoreField
-    private List<String> showColumns = new ArrayList<String>();
+    private List<String> showColumns;
     @CoreField
-    private LinkedHashMap<String, Integer> columns = new LinkedHashMap<String, Integer>();
+    private LinkedHashMap<String, Integer> columns;
     @CoreField
     private int columnType;
     @CoreField
@@ -88,7 +89,7 @@ public class TwoUnionRelationOperator extends AbstractOperator {
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         Iterator<Map.Entry<String, Integer>> it;
         columnList = new ArrayList<SwiftMetaDataColumn>();
-        for (int i = 0; i < metaDatas.length; i++) {
+        for (SwiftMetaData metaData : metaDatas) {
             SwiftMetaData table = metaDatas[0];
             try {
                 int size = table.getColumn(this.idColumnName).getPrecision();
@@ -98,7 +99,7 @@ public class TwoUnionRelationOperator extends AbstractOperator {
                 for (String s : this.showColumns) {
                     it = columns.entrySet().iterator();
                     while (it.hasNext()) {
-                        Map.Entry<String, Integer> entry = it.next();
+                        Entry<String, Integer> entry = it.next();
                         columnList.add(new MetaDataColumn(s + "-" + entry.getKey(), this.columnType, size,
                                 MD5Utils.getMD5String(new String[]{(s + "-" + entry.getKey() + this.columnType)})));
                     }
@@ -110,9 +111,7 @@ public class TwoUnionRelationOperator extends AbstractOperator {
         }
         addedColumns = new String[columnList.size()];
         int index = 0;
-        Iterator<SwiftMetaDataColumn> iterator = columnList.iterator();
-        while (iterator.hasNext()) {
-            SwiftMetaDataColumn temp = iterator.next();
+        for (SwiftMetaDataColumn temp : columnList) {
             addedColumns[index++] = temp.getName();
         }
         return columnList;

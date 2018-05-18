@@ -8,6 +8,7 @@ import com.fr.swift.source.core.Core;
 import com.fr.swift.source.core.CoreGenerator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -41,5 +42,10 @@ public abstract class AbstractOperator implements ETLOperator {
             return columns;
         }
         return new ArrayList<SwiftMetaDataColumn>();
+    }
+
+    @Override
+    public List<String> getNewAddedName() {
+        return Collections.emptyList();
     }
 }

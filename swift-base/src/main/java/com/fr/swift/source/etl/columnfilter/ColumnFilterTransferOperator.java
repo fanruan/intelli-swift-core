@@ -21,6 +21,6 @@ public class ColumnFilterTransferOperator implements ETLTransferOperator {
 
     @Override
     public SwiftResultSet createResultSet(SwiftMetaData metaData, List<SwiftMetaData> basedMetas, List<Segment[]> basedSegments) {
-        return new ColumnFilterOperatorResultSet(basedSegments.get(0), metaData, filterInfo);
+        return new ColumnFilterOperatorResultSet(basedSegments.get(0), basedMetas.get(0), metaData, filterInfo);
     }
 }
