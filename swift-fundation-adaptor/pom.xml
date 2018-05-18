@@ -43,7 +43,12 @@
         </dependency>
         <dependency>
             <groupId>com.finebi</groupId>
-            <artifactId>nuclear-foundation-connector</artifactId>
+            <artifactId>foundation-adapter-sdk</artifactId>
+            <version>5.0-FEATURE-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.finebi</groupId>
+            <artifactId>foundation-connector-sdk</artifactId>
             <version>${foundation.version}</version>
         </dependency>
         <dependency>

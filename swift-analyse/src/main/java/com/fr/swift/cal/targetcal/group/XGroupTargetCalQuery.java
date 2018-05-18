@@ -59,6 +59,8 @@ public class XGroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> 
         XNodeUtils.updateTopGroupNodeValues(colDimensionSize, rowDimensionSize,
                 resultSet.getTopGroupNode(), (XLeftNode) resultSet.getNode());
         GroupNodeAggregateUtils.aggregate(NodeType.TOP_GROUP, colDimensionSize, resultSet.getTopGroupNode(), aggregators);
+        // 先更新一下xLeftNode#valueArrayList（包含topGroupNode所有列（包括汇总列）的某一行）
+        updateXLeftNode(rowDimensionSize, colDimensionSize, resultSet);
 
         // 指标排序，处理的思路是利用横向和纵向汇总的得到的根节点汇总值，转为两个分组表的排序来处理
         // 暂时先这么实现，后面再分析一下能不能优化
@@ -125,8 +127,6 @@ public class XGroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> 
         // 这边XLeftNode根节点的汇总值已经包括了所有列向节点的汇总值
         List<AggregatorValue[]> values = ((XLeftNode) resultSet.getNode()).getValueArrayList();
         setSumValues2Node(colDimensionSize, resultSet.getTopGroupNode(), values);
-        // 先更新一下topGroupNode#topGroupValues（包含xLeftNode所有行的某一列）
-        updateTopGroupValues(rowDimensionSize, colDimensionSize, resultSet);
         NodeSorter.sort(resultSet.getTopGroupNode(), colSorts);
         // 再更新一下xLeftNode#valueArrayList（包含topGroupNode所有列的某一行）
         updateXLeftNode(rowDimensionSize, colDimensionSize, resultSet);
@@ -137,8 +137,6 @@ public class XGroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> 
         // 这边topGroupNode的根节点的汇总值已经包括了所有横向节点的汇总值
         List<AggregatorValue[]> values = resultSet.getTopGroupNode().getTopGroupValues();
         setSumValues2Node(rowDimensionSize, (GroupNode) resultSet.getNode(), values);
-        // 先更新一下xLeftNode#valueArrayList（包含topGroupNode所有列的某一行）
-        updateXLeftNode(rowDimensionSize, colDimensionSize, resultSet);
         NodeSorter.sort(resultSet.getNode(), rowSorts);
         // 再更新一下topGroupNode#topGroupValues（包含xLeftNode所有行的某一列）
         updateTopGroupValues(rowDimensionSize, colDimensionSize, resultSet);

@@ -25,20 +25,29 @@ public class WorkerTaskImpl extends BaseTask implements WorkerTask {
 
     @Override
     public void onCancel() {
-        if (status.order() < Status.RUNNING.order()) {
-            done(new TaskResultImpl(Type.CANCELLED));
+        synchronized (this) {
+            if (status.order() >= Status.RUNNING.order()) {
+                return;
+            }
         }
+        done(new TaskResultImpl(Type.CANCELLED));
     }
 
     @Override
     public void run() {
+        start = System.currentTimeMillis();
+
         worker.work();
+
+        end = System.currentTimeMillis();
     }
 
     @Override
-    public void done(final TaskResult result) {
-        if (status == Status.DONE) {
-            return;
+    public void done(TaskResult result) {
+        synchronized (this) {
+            if (status == Status.DONE) {
+                return;
+            }
         }
         this.result = result;
         setStatus(Status.DONE);

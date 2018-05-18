@@ -23,10 +23,11 @@ public class CubeTaskManager implements TaskManager {
 
     @Override
     public void run(WorkerTask task) {
-        if (task.status().order() > Status.RUNNABLE.order()) {
-            return;
+        synchronized (task) {
+            if (task.status().order() > Status.RUNNABLE.order()) {
+                return;
+            }
         }
-
         task.setStatus(Status.RUNNABLE);
         switch (task.key().operation()) {
             case TRANSPORT_TABLE:
