@@ -80,6 +80,7 @@ public class SwiftDatabaseDataSourceDriver extends CommonDatabaseDataSourceDrive
         return StringUtils.EMPTY;
     }
 
+    @Override
     public EntryInfo createEntryInfo(FineBusinessTable table) {
         CheckSqlDriverTypeUtils.checkDBDriverType(table.getType());
         FineDBBusinessTable dbBusinessTable = (FineDBBusinessTable) table;
