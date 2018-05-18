@@ -3,7 +3,7 @@ package com.fr.swift.cube.space.impl;
 import com.fr.swift.config.ISegmentKey;
 import com.fr.swift.config.conf.service.SwiftConfigService;
 import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.space.SpaceUsageDetector;
 import com.fr.swift.cube.space.SpaceUsageService;
 import com.fr.swift.source.SourceKey;
@@ -43,19 +43,19 @@ public class SpaceUsageServiceImpl implements SpaceUsageService {
 
     @Override
     public long getUsedOverall() throws Exception {
-        URI baseUri = new File(SwiftContext.getInstance().getLocalCubePath()).toURI();
+        URI baseUri = new File(ResourceDiscovery.getInstance().getCubePath()).toURI();
         return detector.detectUsed(baseUri);
     }
 
     @Override
     public long getUsableOverall() throws Exception {
-        URI baseUri = new File(SwiftContext.getInstance().getLocalCubePath()).toURI();
+        URI baseUri = new File("/").toURI();
         return detector.detectUsable(baseUri);
     }
 
     @Override
     public long getTotalOverall() throws Exception {
-        URI baseUri = new File(SwiftContext.getInstance().getLocalCubePath()).toURI();
+        URI baseUri = new File("/").toURI();
         return detector.detectTotal(baseUri);
     }
 
