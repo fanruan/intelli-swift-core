@@ -7,7 +7,8 @@ import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.XLeftNode;
 import com.fr.swift.result.node.iterator.CurrentDimensionIterator;
-import com.fr.swift.result.node.iterator.LastDimensionIterator;
+import com.fr.swift.result.node.iterator.LeafNodeIterator;
+import com.fr.swift.structure.iterator.MapperIterator;
 import com.fr.swift.util.function.Function;
 
 import java.util.Arrays;
@@ -120,7 +121,7 @@ public class TargetCalculatorFactory {
         @Override
         public Iterator<List<AggregatorValue[]>> next() {
             hasNext = false;
-            return new LastDimensionIterator(root, function);
+            return new MapperIterator<GroupNode, List<AggregatorValue[]>>(new LeafNodeIterator(root), function);
         }
 
         @Override

@@ -6,6 +6,7 @@ import com.fr.swift.query.aggregator.AggregatorValueUtils;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.TopGroupNode;
 import com.fr.swift.result.XLeftNode;
+import com.fr.swift.result.node.iterator.LeafNodeIterator;
 import com.fr.swift.result.node.iterator.NLevelGroupNodeIterator;
 
 import java.util.ArrayList;
@@ -106,7 +107,8 @@ public class GroupNodeAggregateUtils {
             groupNode.setAggregatorValue(createAggregateValues(groupNode.getChild(0).getAggregatorValue(), aggregators));
             return;
         }
-        Iterator<GroupNode> iterator = groupNode.getChildren().iterator();
+        // 节点的合计都是在叶子节点（聚合结果的二维表）的基础上做（如果没有切换汇总方式可以在聚合子节点的基础上做，后面再优化吧）
+        Iterator<GroupNode> iterator = new LeafNodeIterator(groupNode);
         // 默认清空父节点的值。
         // FIXME: 2018/5/4 多个segment同时有expander的情况下父节点有可能不为空的，这时就有bug了！
         AggregatorValue[] valuesOfParent = createAggregateValues(iterator.next().getAggregatorValue(), aggregators);
