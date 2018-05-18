@@ -24,7 +24,6 @@ import com.fr.swift.query.filter.info.value.SwiftDateInRangeFilterValue;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.etl.utils.FormulaUtils;
-import com.fr.swift.util.Crasher;
 import com.fr.swift.util.function.Function2;
 
 import java.util.ArrayList;
@@ -53,14 +52,15 @@ public class DimensionFilterAdaptor {
         for (FilterBean bean : beans) {
             AbstractFilterBean filterBean = (AbstractFilterBean) bean;
             // 因为前端不区分明细过滤和结果过滤，直接用通用过滤器平拼在一起的，所以分别取出明细过滤bean和结果过滤bean
-            FilterBean resultBean = getFilterBean(dimId, filterBean, resultBeanFilter);
-            if (resultBean != null && targets != null) {
-                filterInfoList.add(getResultFilterInfo(tableName, (AbstractFilterBean) resultBean, targets));
+//            FilterBean resultBean = getFilterBean(dimId, filterBean, resultBeanFilter);
+            if (filterBean != null && targets != null) {
+                // 暂时全部是matchFilter
+                filterInfoList.add(getResultFilterInfo(tableName, filterBean, targets));
             }
-            FilterBean detailBean = getFilterBean(dimId, filterBean, detailBeanFilter);
-            if (detailBean != null) {
-                filterInfoList.add(getDetailFilterInfo(tableName, (AbstractFilterBean) detailBean, dimension));
-            }
+//            FilterBean detailBean = getFilterBean(dimId, filterBean, detailBeanFilter);
+//            if (detailBean != null) {
+//                filterInfoList.add(getDetailFilterInfo(tableName, (AbstractFilterBean) detailBean, dimension));
+//            }
         }
         if (attachTargetFilters && targets != null) {
             for (int i = 0; i < targets.size(); i++) {
@@ -286,7 +286,7 @@ public class DimensionFilterAdaptor {
                 return i;
             }
         }
-        return Crasher.crash("invalid target filter id :" + targetId);
+        return -1;
     }
 
     private static boolean isConvertedDimension(FineDimension dimension) {
