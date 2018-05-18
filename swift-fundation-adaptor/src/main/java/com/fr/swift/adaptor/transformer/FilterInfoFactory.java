@@ -231,12 +231,20 @@ public class FilterInfoFactory {
             case BICommonConstants.ANALYSIS_FILTER_STRING.NOT_NULL:
                 return new SwiftDetailFilterInfo<Object>(columnKey, null, SwiftDetailFilterType.NOT_NULL);
             case BICommonConstants.ANALYSIS_FILTER_STRING.TOP_N: {
-                int n = ((StringTopNFilterBean) bean).getFilterValue().intValue();
+                Long filterValue = ((StringTopNFilterBean) bean).getFilterValue();
+                if (filterValue == null) {
+                    break;
+                }
+                int n = filterValue.intValue();
                 // 功能的前N个对应字典排序中最小的N个
                 return new SwiftDetailFilterInfo<Integer>(columnKey, n, SwiftDetailFilterType.BOTTOM_N);
             }
             case BICommonConstants.ANALYSIS_FILTER_STRING.BOTTOM_N: {
-                int n = ((StringBottomNFilterBean) bean).getFilterValue().intValue();
+                Long filterValue = ((StringBottomNFilterBean) bean).getFilterValue();
+                if (filterValue == null) {
+                    break;
+                }
+                int n = filterValue.intValue();
                 // 功能的后N个对应字典排序中最大的N个
                 return new SwiftDetailFilterInfo<Integer>(columnKey, n, SwiftDetailFilterType.TOP_N);
             }
