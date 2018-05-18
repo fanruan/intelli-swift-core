@@ -1,6 +1,7 @@
 package com.fr.swift.adaptor.log;
 
 import com.fr.general.LogOperator;
+import com.fr.swift.adaptor.log.SwiftLogOperator.Sync;
 import com.fr.swift.adaptor.log.SwiftMetaAdaptorTest.A;
 import com.fr.swift.adaptor.log.SwiftMetaAdaptorTest.ConvertType;
 import com.fr.swift.config.TestConfDb;
@@ -15,6 +16,7 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SourceKey;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -60,11 +62,11 @@ public class LogOperatorTest {
     public void recordInfo() throws Exception {
         initTables();
         List<Object> as = new ArrayList<Object>();
-        for (int i = 0; i <= SwiftLogOperator.FLUSH_SIZE_THRESHOLD; i++) {
+        for (int i = 0; i <= Sync.FLUSH_SIZE_THRESHOLD; i++) {
             as.add(new A());
         }
-        Thread.sleep(SwiftLogOperator.FLUSH_INTERVAL_THRESHOLD + 1);
         logOperator.recordInfo(as);
+//        TimeUnit.SECONDS.sleep(40);
         SwiftSegmentManager segmentManager = SwiftContext.getInstance().getSegmentProvider();
         List<Segment> segs = segmentManager.getSegment(new SourceKey("A"));
         Segment seg = segs.get(segs.size() - 1);
@@ -80,6 +82,7 @@ public class LogOperatorTest {
         assertEquals(a.b ? 1L : 0L, seg.getColumn(new ColumnKey("b")).getDetailColumn().get(0));
     }
 
+    @Ignore
     @Test
     public void recordInfos() {
     }

@@ -14,6 +14,7 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.util.concurrent.PoolThreadFactory;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,6 +22,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author anchore
@@ -33,13 +37,7 @@ public class SwiftLogOperator implements LogOperator {
 
     private final Database db = SwiftDatabase.getInstance();
 
-    private Map<Class<?>, List<Object>> dataMap = new ConcurrentHashMap<Class<?>, List<Object>>();
-
-    public static final int FLUSH_INTERVAL_THRESHOLD = 60000;
-
-    public static final int FLUSH_SIZE_THRESHOLD = 10000;
-
-    private long lastFlushTime = System.currentTimeMillis();
+    private Sync sync = new Sync();
 
     @Override
     public <T> DataList<T> find(Class<T> entity, QueryCondition queryCondition) {
@@ -74,33 +72,7 @@ public class SwiftLogOperator implements LogOperator {
         if (o == null) {
             return;
         }
-        record(Collections.singletonList(o));
-    }
-
-    private synchronized void record(List<Object> data) throws Exception {
-        Object first = data.get(0);
-        Class<?> entity = first.getClass();
-        if (!dataMap.containsKey(entity)) {
-            dataMap.put(entity, new ArrayList<Object>());
-        }
-        List<Object> curData = dataMap.get(entity);
-        curData.addAll(data);
-
-        if (curData.size() < FLUSH_SIZE_THRESHOLD && System.currentTimeMillis() - lastFlushTime < FLUSH_INTERVAL_THRESHOLD) {
-            return;
-        }
-
-        Table table = db.getTable(new SourceKey(SwiftMetaAdaptor.getTableName(entity)));
-        SwiftResultSet rowSet = new LogRowSet(table.getMeta(), curData, entity);
-
-//        if (curData.size() < USE_IMPORT_THRESHOLD) {
-        table.insert(rowSet);
-//        } else {
-//            table.importFrom(rowSet);
-//        }
-
-        curData.clear();
-        lastFlushTime = System.currentTimeMillis();
+        sync.stage(Collections.singletonList(o));
     }
 
     @Override
@@ -109,7 +81,7 @@ public class SwiftLogOperator implements LogOperator {
             return;
         }
 
-        record(list);
+        sync.stage(list);
     }
 
     @Override
@@ -121,6 +93,57 @@ public class SwiftLogOperator implements LogOperator {
                 if (!db.existsTable(tableKey)) {
                     db.createTable(tableKey, meta);
                 }
+            }
+        }
+    }
+
+    class Sync implements Runnable {
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1, new PoolThreadFactory(getClass().getName()));
+
+        private Map<Class<?>, List<Object>> dataMap = new ConcurrentHashMap<Class<?>, List<Object>>();
+
+        public static final int FLUSH_SIZE_THRESHOLD = 10000;
+
+        Sync() {
+            scheduler.scheduleAtFixedRate(this, 0, 30, TimeUnit.SECONDS);
+        }
+
+        @Override
+        public void run() {
+            try {
+                for (Class<?> entity : dataMap.keySet()) {
+                    record(entity);
+                }
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().error(e);
+            }
+        }
+
+        synchronized
+        private void record(Class<?> entity) throws Exception {
+            List<Object> data = dataMap.get(entity);
+            if (data == null || data.isEmpty()) {
+                return;
+            }
+
+            dataMap.remove(entity);
+            Table table = db.getTable(new SourceKey(SwiftMetaAdaptor.getTableName(entity)));
+            SwiftResultSet rowSet = new LogRowSet(table.getMeta(), data, entity);
+            table.insert(rowSet);
+        }
+
+        synchronized
+        private void stage(List<Object> data) throws Exception {
+            Object first = data.get(0);
+            Class<?> entity = first.getClass();
+            if (!dataMap.containsKey(entity)) {
+                dataMap.put(entity, new ArrayList<Object>());
+            }
+            List<Object> curData = dataMap.get(entity);
+            curData.addAll(data);
+
+            if (curData.size() > FLUSH_SIZE_THRESHOLD) {
+                record(entity);
             }
         }
     }

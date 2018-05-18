@@ -63,6 +63,7 @@ import com.fr.swift.adaptor.transformer.filter.date.DateUtils;
 import com.fr.swift.adaptor.transformer.filter.date.DateWidgetBeanAdaptor;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
+import com.fr.swift.query.filter.detail.impl.number.NumberAverageFilter;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
@@ -157,12 +158,32 @@ public class FilterInfoFactory {
                 StringBelongFilterValueBean valueBean = ((StringNoBelongFilterBean) bean).getFilterValue();
                 List<String> notBelongValues = valueBean.getValue();
                 if (notBelongValues == null || notBelongValues.isEmpty()) {
-                    return new SwiftDetailFilterInfo(columnKey, null, SwiftDetailFilterType.NOT_SHOW);
+                    break;
                 }
                 int valueType = valueBean.getType();
                 return new SwiftDetailFilterInfo<Set<String>>(columnKey, new HashSet<String>(notBelongValues),
                         // 多选同filterType，否则是反选
                         valueType == BICommonConstants.SELECTION_TYPE.MULTI ? SwiftDetailFilterType.STRING_NOT_IN : SwiftDetailFilterType.STRING_IN);
+            }
+            case BICommonConstants.ANALYSIS_FILTER_DATE.BELONG_STRING_VALUE: {
+                StringBelongFilterValueBean filterValueBean = ((DateBelongStringFilterBean) bean).getFilterValue();
+                List<String> dates = filterValueBean.getValue();
+                if (dates == null || dates.isEmpty()) {
+                    break;
+                }
+                int valueType = filterValueBean.getType();
+                return new SwiftDetailFilterInfo<List<String>>(columnKey, dates,
+                        valueType == BICommonConstants.SELECTION_TYPE.MULTI ? SwiftDetailFilterType.TMP_DATE_BELONG_STRING : SwiftDetailFilterType.TMP_DATE_NOT_BELONG_STRING);
+            }
+            case BICommonConstants.ANALYSIS_FILTER_DATE.NOT_BELONG_STRING_VALUE: {
+                StringBelongFilterValueBean filterValueBean = ((DateNoBelongStringFilterBean) bean).getFilterValue();
+                List<String> dates = filterValueBean.getValue();
+                if (dates == null || dates.isEmpty()) {
+                    break;
+                }
+                int valueType = filterValueBean.getType();
+                return new SwiftDetailFilterInfo<List<String>>(columnKey, dates,
+                        valueType == BICommonConstants.SELECTION_TYPE.MULTI ? SwiftDetailFilterType.TMP_DATE_NOT_BELONG_STRING : SwiftDetailFilterType.TMP_DATE_BELONG_STRING);
             }
             case BICommonConstants.ANALYSIS_FILTER_STRING.CONTAIN:
                 String contain = ((StringContainFilterBean) bean).getFilterValue();
@@ -173,7 +194,7 @@ public class FilterInfoFactory {
             case BICommonConstants.ANALYSIS_FILTER_STRING.NOT_CONTAIN: {
                 String value = ((StringNoContainFilterBean) bean).getFilterValue();
                 if (StringUtils.isBlank(value)) {
-                    return new SwiftDetailFilterInfo(columnKey, null, SwiftDetailFilterType.NOT_SHOW);
+                    break;
                 }
                 return new SwiftDetailFilterInfo<String>(columnKey, value, SwiftDetailFilterType.STRING_NOT_LIKE);
             }
@@ -210,12 +231,20 @@ public class FilterInfoFactory {
             case BICommonConstants.ANALYSIS_FILTER_STRING.NOT_NULL:
                 return new SwiftDetailFilterInfo<Object>(columnKey, null, SwiftDetailFilterType.NOT_NULL);
             case BICommonConstants.ANALYSIS_FILTER_STRING.TOP_N: {
-                int n = ((StringTopNFilterBean) bean).getFilterValue().intValue();
+                Long filterValue = ((StringTopNFilterBean) bean).getFilterValue();
+                if (filterValue == null) {
+                    break;
+                }
+                int n = filterValue.intValue();
                 // 功能的前N个对应字典排序中最小的N个
                 return new SwiftDetailFilterInfo<Integer>(columnKey, n, SwiftDetailFilterType.BOTTOM_N);
             }
             case BICommonConstants.ANALYSIS_FILTER_STRING.BOTTOM_N: {
-                int n = ((StringBottomNFilterBean) bean).getFilterValue().intValue();
+                Long filterValue = ((StringBottomNFilterBean) bean).getFilterValue();
+                if (filterValue == null) {
+                    break;
+                }
+                int n = filterValue.intValue();
                 // 功能的后N个对应字典排序中最大的N个
                 return new SwiftDetailFilterInfo<Integer>(columnKey, n, SwiftDetailFilterType.TOP_N);
             }
@@ -224,17 +253,11 @@ public class FilterInfoFactory {
             // 数值类过滤
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.BELONG_VALUE: {
                 NumberValue nv = ((NumberBelongFilterBean) bean).getFilterValue();
-                if (nv.getMin() == Double.NEGATIVE_INFINITY && nv.getMax() == Double.POSITIVE_INFINITY) {
-                    break;
-                }
                 return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(columnKey, createValue(nv),
                         SwiftDetailFilterType.NUMBER_IN_RANGE);
             }
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.NOT_BELONG_VALUE: {
                 NumberValue nv = ((NumberNoBelongFilterBean) bean).getFilterValue();
-                if (nv.getMin() == Double.NEGATIVE_INFINITY && nv.getMax() == Double.POSITIVE_INFINITY) {
-                    return new SwiftDetailFilterInfo(columnKey, null, SwiftDetailFilterType.NOT_SHOW);
-                }
                 return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(columnKey, createValue(nv),
                         SwiftDetailFilterType.NUMBER_NOT_IN_RANGE);
             }
@@ -255,21 +278,21 @@ public class FilterInfoFactory {
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.LARGE: {
                 NumberSelectedFilterValueBean numberBean = ((NumberLargeFilterBean) bean).getFilterValue();
                 SwiftNumberInRangeFilterValue filterValue = new SwiftNumberInRangeFilterValue();
-                filterValue.setMin(createValue(numberBean, segments, fieldName));
+                filterValue.setMin(createValue(numberBean, segments, fieldName, fieldId, tableName));
                 return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(columnKey, filterValue,
                         isAverage(numberBean) ? SwiftDetailFilterType.NUMBER_AVERAGE : SwiftDetailFilterType.NUMBER_IN_RANGE);
             }
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.SMALL: {
                 NumberSelectedFilterValueBean numberBean = ((NumberSmallFilterBean) bean).getFilterValue();
                 SwiftNumberInRangeFilterValue value = new SwiftNumberInRangeFilterValue();
-                value.setMax(createValue(numberBean, segments, fieldName));
+                value.setMax(createValue(numberBean, segments, fieldName, fieldId, tableName));
                 return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(columnKey, value,
                         isAverage(numberBean) ? SwiftDetailFilterType.NUMBER_AVERAGE : SwiftDetailFilterType.NUMBER_IN_RANGE);
             }
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.LARGE_OR_EQUAL: {
                 NumberSelectedFilterValueBean numberBean = ((NumberLargeOrEqualFilterBean) bean).getFilterValue();
                 SwiftNumberInRangeFilterValue value = new SwiftNumberInRangeFilterValue();
-                value.setMin(createValue(numberBean, segments, fieldName));
+                value.setMin(createValue(numberBean, segments, fieldName, fieldId, tableName));
                 value.setMinIncluded(true);
                 return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(columnKey, value,
                         isAverage(numberBean) ? SwiftDetailFilterType.NUMBER_AVERAGE : SwiftDetailFilterType.NUMBER_IN_RANGE);
@@ -277,7 +300,7 @@ public class FilterInfoFactory {
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.SMALL_OR_EQUAL: {
                 NumberSelectedFilterValueBean numberBean = ((NumberSmallOrEqualFilterBean) bean).getFilterValue();
                 SwiftNumberInRangeFilterValue value = new SwiftNumberInRangeFilterValue();
-                value.setMax(createValue(numberBean, segments, fieldName));
+                value.setMax(createValue(numberBean, segments, fieldName, fieldId, tableName));
                 value.setMaxIncluded(true);
                 return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(columnKey, value,
                         isAverage(numberBean) ? SwiftDetailFilterType.NUMBER_AVERAGE : SwiftDetailFilterType.NUMBER_IN_RANGE);
@@ -298,38 +321,13 @@ public class FilterInfoFactory {
             // 日期类过滤
             case BICommonConstants.ANALYSIS_FILTER_DATE.BELONG_VALUE: {
                 DateRangeValueBean dateValueBean = ((DateBelongFilterBean) bean).getFilterValue();
-                if (dateValueBean.getStart() == null && dateValueBean.getEnd() == null) {
-                    break;
-                }
                 return new SwiftDetailFilterInfo<SwiftDateInRangeFilterValue>(columnKey,
                         DateRangeValueBeanAdaptor.create(dateValueBean), SwiftDetailFilterType.DATE_IN_RANGE);
             }
             case BICommonConstants.ANALYSIS_FILTER_DATE.NOT_BELONG_VALUE: {
                 DateRangeValueBean dateValueBean = ((DateNoBelongFilterBean) bean).getFilterValue();
-                if (dateValueBean.getStart() == null && dateValueBean.getEnd() == null) {
-                    return new SwiftDetailFilterInfo(columnKey, null, SwiftDetailFilterType.NOT_SHOW);
-                }
                 return new SwiftDetailFilterInfo<SwiftDateInRangeFilterValue>(columnKey,
                         DateRangeValueBeanAdaptor.create(dateValueBean), SwiftDetailFilterType.DATE_NOT_IN_RANGE);
-            }
-            case BICommonConstants.ANALYSIS_FILTER_DATE.BELONG_STRING_VALUE: {
-                StringBelongFilterValueBean filterValueBean = ((DateBelongStringFilterBean) bean).getFilterValue();
-                List<String> dates = filterValueBean.getValue();
-//                if(dates.size() == 0) {
-//                    break;
-//                }
-                return new SwiftDetailFilterInfo<List<String>>(columnKey, dates,
-                        SwiftDetailFilterType.TMP_DATE_BELONG_STRING);
-            }
-            case BICommonConstants.ANALYSIS_FILTER_DATE.NOT_BELONG_STRING_VALUE: {
-                StringBelongFilterValueBean filterValueBean = ((DateNoBelongStringFilterBean) bean).getFilterValue();
-                List<String> dates = filterValueBean.getValue();
-                //这里这样写时分组表日期过滤并没什么用
-//                if(dates.size() == 0) {
-//                    return new SwiftDetailFilterInfo(columnKey, null, SwiftDetailFilterType.NOT_SHOW);
-//                }
-                return new SwiftDetailFilterInfo<List<String>>(columnKey, dates,
-                        SwiftDetailFilterType.TMP_DATE_NOT_BELONG_STRING);
             }
             case BICommonConstants.ANALYSIS_FILTER_DATE.LESS_THAN: {
                 DateFilterBean dateFilterBean = ((DateBeforeFilterBean) bean).getFilterValue();
@@ -445,15 +443,20 @@ public class FilterInfoFactory {
         return filterInfoList;
     }
 
-    private static double createValue(NumberSelectedFilterValueBean bean, List<Segment> segments, String fieldName) {
+    private static double createValue(NumberSelectedFilterValueBean bean, List<Segment> segments,
+                                      String fieldName, String fieldId, String tableName) {
         int valueType = bean.getType();
-        Double min;
+        Double value;
         if (valueType == BICommonConstants.ANALYSIS_FILTER_NUMBER_VALUE.AVG) {
-            min = AvgUtils.average(segments, fieldName);
+            value = AvgUtils.average(segments, fieldName);
+            // FIXME: 2018/5/18 明细表（包括分析表）中的这类依赖聚合结果的过滤怎么处理比较好呢？
+            if (value.equals(NumberAverageFilter.AVG_HOLDER)) {
+                value = AvgUtils.average(fieldId, tableName);
+            }
         } else {
-            min = bean.getValue();
+            value = bean.getValue();
         }
-        return min;
+        return value;
     }
 
     private static boolean isAverage(NumberSelectedFilterValueBean bean) {
