@@ -37,9 +37,11 @@ import com.finebi.conf.structure.result.table.BITableResult;
 import com.fr.swift.adaptor.widget.date.MonthControlWidgetAdaptor;
 import com.fr.swift.adaptor.widget.date.QuarterControlWidgetAdaptor;
 import com.fr.swift.adaptor.widget.date.YearControlWidgetAdaptor;
+import com.fr.swift.adaptor.widget.jump.JumpAdaptor;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -157,8 +159,8 @@ public class SwiftWidgetExecutorManager implements EngineWidgetExecutorManager {
     }
 
     @Override
-    public Map<String, Object> getClickValue(FineWidget widget, Map clicked, List<String> fieldsId) {
-        return null;
+    public Map<String, Object> getClickValue(FineWidget widget, Map clicked, List<String> fieldsId) throws SQLException {
+        return JumpAdaptor.getClickValue(widget, clicked, fieldsId);
     }
 
     @Override

@@ -29,10 +29,7 @@ public class FieldFactory {
         List<FineBusinessField> fineBusinessFieldList = new ArrayList<FineBusinessField>();
         for (int i = 1; i <= swiftMetaData.getColumnCount(); i++) {
             String columnName = swiftMetaData.getColumnName(i);
-            int columnType = swiftMetaData.getColumnType(i);
             String columnRemark = swiftMetaData.getColumnRemark(i);
-            int precision = swiftMetaData.getPrecision(i);
-            int scale = swiftMetaData.getScale(i);
             if (escapeMap != null && escapeMap.containsKey(columnName)) {
                 columnRemark = escapeMap.get(columnName);
             }
@@ -42,7 +39,7 @@ public class FieldFactory {
             String tableId = businessTableId == null ? swiftMetaData.getTableName() : businessTableId;
             FineBusinessFieldImp fineBusinessField = new FineBusinessFieldImp(SwiftEncryption.encryptFieldId(tableId, columnName), columnName, columnRemark);
             fineBusinessField.setEngineType(FineEngineType.Cube);
-            fineBusinessField.setType(transformSwiftColumnType2BIColumnType(ColumnTypeUtils.sqlTypeToColumnType(columnType, precision, scale)));
+            fineBusinessField.setType(toBiType(ColumnTypeUtils.getColumnType(swiftMetaData.getColumn(i))));
             fineBusinessField.setUsable(true);
             fineBusinessFieldList.add(fineBusinessField);
         }
@@ -61,7 +58,7 @@ public class FieldFactory {
         return swiftMetaDataColumnList;
     }
 
-    public static ColumnType transformBIColumnType2SwiftColumnType(int biType) {
+    public static ColumnType toColumnType(int biType) {
         switch (biType) {
             case BIConfConstants.CONF.COLUMN.NUMBER:
                 return ColumnType.NUMBER;
@@ -72,7 +69,7 @@ public class FieldFactory {
         }
     }
 
-    public static int transformSwiftColumnType2BIColumnType(ColumnType biType) {
+    public static int toBiType(ColumnType biType) {
         switch (biType) {
             case NUMBER:
                 return BIConfConstants.CONF.COLUMN.NUMBER;

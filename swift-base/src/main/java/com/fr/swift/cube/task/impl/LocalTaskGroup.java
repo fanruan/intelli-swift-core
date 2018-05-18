@@ -26,7 +26,7 @@ public class LocalTaskGroup extends BaseTask implements WorkerTask {
     }
 
     @Override
-    public void done(final TaskResult result) {
+    public void done(TaskResult result) {
         this.result = result;
         setStatus(Status.DONE);
     }

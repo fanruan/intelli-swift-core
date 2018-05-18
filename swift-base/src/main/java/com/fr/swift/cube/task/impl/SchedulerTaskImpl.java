@@ -34,23 +34,24 @@ public class SchedulerTaskImpl extends BaseTask implements SchedulerTask {
 
     @Override
     public void triggerRun() {
-        start = System.currentTimeMillis();
-
-        if (status.order() <= Status.RUNNABLE.order()) {
-            setStatus(Status.RUNNABLE);
-            triggerEvent(EventType.RUN_TASK);
+        synchronized (this) {
+            if (status.order() > Status.RUNNABLE.order()) {
+                return;
+            }
         }
+        setStatus(Status.RUNNABLE);
+        triggerEvent(EventType.RUN_TASK);
     }
 
     @Override
     public void onDone(TaskResult result) {
-        if (status == Status.DONE) {
-            return;
+        synchronized (this) {
+            if (status == Status.DONE) {
+                return;
+            }
         }
         this.result = result;
         setStatus(Status.DONE);
-
-        end = System.currentTimeMillis();
 
         SwiftLoggers.getLogger().info(String.format("%s %s", key, result));
 

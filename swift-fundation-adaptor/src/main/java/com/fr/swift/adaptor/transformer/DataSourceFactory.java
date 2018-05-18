@@ -79,7 +79,7 @@ public class DataSourceFactory {
         }
     }
 
-    public static List<DataSource> transformDataSources(List<FineBusinessTable> tables) throws Exception {
+    public static List<DataSource> transformDataSources(List<FineBusinessTable> tables) {
         List<DataSource> dataSourceList = new ArrayList<DataSource>();
         if (tables != null) {
             for (FineBusinessTable table : tables) {
@@ -159,7 +159,7 @@ public class DataSourceFactory {
                 Map<String, ColumnType> fieldsTypes = new HashMap<String, ColumnType>();
                 for (ConfSelectBeanItem item : items) {
                     if (item.isUsable()) {
-                        fieldsTypes.put(item.getName(), FieldFactory.transformBIColumnType2SwiftColumnType(item.getType()));
+                        fieldsTypes.put(item.getName(), FieldFactory.toColumnType(item.getType()));
                     }
                 }
                 return fieldsTypes;

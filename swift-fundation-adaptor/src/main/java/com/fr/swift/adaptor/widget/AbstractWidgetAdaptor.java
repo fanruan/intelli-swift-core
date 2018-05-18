@@ -9,7 +9,6 @@ import com.finebi.conf.internalimp.analysis.bean.operator.add.group.custom.numbe
 import com.finebi.conf.internalimp.bean.dashboard.widget.control.time.AbstractTimeControlBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
 import com.finebi.conf.internalimp.bean.dashboard.widget.field.value.FormulaValueBean;
-import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
 import com.finebi.conf.internalimp.bean.filter.AbstractFilterBean;
 import com.finebi.conf.internalimp.bean.filter.GeneraAndFilterBean;
 import com.finebi.conf.internalimp.bean.filter.GeneraOrFilterBean;
@@ -307,7 +306,7 @@ public abstract class AbstractWidgetAdaptor {
         return "${" + targetId + "}";
     }
 
-    static void handleCrossTempletCustomLink(String tableName, WidgetGlobalFilterBean globalBean, JumpItemBean jump, List<FilterInfo> filterInfos) throws Exception {
+    private static void handleCrossTempletCustomLink(String tableName, WidgetGlobalFilterBean globalBean, JumpItemBean jump, List<FilterInfo> filterInfos) throws Exception {
         // todo 提炼公共部分 或者这边widget可以进行实例化的重构，减少参数传来传去
         List<JumpSourceTargetFieldBean> sourceTargetFields = jump.getSourceTargetFields();
         // 自定义设置的维度
@@ -324,10 +323,10 @@ public abstract class AbstractWidgetAdaptor {
 
         // 根据点击的值，创建过滤条件
         List<FilterInfo> filters = new ArrayList<FilterInfo>();
-        TableWidgetBean fromWidget = LinkageAdaptor.handleCrossTempletClick(tableName, globalBean, filters, fromColumns, toColumns);
+        LinkageAdaptor.handleCrossTempletClick(tableName, globalBean, filters, fromColumns, toColumns);
         // 分组表查询
         FilterInfo filterInfo = new GeneralFilterInfo(filters, GeneralFilterInfo.AND);
-        GroupQueryInfo queryInfo = new GroupQueryInfo(fromWidget.getwId(), fromColumns[0].getSourceKey(),
+        GroupQueryInfo queryInfo = new GroupQueryInfo(globalBean.getLinkedWidget().getwId(), fromColumns[0].getSourceKey(),
                 new DimensionInfoImpl(new AllCursor(), filterInfo, null, fromColumns),
                 new TargetInfoImpl(0, new ArrayList<Metric>(0), new ArrayList<GroupTarget>(0), new ArrayList<ResultTarget>(0), new ArrayList<Aggregator>(0)));
         SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
