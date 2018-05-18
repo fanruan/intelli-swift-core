@@ -265,7 +265,7 @@ public abstract class AbstractWidgetAdaptor {
             case BIDesignConstants.DESIGN.WIDGET.QUARTER:
             case BIDesignConstants.DESIGN.WIDGET.MONTH: {
                 DateFilterBean dateFilterBean = (DateFilterBean) ((AbstractTimeControlBean) widgetBean).getValue();
-                long time = DateUtils.dateFilterBean2Long(dateFilterBean, true);
+                long time = dateFilterBean == null ? System.currentTimeMillis() : DateUtils.dateFilterBean2Long(dateFilterBean, true);
                 return formatDate(time);
             }
             default:
