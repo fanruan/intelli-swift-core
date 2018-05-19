@@ -25,14 +25,20 @@ import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
 import com.finebi.conf.internalimp.bean.filter.AbstractFilterBean;
 import com.finebi.conf.internalimp.bean.filter.GeneraAndFilterBean;
 import com.finebi.conf.internalimp.bean.filter.GeneraOrFilterBean;
+import com.finebi.conf.internalimp.bean.filter.date.DateBelongFilterBean;
+import com.finebi.conf.internalimp.bean.filter.date.DateEqualFilterBean;
 import com.finebi.conf.internalimp.bean.filter.number.NumberBelongFilterBean;
 import com.finebi.conf.internalimp.bean.filter.string.StringBelongFilterBean;
 import com.finebi.conf.internalimp.bean.filter.visiter.FilterBeanToFilterVisitor;
+import com.finebi.conf.internalimp.bean.filtervalue.date.DateRangeValueBean;
 import com.finebi.conf.internalimp.bean.filtervalue.number.NumberValue;
 import com.finebi.conf.internalimp.bean.filtervalue.string.StringBelongFilterValueBean;
+import com.finebi.conf.internalimp.filter.date.DateBelongFilter;
+import com.finebi.conf.internalimp.filter.date.DateEqualFilter;
 import com.finebi.conf.internalimp.filter.number.NumberBelongFilter;
 import com.finebi.conf.internalimp.filter.string.StringBelongFilter;
 import com.finebi.conf.structure.bean.dashboard.visitor.WidgetBeanVisitor;
+import com.finebi.conf.structure.bean.filter.DateFilterBean;
 import com.finebi.conf.structure.bean.filter.FilterBean;
 import com.finebi.conf.structure.filter.FineFilter;
 
@@ -96,17 +102,43 @@ public class WidgetFilterVisitor implements WidgetBeanVisitor<List<FineFilter>> 
 
     @Override
     public List<FineFilter> visit(YearControlBean yearControlBean) throws Exception {
-        return null;
+        String fieldId = yearControlBean.getDimensions().values().iterator().next().getFieldId();
+        return visitDateEqualValue(yearControlBean.getValue(), fieldId);
+    }
+
+    private List<FineFilter> visitDateEqualValue(DateFilterBean selectedValue, String fieldId) throws Exception {
+        List<FineFilter> filters = new ArrayList<FineFilter>();
+        DateEqualFilter filter = new DateEqualFilter();
+        DateEqualFilterBean filterBean = new DateEqualFilterBean();
+        filterBean.setFieldId(fieldId);
+        filterBean.setFilterValue(selectedValue);
+        filter.setValue(filterBean);
+        filters.add(filter);
+        return filters;
+    }
+
+
+    private List<FineFilter> visitDateRangeValValue(DateRangeValueBean selectedValue, String fieldId) throws Exception {
+        List<FineFilter> filters = new ArrayList<FineFilter>();
+        DateBelongFilter filter = new DateBelongFilter();
+        DateBelongFilterBean filterBean = new DateBelongFilterBean();
+        filterBean.setFieldId(fieldId);
+        filterBean.setFilterValue(selectedValue);
+        filter.setValue(filterBean);
+        filters.add(filter);
+        return filters;
     }
 
     @Override
     public List<FineFilter> visit(MonthControlBean monthControlBean) throws Exception {
-        return null;
+        String fieldId = monthControlBean.getDimensions().values().iterator().next().getFieldId();
+        return visitDateEqualValue(monthControlBean.getValue(), fieldId);
     }
 
     @Override
     public List<FineFilter> visit(QuarterControlWidgetBean quarterControlWidgetBean) throws Exception {
-        return null;
+        String fieldId = quarterControlWidgetBean.getDimensions().values().iterator().next().getFieldId();
+        return visitDateEqualValue(quarterControlWidgetBean.getValue(), fieldId);
     }
 
     @Override
@@ -116,22 +148,26 @@ public class WidgetFilterVisitor implements WidgetBeanVisitor<List<FineFilter>> 
 
     @Override
     public List<FineFilter> visit(DateControlBean dateControlBean) throws Exception {
-        return null;
+        String fieldId = dateControlBean.getDimensions().values().iterator().next().getFieldId();
+        return visitDateEqualValue(dateControlBean.getValue(), fieldId);
     }
 
     @Override
     public List<FineFilter> visit(DateIntervalControlBean dateIntervalControlBean) throws Exception {
-        return null;
+        String fieldId = dateIntervalControlBean.getDimensions().values().iterator().next().getFieldId();
+        return visitDateRangeValValue(dateIntervalControlBean.getValue(), fieldId);
     }
 
     @Override
     public List<FineFilter> visit(DatePaneControlBean datePaneControlBean) throws Exception {
-        return null;
+        String fieldId = datePaneControlBean.getDimensions().values().iterator().next().getFieldId();
+        return visitDateEqualValue(datePaneControlBean.getValue(), fieldId);
     }
 
     @Override
     public List<FineFilter> visit(YearMonthIntervalWidgetBean yearMonthIntervalWidgetBean) throws Exception {
-        return null;
+        String fieldId = yearMonthIntervalWidgetBean.getDimensions().values().iterator().next().getFieldId();
+        return visitDateRangeValValue(yearMonthIntervalWidgetBean.getValue(), fieldId);
     }
 
     @Override
