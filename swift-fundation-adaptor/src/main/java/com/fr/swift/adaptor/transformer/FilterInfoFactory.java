@@ -170,7 +170,7 @@ public class FilterInfoFactory {
                 StringBelongFilterValueBean valueBean = ((StringNoBelongFilterBean) bean).getFilterValue();
                 List<String> notBelongValues = valueBean.getValue();
                 if (notBelongValues == null || notBelongValues.isEmpty()) {
-                    break;
+                    return new SwiftDetailFilterInfo(columnKey, null, SwiftDetailFilterType.NOT_SHOW);
                 }
                 int valueType = valueBean.getType();
                 return new SwiftDetailFilterInfo<Set<String>>(columnKey, new HashSet<String>(notBelongValues),
@@ -191,7 +191,7 @@ public class FilterInfoFactory {
                 StringBelongFilterValueBean filterValueBean = ((DateNoBelongStringFilterBean) bean).getFilterValue();
                 List<String> dates = filterValueBean.getValue();
                 if (dates == null || dates.isEmpty()) {
-                    break;
+                    return new SwiftDetailFilterInfo(columnKey, null, SwiftDetailFilterType.NOT_SHOW);
                 }
                 int valueType = filterValueBean.getType();
                 return new SwiftDetailFilterInfo<List<String>>(columnKey, dates,
@@ -206,7 +206,7 @@ public class FilterInfoFactory {
             case BICommonConstants.ANALYSIS_FILTER_STRING.NOT_CONTAIN: {
                 String value = ((StringNoContainFilterBean) bean).getFilterValue();
                 if (StringUtils.isBlank(value)) {
-                    break;
+                    return new SwiftDetailFilterInfo(columnKey, null, SwiftDetailFilterType.NOT_SHOW);
                 }
                 return new SwiftDetailFilterInfo<String>(columnKey, value, SwiftDetailFilterType.STRING_NOT_LIKE);
             }
@@ -265,11 +265,17 @@ public class FilterInfoFactory {
             // 数值类过滤
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.BELONG_VALUE: {
                 NumberValue nv = ((NumberBelongFilterBean) bean).getFilterValue();
+                if (nv.getMin() == Double.NEGATIVE_INFINITY && nv.getMax() == Double.POSITIVE_INFINITY) {
+                    break;
+                }
                 return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(columnKey, createValue(nv),
                         SwiftDetailFilterType.NUMBER_IN_RANGE);
             }
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.NOT_BELONG_VALUE: {
                 NumberValue nv = ((NumberNoBelongFilterBean) bean).getFilterValue();
+                if (nv.getMin() == Double.NEGATIVE_INFINITY && nv.getMax() == Double.POSITIVE_INFINITY) {
+                    return new SwiftDetailFilterInfo(columnKey, null, SwiftDetailFilterType.NOT_SHOW);
+                }
                 return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(columnKey, createValue(nv),
                         SwiftDetailFilterType.NUMBER_NOT_IN_RANGE);
             }
@@ -333,11 +339,17 @@ public class FilterInfoFactory {
             // 日期类过滤
             case BICommonConstants.ANALYSIS_FILTER_DATE.BELONG_VALUE: {
                 DateRangeValueBean dateValueBean = ((DateBelongFilterBean) bean).getFilterValue();
+                if (dateValueBean.getStart() == null && dateValueBean.getEnd() == null) {
+                    break;
+                }
                 return new SwiftDetailFilterInfo<SwiftDateInRangeFilterValue>(columnKey,
                         DateRangeValueBeanAdaptor.create(dateValueBean), SwiftDetailFilterType.DATE_IN_RANGE);
             }
             case BICommonConstants.ANALYSIS_FILTER_DATE.NOT_BELONG_VALUE: {
                 DateRangeValueBean dateValueBean = ((DateNoBelongFilterBean) bean).getFilterValue();
+                if (dateValueBean.getStart() == null && dateValueBean.getEnd() == null) {
+                    return new SwiftDetailFilterInfo(columnKey, null, SwiftDetailFilterType.NOT_SHOW);
+                }
                 return new SwiftDetailFilterInfo<SwiftDateInRangeFilterValue>(columnKey,
                         DateRangeValueBeanAdaptor.create(dateValueBean), SwiftDetailFilterType.DATE_NOT_IN_RANGE);
             }

@@ -3,6 +3,7 @@ package com.fr.swift.query.filter;
 import com.fr.stable.StringUtils;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.filter.detail.impl.AllShowDetailFilter;
+import com.fr.swift.query.filter.detail.impl.NotShowDetailFilter;
 import com.fr.swift.query.filter.detail.impl.FormulaFilter;
 import com.fr.swift.query.filter.detail.impl.GeneralAndFilter;
 import com.fr.swift.query.filter.detail.impl.GeneralOrFilter;
@@ -62,8 +63,14 @@ public class DetailFilterFactory {
             case STRING_ENDS_WITH:
                 return new StringEndsWithFilter((String) filterInfo.getFilterValue(), column);
             case STRING_NOT_IN:
+//                if(filterInfo.getFilterValue()==null || ((Set<String>) filterInfo.getFilterValue()).size() == 0) {
+//                    return new StringNotInFilter((Set<String>) filterInfo.getFilterValue(), 0, column);
+//                }
                 return new StringNotInFilter((Set<String>) filterInfo.getFilterValue(), rowCount, column);
             case STRING_NOT_LIKE:
+//                if(StringUtils.isBlank((String) filterInfo.getFilterValue())) {
+//                    return new StringNotLikeFilter((String) filterInfo.getFilterValue(), 0, column);
+//                }
                 return new StringNotLikeFilter((String) filterInfo.getFilterValue(), rowCount, column);
             case STRING_NOT_STARTS_WITH:
                 return new StringNotStartsWithFilter((String) filterInfo.getFilterValue(), rowCount, column);
@@ -78,9 +85,16 @@ public class DetailFilterFactory {
                         value.isMinIncluded(), value.isMaxIncluded(), column);
             }
             case NUMBER_NOT_CONTAIN:
+//                if(filterInfo.getFilterValue()==null || ((Set<Double>) filterInfo.getFilterValue()).toArray()[0] == null) {
+//                    return new NumberNotContainFilter(0, (Set<Double>) filterInfo.getFilterValue(), column);
+//                }
                 return new NumberNotContainFilter(rowCount, (Set<Double>) filterInfo.getFilterValue(), column);
             case NUMBER_NOT_IN_RANGE: {
                 SwiftNumberInRangeFilterValue value = (SwiftNumberInRangeFilterValue) filterInfo.getFilterValue();
+//                if(value.getMin() == Double.NEGATIVE_INFINITY && value.getMax() == Double.POSITIVE_INFINITY) {
+//                    return new NumberNotInRangeFilter(0, value.getMin(), value.getMax(), value.isMinIncluded(),
+//                            value.isMaxIncluded(), column);
+//                }
                 return new NumberNotInRangeFilter(rowCount, value.getMin(), value.getMax(), value.isMinIncluded(),
                         value.isMaxIncluded(), column);
             }
@@ -95,6 +109,9 @@ public class DetailFilterFactory {
                 return new DateInRangeFilter(value2.getStart(), value2.getEnd(), column);
             case DATE_NOT_IN_RANGE:
                 SwiftDateInRangeFilterValue value3 = (SwiftDateInRangeFilterValue) filterInfo.getFilterValue();
+//                if(value3.getStart() == Long.MIN_VALUE && value3.getEnd() == Long.MAX_VALUE) {
+//                    return new DateNotInRangeFilter(0, value3.getStart(), value3.getEnd(), column);
+//                }
                 return new DateNotInRangeFilter(rowCount, value3.getStart(), value3.getEnd(), column);
             case TOP_N:
                 return new TopNFilter((Integer) filterInfo.getFilterValue(), column);
@@ -112,6 +129,8 @@ public class DetailFilterFactory {
                 return new FormulaFilter((String) filterInfo.getFilterValue(), segment);
             case KEY_WORDS:
                 return new StringKeyWordFilter((String) filterInfo.getFilterValue(), column);
+            case NOT_SHOW:
+                return new NotShowDetailFilter();
             default:
                 return new AllShowDetailFilter(segment);
         }
