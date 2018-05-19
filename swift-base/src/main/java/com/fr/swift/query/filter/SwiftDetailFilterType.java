@@ -34,6 +34,7 @@ public enum SwiftDetailFilterType {
 
     FORMULA,
 
+    NOT_SHOW,
     ALL_SHOW,
     KEY_WORDS,
 
