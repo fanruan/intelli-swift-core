@@ -13,6 +13,7 @@ import com.finebi.conf.internalimp.bean.filter.AbstractFilterBean;
 import com.finebi.conf.internalimp.bean.filter.BelongWidgetValue;
 import com.finebi.conf.internalimp.bean.filter.GeneraAndFilterBean;
 import com.finebi.conf.internalimp.bean.filter.GeneraOrFilterBean;
+import com.finebi.conf.internalimp.bean.filter.number.NumberNotNullFilterBean;
 import com.finebi.conf.internalimp.bean.filtervalue.date.DateRangeValueBean;
 import com.finebi.conf.internalimp.dashboard.widget.filter.JumpItemBean;
 import com.finebi.conf.internalimp.dashboard.widget.filter.JumpSourceTargetFieldBean;
@@ -20,6 +21,7 @@ import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetGlobalFilterBea
 import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
 import com.finebi.conf.internalimp.filter.GeneraAndFilter;
 import com.finebi.conf.internalimp.filter.GeneraOrFilter;
+import com.finebi.conf.internalimp.filter.number.NumberNotNullFilter;
 import com.finebi.conf.internalimp.service.pack.FineConfManageCenter;
 import com.finebi.conf.service.engine.relation.EngineRelationPathManager;
 import com.finebi.conf.structure.bean.dashboard.widget.WidgetBean;
@@ -114,6 +116,11 @@ public abstract class AbstractWidgetAdaptor {
 
     static void setMaxMinNumValue(String queryId, String fieldId, List<FineFilter> fineFilters, NumberMaxAndMinValue value) throws Exception {
         SourceKey sourceKey = getSourceKey(fieldId);
+        NumberNotNullFilter filter = new NumberNotNullFilter();
+        NumberNotNullFilterBean bean = new NumberNotNullFilterBean();
+        bean.setFieldId(fieldId);
+        filter.setValue(bean);
+        fineFilters.add(filter);
         FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(getTableName(fieldId), fineFilters);
 
         //先通过明细表排序查最小
