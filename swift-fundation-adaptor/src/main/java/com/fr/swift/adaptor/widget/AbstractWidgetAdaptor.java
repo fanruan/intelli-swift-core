@@ -190,7 +190,7 @@ public abstract class AbstractWidgetAdaptor {
                     }
                     break;
                 default:
-                    String primaryTable = null;
+                    String primaryTable;
                     try {
                         primaryTable = getTableName(bean.getFieldId());
                     } catch (Exception e) {
