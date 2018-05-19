@@ -2,12 +2,15 @@ package com.fr.swift.driver;
 
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.common.internalimp.config.driver.CommonDatabaseDataSourceDriver;
+import com.finebi.common.internalimp.config.driver.utils.CheckSqlDriverTypeUtils;
+import com.finebi.common.internalimp.config.driver.utils.TransferNameUtils;
 import com.finebi.common.internalimp.config.entryinfo.sql.DatabaseEntryInfo;
 import com.finebi.common.internalimp.config.fieldinfo.SimpleFieldPersist;
 import com.finebi.common.structure.config.driver.CommonDBDataSourceDriver;
 import com.finebi.common.structure.config.entryinfo.EntryInfo;
 import com.finebi.common.structure.config.fieldinfo.FieldInfoPersist;
 import com.finebi.common.structure.config.relation.Relation;
+import com.finebi.common.structure.config.utils.TableIdCreator;
 import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
@@ -75,6 +78,22 @@ public class SwiftDatabaseDataSourceDriver extends CommonDatabaseDataSourceDrive
             return info.getSchema();
         }
         return StringUtils.EMPTY;
+    }
+
+    @Override
+    public EntryInfo createEntryInfo(FineBusinessTable table) {
+        CheckSqlDriverTypeUtils.checkDBDriverType(table.getType());
+        FineDBBusinessTable dbBusinessTable = (FineDBBusinessTable) table;
+        DatabaseEntryInfo entryInfo = new DatabaseEntryInfo();
+        entryInfo.setDbTableName(dbBusinessTable.getTableName());
+        entryInfo.setDbName(dbBusinessTable.getConnName());
+        entryInfo.setId(TableIdCreator.getInstance().createTableId(dbBusinessTable.getId()));
+        entryInfo.setSchema(this.getSchemaFromConnName(dbBusinessTable.getConnName()));
+        entryInfo.setName(dbBusinessTable.getName());
+        Map<String, String> escapeMap = TransferNameUtils.updateFieldEscapeMap(table, entryInfo);
+        entryInfo.setEscapeMap(escapeMap);
+        this.entryInfoFactory.updateEntryInfoName(entryInfo, table.getTransferName());
+        return entryInfo;
     }
 
 
