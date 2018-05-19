@@ -10,7 +10,8 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.core.CoreField;
 
 /**
- * Created by Lyon on 2018/2/2.
+ * @author Lyon
+ * @date 2018/2/2
  * 一个过滤器的过滤信息
  */
 public class SwiftDetailFilterInfo<T> extends AbstractDetailFilterInfo {
@@ -54,13 +55,21 @@ public class SwiftDetailFilterInfo<T> extends AbstractDetailFilterInfo {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SwiftDetailFilterInfo<?> that = (SwiftDetailFilterInfo<?>) o;
 
-        if (filterValue != null ? !filterValue.equals(that.filterValue) : that.filterValue != null) return false;
-        if (type != that.type) return false;
+        if (filterValue != null ? !filterValue.equals(that.filterValue) : that.filterValue != null) {
+            return false;
+        }
+        if (type != that.type) {
+            return false;
+        }
         return columnKey != null ? columnKey.equals(that.columnKey) : that.columnKey == null;
     }
 
