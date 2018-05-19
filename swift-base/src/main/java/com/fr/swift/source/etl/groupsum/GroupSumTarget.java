@@ -17,19 +17,21 @@ import java.io.Serializable;
 /**
  * Created by Handsome on 2017/12/8 0008 14:14
  */
-public class SumByGroupTarget implements CoreService,Serializable {
-
+public class GroupSumTarget implements CoreService, Serializable {
     @CoreField
     private int sumType;
+
     @CoreField
     private String name;
+
     private String nameText;
+
     private ColumnType columnType;
+
     private Aggregator aggregator;
 
-
     public Object getSumValue(Segment[] segments, RowTraversal[] traversal) {
-        if (segments == null || segments.length == 0){
+        if (segments == null || segments.length == 0) {
             return null;
         }
         AggregatorValue value = aggregator.aggregate(traversal[0], segments[0].getColumn(new ColumnKey(name)));
@@ -60,11 +62,9 @@ public class SumByGroupTarget implements CoreService,Serializable {
         this.sumType = sumType;
     }
 
-
     public void setColumnType(ColumnType columnType) {
         this.columnType = columnType;
     }
-
 
     public ColumnType getColumnType() {
         return columnType;
@@ -75,11 +75,11 @@ public class SumByGroupTarget implements CoreService,Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof SumByGroupTarget)) {
+        if (!(o instanceof GroupSumTarget)) {
             return false;
         }
 
-        SumByGroupTarget that = (SumByGroupTarget) o;
+        GroupSumTarget that = (GroupSumTarget) o;
 
         if (sumType != that.sumType) {
             return false;
@@ -99,7 +99,7 @@ public class SumByGroupTarget implements CoreService,Serializable {
     public Core fetchObjectCore() {
         try {
             return new CoreGenerator(this).fetchObjectCore();
-        } catch(Exception ignore) {
+        } catch (Exception ignore) {
 
         }
         return Core.EMPTY_CORE;
