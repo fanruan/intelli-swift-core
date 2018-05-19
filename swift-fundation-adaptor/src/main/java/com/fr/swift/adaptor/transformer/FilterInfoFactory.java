@@ -51,7 +51,6 @@ import com.finebi.conf.internalimp.bean.filtervalue.number.NumberValue;
 import com.finebi.conf.internalimp.bean.filtervalue.string.StringBelongFilterValueBean;
 import com.finebi.conf.internalimp.service.pack.FineConfManageCenter;
 import com.finebi.conf.service.engine.relation.EngineRelationPathManager;
-import com.finebi.conf.structure.bean.dashboard.widget.WidgetBean;
 import com.finebi.conf.structure.bean.filter.DateFilterBean;
 import com.finebi.conf.structure.bean.filter.FilterBean;
 import com.finebi.conf.structure.filter.FineFilter;
@@ -76,10 +75,8 @@ import com.fr.swift.source.RelationSource;
 import com.fr.swift.utils.BusinessTableUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -95,15 +92,6 @@ public class FilterInfoFactory {
      * @return
      */
     public static FilterInfo transformFineFilter(String tableName, List<FineFilter> filters) {
-        return transformFineFilter(tableName, filters, new HashMap<String, WidgetBean>());
-    }
-
-    /**
-     * @param tableName widget自身的表名，没表名直接传null
-     * @param filters
-     * @return
-     */
-    public static FilterInfo transformFineFilter(String tableName, List<FineFilter> filters, Map<String, WidgetBean> widgetBeanMap) {
         List<FilterBean> beans = new ArrayList<FilterBean>();
         for (FineFilter filter : filters) {
             if (filter.getValue() != null) {
