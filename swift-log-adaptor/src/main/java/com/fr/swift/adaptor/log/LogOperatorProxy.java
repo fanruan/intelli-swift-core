@@ -57,7 +57,7 @@ public class LogOperatorProxy implements LogOperator {
     @Override
     public void initTables(List<Class> list) throws Exception {
         synchronized (LogOperatorProxy.class) {
-            logOperator.recordInfo(list);
+            logOperator.initTables(list);
         }
     }
 

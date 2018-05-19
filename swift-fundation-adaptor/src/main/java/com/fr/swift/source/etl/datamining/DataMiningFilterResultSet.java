@@ -4,6 +4,7 @@ import com.finebi.conf.algorithm.DMAbstractAlgorithm;
 import com.finebi.conf.algorithm.DMAlgorithmFactory;
 import com.finebi.conf.algorithm.DMColMetaData;
 import com.finebi.conf.algorithm.DMDataModel;
+import com.finebi.conf.algorithm.DMModel;
 import com.finebi.conf.algorithm.DMRowMetaData;
 import com.finebi.conf.algorithm.DMType;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AbstractFilterBean;
@@ -100,7 +101,7 @@ public class DataMiningFilterResultSet implements SwiftResultSet {
         inputModel.setFilterData(filterModel);
         DMAbstractAlgorithm algorithm = DMAlgorithmFactory.create(algorithmBean.getAlgorithmName());
         algorithm.init(algorithmBean, inputModel);
-        DMDataModel outputData = algorithm.run();
+        DMModel outputData = algorithm.run();
         predictTableData = outputData.getData();
     }
 

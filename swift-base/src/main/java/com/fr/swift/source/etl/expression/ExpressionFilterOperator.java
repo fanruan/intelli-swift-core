@@ -11,6 +11,7 @@ import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -84,8 +85,6 @@ public class ExpressionFilterOperator extends AbstractOperator {
 
     @Override
     public List<String> getNewAddedName() {
-        List<String> addColumnNames = new ArrayList<String>();
-        addColumnNames.add(columnName);
-        return addColumnNames;
+        return Collections.singletonList(columnName);
     }
 }

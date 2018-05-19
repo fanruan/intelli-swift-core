@@ -13,7 +13,6 @@ import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
@@ -29,6 +28,11 @@ public class ColumnFilterOperatorResultSet implements SwiftResultSet {
 
     private Segment[] segment;
 
+    /**
+     * 可能字段改过名，底层取数据用这个
+     */
+    private SwiftMetaData baseMeta;
+
     private SwiftMetaData metaData;
 
     private FilterInfo filterInfo;
@@ -36,26 +40,28 @@ public class ColumnFilterOperatorResultSet implements SwiftResultSet {
     private DictionaryEncodedColumn[] dics;
     private Iterator<Integer> currentSegRowIter;
 
-
-    public ColumnFilterOperatorResultSet(Segment[] segment,SwiftMetaData metaData, FilterInfo filterInfo) {
+    public ColumnFilterOperatorResultSet(Segment[] segment, SwiftMetaData baseMeta, SwiftMetaData metaData, FilterInfo filterInfo) {
         this.segment = segment;
+        this.baseMeta = baseMeta;
         this.metaData = metaData;
         this.filterInfo = filterInfo;
         moveNextSegment();
     }
 
+    public ColumnFilterOperatorResultSet(Segment[] segment, SwiftMetaData metaData, FilterInfo filterInfo) {
+        this(segment, metaData, metaData, filterInfo);
+    }
+
     private void moveNextSegment() {
         final List<Integer> rows = new ArrayList<Integer>();
-        if (segCursor >= segment.length){
+        if (segCursor >= segment.length) {
             currentSegRowIter = null;
             return;
         }
         try {
-            dics = new DictionaryEncodedColumn[this.metaData.getColumnCount()];
-            SwiftMetaDataColumn[] metaDataColumn = new SwiftMetaDataColumn[this.metaData.getColumnCount()];
-            for (int i = 0; i < this.metaData.getColumnCount(); i++) {
-                metaDataColumn[i] = this.metaData.getColumn(i + 1);
-                dics[i] = this.segment[segCursor].getColumn(new ColumnKey(metaDataColumn[i].getName())).getDictionaryEncodedColumn();
+            dics = new DictionaryEncodedColumn[baseMeta.getColumnCount()];
+            for (int i = 0; i < baseMeta.getColumnCount(); i++) {
+                dics[i] = segment[segCursor].getColumn(new ColumnKey(baseMeta.getColumn(i + 1).getName())).getDictionaryEncodedColumn();
             }
             segment[segCursor].getAllShowIndex().getAnd(createFilter(segment[segCursor])).traversal(new TraversalAction() {
                 @Override
@@ -81,7 +87,7 @@ public class ColumnFilterOperatorResultSet implements SwiftResultSet {
 
     @Override
     public boolean next() {
-        while (currentSegRowIter != null && !currentSegRowIter.hasNext()){
+        while (currentSegRowIter != null && !currentSegRowIter.hasNext()) {
             moveNextSegment();
         }
         return currentSegRowIter != null && currentSegRowIter.hasNext();
@@ -94,10 +100,10 @@ public class ColumnFilterOperatorResultSet implements SwiftResultSet {
 
     @Override
     public Row getRowData() throws SQLException {
-        List list = new ArrayList();
+        List<Object> list = new ArrayList<Object>();
         int row = currentSegRowIter.next();
-        for (int i = 0; i < dics.length; i++) {
-            list.add(dics[i].getValueByRow(row));
+        for (DictionaryEncodedColumn dic : dics) {
+            list.add(dic.getValueByRow(row));
         }
         return new ListBasedRow(list);
     }
