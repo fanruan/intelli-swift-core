@@ -35,6 +35,7 @@ import com.fr.swift.generate.preview.SwiftDataPreviewer;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.manager.ProviderManager;
 import com.fr.swift.provider.IndexStuffInfoProvider;
 import com.fr.swift.provider.IndexStuffMedium;
@@ -52,6 +53,7 @@ import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.container.SourceContainerManager;
 import com.fr.swift.source.db.QueryDBSource;
+import com.fr.swift.source.empty.EmptyDataSource;
 import com.fr.swift.source.manager.IndexStuffProvider;
 import com.fr.swift.utils.RelationRelianceFactory;
 import com.fr.swift.utils.SourceRelianceFactory;
@@ -285,6 +287,9 @@ public class SwiftUpdateManager implements EngineUpdateManager {
             if (task != null) {
                 UpdateLog updateLog = new UpdateLog();
                 updateLog.setName(table.getName());
+                if (task.getEndTime() == null) {
+                    break;
+                }
                 updateLog.setEndTime(task.getEndTime());
                 updateLogs.add(updateLog);
             }
@@ -410,6 +415,20 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
     @Override
     public boolean shouldUpdate() {
+        List<FineBusinessTable> allBusinessTable = tableManager.getAllTable();
+        LocalSegmentProvider localSegmentProvider = LocalSegmentProvider.getInstance();
+        for (FineBusinessTable fineBusinessTable : allBusinessTable) {
+            try {
+                DataSource dataSource = DataSourceFactory.getDataSource(fineBusinessTable);
+                if (!(dataSource instanceof EmptyDataSource)) {
+                    if (!localSegmentProvider.isSegmentsExist(dataSource.getSourceKey())) {
+                        return true;
+                    }
+                }
+            } catch (Exception e) {
+                LOGGER.error(e);
+            }
+        }
         return false;
     }
 
