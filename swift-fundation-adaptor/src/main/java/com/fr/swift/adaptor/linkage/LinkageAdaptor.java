@@ -12,6 +12,7 @@ import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.WidgetDimensi
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.number.custom.NumberCustomGroupBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.number.custom.NumberCustomGroupNodeBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.number.custom.NumberCustomGroupValueBean;
+import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
 import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.visitor.WidgetBeanToFineWidgetVisitor;
 import com.finebi.conf.internalimp.bean.filtervalue.date.single.DateStaticFilterBean;
@@ -29,9 +30,11 @@ import com.finebi.conf.service.engine.relation.EngineRelationPathManager;
 import com.finebi.conf.service.engine.table.EngineTableManager;
 import com.finebi.conf.structure.bean.dashboard.widget.WidgetBean;
 import com.finebi.conf.structure.bean.filter.DateFilterBean;
+import com.finebi.conf.structure.bean.filter.FilterBean;
 import com.finebi.conf.structure.path.FineBusinessTableRelationPath;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
+import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.transformer.RelationSourceFactory;
 import com.fr.swift.adaptor.transformer.filter.date.DateUtils;
 import com.fr.swift.cal.QueryInfo;
@@ -44,6 +47,7 @@ import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.filter.info.value.SwiftDateInRangeFilterValue;
 import com.fr.swift.query.filter.info.value.SwiftNumberInRangeFilterValue;
+import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.RelationSource;
@@ -58,6 +62,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -168,6 +173,7 @@ public class LinkageAdaptor {
 
             }
         }
+        dealFieldFilter(fromWidget.getTableName(), fromWidget.getNewFields(), filterInfos);
     }
 
     private static RelationSource dealWithCustomRelation(String primaryTable, String foreignTable, Dimension[] primary, String[] foreign) throws Exception {
@@ -217,6 +223,7 @@ public class LinkageAdaptor {
                 }
             }
         }
+        dealFieldFilter(fromWidget.getTableName(), fromWidget.getNewFields(), filterInfos);
     }
 
 
@@ -372,5 +379,22 @@ public class LinkageAdaptor {
         }
         bean.setValue(beanValue);
         return bean;
+    }
+
+    private static void dealFieldFilter(String tableName, List<WidgetBeanField> fields, List<FilterInfo> filterInfos) {
+        if (null != fields && !fields.isEmpty()) {
+            for (WidgetBeanField field : fields) {
+                ArrayList<FilterBean> filterBeans = new ArrayList<FilterBean>();
+                if (null != field.getFilter()) {
+                    filterBeans.add(field.getFilter());
+                }
+                if (null != field.getDetailFilter()) {
+                    filterBeans.add(field.getDetailFilter());
+                }
+                if (!filterBeans.isEmpty()) {
+                    filterInfos.add(FilterInfoFactory.transformFilterBean(tableName, filterBeans, new ArrayList<Segment>()));
+                }
+            }
+        }
     }
 }
