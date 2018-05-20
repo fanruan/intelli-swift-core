@@ -42,7 +42,6 @@ public class DecreaseTransport implements IncrementTransport {
         for (Segment segment : segmentList) {
             SwiftResultSet decreaseResult = decreaseTransfer.createResultSet();
             Deleter deleter = SwiftContext.getInstance().getSwiftDataOperatorProvider().getSwiftDeleter(segment);
-            // fixme result set走一遍就没了，所以应该用一组seg构造deleter
             deleter.deleteData(decreaseResult);
         }
     }
