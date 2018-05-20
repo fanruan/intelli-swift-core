@@ -2,22 +2,26 @@ package com.fr.swift.log;
 
 import com.fr.base.Env;
 import com.fr.base.FRContext;
+import com.fr.third.apache.log4j.ConsoleAppender;
+import com.fr.third.apache.log4j.DailyRollingFileAppender;
 import com.fr.third.apache.log4j.Level;
 import com.fr.third.apache.log4j.Logger;
+import com.fr.third.apache.log4j.PatternLayout;
 import com.fr.third.apache.log4j.PropertyConfigurator;
 
 import java.io.ByteArrayInputStream;
-import java.util.HashMap;
+import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author anchore
  */
 public final class SwiftLoggers {
-    private static final Map<Class, SwiftLogger> LOGGERS = new HashMap<Class, SwiftLogger>();
-    private static final String FINE_LOG_PROPS = "FineLog.properties";
+    private static final Map<Class, SwiftLogger> LOGGERS = new ConcurrentHashMap<Class, SwiftLogger>();
+    private static final String LOG_PROPS = "swift_log.properties";
 
-    private static final SwiftLogger ROOT_LOGGER = new SwiftLogger(Logger.getRootLogger());
+    private static final PatternLayout LAYOUT = new PatternLayout("%d{yy-M-d H:m:s.S} %t %p [%C.%M] %m%n");
 
     static {
         conf();
@@ -42,7 +46,7 @@ public final class SwiftLoggers {
     }
 
     public static SwiftLogger getLogger() {
-        return ROOT_LOGGER;
+        return getLogger(SwiftLogger.class);
     }
 
     public static SwiftLogger getLogger(Class cls) {
@@ -54,23 +58,34 @@ public final class SwiftLoggers {
                 return LOGGERS.get(cls);
             }
             Logger logger = Logger.getLogger(cls);
-            logger.setLevel(Level.INFO);
-            SwiftLogger sl = new SwiftLogger(logger);
+            SwiftLogger sl = new SwiftLogger(conf(logger));
             LOGGERS.put(cls, sl);
             return sl;
         }
+    }
+
+    private static Logger conf(Logger logger) {
+        logger.setLevel(Level.INFO);
+        logger.setAdditivity(false);
+        logger.removeAllAppenders();
+        logger.addAppender(new ConsoleAppender(LAYOUT));
+        try {
+            logger.addAppender(new DailyRollingFileAppender(LAYOUT, "logs/swift.log", "'.'yy-M-d"));
+        } catch (IOException ignore) {
+        }
+        return logger;
     }
 
     private static final String DEFAULT_PROPS =
             "log4j.rootLogger=INFO, stdout, ServerDailyRollingFile\n" +
                     "log4j.appender.ServerDailyRollingFile=com.fr.third.apache.log4j.DailyRollingFileAppender\n" +
                     "log4j.appender.ServerDailyRollingFile.File=logs/swift.log\n" +
-                    "log4j.appender.ServerDailyRollingFile.DatePattern='.'yy-MM-dd\n" +
+                    "log4j.appender.ServerDailyRollingFile.DatePattern='.'yy-M-d\n" +
                     "log4j.appender.ServerDailyRollingFile.layout=com.fr.third.apache.log4j.PatternLayout\n" +
-                    "log4j.appender.ServerDailyRollingFile.layout.ConversionPattern=%d{yy-MM-dd HH:mm:ss.S} %t %p [%C.%M] %m%n\n" +
+                    "log4j.appender.ServerDailyRollingFile.layout.ConversionPattern=%d{yy-M-d H:m:s.S} %t %p [%C.%M] %m%n\n" +
                     "log4j.appender.ServerDailyRollingFile.Append=true\n" +
                     "log4j.appender.stdout=com.fr.third.apache.log4j.ConsoleAppender\n" +
                     "log4j.appender.stdout.layout=com.fr.third.apache.log4j.PatternLayout\n" +
-                    "log4j.appender.stdout.layout.ConversionPattern=%d{yy-MM-dd HH:mm:ss.S} %t %p [%C.%M] %m%n";
+                    "log4j.appender.stdout.layout.ConversionPattern=%d{yy-M-d H:m:s.S} %t %p [%C.%M] %m%n";
 
 }

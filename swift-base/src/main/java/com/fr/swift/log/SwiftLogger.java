@@ -79,5 +79,4 @@ public class SwiftLogger {
     public void error(String msg, Throwable throwable) {
         logger.log(FQCN, Level.ERROR, msg, throwable);
     }
-
 }

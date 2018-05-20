@@ -15,16 +15,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by pony on 2017/12/6.
+ * @author pony
+ * @date 2017/12/6
  */
-public class JDBCResultSet implements SwiftResultSet{
+public class JdbcResultSet implements SwiftResultSet {
     private ResultSet rs;
     private Statement stmt;
     private Connection conn;
     private SwiftMetaData metaData;
     private DBDealer[] dealers;
 
-    public JDBCResultSet(ResultSet rs, Statement stmt, Connection conn, SwiftMetaData metaData, DBDealer[] dealers) {
+    public JdbcResultSet(ResultSet rs, Statement stmt, Connection conn, SwiftMetaData metaData, DBDealer[] dealers) {
         this.rs = rs;
         this.stmt = stmt;
         this.conn = conn;
@@ -50,10 +51,10 @@ public class JDBCResultSet implements SwiftResultSet{
     }
 
     @Override
-    public Row getRowData() throws SQLException{
-        List list = new ArrayList();
-        for (int i = 0; i < dealers.length; i++) {
-            list.add(dealers[i].dealWithResultSet(rs));
+    public Row getRowData() throws SQLException {
+        List<Object> list = new ArrayList<Object>();
+        for (DBDealer dealer : dealers) {
+            list.add(dealer.dealWithResultSet(rs));
         }
         return new ListBasedRow(list);
     }

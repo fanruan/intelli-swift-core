@@ -16,8 +16,8 @@ import java.io.Serializable;
 /**
  * Created by Handsome on 2017/12/8 0008 14:36
  */
-public class SumByGroupDimension implements CoreService, Serializable {
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SumByGroupDimension.class);
+public class GroupSumDimension implements CoreService, Serializable {
+    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(GroupSumDimension.class);
     /**
      * 维度字段名
      */
@@ -61,11 +61,11 @@ public class SumByGroupDimension implements CoreService, Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof SumByGroupDimension)) {
+        if (!(o instanceof GroupSumDimension)) {
             return false;
         }
 
-        SumByGroupDimension that = (SumByGroupDimension) o;
+        GroupSumDimension that = (GroupSumDimension) o;
 
         if (group != null ? !ComparatorUtils.equals(group, that.group) : that.group != null) {
             return false;

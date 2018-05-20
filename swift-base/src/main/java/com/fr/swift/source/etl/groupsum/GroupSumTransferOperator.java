@@ -10,18 +10,18 @@ import java.util.List;
 /**
  * Created by Handsome on 2018/1/22 0022 12:01
  */
-public class SumByGroupTransferOperator implements ETLTransferOperator {
+public class GroupSumTransferOperator implements ETLTransferOperator {
 
-    private SumByGroupTarget[] targets;
-    private SumByGroupDimension[] dimensions;
+    private GroupSumTarget[] targets;
+    private GroupSumDimension[] dimensions;
 
-    public SumByGroupTransferOperator(SumByGroupTarget[] targets, SumByGroupDimension[] dimensions) {
+    public GroupSumTransferOperator(GroupSumTarget[] targets, GroupSumDimension[] dimensions) {
         this.targets = targets;
         this.dimensions = dimensions;
     }
 
     @Override
     public SwiftResultSet createResultSet(SwiftMetaData metaData, List<SwiftMetaData> basedMetas, List<Segment[]> basedSegments) {
-        return new SumByGroupOperatorResultSet(this.targets, this.dimensions, basedSegments.get(0), metaData);
+        return new GroupSumOperatorResultSet(this.targets, this.dimensions, basedSegments.get(0), metaData);
     }
 }

@@ -1,8 +1,7 @@
 package com.fr.swift.cube.space.impl;
 
 import com.fr.swift.cube.space.SpaceUsageDetector;
-import com.fr.swift.util.FileUtil;
-import com.fr.swift.util.function.Consumer;
+import com.fr.third.org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.net.URI;
@@ -13,12 +12,10 @@ import java.net.URISyntaxException;
  * @date 2018/4/13
  */
 public class LocalSpaceUsageDetector implements SpaceUsageDetector {
-
     @Override
     public long detectUsed(URI uri) throws Exception {
-        SpaceMeasurer measurer = new SpaceMeasurer();
-        FileUtil.walk(toFile(uri), measurer);
-        return measurer.getSize();
+        File file = toFile(uri);
+        return file.exists() ? FileUtils.sizeOf(file) : 0;
     }
 
     @Override
@@ -33,18 +30,5 @@ public class LocalSpaceUsageDetector implements SpaceUsageDetector {
 
     private static File toFile(URI uri) throws URISyntaxException {
         return new File(new URI("file", uri.getSchemeSpecificPart(), null));
-    }
-
-    private static class SpaceMeasurer implements Consumer<File> {
-        long size;
-
-        @Override
-        public void accept(File file) {
-            size += file.length();
-        }
-
-        public long getSize() {
-            return size;
-        }
     }
 }

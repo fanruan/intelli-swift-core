@@ -1,6 +1,7 @@
 package com.fr.swift.adaptor.widget.jump;
 
 import com.finebi.conf.constant.BIDesignConstants.DESIGN;
+import com.finebi.conf.constant.BIDesignConstants.DESIGN.WIDGET;
 import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
 import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
 import com.finebi.conf.internalimp.dashboard.widget.detail.DetailWidget;
@@ -35,9 +36,9 @@ import java.util.Map;
 public class JumpAdaptor {
     public static Map<String, Object> getClickValue(FineWidget widget, Map clicked, List<String> fieldIds) throws SQLException {
         switch (widget.getType()) {
-            case 4:
+            case WIDGET.DETAIL:
                 return getClickDetailValue((DetailWidget) widget, clicked, fieldIds);
-            case 1:
+            case WIDGET.TABLE:
                 return getClickGroupValue((TableWidget) widget, clicked, fieldIds);
             default:
                 return Collections.emptyMap();

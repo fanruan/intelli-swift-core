@@ -19,6 +19,6 @@ public class BrotherRateTargetCalculator extends AbstractBrotherTargetCalculator
 
     @Override
     protected Double getValue(Double relationValue, Double currentValue) {
-        return currentValue == null ? null : relationValue / currentValue;
+        return currentValue == null ? null : currentValue / relationValue - 1;
     }
 }

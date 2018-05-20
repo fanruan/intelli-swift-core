@@ -16,8 +16,8 @@ import com.fr.swift.source.etl.group.GroupAssignmentOperator;
 import com.fr.swift.source.etl.group.GroupAssignmentTransferOperator;
 import com.fr.swift.source.etl.group.GroupNumericOperator;
 import com.fr.swift.source.etl.group.GroupNumericTransferOperator;
-import com.fr.swift.source.etl.groupsum.SumByGroupOperator;
-import com.fr.swift.source.etl.groupsum.SumByGroupTransferOperator;
+import com.fr.swift.source.etl.groupsum.GroupSumOperator;
+import com.fr.swift.source.etl.groupsum.GroupSumTransferOperator;
 import com.fr.swift.source.etl.join.JoinOperator;
 import com.fr.swift.source.etl.join.JoinTransferOperator;
 import com.fr.swift.source.etl.rowcal.accumulate.AccumulateRowOperator;
@@ -52,7 +52,7 @@ public class EtlTransferOperatorFactory {
             case JOIN:
                 return transferJoinOperator((JoinOperator) operator);
             case GROUP_SUM:
-                return transferGroupSumOperator((SumByGroupOperator) operator);
+                return transferGroupSumOperator((GroupSumOperator) operator);
             case COLUMN_ROW_TRANS:
                 return transferColumnRowTransOperator((ColumnRowTransOperator) operator);
             case FILTER:
@@ -124,8 +124,8 @@ public class EtlTransferOperatorFactory {
         return new JoinTransferOperator(operator.getColumns(), operator.getlKey(), operator.getrKey(), operator.getType());
     }
 
-    private static ETLTransferOperator transferGroupSumOperator(SumByGroupOperator operator) {
-        return new SumByGroupTransferOperator(operator.getTargets(), operator.getDimensions());
+    private static ETLTransferOperator transferGroupSumOperator(GroupSumOperator operator) {
+        return new GroupSumTransferOperator(operator.getTargets(), operator.getDimensions());
     }
 
     private static ETLTransferOperator transferColumnRowTransOperator(ColumnRowTransOperator operator) {
