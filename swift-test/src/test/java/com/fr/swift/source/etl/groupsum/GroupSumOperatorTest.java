@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Created by Handsome on 2018/1/22 0022 16:05
  */
-public class SumByGroupOperatorTest extends TestCase {
+public class GroupSumOperatorTest extends TestCase {
 
 
     public void testSumByGroup() throws Exception {
@@ -37,13 +37,13 @@ public class SumByGroupOperatorTest extends TestCase {
     }
 
     public SwiftResultSet init(AggregatorType type) {
-        SumByGroupTarget[] target = new SumByGroupTarget[1];
-        SumByGroupDimension[] dimension = new SumByGroupDimension[1];
-        target[0] = new SumByGroupTarget();
+        GroupSumTarget[] target = new GroupSumTarget[1];
+        GroupSumDimension[] dimension = new GroupSumDimension[1];
+        target[0] = new GroupSumTarget();
         target[0].setName("column2");
         target[0].setAggregator(AggregatorFactory.createAggregator(AggregatorType.SUM));
         // TODO   应该是整型
-        dimension[0] = new SumByGroupDimension();
+        dimension[0] = new GroupSumDimension();
         dimension[0].setName("column1");
         dimension[0].setGroup(Groups.newGroup(new NoGroupRule()));
         Segment[] segment = new Segment[2];
@@ -64,7 +64,7 @@ public class SumByGroupOperatorTest extends TestCase {
             EasyMock.replay(column1);
             List list = new ArrayList();
             list.add(parent);
-            SumByGroupTransferOperator operator = new SumByGroupTransferOperator(target, dimension);
+            GroupSumTransferOperator operator = new GroupSumTransferOperator(target, dimension);
             SwiftResultSet rs = operator.createResultSet(null, null, listOfSegment);
             return rs;
         } catch (Exception e) {

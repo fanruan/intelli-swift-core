@@ -22,18 +22,18 @@ import java.util.List;
 /**
  * Created by Handsome on 2018/1/22 0022 11:38
  */
-public class SumByGroupOperatorResultSet implements SwiftResultSet {
+public class GroupSumOperatorResultSet implements SwiftResultSet {
 
-    private SumByGroupTarget[] targets;
-    private SumByGroupDimension[] dimensions;
+    private GroupSumTarget[] targets;
+    private GroupSumDimension[] dimensions;
     private Function[] convertors;
     private Segment[] segments;
     private MergerGroupByValues mergerGroupByValues;
     private SwiftMetaData metaData;
 
-    public SumByGroupOperatorResultSet(SumByGroupTarget[] targets, SumByGroupDimension[] dimensions, Segment[] segments, SwiftMetaData metaData) {
-        this.targets = targets == null ? new SumByGroupTarget[0] : targets;
-        this.dimensions = dimensions == null ? new SumByGroupDimension[0] : dimensions;
+    public GroupSumOperatorResultSet(GroupSumTarget[] targets, GroupSumDimension[] dimensions, Segment[] segments, SwiftMetaData metaData) {
+        this.targets = targets == null ? new GroupSumTarget[0] : targets;
+        this.dimensions = dimensions == null ? new GroupSumDimension[0] : dimensions;
         this.segments = segments;
         this.metaData = metaData;
         init();
@@ -72,10 +72,10 @@ public class SumByGroupOperatorResultSet implements SwiftResultSet {
     @Override
     public Row getRowData() throws SQLException {
         KeyValue<RowIndexKey<Object[]>, List<RowTraversal[]>> kv = mergerGroupByValues.next();
-        List valueList = new ArrayList();
+        List<Object> values = new ArrayList<Object>();
         Object[] dimensionsValues = kv.getKey().getKey();
         for (int i = 0; i < dimensionsValues.length; i++) {
-            valueList.add(convertors[i].apply(dimensionsValues[i]));
+            values.add(convertors[i].apply(dimensionsValues[i]));
         }
         List<RowTraversal[]> traversals =kv.getValue();
         RowTraversal[] traversal = new RowTraversal[traversals.size()];
@@ -84,10 +84,10 @@ public class SumByGroupOperatorResultSet implements SwiftResultSet {
                 traversal[i] = traversals.get(i)[dimensionsValues.length];
             }
         }
-        for (int i = 0; i< targets.length; i++){
-            valueList.add(targets[i].getSumValue(segments, traversal));
+        for (GroupSumTarget target : targets) {
+            values.add(target.getSumValue(segments, traversal));
         }
-        return new ListBasedRow(valueList);
+        return new ListBasedRow(values);
     }
 
 }
