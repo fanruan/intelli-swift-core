@@ -7,6 +7,7 @@ import com.finebi.conf.internalimp.analysis.bean.operator.datamining.kmeans.Kmea
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.timeseries.HoltWintersBean;
 import com.finebi.conf.internalimp.dashboard.widget.table.CrossTableWidget;
 import com.finebi.conf.structure.analysis.vistor.DMBeanVisitor;
+import com.fr.swift.adaptor.widget.datamining.kmeans.KmeansCrossTableAdapter;
 import com.fr.swift.adaptor.widget.datamining.timeseries.TimeSeriesCrossTableAdapter;
 import com.fr.swift.cal.info.XGroupQueryInfo;
 import com.fr.swift.result.NodeResultSet;
@@ -34,8 +35,9 @@ public class CrossTableToDMResultVisitor implements DMBeanVisitor<SwiftResultSet
     }
 
     @Override
-    public SwiftResultSet visit(KmeansBean bean) {
-        return result;
+    public SwiftResultSet visit(KmeansBean bean) throws Exception {
+        KmeansCrossTableAdapter adapter = new KmeansCrossTableAdapter();
+        return adapter.getResult(bean, widget, result, info);
     }
 
     @Override
