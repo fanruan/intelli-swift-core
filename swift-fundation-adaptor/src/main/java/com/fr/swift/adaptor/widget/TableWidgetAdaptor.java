@@ -118,7 +118,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         List<FilterInfo> filterInfoList = new ArrayList<FilterInfo>();
         dealWithWidgetFilter(filterInfoList, widget);
         dealWithLink(filterInfoList, widget);
-        dealWithDrill(filterInfoList, widget);
+        LinkageAdaptor.dealWithDrill(filterInfoList, widget, null);
         dealWithDimensionDirectFilter(filterInfoList, dimensions);
         return new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
     }
@@ -149,7 +149,6 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
 //                filterInfoList.add(new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(columnName), values, SwiftDetailFilterType.STRING_IN));
             }
         }
-        widget.getValue().getDrillList();
     }
 
     private static void dealWithLink(List<FilterInfo> filterInfos, AbstractTableWidget widget) throws Exception {

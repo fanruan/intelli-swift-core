@@ -9,9 +9,12 @@ import com.finebi.conf.constant.BIDesignConstants;
 import com.finebi.conf.constant.BIDesignConstants.DESIGN;
 import com.finebi.conf.exception.FineEngineException;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.WidgetDimensionBean;
+import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.date.DateWidgetDimensionBean;
+import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.TypeGroupBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.number.custom.NumberCustomGroupBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.number.custom.NumberCustomGroupNodeBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.number.custom.NumberCustomGroupValueBean;
+import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.number.NumberWidgetDimensionBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
 import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.visitor.WidgetBeanToFineWidgetVisitor;
@@ -21,17 +24,23 @@ import com.finebi.conf.internalimp.bean.filtervalue.number.NumberValue;
 import com.finebi.conf.internalimp.dashboard.widget.filter.ClickValue;
 import com.finebi.conf.internalimp.dashboard.widget.filter.ClickValueItem;
 import com.finebi.conf.internalimp.dashboard.widget.filter.DetailJumpClickValue;
+import com.finebi.conf.internalimp.dashboard.widget.filter.DrillSequence;
 import com.finebi.conf.internalimp.dashboard.widget.filter.JumpClickValue;
 import com.finebi.conf.internalimp.dashboard.widget.filter.TableJumpClickValue;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetGlobalFilterBean;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
+import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
+import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
 import com.finebi.conf.internalimp.service.pack.FineConfManageCenter;
 import com.finebi.conf.service.engine.relation.EngineRelationPathManager;
 import com.finebi.conf.service.engine.table.EngineTableManager;
 import com.finebi.conf.structure.bean.dashboard.widget.WidgetBean;
 import com.finebi.conf.structure.bean.filter.DateFilterBean;
 import com.finebi.conf.structure.bean.filter.FilterBean;
+import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
+import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionDrill;
 import com.finebi.conf.structure.path.FineBusinessTableRelationPath;
+import com.fr.engine.utils.StringUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
@@ -74,6 +83,7 @@ import java.util.Set;
 public class LinkageAdaptor {
     private static final FineConfManageCenter fineConfManageCenter = StableManager.getContext().getObject("fineConfManageCenter");
     private static final WidgetBeanToFineWidgetVisitor VISITOR = new WidgetBeanToFineWidgetVisitor();
+
     /**
      * 计算被联动过滤信息
      *
@@ -87,7 +97,7 @@ public class LinkageAdaptor {
         if (!(widgetBean instanceof TableWidgetBean)) {
             Crasher.crash("WidgetBean must instance of " + TableWidgetBean.class.getName() + " but got " + widgetBean.getClass().getName());
         }
-        TableWidgetBean fromWidget = VISITOR.visit((TableWidgetBean) widgetBean).getValue();
+        TableWidget fromWidget = VISITOR.visit((TableWidgetBean) widgetBean);
         String fromTableName = fromWidget.getTableName();
 
         if (ComparatorUtils.equals(fromTableName, tableName)) {
@@ -95,7 +105,7 @@ public class LinkageAdaptor {
         } else {
             handleRelationFilter(tableName, fromWidget, clickValueItems, filterInfos, primary, foreign);
         }
-        return fromWidget;
+        return fromWidget.getValue();
     }
 
     public static TableWidgetBean handleClickItem(String tableName, WidgetLinkItem widgetLinkItem, List<FilterInfo> filterInfos) throws Exception {
@@ -159,12 +169,12 @@ public class LinkageAdaptor {
         }
     }
 
-    private static void handleOneTableFilter(TableWidgetBean fromWidget, List<ClickValueItem> clickedList, List<FilterInfo> filterInfos) {
+    private static void handleOneTableFilter(TableWidget fromWidget, List<ClickValueItem> clickedList, List<FilterInfo> filterInfos) throws Exception {
+        TableWidgetBean fromBean = fromWidget.getValue();
         if (null != clickedList) {
             for (ClickValueItem clickValueItem : clickedList) {
                 String value = clickValueItem.getText();
-
-                WidgetDimensionBean bean = fromWidget.getDimensions().get(clickValueItem.getdId());
+                WidgetDimensionBean bean = fromBean.getDimensions().get(clickValueItem.getdId());
                 ColumnKey columnKey = new ColumnKey(BusinessTableUtils.getFieldNameByFieldId(bean.getFieldId()));
                 FilterInfo info = dealFilterInfo(columnKey, value, bean);
                 if (null != info) {
@@ -173,7 +183,8 @@ public class LinkageAdaptor {
 
             }
         }
-        dealFieldFilter(fromWidget.getTableName(), fromWidget.getNewFields(), filterInfos);
+        dealWithDrill(filterInfos, fromWidget, null);
+        dealFieldFilter(fromWidget.getTableName(), fromBean.getNewFields(), filterInfos);
     }
 
     private static RelationSource dealWithCustomRelation(String primaryTable, String foreignTable, Dimension[] primary, String[] foreign) throws Exception {
@@ -188,33 +199,36 @@ public class LinkageAdaptor {
         return new RelationSourceImpl(primarySource, foreignSource, primaryFields, foreignFields);
     }
 
-    private static void handleRelationFilter(String table, TableWidgetBean fromWidget, List<ClickValueItem> clickedList, List<FilterInfo> filterInfos, Dimension[] primary, String[] foreign) {
+    private static void handleRelationFilter(String table, TableWidget fromWidget, List<ClickValueItem> clickedList, List<FilterInfo> filterInfos, Dimension[] primary, String[] foreign) throws Exception {
+        TableWidgetBean fromBean = fromWidget.getValue();
         if (null != clickedList) {
-            EngineRelationPathManager manager = fineConfManageCenter.getRelationPathProvider().get(FineEngineType.Cube);
+//            EngineRelationPathManager manager = fineConfManageCenter.getRelationPathProvider().get(FineEngineType.Cube);
+//
+//            List<FineBusinessTableRelationPath> relationPaths = new ArrayList<FineBusinessTableRelationPath>();
+//            try {
+//                relationPaths.addAll(manager.getRelationPaths(fromWidget.getTableName(), table));
+//                relationPaths.addAll(manager.getRelationPaths(table, fromWidget.getTableName()));
+//            } catch (FineEngineException e) {
+//                Crasher.crash("get relation paths error: ", e);
+//            }
+//            RelationSource relationSource = null;
+//            if (relationPaths.isEmpty()) {
+//                if (null == primary || null == foreign) {
+//                    Crasher.crash(String.format("can not find relation paths between %s and %s!", table, fromWidget.getTableName()));
+//                }
+//                try {
+//                    relationSource = dealWithCustomRelation(fromWidget.getTableName(), table, primary, foreign);
+//                } catch (Exception e) {
+//                    Crasher.crash(String.format("create  relation between %s and %s error!", table, fromWidget.getTableName()), e);
+//                }
+//            } else {
+//                relationSource = RelationSourceFactory.transformRelationSourcesFromPath(relationPaths.get(0));
+//            }
 
-            List<FineBusinessTableRelationPath> relationPaths = new ArrayList<FineBusinessTableRelationPath>();
-            try {
-                relationPaths.addAll(manager.getRelationPaths(fromWidget.getTableName(), table));
-                relationPaths.addAll(manager.getRelationPaths(table, fromWidget.getTableName()));
-            } catch (FineEngineException e) {
-                Crasher.crash("get relation paths error: ", e);
-            }
-            RelationSource relationSource = null;
-            if (relationPaths.isEmpty()) {
-                if (null == primary || null == foreign) {
-                    Crasher.crash(String.format("can not find relation paths between %s and %s!", table, fromWidget.getTableName()));
-                }
-                try {
-                    relationSource = dealWithCustomRelation(fromWidget.getTableName(), table, primary, foreign);
-                } catch (Exception e) {
-                    Crasher.crash(String.format("create  relation between %s and %s error!", table, fromWidget.getTableName()), e);
-                }
-            } else {
-                relationSource = RelationSourceFactory.transformRelationSourcesFromPath(relationPaths.get(0));
-            }
+            RelationSource relationSource = dealRelationSource(fromWidget.getTableName(), table, primary, foreign);
             for (ClickValueItem clickValueItem : clickedList) {
                 String value = clickValueItem.getText();
-                WidgetDimensionBean bean = fromWidget.getDimensions().get(clickValueItem.getdId());
+                WidgetDimensionBean bean = fromBean.getDimensions().get(clickValueItem.getdId());
                 ColumnKey columnKey = new ColumnKey(BusinessTableUtils.getFieldNameByFieldId(bean.getFieldId()));
                 columnKey.setRelation(relationSource);
                 FilterInfo info = dealFilterInfo(columnKey, value, bean);
@@ -222,8 +236,9 @@ public class LinkageAdaptor {
                     filterInfos.add(info);
                 }
             }
+            dealWithDrill(filterInfos, fromWidget, relationSource);
         }
-        dealFieldFilter(fromWidget.getTableName(), fromWidget.getNewFields(), filterInfos);
+        dealFieldFilter(fromWidget.getTableName(), fromBean.getNewFields(), filterInfos);
     }
 
 
@@ -396,5 +411,71 @@ public class LinkageAdaptor {
                 }
             }
         }
+    }
+
+    public static void dealWithDrill(List<FilterInfo> filterInfoList, AbstractTableWidget widget, RelationSource relationSource) throws Exception {
+        for (FineDimension fineDimension : widget.getDimensionList()) {
+            FineDimensionDrill drill = fineDimension.getDimensionDrill();
+            if (drill != null) {
+                List<DrillSequence> list = drill.getDrillSequence();
+                for (DrillSequence sequence : list) {
+                    String value = sequence.getValue();
+                    if (StringUtils.isEmpty(value)) {
+                        continue;
+                    }
+                    String columnName = BusinessTableUtils.getFieldNameByFieldId(sequence.getFrom());
+                    WidgetBeanField field = widget.getFieldByFieldId(sequence.getFrom());
+                    WidgetDimensionBean bean;
+                    switch (field.getType()) {
+                        case BICommonConstants.COLUMN.DATE:
+                            bean = new DateWidgetDimensionBean();
+                            TypeGroupBean groupBean = new TypeGroupBean();
+                            groupBean.setType(BICommonConstants.GROUP.YMD);
+                            bean.setGroup(groupBean);
+                            break;
+                        case BICommonConstants.COLUMN.NUMBER:
+                            bean = new NumberWidgetDimensionBean();
+                            break;
+                        default:
+                            bean = new WidgetDimensionBean();
+                    }
+                    ColumnKey columnKey = new ColumnKey(columnName);
+                    columnKey.setRelation(relationSource);
+                    FilterInfo info = dealFilterInfo(columnKey, value, bean);
+                    if (null != info) {
+                        filterInfoList.add(info);
+                    }
+                }
+
+            }
+        }
+    }
+
+    private static RelationSource dealRelationSource(String primaryTable, String foreignTable, Dimension[] primary, String[] foreign) {
+        if (ComparatorUtils.equals(primaryTable, foreignTable)) {
+            return null;
+        }
+        EngineRelationPathManager manager = fineConfManageCenter.getRelationPathProvider().get(FineEngineType.Cube);
+
+        List<FineBusinessTableRelationPath> relationPaths = new ArrayList<FineBusinessTableRelationPath>();
+        try {
+            relationPaths.addAll(manager.getRelationPaths(primaryTable, foreignTable));
+        } catch (FineEngineException e) {
+            Crasher.crash("get relation paths error: ", e);
+        }
+        RelationSource relationSource = null;
+        if (relationPaths.isEmpty()) {
+            if (null == primary || null == foreign) {
+                Crasher.crash(String.format("can not find relation paths between %s and %s!", primaryTable, foreignTable));
+            }
+            try {
+                relationSource = dealWithCustomRelation(primaryTable, foreignTable, primary, foreign);
+            } catch (Exception e) {
+                Crasher.crash(String.format("create  relation between %s and %s error!", primaryTable, foreignTable), e);
+            }
+        } else {
+            relationSource = RelationSourceFactory.transformRelationSourcesFromPath(relationPaths.get(0));
+        }
+        return relationSource;
     }
 }
