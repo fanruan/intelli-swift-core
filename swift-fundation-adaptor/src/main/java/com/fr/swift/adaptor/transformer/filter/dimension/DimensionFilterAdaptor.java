@@ -53,6 +53,8 @@ public class DimensionFilterAdaptor {
             if (filterBean != null && targets != null) {
                 // 暂时全部是matchFilter
                 filterInfoList.add(getResultFilterInfo(tableName, filterBean, dimension, targets));
+            } else {
+                filterInfoList.add(getDetailFilterInfo(tableName, filterBean, dimension));
             }
         }
         if (attachTargetFilters && targets != null) {
@@ -71,6 +73,26 @@ public class DimensionFilterAdaptor {
             }
         }
         return new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
+    }
+
+    private static FilterInfo getDetailFilterInfo(String tableName, AbstractFilterBean filterBean, FineDimension dimension) {
+        int type = filterBean.getFilterType();
+        if (type == BICommonConstants.ANALYSIS_FILTER_TYPE.OR || type == BICommonConstants.ANALYSIS_FILTER_TYPE.AND) {
+            List<FilterBean> beans = type == BICommonConstants.ANALYSIS_FILTER_TYPE.AND ?
+                    ((GeneraAndFilterBean) filterBean).getFilterValue() : ((GeneraOrFilterBean) filterBean).getFilterValue();
+            List<FilterInfo> children = new ArrayList<FilterInfo>();
+            for (FilterBean bean : beans) {
+                FilterInfo info = getDetailFilterInfo(tableName, (AbstractFilterBean) bean, dimension);
+                if (info != null) {
+                    children.add(info);
+                }
+            }
+            return new GeneralFilterInfo(children, type == BICommonConstants.ANALYSIS_FILTER_TYPE.AND ?
+                    GeneralFilterInfo.AND : GeneralFilterInfo.OR);
+
+        }
+        filterBean.setFieldId(dimension.getFieldId());
+        return FilterInfoFactory.createFilterInfo(tableName, filterBean, new ArrayList<Segment>());
     }
 
     /**

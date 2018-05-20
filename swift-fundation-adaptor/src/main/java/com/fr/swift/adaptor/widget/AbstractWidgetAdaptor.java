@@ -10,8 +10,10 @@ import com.finebi.conf.internalimp.bean.dashboard.widget.control.time.AbstractTi
 import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
 import com.finebi.conf.internalimp.bean.dashboard.widget.field.value.FormulaValueBean;
 import com.finebi.conf.internalimp.bean.filter.AbstractFilterBean;
+import com.finebi.conf.internalimp.bean.filter.BelongWidgetValue;
 import com.finebi.conf.internalimp.bean.filter.GeneraAndFilterBean;
 import com.finebi.conf.internalimp.bean.filter.GeneraOrFilterBean;
+import com.finebi.conf.internalimp.bean.filter.number.NumberNotNullFilterBean;
 import com.finebi.conf.internalimp.bean.filtervalue.date.DateRangeValueBean;
 import com.finebi.conf.internalimp.dashboard.widget.filter.JumpItemBean;
 import com.finebi.conf.internalimp.dashboard.widget.filter.JumpSourceTargetFieldBean;
@@ -19,6 +21,7 @@ import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetGlobalFilterBea
 import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
 import com.finebi.conf.internalimp.filter.GeneraAndFilter;
 import com.finebi.conf.internalimp.filter.GeneraOrFilter;
+import com.finebi.conf.internalimp.filter.number.NumberNotNullFilter;
 import com.finebi.conf.internalimp.service.pack.FineConfManageCenter;
 import com.finebi.conf.service.engine.relation.EngineRelationPathManager;
 import com.finebi.conf.structure.bean.dashboard.widget.WidgetBean;
@@ -113,6 +116,11 @@ public abstract class AbstractWidgetAdaptor {
 
     static void setMaxMinNumValue(String queryId, String fieldId, List<FineFilter> fineFilters, NumberMaxAndMinValue value) throws Exception {
         SourceKey sourceKey = getSourceKey(fieldId);
+        NumberNotNullFilter filter = new NumberNotNullFilter();
+        NumberNotNullFilterBean bean = new NumberNotNullFilterBean();
+        bean.setFieldId(fieldId);
+        filter.setValue(bean);
+        fineFilters.add(filter);
         FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(getTableName(fieldId), fineFilters);
 
         //先通过明细表排序查最小
@@ -145,7 +153,7 @@ public abstract class AbstractWidgetAdaptor {
     static void dealWithWidgetFilter(List<FilterInfo> filterInfoList, AbstractTableWidget widget) throws Exception {
         List<FineFilter> filters = dealWithTargetFilter(widget, widget.getFilters());
         if (filters != null && !filters.isEmpty()) {
-            filterInfoList.add(FilterInfoFactory.transformFineFilter(widget.getTableName(), filters, widget.getDateWidgetIdValueMap()));
+            filterInfoList.add(FilterInfoFactory.transformFineFilter(widget.getTableName(), filters));
         }
     }
 
@@ -197,11 +205,11 @@ public abstract class AbstractWidgetAdaptor {
                         primaryTable = StringUtils.EMPTY;
                     }
                     if (ComparatorUtils.equals(primaryTable, tableName)) {
-                        target.add(filter);
+                        createFilterByType(widget, target, filter);
                     } else {
                         try {
                             if (relationPathManager.isRelationPathExist(primaryTable, tableName)) {
-                                target.add(filter);
+                                createFilterByType(widget, target, filter);
                             }
                         } catch (FineEngineException ignore) {
                             SwiftLoggers.getLogger().info("Can not find relation");
@@ -212,6 +220,37 @@ public abstract class AbstractWidgetAdaptor {
 
         }
         return target;
+    }
+
+    private static void createFilterByType(AbstractTableWidget widget, List<FineFilter> target, FineFilter filter) {
+        Map<String, WidgetBean> widgetBeanMap = widget.getDateWidgetIdValueMap();
+        switch (filter.getFilterType()) {
+            case BICommonConstants.ANALYSIS_FILTER_STRING.BELONG_WIDGET_VALUE:
+            case BICommonConstants.ANALYSIS_FILTER_NUMBER.BELONG_WIDGET_VALUE:
+            case BICommonConstants.ANALYSIS_FILTER_DATE.BELONG_WIDGET_VALUE:
+                AbstractFilterBean bean = (AbstractFilterBean) filter.getValue();
+                BelongWidgetValue widgetValue = (BelongWidgetValue) bean.getFilterValue();
+                createFilterByWidgetType(widgetValue.getWidgetId(), widgetBeanMap, target);
+                break;
+            default:
+                target.add(filter);
+        }
+
+    }
+
+    private static void createFilterByWidgetType(String widgetId, Map<String, WidgetBean> widgetBeanMap, List<FineFilter> target) {
+        if (widgetBeanMap != null && widgetBeanMap.containsKey(widgetId)) {
+            WidgetBean widgetBean = widgetBeanMap.get(widgetId);
+            WidgetFilterVisitor visitor = new WidgetFilterVisitor();
+            try {
+                List<FineFilter> filters = widgetBean.accept(visitor);
+                if (filters != null) {
+                    target.addAll(filters);
+                }
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().error("add widget filter failed", e);
+            }
+        }
     }
 
     private static AbstractFilterBean dealWithFilterBean(AbstractFilterBean bean, List<FineFilter> filters) {
