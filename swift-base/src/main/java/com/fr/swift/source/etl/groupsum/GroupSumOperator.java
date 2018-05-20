@@ -20,25 +20,25 @@ import java.util.List;
 /**
  * Created by Handsome on 2018/1/22 0022 14:02
  */
-public class SumByGroupOperator extends AbstractOperator {
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SumByGroupOperator.class);
+public class GroupSumOperator extends AbstractOperator {
+    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(GroupSumOperator.class);
 
     @CoreField
-    private SumByGroupTarget[] targets;
+    private GroupSumTarget[] targets;
 
     @CoreField
-    private SumByGroupDimension[] dimensions;
+    private GroupSumDimension[] dimensions;
 
-    public SumByGroupOperator(SumByGroupTarget[] targets, SumByGroupDimension[] dimensions) {
+    public GroupSumOperator(GroupSumTarget[] targets, GroupSumDimension[] dimensions) {
         this.targets = targets;
         this.dimensions = dimensions;
     }
 
-    public SumByGroupTarget[] getTargets() {
+    public GroupSumTarget[] getTargets() {
         return targets;
     }
 
-    public SumByGroupDimension[] getDimensions() {
+    public GroupSumDimension[] getDimensions() {
         return dimensions;
     }
 
@@ -48,24 +48,27 @@ public class SumByGroupOperator extends AbstractOperator {
         for (SwiftMetaData parent : tables) {
             try {
                 if (null != dimensions) {
-                    for (SumByGroupDimension dimension : this.dimensions) {
-                        ColumnType columnType = ColumnTypeUtils.getColumnType(parent.getColumn(dimension.getName()));
+                    for (GroupSumDimension dimension : this.dimensions) {
+                        String columnName = dimension.getName();
+                        SwiftMetaDataColumn columnMeta = parent.getColumn(columnName);
+                        ColumnType columnType = ColumnTypeUtils.getColumnType(columnMeta);
                         switch (columnType) {
                             case DATE:
-                                columns.add(new MetaDataColumn(dimension.getNameText(), getSqlType(dimension.getGroup().getGroupType())));
+                                columns.add(new MetaDataColumn(columnName, getSqlType(dimension.getGroup().getGroupType()), columnMeta.getPrecision(), columnMeta.getScale()));
                                 break;
                             case NUMBER:
-                                SwiftMetaDataColumn singleColumn = parent.getColumn(dimension.getName());
-                                columns.add(generateSumNumberGroup(dimension, singleColumn));
+                                columns.add(getNumberGroupSumMeta(dimension, columnMeta));
                                 break;
                             default:
-                                columns.add(new MetaDataColumn(dimension.getNameText(), parent.getColumn(dimension.getName()).getType(), parent.getColumn(dimension.getName()).getPrecision()));
+                                columns.add(new MetaDataColumn(columnName, columnMeta.getType(), columnMeta.getPrecision(), columnMeta.getScale()));
                         }
                     }
                 }
                 if (null != targets) {
-                    for (SumByGroupTarget target : this.targets) {
-                        columns.add(new MetaDataColumn(target.getNameText(), ColumnTypeUtils.columnTypeToSqlType(target.getColumnType()), parent.getColumn(target.getName()).getPrecision()));
+                    for (GroupSumTarget target : this.targets) {
+                        String columnName = target.getName();
+                        SwiftMetaDataColumn columnMeta = parent.getColumn(columnName);
+                        columns.add(new MetaDataColumn(columnName, ColumnTypeUtils.columnTypeToSqlType(target.getColumnType()), columnMeta.getPrecision(), columnMeta.getScale()));
                     }
                 }
             } catch (SwiftMetaDataException e) {
@@ -107,7 +110,7 @@ public class SumByGroupOperator extends AbstractOperator {
         return OperatorType.GROUP_SUM;
     }
 
-    private SwiftMetaDataColumn generateSumNumberGroup(SumByGroupDimension sum, SwiftMetaDataColumn parentColumn) {
+    private SwiftMetaDataColumn getNumberGroupSumMeta(GroupSumDimension sum, SwiftMetaDataColumn parentColumn) {
         int sqlType;
         switch (sum.getGroup().getGroupType()) {
             case CUSTOM:
@@ -142,6 +145,6 @@ public class SumByGroupOperator extends AbstractOperator {
                 sqlType = parentColumn.getType();
         }
 
-        return new MetaDataColumn(sum.getNameText(), sum.getNameText(), sqlType, parentColumn.getPrecision(), parentColumn.getScale());
+        return new MetaDataColumn(sum.getName(), sum.getName(), sqlType, parentColumn.getPrecision(), parentColumn.getScale());
     }
 }

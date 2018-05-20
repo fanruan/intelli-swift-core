@@ -9,13 +9,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- * Created by pony on 2017/12/6.
+ * @author pony
+ * @date 2017/12/6
  */
-public class JDBCRowLimitResultSet extends JDBCResultSet {
+public class JdbcRowLimitResultSet extends JdbcResultSet {
     private int row = -1;
     private int limit;
 
-    public JDBCRowLimitResultSet(ResultSet rs, Statement stmt, Connection conn, SwiftMetaData metaData, DBDealer[] dealers, int limit) {
+    public JdbcRowLimitResultSet(ResultSet rs, Statement stmt, Connection conn, SwiftMetaData metaData, DBDealer[] dealers, int limit) {
         super(rs, stmt, conn, metaData, dealers);
         this.limit = limit;
     }

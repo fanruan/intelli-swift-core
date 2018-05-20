@@ -21,7 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by pony on 2017/12/5.
+ * @author pony
+ * @date 2017/12/5
  */
 public abstract class AbstractPreviewQueryTransfer extends AbstractQueryTransfer {
     protected Map<String, ColumnType> fieldClassTypes;
@@ -43,7 +44,7 @@ public abstract class AbstractPreviewQueryTransfer extends AbstractQueryTransfer
         Statement statement = super.createStatement(conn, dialect);
         try {
             statement.setMaxRows(row);
-        } catch (Exception e){
+        } catch (Exception e) {
             LOGGER.error("not support setMaxRow");
         }
         return statement;
@@ -55,11 +56,11 @@ public abstract class AbstractPreviewQueryTransfer extends AbstractQueryTransfer
         ColumnInformation[] columns = dialect.getColumnInformation(conn, rs, sql, originalCharSetName, newCharSetName);
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
         List<SwiftMetaDataColumn> outerColumnList = new ArrayList<SwiftMetaDataColumn>();
-        for (int i = 0, cols = columns.length; i < cols; i++) {
-            SwiftMetaDataColumn outerColumn = new MetaDataColumn(columns[i].getColumnName(), columns[i].getColumnType(), columns[i].getColumnSize(), columns[i].getScale());
-            if (fieldClassTypes == null || fieldClassTypes.isEmpty()){
+        for (ColumnInformation columnInfo : columns) {
+            SwiftMetaDataColumn outerColumn = new MetaDataColumn(columnInfo.getColumnName(), columnInfo.getColumnType(), columnInfo.getColumnSize(), columnInfo.getScale());
+            if (fieldClassTypes == null || fieldClassTypes.isEmpty()) {
                 columnList.add(outerColumn);
-            } else if (fieldClassTypes.containsKey(outerColumn.getName())){
+            } else if (fieldClassTypes.containsKey(outerColumn.getName())) {
                 SwiftMetaDataColumn column = outerColumn;
                 ColumnType outerColumnType = ColumnTypeUtils.getColumnType(outerColumn);
                 ColumnType columnType = fieldClassTypes.get(outerColumn.getName());
@@ -73,6 +74,6 @@ public abstract class AbstractPreviewQueryTransfer extends AbstractQueryTransfer
         SwiftMetaData metaData = new SwiftMetaDataImpl(StringUtils.EMPTY, columnList);
         SwiftMetaData outerMeta = new SwiftMetaDataImpl(StringUtils.EMPTY, outerColumnList);
         DBDealer[] dealers = createDBDealer(needCharSetConvert, originalCharSetName, newCharSetName, metaData, outerMeta);
-        return new JDBCRowLimitResultSet(rs, stmt, conn, metaData, dealers, row);
+        return new JdbcRowLimitResultSet(rs, stmt, conn, metaData, dealers, row);
     }
 }

@@ -11,7 +11,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- * Created by pony on 2017/12/5.
+ *
+ * @author pony
+ * @date 2017/12/5
  */
 public abstract class AbstractAllQueryTransfer extends AbstractQueryTransfer {
     protected SwiftMetaData metaData;
@@ -34,7 +36,6 @@ public abstract class AbstractAllQueryTransfer extends AbstractQueryTransfer {
     @Override
     public SwiftResultSet createIterator(final ResultSet rs, Dialect dialect, String sql, final Statement stmt, final Connection conn, boolean needCharSetConvert, String originalCharSetName, String newCharSetName) throws SQLException {
         DBDealer[] dealers = createDBDealer(needCharSetConvert, originalCharSetName, newCharSetName, metaData, getSqlMeta());
-        return new JDBCResultSet(rs, stmt, conn, metaData, dealers);
+        return new JdbcResultSet(rs, stmt, conn, metaData, dealers);
     }
-
 }
