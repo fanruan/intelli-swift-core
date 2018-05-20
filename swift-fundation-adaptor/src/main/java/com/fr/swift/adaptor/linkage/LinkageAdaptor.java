@@ -202,29 +202,6 @@ public class LinkageAdaptor {
     private static void handleRelationFilter(String table, TableWidget fromWidget, List<ClickValueItem> clickedList, List<FilterInfo> filterInfos, Dimension[] primary, String[] foreign) throws Exception {
         TableWidgetBean fromBean = fromWidget.getValue();
         if (null != clickedList) {
-//            EngineRelationPathManager manager = fineConfManageCenter.getRelationPathProvider().get(FineEngineType.Cube);
-//
-//            List<FineBusinessTableRelationPath> relationPaths = new ArrayList<FineBusinessTableRelationPath>();
-//            try {
-//                relationPaths.addAll(manager.getRelationPaths(fromWidget.getTableName(), table));
-//                relationPaths.addAll(manager.getRelationPaths(table, fromWidget.getTableName()));
-//            } catch (FineEngineException e) {
-//                Crasher.crash("get relation paths error: ", e);
-//            }
-//            RelationSource relationSource = null;
-//            if (relationPaths.isEmpty()) {
-//                if (null == primary || null == foreign) {
-//                    Crasher.crash(String.format("can not find relation paths between %s and %s!", table, fromWidget.getTableName()));
-//                }
-//                try {
-//                    relationSource = dealWithCustomRelation(fromWidget.getTableName(), table, primary, foreign);
-//                } catch (Exception e) {
-//                    Crasher.crash(String.format("create  relation between %s and %s error!", table, fromWidget.getTableName()), e);
-//                }
-//            } else {
-//                relationSource = RelationSourceFactory.transformRelationSourcesFromPath(relationPaths.get(0));
-//            }
-
             RelationSource relationSource = dealRelationSource(fromWidget.getTableName(), table, primary, foreign);
             for (ClickValueItem clickValueItem : clickedList) {
                 String value = clickValueItem.getText();
