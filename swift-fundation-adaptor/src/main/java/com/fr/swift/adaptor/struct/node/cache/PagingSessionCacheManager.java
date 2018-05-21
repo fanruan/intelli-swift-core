@@ -20,10 +20,13 @@ public class PagingSessionCacheManager {
     private PagingSessionCacheManager() {}
 
     public PagingSession get(String sessionId) {
-        return cache.getWeakHashMapValue(sessionId);
+        return sessionId == null ? null : cache.getWeakHashMapValue(sessionId);
     }
 
     public void cache(String sessionId, PagingSession pagingSession) {
+        if (sessionId == null) {
+            return;
+        }
         cache.putWeakValue(sessionId, pagingSession);
     }
 }

@@ -12,8 +12,15 @@ public class PagingUtils {
     public static PagingInfo createPagingInfo(TableWidget widget, Expander expander) {
         boolean isFirstPage = isFirstPage(widget.getPage());
         boolean isNextPage = isNextPage(widget.getPage());
-        int pageSize = widget.getRowCounts();
+        int pageSize = getPageSize(widget);
         return new PagingInfo(isFirstPage, isNextPage, pageSize, widget.getValue().getSessionId(), expander);
+    }
+
+    public static int getPageSize(TableWidget widget) {
+        if (widget.getPage() == BIDesignConstants.DESIGN.TABLE_PAGE_OPERATOR.ALL_PAGE) {
+            return Integer.MAX_VALUE;
+        }
+        return widget.getRowCounts();
     }
 
     public static boolean isRefresh(int pageOperation) {
