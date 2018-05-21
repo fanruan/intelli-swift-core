@@ -205,7 +205,7 @@ public class DimensionFilterAdaptor {
     }
 
     private static AbstractFilterBean changeNFilterBySort(AbstractFilterBean bean, FineDimensionSort sort) {
-        if (sort.getType() == BIDesignConstants.DESIGN.SORT.FILTER_DESC){
+        if (sort != null && sort.getType() == BIDesignConstants.DESIGN.SORT.FILTER_DESC){
             switch (bean.getFilterType()){
                 case BICommonConstants.ANALYSIS_FILTER_STRING.TOP_N:
                     StringBottomNFilterBean bottomN = new StringBottomNFilterBean();
