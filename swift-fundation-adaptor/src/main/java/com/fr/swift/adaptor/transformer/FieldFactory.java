@@ -4,6 +4,8 @@ import com.finebi.base.constant.FineEngineType;
 import com.finebi.conf.constant.BIConfConstants;
 import com.finebi.conf.internalimp.field.FineBusinessFieldImp;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
+import com.fr.engine.utils.StringUtils;
+import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
@@ -27,15 +29,20 @@ public class FieldFactory {
 
     public static List<FineBusinessField> transformColumns2Fields(SwiftMetaData swiftMetaData, String businessTableId, Map<String, String> escapeMap) throws SwiftMetaDataException {
         List<FineBusinessField> fineBusinessFieldList = new ArrayList<FineBusinessField>();
+        List<String> columnRemarks = new ArrayList<String>();
         for (int i = 1; i <= swiftMetaData.getColumnCount(); i++) {
             String columnName = swiftMetaData.getColumnName(i);
             String columnRemark = swiftMetaData.getColumnRemark(i);
             if (escapeMap != null && escapeMap.containsKey(columnName)) {
                 columnRemark = escapeMap.get(columnName);
             }
-            if (columnRemark == null) {
+            if (columnRemark == null || ComparatorUtils.equals(columnRemark, StringUtils.EMPTY)) {
                 columnRemark = columnName;
             }
+
+            columnRemark = checkColumnRemark(columnRemarks, columnRemark);
+
+            columnRemarks.add(columnRemark);
             String tableId = businessTableId == null ? swiftMetaData.getTableName() : businessTableId;
             FineBusinessFieldImp fineBusinessField = new FineBusinessFieldImp(SwiftEncryption.encryptFieldId(tableId, columnName), columnName, columnRemark);
             fineBusinessField.setEngineType(FineEngineType.Cube);
@@ -47,8 +54,16 @@ public class FieldFactory {
     }
 
 
-    public static List<SwiftMetaDataColumn> transformFields2Column(List<FineBusinessField> fineBusinessFieldList) {
+    private static String checkColumnRemark(List<String> columnRemarks, String remark) {
+        String tmpRemark = remark;
+        int count = 1;
+        while (columnRemarks.contains(tmpRemark)) {
+            tmpRemark = remark + count++;
+        }
+        return tmpRemark;
+    }
 
+    public static List<SwiftMetaDataColumn> transformFields2Column(List<FineBusinessField> fineBusinessFieldList) {
         List<SwiftMetaDataColumn> swiftMetaDataColumnList = new ArrayList<SwiftMetaDataColumn>();
         for (FineBusinessField fineBusinessField : fineBusinessFieldList) {
             //String name, String remark, int sqlType, int precision, int scale

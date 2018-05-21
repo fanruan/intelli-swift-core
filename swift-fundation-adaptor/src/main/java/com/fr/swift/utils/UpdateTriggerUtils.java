@@ -35,7 +35,7 @@ public class UpdateTriggerUtils {
             case UpdateConstants.TableUpdateType.ALL:
                 return tableUpdateInfo;
             case UpdateConstants.TableUpdateType.INCREMENT:
-                DataSource incrementDataSource = DataSourceFactory.getDataSource(fineBusinessTable);
+                DataSource incrementDataSource = DataSourceFactory.getDataSourceInCache(fineBusinessTable);
                 if (LocalSegmentProvider.getInstance().isSegmentsExist(incrementDataSource.getSourceKey())) {
                     return tableUpdateInfo;
                 } else {
@@ -44,7 +44,7 @@ public class UpdateTriggerUtils {
                     return result;
                 }
             case UpdateConstants.TableUpdateType.NEVER:
-                DataSource neverDataSource = DataSourceFactory.getDataSource(fineBusinessTable);
+                DataSource neverDataSource = DataSourceFactory.getDataSourceInCache(fineBusinessTable);
                 if (!LocalSegmentProvider.getInstance().isSegmentsExist(neverDataSource.getSourceKey())) {
                     return tableUpdateInfo;
                 } else {
