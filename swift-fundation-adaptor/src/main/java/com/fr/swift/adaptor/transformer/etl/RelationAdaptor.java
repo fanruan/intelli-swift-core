@@ -98,6 +98,9 @@ class RelationAdaptor {
         RelationshipBean bean = item.getRelationship();
         List<String> from = bean.getFrom();
         List<String> to = bean.getTo();
+        if (null == from || null == to) {
+            return;
+        }
         FineBusinessTable fromTable = BusinessTableUtils.getTableByFieldId(from.get(0));
         FineBusinessTable toTable = BusinessTableUtils.getTableByFieldId((to.get(0)));
         List<FineBusinessTableRelation> relations = relationProvider.getRelationsByTables(fromTable.getName(), toTable.getName());
