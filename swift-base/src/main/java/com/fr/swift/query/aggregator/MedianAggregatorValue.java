@@ -9,7 +9,7 @@ import java.util.TreeMap;
 
 public class MedianAggregatorValue implements AggregatorValue<Number> {
     private double median;
-    private int count;
+    private int count = 0;
     //取值和值的个数作为map保存下来，数据量大且重复值少时会有些问题
     private TreeMap<Double, Integer> values = new TreeMap<Double, Integer>();
 
@@ -39,12 +39,12 @@ public class MedianAggregatorValue implements AggregatorValue<Number> {
 
     @Override
     public double calculate() {
-        return median;
+        return count == 0 ? null : median;
     }
 
     @Override
     public Double calculateValue() {
-        return median;
+        return count == 0 ? null : median;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.fr.swift.query.aggregator;
 
+
 /**
  * @author Xiaolei.liu
  */
@@ -26,12 +27,12 @@ public class DoubleAverageAggregatorValue implements AggregatorValue<Double> {
 
     @Override
     public double calculate() {
-        return value / rowCount;
+        return rowCount == 0 ? null : value / rowCount;
     }
 
     @Override
     public Double calculateValue() {
-        return value / rowCount;
+        return rowCount == 0 ? null : value / rowCount;
     }
 
     @Override
