@@ -82,7 +82,7 @@ public class GroupTargetFactory {
             case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.MONTH_ON_MONTH_VALUE:
                 return new BrotherGroupTarget(queryIndex, resultIndex, paramIndexes, CalTargetType.BROTHER_VALUE, brotherIndexGroup);
             case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.MONTH_ON_MONTH_RATE:
-                return new BrotherGroupTarget(queryIndex, resultIndex, paramIndexes, CalTargetType.COUSIN_VALUE, brotherIndexGroup);
+                return new BrotherGroupTarget(queryIndex, resultIndex, paramIndexes, CalTargetType.BROTHER_RATE, brotherIndexGroup);
             case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.CURRENT_DIMENSION_PERCENT:
                 return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.DIMENSION_PERCENT);
             case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.CURRENT_TARGET_PERCENT:
