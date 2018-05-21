@@ -189,8 +189,8 @@ public class LinkageAdaptor {
 
     private static RelationSource dealWithCustomRelation(String primaryTable, String foreignTable, Dimension[] primary, String[] foreign) throws Exception {
         EngineTableManager tableManager = fineConfManageCenter.getTableProvider().get(FineEngineType.Cube);
-        SourceKey primarySource = DataSourceFactory.getDataSource(tableManager.getSingleTable(primaryTable)).getSourceKey();
-        SourceKey foreignSource = DataSourceFactory.getDataSource(tableManager.getSingleTable(foreignTable)).getSourceKey();
+        SourceKey primarySource = DataSourceFactory.getDataSourceInCache(tableManager.getSingleTable(primaryTable)).getSourceKey();
+        SourceKey foreignSource = DataSourceFactory.getDataSourceInCache(tableManager.getSingleTable(foreignTable)).getSourceKey();
         List<String> primaryFields = new ArrayList<String>();
         for (Dimension dimension : primary) {
             primaryFields.add(dimension.getColumnKey().getName());

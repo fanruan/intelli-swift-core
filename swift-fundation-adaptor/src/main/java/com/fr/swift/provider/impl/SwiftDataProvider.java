@@ -63,7 +63,7 @@ public class SwiftDataProvider implements DataProvider {
     @Override
     public BIDetailTableResult getDetailPreviewByFields(FineBusinessTable table, int rowCount) throws SQLException {
         try {
-            DataSource dataSource = DataSourceFactory.transformDataSource(table);
+            DataSource dataSource = DataSourceFactory.getDataSourceInCache(table);
             if (dataSource instanceof EmptyDataSource) {
                 return new SwiftDetailTableResult(new SwiftEmptyResult(), 0, -1);
             }

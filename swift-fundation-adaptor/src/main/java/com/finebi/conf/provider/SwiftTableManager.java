@@ -84,7 +84,7 @@ public class SwiftTableManager extends AbstractEngineTableManager {
         try {
             while (iterator.hasNext()) {
                 FineBusinessTable table = (FineBusinessTable) iterator.next();
-                DataSource dataSource = DataSourceFactory.transformDataSource(table);
+                DataSource dataSource = DataSourceFactory.getDataSourceInCache(table);
                 tableToSourceConfigDao.addConfig(table.getId(), dataSource.getSourceKey().getId());
                 EntryInfo entryInfo = this.createEntryInfo(table);
                 setRealTime(table, entryInfo);
@@ -107,7 +107,7 @@ public class SwiftTableManager extends AbstractEngineTableManager {
 
             while (iterator.hasNext()) {
                 FineBusinessTable table = (FineBusinessTable) iterator.next();
-                DataSource dataSource = DataSourceFactory.transformDataSource(table);
+                DataSource dataSource = DataSourceFactory.getDataSourceInCache(table);
                 TableToSource tableToSource = new TableToSourceUnique(table.getId(), dataSource.getSourceKey().getId());
                 tableToSourceConfigDao.updateConfig(tableToSource);
                 EntryInfo entryInfo = this.createEntryInfo(table);
