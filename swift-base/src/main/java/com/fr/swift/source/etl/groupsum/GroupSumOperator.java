@@ -68,7 +68,11 @@ public class GroupSumOperator extends AbstractOperator {
                     for (GroupSumTarget target : this.targets) {
                         String columnName = target.getName();
                         SwiftMetaDataColumn columnMeta = parent.getColumn(columnName);
-                        columns.add(new MetaDataColumn(columnName, ColumnTypeUtils.columnTypeToSqlType(target.getColumnType()), columnMeta.getPrecision(), columnMeta.getScale()));
+                        if (target.getColumnType() == ColumnType.NUMBER){
+                            columns.add(new MetaDataColumn(columnName, ColumnTypeUtils.columnTypeToSqlType(target.getColumnType())));
+                        } else {
+                            columns.add(new MetaDataColumn(columnName, ColumnTypeUtils.columnTypeToSqlType(target.getColumnType()), columnMeta.getPrecision(), columnMeta.getScale()));
+                        }
                     }
                 }
             } catch (SwiftMetaDataException e) {
