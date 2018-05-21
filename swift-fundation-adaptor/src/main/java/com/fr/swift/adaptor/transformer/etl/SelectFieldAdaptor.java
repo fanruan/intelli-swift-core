@@ -48,7 +48,7 @@ public class SelectFieldAdaptor {
         for (SelectFieldBeanItem selectFieldBeanItem : selectFieldBeanItemList) {
             FineBusinessTable fineBusinessTable = BusinessTableUtils.getTableByFieldId(selectFieldBeanItem.getField());
             FineBusinessField fineBusinessField = fineBusinessTable.getFieldByFieldId(selectFieldBeanItem.getField());
-            DataSource baseDataSource = DataSourceFactory.getDataSource(fineBusinessTable);
+            DataSource baseDataSource = DataSourceFactory.getDataSourceInCache(fineBusinessTable);
             List<SelectFieldPathItem> path = selectFieldBeanItem.getPath();
             handleSelectPath(path, sourceKeyDataSourceMap);
             ColumnKey columnKey = new ColumnKey(fineBusinessField.getName());
@@ -67,14 +67,14 @@ public class SelectFieldAdaptor {
         }
         List<DataSource> baseDatas = new ArrayList<DataSource>();
         if (analysis.getBaseTable() != null) {
-            baseDatas.add(DataSourceFactory.getDataSource(analysis.getBaseTable()));
+            baseDatas.add(DataSourceFactory.getDataSourceInCache(analysis.getBaseTable()));
         }
         if (sourceKeyDataSourceMap.size() == 1) {
             //选字段只选了一张表的情况
             return getSingleTableSelectFieldSource(sourceKeyColumnMap, sourceKeyDataSourceMap, baseDatas);
         } else {
             FineBusinessTable table = BusinessTableUtils.getTableByTableName(baseTable);
-            DataSource baseDataSource = DataSourceFactory.getDataSource(table);
+            DataSource baseDataSource = DataSourceFactory.getDataSourceInCache(table);
             return getMultiTableSelectFieldSource(sourceKeyColumnMap, sourceKeyDataSourceMap, baseDatas, baseDataSource.getSourceKey().getId());
         }
     }
@@ -123,7 +123,7 @@ public class SelectFieldAdaptor {
 
     private static void dealSourceWithSelectPath(FineBusinessTable table, String tableName, Map<String, DataSource> sourceKeyDataSourceMap) throws Exception {
         if (ComparatorUtils.equals(table.getName(), tableName)) {
-            DataSource dataSource = DataSourceFactory.getDataSource(table);
+            DataSource dataSource = DataSourceFactory.getDataSourceInCache(table);
             String sourceKey = dataSource.getSourceKey().getId();
             if (!sourceKeyDataSourceMap.containsKey(sourceKey)) {
                 sourceKeyDataSourceMap.put(sourceKey, dataSource);
