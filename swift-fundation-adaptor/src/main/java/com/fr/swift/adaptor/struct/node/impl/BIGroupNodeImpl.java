@@ -13,16 +13,19 @@ import java.util.List;
 public class BIGroupNodeImpl implements BIGroupNode {
 
     private int depth;
+    private int index;
     private Object data;
     private BIGroupNode sibling;
     private BIGroupNode parent;
     private Number[] values;
-    private List<BIGroupNode> children = new ArrayList<BIGroupNode>();
+    private List<BIGroupNode> children;
 
-    public BIGroupNodeImpl(GroupNode node) {
+    public BIGroupNodeImpl(boolean isInOrder, GroupNode node) {
         this.depth = node.getDepth();
         this.data = node.getData();
         this.values = getValues(node);
+        this.index = node.getIndex();
+        this.children = isInOrder ? new ArrayList<BIGroupNode>() : new ReverseGettingList();
     }
 
     private Number[] getValues(GroupNode node) {
@@ -33,6 +36,10 @@ public class BIGroupNodeImpl implements BIGroupNode {
             values[i] = value == null ? null : (Number) value.calculateValue();
         }
         return values;
+    }
+
+    public int getIndex() {
+        return index;
     }
 
     public void addChild(BIGroupNodeImpl child) {
@@ -130,5 +137,12 @@ public class BIGroupNodeImpl implements BIGroupNode {
     @Override
     public void setSummaryValue(Number[] summaryValue) {
         throw new UnsupportedOperationException();
+    }
+
+    private static class ReverseGettingList extends ArrayList<BIGroupNode> {
+        @Override
+        public BIGroupNode get(int index) {
+            return super.get(size() - index - 1);
+        }
     }
 }
