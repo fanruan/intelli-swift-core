@@ -6,6 +6,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
+import com.fr.swift.source.excel.data.IExcelDataModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class ExcelTransfer implements SwiftSourceTransfer {
         LOGGER.info("start extracting data from tabledata");
         try {
             for (String fileName : fileNames) {
-                DataModel tableData = new ExcelTableData(fileName).createDataModel();
+                IExcelDataModel tableData = new ExcelTableData(fileName).createDataModel();
                 dataModelList.add(tableData);
             }
             return new DataModelsResultSet(dataModelList, metaData, outerMetadata);
