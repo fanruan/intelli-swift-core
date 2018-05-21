@@ -109,12 +109,12 @@ public class SelectFieldAdaptor {
             for (SelectFieldPathItem item : path) {
                 List<String> from = item.getRelationship().getFrom();
                 if (null != from && !from.isEmpty()) {
-                    FineBusinessTable table = BusinessTableUtils.getTableByFieldId(item.getRelationship().getFrom().get(0));
+                    FineBusinessTable table = BusinessTableUtils.getTableByFieldId(from.get(0));
                     dealSourceWithSelectPath(table, item.getTable(), sourceKeyDataSourceMap);
                 }
                 List<String> to = item.getRelationship().getTo();
                 if (null != to && !to.isEmpty()) {
-                    FineBusinessTable table = BusinessTableUtils.getTableByFieldId(item.getRelationship().getTo().get(0));
+                    FineBusinessTable table = BusinessTableUtils.getTableByFieldId(to.get(0));
                     dealSourceWithSelectPath(table, item.getTable(), sourceKeyDataSourceMap);
                 }
             }
