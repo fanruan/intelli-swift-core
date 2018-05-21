@@ -18,14 +18,14 @@ public class NLevelGroupNodeIterator implements Iterator<GroupNode> {
     /**
      * -1层为根节点，依次类推
      *
-     * @param nthLevel
+     * @param depth
      * @param root
      */
-    public NLevelGroupNodeIterator(final int nthLevel, GroupNode root) {
-        this.iterator = new FilteredIterator<GroupNode>(new DFTGroupNodeIterator(nthLevel, root), new Filter<GroupNode>() {
+    public NLevelGroupNodeIterator(final int depth, GroupNode root) {
+        this.iterator = new FilteredIterator<GroupNode>(new DFTGroupNodeIterator(depth + 1, root), new Filter<GroupNode>() {
             @Override
             public boolean accept(GroupNode node) {
-                return node.getDepth() == nthLevel;
+                return node.getDepth() == depth;
             }
         });
     }

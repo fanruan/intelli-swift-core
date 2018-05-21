@@ -7,14 +7,22 @@ import com.fr.swift.query.adapter.dimension.Expander;
  */
 public class PagingInfo {
 
+    private boolean isFirstPage;
     private boolean isNextPage;
     private int pageSize;
+    private String sessionId;
     private Expander expander;
 
-    public PagingInfo(boolean isNextPage, int pageSize, Expander expander) {
+    public PagingInfo(boolean isFirstPage, boolean isNextPage, int pageSize, String sessionId, Expander expander) {
+        this.isFirstPage = isFirstPage;
         this.isNextPage = isNextPage;
         this.pageSize = pageSize;
+        this.sessionId = sessionId;
         this.expander = expander;
+    }
+
+    public boolean isFirstPage() {
+        return isFirstPage;
     }
 
     public boolean isNextPage() {
@@ -23,6 +31,10 @@ public class PagingInfo {
 
     public int getPageSize() {
         return pageSize;
+    }
+
+    public String getSessionId() {
+        return sessionId;
     }
 
     public Expander getExpander() {

@@ -5,6 +5,7 @@ import com.fr.swift.structure.stack.ArrayLimitedStack;
 import com.fr.swift.structure.stack.LimitedStack;
 import com.fr.swift.util.function.Function2;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class DFTGroupNodeIterator implements Iterator<GroupNode> {
      * @param root
      */
     public DFTGroupNodeIterator(int dimensionSize, GroupNode root) {
-        this(true, dimensionSize, root, new int[dimensionSize]);
+        this(true, dimensionSize, root, new int[dimensionSize < 0 ? 0 : dimensionSize]);
     }
 
     /**
@@ -41,7 +42,7 @@ public class DFTGroupNodeIterator implements Iterator<GroupNode> {
      */
     public DFTGroupNodeIterator(boolean isNormalIterator, int dimensionSize, GroupNode root, int[] cursor) {
         this.root = root;
-        this.cursor = cursor;
+        this.cursor = Arrays.copyOf(cursor, cursor.length);
         this.iterators = dimensionSize <= 0 ? null : new ArrayLimitedStack<Iterator<GroupNode>>(dimensionSize);
         this.itGetter = isNormalIterator ? normalItGetter : reverseItGetter;
         init();
@@ -69,7 +70,7 @@ public class DFTGroupNodeIterator implements Iterator<GroupNode> {
             if (index == DEFAULT_START_INDEX) {
                 return new ReverseIt(children.size() - 1, children);
             } else {
-                return new ReverseIt(index, children.subList(0, index));
+                return new ReverseIt(index, children.subList(0, index + 1));
             }
         }
     };
@@ -90,7 +91,7 @@ public class DFTGroupNodeIterator implements Iterator<GroupNode> {
 
     private GroupNode getNext() {
         GroupNode ret = null;
-        while (!iterators.isEmpty()) {
+        while (iterators != null && !iterators.isEmpty()) {
             Iterator<GroupNode> it = iterators.peek();
             if (it.hasNext()) {
                 GroupNode node = it.next();

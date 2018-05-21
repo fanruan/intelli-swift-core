@@ -1,9 +1,11 @@
 package com.fr.swift.adaptor.struct.node.paging;
 
 import com.finebi.conf.structure.result.table.BIGroupNode;
+import com.fr.swift.adaptor.struct.node.cache.PagingSessionCacheManager;
 import com.fr.swift.adaptor.struct.node.impl.BIGroupNodeImpl;
 import com.fr.swift.query.adapter.dimension.Expander;
 import com.fr.swift.result.GroupNode;
+import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.node.iterator.DFTGroupNodeIterator;
 import com.fr.swift.structure.Pair;
 
@@ -13,46 +15,49 @@ import java.util.Iterator;
 /**
  * Created by Lyon on 2018/5/20.
  */
-public class GroupNodePagingHelper implements NodePagingHelper<BIGroupNode> {
+public class GroupNodePagingHelper implements NodePagingHelper {
 
     private int dimensionSize;
     private GroupNode root;
-    // 前一页的开始游标
-    private int[] prevPageStartCursor = null;
-    // 后一页的开始游标
-    private int[] nextPageStartCursor = null;
-    // 向前翻页的第一行（再向前翻一页之后就是下一页的第一行）
-    private int[] firstRowOfPrevPage = null;
-    // 向后翻页的最后一行（再向后翻一页之后就是前一页的最后一行）
-    private int[] lastRowOfNextPage = null;
+    private NodeResultSet resultSet;
 
-    public GroupNodePagingHelper(int dimensionSize, GroupNode root) {
+    public GroupNodePagingHelper(int dimensionSize, NodeResultSet resultSet) {
         this.dimensionSize = dimensionSize;
-        this.root = root;
+        this.root = (GroupNode) resultSet.getNode();
+        this.resultSet = resultSet;
     }
 
     @Override
-    public BIGroupNode getPage(PagingInfo pagingInfo) {
-        int[] cursor = getCursor(pagingInfo);
+    public Pair<BIGroupNode, PagingSession> getPage(PagingInfo pagingInfo) {
+        PagingSession pagingSession = PagingSessionCacheManager.getInstance().get(pagingInfo.getSessionId());
+        if (pagingSession == null) {
+            pagingSession = new PagingSession();
+        }
+        int[] cursor = getCursor(pagingInfo, pagingSession);
         Pair<BIGroupNodeImpl, Pair<int[], int[]>> pair = copyNode(pagingInfo, cursor);
         if (pagingInfo.isNextPage()) {
-            prevPageStartCursor = lastRowOfNextPage;
-            lastRowOfNextPage = pair.getValue().getKey();
-            nextPageStartCursor = pair.getValue().getValue();
+            pagingSession.setPrevPageStartCursor(pagingSession.getLastRowOfPage());
+            pagingSession.setFirstRowOfPage(pagingSession.getNextPageStartCursor());
+            pagingSession.setLastRowOfPage(pair.getValue().getKey());
+            pagingSession.setNextPageStartCursor(pair.getValue().getValue());
         } else {
-            nextPageStartCursor = firstRowOfPrevPage;
-            firstRowOfPrevPage = pair.getValue().getKey();
-            prevPageStartCursor = pair.getValue().getValue();
+            pagingSession.setNextPageStartCursor(pagingSession.getFirstRowOfPage());
+            pagingSession.setLastRowOfPage(pagingSession.getPrevPageStartCursor());
+            pagingSession.setFirstRowOfPage(pair.getValue().getKey());
+            pagingSession.setPrevPageStartCursor(pair.getValue().getValue());
         }
-        return pair.getKey();
+        PagingSessionCacheManager.getInstance().cache(pagingInfo.getSessionId(), pagingSession);
+        return Pair.of((BIGroupNode) pair.getKey(), pagingSession);
     }
 
-    private int[] getCursor(PagingInfo pagingInfo) {
-        if (pagingInfo.isNextPage()) {
-            return nextPageStartCursor == null ? new int[dimensionSize] : nextPageStartCursor;
+    private int[] getCursor(PagingInfo pagingInfo, PagingSession pagingSession) {
+        if (pagingInfo.isFirstPage()) {
+            pagingSession.setNextPageStartCursor(new int[dimensionSize]);
+            pagingSession.setPrevPageStartCursor(null);
+            pagingSession.setFirstRowOfPage(null);
+            pagingSession.setLastRowOfPage(null);
         }
-        assert prevPageStartCursor != null;
-        return prevPageStartCursor;
+        return pagingInfo.isNextPage() ? pagingSession.getNextPageStartCursor() : pagingSession.getPrevPageStartCursor();
     }
 
     private Pair<BIGroupNodeImpl, Pair<int[], int[]>> copyNode(PagingInfo pagingInfo, int[] cursor) {
@@ -89,10 +94,13 @@ public class GroupNodePagingHelper implements NodePagingHelper<BIGroupNode> {
     private static int[] getRowCursor(int childIndex, BIGroupNodeImpl[] cacheNode) {
         int[] cursor = new int[cacheNode.length - 1];
         Arrays.fill(cursor, DFTGroupNodeIterator.DEFAULT_START_INDEX);
-        for (int i = 0; i <= childIndex; i++) {
-            cursor[i] = cacheNode[i + 1].getIndex();
+        for (int i = 1; i <= childIndex; i++) {
+            if (cacheNode[i] == null) {
+                continue;
+            }
+            cursor[i - 1] = cacheNode[i].getIndex();
         }
-        return cursor;
+        return cursor.length > 0 && cursor[0] == DFTGroupNodeIterator.DEFAULT_START_INDEX ? null : cursor;
     }
 
     private static boolean isRow(int childIndex, BIGroupNodeImpl[] cacheNode, Expander expander) {
@@ -102,6 +110,11 @@ public class GroupNodePagingHelper implements NodePagingHelper<BIGroupNode> {
 
     private static boolean isChild(int childIndex, BIGroupNodeImpl[] cacheNode, Expander expander) {
         // TODO: 2018/5/21 通过expander来判断是否要添加child
-        return childIndex != cacheNode.length - 1;
+        return true;
+    }
+
+    @Override
+    public <T extends NodeResultSet> T getNodeResultSet() {
+        return (T) resultSet;
     }
 }

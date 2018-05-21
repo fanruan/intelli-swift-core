@@ -19,11 +19,11 @@ public class NodeCacheManager {
 
     private NodeCacheManager() {}
 
-    public <T extends NodePagingHelper> T get(String sessionId) {
-        return (T) cache.getWeakHashMapValue(sessionId);
+    public <T extends NodePagingHelper> T get(String widgetId) {
+        return (T) cache.getWeakHashMapValue(widgetId);
     }
 
-    public <T extends NodePagingHelper> void cache(String sessionId, T nodePagingHelper) {
-        cache.putWeakValue(sessionId, nodePagingHelper);
+    public <T extends NodePagingHelper> void cache(String widgetId, T nodePagingHelper) {
+        cache.putWeakValue(widgetId, nodePagingHelper);
     }
 }
