@@ -12,6 +12,7 @@ import com.fr.swift.structure.iterator.RowTraversal;
 import java.util.Arrays;
 
 
+
 /**
  * @author Xiaolei.liu
  * 方差的计算和平均数计算基本一样，只是求和的数据有差别，
@@ -26,13 +27,13 @@ public class VarianceAggregate extends AbstractAggregator<VarianceAggregatorValu
         final VarianceAggregatorValue varianceValue = new VarianceAggregatorValue();
         final DetailColumn detailColumn = column.getDetailColumn();
         final Aggregator avg = AverageAggregate.INSTANCE;
-        final double average = avg.aggregate(traversal, column).calculate();
         final double[] sum = new double[2];
         Arrays.fill(sum, 0);
         RowTraversal notNullTraversal = getNotNullTraversal(traversal, column);
         if (notNullTraversal.isEmpty()) {
-            return new VarianceAggregatorValue();
+            return varianceValue;
         }
+        final double average = avg.aggregate(notNullTraversal, column).calculate();
         CalculatorTraversalAction ss;
         if (detailColumn instanceof LongDetailColumn) {
             return aggregateLong(notNullTraversal, detailColumn, average);

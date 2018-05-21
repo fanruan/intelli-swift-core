@@ -15,8 +15,9 @@ public class AverageAggregate extends AbstractAggregator<DoubleAverageAggregator
     public DoubleAverageAggregatorValue aggregate(RowTraversal traversal, Column column) {
 
         DoubleAverageAggregatorValue averageValue = new DoubleAverageAggregatorValue();
+        RowTraversal notNullTraversal = getNotNullTraversal(traversal, column);
         averageValue.setValue((getSumValue(traversal, column)).getValue());
-        averageValue.setRowCount(traversal.getCardinality());
+        averageValue.setRowCount(notNullTraversal.getCardinality());
         return averageValue;
     }
 
@@ -30,8 +31,10 @@ public class AverageAggregate extends AbstractAggregator<DoubleAverageAggregator
 
     @Override
     public void combine(DoubleAverageAggregatorValue value, DoubleAverageAggregatorValue other) {
+        double dValue = Double.isNaN(value.getValue()) ? 0 : value.getValue();
+        double dOther = Double.isNaN(other.getValue()) ? 0 : other.getValue();
         value.setRowCount(value.getRowCount() + other.getRowCount());
-        value.setValue(value.getValue() + other.getValue());
+        value.setValue(dValue + dOther);
     }
 
 
