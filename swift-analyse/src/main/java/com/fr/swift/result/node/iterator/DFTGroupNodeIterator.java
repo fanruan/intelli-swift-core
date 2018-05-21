@@ -3,6 +3,7 @@ package com.fr.swift.result.node.iterator;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.structure.stack.ArrayLimitedStack;
 import com.fr.swift.structure.stack.LimitedStack;
+import com.fr.swift.util.function.Function2;
 
 import java.util.Iterator;
 import java.util.List;
@@ -14,9 +15,12 @@ import java.util.List;
  */
 public class DFTGroupNodeIterator implements Iterator<GroupNode> {
 
+    private static final int DEFAULT_START_INDEX = -1;
+
     private GroupNode root;
     private int[] cursor;
     private LimitedStack<Iterator<GroupNode>> iterators;
+    private Function2<Integer, List<GroupNode>, Iterator<GroupNode>> itGetter;
     private GroupNode next;
 
     /**
@@ -24,33 +28,57 @@ public class DFTGroupNodeIterator implements Iterator<GroupNode> {
      * @param root
      */
     public DFTGroupNodeIterator(int dimensionSize, GroupNode root) {
-        this(dimensionSize, root, new int[dimensionSize]);
+        this(true, dimensionSize, root, new int[dimensionSize]);
     }
 
-    public DFTGroupNodeIterator(int dimensionSize, GroupNode root, int[] cursor) {
+    /**
+     * 可以根据游标进行向前或者向后遍历的迭代器
+     *
+     * @param isNormalIterator true为前序
+     * @param dimensionSize
+     * @param root
+     * @param cursor           GroupNode#getIndex()对应的游标
+     */
+    public DFTGroupNodeIterator(boolean isNormalIterator, int dimensionSize, GroupNode root, int[] cursor) {
         this.root = root;
         this.cursor = cursor;
         this.iterators = dimensionSize <= 0 ? null : new ArrayLimitedStack<Iterator<GroupNode>>(dimensionSize);
+        this.itGetter = isNormalIterator ? normalItGetter : reverseItGetter;
         init();
     }
 
     private void init() {
         if (iterators != null) {
-            iterators.push(getIt(0, root.getChildren()));
+            iterators.push(itGetter.apply(0, root.getChildren()));
         }
         next = root;
     }
 
-    private Iterator<GroupNode> getIt(int dimensionIndex, List<GroupNode> children) {
-        int index = getStartIndex(dimensionIndex);
-        return index == 0 ? children.iterator() : children.subList(index, children.size()).iterator();
-    }
+    private Function2<Integer, List<GroupNode>, Iterator<GroupNode>> normalItGetter = new Function2<Integer, List<GroupNode>, Iterator<GroupNode>>() {
+        @Override
+        public Iterator<GroupNode> apply(Integer dimensionIndex, List<GroupNode> children) {
+            int index = getStartIndex(dimensionIndex);
+            return index == DEFAULT_START_INDEX || index == 0 ? children.iterator() : children.subList(index, children.size()).iterator();
+        }
+    };
+
+    private Function2<Integer, List<GroupNode>, Iterator<GroupNode>> reverseItGetter = new Function2<Integer, List<GroupNode>, Iterator<GroupNode>>() {
+        @Override
+        public Iterator<GroupNode> apply(Integer dimensionIndex, List<GroupNode> children) {
+            int index = getStartIndex(dimensionIndex);
+            if (index == DEFAULT_START_INDEX) {
+                return new ReverseIt(children.size() - 1, children);
+            } else {
+                return new ReverseIt(index, children.subList(0, index));
+            }
+        }
+    };
 
     private int getStartIndex(int dimensionIndex) {
         int index = cursor[dimensionIndex];
-        if (index != 0) {
+        if (index != DEFAULT_START_INDEX) {
             // 分组定位的游标只能用一次
-            cursor[dimensionIndex] = 0;
+            cursor[dimensionIndex] = DEFAULT_START_INDEX;
         }
         return index;
     }
@@ -68,7 +96,7 @@ public class DFTGroupNodeIterator implements Iterator<GroupNode> {
                 GroupNode node = it.next();
                 ret = node;
                 if (iterators.size() != iterators.limit()) {
-                    iterators.push(getIt(iterators.size(), node.getChildren()));
+                    iterators.push(itGetter.apply(iterators.size(), node.getChildren()));
                 }
                 break;
             } else {
@@ -83,6 +111,31 @@ public class DFTGroupNodeIterator implements Iterator<GroupNode> {
         GroupNode ret = next;
         next = getNext();
         return ret;
+    }
+
+    private static class ReverseIt implements Iterator<GroupNode> {
+
+        private int index;
+        private List<GroupNode> children;
+
+        public ReverseIt(int index, List<GroupNode> children) {
+            this.index = index;
+            this.children = children;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return index > -1;
+        }
+
+        @Override
+        public GroupNode next() {
+            return children.get(index--);
+        }
+
+        @Override
+        public void remove() {
+        }
     }
 
     @Override
