@@ -17,6 +17,11 @@ import java.util.List;
  * @date 2018/5/21
  */
 public class ExcelUtil {
+    /**
+     * 暂时这么处理，继承的ExcelDataModelPlus没法拿到mergeCell
+     * @param inputStream
+     * @param filePath
+     */
     public static void checkHead(InputStream inputStream, String filePath)  {
         try {
             if (null == inputStream) {
