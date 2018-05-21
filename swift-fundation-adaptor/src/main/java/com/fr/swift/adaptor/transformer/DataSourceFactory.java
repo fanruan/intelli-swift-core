@@ -35,6 +35,7 @@ import com.fr.swift.source.etl.EtlSource;
 import com.fr.swift.source.excel.ExcelDataSource;
 import com.fr.swift.source.excel.data.ExcelDataModelCreator;
 import com.fr.swift.source.excel.data.IExcelDataModel;
+import com.fr.swift.source.excel.exception.ExcelException;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -110,6 +111,9 @@ public class DataSourceFactory {
             DataSource dataSource = getDataSource(table);
             dataSource = SourceCache.getCache().getMetaDataBySource(dataSource);
             return dataSource;
+        } catch (ExcelException e){
+            // 如果是ExcelException表示DataSource是Excel，抛错没影响，没毛病
+            throw e;
         } catch (Exception e) {
             LOGGER.error(e);
             return new EmptyDataSource();
