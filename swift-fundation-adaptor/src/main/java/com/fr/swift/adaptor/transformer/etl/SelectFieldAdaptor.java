@@ -107,10 +107,16 @@ public class SelectFieldAdaptor {
     private static void handleSelectPath(List<SelectFieldPathItem> path, Map<String, DataSource> sourceKeyDataSourceMap) throws Exception {
         if (path != null && !path.isEmpty()) {
             for (SelectFieldPathItem item : path) {
-                FineBusinessTable table = BusinessTableUtils.getTableByFieldId(item.getRelationship().getFrom().get(0));
-                dealSourceWithSelectPath(table, item.getTable(), sourceKeyDataSourceMap);
-                table = BusinessTableUtils.getTableByFieldId(item.getRelationship().getTo().get(0));
-                dealSourceWithSelectPath(table, item.getTable(), sourceKeyDataSourceMap);
+                List<String> from = item.getRelationship().getFrom();
+                if (null != from && !from.isEmpty()) {
+                    FineBusinessTable table = BusinessTableUtils.getTableByFieldId(from.get(0));
+                    dealSourceWithSelectPath(table, item.getTable(), sourceKeyDataSourceMap);
+                }
+                List<String> to = item.getRelationship().getTo();
+                if (null != to && !to.isEmpty()) {
+                    FineBusinessTable table = BusinessTableUtils.getTableByFieldId(to.get(0));
+                    dealSourceWithSelectPath(table, item.getTable(), sourceKeyDataSourceMap);
+                }
             }
         }
     }

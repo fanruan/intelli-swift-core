@@ -9,7 +9,7 @@ import com.fr.swift.bitmap.impl.RoaringMutableBitMap;
 public class DistinctCountAggregatorValue implements AggregatorValue<Double> {
 
 
-    private RoaringMutableBitMap bitMap;
+    private RoaringMutableBitMap bitMap = (RoaringMutableBitMap) RoaringMutableBitMap.newInstance();
 
 
     public void setBitMap(RoaringMutableBitMap bitMap) {

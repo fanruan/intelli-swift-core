@@ -1,5 +1,6 @@
 package com.fr.swift.query.aggregator;
 
+
 /**
  * @author Xiaolei.liu
  */
@@ -14,9 +15,9 @@ public class VarianceAggregatorValue implements AggregatorValue<Number> {
     private double variance;
 
     //取标准差
-    public double getStandarDeviation() {
-        return Math.sqrt(variance);
-    }
+//    public double getStandarDeviation() {
+//        return Math.sqrt(variance);
+//    }
 
     public double getSum() {
         return sum;
@@ -52,12 +53,12 @@ public class VarianceAggregatorValue implements AggregatorValue<Number> {
 
     @Override
     public double calculate() {
-        return (count != 0 ? variance / count : 0);
+        return (count == 0 ? null : variance / count);
     }
 
     @Override
     public Number calculateValue() {
-        return (count != 0 ? variance / count : 0);
+        return (count == 0 ? null : variance / count);
     }
 
     @Override

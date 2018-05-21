@@ -1,5 +1,6 @@
 package com.fr.swift.query.aggregator;
 
+
 /**
  * @author Xiaolei.liu
  */
@@ -18,12 +19,12 @@ public class StandardAggregatorValue extends VarianceAggregatorValue {
 
     @Override
     public double calculate() {
-        return Math.sqrt(variance.calculate());
+        return (variance.getCount() == 0) ? null : Math.sqrt(variance.calculateValue().doubleValue());
     }
 
     @Override
     public Number calculateValue() {
-        return Math.sqrt(variance.calculateValue().doubleValue());
+        return (variance.getCount() == 0) ? null : Math.sqrt(variance.calculateValue().doubleValue());
     }
 
     @Override
