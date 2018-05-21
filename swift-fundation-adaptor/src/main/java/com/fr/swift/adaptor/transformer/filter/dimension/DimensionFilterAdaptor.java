@@ -205,8 +205,8 @@ public class DimensionFilterAdaptor {
     }
 
     private static AbstractFilterBean changeNFilterBySort(AbstractFilterBean bean, FineDimensionSort sort) {
-        if (sort.getType() == BIDesignConstants.DESIGN.SORT.FILTER_DESC){
-            switch (bean.getFilterType()){
+        if (sort != null && sort.getType() == BIDesignConstants.DESIGN.SORT.FILTER_DESC) {
+            switch (bean.getFilterType()) {
                 case BICommonConstants.ANALYSIS_FILTER_STRING.TOP_N:
                     StringBottomNFilterBean bottomN = new StringBottomNFilterBean();
                     bottomN.setFieldId(bean.getFieldId());
@@ -220,10 +220,11 @@ public class DimensionFilterAdaptor {
                 case BICommonConstants.ANALYSIS_FILTER_TYPE.AND:
                 case BICommonConstants.ANALYSIS_FILTER_TYPE.OR:
                     List<FilterBean> children = (List<FilterBean>) bean.getFilterValue();
-                    for (int i = 0;i < children.size(); i++){
+                    for (int i = 0; i < children.size(); i++) {
                         children.set(i, changeNFilterBySort((AbstractFilterBean) children.get(i), sort));
                     }
                     return bean;
+                default:
             }
 
         }

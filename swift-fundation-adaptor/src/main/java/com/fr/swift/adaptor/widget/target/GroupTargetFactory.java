@@ -59,6 +59,8 @@ public class GroupTargetFactory {
                 return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_AVG);
             case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.SUM_OF_ALL_MAX:
                 return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_MAX);
+            case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.SUM_OF_ALL_MIN:
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_MIN);
             case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.RANK_IN_GROUP_ASC:
                 return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.GROUP_RANK_ASC);
             case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.RANK_IN_GROUP_DES:

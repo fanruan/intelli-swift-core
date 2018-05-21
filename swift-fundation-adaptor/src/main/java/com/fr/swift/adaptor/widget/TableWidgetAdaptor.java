@@ -9,11 +9,13 @@ import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.TypeGro
 import com.finebi.conf.internalimp.bean.dashboard.widget.expander.ExpanderBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
 import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
+import com.finebi.conf.internalimp.bean.dashboard.widget.visitor.WidgetBeanToFineWidgetVisitor;
 import com.finebi.conf.internalimp.dashboard.widget.dimension.sort.DimensionTargetSort;
 import com.finebi.conf.internalimp.dashboard.widget.filter.CustomLinkConfItem;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
 import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
 import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
+import com.finebi.conf.structure.dashboard.widget.FineWidget;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionDrill;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionSort;
@@ -166,6 +168,18 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
                     dealWithCustomLink(widget.getTableName(), filterInfos, widgetLinkItem, customLinkConf.get(id));
                 } else {
                     dealWithAutoLink(widget.getTableName(), filterInfos, widgetLinkItem);
+                }
+
+                FineWidget fineWidget = widgetLinkItem.getWidget().accept(new WidgetBeanToFineWidgetVisitor());
+                List<FineTarget> fineTargets = fineWidget.getTargetList();
+                if (fineTargets != null) {
+                    for (FineTarget fineTarget : fineTargets) {
+                        AbstractTableWidget tableWidget = (AbstractTableWidget) fineWidget;
+                        List detailFilters = fineTarget.getDetailFilters();
+                        if (detailFilters != null && !detailFilters.isEmpty()) {
+                            filterInfos.add(FilterInfoFactory.transformFineFilter(tableWidget.getTableName(), detailFilters));
+                        }
+                    }
                 }
             }
         }

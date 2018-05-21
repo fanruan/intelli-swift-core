@@ -136,6 +136,9 @@ public class VarianceAggregate extends AbstractAggregator<VarianceAggregatorValu
 
     @Override
     public VarianceAggregatorValue createAggregatorValue(AggregatorValue value) {
+        if(value.calculateValue() == null) {
+            return new VarianceAggregatorValue();
+        }
         VarianceAggregatorValue varianceAggregatorValue = new VarianceAggregatorValue();
         varianceAggregatorValue.setCount(1);
         varianceAggregatorValue.setSum(value.calculate());
