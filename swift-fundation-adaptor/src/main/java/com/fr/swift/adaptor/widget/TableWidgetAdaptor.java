@@ -9,11 +9,13 @@ import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.TypeGro
 import com.finebi.conf.internalimp.bean.dashboard.widget.expander.ExpanderBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
 import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
+import com.finebi.conf.internalimp.bean.dashboard.widget.visitor.WidgetBeanToFineWidgetVisitor;
 import com.finebi.conf.internalimp.dashboard.widget.dimension.sort.DimensionTargetSort;
 import com.finebi.conf.internalimp.dashboard.widget.filter.CustomLinkConfItem;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
 import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
 import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
+import com.finebi.conf.structure.dashboard.widget.FineWidget;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionDrill;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionSort;
@@ -131,7 +133,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         List<FilterInfo> filterInfoList = new ArrayList<FilterInfo>();
         dealWithWidgetFilter(filterInfoList, widget);
         dealWithLink(filterInfoList, widget);
-        dealWithDrill(filterInfoList, widget);
+        LinkageAdaptor.dealWithDrill(filterInfoList, widget, null);
         dealWithDimensionDirectFilter(filterInfoList, dimensions);
         return new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
     }
@@ -162,7 +164,6 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
 //                filterInfoList.add(new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(columnName), values, SwiftDetailFilterType.STRING_IN));
             }
         }
-        widget.getValue().getDrillList();
     }
 
     private static void dealWithLink(List<FilterInfo> filterInfos, AbstractTableWidget widget) throws Exception {
@@ -180,6 +181,18 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
                     dealWithCustomLink(widget.getTableName(), filterInfos, widgetLinkItem, customLinkConf.get(id));
                 } else {
                     dealWithAutoLink(widget.getTableName(), filterInfos, widgetLinkItem);
+                }
+
+                FineWidget fineWidget = widgetLinkItem.getWidget().accept(new WidgetBeanToFineWidgetVisitor());
+                List<FineTarget> fineTargets = fineWidget.getTargetList();
+                if (fineTargets != null) {
+                    for (FineTarget fineTarget : fineTargets) {
+                        AbstractTableWidget tableWidget = (AbstractTableWidget) fineWidget;
+                        List detailFilters = fineTarget.getDetailFilters();
+                        if (detailFilters != null && !detailFilters.isEmpty()) {
+                            filterInfos.add(FilterInfoFactory.transformFineFilter(tableWidget.getTableName(), detailFilters));
+                        }
+                    }
                 }
             }
         }

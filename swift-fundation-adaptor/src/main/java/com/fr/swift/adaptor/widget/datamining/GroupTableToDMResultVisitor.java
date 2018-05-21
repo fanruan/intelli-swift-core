@@ -7,6 +7,7 @@ import com.finebi.conf.internalimp.analysis.bean.operator.datamining.kmeans.Kmea
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.timeseries.HoltWintersBean;
 import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
 import com.finebi.conf.structure.analysis.vistor.DMBeanVisitor;
+import com.fr.swift.adaptor.widget.datamining.kmeans.KmeansGroupTableAdapter;
 import com.fr.swift.adaptor.widget.datamining.timeseries.TimeSeriesGroupTableAdapter;
 import com.fr.swift.cal.info.GroupQueryInfo;
 import com.fr.swift.result.NodeResultSet;
@@ -33,8 +34,9 @@ public class GroupTableToDMResultVisitor implements DMBeanVisitor<SwiftResultSet
     }
 
     @Override
-    public SwiftResultSet visit(KmeansBean bean) {
-        return result;
+    public SwiftResultSet visit(KmeansBean bean) throws Exception {
+        KmeansGroupTableAdapter adapter = new KmeansGroupTableAdapter();
+        return adapter.getResult(bean, widget, result, info);
     }
 
     @Override

@@ -24,11 +24,15 @@ public class StandarDeviationAggregate  implements Aggregator<StandardAggregator
     @Override
     public StandardAggregatorValue createAggregatorValue(AggregatorValue value) {
         StandardAggregatorValue standardAggregatorValue = new StandardAggregatorValue();
-        standardAggregatorValue.setCount(1);
-        standardAggregatorValue.setSum(value.calculate());
-        standardAggregatorValue.setSquareSum(value.calculate() * value.calculate());
-        standardAggregatorValue.setVariance(0);
+//        standardAggregatorValue.setCount(1);
+//        standardAggregatorValue.setSum(value.calculate());
+//        standardAggregatorValue.setSquareSum(value.calculate() * value.calculate());
+//        standardAggregatorValue.setVariance(0);
         VarianceAggregatorValue varianceAggregatorValue = new VarianceAggregatorValue();
+        if(value.calculateValue() == null) {
+            standardAggregatorValue.setVariance(varianceAggregatorValue);
+            return standardAggregatorValue;
+        }
         varianceAggregatorValue.setCount(1);
         varianceAggregatorValue.setSum(value.calculate());
         varianceAggregatorValue.setSquareSum(value.calculate() * value.calculate());

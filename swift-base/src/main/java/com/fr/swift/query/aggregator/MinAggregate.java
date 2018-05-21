@@ -43,7 +43,19 @@ public class MinAggregate extends AllDataCompare {
     }
 
     @Override
+    public DoubleAmountAggregatorValue createAggregatorValue(AggregatorValue value) {
+        DoubleAmountAggregatorValue valueAmount = new DoubleAmountAggregatorValue();
+        if (value.calculateValue() == null) {
+            valueAmount.setValue(Double.MAX_VALUE);
+            return valueAmount;
+        }
+        return new DoubleAmountAggregatorValue(value.calculate());
+    }
+
+    @Override
     public void combine(DoubleAmountAggregatorValue value, DoubleAmountAggregatorValue other) {
-        value.setValue(Math.min(value.getValue(), other.getValue()));
+        double dValue = Double.isNaN(value.getValue()) ? Double.MAX_VALUE : value.getValue();
+        double dOther = Double.isNaN(other.getValue()) ? Double.MAX_VALUE : other.getValue();
+        value.setValue(Math.min(dValue, dOther));
     }
 }

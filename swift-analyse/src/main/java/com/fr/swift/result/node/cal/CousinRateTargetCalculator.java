@@ -19,6 +19,6 @@ public class CousinRateTargetCalculator extends AbstractCousinTargetCalculator {
 
     @Override
     protected Double getValue(Double relationValue, Double currentValue) {
-        return currentValue != null ? relationValue / currentValue : null;
+        return currentValue != null ? currentValue / relationValue - 1 : null;
     }
 }
