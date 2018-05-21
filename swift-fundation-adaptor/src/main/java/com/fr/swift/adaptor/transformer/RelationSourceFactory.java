@@ -79,8 +79,8 @@ public class RelationSourceFactory {
             primaryFields = relation.getPrimaryBusinessField();
             foreignFields = relation.getForeignBusinessField();
         }
-        SourceKey primary = DataSourceFactory.getDataSource(primaryTable).getSourceKey();
-        SourceKey foreign = DataSourceFactory.getDataSource(foreignTable).getSourceKey();
+        SourceKey primary = DataSourceFactory.getDataSourceInCache(primaryTable).getSourceKey();
+        SourceKey foreign = DataSourceFactory.getDataSourceInCache(foreignTable).getSourceKey();
         List<String> primaryKey = new ArrayList<String>();
         List<String> foreignKey = new ArrayList<String>();
 

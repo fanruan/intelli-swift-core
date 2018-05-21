@@ -277,7 +277,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
     @Override
     public List<UpdateLog> getTableUpdateLog(FineBusinessTable table) throws Exception {
-        DataSource dataSource = DataSourceFactory.getDataSource(table);
+        DataSource dataSource = DataSourceFactory.getDataSourceInCache(table);
         List<UpdateLog> updateLogs = new ArrayList<UpdateLog>();
         int round = CubeTasks.getCurrentRound();
         for (int i = 1; i <= round; i++) {
@@ -419,7 +419,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         LocalSegmentProvider localSegmentProvider = LocalSegmentProvider.getInstance();
         for (FineBusinessTable fineBusinessTable : allBusinessTable) {
             try {
-                DataSource dataSource = DataSourceFactory.getDataSource(fineBusinessTable);
+                DataSource dataSource = DataSourceFactory.getDataSourceInCache(fineBusinessTable);
                 if (!(dataSource instanceof EmptyDataSource)) {
                     if (!localSegmentProvider.isSegmentsExist(dataSource.getSourceKey())) {
                         return true;

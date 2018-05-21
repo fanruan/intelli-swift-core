@@ -55,3 +55,15 @@ hs_err_pid*
 project/.idea/*.xml
 .idea/
 *.iml
+*.lst
+swift-indexing/target/maven-archiver/pom.properties
+swift-analyse/target/maven-archiver/pom.properties
+swift-history/target/maven-archiver/pom.properties
+swift-log-adaptor/target/generated-test-sources/test-annotations/com/fr/swift/adaptor/log/query/ContractBean_.java
+swift-realtime/target/maven-archiver/pom.properties
+fine-engine-swift/target/maven-archiver/pom.properties
+swift-server/target/maven-archiver/pom.properties
+swift-base/target/maven-archiver/pom.properties
+swift-fundation-adaptor/target/maven-archiver/pom.properties
+swift-log-adaptor/target/maven-archiver/pom.properties
+swift-test/target/maven-archiver/pom.properties
