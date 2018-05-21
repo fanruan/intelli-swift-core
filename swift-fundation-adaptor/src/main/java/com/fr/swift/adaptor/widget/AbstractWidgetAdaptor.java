@@ -66,7 +66,6 @@ import com.fr.swift.utils.BusinessTableUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -146,7 +145,7 @@ public abstract class AbstractWidgetAdaptor {
 
     static NumberMaxAndMinValue getMaxMinNumValue(String fieldId) throws Exception {
         NumberMaxAndMinValue val = new NumberMaxAndMinValue();
-        setMaxMinNumValue(fieldId, fieldId, Collections.<FineFilter>emptyList(), val);
+        setMaxMinNumValue(fieldId, fieldId, new ArrayList<FineFilter>(), val);
         return val;
     }
 
