@@ -29,7 +29,7 @@ public class MedianAggregate extends AbstractAggregator<MedianAggregatorValue> {
         Arrays.fill(groupIndex, 0);
         RowTraversal notNullTraversal = getNotNullTraversal(traversal, column);
         if (notNullTraversal.isEmpty()) {
-            return new MedianAggregatorValue();
+            return valueAmount;
         }
         valueAmount.setCount(notNullTraversal.getCardinality());
         notNullTraversal.traversal(new CalculatorTraversalAction() {
@@ -124,6 +124,9 @@ public class MedianAggregate extends AbstractAggregator<MedianAggregatorValue> {
 
     @Override
     public MedianAggregatorValue createAggregatorValue(AggregatorValue value) {
+        if (value.calculateValue() == null) {
+            return new MedianAggregatorValue();
+        }
         MedianAggregatorValue medianAggregatorValue = new MedianAggregatorValue();
         medianAggregatorValue.setCount(1);
         TreeMap<Double, Integer> values = new TreeMap<Double, Integer>();
