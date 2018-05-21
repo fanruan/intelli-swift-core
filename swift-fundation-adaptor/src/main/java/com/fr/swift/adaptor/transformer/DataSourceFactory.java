@@ -34,6 +34,7 @@ import com.fr.swift.source.etl.EtlSource;
 import com.fr.swift.source.excel.ExcelDataSource;
 import com.fr.swift.source.excel.data.ExcelDataModelCreator;
 import com.fr.swift.source.excel.data.IExcelDataModel;
+import com.fr.swift.source.excel.exception.ExcelException;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -107,6 +108,8 @@ public class DataSourceFactory {
     public static DataSource transformDataSource(FineBusinessTable table) {
         try {
             return getDataSource(table);
+        } catch (ExcelException e) {
+            throw e;
         } catch (Exception e) {
             LOGGER.error(e);
             return new EmptyDataSource();
