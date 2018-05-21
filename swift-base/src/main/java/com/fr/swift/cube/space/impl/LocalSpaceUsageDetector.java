@@ -14,7 +14,8 @@ import java.net.URISyntaxException;
 public class LocalSpaceUsageDetector implements SpaceUsageDetector {
     @Override
     public long detectUsed(URI uri) throws Exception {
-        return FileUtils.sizeOf(toFile(uri));
+        File file = toFile(uri);
+        return file.exists() ? FileUtils.sizeOf(file) : 0;
     }
 
     @Override
