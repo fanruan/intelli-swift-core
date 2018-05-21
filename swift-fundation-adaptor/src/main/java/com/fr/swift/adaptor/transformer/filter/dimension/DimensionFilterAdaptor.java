@@ -7,8 +7,11 @@ import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
 import com.finebi.conf.internalimp.bean.filter.AbstractFilterBean;
 import com.finebi.conf.internalimp.bean.filter.GeneraAndFilterBean;
 import com.finebi.conf.internalimp.bean.filter.GeneraOrFilterBean;
+import com.finebi.conf.internalimp.bean.filter.string.StringBottomNFilterBean;
+import com.finebi.conf.internalimp.bean.filter.string.StringTopNFilterBean;
 import com.finebi.conf.structure.bean.filter.FilterBean;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
+import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionSort;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.structure.filter.FineFilter;
 import com.fr.general.ComparatorUtils;
@@ -45,7 +48,7 @@ public class DimensionFilterAdaptor {
      * @return
      */
     public static FilterInfo transformDimensionFineFilter(String tableName, FineDimension dimension, boolean attachTargetFilters, List<FineTarget> targets) {
-        List<FilterBean> beans = setFieldIdAndGetFilterBeans(dimension);
+        List<FilterBean> beans = setFieldIdAndGetFilterBeans(dimension, attachTargetFilters);
         List<FilterInfo> filterInfoList = new ArrayList<FilterInfo>();
         for (FilterBean bean : beans) {
             AbstractFilterBean filterBean = (AbstractFilterBean) bean;
@@ -176,7 +179,7 @@ public class DimensionFilterAdaptor {
         }
     }
 
-    private static List<FilterBean> setFieldIdAndGetFilterBeans(FineDimension dimension) {
+    private static List<FilterBean> setFieldIdAndGetFilterBeans(FineDimension dimension, boolean attachTargetFilters) {
         List<FineFilter> filters = dimension.getFilters();
         List<FilterBean> beans = new ArrayList<FilterBean>();
         if (filters != null) {
@@ -193,11 +196,38 @@ public class DimensionFilterAdaptor {
                     }
                     // 如果是generalBean还要递归地设置一下，坑爹！
                     deepSettingFieldId(bean, fieldId);
+                    bean = attachTargetFilters ? bean : changeNFilterBySort(bean, dimension.getSort());
                     beans.add(bean);
                 }
             }
         }
         return beans;
+    }
+
+    private static AbstractFilterBean changeNFilterBySort(AbstractFilterBean bean, FineDimensionSort sort) {
+        if (sort != null && sort.getType() == BIDesignConstants.DESIGN.SORT.FILTER_DESC){
+            switch (bean.getFilterType()){
+                case BICommonConstants.ANALYSIS_FILTER_STRING.TOP_N:
+                    StringBottomNFilterBean bottomN = new StringBottomNFilterBean();
+                    bottomN.setFieldId(bean.getFieldId());
+                    bottomN.setFilterValue((Long) bean.getFilterValue());
+                    return bottomN;
+                case BICommonConstants.ANALYSIS_FILTER_STRING.BOTTOM_N:
+                    StringTopNFilterBean topN = new StringTopNFilterBean();
+                    topN.setFieldId(bean.getFieldId());
+                    topN.setFilterValue((Long) bean.getFilterValue());
+                    return topN;
+                case BICommonConstants.ANALYSIS_FILTER_TYPE.AND:
+                case BICommonConstants.ANALYSIS_FILTER_TYPE.OR:
+                    List<FilterBean> children = (List<FilterBean>) bean.getFilterValue();
+                    for (int i = 0;i < children.size(); i++){
+                        children.set(i, changeNFilterBySort((AbstractFilterBean) children.get(i), sort));
+                    }
+                    return bean;
+            }
+
+        }
+        return bean;
     }
 
     private static Object transformTargetMatchFormula(Object value, List<FineTarget> targets) {
