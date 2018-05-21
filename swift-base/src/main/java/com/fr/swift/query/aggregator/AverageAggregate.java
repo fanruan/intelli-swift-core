@@ -23,7 +23,13 @@ public class AverageAggregate extends AbstractAggregator<DoubleAverageAggregator
 
     @Override
     public DoubleAverageAggregatorValue createAggregatorValue(AggregatorValue value) {
+
         DoubleAverageAggregatorValue averageAggregatorValue = new DoubleAverageAggregatorValue();
+        if(value.calculateValue() == null) {
+            averageAggregatorValue.setRowCount(0);
+            averageAggregatorValue.setValue(0);
+            return averageAggregatorValue;
+        }
         averageAggregatorValue.setRowCount(1);
         averageAggregatorValue.setValue(value.calculate());
         return averageAggregatorValue;
