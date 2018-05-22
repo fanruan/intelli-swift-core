@@ -7,6 +7,9 @@ import com.fr.swift.segment.column.ColumnKey;
  * @date 2018/1/23
  */
 public class DescSort extends AbstractSort {
+
+    private SortType sortType = SortType.DESC;
+
     public DescSort(int targetIndex) {
         super(targetIndex);
     }
@@ -17,6 +20,24 @@ public class DescSort extends AbstractSort {
 
     @Override
     public SortType getSortType() {
-        return SortType.DESC;
+        return sortType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        DescSort descSort = (DescSort) o;
+
+        return sortType == descSort.sortType;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (sortType != null ? sortType.hashCode() : 0);
+        return result;
     }
 }

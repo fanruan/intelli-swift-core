@@ -14,7 +14,7 @@ import com.fr.swift.util.Crasher;
 public class FormulaIndexColumn implements BitmapIndexedColumn {
     private ImmutableBitMap nullIndex;
     public FormulaIndexColumn(String formula, Segment segment) {
-        ColumnTypeConstants.ColumnType type = FormulaUtils.getHistoryColumnType(segment.getMetaData(), formula);
+        ColumnTypeConstants.ColumnType type = FormulaUtils.getColumnType(segment.getMetaData(), formula);
         if (type != ColumnTypeConstants.ColumnType.NUMBER){
             nullIndex = AllShowBitMap.newInstance(segment.getRowCount());
         }

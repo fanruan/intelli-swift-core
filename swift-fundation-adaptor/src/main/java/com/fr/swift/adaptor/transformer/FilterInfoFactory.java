@@ -109,6 +109,16 @@ public class FilterInfoFactory {
         return new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
     }
 
+    public static String transformFormula(String formula, String tableName) {
+        if (StringUtils.isEmpty(tableName)) {
+            return formula;
+        }
+        int len = tableName.length();
+        StringBuffer buffer = new StringBuffer(String.format("%04d", len));
+        buffer.append(tableName);
+        return formula.replaceAll(buffer.toString(), StringUtils.EMPTY);
+    }
+
     /**
      * @param tableName 控件的表名，没表名传null或者空字符串
      * @param bean
@@ -409,7 +419,7 @@ public class FilterInfoFactory {
             }
 
             case BICommonConstants.ANALYSIS_FILTER_TYPE.FORMULA: {
-                String expr = ((FormulaFilterBean) bean).getFilterValue();
+                String expr = transformFormula(((FormulaFilterBean) bean).getFilterValue(), tableName);
                 return new SwiftDetailFilterInfo<String>(columnKey, expr, SwiftDetailFilterType.FORMULA);
             }
             case BICommonConstants.ANALYSIS_FILTER_TYPE.AND: {

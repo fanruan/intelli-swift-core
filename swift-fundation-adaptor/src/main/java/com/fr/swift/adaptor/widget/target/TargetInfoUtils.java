@@ -210,7 +210,7 @@ public class TargetInfoUtils {
 
     private static Metric getFormulaMetric(SourceKey key, FilterInfo filterInfo, Aggregator aggregator, String formula){
         if (isGroupMetricFormula(formula)){
-            String fieldId = FormulaUtils.getRealRelatedParaNames(formula)[0];
+            String fieldId = FormulaUtils.getRelatedParaNames(formula)[0];
             return new GroupMetric(0, key, new ColumnKey(BusinessTableUtils.getFieldNameByFieldId(fieldId)), filterInfo, aggregator);
         }
         return new FormulaMetric(0, key, filterInfo,
@@ -218,7 +218,7 @@ public class TargetInfoUtils {
     }
 
     private static boolean isGroupMetricFormula(String formula) {
-        String[] paras = FormulaUtils.getRealRelatedParaNames(formula);
+        String[] paras = FormulaUtils.getRelatedParaNames(formula);
         if (paras.length != 1){
             return false;
         }
