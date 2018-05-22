@@ -1,6 +1,5 @@
 package com.fr.swift.adaptor.widget.datamining.timeseries;
 
-import com.finebi.base.stable.StableManager;
 import com.finebi.conf.algorithm.common.DMUtils;
 import com.finebi.conf.algorithm.timeseries.MultiHoltWintersForecast;
 import com.finebi.conf.algorithm.timeseries.TimeSeriesActualItem;
@@ -11,10 +10,8 @@ import com.finebi.conf.algorithm.timeseries.TimeSeriesPredictItem;
 import com.finebi.conf.algorithm.timeseries.TimeSeriesUtils;
 import com.finebi.conf.constant.BIDesignConstants;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.timeseries.HoltWintersBean;
-import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.WidgetDimensionBean;
 import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
 import com.finebi.conf.internalimp.dashboard.widget.table.CrossTableWidget;
-import com.finebi.conf.internalimp.dashboard.widget.target.FineTargetImpl;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.utils.transform.FineDataTransformUtils;
@@ -36,6 +33,7 @@ import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.node.GroupNodeAggregateUtils;
 import com.fr.swift.result.node.NodeType;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.structure.Pair;
 
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
@@ -92,7 +90,10 @@ public class TimeSeriesGroupTableAdapter implements SwiftAlgorithmResultAdapter<
 
             // 把指标长度设置成两倍
             List<FineTarget> fineTargets = new ArrayList<FineTarget>();
-            List<Aggregator> aggregators = targetInfo.getResultAggregators();
+            List<Aggregator> aggregators = new ArrayList<Aggregator>();
+            for (Pair<Aggregator, Integer> pair : targetInfo.getResultAggregators()) {
+                aggregators.add(pair.getKey());
+            }
             for (int i = 0; i < targetList.size(); i++) {
                 FineTarget fineTarget = targetList.get(i);
                 fineTargets.add(fineTarget);
@@ -212,7 +213,7 @@ public class TimeSeriesGroupTableAdapter implements SwiftAlgorithmResultAdapter<
             // resultRootNode.setAggregatorValue(NumberArrToAggregatorValueArr(sums));
             // 使用结果汇总聚合器汇总，相对于明细的汇总方式，可能一样也可能不一样。这边可以通过细分做进一步优化。
             GroupNodeAggregateUtils.aggregate(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
-                    resultRootNode, aggregators);
+                    resultRootNode, targetInfo.getResultAggregators());
 
             if (!isDesc) {
                 Collections.reverse(resultRootNode.getChildren());
@@ -304,7 +305,10 @@ public class TimeSeriesGroupTableAdapter implements SwiftAlgorithmResultAdapter<
 
     private AggregatorValue[] NumberArrToAggregatorValueArr(Number[] numbers) {
         AggregatorValue[] arr = new AggregatorValue[numbers.length];
-        List<Aggregator> aggregators = info.getTargetInfo().getResultAggregators();
+        List<Aggregator> aggregators = new ArrayList<Aggregator>();
+        for (Pair<Aggregator, Integer> pair : info.getTargetInfo().getResultAggregators()) {
+            aggregators.add(pair.getKey());
+        }
         for (int i = 0; i < numbers.length; i++) {
             Number num = numbers[i];
             if (num == null) {

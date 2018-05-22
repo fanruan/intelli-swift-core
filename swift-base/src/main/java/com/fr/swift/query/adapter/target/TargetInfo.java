@@ -3,6 +3,7 @@ package com.fr.swift.query.adapter.target;
 import com.fr.swift.query.adapter.metric.Metric;
 import com.fr.swift.query.adapter.target.cal.ResultTarget;
 import com.fr.swift.query.aggregator.Aggregator;
+import com.fr.swift.structure.Pair;
 
 import java.util.List;
 
@@ -36,10 +37,11 @@ public interface TargetInfo {
     /**
      * 最后一步结果汇总的聚合器（结果过滤之后）
      * 对List<ResultTarget>取出来的结果进行汇总，他们的顺序和对应关系在解析查询信息的就确定好了
+     * pair#value == ResultTarget#fetchResultIndex
      *
      * @return
      */
-    List<Aggregator> getResultAggregators();
+    List<Pair<Aggregator, Integer>> getResultAggregators();
 
     /**
      * 用于从最后一步计算的中间结果([metrics + groupTargets])中取出查询最后返回的结果

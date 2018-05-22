@@ -13,11 +13,12 @@ import com.fr.swift.result.TopGroupNode;
 import com.fr.swift.result.XLeftNode;
 import com.fr.swift.result.XNodeMergeResultSet;
 import com.fr.swift.result.node.GroupNodeAggregateUtils;
+import com.fr.swift.result.node.GroupNodeUtils;
 import com.fr.swift.result.node.NodeType;
 import com.fr.swift.result.node.cal.TargetCalculatorUtils;
-import com.fr.swift.result.node.iterator.BFTGroupNodeIterator;
 import com.fr.swift.result.node.iterator.PostOrderNodeIterator;
 import com.fr.swift.result.node.xnode.XNodeUtils;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.iterator.IteratorUtils;
 
 import java.sql.SQLException;
@@ -47,13 +48,12 @@ public class XGroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> 
         // TODO: 2018/5/2 结果过滤
 
         // 下面设置字典、取出要返回的结果指标、对结果指标做横向和列向汇总、结果指标转为二维数组
-        TargetCalculatorUtils.setTopGroupNodeData(resultSet.getTopGroupNode(), resultSet.getColGlobalDictionaries());
-        TargetCalculatorUtils.getShowTargetsForXLeftNodeAndSetNodeDataAndSetNodeIndex((XLeftNode) resultSet.getNode(),
-                info.getTargetInfo().getTargetsForShowList(), resultSet.getRowGlobalDictionaries());
+        GroupNodeUtils.updateNodeData(resultSet.getTopGroupNode(), resultSet.getColGlobalDictionaries());
+        GroupNodeUtils.updateNodeData((XLeftNode) resultSet.getNode(), resultSet.getRowGlobalDictionaries());
         // 对最后结果进行汇总
         int rowDimensionSize = info.getDimensionInfo().getDimensions().length;
         int colDimensionSize = info.getColDimensionInfo().getDimensions().length;
-        List<Aggregator> aggregators = info.getTargetInfo().getResultAggregators();
+        List<Pair<Aggregator, Integer>> aggregators = info.getTargetInfo().getResultAggregators();
         GroupNodeAggregateUtils.aggregate(NodeType.X_LEFT, rowDimensionSize, (GroupNode) resultSet.getNode(), aggregators);
         // 先更新topGroupNode里面的topGroupValues，然后在做列向汇总。为什么呢？因为要对xLeftNode横向的汇总行做列向汇总
         XNodeUtils.updateTopGroupNodeValues(colDimensionSize, rowDimensionSize,
