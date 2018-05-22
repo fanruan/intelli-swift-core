@@ -1,6 +1,6 @@
 package com.fr.swift.adaptor.transformer.filter.date;
 
-import com.finebi.conf.constant.BIDesignConstants;
+import com.finebi.conf.constant.BICommonConstants;
 import com.finebi.conf.internalimp.bean.filtervalue.date.DateRangeOffset;
 import com.finebi.conf.internalimp.bean.filtervalue.date.DateRangeValueBean;
 import com.finebi.conf.internalimp.bean.filtervalue.date.DateWidgetBean;
@@ -22,10 +22,9 @@ public class DateWidgetBeanAdaptor {
         DateWidgetBeanValue value = bean.getWidget();
         SwiftDateInRangeFilterValue filterValue = null;
         DateRangeOffset offset = bean.getOffset();
-        int type = value.getType();
+        int type = value.getPoint();
         switch (type) {
-            case BIDesignConstants.DESIGN.WIDGET.DATE_INTERVAL:
-            case BIDesignConstants.DESIGN.WIDGET.YEAR_MONTH_INTERVAL: {
+            case BICommonConstants.DATE_TIME_TYPE.INTERVAL: {
                 DateRangeValueBean dateRangeValueBean = ((DateWidgetInterval) value).getValue();
                 if (bean.getStartOrEnd() == START_BEAN_OF_INTERVAL) {
                     filterValue = convertDateFilterBean(dateRangeValueBean.getStart(), offset);
@@ -43,11 +42,7 @@ public class DateWidgetBeanAdaptor {
                 }
                 break;
             }
-            case BIDesignConstants.DESIGN.WIDGET.YEAR:
-            case BIDesignConstants.DESIGN.WIDGET.QUARTER:
-            case BIDesignConstants.DESIGN.WIDGET.MONTH:
-            case BIDesignConstants.DESIGN.WIDGET.DATE:
-            case BIDesignConstants.DESIGN.WIDGET.DATE_PANE: {
+            case BICommonConstants.DATE_TIME_TYPE.POINT: {
                 DateFilterBean dateFilterBean = ((DateWidgetPanel) value).getValue();
                 filterValue = convertDateFilterBean(dateFilterBean, offset);
                 break;
