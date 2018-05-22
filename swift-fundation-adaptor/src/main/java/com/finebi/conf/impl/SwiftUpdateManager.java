@@ -408,19 +408,6 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     }
     
     @Override
-    public UpdateNeedSpace getSingleTableUpdateSpace(String tableName) {
-        
-        return new UpdateNeedSpace();
-    }
-    
-    @Override
-    public UpdateNeedSpace getSinglePackageUpdateSpace(String packageId) {
-        
-        return new UpdateNeedSpace();
-    }
-    
-    
-    @Override
     public UpdateNeedSpace getUpdateNeedSpace() {
         return null;
     }
