@@ -151,6 +151,7 @@ public class DimensionFilterAdaptor {
                 return new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
             }
             // TODO: 2018/5/16 维度上面其他要二次转换到的过滤类型，比如日期前端现在只加了属于和不属于
+            default:
         }
         return filterInfo;
     }
