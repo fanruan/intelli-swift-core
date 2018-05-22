@@ -57,7 +57,7 @@ public class StuffFetcher implements Runnable {
         }
     }
 
-    public synchronized static void update(IndexStuffProvider stuff) throws SwiftMetaDataException, SwiftServiceException {
+    public synchronized static void update(final IndexStuffProvider stuff) throws SwiftMetaDataException, SwiftServiceException {
         final long t = System.currentTimeMillis();
         CubeTasks.nextRound();
         int currentRound = CubeTasks.getCurrentRound();
@@ -99,6 +99,9 @@ public class StuffFetcher implements Runnable {
                 if (now == Status.DONE) {
                     LOGGER.info("build cost " + DateUtils.timeCostFrom(t));
                     LOGGER.info("build " + end.result());
+                    for (IndexStuffProvider.TaskResultListener taskResultListener : stuff.taskResultListeners()) {
+                        taskResultListener.call(end.result());
+                    }
                 }
             }
         });
