@@ -1,6 +1,6 @@
 package com.fr.swift.adaptor.transformer.filter.date;
 
-import com.finebi.conf.constant.BIDesignConstants;
+import com.finebi.conf.constant.BICommonConstants;
 import com.finebi.conf.internalimp.bean.filtervalue.date.DateRangeOffset;
 import com.finebi.conf.internalimp.bean.filtervalue.date.DateRangeValueBean;
 import com.finebi.conf.internalimp.bean.filtervalue.date.DateWidgetBean;
@@ -19,13 +19,15 @@ public class DateWidgetBeanAdaptor {
     private static final int END_BEAN_OF_INTERVAL = 2;
 
     public static SwiftDateInRangeFilterValue create(DateWidgetBean bean) {
+        if (bean == null){
+            return new SwiftDateInRangeFilterValue();
+        }
         DateWidgetBeanValue value = bean.getWidget();
         SwiftDateInRangeFilterValue filterValue = null;
         DateRangeOffset offset = bean.getOffset();
-        int type = value.getType();
+        int type = value.getPoint();
         switch (type) {
-            case BIDesignConstants.DESIGN.WIDGET.DATE_INTERVAL:
-            case BIDesignConstants.DESIGN.WIDGET.YEAR_MONTH_INTERVAL: {
+            case BICommonConstants.DATE_TIME_TYPE.INTERVAL: {
                 DateRangeValueBean dateRangeValueBean = ((DateWidgetInterval) value).getValue();
                 if (bean.getStartOrEnd() == START_BEAN_OF_INTERVAL) {
                     filterValue = convertDateFilterBean(dateRangeValueBean.getStart(), offset);
@@ -43,11 +45,7 @@ public class DateWidgetBeanAdaptor {
                 }
                 break;
             }
-            case BIDesignConstants.DESIGN.WIDGET.YEAR:
-            case BIDesignConstants.DESIGN.WIDGET.QUARTER:
-            case BIDesignConstants.DESIGN.WIDGET.MONTH:
-            case BIDesignConstants.DESIGN.WIDGET.DATE:
-            case BIDesignConstants.DESIGN.WIDGET.DATE_PANE: {
+            case BICommonConstants.DATE_TIME_TYPE.POINT: {
                 DateFilterBean dateFilterBean = ((DateWidgetPanel) value).getValue();
                 filterValue = convertDateFilterBean(dateFilterBean, offset);
                 break;
@@ -65,6 +63,9 @@ public class DateWidgetBeanAdaptor {
     }
 
     public static SwiftDateInRangeFilterValue createDateLessThanFilterInfo(DateWidgetBean bean) {
+        if (bean == null){
+            return new SwiftDateInRangeFilterValue();
+        }
         // 在某一时刻之前。-1ms，因为DateInRangeFilter的范围是左右包含的(startTimeIncluded, endTimeIncluded)
         SwiftDateInRangeFilterValue range = create(bean);
         long value = -1;
