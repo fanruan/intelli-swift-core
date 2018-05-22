@@ -23,7 +23,7 @@ public class DMSwiftWidgetUtils {
             List<FineDimension> dimensionList = widget.getDimensionList();
 
             for (FineDimension dimension : dimensionList) {
-                if (dimension.getType() != BIDesignConstants.DESIGN.DIMENSION_TYPE.KMEANS) {
+                if (dimension.getType() != BIDesignConstants.DESIGN.DIMENSION_TYPE.KMEANS_DIMENSION) {
                     swiftDimensionList.add(dimension);
                 }
             }
