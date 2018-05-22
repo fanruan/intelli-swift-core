@@ -61,11 +61,12 @@ public class XNodeUtils {
             // 同时清理一下保存中间结果的List
             xLeftNodeList.get(row).setValueArrayList(null);
         }
+        // 这个挖掘需要这个数据进行二次处理，暂时不设置为null，应该不影响主要逻辑
         // 清理TopGroupNode中的topGroupNodeValues
-        Iterator<GroupNode> iterator = new BFTGroupNodeIterator(topGroupNode);
-        while (iterator.hasNext()) {
-            ((TopGroupNode) iterator.next()).setTopGroupValues(null);
-        }
+        // Iterator<GroupNode> iterator = new BFTGroupNodeIterator(topGroupNode);
+        // while (iterator.hasNext()) {
+        //     ((TopGroupNode) iterator.next()).setTopGroupValues(null);
+        // }
     }
 
     /**
