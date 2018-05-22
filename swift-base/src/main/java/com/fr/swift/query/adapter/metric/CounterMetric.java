@@ -12,12 +12,32 @@ import com.fr.swift.source.SourceKey;
  */
 public class CounterMetric extends AbstractMetric {
 
+    private Aggregator aggregator = AggregatorFactory.createAggregator(AggregatorType.COUNT);
+
     public CounterMetric(int queryIndex, SourceKey sourceKey, ColumnKey columnKey, FilterInfo filterInfo) {
         super(queryIndex, sourceKey, columnKey, filterInfo);
     }
 
     @Override
     public Aggregator getAggregator() {
-        return AggregatorFactory.createAggregator(AggregatorType.COUNT);
+        return aggregator;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        CounterMetric that = (CounterMetric) o;
+
+        return aggregator != null ? aggregator.equals(that.aggregator) : that.aggregator == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (aggregator != null ? aggregator.hashCode() : 0);
+        return result;
     }
 }

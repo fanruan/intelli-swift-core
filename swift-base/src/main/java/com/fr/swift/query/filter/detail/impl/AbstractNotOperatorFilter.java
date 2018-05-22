@@ -2,6 +2,7 @@ package com.fr.swift.query.filter.detail.impl;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.result.SwiftNode;
 
 /**
@@ -24,8 +25,8 @@ public abstract class AbstractNotOperatorFilter implements DetailFilter {
     }
 
     @Override
-    public boolean matches(SwiftNode node, int targetIndex) {
-        return node.getData() == null ? false : !filter.matches(node, targetIndex);
+    public boolean matches(SwiftNode node, int targetIndex, MatchConverter converter) {
+        return node.getData() == null ? false : !filter.matches(node, targetIndex, converter);
     }
 
 }

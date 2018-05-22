@@ -3,6 +3,7 @@ package com.fr.swift.query.adapter.dimension;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.result.row.RowIndexKey;
 
+import java.util.Arrays;
 import java.util.HashSet;
 
 /**
@@ -52,5 +53,28 @@ public class DimensionInfoImpl implements DimensionInfo {
     @Override
     public boolean isShowSum() {
         return isShowSum;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DimensionInfoImpl that = (DimensionInfoImpl) o;
+
+        if (isShowSum != that.isShowSum) return false;
+        if (filterInfo != null ? !filterInfo.equals(that.filterInfo) : that.filterInfo != null) return false;
+        if (expander != null ? !expander.equals(that.expander) : that.expander != null) return false;
+        // Probably incorrect - comparing Object[] arrays with Arrays.equals
+        return Arrays.equals(dimensions, that.dimensions);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (isShowSum ? 1 : 0);
+        result = 31 * result + (filterInfo != null ? filterInfo.hashCode() : 0);
+        result = 31 * result + (expander != null ? expander.hashCode() : 0);
+        result = 31 * result + Arrays.hashCode(dimensions);
+        return result;
     }
 }

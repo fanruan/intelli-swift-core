@@ -2,6 +2,7 @@ package com.fr.swift.query.filter.detail.impl.date;
 
 import com.fr.swift.query.filter.detail.impl.AbstractDetailFilter;
 import com.fr.swift.query.filter.detail.impl.util.LookupFactory;
+import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
@@ -47,7 +48,7 @@ public class DateInRangeFilter extends AbstractDetailFilter<Long> {
     }
 
     @Override
-    public boolean matches(SwiftNode node, int targetIndex) {
+    public boolean matches(SwiftNode node, int targetIndex, MatchConverter converter) {
         Long date = (Long) node.getData();
         if (date == null){
             return false;

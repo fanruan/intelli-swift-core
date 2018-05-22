@@ -1,6 +1,7 @@
 package com.fr.swift.adaptor.struct.node.cache;
 
 import com.fr.swift.adaptor.struct.node.paging.NodePagingHelper;
+import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.structure.lru.LRUWithKConcurrentHashMap;
 
 /**
@@ -11,7 +12,7 @@ public class NodeCacheManager {
     private static final int CACHE_SIZE = 256;
     private static NodeCacheManager manager = new NodeCacheManager();
 
-    private LRUWithKConcurrentHashMap<String, NodePagingHelper> cache = new LRUWithKConcurrentHashMap<String, NodePagingHelper>(CACHE_SIZE);
+    private LRUWithKConcurrentHashMap<QueryInfo, NodePagingHelper> cache = new LRUWithKConcurrentHashMap<QueryInfo, NodePagingHelper>(CACHE_SIZE);
 
     public static NodeCacheManager getInstance() {
         return manager;
@@ -19,11 +20,11 @@ public class NodeCacheManager {
 
     private NodeCacheManager() {}
 
-    public <T extends NodePagingHelper> T get(String widgetId) {
-        return (T) cache.getWeakHashMapValue(widgetId);
+    public <T extends NodePagingHelper> T get(QueryInfo queryInfo) {
+        return (T) cache.getWeakHashMapValue(queryInfo);
     }
 
-    public <T extends NodePagingHelper> void cache(String widgetId, T nodePagingHelper) {
-        cache.putWeakValue(widgetId, nodePagingHelper);
+    public <T extends NodePagingHelper> void cache(QueryInfo queryInfo, T nodePagingHelper) {
+        cache.putWeakValue(queryInfo, nodePagingHelper);
     }
 }

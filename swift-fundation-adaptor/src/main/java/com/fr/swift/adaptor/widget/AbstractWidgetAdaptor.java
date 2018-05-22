@@ -283,6 +283,7 @@ public abstract class AbstractWidgetAdaptor {
                 formula = formula.replace(toParameter(targetId), subFormula);
             }
         }
+        formula = FilterInfoFactory.transformFormula(formula, widget.getTableName());
         return formula;
     }
 

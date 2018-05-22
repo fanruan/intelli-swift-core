@@ -1,6 +1,7 @@
 package com.fr.swift.query.filter.detail.impl.string;
 
 import com.fr.swift.query.filter.detail.impl.AbstractDetailFilter;
+import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
@@ -36,8 +37,8 @@ public class StringInFilter extends AbstractDetailFilter<String> {
     }
 
     @Override
-    public boolean matches(SwiftNode node, int targetIndex) {
-        String data = node.getData() == null ? null : node.getData().toString();
-        return data != null && groups.contains(data);
+    public boolean matches(SwiftNode node, int targetIndex, MatchConverter converter) {
+        Object data = node.getData();
+        return data != null && (groups.contains(converter.convert(data)));
     }
 }

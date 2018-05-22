@@ -18,15 +18,18 @@ import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
 import com.fr.swift.adaptor.linkage.LinkageAdaptor;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
+import com.fr.swift.adaptor.widget.group.GroupTypeAdaptor;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.MatchFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.filter.info.value.SwiftDateInRangeFilterValue;
+import com.fr.swift.query.filter.match.MatchConverterFactory;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.etl.utils.FormulaUtils;
+import com.fr.swift.structure.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +50,9 @@ public class DimensionFilterAdaptor {
      * @param targets
      * @return
      */
-    public static FilterInfo transformDimensionFineFilter(String tableName, FineDimension dimension, boolean attachTargetFilters, List<FineTarget> targets) {
+    public static FilterInfo transformDimensionFineFilter(String tableName, FineDimension dimension,
+                                                          boolean attachTargetFilters,
+                                                          Pair<List<FineTarget>, List<Integer>> targets) {
         List<FilterBean> beans = setFieldIdAndGetFilterBeans(dimension, attachTargetFilters);
         List<FilterInfo> filterInfoList = new ArrayList<FilterInfo>();
         for (FilterBean bean : beans) {
@@ -57,12 +62,13 @@ public class DimensionFilterAdaptor {
                 // 暂时全部是matchFilter
                 filterInfoList.add(getResultFilterInfo(tableName, filterBean, dimension, targets));
             } else {
+                // 这边给文本下拉控件用的
                 filterInfoList.add(getDetailFilterInfo(tableName, filterBean, dimension));
             }
         }
         if (attachTargetFilters && targets != null) {
-            for (int i = 0; i < targets.size(); i++) {
-                FineTarget target = targets.get(i);
+            for (int i = 0; i < targets.getKey().size(); i++) {
+                FineTarget target = targets.getKey().get(i);
                 List<FineFilter> targetFilters = target.getFilters();
                 if (targetFilters != null) {
                     for (FineFilter filter : targetFilters) {
@@ -70,7 +76,7 @@ public class DimensionFilterAdaptor {
                             continue;
                         }
                         FilterInfo targetFilterInfo = FilterInfoFactory.createFilterInfo(tableName, (AbstractFilterBean) filter.getValue(), new ArrayList<Segment>());
-                        filterInfoList.add(new MatchFilterInfo(targetFilterInfo, i));
+                        filterInfoList.add(new MatchFilterInfo(targetFilterInfo, targets.getValue().get(i), MatchConverterFactory.createConvertor(GroupTypeAdaptor.adaptDashboardGroup(dimension.getGroup().getType()))));
                     }
                 }
             }
@@ -123,26 +129,26 @@ public class DimensionFilterAdaptor {
         switch (type) {
             case TMP_DATE_BELONG_STRING: {
                 List<String> dates = (List<String>) detailFilterInfo.getFilterValue();
-                List<SwiftDetailFilterInfo> filterInfoList = new ArrayList<SwiftDetailFilterInfo>();
+                List<FilterInfo> filterInfoList = new ArrayList<FilterInfo>();
                 ColumnKey key = detailFilterInfo.getColumnKey();
                 WidgetDimensionBean dimensionBean = (WidgetDimensionBean) dimension.getValue();
                 for (String date : dates) {
-                    filterInfoList.add((SwiftDetailFilterInfo) LinkageAdaptor.dealFilterInfo(key, date, dimensionBean));
+                    filterInfoList.add(LinkageAdaptor.dealFilterInfo(key, date, dimensionBean));
                 }
-                return new SwiftDetailFilterInfo<List<SwiftDetailFilterInfo>>(key, filterInfoList, SwiftDetailFilterType.OR);
+                return new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
             }
             case TMP_DATE_NOT_BELONG_STRING: {
                 List<String> dates = (List<String>) detailFilterInfo.getFilterValue();
-                List<SwiftDetailFilterInfo> filterInfoList = new ArrayList<SwiftDetailFilterInfo>();
+                List<FilterInfo> filterInfoList = new ArrayList<FilterInfo>();
                 ColumnKey key = detailFilterInfo.getColumnKey();
                 WidgetDimensionBean dimensionBean = (WidgetDimensionBean) dimension.getValue();
                 for (String date : dates) {
                     SwiftDetailFilterInfo info = (SwiftDetailFilterInfo) LinkageAdaptor.dealFilterInfo(key, date, dimensionBean);
                     info = new SwiftDetailFilterInfo<SwiftDateInRangeFilterValue>(key, (SwiftDateInRangeFilterValue) info.getFilterValue(),
-                            SwiftDetailFilterType.DATE_NOT_IN_RANGE);
+                            SwiftDetailFilterType.STRING_NOT_IN);
                     filterInfoList.add(info);
                 }
-                return new SwiftDetailFilterInfo<List<SwiftDetailFilterInfo>>(key, filterInfoList, SwiftDetailFilterType.OR);
+                return new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
             }
             // TODO: 2018/5/16 维度上面其他要二次转换到的过滤类型，比如日期前端现在只加了属于和不属于
         }
@@ -150,7 +156,7 @@ public class DimensionFilterAdaptor {
     }
 
     private static FilterInfo getResultFilterInfo(String tableName, AbstractFilterBean filterBean,
-                                                  FineDimension dimension, List<FineTarget> targets) {
+                                                  FineDimension dimension, Pair<List<FineTarget>, List<Integer>> targets) {
         int type = filterBean.getFilterType();
         if (type == BICommonConstants.ANALYSIS_FILTER_TYPE.OR || type == BICommonConstants.ANALYSIS_FILTER_TYPE.AND) {
             List<FilterBean> beans = type == BICommonConstants.ANALYSIS_FILTER_TYPE.AND ?
@@ -158,24 +164,18 @@ public class DimensionFilterAdaptor {
             List<FilterInfo> children = new ArrayList<FilterInfo>();
             for (FilterBean bean : beans) {
                 FilterInfo info = getResultFilterInfo(tableName, (AbstractFilterBean) bean, dimension, targets);
-                if (info != null) {
-                    children.add(info);
-                }
+                children.add(info);
             }
             return new GeneralFilterInfo(children, type == BICommonConstants.ANALYSIS_FILTER_TYPE.AND ?
                     GeneralFilterInfo.AND : GeneralFilterInfo.OR);
 
         }
-        SwiftDetailFilterInfo info = (SwiftDetailFilterInfo) FilterInfoFactory.createFilterInfo(tableName, filterBean, new ArrayList<Segment>());
+        SwiftDetailFilterInfo info = (SwiftDetailFilterInfo) FilterInfoFactory.createMatchFilterInfo(filterBean, MatchConverterFactory.createConvertor(GroupTypeAdaptor.adaptDashboardGroup(dimension.getGroup().getType())));
         if (info.getType() == SwiftDetailFilterType.FORMULA) {
             info = new SwiftDetailFilterInfo<Object>(info.getColumnKey(), transformTargetMatchFormula(info.getFilterValue(), targets), info.getType());
-            return new MatchFilterInfo(info, 0);
+            return new MatchFilterInfo(info, getIndex(filterBean.getTargetId(), targets), MatchConverterFactory.createConvertor(GroupTypeAdaptor.adaptDashboardGroup(dimension.getGroup().getType())));
         } else {
-            FilterInfo filterInfo = info;
-            if (isConvertedDimension(dimension)) {
-                filterInfo = getFilterInfoFromConvertedDimension(info, dimension);
-            }
-            return new MatchFilterInfo(filterInfo, getIndex(filterBean.getTargetId(), targets));
+            return new MatchFilterInfo(info, getIndex(filterBean.getTargetId(), targets), MatchConverterFactory.createConvertor(GroupTypeAdaptor.adaptDashboardGroup(dimension.getGroup().getType())));
         }
     }
 
@@ -231,12 +231,12 @@ public class DimensionFilterAdaptor {
         return bean;
     }
 
-    private static Object transformTargetMatchFormula(Object value, List<FineTarget> targets) {
+    private static Object transformTargetMatchFormula(Object value, Pair<List<FineTarget>, List<Integer>> targets) {
         if (value == null) {
             return value;
         }
         String formula = value.toString();
-        for (String targetId : FormulaUtils.getRealRelatedParaNames(formula)) {
+        for (String targetId : FormulaUtils.getRelatedParaNames(formula)) {
             formula = formula.replace(targetId, String.valueOf(getIndex(targetId, targets)));
         }
         return formula;
@@ -268,10 +268,10 @@ public class DimensionFilterAdaptor {
         }
     }
 
-    private static int getIndex(String targetId, List<FineTarget> targets) {
-        for (int i = 0; i < targets.size(); i++) {
-            if (ComparatorUtils.equals(targetId, targets.get(i).getId())) {
-                return i;
+    private static int getIndex(String targetId, Pair<List<FineTarget>, List<Integer>> targets) {
+        for (int i = 0; i < targets.getKey().size(); i++) {
+            if (ComparatorUtils.equals(targetId, targets.getKey().get(i).getId())) {
+                return targets.getValue().get(i);
             }
         }
         return -1;

@@ -1,6 +1,7 @@
 package com.fr.swift.query.filter.detail.impl.nfilter;
 
 import com.fr.swift.compare.Comparators;
+import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
@@ -34,7 +35,7 @@ public class TopNFilter extends AbstractNFilter {
     }
 
     @Override
-    public boolean matches(SwiftNode node, int targetIndex) {
+    public boolean matches(SwiftNode node, int targetIndex, MatchConverter converter) {
         // 对接点本身的前几个过滤
         if (targetIndex == -1) {
             int index = node.getIndex();

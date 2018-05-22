@@ -27,4 +27,22 @@ abstract class AbstractSort implements Sort {
     public ColumnKey getColumnKey() {
         return columnKey;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AbstractSort that = (AbstractSort) o;
+
+        if (targetIndex != that.targetIndex) return false;
+        return columnKey != null ? columnKey.equals(that.columnKey) : that.columnKey == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = targetIndex;
+        result = 31 * result + (columnKey != null ? columnKey.hashCode() : 0);
+        return result;
+    }
 }

@@ -51,4 +51,29 @@ public class TargetInfoImpl implements TargetInfo {
     public List<ResultTarget> getTargetsForShowList() {
         return targetsForShowList;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TargetInfoImpl that = (TargetInfoImpl) o;
+
+        if (targetLength != that.targetLength) return false;
+        if (metrics != null ? !metrics.equals(that.metrics) : that.metrics != null) return false;
+        if (groupTargets != null ? !groupTargets.equals(that.groupTargets) : that.groupTargets != null) return false;
+        if (targetsForShowList != null ? !targetsForShowList.equals(that.targetsForShowList) : that.targetsForShowList != null)
+            return false;
+        return resultAggregators != null ? resultAggregators.equals(that.resultAggregators) : that.resultAggregators == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = targetLength;
+        result = 31 * result + (metrics != null ? metrics.hashCode() : 0);
+        result = 31 * result + (groupTargets != null ? groupTargets.hashCode() : 0);
+        result = 31 * result + (targetsForShowList != null ? targetsForShowList.hashCode() : 0);
+        result = 31 * result + (resultAggregators != null ? resultAggregators.hashCode() : 0);
+        return result;
+    }
 }

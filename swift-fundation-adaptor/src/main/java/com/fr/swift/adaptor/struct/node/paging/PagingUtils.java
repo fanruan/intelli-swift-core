@@ -3,6 +3,7 @@ package com.fr.swift.adaptor.struct.node.paging;
 import com.finebi.conf.constant.BIDesignConstants;
 import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
 import com.fr.swift.query.adapter.dimension.Expander;
+import com.fr.swift.source.core.MD5Utils;
 
 /**
  * Created by Lyon on 2018/5/21.
@@ -13,7 +14,17 @@ public class PagingUtils {
         boolean isFirstPage = isFirstPage(widget.getPage());
         boolean isNextPage = isNextPage(widget.getPage());
         int pageSize = getPageSize(widget);
-        return new PagingInfo(isFirstPage, isNextPage, pageSize, widget.getValue().getSessionId(), expander);
+        String pagingSessionId = getPagingSessionId(widget);
+        return new PagingInfo(isFirstPage, isNextPage, pageSize, pagingSessionId, expander);
+    }
+
+    private static String getPagingSessionId(TableWidget widget) {
+        String widgetId = widget.getWidgetId();
+        String sessionId = widget.getValue().getSessionId();
+        if (widgetId == null || sessionId == null) {
+            return null;
+        }
+        return MD5Utils.getMD5String(new String[] { widgetId, sessionId });
     }
 
     public static int getPageSize(TableWidget widget) {

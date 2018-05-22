@@ -14,4 +14,19 @@ public class AbstractQueryColumn implements QueryColumn {
     public int getIndex() {
         return index;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AbstractQueryColumn that = (AbstractQueryColumn) o;
+
+        return index == that.index;
+    }
+
+    @Override
+    public int hashCode() {
+        return index;
+    }
 }
