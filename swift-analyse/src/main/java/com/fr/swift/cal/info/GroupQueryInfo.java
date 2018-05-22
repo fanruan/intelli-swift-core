@@ -79,4 +79,25 @@ public class GroupQueryInfo extends AbstractQueryInfo<GroupByResultSet> {
         }
         return filter.isMatchFilter();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        GroupQueryInfo that = (GroupQueryInfo) o;
+
+        if (dimensionInfo != null ? !dimensionInfo.equals(that.dimensionInfo) : that.dimensionInfo != null)
+            return false;
+        return targetInfo != null ? targetInfo.equals(that.targetInfo) : that.targetInfo == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (dimensionInfo != null ? dimensionInfo.hashCode() : 0);
+        result = 31 * result + (targetInfo != null ? targetInfo.hashCode() : 0);
+        return result;
+    }
 }

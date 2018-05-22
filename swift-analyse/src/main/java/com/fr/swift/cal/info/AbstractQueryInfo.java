@@ -43,4 +43,23 @@ public abstract class AbstractQueryInfo<T> implements QueryInfo<T> {
         return filterInfo;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AbstractQueryInfo<?> that = (AbstractQueryInfo<?>) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (filterInfo != null ? !filterInfo.equals(that.filterInfo) : that.filterInfo != null) return false;
+        return table != null ? table.equals(that.table) : that.table == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (filterInfo != null ? filterInfo.hashCode() : 0);
+        result = 31 * result + (table != null ? table.hashCode() : 0);
+        return result;
+    }
 }
