@@ -1,7 +1,8 @@
 package com.fr.swift.adaptor.widget;
 
-import com.finebi.conf.algorithm.AlgorithmNameEnum;
+import com.finebi.conf.algorithm.common.DMUtils;
 import com.finebi.conf.constant.BICommonConstants;
+import com.finebi.conf.constant.BIDesignConstants;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.WidgetDimensionBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.date.DateWidgetDimensionBean;
@@ -34,6 +35,7 @@ import com.fr.swift.adaptor.struct.node.paging.PagingUtils;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.transformer.SortAdaptor;
 import com.fr.swift.adaptor.transformer.filter.dimension.DimensionFilterAdaptor;
+import com.fr.swift.adaptor.widget.datamining.DMSwiftWidgetUtils;
 import com.fr.swift.adaptor.widget.datamining.GroupTableToDMResultVisitor;
 import com.fr.swift.adaptor.widget.expander.ExpanderFactory;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
@@ -98,7 +100,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
                 resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
                 // 添加挖掘相关
                 AlgorithmBean dmBean = widget.getValue().getDataMining();
-                if (dmBean != null && dmBean.getAlgorithmName() != AlgorithmNameEnum.EMPTY) {
+                if (!DMUtils.isEmptyAlgorithm(dmBean)) {
                     GroupTableToDMResultVisitor visitor = new GroupTableToDMResultVisitor((NodeResultSet) resultSet, widget, (GroupQueryInfo) queryInfo);
                     resultSet = dmBean.accept(visitor);
                 }
@@ -257,6 +259,10 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         List<Dimension> dimensions = new ArrayList<Dimension>();
         for (int i = 0, size = fineDims.size(); i < size; i++) {
             FineDimension fineDim = fineDims.get(i);
+            // 前端多出一个挖掘维度字段，引擎不需要，这里把挖掘维度字段给过滤掉
+            if(fineDim.getType() == BIDesignConstants.DESIGN.DIMENSION_TYPE.KMEANS){
+                continue;
+            }
             dimensions.add(toDimension(sourceKey, fineDim, i, size, targets));
         }
         return dimensions;

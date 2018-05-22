@@ -1,11 +1,42 @@
 package com.fr.swift.adaptor.widget.datamining.timeseries;
 
+import com.finebi.conf.algorithm.timeseries.MultiHoltWintersForecast;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.timeseries.HoltWintersBean;
 import com.finebi.conf.internalimp.dashboard.widget.table.CrossTableWidget;
+import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
+import com.finebi.conf.utils.transform.FineDataTransformUtils;
+import com.fr.engine.compare.CompareUtil;
+import com.fr.swift.adaptor.widget.datamining.DMSwiftWidgetUtils;
 import com.fr.swift.adaptor.widget.datamining.SwiftAlgorithmResultAdapter;
 import com.fr.swift.cal.info.XGroupQueryInfo;
+import com.fr.swift.cal.targetcal.group.XGroupTargetCalQuery;
+import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.adapter.target.TargetInfo;
+import com.fr.swift.query.aggregator.Aggregator;
+import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.query.group.Group;
+import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeResultSet;
+import com.fr.swift.result.SwiftNode;
+import com.fr.swift.result.TopGroupNode;
+import com.fr.swift.result.XLeftNode;
+import com.fr.swift.result.XNodeMergeResultSet;
+import com.fr.swift.result.XNodeMergeResultSetImpl;
+import com.fr.swift.result.node.GroupNodeAggregateUtils;
+import com.fr.swift.result.node.NodeType;
+import com.fr.swift.result.node.iterator.LeafNodeIterator;
+import com.fr.swift.result.node.iterator.NLevelGroupNodeIterator;
+import com.fr.swift.result.node.iterator.PostOrderNodeIterator;
+import com.fr.swift.result.node.xnode.XNodeUtils;
 import com.fr.swift.source.SwiftResultSet;
+import edu.emory.mathcs.backport.java.util.Arrays;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by Jonas on 2018/5/15.
@@ -18,7 +49,7 @@ public class TimeSeriesCrossTableAdapter implements SwiftAlgorithmResultAdapter<
     private XGroupQueryInfo info;
 
     @Override
-    public SwiftResultSet getResult(HoltWintersBean bean, CrossTableWidget widget, NodeResultSet result, XGroupQueryInfo info) {
+    public SwiftResultSet getResult(HoltWintersBean bean, CrossTableWidget widget, NodeResultSet result, XGroupQueryInfo info) throws Exception {
         this.bean = bean;
         this.widget = widget;
         this.result = result;
@@ -36,7 +67,59 @@ public class TimeSeriesCrossTableAdapter implements SwiftAlgorithmResultAdapter<
         return groupTableAdapter.getResult(bean, widget, result, info);
     }
 
-    private SwiftResultSet handleCrossTable() {
-        return result;
+    private SwiftResultSet handleCrossTable() throws Exception {
+
+        int targetSize = info.getTargetInfo().getMetrics().size();
+
+        XNodeMergeResultSet XResultSet = (XNodeMergeResultSet) result;
+
+        List<FineTarget> targetList = widget.getTargetList();
+        TargetInfo targetInfo = info.getTargetInfo();
+
+        boolean isCalculateConfidence = bean.isCalculateConfidenceInterval();
+
+        // 把指标长度设置成两倍
+        List<FineTarget> fineTargets = new ArrayList<FineTarget>();
+        List<Aggregator> aggregators = targetInfo.getResultAggregators();
+        for (int i = 0; i < targetList.size(); i++) {
+            FineTarget fineTarget = targetList.get(i);
+            fineTargets.add(fineTarget);
+            String fieldNamePrefix = FineDataTransformUtils.formatData(fineTarget.getText());
+            fineTargets.add(DMSwiftWidgetUtils.createFineTarget(fineTarget, fieldNamePrefix + MultiHoltWintersForecast.FORECAST_SUFFIX));
+            Aggregator targetAggregator = aggregators.get(i);
+            aggregators.add(i + 1, targetAggregator);
+            if (isCalculateConfidence) {
+                fineTargets.add(DMSwiftWidgetUtils.createFineTarget(fineTarget, fieldNamePrefix + MultiHoltWintersForecast.LOWER_SUFFIX));
+                fineTargets.add(DMSwiftWidgetUtils.createFineTarget(fineTarget, fieldNamePrefix + MultiHoltWintersForecast.UPPER_SUFFIX));
+                aggregators.add(i + 2, targetAggregator);
+                aggregators.add(i + 3, targetAggregator);
+            }
+        }
+        widget.setTargets(fineTargets);
+
+
+        XLeftNode leftNode = (XLeftNode) XResultSet.getNode();
+        int leftDepth = info.getDimensionInfo().getDimensions().length;
+        PostOrderNodeIterator<XLeftNode> xLeftIterator = new PostOrderNodeIterator<XLeftNode>(leftDepth, leftNode);
+        while (xLeftIterator.hasNext()) {
+            XLeftNode next = xLeftIterator.next();
+            List<AggregatorValue[]> newXValue = new ArrayList<AggregatorValue[]>();
+            AggregatorValue[][] xValue = next.getXValue();
+            AggregatorValue[] addNewValue = null;
+            for (int i = 0; i < xValue.length; i++) {
+                newXValue.add(xValue[i]);
+                if (addNewValue == null) {
+                    addNewValue = (AggregatorValue[]) Arrays.copyOf(xValue[i],xValue[i].length);
+                    Arrays.fill(addNewValue, null);
+                }
+            }
+            newXValue.add(addNewValue);
+            AggregatorValue[][] newXValueArr = new AggregatorValue[newXValue.size()][];
+            newXValue.toArray(newXValueArr);
+            next.setXValues(newXValueArr);
+        }
+
+
+        return XResultSet;
     }
 }

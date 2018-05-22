@@ -115,11 +115,12 @@ public class XGroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> 
             // 设置xValues，要显示列向汇总的情况下，每个XLeftNode包含了列向汇总行
             xLeftNodes.get(row).setXValues(rowValues);
         }
+        // 这个挖掘需要这个数据进行二次处理，暂时不设置为null，应该不影响主要逻辑
         // 清理TopGroupNode中的topGroupNodeValues
-        Iterator<GroupNode> topNodes = new BFTGroupNodeIterator(resultSet.getTopGroupNode());
-        while (iterator.hasNext()) {
-            ((TopGroupNode) topNodes.next()).setTopGroupValues(null);
-        }
+        // Iterator<GroupNode> topNodes = new BFTGroupNodeIterator(resultSet.getTopGroupNode());
+        // while (iterator.hasNext()) {
+        //     ((TopGroupNode) topNodes.next()).setTopGroupValues(null);
+        // }
     }
 
     private void sortTopGroupNode(int rowDimensionSize, int colDimensionSize, XNodeMergeResultSet resultSet) {
@@ -142,7 +143,7 @@ public class XGroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> 
         updateTopGroupValues(rowDimensionSize, colDimensionSize, resultSet);
     }
 
-    private static void updateXLeftNode(int rowDimensionSize, int colDimensionSize, XNodeMergeResultSet resultSet) {
+    public static void updateXLeftNode(int rowDimensionSize, int colDimensionSize, XNodeMergeResultSet resultSet) {
         List<TopGroupNode> topGroupNodes = IteratorUtils.iterator2List(new PostOrderNodeIterator<TopGroupNode>(colDimensionSize, resultSet.getTopGroupNode()));
         List<XLeftNode> xLeftNodes = IteratorUtils.iterator2List(new PostOrderNodeIterator<XLeftNode>(rowDimensionSize, (XLeftNode) resultSet.getNode()));
         for (int row = 0; row < xLeftNodes.size(); row++) {
