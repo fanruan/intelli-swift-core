@@ -29,9 +29,9 @@ public class GroupNodeAggregateUtils {
      * @return
      */
     public static GroupNode aggregate(NodeType type, int dimensionSize, GroupNode root, List<Aggregator> aggregators) {
-        // 从第n个维度到第0个维度进行汇总
-        for (int nthLevel = dimensionSize; nthLevel >= 0; nthLevel--) {
-            Iterator<GroupNode> iterator = new NLevelGroupNodeIterator(nthLevel, root);
+        // 从第n个维度到第-1个维度(根节点)进行汇总
+        for (int depth = dimensionSize - 1; depth >= -1; depth--) {
+            Iterator<GroupNode> iterator = new NLevelGroupNodeIterator(depth, root);
             while (iterator.hasNext()) {
                 GroupNode node = iterator.next();
                 if (type == NodeType.GROUP) {

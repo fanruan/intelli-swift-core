@@ -29,7 +29,7 @@ public class CrossTableToDMResultVisitor implements DMBeanVisitor<SwiftResultSet
     }
 
     @Override
-    public SwiftResultSet visit(HoltWintersBean bean) {
+    public SwiftResultSet visit(HoltWintersBean bean) throws Exception {
         TimeSeriesCrossTableAdapter adapter = new TimeSeriesCrossTableAdapter();
         return adapter.getResult(bean, widget, result, info);
     }

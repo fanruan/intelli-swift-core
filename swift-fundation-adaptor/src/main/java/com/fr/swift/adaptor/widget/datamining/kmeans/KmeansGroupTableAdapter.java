@@ -36,25 +36,11 @@ public class KmeansGroupTableAdapter implements SwiftAlgorithmResultAdapter<Kmea
     public SwiftResultSet getResult(KmeansBean bean, AbstractTableWidget widget, NodeResultSet result, GroupQueryInfo info) throws Exception {
 
 
-        List<FineDimension> dimensionList = widget.getDimensionList();
+        // List<FineDimension> dimensionList = widget.getDimensionList();
         List<FineTarget> targetList = widget.getTargetList();
         TargetInfo targetInfo = info.getTargetInfo();
         DimensionInfo dimensionInfo = info.getDimensionInfo();
         List<Aggregator> aggregators = targetInfo.getResultAggregators();
-
-
-        // 增加聚类维度
-        List<FineDimension> dimensions = new ArrayList<FineDimension>();
-        dimensions.addAll(dimensionList);
-        FineKmeansDimension kmeansDimension = new FineKmeansDimension();
-        kmeansDimension.setFieldId(bean.getClusterName());
-        WidgetDimensionBean widgetDimensionBean = StableManager.getContext().getObject("kmeansWidgetDimensionBean");
-        widgetDimensionBean.setName(bean.getClusterName());
-        kmeansDimension.setValue(widgetDimensionBean);
-        kmeansDimension.setIsUsed(true);
-        kmeansDimension.setId(bean.getUuid());
-        dimensions.add(kmeansDimension);
-        widget.setDimensions(dimensions);
 
         GroupNode rootNode = (GroupNode) result.getNode();
         List<double[]> resultSummary = getResultSummary(rootNode);

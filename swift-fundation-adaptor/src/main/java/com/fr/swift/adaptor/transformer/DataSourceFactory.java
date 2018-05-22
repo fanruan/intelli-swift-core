@@ -35,6 +35,7 @@ import com.fr.swift.source.etl.EtlSource;
 import com.fr.swift.source.excel.ExcelDataSource;
 import com.fr.swift.source.excel.data.ExcelDataModelCreator;
 import com.fr.swift.source.excel.data.IExcelDataModel;
+import com.fr.swift.source.excel.exception.ExcelException;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -110,6 +111,9 @@ public class DataSourceFactory {
             DataSource dataSource = getDataSource(table);
             dataSource = SourceCache.getCache().getMetaDataBySource(dataSource);
             return dataSource;
+        } catch (ExcelException e){
+            // 如果是ExcelException表示DataSource是Excel，抛错没影响，没毛病
+            throw e;
         } catch (Exception e) {
             LOGGER.error(e);
             return new EmptyDataSource();
@@ -181,7 +185,7 @@ public class DataSourceFactory {
         return null;
     }
 
-    private static DataSource transformExcelDataSource(FineExcelBusinessTable table) {
+    private static DataSource transformExcelDataSource(FineExcelBusinessTable table) throws Exception{
         Attachment baseAttachment = AttachmentSource.getAttachment(table.getBaseAttach().getId());
         String path = FRContext.getCurrentEnv().getPath() + File.separator + baseAttachment.getPath();
         IExcelDataModel excelDataModel = ExcelDataModelCreator.createDataModel(path);
@@ -197,8 +201,15 @@ public class DataSourceFactory {
                 additionPaths.add(additionPath);
             }
         }
+        Map<String, ColumnType> fieldColumnTypes = checkFieldTypes(table.getOperators());
+        if (fieldColumnTypes != null && !fieldColumnTypes.isEmpty()){
+            columnTypes = new ColumnType[columnNames.length];
+            for (int i = 0; i < columnNames.length; i++){
+                columnTypes[i] = fieldColumnTypes.get(columnNames[i]);
+            }
+        }
         ExcelDataSource excelDataSource = new ExcelDataSource(path, columnNames, columnTypes, additionPaths);
-        return excelDataSource;
+        return checkETL(excelDataSource, table);
     }
 
     private static DataSource transformQueryDBSource(FineSQLBusinessTable table) throws Exception {

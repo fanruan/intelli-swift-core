@@ -1,7 +1,8 @@
 package com.fr.swift.adaptor.widget;
 
-import com.finebi.conf.algorithm.AlgorithmNameEnum;
+import com.finebi.conf.algorithm.common.DMUtils;
 import com.finebi.conf.constant.BICommonConstants;
+import com.finebi.conf.constant.BIDesignConstants;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.WidgetDimensionBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.date.DateWidgetDimensionBean;
@@ -9,23 +10,32 @@ import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.TypeGro
 import com.finebi.conf.internalimp.bean.dashboard.widget.expander.ExpanderBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
 import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
+import com.finebi.conf.internalimp.bean.dashboard.widget.visitor.WidgetBeanToFineWidgetVisitor;
 import com.finebi.conf.internalimp.dashboard.widget.dimension.sort.DimensionTargetSort;
 import com.finebi.conf.internalimp.dashboard.widget.filter.CustomLinkConfItem;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
 import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
 import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
+import com.finebi.conf.structure.dashboard.widget.FineWidget;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionDrill;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionSort;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.structure.filter.FineFilter;
+import com.finebi.conf.structure.result.table.BIGroupNode;
 import com.finebi.conf.structure.result.table.BITableResult;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.linkage.LinkageAdaptor;
 import com.fr.swift.adaptor.struct.node.SwiftTableResult;
+import com.fr.swift.adaptor.struct.node.cache.NodeCacheManager;
+import com.fr.swift.adaptor.struct.node.paging.GroupNodePagingHelper;
+import com.fr.swift.adaptor.struct.node.paging.PagingInfo;
+import com.fr.swift.adaptor.struct.node.paging.PagingSession;
+import com.fr.swift.adaptor.struct.node.paging.PagingUtils;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.transformer.SortAdaptor;
 import com.fr.swift.adaptor.transformer.filter.dimension.DimensionFilterAdaptor;
+import com.fr.swift.adaptor.widget.datamining.DMSwiftWidgetUtils;
 import com.fr.swift.adaptor.widget.datamining.GroupTableToDMResultVisitor;
 import com.fr.swift.adaptor.widget.expander.ExpanderFactory;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
@@ -53,13 +63,14 @@ import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.group.Group;
 import com.fr.swift.query.sort.AscSort;
-import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.structure.Pair;
+import com.fr.swift.util.Crasher;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -78,27 +89,33 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(TableWidgetAdaptor.class);
 
     public static BITableResult calculate(TableWidget widget) {
-        GroupNode groupNode;
-        int dimensionSize = 0;
+        GroupNodePagingHelper pagingHelper = null;
+        QueryInfo queryInfo = null;
         try {
-            dimensionSize = widget.getDimensionList().size();
             TargetInfo targetInfo = TargetInfoUtils.parse(widget);
-            QueryInfo info = buildQueryInfo(widget, targetInfo);
-            SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(info);
-
-            // 添加挖掘相关
-            AlgorithmBean dmBean = widget.getValue().getDataMining();
-            if (dmBean != null && dmBean.getAlgorithmName() != AlgorithmNameEnum.EMPTY) {
-                GroupTableToDMResultVisitor visitor = new GroupTableToDMResultVisitor((NodeResultSet) resultSet, widget, (GroupQueryInfo) info);
-                resultSet = dmBean.accept(visitor);
+            queryInfo = buildQueryInfo(widget, targetInfo);
+            SwiftResultSet resultSet;
+            pagingHelper = NodeCacheManager.getInstance().get(widget.getWidgetId());
+            if (PagingUtils.isRefresh(widget.getPage()) || pagingHelper == null) {
+                resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
+                // 添加挖掘相关
+                AlgorithmBean dmBean = widget.getValue().getDataMining();
+                if (!DMUtils.isEmptyAlgorithm(dmBean)) {
+                    GroupTableToDMResultVisitor visitor = new GroupTableToDMResultVisitor((NodeResultSet) resultSet, widget, (GroupQueryInfo) queryInfo);
+                    resultSet = dmBean.accept(visitor);
+                }
+                pagingHelper = new GroupNodePagingHelper(widget.getDimensionList().size(), (NodeResultSet) resultSet);
+                NodeCacheManager.getInstance().cache(widget.getWidgetId(), pagingHelper);
             }
-
-            groupNode = (GroupNode) ((NodeResultSet) resultSet).getNode();
         } catch (Exception e) {
-            groupNode = new GroupNode(-1, null);
             LOGGER.error(e);
         }
-        return new SwiftTableResult(dimensionSize, groupNode, widget.getPage());
+        if (pagingHelper == null) {
+            return Crasher.crash("group query exception!");
+        }
+        PagingInfo pagingInfo = PagingUtils.createPagingInfo(widget, ((GroupQueryInfo)queryInfo).getDimensionInfo().getExpander());
+        Pair<BIGroupNode, PagingSession> pair = pagingHelper.getPage(pagingInfo);
+        return new SwiftTableResult(pair.getValue().hasNextPage(), pair.getValue().hasPrevPage(), pair.getKey());
     }
 
     private static QueryInfo buildQueryInfo(TableWidget widget, TargetInfo targetInfo) throws Exception {
@@ -167,6 +184,18 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
                 } else {
                     dealWithAutoLink(widget.getTableName(), filterInfos, widgetLinkItem);
                 }
+
+                FineWidget fineWidget = widgetLinkItem.getWidget().accept(new WidgetBeanToFineWidgetVisitor());
+                List<FineTarget> fineTargets = fineWidget.getTargetList();
+                if (fineTargets != null) {
+                    for (FineTarget fineTarget : fineTargets) {
+                        AbstractTableWidget tableWidget = (AbstractTableWidget) fineWidget;
+                        List detailFilters = fineTarget.getDetailFilters();
+                        if (detailFilters != null && !detailFilters.isEmpty()) {
+                            filterInfos.add(FilterInfoFactory.transformFineFilter(tableWidget.getTableName(), detailFilters));
+                        }
+                    }
+                }
             }
         }
 
@@ -230,6 +259,10 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         List<Dimension> dimensions = new ArrayList<Dimension>();
         for (int i = 0, size = fineDims.size(); i < size; i++) {
             FineDimension fineDim = fineDims.get(i);
+            // 前端多出一个挖掘维度字段，引擎不需要，这里把挖掘维度字段给过滤掉
+            if(fineDim.getType() == BIDesignConstants.DESIGN.DIMENSION_TYPE.KMEANS){
+                continue;
+            }
             dimensions.add(toDimension(sourceKey, fineDim, i, size, targets));
         }
         return dimensions;
