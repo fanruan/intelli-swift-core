@@ -11,6 +11,7 @@ import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.segment.operator.column.SwiftFieldPathIndexer;
 import com.fr.swift.segment.relation.RelationIndex;
 import com.fr.swift.util.Crasher;
 
@@ -20,7 +21,7 @@ import java.util.List;
  * @author yee
  * @date 2018/1/17
  */
-public abstract class BaseFieldPathIndexer extends BaseTablePathIndexer {
+public abstract class BaseFieldPathIndexer extends BaseTablePathIndexer implements SwiftFieldPathIndexer {
     private ColumnKey logicColumnKey;
 
     public BaseFieldPathIndexer(CubeMultiRelationPath relationPath, ColumnKey logicColumnKey, SwiftSegmentManager provider) {
@@ -40,7 +41,8 @@ public abstract class BaseFieldPathIndexer extends BaseTablePathIndexer {
 
     }
 
-    private void buildFieldPath() {
+    @Override
+    public void buildFieldPath() {
         LOGGER.info(String.format("start build FieldRelationIndex: %s -> %s", logicColumnKey.getName(), relationPath.getKey()));
         List<Segment> primarySegment = getPrimaryTableSegments();
         List<Segment> targetSegment = getTargetTableSegments();
