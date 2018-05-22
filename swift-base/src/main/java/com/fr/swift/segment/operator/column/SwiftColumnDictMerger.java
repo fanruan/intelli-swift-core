@@ -1,7 +1,5 @@
 package com.fr.swift.segment.operator.column;
 
-import com.fr.swift.cube.task.WorkerTask;
-
 /**
  * This class created on 2018/4/18
  *
@@ -9,6 +7,6 @@ import com.fr.swift.cube.task.WorkerTask;
  * @description
  * @since Advanced FineBI 5.0
  */
-public interface SwiftColumnDictMerger extends WorkerTask.Worker {
+public interface SwiftColumnDictMerger {
     void mergeDict() throws Exception;
 }
