@@ -479,4 +479,14 @@ public class SwiftUpdateManager implements EngineUpdateManager {
             ResourceDiscovery.getInstance().setCubePath(newPath);
         }
     }
+
+    @Override
+    public boolean checkPath(String path) throws Exception {
+        return ResourceDiscovery.getInstance().checkCubePath(path);
+    }
+
+    @Override
+    public boolean isCluster() throws Exception {
+        return false;
+    }
 }
