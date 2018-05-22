@@ -131,7 +131,6 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
                     // link task
                     transportTask.addNext(indexTask);
                     indexTask.addNext(mergeTask);
-
                     initSubColumnTaskIfHas(mergeTask, indexField, allSegments, indexSegments);
                 }
             }
