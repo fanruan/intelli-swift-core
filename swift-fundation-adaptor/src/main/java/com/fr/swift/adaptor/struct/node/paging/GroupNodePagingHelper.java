@@ -29,7 +29,7 @@ public class GroupNodePagingHelper implements NodePagingHelper {
 
     @Override
     public Pair<BIGroupNode, PagingSession> getPage(PagingInfo pagingInfo) {
-        PagingSession pagingSession = PagingSessionCacheManager.getInstance().get(pagingInfo.getSessionId());
+        PagingSession pagingSession = PagingSessionCacheManager.getInstance().get(pagingInfo.getPagingSessionId());
         if (pagingSession == null) {
             pagingSession = new PagingSession();
         }
@@ -46,7 +46,7 @@ public class GroupNodePagingHelper implements NodePagingHelper {
             pagingSession.setFirstRowOfPage(pair.getValue().getKey());
             pagingSession.setPrevPageStartCursor(pair.getValue().getValue());
         }
-        PagingSessionCacheManager.getInstance().cache(pagingInfo.getSessionId(), pagingSession);
+        PagingSessionCacheManager.getInstance().cache(pagingInfo.getPagingSessionId(), pagingSession);
         return Pair.of((BIGroupNode) pair.getKey(), pagingSession);
     }
 

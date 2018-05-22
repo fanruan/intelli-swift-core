@@ -10,14 +10,14 @@ public class PagingInfo {
     private boolean isFirstPage;
     private boolean isNextPage;
     private int pageSize;
-    private String sessionId;
+    private String pagingSessionId;
     private Expander expander;
 
-    public PagingInfo(boolean isFirstPage, boolean isNextPage, int pageSize, String sessionId, Expander expander) {
+    public PagingInfo(boolean isFirstPage, boolean isNextPage, int pageSize, String pagingSessionId, Expander expander) {
         this.isFirstPage = isFirstPage;
         this.isNextPage = isNextPage;
         this.pageSize = pageSize;
-        this.sessionId = sessionId;
+        this.pagingSessionId = pagingSessionId;
         this.expander = expander;
     }
 
@@ -33,8 +33,8 @@ public class PagingInfo {
         return pageSize;
     }
 
-    public String getSessionId() {
-        return sessionId;
+    public String getPagingSessionId() {
+        return pagingSessionId;
     }
 
     public Expander getExpander() {

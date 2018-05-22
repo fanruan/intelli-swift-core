@@ -93,7 +93,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
             TargetInfo targetInfo = TargetInfoUtils.parse(widget);
             queryInfo = buildQueryInfo(widget, targetInfo);
             SwiftResultSet resultSet;
-            pagingHelper = NodeCacheManager.getInstance().get(widget.getWidgetId());
+            pagingHelper = NodeCacheManager.getInstance().get(queryInfo);
             if (PagingUtils.isRefresh(widget.getPage()) || pagingHelper == null) {
                 resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
                 // 添加挖掘相关
@@ -103,7 +103,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
                     resultSet = dmBean.accept(visitor);
                 }
                 pagingHelper = new GroupNodePagingHelper(widget.getDimensionList().size(), (NodeResultSet) resultSet);
-                NodeCacheManager.getInstance().cache(widget.getWidgetId(), pagingHelper);
+                NodeCacheManager.getInstance().cache(queryInfo, pagingHelper);
             }
         } catch (Exception e) {
             LOGGER.error(e);
