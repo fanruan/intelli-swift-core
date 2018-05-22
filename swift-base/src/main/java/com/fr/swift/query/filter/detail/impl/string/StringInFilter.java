@@ -37,7 +37,7 @@ public class StringInFilter extends AbstractDetailFilter<String> {
 
     @Override
     public boolean matches(SwiftNode node, int targetIndex) {
-        String data = (String) node.getData();
+        String data = node.getData() == null ? null : node.getData().toString();
         return data != null && groups.contains(data);
     }
 }
