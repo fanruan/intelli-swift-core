@@ -19,6 +19,7 @@ import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.utils.transform.FineDataTransformUtils;
 import com.finebi.log.BILoggerFactory;
+import com.fr.swift.adaptor.widget.datamining.DMSwiftWidgetUtils;
 import com.fr.swift.adaptor.widget.datamining.SwiftAlgorithmResultAdapter;
 import com.fr.swift.cal.info.GroupQueryInfo;
 import com.fr.swift.cal.info.XGroupQueryInfo;
@@ -53,17 +54,6 @@ public class TimeSeriesGroupTableAdapter implements SwiftAlgorithmResultAdapter<
     private double[][] confidence;
     private boolean isCalculateConfidence = false;
     private GroupQueryInfo info;
-
-    private FineTarget createFineTarget(FineTarget originalTarget, String fieldName) {
-        FineTargetImpl newFineTarget = new FineTargetImpl();
-        newFineTarget.setId(originalTarget.getId());
-        newFineTarget.setTargetType(originalTarget.getTargetType());
-        WidgetDimensionBean widgetDimensionBean = StableManager.getContext().getObject("numberWidgetDimensionBean");
-        widgetDimensionBean.setName(fieldName);
-        newFineTarget.setValue(widgetDimensionBean);
-        newFineTarget.setIsUsed(false);
-        return newFineTarget;
-    }
 
     @Override
     public SwiftResultSet getResult(HoltWintersBean bean, AbstractTableWidget widget, NodeResultSet result, GroupQueryInfo info) {
@@ -107,12 +97,12 @@ public class TimeSeriesGroupTableAdapter implements SwiftAlgorithmResultAdapter<
                 FineTarget fineTarget = targetList.get(i);
                 fineTargets.add(fineTarget);
                 String fieldNamePrefix = FineDataTransformUtils.formatData(fineTarget.getText());
-                fineTargets.add(createFineTarget(fineTarget, fieldNamePrefix + MultiHoltWintersForecast.FORECAST_SUFFIX));
+                fineTargets.add(DMSwiftWidgetUtils.createFineTarget(fineTarget, fieldNamePrefix + MultiHoltWintersForecast.FORECAST_SUFFIX));
                 Aggregator targetAggregator = aggregators.get(i);
                 aggregators.add(i + 1, targetAggregator);
                 if (isCalculateConfidence) {
-                    fineTargets.add(createFineTarget(fineTarget, fieldNamePrefix + MultiHoltWintersForecast.LOWER_SUFFIX));
-                    fineTargets.add(createFineTarget(fineTarget, fieldNamePrefix + MultiHoltWintersForecast.UPPER_SUFFIX));
+                    fineTargets.add(DMSwiftWidgetUtils.createFineTarget(fineTarget, fieldNamePrefix + MultiHoltWintersForecast.LOWER_SUFFIX));
+                    fineTargets.add(DMSwiftWidgetUtils.createFineTarget(fineTarget, fieldNamePrefix + MultiHoltWintersForecast.UPPER_SUFFIX));
                     aggregators.add(i + 2, targetAggregator);
                     aggregators.add(i + 3, targetAggregator);
                 }

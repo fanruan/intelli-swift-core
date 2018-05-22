@@ -2,6 +2,7 @@ package com.fr.swift.adaptor.widget;
 
 import com.finebi.conf.algorithm.AlgorithmNameEnum;
 import com.finebi.conf.constant.BICommonConstants;
+import com.finebi.conf.constant.BIDesignConstants;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.WidgetDimensionBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.date.DateWidgetDimensionBean;
@@ -26,6 +27,7 @@ import com.fr.swift.adaptor.struct.node.SwiftTableResult;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.transformer.SortAdaptor;
 import com.fr.swift.adaptor.transformer.filter.dimension.DimensionFilterAdaptor;
+import com.fr.swift.adaptor.widget.datamining.DMSwiftWidgetUtils;
 import com.fr.swift.adaptor.widget.datamining.GroupTableToDMResultVisitor;
 import com.fr.swift.adaptor.widget.expander.ExpanderFactory;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
@@ -81,6 +83,10 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         GroupNode groupNode;
         int dimensionSize = 0;
         try {
+            // 把聚类维度字段去掉
+            // List<FineDimension> swiftDimensions = DMSwiftWidgetUtils.parseSwiftDimensions(widget);
+            // widget.setDimensions(swiftDimensions);
+
             dimensionSize = widget.getDimensionList().size();
             TargetInfo targetInfo = TargetInfoUtils.parse(widget);
             QueryInfo info = buildQueryInfo(widget, targetInfo);
@@ -230,6 +236,9 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         List<Dimension> dimensions = new ArrayList<Dimension>();
         for (int i = 0, size = fineDims.size(); i < size; i++) {
             FineDimension fineDim = fineDims.get(i);
+            if(fineDim.getType() == BIDesignConstants.DESIGN.DIMENSION_TYPE.KMEANS){
+                continue;
+            }
             dimensions.add(toDimension(sourceKey, fineDim, i, size, targets));
         }
         return dimensions;
