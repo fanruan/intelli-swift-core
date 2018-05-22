@@ -21,10 +21,16 @@ import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionDrill;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionSort;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.structure.filter.FineFilter;
+import com.finebi.conf.structure.result.table.BIGroupNode;
 import com.finebi.conf.structure.result.table.BITableResult;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.linkage.LinkageAdaptor;
 import com.fr.swift.adaptor.struct.node.SwiftTableResult;
+import com.fr.swift.adaptor.struct.node.cache.NodeCacheManager;
+import com.fr.swift.adaptor.struct.node.paging.GroupNodePagingHelper;
+import com.fr.swift.adaptor.struct.node.paging.PagingInfo;
+import com.fr.swift.adaptor.struct.node.paging.PagingSession;
+import com.fr.swift.adaptor.struct.node.paging.PagingUtils;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.transformer.SortAdaptor;
 import com.fr.swift.adaptor.transformer.filter.dimension.DimensionFilterAdaptor;
@@ -55,13 +61,14 @@ import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.group.Group;
 import com.fr.swift.query.sort.AscSort;
-import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.structure.Pair;
+import com.fr.swift.util.Crasher;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -80,27 +87,33 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(TableWidgetAdaptor.class);
 
     public static BITableResult calculate(TableWidget widget) {
-        GroupNode groupNode;
-        int dimensionSize = 0;
+        GroupNodePagingHelper pagingHelper = null;
+        QueryInfo queryInfo = null;
         try {
-            dimensionSize = widget.getDimensionList().size();
             TargetInfo targetInfo = TargetInfoUtils.parse(widget);
-            QueryInfo info = buildQueryInfo(widget, targetInfo);
-            SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(info);
-
-            // 添加挖掘相关
-            AlgorithmBean dmBean = widget.getValue().getDataMining();
-            if (dmBean != null && dmBean.getAlgorithmName() != AlgorithmNameEnum.EMPTY) {
-                GroupTableToDMResultVisitor visitor = new GroupTableToDMResultVisitor((NodeResultSet) resultSet, widget, (GroupQueryInfo) info);
-                resultSet = dmBean.accept(visitor);
+            queryInfo = buildQueryInfo(widget, targetInfo);
+            SwiftResultSet resultSet;
+            pagingHelper = NodeCacheManager.getInstance().get(widget.getWidgetId());
+            if (PagingUtils.isRefresh(widget.getPage()) || pagingHelper == null) {
+                resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
+                // 添加挖掘相关
+                AlgorithmBean dmBean = widget.getValue().getDataMining();
+                if (dmBean != null && dmBean.getAlgorithmName() != AlgorithmNameEnum.EMPTY) {
+                    GroupTableToDMResultVisitor visitor = new GroupTableToDMResultVisitor((NodeResultSet) resultSet, widget, (GroupQueryInfo) queryInfo);
+                    resultSet = dmBean.accept(visitor);
+                }
+                pagingHelper = new GroupNodePagingHelper(widget.getDimensionList().size(), (NodeResultSet) resultSet);
+                NodeCacheManager.getInstance().cache(widget.getWidgetId(), pagingHelper);
             }
-
-            groupNode = (GroupNode) ((NodeResultSet) resultSet).getNode();
         } catch (Exception e) {
-            groupNode = new GroupNode(-1, null);
             LOGGER.error(e);
         }
-        return new SwiftTableResult(dimensionSize, groupNode, widget.getPage());
+        if (pagingHelper == null) {
+            return Crasher.crash("group query exception!");
+        }
+        PagingInfo pagingInfo = PagingUtils.createPagingInfo(widget, ((GroupQueryInfo)queryInfo).getDimensionInfo().getExpander());
+        Pair<BIGroupNode, PagingSession> pair = pagingHelper.getPage(pagingInfo);
+        return new SwiftTableResult(pair.getValue().hasNextPage(), pair.getValue().hasPrevPage(), pair.getKey());
     }
 
     private static QueryInfo buildQueryInfo(TableWidget widget, TargetInfo targetInfo) throws Exception {

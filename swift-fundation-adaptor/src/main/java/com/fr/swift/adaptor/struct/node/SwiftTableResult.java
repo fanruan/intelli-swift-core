@@ -14,70 +14,29 @@ import java.util.List;
  */
 public class SwiftTableResult implements BITableResult {
 
-    private static int PAGE_SIZE = 20;
+    private boolean hasNextPage;
+    private boolean hasPrevPage;
+    private BIGroupNode node;
 
-    private GroupNode root;
-    private List<List<GroupNode>> rows;
-    private int page;
-
-    public SwiftTableResult(int dimensionSize, GroupNode root, int currentPage) {
-        this.root = root;
-        this.rows = IteratorUtils.iterator2List(new Tree2RowIterator(dimensionSize, root.getChildren().iterator()));
-        this.page = currentPage;
+    public SwiftTableResult(boolean hasNextPage, boolean hasPrevPage, BIGroupNode node) {
+        this.hasNextPage = hasNextPage;
+        this.hasPrevPage = hasPrevPage;
+        this.node = node;
     }
 
-    /**
-     * TODO 等后面能做结果集缓存之后，全部计算的情况下，缓存结果集上的分页只需要加两个辅助指针保存startRow和endRow，
-     * 等下一页到来的时候清掉前一次的两行node里面的NodeRange，继续按照当前逻辑进行分页就可以了
-     *
-     * @return
-     */
     @Override
     public BIGroupNode getNode() {
-        //-1取全部
-        if (rows.isEmpty() || page == -1) {
-            return new BIGroupNodeAdaptor(root);
-        }
-        if (page != 0) {
-            List<GroupNode> startRow = rows.get(page * PAGE_SIZE);
-            for (int i = 0; i < startRow.size(); i++) {
-                if (startRow.get(i) == null) {
-                    continue;
-                }
-                NodeRange range = new NodeRange();
-                range.setStartIndexIncluded(startRow.get(i).getIndex());
-                if (i == 0) {
-                    root.setNodeRange(range);
-                } else {
-                    startRow.get(i - 1).setNodeRange(range);
-                }
-            }
-        }
-        int endIndex = Math.min((page + 1) * PAGE_SIZE - 1, rows.size() - 1);
-        List<GroupNode> endRow = rows.get(endIndex);
-        for (int i = 0; i < endRow.size(); i++) {
-            if (endRow.get(i) == null) {
-                continue;
-            }
-            NodeRange range = new NodeRange();
-            range.setEndIndexIncluded(endRow.get(i).getIndex());
-            if (i == 0) {
-                root.setNodeRange(range);
-            } else {
-                endRow.get(i - 1).setNodeRange(range);
-            }
-        }
-        return new BIGroupNodeAdaptor(root);
+        return node;
     }
 
     @Override
     public boolean hasNextPage() {
-        return (page + 1) * PAGE_SIZE < rows.size();
+        return hasNextPage;
     }
 
     @Override
     public boolean hasPreviousPage() {
-        return page > 0;
+        return hasPrevPage;
     }
 
     @Override

@@ -242,6 +242,16 @@ public class DimensionFilterAdaptor {
         return formula;
     }
 
+    public static void deepSettingFieldId(FineDimension dimension) {
+        List<FineFilter> fineFilters = dimension.getFilters();
+        fineFilters = fineFilters == null ? new ArrayList<FineFilter>(0) : fineFilters;
+        String fieldId = dimension.getFieldId();
+        for (FineFilter fineFilter : fineFilters) {
+            AbstractFilterBean bean = (AbstractFilterBean) fineFilter.getValue();
+            deepSettingFieldId(bean, fieldId);
+        }
+    }
+
     private static void deepSettingFieldId(AbstractFilterBean bean, String fieldId) {
         List<FilterBean> filterBeans = null;
         if (bean instanceof GeneraAndFilterBean) {

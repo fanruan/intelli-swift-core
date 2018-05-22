@@ -14,6 +14,7 @@ import com.fr.swift.adaptor.struct.SwiftDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftEmptyResult;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.transformer.SortAdaptor;
+import com.fr.swift.adaptor.transformer.filter.dimension.DimensionFilterAdaptor;
 import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.cal.info.DetailQueryInfo;
 import com.fr.swift.config.conf.MetaDataConvertUtil;
@@ -162,6 +163,7 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
         ArrayList<Dimension> dimensions = new ArrayList<Dimension>();
         for (int i = 0, size = fineDimensions.size(); i < size; i++) {
             FineDimension fineDimension = fineDimensions.get(i);
+            DimensionFilterAdaptor.deepSettingFieldId(fineDimension);
             if (fineDimension.getType() == BIDesignConstants.DESIGN.DIMENSION_TYPE.CAL_TARGET) {
                 dimensions.add(new DetailFormulaDimension(i, new SourceKey(fineDimension.getId()),
                         FilterInfoFactory.transformFineFilter(widget.getTableName(), dealWithTargetFilter(widget, fineDimension.getFilters())), getFormula(fineDimension.getFieldId(), widget)));
