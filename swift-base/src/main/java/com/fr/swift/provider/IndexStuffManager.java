@@ -94,4 +94,14 @@ public class IndexStuffManager implements IndexStuffProvider {
     public IndexStuffMedium getIndexStuffMedium() {
         return provider.getIndexStuffMedium();
     }
+
+    @Override
+    public List<TaskResultListener> taskResultListeners() {
+        return provider.taskResultListeners();
+    }
+
+    @Override
+    public void addResultListener(TaskResultListener taskResultListener) {
+        provider.addResultListener(taskResultListener);
+    }
 }

@@ -1,15 +1,18 @@
 package com.finebi.conf.provider;
 
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.common.internalimp.config.driver.CommonDataSourceDriverFactory;
 import com.finebi.common.internalimp.config.intercept.InterceptModelImpl;
 import com.finebi.common.internalimp.config.session.CommonConfigManager;
 import com.finebi.common.service.engine.table.AbstractEngineTableManager;
+import com.finebi.common.structure.config.driver.CommonDataSourceDriver;
 import com.finebi.common.structure.config.entryinfo.EntryInfo;
 import com.finebi.common.structure.config.fieldinfo.FieldInfo;
 import com.finebi.common.structure.config.relation.Relation;
 import com.finebi.common.structure.config.session.InterceptSession;
 import com.finebi.conf.constant.BICommonConstants;
 import com.finebi.conf.exception.FineEngineException;
+import com.finebi.conf.exception.FinePackageAbsentException;
 import com.finebi.conf.exception.FineTableAbsentException;
 import com.finebi.conf.internalimp.analysis.table.FineAnalysisTableImpl;
 import com.finebi.conf.internalimp.response.bean.FineTableResponed;
@@ -23,6 +26,8 @@ import com.fr.swift.conf.business.table2source.TableToSource;
 import com.fr.swift.conf.business.table2source.dao.TableToSourceConfigDao;
 import com.fr.swift.conf.business.table2source.dao.TableToSourceConfigDaoImpl;
 import com.fr.swift.conf.business.table2source.unique.TableToSourceUnique;
+import com.fr.swift.conf.dashboard.DashboardPackageTableService;
+import com.fr.swift.conf.dashboard.store.DashboardConfManager;
 import com.fr.swift.conf.updateInfo.TableUpdateInfoConfigService;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -55,6 +60,46 @@ public class SwiftTableManager extends AbstractEngineTableManager {
     @Override
     protected FieldInfo createFieldInfo(EntryInfo entryInfo) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List<FineBusinessTable> getAllTable() {
+        List<FineBusinessTable> fineBusinessTables = new ArrayList<FineBusinessTable>();
+        Map<String, EntryInfo> all = directSessionManager.getAllEntryInfo(getEngineType());
+        all.putAll(DashboardConfManager.getManager().getEntryInfoSession().getAll());
+        for (Map.Entry<String, EntryInfo> entry : all.entrySet()) {
+            EntryInfo entryInfo = entry.getValue();
+            CommonDataSourceDriver driver = CommonDataSourceDriverFactory.getInstance(getEngineType()).getDriver(entryInfo);
+            FineBusinessTable businessTable = driver.createBusinessTable(entryInfo);
+            fineBusinessTables.add(businessTable);
+        }
+        return fineBusinessTables;
+    }
+
+    @Override
+    public FineBusinessTable getSingleTable(String tableName) throws FineTableAbsentException {
+        try {
+            return super.getSingleTable(tableName);
+        } catch (FineTableAbsentException e) {
+            return DashboardPackageTableService.getService().getTableByName(tableName);
+        }
+    }
+
+    @Override
+    public List<FineBusinessTable> getAllTableByPackId(String packId) throws FinePackageAbsentException {
+        try {
+            return super.getAllTableByPackId(packId);
+        } catch (FinePackageAbsentException e) {
+            return DashboardPackageTableService.getService().getBusinessTables(packId);
+        }
+    }
+
+    @Override
+    public boolean isTableExist(String tableName) {
+        if (!super.isTableExist(tableName)) {
+            return DashboardPackageTableService.getService().isTableExists(tableName);
+        }
+        return true;
     }
 
     @Override

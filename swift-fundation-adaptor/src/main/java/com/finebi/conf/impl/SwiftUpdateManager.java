@@ -23,12 +23,14 @@ import com.fr.swift.adaptor.space.SwiftSpaceManager;
 import com.fr.swift.adaptor.struct.ShowResultSet;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.transformer.RelationSourceFactory;
+import com.fr.swift.conf.dashboard.DashboardPackageTableService;
 import com.fr.swift.conf.updateInfo.TableUpdateInfoConfigService;
 import com.fr.swift.constants.UpdateConstants;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.task.Task;
 import com.fr.swift.cube.task.TaskKey;
+import com.fr.swift.cube.task.TaskResult;
 import com.fr.swift.cube.task.impl.LocalTaskPool;
 import com.fr.swift.cube.task.impl.SchedulerTaskPool;
 import com.fr.swift.generate.preview.SwiftDataPreviewer;
@@ -144,6 +146,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
     @Override
     public void triggerTableUpdate(TableUpdateInfo updateInfo, FineBusinessTable table) throws Exception {
+        DashboardPackageTableService.getService().cleanTable(table.getName());
         Map<FineBusinessTable, TableUpdateInfo> infoMap = new HashMap<FineBusinessTable, TableUpdateInfo>();
         infoMap.put(table, updateInfo);
         LOGGER.info("Table " + table.getName() + " update trigger!");
@@ -209,10 +212,15 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         SourceReliance sourceReliance = SourceRelianceFactory.generateSourceReliance(baseDataSourceList, allDataSourceList, incrementMap);
         List<RelationSource> relationSources = RelationSourceFactory.transformRelationSources(relationPathConfProvider.getAllRelations());
         List<SourcePath> sourcePaths = RelationSourceFactory.transformSourcePaths(relationPathConfProvider.getAllRelationPaths());
-        // FIXME 传表的责任链，只更新和表有关的关联，单表更新可能无法更新到关联
         RelationReliance relationReliance = RelationRelianceFactory.generateRelationReliance(relationSources, sourceReliance);
         RelationPathReliance relationPathReliance = RelationRelianceFactory.generateRelationPathReliance(sourcePaths, relationReliance);
         IndexStuffProvider indexStuffProvider = new IndexStuffInfoProvider(updateSourceContainer, incrementMap, sourceReliance, relationReliance, relationPathReliance, indexStuffMedium);
+        indexStuffProvider.addResultListener(new IndexStuffProvider.TaskResultListener() {
+            @Override
+            public void call(TaskResult result) {
+                DashboardPackageTableService.getService().listen(result);
+            }
+        });
         ProviderManager.getManager().registProvider(0, indexStuffProvider);
     }
 
@@ -233,6 +241,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
     @Override
     public void triggerPackageUpdate(String packId) throws Exception {
+        DashboardPackageTableService.getService().cleanPackage(packId);
         TableUpdateInfo info = updateInfoConfigService.getPackageUpdateInfo(packId);
         if (info == null) {
             info = new TableUpdateInfo();
@@ -253,6 +262,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         }
         Map<String, String> packageIdName = new HashMap<String, String>();
         packageIdName.put(packId, packageName);
+
         LOGGER.info("Package " + packageName + " update trigger!");
         this.triggerUpdate(infoMap, true, true, new IndexStuffMedium(IndexStuffType.PACKAGE, packageIdName));
     }
@@ -325,6 +335,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
             }
         }
         if (!infoMap.isEmpty()) {
+            DashboardPackageTableService.getService().cleanAll();
             try {
                 LOGGER.info("Gloable update trigger!");
                 this.triggerUpdate(infoMap, true, true, new IndexStuffMedium(IndexStuffType.GLOABLE, packageIdName));
