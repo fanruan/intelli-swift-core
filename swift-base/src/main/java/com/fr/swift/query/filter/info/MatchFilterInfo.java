@@ -2,6 +2,7 @@ package com.fr.swift.query.filter.info;
 
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.filter.match.DetailBasedMatchFilter;
+import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.segment.Segment;
 
@@ -11,10 +12,12 @@ import com.fr.swift.segment.Segment;
 public class MatchFilterInfo extends AbstractFilterInfo {
     private FilterInfo filterInfo;
     private int index;
+    private MatchConverter converter;
 
-    public MatchFilterInfo(FilterInfo filterInfo, int index) {
+    public MatchFilterInfo(FilterInfo filterInfo, int index, MatchConverter converter) {
         this.filterInfo = filterInfo;
         this.index = index;
+        this.converter = converter;
     }
 
     @Override
@@ -29,7 +32,7 @@ public class MatchFilterInfo extends AbstractFilterInfo {
 
     @Override
     public MatchFilter createMatchFilter() {
-        return new DetailBasedMatchFilter(index, this.createDetailFilter(null));
+        return new DetailBasedMatchFilter(index, converter, this.createDetailFilter(null));
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.fr.swift.query.group.by;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
 import junit.framework.TestCase;
@@ -19,7 +20,7 @@ public class MergerGroupByTest extends TestCase {
     private MergerGroupBy mergerGroupByIndex;
     private MergerGroupBy mergerGroupByValues;
 
-    public void setUp(){
+    public void setUp() {
         CubeData cubeData1 = new CubeData();
         CubeData cubeData2 = new CubeData();
         List<Column> dimensions1 = cubeData1.getDimensions();
@@ -35,7 +36,7 @@ public class MergerGroupByTest extends TestCase {
             }
 
             @Override
-            public boolean matches(SwiftNode node, int targetIndex) {
+            public boolean matches(SwiftNode node, int targetIndex, MatchConverter converter) {
                 return false;
             }
         }, cursor, asc, true);
@@ -46,7 +47,7 @@ public class MergerGroupByTest extends TestCase {
             }
 
             @Override
-            public boolean matches(SwiftNode node, int targetIndex) {
+            public boolean matches(SwiftNode node, int targetIndex, MatchConverter converter) {
                 return false;
             }
         }, cursor, asc);
@@ -58,7 +59,7 @@ public class MergerGroupByTest extends TestCase {
             }
 
             @Override
-            public boolean matches(SwiftNode node, int targetIndex) {
+            public boolean matches(SwiftNode node, int targetIndex, MatchConverter converter) {
                 return false;
             }
         }, cursor, asc, true);
@@ -69,13 +70,13 @@ public class MergerGroupByTest extends TestCase {
             }
 
             @Override
-            public boolean matches(SwiftNode node, int targetIndex) {
+            public boolean matches(SwiftNode node, int targetIndex, MatchConverter converter) {
                 return false;
             }
         }, cursor, asc);
         mergerGroupByIndex = new MergerGroupByIndex(new MultiGroupByIndex[]{multiGroupByIndex1, multiGroupByIndex2}, asc);
         Comparator[] comparators = new Comparator[dimensions1.size()];
-        for (int i = 0; i < comparators.length; i++){
+        for (int i = 0; i < comparators.length; i++) {
             comparators[i] = dimensions1.get(i).getDictionaryEncodedColumn().getComparator();
         }
         mergerGroupByValues = new MergerGroupByValues(new MultiGroupByValues[]{multiGroupByValues1, multiGroupByValues2}, comparators, asc);

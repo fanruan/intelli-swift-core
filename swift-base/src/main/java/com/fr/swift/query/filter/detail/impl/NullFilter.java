@@ -1,6 +1,7 @@
 package com.fr.swift.query.filter.detail.impl;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
@@ -26,7 +27,7 @@ public class NullFilter extends AbstractDetailFilter {
     }
 
     @Override
-    public boolean matches(SwiftNode node, int targetIndex) {
+    public boolean matches(SwiftNode node, int targetIndex, MatchConverter converter) {
         if (targetIndex == -1){
             return node.getData() == null;
         }
