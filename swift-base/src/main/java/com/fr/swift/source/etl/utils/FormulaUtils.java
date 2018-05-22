@@ -88,7 +88,7 @@ public class FormulaUtils {
 
     public static Map<String, ColumnKey> createColumnIndexMap(String formular, Segment segment) {
         Map<String, ColumnKey> columnIndexMap = new HashMap<String, ColumnKey>();
-        String[] parameters = segment.isHistory() ? getHistoryRelatedParaNames(formular):getRealRelatedParaNames(formular);
+        String[] parameters = getRelatedParaNames(formular);
         for (int i = 0; i < parameters.length; i++) {
             String columnName = parameters[i];
             Column column = segment.getColumn(new ColumnKey(columnName));
@@ -101,7 +101,7 @@ public class FormulaUtils {
         return columnIndexMap;
     }
 
-    public static String[] getRealRelatedParaNames(String formular) {
+    public static String[] getRelatedParaNames(String formular) {
 
         ArrayList<String> nameList = new ArrayList<String>();
         Pattern pat = Pattern.compile("\\$[\\{][^\\}]*[\\}]");
@@ -117,32 +117,11 @@ public class FormulaUtils {
         return names;
     }
 
-
-    public static String[] getHistoryRelatedParaNames(String formular) {
-        int headStart = 0;
-        int headEnd = 4;
-        ArrayList<String> nameList = new ArrayList<String>();
-        Pattern pat = Pattern.compile("\\$[\\{][^\\}]*[\\}]");
-        Matcher matcher = pat.matcher(formular);
-        while (matcher.find()) {
-            String matchStr = matcher.group(0);
-            nameList.add(matchStr.substring(2, matchStr.length() - 1));
-        }
-        String[] names = new String[nameList.size()];
-        for (int i = 0; i < nameList.size(); i++) {
-            String fieldId = nameList.get(i);
-            int tableIdLength = Integer.valueOf(fieldId.substring(headStart, headEnd));
-            names[i] = fieldId.substring(headEnd + tableIdLength, fieldId.length());
-        }
-        return names;
-    }
-
-
     //取得字段原本的类型
     public static ColumnType getColumnType(SwiftMetaData metadata, String expression) {
         Calculator c = Calculator.createCalculator();
         String formula = getParameterIndexEncodedFormula(expression);
-        String[] parameters = getRealRelatedParaNames(expression);
+        String[] parameters = getRelatedParaNames(expression);
         int index = 0;
         for (String parameter : parameters) {
             c.set(toParameterFormat(index++ + ""), getParameterDefaultValue(metadata, parameter));
@@ -162,27 +141,27 @@ public class FormulaUtils {
     }
 
     //取得字段原本的类型
-    public static ColumnType getHistoryColumnType(SwiftMetaData metadata, String expression) {
-        Calculator c = Calculator.createCalculator();
-        String formula = getParameterIndexEncodedFormula(expression);
-        String[] parameters = getHistoryRelatedParaNames(expression);
-        int index = 0;
-        for (String parameter : parameters) {
-            c.set(toParameterFormat(index++ + ""), getParameterDefaultValue(metadata, parameter));
-        }
-        try {
-            Object ob = c.eval(formula);
-            if (ob instanceof Date) {
-                return ColumnType.DATE;
-            } else if (ob instanceof Number) {
-                return ColumnType.NUMBER;
-            } else {
-                return ColumnType.STRING;
-            }
-        } catch (UtilEvalError utilEvalError) {
-            return ColumnType.STRING;
-        }
-    }
+//    public static ColumnType getHistoryColumnType(SwiftMetaData metadata, String expression) {
+//        Calculator c = Calculator.createCalculator();
+//        String formula = getParameterIndexEncodedFormula(expression);
+//        String[] parameters = getRelatedParaNames(expression);
+//        int index = 0;
+//        for (String parameter : parameters) {
+//            c.set(toParameterFormat(index++ + ""), getParameterDefaultValue(metadata, parameter));
+//        }
+//        try {
+//            Object ob = c.eval(formula);
+//            if (ob instanceof Date) {
+//                return ColumnType.DATE;
+//            } else if (ob instanceof Number) {
+//                return ColumnType.NUMBER;
+//            } else {
+//                return ColumnType.STRING;
+//            }
+//        } catch (UtilEvalError utilEvalError) {
+//            return ColumnType.STRING;
+//        }
+//    }
 
     /**
      * 参数转成自增长id，避免字段名字带特殊字符
@@ -226,7 +205,7 @@ public class FormulaUtils {
 
     public static Map<String, Integer> createColumnIndexMap(String formula) {
         Map<String, Integer> columnIndexMap = new HashMap<String, Integer>();
-        String[] parameters = getRealRelatedParaNames(formula);
+        String[] parameters = getRelatedParaNames(formula);
         for (int i = 0; i < parameters.length; i++) {
             columnIndexMap.put(toParameterFormat(String.valueOf(i)), Integer.valueOf(parameters[i]));
         }
