@@ -241,7 +241,7 @@ public class TargetInfoUtils {
     private static boolean isDistinctCounter(FineTarget target) {
         String countDep = target.getCounterDep();
         return StringUtils.isNotEmpty(countDep)
-                && !ComparatorUtils.equals(countDep, BIDesignConstants.COUNTER_DEP.TOTAL_ROWS);
+                && !ComparatorUtils.equals(countDep, BIDesignConstants.DESIGN.COUNTER_DEP.TOTAL_ROWS);
     }
 
     private static List<Pair<Integer, GroupType>> getDateDimensionIndexTypePair(AbstractTableWidget widget) {
