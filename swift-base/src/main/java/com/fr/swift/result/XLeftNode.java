@@ -1,3 +1,4 @@
+
 package com.fr.swift.result;
 
 import com.fr.swift.query.aggregator.AggregatorValue;
@@ -125,5 +126,10 @@ public class XLeftNode extends GroupNode<XLeftNode> {
             result[i] = values.toArray(new AggregatorValue[values.size()]);
         }
         return result;
+    }
+
+    @Override
+    public AggregatorValue getAggregatorValue(int key) {
+        return valueArrayList.get(valueArrayList.size() - 1)[key];
     }
 }
