@@ -1,5 +1,6 @@
 package com.fr.swift.query.filter.detail.impl;
 
+import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
 
@@ -13,7 +14,7 @@ public class NotNullFilter extends AbstractNotOperatorFilter {
     }
 
     @Override
-    public boolean matches(SwiftNode node, int targetIndex) {
+    public boolean matches(SwiftNode node, int targetIndex, MatchConverter converter) {
         if (targetIndex == -1){
             return node.getData() != null;
         }

@@ -417,7 +417,8 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
         return globalUpdateLog;
     }
-    
+
+
     @Override
     public UpdateNeedSpace getUpdateNeedSpace() {
         return null;
@@ -492,7 +493,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
     @Override
     public boolean checkPath(String path) throws Exception {
-        return true;
+        return ResourceDiscovery.getInstance().checkCubePath(path);
     }
 
     @Override

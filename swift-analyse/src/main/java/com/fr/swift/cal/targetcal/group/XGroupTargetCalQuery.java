@@ -3,8 +3,13 @@ package com.fr.swift.cal.targetcal.group;
 import com.fr.swift.cal.info.XGroupQueryInfo;
 import com.fr.swift.cal.result.ResultQuery;
 import com.fr.swift.cal.targetcal.AbstractTargetCalQuery;
+import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.query.filter.FilterBuilder;
+import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.query.filter.match.MatchFilter;
+import com.fr.swift.query.filter.match.NodeFilter;
 import com.fr.swift.query.filter.match.NodeSorter;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.GroupNode;
@@ -13,11 +18,12 @@ import com.fr.swift.result.TopGroupNode;
 import com.fr.swift.result.XLeftNode;
 import com.fr.swift.result.XNodeMergeResultSet;
 import com.fr.swift.result.node.GroupNodeAggregateUtils;
+import com.fr.swift.result.node.GroupNodeUtils;
 import com.fr.swift.result.node.NodeType;
 import com.fr.swift.result.node.cal.TargetCalculatorUtils;
-import com.fr.swift.result.node.iterator.BFTGroupNodeIterator;
 import com.fr.swift.result.node.iterator.PostOrderNodeIterator;
 import com.fr.swift.result.node.xnode.XNodeUtils;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.iterator.IteratorUtils;
 
 import java.sql.SQLException;
@@ -47,13 +53,12 @@ public class XGroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> 
         // TODO: 2018/5/2 结果过滤
 
         // 下面设置字典、取出要返回的结果指标、对结果指标做横向和列向汇总、结果指标转为二维数组
-        TargetCalculatorUtils.setTopGroupNodeData(resultSet.getTopGroupNode(), resultSet.getColGlobalDictionaries());
-        TargetCalculatorUtils.getShowTargetsForXLeftNodeAndSetNodeDataAndSetNodeIndex((XLeftNode) resultSet.getNode(),
-                info.getTargetInfo().getTargetsForShowList(), resultSet.getRowGlobalDictionaries());
+        GroupNodeUtils.updateNodeData(resultSet.getTopGroupNode(), resultSet.getColGlobalDictionaries());
+        GroupNodeUtils.updateNodeData((XLeftNode) resultSet.getNode(), resultSet.getRowGlobalDictionaries());
         // 对最后结果进行汇总
         int rowDimensionSize = info.getDimensionInfo().getDimensions().length;
         int colDimensionSize = info.getColDimensionInfo().getDimensions().length;
-        List<Aggregator> aggregators = info.getTargetInfo().getResultAggregators();
+        List<Pair<Aggregator, Integer>> aggregators = info.getTargetInfo().getResultAggregators();
         GroupNodeAggregateUtils.aggregate(NodeType.X_LEFT, rowDimensionSize, (GroupNode) resultSet.getNode(), aggregators);
         // 先更新topGroupNode里面的topGroupValues，然后在做列向汇总。为什么呢？因为要对xLeftNode横向的汇总行做列向汇总
         XNodeUtils.updateTopGroupNodeValues(colDimensionSize, rowDimensionSize,
@@ -61,6 +66,27 @@ public class XGroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> 
         GroupNodeAggregateUtils.aggregate(NodeType.TOP_GROUP, colDimensionSize, resultSet.getTopGroupNode(), aggregators);
         // 先更新一下xLeftNode#valueArrayList（包含topGroupNode所有列（包括汇总列）的某一行）
         updateXLeftNode(rowDimensionSize, colDimensionSize, resultSet);
+        List<MatchFilter> dimensionMatchFilter = getDimensionMatchFilters(info.getDimensionInfo().getDimensions());
+        if (hasDimensionFilter(dimensionMatchFilter)) {
+            GroupNodeAggregateUtils.aggregate(NodeType.X_LEFT, rowDimensionSize, (GroupNode) resultSet.getNode(), aggregators);
+            // 先更新topGroupNode里面的topGroupValues，然后在做列向汇总。为什么呢？因为要对xLeftNode横向的汇总行做列向汇总
+            XNodeUtils.updateTopGroupNodeValues(colDimensionSize, rowDimensionSize,
+                    resultSet.getTopGroupNode(), (XLeftNode) resultSet.getNode());
+            GroupNodeAggregateUtils.aggregate(NodeType.TOP_GROUP, colDimensionSize, resultSet.getTopGroupNode(), aggregators);
+            // 先更新一下xLeftNode#valueArrayList（包含topGroupNode所有列（包括汇总列）的某一行）
+            updateXLeftNode(rowDimensionSize, colDimensionSize, resultSet);
+            NodeFilter.filter(resultSet.getNode(), dimensionMatchFilter);
+        } else {
+            //pony 过滤之后这个挂了，要lyon改下，暂时屏蔽
+            // 对最后结果进行汇总
+            GroupNodeAggregateUtils.aggregate(NodeType.X_LEFT, rowDimensionSize, (GroupNode) resultSet.getNode(), aggregators);
+            // 先更新topGroupNode里面的topGroupValues，然后在做列向汇总。为什么呢？因为要对xLeftNode横向的汇总行做列向汇总
+            XNodeUtils.updateTopGroupNodeValues(colDimensionSize, rowDimensionSize,
+                    resultSet.getTopGroupNode(), (XLeftNode) resultSet.getNode());
+            GroupNodeAggregateUtils.aggregate(NodeType.TOP_GROUP, colDimensionSize, resultSet.getTopGroupNode(), aggregators);
+            // 先更新一下xLeftNode#valueArrayList（包含topGroupNode所有列（包括汇总列）的某一行）
+            updateXLeftNode(rowDimensionSize, colDimensionSize, resultSet);
+        }
 
         // 指标排序，处理的思路是利用横向和纵向汇总的得到的根节点汇总值，转为两个分组表的排序来处理
         // 暂时先这么实现，后面再分析一下能不能优化
@@ -85,6 +111,33 @@ public class XGroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> 
                     resultSet.getTopGroupNode(), (XLeftNode) resultSet.getNode());
         }
         return resultSet;
+    }
+
+
+    private static List<MatchFilter> getDimensionMatchFilters(Dimension[] dimensions) {
+        List<MatchFilter> matchFilters = new ArrayList<MatchFilter>(dimensions.length);
+        for (Dimension dimension : dimensions) {
+            FilterInfo filter = dimension.getFilter();
+            if (filter != null && filter.isMatchFilter()) {
+                matchFilters.add(FilterBuilder.buildMatchFilter(filter));
+            } else {
+                // 其他情况用null占位，表示不过滤
+                matchFilters.add(null);
+            }
+        }
+        return matchFilters;
+    }
+
+    private boolean hasDimensionFilter(List<MatchFilter> dimensionMatchFilter) {
+        if (dimensionMatchFilter == null) {
+            return false;
+        }
+        for (int i = 0; i < dimensionMatchFilter.size(); i++) {
+            if (dimensionMatchFilter.get(i) != null) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static boolean isEmpty(XNodeMergeResultSet xNodeMergeResultSet) {

@@ -1,12 +1,8 @@
 package com.fr.swift.adaptor.widget.datamining.kmeans;
 
-import com.finebi.base.stable.StableManager;
 import com.finebi.conf.algorithm.kmeans.KmeansPredict;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.kmeans.KmeansBean;
-import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.WidgetDimensionBean;
-import com.finebi.conf.internalimp.dashboard.widget.dimension.kmeans.FineKmeansDimension;
 import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
-import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.fr.swift.adaptor.widget.datamining.SwiftAlgorithmResultAdapter;
 import com.fr.swift.cal.info.GroupQueryInfo;
@@ -20,6 +16,7 @@ import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.node.GroupNodeAggregateUtils;
 import com.fr.swift.result.node.NodeType;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.structure.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,14 +37,17 @@ public class KmeansGroupTableAdapter implements SwiftAlgorithmResultAdapter<Kmea
         List<FineTarget> targetList = widget.getTargetList();
         TargetInfo targetInfo = info.getTargetInfo();
         DimensionInfo dimensionInfo = info.getDimensionInfo();
-        List<Aggregator> aggregators = targetInfo.getResultAggregators();
+        List<Aggregator> aggregators = new ArrayList<Aggregator>();
+        for (Pair<Aggregator, Integer> pair : targetInfo.getResultAggregators()) {
+            aggregators.add(pair.getKey());
+        }
 
         GroupNode rootNode = (GroupNode) result.getNode();
         List<double[]> resultSummary = getResultSummary(rootNode);
 
         KmeansPredict kmeans = new KmeansPredict(bean, resultSummary, targetList);
         GroupNode resultRootNode = addFirstDimension(rootNode, kmeans, info);
-        GroupNodeAggregateUtils.aggregate(NodeType.GROUP, dimensionInfo.getDimensions().length, resultRootNode, aggregators);
+        GroupNodeAggregateUtils.aggregate(NodeType.GROUP, dimensionInfo.getDimensions().length, resultRootNode, targetInfo.getResultAggregators());
 
         return new NodeMergeResultSetImpl(resultRootNode, new ArrayList<Map<Integer, Object>>(), new ArrayList<Aggregator>());
 

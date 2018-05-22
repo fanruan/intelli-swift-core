@@ -179,7 +179,7 @@ public class MinorUpdater {
     }
 
     private void buildRelationIndex(RelationSource relation) {
-        new RealtimeMultiRelationIndexer(RelationPathHelper.convert2CubeRelation(relation), MinorSegmentManager.getInstance()).work();
+        new RealtimeMultiRelationIndexer(RelationPathHelper.convert2CubeRelation(relation), MinorSegmentManager.getInstance()).buildRelationIndex();
     }
 
     private void buildPathRelationIndex(SourcePath sourcePath, List<SourceKey> hadBuild) {
@@ -194,7 +194,7 @@ public class MinorUpdater {
                 hadBuild.add(relation.getSourceKey());
             }
         }
-        new RealtimeTablePathIndexer(RelationPathHelper.convert2CubeRelationPath(sourcePath), MinorSegmentManager.getInstance()).work();
+        new RealtimeTablePathIndexer(RelationPathHelper.convert2CubeRelationPath(sourcePath), MinorSegmentManager.getInstance()).buildTablePath();
     }
 
     private Inserter getInserter(DataSource dataSource, Segment segment) throws Exception {

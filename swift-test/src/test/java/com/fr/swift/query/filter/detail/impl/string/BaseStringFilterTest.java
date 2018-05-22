@@ -4,6 +4,7 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.filter.detail.impl.BaseFilterTest;
 import com.fr.swift.query.filter.detail.impl.BaseColumnImplTest;
+import com.fr.swift.query.filter.match.ToStringConverter;
 import com.fr.swift.segment.column.Column;
 
 import java.util.ArrayList;
@@ -19,13 +20,13 @@ import java.util.stream.IntStream;
 public abstract class BaseStringFilterTest extends BaseFilterTest {
 
     protected static List<String> words = prepareWords(100);
-//    protected static Column wordsColumn = new BaseColumnImplTest(words, Comparator.naturalOrder(), NULL_VALUE);
+    //    protected static Column wordsColumn = new BaseColumnImplTest(words, Comparator.naturalOrder(), NULL_VALUE);
     protected static Column wordsColumn = new BaseColumnImplTest(words, Comparator.naturalOrder(), NULL_VALUE) {
-    @Override
-    protected Object convertValue(Object value) {
-        return value;
-    }
-};
+        @Override
+        protected Object convertValue(Object value) {
+            return value;
+        }
+    };
 
     protected List<String> details;
     protected Column column;
@@ -51,9 +52,9 @@ public abstract class BaseStringFilterTest extends BaseFilterTest {
     }
 
     public void testMatch() {
-        assertTrue(filter.matches(createNode(getRandomMatchedDetail(details, expectedIndexes)), 0));
-        assertTrue(!filter.matches(createNode(getRandomNotMatchedDetail(details, expectedIndexes)), 0));
-        assertTrue(!filter.matches(createNode(null), 0));
+        assertTrue(filter.matches(createNode(getRandomMatchedDetail(details, expectedIndexes)), 0, new ToStringConverter()));
+        assertTrue(!filter.matches(createNode(getRandomNotMatchedDetail(details, expectedIndexes)), 0, new ToStringConverter()));
+        assertTrue(!filter.matches(createNode(null), 0, new ToStringConverter()));
     }
 
     private static String getWord() {

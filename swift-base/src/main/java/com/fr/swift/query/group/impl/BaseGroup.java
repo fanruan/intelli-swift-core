@@ -39,4 +39,19 @@ abstract class BaseGroup<Base, Derive> implements Group<Base, Derive> {
         }
         return Core.EMPTY_CORE;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BaseGroup<?, ?> baseGroup = (BaseGroup<?, ?>) o;
+
+        return rule != null ? rule.getGroupType().equals(baseGroup.rule.getGroupType()) : baseGroup.rule == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return rule.getGroupType() != null ? rule.getGroupType().hashCode() : 0;
+    }
 }

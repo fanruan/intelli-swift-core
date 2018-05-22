@@ -5,6 +5,7 @@ import com.finebi.conf.internalimp.space.SpaceInfo;
 import com.finebi.conf.provider.SwiftAnalysisConfManager;
 import com.finebi.conf.service.engine.space.EngineSpaceManager;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
+import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.cube.space.SpaceUnit;
 import com.fr.swift.cube.space.SpaceUsageService;
 import com.fr.swift.cube.space.impl.SpaceUsageServiceImpl;
@@ -42,7 +43,7 @@ public class SwiftSpaceManager implements EngineSpaceManager {
         List<FineBusinessTable> fineTables = analysisConfManager.getBusinessTables(pack);
         List<SourceKey> tables = new ArrayList<SourceKey>();
         for (FineBusinessTable fineTable : fineTables) {
-            tables.add(new SourceKey(fineTable.getName()));
+            tables.add(DataSourceFactory.getDataSourceInCache(fineTable).getSourceKey());
         }
         long used = spaceUsageService.getTableUsedSpace(tables);
         return newSpaceInfo(used);

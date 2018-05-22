@@ -1,5 +1,6 @@
 package com.fr.swift.query.filter.detail.impl.number;
 
+import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.result.SwiftNode;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class NumberAverageFilter extends NumberInRangeFilter {
     }
 
     @Override
-    public boolean matches(SwiftNode node, int targetIndex) {
+    public boolean matches(SwiftNode node, int targetIndex, MatchConverter converter) {
         if (cacheMap == null) {
             cacheMap = new HashMap<List, Double>();
         }

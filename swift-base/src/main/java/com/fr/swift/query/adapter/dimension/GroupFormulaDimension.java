@@ -22,4 +22,22 @@ public class GroupFormulaDimension extends GroupDimension {
     public Column getColumn(Segment segment) {
         return new DetailFormulaColumn(formula, segment);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        GroupFormulaDimension that = (GroupFormulaDimension) o;
+
+        return formula != null ? formula.equals(that.formula) : that.formula == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (formula != null ? formula.hashCode() : 0);
+        return result;
+    }
 }

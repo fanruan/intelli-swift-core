@@ -2,6 +2,7 @@ package com.fr.swift.adaptor.widget.target;
 
 import com.finebi.conf.constant.BIDesignConstants;
 import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
+import com.finebi.conf.internalimp.dashboard.widget.target.FineTargetImpl;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.fr.general.ComparatorUtils;
@@ -47,14 +48,14 @@ public class TargetInfoUtils {
     public static TargetInfo parse(AbstractTableWidget widget) throws Exception {
         List<Metric> metrics = parseMetric(widget);
         List<GroupTarget> targetCalInfoList = parseTargetCalInfo(widget, metrics);
-        Pair<List<Aggregator>, List<ResultTarget>> pair = parseResultAggAndResultTarget(widget, metrics, targetCalInfoList);
+        Pair<List<Pair<Aggregator, Integer>>, List<ResultTarget>> pair = parseResultAggAndResultTarget(widget, metrics, targetCalInfoList);
         int targetLength = metrics.size() + targetCalInfoList.size();
         return new TargetInfoImpl(targetLength, new ArrayList<Metric>(metrics), targetCalInfoList, pair.getValue(), pair.getKey());
     }
 
-    private static Pair<List<Aggregator>, List<ResultTarget>> parseResultAggAndResultTarget(
+    private static Pair<List<Pair<Aggregator, Integer>>, List<ResultTarget>> parseResultAggAndResultTarget(
             AbstractTableWidget widget, List<Metric> metrics, List<GroupTarget> calInfoList) throws Exception {
-        List<Aggregator> aggregators = new ArrayList<Aggregator>();
+        List<Pair<Aggregator, Integer>> aggregators = new ArrayList<Pair<Aggregator, Integer>>();
         List<ResultTarget> resultTargets = new ArrayList<ResultTarget>();
         List<FineTarget> targets = widget.getTargetList();
         for (int i = 0; i < targets.size(); i++) {
@@ -67,20 +68,24 @@ public class TargetInfoUtils {
                     AggregatorType nodeAggType = AggregatorAdaptor.adaptorMetric(target.getMetric());
                     Metric metric = parseMetric(target, widget).get(0);
                     Aggregator detailAgg = metrics.get(metrics.indexOf(metric)).getAggregator();
+                    Aggregator resultAgg;
                     if (nodeAggType == AggregatorType.DUMMY) {
                         // 和明细的聚合器相同
-                        aggregators.add(new WrappedAggregator(detailAgg));
+                        resultAgg = new WrappedAggregator(detailAgg);
                     } else {
-                        aggregators.add(new WrappedAggregator(detailAgg, AggregatorFactory.createAggregator(nodeAggType)));
+                        resultAgg = new WrappedAggregator(detailAgg, AggregatorFactory.createAggregator(nodeAggType));
                     }
                     GroupTarget calInfo = parseTargetCalInfo(0, target, widget, metrics);
+                    int resultFetchIndex;
                     if (calInfo != null) {
                         // 显示快速计算指标
-                        resultTargets.add(new ResultTarget(i, metrics.size() + calInfoList.indexOf(calInfo)));
+                        resultFetchIndex = metrics.size() + calInfoList.indexOf(calInfo);
                     } else {
                         // 显示聚合指标
-                        resultTargets.add(new ResultTarget(i, metrics.indexOf(metric)));
+                        resultFetchIndex = metrics.indexOf(metric);
                     }
+                    resultTargets.add(new ResultTarget(i, resultFetchIndex));
+                    aggregators.add(Pair.of(resultAgg, resultFetchIndex));
                     break;
                 }
                 default:
@@ -127,8 +132,8 @@ public class TargetInfoUtils {
                     // 不包含聚合函数的公式字段生成的指标只能对应一个FormulaMetric
                     int paramIndex = metrics.indexOf(parseMetric(target, widget).get(0));
                     int rapidType = target.getCalculation().getType();
-
-                    return GroupTargetFactory.createFromRapidTarget(rapidType, 0,
+                    // 现在只有计算指标中的排名可能设置了二次计算
+                    return GroupTargetFactory.createFromRapidTarget(rapidType, 0, isRepeatCal(target),
                             new int[]{paramIndex}, resultIndex, getDateDimensionIndexTypePair(widget));
                 }
                 String fieldId = getFieldId(target);
@@ -210,11 +215,19 @@ public class TargetInfoUtils {
 
     private static Metric getFormulaMetric(SourceKey key, FilterInfo filterInfo, Aggregator aggregator, String formula){
         if (isGroupMetricFormula(formula)){
-            String fieldId = FormulaUtils.getRelatedParaNames(formula)[0];
-            return new GroupMetric(0, key, new ColumnKey(BusinessTableUtils.getFieldNameByFieldId(fieldId)), filterInfo, aggregator);
+            String fieldName = FormulaUtils.getRelatedParaNames(formula)[0];
+            return new GroupMetric(0, key, new ColumnKey(fieldName), filterInfo, aggregator);
         }
         return new FormulaMetric(0, key, filterInfo,
                 aggregator, formula);
+    }
+
+    private static boolean isRepeatCal(FineTarget target) {
+        try {
+            return ((FineTargetImpl) target).isRepeatCal();
+        } catch (Exception e) {
+        }
+        return false;
     }
 
     private static boolean isGroupMetricFormula(String formula) {

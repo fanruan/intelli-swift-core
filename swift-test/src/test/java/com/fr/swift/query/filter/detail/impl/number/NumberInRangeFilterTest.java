@@ -2,6 +2,7 @@ package com.fr.swift.query.filter.detail.impl.number;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.filter.match.ToStringConverter;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
 
@@ -17,7 +18,7 @@ import java.util.stream.IntStream;
  */
 public class NumberInRangeFilterTest extends BaseNumberFilterTest {
 
-    static Class[] doubleType = new Class[] { int.class, Double.class, Double.class, boolean.class, boolean.class, Column.class };
+    static Class[] doubleType = new Class[]{int.class, Double.class, Double.class, boolean.class, boolean.class, Column.class};
 
     private Number min;
     private Number max;
@@ -134,11 +135,11 @@ public class NumberInRangeFilterTest extends BaseNumberFilterTest {
         SwiftNode node = createNode(getRandomMatchedNumber());
         SwiftNode node1 = createNode(getRandomNotMatchedNumber());
         if (node.getData() == null) {
-            assertTrue(!filter.matches(node, 0));
+            assertTrue(!filter.matches(node, 0, new ToStringConverter()));
         } else {
-            assertTrue(filter.matches(node, 0));
+            assertTrue(filter.matches(node, 0, new ToStringConverter()));
         }
-        assertTrue(!filter.matches(node1, 0));
+        assertTrue(!filter.matches(node1, 0, new ToStringConverter()));
     }
 
     @Override
@@ -213,7 +214,7 @@ public class NumberInRangeFilterTest extends BaseNumberFilterTest {
     private Number getGreaterGroup(Number min) {
         while (true) {
             Number n = details.get(random.nextInt(details.size()));
-            if (n.doubleValue() > min.doubleValue()){
+            if (n.doubleValue() > min.doubleValue()) {
                 return n;
             }
         }

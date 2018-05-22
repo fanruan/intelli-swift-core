@@ -39,4 +39,22 @@ public class WrappedAggregator<T extends AggregatorValue> implements Aggregator<
             changedAgg.combine(current, changedAgg.createAggregatorValue(other));
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        WrappedAggregator<?> that = (WrappedAggregator<?>) o;
+
+        if (metricAgg != null ? !metricAgg.equals(that.metricAgg) : that.metricAgg != null) return false;
+        return changedAgg != null ? changedAgg.equals(that.changedAgg) : that.changedAgg == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = metricAgg != null ? metricAgg.hashCode() : 0;
+        result = 31 * result + (changedAgg != null ? changedAgg.hashCode() : 0);
+        return result;
+    }
 }
