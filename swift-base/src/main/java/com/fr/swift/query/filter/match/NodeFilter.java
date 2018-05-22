@@ -1,7 +1,6 @@
 package com.fr.swift.query.filter.match;
 
 import com.fr.swift.query.aggregator.AggregatorValue;
-import com.fr.swift.query.group.GroupType;
 import com.fr.swift.result.SwiftNode;
 
 import java.util.ArrayList;
@@ -68,7 +67,7 @@ public class NodeFilter {
         return results;
     }
 
-    public static void filter(SwiftNode node, List<MatchFilter> matchFilters, List<GroupType> groupTypes) {
+    public static void filter(SwiftNode node, List<MatchFilter> matchFilters) {
         filter(node, 0, matchFilters);
     }
 }
