@@ -35,7 +35,6 @@ import com.fr.swift.adaptor.struct.node.paging.PagingUtils;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.transformer.SortAdaptor;
 import com.fr.swift.adaptor.transformer.filter.dimension.DimensionFilterAdaptor;
-import com.fr.swift.adaptor.widget.datamining.DMSwiftWidgetUtils;
 import com.fr.swift.adaptor.widget.datamining.GroupTableToDMResultVisitor;
 import com.fr.swift.adaptor.widget.expander.ExpanderFactory;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
@@ -260,7 +259,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         for (int i = 0, size = fineDims.size(); i < size; i++) {
             FineDimension fineDim = fineDims.get(i);
             // 前端多出一个挖掘维度字段，引擎不需要，这里把挖掘维度字段给过滤掉
-            if(fineDim.getType() == BIDesignConstants.DESIGN.DIMENSION_TYPE.KMEANS){
+            if(fineDim.getType() == BIDesignConstants.DESIGN.DIMENSION_TYPE.KMEANS_DIMENSION){
                 continue;
             }
             dimensions.add(toDimension(sourceKey, fineDim, i, size, targets));
