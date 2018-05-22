@@ -69,6 +69,7 @@ import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.filter.info.value.SwiftDateInRangeFilterValue;
 import com.fr.swift.query.filter.info.value.SwiftNumberInRangeFilterValue;
+import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.RelationSource;
@@ -444,7 +445,7 @@ public class FilterInfoFactory {
      * @param bean
      * @return
      */
-    public static FilterInfo createMatchFilterInfo(FilterBean bean) {
+    public static FilterInfo createMatchFilterInfo(FilterBean bean, MatchConverter converter) {
         switch (bean.getFilterType()) {
             // string类过滤
             case BICommonConstants.ANALYSIS_FILTER_STRING.BELONG_VALUE:
@@ -454,6 +455,13 @@ public class FilterInfoFactory {
                 List<String> belongValues = valueBean.getValue();
                 if (belongValues == null || belongValues.isEmpty()) {
                     break;
+                }
+                if (bean.getFilterType() == BICommonConstants.ANALYSIS_FILTER_DATE.BELONG_STRING_VALUE){
+                    List<String> transValues = new ArrayList<String>();
+                    for (String value : belongValues){
+                        transValues.add(converter.convert(Long.valueOf(value)));
+                        belongValues = transValues;
+                    }
                 }
                 int valueType = valueBean.getType();
                 return new SwiftDetailFilterInfo<Set<String>>(null, new HashSet<String>(belongValues),
@@ -467,6 +475,13 @@ public class FilterInfoFactory {
                 List<String> notBelongValues = valueBean.getValue();
                 if (notBelongValues == null || notBelongValues.isEmpty()) {
                     return new SwiftDetailFilterInfo(null, null, SwiftDetailFilterType.NOT_SHOW);
+                }
+                if (bean.getFilterType() == BICommonConstants.ANALYSIS_FILTER_DATE.BELONG_STRING_VALUE){
+                    List<String> transValues = new ArrayList<String>();
+                    for (String value : notBelongValues){
+                        transValues.add(converter.convert(Long.valueOf(value)));
+                        notBelongValues = transValues;
+                    }
                 }
                 int valueType = valueBean.getType();
                 return new SwiftDetailFilterInfo<Set<String>>(null, new HashSet<String>(notBelongValues),

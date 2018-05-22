@@ -76,7 +76,7 @@ public class DimensionFilterAdaptor {
                             continue;
                         }
                         FilterInfo targetFilterInfo = FilterInfoFactory.createFilterInfo(tableName, (AbstractFilterBean) filter.getValue(), new ArrayList<Segment>());
-                        filterInfoList.add(new MatchFilterInfo(targetFilterInfo, targets.getValue().get(i)));
+                        filterInfoList.add(new MatchFilterInfo(targetFilterInfo, targets.getValue().get(i), MatchConverterFactory.createConvertor(GroupTypeAdaptor.adaptDashboardGroup(dimension.getGroup().getType()))));
                     }
                 }
             }
@@ -170,10 +170,10 @@ public class DimensionFilterAdaptor {
                     GeneralFilterInfo.AND : GeneralFilterInfo.OR);
 
         }
-        SwiftDetailFilterInfo info = (SwiftDetailFilterInfo) FilterInfoFactory.createMatchFilterInfo(filterBean);
+        SwiftDetailFilterInfo info = (SwiftDetailFilterInfo) FilterInfoFactory.createMatchFilterInfo(filterBean, MatchConverterFactory.createConvertor(GroupTypeAdaptor.adaptDashboardGroup(dimension.getGroup().getType())));
         if (info.getType() == SwiftDetailFilterType.FORMULA) {
             info = new SwiftDetailFilterInfo<Object>(info.getColumnKey(), transformTargetMatchFormula(info.getFilterValue(), targets), info.getType());
-            return new MatchFilterInfo(info, getIndex(filterBean.getTargetId(), targets));
+            return new MatchFilterInfo(info, getIndex(filterBean.getTargetId(), targets), MatchConverterFactory.createConvertor(GroupTypeAdaptor.adaptDashboardGroup(dimension.getGroup().getType())));
         } else {
             return new MatchFilterInfo(info, getIndex(filterBean.getTargetId(), targets), MatchConverterFactory.createConvertor(GroupTypeAdaptor.adaptDashboardGroup(dimension.getGroup().getType())));
         }
