@@ -1,5 +1,7 @@
 package com.fr.swift.increase;
 
+import com.fr.general.DateUtils;
+import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.SourceKey;
@@ -7,7 +9,10 @@ import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.excel.ExcelDataSource;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This class created on 2018-1-5 14:20:28
@@ -45,6 +50,7 @@ public class IncrementImpl implements Increment {
     }
 
     public IncrementImpl(String increaseQuery, String decreaseQuery, String modifyQuery, SourceKey targetSourceKey, String connectionName) {
+        this.targetSourceKey = targetSourceKey;
         if (increaseQuery != null && !increaseQuery.isEmpty()) {
             this.increaseSource = createTempQueryDBSource(increaseQuery, connectionName);
         }
@@ -54,7 +60,6 @@ public class IncrementImpl implements Increment {
         if (modifyQuery != null && !modifyQuery.isEmpty()) {
             this.modifySource = createTempQueryDBSource(modifyQuery, connectionName);
         }
-        this.targetSourceKey = targetSourceKey;
     }
 
     public IncrementImpl(String increaseQuery, String decreaseQuery, String modifyQuery, SourceKey targetSourceKey, String connectionName, UpdateType updateType) {
@@ -91,7 +96,35 @@ public class IncrementImpl implements Increment {
         if (query == null) {
             return null;
         }
+        query = replaceDate(query);
         QueryDBSource queryDBSource = new QueryDBSource(query, connectionName);
         return queryDBSource;
+    }
+
+    private String replaceDate(String sql) {
+        if (sql == null) {
+            return sql;
+        }
+
+        //替换上次更新时间
+        Date lastTime = ResourceDiscovery.getInstance().getLastUpdateTime(targetSourceKey);
+        Pattern lastTimePat = Pattern.compile("\\$[\\{]" + "上次更新时间" + "[\\}]");
+        sql = replacePattern(sql, lastTimePat, lastTime);
+
+        //替换当前更新时间
+        Date currentTime = new Date(System.currentTimeMillis());
+        Pattern currentTimePat = Pattern.compile("\\$[\\{]" + "当前更新时间" + "[\\}]");
+        sql = replacePattern(sql, currentTimePat, currentTime);
+        return sql;
+    }
+
+    private String replacePattern(String sql, Pattern pattern, Date date) {
+        Matcher matcher = pattern.matcher(sql);
+        String dateStr = "'"+DateUtils.DATETIMEFORMAT2.format(date)+"'";
+        while (matcher.find()) {
+            String matchStr = matcher.group(0);
+            sql = sql.replace(matchStr, dateStr);
+        }
+        return sql;
     }
 }

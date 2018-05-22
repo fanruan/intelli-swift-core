@@ -3,6 +3,7 @@ package com.fr.swift.result.node.cal;
 import com.fr.swift.query.adapter.target.GroupTarget;
 import com.fr.swift.query.adapter.target.cal.BrotherGroupTarget;
 import com.fr.swift.query.adapter.target.cal.CalTargetType;
+import com.fr.swift.query.adapter.target.cal.GroupFormulaTarget;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.XLeftNode;
@@ -70,6 +71,9 @@ public class TargetCalculatorFactory {
                 return new CousinValueTargetCalculator(target.paramIndexes(), target.resultIndex(), groupNode, dic, getFunctionByNodeType(groupNode), ((BrotherGroupTarget) target).getBrotherGroupIndex());
             case COUSIN_RATE:
                 return new CousinRateTargetCalculator(target.paramIndexes(), target.resultIndex(), groupNode, dic, getFunctionByNodeType(groupNode), ((BrotherGroupTarget) target).getBrotherGroupIndex());
+            case FORMULA:
+                return new GroupFormulaCalculator(target.paramIndexes(), target.resultIndex(),
+                        ((GroupFormulaTarget) target).getFormula(), iterator.next());
         }
         return null;
     }

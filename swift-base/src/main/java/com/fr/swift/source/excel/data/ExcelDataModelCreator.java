@@ -3,6 +3,7 @@ package com.fr.swift.source.excel.data;
 import com.fr.base.Parameter;
 import com.fr.base.ParameterHelper;
 import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.excel.ExcelUtil;
 
 import java.io.InputStream;
 
@@ -20,6 +21,7 @@ public class ExcelDataModelCreator {
         if (isCsv(filePath)) {
             return new CSVDataModel(inputStream, filePath);
         }
+        ExcelUtil.checkHead(inputStream, filePath);
         return new ExcelDataModel(inputStream, filePath);
     }
 
@@ -32,6 +34,7 @@ public class ExcelDataModelCreator {
         if (isCsv(filePath)) {
             return new CSVDataModel(filePath);
         }
+        ExcelUtil.checkHead(null, filePath);
         return new ExcelDataModel(filePath);
     }
 

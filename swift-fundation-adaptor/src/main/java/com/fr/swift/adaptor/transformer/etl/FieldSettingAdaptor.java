@@ -33,7 +33,7 @@ public class FieldSettingAdaptor {
                 break;
             }
         }
-        EtlSource source = (EtlSource) DataSourceFactory.getDataSource(analysis);
+        EtlSource source = (EtlSource) DataSourceFactory.getDataSourceInCache(analysis);
         return new EtlSource(source.getBasedSources(), source.getOperator(), createFieldsInfo(fieldSettingOperatorList, source));
     }
 

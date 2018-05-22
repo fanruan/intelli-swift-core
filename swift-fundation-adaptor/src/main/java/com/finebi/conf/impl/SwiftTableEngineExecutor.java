@@ -5,6 +5,9 @@ import com.finebi.base.constant.FineEngineType;
 import com.finebi.common.internalimp.config.session.CommonConfigManager;
 import com.finebi.common.structure.config.entryinfo.EntryInfo;
 import com.finebi.conf.exception.FineEngineException;
+import com.finebi.conf.exception.FineExcelFileTypeException;
+import com.finebi.conf.exception.FineExcelTableException;
+import com.finebi.conf.exception.FineExcelTypeOrQuantityException;
 import com.finebi.conf.internalimp.analysis.operator.circulate.CirculateOneFieldOperator;
 import com.finebi.conf.internalimp.analysis.operator.circulate.CirculateTwoFieldOperator;
 import com.finebi.conf.internalimp.analysis.operator.circulate.FloorItem;
@@ -41,6 +44,8 @@ import com.fr.swift.adaptor.struct.SwiftEmptyResult;
 import com.fr.swift.adaptor.struct.SwiftSegmentDetailResult;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.transformer.FieldFactory;
+import com.fr.swift.source.excel.exception.ExcelFileTypeException;
+import com.fr.swift.source.excel.exception.ExcelTableHeaderException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.provider.DataProvider;
@@ -49,6 +54,7 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.db.ConnectionInfo;
 import com.fr.swift.source.db.ConnectionManager;
+import com.fr.swift.source.excel.exception.ExcelTypeOrQuantityException;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -92,20 +98,28 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
 
     @Override
     public BIDetailTableResult getRealData(FineBusinessTable table) throws Exception {
-        DataSource dataSource = DataSourceFactory.transformDataSource(table);
+        DataSource dataSource = DataSourceFactory.getDataSourceInCache(table);
         List<Segment> segmentList = dataProvider.getRealData(dataSource);
         return new SwiftSegmentDetailResult(segmentList, dataSource.getMetadata());
     }
 
+    //todo 正常情况下只有新增表和编辑表会调用这个方法，目前功能代码调用比较混乱，出现了性能问题由功能负责!!!
     @Override
     public List<FineBusinessField> getFieldList(FineBusinessTable table) throws Exception {
         try {
             EntryInfo entryInfo = CommonConfigManager.getEntryInfoSession(getEngineType()).findByName(table.getName());
             Map<String, String> escapeMap = entryInfo != null ? entryInfo.getEscapeMap() : new HashMap<String, String>();
 
-            DataSource dataSource = DataSourceFactory.transformDataSource(table);
+            DataSource dataSource = DataSourceFactory.getDataSourceInSource(table);
             List<FineBusinessField> fieldsList = FieldFactory.transformColumns2Fields(dataSource.getMetadata(), table.getId(), escapeMap);
             return fieldsList;
+        } catch (ExcelTypeOrQuantityException e) {
+            throw new FineExcelTypeOrQuantityException(e.getMessage());
+
+        } catch (ExcelFileTypeException e) {
+            throw new FineExcelFileTypeException(e.getMessage());
+        } catch (ExcelTableHeaderException e) {
+            throw new FineExcelTableException(e.getMessage());
         } catch (RuntimeException run) {
             LOGGER.error(run.getCause());
             throw (Exception) run.getCause();
@@ -119,7 +133,7 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
     public boolean isAvailable(FineResourceItem item) {
         try {
             FineBusinessTable fineBusinessTable = tableManager.getSingleTable(item.getName());
-            DataSource dataSource = DataSourceFactory.transformDataSource(fineBusinessTable);
+            DataSource dataSource = DataSourceFactory.getDataSourceInCache(fineBusinessTable);
             return dataProvider.isSwiftAvailable(dataSource);
         } catch (FineEngineException e) {
             LOGGER.error(e);

@@ -1,6 +1,7 @@
 package com.fr.swift.generate.history.transport;
 
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.task.TaskResult.Type;
 import com.fr.swift.cube.task.impl.BaseWorker;
 import com.fr.swift.cube.task.impl.TaskResultImpl;
@@ -37,6 +38,7 @@ public class TableTransporter extends BaseWorker implements Transporter {
     public void work() {
         try {
             transport();
+            ResourceDiscovery.getInstance().setLastUpdateTime(dataSource.getSourceKey(), System.currentTimeMillis());
             workOver(new TaskResultImpl(Type.SUCCEEDED));
         } catch (Exception e) {
             LOGGER.error("Datasource:" + dataSource.getSourceKey().getId() + " transport failed", e);
