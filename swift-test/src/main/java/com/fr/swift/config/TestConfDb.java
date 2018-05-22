@@ -1,7 +1,7 @@
 package com.fr.swift.config;
 
 import com.fr.base.FRContext;
-import com.fr.config.DBEnv;
+import com.fr.config.BaseDBEnv;
 import com.fr.config.dao.DaoContext;
 import com.fr.config.dao.impl.HibernateClassHelperDao;
 import com.fr.config.dao.impl.HibernateEntityDao;
@@ -43,7 +43,7 @@ public class TestConfDb {
         dbProvider.addEntityClass(XmlEntity.class);
         dbProvider.addEntityClass(ClassHelper.class);
         dbProvider.init(dbOption);
-        DBEnv.setDBContext(dbProvider);
+        BaseDBEnv.setDBContext(dbProvider);
         DaoContext.setClassHelperDao(new HibernateClassHelperDao());
         DaoContext.setXmlEntityDao(new HibernateXmlEnityDao());
         DaoContext.setEntityDao(new HibernateEntityDao());
