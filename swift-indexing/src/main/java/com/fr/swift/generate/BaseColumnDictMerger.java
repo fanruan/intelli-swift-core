@@ -12,7 +12,7 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.swift.segment.operator.SwiftColumnDictMerger;
+import com.fr.swift.segment.operator.column.SwiftColumnDictMerger;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.DataSource;

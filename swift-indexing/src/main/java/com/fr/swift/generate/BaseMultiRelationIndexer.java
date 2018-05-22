@@ -19,6 +19,7 @@ import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.segment.operator.column.SwiftMultiRelationIndexer;
 import com.fr.swift.segment.relation.RelationIndex;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.array.LongArray;
@@ -31,7 +32,7 @@ import java.util.List;
  * @author yee
  * @date 2018/1/29
  */
-public abstract class BaseMultiRelationIndexer extends BaseWorker {
+public abstract class BaseMultiRelationIndexer extends BaseWorker implements SwiftMultiRelationIndexer {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(BaseMultiRelationIndexer.class);
 
     private CubeMultiRelation relation;
@@ -55,7 +56,8 @@ public abstract class BaseMultiRelationIndexer extends BaseWorker {
         }
     }
 
-    private void buildRelationIndex() {
+    @Override
+    public void buildRelationIndex() {
         LOGGER.info("start generate relation: " + relation.getKey());
         List<Segment> primarySegments = getSegments(relation.getPrimaryTable());
         List<Segment> foreignSegments = getSegments(relation.getForeignTable());
