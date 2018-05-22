@@ -18,12 +18,14 @@ import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
 import com.fr.swift.adaptor.linkage.LinkageAdaptor;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
+import com.fr.swift.adaptor.widget.group.GroupTypeAdaptor;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.MatchFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.filter.info.value.SwiftDateInRangeFilterValue;
+import com.fr.swift.query.filter.match.MatchConverterFactory;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.etl.utils.FormulaUtils;
@@ -70,7 +72,7 @@ public class DimensionFilterAdaptor {
                             continue;
                         }
                         FilterInfo targetFilterInfo = FilterInfoFactory.createFilterInfo(tableName, (AbstractFilterBean) filter.getValue(), new ArrayList<Segment>());
-                        filterInfoList.add(new MatchFilterInfo(targetFilterInfo, i));
+                        filterInfoList.add(new MatchFilterInfo(targetFilterInfo, i, MatchConverterFactory.createConvertor(GroupTypeAdaptor.adaptDashboardGroup(dimension.getGroup().getType()))));
                     }
                 }
             }
@@ -139,7 +141,7 @@ public class DimensionFilterAdaptor {
                 for (String date : dates) {
                     SwiftDetailFilterInfo info = (SwiftDetailFilterInfo) LinkageAdaptor.dealFilterInfo(key, date, dimensionBean);
                     info = new SwiftDetailFilterInfo<SwiftDateInRangeFilterValue>(key, (SwiftDateInRangeFilterValue) info.getFilterValue(),
-                            SwiftDetailFilterType.DATE_NOT_IN_RANGE);
+                            SwiftDetailFilterType.STRING_NOT_IN);
                     filterInfoList.add(info);
                 }
                 return new SwiftDetailFilterInfo<List<SwiftDetailFilterInfo>>(key, filterInfoList, SwiftDetailFilterType.OR);
@@ -166,16 +168,12 @@ public class DimensionFilterAdaptor {
                     GeneralFilterInfo.AND : GeneralFilterInfo.OR);
 
         }
-        SwiftDetailFilterInfo info = (SwiftDetailFilterInfo) FilterInfoFactory.createFilterInfo(tableName, filterBean, new ArrayList<Segment>());
+        SwiftDetailFilterInfo info = (SwiftDetailFilterInfo) FilterInfoFactory.createMatchFilterInfo(filterBean);
         if (info.getType() == SwiftDetailFilterType.FORMULA) {
             info = new SwiftDetailFilterInfo<Object>(info.getColumnKey(), transformTargetMatchFormula(info.getFilterValue(), targets), info.getType());
-            return new MatchFilterInfo(info, 0);
+            return new MatchFilterInfo(info, 0, MatchConverterFactory.createConvertor(GroupTypeAdaptor.adaptDashboardGroup(dimension.getGroup().getType())));
         } else {
-            FilterInfo filterInfo = info;
-            if (isConvertedDimension(dimension)) {
-                filterInfo = getFilterInfoFromConvertedDimension(info, dimension);
-            }
-            return new MatchFilterInfo(filterInfo, getIndex(filterBean.getTargetId(), targets));
+            return new MatchFilterInfo(info, getIndex(filterBean.getTargetId(), targets), MatchConverterFactory.createConvertor(GroupTypeAdaptor.adaptDashboardGroup(dimension.getGroup().getType())));
         }
     }
 

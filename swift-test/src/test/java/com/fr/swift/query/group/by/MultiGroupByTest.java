@@ -4,6 +4,7 @@ import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.result.KeyValue;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.row.RowIndexKey;
@@ -45,7 +46,7 @@ public class MultiGroupByTest extends TestCase {
             }
 
             @Override
-            public boolean matches(SwiftNode node, int targetIndex) {
+            public boolean matches(SwiftNode node, int targetIndex, MatchConverter converter) {
                 return false;
             }
         }, cursor, asc);

@@ -10,6 +10,7 @@ import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.query.filter.match.NodeFilter;
 import com.fr.swift.query.filter.match.NodeSorter;
+import com.fr.swift.query.group.GroupType;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
@@ -49,9 +50,13 @@ public class GroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> {
         List<MatchFilter> dimensionMatchFilter = getDimensionMatchFilters(info.getDimensionInfo().getDimensions());
         if (hasDimensionFilter(dimensionMatchFilter)) {
             // 产品确定结果过滤在明细汇总方式的基础上进行，不用考虑切换汇总方式的情况了
+            List<GroupType> groupTypes = new ArrayList<GroupType>();
+            for (Dimension dimension : info.getDimensionInfo().getDimensions()){
+                groupTypes.add(dimension.getGroup().getGroupType());
+            }
             GroupNodeAggregateUtils.aggregate(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
                     (GroupNode) mergeResult.getNode(), mergeResult.getAggregators());
-            NodeFilter.filter(mergeResult.getNode(), dimensionMatchFilter);
+            NodeFilter.filter(mergeResult.getNode(), dimensionMatchFilter, groupTypes);
         }
         // TODO: 2018/5/15 是否选了二次计算的问题。应该在过滤之前做一次汇总，然后根据是否选了二次计算决定是否进行再汇总。
         // 使用结果汇总聚合器汇总，这边不用管汇总方式的切换了，解析的时候包装了聚合器。

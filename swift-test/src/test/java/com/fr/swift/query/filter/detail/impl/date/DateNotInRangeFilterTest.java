@@ -1,6 +1,7 @@
 package com.fr.swift.query.filter.detail.impl.date;
 
 import com.fr.swift.query.filter.detail.impl.date.not.DateNotInRangeFilter;
+import com.fr.swift.query.filter.match.ToStringConverter;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,10 +18,10 @@ public class DateNotInRangeFilterTest extends DateInRangeFilterTest {
 
     @Override
     public void testMatch() {
-        assertTrue(!filter.matches(createNode(startDate, comparator), 0));
-        assertTrue(!filter.matches(createNode(endDate, comparator), 0));
-        assertTrue(filter.matches(createNode(getRandomMatchedDetail(details, expectedIndexes), comparator), 0));
-        assertTrue(!filter.matches(createNode(getRandomNotMatchedDetail(details, expectedIndexes), comparator), 0));
+        assertTrue(!filter.matches(createNode(startDate, comparator), 0, new ToStringConverter()));
+        assertTrue(!filter.matches(createNode(endDate, comparator), 0, new ToStringConverter()));
+        assertTrue(filter.matches(createNode(getRandomMatchedDetail(details, expectedIndexes), comparator), 0, new ToStringConverter()));
+        assertTrue(!filter.matches(createNode(getRandomNotMatchedDetail(details, expectedIndexes), comparator), 0, new ToStringConverter()));
     }
 
     @Override
