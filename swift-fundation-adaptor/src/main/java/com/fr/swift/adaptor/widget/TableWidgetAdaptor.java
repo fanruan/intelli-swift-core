@@ -1,6 +1,6 @@
 package com.fr.swift.adaptor.widget;
 
-import com.finebi.conf.algorithm.AlgorithmNameEnum;
+import com.finebi.conf.algorithm.common.DMUtils;
 import com.finebi.conf.constant.BICommonConstants;
 import com.finebi.conf.constant.BIDesignConstants;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
@@ -10,11 +10,13 @@ import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.TypeGro
 import com.finebi.conf.internalimp.bean.dashboard.widget.expander.ExpanderBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
 import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
+import com.finebi.conf.internalimp.bean.dashboard.widget.visitor.WidgetBeanToFineWidgetVisitor;
 import com.finebi.conf.internalimp.dashboard.widget.dimension.sort.DimensionTargetSort;
 import com.finebi.conf.internalimp.dashboard.widget.filter.CustomLinkConfItem;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
 import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
 import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
+import com.finebi.conf.structure.dashboard.widget.FineWidget;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionDrill;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionSort;
@@ -83,9 +85,6 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         GroupNode groupNode;
         int dimensionSize = 0;
         try {
-            // 把聚类维度字段去掉
-            // List<FineDimension> swiftDimensions = DMSwiftWidgetUtils.parseSwiftDimensions(widget);
-            // widget.setDimensions(swiftDimensions);
 
             dimensionSize = widget.getDimensionList().size();
             TargetInfo targetInfo = TargetInfoUtils.parse(widget);
@@ -94,7 +93,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
 
             // 添加挖掘相关
             AlgorithmBean dmBean = widget.getValue().getDataMining();
-            if (dmBean != null && dmBean.getAlgorithmName() != AlgorithmNameEnum.EMPTY) {
+            if (!DMUtils.isEmptyAlgorithm(dmBean)) {
                 GroupTableToDMResultVisitor visitor = new GroupTableToDMResultVisitor((NodeResultSet) resultSet, widget, (GroupQueryInfo) info);
                 resultSet = dmBean.accept(visitor);
             }
@@ -173,6 +172,18 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
                 } else {
                     dealWithAutoLink(widget.getTableName(), filterInfos, widgetLinkItem);
                 }
+
+                FineWidget fineWidget = widgetLinkItem.getWidget().accept(new WidgetBeanToFineWidgetVisitor());
+                List<FineTarget> fineTargets = fineWidget.getTargetList();
+                if (fineTargets != null) {
+                    for (FineTarget fineTarget : fineTargets) {
+                        AbstractTableWidget tableWidget = (AbstractTableWidget) fineWidget;
+                        List detailFilters = fineTarget.getDetailFilters();
+                        if (detailFilters != null && !detailFilters.isEmpty()) {
+                            filterInfos.add(FilterInfoFactory.transformFineFilter(tableWidget.getTableName(), detailFilters));
+                        }
+                    }
+                }
             }
         }
 
@@ -236,6 +247,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         List<Dimension> dimensions = new ArrayList<Dimension>();
         for (int i = 0, size = fineDims.size(); i < size; i++) {
             FineDimension fineDim = fineDims.get(i);
+            // 前端多出一个挖掘维度字段，引擎不需要，这里把挖掘维度字段给过滤掉
             if(fineDim.getType() == BIDesignConstants.DESIGN.DIMENSION_TYPE.KMEANS){
                 continue;
             }

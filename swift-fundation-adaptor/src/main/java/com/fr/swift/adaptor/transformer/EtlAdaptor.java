@@ -63,13 +63,13 @@ public class EtlAdaptor {
         FineBusinessTable baseTable = analysis.getBaseTable();
         try {
             if (baseTable != null) {
-                dataSources.add(DataSourceFactory.getDataSource(baseTable));
+                dataSources.add(DataSourceFactory.getDataSourceInCache(baseTable));
             }
             dataSources.addAll(fromOperator(op));
             return new EtlSource(dataSources, adaptEtlOperator(op, table));
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
-            return DataSourceFactory.getDataSource(baseTable);
+            return DataSourceFactory.getDataSourceInCache(baseTable);
         }
     }
 
@@ -80,7 +80,7 @@ public class EtlAdaptor {
             case AnalysisType.JOIN: {
                 JoinBeanValue jbv = op.<JoinBean>getValue().getValue();
                 FineBusinessTable busiTable = BusinessTableUtils.getTableByTableName(jbv.getTable().getName());
-                dataSources.add(DataSourceFactory.getDataSource(busiTable));
+                dataSources.add(DataSourceFactory.getDataSourceInCache(busiTable));
                 break;
             }
             case AnalysisType.UNION:
@@ -88,7 +88,7 @@ public class EtlAdaptor {
                 for (UnionBeanValueTable table : ubv.getTables()) {
                     try {
                         FineBusinessTable busiTable = BusinessTableUtils.getTableByTableName(table.getName());
-                        dataSources.add(DataSourceFactory.getDataSource(busiTable));
+                        dataSources.add(DataSourceFactory.getDataSourceInCache(busiTable));
                     } catch (Exception e) {
                         continue;
                     }

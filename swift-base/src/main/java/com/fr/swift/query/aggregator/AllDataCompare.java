@@ -26,7 +26,8 @@ public abstract class AllDataCompare extends AbstractAggregator<DoubleAmountAggr
         final DetailColumn getter = column.getDetailColumn();
         RowTraversal notNullTraversal = getNotNullTraversal(traversal, column);
         if (notNullTraversal.isEmpty()) {
-            return new DoubleAmountAggregatorValue();
+            minOrMaxValue.setValue(NULL_DOUBLE);
+            return minOrMaxValue;
         }
         CalculatorTraversalAction ss;
         if (getter instanceof LongDetailColumn) {

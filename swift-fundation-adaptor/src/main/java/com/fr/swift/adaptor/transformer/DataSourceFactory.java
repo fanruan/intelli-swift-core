@@ -17,6 +17,7 @@ import com.fr.base.FRContext;
 import com.fr.cache.Attachment;
 import com.fr.cache.AttachmentSource;
 import com.fr.swift.cache.SourceCache;
+import com.fr.swift.generate.preview.MinorSegmentManager;
 import com.fr.swift.increase.IncrementImpl;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.increment.Increment.UpdateType;
@@ -34,6 +35,7 @@ import com.fr.swift.source.etl.EtlSource;
 import com.fr.swift.source.excel.ExcelDataSource;
 import com.fr.swift.source.excel.data.ExcelDataModelCreator;
 import com.fr.swift.source.excel.data.IExcelDataModel;
+import com.fr.swift.source.excel.exception.ExcelException;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -54,7 +56,7 @@ public class DataSourceFactory {
 
     public static void transformDataSources(Map<FineBusinessTable, TableUpdateInfo> infoMap, SourceContainerManager updateSourceContainer, Map<String, List<Increment>> incrementMap) throws Exception {
         for (Map.Entry<FineBusinessTable, TableUpdateInfo> infoEntry : infoMap.entrySet()) {
-            DataSource updateDataSource = getDataSource(infoEntry.getKey());
+            DataSource updateDataSource = getDataSourceInCache(infoEntry.getKey());
             if (updateDataSource != null) {
                 updateSourceContainer.getDataSourceContainer().addSource(updateDataSource);
 
@@ -84,7 +86,7 @@ public class DataSourceFactory {
         if (tables != null) {
             for (FineBusinessTable table : tables) {
                 try {
-                    DataSource updateDataSource = getDataSource(table);
+                    DataSource updateDataSource = getDataSourceInCache(table);
                     if (updateDataSource != null) {
                         dataSourceList.add(updateDataSource);
                     }
@@ -98,15 +100,20 @@ public class DataSourceFactory {
 
 
     /**
-     * 外部和接口调用
-     * 转换table->datasource
-     *
      * @param table
      * @return
+     * @throws Exception
+     * @description 优先从cache中取，取不到去配置取，再取不到才去数据源取
+     * 内部统一调用此方法!!
      */
-    public static DataSource transformDataSource(FineBusinessTable table) {
+    public static DataSource getDataSourceInCache(FineBusinessTable table) {
         try {
-            return getDataSource(table);
+            DataSource dataSource = getDataSource(table);
+            dataSource = SourceCache.getCache().getMetaDataBySource(dataSource);
+            return dataSource;
+        } catch (ExcelException e){
+            // 如果是ExcelException表示DataSource是Excel，抛错没影响，没毛病
+            throw e;
         } catch (Exception e) {
             LOGGER.error(e);
             return new EmptyDataSource();
@@ -114,14 +121,25 @@ public class DataSourceFactory {
     }
 
     /**
-     * 内部和包内调用
-     * 转换table->datasource
-     *
      * @param table
      * @return
      * @throws Exception
+     * @description 直接从数据源取，同时刷新cache
+     * 只有前端新增和更新表，会走这个方法
      */
-    public static DataSource getDataSource(FineBusinessTable table) throws Exception {
+    public static DataSource getDataSourceInSource(FineBusinessTable table) throws Exception {
+        try {
+            DataSource dataSource = getDataSource(table);
+            SourceCache.getCache().putSource2MetaData(dataSource);
+            MinorSegmentManager.getInstance().remove(dataSource.getSourceKey());
+            return dataSource;
+        } catch (Exception e) {
+            LOGGER.error(e);
+            return new EmptyDataSource();
+        }
+    }
+
+    private static DataSource getDataSource(FineBusinessTable table) throws Exception {
         DataSource dataSource = null;
         switch (table.getType()) {
             case BICommonConstants.TABLE.DATABASE:
@@ -139,7 +157,6 @@ public class DataSourceFactory {
             default:
                 dataSource = EtlAdaptor.adaptEtlDataSource(table);
         }
-        dataSource = SourceCache.getCache().getMetaDataBySource(dataSource);
         return dataSource;
     }
 
@@ -168,7 +185,7 @@ public class DataSourceFactory {
         return null;
     }
 
-    private static DataSource transformExcelDataSource(FineExcelBusinessTable table) {
+    private static DataSource transformExcelDataSource(FineExcelBusinessTable table) throws Exception{
         Attachment baseAttachment = AttachmentSource.getAttachment(table.getBaseAttach().getId());
         String path = FRContext.getCurrentEnv().getPath() + File.separator + baseAttachment.getPath();
         IExcelDataModel excelDataModel = ExcelDataModelCreator.createDataModel(path);
@@ -184,8 +201,15 @@ public class DataSourceFactory {
                 additionPaths.add(additionPath);
             }
         }
+        Map<String, ColumnType> fieldColumnTypes = checkFieldTypes(table.getOperators());
+        if (fieldColumnTypes != null && !fieldColumnTypes.isEmpty()){
+            columnTypes = new ColumnType[columnNames.length];
+            for (int i = 0; i < columnNames.length; i++){
+                columnTypes[i] = fieldColumnTypes.get(columnNames[i]);
+            }
+        }
         ExcelDataSource excelDataSource = new ExcelDataSource(path, columnNames, columnTypes, additionPaths);
-        return excelDataSource;
+        return checkETL(excelDataSource, table);
     }
 
     private static DataSource transformQueryDBSource(FineSQLBusinessTable table) throws Exception {

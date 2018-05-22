@@ -100,7 +100,7 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
             List<FineBusinessField> fields;
             if (table.getOperator() != null && table.getOperator().getType() == ConfConstant.AnalysisType.FIELD_SETTING) {
                 List<FieldSettingBeanItem> fieldSettings = ((FieldSettingOperator) table.getOperator()).getValue().getValue();
-                fields = FieldFactory.transformColumns2Fields(DataSourceFactory.transformDataSource(table.getBaseTable()).getMetadata(), table.getId(), escapeMap);
+                fields = FieldFactory.transformColumns2Fields(DataSourceFactory.getDataSourceInCache(table.getBaseTable()).getMetadata(), table.getId(), escapeMap);
                 for (int i = 0; i < fields.size(); i++) {
                     if (!fieldSettings.isEmpty()) {
                         ((FineBusinessFieldImp) (fields.get(i))).setEnable(fieldSettings.get(i).isUsed());
@@ -109,7 +109,7 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
                     }
                 }
             } else {
-                fields = FieldFactory.transformColumns2Fields(DataSourceFactory.transformDataSource(table).getMetadata(), table.getId(), escapeMap);
+                fields = FieldFactory.transformColumns2Fields(DataSourceFactory.getDataSourceInCache(table).getMetadata(), table.getId(), escapeMap);
             }
             if (!groupMap.isEmpty()) {
                 for (FineBusinessField field : fields) {
@@ -195,7 +195,7 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
     public NumberMaxAndMinValue getNumberMaxAndMinValue(FineAnalysisTable table, String fieldName) {
 
         try {
-            DataSource dataSource = DataSourceFactory.transformDataSource(table);
+            DataSource dataSource = DataSourceFactory.getDataSourceInCache(table);
             return dataProvider.getNumberMaxAndMinValue(dataSource, fieldName);
         } catch (Exception ignore) {
         }
@@ -205,7 +205,7 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
     @Override
     public List<Object> getColumnValue(FineAnalysisTable table, String fieldName) {
         try {
-            DataSource dataSource = DataSourceFactory.transformDataSource(table);
+            DataSource dataSource = DataSourceFactory.getDataSourceInCache(table);
             return dataProvider.getGroupPreviewByFields(dataSource, fieldName);
         } catch (Exception e) {
             LOGGER.error(e);

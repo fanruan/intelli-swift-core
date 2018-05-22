@@ -59,6 +59,8 @@ public class GroupTargetFactory {
                 return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_AVG);
             case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.SUM_OF_ALL_MAX:
                 return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_MAX);
+            case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.SUM_OF_ALL_MIN:
+                return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.ALL_MIN);
             case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.RANK_IN_GROUP_ASC:
                 return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.GROUP_RANK_ASC);
             case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.RANK_IN_GROUP_DES:
@@ -80,7 +82,7 @@ public class GroupTargetFactory {
             case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.MONTH_ON_MONTH_VALUE:
                 return new BrotherGroupTarget(queryIndex, resultIndex, paramIndexes, CalTargetType.BROTHER_VALUE, brotherIndexGroup);
             case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.MONTH_ON_MONTH_RATE:
-                return new BrotherGroupTarget(queryIndex, resultIndex, paramIndexes, CalTargetType.COUSIN_VALUE, brotherIndexGroup);
+                return new BrotherGroupTarget(queryIndex, resultIndex, paramIndexes, CalTargetType.BROTHER_RATE, brotherIndexGroup);
             case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.CURRENT_DIMENSION_PERCENT:
                 return new GroupTargetImpl(queryIndex, resultIndex, paramIndexes, CalTargetType.DIMENSION_PERCENT);
             case BIDesignConstants.DESIGN.RAPID_CALCULATE_TYPE.CURRENT_TARGET_PERCENT:

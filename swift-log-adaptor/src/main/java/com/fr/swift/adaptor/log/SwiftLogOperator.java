@@ -98,7 +98,7 @@ public class SwiftLogOperator implements LogOperator {
     }
 
     class Sync implements Runnable {
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1, new PoolThreadFactory(getClass().getName()));
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1, new PoolThreadFactory(getClass().getSimpleName()));
 
         private Map<Class<?>, List<Object>> dataMap = new ConcurrentHashMap<Class<?>, List<Object>>();
 

@@ -149,13 +149,8 @@ public class TargetInfoUtils {
         switch (type) {
             case BIDesignConstants.DESIGN.DIMENSION_TYPE.COUNTER:
             case BIDesignConstants.DESIGN.DIMENSION_TYPE.NUMBER: {
-                FilterInfo filterInfo = target.getDetailFilters() == null ? null :
-                        FilterInfoFactory.transformFineFilter(widget.getTableName(), target.getDetailFilters());
-                String fieldId = target.getFieldId();
-                if (isTargetFromCopyField(target)) {
-                    // 复制字段
-                    fieldId = target.getWidgetBeanField().getSource();
-                }
+                FilterInfo filterInfo = getFilterInfo(target, widget);
+                String fieldId = getFieldId(target);
                 SourceKey key = new SourceKey(fieldId);
                 if (type == BIDesignConstants.DESIGN.DIMENSION_TYPE.COUNTER && !isDistinctCounter(target)) {
                     metrics.add(new CounterMetric(0, key, new ColumnKey(fieldId), filterInfo));
@@ -171,25 +166,37 @@ public class TargetInfoUtils {
             }
             case BIDesignConstants.DESIGN.DIMENSION_TYPE.CAL_TARGET: {
                 // TODO: 2018/5/17 一个计算指标字段可能对应多个聚合函数（多个GroupMetric），如何区分计算指标是否包含聚合函数呢？
-                FilterInfo filterInfo = target.getDetailFilters() == null ? null :
-                        FilterInfoFactory.transformFineFilter(widget.getTableName(), target.getDetailFilters());
-                String fieldId = target.getFieldId();
-                if (isTargetFromCopyField(target)) {
-                    fieldId = target.getWidgetBeanField().getSource();
+                String fieldId = getFieldId(target);
+                String formula = AbstractWidgetAdaptor.getFormula(fieldId, widget);
+                if (AggFormulaUtils.isAggFormula(formula)){
+                    for (String paras : AggFormulaUtils.getBaseParas(formula)){
+
+                    }
+                } else {
+                    FilterInfo filterInfo = getFilterInfo(target, widget);
+                    SourceKey key = new SourceKey(fieldId);
+                    AggregatorType aggregatorType = AggregatorAdaptor.adaptorDashBoard(target.getGroup().getType());
+                    Aggregator aggregator = AggregatorFactory.createAggregator(aggregatorType);
+                    metrics.add(new FormulaMetric(0, key, filterInfo,
+                            aggregator, AbstractWidgetAdaptor.getFormula(fieldId, widget)));
+                    return metrics;
                 }
-                SourceKey key = new SourceKey(fieldId);
-                AggregatorType aggregatorType = AggregatorAdaptor.adaptorDashBoard(target.getGroup().getType());
-                Aggregator aggregator = AggregatorFactory.createAggregator(aggregatorType);
-                metrics.add(new FormulaMetric(0, key, filterInfo,
-                        aggregator, AbstractWidgetAdaptor.getFormula(fieldId, widget)));
-                return metrics;
             }
         }
         return Crasher.crash("invalid dimension type of target!");
     }
 
-    private static boolean isTargetFromCopyField(FineTarget target) {
-        return target.getWidgetBeanField() != null && target.getWidgetBeanField().getSource() != null;
+    private static String getFieldId(FineTarget target) {
+        //复制的字段
+        if (target.getWidgetBeanField() != null && target.getWidgetBeanField().getSource() != null) {
+            return target.getWidgetBeanField().getSource();
+        }
+        return target.getFieldId();
+    }
+
+    private static FilterInfo getFilterInfo(FineTarget target, AbstractTableWidget widget) {
+        return target.getDetailFilters() == null ? null :
+                FilterInfoFactory.transformFineFilter(widget.getTableName(), target.getDetailFilters());
     }
 
     private static boolean isDistinctCounter(FineTarget target) {
