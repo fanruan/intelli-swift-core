@@ -238,7 +238,7 @@ public class DimensionFilterAdaptor {
             return value;
         }
         String formula = value.toString();
-        for (String targetId : FormulaUtils.getRealRelatedParaNames(formula)) {
+        for (String targetId : FormulaUtils.getRelatedParaNames(formula)) {
             formula = formula.replace(targetId, String.valueOf(getIndex(targetId, targets)));
         }
         return formula;

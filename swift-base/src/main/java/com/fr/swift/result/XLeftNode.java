@@ -43,6 +43,10 @@ public class XLeftNode extends GroupNode<XLeftNode> {
         this.xValues = create2DArrayValue(valueArrayList);
     }
 
+    public void setXValues(AggregatorValue[][] xValues) {
+        this.xValues = xValues;
+    }
+
     /**
      * 用来处理交叉表的计算指标
      * @return

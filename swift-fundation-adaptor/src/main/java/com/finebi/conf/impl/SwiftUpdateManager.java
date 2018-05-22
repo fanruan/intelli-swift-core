@@ -406,8 +406,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
         return globalUpdateLog;
     }
-
-
+    
     @Override
     public UpdateNeedSpace getUpdateNeedSpace() {
         return null;
@@ -478,5 +477,15 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         if (ResourceDiscovery.getInstance().checkCubePath(newPath)) {
             ResourceDiscovery.getInstance().setCubePath(newPath);
         }
+    }
+
+    @Override
+    public boolean checkPath(String path) throws Exception {
+        return true;
+    }
+
+    @Override
+    public boolean isCluster() throws Exception {
+        return false;
     }
 }

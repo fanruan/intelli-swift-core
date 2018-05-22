@@ -4,8 +4,10 @@ import com.fr.swift.cube.io.impl.mem.MemIo;
 import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.Writer;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.Clearable;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -40,4 +42,8 @@ public interface IResourceDiscovery extends Clearable {
     boolean setCubePath(String path);
 
     boolean checkCubePath(String path);
+
+    Date getLastUpdateTime(SourceKey sourceKey);
+
+    void setLastUpdateTime(SourceKey sourceKey, long lastUpdateTime);
 }

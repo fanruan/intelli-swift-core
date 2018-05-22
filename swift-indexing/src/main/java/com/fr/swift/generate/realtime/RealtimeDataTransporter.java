@@ -1,5 +1,6 @@
 package com.fr.swift.generate.realtime;
 
+import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.task.TaskResult.Type;
 import com.fr.swift.cube.task.impl.BaseWorker;
 import com.fr.swift.cube.task.impl.TaskResultImpl;
@@ -81,6 +82,7 @@ public class RealtimeDataTransporter extends BaseWorker implements Transporter {
     public void work() {
         try {
             transport();
+            ResourceDiscovery.getInstance().setLastUpdateTime(dataSource.getSourceKey(), System.currentTimeMillis());
             workOver(new TaskResultImpl(Type.SUCCEEDED));
         } catch (Exception e) {
             LOGGER.error(e);
