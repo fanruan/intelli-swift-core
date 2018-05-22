@@ -11,7 +11,7 @@ public class MixDateConverter implements MatchConverter {
 
     private DateType[] dateTypes;
     private Calendar c = Calendar.getInstance();
-    private static final String[] APPENDED = {"-","-"," ",":",":"," "};
+    private static final String[] APPENDED = {"-", "-", " ", ":", ":", " "};
 
     public MixDateConverter(DateType[] dateTypes) {
         this.dateTypes = dateTypes;

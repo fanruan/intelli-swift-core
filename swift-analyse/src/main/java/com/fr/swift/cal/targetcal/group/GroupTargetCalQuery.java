@@ -15,6 +15,7 @@ import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.node.GroupNodeAggregateUtils;
+import com.fr.swift.result.node.GroupNodeUtils;
 import com.fr.swift.result.node.NodeType;
 import com.fr.swift.result.node.cal.TargetCalculatorUtils;
 import com.fr.swift.structure.Pair;
@@ -40,29 +41,32 @@ public class GroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> {
     public NodeResultSet getQueryResult() throws SQLException {
         // 合并后的结果
         NodeMergeResultSet<GroupNode> mergeResult = (NodeMergeResultSet<GroupNode>) mergeQuery.getQueryResult();
-        // 根据合并后的结果处理计算指标的计算
-        TargetCalculatorUtils.calculate(((GroupNode) mergeResult.getNode()), mergeResult.getRowGlobalDictionaries(), info.getTargetInfo().getGroupTargets());
-        // 取出查询最后要返回的结果
-        TargetCalculatorUtils.getShowTargetsForGroupNodeAndSetNodeDataAndSetNodeIndex(((GroupNode) mergeResult.getNode()),
-                info.getTargetInfo().getTargetsForShowList(), mergeResult.getRowGlobalDictionaries());
-        // 进行结果过滤
-        List<MatchFilter> dimensionMatchFilter = getDimensionMatchFilters(info.getDimensionInfo().getDimensions());
-        if (hasDimensionFilter(dimensionMatchFilter)) {
-            // 产品确定结果过滤在明细汇总方式的基础上进行，不用考虑切换汇总方式的情况了
-            GroupNodeAggregateUtils.aggregate(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
-                    (GroupNode) mergeResult.getNode(), mergeResult.getAggregators());
-            NodeFilter.filter(mergeResult.getNode(), dimensionMatchFilter);
-        }
-        // TODO: 2018/5/15 是否选了二次计算的问题。应该在过滤之前做一次汇总，然后根据是否选了二次计算决定是否进行再汇总。
-        // 使用结果汇总聚合器汇总，这边不用管汇总方式的切换了，解析的时候包装了聚合器。
-        GroupNodeAggregateUtils.aggregate(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
-                (GroupNode) mergeResult.getNode(), info.getTargetInfo().getResultAggregators());
-        // 维度上的指标排序
+        // 产品确定结果过滤在明细汇总方式的基础上进行，不用考虑切换汇总方式的情况了
+        GroupNodeAggregateUtils.aggregateMetric(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
+                (GroupNode) mergeResult.getNode(), mergeResult.getAggregators());
+        // 维度上的排序
         if (hasDimensionTargetSorts(info.getDimensionInfo().getDimensions())) {
             NodeSorter.sort(mergeResult.getNode(), getDimensionTargetSorts(info.getDimensionInfo().getDimensions()));
             // 在遍历一遍node，更新一下nodeIndex用于分页
-            TargetCalculatorUtils.updateNodeIndexAfterSort((GroupNode) mergeResult.getNode());
+            GroupNodeUtils.updateNodeIndexAfterSort((GroupNode) mergeResult.getNode());
         }
+        // 根据合并后的结果处理计算指标的计算
+        TargetCalculatorUtils.calculate(((GroupNode) mergeResult.getNode()), mergeResult.getRowGlobalDictionaries(), info.getTargetInfo().getGroupTargets());
+        // 取出查询最后要返回的结果
+        GroupNodeUtils.updateNodeData(((GroupNode) mergeResult.getNode()), mergeResult.getRowGlobalDictionaries());
+        // 进行结果过滤
+        List<MatchFilter> dimensionMatchFilter = getDimensionMatchFilters(info.getDimensionInfo().getDimensions());
+        if (hasDimensionFilter(dimensionMatchFilter)) {
+            NodeFilter.filter(mergeResult.getNode(), dimensionMatchFilter);
+        }
+        // 处理二次计算
+        TargetCalculatorUtils.calculateAfterFiltering(((GroupNode) mergeResult.getNode()),
+                mergeResult.getRowGlobalDictionaries(), info.getTargetInfo().getGroupTargets());
+        // 使用结果汇总聚合器汇总，这边不用管汇总方式的切换了，解析的时候包装了聚合器。
+        GroupNodeAggregateUtils.aggregate(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
+                (GroupNode) mergeResult.getNode(), info.getTargetInfo().getResultAggregators());
+        // 取出结果
+        GroupNodeUtils.updateShowTargetsForGroupNode((GroupNode) mergeResult.getNode(), info.getTargetInfo().getTargetsForShowList());
         return mergeResult;
     }
 

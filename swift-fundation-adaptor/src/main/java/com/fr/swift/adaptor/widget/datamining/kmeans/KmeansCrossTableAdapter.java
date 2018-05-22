@@ -1,7 +1,6 @@
 package com.fr.swift.adaptor.widget.datamining.kmeans;
 
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.kmeans.KmeansBean;
-import com.finebi.conf.internalimp.analysis.bean.operator.datamining.timeseries.HoltWintersBean;
 import com.finebi.conf.internalimp.dashboard.widget.table.CrossTableWidget;
 import com.fr.engine.compare.CompareUtil;
 import com.fr.swift.adaptor.widget.datamining.SwiftAlgorithmResultAdapter;
@@ -22,6 +21,7 @@ import com.fr.swift.result.node.iterator.NLevelGroupNodeIterator;
 import com.fr.swift.result.node.iterator.PostOrderNodeIterator;
 import com.fr.swift.result.node.xnode.XNodeUtils;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.structure.Pair;
 import edu.emory.mathcs.backport.java.util.Arrays;
 
 import java.util.ArrayList;
@@ -60,7 +60,10 @@ public class KmeansCrossTableAdapter implements SwiftAlgorithmResultAdapter<Kmea
         try {
 
             int targetSize = info.getTargetInfo().getMetrics().size();
-            List<Aggregator> aggregators = info.getTargetInfo().getResultAggregators();
+            List<Aggregator> aggregators = new ArrayList<Aggregator>();
+            for (Pair<Aggregator, Integer> pair : info.getTargetInfo().getResultAggregators()) {
+                aggregators.add(pair.getKey());
+            }
 
             XNodeMergeResultSet XResultSet = (XNodeMergeResultSet) result;
             TopGroupNode topNode = XResultSet.getTopGroupNode();
@@ -160,13 +163,13 @@ public class KmeansCrossTableAdapter implements SwiftAlgorithmResultAdapter<Kmea
             XLeftNode xLeftResultNode = cloneGroupNodeToXLeftNode(resultNode, targetSize);
 
             // 计算XLeft汇总值，并刷新到TopGroup上
-            GroupNodeAggregateUtils.aggregate(NodeType.X_LEFT, clusterDepth, xLeftResultNode, aggregators);
+            GroupNodeAggregateUtils.aggregate(NodeType.X_LEFT, clusterDepth, xLeftResultNode, info.getTargetInfo().getResultAggregators());
             XNodeUtils.updateTopGroupNodeValues(topDepth, clusterDepth,
                     topNode, xLeftResultNode);
 
             // 计算TopGroup汇总值，并刷新到xLeft上
             topNode.setTopGroupValues(null); // 不设置为null他不计算根节点
-            GroupNodeAggregateUtils.aggregate(NodeType.TOP_GROUP, topDepth, topNode, aggregators);
+            GroupNodeAggregateUtils.aggregate(NodeType.TOP_GROUP, topDepth, topNode, info.getTargetInfo().getResultAggregators());
             // 先更新一下xLeftNode#valueArrayList（包含topGroupNode所有列（包括汇总列）的某一行)
             XGroupTargetCalQuery.updateXLeftNode(clusterDepth, topDepth, xNodeResultAdapter(xLeftResultNode, topNode));
 
