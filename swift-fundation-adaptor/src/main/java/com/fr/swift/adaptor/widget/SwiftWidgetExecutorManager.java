@@ -3,6 +3,7 @@ package com.fr.swift.adaptor.widget;
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.group.custom.number.NumberMaxAndMinValue;
 import com.finebi.conf.internalimp.dashboard.widget.chart.VanChartWidget;
+import com.finebi.conf.internalimp.dashboard.widget.chart.geom.GeomWidget;
 import com.finebi.conf.internalimp.dashboard.widget.control.number.SingleSliderWidget;
 import com.finebi.conf.internalimp.dashboard.widget.control.string.ListLabelWidget;
 import com.finebi.conf.internalimp.dashboard.widget.control.time.DateControlWidget;
@@ -42,6 +43,9 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -58,24 +62,25 @@ public class SwiftWidgetExecutorManager implements EngineWidgetExecutorManager {
     }
 
     @Override
-    public BIComplexGroupResult visit(VanChartWidget vanChartWidget) {
-        final BITableResult result = TableWidgetAdaptor.calculate(vanChartWidget);
-        return new BIComplexGroupResult() {
-            @Override
-            public int size() {
-                return 0;
-            }
+    public BIComplexGroupResult visit(VanChartWidget vanChartWidget) throws Exception {
+        HashMap<Integer, BIGroupNode> map = new HashMap<Integer, BIGroupNode>();
 
-            @Override
-            public BIGroupNode getNode(int index) {
-                return result.getNode();
-            }
+        Map<String, GeomWidget> attrWidgetMap = vanChartWidget.getAttrWidgetMap();
 
-            @Override
-            public ResultType getResultType() {
-                return ResultType.BICOMPLEXGROUP;
-            }
-        };
+        Iterator<Map.Entry<String, GeomWidget>> entries = attrWidgetMap.entrySet().iterator();
+        int index = 0;
+        while (entries.hasNext()) {
+            Map.Entry<String, GeomWidget> entry = entries.next();
+            GeomWidget geomWidget = entry.getValue();
+            geomWidget.setGroupNodeId(index);
+            TableWidget tableWidget = new VanChartWidget();
+            tableWidget.init(vanChartWidget.getValue());
+            tableWidget.setDimensions(vanChartWidget.getDimensionList(geomWidget));
+            tableWidget.setTargets(vanChartWidget.getTargetList(geomWidget));
+            BITableResult visit = this.visit(tableWidget);
+            map.put(index++, visit.getNode());
+        }
+        return new SwiftComplexGroupResult(new ArrayList<BIGroupNode>(map.values()));
     }
 
     @Override
