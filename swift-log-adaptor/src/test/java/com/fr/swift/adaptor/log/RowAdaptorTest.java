@@ -25,9 +25,9 @@ public class RowAdaptorTest {
 
     @Test
     public void applyRowToLog() throws Exception {
-        Row row = new ListBasedRow(Arrays.<Object>asList(10L, 100L, 1000D, -100D, "qwe", System.currentTimeMillis(), System.currentTimeMillis(), 0L));
+        Row row = new ListBasedRow(Arrays.<Object>asList(10L, 100L, 1000D, -100D, "qwe", System.currentTimeMillis(), System.currentTimeMillis(), 0L, 192L));
 
-        Function<Row, Object> adapter = new DecisionRowAdaptor(A.class, new SwiftMetaDataImpl("A",
+        Function<Row, A> adapter = new DecisionRowAdaptor<A>(A.class, new SwiftMetaDataImpl("A",
                 Arrays.<SwiftMetaDataColumn>asList(
                         new MetaDataColumn("s", Types.BIGINT),
                         new MetaDataColumn("l", Types.BIGINT),
@@ -36,8 +36,10 @@ public class RowAdaptorTest {
                         new MetaDataColumn("str", Types.VARCHAR),
                         new MetaDataColumn("utilDate", Types.DATE),
                         new MetaDataColumn("sqlDate", Types.DATE),
-                        new MetaDataColumn("b", Types.BIGINT))));
-        A a = (A) adapter.apply(row);
+                        new MetaDataColumn("b", Types.BIGINT),
+                        new MetaDataColumn("i", Types.BIGINT))));
+        A a = adapter.apply(row);
+        assertEquals(9, row.getSize());
         assertEquals(((Number) row.getValue(0)).shortValue(), a.s);
         assertEquals(((Number) row.getValue(1)).longValue(), (long) a.l);
         assertEquals(((Number) row.getValue(2)).doubleValue(), a.d1, 0);
@@ -46,17 +48,18 @@ public class RowAdaptorTest {
         assertEquals(new Date((Long) row.getValue(5)), a.utilDate);
         assertEquals(new java.sql.Date((Long) row.getValue(6)), a.sqlDate);
         assertEquals(((Long) row.getValue(7)) != 0L, a.b);
+        assertEquals(row.getValue(8), (long) a.i);
 
         row = new ListBasedRow(Collections.<Object>singletonList(1D));
-        adapter = new DecisionRowAdaptor(ConvertType.class, new SwiftMetaDataImpl("ConvertType", Collections.<SwiftMetaDataColumn>singletonList(new MetaDataColumn("o", Types.BIGINT))));
-        ConvertType convertType = (ConvertType) adapter.apply(row);
+        Function<Row, ConvertType> adapter1 = new DecisionRowAdaptor<ConvertType>(ConvertType.class, new SwiftMetaDataImpl("ConvertType", Collections.<SwiftMetaDataColumn>singletonList(new MetaDataColumn("o", Types.BIGINT))));
+        ConvertType convertType = adapter1.apply(row);
         assertEquals(row.getValue(0), convertType.o);
     }
 
     @Test
     public void applyLogToRow() throws Exception {
         A a = new A();
-        Function<Object, Row> adapter = new SwiftRowAdaptor(A.class, new SwiftMetaDataImpl("A",
+        Function<A, Row> adapter = new SwiftRowAdaptor<A>(A.class, new SwiftMetaDataImpl("A",
                 Arrays.<SwiftMetaDataColumn>asList(
                         new MetaDataColumn("s", Types.BIGINT),
                         new MetaDataColumn("l", Types.BIGINT),
@@ -65,9 +68,10 @@ public class RowAdaptorTest {
                         new MetaDataColumn("str", Types.VARCHAR),
                         new MetaDataColumn("utilDate", Types.DATE),
                         new MetaDataColumn("sqlDate", Types.DATE),
-                        new MetaDataColumn("b", Types.BIGINT))));
+                        new MetaDataColumn("b", Types.BIGINT),
+                        new MetaDataColumn("i", Types.BIGINT))));
         Row row = adapter.apply(a);
-        assertEquals(8, row.getSize());
+        assertEquals(9, row.getSize());
         assertEquals(((long) a.s), row.getValue(0));
         assertEquals(a.l, row.getValue(1));
         assertEquals(a.d1, row.getValue(2));
@@ -76,11 +80,12 @@ public class RowAdaptorTest {
         assertEquals(a.utilDate.getTime(), row.getValue(5));
         assertEquals(a.sqlDate.getTime(), row.getValue(6));
         assertEquals(a.b ? 1L : 0L, row.getValue(7));
+        assertEquals((long) a.i, row.getValue(8));
 
         ConvertType convertType = new ConvertType();
         convertType.o = new Object();
-        adapter = new SwiftRowAdaptor(ConvertType.class, new SwiftMetaDataImpl("ConvertType", Collections.<SwiftMetaDataColumn>singletonList(new MetaDataColumn("o", Types.BIGINT))));
-        row = adapter.apply(convertType);
+        Function<ConvertType, Row> adapter1 = new SwiftRowAdaptor<ConvertType>(ConvertType.class, new SwiftMetaDataImpl("ConvertType", Collections.<SwiftMetaDataColumn>singletonList(new MetaDataColumn("o", Types.BIGINT))));
+        row = adapter1.apply(convertType);
         assertEquals(1, row.getSize());
         assertEquals(1L, row.getValue(0));
     }
