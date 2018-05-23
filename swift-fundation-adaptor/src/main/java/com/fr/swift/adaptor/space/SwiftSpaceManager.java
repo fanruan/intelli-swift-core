@@ -1,6 +1,7 @@
 package com.fr.swift.adaptor.space;
 
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.conf.exception.FinePackageAbsentException;
 import com.finebi.conf.exception.FineTableAbsentException;
 import com.finebi.conf.internalimp.space.SpaceInfo;
 import com.finebi.conf.provider.SwiftAnalysisConfManager;
@@ -9,7 +10,7 @@ import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.cube.space.SpaceUnit;
 import com.fr.swift.cube.space.SpaceUsageService;
-import com.fr.swift.cube.space.impl.SpaceUsageServiceImpl;
+import com.fr.swift.cube.space.impl.SwiftSpaceUsageService;
 import com.fr.swift.source.SourceKey;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
@@ -24,7 +25,7 @@ public class SwiftSpaceManager implements EngineSpaceManager {
     @Autowired
     private SwiftAnalysisConfManager analysisConfManager;
 
-    private SpaceUsageService spaceUsageService = SpaceUsageServiceImpl.getInstance();
+    private SpaceUsageService spaceUsageService = SwiftSpaceUsageService.getInstance();
 
     private static SpaceInfo newSpaceInfo(long size) {
         SpaceInfo info = new SpaceInfo();
@@ -46,12 +47,17 @@ public class SwiftSpaceManager implements EngineSpaceManager {
 
     @Override
     public SpaceInfo getPackageSpaceInfo(String pack) throws Exception {
-        List<FineBusinessTable> fineTables = analysisConfManager.getBusinessTables(pack);
-        List<SourceKey> tables = new ArrayList<SourceKey>();
-        for (FineBusinessTable fineTable : fineTables) {
-            tables.add(DataSourceFactory.getDataSourceInCache(fineTable).getSourceKey());
+        long used;
+        try {
+            List<FineBusinessTable> fineTables = analysisConfManager.getBusinessTables(pack);
+            List<SourceKey> tables = new ArrayList<SourceKey>();
+            for (FineBusinessTable fineTable : fineTables) {
+                tables.add(DataSourceFactory.getDataSourceInCache(fineTable).getSourceKey());
+            }
+            used = spaceUsageService.getTableUsedSpace(tables);
+        } catch (FinePackageAbsentException e) {
+            used = 0;
         }
-        long used = spaceUsageService.getTableUsedSpace(tables);
         return newSpaceInfo(used);
     }
 

@@ -6,7 +6,7 @@ import com.fr.config.holder.impl.ObjectMapConf;
 import com.fr.config.utils.UniqueKey;
 import com.fr.stable.StringUtils;
 import com.fr.swift.config.IConfigSegment;
-import com.fr.swift.config.ISegmentKey;
+import com.fr.swift.segment.SegmentKey;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,9 +21,9 @@ public class SegmentUnique extends UniqueKey implements IConfigSegment {
 
     private Conf<String> sourceKey = Holders.simple(StringUtils.EMPTY);
 
-    private ObjectMapConf<Map<Integer, ISegmentKey>> segments = Holders.objMap(new HashMap<Integer, ISegmentKey>(), Integer.class, ISegmentKey.class);
+    private ObjectMapConf<Map<Integer, SegmentKey>> segments = Holders.objMap(new HashMap<Integer, SegmentKey>(), Integer.class, SegmentKey.class);
 
-    public SegmentUnique(String sourceKey, List<ISegmentKey> keys) {
+    public SegmentUnique(String sourceKey, List<SegmentKey> keys) {
         this.setSourceKey(sourceKey);
         this.setSegments(keys);
     }
@@ -33,10 +33,10 @@ public class SegmentUnique extends UniqueKey implements IConfigSegment {
     }
 
     @Override
-    public List<ISegmentKey> getSegments() {
-        Map<Integer, ISegmentKey> map = segments.get();
+    public List<SegmentKey> getSegments() {
+        Map<Integer, SegmentKey> map = segments.get();
         int size = map.size();
-        List<ISegmentKey> result = new ArrayList<ISegmentKey>();
+        List<SegmentKey> result = new ArrayList<SegmentKey>();
         for (int i = 0; i < size; i++) {
             result.add(map.get(i));
         }
@@ -45,7 +45,7 @@ public class SegmentUnique extends UniqueKey implements IConfigSegment {
     }
 
     @Override
-    public void setSegments(List<ISegmentKey> segments) {
+    public void setSegments(List<SegmentKey> segments) {
         int size = segments.size();
         for (int i = 0; i < size; i++) {
             this.segments.put(i, segments.get(i));
@@ -63,7 +63,7 @@ public class SegmentUnique extends UniqueKey implements IConfigSegment {
     }
 
     @Override
-    public void addSegment(ISegmentKey segmentKey) {
+    public void addSegment(SegmentKey segmentKey) {
         segments.put(segments.get().size(), segmentKey);
     }
 }

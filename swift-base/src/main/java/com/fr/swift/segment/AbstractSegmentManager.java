@@ -1,13 +1,9 @@
 package com.fr.swift.segment;
 
-import com.fr.general.ComparatorUtils;
 import com.fr.swift.config.IConfigSegment;
-import com.fr.swift.config.ISegmentKey;
 import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
-import com.fr.swift.cube.io.Types;
 import com.fr.swift.source.SourceKey;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,18 +41,8 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
         IConfigSegment segments = SwiftConfigServiceProvider.getInstance().getSegmentByKey(sourceKey);
         List<SegmentKey> target = new ArrayList<SegmentKey>();
         if (null != segments) {
-            List<ISegmentKey> segmentKeys = segments.getSegments();
-
-            for (int i = 0, len = segmentKeys.size(); i < len; i++) {
-                ISegmentKey key = segmentKeys.get(i);
-                Types.StoreType storeType = Types.StoreType.FINE_IO;
-                String type = key.getStoreType();
-                if (!ComparatorUtils.equalsIgnoreCase(Types.StoreType.FINE_IO.name(), type)) {
-                    storeType = Types.StoreType.MEMORY;
-                }
-                SegmentKey segmentKey = new SegmentKey(key.getName(), URI.create(key.getUri()), key.getSegmentOrder(), storeType);
-                segmentKey.setSourceId(key.getSourceId());
-                target.add(segmentKey);
+            for (SegmentKey key : segments.getSegments()) {
+                target.add(new SwiftSegmentKey(key));
             }
         }
         return target;
