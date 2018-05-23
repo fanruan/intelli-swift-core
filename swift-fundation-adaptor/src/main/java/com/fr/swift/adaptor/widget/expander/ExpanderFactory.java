@@ -30,7 +30,7 @@ public class ExpanderFactory {
         // 如果是挖掘，则展开所有节点
         boolean openRowNode = bean.isOpenRowNode();
         Map<String, Boolean> headerExpand = bean.getHeaderExpand();
-        if (!DMUtils.isEmptyAlgorithm(bean.getDataMining())){
+        if (!DMUtils.isEmptyAlgorithm(bean.getDataMining())) {
             openRowNode = true;
             headerExpand = null;
         }

@@ -44,26 +44,32 @@ public class GroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> {
         // 更新Node#data
         int dimensionSize = info.getDimensionInfo().getDimensions().length;
         GroupNodeUtils.updateNodeData(dimensionSize, ((GroupNode) mergeResult.getNode()), mergeResult.getRowGlobalDictionaries());
+
         // 产品确定结果过滤在明细汇总方式的基础上进行，不用考虑切换汇总方式的情况了
         GroupNodeAggregateUtils.aggregateMetric(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
                 (GroupNode) mergeResult.getNode(), mergeResult.getAggregators());
+
         // 维度上的排序
         if (hasDimensionTargetSorts(info.getDimensionInfo().getDimensions())) {
             NodeSorter.sort(mergeResult.getNode(), getDimensionTargetSorts(info.getDimensionInfo().getDimensions()));
             // 在遍历一遍node，更新一下nodeIndex用于分页
             GroupNodeUtils.updateNodeIndexAfterSort((GroupNode) mergeResult.getNode());
         }
+
         // 根据合并后的结果处理计算指标的计算
         TargetCalculatorUtils.calculate(((GroupNode) mergeResult.getNode()), mergeResult.getRowGlobalDictionaries(), info.getTargetInfo().getGroupTargets());
+
         // 进行结果过滤
         List<MatchFilter> dimensionMatchFilter = getDimensionMatchFilters(info.getDimensionInfo().getDimensions());
         if (hasDimensionFilter(dimensionMatchFilter)) {
             NodeFilter.filter(mergeResult.getNode(), dimensionMatchFilter);
         }
+
         // 处理二次计算
         TargetCalculatorUtils.calculateAfterFiltering(((GroupNode) mergeResult.getNode()),
                 mergeResult.getRowGlobalDictionaries(), info.getTargetInfo().getGroupTargets());
-        // 取出结果，在做合计
+
+        // 取出结果，再做合计
         GroupNodeUtils.updateShowTargetsForGroupNode(dimensionSize, (GroupNode) mergeResult.getNode(),
                 info.getTargetInfo().getTargetsForShowList());
         // 使用结果汇总聚合器汇总，这边不用管汇总方式的切换了，解析的时候包装了聚合器。

@@ -73,12 +73,7 @@ public class GroupNodeAggregateUtils {
             return;
         }
         Iterator<GroupNode> iterator = new LeafNodeIterator(groupNode);
-        List<AggregatorValue[]> valuesListOfParent;
-        if (type == NodeType.X_LEFT) {
-            valuesListOfParent = ((XLeftNode) groupNode).getValueArrayList();
-        } else {
-            valuesListOfParent = ((TopGroupNode) groupNode).getTopGroupValues();
-        }
+        List<AggregatorValue[]> valuesListOfParent = null;
         while (iterator.hasNext()) {
             List<AggregatorValue[]> valuesListOfChild;
             if (type == NodeType.X_LEFT) {

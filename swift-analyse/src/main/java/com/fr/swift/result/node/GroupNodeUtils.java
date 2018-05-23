@@ -54,10 +54,13 @@ public class GroupNodeUtils {
                 }
                 for (int i = 0; i < allValues.size(); i++) {
                     AggregatorValue[] values = allValues.get(i);
-                    for (int j = 0; j < values.length; j++) {
-                        showValues.get(i)[j] = allValues.get(i)[targetsForShowList.get(j).getResultFetchIndex()];
+                    AggregatorValue[] forShowValues = showValues.get(i);
+                    assert forShowValues.length == targetsForShowList.size();
+                    for (int n = 0; n < forShowValues.length; n++) {
+                        forShowValues[n] = values[targetsForShowList.get(n).getResultFetchIndex()];
                     }
                 }
+                ((XLeftNode) p).setValueArrayList(showValues);
                 return p;
             }
         });
