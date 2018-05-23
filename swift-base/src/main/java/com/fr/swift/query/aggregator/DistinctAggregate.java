@@ -36,9 +36,7 @@ public class DistinctAggregate implements Aggregator<DistinctCountAggregatorValu
 
     @Override
     public DistinctCountAggregatorValue createAggregatorValue(AggregatorValue value) {
-        //去重计数只有明细合计
-//        return new DistinctCountAggregatorValue();
-        return (DistinctCountAggregatorValue) value;
+        return new DistinctCountAggregatorValue();
     }
 
     @Override
