@@ -20,23 +20,25 @@ public class GroupTableToDMResultVisitor implements DMBeanVisitor<SwiftResultSet
     private NodeResultSet result;
     private TableWidget widget;
     private GroupQueryInfo info;
+    private DMErrorWrap errorWrap;
 
-    public GroupTableToDMResultVisitor(NodeResultSet result, TableWidget widget, GroupQueryInfo info) {
+    public GroupTableToDMResultVisitor(NodeResultSet result, TableWidget widget, GroupQueryInfo info, DMErrorWrap dmErrorWrap) {
         this.result = result;
         this.widget = widget;
         this.info = info;
+        this.errorWrap = errorWrap;
     }
 
     @Override
     public SwiftResultSet visit(HoltWintersBean bean) {
-        TimeSeriesGroupTableAdapter adapter = new TimeSeriesGroupTableAdapter();
-        return adapter.getResult(bean, widget, result, info);
+        TimeSeriesGroupTableAdapter adapter = new TimeSeriesGroupTableAdapter(bean, widget, result, info, errorWrap);
+        return adapter.getResult();
     }
 
     @Override
     public SwiftResultSet visit(KmeansBean bean) throws Exception {
-        KmeansGroupTableAdapter adapter = new KmeansGroupTableAdapter();
-        return adapter.getResult(bean, widget, result, info);
+        KmeansGroupTableAdapter adapter = new KmeansGroupTableAdapter(bean, widget, result, info, errorWrap);
+        return adapter.getResult();
     }
 
     @Override

@@ -35,7 +35,7 @@ import com.fr.swift.adaptor.struct.node.paging.PagingUtils;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.transformer.SortAdaptor;
 import com.fr.swift.adaptor.transformer.filter.dimension.DimensionFilterAdaptor;
-import com.fr.swift.adaptor.widget.datamining.DMSwiftWidgetUtils;
+import com.fr.swift.adaptor.widget.datamining.DMErrorWrap;
 import com.fr.swift.adaptor.widget.datamining.GroupTableToDMResultVisitor;
 import com.fr.swift.adaptor.widget.expander.ExpanderFactory;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
@@ -91,6 +91,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
     public static BITableResult calculate(TableWidget widget) {
         GroupNodePagingHelper pagingHelper = null;
         QueryInfo queryInfo = null;
+        DMErrorWrap errorWrap = new DMErrorWrap();
         try {
             TargetInfo targetInfo = TargetInfoUtils.parse(widget);
             queryInfo = buildQueryInfo(widget, targetInfo);
@@ -101,7 +102,8 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
                 // 添加挖掘相关
                 AlgorithmBean dmBean = widget.getValue().getDataMining();
                 if (!DMUtils.isEmptyAlgorithm(dmBean)) {
-                    GroupTableToDMResultVisitor visitor = new GroupTableToDMResultVisitor((NodeResultSet) resultSet, widget, (GroupQueryInfo) queryInfo);
+                    GroupTableToDMResultVisitor visitor = new GroupTableToDMResultVisitor((NodeResultSet) resultSet,
+                            widget, (GroupQueryInfo) queryInfo, errorWrap);
                     resultSet = dmBean.accept(visitor);
                 }
                 pagingHelper = new GroupNodePagingHelper(widget.getDimensionList().size(), (NodeResultSet) resultSet);
@@ -115,7 +117,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         }
         PagingInfo pagingInfo = PagingUtils.createPagingInfo(widget, ((GroupQueryInfo)queryInfo).getDimensionInfo().getExpander());
         Pair<BIGroupNode, PagingSession> pair = pagingHelper.getPage(pagingInfo);
-        return new SwiftTableResult(pair.getValue().hasNextPage(), pair.getValue().hasPrevPage(), pair.getKey());
+        return new SwiftTableResult(pair.getValue().hasNextPage(), pair.getValue().hasPrevPage(), pair.getKey(), errorWrap);
     }
 
     private static QueryInfo buildQueryInfo(TableWidget widget, TargetInfo targetInfo) throws Exception {
@@ -125,8 +127,15 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         List<Dimension> dimensions = getDimensions(sourceKey, widget.getDimensionList(), widget.getTargetList());
         FilterInfo filterInfo = getFilterInfo(widget, dimensions);
         List<ExpanderBean> rowExpand = widget.getValue().getRowExpand();
-        Expander expander = ExpanderFactory.create(widget.isOpenRowNode(), widget.getDimensionList(),
-                rowExpand == null ? new ArrayList<ExpanderBean>() : rowExpand, widget.getHeaderExpand());
+        boolean openRowNode = widget.isOpenRowNode();
+        Map<String, Boolean> headerExpand = widget.getHeaderExpand();
+        // 如果是挖掘，则展开所有节点
+        if (!DMUtils.isEmptyAlgorithm(widget.getValue().getDataMining())){
+            openRowNode = true;
+            headerExpand = null;
+        }
+        Expander expander = ExpanderFactory.create(openRowNode, widget.getDimensionList(),
+                rowExpand == null ? new ArrayList<ExpanderBean>() : rowExpand, headerExpand);
         DimensionInfo dimensionInfo = new DimensionInfoImpl(cursor, filterInfo, expander, dimensions.toArray(new Dimension[0]));
         return new GroupQueryInfo(queryId, sourceKey, dimensionInfo, targetInfo);
     }

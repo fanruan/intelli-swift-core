@@ -19,6 +19,7 @@ import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.utils.transform.FineDataTransformUtils;
 import com.finebi.log.BILoggerFactory;
+import com.fr.swift.adaptor.widget.datamining.DMErrorWrap;
 import com.fr.swift.adaptor.widget.datamining.DMSwiftWidgetUtils;
 import com.fr.swift.adaptor.widget.datamining.SwiftAlgorithmResultAdapter;
 import com.fr.swift.cal.info.GroupQueryInfo;
@@ -49,18 +50,19 @@ import java.util.Map;
 /**
  * Created by Jonas on 2018/5/9.
  */
-public class TimeSeriesGroupTableAdapter implements SwiftAlgorithmResultAdapter<HoltWintersBean, AbstractTableWidget, NodeResultSet, GroupQueryInfo> {
+public class TimeSeriesGroupTableAdapter extends SwiftAlgorithmResultAdapter<HoltWintersBean, AbstractTableWidget, NodeResultSet, GroupQueryInfo> {
 
     private double[][] confidence;
     private boolean isCalculateConfidence = false;
-    private GroupQueryInfo info;
+
+    public TimeSeriesGroupTableAdapter(HoltWintersBean bean, AbstractTableWidget widget, NodeResultSet result, GroupQueryInfo info, DMErrorWrap errorWrap) {
+        super(bean, widget, result, info, errorWrap);
+    }
 
     @Override
-    public SwiftResultSet getResult(HoltWintersBean bean, AbstractTableWidget widget, NodeResultSet result, GroupQueryInfo info) {
+    public SwiftResultSet getResult() {
 
         GroupNode rootNode = (GroupNode) result.getNode();
-        this.info = info;
-
 
         try {
             List<FineDimension> dimensionList = new ArrayList<FineDimension>();
@@ -221,6 +223,7 @@ public class TimeSeriesGroupTableAdapter implements SwiftAlgorithmResultAdapter<
 
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
+            errorWrap.setError(e.getMessage());
             return generatorErrorResult(rootNode, e.getMessage());
         }
     }

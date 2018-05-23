@@ -17,22 +17,6 @@ import java.util.List;
  */
 public class DMSwiftWidgetUtils {
 
-    public static List<FineDimension> parseSwiftDimensions(FineWidget widget) {
-        List<FineDimension> swiftDimensionList = new ArrayList<FineDimension>();
-        try {
-            List<FineDimension> dimensionList = widget.getDimensionList();
-
-            for (FineDimension dimension : dimensionList) {
-                if (dimension.getType() != BIDesignConstants.DESIGN.DIMENSION_TYPE.KMEANS) {
-                    swiftDimensionList.add(dimension);
-                }
-            }
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().error(e.getMessage(), e);
-        }
-        return swiftDimensionList;
-    }
-
     public static FineTarget createFineTarget(FineTarget originalTarget, String fieldName) {
         FineTargetImpl newFineTarget = new FineTargetImpl();
         newFineTarget.setId(originalTarget.getId());
