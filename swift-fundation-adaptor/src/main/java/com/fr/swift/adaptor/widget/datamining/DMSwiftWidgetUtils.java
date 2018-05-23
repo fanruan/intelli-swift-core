@@ -20,7 +20,7 @@ public class DMSwiftWidgetUtils {
 
     public static FineTarget createFineTarget(FineTarget originalTarget, String fieldName) {
         FineTargetImpl newFineTarget = new FineTargetImpl();
-        newFineTarget.setId(RandomUtils.getUUID().substring(0,16));
+        newFineTarget.setId(originalTarget.getId());
         newFineTarget.setTargetType(originalTarget.getTargetType());
         WidgetDimensionBean widgetDimensionBean = StableManager.getContext().getObject("numberWidgetDimensionBean");
         widgetDimensionBean.setName(fieldName);
