@@ -31,45 +31,54 @@ class DashboardConfListener {
         if (result.getType() == TaskResult.Type.SUCCEEDED) {
             TableUpdateInfoConfigService service = TableUpdateInfoConfigService.getService();
             Map<String, TableUpdateInfo> infos = service.getAllTableUpdateInfo();
-            Iterator<Map.Entry<String, TableUpdateInfo>> iterator = infos.entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry<String, TableUpdateInfo> entry = iterator.next();
-                String tableName = entry.getKey();
-                if (ComparatorUtils.equals(UpdateConstants.GLOBAL_KEY, tableName)) {
-                    List<PackageInfo> packageInfos = CommonConfigManager.getPackageSession(FineEngineType.Cube).getAllPackages();
-                    for (PackageInfo info : packageInfos) {
-                        if (null != info) {
-                            savePackage(info);
+            if (!infos.isEmpty()) {
+                Iterator<Map.Entry<String, TableUpdateInfo>> iterator = infos.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<String, TableUpdateInfo> entry = iterator.next();
+                    String tableName = entry.getKey();
+                    if (ComparatorUtils.equals(UpdateConstants.GLOBAL_KEY, tableName)) {
+                        List<PackageInfo> packageInfos = CommonConfigManager.getPackageSession(FineEngineType.Cube).getAllPackages();
+                        for (PackageInfo info : packageInfos) {
+                            if (null != info) {
+                                savePackage(info);
+                            }
                         }
-                    }
-                } else if (entry.getValue().getUpdateType() != UpdateConstants.TableUpdateType.NEVER) {
-                    EntryInfo entryInfo = CommonConfigManager.getEntryInfoSession(FineEngineType.Cube).findByName(tableName);
-                    if (null != entryInfo) {
-                        FieldInfo fieldInfo = CommonConfigManager.getFieldSession(FineEngineType.Cube).find(entryInfo.getID());
-                        if (null != fieldInfo) {
-                            DashboardConfManager.getManager().getEntryInfoSession().save(entryInfo);
-                            DashboardConfManager.getManager().getFieldSession().save(fieldInfo);
-                            try {
-                                PackageInfo info = DashboardConfManager.getManager().getPackageSession().getPackageByEntryInfoId(entryInfo.getID());
-                                dealDashboardPackage(info, entryInfo.getID());
-                            } catch (Exception e) {
+                    } else if (entry.getValue().getUpdateType() != UpdateConstants.TableUpdateType.NEVER) {
+                        EntryInfo entryInfo = CommonConfigManager.getEntryInfoSession(FineEngineType.Cube).findByName(tableName);
+                        if (null != entryInfo) {
+                            FieldInfo fieldInfo = CommonConfigManager.getFieldSession(FineEngineType.Cube).find(entryInfo.getID());
+                            if (null != fieldInfo) {
+                                DashboardConfManager.getManager().getEntryInfoSession().save(entryInfo);
+                                DashboardConfManager.getManager().getFieldSession().save(fieldInfo);
                                 PackageInfo info = CommonConfigManager.getPackageSession(FineEngineType.Cube).getPackageByEntryInfoId(entryInfo.getID());
-                                dealCommonPackage(info, entryInfo.getID());
+                                try {
+                                    info = DashboardConfManager.getManager().getPackageSession().getPackageById(info.getId());
+                                    dealDashboardPackage(info, entryInfo.getID());
+                                } catch (Exception e) {
+                                    dealCommonPackage(info, entryInfo.getID());
+                                }
+                            }
+                        } else {
+                            PackageInfo info = CommonConfigManager.getPackageSession(FineEngineType.Cube).getPackageById(tableName);
+                            if (null != info) {
+                                if (entry.getValue().getUpdateType() == UpdateConstants.PackageUpdateType.UPDATE) {
+                                    savePackage(info);
+                                } else {
+                                    removePackage(info);
+                                }
                             }
                         }
                     } else {
-                        PackageInfo info = CommonConfigManager.getPackageSession(FineEngineType.Cube).getPackageById(tableName);
-                        if (null != info) {
-                            if (entry.getValue().getUpdateType() == UpdateConstants.PackageUpdateType.UPDATE) {
-                                savePackage(info);
-                            } else {
-                                removePackage(info);
-                            }
-                        }
+                        EntryInfo entryInfo = CommonConfigManager.getEntryInfoSession(FineEngineType.Cube).findByName(tableName);
+                        removeEntryInfo(entryInfo);
                     }
-                } else {
-                    EntryInfo entryInfo = CommonConfigManager.getEntryInfoSession(FineEngineType.Cube).findByName(tableName);
-                    removeEntryInfo(entryInfo);
+                }
+            } else {
+                List<PackageInfo> packageInfos = CommonConfigManager.getPackageSession(FineEngineType.Cube).getAllPackages();
+                for (PackageInfo info : packageInfos) {
+                    if (null != info) {
+                        savePackage(info);
+                    }
                 }
             }
             updateRelations();
