@@ -14,4 +14,8 @@ public class PoolThreadFactory extends BaseThreadFactory {
     public PoolThreadFactory(String poolPrefix) {
         super(String.format("%s-%d-thread", poolPrefix, POOL_NUMBER.getAndIncrement()));
     }
+
+    public PoolThreadFactory(Class<?> c) {
+        this(getSimpleName(c));
+    }
 }

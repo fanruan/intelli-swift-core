@@ -3,11 +3,13 @@ package com.fr.swift.adaptor.widget;
 import com.finebi.conf.algorithm.common.DMUtils;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
 import com.finebi.conf.internalimp.dashboard.widget.table.CrossTableWidget;
+import com.finebi.conf.structure.result.datamining.BIDMResult;
 import com.finebi.conf.structure.result.table.BICrossNode;
 import com.finebi.conf.structure.result.table.BICrossTableResult;
 import com.fr.swift.adaptor.struct.node.BICrossNodeAdaptor;
 import com.fr.swift.adaptor.struct.node.GroupNode2XLeftNodeAdaptor;
 import com.fr.swift.adaptor.widget.datamining.CrossTableToDMResultVisitor;
+import com.fr.swift.adaptor.widget.datamining.DMErrorWrap;
 import com.fr.swift.adaptor.widget.expander.ExpanderFactory;
 import com.fr.swift.adaptor.widget.target.TargetInfoUtils;
 import com.fr.swift.cal.info.GroupQueryInfo;
@@ -53,6 +55,7 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor {
     public static BICrossTableResult calculate(CrossTableWidget widget) {
         BICrossNode crossNode = null;
         XNodeMergeResultSet resultSet = null;
+        DMErrorWrap dmErrorWrap = new DMErrorWrap();
         try {
             TargetInfo targetInfo = TargetInfoUtils.parse(widget);
             XGroupQueryInfo queryInfo = buildQueryInfo(widget, targetInfo);
@@ -63,7 +66,7 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor {
                 NodeMergeResultSet result = (NodeMergeResultSet) QueryRunnerProvider.getInstance().executeQuery(groupQueryInfo);
 
                 // 添加挖掘相关
-                result = processDataMining(result, widget, queryInfo);
+                result = processDataMining(result, widget, queryInfo, dmErrorWrap);
 
                 crossNode = new BICrossNodeAdaptor(new XGroupNodeImpl(new GroupNode2XLeftNodeAdaptor((GroupNode) result.getNode()), new GroupNode()));
             } else if (queryInfo.getDimensionInfo().getDimensions().length == 0) {
@@ -73,7 +76,7 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor {
                 NodeMergeResultSet result = (NodeMergeResultSet) QueryRunnerProvider.getInstance().executeQuery(groupQueryInfo);
 
                 // 添加挖掘相关
-                result = processDataMining(result, widget, queryInfo);
+                result = processDataMining(result, widget, queryInfo, dmErrorWrap);
 
                 GroupNode groupNode = (GroupNode) result.getNode();
                 XLeftNode xLeftNode = topGroupNode2XLeftNode(queryInfo.getColDimensionInfo().isShowSum(),
@@ -84,7 +87,7 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor {
                 resultSet = (XNodeMergeResultSet) QueryRunnerProvider.getInstance().executeQuery(queryInfo);
 
                 // 添加挖掘相关
-                resultSet = processDataMining(resultSet, widget, queryInfo);
+                resultSet = processDataMining(resultSet, widget, queryInfo, dmErrorWrap);
 
                 crossNode = new BICrossNodeAdaptor(new XGroupNodeImpl((XLeftNode) resultSet.getNode(), resultSet.getTopGroupNode()));
             }
@@ -92,15 +95,15 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor {
             crossNode = new BICrossNodeAdaptor(new XGroupNodeImpl(new XLeftNode(-1, null), new TopGroupNode(-1, null)));
             LOGGER.error(e);
         }
-        return new CrossTableResult(crossNode, false, false, false, false);
+        return new CrossTableResult(crossNode, false, false, false, false, dmErrorWrap);
     }
 
-    private static <T extends NodeResultSet> T processDataMining(T result, CrossTableWidget widget, XGroupQueryInfo info) throws Exception {
+    private static <T extends NodeResultSet> T processDataMining(T result, CrossTableWidget widget, XGroupQueryInfo info, DMErrorWrap dmErrorWrap) throws Exception {
         // 挖掘模块处理
         AlgorithmBean dmBean = widget.getValue().getDataMining();
         T resultSet = result;
         if (!DMUtils.isEmptyAlgorithm(dmBean)) {
-            CrossTableToDMResultVisitor crossVisitor = new CrossTableToDMResultVisitor(result, widget, info);
+            CrossTableToDMResultVisitor crossVisitor = new CrossTableToDMResultVisitor(result, widget, info, dmErrorWrap);
             resultSet = (T) dmBean.accept(crossVisitor);
         }
         return resultSet;
@@ -140,19 +143,21 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         return new XGroupQueryInfo(queryId, sourceKey, rowDimensionInfo, colDimensionInfo, targetInfo);
     }
 
-    private static class CrossTableResult implements BICrossTableResult {
+    private static class CrossTableResult implements BICrossTableResult, BIDMResult {
         private BICrossNode node;
         private boolean hasHorizontalNextPage;
         private boolean hasHorizontalPreviousPage;
         private boolean hasVerticalNextPage;
         private boolean hasVerticalPreviousPage;
+        private DMErrorWrap errorWrap;
 
-        public CrossTableResult(BICrossNode node, boolean hasHorizontalNextPage, boolean hasHorizontalPreviousPage, boolean hasVerticalNextPage, boolean hasVerticalPreviousPage) {
+        public CrossTableResult(BICrossNode node, boolean hasHorizontalNextPage, boolean hasHorizontalPreviousPage, boolean hasVerticalNextPage, boolean hasVerticalPreviousPage, DMErrorWrap errorWrap) {
             this.node = node;
             this.hasHorizontalNextPage = hasHorizontalNextPage;
             this.hasHorizontalPreviousPage = hasHorizontalPreviousPage;
             this.hasVerticalNextPage = hasVerticalNextPage;
             this.hasVerticalPreviousPage = hasVerticalPreviousPage;
+            this.errorWrap = errorWrap;
         }
 
         @Override
@@ -183,6 +188,11 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         @Override
         public ResultType getResultType() {
             return ResultType.BICROSS;
+        }
+
+        @Override
+        public String getDataMiningError() {
+            return errorWrap.getError();
         }
     }
 }

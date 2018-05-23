@@ -8,6 +8,7 @@ import com.finebi.common.structure.config.fieldinfo.FieldInfo;
 import com.finebi.common.structure.config.pack.PackageInfo;
 import com.finebi.common.structure.config.relation.Relation;
 import com.finebi.common.structure.config.session.EntryInfoSession;
+import com.finebi.conf.exception.FinePackageAbsentException;
 import com.finebi.conf.internalimp.update.TableUpdateInfo;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.conf.dashboard.store.DashboardConfManager;
@@ -52,9 +53,9 @@ class DashboardConfListener {
                                 DashboardConfManager.getManager().getFieldSession().save(fieldInfo);
                                 PackageInfo info = CommonConfigManager.getPackageSession(FineEngineType.Cube).getPackageByEntryInfoId(entryInfo.getID());
                                 try {
-                                    info = DashboardConfManager.getManager().getPackageSession().getPackageById(info.getId());
-                                    dealDashboardPackage(info, entryInfo.getID());
-                                } catch (Exception e) {
+                                    PackageInfo dashboardInfo = DashboardConfManager.getManager().getPackageSession().getPackageById(info.getId());
+                                    dealDashboardPackage(dashboardInfo, entryInfo.getID());
+                                } catch (FinePackageAbsentException e) {
                                     dealCommonPackage(info, entryInfo.getID());
                                 }
                             }
@@ -85,7 +86,10 @@ class DashboardConfListener {
         }
     }
 
-    private static void dealDashboardPackage(PackageInfo packageInfo, String tableId) {
+    private static void dealDashboardPackage(PackageInfo packageInfo, String tableId) throws FinePackageAbsentException {
+        if (null == packageInfo) {
+            throw new FinePackageAbsentException();
+        }
         packageInfo.addTable(tableId);
         DashboardConfManager.getManager().getPackageSession().put(packageInfo);
     }

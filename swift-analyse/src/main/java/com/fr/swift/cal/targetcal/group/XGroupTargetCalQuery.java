@@ -53,11 +53,11 @@ public class XGroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> 
         // TODO: 2018/5/2 结果过滤
 
         // 下面设置字典、取出要返回的结果指标、对结果指标做横向和列向汇总、结果指标转为二维数组
-        GroupNodeUtils.updateNodeData(resultSet.getTopGroupNode(), resultSet.getColGlobalDictionaries());
-        GroupNodeUtils.updateNodeData((XLeftNode) resultSet.getNode(), resultSet.getRowGlobalDictionaries());
-        // 对最后结果进行汇总
         int rowDimensionSize = info.getDimensionInfo().getDimensions().length;
         int colDimensionSize = info.getColDimensionInfo().getDimensions().length;
+        GroupNodeUtils.updateNodeData(colDimensionSize, resultSet.getTopGroupNode(), resultSet.getColGlobalDictionaries());
+        GroupNodeUtils.updateNodeData(rowDimensionSize, (XLeftNode) resultSet.getNode(), resultSet.getRowGlobalDictionaries());
+        // 对最后结果进行汇总
         List<Pair<Aggregator, Integer>> aggregators = info.getTargetInfo().getResultAggregators();
         GroupNodeAggregateUtils.aggregate(NodeType.X_LEFT, rowDimensionSize, (GroupNode) resultSet.getNode(), aggregators);
         // 先更新topGroupNode里面的topGroupValues，然后在做列向汇总。为什么呢？因为要对xLeftNode横向的汇总行做列向汇总
@@ -93,14 +93,18 @@ public class XGroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> 
         if (GroupTargetCalQuery.hasDimensionTargetSorts(info.getDimensionInfo().getDimensions())) {
             // 行表头排序
             sortXLeftNode(rowDimensionSize, colDimensionSize, resultSet);
+            GroupNodeUtils.updateNodeIndexAfterSort(rowDimensionSize, (GroupNode) resultSet.getNode());
         }
         if (GroupTargetCalQuery.hasDimensionTargetSorts(info.getColDimensionInfo().getDimensions())) {
             // 列表头排序
             sortTopGroupNode(rowDimensionSize, colDimensionSize, resultSet);
+            GroupNodeUtils.updateNodeIndexAfterSort(colDimensionSize, (GroupNode) resultSet.getNode());
         }
         if (isEmpty(resultSet)) {
             return resultSet;
         }
+        GroupNodeUtils.updateShowTargetsForXLeftNode(rowDimensionSize, (XLeftNode) resultSet.getNode(),
+                info.getTargetInfo().getTargetsForShowList());
         // 最后一步将xLeftNode的List<AggregatorValue[]> valueArrayList转为二维数组
         if (GroupTargetCalQuery.hasDimensionTargetSorts(info.getDimensionInfo().getDimensions())
                 || GroupTargetCalQuery.hasDimensionTargetSorts(info.getColDimensionInfo().getDimensions())) {

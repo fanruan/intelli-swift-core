@@ -41,6 +41,7 @@ public class GroupNode<T extends GroupNode> extends AbstractSwiftNode<T> impleme
     }
 
     @Override
+    @Deprecated
     public T getSibling() {
         return super.getSibling();
     }
@@ -53,6 +54,10 @@ public class GroupNode<T extends GroupNode> extends AbstractSwiftNode<T> impleme
     @Override
     public int getDepth() {
         return deep;
+    }
+
+    public void setDepth(int deep) {
+        this.deep = deep;
     }
 
     @Override

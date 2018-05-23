@@ -18,7 +18,7 @@ abstract class BaseTaskTomb implements Runnable {
     private BlockingQueue<SchedulerTask> tasks = new LinkedBlockingQueue<SchedulerTask>();
 
     BaseTaskTomb() {
-        new SingleThreadFactory(getClass().getSimpleName()).newThread(this).start();
+        new SingleThreadFactory(getClass()).newThread(this).start();
     }
 
     public void add(SchedulerTask task) {
