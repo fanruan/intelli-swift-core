@@ -50,11 +50,11 @@ class DashboardConfListener {
                             if (null != fieldInfo) {
                                 DashboardConfManager.getManager().getEntryInfoSession().save(entryInfo);
                                 DashboardConfManager.getManager().getFieldSession().save(fieldInfo);
+                                PackageInfo info = CommonConfigManager.getPackageSession(FineEngineType.Cube).getPackageByEntryInfoId(entryInfo.getID());
                                 try {
-                                    PackageInfo info = DashboardConfManager.getManager().getPackageSession().getPackageByEntryInfoId(entryInfo.getID());
+                                    info = DashboardConfManager.getManager().getPackageSession().getPackageById(info.getId());
                                     dealDashboardPackage(info, entryInfo.getID());
                                 } catch (Exception e) {
-                                    PackageInfo info = CommonConfigManager.getPackageSession(FineEngineType.Cube).getPackageByEntryInfoId(entryInfo.getID());
                                     dealCommonPackage(info, entryInfo.getID());
                                 }
                             }
