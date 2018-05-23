@@ -193,10 +193,9 @@ public class DashboardPackageTableService {
     }
 
     protected void deleteTableInPackage(List<String> entryInfoIds) {
+        entryInfoIds = Collections.synchronizedList(entryInfoIds);
         for (String entryInfoId : entryInfoIds) {
-            synchronized (this) {
-                deleteTableInfo(entryInfoId);
-            }
+            deleteTableInfo(entryInfoId);
         }
     }
 
