@@ -47,45 +47,23 @@ public class XGroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> 
     @Override
     public NodeResultSet getQueryResult() throws SQLException {
         XNodeMergeResultSet resultSet = (XNodeMergeResultSet) mergeQuery.getQueryResult();
-        // 处理计算指标
-        TargetCalculatorUtils.calculate(((GroupNode) resultSet.getNode()), resultSet.getRowGlobalDictionaries(), info.getTargetInfo().getGroupTargets());
-        // TODO: 2018/5/2 结果过滤
-
         // 下面设置字典、取出要返回的结果指标、对结果指标做横向和列向汇总、结果指标转为二维数组
         int rowDimensionSize = info.getDimensionInfo().getDimensions().length;
         int colDimensionSize = info.getColDimensionInfo().getDimensions().length;
         GroupNodeUtils.updateNodeData(colDimensionSize, resultSet.getTopGroupNode(), resultSet.getColGlobalDictionaries());
         GroupNodeUtils.updateNodeData(rowDimensionSize, (XLeftNode) resultSet.getNode(), resultSet.getRowGlobalDictionaries());
-        // 对最后结果进行汇总
-        List<Aggregator> aggregators = info.getTargetInfo().getResultAggregators();
-        GroupNodeAggregateUtils.aggregate(NodeType.X_LEFT, rowDimensionSize, (GroupNode) resultSet.getNode(), aggregators);
+
+        // 在明细的基础上对Node做合计，用于过滤
+        GroupNodeAggregateUtils.aggregate(NodeType.X_LEFT, rowDimensionSize,
+                (GroupNode) resultSet.getNode(), resultSet.getAggregators());
         // 先更新topGroupNode里面的topGroupValues，然后在做列向汇总。为什么呢？因为要对xLeftNode横向的汇总行做列向汇总
+        // TODO: 2018/5/23 列表头要支持对指标的过滤实在太麻烦了，能不支持就不不支持吧
         XNodeUtils.updateTopGroupNodeValues(colDimensionSize, rowDimensionSize,
                 resultSet.getTopGroupNode(), (XLeftNode) resultSet.getNode());
-        GroupNodeAggregateUtils.aggregate(NodeType.TOP_GROUP, colDimensionSize, resultSet.getTopGroupNode(), aggregators);
-        // 先更新一下xLeftNode#valueArrayList（包含topGroupNode所有列（包括汇总列）的某一行）
+        GroupNodeAggregateUtils.aggregate(NodeType.TOP_GROUP, colDimensionSize,
+                resultSet.getTopGroupNode(), resultSet.getAggregators());
+//        // 先更新一下xLeftNode#valueArrayList（包含topGroupNode所有列（包括汇总列）的某一行）
         updateXLeftNode(rowDimensionSize, colDimensionSize, resultSet);
-        List<MatchFilter> dimensionMatchFilter = getDimensionMatchFilters(info.getDimensionInfo().getDimensions());
-        if (hasDimensionFilter(dimensionMatchFilter)) {
-            GroupNodeAggregateUtils.aggregate(NodeType.X_LEFT, rowDimensionSize, (GroupNode) resultSet.getNode(), aggregators);
-            // 先更新topGroupNode里面的topGroupValues，然后在做列向汇总。为什么呢？因为要对xLeftNode横向的汇总行做列向汇总
-            XNodeUtils.updateTopGroupNodeValues(colDimensionSize, rowDimensionSize,
-                    resultSet.getTopGroupNode(), (XLeftNode) resultSet.getNode());
-            GroupNodeAggregateUtils.aggregate(NodeType.TOP_GROUP, colDimensionSize, resultSet.getTopGroupNode(), aggregators);
-            // 先更新一下xLeftNode#valueArrayList（包含topGroupNode所有列（包括汇总列）的某一行）
-            updateXLeftNode(rowDimensionSize, colDimensionSize, resultSet);
-            NodeFilter.filter(resultSet.getNode(), dimensionMatchFilter);
-        } else {
-            //pony 过滤之后这个挂了，要lyon改下，暂时屏蔽
-            // 对最后结果进行汇总
-            GroupNodeAggregateUtils.aggregate(NodeType.X_LEFT, rowDimensionSize, (GroupNode) resultSet.getNode(), aggregators);
-            // 先更新topGroupNode里面的topGroupValues，然后在做列向汇总。为什么呢？因为要对xLeftNode横向的汇总行做列向汇总
-            XNodeUtils.updateTopGroupNodeValues(colDimensionSize, rowDimensionSize,
-                    resultSet.getTopGroupNode(), (XLeftNode) resultSet.getNode());
-            GroupNodeAggregateUtils.aggregate(NodeType.TOP_GROUP, colDimensionSize, resultSet.getTopGroupNode(), aggregators);
-            // 先更新一下xLeftNode#valueArrayList（包含topGroupNode所有列（包括汇总列）的某一行）
-            updateXLeftNode(rowDimensionSize, colDimensionSize, resultSet);
-        }
 
         // 指标排序，处理的思路是利用横向和纵向汇总的得到的根节点汇总值，转为两个分组表的排序来处理
         // 暂时先这么实现，后面再分析一下能不能优化
@@ -95,15 +73,41 @@ public class XGroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> 
             GroupNodeUtils.updateNodeIndexAfterSort((GroupNode) resultSet.getNode());
         }
         if (GroupTargetCalQuery.hasDimensionTargetSorts(info.getColDimensionInfo().getDimensions())) {
+            // TODO: 2018/5/23 列表头的排序同样比较麻烦，有的快速计算要放到排序之前
             // 列表头排序
             sortTopGroupNode(rowDimensionSize, colDimensionSize, resultSet);
             GroupNodeUtils.updateNodeIndexAfterSort((GroupNode) resultSet.getNode());
         }
+
+        // 处理计算指标
+        TargetCalculatorUtils.calculate(((GroupNode) resultSet.getNode()),
+                resultSet.getRowGlobalDictionaries(), info.getTargetInfo().getGroupTargets());
+
+        // 结果过滤
+        List<MatchFilter> dimensionMatchFilter = getDimensionMatchFilters(info.getDimensionInfo().getDimensions());
+        if (hasDimensionFilter(dimensionMatchFilter)) {
+            NodeFilter.filter(resultSet.getNode(), dimensionMatchFilter);
+        }
+
+        // 二次计算
+        TargetCalculatorUtils.calculateAfterFiltering(((GroupNode) resultSet.getNode()),
+                resultSet.getRowGlobalDictionaries(), info.getTargetInfo().getGroupTargets());
+
+        // 取出要展示的指标，再做合计
+        GroupNodeUtils.updateShowTargetsForXLeftNode(rowDimensionSize, (XLeftNode) resultSet.getNode(),
+                info.getTargetInfo().getTargetsForShowList());
+        List<Aggregator> aggregators = info.getTargetInfo().getResultAggregators();
+        GroupNodeAggregateUtils.aggregate(NodeType.X_LEFT, rowDimensionSize, (GroupNode) resultSet.getNode(), aggregators);
+        // 先更新topGroupNode里面的topGroupValues，然后在做列向汇总
+        XNodeUtils.updateTopGroupNodeValues(colDimensionSize, rowDimensionSize,
+                resultSet.getTopGroupNode(), (XLeftNode) resultSet.getNode());
+        GroupNodeAggregateUtils.aggregate(NodeType.TOP_GROUP, colDimensionSize, resultSet.getTopGroupNode(), aggregators);
+        // 再更新一下xLeftNode#valueArrayList（包含topGroupNode所有列（包括汇总列）的某一行）
+        updateXLeftNode(rowDimensionSize, colDimensionSize, resultSet);
+
         if (isEmpty(resultSet)) {
             return resultSet;
         }
-        GroupNodeUtils.updateShowTargetsForXLeftNode(rowDimensionSize, (XLeftNode) resultSet.getNode(),
-                info.getTargetInfo().getTargetsForShowList());
         // 最后一步将xLeftNode的List<AggregatorValue[]> valueArrayList转为二维数组
         if (GroupTargetCalQuery.hasDimensionTargetSorts(info.getDimensionInfo().getDimensions())
                 || GroupTargetCalQuery.hasDimensionTargetSorts(info.getColDimensionInfo().getDimensions())) {
