@@ -14,6 +14,10 @@ abstract class BaseThreadFactory implements ThreadFactory {
     private final AtomicInteger threadNumber = new AtomicInteger(1);
     private final String namePrefix;
 
+    BaseThreadFactory(Class<?> c) {
+        this(getSimpleName(c));
+    }
+
     BaseThreadFactory(String namePrefix) {
         Util.requireNonNull(namePrefix);
 
@@ -35,5 +39,10 @@ abstract class BaseThreadFactory implements ThreadFactory {
             t.setPriority(Thread.NORM_PRIORITY);
         }
         return t;
+    }
+
+    static String getSimpleName(Class<?> c) {
+        String name = c.getName();
+        return name.substring(name.lastIndexOf('.') + 1);
     }
 }
