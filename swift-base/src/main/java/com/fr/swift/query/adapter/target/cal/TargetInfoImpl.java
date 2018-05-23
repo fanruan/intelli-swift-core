@@ -4,7 +4,6 @@ import com.fr.swift.query.adapter.metric.Metric;
 import com.fr.swift.query.adapter.target.GroupTarget;
 import com.fr.swift.query.adapter.target.TargetInfo;
 import com.fr.swift.query.aggregator.Aggregator;
-import com.fr.swift.structure.Pair;
 
 import java.util.List;
 
@@ -17,10 +16,10 @@ public class TargetInfoImpl implements TargetInfo {
     private List<Metric> metrics;
     private List<GroupTarget> groupTargets;
     private List<ResultTarget> targetsForShowList;
-    private List<Pair<Aggregator, Integer>> resultAggregators;
+    private List<Aggregator> resultAggregators;
 
     public TargetInfoImpl(int targetLength, List<Metric> metrics, List<GroupTarget> groupTargets,
-                          List<ResultTarget> targetsForShowList, List<Pair<Aggregator, Integer>> resultAggregators) {
+                          List<ResultTarget> targetsForShowList, List<Aggregator> resultAggregators) {
         this.targetLength = targetLength;
         this.metrics = metrics;
         this.groupTargets = groupTargets;
@@ -44,7 +43,7 @@ public class TargetInfoImpl implements TargetInfo {
     }
 
     @Override
-    public List<Pair<Aggregator, Integer>> getResultAggregators() {
+    public List<Aggregator> getResultAggregators() {
         return resultAggregators;
     }
 
