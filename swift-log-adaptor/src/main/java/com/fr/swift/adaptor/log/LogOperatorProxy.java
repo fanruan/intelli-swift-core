@@ -48,14 +48,14 @@ public class LogOperatorProxy implements LogOperator {
     }
 
     @Override
-    public void recordInfo(List<Object> list) throws Exception {
+    public void recordInfo(List<Object> list){
         synchronized (LogOperatorProxy.class) {
             logOperator.recordInfo(list);
         }
     }
 
     @Override
-    public void initTables(List<Class> list) throws Exception {
+    public void initTables(List<Class> list){
         synchronized (LogOperatorProxy.class) {
             logOperator.initTables(list);
         }
