@@ -2,7 +2,6 @@ package com.fr.swift.generate;
 
 import com.fr.swift.config.IConfigSegment;
 import com.fr.swift.config.IMetaData;
-import com.fr.swift.config.ISegmentKey;
 import com.fr.swift.config.conf.MetaDataConfig;
 import com.fr.swift.config.conf.MetaDataConvertUtil;
 import com.fr.swift.config.conf.SegmentConfig;
@@ -26,17 +25,12 @@ public abstract class BaseTest extends BaseConfigTest {
         TestConnectionProvider.createConnection();
     }
 
-    protected void putMetaAndSegment(DataSource dataSource, int seg, IResourceLocation location, Types.StoreType storeType) throws Exception {
+    protected void putMetaAndSegment(DataSource dataSource, int segOrder, IResourceLocation location, Types.StoreType storeType) throws Exception {
         IMetaData metaData = MetaDataConvertUtil.convert2ConfigMetaData(dataSource.getMetadata());
         MetaDataConfig.getInstance().addMetaData(dataSource.getSourceKey().getId(), metaData);
         IConfigSegment configSegment = new SegmentUnique();
         configSegment.setSourceKey(dataSource.getSourceKey().getId());
-        ISegmentKey segmentKey = new SegmentKeyUnique();
-        segmentKey.setSegmentOrder(seg);
-        segmentKey.setUri(location.getUri().getPath());
-        segmentKey.setSourceId(dataSource.getSourceKey().getId());
-        segmentKey.setStoreType(storeType.name());
-        configSegment.addSegment(segmentKey);
+        configSegment.addSegment(new SegmentKeyUnique(dataSource.getSourceKey(), "", location.getUri(), segOrder, storeType));
         SegmentConfig.getInstance().putSegment(configSegment);
     }
 }

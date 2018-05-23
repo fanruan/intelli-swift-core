@@ -2,13 +2,13 @@ package com.fr.swift.generate.segment.operator.merger;
 
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.config.IConfigSegment;
-import com.fr.swift.config.ISegmentKey;
 import com.fr.swift.config.conf.SegmentConfig;
 import com.fr.swift.config.unique.SegmentKeyUnique;
 import com.fr.swift.config.unique.SegmentUnique;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types;
+import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.impl.SwiftDatabase;
@@ -97,12 +97,7 @@ public class RealtimeMerger implements Merger {
     protected Segment createSegment(int order) {
         String cubePath = ResourceDiscovery.getInstance().getCubePath() + "/" + cubeSourceKey + "/seg" + order;
         IResourceLocation location = new ResourceLocation(cubePath);
-        ISegmentKey segmentKey = new SegmentKeyUnique();
-        segmentKey.setSegmentOrder(order);
-        segmentKey.setUri(location.getUri().getPath());
-        segmentKey.setSourceId(sourceKey.getId());
-        segmentKey.setStoreType(Types.StoreType.FINE_IO.name());
-        configSegment.addSegment(segmentKey);
+        configSegment.addSegment(new SegmentKeyUnique(sourceKey, "", location.getUri(), order, StoreType.FINE_IO));
         return new HistorySegmentImpl(location, metaData);
     }
 

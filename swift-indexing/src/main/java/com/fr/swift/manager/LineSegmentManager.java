@@ -27,7 +27,7 @@ public class LineSegmentManager extends AbstractSegmentManager {
         URI uri = segmentKey.getUri();
         Types.StoreType storeType = segmentKey.getStoreType();
         ResourceLocation location = new ResourceLocation(uri.getPath(), storeType);
-        SourceKey sourceKey = new SourceKey(segmentKey.getSourceId());
+        SourceKey sourceKey = segmentKey.getTable();
         SwiftMetaData metaData = MetaDataConvertUtil.getSwiftMetaDataBySourceKey(sourceKey.getId());
         Util.requireNonNull(metaData);
         switch (storeType) {
