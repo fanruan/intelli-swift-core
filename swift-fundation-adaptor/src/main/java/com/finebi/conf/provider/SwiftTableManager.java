@@ -8,6 +8,7 @@ import com.finebi.common.service.engine.table.AbstractEngineTableManager;
 import com.finebi.common.structure.config.driver.CommonDataSourceDriver;
 import com.finebi.common.structure.config.entryinfo.EntryInfo;
 import com.finebi.common.structure.config.fieldinfo.FieldInfo;
+import com.finebi.common.structure.config.pack.PackageInfo;
 import com.finebi.common.structure.config.relation.Relation;
 import com.finebi.common.structure.config.session.InterceptSession;
 import com.finebi.conf.constant.BICommonConstants;
@@ -71,6 +72,7 @@ public class SwiftTableManager extends AbstractEngineTableManager {
             EntryInfo entryInfo = entry.getValue();
             CommonDataSourceDriver driver = CommonDataSourceDriverFactory.getInstance(getEngineType()).getDriver(entryInfo);
             FineBusinessTable businessTable = driver.createBusinessTable(entryInfo);
+            setRealTime(businessTable, entryInfo);
             fineBusinessTables.add(businessTable);
         }
         return fineBusinessTables;
@@ -88,7 +90,18 @@ public class SwiftTableManager extends AbstractEngineTableManager {
     @Override
     public List<FineBusinessTable> getAllTableByPackId(String packId) throws FinePackageAbsentException {
         try {
-            return super.getAllTableByPackId(packId);
+            List<FineBusinessTable> fineBusinessTables = new ArrayList<FineBusinessTable>();
+            PackageInfo packageInfo = CommonConfigManager.getPackageSession(getEngineType()).getPackageById(packId);
+            checkPackageExist(packageInfo);
+            List<String> tableIds = packageInfo.getTableIds();
+            for (String tableId : tableIds) {
+                EntryInfo entryInfo = CommonConfigManager.getEntryInfoSession(getEngineType()).find(tableId);
+                CommonDataSourceDriver driver = CommonDataSourceDriverFactory.getInstance(getEngineType()).getDriver(entryInfo);
+                FineBusinessTable businessTable = driver.createBusinessTable(entryInfo);
+                setRealTime(businessTable, entryInfo);
+                fineBusinessTables.add(businessTable);
+            }
+            return fineBusinessTables;
         } catch (FinePackageAbsentException e) {
             return DashboardPackageTableService.getService().getBusinessTables(packId);
         }
@@ -132,7 +145,7 @@ public class SwiftTableManager extends AbstractEngineTableManager {
                 DataSource dataSource = DataSourceFactory.getDataSourceInCache(table);
                 tableToSourceConfigDao.addConfig(table.getId(), dataSource.getSourceKey().getId());
                 EntryInfo entryInfo = this.createEntryInfo(table);
-                setRealTime(table, entryInfo);
+                saveRealTimeStatus(table, entryInfo);
                 this.addEntryInfo(entryInfo, entry.getKey());
                 table.setFields(FieldFactory.transformColumns2Fields(dataSource.getMetadata(), table.getId(), entryInfo.getEscapeMap()));
                 this.saveFieldInfo(FieldInfoHelper.createFieldInfo(entryInfo, table));
@@ -156,7 +169,7 @@ public class SwiftTableManager extends AbstractEngineTableManager {
                 TableToSource tableToSource = new TableToSourceUnique(table.getId(), dataSource.getSourceKey().getId());
                 tableToSourceConfigDao.updateConfig(tableToSource);
                 EntryInfo entryInfo = this.createEntryInfo(table);
-                setRealTime(table, entryInfo);
+                saveRealTimeStatus(table, entryInfo);
                 this.updateEntryInfo(entryInfo);
                 table.setFields(FieldFactory.transformColumns2Fields(dataSource.getMetadata(), table.getId(), entryInfo.getEscapeMap()));
                 this.saveFieldInfo(FieldInfoHelper.createFieldInfo(entryInfo, table));
@@ -190,15 +203,30 @@ public class SwiftTableManager extends AbstractEngineTableManager {
         return super.updateField(tableName, field);
     }
 
-    private void setRealTime(FineBusinessTable table, EntryInfo entryInfo) {
-        if (!table.isRealTimeData()) {
-            if (!interceptSession.hasModel(entryInfo.getID())) {
+    private void saveRealTimeStatus(FineBusinessTable table, EntryInfo entryInfo) {
+        boolean isIntercept = isIntercept(table);
+        if (interceptSession.hasModel(entryInfo.getID()) != isIntercept) {
+            if (isIntercept) {
                 interceptSession.put(new InterceptModelImpl(entryInfo.getID()));
-            }
-        } else {
-            if (interceptSession.hasModel(entryInfo.getID())) {
-                interceptSession.delete(entryInfo.getID());
+            } else {
+                interceptSession.delete(new InterceptModelImpl(entryInfo.getID()));
             }
         }
     }
+
+    private void setRealTime(FineBusinessTable table, EntryInfo entryInfo) {
+        table.setRealTimeData(!interceptSession.hasModel(entryInfo.getID()));
+    }
+
+    private boolean isIntercept(FineBusinessTable table) {
+        return !table.isRealTimeData();
+    }
+
+    protected FineBusinessTable createFineBusinessTable(EntryInfo entryInfo) {
+        CommonDataSourceDriver driver = CommonDataSourceDriverFactory.getInstance(getEngineType()).getDriver(entryInfo);
+        FineBusinessTable businessTable = driver.createBusinessTable(entryInfo);
+        setRealTime(businessTable, entryInfo);
+        return businessTable;
+    }
+
 }
