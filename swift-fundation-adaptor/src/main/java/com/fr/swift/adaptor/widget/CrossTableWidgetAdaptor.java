@@ -143,7 +143,7 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         return new XGroupQueryInfo(queryId, sourceKey, rowDimensionInfo, colDimensionInfo, targetInfo);
     }
 
-    private static class CrossTableResult implements BICrossTableResult, BIDMResult {
+    private static class CrossTableResult implements BICrossTableResult {
         private BICrossNode node;
         private boolean hasHorizontalNextPage;
         private boolean hasHorizontalPreviousPage;
