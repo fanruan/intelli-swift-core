@@ -68,7 +68,7 @@ public class SwiftLogOperator implements LogOperator {
     }
 
     @Override
-    public void recordInfo(Object o) throws Exception {
+    public void recordInfo(Object o) {
         if (o == null) {
             return;
         }
@@ -76,11 +76,10 @@ public class SwiftLogOperator implements LogOperator {
     }
 
     @Override
-    public void recordInfo(List<Object> list) throws Exception {
+    public void recordInfo(List<Object> list) {
         if (list == null || list.isEmpty()) {
             return;
         }
-
         sync.stage(list);
     }
 
@@ -120,20 +119,24 @@ public class SwiftLogOperator implements LogOperator {
         }
 
         synchronized
-        private void record(Class<?> entity) throws Exception {
+        private void record(Class<?> entity) {
             List<Object> data = dataMap.get(entity);
             if (data == null || data.isEmpty()) {
                 return;
             }
 
             dataMap.remove(entity);
-            Table table = db.getTable(new SourceKey(SwiftMetaAdaptor.getTableName(entity)));
-            SwiftResultSet rowSet = new LogRowSet(table.getMeta(), data, entity);
-            table.insert(rowSet);
+            try {
+                Table table = db.getTable(new SourceKey(SwiftMetaAdaptor.getTableName(entity)));
+                SwiftResultSet rowSet = new LogRowSet(table.getMeta(), data, entity);
+                table.insert(rowSet);
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().error(e);
+            }
         }
 
         synchronized
-        private void stage(List<Object> data) throws Exception {
+        private void stage(List<Object> data) {
             Object first = data.get(0);
             Class<?> entity = first.getClass();
             if (!dataMap.containsKey(entity)) {
