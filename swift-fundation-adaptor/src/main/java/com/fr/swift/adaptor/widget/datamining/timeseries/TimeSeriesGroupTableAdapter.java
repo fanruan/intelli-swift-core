@@ -16,6 +16,7 @@ import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.utils.transform.FineDataTransformUtils;
 import com.finebi.log.BILoggerFactory;
+import com.fr.swift.adaptor.widget.datamining.DMErrorWrap;
 import com.fr.swift.adaptor.widget.datamining.DMSwiftWidgetUtils;
 import com.fr.swift.adaptor.widget.datamining.SwiftAlgorithmResultAdapter;
 import com.fr.swift.cal.info.GroupQueryInfo;
@@ -33,7 +34,6 @@ import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.node.GroupNodeAggregateUtils;
 import com.fr.swift.result.node.NodeType;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.structure.Pair;
 
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
@@ -47,18 +47,19 @@ import java.util.Map;
 /**
  * Created by Jonas on 2018/5/9.
  */
-public class TimeSeriesGroupTableAdapter implements SwiftAlgorithmResultAdapter<HoltWintersBean, AbstractTableWidget, NodeResultSet, GroupQueryInfo> {
+public class TimeSeriesGroupTableAdapter extends SwiftAlgorithmResultAdapter<HoltWintersBean, AbstractTableWidget, NodeResultSet, GroupQueryInfo> {
 
     private double[][] confidence;
     private boolean isCalculateConfidence = false;
-    private GroupQueryInfo info;
+
+    public TimeSeriesGroupTableAdapter(HoltWintersBean bean, AbstractTableWidget widget, NodeResultSet result, GroupQueryInfo info, DMErrorWrap errorWrap) {
+        super(bean, widget, result, info, errorWrap);
+    }
 
     @Override
-    public SwiftResultSet getResult(HoltWintersBean bean, AbstractTableWidget widget, NodeResultSet result, GroupQueryInfo info) {
+    public SwiftResultSet getResult() {
 
         GroupNode rootNode = (GroupNode) result.getNode();
-        this.info = info;
-
 
         try {
             List<FineDimension> dimensionList = new ArrayList<FineDimension>();
@@ -90,10 +91,7 @@ public class TimeSeriesGroupTableAdapter implements SwiftAlgorithmResultAdapter<
 
             // 把指标长度设置成两倍
             List<FineTarget> fineTargets = new ArrayList<FineTarget>();
-            List<Aggregator> aggregators = new ArrayList<Aggregator>();
-            for (Pair<Aggregator, Integer> pair : targetInfo.getResultAggregators()) {
-                aggregators.add(pair.getKey());
-            }
+            List<Aggregator> aggregators = targetInfo.getResultAggregators();
             for (int i = 0; i < targetList.size(); i++) {
                 FineTarget fineTarget = targetList.get(i);
                 fineTargets.add(fineTarget);
@@ -111,6 +109,7 @@ public class TimeSeriesGroupTableAdapter implements SwiftAlgorithmResultAdapter<
             widget.setTargets(fineTargets);
 
 
+
             boolean isDesc = dateDimension.getSort() == null || dateDimension.getSort().getType() == 0;
             int periodicity;
             int groupType = dateDimension.getGroup().getType();
@@ -118,10 +117,10 @@ public class TimeSeriesGroupTableAdapter implements SwiftAlgorithmResultAdapter<
             double[] missValue = null;
             SimpleDateFormat format = new SimpleDateFormat("yyyy");
             List<TimeSeriesPredictItem> predictItems;
-            GroupNode resultRootNode = new GroupNode();
+            GroupNode resultRootNode = new GroupNode(-1,rootNode.getData());
             List<TimeSeriesActualItem> actualItems = new ArrayList<TimeSeriesActualItem>();
 
-            resultRootNode.setData(rootNode.getData());
+            // resultRootNode.setData();
 
 
             // Node转换成预测类型
@@ -189,8 +188,7 @@ public class TimeSeriesGroupTableAdapter implements SwiftAlgorithmResultAdapter<
                     String yyyy = format.format(new Date(item.getTimestamp()));
                     item.setTimestamp(Long.parseLong(yyyy));
                 }
-                GroupNode newNode = new GroupNode();
-                newNode.setData(item.getTimestamp());
+                GroupNode newNode = new GroupNode(0, item.getTimestamp());
                 newNode.setAggregatorValue(doubleArrToNumberArr(item.getActual(), false));
                 resultRootNode.addChild(newNode);
             }
@@ -213,7 +211,7 @@ public class TimeSeriesGroupTableAdapter implements SwiftAlgorithmResultAdapter<
             // resultRootNode.setAggregatorValue(NumberArrToAggregatorValueArr(sums));
             // 使用结果汇总聚合器汇总，相对于明细的汇总方式，可能一样也可能不一样。这边可以通过细分做进一步优化。
             GroupNodeAggregateUtils.aggregate(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
-                    resultRootNode, targetInfo.getResultAggregators());
+                    resultRootNode, aggregators);
 
             if (!isDesc) {
                 Collections.reverse(resultRootNode.getChildren());
@@ -222,6 +220,7 @@ public class TimeSeriesGroupTableAdapter implements SwiftAlgorithmResultAdapter<
 
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
+            errorWrap.setError(e.getMessage());
             return generatorErrorResult(rootNode, e.getMessage());
         }
     }
@@ -255,7 +254,7 @@ public class TimeSeriesGroupTableAdapter implements SwiftAlgorithmResultAdapter<
 
     private SwiftResultSet generatorErrorResult(GroupNode rootNode, String err) {
 
-        GroupNode resultRootNode = new GroupNode();
+        GroupNode resultRootNode = new GroupNode(-1, null);
         GroupNode node = getNewSummaryValueNode(resultRootNode, rootNode);
 
         // 求汇总值
@@ -270,6 +269,7 @@ public class TimeSeriesGroupTableAdapter implements SwiftAlgorithmResultAdapter<
     private GroupNode getNewSummaryValueNode(GroupNode fineNode, GroupNode biNode) {
         // 设置本身
         fineNode.setData(biNode.getData());
+        fineNode.setDepth(biNode.getDepth());
         fineNode.setAggregatorValue(generatorErrorSummaryValue(biNode.getAggregatorValue()));
 
         // 迭代孩子
@@ -305,10 +305,7 @@ public class TimeSeriesGroupTableAdapter implements SwiftAlgorithmResultAdapter<
 
     private AggregatorValue[] NumberArrToAggregatorValueArr(Number[] numbers) {
         AggregatorValue[] arr = new AggregatorValue[numbers.length];
-        List<Aggregator> aggregators = new ArrayList<Aggregator>();
-        for (Pair<Aggregator, Integer> pair : info.getTargetInfo().getResultAggregators()) {
-            aggregators.add(pair.getKey());
-        }
+        List<Aggregator> aggregators = info.getTargetInfo().getResultAggregators();
         for (int i = 0; i < numbers.length; i++) {
             Number num = numbers[i];
             if (num == null) {

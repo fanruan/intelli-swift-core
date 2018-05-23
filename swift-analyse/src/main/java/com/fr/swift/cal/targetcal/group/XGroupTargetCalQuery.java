@@ -23,7 +23,6 @@ import com.fr.swift.result.node.NodeType;
 import com.fr.swift.result.node.cal.TargetCalculatorUtils;
 import com.fr.swift.result.node.iterator.PostOrderNodeIterator;
 import com.fr.swift.result.node.xnode.XNodeUtils;
-import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.iterator.IteratorUtils;
 
 import java.sql.SQLException;
@@ -58,7 +57,7 @@ public class XGroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> 
         GroupNodeUtils.updateNodeData(colDimensionSize, resultSet.getTopGroupNode(), resultSet.getColGlobalDictionaries());
         GroupNodeUtils.updateNodeData(rowDimensionSize, (XLeftNode) resultSet.getNode(), resultSet.getRowGlobalDictionaries());
         // 对最后结果进行汇总
-        List<Pair<Aggregator, Integer>> aggregators = info.getTargetInfo().getResultAggregators();
+        List<Aggregator> aggregators = info.getTargetInfo().getResultAggregators();
         GroupNodeAggregateUtils.aggregate(NodeType.X_LEFT, rowDimensionSize, (GroupNode) resultSet.getNode(), aggregators);
         // 先更新topGroupNode里面的topGroupValues，然后在做列向汇总。为什么呢？因为要对xLeftNode横向的汇总行做列向汇总
         XNodeUtils.updateTopGroupNodeValues(colDimensionSize, rowDimensionSize,
@@ -93,12 +92,12 @@ public class XGroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> 
         if (GroupTargetCalQuery.hasDimensionTargetSorts(info.getDimensionInfo().getDimensions())) {
             // 行表头排序
             sortXLeftNode(rowDimensionSize, colDimensionSize, resultSet);
-            GroupNodeUtils.updateNodeIndexAfterSort(rowDimensionSize, (GroupNode) resultSet.getNode());
+            GroupNodeUtils.updateNodeIndexAfterSort((GroupNode) resultSet.getNode());
         }
         if (GroupTargetCalQuery.hasDimensionTargetSorts(info.getColDimensionInfo().getDimensions())) {
             // 列表头排序
             sortTopGroupNode(rowDimensionSize, colDimensionSize, resultSet);
-            GroupNodeUtils.updateNodeIndexAfterSort(colDimensionSize, (GroupNode) resultSet.getNode());
+            GroupNodeUtils.updateNodeIndexAfterSort((GroupNode) resultSet.getNode());
         }
         if (isEmpty(resultSet)) {
             return resultSet;

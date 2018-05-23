@@ -59,8 +59,8 @@ public class DashboardRelationPathService {
     }
 
     public List<FineBusinessTableRelation> getAnalysisRelationsByTables(String s, String s1) {
-        EntryInfo from = DashboardConfManager.getManager().getEntryInfoSession().findByName(s);
-        EntryInfo to = DashboardConfManager.getManager().getEntryInfoSession().findByName(s1);
+        EntryInfo from = DashboardConfManager.getManager().getEntryInfoSession().findByName(s1);
+        EntryInfo to = DashboardConfManager.getManager().getEntryInfoSession().findByName(s);
         if (null == from || null == to) {
             return new ArrayList<FineBusinessTableRelation>();
         }
@@ -106,8 +106,8 @@ public class DashboardRelationPathService {
     }
 
     public List<FineBusinessTableRelationPath> getRelationPathsByTables(String s, String s1) {
-        EntryInfo from = DashboardConfManager.getManager().getEntryInfoSession().findByName(s);
-        EntryInfo to = DashboardConfManager.getManager().getEntryInfoSession().findByName(s1);
+        EntryInfo from = DashboardConfManager.getManager().getEntryInfoSession().findByName(s1);
+        EntryInfo to = DashboardConfManager.getManager().getEntryInfoSession().findByName(s);
         if (null == from || null == to) {
             return new ArrayList<FineBusinessTableRelationPath>();
         }

@@ -48,14 +48,14 @@ public class TargetInfoUtils {
     public static TargetInfo parse(AbstractTableWidget widget) throws Exception {
         List<Metric> metrics = parseMetric(widget);
         List<GroupTarget> targetCalInfoList = parseTargetCalInfo(widget, metrics);
-        Pair<List<Pair<Aggregator, Integer>>, List<ResultTarget>> pair = parseResultAggAndResultTarget(widget, metrics, targetCalInfoList);
+        Pair<List<Aggregator>, List<ResultTarget>> pair = parseResultAggAndResultTarget(widget, metrics, targetCalInfoList);
         int targetLength = metrics.size() + targetCalInfoList.size();
         return new TargetInfoImpl(targetLength, new ArrayList<Metric>(metrics), targetCalInfoList, pair.getValue(), pair.getKey());
     }
 
-    private static Pair<List<Pair<Aggregator, Integer>>, List<ResultTarget>> parseResultAggAndResultTarget(
+    private static Pair<List<Aggregator>, List<ResultTarget>> parseResultAggAndResultTarget(
             AbstractTableWidget widget, List<Metric> metrics, List<GroupTarget> calInfoList) throws Exception {
-        List<Pair<Aggregator, Integer>> aggregators = new ArrayList<Pair<Aggregator, Integer>>();
+        List<Aggregator> aggregators = new ArrayList<Aggregator>();
         List<ResultTarget> resultTargets = new ArrayList<ResultTarget>();
         List<FineTarget> targets = widget.getTargetList();
         for (int i = 0; i < targets.size(); i++) {
@@ -88,7 +88,7 @@ public class TargetInfoUtils {
                         resultFetchIndex = metrics.indexOf(metric);
                     }
                     resultTargets.add(new ResultTarget(i, resultFetchIndex));
-                    aggregators.add(Pair.of(resultAgg, resultFetchIndex));
+                    aggregators.add(resultAgg);
                     break;
                 }
                 default:
