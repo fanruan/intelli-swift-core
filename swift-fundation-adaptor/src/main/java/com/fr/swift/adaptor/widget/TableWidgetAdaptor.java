@@ -243,7 +243,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         FilterInfo filterInfo = new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND);
         GroupQueryInfo queryInfo = new GroupQueryInfo(fromWidget.getwId(), fromColumns[0].getSourceKey(),
                 new DimensionInfoImpl(new AllCursor(), filterInfo, null, fromColumns),
-                new TargetInfoImpl(0, new ArrayList<Metric>(0), new ArrayList<GroupTarget>(0), new ArrayList<ResultTarget>(0), new ArrayList<Pair<Aggregator, Integer>>(0)));
+                new TargetInfoImpl(0, new ArrayList<Metric>(0), new ArrayList<GroupTarget>(0), new ArrayList<ResultTarget>(0), new ArrayList<Aggregator>(0)));
         SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
         Set[] results = new HashSet[toColumns.length];
         for (int i = 0; i < results.length; i++) {

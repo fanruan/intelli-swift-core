@@ -4,6 +4,7 @@ import com.finebi.conf.structure.result.table.BIGroupNode;
 import com.fr.swift.adaptor.struct.node.cache.PagingSessionCacheManager;
 import com.fr.swift.adaptor.struct.node.impl.BIGroupNodeImpl;
 import com.fr.swift.query.adapter.dimension.Expander;
+import com.fr.swift.query.adapter.dimension.ExpanderType;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.node.iterator.DFTGroupNodeIterator;
@@ -105,6 +106,9 @@ public class GroupNodePagingHelper implements NodePagingHelper {
 
     private static boolean isRow(int childIndex, BIGroupNodeImpl[] cacheNode, Expander expander) {
         // TODO: 2018/5/21 通过expander来判断[node.getData() : node in cacheNode[1:]]是否为一行
+        if (expander.getType() == ExpanderType.LAZY_EXPANDER && expander.getStringIndexKeys().isEmpty()) {
+            return true;
+        }
         return childIndex == cacheNode.length - 1;
     }
 
