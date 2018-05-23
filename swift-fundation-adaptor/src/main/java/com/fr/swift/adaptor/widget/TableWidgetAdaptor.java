@@ -281,28 +281,46 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         return dimensions;
     }
 
-    private static Dimension toDimension(SourceKey sourceKey, FineDimension fineDim, int dimensionIndex, int size,
+    private static Dimension toDimension(SourceKey sourceKey, FineDimension fineDim, int dimensionIndex, int dimensionSize,
                                          Pair<List<FineTarget>, List<Integer>> targets) throws SQLException {
         String columnName = getColumnName(fineDim);
         String tableName = getTableName(getFieldId(fineDim));
         ColumnKey colKey = new ColumnKey(columnName);
         Group group = GroupAdaptor.adaptDashboardGroup(fineDim);
 
-        FilterInfo filterInfo = DimensionFilterAdaptor.transformDimensionFineFilter(tableName, fineDim, dimensionIndex == size - 1, targets);
-        Sort sort = SortAdaptor.adaptorDimensionSort(fineDim.getSort(), getSortIndex(fineDim.getSort(), dimensionIndex, targets, size));
-
+        FilterInfo filterInfo = DimensionFilterAdaptor.transformDimensionFineFilter(tableName, fineDim,
+                dimensionIndex == dimensionSize - 1, targets);
+        Sort sort = SortAdaptor.adaptorDimensionSort(fineDim.getSort(), getSortIndex(fineDim.getSort(),
+                dimensionIndex, targets, dimensionSize));
+        if (dimensionIndex == dimensionSize - 1) {
+            // 最后一个维度加上指标的排序
+            Sort targetSort = getTargetSort(dimensionSize, targets);
+            sort = targetSort == null ? sort : targetSort;
+        }
         return new GroupDimension(dimensionIndex, sourceKey, colKey, group, sort, filterInfo);
     }
 
-    private static int getSortIndex(FineDimensionSort sort, int index, Pair<List<FineTarget>, List<Integer>> targets, int size) {
+    private static Sort getTargetSort(int dimensionSize, Pair<List<FineTarget>, List<Integer>> targets) {
+        List<FineTarget> fineTargets = targets.getKey();
+        for (int i = 0; i < fineTargets.size(); i++) {
+            if (fineTargets.get(i).getSort() != null) {
+                // 指标上的排序没有或者只有一个
+                return SortAdaptor.adaptorDimensionSort(fineTargets.get(i).getSort(), dimensionSize + targets.getValue().get(i));
+            }
+        }
+        return null;
+    }
+
+    private static int getSortIndex(FineDimensionSort sort, int dimensionIndex,
+                                    Pair<List<FineTarget>, List<Integer>> targets, int dimensionSize) {
         if (sort instanceof DimensionTargetSort) {
             String targetId = ((DimensionTargetSort) sort).getTargetId();
             for (int i = 0; i < targets.getKey().size(); i++) {
                 if (ComparatorUtils.equals(targets.getKey().get(i).getId(), targetId)) {
-                    return targets.getValue().get(i) + size;
+                    return targets.getValue().get(i) + dimensionSize;
                 }
             }
         }
-        return index;
+        return dimensionIndex;
     }
 }

@@ -41,6 +41,7 @@ public class GroupNode<T extends GroupNode> extends AbstractSwiftNode<T> impleme
     }
 
     @Override
+    @Deprecated
     public T getSibling() {
         return super.getSibling();
     }
