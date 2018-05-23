@@ -164,9 +164,11 @@ public class DashboardPackageTableService {
     }
 
     private void cleanPackage(PackageInfo info) {
-        if (null != info) {
-            deleteTableInPackage(info.getTableIds());
-            DashboardConfManager.getManager().getPackageSession().delPackage(info.getId());
+        synchronized (this) {
+            if (null != info) {
+                deleteTableInPackage(info.getTableIds());
+                DashboardConfManager.getManager().getPackageSession().delPackage(info.getId());
+            }
         }
     }
 
@@ -193,9 +195,11 @@ public class DashboardPackageTableService {
     }
 
     protected void deleteTableInPackage(List<String> entryInfoIds) {
-        entryInfoIds = Collections.synchronizedList(entryInfoIds);
-        for (String entryInfoId : entryInfoIds) {
-            deleteTableInfo(entryInfoId);
+        List<String> synchronizedList = new ArrayList<String>(entryInfoIds);
+        for (String entryInfoId : synchronizedList) {
+            synchronized (this) {
+                deleteTableInfo(entryInfoId);
+            }
         }
     }
 
