@@ -41,21 +41,21 @@ public class LogOperatorProxy implements LogOperator {
     }
 
     @Override
-    public void recordInfo(Object o) throws Exception {
+    public void recordInfo(Object o) {
         synchronized (LogOperatorProxy.class) {
             logOperator.recordInfo(o);
         }
     }
 
     @Override
-    public void recordInfo(List<Object> list){
+    public void recordInfo(List<Object> list) {
         synchronized (LogOperatorProxy.class) {
             logOperator.recordInfo(list);
         }
     }
 
     @Override
-    public void initTables(List<Class> list){
+    public void initTables(List<Class> list) throws Exception {
         synchronized (LogOperatorProxy.class) {
             logOperator.initTables(list);
         }
