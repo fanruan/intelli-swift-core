@@ -16,7 +16,6 @@ import com.fr.swift.result.XLeftNode;
 import com.fr.swift.result.XNodeMergeResultSet;
 import com.fr.swift.result.node.iterator.PostOrderNodeIterator;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.structure.Pair;
 import edu.emory.mathcs.backport.java.util.Arrays;
 
 import java.util.ArrayList;
@@ -64,10 +63,7 @@ public class TimeSeriesCrossTableAdapter implements SwiftAlgorithmResultAdapter<
 
         // 把指标长度设置成两倍
         List<FineTarget> fineTargets = new ArrayList<FineTarget>();
-        List<Aggregator> aggregators = new ArrayList<Aggregator>();
-        for (Pair<Aggregator, Integer> pair : targetInfo.getResultAggregators()) {
-            aggregators.add(pair.getKey());
-        }
+        List<Aggregator> aggregators = info.getTargetInfo().getResultAggregators();
         for (int i = 0; i < targetList.size(); i++) {
             FineTarget fineTarget = targetList.get(i);
             fineTargets.add(fineTarget);

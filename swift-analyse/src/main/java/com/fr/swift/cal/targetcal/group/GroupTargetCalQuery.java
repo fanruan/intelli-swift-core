@@ -63,12 +63,12 @@ public class GroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> {
         // 处理二次计算
         TargetCalculatorUtils.calculateAfterFiltering(((GroupNode) mergeResult.getNode()),
                 mergeResult.getRowGlobalDictionaries(), info.getTargetInfo().getGroupTargets());
+        // 取出结果，在做合计
+        GroupNodeUtils.updateShowTargetsForGroupNode(dimensionSize, (GroupNode) mergeResult.getNode(),
+                info.getTargetInfo().getTargetsForShowList());
         // 使用结果汇总聚合器汇总，这边不用管汇总方式的切换了，解析的时候包装了聚合器。
         GroupNodeAggregateUtils.aggregate(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
                 (GroupNode) mergeResult.getNode(), info.getTargetInfo().getResultAggregators());
-        // 取出结果
-        GroupNodeUtils.updateShowTargetsForGroupNode(dimensionSize, (GroupNode) mergeResult.getNode(),
-                info.getTargetInfo().getTargetsForShowList());
         return mergeResult;
     }
 

@@ -33,7 +33,6 @@ import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.node.GroupNodeAggregateUtils;
 import com.fr.swift.result.node.NodeType;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.structure.Pair;
 
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
@@ -90,10 +89,7 @@ public class TimeSeriesGroupTableAdapter implements SwiftAlgorithmResultAdapter<
 
             // 把指标长度设置成两倍
             List<FineTarget> fineTargets = new ArrayList<FineTarget>();
-            List<Aggregator> aggregators = new ArrayList<Aggregator>();
-            for (Pair<Aggregator, Integer> pair : targetInfo.getResultAggregators()) {
-                aggregators.add(pair.getKey());
-            }
+            List<Aggregator> aggregators = targetInfo.getResultAggregators();
             for (int i = 0; i < targetList.size(); i++) {
                 FineTarget fineTarget = targetList.get(i);
                 fineTargets.add(fineTarget);
@@ -305,10 +301,7 @@ public class TimeSeriesGroupTableAdapter implements SwiftAlgorithmResultAdapter<
 
     private AggregatorValue[] NumberArrToAggregatorValueArr(Number[] numbers) {
         AggregatorValue[] arr = new AggregatorValue[numbers.length];
-        List<Aggregator> aggregators = new ArrayList<Aggregator>();
-        for (Pair<Aggregator, Integer> pair : info.getTargetInfo().getResultAggregators()) {
-            aggregators.add(pair.getKey());
-        }
+        List<Aggregator> aggregators = info.getTargetInfo().getResultAggregators();
         for (int i = 0; i < numbers.length; i++) {
             Number num = numbers[i];
             if (num == null) {
