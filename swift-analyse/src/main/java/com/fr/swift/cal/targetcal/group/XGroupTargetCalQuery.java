@@ -92,12 +92,12 @@ public class XGroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> 
         if (GroupTargetCalQuery.hasDimensionTargetSorts(info.getDimensionInfo().getDimensions())) {
             // 行表头排序
             sortXLeftNode(rowDimensionSize, colDimensionSize, resultSet);
-            GroupNodeUtils.updateNodeIndexAfterSort(rowDimensionSize, (GroupNode) resultSet.getNode());
+            GroupNodeUtils.updateNodeIndexAfterSort((GroupNode) resultSet.getNode());
         }
         if (GroupTargetCalQuery.hasDimensionTargetSorts(info.getColDimensionInfo().getDimensions())) {
             // 列表头排序
             sortTopGroupNode(rowDimensionSize, colDimensionSize, resultSet);
-            GroupNodeUtils.updateNodeIndexAfterSort(colDimensionSize, (GroupNode) resultSet.getNode());
+            GroupNodeUtils.updateNodeIndexAfterSort((GroupNode) resultSet.getNode());
         }
         if (isEmpty(resultSet)) {
             return resultSet;
