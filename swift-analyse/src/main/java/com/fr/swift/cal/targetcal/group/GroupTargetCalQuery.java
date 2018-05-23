@@ -45,15 +45,16 @@ public class GroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> {
         GroupNodeAggregateUtils.aggregateMetric(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
                 (GroupNode) mergeResult.getNode(), mergeResult.getAggregators());
         // 维度上的排序
+        int dimensionSize = info.getDimensionInfo().getDimensions().length;
         if (hasDimensionTargetSorts(info.getDimensionInfo().getDimensions())) {
             NodeSorter.sort(mergeResult.getNode(), getDimensionTargetSorts(info.getDimensionInfo().getDimensions()));
             // 在遍历一遍node，更新一下nodeIndex用于分页
-            GroupNodeUtils.updateNodeIndexAfterSort((GroupNode) mergeResult.getNode());
+            GroupNodeUtils.updateNodeIndexAfterSort(dimensionSize, (GroupNode) mergeResult.getNode());
         }
         // 根据合并后的结果处理计算指标的计算
         TargetCalculatorUtils.calculate(((GroupNode) mergeResult.getNode()), mergeResult.getRowGlobalDictionaries(), info.getTargetInfo().getGroupTargets());
-        // 取出查询最后要返回的结果
-        GroupNodeUtils.updateNodeData(((GroupNode) mergeResult.getNode()), mergeResult.getRowGlobalDictionaries());
+        // 更新Node#data
+        GroupNodeUtils.updateNodeData(dimensionSize, ((GroupNode) mergeResult.getNode()), mergeResult.getRowGlobalDictionaries());
         // 进行结果过滤
         List<MatchFilter> dimensionMatchFilter = getDimensionMatchFilters(info.getDimensionInfo().getDimensions());
         if (hasDimensionFilter(dimensionMatchFilter)) {
@@ -66,7 +67,8 @@ public class GroupTargetCalQuery extends AbstractTargetCalQuery<NodeResultSet> {
         GroupNodeAggregateUtils.aggregate(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
                 (GroupNode) mergeResult.getNode(), info.getTargetInfo().getResultAggregators());
         // 取出结果
-        GroupNodeUtils.updateShowTargetsForGroupNode((GroupNode) mergeResult.getNode(), info.getTargetInfo().getTargetsForShowList());
+        GroupNodeUtils.updateShowTargetsForGroupNode(dimensionSize, (GroupNode) mergeResult.getNode(),
+                info.getTargetInfo().getTargetsForShowList());
         return mergeResult;
     }
 

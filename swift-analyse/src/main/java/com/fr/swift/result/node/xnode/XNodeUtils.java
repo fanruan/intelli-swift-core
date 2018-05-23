@@ -5,7 +5,6 @@ import com.fr.swift.query.group.by2.node.XNodeGroupByUtils;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.TopGroupNode;
 import com.fr.swift.result.XLeftNode;
-import com.fr.swift.result.node.iterator.BFTGroupNodeIterator;
 import com.fr.swift.result.node.iterator.PostOrderNodeIterator;
 import com.fr.swift.structure.iterator.Filter;
 import com.fr.swift.structure.iterator.FilteredIterator;
