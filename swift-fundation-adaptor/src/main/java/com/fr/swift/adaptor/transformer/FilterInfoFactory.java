@@ -2,6 +2,7 @@ package com.fr.swift.adaptor.transformer;
 
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.base.stable.StableManager;
+import com.finebi.base.utils.FineNullValue;
 import com.finebi.conf.constant.BICommonConstants;
 import com.finebi.conf.exception.FineEngineException;
 import com.finebi.conf.internalimp.bean.filter.AbstractFilterBean;
@@ -219,7 +220,7 @@ public class FilterInfoFactory {
             case BICommonConstants.ANALYSIS_FILTER_STRING.NOT_BEGIN_WITH: {
                 String value = ((StringNoBeginWithFilterBean) bean).getFilterValue();
                 if (StringUtils.isBlank(value)) {
-                    break;
+                    return new SwiftDetailFilterInfo(columnKey, null, SwiftDetailFilterType.NOT_SHOW);
                 }
                 return new SwiftDetailFilterInfo<String>(columnKey, value, SwiftDetailFilterType.STRING_NOT_STARTS_WITH);
             }
@@ -233,7 +234,7 @@ public class FilterInfoFactory {
             case BICommonConstants.ANALYSIS_FILTER_STRING.NOT_END_WITH: {
                 String value = ((StringNoEndWithFilterBean) bean).getFilterValue();
                 if (StringUtils.isBlank(value)) {
-                    break;
+                    return new SwiftDetailFilterInfo(columnKey, null, SwiftDetailFilterType.NOT_SHOW);
                 }
                 return new SwiftDetailFilterInfo<String>(columnKey, value, SwiftDetailFilterType.STRING_NOT_ENDS_WITH);
             }
@@ -264,16 +265,28 @@ public class FilterInfoFactory {
             // 数值类过滤
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.BELONG_VALUE: {
                 NumberValue nv = ((NumberBelongFilterBean) bean).getFilterValue();
-                if (nv.getMin() == Double.NEGATIVE_INFINITY && nv.getMax() == Double.POSITIVE_INFINITY) {
+                if (nv.getMin() == FineNullValue.DOUBLE && nv.getMax() == FineNullValue.DOUBLE) {
                     break;
+                }
+                if (nv.getMin() == FineNullValue.DOUBLE) {
+                    nv.setMin(Double.NEGATIVE_INFINITY);
+                }
+                if (nv.getMax() == FineNullValue.DOUBLE) {
+                    nv.setMax(Double.POSITIVE_INFINITY);
                 }
                 return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(columnKey, createValue(nv),
                         SwiftDetailFilterType.NUMBER_IN_RANGE);
             }
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.NOT_BELONG_VALUE: {
                 NumberValue nv = ((NumberNoBelongFilterBean) bean).getFilterValue();
-                if (nv.getMin() == Double.NEGATIVE_INFINITY && nv.getMax() == Double.POSITIVE_INFINITY) {
+                if (nv.getMin() == FineNullValue.DOUBLE && nv.getMax() == FineNullValue.DOUBLE) {
                     return new SwiftDetailFilterInfo(columnKey, null, SwiftDetailFilterType.NOT_SHOW);
+                }
+                if (nv.getMin() == FineNullValue.DOUBLE) {
+                    nv.setMin(Double.NEGATIVE_INFINITY);
+                }
+                if (nv.getMax() == FineNullValue.DOUBLE) {
+                    nv.setMax(Double.POSITIVE_INFINITY);
                 }
                 return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(columnKey, createValue(nv),
                         SwiftDetailFilterType.NUMBER_NOT_IN_RANGE);
@@ -294,6 +307,9 @@ public class FilterInfoFactory {
             }
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.LARGE: {
                 NumberSelectedFilterValueBean numberBean = ((NumberLargeFilterBean) bean).getFilterValue();
+                if (numberBean.getValue() == null) {
+                    break;
+                }
                 SwiftNumberInRangeFilterValue filterValue = new SwiftNumberInRangeFilterValue();
                 filterValue.setMin(createValue(numberBean, segments, fieldName, fieldId, tableName));
                 return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(columnKey, filterValue,
@@ -301,6 +317,9 @@ public class FilterInfoFactory {
             }
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.SMALL: {
                 NumberSelectedFilterValueBean numberBean = ((NumberSmallFilterBean) bean).getFilterValue();
+                if (numberBean.getValue() == null) {
+                    break;
+                }
                 SwiftNumberInRangeFilterValue value = new SwiftNumberInRangeFilterValue();
                 value.setMax(createValue(numberBean, segments, fieldName, fieldId, tableName));
                 return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(columnKey, value,
@@ -308,6 +327,9 @@ public class FilterInfoFactory {
             }
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.LARGE_OR_EQUAL: {
                 NumberSelectedFilterValueBean numberBean = ((NumberLargeOrEqualFilterBean) bean).getFilterValue();
+                if (numberBean.getValue() == null) {
+                    break;
+                }
                 SwiftNumberInRangeFilterValue value = new SwiftNumberInRangeFilterValue();
                 value.setMin(createValue(numberBean, segments, fieldName, fieldId, tableName));
                 value.setMinIncluded(true);
@@ -316,6 +338,9 @@ public class FilterInfoFactory {
             }
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.SMALL_OR_EQUAL: {
                 NumberSelectedFilterValueBean numberBean = ((NumberSmallOrEqualFilterBean) bean).getFilterValue();
+                if (numberBean.getValue() == null) {
+                    break;
+                }
                 SwiftNumberInRangeFilterValue value = new SwiftNumberInRangeFilterValue();
                 value.setMax(createValue(numberBean, segments, fieldName, fieldId, tableName));
                 value.setMaxIncluded(true);
@@ -516,7 +541,7 @@ public class FilterInfoFactory {
             case BICommonConstants.ANALYSIS_FILTER_DATE.NOT_BEGIN_WITH: {
                 String value = (String) ((AbstractFilterBean) bean).getFilterValue();
                 if (StringUtils.isBlank(value)) {
-                    break;
+                    return new SwiftDetailFilterInfo(null, null, SwiftDetailFilterType.NOT_SHOW);
                 }
                 return new SwiftDetailFilterInfo<String>(null, value, SwiftDetailFilterType.STRING_NOT_STARTS_WITH);
             }
@@ -532,7 +557,7 @@ public class FilterInfoFactory {
             case BICommonConstants.ANALYSIS_FILTER_DATE.NOT_END_WITH: {
                 String value = (String) ((AbstractFilterBean) bean).getFilterValue();
                 if (StringUtils.isBlank(value)) {
-                    break;
+                    return new SwiftDetailFilterInfo(null, null, SwiftDetailFilterType.NOT_SHOW);
                 }
                 return new SwiftDetailFilterInfo<String>(null, value, SwiftDetailFilterType.STRING_NOT_ENDS_WITH);
             }
@@ -571,16 +596,28 @@ public class FilterInfoFactory {
             //对于指标汇总结果的过滤
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.BELONG_VALUE: {
                 NumberValue nv = ((NumberBelongFilterBean) bean).getFilterValue();
-                if (nv.getMin() == Double.NEGATIVE_INFINITY && nv.getMax() == Double.POSITIVE_INFINITY) {
+                if (nv.getMin() == FineNullValue.DOUBLE && nv.getMax() == FineNullValue.DOUBLE) {
                     break;
+                }
+                if (nv.getMin() == FineNullValue.DOUBLE) {
+                    nv.setMin(Double.NEGATIVE_INFINITY);
+                }
+                if (nv.getMax() == FineNullValue.DOUBLE) {
+                    nv.setMax(Double.POSITIVE_INFINITY);
                 }
                 return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(null, createValue(nv),
                         SwiftDetailFilterType.NUMBER_IN_RANGE);
             }
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.NOT_BELONG_VALUE: {
                 NumberValue nv = ((NumberNoBelongFilterBean) bean).getFilterValue();
-                if (nv.getMin() == Double.NEGATIVE_INFINITY && nv.getMax() == Double.POSITIVE_INFINITY) {
+                if (nv.getMin() == FineNullValue.DOUBLE && nv.getMax() == FineNullValue.DOUBLE) {
                     return new SwiftDetailFilterInfo(null, null, SwiftDetailFilterType.NOT_SHOW);
+                }
+                if (nv.getMin() == FineNullValue.DOUBLE) {
+                    nv.setMin(Double.NEGATIVE_INFINITY);
+                }
+                if (nv.getMax() == FineNullValue.DOUBLE) {
+                    nv.setMax(Double.POSITIVE_INFINITY);
                 }
                 return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(null, createValue(nv),
                         SwiftDetailFilterType.NUMBER_NOT_IN_RANGE);
@@ -601,6 +638,9 @@ public class FilterInfoFactory {
             }
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.LARGE: {
                 NumberSelectedFilterValueBean numberBean = ((NumberLargeFilterBean) bean).getFilterValue();
+                if (numberBean.getValue() == null) {
+                    break;
+                }
                 SwiftNumberInRangeFilterValue filterValue = new SwiftNumberInRangeFilterValue();
                 filterValue.setMin(getDimensionAVGValue(numberBean));
                 return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(null, filterValue,
@@ -608,6 +648,9 @@ public class FilterInfoFactory {
             }
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.SMALL: {
                 NumberSelectedFilterValueBean numberBean = ((NumberSmallFilterBean) bean).getFilterValue();
+                if (numberBean.getValue() == null) {
+                    break;
+                }
                 SwiftNumberInRangeFilterValue value = new SwiftNumberInRangeFilterValue();
                 value.setMax(getDimensionAVGValue(numberBean));
                 return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(null, value,
@@ -615,6 +658,9 @@ public class FilterInfoFactory {
             }
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.LARGE_OR_EQUAL: {
                 NumberSelectedFilterValueBean numberBean = ((NumberLargeOrEqualFilterBean) bean).getFilterValue();
+                if (numberBean.getValue() == null) {
+                    break;
+                }
                 SwiftNumberInRangeFilterValue value = new SwiftNumberInRangeFilterValue();
                 value.setMin(getDimensionAVGValue(numberBean));
                 value.setMinIncluded(true);
@@ -623,6 +669,9 @@ public class FilterInfoFactory {
             }
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.SMALL_OR_EQUAL: {
                 NumberSelectedFilterValueBean numberBean = ((NumberSmallOrEqualFilterBean) bean).getFilterValue();
+                if (numberBean.getValue() == null) {
+                    break;
+                }
                 SwiftNumberInRangeFilterValue value = new SwiftNumberInRangeFilterValue();
                 value.setMax(getDimensionAVGValue(numberBean));
                 value.setMaxIncluded(true);
