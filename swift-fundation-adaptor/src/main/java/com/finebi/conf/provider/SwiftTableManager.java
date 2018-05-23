@@ -67,7 +67,7 @@ public class SwiftTableManager extends AbstractEngineTableManager {
     public List<FineBusinessTable> getAllTable() {
         List<FineBusinessTable> fineBusinessTables = new ArrayList<FineBusinessTable>();
         Map<String, EntryInfo> all = directSessionManager.getAllEntryInfo(getEngineType());
-        all.putAll(DashboardConfManager.getManager().getEntryInfoSession().getAll());
+//        all.putAll(DashboardConfManager.getManager().getEntryInfoSession().getAll());
         for (Map.Entry<String, EntryInfo> entry : all.entrySet()) {
             EntryInfo entryInfo = entry.getValue();
             CommonDataSourceDriver driver = CommonDataSourceDriverFactory.getInstance(getEngineType()).getDriver(entryInfo);
