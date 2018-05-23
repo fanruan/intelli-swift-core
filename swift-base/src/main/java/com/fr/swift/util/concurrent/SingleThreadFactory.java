@@ -10,4 +10,8 @@ public class SingleThreadFactory extends BaseThreadFactory {
     public SingleThreadFactory(String namePrefix) {
         super(namePrefix);
     }
+
+    public SingleThreadFactory(Class<?> c) {
+        super(c);
+    }
 }
