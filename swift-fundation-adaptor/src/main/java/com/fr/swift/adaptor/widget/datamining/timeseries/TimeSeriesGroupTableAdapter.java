@@ -34,7 +34,6 @@ import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.node.GroupNodeAggregateUtils;
 import com.fr.swift.result.node.NodeType;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.structure.Pair;
 
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
@@ -92,11 +91,7 @@ public class TimeSeriesGroupTableAdapter extends SwiftAlgorithmResultAdapter<Hol
 
             // 把指标长度设置成两倍
             List<FineTarget> fineTargets = new ArrayList<FineTarget>();
-            List<Aggregator> aggregators = new ArrayList<Aggregator>();
-            List<Pair<Aggregator, Integer>> resultAggregators = targetInfo.getResultAggregators();
-            for (Pair<Aggregator, Integer> pair : resultAggregators) {
-                aggregators.add(pair.getKey());
-            }
+            List<Aggregator> aggregators = targetInfo.getResultAggregators();
             for (int i = 0; i < targetList.size(); i++) {
                 FineTarget fineTarget = targetList.get(i);
                 fineTargets.add(fineTarget);
@@ -112,11 +107,6 @@ public class TimeSeriesGroupTableAdapter extends SwiftAlgorithmResultAdapter<Hol
                 }
             }
             widget.setTargets(fineTargets);
-
-            resultAggregators.clear();
-            for (int i = 0; i < aggregators.size(); i++) {
-                resultAggregators.add(Pair.of(aggregators.get(i), i));
-            }
 
 
 
@@ -221,7 +211,7 @@ public class TimeSeriesGroupTableAdapter extends SwiftAlgorithmResultAdapter<Hol
             // resultRootNode.setAggregatorValue(NumberArrToAggregatorValueArr(sums));
             // 使用结果汇总聚合器汇总，相对于明细的汇总方式，可能一样也可能不一样。这边可以通过细分做进一步优化。
             GroupNodeAggregateUtils.aggregate(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
-                    resultRootNode, resultAggregators);
+                    resultRootNode, aggregators);
 
             if (!isDesc) {
                 Collections.reverse(resultRootNode.getChildren());
@@ -315,10 +305,7 @@ public class TimeSeriesGroupTableAdapter extends SwiftAlgorithmResultAdapter<Hol
 
     private AggregatorValue[] NumberArrToAggregatorValueArr(Number[] numbers) {
         AggregatorValue[] arr = new AggregatorValue[numbers.length];
-        List<Aggregator> aggregators = new ArrayList<Aggregator>();
-        for (Pair<Aggregator, Integer> pair : info.getTargetInfo().getResultAggregators()) {
-            aggregators.add(pair.getKey());
-        }
+        List<Aggregator> aggregators = info.getTargetInfo().getResultAggregators();
         for (int i = 0; i < numbers.length; i++) {
             Number num = numbers[i];
             if (num == null) {

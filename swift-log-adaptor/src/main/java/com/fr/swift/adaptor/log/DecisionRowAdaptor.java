@@ -22,15 +22,15 @@ import java.util.TreeMap;
  * <p>
  * swift row -> fr log
  */
-public class DecisionRowAdaptor implements Function<Row, Object> {
-    private Class<?> entity;
+public class DecisionRowAdaptor<T> implements Function<Row, T> {
+    private Class<T> entity;
 
     /**
      * columnIndex -> (field, converter)
      */
     private Map<Integer, Pair<Field, UnaryOperator<Object>>> converters = new TreeMap<Integer, Pair<Field, UnaryOperator<Object>>>();
 
-    DecisionRowAdaptor(Class<?> entity, SwiftMetaData meta) throws Exception {
+    DecisionRowAdaptor(Class<T> entity, SwiftMetaData meta) throws Exception {
         this.entity = entity;
         init(meta);
     }
@@ -54,9 +54,9 @@ public class DecisionRowAdaptor implements Function<Row, Object> {
     }
 
     @Override
-    public Object apply(Row row) {
+    public T apply(Row row) {
         try {
-            Object data = entity.newInstance();
+            T data = entity.newInstance();
             for (Entry<Integer, Pair<Field, UnaryOperator<Object>>> entry : converters.entrySet()) {
                 Pair<Field, UnaryOperator<Object>> pair = entry.getValue();
                 pair.getKey().set(data, pair.getValue().apply(row.getValue(entry.getKey())));

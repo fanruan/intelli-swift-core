@@ -44,14 +44,14 @@ public class SwiftLogOperator implements LogOperator {
         DataList<T> dataList = new DataList<T>();
         try {
             Table table = db.getTable(new SourceKey(SwiftMetaAdaptor.getTableName(entity)));
+            DecisionRowAdaptor<T> adaptor = new DecisionRowAdaptor<T>(entity, table.getMeta());
             QueryInfo queryInfo = QueryConditionAdaptor.adaptCondition(queryCondition, table);
             SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
 
             List<T> tList = new ArrayList<T>();
             while (resultSet.next()) {
                 Row row = resultSet.getRowData();
-                DecisionRowAdaptor adaptor = new DecisionRowAdaptor(entity, table.getMeta());
-                T t = (T) adaptor.apply(row);
+                T t = adaptor.apply(row);
                 tList.add(t);
             }
             dataList.list(tList);
