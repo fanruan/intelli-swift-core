@@ -73,7 +73,7 @@ class DashboardConfListener {
                         removeEntryInfo(entryInfo);
                     }
                 }
-            } else if (null != service.getGlobalUpdateSettings()) {
+            } else {
                 List<PackageInfo> packageInfos = CommonConfigManager.getPackageSession(FineEngineType.Cube).getAllPackages();
                 for (PackageInfo info : packageInfos) {
                     if (null != info) {
