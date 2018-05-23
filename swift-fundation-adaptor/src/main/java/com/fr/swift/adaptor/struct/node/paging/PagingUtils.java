@@ -35,7 +35,8 @@ public class PagingUtils {
     }
 
     public static boolean isRefresh(int pageOperation) {
-        return pageOperation == BIDesignConstants.DESIGN.TABLE_PAGE_OPERATOR.REFRESH;
+        return pageOperation == BIDesignConstants.DESIGN.TABLE_PAGE_OPERATOR.REFRESH
+                || pageOperation == BIDesignConstants.DESIGN.TABLE_PAGE_OPERATOR.ALL_PAGE;
     }
 
     private static boolean isFirstPage(int pageOperation) {

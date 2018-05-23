@@ -7,7 +7,6 @@ import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBe
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.WidgetDimensionBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.date.DateWidgetDimensionBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.TypeGroupBean;
-import com.finebi.conf.internalimp.bean.dashboard.widget.expander.ExpanderBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
 import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.visitor.WidgetBeanToFineWidgetVisitor;
@@ -125,9 +124,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         List<Dimension> dimensions = getDimensions(sourceKey, widget.getDimensionList(),
                 getTargetIndexPair(widget.getTargetList(), targetInfo.getTargetsForShowList()));
         FilterInfo filterInfo = getFilterInfo(widget, dimensions);
-        List<ExpanderBean> rowExpand = widget.getValue().getRowExpand();
-        Expander expander = ExpanderFactory.create(widget.isOpenRowNode(), widget.getDimensionList(),
-                rowExpand == null ? new ArrayList<ExpanderBean>() : rowExpand, widget.getHeaderExpand());
+        Expander expander = ExpanderFactory.createRowExpander(widget.getValue(), widget.getDimensionList());
         DimensionInfo dimensionInfo = new DimensionInfoImpl(cursor, filterInfo, expander, dimensions.toArray(new Dimension[0]));
         return new GroupQueryInfo(queryId, sourceKey, dimensionInfo, targetInfo);
     }

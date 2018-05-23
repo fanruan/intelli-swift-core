@@ -1,6 +1,8 @@
 package com.fr.swift.adaptor.widget.expander;
 
+import com.finebi.conf.constant.BIDesignConstants;
 import com.finebi.conf.internalimp.bean.dashboard.widget.expander.ExpanderBean;
+import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.fr.swift.query.adapter.dimension.Expander;
 import com.fr.swift.query.adapter.dimension.ExpanderImpl;
@@ -23,10 +25,29 @@ import java.util.Set;
  */
 public class ExpanderFactory {
 
-    public static Expander create(boolean isOpenNode, List<FineDimension> dimensions,
+    public static Expander createRowExpander(TableWidgetBean bean, List<FineDimension> rowDimensions) {
+        // TODO: 2018/5/23 交叉表的行表头是bean.getvPage还是bean.getPage?
+        return create(isOperationNode(bean.getPage(), bean.isOpenRowNode()), rowDimensions, bean.getRowExpand(),
+                bean.getHeaderExpand());
+    }
+
+    public static Expander createColExpander(TableWidgetBean bean, List<FineDimension> colDimensions) {
+        return create(isOperationNode(bean.gethPage(), bean.isOpenColNode()), colDimensions, bean.getColExpand(),
+                bean.getCrossHeaderExpand());
+    }
+
+    private static boolean isOperationNode(int pageOperator, boolean isOpenNode) {
+        if (pageOperator == BIDesignConstants.DESIGN.TABLE_PAGE_OPERATOR.ALL_PAGE) {
+            isOpenNode = true;
+        }
+        return isOpenNode;
+    }
+
+    private static Expander create(boolean isOpenNode, List<FineDimension> dimensions,
                                   List<ExpanderBean> beanList, Map<String, Boolean> headerExpander) {
         ExpanderType type = isOpenNode ? ExpanderType.ALL_EXPANDER : ExpanderType.LAZY_EXPANDER;
         type = headerExpander == null || headerExpander.isEmpty() ? type : ExpanderType.N_LEVEL_EXPANDER;
+        beanList = beanList == null ? new ArrayList<ExpanderBean>(0) : beanList;
         Iterator<List<BeanTree>> iterator = new Tree2RowIterator<BeanTree>(dimensions.size(), new MapperIterator<ExpanderBean, BeanTree>(beanList.iterator(), new Function<ExpanderBean, BeanTree>() {
             @Override
             public BeanTree apply(ExpanderBean p) {
