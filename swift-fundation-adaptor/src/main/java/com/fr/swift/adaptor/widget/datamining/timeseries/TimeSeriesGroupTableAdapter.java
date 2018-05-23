@@ -93,7 +93,8 @@ public class TimeSeriesGroupTableAdapter extends SwiftAlgorithmResultAdapter<Hol
             // 把指标长度设置成两倍
             List<FineTarget> fineTargets = new ArrayList<FineTarget>();
             List<Aggregator> aggregators = new ArrayList<Aggregator>();
-            for (Pair<Aggregator, Integer> pair : targetInfo.getResultAggregators()) {
+            List<Pair<Aggregator, Integer>> resultAggregators = targetInfo.getResultAggregators();
+            for (Pair<Aggregator, Integer> pair : resultAggregators) {
                 aggregators.add(pair.getKey());
             }
             for (int i = 0; i < targetList.size(); i++) {
@@ -112,6 +113,12 @@ public class TimeSeriesGroupTableAdapter extends SwiftAlgorithmResultAdapter<Hol
             }
             widget.setTargets(fineTargets);
 
+            resultAggregators.clear();
+            for (int i = 0; i < aggregators.size(); i++) {
+                resultAggregators.add(Pair.of(aggregators.get(i), i));
+            }
+
+
 
             boolean isDesc = dateDimension.getSort() == null || dateDimension.getSort().getType() == 0;
             int periodicity;
@@ -120,10 +127,10 @@ public class TimeSeriesGroupTableAdapter extends SwiftAlgorithmResultAdapter<Hol
             double[] missValue = null;
             SimpleDateFormat format = new SimpleDateFormat("yyyy");
             List<TimeSeriesPredictItem> predictItems;
-            GroupNode resultRootNode = new GroupNode();
+            GroupNode resultRootNode = new GroupNode(-1,rootNode.getData());
             List<TimeSeriesActualItem> actualItems = new ArrayList<TimeSeriesActualItem>();
 
-            resultRootNode.setData(rootNode.getData());
+            // resultRootNode.setData();
 
 
             // Node转换成预测类型
@@ -191,8 +198,7 @@ public class TimeSeriesGroupTableAdapter extends SwiftAlgorithmResultAdapter<Hol
                     String yyyy = format.format(new Date(item.getTimestamp()));
                     item.setTimestamp(Long.parseLong(yyyy));
                 }
-                GroupNode newNode = new GroupNode();
-                newNode.setData(item.getTimestamp());
+                GroupNode newNode = new GroupNode(0, item.getTimestamp());
                 newNode.setAggregatorValue(doubleArrToNumberArr(item.getActual(), false));
                 resultRootNode.addChild(newNode);
             }
@@ -215,7 +221,7 @@ public class TimeSeriesGroupTableAdapter extends SwiftAlgorithmResultAdapter<Hol
             // resultRootNode.setAggregatorValue(NumberArrToAggregatorValueArr(sums));
             // 使用结果汇总聚合器汇总，相对于明细的汇总方式，可能一样也可能不一样。这边可以通过细分做进一步优化。
             GroupNodeAggregateUtils.aggregate(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
-                    resultRootNode, targetInfo.getResultAggregators());
+                    resultRootNode, resultAggregators);
 
             if (!isDesc) {
                 Collections.reverse(resultRootNode.getChildren());
@@ -258,7 +264,7 @@ public class TimeSeriesGroupTableAdapter extends SwiftAlgorithmResultAdapter<Hol
 
     private SwiftResultSet generatorErrorResult(GroupNode rootNode, String err) {
 
-        GroupNode resultRootNode = new GroupNode();
+        GroupNode resultRootNode = new GroupNode(-1, null);
         GroupNode node = getNewSummaryValueNode(resultRootNode, rootNode);
 
         // 求汇总值
@@ -273,6 +279,7 @@ public class TimeSeriesGroupTableAdapter extends SwiftAlgorithmResultAdapter<Hol
     private GroupNode getNewSummaryValueNode(GroupNode fineNode, GroupNode biNode) {
         // 设置本身
         fineNode.setData(biNode.getData());
+        fineNode.setDepth(biNode.getDepth());
         fineNode.setAggregatorValue(generatorErrorSummaryValue(biNode.getAggregatorValue()));
 
         // 迭代孩子

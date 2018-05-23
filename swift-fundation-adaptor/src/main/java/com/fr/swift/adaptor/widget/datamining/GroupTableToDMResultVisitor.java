@@ -22,7 +22,7 @@ public class GroupTableToDMResultVisitor implements DMBeanVisitor<SwiftResultSet
     private GroupQueryInfo info;
     private DMErrorWrap errorWrap;
 
-    public GroupTableToDMResultVisitor(NodeResultSet result, TableWidget widget, GroupQueryInfo info, DMErrorWrap dmErrorWrap) {
+    public GroupTableToDMResultVisitor(NodeResultSet result, TableWidget widget, GroupQueryInfo info, DMErrorWrap errorWrap) {
         this.result = result;
         this.widget = widget;
         this.info = info;

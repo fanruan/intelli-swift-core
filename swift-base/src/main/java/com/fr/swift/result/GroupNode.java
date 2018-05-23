@@ -55,6 +55,10 @@ public class GroupNode<T extends GroupNode> extends AbstractSwiftNode<T> impleme
         return deep;
     }
 
+    public void setDepth(int deep) {
+        this.deep = deep;
+    }
+
     @Override
     public void clearChildren() {
         childMap = new ChildMap<T>();

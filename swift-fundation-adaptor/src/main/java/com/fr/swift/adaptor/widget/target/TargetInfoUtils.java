@@ -68,14 +68,17 @@ public class TargetInfoUtils {
                     AggregatorType nodeAggType = AggregatorAdaptor.adaptorMetric(target.getMetric());
                     Metric metric = parseMetric(target, widget).get(0);
                     Aggregator detailAgg = metrics.get(metrics.indexOf(metric)).getAggregator();
+                    GroupTarget calInfo = parseTargetCalInfo(0, target, widget, metrics);
                     Aggregator resultAgg;
-                    if (nodeAggType == AggregatorType.DUMMY) {
+                    //计算指标不聚合
+                    if (calInfo != null) {
+                        resultAgg = new WrappedAggregator(AggregatorFactory.createAggregator(AggregatorType.DUMMY));
+                    } else if (nodeAggType == AggregatorType.DUMMY) {
                         // 和明细的聚合器相同
                         resultAgg = new WrappedAggregator(detailAgg);
                     } else {
                         resultAgg = new WrappedAggregator(detailAgg, AggregatorFactory.createAggregator(nodeAggType));
                     }
-                    GroupTarget calInfo = parseTargetCalInfo(0, target, widget, metrics);
                     int resultFetchIndex;
                     if (calInfo != null) {
                         // 显示快速计算指标
@@ -140,10 +143,13 @@ public class TargetInfoUtils {
                 String formula = AbstractWidgetAdaptor.getFormula(fieldId, widget);
                 FilterInfo filterInfo = getFilterInfo(target, widget);
                 SourceKey key = new SourceKey(BusinessTableUtils.getSourceIdByTableId(widget.getTableName()));
-                if (AggFormulaUtils.isAggFormula(formula)){
+                if (AggFormulaUtils.isAggFormula(formula)) {
                     List<AggUnit> aggUnits = AggFormulaUtils.getBaseParas(formula);
                     int[] paraIndex = new int[aggUnits.size()];
-                    for (int i = 0; i < aggUnits.size(); i++){
+                    if (aggUnits.size() == 1 && isGroupMetricFormula(aggUnits.get(0).getFormula())) {
+                        return null;
+                    }
+                    for (int i = 0; i < aggUnits.size(); i++) {
                         AggUnit unit = aggUnits.get(i);
                         Aggregator aggregator = AggregatorFactory.createAggregator(unit.getAggregatorType());
                         Metric metric = getFormulaMetric(key, filterInfo, aggregator, unit.getFormula());
@@ -195,9 +201,9 @@ public class TargetInfoUtils {
                 String formula = AbstractWidgetAdaptor.getFormula(fieldId, widget);
                 FilterInfo filterInfo = getFilterInfo(target, widget);
                 SourceKey key = new SourceKey(BusinessTableUtils.getSourceIdByTableId(widget.getTableName()));
-                if (AggFormulaUtils.isAggFormula(formula)){
+                if (AggFormulaUtils.isAggFormula(formula)) {
                     List<AggUnit> aggUnits = AggFormulaUtils.getBaseParas(formula);
-                    for (AggUnit unit : aggUnits){
+                    for (AggUnit unit : aggUnits) {
                         Aggregator aggregator = AggregatorFactory.createAggregator(unit.getAggregatorType());
                         metrics.add(getFormulaMetric(key, filterInfo, aggregator, unit.getFormula()));
                     }
@@ -213,8 +219,8 @@ public class TargetInfoUtils {
         return Crasher.crash("invalid dimension type of target!");
     }
 
-    private static Metric getFormulaMetric(SourceKey key, FilterInfo filterInfo, Aggregator aggregator, String formula){
-        if (isGroupMetricFormula(formula)){
+    private static Metric getFormulaMetric(SourceKey key, FilterInfo filterInfo, Aggregator aggregator, String formula) {
+        if (isGroupMetricFormula(formula)) {
             String fieldName = FormulaUtils.getRelatedParaNames(formula)[0];
             return new GroupMetric(0, key, new ColumnKey(fieldName), filterInfo, aggregator);
         }
@@ -232,10 +238,10 @@ public class TargetInfoUtils {
 
     private static boolean isGroupMetricFormula(String formula) {
         String[] paras = FormulaUtils.getRelatedParaNames(formula);
-        if (paras.length != 1){
+        if (paras.length != 1) {
             return false;
         }
-        return formula.replace(paras[0],"").trim().length() == 3;
+        return formula.replace(paras[0], "").trim().length() == 3;
     }
 
     private static String getFieldId(FineTarget target) {

@@ -134,10 +134,8 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor {
                 TableWidgetAdaptor.getTargetIndexPair(widget.getTargetList(), targetInfo.getTargetsForShowList()));
         List<Dimension> colDimensions = TableWidgetAdaptor.getDimensions(sourceKey, widget.getColDimensionList(),
                 TableWidgetAdaptor.getTargetIndexPair(widget.getTargetList(), targetInfo.getTargetsForShowList()));
-        Expander rowExpander = ExpanderFactory.create(widget.getValue().isOpenRowNode(), widget.getDimensionList(),
-                widget.getValue().getRowExpand(), widget.getValue().getHeaderExpand());
-        Expander colExpander = ExpanderFactory.create(widget.getValue().isOpenColNode(), widget.getColDimensionList(),
-                widget.getValue().getColExpand(), widget.getValue().getCrossHeaderExpand());
+        Expander rowExpander = ExpanderFactory.createRowExpander(widget.getValue(), widget.getDimensionList());
+        Expander colExpander = ExpanderFactory.createColExpander(widget.getValue(), widget.getColDimensionList());
         FilterInfo rowFilterInfo = TableWidgetAdaptor.getFilterInfo(widget, rowDimensions);
         FilterInfo colFilterInfo = TableWidgetAdaptor.getFilterInfo(widget, colDimensions);
         DimensionInfo rowDimensionInfo = new DimensionInfoImpl(new AllCursor(), rowFilterInfo, rowExpander, rowDimensions.toArray(new Dimension[rowDimensions.size()]));

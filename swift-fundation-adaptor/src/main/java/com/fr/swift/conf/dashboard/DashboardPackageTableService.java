@@ -2,7 +2,6 @@ package com.fr.swift.conf.dashboard;
 
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.common.internalimp.config.driver.CommonDataSourceDriverFactory;
-import com.finebi.common.internalimp.config.session.CommonConfigManager;
 import com.finebi.common.structure.config.driver.CommonDataSourceDriver;
 import com.finebi.common.structure.config.entryinfo.EntryInfo;
 import com.finebi.common.structure.config.pack.PackageInfo;
@@ -194,10 +193,9 @@ public class DashboardPackageTableService {
     }
 
     protected void deleteTableInPackage(List<String> entryInfoIds) {
+        entryInfoIds = Collections.synchronizedList(entryInfoIds);
         for (String entryInfoId : entryInfoIds) {
-            synchronized (this) {
-                deleteTableInfo(entryInfoId);
-            }
+            deleteTableInfo(entryInfoId);
         }
     }
 
