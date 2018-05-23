@@ -18,6 +18,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.relation.CubeMultiRelationPath;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.operator.column.SwiftTablePathIndexer;
 import com.fr.swift.segment.relation.RelationIndex;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.array.LongArray;
@@ -31,7 +32,7 @@ import java.util.List;
  * @author yee
  * @date 2018/1/17
  */
-public abstract class BaseTablePathIndexer extends BaseWorker {
+public abstract class BaseTablePathIndexer extends BaseWorker implements SwiftTablePathIndexer {
     protected static final SwiftLogger LOGGER = SwiftLoggers.getLogger(BaseTablePathIndexer.class);
 
     CubeMultiRelationPath relationPath;
@@ -45,7 +46,7 @@ public abstract class BaseTablePathIndexer extends BaseWorker {
     @Override
     public void work() {
         try {
-            build();
+            buildTablePath();
             workOver(new TaskResultImpl(Type.SUCCEEDED));
         } catch (Exception e) {
             LOGGER.error("Build index error with exception!", e);
@@ -53,7 +54,8 @@ public abstract class BaseTablePathIndexer extends BaseWorker {
         }
     }
 
-    private void build() {
+    @Override
+    public void buildTablePath() {
         if (relationPath.size() > 1) {
             LOGGER.info("Start build TablePathIndex: " + relationPath.getKey());
             List<Segment> primary = getPrimaryTableSegments();

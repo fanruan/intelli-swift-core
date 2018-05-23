@@ -7,7 +7,6 @@ import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBe
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.WidgetDimensionBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.date.DateWidgetDimensionBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.TypeGroupBean;
-import com.finebi.conf.internalimp.bean.dashboard.widget.expander.ExpanderBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.field.WidgetBeanField;
 import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.visitor.WidgetBeanToFineWidgetVisitor;
@@ -72,7 +71,6 @@ import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
 
-import java.io.PipedReader;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -126,9 +124,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         List<Dimension> dimensions = getDimensions(sourceKey, widget.getDimensionList(),
                 getTargetIndexPair(widget.getTargetList(), targetInfo.getTargetsForShowList()));
         FilterInfo filterInfo = getFilterInfo(widget, dimensions);
-        List<ExpanderBean> rowExpand = widget.getValue().getRowExpand();
-        Expander expander = ExpanderFactory.create(widget.isOpenRowNode(), widget.getDimensionList(),
-                rowExpand == null ? new ArrayList<ExpanderBean>() : rowExpand, widget.getHeaderExpand());
+        Expander expander = ExpanderFactory.createRowExpander(widget.getValue(), widget.getDimensionList());
         DimensionInfo dimensionInfo = new DimensionInfoImpl(cursor, filterInfo, expander, dimensions.toArray(new Dimension[0]));
         return new GroupQueryInfo(queryId, sourceKey, dimensionInfo, targetInfo);
     }
@@ -244,7 +240,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         FilterInfo filterInfo = new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND);
         GroupQueryInfo queryInfo = new GroupQueryInfo(fromWidget.getwId(), fromColumns[0].getSourceKey(),
                 new DimensionInfoImpl(new AllCursor(), filterInfo, null, fromColumns),
-                new TargetInfoImpl(0, new ArrayList<Metric>(0), new ArrayList<GroupTarget>(0), new ArrayList<ResultTarget>(0), new ArrayList<Aggregator>(0)));
+                new TargetInfoImpl(0, new ArrayList<Metric>(0), new ArrayList<GroupTarget>(0), new ArrayList<ResultTarget>(0), new ArrayList<Pair<Aggregator, Integer>>(0)));
         SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
         Set[] results = new HashSet[toColumns.length];
         for (int i = 0; i < results.length; i++) {

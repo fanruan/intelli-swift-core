@@ -1,5 +1,6 @@
 package com.fr.swift.source.manager;
 
+import com.fr.swift.cube.task.TaskResult;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.provider.IndexStuffMedium;
 import com.fr.swift.reliance.RelationPathReliance;
@@ -46,4 +47,12 @@ public interface IndexStuffProvider {
     RelationPathReliance getRelationPathReliance();
 
     IndexStuffMedium getIndexStuffMedium();
+
+    List<TaskResultListener> taskResultListeners();
+
+    void addResultListener(TaskResultListener taskResultListener);
+
+    interface TaskResultListener {
+        void call(TaskResult result);
+    }
 }

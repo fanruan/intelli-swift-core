@@ -4,8 +4,8 @@ import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.operator.Deleter;
 import com.fr.swift.segment.operator.Inserter;
-import com.fr.swift.segment.operator.SwiftColumnDictMerger;
-import com.fr.swift.segment.operator.SwiftColumnIndexer;
+import com.fr.swift.segment.operator.column.SwiftColumnDictMerger;
+import com.fr.swift.segment.operator.column.SwiftColumnIndexer;
 import com.fr.swift.source.DataSource;
 
 import java.util.List;

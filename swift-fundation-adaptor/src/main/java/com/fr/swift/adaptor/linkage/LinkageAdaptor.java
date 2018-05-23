@@ -97,7 +97,8 @@ public class LinkageAdaptor {
         if (!(widgetBean instanceof TableWidgetBean)) {
             Crasher.crash("WidgetBean must instance of " + TableWidgetBean.class.getName() + " but got " + widgetBean.getClass().getName());
         }
-        TableWidget fromWidget = VISITOR.visit((TableWidgetBean) widgetBean);
+
+        TableWidget fromWidget = (TableWidget) widgetBean.accept(VISITOR);
         String fromTableName = fromWidget.getTableName();
 
         if (ComparatorUtils.equals(fromTableName, tableName)) {

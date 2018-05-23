@@ -5,37 +5,21 @@ import com.finebi.conf.internalimp.analysis.bean.operator.datamining.timeseries.
 import com.finebi.conf.internalimp.dashboard.widget.table.CrossTableWidget;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.utils.transform.FineDataTransformUtils;
-import com.fr.engine.compare.CompareUtil;
 import com.fr.swift.adaptor.widget.datamining.DMSwiftWidgetUtils;
 import com.fr.swift.adaptor.widget.datamining.SwiftAlgorithmResultAdapter;
 import com.fr.swift.cal.info.XGroupQueryInfo;
-import com.fr.swift.cal.targetcal.group.XGroupTargetCalQuery;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.adapter.target.TargetInfo;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
-import com.fr.swift.query.group.Group;
-import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeResultSet;
-import com.fr.swift.result.SwiftNode;
-import com.fr.swift.result.TopGroupNode;
 import com.fr.swift.result.XLeftNode;
 import com.fr.swift.result.XNodeMergeResultSet;
-import com.fr.swift.result.XNodeMergeResultSetImpl;
-import com.fr.swift.result.node.GroupNodeAggregateUtils;
-import com.fr.swift.result.node.NodeType;
-import com.fr.swift.result.node.iterator.LeafNodeIterator;
-import com.fr.swift.result.node.iterator.NLevelGroupNodeIterator;
 import com.fr.swift.result.node.iterator.PostOrderNodeIterator;
-import com.fr.swift.result.node.xnode.XNodeUtils;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.structure.Pair;
 import edu.emory.mathcs.backport.java.util.Arrays;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -80,7 +64,10 @@ public class TimeSeriesCrossTableAdapter implements SwiftAlgorithmResultAdapter<
 
         // 把指标长度设置成两倍
         List<FineTarget> fineTargets = new ArrayList<FineTarget>();
-        List<Aggregator> aggregators = targetInfo.getResultAggregators();
+        List<Aggregator> aggregators = new ArrayList<Aggregator>();
+        for (Pair<Aggregator, Integer> pair : targetInfo.getResultAggregators()) {
+            aggregators.add(pair.getKey());
+        }
         for (int i = 0; i < targetList.size(); i++) {
             FineTarget fineTarget = targetList.get(i);
             fineTargets.add(fineTarget);

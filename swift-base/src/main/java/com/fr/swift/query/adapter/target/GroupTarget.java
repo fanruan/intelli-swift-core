@@ -6,4 +6,11 @@ package com.fr.swift.query.adapter.target;
  * 分组表的指标
  */
 public interface GroupTarget extends Target {
+
+    /**
+     * 过滤之后要再次计算的计算指标
+     *
+     * @return
+     */
+    boolean isRepeatCal();
 }

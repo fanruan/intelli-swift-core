@@ -1,6 +1,7 @@
 package com.fr.swift.adaptor.space;
 
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.conf.exception.FineTableAbsentException;
 import com.finebi.conf.internalimp.space.SpaceInfo;
 import com.finebi.conf.provider.SwiftAnalysisConfManager;
 import com.finebi.conf.service.engine.space.EngineSpaceManager;
@@ -33,8 +34,13 @@ public class SwiftSpaceManager implements EngineSpaceManager {
 
     @Override
     public SpaceInfo getTableSpaceInfo(String table) throws Exception {
-        FineBusinessTable fineTable = analysisConfManager.getBusinessTable(table);
-        long used = spaceUsageService.getTableUsedSpace(new SourceKey(fineTable.getName()));
+        long used;
+        try {
+            FineBusinessTable fineTable = analysisConfManager.getBusinessTable(table);
+            used = spaceUsageService.getTableUsedSpace(DataSourceFactory.getDataSourceInCache(fineTable).getSourceKey());
+        } catch (FineTableAbsentException e) {
+            used = 0;
+        }
         return newSpaceInfo(used);
     }
 

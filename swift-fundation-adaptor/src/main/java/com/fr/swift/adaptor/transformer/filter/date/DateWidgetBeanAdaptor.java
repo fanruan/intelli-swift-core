@@ -19,7 +19,7 @@ public class DateWidgetBeanAdaptor {
     private static final int END_BEAN_OF_INTERVAL = 2;
 
     public static SwiftDateInRangeFilterValue create(DateWidgetBean bean) {
-        if (bean == null){
+        if (bean == null) {
             return new SwiftDateInRangeFilterValue();
         }
         DateWidgetBeanValue value = bean.getWidget();
@@ -63,7 +63,7 @@ public class DateWidgetBeanAdaptor {
     }
 
     public static SwiftDateInRangeFilterValue createDateLessThanFilterInfo(DateWidgetBean bean) {
-        if (bean == null){
+        if (bean == null) {
             return new SwiftDateInRangeFilterValue();
         }
         // 在某一时刻之前。-1ms，因为DateInRangeFilter的范围是左右包含的(startTimeIncluded, endTimeIncluded)

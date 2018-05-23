@@ -24,7 +24,7 @@ public class SwiftDatabase implements Database {
     @Override
     public synchronized Table createTable(SourceKey tableKey, SwiftMetaData meta) throws SQLException {
         if (existsTable(tableKey)) {
-            throw new SQLException("table already existed");
+            throw new SQLException("table " + tableKey + " already existed");
         }
 
         Table table = new SwiftTable(tableKey, meta);
@@ -35,7 +35,7 @@ public class SwiftDatabase implements Database {
     @Override
     public synchronized Table getTable(SourceKey tableKey) throws SQLException {
         if (!existsTable(tableKey)) {
-            throw new SQLException("table not exists");
+            throw new SQLException("table " + tableKey + " not exists");
         }
         SwiftMetaData meta = MetaDataConvertUtil.getSwiftMetaDataBySourceKey(tableKey.getId());
         return new SwiftTable(tableKey, meta);
@@ -60,7 +60,7 @@ public class SwiftDatabase implements Database {
     @Override
     public synchronized void alterTable(SourceKey tableKey, SwiftMetaData meta) throws SQLException {
         if (!existsTable(tableKey)) {
-            throw new SQLException("table not exists");
+            throw new SQLException("table " + tableKey + " not exists");
         }
         confSvc.updateMetaData(tableKey.getId(), MetaDataConvertUtil.convert2ConfigMetaData(meta));
     }
@@ -68,7 +68,7 @@ public class SwiftDatabase implements Database {
     @Override
     public synchronized void dropTable(SourceKey tableKey) throws SQLException {
         if (!existsTable(tableKey)) {
-            throw new SQLException("table not exists");
+            throw new SQLException("table " + tableKey + " not exists");
         }
         confSvc.removeMetaDatas(tableKey.getId());
     }

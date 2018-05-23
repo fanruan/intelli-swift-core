@@ -130,4 +130,14 @@ public class TotalIndexStuffTestProvider implements IndexStuffProvider {
     public IndexStuffMedium getIndexStuffMedium() {
         return null;
     }
+
+    @Override
+    public List<TaskResultListener> taskResultListeners() {
+        return null;
+    }
+
+    @Override
+    public void addResultListener(TaskResultListener taskResultListener) {
+
+    }
 }

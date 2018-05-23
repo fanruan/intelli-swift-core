@@ -13,6 +13,7 @@ import com.finebi.conf.structure.path.FineBusinessTableRelationPath;
 import com.finebi.conf.structure.relation.FineBusinessTableRelation;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.transformer.RelationSourceFactory;
+import com.fr.swift.conf.dashboard.DashboardRelationPathService;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.RelationSource;
 import com.fr.swift.util.Crasher;
@@ -28,7 +29,7 @@ import java.util.Set;
  * @date 2018/4/11
  */
 class RelationAdaptor {
-    static String getBaseTable(SwiftRelationPathConfProvider relationProvider, List<SelectFieldBeanItem> selectFieldBeanItemList) throws Exception {
+    static String getBaseTable(DashboardRelationPathService relationProvider, List<SelectFieldBeanItem> selectFieldBeanItemList) throws Exception {
         Set<String> tables = new HashSet<String>();
         for (SelectFieldBeanItem selectFieldBeanItem : selectFieldBeanItemList) {
             tables.add(selectFieldBeanItem.getTableName());
@@ -42,7 +43,7 @@ class RelationAdaptor {
                 return path.get(path.size() - 1).getTable();
             }
         }
-        List<FineBusinessTableRelationPath> allPaths = relationProvider.getAllRelationPaths();
+        List<FineBusinessTableRelationPath> allPaths = relationProvider.getAllAnalysisRelationPaths();
         for (FineBusinessTableRelationPath path : allPaths) {
             if (tables.size() == 1) {
                 break;
@@ -74,7 +75,7 @@ class RelationAdaptor {
         return tables.iterator().next();
     }
 
-    static RelationSource getRelation(List<SelectFieldPathItem> path, String baseTable, String table, SwiftRelationPathConfProvider relationProvider) {
+    static RelationSource getRelation(List<SelectFieldPathItem> path, String baseTable, String table, DashboardRelationPathService relationProvider) {
         if (path != null && !path.isEmpty()) {
             List<FineBusinessTableRelation> targetRelations = new ArrayList<FineBusinessTableRelation>();
             try {
@@ -86,7 +87,7 @@ class RelationAdaptor {
                 SwiftLoggers.getLogger().error(e.getMessage(), e);
             }
         }
-        List<FineBusinessTableRelationPath> relation = relationProvider.getRelationPaths(table, baseTable);
+        List<FineBusinessTableRelationPath> relation = relationProvider.getRelationPathsByTables(table, baseTable);
         if (relation == null || relation.isEmpty()) {
             return Crasher.crash("invalid relation tables");
         }
@@ -94,7 +95,7 @@ class RelationAdaptor {
         return RelationSourceFactory.transformRelationSourcesFromPath(p);
     }
 
-    private static void handleSelectFieldPath(SwiftRelationPathConfProvider relationProvider, SelectFieldPathItem item, List<FineBusinessTableRelation> targetRelations) throws FineEngineException {
+    private static void handleSelectFieldPath(DashboardRelationPathService relationProvider, SelectFieldPathItem item, List<FineBusinessTableRelation> targetRelations) throws FineEngineException {
         RelationshipBean bean = item.getRelationship();
         List<String> from = bean.getFrom();
         List<String> to = bean.getTo();
@@ -103,7 +104,7 @@ class RelationAdaptor {
         }
         FineBusinessTable fromTable = BusinessTableUtils.getTableByFieldId(from.get(0));
         FineBusinessTable toTable = BusinessTableUtils.getTableByFieldId((to.get(0)));
-        List<FineBusinessTableRelation> relations = relationProvider.getRelationsByTables(fromTable.getName(), toTable.getName());
+        List<FineBusinessTableRelation> relations = relationProvider.getAnalysisRelationsByTables(fromTable.getName(), toTable.getName());
         if (!relations.isEmpty()) {
             int lastSize = targetRelations.size();
             for (FineBusinessTableRelation relation : relations) {
