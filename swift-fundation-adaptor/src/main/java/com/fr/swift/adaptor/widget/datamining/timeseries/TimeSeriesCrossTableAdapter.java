@@ -5,6 +5,7 @@ import com.finebi.conf.internalimp.analysis.bean.operator.datamining.timeseries.
 import com.finebi.conf.internalimp.dashboard.widget.table.CrossTableWidget;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.utils.transform.FineDataTransformUtils;
+import com.fr.swift.adaptor.widget.datamining.DMErrorWrap;
 import com.fr.swift.adaptor.widget.datamining.DMSwiftWidgetUtils;
 import com.fr.swift.adaptor.widget.datamining.SwiftAlgorithmResultAdapter;
 import com.fr.swift.cal.info.XGroupQueryInfo;
@@ -24,19 +25,14 @@ import java.util.List;
 /**
  * Created by Jonas on 2018/5/15.
  */
-public class TimeSeriesCrossTableAdapter implements SwiftAlgorithmResultAdapter<HoltWintersBean, CrossTableWidget, NodeResultSet, XGroupQueryInfo> {
+public class TimeSeriesCrossTableAdapter extends SwiftAlgorithmResultAdapter<HoltWintersBean, CrossTableWidget, NodeResultSet, XGroupQueryInfo> {
 
-    private HoltWintersBean bean;
-    private CrossTableWidget widget;
-    private NodeResultSet result;
-    private XGroupQueryInfo info;
+    public TimeSeriesCrossTableAdapter(HoltWintersBean bean, CrossTableWidget widget, NodeResultSet result, XGroupQueryInfo info, DMErrorWrap errorWrap) {
+        super(bean, widget, result, info, errorWrap);
+    }
 
     @Override
-    public SwiftResultSet getResult(HoltWintersBean bean, CrossTableWidget widget, NodeResultSet result, XGroupQueryInfo info) throws Exception {
-        this.bean = bean;
-        this.widget = widget;
-        this.result = result;
-        this.info = info;
+    public SwiftResultSet getResult() throws Exception {
         if (info.getColDimensionInfo().getDimensions().length == 0 || info.getDimensionInfo().getDimensions().length == 0) {
             return handleGroupTable();
         } else {
@@ -46,13 +42,12 @@ public class TimeSeriesCrossTableAdapter implements SwiftAlgorithmResultAdapter<
     }
 
     private SwiftResultSet handleGroupTable() {
-        TimeSeriesGroupTableAdapter groupTableAdapter = new TimeSeriesGroupTableAdapter();
-        return groupTableAdapter.getResult(bean, widget, result, info);
+        TimeSeriesGroupTableAdapter groupTableAdapter = new TimeSeriesGroupTableAdapter(bean, widget, result, info, errorWrap);
+        return groupTableAdapter.getResult();
     }
 
     private SwiftResultSet handleCrossTable() throws Exception {
-
-        int targetSize = info.getTargetInfo().getMetrics().size();
+        errorWrap.setError("Multiple dimensions cannot be predicted.");
 
         XNodeMergeResultSet XResultSet = (XNodeMergeResultSet) result;
 
@@ -88,15 +83,12 @@ public class TimeSeriesCrossTableAdapter implements SwiftAlgorithmResultAdapter<
             XLeftNode next = xLeftIterator.next();
             List<AggregatorValue[]> newXValue = new ArrayList<AggregatorValue[]>();
             AggregatorValue[][] xValue = next.getXValue();
-            AggregatorValue[] addNewValue = null;
             for (int i = 0; i < xValue.length; i++) {
                 newXValue.add(xValue[i]);
-                if (addNewValue == null) {
-                    addNewValue = (AggregatorValue[]) Arrays.copyOf(xValue[i],xValue[i].length);
-                    Arrays.fill(addNewValue, null);
-                }
+                AggregatorValue[] addNewValue = (AggregatorValue[]) Arrays.copyOf(xValue[i], xValue[i].length);
+                Arrays.fill(addNewValue, null);
+                newXValue.add(addNewValue);
             }
-            newXValue.add(addNewValue);
             AggregatorValue[][] newXValueArr = new AggregatorValue[newXValue.size()][];
             newXValue.toArray(newXValueArr);
             next.setXValues(newXValueArr);

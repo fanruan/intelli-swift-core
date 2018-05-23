@@ -4,6 +4,7 @@ import com.finebi.conf.algorithm.kmeans.KmeansPredict;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.kmeans.KmeansBean;
 import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
+import com.fr.swift.adaptor.widget.datamining.DMErrorWrap;
 import com.fr.swift.adaptor.widget.datamining.SwiftAlgorithmResultAdapter;
 import com.fr.swift.cal.info.GroupQueryInfo;
 import com.fr.swift.query.adapter.dimension.DimensionInfo;
@@ -15,6 +16,8 @@ import com.fr.swift.result.NodeMergeResultSetImpl;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.node.GroupNodeAggregateUtils;
 import com.fr.swift.result.node.NodeType;
+import com.fr.swift.result.node.iterator.BFTGroupNodeIterator;
+import com.fr.swift.result.node.iterator.NLevelGroupNodeIterator;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.util.ArrayList;
@@ -25,14 +28,16 @@ import java.util.Map;
 /**
  * @author qingj
  */
-public class KmeansGroupTableAdapter implements SwiftAlgorithmResultAdapter<KmeansBean, AbstractTableWidget, NodeResultSet, GroupQueryInfo> {
+public class KmeansGroupTableAdapter extends SwiftAlgorithmResultAdapter<KmeansBean, AbstractTableWidget, NodeResultSet, GroupQueryInfo> {
 
+
+    public KmeansGroupTableAdapter(KmeansBean bean, AbstractTableWidget widget, NodeResultSet result, GroupQueryInfo info, DMErrorWrap errorWrap) {
+        super(bean, widget, result, info, errorWrap);
+    }
 
     @Override
-    public SwiftResultSet getResult(KmeansBean bean, AbstractTableWidget widget, NodeResultSet result, GroupQueryInfo info) throws Exception {
+    public SwiftResultSet getResult() throws Exception {
 
-
-        // List<FineDimension> dimensionList = widget.getDimensionList();
         List<FineTarget> targetList = widget.getTargetList();
         TargetInfo targetInfo = info.getTargetInfo();
         DimensionInfo dimensionInfo = info.getDimensionInfo();
@@ -82,11 +87,11 @@ public class KmeansGroupTableAdapter implements SwiftAlgorithmResultAdapter<Kmea
      * @throws Exception
      */
     private GroupNode addFirstDimension(GroupNode rootNode, KmeansPredict kmeans, GroupQueryInfo info) throws Exception {
-        GroupNode resultRootNode = new GroupNode();
+        GroupNode resultRootNode = new GroupNode(-1, null);
         Map<Integer, GroupNode> childNodes = new HashMap<Integer, GroupNode>(kmeans.getCluster());
         for (int i = 0; i < rootNode.getChildrenSize(); i++) {
             Map<Integer, GroupNode> node = changeNode(rootNode.getChild(i), kmeans);
-            childNodes.putAll(mergeNode(node, childNodes, info));
+            childNodes.putAll(mergeRootNode(node, childNodes));
         }
 
         // 聚类维度排序
@@ -108,7 +113,7 @@ public class KmeansGroupTableAdapter implements SwiftAlgorithmResultAdapter<Kmea
      */
     private Map<Integer, GroupNode> changeNode(GroupNode rootNode, KmeansPredict kmeans) throws Exception {
         if (rootNode.getChildrenSize() == 0) {
-            GroupNode resultRootNode = new GroupNode();
+            GroupNode resultRootNode = new GroupNode(rootNode.getDepth() + 1, null);
             resultRootNode.setData(rootNode.getData());
             AggregatorValue[] summaryValue = rootNode.getAggregatorValue();
             resultRootNode.setAggregatorValue(summaryValue);
@@ -131,70 +136,54 @@ public class KmeansGroupTableAdapter implements SwiftAlgorithmResultAdapter<Kmea
         }
     }
 
-    private Map<Integer, GroupNode> mergeNode(Map<Integer, GroupNode> node1, Map<Integer, GroupNode> node2, GroupQueryInfo info) {
+    private Map<Integer, GroupNode> mergeRootNode(Map<Integer, GroupNode> subLevelMap, Map<Integer, GroupNode> sameLevelMap) {
         Map<Integer, GroupNode> resultNode = new HashMap<Integer, GroupNode>();
 
-        if (node2.isEmpty()) {
-            for (int index : node1.keySet()) {
-                GroupNode resultRootNode = new GroupNode();
-                resultRootNode.setData(index);
-                resultRootNode.addChild(node1.get(index));
-                resultRootNode.setAggregatorValue(node1.get(index).getAggregatorValue());
-                resultNode.put(index, resultRootNode);
+        for (int clusterNum : subLevelMap.keySet()) {
+            GroupNode subGroupNode = subLevelMap.get(clusterNum);
+            if (sameLevelMap.keySet().contains(clusterNum)) {
+                GroupNode sameGroupNode = sameLevelMap.get(clusterNum);
+                sameGroupNode.addChild(subGroupNode);
+                sameGroupNode.setAggregatorValue(subGroupNode.getAggregatorValue());
+                resultNode.put(clusterNum, sameGroupNode);
+            } else {
+                GroupNode resultRootNode = new GroupNode(0, (Integer) clusterNum);
+                resultRootNode.addChild(subGroupNode);
+                resultNode.put(clusterNum, resultRootNode);
             }
-            return resultNode;
         }
 
-        for (int index : node1.keySet()) {
-            if (node2.keySet().contains(index)) {
-                GroupNode fineGroupNode1 = node1.get(index);
-                GroupNode fineGroupNode2 = node2.get(index);
-                if (fineGroupNode2.getData() == (Object) index) {
-                    fineGroupNode2.addChild(fineGroupNode1);
-                    fineGroupNode2.setAggregatorValue(fineGroupNode1.getAggregatorValue());
-                    resultNode.put(index, fineGroupNode2);
-                }
-            } else {
-                GroupNode resultRootNode = new GroupNode();
-                resultRootNode.setData(index);
-                resultRootNode.addChild(node1.get(index));
-                resultRootNode.setAggregatorValue(node1.get(index).getAggregatorValue());
-                resultNode.put(index, resultRootNode);
-            }
-        }
+
         return resultNode;
     }
 
 
-    private Map<Integer, GroupNode> mergeNode(Map<Integer, GroupNode> node1, Map<Integer, GroupNode> node2, Object parentData) {
+    /**
+     * @param subLevelMap  儿子结点的信息
+     * @param sameLevelMap 同级结点的信息
+     * @param parentData
+     * @return
+     */
+    private Map<Integer, GroupNode> mergeNode(Map<Integer, GroupNode> subLevelMap, Map<Integer, GroupNode> sameLevelMap, Object parentData) {
         Map<Integer, GroupNode> resultNode = new HashMap<Integer, GroupNode>();
 
-        if (node2.isEmpty()) {
-            for (int index : node1.keySet()) {
-                GroupNode resultRootNode = new GroupNode();
-                resultRootNode.setData(parentData);
-                resultRootNode.addChild(node1.get(index));
-                resultRootNode.setAggregatorValue(node1.get(index).getAggregatorValue());
-                resultNode.put(index, resultRootNode);
-            }
-            return resultNode;
-        }
+        // 在子节点的时候调用，相当于clone一遍元素，放到对应的聚类数里面
+        for (int clusterNum : subLevelMap.keySet()) {
+            GroupNode subGroupNode = subLevelMap.get(clusterNum);
+            if (sameLevelMap.keySet().contains(clusterNum)) {
 
-        for (int index : node1.keySet()) {
-            if (node2.keySet().contains(index)) {
-                GroupNode fineGroupNode1 = node1.get(index);
-                GroupNode fineGroupNode2 = node2.get(index);
-                if (fineGroupNode2.getData() == parentData) {
-                    fineGroupNode2.addChild(fineGroupNode1);
-                    fineGroupNode2.setAggregatorValue(fineGroupNode1.getAggregatorValue());
-                    resultNode.put(index, fineGroupNode2);
+                GroupNode sameGroupNode = sameLevelMap.get(clusterNum);
+                if (sameGroupNode.getData() == parentData) {
+                    sameGroupNode.addChild(subGroupNode);
+                    sameGroupNode.setAggregatorValue(subGroupNode.getAggregatorValue());
+                    resultNode.put(clusterNum, sameGroupNode);
                 }
             } else {
-                GroupNode resultRootNode = new GroupNode();
-                resultRootNode.setData(parentData);
-                resultRootNode.addChild(node1.get(index));
-                resultRootNode.setAggregatorValue(node1.get(index).getAggregatorValue());
-                resultNode.put(index, resultRootNode);
+
+                GroupNode resultRootNode = new GroupNode(subGroupNode.getDepth() - 1, parentData);
+                resultRootNode.addChild(subGroupNode);
+                resultRootNode.setAggregatorValue(subGroupNode.getAggregatorValue());
+                resultNode.put(clusterNum, resultRootNode);
             }
         }
         return resultNode;

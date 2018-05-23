@@ -3,6 +3,7 @@ package com.fr.swift.adaptor.widget.datamining.kmeans;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.kmeans.KmeansBean;
 import com.finebi.conf.internalimp.dashboard.widget.table.CrossTableWidget;
 import com.fr.engine.compare.CompareUtil;
+import com.fr.swift.adaptor.widget.datamining.DMErrorWrap;
 import com.fr.swift.adaptor.widget.datamining.SwiftAlgorithmResultAdapter;
 import com.fr.swift.cal.info.XGroupQueryInfo;
 import com.fr.swift.cal.targetcal.group.XGroupTargetCalQuery;
@@ -32,23 +33,18 @@ import java.util.List;
 /**
  * @author qingj
  */
-public class KmeansCrossTableAdapter implements SwiftAlgorithmResultAdapter<KmeansBean, CrossTableWidget, NodeResultSet, XGroupQueryInfo> {
+public class KmeansCrossTableAdapter extends SwiftAlgorithmResultAdapter<KmeansBean, CrossTableWidget, NodeResultSet, XGroupQueryInfo> {
 
-    private KmeansBean bean;
-    private CrossTableWidget widget;
-    private NodeResultSet result;
-    private XGroupQueryInfo info;
+    public KmeansCrossTableAdapter(KmeansBean bean, CrossTableWidget widget, NodeResultSet result, XGroupQueryInfo info, DMErrorWrap errorWrap) {
+        super(bean, widget, result, info, errorWrap);
+    }
 
     @Override
-    public SwiftResultSet getResult(KmeansBean bean, CrossTableWidget widget, NodeResultSet result, XGroupQueryInfo info) throws Exception {
-        this.bean = bean;
-        this.widget = widget;
-        this.result = result;
-        this.info = info;
+    public SwiftResultSet getResult() throws Exception {
 
         if (info.getColDimensionInfo().getDimensions().length == 0 || info.getDimensionInfo().getDimensions().length == 0) {
-            KmeansGroupTableAdapter adapter = new KmeansGroupTableAdapter();
-            return adapter.getResult(bean, widget, result, info);
+            KmeansGroupTableAdapter adapter = new KmeansGroupTableAdapter(bean, widget, result, info, errorWrap);
+            return adapter.getResult();
         } else {
             // 行列表头都不为空
             return handleCrossTable();
@@ -176,6 +172,7 @@ public class KmeansCrossTableAdapter implements SwiftAlgorithmResultAdapter<Kmea
             return xNodeResultAdapter(xLeftResultNode, topNode);
 
         } catch (Exception e) {
+            errorWrap.setError(e.getMessage());
             SwiftLoggers.getLogger().error(e.getMessage(), e);
         }
 
