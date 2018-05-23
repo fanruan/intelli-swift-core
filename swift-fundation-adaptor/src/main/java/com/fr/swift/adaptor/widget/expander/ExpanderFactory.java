@@ -1,5 +1,6 @@
 package com.fr.swift.adaptor.widget.expander;
 
+import com.finebi.conf.algorithm.common.DMUtils;
 import com.finebi.conf.constant.BIDesignConstants;
 import com.finebi.conf.internalimp.bean.dashboard.widget.expander.ExpanderBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
@@ -26,9 +27,17 @@ import java.util.Set;
 public class ExpanderFactory {
 
     public static Expander createRowExpander(TableWidgetBean bean, List<FineDimension> rowDimensions) {
+        // 如果是挖掘，则展开所有节点
+        boolean openRowNode = bean.isOpenRowNode();
+        Map<String, Boolean> headerExpand = bean.getHeaderExpand();
+        if (!DMUtils.isEmptyAlgorithm(bean.getDataMining())){
+            openRowNode = true;
+            headerExpand = null;
+        }
+
         // TODO: 2018/5/23 交叉表的行表头是bean.getvPage还是bean.getPage?
-        return create(isOperationNode(bean.getPage(), bean.isOpenRowNode()), rowDimensions, bean.getRowExpand(),
-                bean.getHeaderExpand());
+        return create(isOperationNode(bean.getPage(), openRowNode), rowDimensions, bean.getRowExpand(),
+                headerExpand);
     }
 
     public static Expander createColExpander(TableWidgetBean bean, List<FineDimension> colDimensions) {

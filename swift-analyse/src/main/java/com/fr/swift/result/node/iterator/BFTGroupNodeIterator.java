@@ -5,6 +5,7 @@ import com.fr.swift.result.node.FIFOQueue;
 import com.fr.swift.result.node.LinkedListFIFOQueue;
 
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * 广度优先的node迭代器
@@ -26,10 +27,9 @@ public class BFTGroupNodeIterator implements Iterator<GroupNode> {
     @Override
     public GroupNode next() {
         GroupNode node4Return = queue.remove();
-        GroupNode tmp = node4Return.getChildrenSize() == 0 ? null : node4Return.getChild(0);
-        while (tmp != null) {
-            queue.add(tmp);
-            tmp = tmp.getSibling();
+        List<GroupNode> children = node4Return.getChildren();
+        for (GroupNode child : children) {
+            queue.add(child);
         }
         return node4Return;
     }

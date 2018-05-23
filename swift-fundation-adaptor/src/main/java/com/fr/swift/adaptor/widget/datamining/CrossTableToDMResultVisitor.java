@@ -21,23 +21,25 @@ public class CrossTableToDMResultVisitor implements DMBeanVisitor<SwiftResultSet
     private NodeResultSet result;
     private CrossTableWidget widget;
     private XGroupQueryInfo info;
+    private DMErrorWrap dmErrorWrap;
 
-    public CrossTableToDMResultVisitor(NodeResultSet result, CrossTableWidget widget, XGroupQueryInfo info) {
+    public CrossTableToDMResultVisitor(NodeResultSet result, CrossTableWidget widget, XGroupQueryInfo info, DMErrorWrap dmErrorWrap) {
         this.result = result;
         this.widget = widget;
         this.info = info;
+        this.dmErrorWrap = dmErrorWrap;
     }
 
     @Override
     public SwiftResultSet visit(HoltWintersBean bean) throws Exception {
-        TimeSeriesCrossTableAdapter adapter = new TimeSeriesCrossTableAdapter();
-        return adapter.getResult(bean, widget, result, info);
+        TimeSeriesCrossTableAdapter adapter = new TimeSeriesCrossTableAdapter(bean, widget, result, info, dmErrorWrap);
+        return adapter.getResult();
     }
 
     @Override
     public SwiftResultSet visit(KmeansBean bean) throws Exception {
-        KmeansCrossTableAdapter adapter = new KmeansCrossTableAdapter();
-        return adapter.getResult(bean, widget, result, info);
+        KmeansCrossTableAdapter adapter = new KmeansCrossTableAdapter(bean, widget, result, info, dmErrorWrap);
+        return adapter.getResult();
     }
 
     @Override

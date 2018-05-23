@@ -5,7 +5,7 @@ import com.fr.swift.query.adapter.target.cal.ResultTarget;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.XLeftNode;
-import com.fr.swift.result.node.iterator.BFTGroupNodeIterator;
+import com.fr.swift.result.node.iterator.DFTGroupNodeIterator;
 import com.fr.swift.structure.iterator.MapperIterator;
 import com.fr.swift.util.function.Function;
 
@@ -19,9 +19,9 @@ import java.util.Map;
  */
 public class GroupNodeUtils {
 
-    public static void updateNodeData(GroupNode root, final List<Map<Integer, Object>> dictionaries) {
+    public static void updateNodeData(int dimensionSize, GroupNode root, final List<Map<Integer, Object>> dictionaries) {
         // 从计算结果中提取要展示的结果集
-        Iterator<GroupNode> iterator = new MapperIterator<GroupNode, GroupNode>(new BFTGroupNodeIterator(root), new Function<GroupNode, GroupNode>() {
+        Iterator<GroupNode> iterator = new MapperIterator<GroupNode, GroupNode>(new DFTGroupNodeIterator(dimensionSize, root), new Function<GroupNode, GroupNode>() {
             @Override
             public GroupNode apply(GroupNode p) {
                 // 设置节点的data
@@ -36,8 +36,9 @@ public class GroupNodeUtils {
         }
     }
 
-    public static void updateShowTargetsForXLeftNode(XLeftNode root, final List<ResultTarget> targetsForShowList) {
-        Iterator<GroupNode> iterator = new MapperIterator<GroupNode, GroupNode>(new BFTGroupNodeIterator(root), new Function<GroupNode, GroupNode>() {
+    public static void updateShowTargetsForXLeftNode(int rowDimensionSize, XLeftNode root,
+                                                     final List<ResultTarget> targetsForShowList) {
+        Iterator<GroupNode> iterator = new MapperIterator<GroupNode, GroupNode>(new DFTGroupNodeIterator(rowDimensionSize, root), new Function<GroupNode, GroupNode>() {
             @Override
             public GroupNode apply(GroupNode p) {
                 List<AggregatorValue[]> allValues = ((XLeftNode) p).getValueArrayList();
@@ -64,8 +65,8 @@ public class GroupNodeUtils {
         }
     }
 
-    public static void updateShowTargetsForGroupNode(GroupNode root, final List<ResultTarget> targetsForShowList) {
-        Iterator<GroupNode> iterator = new MapperIterator<GroupNode, GroupNode>(new BFTGroupNodeIterator(root), new Function<GroupNode, GroupNode>() {
+    public static void updateShowTargetsForGroupNode(int dimensionSize, GroupNode root, final List<ResultTarget> targetsForShowList) {
+        Iterator<GroupNode> iterator = new MapperIterator<GroupNode, GroupNode>(new DFTGroupNodeIterator(dimensionSize, root), new Function<GroupNode, GroupNode>() {
             @Override
             public GroupNode apply(GroupNode p) {
                 AggregatorValue[] showValues = new AggregatorValue[targetsForShowList.size()];
@@ -86,9 +87,9 @@ public class GroupNodeUtils {
         }
     }
 
-    public static void updateNodeIndexAfterSort(GroupNode root) {
+    public static void updateNodeIndexAfterSort(int dimensionSize, GroupNode root) {
         final IndexCounter indexCounter = new IndexCounter();
-        Iterator<GroupNode> iterator = new MapperIterator<GroupNode, GroupNode>(new BFTGroupNodeIterator(root), new Function<GroupNode, GroupNode>() {
+        Iterator<GroupNode> iterator = new MapperIterator<GroupNode, GroupNode>(new DFTGroupNodeIterator(dimensionSize, root), new Function<GroupNode, GroupNode>() {
             @Override
             public GroupNode apply(GroupNode p) {
                 p.setIndex(indexCounter.index(p));
