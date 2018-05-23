@@ -37,6 +37,9 @@ public class DateUtils {
     }
 
     public static SwiftDateInRangeFilterValue create(DateFilterBean bean) {
+        if (bean == null) {
+            return new SwiftDateInRangeFilterValue();
+        }
         long[] range = rangeOfDateFilterBean(bean);
         SwiftDateInRangeFilterValue value = new SwiftDateInRangeFilterValue();
         value.setStart(range[0]);

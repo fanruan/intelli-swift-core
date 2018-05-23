@@ -17,4 +17,19 @@ public class ResultTarget extends AbstractQueryColumn {
     public int getResultFetchIndex() {
         return resultFetchIndex;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ResultTarget that = (ResultTarget) o;
+
+        return resultFetchIndex == that.resultFetchIndex;
+    }
+
+    @Override
+    public int hashCode() {
+        return resultFetchIndex;
+    }
 }

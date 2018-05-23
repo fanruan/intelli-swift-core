@@ -9,8 +9,10 @@ import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.cube.io.output.Writer;
+import com.fr.swift.source.SourceKey;
 
 import java.io.File;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,7 +43,10 @@ public class ResourceDiscovery implements IResourceDiscovery {
 
     private String defaultSwiftPath = FRContext.getCurrentEnv().getPath() + File.separator + "cubes";
 
+    private Map<SourceKey, Long> lastUpdateTime;
+
     private ResourceDiscovery() {
+        lastUpdateTime = new ConcurrentHashMap<SourceKey, Long>();
     }
 
     public static IResourceDiscovery getInstance() {
@@ -179,5 +184,19 @@ public class ResourceDiscovery implements IResourceDiscovery {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public Date getLastUpdateTime(SourceKey sourceKey) {
+        if (lastUpdateTime.containsKey(sourceKey)) {
+            return new Date(lastUpdateTime.get(sourceKey));
+        } else {
+            return new Date(0l);
+        }
+    }
+
+    @Override
+    public void setLastUpdateTime(SourceKey sourceKey, long lastUpdateTime) {
+        this.lastUpdateTime.put(sourceKey, lastUpdateTime);
     }
 }

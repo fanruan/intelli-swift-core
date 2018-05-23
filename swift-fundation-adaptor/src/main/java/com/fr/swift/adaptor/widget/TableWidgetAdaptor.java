@@ -63,6 +63,7 @@ import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.group.Group;
 import com.fr.swift.query.sort.AscSort;
+import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
@@ -96,7 +97,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
             TargetInfo targetInfo = TargetInfoUtils.parse(widget);
             queryInfo = buildQueryInfo(widget, targetInfo);
             SwiftResultSet resultSet;
-            pagingHelper = NodeCacheManager.getInstance().get(widget.getWidgetId());
+            pagingHelper = NodeCacheManager.getInstance().get(queryInfo);
             if (PagingUtils.isRefresh(widget.getPage()) || pagingHelper == null) {
                 resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
                 // 添加挖掘相关
@@ -107,7 +108,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
                     resultSet = dmBean.accept(visitor);
                 }
                 pagingHelper = new GroupNodePagingHelper(widget.getDimensionList().size(), (NodeResultSet) resultSet);
-                NodeCacheManager.getInstance().cache(widget.getWidgetId(), pagingHelper);
+                NodeCacheManager.getInstance().cache(queryInfo, pagingHelper);
             }
         } catch (Exception e) {
             LOGGER.error(e);
@@ -124,7 +125,8 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         Cursor cursor = null;
         String queryId = widget.getWidgetId();
         SourceKey sourceKey = getSourceKey(widget);
-        List<Dimension> dimensions = getDimensions(sourceKey, widget.getDimensionList(), widget.getTargetList());
+        List<Dimension> dimensions = getDimensions(sourceKey, widget.getDimensionList(),
+                getTargetIndexPair(widget.getTargetList(), targetInfo.getTargetsForShowList()));
         FilterInfo filterInfo = getFilterInfo(widget, dimensions);
         List<ExpanderBean> rowExpand = widget.getValue().getRowExpand();
         boolean openRowNode = widget.isOpenRowNode();
@@ -138,6 +140,17 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
                 rowExpand == null ? new ArrayList<ExpanderBean>() : rowExpand, headerExpand);
         DimensionInfo dimensionInfo = new DimensionInfoImpl(cursor, filterInfo, expander, dimensions.toArray(new Dimension[0]));
         return new GroupQueryInfo(queryId, sourceKey, dimensionInfo, targetInfo);
+    }
+
+    static Pair<List<FineTarget>, List<Integer>> getTargetIndexPair(List<FineTarget> targets, List<ResultTarget> resultTargets) {
+        assert targets.size() == resultTargets.size();
+        List<Integer> indexes = new ArrayList<Integer>();
+        for (int i = 0; i < targets.size(); i++) {
+            // ResultTarget#resultFetchIndex对应结果过滤指标在中间结果数组中的index，如果设置了快速计算，就是快速计算的值
+            // 否则是聚合值。这种处理和Node上对指标进行结果过滤不矛盾
+            indexes.add(resultTargets.get(i).getResultFetchIndex());
+        }
+        return Pair.of(targets, indexes);
     }
 
     static FilterInfo getFilterInfo(AbstractTableWidget widget, List<Dimension> dimensions) throws Exception {
@@ -240,7 +253,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         FilterInfo filterInfo = new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND);
         GroupQueryInfo queryInfo = new GroupQueryInfo(fromWidget.getwId(), fromColumns[0].getSourceKey(),
                 new DimensionInfoImpl(new AllCursor(), filterInfo, null, fromColumns),
-                new TargetInfoImpl(0, new ArrayList<Metric>(0), new ArrayList<GroupTarget>(0), new ArrayList<ResultTarget>(0), new ArrayList<Aggregator>(0)));
+                new TargetInfoImpl(0, new ArrayList<Metric>(0), new ArrayList<GroupTarget>(0), new ArrayList<ResultTarget>(0), new ArrayList<Pair<Aggregator, Integer>>(0)));
         SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
         Set[] results = new HashSet[toColumns.length];
         for (int i = 0; i < results.length; i++) {
@@ -264,12 +277,13 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         }
     }
 
-    static List<Dimension> getDimensions(SourceKey sourceKey, List<FineDimension> fineDims, List<FineTarget> targets) throws SQLException {
+    static List<Dimension> getDimensions(SourceKey sourceKey, List<FineDimension> fineDims,
+                                         Pair<List<FineTarget>, List<Integer>> targets) throws SQLException {
         List<Dimension> dimensions = new ArrayList<Dimension>();
         for (int i = 0, size = fineDims.size(); i < size; i++) {
             FineDimension fineDim = fineDims.get(i);
             // 前端多出一个挖掘维度字段，引擎不需要，这里把挖掘维度字段给过滤掉
-            if(fineDim.getType() == BIDesignConstants.DESIGN.DIMENSION_TYPE.KMEANS){
+            if(fineDim.getType() == BIDesignConstants.DESIGN.DIMENSION_TYPE.KMEANS_DIMENSION){
                 continue;
             }
             dimensions.add(toDimension(sourceKey, fineDim, i, size, targets));
@@ -277,24 +291,25 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         return dimensions;
     }
 
-    private static Dimension toDimension(SourceKey sourceKey, FineDimension fineDim, int index, int size, List<FineTarget> targets) throws SQLException {
+    private static Dimension toDimension(SourceKey sourceKey, FineDimension fineDim, int dimensionIndex, int size,
+                                         Pair<List<FineTarget>, List<Integer>> targets) throws SQLException {
         String columnName = getColumnName(fineDim);
         String tableName = getTableName(getFieldId(fineDim));
         ColumnKey colKey = new ColumnKey(columnName);
         Group group = GroupAdaptor.adaptDashboardGroup(fineDim);
 
-        FilterInfo filterInfo = DimensionFilterAdaptor.transformDimensionFineFilter(tableName, fineDim, index == size - 1, targets);
+        FilterInfo filterInfo = DimensionFilterAdaptor.transformDimensionFineFilter(tableName, fineDim, dimensionIndex == size - 1, targets);
+        Sort sort = SortAdaptor.adaptorDimensionSort(fineDim.getSort(), getSortIndex(fineDim.getSort(), dimensionIndex, targets, size));
 
-        return new GroupDimension(index, sourceKey, colKey, group, SortAdaptor.adaptorDimensionSort(fineDim.getSort(), getSortIndex(fineDim.getSort(), index, targets, size)),
-                filterInfo);
+        return new GroupDimension(dimensionIndex, sourceKey, colKey, group, sort, filterInfo);
     }
 
-    private static int getSortIndex(FineDimensionSort sort, int index, List<FineTarget> targets, int size) {
+    private static int getSortIndex(FineDimensionSort sort, int index, Pair<List<FineTarget>, List<Integer>> targets, int size) {
         if (sort instanceof DimensionTargetSort) {
             String targetId = ((DimensionTargetSort) sort).getTargetId();
-            for (int i = 0; i < targets.size(); i++) {
-                if (ComparatorUtils.equals(targets.get(i).getId(), targetId)) {
-                    return i + size;
+            for (int i = 0; i < targets.getKey().size(); i++) {
+                if (ComparatorUtils.equals(targets.getKey().get(i).getId(), targetId)) {
+                    return targets.getValue().get(i) + size;
                 }
             }
         }

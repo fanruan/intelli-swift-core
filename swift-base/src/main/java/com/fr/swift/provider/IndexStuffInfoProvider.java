@@ -30,6 +30,7 @@ public class IndexStuffInfoProvider implements IndexStuffProvider {
     private SourceReliance sourceReliance;
     private RelationReliance relationReliance;
     private RelationPathReliance relationPathReliance;
+    private List<TaskResultListener> taskResultListeners;
 
     private IndexStuffMedium indexStuffMedium;
 
@@ -37,6 +38,7 @@ public class IndexStuffInfoProvider implements IndexStuffProvider {
         this.sourceContainer = sourceContainer;
         this.incrementMap = new HashMap<String, List<Increment>>();
         this.indexStuffMedium = indexStuffMedium;
+        taskResultListeners = new ArrayList<TaskResultListener>();
     }
 
     public IndexStuffInfoProvider(SourceContainerManager sourceContainer,
@@ -47,6 +49,7 @@ public class IndexStuffInfoProvider implements IndexStuffProvider {
         this.relationReliance = relationReliance;
         this.relationPathReliance = relationPathReliance;
         this.indexStuffMedium = indexStuffMedium;
+        taskResultListeners = new ArrayList<TaskResultListener>();
     }
 
     @Override
@@ -122,5 +125,15 @@ public class IndexStuffInfoProvider implements IndexStuffProvider {
     @Override
     public IndexStuffMedium getIndexStuffMedium() {
         return this.indexStuffMedium;
+    }
+
+    @Override
+    public List<TaskResultListener> taskResultListeners() {
+        return taskResultListeners;
+    }
+
+    @Override
+    public void addResultListener(TaskResultListener taskResultListener) {
+        taskResultListeners.add(taskResultListener);
     }
 }

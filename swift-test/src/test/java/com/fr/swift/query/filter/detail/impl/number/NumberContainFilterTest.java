@@ -2,6 +2,7 @@ package com.fr.swift.query.filter.detail.impl.number;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.filter.match.ToStringConverter;
 import com.fr.swift.segment.column.Column;
 
 import java.util.HashSet;
@@ -53,9 +54,9 @@ public class NumberContainFilterTest extends BaseNumberFilterTest {
     }
 
     public void match() {
-        assertTrue(!filter.matches(createNode(null), 0));
-        assertTrue(filter.matches(createNode(getRandomMatchedNumber()), 0));
-        assertTrue(!filter.matches(createNode(getRandomNotMatchedNumber()), 0));
+        assertTrue(!filter.matches(createNode(null), 0, new ToStringConverter()));
+        assertTrue(filter.matches(createNode(getRandomMatchedNumber()), 0, new ToStringConverter()));
+        assertTrue(!filter.matches(createNode(getRandomNotMatchedNumber()), 0, new ToStringConverter()));
     }
 
     @Override

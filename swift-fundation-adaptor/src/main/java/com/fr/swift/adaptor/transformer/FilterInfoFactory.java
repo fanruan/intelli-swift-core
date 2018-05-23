@@ -69,6 +69,7 @@ import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.filter.info.value.SwiftDateInRangeFilterValue;
 import com.fr.swift.query.filter.info.value.SwiftNumberInRangeFilterValue;
+import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.RelationSource;
@@ -107,6 +108,16 @@ public class FilterInfoFactory {
             filterInfoList.add(createFilterInfo(tableName, bean, segments));
         }
         return new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
+    }
+
+    public static String transformFormula(String formula, String tableName) {
+        if (StringUtils.isEmpty(tableName)) {
+            return formula;
+        }
+        int len = tableName.length();
+        StringBuffer buffer = new StringBuffer(String.format("%04d", len));
+        buffer.append(tableName);
+        return formula.replaceAll(buffer.toString(), StringUtils.EMPTY);
     }
 
     /**
@@ -173,7 +184,7 @@ public class FilterInfoFactory {
                 }
                 int valueType = filterValueBean.getType();
                 return new SwiftDetailFilterInfo<List<String>>(columnKey, dates,
-                        valueType == BICommonConstants.SELECTION_TYPE.MULTI ? SwiftDetailFilterType.TMP_DATE_BELONG_STRING : SwiftDetailFilterType.TMP_DATE_NOT_BELONG_STRING);
+                        valueType == BICommonConstants.SELECTION_TYPE.MULTI ? SwiftDetailFilterType.STRING_IN : SwiftDetailFilterType.STRING_NOT_IN);
             }
             case BICommonConstants.ANALYSIS_FILTER_DATE.NOT_BELONG_STRING_VALUE: {
                 StringBelongFilterValueBean filterValueBean = ((DateNoBelongStringFilterBean) bean).getFilterValue();
@@ -183,7 +194,7 @@ public class FilterInfoFactory {
                 }
                 int valueType = filterValueBean.getType();
                 return new SwiftDetailFilterInfo<List<String>>(columnKey, dates,
-                        valueType == BICommonConstants.SELECTION_TYPE.MULTI ? SwiftDetailFilterType.TMP_DATE_NOT_BELONG_STRING : SwiftDetailFilterType.TMP_DATE_BELONG_STRING);
+                        valueType == BICommonConstants.SELECTION_TYPE.MULTI ? SwiftDetailFilterType.STRING_IN : SwiftDetailFilterType.STRING_IN);
             }
             case BICommonConstants.ANALYSIS_FILTER_STRING.CONTAIN:
                 String contain = ((StringContainFilterBean) bean).getFilterValue();
@@ -409,7 +420,7 @@ public class FilterInfoFactory {
             }
 
             case BICommonConstants.ANALYSIS_FILTER_TYPE.FORMULA: {
-                String expr = ((FormulaFilterBean) bean).getFilterValue();
+                String expr = transformFormula(((FormulaFilterBean) bean).getFilterValue(), tableName);
                 return new SwiftDetailFilterInfo<String>(columnKey, expr, SwiftDetailFilterType.FORMULA);
             }
             case BICommonConstants.ANALYSIS_FILTER_TYPE.AND: {
@@ -427,6 +438,211 @@ public class FilterInfoFactory {
             default:
         }
         return new SwiftDetailFilterInfo(columnKey, null, SwiftDetailFilterType.ALL_SHOW);
+    }
+
+
+    /**
+     * @param bean
+     * @return
+     */
+    public static FilterInfo createMatchFilterInfo(FilterBean bean, MatchConverter converter) {
+        switch (bean.getFilterType()) {
+            // string类过滤
+            case BICommonConstants.ANALYSIS_FILTER_STRING.BELONG_VALUE:
+            case BICommonConstants.ANALYSIS_FILTER_DATE.BELONG_STRING_VALUE:
+            case BICommonConstants.ANALYSIS_FILTER_NUMBER.BELONG_STRING_VALUE: {
+                StringBelongFilterValueBean valueBean = (StringBelongFilterValueBean) ((AbstractFilterBean) bean).getFilterValue();
+                List<String> belongValues = valueBean.getValue();
+                if (belongValues == null || belongValues.isEmpty()) {
+                    break;
+                }
+                if (bean.getFilterType() == BICommonConstants.ANALYSIS_FILTER_DATE.BELONG_STRING_VALUE){
+                    List<String> transValues = new ArrayList<String>();
+                    for (String value : belongValues){
+                        transValues.add(converter.convert(Long.valueOf(value)));
+                        belongValues = transValues;
+                    }
+                }
+                int valueType = valueBean.getType();
+                return new SwiftDetailFilterInfo<Set<String>>(null, new HashSet<String>(belongValues),
+                        // 多选同filterType，否则是反选
+                        valueType == BICommonConstants.SELECTION_TYPE.MULTI ? SwiftDetailFilterType.STRING_IN : SwiftDetailFilterType.STRING_NOT_IN);
+            }
+            case BICommonConstants.ANALYSIS_FILTER_STRING.NOT_BELONG_VALUE:
+            case BICommonConstants.ANALYSIS_FILTER_NUMBER.NOT_BELONG_STRING_VALUE:
+            case BICommonConstants.ANALYSIS_FILTER_DATE.NOT_BELONG_STRING_VALUE: {
+                StringBelongFilterValueBean valueBean = (StringBelongFilterValueBean) ((AbstractFilterBean) bean).getFilterValue();
+                List<String> notBelongValues = valueBean.getValue();
+                if (notBelongValues == null || notBelongValues.isEmpty()) {
+                    return new SwiftDetailFilterInfo(null, null, SwiftDetailFilterType.NOT_SHOW);
+                }
+                if (bean.getFilterType() == BICommonConstants.ANALYSIS_FILTER_DATE.BELONG_STRING_VALUE){
+                    List<String> transValues = new ArrayList<String>();
+                    for (String value : notBelongValues){
+                        transValues.add(converter.convert(Long.valueOf(value)));
+                        notBelongValues = transValues;
+                    }
+                }
+                int valueType = valueBean.getType();
+                return new SwiftDetailFilterInfo<Set<String>>(null, new HashSet<String>(notBelongValues),
+                        // 多选同filterType，否则是反选
+                        valueType == BICommonConstants.SELECTION_TYPE.MULTI ? SwiftDetailFilterType.STRING_NOT_IN : SwiftDetailFilterType.STRING_IN);
+            }
+            case BICommonConstants.ANALYSIS_FILTER_STRING.CONTAIN:
+            case BICommonConstants.ANALYSIS_FILTER_DATE.CONTAIN: {
+                String contain = (String) ((AbstractFilterBean) bean).getFilterValue();
+                if (StringUtils.isBlank(contain)) {
+                    break;
+                }
+                return new SwiftDetailFilterInfo<String>(null, contain, SwiftDetailFilterType.STRING_LIKE);
+            }
+            case BICommonConstants.ANALYSIS_FILTER_STRING.NOT_CONTAIN:
+            case BICommonConstants.ANALYSIS_FILTER_DATE.NOT_CONTAIN: {
+                String value = (String) ((AbstractFilterBean) bean).getFilterValue();
+                if (StringUtils.isBlank(value)) {
+                    return new SwiftDetailFilterInfo(null, null, SwiftDetailFilterType.NOT_SHOW);
+                }
+                return new SwiftDetailFilterInfo<String>(null, value, SwiftDetailFilterType.STRING_NOT_LIKE);
+            }
+            case BICommonConstants.ANALYSIS_FILTER_STRING.BEGIN_WITH:
+            case BICommonConstants.ANALYSIS_FILTER_DATE.BEGIN_WITH: {
+                String value = (String) ((AbstractFilterBean) bean).getFilterValue();
+                if (StringUtils.isBlank(value)) {
+                    break;
+                }
+                return new SwiftDetailFilterInfo<String>(null, value, SwiftDetailFilterType.STRING_STARTS_WITH);
+            }
+            case BICommonConstants.ANALYSIS_FILTER_STRING.NOT_BEGIN_WITH:
+            case BICommonConstants.ANALYSIS_FILTER_DATE.NOT_BEGIN_WITH: {
+                String value = (String) ((AbstractFilterBean) bean).getFilterValue();
+                if (StringUtils.isBlank(value)) {
+                    break;
+                }
+                return new SwiftDetailFilterInfo<String>(null, value, SwiftDetailFilterType.STRING_NOT_STARTS_WITH);
+            }
+            case BICommonConstants.ANALYSIS_FILTER_STRING.END_WITH:
+            case BICommonConstants.ANALYSIS_FILTER_DATE.END_WITH: {
+                String value = (String) ((AbstractFilterBean) bean).getFilterValue();
+                if (StringUtils.isBlank(value)) {
+                    break;
+                }
+                return new SwiftDetailFilterInfo<String>(null, value, SwiftDetailFilterType.STRING_ENDS_WITH);
+            }
+            case BICommonConstants.ANALYSIS_FILTER_STRING.NOT_END_WITH:
+            case BICommonConstants.ANALYSIS_FILTER_DATE.NOT_END_WITH: {
+                String value = (String) ((AbstractFilterBean) bean).getFilterValue();
+                if (StringUtils.isBlank(value)) {
+                    break;
+                }
+                return new SwiftDetailFilterInfo<String>(null, value, SwiftDetailFilterType.STRING_NOT_ENDS_WITH);
+            }
+            case BICommonConstants.ANALYSIS_FILTER_STRING.IS_NULL:
+            case BICommonConstants.ANALYSIS_FILTER_DATE.IS_NULL:
+            case BICommonConstants.ANALYSIS_FILTER_NUMBER.IS_NULL:
+                return new SwiftDetailFilterInfo<Object>(null, null, SwiftDetailFilterType.NULL);
+            case BICommonConstants.ANALYSIS_FILTER_STRING.NOT_NULL:
+            case BICommonConstants.ANALYSIS_FILTER_DATE.NOT_NULL:
+            case BICommonConstants.ANALYSIS_FILTER_NUMBER.NOT_NULL:
+                return new SwiftDetailFilterInfo<Object>(null, null, SwiftDetailFilterType.NOT_NULL);
+            case BICommonConstants.ANALYSIS_FILTER_STRING.TOP_N:
+            case BICommonConstants.ANALYSIS_FILTER_NUMBER.TOP_N:
+            case BICommonConstants.ANALYSIS_FILTER_DATE.TOP_N: {
+                Long filterValue = (Long) ((AbstractFilterBean) bean).getFilterValue();
+                if (filterValue == null) {
+                    break;
+                }
+                int n = filterValue.intValue();
+                // 功能的前N个对应字典排序中最小的N个
+                return new SwiftDetailFilterInfo<Integer>(null, n, SwiftDetailFilterType.BOTTOM_N);
+            }
+            case BICommonConstants.ANALYSIS_FILTER_STRING.BOTTOM_N:
+            case BICommonConstants.ANALYSIS_FILTER_NUMBER.BOTTOM_N:
+            case BICommonConstants.ANALYSIS_FILTER_DATE.BOTTOM_N: {
+                Long filterValue = ((StringBottomNFilterBean) bean).getFilterValue();
+                if (filterValue == null) {
+                    break;
+                }
+                int n = filterValue.intValue();
+                // 功能的后N个对应字典排序中最大的N个
+                return new SwiftDetailFilterInfo<Integer>(null, n, SwiftDetailFilterType.TOP_N);
+            }
+
+
+            //对于指标汇总结果的过滤
+            case BICommonConstants.ANALYSIS_FILTER_NUMBER.BELONG_VALUE: {
+                NumberValue nv = ((NumberBelongFilterBean) bean).getFilterValue();
+                if (nv.getMin() == Double.NEGATIVE_INFINITY && nv.getMax() == Double.POSITIVE_INFINITY) {
+                    break;
+                }
+                return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(null, createValue(nv),
+                        SwiftDetailFilterType.NUMBER_IN_RANGE);
+            }
+            case BICommonConstants.ANALYSIS_FILTER_NUMBER.NOT_BELONG_VALUE: {
+                NumberValue nv = ((NumberNoBelongFilterBean) bean).getFilterValue();
+                if (nv.getMin() == Double.NEGATIVE_INFINITY && nv.getMax() == Double.POSITIVE_INFINITY) {
+                    return new SwiftDetailFilterInfo(null, null, SwiftDetailFilterType.NOT_SHOW);
+                }
+                return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(null, createValue(nv),
+                        SwiftDetailFilterType.NUMBER_NOT_IN_RANGE);
+            }
+            case BICommonConstants.ANALYSIS_FILTER_NUMBER.EQUAL_TO: {
+                final Double value = ((NumberEqualFilterBean) bean).getFilterValue();
+                return new SwiftDetailFilterInfo<Set<Double>>(null, new HashSet<Double>() {{
+                    add(value);
+                }},
+                        SwiftDetailFilterType.NUMBER_CONTAIN);
+            }
+            case BICommonConstants.ANALYSIS_FILTER_NUMBER.NOT_EQUAL_TO: {
+                final Double value = ((NumberNoEqualFilterBean) bean).getFilterValue();
+                return new SwiftDetailFilterInfo<Set<Double>>(null, new HashSet<Double>() {{
+                    add(value);
+                }},
+                        SwiftDetailFilterType.NUMBER_NOT_CONTAIN);
+            }
+            case BICommonConstants.ANALYSIS_FILTER_NUMBER.LARGE: {
+                NumberSelectedFilterValueBean numberBean = ((NumberLargeFilterBean) bean).getFilterValue();
+                SwiftNumberInRangeFilterValue filterValue = new SwiftNumberInRangeFilterValue();
+                filterValue.setMin(getDimensionAVGValue(numberBean));
+                return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(null, filterValue,
+                        isAverage(numberBean) ? SwiftDetailFilterType.NUMBER_AVERAGE : SwiftDetailFilterType.NUMBER_IN_RANGE);
+            }
+            case BICommonConstants.ANALYSIS_FILTER_NUMBER.SMALL: {
+                NumberSelectedFilterValueBean numberBean = ((NumberSmallFilterBean) bean).getFilterValue();
+                SwiftNumberInRangeFilterValue value = new SwiftNumberInRangeFilterValue();
+                value.setMax(getDimensionAVGValue(numberBean));
+                return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(null, value,
+                        isAverage(numberBean) ? SwiftDetailFilterType.NUMBER_AVERAGE : SwiftDetailFilterType.NUMBER_IN_RANGE);
+            }
+            case BICommonConstants.ANALYSIS_FILTER_NUMBER.LARGE_OR_EQUAL: {
+                NumberSelectedFilterValueBean numberBean = ((NumberLargeOrEqualFilterBean) bean).getFilterValue();
+                SwiftNumberInRangeFilterValue value = new SwiftNumberInRangeFilterValue();
+                value.setMin(getDimensionAVGValue(numberBean));
+                value.setMinIncluded(true);
+                return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(null, value,
+                        isAverage(numberBean) ? SwiftDetailFilterType.NUMBER_AVERAGE : SwiftDetailFilterType.NUMBER_IN_RANGE);
+            }
+            case BICommonConstants.ANALYSIS_FILTER_NUMBER.SMALL_OR_EQUAL: {
+                NumberSelectedFilterValueBean numberBean = ((NumberSmallOrEqualFilterBean) bean).getFilterValue();
+                SwiftNumberInRangeFilterValue value = new SwiftNumberInRangeFilterValue();
+                value.setMax(getDimensionAVGValue(numberBean));
+                value.setMaxIncluded(true);
+                return new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(null, value,
+                        isAverage(numberBean) ? SwiftDetailFilterType.NUMBER_AVERAGE : SwiftDetailFilterType.NUMBER_IN_RANGE);
+            }
+            case BICommonConstants.ANALYSIS_FILTER_TYPE.EMPTY_FORMULA:
+            case BICommonConstants.ANALYSIS_FILTER_TYPE.EMPTY_CONDITION:
+            default:
+        }
+        return new SwiftDetailFilterInfo(null, null, SwiftDetailFilterType.ALL_SHOW);
+    }
+
+    private static double getDimensionAVGValue(NumberSelectedFilterValueBean bean) {
+        int valueType = bean.getType();
+        if (valueType == BICommonConstants.ANALYSIS_FILTER_NUMBER_VALUE.AVG) {
+            return NumberAverageFilter.AVG_HOLDER;
+        } else {
+            return bean.getValue();
+        }
     }
 
     private static SwiftDetailFilterInfo createDateLessThanFilterInfo(ColumnKey columnKey, DateFilterBean bean) {

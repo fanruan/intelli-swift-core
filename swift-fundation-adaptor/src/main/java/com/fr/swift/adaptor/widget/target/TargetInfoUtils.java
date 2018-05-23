@@ -2,6 +2,7 @@ package com.fr.swift.adaptor.widget.target;
 
 import com.finebi.conf.constant.BIDesignConstants;
 import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
+import com.finebi.conf.internalimp.dashboard.widget.target.FineTargetImpl;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.fr.general.ComparatorUtils;
@@ -16,6 +17,8 @@ import com.fr.swift.query.adapter.metric.GroupMetric;
 import com.fr.swift.query.adapter.metric.Metric;
 import com.fr.swift.query.adapter.target.GroupTarget;
 import com.fr.swift.query.adapter.target.TargetInfo;
+import com.fr.swift.query.adapter.target.cal.CalTargetType;
+import com.fr.swift.query.adapter.target.cal.GroupFormulaTarget;
 import com.fr.swift.query.adapter.target.cal.ResultTarget;
 import com.fr.swift.query.adapter.target.cal.TargetInfoImpl;
 import com.fr.swift.query.aggregator.Aggregator;
@@ -26,6 +29,7 @@ import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.group.GroupType;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.etl.utils.FormulaUtils;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.utils.BusinessTableUtils;
@@ -44,14 +48,14 @@ public class TargetInfoUtils {
     public static TargetInfo parse(AbstractTableWidget widget) throws Exception {
         List<Metric> metrics = parseMetric(widget);
         List<GroupTarget> targetCalInfoList = parseTargetCalInfo(widget, metrics);
-        Pair<List<Aggregator>, List<ResultTarget>> pair = parseResultAggAndResultTarget(widget, metrics, targetCalInfoList);
+        Pair<List<Pair<Aggregator, Integer>>, List<ResultTarget>> pair = parseResultAggAndResultTarget(widget, metrics, targetCalInfoList);
         int targetLength = metrics.size() + targetCalInfoList.size();
         return new TargetInfoImpl(targetLength, new ArrayList<Metric>(metrics), targetCalInfoList, pair.getValue(), pair.getKey());
     }
 
-    private static Pair<List<Aggregator>, List<ResultTarget>> parseResultAggAndResultTarget(
+    private static Pair<List<Pair<Aggregator, Integer>>, List<ResultTarget>> parseResultAggAndResultTarget(
             AbstractTableWidget widget, List<Metric> metrics, List<GroupTarget> calInfoList) throws Exception {
-        List<Aggregator> aggregators = new ArrayList<Aggregator>();
+        List<Pair<Aggregator, Integer>> aggregators = new ArrayList<Pair<Aggregator, Integer>>();
         List<ResultTarget> resultTargets = new ArrayList<ResultTarget>();
         List<FineTarget> targets = widget.getTargetList();
         for (int i = 0; i < targets.size(); i++) {
@@ -64,20 +68,24 @@ public class TargetInfoUtils {
                     AggregatorType nodeAggType = AggregatorAdaptor.adaptorMetric(target.getMetric());
                     Metric metric = parseMetric(target, widget).get(0);
                     Aggregator detailAgg = metrics.get(metrics.indexOf(metric)).getAggregator();
+                    Aggregator resultAgg;
                     if (nodeAggType == AggregatorType.DUMMY) {
                         // 和明细的聚合器相同
-                        aggregators.add(new WrappedAggregator(detailAgg));
+                        resultAgg = new WrappedAggregator(detailAgg);
                     } else {
-                        aggregators.add(new WrappedAggregator(detailAgg, AggregatorFactory.createAggregator(nodeAggType)));
+                        resultAgg = new WrappedAggregator(detailAgg, AggregatorFactory.createAggregator(nodeAggType));
                     }
                     GroupTarget calInfo = parseTargetCalInfo(0, target, widget, metrics);
+                    int resultFetchIndex;
                     if (calInfo != null) {
                         // 显示快速计算指标
-                        resultTargets.add(new ResultTarget(i, metrics.size() + calInfoList.indexOf(calInfo)));
+                        resultFetchIndex = metrics.size() + calInfoList.indexOf(calInfo);
                     } else {
                         // 显示聚合指标
-                        resultTargets.add(new ResultTarget(i, metrics.indexOf(metric)));
+                        resultFetchIndex = metrics.indexOf(metric);
                     }
+                    resultTargets.add(new ResultTarget(i, resultFetchIndex));
+                    aggregators.add(Pair.of(resultAgg, resultFetchIndex));
                     break;
                 }
                 default:
@@ -124,9 +132,26 @@ public class TargetInfoUtils {
                     // 不包含聚合函数的公式字段生成的指标只能对应一个FormulaMetric
                     int paramIndex = metrics.indexOf(parseMetric(target, widget).get(0));
                     int rapidType = target.getCalculation().getType();
-
-                    return GroupTargetFactory.createFromRapidTarget(rapidType, 0,
+                    // 现在只有计算指标中的排名可能设置了二次计算
+                    return GroupTargetFactory.createFromRapidTarget(rapidType, 0, isRepeatCal(target),
                             new int[]{paramIndex}, resultIndex, getDateDimensionIndexTypePair(widget));
+                }
+                String fieldId = getFieldId(target);
+                String formula = AbstractWidgetAdaptor.getFormula(fieldId, widget);
+                FilterInfo filterInfo = getFilterInfo(target, widget);
+                SourceKey key = new SourceKey(BusinessTableUtils.getSourceIdByTableId(widget.getTableName()));
+                if (AggFormulaUtils.isAggFormula(formula)){
+                    List<AggUnit> aggUnits = AggFormulaUtils.getBaseParas(formula);
+                    int[] paraIndex = new int[aggUnits.size()];
+                    for (int i = 0; i < aggUnits.size(); i++){
+                        AggUnit unit = aggUnits.get(i);
+                        Aggregator aggregator = AggregatorFactory.createAggregator(unit.getAggregatorType());
+                        Metric metric = getFormulaMetric(key, filterInfo, aggregator, unit.getFormula());
+                        int index = metrics.indexOf(metric);
+                        paraIndex[i] = index;
+                        formula = formula.replace(unit.toAGGString(), "${" + index + "}");
+                    }
+                    return new GroupFormulaTarget(0, resultIndex, paraIndex, CalTargetType.FORMULA, formula);
                 }
                 return null;
             }
@@ -151,7 +176,7 @@ public class TargetInfoUtils {
             case BIDesignConstants.DESIGN.DIMENSION_TYPE.NUMBER: {
                 FilterInfo filterInfo = getFilterInfo(target, widget);
                 String fieldId = getFieldId(target);
-                SourceKey key = new SourceKey(fieldId);
+                SourceKey key = new SourceKey(BusinessTableUtils.getSourceIdByTableId(widget.getTableName()));
                 if (type == BIDesignConstants.DESIGN.DIMENSION_TYPE.COUNTER && !isDistinctCounter(target)) {
                     metrics.add(new CounterMetric(0, key, new ColumnKey(fieldId), filterInfo));
                     return metrics;
@@ -168,22 +193,49 @@ public class TargetInfoUtils {
                 // TODO: 2018/5/17 一个计算指标字段可能对应多个聚合函数（多个GroupMetric），如何区分计算指标是否包含聚合函数呢？
                 String fieldId = getFieldId(target);
                 String formula = AbstractWidgetAdaptor.getFormula(fieldId, widget);
+                FilterInfo filterInfo = getFilterInfo(target, widget);
+                SourceKey key = new SourceKey(BusinessTableUtils.getSourceIdByTableId(widget.getTableName()));
                 if (AggFormulaUtils.isAggFormula(formula)){
-                    for (String paras : AggFormulaUtils.getBaseParas(formula)){
-
+                    List<AggUnit> aggUnits = AggFormulaUtils.getBaseParas(formula);
+                    for (AggUnit unit : aggUnits){
+                        Aggregator aggregator = AggregatorFactory.createAggregator(unit.getAggregatorType());
+                        metrics.add(getFormulaMetric(key, filterInfo, aggregator, unit.getFormula()));
                     }
+                    return metrics;
                 } else {
-                    FilterInfo filterInfo = getFilterInfo(target, widget);
-                    SourceKey key = new SourceKey(fieldId);
                     AggregatorType aggregatorType = AggregatorAdaptor.adaptorDashBoard(target.getGroup().getType());
                     Aggregator aggregator = AggregatorFactory.createAggregator(aggregatorType);
-                    metrics.add(new FormulaMetric(0, key, filterInfo,
-                            aggregator, AbstractWidgetAdaptor.getFormula(fieldId, widget)));
+                    metrics.add(getFormulaMetric(key, filterInfo, aggregator, formula));
                     return metrics;
                 }
             }
         }
         return Crasher.crash("invalid dimension type of target!");
+    }
+
+    private static Metric getFormulaMetric(SourceKey key, FilterInfo filterInfo, Aggregator aggregator, String formula){
+        if (isGroupMetricFormula(formula)){
+            String fieldName = FormulaUtils.getRelatedParaNames(formula)[0];
+            return new GroupMetric(0, key, new ColumnKey(fieldName), filterInfo, aggregator);
+        }
+        return new FormulaMetric(0, key, filterInfo,
+                aggregator, formula);
+    }
+
+    private static boolean isRepeatCal(FineTarget target) {
+        try {
+            return ((FineTargetImpl) target).isRepeatCal();
+        } catch (Exception e) {
+        }
+        return false;
+    }
+
+    private static boolean isGroupMetricFormula(String formula) {
+        String[] paras = FormulaUtils.getRelatedParaNames(formula);
+        if (paras.length != 1){
+            return false;
+        }
+        return formula.replace(paras[0],"").trim().length() == 3;
     }
 
     private static String getFieldId(FineTarget target) {
@@ -202,7 +254,7 @@ public class TargetInfoUtils {
     private static boolean isDistinctCounter(FineTarget target) {
         String countDep = target.getCounterDep();
         return StringUtils.isNotEmpty(countDep)
-                && !ComparatorUtils.equals(countDep, BIDesignConstants.COUNTER_DEP.TOTAL_ROWS);
+                && !ComparatorUtils.equals(countDep, BIDesignConstants.DESIGN.COUNTER_DEP.TOTAL_ROWS);
     }
 
     private static List<Pair<Integer, GroupType>> getDateDimensionIndexTypePair(AbstractTableWidget widget) {

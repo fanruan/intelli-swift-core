@@ -1,6 +1,7 @@
 package com.fr.swift.query.filter.detail;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.result.SwiftNode;
 
 /**
@@ -10,5 +11,5 @@ import com.fr.swift.result.SwiftNode;
 public interface DetailFilter {
     ImmutableBitMap createFilterIndex();
 
-    boolean matches(SwiftNode node, int targetIndex);
+    boolean matches(SwiftNode node, int targetIndex, MatchConverter converter);
 }

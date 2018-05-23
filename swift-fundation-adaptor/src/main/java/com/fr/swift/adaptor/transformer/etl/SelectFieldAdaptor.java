@@ -12,6 +12,7 @@ import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
+import com.fr.swift.conf.dashboard.DashboardRelationPathService;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
@@ -42,8 +43,9 @@ public class SelectFieldAdaptor {
         Map<String, DataSource> sourceKeyDataSourceMap = new LinkedHashMap<String, DataSource>();
         SelectFieldOperator selectFieldOperator = analysis.getOperator();
         List<SelectFieldBeanItem> selectFieldBeanItemList = selectFieldOperator.getValue().getValue();
-        FineConfManageCenter fineConfManageCenter = StableManager.getContext().getObject("fineConfManageCenter");
-        SwiftRelationPathConfProvider relationProvider = (SwiftRelationPathConfProvider) fineConfManageCenter.getRelationPathProvider().get(FineEngineType.Cube);
+//        FineConfManageCenter fineConfManageCenter = StableManager.getContext().getObject("fineConfManageCenter");
+//        SwiftRelationPathConfProvider relationProvider = (SwiftRelationPathConfProvider) fineConfManageCenter.getRelationPathProvider().get(FineEngineType.Cube);
+        DashboardRelationPathService relationProvider = DashboardRelationPathService.getService();
         String baseTable = RelationAdaptor.getBaseTable(relationProvider, selectFieldBeanItemList);
         for (SelectFieldBeanItem selectFieldBeanItem : selectFieldBeanItemList) {
             FineBusinessTable fineBusinessTable = BusinessTableUtils.getTableByFieldId(selectFieldBeanItem.getField());

@@ -28,7 +28,7 @@ public class DetailFormulaDicColumn implements DictionaryEncodedColumn {
         this.formula = FormulaUtils.getParameterIndexEncodedFormula(formula);
         this.segment = segment;
         this.columnIndexMap = FormulaUtils.createColumnIndexMap(formula, segment);
-        String[] paras = FormulaUtils.getHistoryRelatedParaNames(formula);
+        String[] paras = FormulaUtils.getRelatedParaNames(formula);
         //todo 先取一个用到的列暂时用下，如果一个都没用到，就
         if (paras.length != 0){
             hostColumn = segment.getColumn(new ColumnKey(paras[0])).getDictionaryEncodedColumn();

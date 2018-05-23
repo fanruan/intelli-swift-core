@@ -5,6 +5,7 @@ import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
@@ -41,7 +42,7 @@ public class FormulaFilter implements DetailFilter {
     }
 
     @Override
-    public boolean matches(SwiftNode node, int targetIndex) {
+    public boolean matches(SwiftNode node, int targetIndex, MatchConverter converter) {
         Calculator calculator = Calculator.createCalculator();
         String formula = FormulaUtils.getParameterIndexEncodedFormula(expression);
         Map<String, Integer> map = FormulaUtils.createColumnIndexMap(expression);

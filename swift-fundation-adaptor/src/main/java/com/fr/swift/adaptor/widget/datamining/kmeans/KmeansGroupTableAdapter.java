@@ -19,6 +19,7 @@ import com.fr.swift.result.node.NodeType;
 import com.fr.swift.result.node.iterator.BFTGroupNodeIterator;
 import com.fr.swift.result.node.iterator.NLevelGroupNodeIterator;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.structure.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,14 +42,17 @@ public class KmeansGroupTableAdapter extends SwiftAlgorithmResultAdapter<KmeansB
         List<FineTarget> targetList = widget.getTargetList();
         TargetInfo targetInfo = info.getTargetInfo();
         DimensionInfo dimensionInfo = info.getDimensionInfo();
-        List<Aggregator> aggregators = targetInfo.getResultAggregators();
+        List<Aggregator> aggregators = new ArrayList<Aggregator>();
+        for (Pair<Aggregator, Integer> pair : targetInfo.getResultAggregators()) {
+            aggregators.add(pair.getKey());
+        }
 
         GroupNode rootNode = (GroupNode) result.getNode();
         List<double[]> resultSummary = getResultSummary(rootNode);
 
         KmeansPredict kmeans = new KmeansPredict(bean, resultSummary, targetList);
         GroupNode resultRootNode = addFirstDimension(rootNode, kmeans, info);
-        GroupNodeAggregateUtils.aggregate(NodeType.GROUP, dimensionInfo.getDimensions().length, resultRootNode, aggregators);
+        GroupNodeAggregateUtils.aggregate(NodeType.GROUP, dimensionInfo.getDimensions().length, resultRootNode, targetInfo.getResultAggregators());
 
         return new NodeMergeResultSetImpl(resultRootNode, new ArrayList<Map<Integer, Object>>(), new ArrayList<Aggregator>());
 

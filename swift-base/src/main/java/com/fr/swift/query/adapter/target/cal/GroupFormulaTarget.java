@@ -8,7 +8,7 @@ public class GroupFormulaTarget extends GroupTargetImpl {
     private String formula;
 
     public GroupFormulaTarget(int queryIndex, int resultIndex, int[] paramIndexes, CalTargetType type, String formula) {
-        super(queryIndex, resultIndex, paramIndexes, type);
+        super(queryIndex, false, resultIndex, paramIndexes, type);
         this.formula = formula;
     }
 

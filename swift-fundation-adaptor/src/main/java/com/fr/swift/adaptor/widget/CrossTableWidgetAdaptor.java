@@ -130,8 +130,10 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor {
     private static XGroupQueryInfo buildQueryInfo(CrossTableWidget widget, TargetInfo targetInfo) throws Exception {
         String queryId = widget.getWidgetId();
         SourceKey sourceKey = getSourceKey(widget);
-        List<Dimension> rowDimensions = TableWidgetAdaptor.getDimensions(sourceKey, widget.getDimensionList(), widget.getTargetList());
-        List<Dimension> colDimensions = TableWidgetAdaptor.getDimensions(sourceKey, widget.getColDimensionList(), widget.getTargetList());
+        List<Dimension> rowDimensions = TableWidgetAdaptor.getDimensions(sourceKey, widget.getDimensionList(),
+                TableWidgetAdaptor.getTargetIndexPair(widget.getTargetList(), targetInfo.getTargetsForShowList()));
+        List<Dimension> colDimensions = TableWidgetAdaptor.getDimensions(sourceKey, widget.getColDimensionList(),
+                TableWidgetAdaptor.getTargetIndexPair(widget.getTargetList(), targetInfo.getTargetsForShowList()));
         Expander rowExpander = ExpanderFactory.create(widget.getValue().isOpenRowNode(), widget.getDimensionList(),
                 widget.getValue().getRowExpand(), widget.getValue().getHeaderExpand());
         Expander colExpander = ExpanderFactory.create(widget.getValue().isOpenColNode(), widget.getColDimensionList(),

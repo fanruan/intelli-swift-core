@@ -6,6 +6,7 @@ import com.fr.swift.query.adapter.dimension.ExpanderImpl;
 import com.fr.swift.query.adapter.dimension.ExpanderType;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.query.group.by.CubeData;
 import com.fr.swift.query.group.by.GroupByEntry;
 import com.fr.swift.query.group.info.GroupByInfo;
@@ -43,7 +44,7 @@ public class MultiGroupByRowIteratorTest extends TestCase {
             }
 
             @Override
-            public boolean matches(SwiftNode node, int targetIndex) {
+            public boolean matches(SwiftNode node, int targetIndex, MatchConverter converter) {
                 return false;
             }
         }, new ArrayList<>(), new ExpanderImpl(ExpanderType.ALL_EXPANDER, new HashSet<>()));

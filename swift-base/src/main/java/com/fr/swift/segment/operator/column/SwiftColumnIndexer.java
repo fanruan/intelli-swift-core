@@ -1,6 +1,4 @@
-package com.fr.swift.segment.operator;
-
-import com.fr.swift.cube.task.WorkerTask;
+package com.fr.swift.segment.operator.column;
 
 /**
  * This class created on 2018/4/18
@@ -9,6 +7,6 @@ import com.fr.swift.cube.task.WorkerTask;
  * @description
  * @since Advanced FineBI 5.0
  */
-public interface SwiftColumnIndexer extends WorkerTask.Worker {
+public interface SwiftColumnIndexer {
     void buildIndex() throws Exception;
 }

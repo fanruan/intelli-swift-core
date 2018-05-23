@@ -51,4 +51,24 @@ public class ExpanderImpl implements Expander {
     public Set<RowIndexKey<String[]>> getStringIndexKeys() {
         return strIndexKeys;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ExpanderImpl expander = (ExpanderImpl) o;
+
+        if (nLevel != expander.nLevel) return false;
+        if (type != expander.type) return false;
+        return strIndexKeys != null ? strIndexKeys.equals(expander.strIndexKeys) : expander.strIndexKeys == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = nLevel;
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (strIndexKeys != null ? strIndexKeys.hashCode() : 0);
+        return result;
+    }
 }
