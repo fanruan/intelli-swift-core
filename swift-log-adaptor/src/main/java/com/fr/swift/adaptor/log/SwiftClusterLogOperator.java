@@ -34,7 +34,7 @@ public class SwiftClusterLogOperator implements LogOperator {
     //todo masterNode为空的情况
 
     @Override
-    public <T> DataList<T> find(Class<T> aClass, QueryCondition queryCondition) throws Exception {
+    public <T> DataList<T> find(Class<T> aClass, QueryCondition queryCondition) {
         ClusterNode masterNode = ClusterNodeManager.getInstance().getMasterNode();
         Invocation invocation = Invocation.create(LogOperatorProxy.class, "find",
                 new Class[]{Class.class, QueryCondition.class}, aClass, queryCondition);
@@ -43,7 +43,7 @@ public class SwiftClusterLogOperator implements LogOperator {
     }
 
     @Override
-    public <T> DataList<T> find(Class<T> aClass, QueryCondition queryCondition, String s) throws Exception {
+    public <T> DataList<T> find(Class<T> aClass, QueryCondition queryCondition, String s) {
         ClusterNode masterNode = ClusterNodeManager.getInstance().getMasterNode();
         Invocation invocation = Invocation.create(LogOperatorProxy.class, "find",
                 new Class[]{Class.class, QueryCondition.class, String.class}, aClass, queryCondition, s);
@@ -52,7 +52,7 @@ public class SwiftClusterLogOperator implements LogOperator {
     }
 
     @Override
-    public void recordInfo(Object o) throws Exception {
+    public void recordInfo(Object o) {
         ClusterNode masterNode = ClusterNodeManager.getInstance().getMasterNode();
         Invocation invocation = Invocation.create(LogOperatorProxy.class, "recordInfo",
                 new Class[]{Object.class}, o);
@@ -60,7 +60,7 @@ public class SwiftClusterLogOperator implements LogOperator {
     }
 
     @Override
-    public void recordInfo(List<Object> list) throws Exception {
+    public void recordInfo(List<Object> list) {
         ClusterNode masterNode = ClusterNodeManager.getInstance().getMasterNode();
         Invocation invocation = Invocation.create(LogOperatorProxy.class, "recordInfo",
                 new Class[]{List.class}, list);
@@ -68,7 +68,7 @@ public class SwiftClusterLogOperator implements LogOperator {
     }
 
     @Override
-    public void initTables(List<Class> list) throws Exception {
+    public void initTables(List<Class> list) {
         ClusterNode masterNode = ClusterNodeManager.getInstance().getMasterNode();
         Invocation invocation = Invocation.create(LogOperatorProxy.class, "initTables",
                 new Class[]{List.class}, list);
