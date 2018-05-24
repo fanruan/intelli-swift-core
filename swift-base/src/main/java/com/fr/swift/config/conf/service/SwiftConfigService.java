@@ -1,6 +1,7 @@
 package com.fr.swift.config.conf.service;
 
 import com.fr.swift.config.IConfigSegment;
+import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 
@@ -50,7 +51,7 @@ public interface SwiftConfigService {
      *
      * @return
      */
-    Map<String, SwiftMetaData> getAllMetaData();
+    Map<String, SwiftMetaData> getAllMetaData() throws SwiftMetaDataException;
 
     /**
      * 根据SourceKey获取MetaData
@@ -58,7 +59,7 @@ public interface SwiftConfigService {
      * @param sourceKey
      * @return
      */
-    SwiftMetaData getMetaDataByKey(String sourceKey);
+    SwiftMetaData getMetaDataByKey(String sourceKey) throws SwiftMetaDataException;
 
     boolean containsMeta(SourceKey sourceKey);
 

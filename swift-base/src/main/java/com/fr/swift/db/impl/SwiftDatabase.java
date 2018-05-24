@@ -2,7 +2,6 @@ package com.fr.swift.db.impl;
 
 import com.fr.swift.config.conf.service.SwiftConfigService;
 import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
-import com.fr.swift.config.unique.SwiftMetaDataUnique;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
@@ -30,7 +29,7 @@ public class SwiftDatabase implements Database {
         }
 
         Table table = new SwiftTable(tableKey, meta);
-        confSvc.addMetaData(tableKey.getId(), new SwiftMetaDataUnique(meta));
+        confSvc.addMetaData(tableKey.getId(), meta);
         return table;
     }
 
@@ -68,7 +67,7 @@ public class SwiftDatabase implements Database {
         if (!existsTable(tableKey)) {
             throw new SQLException("table " + tableKey + " not exists");
         }
-        confSvc.updateMetaData(tableKey.getId(), new SwiftMetaDataUnique(meta));
+        confSvc.updateMetaData(tableKey.getId(), meta);
     }
 
     @Override
