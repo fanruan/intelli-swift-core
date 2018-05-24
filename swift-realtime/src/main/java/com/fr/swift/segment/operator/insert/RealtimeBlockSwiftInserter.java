@@ -4,6 +4,9 @@ import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.segment.RealTimeSegmentImpl;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.operator.Recorder;
+import com.fr.swift.segment.operator.record.RealtimeRecorder;
+import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 
@@ -18,12 +21,17 @@ import java.util.List;
  */
 public class RealtimeBlockSwiftInserter extends AbstractBlockInserter {
 
+    private Recorder recorder;
+
     public RealtimeBlockSwiftInserter(List<Segment> segments, SourceKey sourceKey, String cubeSourceKey, SwiftMetaData swiftMetaData) {
         super(segments, sourceKey, cubeSourceKey, swiftMetaData);
+        recorder = new RealtimeRecorder(sourceKey, swiftMetaData, fields, cubeSourceKey);
     }
 
     public RealtimeBlockSwiftInserter(List<Segment> segments, SourceKey sourceKey, String cubeSourceKey, SwiftMetaData swiftMetaData, List<String> fields) {
         super(segments, sourceKey, cubeSourceKey, swiftMetaData, fields);
+        recorder = new RealtimeRecorder(sourceKey, swiftMetaData, fields, cubeSourceKey);
+
     }
 
     @Override
@@ -34,5 +42,15 @@ public class RealtimeBlockSwiftInserter extends AbstractBlockInserter {
     @Override
     protected Segment createSegment(int order) {
         return createSegment(order, Types.StoreType.MEMORY);
+    }
+
+    @Override
+    public void recordData(Row row, int segIndex) {
+        recorder.recordData(row, segIndex);
+    }
+
+    @Override
+    public void end() {
+        recorder.end();
     }
 }
