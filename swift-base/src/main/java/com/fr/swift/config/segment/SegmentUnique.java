@@ -1,11 +1,10 @@
-package com.fr.swift.config.unique;
+package com.fr.swift.config.segment;
 
 import com.fr.config.holder.Conf;
 import com.fr.config.holder.factory.Holders;
 import com.fr.config.holder.impl.ObjectMapConf;
 import com.fr.config.utils.UniqueKey;
 import com.fr.stable.StringUtils;
-import com.fr.swift.config.IConfigSegment;
 import com.fr.swift.segment.SegmentKey;
 
 import java.util.ArrayList;

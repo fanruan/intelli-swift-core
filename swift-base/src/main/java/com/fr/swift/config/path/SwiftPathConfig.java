@@ -1,4 +1,4 @@
-package com.fr.swift.config.conf;
+package com.fr.swift.config.path;
 
 import com.fr.config.ConfigContext;
 import com.fr.config.DefaultConfiguration;

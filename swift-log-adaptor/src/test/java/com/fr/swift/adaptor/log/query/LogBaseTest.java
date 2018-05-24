@@ -1,8 +1,8 @@
 package com.fr.swift.adaptor.log.query;
 
-import com.fr.swift.config.IConfigSegment;
 import com.fr.swift.config.TestConfDb;
-import com.fr.swift.config.unique.SegmentKeyUnique;
+import com.fr.swift.config.segment.IConfigSegment;
+import com.fr.swift.config.segment.SegmentKeyUnique;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;

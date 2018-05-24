@@ -1,10 +1,10 @@
 package com.fr.swift.generate;
 
-import com.fr.swift.config.IConfigSegment;
-import com.fr.swift.config.conf.MetaDataConfig;
-import com.fr.swift.config.conf.SegmentConfig;
-import com.fr.swift.config.unique.SegmentKeyUnique;
-import com.fr.swift.config.unique.SegmentUnique;
+import com.fr.swift.config.meta.MetaDataConfig;
+import com.fr.swift.config.segment.IConfigSegment;
+import com.fr.swift.config.segment.SegmentConfig;
+import com.fr.swift.config.segment.SegmentKeyUnique;
+import com.fr.swift.config.segment.SegmentUnique;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.log.SwiftLogger;

@@ -1,10 +1,9 @@
-package com.fr.swift.config.conf;
+package com.fr.swift.config.segment;
 
 import com.fr.config.ConfigContext;
 import com.fr.config.DefaultConfiguration;
 import com.fr.config.holder.factory.Holders;
 import com.fr.config.holder.impl.ObjectMapConf;
-import com.fr.swift.config.IConfigSegment;
 
 import java.util.HashMap;
 import java.util.Map;

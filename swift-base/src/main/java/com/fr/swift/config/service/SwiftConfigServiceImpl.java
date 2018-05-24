@@ -1,10 +1,10 @@
-package com.fr.swift.config.conf.service;
+package com.fr.swift.config.service;
 
 import com.fr.config.Configuration;
-import com.fr.swift.config.IConfigSegment;
-import com.fr.swift.config.conf.MetaDataConfig;
-import com.fr.swift.config.conf.SegmentConfig;
-import com.fr.swift.config.conf.SwiftPathConfig;
+import com.fr.swift.config.meta.MetaDataConfig;
+import com.fr.swift.config.path.SwiftPathConfig;
+import com.fr.swift.config.segment.IConfigSegment;
+import com.fr.swift.config.segment.SegmentConfig;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;

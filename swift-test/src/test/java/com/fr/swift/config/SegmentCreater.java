@@ -1,7 +1,7 @@
 package com.fr.swift.config;
 
-import com.fr.swift.config.unique.SegmentKeyUnique;
-import com.fr.swift.config.unique.SegmentUnique;
+import com.fr.swift.config.segment.SegmentKeyUnique;
+import com.fr.swift.config.segment.SegmentUnique;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;

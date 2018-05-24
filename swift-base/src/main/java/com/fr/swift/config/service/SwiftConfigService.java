@@ -1,6 +1,6 @@
-package com.fr.swift.config.conf.service;
+package com.fr.swift.config.service;
 
-import com.fr.swift.config.IConfigSegment;
+import com.fr.swift.config.segment.IConfigSegment;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;

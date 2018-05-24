@@ -1,10 +1,9 @@
-package com.fr.swift.config.conf;
+package com.fr.swift.config.meta;
 
 import com.fr.config.ConfigContext;
 import com.fr.config.DefaultConfiguration;
 import com.fr.config.holder.factory.Holders;
 import com.fr.config.holder.impl.ObjectMapConf;
-import com.fr.swift.config.unique.SwiftMetaDataUnique;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;

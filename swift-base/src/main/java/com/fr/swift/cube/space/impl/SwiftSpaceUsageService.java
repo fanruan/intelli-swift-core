@@ -1,8 +1,8 @@
 package com.fr.swift.cube.space.impl;
 
-import com.fr.swift.config.IConfigSegment;
-import com.fr.swift.config.conf.service.SwiftConfigService;
-import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
+import com.fr.swift.config.segment.IConfigSegment;
+import com.fr.swift.config.service.SwiftConfigService;
+import com.fr.swift.config.service.SwiftConfigServiceProvider;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.space.SpaceUsageDetector;
 import com.fr.swift.cube.space.SpaceUsageService;

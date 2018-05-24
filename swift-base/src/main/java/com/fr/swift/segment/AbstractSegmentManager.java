@@ -1,7 +1,7 @@
 package com.fr.swift.segment;
 
-import com.fr.swift.config.IConfigSegment;
-import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
+import com.fr.swift.config.segment.IConfigSegment;
+import com.fr.swift.config.service.SwiftConfigServiceProvider;
 import com.fr.swift.source.SourceKey;
 
 import java.util.ArrayList;

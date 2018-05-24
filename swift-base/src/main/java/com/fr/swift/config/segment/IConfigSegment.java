@@ -1,4 +1,4 @@
-package com.fr.swift.config;
+package com.fr.swift.config.segment;
 
 import com.fr.swift.segment.SegmentKey;
 

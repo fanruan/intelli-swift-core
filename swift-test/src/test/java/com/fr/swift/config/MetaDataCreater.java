@@ -1,7 +1,7 @@
 package com.fr.swift.config;
 
-import com.fr.swift.config.unique.MetaDataColumnUnique;
-import com.fr.swift.config.unique.SwiftMetaDataUnique;
+import com.fr.swift.config.meta.MetaDataColumnUnique;
+import com.fr.swift.config.meta.SwiftMetaDataUnique;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 
