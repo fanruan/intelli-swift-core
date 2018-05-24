@@ -21,6 +21,9 @@ class DatumConverters {
                 return new UnaryOperator<Object>() {
                     @Override
                     public Object apply(Object p) {
+                        if (p == null) {
+                            return null;
+                        }
                         if (p instanceof Boolean) {
                             return ((Boolean) p) ? 1L : 0L;
                         }
@@ -31,14 +34,14 @@ class DatumConverters {
                 return new UnaryOperator<Object>() {
                     @Override
                     public Object apply(Object p) {
-                        return ((Number) p).doubleValue();
+                        return p == null ? null : ((Number) p).doubleValue();
                     }
                 };
             case Types.VARCHAR:
                 return new UnaryOperator<Object>() {
                     @Override
                     public Object apply(Object p) {
-                        return p.toString();
+                        return p == null ? null : p.toString();
                     }
                 };
             case Types.DATE:
@@ -84,7 +87,6 @@ class DatumConverters {
                     }
                 };
             case Types.FLOAT:
-
                 return new UnaryOperator<Object>() {
                     @Override
                     public Object apply(Object p) {
@@ -140,7 +142,7 @@ class DatumConverters {
 
         @Override
         public Object apply(Object p) {
-            return baseConverter.apply(converter.convertToDatabaseColumn(p));
+            return p == null ? null : baseConverter.apply(converter.convertToDatabaseColumn(p));
         }
     }
 
@@ -156,7 +158,7 @@ class DatumConverters {
 
         @Override
         public Object apply(Object p) {
-            return converter.convertToEntityAttribute(baseConverter.apply(p));
+            return p == null ? null : converter.convertToEntityAttribute(baseConverter.apply(p));
         }
     }
 }
