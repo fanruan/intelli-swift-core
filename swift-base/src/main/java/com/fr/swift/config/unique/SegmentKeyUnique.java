@@ -4,8 +4,9 @@ import com.fr.config.holder.Conf;
 import com.fr.config.holder.factory.Holders;
 import com.fr.config.utils.UniqueKey;
 import com.fr.stable.StringUtils;
-import com.fr.swift.config.ISegmentKey;
-import com.fr.swift.cube.io.Types;
+import com.fr.swift.cube.io.Types.StoreType;
+import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.source.SourceKey;
 
 import java.net.URI;
 
@@ -13,60 +14,50 @@ import java.net.URI;
  * @author yee
  * @date 2018/3/9
  */
-public class SegmentKeyUnique extends UniqueKey implements ISegmentKey {
+public class SegmentKeyUnique extends UniqueKey implements SegmentKey {
+    private Conf<String> table = Holders.simple(StringUtils.EMPTY);
+
     private Conf<String> name = Holders.simple(StringUtils.EMPTY);
+
     private Conf<String> uri = Holders.simple(StringUtils.EMPTY);
-    private Conf<Integer> segmentOrder = Holders.simple(0);
-    private Conf<String> sourceId = Holders.simple(StringUtils.EMPTY);
+
+    private Conf<Integer> order = Holders.simple(0);
+
     private Conf<String> storeType = Holders.simple(StringUtils.EMPTY);
+
+    public SegmentKeyUnique(SourceKey table, String name, URI uri, int order, StoreType storeType) {
+        this.table.set(table.getId());
+        this.name.set(name);
+        this.uri.set(uri.getPath());
+        this.order.set(order);
+        this.storeType.set(storeType.name());
+    }
 
     public SegmentKeyUnique() {
     }
 
-    public SegmentKeyUnique(String name, URI uri, int segmentOrder, Types.StoreType storeType) {
-        setName(name);
-        setUri(uri.getPath());
-        setSegmentOrder(segmentOrder);
-        setStoreType(storeType.name());
+    @Override
+    public StoreType getStoreType() {
+        return StoreType.valueOf(storeType.get());
     }
 
-    public void setName(String name) {
-        this.name.set(name);
-    }
-
-    public String getStoreType() {
-        return storeType.get();
-    }
-
-    public void setStoreType(String storeType) {
-        this.storeType.set(storeType);
-    }
-
+    @Override
     public String getName() {
         return name.get();
     }
 
-    public String getUri() {
-        return uri.get();
+    @Override
+    public URI getUri() {
+        return URI.create(uri.get());
     }
 
-    public void setUri(String uri) {
-        this.uri.set(uri);
+    @Override
+    public int getOrder() {
+        return order.get();
     }
 
-    public int getSegmentOrder() {
-        return segmentOrder.get();
-    }
-
-    public void setSegmentOrder(int segmentOrder) {
-        this.segmentOrder.set(segmentOrder);
-    }
-
-    public String getSourceId() {
-        return sourceId.get();
-    }
-
-    public void setSourceId(String sourceId) {
-        this.sourceId.set(sourceId);
+    @Override
+    public SourceKey getTable() {
+        return new SourceKey(table.get());
     }
 }

@@ -22,7 +22,6 @@ import com.fr.swift.result.node.iterator.NLevelGroupNodeIterator;
 import com.fr.swift.result.node.iterator.PostOrderNodeIterator;
 import com.fr.swift.result.node.xnode.XNodeUtils;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.structure.Pair;
 import edu.emory.mathcs.backport.java.util.Arrays;
 
 import java.util.ArrayList;
@@ -56,10 +55,7 @@ public class KmeansCrossTableAdapter extends SwiftAlgorithmResultAdapter<KmeansB
         try {
 
             int targetSize = info.getTargetInfo().getMetrics().size();
-            List<Aggregator> aggregators = new ArrayList<Aggregator>();
-            for (Pair<Aggregator, Integer> pair : info.getTargetInfo().getResultAggregators()) {
-                aggregators.add(pair.getKey());
-            }
+            List<Aggregator> aggregators = info.getTargetInfo().getResultAggregators();
 
             XNodeMergeResultSet XResultSet = (XNodeMergeResultSet) result;
             TopGroupNode topNode = XResultSet.getTopGroupNode();

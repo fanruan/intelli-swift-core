@@ -27,7 +27,6 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.iterator.IntListRowTraversal;
 import com.fr.swift.utils.BusinessTableUtils;
@@ -73,7 +72,7 @@ public class AvgUtils {
         TargetInfo targetInfo = new TargetInfoImpl(1, Arrays.asList(metric),
                 new ArrayList<GroupTarget>(0),
                 Arrays.asList(new ResultTarget(0, 0)),
-                Arrays.asList(Pair.of(aggregator, 0)));
+                Arrays.asList(aggregator));
         QueryInfo queryInfo = new GroupQueryInfo(fieldId, sourceKey, dimensionInfo, targetInfo);
         NodeResultSet nodeResultSet = null;
         try {

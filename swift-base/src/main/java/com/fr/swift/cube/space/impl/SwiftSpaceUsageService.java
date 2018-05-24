@@ -1,12 +1,12 @@
 package com.fr.swift.cube.space.impl;
 
 import com.fr.swift.config.IConfigSegment;
-import com.fr.swift.config.ISegmentKey;
 import com.fr.swift.config.conf.service.SwiftConfigService;
 import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.space.SpaceUsageDetector;
 import com.fr.swift.cube.space.SpaceUsageService;
+import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 
 import java.io.File;
@@ -17,7 +17,7 @@ import java.util.List;
  * @author anchore
  * @date 2018/4/13
  */
-public class SpaceUsageServiceImpl implements SpaceUsageService {
+public class SwiftSpaceUsageService implements SpaceUsageService {
     private SpaceUsageDetector detector = new LocalSpaceUsageDetector();
 
     private SwiftConfigService confSvc = SwiftConfigServiceProvider.getInstance();
@@ -28,11 +28,11 @@ public class SpaceUsageServiceImpl implements SpaceUsageService {
         if (segConf == null) {
             return 0;
         }
-        List<ISegmentKey> segs = segConf.getSegments();
+        List<SegmentKey> segs = segConf.getSegments();
 
         long size = 0;
-        for (ISegmentKey seg : segs) {
-            size += detector.detectUsed(URI.create(seg.getUri()));
+        for (SegmentKey seg : segs) {
+            size += detector.detectUsed(seg.getUri());
         }
         return size;
     }
@@ -64,9 +64,9 @@ public class SpaceUsageServiceImpl implements SpaceUsageService {
         return detector.detectTotal(baseUri);
     }
 
-    private static final SpaceUsageService INSTANCE = new SpaceUsageServiceImpl();
+    private static final SpaceUsageService INSTANCE = new SwiftSpaceUsageService();
 
-    private SpaceUsageServiceImpl() {
+    private SwiftSpaceUsageService() {
     }
 
     public static SpaceUsageService getInstance() {

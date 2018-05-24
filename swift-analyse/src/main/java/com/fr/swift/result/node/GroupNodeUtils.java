@@ -5,6 +5,7 @@ import com.fr.swift.query.adapter.target.cal.ResultTarget;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.XLeftNode;
+import com.fr.swift.result.node.iterator.BFTGroupNodeIterator;
 import com.fr.swift.result.node.iterator.DFTGroupNodeIterator;
 import com.fr.swift.structure.iterator.MapperIterator;
 import com.fr.swift.util.function.Function;
@@ -53,10 +54,13 @@ public class GroupNodeUtils {
                 }
                 for (int i = 0; i < allValues.size(); i++) {
                     AggregatorValue[] values = allValues.get(i);
-                    for (int j = 0; j < values.length; j++) {
-                        showValues.get(i)[j] = allValues.get(i)[targetsForShowList.get(j).getResultFetchIndex()];
+                    AggregatorValue[] forShowValues = showValues.get(i);
+                    assert forShowValues.length == targetsForShowList.size();
+                    for (int n = 0; n < forShowValues.length; n++) {
+                        forShowValues[n] = values[targetsForShowList.get(n).getResultFetchIndex()];
                     }
                 }
+                ((XLeftNode) p).setValueArrayList(showValues);
                 return p;
             }
         });
@@ -87,9 +91,9 @@ public class GroupNodeUtils {
         }
     }
 
-    public static void updateNodeIndexAfterSort(int dimensionSize, GroupNode root) {
+    public static void updateNodeIndexAfterSort(GroupNode root) {
         final IndexCounter indexCounter = new IndexCounter();
-        Iterator<GroupNode> iterator = new MapperIterator<GroupNode, GroupNode>(new DFTGroupNodeIterator(dimensionSize, root), new Function<GroupNode, GroupNode>() {
+        Iterator<GroupNode> iterator = new MapperIterator<GroupNode, GroupNode>(new BFTGroupNodeIterator(root), new Function<GroupNode, GroupNode>() {
             @Override
             public GroupNode apply(GroupNode p) {
                 p.setIndex(indexCounter.index(p));

@@ -1,74 +1,22 @@
 package com.fr.swift.segment;
 
-import com.fr.swift.cube.io.Types;
+import com.fr.swift.cube.io.Types.StoreType;
+import com.fr.swift.source.SourceKey;
 
 import java.net.URI;
 
 /**
- * Created by pony on 2017/10/16.
+ * @author anchore
+ * @date 2018/5/23
  */
-public class SegmentKey {
-    private String name;
-    private URI uri;
-    /**
-     * @deprecated fixme 不是通用的抽象，可以扩展个按行分块的key
-     */
-    @Deprecated
-    private int segmentOrder;
-    private String sourceId;
-    private Types.StoreType storeType;
+public interface SegmentKey {
+    SourceKey getTable();
 
-    public SegmentKey(String name, URI uri, int segmentOrder, Types.StoreType storeType) {
-        this.name = name;
-        this.uri = uri;
-        this.segmentOrder = segmentOrder;
-        this.storeType = storeType;
-    }
+    String getName();
 
-    public SegmentKey(String name) {
-        this.name = name;
-    }
+    URI getUri();
 
-    public SegmentKey() {
-    }
+    int getOrder();
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Types.StoreType getStoreType() {
-        return storeType;
-    }
-
-    public void setStoreType(Types.StoreType storeType) {
-        this.storeType = storeType;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public URI getUri() {
-        return uri;
-    }
-
-    public void setUri(URI uri) {
-        this.uri = uri;
-    }
-
-    public int getSegmentOrder() {
-        return segmentOrder;
-    }
-
-    public void setSegmentOrder(int segmentOrder) {
-        this.segmentOrder = segmentOrder;
-    }
-
-    public String getSourceId() {
-        return sourceId;
-    }
-
-    public void setSourceId(String sourceId) {
-        this.sourceId = sourceId;
-    }
+    StoreType getStoreType();
 }

@@ -23,7 +23,7 @@ public class DateWidgetBeanAdaptor {
             return new SwiftDateInRangeFilterValue();
         }
         DateWidgetBeanValue value = bean.getWidget();
-        if (value == null){
+        if (value == null) {
             return new SwiftDateInRangeFilterValue();
         }
         SwiftDateInRangeFilterValue filterValue = null;

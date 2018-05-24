@@ -25,13 +25,13 @@ import java.util.TreeMap;
  * <p>
  * fr log -> swift row
  */
-public class SwiftRowAdaptor implements Function<Object, Row> {
+public class SwiftRowAdaptor<T> implements Function<T, Row> {
     /**
      * columnIndex -> (field, converter)
      */
     private Map<Integer, Pair<Field, UnaryOperator<Object>>> converters = new TreeMap<Integer, Pair<Field, UnaryOperator<Object>>>();
 
-    SwiftRowAdaptor(Class<?> entity, SwiftMetaData meta) throws Exception {
+    SwiftRowAdaptor(Class<T> entity, SwiftMetaData meta) throws Exception {
         init(SwiftMetaAdaptor.getFields(entity), meta);
     }
 
@@ -54,7 +54,7 @@ public class SwiftRowAdaptor implements Function<Object, Row> {
     }
 
     @Override
-    public Row apply(Object data) {
+    public Row apply(T data) {
         List<Object> row = new ArrayList<Object>();
         try {
             for (Entry<Integer, Pair<Field, UnaryOperator<Object>>> entry : converters.entrySet()) {
