@@ -17,7 +17,7 @@ import com.fr.swift.adaptor.transformer.SortAdaptor;
 import com.fr.swift.adaptor.transformer.filter.dimension.DimensionFilterAdaptor;
 import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.cal.info.DetailQueryInfo;
-import com.fr.swift.config.conf.MetaDataConvertUtil;
+import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.adapter.dimension.AllCursor;
@@ -47,7 +47,6 @@ import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.utils.BusinessTableUtils;
 
-import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -88,7 +87,7 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
         String queryId = widget.getWidgetId();
         List<Dimension> dimensions = getDimension(widget);
         SourceKey target = new SourceKey(BusinessTableUtils.getSourceIdByTableId(widget.getTableName()));
-        SwiftMetaData swiftMetaData = MetaDataConvertUtil.getSwiftMetaDataBySourceKey(target.toString());
+        SwiftMetaData swiftMetaData = SwiftDatabase.getInstance().getTable(target).getMetadata();
         SwiftMetaData metaData = getMetaData(widget, swiftMetaData);
         DetailTarget[] targets = getTargets(widget);
         //没传进来排序顺序
@@ -206,7 +205,7 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
         FilterInfo filterInfo = new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND);
         String queryId = fromWidget.getwId();
         SourceKey target = new SourceKey(BusinessTableUtils.getSourceIdByTableId(detailWidget.getTableName()));
-        SwiftMetaData swiftMetaData = MetaDataConvertUtil.getSwiftMetaDataBySourceKey(target.getId());
+        SwiftMetaData swiftMetaData = SwiftDatabase.getInstance().getTable(target).getMetadata();
         SwiftMetaData metaData = getMetaData(detailWidget, swiftMetaData);
         DetailTarget[] targets = getTargets(detailWidget);
         //没传进来排序顺序

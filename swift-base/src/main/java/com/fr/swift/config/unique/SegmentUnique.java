@@ -29,7 +29,6 @@ public class SegmentUnique extends UniqueKey implements IConfigSegment {
     }
 
     public SegmentUnique() {
-
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.fr.swift.db.impl;
 
-import com.fr.swift.config.conf.MetaDataConvertUtil;
 import com.fr.swift.config.conf.service.SwiftConfigService;
 import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
 import com.fr.swift.config.unique.SwiftMetaDataUnique;
@@ -40,7 +39,7 @@ public class SwiftDatabase implements Database {
         if (!existsTable(tableKey)) {
             throw new SQLException("table " + tableKey + " not exists");
         }
-        SwiftMetaData meta = MetaDataConvertUtil.getSwiftMetaDataBySourceKey(tableKey.getId());
+        SwiftMetaData meta = confSvc.getMetaDataByKey(tableKey.getId());
         return new SwiftTable(tableKey, meta);
     }
 
