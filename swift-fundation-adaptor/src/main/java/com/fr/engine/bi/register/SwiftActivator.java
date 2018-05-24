@@ -3,9 +3,9 @@ package com.fr.engine.bi.register;
 import com.finebi.base.stable.StableManager;
 import com.finebi.conf.algorithm.DMDataModel;
 import com.fr.module.Activator;
+import com.fr.swift.cube.queue.ProviderTaskManager;
 import com.fr.swift.driver.SwiftDriverRegister;
 import com.fr.swift.manager.ConnectionProvider;
-import com.fr.swift.manager.ProviderTaskManager;
 import com.fr.swift.service.LocalSwiftServerService;
 import com.fr.swift.service.SwiftAnalyseService;
 import com.fr.swift.service.SwiftHistoryService;
@@ -62,6 +62,7 @@ public class SwiftActivator extends Activator {
             }
         });
 
+        // fixme 这边先不去掉，其实和SwiftEngineActivator重复了
         try {
             SwiftDriverRegister.register();
             new LocalSwiftServerService().start();
@@ -77,6 +78,5 @@ public class SwiftActivator extends Activator {
 
     @Override
     public void stop() {
-
     }
 }

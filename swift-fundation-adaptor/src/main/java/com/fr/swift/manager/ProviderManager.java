@@ -1,5 +1,6 @@
 package com.fr.swift.manager;
 
+import com.fr.swift.cube.queue.ProviderTaskManager;
 import com.fr.swift.cube.queue.StuffProviderQueue;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;

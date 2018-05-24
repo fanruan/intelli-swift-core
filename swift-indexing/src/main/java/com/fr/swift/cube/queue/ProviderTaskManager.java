@@ -1,6 +1,5 @@
-package com.fr.swift.manager;
+package com.fr.swift.cube.queue;
 
-import com.fr.swift.cube.queue.StuffFetcher;
 import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.cube.task.WorkerTask;
 import com.fr.swift.cube.task.impl.BaseWorker;
@@ -18,6 +17,7 @@ import com.fr.swift.generate.history.index.TablePathIndexer;
 import com.fr.swift.generate.realtime.RealtimeTableBuilder;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.relation.utils.RelationPathHelper;
 import com.fr.swift.reliance.SourceNode;
 import com.fr.swift.source.RelationSource;
