@@ -1,8 +1,8 @@
 package com.fr.swift.config.conf.service;
 
 import com.fr.swift.config.IConfigSegment;
-import com.fr.swift.config.IMetaData;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SwiftMetaData;
 
 import java.util.Map;
 
@@ -29,12 +29,12 @@ public class SwiftConfigServiceProvider implements SwiftConfigService {
     }
 
     @Override
-    public boolean addMetaData(String sourceKey, IMetaData metaData) {
+    public boolean addMetaData(String sourceKey, SwiftMetaData metaData) {
         return service.addMetaData(sourceKey, metaData);
     }
 
     @Override
-    public boolean addMetaDatas(Map<String, IMetaData> metaDatas) {
+    public boolean addMetaDatas(Map<String, SwiftMetaData> metaDatas) {
         return service.addMetaDatas(metaDatas);
     }
 
@@ -44,17 +44,17 @@ public class SwiftConfigServiceProvider implements SwiftConfigService {
     }
 
     @Override
-    public boolean updateMetaData(String sourceKey, IMetaData metaData) {
+    public boolean updateMetaData(String sourceKey, SwiftMetaData metaData) {
         return service.updateMetaData(sourceKey, metaData);
     }
 
     @Override
-    public Map<String, IMetaData> getAllMetaData() {
+    public Map<String, SwiftMetaData> getAllMetaData() {
         return service.getAllMetaData();
     }
 
     @Override
-    public IMetaData getMetaDataByKey(String sourceKey) {
+    public SwiftMetaData getMetaDataByKey(String sourceKey) {
         return service.getMetaDataByKey(sourceKey);
     }
 

@@ -1,9 +1,10 @@
 package com.fr.swift.manager;
 
 
-import com.fr.swift.config.conf.MetaDataConvertUtil;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;
+import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.AbstractSegmentManager;
 import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.RealTimeSegmentImpl;
@@ -14,6 +15,7 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Util;
 
 import java.net.URI;
+import java.sql.SQLException;
 
 /**
  * @author yee
@@ -28,7 +30,13 @@ public class LineSegmentManager extends AbstractSegmentManager {
         Types.StoreType storeType = segmentKey.getStoreType();
         ResourceLocation location = new ResourceLocation(uri.getPath(), storeType);
         SourceKey sourceKey = segmentKey.getTable();
-        SwiftMetaData metaData = MetaDataConvertUtil.getSwiftMetaDataBySourceKey(sourceKey.getId());
+        SwiftMetaData metaData = null;
+        try {
+            metaData = SwiftDatabase.getInstance().getTable(sourceKey).getMetadata();
+        } catch (SQLException e) {
+            SwiftLoggers.getLogger().error(e);
+        }
+
         Util.requireNonNull(metaData);
         switch (storeType) {
             case MEMORY:

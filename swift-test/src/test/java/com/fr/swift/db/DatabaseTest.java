@@ -91,7 +91,7 @@ public class DatabaseTest {
             if (columnMeta1.getScale() != columnMeta2.getScale()) {
                 return false;
             }
-            if (!ComparatorUtils.equals(columnMeta1.getColumnId(), columnMeta2.getColumnId())) {
+            if (!ComparatorUtils.equals(columnMeta1.getId(), columnMeta2.getId())) {
                 return false;
             }
         }

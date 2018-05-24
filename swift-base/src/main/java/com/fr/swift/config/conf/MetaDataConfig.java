@@ -4,8 +4,8 @@ import com.fr.config.ConfigContext;
 import com.fr.config.DefaultConfiguration;
 import com.fr.config.holder.factory.Holders;
 import com.fr.config.holder.impl.ObjectMapConf;
-import com.fr.swift.config.IMetaData;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SwiftMetaData;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,13 +17,12 @@ import java.util.Map;
  * todo 事务处理
  */
 public class MetaDataConfig extends DefaultConfiguration {
-
     private final static String NAMESPACE = "metadata_config";
 
     private static MetaDataConfig config = null;
 
-    private ObjectMapConf<Map<String, IMetaData>> metaDataHolder =
-            Holders.objMap(new HashMap<String, IMetaData>(), String.class, IMetaData.class);
+    private ObjectMapConf<Map<String, SwiftMetaData>> metaDataHolder =
+            Holders.objMap(new HashMap<String, SwiftMetaData>(), String.class, SwiftMetaData.class);
 
     public static MetaDataConfig getInstance() {
         if (config == null) {
@@ -32,12 +31,12 @@ public class MetaDataConfig extends DefaultConfiguration {
         return config;
     }
 
-    public Map<String, IMetaData> getAllMetaData() {
+    public Map<String, SwiftMetaData> getAllMetaData() {
         return metaDataHolder.get();
     }
 
-    public IMetaData getMetaDataByKey(String key) {
-        return (IMetaData) metaDataHolder.get(key);
+    public SwiftMetaData getMetaDataByKey(String key) {
+        return (SwiftMetaData) metaDataHolder.get(key);
     }
 
     /**
@@ -45,7 +44,7 @@ public class MetaDataConfig extends DefaultConfiguration {
      * @param sourceKey
      * @param metaData
      */
-    public void addMetaData(String sourceKey, IMetaData metaData) {
+    public void addMetaData(String sourceKey, SwiftMetaData metaData) {
         metaDataHolder.put(sourceKey, metaData);
     }
 
@@ -53,7 +52,7 @@ public class MetaDataConfig extends DefaultConfiguration {
         metaDataHolder.remove(key);
     }
 
-    public void modifyMetaData(String sourceKey, IMetaData metaData) {
+    public void modifyMetaData(String sourceKey, SwiftMetaData metaData) {
         // 直接调添加方法好了，取出metaData再设置好像不能全覆盖
         addMetaData(sourceKey, metaData);
     }

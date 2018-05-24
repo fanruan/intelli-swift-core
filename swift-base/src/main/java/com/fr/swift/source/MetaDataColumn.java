@@ -1,16 +1,26 @@
 package com.fr.swift.source;
 
-import com.fr.swift.config.pojo.MetaDataColumnPojo;
-
 /**
  * 保存列的信息
  */
 public class MetaDataColumn implements SwiftMetaDataColumn {
     private static final long serialVersionUID = -3638876557665551219L;
+
     private static final int DEFAULT_PRECISION = 255;
+
     private static final int DEFAULT_SCALE = 15;
 
-    private MetaDataColumnPojo metaDataColumnPojo;
+    private String name;
+
+    private String remark;
+
+    private String columnId;
+
+    private int type;
+
+    private int precision;
+
+    private int scale;
 
     public MetaDataColumn(String name, int sqlType) {
         this(name, null, sqlType, DEFAULT_PRECISION, DEFAULT_SCALE);
@@ -36,43 +46,47 @@ public class MetaDataColumn implements SwiftMetaDataColumn {
         this(name, null, sqlType, size, scale);
     }
 
-
-    public MetaDataColumn(String name, String remark, int sqlType, int precision, int scale) {
-        metaDataColumnPojo = new MetaDataColumnPojo(sqlType, name, remark, precision, scale);
+    public MetaDataColumn(String name, String remark, int type, int precision, int scale) {
+        this(name, remark, type, precision, scale, name);
     }
 
-    public MetaDataColumn(String name, String remark, int sqlType, int precision, int scale, String columnId) {
-        this.metaDataColumnPojo = new MetaDataColumnPojo(sqlType, name, remark, precision, scale, columnId);
-    }
-
-    @Override
-    public int getPrecision() {
-        return metaDataColumnPojo.getPrecision();
-    }
-
-    @Override
-    public int getType() {
-        return metaDataColumnPojo.getType();
+    public MetaDataColumn(String name, String remark, int type, int precision, int scale, String columnId) {
+        this.name = name;
+        this.remark = remark;
+        this.columnId = columnId;
+        this.type = type;
+        this.precision = precision;
+        this.scale = scale;
     }
 
     @Override
     public String getName() {
-        return metaDataColumnPojo.getName();
+        return name;
+    }
+
+    @Override
+    public String getId() {
+        return columnId;
     }
 
     @Override
     public String getRemark() {
-        return metaDataColumnPojo.getRemark();
+        return remark;
+    }
+
+    @Override
+    public int getType() {
+        return type;
+    }
+
+    @Override
+    public int getPrecision() {
+        return precision;
     }
 
     @Override
     public int getScale() {
-        return metaDataColumnPojo.getScale();
-    }
-
-    @Override
-    public MetaDataColumnPojo getMetaDataColumnPojo() {
-        return this.metaDataColumnPojo;
+        return scale;
     }
 
     /**
@@ -84,12 +98,7 @@ public class MetaDataColumn implements SwiftMetaDataColumn {
     }
 
     @Override
-    public String getColumnId() {
-        return metaDataColumnPojo.getColumnId();
-    }
-
-    @Override
     public String toString() {
-        return metaDataColumnPojo.toString();
+        return "{" + type + ", " + name + "}";
     }
 }
