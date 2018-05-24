@@ -18,6 +18,7 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentIndexCache;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.operator.Inserter;
+import com.fr.swift.segment.operator.Recorder;
 import com.fr.swift.segment.operator.utils.InserterUtils;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.ColumnTypeUtils;
@@ -43,7 +44,7 @@ import java.util.Map;
  * @description 指定数据，分块逻辑在内部计算
  * @since Advanced FineBI Analysis 1.0
  */
-public abstract class AbstractBlockInserter implements Inserter {
+public abstract class AbstractBlockInserter implements Inserter, Recorder {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(AbstractBlockInserter.class);
 
     protected SourceKey sourceKey;
@@ -103,8 +104,6 @@ public abstract class AbstractBlockInserter implements Inserter {
                 String allotColumn = fields.get(0);
                 while (swiftResultSet.next()) {
                     Row rowData = swiftResultSet.getRowData();
-                    // fixme 为啥这里要传后两个参数？
-                    // 为了以后特殊的分块逻辑
                     int size = segments.size();
                     int index = alloter.allot(count, allotColumn, rowData.getValue(0)) + startSegIndex;
                     if (index >= size) {
@@ -117,8 +116,8 @@ public abstract class AbstractBlockInserter implements Inserter {
                     } else if (index == -1) {
                         index = segments.size() - 1;
                     }
+                    recordData(rowData, index);
                     int segmentRow = segmentIndexCache.getSegRowByIndex(index);
-
                     Segment segment = segments.get(index);
                     segmentIndexCache.putSegment(index, segment);
                     for (int i = 0; i < fields.size(); i++) {
@@ -215,5 +214,13 @@ public abstract class AbstractBlockInserter implements Inserter {
     @Override
     public List<String> getFields() {
         return fields;
+    }
+
+    @Override
+    public void recordData(Row row, int segIndex) {
+    }
+
+    @Override
+    public void end() {
     }
 }
