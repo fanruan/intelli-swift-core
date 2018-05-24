@@ -1,4 +1,4 @@
-package com.fr.swift.config.pojo;
+package com.fr.swift.config.conf.bean;
 
 import com.fr.swift.config.IMetaDataColumn;
 
@@ -7,7 +7,7 @@ import com.fr.swift.config.IMetaDataColumn;
  * @Description:
  * @Date: Created in 2018-3-8
  */
-public class MetaDataColumnPojo implements IMetaDataColumn {
+public class MetaDataColumnBean implements IMetaDataColumn {
     private int type;
     private String name;
     private String remark;
@@ -15,7 +15,10 @@ public class MetaDataColumnPojo implements IMetaDataColumn {
     private int scale;
     private String columnId;
 
-    public MetaDataColumnPojo(int type, String name, String remark, int precision, int scale) {
+    public MetaDataColumnBean() {
+    }
+
+    public MetaDataColumnBean(int type, String name, String remark, int precision, int scale) {
         this.type = type;
         this.name = name;
         this.remark = remark;
@@ -24,7 +27,7 @@ public class MetaDataColumnPojo implements IMetaDataColumn {
         this.columnId = name;
     }
 
-    public MetaDataColumnPojo(int type, String name, String remark, int precision, int scale, String columnId) {
+    public MetaDataColumnBean(int type, String name, String remark, int precision, int scale, String columnId) {
         this.type = type;
         this.name = name;
         this.remark = remark;

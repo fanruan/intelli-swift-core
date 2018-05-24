@@ -20,7 +20,7 @@ public interface IMetaData<T extends IMetaDataColumn> {
 
     void setRemark(String remark);
 
-    List<T> getFieldList();
+    List<T> getFields();
 
-    void setFieldList(List<T> fieldList);
+    void setFields(List<T> fields);
 }

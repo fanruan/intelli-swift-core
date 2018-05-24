@@ -3,8 +3,8 @@ package com.fr.swift.config.conf;
 import com.fr.swift.config.IMetaData;
 import com.fr.swift.config.IMetaDataColumn;
 import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
-import com.fr.swift.config.pojo.MetaDataColumnPojo;
-import com.fr.swift.config.pojo.SwiftMetaDataPojo;
+import com.fr.swift.config.conf.bean.MetaDataColumnBean;
+import com.fr.swift.config.conf.bean.SwiftMetaDataBean;
 import com.fr.swift.config.unique.MetaDataColumnUnique;
 import com.fr.swift.config.unique.SwiftMetaDataUnique;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
@@ -37,11 +37,11 @@ public class MetaDataConvertUtil {
     }
 
     public static <T extends IMetaDataColumn> SwiftMetaData toSwiftMetadata(IMetaData<T> iMetaData) {
-        if (iMetaData instanceof SwiftMetaDataPojo) {
-            return new SwiftMetaDataImpl((SwiftMetaDataPojo) iMetaData);
+        if (iMetaData instanceof SwiftMetaDataBean) {
+            return new SwiftMetaDataImpl((SwiftMetaDataBean) iMetaData);
         }
         List<SwiftMetaDataColumn> columnMetas = new ArrayList<SwiftMetaDataColumn>();
-        for (IMetaDataColumn columnMeta : iMetaData.getFieldList()) {
+        for (IMetaDataColumn columnMeta : iMetaData.getFields()) {
             columnMetas.add(new MetaDataColumn(columnMeta.getName(), columnMeta.getRemark(),
                     columnMeta.getType(), columnMeta.getPrecision(), columnMeta.getScale(),
                     columnMeta.getColumnId()
@@ -50,17 +50,17 @@ public class MetaDataConvertUtil {
         return new SwiftMetaDataImpl(iMetaData.getTableName(), iMetaData.getRemark(), iMetaData.getSchema(), columnMetas);
     }
 
-    public static <T extends IMetaDataColumn> SwiftMetaDataPojo toSwiftMetadataPojo(IMetaData<T> iMetaData) {
-        if (iMetaData instanceof SwiftMetaDataPojo) {
-            return (SwiftMetaDataPojo) iMetaData;
+    public static <T extends IMetaDataColumn> SwiftMetaDataBean toSwiftMetadataPojo(IMetaData<T> iMetaData) {
+        if (iMetaData instanceof SwiftMetaDataBean) {
+            return (SwiftMetaDataBean) iMetaData;
         }
-        List<MetaDataColumnPojo> columnMetas = new ArrayList<MetaDataColumnPojo>();
-        for (T columnMeta : iMetaData.getFieldList()) {
-            columnMetas.add(new MetaDataColumnPojo(columnMeta.getType(), columnMeta.getName(), columnMeta.getRemark(),
+        List<MetaDataColumnBean> columnMetas = new ArrayList<MetaDataColumnBean>();
+        for (T columnMeta : iMetaData.getFields()) {
+            columnMetas.add(new MetaDataColumnBean(columnMeta.getType(), columnMeta.getName(), columnMeta.getRemark(),
                     columnMeta.getPrecision(), columnMeta.getScale(),
                     columnMeta.getColumnId()
             ));
         }
-        return new SwiftMetaDataPojo(iMetaData.getSchema(), iMetaData.getTableName(), iMetaData.getRemark(), columnMetas);
+        return new SwiftMetaDataBean(iMetaData.getSchema(), iMetaData.getTableName(), iMetaData.getRemark(), columnMetas);
     }
 }

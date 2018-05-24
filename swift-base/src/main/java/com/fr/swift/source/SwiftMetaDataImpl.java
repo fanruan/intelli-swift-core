@@ -1,8 +1,8 @@
 package com.fr.swift.source;
 
 import com.fr.general.ComparatorUtils;
-import com.fr.swift.config.pojo.MetaDataColumnPojo;
-import com.fr.swift.config.pojo.SwiftMetaDataPojo;
+import com.fr.swift.config.conf.bean.MetaDataColumnBean;
+import com.fr.swift.config.conf.bean.SwiftMetaDataBean;
 import com.fr.swift.exception.meta.SwiftMetaDataColumnAbsentException;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.util.Util;
@@ -19,7 +19,7 @@ import java.util.List;
 public class SwiftMetaDataImpl implements SwiftMetaData {
     private static final long serialVersionUID = 5516973769561307468L;
 
-    private SwiftMetaDataPojo swiftMetaDataPojo;
+    private SwiftMetaDataBean swiftMetaDataBean;
 
     private List<SwiftMetaDataColumn> fieldList;
 
@@ -35,21 +35,21 @@ public class SwiftMetaDataImpl implements SwiftMetaData {
 
     public SwiftMetaDataImpl(String tableName, String tableNameRemark, String schema, List<SwiftMetaDataColumn> fieldList) {
         Util.requireNonNull(tableName, fieldList);
-        List<MetaDataColumnPojo> fieldPojoList = new ArrayList<MetaDataColumnPojo>();
+        List<MetaDataColumnBean> fieldPojoList = new ArrayList<MetaDataColumnBean>();
 
         for (SwiftMetaDataColumn column : fieldList) {
-            fieldPojoList.add(column.getMetaDataColumnPojo());
+            fieldPojoList.add(column.getMetaDataColumnBean());
             fieldNames.add(column.getName());
         }
-        swiftMetaDataPojo = new SwiftMetaDataPojo(schema, tableName, tableNameRemark, fieldPojoList);
+        swiftMetaDataBean = new SwiftMetaDataBean(schema, tableName, tableNameRemark, fieldPojoList);
         this.fieldList = fieldList;
     }
 
-    public SwiftMetaDataImpl(SwiftMetaDataPojo swiftMetaDataPojo) {
-        this.swiftMetaDataPojo = swiftMetaDataPojo;
-        List<MetaDataColumnPojo> fieldPojoList = swiftMetaDataPojo.getFieldList();
+    public SwiftMetaDataImpl(SwiftMetaDataBean swiftMetaDataBean) {
+        this.swiftMetaDataBean = swiftMetaDataBean;
+        List<MetaDataColumnBean> fieldPojoList = swiftMetaDataBean.getFields();
         this.fieldList = new ArrayList<SwiftMetaDataColumn>();
-        for (MetaDataColumnPojo column : fieldPojoList) {
+        for (MetaDataColumnBean column : fieldPojoList) {
             fieldList.add(new MetaDataColumn(column.getName(), column.getRemark(), column.getType(), column.getPrecision(), column.getScale(), column.getColumnId()));
             fieldNames.add(column.getName());
         }
@@ -58,7 +58,7 @@ public class SwiftMetaDataImpl implements SwiftMetaData {
 
     @Override
     public String getSchemaName() {
-        return swiftMetaDataPojo.getSchema();
+        return swiftMetaDataBean.getSchema();
     }
 
     /**
@@ -66,7 +66,7 @@ public class SwiftMetaDataImpl implements SwiftMetaData {
      */
     @Override
     public String getTableName() {
-        return swiftMetaDataPojo.getTableName();
+        return swiftMetaDataBean.getTableName();
     }
 
     @Override
@@ -106,7 +106,7 @@ public class SwiftMetaDataImpl implements SwiftMetaData {
 
     @Override
     public String getRemark() {
-        return swiftMetaDataPojo.getRemark();
+        return swiftMetaDataBean.getRemark();
     }
 
     @Override
@@ -163,6 +163,6 @@ public class SwiftMetaDataImpl implements SwiftMetaData {
 
     @Override
     public String toString() {
-        return swiftMetaDataPojo.toString();
+        return swiftMetaDataBean.toString();
     }
 }

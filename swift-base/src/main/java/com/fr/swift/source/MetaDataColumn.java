@@ -1,6 +1,6 @@
 package com.fr.swift.source;
 
-import com.fr.swift.config.pojo.MetaDataColumnPojo;
+import com.fr.swift.config.conf.bean.MetaDataColumnBean;
 
 /**
  * 保存列的信息
@@ -10,7 +10,7 @@ public class MetaDataColumn implements SwiftMetaDataColumn {
     private static final int DEFAULT_PRECISION = 255;
     private static final int DEFAULT_SCALE = 15;
 
-    private MetaDataColumnPojo metaDataColumnPojo;
+    private MetaDataColumnBean metaDataColumnBean;
 
     public MetaDataColumn(String name, int sqlType) {
         this(name, null, sqlType, DEFAULT_PRECISION, DEFAULT_SCALE);
@@ -38,41 +38,41 @@ public class MetaDataColumn implements SwiftMetaDataColumn {
 
 
     public MetaDataColumn(String name, String remark, int sqlType, int precision, int scale) {
-        metaDataColumnPojo = new MetaDataColumnPojo(sqlType, name, remark, precision, scale);
+        metaDataColumnBean = new MetaDataColumnBean(sqlType, name, remark, precision, scale);
     }
 
     public MetaDataColumn(String name, String remark, int sqlType, int precision, int scale, String columnId) {
-        this.metaDataColumnPojo = new MetaDataColumnPojo(sqlType, name, remark, precision, scale, columnId);
+        this.metaDataColumnBean = new MetaDataColumnBean(sqlType, name, remark, precision, scale, columnId);
     }
 
     @Override
     public int getPrecision() {
-        return metaDataColumnPojo.getPrecision();
+        return metaDataColumnBean.getPrecision();
     }
 
     @Override
     public int getType() {
-        return metaDataColumnPojo.getType();
+        return metaDataColumnBean.getType();
     }
 
     @Override
     public String getName() {
-        return metaDataColumnPojo.getName();
+        return metaDataColumnBean.getName();
     }
 
     @Override
     public String getRemark() {
-        return metaDataColumnPojo.getRemark();
+        return metaDataColumnBean.getRemark();
     }
 
     @Override
     public int getScale() {
-        return metaDataColumnPojo.getScale();
+        return metaDataColumnBean.getScale();
     }
 
     @Override
-    public MetaDataColumnPojo getMetaDataColumnPojo() {
-        return this.metaDataColumnPojo;
+    public MetaDataColumnBean getMetaDataColumnBean() {
+        return this.metaDataColumnBean;
     }
 
     /**
@@ -85,11 +85,11 @@ public class MetaDataColumn implements SwiftMetaDataColumn {
 
     @Override
     public String getColumnId() {
-        return metaDataColumnPojo.getColumnId();
+        return metaDataColumnBean.getColumnId();
     }
 
     @Override
     public String toString() {
-        return metaDataColumnPojo.toString();
+        return metaDataColumnBean.toString();
     }
 }

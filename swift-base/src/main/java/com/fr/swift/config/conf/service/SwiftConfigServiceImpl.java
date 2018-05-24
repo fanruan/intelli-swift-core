@@ -7,7 +7,7 @@ import com.fr.swift.config.conf.MetaDataConfig;
 import com.fr.swift.config.conf.MetaDataConvertUtil;
 import com.fr.swift.config.conf.SegmentConfig;
 import com.fr.swift.config.conf.SwiftPathConfig;
-import com.fr.swift.config.pojo.SwiftMetaDataPojo;
+import com.fr.swift.config.conf.bean.SwiftMetaDataBean;
 import com.fr.swift.source.SourceKey;
 import com.fr.transaction.Configurations;
 import com.fr.transaction.Worker;
@@ -26,7 +26,7 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
     private SegmentConfig segmentConfig = SegmentConfig.getInstance();
     private SwiftPathConfig swiftPathConfig = SwiftPathConfig.getInstance();
 
-    private ConcurrentHashMap<String, SwiftMetaDataPojo> metaDataCache = new ConcurrentHashMap<String, SwiftMetaDataPojo>();
+    private ConcurrentHashMap<String, SwiftMetaDataBean> metaDataCache = new ConcurrentHashMap<String, SwiftMetaDataBean>();
 
     @Override
     public boolean addMetaData(final String sourceKey, final IMetaData metaData) {

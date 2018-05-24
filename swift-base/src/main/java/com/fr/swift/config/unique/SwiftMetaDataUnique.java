@@ -32,7 +32,7 @@ public class SwiftMetaDataUnique extends UniqueKey implements IMetaData<MetaData
         this.setSchema(schema);
         this.setTableName(tableName);
         this.setRemark(remark);
-        this.setFieldList(fieldList);
+        this.setFields(fieldList);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class SwiftMetaDataUnique extends UniqueKey implements IMetaData<MetaData
     }
 
     @Override
-    public List<MetaDataColumnUnique> getFieldList() {
+    public List<MetaDataColumnUnique> getFields() {
         // 不能直接用fieldList.get(i)
         Map<Integer, MetaDataColumnUnique> map = fieldList.get();
         int size = map.size();
@@ -78,9 +78,9 @@ public class SwiftMetaDataUnique extends UniqueKey implements IMetaData<MetaData
     }
 
     @Override
-    public void setFieldList(List<MetaDataColumnUnique> fieldList) {
-        for (int i = 0, len = fieldList.size(); i < len; i++) {
-            this.fieldList.put(i, fieldList.get(i));
+    public void setFields(List<MetaDataColumnUnique> fields) {
+        for (int i = 0, len = fields.size(); i < len; i++) {
+            this.fieldList.put(i, fields.get(i));
         }
     }
 

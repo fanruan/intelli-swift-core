@@ -1,6 +1,6 @@
 package com.fr.swift.source;
 
-import com.fr.swift.config.pojo.MetaDataColumnPojo;
+import com.fr.swift.config.conf.bean.MetaDataColumnBean;
 
 /**
  * Created by Handsome on 2017/12/23 0023 15:07
@@ -23,7 +23,7 @@ public interface SwiftMetaDataColumn {
      */
     int getScale();
 
-    MetaDataColumnPojo getMetaDataColumnPojo();
+    MetaDataColumnBean getMetaDataColumnBean();
 
     String getColumnId();
 }
