@@ -18,10 +18,10 @@ import java.util.List;
  */
 @Entity
 @Table(name = "swift_metadata")
-public class MetaDataEntity extends com.fr.config.entity.Entity implements Convert<SwiftMetaDataBean> {
+public class SwiftMetaDataEntity extends com.fr.config.entity.Entity implements Convert<SwiftMetaDataBean> {
 
-    @Column(name = "schema")
-    private String schema;
+    @Column(name = "schemaName")
+    private String schemaName;
 
     @Column(name = "tableName")
     private String tableName;
@@ -35,12 +35,12 @@ public class MetaDataEntity extends com.fr.config.entity.Entity implements Conve
     )
     private List<SwiftMetaDataColumn> fields;
 
-    public String getSchema() {
-        return schema;
+    public String getSchemaName() {
+        return schemaName;
     }
 
-    public void setSchema(String schema) {
-        this.schema = schema;
+    public void setSchemaName(String schemaName) {
+        this.schemaName = schemaName;
     }
 
     public String getTableName() {
@@ -69,6 +69,6 @@ public class MetaDataEntity extends com.fr.config.entity.Entity implements Conve
 
     @Override
     public SwiftMetaDataBean convert() {
-        return new SwiftMetaDataBean(getId(), schema, tableName, remark, fields);
+        return new SwiftMetaDataBean(getId(), schemaName, tableName, remark, fields);
     }
 }

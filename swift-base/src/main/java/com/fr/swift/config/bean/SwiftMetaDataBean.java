@@ -2,7 +2,7 @@ package com.fr.swift.config.bean;
 
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
-import com.fr.swift.config.entity.MetaDataEntity;
+import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
@@ -16,7 +16,7 @@ import java.util.List;
  * @Description:
  * @Date: Created in 2018-3-8
  */
-public class SwiftMetaDataBean implements SwiftMetaData, Serializable, Convert<MetaDataEntity> {
+public class SwiftMetaDataBean implements SwiftMetaData, Serializable, Convert<SwiftMetaDataEntity> {
 
     public static final String COLUMN_SCHEMA = "schema";
     public static final String COLUMN_TABLE_NAME = "tableName";
@@ -61,7 +61,7 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable, Convert<M
     }
 
     @Override
-    public String getSchema() {
+    public String getSchemaName() {
         return schema;
     }
 
@@ -191,11 +191,11 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable, Convert<M
     }
 
     @Override
-    public MetaDataEntity convert() {
-        MetaDataEntity entity = new MetaDataEntity();
+    public SwiftMetaDataEntity convert() {
+        SwiftMetaDataEntity entity = new SwiftMetaDataEntity();
         entity.setId(getId());
         entity.setTableName(getTableName());
-        entity.setSchema(getSchema());
+        entity.setSchemaName(getSchemaName());
         entity.setRemark(getRemark());
         entity.setFields(getFields());
         return entity;

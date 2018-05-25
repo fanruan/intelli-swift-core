@@ -154,7 +154,7 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
             String columnName = fineDimension.getText();
             fields.add(new MetaDataColumnBean(columnName, Types.VARCHAR));
         }
-        return new SwiftMetaDataBean(metaData.getTableName(), metaData.getRemark(), metaData.getSchema(), fields);
+        return new SwiftMetaDataBean(metaData.getTableName(), metaData.getRemark(), metaData.getSchemaName(), fields);
     }
 
     private static List<Dimension> getDimension(AbstractTableWidget widget) throws Exception {

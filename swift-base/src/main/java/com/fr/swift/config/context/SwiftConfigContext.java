@@ -8,8 +8,8 @@ import com.fr.swift.config.dao.SwiftMetaDataDAO;
 import com.fr.swift.config.dao.SwiftSegmentDAO;
 import com.fr.swift.config.dao.impl.SwiftMetaDataDAOImpl;
 import com.fr.swift.config.dao.impl.SwiftSegmentDAOImpl;
-import com.fr.swift.config.entity.MetaDataEntity;
-import com.fr.swift.config.entity.SegmentEntity;
+import com.fr.swift.config.entity.SwiftMetaDataEntity;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.log.SwiftLoggers;
 
 /**
@@ -49,8 +49,8 @@ public class SwiftConfigContext {
             }
             DBOption option = FineDBProperties.getInstance().get();
             DBContext dbContext = BaseDBEnv.getDBContext();
-            dbContext.addEntityClass(MetaDataEntity.class);
-            dbContext.addEntityClass(SegmentEntity.class);
+            dbContext.addEntityClass(SwiftMetaDataEntity.class);
+            dbContext.addEntityClass(SwiftSegmentEntity.class);
             dbContext.init(option);
             swiftMetaDataDAO = new SwiftMetaDataDAOImpl();
             swiftSegmentDAO = new SwiftSegmentDAOImpl();

@@ -55,7 +55,7 @@ public abstract class AbstractDataSource implements DataSource {
                 columnList.add(column);
                 names.add(column.getName());
             }
-            metaData = new SwiftMetaDataBean(metaData.getTableName(), metaData.getRemark(), metaData.getSchema(), columnList);
+            metaData = new SwiftMetaDataBean(metaData.getTableName(), metaData.getRemark(), metaData.getSchemaName(), columnList);
         } catch (Exception ignore){
 
         }

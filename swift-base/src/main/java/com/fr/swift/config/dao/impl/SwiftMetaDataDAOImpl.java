@@ -3,7 +3,7 @@ package com.fr.swift.config.dao.impl;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.config.dao.BaseDAO;
 import com.fr.swift.config.dao.SwiftMetaDataDAO;
-import com.fr.swift.config.entity.MetaDataEntity;
+import com.fr.swift.config.entity.SwiftMetaDataEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,12 +13,12 @@ import java.util.List;
  * @author yee
  * @date 2018/5/24
  */
-public class SwiftMetaDataDAOImpl extends BaseDAO<MetaDataEntity> implements SwiftMetaDataDAO {
+public class SwiftMetaDataDAOImpl extends BaseDAO<SwiftMetaDataEntity> implements SwiftMetaDataDAO {
 
-    private static final String FIND_BY_NAME_HQL = String.format("from MetaDataEntity entity where entity.%s = ", SwiftMetaDataBean.COLUMN_TABLE_NAME);
+    private static final String FIND_BY_NAME_HQL = String.format("from SwiftMetaDataEntity entity where entity.%s = ", SwiftMetaDataBean.COLUMN_TABLE_NAME);
 
     public SwiftMetaDataDAOImpl() {
-        super(MetaDataEntity.class);
+        super(SwiftMetaDataEntity.class);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class SwiftMetaDataDAOImpl extends BaseDAO<MetaDataEntity> implements Swi
 
     @Override
     public SwiftMetaDataBean findByTableName(String tableName) {
-        List<MetaDataEntity> list = find(String.format("%s '%s'", FIND_BY_NAME_HQL, tableName));
+        List<SwiftMetaDataEntity> list = find(String.format("%s '%s'", FIND_BY_NAME_HQL, tableName));
         if (null == list && list.isEmpty()) {
             throw new RuntimeException(String.format("Find meta data error! Table named '%s' not exists!", tableName));
         }
@@ -50,9 +50,9 @@ public class SwiftMetaDataDAOImpl extends BaseDAO<MetaDataEntity> implements Swi
 
     @Override
     public List<SwiftMetaDataBean> findAll() {
-        List<MetaDataEntity> all = find();
+        List<SwiftMetaDataEntity> all = find();
         List<SwiftMetaDataBean> result = new ArrayList<SwiftMetaDataBean>();
-        for (MetaDataEntity entity : all) {
+        for (SwiftMetaDataEntity entity : all) {
             result.add(entity.convert());
         }
         return result;

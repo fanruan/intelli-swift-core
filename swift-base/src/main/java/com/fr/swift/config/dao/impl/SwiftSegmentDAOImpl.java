@@ -7,7 +7,7 @@ import com.fr.store.access.ResourceHolder;
 import com.fr.swift.config.bean.SegmentBean;
 import com.fr.swift.config.dao.BaseDAO;
 import com.fr.swift.config.dao.SwiftSegmentDAO;
-import com.fr.swift.config.entity.SegmentEntity;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.third.org.hibernate.Query;
 
 import java.util.ArrayList;
@@ -19,13 +19,13 @@ import java.util.List;
  * @author yee
  * @date 2018/5/24
  */
-public class SwiftSegmentDAOImpl extends BaseDAO<SegmentEntity> implements SwiftSegmentDAO {
+public class SwiftSegmentDAOImpl extends BaseDAO<SwiftSegmentEntity> implements SwiftSegmentDAO {
 
-    private static final String FIND_BY_SOURCE_KEY = String.format("from SegmentEntity entity where entity.%s = ", SegmentBean.COLUMN_SOURCE_KEY);
-    private static final String DELETE_BY_SOURCE_KEY = String.format("delete from SegmentEntity entity where entity.%s = ", SegmentBean.COLUMN_SOURCE_KEY);
+    private static final String FIND_BY_SOURCE_KEY = String.format("from SwiftSegmentEntity entity where entity.%s = ", SegmentBean.COLUMN_SOURCE_KEY);
+    private static final String DELETE_BY_SOURCE_KEY = String.format("delete from SwiftSegmentEntity entity where entity.%s = ", SegmentBean.COLUMN_SOURCE_KEY);
 
     public SwiftSegmentDAOImpl() {
-        super(SegmentEntity.class);
+        super(SwiftSegmentEntity.class);
     }
 
     @Override
@@ -35,9 +35,9 @@ public class SwiftSegmentDAOImpl extends BaseDAO<SegmentEntity> implements Swift
 
     @Override
     public List<SegmentBean> findBySourceKey(String sourceKey) {
-        List<SegmentEntity> list = find(String.format("%s'%s' order by entity.%s", FIND_BY_SOURCE_KEY, sourceKey, SegmentBean.COLUMN_ORDER));
+        List<SwiftSegmentEntity> list = find(String.format("%s'%s' order by entity.%s", FIND_BY_SOURCE_KEY, sourceKey, SegmentBean.COLUMN_ORDER));
         List<SegmentBean> result = new ArrayList<SegmentBean>();
-        for (SegmentEntity entity : list) {
+        for (SwiftSegmentEntity entity : list) {
             result.add(entity.convert());
         }
         return Collections.unmodifiableList(result);
@@ -64,9 +64,9 @@ public class SwiftSegmentDAOImpl extends BaseDAO<SegmentEntity> implements Swift
 
     @Override
     public List<SegmentBean> findAll() {
-        List<SegmentEntity> list = find();
+        List<SwiftSegmentEntity> list = find();
         List<SegmentBean> result = new ArrayList<SegmentBean>();
-        for (SegmentEntity entity : list) {
+        for (SwiftSegmentEntity entity : list) {
             result.add(entity.convert());
         }
         return Collections.unmodifiableList(result);

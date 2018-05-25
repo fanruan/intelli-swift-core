@@ -18,7 +18,7 @@ import java.net.URI;
  */
 @Entity
 @Table(name = "swift_segments")
-public class SegmentEntity extends com.fr.config.entity.Entity implements Convert<SegmentBean> {
+public class SwiftSegmentEntity extends com.fr.config.entity.Entity implements Convert<SegmentBean> {
     @Column(name = "segmentOwner")
     private String segmentOwner;
     @Column(name = "segmentName")

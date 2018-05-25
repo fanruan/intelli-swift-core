@@ -1,6 +1,6 @@
 package com.fr.swift.config.bean;
 
-import com.fr.swift.config.entity.SegmentEntity;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
@@ -12,7 +12,7 @@ import java.net.URI;
  * @author yee
  * @date 2018/5/24
  */
-public class SegmentBean implements Serializable, Convert<SegmentEntity>, SegmentKey {
+public class SegmentBean implements Serializable, Convert<SwiftSegmentEntity>, SegmentKey {
 
     public static final String COLUMN_SOURCE_KEY = "segmentOwner";
     public static final String COLUMN_ORDER = "segmentOrder";
@@ -24,12 +24,12 @@ public class SegmentBean implements Serializable, Convert<SegmentEntity>, Segmen
     private Types.StoreType storeType;
 
     public SegmentBean(String sourceKey, String name, URI uri, int order, Types.StoreType storeType) {
-        this.id = uri.getPath();
         this.sourceKey = sourceKey;
         this.name = name;
         this.uri = uri;
         this.order = order;
         this.storeType = storeType;
+        this.id = toString();
     }
 
     public SegmentBean() {
@@ -89,8 +89,8 @@ public class SegmentBean implements Serializable, Convert<SegmentEntity>, Segmen
     }
 
     @Override
-    public SegmentEntity convert() {
-        SegmentEntity entity = new SegmentEntity();
+    public SwiftSegmentEntity convert() {
+        SwiftSegmentEntity entity = new SwiftSegmentEntity();
         entity.setId(id);
         entity.setSegmentOwner(sourceKey);
         entity.setSegmentName(name);
@@ -98,5 +98,10 @@ public class SegmentBean implements Serializable, Convert<SegmentEntity>, Segmen
         entity.setStoreType(storeType);
         entity.setSegmentUri(uri);
         return entity;
+    }
+
+    @Override
+    public String toString() {
+        return sourceKey + '@' + storeType + "@" + order;
     }
 }

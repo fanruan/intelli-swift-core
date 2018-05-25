@@ -51,7 +51,7 @@ public class SwiftEmptyResult implements SwiftResultSet{
             }
 
             @Override
-            public String getSchema() {
+            public String getSchemaName() {
                 return null;
             }
 
