@@ -75,4 +75,9 @@ public class SegmentControllerImpl implements SegmentController {
     public List<SegmentBean> findBySourceKey(String sourceKey) throws Exception {
         return find(QueryFactory.create().addRestriction(RestrictionFactory.eq(SegmentBean.COLUMN_SOURCE_KEY, sourceKey)));
     }
+
+    @Override
+    public void removeBySourceKey(String sourceKey) throws Exception {
+        remove(QueryFactory.create().addRestriction(RestrictionFactory.eq(SegmentBean.COLUMN_SOURCE_KEY, sourceKey)));
+    }
 }

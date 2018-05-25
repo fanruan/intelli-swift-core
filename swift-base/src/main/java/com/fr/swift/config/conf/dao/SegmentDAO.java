@@ -6,6 +6,7 @@ import com.fr.decision.base.db.session.DAOSession;
 import com.fr.stable.query.QueryFactory;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.restriction.RestrictionFactory;
+import com.fr.swift.config.conf.bean.SegmentBean;
 import com.fr.swift.config.conf.entity.SegmentEntity;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class SegmentDAO extends BaseDAO<SegmentEntity> {
 
     @Override
     public void remove(String s) throws Exception {
-        this.getSession().remove(QueryFactory.create().addRestriction(RestrictionFactory.eq("id", s)), SegmentEntity.class);
+        this.getSession().remove(QueryFactory.create().addRestriction(RestrictionFactory.eq(SegmentBean.COLUMN_ID, s)), SegmentEntity.class);
     }
 
     @Override

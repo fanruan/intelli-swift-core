@@ -1,9 +1,10 @@
 package com.fr.swift.config.conf.service;
 
-import com.fr.swift.config.IConfigSegment;
 import com.fr.swift.config.IMetaData;
+import com.fr.swift.config.conf.bean.SegmentBean;
 import com.fr.swift.source.SourceKey;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -64,7 +65,7 @@ public class SwiftConfigServiceProvider implements SwiftConfigService {
     }
 
     @Override
-    public boolean addSegments(IConfigSegment... segments) {
+    public boolean addSegments(List<SegmentBean> segments) {
         return service.addSegments(segments);
     }
 
@@ -74,17 +75,17 @@ public class SwiftConfigServiceProvider implements SwiftConfigService {
     }
 
     @Override
-    public boolean updateSegments(IConfigSegment... segments) {
+    public boolean updateSegments(List<SegmentBean> segments) {
         return service.updateSegments(segments);
     }
 
     @Override
-    public Map<String, IConfigSegment> getAllSegments() {
+    public Map<String, List<SegmentBean>> getAllSegments() {
         return service.getAllSegments();
     }
 
     @Override
-    public IConfigSegment getSegmentByKey(String sourceKey) {
+    public List<SegmentBean> getSegmentByKey(String sourceKey) {
         return service.getSegmentByKey(sourceKey);
     }
 

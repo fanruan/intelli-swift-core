@@ -1,6 +1,7 @@
 package com.fr.swift.config.conf.entity;
 
 import com.fr.decision.base.entity.BaseEntity;
+import com.fr.decision.webservice.utils.DecisionServiceConstants;
 import com.fr.swift.config.conf.bean.Convert;
 import com.fr.swift.config.conf.convert.MetaDataColumnListConverter;
 import com.fr.swift.config.conf.bean.MetaDataColumnBean;
@@ -29,7 +30,7 @@ public class MetaDataEntity extends BaseEntity implements Convert<SwiftMetaDataB
     @Column(name = "remark")
     private String remark;
 
-    @Column(name = "fields")
+    @Column(name = "fields", length = DecisionServiceConstants.LONG_TEXT_LENGTH)
     @com.fr.third.javax.persistence.Convert(
             converter = MetaDataColumnListConverter.class
     )

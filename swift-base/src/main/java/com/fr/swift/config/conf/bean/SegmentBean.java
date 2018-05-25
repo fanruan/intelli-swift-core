@@ -3,15 +3,19 @@ package com.fr.swift.config.conf.bean;
 import com.fr.decision.base.data.BaseDataRecord;
 import com.fr.swift.config.conf.entity.SegmentEntity;
 import com.fr.swift.cube.io.Types;
+import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.core.MD5Utils;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.util.Arrays;
 
 /**
  * @author yee
  * @date 2018/5/24
  */
-public class SegmentBean extends BaseDataRecord implements Serializable, Convert<SegmentEntity> {
+public class SegmentBean extends BaseDataRecord implements Serializable, Convert<SegmentEntity>, SegmentKey {
 
     public static final String COLUMN_SOURCE_KEY = "sourceKey";
     private String sourceKey;
@@ -20,8 +24,8 @@ public class SegmentBean extends BaseDataRecord implements Serializable, Convert
     private int order;
     private Types.StoreType storeType;
 
-    public SegmentBean(String id, String sourceKey, String name, URI uri, int order, Types.StoreType storeType) {
-        this.setId(id);
+    public SegmentBean(String sourceKey, String name, URI uri, int order, Types.StoreType storeType) {
+        this.setId(uri.getPath());
         this.sourceKey = sourceKey;
         this.name = name;
         this.uri = uri;
@@ -38,6 +42,11 @@ public class SegmentBean extends BaseDataRecord implements Serializable, Convert
 
     public void setSourceKey(String sourceKey) {
         this.sourceKey = sourceKey;
+    }
+
+    @Override
+    public SourceKey getTable() {
+        return new SourceKey(sourceKey);
     }
 
     public String getName() {

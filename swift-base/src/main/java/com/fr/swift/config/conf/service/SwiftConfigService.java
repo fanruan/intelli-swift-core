@@ -2,8 +2,10 @@ package com.fr.swift.config.conf.service;
 
 import com.fr.swift.config.IConfigSegment;
 import com.fr.swift.config.IMetaData;
+import com.fr.swift.config.conf.bean.SegmentBean;
 import com.fr.swift.source.SourceKey;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -63,12 +65,12 @@ public interface SwiftConfigService {
     boolean containsMeta(SourceKey sourceKey);
 
     /**
-     * 批量增加Segment
+     * Segment
      *
      * @param segments
      * @return
      */
-    boolean addSegments(IConfigSegment... segments);
+    boolean addSegments(List<SegmentBean> segments);
 
     /**
      * 批量删除Segment
@@ -84,14 +86,14 @@ public interface SwiftConfigService {
      * @param segments
      * @return
      */
-    boolean updateSegments(IConfigSegment... segments);
+    boolean updateSegments(List<SegmentBean> segments);
 
     /**
      * 获取所有Segment
      *
      * @return
      */
-    Map<String, IConfigSegment> getAllSegments();
+    Map<String, List<SegmentBean>> getAllSegments();
 
     /**
      * 根据SourceKey获取Segment
@@ -99,7 +101,7 @@ public interface SwiftConfigService {
      * @param sourceKey
      * @return
      */
-    IConfigSegment getSegmentByKey(String sourceKey);
+    List<SegmentBean> getSegmentByKey(String sourceKey);
 
     /**
      * 设置cube更新路径

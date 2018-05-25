@@ -94,6 +94,7 @@ public class SwiftMetaDataBean extends BaseDataRecord implements IMetaData<MetaD
     public MetaDataEntity convert() {
         MetaDataEntity entity = new MetaDataEntity();
         entity.setId(getId());
+        entity.setTableName(getTableName());
         entity.setSchema(getSchema());
         entity.setRemark(getRemark());
         entity.setFields(getFields());

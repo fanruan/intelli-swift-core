@@ -20,4 +20,7 @@ public interface SegmentController extends BaseController<SegmentBean> {
      */
     @DataOperatorAction(actionType = DataOperatorAction.ActionType.QUERY)
     List<SegmentBean> findBySourceKey(String sourceKey) throws Exception;
+
+    @DataOperatorAction(actionType = DataOperatorAction.ActionType.QUERY)
+    void removeBySourceKey(String sourceKey) throws Exception;
 }

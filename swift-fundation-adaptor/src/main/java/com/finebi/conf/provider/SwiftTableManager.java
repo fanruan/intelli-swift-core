@@ -3,6 +3,7 @@ package com.finebi.conf.provider;
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.common.internalimp.config.driver.CommonDataSourceDriverFactory;
 import com.finebi.common.internalimp.config.intercept.InterceptModelImpl;
+import com.finebi.common.internalimp.config.manager.DefaultEngineSessionManager;
 import com.finebi.common.internalimp.config.session.CommonConfigManager;
 import com.finebi.common.service.engine.table.AbstractEngineTableManager;
 import com.finebi.common.structure.config.driver.CommonDataSourceDriver;
@@ -66,7 +67,7 @@ public class SwiftTableManager extends AbstractEngineTableManager {
     @Override
     public List<FineBusinessTable> getAllTable() {
         List<FineBusinessTable> fineBusinessTables = new ArrayList<FineBusinessTable>();
-        Map<String, EntryInfo> all = directSessionManager.getAllEntryInfo(getEngineType());
+        Map<String, EntryInfo> all = DefaultEngineSessionManager.getInstance().getAllEntryInfo(getEngineType());
 //        all.putAll(DashboardConfManager.getManager().getEntryInfoSession().getAll());
         for (Map.Entry<String, EntryInfo> entry : all.entrySet()) {
             EntryInfo entryInfo = entry.getValue();

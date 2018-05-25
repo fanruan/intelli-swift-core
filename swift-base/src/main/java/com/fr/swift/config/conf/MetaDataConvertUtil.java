@@ -5,8 +5,6 @@ import com.fr.swift.config.IMetaDataColumn;
 import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
 import com.fr.swift.config.conf.bean.MetaDataColumnBean;
 import com.fr.swift.config.conf.bean.SwiftMetaDataBean;
-import com.fr.swift.config.unique.MetaDataColumnUnique;
-import com.fr.swift.config.unique.SwiftMetaDataUnique;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
@@ -27,13 +25,13 @@ public class MetaDataConvertUtil {
     }
 
     public static IMetaData convert2ConfigMetaData(SwiftMetaData metaData) throws SwiftMetaDataException {
-        List<MetaDataColumnUnique> columns = new ArrayList<MetaDataColumnUnique>();
+        List<MetaDataColumnBean> columns = new ArrayList<MetaDataColumnBean>();
         int columnCount = metaData.getColumnCount();
         for (int i = 1; i <= columnCount; i++) {
             SwiftMetaDataColumn column = metaData.getColumn(i);
-            columns.add(new MetaDataColumnUnique(column.getType(), column.getName(), column.getRemark(), column.getPrecision(), column.getScale(), column.getColumnId()));
+            columns.add(new MetaDataColumnBean(column.getType(), column.getName(), column.getRemark(), column.getPrecision(), column.getScale(), column.getColumnId()));
         }
-        return new SwiftMetaDataUnique(metaData.getSchemaName(), metaData.getTableName(), metaData.getRemark(), columns);
+        return new SwiftMetaDataBean(metaData.getSchemaName(), metaData.getTableName(), metaData.getRemark(), columns);
     }
 
     public static <T extends IMetaDataColumn> SwiftMetaData toSwiftMetadata(IMetaData<T> iMetaData) {

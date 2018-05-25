@@ -72,7 +72,16 @@ public class MetaDataControllerImpl implements MetaDataController {
     }
 
     @Override
-    public List<SwiftMetaDataBean> findByTableName(String tableName) throws Exception {
-        return find(QueryFactory.create().addRestriction(RestrictionFactory.eq(SwiftMetaDataBean.COLUMN_TABLE_NAME, tableName)));
+    public SwiftMetaDataBean findByTableName(String tableName) throws Exception {
+        List<SwiftMetaDataBean> list = find(QueryFactory.create().addRestriction(RestrictionFactory.eq(SwiftMetaDataBean.COLUMN_TABLE_NAME, tableName)));
+        if (null != list && list.size() > 0) {
+            return list.get(0);
+        }
+        return null;
+    }
+
+    @Override
+    public SwiftMetaDataBean findBySourceKey(String sourceKey) throws Exception {
+        return getById(sourceKey);
     }
 }

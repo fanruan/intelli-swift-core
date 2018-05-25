@@ -2,6 +2,7 @@ package com.fr.swift.segment.operator.insert;
 
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.config.IConfigSegment;
+import com.fr.swift.config.conf.bean.SegmentBean;
 import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
 import com.fr.swift.config.unique.SegmentKeyUnique;
 import com.fr.swift.config.unique.SegmentUnique;
@@ -51,7 +52,7 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
     protected SwiftMetaData swiftMetaData;
     protected List<String> fields;
     protected List<Segment> segments;
-    private IConfigSegment configSegment;
+    private List<SegmentBean> configSegment;
     private SwiftSourceAlloter alloter;
     private SegmentIndexCache segmentIndexCache;
     private int startSegIndex;
@@ -75,8 +76,7 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
         this.fields = fields;
         this.alloter = SwiftSourceAlloterFactory.createLineSourceAlloter(sourceKey, cubeSourceKey);
         this.segments = new ArrayList<Segment>();
-        this.configSegment = new SegmentUnique();
-        this.configSegment.setSourceKey(sourceKey.getId());
+        this.configSegment = new ArrayList<SegmentBean>();
         this.segments = segments;
         this.segmentIndexCache = new SegmentIndexCache();
         this.startSegIndex = segments.size();
@@ -161,7 +161,7 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
     protected Segment createSegment(int order, Types.StoreType storeType) {
         String cubePath = ResourceDiscovery.getInstance().getCubePath() + "/" + cubeSourceKey + "/seg" + order;
         IResourceLocation location = new ResourceLocation(cubePath, storeType);
-        configSegment.addSegment(new SegmentKeyUnique(sourceKey, "", location.getUri(), order, storeType));
+        configSegment.add(new SegmentBean(sourceKey.getId(), "", location.getUri(), order, storeType));
         return createNewSegment(location, swiftMetaData);
     }
 

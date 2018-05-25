@@ -2,7 +2,17 @@ package com.fr.engine.bi.register;
 
 import com.finebi.base.stable.StableManager;
 import com.finebi.conf.algorithm.DMDataModel;
+import com.fr.base.FRContext;
+import com.fr.decision.db.DecisionDBEntityKey;
+import com.fr.log.FineLoggerProvider;
 import com.fr.module.Activator;
+import com.fr.module.extension.Prepare;
+import com.fr.stable.db.DBContext;
+import com.fr.stable.db.DBProvider;
+import com.fr.stable.db.context.ContextOption;
+import com.fr.swift.config.conf.context.SwiftConfigContext;
+import com.fr.swift.config.conf.entity.MetaDataEntity;
+import com.fr.swift.config.conf.entity.SegmentEntity;
 import com.fr.swift.cube.queue.ProviderTaskManager;
 import com.fr.swift.driver.SwiftDriverRegister;
 import com.fr.swift.manager.ConnectionProvider;
@@ -24,7 +34,7 @@ import com.fr.swift.util.Crasher;
 /**
  * Created by pony on 2018/5/9.
  */
-public class SwiftActivator extends Activator {
+public class SwiftActivator extends Activator implements Prepare {
     @Override
     public void start() {
         StableManager.addClass("swiftTableEngineExecutor", com.finebi.conf.impl.SwiftTableEngineExecutor.class);
@@ -62,6 +72,23 @@ public class SwiftActivator extends Activator {
             }
         });
 
+        try {
+            final DBContext context = leftFindSingleton(DBContext.class);
+            SwiftConfigContext.getInstance().init(new ContextOption() {
+                @Override
+                public DBProvider getDBProvider() {
+                    return context;
+                }
+
+                @Override
+                public FineLoggerProvider getLogger() {
+                    return FRContext.getLogger();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         // fixme 这边先不去掉，其实和SwiftEngineActivator重复了
         try {
             SwiftDriverRegister.register();
@@ -78,5 +105,10 @@ public class SwiftActivator extends Activator {
 
     @Override
     public void stop() {
+    }
+
+    @Override
+    public void prepare() {
+        addMutable(DecisionDBEntityKey.Key, MetaDataEntity.class, SegmentEntity.class);
     }
 }

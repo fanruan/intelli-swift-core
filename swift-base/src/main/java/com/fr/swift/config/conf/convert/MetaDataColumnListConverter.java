@@ -4,6 +4,7 @@ import com.fr.stable.StringUtils;
 import com.fr.swift.config.conf.bean.MetaDataColumnBean;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.third.fasterxml.jackson.core.JsonProcessingException;
+import com.fr.third.fasterxml.jackson.core.type.TypeReference;
 import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
 import com.fr.third.javax.persistence.AttributeConverter;
 
@@ -31,7 +32,8 @@ public class MetaDataColumnListConverter implements AttributeConverter<List<Meta
     @Override
     public List<MetaDataColumnBean> convertToEntityAttribute(String s) {
         try {
-            return StringUtils.isNotEmpty(s) ? mapper.readValue(s, ArrayList.class) : new ArrayList<MetaDataColumnBean>();
+            return StringUtils.isNotEmpty(s) ? (List<MetaDataColumnBean>) mapper.readValue(s, new TypeReference<List<MetaDataColumnBean>>() {
+            }) : new ArrayList<MetaDataColumnBean>();
         } catch (IOException e) {
             SwiftLoggers.getLogger(MetaDataColumnListConverter.class).error(e);
             return null;

@@ -1,6 +1,7 @@
 package com.fr.swift.cube.space.impl;
 
 import com.fr.swift.config.IConfigSegment;
+import com.fr.swift.config.conf.bean.SegmentBean;
 import com.fr.swift.config.conf.service.SwiftConfigService;
 import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
 import com.fr.swift.cube.io.ResourceDiscovery;
@@ -24,14 +25,12 @@ public class SwiftSpaceUsageService implements SpaceUsageService {
 
     @Override
     public long getTableUsedSpace(SourceKey table) throws Exception {
-        IConfigSegment segConf = confSvc.getSegmentByKey(table.getId());
-        if (segConf == null) {
+        List<SegmentBean> segConf = confSvc.getSegmentByKey(table.getId());
+        if (segConf == null || segConf.isEmpty()) {
             return 0;
         }
-        List<SegmentKey> segs = segConf.getSegments();
-
         long size = 0;
-        for (SegmentKey seg : segs) {
+        for (SegmentKey seg : segConf) {
             size += detector.detectUsed(seg.getUri());
         }
         return size;

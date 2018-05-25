@@ -1,6 +1,6 @@
 package com.fr.swift.segment;
 
-import com.fr.swift.config.IConfigSegment;
+import com.fr.swift.config.conf.bean.SegmentBean;
 import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
 import com.fr.swift.source.SourceKey;
 
@@ -38,10 +38,10 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
     }
 
     private List<SegmentKey> getSegmentKey(String sourceKey) {
-        IConfigSegment segments = SwiftConfigServiceProvider.getInstance().getSegmentByKey(sourceKey);
+        List<SegmentBean> segments = SwiftConfigServiceProvider.getInstance().getSegmentByKey(sourceKey);
         List<SegmentKey> target = new ArrayList<SegmentKey>();
         if (null != segments) {
-            for (SegmentKey key : segments.getSegments()) {
+            for (SegmentBean key : segments) {
                 target.add(new SwiftSegmentKey(key));
             }
         }

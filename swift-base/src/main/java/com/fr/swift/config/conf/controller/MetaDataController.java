@@ -20,5 +20,8 @@ public interface MetaDataController extends BaseController<SwiftMetaDataBean> {
      * @throws Exception 异常
      */
     @DataOperatorAction(actionType = DataOperatorAction.ActionType.QUERY)
-    List<SwiftMetaDataBean> findByTableName(String tableName) throws Exception;
+    SwiftMetaDataBean findByTableName(String tableName) throws Exception;
+
+    @DataOperatorAction(actionType = DataOperatorAction.ActionType.QUERY)
+    SwiftMetaDataBean findBySourceKey(String sourceKey) throws Exception;
 }

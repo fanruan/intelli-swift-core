@@ -1,6 +1,7 @@
 package com.fr.swift.config.conf.entity;
 
 import com.fr.decision.base.entity.BaseEntity;
+import com.fr.decision.webservice.utils.DecisionServiceConstants;
 import com.fr.swift.config.conf.bean.Convert;
 import com.fr.swift.config.conf.bean.SegmentBean;
 import com.fr.swift.config.conf.convert.StoreTypeConverter;
@@ -17,13 +18,13 @@ import java.net.URI;
  * @date 2018/5/24
  */
 @Entity
-@Table(name = "swift_segment")
+@Table(name = "swift_segments")
 public class SegmentEntity extends BaseEntity implements Convert<SegmentBean> {
     @Column(name = "sourceKey", nullable = false)
     private String sourceKey;
-    @Column(name = "name")
+    @Column(name = "segmentName")
     private String name;
-    @Column(name = "uri", nullable = false, unique = true)
+    @Column(name = "uri", nullable = false, unique = true, length = DecisionServiceConstants.LONG_TEXT_LENGTH)
     @com.fr.third.javax.persistence.Convert(
             converter = URIConverter.class
     )
@@ -78,6 +79,6 @@ public class SegmentEntity extends BaseEntity implements Convert<SegmentBean> {
 
     @Override
     public SegmentBean convert() {
-        return new SegmentBean(getId(), sourceKey, name, uri, order, storeType);
+        return new SegmentBean(sourceKey, name, uri, order, storeType);
     }
 }
