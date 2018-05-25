@@ -24,6 +24,10 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable, Convert<S
     public static final String COLUMN_FIELDS = "fields";
     public static final String COLUMN_ID = "id";
 
+    /**
+     * id实际上传的是SourceKey
+     * 理论上SourceKey不重复
+     */
     private String id;
 
     private String schema;
