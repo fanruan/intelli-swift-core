@@ -20,16 +20,16 @@ import java.util.List;
 @Table(name = "swift_metadata")
 public class SwiftMetaDataEntity extends com.fr.config.entity.Entity implements Convert<SwiftMetaDataBean> {
 
-    @Column(name = "schemaName")
+    @Column(name = SwiftMetaDataBean.COLUMN_SCHEMA)
     private String schemaName;
 
-    @Column(name = "tableName")
+    @Column(name = SwiftMetaDataBean.COLUMN_TABLE_NAME)
     private String tableName;
 
-    @Column(name = "remark")
+    @Column(name = SwiftMetaDataBean.COLUMN_REMARK)
     private String remark;
 
-    @Column(name = "fields", length = DecisionServiceConstants.LONG_TEXT_LENGTH)
+    @Column(name = SwiftMetaDataBean.COLUMN_FIELDS, length = DecisionServiceConstants.LONG_TEXT_LENGTH)
     @com.fr.third.javax.persistence.Convert(
             converter = MetaDataColumnListConverter.class
     )

@@ -19,18 +19,18 @@ import java.net.URI;
 @Entity
 @Table(name = "swift_segments")
 public class SwiftSegmentEntity extends com.fr.config.entity.Entity implements Convert<SegmentBean> {
-    @Column(name = "segmentOwner")
+    @Column(name = SegmentBean.COLUMN_SEGMENT_OWNER)
     private String segmentOwner;
-    @Column(name = "segmentName")
+    @Column(name = SegmentBean.COLUMN_SEGMENT_NAME)
     private String segmentName;
-    @Column(name = "segmentUri", unique = true, length = DecisionServiceConstants.LONG_TEXT_LENGTH)
+    @Column(name = SegmentBean.COLUMN_SEGMENT_URI, unique = true, length = DecisionServiceConstants.LONG_TEXT_LENGTH)
     @com.fr.third.javax.persistence.Convert(
             converter = URIConverter.class
     )
     private URI segmentUri;
-    @Column(name = "segmentOrder")
+    @Column(name = SegmentBean.COLUMN_SEGMENT_ORDER)
     private int segmentOrder;
-    @Column(name = "storeType")
+    @Column(name = SegmentBean.COLUMN_STORE_TYPE)
     @com.fr.third.javax.persistence.Convert(
             converter = StoreTypeConverter.class
     )

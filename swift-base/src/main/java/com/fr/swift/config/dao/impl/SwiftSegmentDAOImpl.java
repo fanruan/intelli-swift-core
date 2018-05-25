@@ -21,8 +21,8 @@ import java.util.List;
  */
 public class SwiftSegmentDAOImpl extends BaseDAO<SwiftSegmentEntity> implements SwiftSegmentDAO {
 
-    private static final String FIND_BY_SOURCE_KEY = String.format("from SwiftSegmentEntity entity where entity.%s = ", SegmentBean.COLUMN_SOURCE_KEY);
-    private static final String DELETE_BY_SOURCE_KEY = String.format("delete from SwiftSegmentEntity entity where entity.%s = ", SegmentBean.COLUMN_SOURCE_KEY);
+    private static final String FIND_BY_SOURCE_KEY = String.format("from SwiftSegmentEntity entity where entity.%s = ", SegmentBean.COLUMN_SEGMENT_OWNER);
+    private static final String DELETE_BY_SOURCE_KEY = String.format("delete from SwiftSegmentEntity entity where entity.%s = ", SegmentBean.COLUMN_SEGMENT_OWNER);
 
     public SwiftSegmentDAOImpl() {
         super(SwiftSegmentEntity.class);
@@ -35,7 +35,7 @@ public class SwiftSegmentDAOImpl extends BaseDAO<SwiftSegmentEntity> implements 
 
     @Override
     public List<SegmentBean> findBySourceKey(String sourceKey) {
-        List<SwiftSegmentEntity> list = find(String.format("%s'%s' order by entity.%s", FIND_BY_SOURCE_KEY, sourceKey, SegmentBean.COLUMN_ORDER));
+        List<SwiftSegmentEntity> list = find(String.format("%s'%s' order by entity.%s", FIND_BY_SOURCE_KEY, sourceKey, SegmentBean.COLUMN_SEGMENT_ORDER));
         List<SegmentBean> result = new ArrayList<SegmentBean>();
         for (SwiftSegmentEntity entity : list) {
             result.add(entity.convert());

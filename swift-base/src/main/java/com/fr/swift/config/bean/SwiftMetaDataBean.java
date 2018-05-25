@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class SwiftMetaDataBean implements SwiftMetaData, Serializable, Convert<SwiftMetaDataEntity> {
 
-    public static final String COLUMN_SCHEMA = "schema";
+    public static final String COLUMN_SCHEMA = "schemaName";
     public static final String COLUMN_TABLE_NAME = "tableName";
     public static final String COLUMN_REMARK = "remark";
     public static final String COLUMN_FIELDS = "fields";
