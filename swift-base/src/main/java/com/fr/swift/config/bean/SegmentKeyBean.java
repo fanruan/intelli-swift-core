@@ -18,7 +18,6 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
     public static final String COLUMN_SEGMENT_ORDER = "segmentOrder";
     public static final String COLUMN_STORE_TYPE = "storeType";
     public static final String COLUMN_SEGMENT_URI = "segmentUri";
-    public static final String COLUMN_SEGMENT_NAME = "segmentName";
 
 
     /**
@@ -26,14 +25,12 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
      */
     private String id;
     private String sourceKey;
-    private String name;
     private URI uri;
     private int order;
     private Types.StoreType storeType;
 
-    public SegmentKeyBean(String sourceKey, String name, URI uri, int order, Types.StoreType storeType) {
+    public SegmentKeyBean(String sourceKey, URI uri, int order, Types.StoreType storeType) {
         this.sourceKey = sourceKey;
-        this.name = name;
         this.uri = uri;
         this.order = order;
         this.storeType = storeType;
@@ -54,14 +51,6 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
     @Override
     public SourceKey getTable() {
         return new SourceKey(sourceKey);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public URI getUri() {
@@ -101,7 +90,6 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
         SwiftSegmentEntity entity = new SwiftSegmentEntity();
         entity.setId(id);
         entity.setSegmentOwner(sourceKey);
-        entity.setSegmentName(name);
         entity.setSegmentOrder(order);
         entity.setStoreType(storeType);
         entity.setSegmentUri(uri);

@@ -21,8 +21,6 @@ import java.net.URI;
 public class SwiftSegmentEntity extends com.fr.config.entity.Entity implements Convert<SegmentKeyBean> {
     @Column(name = SegmentKeyBean.COLUMN_SEGMENT_OWNER)
     private String segmentOwner;
-    @Column(name = SegmentKeyBean.COLUMN_SEGMENT_NAME)
-    private String segmentName;
     @Column(name = SegmentKeyBean.COLUMN_SEGMENT_URI, unique = true, length = DecisionServiceConstants.LONG_TEXT_LENGTH)
     @com.fr.third.javax.persistence.Convert(
             converter = URIConverter.class
@@ -68,16 +66,9 @@ public class SwiftSegmentEntity extends com.fr.config.entity.Entity implements C
         this.storeType = storeType;
     }
 
-    public String getSegmentName() {
-        return segmentName;
-    }
-
-    public void setSegmentName(String segmentName) {
-        this.segmentName = segmentName;
-    }
 
     @Override
     public SegmentKeyBean convert() {
-        return new SegmentKeyBean(segmentOwner, segmentName, segmentUri, segmentOrder, storeType);
+        return new SegmentKeyBean(segmentOwner, segmentUri, segmentOrder, storeType);
     }
 }
