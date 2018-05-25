@@ -1,6 +1,6 @@
 package com.fr.swift.cache;
 
-import com.fr.swift.config.meta.MetaDataConfig;
+import com.fr.swift.config.conf.MetaDataConfig;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
 

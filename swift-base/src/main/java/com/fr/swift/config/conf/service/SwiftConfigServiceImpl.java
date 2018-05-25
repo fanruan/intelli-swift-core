@@ -1,12 +1,10 @@
-package com.fr.swift.config.service;
+package com.fr.swift.config.conf.service;
 
 import com.fr.config.Configuration;
-import com.fr.swift.config.meta.MetaDataConfig;
-import com.fr.swift.config.path.SwiftPathConfig;
-import com.fr.swift.config.segment.IConfigSegment;
-import com.fr.swift.config.segment.SegmentConfig;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.config.IConfigSegment;
+import com.fr.swift.config.conf.MetaDataConfig;
+import com.fr.swift.config.conf.SegmentConfig;
+import com.fr.swift.config.conf.SwiftPathConfig;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.transaction.Configurations;
@@ -21,25 +19,20 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2018/3/23
  */
 public class SwiftConfigServiceImpl implements SwiftConfigService {
+
     private MetaDataConfig metaDataConfig = MetaDataConfig.getInstance();
-
     private SegmentConfig segmentConfig = SegmentConfig.getInstance();
-
     private SwiftPathConfig swiftPathConfig = SwiftPathConfig.getInstance();
 
-    private Map<String, SwiftMetaData> metaDataCache = new ConcurrentHashMap<String, SwiftMetaData>();
+    private ConcurrentHashMap<String, SwiftMetaData> metaDataCache = new ConcurrentHashMap<String, SwiftMetaData>();
 
     @Override
     public boolean addMetaData(final String sourceKey, final SwiftMetaData metaData) {
         return Configurations.update(new MetaDataConfigWorker() {
             @Override
             public void run() {
-                try {
-                    metaDataConfig.addMetaData(sourceKey, metaData);
-                    metaDataCache.put(sourceKey, metaData);
-                } catch (SwiftMetaDataException e) {
-                    SwiftLoggers.getLogger().error(e);
-                }
+                metaDataConfig.addMetaData(sourceKey, metaData);
+                metaDataCache.put(sourceKey, metaData);
             }
         });
     }
@@ -49,13 +42,9 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
         return Configurations.update(new MetaDataConfigWorker() {
             @Override
             public void run() {
-                try {
-                    for (Entry<String, SwiftMetaData> entry : metaDatas.entrySet()) {
-                        metaDataConfig.addMetaData(entry.getKey(), entry.getValue());
-                        metaDataCache.put(entry.getKey(), entry.getValue());
-                    }
-                } catch (SwiftMetaDataException e) {
-                    SwiftLoggers.getLogger().error(e);
+                for (Entry<String, SwiftMetaData> entry : metaDatas.entrySet()) {
+                    metaDataConfig.addMetaData(entry.getKey(), entry.getValue());
+                    metaDataCache.put(entry.getKey(), entry.getValue());
                 }
             }
         });
@@ -79,23 +68,19 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
         return Configurations.update(new MetaDataConfigWorker() {
             @Override
             public void run() {
-                try {
-                    metaDataConfig.modifyMetaData(sourceKey, metaData);
-                    metaDataCache.put(sourceKey, metaData);
-                } catch (SwiftMetaDataException e) {
-                    SwiftLoggers.getLogger().error(e);
-                }
+                metaDataConfig.modifyMetaData(sourceKey, metaData);
+                metaDataCache.put(sourceKey, metaData);
             }
         });
     }
 
     @Override
-    public Map<String, SwiftMetaData> getAllMetaData() throws SwiftMetaDataException {
+    public Map<String, SwiftMetaData> getAllMetaData() {
         return metaDataConfig.getAllMetaData();
     }
 
     @Override
-    public SwiftMetaData getMetaDataByKey(String sourceKey) throws SwiftMetaDataException {
+    public SwiftMetaData getMetaDataByKey(String sourceKey) {
         SwiftMetaData metaData = metaDataCache.get(sourceKey);
         if (null == metaData) {
             metaData = metaDataConfig.getMetaDataByKey(sourceKey);

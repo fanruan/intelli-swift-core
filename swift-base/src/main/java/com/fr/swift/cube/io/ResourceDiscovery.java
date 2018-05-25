@@ -2,7 +2,7 @@ package com.fr.swift.cube.io;
 
 import com.fr.base.FRContext;
 import com.fr.general.ComparatorUtils;
-import com.fr.swift.config.service.SwiftConfigServiceProvider;
+import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.impl.mem.MemIo;
 import com.fr.swift.cube.io.input.Reader;
@@ -180,7 +180,10 @@ public class ResourceDiscovery implements IResourceDiscovery {
 
     @Override
     public boolean checkCubePath(String path) {
-        return path != null && !ComparatorUtils.equals(path, "");
+        if (path == null || ComparatorUtils.equals(path, "")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

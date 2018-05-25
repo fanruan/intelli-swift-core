@@ -1,10 +1,11 @@
 package com.fr.swift.generate;
 
-import com.fr.swift.config.meta.MetaDataConfig;
-import com.fr.swift.config.segment.IConfigSegment;
-import com.fr.swift.config.segment.SegmentConfig;
-import com.fr.swift.config.segment.SegmentKeyUnique;
-import com.fr.swift.config.segment.SegmentUnique;
+import com.fr.swift.config.IConfigSegment;
+import com.fr.swift.config.conf.MetaDataConfig;
+import com.fr.swift.config.conf.SegmentConfig;
+import com.fr.swift.config.unique.SegmentKeyUnique;
+import com.fr.swift.config.unique.SegmentUnique;
+import com.fr.swift.config.unique.SwiftMetaDataUnique;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.log.SwiftLogger;
@@ -24,7 +25,7 @@ public abstract class BaseTest extends BaseConfigTest {
     }
 
     protected void putMetaAndSegment(DataSource dataSource, int segOrder, IResourceLocation location, Types.StoreType storeType) throws Exception {
-        MetaDataConfig.getInstance().addMetaData(dataSource.getSourceKey().getId(), dataSource.getMetadata());
+        MetaDataConfig.getInstance().addMetaData(dataSource.getSourceKey().getId(), new SwiftMetaDataUnique(dataSource.getMetadata()));
         IConfigSegment configSegment = new SegmentUnique();
         configSegment.setSourceKey(dataSource.getSourceKey().getId());
         configSegment.addSegment(new SegmentKeyUnique(dataSource.getSourceKey(), "", location.getUri(), segOrder, storeType));

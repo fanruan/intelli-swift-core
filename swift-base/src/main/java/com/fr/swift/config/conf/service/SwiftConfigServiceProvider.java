@@ -1,7 +1,6 @@
-package com.fr.swift.config.service;
+package com.fr.swift.config.conf.service;
 
-import com.fr.swift.config.segment.IConfigSegment;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.config.IConfigSegment;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 
@@ -50,12 +49,12 @@ public class SwiftConfigServiceProvider implements SwiftConfigService {
     }
 
     @Override
-    public Map<String, SwiftMetaData> getAllMetaData() throws SwiftMetaDataException {
+    public Map<String, SwiftMetaData> getAllMetaData() {
         return service.getAllMetaData();
     }
 
     @Override
-    public SwiftMetaData getMetaDataByKey(String sourceKey) throws SwiftMetaDataException {
+    public SwiftMetaData getMetaDataByKey(String sourceKey) {
         return service.getMetaDataByKey(sourceKey);
     }
 

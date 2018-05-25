@@ -1,4 +1,4 @@
-package com.fr.swift.config.segment;
+package com.fr.swift.config.unique;
 
 import com.fr.config.holder.Conf;
 import com.fr.config.holder.factory.Holders;

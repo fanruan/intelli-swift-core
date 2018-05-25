@@ -1,10 +1,10 @@
 package com.fr.swift.segment.operator.insert;
 
 import com.fr.swift.bitmap.BitMaps;
-import com.fr.swift.config.segment.IConfigSegment;
-import com.fr.swift.config.segment.SegmentKeyUnique;
-import com.fr.swift.config.segment.SegmentUnique;
-import com.fr.swift.config.service.SwiftConfigServiceProvider;
+import com.fr.swift.config.IConfigSegment;
+import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
+import com.fr.swift.config.unique.SegmentKeyUnique;
+import com.fr.swift.config.unique.SegmentUnique;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types;
