@@ -19,7 +19,6 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
     public static final String COLUMN_STORE_TYPE = "storeType";
     public static final String COLUMN_SEGMENT_URI = "segmentUri";
 
-
     /**
      * sourceKey@storeType@order
      */

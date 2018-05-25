@@ -17,6 +17,7 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.transaction.Configurations;
 import com.fr.transaction.Worker;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,7 +44,7 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
             bean.setId(sourceKey);
             return (Boolean) SwiftTransactionManager.doTransactionIfNeed(new SwiftMetaDataTransactionWorker() {
                 @Override
-                public Object work(SwiftMetaDataDAO dao) {
+                public Object work(SwiftMetaDataDAO dao) throws SQLException {
                     dao.addOrUpdateSwiftMetaData(bean);
                     metaDataCache.put(sourceKey, bean);
                     return true;
@@ -60,7 +61,7 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
         try {
             return (Boolean) SwiftTransactionManager.doTransactionIfNeed(new SwiftMetaDataTransactionWorker() {
                 @Override
-                public Object work(SwiftMetaDataDAO dao) {
+                public Object work(SwiftMetaDataDAO dao) throws SQLException {
                     Iterator<Map.Entry<String, SwiftMetaData>> iterator = metaDatas.entrySet().iterator();
                     while (iterator.hasNext()) {
                         Map.Entry<String, SwiftMetaData> entry = iterator.next();
@@ -84,7 +85,7 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
             return (Boolean) SwiftTransactionManager.doTransactionIfNeed(new SwiftMetaDataTransactionWorker() {
 
                 @Override
-                public Object work(SwiftMetaDataDAO dao) {
+                public Object work(SwiftMetaDataDAO dao) throws SQLException {
                     for (String sourceKey : sourceKeys) {
                         dao.deleteSwiftMetaDataBean(sourceKey);
                     }
@@ -135,7 +136,7 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
             try {
                 return (SwiftMetaDataBean) SwiftTransactionManager.doTransactionIfNeed(new SwiftMetaDataTransactionWorker() {
                     @Override
-                    public Object work(SwiftMetaDataDAO dao) {
+                    public Object work(SwiftMetaDataDAO dao) throws SQLException {
                         SwiftMetaDataBean metaData = dao.findBySourceKey(sourceKey);
                         metaDataCache.put(sourceKey, metaData);
                         return metaData;
@@ -160,7 +161,7 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
         try {
             return (Boolean) SwiftTransactionManager.doTransactionIfNeed(new SwiftMetaDataTransactionWorker() {
                 @Override
-                public Object work(SwiftMetaDataDAO dao) {
+                public Object work(SwiftMetaDataDAO dao) throws SQLException {
                     SwiftMetaDataBean metaData = dao.findBySourceKey(sourceKey.getId());
                     return null != metaData;
                 }
@@ -180,7 +181,7 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
         try {
             return (Boolean) SwiftTransactionManager.doTransactionIfNeed(new SwiftSegmentTransactionWorker() {
                 @Override
-                public Object work(SwiftSegmentDAO dao) {
+                public Object work(SwiftSegmentDAO dao) throws SQLException {
                     for (SegmentKey bean : segments) {
                         dao.addOrUpdateSwiftSegment((SegmentKeyBean) bean);
                     }
@@ -198,7 +199,7 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
         try {
             return (Boolean) SwiftTransactionManager.doTransactionIfNeed(new SwiftSegmentTransactionWorker() {
                 @Override
-                public Object work(SwiftSegmentDAO dao) {
+                public Object work(SwiftSegmentDAO dao) throws SQLException {
                     for (String sourceKey : sourceKeys) {
                         dao.deleteBySourceKey(sourceKey);
                     }
@@ -216,7 +217,7 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
         try {
             return (Boolean) SwiftTransactionManager.doTransactionIfNeed(new SwiftSegmentTransactionWorker() {
                 @Override
-                public Object work(SwiftSegmentDAO dao) {
+                public Object work(SwiftSegmentDAO dao) throws SQLException {
                     dao.deleteBySourceKey(sourceKey);
                     for (SegmentKey segment : segments) {
                         dao.addOrUpdateSwiftSegment((SegmentKeyBean) segment);

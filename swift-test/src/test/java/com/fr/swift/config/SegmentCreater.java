@@ -17,7 +17,7 @@ public class SegmentCreater {
         String sourceKey = "sourceA";
         List<SegmentKey> keyUniques = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
-            keyUniques.add(new SegmentKeyBean(sourceKey, "seg" + i, URI.create("/seg" + i), i, Types.StoreType.FINE_IO));
+            keyUniques.add(new SegmentKeyBean(sourceKey, URI.create("/seg" + i), i, Types.StoreType.FINE_IO));
         }
         return keyUniques;
     }
@@ -26,7 +26,7 @@ public class SegmentCreater {
         String sourceKey = "sourceA";
         List<SegmentKey> keyUniques = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
-            keyUniques.add(new SegmentKeyBean(sourceKey, "seg" + (i + 1), URI.create("/seg" + (i + 1)), i, Types.StoreType.FINE_IO));
+            keyUniques.add(new SegmentKeyBean(sourceKey, URI.create("/seg" + (i + 1)), i, Types.StoreType.FINE_IO));
         }
         return keyUniques;
     }

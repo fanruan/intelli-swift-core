@@ -95,7 +95,7 @@ public class RealtimeMerger implements Merger {
     protected Segment createSegment(int order) {
         String cubePath = ResourceDiscovery.getInstance().getCubePath() + "/" + cubeSourceKey + "/seg" + order;
         IResourceLocation location = new ResourceLocation(cubePath);
-        configSegment.add(new SegmentKeyBean(sourceKey.getId(), "", location.getUri(), order, StoreType.FINE_IO));
+        configSegment.add(new SegmentKeyBean(sourceKey.getId(), location.getUri(), order, StoreType.FINE_IO));
         return new HistorySegmentImpl(location, metaData);
     }
 
