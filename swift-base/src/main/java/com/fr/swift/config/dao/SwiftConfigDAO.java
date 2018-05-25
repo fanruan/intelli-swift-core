@@ -9,13 +9,42 @@ import java.util.List;
  * @date 2018/5/25
  */
 public interface SwiftConfigDAO<T extends Entity> {
-    boolean saveOrUpdate(T var1);
+    /**
+     * 添加或更新方法
+     *
+     * @param entity
+     * @return
+     */
+    boolean saveOrUpdate(T entity);
 
-    T select(String var1);
+    /**
+     * 根据ID查询
+     *
+     * @param id
+     * @return
+     */
+    T select(String id);
 
-    List<T> find(String var1);
+    /**
+     * 自定义hql查询
+     *
+     * @param hql hibernate sql
+     * @return
+     */
+    List<T> find(String hql);
 
+    /**
+     * 查询所有记录
+     *
+     * @return
+     */
     List<T> find();
 
-    boolean deleteById(String var1);
+    /**
+     * 根据ID删除
+     *
+     * @param id
+     * @return
+     */
+    boolean deleteById(String id);
 }

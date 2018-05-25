@@ -2,7 +2,7 @@ package com.fr.swift.config.entity;
 
 import com.fr.decision.webservice.utils.DecisionServiceConstants;
 import com.fr.swift.config.bean.Convert;
-import com.fr.swift.config.bean.SegmentBean;
+import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.convert.StoreTypeConverter;
 import com.fr.swift.config.convert.URIConverter;
 import com.fr.swift.cube.io.Types;
@@ -18,19 +18,19 @@ import java.net.URI;
  */
 @Entity
 @Table(name = "swift_segments")
-public class SwiftSegmentEntity extends com.fr.config.entity.Entity implements Convert<SegmentBean> {
-    @Column(name = SegmentBean.COLUMN_SEGMENT_OWNER)
+public class SwiftSegmentEntity extends com.fr.config.entity.Entity implements Convert<SegmentKeyBean> {
+    @Column(name = SegmentKeyBean.COLUMN_SEGMENT_OWNER)
     private String segmentOwner;
-    @Column(name = SegmentBean.COLUMN_SEGMENT_NAME)
+    @Column(name = SegmentKeyBean.COLUMN_SEGMENT_NAME)
     private String segmentName;
-    @Column(name = SegmentBean.COLUMN_SEGMENT_URI, unique = true, length = DecisionServiceConstants.LONG_TEXT_LENGTH)
+    @Column(name = SegmentKeyBean.COLUMN_SEGMENT_URI, unique = true, length = DecisionServiceConstants.LONG_TEXT_LENGTH)
     @com.fr.third.javax.persistence.Convert(
             converter = URIConverter.class
     )
     private URI segmentUri;
-    @Column(name = SegmentBean.COLUMN_SEGMENT_ORDER)
+    @Column(name = SegmentKeyBean.COLUMN_SEGMENT_ORDER)
     private int segmentOrder;
-    @Column(name = SegmentBean.COLUMN_STORE_TYPE)
+    @Column(name = SegmentKeyBean.COLUMN_STORE_TYPE)
     @com.fr.third.javax.persistence.Convert(
             converter = StoreTypeConverter.class
     )
@@ -77,7 +77,7 @@ public class SwiftSegmentEntity extends com.fr.config.entity.Entity implements C
     }
 
     @Override
-    public SegmentBean convert() {
-        return new SegmentBean(segmentOwner, segmentName, segmentUri, segmentOrder, storeType);
+    public SegmentKeyBean convert() {
+        return new SegmentKeyBean(segmentOwner, segmentName, segmentUri, segmentOrder, storeType);
     }
 }
