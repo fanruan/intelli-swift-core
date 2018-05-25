@@ -1,9 +1,9 @@
 package com.fr.swift.source.etl.rowcal.alldata;
 
+import com.fr.swift.config.conf.bean.MetaDataColumnBean;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
-import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.core.CoreField;
@@ -57,7 +57,7 @@ public class AllDataRowCalculatorOperator extends AbstractOperator {
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
-        columnList.add(new MetaDataColumn(this.addedColumnName, this.addedColumnName,
+        columnList.add(new MetaDataColumnBean(this.addedColumnName, this.addedColumnName,
                 Types.DOUBLE, fetchObjectCore().getValue()));
         return columnList;
     }

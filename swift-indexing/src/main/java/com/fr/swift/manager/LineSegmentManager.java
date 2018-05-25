@@ -1,7 +1,7 @@
 package com.fr.swift.manager;
 
 
-import com.fr.swift.config.conf.MetaDataConvertUtil;
+import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.segment.AbstractSegmentManager;
@@ -28,7 +28,7 @@ public class LineSegmentManager extends AbstractSegmentManager {
         Types.StoreType storeType = segmentKey.getStoreType();
         ResourceLocation location = new ResourceLocation(uri.getPath(), storeType);
         SourceKey sourceKey = segmentKey.getTable();
-        SwiftMetaData metaData = MetaDataConvertUtil.getSwiftMetaDataBySourceKey(sourceKey.getId());
+        SwiftMetaData metaData = SwiftConfigServiceProvider.getInstance().getMetaDataByKey(sourceKey.getId());
         Util.requireNonNull(metaData);
         switch (storeType) {
             case MEMORY:

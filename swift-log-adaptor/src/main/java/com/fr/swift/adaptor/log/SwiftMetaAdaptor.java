@@ -1,9 +1,9 @@
 package com.fr.swift.adaptor.log;
 
-import com.fr.swift.source.MetaDataColumn;
+import com.fr.swift.config.conf.bean.MetaDataColumnBean;
+import com.fr.swift.config.conf.bean.SwiftMetaDataBean;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.SwiftMetaDataImpl;
 import com.fr.swift.util.Crasher;
 import com.fr.third.javax.persistence.AttributeConverter;
 import com.fr.third.javax.persistence.Column;
@@ -27,12 +27,12 @@ class SwiftMetaAdaptor {
     static SwiftMetaData adapt(Class<?> entity) {
         List<SwiftMetaDataColumn> columnMetas = new ArrayList<SwiftMetaDataColumn>();
         for (Field field : getFields(entity)) {
-            SwiftMetaDataColumn columnMeta = new MetaDataColumn(
+            SwiftMetaDataColumn columnMeta = new MetaDataColumnBean(
                     field.getAnnotation(Column.class).name(),
                     getSqlType(getClassType(field)));
             columnMetas.add(columnMeta);
         }
-        return new SwiftMetaDataImpl(getTableName(entity), columnMetas);
+        return new SwiftMetaDataBean(getTableName(entity), columnMetas);
     }
 
     static List<Field> getFields(Class<?> entity) {

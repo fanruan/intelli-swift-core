@@ -38,10 +38,10 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
     }
 
     private List<SegmentKey> getSegmentKey(String sourceKey) {
-        List<SegmentBean> segments = SwiftConfigServiceProvider.getInstance().getSegmentByKey(sourceKey);
+        List<SegmentKey> segments = SwiftConfigServiceProvider.getInstance().getSegmentByKey(sourceKey);
         List<SegmentKey> target = new ArrayList<SegmentKey>();
         if (null != segments) {
-            for (SegmentBean key : segments) {
+            for (SegmentKey key : segments) {
                 target.add(new SwiftSegmentKey(key));
             }
         }

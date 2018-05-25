@@ -63,13 +63,13 @@
 //        assertEquals(source.getTableName(), dest.getTableName());
 //        assertEquals(source.getRemark(), dest.getRemark());
 //        assertEquals(source.getSchema(), dest.getSchema());
-//        assertEquals(source.getFieldList().size(), dest.getFieldList().size());
+//        assertEquals(source.getFields().size(), dest.getFields().size());
 //    }
 //
 //    private void assertMetaDataNotSame(IMetaData metaData1, IMetaData metaData2) {
 //        assertEquals(metaData1.getTableName(), metaData2.getTableName());
 //        assertNotSame(metaData1.getRemark(), metaData2.getRemark());
 //        assertNotSame(metaData1.getSchema(), metaData2.getSchema());
-//        assertEquals(metaData1.getFieldList().size(), metaData2.getFieldList().size());
+//        assertEquals(metaData1.getFields().size(), metaData2.getFields().size());
 //    }
 //}

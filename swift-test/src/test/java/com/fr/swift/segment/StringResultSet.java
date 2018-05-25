@@ -1,9 +1,9 @@
 package com.fr.swift.segment;
 
+import com.fr.swift.config.conf.bean.MetaDataColumnBean;
+import com.fr.swift.config.conf.bean.SwiftMetaDataBean;
 import com.fr.swift.source.ListBasedRow;
-import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftMetaDataImpl;
 
 import java.sql.SQLException;
 import java.sql.Types;
@@ -20,9 +20,9 @@ public class StringResultSet extends SingleColumnResultSet {
     int count;
 
     @Override
-    public SwiftMetaData getMetaData() throws SQLException {
-        return new SwiftMetaDataImpl("STR_TABLE",
-                Arrays.asList(new MetaDataColumn("string", Types.VARCHAR)));
+    public SwiftMetaData getMetaData() {
+        return new SwiftMetaDataBean("STR_TABLE",
+                Arrays.asList(new MetaDataColumnBean("string", Types.VARCHAR)));
     }
 
 

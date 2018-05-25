@@ -1,12 +1,12 @@
 package com.fr.swift.source.etl.groupsum;
 
+import com.fr.swift.config.conf.bean.MetaDataColumnBean;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.group.GroupType;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.ColumnTypeUtils;
-import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.core.CoreField;
@@ -54,13 +54,13 @@ public class GroupSumOperator extends AbstractOperator {
                         ColumnType columnType = ColumnTypeUtils.getColumnType(columnMeta);
                         switch (columnType) {
                             case DATE:
-                                columns.add(new MetaDataColumn(columnName, getSqlType(dimension.getGroup().getGroupType()), columnMeta.getPrecision(), columnMeta.getScale()));
+                                columns.add(new MetaDataColumnBean(columnName, getSqlType(dimension.getGroup().getGroupType()), columnMeta.getPrecision(), columnMeta.getScale()));
                                 break;
                             case NUMBER:
                                 columns.add(getNumberGroupSumMeta(dimension, columnMeta));
                                 break;
                             default:
-                                columns.add(new MetaDataColumn(columnName, columnMeta.getType(), columnMeta.getPrecision(), columnMeta.getScale()));
+                                columns.add(new MetaDataColumnBean(columnName, columnMeta.getType(), columnMeta.getPrecision(), columnMeta.getScale()));
                         }
                     }
                 }
@@ -69,9 +69,9 @@ public class GroupSumOperator extends AbstractOperator {
                         String columnName = target.getName();
                         SwiftMetaDataColumn columnMeta = parent.getColumn(columnName);
                         if (target.getColumnType() == ColumnType.NUMBER){
-                            columns.add(new MetaDataColumn(columnName, ColumnTypeUtils.columnTypeToSqlType(target.getColumnType())));
+                            columns.add(new MetaDataColumnBean(columnName, ColumnTypeUtils.columnTypeToSqlType(target.getColumnType())));
                         } else {
-                            columns.add(new MetaDataColumn(columnName, ColumnTypeUtils.columnTypeToSqlType(target.getColumnType()), columnMeta.getPrecision(), columnMeta.getScale()));
+                            columns.add(new MetaDataColumnBean(columnName, ColumnTypeUtils.columnTypeToSqlType(target.getColumnType()), columnMeta.getPrecision(), columnMeta.getScale()));
                         }
                     }
                 }
@@ -149,6 +149,6 @@ public class GroupSumOperator extends AbstractOperator {
                 sqlType = parentColumn.getType();
         }
 
-        return new MetaDataColumn(sum.getName(), sum.getName(), sqlType, parentColumn.getPrecision(), parentColumn.getScale());
+        return new MetaDataColumnBean(sum.getName(), sum.getName(), sqlType, parentColumn.getPrecision(), parentColumn.getScale());
     }
 }

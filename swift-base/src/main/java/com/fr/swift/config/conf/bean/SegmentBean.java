@@ -1,23 +1,22 @@
 package com.fr.swift.config.conf.bean;
 
-import com.fr.decision.base.data.BaseDataRecord;
 import com.fr.swift.config.conf.entity.SegmentEntity;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.core.MD5Utils;
 
 import java.io.Serializable;
 import java.net.URI;
-import java.util.Arrays;
 
 /**
  * @author yee
  * @date 2018/5/24
  */
-public class SegmentBean extends BaseDataRecord implements Serializable, Convert<SegmentEntity>, SegmentKey {
+public class SegmentBean implements Serializable, Convert<SegmentEntity>, SegmentKey {
 
-    public static final String COLUMN_SOURCE_KEY = "sourceKey";
+    public static final String COLUMN_SOURCE_KEY = "segmentOwner";
+    public static final String COLUMN_ORDER = "segmentOrder";
+    private String id;
     private String sourceKey;
     private String name;
     private URI uri;
@@ -25,7 +24,7 @@ public class SegmentBean extends BaseDataRecord implements Serializable, Convert
     private Types.StoreType storeType;
 
     public SegmentBean(String sourceKey, String name, URI uri, int order, Types.StoreType storeType) {
-        this.setId(uri.getPath());
+        this.id = uri.getPath();
         this.sourceKey = sourceKey;
         this.name = name;
         this.uri = uri;
@@ -81,15 +80,23 @@ public class SegmentBean extends BaseDataRecord implements Serializable, Convert
         this.storeType = storeType;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     @Override
     public SegmentEntity convert() {
         SegmentEntity entity = new SegmentEntity();
-        entity.setId(getId());
-        entity.setSourceKey(sourceKey);
-        entity.setName(name);
-        entity.setOrder(order);
+        entity.setId(id);
+        entity.setSegmentOwner(sourceKey);
+        entity.setSegmentName(name);
+        entity.setSegmentOrder(order);
         entity.setStoreType(storeType);
-        entity.setUri(uri);
+        entity.setSegmentUri(uri);
         return entity;
     }
 }

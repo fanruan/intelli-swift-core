@@ -1,10 +1,10 @@
 package com.fr.swift.source.etl.join;
 
+import com.fr.swift.config.conf.bean.MetaDataColumnBean;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.core.CoreField;
@@ -61,7 +61,7 @@ public class JoinOperator extends AbstractOperator {
         for (JoinColumn joinColumn : this.columns) {
             try {
                 SwiftMetaDataColumn originColumn = joinColumn.isLeft() ? leftT.getColumn(joinColumn.getColumnName()) : rightT.getColumn(joinColumn.getColumnName());
-                columnList.add(new MetaDataColumn(joinColumn.getName(), originColumn.getRemark(), originColumn.getType(), originColumn.getPrecision(), originColumn.getScale(), joinColumn.getName()));
+                columnList.add(new MetaDataColumnBean(joinColumn.getName(), originColumn.getRemark(), originColumn.getType(), originColumn.getPrecision(), originColumn.getScale(), joinColumn.getName()));
             } catch (SwiftMetaDataException e) {
                 LOGGER.error("the field " + joinColumn.getColumnName() + " get meta failed", e);
             }

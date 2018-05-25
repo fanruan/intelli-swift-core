@@ -2,13 +2,13 @@ package com.fr.swift.db;
 
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.config.TestConfDb;
+import com.fr.swift.config.conf.bean.MetaDataColumnBean;
+import com.fr.swift.config.conf.bean.SwiftMetaDataBean;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.SwiftMetaDataImpl;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -36,12 +36,12 @@ public class DatabaseTest {
     @Test
     public void tableOpFlow() throws SQLException {
         List<SwiftMetaDataColumn> columnMetas = Arrays.asList(
-                new MetaDataColumn("A", Types.VARCHAR),
-                new MetaDataColumn("B", Types.DATE),
-                new MetaDataColumn("C", Types.INTEGER)
+                new MetaDataColumnBean("A", Types.VARCHAR),
+                new MetaDataColumnBean("B", Types.DATE),
+                new MetaDataColumnBean("C", Types.INTEGER)
         );
         SourceKey tableKey = new SourceKey("a");
-        SwiftMetaDataImpl meta = new SwiftMetaDataImpl("a", columnMetas);
+        SwiftMetaData meta = new SwiftMetaDataBean("a", columnMetas);
 
         if (db.existsTable(tableKey)) {
             db.dropTable(tableKey);
@@ -53,7 +53,7 @@ public class DatabaseTest {
         assertEquals(tableKey, db.getTable(tableKey).getSourceKey());
         assertTrue(equals(meta, db.getTable(tableKey).getMeta()));
 
-        SwiftMetaDataImpl changedMeta = new SwiftMetaDataImpl("b", columnMetas.subList(1, 3));
+        SwiftMetaData changedMeta = new SwiftMetaDataBean("b", columnMetas.subList(1, 3));
         db.alterTable(tableKey, changedMeta);
         assertTrue(equals(changedMeta, db.getTable(tableKey).getMeta()));
 

@@ -26,7 +26,7 @@ import java.nio.file.Paths;
 public class TestConfDb {
     private static final Path PATH = Paths.get(System.getProperty("user.dir") + "/config");
 
-    public static void setConfDb() throws Exception {
+    public static DBContext setConfDb() throws Exception {
         FRContext.setCurrentEnv(new LocalEnv());
         FileUtil.delete(PATH + ".mv.db");
         FileUtil.delete(PATH + ".trace.db");
@@ -48,5 +48,6 @@ public class TestConfDb {
         DaoContext.setXmlEntityDao(new HibernateXmlEnityDao());
         DaoContext.setEntityDao(new HibernateEntityDao());
         Configurations.setHelper(new FineConfigurationHelper());
+        return dbProvider;
     }
 }

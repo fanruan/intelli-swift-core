@@ -1,7 +1,7 @@
 package com.fr.swift.source.etl.group;
 
+import com.fr.swift.config.conf.bean.MetaDataColumnBean;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.core.CoreField;
@@ -35,7 +35,7 @@ public class GroupAssignmentOperator extends AbstractOperator {
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
-        columnList.add(new MetaDataColumn(this.columnName,
+        columnList.add(new MetaDataColumnBean(this.columnName,
                 this.columnName, Types.VARCHAR, fetchObjectCore().getValue()));
         return columnList;
     }

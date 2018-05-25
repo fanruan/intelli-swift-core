@@ -7,10 +7,10 @@ import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.fr.engine.utils.StringUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.encrypt.SwiftEncryption;
+import com.fr.swift.config.conf.bean.MetaDataColumnBean;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.ColumnTypeUtils;
-import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 
@@ -67,7 +67,7 @@ public class FieldFactory {
         List<SwiftMetaDataColumn> swiftMetaDataColumnList = new ArrayList<SwiftMetaDataColumn>();
         for (FineBusinessField fineBusinessField : fineBusinessFieldList) {
             //String name, String remark, int sqlType, int precision, int scale
-            SwiftMetaDataColumn metaDataColumn = new MetaDataColumn(fineBusinessField.getName(), fineBusinessField.getTransferName(), fineBusinessField.getType(), fineBusinessField.getSize(), fineBusinessField.getType());
+            SwiftMetaDataColumn metaDataColumn = new MetaDataColumnBean(fineBusinessField.getName(), fineBusinessField.getTransferName(), fineBusinessField.getType(), fineBusinessField.getSize(), fineBusinessField.getType());
             swiftMetaDataColumnList.add(metaDataColumn);
         }
         return swiftMetaDataColumnList;

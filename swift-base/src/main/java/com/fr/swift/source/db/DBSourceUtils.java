@@ -13,15 +13,15 @@ import com.fr.file.DatasourceManagerProvider;
 import com.fr.general.data.DataModel;
 import com.fr.script.Calculator;
 import com.fr.stable.StringUtils;
+import com.fr.swift.config.conf.bean.MetaDataColumnBean;
+import com.fr.swift.config.conf.bean.SwiftMetaDataBean;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.retry.RetryLoop;
 import com.fr.swift.retry.RetryNTimes;
 import com.fr.swift.setting.PerformancePlugManager;
-import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.SwiftMetaDataImpl;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.Util;
 
@@ -51,9 +51,9 @@ public class DBSourceUtils {
                     List<FieldMessage> messages = dialect.getTableFieldsMessage(conn, table, schema, null);
                     for (FieldMessage message : messages) {
                         String comment = getTransferColumnComment(connection, message.getColumnComment());
-                        columnList.add(new MetaDataColumn(message.getColumnName(), comment, message.getColumnType(), message.getColumnSize(), message.getColumnDecimalDigits()));
+                        columnList.add(new MetaDataColumnBean(message.getColumnName(), comment, message.getColumnType(), message.getColumnSize(), message.getColumnDecimalDigits()));
                     }
-                    return new SwiftMetaDataImpl(table, translatedTableName, schema, columnList);
+                    return new SwiftMetaDataBean(table, translatedTableName, schema, columnList);
                 } finally {
                     DBUtils.closeConnection(conn);
                 }
@@ -113,10 +113,10 @@ public class DBSourceUtils {
             int rowCount = dm.getRowCount();
             List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
             for (int i = 0; i < cols; i++) {
-                MetaDataColumn column = new MetaDataColumn(dm.getColumnName(i), rowCount == 0 ? java.sql.Types.VARCHAR : resloveValue(dm.getValueAt(0, i)));
+                SwiftMetaDataColumn column = new MetaDataColumnBean(dm.getColumnName(i), rowCount == 0 ? java.sql.Types.VARCHAR : resloveValue(dm.getValueAt(0, i)));
                 columnList.add(column);
             }
-            return new SwiftMetaDataImpl(serverTableName, columnList);
+            return new SwiftMetaDataBean(serverTableName, columnList);
         } catch (Exception e) {
             return Crasher.crash(e);
         } finally {
@@ -169,9 +169,9 @@ public class DBSourceUtils {
                     ColumnInformation[] columns = DBUtils.checkInColumnInformation(conn, dialect, query);
                     List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
                     for (int i = 0, cols = columns.length; i < cols; i++) {
-                        columnList.add(new MetaDataColumn(columns[i].getColumnName(), columns[i].getColumnType(), columns[i].getColumnSize(), columns[i].getScale()));
+                        columnList.add(new MetaDataColumnBean(columns[i].getColumnName(), columns[i].getColumnType(), columns[i].getColumnSize(), columns[i].getScale()));
                     }
-                    return new SwiftMetaDataImpl(tableName, columnList);
+                    return new SwiftMetaDataBean(tableName, columnList);
                 } finally {
                     DBUtils.closeConnection(conn);
                 }

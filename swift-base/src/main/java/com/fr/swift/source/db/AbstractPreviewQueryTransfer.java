@@ -3,12 +3,12 @@ package com.fr.swift.source.db;
 import com.fr.data.core.db.ColumnInformation;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.stable.StringUtils;
+import com.fr.swift.config.conf.bean.MetaDataColumnBean;
+import com.fr.swift.config.conf.bean.SwiftMetaDataBean;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.ColumnTypeUtils;
-import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.SwiftMetaDataImpl;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.db.dbdealer.DBDealer;
 
@@ -57,7 +57,7 @@ public abstract class AbstractPreviewQueryTransfer extends AbstractQueryTransfer
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
         List<SwiftMetaDataColumn> outerColumnList = new ArrayList<SwiftMetaDataColumn>();
         for (ColumnInformation columnInfo : columns) {
-            SwiftMetaDataColumn outerColumn = new MetaDataColumn(columnInfo.getColumnName(), columnInfo.getColumnType(), columnInfo.getColumnSize(), columnInfo.getScale());
+            SwiftMetaDataColumn outerColumn = new MetaDataColumnBean(columnInfo.getColumnName(), columnInfo.getColumnType(), columnInfo.getColumnSize(), columnInfo.getScale());
             if (fieldClassTypes == null || fieldClassTypes.isEmpty()) {
                 columnList.add(outerColumn);
             } else if (fieldClassTypes.containsKey(outerColumn.getName())) {
@@ -71,8 +71,8 @@ public abstract class AbstractPreviewQueryTransfer extends AbstractQueryTransfer
             }
             outerColumnList.add(outerColumn);
         }
-        SwiftMetaData metaData = new SwiftMetaDataImpl(StringUtils.EMPTY, columnList);
-        SwiftMetaData outerMeta = new SwiftMetaDataImpl(StringUtils.EMPTY, outerColumnList);
+        SwiftMetaData metaData = new SwiftMetaDataBean(StringUtils.EMPTY, columnList);
+        SwiftMetaData outerMeta = new SwiftMetaDataBean(StringUtils.EMPTY, outerColumnList);
         DBDealer[] dealers = createDBDealer(needCharSetConvert, originalCharSetName, newCharSetName, metaData, outerMeta);
         return new JdbcRowLimitResultSet(rs, stmt, conn, metaData, dealers, row);
     }

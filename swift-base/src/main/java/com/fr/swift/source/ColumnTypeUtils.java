@@ -1,5 +1,6 @@
 package com.fr.swift.source;
 
+import com.fr.swift.config.conf.bean.MetaDataColumnBean;
 import com.fr.swift.setting.PerformancePlugManager;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
@@ -110,14 +111,14 @@ public class ColumnTypeUtils {
             case NUMBER:
                 //Date → Number 是Long类型
                 if (fromColumnType == ColumnType.DATE) {
-                    return new MetaDataColumn(fromColumn.getName(), fromColumn.getRemark(), Types.BIGINT, MAX_LONG_COLUMN_SIZE - 1, 0);
+                    return new MetaDataColumnBean(fromColumn.getName(), fromColumn.getRemark(), Types.BIGINT, MAX_LONG_COLUMN_SIZE - 1, 0);
                 }
                 //文本转数值，scale设置为1，因为文本获取不到小数位数，如果是0的话，可能被是别成long，实际文本又有小数点，会丢精度。
-                return new MetaDataColumn(fromColumn.getName(), fromColumn.getRemark(), Types.DOUBLE, fromColumn.getPrecision(), 1);
+                return new MetaDataColumnBean(fromColumn.getName(), fromColumn.getRemark(), Types.DOUBLE, fromColumn.getPrecision(), 1);
             case DATE:
-                return new MetaDataColumn(fromColumn.getName(), fromColumn.getRemark(), Types.DATE, fromColumn.getPrecision(), fromColumn.getScale());
+                return new MetaDataColumnBean(fromColumn.getName(), fromColumn.getRemark(), Types.DATE, fromColumn.getPrecision(), fromColumn.getScale());
             default:
-                return new MetaDataColumn(fromColumn.getName(), fromColumn.getRemark(), Types.VARCHAR, fromColumn.getPrecision(), fromColumn.getScale());
+                return new MetaDataColumnBean(fromColumn.getName(), fromColumn.getRemark(), Types.VARCHAR, fromColumn.getPrecision(), fromColumn.getScale());
 
         }
     }

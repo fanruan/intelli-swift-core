@@ -1,10 +1,10 @@
 package com.fr.swift.source.etl.columnrowtrans;
 
 import com.fr.general.ComparatorUtils;
+import com.fr.swift.config.conf.bean.MetaDataColumnBean;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.core.CoreField;
@@ -80,19 +80,19 @@ public class ColumnRowTransOperator extends AbstractOperator {
         try {
             SwiftMetaData table = tables[0];
             SwiftMetaDataColumn groupColumn = table.getColumn(groupName);
-            columnList.add(new MetaDataColumn(groupName, groupName, groupColumn.getType(), groupColumn.getPrecision(), groupColumn.getScale()));
+            columnList.add(new MetaDataColumnBean(groupName, groupName, groupColumn.getType(), groupColumn.getPrecision(), groupColumn.getScale()));
             for (Pair<String, String> column : this.columns) {
                 SwiftMetaDataColumn c = table.getColumn(column.getKey());
                 for (Pair<String, String> aLcValue : lcValue) {
                     String lcColumn = aLcValue.getKey() + "-" + column.getKey();
                     String text = aLcValue.getValue() + "-" + column.getValue();
                     String lcColumnText = ComparatorUtils.equals(text, lcColumn) ? null : text;
-                    columnList.add(new MetaDataColumn(lcColumn, lcColumnText, c.getType(), c.getPrecision(), c.getScale()));
+                    columnList.add(new MetaDataColumnBean(lcColumn, lcColumnText, c.getType(), c.getPrecision(), c.getScale()));
                 }
             }
             for (Pair<String, String> column : this.otherColumnNames) {
                 SwiftMetaDataColumn c = table.getColumn(column.getKey());
-                columnList.add(new MetaDataColumn(column.getKey(), column.getValue(), c.getType(), c.getPrecision(), c.getScale()));
+                columnList.add(new MetaDataColumnBean(column.getKey(), column.getValue(), c.getType(), c.getPrecision(), c.getScale()));
             }
         } catch (SwiftMetaDataException e) {
             LOGGER.error("getting meta's column information failed", e);

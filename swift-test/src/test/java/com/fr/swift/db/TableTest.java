@@ -1,6 +1,8 @@
 package com.fr.swift.db;
 
 import com.fr.swift.config.TestConfDb;
+import com.fr.swift.config.conf.bean.MetaDataColumnBean;
+import com.fr.swift.config.conf.bean.SwiftMetaDataBean;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.manager.LocalDataOperatorProvider;
@@ -8,11 +10,9 @@ import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.source.ListBasedRow;
-import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftMetaDataImpl;
 import com.fr.swift.source.SwiftResultSet;
 import org.junit.After;
 import org.junit.Before;
@@ -47,8 +47,8 @@ public class TableTest {
             db.dropTable(sk);
         }
 
-        t = db.createTable(sk, new SwiftMetaDataImpl(sk.getId(),
-                Collections.singletonList(new MetaDataColumn("A", Types.DATE))));
+        t = db.createTable(sk, new SwiftMetaDataBean(sk.getId(),
+                Collections.singletonList(new MetaDataColumnBean("A", Types.DATE))));
     }
 
     @Test

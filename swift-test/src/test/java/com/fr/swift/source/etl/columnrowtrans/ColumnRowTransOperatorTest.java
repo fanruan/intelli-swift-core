@@ -1,11 +1,11 @@
 package com.fr.swift.source.etl.columnrowtrans;
 
+import com.fr.swift.config.conf.bean.SwiftMetaDataBean;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.SwiftMetaDataImpl;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.BaseCreateSegmentForColumnTransTest;
 import com.fr.swift.structure.Pair;
@@ -56,7 +56,7 @@ public class ColumnRowTransOperatorTest extends TestCase {
         segments.add(seg);
         ColumnRowTransOperator transOperator = new ColumnRowTransOperator("column1", "column1", lc_value, column, otherColumns);
         List<SwiftMetaDataColumn> columnList = transOperator.getColumns(tables);
-        SwiftMetaDataImpl basicMeta = new SwiftMetaDataImpl("aaa", columnList);
+        SwiftMetaData basicMeta = new SwiftMetaDataBean("aaa", columnList);
         ColumnRowTransferOperator operator = new ColumnRowTransferOperator("column1", "column1", column, lc_value, transOperator.getOtherColumnNames());
         SwiftResultSet set = operator.createResultSet(basicMeta, null, segments);
         String[][] str = new String[][]{{"A", "A", null, null, "A"}, {"B", null, "B", null, "B"}, {"C", null, null, "C", "C"}};

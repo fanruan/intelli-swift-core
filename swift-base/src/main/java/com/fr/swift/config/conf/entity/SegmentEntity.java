@@ -1,6 +1,5 @@
 package com.fr.swift.config.conf.entity;
 
-import com.fr.decision.base.entity.BaseEntity;
 import com.fr.decision.webservice.utils.DecisionServiceConstants;
 import com.fr.swift.config.conf.bean.Convert;
 import com.fr.swift.config.conf.bean.SegmentBean;
@@ -19,54 +18,46 @@ import java.net.URI;
  */
 @Entity
 @Table(name = "swift_segments")
-public class SegmentEntity extends BaseEntity implements Convert<SegmentBean> {
-    @Column(name = "sourceKey", nullable = false)
-    private String sourceKey;
+public class SegmentEntity extends com.fr.config.entity.Entity implements Convert<SegmentBean> {
+    @Column(name = "segmentOwner")
+    private String segmentOwner;
     @Column(name = "segmentName")
-    private String name;
-    @Column(name = "uri", nullable = false, unique = true, length = DecisionServiceConstants.LONG_TEXT_LENGTH)
+    private String segmentName;
+    @Column(name = "segmentUri", unique = true, length = DecisionServiceConstants.LONG_TEXT_LENGTH)
     @com.fr.third.javax.persistence.Convert(
             converter = URIConverter.class
     )
-    private URI uri;
-    @Column(name = "order")
-    private int order;
-    @Column(name = "storeType", nullable = false)
+    private URI segmentUri;
+    @Column(name = "segmentOrder")
+    private int segmentOrder;
+    @Column(name = "storeType")
     @com.fr.third.javax.persistence.Convert(
             converter = StoreTypeConverter.class
     )
     private Types.StoreType storeType;
 
-    public String getSourceKey() {
-        return sourceKey;
+    public String getSegmentOwner() {
+        return segmentOwner;
     }
 
-    public void setSourceKey(String sourceKey) {
-        this.sourceKey = sourceKey;
+    public void setSegmentOwner(String segmentOwner) {
+        this.segmentOwner = segmentOwner;
     }
 
-    public String getName() {
-        return name;
+    public URI getSegmentUri() {
+        return segmentUri;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setSegmentUri(URI segmentUri) {
+        this.segmentUri = segmentUri;
     }
 
-    public URI getUri() {
-        return uri;
+    public int getSegmentOrder() {
+        return segmentOrder;
     }
 
-    public void setUri(URI uri) {
-        this.uri = uri;
-    }
-
-    public int getOrder() {
-        return order;
-    }
-
-    public void setOrder(int order) {
-        this.order = order;
+    public void setSegmentOrder(int segmentOrder) {
+        this.segmentOrder = segmentOrder;
     }
 
     public Types.StoreType getStoreType() {
@@ -77,8 +68,16 @@ public class SegmentEntity extends BaseEntity implements Convert<SegmentBean> {
         this.storeType = storeType;
     }
 
+    public String getSegmentName() {
+        return segmentName;
+    }
+
+    public void setSegmentName(String segmentName) {
+        this.segmentName = segmentName;
+    }
+
     @Override
     public SegmentBean convert() {
-        return new SegmentBean(sourceKey, name, uri, order, storeType);
+        return new SegmentBean(segmentOwner, segmentName, segmentUri, segmentOrder, storeType);
     }
 }

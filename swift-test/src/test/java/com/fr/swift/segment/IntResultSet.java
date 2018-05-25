@@ -1,11 +1,10 @@
 package com.fr.swift.segment;
 
+import com.fr.swift.config.conf.bean.MetaDataColumnBean;
+import com.fr.swift.config.conf.bean.SwiftMetaDataBean;
 import com.fr.swift.source.ListBasedRow;
-import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftMetaDataImpl;
 
-import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,8 +20,8 @@ public class IntResultSet extends SingleColumnResultSet {
 
     @Override
     public SwiftMetaData getMetaData() {
-        return new SwiftMetaDataImpl("INT_TABLE",
-                Arrays.asList(new MetaDataColumn("int", Types.INTEGER)));
+        return new SwiftMetaDataBean("INT_TABLE",
+                Arrays.asList(new MetaDataColumnBean("int", Types.INTEGER)));
     }
 
 

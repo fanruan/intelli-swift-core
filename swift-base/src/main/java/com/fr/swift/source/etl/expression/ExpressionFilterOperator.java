@@ -1,10 +1,10 @@
 package com.fr.swift.source.etl.expression;
 
+import com.fr.swift.config.conf.bean.MetaDataColumnBean;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.ColumnTypeUtils;
-import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.etl.AbstractOperator;
@@ -70,7 +70,7 @@ public class ExpressionFilterOperator extends AbstractOperator {
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
-        columnList.add(new MetaDataColumn(columnName, getSqlType(metaDatas)));
+        columnList.add(new MetaDataColumnBean(columnName, getSqlType(metaDatas)));
         return columnList;
     }
 

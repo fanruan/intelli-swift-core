@@ -1,6 +1,8 @@
 package com.fr.swift.source.alloter;
 
 import com.fr.stable.StringUtils;
+import com.fr.swift.config.conf.bean.MetaDataColumnBean;
+import com.fr.swift.config.conf.bean.SwiftMetaDataBean;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.manager.LocalDataOperatorProvider;
 import com.fr.swift.segment.HistorySegmentImpl;
@@ -10,11 +12,9 @@ import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.ListBasedRow;
-import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftMetaDataImpl;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceAlloter;
 import com.fr.swift.source.SwiftSourceAlloterFactory;
@@ -65,8 +65,8 @@ public class LineSegmentAlloterTest extends TestIo {
 
             @Override
             public SwiftMetaData getMetaData() {
-                return new SwiftMetaDataImpl("A",
-                        Arrays.asList(new MetaDataColumn("long", Types.BIGINT)));
+                return new SwiftMetaDataBean("A",
+                        Arrays.asList(new MetaDataColumnBean("long", Types.BIGINT)));
             }
 
             @Override

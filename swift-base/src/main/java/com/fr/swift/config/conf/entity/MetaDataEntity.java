@@ -1,11 +1,11 @@
 package com.fr.swift.config.conf.entity;
 
-import com.fr.decision.base.entity.BaseEntity;
 import com.fr.decision.webservice.utils.DecisionServiceConstants;
 import com.fr.swift.config.conf.bean.Convert;
 import com.fr.swift.config.conf.convert.MetaDataColumnListConverter;
 import com.fr.swift.config.conf.bean.MetaDataColumnBean;
 import com.fr.swift.config.conf.bean.SwiftMetaDataBean;
+import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Entity;
 import com.fr.third.javax.persistence.Table;
@@ -19,7 +19,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "swift_metadata")
-public class MetaDataEntity extends BaseEntity implements Convert<SwiftMetaDataBean> {
+public class MetaDataEntity extends com.fr.config.entity.Entity implements Convert<SwiftMetaDataBean> {
 
     @Column(name = "schema")
     private String schema;
@@ -34,7 +34,7 @@ public class MetaDataEntity extends BaseEntity implements Convert<SwiftMetaDataB
     @com.fr.third.javax.persistence.Convert(
             converter = MetaDataColumnListConverter.class
     )
-    private List<MetaDataColumnBean> fields;
+    private List<SwiftMetaDataColumn> fields;
 
     public String getSchema() {
         return schema;
@@ -60,11 +60,11 @@ public class MetaDataEntity extends BaseEntity implements Convert<SwiftMetaDataB
         this.remark = remark;
     }
 
-    public List<MetaDataColumnBean> getFields() {
+    public List<SwiftMetaDataColumn> getFields() {
         return fields;
     }
 
-    public void setFields(List<MetaDataColumnBean> fields) {
+    public void setFields(List<SwiftMetaDataColumn> fields) {
         this.fields = fields;
     }
 

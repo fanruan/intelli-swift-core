@@ -3,12 +3,16 @@ package com.fr.engine.bi.register;
 import com.finebi.base.stable.StableManager;
 import com.finebi.conf.algorithm.DMDataModel;
 import com.fr.base.FRContext;
+import com.fr.config.entity.ClassHelper;
+import com.fr.config.entity.Entity;
+import com.fr.config.entity.XmlEntity;
 import com.fr.decision.db.DecisionDBEntityKey;
 import com.fr.log.FineLoggerProvider;
 import com.fr.module.Activator;
 import com.fr.module.extension.Prepare;
 import com.fr.stable.db.DBContext;
 import com.fr.stable.db.DBProvider;
+import com.fr.stable.db.constant.BaseDBConstant;
 import com.fr.stable.db.context.ContextOption;
 import com.fr.swift.config.conf.context.SwiftConfigContext;
 import com.fr.swift.config.conf.entity.MetaDataEntity;
@@ -72,23 +76,6 @@ public class SwiftActivator extends Activator implements Prepare {
             }
         });
 
-        try {
-            final DBContext context = leftFindSingleton(DBContext.class);
-            SwiftConfigContext.getInstance().init(new ContextOption() {
-                @Override
-                public DBProvider getDBProvider() {
-                    return context;
-                }
-
-                @Override
-                public FineLoggerProvider getLogger() {
-                    return FRContext.getLogger();
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         // fixme 这边先不去掉，其实和SwiftEngineActivator重复了
         try {
             SwiftDriverRegister.register();
@@ -109,6 +96,6 @@ public class SwiftActivator extends Activator implements Prepare {
 
     @Override
     public void prepare() {
-        addMutable(DecisionDBEntityKey.Key, MetaDataEntity.class, SegmentEntity.class);
+        this.addMutable(BaseDBConstant.BASE_ENTITY_KEY, MetaDataEntity.class, SegmentEntity.class);
     }
 }

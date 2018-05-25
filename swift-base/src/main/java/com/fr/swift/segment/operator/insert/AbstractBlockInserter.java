@@ -1,11 +1,8 @@
 package com.fr.swift.segment.operator.insert;
 
 import com.fr.swift.bitmap.BitMaps;
-import com.fr.swift.config.IConfigSegment;
 import com.fr.swift.config.conf.bean.SegmentBean;
 import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
-import com.fr.swift.config.unique.SegmentKeyUnique;
-import com.fr.swift.config.unique.SegmentUnique;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types;
@@ -16,6 +13,7 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentIndexCache;
+import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.Recorder;
@@ -52,7 +50,7 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
     protected SwiftMetaData swiftMetaData;
     protected List<String> fields;
     protected List<Segment> segments;
-    private List<SegmentBean> configSegment;
+    private List<SegmentKey> configSegment;
     private SwiftSourceAlloter alloter;
     private SegmentIndexCache segmentIndexCache;
     private int startSegIndex;
@@ -76,7 +74,7 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
         this.fields = fields;
         this.alloter = SwiftSourceAlloterFactory.createLineSourceAlloter(sourceKey, cubeSourceKey);
         this.segments = new ArrayList<Segment>();
-        this.configSegment = new ArrayList<SegmentBean>();
+        this.configSegment = new ArrayList<SegmentKey>();
         this.segments = segments;
         this.segmentIndexCache = new SegmentIndexCache();
         this.startSegIndex = segments.size();

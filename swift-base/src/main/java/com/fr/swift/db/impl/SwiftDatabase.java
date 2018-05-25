@@ -1,7 +1,5 @@
 package com.fr.swift.db.impl;
 
-import com.fr.swift.config.IMetaData;
-import com.fr.swift.config.conf.MetaDataConvertUtil;
 import com.fr.swift.config.conf.service.SwiftConfigService;
 import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
 import com.fr.swift.db.Database;
@@ -28,7 +26,7 @@ public class SwiftDatabase implements Database {
         }
 
         Table table = new SwiftTable(tableKey, meta);
-        confSvc.addMetaData(tableKey.getId(), MetaDataConvertUtil.convert2ConfigMetaData(meta));
+        confSvc.addMetaData(tableKey.getId(), meta);
         return table;
     }
 
@@ -37,17 +35,16 @@ public class SwiftDatabase implements Database {
         if (!existsTable(tableKey)) {
             throw new SQLException("table " + tableKey + " not exists");
         }
-        SwiftMetaData meta = MetaDataConvertUtil.getSwiftMetaDataBySourceKey(tableKey.getId());
+        SwiftMetaData meta = SwiftConfigServiceProvider.getInstance().getMetaDataByKey(tableKey.getId());
         return new SwiftTable(tableKey, meta);
     }
 
     @Override
     public synchronized List<Table> getAllTables() {
         List<Table> tables = new ArrayList<Table>();
-        for (Entry<String, IMetaData> entry : confSvc.getAllMetaData().entrySet()) {
+        for (Entry<String, SwiftMetaData> entry : confSvc.getAllMetaData().entrySet()) {
             SourceKey tableKey = new SourceKey(entry.getKey());
-            SwiftMetaData meta = MetaDataConvertUtil.toSwiftMetadata(entry.getValue());
-            tables.add(new SwiftTable(tableKey, meta));
+            tables.add(new SwiftTable(tableKey, entry.getValue()));
         }
         return tables;
     }
@@ -62,7 +59,7 @@ public class SwiftDatabase implements Database {
         if (!existsTable(tableKey)) {
             throw new SQLException("table " + tableKey + " not exists");
         }
-        confSvc.updateMetaData(tableKey.getId(), MetaDataConvertUtil.convert2ConfigMetaData(meta));
+        confSvc.updateMetaData(tableKey.getId(), meta);
     }
 
     @Override

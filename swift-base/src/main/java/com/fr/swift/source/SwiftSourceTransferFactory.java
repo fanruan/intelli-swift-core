@@ -1,5 +1,6 @@
 package com.fr.swift.source;
 
+import com.fr.swift.config.conf.bean.SwiftMetaDataBean;
 import com.fr.swift.exception.SegmentAbsentException;
 import com.fr.swift.source.db.ConnectionManager;
 import com.fr.swift.source.db.QueryDBSource;
@@ -52,7 +53,7 @@ public class SwiftSourceTransferFactory {
                 list.add(parentMetaData);
             }
             List<SwiftMetaDataColumn> columnList = operator.getColumns(list.toArray(new SwiftMetaData[list.size()]));
-            return new SwiftMetaDataImpl(source.getSourceKey().getId(), columnList);
+            return new SwiftMetaDataBean(source.getSourceKey().getId(), columnList);
         }
         return metaData;
     }

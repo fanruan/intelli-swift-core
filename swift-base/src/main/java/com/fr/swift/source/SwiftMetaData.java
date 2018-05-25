@@ -11,7 +11,7 @@ import java.util.List;
  * column 从1开始
  */
 public interface SwiftMetaData {
-    String getSchemaName() throws SwiftMetaDataException;
+    String getSchema() throws SwiftMetaDataException;
 
     String getTableName() throws SwiftMetaDataException;
 

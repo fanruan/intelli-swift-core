@@ -1,8 +1,8 @@
 package com.fr.swift.source.etl.datediff;
 
+import com.fr.swift.config.conf.bean.MetaDataColumnBean;
 import com.fr.swift.query.group.GroupType;
 import com.fr.swift.source.ColumnTypeUtils;
-import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.core.CoreField;
@@ -38,7 +38,7 @@ public class DateDiffOperator extends AbstractOperator {
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
-        columnList.add(new MetaDataColumn(this.columnName, this.columnName,
+        columnList.add(new MetaDataColumnBean(this.columnName, this.columnName,
                 Types.BIGINT, ColumnTypeUtils.MAX_LONG_COLUMN_SIZE, 0, fetchObjectCore().getValue()));
         return columnList;
     }

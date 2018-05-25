@@ -1,16 +1,16 @@
 package com.fr.swift.source.etl;
 
+import com.fr.swift.config.conf.bean.MetaDataColumnBean;
+import com.fr.swift.config.conf.bean.SwiftMetaDataBean;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.AbstractDataSource;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.EtlDataSource;
-import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.SwiftMetaDataImpl;
 import com.fr.swift.source.core.CoreField;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.Util;
@@ -114,7 +114,7 @@ public class EtlSource extends AbstractDataSource implements EtlDataSource {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
         columnList.addAll(originColumns);
         columnList.addAll(addColumnList);
-        metaData = new SwiftMetaDataImpl(getSourceKey().getId(), columnList);
+        metaData = new SwiftMetaDataBean(getSourceKey().getId(), columnList);
         checkFieldsInfo();
     }
 
@@ -124,13 +124,13 @@ public class EtlSource extends AbstractDataSource implements EtlDataSource {
             for (Map.Entry<Integer, String> entry : fieldsInfo.entrySet()) {
                 try {
                     int columnIndex = entry.getKey() + 1;
-                    columnList.add(new MetaDataColumn(entry.getValue(), metaData.getColumnRemark(columnIndex), metaData.getColumnType(columnIndex),
+                    columnList.add(new MetaDataColumnBean(entry.getValue(), metaData.getColumnRemark(columnIndex), metaData.getColumnType(columnIndex),
                             metaData.getPrecision(columnIndex), metaData.getScale(columnIndex), metaData.getColumnId(columnIndex)));
                 } catch (SwiftMetaDataException e) {
                     LOGGER.error("field missed " + entry.getKey());
                 }
             }
-            metaData = new SwiftMetaDataImpl(getSourceKey().getId(), columnList);
+            metaData = new SwiftMetaDataBean(getSourceKey().getId(), columnList);
         }
     }
 

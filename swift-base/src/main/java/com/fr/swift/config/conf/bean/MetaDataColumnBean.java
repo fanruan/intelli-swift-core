@@ -1,13 +1,17 @@
 package com.fr.swift.config.conf.bean;
 
-import com.fr.swift.config.IMetaDataColumn;
+import com.fr.swift.source.SwiftMetaDataColumn;
 
 /**
  * @Author: Lucifer
  * @Description:
  * @Date: Created in 2018-3-8
  */
-public class MetaDataColumnBean implements IMetaDataColumn {
+public class MetaDataColumnBean implements SwiftMetaDataColumn {
+
+    private static final int DEFAULT_PRECISION = 255;
+    private static final int DEFAULT_SCALE = 15;
+
     private int type;
     private String name;
     private String remark;
@@ -18,8 +22,32 @@ public class MetaDataColumnBean implements IMetaDataColumn {
     public MetaDataColumnBean() {
     }
 
-    public MetaDataColumnBean(int type, String name, String remark, int precision, int scale) {
-        this.type = type;
+    public MetaDataColumnBean(String name, int sqlType) {
+        this(name, null, sqlType, DEFAULT_PRECISION, DEFAULT_SCALE);
+    }
+
+    public MetaDataColumnBean(String name, String remark, int sqlType) {
+        this(name, remark, sqlType, DEFAULT_PRECISION, DEFAULT_SCALE);
+    }
+
+    public MetaDataColumnBean(String name, String remark, int sqlType, String columnId) {
+        this(name, remark, sqlType, DEFAULT_PRECISION, DEFAULT_SCALE, columnId);
+    }
+
+    public MetaDataColumnBean(String name, int sqlType, int size) {
+        this(name, null, sqlType, size, DEFAULT_SCALE);
+    }
+
+    public MetaDataColumnBean(String name, int sqlType, int size, String columnId) {
+        this(name, null, sqlType, size, DEFAULT_SCALE, columnId);
+    }
+
+    public MetaDataColumnBean(String name, int sqlType, int size, int scale) {
+        this(name, null, sqlType, size, scale);
+    }
+
+    public MetaDataColumnBean(String name, String remark, int sqlType, int precision, int scale) {
+        this.type = sqlType;
         this.name = name;
         this.remark = remark;
         this.precision = precision;
@@ -27,8 +55,8 @@ public class MetaDataColumnBean implements IMetaDataColumn {
         this.columnId = name;
     }
 
-    public MetaDataColumnBean(int type, String name, String remark, int precision, int scale, String columnId) {
-        this.type = type;
+    public MetaDataColumnBean(String name, String remark, int sqlType, int precision, int scale, String columnId) {
+        this.type = sqlType;
         this.name = name;
         this.remark = remark;
         this.precision = precision;
@@ -41,7 +69,6 @@ public class MetaDataColumnBean implements IMetaDataColumn {
         return type;
     }
 
-    @Override
     public void setType(int type) {
         this.type = type;
     }
@@ -51,7 +78,6 @@ public class MetaDataColumnBean implements IMetaDataColumn {
         return name;
     }
 
-    @Override
     public void setName(String name) {
         this.name = name;
     }
@@ -61,7 +87,6 @@ public class MetaDataColumnBean implements IMetaDataColumn {
         return remark;
     }
 
-    @Override
     public void setRemark(String remark) {
         this.remark = remark;
     }
@@ -71,7 +96,6 @@ public class MetaDataColumnBean implements IMetaDataColumn {
         return precision;
     }
 
-    @Override
     public void setPrecision(int precision) {
         this.precision = precision;
     }
@@ -81,7 +105,6 @@ public class MetaDataColumnBean implements IMetaDataColumn {
         return scale;
     }
 
-    @Override
     public void setScale(int scale) {
         this.scale = scale;
     }
@@ -91,7 +114,6 @@ public class MetaDataColumnBean implements IMetaDataColumn {
         return columnId;
     }
 
-    @Override
     public void setColumnId(String columnId) {
         this.columnId = columnId;
     }

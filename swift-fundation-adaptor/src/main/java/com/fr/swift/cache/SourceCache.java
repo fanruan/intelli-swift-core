@@ -1,6 +1,5 @@
 package com.fr.swift.cache;
 
-import com.fr.swift.config.conf.MetaDataConfig;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
 
@@ -16,8 +15,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since Advanced FineBI Analysis 1.0
  */
 public class SourceCache {
-
-    private MetaDataConfig metaDataConfig = MetaDataConfig.getInstance();
 
     private Map<SourceKey, DataSource> key2SourceMap = new ConcurrentHashMap<SourceKey, DataSource>();
 

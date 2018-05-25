@@ -1,18 +1,19 @@
 package com.fr.swift.config.conf.service;
 
 import com.fr.config.Configuration;
-import com.fr.stable.query.QueryFactory;
-import com.fr.swift.config.IMetaData;
-import com.fr.swift.config.conf.MetaDataConfig;
-import com.fr.swift.config.conf.MetaDataConvertUtil;
-import com.fr.swift.config.conf.SegmentConfig;
 import com.fr.swift.config.conf.SwiftPathConfig;
 import com.fr.swift.config.conf.bean.SegmentBean;
 import com.fr.swift.config.conf.bean.SwiftMetaDataBean;
-import com.fr.swift.config.conf.context.SwiftConfigContext;
+import com.fr.swift.config.conf.dao.SwiftMetaDataDAO;
+import com.fr.swift.config.conf.dao.SwiftSegmentDAO;
+import com.fr.swift.config.conf.transaction.SwiftMetaDataTransactionWorker;
+import com.fr.swift.config.conf.transaction.SwiftSegmentTransactionWorker;
+import com.fr.swift.config.conf.transaction.SwiftTransactionManager;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.transaction.Configurations;
 import com.fr.transaction.Worker;
 
@@ -33,16 +34,21 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
     private SwiftPathConfig swiftPathConfig = SwiftPathConfig.getInstance();
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftConfigServiceImpl.class);
 
-    private ConcurrentHashMap<String, SwiftMetaDataBean> metaDataCache = new ConcurrentHashMap<String, SwiftMetaDataBean>();
+    private ConcurrentHashMap<String, SwiftMetaData> metaDataCache = new ConcurrentHashMap<String, SwiftMetaData>();
 
     @Override
-    public boolean addMetaData(final String sourceKey, final IMetaData metaData) {
+    public boolean addMetaData(final String sourceKey, final SwiftMetaData metaData) {
         try {
-            SwiftMetaDataBean bean = (SwiftMetaDataBean) metaData;
+            final SwiftMetaDataBean bean = (SwiftMetaDataBean) metaData;
             bean.setId(sourceKey);
-            SwiftConfigContext.getInstance().getMetaDataController().update(bean);
-            metaDataCache.put(sourceKey, bean);
-            return true;
+            return (Boolean) SwiftTransactionManager.doTransactionIfNeed(new SwiftMetaDataTransactionWorker() {
+                @Override
+                public Object work(SwiftMetaDataDAO dao) {
+                    dao.addOrUpdateSwiftMetaData(bean);
+                    metaDataCache.put(sourceKey, bean);
+                    return true;
+                }
+            });
         } catch (Exception e) {
             LOGGER.error("Add or update metadata error!", e);
             return false;
@@ -50,14 +56,22 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
     }
 
     @Override
-    public boolean addMetaDatas(final Map<String, IMetaData> metaDatas) {
-        Iterator<Map.Entry<String, IMetaData>> iterator = metaDatas.entrySet().iterator();
+    public boolean addMetaDatas(final Map<String, SwiftMetaData> metaDatas) {
         try {
-            while (iterator.hasNext()) {
-                Map.Entry<String, IMetaData> entry = iterator.next();
-                addMetaData(entry.getKey(), entry.getValue());
-            }
-            return true;
+            return (Boolean) SwiftTransactionManager.doTransactionIfNeed(new SwiftMetaDataTransactionWorker() {
+                @Override
+                public Object work(SwiftMetaDataDAO dao) {
+                    Iterator<Map.Entry<String, SwiftMetaData>> iterator = metaDatas.entrySet().iterator();
+                    while (iterator.hasNext()) {
+                        Map.Entry<String, SwiftMetaData> entry = iterator.next();
+                        SwiftMetaDataBean bean = (SwiftMetaDataBean) entry.getValue();
+                        bean.setId(entry.getKey());
+                        dao.addOrUpdateSwiftMetaData(bean);
+                        metaDataCache.put(entry.getKey(), bean);
+                    }
+                    return true;
+                }
+            });
         } catch (Exception e) {
             LOGGER.error("Add metadata error!", e);
             return false;
@@ -66,12 +80,18 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
 
     @Override
     public boolean removeMetaDatas(final String... sourceKeys) {
-
         try {
-            for (String sourceKey : sourceKeys) {
-                SwiftConfigContext.getInstance().getMetaDataController().remove(sourceKey);
-            }
-            return true;
+            return (Boolean) SwiftTransactionManager.doTransactionIfNeed(new SwiftMetaDataTransactionWorker() {
+
+                @Override
+                public Object work(SwiftMetaDataDAO dao) {
+                    for (String sourceKey : sourceKeys) {
+                        dao.deleteSwiftMetaDataBean(sourceKey);
+                    }
+                    return true;
+                }
+            });
+
         } catch (Exception e) {
             LOGGER.error("Remove metadata error!", e);
             return false;
@@ -79,32 +99,53 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
     }
 
     @Override
-    public boolean updateMetaData(final String sourceKey, final IMetaData metaData) {
+    public boolean updateMetaData(final String sourceKey, final SwiftMetaData metaData) {
         return addMetaData(sourceKey, metaData);
     }
 
     @Override
-    public Map<String, IMetaData> getAllMetaData() {
+    public Map<String, SwiftMetaData> getAllMetaData() {
         try {
-            List<SwiftMetaDataBean> beans = SwiftConfigContext.getInstance().getMetaDataController().find(QueryFactory.create());
-            Map<String, IMetaData> result = new HashMap<String, IMetaData>();
+            List<SwiftMetaDataBean> beans = (List<SwiftMetaDataBean>) SwiftTransactionManager.doTransactionIfNeed(new SwiftMetaDataTransactionWorker() {
+                @Override
+                public Object work(SwiftMetaDataDAO dao) {
+                    return dao.findAll();
+                }
+
+                @Override
+                public boolean needTransaction() {
+                    return false;
+                }
+            });
+            Map<String, SwiftMetaData> result = new HashMap<String, SwiftMetaData>();
             for (SwiftMetaDataBean bean : beans) {
                 result.put(bean.getId(), bean);
             }
             return result;
         } catch (Exception e) {
             LOGGER.error("Select metadata error!", e);
-            return new HashMap<String, IMetaData>();
+            return new HashMap<String, SwiftMetaData>();
         }
     }
 
     @Override
-    public IMetaData getMetaDataByKey(String sourceKey) {
-        IMetaData metaData = metaDataCache.get(sourceKey);
+    public SwiftMetaData getMetaDataByKey(final String sourceKey) {
+        SwiftMetaData metaData = metaDataCache.get(sourceKey);
         if (null == metaData) {
             try {
-                metaData = SwiftConfigContext.getInstance().getMetaDataController().findBySourceKey(sourceKey);
-                metaDataCache.put(sourceKey, MetaDataConvertUtil.toSwiftMetadataPojo(metaData));
+                return (SwiftMetaDataBean) SwiftTransactionManager.doTransactionIfNeed(new SwiftMetaDataTransactionWorker() {
+                    @Override
+                    public Object work(SwiftMetaDataDAO dao) {
+                        SwiftMetaDataBean metaData = dao.findBySourceKey(sourceKey);
+                        metaDataCache.put(sourceKey, metaData);
+                        return metaData;
+                    }
+
+                    @Override
+                    public boolean needTransaction() {
+                        return false;
+                    }
+                });
             } catch (Exception e) {
                 LOGGER.error("Select metadata error!", e);
                 return null;
@@ -115,22 +156,37 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
     }
 
     @Override
-    public boolean containsMeta(SourceKey sourceKey) {
+    public boolean containsMeta(final SourceKey sourceKey) {
         try {
-            return SwiftConfigContext.getInstance().getMetaDataController().findBySourceKey(sourceKey.getId()) != null;
+            return (Boolean) SwiftTransactionManager.doTransactionIfNeed(new SwiftMetaDataTransactionWorker() {
+                @Override
+                public Object work(SwiftMetaDataDAO dao) {
+                    SwiftMetaDataBean metaData = dao.findBySourceKey(sourceKey.getId());
+                    return null != metaData;
+                }
+
+                @Override
+                public boolean needTransaction() {
+                    return false;
+                }
+            });
         } catch (Exception e) {
-            LOGGER.error("Select metadata error!", e);
             return false;
         }
     }
 
     @Override
-    public boolean addSegments(final List<SegmentBean> segments) {
+    public boolean addSegments(final List<SegmentKey> segments) {
         try {
-            for (SegmentBean bean : segments) {
-                SwiftConfigContext.getInstance().getSegmentController().add(bean);
-            }
-            return true;
+            return (Boolean) SwiftTransactionManager.doTransactionIfNeed(new SwiftSegmentTransactionWorker() {
+                @Override
+                public Object work(SwiftSegmentDAO dao) {
+                    for (SegmentKey bean : segments) {
+                        dao.addOrUpdateSwiftSegment((SegmentBean) bean);
+                    }
+                    return true;
+                }
+            });
         } catch (Exception e) {
             LOGGER.error("Add or update segments error!", e);
             return false;
@@ -140,10 +196,15 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
     @Override
     public boolean removeSegments(final String... sourceKeys) {
         try {
-            for (String sourceKey : sourceKeys) {
-                SwiftConfigContext.getInstance().getSegmentController().removeBySourceKey(sourceKey);
-            }
-            return true;
+            return (Boolean) SwiftTransactionManager.doTransactionIfNeed(new SwiftSegmentTransactionWorker() {
+                @Override
+                public Object work(SwiftSegmentDAO dao) {
+                    for (String sourceKey : sourceKeys) {
+                        dao.deleteBySourceKey(sourceKey);
+                    }
+                    return true;
+                }
+            });
         } catch (Exception e) {
             LOGGER.error("Remove segments error!", e);
             return false;
@@ -151,18 +212,42 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
     }
 
     @Override
-    public boolean updateSegments(final List<SegmentBean> segments) {
-        return addSegments(segments);
+    public boolean updateSegments(final String sourceKey, final List<SegmentKey> segments) {
+        try {
+            return (Boolean) SwiftTransactionManager.doTransactionIfNeed(new SwiftSegmentTransactionWorker() {
+                @Override
+                public Object work(SwiftSegmentDAO dao) {
+                    dao.deleteBySourceKey(sourceKey);
+                    for (SegmentKey segment : segments) {
+                        dao.addOrUpdateSwiftSegment((SegmentBean) segment);
+                    }
+                    return true;
+                }
+            });
+        } catch (Exception e) {
+            LOGGER.error("Update segment failed!", e);
+            return false;
+        }
     }
 
     @Override
-    public Map<String, List<SegmentBean>> getAllSegments() {
-        Map<String, List<SegmentBean>> result = new HashMap<String, List<SegmentBean>>();
+    public Map<String, List<SegmentKey>> getAllSegments() {
+        Map<String, List<SegmentKey>> result = new HashMap<String, List<SegmentKey>>();
         try {
-            List<SegmentBean> beans = SwiftConfigContext.getInstance().getSegmentController().find(QueryFactory.create());
+            List<SegmentBean> beans = (List<SegmentBean>) SwiftTransactionManager.doTransactionIfNeed(new SwiftSegmentTransactionWorker() {
+                @Override
+                public Object work(SwiftSegmentDAO dao) {
+                    return dao.findAll();
+                }
+
+                @Override
+                public boolean needTransaction() {
+                    return false;
+                }
+            });
             for (SegmentBean bean : beans) {
                 if (!result.containsKey(bean.getSourceKey())) {
-                    result.put(bean.getSourceKey(), new ArrayList<SegmentBean>());
+                    result.put(bean.getSourceKey(), new ArrayList<SegmentKey>());
                 }
                 result.get(bean.getSourceKey()).add(bean);
             }
@@ -173,9 +258,19 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
     }
 
     @Override
-    public List<SegmentBean> getSegmentByKey(String sourceKey) {
+    public List<SegmentKey> getSegmentByKey(final String sourceKey) {
         try {
-            return SwiftConfigContext.getInstance().getSegmentController().findBySourceKey(sourceKey);
+            return (List<SegmentKey>) SwiftTransactionManager.doTransactionIfNeed(new SwiftSegmentTransactionWorker() {
+                @Override
+                public Object work(SwiftSegmentDAO dao) {
+                    return dao.findBySourceKey(sourceKey);
+                }
+
+                @Override
+                public boolean needTransaction() {
+                    return false;
+                }
+            });
         } catch (Exception e) {
             LOGGER.error("Select segments error!", e);
             return Collections.emptyList();
@@ -195,22 +290,6 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
     @Override
     public String getSwiftPath() {
         return this.swiftPathConfig.getPath();
-    }
-
-    private abstract class MetaDataConfigWorker implements Worker {
-
-        @Override
-        public Class<? extends Configuration>[] targets() {
-            return new Class[]{MetaDataConfig.class};
-        }
-    }
-
-    private abstract class SegmentConfigWorker implements Worker {
-
-        @Override
-        public Class<? extends Configuration>[] targets() {
-            return new Class[]{SegmentConfig.class};
-        }
     }
 
     private abstract class SwiftPathConfigWorker implements Worker {
