@@ -1,9 +1,10 @@
-package com.fr.swift.config.conf.service;
+package com.fr.swift.config.service;
 
-import com.fr.swift.config.IConfigSegment;
-import com.fr.swift.config.IMetaData;
+import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SwiftMetaData;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,12 +30,12 @@ public class SwiftConfigServiceProvider implements SwiftConfigService {
     }
 
     @Override
-    public boolean addMetaData(String sourceKey, IMetaData metaData) {
+    public boolean addMetaData(String sourceKey, SwiftMetaData metaData) {
         return service.addMetaData(sourceKey, metaData);
     }
 
     @Override
-    public boolean addMetaDatas(Map<String, IMetaData> metaDatas) {
+    public boolean addMetaDatas(Map<String, SwiftMetaData> metaDatas) {
         return service.addMetaDatas(metaDatas);
     }
 
@@ -44,17 +45,17 @@ public class SwiftConfigServiceProvider implements SwiftConfigService {
     }
 
     @Override
-    public boolean updateMetaData(String sourceKey, IMetaData metaData) {
+    public boolean updateMetaData(String sourceKey, SwiftMetaData metaData) {
         return service.updateMetaData(sourceKey, metaData);
     }
 
     @Override
-    public Map<String, IMetaData> getAllMetaData() {
+    public Map<String, SwiftMetaData> getAllMetaData() {
         return service.getAllMetaData();
     }
 
     @Override
-    public IMetaData getMetaDataByKey(String sourceKey) {
+    public SwiftMetaData getMetaDataByKey(String sourceKey) {
         return service.getMetaDataByKey(sourceKey);
     }
 
@@ -64,7 +65,7 @@ public class SwiftConfigServiceProvider implements SwiftConfigService {
     }
 
     @Override
-    public boolean addSegments(IConfigSegment... segments) {
+    public boolean addSegments(List<SegmentKey> segments) {
         return service.addSegments(segments);
     }
 
@@ -74,17 +75,17 @@ public class SwiftConfigServiceProvider implements SwiftConfigService {
     }
 
     @Override
-    public boolean updateSegments(IConfigSegment... segments) {
-        return service.updateSegments(segments);
+    public boolean updateSegments(String sourceKey, List<SegmentKey> segments) {
+        return service.updateSegments(sourceKey, segments);
     }
 
     @Override
-    public Map<String, IConfigSegment> getAllSegments() {
+    public Map<String, List<SegmentKey>> getAllSegments() {
         return service.getAllSegments();
     }
 
     @Override
-    public IConfigSegment getSegmentByKey(String sourceKey) {
+    public List<SegmentKey> getSegmentByKey(String sourceKey) {
         return service.getSegmentByKey(sourceKey);
     }
 

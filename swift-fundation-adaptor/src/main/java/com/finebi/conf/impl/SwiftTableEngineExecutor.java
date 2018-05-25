@@ -97,11 +97,18 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
     }
 
     @Override
-    public BIDetailTableResult getRealData(FineBusinessTable table) throws Exception {
+    public BIDetailTableResult getRealData(FineBusinessTable table, int rowCount) throws Exception {
         DataSource dataSource = DataSourceFactory.getDataSourceInCache(table);
         List<Segment> segmentList = dataProvider.getRealData(dataSource);
         return new SwiftSegmentDetailResult(segmentList, dataSource.getMetadata());
     }
+
+//    @Override
+//    public BIDetailTableResult getRealData(FineBusinessTable table) throws Exception {
+//        DataSource dataSource = DataSourceFactory.getDataSourceInCache(table);
+//        List<Segment> segmentList = dataProvider.getRealData(dataSource);
+//        return new SwiftSegmentDetailResult(segmentList, dataSource.getMetadata());
+//    }
 
     //todo 正常情况下只有新增表和编辑表会调用这个方法，目前功能代码调用比较混乱，出现了性能问题由功能负责!!!
     @Override

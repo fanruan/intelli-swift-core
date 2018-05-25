@@ -17,7 +17,9 @@ import com.fr.swift.adaptor.transformer.SortAdaptor;
 import com.fr.swift.adaptor.transformer.filter.dimension.DimensionFilterAdaptor;
 import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.cal.info.DetailQueryInfo;
-import com.fr.swift.config.conf.MetaDataConvertUtil;
+import com.fr.swift.config.bean.MetaDataColumnBean;
+import com.fr.swift.config.bean.SwiftMetaDataBean;
+import com.fr.swift.config.service.SwiftConfigServiceProvider;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.adapter.dimension.AllCursor;
@@ -36,18 +38,15 @@ import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
-import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.SwiftMetaDataImpl;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.utils.BusinessTableUtils;
 
-import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -88,7 +87,7 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
         String queryId = widget.getWidgetId();
         List<Dimension> dimensions = getDimension(widget);
         SourceKey target = new SourceKey(BusinessTableUtils.getSourceIdByTableId(widget.getTableName()));
-        SwiftMetaData swiftMetaData = MetaDataConvertUtil.getSwiftMetaDataBySourceKey(target.toString());
+        SwiftMetaData swiftMetaData = SwiftConfigServiceProvider.getInstance().getMetaDataByKey(target.getId());
         SwiftMetaData metaData = getMetaData(widget, swiftMetaData);
         DetailTarget[] targets = getTargets(widget);
         //没传进来排序顺序
@@ -153,9 +152,9 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
         List<SwiftMetaDataColumn> fields = new ArrayList<SwiftMetaDataColumn>();
         for (FineDimension fineDimension : fineDimensions) {
             String columnName = fineDimension.getText();
-            fields.add(new MetaDataColumn(columnName, Types.VARCHAR));
+            fields.add(new MetaDataColumnBean(columnName, Types.VARCHAR));
         }
-        return new SwiftMetaDataImpl(metaData.getTableName(), metaData.getRemark(), metaData.getSchemaName(), fields);
+        return new SwiftMetaDataBean(metaData.getTableName(), metaData.getRemark(), metaData.getSchemaName(), fields);
     }
 
     private static List<Dimension> getDimension(AbstractTableWidget widget) throws Exception {
@@ -206,7 +205,7 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
         FilterInfo filterInfo = new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND);
         String queryId = fromWidget.getwId();
         SourceKey target = new SourceKey(BusinessTableUtils.getSourceIdByTableId(detailWidget.getTableName()));
-        SwiftMetaData swiftMetaData = MetaDataConvertUtil.getSwiftMetaDataBySourceKey(target.getId());
+        SwiftMetaData swiftMetaData = SwiftConfigServiceProvider.getInstance().getMetaDataByKey(target.getId());
         SwiftMetaData metaData = getMetaData(detailWidget, swiftMetaData);
         DetailTarget[] targets = getTargets(detailWidget);
         //没传进来排序顺序

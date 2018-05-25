@@ -1,8 +1,8 @@
 package com.fr.swift.source.empty;
 
+import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.source.AbstractDataSource;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.SwiftMetaDataImpl;
 
 import java.util.ArrayList;
 
@@ -17,6 +17,6 @@ public class EmptyDataSource extends AbstractDataSource {
 
     @Override
     protected void initMetaData() {
-        metaData = new SwiftMetaDataImpl("empty", new ArrayList<SwiftMetaDataColumn>());
+        metaData = new SwiftMetaDataBean("empty", new ArrayList<SwiftMetaDataColumn>());
     }
 }

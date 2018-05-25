@@ -1,9 +1,9 @@
 package com.fr.swift.source.etl.selfrelation;
 
+import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.core.CoreField;
@@ -89,7 +89,7 @@ public class OneUnionRelationOperator extends AbstractOperator {
                     it = columns.entrySet().iterator();
                     while (it.hasNext()) {
                         Entry<String, Integer> entry = it.next();
-                        columnList.add(new MetaDataColumn(s + "-" + entry.getKey(), this.columnType, size,
+                        columnList.add(new MetaDataColumnBean(s + "-" + entry.getKey(), this.columnType, size,
                                 MD5Utils.getMD5String(new String[]{(s + "-" + entry.getKey() + this.columnType)})));
                     }
                 }

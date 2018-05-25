@@ -1,11 +1,11 @@
 package com.fr.swift.source.etl.union;
 
+import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.ColumnTypeUtils;
-import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.core.CoreField;
@@ -56,7 +56,7 @@ public class UnionOperator extends AbstractOperator {
                     LOGGER.error("the field " + list.get(j) + " get meta failed", e);
                 }
             }
-            columnList.add(new MetaDataColumn(list.get(0), getSqlTypeByClassType(type), columnSize, scale));
+            columnList.add(new MetaDataColumnBean(list.get(0), getSqlTypeByClassType(type), columnSize, scale));
         }
         return columnList;
     }

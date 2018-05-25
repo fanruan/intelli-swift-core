@@ -3,6 +3,10 @@ package com.fr.engine.bi.register;
 import com.finebi.base.stable.StableManager;
 import com.finebi.conf.algorithm.DMDataModel;
 import com.fr.module.Activator;
+import com.fr.module.extension.Prepare;
+import com.fr.stable.db.constant.BaseDBConstant;
+import com.fr.swift.config.entity.SwiftMetaDataEntity;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.cube.queue.ProviderTaskManager;
 import com.fr.swift.driver.SwiftDriverRegister;
 import com.fr.swift.manager.ConnectionProvider;
@@ -24,7 +28,7 @@ import com.fr.swift.util.Crasher;
 /**
  * Created by pony on 2018/5/9.
  */
-public class SwiftActivator extends Activator {
+public class SwiftActivator extends Activator implements Prepare {
     @Override
     public void start() {
         StableManager.addClass("swiftTableEngineExecutor", com.finebi.conf.impl.SwiftTableEngineExecutor.class);
@@ -78,5 +82,10 @@ public class SwiftActivator extends Activator {
 
     @Override
     public void stop() {
+    }
+
+    @Override
+    public void prepare() {
+        this.addMutable(BaseDBConstant.BASE_ENTITY_KEY, SwiftMetaDataEntity.class, SwiftSegmentEntity.class);
     }
 }

@@ -1,12 +1,5 @@
 package com.fr.swift.generate;
 
-import com.fr.swift.config.IConfigSegment;
-import com.fr.swift.config.IMetaData;
-import com.fr.swift.config.conf.MetaDataConfig;
-import com.fr.swift.config.conf.MetaDataConvertUtil;
-import com.fr.swift.config.conf.SegmentConfig;
-import com.fr.swift.config.unique.SegmentKeyUnique;
-import com.fr.swift.config.unique.SegmentUnique;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.log.SwiftLogger;
@@ -25,12 +18,12 @@ public abstract class BaseTest extends BaseConfigTest {
         TestConnectionProvider.createConnection();
     }
 
-    protected void putMetaAndSegment(DataSource dataSource, int segOrder, IResourceLocation location, Types.StoreType storeType) throws Exception {
-        IMetaData metaData = MetaDataConvertUtil.convert2ConfigMetaData(dataSource.getMetadata());
-        MetaDataConfig.getInstance().addMetaData(dataSource.getSourceKey().getId(), metaData);
-        IConfigSegment configSegment = new SegmentUnique();
-        configSegment.setSourceKey(dataSource.getSourceKey().getId());
-        configSegment.addSegment(new SegmentKeyUnique(dataSource.getSourceKey(), "", location.getUri(), segOrder, storeType));
-        SegmentConfig.getInstance().putSegment(configSegment);
+    protected void putMetaAndSegment(DataSource dataSource, int segOrder, IResourceLocation location, Types.StoreType storeType) {
+//        IMetaData metaData = MetaDataConvertUtil.convert2ConfigMetaData(dataSource.getMetadata());
+//        MetaDataConfig.getInstance().addMetaData(dataSource.getSourceKey().getId(), dataSource.getMetadata());
+//        IConfigSegment configSegment = new SegmentUnique();
+//        configSegment.setSourceKey(dataSource.getSourceKey().getId());
+//        configSegment.addSegment(new SegmentKeyUnique(dataSource.getSourceKey(), "", location.getUri(), segOrder, storeType));
+//        SegmentConfig.getInstance().putSegment(configSegment);
     }
 }

@@ -1,9 +1,10 @@
-package com.fr.swift.config.conf.service;
+package com.fr.swift.config.service;
 
-import com.fr.swift.config.IConfigSegment;
-import com.fr.swift.config.IMetaData;
+import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SwiftMetaData;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,7 +19,7 @@ public interface SwiftConfigService {
      * @param metaData
      * @return
      */
-    boolean addMetaData(String sourceKey, IMetaData metaData);
+    boolean addMetaData(String sourceKey, SwiftMetaData metaData);
 
     /**
      * 批量增加MetaData
@@ -26,7 +27,7 @@ public interface SwiftConfigService {
      * @param metaDatas
      * @return
      */
-    boolean addMetaDatas(Map<String, IMetaData> metaDatas);
+    boolean addMetaDatas(Map<String, SwiftMetaData> metaDatas);
 
     /**
      * 批量删除MetaData
@@ -43,14 +44,14 @@ public interface SwiftConfigService {
      * @param metaData
      * @return
      */
-    boolean updateMetaData(String sourceKey, IMetaData metaData);
+    boolean updateMetaData(String sourceKey, SwiftMetaData metaData);
 
     /**
      * 获取所有MetaData
      *
      * @return
      */
-    Map<String, IMetaData> getAllMetaData();
+    Map<String, SwiftMetaData> getAllMetaData();
 
     /**
      * 根据SourceKey获取MetaData
@@ -58,17 +59,17 @@ public interface SwiftConfigService {
      * @param sourceKey
      * @return
      */
-    IMetaData getMetaDataByKey(String sourceKey);
+    SwiftMetaData getMetaDataByKey(String sourceKey);
 
     boolean containsMeta(SourceKey sourceKey);
 
     /**
-     * 批量增加Segment
+     * Segment
      *
      * @param segments
      * @return
      */
-    boolean addSegments(IConfigSegment... segments);
+    boolean addSegments(List<SegmentKey> segments);
 
     /**
      * 批量删除Segment
@@ -79,19 +80,18 @@ public interface SwiftConfigService {
     boolean removeSegments(String... sourceKey);
 
     /**
-     * 批量更新Segment
      *
      * @param segments
      * @return
      */
-    boolean updateSegments(IConfigSegment... segments);
+    boolean updateSegments(String sourceKey, List<SegmentKey> segments);
 
     /**
      * 获取所有Segment
      *
      * @return
      */
-    Map<String, IConfigSegment> getAllSegments();
+    Map<String, List<SegmentKey>> getAllSegments();
 
     /**
      * 根据SourceKey获取Segment
@@ -99,7 +99,7 @@ public interface SwiftConfigService {
      * @param sourceKey
      * @return
      */
-    IConfigSegment getSegmentByKey(String sourceKey);
+    List<SegmentKey> getSegmentByKey(String sourceKey);
 
     /**
      * 设置cube更新路径

@@ -28,12 +28,12 @@ import com.fr.swift.adaptor.transformer.etl.JoinAdaptor;
 import com.fr.swift.adaptor.transformer.etl.SelectFieldAdaptor;
 import com.fr.swift.adaptor.transformer.etl.SelfCirculateAdaptor;
 import com.fr.swift.adaptor.transformer.etl.UnionAdaptor;
+import com.fr.swift.config.bean.MetaDataColumnBean;
+import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.SwiftMetaDataImpl;
 import com.fr.swift.source.etl.ETLOperator;
 import com.fr.swift.source.etl.EtlSource;
 import com.fr.swift.utils.BusinessTableUtils;
@@ -103,9 +103,9 @@ public class EtlAdaptor {
         String name = table.getName();
         List<SwiftMetaDataColumn> columns = new ArrayList<SwiftMetaDataColumn>();
         for (FineBusinessField field : table.getFields()) {
-            columns.add(new MetaDataColumn(field.getName(), field.getType(), field.getSize()));
+            columns.add(new MetaDataColumnBean(field.getName(), field.getType(), field.getSize()));
         }
-        return new SwiftMetaDataImpl(name, columns);
+        return new SwiftMetaDataBean(name, columns);
     }
 
     static ETLOperator adaptEtlOperator(FineOperator op, FineBusinessTable table) throws Exception {
