@@ -1,6 +1,6 @@
 package com.fr.swift.config;
 
-import com.fr.swift.config.conf.bean.SegmentBean;
+import com.fr.swift.config.bean.SegmentBean;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.segment.SegmentKey;
 

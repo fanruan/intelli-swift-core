@@ -1,8 +1,8 @@
 package com.fr.swift.db;
 
 import com.fr.swift.config.TestConfDb;
-import com.fr.swift.config.conf.bean.MetaDataColumnBean;
-import com.fr.swift.config.conf.bean.SwiftMetaDataBean;
+import com.fr.swift.config.bean.MetaDataColumnBean;
+import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.manager.LocalDataOperatorProvider;

@@ -1,6 +1,6 @@
 package com.fr.swift.source.etl.columnrowtrans;
 
-import com.fr.swift.config.conf.bean.SwiftMetaDataBean;
+import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.Row;

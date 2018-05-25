@@ -660,7 +660,7 @@ public abstract class ExternalMap<K, V> implements Map<K, V>, Iterable<Map.Entry
                 }
 //                File file = new File(getContainerPath());
 //                if (file.exists()) {
-//                    file.delete();
+//                    file.deleteById();
 //                }
             } catch (Exception e) {
                 LOGGER.error(e.getMessage(), e);

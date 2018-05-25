@@ -1,8 +1,8 @@
 package com.fr.swift.segment.operator.insert;
 
 import com.fr.swift.bitmap.BitMaps;
-import com.fr.swift.config.conf.bean.SegmentBean;
-import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
+import com.fr.swift.config.bean.SegmentBean;
+import com.fr.swift.config.service.SwiftConfigServiceProvider;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types;

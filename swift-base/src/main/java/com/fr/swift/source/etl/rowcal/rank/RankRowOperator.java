@@ -1,6 +1,6 @@
 package com.fr.swift.source.etl.rowcal.rank;
 
-import com.fr.swift.config.conf.bean.MetaDataColumnBean;
+import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.ColumnTypeUtils;

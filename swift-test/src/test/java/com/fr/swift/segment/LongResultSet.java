@@ -1,11 +1,10 @@
 package com.fr.swift.segment;
 
-import com.fr.swift.config.conf.bean.MetaDataColumnBean;
-import com.fr.swift.config.conf.bean.SwiftMetaDataBean;
+import com.fr.swift.config.bean.MetaDataColumnBean;
+import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.SwiftMetaData;
 
-import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -1,12 +1,11 @@
 package com.fr.swift.source.excel;
 
-import com.fr.swift.config.conf.bean.MetaDataColumnBean;
-import com.fr.swift.config.conf.bean.SwiftMetaDataBean;
+import com.fr.swift.config.bean.MetaDataColumnBean;
+import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.AbstractOuterDataSource;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.ColumnTypeUtils;
-import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.excel.data.IExcelDataModel;

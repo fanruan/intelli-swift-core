@@ -1,6 +1,6 @@
 package com.fr.swift.source.empty;
 
-import com.fr.swift.config.conf.bean.SwiftMetaDataBean;
+import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.source.AbstractDataSource;
 import com.fr.swift.source.SwiftMetaDataColumn;
 

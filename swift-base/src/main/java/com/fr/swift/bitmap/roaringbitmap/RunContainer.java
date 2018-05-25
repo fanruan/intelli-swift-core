@@ -691,9 +691,7 @@ public final class RunContainer extends Container implements Cloneable {
     private boolean canPrependValueLength(int value, int index) {
         if (index < this.nbrruns) {
             int nextValue = Util.toIntUnsigned(getValue(index));
-            if (nextValue == value + 1) {
-                return true;
-            }
+            return nextValue == value + 1;
         }
         return false;
     }
@@ -724,9 +722,7 @@ public final class RunContainer extends Container implements Cloneable {
         if (index != -1) {// possible match
             int offset = Util.toIntUnsigned(x) - Util.toIntUnsigned(getValue(index));
             int le = Util.toIntUnsigned(getLength(index));
-            if (offset <= le) {
-                return true;
-            }
+            return offset <= le;
         }
         return false;
     }
@@ -1058,7 +1054,7 @@ public final class RunContainer extends Container implements Cloneable {
         copyToOffset(offset);
         int rlepos = 0;
         this.nbrruns = 0;
-        PeekableShortIterator i = (PeekableShortIterator) x.getShortIterator();
+        PeekableShortIterator i = x.getShortIterator();
         while (i.hasNext() && (rlepos < nbrruns)) {
             if (Util.compareUnsigned(getValue(rlepos + offset), i.peekNext()) <= 0) {
                 smartAppend(getValue(rlepos + offset), getLength(rlepos + offset));
@@ -1307,7 +1303,7 @@ public final class RunContainer extends Container implements Cloneable {
         copyToOffset(offset);
         int rlepos = 0;
         this.nbrruns = 0;
-        PeekableShortIterator i = (PeekableShortIterator) x.getShortIterator();
+        PeekableShortIterator i = x.getShortIterator();
         while (i.hasNext() && (rlepos < nbrruns)) {
             if (Util.compareUnsigned(getValue(rlepos + offset), i.peekNext()) <= 0) {
                 smartAppend(getValue(rlepos + offset), getLength(rlepos + offset));
@@ -1473,7 +1469,7 @@ public final class RunContainer extends Container implements Cloneable {
                             initValueLength(end, eIndex);
                             eIndex--;
                         } else {
-                            // run ends at or before the range being removed, can delete it
+                            // run ends at or before the range being removed, can deleteById it
                         }
                         recoverRoomsInRange(bIndex, eIndex);
                     }
@@ -1489,7 +1485,7 @@ public final class RunContainer extends Container implements Cloneable {
                 }
 
             } else {
-                // eIndex == -1: whole range is before first run, nothing to delete...
+                // eIndex == -1: whole range is before first run, nothing to deleteById...
             }
 
         }
@@ -1608,7 +1604,7 @@ public final class RunContainer extends Container implements Cloneable {
         // TODO: should optimize for the frequent case where we have a single run
         RunContainer answer = new RunContainer(new short[2 * (this.nbrruns + x.getCardinality())], 0);
         int rlepos = 0;
-        PeekableShortIterator i = (PeekableShortIterator) x.getShortIterator();
+        PeekableShortIterator i = x.getShortIterator();
 
         while (i.hasNext() && (rlepos < this.nbrruns)) {
             if (Util.compareUnsigned(getValue(rlepos), i.peekNext()) <= 0) {
@@ -1834,7 +1830,7 @@ public final class RunContainer extends Container implements Cloneable {
     }
 
     @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    public void readExternal(ObjectInput in) throws IOException {
         deserialize(in);
     }
 
@@ -2228,10 +2224,7 @@ public final class RunContainer extends Container implements Cloneable {
         int initialValue = Util.toIntUnsigned(getValue(index));
         int length = Util.toIntUnsigned(getLength(index));
 
-        if (value <= initialValue + length) {
-            return true;
-        }
-        return false;
+        return value <= initialValue + length;
     }
 
     @Override
@@ -2347,7 +2340,7 @@ public final class RunContainer extends Container implements Cloneable {
         return answer;
     }
 
-};
+}
 
 
 final class RunContainerShortIterator implements PeekableShortIterator {

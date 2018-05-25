@@ -1,6 +1,6 @@
 package com.fr.swift.source.etl.rowcal.alldata;
 
-import com.fr.swift.config.conf.bean.MetaDataColumnBean;
+import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;

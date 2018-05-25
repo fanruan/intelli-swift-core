@@ -1,7 +1,7 @@
 package com.fr.swift.manager;
 
 
-import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
+import com.fr.swift.config.service.SwiftConfigServiceProvider;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.segment.AbstractSegmentManager;

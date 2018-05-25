@@ -10,8 +10,8 @@
 //import com.fr.config.entity.XmlEntity;
 //import com.fr.stable.db.DBContext;
 //import com.fr.stable.db.option.DBOption;
-//import com.fr.swift.config.conf.service.SwiftConfigService;
-//import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
+//import com.fr.swift.config.service.SwiftConfigService;
+//import com.fr.swift.config.service.SwiftConfigServiceProvider;
 //import com.fr.swift.source.SourceKey;
 //import junit.framework.TestCase;
 //

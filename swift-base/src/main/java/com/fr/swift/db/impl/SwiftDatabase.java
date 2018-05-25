@@ -1,7 +1,7 @@
 package com.fr.swift.db.impl;
 
-import com.fr.swift.config.conf.service.SwiftConfigService;
-import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
+import com.fr.swift.config.service.SwiftConfigService;
+import com.fr.swift.config.service.SwiftConfigServiceProvider;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.source.SourceKey;
