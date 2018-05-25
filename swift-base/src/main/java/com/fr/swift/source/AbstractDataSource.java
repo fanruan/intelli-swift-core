@@ -48,7 +48,7 @@ public abstract class AbstractDataSource implements DataSource {
                 SwiftMetaDataColumn column = metaData.getColumn(i+1);
                 if (names.contains(column.getName())){
                     String newName = createNewName(names, column.getName());
-                    column = new MetaDataColumn(newName, column.getRemark(), column.getType(), column.getPrecision(), column.getScale(), column.getId());
+                    column = new MetaDataColumn(newName, column.getRemark(), column.getType(), column.getPrecision(), column.getScale(), column.getColumnId());
                 }
                 columnList.add(column);
                 names.add(column.getName());

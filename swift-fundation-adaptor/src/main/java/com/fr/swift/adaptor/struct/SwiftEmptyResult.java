@@ -104,11 +104,6 @@ public class SwiftEmptyResult implements SwiftResultSet{
             public List<String> getFieldNames() {
                 return null;
             }
-
-            @Override
-            public List<SwiftMetaDataColumn> getColumnMetas() {
-                return null;
-            }
         };
     }
 

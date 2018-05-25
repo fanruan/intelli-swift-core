@@ -1,16 +1,13 @@
 package com.fr.swift.db.impl;
 
+import com.fr.swift.config.IMetaData;
 import com.fr.swift.config.conf.MetaDataConvertUtil;
 import com.fr.swift.config.conf.service.SwiftConfigService;
 import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
-import com.fr.swift.config.unique.SwiftMetaDataUnique;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftMetaDataImpl;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -31,7 +28,7 @@ public class SwiftDatabase implements Database {
         }
 
         Table table = new SwiftTable(tableKey, meta);
-        confSvc.addMetaData(tableKey.getId(), new SwiftMetaDataUnique(meta));
+        confSvc.addMetaData(tableKey.getId(), MetaDataConvertUtil.convert2ConfigMetaData(meta));
         return table;
     }
 
@@ -47,14 +44,10 @@ public class SwiftDatabase implements Database {
     @Override
     public synchronized List<Table> getAllTables() {
         List<Table> tables = new ArrayList<Table>();
-        try {
-            for (Entry<String, SwiftMetaData> entry : confSvc.getAllMetaData().entrySet()) {
-                SourceKey tableKey = new SourceKey(entry.getKey());
-                SwiftMetaData meta = new SwiftMetaDataImpl(entry.getValue());
-                tables.add(new SwiftTable(tableKey, meta));
-            }
-        } catch (SwiftMetaDataException e) {
-            SwiftLoggers.getLogger().error(e);
+        for (Entry<String, IMetaData> entry : confSvc.getAllMetaData().entrySet()) {
+            SourceKey tableKey = new SourceKey(entry.getKey());
+            SwiftMetaData meta = MetaDataConvertUtil.toSwiftMetadata(entry.getValue());
+            tables.add(new SwiftTable(tableKey, meta));
         }
         return tables;
     }
@@ -69,7 +62,7 @@ public class SwiftDatabase implements Database {
         if (!existsTable(tableKey)) {
             throw new SQLException("table " + tableKey + " not exists");
         }
-        confSvc.updateMetaData(tableKey.getId(), new SwiftMetaDataUnique(meta));
+        confSvc.updateMetaData(tableKey.getId(), MetaDataConvertUtil.convert2ConfigMetaData(meta));
     }
 
     @Override

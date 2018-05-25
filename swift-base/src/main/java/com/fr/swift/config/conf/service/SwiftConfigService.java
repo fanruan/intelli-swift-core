@@ -1,8 +1,8 @@
 package com.fr.swift.config.conf.service;
 
 import com.fr.swift.config.IConfigSegment;
+import com.fr.swift.config.IMetaData;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.SwiftMetaData;
 
 import java.util.Map;
 
@@ -18,7 +18,7 @@ public interface SwiftConfigService {
      * @param metaData
      * @return
      */
-    boolean addMetaData(String sourceKey, SwiftMetaData metaData);
+    boolean addMetaData(String sourceKey, IMetaData metaData);
 
     /**
      * 批量增加MetaData
@@ -26,7 +26,7 @@ public interface SwiftConfigService {
      * @param metaDatas
      * @return
      */
-    boolean addMetaDatas(Map<String, SwiftMetaData> metaDatas);
+    boolean addMetaDatas(Map<String, IMetaData> metaDatas);
 
     /**
      * 批量删除MetaData
@@ -43,14 +43,14 @@ public interface SwiftConfigService {
      * @param metaData
      * @return
      */
-    boolean updateMetaData(String sourceKey, SwiftMetaData metaData);
+    boolean updateMetaData(String sourceKey, IMetaData metaData);
 
     /**
      * 获取所有MetaData
      *
      * @return
      */
-    Map<String, SwiftMetaData> getAllMetaData();
+    Map<String, IMetaData> getAllMetaData();
 
     /**
      * 根据SourceKey获取MetaData
@@ -58,7 +58,7 @@ public interface SwiftConfigService {
      * @param sourceKey
      * @return
      */
-    SwiftMetaData getMetaDataByKey(String sourceKey);
+    IMetaData getMetaDataByKey(String sourceKey);
 
     boolean containsMeta(SourceKey sourceKey);
 

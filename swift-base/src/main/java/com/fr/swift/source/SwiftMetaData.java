@@ -15,8 +15,6 @@ public interface SwiftMetaData {
 
     String getTableName() throws SwiftMetaDataException;
 
-    String getRemark() throws SwiftMetaDataException;
-
     int getColumnCount() throws SwiftMetaDataException;
 
     String getColumnName(int index) throws SwiftMetaDataException;
@@ -61,7 +59,7 @@ public interface SwiftMetaData {
 
     String getColumnId(String columnName) throws SwiftMetaDataException;
 
-    List<String> getFieldNames();
+    String getRemark() throws SwiftMetaDataException;
 
-    List<SwiftMetaDataColumn> getColumnMetas() throws SwiftMetaDataException;
+    List<String> getFieldNames();
 }

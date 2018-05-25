@@ -5,54 +5,44 @@ import com.fr.config.holder.factory.Holders;
 import com.fr.config.holder.impl.ObjectMapConf;
 import com.fr.config.utils.UniqueKey;
 import com.fr.stable.StringUtils;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.util.Crasher;
+import com.fr.swift.config.IMetaData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * @Author: Lucifer
  * @Description:
  * @Date: Created in 2018-3-8
  */
-public class SwiftMetaDataUnique extends UniqueKey implements SwiftMetaData {
+public class SwiftMetaDataUnique extends UniqueKey implements IMetaData<MetaDataColumnUnique> {
+
+    private final static String NAMESPACE = "metadata";
+
     private Conf<String> schema = Holders.simple(StringUtils.EMPTY);
-
     private Conf<String> tableName = Holders.simple(StringUtils.EMPTY);
-
     private Conf<String> remark = Holders.simple(StringUtils.EMPTY);
-
-    private ObjectMapConf<Map<Integer, SwiftMetaDataColumn>> fields = Holders.objMap(new HashMap<Integer, SwiftMetaDataColumn>(), Integer.class, SwiftMetaDataColumn.class);
-
+    private ObjectMapConf<Map<Integer, MetaDataColumnUnique>> fieldList = Holders.objMap(new HashMap<Integer, MetaDataColumnUnique>(), Integer.class, MetaDataColumnUnique.class);
     public SwiftMetaDataUnique() {
     }
 
-    public SwiftMetaDataUnique(SwiftMetaData meta) throws SwiftMetaDataException {
-        this(meta.getSchemaName(), meta.getTableName(), meta.getRemark(), meta.getColumnMetas());
-    }
-
-    public SwiftMetaDataUnique(String schema, String tableName, String remark, List<SwiftMetaDataColumn> columns) {
-        this.schema.set(schema);
-        this.tableName.set(tableName);
-        this.remark.set(remark);
-        setFields(columns);
-    }
-
-    private void setFields(List<SwiftMetaDataColumn> columns) {
-        for (int i = 0; i < columns.size(); i++) {
-            fields.put(i + 1, new MetaDataColumnUnique(columns.get(i)));
-        }
+    public SwiftMetaDataUnique(String schema, String tableName, String remark, List<MetaDataColumnUnique> fieldList) {
+        this.setSchema(schema);
+        this.setTableName(tableName);
+        this.setRemark(remark);
+        this.setFieldList(fieldList);
     }
 
     @Override
-    public String getSchemaName() {
+    public String getSchema() {
         return schema.get();
+    }
+
+    @Override
+    public void setSchema(String schema) {
+        this.schema.set(schema);
     }
 
     @Override
@@ -61,97 +51,38 @@ public class SwiftMetaDataUnique extends UniqueKey implements SwiftMetaData {
     }
 
     @Override
+    public void setTableName(String tableName) {
+        this.tableName.set(tableName);
+    }
+
+    @Override
     public String getRemark() {
         return remark.get();
     }
 
-    private Map<Integer, SwiftMetaDataColumn> fields() {
-        return fields.get();
+    @Override
+    public void setRemark(String remark) {
+        this.remark.set(remark);
     }
 
     @Override
-    public int getColumnCount() {
-        return fields().size();
-    }
-
-    @Override
-    public SwiftMetaDataColumn getColumn(int index) {
-        return fields().get(index);
-    }
-
-    @Override
-    public SwiftMetaDataColumn getColumn(String columnName) {
-        for (Entry<Integer, SwiftMetaDataColumn> entry : fields().entrySet()) {
-            SwiftMetaDataColumn columnMeta = entry.getValue();
-            if (columnMeta.getName().equals(columnName)) {
-                return columnMeta;
-            }
+    public List<MetaDataColumnUnique> getFieldList() {
+        // 不能直接用fieldList.get(i)
+        Map<Integer, MetaDataColumnUnique> map = fieldList.get();
+        int size = map.size();
+        List<MetaDataColumnUnique> target = new ArrayList<MetaDataColumnUnique>();
+        for (int i = 0; i < size; i++) {
+            target.add(map.get(i));
         }
-        return Crasher.crash(columnName + " not found");
+        return target;
     }
 
     @Override
-    public String getColumnName(int index) {
-        return getColumn(index).getName();
-    }
-
-    @Override
-    public String getColumnId(int index) {
-        return getColumn(index).getId();
-    }
-
-    @Override
-    public String getColumnRemark(int index) {
-        return getColumn(index).getRemark();
-    }
-
-    @Override
-    public int getColumnType(int index) {
-        return getColumn(index).getType();
-    }
-
-    @Override
-    public int getPrecision(int index) {
-        return getColumn(index).getPrecision();
-    }
-
-    @Override
-    public int getScale(int index) {
-        return getColumn(index).getScale();
-    }
-
-    @Override
-    public int getColumnIndex(String columnName) {
-        for (Entry<Integer, SwiftMetaDataColumn> entry : fields().entrySet()) {
-            if (entry.getValue().getName().equals(columnName)) {
-                return entry.getKey();
-            }
+    public void setFieldList(List<MetaDataColumnUnique> fieldList) {
+        for (int i = 0, len = fieldList.size(); i < len; i++) {
+            this.fieldList.put(i, fieldList.get(i));
         }
-        return Crasher.crash(columnName + " not found");
     }
 
-    @Override
-    public String getColumnId(String columnName) {
-        return getColumn(columnName).getId();
-    }
 
-    @Override
-    public List<String> getFieldNames() {
-        Map<Integer, SwiftMetaDataColumn> fields = fields();
-        List<String> fieldNames = new ArrayList<String>();
-        for (int i = 1; i <= fields.size(); i++) {
-            fieldNames.add(fields.get(i).getName());
-        }
-        return fieldNames;
-    }
-
-    @Override
-    public List<SwiftMetaDataColumn> getColumnMetas() {
-        Map<Integer, SwiftMetaDataColumn> fields = fields();
-        List<SwiftMetaDataColumn> columns = new ArrayList<SwiftMetaDataColumn>();
-        for (int i = 1; i <= fields.size(); i++) {
-            columns.add(fields.get(i));
-        }
-        return columns;
-    }
 }

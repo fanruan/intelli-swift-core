@@ -1,6 +1,8 @@
 package com.fr.swift.source;
 
 import com.fr.general.ComparatorUtils;
+import com.fr.swift.config.pojo.MetaDataColumnPojo;
+import com.fr.swift.config.pojo.SwiftMetaDataPojo;
 import com.fr.swift.exception.meta.SwiftMetaDataColumnAbsentException;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.util.Util;
@@ -17,19 +19,11 @@ import java.util.List;
 public class SwiftMetaDataImpl implements SwiftMetaData {
     private static final long serialVersionUID = 5516973769561307468L;
 
-    private String schema;
-
-    private String tableName;
-
-    private String remark;
+    private SwiftMetaDataPojo swiftMetaDataPojo;
 
     private List<SwiftMetaDataColumn> fieldList;
 
     private List<String> fieldNames = new ArrayList<String>();
-
-    public SwiftMetaDataImpl(SwiftMetaData meta) throws SwiftMetaDataException {
-        this(meta.getSchemaName(), meta.getTableName(), meta.getRemark(), meta.getColumnMetas());
-    }
 
     public SwiftMetaDataImpl(String tableName, List<SwiftMetaDataColumn> fieldList) {
         this(tableName, null, null, fieldList);
@@ -41,20 +35,30 @@ public class SwiftMetaDataImpl implements SwiftMetaData {
 
     public SwiftMetaDataImpl(String tableName, String tableNameRemark, String schema, List<SwiftMetaDataColumn> fieldList) {
         Util.requireNonNull(tableName, fieldList);
+        List<MetaDataColumnPojo> fieldPojoList = new ArrayList<MetaDataColumnPojo>();
 
-        this.schema = schema;
-        this.tableName = tableName;
-        this.remark = tableNameRemark;
-        this.fieldList = fieldList;
-
-        for (SwiftMetaDataColumn aFieldList : fieldList) {
-            fieldNames.add(aFieldList.getName());
+        for (SwiftMetaDataColumn column : fieldList) {
+            fieldPojoList.add(column.getMetaDataColumnPojo());
+            fieldNames.add(column.getName());
         }
+        swiftMetaDataPojo = new SwiftMetaDataPojo(schema, tableName, tableNameRemark, fieldPojoList);
+        this.fieldList = fieldList;
+    }
+
+    public SwiftMetaDataImpl(SwiftMetaDataPojo swiftMetaDataPojo) {
+        this.swiftMetaDataPojo = swiftMetaDataPojo;
+        List<MetaDataColumnPojo> fieldPojoList = swiftMetaDataPojo.getFieldList();
+        this.fieldList = new ArrayList<SwiftMetaDataColumn>();
+        for (MetaDataColumnPojo column : fieldPojoList) {
+            fieldList.add(new MetaDataColumn(column.getName(), column.getRemark(), column.getType(), column.getPrecision(), column.getScale(), column.getColumnId()));
+            fieldNames.add(column.getName());
+        }
+
     }
 
     @Override
     public String getSchemaName() {
-        return schema;
+        return swiftMetaDataPojo.getSchema();
     }
 
     /**
@@ -62,12 +66,7 @@ public class SwiftMetaDataImpl implements SwiftMetaData {
      */
     @Override
     public String getTableName() {
-        return tableName;
-    }
-
-    @Override
-    public String getRemark() {
-        return remark;
+        return swiftMetaDataPojo.getTableName();
     }
 
     @Override
@@ -102,12 +101,17 @@ public class SwiftMetaDataImpl implements SwiftMetaData {
 
     @Override
     public String getColumnId(int index) throws SwiftMetaDataException {
-        return getColumn(index).getId();
+        return getColumn(index).getColumnId();
+    }
+
+    @Override
+    public String getRemark() {
+        return swiftMetaDataPojo.getRemark();
     }
 
     @Override
     public String getColumnId(String columnName) throws SwiftMetaDataException {
-        return getColumn(columnName).getId();
+        return getColumn(columnName).getColumnId();
     }
 
     @Override
@@ -158,15 +162,7 @@ public class SwiftMetaDataImpl implements SwiftMetaData {
     }
 
     @Override
-    public List<SwiftMetaDataColumn> getColumnMetas() throws SwiftMetaDataException {
-        if (fieldList == null) {
-            throw new SwiftMetaDataException();
-        }
-        return fieldList;
-    }
-
-    @Override
     public String toString() {
-        return "{" + tableName + ", " + fieldList + "}";
+        return swiftMetaDataPojo.toString();
     }
 }
