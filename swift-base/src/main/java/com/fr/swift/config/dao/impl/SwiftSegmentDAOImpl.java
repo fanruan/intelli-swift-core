@@ -10,6 +10,7 @@ import com.fr.swift.config.dao.SwiftSegmentDAO;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.third.org.hibernate.Query;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +30,7 @@ public class SwiftSegmentDAOImpl extends BaseDAO<SwiftSegmentEntity> implements 
     }
 
     @Override
-    public boolean addOrUpdateSwiftSegment(SegmentKeyBean bean) {
+    public boolean addOrUpdateSwiftSegment(SegmentKeyBean bean) throws SQLException {
         return saveOrUpdate(bean.convert());
     }
 

@@ -8,12 +8,14 @@ import com.fr.transaction.SyncManager;
 import com.fr.transaction.TransactionManager;
 import com.fr.transaction.TransactionManagerFactory;
 
+import java.sql.SQLException;
+
 /**
  * @author yee
  * @date 2018/5/25
  */
 public class SwiftTransactionManager {
-    public static Object doTransactionIfNeed(TransactionWorker worker) {
+    public static Object doTransactionIfNeed(TransactionWorker worker) throws SQLException {
         if (!SyncManager.isTransactionOpen(BaseDBEnv.getDBContext()) && worker.needTransaction()) {
             TransactionManager transactionManager = TransactionManagerFactory.getTransactionManager();
             ConnectionHolder connectionHolder = transactionManager.getConnectionHolder();
@@ -25,7 +27,7 @@ public class SwiftTransactionManager {
                 return result;
             } catch (Throwable throwable) {
                 transactionManager.rollback(connectionHolder);
-                throw new RuntimeException(throwable);
+                throw new SQLException(throwable);
             } finally {
                 transactionManager.close(connectionHolder);
                 SyncUtils.release();
@@ -35,7 +37,7 @@ public class SwiftTransactionManager {
         }
     }
 
-    private static Object work(TransactionWorker worker) {
+    private static Object work(TransactionWorker worker) throws SQLException {
         switch (worker.type()) {
             case META:
                 return worker.work(SwiftConfigContext.getInstance().getSwiftMetaDataDAO());
