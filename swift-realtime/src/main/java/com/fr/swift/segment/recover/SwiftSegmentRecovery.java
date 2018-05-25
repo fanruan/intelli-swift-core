@@ -1,13 +1,19 @@
 package com.fr.swift.segment.recover;
 
+import com.fr.swift.context.SwiftContext;
+import com.fr.swift.cube.io.Types.StoreType;
+import com.fr.swift.cube.io.location.ResourceLocation;
+import com.fr.swift.db.Table;
+import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.segment.HistorySegmentImpl;
+import com.fr.swift.segment.RealTimeSegmentImpl;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftDataOperatorProvider;
-import com.fr.swift.segment.SwiftSegmentKey;
+import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.operator.Inserter;
-import com.fr.swift.source.DataSource;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
@@ -23,47 +29,66 @@ import java.util.List;
  * @date 2018/5/23
  */
 public class SwiftSegmentRecovery implements SegmentRecovery {
-    private SwiftDataOperatorProvider operators = null;
+    private SwiftDataOperatorProvider operators = SwiftContext.getInstance().getSwiftDataOperatorProvider();
+
+    private SwiftSegmentManager manager = SwiftContext.getInstance().getSegmentProvider();
 
     @Override
     public void recover(SourceKey tableKey) {
-        DataSource table = null;
-        List<SwiftSegmentKey> segKeys = getUnstoredSegments(tableKey);
-        for (SwiftSegmentKey segKey : segKeys) {
+        List<Segment> segs = getUnstoredSegments(tableKey);
+        for (Segment seg : segs) {
             try {
-                Inserter insert = operators.getRealtimeSwiftInserter(newRealtimeSegment(segKey), table);
-                insert.insertData(new BackupResultSet(getBackupSegment(segKey)));
+                Table table = SwiftDatabase.getInstance().getTable(tableKey);
+                Inserter insert = operators.getRealtimeSwiftInserter(newRealtimeSegment(seg), table);
+                List<Segment> newSegs = insert.insertData(new BackupResultSet(getBackupSegment(seg)));
+                SwiftMetaData meta = table.getMetadata();
+                for (int i = 1; i < meta.getColumnCount(); i++) {
+                    ColumnKey columnKey = new ColumnKey(meta.getColumn(i).getName());
+                    operators.getColumnIndexer(table, columnKey, newSegs).buildIndex();
+                    operators.getColumnDictMerger(table, columnKey, newSegs).mergeDict();
+                }
             } catch (Exception e) {
-                e.printStackTrace();
+                SwiftLoggers.getLogger().error(e);
             }
         }
     }
 
-    private Segment getBackupSegment(SegmentKey segKey) {
-        return null;
+    private Segment getBackupSegment(Segment realtimeSeg) {
+        return new HistorySegmentImpl(new ResourceLocation(realtimeSeg.getLocation().getPath(), StoreType.FINE_IO), realtimeSeg.getMetaData());
     }
 
-
-    private Segment newRealtimeSegment(SegmentKey segKey) {
-        return null;
+    private Segment newRealtimeSegment(Segment realtimeSeg) {
+        return new RealTimeSegmentImpl(realtimeSeg.getLocation(), realtimeSeg.getMetaData());
     }
 
-    private List<SwiftSegmentKey> getUnstoredSegments(SourceKey tableKey) {
-        return null;
+    private List<Segment> getUnstoredSegments(SourceKey tableKey) {
+        List<Segment> segs = manager.getSegment(tableKey),
+                unstoredSegs = new ArrayList<Segment>();
+        for (Segment seg : segs) {
+            if (seg.getLocation().getStoreType() == StoreType.MEMORY) {
+                unstoredSegs.add(seg);
+            }
+        }
+        return unstoredSegs;
     }
 
     @Override
     public void recoverAll() {
-        List<SourceKey> tables = new ArrayList<SourceKey>();
-        for (SourceKey table : tables) {
-            recover(table);
+        List<Table> tables;
+        try {
+            tables = SwiftDatabase.getInstance().getAllTables();
+            for (Table table : tables) {
+                recover(table.getSourceKey());
+            }
+        } catch (SQLException e) {
+            SwiftLoggers.getLogger().error(e);
         }
     }
 
     static class BackupResultSet implements SwiftResultSet {
         SwiftMetaData meta;
         List<DetailColumn> details = new ArrayList<DetailColumn>();
-        int cursor;
+        int cursor = -1;
         int rowCount;
 
         BackupResultSet(Segment seg) throws SQLException {
@@ -85,7 +110,7 @@ public class SwiftSegmentRecovery implements SegmentRecovery {
 
         @Override
         public boolean next() {
-            return cursor++ < rowCount;
+            return ++cursor < rowCount;
         }
 
         @Override
@@ -103,6 +128,15 @@ public class SwiftSegmentRecovery implements SegmentRecovery {
                 detail.release();
             }
         }
+    }
+
+    private static final SegmentRecovery SEGMENT_RECOVERY = new SwiftSegmentRecovery();
+
+    private SwiftSegmentRecovery() {
+    }
+
+    public static SegmentRecovery getInstance() {
+        return SEGMENT_RECOVERY;
     }
 
 }
