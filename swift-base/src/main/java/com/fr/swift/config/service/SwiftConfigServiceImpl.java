@@ -2,7 +2,7 @@ package com.fr.swift.config.service;
 
 import com.fr.config.Configuration;
 import com.fr.swift.config.SwiftPathConfig;
-import com.fr.swift.config.bean.SegmentBean;
+import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.config.dao.SwiftMetaDataDAO;
 import com.fr.swift.config.dao.SwiftSegmentDAO;
@@ -182,7 +182,7 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
                 @Override
                 public Object work(SwiftSegmentDAO dao) {
                     for (SegmentKey bean : segments) {
-                        dao.addOrUpdateSwiftSegment((SegmentBean) bean);
+                        dao.addOrUpdateSwiftSegment((SegmentKeyBean) bean);
                     }
                     return true;
                 }
@@ -219,7 +219,7 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
                 public Object work(SwiftSegmentDAO dao) {
                     dao.deleteBySourceKey(sourceKey);
                     for (SegmentKey segment : segments) {
-                        dao.addOrUpdateSwiftSegment((SegmentBean) segment);
+                        dao.addOrUpdateSwiftSegment((SegmentKeyBean) segment);
                     }
                     return true;
                 }
@@ -234,7 +234,7 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
     public Map<String, List<SegmentKey>> getAllSegments() {
         Map<String, List<SegmentKey>> result = new HashMap<String, List<SegmentKey>>();
         try {
-            List<SegmentBean> beans = (List<SegmentBean>) SwiftTransactionManager.doTransactionIfNeed(new SwiftSegmentTransactionWorker() {
+            List<SegmentKeyBean> beans = (List<SegmentKeyBean>) SwiftTransactionManager.doTransactionIfNeed(new SwiftSegmentTransactionWorker() {
                 @Override
                 public Object work(SwiftSegmentDAO dao) {
                     return dao.findAll();
@@ -245,7 +245,7 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
                     return false;
                 }
             });
-            for (SegmentBean bean : beans) {
+            for (SegmentKeyBean bean : beans) {
                 if (!result.containsKey(bean.getSourceKey())) {
                     result.put(bean.getSourceKey(), new ArrayList<SegmentKey>());
                 }

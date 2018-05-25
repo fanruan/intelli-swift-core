@@ -12,13 +12,18 @@ import java.net.URI;
  * @author yee
  * @date 2018/5/24
  */
-public class SegmentBean implements Serializable, Convert<SwiftSegmentEntity>, SegmentKey {
+public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>, SegmentKey {
 
     public static final String COLUMN_SEGMENT_OWNER = "segmentOwner";
     public static final String COLUMN_SEGMENT_ORDER = "segmentOrder";
     public static final String COLUMN_STORE_TYPE = "storeType";
     public static final String COLUMN_SEGMENT_URI = "segmentUri";
     public static final String COLUMN_SEGMENT_NAME = "segmentName";
+
+
+    /**
+     * sourceKey@storeType@order
+     */
     private String id;
     private String sourceKey;
     private String name;
@@ -26,7 +31,7 @@ public class SegmentBean implements Serializable, Convert<SwiftSegmentEntity>, S
     private int order;
     private Types.StoreType storeType;
 
-    public SegmentBean(String sourceKey, String name, URI uri, int order, Types.StoreType storeType) {
+    public SegmentKeyBean(String sourceKey, String name, URI uri, int order, Types.StoreType storeType) {
         this.sourceKey = sourceKey;
         this.name = name;
         this.uri = uri;
@@ -35,7 +40,7 @@ public class SegmentBean implements Serializable, Convert<SwiftSegmentEntity>, S
         this.id = toString();
     }
 
-    public SegmentBean() {
+    public SegmentKeyBean() {
     }
 
     public String getSourceKey() {

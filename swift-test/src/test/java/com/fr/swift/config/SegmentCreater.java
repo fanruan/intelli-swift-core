@@ -1,6 +1,6 @@
 package com.fr.swift.config;
 
-import com.fr.swift.config.bean.SegmentBean;
+import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.segment.SegmentKey;
 
@@ -17,7 +17,7 @@ public class SegmentCreater {
         String sourceKey = "sourceA";
         List<SegmentKey> keyUniques = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
-            keyUniques.add(new SegmentBean(sourceKey, "seg" + i, URI.create("/seg" + i), i, Types.StoreType.FINE_IO));
+            keyUniques.add(new SegmentKeyBean(sourceKey, "seg" + i, URI.create("/seg" + i), i, Types.StoreType.FINE_IO));
         }
         return keyUniques;
     }
@@ -26,7 +26,7 @@ public class SegmentCreater {
         String sourceKey = "sourceA";
         List<SegmentKey> keyUniques = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
-            keyUniques.add(new SegmentBean(sourceKey, "seg" + (i + 1), URI.create("/seg" + (i + 1)), i, Types.StoreType.FINE_IO));
+            keyUniques.add(new SegmentKeyBean(sourceKey, "seg" + (i + 1), URI.create("/seg" + (i + 1)), i, Types.StoreType.FINE_IO));
         }
         return keyUniques;
     }

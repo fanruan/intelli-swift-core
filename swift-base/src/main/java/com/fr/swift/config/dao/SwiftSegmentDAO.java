@@ -1,6 +1,6 @@
 package com.fr.swift.config.dao;
 
-import com.fr.swift.config.bean.SegmentBean;
+import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 
 import java.util.List;
@@ -10,11 +10,34 @@ import java.util.List;
  * @date 2018/5/25
  */
 public interface SwiftSegmentDAO extends SwiftConfigDAO<SwiftSegmentEntity> {
-    boolean addOrUpdateSwiftSegment(SegmentBean bean);
+    /**
+     * 保存SegmentKeyBean
+     *
+     * @param bean
+     * @return
+     */
+    boolean addOrUpdateSwiftSegment(SegmentKeyBean bean);
 
-    List<SegmentBean> findBySourceKey(String sourceKey);
+    /**
+     * 根据SourceKey查找
+     *
+     * @param sourceKey
+     * @return
+     */
+    List<SegmentKeyBean> findBySourceKey(String sourceKey);
 
+    /**
+     * 删除SourceKey下的所有SegmentKey
+     *
+     * @param sourceKey
+     * @return
+     */
     boolean deleteBySourceKey(String sourceKey);
 
-    List<SegmentBean> findAll();
+    /**
+     * 返回所有SegmentKey
+     *
+     * @return
+     */
+    List<SegmentKeyBean> findAll();
 }

@@ -1,7 +1,7 @@
 package com.fr.swift.segment.operator.insert;
 
 import com.fr.swift.bitmap.BitMaps;
-import com.fr.swift.config.bean.SegmentBean;
+import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.service.SwiftConfigServiceProvider;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.ResourceDiscovery;
@@ -160,7 +160,7 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
     protected Segment createSegment(int order, Types.StoreType storeType) {
         String cubePath = ResourceDiscovery.getInstance().getCubePath() + "/" + cubeSourceKey + "/seg" + order;
         IResourceLocation location = new ResourceLocation(cubePath, storeType);
-        configSegment.add(new SegmentBean(sourceKey.getId(), "", location.getUri(), order, storeType));
+        configSegment.add(new SegmentKeyBean(sourceKey.getId(), "", location.getUri(), order, storeType));
         return createNewSegment(location, swiftMetaData);
     }
 
