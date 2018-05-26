@@ -8,9 +8,9 @@ import com.finebi.conf.algorithm.DMRowMetaData;
 import com.finebi.conf.algorithm.DMType;
 import com.finebi.conf.algorithm.EmptyAlgorithm;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
+import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.core.CoreField;
@@ -65,7 +65,7 @@ public class DataMiningOperator extends AbstractOperator {
 
             }
             for (DMColMetaData colMetaData : outputMetaData.getColMetas()) {
-                columnList.add(new MetaDataColumn(colMetaData.getColName(), colMetaData.getColType().toSwiftInt()));
+                columnList.add(new MetaDataColumnBean(colMetaData.getColName(), colMetaData.getColType().toSwiftInt()));
             }
         } catch (Exception e) {
             LOGGER.error(e);

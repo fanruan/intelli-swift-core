@@ -1,7 +1,7 @@
 package com.fr.swift.source.etl.rowcal.accumulate;
 
+import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.core.CoreField;
@@ -44,7 +44,7 @@ public class AccumulateRowOperator extends AbstractOperator {
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
-        columnList.add(new MetaDataColumn(this.columnName, this.columnName,
+        columnList.add(new MetaDataColumnBean(this.columnName, this.columnName,
                 Types.DOUBLE, fetchObjectCore().getValue()));
         return columnList;
     }

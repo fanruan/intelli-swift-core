@@ -25,6 +25,7 @@
         <module>swift-log-adaptor</module>
         <module>swift-test</module>
         <module>fine-engine-swift</module>
+        <module>swift-boot</module>
     </modules>
 
     <properties>

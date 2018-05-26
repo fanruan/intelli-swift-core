@@ -1,5 +1,6 @@
 package com.fr.swift.source;
 
+import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -73,7 +74,7 @@ public abstract class AbstractOuterDataSource extends AbstractDataSource impleme
                         columns.add(column);
                     }
                 }
-                metaData = new SwiftMetaDataImpl(outerMetadata.getTableName(), columns);
+                metaData = new SwiftMetaDataBean(outerMetadata.getTableName(), columns);
             } catch (SwiftMetaDataException e) {
                 LOGGER.error("get outerMetadata info failed ", e);
             }

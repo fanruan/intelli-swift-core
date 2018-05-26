@@ -1,7 +1,6 @@
 package com.fr.swift.config;
 
 import com.fr.annotation.Test;
-import com.fr.swift.config.conf.SwiftPathConfig;
 import com.fr.swift.generate.BaseTest;
 
 /**
@@ -14,7 +13,7 @@ import com.fr.swift.generate.BaseTest;
 public class SwiftPathConfigTest extends BaseTest {
 
     @Test
-    public void testSetAndGet() throws Exception {
+    public void testSetAndGet() {
         String path = String.valueOf(System.currentTimeMillis());
         SwiftPathConfig.getInstance().setPath(path);
         assertEquals(SwiftPathConfig.getInstance().getPath(), path);

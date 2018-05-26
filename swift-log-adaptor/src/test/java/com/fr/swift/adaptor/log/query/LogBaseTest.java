@@ -1,8 +1,7 @@
 package com.fr.swift.adaptor.log.query;
 
-import com.fr.swift.config.IConfigSegment;
 import com.fr.swift.config.TestConfDb;
-import com.fr.swift.config.unique.SegmentKeyUnique;
+import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
@@ -20,6 +19,8 @@ import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.TestConnectionProvider;
 import junit.framework.TestCase;
+
+import java.util.List;
 
 /**
  * This class created on 2018/4/27
@@ -65,11 +66,11 @@ public class LogBaseTest extends TestCase {
 //        }
     }
 
-    protected Segment createSegment(int order, Types.StoreType storeType, Table table, IConfigSegment configSegment) throws Exception {
+    protected Segment createSegment(int order, Types.StoreType storeType, Table table, List<SegmentKey> configSegment) throws Exception {
         String cubePath = System.getProperty("user.dir") + "/cubes/" + table.getSourceKey().getId() + "/seg" + order;
         IResourceLocation location = new ResourceLocation(cubePath, storeType);
-        SegmentKey segmentKey = new SegmentKeyUnique(table.getSourceKey(), "", location.getUri(), order, storeType);
-        configSegment.addSegment(segmentKey);
+        SegmentKey segmentKey = new SegmentKeyBean(table.getSourceKey().getId(), location.getUri(), order, storeType);
+        configSegment.add(segmentKey);
         return new RealTimeSegmentImpl(location, table.getMeta());
     }
 

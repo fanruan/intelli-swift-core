@@ -1,10 +1,8 @@
 package com.fr.swift.segment.operator.insert;
 
 import com.fr.swift.bitmap.BitMaps;
-import com.fr.swift.config.IConfigSegment;
-import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
-import com.fr.swift.config.unique.SegmentKeyUnique;
-import com.fr.swift.config.unique.SegmentUnique;
+import com.fr.swift.config.bean.SegmentKeyBean;
+import com.fr.swift.config.service.SwiftConfigServiceProvider;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types;
@@ -15,6 +13,7 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentIndexCache;
+import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.Recorder;
@@ -51,7 +50,7 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
     protected SwiftMetaData swiftMetaData;
     protected List<String> fields;
     protected List<Segment> segments;
-    private IConfigSegment configSegment;
+    private List<SegmentKey> configSegment;
     private SwiftSourceAlloter alloter;
     private SegmentIndexCache segmentIndexCache;
     private int startSegIndex;
@@ -75,8 +74,7 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
         this.fields = fields;
         this.alloter = SwiftSourceAlloterFactory.createLineSourceAlloter(sourceKey, cubeSourceKey);
         this.segments = new ArrayList<Segment>();
-        this.configSegment = new SegmentUnique();
-        this.configSegment.setSourceKey(sourceKey.getId());
+        this.configSegment = new ArrayList<SegmentKey>();
         this.segments = segments;
         this.segmentIndexCache = new SegmentIndexCache();
         this.startSegIndex = segments.size();
@@ -136,6 +134,7 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
                 swiftResultSet.close();
             }
             release();
+            end();
             return newSegments;
         } else {
             List<Segment> cubeSourceSegments = SwiftContext.getInstance().getSegmentProvider().getSegment(new SourceKey(cubeSourceKey));
@@ -161,7 +160,7 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
     protected Segment createSegment(int order, Types.StoreType storeType) {
         String cubePath = ResourceDiscovery.getInstance().getCubePath() + "/" + cubeSourceKey + "/seg" + order;
         IResourceLocation location = new ResourceLocation(cubePath, storeType);
-        configSegment.addSegment(new SegmentKeyUnique(sourceKey, "", location.getUri(), order, storeType));
+        configSegment.add(new SegmentKeyBean(sourceKey.getId(), location.getUri(), order, storeType));
         return createNewSegment(location, swiftMetaData);
     }
 

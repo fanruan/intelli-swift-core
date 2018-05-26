@@ -13,13 +13,13 @@ import com.finebi.conf.algorithm.rcompile.RExecute;
 import com.finebi.conf.internalimp.service.datamining.RConnectionFactory;
 import com.finebi.conf.service.datamining.DMCommonLogService;
 import com.finebi.conf.structure.datamining.DMLogEntity;
+import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.core.CoreField;
@@ -119,7 +119,7 @@ public class RCompileOperator extends AbstractOperator {
                 for (int i = 0; i < count; i++) {
                     String name = metaData.getColumnName(i + 1);
                     int type = metaData.getColumnType(i + 1);
-                    columnList.add(new MetaDataColumn(name, type));
+                    columnList.add(new MetaDataColumnBean(name, type));
                 }
             } catch (Exception e) {
                 LOGGER.error("falied to get metaData's column", e);
@@ -128,7 +128,7 @@ public class RCompileOperator extends AbstractOperator {
         }
         DMRowMetaData rowMetaData = dataModel.getRowMetaData();
         for (DMColMetaData colMetaData : rowMetaData.getColMetas()) {
-            columnList.add(new MetaDataColumn(colMetaData.getColName(), colMetaData.getColType().toSwiftInt()));
+            columnList.add(new MetaDataColumnBean(colMetaData.getColName(), colMetaData.getColType().toSwiftInt()));
         }
     }
 

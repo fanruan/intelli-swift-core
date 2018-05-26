@@ -1,11 +1,10 @@
 package com.fr.swift.segment;
 
+import com.fr.swift.config.bean.MetaDataColumnBean;
+import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.source.ListBasedRow;
-import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftMetaDataImpl;
 
-import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,9 +19,9 @@ public class DateResultSet extends SingleColumnResultSet {
     int count;
 
     @Override
-    public SwiftMetaData getMetaData() throws SQLException {
-        return new SwiftMetaDataImpl("DATE_TABLE",
-                Arrays.asList(new MetaDataColumn("date", Types.BIGINT)));
+    public SwiftMetaData getMetaData() {
+        return new SwiftMetaDataBean("DATE_TABLE",
+                Arrays.asList(new MetaDataColumnBean("date", Types.BIGINT)));
     }
 
 

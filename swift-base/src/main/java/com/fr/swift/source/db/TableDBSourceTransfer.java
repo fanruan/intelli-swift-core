@@ -3,9 +3,9 @@ package com.fr.swift.source.db;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dml.Table;
 import com.fr.stable.StringUtils;
+import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.SwiftMetaDataImpl;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -42,6 +42,6 @@ public class TableDBSourceTransfer extends AbstractAllQueryTransfer {
         for (int i = 0; i < metaData.getColumnCount(); i++){
             columns.add(outerMeta.getColumn(metaData.getColumnName(i + 1)));
         }
-        return new SwiftMetaDataImpl(outerMeta.getTableName(), columns);
+        return new SwiftMetaDataBean(outerMeta.getTableName(), columns);
     }
 }

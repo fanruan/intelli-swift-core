@@ -1,11 +1,11 @@
 package com.fr.swift.source.etl.union;
 
+import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.SwiftMetaDataImpl;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.BaseCreateSegmentForUnion1Test;
 import com.fr.swift.source.etl.BaseCreateSegmentForUnion2Test;
@@ -66,7 +66,7 @@ public class UnionOperatorTest extends TestCase {
             metaDatas[1] = parent2.getMetadata();
             UnionOperator operator = new UnionOperator(listString);
             List<SwiftMetaDataColumn> columnList = operator.getColumns(metaDatas);
-            SwiftMetaData metaData = new SwiftMetaDataImpl("aaa", columnList);
+            SwiftMetaData metaData = new SwiftMetaDataBean("aaa", columnList);
             UnionTransferOperator transOperator = new UnionTransferOperator(listString);
             SwiftResultSet rs = transOperator.createResultSet(metaData, null, list);
             String[][] str = new String[][]{{"A", "A", null}, {"B", "B", null}, {"C", "C", null}, {"B", "B", null}, {"C", "C", null}, {"B", "B", null},

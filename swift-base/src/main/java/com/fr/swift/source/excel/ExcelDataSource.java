@@ -1,12 +1,12 @@
 package com.fr.swift.source.excel;
 
+import com.fr.swift.config.bean.MetaDataColumnBean;
+import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.AbstractOuterDataSource;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.ColumnTypeUtils;
-import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.SwiftMetaDataImpl;
 import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.excel.data.IExcelDataModel;
 import com.fr.swift.util.Util;
@@ -90,10 +90,10 @@ public class ExcelDataSource extends AbstractOuterDataSource {
             int cols = dm.getColumnCount();
             List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
             for (int i = 0; i < cols; i++) {
-                MetaDataColumn column = new MetaDataColumn(dm.getColumnName(i), ColumnTypeUtils.columnTypeToSqlType(dm.getColumnType(i)));
+                SwiftMetaDataColumn column = new MetaDataColumnBean(dm.getColumnName(i), ColumnTypeUtils.columnTypeToSqlType(dm.getColumnType(i)));
                 columnList.add(column);
             }
-            outerMetaData = new SwiftMetaDataImpl(fullFileName, columnList);
+            outerMetaData = new SwiftMetaDataBean(fullFileName, columnList);
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e.getMessage(), e);
             outerMetaData = null;
