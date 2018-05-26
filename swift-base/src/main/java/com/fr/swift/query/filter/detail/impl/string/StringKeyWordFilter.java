@@ -2,6 +2,7 @@ package com.fr.swift.query.filter.detail.impl.string;
 
 import com.fr.stable.StringUtils;
 import com.fr.swift.query.filter.detail.impl.AbstractDetailFilter;
+import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
@@ -53,7 +54,7 @@ public class StringKeyWordFilter extends AbstractDetailFilter<String> {
     }
 
     @Override
-    public boolean matches(SwiftNode node, int targetIndex) {
+    public boolean matches(SwiftNode node, int targetIndex, MatchConverter converter) {
         String data = (String) node.getData();
         return data != null && PinyinUtils.isMatch(keyword, data);
     }

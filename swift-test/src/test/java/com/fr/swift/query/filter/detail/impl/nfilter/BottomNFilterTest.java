@@ -3,6 +3,7 @@ package com.fr.swift.query.filter.detail.impl.nfilter;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.query.filter.detail.impl.BaseColumnImplTest;
 import com.fr.swift.query.filter.detail.impl.number.BaseNumberFilterTest;
+import com.fr.swift.query.filter.match.ToStringConverter;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 
 import java.util.ArrayList;
@@ -36,9 +37,9 @@ public class BottomNFilterTest extends BaseNumberFilterTest {
     }
 
     public void testMatch() {
-        assertTrue(filter.matches(createNode(groups.size() - random.nextInt(bottomN), groups.size()), 0));
-        assertTrue(!filter.matches(createNode(groups.size() - bottomN, groups.size()), 0));
-        assertTrue(filter.matches(createNode(groups.size() - bottomN + 1, groups.size()), 0));
+        assertTrue(filter.matches(createNode(groups.size() - random.nextInt(bottomN), groups.size()), 0, new ToStringConverter()));
+        assertTrue(!filter.matches(createNode(groups.size() - bottomN, groups.size()), 0, new ToStringConverter()));
+        assertTrue(filter.matches(createNode(groups.size() - bottomN + 1, groups.size()), 0, new ToStringConverter()));
     }
 
     @Override

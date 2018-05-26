@@ -57,4 +57,28 @@ public abstract class AbstractDimension extends AbstractQueryColumn implements D
     public Column getColumn(Segment segment) {
         return segment.getColumn(columnKey);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AbstractDimension that = (AbstractDimension) o;
+
+        if (sourceKey != null ? !sourceKey.equals(that.sourceKey) : that.sourceKey != null) return false;
+        if (columnKey != null ? !columnKey.equals(that.columnKey) : that.columnKey != null) return false;
+        if (group != null ? !group.equals(that.group) : that.group != null) return false;
+        if (sort != null ? !sort.equals(that.sort) : that.sort != null) return false;
+        return filterInfo != null ? filterInfo.equals(that.filterInfo) : that.filterInfo == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = sourceKey != null ? sourceKey.hashCode() : 0;
+        result = 31 * result + (columnKey != null ? columnKey.hashCode() : 0);
+        result = 31 * result + (group != null ? group.hashCode() : 0);
+        result = 31 * result + (sort != null ? sort.hashCode() : 0);
+        result = 31 * result + (filterInfo != null ? filterInfo.hashCode() : 0);
+        return result;
+    }
 }

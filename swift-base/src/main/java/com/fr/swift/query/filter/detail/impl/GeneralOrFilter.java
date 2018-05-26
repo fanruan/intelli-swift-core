@@ -4,6 +4,7 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.impl.BitMapOrHelper;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.Segment;
 
@@ -45,9 +46,9 @@ public class GeneralOrFilter implements DetailFilter {
     }
 
     @Override
-    public boolean matches(SwiftNode node, int targetIndex) {
+    public boolean matches(SwiftNode node, int targetIndex, MatchConverter converter) {
         for (DetailFilter filter : filters) {
-            if (filter.matches(node, targetIndex)) {
+            if (filter.matches(node, targetIndex, converter)) {
                 return true;
             }
         }
