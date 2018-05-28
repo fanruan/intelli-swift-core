@@ -41,12 +41,6 @@
             <groupId>com.finebi</groupId>
             <artifactId>swift-test</artifactId>
             <version>5.0-FEATURE-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.finebi</groupId>
-            <artifactId>swift-boot</artifactId>
-            <version>5.0-FEATURE-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>
