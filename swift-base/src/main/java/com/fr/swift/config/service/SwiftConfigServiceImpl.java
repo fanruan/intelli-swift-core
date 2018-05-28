@@ -9,6 +9,7 @@ import com.fr.swift.config.dao.SwiftSegmentDAO;
 import com.fr.swift.config.transaction.SwiftMetaDataTransactionWorker;
 import com.fr.swift.config.transaction.SwiftSegmentTransactionWorker;
 import com.fr.swift.config.transaction.SwiftTransactionManager;
+import com.fr.swift.cube.io.Types;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
@@ -213,6 +214,22 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
     }
 
     @Override
+    public boolean removeByStoreType(final Types.StoreType type) {
+        try {
+            return (Boolean) SwiftTransactionManager.doTransactionIfNeed(new SwiftSegmentTransactionWorker() {
+                @Override
+                public Object work(SwiftSegmentDAO dao) throws SQLException {
+                    dao.deleteByStoreType(type);
+                    return true;
+                }
+            });
+        } catch (Exception e) {
+            LOGGER.error("Remove segments error!", e);
+            return false;
+        }
+    }
+
+    @Override
     public boolean updateSegments(final String sourceKey, final List<SegmentKey> segments) {
         try {
             return (Boolean) SwiftTransactionManager.doTransactionIfNeed(new SwiftSegmentTransactionWorker() {
@@ -265,6 +282,26 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
                 @Override
                 public Object work(SwiftSegmentDAO dao) {
                     return dao.findBySourceKey(sourceKey);
+                }
+
+                @Override
+                public boolean needTransaction() {
+                    return false;
+                }
+            });
+        } catch (Exception e) {
+            LOGGER.error("Select segments error!", e);
+            return Collections.emptyList();
+        }
+    }
+
+    @Override
+    public List<SegmentKey> getUnStoreSegments(final String sourceKey) {
+        try {
+            return (List<SegmentKey>) SwiftTransactionManager.doTransactionIfNeed(new SwiftSegmentTransactionWorker() {
+                @Override
+                public Object work(SwiftSegmentDAO dao) throws SQLException {
+                    return dao.findBeanByStoreType(sourceKey, Types.StoreType.MEMORY);
                 }
 
                 @Override
