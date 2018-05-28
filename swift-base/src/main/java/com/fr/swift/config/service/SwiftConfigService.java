@@ -104,6 +104,7 @@ public interface SwiftConfigService {
      */
     List<SegmentKey> getSegmentByKey(String sourceKey);
 
+    List<SegmentKey> getUnStoreSegments(String sourceKey);
     /**
      * 设置cube更新路径
      *

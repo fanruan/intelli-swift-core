@@ -96,6 +96,11 @@ public class SwiftConfigServiceProvider implements SwiftConfigService {
     }
 
     @Override
+    public List<SegmentKey> getUnStoreSegments(String sourceKey) {
+        return service.getUnStoreSegments(sourceKey);
+    }
+
+    @Override
     public boolean setSwiftPath(String path) {
         return service.setSwiftPath(path);
     }

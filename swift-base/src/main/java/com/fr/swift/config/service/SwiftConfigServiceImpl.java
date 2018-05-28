@@ -296,6 +296,26 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
     }
 
     @Override
+    public List<SegmentKey> getUnStoreSegments(final String sourceKey) {
+        try {
+            return (List<SegmentKey>) SwiftTransactionManager.doTransactionIfNeed(new SwiftSegmentTransactionWorker() {
+                @Override
+                public Object work(SwiftSegmentDAO dao) throws SQLException {
+                    return dao.findBeanByStoreType(sourceKey, Types.StoreType.MEMORY);
+                }
+
+                @Override
+                public boolean needTransaction() {
+                    return false;
+                }
+            });
+        } catch (Exception e) {
+            LOGGER.error("Select segments error!", e);
+            return Collections.emptyList();
+        }
+    }
+
+    @Override
     public boolean setSwiftPath(final String path) {
         return Configurations.update(new SwiftPathConfigWorker() {
             @Override
