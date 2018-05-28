@@ -16,7 +16,7 @@ import com.fr.swift.query.adapter.dimension.DetailDimension;
 import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.service.QueryRunnerProvider;
+import com.fr.swift.service.SwiftAnalyseService;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
@@ -75,7 +75,7 @@ public class JumpAdaptor {
             }
         }
         QueryInfo queryInfo = new DetailQueryInfo(new AllCursor(), widget.getWidgetId(), dims.toArray(new Dimension[0]), sourceKey, null, null, null, null);
-        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
+        SwiftResultSet resultSet = SwiftAnalyseService.getInstance().executeQuery(queryInfo);
         Map<String, Object> pairs = new HashMap<String, Object>();
         if (resultSet.next()) {
             Row row = resultSet.getRowData();
@@ -102,7 +102,7 @@ public class JumpAdaptor {
             i++;
         }
         QueryInfo queryInfo = new DetailQueryInfo(new AllCursor(), widget.getWidgetId(), dims, sourceKey, null, null, null, null);
-        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
+        SwiftResultSet resultSet = SwiftAnalyseService.getInstance().executeQuery(queryInfo);
         int cursor = 0;
         Map<String, Object> pairs = new HashMap<String, Object>();
         while (resultSet.next()) {

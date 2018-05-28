@@ -11,5 +11,5 @@ import java.sql.SQLException;
  * @date 2017/12/20
  */
 public interface QueryRunner {
-    <T extends SwiftResultSet> T getQueryResult(QueryInfo<T> info) throws SQLException;
+    <T extends SwiftResultSet> T executeQuery(QueryInfo<T> info) throws SQLException;
 }

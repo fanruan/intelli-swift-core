@@ -42,4 +42,8 @@ public class SwiftCrossTableResult implements BICrossTableResult {
         return ResultType.BICROSS;
     }
 
+    @Override
+    public String getDataMiningError() {
+        return null;
+    }
 }

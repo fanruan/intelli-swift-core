@@ -20,7 +20,6 @@ import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.visitor.WidgetBeanToFineWidgetVisitor;
 import com.finebi.conf.internalimp.bean.filtervalue.date.single.DateStaticFilterBean;
 import com.finebi.conf.internalimp.bean.filtervalue.date.single.DateStaticFilterBeanValue;
-import com.finebi.conf.internalimp.bean.filtervalue.number.NumberValue;
 import com.finebi.conf.internalimp.dashboard.widget.filter.ClickValue;
 import com.finebi.conf.internalimp.dashboard.widget.filter.ClickValueItem;
 import com.finebi.conf.internalimp.dashboard.widget.filter.DetailJumpClickValue;
@@ -58,7 +57,7 @@ import com.fr.swift.query.filter.info.value.SwiftDateInRangeFilterValue;
 import com.fr.swift.query.filter.info.value.SwiftNumberInRangeFilterValue;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.service.QueryRunnerProvider;
+import com.fr.swift.service.SwiftAnalyseService;
 import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
@@ -67,11 +66,9 @@ import com.fr.swift.source.relation.RelationSourceImpl;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.utils.BusinessTableUtils;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -154,7 +151,7 @@ public class LinkageAdaptor {
                     i++;
                 }
                 QueryInfo queryInfo = new DetailQueryInfo(new AllCursor(), click.getdId(), dims, sourceKey, null, null, null, null);
-                SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
+                SwiftResultSet resultSet = SwiftAnalyseService.getInstance().executeQuery(queryInfo);
                 int cursor = 0;
                 while (resultSet.next()) {
                     Row row = resultSet.getRowData();

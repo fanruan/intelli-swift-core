@@ -9,7 +9,7 @@ import com.fr.swift.adaptor.log.QueryConditionAdaptor;
 import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
-import com.fr.swift.service.QueryRunnerProvider;
+import com.fr.swift.service.SwiftAnalyseService;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
@@ -40,7 +40,7 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
             //eq
             QueryCondition eqQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.eq("合同类型", "购买合同"));
             QueryInfo eqQueryInfo = QueryConditionAdaptor.adaptCondition(eqQueryCondition, table);
-            SwiftResultSet eqResultSet = QueryRunnerProvider.getInstance().executeQuery(eqQueryInfo);
+            SwiftResultSet eqResultSet = SwiftAnalyseService.getInstance().executeQuery(eqQueryInfo);
             int eqindex = table.getMeta().getColumnIndex("合同类型");
             while (eqResultSet.next()) {
                 Row row = eqResultSet.getRowData();
@@ -65,7 +65,7 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
             transportAndIndex(dataSource, table);
             QueryCondition neqQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.neq("合同类型", "购买合同"));
             QueryInfo neqQueryInfo = QueryConditionAdaptor.adaptCondition(neqQueryCondition, table);
-            SwiftResultSet neqResultSet = QueryRunnerProvider.getInstance().executeQuery(neqQueryInfo);
+            SwiftResultSet neqResultSet = SwiftAnalyseService.getInstance().executeQuery(neqQueryInfo);
             int neqindex = table.getMeta().getColumnIndex("合同类型");
             while (neqResultSet.next()) {
                 Row row = neqResultSet.getRowData();
@@ -89,7 +89,7 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
 
             QueryCondition gtQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.gt("总金额", 1000000d));
             QueryInfo gtQueryInfo = QueryConditionAdaptor.adaptCondition(gtQueryCondition, table);
-            SwiftResultSet gtResultSet = QueryRunnerProvider.getInstance().executeQuery(gtQueryInfo);
+            SwiftResultSet gtResultSet = SwiftAnalyseService.getInstance().executeQuery(gtQueryInfo);
             int gtindex = table.getMeta().getColumnIndex("总金额");
             int count = 0;
             while (gtResultSet.next()) {
@@ -118,7 +118,7 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
 
             QueryCondition gteQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.gte("总金额", 1000000d));
             QueryInfo gteQueryInfo = QueryConditionAdaptor.adaptCondition(gteQueryCondition, table);
-            SwiftResultSet gteResultSet = QueryRunnerProvider.getInstance().executeQuery(gteQueryInfo);
+            SwiftResultSet gteResultSet = SwiftAnalyseService.getInstance().executeQuery(gteQueryInfo);
             int gteindex = table.getMeta().getColumnIndex("总金额");
             int count = 0;
             while (gteResultSet.next()) {
@@ -148,7 +148,7 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
 
             QueryCondition ltQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.lt("总金额", 1000000d));
             QueryInfo ltQueryInfo = QueryConditionAdaptor.adaptCondition(ltQueryCondition, table);
-            SwiftResultSet ltResultSet = QueryRunnerProvider.getInstance().executeQuery(ltQueryInfo);
+            SwiftResultSet ltResultSet = SwiftAnalyseService.getInstance().executeQuery(ltQueryInfo);
             int ltindex = table.getMeta().getColumnIndex("总金额");
             int count = 0;
             while (ltResultSet.next()) {
@@ -177,7 +177,7 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
 
             QueryCondition lteQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.lte("总金额", 1000000d));
             QueryInfo lteQueryInfo = QueryConditionAdaptor.adaptCondition(lteQueryCondition, table);
-            SwiftResultSet lteResultSet = QueryRunnerProvider.getInstance().executeQuery(lteQueryInfo);
+            SwiftResultSet lteResultSet = SwiftAnalyseService.getInstance().executeQuery(lteQueryInfo);
             int lteindex = table.getMeta().getColumnIndex("总金额");
             int count = 0;
             while (lteResultSet.next()) {
@@ -209,7 +209,7 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
             set.add("长期协议订单");
             QueryCondition inQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.in("合同类型", set));
             QueryInfo inQueryInfo = QueryConditionAdaptor.adaptCondition(inQueryCondition, table);
-            SwiftResultSet inResultSet = QueryRunnerProvider.getInstance().executeQuery(inQueryInfo);
+            SwiftResultSet inResultSet = SwiftAnalyseService.getInstance().executeQuery(inQueryInfo);
             int inindex = table.getMeta().getColumnIndex("合同类型");
             while (inResultSet.next()) {
                 Row row = inResultSet.getRowData();
@@ -237,7 +237,7 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
             set.add("长期协议订单");
             QueryCondition notinQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.notIn("合同类型", set));
             QueryInfo notinQueryInfo = QueryConditionAdaptor.adaptCondition(notinQueryCondition, table);
-            SwiftResultSet notinResultSet = QueryRunnerProvider.getInstance().executeQuery(notinQueryInfo);
+            SwiftResultSet notinResultSet = SwiftAnalyseService.getInstance().executeQuery(notinQueryInfo);
             int notinindex = table.getMeta().getColumnIndex("合同类型");
             while (notinResultSet.next()) {
                 Row row = notinResultSet.getRowData();
@@ -262,7 +262,7 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
 
             QueryCondition likeQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.like("合同类型", "协议"));
             QueryInfo likeQueryInfo = QueryConditionAdaptor.adaptCondition(likeQueryCondition, table);
-            SwiftResultSet likeResultSet = QueryRunnerProvider.getInstance().executeQuery(likeQueryInfo);
+            SwiftResultSet likeResultSet = SwiftAnalyseService.getInstance().executeQuery(likeQueryInfo);
             int likeindex = table.getMeta().getColumnIndex("合同类型");
             while (likeResultSet.next()) {
                 Row row = likeResultSet.getRowData();
@@ -286,7 +286,7 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
 
             QueryCondition startwithCondition = QueryFactory.create().addRestriction(RestrictionFactory.startWith("合同类型", "长期"));
             QueryInfo startwithQueryInfo = QueryConditionAdaptor.adaptCondition(startwithCondition, table);
-            SwiftResultSet startwithResultSet = QueryRunnerProvider.getInstance().executeQuery(startwithQueryInfo);
+            SwiftResultSet startwithResultSet = SwiftAnalyseService.getInstance().executeQuery(startwithQueryInfo);
             int startwithindex = table.getMeta().getColumnIndex("合同类型");
             while (startwithResultSet.next()) {
                 Row row = startwithResultSet.getRowData();
@@ -310,7 +310,7 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
 
             QueryCondition endwithCondition = QueryFactory.create().addRestriction(RestrictionFactory.startWith("合同类型", "合同"));
             QueryInfo endwithQueryInfo = QueryConditionAdaptor.adaptCondition(endwithCondition, table);
-            SwiftResultSet endwithResultSet = QueryRunnerProvider.getInstance().executeQuery(endwithQueryInfo);
+            SwiftResultSet endwithResultSet = SwiftAnalyseService.getInstance().executeQuery(endwithQueryInfo);
             int endwithindex = table.getMeta().getColumnIndex("合同类型");
             while (endwithResultSet.next()) {
                 Row row = endwithResultSet.getRowData();

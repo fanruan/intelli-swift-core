@@ -56,7 +56,7 @@ import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.DescSort;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.service.QueryRunnerProvider;
+import com.fr.swift.service.SwiftAnalyseService;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
@@ -128,7 +128,7 @@ public abstract class AbstractWidgetAdaptor {
         IntList sortIndex = IntListFactory.createHeapIntList(1);
         sortIndex.add(0);
         DetailQueryInfo minQueryInfo = new DetailQueryInfo(new AllCursor(), queryId, new DetailDimension[]{ascDimension}, sourceKey, null, sortIndex, null, null);
-        DetailResultSet minResultSet = QueryRunnerProvider.getInstance().executeQuery(minQueryInfo);
+        DetailResultSet minResultSet = SwiftAnalyseService.getInstance().executeQuery(minQueryInfo);
         minResultSet.next();
         Number min = minResultSet.getRowData().getValue(0);
         value.setMin(Math.min(value.getMin(), min.doubleValue()));
@@ -137,7 +137,7 @@ public abstract class AbstractWidgetAdaptor {
         DetailDimension descDimension = new DetailDimension(0, sourceKey, new ColumnKey(getColumnName(fieldId)),
                 null, new DescSort(0), filterInfo);
         DetailQueryInfo maxQueryInfo = new DetailQueryInfo(new AllCursor(), queryId, new DetailDimension[]{descDimension}, sourceKey, null, sortIndex, null, null);
-        DetailResultSet maxResultSet = QueryRunnerProvider.getInstance().executeQuery(maxQueryInfo);
+        DetailResultSet maxResultSet = SwiftAnalyseService.getInstance().executeQuery(maxQueryInfo);
         maxResultSet.next();
         Number max = maxResultSet.getRowData().getValue(0);
         value.setMax(Math.max(value.getMax(), max.doubleValue()));
@@ -367,7 +367,7 @@ public abstract class AbstractWidgetAdaptor {
         GroupQueryInfo queryInfo = new GroupQueryInfo(globalBean.getLinkedWidget().getwId(), fromColumns[0].getSourceKey(),
                 new DimensionInfoImpl(new AllCursor(), filterInfo, null, fromColumns),
                 new TargetInfoImpl(0, new ArrayList<Metric>(0), new ArrayList<GroupTarget>(0), new ArrayList<ResultTarget>(0), new ArrayList<Aggregator>(0)));
-        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
+        SwiftResultSet resultSet = SwiftAnalyseService.getInstance().executeQuery(queryInfo);
         Set[] results = new HashSet[toColumns.length];
         for (int i = 0; i < results.length; i++) {
             results[i] = new HashSet();

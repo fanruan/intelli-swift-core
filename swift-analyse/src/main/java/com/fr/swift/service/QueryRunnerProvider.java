@@ -8,6 +8,7 @@ import java.sql.SQLException;
 /**
  * Created by pony on 2017/12/20.
  */
+@Deprecated
 public class QueryRunnerProvider {
     private static QueryRunnerProvider ourInstance = new QueryRunnerProvider();
 
@@ -25,6 +26,6 @@ public class QueryRunnerProvider {
     }
 
     public <T extends SwiftResultSet> T executeQuery(QueryInfo<T> info) throws SQLException {
-        return runner.getQueryResult(info);
+        return runner.executeQuery(info);
     }
 }
