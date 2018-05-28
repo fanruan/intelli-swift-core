@@ -9,6 +9,7 @@ import com.fr.swift.config.dao.SwiftSegmentDAO;
 import com.fr.swift.config.transaction.SwiftMetaDataTransactionWorker;
 import com.fr.swift.config.transaction.SwiftSegmentTransactionWorker;
 import com.fr.swift.config.transaction.SwiftTransactionManager;
+import com.fr.swift.cube.io.Types;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
@@ -203,6 +204,22 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
                     for (String sourceKey : sourceKeys) {
                         dao.deleteBySourceKey(sourceKey);
                     }
+                    return true;
+                }
+            });
+        } catch (Exception e) {
+            LOGGER.error("Remove segments error!", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean removeByStoreType(final Types.StoreType type) {
+        try {
+            return (Boolean) SwiftTransactionManager.doTransactionIfNeed(new SwiftSegmentTransactionWorker() {
+                @Override
+                public Object work(SwiftSegmentDAO dao) throws SQLException {
+                    dao.deleteByStoreType(type);
                     return true;
                 }
             });

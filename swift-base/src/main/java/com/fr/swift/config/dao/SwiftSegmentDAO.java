@@ -2,6 +2,7 @@ package com.fr.swift.config.dao;
 
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
+import com.fr.swift.cube.io.Types;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -34,6 +35,15 @@ public interface SwiftSegmentDAO extends SwiftConfigDAO<SwiftSegmentEntity> {
      * @return
      */
     boolean deleteBySourceKey(String sourceKey) throws SQLException;
+
+    /**
+     * 根据保存类型删除
+     *
+     * @param storeType
+     * @return
+     * @throws SQLException
+     */
+    boolean deleteByStoreType(Types.StoreType storeType) throws SQLException;
 
     /**
      * 返回所有SegmentKey

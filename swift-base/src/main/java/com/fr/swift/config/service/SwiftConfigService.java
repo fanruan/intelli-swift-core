@@ -1,5 +1,6 @@
 package com.fr.swift.config.service;
 
+import com.fr.swift.cube.io.Types;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
@@ -78,6 +79,8 @@ public interface SwiftConfigService {
      * @return
      */
     boolean removeSegments(String... sourceKey);
+
+    boolean removeByStoreType(Types.StoreType type);
 
     /**
      *
