@@ -141,9 +141,9 @@ public class ResourceDiscovery implements IResourceDiscovery {
         minorMemios.clear();
     }
 
-    private static final Pattern MINOR_PATTERN = Pattern.compile("/minor_cubes/(.+?)/.+");
+    private static final Pattern MINOR_PATTERN = Pattern.compile("/minor_cubes/.+?/(.+)");
 
-    private static final Pattern PATTERN = Pattern.compile("/cubes/(.+?)/.+");
+    private static final Pattern PATTERN = Pattern.compile("/cubes/.+?/(.+)");
 
     private boolean isMinor(String path) {
         return path.contains("minor_cubes");
