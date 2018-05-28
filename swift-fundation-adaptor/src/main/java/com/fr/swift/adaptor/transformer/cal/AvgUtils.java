@@ -1,7 +1,7 @@
 package com.fr.swift.adaptor.transformer.cal;
 
-import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.cal.info.GroupQueryInfo;
+import com.fr.swift.cal.info.QueryInfo;
 import com.fr.swift.query.adapter.dimension.AllCursor;
 import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.adapter.dimension.DimensionInfo;

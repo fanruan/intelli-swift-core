@@ -1,7 +1,7 @@
 package com.fr.swift.service;
 
-import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.cal.builder.QueryBuilder;
+import com.fr.swift.cal.info.QueryInfo;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.SwiftSegmentInfo;

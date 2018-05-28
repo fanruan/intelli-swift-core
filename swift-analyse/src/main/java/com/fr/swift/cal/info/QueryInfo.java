@@ -1,4 +1,4 @@
-package com.fr.swift.cal;
+package com.fr.swift.cal.info;
 
 import com.fr.swift.cal.builder.QueryType;
 import com.fr.swift.query.adapter.dimension.Cursor;

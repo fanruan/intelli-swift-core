@@ -4,7 +4,7 @@ import com.fr.annotation.Test;
 import com.fr.stable.query.QueryFactory;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.swift.adaptor.log.QueryConditionAdaptor;
-import com.fr.swift.cal.QueryInfo;
+import com.fr.swift.cal.info.QueryInfo;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.service.SwiftAnalyseService;
