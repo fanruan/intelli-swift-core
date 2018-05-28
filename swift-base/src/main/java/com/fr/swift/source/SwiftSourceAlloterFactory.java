@@ -3,6 +3,7 @@ package com.fr.swift.source;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.source.alloter.LineSourceAlloter;
 import com.fr.swift.source.alloter.NewColumnSourceAlloter;
 
@@ -24,7 +25,7 @@ public class SwiftSourceAlloterFactory {
         if (ComparatorUtils.equals(sourceKey.getId(), cubeSourceKey)) {
             return new LineSourceAlloter(sourceKey);
         } else {
-            List<Segment> baseSegmentList = SwiftContext.getInstance().getSegmentProvider().getSegment(new SourceKey(cubeSourceKey));
+            List<Segment> baseSegmentList = SwiftContext.getInstance().getBean(SwiftSegmentManager.class).getSegment(new SourceKey(cubeSourceKey));
             return new NewColumnSourceAlloter(baseSegmentList);
         }
     }

@@ -26,6 +26,7 @@ import com.fr.swift.adaptor.transformer.RelationSourceFactory;
 import com.fr.swift.conf.dashboard.DashboardPackageTableService;
 import com.fr.swift.conf.updateInfo.TableUpdateInfoConfigService;
 import com.fr.swift.constants.UpdateConstants;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.task.Task;
@@ -154,7 +155,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     }
 
     @Override
-    public void saveUpdateSetting(Map<FineBusinessTable, TableUpdateInfo> infoMap) throws Exception {
+    public void saveUpdateSetting(Map<FineBusinessTable, TableUpdateInfo> infoMap) {
         return;
     }
 
@@ -427,7 +428,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     @Override
     public boolean shouldUpdate() {
         List<FineBusinessTable> allBusinessTable = tableManager.getAllTable();
-        LocalSegmentProvider localSegmentProvider = LocalSegmentProvider.getInstance();
+        LocalSegmentProvider localSegmentProvider = SwiftContext.getInstance().getBean(LocalSegmentProvider.class);
         for (FineBusinessTable fineBusinessTable : allBusinessTable) {
             try {
                 DataSource dataSource = DataSourceFactory.getDataSourceInCache(fineBusinessTable);
@@ -492,12 +493,12 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     }
 
     @Override
-    public boolean checkPath(String path) throws Exception {
+    public boolean checkPath(String path) {
         return ResourceDiscovery.getInstance().checkCubePath(path);
     }
 
     @Override
-    public boolean isCluster() throws Exception {
+    public boolean isCluster() {
         return false;
     }
 }

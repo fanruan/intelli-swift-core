@@ -1,8 +1,10 @@
 package com.fr.swift.service;
 
 
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.exception.SwiftServiceException;
-import com.fr.swift.segment.recover.SwiftSegmentRecovery;
+import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.segment.recover.SegmentRecovery;
 import com.fr.swift.stuff.RealTimeIndexingStuff;
 
 /**
@@ -13,8 +15,12 @@ public class SwiftRealTimeService extends AbstractSwiftService {
     @Override
     public boolean start() throws SwiftServiceException {
         super.start();
-        // 恢复所有realtime块
-        SwiftSegmentRecovery.getInstance().recoverAll();
+        try {
+            // 恢复所有realtime块
+            SwiftContext.getInstance().getBean(SegmentRecovery.class).recoverAll();
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
+        }
         return true;
     }
 

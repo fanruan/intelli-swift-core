@@ -4,6 +4,7 @@ import com.finebi.conf.internalimp.update.TableUpdateInfo;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.constants.UpdateConstants;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.manager.LocalSegmentProvider;
@@ -30,13 +31,13 @@ public class UpdateTriggerUtils {
      * @param fineBusinessTable
      * @return
      */
-    public static TableUpdateInfo checkUpdateInfo(TableUpdateInfo tableUpdateInfo, FineBusinessTable fineBusinessTable) throws Exception {
+    public static TableUpdateInfo checkUpdateInfo(TableUpdateInfo tableUpdateInfo, FineBusinessTable fineBusinessTable) {
         switch (tableUpdateInfo.getUpdateType()) {
             case UpdateConstants.TableUpdateType.ALL:
                 return tableUpdateInfo;
             case UpdateConstants.TableUpdateType.INCREMENT:
                 DataSource incrementDataSource = DataSourceFactory.getDataSourceInCache(fineBusinessTable);
-                if (LocalSegmentProvider.getInstance().isSegmentsExist(incrementDataSource.getSourceKey())) {
+                if (SwiftContext.getInstance().getBean(LocalSegmentProvider.class).isSegmentsExist(incrementDataSource.getSourceKey())) {
                     return tableUpdateInfo;
                 } else {
                     TableUpdateInfo result = new TableUpdateInfo();
@@ -45,7 +46,7 @@ public class UpdateTriggerUtils {
                 }
             case UpdateConstants.TableUpdateType.NEVER:
                 DataSource neverDataSource = DataSourceFactory.getDataSourceInCache(fineBusinessTable);
-                if (!LocalSegmentProvider.getInstance().isSegmentsExist(neverDataSource.getSourceKey())) {
+                if (!SwiftContext.getInstance().getBean(LocalSegmentProvider.class).isSegmentsExist(neverDataSource.getSourceKey())) {
                     return tableUpdateInfo;
                 } else {
                     return null;

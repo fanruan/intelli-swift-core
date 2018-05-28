@@ -5,6 +5,7 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.manager.LineSegmentManager;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SwiftDataOperatorProvider;
 import com.fr.swift.segment.operator.Deleter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
@@ -41,7 +42,7 @@ public class DecreaseTransport implements IncrementTransport {
         List<Segment> segmentList = new LineSegmentManager().getSegment(dataSource.getSourceKey());
         for (Segment segment : segmentList) {
             SwiftResultSet decreaseResult = decreaseTransfer.createResultSet();
-            Deleter deleter = SwiftContext.getInstance().getSwiftDataOperatorProvider().getSwiftDeleter(segment);
+            Deleter deleter = SwiftContext.getInstance().getBean(SwiftDataOperatorProvider.class).getSwiftDeleter(segment);
             deleter.deleteData(decreaseResult);
         }
     }

@@ -6,7 +6,7 @@
 
     <groupId>com.finebi</groupId>
     <artifactId>swift-boot</artifactId>
-    <version>5.0-SNAPSHOT</version>
+    <version>5.0-FEATURE-SNAPSHOT</version>
     <dependencies>
         <dependency>
             <groupId>com.fr.core</groupId>

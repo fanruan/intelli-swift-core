@@ -18,6 +18,7 @@ import com.fr.swift.reliance.IRelationNode;
 import com.fr.swift.reliance.RelationNode;
 import com.fr.swift.reliance.RelationPathNode;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
@@ -81,7 +82,7 @@ public class RelationColumn {
         Util.requireNonNull(columnKey);
         this.relationSource = columnKey.getRelation();
         Util.requireNonNull(relationSource);
-        List<Segment> segments = SwiftContext.getInstance().getSegmentProvider().getSegment(relationSource.getPrimarySource());
+        List<Segment> segments = SwiftContext.getInstance().getBean(SwiftSegmentManager.class).getSegment(relationSource.getPrimarySource());
         Util.requireNonEmpty(segments);
         this.segments = new Segment[segments.size()];
         this.segments = segments.toArray(this.segments);

@@ -19,12 +19,14 @@ import com.fr.swift.segment.operator.insert.RealtimeBlockSwiftInserter;
 import com.fr.swift.segment.operator.insert.RealtimeSwiftInserter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.util.DataSourceUtils;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class LocalDataOperatorProvider implements SwiftDataOperatorProvider {
 
-    private static LocalDataOperatorProvider INSTANCE = new LocalDataOperatorProvider();
+    private static LocalDataOperatorProvider INSTANCE = null;
 
     public static LocalDataOperatorProvider getInstance() {
         return INSTANCE;
@@ -34,10 +36,6 @@ public class LocalDataOperatorProvider implements SwiftDataOperatorProvider {
 
     private LocalDataOperatorProvider() {
         manager = new LineSegmentManager();
-    }
-
-    public void registerSwiftSegmentManager(SwiftSegmentManager manager) {
-        this.manager = manager;
     }
 
     @Override

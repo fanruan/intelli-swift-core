@@ -1,6 +1,7 @@
 package com.fr.swift.generate.trans;
 
 import com.fr.swift.config.TestConfDb;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.task.SchedulerTask;
 import com.fr.swift.cube.task.Task.Status;
@@ -97,7 +98,7 @@ public class TransAndIndexTest extends BaseConfigTest {
 
         latch.await();
 
-        List<Segment> segmentList = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+        List<Segment> segmentList = SwiftContext.getInstance().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
         assertEquals(segmentList.size(), 1);
         Segment segment = segmentList.get(0);
         assertTrue(segment instanceof HistorySegmentImpl);

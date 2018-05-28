@@ -8,6 +8,7 @@ import com.fr.swift.cube.task.impl.TaskResultImpl;
 import com.fr.swift.generate.Transporter;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.segment.SwiftDataOperatorProvider;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftResultSet;
@@ -50,7 +51,7 @@ public class TableTransporter extends BaseWorker implements Transporter {
     public void transport() throws Exception {
         SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
         SwiftResultSet resultSet = transfer.createResultSet();
-        Inserter inserter = SwiftContext.getInstance().getSwiftDataOperatorProvider().getHistoryBlockSwiftInserter(dataSource);
+        Inserter inserter = SwiftContext.getInstance().getBean(SwiftDataOperatorProvider.class).getHistoryBlockSwiftInserter(dataSource);
         indexFieldsList = inserter.getFields();
         inserter.insertData(resultSet);
     }

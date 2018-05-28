@@ -5,6 +5,7 @@ import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftDataOperatorProvider;
+import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.operator.Deleter;
 import com.fr.swift.segment.operator.Inserter;
@@ -21,7 +22,8 @@ import java.util.List;
  * @date 2018/3/28
  */
 class SwiftTable implements Table {
-    private final SwiftDataOperatorProvider operators = SwiftContext.getInstance().getSwiftDataOperatorProvider();
+    private SwiftDataOperatorProvider operators = SwiftContext.getInstance().getBean(SwiftDataOperatorProvider.class);
+
     private SourceKey key;
 
     private SwiftMetaData meta;
@@ -79,7 +81,7 @@ class SwiftTable implements Table {
         // todo 这里应该是从数据库查出来的结果集
         SwiftResultSet rowSet = null;
         try {
-            List<Segment> segments = SwiftContext.getInstance().getSegmentProvider().getSegment(key);
+            List<Segment> segments = SwiftContext.getInstance().getBean(SwiftSegmentManager.class).getSegment(key);
             // fixme 应传入整个segments
             Deleter deleter = operators.getSwiftDeleter(segments.get(0));
             deleter.deleteData(rowSet);

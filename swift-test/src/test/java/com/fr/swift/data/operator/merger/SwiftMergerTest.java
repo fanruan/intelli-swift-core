@@ -1,6 +1,7 @@
 package com.fr.swift.data.operator.merger;
 
 import com.fr.annotation.Test;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.flow.FlowRuleController;
 import com.fr.swift.generate.BaseTest;
@@ -35,6 +36,7 @@ import java.util.List;
  */
 public class SwiftMergerTest extends BaseTest {
 
+    private final LocalSegmentProvider segmentProvider = SwiftContext.getInstance().getBean(LocalSegmentProvider.class);
     private DataSource dataSource;
 
     @Override
@@ -50,7 +52,7 @@ public class SwiftMergerTest extends BaseTest {
             TableTransporter tableTransporter = new TableTransporter(dataSource);
             tableTransporter.transport();
             TestIndexer.historyIndex(dataSource, tableTransporter);
-            List<Segment> segmentList = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+            List<Segment> segmentList = segmentProvider.getSegment(dataSource.getSourceKey());
             assertEquals(segmentList.size(), 1);
             assertTrue(segmentList.get(0) instanceof HistorySegmentImpl);
             assertEquals(segmentList.get(0).getRowCount(), 668);
@@ -65,7 +67,7 @@ public class SwiftMergerTest extends BaseTest {
             transport.work();
             TestIndexer.realtimeIndex(dataSource);
 
-            segmentList = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+            segmentList = segmentProvider.getSegment(dataSource.getSourceKey());
             assertEquals(segmentList.size(), 2);
             //判断第一块内容没有改变
             assertTrue(segmentList.get(0) instanceof HistorySegmentImpl);
@@ -88,7 +90,7 @@ public class SwiftMergerTest extends BaseTest {
             transport2.work();
             TestIndexer.realtimeIndex(dataSource);
 
-            segmentList = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+            segmentList = segmentProvider.getSegment(dataSource.getSourceKey());
             assertEquals(segmentList.size(), 3);
             //判断第二块没有改变
             assertTrue(segmentList.get(1) instanceof RealTimeSegmentImpl);
@@ -115,7 +117,7 @@ public class SwiftMergerTest extends BaseTest {
             assertEquals(ResourceDiscovery.getInstance().isCubeResourceEmpty(), true);
 
 
-            segmentList = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+            segmentList = segmentProvider.getSegment(dataSource.getSourceKey());
 
             for (int i = 1; i <= dataSource.getMetadata().getColumnCount(); i++) {
                 ColumnIndexer columnIndexer = new ColumnIndexer(dataSource, new ColumnKey(dataSource.getMetadata().getColumnName(i)),

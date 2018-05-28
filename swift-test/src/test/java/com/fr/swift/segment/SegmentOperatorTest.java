@@ -2,6 +2,7 @@ package com.fr.swift.segment;
 
 import com.fr.base.FRContext;
 import com.fr.dav.LocalEnv;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.manager.LocalDataOperatorProvider;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.DataSource;
@@ -60,7 +61,7 @@ public class SegmentOperatorTest extends TestCase {
                 }
             };
 
-            Inserter inserter = LocalDataOperatorProvider.getInstance().getHistoryBlockSwiftInserter(dataSource);
+            Inserter inserter = SwiftContext.getInstance().getBean(LocalDataOperatorProvider.class).getHistoryBlockSwiftInserter(dataSource);
             inserter.insertData(set);
         } catch (Exception e) {
             success = false;

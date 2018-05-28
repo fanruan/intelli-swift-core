@@ -8,7 +8,6 @@ import com.fr.swift.generate.history.transport.TableTransporter;
 import com.fr.swift.generate.realtime.RealtimeDataTransporter;
 import com.fr.swift.increase.IncrementImpl;
 import com.fr.swift.increment.Increment;
-import com.fr.swift.manager.LocalDataOperatorProvider;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.HistorySegment;
 import com.fr.swift.segment.RealTimeSegment;
@@ -31,11 +30,10 @@ public class ExcelIncreSingleTest extends BaseExcelTest {
 
     public void testIncreaseOneFile() throws Exception {
         dataSource = new ExcelDataSource(path1, names, types);
-        SwiftContext.getInstance().registerSegmentOperatorProvider(LocalDataOperatorProvider.getInstance());
         TableTransporter tableTransporter = new TableTransporter(dataSource);
         tableTransporter.transport();
 
-        List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+        List<Segment> segments = SwiftContext.getInstance().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
         TestIndexer.historyIndex(dataSource, tableTransporter);
 
         Segment segment = segments.get(0);
@@ -52,7 +50,7 @@ public class ExcelIncreSingleTest extends BaseExcelTest {
 
         TestIndexer.realtimeIndex(dataSource);
 
-        segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+        segments = SwiftContext.getInstance().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
         assertEquals(segments.size(), 2);
 
         assertEquals(segments.get(0).getRowCount(), 3);
