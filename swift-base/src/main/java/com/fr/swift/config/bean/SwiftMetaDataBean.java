@@ -17,13 +17,6 @@ import java.util.List;
  * @Date: Created in 2018-3-8
  */
 public class SwiftMetaDataBean implements SwiftMetaData, Serializable, Convert<SwiftMetaDataEntity> {
-
-    public static final String COLUMN_SCHEMA = "schemaName";
-    public static final String COLUMN_TABLE_NAME = "tableName";
-    public static final String COLUMN_REMARK = "remark";
-    public static final String COLUMN_FIELDS = "fields";
-    public static final String COLUMN_ID = "id";
-
     /**
      * id实际上传的是SourceKey
      * 理论上SourceKey不重复

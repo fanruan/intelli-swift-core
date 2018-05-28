@@ -1,5 +1,6 @@
 package com.fr.swift.config.dao.impl;
 
+import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.config.dao.BaseDAO;
 import com.fr.swift.config.dao.SwiftMetaDataDAO;
@@ -16,7 +17,7 @@ import java.util.List;
  */
 public class SwiftMetaDataDAOImpl extends BaseDAO<SwiftMetaDataEntity> implements SwiftMetaDataDAO {
 
-    private static final String FIND_BY_NAME_HQL = String.format("from SwiftMetaDataEntity entity where entity.%s = ", SwiftMetaDataBean.COLUMN_TABLE_NAME);
+    private static final String FIND_BY_NAME_HQL = String.format("from SwiftMetaDataEntity entity where entity.%s = ", SwiftConfigConstants.MetaDataConfig.COLUMN_TABLE_NAME);
 
     public SwiftMetaDataDAOImpl() {
         super(SwiftMetaDataEntity.class);
