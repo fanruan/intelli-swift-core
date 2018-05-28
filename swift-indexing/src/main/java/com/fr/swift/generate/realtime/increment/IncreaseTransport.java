@@ -5,6 +5,7 @@ import com.fr.swift.flow.FlowRuleController;
 import com.fr.swift.flow.SwiftFlowResultSet;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.segment.SwiftDataOperatorProvider;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
@@ -42,7 +43,7 @@ public class IncreaseTransport implements IncrementTransport {
 
         SwiftFlowResultSet swiftFlowResultSet = new SwiftFlowResultSet(increaseResult, flowRuleController);
 
-        Inserter inserter = SwiftContext.getInstance().getSwiftDataOperatorProvider().getRealtimeBlockSwiftInserter(dataSource);
+        Inserter inserter = SwiftContext.getInstance().getBean(SwiftDataOperatorProvider.class).getRealtimeBlockSwiftInserter(dataSource);
         inserter.insertData(swiftFlowResultSet);
     }
 }

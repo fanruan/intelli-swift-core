@@ -1,5 +1,6 @@
 package com.fr.swift.generate;
 
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.task.LocalTask;
 import com.fr.swift.cube.task.Task;
@@ -91,7 +92,7 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
                 if (transporter.getIndexFieldsList().isEmpty()) {
                     transportTask.addNext(end);
                 }
-                List<Segment> allSegments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+                List<Segment> allSegments = SwiftContext.getInstance().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
                 List<Segment> indexSegments = new ArrayList<Segment>();
                 if (isRealtime) {
 //                    for (Segment segment : allSegments) {
@@ -109,7 +110,7 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
                     if (hisSegCount != allSegments.size()) {
                         Merger realtimeMerger = new RealtimeMerger(dataSource.getSourceKey(), dataSource.getMetadata(), DataSourceUtils.getSwiftSourceKey(dataSource).getId());
                         realtimeMerger.merge();
-                        allSegments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+                        allSegments = SwiftContext.getInstance().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
                         for (int i = hisSegCount; i < allSegments.size(); i++) {
                             indexSegments.add(allSegments.get(i));
                         }

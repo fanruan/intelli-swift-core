@@ -3,6 +3,7 @@ package com.fr.swift.generate.integration;
 import com.fr.base.FRContext;
 import com.fr.dav.LocalEnv;
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.flow.FlowRuleController;
 import com.fr.swift.generate.BaseTest;
 import com.fr.swift.generate.TestIndexer;
@@ -36,6 +37,7 @@ import java.util.List;
  */
 public class IncrementImplIntegrationTest extends BaseTest {
 
+    private final LocalSegmentProvider segmentProvider = SwiftContext.getInstance().getBean(LocalSegmentProvider.class);
     private DataSource dataSource;
 
     @Override
@@ -52,11 +54,11 @@ public class IncrementImplIntegrationTest extends BaseTest {
         //先做全量更新
         TableTransporter tableTransporter = new TableTransporter(dataSource);
         tableTransporter.transport();
-        List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+        List<Segment> segments = segmentProvider.getSegment(dataSource.getSourceKey());
 
         ColumnIndexer columnIndexer = new ColumnIndexer(dataSource, new ColumnKey("记录人"), segments);
         columnIndexer.work();
-        List<Segment> segmentList = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+        List<Segment> segmentList = segmentProvider.getSegment(dataSource.getSourceKey());
         assertEquals(segmentList.size(), 1);
         assertTrue(segmentList.get(0) instanceof HistorySegmentImpl);
         assertEquals(segmentList.get(0).getRowCount(), 682);
@@ -71,7 +73,7 @@ public class IncrementImplIntegrationTest extends BaseTest {
         transport.work();
         TestIndexer.realtimeIndex(dataSource);
 
-        segmentList = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+        segmentList = segmentProvider.getSegment(dataSource.getSourceKey());
         assertEquals(segmentList.size(), 2);
         //判断第一块内容没有改变
         assertTrue(segmentList.get(0) instanceof HistorySegmentImpl);
@@ -118,7 +120,7 @@ public class IncrementImplIntegrationTest extends BaseTest {
         RealtimeDataTransporter transport2 = new RealtimeDataTransporter(dataSource, increment2);
         transport2.work();
 
-        segmentList = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+        segmentList = segmentProvider.getSegment(dataSource.getSourceKey());
         //判断第一块数据不变，但是allshowindex去掉了庆芳的索引
         assertTrue(segmentList.get(0) instanceof HistorySegmentImpl);
         assertEquals(segmentList.get(0).getRowCount(), 682);

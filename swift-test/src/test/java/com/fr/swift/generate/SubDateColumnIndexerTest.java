@@ -1,6 +1,7 @@
 package com.fr.swift.generate;
 
 import com.fr.swift.config.TestConfDb;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.generate.history.index.SubDateColumnIndexer;
 import com.fr.swift.generate.history.transport.TableTransporter;
@@ -31,6 +32,7 @@ import static org.junit.Assert.assertTrue;
  * @date 2018/3/24
  */
 public class SubDateColumnIndexerTest {
+    private final LocalSegmentProvider segmentProvider = SwiftContext.getInstance().getBean(LocalSegmentProvider.class);
     private String columnName = "注册时间";
     private DataSource dataSource = new QueryDBSource("select " + columnName + " from DEMO_CONTRACT", getClass().getName());
 
@@ -44,7 +46,7 @@ public class SubDateColumnIndexerTest {
     @Before
     public void before() {
         new TableTransporter(dataSource).work();
-        List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+        List<Segment> segments = segmentProvider.getSegment(dataSource.getSourceKey());
         new ColumnIndexer(dataSource, new ColumnKey(columnName), segments).work();
     }
 
@@ -56,7 +58,7 @@ public class SubDateColumnIndexerTest {
     }
 
     private void indexSubDate(GroupType type) {
-        List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+        List<Segment> segments = segmentProvider.getSegment(dataSource.getSourceKey());
         new SubDateColumnIndexer(dataSource, new ColumnKey(columnName), type, segments).work();
 
         assertTrue(!segments.isEmpty());

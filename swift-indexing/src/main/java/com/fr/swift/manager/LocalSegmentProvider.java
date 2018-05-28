@@ -4,27 +4,20 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.source.SourceKey;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * Created by pony on 2017/12/14.
  */
+@Service
 public class LocalSegmentProvider implements SwiftSegmentManager {
-    private static LocalSegmentProvider ourInstance = new LocalSegmentProvider();
-
-    public static LocalSegmentProvider getInstance() {
-        return ourInstance;
-    }
 
     private SwiftSegmentManager manager;
 
     private LocalSegmentProvider() {
         manager = new LineSegmentManager();
-    }
-
-    public void registerSwiftSegmentManager(SwiftSegmentManager manager) {
-        this.manager = manager;
     }
 
     @Override

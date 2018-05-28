@@ -5,8 +5,7 @@ import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.impl.SwiftDatabase;
-import com.fr.swift.manager.LocalDataOperatorProvider;
-import com.fr.swift.manager.LocalSegmentProvider;
+import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.source.ListBasedRow;
@@ -14,6 +13,7 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.test.Preparer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -37,8 +37,7 @@ public class TableTest {
     @BeforeClass
     public static void boot() throws Exception {
         TestConfDb.setConfDb();
-        SwiftContext.getInstance().registerSegmentOperatorProvider(LocalDataOperatorProvider.getInstance());
-        SwiftContext.getInstance().registerSegmentProvider(LocalSegmentProvider.getInstance());
+        Preparer.prepareCubeBuild();
     }
 
     @Before
@@ -64,7 +63,7 @@ public class TableTest {
     }
 
     private void checkResult() {
-        DetailColumn<Object> detailColumn = SwiftContext.getInstance().getSegmentProvider().
+        DetailColumn<Object> detailColumn = SwiftContext.getInstance().getBean(SwiftSegmentManager.class).
                 getSegment(sk).get(0).getColumn(new ColumnKey("A")).getDetailColumn();
         assertEquals(2L, detailColumn.get(0));
         assertEquals(3L, detailColumn.get(1));

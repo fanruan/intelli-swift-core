@@ -6,6 +6,7 @@ import com.fr.swift.cal.result.ResultQuery;
 import com.fr.swift.cal.result.group.GroupPagingResultQuery;
 import com.fr.swift.cal.segment.group.GroupPagingSegmentQuery;
 import com.fr.swift.cal.targetcal.group.GroupTargetCalQuery;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.query.adapter.dimension.AllCursor;
 import com.fr.swift.query.adapter.dimension.DimensionInfo;
@@ -40,7 +41,7 @@ public class LocalGroupPagingQueryBuilder extends AbstractLocalGroupQueryBuilder
         DimensionInfo dimensionInfo = info.getDimensionInfo();
         TargetInfo targetInfo = info.getTargetInfo();
         List<Query<NodeResultSet>> queries = new ArrayList<Query<NodeResultSet>>();
-        List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(info.getTable());
+        List<Segment> segments = SwiftContext.getInstance().getBean(LocalSegmentProvider.class).getSegment(info.getTable());
         for (Segment segment : segments) {
             List<Column> rowDimensions = getDimensionSegments(segment, dimensionInfo.getDimensions());
             List<Column> metrics = getMetricSegments(segment, targetInfo.getMetrics());

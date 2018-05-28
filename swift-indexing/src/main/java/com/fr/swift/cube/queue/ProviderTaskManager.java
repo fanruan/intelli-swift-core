@@ -1,5 +1,6 @@
 package com.fr.swift.cube.queue;
 
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.cube.task.WorkerTask;
 import com.fr.swift.cube.task.impl.BaseWorker;
@@ -85,14 +86,14 @@ public class ProviderTaskManager {
                     WorkerTask wt = null;
                     switch (source.getRelationType()) {
                         case RELATION:
-                            wt = new WorkerTaskImpl(taskKey, new MultiRelationIndexer(RelationPathHelper.convert2CubeRelation(source), LocalSegmentProvider.getInstance()));
+                            wt = new WorkerTaskImpl(taskKey, new MultiRelationIndexer(RelationPathHelper.convert2CubeRelation(source), SwiftContext.getInstance().getBean(LocalSegmentProvider.class)));
                             break;
                         case RELATION_PATH:
-                            wt = new WorkerTaskImpl(taskKey, new TablePathIndexer(RelationPathHelper.convert2CubeRelationPath(source), LocalSegmentProvider.getInstance()));
+                            wt = new WorkerTaskImpl(taskKey, new TablePathIndexer(RelationPathHelper.convert2CubeRelationPath(source), SwiftContext.getInstance().getBean(LocalSegmentProvider.class)));
                             break;
                         case FIELD_RELATION:
                             FieldRelationSource fieldRelationSource = (FieldRelationSource) source;
-                            wt = new WorkerTaskImpl(taskKey, new FieldPathIndexer(RelationPathHelper.convert2CubeRelationPath(fieldRelationSource.getRelationSource()), fieldRelationSource.getColumnKey(), LocalSegmentProvider.getInstance()));
+                            wt = new WorkerTaskImpl(taskKey, new FieldPathIndexer(RelationPathHelper.convert2CubeRelationPath(fieldRelationSource.getRelationSource()), fieldRelationSource.getColumnKey(), SwiftContext.getInstance().getBean(LocalSegmentProvider.class)));
                             break;
                         default:
                     }

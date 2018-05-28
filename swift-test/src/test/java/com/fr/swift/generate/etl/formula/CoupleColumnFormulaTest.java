@@ -1,10 +1,12 @@
 package com.fr.swift.generate.etl.formula;
 
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.generate.BaseTest;
 import com.fr.swift.generate.TestIndexer;
 import com.fr.swift.generate.TestTransport;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.ColumnTypeConstants;
@@ -18,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CoupleColumnFormulaTest extends BaseTest {
+
+    private final SwiftSegmentManager segmentProvider = SwiftContext.getInstance().getBean(LocalSegmentProvider.class);
 
     /**
      * A                  A
@@ -46,9 +50,9 @@ public class CoupleColumnFormulaTest extends BaseTest {
             TestIndexer.historyIndex(etlSource1, TestTransport.historyTransport(etlSource1));
             TestIndexer.historyIndex(etlSource2, TestTransport.historyTransport(etlSource2));
 
-            Segment dataSourceSegment = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey()).get(0);
-            Segment etlSourceSegment1 = LocalSegmentProvider.getInstance().getSegment(etlSource1.getSourceKey()).get(0);
-            Segment etlSourceSegment2 = LocalSegmentProvider.getInstance().getSegment(etlSource2.getSourceKey()).get(0);
+            Segment dataSourceSegment = segmentProvider.getSegment(dataSource.getSourceKey()).get(0);
+            Segment etlSourceSegment1 = segmentProvider.getSegment(etlSource1.getSourceKey()).get(0);
+            Segment etlSourceSegment2 = segmentProvider.getSegment(etlSource2.getSourceKey()).get(0);
 
             assertEquals(dataSourceSegment.getLocation().getPath(), etlSourceSegment1.getLocation().getPath());
             assertEquals(dataSourceSegment.getLocation().getPath(), etlSourceSegment2.getLocation().getPath());
@@ -106,9 +110,9 @@ public class CoupleColumnFormulaTest extends BaseTest {
             TestIndexer.historyIndex(etlSource1, TestTransport.historyTransport(etlSource1));
             TestIndexer.historyIndex(etlSource2, TestTransport.historyTransport(etlSource2));
 
-            Segment dataSourceSegment = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey()).get(0);
-            Segment etlSourceSegment1 = LocalSegmentProvider.getInstance().getSegment(etlSource1.getSourceKey()).get(0);
-            Segment etlSourceSegment2 = LocalSegmentProvider.getInstance().getSegment(etlSource2.getSourceKey()).get(0);
+            Segment dataSourceSegment = segmentProvider.getSegment(dataSource.getSourceKey()).get(0);
+            Segment etlSourceSegment1 = segmentProvider.getSegment(etlSource1.getSourceKey()).get(0);
+            Segment etlSourceSegment2 = segmentProvider.getSegment(etlSource2.getSourceKey()).get(0);
 
             assertEquals(dataSourceSegment.getLocation().getPath(), etlSourceSegment1.getLocation().getPath());
             assertEquals(dataSourceSegment.getLocation().getPath(), etlSourceSegment2.getLocation().getPath());
@@ -166,9 +170,9 @@ public class CoupleColumnFormulaTest extends BaseTest {
             TestIndexer.historyIndex(etlSource1, TestTransport.historyTransport(etlSource1));
             TestIndexer.historyIndex(etlSource2, TestTransport.historyTransport(etlSource2));
 
-            Segment dataSourceSegment = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey()).get(0);
-            Segment etlSourceSegment1 = LocalSegmentProvider.getInstance().getSegment(etlSource1.getSourceKey()).get(0);
-            Segment etlSourceSegment2 = LocalSegmentProvider.getInstance().getSegment(etlSource2.getSourceKey()).get(0);
+            Segment dataSourceSegment = segmentProvider.getSegment(dataSource.getSourceKey()).get(0);
+            Segment etlSourceSegment1 = segmentProvider.getSegment(etlSource1.getSourceKey()).get(0);
+            Segment etlSourceSegment2 = segmentProvider.getSegment(etlSource2.getSourceKey()).get(0);
 
             assertEquals(dataSourceSegment.getLocation().getPath(), etlSourceSegment1.getLocation().getPath());
             assertEquals(dataSourceSegment.getLocation().getPath(), etlSourceSegment2.getLocation().getPath());
@@ -226,9 +230,9 @@ public class CoupleColumnFormulaTest extends BaseTest {
             TestIndexer.historyIndex(etlSource1, TestTransport.historyTransport(etlSource1));
             TestIndexer.historyIndex(etlSource2, TestTransport.historyTransport(etlSource2));
 
-            Segment dataSourceSegment = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey()).get(0);
-            Segment etlSourceSegment1 = LocalSegmentProvider.getInstance().getSegment(etlSource1.getSourceKey()).get(0);
-            Segment etlSourceSegment2 = LocalSegmentProvider.getInstance().getSegment(etlSource2.getSourceKey()).get(0);
+            Segment dataSourceSegment = segmentProvider.getSegment(dataSource.getSourceKey()).get(0);
+            Segment etlSourceSegment1 = segmentProvider.getSegment(etlSource1.getSourceKey()).get(0);
+            Segment etlSourceSegment2 = segmentProvider.getSegment(etlSource2.getSourceKey()).get(0);
 
             assertEquals(dataSourceSegment.getLocation().getPath(), etlSourceSegment1.getLocation().getPath());
             assertEquals(dataSourceSegment.getLocation().getPath(), etlSourceSegment2.getLocation().getPath());
