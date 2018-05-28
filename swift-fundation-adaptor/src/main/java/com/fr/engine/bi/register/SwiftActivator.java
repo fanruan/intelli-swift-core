@@ -84,8 +84,6 @@ public class SwiftActivator extends Activator implements Prepare {
 
     @Override
     public void stop() {
-//        在这里remove没啥用
-//        SwiftConfigServiceProvider.getInstance().removeByStoreType(Types.StoreType.MEMORY);
     }
 
     @Override

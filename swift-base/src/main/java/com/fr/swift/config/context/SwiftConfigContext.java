@@ -58,7 +58,7 @@ public class SwiftConfigContext {
             swiftSegmentDAO = new SwiftSegmentDAOImpl();
             BaseDBEnv.setDBContext(dbContext);
             this.initialized = true;
-            SwiftConfigServiceProvider.getInstance().removeByStoreType(Types.StoreType.MEMORY);
+//            SwiftConfigServiceProvider.getInstance().removeByStoreType(Types.StoreType.MEMORY);
         }
 
         return this;
