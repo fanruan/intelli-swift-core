@@ -1,6 +1,6 @@
 package com.fr.swift.generate;
 
-import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.generate.history.index.ColumnDictMerger;
 import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.generate.history.transport.TableTransporter;
@@ -21,9 +21,9 @@ import java.util.List;
  */
 public class TestIndexer {
 
-    public static void realtimeIndex(DataSource dataSource) throws SwiftMetaDataException {
+    public static void realtimeIndex(DataSource dataSource) {
 
-        List<Segment> allSegments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+        List<Segment> allSegments = SwiftContext.getInstance().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
         List<Segment> indexSegments = new ArrayList<Segment>();
         for (Segment segment : allSegments) {
             if (!segment.isHistory()) {
@@ -39,8 +39,8 @@ public class TestIndexer {
         }
     }
 
-    public static void historyIndex(DataSource dataSource, TableTransporter transporter) throws SwiftMetaDataException {
-        List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+    public static void historyIndex(DataSource dataSource, TableTransporter transporter) {
+        List<Segment> segments = SwiftContext.getInstance().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
         for (String field : transporter.getIndexFieldsList()) {
             ColumnIndexer<?> indexer = new ColumnIndexer(dataSource, new ColumnKey(field), segments);
             indexer.work();

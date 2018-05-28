@@ -8,8 +8,6 @@ import com.fr.swift.config.TestConfDb;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.impl.SwiftDatabase;
-import com.fr.swift.manager.LocalDataOperatorProvider;
-import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.ColumnKey;
@@ -26,6 +24,8 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+//import com.fr.swift.test.Preparer;
+
 /**
  * @author anchore
  * @date 2018/4/26
@@ -37,8 +37,7 @@ public class LogOperatorTest {
     @BeforeClass
     public static void boot() throws Exception {
         TestConfDb.setConfDb();
-        SwiftContext.getInstance().registerSegmentOperatorProvider(LocalDataOperatorProvider.getInstance());
-        SwiftContext.getInstance().registerSegmentProvider(LocalSegmentProvider.getInstance());
+//        Preparer.prepareCubeBuild();
     }
 
     @Before
@@ -67,7 +66,7 @@ public class LogOperatorTest {
         }
         logOperator.recordInfo(as);
 //        TimeUnit.SECONDS.sleep(40);
-        SwiftSegmentManager segmentManager = SwiftContext.getInstance().getSegmentProvider();
+        SwiftSegmentManager segmentManager = SwiftContext.getInstance().getBean(SwiftSegmentManager.class);
         List<Segment> segs = segmentManager.getSegment(new SourceKey("A"));
         Segment seg = segs.get(segs.size() - 1);
         A a = (A) as.get(0);

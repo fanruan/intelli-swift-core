@@ -14,6 +14,7 @@ import com.fr.swift.adaptor.struct.SwiftEmptyResult;
 import com.fr.swift.adaptor.struct.SwiftSegmentDetailResult;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.transformer.SortAdaptor;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.generate.preview.MinorSegmentManager;
 import com.fr.swift.generate.preview.MinorUpdater;
 import com.fr.swift.log.SwiftLoggers;
@@ -54,12 +55,12 @@ public class SwiftDataProvider implements DataProvider {
 
     @Override
     public List<Segment> getRealData(DataSource dataSource) {
-        return LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+        return SwiftContext.getInstance().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
     }
 
     @Override
     public boolean isSwiftAvailable(DataSource dataSource) {
-        return LocalSegmentProvider.getInstance().isSegmentsExist(dataSource.getSourceKey());
+        return SwiftContext.getInstance().getBean(LocalSegmentProvider.class).isSegmentsExist(dataSource.getSourceKey());
     }
 
     @Override

@@ -1,9 +1,10 @@
 package com.fr.swift.cal.info;
 
 import com.fr.swift.cal.builder.QueryType;
-import com.fr.swift.query.adapter.dimension.Cursor;
 import com.fr.swift.compare.Comparators;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.manager.LocalSegmentProvider;
+import com.fr.swift.query.adapter.dimension.Cursor;
 import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.adapter.target.DetailTarget;
 import com.fr.swift.query.filter.info.FilterInfo;
@@ -87,7 +88,7 @@ public class DetailQueryInfo extends AbstractQueryInfo<DetailResultSet> {
         private List<Column> columns;
         public DetailSortComparator() {
             columns = new ArrayList<Column>();
-            List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(getTable());
+            List<Segment> segments = SwiftContext.getInstance().getBean(LocalSegmentProvider.class).getSegment(getTable());
             if(segments.size() > 0) {
                 for (int i = 0; i < dimensions.length; i++) {
                     columns.add(dimensions[i].getColumn(segments.get(0)));

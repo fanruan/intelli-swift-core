@@ -1,15 +1,11 @@
 package com.fr.swift.segment.recover;
 
-import com.fr.base.FRContext;
-import com.fr.dav.LocalEnv;
 import com.fr.swift.config.TestConfDb;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
-import com.fr.swift.manager.LocalDataOperatorProvider;
-import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.RealTimeSegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftDataOperatorProvider;
@@ -20,6 +16,7 @@ import com.fr.swift.source.db.ConnectionInfo;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.db.QuerySourceTransfer;
 import com.fr.swift.source.db.TestConnectionProvider;
+import com.fr.swift.test.Preparer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,11 +37,8 @@ public class SegmentRecoveryTest {
         TestConfDb.setConfDb();
         connectionInfo = TestConnectionProvider.createConnection();
         dataSource = new QueryDBSource("select * from DEMO_CAPITAL_RETURN", "RealtimeRecorderTest");
-        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir") + "\\" + System.currentTimeMillis()));
-        operators = LocalDataOperatorProvider.getInstance();
-
-        SwiftContext.getInstance().registerSegmentProvider(LocalSegmentProvider.getInstance());
-        SwiftContext.getInstance().registerSegmentOperatorProvider(LocalDataOperatorProvider.getInstance());
+        Preparer.prepareCubeBuild();
+        operators = SwiftContext.getInstance().getBean(SwiftDataOperatorProvider.class);
     }
 
     @After
@@ -61,7 +55,7 @@ public class SegmentRecoveryTest {
 
         String tablePath = ResourceDiscovery.getInstance().getCubePath() + "/" + dataSource.getSourceKey().getId();
         ResourceDiscovery.getInstance().removeCubeResource(tablePath);
-        SwiftSegmentRecovery.getInstance().recoverAll();
+        SwiftContext.getInstance().getBean(SegmentRecovery.class).recoverAll();
 
         String cubePath = tablePath + "/seg0";
         IResourceLocation location = new ResourceLocation(cubePath, StoreType.MEMORY);

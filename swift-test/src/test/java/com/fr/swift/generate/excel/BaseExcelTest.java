@@ -6,6 +6,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.resource.ResourceUtils;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.excel.ExcelDataSource;
+import com.fr.swift.test.Preparer;
 
 /**
  * This class created on 2018/3/19
@@ -26,4 +27,8 @@ public abstract class BaseExcelTest extends BaseConfigTest {
     protected String[] names = {"A", "B"};
     protected ColumnTypeConstants.ColumnType[] types = {ColumnTypeConstants.ColumnType.STRING, ColumnTypeConstants.ColumnType.NUMBER};
 
+    @Override
+    protected void setUp() throws Exception {
+        Preparer.prepareCubeBuild();
+    }
 }

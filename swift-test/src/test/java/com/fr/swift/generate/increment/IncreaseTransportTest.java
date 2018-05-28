@@ -1,5 +1,6 @@
 package com.fr.swift.generate.increment;
 
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.flow.FlowRuleController;
 import com.fr.swift.generate.BaseTest;
 import com.fr.swift.generate.TestIndexer;
@@ -47,7 +48,7 @@ public class IncreaseTransportTest extends BaseTest {
             transport.work();
             TestIndexer.realtimeIndex(dataSource);
 
-            List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+            List<Segment> segments = SwiftContext.getInstance().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
             Segment segment = segments.get(0);
             assertTrue(segment instanceof RealTimeSegmentImpl);
             DetailColumn column = (segment.getColumn(new ColumnKey("付款时间")).getDetailColumn());

@@ -1,5 +1,6 @@
 package com.fr.swift.generate.etl.formula;
 
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.generate.BaseTest;
 import com.fr.swift.generate.TestIndexer;
 import com.fr.swift.generate.TestTransport;
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SingleTableColumnFormulaTest extends BaseTest {
+
+    private final LocalSegmentProvider segmentProvider = SwiftContext.getInstance().getBean(LocalSegmentProvider.class);
 
     /**
      * A
@@ -39,8 +42,8 @@ public class SingleTableColumnFormulaTest extends BaseTest {
             TestIndexer.historyIndex(dataSource, TestTransport.historyTransport(dataSource));
             TestIndexer.historyIndex(etlSource, TestTransport.historyTransport(etlSource));
 
-            Segment dataSourceSegment = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey()).get(0);
-            Segment etlSourceSegment = LocalSegmentProvider.getInstance().getSegment(etlSource.getSourceKey()).get(0);
+            Segment dataSourceSegment = segmentProvider.getSegment(dataSource.getSourceKey()).get(0);
+            Segment etlSourceSegment = segmentProvider.getSegment(etlSource.getSourceKey()).get(0);
             assertEquals(dataSourceSegment.getLocation().getPath(), etlSourceSegment.getLocation().getPath());
 
             Column originalColumn1 = dataSourceSegment.getColumn(new ColumnKey("付款金额"));
@@ -87,9 +90,9 @@ public class SingleTableColumnFormulaTest extends BaseTest {
             TestIndexer.historyIndex(etlSource1, TestTransport.historyTransport(etlSource1));
             TestIndexer.historyIndex(etlSource2, TestTransport.historyTransport(etlSource2));
 
-            Segment dataSourceSegment = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey()).get(0);
-            Segment etlSourceSegment = LocalSegmentProvider.getInstance().getSegment(etlSource1.getSourceKey()).get(0);
-            Segment etlSourceSegment2 = LocalSegmentProvider.getInstance().getSegment(etlSource2.getSourceKey()).get(0);
+            Segment dataSourceSegment = segmentProvider.getSegment(dataSource.getSourceKey()).get(0);
+            Segment etlSourceSegment = segmentProvider.getSegment(etlSource1.getSourceKey()).get(0);
+            Segment etlSourceSegment2 = segmentProvider.getSegment(etlSource2.getSourceKey()).get(0);
 
             assertEquals(dataSourceSegment.getLocation().getPath(), etlSourceSegment.getLocation().getPath());
             assertEquals(dataSourceSegment.getLocation().getPath(), etlSourceSegment2.getLocation().getPath());

@@ -5,7 +5,6 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.generate.TestIndexer;
 import com.fr.swift.generate.TestTransport;
 import com.fr.swift.generate.excel.BaseExcelTest;
-import com.fr.swift.manager.LocalDataOperatorProvider;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
@@ -23,14 +22,15 @@ import java.util.List;
  */
 public class ExcelGenerateTest extends BaseExcelTest {
 
-    public void testSingleFileGenerateExcel() throws Exception {
+    private final LocalSegmentProvider segmentProvider = SwiftContext.getInstance().getBean(LocalSegmentProvider.class);
+
+    public void testSingleFileGenerateExcel() {
         try {
-            SwiftContext.getInstance().registerSegmentOperatorProvider(LocalDataOperatorProvider.getInstance());
             dataSource = new ExcelDataSource(path1, names, types);
 
             TestIndexer.historyIndex(dataSource, TestTransport.historyTransport(dataSource));
 
-            List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+            List<Segment> segments = segmentProvider.getSegment(dataSource.getSourceKey());
             Segment segment = segments.get(0);
             assertEquals(segment.getRowCount(), 3);
             ImmutableBitMap bitMap = segment.getAllShowIndex();
@@ -49,7 +49,7 @@ public class ExcelGenerateTest extends BaseExcelTest {
         }
     }
 
-    public void testCoupleFilesGenerateExcel() throws Exception {
+    public void testCoupleFilesGenerateExcel() {
         try {
             List<String> appendPaths = new ArrayList<>();
             appendPaths.add(path2);
@@ -58,7 +58,7 @@ public class ExcelGenerateTest extends BaseExcelTest {
 
             TestIndexer.historyIndex(dataSource, TestTransport.historyTransport(dataSource));
 
-            List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+            List<Segment> segments = segmentProvider.getSegment(dataSource.getSourceKey());
             Segment segment = segments.get(0);
             assertEquals(segment.getRowCount(), 9);
             ImmutableBitMap bitMap = segment.getAllShowIndex();
