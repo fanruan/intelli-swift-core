@@ -1,6 +1,6 @@
 package com.fr.swift.config.entity;
 
-import com.fr.decision.webservice.utils.DecisionServiceConstants;
+import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.Convert;
 import com.fr.swift.config.convert.MetaDataColumnListConverter;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
@@ -20,16 +20,16 @@ import java.util.List;
 @Table(name = "swift_metadata")
 public class SwiftMetaDataEntity extends com.fr.config.entity.Entity implements Convert<SwiftMetaDataBean> {
 
-    @Column(name = SwiftMetaDataBean.COLUMN_SCHEMA)
+    @Column(name = SwiftConfigConstants.MetaDataConfig.COLUMN_SCHEMA)
     private String schemaName;
 
-    @Column(name = SwiftMetaDataBean.COLUMN_TABLE_NAME)
+    @Column(name = SwiftConfigConstants.MetaDataConfig.COLUMN_TABLE_NAME)
     private String tableName;
 
-    @Column(name = SwiftMetaDataBean.COLUMN_REMARK)
+    @Column(name = SwiftConfigConstants.MetaDataConfig.COLUMN_REMARK)
     private String remark;
 
-    @Column(name = SwiftMetaDataBean.COLUMN_FIELDS, length = DecisionServiceConstants.LONG_TEXT_LENGTH)
+    @Column(name = SwiftConfigConstants.MetaDataConfig.COLUMN_FIELDS, length = SwiftConfigConstants.LONG_TEXT_LENGTH)
     @com.fr.third.javax.persistence.Convert(
             converter = MetaDataColumnListConverter.class
     )

@@ -3,8 +3,11 @@ package com.fr.swift.cluster;
 import com.fr.cluster.ClusterBridge;
 import com.fr.cluster.core.ClusterNode;
 import com.fr.cluster.engine.rpc.base.InvokerManager;
+import com.fr.cluster.engine.rpc.proxy.FineRPCProxyFactory;
 import com.fr.cluster.rpc.base.Invocation;
 import com.fr.cluster.rpc.base.Invoker;
+import com.fr.cluster.rpc.proxy.RPCInvokeStrategy;
+import com.fr.cluster.rpc.proxy.RPCProxyFactory;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 
@@ -47,7 +50,7 @@ public class ClusterCompete {
     public synchronized void competeMaster() {
         ClusterNode currentNode = ClusterNodeManager.getInstance().getCurrentNode();
         ClusterNode oldMasterNode = ClusterNodeManager.getInstance().getMasterNode();
-        ClusterNode tempMasterNode = ClusterBridge.getView().getNodeById(oldMasterNode.getID());
+        ClusterNode tempMasterNode = oldMasterNode != null ? ClusterBridge.getView().getNodeById(oldMasterNode.getID()) : null;
 
         //加集群锁
         //如果master不在集群中了，则竞争master
@@ -57,7 +60,7 @@ public class ClusterCompete {
                 //抢到锁，再次判断masternode，依然为空，则把自己置为master，并向集群中其他机器发送消息
                 LOGGER.info("Check compete master!");
                 oldMasterNode = ClusterNodeManager.getInstance().getMasterNode();
-                tempMasterNode = ClusterBridge.getView().getNodeById(oldMasterNode.getID());
+                tempMasterNode = oldMasterNode != null ? ClusterBridge.getView().getNodeById(oldMasterNode.getID()) : null;
                 if (tempMasterNode == null) {
                     LOGGER.info("Begin to compete master!");
                     setUpMaster(currentNode.getID());

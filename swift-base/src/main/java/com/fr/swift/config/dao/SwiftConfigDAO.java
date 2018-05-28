@@ -2,6 +2,7 @@ package com.fr.swift.config.dao;
 
 import com.fr.config.entity.Entity;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -15,7 +16,7 @@ public interface SwiftConfigDAO<T extends Entity> {
      * @param entity
      * @return
      */
-    boolean saveOrUpdate(T entity);
+    boolean saveOrUpdate(T entity) throws SQLException;
 
     /**
      * 根据ID查询
@@ -23,7 +24,7 @@ public interface SwiftConfigDAO<T extends Entity> {
      * @param id
      * @return
      */
-    T select(String id);
+    T select(String id) throws SQLException;
 
     /**
      * 自定义hql查询
@@ -46,5 +47,5 @@ public interface SwiftConfigDAO<T extends Entity> {
      * @param id
      * @return
      */
-    boolean deleteById(String id);
+    boolean deleteById(String id) throws SQLException;
 }
