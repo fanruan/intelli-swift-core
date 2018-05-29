@@ -1,6 +1,5 @@
 package com.fr.swift.segment.recover;
 
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.Table;
@@ -19,6 +18,8 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.third.springframework.beans.factory.annotation.Autowired;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -28,10 +29,13 @@ import java.util.List;
  * @author anchore
  * @date 2018/5/23
  */
+@Service
 public class SwiftSegmentRecovery implements SegmentRecovery {
-    private SwiftDataOperatorProvider operators = SwiftContext.getInstance().getSwiftDataOperatorProvider();
+    @Autowired
+    private SwiftDataOperatorProvider operators;
 
-    private SwiftSegmentManager manager = SwiftContext.getInstance().getSegmentProvider();
+    @Autowired
+    private SwiftSegmentManager manager;
 
     @Override
     public void recover(SourceKey tableKey) {
@@ -41,9 +45,8 @@ public class SwiftSegmentRecovery implements SegmentRecovery {
                 Table table = SwiftDatabase.getInstance().getTable(tableKey);
                 Inserter insert = operators.getRealtimeSwiftInserter(newRealtimeSegment(seg), table);
                 List<Segment> newSegs = insert.insertData(new BackupResultSet(getBackupSegment(seg)));
-                SwiftMetaData meta = table.getMetadata();
-                for (int i = 1; i < meta.getColumnCount(); i++) {
-                    ColumnKey columnKey = new ColumnKey(meta.getColumn(i).getName());
+                for (String columnName : insert.getFields()) {
+                    ColumnKey columnKey = new ColumnKey(columnName);
                     operators.getColumnIndexer(table, columnKey, newSegs).buildIndex();
                     operators.getColumnDictMerger(table, columnKey, newSegs).mergeDict();
                 }
@@ -130,13 +133,6 @@ public class SwiftSegmentRecovery implements SegmentRecovery {
         }
     }
 
-    private static final SegmentRecovery SEGMENT_RECOVERY = new SwiftSegmentRecovery();
-
     private SwiftSegmentRecovery() {
     }
-
-    public static SegmentRecovery getInstance() {
-        return SEGMENT_RECOVERY;
-    }
-
 }

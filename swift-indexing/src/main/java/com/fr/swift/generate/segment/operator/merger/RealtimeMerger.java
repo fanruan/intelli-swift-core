@@ -15,6 +15,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.Merger;
 import com.fr.swift.source.SourceKey;
@@ -54,7 +55,7 @@ public class RealtimeMerger implements Merger {
         this.alloter = SwiftSourceAlloterFactory.createLineSourceAlloter(sourceKey, cubeSourceKey);
         this.cubeSourceKey = cubeSourceKey;
 
-        List<Segment> segmentList = SwiftContext.getInstance().getSegmentProvider().getSegment(sourceKey);
+        List<Segment> segmentList = SwiftContext.getInstance().getBean(SwiftSegmentManager.class).getSegment(sourceKey);
         configSegment = new ArrayList<SegmentKey>();
 
         for (int i = 0; i < segmentList.size(); i++) {

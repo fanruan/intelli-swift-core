@@ -1,5 +1,6 @@
-package com.fr.swift.segment;
+package com.fr.swift.service;
 
+import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.source.SourceKey;
 
 import java.net.URI;
@@ -17,11 +18,21 @@ public class SegmentLocationProvider {
         return ourInstance;
     }
 
+    private SegmentLocationManager manager;
+
     private SegmentLocationProvider() {
     }
 
+    /**
+     * 给AnalysisService调用并更新segment location信息
+     *
+     * @param locationInfo
+     */
+    void updateSegmentInfo(SegmentLocationInfo locationInfo) {
+        manager.updateSegmentInfo(locationInfo);
+    }
 
-    public Set<URI> getURI(SourceKey sourceKey){
+    public Set<URI> getSegmentLocaltionURI(SourceKey table) {
         Set<URI> set = new HashSet<URI>();
         try {
             set.add(new URI(""));

@@ -3,7 +3,7 @@ package com.fr.swift.adaptor.log;
 import com.fr.general.DataList;
 import com.fr.general.LogOperator;
 import com.fr.stable.query.condition.QueryCondition;
-import com.fr.swift.cal.QueryInfo;
+import com.fr.swift.cal.info.QueryInfo;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;

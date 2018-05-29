@@ -11,12 +11,12 @@ import com.fr.swift.generate.TestTransport;
 import com.fr.swift.generate.realtime.RealtimeDataTransporter;
 import com.fr.swift.increase.IncrementImpl;
 import com.fr.swift.increment.Increment;
-import com.fr.swift.manager.LocalDataOperatorProvider;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.db.TestConnectionProvider;
+import com.fr.swift.test.Preparer;
 
 import java.util.List;
 
@@ -38,10 +38,10 @@ public class DecreaseTransportTest extends BaseConfigTest {
         TestConnectionProvider.createConnection();
         TestConfDb.setConfDb();
         dataSource = new QueryDBSource("select 记录人 from DEMO_CAPITAL_RETURN", "DecreaseTest");
+        Preparer.prepareCubeBuild();
     }
 
     public void testDecreaseTransport() throws Exception {
-        SwiftContext.getInstance().registerSegmentOperatorProvider(LocalDataOperatorProvider.getInstance());
 
         TestIndexer.historyIndex(dataSource, TestTransport.historyTransport(dataSource));
 
@@ -49,7 +49,7 @@ public class DecreaseTransportTest extends BaseConfigTest {
         RealtimeDataTransporter transport = new RealtimeDataTransporter(dataSource, increment);
         transport.work();
 
-        List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+        List<Segment> segments = SwiftContext.getInstance().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
         Segment segment = segments.get(0);
         assertEquals(segment.getRowCount(), 682);
         ImmutableBitMap bitMap = segment.getAllShowIndex();

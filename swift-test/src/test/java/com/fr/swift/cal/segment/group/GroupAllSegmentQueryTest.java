@@ -66,7 +66,7 @@ public class GroupAllSegmentQueryTest extends TestCase {
 //        }, new ArrayList<>());
 //        GroupByResultSet collector = null;
 //        try {
-//            collector = query.getQueryResult();
+//            collector = query.executeQuery();
 //        } catch (Exception e) {
 //            assertTrue(false);
 //        }

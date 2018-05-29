@@ -57,9 +57,9 @@ public class SwiftConfigContext {
             BaseDBEnv.setDBContext(dbContext);
             this.initialized = true;
         }
-
         return this;
     }
+
 
     public SwiftMetaDataDAO getSwiftMetaDataDAO() {
         return swiftMetaDataDAO;

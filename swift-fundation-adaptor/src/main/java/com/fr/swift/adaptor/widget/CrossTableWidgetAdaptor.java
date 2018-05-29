@@ -3,7 +3,6 @@ package com.fr.swift.adaptor.widget;
 import com.finebi.conf.algorithm.common.DMUtils;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
 import com.finebi.conf.internalimp.dashboard.widget.table.CrossTableWidget;
-import com.finebi.conf.structure.result.datamining.BIDMResult;
 import com.finebi.conf.structure.result.table.BICrossNode;
 import com.finebi.conf.structure.result.table.BICrossTableResult;
 import com.fr.swift.adaptor.struct.node.BICrossNodeAdaptor;
@@ -190,5 +189,9 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor {
             return ResultType.BICROSS;
         }
 
+        @Override
+        public String getDataMiningError() {
+            return null;
+        }
     }
 }

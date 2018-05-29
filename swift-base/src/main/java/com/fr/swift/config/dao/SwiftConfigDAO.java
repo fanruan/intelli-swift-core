@@ -1,6 +1,5 @@
 package com.fr.swift.config.dao;
 
-import com.fr.config.entity.Entity;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -9,7 +8,7 @@ import java.util.List;
  * @author yee
  * @date 2018/5/25
  */
-public interface SwiftConfigDAO<T extends Entity> {
+public interface SwiftConfigDAO<T> {
     /**
      * 添加或更新方法
      *

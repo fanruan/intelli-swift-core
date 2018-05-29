@@ -1,6 +1,6 @@
 package com.fr.swift.config.entity;
 
-import com.fr.decision.webservice.utils.DecisionServiceConstants;
+import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.Convert;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.convert.StoreTypeConverter;
@@ -8,6 +8,7 @@ import com.fr.swift.config.convert.URIConverter;
 import com.fr.swift.cube.io.Types;
 import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Entity;
+import com.fr.third.javax.persistence.Id;
 import com.fr.third.javax.persistence.Table;
 
 import java.net.URI;
@@ -18,17 +19,21 @@ import java.net.URI;
  */
 @Entity
 @Table(name = "swift_segments")
-public class SwiftSegmentEntity extends com.fr.config.entity.Entity implements Convert<SegmentKeyBean> {
-    @Column(name = SegmentKeyBean.COLUMN_SEGMENT_OWNER)
+public class SwiftSegmentEntity implements Convert<SegmentKeyBean> {
+
+    @Id
+    private String id;
+
+    @Column(name = SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER)
     private String segmentOwner;
-    @Column(name = SegmentKeyBean.COLUMN_SEGMENT_URI, unique = true, length = DecisionServiceConstants.LONG_TEXT_LENGTH)
+    @Column(name = SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_URI, unique = true, length = SwiftConfigConstants.LONG_TEXT_LENGTH)
     @com.fr.third.javax.persistence.Convert(
             converter = URIConverter.class
     )
     private URI segmentUri;
-    @Column(name = SegmentKeyBean.COLUMN_SEGMENT_ORDER)
+    @Column(name = SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_ORDER)
     private int segmentOrder;
-    @Column(name = SegmentKeyBean.COLUMN_STORE_TYPE)
+    @Column(name = SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE)
     @com.fr.third.javax.persistence.Convert(
             converter = StoreTypeConverter.class
     )
@@ -66,6 +71,13 @@ public class SwiftSegmentEntity extends com.fr.config.entity.Entity implements C
         this.storeType = storeType;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     @Override
     public SegmentKeyBean convert() {

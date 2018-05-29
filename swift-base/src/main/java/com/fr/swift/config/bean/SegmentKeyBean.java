@@ -13,12 +13,6 @@ import java.net.URI;
  * @date 2018/5/24
  */
 public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>, SegmentKey {
-
-    public static final String COLUMN_SEGMENT_OWNER = "segmentOwner";
-    public static final String COLUMN_SEGMENT_ORDER = "segmentOrder";
-    public static final String COLUMN_STORE_TYPE = "storeType";
-    public static final String COLUMN_SEGMENT_URI = "segmentUri";
-
     /**
      * sourceKey@storeType@order
      */

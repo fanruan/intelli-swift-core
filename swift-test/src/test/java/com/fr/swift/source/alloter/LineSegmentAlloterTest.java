@@ -3,6 +3,7 @@ package com.fr.swift.source.alloter;
 import com.fr.stable.StringUtils;
 import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.manager.LocalDataOperatorProvider;
 import com.fr.swift.segment.HistorySegmentImpl;
@@ -102,7 +103,7 @@ public class LineSegmentAlloterTest extends TestIo {
             }
         };
 
-        Inserter inserter = LocalDataOperatorProvider.getInstance().getHistoryBlockSwiftInserter(dataSource);
+        Inserter inserter = SwiftContext.getInstance().getBean(LocalDataOperatorProvider.class).getHistoryBlockSwiftInserter(dataSource);
         inserter.insertData(resultSet);
         SwiftSourceAlloter alloter = SwiftSourceAlloterFactory.createLineSourceAlloter(sourceKey, sourceKey.getId());
         int lastIndex = -1;

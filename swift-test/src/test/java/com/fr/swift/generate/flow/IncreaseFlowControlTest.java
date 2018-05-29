@@ -3,6 +3,7 @@ package com.fr.swift.generate.flow;
 import com.fr.base.FRContext;
 import com.fr.dav.LocalEnv;
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.flow.FlowControlRule;
 import com.fr.swift.flow.FlowRuleController;
 import com.fr.swift.flow.RowNumberControlRule;
@@ -35,6 +36,7 @@ import java.util.List;
  */
 public class IncreaseFlowControlTest extends BaseTest {
 
+    private final LocalSegmentProvider segmentProvider = SwiftContext.getInstance().getBean(LocalSegmentProvider.class);
     private DataSource dataSource;
 
     @Override
@@ -60,7 +62,7 @@ public class IncreaseFlowControlTest extends BaseTest {
         RealtimeDataTransporter transport = new RealtimeDataTransporter(dataSource, increment, flowRuleController);
         transport.work();
 
-        List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+        List<Segment> segments = segmentProvider.getSegment(dataSource.getSourceKey());
         for (int i = 1; i <= dataSource.getMetadata().getColumnCount(); i++) {
             ColumnIndexer columnIndexer = new ColumnIndexer(dataSource, new ColumnKey(dataSource.getMetadata().getColumnName(i)), segments);
             columnIndexer.work();
@@ -115,7 +117,7 @@ public class IncreaseFlowControlTest extends BaseTest {
         RealtimeDataTransporter transport = new RealtimeDataTransporter(dataSource, increment, flowRuleController);
         transport.work();
 
-        List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+        List<Segment> segments = segmentProvider.getSegment(dataSource.getSourceKey());
         Segment segment = segments.get(0);
 
         DetailColumn column = (segment.getColumn(new ColumnKey("合同ID")).getDetailColumn());

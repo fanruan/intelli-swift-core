@@ -8,6 +8,7 @@ import com.fr.swift.cube.task.impl.Operation;
 import com.fr.swift.cube.task.impl.SchedulerTaskImpl;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.service.SwiftServiceEvent;
 import com.fr.swift.service.listener.EventType;
 import com.fr.swift.service.listener.SwiftServiceListenerManager;
@@ -76,7 +77,7 @@ public class CubeTasks {
 
     @Deprecated
     private static boolean isReadable(DataSource dataSource) {
-        return SwiftContext.getInstance().getSegmentProvider().isSegmentsExist(dataSource.getSourceKey());
+        return SwiftContext.getInstance().getBean(SwiftSegmentManager.class).isSegmentsExist(dataSource.getSourceKey());
     }
 
     public static void sendTasks(final Collection<Pair<TaskKey, Object>> tasks) throws SwiftServiceException {

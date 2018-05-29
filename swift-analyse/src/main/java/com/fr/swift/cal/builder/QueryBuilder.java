@@ -1,9 +1,9 @@
 package com.fr.swift.cal.builder;
 
 import com.fr.swift.cal.Query;
-import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.cal.info.DetailQueryInfo;
 import com.fr.swift.cal.info.GroupQueryInfo;
+import com.fr.swift.cal.info.QueryInfo;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.source.SwiftResultSet;
@@ -25,7 +25,7 @@ public class QueryBuilder {
         }
     }
 
-    private static Query<NodeResultSet> buildGroupQuery(GroupQueryInfo info) throws SQLException {
+    private static Query<NodeResultSet> buildGroupQuery(GroupQueryInfo info) {
         return GroupQueryBuilder.buildQuery(info);
     }
 

@@ -93,7 +93,7 @@ public class GroupResultQueryTest extends TestCase {
         updateGlobalIndex(dimensions, expectedDictionaries);
         GroupResultQuery groupResultQuery = new GroupResultQuery(queryList, aggregators, null);
 //        try {
-//            collector = groupResultQuery.getQueryResult();
+//            collector = groupResultQuery.executeQuery();
 //        } catch (SQLException e) {
 //            assertTrue(false);
 //        }

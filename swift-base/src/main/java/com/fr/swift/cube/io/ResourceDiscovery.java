@@ -16,6 +16,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author anchore
@@ -128,9 +130,9 @@ public class ResourceDiscovery implements IResourceDiscovery {
         return storeType == StoreType.MEMORY;
     }
 
-    //todo 增量的memio慎重clear!!!
     @Override
     public void clear() {
+        //todo 增量的memio慎重clear!!!
         for (Map.Entry<String, Map<String, MemIo>> mapEntry : minorMemios.entrySet()) {
             for (Map.Entry<String, MemIo> entry : mapEntry.getValue().entrySet()) {
                 entry.getValue().release();
@@ -139,19 +141,25 @@ public class ResourceDiscovery implements IResourceDiscovery {
         minorMemios.clear();
     }
 
+    private static final Pattern MINOR_PATTERN = Pattern.compile("/minor_cubes/.+?/(.+)");
+
+    private static final Pattern PATTERN = Pattern.compile("/cubes/.+?/(.+)");
+
     private boolean isMinor(String path) {
         return path.contains("minor_cubes");
     }
 
-    //todo 路径需要单独配置，后续需要对此进行改正，现在先简单处理
     private String getCubeBasePath(String path) {
+        //todo 路径需要单独配置，后续需要对此进行改正，现在先简单处理
         if (isMinor(path)) {
-            int index = path.indexOf("minor_cubes/");
-            return path.substring(0, index + "minor_cubes/".length() + 8);
-        } else {
-            int index = path.indexOf("cubes/");
-            return path.substring(0, index + "cubes/".length() + 8);
+            Matcher matcher = MINOR_PATTERN.matcher(path);
+            matcher.find();
+            return path.substring(0, matcher.start(1));
         }
+
+        Matcher matcher = PATTERN.matcher(path);
+        matcher.find();
+        return path.substring(0, matcher.start(1));
     }
 
     @Override

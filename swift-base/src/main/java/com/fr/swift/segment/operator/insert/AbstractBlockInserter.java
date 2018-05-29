@@ -14,6 +14,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentIndexCache;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.Recorder;
@@ -130,6 +131,8 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
                     segmentIndexCache.putSegRow(index, ++segmentRow);
                     count++;
                 }
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().error(e);
             } finally {
                 swiftResultSet.close();
             }
@@ -137,7 +140,7 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
             end();
             return newSegments;
         } else {
-            List<Segment> cubeSourceSegments = SwiftContext.getInstance().getSegmentProvider().getSegment(new SourceKey(cubeSourceKey));
+            List<Segment> cubeSourceSegments = SwiftContext.getInstance().getBean(SwiftSegmentManager.class).getSegment(new SourceKey(cubeSourceKey));
             for (int i = 0; i < cubeSourceSegments.size(); i++) {
                 Segment segment = cubeSourceSegments.get(i);
                 createSegment(i, segment.isHistory() ? Types.StoreType.FINE_IO : Types.StoreType.MEMORY);

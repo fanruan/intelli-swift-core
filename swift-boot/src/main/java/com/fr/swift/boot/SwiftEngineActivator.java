@@ -6,6 +6,7 @@ import com.fr.stable.db.constant.BaseDBConstant;
 import com.fr.swift.config.SwiftServiceInfoEntity;
 import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.ProviderTaskManager;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.service.LocalSwiftServerService;
@@ -27,6 +28,8 @@ public class SwiftEngineActivator extends Activator implements Prepare {
 
     private void startSwift() {
         try {
+            SwiftContext.init();
+
             new LocalSwiftServerService().start();
             new SwiftAnalyseService().start();
             new SwiftHistoryService().start();
