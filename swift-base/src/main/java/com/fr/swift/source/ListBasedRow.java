@@ -19,4 +19,9 @@ public class ListBasedRow implements Row {
     public int getSize() {
         return values == null ? 0 : values.size();
     }
+
+    @Override
+    public String toString() {
+        return values.toString();
+    }
 }

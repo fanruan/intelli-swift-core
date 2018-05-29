@@ -45,9 +45,8 @@ public class SwiftSegmentRecovery implements SegmentRecovery {
                 Table table = SwiftDatabase.getInstance().getTable(tableKey);
                 Inserter insert = operators.getRealtimeSwiftInserter(newRealtimeSegment(seg), table);
                 List<Segment> newSegs = insert.insertData(new BackupResultSet(getBackupSegment(seg)));
-                SwiftMetaData meta = table.getMetadata();
-                for (int i = 1; i < meta.getColumnCount(); i++) {
-                    ColumnKey columnKey = new ColumnKey(meta.getColumn(i).getName());
+                for (String columnName : insert.getFields()) {
+                    ColumnKey columnKey = new ColumnKey(columnName);
                     operators.getColumnIndexer(table, columnKey, newSegs).buildIndex();
                     operators.getColumnDictMerger(table, columnKey, newSegs).mergeDict();
                 }
