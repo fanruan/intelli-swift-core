@@ -22,7 +22,7 @@ import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.service.SwiftAnalyseService;
+import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.utils.BusinessTableUtils;
 
@@ -60,7 +60,7 @@ public class QueryUtils {
                     null, new Dimension[]{groupDimension}
             );
             GroupQueryInfo valueInfo = new GroupQueryInfo(id, sourceKey, dimensionInfo, targetInfo);
-            NodeResultSet nodeResultSet = (NodeResultSet) SwiftAnalyseService.getInstance().executeQuery(valueInfo);
+            NodeResultSet nodeResultSet = (NodeResultSet) QueryRunnerProvider.getInstance().executeQuery(valueInfo);
             SwiftNode n = nodeResultSet.getNode();
             List values = new ArrayList();
             for (int i = 0; i < n.getChildrenSize(); i++) {

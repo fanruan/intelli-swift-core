@@ -65,7 +65,7 @@ import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.service.SwiftAnalyseService;
+import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
@@ -98,7 +98,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
             SwiftResultSet resultSet;
             pagingHelper = NodeCacheManager.getInstance().get(queryInfo);
             if (PagingUtils.isRefresh(widget.getPage()) || pagingHelper == null) {
-                resultSet = SwiftAnalyseService.getInstance().executeQuery(queryInfo);
+                resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
                 // 添加挖掘相关
                 AlgorithmBean dmBean = widget.getValue().getDataMining();
                 if (!DMUtils.isEmptyAlgorithm(dmBean)) {
@@ -244,7 +244,7 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         GroupQueryInfo queryInfo = new GroupQueryInfo(fromWidget.getwId(), fromColumns[0].getSourceKey(),
                 new DimensionInfoImpl(new AllCursor(), filterInfo, null, fromColumns),
                 new TargetInfoImpl(0, new ArrayList<Metric>(0), new ArrayList<GroupTarget>(0), new ArrayList<ResultTarget>(0), new ArrayList<Aggregator>(0)));
-        SwiftResultSet resultSet = SwiftAnalyseService.getInstance().executeQuery(queryInfo);
+        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
         Set[] results = new HashSet[toColumns.length];
         for (int i = 0; i < results.length; i++) {
             results[i] = new HashSet();

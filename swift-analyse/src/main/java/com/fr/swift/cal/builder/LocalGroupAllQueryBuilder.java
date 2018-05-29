@@ -11,6 +11,8 @@ import com.fr.swift.cal.segment.group.XGroupAllSegmentQuery;
 import com.fr.swift.cal.targetcal.group.GroupTargetCalQuery;
 import com.fr.swift.cal.targetcal.group.XGroupTargetCalQuery;
 import com.fr.swift.compare.Comparators;
+import com.fr.swift.context.SwiftContext;
+import com.fr.swift.manager.LineSegmentManager;
 import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.adapter.dimension.DimensionInfo;
 import com.fr.swift.query.adapter.metric.Metric;
@@ -27,7 +29,6 @@ import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
-import com.fr.swift.service.SwiftAnalyseService;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -52,7 +53,7 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
         TargetInfo targetInfo = info.getTargetInfo();
         List<Query<NodeResultSet>> queries = new ArrayList<Query<NodeResultSet>>();
         QueryType type = info.getType();
-        List<Segment> segments = SwiftAnalyseService.getInstance().getSwiftSegmentManager().getSegment(info.getTable());
+        List<Segment> segments = SwiftContext.getInstance().getBean(LineSegmentManager.class).getSegment(info.getTable());
         for (Segment segment : segments) {
             List<Column> rowDimensions = getDimensionSegments(segment, rowDimensionInfo.getDimensions());
             List<Column> metrics = getMetricSegments(segment, targetInfo.getMetrics());

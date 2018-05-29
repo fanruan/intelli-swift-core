@@ -32,7 +32,7 @@ import com.fr.swift.result.XNodeMergeResultSet;
 import com.fr.swift.result.node.iterator.PostOrderNodeIterator;
 import com.fr.swift.result.node.xnode.XGroupNodeImpl;
 import com.fr.swift.result.node.xnode.XNodeUtils;
-import com.fr.swift.service.SwiftAnalyseService;
+import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.iterator.IteratorUtils;
 import com.fr.swift.structure.iterator.MapperIterator;
@@ -62,7 +62,7 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor {
                 // 列表头为空
                 GroupQueryInfo groupQueryInfo = new GroupQueryInfo(queryInfo.getQueryId(), queryInfo.getTable(),
                         queryInfo.getDimensionInfo(), queryInfo.getTargetInfo());
-                NodeMergeResultSet result = (NodeMergeResultSet) SwiftAnalyseService.getInstance().executeQuery(groupQueryInfo);
+                NodeMergeResultSet result = (NodeMergeResultSet) QueryRunnerProvider.getInstance().executeQuery(groupQueryInfo);
 
                 // 添加挖掘相关
                 result = processDataMining(result, widget, queryInfo, dmErrorWrap);
@@ -72,7 +72,7 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor {
                 // 行表头为空
                 GroupQueryInfo groupQueryInfo = new GroupQueryInfo(queryInfo.getQueryId(), queryInfo.getTable(),
                         queryInfo.getColDimensionInfo(), queryInfo.getTargetInfo());
-                NodeMergeResultSet result = (NodeMergeResultSet) SwiftAnalyseService.getInstance().executeQuery(groupQueryInfo);
+                NodeMergeResultSet result = (NodeMergeResultSet) QueryRunnerProvider.getInstance().executeQuery(groupQueryInfo);
 
                 // 添加挖掘相关
                 result = processDataMining(result, widget, queryInfo, dmErrorWrap);
@@ -83,7 +83,7 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor {
                 crossNode = new BICrossNodeAdaptor(new XGroupNodeImpl(xLeftNode, groupNode));
             } else {
                 // 行列表头都不为空
-                resultSet = (XNodeMergeResultSet) SwiftAnalyseService.getInstance().executeQuery(queryInfo);
+                resultSet = (XNodeMergeResultSet) QueryRunnerProvider.getInstance().executeQuery(queryInfo);
 
                 // 添加挖掘相关
                 resultSet = processDataMining(resultSet, widget, queryInfo, dmErrorWrap);

@@ -37,7 +37,7 @@ import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.service.SwiftAnalyseService;
+import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
@@ -69,7 +69,7 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
         BIDetailTableResult result = null;
         SwiftResultSet resultSet;
         try {
-            resultSet = SwiftAnalyseService.getInstance().executeQuery(buildQueryInfo(widget));
+            resultSet = QueryRunnerProvider.getInstance().executeQuery(buildQueryInfo(widget));
             if (resultSet == null) {
                 return new SwiftDetailTableResult(new SwiftEmptyResult(), 0, -1);
             }
@@ -214,7 +214,7 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
             sortIndex.add(i);
         }
         DetailQueryInfo info = new DetailQueryInfo(new AllCursor(), queryId, fromColumns, target, targets, sortIndex, filterInfo, metaData);
-        SwiftResultSet resultSet = SwiftAnalyseService.getInstance().executeQuery(info);
+        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(info);
         Set[] results = new HashSet[toColumns.length];
         for (int i = 0; i < results.length; i++) {
             results[i] = new HashSet();

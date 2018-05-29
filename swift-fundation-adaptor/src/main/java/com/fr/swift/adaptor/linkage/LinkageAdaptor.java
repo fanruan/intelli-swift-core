@@ -57,7 +57,7 @@ import com.fr.swift.query.filter.info.value.SwiftDateInRangeFilterValue;
 import com.fr.swift.query.filter.info.value.SwiftNumberInRangeFilterValue;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.service.SwiftAnalyseService;
+import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
@@ -151,7 +151,7 @@ public class LinkageAdaptor {
                     i++;
                 }
                 QueryInfo queryInfo = new DetailQueryInfo(new AllCursor(), click.getdId(), dims, sourceKey, null, null, null, null);
-                SwiftResultSet resultSet = SwiftAnalyseService.getInstance().executeQuery(queryInfo);
+                SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
                 int cursor = 0;
                 while (resultSet.next()) {
                     Row row = resultSet.getRowData();

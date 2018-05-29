@@ -5,7 +5,7 @@ import com.fr.swift.cal.info.DetailQueryInfo;
 import com.fr.swift.cal.remote.RemoteQueryImpl;
 import com.fr.swift.exception.SwiftSegmentAbsentException;
 import com.fr.swift.result.DetailResultSet;
-import com.fr.swift.segment.SegmentLocationProvider;
+import com.fr.swift.service.SegmentLocationProvider;
 import com.fr.swift.source.SourceKey;
 
 import java.net.URI;
@@ -28,8 +28,8 @@ public class DetailQueryBuilder {
 
 
     private static Query<DetailResultSet> buildQuery(DetailQueryInfo info, LocalDetailQueryBuilder builder) throws SQLException{
-        SourceKey key = info.getTable();
-        Set<URI> uris = SegmentLocationProvider.getInstance().getURI(key);
+        SourceKey table = info.getTable();
+        Set<URI> uris = SegmentLocationProvider.getInstance().getSegmentLocaltionURI(table);
         if (uris == null || uris.isEmpty()){
             throw new SwiftSegmentAbsentException("no such table");
         }

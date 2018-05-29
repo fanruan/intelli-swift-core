@@ -4,7 +4,7 @@ import com.fr.swift.cal.Query;
 import com.fr.swift.cal.info.GroupQueryInfo;
 import com.fr.swift.cal.remote.RemoteQueryImpl;
 import com.fr.swift.result.NodeResultSet;
-import com.fr.swift.segment.SegmentLocationProvider;
+import com.fr.swift.service.SegmentLocationProvider;
 import com.fr.swift.source.SourceKey;
 
 import java.net.URI;
@@ -18,8 +18,8 @@ import java.util.Set;
 public class GroupQueryBuilder {
 
     protected static Query<NodeResultSet> buildQuery(GroupQueryInfo info) {
-        SourceKey key = info.getTable();
-        Set<URI> uris = SegmentLocationProvider.getInstance().getURI(key);
+        SourceKey table = info.getTable();
+        Set<URI> uris = SegmentLocationProvider.getInstance().getSegmentLocaltionURI(table);
 //        if (info.isPagingQuery()) {
         if (false) {
             return buildQuery(uris, info, LocalGroupQueryBuilder.PAGING);
@@ -38,6 +38,9 @@ public class GroupQueryBuilder {
      * SegmentQuery、ResultQuery、TargetCalQuery
      * 1、外层节点负责结果计算TargetCalQuery(ResultQuery(ResultQuery(SegmentQuery, ...), ...))，这个TargetCalQuery在合并多个节点结果的机器上
      * 2、子节点负责结果计算TargetCalQuery(ResultCalQuery(SegmentQuery, ...))，这个TargetCalQuery在拥有全部数据的节点上
+     *
+     * 这边buildQuery的转发至多经过两个节点，RemoteQuery调用buildQuery的时候不会有RemoteQuery了
+     * 这就要保证当前analysisService节点拥有所有的SegmentLocation信息
      *
      * @param uris    数据在节点上的分布情况
      * @param info    查询信息

@@ -9,7 +9,7 @@ import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.service.SwiftAnalyseService;
+import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
@@ -46,7 +46,7 @@ public class SwiftLogOperator implements LogOperator {
             Table table = db.getTable(new SourceKey(SwiftMetaAdaptor.getTableName(entity)));
             DecisionRowAdaptor<T> adaptor = new DecisionRowAdaptor<T>(entity, table.getMeta());
             QueryInfo queryInfo = QueryConditionAdaptor.adaptCondition(queryCondition, table);
-            SwiftResultSet resultSet = SwiftAnalyseService.getInstance().executeQuery(queryInfo);
+            SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
 
             List<T> tList = new ArrayList<T>();
             while (resultSet.next()) {

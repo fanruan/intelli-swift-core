@@ -4,6 +4,8 @@ import com.fr.swift.cal.Query;
 import com.fr.swift.cal.info.DetailQueryInfo;
 import com.fr.swift.cal.result.detail.SortDetailResultQuery;
 import com.fr.swift.cal.segment.detail.SortDetailSegmentQuery;
+import com.fr.swift.context.SwiftContext;
+import com.fr.swift.manager.LineSegmentManager;
 import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
@@ -15,7 +17,6 @@ import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
-import com.fr.swift.service.SwiftAnalyseService;
 import com.fr.swift.structure.array.IntList;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
     @Override
     public Query<DetailResultSet> buildLocalQuery(DetailQueryInfo info) {
         List<Query<DetailResultSet>> queries = new ArrayList<Query<DetailResultSet>>();
-        List<Segment> segments = SwiftAnalyseService.getInstance().getSwiftSegmentManager().getSegment(info.getTable());
+        List<Segment> segments = SwiftContext.getInstance().getBean(LineSegmentManager.class).getSegment(info.getTable());
         IntList list = info.getSortIndex();
         List<SortType> sortTypes = new ArrayList<SortType>();
         Dimension[] dimensions = info.getDimensions();
