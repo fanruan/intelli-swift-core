@@ -12,7 +12,7 @@ import com.fr.swift.cal.targetcal.group.GroupTargetCalQuery;
 import com.fr.swift.cal.targetcal.group.XGroupTargetCalQuery;
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.manager.LineSegmentManager;
+import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.adapter.dimension.DimensionInfo;
 import com.fr.swift.query.adapter.metric.Metric;
@@ -53,7 +53,7 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
         TargetInfo targetInfo = info.getTargetInfo();
         List<Query<NodeResultSet>> queries = new ArrayList<Query<NodeResultSet>>();
         QueryType type = info.getType();
-        List<Segment> segments = SwiftContext.getInstance().getBean(LineSegmentManager.class).getSegment(info.getTable());
+        List<Segment> segments = SwiftContext.getInstance().getBean(LocalSegmentProvider.class).getSegment(info.getTable());
         for (Segment segment : segments) {
             List<Column> rowDimensions = getDimensionSegments(segment, rowDimensionInfo.getDimensions());
             List<Column> metrics = getMetricSegments(segment, targetInfo.getMetrics());

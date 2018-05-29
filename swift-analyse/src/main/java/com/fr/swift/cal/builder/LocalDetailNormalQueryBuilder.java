@@ -5,7 +5,7 @@ import com.fr.swift.cal.info.DetailQueryInfo;
 import com.fr.swift.cal.result.detail.NormalDetailResultQuery;
 import com.fr.swift.cal.segment.detail.NormalDetailSegmentQuery;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.manager.LineSegmentManager;
+import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.info.FilterInfo;
@@ -28,7 +28,7 @@ public class LocalDetailNormalQueryBuilder implements LocalDetailQueryBuilder {
     @Override
     public Query<DetailResultSet> buildLocalQuery(DetailQueryInfo info) {
         List<Query<DetailResultSet>> queries = new ArrayList<Query<DetailResultSet>>();
-        List<Segment> segments = SwiftContext.getInstance().getBean(LineSegmentManager.class).getSegment(info.getTable());
+        List<Segment> segments = SwiftContext.getInstance().getBean(LocalSegmentProvider.class).getSegment(info.getTable());
         for (Segment segment : segments) {
             List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
             Dimension[] dimensions = info.getDimensions();
