@@ -3,6 +3,7 @@ package com.fr.swift.segment.operator.insert;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
@@ -100,6 +101,8 @@ public abstract class AbstractInserter implements Inserter {
                 putRow(rowData);
                 row++;
             }
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
         } finally {
             swiftResultSet.close();
         }

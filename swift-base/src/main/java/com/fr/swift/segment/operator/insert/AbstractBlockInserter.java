@@ -131,6 +131,8 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
                     segmentIndexCache.putSegRow(index, ++segmentRow);
                     count++;
                 }
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().error(e);
             } finally {
                 swiftResultSet.close();
             }
