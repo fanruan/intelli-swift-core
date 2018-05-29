@@ -10,8 +10,6 @@ import com.fr.swift.config.dao.impl.SwiftMetaDataDAOImpl;
 import com.fr.swift.config.dao.impl.SwiftSegmentDAOImpl;
 import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
-import com.fr.swift.config.service.SwiftConfigServiceProvider;
-import com.fr.swift.cube.io.Types;
 import com.fr.swift.log.SwiftLoggers;
 
 /**
@@ -58,11 +56,10 @@ public class SwiftConfigContext {
             swiftSegmentDAO = new SwiftSegmentDAOImpl();
             BaseDBEnv.setDBContext(dbContext);
             this.initialized = true;
-//            SwiftConfigServiceProvider.getInstance().removeByStoreType(Types.StoreType.MEMORY);
         }
-
         return this;
     }
+
 
     public SwiftMetaDataDAO getSwiftMetaDataDAO() {
         return swiftMetaDataDAO;
