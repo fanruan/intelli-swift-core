@@ -59,7 +59,7 @@ public class DecisionRowAdaptor<T> implements Function<Row, T> {
             T data = entity.newInstance();
             for (Entry<Integer, Pair<Field, UnaryOperator<Object>>> entry : converters.entrySet()) {
                 Pair<Field, UnaryOperator<Object>> pair = entry.getValue();
-                pair.getKey().set(data, pair.getValue().apply(row.getValue(entry.getKey())));
+                pair.getKey().set(data, pair.getValue().apply(row.getValue(entry.getKey() - 1)));
             }
             return data;
         } catch (Exception e) {
