@@ -1,6 +1,6 @@
 package com.fr.swift.service;
 
-import com.fr.swift.cal.QueryInfo;
+import com.fr.swift.cal.info.QueryInfo;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
@@ -20,7 +20,7 @@ public class QueryRunnerProvider {
     private QueryRunnerProvider() {
     }
 
-    protected void registerRunner(QueryRunner runner){
+    void registerRunner(QueryRunner runner) {
         this.runner = runner;
     }
 

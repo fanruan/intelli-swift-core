@@ -16,8 +16,7 @@ public interface Dimension extends SwiftColumnProvider {
     Group getGroup();
 
     /**
-     * 这边只用来取结果过滤器。维度里面的明细过滤要在适配层各个组件分别解析
-     *
+     * 这个接口应该去掉，通用查询这边只处理到最后一个维度的结果过滤，这个结果过滤在postAggregation里面做
      * @return
      */
     FilterInfo getFilter();

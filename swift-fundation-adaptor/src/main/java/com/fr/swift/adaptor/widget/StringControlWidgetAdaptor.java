@@ -66,7 +66,7 @@ public class StringControlWidgetAdaptor extends AbstractTableWidgetAdaptor {
 //            Metric countMetric = new GroupMetric(0, baseDataSource.getSourceKey(), new ColumnKey(fineBusinessField.getName()), filterInfo, new DistinctAggregate());
 //            SingleTableGroupQueryInfo countInfo = new SingleTableGroupQueryInfo(new RowCursor(), widget.getWidgetId(), new Dimension[0], new Metric[]{countMetric}, new GroupTarget[0], filterInfo, null);
 //            Query<GroupByResultSet> countQuery = QueryBuilder.buildQuery(countInfo);
-//            GroupByResultSet countResultSet = countQuery.getQueryResult();
+//            GroupByResultSet countResultSet = countQuery.executeQuery();
 
             value.setHasNext(values.size() > (times) * PAGE_SIZE);
             value.setValue(showValues);
