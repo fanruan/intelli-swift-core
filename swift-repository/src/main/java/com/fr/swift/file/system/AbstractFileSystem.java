@@ -63,4 +63,9 @@ public abstract class AbstractFileSystem implements SwiftFileSystem {
     public String getResourceName() {
         return null;
     }
+
+    @Override
+    public boolean isExists() {
+        return isExists(uri);
+    }
 }

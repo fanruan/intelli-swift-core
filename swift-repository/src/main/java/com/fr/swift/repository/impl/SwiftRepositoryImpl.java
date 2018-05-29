@@ -25,36 +25,39 @@ public class SwiftRepositoryImpl extends AbstractRepository {
     @Override
     public URI copyFromRemote(URI remote, URI local) throws IOException {
         SwiftFileSystem from = getFileSystem(remote);
-        SwiftFileSystem target = from.read();
-        if (target.isFile()) {
-            InputStream inputStream = null;
-            FileOutputStream fileOutputStream = null;
-            try {
-                inputStream = target.toStream();
-                fileOutputStream = new FileOutputStream(new File(local.getPath()));
-                byte[] bytes = new byte[1024];
-                int len = 0;
-                while ((len = inputStream.read(bytes, 0, len)) > 0) {
-                    fileOutputStream.write(bytes, 0, len);
+        if (from.isExists()) {
+            SwiftFileSystem target = from.read();
+            if (target.isFile()) {
+                InputStream inputStream = null;
+                FileOutputStream fileOutputStream = null;
+                try {
+                    inputStream = target.toStream();
+                    fileOutputStream = new FileOutputStream(new File(local.getPath()));
+                    byte[] bytes = new byte[1024];
+                    int len = 0;
+                    while ((len = inputStream.read(bytes, 0, len)) > 0) {
+                        fileOutputStream.write(bytes, 0, len);
+                    }
+                    fileOutputStream.flush();
+                } catch (Exception e) {
+                    throw new SwiftFileException(e);
+                } finally {
+                    if (null != inputStream) {
+                        inputStream.close();
+                    }
+                    if (null != fileOutputStream) {
+                        fileOutputStream.close();
+                    }
                 }
-                fileOutputStream.flush();
-            } catch (Exception e) {
-                throw new SwiftFileException(e);
-            } finally {
-                if (null != inputStream) {
-                    inputStream.close();
-                }
-                if (null != fileOutputStream) {
-                    fileOutputStream.close();
+            } else {
+                SwiftFileSystem[] systems = from.listFiles();
+                for (SwiftFileSystem fileSystem : systems) {
+                    copyFromRemote(fileSystem.getResourceURI(), local.resolve(fileSystem.getResourceName()));
                 }
             }
-        } else {
-            SwiftFileSystem[] systems = from.listFiles();
-            for (SwiftFileSystem fileSystem : systems) {
-                copyFromRemote(fileSystem.getResourceURI(), local.resolve(fileSystem.getResourceName()));
-            }
+            return local;
         }
-        return local;
+        throw new SwiftFileException(String.format("Remote resource '%s' is not exists!", remote.getPath()));
     }
 
     @Override
@@ -70,6 +73,9 @@ public class SwiftRepositoryImpl extends AbstractRepository {
             try {
                 inputStream = new FileInputStream(file);
                 SwiftFileSystem to = getFileSystem(remote);
+                if (to.isExists()) {
+                    to.remove();
+                }
                 to.write(inputStream);
             } catch (FileNotFoundException e) {
                 throw new SwiftFileException(e);

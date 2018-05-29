@@ -35,6 +35,8 @@ public interface SwiftFileSystem extends Closeable {
 
     boolean isExists(URI remote);
 
+    boolean isExists();
+
     boolean isDirectory();
 
     boolean isFile();
