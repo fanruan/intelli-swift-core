@@ -10,4 +10,9 @@ import com.fr.swift.Destination;
  * @since Advanced FineBI 5.0
  */
 public class LocalDestination implements Destination {
+
+    @Override
+    public String getId() {
+        return null;
+    }
 }

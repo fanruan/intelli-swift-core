@@ -49,13 +49,6 @@ public interface Result {
     Object recreate() throws Throwable;
 
     /**
-     * @deprecated Replace to getValue()
-     */
-    @Deprecated
-    Object getResult();
-
-
-    /**
      * get attachments.
      *
      * @return attachments.

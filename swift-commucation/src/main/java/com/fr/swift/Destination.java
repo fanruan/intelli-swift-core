@@ -8,4 +8,7 @@ package com.fr.swift;
  * @since Advanced FineBI 5.0
  */
 public interface Destination {
+
+    String getId();
+
 }

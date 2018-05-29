@@ -4,7 +4,7 @@ import com.fr.swift.Invoker;
 import com.fr.swift.ProxyFactory;
 import com.fr.swift.URL;
 import com.fr.swift.invoker.InvokerInvocationHandler;
-import com.fr.swift.invoker.LocalInvoker;
+import com.fr.swift.invoker.SwiftInvoker;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
@@ -29,6 +29,6 @@ public class LocalProxyFactory implements ProxyFactory {
 
     @Override
     public <T> Invoker<T> getInvoker(T proxy, Class<T> type, URL url) {
-        return new LocalInvoker<>(proxy, type, url);
+        return new SwiftInvoker<T>(proxy, type, url);
     }
 }
