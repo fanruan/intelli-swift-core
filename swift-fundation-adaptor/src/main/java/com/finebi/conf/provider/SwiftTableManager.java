@@ -56,7 +56,7 @@ public class SwiftTableManager extends AbstractEngineTableManager {
     public SwiftTableManager() {
         tableToSourceConfigDao = new TableToSourceConfigDaoImpl();
         updateInfoConfigService = TableUpdateInfoConfigService.getService();
-        interceptSession = CommonConfigManager.getInterceptSession(FineEngineType.Cube);
+//        interceptSession = CommonConfigManager.getInterceptSession(FineEngineType.Cube);
     }
 
     @Override
@@ -206,17 +206,17 @@ public class SwiftTableManager extends AbstractEngineTableManager {
 
     private void saveRealTimeStatus(FineBusinessTable table, EntryInfo entryInfo) {
         boolean isIntercept = isIntercept(table);
-        if (interceptSession.hasModel(entryInfo.getID()) != isIntercept) {
+        if (getInterceptSession().hasModel(entryInfo.getID()) != isIntercept) {
             if (isIntercept) {
-                interceptSession.put(new InterceptModelImpl(entryInfo.getID()));
+                getInterceptSession().put(new InterceptModelImpl(entryInfo.getID()));
             } else {
-                interceptSession.delete(new InterceptModelImpl(entryInfo.getID()));
+                getInterceptSession().delete(new InterceptModelImpl(entryInfo.getID()));
             }
         }
     }
 
     private void setRealTime(FineBusinessTable table, EntryInfo entryInfo) {
-        table.setRealTimeData(!interceptSession.hasModel(entryInfo.getID()));
+        table.setRealTimeData(!getInterceptSession().hasModel(entryInfo.getID()));
     }
 
     private boolean isIntercept(FineBusinessTable table) {
@@ -230,4 +230,10 @@ public class SwiftTableManager extends AbstractEngineTableManager {
         return businessTable;
     }
 
+    public InterceptSession getInterceptSession() {
+        if (null == interceptSession) {
+            interceptSession = CommonConfigManager.getInterceptSession(FineEngineType.Cube);
+        }
+        return interceptSession;
+    }
 }
