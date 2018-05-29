@@ -24,10 +24,14 @@ public class SwiftRepositoryImpl extends AbstractRepository {
 
     @Override
     public URI copyFromRemote(URI remote, URI local) throws IOException {
-        SwiftFileSystem from = getFileSystem(remote);
+        SwiftFileSystem from = createFileSystem(remote);
+        File directory = new File(local.getPath()).getParentFile();
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
         if (from.isExists()) {
             SwiftFileSystem target = from.read();
-            if (target.isFile()) {
+            if (!target.isDirectory()) {
                 InputStream inputStream = null;
                 FileOutputStream fileOutputStream = null;
                 try {
@@ -35,7 +39,7 @@ public class SwiftRepositoryImpl extends AbstractRepository {
                     fileOutputStream = new FileOutputStream(new File(local.getPath()));
                     byte[] bytes = new byte[1024];
                     int len = 0;
-                    while ((len = inputStream.read(bytes, 0, len)) > 0) {
+                    while ((len = inputStream.read(bytes, 0, bytes.length)) != -1) {
                         fileOutputStream.write(bytes, 0, len);
                     }
                     fileOutputStream.flush();
@@ -52,7 +56,7 @@ public class SwiftRepositoryImpl extends AbstractRepository {
             } else {
                 SwiftFileSystem[] systems = from.listFiles();
                 for (SwiftFileSystem fileSystem : systems) {
-                    copyFromRemote(fileSystem.getResourceURI(), local.resolve(fileSystem.getResourceName()));
+                    copyFromRemote(fileSystem.getResourceURI(), resolve(local, fileSystem.getResourceName()));
                 }
             }
             return local;
@@ -64,15 +68,20 @@ public class SwiftRepositoryImpl extends AbstractRepository {
     public boolean copyToRemote(URI local, URI remote) throws IOException {
         File file = new File(local.getPath());
         if (file.isDirectory()) {
+            SwiftFileSystem fileSystem = createFileSystem(remote);
+            if (fileSystem.isExists()) {
+                fileSystem.remove();
+            }
+            fileSystem.mkdirs();
             File[] files = file.listFiles();
             for (File f : files) {
-                copyToRemote(f.toURI(), remote.resolve(f.getName()));
+                copyToRemote(f.toURI(), resolve(remote, f.getName()));
             }
         } else {
             FileInputStream inputStream = null;
             try {
                 inputStream = new FileInputStream(file);
-                SwiftFileSystem to = getFileSystem(remote);
+                SwiftFileSystem to = createFileSystem(remote);
                 if (to.isExists()) {
                     to.remove();
                 }
@@ -88,4 +97,11 @@ public class SwiftRepositoryImpl extends AbstractRepository {
         return true;
     }
 
+    private URI resolve(URI uri, String resolve) {
+        String path = uri.getPath();
+        if (path.endsWith("/")) {
+            return uri.resolve(resolve);
+        }
+        return URI.create(path + "/").resolve(resolve);
+    }
 }

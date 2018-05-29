@@ -11,9 +11,9 @@ import java.net.URI;
  * @date 2018/5/28
  */
 public interface SwiftFileSystem extends Closeable {
-    boolean write(URI remote, InputStream inputStream) throws SwiftFileException;
+    void write(URI remote, InputStream inputStream) throws SwiftFileException;
 
-    boolean write(InputStream inputStream) throws SwiftFileException;
+    void write(InputStream inputStream) throws SwiftFileException;
 
     SwiftFileSystem read(URI remote) throws SwiftFileException;
 
@@ -33,19 +33,17 @@ public interface SwiftFileSystem extends Closeable {
 
     SwiftFileSystem[] listFiles() throws SwiftFileException;
 
-    boolean isExists(URI remote);
-
     boolean isExists();
 
     boolean isDirectory();
-
-    boolean isFile();
 
     InputStream toStream();
 
     URI getResourceURI();
 
     String getResourceName();
+
+    void mkdirs();
 
     @Override
     void close() throws SwiftFileException;

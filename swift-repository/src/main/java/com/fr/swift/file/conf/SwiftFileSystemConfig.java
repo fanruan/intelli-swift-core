@@ -8,4 +8,11 @@ import com.fr.swift.file.system.SwiftFileSystemType;
  */
 public interface SwiftFileSystemConfig {
     SwiftFileSystemType getType();
+
+    SwiftFileSystemConfig DEFAULT = new SwiftFileSystemConfig() {
+        @Override
+        public SwiftFileSystemType getType() {
+            return SwiftFileSystemType.DEFAULT;
+        }
+    };
 }

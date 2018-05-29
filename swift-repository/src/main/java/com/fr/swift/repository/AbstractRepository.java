@@ -1,7 +1,6 @@
 package com.fr.swift.repository;
 
 import com.fr.swift.file.conf.SwiftFileSystemConfig;
-import com.fr.swift.file.exception.SwiftFileException;
 import com.fr.swift.file.system.SwiftFileSystem;
 import com.fr.swift.file.system.impl.DefaultFileSystemImpl;
 import com.fr.swift.file.system.impl.SwiftFileSystemImpl;
@@ -28,7 +27,7 @@ public abstract class AbstractRepository implements SwiftRepository {
     @Override
     public abstract boolean copyToRemote(URI local, URI remote) throws IOException;
 
-    private SwiftFileSystem createFileSystem(URI uri) {
+    public SwiftFileSystem createFileSystem(URI uri) {
         switch (configuration.getType()) {
 
             case SWIFT:
@@ -36,12 +35,5 @@ public abstract class AbstractRepository implements SwiftRepository {
             default:
                 return new DefaultFileSystemImpl(configuration, uri);
         }
-    }
-
-    public SwiftFileSystem getFileSystem(URI uri) {
-        if (null == fileSystem) {
-            fileSystem = createFileSystem(uri);
-        }
-        return fileSystem;
     }
 }
