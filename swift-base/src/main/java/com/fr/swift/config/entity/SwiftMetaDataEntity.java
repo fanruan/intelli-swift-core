@@ -18,7 +18,7 @@ import java.util.List;
  * @date 2018/5/24
  */
 @Entity
-@Table(name = "swift_metadata")
+@Table(name = "FINE_SWIFT_METADATA")
 public class SwiftMetaDataEntity implements Convert<SwiftMetaDataBean> {
 
     @Id
