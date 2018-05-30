@@ -30,6 +30,6 @@ public class FRClusterProxyFactory implements ProxyFactory {
 
     @Override
     public <T> Invoker<T> getInvoker(T proxy, Class<T> type, URL url) {
-        return new SwiftInvoker<>(proxy, type, url);
+        return new SwiftInvoker(proxy, type, url);
     }
 }

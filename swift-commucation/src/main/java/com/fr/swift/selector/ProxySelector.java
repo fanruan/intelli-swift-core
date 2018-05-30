@@ -11,7 +11,7 @@ import com.fr.swift.proxy.LocalProxyFactory;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class ProxySelector implements Selector {
+public class ProxySelector implements Selector<ProxyFactory> {
 
     private ProxyFactory proxyFactory;
 
@@ -19,9 +19,9 @@ public class ProxySelector implements Selector {
         proxyFactory = new LocalProxyFactory();
     }
 
-    private static final Selector INSTANCE = new ProxySelector();
+    private static final ProxySelector INSTANCE = new ProxySelector();
 
-    public static Selector getInstance() {
+    public static ProxySelector getInstance() {
         return INSTANCE;
     }
 
