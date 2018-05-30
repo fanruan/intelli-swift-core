@@ -30,6 +30,17 @@
             <artifactId>swift-base</artifactId>
             <version>5.0-FEATURE-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.finebi</groupId>
+            <artifactId>swift-commucation</artifactId>
+            <version>5.0-FEATURE-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.finebi</groupId>
+            <artifactId>swift-test</artifactId>
+            <version>5.0-FEATURE-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>

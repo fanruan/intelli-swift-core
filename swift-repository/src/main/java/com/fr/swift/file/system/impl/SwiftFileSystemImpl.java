@@ -1,7 +1,6 @@
 package com.fr.swift.file.system.impl;
 
 import com.fr.swift.file.conf.SwiftFileSystemConfig;
-import com.fr.swift.file.exception.SwiftFileException;
 import com.fr.swift.file.system.AbstractFileSystem;
 import com.fr.swift.file.system.SwiftFileSystem;
 
@@ -18,8 +17,7 @@ public class SwiftFileSystemImpl extends AbstractFileSystem {
     }
 
     @Override
-    public boolean write(URI remote, InputStream inputStream) {
-        return false;
+    public void write(URI remote, InputStream inputStream) {
     }
 
     @Override
@@ -43,7 +41,7 @@ public class SwiftFileSystemImpl extends AbstractFileSystem {
     }
 
     @Override
-    public boolean isExists(URI remote) {
+    public boolean isExists() {
         return false;
     }
 
@@ -53,13 +51,18 @@ public class SwiftFileSystemImpl extends AbstractFileSystem {
     }
 
     @Override
-    public boolean isFile() {
-        return false;
+    public InputStream toStream() {
+        return null;
     }
 
     @Override
-    public InputStream toStream() {
+    public String getResourceName() {
         return null;
+    }
+
+    @Override
+    public void mkdirs() {
+
     }
 
     @Override
