@@ -1,17 +1,15 @@
 package com.fr.swift.cube.io;
 
 import com.fr.base.FRContext;
-import com.fr.general.ComparatorUtils;
-import com.fr.swift.config.service.SwiftConfigServiceProvider;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.impl.mem.MemIo;
 import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.cube.io.output.Writer;
+import com.fr.swift.db.impl.SwiftDatabase.Schema;
 import com.fr.swift.source.SourceKey;
 
-import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +41,6 @@ public class ResourceDiscovery implements IResourceDiscovery {
 
     private static final ResourceDiscovery INSTANCE = new ResourceDiscovery();
 
-    private String defaultSwiftPath = FRContext.getCurrentEnv().getPath() + File.separator + "cubes";
 
     private Map<SourceKey, Long> lastUpdateTime;
 
@@ -141,9 +138,11 @@ public class ResourceDiscovery implements IResourceDiscovery {
         minorMemios.clear();
     }
 
+    private String defaultSwiftPath = String.format("%s/../", FRContext.getCurrentEnv().getPath());
+
     private static final Pattern MINOR_PATTERN = Pattern.compile("/minor_cubes/.+?/(.+)");
 
-    private static final Pattern PATTERN = Pattern.compile("/cubes/.+?/(.+)");
+    private static final Pattern PATTERN = Pattern.compile("/" + Schema.DECISION_LOG.dir + "/.+?/(.+)");
 
     private boolean isMinor(String path) {
         return path.contains("minor_cubes");
@@ -170,25 +169,6 @@ public class ResourceDiscovery implements IResourceDiscovery {
     @Override
     public Map<String, MemIo> removeCubeResource(String basePath) {
         return cubeMemios.remove(new ResourceLocation(basePath).getPath());
-    }
-
-    @Override
-    public String getCubePath() {
-        String swiftPath = SwiftConfigServiceProvider.getInstance().getSwiftPath();
-        if (checkCubePath(swiftPath)) {
-            return swiftPath;
-        }
-        return defaultSwiftPath;
-    }
-
-    @Override
-    public boolean setCubePath(String path) {
-        return SwiftConfigServiceProvider.getInstance().setSwiftPath(path);
-    }
-
-    @Override
-    public boolean checkCubePath(String path) {
-        return path != null && !ComparatorUtils.equals(path, "");
     }
 
     @Override

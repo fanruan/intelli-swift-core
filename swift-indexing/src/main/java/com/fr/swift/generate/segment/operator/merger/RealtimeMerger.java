@@ -1,6 +1,7 @@
 package com.fr.swift.generate.segment.operator.merger;
 
 import com.fr.general.ComparatorUtils;
+import com.fr.swift.config.SwiftCubePathConfig;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.service.SwiftConfigServiceProvider;
 import com.fr.swift.context.SwiftContext;
@@ -94,7 +95,9 @@ public class RealtimeMerger implements Merger {
 
 
     protected Segment createSegment(int order) {
-        String cubePath = ResourceDiscovery.getInstance().getCubePath() + "/" + cubeSourceKey + "/seg" + order;
+        String cubePath = String.format("%s/%s/seg%d",
+                SwiftCubePathConfig.getInstance().getPath(),
+                cubeSourceKey, order);
         IResourceLocation location = new ResourceLocation(cubePath);
         configSegment.add(new SegmentKeyBean(sourceKey.getId(), location.getUri(), order, StoreType.FINE_IO));
         return new HistorySegmentImpl(location, metaData);
@@ -103,7 +106,8 @@ public class RealtimeMerger implements Merger {
     public void release() {
         persistMeta();
         persistSegment();
-        ResourceDiscovery.getInstance().removeCubeResource(ResourceDiscovery.getInstance().getCubePath() + "/" + sourceKey.getId());
+        ResourceDiscovery.getInstance().removeCubeResource(String.format("%s/%s",
+                SwiftCubePathConfig.getInstance().getPath(), sourceKey.getId()));
     }
 
     protected void persistMeta() {

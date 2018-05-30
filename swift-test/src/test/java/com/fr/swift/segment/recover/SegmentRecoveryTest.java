@@ -1,5 +1,6 @@
 package com.fr.swift.segment.recover;
 
+import com.fr.swift.config.SwiftCubePathConfig;
 import com.fr.swift.config.TestConfDb;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.ResourceDiscovery;
@@ -53,7 +54,9 @@ public class SegmentRecoveryTest {
         Inserter inserter = operators.getRealtimeBlockSwiftInserter(dataSource);
         inserter.insertData(swiftResultSet);
 
-        String tablePath = ResourceDiscovery.getInstance().getCubePath() + "/" + dataSource.getSourceKey().getId();
+        String tablePath = String.format("%s/%s",
+                SwiftCubePathConfig.getInstance().getPath(),
+                dataSource.getSourceKey().getId());
         ResourceDiscovery.getInstance().removeCubeResource(tablePath);
         SwiftContext.getInstance().getBean(SegmentRecovery.class).recoverAll();
 

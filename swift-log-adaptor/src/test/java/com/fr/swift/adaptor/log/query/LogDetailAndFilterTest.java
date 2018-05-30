@@ -7,6 +7,7 @@ import com.fr.stable.query.restriction.Restriction;
 import com.fr.stable.query.restriction.RestrictionFactory;
 import com.fr.swift.adaptor.log.QueryConditionAdaptor;
 import com.fr.swift.cal.info.QueryInfo;
+import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.service.QueryRunnerProvider;
@@ -28,13 +29,15 @@ import java.util.List;
  */
 public class LogDetailAndFilterTest extends LogBaseTest {
 
+    private final Database db = SwiftDatabase.getInstance();
+
     public void testAnd() {
         try {
             DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "DBtestAnd");
-            if (!SwiftDatabase.getInstance().existsTable(new SourceKey("testAnd"))) {
-                SwiftDatabase.getInstance().createTable(new SourceKey("testAnd"), dataSource.getMetadata());
+            if (!db.existsTable(new SourceKey("testAnd"))) {
+                db.createTable(new SourceKey("testAnd"), dataSource.getMetadata());
             }
-            Table table = SwiftDatabase.getInstance().getTable(new SourceKey("testAnd"));
+            Table table = db.getTable(new SourceKey("testAnd"));
             transportAndIndex(dataSource, table);
 
             QueryCondition eqQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.eq("合同类型", "购买合同"))
@@ -60,10 +63,10 @@ public class LogDetailAndFilterTest extends LogBaseTest {
     public void testOr() {
         try {
             DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "DBtestAnd");
-            if (!SwiftDatabase.getInstance().existsTable(new SourceKey("testAnd"))) {
-                SwiftDatabase.getInstance().createTable(new SourceKey("testAnd"), dataSource.getMetadata());
+            if (!db.existsTable(new SourceKey("testAnd"))) {
+                db.createTable(new SourceKey("testAnd"), dataSource.getMetadata());
             }
-            Table table = SwiftDatabase.getInstance().getTable(new SourceKey("testAnd"));
+            Table table = db.getTable(new SourceKey("testAnd"));
             transportAndIndex(dataSource, table);
 
             List<Restriction> restrictions = new ArrayList<Restriction>();

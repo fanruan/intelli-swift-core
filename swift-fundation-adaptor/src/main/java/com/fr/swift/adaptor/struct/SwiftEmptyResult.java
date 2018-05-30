@@ -1,5 +1,6 @@
 package com.fr.swift.adaptor.struct;
 
+import com.fr.swift.db.impl.SwiftDatabase.Schema;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
@@ -47,6 +48,11 @@ public class SwiftEmptyResult implements SwiftResultSet{
 
             @Override
             public String getColumnRemark(int column) {
+                return null;
+            }
+
+            @Override
+            public Schema getSwiftSchema() {
                 return null;
             }
 
