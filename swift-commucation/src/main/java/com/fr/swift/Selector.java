@@ -7,9 +7,9 @@ package com.fr.swift;
  * @description
  * @since Advanced FineBI 5.0
  */
-public interface Selector {
+public interface Selector<T> {
 
-    ProxyFactory getFactory();
+    T getFactory();
 
-    void switchFactory(ProxyFactory proxyFactory);
+    void switchFactory(T proxyFactory);
 }
