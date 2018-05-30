@@ -8,7 +8,7 @@ import com.fr.cluster.rpc.base.Result;
 import com.fr.general.DataList;
 import com.fr.general.LogOperator;
 import com.fr.stable.query.condition.QueryCondition;
-import com.fr.swift.cluster.ClusterNodeManager;
+import com.fr.swift.frrpc.ClusterNodeManager;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 

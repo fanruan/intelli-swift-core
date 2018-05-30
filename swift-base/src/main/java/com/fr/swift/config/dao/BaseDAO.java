@@ -20,7 +20,7 @@ import java.util.List;
 public class BaseDAO<T> implements SwiftConfigDAO<T> {
     protected final SwiftLogger LOGGER = SwiftLoggers.getLogger(this.getClass());
 
-    private Class<T> entityClass;
+    protected Class<T> entityClass;
 
     public BaseDAO(Class<T> entityClass) {
         this.entityClass = entityClass;

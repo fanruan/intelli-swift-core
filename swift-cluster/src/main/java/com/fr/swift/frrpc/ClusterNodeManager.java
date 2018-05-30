@@ -1,4 +1,4 @@
-package com.fr.swift.cluster;
+package com.fr.swift.frrpc;
 
 import com.fr.cluster.ClusterBridge;
 import com.fr.cluster.core.ClusterNode;
@@ -12,13 +12,15 @@ import com.fr.cluster.core.ClusterNode;
  */
 public class ClusterNodeManager {
 
-    public ClusterNode masterNode;
-    public ClusterNode currentNode;
+    private ClusterNode masterNode;
+    private ClusterNode currentNode;
+    private boolean isCluster;
 
     private static final ClusterNodeManager INSTANCE = new ClusterNodeManager();
 
     private ClusterNodeManager() {
         this.currentNode = ClusterBridge.getView().getCurrent();
+        this.isCluster = false;
     }
 
     public static ClusterNodeManager getInstance() {
@@ -39,5 +41,28 @@ public class ClusterNodeManager {
 
     public ClusterNode getCurrentNode() {
         return currentNode;
+    }
+
+    public String getCurrentId() {
+        return currentNode.getID();
+    }
+
+    public String getMasterId() {
+        if (masterNode == null) {
+            return null;
+        }
+        return masterNode.getID();
+    }
+
+    public boolean isCluster() {
+        synchronized (ClusterNodeManager.class) {
+            return isCluster;
+        }
+    }
+
+    public void setCluster(boolean cluster) {
+        synchronized (ClusterNodeManager.class) {
+            isCluster = cluster;
+        }
     }
 }
