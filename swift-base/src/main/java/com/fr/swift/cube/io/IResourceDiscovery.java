@@ -37,12 +37,6 @@ public interface IResourceDiscovery extends Clearable {
 
     Map<String, MemIo> removeCubeResource(String basePath);
 
-    String getCubePath();
-
-    boolean setCubePath(String path);
-
-    boolean checkCubePath(String path);
-
     Date getLastUpdateTime(SourceKey sourceKey);
 
     void setLastUpdateTime(SourceKey sourceKey, long lastUpdateTime);

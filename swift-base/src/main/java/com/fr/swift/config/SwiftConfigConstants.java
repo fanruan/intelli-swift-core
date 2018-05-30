@@ -15,6 +15,7 @@ public class SwiftConfigConstants {
     }
 
     public static class MetaDataConfig {
+        public static final String COLUMN_SWIFT_SCHEMA = "swiftSchema";
         public static final String COLUMN_SCHEMA = "schemaName";
         public static final String COLUMN_TABLE_NAME = "tableName";
         public static final String COLUMN_REMARK = "remark";

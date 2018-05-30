@@ -1,6 +1,5 @@
 package com.fr.swift.context;
 
-import com.fr.third.springframework.beans.factory.BeanFactory;
 import com.fr.third.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
@@ -16,12 +15,16 @@ public class SwiftContext extends AnnotationConfigApplicationContext {
     private SwiftContext() {
     }
 
-    public static BeanFactory getInstance() {
+    public static SwiftContext getInstance() {
         return INSTANCE;
     }
 
     public static void init() {
-        INSTANCE.scan("com.fr.swift");
+        init("com.fr.swift");
+    }
+
+    public static void init(String... packages) {
+        INSTANCE.scan(packages);
         INSTANCE.refresh();
     }
 }
