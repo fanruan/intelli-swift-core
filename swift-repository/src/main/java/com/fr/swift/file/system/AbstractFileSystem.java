@@ -21,7 +21,7 @@ public abstract class AbstractFileSystem implements SwiftFileSystem {
 
     @Override
     public SwiftFileSystem[] listFiles() throws SwiftFileException {
-        if (isFile()) {
+        if (!isDirectory()) {
             throw new SwiftFileException(String.format("File path '%s' is not directory!", uri.getPath()));
         }
         return list();
@@ -35,8 +35,8 @@ public abstract class AbstractFileSystem implements SwiftFileSystem {
     }
 
     @Override
-    public boolean write(InputStream inputStream) throws SwiftFileException {
-        return write(uri, inputStream);
+    public void write(InputStream inputStream) throws SwiftFileException {
+        write(uri, inputStream);
     }
 
     @Override
@@ -59,8 +59,7 @@ public abstract class AbstractFileSystem implements SwiftFileSystem {
         return uri;
     }
 
-    @Override
-    public String getResourceName() {
-        return null;
+    public SwiftFileSystemConfig getConfig() {
+        return config;
     }
 }
