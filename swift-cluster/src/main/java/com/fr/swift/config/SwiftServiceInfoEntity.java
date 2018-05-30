@@ -3,6 +3,7 @@ package com.fr.swift.config;
 import com.fr.swift.config.bean.Convert;
 import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Entity;
+import com.fr.third.javax.persistence.Id;
 import com.fr.third.javax.persistence.Table;
 
 /**
@@ -14,7 +15,10 @@ import com.fr.third.javax.persistence.Table;
  */
 @Entity
 @Table(name = "swift_service_info")
-public class SwiftServiceInfoEntity extends com.fr.config.entity.Entity implements Convert<SwiftServiceInfoBean> {
+public class SwiftServiceInfoEntity implements Convert<SwiftServiceInfoBean> {
+
+    @Id
+    private String id;
 
     @Column(name = "service")
     private String service;
@@ -27,6 +31,14 @@ public class SwiftServiceInfoEntity extends com.fr.config.entity.Entity implemen
 
     @Column(name = "is_singleton")
     private boolean isSingleton;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getService() {
         return service;
