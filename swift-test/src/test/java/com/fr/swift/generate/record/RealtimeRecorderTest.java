@@ -59,7 +59,7 @@ public class RealtimeRecorderTest extends BaseTest {
 
             for (int i = 0; i < 7; i++) {
                 String cubePath = String.format("%s/%s/seg%d",
-                        SwiftCubePathConfig.getInstance().getPath(),
+                        SwiftCubePathConfig.getInstance().getPath(dataSource.getMetadata().getSwiftSchema()),
                         dataSource.getSourceKey().getId(), i);
                 IResourceLocation location = new ResourceLocation(cubePath, Types.StoreType.FINE_IO);
                 Segment segment = new HistorySegmentImpl(location, dataSource.getMetadata());
