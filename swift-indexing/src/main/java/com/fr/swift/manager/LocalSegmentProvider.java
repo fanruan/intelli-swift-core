@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by pony on 2017/12/14.
  */
-@Service
+@Service("LocalSegmentProvider")
 public class LocalSegmentProvider implements SwiftSegmentManager {
 
     private SwiftSegmentManager manager;
@@ -26,12 +26,17 @@ public class LocalSegmentProvider implements SwiftSegmentManager {
     }
 
     @Override
-    public List<Segment> getSegment(SourceKey sourceKey) {
-        return manager.getSegment(sourceKey);
+    public List<Segment> getSegment(SourceKey tableKey) {
+        return manager.getSegment(tableKey);
     }
 
     @Override
-    public boolean isSegmentsExist(SourceKey key) {
-        return manager.isSegmentsExist(key);
+    public List<SegmentKey> getSegmentKeys(SourceKey tableKey) {
+        return manager.getSegmentKeys(tableKey);
+    }
+
+    @Override
+    public boolean isSegmentsExist(SourceKey tableKey) {
+        return manager.isSegmentsExist(tableKey);
     }
 }

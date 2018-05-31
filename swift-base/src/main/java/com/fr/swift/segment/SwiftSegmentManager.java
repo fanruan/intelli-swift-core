@@ -12,7 +12,9 @@ import java.util.List;
 public interface SwiftSegmentManager {
     Segment getSegment(SegmentKey key);
 
-    List<Segment> getSegment(SourceKey sourceKey);
+    List<Segment> getSegment(SourceKey tableKey);
 
-    boolean isSegmentsExist(SourceKey key);
+    List<SegmentKey> getSegmentKeys(SourceKey tableKey);
+
+    boolean isSegmentsExist(SourceKey tableKey);
 }

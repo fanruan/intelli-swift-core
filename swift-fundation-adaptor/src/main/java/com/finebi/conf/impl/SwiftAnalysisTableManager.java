@@ -1,10 +1,7 @@
 package com.finebi.conf.impl;
 
 import com.finebi.base.constant.FineEngineType;
-import com.finebi.common.authority.role.FineAuthorityUser;
 import com.finebi.common.internalimp.config.session.CommonConfigManager;
-import com.finebi.common.structure.config.entryinfo.EntryInfo;
-import com.finebi.conf.constant.BIConfConstants;
 import com.finebi.common.structure.config.entryinfo.EntryInfo;
 import com.finebi.conf.constant.BIConfConstants.CONF.ADD_COLUMN.TIME;
 import com.finebi.conf.constant.BIConfConstants.CONF.GROUP.TYPE;
@@ -31,7 +28,6 @@ import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.filter.FineFilter;
 import com.finebi.conf.structure.result.BIDetailTableResult;
-import com.fr.decision.authority.data.User;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.transformer.FieldFactory;
 import com.fr.swift.log.SwiftLogger;
@@ -215,15 +211,6 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
         return new ArrayList<Object>();
     }
 
-    @Override
-    public Map<String, List<Object>> getRowValueByUserAuthority(User user) {
-        return null;
-    }
-
-    @Override
-    public BIDetailTableResult getRowValueByUserAuthority(String tableName, User user) {
-        return null;
-    }
 
     @Override
     public FineEngineType getEngineType() {

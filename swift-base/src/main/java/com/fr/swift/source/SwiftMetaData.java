@@ -1,5 +1,6 @@
 package com.fr.swift.source;
 
+import com.fr.swift.db.impl.SwiftDatabase.Schema;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 
 import java.util.List;
@@ -11,6 +12,8 @@ import java.util.List;
  * column 从1开始
  */
 public interface SwiftMetaData {
+    Schema getSwiftSchema();
+
     String getSchemaName() throws SwiftMetaDataException;
 
     String getTableName() throws SwiftMetaDataException;

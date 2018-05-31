@@ -16,7 +16,7 @@ import java.lang.reflect.Method;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class LocalInvoker<T> implements Invoker<T> {
+public class SwiftInvoker<T> implements Invoker<T> {
 
     private final T proxy;
 
@@ -24,7 +24,7 @@ public class LocalInvoker<T> implements Invoker<T> {
 
     private final URL url;
 
-    public LocalInvoker(T proxy, Class<T> type, URL url) {
+    public SwiftInvoker(T proxy, Class<T> type, URL url) {
         if (proxy == null) {
             throw new IllegalArgumentException("proxy == null");
         }

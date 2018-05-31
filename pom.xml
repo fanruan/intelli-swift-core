@@ -28,6 +28,7 @@
         <module>swift-boot</module>
         <module>swift-cluster</module>
         <module>swift-commucation</module>
+        <module>swift-repository</module>
     </modules>
 
     <properties>

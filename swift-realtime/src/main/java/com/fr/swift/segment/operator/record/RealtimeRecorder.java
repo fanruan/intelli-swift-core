@@ -2,7 +2,7 @@ package com.fr.swift.segment.operator.record;
 
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.MutableBitMap;
-import com.fr.swift.cube.io.ResourceDiscovery;
+import com.fr.swift.config.SwiftCubePathConfig;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
@@ -114,7 +114,9 @@ public class RealtimeRecorder implements Recorder {
     }
 
     private Segment createSegment(int index) {
-        String cubePath = ResourceDiscovery.getInstance().getCubePath() + "/" + cubeSourceKey + "/seg" + index;
+        String cubePath = String.format("%s/%s/seg%d",
+                SwiftCubePathConfig.getInstance().getPath(),
+                cubeSourceKey, index);
         IResourceLocation location = new ResourceLocation(cubePath, Types.StoreType.FINE_IO);
         return new HistorySegmentImpl(location, swiftMetaData);
     }

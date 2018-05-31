@@ -43,17 +43,6 @@ public class SwiftResult implements Result, Serializable {
     }
 
     @Override
-    @Deprecated
-    public Object getResult() {
-        return getValue();
-    }
-
-    @Deprecated
-    public void setResult(Object result) {
-        setValue(result);
-    }
-
-    @Override
     public Object getValue() {
         return result;
     }

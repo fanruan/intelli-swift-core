@@ -47,6 +47,11 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class MinorUpdater {
     /**
+     * minor cube的逻辑位置
+     */
+    public static final String MINOR_CUBES = "/minor_cubes";
+
+    /**
      * 预览数据过期时间
      */
     private static Map<SourceKey, Long> segmentsExpireMap = new ConcurrentHashMap<SourceKey, Long>();
@@ -71,7 +76,6 @@ public class MinorUpdater {
         if (isEtl(dataSource)) {
             buildEtl((EtlDataSource) dataSource);
         } else {
-//            MinorSegmentManager.getInstance().remove(dataSource.getSourceKey());
             build(dataSource);
         }
     }
@@ -206,9 +210,7 @@ public class MinorUpdater {
 
     private Segment createSegment(DataSource dataSource) {
         String cubeSourceKey = DataSourceUtils.getSwiftSourceKey(dataSource).getId();
-        String path = String.format("/%s/minor_cubes/%s/minor_seg",
-                ResourceDiscovery.getInstance().getCubePath(),
-                cubeSourceKey);
+        String path = String.format("%s/%s/minor_seg", MINOR_CUBES, cubeSourceKey);
         return new RealTimeSegmentImpl(new ResourceLocation(path, Types.StoreType.MEMORY), dataSource.getMetadata());
     }
 

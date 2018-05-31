@@ -1,7 +1,6 @@
 package com.fr.swift.config.dao;
 
 import com.fr.config.dao.HibernateTemplate;
-import com.fr.config.entity.Entity;
 import com.fr.stable.db.DBSession;
 import com.fr.store.access.AccessActionCallback;
 import com.fr.store.access.ResourceHolder;
@@ -18,10 +17,10 @@ import java.util.List;
  * @author yee
  * @date 2018/5/25
  */
-public class BaseDAO<T extends Entity> implements SwiftConfigDAO<T> {
+public class BaseDAO<T> implements SwiftConfigDAO<T> {
     protected final SwiftLogger LOGGER = SwiftLoggers.getLogger(this.getClass());
 
-    private Class<T> entityClass;
+    protected Class<T> entityClass;
 
     public BaseDAO(Class<T> entityClass) {
         this.entityClass = entityClass;

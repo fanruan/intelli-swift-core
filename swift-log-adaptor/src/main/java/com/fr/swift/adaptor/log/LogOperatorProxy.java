@@ -3,6 +3,12 @@ package com.fr.swift.adaptor.log;
 import com.fr.general.DataList;
 import com.fr.general.LogOperator;
 import com.fr.stable.query.condition.QueryCondition;
+import com.fr.swift.event.ClusterEvent;
+import com.fr.swift.event.ClusterEventListener;
+import com.fr.swift.event.ClusterEventType;
+import com.fr.swift.event.ClusterListenerHandler;
+import com.fr.swift.log.SwiftLogger;
+import com.fr.swift.log.SwiftLoggers;
 
 import java.util.List;
 
@@ -16,14 +22,23 @@ import java.util.List;
 public class LogOperatorProxy implements LogOperator {
 
     private LogOperator logOperator;
-
     private LogOperator singleLogOperator;
     private LogOperator clusterLogOperator;
+    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(LogOperatorProxy.class);
 
     private LogOperatorProxy() {
         this.singleLogOperator = new SwiftLogOperator();
-        //默认单机
         this.logOperator = singleLogOperator;
+        ClusterListenerHandler.addListener(new ClusterEventListener() {
+            @Override
+            public void handleEvent(ClusterEvent clusterEvent) {
+                if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
+                    switchCluster();
+                } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
+                    switchSingle();
+                }
+            }
+        });
     }
 
     @Override
@@ -65,6 +80,7 @@ public class LogOperatorProxy implements LogOperator {
         synchronized (LogOperatorProxy.class) {
             if (logOperator == clusterLogOperator) {
                 logOperator = singleLogOperator;
+                LOGGER.info("LogOperator switch to single successfully!");
                 return true;
             }
             return false;
@@ -78,6 +94,7 @@ public class LogOperatorProxy implements LogOperator {
                     this.clusterLogOperator = new SwiftClusterLogOperator();
                 }
                 logOperator = clusterLogOperator;
+                LOGGER.info("LogOperator switch to cluster successfully!");
                 return true;
             }
             return false;

@@ -125,11 +125,11 @@ public class SwiftLogOperator implements LogOperator {
                 return;
             }
 
-            dataMap.remove(entity);
             try {
                 Table table = db.getTable(new SourceKey(SwiftMetaAdaptor.getTableName(entity)));
                 SwiftResultSet rowSet = new LogRowSet(table.getMeta(), data, entity);
                 table.insert(rowSet);
+                dataMap.remove(entity);
             } catch (Exception e) {
                 SwiftLoggers.getLogger().error(e);
             }

@@ -2,7 +2,6 @@ package com.fr.swift.query.info;
 
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.query.builder.QueryType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.group.info.cursor.Cursor;
@@ -11,6 +10,7 @@ import com.fr.swift.query.info.target.DetailTarget;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
@@ -86,13 +86,15 @@ public class DetailQueryInfo extends AbstractQueryInfo<DetailResultSet> {
 
     protected class DetailSortComparator implements Comparator<Row> {
 
+        private final SwiftSegmentManager localSegmentProvider = SwiftContext.getInstance().getBean("LocalSegmentProvider", SwiftSegmentManager.class);
         private List<Column> columns;
+
         public DetailSortComparator() {
             columns = new ArrayList<Column>();
-            List<Segment> segments = SwiftContext.getInstance().getBean(LocalSegmentProvider.class).getSegment(getTable());
+            List<Segment> segments = localSegmentProvider.getSegment(getTable());
             if(segments.size() > 0) {
-                for (int i = 0; i < dimensions.length; i++) {
-                    columns.add(dimensions[i].getColumn(segments.get(0)));
+                for (Dimension dimension : dimensions) {
+                    columns.add(dimension.getColumn(segments.get(0)));
                 }
             }
         }

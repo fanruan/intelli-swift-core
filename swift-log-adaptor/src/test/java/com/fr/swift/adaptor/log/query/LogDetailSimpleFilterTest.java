@@ -6,6 +6,7 @@ import com.fr.stable.query.QueryFactory;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.restriction.RestrictionFactory;
 import com.fr.swift.adaptor.log.QueryConditionAdaptor;
+import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.query.info.QueryInfo;
@@ -28,14 +29,16 @@ import java.util.Set;
  */
 public class LogDetailSimpleFilterTest extends LogBaseTest {
 
+    private final Database db = SwiftDatabase.getInstance();
+
     @Test
     public void testEQ() {
         try {
             DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "DBtestEQ");
-            if (!SwiftDatabase.getInstance().existsTable(new SourceKey("testEQ"))) {
-                SwiftDatabase.getInstance().createTable(new SourceKey("testEQ"), dataSource.getMetadata());
+            if (!db.existsTable(new SourceKey("testEQ"))) {
+                db.createTable(new SourceKey("testEQ"), dataSource.getMetadata());
             }
-            Table table = SwiftDatabase.getInstance().getTable(new SourceKey("testEQ"));
+            Table table = db.getTable(new SourceKey("testEQ"));
             transportAndIndex(dataSource, table);
             //eq
             QueryCondition eqQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.eq("合同类型", "购买合同"));
@@ -57,10 +60,10 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
     public void testNEQ() {
         try {
             DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "DBtestNEQ");
-            if (!SwiftDatabase.getInstance().existsTable(new SourceKey("testNEQ"))) {
-                SwiftDatabase.getInstance().createTable(new SourceKey("testNEQ"), dataSource.getMetadata());
+            if (!db.existsTable(new SourceKey("testNEQ"))) {
+                db.createTable(new SourceKey("testNEQ"), dataSource.getMetadata());
             }
-            Table table = SwiftDatabase.getInstance().getTable(new SourceKey("testNEQ"));
+            Table table = db.getTable(new SourceKey("testNEQ"));
 
             transportAndIndex(dataSource, table);
             QueryCondition neqQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.neq("合同类型", "购买合同"));
@@ -81,10 +84,10 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
     public void testGT() {
         try {
             DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "DBtestGT");
-            if (!SwiftDatabase.getInstance().existsTable(new SourceKey("testGT"))) {
-                SwiftDatabase.getInstance().createTable(new SourceKey("testGT"), dataSource.getMetadata());
+            if (!db.existsTable(new SourceKey("testGT"))) {
+                db.createTable(new SourceKey("testGT"), dataSource.getMetadata());
             }
-            Table table = SwiftDatabase.getInstance().getTable(new SourceKey("testGT"));
+            Table table = db.getTable(new SourceKey("testGT"));
             transportAndIndex(dataSource, table);
 
             QueryCondition gtQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.gt("总金额", 1000000d));
@@ -110,10 +113,10 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
     public void testGTE() {
         try {
             DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "DBtestGTE");
-            if (!SwiftDatabase.getInstance().existsTable(new SourceKey("testGTE"))) {
-                SwiftDatabase.getInstance().createTable(new SourceKey("testGTE"), dataSource.getMetadata());
+            if (!db.existsTable(new SourceKey("testGTE"))) {
+                db.createTable(new SourceKey("testGTE"), dataSource.getMetadata());
             }
-            Table table = SwiftDatabase.getInstance().getTable(new SourceKey("testGTE"));
+            Table table = db.getTable(new SourceKey("testGTE"));
             transportAndIndex(dataSource, table);
 
             QueryCondition gteQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.gte("总金额", 1000000d));
@@ -140,10 +143,10 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
     public void testLT() {
         try {
             DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "DBtestLT");
-            if (!SwiftDatabase.getInstance().existsTable(new SourceKey("testLT"))) {
-                SwiftDatabase.getInstance().createTable(new SourceKey("testLT"), dataSource.getMetadata());
+            if (!db.existsTable(new SourceKey("testLT"))) {
+                db.createTable(new SourceKey("testLT"), dataSource.getMetadata());
             }
-            Table table = SwiftDatabase.getInstance().getTable(new SourceKey("testLT"));
+            Table table = db.getTable(new SourceKey("testLT"));
             transportAndIndex(dataSource, table);
 
             QueryCondition ltQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.lt("总金额", 1000000d));
@@ -169,10 +172,10 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
     public void testLTE() {
         try {
             DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "DBtestLTE");
-            if (!SwiftDatabase.getInstance().existsTable(new SourceKey("testLTE"))) {
-                SwiftDatabase.getInstance().createTable(new SourceKey("testLTE"), dataSource.getMetadata());
+            if (!db.existsTable(new SourceKey("testLTE"))) {
+                db.createTable(new SourceKey("testLTE"), dataSource.getMetadata());
             }
-            Table table = SwiftDatabase.getInstance().getTable(new SourceKey("testLTE"));
+            Table table = db.getTable(new SourceKey("testLTE"));
             transportAndIndex(dataSource, table);
 
             QueryCondition lteQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.lte("总金额", 1000000d));
@@ -198,10 +201,10 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
     public void testIn() {
         try {
             DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "DBtestIn");
-            if (!SwiftDatabase.getInstance().existsTable(new SourceKey("testIn"))) {
-                SwiftDatabase.getInstance().createTable(new SourceKey("testIn"), dataSource.getMetadata());
+            if (!db.existsTable(new SourceKey("testIn"))) {
+                db.createTable(new SourceKey("testIn"), dataSource.getMetadata());
             }
-            Table table = SwiftDatabase.getInstance().getTable(new SourceKey("testIn"));
+            Table table = db.getTable(new SourceKey("testIn"));
             transportAndIndex(dataSource, table);
 
             Set<String> set = new HashSet<String>();
@@ -226,10 +229,10 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
     public void testNotIn() {
         try {
             DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "DBtestNotIn");
-            if (!SwiftDatabase.getInstance().existsTable(new SourceKey("testNotIn"))) {
-                SwiftDatabase.getInstance().createTable(new SourceKey("testNotIn"), dataSource.getMetadata());
+            if (!db.existsTable(new SourceKey("testNotIn"))) {
+                db.createTable(new SourceKey("testNotIn"), dataSource.getMetadata());
             }
-            Table table = SwiftDatabase.getInstance().getTable(new SourceKey("testNotIn"));
+            Table table = db.getTable(new SourceKey("testNotIn"));
             transportAndIndex(dataSource, table);
 
             Set<String> set = new HashSet<String>();
@@ -254,10 +257,10 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
     public void testLike() {
         try {
             DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "DBtestLike");
-            if (!SwiftDatabase.getInstance().existsTable(new SourceKey("testLike"))) {
-                SwiftDatabase.getInstance().createTable(new SourceKey("testLike"), dataSource.getMetadata());
+            if (!db.existsTable(new SourceKey("testLike"))) {
+                db.createTable(new SourceKey("testLike"), dataSource.getMetadata());
             }
-            Table table = SwiftDatabase.getInstance().getTable(new SourceKey("testLike"));
+            Table table = db.getTable(new SourceKey("testLike"));
             transportAndIndex(dataSource, table);
 
             QueryCondition likeQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.like("合同类型", "协议"));
@@ -278,10 +281,10 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
     public void testStartWith() {
         try {
             DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "DBtestStartWith");
-            if (!SwiftDatabase.getInstance().existsTable(new SourceKey("testStartWith"))) {
-                SwiftDatabase.getInstance().createTable(new SourceKey("testStartWith"), dataSource.getMetadata());
+            if (!db.existsTable(new SourceKey("testStartWith"))) {
+                db.createTable(new SourceKey("testStartWith"), dataSource.getMetadata());
             }
-            Table table = SwiftDatabase.getInstance().getTable(new SourceKey("testStartWith"));
+            Table table = db.getTable(new SourceKey("testStartWith"));
             transportAndIndex(dataSource, table);
 
             QueryCondition startwithCondition = QueryFactory.create().addRestriction(RestrictionFactory.startWith("合同类型", "长期"));
@@ -302,10 +305,10 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
     public void testEndWith() {
         try {
             DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "DBtestEndWith");
-            if (!SwiftDatabase.getInstance().existsTable(new SourceKey("testEndWith"))) {
-                SwiftDatabase.getInstance().createTable(new SourceKey("testEndWith"), dataSource.getMetadata());
+            if (!db.existsTable(new SourceKey("testEndWith"))) {
+                db.createTable(new SourceKey("testEndWith"), dataSource.getMetadata());
             }
-            Table table = SwiftDatabase.getInstance().getTable(new SourceKey("testEndWith"));
+            Table table = db.getTable(new SourceKey("testEndWith"));
             transportAndIndex(dataSource, table);
 
             QueryCondition endwithCondition = QueryFactory.create().addRestriction(RestrictionFactory.startWith("合同类型", "合同"));

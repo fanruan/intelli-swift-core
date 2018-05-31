@@ -14,7 +14,7 @@ public class MonitorUtil {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(MonitorUtil.class);
 
-    private static ThreadLocal<Long> tl = new ThreadLocal<>();
+    private static ThreadLocal<Long> tl = new ThreadLocal<Long>();
 
     public static void start() {
         tl.set(System.currentTimeMillis());
@@ -22,6 +22,6 @@ public class MonitorUtil {
 
     public static void finish(String methodName) {
         long finishTime = System.currentTimeMillis();
-        LOGGER.debug(methodName + "cost time:" + (finishTime - tl.get()) + "ms");
+        LOGGER.info("method " + methodName + " cost time:" + (finishTime - tl.get()) + "ms");
     }
 }

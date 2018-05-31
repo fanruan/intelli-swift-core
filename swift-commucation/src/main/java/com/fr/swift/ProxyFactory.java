@@ -9,7 +9,7 @@ package com.fr.swift;
  */
 public interface ProxyFactory {
 
-    <T> T getProxy(Invoker<T> invoker);
+    <T> T getProxy(Invoker<T> invoker) throws Exception;
 
     <T> Invoker<T> getInvoker(T proxy, Class<T> type, URL url);
 

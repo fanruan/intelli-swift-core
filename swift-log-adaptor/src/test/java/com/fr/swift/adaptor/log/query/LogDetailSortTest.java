@@ -4,6 +4,7 @@ import com.fr.annotation.Test;
 import com.fr.stable.query.QueryFactory;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.swift.adaptor.log.QueryConditionAdaptor;
+import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.query.info.QueryInfo;
@@ -26,14 +27,16 @@ import java.util.List;
  */
 public class LogDetailSortTest extends LogBaseTest {
 
+    private final Database db = SwiftDatabase.getInstance();
+
     @Test
     public void testSortedAsc() {
         try {
             DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "DBtestSortedAsc");
-            if (!SwiftDatabase.getInstance().existsTable(new SourceKey("testSortedAsc"))) {
-                SwiftDatabase.getInstance().createTable(new SourceKey("testSortedAsc"), dataSource.getMetadata());
+            if (!db.existsTable(new SourceKey("testSortedAsc"))) {
+                db.createTable(new SourceKey("testSortedAsc"), dataSource.getMetadata());
             }
-            Table table = SwiftDatabase.getInstance().getTable(new SourceKey("testSortedAsc"));
+            Table table = db.getTable(new SourceKey("testSortedAsc"));
             transportAndIndex(dataSource, table);
 
             QueryCondition sortQueryCondition = QueryFactory.create().addSort("总金额");
@@ -59,10 +62,10 @@ public class LogDetailSortTest extends LogBaseTest {
     public void testSortedDesc() {
         try {
             DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "DBtestSortedDesc");
-            if (!SwiftDatabase.getInstance().existsTable(new SourceKey("testSortedDesc"))) {
-                SwiftDatabase.getInstance().createTable(new SourceKey("testSortedDesc"), dataSource.getMetadata());
+            if (!db.existsTable(new SourceKey("testSortedDesc"))) {
+                db.createTable(new SourceKey("testSortedDesc"), dataSource.getMetadata());
             }
-            Table table = SwiftDatabase.getInstance().getTable(new SourceKey("testSortedDesc"));
+            Table table = db.getTable(new SourceKey("testSortedDesc"));
             transportAndIndex(dataSource, table);
 
             QueryCondition sortQueryCondition = QueryFactory.create().addSort("总金额", true);
