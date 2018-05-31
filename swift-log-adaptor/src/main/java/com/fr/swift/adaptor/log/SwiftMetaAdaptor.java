@@ -2,6 +2,7 @@ package com.fr.swift.adaptor.log;
 
 import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
+import com.fr.swift.db.impl.SwiftDatabase.Schema;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.util.Crasher;
@@ -32,7 +33,7 @@ class SwiftMetaAdaptor {
                     getSqlType(getClassType(field)));
             columnMetas.add(columnMeta);
         }
-        return new SwiftMetaDataBean(getTableName(entity), columnMetas);
+        return new SwiftMetaDataBean(Schema.DECISION_LOG, getTableName(entity), columnMetas);
     }
 
     static List<Field> getFields(Class<?> entity) {

@@ -1,7 +1,7 @@
 package com.fr.swift.config.service;
 
 import com.fr.config.Configuration;
-import com.fr.swift.config.SwiftPathConfig;
+import com.fr.swift.config.SwiftCubePathConfig;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.config.dao.SwiftMetaDataDAO;
@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SwiftConfigServiceImpl implements SwiftConfigService {
 
-    private SwiftPathConfig swiftPathConfig = SwiftPathConfig.getInstance();
+    private SwiftCubePathConfig swiftCubePathConfig = SwiftCubePathConfig.getInstance();
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftConfigServiceImpl.class);
 
     private ConcurrentHashMap<String, SwiftMetaData> metaDataCache = new ConcurrentHashMap<String, SwiftMetaData>();
@@ -320,20 +320,20 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
         return Configurations.update(new SwiftPathConfigWorker() {
             @Override
             public void run() {
-                swiftPathConfig.setPath(path);
+                swiftCubePathConfig.setPath(path);
             }
         });
     }
 
     @Override
     public String getSwiftPath() {
-        return this.swiftPathConfig.getPath();
+        return this.swiftCubePathConfig.getPath();
     }
 
     private abstract class SwiftPathConfigWorker implements Worker {
         @Override
         public Class<? extends Configuration>[] targets() {
-            return new Class[]{SwiftPathConfig.class};
+            return new Class[]{SwiftCubePathConfig.class};
         }
     }
 }

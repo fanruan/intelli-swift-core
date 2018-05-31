@@ -2,7 +2,7 @@ package com.fr.swift.generate.record;
 
 import com.fr.base.FRContext;
 import com.fr.dav.LocalEnv;
-import com.fr.swift.cube.io.ResourceDiscovery;
+import com.fr.swift.config.SwiftCubePathConfig;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
@@ -58,7 +58,9 @@ public class RealtimeRecorderTest extends BaseTest {
             realtimeRecorder.end();
 
             for (int i = 0; i < 7; i++) {
-                String cubePath = ResourceDiscovery.getInstance().getCubePath() + "/" + dataSource.getSourceKey().getId() + "/seg" + i;
+                String cubePath = String.format("%s/%s/seg%d",
+                        SwiftCubePathConfig.getInstance().getPath(),
+                        dataSource.getSourceKey().getId(), i);
                 IResourceLocation location = new ResourceLocation(cubePath, Types.StoreType.FINE_IO);
                 Segment segment = new HistorySegmentImpl(location, dataSource.getMetadata());
 

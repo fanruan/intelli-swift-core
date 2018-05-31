@@ -4,6 +4,7 @@ import com.fr.general.DataList;
 import com.fr.stable.query.QueryFactory;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.swift.adaptor.log.LogOperatorProxy;
+import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.source.DataSource;
@@ -19,13 +20,15 @@ import com.fr.swift.source.db.QueryDBSource;
  */
 public class LogDetailTest extends LogBaseTest {
 
+    private final Database db = SwiftDatabase.getInstance();
+
     public void testFind() {
         try {
             DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "DEMO_CONTRACT");
-            if (!SwiftDatabase.getInstance().existsTable(new SourceKey("DEMO_CONTRACT"))) {
-                SwiftDatabase.getInstance().createTable(new SourceKey("DEMO_CONTRACT"), dataSource.getMetadata());
+            if (!db.existsTable(new SourceKey("DEMO_CONTRACT"))) {
+                db.createTable(new SourceKey("DEMO_CONTRACT"), dataSource.getMetadata());
             }
-            Table table = SwiftDatabase.getInstance().getTable(new SourceKey("DEMO_CONTRACT"));
+            Table table = db.getTable(new SourceKey("DEMO_CONTRACT"));
             transportAndIndex(dataSource, table);
 
             QueryCondition sortQueryCondition = QueryFactory.create();

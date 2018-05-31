@@ -25,9 +25,9 @@ import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.transformer.RelationSourceFactory;
 import com.fr.swift.conf.dashboard.DashboardPackageTableService;
 import com.fr.swift.conf.updateInfo.TableUpdateInfoConfigService;
+import com.fr.swift.config.SwiftCubePathConfig;
 import com.fr.swift.constants.UpdateConstants;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.task.Task;
 import com.fr.swift.cube.task.TaskKey;
@@ -482,19 +482,17 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
     @Override
     public String getUpdatePath() {
-        return ResourceDiscovery.getInstance().getCubePath();
+        return SwiftCubePathConfig.getInstance().getPath();
     }
 
     @Override
     public void updatePath(String newPath) {
-        if (ResourceDiscovery.getInstance().checkCubePath(newPath)) {
-            ResourceDiscovery.getInstance().setCubePath(newPath);
-        }
+        SwiftCubePathConfig.getInstance().setPath(newPath);
     }
 
     @Override
     public boolean checkPath(String path) {
-        return ResourceDiscovery.getInstance().checkCubePath(path);
+        return SwiftCubePathConfig.isValidPath(path);
     }
 
     @Override
