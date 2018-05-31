@@ -1,6 +1,6 @@
 package com.fr.swift.result.node.cal;
 
-import com.fr.swift.query.adapter.target.GroupTarget;
+import com.fr.swift.query.info.target.GroupTarget;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.structure.iterator.Filter;
 import com.fr.swift.structure.iterator.FilteredIterator;

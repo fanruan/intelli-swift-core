@@ -1,10 +1,10 @@
 package com.fr.swift.result.node.cal;
 
-import com.fr.swift.query.adapter.target.GroupTarget;
-import com.fr.swift.query.adapter.target.cal.BrotherGroupTarget;
-import com.fr.swift.query.adapter.target.cal.CalTargetType;
-import com.fr.swift.query.adapter.target.cal.GroupFormulaTarget;
 import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.query.info.target.GroupTarget;
+import com.fr.swift.query.info.target.cal.BrotherGroupTarget;
+import com.fr.swift.query.info.target.cal.CalTargetType;
+import com.fr.swift.query.info.target.cal.GroupFormulaTarget;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.XLeftNode;
 import com.fr.swift.result.node.iterator.CurrentDimensionIterator;

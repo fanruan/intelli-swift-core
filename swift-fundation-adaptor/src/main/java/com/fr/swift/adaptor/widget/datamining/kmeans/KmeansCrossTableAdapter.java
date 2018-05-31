@@ -5,11 +5,11 @@ import com.finebi.conf.internalimp.dashboard.widget.table.CrossTableWidget;
 import com.fr.engine.compare.CompareUtil;
 import com.fr.swift.adaptor.widget.datamining.DMErrorWrap;
 import com.fr.swift.adaptor.widget.datamining.SwiftAlgorithmResultAdapter;
-import com.fr.swift.cal.info.XGroupQueryInfo;
-import com.fr.swift.cal.targetcal.group.XGroupTargetCalQuery;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.query.info.XGroupQueryInfo;
+import com.fr.swift.query.post.group.XGroupPostQuery;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.TopGroupNode;
@@ -163,7 +163,7 @@ public class KmeansCrossTableAdapter extends SwiftAlgorithmResultAdapter<KmeansB
             topNode.setTopGroupValues(null); // 不设置为null他不计算根节点
             GroupNodeAggregateUtils.aggregate(NodeType.TOP_GROUP, topDepth, topNode, info.getTargetInfo().getResultAggregators());
             // 先更新一下xLeftNode#valueArrayList（包含topGroupNode所有列（包括汇总列）的某一行)
-            XGroupTargetCalQuery.updateXLeftNode(clusterDepth, topDepth, xNodeResultAdapter(xLeftResultNode, topNode));
+            XGroupPostQuery.updateXLeftNode(clusterDepth, topDepth, xNodeResultAdapter(xLeftResultNode, topNode));
 
             // 把XLeft的中间值，转化成XValue最终结果
             XNodeUtils.setValues2XLeftNode(info.getColDimensionInfo().isShowSum(), topDepth, clusterDepth,

@@ -1,6 +1,6 @@
 package com.fr.swift.result;
 
-import com.fr.swift.cal.Query;
+import com.fr.swift.query.Query;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 

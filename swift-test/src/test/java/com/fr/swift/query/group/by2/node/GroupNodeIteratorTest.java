@@ -2,8 +2,6 @@ package com.fr.swift.query.group.by2.node;
 
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.query.adapter.dimension.ExpanderImpl;
-import com.fr.swift.query.adapter.dimension.ExpanderType;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.filter.match.MatchConverter;
@@ -14,6 +12,8 @@ import com.fr.swift.query.group.by2.node.mapper.GroupNodeRowMapper;
 import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.query.group.info.GroupByInfoImpl;
 import com.fr.swift.query.group.info.MetricInfoImpl;
+import com.fr.swift.query.group.info.cursor.ExpanderImpl;
+import com.fr.swift.query.group.info.cursor.ExpanderType;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.row.RowIndexKey;

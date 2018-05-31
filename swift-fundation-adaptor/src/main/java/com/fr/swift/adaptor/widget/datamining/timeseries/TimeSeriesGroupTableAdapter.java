@@ -19,14 +19,14 @@ import com.finebi.log.BILoggerFactory;
 import com.fr.swift.adaptor.widget.datamining.DMErrorWrap;
 import com.fr.swift.adaptor.widget.datamining.DMSwiftWidgetUtils;
 import com.fr.swift.adaptor.widget.datamining.SwiftAlgorithmResultAdapter;
-import com.fr.swift.cal.info.GroupQueryInfo;
-import com.fr.swift.cal.info.XGroupQueryInfo;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.query.adapter.target.TargetInfo;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
 import com.fr.swift.query.aggregator.WrappedAggregator;
+import com.fr.swift.query.info.GroupQueryInfoImpl;
+import com.fr.swift.query.info.XGroupQueryInfo;
+import com.fr.swift.query.info.target.TargetInfo;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSetImpl;
 import com.fr.swift.result.NodeResultSet;
@@ -47,12 +47,12 @@ import java.util.Map;
 /**
  * Created by Jonas on 2018/5/9.
  */
-public class TimeSeriesGroupTableAdapter extends SwiftAlgorithmResultAdapter<HoltWintersBean, AbstractTableWidget, NodeResultSet, GroupQueryInfo> {
+public class TimeSeriesGroupTableAdapter extends SwiftAlgorithmResultAdapter<HoltWintersBean, AbstractTableWidget, NodeResultSet, GroupQueryInfoImpl> {
 
     private double[][] confidence;
     private boolean isCalculateConfidence = false;
 
-    public TimeSeriesGroupTableAdapter(HoltWintersBean bean, AbstractTableWidget widget, NodeResultSet result, GroupQueryInfo info, DMErrorWrap errorWrap) {
+    public TimeSeriesGroupTableAdapter(HoltWintersBean bean, AbstractTableWidget widget, NodeResultSet result, GroupQueryInfoImpl info, DMErrorWrap errorWrap) {
         super(bean, widget, result, info, errorWrap);
     }
 

@@ -35,23 +35,23 @@ import com.fr.stable.StringUtils;
 import com.fr.swift.adaptor.linkage.LinkageAdaptor;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.transformer.filter.date.DateUtils;
-import com.fr.swift.cal.info.DetailQueryInfo;
-import com.fr.swift.cal.info.GroupQueryInfo;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.query.adapter.dimension.AllCursor;
-import com.fr.swift.query.adapter.dimension.DetailDimension;
-import com.fr.swift.query.adapter.dimension.Dimension;
-import com.fr.swift.query.adapter.dimension.DimensionInfoImpl;
-import com.fr.swift.query.adapter.dimension.GroupDimension;
-import com.fr.swift.query.adapter.metric.Metric;
-import com.fr.swift.query.adapter.target.GroupTarget;
-import com.fr.swift.query.adapter.target.cal.ResultTarget;
-import com.fr.swift.query.adapter.target.cal.TargetInfoImpl;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
+import com.fr.swift.query.group.info.cursor.AllCursor;
+import com.fr.swift.query.info.DetailQueryInfo;
+import com.fr.swift.query.info.GroupQueryInfoImpl;
+import com.fr.swift.query.info.dimension.DetailDimension;
+import com.fr.swift.query.info.dimension.Dimension;
+import com.fr.swift.query.info.dimension.DimensionInfoImpl;
+import com.fr.swift.query.info.dimension.GroupDimension;
+import com.fr.swift.query.info.metric.Metric;
+import com.fr.swift.query.info.target.GroupTarget;
+import com.fr.swift.query.info.target.cal.ResultTarget;
+import com.fr.swift.query.info.target.cal.TargetInfoImpl;
 import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.DescSort;
 import com.fr.swift.result.DetailResultSet;
@@ -159,10 +159,11 @@ public abstract class AbstractWidgetAdaptor {
     static void dealWithDimensionDirectFilter(List<FilterInfo> filterInfoList, List<Dimension> dimensions) {
         // 维度上的直接过滤，提取出来
         for (Dimension dimension : dimensions) {
-            FilterInfo filter = dimension.getFilter();
-            if (filter != null && !filter.isMatchFilter()) {
-                filterInfoList.add(dimension.getFilter());
-            }
+            // TODO: 2018/5/30
+//            FilterInfo filter = dimension.getFilter();
+//            if (filter != null && !filter.isMatchFilter()) {
+//                filterInfoList.add(dimension.getFilter());
+//            }
         }
     }
 
@@ -364,7 +365,7 @@ public abstract class AbstractWidgetAdaptor {
         LinkageAdaptor.handleCrossTempletClick(tableName, globalBean, filters, fromColumns, toColumns);
         // 分组表查询
         FilterInfo filterInfo = new GeneralFilterInfo(filters, GeneralFilterInfo.AND);
-        GroupQueryInfo queryInfo = new GroupQueryInfo(globalBean.getLinkedWidget().getwId(), fromColumns[0].getSourceKey(),
+        GroupQueryInfoImpl queryInfo = new GroupQueryInfoImpl(globalBean.getLinkedWidget().getwId(), fromColumns[0].getSourceKey(),
                 new DimensionInfoImpl(new AllCursor(), filterInfo, null, fromColumns),
                 new TargetInfoImpl(0, new ArrayList<Metric>(0), new ArrayList<GroupTarget>(0), new ArrayList<ResultTarget>(0), new ArrayList<Aggregator>(0)));
         SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);

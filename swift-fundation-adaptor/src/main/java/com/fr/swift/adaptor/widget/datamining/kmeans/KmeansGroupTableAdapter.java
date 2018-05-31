@@ -6,18 +6,16 @@ import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.fr.swift.adaptor.widget.datamining.DMErrorWrap;
 import com.fr.swift.adaptor.widget.datamining.SwiftAlgorithmResultAdapter;
-import com.fr.swift.cal.info.GroupQueryInfo;
-import com.fr.swift.query.adapter.dimension.DimensionInfo;
-import com.fr.swift.query.adapter.target.TargetInfo;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.query.info.GroupQueryInfoImpl;
+import com.fr.swift.query.info.dimension.DimensionInfo;
+import com.fr.swift.query.info.target.TargetInfo;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSetImpl;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.node.GroupNodeAggregateUtils;
 import com.fr.swift.result.node.NodeType;
-import com.fr.swift.result.node.iterator.BFTGroupNodeIterator;
-import com.fr.swift.result.node.iterator.NLevelGroupNodeIterator;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.util.ArrayList;
@@ -28,10 +26,10 @@ import java.util.Map;
 /**
  * @author qingj
  */
-public class KmeansGroupTableAdapter extends SwiftAlgorithmResultAdapter<KmeansBean, AbstractTableWidget, NodeResultSet, GroupQueryInfo> {
+public class KmeansGroupTableAdapter extends SwiftAlgorithmResultAdapter<KmeansBean, AbstractTableWidget, NodeResultSet, GroupQueryInfoImpl> {
 
 
-    public KmeansGroupTableAdapter(KmeansBean bean, AbstractTableWidget widget, NodeResultSet result, GroupQueryInfo info, DMErrorWrap errorWrap) {
+    public KmeansGroupTableAdapter(KmeansBean bean, AbstractTableWidget widget, NodeResultSet result, GroupQueryInfoImpl info, DMErrorWrap errorWrap) {
         super(bean, widget, result, info, errorWrap);
     }
 
@@ -86,7 +84,7 @@ public class KmeansGroupTableAdapter extends SwiftAlgorithmResultAdapter<KmeansB
      * @return 添加后的根节点
      * @throws Exception
      */
-    private GroupNode addFirstDimension(GroupNode rootNode, KmeansPredict kmeans, GroupQueryInfo info) throws Exception {
+    private GroupNode addFirstDimension(GroupNode rootNode, KmeansPredict kmeans, GroupQueryInfoImpl info) throws Exception {
         GroupNode resultRootNode = new GroupNode(-1, null);
         Map<Integer, GroupNode> childNodes = new HashMap<Integer, GroupNode>(kmeans.getCluster());
         for (int i = 0; i < rootNode.getChildrenSize(); i++) {

@@ -9,7 +9,7 @@ import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
 import com.finebi.conf.structure.analysis.vistor.DMBeanVisitor;
 import com.fr.swift.adaptor.widget.datamining.kmeans.KmeansGroupTableAdapter;
 import com.fr.swift.adaptor.widget.datamining.timeseries.TimeSeriesGroupTableAdapter;
-import com.fr.swift.cal.info.GroupQueryInfo;
+import com.fr.swift.query.info.GroupQueryInfoImpl;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.source.SwiftResultSet;
 
@@ -19,10 +19,10 @@ import com.fr.swift.source.SwiftResultSet;
 public class GroupTableToDMResultVisitor implements DMBeanVisitor<SwiftResultSet> {
     private NodeResultSet result;
     private TableWidget widget;
-    private GroupQueryInfo info;
+    private GroupQueryInfoImpl info;
     private DMErrorWrap errorWrap;
 
-    public GroupTableToDMResultVisitor(NodeResultSet result, TableWidget widget, GroupQueryInfo info, DMErrorWrap errorWrap) {
+    public GroupTableToDMResultVisitor(NodeResultSet result, TableWidget widget, GroupQueryInfoImpl info, DMErrorWrap errorWrap) {
         this.result = result;
         this.widget = widget;
         this.info = info;

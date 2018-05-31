@@ -11,18 +11,18 @@ import com.fr.swift.adaptor.widget.datamining.CrossTableToDMResultVisitor;
 import com.fr.swift.adaptor.widget.datamining.DMErrorWrap;
 import com.fr.swift.adaptor.widget.expander.ExpanderFactory;
 import com.fr.swift.adaptor.widget.target.TargetInfoUtils;
-import com.fr.swift.cal.info.GroupQueryInfo;
-import com.fr.swift.cal.info.XGroupQueryInfo;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.query.adapter.dimension.AllCursor;
-import com.fr.swift.query.adapter.dimension.Dimension;
-import com.fr.swift.query.adapter.dimension.DimensionInfo;
-import com.fr.swift.query.adapter.dimension.DimensionInfoImpl;
-import com.fr.swift.query.adapter.dimension.Expander;
-import com.fr.swift.query.adapter.target.TargetInfo;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.query.group.info.cursor.AllCursor;
+import com.fr.swift.query.group.info.cursor.Expander;
+import com.fr.swift.query.info.GroupQueryInfoImpl;
+import com.fr.swift.query.info.XGroupQueryInfo;
+import com.fr.swift.query.info.dimension.Dimension;
+import com.fr.swift.query.info.dimension.DimensionInfo;
+import com.fr.swift.query.info.dimension.DimensionInfoImpl;
+import com.fr.swift.query.info.target.TargetInfo;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.NodeResultSet;
@@ -60,7 +60,7 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor {
             XGroupQueryInfo queryInfo = buildQueryInfo(widget, targetInfo);
             if (queryInfo.getColDimensionInfo().getDimensions().length == 0) {
                 // 列表头为空
-                GroupQueryInfo groupQueryInfo = new GroupQueryInfo(queryInfo.getQueryId(), queryInfo.getTable(),
+                GroupQueryInfoImpl groupQueryInfo = new GroupQueryInfoImpl(queryInfo.getQueryId(), queryInfo.getTable(),
                         queryInfo.getDimensionInfo(), queryInfo.getTargetInfo());
                 NodeMergeResultSet result = (NodeMergeResultSet) QueryRunnerProvider.getInstance().executeQuery(groupQueryInfo);
 
@@ -70,7 +70,7 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor {
                 crossNode = new BICrossNodeAdaptor(new XGroupNodeImpl(new GroupNode2XLeftNodeAdaptor((GroupNode) result.getNode()), new GroupNode()));
             } else if (queryInfo.getDimensionInfo().getDimensions().length == 0) {
                 // 行表头为空
-                GroupQueryInfo groupQueryInfo = new GroupQueryInfo(queryInfo.getQueryId(), queryInfo.getTable(),
+                GroupQueryInfoImpl groupQueryInfo = new GroupQueryInfoImpl(queryInfo.getQueryId(), queryInfo.getTable(),
                         queryInfo.getColDimensionInfo(), queryInfo.getTargetInfo());
                 NodeMergeResultSet result = (NodeMergeResultSet) QueryRunnerProvider.getInstance().executeQuery(groupQueryInfo);
 
