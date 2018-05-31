@@ -45,11 +45,11 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable, Convert<S
     }
 
     public SwiftMetaDataBean(String tableName, String remark, String schema, List<SwiftMetaDataColumn> fields) {
-        this(null, Schema.DEFAULT, schema, tableName, remark, fields);
+        this(null, Schema.CUBE, schema, tableName, remark, fields);
     }
 
     public SwiftMetaDataBean(String id, String schema, String tableName, String remark, List<SwiftMetaDataColumn> fields) {
-        this(id, Schema.DEFAULT, schema, tableName, remark, fields);
+        this(id, Schema.CUBE, schema, tableName, remark, fields);
     }
 
     public SwiftMetaDataBean(SwiftMetaDataEntity metaEntity) {

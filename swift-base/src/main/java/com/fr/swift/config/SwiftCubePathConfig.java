@@ -25,7 +25,7 @@ public class SwiftCubePathConfig extends DefaultConfiguration {
 
     private MapConf<Map<String, String>> paths = Holders.map(new HashMap<String, String>(), String.class, String.class);
 
-    private static final String DEFAULT_CUBE_PATH = String.format("%s/../%s", FRContext.getCurrentEnv().getPath(), Schema.DECISION_LOG.dir);
+    private static final String BASE_CUBE_PATH = String.format("%s/../", FRContext.getCurrentEnv().getPath());
 
     public static SwiftCubePathConfig getInstance() {
         if (null == config) {
@@ -35,11 +35,11 @@ public class SwiftCubePathConfig extends DefaultConfiguration {
     }
 
     public void setPath(String path) {
-        setPath(Schema.DECISION_LOG, path);
+        setPath(Schema.CUBE, path);
     }
 
     public String getPath() {
-        return getPath(Schema.DECISION_LOG);
+        return getPath(Schema.CUBE);
     }
 
     public void setPath(Schema swiftSchema, String path) {
@@ -52,7 +52,7 @@ public class SwiftCubePathConfig extends DefaultConfiguration {
         if (paths.containsKey(swiftSchema.name)) {
             return (String) paths.get(swiftSchema.name);
         }
-        return DEFAULT_CUBE_PATH;
+        return BASE_CUBE_PATH + swiftSchema.dir;
     }
 
     public static boolean isValidPath(String path) {
