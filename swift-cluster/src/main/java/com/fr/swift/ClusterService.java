@@ -11,4 +11,6 @@ public interface ClusterService {
     boolean competeMaster();
 
     void rpcSend(String masterId, Object object);
+
+    void rpcSend();
 }
