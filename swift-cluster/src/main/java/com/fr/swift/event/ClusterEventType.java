@@ -8,5 +8,5 @@ package com.fr.swift.event;
  * @since Advanced FineBI 5.0
  */
 public enum ClusterEventType {
-    JOIN_CLUSTER, LEFT_CLUSTER;
+    JOIN_CLUSTER, LEFT_CLUSTER
 }

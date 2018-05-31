@@ -1,7 +1,6 @@
 package com.fr.swift.config;
 
 import com.fr.swift.config.bean.Convert;
-import com.fr.third.javax.persistence.Id;
 
 import java.io.Serializable;
 
