@@ -30,6 +30,11 @@ public class RemoteSegmentProvider implements SwiftSegmentManager {
     }
 
     @Override
+    public List<SegmentKey> getSegmentKeys(SourceKey sourceKey) {
+        return null;
+    }
+
+    @Override
     public boolean isSegmentsExist(SourceKey key) {
         return false;
     }

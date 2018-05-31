@@ -1,7 +1,6 @@
 package com.fr.swift.generate.segment.operator.merger;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
@@ -10,7 +9,6 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +28,7 @@ class MergerResultSet implements SwiftResultSet {
     private List<Row> rowList;
     private int currentSegment;
 
-    public MergerResultSet(List<Segment> segmentList, int alloterCount, SwiftMetaData swiftMetaData) throws SwiftMetaDataException {
+    public MergerResultSet(List<Segment> segmentList, int alloterCount, SwiftMetaData swiftMetaData) {
         this.segmentList = segmentList;
         this.alloterCount = alloterCount;
         this.swiftMetaData = swiftMetaData;
@@ -47,8 +45,8 @@ class MergerResultSet implements SwiftResultSet {
                     continue;
                 }
                 List<Object> values = new ArrayList<Object>();
-                for (int j = 0; j < fieldNames.size(); j++) {
-                    Column column = segment.getColumn(new ColumnKey(fieldNames.get(j)));
+                for (String fieldName : fieldNames) {
+                    Column column = segment.getColumn(new ColumnKey(fieldName));
                     if (column.getBitmapIndex().getNullIndex().contains(i)) {
                         values.add(null);
                     } else {
@@ -62,25 +60,22 @@ class MergerResultSet implements SwiftResultSet {
     }
 
     @Override
-    public SwiftMetaData getMetaData() throws SQLException {
+    public SwiftMetaData getMetaData() {
         return swiftMetaData;
     }
 
     @Override
-    public boolean next() throws SQLException {
-        if ((currentCount / alloterCount) > currentSegment || currentCount >= rowList.size()) {
-            return false;
-        }
-        return true;
+    public boolean next() {
+        return (currentCount / alloterCount) <= currentSegment && currentCount < rowList.size();
     }
 
     @Override
-    public Row getRowData() throws SQLException {
+    public Row getRowData() {
         return rowList.get(currentCount++);
     }
 
     @Override
-    public void close() throws SQLException {
+    public void close() {
         currentSegment++;
     }
 }

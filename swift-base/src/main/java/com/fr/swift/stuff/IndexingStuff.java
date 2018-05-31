@@ -9,7 +9,6 @@ import java.util.List;
  * @since Advanced FineBI Analysis 1.0
  */
 public interface IndexingStuff {
-
     List<String> getUpdateTableSources();
 
     List<String> getUpdateTableSourceRelations();

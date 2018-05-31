@@ -32,6 +32,11 @@ public class MinorSegmentManager implements SwiftSegmentManager {
     }
 
     @Override
+    public List<SegmentKey> getSegmentKeys(SourceKey sourceKey) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public boolean isSegmentsExist(SourceKey sourceKey) {
         return segments.containsKey(sourceKey);
     }

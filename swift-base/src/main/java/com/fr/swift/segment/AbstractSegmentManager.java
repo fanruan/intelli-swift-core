@@ -15,7 +15,7 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
     public synchronized List<Segment> getSegment(SourceKey sourceKey) {
         // 并发地拿，比如多个column indexer同时进行索引， 要同步下
         List<Segment> segments = new ArrayList<Segment>();
-        List<SegmentKey> keys = getSegmentKey(sourceKey.getId());
+        List<SegmentKey> keys = getSegmentKeys(sourceKey);
         if (null != keys && !keys.isEmpty()) {
             for (SegmentKey key : keys) {
                 try {
@@ -32,11 +32,12 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
     }
 
     @Override
-    public boolean isSegmentsExist(SourceKey sourceKey) {
-        return !getSegmentKey(sourceKey.getId()).isEmpty();
+    public List<SegmentKey> getSegmentKeys(SourceKey sourceKey) {
+        return SwiftConfigServiceProvider.getInstance().getSegmentByKey(sourceKey.getId());
     }
 
-    private List<SegmentKey> getSegmentKey(String sourceKey) {
-        return SwiftConfigServiceProvider.getInstance().getSegmentByKey(sourceKey);
+    @Override
+    public boolean isSegmentsExist(SourceKey sourceKey) {
+        return !getSegmentKeys(sourceKey).isEmpty();
     }
 }

@@ -1,5 +1,6 @@
 package com.fr.swift.segment.recover;
 
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.Table;
@@ -18,8 +19,6 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -29,13 +28,10 @@ import java.util.List;
  * @author anchore
  * @date 2018/5/23
  */
-@Service
 public class SwiftSegmentRecovery implements SegmentRecovery {
-    @Autowired
-    private SwiftDataOperatorProvider operators;
+    private SwiftDataOperatorProvider operators = SwiftContext.getInstance().getBean(SwiftDataOperatorProvider.class);
 
-    @Autowired
-    private SwiftSegmentManager manager;
+    private SwiftSegmentManager manager = SwiftContext.getInstance().getBean(SwiftSegmentManager.class);
 
     @Override
     public void recover(SourceKey tableKey) {
@@ -133,6 +129,12 @@ public class SwiftSegmentRecovery implements SegmentRecovery {
         }
     }
 
+    private static final SegmentRecovery INSTANCE = new SwiftSegmentRecovery();
+
     private SwiftSegmentRecovery() {
+    }
+
+    public static SegmentRecovery getInstance() {
+        return INSTANCE;
     }
 }
