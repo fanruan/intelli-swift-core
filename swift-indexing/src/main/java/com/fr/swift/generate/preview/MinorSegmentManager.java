@@ -24,21 +24,21 @@ public class MinorSegmentManager implements SwiftSegmentManager {
     }
 
     @Override
-    public List<Segment> getSegment(SourceKey sourceKey) {
-        if (isSegmentsExist(sourceKey)) {
-            return segments.get(sourceKey);
+    public List<Segment> getSegment(SourceKey tableKey) {
+        if (isSegmentsExist(tableKey)) {
+            return segments.get(tableKey);
         }
         return Collections.emptyList();
     }
 
     @Override
-    public List<SegmentKey> getSegmentKeys(SourceKey sourceKey) {
+    public List<SegmentKey> getSegmentKeys(SourceKey tableKey) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean isSegmentsExist(SourceKey sourceKey) {
-        return segments.containsKey(sourceKey);
+    public boolean isSegmentsExist(SourceKey tableKey) {
+        return segments.containsKey(tableKey);
     }
 
     public void putSegment(SourceKey key, List<Segment> seg) {

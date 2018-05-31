@@ -26,17 +26,17 @@ public class LocalSegmentProvider implements SwiftSegmentManager {
     }
 
     @Override
-    public List<Segment> getSegment(SourceKey sourceKey) {
-        return manager.getSegment(sourceKey);
+    public List<Segment> getSegment(SourceKey tableKey) {
+        return manager.getSegment(tableKey);
     }
 
     @Override
-    public List<SegmentKey> getSegmentKeys(SourceKey sourceKey) {
-        return manager.getSegmentKeys(sourceKey);
+    public List<SegmentKey> getSegmentKeys(SourceKey tableKey) {
+        return manager.getSegmentKeys(tableKey);
     }
 
     @Override
-    public boolean isSegmentsExist(SourceKey key) {
-        return manager.isSegmentsExist(key);
+    public boolean isSegmentsExist(SourceKey tableKey) {
+        return manager.isSegmentsExist(tableKey);
     }
 }
