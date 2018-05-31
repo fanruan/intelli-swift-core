@@ -1,5 +1,6 @@
 package com.fr.swift.query.info;
 
+import com.fr.swift.query.QueryInfo;
 import com.fr.swift.query.info.dimension.Dimension;
 
 import java.util.List;

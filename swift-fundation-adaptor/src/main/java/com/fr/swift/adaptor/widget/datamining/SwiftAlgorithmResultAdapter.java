@@ -1,7 +1,7 @@
 package com.fr.swift.adaptor.widget.datamining;
 
 import com.finebi.conf.structure.dashboard.widget.FineWidget;
-import com.fr.swift.query.info.QueryInfo;
+import com.fr.swift.query.QueryInfo;
 import com.fr.swift.source.SwiftResultSet;
 
 /**

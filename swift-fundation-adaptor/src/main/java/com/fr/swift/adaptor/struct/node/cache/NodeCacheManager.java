@@ -1,7 +1,7 @@
 package com.fr.swift.adaptor.struct.node.cache;
 
 import com.fr.swift.adaptor.struct.node.paging.NodePagingHelper;
-import com.fr.swift.query.info.QueryInfo;
+import com.fr.swift.query.QueryInfo;
 import com.fr.swift.structure.lru.LRUWithKConcurrentHashMap;
 
 /**

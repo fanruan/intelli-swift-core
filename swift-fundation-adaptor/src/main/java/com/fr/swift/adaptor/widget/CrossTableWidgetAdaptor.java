@@ -17,7 +17,7 @@ import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.group.info.cursor.AllCursor;
 import com.fr.swift.query.group.info.cursor.Expander;
-import com.fr.swift.query.info.GroupQueryInfoImpl;
+import com.fr.swift.query.info.GroupQueryInfo;
 import com.fr.swift.query.info.XGroupQueryInfo;
 import com.fr.swift.query.info.dimension.Dimension;
 import com.fr.swift.query.info.dimension.DimensionInfo;
@@ -58,38 +58,39 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         try {
             TargetInfo targetInfo = TargetInfoUtils.parse(widget);
             XGroupQueryInfo queryInfo = buildQueryInfo(widget, targetInfo);
-            if (queryInfo.getColDimensionInfo().getDimensions().length == 0) {
+//            if (queryInfo.getColDimensionInfo().getDimensions().length == 0) {
                 // 列表头为空
-                GroupQueryInfoImpl groupQueryInfo = new GroupQueryInfoImpl(queryInfo.getQueryId(), queryInfo.getTable(),
-                        queryInfo.getDimensionInfo(), queryInfo.getTargetInfo());
+//                GroupQueryInfoImpl groupQueryInfo = new GroupQueryInfoImpl(queryInfo.getQueryId(), queryInfo.getTable(),
+//                        queryInfo.getDimensionInfo(), queryInfo.getTargetInfo());
+            GroupQueryInfo groupQueryInfo = null;
                 NodeMergeResultSet result = (NodeMergeResultSet) QueryRunnerProvider.getInstance().executeQuery(groupQueryInfo);
 
                 // 添加挖掘相关
                 result = processDataMining(result, widget, queryInfo, dmErrorWrap);
 
                 crossNode = new BICrossNodeAdaptor(new XGroupNodeImpl(new GroupNode2XLeftNodeAdaptor((GroupNode) result.getNode()), new GroupNode()));
-            } else if (queryInfo.getDimensionInfo().getDimensions().length == 0) {
-                // 行表头为空
-                GroupQueryInfoImpl groupQueryInfo = new GroupQueryInfoImpl(queryInfo.getQueryId(), queryInfo.getTable(),
-                        queryInfo.getColDimensionInfo(), queryInfo.getTargetInfo());
-                NodeMergeResultSet result = (NodeMergeResultSet) QueryRunnerProvider.getInstance().executeQuery(groupQueryInfo);
-
-                // 添加挖掘相关
-                result = processDataMining(result, widget, queryInfo, dmErrorWrap);
-
-                GroupNode groupNode = (GroupNode) result.getNode();
-                XLeftNode xLeftNode = topGroupNode2XLeftNode(queryInfo.getColDimensionInfo().isShowSum(),
-                        groupQueryInfo.getDimensionInfo().getDimensions().length, groupNode);
-                crossNode = new BICrossNodeAdaptor(new XGroupNodeImpl(xLeftNode, groupNode));
-            } else {
+//            } else if (queryInfo.getDimensionInfo().getDimensions().length == 0) {
+//                // 行表头为空
+//                GroupQueryInfoImpl groupQueryInfo = new GroupQueryInfoImpl(queryInfo.getQueryId(), queryInfo.getTable(),
+//                        queryInfo.getColDimensionInfo(), queryInfo.getTargetInfo());
+//                NodeMergeResultSet result = (NodeMergeResultSet) QueryRunnerProvider.getInstance().executeQuery(groupQueryInfo);
+//
+//                // 添加挖掘相关
+//                result = processDataMining(result, widget, queryInfo, dmErrorWrap);
+//
+//                GroupNode groupNode = (GroupNode) result.getNode();
+//                XLeftNode xLeftNode = topGroupNode2XLeftNode(queryInfo.getColDimensionInfo().isShowSum(),
+//                        groupQueryInfo.getDimensionInfo().getDimensions().length, groupNode);
+//                crossNode = new BICrossNodeAdaptor(new XGroupNodeImpl(xLeftNode, groupNode));
+//            } else {
                 // 行列表头都不为空
-                resultSet = (XNodeMergeResultSet) QueryRunnerProvider.getInstance().executeQuery(queryInfo);
-
-                // 添加挖掘相关
-                resultSet = processDataMining(resultSet, widget, queryInfo, dmErrorWrap);
-
-                crossNode = new BICrossNodeAdaptor(new XGroupNodeImpl((XLeftNode) resultSet.getNode(), resultSet.getTopGroupNode()));
-            }
+//                resultSet = (XNodeMergeResultSet) QueryRunnerProvider.getInstance().executeQuery(queryInfo);
+//
+//                // 添加挖掘相关
+//                resultSet = processDataMining(resultSet, widget, queryInfo, dmErrorWrap);
+//
+//                crossNode = new BICrossNodeAdaptor(new XGroupNodeImpl((XLeftNode) resultSet.getNode(), resultSet.getTopGroupNode()));
+//            }
         } catch (Exception e) {
             crossNode = new BICrossNodeAdaptor(new XGroupNodeImpl(new XLeftNode(-1, null), new TopGroupNode(-1, null)));
             LOGGER.error(e);
@@ -189,5 +190,9 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor {
             return ResultType.BICROSS;
         }
 
+        @Override
+        public String getDataMiningError() {
+            return null;
+        }
     }
 }

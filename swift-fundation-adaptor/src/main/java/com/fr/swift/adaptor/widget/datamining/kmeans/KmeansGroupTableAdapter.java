@@ -37,9 +37,13 @@ public class KmeansGroupTableAdapter extends SwiftAlgorithmResultAdapter<KmeansB
     public SwiftResultSet getResult() throws Exception {
 
         List<FineTarget> targetList = widget.getTargetList();
-        TargetInfo targetInfo = info.getTargetInfo();
-        DimensionInfo dimensionInfo = info.getDimensionInfo();
-        List<Aggregator> aggregators = info.getTargetInfo().getResultAggregators();
+//        TargetInfo targetInfo = info.getTargetInfo();
+//        DimensionInfo dimensionInfo = info.getDimensionInfo();
+//        List<Aggregator> aggregators = info.getTargetInfo().getResultAggregators();
+
+        TargetInfo targetInfo = null;
+        DimensionInfo dimensionInfo = null;
+        List<Aggregator> aggregators = null;
 
         GroupNode rootNode = (GroupNode) result.getNode();
         List<double[]> resultSummary = getResultSummary(rootNode);

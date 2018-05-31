@@ -1,6 +1,6 @@
 package com.fr.swift.service;
 
-import com.fr.swift.cal.info.QueryInfo;
+import com.fr.swift.query.QueryInfo;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 

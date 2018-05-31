@@ -1,4 +1,4 @@
-package com.fr.swift.query.builder;
+package com.fr.swift.query;
 
 /**
  * @author pony

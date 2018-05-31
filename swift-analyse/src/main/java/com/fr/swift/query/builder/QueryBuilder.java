@@ -1,9 +1,9 @@
 package com.fr.swift.query.builder;
 
 import com.fr.swift.query.Query;
+import com.fr.swift.query.QueryInfo;
 import com.fr.swift.query.info.DetailQueryInfo;
 import com.fr.swift.query.info.GroupQueryInfoImpl;
-import com.fr.swift.query.info.QueryInfo;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.source.SwiftResultSet;

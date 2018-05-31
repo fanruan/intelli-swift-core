@@ -11,7 +11,6 @@ import com.fr.swift.adaptor.widget.datamining.SwiftAlgorithmResultAdapter;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.info.XGroupQueryInfo;
-import com.fr.swift.query.info.target.TargetInfo;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.XLeftNode;
 import com.fr.swift.result.XNodeMergeResultSet;
@@ -33,12 +32,12 @@ public class TimeSeriesCrossTableAdapter extends SwiftAlgorithmResultAdapter<Hol
 
     @Override
     public SwiftResultSet getResult() throws Exception {
-        if (info.getColDimensionInfo().getDimensions().length == 0 || info.getDimensionInfo().getDimensions().length == 0) {
-            return handleGroupTable();
-        } else {
+//        if (info.getColDimensionInfo().getDimensions().length == 0 || info.getDimensionInfo().getDimensions().length == 0) {
+//            return handleGroupTable();
+//        } else {
             // 行列表头都不为空
             return handleCrossTable();
-        }
+//        }
     }
 
     private SwiftResultSet handleGroupTable() {
@@ -52,13 +51,14 @@ public class TimeSeriesCrossTableAdapter extends SwiftAlgorithmResultAdapter<Hol
         XNodeMergeResultSet XResultSet = (XNodeMergeResultSet) result;
 
         List<FineTarget> targetList = widget.getTargetList();
-        TargetInfo targetInfo = info.getTargetInfo();
+//        TargetInfo targetInfo = info.getTargetInfo();
 
         boolean isCalculateConfidence = bean.isCalculateConfidenceInterval();
 
         // 把指标长度设置成两倍
         List<FineTarget> fineTargets = new ArrayList<FineTarget>();
-        List<Aggregator> aggregators = info.getTargetInfo().getResultAggregators();
+        List<Aggregator> aggregators = null;
+//        List<Aggregator> aggregators = info.getTargetInfo().getResultAggregators();
         for (int i = 0; i < targetList.size(); i++) {
             FineTarget fineTarget = targetList.get(i);
             fineTargets.add(fineTarget);
@@ -77,7 +77,8 @@ public class TimeSeriesCrossTableAdapter extends SwiftAlgorithmResultAdapter<Hol
 
 
         XLeftNode leftNode = (XLeftNode) XResultSet.getNode();
-        int leftDepth = info.getDimensionInfo().getDimensions().length;
+//        int leftDepth = info.getDimensionInfo().getDimensions().length;
+        int leftDepth = 0;
         PostOrderNodeIterator<XLeftNode> xLeftIterator = new PostOrderNodeIterator<XLeftNode>(leftDepth, leftNode);
         while (xLeftIterator.hasNext()) {
             XLeftNode next = xLeftIterator.next();

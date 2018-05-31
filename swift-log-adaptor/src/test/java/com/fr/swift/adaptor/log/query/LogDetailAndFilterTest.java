@@ -9,7 +9,7 @@ import com.fr.swift.adaptor.log.QueryConditionAdaptor;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
-import com.fr.swift.query.info.QueryInfo;
+import com.fr.swift.query.QueryInfo;
 import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.Row;

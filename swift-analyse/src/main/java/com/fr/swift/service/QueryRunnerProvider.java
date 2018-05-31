@@ -1,6 +1,6 @@
 package com.fr.swift.service;
 
-import com.fr.swift.query.info.QueryInfo;
+import com.fr.swift.query.QueryInfo;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
@@ -26,5 +26,9 @@ public class QueryRunnerProvider {
 
     public <T extends SwiftResultSet> T executeQuery(QueryInfo<T> info) throws SQLException {
         return runner.getQueryResult(info);
+    }
+
+    public <T extends SwiftResultSet> T getRemoteQueryResult(QueryInfo<T> info) throws SQLException {
+        return runner.getRemoteQueryResult(info);
     }
 }

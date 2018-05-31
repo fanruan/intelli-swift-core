@@ -37,7 +37,7 @@ public class DetailQueryBuilder {
             if (QueryBuilder.isLocalURI(uri)){
                 queries.add(builder.buildLocalQuery(info));
             } else {
-                queries.add(new RemoteQueryImpl());
+                queries.add(new RemoteQueryImpl(info));
             }
         }
         return builder.buildResultQuery(queries, info);

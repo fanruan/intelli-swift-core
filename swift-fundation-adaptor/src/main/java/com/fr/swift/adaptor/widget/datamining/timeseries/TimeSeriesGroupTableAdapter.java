@@ -31,8 +31,6 @@ import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSetImpl;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.SwiftNode;
-import com.fr.swift.result.node.GroupNodeAggregateUtils;
-import com.fr.swift.result.node.NodeType;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.lang.reflect.Field;
@@ -70,14 +68,16 @@ public class TimeSeriesGroupTableAdapter extends SwiftAlgorithmResultAdapter<Hol
                 XGroupQueryInfo xGroupQueryInfo = (XGroupQueryInfo) info;
                 if (xGroupQueryInfo.getColDimensionInfo().getDimensions().length != 0) {
                     dimensionList = crossTableWidget.getColDimensionList();
-                } else if (info.getDimensionInfo().getDimensions().length != 0) {
-                    dimensionList = widget.getDimensionList();
                 }
+//                } else if (info.getDimensionInfo().getDimensions().length != 0) {
+//                    dimensionList = widget.getDimensionList();
+//                }
             } else {
                 dimensionList = widget.getDimensionList();
             }
 
-            TargetInfo targetInfo = info.getTargetInfo();
+            TargetInfo targetInfo = null;
+//            TargetInfo targetInfo = info.getTargetInfo();
 
             isCalculateConfidence = bean.isCalculateConfidenceInterval();
 
@@ -210,8 +210,8 @@ public class TimeSeriesGroupTableAdapter extends SwiftAlgorithmResultAdapter<Hol
             }
             // resultRootNode.setAggregatorValue(NumberArrToAggregatorValueArr(sums));
             // 使用结果汇总聚合器汇总，相对于明细的汇总方式，可能一样也可能不一样。这边可以通过细分做进一步优化。
-            GroupNodeAggregateUtils.aggregate(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
-                    resultRootNode, aggregators);
+//            GroupNodeAggregateUtils.aggregate(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
+//                    resultRootNode, aggregators);
 
             if (!isDesc) {
                 Collections.reverse(resultRootNode.getChildren());
@@ -258,8 +258,8 @@ public class TimeSeriesGroupTableAdapter extends SwiftAlgorithmResultAdapter<Hol
         GroupNode node = getNewSummaryValueNode(resultRootNode, rootNode);
 
         // 求汇总值
-        GroupNodeAggregateUtils.aggregate(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
-                resultRootNode, info.getTargetInfo().getResultAggregators());
+//        GroupNodeAggregateUtils.aggregate(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
+//                resultRootNode, info.getTargetInfo().getResultAggregators());
 
         NodeMergeResultSetImpl dmTableResult = new NodeMergeResultSetImpl(node, new ArrayList<Map<Integer, Object>>(), new ArrayList<Aggregator>());
 //        dmTableResult.setError(err);
@@ -305,7 +305,8 @@ public class TimeSeriesGroupTableAdapter extends SwiftAlgorithmResultAdapter<Hol
 
     private AggregatorValue[] NumberArrToAggregatorValueArr(Number[] numbers) {
         AggregatorValue[] arr = new AggregatorValue[numbers.length];
-        List<Aggregator> aggregators = info.getTargetInfo().getResultAggregators();
+        List<Aggregator> aggregators = null;
+//        List<Aggregator> aggregators = info.getTargetInfo().getResultAggregators();
         for (int i = 0; i < numbers.length; i++) {
             Number num = numbers[i];
             if (num == null) {

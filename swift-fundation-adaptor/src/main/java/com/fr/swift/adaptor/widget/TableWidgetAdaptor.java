@@ -2,7 +2,6 @@ package com.fr.swift.adaptor.widget;
 
 import com.finebi.conf.algorithm.common.DMUtils;
 import com.finebi.conf.constant.BICommonConstants;
-import com.finebi.conf.constant.BIDesignConstants;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.WidgetDimensionBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.date.DateWidgetDimensionBean;
@@ -41,6 +40,7 @@ import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.adaptor.widget.target.TargetInfoUtils;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.QueryInfo;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
@@ -51,7 +51,6 @@ import com.fr.swift.query.group.info.cursor.AllCursor;
 import com.fr.swift.query.group.info.cursor.Cursor;
 import com.fr.swift.query.group.info.cursor.Expander;
 import com.fr.swift.query.info.GroupQueryInfoImpl;
-import com.fr.swift.query.info.QueryInfo;
 import com.fr.swift.query.info.dimension.Dimension;
 import com.fr.swift.query.info.dimension.DimensionInfo;
 import com.fr.swift.query.info.dimension.DimensionInfoImpl;
@@ -115,7 +114,8 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         if (pagingHelper == null) {
             return Crasher.crash("group query exception!");
         }
-        PagingInfo pagingInfo = PagingUtils.createPagingInfo(widget, ((GroupQueryInfoImpl) queryInfo).getDimensionInfo().getExpander());
+//        PagingInfo pagingInfo = PagingUtils.createPagingInfo(widget, ((GroupQueryInfoImpl) queryInfo).getDimensionInfo().getExpander());
+        PagingInfo pagingInfo = null;
         Pair<BIGroupNode, PagingSession> pair = pagingHelper.getPage(pagingInfo);
         return new SwiftTableResult(pair.getValue().hasNextPage(), pair.getValue().hasPrevPage(), pair.getKey(), errorWrap);
     }
@@ -273,9 +273,9 @@ public class TableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         for (int i = 0, size = fineDims.size(); i < size; i++) {
             FineDimension fineDim = fineDims.get(i);
             // 前端多出一个挖掘维度字段，引擎不需要，这里把挖掘维度字段给过滤掉
-            if(fineDim.getType() == BIDesignConstants.DESIGN.DIMENSION_TYPE.KMEANS_DIMENSION){
-                continue;
-            }
+//            if(fineDim.getType() == BIDesignConstants.DESIGN.DIMENSION_TYPE.KMEANS_DIMENSION){
+//                continue;
+//            }
             dimensions.add(toDimension(sourceKey, fineDim, i, size, targets));
         }
         return dimensions;

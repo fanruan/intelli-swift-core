@@ -1,8 +1,8 @@
 package com.fr.swift.service;
 
 import com.fr.swift.exception.SwiftServiceException;
+import com.fr.swift.query.QueryInfo;
 import com.fr.swift.query.builder.QueryBuilder;
-import com.fr.swift.query.info.QueryInfo;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
@@ -31,6 +31,12 @@ public class SwiftAnalyseService extends AbstractSwiftService implements QueryRu
     @Override
     public <T extends SwiftResultSet> T getQueryResult(QueryInfo<T> info) throws SQLException {
         return QueryBuilder.buildQuery(info).getQueryResult();
+    }
+
+    @Override
+    public <T extends SwiftResultSet> T getRemoteQueryResult(QueryInfo<T> info) {
+        // TODO: 2018/5/31 远程调用history或者realTime节点上的服务
+        return null;
     }
 
     @Override

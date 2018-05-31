@@ -2,7 +2,7 @@ package com.fr.swift.query.info;
 
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.query.builder.QueryType;
+import com.fr.swift.query.QueryType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.group.info.cursor.Cursor;
 import com.fr.swift.query.info.dimension.Dimension;

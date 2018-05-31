@@ -1,5 +1,6 @@
 package com.fr.swift.adaptor.transformer.cal;
 
+import com.fr.swift.query.QueryInfo;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorFactory;
 import com.fr.swift.query.aggregator.AggregatorType;
@@ -11,7 +12,6 @@ import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.group.info.cursor.AllCursor;
 import com.fr.swift.query.info.GroupQueryInfoImpl;
-import com.fr.swift.query.info.QueryInfo;
 import com.fr.swift.query.info.dimension.Dimension;
 import com.fr.swift.query.info.dimension.DimensionInfo;
 import com.fr.swift.query.info.dimension.DimensionInfoImpl;

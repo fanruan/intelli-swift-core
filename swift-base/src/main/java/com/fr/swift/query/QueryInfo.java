@@ -1,6 +1,4 @@
-package com.fr.swift.query.info;
-
-import com.fr.swift.query.builder.QueryType;
+package com.fr.swift.query;
 
 /**
  * Created by pony on 2017/12/12.

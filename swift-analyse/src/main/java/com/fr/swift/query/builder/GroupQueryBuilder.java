@@ -53,7 +53,7 @@ public class GroupQueryBuilder {
                 return builder.buildPostCalQuery(builder.buildLocalQuery(info), info);
             } else {
                 // TODO: 2018/5/30 丢给远程机器
-                return new RemoteQueryImpl();
+                return new RemoteQueryImpl(info);
             }
         }
         List<Query<NodeResultSet>> queries = new ArrayList<Query<NodeResultSet>>();
@@ -61,7 +61,7 @@ public class GroupQueryBuilder {
             if (QueryBuilder.isLocalURI(uri)) {
                 queries.add(builder.buildLocalQuery(info));
             } else {
-                queries.add(new RemoteQueryImpl());
+                queries.add(new RemoteQueryImpl(info));
             }
         }
         // 多个节点的ResultQuery合并之后在处理计算指标

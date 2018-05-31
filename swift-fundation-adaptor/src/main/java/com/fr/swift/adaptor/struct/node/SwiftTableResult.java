@@ -41,4 +41,8 @@ public class SwiftTableResult implements BITableResult {
         return ResultType.BIGROUP;
     }
 
+    @Override
+    public String getDataMiningError() {
+        return null;
+    }
 }
