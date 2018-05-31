@@ -1,6 +1,5 @@
 package com.fr.swift.generate.segment.operator.merger;
 
-import com.fr.general.ComparatorUtils;
 import com.fr.swift.config.SwiftCubePathConfig;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.service.SwiftConfigServiceProvider;
@@ -38,17 +37,16 @@ import java.util.List;
  * @since Advanced FineBI Analysis 1.0
  */
 public class RealtimeMerger implements Merger {
+    protected static final SwiftLogger LOGGER = SwiftLoggers.getLogger(RealtimeMerger.class);
 
-    protected SwiftLogger LOGGER = SwiftLoggers.getLogger(RealtimeMerger.class);
-
-    protected SourceKey sourceKey;
-    protected SwiftMetaData metaData;
-    protected String cubeSourceKey;
-    protected SwiftSourceAlloter alloter;
-    protected List<Segment> historySegmentList = new ArrayList<Segment>();
-    protected List<Segment> realtimeSegmentList = new ArrayList<Segment>();
-    protected List<SegmentKey> configSegment;
-    protected int totalCount = 0;
+    private SourceKey sourceKey;
+    private SwiftMetaData metaData;
+    private String cubeSourceKey;
+    private SwiftSourceAlloter alloter;
+    private List<Segment> historySegs = new ArrayList<Segment>();
+    private List<Segment> realtimeSegs = new ArrayList<Segment>();
+    private List<SegmentKey> configSegment;
+    private int totalCount = 0;
 
     public RealtimeMerger(SourceKey sourceKey, SwiftMetaData metaData, String cubeSourceKey) {
         this.sourceKey = sourceKey;
@@ -61,12 +59,12 @@ public class RealtimeMerger implements Merger {
 
         for (int i = 0; i < segmentList.size(); i++) {
             Segment segment = segmentList.get(i);
-            if (ComparatorUtils.equals(segment.getLocation().getStoreType(), Types.StoreType.FINE_IO)) {
-                historySegmentList.add(segment);
+            if (segment.getLocation().getStoreType() == Types.StoreType.FINE_IO) {
+                historySegs.add(segment);
                 createSegment(i);
             } else {
                 totalCount += segment.getRowCount();
-                realtimeSegmentList.add(segment);
+                realtimeSegs.add(segment);
             }
         }
     }
@@ -79,10 +77,10 @@ public class RealtimeMerger implements Merger {
 
         List<Segment> mergeSegments = new ArrayList<Segment>();
 
-        SwiftResultSet resultSet = new MergerResultSet(realtimeSegmentList, alloterCount, metaData);
+        SwiftResultSet resultSet = new MergerResultSet(realtimeSegs, alloterCount, metaData);
 
         for (int i = 1; i <= totalIndex + 1; i++) {
-            Segment segment = createSegment(historySegmentList.size());
+            Segment segment = createSegment(historySegs.size());
             mergeSegments.add(segment);
 
             Inserter inserter = new MergerInserter(segment);
