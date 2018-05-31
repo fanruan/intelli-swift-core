@@ -3,7 +3,6 @@ package com.fr.swift.frrpc;
 import com.fr.swift.Invoker;
 import com.fr.swift.ProxyFactory;
 import com.fr.swift.URL;
-import com.fr.swift.invoker.SwiftInvoker;
 
 /**
  * This class created on 2018/5/28
@@ -24,12 +23,11 @@ public class FRClusterProxyFactory implements ProxyFactory {
     //fixme 暂时远程方法直接调用fr的，正确的应该在外再包一层动态代理。
     @Override
     public <T> T getProxy(Invoker<T> invoker) throws Exception {
-        T proxy = (T) FRProxyCache.getProxy(invoker.getInterface());
-        return proxy;
+        return (T) FRProxyCache.getProxy(invoker.getInterface());
     }
 
     @Override
     public <T> Invoker<T> getInvoker(T proxy, Class<T> type, URL url) {
-        return new SwiftInvoker(proxy, type, url);
+        return new FRInvoker(proxy, type, url);
     }
 }
