@@ -11,6 +11,6 @@ public interface ProxyFactory {
 
     <T> T getProxy(Invoker<T> invoker) throws Exception;
 
-    <T> Invoker<T> getInvoker(T proxy, Class<T> type, URL url) throws Exception;
+    <T> Invoker<T> getInvoker(T proxy, Class<T> type, URL url);
 
 }

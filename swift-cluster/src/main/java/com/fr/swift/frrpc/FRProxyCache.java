@@ -15,9 +15,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public class FRProxyCache {
 
     private final Map<Class, Object> proxyMap;
+    private final Map<Class, Object> instanceMap;
+
 
     private FRProxyCache() {
         this.proxyMap = new ConcurrentHashMap<Class, Object>();
+        this.instanceMap = new ConcurrentHashMap<Class, Object>();
     }
 
     private static final FRProxyCache INSTANCE = new FRProxyCache();
@@ -35,6 +38,18 @@ public class FRProxyCache {
             return INSTANCE.proxyMap.get(classType);
         } else {
             throw new ProxyNotRegisteException(classType.getName() + "'s proxy hasn't been registed!");
+        }
+    }
+
+    public static void registerInstance(Class classType, Object object) {
+        INSTANCE.instanceMap.put(classType, object);
+    }
+
+    public static Object getInstance(Class classType) throws ProxyNotRegisteException {
+        if (INSTANCE.instanceMap.containsKey(classType)) {
+            return INSTANCE.instanceMap.get(classType);
+        } else {
+            throw new ProxyNotRegisteException(classType.getName() + "'s instance hasn't been registed!");
         }
     }
 }

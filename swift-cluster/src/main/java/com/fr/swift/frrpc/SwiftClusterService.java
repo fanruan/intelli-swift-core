@@ -82,4 +82,9 @@ public class SwiftClusterService implements ClusterService {
     public void rpcSend(String masterId, Object object) {
         LOGGER.info(masterId + ":" + object.toString());
     }
+
+    @Override
+    public void rpcSend() {
+        LOGGER.info("time:" + System.currentTimeMillis());
+    }
 }

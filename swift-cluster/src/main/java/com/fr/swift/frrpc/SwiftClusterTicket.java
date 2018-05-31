@@ -47,9 +47,24 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
 
     @Override
     public void approach(ClusterToolKit clusterToolKit) {
+//        Invoker invoker = clusterToolKit.getInvokerFactory().create(SwiftClusterService.getInstance());
+//        ClusterNode masterNode = ClusterBridge.getView().getNodeById("lucifer-cluster2");
+//
+//        Method method = null;
+//        try {
+//            method = SwiftClusterService.class.getMethod("rpcSend", String.class, Object.class);
+//        } catch (NoSuchMethodException e) {
+//            e.printStackTrace();
+//        }
+//        Invocation invocation = Invocation.create(method, "lucifer", "test" + System.currentTimeMillis());
+//        Result result = invoker.invoke(masterNode, invocation);
+
         //注册rpc proxy
         clusterServiceProxy = clusterToolKit.getRPCProxyFactory().newBuilder(SwiftClusterService.getInstance()).build();
-        FRProxyCache.registerProxy(ClusterService.class, clusterServiceProxy);
+        FRProxyCache.registerProxy(SwiftClusterService.class, clusterServiceProxy);
+
+        //注册单例类型
+        FRProxyCache.registerInstance(SwiftClusterService.class, SwiftClusterService.getInstance());
 
         SwiftClusterService.getInstance().competeMaster();
 
