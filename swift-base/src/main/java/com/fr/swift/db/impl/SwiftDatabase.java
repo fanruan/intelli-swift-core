@@ -82,7 +82,7 @@ public class SwiftDatabase implements Database {
     }
 
     public enum Schema {
-        DEFAULT(0, "default", "cubes"),
+        CUBE(0, "cube", "cubes"),
         DECISION_LOG(1, "decision_log", "log/cubes");
 
         public final int id;
@@ -93,6 +93,11 @@ public class SwiftDatabase implements Database {
             this.id = id;
             this.name = name;
             this.dir = dir;
+        }
+
+        @Override
+        public String toString() {
+            return dir;
         }
 
         public static class SchemaConverter implements AttributeConverter<Schema, Integer> {

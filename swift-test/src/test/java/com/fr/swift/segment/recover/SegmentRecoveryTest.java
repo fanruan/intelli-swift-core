@@ -54,8 +54,9 @@ public class SegmentRecoveryTest {
         Inserter inserter = operators.getRealtimeBlockSwiftInserter(dataSource);
         inserter.insertData(swiftResultSet);
 
-        String tablePath = String.format("%s/%s",
+        String tablePath = String.format("%s/%s/%s",
                 SwiftCubePathConfig.getInstance().getPath(),
+                dataSource.getMetadata().getSwiftSchema().dir,
                 dataSource.getSourceKey().getId());
         ResourceDiscovery.getInstance().removeCubeResource(tablePath);
         SwiftContext.getInstance().getBean(SegmentRecovery.class).recoverAll();

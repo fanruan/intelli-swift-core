@@ -52,7 +52,9 @@ public class LocalTaskImpl extends BaseTask implements LocalTask {
     @Override
     public void run() {
         start = System.currentTimeMillis();
+
         worker.work();
+
         end = System.currentTimeMillis();
     }
 
