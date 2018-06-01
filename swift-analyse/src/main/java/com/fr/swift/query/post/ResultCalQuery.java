@@ -1,7 +1,6 @@
 package com.fr.swift.query.post;
 
 import com.fr.swift.query.info.target.GroupTarget;
-import com.fr.swift.query.result.ResultQuery;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.NodeResultSet;
@@ -15,10 +14,10 @@ import java.util.List;
  */
 public class ResultCalQuery extends AbstractPostQuery<NodeResultSet> {
 
-    private ResultQuery<NodeResultSet> query;
+    private PostQuery<NodeResultSet> query;
     private List<GroupTarget> calInfo;
 
-    public ResultCalQuery(ResultQuery<NodeResultSet> query, List<GroupTarget> calInfo) {
+    public ResultCalQuery(PostQuery<NodeResultSet> query, List<GroupTarget> calInfo) {
         this.query = query;
         this.calInfo = calInfo;
     }

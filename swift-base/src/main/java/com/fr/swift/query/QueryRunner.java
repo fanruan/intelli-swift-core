@@ -1,6 +1,5 @@
-package com.fr.swift.service;
+package com.fr.swift.query;
 
-import com.fr.swift.query.QueryInfo;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;

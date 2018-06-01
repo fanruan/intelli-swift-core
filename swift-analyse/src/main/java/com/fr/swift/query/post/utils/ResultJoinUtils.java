@@ -1,0 +1,276 @@
+package com.fr.swift.query.post.utils;
+
+import com.fr.swift.compare.Comparators;
+import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.query.aggregator.Combiner;
+import com.fr.swift.query.info.dimension.Dimension;
+import com.fr.swift.result.GroupNode;
+import com.fr.swift.result.NodeResultSet;
+import com.fr.swift.result.NodeResultSetImpl;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.structure.iterator.MapperIterator;
+import com.fr.swift.structure.iterator.Tree2RowIterator;
+import com.fr.swift.structure.queue.SortedListMergingUtils;
+import com.fr.swift.util.function.Function;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+
+/**
+ * Created by Lyon on 2018/5/31.
+ */
+public class ResultJoinUtils {
+
+    /**
+     * 对过个查询结果根据维度合并
+     * todo 这边处理地略繁琐，后面看一下怎么改进
+     *
+     * @param resultSets 多个查询结果
+     * @param dimensions 合并依据的维度
+     * @return
+     * @throws SQLException
+     */
+    public static NodeResultSet join(final List<NodeResultSet> resultSets, List<Dimension> dimensions) throws SQLException {
+        int dimensionSize = dimensions.size();
+        final List<Integer> metricLengthList = getMetricLengthList(dimensionSize, resultSets);
+        List<Iterator<MergeRow>> iterators = new ArrayList<Iterator<MergeRow>>();
+        for (int i = 0; i < resultSets.size(); i++) {
+            GroupNode root = (GroupNode) resultSets.get(i).getNode();
+            Iterator<List<GroupNode>> iterator = new Tree2RowIterator(dimensionSize, root.getChildren().iterator());
+            final int resultSetIndex = i;
+            Iterator<MergeRow> rowIterator = new MapperIterator<List<GroupNode>, MergeRow>(iterator, new Function<List<GroupNode>, MergeRow>() {
+                @Override
+                public MergeRow apply(List<GroupNode> p) {
+                    return new MergeRow(resultSetIndex, metricLengthList, p);
+                }
+            });
+            iterators.add(rowIterator);
+        }
+        Iterator<MergeRow> iterator = SortedListMergingUtils.mergeIterator(iterators, new MergeRowComparator(), new MergeRowCombiner());
+        return new NodeResultSetImpl(dimensionSize, createNode(dimensionSize, iterator), crateMetaData(resultSets, dimensions));
+    }
+
+    private static GroupNode createNode(int dimensionSize, Iterator<MergeRow> iterator) {
+        // GroupNode各层的节点缓存，第一层为根节点
+        Object[] cachedNode = new Object[dimensionSize + 1];
+        Arrays.fill(cachedNode, null);
+        // 缓存上一次插入的一行数据对于的各个维度的索引
+        String[] cachedKey = new String[dimensionSize];
+        GroupNode root = new GroupNode(-1, null);
+        cachedNode[0] = root;
+        while (iterator.hasNext()) {
+            MergeRow row = iterator.next();
+            List<String> key = row.getKey();
+            AggregatorValue[] values = row.getAllValues();
+            int deep = 0;
+            for (; deep < key.size(); deep++) {
+                if (key.get(deep) == null) {
+                    break;
+                }
+                if (cachedNode[deep + 1] == null || !cachedKey[deep].equals(cachedKey[deep])) {
+                    // 刷新缓存索引，deep之后的索引都无效了
+                    Arrays.fill(cachedKey, deep, cachedKey.length, null);
+                    // cachedNode和cachedIndex是同步更新的
+                    cachedNode[deep + 1] = new GroupNode<GroupNode>(deep, key.get(deep));
+                    cachedKey[deep] = key.get(deep);
+                    GroupNode node = (GroupNode) cachedNode[deep];
+                    node.addChild((GroupNode) cachedNode[deep + 1]);
+                }
+            }
+            // 给当前kv所代表的行设置值
+            ((GroupNode) cachedNode[deep]).setAggregatorValue(values);
+        }
+        return root;
+    }
+
+    private static SwiftMetaData crateMetaData(List<NodeResultSet> resultSets, List<Dimension> dimensions) throws SQLException {
+        final List<String> columnNames = getColumnNames(dimensions, resultSets);
+        return new SwiftMetaData() {
+            @Override
+            public SwiftDatabase.Schema getSwiftSchema() {
+                return null;
+            }
+
+            @Override
+            public String getSchemaName() {
+                return null;
+            }
+
+            @Override
+            public String getTableName() {
+                return null;
+            }
+
+            @Override
+            public int getColumnCount() {
+                return columnNames.size();
+            }
+
+            @Override
+            public String getColumnName(int index) {
+                return columnNames.get(index);
+            }
+
+            @Override
+            public String getColumnRemark(int index) {
+                return null;
+            }
+
+            @Override
+            public int getColumnType(int index) {
+                return 0;
+            }
+
+            @Override
+            public int getPrecision(int index) {
+                return 0;
+            }
+
+            @Override
+            public int getScale(int index) {
+                return 0;
+            }
+
+            @Override
+            public SwiftMetaDataColumn getColumn(int index) {
+                return null;
+            }
+
+            @Override
+            public SwiftMetaDataColumn getColumn(String columnName) {
+                return null;
+            }
+
+            @Override
+            public int getColumnIndex(String columnName) {
+                return columnNames.indexOf(columnName);
+            }
+
+            @Override
+            public String getColumnId(int index) {
+                return null;
+            }
+
+            @Override
+            public String getColumnId(String columnName) {
+                return null;
+            }
+
+            @Override
+            public String getRemark() {
+                return null;
+            }
+
+            @Override
+            public List<String> getFieldNames() {
+                return columnNames;
+            }
+        };
+    }
+
+    private static List<Integer> getMetricLengthList(int dimensionSize, List<NodeResultSet> resultSets) throws SQLException {
+        List<Integer> list = new ArrayList<Integer>();
+        for (NodeResultSet resultSet : resultSets) {
+            int len = resultSet.getMetaData().getFieldNames().size() - dimensionSize;
+            list.add(len);
+        }
+        return list;
+    }
+
+    private static List<String> getColumnNames(List<Dimension> dimensions, List<NodeResultSet> resultSets) throws SQLException {
+        List<String> names = new ArrayList<String>();
+        for (Dimension dimension : dimensions) {
+            names.add(dimension.getColumnKey().getName());
+        }
+        int dimensionSize = dimensions.size();
+        for (NodeResultSet resultSet : resultSets) {
+            List<String> fieldNames = resultSet.getMetaData().getFieldNames();
+            names.addAll(fieldNames.subList(dimensionSize, fieldNames.size()));
+        }
+        return names;
+    }
+
+    private static class MergeRowCombiner implements Combiner<MergeRow> {
+        @Override
+        public void combine(MergeRow current, MergeRow other) {
+            current.setValue(other.getResultSetIndex(), other.getSelfValue());
+        }
+    }
+
+    private static class MergeRowComparator implements Comparator<MergeRow> {
+
+        @Override
+        public int compare(MergeRow o1, MergeRow o2) {
+            List<String> key1 = o1.getKey();
+            List<String> key2 = o2.getKey();
+            assert key1.size() == key2.size();
+            for (int i = 0; i < key1.size(); i++) {
+                if (Comparators.PINYIN_ASC.compare(key1.get(i), key2.get(i)) > 0) {
+                    return 1;
+                }
+                if (Comparators.PINYIN_ASC.compare(key1.get(i), key2.get(i)) < 0) {
+                    return -1;
+                }
+            }
+            return 0;
+        }
+    }
+
+    private static class MergeRow {
+
+        private int resultSetIndex;
+        private List<String> key;
+        private AggregatorValue[][] values;
+
+        public MergeRow(int resultSetIndex, List<Integer> metricLengthList, List<GroupNode> nodes) {
+            this.resultSetIndex = resultSetIndex;
+            initKey(nodes);
+            initValues(metricLengthList);
+        }
+
+        private void initKey(List<GroupNode> nodes) {
+            key = new ArrayList<String>();
+            for (GroupNode node : nodes) {
+                key.add(node.getData().toString());
+            }
+        }
+
+        private void initValues(List<Integer> metricLengthList) {
+            this.values = new AggregatorValue[metricLengthList.size()][];
+            for (int i = 0; i < values.length; i++) {
+                values[i] = new AggregatorValue[metricLengthList.get(i)];
+            }
+        }
+
+        public void setValue(int index, AggregatorValue[] value) {
+            values[index] = value;
+        }
+
+        public AggregatorValue[] getSelfValue() {
+            return values[resultSetIndex];
+        }
+
+        public AggregatorValue[] getAllValues() {
+            List<AggregatorValue> total = new ArrayList<AggregatorValue>();
+            for (AggregatorValue[] value : values) {
+                total.addAll(Arrays.asList(value));
+            }
+            return total.toArray(new AggregatorValue[total.size()]);
+        }
+
+        public List<String> getKey() {
+            return key;
+        }
+
+        public int getResultSetIndex() {
+            return resultSetIndex;
+        }
+    }
+
+}

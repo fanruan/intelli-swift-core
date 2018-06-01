@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class GroupQueryBuilder {
 
-    protected static Query<NodeResultSet> buildQuery(GroupQueryInfo info) {
+    static Query<NodeResultSet> buildQuery(GroupQueryInfo info) {
         SourceKey table = info.getTable();
         List<URI> uris = SegmentLocationProvider.getInstance().getSegmentLocationURI(table);
 //        if (info.isPagingQuery()) {

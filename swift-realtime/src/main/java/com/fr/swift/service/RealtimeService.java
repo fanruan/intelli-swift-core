@@ -4,6 +4,7 @@ import com.fr.swift.query.QueryInfo;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -40,5 +41,5 @@ public interface RealtimeService extends SwiftService {
      * @param <T>       数据
      * @return 数据
      */
-    <T extends SwiftResultSet> T query(QueryInfo<T> queryInfo);
+    <T extends SwiftResultSet> T query(QueryInfo<T> queryInfo) throws SQLException;
 }

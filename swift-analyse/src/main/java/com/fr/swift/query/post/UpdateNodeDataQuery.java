@@ -26,6 +26,7 @@ public class UpdateNodeDataQuery extends AbstractPostQuery<NodeResultSet> {
         NodeMergeResultSet<GroupNode> mergeResult = (NodeMergeResultSet<GroupNode>) query.getQueryResult();
         List<Map<Integer, Object>> dictionary = mergeResult.getRowGlobalDictionaries();
         GroupNodeUtils.updateNodeData(dictionary.size(), ((GroupNode) mergeResult.getNode()), dictionary);
-        return null;
+        // TODO: 2018/6/1 这个可以看情况把NodeMergeResultSet里面的字典扔掉了
+        return mergeResult;
     }
 }

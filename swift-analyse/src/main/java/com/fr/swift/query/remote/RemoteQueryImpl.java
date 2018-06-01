@@ -1,8 +1,8 @@
 package com.fr.swift.query.remote;
 
 import com.fr.swift.query.QueryInfo;
+import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.query.RemoteQuery;
-import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
@@ -20,6 +20,6 @@ public class RemoteQueryImpl<T extends SwiftResultSet> implements RemoteQuery<T>
 
     @Override
     public T getQueryResult() throws SQLException {
-        return QueryRunnerProvider.getInstance().getRemoteQueryResult(queryInfo);
+        return QueryRunnerProvider.getInstance().executeRemoteQuery(queryInfo);
     }
 }

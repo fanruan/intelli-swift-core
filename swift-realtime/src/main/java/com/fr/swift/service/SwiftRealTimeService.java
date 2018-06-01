@@ -3,10 +3,12 @@ package com.fr.swift.service;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.QueryInfo;
+import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.segment.recover.SwiftSegmentRecovery;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -30,8 +32,8 @@ public class SwiftRealTimeService extends AbstractSwiftService implements Realti
     }
 
     @Override
-    public <T extends SwiftResultSet> T query(QueryInfo<T> queryInfo) {
-        return null;
+    public <T extends SwiftResultSet> T query(QueryInfo<T> queryInfo) throws SQLException {
+        return QueryRunnerProvider.getInstance().executeQuery(queryInfo);
     }
 
     @Override

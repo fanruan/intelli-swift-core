@@ -6,6 +6,7 @@ import com.fr.swift.adaptor.transformer.filter.dimension.DimensionFilterAdaptor;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.group.info.cursor.AllCursor;
@@ -22,7 +23,6 @@ import com.fr.swift.query.info.target.cal.TargetInfoImpl;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.utils.BusinessTableUtils;
 

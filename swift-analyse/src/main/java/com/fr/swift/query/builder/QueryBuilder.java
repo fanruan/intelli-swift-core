@@ -3,7 +3,9 @@ package com.fr.swift.query.builder;
 import com.fr.swift.query.Query;
 import com.fr.swift.query.QueryInfo;
 import com.fr.swift.query.info.DetailQueryInfo;
+import com.fr.swift.query.info.GroupQueryInfo;
 import com.fr.swift.query.info.GroupQueryInfoImpl;
+import com.fr.swift.query.info.ResultJoinQueryInfo;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.source.SwiftResultSet;
@@ -20,12 +22,18 @@ public class QueryBuilder {
             case GROUP:
             case CROSS_GROUP:
                 return (Query<T>) buildGroupQuery((GroupQueryInfoImpl) info);
+            case RESULT_JOIN:
+                return (Query<T>) buildResultJoinQuery((ResultJoinQueryInfo) info);
             default:
                 return (Query<T>) buildDetailQuery((DetailQueryInfo) info);
         }
     }
 
-    private static Query<NodeResultSet> buildGroupQuery(GroupQueryInfoImpl info) {
+    private static Query<SwiftResultSet> buildResultJoinQuery(ResultJoinQueryInfo info) throws SQLException {
+        return ResultJoinQueryBuilder.buildQuery(info);
+    }
+
+    private static Query<NodeResultSet> buildGroupQuery(GroupQueryInfo info) {
         return GroupQueryBuilder.buildQuery(info);
     }
 

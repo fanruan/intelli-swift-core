@@ -4,6 +4,7 @@ import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.source.SourceKey;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +34,11 @@ public class SegmentLocationProvider {
 
     public List<URI> getSegmentLocationURI(SourceKey table) {
         // TODO: 2018/5/30
-        return new ArrayList<URI>();
+        List<URI> uris = new ArrayList<URI>();
+        try {
+            uris.add(new URI(""));
+        } catch (URISyntaxException e) {
+        }
+        return uris;
     }
 }

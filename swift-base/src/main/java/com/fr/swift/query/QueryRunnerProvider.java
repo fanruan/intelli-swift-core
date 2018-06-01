@@ -1,6 +1,5 @@
-package com.fr.swift.service;
+package com.fr.swift.query;
 
-import com.fr.swift.query.QueryInfo;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
@@ -20,7 +19,7 @@ public class QueryRunnerProvider {
     private QueryRunnerProvider() {
     }
 
-    void registerRunner(QueryRunner runner) {
+    public void registerRunner(QueryRunner runner) {
         this.runner = runner;
     }
 
@@ -28,7 +27,7 @@ public class QueryRunnerProvider {
         return runner.getQueryResult(info);
     }
 
-    public <T extends SwiftResultSet> T getRemoteQueryResult(QueryInfo<T> info) throws SQLException {
+    public <T extends SwiftResultSet> T executeRemoteQuery(QueryInfo<T> info) throws SQLException {
         return runner.getRemoteQueryResult(info);
     }
 }

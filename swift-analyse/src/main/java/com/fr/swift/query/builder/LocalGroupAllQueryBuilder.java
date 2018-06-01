@@ -17,6 +17,8 @@ import com.fr.swift.query.info.GroupQueryInfo;
 import com.fr.swift.query.info.dimension.Dimension;
 import com.fr.swift.query.info.metric.Metric;
 import com.fr.swift.query.post.HavingFilterQuery;
+import com.fr.swift.query.post.PostQuery;
+import com.fr.swift.query.post.PrepareMetaDataQuery;
 import com.fr.swift.query.post.ResultCalQuery;
 import com.fr.swift.query.post.UpdateNodeDataQuery;
 import com.fr.swift.query.result.ResultQuery;
@@ -39,18 +41,19 @@ import java.util.List;
  */
 public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
 
-    // TODO: 2018/5/31 结果的配置计算中值的读写还是依赖之前解析的数组的index，外部查询写得时候比较麻烦
+    // TODO: 2018/5/31 结果的配置计算中值的读写还是依赖之前解析的数组的index，外部调用查询写得时候比较麻烦
     // bi功能这边树结构的聚合、过滤、排序怎么支持呢？增加QueryInfo类型，在GroupQueryInfo的基础上扩展
     @Override
     public Query<NodeResultSet> buildPostCalQuery(ResultQuery<NodeResultSet> query, GroupQueryInfo info) {
-        ResultQuery<NodeResultSet> tmpQuery = new UpdateNodeDataQuery(query);
+        PostQuery<NodeResultSet> tmpQuery = new UpdateNodeDataQuery(query);
         if (!info.getPostCalculationInfo().isEmpty()) {
             tmpQuery = new ResultCalQuery(tmpQuery, info.getPostCalculationInfo());
         }
         if (info.getHavingFilter() != null) {
             tmpQuery = new HavingFilterQuery(tmpQuery, null);
         }
-        return tmpQuery;
+        //最后一层query的结果要包含SwiftMetaData
+        return new PrepareMetaDataQuery(tmpQuery, info);
     }
 
     @Override
@@ -69,6 +72,7 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
             // TODO: 2018/5/30 AggregatorValueContainer用map还是数组的取舍
             // 数组读写存储效率好但是解析麻烦，map占用空间大一点计算解析方便
             MetricInfo metricInfo = new MetricInfoImpl(metricColumns, aggregators, metrics.size());
+            // TODO: 2018/5/31 segmentQuery也能做部分过滤，比如有全局字段的情况下的前N个过滤
             queries.add(new GroupAllSegmentQuery(rowGroupByInfo, metricInfo));
         }
         return new GroupResultQuery(queries, getAggregators(metrics), getComparatorsForMerge(dimensions));

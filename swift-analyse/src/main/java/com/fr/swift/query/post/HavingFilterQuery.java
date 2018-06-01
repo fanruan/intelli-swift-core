@@ -2,7 +2,6 @@ package com.fr.swift.query.post;
 
 import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.query.filter.match.NodeFilter;
-import com.fr.swift.query.result.ResultQuery;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.NodeResultSet;
@@ -15,10 +14,10 @@ import java.util.List;
  */
 public class HavingFilterQuery extends AbstractPostQuery<NodeResultSet> {
 
-    private ResultQuery<NodeResultSet> query;
+    private PostQuery<NodeResultSet> query;
     private List<MatchFilter> filter;
 
-    public HavingFilterQuery(ResultQuery<NodeResultSet> query, List<MatchFilter> filter) {
+    public HavingFilterQuery(PostQuery<NodeResultSet> query, List<MatchFilter> filter) {
         this.query = query;
         this.filter = filter;
     }

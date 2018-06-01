@@ -22,6 +22,6 @@ public class GroupPagingSegmentQuery extends AbstractGroupSegmentQuery {
     public NodeResultSet getQueryResult() {
         GroupByResultSet result = GroupByUtils.query(groupByInfo, metricInfo, -1);
         SwiftNode node = GroupNodeFactory.createNode(result, metricInfo.getTargetLength());
-        return new NodeResultSetImpl(node);
+        return new NodeResultSetImpl(groupByInfo.getDimensions().size(), node);
     }
 }
