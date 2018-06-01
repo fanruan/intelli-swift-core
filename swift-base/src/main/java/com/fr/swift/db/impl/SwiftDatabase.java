@@ -95,6 +95,11 @@ public class SwiftDatabase implements Database {
             this.dir = dir;
         }
 
+        @Override
+        public String toString() {
+            return dir;
+        }
+
         public static class SchemaConverter implements AttributeConverter<Schema, Integer> {
             @Override
             public Integer convertToDatabaseColumn(Schema schema) {

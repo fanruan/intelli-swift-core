@@ -1,13 +1,11 @@
 package com.fr.swift.cube.io;
 
-import com.fr.base.FRContext;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.impl.mem.MemIo;
 import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.cube.io.output.Writer;
-import com.fr.swift.db.impl.SwiftDatabase.Schema;
 import com.fr.swift.source.SourceKey;
 
 import java.util.Date;
@@ -40,7 +38,6 @@ public class ResourceDiscovery implements IResourceDiscovery {
     private final Map<String, Map<String, MemIo>> cubeMemios = new ConcurrentHashMap<String, Map<String, MemIo>>();
 
     private static final ResourceDiscovery INSTANCE = new ResourceDiscovery();
-
 
     private Map<SourceKey, Long> lastUpdateTime;
 
@@ -138,20 +135,16 @@ public class ResourceDiscovery implements IResourceDiscovery {
         minorMemios.clear();
     }
 
-    private String defaultSwiftPath = String.format("%s/../", FRContext.getCurrentEnv().getPath());
+    private static final Pattern PATTERN = Pattern.compile("/.+(/.+?)/seg\\d+?/.+");
 
-    private static final Pattern MINOR_PATTERN = Pattern.compile("/minor_cubes/.+?/(.+)");
-
-    private static final Pattern PATTERN = Pattern.compile("/" + Schema.DECISION_LOG.dir + "/.+?/(.+)");
-
-    private boolean isMinor(String path) {
+    private static boolean isMinor(String path) {
         return path.contains("minor_cubes");
     }
 
-    private String getCubeBasePath(String path) {
+    private static String getCubeBasePath(String path) {
         //todo 路径需要单独配置，后续需要对此进行改正，现在先简单处理
         if (isMinor(path)) {
-            Matcher matcher = MINOR_PATTERN.matcher(path);
+            Matcher matcher = PATTERN.matcher(path);
             matcher.find();
             return path.substring(0, matcher.start(1));
         }

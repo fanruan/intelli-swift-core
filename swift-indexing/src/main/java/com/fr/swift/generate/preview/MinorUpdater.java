@@ -210,7 +210,7 @@ public class MinorUpdater {
 
     private Segment createSegment(DataSource dataSource) {
         String cubeSourceKey = DataSourceUtils.getSwiftSourceKey(dataSource).getId();
-        String path = String.format("%s/%s/minor_seg", MINOR_CUBES, cubeSourceKey);
+        String path = String.format("%s/%s/seg0", MINOR_CUBES, cubeSourceKey);
         return new RealTimeSegmentImpl(new ResourceLocation(path, Types.StoreType.MEMORY), dataSource.getMetadata());
     }
 
