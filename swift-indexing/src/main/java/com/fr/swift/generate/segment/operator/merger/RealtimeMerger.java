@@ -107,7 +107,7 @@ public class RealtimeMerger implements Merger {
         persistSegment();
         ResourceDiscovery.getInstance().removeCubeResource(String.format("%s/%s/%s",
                 SwiftCubePathConfig.getInstance().getPath(),
-                metaData.getSwiftSchema(), sourceKey.getId()));
+                metaData.getSwiftSchema().dir, sourceKey.getId()));
     }
 
     protected void persistMeta() {
