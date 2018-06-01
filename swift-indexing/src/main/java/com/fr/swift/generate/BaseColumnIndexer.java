@@ -36,7 +36,6 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import static com.fr.swift.segment.column.impl.base.FakeStringDetailColumn.EXTERNAL_STRING;
-import static com.fr.swift.source.ColumnTypeConstants.ClassType.STRING;
 
 /**
  * @author anchore
@@ -123,7 +122,9 @@ public abstract class BaseColumnIndexer<T> extends BaseWorker implements SwiftCo
     private static boolean isDetailInExternal(ClassType klass, StoreType storeType) {
         // 非内存的String类型没写明细，数据写到外排map里了，所以这里可以直接开始索引了
         // @see FakeStringDetailColumn#calExternalLocation
-        return klass == STRING && storeType != StoreType.MEMORY;
+//        return klass == STRING && storeType != StoreType.MEMORY;
+        // string明细不写外排了
+        return false;
     }
 
     private Map<T, IntList> mapDictValueToRows(Column<T> column, int rowCount) throws SwiftMetaDataException {

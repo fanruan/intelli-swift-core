@@ -34,6 +34,7 @@ import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.cube.task.TaskResult;
 import com.fr.swift.cube.task.impl.LocalTaskPool;
 import com.fr.swift.cube.task.impl.SchedulerTaskPool;
+import com.fr.swift.db.impl.SwiftDatabase.Schema;
 import com.fr.swift.generate.preview.SwiftDataPreviewer;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.log.SwiftLogger;
@@ -482,7 +483,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
     @Override
     public String getUpdatePath() {
-        return SwiftCubePathConfig.getInstance().getPath();
+        return SwiftCubePathConfig.getInstance().getPath() + "/" + Schema.CUBE.dir;
     }
 
     @Override

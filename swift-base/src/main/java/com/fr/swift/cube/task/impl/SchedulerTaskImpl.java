@@ -50,9 +50,11 @@ public class SchedulerTaskImpl extends BaseTask implements SchedulerTask {
                 return;
             }
         }
+        end = System.currentTimeMillis();
+
         this.result = result;
         setStatus(Status.DONE);
-        end = System.currentTimeMillis();
+
         SwiftLoggers.getLogger().info(String.format("%s %s", key, result));
 
         SchedulerTaskTomb.getTomb().add(this);
