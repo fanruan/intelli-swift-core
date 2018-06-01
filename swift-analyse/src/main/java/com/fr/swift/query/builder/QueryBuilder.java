@@ -29,7 +29,7 @@ public class QueryBuilder {
         }
     }
 
-    private static Query<SwiftResultSet> buildResultJoinQuery(ResultJoinQueryInfo info) throws SQLException {
+    private static Query<NodeResultSet> buildResultJoinQuery(ResultJoinQueryInfo info) throws SQLException {
         return ResultJoinQueryBuilder.buildQuery(info);
     }
 

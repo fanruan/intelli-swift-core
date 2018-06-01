@@ -41,13 +41,15 @@ public class ResultJoinUtils {
         final List<Integer> metricLengthList = getMetricLengthList(dimensionSize, resultSets);
         List<Iterator<MergeRow>> iterators = new ArrayList<Iterator<MergeRow>>();
         for (int i = 0; i < resultSets.size(); i++) {
-            GroupNode root = (GroupNode) resultSets.get(i).getNode();
+            final GroupNode root = (GroupNode) resultSets.get(i).getNode();
             Iterator<List<GroupNode>> iterator = new Tree2RowIterator(dimensionSize, root.getChildren().iterator());
             final int resultSetIndex = i;
             Iterator<MergeRow> rowIterator = new MapperIterator<List<GroupNode>, MergeRow>(iterator, new Function<List<GroupNode>, MergeRow>() {
                 @Override
                 public MergeRow apply(List<GroupNode> p) {
-                    return new MergeRow(resultSetIndex, metricLengthList, p);
+                    MergeRow row = new MergeRow(resultSetIndex, metricLengthList, p);
+                    row.setValue(resultSetIndex, p.get(p.size() - 1).getAggregatorValue());
+                    return row;
                 }
             });
             iterators.add(rowIterator);
@@ -73,7 +75,7 @@ public class ResultJoinUtils {
                 if (key.get(deep) == null) {
                     break;
                 }
-                if (cachedNode[deep + 1] == null || !cachedKey[deep].equals(cachedKey[deep])) {
+                if (cachedNode[deep + 1] == null || !cachedKey[deep].equals(key.get(deep))) {
                     // 刷新缓存索引，deep之后的索引都无效了
                     Arrays.fill(cachedKey, deep, cachedKey.length, null);
                     // cachedNode和cachedIndex是同步更新的
@@ -259,7 +261,9 @@ public class ResultJoinUtils {
         public AggregatorValue[] getAllValues() {
             List<AggregatorValue> total = new ArrayList<AggregatorValue>();
             for (AggregatorValue[] value : values) {
-                total.addAll(Arrays.asList(value));
+                for (int i = 0; i < value.length; i++) {
+                    total.add(value[i]);
+                }
             }
             return total.toArray(new AggregatorValue[total.size()]);
         }

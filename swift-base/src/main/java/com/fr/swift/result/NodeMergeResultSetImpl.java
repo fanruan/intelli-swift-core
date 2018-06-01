@@ -79,7 +79,7 @@ public class NodeMergeResultSetImpl<T extends GroupNode> implements NodeMergeRes
             AggregatorValue[] values = leafNode.getAggregatorValue();
             values = values == null ? new AggregatorValue[0] : values;
             for (int i = 0; i < values.length; i++) {
-                data.add(values[i].calculateValue());
+                data.add(values[i] == null ? null : values[i].calculateValue());
             }
         }
         return new ListBasedRow(data);

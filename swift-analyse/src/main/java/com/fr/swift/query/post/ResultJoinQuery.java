@@ -4,7 +4,6 @@ import com.fr.swift.query.Query;
 import com.fr.swift.query.info.dimension.Dimension;
 import com.fr.swift.query.post.utils.ResultJoinUtils;
 import com.fr.swift.result.NodeResultSet;
-import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ import java.util.List;
  * <p>
  * Created by Lyon on 2018/5/31.
  */
-public class ResultJoinQuery extends AbstractPostQuery<SwiftResultSet> {
+public class ResultJoinQuery extends AbstractPostQuery<NodeResultSet> {
 
     private List<Query<NodeResultSet>> queries;
     private List<Dimension> dimensions;
@@ -28,7 +27,7 @@ public class ResultJoinQuery extends AbstractPostQuery<SwiftResultSet> {
     }
 
     @Override
-    public SwiftResultSet getQueryResult() throws SQLException {
+    public NodeResultSet getQueryResult() throws SQLException {
         List<NodeResultSet> resultSets = new ArrayList<NodeResultSet>();
         for (Query<NodeResultSet> query : queries) {
             resultSets.add(query.getQueryResult());
