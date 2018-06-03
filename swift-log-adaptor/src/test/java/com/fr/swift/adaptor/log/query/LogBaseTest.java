@@ -1,7 +1,5 @@
 package com.fr.swift.adaptor.log.query;
 
-import com.fr.base.FRContext;
-import com.fr.dav.LocalEnv;
 import com.fr.swift.config.TestConfDb;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.cube.io.Types;
@@ -41,7 +39,7 @@ public class LogBaseTest extends TestCase {
         new SwiftAnalyseService().start();
         TestConnectionProvider.createConnection();
         TestConfDb.setConfDb();
-        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir")));
+//        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir")));
     }
 
     protected void transportAndIndex(DataSource dataSource, Table table) throws Exception {

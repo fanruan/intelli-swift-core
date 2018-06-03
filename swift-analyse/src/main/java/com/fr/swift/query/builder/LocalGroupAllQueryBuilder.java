@@ -13,13 +13,20 @@ import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.query.group.info.MetricInfoImpl;
 import com.fr.swift.query.group.info.cursor.ExpanderImpl;
 import com.fr.swift.query.group.info.cursor.ExpanderType;
-import com.fr.swift.query.info.GroupQueryInfo;
-import com.fr.swift.query.info.dimension.Dimension;
-import com.fr.swift.query.info.metric.Metric;
+import com.fr.swift.query.info.element.dimension.Dimension;
+import com.fr.swift.query.info.element.metric.Metric;
+import com.fr.swift.query.info.group.GroupQueryInfo;
+import com.fr.swift.query.info.group.post.CalculatedFieldQueryInfo;
+import com.fr.swift.query.info.group.post.PostQueryInfo;
 import com.fr.swift.query.post.HavingFilterQuery;
 import com.fr.swift.query.post.PostQuery;
+import com.fr.swift.query.post.PostQueryType;
 import com.fr.swift.query.post.PrepareMetaDataQuery;
 import com.fr.swift.query.post.ResultCalQuery;
+import com.fr.swift.query.post.RowSortQuery;
+import com.fr.swift.query.post.TreeAggregationQuery;
+import com.fr.swift.query.post.TreeFilterQuery;
+import com.fr.swift.query.post.TreeSortQuery;
 import com.fr.swift.query.post.UpdateNodeDataQuery;
 import com.fr.swift.query.result.ResultQuery;
 import com.fr.swift.query.result.group.GroupResultQuery;
@@ -41,16 +48,33 @@ import java.util.List;
  */
 public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
 
-    // TODO: 2018/5/31 结果的配置计算中值的读写还是依赖之前解析的数组的index，外部调用查询写得时候比较麻烦
-    // bi功能这边树结构的聚合、过滤、排序怎么支持呢？增加QueryInfo类型，在GroupQueryInfo的基础上扩展
+    // TODO: 2018/5/31 结果的配置计算中值的读写还是依赖之前解析的数组的index，外部调用查询写得时候比较麻烦。查询属性写字段名，做一层解析吧
     @Override
-    public Query<NodeResultSet> buildPostCalQuery(ResultQuery<NodeResultSet> query, GroupQueryInfo info) {
+    public Query<NodeResultSet> buildPostQuery(ResultQuery<NodeResultSet> query, GroupQueryInfo info) {
         PostQuery<NodeResultSet> tmpQuery = new UpdateNodeDataQuery(query);
-        if (!info.getPostCalculationInfo().isEmpty()) {
-            tmpQuery = new ResultCalQuery(tmpQuery, info.getPostCalculationInfo());
-        }
-        if (info.getHavingFilter() != null) {
-            tmpQuery = new HavingFilterQuery(tmpQuery, null);
+        List<PostQueryInfo> postQueryInfoList = info.getPostQueryInfoList();
+        for (PostQueryInfo postQueryInfo : postQueryInfoList) {
+            PostQueryType type = postQueryInfo.getType();
+            switch (type) {
+                case CAL_FIELD:
+                    tmpQuery = new ResultCalQuery(tmpQuery, ((CalculatedFieldQueryInfo) postQueryInfo).getCalInfoList());
+                    break;
+                case HAVING_FILTER:
+                    tmpQuery = new HavingFilterQuery(tmpQuery, null);
+                    break;
+                case TREE_FILTER:
+                    tmpQuery = new TreeFilterQuery(tmpQuery, null);
+                    break;
+                case TREE_AGGREGATION:
+                    tmpQuery = new TreeAggregationQuery(tmpQuery, null);
+                    break;
+                case TREE_SORT:
+                    tmpQuery = new TreeSortQuery(tmpQuery, null);
+                    break;
+                case ROW_SORT:
+                    tmpQuery = new RowSortQuery(tmpQuery, null);
+                    break;
+            }
         }
         //最后一层query的结果要包含SwiftMetaData
         return new PrepareMetaDataQuery(tmpQuery, info);

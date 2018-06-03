@@ -18,12 +18,12 @@ import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.group.info.cursor.AllCursor;
 import com.fr.swift.query.group.info.cursor.Expander;
-import com.fr.swift.query.info.GroupQueryInfo;
-import com.fr.swift.query.info.XGroupQueryInfo;
-import com.fr.swift.query.info.dimension.Dimension;
-import com.fr.swift.query.info.dimension.DimensionInfo;
-import com.fr.swift.query.info.dimension.DimensionInfoImpl;
-import com.fr.swift.query.info.target.TargetInfo;
+import com.fr.swift.query.info.element.dimension.Dimension;
+import com.fr.swift.query.info.element.dimension.DimensionInfo;
+import com.fr.swift.query.info.element.dimension.DimensionInfoImpl;
+import com.fr.swift.query.info.element.target.TargetInfo;
+import com.fr.swift.query.info.group.GroupQueryInfo;
+import com.fr.swift.query.info.group.XGroupQueryInfo;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.NodeResultSet;
@@ -188,11 +188,6 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         @Override
         public ResultType getResultType() {
             return ResultType.BICROSS;
-        }
-
-        @Override
-        public String getDataMiningError() {
-            return null;
         }
     }
 }

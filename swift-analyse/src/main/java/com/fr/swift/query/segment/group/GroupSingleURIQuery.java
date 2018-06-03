@@ -1,7 +1,7 @@
 package com.fr.swift.query.segment.group;
 
 import com.fr.swift.query.filter.match.MatchFilter;
-import com.fr.swift.query.info.target.Target;
+import com.fr.swift.query.info.element.target.Target;
 import com.fr.swift.query.segment.AbstractSegmentQuery;
 import com.fr.swift.result.NodeResultSet;
 

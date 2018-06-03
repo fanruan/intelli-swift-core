@@ -156,7 +156,7 @@ public class SwiftWidgetExecutorManager implements EngineWidgetExecutorManager {
         return ListLabelWidgetAdaptor.calculate(listLabelWidget);
     }
 
-    @Override
+
     public NumberMaxAndMinValue getFieldMaxAndMinValueByFieldId(String s, FineWidget fineWidget) {
         return null;
     }
@@ -167,7 +167,7 @@ public class SwiftWidgetExecutorManager implements EngineWidgetExecutorManager {
     }
 
     @Override
-    public Map<String, List<Object>> getClickValue(FineWidget widget, Map clicked, List<String> fieldsId) {
+    public Map<String, Object> getClickValue(FineWidget widget, Map clicked, List<String> fieldsId) {
 //        return JumpAdaptor.getClickValue(widget, clicked, fieldsId);
         return null;
     }

@@ -7,7 +7,7 @@ import com.fr.swift.adaptor.widget.datamining.DMErrorWrap;
 import com.fr.swift.adaptor.widget.datamining.SwiftAlgorithmResultAdapter;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.aggregator.AggregatorValue;
-import com.fr.swift.query.info.XGroupQueryInfo;
+import com.fr.swift.query.info.group.XGroupQueryInfo;
 import com.fr.swift.query.post.group.XGroupPostQuery;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeResultSet;

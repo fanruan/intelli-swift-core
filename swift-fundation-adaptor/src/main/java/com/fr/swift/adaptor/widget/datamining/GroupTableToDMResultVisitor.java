@@ -9,7 +9,7 @@ import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
 import com.finebi.conf.structure.analysis.vistor.DMBeanVisitor;
 import com.fr.swift.adaptor.widget.datamining.kmeans.KmeansGroupTableAdapter;
 import com.fr.swift.adaptor.widget.datamining.timeseries.TimeSeriesGroupTableAdapter;
-import com.fr.swift.query.info.GroupQueryInfoImpl;
+import com.fr.swift.query.info.group.GroupQueryInfoImpl;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.source.SwiftResultSet;
 

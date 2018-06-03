@@ -12,9 +12,9 @@ import com.fr.swift.query.group.info.PageGroupInfoImpl;
 import com.fr.swift.query.group.info.cursor.AllCursor;
 import com.fr.swift.query.group.info.cursor.ExpanderImpl;
 import com.fr.swift.query.group.info.cursor.ExpanderType;
-import com.fr.swift.query.info.GroupQueryInfo;
-import com.fr.swift.query.info.dimension.Dimension;
-import com.fr.swift.query.info.metric.Metric;
+import com.fr.swift.query.info.element.dimension.Dimension;
+import com.fr.swift.query.info.element.metric.Metric;
+import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.post.group.GroupPostQuery;
 import com.fr.swift.query.result.ResultQuery;
 import com.fr.swift.query.result.group.GroupPagingResultQuery;
@@ -38,7 +38,7 @@ public class LocalGroupPagingQueryBuilder extends AbstractLocalGroupQueryBuilder
     private final SwiftSegmentManager localSegmentProvider = SwiftContext.getInstance().getBean("LocalSegmentProvider", SwiftSegmentManager.class);
 
     @Override
-    public Query<NodeResultSet> buildPostCalQuery(ResultQuery<NodeResultSet> query, GroupQueryInfo info) {
+    public Query<NodeResultSet> buildPostQuery(ResultQuery<NodeResultSet> query, GroupQueryInfo info) {
         return new GroupPostQuery(null, null);
     }
 

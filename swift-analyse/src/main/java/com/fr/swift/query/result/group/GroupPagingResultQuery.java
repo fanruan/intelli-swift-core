@@ -2,7 +2,7 @@ package com.fr.swift.query.result.group;
 
 import com.fr.swift.query.Query;
 import com.fr.swift.query.aggregator.Aggregator;
-import com.fr.swift.query.info.target.GroupTarget;
+import com.fr.swift.query.info.element.target.GroupTarget;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.NodeResultSet;
 

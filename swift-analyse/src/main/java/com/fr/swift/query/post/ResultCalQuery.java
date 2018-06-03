@@ -1,6 +1,6 @@
 package com.fr.swift.query.post;
 
-import com.fr.swift.query.info.target.GroupTarget;
+import com.fr.swift.query.info.element.target.GroupTarget;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.NodeResultSet;

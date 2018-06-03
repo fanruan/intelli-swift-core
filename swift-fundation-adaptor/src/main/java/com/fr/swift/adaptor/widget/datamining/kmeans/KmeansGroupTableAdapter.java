@@ -8,9 +8,9 @@ import com.fr.swift.adaptor.widget.datamining.DMErrorWrap;
 import com.fr.swift.adaptor.widget.datamining.SwiftAlgorithmResultAdapter;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
-import com.fr.swift.query.info.GroupQueryInfoImpl;
-import com.fr.swift.query.info.dimension.DimensionInfo;
-import com.fr.swift.query.info.target.TargetInfo;
+import com.fr.swift.query.info.element.dimension.DimensionInfo;
+import com.fr.swift.query.info.element.target.TargetInfo;
+import com.fr.swift.query.info.group.GroupQueryInfoImpl;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSetImpl;
 import com.fr.swift.result.NodeResultSet;
@@ -48,7 +48,8 @@ public class KmeansGroupTableAdapter extends SwiftAlgorithmResultAdapter<KmeansB
         GroupNode rootNode = (GroupNode) result.getNode();
         List<double[]> resultSummary = getResultSummary(rootNode);
 
-        KmeansPredict kmeans = new KmeansPredict(bean, resultSummary, targetList);
+//        KmeansPredict kmeans = new KmeansPredict(bean, resultSummary, targetList);
+        KmeansPredict kmeans = null;
         GroupNode resultRootNode = addFirstDimension(rootNode, kmeans, info);
         GroupNodeAggregateUtils.aggregate(NodeType.GROUP, dimensionInfo.getDimensions().length, resultRootNode, targetInfo.getResultAggregators());
 
@@ -113,7 +114,7 @@ public class KmeansGroupTableAdapter extends SwiftAlgorithmResultAdapter<KmeansB
      * @return 节点与对应的聚类值map
      * @throws Exception
      */
-    private Map<Integer, GroupNode> changeNode(GroupNode rootNode, KmeansPredict kmeans) throws Exception {
+    private Map<Integer, GroupNode> changeNode(GroupNode rootNode, KmeansPredict kmeans) {
         if (rootNode.getChildrenSize() == 0) {
             GroupNode resultRootNode = new GroupNode(rootNode.getDepth() + 1, null);
             resultRootNode.setData(rootNode.getData());
@@ -124,7 +125,8 @@ public class KmeansGroupTableAdapter extends SwiftAlgorithmResultAdapter<KmeansB
             for (int i = 0; i < summaryValue.length; i++) {
                 targets[i] = summaryValue[i].calculate();
             }
-            int predict = kmeans.predict(targets);
+//            int predict = kmeans.predict(targets);
+            int predict = 0;
             HashMap<Integer, GroupNode> map = new HashMap<Integer, GroupNode>(1);
             map.put(predict, resultRootNode);
             return map;

@@ -2,7 +2,7 @@ package com.fr.swift.query.info;
 
 import com.fr.swift.query.QueryInfo;
 import com.fr.swift.query.filter.info.FilterInfo;
-import com.fr.swift.query.info.dimension.Dimension;
+import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.source.SourceKey;
 
 import java.util.List;

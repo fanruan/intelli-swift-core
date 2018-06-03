@@ -1,7 +1,7 @@
 package com.fr.swift.query.result.detail;
 
 import com.fr.swift.query.Query;
-import com.fr.swift.query.info.target.DetailTarget;
+import com.fr.swift.query.info.element.target.DetailTarget;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.result.MultiSegmentDetailResultSet;
 import com.fr.swift.source.SwiftMetaData;

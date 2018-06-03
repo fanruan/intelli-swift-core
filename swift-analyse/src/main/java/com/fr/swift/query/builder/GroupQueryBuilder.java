@@ -1,7 +1,7 @@
 package com.fr.swift.query.builder;
 
 import com.fr.swift.query.Query;
-import com.fr.swift.query.info.GroupQueryInfo;
+import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.remote.RemoteQueryImpl;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.service.SegmentLocationProvider;
@@ -50,9 +50,9 @@ public class GroupQueryBuilder {
         if (uris.size() == 1) {
             // 如果数据只分布在一个节点上面，那么在该节点上面完成最后一步计算指标计算
             if (QueryBuilder.isLocalURI(uris.get(0))) {
-                return builder.buildPostCalQuery(builder.buildLocalQuery(info), info);
+                return builder.buildPostQuery(builder.buildLocalQuery(info), info);
             } else {
-                // TODO: 2018/5/30 丢给远程机器
+                // 丢给远程节点
                 return new RemoteQueryImpl(info);
             }
         }
@@ -65,6 +65,6 @@ public class GroupQueryBuilder {
             }
         }
         // 多个节点的ResultQuery合并之后在处理计算指标
-        return builder.buildPostCalQuery(builder.buildResultQuery(queries, info), info);
+        return builder.buildPostQuery(builder.buildResultQuery(queries, info), info);
     }
 }

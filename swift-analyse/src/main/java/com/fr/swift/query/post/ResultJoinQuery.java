@@ -1,7 +1,7 @@
 package com.fr.swift.query.post;
 
 import com.fr.swift.query.Query;
-import com.fr.swift.query.info.dimension.Dimension;
+import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.post.utils.ResultJoinUtils;
 import com.fr.swift.result.NodeResultSet;
 

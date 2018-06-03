@@ -2,10 +2,10 @@ package com.fr.swift.adaptor.widget.target;
 
 import com.finebi.conf.constant.BIDesignConstants;
 import com.fr.swift.query.group.GroupType;
-import com.fr.swift.query.info.target.GroupTarget;
-import com.fr.swift.query.info.target.cal.BrotherGroupTarget;
-import com.fr.swift.query.info.target.cal.CalTargetType;
-import com.fr.swift.query.info.target.cal.GroupTargetImpl;
+import com.fr.swift.query.info.element.target.GroupTarget;
+import com.fr.swift.query.info.element.target.cal.BrotherGroupTarget;
+import com.fr.swift.query.info.element.target.cal.CalTargetType;
+import com.fr.swift.query.info.element.target.cal.GroupTargetImpl;
 import com.fr.swift.structure.Pair;
 
 import java.util.List;

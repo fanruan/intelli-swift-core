@@ -2,8 +2,8 @@ package com.fr.swift.query.builder;
 
 import com.fr.swift.query.Query;
 import com.fr.swift.query.aggregator.Aggregator;
-import com.fr.swift.query.info.GroupQueryInfo;
-import com.fr.swift.query.info.target.GroupTarget;
+import com.fr.swift.query.info.element.target.GroupTarget;
+import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.post.group.GroupPostQuery;
 import com.fr.swift.query.result.ResultQuery;
 import com.fr.swift.query.result.group.GroupPagingResultQuery;
@@ -20,7 +20,7 @@ import java.util.List;
 public class LocalGroupSingleURIQueryBuilder extends AbstractLocalGroupQueryBuilder{
 
     @Override
-    public Query<NodeResultSet> buildPostCalQuery(ResultQuery<NodeResultSet> query, GroupQueryInfo info) {
+    public Query<NodeResultSet> buildPostQuery(ResultQuery<NodeResultSet> query, GroupQueryInfo info) {
         return new GroupPostQuery(query, info);
     }
 

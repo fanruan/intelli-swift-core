@@ -491,13 +491,13 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         SwiftCubePathConfig.getInstance().setPath(newPath);
     }
 
-    @Override
-    public boolean checkPath(String path) {
-        return SwiftCubePathConfig.isValidPath(path);
-    }
-
-    @Override
-    public boolean isCluster() {
-        return false;
-    }
+//    @Override
+//    public boolean checkPath(String path) {
+//        return SwiftCubePathConfig.isValidPath(path);
+//    }
+//
+//    @Override
+//    public boolean isCluster() {
+//        return false;
+//    }
 }

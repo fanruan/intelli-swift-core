@@ -28,7 +28,6 @@ import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.filter.FineFilter;
 import com.finebi.conf.structure.result.BIDetailTableResult;
-import com.fr.decision.authority.data.User;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.transformer.FieldFactory;
 import com.fr.swift.log.SwiftLogger;
@@ -212,15 +211,15 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
         return new ArrayList<Object>();
     }
 
-    @Override
-    public Map<String, List<Object>> getRowValueByUserAuthority(User user) {
-        return null;
-    }
-
-    @Override
-    public BIDetailTableResult getRowValueByUserAuthority(String tableName, User user) {
-        return null;
-    }
+//    @Override
+//    public Map<String, List<Object>> getRowValueByUserAuthority(User user) {
+//        return null;
+//    }
+//
+//    @Override
+//    public BIDetailTableResult getRowValueByUserAuthority(String tableName, User user) {
+//        return null;
+//    }
 
 
     @Override

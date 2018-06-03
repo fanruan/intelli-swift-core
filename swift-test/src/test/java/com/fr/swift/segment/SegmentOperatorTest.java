@@ -1,7 +1,5 @@
 package com.fr.swift.segment;
 
-import com.fr.base.FRContext;
-import com.fr.dav.LocalEnv;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.manager.LocalDataOperatorProvider;
 import com.fr.swift.segment.operator.Inserter;
@@ -27,7 +25,7 @@ public class SegmentOperatorTest extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir")));
+//        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir")));
         File file = new File(System.getProperty("user.dir"), "resources");
         file.deleteOnExit();
         intKey = new SourceKey("int_table");

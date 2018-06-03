@@ -1,7 +1,7 @@
 package com.fr.swift.query.builder;
 
 import com.fr.swift.query.Query;
-import com.fr.swift.query.info.GroupQueryInfo;
+import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.result.ResultQuery;
 import com.fr.swift.result.NodeResultSet;
 
@@ -43,5 +43,5 @@ public interface LocalGroupQueryBuilder {
      * @param info  查询信息
      * @return
      */
-    Query<NodeResultSet> buildPostCalQuery(ResultQuery<NodeResultSet> query, GroupQueryInfo info);
+    Query<NodeResultSet> buildPostQuery(ResultQuery<NodeResultSet> query, GroupQueryInfo info);
 }

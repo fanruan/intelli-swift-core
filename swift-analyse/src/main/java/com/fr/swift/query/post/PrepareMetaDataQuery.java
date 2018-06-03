@@ -1,6 +1,6 @@
 package com.fr.swift.query.post;
 
-import com.fr.swift.query.info.GroupQueryInfo;
+import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.post.utils.SwiftMetaDataUtils;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.NodeResultSetImpl;
