@@ -7,10 +7,4 @@ package com.fr.swift.query.info.element.target;
  */
 public interface GroupTarget extends Target {
 
-    /**
-     * 过滤之后要再次计算的计算指标
-     *
-     * @return
-     */
-    boolean isRepeatCal();
 }

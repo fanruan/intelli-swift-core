@@ -93,7 +93,12 @@ public class XNodeGroupByUtils {
      */
     public static <Node extends GroupNode<Node>> List<Node> getLeafNodes(int dimensionSize, Node root) {
         // 树转为行
-        Iterator<List<Node>> topIt = new Tree2RowIterator<Node>(dimensionSize, root.iterator());
+        Iterator<List<Node>> topIt = new Tree2RowIterator<Node>(dimensionSize, root.getChildren().iterator(), new Function<Node, Iterator<Node>>() {
+            @Override
+            public Iterator<Node> apply(Node p) {
+                return p.getChildren().iterator();
+            }
+        });
         // 找出每一行中叶子节点
         Iterator<Node> leafNodeIt = new MapperIterator<List<Node>, Node>(topIt, new Function<List<Node>, Node>() {
             @Override

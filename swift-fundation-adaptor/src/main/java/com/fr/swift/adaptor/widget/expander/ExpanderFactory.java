@@ -62,7 +62,12 @@ public class ExpanderFactory {
             public BeanTree apply(ExpanderBean p) {
                 return new BeanTree(p);
             }
-        }));
+        }), new Function<BeanTree, Iterator<BeanTree>>() {
+            @Override
+            public Iterator<BeanTree> apply(BeanTree p) {
+                return p.iterator();
+            }
+        });
         final Function<BeanTree, String> fn = new Function<BeanTree, String>() {
             @Override
             public String apply(BeanTree p) {

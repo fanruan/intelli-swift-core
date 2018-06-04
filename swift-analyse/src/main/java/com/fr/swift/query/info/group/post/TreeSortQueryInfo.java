@@ -3,21 +3,21 @@ package com.fr.swift.query.info.group.post;
 import com.fr.swift.query.post.PostQueryType;
 import com.fr.swift.query.sort.Sort;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * Created by Lyon on 2018/6/3.
  */
 public class TreeSortQueryInfo implements PostQueryInfo {
 
-    private Map<String, Sort> sortMap;
+    private List<Sort> sortList;
 
-    public TreeSortQueryInfo(Map<String, Sort> sortMap) {
-        this.sortMap = sortMap;
+    public TreeSortQueryInfo(List<Sort> sortList) {
+        this.sortList = sortList;
     }
 
-    public Map<String, Sort> getSortMap() {
-        return sortMap;
+    public List<Sort> getSortList() {
+        return sortList;
     }
 
     @Override

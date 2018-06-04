@@ -3,6 +3,7 @@ package com.fr.swift.result;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.iterator.Tree2RowIterator;
+import com.fr.swift.util.function.Function;
 
 import java.sql.SQLException;
 import java.util.Iterator;
@@ -18,15 +19,25 @@ public class NodeResultSetImpl<T extends SwiftNode> implements NodeResultSet {
     private SwiftMetaData metaData;
     private Iterator<List<SwiftNode>> iterator;
 
-    public NodeResultSetImpl(int dimensionSize, SwiftNode<T> node) {
+    public NodeResultSetImpl(int dimensionSize, SwiftNode node) {
         this.node = node;
-        this.iterator = new Tree2RowIterator(dimensionSize, node.getChildren().iterator());
+        this.iterator = new Tree2RowIterator<SwiftNode>(dimensionSize, node.getChildren().iterator(), new Function<SwiftNode, Iterator<SwiftNode>>() {
+            @Override
+            public Iterator<SwiftNode> apply(SwiftNode p) {
+                return p.getChildren().iterator();
+            }
+        });
     }
 
-    public NodeResultSetImpl(int dimensionSize, SwiftNode<T> node, SwiftMetaData metaData) {
+    public NodeResultSetImpl(int dimensionSize, SwiftNode node, SwiftMetaData metaData) {
         this.node = node;
         this.metaData = metaData;
-        this.iterator = new Tree2RowIterator(dimensionSize, node.getChildren().iterator());
+        this.iterator = new Tree2RowIterator<SwiftNode>(dimensionSize, node.getChildren().iterator(), new Function<SwiftNode, Iterator<SwiftNode>>() {
+            @Override
+            public Iterator<SwiftNode> apply(SwiftNode p) {
+                return p.getChildren().iterator();
+            }
+        });
     }
 
     @Override
