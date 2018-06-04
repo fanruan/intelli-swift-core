@@ -2,31 +2,29 @@ package com.fr.swift.adaptor.widget.target;
 
 import com.finebi.conf.constant.BIDesignConstants;
 import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
-import com.finebi.conf.internalimp.dashboard.widget.target.FineTargetImpl;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.fr.general.ComparatorUtils;
-import com.fr.stable.StringUtils;
 import com.fr.swift.adaptor.transformer.AggregatorAdaptor;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.widget.AbstractWidgetAdaptor;
 import com.fr.swift.adaptor.widget.group.GroupTypeAdaptor;
-import com.fr.swift.query.adapter.metric.CounterMetric;
-import com.fr.swift.query.adapter.metric.FormulaMetric;
-import com.fr.swift.query.adapter.metric.GroupMetric;
-import com.fr.swift.query.adapter.metric.Metric;
-import com.fr.swift.query.adapter.target.GroupTarget;
-import com.fr.swift.query.adapter.target.TargetInfo;
-import com.fr.swift.query.adapter.target.cal.CalTargetType;
-import com.fr.swift.query.adapter.target.cal.GroupFormulaTarget;
-import com.fr.swift.query.adapter.target.cal.ResultTarget;
-import com.fr.swift.query.adapter.target.cal.TargetInfoImpl;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorFactory;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.aggregator.WrappedAggregator;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.group.GroupType;
+import com.fr.swift.query.info.element.metric.CounterMetric;
+import com.fr.swift.query.info.element.metric.FormulaMetric;
+import com.fr.swift.query.info.element.metric.GroupMetric;
+import com.fr.swift.query.info.element.metric.Metric;
+import com.fr.swift.query.info.element.target.GroupTarget;
+import com.fr.swift.query.info.element.target.TargetInfo;
+import com.fr.swift.query.info.element.target.cal.CalTargetType;
+import com.fr.swift.query.info.element.target.cal.GroupFormulaTarget;
+import com.fr.swift.query.info.element.target.cal.ResultTarget;
+import com.fr.swift.query.info.element.target.cal.TargetInfoImpl;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.etl.utils.FormulaUtils;
@@ -230,7 +228,7 @@ public class TargetInfoUtils {
 
     private static boolean isRepeatCal(FineTarget target) {
         try {
-            return ((FineTargetImpl) target).isRepeatCal();
+//            return target.isRepeatCal();
         } catch (Exception e) {
         }
         return false;
@@ -259,8 +257,9 @@ public class TargetInfoUtils {
 
     private static boolean isDistinctCounter(FineTarget target) {
         String countDep = target.getCounterDep();
-        return StringUtils.isNotEmpty(countDep)
-                && !ComparatorUtils.equals(countDep, BIDesignConstants.DESIGN.COUNTER_DEP.TOTAL_ROWS);
+//        return StringUtils.isNotEmpty(countDep)
+//                && !ComparatorUtils.equals(countDep, BIDesignConstants.DESIGN.COUNTER_DEP.TOTAL_ROWS);
+        return false;
     }
 
     private static List<Pair<Integer, GroupType>> getDateDimensionIndexTypePair(AbstractTableWidget widget) {

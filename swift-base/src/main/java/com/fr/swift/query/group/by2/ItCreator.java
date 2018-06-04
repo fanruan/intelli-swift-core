@@ -1,9 +1,9 @@
 package com.fr.swift.query.group.by2;
 
-import com.fr.swift.query.adapter.dimension.Cursor;
 import com.fr.swift.query.group.by.GroupBy;
 import com.fr.swift.query.group.by.GroupByEntry;
 import com.fr.swift.query.group.info.GroupByInfo;
+import com.fr.swift.query.group.info.cursor.Cursor;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.segment.column.Column;

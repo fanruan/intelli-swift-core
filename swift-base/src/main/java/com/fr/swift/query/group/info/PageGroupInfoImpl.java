@@ -1,8 +1,8 @@
 package com.fr.swift.query.group.info;
 
-import com.fr.swift.query.adapter.dimension.Cursor;
-import com.fr.swift.query.adapter.dimension.Expander;
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.group.info.cursor.Cursor;
+import com.fr.swift.query.group.info.cursor.Expander;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.segment.column.Column;
 

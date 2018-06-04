@@ -1,9 +1,8 @@
 package com.fr.swift.service;
 
-
-import com.fr.swift.cal.info.QueryInfo;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.QueryInfo;
 import com.fr.swift.segment.recover.SwiftSegmentRecovery;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
@@ -32,6 +31,7 @@ public class SwiftRealTimeService extends AbstractSwiftService implements Realti
 
     @Override
     public <T extends SwiftResultSet> T query(QueryInfo<T> queryInfo) {
+        // TODO: 2018/6/4  
         return null;
     }
 

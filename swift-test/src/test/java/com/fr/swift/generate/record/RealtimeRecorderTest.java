@@ -1,7 +1,5 @@
 package com.fr.swift.generate.record;
 
-import com.fr.base.FRContext;
-import com.fr.dav.LocalEnv;
 import com.fr.swift.config.SwiftCubePathConfig;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
@@ -38,7 +36,7 @@ public class RealtimeRecorderTest extends BaseTest {
         super.setUp();
         connectionInfo = TestConnectionProvider.createConnection();
         dataSource = new QueryDBSource("select * from DEMO_CAPITAL_RETURN", "RealtimeRecorderTest");
-        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir") + "\\" + System.currentTimeMillis()));
+//        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir") + "\\" + System.currentTimeMillis()));
     }
 
     public void testRecord() {

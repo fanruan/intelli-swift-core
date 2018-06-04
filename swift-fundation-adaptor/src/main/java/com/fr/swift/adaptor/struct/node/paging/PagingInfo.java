@@ -1,6 +1,6 @@
 package com.fr.swift.adaptor.struct.node.paging;
 
-import com.fr.swift.query.adapter.dimension.Expander;
+import com.fr.swift.query.group.info.cursor.Expander;
 
 /**
  * Created by Lyon on 2018/5/20.

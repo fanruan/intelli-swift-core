@@ -38,11 +38,9 @@ import com.finebi.conf.structure.result.table.BITableResult;
 import com.fr.swift.adaptor.widget.date.MonthControlWidgetAdaptor;
 import com.fr.swift.adaptor.widget.date.QuarterControlWidgetAdaptor;
 import com.fr.swift.adaptor.widget.date.YearControlWidgetAdaptor;
-import com.fr.swift.adaptor.widget.jump.JumpAdaptor;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -158,14 +156,20 @@ public class SwiftWidgetExecutorManager implements EngineWidgetExecutorManager {
         return ListLabelWidgetAdaptor.calculate(listLabelWidget);
     }
 
-    @Override
+
+    public NumberMaxAndMinValue getFieldMaxAndMinValueByFieldId(String s, FineWidget fineWidget) {
+        return null;
+    }
+
+
     public NumberMaxAndMinValue getFieldMaxAndMinValueByFieldId(String fieldId) throws Exception {
         return AbstractWidgetAdaptor.getMaxMinNumValue(fieldId);
     }
 
     @Override
-    public Map<String, Object> getClickValue(FineWidget widget, Map clicked, List<String> fieldsId) throws SQLException {
-        return JumpAdaptor.getClickValue(widget, clicked, fieldsId);
+    public Map<String, List<Object>> getClickValue(FineWidget widget, Map clicked, List<String> fieldsId) {
+//        return JumpAdaptor.getClickValue(widget, clicked, fieldsId);
+        return null;
     }
 
     @Override

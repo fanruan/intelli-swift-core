@@ -12,7 +12,6 @@ import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.swift.segment.column.impl.base.IntDetailColumn;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.iterator.IntListRowTraversal;
@@ -273,7 +272,7 @@ public class CubeData {
 
                 @Override
                 public DetailColumn getDetailColumn() {
-                    DetailColumn column = EasyMock.createMock(IntDetailColumn.class);
+                    DetailColumn column = EasyMock.createMock(DetailColumn.class);
                     for (int i = 0; i < rowCount; i++) {
                         EasyMock.expect(column.getInt(i)).andReturn(metrics[columnIndex][i]).times(1);
                     }

@@ -1,12 +1,12 @@
 package com.fr.swift.query.group.by;
 
-import com.fr.swift.query.adapter.dimension.Cursor;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
 import com.fr.swift.query.group.by.paging.GroupByPagingIterator;
 import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.query.group.info.MetricInfo;
+import com.fr.swift.query.group.info.cursor.Cursor;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.KeyValue;

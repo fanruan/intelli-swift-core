@@ -1,6 +1,6 @@
 package com.fr.swift.query.group.info;
 
-import com.fr.swift.query.adapter.dimension.Cursor;
+import com.fr.swift.query.group.info.cursor.Cursor;
 
 /**
  * Created by Lyon on 2018/4/25.

@@ -1,17 +1,7 @@
 package com.fr.swift.adaptor.transformer.cal;
 
-import com.fr.swift.cal.info.GroupQueryInfo;
-import com.fr.swift.cal.info.QueryInfo;
-import com.fr.swift.query.adapter.dimension.AllCursor;
-import com.fr.swift.query.adapter.dimension.Dimension;
-import com.fr.swift.query.adapter.dimension.DimensionInfo;
-import com.fr.swift.query.adapter.dimension.DimensionInfoImpl;
-import com.fr.swift.query.adapter.metric.GroupMetric;
-import com.fr.swift.query.adapter.metric.Metric;
-import com.fr.swift.query.adapter.target.GroupTarget;
-import com.fr.swift.query.adapter.target.TargetInfo;
-import com.fr.swift.query.adapter.target.cal.ResultTarget;
-import com.fr.swift.query.adapter.target.cal.TargetInfoImpl;
+import com.fr.swift.query.QueryInfo;
+import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorFactory;
 import com.fr.swift.query.aggregator.AggregatorType;
@@ -21,11 +11,21 @@ import com.fr.swift.query.aggregator.AverageAggregate;
 import com.fr.swift.query.filter.detail.impl.number.NumberAverageFilter;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
+import com.fr.swift.query.group.info.cursor.AllCursor;
+import com.fr.swift.query.info.element.dimension.Dimension;
+import com.fr.swift.query.info.element.dimension.DimensionInfo;
+import com.fr.swift.query.info.element.dimension.DimensionInfoImpl;
+import com.fr.swift.query.info.element.metric.GroupMetric;
+import com.fr.swift.query.info.element.metric.Metric;
+import com.fr.swift.query.info.element.target.GroupTarget;
+import com.fr.swift.query.info.element.target.TargetInfo;
+import com.fr.swift.query.info.element.target.cal.ResultTarget;
+import com.fr.swift.query.info.element.target.cal.TargetInfoImpl;
+import com.fr.swift.query.info.group.GroupQueryInfoImpl;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.iterator.IntListRowTraversal;
@@ -73,7 +73,7 @@ public class AvgUtils {
                 new ArrayList<GroupTarget>(0),
                 Arrays.asList(new ResultTarget(0, 0)),
                 Arrays.asList(aggregator));
-        QueryInfo queryInfo = new GroupQueryInfo(fieldId, sourceKey, dimensionInfo, targetInfo);
+        QueryInfo queryInfo = new GroupQueryInfoImpl(fieldId, sourceKey, dimensionInfo, targetInfo);
         NodeResultSet nodeResultSet = null;
         try {
             nodeResultSet = (NodeResultSet) QueryRunnerProvider.getInstance().executeQuery(queryInfo);

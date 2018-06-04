@@ -2,7 +2,7 @@ package com.fr.swift.adaptor.struct.node.paging;
 
 import com.finebi.conf.constant.BIDesignConstants;
 import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
-import com.fr.swift.query.adapter.dimension.Expander;
+import com.fr.swift.query.group.info.cursor.Expander;
 import com.fr.swift.source.core.MD5Utils;
 
 /**

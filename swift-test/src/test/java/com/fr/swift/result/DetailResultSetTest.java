@@ -3,11 +3,11 @@ package com.fr.swift.result;
 
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
-import com.fr.swift.cal.Query;
-import com.fr.swift.cal.segment.detail.NormalDetailSegmentQuery;
-import com.fr.swift.cal.segment.detail.SortDetailSegmentQuery;
 import com.fr.swift.compare.Comparators;
+import com.fr.swift.query.Query;
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.segment.detail.NormalDetailSegmentQuery;
+import com.fr.swift.query.segment.detail.SortDetailSegmentQuery;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.source.Row;
@@ -63,7 +63,7 @@ public class DetailResultSetTest extends TestCase {
     }
 
 
-    public void testSegmentGetRowData() throws SQLException {
+    public void testSegmentGetRowData() {
 
         int i = 0;
         int[] intData = {2, 4, 2, 4};

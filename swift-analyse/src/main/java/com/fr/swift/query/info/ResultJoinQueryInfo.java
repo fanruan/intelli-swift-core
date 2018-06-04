@@ -1,0 +1,18 @@
+package com.fr.swift.query.info;
+
+import com.fr.swift.query.QueryInfo;
+import com.fr.swift.query.info.element.dimension.Dimension;
+import com.fr.swift.source.SwiftResultSet;
+
+import java.util.List;
+
+/**
+ * todo 这个info通过多个表关联成大表再做groupBy是不是好一点，虽然我们内部可以不通过建关联来做
+ * Created by Lyon on 2018/5/31.
+ */
+public interface ResultJoinQueryInfo<T extends SwiftResultSet> extends QueryInfo<T> {
+
+    List<QueryInfo<T>> getQueryInfoList();
+
+    List<Dimension> getJoinedDimensions();
+}

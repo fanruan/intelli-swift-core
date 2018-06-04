@@ -1,7 +1,5 @@
 package com.fr.swift.generate.flow;
 
-import com.fr.base.FRContext;
-import com.fr.dav.LocalEnv;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.flow.FlowControlRule;
@@ -42,7 +40,7 @@ public class IncreaseFlowControlTest extends BaseTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir") + "\\" + System.currentTimeMillis()));
+//        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir") + "\\" + System.currentTimeMillis()));
         TestConnectionProvider.createConnection();
         dataSource = new QueryDBSource("select 合同ID from DEMO_CAPITAL_RETURN", "IncreaseFlowControlTest");
     }

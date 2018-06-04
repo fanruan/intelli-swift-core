@@ -1,12 +1,11 @@
 package com.fr.swift.result;
 
-import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.structure.iterator.Tree2RowIterator;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -14,19 +13,20 @@ import java.util.List;
  * 根据最后一个节点来遍历node，直到没有sibling
  */
 public class NodeResultSetImpl<T extends SwiftNode> implements NodeResultSet {
-    private SwiftNode<T> node;
-    private SwiftNode<T> currentChild;
 
-    public NodeResultSetImpl(SwiftNode<T> node) {
+    private SwiftNode<T> node;
+    private SwiftMetaData metaData;
+    private Iterator<List<SwiftNode>> iterator;
+
+    public NodeResultSetImpl(int dimensionSize, SwiftNode<T> node) {
         this.node = node;
-        initCurrentChild();
+        this.iterator = new Tree2RowIterator(dimensionSize, node.getChildren().iterator());
     }
 
-    private void initCurrentChild() {
-        currentChild = node;
-        while (currentChild.getChildrenSize() != 0){
-            currentChild = currentChild.getChild(0);
-        }
+    public NodeResultSetImpl(int dimensionSize, SwiftNode<T> node, SwiftMetaData metaData) {
+        this.node = node;
+        this.metaData = metaData;
+        this.iterator = new Tree2RowIterator(dimensionSize, node.getChildren().iterator());
     }
 
     @Override
@@ -36,30 +36,17 @@ public class NodeResultSetImpl<T extends SwiftNode> implements NodeResultSet {
 
     @Override
     public SwiftMetaData getMetaData() throws SQLException {
-        return null;
+        return metaData;
     }
 
     @Override
     public boolean next() throws SQLException {
-        boolean next = currentChild.getSibling() != null;
-        // TODO: 2018/4/23 多层节点就错了
-        currentChild = currentChild.getSibling();
-        return next;
+        return iterator.hasNext();
     }
 
     @Override
     public Row getRowData() throws SQLException {
-        List list = new ArrayList();
-        SwiftNode node = currentChild;
-        while (node.getParent() != null){
-            //排除根节点
-            if (node.getParent() != null){
-                list.add(node.getData());
-            }
-            node = node.getParent();
-        }
-        Collections.reverse(list);
-        return new ListBasedRow(list);
+        return NodeMergeResultSetImpl.nodes2Row(iterator.next());
     }
 
     @Override

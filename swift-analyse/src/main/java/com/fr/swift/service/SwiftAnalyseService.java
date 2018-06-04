@@ -1,15 +1,17 @@
 package com.fr.swift.service;
 
-import com.fr.swift.cal.builder.QueryBuilder;
-import com.fr.swift.cal.info.QueryInfo;
 import com.fr.swift.exception.SwiftServiceException;
+import com.fr.swift.query.QueryInfo;
+import com.fr.swift.query.QueryRunner;
+import com.fr.swift.query.QueryRunnerProvider;
+import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.net.URI;
 import java.sql.SQLException;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Created by pony on 2017/10/12.
@@ -34,8 +36,14 @@ public class SwiftAnalyseService extends AbstractSwiftService implements QueryRu
     }
 
     @Override
-    public Set<URI> getSegmentLocationURI(SourceKey table) {
-        return SegmentLocationProvider.getInstance().getSegmentLocaltionURI(table);
+    public <T extends SwiftResultSet> T getRemoteQueryResult(QueryInfo<T> info) {
+        // TODO: 2018/5/31 远程调用history或者realTime节点上的服务进行查询
+        return null;
+    }
+
+    @Override
+    public List<URI> getSegmentLocationURI(SourceKey table) {
+        return SegmentLocationProvider.getInstance().getSegmentLocationURI(table);
     }
 
     @Override

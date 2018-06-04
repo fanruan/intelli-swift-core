@@ -1,7 +1,5 @@
 package com.fr.swift.generate.integration;
 
-import com.fr.base.FRContext;
-import com.fr.dav.LocalEnv;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.flow.FlowRuleController;
@@ -43,7 +41,7 @@ public class IncrementImplIntegrationTest extends BaseTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir") + "\\" + System.currentTimeMillis()));
+//        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir") + "\\" + System.currentTimeMillis()));
         TestConnectionProvider.createConnection();
 
         dataSource = new QueryDBSource("select 记录人 from DEMO_CAPITAL_RETURN", "local2");
