@@ -10,6 +10,7 @@ import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.NodeResultSetImpl;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.iterator.MapperIterator;
 import com.fr.swift.structure.iterator.Tree2RowIterator;
 import com.fr.swift.structure.queue.SortedListMergingUtils;
@@ -60,27 +61,33 @@ public class ResultJoinUtils {
             iterators.add(rowIterator);
         }
         Iterator<MergeRow> iterator = SortedListMergingUtils.mergeIterator(iterators, new MergeRowComparator(), new MergeRowCombiner());
-        return new NodeResultSetImpl(dimensionSize, createNode(dimensionSize, iterator), crateMetaData(resultSets, dimensions));
+        Iterator<Pair<List<Object>, AggregatorValue[]>> rowIt = new MapperIterator<MergeRow, Pair<List<Object>, AggregatorValue[]>>(iterator, new Function<MergeRow, Pair<List<Object>, AggregatorValue[]>>() {
+            @Override
+            public Pair<List<Object>, AggregatorValue[]> apply(MergeRow p) {
+                return Pair.of(p.getKey(), p.getAllValues());
+            }
+        });
+        return new NodeResultSetImpl(dimensionSize, createNode(dimensionSize, rowIt), crateMetaData(resultSets, dimensions));
     }
 
-    private static GroupNode createNode(int dimensionSize, Iterator<MergeRow> iterator) {
+    public static GroupNode createNode(int dimensionSize, Iterator<Pair<List<Object>, AggregatorValue[]>> iterator) {
         // GroupNode各层的节点缓存，第一层为根节点
         Object[] cachedNode = new Object[dimensionSize + 1];
         Arrays.fill(cachedNode, null);
         // 缓存上一次插入的一行数据对于的各个维度的索引
-        String[] cachedKey = new String[dimensionSize];
+        Object[] cachedKey = new Object[dimensionSize];
         GroupNode root = new GroupNode(-1, null);
         cachedNode[0] = root;
         while (iterator.hasNext()) {
-            MergeRow row = iterator.next();
-            List<String> key = row.getKey();
-            AggregatorValue[] values = row.getAllValues();
+            Pair<List<Object>, AggregatorValue[]> row = iterator.next();
+            List<Object> key = row.getKey();
+            AggregatorValue[] values = row.getValue();
             int deep = 0;
             for (; deep < key.size(); deep++) {
                 if (key.get(deep) == null) {
                     break;
                 }
-                if (cachedNode[deep + 1] == null || !cachedKey[deep].equals(key.get(deep))) {
+                if (cachedNode[deep + 1] == null || cachedKey[deep] == null || !cachedKey[deep].equals(key.get(deep))) {
                     // 刷新缓存索引，deep之后的索引都无效了
                     Arrays.fill(cachedKey, deep, cachedKey.length, null);
                     // cachedNode和cachedIndex是同步更新的
@@ -214,14 +221,16 @@ public class ResultJoinUtils {
 
         @Override
         public int compare(MergeRow o1, MergeRow o2) {
-            List<String> key1 = o1.getKey();
-            List<String> key2 = o2.getKey();
+            List<?> key1 = o1.getKey();
+            List<?> key2 = o2.getKey();
             assert key1.size() == key2.size();
             for (int i = 0; i < key1.size(); i++) {
-                if (Comparators.PINYIN_ASC.compare(key1.get(i), key2.get(i)) > 0) {
+                String s1 = key1.get(i) == null ? null : key1.get(i).toString();
+                String s2 = key2.get(i) == null ? null : key2.get(i).toString();
+                if (Comparators.PINYIN_ASC.compare(s1, s2) > 0) {
                     return 1;
                 }
-                if (Comparators.PINYIN_ASC.compare(key1.get(i), key2.get(i)) < 0) {
+                if (Comparators.PINYIN_ASC.compare(s1, s2) < 0) {
                     return -1;
                 }
             }
@@ -232,7 +241,7 @@ public class ResultJoinUtils {
     private static class MergeRow {
 
         private int resultSetIndex;
-        private List<String> key;
+        private List<Object> key;
         private AggregatorValue[][] values;
 
         public MergeRow(int resultSetIndex, List<Integer> metricLengthList, List<GroupNode> nodes) {
@@ -242,9 +251,9 @@ public class ResultJoinUtils {
         }
 
         private void initKey(List<GroupNode> nodes) {
-            key = new ArrayList<String>();
+            key = new ArrayList<Object>();
             for (GroupNode node : nodes) {
-                key.add(node.getData().toString());
+                key.add(node.getData());
             }
         }
 
@@ -273,7 +282,7 @@ public class ResultJoinUtils {
             return total.toArray(new AggregatorValue[total.size()]);
         }
 
-        public List<String> getKey() {
+        public List<Object> getKey() {
             return key;
         }
 

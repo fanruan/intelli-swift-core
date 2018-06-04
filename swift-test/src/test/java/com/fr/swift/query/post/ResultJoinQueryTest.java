@@ -1,7 +1,6 @@
 package com.fr.swift.query.post;
 
 import com.fr.stable.StringUtils;
-import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.query.Query;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
@@ -12,13 +11,12 @@ import com.fr.swift.result.NodeResultSetImpl;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.structure.Pair;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -31,14 +29,26 @@ public class ResultJoinQueryTest extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        AggregatorValue[] values = new AggregatorValue[]{
-                new DoubleAmountAggregatorValue(1)
-        };
         List<GroupNode> roots = new ArrayList<>();
-        roots.add(createNode(new String[]{"a", "b"}, values));
-        roots.add(createNode(new String[]{"b", "c"}, values));
-        roots.add(createNode(new String[]{"a", "c"}, values));
-        List<SwiftMetaData> metaDataList = createMetaData();
+        roots.add(PostQueryTestUtils.createNode(1, new Pair[]{
+                Pair.of(new Object[]{"a"}, new int[]{1}),
+                Pair.of(new Object[]{"b"}, new int[]{1}),
+        }));
+        roots.add(PostQueryTestUtils.createNode(1, new Pair[]{
+                Pair.of(new Object[]{"b"}, new int[]{1}),
+                Pair.of(new Object[]{"c"}, new int[]{1}),
+        }));
+        roots.add(PostQueryTestUtils.createNode(1, new Pair[]{
+                Pair.of(new Object[]{"a"}, new int[]{1}),
+                Pair.of(new Object[]{"c"}, new int[]{1}),
+        }));
+        String[] tableNames = new String[]{"a", "b", "c"};
+        String[][] columnNames = new String[][]{
+                new String[]{"dim", "a_metric1"},
+                new String[]{"dim", "b_metric1"},
+                new String[]{"dim", "c_metric1"},
+        };
+        List<SwiftMetaData> metaDataList = PostQueryTestUtils.createMetaData(tableNames, columnNames);
         queries = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             final int index = i;
@@ -93,106 +103,15 @@ public class ResultJoinQueryTest extends TestCase {
         }
     }
 
-    private static List<SwiftMetaData> createMetaData() {
-        String[] tableNames = new String[]{"a", "b", "c"};
-        String[][] columnNames = new String[][]{
-                new String[]{"dim", "a_metric1"},
-                new String[]{"dim", "b_metric1"},
-                new String[]{"dim", "c_metric1"},
-        };
-        List<SwiftMetaData> metaData = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            final int index = i;
-            metaData.add(new SwiftMetaData() {
-                @Override
-                public SwiftDatabase.Schema getSwiftSchema() {
-                    return null;
-                }
-
-                @Override
-                public String getSchemaName() {
-                    return null;
-                }
-
-                @Override
-                public String getTableName() {
-                    return tableNames[index];
-                }
-
-                @Override
-                public int getColumnCount() {
-                    return columnNames[index].length;
-                }
-
-                @Override
-                public String getColumnName(int i) {
-                    return columnNames[index][i];
-                }
-
-                @Override
-                public String getColumnRemark(int index) {
-                    return null;
-                }
-
-                @Override
-                public int getColumnType(int index) {
-                    return 0;
-                }
-
-                @Override
-                public int getPrecision(int index) {
-                    return 0;
-                }
-
-                @Override
-                public int getScale(int index) {
-                    return 0;
-                }
-
-                @Override
-                public SwiftMetaDataColumn getColumn(int index) {
-                    return null;
-                }
-
-                @Override
-                public SwiftMetaDataColumn getColumn(String columnName) {
-                    return null;
-                }
-
-                @Override
-                public int getColumnIndex(String columnName) {
-                    return 0;
-                }
-
-                @Override
-                public String getColumnId(int index) {
-                    return null;
-                }
-
-                @Override
-                public String getColumnId(String columnName) {
-                    return null;
-                }
-
-                @Override
-                public String getRemark() {
-                    return null;
-                }
-
-                @Override
-                public List<String> getFieldNames() {
-                    return new ArrayList<>(Arrays.asList(columnNames[index]));
-                }
-            });
+    private static GroupNode createNode(String[] keys, int[] values) {
+        AggregatorValue[] aggregatorValues = new AggregatorValue[values.length];
+        for (int i = 0; i < aggregatorValues.length; i++) {
+            aggregatorValues[i] = new DoubleAmountAggregatorValue(values[i]);
         }
-        return metaData;
-    }
-
-    private static GroupNode createNode(String[] keys, AggregatorValue[] values) {
         GroupNode root = new GroupNode(-1, null);
         for (int i = 0; i < keys.length; i++) {
             GroupNode node = new GroupNode(1, keys[i]);
-            node.setAggregatorValue(values);
+            node.setAggregatorValue(aggregatorValues);
             root.addChild(node);
         }
         return root;

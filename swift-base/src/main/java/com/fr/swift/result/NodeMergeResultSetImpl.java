@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * TODO 简单用Tree2RowIterator实现了一下，具体怎么实现还不知道
  * Created by Lyon on 2018/4/27.
  */
 public class NodeMergeResultSetImpl<T extends GroupNode> implements NodeMergeResultSet<T> {

@@ -4,6 +4,7 @@ import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.query.filter.match.NodeFilter;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
+import com.fr.swift.result.NodeMergeResultSetImpl;
 import com.fr.swift.result.NodeResultSet;
 
 import java.sql.SQLException;
@@ -26,6 +27,8 @@ public class HavingFilterQuery extends AbstractPostQuery<NodeResultSet> {
     public NodeResultSet getQueryResult() throws SQLException {
         NodeMergeResultSet<GroupNode> mergeResult = (NodeMergeResultSet<GroupNode>) query.getQueryResult();
         NodeFilter.filter(mergeResult.getNode(), matchFilterList);
-        return mergeResult;
+        // 过滤了要重新new一个resetSet，因为在构造函数里面初始化了迭代器
+        return new NodeMergeResultSetImpl((GroupNode) mergeResult.getNode(),
+                mergeResult.getRowGlobalDictionaries(), mergeResult.getAggregators());
     }
 }

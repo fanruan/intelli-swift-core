@@ -4,6 +4,7 @@ import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.query.filter.match.NodeFilter;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
+import com.fr.swift.result.NodeMergeResultSetImpl;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.node.GroupNodeAggregateUtils;
 import com.fr.swift.result.node.NodeType;
@@ -31,6 +32,7 @@ public class TreeFilterQuery extends AbstractPostQuery<NodeResultSet> {
         GroupNodeAggregateUtils.aggregateMetric(NodeType.GROUP, mergeResult.getRowGlobalDictionaries().size(),
                 (GroupNode) mergeResult.getNode(), mergeResult.getAggregators());
         NodeFilter.filter(mergeResult.getNode(), matchFilterList);
-        return mergeResult;
+        return new NodeMergeResultSetImpl((GroupNode) mergeResult.getNode(),
+                mergeResult.getRowGlobalDictionaries(), mergeResult.getAggregators());
     }
 }

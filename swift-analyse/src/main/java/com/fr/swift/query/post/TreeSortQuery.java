@@ -4,6 +4,7 @@ import com.fr.swift.query.filter.match.NodeSorter;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
+import com.fr.swift.result.NodeMergeResultSetImpl;
 import com.fr.swift.result.NodeResultSet;
 
 import java.sql.SQLException;
@@ -26,6 +27,7 @@ public class TreeSortQuery extends AbstractPostQuery<NodeResultSet> {
     public NodeResultSet getQueryResult() throws SQLException {
         NodeMergeResultSet<GroupNode> mergeResult = (NodeMergeResultSet<GroupNode>) query.getQueryResult();
         NodeSorter.sort(mergeResult.getNode(), sortList);
-        return mergeResult;
+        return new NodeMergeResultSetImpl((GroupNode) mergeResult.getNode(),
+                mergeResult.getRowGlobalDictionaries(), mergeResult.getAggregators());
     }
 }

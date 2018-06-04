@@ -17,7 +17,7 @@ public class HavingFilterQueryInfo implements PostQueryInfo {
     }
 
     /**
-     * 对应NodeResultSet最后一个维度上面的过滤
+     * 对应NodeResultSet最后一个维度上面的过滤。matchFilterList.get(matchFilterList.size() - 1) != null，其他都为null
      *
      * @return
      */
