@@ -10,13 +10,10 @@ import com.fr.event.Listener;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.ClusterService;
 import com.fr.swift.event.ClusterEvent;
-import com.fr.swift.event.ClusterEventListener;
 import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.proxy.LocalProxyFactory;
-import com.fr.swift.selector.ProxySelector;
 
 /**
  * This class created on 2018/5/14
@@ -61,29 +58,15 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
 
         //注册rpc proxy
         clusterServiceProxy = clusterToolKit.getRPCProxyFactory().newBuilder(SwiftClusterService.getInstance()).build();
-        FRProxyCache.registerProxy(SwiftClusterService.class, clusterServiceProxy);
-
+//        FRProxyCache.registerProxy(ClusterService.class, clusterServiceProxy);
         //注册单例类型
         FRProxyCache.registerInstance(SwiftClusterService.class, SwiftClusterService.getInstance());
-
-        SwiftClusterService.getInstance().competeMaster();
 
         EventDispatcher.listen(ClusterViewEvent.NODE_LEFT, new Listener<ClusterNode>() {
             @Override
             public void on(Event event, ClusterNode clusterNode) {
                 if (ClusterNodeManager.getInstance().getMasterId() == null || ComparatorUtils.equals(ClusterNodeManager.getInstance().getMasterId(), clusterNode.getID())) {
                     SwiftClusterService.getInstance().competeMaster();
-                }
-            }
-        });
-
-        ClusterListenerHandler.addListener(new ClusterEventListener() {
-            @Override
-            public void handleEvent(ClusterEvent clusterEvent) {
-                if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
-                    ProxySelector.getInstance().switchFactory(new FRClusterProxyFactory());
-                } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
-                    ProxySelector.getInstance().switchFactory(new LocalProxyFactory());
                 }
             }
         });
@@ -94,12 +77,19 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
 
     }
 
+    /**
+     * 加入集群后，向master注册集群service
+     */
     @Override
     public void afterJoin() {
+        SwiftClusterService.getInstance().competeMaster();
         ClusterListenerHandler.handlerEvent(new ClusterEvent(ClusterEventType.JOIN_CLUSTER));
         ClusterNodeManager.getInstance().setCluster(true);
     }
 
+    /**
+     * 离开集群后，取消本地的集群模式
+     */
     @Override
     public void onLeft() {
         ClusterListenerHandler.handlerEvent(new ClusterEvent(ClusterEventType.LEFT_CLUSTER));

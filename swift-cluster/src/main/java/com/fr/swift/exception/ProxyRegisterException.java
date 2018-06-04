@@ -7,8 +7,8 @@ package com.fr.swift.exception;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class ProxyNotRegisteException extends Exception {
-    public ProxyNotRegisteException(String message) {
+public class ProxyRegisterException extends Exception {
+    public ProxyRegisterException(String message) {
         super(message);
 
     }

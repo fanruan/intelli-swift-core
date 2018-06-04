@@ -43,7 +43,7 @@ public class IncrementImplIntegrationTest extends BaseTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir") + "\\" + System.currentTimeMillis()));
+        FRContext.setCurrentEnv(new LocalEnv());
         TestConnectionProvider.createConnection();
 
         dataSource = new QueryDBSource("select 记录人 from DEMO_CAPITAL_RETURN", "local2");

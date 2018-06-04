@@ -2,6 +2,7 @@ package com.fr.swift.frrpc;
 
 import com.fr.cluster.ClusterBridge;
 import com.fr.cluster.core.ClusterNode;
+import com.fr.cluster.engine.rpc.base.FineResult;
 import com.fr.cluster.engine.ticket.FineClusterToolKit;
 import com.fr.swift.Invocation;
 import com.fr.swift.Invoker;
@@ -45,7 +46,12 @@ public class FRInvoker<T> implements Invoker<T> {
     @Override
     public Result invoke(Invocation invocation) {
         try {
-            return new SwiftResult(doInvoke(proxy, invocation.getMethodName(), invocation.getParameterTypes(), invocation.getArguments()));
+            FineResult fineResult = (FineResult) doInvoke(proxy, invocation.getMethodName(), invocation.getParameterTypes(), invocation.getArguments());
+            if (fineResult.getException() == null) {
+                return new SwiftResult(fineResult.get());
+            } else {
+                throw fineResult.getException();
+            }
         } catch (InvocationTargetException e) {
             return new SwiftResult(e);
         } catch (Throwable e) {
@@ -69,7 +75,7 @@ public class FRInvoker<T> implements Invoker<T> {
 
     protected Object doInvoke(T proxy, String methodName, Class<?>[] parameterTypes, Object[] arguments) throws Throwable {
         com.fr.cluster.rpc.base.Invoker frInvoker = FineClusterToolKit.getInstance().getInvokerFactory().create(proxy);
-        Method method = SwiftClusterService.class.getMethod(methodName, parameterTypes);
+        Method method = proxy.getClass().getMethod(methodName, parameterTypes);
         com.fr.cluster.rpc.base.Invocation invocation = com.fr.cluster.rpc.base.Invocation.create(method, arguments);
         if (url.getDestination() != null) {
             ClusterNode clusterNode = ClusterBridge.getView().getNodeById(url.getDestination().getId());

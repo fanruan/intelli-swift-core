@@ -4,6 +4,8 @@ import com.fr.swift.Invocation;
 import com.fr.swift.Invoker;
 import com.fr.swift.ProxyFactory;
 import com.fr.swift.Result;
+import com.fr.swift.config.bean.SwiftServiceInfoBean;
+import com.fr.swift.config.service.SwiftConfigServiceProvider;
 import com.fr.swift.frrpc.ClusterNodeManager;
 import com.fr.swift.frrpc.FRDestination;
 import com.fr.swift.frrpc.FRProxyCache;
@@ -45,7 +47,6 @@ public class SwiftTestAction {
     public Object saveTable(@RequestBody() Map map) throws Exception {
 
         String className = (String) map.get("className");
-
         Class classType = Class.forName(className);
         String methodName = (String) map.get("methodName");
 
@@ -59,9 +60,7 @@ public class SwiftTestAction {
         if (ClusterNodeManager.getInstance().isCluster()) {
             ProxyFactory proxyFactory = ProxySelector.getInstance().getFactory();
             String masterId = (String) map.get("masterId");
-
             Invoker invoker = proxyFactory.getInvoker(FRProxyCache.getInstance(classType), classType, new FRUrl(masterId == null ? null : new FRDestination(masterId)));
-
             Invocation invocation = new SwiftInvocation(methodName, paramsClassTypes, params);
             Result result = invoker.invoke(invocation);
             return result;

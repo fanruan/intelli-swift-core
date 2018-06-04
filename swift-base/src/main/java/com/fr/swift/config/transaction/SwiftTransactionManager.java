@@ -43,6 +43,8 @@ public class SwiftTransactionManager {
                 return worker.work(SwiftConfigContext.getInstance().getSwiftMetaDataDAO());
             case SEGMENT:
                 return worker.work(SwiftConfigContext.getInstance().getSwiftSegmentDAO());
+            case SERVICE:
+                return worker.work(SwiftConfigContext.getInstance().getServiceInfoDao());
             default:
                 return null;
         }

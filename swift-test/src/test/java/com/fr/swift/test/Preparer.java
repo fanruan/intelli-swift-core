@@ -10,7 +10,7 @@ import com.fr.swift.context.SwiftContext;
  */
 public class Preparer {
     public static void preparePath() {
-        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir")));
+        FRContext.setCurrentEnv(new LocalEnv());
     }
 
     public static void prepareCubeBuild() {

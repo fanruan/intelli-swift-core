@@ -1,6 +1,8 @@
-package com.fr.swift.config;
+package com.fr.swift.config.dao.impl;
 
 import com.fr.swift.config.dao.BaseDAO;
+import com.fr.swift.config.dao.SwiftServiceInfoDao;
+import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 
 import java.util.List;
 

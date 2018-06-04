@@ -38,7 +38,7 @@ public class RealtimeRecorderTest extends BaseTest {
         super.setUp();
         connectionInfo = TestConnectionProvider.createConnection();
         dataSource = new QueryDBSource("select * from DEMO_CAPITAL_RETURN", "RealtimeRecorderTest");
-        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir") + "\\" + System.currentTimeMillis()));
+        FRContext.setCurrentEnv(new LocalEnv());
     }
 
     public void testRecord() {

@@ -6,10 +6,13 @@ import com.fr.stable.db.DBContext;
 import com.fr.stable.db.option.DBOption;
 import com.fr.swift.config.dao.SwiftMetaDataDAO;
 import com.fr.swift.config.dao.SwiftSegmentDAO;
+import com.fr.swift.config.dao.SwiftServiceInfoDao;
 import com.fr.swift.config.dao.impl.SwiftMetaDataDAOImpl;
 import com.fr.swift.config.dao.impl.SwiftSegmentDAOImpl;
+import com.fr.swift.config.dao.impl.SwiftServiceInfoDaoImpl;
 import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
+import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 import com.fr.swift.log.SwiftLoggers;
 
 /**
@@ -22,6 +25,7 @@ public class SwiftConfigContext {
 
     private SwiftMetaDataDAO swiftMetaDataDAO;
     private SwiftSegmentDAO swiftSegmentDAO;
+    private SwiftServiceInfoDao serviceInfoDao;
 
     private SwiftConfigContext() {
     }
@@ -51,9 +55,11 @@ public class SwiftConfigContext {
             DBContext dbContext = BaseDBEnv.getDBContext();
             dbContext.addEntityClass(SwiftMetaDataEntity.class);
             dbContext.addEntityClass(SwiftSegmentEntity.class);
+            dbContext.addEntityClass(SwiftServiceInfoEntity.class);
             dbContext.init(option);
             swiftMetaDataDAO = new SwiftMetaDataDAOImpl();
             swiftSegmentDAO = new SwiftSegmentDAOImpl();
+            serviceInfoDao = new SwiftServiceInfoDaoImpl();
             BaseDBEnv.setDBContext(dbContext);
             this.initialized = true;
         }
@@ -67,5 +73,9 @@ public class SwiftConfigContext {
 
     public SwiftSegmentDAO getSwiftSegmentDAO() {
         return swiftSegmentDAO;
+    }
+
+    public SwiftServiceInfoDao getServiceInfoDao() {
+        return serviceInfoDao;
     }
 }

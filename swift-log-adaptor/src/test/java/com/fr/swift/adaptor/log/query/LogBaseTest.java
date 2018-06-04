@@ -41,7 +41,7 @@ public class LogBaseTest extends TestCase {
         new SwiftAnalyseService().start();
         TestConnectionProvider.createConnection();
         TestConfDb.setConfDb();
-        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir")));
+        FRContext.setCurrentEnv(new LocalEnv());
     }
 
     protected void transportAndIndex(DataSource dataSource, Table table) throws Exception {

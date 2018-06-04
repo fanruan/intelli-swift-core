@@ -10,7 +10,7 @@ package com.fr.swift;
 public interface ClusterService {
     boolean competeMaster();
 
-    void rpcSend(String masterId, Object object);
+    String rpcSend(String masterId, Object object);
 
-    void rpcSend();
+    String rpcSend();
 }
