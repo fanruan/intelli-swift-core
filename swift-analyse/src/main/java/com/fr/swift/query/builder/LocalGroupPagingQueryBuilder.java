@@ -17,7 +17,6 @@ import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.post.group.GroupPostQuery;
 import com.fr.swift.query.result.ResultQuery;
-import com.fr.swift.query.result.group.GroupPagingResultQuery;
 import com.fr.swift.query.segment.group.GroupPagingSegmentQuery;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.NodeResultSet;
@@ -58,11 +57,13 @@ public class LocalGroupPagingQueryBuilder extends AbstractLocalGroupQueryBuilder
             MetricInfo metricInfo = new MetricInfoImpl(metricColumns, aggregators, metrics.size());
             queries.add(new GroupPagingSegmentQuery(rowGroupByInfo, metricInfo));
         }
-        return new GroupPagingResultQuery(queries, getAggregators(metrics), getTargets(info.getPostCalculationInfo()));
+//        return new GroupPagingResultQuery(queries, getAggregators(metrics), getTargets(info.getPostCalculationInfo()));
+        return null;
     }
 
     @Override
     public ResultQuery<NodeResultSet> buildResultQuery(List<Query<NodeResultSet>> queries, GroupQueryInfo info) {
-        return new GroupPagingResultQuery(queries, getAggregators(info.getMetrics()), getTargets(info.getPostCalculationInfo()));
+//        return new GroupPagingResultQuery(queries, getAggregators(info.getMetrics()), getTargets(info.getPostCalculationInfo()));
+        return null;
     }
 }

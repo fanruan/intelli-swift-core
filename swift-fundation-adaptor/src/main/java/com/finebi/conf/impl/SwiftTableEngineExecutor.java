@@ -96,10 +96,10 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
         return new SwiftDetailTableResult(new SwiftEmptyResult(), 0, -1);
     }
 
-//    @Override
-//    public BIDetailTableResult getRealData(FineBusinessTable table, int rowCount) {
-//        return null;
-//    }
+    @Override
+    public BIDetailTableResult getRealData(FineBusinessTable table, int rowCount) {
+        return null;
+    }
 
 
     public BIDetailTableResult getRealData(FineBusinessTable table) throws Exception {

@@ -17,7 +17,6 @@ import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.node.GroupNodeAggregateUtils;
 import com.fr.swift.result.node.GroupNodeUtils;
 import com.fr.swift.result.node.NodeType;
-import com.fr.swift.result.node.cal.TargetCalculatorUtils;
 import com.fr.swift.structure.Pair;
 
 import java.sql.SQLException;
@@ -57,7 +56,7 @@ public class GroupPostQuery extends AbstractPostQuery<NodeResultSet> {
         }
 
         // 根据合并后的结果处理计算指标的计算
-        TargetCalculatorUtils.calculate(((GroupNode) mergeResult.getNode()), mergeResult.getRowGlobalDictionaries(), info.getPostCalculationInfo());
+//        TargetCalculatorUtils.calculate(((GroupNode) mergeResult.getNode()), mergeResult.getRowGlobalDictionaries(), info.getPostCalculationInfo());
 
         // 进行结果过滤
         List<MatchFilter> dimensionMatchFilter = getDimensionMatchFilters(info.getDimensions());
@@ -66,8 +65,8 @@ public class GroupPostQuery extends AbstractPostQuery<NodeResultSet> {
         }
 
         // 处理二次计算
-        TargetCalculatorUtils.calculateAfterFiltering(((GroupNode) mergeResult.getNode()),
-                mergeResult.getRowGlobalDictionaries(), info.getPostCalculationInfo());
+//        TargetCalculatorUtils.calculateAfterFiltering(((GroupNode) mergeResult.getNode()),
+//                mergeResult.getRowGlobalDictionaries(), info.getPostCalculationInfo());
 
         // 取出结果，再做合计
 //        GroupNodeUtils.updateShowTargetsForGroupNode(dimensionSize, (GroupNode) mergeResult.getNode(),

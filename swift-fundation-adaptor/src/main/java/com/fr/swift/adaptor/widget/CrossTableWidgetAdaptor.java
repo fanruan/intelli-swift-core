@@ -189,5 +189,10 @@ public class CrossTableWidgetAdaptor extends AbstractTableWidgetAdaptor {
         public ResultType getResultType() {
             return ResultType.BICROSS;
         }
+
+        @Override
+        public String getDataMiningError() {
+            return null;
+        }
     }
 }
