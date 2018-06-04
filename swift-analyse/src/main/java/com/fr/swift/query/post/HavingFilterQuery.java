@@ -7,7 +7,7 @@ import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.NodeResultSet;
 
 import java.sql.SQLException;
-import java.util.Map;
+import java.util.List;
 
 /**
  * Created by Lyon on 2018/5/31.
@@ -15,18 +15,17 @@ import java.util.Map;
 public class HavingFilterQuery extends AbstractPostQuery<NodeResultSet> {
 
     private PostQuery<NodeResultSet> query;
-    private Map<String, MatchFilter> filter;
+    private List<MatchFilter> matchFilterList;
 
-    public HavingFilterQuery(PostQuery<NodeResultSet> query, Map<String, MatchFilter> filter) {
+    public HavingFilterQuery(PostQuery<NodeResultSet> query, List<MatchFilter> matchFilterList) {
         this.query = query;
-        this.filter = filter;
+        this.matchFilterList = matchFilterList;
     }
 
     @Override
     public NodeResultSet getQueryResult() throws SQLException {
         NodeMergeResultSet<GroupNode> mergeResult = (NodeMergeResultSet<GroupNode>) query.getQueryResult();
-        // TODO: 2018/6/3
-        NodeFilter.filter(mergeResult.getNode(), null);
+        NodeFilter.filter(mergeResult.getNode(), matchFilterList);
         return mergeResult;
     }
 }

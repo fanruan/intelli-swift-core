@@ -60,9 +60,4 @@ public class GroupTargetImpl extends AbstractQueryColumn implements GroupTarget 
         result = 31 * result + (type != null ? type.hashCode() : 0);
         return result;
     }
-
-    @Override
-    public boolean isRepeatCal() {
-        return isRepeatCal;
-    }
 }

@@ -31,7 +31,7 @@ public enum PostQueryType {
     TREE_SORT,
 
     /**
-     * 结果二维表的行排序。比如order by field(数值字段)，做完这个操作之后，树结构被破坏了
+     * 结果二维表的行排序。比如order by field1(数值字段), field2(数值字段)，做完这个操作之后，树结构被破坏了
      */
     ROW_SORT
 }

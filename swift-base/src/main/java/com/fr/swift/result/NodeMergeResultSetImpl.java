@@ -6,6 +6,7 @@ import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.iterator.Tree2RowIterator;
+import com.fr.swift.util.function.Function;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -19,17 +20,22 @@ import java.util.Map;
  */
 public class NodeMergeResultSetImpl<T extends GroupNode> implements NodeMergeResultSet<T> {
 
-    private GroupNode<T> root;
+    private GroupNode root;
     private List<Map<Integer, Object>> rowGlobalDictionaries;
     private List<Aggregator> aggregators;
     private Iterator<List<SwiftNode>> tree2RowIterator;
 
-    public NodeMergeResultSetImpl(GroupNode<T> root, List<Map<Integer, Object>> rowGlobalDictionaries,
+    public NodeMergeResultSetImpl(GroupNode root, List<Map<Integer, Object>> rowGlobalDictionaries,
                                   List<Aggregator> aggregators) {
         this.root = root;
         this.rowGlobalDictionaries = rowGlobalDictionaries;
         this.aggregators = aggregators;
-        this.tree2RowIterator = new Tree2RowIterator(rowGlobalDictionaries.size(), root.getChildren().iterator());
+        this.tree2RowIterator = new Tree2RowIterator<SwiftNode>(rowGlobalDictionaries.size(), root.getChildren().iterator(), new Function<SwiftNode, Iterator<SwiftNode>>() {
+            @Override
+            public Iterator<SwiftNode> apply(SwiftNode p) {
+                return p.getChildren().iterator();
+            }
+        });
     }
 
     @Override

@@ -42,7 +42,12 @@ public class ResultJoinUtils {
         List<Iterator<MergeRow>> iterators = new ArrayList<Iterator<MergeRow>>();
         for (int i = 0; i < resultSets.size(); i++) {
             final GroupNode root = (GroupNode) resultSets.get(i).getNode();
-            Iterator<List<GroupNode>> iterator = new Tree2RowIterator(dimensionSize, root.getChildren().iterator());
+            Iterator<List<GroupNode>> iterator = new Tree2RowIterator<GroupNode>(dimensionSize, root.getChildren().iterator(), new Function<GroupNode, Iterator<GroupNode>>() {
+                @Override
+                public Iterator<GroupNode> apply(GroupNode p) {
+                    return p.getChildren().iterator();
+                }
+            });
             final int resultSetIndex = i;
             Iterator<MergeRow> rowIterator = new MapperIterator<List<GroupNode>, MergeRow>(iterator, new Function<List<GroupNode>, MergeRow>() {
                 @Override
@@ -79,7 +84,7 @@ public class ResultJoinUtils {
                     // 刷新缓存索引，deep之后的索引都无效了
                     Arrays.fill(cachedKey, deep, cachedKey.length, null);
                     // cachedNode和cachedIndex是同步更新的
-                    cachedNode[deep + 1] = new GroupNode<GroupNode>(deep, key.get(deep));
+                    cachedNode[deep + 1] = new GroupNode(deep, key.get(deep));
                     cachedKey[deep] = key.get(deep);
                     GroupNode node = (GroupNode) cachedNode[deep];
                     node.addChild((GroupNode) cachedNode[deep + 1]);

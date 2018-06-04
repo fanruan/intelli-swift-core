@@ -2,6 +2,7 @@ package com.fr.swift.structure.iterator;
 
 import com.fr.swift.structure.stack.ArrayLimitedStack;
 import com.fr.swift.structure.stack.LimitedStack;
+import com.fr.swift.util.function.Function;
 
 import java.util.Iterator;
 import java.util.List;
@@ -11,17 +12,19 @@ import java.util.List;
  *
  * Created by Lyon on 2018/4/19.
  */
-public class Tree2RowIterator<TREE extends Iterable<TREE>> implements Iterator<List<TREE>> {
+public class Tree2RowIterator<TREE> implements Iterator<List<TREE>> {
 
     private LimitedStack<Iterator<TREE>> iterators;
     private LimitedStack<TREE> elements;
     private Iterator<TREE> rootIt;
+    private Function<TREE, Iterator<TREE>> itCreator;
     private List<TREE> next;
 
-    public Tree2RowIterator(int limitLevel, Iterator<TREE> rootIt) {
+    public Tree2RowIterator(int limitLevel, Iterator<TREE> rootIt, Function<TREE, Iterator<TREE>> itCreator) {
         this.rootIt = rootIt;
         this.iterators = new ArrayLimitedStack<Iterator<TREE>>(limitLevel);
         this.elements = new ArrayLimitedStack<TREE>(limitLevel);
+        this.itCreator = itCreator;
         init(limitLevel);
     }
 
@@ -40,9 +43,10 @@ public class Tree2RowIterator<TREE extends Iterable<TREE>> implements Iterator<L
             if (it.hasNext()) {
                 TREE node = it.next();
                 elements.push(node);
-                if (iterators.size() != iterators.limit() && node.iterator().hasNext()) {
-                    iterators.push(node.iterator());
-                    // 因为要按行返回，索引这里要继续循环，直到遇到叶子节点（普通叶子节点或者是第limitLevel层的节点）
+                Iterator<TREE> childIterator = itCreator.apply(node);
+                if (iterators.size() != iterators.limit() && childIterator.hasNext()) {
+                    iterators.push(childIterator);
+                    // 因为要按行返回，所以这里要继续循环，直到遇到叶子节点（普通叶子节点或者是第limitLevel层的节点）
                     continue;
                 }
             } else {

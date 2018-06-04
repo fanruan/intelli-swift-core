@@ -12,12 +12,12 @@ import java.util.List;
 /**
  * Created by Lyon on 2018/5/31.
  */
-public class ResultCalQuery extends AbstractPostQuery<NodeResultSet> {
+public class FieldCalQuery extends AbstractPostQuery<NodeResultSet> {
 
     private PostQuery<NodeResultSet> query;
     private List<GroupTarget> calInfo;
 
-    public ResultCalQuery(PostQuery<NodeResultSet> query, List<GroupTarget> calInfo) {
+    public FieldCalQuery(PostQuery<NodeResultSet> query, List<GroupTarget> calInfo) {
         this.query = query;
         this.calInfo = calInfo;
     }
