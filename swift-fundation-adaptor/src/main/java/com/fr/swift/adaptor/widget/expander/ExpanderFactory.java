@@ -5,9 +5,9 @@ import com.finebi.conf.constant.BIDesignConstants;
 import com.finebi.conf.internalimp.bean.dashboard.widget.expander.ExpanderBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.table.TableWidgetBean;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
-import com.fr.swift.query.adapter.dimension.Expander;
-import com.fr.swift.query.adapter.dimension.ExpanderImpl;
-import com.fr.swift.query.adapter.dimension.ExpanderType;
+import com.fr.swift.query.group.info.cursor.Expander;
+import com.fr.swift.query.group.info.cursor.ExpanderImpl;
+import com.fr.swift.query.group.info.cursor.ExpanderType;
 import com.fr.swift.result.row.RowIndexKey;
 import com.fr.swift.structure.iterator.IteratorUtils;
 import com.fr.swift.structure.iterator.MapperIterator;
@@ -62,7 +62,12 @@ public class ExpanderFactory {
             public BeanTree apply(ExpanderBean p) {
                 return new BeanTree(p);
             }
-        }));
+        }), new Function<BeanTree, Iterator<BeanTree>>() {
+            @Override
+            public Iterator<BeanTree> apply(BeanTree p) {
+                return p.iterator();
+            }
+        });
         final Function<BeanTree, String> fn = new Function<BeanTree, String>() {
             @Override
             public String apply(BeanTree p) {

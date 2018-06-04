@@ -1,7 +1,5 @@
 package com.fr.swift.query.group.by2.node.iterator;
 
-import com.fr.swift.query.adapter.dimension.Expander;
-import com.fr.swift.query.adapter.dimension.ExpanderType;
 import com.fr.swift.query.group.by.GroupByEntry;
 import com.fr.swift.query.group.by2.DFTIterator;
 import com.fr.swift.query.group.by2.GroupByController;
@@ -12,6 +10,8 @@ import com.fr.swift.query.group.by2.node.expander.NodeAllExpanderController;
 import com.fr.swift.query.group.by2.node.expander.NodeLazyExpanderController;
 import com.fr.swift.query.group.by2.node.expander.NodeNLevelExpanderController;
 import com.fr.swift.query.group.info.GroupByInfo;
+import com.fr.swift.query.group.info.cursor.Expander;
+import com.fr.swift.query.group.info.cursor.ExpanderType;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.row.RowIndexKey;
 import com.fr.swift.segment.column.Column;

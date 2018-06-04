@@ -4,25 +4,25 @@ import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.fr.swift.adaptor.transformer.SortAdaptor;
 import com.fr.swift.adaptor.transformer.filter.dimension.DimensionFilterAdaptor;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
-import com.fr.swift.cal.info.GroupQueryInfo;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.query.adapter.dimension.AllCursor;
-import com.fr.swift.query.adapter.dimension.Dimension;
-import com.fr.swift.query.adapter.dimension.DimensionInfo;
-import com.fr.swift.query.adapter.dimension.DimensionInfoImpl;
-import com.fr.swift.query.adapter.dimension.GroupDimension;
-import com.fr.swift.query.adapter.metric.Metric;
-import com.fr.swift.query.adapter.target.GroupTarget;
-import com.fr.swift.query.adapter.target.TargetInfo;
-import com.fr.swift.query.adapter.target.cal.ResultTarget;
-import com.fr.swift.query.adapter.target.cal.TargetInfoImpl;
+import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.query.group.info.cursor.AllCursor;
+import com.fr.swift.query.info.element.dimension.Dimension;
+import com.fr.swift.query.info.element.dimension.DimensionInfo;
+import com.fr.swift.query.info.element.dimension.DimensionInfoImpl;
+import com.fr.swift.query.info.element.dimension.GroupDimension;
+import com.fr.swift.query.info.element.metric.Metric;
+import com.fr.swift.query.info.element.target.GroupTarget;
+import com.fr.swift.query.info.element.target.TargetInfo;
+import com.fr.swift.query.info.element.target.cal.ResultTarget;
+import com.fr.swift.query.info.element.target.cal.TargetInfoImpl;
+import com.fr.swift.query.info.group.GroupQueryInfoImpl;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.utils.BusinessTableUtils;
 
@@ -59,8 +59,8 @@ public class QueryUtils {
                     filterInfo,
                     null, new Dimension[]{groupDimension}
             );
-            GroupQueryInfo valueInfo = new GroupQueryInfo(id, sourceKey, dimensionInfo, targetInfo);
-            NodeResultSet nodeResultSet = (NodeResultSet) QueryRunnerProvider.getInstance().executeQuery(valueInfo);
+            GroupQueryInfoImpl valueInfo = new GroupQueryInfoImpl(id, sourceKey, dimensionInfo, targetInfo);
+            NodeResultSet nodeResultSet = QueryRunnerProvider.getInstance().executeQuery(valueInfo);
             SwiftNode n = nodeResultSet.getNode();
             List values = new ArrayList();
             for (int i = 0; i < n.getChildrenSize(); i++) {

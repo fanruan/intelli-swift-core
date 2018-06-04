@@ -1,6 +1,6 @@
 package com.fr.swift.structure.iterator;
 
-import com.fr.swift.structure.iterator.Tree2RowIterator;
+import com.fr.swift.util.function.Function;
 import junit.framework.TestCase;
 import org.junit.Before;
 
@@ -27,14 +27,19 @@ public class Tree2RowIteratorTest extends TestCase {
         //  }
         // rows = [[0, 1, 0], [0, 1, 3], [0, 2, null], [0, 3, 3], [0, 3, 5]]
         root = new Tree(0);
-        List<Tree> level1 = Arrays.asList(new Tree[] {new Tree(1), new Tree(2), new Tree(3)});
+        List<Tree> level1 = Arrays.asList(new Tree(1), new Tree(2), new Tree(3));
         root.setChildren(level1);
-        level1.get(0).setChildren(Arrays.asList(new Tree[] {new Tree(0), new Tree(3)}));
-        level1.get(2).setChildren(Arrays.asList(new Tree[] {new Tree(3), new Tree(5)}));
+        level1.get(0).setChildren(Arrays.asList(new Tree(0), new Tree(3)));
+        level1.get(2).setChildren(Arrays.asList(new Tree(3), new Tree(5)));
     }
 
     public void test() {
-        Iterator<List<Tree>> iterator = new Tree2RowIterator<Tree>(3, Arrays.asList(root).iterator());
+        Iterator<List<Tree>> iterator = new Tree2RowIterator<Tree>(3, Arrays.asList(root).iterator(), new Function<Tree, Iterator<Tree>>() {
+            @Override
+            public Iterator<Tree> apply(Tree p) {
+                return p.iterator();
+            }
+        });
         assertTrue(Arrays.equals(list2Array(iterator.next()), new Integer[] {0, 1, 0}));
         assertTrue(Arrays.equals(list2Array(iterator.next()), new Integer[] {0, 1, 3}));
         assertTrue(Arrays.equals(list2Array(iterator.next()), new Integer[] {0, 2, null}));

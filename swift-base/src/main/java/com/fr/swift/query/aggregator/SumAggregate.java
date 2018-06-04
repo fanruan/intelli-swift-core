@@ -3,11 +3,10 @@ package com.fr.swift.query.aggregator;
 
 import com.fr.swift.bitmap.traversal.CalculatorTraversalAction;
 import com.fr.swift.bitmap.traversal.TraversalAction;
-import com.fr.swift.query.adapter.metric.FormulaDetailColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.impl.base.DoubleDetailColumn;
-import com.fr.swift.segment.column.impl.base.IntDetailColumn;
+import com.fr.swift.segment.column.impl.base.FormulaDetailColumn;
 import com.fr.swift.segment.column.impl.base.LongDetailColumn;
 import com.fr.swift.structure.iterator.RowTraversal;
 
@@ -40,7 +39,7 @@ public class SumAggregate extends AbstractAggregator<DoubleAmountAggregatorValue
         } else if (detailColumn instanceof DoubleDetailColumn || detailColumn instanceof FormulaDetailColumn) {
             return aggregateDouble(notNullTraversal, detailColumn);
         } else {
-            final IntDetailColumn idc = (IntDetailColumn) detailColumn;
+            final DetailColumn idc = detailColumn;
             if (traversal.isEmpty()) {
                 valueAmount.setValue(NULL_DOUBLE);
                 return valueAmount;

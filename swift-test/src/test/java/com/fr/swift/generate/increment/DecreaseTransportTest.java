@@ -1,7 +1,5 @@
 package com.fr.swift.generate.increment;
 
-import com.fr.base.FRContext;
-import com.fr.dav.LocalEnv;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.config.TestConfDb;
 import com.fr.swift.context.SwiftContext;
@@ -34,7 +32,7 @@ public class DecreaseTransportTest extends BaseConfigTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        FRContext.setCurrentEnv(new LocalEnv());
+//        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir") + "\\" + System.currentTimeMillis()));
         TestConnectionProvider.createConnection();
         TestConfDb.setConfDb();
         dataSource = new QueryDBSource("select 记录人 from DEMO_CAPITAL_RETURN", "DecreaseTest");

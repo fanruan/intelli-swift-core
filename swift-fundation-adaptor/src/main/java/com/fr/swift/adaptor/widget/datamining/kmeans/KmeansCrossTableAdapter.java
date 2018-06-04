@@ -5,19 +5,16 @@ import com.finebi.conf.internalimp.dashboard.widget.table.CrossTableWidget;
 import com.fr.engine.compare.CompareUtil;
 import com.fr.swift.adaptor.widget.datamining.DMErrorWrap;
 import com.fr.swift.adaptor.widget.datamining.SwiftAlgorithmResultAdapter;
-import com.fr.swift.cal.info.XGroupQueryInfo;
-import com.fr.swift.cal.targetcal.group.XGroupTargetCalQuery;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.query.info.group.XGroupQueryInfo;
+import com.fr.swift.query.post.group.XGroupPostQuery;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.TopGroupNode;
 import com.fr.swift.result.XLeftNode;
 import com.fr.swift.result.XNodeMergeResultSet;
 import com.fr.swift.result.XNodeMergeResultSetImpl;
-import com.fr.swift.result.node.GroupNodeAggregateUtils;
-import com.fr.swift.result.node.NodeType;
 import com.fr.swift.result.node.iterator.NLevelGroupNodeIterator;
 import com.fr.swift.result.node.iterator.PostOrderNodeIterator;
 import com.fr.swift.result.node.xnode.XNodeUtils;
@@ -40,22 +37,23 @@ public class KmeansCrossTableAdapter extends SwiftAlgorithmResultAdapter<KmeansB
     }
 
     @Override
-    public SwiftResultSet getResult() throws Exception {
+    public SwiftResultSet getResult() {
 
-        if (info.getColDimensionInfo().getDimensions().length == 0 || info.getDimensionInfo().getDimensions().length == 0) {
-            KmeansGroupTableAdapter adapter = new KmeansGroupTableAdapter(bean, widget, result, info, errorWrap);
-            return adapter.getResult();
-        } else {
+//        if (info.getColDimensionInfo().getDimensions().length == 0 || info.getDimensionInfo().getDimensions().length == 0) {
+//            KmeansGroupTableAdapter adapter = new KmeansGroupTableAdapter(bean, widget, result, info, errorWrap);
+//            return adapter.getResult();
+//        } else {
             // 行列表头都不为空
             return handleCrossTable();
-        }
+//        }
     }
 
     private SwiftResultSet handleCrossTable() {
         try {
 
-            int targetSize = info.getTargetInfo().getMetrics().size();
-            List<Aggregator> aggregators = info.getTargetInfo().getResultAggregators();
+//            int targetSize = info.getTargetInfo().getMetrics().size();
+            int targetSize = 0;
+//            List<Aggregator> aggregators = info.getTargetInfo().getResultAggregators();
 
             XNodeMergeResultSet XResultSet = (XNodeMergeResultSet) result;
             TopGroupNode topNode = XResultSet.getTopGroupNode();
@@ -63,7 +61,8 @@ public class KmeansCrossTableAdapter extends SwiftAlgorithmResultAdapter<KmeansB
 
 
             XLeftNode leftNode = (XLeftNode) XResultSet.getNode();
-            int leftDepth = info.getDimensionInfo().getDimensions().length;
+//            int leftDepth = info.getDimensionInfo().getDimensions().length;
+            int leftDepth = 0;
             PostOrderNodeIterator<GroupNode> xLeftNodePostOrderNodeIterator = new PostOrderNodeIterator<GroupNode>(leftDepth, leftNode);
             Iterator<GroupNode> leftIterator = XNodeUtils.excludeAllSummaryRow(xLeftNodePostOrderNodeIterator);
 
@@ -155,15 +154,15 @@ public class KmeansCrossTableAdapter extends SwiftAlgorithmResultAdapter<KmeansB
             XLeftNode xLeftResultNode = cloneGroupNodeToXLeftNode(resultNode, targetSize);
 
             // 计算XLeft汇总值，并刷新到TopGroup上
-            GroupNodeAggregateUtils.aggregate(NodeType.X_LEFT, clusterDepth, xLeftResultNode, info.getTargetInfo().getResultAggregators());
+//            GroupNodeAggregateUtils.aggregate(NodeType.X_LEFT, clusterDepth, xLeftResultNode, info.getTargetInfo().getResultAggregators());
             XNodeUtils.updateTopGroupNodeValues(topDepth, clusterDepth,
                     topNode, xLeftResultNode);
 
             // 计算TopGroup汇总值，并刷新到xLeft上
             topNode.setTopGroupValues(null); // 不设置为null他不计算根节点
-            GroupNodeAggregateUtils.aggregate(NodeType.TOP_GROUP, topDepth, topNode, info.getTargetInfo().getResultAggregators());
+//            GroupNodeAggregateUtils.aggregate(NodeType.TOP_GROUP, topDepth, topNode, info.getTargetInfo().getResultAggregators());
             // 先更新一下xLeftNode#valueArrayList（包含topGroupNode所有列（包括汇总列）的某一行)
-            XGroupTargetCalQuery.updateXLeftNode(clusterDepth, topDepth, xNodeResultAdapter(xLeftResultNode, topNode));
+            XGroupPostQuery.updateXLeftNode(clusterDepth, topDepth, xNodeResultAdapter(xLeftResultNode, topNode));
 
             // 把XLeft的中间值，转化成XValue最终结果
             XNodeUtils.setValues2XLeftNode(info.getColDimensionInfo().isShowSum(), topDepth, clusterDepth,

@@ -1,7 +1,5 @@
 package com.fr.swift.test;
 
-import com.fr.base.FRContext;
-import com.fr.dav.LocalEnv;
 import com.fr.swift.context.SwiftContext;
 
 /**
@@ -10,7 +8,7 @@ import com.fr.swift.context.SwiftContext;
  */
 public class Preparer {
     public static void preparePath() {
-        FRContext.setCurrentEnv(new LocalEnv());
+//        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir")));
     }
 
     public static void prepareCubeBuild() {

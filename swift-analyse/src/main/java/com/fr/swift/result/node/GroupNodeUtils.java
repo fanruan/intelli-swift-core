@@ -1,8 +1,8 @@
 package com.fr.swift.result.node;
 
 import com.fr.general.ComparatorUtils;
-import com.fr.swift.query.adapter.target.cal.ResultTarget;
 import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.query.info.element.target.cal.ResultTarget;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.XLeftNode;
 import com.fr.swift.result.node.iterator.BFTGroupNodeIterator;

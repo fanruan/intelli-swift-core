@@ -1,12 +1,11 @@
 package com.fr.swift.result;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
  * Created by Lyon on 2018/4/4.
  */
-public class GroupNode<T extends GroupNode> extends AbstractSwiftNode<T> implements Iterable<T> {
+public class GroupNode<T extends GroupNode<T>> extends AbstractSwiftNode<T> {
 
     protected int deep;
     protected int nodeIndex = 0;
@@ -91,7 +90,7 @@ public class GroupNode<T extends GroupNode> extends AbstractSwiftNode<T> impleme
             child.nodeIndex = 0;
         }
         childMap.put(child.getData(), child);
-        child.parent = this;
+        child.parent = (T) this;
     }
 
     private T getLastChild() {
@@ -118,10 +117,5 @@ public class GroupNode<T extends GroupNode> extends AbstractSwiftNode<T> impleme
     @Override
     public int getIndex() {
         return nodeIndex;
-    }
-
-    @Override
-    public Iterator<T> iterator() {
-        return getChildren().iterator();
     }
 }

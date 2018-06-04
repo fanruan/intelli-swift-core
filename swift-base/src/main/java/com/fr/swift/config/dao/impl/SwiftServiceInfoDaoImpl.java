@@ -21,7 +21,7 @@ public class SwiftServiceInfoDaoImpl extends BaseDAO<SwiftServiceInfoEntity> imp
 
     @Override
     public List<SwiftServiceInfoEntity> getServiceInfoByService(String service) {
-        String sql = "from " + entityClass.getSimpleName() + " entity where entity.service = '" + service+"'";
+        String sql = "from " + entityClass.getSimpleName() + " entity where entity.service = '" + service + "'";
         return find(sql);
     }
 }

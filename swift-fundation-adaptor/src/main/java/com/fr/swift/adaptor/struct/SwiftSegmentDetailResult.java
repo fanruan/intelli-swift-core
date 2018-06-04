@@ -2,13 +2,13 @@ package com.fr.swift.adaptor.struct;
 
 import com.finebi.conf.structure.result.BIDetailCell;
 import com.finebi.conf.structure.result.BIDetailTableResult;
-import com.fr.swift.cal.Query;
-import com.fr.swift.cal.result.detail.NormalDetailResultQuery;
-import com.fr.swift.cal.result.detail.SortDetailResultQuery;
-import com.fr.swift.cal.segment.detail.NormalDetailSegmentQuery;
-import com.fr.swift.cal.segment.detail.SortDetailSegmentQuery;
 import com.fr.swift.compare.Comparators;
+import com.fr.swift.query.Query;
 import com.fr.swift.query.filter.detail.impl.AllShowDetailFilter;
+import com.fr.swift.query.result.detail.NormalDetailResultQuery;
+import com.fr.swift.query.result.detail.SortDetailResultQuery;
+import com.fr.swift.query.segment.detail.NormalDetailSegmentQuery;
+import com.fr.swift.query.segment.detail.SortDetailSegmentQuery;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.segment.Segment;

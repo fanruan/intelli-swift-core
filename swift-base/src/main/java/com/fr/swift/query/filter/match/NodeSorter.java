@@ -29,9 +29,6 @@ public class NodeSorter {
 
                         Number v1 = (Number) o1.getAggregatorValue(sort.getTargetIndex() - dimensionSorts.size()).calculateValue();
                         Number v2 = (Number) o2.getAggregatorValue(sort.getTargetIndex() - dimensionSorts.size()).calculateValue();
-                        if (v1 == v2) {
-                            return 0;
-                        }
                         if (v1 == null) {
                             return 1;
                         }
