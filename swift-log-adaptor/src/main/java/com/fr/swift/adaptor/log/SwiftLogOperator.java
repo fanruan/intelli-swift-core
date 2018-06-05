@@ -55,7 +55,7 @@ public class SwiftLogOperator implements LogOperator {
             long currentCount = 0;
             while (resultSet.next()) {
                 if (isLimit) {
-                    if (currentCount <= start || currentCount > end) {
+                    if (currentCount < start || currentCount >= end) {
                         continue;
                     }
                 }
