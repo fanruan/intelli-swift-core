@@ -1,6 +1,5 @@
 package com.fr.swift.service;
 
-import com.fr.swift.Invoker;
 import com.fr.swift.ProxyFactory;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftConfigServiceProvider;
@@ -24,7 +23,7 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
 
     private Map<String, SwiftIndexingService> indexingServiceMap = new HashMap<String, SwiftIndexingService>();
     private Map<String, SwiftRealTimeService> realTimeServiceMap = new HashMap<String, SwiftRealTimeService>();
-    private Map<String, SwiftHistoryService> historyServiceMap = new HashMap<String, SwiftHistoryService>();
+    private Map<String, HistoryService> historyServiceMap = new HashMap<String, HistoryService>();
     private Map<String, SwiftAnalyseService> analyseServiceMap = new HashMap<String, SwiftAnalyseService>();
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(ClusterSwiftServerService.class);
@@ -41,7 +40,7 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
                         new SwiftAnalyseService(swiftServiceInfoBean.getClusterId()).start();
                         break;
                     case HISTORY:
-//                        new SwiftHistoryService(swiftServiceInfoBean.getClusterId()).start();
+                        SwiftHistoryService.getInstance().setId(swiftServiceInfoBean.getClusterId());
                         SwiftHistoryService.getInstance().start();
                         break;
                     case INDEXING:
@@ -73,10 +72,11 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
                     break;
                 case HISTORY:
                     try {
-                        Invoker<HistoryService> historyServiceInvoker = proxyFactory.getInvoker((HistoryService) FRProxyCache.getProxy(HistoryService.class), HistoryService.class, new FRUrl(new FRDestination(service.getID())));
-                        historyServiceMap.put(service.getID(), (SwiftHistoryService) proxyFactory.getProxy(historyServiceInvoker));
+                        HistoryService historyServiceProxy = proxyFactory.getProxy((HistoryService) FRProxyCache.getInstance(HistoryService.class),
+                                HistoryService.class, new FRUrl(new FRDestination(service.getID())));
+                        historyServiceMap.put(service.getID(), historyServiceProxy);
                     } catch (Exception e) {
-                        historyServiceMap.put(service.getID(), (SwiftHistoryService) service);
+                        historyServiceMap.put(service.getID(), (HistoryService) service);
                     }
                     break;
                 case INDEXING:
