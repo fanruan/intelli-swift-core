@@ -24,7 +24,7 @@ public class FormulaPreviewTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         TestConfDb.setConfDb();
-        new LocalSwiftServerService().start();
+        LocalSwiftServerService.getInstance().start();
         TestConnectionProvider.createConnection();
     }
 

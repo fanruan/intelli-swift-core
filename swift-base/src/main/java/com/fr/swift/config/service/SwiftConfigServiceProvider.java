@@ -1,5 +1,6 @@
 package com.fr.swift.config.service;
 
+import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
@@ -12,13 +13,15 @@ import java.util.Map;
  * @author yee
  * @date 2018/3/23
  */
-public class SwiftConfigServiceProvider implements SwiftConfigService {
+public class SwiftConfigServiceProvider implements SwiftConfigService, SwiftServiceInfoService {
 
     private SwiftConfigService service = null;
+    private SwiftServiceInfoService serviceInfoService = null;
     private static SwiftConfigServiceProvider instance;
 
     private SwiftConfigServiceProvider() {
         this.service = new SwiftConfigServiceImpl();
+        this.serviceInfoService = new SwiftServiceInfoServiceImpl();
     }
 
     public static SwiftConfigServiceProvider getInstance() {
@@ -108,5 +111,31 @@ public class SwiftConfigServiceProvider implements SwiftConfigService {
     @Override
     public String getSwiftPath() {
         return service.getSwiftPath();
+    }
+
+
+    @Override
+    public boolean saveOrUpdateServiceInfo(SwiftServiceInfoBean serviceInfoBean) {
+        return serviceInfoService.saveOrUpdateServiceInfo(serviceInfoBean);
+    }
+
+    @Override
+    public boolean removeServiceInfo(SwiftServiceInfoBean serviceInfoBean) {
+        return serviceInfoService.removeServiceInfo(serviceInfoBean);
+    }
+
+    @Override
+    public SwiftServiceInfoBean getServiceInfo(SwiftServiceInfoBean serviceInfoBean) {
+        return serviceInfoService.getServiceInfo(serviceInfoBean);
+    }
+
+    @Override
+    public List<SwiftServiceInfoBean> getAllServiceInfo() {
+        return serviceInfoService.getAllServiceInfo();
+    }
+
+    @Override
+    public List<SwiftServiceInfoBean> getServiceInfoByService(String service) {
+        return serviceInfoService.getServiceInfoByService(service);
     }
 }

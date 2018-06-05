@@ -36,8 +36,9 @@ import java.util.concurrent.CountDownLatch;
  */
 public class TransAndIndexTest extends BaseConfigTest {
     CountDownLatch latch = new CountDownLatch(1);
+
     @Override
-    protected void setUp() throws Exception{
+    protected void setUp() throws Exception {
         super.setUp();
         new LocalSwiftServerService().start();
         TestConnectionProvider.createConnection();

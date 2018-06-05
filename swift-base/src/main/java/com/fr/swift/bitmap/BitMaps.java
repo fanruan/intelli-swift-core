@@ -4,6 +4,7 @@ import com.fr.swift.bitmap.impl.AllShowBitMap;
 import com.fr.swift.bitmap.impl.BitSetImmutableBitMap;
 import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
 import com.fr.swift.bitmap.impl.IdBitMap;
+import com.fr.swift.bitmap.impl.RangeBitmap;
 import com.fr.swift.bitmap.impl.RoaringMutableBitMap;
 import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.structure.array.IntList;
@@ -25,6 +26,10 @@ public final class BitMaps {
 
     public static ImmutableBitMap newAllShowBitMap(int rowCount) {
         return AllShowBitMap.newInstance(rowCount);
+    }
+
+    public static ImmutableBitMap newRangeBitmap(int start, int end) {
+        return new RangeBitmap(start, end);
     }
 
     public static ImmutableBitMap newIdBitMap(int id) {

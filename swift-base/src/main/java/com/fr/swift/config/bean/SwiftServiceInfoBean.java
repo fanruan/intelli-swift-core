@@ -1,6 +1,6 @@
-package com.fr.swift.config;
+package com.fr.swift.config.bean;
 
-import com.fr.swift.config.bean.Convert;
+import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 
 import java.io.Serializable;
 

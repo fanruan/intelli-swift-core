@@ -12,7 +12,7 @@ public class BuildConf {
     /**
      * 默认覆写
      */
-    public static final WriteType DEFAULT_WRITE_TYPE = WriteType.OVERWRITE;
+    public static final WriteType DEFAULT_WRITE_TYPE = WriteType.EDIT;
 
     public final IoType ioType;
     public final DataType dataType;

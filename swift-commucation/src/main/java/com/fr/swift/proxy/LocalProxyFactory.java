@@ -31,4 +31,11 @@ public class LocalProxyFactory implements ProxyFactory {
     public <T> Invoker<T> getInvoker(T proxy, Class<T> type, URL url) {
         return new SwiftInvoker<T>(proxy, type, url);
     }
+
+    @Override
+    public <T> T getProxy(T proxy, Class<T> type, URL url) {
+        Invoker invoker = getInvoker(proxy, type, url);
+        T t = (T)getProxy(invoker);
+        return t;
+    }
 }

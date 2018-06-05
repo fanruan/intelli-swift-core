@@ -5,9 +5,8 @@ import com.fr.cluster.core.ClusterNode;
 import com.fr.cluster.lock.ClusterLock;
 import com.fr.cluster.lock.ClusterLockFactory;
 import com.fr.swift.ClusterService;
-import com.fr.swift.config.SwiftServiceInfoBean;
-import com.fr.swift.config.SwiftServiceInfoService;
-import com.fr.swift.config.SwiftServiceInfoServiceImpl;
+import com.fr.swift.config.bean.SwiftServiceInfoBean;
+import com.fr.swift.config.service.SwiftConfigServiceProvider;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 
@@ -27,12 +26,9 @@ public class SwiftClusterService implements ClusterService {
     private ClusterLockFactory factory = ClusterBridge.getLockFactory();
     private ClusterLock clusterLock = factory.get(SwiftClusterService.class);
 
-    private SwiftServiceInfoService swiftServiceInfoService;
-
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftClusterService.class);
 
     private SwiftClusterService() {
-        swiftServiceInfoService = new SwiftServiceInfoServiceImpl();
     }
 
     private static final ClusterService INSTANCE = new SwiftClusterService();
@@ -47,7 +43,7 @@ public class SwiftClusterService implements ClusterService {
         ClusterNode currentNode = ClusterNodeManager.getInstance().getCurrentNode();
         try {
             clusterLock.lock();
-            List<SwiftServiceInfoBean> masterServiceInfoBeanList = swiftServiceInfoService.getServiceInfoByService(SwiftClusterService.SERVICE);
+            List<SwiftServiceInfoBean> masterServiceInfoBeanList = SwiftConfigServiceProvider.getInstance().getServiceInfoByService(SwiftClusterService.SERVICE);
             if (!masterServiceInfoBeanList.isEmpty()) {
                 SwiftServiceInfoBean clusterMasterBean = masterServiceInfoBeanList.get(0);
                 String masterId = clusterMasterBean.getClusterId();
@@ -55,7 +51,7 @@ public class SwiftClusterService implements ClusterService {
                     LOGGER.info("Master " + masterId + " is dead, " + currentNode.getID() + " start to compete master!");
                     ClusterNodeManager.getInstance().setMasterNode(currentNode);
                     SwiftServiceInfoBean swiftServiceInfoBean = new SwiftServiceInfoBean(SwiftClusterService.SERVICE, currentNode.getID(), "");
-                    swiftServiceInfoService.saveOrUpdateServiceInfo(swiftServiceInfoBean);
+                    SwiftConfigServiceProvider.getInstance().saveOrUpdateServiceInfo(swiftServiceInfoBean);
                     LOGGER.info(currentNode.getID() + " compete master succeeded!");
                 } else {
                     LOGGER.info("Master " + masterId + " is alive, " + currentNode.getID() + " sync master node!");
@@ -65,7 +61,7 @@ public class SwiftClusterService implements ClusterService {
             } else {
                 LOGGER.info("Master is null," + currentNode.getID() + " start to compete master!");
                 SwiftServiceInfoBean swiftServiceInfoBean = new SwiftServiceInfoBean(SwiftClusterService.SERVICE, currentNode.getID(), "");
-                swiftServiceInfoService.saveOrUpdateServiceInfo(swiftServiceInfoBean);
+                SwiftConfigServiceProvider.getInstance().saveOrUpdateServiceInfo(swiftServiceInfoBean);
                 LOGGER.info(currentNode.getID() + " compete master succeeded!");
             }
             LOGGER.info("End to compete master !");
@@ -79,12 +75,14 @@ public class SwiftClusterService implements ClusterService {
     }
 
     @Override
-    public void rpcSend(String masterId, Object object) {
+    public String rpcSend(String masterId, Object object) {
         LOGGER.info(masterId + ":" + object.toString());
+        return "response:" + masterId + ":" + object.toString();
     }
 
     @Override
-    public void rpcSend() {
+    public String rpcSend() {
         LOGGER.info("time:" + System.currentTimeMillis());
+        return "response:" + System.currentTimeMillis();
     }
 }

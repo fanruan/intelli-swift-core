@@ -14,9 +14,6 @@ public class LocalSwiftServerService extends AbstractSwiftServerService {
     private SwiftHistoryService historyService;
     private SwiftAnalyseService analyseService;
 
-    public LocalSwiftServerService() {
-    }
-
     @Override
     public void registerService(SwiftService service) {
         synchronized (this) {
@@ -38,7 +35,21 @@ public class LocalSwiftServerService extends AbstractSwiftServerService {
 
     @Override
     public void unRegisterService(SwiftService service) {
-
+        synchronized (this) {
+            switch (service.getServiceType()) {
+                case ANALYSE:
+                    analyseService = null;
+                    break;
+                case HISTORY:
+                    historyService = null;
+                    break;
+                case INDEXING:
+                    indexingService = null;
+                    break;
+                case REAL_TIME:
+                    realTimeService = null;
+            }
+        }
     }
 
 

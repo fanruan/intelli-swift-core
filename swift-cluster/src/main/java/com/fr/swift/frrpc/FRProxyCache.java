@@ -1,6 +1,7 @@
 package com.fr.swift.frrpc;
 
-import com.fr.swift.exception.ProxyNotRegisteException;
+import com.fr.cluster.engine.ticket.FineClusterToolKit;
+import com.fr.swift.exception.ProxyRegisterException;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,23 +34,30 @@ public class FRProxyCache {
         INSTANCE.proxyMap.put(classType, object);
     }
 
-    public static Object getProxy(Class classType) throws ProxyNotRegisteException {
+    public static Object getProxy(Class classType) throws ProxyRegisterException {
         if (INSTANCE.proxyMap.containsKey(classType)) {
             return INSTANCE.proxyMap.get(classType);
         } else {
-            throw new ProxyNotRegisteException(classType.getName() + "'s proxy hasn't been registed!");
+            throw new ProxyRegisterException(classType.getName() + "'s proxy hasn't been registed!");
         }
     }
 
-    public static void registerInstance(Class classType, Object object) {
-        INSTANCE.instanceMap.put(classType, object);
+    /**
+     * @param classType 注册对象的接口，不能是实现类，否则动态代理无法生效
+     * @param object    必须是单例
+     */
+    public synchronized static void registerInstance(Class classType, Object object) {
+        if (!INSTANCE.instanceMap.containsKey(classType)) {
+            FineClusterToolKit.getInstance().getRPCProxyFactory().newBuilder(object).build();
+            INSTANCE.instanceMap.put(classType, object);
+        }
     }
 
-    public static Object getInstance(Class classType) throws ProxyNotRegisteException {
+    public static Object getInstance(Class classType) throws ProxyRegisterException {
         if (INSTANCE.instanceMap.containsKey(classType)) {
             return INSTANCE.instanceMap.get(classType);
         } else {
-            throw new ProxyNotRegisteException(classType.getName() + "'s instance hasn't been registed!");
+            throw new ProxyRegisterException(classType.getName() + "'s instance hasn't been registed!");
         }
     }
 }

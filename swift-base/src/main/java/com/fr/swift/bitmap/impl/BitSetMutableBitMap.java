@@ -34,6 +34,11 @@ public class BitSetMutableBitMap extends BaseBitSetBitMap implements MutableBitM
     }
 
     @Override
+    public void not(int bound) {
+        bitset.flip(0, bound);
+    }
+
+    @Override
     public void andNot(ImmutableBitMap index) {
         bitset.andNot(extract(index));
     }
@@ -101,5 +106,4 @@ public class BitSetMutableBitMap extends BaseBitSetBitMap implements MutableBitM
     public BitMapType getType() {
         return BitMapType.BIT_SET_MUTABLE;
     }
-
 }

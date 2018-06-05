@@ -10,11 +10,33 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>swift-history</artifactId>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>6</source>
+                    <target>6</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
         <dependency>
             <groupId>com.finebi</groupId>
             <artifactId>swift-base</artifactId>
+            <version>5.0-FEATURE-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.finebi</groupId>
+            <artifactId>swift-repository</artifactId>
+            <version>5.0-FEATURE-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.finebi</groupId>
+            <artifactId>swift-cluster</artifactId>
             <version>5.0-FEATURE-SNAPSHOT</version>
         </dependency>
     </dependencies>
