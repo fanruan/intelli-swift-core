@@ -29,7 +29,7 @@ public abstract class AbstractSwiftRegister implements SwiftRegister {
 
     protected void localServiceRegister() throws SwiftServiceException {
         new SwiftAnalyseService().start();
-        new SwiftHistoryService().start();
+        SwiftHistoryService.getInstance().start();
         new SwiftIndexingService().start();
         new SwiftRealTimeService().start();
     }
@@ -49,10 +49,13 @@ public abstract class AbstractSwiftRegister implements SwiftRegister {
         try {
             Invoker invoker = proxyFactory.getInvoker((SwiftServiceListenerHandler) FRProxyCache.getInstance(RemoteServiceSender.class), SwiftServiceListenerHandler.class
                     , new FRUrl(new FRDestination(masterId)));
+            String currentId = ClusterNodeManager.getInstance().getCurrentId();
             SwiftServiceListenerHandler senderProxy = (SwiftServiceListenerHandler) proxyFactory.getProxy(invoker);
             senderProxy.registerService(new SwiftRealTimeService(ClusterNodeManager.getInstance().getCurrentId()));
             senderProxy.registerService(new SwiftIndexingService(ClusterNodeManager.getInstance().getCurrentId()));
-            senderProxy.registerService(new SwiftHistoryService(ClusterNodeManager.getInstance().getCurrentId()));
+            SwiftHistoryService historyService = SwiftHistoryService.getInstance();
+            historyService.setId(currentId);
+            senderProxy.registerService(historyService);
             senderProxy.registerService(new SwiftAnalyseService(ClusterNodeManager.getInstance().getCurrentId()));
         } catch (ProxyRegisterException e) {
         } catch (Exception e) {
