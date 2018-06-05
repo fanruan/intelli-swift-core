@@ -14,7 +14,6 @@ import java.util.List;
  * @since Advanced FineBI Analysis 1.0
  */
 public interface Inserter {
-
     List<Segment> insertData(List<Row> rowList) throws Exception;
 
     List<Segment> insertData(SwiftResultSet swiftResultSet) throws Exception;

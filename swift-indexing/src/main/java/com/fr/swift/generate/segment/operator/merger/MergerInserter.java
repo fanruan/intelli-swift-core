@@ -1,8 +1,7 @@
 package com.fr.swift.generate.segment.operator.merger;
 
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.segment.operator.insert.AbstractInserter;
+import com.fr.swift.segment.operator.insert.SwiftInserter;
 
 /**
  * This class created on 2018/4/24
@@ -11,19 +10,9 @@ import com.fr.swift.segment.operator.insert.AbstractInserter;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class MergerInserter extends AbstractInserter {
+public class MergerInserter extends SwiftInserter {
 
-    public MergerInserter(Segment segment) throws Exception {
+    public MergerInserter(Segment segment) {
         super(segment);
-    }
-
-    @Override
-    public void release() {
-        for (String field : fields) {
-            segment.getColumn(new ColumnKey(field)).getBitmapIndex().putNullIndex(nullMap.get(field));
-            segment.getColumn(new ColumnKey(field)).getBitmapIndex().release();
-            segment.getColumn(new ColumnKey(field)).getDetailColumn().release();
-        }
-        segment.release();
     }
 }

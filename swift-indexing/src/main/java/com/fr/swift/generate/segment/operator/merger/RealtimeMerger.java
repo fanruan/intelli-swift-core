@@ -18,6 +18,7 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.Merger;
+import com.fr.swift.segment.operator.insert.SwiftInserter;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
@@ -83,7 +84,7 @@ public class RealtimeMerger implements Merger {
             Segment segment = createSegment(historySegs.size());
             mergeSegments.add(segment);
 
-            Inserter inserter = new MergerInserter(segment);
+            Inserter inserter = new SwiftInserter(segment);
             inserter.insertData(resultSet);
 //            resultSet.close();
         }

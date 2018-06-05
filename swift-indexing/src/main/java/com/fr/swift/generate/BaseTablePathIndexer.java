@@ -165,15 +165,14 @@ public abstract class BaseTablePathIndexer extends BaseWorker implements SwiftTa
     MutableBitMap getTableLinkedOrGVI(ImmutableBitMap currentIndex, final RelationIndex relationIndex, final int primaryIndex) {
         if (null != currentIndex) {
             final List<ImmutableBitMap> bitMaps = new ArrayList<ImmutableBitMap>();
-            currentIndex.breakableTraversal(new BreakTraversalAction() {
+            currentIndex.traversal(new TraversalAction() {
                 @Override
-                public boolean actionPerformed(int row) {
+                public void actionPerformed(int row) {
                     try {
                         bitMaps.add(relationIndex.getIndex(primaryIndex, row + 1));
                     } catch (Exception ignore) {
                         bitMaps.add(BitMaps.newRoaringMutable());
                     }
-                    return false;
                 }
             });
             MutableBitMap result = BitMaps.newRoaringMutable();

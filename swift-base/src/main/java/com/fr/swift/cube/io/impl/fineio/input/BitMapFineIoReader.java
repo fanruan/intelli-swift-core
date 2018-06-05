@@ -2,7 +2,7 @@ package com.fr.swift.cube.io.impl.fineio.input;
 
 import com.fr.swift.bitmap.BitMapType;
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.bitmap.impl.AllShowBitMap;
+import com.fr.swift.bitmap.impl.RangeBitmap;
 import com.fr.swift.bitmap.impl.RoaringMutableBitMap;
 import com.fr.swift.cube.io.input.BitMapReader;
 import com.fr.swift.cube.io.input.ByteArrayReader;
@@ -36,8 +36,8 @@ public class BitMapFineIoReader extends BaseFineIoReader implements BitMapReader
         if (head == BitMapType.ROARING_IMMUTABLE.head || head == BitMapType.ROARING_MUTABLE.head) {
             return RoaringMutableBitMap.fromBytes(bytes, 1, bytes.length - 1);
         }
-        if (head == BitMapType.ALL_SHOW.head) {
-            return AllShowBitMap.fromBytes(bytes, 1);
+        if (head == BitMapType.RANGE.head || head == BitMapType.ALL_SHOW.head || head == BitMapType.ID.head) {
+            return RangeBitmap.fromBytes(bytes, 1);
         }
         return Crasher.crash("not a valid head or this bitmap doesn't support, head: " + head);
     }
