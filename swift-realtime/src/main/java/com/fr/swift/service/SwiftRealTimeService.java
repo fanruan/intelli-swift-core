@@ -7,13 +7,24 @@ import com.fr.swift.segment.recover.SwiftSegmentRecovery;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author pony
  * @date 2017/10/10
  */
-public class SwiftRealTimeService extends AbstractSwiftService implements RealtimeService {
+public class SwiftRealTimeService extends AbstractSwiftService implements RealtimeService, Serializable {
+
+    private static final long serialVersionUID = 4719723736240190155L;
+
+    public SwiftRealTimeService(String id) {
+        super(id);
+    }
+
+    public SwiftRealTimeService() {
+    }
+
     @Override
     public void insert(SourceKey tableKey, SwiftResultSet resultSet) {
 

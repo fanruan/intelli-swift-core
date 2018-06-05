@@ -2,6 +2,7 @@ package com.fr.swift.frrpc;
 
 import com.fr.cluster.ClusterBridge;
 import com.fr.cluster.core.ClusterNode;
+import com.fr.general.ComparatorUtils;
 
 /**
  * This class created on 2018/5/10
@@ -63,6 +64,18 @@ public class ClusterNodeManager {
     public void setCluster(boolean cluster) {
         synchronized (ClusterNodeManager.class) {
             isCluster = cluster;
+        }
+    }
+
+    public boolean isMaster() {
+        synchronized (ClusterNodeManager.class) {
+            if (masterNode == null) {
+                return false;
+            }
+            if (ComparatorUtils.equals(getMasterId(), getCurrentId())) {
+                return true;
+            }
+            return false;
         }
     }
 }

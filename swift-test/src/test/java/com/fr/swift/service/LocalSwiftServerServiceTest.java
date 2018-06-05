@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class LocalSwiftServerServiceTest extends TestCase {
     private LocalSwiftServerService localSwiftServerService;
+
     @Override
     public void setUp() throws Exception {
         super.setUp();

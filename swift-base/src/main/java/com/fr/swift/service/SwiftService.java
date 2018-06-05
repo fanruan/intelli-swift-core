@@ -10,6 +10,7 @@ public interface SwiftService {
 
     /**
      * 启动服务
+     *
      * @return 是否成功
      * @throws SwiftServiceException
      */
@@ -17,6 +18,7 @@ public interface SwiftService {
 
     /**
      * 关闭服务
+     *
      * @return 是否成功
      * @throws SwiftServiceException
      */
@@ -24,12 +26,14 @@ public interface SwiftService {
 
     /**
      * 服务的类型。
+     *
      * @return
      */
     ServiceType getServiceType();
 
     /**
      * id,unregister的时候要区分下
+     *
      * @return
      */
     String getID();

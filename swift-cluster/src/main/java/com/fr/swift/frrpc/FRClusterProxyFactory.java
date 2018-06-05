@@ -3,6 +3,10 @@ package com.fr.swift.frrpc;
 import com.fr.swift.Invoker;
 import com.fr.swift.ProxyFactory;
 import com.fr.swift.URL;
+import com.fr.swift.invoker.InvokerInvocationHandler;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 
 /**
  * This class created on 2018/5/28
@@ -13,17 +17,15 @@ import com.fr.swift.URL;
  */
 public class FRClusterProxyFactory implements ProxyFactory {
 
-    /**
-     * fr rpc demo
-     * ProxyFactory proxyFactory = ProxySelector.getInstance().getFactory();
-     * Invoker<ClusterService> invoker = proxyFactory.getInvoker(INSTANCE, ClusterService.class, new FRUrl(null));
-     * ClusterService proxy = proxyFactory.getProxy(invoker);
-     * proxy.rpcSend(ClusterNodeManager.getInstance().getCurrentId(), System.currentTimeMillis());
-     */
-    //fixme 暂时远程方法直接调用fr的，正确的应该在外再包一层动态代理。
     @Override
     public <T> T getProxy(Invoker<T> invoker) throws Exception {
-        return (T) FRProxyCache.getProxy(invoker.getInterface());
+
+        InvocationHandler invocationHandler = new InvokerInvocationHandler(invoker);
+        Class interfaceClass = invoker.getInterface();
+        T t = (T) Proxy.newProxyInstance(interfaceClass.getClassLoader(), new Class<?>[]
+                {interfaceClass}, invocationHandler);
+        return t;
+//        return (T) FRProxyCache.getProxy(invoker.getInterface());
     }
 
     @Override

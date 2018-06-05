@@ -1,6 +1,7 @@
-package com.fr.swift.config;
+package com.fr.swift.config.entity;
 
 import com.fr.swift.config.bean.Convert;
+import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Entity;
 import com.fr.third.javax.persistence.Id;
