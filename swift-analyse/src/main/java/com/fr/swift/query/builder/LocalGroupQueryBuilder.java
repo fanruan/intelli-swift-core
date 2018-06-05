@@ -11,6 +11,7 @@ import java.util.List;
  * Created by pony on 2017/12/15.
  */
 public interface LocalGroupQueryBuilder {
+
     LocalGroupQueryBuilder SINGLE_URI = new LocalGroupSingleURIQueryBuilder();
 
     LocalGroupQueryBuilder PAGING = new LocalGroupPagingQueryBuilder();

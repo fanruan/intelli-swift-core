@@ -54,6 +54,9 @@ import java.util.List;
 public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
 
     // TODO: 2018/5/31 结果的配置计算中值的读写还是依赖之前解析的数组的index，外部调用查询写得时候比较麻烦。查询属性写字段名，做一层解析吧
+    // TODO: 2018/6/5 关于分页计算和结果集分页的问题，检查List<PostQueryInfo>有没有需要全部计算的条件，
+    // 如果有结果过滤、排序、组内计算和topN等则全部计算，否则进行分页计算。全部计算的情况下，内部节点之间传递全部结果集，最后一个
+    // 节点提供结果集分页的实现。分页计算情况下，内部节点之间传递部分结果集，结合最后一个节点的分页实现按需计算。
     @Override
     public Query<NodeResultSet> buildPostQuery(ResultQuery<NodeResultSet> query, GroupQueryInfo info) {
         PostQuery<NodeResultSet> tmpQuery = new UpdateNodeDataQuery(query);

@@ -1,7 +1,10 @@
 package com.fr.swift.query.builder;
 
 import com.fr.swift.query.Query;
+import com.fr.swift.query.QueryInfo;
+import com.fr.swift.query.QueryType;
 import com.fr.swift.query.info.group.GroupQueryInfo;
+import com.fr.swift.query.info.group.RemoteQueryInfoImpl;
 import com.fr.swift.query.remote.RemoteQueryImpl;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.service.SegmentLocationProvider;
@@ -14,7 +17,7 @@ import java.util.List;
 /**
  * Created by pony on 2017/12/14.
  */
-public class GroupQueryBuilder {
+class GroupQueryBuilder {
 
     static Query<NodeResultSet> buildQuery(GroupQueryInfo info) {
         SourceKey table = info.getTable();
@@ -24,6 +27,21 @@ public class GroupQueryBuilder {
             return buildQuery(uris, info, LocalGroupQueryBuilder.PAGING);
         } else {
             return buildQuery(uris, info, LocalGroupQueryBuilder.ALL);
+        }
+    }
+
+    /**
+     * 处理另一个节点转发过来的查询，并且当前节点上包含查询的部分分块数据
+     *
+     * @param info 查询信息
+     * @return
+     */
+    static Query<NodeResultSet> buildLocalQuery(GroupQueryInfo info) {
+        // TODO: 2018/6/5 区分是否能分页
+        if (false) {
+            return LocalGroupQueryBuilder.PAGING.buildLocalQuery(info);
+        } else {
+            return LocalGroupQueryBuilder.ALL.buildLocalQuery(info);
         }
     }
 
@@ -53,7 +71,8 @@ public class GroupQueryBuilder {
                 return builder.buildPostQuery(builder.buildLocalQuery(info), info);
             } else {
                 // 丢给远程节点
-                return new RemoteQueryImpl(info);
+                QueryInfo<NodeResultSet> queryInfo = new RemoteQueryInfoImpl<NodeResultSet>(QueryType.REMOTE_ALL, info);
+                return new RemoteQueryImpl<NodeResultSet>(queryInfo);
             }
         }
         List<Query<NodeResultSet>> queries = new ArrayList<Query<NodeResultSet>>();
@@ -61,10 +80,11 @@ public class GroupQueryBuilder {
             if (QueryBuilder.isLocalURI(uri)) {
                 queries.add(builder.buildLocalQuery(info));
             } else {
-                queries.add(new RemoteQueryImpl(info));
+                QueryInfo<NodeResultSet> queryInfo = new RemoteQueryInfoImpl<NodeResultSet>(QueryType.REMOTE_PART, info);
+                queries.add(new RemoteQueryImpl<NodeResultSet>(queryInfo));
             }
         }
-        // 多个节点的ResultQuery合并之后在处理计算指标
+        // 多个节点的ResultQuery合并之后在处理List<PostQueryInfo>
         return builder.buildPostQuery(builder.buildResultQuery(queries, info), info);
     }
 }

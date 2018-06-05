@@ -1,5 +1,6 @@
 package com.fr.swift.result;
 
+import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.query.filter.detail.DetailFilter;
@@ -21,8 +22,10 @@ import java.util.List;
  */
 
 public class SortSegmentDetailResultSet extends DetailResultSet {
+
     private List<Column> columnList;
-    private DetailFilter filter;
+    // 过滤结果(所有行)的bitmap
+    private ImmutableBitMap bitMapOfTotalRows;
     private IntList sortIndex;
     private List<SortType> sorts;
     private SwiftMetaData metaData;
@@ -30,11 +33,12 @@ public class SortSegmentDetailResultSet extends DetailResultSet {
 
     public SortSegmentDetailResultSet(List<Column> columnList, DetailFilter filter, IntList sortIndex, List<SortType> sorts, SwiftMetaData metaData) {
         this.columnList = columnList;
-        this.filter = filter;
+        this.bitMapOfTotalRows = filter.createFilterIndex();
         this.sortIndex = sortIndex;
         this.sorts = sorts;
         this.metaData = metaData;
-        init();
+        this.maxRow = bitMapOfTotalRows.getCardinality();
+        sortDetail();
     }
 
     @Override
@@ -46,14 +50,10 @@ public class SortSegmentDetailResultSet extends DetailResultSet {
     public SwiftMetaData getMetaData() {
         return metaData;
     }
-    private void init() {
-        maxRow = filter.createFilterIndex().getCardinality();
-        sortDetail();
-    }
 
     private void sortDetail() {
         sortedDetailList = new ArrayList<Row>();
-        filter.createFilterIndex().traversal(new TraversalAction() {
+        bitMapOfTotalRows.traversal(new TraversalAction() {
             @Override
             public void actionPerformed(int row) {
                 List<Object> values = new ArrayList<Object>();
@@ -88,11 +88,6 @@ public class SortSegmentDetailResultSet extends DetailResultSet {
                 }
             }
             return 0;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return false;
         }
     }
 }
