@@ -1,7 +1,6 @@
 package com.fr.swift.service;
 
 import com.fr.swift.config.SwiftCubePathConfig;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.QueryInfo;
 import com.fr.swift.repository.SwiftRepository;
@@ -11,7 +10,6 @@ import com.fr.swift.source.SwiftResultSet;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.Set;
 
 /**
@@ -20,13 +18,16 @@ import java.util.Set;
 public class SwiftHistoryService extends AbstractSwiftService implements HistoryService, Serializable {
 
     private static final long serialVersionUID = -6013675740141588108L;
+    private final static SwiftHistoryService instance = new SwiftHistoryService();
 
-    public SwiftHistoryService(String id) {
-        super(id);
+    private SwiftHistoryService() {
     }
 
-    public SwiftHistoryService() {
+    public static SwiftHistoryService getInstance() {
+        return instance;
     }
+
+
 
     @Override
     public ServiceType getServiceType() {
@@ -34,7 +35,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     }
 
     @Override
-    public <T extends SwiftResultSet> T query(QueryInfo<T> queryInfo) throws SQLException {
+    public <T extends SwiftResultSet> T query(QueryInfo<T> queryInfo) {
         SwiftLoggers.getLogger().info("History query");
         return null;
     }

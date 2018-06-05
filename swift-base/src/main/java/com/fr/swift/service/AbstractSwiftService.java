@@ -37,4 +37,8 @@ public abstract class AbstractSwiftService implements SwiftService, Serializable
     public String getID() {
         return id;
     }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 }
