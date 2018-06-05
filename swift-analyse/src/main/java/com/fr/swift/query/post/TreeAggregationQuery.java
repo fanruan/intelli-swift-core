@@ -1,9 +1,14 @@
 package com.fr.swift.query.post;
 
 import com.fr.swift.query.aggregator.Aggregator;
+import com.fr.swift.result.GroupNode;
+import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.NodeResultSet;
+import com.fr.swift.result.node.GroupNodeAggregateUtils;
+import com.fr.swift.result.node.NodeType;
 
-import java.util.Map;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Created by Lyon on 2018/6/3.
@@ -11,15 +16,19 @@ import java.util.Map;
 public class TreeAggregationQuery extends AbstractPostQuery<NodeResultSet> {
 
     private PostQuery<NodeResultSet> query;
-    private Map<String, Aggregator> aggregatorMap;
+    private List<Aggregator> aggregators;
 
-    public TreeAggregationQuery(PostQuery<NodeResultSet> query, Map<String, Aggregator> aggregatorMap) {
+    public TreeAggregationQuery(PostQuery<NodeResultSet> query, List<Aggregator> aggregators) {
         this.query = query;
-        this.aggregatorMap = aggregatorMap;
+        this.aggregators = aggregators;
     }
 
     @Override
-    public NodeResultSet getQueryResult() {
-        return null;
+    public NodeResultSet getQueryResult() throws SQLException {
+        NodeMergeResultSet<GroupNode> mergeResult = (NodeMergeResultSet<GroupNode>) query.getQueryResult();
+        // 先做节点合计，再做过滤
+        GroupNodeAggregateUtils.aggregateMetric(NodeType.GROUP, mergeResult.getRowGlobalDictionaries().size(),
+                (GroupNode) mergeResult.getNode(), aggregators);
+        return mergeResult;
     }
 }

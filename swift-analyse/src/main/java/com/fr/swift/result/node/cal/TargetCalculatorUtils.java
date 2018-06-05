@@ -2,9 +2,6 @@ package com.fr.swift.result.node.cal;
 
 import com.fr.swift.query.info.element.target.GroupTarget;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.structure.iterator.Filter;
-import com.fr.swift.structure.iterator.FilteredIterator;
-import com.fr.swift.structure.iterator.IteratorUtils;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -44,13 +41,14 @@ public class TargetCalculatorUtils {
     }
 
     public static GroupNode calculateAfterFiltering(GroupNode root, List<Map<Integer, Object>> dic,
-                                                    List<GroupTarget> groupTargets) throws SQLException {
-        List<GroupTarget> targets = IteratorUtils.iterator2List(new FilteredIterator<GroupTarget>(groupTargets.iterator(), new Filter<GroupTarget>() {
-            @Override
-            public boolean accept(GroupTarget target) {
-                return target.isRepeatCal();
-            }
-        }));
-        return calculate(root, dic, targets);
+                                                    List<GroupTarget> groupTargets) {
+//        List<GroupTarget> targets = IteratorUtils.iterator2List(new FilteredIterator<GroupTarget>(groupTargets.iterator(), new Filter<GroupTarget>() {
+//            @Override
+//            public boolean accept(GroupTarget target) {
+//                return target.isRepeatCal();
+//            }
+//        }));
+//        return calculate(root, dic, targets);
+        return root;
     }
 }

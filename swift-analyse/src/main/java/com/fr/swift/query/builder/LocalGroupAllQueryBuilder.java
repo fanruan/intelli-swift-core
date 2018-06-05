@@ -17,12 +17,17 @@ import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.info.group.post.CalculatedFieldQueryInfo;
+import com.fr.swift.query.info.group.post.HavingFilterQueryInfo;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
+import com.fr.swift.query.info.group.post.RowSortQueryInfo;
+import com.fr.swift.query.info.group.post.TreeAggregationQueryInfo;
+import com.fr.swift.query.info.group.post.TreeFilterQueryInfo;
+import com.fr.swift.query.info.group.post.TreeSortQueryInfo;
+import com.fr.swift.query.post.FieldCalQuery;
 import com.fr.swift.query.post.HavingFilterQuery;
 import com.fr.swift.query.post.PostQuery;
 import com.fr.swift.query.post.PostQueryType;
 import com.fr.swift.query.post.PrepareMetaDataQuery;
-import com.fr.swift.query.post.ResultCalQuery;
 import com.fr.swift.query.post.RowSortQuery;
 import com.fr.swift.query.post.TreeAggregationQuery;
 import com.fr.swift.query.post.TreeFilterQuery;
@@ -57,22 +62,22 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
             PostQueryType type = postQueryInfo.getType();
             switch (type) {
                 case CAL_FIELD:
-                    tmpQuery = new ResultCalQuery(tmpQuery, ((CalculatedFieldQueryInfo) postQueryInfo).getCalInfoList());
+                    tmpQuery = new FieldCalQuery(tmpQuery, ((CalculatedFieldQueryInfo) postQueryInfo).getCalInfoList());
                     break;
                 case HAVING_FILTER:
-                    tmpQuery = new HavingFilterQuery(tmpQuery, null);
+                    tmpQuery = new HavingFilterQuery(tmpQuery, ((HavingFilterQueryInfo) postQueryInfo).getMatchFilterList());
                     break;
                 case TREE_FILTER:
-                    tmpQuery = new TreeFilterQuery(tmpQuery, null);
+                    tmpQuery = new TreeFilterQuery(tmpQuery, ((TreeFilterQueryInfo) postQueryInfo).getMatchFilterList());
                     break;
                 case TREE_AGGREGATION:
-                    tmpQuery = new TreeAggregationQuery(tmpQuery, null);
+                    tmpQuery = new TreeAggregationQuery(tmpQuery, ((TreeAggregationQueryInfo) postQueryInfo).getAggregators());
                     break;
                 case TREE_SORT:
-                    tmpQuery = new TreeSortQuery(tmpQuery, null);
+                    tmpQuery = new TreeSortQuery(tmpQuery, ((TreeSortQueryInfo) postQueryInfo).getSortList());
                     break;
                 case ROW_SORT:
-                    tmpQuery = new RowSortQuery(tmpQuery, null);
+                    tmpQuery = new RowSortQuery(tmpQuery, ((RowSortQueryInfo) postQueryInfo).getSortList());
                     break;
             }
         }

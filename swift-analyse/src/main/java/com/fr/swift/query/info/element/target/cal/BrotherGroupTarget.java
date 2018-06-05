@@ -11,8 +11,8 @@ import java.util.List;
 public class BrotherGroupTarget extends GroupTargetImpl {
     private List<Pair<Integer, GroupType>> brotherGroupIndex;
 
-    public BrotherGroupTarget(int queryIndex, boolean isRepeatCal, int resultIndex, int[] paramIndexes, CalTargetType type, List<Pair<Integer, GroupType>> brotherGroupIndex) {
-        super(queryIndex, isRepeatCal, resultIndex, paramIndexes, type);
+    public BrotherGroupTarget(int queryIndex, int resultIndex, int[] paramIndexes, CalTargetType type, List<Pair<Integer, GroupType>> brotherGroupIndex) {
+        super(queryIndex, resultIndex, paramIndexes, type);
         this.brotherGroupIndex = brotherGroupIndex;
     }
 

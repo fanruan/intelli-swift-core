@@ -3,21 +3,26 @@ package com.fr.swift.query.info.group.post;
 import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.query.post.PostQueryType;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * Created by Lyon on 2018/6/3.
  */
 public class TreeFilterQueryInfo implements PostQueryInfo {
 
-    private Map<String, MatchFilter> matchFilterMap;
+    private List<MatchFilter> matchFilterList;
 
-    public TreeFilterQueryInfo(Map<String, MatchFilter> matchFilterMap) {
-        this.matchFilterMap = matchFilterMap;
+    public TreeFilterQueryInfo(List<MatchFilter> matchFilterList) {
+        this.matchFilterList = matchFilterList;
     }
 
-    public Map<String, MatchFilter> getMatchFilterMap() {
-        return matchFilterMap;
+    /**
+     * 对应NodeResultSet非叶子节点上面的过滤
+     *
+     * @return
+     */
+    public List<MatchFilter> getMatchFilterList() {
+        return matchFilterList;
     }
 
     @Override

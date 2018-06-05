@@ -22,7 +22,7 @@ public class CurrentDimensionIterator implements Iterator<List<AggregatorValue[]
     }
 
     private void init(GroupNode root, Function<GroupNode, List<AggregatorValue[]>> fn) {
-        Iterator<GroupNode> iterator = root.iterator();
+        Iterator<GroupNode> iterator = root.getChildren().iterator();
         FilteredIterator<GroupNode> filteredIterator = new FilteredIterator<GroupNode>(iterator, new Filter<GroupNode>() {
             @Override
             public boolean accept(GroupNode biGroupNode) {
