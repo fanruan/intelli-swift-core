@@ -4,8 +4,6 @@ import com.fr.swift.Invocation;
 import com.fr.swift.Invoker;
 import com.fr.swift.ProxyFactory;
 import com.fr.swift.Result;
-import com.fr.swift.config.bean.SwiftServiceInfoBean;
-import com.fr.swift.config.service.SwiftConfigServiceProvider;
 import com.fr.swift.frrpc.ClusterNodeManager;
 import com.fr.swift.frrpc.FRDestination;
 import com.fr.swift.frrpc.FRProxyCache;

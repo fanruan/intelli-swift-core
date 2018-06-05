@@ -7,8 +7,9 @@ import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.segment.recover.SwiftSegmentRecovery;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
-import java.sql.SQLException;
+
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.List;
 
 /**

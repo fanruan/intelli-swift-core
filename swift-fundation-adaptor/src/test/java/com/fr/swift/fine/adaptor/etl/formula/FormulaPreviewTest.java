@@ -5,7 +5,6 @@ import com.finebi.conf.structure.result.BIDetailTableResult;
 import com.fr.swift.config.TestConfDb;
 import com.fr.swift.provider.DataProvider;
 import com.fr.swift.provider.impl.SwiftDataProvider;
-import com.fr.swift.service.LocalSwiftServerService;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.db.QueryDBSource;
@@ -24,7 +23,7 @@ public class FormulaPreviewTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         TestConfDb.setConfDb();
-        LocalSwiftServerService.getInstance().start();
+//        LocalSwiftServerService.getInstance().start();
         TestConnectionProvider.createConnection();
     }
 
