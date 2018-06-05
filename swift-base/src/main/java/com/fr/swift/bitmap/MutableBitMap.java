@@ -10,6 +10,8 @@ public interface MutableBitMap extends ImmutableBitMap {
 
     void and(ImmutableBitMap index);
 
+    void not(int bound);
+
     void andNot(ImmutableBitMap index);
 
     void add(int index);

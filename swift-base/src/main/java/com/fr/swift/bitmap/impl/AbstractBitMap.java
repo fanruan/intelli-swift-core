@@ -17,4 +17,9 @@ public abstract class AbstractBitMap implements ImmutableBitMap {
     public ImmutableBitMap toBitMap() {
         return this;
     }
+
+    @Override
+    public boolean isEmpty() {
+        return getCardinality() == 0;
+    }
 }

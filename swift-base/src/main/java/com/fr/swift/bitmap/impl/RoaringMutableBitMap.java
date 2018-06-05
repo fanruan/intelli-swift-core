@@ -20,7 +20,7 @@ public class RoaringMutableBitMap extends BaseRoaringBitMap implements MutableBi
         super(bitmap);
     }
 
-    private static MutableBitMap newInstance(MutableRoaringBitmap bitmap) {
+    static MutableBitMap newInstance(MutableRoaringBitmap bitmap) {
         return new RoaringMutableBitMap(bitmap);
     }
 
@@ -67,6 +67,11 @@ public class RoaringMutableBitMap extends BaseRoaringBitMap implements MutableBi
     @Override
     public void and(ImmutableBitMap index) {
         bitmap.and(extract(index));
+    }
+
+    @Override
+    public void not(int bound) {
+        bitmap.flip(0L, bound);
     }
 
     @Override

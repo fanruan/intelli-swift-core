@@ -38,9 +38,8 @@ public class InserterUtils {
     public static Object getNullValue(ColumnTypeConstants.ClassType clazz) {
         switch (clazz) {
             case INTEGER:
-                return IOConstant.NULL_LONG;
-            case DATE:
             case LONG:
+            case DATE:
                 return IOConstant.NULL_LONG;
             case DOUBLE:
                 return IOConstant.NULL_DOUBLE;

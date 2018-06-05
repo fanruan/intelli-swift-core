@@ -15,12 +15,14 @@ import java.util.List;
  * @date 2018/1/4
  */
 public interface SwiftDataOperatorProvider {
-    Inserter getHistorySwiftInserter(Segment segment, DataSource dataSource) throws Exception;
+    Inserter getInserter(DataSource dataSource, Segment seg);
 
     Inserter getRealtimeSwiftInserter(Segment segment, DataSource dataSource) throws Exception;
 
+    @Deprecated
     Inserter getHistoryBlockSwiftInserter(DataSource dataSource);
 
+    @Deprecated
     Inserter getRealtimeBlockSwiftInserter(DataSource dataSource);
 
     Deleter getSwiftDeleter(Segment segment) throws SwiftMetaDataException;

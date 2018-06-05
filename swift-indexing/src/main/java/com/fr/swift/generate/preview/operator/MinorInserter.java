@@ -12,6 +12,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
+@Deprecated
 public class MinorInserter extends RealtimeSwiftInserter {
 
     public MinorInserter(Segment segment) throws Exception {

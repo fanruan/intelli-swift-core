@@ -2,7 +2,7 @@ package com.fr.swift.generate;
 
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.bitmap.traversal.BreakTraversalAction;
+import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.cube.nio.NIOConstant;
 import com.fr.swift.cube.task.TaskResult.Type;
@@ -197,32 +197,29 @@ public abstract class BaseMultiRelationIndexer extends BaseWorker implements Swi
     }
 
     private void notMatch(ImmutableBitMap indexBitMap, final byte[][] relationIndexBytes) {
-        indexBitMap.breakableTraversal(new BreakTraversalAction() {
+        indexBitMap.traversal(new TraversalAction() {
             @Override
-            public boolean actionPerformed(int row) {
+            public void actionPerformed(int row) {
                 relationIndexBytes[row] = BitMaps.newRoaringMutable().toBytes();
-                return false;
             }
         });
     }
 
     private void match(ImmutableBitMap primary, final ImmutableBitMap foreign, final byte[][] relationIndexBytes, final LongArray revert, final int primaryIndex) {
-        primary.breakableTraversal(new BreakTraversalAction() {
+        primary.traversal(new TraversalAction() {
             @Override
-            public boolean actionPerformed(int row) {
+            public void actionPerformed(int row) {
                 relationIndexBytes[row] = foreign.toBytes();
                 initReverseIndex(revert, RelationIndexHelper.merge2Long(primaryIndex, row), foreign);
-                return false;
             }
         });
     }
 
     private void initReverseIndex(final LongArray index, final long row, ImmutableBitMap bitMap) {
-        bitMap.breakableTraversal(new BreakTraversalAction() {
+        bitMap.traversal(new TraversalAction() {
             @Override
-            public boolean actionPerformed(int rowIndex) {
+            public void actionPerformed(int rowIndex) {
                 index.put(rowIndex, row);
-                return false;
             }
         });
     }

@@ -12,7 +12,8 @@ public enum BitMapType {
     BIT_SET_IMMUTABLE((byte) 2),
     BIT_SET_MUTABLE((byte) 3),
     ALL_SHOW((byte) 4),
-    ID((byte) 5);
+    ID((byte) 5),
+    RANGE((byte) 6);
 
     BitMapType(byte head) {
         this.head = head;

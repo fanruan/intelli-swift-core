@@ -6,7 +6,6 @@ import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.generate.segment.operator.inserter.BlockInserter;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftDataOperatorProvider;
-import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.operator.Deleter;
 import com.fr.swift.segment.operator.Inserter;
@@ -14,9 +13,9 @@ import com.fr.swift.segment.operator.column.SwiftColumnDictMerger;
 import com.fr.swift.segment.operator.column.SwiftColumnIndexer;
 import com.fr.swift.segment.operator.delete.HistorySwiftDeleter;
 import com.fr.swift.segment.operator.delete.RealtimeSwiftDeleter;
-import com.fr.swift.segment.operator.insert.HistorySwiftInserter;
 import com.fr.swift.segment.operator.insert.RealtimeBlockSwiftInserter;
 import com.fr.swift.segment.operator.insert.RealtimeSwiftInserter;
+import com.fr.swift.segment.operator.insert.SwiftInserter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.util.DataSourceUtils;
 import com.fr.third.springframework.stereotype.Service;
@@ -25,25 +24,15 @@ import java.util.List;
 
 @Service
 public class LocalDataOperatorProvider implements SwiftDataOperatorProvider {
-
-    private static LocalDataOperatorProvider INSTANCE = null;
-
-    public static LocalDataOperatorProvider getInstance() {
-        return INSTANCE;
-    }
-
-    private SwiftSegmentManager manager;
-
     private LocalDataOperatorProvider() {
-        manager = new LineSegmentManager();
     }
 
     @Override
-    public Inserter getHistorySwiftInserter(Segment segment, DataSource dataSource) throws Exception {
+    public Inserter getInserter(DataSource dataSource, Segment seg) {
         if (DataSourceUtils.isAddColumn(dataSource)) {
-            return new HistorySwiftInserter(segment, DataSourceUtils.getAddFields(dataSource));
+            return new SwiftInserter(seg, DataSourceUtils.getAddFields(dataSource));
         }
-        return new HistorySwiftInserter(segment);
+        return new SwiftInserter(seg);
     }
 
     @Override
