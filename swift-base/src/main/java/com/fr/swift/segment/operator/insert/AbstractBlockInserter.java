@@ -43,6 +43,7 @@ import java.util.Map;
  * @description 指定数据，分块逻辑在内部计算
  * @since Advanced FineBI Analysis 1.0
  */
+@Deprecated
 public abstract class AbstractBlockInserter implements Inserter, Recorder {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(AbstractBlockInserter.class);
 

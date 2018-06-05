@@ -1,6 +1,7 @@
 package com.fr.swift.test;
 
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.source.db.TestConnectionProvider;
 
 /**
  * @author anchore
@@ -13,6 +14,7 @@ public class Preparer {
 
     public static void prepareCubeBuild() {
         prepareContext();
+        TestConnectionProvider.createConnection();
         preparePath();
     }
 

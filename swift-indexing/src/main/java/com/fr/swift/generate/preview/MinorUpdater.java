@@ -7,7 +7,6 @@ import com.fr.swift.generate.history.index.ColumnDictMerger;
 import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.generate.history.index.SubDateColumnDictMerger;
 import com.fr.swift.generate.history.index.SubDateColumnIndexer;
-import com.fr.swift.generate.preview.operator.MinorInserter;
 import com.fr.swift.generate.realtime.index.RealtimeMultiRelationIndexer;
 import com.fr.swift.generate.realtime.index.RealtimeTablePathIndexer;
 import com.fr.swift.query.group.GroupType;
@@ -17,6 +16,7 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.impl.SubDateColumn;
 import com.fr.swift.segment.operator.Inserter;
+import com.fr.swift.segment.operator.insert.SwiftInserter;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.DataSource;
@@ -201,11 +201,11 @@ public class MinorUpdater {
         new RealtimeTablePathIndexer(RelationPathHelper.convert2CubeRelationPath(sourcePath), MinorSegmentManager.getInstance()).buildTablePath();
     }
 
-    private Inserter getInserter(DataSource dataSource, Segment segment) throws Exception {
+    private Inserter getInserter(DataSource dataSource, Segment segment) {
         if (DataSourceUtils.isAddColumn(dataSource)) {
-            return new MinorInserter(segment, DataSourceUtils.getAddFields(dataSource));
+            return new SwiftInserter(segment, DataSourceUtils.getAddFields(dataSource));
         }
-        return new MinorInserter(segment);
+        return new SwiftInserter(segment);
     }
 
     private Segment createSegment(DataSource dataSource) {
