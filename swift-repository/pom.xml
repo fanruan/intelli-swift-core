@@ -35,12 +35,12 @@
             <artifactId>swift-commucation</artifactId>
             <version>5.0-FEATURE-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>com.finebi</groupId>
-            <artifactId>swift-test</artifactId>
-            <version>5.0-FEATURE-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
+        <!--<dependency>-->
+        <!--<groupId>com.finebi</groupId>-->
+        <!--<artifactId>swift-test</artifactId>-->
+        <!--<version>5.0-FEATURE-SNAPSHOT</version>-->
+        <!--<scope>test</scope>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>com.fr.core</groupId>
             <artifactId>fine-core</artifactId>
