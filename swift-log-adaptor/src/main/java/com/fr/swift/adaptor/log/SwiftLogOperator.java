@@ -47,12 +47,22 @@ public class SwiftLogOperator implements LogOperator {
             DecisionRowAdaptor<T> adaptor = new DecisionRowAdaptor<T>(entity, table.getMeta());
             QueryInfo queryInfo = QueryConditionAdaptor.adaptCondition(queryCondition, table);
             SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
-
+            long start = queryCondition.getSkip();
+            long end = queryCondition.getSkip() + queryCondition.getCount();
+            //是否需要分页
+            boolean isLimit = queryCondition.isCountLimitValid();
             List<T> tList = new ArrayList<T>();
+            long currentCount = 0;
             while (resultSet.next()) {
+                if (isLimit) {
+                    if (currentCount <= start || currentCount > end) {
+                        continue;
+                    }
+                }
                 Row row = resultSet.getRowData();
                 T t = adaptor.apply(row);
                 tList.add(t);
+                currentCount++;
             }
             dataList.list(tList);
             dataList.setTotalCount(tList.size());

@@ -1,5 +1,6 @@
 package com.fr.swift.frrpc;
 
+import com.fr.cluster.engine.ticket.FineClusterToolKit;
 import com.fr.swift.exception.ProxyRegisterException;
 
 import java.util.Map;
@@ -42,11 +43,14 @@ public class FRProxyCache {
     }
 
     /**
-     * @param classType -- 注册对象的接口，不能是实现类，否则动态代理无法生效
-     * @param object
+     * @param classType 注册对象的接口，不能是实现类，否则动态代理无法生效
+     * @param object    必须是单例
      */
-    public static void registerInstance(Class classType, Object object) {
-        INSTANCE.instanceMap.put(classType, object);
+    public synchronized static void registerInstance(Class classType, Object object) {
+        if (!INSTANCE.instanceMap.containsKey(classType)) {
+            FineClusterToolKit.getInstance().getRPCProxyFactory().newBuilder(object).build();
+            INSTANCE.instanceMap.put(classType, object);
+        }
     }
 
     public static Object getInstance(Class classType) throws ProxyRegisterException {
