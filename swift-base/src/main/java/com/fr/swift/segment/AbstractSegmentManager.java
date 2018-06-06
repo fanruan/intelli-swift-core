@@ -1,6 +1,7 @@
 package com.fr.swift.segment;
 
-import com.fr.swift.config.service.SwiftConfigServiceProvider;
+import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.source.SourceKey;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.List;
  * Created by pony on 2017/10/16.
  */
 public abstract class AbstractSegmentManager implements SwiftSegmentManager {
+    protected SwiftSegmentService segmentService = SwiftContext.getInstance().getBean(SwiftSegmentService.class);
     @Override
     public synchronized List<Segment> getSegment(SourceKey tableKey) {
         // 并发地拿，比如多个column indexer同时进行索引， 要同步下
@@ -33,7 +35,7 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
 
     @Override
     public List<SegmentKey> getSegmentKeys(SourceKey tableKey) {
-        return SwiftConfigServiceProvider.getInstance().getSegmentByKey(tableKey.getId());
+        return segmentService.getSegmentByKey(tableKey.getId());
     }
 
     @Override

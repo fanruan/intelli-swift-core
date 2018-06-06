@@ -1,7 +1,7 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.config.bean.SegmentKeyBean;
-import com.fr.swift.config.service.SwiftConfigServiceProvider;
+import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types.StoreType;
@@ -77,7 +77,7 @@ public class Incrementer {
         // fixme 要事先判断是否存在 config支持不太好啊
         IResourceLocation location = seg.getLocation();
         SegmentKey segKey = new SegmentKeyBean(dataSource.getSourceKey().getId(), location.getUri(), order, location.getStoreType());
-        SwiftConfigServiceProvider.getInstance().addSegments(Collections.singletonList(segKey));
+        SwiftContext.getInstance().getBean(SwiftSegmentService.class).addSegments(Collections.singletonList(segKey));
     }
 
     private Segment newRealtimeSegment(SegmentInfo segInfo) {

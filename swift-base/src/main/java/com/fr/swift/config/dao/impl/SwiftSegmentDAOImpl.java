@@ -65,6 +65,11 @@ public class SwiftSegmentDAOImpl extends BaseDAO<SwiftSegmentEntity> implements 
     }
 
     @Override
+    public boolean contains(SegmentKeyBean bean) throws SQLException {
+        return null != select(bean.getId());
+    }
+
+    @Override
     public boolean deleteBySourceKey(final String sourceKey) throws SQLException {
         try {
             return HibernateTemplate.getInstance().doQuery(new AccessActionCallback<Boolean>() {
