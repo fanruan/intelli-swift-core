@@ -1,6 +1,5 @@
 package com.fr.swift.source.alloter;
 
-import com.fr.stable.StringUtils;
 import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.context.SwiftContext;
@@ -17,8 +16,7 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.source.SwiftSourceAlloter;
-import com.fr.swift.source.SwiftSourceAlloterFactory;
+import com.fr.swift.source.alloter.line.LineRowInfo;
 import com.fr.swift.source.core.Core;
 import com.fr.swift.test.TestIo;
 import org.junit.Assert;
@@ -110,7 +108,7 @@ public class LineSegmentAlloterTest extends TestIo {
         Segment segment = null;
         DetailColumn column = null;
         for (int i = 0; i < count; i++) {
-            int index = alloter.allot(i, StringUtils.EMPTY, null);
+            int index = alloter.allot(new LineRowInfo(i)).getOrder();
             if (lastIndex != index || null == segment) {
                 lastIndex = index;
                 ResourceLocation location = new ResourceLocation(System.getProperty("user.dir") + "/cubes/" + sourceKey.getId() + "/seg" + index);

@@ -1,7 +1,7 @@
 package com.fr.swift.source.alloter;
 
 import com.fr.swift.segment.Segment;
-import com.fr.swift.source.SwiftSourceAlloter;
+import com.fr.swift.source.alloter.impl.SwiftSegmentInfo;
 
 import java.util.List;
 
@@ -13,7 +13,6 @@ import java.util.List;
  * @since Advanced FineBI 5.0
  */
 public class NewColumnSourceAlloter implements SwiftSourceAlloter {
-
     private List<Segment> baseSegmentList;
 
     public NewColumnSourceAlloter(List<Segment> baseSegmentList) {
@@ -21,17 +20,17 @@ public class NewColumnSourceAlloter implements SwiftSourceAlloter {
     }
 
     @Override
-    public int allot(long row, String keyColumn, Object data) {
+    public SegmentInfo allot(RowInfo rowInfo) {
         int currentSegmentsCount = baseSegmentList.get(0).getRowCount();
         int index = 0;
-        while (row >= currentSegmentsCount) {
+        while (rowInfo.getCursor() >= currentSegmentsCount) {
             currentSegmentsCount += baseSegmentList.get(++index).getRowCount();
         }
-        return index;
+        return new SwiftSegmentInfo(index);
     }
 
     @Override
-    public int getAllotStep() {
-        return 0;
+    public AllotRule getAllotRule() {
+        return null;
     }
 }

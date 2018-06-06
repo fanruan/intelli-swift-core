@@ -23,7 +23,7 @@ import java.util.Map;
 public class ClusterSwiftServerService extends AbstractSwiftServerService {
 
     private Map<String, SwiftIndexingService> indexingServiceMap = new HashMap<String, SwiftIndexingService>();
-    private Map<String, SwiftRealTimeService> realTimeServiceMap = new HashMap<String, SwiftRealTimeService>();
+    private Map<String, SwiftRealtimeService> realTimeServiceMap = new HashMap<String, SwiftRealtimeService>();
     private Map<String, SwiftHistoryService> historyServiceMap = new HashMap<String, SwiftHistoryService>();
     private Map<String, SwiftAnalyseService> analyseServiceMap = new HashMap<String, SwiftAnalyseService>();
 
@@ -48,7 +48,7 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
                         new SwiftIndexingService(swiftServiceInfoBean.getClusterId()).start();
                         break;
                     case REAL_TIME:
-                        new SwiftRealTimeService(swiftServiceInfoBean.getClusterId()).start();
+                        new SwiftRealtimeService(swiftServiceInfoBean.getClusterId()).start();
                 }
             } catch (Exception e) {
                 LOGGER.error(e);
@@ -83,7 +83,7 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
                     indexingServiceMap.put(service.getID(), (SwiftIndexingService) service);
                     break;
                 case REAL_TIME:
-                    realTimeServiceMap.put(service.getID(), (SwiftRealTimeService) service);
+                    realTimeServiceMap.put(service.getID(), (SwiftRealtimeService) service);
             }
         }
     }

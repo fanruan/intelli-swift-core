@@ -13,7 +13,7 @@ import com.fr.swift.selector.ProxySelector;
 import com.fr.swift.service.SwiftAnalyseService;
 import com.fr.swift.service.SwiftHistoryService;
 import com.fr.swift.service.SwiftIndexingService;
-import com.fr.swift.service.SwiftRealTimeService;
+import com.fr.swift.service.SwiftRealtimeService;
 import com.fr.swift.service.SwiftRegister;
 import com.fr.swift.service.listener.RemoteServiceSender;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
@@ -31,7 +31,7 @@ public abstract class AbstractSwiftRegister implements SwiftRegister {
         new SwiftAnalyseService().start();
         SwiftHistoryService.getInstance().start();
         new SwiftIndexingService().start();
-        new SwiftRealTimeService().start();
+        new SwiftRealtimeService().start();
     }
 
     protected void masterLocalServiceRegister() {
@@ -51,7 +51,7 @@ public abstract class AbstractSwiftRegister implements SwiftRegister {
                     , new FRUrl(new FRDestination(masterId)));
             String currentId = ClusterNodeManager.getInstance().getCurrentId();
             SwiftServiceListenerHandler senderProxy = (SwiftServiceListenerHandler) proxyFactory.getProxy(invoker);
-            senderProxy.registerService(new SwiftRealTimeService(ClusterNodeManager.getInstance().getCurrentId()));
+            senderProxy.registerService(new SwiftRealtimeService(ClusterNodeManager.getInstance().getCurrentId()));
             senderProxy.registerService(new SwiftIndexingService(ClusterNodeManager.getInstance().getCurrentId()));
             SwiftHistoryService historyService = SwiftHistoryService.getInstance();
             historyService.setId(currentId);

@@ -4,7 +4,6 @@ import com.fr.swift.query.QueryInfo;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -18,21 +17,21 @@ public interface RealtimeService extends SwiftService {
      * @param tableKey  表
      * @param resultSet 数据
      */
-    void insert(SourceKey tableKey, SwiftResultSet resultSet);
+    void insert(SourceKey tableKey, SwiftResultSet resultSet) throws Exception;
 
     /**
      * 合并增量块
      *
      * @param tableKeys 表
      */
-    void merge(List<SourceKey> tableKeys);
+    void merge(List<SourceKey> tableKeys) throws Exception;
 
     /**
      * 恢复增量数据
      *
      * @param tableKeys 表
      */
-    void recover(List<SourceKey> tableKeys);
+    void recover(List<SourceKey> tableKeys) throws Exception;
 
     /**
      * 查询
@@ -41,5 +40,5 @@ public interface RealtimeService extends SwiftService {
      * @param <T>       数据
      * @return 数据
      */
-    <T extends SwiftResultSet> T query(QueryInfo<T> queryInfo) throws SQLException;
+    <T extends SwiftResultSet> T query(QueryInfo<T> queryInfo) throws Exception;
 }

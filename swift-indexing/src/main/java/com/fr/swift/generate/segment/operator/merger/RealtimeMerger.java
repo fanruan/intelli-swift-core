@@ -22,8 +22,10 @@ import com.fr.swift.segment.operator.insert.SwiftInserter;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.source.SwiftSourceAlloter;
-import com.fr.swift.source.SwiftSourceAlloterFactory;
+import com.fr.swift.source.alloter.SwiftSourceAlloter;
+import com.fr.swift.source.alloter.SwiftSourceAlloterFactory;
+import com.fr.swift.source.alloter.line.LineAllotRule;
+import com.fr.swift.source.alloter.line.LineRowInfo;
 import com.fr.swift.util.Crasher;
 
 import java.sql.SQLException;
@@ -73,8 +75,8 @@ public class RealtimeMerger implements Merger {
     @Override
     public List<Segment> merge() throws Exception {
         String allotColumn = metaData.getColumnName(1);
-        int totalIndex = alloter.allot(totalCount, allotColumn, null);
-        int alloterCount = alloter.getAllotStep();
+        int totalIndex = alloter.allot(new LineRowInfo(totalCount)).getOrder();
+        int alloterCount = ((LineAllotRule) alloter.getAllotRule()).getStep();
 
         List<Segment> mergeSegments = new ArrayList<Segment>();
 
