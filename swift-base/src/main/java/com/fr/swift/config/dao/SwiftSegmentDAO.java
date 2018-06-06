@@ -30,8 +30,6 @@ public interface SwiftSegmentDAO extends SwiftConfigDAO<SwiftSegmentEntity> {
 
     List<SegmentKeyBean> findBeanByStoreType(String sourceKey, Types.StoreType type) throws SQLException;
 
-    boolean contains(SegmentKeyBean bean) throws SQLException;
-
     /**
      * 删除SourceKey下的所有SegmentKey
      *

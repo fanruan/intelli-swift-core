@@ -163,4 +163,19 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
             return Collections.emptyList();
         }
     }
+
+    @Override
+    public boolean containsSegment(final SegmentKey segmentKey) {
+        try {
+            return (Boolean) SwiftTransactionManager.doTransactionIfNeed(new SwiftSegmentTransactionWorker() {
+                @Override
+                public Object work(SwiftSegmentDAO dao) throws SQLException {
+                    return null != dao.select(((SegmentKeyBean) segmentKey).getId());
+                }
+            });
+        } catch (Exception e) {
+            LOGGER.error("Update segment failed!", e);
+            return false;
+        }
+    }
 }

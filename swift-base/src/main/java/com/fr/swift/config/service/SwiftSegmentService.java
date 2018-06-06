@@ -51,4 +51,6 @@ public interface SwiftSegmentService {
     List<SegmentKey> getSegmentByKey(String sourceKey);
 
     List<SegmentKey> getUnStoreSegments(String sourceKey);
+
+    boolean containsSegment(SegmentKey segmentKey);
 }
