@@ -15,7 +15,7 @@ public class SwiftCubePathConfigTest extends BaseTest {
 
     @Override
     public void setUp() throws Exception {
-        Preparer.preparePath();
+        Preparer.prepareFrEnv();
     }
 
     @Test

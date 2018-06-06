@@ -8,7 +8,7 @@ import org.junit.BeforeClass;
  */
 public abstract class TestIo {
     @BeforeClass
-    public static void beforeClass() {
-        Preparer.preparePath();
+    public static void beforeClass() throws Exception {
+        Preparer.prepareFrEnv();
     }
 }
