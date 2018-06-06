@@ -19,12 +19,48 @@ import java.util.List;
 /**
  * Created by pony on 2017/12/13.
  */
-public class DetailQueryBuilder {
-    protected static Query<DetailResultSet> buildQuery(DetailQueryInfo info) throws SQLException{
+// TODO: 2018/6/6 明细查询这边的细节有待梳理
+final class DetailQueryBuilder {
+
+    /**
+     * 给最外层查询节点（查询服务节点）条用并构建query，根据segment分布信息区分本地query和远程query
+     *
+     * @param info
+     * @return
+     */
+    static Query<DetailResultSet> buildQuery(DetailQueryInfo info) throws SQLException {
         if (info.hasSort()){
             return buildQuery(info, LocalDetailQueryBuilder.GROUP);
         } else {
             return buildQuery(info, LocalDetailQueryBuilder.NORMAL);
+        }
+    }
+
+    /**
+     * 处理另一个节点转发过来的查询，并且当前节点上包含查询的部分分块数据
+     *
+     * @param info 查询信息
+     * @return
+     */
+    static Query<DetailResultSet> buildLocalPartQuery(DetailQueryInfo info) {
+        if (info.hasSort()) {
+            return LocalDetailQueryBuilder.GROUP.buildLocalQuery(info);
+        } else {
+            return LocalDetailQueryBuilder.NORMAL.buildLocalQuery(info);
+        }
+    }
+
+    /**
+     * 处理另一个节点转发过来的查询，并且当前节点上包含查询的全部分块数据
+     *
+     * @param info 查询信息
+     * @return
+     */
+    static Query<DetailResultSet> buildLocalAllQuery(DetailQueryInfo info) {
+        if (info.hasSort()) {
+            return LocalDetailQueryBuilder.GROUP.buildLocalQuery(info);
+        } else {
+            return LocalDetailQueryBuilder.NORMAL.buildLocalQuery(info);
         }
     }
 
@@ -38,8 +74,8 @@ public class DetailQueryBuilder {
             if (QueryBuilder.isLocalURI(uris.get(0))) {
                 return builder.buildLocalQuery(info);
             } else {
-                QueryInfo<DetailResultSet> queryInfo = new RemoteQueryInfoImpl<DetailResultSet>(QueryType.REMOTE_ALL, info);
-                return new RemoteQueryImpl<DetailResultSet>(queryInfo);
+                QueryInfo<DetailResultSet> queryInfo = new RemoteQueryInfoImpl<DetailResultSet>(QueryType.LOCAL_ALL, info);
+                return new RemoteQueryImpl<DetailResultSet>(queryInfo, uris.get(0));
             }
         }
         List<Query<DetailResultSet>> queries = new ArrayList<Query<DetailResultSet>>();
@@ -47,8 +83,8 @@ public class DetailQueryBuilder {
             if (QueryBuilder.isLocalURI(uri)){
                 queries.add(builder.buildLocalQuery(info));
             } else {
-                QueryInfo<DetailResultSet> queryInfo = new RemoteQueryInfoImpl<DetailResultSet>(QueryType.REMOTE_PART, info);
-                queries.add(new RemoteQueryImpl<DetailResultSet>(queryInfo));
+                QueryInfo<DetailResultSet> queryInfo = new RemoteQueryInfoImpl<DetailResultSet>(QueryType.LOCAL_PART, info);
+                queries.add(new RemoteQueryImpl<DetailResultSet>(queryInfo, uri));
             }
         }
         return builder.buildResultQuery(queries, info);
