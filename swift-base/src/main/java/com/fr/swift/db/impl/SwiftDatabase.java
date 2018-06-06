@@ -1,7 +1,7 @@
 package com.fr.swift.db.impl;
 
-import com.fr.swift.config.service.SwiftConfigService;
-import com.fr.swift.config.service.SwiftConfigServiceProvider;
+import com.fr.swift.config.service.SwiftMetaDataService;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.source.SourceKey;
@@ -19,7 +19,7 @@ import java.util.Map.Entry;
  * @date 2018/3/28
  */
 public class SwiftDatabase implements Database {
-    private SwiftConfigService confSvc = SwiftConfigServiceProvider.getInstance();
+    private SwiftMetaDataService confSvc = SwiftContext.getInstance().getBean(SwiftMetaDataService.class);
 
     @Override
     public synchronized Table createTable(SourceKey tableKey, SwiftMetaData meta) throws SQLException {
@@ -37,7 +37,7 @@ public class SwiftDatabase implements Database {
         if (!existsTable(tableKey)) {
             throw new SQLException("table " + tableKey + " not exists");
         }
-        SwiftMetaData meta = SwiftConfigServiceProvider.getInstance().getMetaDataByKey(tableKey.getId());
+        SwiftMetaData meta = confSvc.getMetaDataByKey(tableKey.getId());
         return new SwiftTable(tableKey, meta);
     }
 

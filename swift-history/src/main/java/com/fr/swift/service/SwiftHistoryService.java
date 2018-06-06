@@ -1,6 +1,7 @@
 package com.fr.swift.service;
 
 import com.fr.swift.config.SwiftCubePathConfig;
+import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.QueryInfo;
 import com.fr.swift.query.builder.QueryBuilder;
@@ -20,15 +21,27 @@ import java.util.Set;
 public class SwiftHistoryService extends AbstractSwiftService implements HistoryService, Serializable {
 
     private static final long serialVersionUID = -6013675740141588108L;
-    private final static SwiftHistoryService instance = new SwiftHistoryService();
+    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftHistoryService.class);
+
+    public static SwiftHistoryService getInstance() {
+        return SingletonHolder.instance;
+    }
 
     private SwiftHistoryService() {
     }
 
-    public static SwiftHistoryService getInstance() {
-        return instance;
+    @Override
+    public void load(Set<URI> remoteUris) throws IOException {
+        if (null != remoteUris && !remoteUris.isEmpty()) {
+            String path = SwiftCubePathConfig.getInstance().getPath();
+            SwiftRepository repository = SwiftRepositoryManager.getManager().getDefaultRepository();
+            for (URI remote : remoteUris) {
+                repository.copyFromRemote(remote, URI.create(path + remote.getPath()));
+            }
+        } else {
+            LOGGER.warn("Receive an empty URI set. Skip loading.");
+        }
     }
-
 
 
     @Override
@@ -41,16 +54,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         return QueryBuilder.buildQuery(queryInfo).getQueryResult();
     }
 
-    @Override
-    public void load(Set<URI> remoteUris) throws IOException {
-
-        SwiftLoggers.getLogger().info("History load uri");
-        if (null != remoteUris && !remoteUris.isEmpty()) {
-            String path = SwiftCubePathConfig.getInstance().getPath();
-            SwiftRepository repository = SwiftRepositoryManager.getManager().getDefaultRepository();
-            for (URI remote : remoteUris) {
-                repository.copyFromRemote(remote, URI.create(path + remote.getPath()));
-            }
-        }
+    private static class SingletonHolder {
+        private static final SwiftHistoryService instance = new SwiftHistoryService();
     }
 }
