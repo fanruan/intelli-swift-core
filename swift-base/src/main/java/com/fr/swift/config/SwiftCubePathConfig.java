@@ -1,5 +1,6 @@
 package com.fr.swift.config;
 
+import com.fr.base.FRContext;
 import com.fr.config.ConfigContext;
 import com.fr.config.DefaultConfiguration;
 import com.fr.config.holder.Conf;
