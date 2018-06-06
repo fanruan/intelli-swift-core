@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by Lyon on 2018/5/31.
  */
-public class ResultJoinQueryBuilder {
+final class ResultJoinQueryBuilder {
 
     static Query<NodeResultSet> buildQuery(ResultJoinQueryInfo info) throws SQLException {
         List<QueryInfo> infoList = info.getQueryInfoList();

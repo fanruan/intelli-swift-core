@@ -2,6 +2,7 @@ package com.fr.swift.query;
 
 import com.fr.swift.source.SwiftResultSet;
 
+import java.net.URI;
 import java.sql.SQLException;
 
 /**
@@ -25,9 +26,10 @@ public interface QueryRunner {
      * 远程查询
      *
      * @param info
+     * @param remoteURI
      * @param <T>
      * @return
      * @throws SQLException
      */
-    <T extends SwiftResultSet> T getRemoteQueryResult(QueryInfo<T> info) throws SQLException;
+    <T extends SwiftResultSet> T getRemoteQueryResult(QueryInfo<T> info, URI remoteURI) throws SQLException;
 }

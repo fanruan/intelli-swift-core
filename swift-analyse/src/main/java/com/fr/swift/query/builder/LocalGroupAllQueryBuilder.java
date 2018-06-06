@@ -2,7 +2,6 @@ package com.fr.swift.query.builder;
 
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.query.Query;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.FilterBuilder;
@@ -41,6 +40,7 @@ import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.row.RowIndexKey;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
 
 import java.util.ArrayList;
@@ -93,7 +93,7 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
         List<Query<NodeResultSet>> queries = new ArrayList<Query<NodeResultSet>>();
         List<Metric> metrics = info.getMetrics();
         List<Dimension> dimensions = info.getDimensions();
-        List<Segment> segments = SwiftContext.getInstance().getBean(LocalSegmentProvider.class).getSegment(info.getTable());
+        List<Segment> segments = SwiftContext.getInstance().getBean("LocalSegmentProvider", SwiftSegmentManager.class).getSegment(info.getTable());
         for (Segment segment : segments) {
             List<Column> dimensionColumns = getDimensionSegments(segment, dimensions);
             List<Column> metricColumns = getMetricSegments(segment, metrics);
