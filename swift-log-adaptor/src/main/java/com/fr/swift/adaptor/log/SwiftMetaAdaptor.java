@@ -26,11 +26,19 @@ import java.util.List;
  */
 class SwiftMetaAdaptor {
     static SwiftMetaData adapt(Class<?> entity) {
+        List<String> columnNames = new ArrayList<String>();
         List<SwiftMetaDataColumn> columnMetas = new ArrayList<SwiftMetaDataColumn>();
         for (Field field : getFields(entity)) {
+            String columnName = field.getAnnotation(Column.class).name();
+
+            if (columnNames.contains(columnName)) {
+                return Crasher.crash(String.format("column %s already existed", columnName));
+            }
+
             SwiftMetaDataColumn columnMeta = new MetaDataColumnBean(
-                    field.getAnnotation(Column.class).name(),
+                    columnName,
                     getSqlType(getClassType(field)));
+            columnNames.add(columnName);
             columnMetas.add(columnMeta);
         }
         return new SwiftMetaDataBean(Schema.DECISION_LOG, getTableName(entity), columnMetas);

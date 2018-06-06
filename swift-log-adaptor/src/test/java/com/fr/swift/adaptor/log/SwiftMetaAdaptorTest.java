@@ -86,6 +86,20 @@ public class SwiftMetaAdaptorTest {
         assertEquals(Types.INTEGER, meta.getColumnType(1));
     }
 
+    @Test(expected = RuntimeException.class)
+    public void duplicateColumn() {
+        SwiftMetaAdaptor.adapt(DuplicateColumnEntity.class);
+    }
+
+    @Table(name = "DuplicateColumnEntity")
+    class DuplicateColumnEntity {
+        @Column(name = "s")
+        String s;
+
+        @Column(name = "s")
+        String s1;
+    }
+
     @Table(name = "ConvertType")
     static class ConvertType {
         @Column(name = "o")
