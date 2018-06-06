@@ -1,6 +1,5 @@
 package com.fr.swift.service.register;
 
-import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.frrpc.ClusterNodeManager;
 import com.fr.swift.service.ClusterSwiftServerService;
 
@@ -13,7 +12,7 @@ import com.fr.swift.service.ClusterSwiftServerService;
  */
 public class ClusterSwiftRegister extends AbstractSwiftRegister {
     @Override
-    public void serviceRegister() throws SwiftServiceException {
+    public void serviceRegister() {
         if (!ClusterNodeManager.getInstance().isMaster()) {
             remoteServiceRegister();
         } else {
@@ -23,7 +22,7 @@ public class ClusterSwiftRegister extends AbstractSwiftRegister {
     }
 
     @Override
-    public void serviceUnregister() throws SwiftServiceException {
+    public void serviceUnregister() {
 
     }
 }

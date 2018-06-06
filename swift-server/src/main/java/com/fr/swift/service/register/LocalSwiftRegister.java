@@ -19,7 +19,7 @@ public class LocalSwiftRegister extends AbstractSwiftRegister {
     }
 
     @Override
-    public void serviceUnregister() throws SwiftServiceException {
+    public void serviceUnregister() {
 
     }
 }

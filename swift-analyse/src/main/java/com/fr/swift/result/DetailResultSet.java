@@ -35,6 +35,7 @@ public abstract class DetailResultSet implements SwiftResultSet {
 
     @Override
     public boolean next() {
+        // TODO: 2018/6/5 这个地方改变rowCount感觉不太好，和标准迭代器的hashNext统一一下比较好
         return ++rowCount < maxRow;
     }
 

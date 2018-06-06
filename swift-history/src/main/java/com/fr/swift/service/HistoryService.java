@@ -24,6 +24,7 @@ public interface HistoryService extends SwiftService {
 
     /**
      * 从共享存储加载
+     *
      * @param remoteUris
      * @throws IOException
      */
