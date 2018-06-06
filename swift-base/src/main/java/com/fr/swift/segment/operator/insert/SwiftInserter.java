@@ -4,6 +4,8 @@ import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.RangeBitmap;
+import com.fr.swift.cube.CubeUtil;
+import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
@@ -74,12 +76,12 @@ public class SwiftInserter implements Inserter {
     }
 
     @Override
-    public List<Segment> insertData(List<Row> rowList) throws Exception {
+    public List<Segment> insertData(List<Row> rowList) throws SQLException {
         return insertData(new ListResultSet(segment.getMetaData(), rowList));
     }
 
     @Override
-    public List<Segment> insertData(SwiftResultSet swiftResultSet) throws Exception {
+    public List<Segment> insertData(SwiftResultSet swiftResultSet) throws SQLException {
         try {
             return insert(swiftResultSet);
         } catch (Exception e) {
@@ -91,7 +93,7 @@ public class SwiftInserter implements Inserter {
     }
 
     private List<Segment> insert(SwiftResultSet resultSet) throws SQLException {
-        boolean readable = isReadable(segment);
+        boolean readable = CubeUtil.isReadable(segment);
         int lastCursor = readable ? segment.getRowCount() : 0,
                 cursor = lastCursor;
 
@@ -137,17 +139,8 @@ public class SwiftInserter implements Inserter {
         }
     }
 
-    private static boolean isReadable(Segment seg) {
-        try {
-            seg.getRowCount();
-            return true;
-        } catch (Exception ignore) {
-            return false;
-        }
-    }
-
     private void release() {
-        if (segment.isHistory()) {
+        if (segment.getLocation().getStoreType() == StoreType.FINE_IO) {
             for (Column column : columns) {
                 column.getDetailColumn().release();
                 column.getBitmapIndex().release();

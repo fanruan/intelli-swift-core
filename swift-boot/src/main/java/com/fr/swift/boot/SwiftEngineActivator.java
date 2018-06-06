@@ -71,6 +71,7 @@ public class SwiftEngineActivator extends Activator implements Prepare {
         SwiftLoggers.getLogger().info("swift engine stopped");
     }
 
+    @Override
     public void prepare() {
         this.addMutable(BaseDBConstant.BASE_ENTITY_KEY, SwiftMetaDataEntity.class, SwiftSegmentEntity.class, SwiftServiceInfoEntity.class);
     }

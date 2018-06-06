@@ -1,16 +1,17 @@
-package com.fr.swift.source;
+package com.fr.swift.source.alloter;
 
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
-import com.fr.swift.source.alloter.LineSourceAlloter;
-import com.fr.swift.source.alloter.NewColumnSourceAlloter;
+import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.alloter.line.LineSourceAlloter;
 
 import java.util.List;
 
 /**
- * Created by pony on 2017/11/22.
+ * @author pony
+ * @date 2017/11/22
  */
 public class SwiftSourceAlloterFactory {
 

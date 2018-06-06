@@ -27,12 +27,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.fr.core</groupId>
-            <artifactId>fine-core</artifactId>
-            <version>10.0-FEATURE-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>com.finebi</groupId>
             <artifactId>swift-server</artifactId>
             <version>5.0-FEATURE-SNAPSHOT</version>
