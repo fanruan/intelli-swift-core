@@ -57,10 +57,10 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
 //        Result result = invoker.invoke(masterNode, invocation);
 
         //注册rpc proxy
-        clusterServiceProxy = clusterToolKit.getRPCProxyFactory().newBuilder(SwiftClusterService.getInstance()).build();
+//        clusterServiceProxy = clusterToolKit.getRPCProxyFactory().newBuilder(SwiftClusterService.getInstance()).build();
 //        FRProxyCache.registerProxy(ClusterService.class, clusterServiceProxy);
         //注册单例类型
-        FRProxyCache.registerInstance(SwiftClusterService.class, SwiftClusterService.getInstance());
+//        FRProxyCache.registerInstance(SwiftClusterService.class, SwiftClusterService.getInstance());
 
         EventDispatcher.listen(ClusterViewEvent.NODE_LEFT, new Listener<ClusterNode>() {
             @Override

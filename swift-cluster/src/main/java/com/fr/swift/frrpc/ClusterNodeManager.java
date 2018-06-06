@@ -72,10 +72,7 @@ public class ClusterNodeManager {
             if (masterNode == null) {
                 return false;
             }
-            if (ComparatorUtils.equals(getMasterId(), getCurrentId())) {
-                return true;
-            }
-            return false;
+            return ComparatorUtils.equals(getMasterId(), getCurrentId());
         }
     }
 }

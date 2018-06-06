@@ -1,7 +1,5 @@
 package com.fr.swift.service.register;
 
-import com.fr.cluster.engine.ticket.FineClusterToolKit;
-import com.fr.swift.Invoker;
 import com.fr.swift.ProxyFactory;
 import com.fr.swift.exception.ProxyRegisterException;
 import com.fr.swift.exception.SwiftServiceException;
@@ -10,6 +8,7 @@ import com.fr.swift.frrpc.FRDestination;
 import com.fr.swift.frrpc.FRProxyCache;
 import com.fr.swift.frrpc.FRUrl;
 import com.fr.swift.selector.ProxySelector;
+import com.fr.swift.service.HistoryService;
 import com.fr.swift.service.SwiftAnalyseService;
 import com.fr.swift.service.SwiftHistoryService;
 import com.fr.swift.service.SwiftIndexingService;
@@ -36,29 +35,30 @@ public abstract class AbstractSwiftRegister implements SwiftRegister {
 
     protected void masterLocalServiceRegister() {
         //必须注册
-        FineClusterToolKit.getInstance().getRPCProxyFactory().newBuilder(RemoteServiceSender.getInstance()).build();
         FRProxyCache.registerInstance(RemoteServiceSender.class, RemoteServiceSender.getInstance());
     }
 
     protected void remoteServiceRegister() {
-        FineClusterToolKit.getInstance().getRPCProxyFactory().newBuilder(RemoteServiceSender.getInstance()).build();
         FRProxyCache.registerInstance(RemoteServiceSender.class, RemoteServiceSender.getInstance());
 
         ProxyFactory proxyFactory = ProxySelector.getInstance().getFactory();
         String masterId = ClusterNodeManager.getInstance().getMasterId();
         try {
-            Invoker invoker = proxyFactory.getInvoker((SwiftServiceListenerHandler) FRProxyCache.getInstance(RemoteServiceSender.class), SwiftServiceListenerHandler.class
-                    , new FRUrl(new FRDestination(masterId)));
+            RemoteServiceSender senderProxy = (RemoteServiceSender) proxyFactory.getProxy((SwiftServiceListenerHandler) FRProxyCache.getInstance(RemoteServiceSender.class),
+                    SwiftServiceListenerHandler.class, new FRUrl(new FRDestination(masterId)));
+
             String currentId = ClusterNodeManager.getInstance().getCurrentId();
-            SwiftServiceListenerHandler senderProxy = (SwiftServiceListenerHandler) proxyFactory.getProxy(invoker);
+
             senderProxy.registerService(new SwiftRealtimeService(ClusterNodeManager.getInstance().getCurrentId()));
             senderProxy.registerService(new SwiftIndexingService(ClusterNodeManager.getInstance().getCurrentId()));
+
             SwiftHistoryService historyService = SwiftHistoryService.getInstance();
+            FRProxyCache.registerInstance(HistoryService.class, historyService);
             historyService.setId(currentId);
             senderProxy.registerService(historyService);
+
             senderProxy.registerService(new SwiftAnalyseService(ClusterNodeManager.getInstance().getCurrentId()));
         } catch (ProxyRegisterException e) {
-        } catch (Exception e) {
         }
     }
 }

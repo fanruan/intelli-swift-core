@@ -18,7 +18,7 @@ import java.lang.reflect.Proxy;
 public class FRClusterProxyFactory implements ProxyFactory {
 
     @Override
-    public <T> T getProxy(Invoker<T> invoker) throws Exception {
+    public <T> T getProxy(Invoker<T> invoker) {
 
         InvocationHandler invocationHandler = new InvokerInvocationHandler(invoker);
         Class interfaceClass = invoker.getInterface();
@@ -31,5 +31,12 @@ public class FRClusterProxyFactory implements ProxyFactory {
     @Override
     public <T> Invoker<T> getInvoker(T proxy, Class<T> type, URL url) {
         return new FRInvoker(proxy, type, url);
+    }
+
+    @Override
+    public <T> T getProxy(T proxy, Class<T> type, URL url) {
+        Invoker invoker = getInvoker(proxy, type, url);
+        T t = (T) getProxy(invoker);
+        return t;
     }
 }

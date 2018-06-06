@@ -36,7 +36,7 @@ public class LocalDataOperatorProvider implements SwiftDataOperatorProvider {
     }
 
     @Override
-    public Inserter getRealtimeSwiftInserter(Segment segment, DataSource dataSource) throws Exception {
+    public Inserter getRealtimeSwiftInserter(Segment segment, DataSource dataSource) {
         if (DataSourceUtils.isAddColumn(dataSource)) {
             return new RealtimeSwiftInserter(segment, DataSourceUtils.getAddFields(dataSource));
         }

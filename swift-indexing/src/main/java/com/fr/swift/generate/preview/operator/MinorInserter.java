@@ -15,11 +15,11 @@ import java.util.List;
 @Deprecated
 public class MinorInserter extends RealtimeSwiftInserter {
 
-    public MinorInserter(Segment segment) throws Exception {
+    public MinorInserter(Segment segment) {
         super(segment);
     }
 
-    public MinorInserter(Segment segment, List<String> fields) throws Exception {
+    public MinorInserter(Segment segment, List<String> fields) {
         super(segment, fields);
     }
 }

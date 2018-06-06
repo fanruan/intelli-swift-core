@@ -3,6 +3,7 @@ package com.fr.swift.service;
 import com.fr.swift.config.SwiftCubePathConfig;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.QueryInfo;
+import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.source.SwiftResultSet;
@@ -10,6 +11,7 @@ import com.fr.swift.source.SwiftResultSet;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URI;
+import java.sql.SQLException;
 import java.util.Set;
 
 /**
@@ -35,9 +37,8 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     }
 
     @Override
-    public <T extends SwiftResultSet> T query(QueryInfo<T> queryInfo) {
-        SwiftLoggers.getLogger().info("History query");
-        return null;
+    public <T extends SwiftResultSet> T query(QueryInfo<T> queryInfo) throws SQLException {
+        return QueryRunnerProvider.getInstance().executeQuery(queryInfo);
     }
 
     @Override
