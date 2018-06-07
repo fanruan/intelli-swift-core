@@ -12,6 +12,7 @@ import com.fr.swift.frrpc.ClusterNodeManager;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -72,6 +73,14 @@ public class SwiftClusterLogOperator implements LogOperator {
         ClusterNode masterNode = ClusterNodeManager.getInstance().getMasterNode();
         Invocation invocation = Invocation.create(LogOperatorProxy.class, "initTables",
                 new Class[]{List.class}, list);
+        invoker.invoke(masterNode, invocation);
+    }
+
+    @Override
+    public void clearLogBefore(Date date) {
+        ClusterNode masterNode = ClusterNodeManager.getInstance().getMasterNode();
+        Invocation invocation = Invocation.create(LogOperatorProxy.class, "clearLogBefore",
+                new Class[]{Date.class}, date);
         invoker.invoke(masterNode, invocation);
     }
 }
