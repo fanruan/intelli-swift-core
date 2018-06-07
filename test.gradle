@@ -22,7 +22,7 @@ def srcDir = "."
 sourceSets {
     main {
         java {
-            srcDirs = ["${srcDir}/swift-test/src/test/java"]
+            srcDirs = ["${srcDir}/swift-test/src/main/java","${srcDir}/swift-test/src/test/java"]
         }
     }
 }
