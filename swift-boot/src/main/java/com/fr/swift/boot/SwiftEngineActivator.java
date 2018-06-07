@@ -3,6 +3,7 @@ package com.fr.swift.boot;
 import com.fr.module.Activator;
 import com.fr.module.extension.Prepare;
 import com.fr.stable.db.constant.BaseDBConstant;
+import com.fr.swift.config.context.SwiftConfigContext;
 import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.entity.SwiftServiceInfoEntity;
@@ -36,6 +37,7 @@ public class SwiftEngineActivator extends Activator implements Prepare {
 
     private void startSwift() {
         try {
+            SwiftConfigContext.getInstance().init();
             SwiftContext.init();
 
             new LocalSwiftRegister().serviceRegister();

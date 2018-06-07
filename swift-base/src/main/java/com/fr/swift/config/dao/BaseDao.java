@@ -17,12 +17,12 @@ import java.util.List;
  * @author yee
  * @date 2018/5/25
  */
-public class BaseDAO<T> implements SwiftConfigDAO<T> {
+public class BaseDao<T> implements SwiftConfigDao<T> {
     protected final SwiftLogger LOGGER = SwiftLoggers.getLogger(this.getClass());
 
     protected Class<T> entityClass;
 
-    public BaseDAO(Class<T> entityClass) {
+    public BaseDao(Class<T> entityClass) {
         this.entityClass = entityClass;
     }
 

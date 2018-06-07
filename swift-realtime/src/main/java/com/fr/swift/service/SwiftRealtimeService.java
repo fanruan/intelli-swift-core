@@ -1,7 +1,6 @@
 package com.fr.swift.service;
 
 import com.fr.swift.exception.SwiftServiceException;
-import com.fr.swift.frrpc.FRProxyCache;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.QueryInfo;
 import com.fr.swift.query.builder.QueryBuilder;
@@ -47,7 +46,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         boolean succ = true;
         succ &= super.start();
 
-        FRProxyCache.registerInstance(RealtimeService.class, this);
+//        FRProxyCache.registerInstance(RealtimeService.class, this);
 
         succ &= recover0();
         return succ;

@@ -7,11 +7,13 @@ import com.fr.store.access.AccessActionCallback;
 import com.fr.store.access.ResourceHolder;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.SegmentKeyBean;
-import com.fr.swift.config.dao.BaseDAO;
-import com.fr.swift.config.dao.SwiftSegmentDAO;
+import com.fr.swift.config.dao.BaseDao;
+import com.fr.swift.config.dao.SwiftSegmentDao;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.cube.io.Types;
+import com.fr.swift.segment.SegmentKey;
 import com.fr.third.org.hibernate.Query;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -23,14 +25,15 @@ import java.util.List;
  * @author yee
  * @date 2018/5/24
  */
-public class SwiftSegmentDAOImpl extends BaseDAO<SwiftSegmentEntity> implements SwiftSegmentDAO {
+@Service
+public class SwiftSegmentDaoImpl extends BaseDao<SwiftSegmentEntity> implements SwiftSegmentDao {
 
     private static final String FIND_BY_SOURCE_KEY = String.format("from SwiftSegmentEntity entity where entity.%s = ", SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER);
     private static final String FIND_BY_STORE_TYPE = String.format("from SwiftSegmentEntity entity where entity.%s = ", SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE);
     private static final String DELETE_BY_SOURCE_KEY = String.format("delete from SwiftSegmentEntity entity where entity.%s = ", SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER);
     private static final String DELETE_BY_STORE_TYPE = String.format("delete from SwiftSegmentEntity entity where entity.%s = ", SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE);
 
-    public SwiftSegmentDAOImpl() {
+    public SwiftSegmentDaoImpl() {
         super(SwiftSegmentEntity.class);
     }
 
@@ -40,9 +43,9 @@ public class SwiftSegmentDAOImpl extends BaseDAO<SwiftSegmentEntity> implements 
     }
 
     @Override
-    public List<SegmentKeyBean> findBySourceKey(String sourceKey) {
+    public List<SegmentKey> findBySourceKey(String sourceKey) {
         List<SwiftSegmentEntity> list = find(String.format("%s'%s' order by entity.%s", FIND_BY_SOURCE_KEY, sourceKey, SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_ORDER));
-        List<SegmentKeyBean> result = new ArrayList<SegmentKeyBean>();
+        List<SegmentKey> result = new ArrayList<SegmentKey>();
         for (SwiftSegmentEntity entity : list) {
             result.add(entity.convert());
         }
@@ -50,14 +53,14 @@ public class SwiftSegmentDAOImpl extends BaseDAO<SwiftSegmentEntity> implements 
     }
 
     @Override
-    public List<SegmentKeyBean> findBeanByStoreType(String sourceKey, Types.StoreType type) throws SQLException {
+    public List<SegmentKey> findBeanByStoreType(String sourceKey, Types.StoreType type) throws SQLException {
         if (StringUtils.isEmpty(sourceKey) || null == type) {
             throw new SQLException();
         }
         StringBuilder hqlBuilder = new StringBuilder(String.format("%s'%s'", FIND_BY_STORE_TYPE, type.name()));
         hqlBuilder.append(String.format(" and entity.%s = '%s'", SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, sourceKey));
         List<SwiftSegmentEntity> list = find(hqlBuilder.toString());
-        List<SegmentKeyBean> result = new ArrayList<SegmentKeyBean>();
+        List<SegmentKey> result = new ArrayList<SegmentKey>();
         for (SwiftSegmentEntity entity : list) {
             result.add(entity.convert());
         }
@@ -111,9 +114,9 @@ public class SwiftSegmentDAOImpl extends BaseDAO<SwiftSegmentEntity> implements 
     }
 
     @Override
-    public List<SegmentKeyBean> findAll() {
+    public List<SegmentKey> findAll() {
         List<SwiftSegmentEntity> list = find();
-        List<SegmentKeyBean> result = new ArrayList<SegmentKeyBean>();
+        List<SegmentKey> result = new ArrayList<SegmentKey>();
         for (SwiftSegmentEntity entity : list) {
             result.add(entity.convert());
         }

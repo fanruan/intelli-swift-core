@@ -2,6 +2,7 @@ package com.fr.swift.cube.io.impl.fineio.connector;
 
 import com.fineio.io.file.FileBlock;
 import com.fineio.storage.AbstractConnector;
+import com.fr.swift.util.Strings;
 import com.fr.third.org.apache.commons.io.FileUtils;
 
 import java.io.ByteArrayInputStream;
@@ -11,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
@@ -21,11 +23,21 @@ import java.util.zip.Inflater;
  */
 public class ZipConnector extends AbstractConnector {
 
-    private ZipConnector() {
+    private URI parentURI;
+
+    private ZipConnector(String path) {
+        initParentPath(path);
     }
 
-    public static ZipConnector newInstance() {
-        return new ZipConnector();
+    public static ZipConnector newInstance(String path) {
+        return new ZipConnector(path);
+    }
+
+    private void initParentPath(String path) {
+        path = Strings.trimSeparator(path, "\\", "/");
+        path = "/" + path + "/";
+        path = Strings.trimSeparator(path, "/");
+        parentURI = URI.create(path);
     }
 
     public InputStream read(FileBlock block) throws IOException {
@@ -149,7 +161,7 @@ public class ZipConnector extends AbstractConnector {
     }
 
     private File getFolderPath(FileBlock block) {
-        return new File(block.getParentUri().getPath());
+        return new File(parentURI.resolve(block.getParentUri()).getPath());
     }
 
     private File getPath(FileBlock block, boolean mkdir) {

@@ -1,9 +1,12 @@
 package com.fr.swift.config.bean;
 
 import com.fr.swift.config.entity.SwiftSegmentEntity;
+import com.fr.swift.config.service.SwiftPathService;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.util.Strings;
 
 import java.io.Serializable;
 import java.net.URI;
@@ -13,11 +16,13 @@ import java.net.URI;
  * @date 2018/5/24
  */
 public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>, SegmentKey {
+    private SwiftPathService service = SwiftContext.getInstance().getBean(SwiftPathService.class);
     /**
      * sourceKey@storeType@order
      */
     private String id;
     private String sourceKey;
+    private URI absoluteUri;
     private URI uri;
     private int order;
     private Types.StoreType storeType;
@@ -28,9 +33,14 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
         this.order = order;
         this.storeType = storeType;
         this.id = toString();
+        String path = service.getSwiftPath();
+        initAbsoluteUri(path);
     }
 
-    public SegmentKeyBean() {
+    private void initAbsoluteUri(String path) {
+        path = Strings.trimSeparator(path, "\\", "/");
+        path = "/" + path + "/";
+        absoluteUri = URI.create(Strings.trimSeparator(path, "/")).resolve(uri);
     }
 
     public String getSourceKey() {
@@ -44,6 +54,18 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
     @Override
     public SourceKey getTable() {
         return new SourceKey(sourceKey);
+    }
+
+    @Override
+    public URI getAbsoluteUri() {
+        if (null == absoluteUri) {
+            initAbsoluteUri(service.getSwiftPath());
+        }
+        return absoluteUri;
+    }
+
+    public void setAbsoluteUri(URI absoluteUri) {
+        this.absoluteUri = absoluteUri;
     }
 
     @Override
