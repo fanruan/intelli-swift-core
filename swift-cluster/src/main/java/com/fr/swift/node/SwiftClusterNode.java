@@ -8,4 +8,13 @@ package com.fr.swift.node;
  * @since Advanced FineBI 5.0
  */
 public interface SwiftClusterNode {
+
+    String getId();
+
+    String getName();
+
+    String getIp();
+
+    int getPort();
+
 }
