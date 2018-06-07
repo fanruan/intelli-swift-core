@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>swift-cluster</artifactId>
+    <artifactId>swift-netty</artifactId>
     <build>
         <plugins>
             <plugin>
@@ -31,22 +31,26 @@
         </dependency>
         <dependency>
             <groupId>com.finebi</groupId>
-            <artifactId>swift-commucation</artifactId>
+            <artifactId>swift-boot</artifactId>
             <version>5.0-FEATURE-SNAPSHOT</version>
         </dependency>
-
-        <!-- ZooKeeper -->
+        <!-- Netty -->
         <dependency>
-            <groupId>org.apache.zookeeper</groupId>
-            <artifactId>zookeeper</artifactId>
-            <version>3.4.12</version>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.24.Final</version>
         </dependency>
-        <!-- ZkClient -->
+
+        <!-- Protostuff -->
         <dependency>
-            <groupId>com.101tec</groupId>
-            <artifactId>zkclient</artifactId>
-            <version>0.10</version>
+            <groupId>com.dyuproject.protostuff</groupId>
+            <artifactId>protostuff-core</artifactId>
+            <version>1.0.9</version>
+        </dependency>
+        <dependency>
+            <groupId>com.dyuproject.protostuff</groupId>
+            <artifactId>protostuff-runtime</artifactId>
+            <version>1.0.9</version>
         </dependency>
     </dependencies>
-
 </project>

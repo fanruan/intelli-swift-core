@@ -75,14 +75,7 @@ public class SwiftClusterService implements ClusterService {
     }
 
     @Override
-    public String rpcSend(String masterId, Object object) {
-        LOGGER.info(masterId + ":" + object.toString());
-        return "response:" + masterId + ":" + object.toString();
-    }
-
-    @Override
-    public String rpcSend() {
-        LOGGER.info("time:" + System.currentTimeMillis());
-        return "response:" + System.currentTimeMillis();
+    public boolean registerNode() {
+        return false;
     }
 }
