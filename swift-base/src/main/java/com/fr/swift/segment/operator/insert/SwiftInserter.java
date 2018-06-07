@@ -127,7 +127,7 @@ public class SwiftInserter implements Inserter {
         }
     }
 
-    private void putRow(int cursor, Row rowData) {
+    protected void putRow(int cursor, Row rowData) {
         for (int i = 0; i < fields.size(); i++) {
             DetailColumn detail = columns.get(i).getDetailColumn();
             if (InserterUtils.isBusinessNullValue(rowData.getValue(i))) {

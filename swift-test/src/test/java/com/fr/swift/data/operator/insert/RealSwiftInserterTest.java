@@ -8,7 +8,7 @@ import com.fr.swift.generate.BaseTest;
 import com.fr.swift.segment.RealTimeSegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.segment.operator.insert.RealtimeSwiftInserter;
+import com.fr.swift.segment.operator.insert.SwiftRealtimeInserter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
@@ -45,7 +45,7 @@ public class RealSwiftInserterTest extends BaseTest {
             rowList.add(row);
         }
 
-        RealtimeSwiftInserter swiftInserter = new RealtimeSwiftInserter(segment);
+        SwiftRealtimeInserter swiftInserter = new SwiftRealtimeInserter(segment);
         swiftInserter.insertData(rowList);
 
         for (int i = 0; i < 42; i++) {
@@ -74,7 +74,7 @@ public class RealSwiftInserterTest extends BaseTest {
             rowList.add(row);
         }
 
-        RealtimeSwiftInserter swiftInserter = new RealtimeSwiftInserter(segment);
+        SwiftRealtimeInserter swiftInserter = new SwiftRealtimeInserter(segment);
         swiftInserter.insertData(rowList);
 
         for (int i = 0; i < 668; i++) {
@@ -96,7 +96,7 @@ public class RealSwiftInserterTest extends BaseTest {
         IResourceLocation location = new ResourceLocation(cubePath, Types.StoreType.MEMORY);
         Segment segment = new RealTimeSegmentImpl(location, dataSource.getMetadata());
 
-        RealtimeSwiftInserter swiftInserter = new RealtimeSwiftInserter(segment);
+        SwiftRealtimeInserter swiftInserter = new SwiftRealtimeInserter(segment);
         swiftInserter.insertData(resultSet);
 
         for (int i = 0; i < 668; i++) {
