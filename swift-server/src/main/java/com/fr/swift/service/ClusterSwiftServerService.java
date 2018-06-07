@@ -2,7 +2,8 @@ package com.fr.swift.service;
 
 import com.fr.swift.ProxyFactory;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
-import com.fr.swift.config.service.SwiftConfigServiceProvider;
+import com.fr.swift.config.service.SwiftServiceInfoService;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.frrpc.FRDestination;
 import com.fr.swift.frrpc.FRProxyCache;
 import com.fr.swift.frrpc.FRUrl;
@@ -22,16 +23,18 @@ import java.util.Map;
 public class ClusterSwiftServerService extends AbstractSwiftServerService {
 
     private Map<String, SwiftIndexingService> indexingServiceMap = new HashMap<String, SwiftIndexingService>();
-    private Map<String, SwiftRealTimeService> realTimeServiceMap = new HashMap<String, SwiftRealTimeService>();
+    private Map<String, SwiftRealtimeService> realTimeServiceMap = new HashMap<String, SwiftRealtimeService>();
     private Map<String, HistoryService> historyServiceMap = new HashMap<String, HistoryService>();
     private Map<String, SwiftAnalyseService> analyseServiceMap = new HashMap<String, SwiftAnalyseService>();
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(ClusterSwiftServerService.class);
 
+    private SwiftServiceInfoService serviceInfoService = SwiftContext.getInstance().getBean(SwiftServiceInfoService.class);
+
     @Override
     public boolean start() {
         super.start();
-        List<SwiftServiceInfoBean> swiftServiceBeanList = SwiftConfigServiceProvider.getInstance().getAllServiceInfo();
+        List<SwiftServiceInfoBean> swiftServiceBeanList = serviceInfoService.getAllServiceInfo();
         for (SwiftServiceInfoBean swiftServiceInfoBean : swiftServiceBeanList) {
             try {
                 String service = swiftServiceInfoBean.getService();
@@ -47,7 +50,7 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
                         new SwiftIndexingService(swiftServiceInfoBean.getClusterId()).start();
                         break;
                     case REAL_TIME:
-                        new SwiftRealTimeService(swiftServiceInfoBean.getClusterId()).start();
+                        new SwiftRealtimeService(swiftServiceInfoBean.getClusterId()).start();
                 }
             } catch (Exception e) {
                 LOGGER.error(e);
@@ -64,7 +67,7 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
         LOGGER.info(service.getID() + " register service :" + service.getServiceType().name());
         ProxyFactory proxyFactory = ProxySelector.getInstance().getFactory();
         synchronized (this) {
-            SwiftConfigServiceProvider.getInstance().saveOrUpdateServiceInfo(new SwiftServiceInfoBean(
+            serviceInfoService.saveOrUpdateServiceInfo(new SwiftServiceInfoBean(
                     service.getServiceType().name(), service.getID(), "", false));
             switch (service.getServiceType()) {
                 case ANALYSE:
@@ -83,7 +86,7 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
                     indexingServiceMap.put(service.getID(), (SwiftIndexingService) service);
                     break;
                 case REAL_TIME:
-                    realTimeServiceMap.put(service.getID(), (SwiftRealTimeService) service);
+                    realTimeServiceMap.put(service.getID(), (SwiftRealtimeService) service);
             }
         }
     }
@@ -95,7 +98,7 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
         }
         LOGGER.info(service.getID() + " unregister service :" + service.getServiceType().name());
         synchronized (this) {
-            SwiftConfigServiceProvider.getInstance().removeServiceInfo(new SwiftServiceInfoBean(service.getServiceType().name(), service.getID(), ""));
+            serviceInfoService.removeServiceInfo(new SwiftServiceInfoBean(service.getServiceType().name(), service.getID(), ""));
             switch (service.getServiceType()) {
                 case ANALYSE:
                     analyseServiceMap.remove(service.getID());

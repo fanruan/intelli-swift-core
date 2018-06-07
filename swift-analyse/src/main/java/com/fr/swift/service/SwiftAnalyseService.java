@@ -47,7 +47,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements QueryRu
     }
 
     @Override
-    public <T extends SwiftResultSet> T getRemoteQueryResult(QueryInfo<T> info) {
+    public <T extends SwiftResultSet> T getRemoteQueryResult(QueryInfo<T> info, URI remoteURI) {
         // TODO: 2018/5/31 远程调用history或者realTime节点上的服务进行查询
         return null;
     }

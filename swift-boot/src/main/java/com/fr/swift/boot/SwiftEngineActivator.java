@@ -43,13 +43,9 @@ public class SwiftEngineActivator extends Activator implements Prepare {
                 @Override
                 public void handleEvent(ClusterEvent clusterEvent) {
                     if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
-                        try {
-                            ProxySelector.getInstance().switchFactory(new FRClusterProxyFactory());
-                            new LocalSwiftRegister().serviceUnregister();
-                            new ClusterSwiftRegister().serviceRegister();
-                        } catch (SwiftServiceException e) {
-                            e.printStackTrace();
-                        }
+                        ProxySelector.getInstance().switchFactory(new FRClusterProxyFactory());
+                        new LocalSwiftRegister().serviceUnregister();
+                        new ClusterSwiftRegister().serviceRegister();
                     } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
                         try {
                             ProxySelector.getInstance().switchFactory(new LocalProxyFactory());
@@ -75,6 +71,7 @@ public class SwiftEngineActivator extends Activator implements Prepare {
         SwiftLoggers.getLogger().info("swift engine stopped");
     }
 
+    @Override
     public void prepare() {
         this.addMutable(BaseDBConstant.BASE_ENTITY_KEY, SwiftMetaDataEntity.class, SwiftSegmentEntity.class, SwiftServiceInfoEntity.class);
     }

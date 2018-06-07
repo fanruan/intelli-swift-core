@@ -35,7 +35,7 @@ public class LocalProxyFactory implements ProxyFactory {
     @Override
     public <T> T getProxy(T proxy, Class<T> type, URL url) {
         Invoker invoker = getInvoker(proxy, type, url);
-        T t = (T)getProxy(invoker);
+        T t = (T) getProxy(invoker);
         return t;
     }
 }

@@ -79,7 +79,9 @@ public class LogOperatorProxy implements LogOperator {
 
     @Override
     public void clearLogBefore(Date date) throws Exception {
-
+        synchronized (LogOperatorProxy.class) {
+            logOperator.clearLogBefore(date);
+        }
     }
 
     public boolean switchSingle() {

@@ -1,6 +1,5 @@
 package com.fr.swift.config;
 
-import com.fr.base.FRContext;
 import com.fr.config.BaseDBEnv;
 import com.fr.config.dao.DaoContext;
 import com.fr.config.dao.impl.HibernateClassHelperDao;
@@ -9,9 +8,12 @@ import com.fr.config.dao.impl.HibernateXmlEnityDao;
 import com.fr.config.entity.ClassHelper;
 import com.fr.config.entity.Entity;
 import com.fr.config.entity.XmlEntity;
-import com.fr.dav.LocalEnv;
 import com.fr.stable.db.DBContext;
 import com.fr.stable.db.option.DBOption;
+import com.fr.swift.config.entity.SwiftMetaDataEntity;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
+import com.fr.swift.config.entity.SwiftServiceInfoEntity;
+import com.fr.swift.test.Preparer;
 import com.fr.swift.util.FileUtil;
 import com.fr.transaction.Configurations;
 import com.fr.transaction.FineConfigurationHelper;
@@ -27,7 +29,7 @@ public class TestConfDb {
     private static final Path PATH = Paths.get(System.getProperty("user.dir") + "/config");
 
     public static DBContext setConfDb() throws Exception {
-        FRContext.setCurrentEnv(new LocalEnv());
+        Preparer.prepareFrEnv();
         FileUtil.delete(PATH + ".mv.db");
         FileUtil.delete(PATH + ".trace.db");
         DBOption dbOption = new DBOption();
@@ -42,6 +44,11 @@ public class TestConfDb {
         dbProvider.addEntityClass(Entity.class);
         dbProvider.addEntityClass(XmlEntity.class);
         dbProvider.addEntityClass(ClassHelper.class);
+
+        dbProvider.addEntityClass(SwiftMetaDataEntity.class);
+        dbProvider.addEntityClass(SwiftSegmentEntity.class);
+        dbProvider.addEntityClass(SwiftServiceInfoEntity.class);
+
         dbProvider.init(dbOption);
         BaseDBEnv.setDBContext(dbProvider);
         DaoContext.setClassHelperDao(new HibernateClassHelperDao());

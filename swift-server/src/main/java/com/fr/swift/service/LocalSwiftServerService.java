@@ -10,7 +10,7 @@ import com.fr.swift.stuff.RealTimeIndexingStuff;
 public class LocalSwiftServerService extends AbstractSwiftServerService {
 
     private SwiftIndexingService indexingService;
-    private SwiftRealTimeService realTimeService;
+    private SwiftRealtimeService realTimeService;
     private SwiftHistoryService historyService;
     private SwiftAnalyseService analyseService;
 
@@ -28,7 +28,7 @@ public class LocalSwiftServerService extends AbstractSwiftServerService {
                     indexingService = (SwiftIndexingService) service;
                     break;
                 case REAL_TIME:
-                    realTimeService = (SwiftRealTimeService) service;
+                    realTimeService = (SwiftRealtimeService) service;
             }
         }
     }

@@ -46,6 +46,7 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
         return new SourceKey(sourceKey);
     }
 
+    @Override
     public URI getUri() {
         return uri;
     }
@@ -54,6 +55,7 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
         this.uri = uri;
     }
 
+    @Override
     public int getOrder() {
         return order;
     }
@@ -62,6 +64,7 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
         this.order = order;
     }
 
+    @Override
     public Types.StoreType getStoreType() {
         return storeType;
     }

@@ -77,7 +77,10 @@ public class SwiftClusterLogOperator implements LogOperator {
     }
 
     @Override
-    public void clearLogBefore(Date date) throws Exception {
-
+    public void clearLogBefore(Date date) {
+        ClusterNode masterNode = ClusterNodeManager.getInstance().getMasterNode();
+        Invocation invocation = Invocation.create(LogOperatorProxy.class, "clearLogBefore",
+                new Class[]{Date.class}, date);
+        invoker.invoke(masterNode, invocation);
     }
 }

@@ -16,36 +16,28 @@ import java.util.List;
  * Created by Xiaolei.Liu on 2018/1/18
  */
 public class SegmentDetailResultSet extends DetailResultSet {
-    /**
-     * 行号
-     */
+
+    // resultSet迭代器的游标
     private int row = -1;
-
-    /**
-     * 列
-     */
+    // 字段列
     private List<Column> columnList;
-
-    /**
-     * 明细过滤条件
-     */
-    private DetailFilter filter;
+    // 过滤结果(所有行)的bitmap
+    private ImmutableBitMap bitMapOfTotalRows;
     private SwiftMetaData metaData;
 
     public SegmentDetailResultSet(List<Column> columnList, DetailFilter filter, SwiftMetaData metaData) {
         this.columnList = columnList;
-        this.filter = filter;
+        this.bitMapOfTotalRows = filter.createFilterIndex();
         this.metaData = metaData;
-        init();
+        this.maxRow = bitMapOfTotalRows.getCardinality();
     }
 
     @Override
     public Row getRowData() {
-        ImmutableBitMap rowIndex = filter.createFilterIndex();
         List values = new ArrayList();
         while (true) {
             row++;
-            if (rowIndex.contains(row)) {
+            if (bitMapOfTotalRows.contains(row)) {
                 break;
             }
         }
@@ -55,11 +47,6 @@ public class SegmentDetailResultSet extends DetailResultSet {
             values.add(val);
         }
         return new ListBasedRow(values);
-    }
-
-
-    private void init() {
-        this.maxRow = filter.createFilterIndex().getCardinality();
     }
 
     @Override

@@ -14,8 +14,8 @@ import com.fr.swift.segment.operator.column.SwiftColumnIndexer;
 import com.fr.swift.segment.operator.delete.HistorySwiftDeleter;
 import com.fr.swift.segment.operator.delete.RealtimeSwiftDeleter;
 import com.fr.swift.segment.operator.insert.RealtimeBlockSwiftInserter;
-import com.fr.swift.segment.operator.insert.RealtimeSwiftInserter;
 import com.fr.swift.segment.operator.insert.SwiftInserter;
+import com.fr.swift.segment.operator.insert.SwiftRealtimeInserter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.util.DataSourceUtils;
 import com.fr.third.springframework.stereotype.Service;
@@ -36,11 +36,11 @@ public class LocalDataOperatorProvider implements SwiftDataOperatorProvider {
     }
 
     @Override
-    public Inserter getRealtimeSwiftInserter(Segment segment, DataSource dataSource) throws Exception {
+    public Inserter getRealtimeSwiftInserter(Segment segment, DataSource dataSource) {
         if (DataSourceUtils.isAddColumn(dataSource)) {
-            return new RealtimeSwiftInserter(segment, DataSourceUtils.getAddFields(dataSource));
+            return new SwiftRealtimeInserter(segment, DataSourceUtils.getAddFields(dataSource));
         }
-        return new RealtimeSwiftInserter(segment);
+        return new SwiftRealtimeInserter(segment);
     }
 
     @Override

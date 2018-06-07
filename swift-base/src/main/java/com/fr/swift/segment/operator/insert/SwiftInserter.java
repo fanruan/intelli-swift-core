@@ -4,6 +4,8 @@ import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.RangeBitmap;
+import com.fr.swift.cube.CubeUtil;
+import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
@@ -74,24 +76,17 @@ public class SwiftInserter implements Inserter {
     }
 
     @Override
-    public List<Segment> insertData(List<Row> rowList) throws Exception {
+    public List<Segment> insertData(List<Row> rowList) throws SQLException {
         return insertData(new ListResultSet(segment.getMetaData(), rowList));
     }
 
     @Override
-    public List<Segment> insertData(SwiftResultSet swiftResultSet) throws Exception {
-        try {
-            return insert(swiftResultSet);
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().error(e);
-            return Collections.emptyList();
-        } finally {
-            swiftResultSet.close();
-        }
+    public List<Segment> insertData(SwiftResultSet swiftResultSet) throws SQLException {
+        return insert(swiftResultSet);
     }
 
     private List<Segment> insert(SwiftResultSet resultSet) throws SQLException {
-        boolean readable = isReadable(segment);
+        boolean readable = CubeUtil.isReadable(segment);
         int lastCursor = readable ? segment.getRowCount() : 0,
                 cursor = lastCursor;
 
@@ -125,7 +120,7 @@ public class SwiftInserter implements Inserter {
         }
     }
 
-    private void putRow(int cursor, Row rowData) {
+    protected void putRow(int cursor, Row rowData) {
         for (int i = 0; i < fields.size(); i++) {
             DetailColumn detail = columns.get(i).getDetailColumn();
             if (InserterUtils.isBusinessNullValue(rowData.getValue(i))) {
@@ -137,17 +132,8 @@ public class SwiftInserter implements Inserter {
         }
     }
 
-    private static boolean isReadable(Segment seg) {
-        try {
-            seg.getRowCount();
-            return true;
-        } catch (Exception ignore) {
-            return false;
-        }
-    }
-
     private void release() {
-        if (segment.isHistory()) {
+        if (segment.getLocation().getStoreType() == StoreType.FINE_IO) {
             for (Column column : columns) {
                 column.getDetailColumn().release();
                 column.getBitmapIndex().release();

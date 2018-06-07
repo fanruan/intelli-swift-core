@@ -66,5 +66,4 @@ public class SwiftRowAdaptor<T> implements Function<T, Row> {
             return Crasher.crash(e);
         }
     }
-
 }

@@ -10,7 +10,7 @@ import com.fr.swift.segment.RealTimeSegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.operator.delete.RealtimeSwiftDeleter;
-import com.fr.swift.segment.operator.insert.RealtimeSwiftInserter;
+import com.fr.swift.segment.operator.insert.SwiftRealtimeInserter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
@@ -47,7 +47,7 @@ public class RealtimeSwiftDeleterTest extends BaseTest {
                 Row row = resultSet.getRowData();
                 rowList.add(row);
             }
-            RealtimeSwiftInserter swiftInserter = new RealtimeSwiftInserter(segment);
+            SwiftRealtimeInserter swiftInserter = new SwiftRealtimeInserter(segment);
             swiftInserter.insertData(rowList);
 
             assertEquals(segment.getRowCount(), 668);
@@ -110,7 +110,7 @@ public class RealtimeSwiftDeleterTest extends BaseTest {
                 Row row = resultSet.getRowData();
                 rowList.add(row);
             }
-            RealtimeSwiftInserter swiftInserter = new RealtimeSwiftInserter(segment);
+            SwiftRealtimeInserter swiftInserter = new SwiftRealtimeInserter(segment);
             swiftInserter.insertData(rowList);
 
             assertEquals(segment.getRowCount(), 668);

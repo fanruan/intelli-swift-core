@@ -3,7 +3,7 @@ package com.fr.swift.segment.operator.insert;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.config.SwiftCubePathConfig;
 import com.fr.swift.config.bean.SegmentKeyBean;
-import com.fr.swift.config.service.SwiftConfigServiceProvider;
+import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
@@ -26,8 +26,9 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.source.SwiftSourceAlloter;
-import com.fr.swift.source.SwiftSourceAlloterFactory;
+import com.fr.swift.source.alloter.SwiftSourceAlloter;
+import com.fr.swift.source.alloter.SwiftSourceAlloterFactory;
+import com.fr.swift.source.alloter.line.LineRowInfo;
 import com.fr.swift.util.Crasher;
 
 import java.sql.SQLException;
@@ -56,6 +57,7 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
     private SwiftSourceAlloter alloter;
     private SegmentIndexCache segmentIndexCache;
     private int startSegIndex;
+    private SwiftSegmentService segmentService = SwiftContext.getInstance().getBean(SwiftSegmentService.class);
 
     public AbstractBlockInserter(SourceKey sourceKey, String cubeSourceKey, SwiftMetaData swiftMetaData) {
         this(sourceKey, cubeSourceKey, swiftMetaData, swiftMetaData.getFieldNames());
@@ -95,7 +97,7 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
     }
 
     @Override
-    public List<Segment> insertData(SwiftResultSet swiftResultSet) throws Exception {
+    public List<Segment> insertData(SwiftResultSet swiftResultSet) throws SQLException {
         if (!fields.isEmpty()) {
             List<Segment> newSegments = new ArrayList<Segment>();
             try {
@@ -104,7 +106,7 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
                 while (swiftResultSet.next()) {
                     Row rowData = swiftResultSet.getRowData();
                     int size = segments.size();
-                    int index = alloter.allot(count, allotColumn, rowData.getValue(0)) + startSegIndex;
+                    int index = alloter.allot(new LineRowInfo(count)).getOrder() + startSegIndex;
                     if (index >= size) {
                         for (int i = size; i <= index; i++) {
                             segmentIndexCache.putSegRow(i, 0);
@@ -208,7 +210,7 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
     }
 
     private void persistSegment() {
-        SwiftConfigServiceProvider.getInstance().addSegments(configSegment);
+        segmentService.addSegments(configSegment);
     }
 
     @Override

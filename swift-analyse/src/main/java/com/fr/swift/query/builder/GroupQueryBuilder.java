@@ -1,7 +1,10 @@
 package com.fr.swift.query.builder;
 
 import com.fr.swift.query.Query;
+import com.fr.swift.query.QueryInfo;
+import com.fr.swift.query.QueryType;
 import com.fr.swift.query.info.group.GroupQueryInfo;
+import com.fr.swift.query.info.group.RemoteQueryInfoImpl;
 import com.fr.swift.query.remote.RemoteQueryImpl;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.service.SegmentLocationProvider;
@@ -14,8 +17,14 @@ import java.util.List;
 /**
  * Created by pony on 2017/12/14.
  */
-public class GroupQueryBuilder {
+final class GroupQueryBuilder {
 
+    /**
+     * 给最外层查询节点（查询服务节点）条用并构建query，根据segment分布信息区分本地query和远程query
+     *
+     * @param info
+     * @return
+     */
     static Query<NodeResultSet> buildQuery(GroupQueryInfo info) {
         SourceKey table = info.getTable();
         List<URI> uris = SegmentLocationProvider.getInstance().getSegmentLocationURI(table);
@@ -24,6 +33,36 @@ public class GroupQueryBuilder {
             return buildQuery(uris, info, LocalGroupQueryBuilder.PAGING);
         } else {
             return buildQuery(uris, info, LocalGroupQueryBuilder.ALL);
+        }
+    }
+
+    /**
+     * 处理另一个节点转发过来的查询，并且当前节点上包含查询的部分分块数据
+     *
+     * @param info 查询信息
+     * @return
+     */
+    static Query<NodeResultSet> buildLocalPartQuery(GroupQueryInfo info) {
+        // TODO: 2018/6/5 区分是否能分页
+        if (false) {
+            return LocalGroupQueryBuilder.PAGING.buildLocalQuery(info);
+        } else {
+            return LocalGroupQueryBuilder.ALL.buildLocalQuery(info);
+        }
+    }
+
+    /**
+     * 处理另一个节点转发过来的查询，并且当前节点上包含查询的全部分块数据
+     *
+     * @param info 查询信息
+     * @return
+     */
+    static Query<NodeResultSet> buildLocalAllQuery(GroupQueryInfo info) {
+        // TODO: 2018/6/5 区分是否能分页
+        if (false) {
+            return LocalGroupQueryBuilder.PAGING.buildPostQuery(LocalGroupQueryBuilder.PAGING.buildLocalQuery(info), info);
+        } else {
+            return LocalGroupQueryBuilder.ALL.buildPostQuery(LocalGroupQueryBuilder.ALL.buildLocalQuery(info), info);
         }
     }
 
@@ -53,7 +92,8 @@ public class GroupQueryBuilder {
                 return builder.buildPostQuery(builder.buildLocalQuery(info), info);
             } else {
                 // 丢给远程节点
-                return new RemoteQueryImpl(info);
+                QueryInfo<NodeResultSet> queryInfo = new RemoteQueryInfoImpl<NodeResultSet>(QueryType.LOCAL_ALL, info);
+                return new RemoteQueryImpl<NodeResultSet>(queryInfo, uris.get(0));
             }
         }
         List<Query<NodeResultSet>> queries = new ArrayList<Query<NodeResultSet>>();
@@ -61,10 +101,12 @@ public class GroupQueryBuilder {
             if (QueryBuilder.isLocalURI(uri)) {
                 queries.add(builder.buildLocalQuery(info));
             } else {
-                queries.add(new RemoteQueryImpl(info));
+                QueryInfo<NodeResultSet> queryInfo = new RemoteQueryInfoImpl<NodeResultSet>(QueryType.LOCAL_PART, info);
+                // TODO: 2018/6/6 这边有个问题，远程节点有多个segment怎么办呢？RemoteQuery只对应一个segment的uri的话，远程节点就不能做合并了
+                queries.add(new RemoteQueryImpl<NodeResultSet>(queryInfo, uri));
             }
         }
-        // 多个节点的ResultQuery合并之后在处理计算指标
+        // 多个节点的ResultQuery合并之后在处理List<PostQueryInfo>
         return builder.buildPostQuery(builder.buildResultQuery(queries, info), info);
     }
 }

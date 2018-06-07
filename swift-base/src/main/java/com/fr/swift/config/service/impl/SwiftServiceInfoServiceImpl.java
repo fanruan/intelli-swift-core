@@ -1,12 +1,14 @@
-package com.fr.swift.config.service;
+package com.fr.swift.config.service.impl;
 
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.dao.SwiftServiceInfoDao;
 import com.fr.swift.config.entity.SwiftServiceInfoEntity;
+import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.config.transaction.SwiftServiceInfoTransactionWorker;
 import com.fr.swift.config.transaction.SwiftTransactionManager;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
+@Service("swiftServiceInfoService")
 class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftServiceInfoServiceImpl.class);

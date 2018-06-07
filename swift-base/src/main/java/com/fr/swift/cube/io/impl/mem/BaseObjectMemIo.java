@@ -1,7 +1,5 @@
 package com.fr.swift.cube.io.impl.mem;
 
-import com.fr.swift.cube.io.input.ObjectReader;
-import com.fr.swift.cube.io.output.ObjectWriter;
 import com.fr.swift.util.Crasher;
 
 import java.util.Arrays;
@@ -10,7 +8,7 @@ import java.util.Arrays;
  * @author anchore
  * @date 2017/11/23
  */
-abstract class BaseObjectMemIo<T> extends BaseMemIo implements ObjectReader<T>, ObjectWriter<T> {
+abstract class BaseObjectMemIo<T> extends BaseMemIo implements ObjectMemIo<T> {
     T[] mem;
 
     @Override

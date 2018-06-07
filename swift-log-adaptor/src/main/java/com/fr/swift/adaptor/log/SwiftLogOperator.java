@@ -108,7 +108,7 @@ public class SwiftLogOperator implements LogOperator {
     }
 
     @Override
-    public void clearLogBefore(Date date) throws Exception {
+    public void clearLogBefore(Date date) {
 
     }
 
