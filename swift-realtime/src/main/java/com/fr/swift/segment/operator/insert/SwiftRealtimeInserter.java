@@ -11,14 +11,12 @@ import java.util.List;
  * @description 指定数据和块insert，块必须是新块。
  * @since Advanced FineBI Analysis 1.0
  */
-@Deprecated
-public class RealtimeSwiftInserter extends SwiftInserter {
-
-    public RealtimeSwiftInserter(Segment segment) {
+public class SwiftRealtimeInserter extends SwiftInserter {
+    public SwiftRealtimeInserter(Segment segment) {
         super(segment);
     }
 
-    public RealtimeSwiftInserter(Segment segment, List<String> fields) {
+    public SwiftRealtimeInserter(Segment segment, List<String> fields) {
         super(segment, fields);
     }
 }

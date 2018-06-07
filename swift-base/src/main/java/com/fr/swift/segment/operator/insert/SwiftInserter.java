@@ -82,14 +82,7 @@ public class SwiftInserter implements Inserter {
 
     @Override
     public List<Segment> insertData(SwiftResultSet swiftResultSet) throws SQLException {
-        try {
-            return insert(swiftResultSet);
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().error(e);
-            return Collections.emptyList();
-        } finally {
-            swiftResultSet.close();
-        }
+        return insert(swiftResultSet);
     }
 
     private List<Segment> insert(SwiftResultSet resultSet) throws SQLException {
@@ -127,7 +120,7 @@ public class SwiftInserter implements Inserter {
         }
     }
 
-    private void putRow(int cursor, Row rowData) {
+    protected void putRow(int cursor, Row rowData) {
         for (int i = 0; i < fields.size(); i++) {
             DetailColumn detail = columns.get(i).getDetailColumn();
             if (InserterUtils.isBusinessNullValue(rowData.getValue(i))) {

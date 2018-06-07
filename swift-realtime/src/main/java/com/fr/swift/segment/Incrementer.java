@@ -74,14 +74,15 @@ public class Incrementer {
     }
 
     private void persistSegment(Segment seg, int order) {
-        // fixme 要事先判断是否存在 config支持不太好啊
         IResourceLocation location = seg.getLocation();
         SegmentKey segKey = new SegmentKeyBean(dataSource.getSourceKey().getId(), location.getUri(), order, location.getStoreType());
-        SwiftContext.getInstance().getBean(SwiftSegmentService.class).addSegments(Collections.singletonList(segKey));
+        if (!SwiftContext.getInstance().getBean(SwiftSegmentService.class).containsSegment(segKey)) {
+            SwiftContext.getInstance().getBean(SwiftSegmentService.class).addSegments(Collections.singletonList(segKey));
+        }
     }
 
-    private Segment newRealtimeSegment(SegmentInfo segInfo) {
-        String segPath = CubeUtil.getTablePath(dataSource) + "/" + segInfo.getName();
+    private Segment newRealtimeSegment(SegmentInfo segInfo, int segCount) {
+        String segPath = String.format("%s/seg%d", CubeUtil.getTablePath(dataSource), segCount + segInfo.getOrder());
         return new RealTimeSegmentImpl(new ResourceLocation(segPath, StoreType.MEMORY), dataSource.getMetadata());
     }
 
@@ -89,7 +90,7 @@ public class Incrementer {
         List<SegmentKey> segmentKeys = LOCAL_SEGMENT_PROVIDER.getSegmentKeys(dataSource.getSourceKey());
         if (segmentKeys.isEmpty() ||
                 segmentKeys.get(segmentKeys.size() - 1).getStoreType() != StoreType.MEMORY) {
-            return newRealtimeSegment(alloter.allot(new LineRowInfo(0)));
+            return newRealtimeSegment(alloter.allot(new LineRowInfo(0)), segmentKeys.size());
         }
         return LOCAL_SEGMENT_PROVIDER.getSegment(segmentKeys.get(segmentKeys.size() - 1));
     }

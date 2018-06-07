@@ -11,16 +11,16 @@ import com.fr.swift.segment.column.impl.base.BitMapColumn;
  * @author anchore
  * @date 2017/11/30
  */
-abstract class BaseColumn<T> implements Column<T> {
-    DetailColumn<T> detailColumn;
+public abstract class BaseColumn<T> implements Column<T> {
+    protected DetailColumn<T> detailColumn;
 
-    DictionaryEncodedColumn<T> dictColumn;
+    protected DictionaryEncodedColumn<T> dictColumn;
 
-    BitmapIndexedColumn indexColumn;
+    protected BitmapIndexedColumn indexColumn;
 
-    IResourceLocation location;
+    protected IResourceLocation location;
 
-    BaseColumn(IResourceLocation location) {
+    protected BaseColumn(IResourceLocation location) {
         this.location = location;
     }
 
