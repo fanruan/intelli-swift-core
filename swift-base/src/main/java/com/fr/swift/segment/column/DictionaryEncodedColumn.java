@@ -9,6 +9,8 @@ import java.util.Comparator;
  * @author pony
  * @date 2017/10/9
  * 字典编码的列
+ *
+ * todo 一摞put方法，考虑可以挪到类似Putter子接口里，接口只当个getter来用
  */
 public interface DictionaryEncodedColumn<T> extends Releasable, Flushable {
     /**
