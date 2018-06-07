@@ -14,11 +14,6 @@ public class SwiftSegmentInfo implements SegmentInfo {
     }
 
     @Override
-    public String getName() {
-        return "seg" + order;
-    }
-
-    @Override
     public int getOrder() {
         return order;
     }

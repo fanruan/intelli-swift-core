@@ -20,19 +20,21 @@ import java.net.URI;
 @Entity
 @Table(name = "FINE_SWIFT_SEGMENTS")
 public class SwiftSegmentEntity implements Convert<SegmentKeyBean> {
-
     @Id
     private String id;
 
     @Column(name = SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER)
     private String segmentOwner;
+
     @Column(name = SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_URI, unique = true, length = SwiftConfigConstants.LONG_TEXT_LENGTH)
     @com.fr.third.javax.persistence.Convert(
             converter = URIConverter.class
     )
     private URI segmentUri;
+
     @Column(name = SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_ORDER)
     private int segmentOrder;
+
     @Column(name = SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE)
     @com.fr.third.javax.persistence.Convert(
             converter = StoreTypeConverter.class

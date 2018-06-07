@@ -82,14 +82,7 @@ public class SwiftInserter implements Inserter {
 
     @Override
     public List<Segment> insertData(SwiftResultSet swiftResultSet) throws SQLException {
-        try {
-            return insert(swiftResultSet);
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().error(e);
-            return Collections.emptyList();
-        } finally {
-            swiftResultSet.close();
-        }
+        return insert(swiftResultSet);
     }
 
     private List<Segment> insert(SwiftResultSet resultSet) throws SQLException {
