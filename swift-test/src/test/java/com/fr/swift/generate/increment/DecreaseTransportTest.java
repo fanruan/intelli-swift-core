@@ -1,7 +1,6 @@
 package com.fr.swift.generate.increment;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.config.TestConfDb;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.generate.BaseConfigTest;
 import com.fr.swift.generate.TestIndexer;
@@ -13,10 +12,12 @@ import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.db.QueryDBSource;
-import com.fr.swift.source.db.TestConnectionProvider;
 import com.fr.swift.test.Preparer;
+import org.junit.Test;
 
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * This class created on 2018-1-8 13:53:30
@@ -32,13 +33,11 @@ public class DecreaseTransportTest extends BaseConfigTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-//        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir") + "\\" + System.currentTimeMillis()));
-        TestConnectionProvider.createConnection();
-        TestConfDb.setConfDb();
-        dataSource = new QueryDBSource("select 记录人 from DEMO_CAPITAL_RETURN", "DecreaseTest");
         Preparer.prepareCubeBuild();
+        dataSource = new QueryDBSource("select 记录人 from DEMO_CAPITAL_RETURN", "DecreaseTest");
     }
 
+    @Test
     public void testDecreaseTransport() throws Exception {
 
         TestIndexer.historyIndex(dataSource, TestTransport.historyTransport(dataSource));
@@ -59,6 +58,5 @@ public class DecreaseTransportTest extends BaseConfigTest {
             }
         }
         assertEquals(containCount, 650);
-        assertTrue(true);
     }
 }

@@ -15,9 +15,13 @@ import com.fr.swift.segment.RealTimeSegment;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.excel.ExcelDataSource;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This class created on 2018/3/19
@@ -28,6 +32,7 @@ import java.util.List;
  */
 public class ExcelIncreaseCoupleTest extends BaseExcelTest {
 
+    @Test
     public void testIncreaseCoupleFiles() throws Exception {
         dataSource = new ExcelDataSource(path2, names, types);
         TableTransporter tableTransporter = new TableTransporter(dataSource);

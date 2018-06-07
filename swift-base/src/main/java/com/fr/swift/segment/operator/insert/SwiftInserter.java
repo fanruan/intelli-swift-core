@@ -86,6 +86,7 @@ public class SwiftInserter implements Inserter {
     }
 
     private List<Segment> insert(SwiftResultSet resultSet) throws SQLException {
+        // fixme 要从配置里判断，这里有可能读的recorder备份的数据
         boolean readable = CubeUtil.isReadable(segment);
         int lastCursor = readable ? segment.getRowCount() : 0,
                 cursor = lastCursor;

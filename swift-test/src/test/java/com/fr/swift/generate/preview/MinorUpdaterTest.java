@@ -13,6 +13,8 @@ import com.fr.swift.source.etl.join.JoinType;
 
 import java.util.Arrays;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * @author anchore
  * @date 2018/2/2
