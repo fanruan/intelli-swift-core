@@ -3,10 +3,6 @@ package com.fr.swift.rpc.server;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rpc.annotation.RpcService;
-import com.fr.swift.rpc.bean.RpcRequest;
-import com.fr.swift.rpc.bean.RpcResponse;
-import com.fr.swift.rpc.codec.RpcDecoder;
-import com.fr.swift.rpc.codec.RpcEncoder;
 import com.fr.swift.rpc.registry.ServiceRegistry;
 import com.fr.third.jodd.util.StringUtil;
 import com.fr.third.org.apache.commons.collections4.MapUtils;
@@ -21,6 +17,9 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -77,8 +76,13 @@ public class RpcServer {
                 @Override
                 public void initChannel(SocketChannel channel) throws Exception {
                     ChannelPipeline pipeline = channel.pipeline();
-                    pipeline.addLast(new RpcDecoder(RpcRequest.class)); // 解码 RPC 请求
-                    pipeline.addLast(new RpcEncoder(RpcResponse.class)); // 编码 RPC 响应
+                    pipeline.addLast(
+                            new ObjectDecoder(1024 * 1024, ClassResolvers
+                                    .weakCachingConcurrentResolver(this.getClass()
+                                            .getClassLoader())));
+                    pipeline.addLast(new ObjectEncoder());
+//                    pipeline.addLast(new RpcDecoder(RpcRequest.class)); // 解码 RPC 请求
+//                    pipeline.addLast(new RpcEncoder(RpcResponse.class)); // 编码 RPC 响应
                     pipeline.addLast(new RpcServerHandler(handlerMap)); // 处理 RPC 请求
                 }
             });

@@ -3,7 +3,7 @@ package com.fr.swift.rpc;
 import com.fr.swift.ClusterService;
 import com.fr.swift.node.SwiftClusterNodeImpl;
 import com.fr.swift.rpc.server.RpcServer;
-import com.fr.swift.zookeeper.ZkClusterService;
+import com.fr.swift.rpc.zookeeper.ZkClusterService;
 import com.fr.third.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
@@ -13,7 +13,7 @@ import com.fr.third.springframework.context.support.ClassPathXmlApplicationConte
  * @description
  * @since Advanced FineBI 5.0
  */
-public class SwiftServiceStart {
+public class SwiftServerStart {
 
     public static void main(String[] args) throws Exception {
 //        new SwiftEngineActivator().start();

@@ -1,5 +1,7 @@
 package com.fr.swift.rpc.bean;
 
+import java.io.Serializable;
+
 /**
  * This class created on 2018/6/6
  *
@@ -7,8 +9,9 @@ package com.fr.swift.rpc.bean;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class RpcResponse {
+public class RpcResponse implements Serializable {
 
+    private static final long serialVersionUID = -2376912555513832143L;
     private String requestId;
     private Exception exception;
     private Object result;

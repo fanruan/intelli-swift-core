@@ -4,8 +4,6 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rpc.bean.RpcRequest;
 import com.fr.swift.rpc.bean.RpcResponse;
-import com.fr.swift.rpc.codec.RpcDecoder;
-import com.fr.swift.rpc.codec.RpcEncoder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -18,6 +16,9 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
 
 /**
  * This class created on 2018/6/6
@@ -61,8 +62,12 @@ public class RpcClient extends SimpleChannelInboundHandler<RpcResponse> {
                 @Override
                 public void initChannel(SocketChannel channel) throws Exception {
                     ChannelPipeline pipeline = channel.pipeline();
-                    pipeline.addLast(new RpcEncoder(RpcRequest.class)); // 编码 RPC 请求
-                    pipeline.addLast(new RpcDecoder(RpcResponse.class)); // 解码 RPC 响应
+                    pipeline.addLast(
+                            new ObjectDecoder(1024, ClassResolvers.cacheDisabled(this
+                                    .getClass().getClassLoader())));
+                    pipeline.addLast(new ObjectEncoder());
+//                    pipeline.addLast(new RpcEncoder(RpcRequest.class)); // 编码 RPC 请求
+//                    pipeline.addLast(new RpcDecoder(RpcResponse.class)); // 解码 RPC 响应
                     pipeline.addLast(RpcClient.this); // 处理 RPC 响应
                 }
             });

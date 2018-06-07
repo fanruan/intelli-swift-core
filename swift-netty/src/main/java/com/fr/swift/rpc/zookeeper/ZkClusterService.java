@@ -1,4 +1,4 @@
-package com.fr.swift.zookeeper;
+package com.fr.swift.rpc.zookeeper;
 
 import com.fr.swift.ClusterService;
 import com.fr.swift.log.SwiftLogger;
