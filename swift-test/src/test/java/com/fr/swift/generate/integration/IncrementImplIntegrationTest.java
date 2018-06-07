@@ -20,10 +20,13 @@ import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.db.QueryDBSource;
-import com.fr.swift.source.db.TestConnectionProvider;
 import org.junit.Test;
 
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This class created on 2018-1-11 09:45:45
@@ -35,15 +38,13 @@ import java.util.List;
  */
 public class IncrementImplIntegrationTest extends BaseTest {
 
-    private final LocalSegmentProvider segmentProvider = SwiftContext.getInstance().getBean(LocalSegmentProvider.class);
+    private LocalSegmentProvider segmentProvider;
     private DataSource dataSource;
 
     @Override
     public void setUp() throws Exception {
         super.setUp();
-//        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir") + "\\" + System.currentTimeMillis()));
-        TestConnectionProvider.createConnection();
-
+        segmentProvider = SwiftContext.getInstance().getBean(LocalSegmentProvider.class);
         dataSource = new QueryDBSource("select 记录人 from DEMO_CAPITAL_RETURN", "local2");
     }
 

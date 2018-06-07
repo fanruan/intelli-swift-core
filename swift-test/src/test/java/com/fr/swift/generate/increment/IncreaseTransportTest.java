@@ -21,6 +21,12 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 /**
  * This class created on 2018-1-5 15:31:46
  *
@@ -41,7 +47,6 @@ public class IncreaseTransportTest extends BaseTest {
 
     @Test
     public void testIncreaseTransport() {
-        try {
             Increment increment = new IncrementImpl("select 付款时间 from DEMO_CAPITAL_RETURN where 记录人 ='庆芳'", null, null, dataSource.getSourceKey(), "IncreaseTest");
 
             RealtimeDataTransporter transport = new RealtimeDataTransporter(dataSource, increment, new FlowRuleController());
@@ -81,10 +86,6 @@ public class IncreaseTransportTest extends BaseTest {
             } catch (ArrayIndexOutOfBoundsException EE) {
                 assertTrue(true);
             }
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            assertTrue(false);
-        }
     }
 
 }

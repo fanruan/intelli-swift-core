@@ -1,6 +1,5 @@
 package com.fr.swift.data.operator.delete;
 
-import com.fr.annotation.Test;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
@@ -17,10 +16,14 @@ import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.QueryDBSource;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This class created on 2018/3/26
@@ -32,8 +35,7 @@ import java.util.List;
 public class HisSwiftDeleterTest extends BaseTest {
 
     @Test
-    public void testHisDeleteWithRowlist() {
-        try {
+    public void testHisDeleteWithRowlist() throws Exception {
             DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "HisSwiftDeleterTest");
 
             SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
@@ -89,15 +91,10 @@ public class HisSwiftDeleterTest extends BaseTest {
             }
             //allshowindex改变
             assertEquals(segment.getRowCount() - showCount, deleteRowList.size());
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            assertTrue(false);
-        }
     }
 
     @Test
-    public void testHisDeleteWithResultSet() {
-        try {
+    public void testHisDeleteWithResultSet() throws Exception {
             DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "HisSwiftDeleterTest");
 
             SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
@@ -153,9 +150,5 @@ public class HisSwiftDeleterTest extends BaseTest {
             }
             //allshowindex改变
             assertEquals(segment.getRowCount() - showCount, 482);
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            assertTrue(false);
-        }
     }
 }

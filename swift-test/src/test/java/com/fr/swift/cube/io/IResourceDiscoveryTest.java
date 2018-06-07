@@ -32,7 +32,7 @@ public class IResourceDiscoveryTest extends TestIo {
     @Test
     public void testGetReader() throws ExecutionException, InterruptedException {
         List<Future<Reader>> readers = new ArrayList<>();
-        IResourceLocation location = new ResourceLocation(CUBES_PATH + "/int/child", StoreType.MEMORY);
+        IResourceLocation location = new ResourceLocation(CUBES_PATH + "/int/seg0/c1", StoreType.MEMORY);
         for (int i = 0; i < 16; i++) {
             readers.add(exec.submit(() -> DISCOVERY.getReader(location, new BuildConf(IoType.READ, DataType.INT))));
         }
@@ -47,7 +47,7 @@ public class IResourceDiscoveryTest extends TestIo {
     @Test
     public void testGetWriter() throws ExecutionException, InterruptedException {
         List<Future<Writer>> writers = new ArrayList<>();
-        IResourceLocation location = new ResourceLocation(CUBES_PATH + "/int/child", StoreType.MEMORY);
+        IResourceLocation location = new ResourceLocation(CUBES_PATH + "/int/seg0/c1", StoreType.MEMORY);
         for (int i = 0; i < 16; i++) {
             writers.add(exec.submit(() -> DISCOVERY.getWriter(location, new BuildConf(IoType.WRITE, DataType.INT))));
         }

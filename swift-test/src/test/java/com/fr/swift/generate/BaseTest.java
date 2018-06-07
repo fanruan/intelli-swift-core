@@ -8,15 +8,15 @@ import com.fr.swift.service.LocalSwiftServerService;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.db.TestConnectionProvider;
 import com.fr.swift.test.Preparer;
+import org.junit.BeforeClass;
 
 public abstract class BaseTest extends BaseConfigTest {
     protected static final SwiftLogger LOGGER = SwiftLoggers.getLogger(BaseTest.class);
 
-    @Override
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void boot() {
         Preparer.prepareFrEnv();
         Preparer.prepareContext();
-        super.setUp();
         new LocalSwiftServerService().start();
         TestConnectionProvider.createConnection();
     }

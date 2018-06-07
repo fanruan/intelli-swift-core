@@ -14,9 +14,13 @@ import com.fr.swift.segment.RealTimeSegment;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.excel.ExcelDataSource;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -28,6 +32,7 @@ import java.util.List;
  */
 public class ExcelIncreSingleTest extends BaseExcelTest {
 
+    @Test
     public void testIncreaseOneFile() throws Exception {
         dataSource = new ExcelDataSource(path1, names, types);
         TableTransporter tableTransporter = new TableTransporter(dataSource);
