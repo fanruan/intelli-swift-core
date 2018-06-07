@@ -5,7 +5,5 @@ package com.fr.swift.source.alloter;
  * @date 2018/6/5
  */
 public interface SegmentInfo {
-    String getName();
-
     int getOrder();
 }

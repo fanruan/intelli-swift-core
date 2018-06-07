@@ -27,7 +27,6 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         new Incrementer(tableKey).increment(resultSet);
     }
 
-
     @Override
     public void merge(List<SourceKey> tableKeys) {
         SwiftLoggers.getLogger().info("merge");
