@@ -21,5 +21,7 @@ public @interface RpcService {
 
     Class<?> value();
 
-    String version() default "";
+    //0 server端service
+    //1 client端service
+    int type() default 0;
 }

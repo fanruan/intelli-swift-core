@@ -2,6 +2,7 @@ package com.fr.swift.service.listener;
 
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.rpc.annotation.RpcService;
 import com.fr.swift.service.SwiftService;
 import com.fr.swift.service.SwiftServiceEvent;
 
@@ -9,6 +10,7 @@ import com.fr.swift.service.SwiftServiceEvent;
  * Created by pony on 2017/11/9.
  * 待实现，向远程的serverService注册本地启动的服务，触发事件
  */
+@RpcService(value = SwiftServiceListenerHandler.class, type = 0)
 public class RemoteServiceSender implements SwiftServiceListenerHandler {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(RemoteServiceSender.class);

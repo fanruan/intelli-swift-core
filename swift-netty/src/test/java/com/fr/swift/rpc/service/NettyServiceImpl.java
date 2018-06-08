@@ -10,7 +10,7 @@ import com.fr.swift.rpc.annotation.RpcService;
  * @description
  * @since Advanced FineBI 5.0
  */
-@RpcService(NettyService.class)
+@RpcService(value = NettyService.class, type = 0)
 public class NettyServiceImpl implements NettyService {
     @Override
     public String print(String name) {

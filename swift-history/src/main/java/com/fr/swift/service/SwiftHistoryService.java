@@ -7,6 +7,7 @@ import com.fr.swift.query.QueryInfo;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.SwiftRepositoryManager;
+import com.fr.swift.rpc.annotation.RpcService;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.io.IOException;
@@ -18,6 +19,7 @@ import java.util.Set;
 /**
  * Created by pony on 2017/10/10.
  */
+@RpcService(value = HistoryService.class, type = 1)
 public class SwiftHistoryService extends AbstractSwiftService implements HistoryService, Serializable {
 
     private static final long serialVersionUID = -6013675740141588108L;

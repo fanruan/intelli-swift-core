@@ -31,7 +31,7 @@
         </dependency>
         <dependency>
             <groupId>com.finebi</groupId>
-            <artifactId>swift-boot</artifactId>
+            <artifactId>swift-commucation</artifactId>
             <version>5.0-FEATURE-SNAPSHOT</version>
         </dependency>
         <!-- Netty -->
@@ -40,17 +40,18 @@
             <artifactId>netty-all</artifactId>
             <version>4.1.24.Final</version>
         </dependency>
+        <!--zookeeper暂时不启用-->
         <!-- ZooKeeper -->
-        <dependency>
-            <groupId>org.apache.zookeeper</groupId>
-            <artifactId>zookeeper</artifactId>
-            <version>3.4.12</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.apache.zookeeper</groupId>-->
+            <!--<artifactId>zookeeper</artifactId>-->
+            <!--<version>3.4.12</version>-->
+        <!--</dependency>-->
         <!-- ZkClient -->
-        <dependency>
-            <groupId>com.101tec</groupId>
-            <artifactId>zkclient</artifactId>
-            <version>0.10</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.101tec</groupId>-->
+            <!--<artifactId>zkclient</artifactId>-->
+            <!--<version>0.10</version>-->
+        <!--</dependency>-->
     </dependencies>
 </project>

@@ -16,26 +16,11 @@ import java.lang.reflect.Proxy;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class LocalProxyFactory implements ProxyFactory {
-
-    @Override
-    public <T> T getProxy(Invoker<T> invoker) {
-        InvocationHandler invocationHandler = new InvokerInvocationHandler(invoker);
-        Class interfaceClass = invoker.getInterface();
-        T t = (T) Proxy.newProxyInstance(interfaceClass.getClassLoader(), new Class<?>[]
-                {interfaceClass}, invocationHandler);
-        return t;
-    }
+public class LocalProxyFactory extends AbstractProxyFactory {
 
     @Override
     public <T> Invoker<T> getInvoker(T proxy, Class<T> type, URL url) {
         return new SwiftInvoker<T>(proxy, type, url);
     }
 
-    @Override
-    public <T> T getProxy(T proxy, Class<T> type, URL url) {
-        Invoker invoker = getInvoker(proxy, type, url);
-        T t = (T) getProxy(invoker);
-        return t;
-    }
 }

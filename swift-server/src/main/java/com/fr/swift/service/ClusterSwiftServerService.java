@@ -1,14 +1,15 @@
 package com.fr.swift.service;
 
 import com.fr.swift.ProxyFactory;
+import com.fr.swift.URL;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.frrpc.FRDestination;
-import com.fr.swift.frrpc.FRProxyCache;
-import com.fr.swift.frrpc.FRUrl;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.property.SwiftProperty;
+import com.fr.swift.rpc.url.RPCDestination;
+import com.fr.swift.rpc.url.RPCUrl;
 import com.fr.swift.selector.ProxySelector;
 import com.fr.swift.util.Crasher;
 
@@ -61,6 +62,9 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
 
     @Override
     public void registerService(SwiftService service) {
+
+        SwiftProperty swiftProperty = (SwiftProperty) SwiftContext.getInstance().getRpcContext().getBean("swiftProperty");
+
         if (service.getID() == null) {
             Crasher.crash("Service's clusterId is null! Can't be registered!");
         }
@@ -68,15 +72,17 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
         ProxyFactory proxyFactory = ProxySelector.getInstance().getFactory();
         synchronized (this) {
             serviceInfoService.saveOrUpdateServiceInfo(new SwiftServiceInfoBean(
-                    service.getServiceType().name(), service.getID(), "", false));
+                    service.getServiceType().name(), service.getID(), swiftProperty.getRpcAddress(), false));
             switch (service.getServiceType()) {
                 case ANALYSE:
                     analyseServiceMap.put(service.getID(), (SwiftAnalyseService) service);
                     break;
                 case HISTORY:
                     try {
-                        HistoryService historyServiceProxy = proxyFactory.getProxy((HistoryService) FRProxyCache.getInstance(HistoryService.class),
-                                HistoryService.class, new FRUrl(new FRDestination(service.getID())));
+//                        HistoryService historyServiceProxy = proxyFactory.getProxy((HistoryService) FRProxyCache.getInstance(HistoryService.class),
+//                                HistoryService.class, new FRUrl(new FRDestination(service.getID())));
+                        URL url = new RPCUrl(new RPCDestination(service.getID()));
+                        HistoryService historyServiceProxy = proxyFactory.getProxy(null, HistoryService.class, url);
                         historyServiceMap.put(service.getID(), historyServiceProxy);
                     } catch (Exception e) {
                         historyServiceMap.put(service.getID(), (HistoryService) service);

@@ -7,6 +7,7 @@ package com.fr.swift.rpc;
  * @description
  * @since Advanced FineBI 5.0
  */
+@Deprecated
 public interface NettyService {
 
     String print(String name);
