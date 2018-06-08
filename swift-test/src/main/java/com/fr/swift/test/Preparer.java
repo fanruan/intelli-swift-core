@@ -16,7 +16,7 @@ import java.io.File;
  * @date 2018/5/8
  */
 public class Preparer {
-    public static void prepareFrEnv() throws Exception {
+    public static void prepareFrEnv() {
         new EnvInitializer().start();
         File f = new File(System.getProperty("user.dir") + "/WEB-INF");
         f.mkdirs();
@@ -25,8 +25,8 @@ public class Preparer {
     }
 
     public static void prepareCubeBuild() throws Exception {
-        prepareContext();
         prepareFrEnv();
+        prepareContext();
         TestConfDb.setConfDb();
         TestConnectionProvider.createConnection();
     }

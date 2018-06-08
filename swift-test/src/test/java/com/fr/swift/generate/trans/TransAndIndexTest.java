@@ -1,6 +1,5 @@
 package com.fr.swift.generate.trans;
 
-import com.fr.swift.config.TestConfDb;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.task.SchedulerTask;
@@ -23,12 +22,18 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.LocalSwiftServerService;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.db.QueryDBSource;
-import com.fr.swift.source.db.TestConnectionProvider;
 import com.fr.swift.structure.Pair;
+import com.fr.swift.test.Preparer;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author anchore
@@ -38,11 +43,10 @@ public class TransAndIndexTest extends BaseConfigTest {
     CountDownLatch latch = new CountDownLatch(1);
 
     @Override
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
         super.setUp();
+        Preparer.prepareCubeBuild();
         new LocalSwiftServerService().start();
-        TestConnectionProvider.createConnection();
-        TestConfDb.setConfDb();
     }
 
     /**
@@ -50,6 +54,7 @@ public class TransAndIndexTest extends BaseConfigTest {
      *
      * @throws Exception
      */
+    @Test
     public void testTransport() throws Exception {
         DataSource dataSource = new QueryDBSource("select * from DEMO_CAPITAL_RETURN", "allTest");
 
@@ -107,16 +112,13 @@ public class TransAndIndexTest extends BaseConfigTest {
         assertTrue(segment.getAllShowIndex().contains(0));
         assertTrue(segment.getAllShowIndex().contains(681));
         assertFalse(segment.getAllShowIndex().contains(682));
-        try {
-            for (int i = 1; i <= dataSource.getMetadata().getColumnCount(); i++) {
-                String columnName = dataSource.getMetadata().getColumnName(i);
-                Column column = segment.getColumn(new ColumnKey(columnName));
-                assertNotNull(column.getBitmapIndex().getBitMapIndex(1));
-                assertNotNull(column.getDictionaryEncodedColumn().getIndexByRow(1));
-                assertNotNull(column.getDetailColumn().get(1));
-            }
-        } catch (Exception e) {
-            assertTrue(false);
+
+        for (int i = 1; i <= dataSource.getMetadata().getColumnCount(); i++) {
+            String columnName = dataSource.getMetadata().getColumnName(i);
+            Column column = segment.getColumn(new ColumnKey(columnName));
+            assertNotNull(column.getBitmapIndex().getBitMapIndex(1));
+            assertNotNull(column.getDictionaryEncodedColumn().getIndexByRow(1));
+            assertNotNull(column.getDetailColumn().get(1));
         }
     }
 }
