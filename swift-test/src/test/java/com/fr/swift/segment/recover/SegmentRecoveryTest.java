@@ -20,6 +20,7 @@ import com.fr.swift.source.db.TestConnectionProvider;
 import com.fr.swift.test.Preparer;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -33,12 +34,17 @@ public class SegmentRecoveryTest {
 
     private ConnectionInfo connectionInfo;
 
+    @BeforeClass
+    public static void boot() throws Exception {
+        Preparer.prepareCubeBuild();
+    }
+
+
     @Before
     public void setUp() throws Exception {
         TestConfDb.setConfDb();
         connectionInfo = TestConnectionProvider.createConnection();
         dataSource = new QueryDBSource("select * from DEMO_CAPITAL_RETURN", "RealtimeRecorderTest");
-        Preparer.prepareCubeBuild();
         operators = SwiftContext.getInstance().getBean(SwiftDataOperatorProvider.class);
     }
 

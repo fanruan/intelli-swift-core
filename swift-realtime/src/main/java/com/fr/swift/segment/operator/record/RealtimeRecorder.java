@@ -5,6 +5,7 @@ import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
+import com.fr.swift.db.impl.SwiftDatabase.Schema;
 import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
