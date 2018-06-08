@@ -210,7 +210,7 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
     }
 
     private void persistSegment() {
-        segmentService.addSegments(configSegment);
+        segmentService.updateSegments(sourceKey.getId(), configSegment);
     }
 
     @Override

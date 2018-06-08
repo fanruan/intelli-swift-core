@@ -12,7 +12,7 @@ import java.util.Random;
 public abstract class BaseIoTest {
     final Random r = new Random();
     static final int BOUND = 100000;
-    public static final String CUBES_PATH = System.getProperty("user.dir") + "/cubes/";
+    public static final String CUBES_PATH = System.getProperty("user.dir") + "/cubes/table/seg0/column";
 
     @Test
     public abstract void testOverwritePutThenGet();

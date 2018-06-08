@@ -9,6 +9,7 @@ import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.test.Preparer;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -31,6 +32,7 @@ public class DatabaseTest {
     @BeforeClass
     public static void beforeClass() throws Exception {
         TestConfDb.setConfDb();
+        Preparer.prepareContext();
     }
 
     @Test

@@ -21,7 +21,7 @@ public class ExcelDataModelCreator {
         if (isCsv(filePath)) {
             return new CSVDataModel(inputStream, filePath);
         }
-        ExcelUtil.checkHead(inputStream, filePath);
+        ExcelUtil.checkHead(filePath);
         return new ExcelDataModel(inputStream, filePath);
     }
 
@@ -34,7 +34,7 @@ public class ExcelDataModelCreator {
         if (isCsv(filePath)) {
             return new CSVDataModel(filePath);
         }
-        ExcelUtil.checkHead(null, filePath);
+        ExcelUtil.checkHead(filePath);
         return new ExcelDataModel(filePath);
     }
 

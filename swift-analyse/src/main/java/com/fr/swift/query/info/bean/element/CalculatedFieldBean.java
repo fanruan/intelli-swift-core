@@ -1,4 +1,4 @@
-package com.fr.swift.query.info.bean;
+package com.fr.swift.query.info.bean.element;
 
 import com.fr.swift.query.info.element.target.cal.CalTargetType;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
@@ -13,9 +13,9 @@ public class CalculatedFieldBean {
     @JsonProperty
     private CalTargetType type;
     @JsonProperty
-    private String name;    // 计算指标的名称
+    private String name;
     @JsonProperty
-    private List<String> parameter;
+    private List<String> parameters;
 
     public CalTargetType getType() {
         return type;
@@ -33,11 +33,11 @@ public class CalculatedFieldBean {
         this.name = name;
     }
 
-    public List<String> getParameter() {
-        return parameter;
+    public List<String> getParameters() {
+        return parameters;
     }
 
-    public void setParameter(List<String> parameter) {
-        this.parameter = parameter;
+    public void setParameters(List<String> parameters) {
+        this.parameters = parameters;
     }
 }

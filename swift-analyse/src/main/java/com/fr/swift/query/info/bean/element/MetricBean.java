@@ -1,4 +1,4 @@
-package com.fr.swift.query.info.bean;
+package com.fr.swift.query.info.bean.element;
 
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
@@ -9,11 +9,13 @@ import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 public class MetricBean {
 
     @JsonProperty
+    private AggregatorType type;
+    @JsonProperty
     private String name;
     @JsonProperty
-    private FilterInfoBean filterInfoBean;
+    private String fieldName;
     @JsonProperty
-    private AggregatorType type;
+    private FilterInfoBean filterInfoBean;
 
     public String getName() {
         return name;
@@ -21,6 +23,14 @@ public class MetricBean {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getFieldName() {
+        return fieldName;
+    }
+
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
     }
 
     public FilterInfoBean getFilterInfoBean() {

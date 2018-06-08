@@ -2,6 +2,7 @@ package com.fr.swift.query.info;
 
 import com.fr.swift.query.QueryInfo;
 import com.fr.swift.query.info.element.dimension.Dimension;
+import com.fr.swift.query.info.group.post.PostQueryInfo;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.util.List;
@@ -12,7 +13,10 @@ import java.util.List;
  */
 public interface ResultJoinQueryInfo<T extends SwiftResultSet> extends QueryInfo<T> {
 
+    // TODO: 2018/6/7 这边的queryInfo只能是GroupQueryInfo？
     List<QueryInfo<T>> getQueryInfoList();
 
     List<Dimension> getJoinedDimensions();
+
+    List<PostQueryInfo> getPostQueryInfoList();
 }
