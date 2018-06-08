@@ -23,6 +23,7 @@ public class GroupQueryInfoImpl extends AbstractQueryInfo<NodeResultSet> impleme
     private List<Metric> metrics;
     private List<PostQueryInfo> postQueryInfoList;
 
+    @Deprecated
     public GroupQueryInfoImpl(String queryId, SourceKey table, DimensionInfo dimensionInfo, TargetInfo targetInfo) {
         super(queryId, table, null, null);
     }

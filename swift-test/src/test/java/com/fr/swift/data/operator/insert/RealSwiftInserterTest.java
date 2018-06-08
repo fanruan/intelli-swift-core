@@ -1,6 +1,5 @@
 package com.fr.swift.data.operator.insert;
 
-import com.fr.annotation.Test;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
@@ -15,9 +14,14 @@ import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.QueryDBSource;
+import com.fr.swift.test.TestResource;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This class created on 2018/3/26
@@ -28,6 +32,8 @@ import java.util.List;
  */
 public class RealSwiftInserterTest extends BaseTest {
 
+    private final String path = TestResource.getRunPath(getClass());
+
     @Test
     public void testInsertDataNullIndex() throws Exception {
         DataSource dataSource = new QueryDBSource("select USER_NUMBER from DEMO_HR_USER", "RealSwiftInserterTest");
@@ -35,7 +41,7 @@ public class RealSwiftInserterTest extends BaseTest {
         SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
         SwiftResultSet resultSet = transfer.createResultSet();
 
-        String cubePath = System.getProperty("user.dir") + "/cubes/" + dataSource.getSourceKey().getId() + "/seg0";
+        String cubePath = path + "/cubes/" + dataSource.getSourceKey().getId() + "/seg0";
         IResourceLocation location = new ResourceLocation(cubePath, Types.StoreType.MEMORY);
         Segment segment = new RealTimeSegmentImpl(location, dataSource.getMetadata());
 
@@ -64,7 +70,7 @@ public class RealSwiftInserterTest extends BaseTest {
         SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
         SwiftResultSet resultSet = transfer.createResultSet();
 
-        String cubePath = System.getProperty("user.dir") + "/cubes/" + dataSource.getSourceKey().getId() + "/seg0";
+        String cubePath = path + "/cubes/" + dataSource.getSourceKey().getId() + "/seg0";
         IResourceLocation location = new ResourceLocation(cubePath, Types.StoreType.MEMORY);
         Segment segment = new RealTimeSegmentImpl(location, dataSource.getMetadata());
 
@@ -92,7 +98,7 @@ public class RealSwiftInserterTest extends BaseTest {
         SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
         SwiftResultSet resultSet = transfer.createResultSet();
 
-        String cubePath = System.getProperty("user.dir") + "/cubes/" + dataSource.getSourceKey().getId() + "/seg1";
+        String cubePath = path + "/cubes/" + dataSource.getSourceKey().getId() + "/seg1";
         IResourceLocation location = new ResourceLocation(cubePath, Types.StoreType.MEMORY);
         Segment segment = new RealTimeSegmentImpl(location, dataSource.getMetadata());
 

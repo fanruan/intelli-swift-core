@@ -4,6 +4,7 @@ import com.fr.swift.query.QueryInfo;
 import com.fr.swift.query.QueryType;
 import com.fr.swift.query.info.ResultJoinQueryInfo;
 import com.fr.swift.query.info.element.dimension.Dimension;
+import com.fr.swift.query.info.group.post.PostQueryInfo;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.util.List;
@@ -16,11 +17,14 @@ public class ResultJoinQueryInfoImpl<T extends SwiftResultSet> implements Result
     private String queryId;
     private List<QueryInfo<T>> queryInfoList;
     private List<Dimension> dimensions;
+    private List<PostQueryInfo> postQueryInfoList;
 
-    public ResultJoinQueryInfoImpl(String queryId, List<QueryInfo<T>> queryInfoList, List<Dimension> dimensions) {
+    public ResultJoinQueryInfoImpl(String queryId, List<QueryInfo<T>> queryInfoList,
+                                   List<Dimension> dimensions, List<PostQueryInfo> postQueryInfoList) {
         this.queryId = queryId;
         this.queryInfoList = queryInfoList;
         this.dimensions = dimensions;
+        this.postQueryInfoList = postQueryInfoList;
     }
 
     @Override
@@ -31,6 +35,11 @@ public class ResultJoinQueryInfoImpl<T extends SwiftResultSet> implements Result
     @Override
     public List<Dimension> getJoinedDimensions() {
         return dimensions;
+    }
+
+    @Override
+    public List<PostQueryInfo> getPostQueryInfoList() {
+        return postQueryInfoList;
     }
 
     @Override

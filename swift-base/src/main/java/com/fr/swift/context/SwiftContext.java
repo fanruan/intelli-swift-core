@@ -34,8 +34,21 @@ public class SwiftContext extends AnnotationConfigApplicationContext {
 
     }
 
+    volatile
+    private boolean refreshed = false;
+
     public static void init(String... packages) {
-        INSTANCE.scan(packages);
-        INSTANCE.refresh();
+        if (INSTANCE.refreshed) {
+            return;
+        }
+        synchronized (INSTANCE) {
+            if (INSTANCE.refreshed) {
+                return;
+            }
+            INSTANCE.scan(packages);
+            INSTANCE.refresh();
+
+            INSTANCE.refreshed = true;
+        }
     }
 }

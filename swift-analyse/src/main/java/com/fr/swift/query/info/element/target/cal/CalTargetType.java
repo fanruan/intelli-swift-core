@@ -28,5 +28,13 @@ public enum CalTargetType {
     COUSIN_VALUE,
     COUSIN_RATE,
 
-    FORMULA
+    FORMULA,
+
+    /**
+     * 简单的加减乘除不走公式了
+     */
+    ARITHMETIC_ADD,
+    ARITHMETIC_SUB,
+    ARITHMETIC_MUL,
+    ARITHMETIC_DIV,
 }

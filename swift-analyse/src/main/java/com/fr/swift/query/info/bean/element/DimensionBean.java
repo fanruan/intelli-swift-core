@@ -1,4 +1,4 @@
-package com.fr.swift.query.info.bean;
+package com.fr.swift.query.info.bean.element;
 
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 
@@ -10,7 +10,7 @@ public class DimensionBean {
     @JsonProperty
     private String name;
     @JsonProperty
-    private SortBean sortBean;
+    private String fieldName;
     @JsonProperty
     private GroupBean groupBean;
 
@@ -22,12 +22,12 @@ public class DimensionBean {
         this.name = name;
     }
 
-    public SortBean getSortBean() {
-        return sortBean;
+    public String getFieldName() {
+        return fieldName;
     }
 
-    public void setSortBean(SortBean sortBean) {
-        this.sortBean = sortBean;
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
     }
 
     public GroupBean getGroupBean() {

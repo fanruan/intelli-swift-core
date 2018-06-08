@@ -15,22 +15,9 @@ import com.fr.swift.query.group.info.cursor.ExpanderType;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.group.GroupQueryInfo;
-import com.fr.swift.query.info.group.post.CalculatedFieldQueryInfo;
-import com.fr.swift.query.info.group.post.HavingFilterQueryInfo;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
-import com.fr.swift.query.info.group.post.RowSortQueryInfo;
-import com.fr.swift.query.info.group.post.TreeAggregationQueryInfo;
-import com.fr.swift.query.info.group.post.TreeFilterQueryInfo;
-import com.fr.swift.query.info.group.post.TreeSortQueryInfo;
-import com.fr.swift.query.post.FieldCalQuery;
-import com.fr.swift.query.post.HavingFilterQuery;
 import com.fr.swift.query.post.PostQuery;
-import com.fr.swift.query.post.PostQueryType;
 import com.fr.swift.query.post.PrepareMetaDataQuery;
-import com.fr.swift.query.post.RowSortQuery;
-import com.fr.swift.query.post.TreeAggregationQuery;
-import com.fr.swift.query.post.TreeFilterQuery;
-import com.fr.swift.query.post.TreeSortQuery;
 import com.fr.swift.query.post.UpdateNodeDataQuery;
 import com.fr.swift.query.result.ResultQuery;
 import com.fr.swift.query.result.group.GroupResultQuery;
@@ -61,30 +48,8 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
     public Query<NodeResultSet> buildPostQuery(ResultQuery<NodeResultSet> query, GroupQueryInfo info) {
         PostQuery<NodeResultSet> tmpQuery = new UpdateNodeDataQuery(query);
         List<PostQueryInfo> postQueryInfoList = info.getPostQueryInfoList();
-        for (PostQueryInfo postQueryInfo : postQueryInfoList) {
-            PostQueryType type = postQueryInfo.getType();
-            switch (type) {
-                case CAL_FIELD:
-                    tmpQuery = new FieldCalQuery(tmpQuery, ((CalculatedFieldQueryInfo) postQueryInfo).getCalInfoList());
-                    break;
-                case HAVING_FILTER:
-                    tmpQuery = new HavingFilterQuery(tmpQuery, ((HavingFilterQueryInfo) postQueryInfo).getMatchFilterList());
-                    break;
-                case TREE_FILTER:
-                    tmpQuery = new TreeFilterQuery(tmpQuery, ((TreeFilterQueryInfo) postQueryInfo).getMatchFilterList());
-                    break;
-                case TREE_AGGREGATION:
-                    tmpQuery = new TreeAggregationQuery(tmpQuery, ((TreeAggregationQueryInfo) postQueryInfo).getAggregators());
-                    break;
-                case TREE_SORT:
-                    tmpQuery = new TreeSortQuery(tmpQuery, ((TreeSortQueryInfo) postQueryInfo).getSortList());
-                    break;
-                case ROW_SORT:
-                    tmpQuery = new RowSortQuery(tmpQuery, ((RowSortQueryInfo) postQueryInfo).getSortList());
-                    break;
-            }
-        }
-        //最后一层query的结果要包含SwiftMetaData
+        tmpQuery = PostQueryBuilder.buildQuery(tmpQuery, postQueryInfoList);
+        // 最后一层query的结果要包含SwiftMetaData
         return new PrepareMetaDataQuery(tmpQuery, info);
     }
 

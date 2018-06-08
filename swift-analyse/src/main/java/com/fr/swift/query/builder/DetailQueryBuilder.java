@@ -20,7 +20,7 @@ import java.util.List;
  * Created by pony on 2017/12/13.
  */
 // TODO: 2018/6/6 明细查询这边的细节有待梳理
-final class DetailQueryBuilder {
+class DetailQueryBuilder {
 
     /**
      * 给最外层查询节点（查询服务节点）条用并构建query，根据segment分布信息区分本地query和远程query

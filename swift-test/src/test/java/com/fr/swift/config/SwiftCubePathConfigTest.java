@@ -1,8 +1,11 @@
 package com.fr.swift.config;
 
-import com.fr.annotation.Test;
 import com.fr.swift.generate.BaseTest;
 import com.fr.swift.test.Preparer;
+import com.fr.swift.test.TestResource;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * This class created on 2018/5/7
@@ -21,7 +24,7 @@ public class SwiftCubePathConfigTest extends BaseTest {
     @Test
     public void testSetAndGet() {
         String path = String.valueOf(System.currentTimeMillis());
-        String newPath = System.getProperty("user.dir") + "/" + path;
+        String newPath = TestResource.getRunPath(getClass()) + "/" + path;
         SwiftCubePathConfig.getInstance().setPath(newPath);
         assertEquals(SwiftCubePathConfig.getInstance().getPath(), newPath);
     }

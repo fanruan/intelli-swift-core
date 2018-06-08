@@ -1,10 +1,10 @@
 package com.fr.swift.query.info.bean.post;
 
-import com.fr.swift.query.info.bean.SortBean;
+import com.fr.swift.query.info.bean.element.SortBean;
 import com.fr.swift.query.post.PostQueryType;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * Created by Lyon on 2018/6/3.
@@ -12,14 +12,14 @@ import java.util.Map;
 public class RowSortQueryInfoBean extends AbstractPostQueryInfoBean {
 
     @JsonProperty
-    private Map<String, SortBean> sortMap;
+    private List<SortBean> sortBeans;
 
-    public Map<String, SortBean> getSortMap() {
-        return sortMap;
+    public List<SortBean> getSortBeans() {
+        return sortBeans;
     }
 
-    public void setSortMap(Map<String, SortBean> sortMap) {
-        this.sortMap = sortMap;
+    public void setSortBeans(List<SortBean> sortBeans) {
+        this.sortBeans = sortBeans;
     }
 
     @Override

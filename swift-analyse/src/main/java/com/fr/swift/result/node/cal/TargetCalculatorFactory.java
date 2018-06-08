@@ -74,6 +74,16 @@ public class TargetCalculatorFactory {
             case FORMULA:
                 return new GroupFormulaCalculator(target.paramIndexes(), target.resultIndex(),
                         ((GroupFormulaTarget) target).getFormula(), iterator.next());
+            case ARITHMETIC_ADD:
+            case ARITHMETIC_DIV:
+            case ARITHMETIC_MUL:
+            case ARITHMETIC_SUB:
+                return new ArithmeticTargetCalculator(type, target.paramIndexes(), target.resultIndex(), new MapperIterator<GroupNode, AggregatorValue[]>(new LeafNodeIterator(groupNode), new Function<GroupNode, AggregatorValue[]>() {
+                    @Override
+                    public AggregatorValue[] apply(GroupNode p) {
+                        return p.getAggregatorValue();
+                    }
+                }));
         }
         return null;
     }

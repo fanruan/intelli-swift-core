@@ -11,6 +11,7 @@ import com.fr.swift.source.etl.BaseCreateSegment2Test;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +55,7 @@ public class JoinOperatorTest extends TestCase {
         EasyMock.expect(metaData2.getColumn("column3")).andReturn(metaDataColumn).anyTimes();
         EasyMock.expect(metaData2.getColumn("column4")).andReturn(metaDataColumn).anyTimes();
         EasyMock.expect(metaDataColumn.getName()).andReturn("column1").times(1).andReturn("column2").times(1).andReturn("column3").times(1).andReturn("column4").times(1);
-        EasyMock.expect(metaDataColumn.getType()).andReturn(16).anyTimes();
+        EasyMock.expect(metaDataColumn.getType()).andReturn(Types.VARCHAR).anyTimes();
         EasyMock.expect(metaDataColumn.getPrecision()).andReturn(8).anyTimes();
         EasyMock.expect(metaDataColumn.getScale()).andReturn(0).anyTimes();
         EasyMock.replay(parent1);

@@ -2,7 +2,7 @@ package com.fr.swift.test;
 
 import com.fr.base.FRContext;
 import com.fr.core.env.EnvContext;
-import com.fr.core.env.resource.LocalEnvConfig;
+import com.fr.core.env.impl.LocalEnvConfig;
 import com.fr.dav.LocalEnv;
 import com.fr.startup.EnvInitializer;
 import com.fr.swift.config.TestConfDb;
@@ -16,7 +16,7 @@ import java.io.File;
  * @date 2018/5/8
  */
 public class Preparer {
-    public static void prepareFrEnv() throws Exception {
+    public static void prepareFrEnv() {
         new EnvInitializer().start();
         File f = new File(System.getProperty("user.dir") + "/WEB-INF");
         f.mkdirs();
@@ -25,8 +25,8 @@ public class Preparer {
     }
 
     public static void prepareCubeBuild() throws Exception {
-        prepareContext();
         prepareFrEnv();
+        prepareContext();
         TestConfDb.setConfDb();
         TestConnectionProvider.createConnection();
     }
