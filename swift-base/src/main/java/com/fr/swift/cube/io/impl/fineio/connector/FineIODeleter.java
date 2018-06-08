@@ -1,7 +1,9 @@
 package com.fr.swift.cube.io.impl.fineio.connector;
 
 import com.fineio.FineIO;
+import com.fineio.FineIO.MODEL;
 import com.fineio.io.file.IOFile;
+import com.fineio.io.file.ReadIOFile;
 import com.fineio.storage.Connector;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Crasher;
@@ -36,8 +38,8 @@ public class FineIODeleter {
             @Override
             public void run() {
                 try {
-                    IOFile ioFile = FineIO.createIOFile(connector, URI.create(path), FineIO.MODEL.WRITE_BYTE);
-                    ioFile.delete();
+                    IOFile ioFile = FineIO.createIOFile(connector, URI.create(path), MODEL.READ_BYTE);
+                    ((ReadIOFile) ioFile).delete();
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().error(e);
                     Crasher.crash(e);

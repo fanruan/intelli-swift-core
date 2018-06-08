@@ -15,6 +15,7 @@ import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.test.Preparer;
+import com.fr.swift.test.TestResource;
 import com.fr.swift.util.FileUtil;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -37,7 +38,7 @@ public class SwiftInserterTest {
         dataSource = new QueryDBSource("select 客户状态 from DEMO_CUSTOMER", SwiftInserterTest.class.getSimpleName());
         transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
         cubePath = String.format("%s/cubes/%s/seg0",
-                System.getProperty("user.dir"), dataSource.getSourceKey().getId());
+                TestResource.getRunPath(SwiftInserterTest.class), dataSource.getSourceKey().getId());
         FileUtil.delete(cubePath);
     }
 

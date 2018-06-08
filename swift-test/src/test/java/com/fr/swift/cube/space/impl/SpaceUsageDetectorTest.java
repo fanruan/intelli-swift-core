@@ -1,6 +1,7 @@
 package com.fr.swift.cube.space.impl;
 
 import com.fr.swift.cube.space.SpaceUsageDetector;
+import com.fr.swift.test.TestResource;
 import com.fr.swift.util.FileUtil;
 import com.fr.swift.util.Strings;
 import org.junit.After;
@@ -23,7 +24,7 @@ import static org.junit.Assert.assertTrue;
 public class SpaceUsageDetectorTest {
     SpaceUsageDetector detector = new LocalSpaceUsageDetector();
     URI uri;
-    String path = System.getProperty("user.dir") + "/" + getClass().getSimpleName();
+    String path = TestResource.getRunPath(getClass());
 
     @Before
     public void setup() throws IOException {
