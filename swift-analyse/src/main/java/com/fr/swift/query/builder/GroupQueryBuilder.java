@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Created by pony on 2017/12/14.
  */
-final class GroupQueryBuilder {
+class GroupQueryBuilder {
 
     /**
      * 给最外层查询节点（查询服务节点）条用并构建query，根据segment分布信息区分本地query和远程query

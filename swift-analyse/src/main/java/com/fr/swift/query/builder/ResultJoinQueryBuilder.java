@@ -4,6 +4,7 @@ import com.fr.swift.query.Query;
 import com.fr.swift.query.QueryInfo;
 import com.fr.swift.query.QueryType;
 import com.fr.swift.query.info.ResultJoinQueryInfo;
+import com.fr.swift.query.post.PostQuery;
 import com.fr.swift.query.post.ResultJoinQuery;
 import com.fr.swift.result.NodeResultSet;
 
@@ -14,7 +15,7 @@ import java.util.List;
 /**
  * Created by Lyon on 2018/5/31.
  */
-final class ResultJoinQueryBuilder {
+class ResultJoinQueryBuilder {
 
     static Query<NodeResultSet> buildQuery(ResultJoinQueryInfo info) throws SQLException {
         List<QueryInfo> infoList = info.getQueryInfoList();
@@ -24,6 +25,9 @@ final class ResultJoinQueryBuilder {
             assert queryInfo.getType() == QueryType.GROUP;
             queries.add(QueryBuilder.buildQuery(queryInfo));
         }
-        return new ResultJoinQuery(queries, info.getJoinedDimensions());
+        PostQuery<NodeResultSet> tmpQuery = new ResultJoinQuery(queries, info.getJoinedDimensions());
+        tmpQuery = PostQueryBuilder.buildQuery(tmpQuery, info.getPostQueryInfoList());
+        // TODO: 2018/6/7 更新metadata
+        return tmpQuery;
     }
 }

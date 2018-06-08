@@ -17,7 +17,6 @@ import com.fr.swift.adaptor.transformer.SortAdaptor;
 import com.fr.swift.adaptor.transformer.filter.dimension.DimensionFilterAdaptor;
 import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
-import com.fr.swift.config.service.SwiftConfigServiceProvider;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.QueryInfo;
@@ -87,8 +86,8 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
         String queryId = widget.getWidgetId();
         List<Dimension> dimensions = getDimension(widget);
         SourceKey target = new SourceKey(BusinessTableUtils.getSourceIdByTableId(widget.getTableName()));
-        SwiftMetaData swiftMetaData = SwiftConfigServiceProvider.getInstance().getMetaDataByKey(target.getId());
-        SwiftMetaData metaData = getMetaData(widget, swiftMetaData);
+//        SwiftMetaData swiftMetaData = SwiftConfigServiceProvider.getInstance().getMetaDataByKey(target.getId());
+        SwiftMetaData metaData = getMetaData(widget, null);
         DetailTarget[] targets = getTargets(widget);
         //没传进来排序顺序
         IntList sortIndex = IntListFactory.createHeapIntList();
@@ -205,8 +204,8 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
         FilterInfo filterInfo = new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND);
         String queryId = fromWidget.getwId();
         SourceKey target = new SourceKey(BusinessTableUtils.getSourceIdByTableId(detailWidget.getTableName()));
-        SwiftMetaData swiftMetaData = SwiftConfigServiceProvider.getInstance().getMetaDataByKey(target.getId());
-        SwiftMetaData metaData = getMetaData(detailWidget, swiftMetaData);
+//        SwiftMetaData swiftMetaData = SwiftConfigServiceProvider.getInstance().getMetaDataByKey(target.getId());
+        SwiftMetaData metaData = getMetaData(detailWidget, null);
         DetailTarget[] targets = getTargets(detailWidget);
         //没传进来排序顺序
         IntList sortIndex = IntListFactory.createHeapIntList();

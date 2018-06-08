@@ -20,10 +20,10 @@ public class StringCombineAggregateTest extends TestCase {
         DictionaryEncodedColumn dic = control.createMock(DictionaryEncodedColumn.class);
         EasyMock.expect(mockColumn.getDictionaryEncodedColumn()).andReturn(dic).anyTimes();
         EasyMock.expect(dic.getIndexByRow(EasyMock.anyInt())).andReturn(0).anyTimes();
-        EasyMock.expect(dic.getValue(EasyMock.anyInt())).andReturn("a").anyTimes();
+        EasyMock.expect(dic.getValueByRow(EasyMock.anyInt())).andReturn("a").anyTimes();
         control.replay();
         StringAggregateValue value = (StringAggregateValue) StringCombineAggregate.INSTANCE.aggregate(bitMap, mockColumn);
-        assertEquals(value.calculateValue(), "a,a,a,a");
+        assertEquals(value.calculateValue(), "a/a/a/a");
     }
 
     public void testCombine() {
@@ -32,8 +32,8 @@ public class StringCombineAggregateTest extends TestCase {
         StringAggregateValue v2 = new StringAggregateValue();
         v2.setValue("b");
         StringCombineAggregate.INSTANCE.combine(v1, v2);
-        assertEquals(v1.getValue(), "a,b");
+        assertEquals(v1.getValue(), "a/b");
         assertEquals(v1.calculate(), 0.0);
-        assertEquals(v1.calculateValue(), "a,b");
+        assertEquals(v1.calculateValue(), "a/b");
     }
 }

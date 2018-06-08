@@ -51,9 +51,10 @@ public class DetailQueryInfo extends AbstractQueryInfo<DetailResultSet> {
         this.metaData = metaData;
     }
 
-//    public Dimension[] getDimensions() {
-//        return dimensions;
-//    }
+    public DetailQueryInfo(String queryId, SourceKey table, FilterInfo filterInfo, List<Dimension> dimensions) {
+        super(queryId, table, filterInfo, dimensions);
+        // TODO: 2018/6/7 通用情况下，明细的行操作、排序有待定义
+    }
 
     public DetailTarget[] getTargets() {
         return targets;

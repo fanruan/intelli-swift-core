@@ -25,6 +25,11 @@ public enum QueryType {
     RESULT_JOIN,
 
     /**
+     * 嵌套查询
+     */
+    NEST,
+
+    /**
      * 远程全部查询，目标远程节点包含当前用户查询的所有数据分块。该类型仅内部使用！
      */
     LOCAL_ALL,
