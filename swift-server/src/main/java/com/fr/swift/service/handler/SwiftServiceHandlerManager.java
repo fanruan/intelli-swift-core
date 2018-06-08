@@ -1,16 +1,18 @@
 package com.fr.swift.service.handler;
 
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.event.base.AbstractAnalyseEvent;
-import com.fr.swift.event.base.AbstractHistoryEvent;
-import com.fr.swift.event.base.AbstractIndexingEvent;
-import com.fr.swift.event.base.AbstractRealTimeEvent;
-import com.fr.swift.event.base.SwiftEvent;
+import com.fr.swift.event.base.AbstractAnalyseRpcEvent;
+import com.fr.swift.event.base.AbstractHistoryRpcEvent;
+import com.fr.swift.event.base.AbstractIndexingRpcEvent;
+import com.fr.swift.event.base.AbstractRealTimeRpcEvent;
+import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.service.handler.analyse.SwiftAnalyseEventHandler;
 import com.fr.swift.service.handler.base.Handler;
 import com.fr.swift.service.handler.history.SwiftHistoryEventHandler;
 import com.fr.swift.service.handler.indexing.SwiftIndexingEventHandler;
 import com.fr.swift.service.handler.realtime.SwiftRealTimeEventHandler;
+
+import java.io.Serializable;
 
 /**
  * @author yee
@@ -30,23 +32,20 @@ public class SwiftServiceHandlerManager implements Handler {
     }
 
     @Override
-    public void handle(SwiftEvent event) {
+    public Serializable handle(SwiftRpcEvent event) {
         switch (event.type()) {
             case HISTORY:
-                historyEventHandler.handle((AbstractHistoryEvent) event);
-                break;
+                return historyEventHandler.handle((AbstractHistoryRpcEvent) event);
             case REAL_TIME:
-                realTimeEventHandler.handle((AbstractRealTimeEvent) event);
-                break;
+                return realTimeEventHandler.handle((AbstractRealTimeRpcEvent) event);
             case ANALYSE:
-                analyseService.handle((AbstractAnalyseEvent) event);
-                break;
+                return analyseService.handle((AbstractAnalyseRpcEvent) event);
             case INDEXING:
-                indexingEventHandler.handle((AbstractIndexingEvent) event);
-                break;
+                return indexingEventHandler.handle((AbstractIndexingRpcEvent) event);
             default:
                 break;
         }
+        return null;
     }
 
     private static class SingletonHandler {
