@@ -135,7 +135,7 @@ public class ResourceDiscovery implements IResourceDiscovery {
         minorMemios.clear();
     }
 
-    private static final Pattern PATTERN = Pattern.compile("/.+(/.+?)/seg\\d+?/.+");
+    private static final Pattern PATTERN = Pattern.compile("/.+/.+?(/seg\\d+?)/.+");
 
     private static boolean isMinor(String path) {
         return path.contains("minor_cubes");

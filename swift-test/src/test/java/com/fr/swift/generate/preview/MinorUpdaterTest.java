@@ -10,6 +10,7 @@ import com.fr.swift.source.etl.EtlSource;
 import com.fr.swift.source.etl.join.JoinColumn;
 import com.fr.swift.source.etl.join.JoinOperator;
 import com.fr.swift.source.etl.join.JoinType;
+import org.junit.Test;
 
 import java.util.Arrays;
 
@@ -20,7 +21,7 @@ import static org.junit.Assert.assertEquals;
  * @date 2018/2/2
  */
 public class MinorUpdaterTest extends BaseTest {
-
+    @Test
     public void testUpdate() throws Exception {
         DataSource demoCustomer = new TableDBSource("DEMO_CAPITAL_RETURN", "allTest");
         DataSource demoContract = new TableDBSource("DEMO_CONTRACT", "allTest");

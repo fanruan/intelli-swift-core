@@ -30,6 +30,6 @@ public class AllShowDetailFilterTest extends TestCase {
     }
 
     public void testMatches() {
-        assertEquals(filter.matches(null, 0, new ToStringConverter()), false);
+        assertTrue(filter.matches(null, 0, new ToStringConverter()));
     }
 }
