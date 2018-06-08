@@ -2,7 +2,7 @@ package com.fr.swift.test;
 
 import com.fr.base.FRContext;
 import com.fr.core.env.EnvContext;
-import com.fr.core.env.resource.LocalEnvConfig;
+import com.fr.core.env.impl.LocalEnvConfig;
 import com.fr.dav.LocalEnv;
 import com.fr.startup.EnvInitializer;
 import com.fr.swift.config.TestConfDb;

@@ -4,6 +4,7 @@ import com.fr.swift.compare.Comparators;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.structure.IntPair;
 import com.fr.swift.structure.external.map.intpairs.IntPairsExtMaps;
+import com.fr.swift.test.TestResource;
 import com.fr.swift.util.FileUtil;
 import junit.framework.TestCase;
 
@@ -23,7 +24,7 @@ public class IntPairsExtMapTest extends TestCase {
             list3 = Arrays.asList(of(0, 6), of(1, 7), of(2, 7)),
             list4 = Arrays.asList(of(3, 0), of(4, 1), of(5, 2));
 
-    String basePath = System.getProperty("user.dir");
+    String basePath = TestResource.getRunPath(getClass());
 
     public void testLongPutThenGet() {
         ExternalMap<Long, List<IntPair>> map =

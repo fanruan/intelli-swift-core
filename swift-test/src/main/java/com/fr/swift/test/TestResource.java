@@ -5,8 +5,8 @@ package com.fr.swift.test;
  * @date 2018/6/8
  */
 public class TestResource {
-    public static String getRunPath() {
-        return System.getProperty("user.dir") + "/" + getCallerClassSimpleName();
+    public static String getRunPath(Class<?> c) {
+        return System.getProperty("user.dir") + "/test_temp/" + c.getSimpleName();
     }
 
     public static String getCallerClassName() {

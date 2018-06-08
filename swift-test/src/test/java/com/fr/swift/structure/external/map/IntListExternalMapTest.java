@@ -5,6 +5,7 @@ import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.external.map.intlist.IntListExternalMapFactory;
+import com.fr.swift.test.TestResource;
 import com.fr.swift.util.FileUtil;
 import junit.framework.TestCase;
 
@@ -26,7 +27,7 @@ public class IntListExternalMapTest extends TestCase {
             list3 = Arrays.asList(6, 7, 7),
             list4 = Arrays.asList(0, 1, 2);
 
-    private String basePath = System.getProperty("user.dir");
+    private String basePath = TestResource.getRunPath(getClass());
 
     public void testLongPutThenGet() {
         ExternalMap<Long, IntList> map =

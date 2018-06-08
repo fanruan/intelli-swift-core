@@ -22,6 +22,7 @@ import com.fr.swift.source.alloter.line.LineRowInfo;
 import com.fr.swift.source.core.Core;
 import com.fr.swift.test.Preparer;
 import com.fr.swift.test.TestIo;
+import com.fr.swift.test.TestResource;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -123,7 +124,7 @@ public class LineSegmentAlloterTest extends TestIo {
             int index = alloter.allot(new LineRowInfo(i)).getOrder();
             if (lastIndex != index || null == segment) {
                 lastIndex = index;
-                ResourceLocation location = new ResourceLocation(System.getProperty("user.dir") + "/cubes/" + sourceKey.getId() + "/seg" + index);
+                ResourceLocation location = new ResourceLocation(TestResource.getRunPath(getClass()) + "/cubes/" + sourceKey.getId() + "/seg" + index);
                 segment = new HistorySegmentImpl(location, resultSet.getMetaData());
                 column = segment.getColumn(new ColumnKey("long")).getDetailColumn();
             }
