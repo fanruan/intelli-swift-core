@@ -147,6 +147,6 @@ task test_jar(dependsOn: compileJava) << {
             report(format: "frames", todir: "test_result/report")
         }
 
-        fail(if: "tests.failed", message: "There were test failures. See http://build.finedevelop.com/test/feature/swift-log/")
+        fail(if: "tests.failed", message: "There were test failures. See http://build.finedevelop.com/test/finereport10.0/feature/swift-log/")
     }
 }
