@@ -1,4 +1,4 @@
-package com.fr.swift.query.info.bean;
+package com.fr.swift.query.info.bean.element;
 
 import com.fr.swift.query.group.GroupType;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
