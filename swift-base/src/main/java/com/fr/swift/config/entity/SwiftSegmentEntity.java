@@ -26,7 +26,7 @@ public class SwiftSegmentEntity implements Convert<SegmentKeyBean> {
     @Column(name = SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER)
     private String segmentOwner;
 
-    @Column(name = SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_URI, unique = true, length = SwiftConfigConstants.LONG_TEXT_LENGTH)
+    @Column(name = SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_URI, length = SwiftConfigConstants.LONG_TEXT_LENGTH)
     @com.fr.third.javax.persistence.Convert(
             converter = URIConverter.class
     )

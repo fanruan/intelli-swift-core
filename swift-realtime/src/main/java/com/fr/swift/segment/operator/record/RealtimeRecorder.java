@@ -6,6 +6,7 @@ import com.fr.swift.config.SwiftCubePathConfig;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
+import com.fr.swift.db.impl.SwiftDatabase.Schema;
 import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
@@ -116,7 +117,7 @@ public class RealtimeRecorder implements Recorder {
     private Segment createSegment(int index) {
         String cubePath = String.format("%s/%s/%s/seg%d",
                 SwiftCubePathConfig.getInstance().getPath(),
-                swiftMetaData.getSwiftSchema().dir,
+                Schema.BACKUP_CUBE.dir,
                 cubeSourceKey, index);
         IResourceLocation location = new ResourceLocation(cubePath, Types.StoreType.FINE_IO);
         return new HistorySegmentImpl(location, swiftMetaData);

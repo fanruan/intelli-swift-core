@@ -82,8 +82,9 @@ public class SwiftDatabase implements Database {
     }
 
     public enum Schema {
-        CUBE(0, "cube", "cubes"),
-        DECISION_LOG(1, "decision_log", "log/cubes");
+        CUBE(0, "Cube", "cubes"),
+        DECISION_LOG(1, "Decision Log", "log/cubes"),
+        BACKUP_CUBE(2, "Backup Cube", "backup_cubes");
 
         public final int id;
         public final String name;
