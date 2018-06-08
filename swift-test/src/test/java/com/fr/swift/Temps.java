@@ -49,7 +49,7 @@ public final class Temps {
 
         @Override
         public T getValueByRow(int row) {
-            throw new UnsupportedOperationException();
+            return getValue(getIndexByRow(row));
         }
 
         @Override

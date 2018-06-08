@@ -49,8 +49,8 @@ public class OneUnionRelationOperatorTest extends TestCase {
         list.add(segments);
         List parents = new ArrayList();
         parents.add(source);
-        String[][] str = new String[][]{{null, "A", null}, {null, "B", null}, {null, "C", null}, {null, "B", null},
-                {null, "C", null}, {null, "B", null}, {null, "A", null}, {null, "C", null}, {null, "B", null}};
+        String[][] str = new String[][]{{null, null, null}, {null, null, null}, {null, null, null}, {null, null, null},
+                {null, null, null}, {null, null, null}, {null, null, null}, {null, null, null}, {null, null, null}};
         SwiftResultSet rs = operator.createResultSet(metaData, parents, list);
         int k = 0;
         while (rs.next()) {
