@@ -10,7 +10,5 @@ package com.fr.swift;
 public interface ClusterService {
     boolean competeMaster();
 
-    String rpcSend(String masterId, Object object);
-
-    String rpcSend();
+    boolean registerNode();
 }
