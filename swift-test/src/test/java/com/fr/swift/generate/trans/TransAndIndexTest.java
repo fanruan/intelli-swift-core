@@ -24,6 +24,7 @@ import com.fr.swift.source.DataSource;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.test.Preparer;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -54,6 +55,7 @@ public class TransAndIndexTest extends BaseConfigTest {
      *
      * @throws Exception
      */
+    @Ignore
     @Test(timeout = 1000 * 60 * 10)
     public void testTransport() throws Exception {
         DataSource dataSource = new QueryDBSource("select * from DEMO_CAPITAL_RETURN", "allTest");

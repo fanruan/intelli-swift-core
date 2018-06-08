@@ -5,6 +5,7 @@ import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.db.impl.SwiftDatabase.Schema;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.RealTimeSegmentImpl;
@@ -14,6 +15,7 @@ import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SwiftMetaData;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -48,7 +50,9 @@ public class SwiftSegmentRecovery implements SegmentRecovery {
     }
 
     private Segment getBackupSegment(Segment realtimeSeg) {
-        return new HistorySegmentImpl(new ResourceLocation(realtimeSeg.getLocation().getPath(), StoreType.FINE_IO), realtimeSeg.getMetaData());
+        SwiftMetaData meta = realtimeSeg.getMetaData();
+        String realtimeSegPath = realtimeSeg.getLocation().getPath();
+        return new HistorySegmentImpl(new ResourceLocation(realtimeSegPath.replace(meta.getSwiftSchema().dir, Schema.BACKUP_CUBE.dir), StoreType.FINE_IO), meta);
     }
 
     private Segment newRealtimeSegment(Segment realtimeSeg) {
