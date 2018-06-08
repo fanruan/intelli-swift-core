@@ -13,6 +13,7 @@ import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.QueryDBSource;
+import com.fr.swift.util.FileUtil;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ public class HisSwiftInserterTest extends BaseTest {
         SwiftResultSet resultSet = transfer.createResultSet();
 
         String cubePath = System.getProperty("user.dir") + "/cubes/" + dataSource.getSourceKey().getId() + "/seg0";
+        FileUtil.delete(cubePath);
         IResourceLocation location = new ResourceLocation(cubePath);
         Segment segment = new HistorySegmentImpl(location, dataSource.getMetadata());
         List<Row> rowList = new ArrayList<Row>();
@@ -67,6 +69,7 @@ public class HisSwiftInserterTest extends BaseTest {
         SwiftResultSet resultSet = transfer.createResultSet();
 
         String cubePath = System.getProperty("user.dir") + "/cubes/" + dataSource.getSourceKey().getId() + "/seg0";
+        FileUtil.delete(cubePath);
         IResourceLocation location = new ResourceLocation(cubePath);
         Segment segment = new HistorySegmentImpl(location, dataSource.getMetadata());
 
@@ -94,6 +97,7 @@ public class HisSwiftInserterTest extends BaseTest {
         SwiftResultSet resultSet = transfer.createResultSet();
 
         String cubePath = System.getProperty("user.dir") + "/cubes/" + dataSource.getSourceKey().getId() + "/seg1";
+        FileUtil.delete(cubePath);
         IResourceLocation location = new ResourceLocation(cubePath);
         Segment segment = new HistorySegmentImpl(location, dataSource.getMetadata());
 

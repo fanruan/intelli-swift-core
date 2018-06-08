@@ -16,6 +16,7 @@ import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.QueryDBSource;
+import com.fr.swift.util.FileUtil;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -36,119 +37,121 @@ public class HisSwiftDeleterTest extends BaseTest {
 
     @Test
     public void testHisDeleteWithRowlist() throws Exception {
-            DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "HisSwiftDeleterTest");
+        DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "HisSwiftDeleterTest");
 
-            SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
-            SwiftResultSet resultSet = transfer.createResultSet();
+        SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
+        SwiftResultSet resultSet = transfer.createResultSet();
 
-            String cubePath = System.getProperty("user.dir") + "/cubes/" + dataSource.getSourceKey().getId() + "/seg0";
-            IResourceLocation location = new ResourceLocation(cubePath);
+        String cubePath = System.getProperty("user.dir") + "/cubes/" + dataSource.getSourceKey().getId() + "/seg0";
+        FileUtil.delete(cubePath);
+        IResourceLocation location = new ResourceLocation(cubePath);
 
-            Segment segment = new HistorySegmentImpl(location, dataSource.getMetadata());
-            List<Row> rowList = new ArrayList<Row>();
+        Segment segment = new HistorySegmentImpl(location, dataSource.getMetadata());
+        List<Row> rowList = new ArrayList<Row>();
 
-            while (resultSet.next()) {
-                Row row = resultSet.getRowData();
-                rowList.add(row);
-            }
-            HistorySwiftInserter swiftInserter = new HistorySwiftInserter(segment);
-            swiftInserter.insertData(rowList);
+        while (resultSet.next()) {
+            Row row = resultSet.getRowData();
+            rowList.add(row);
+        }
+        HistorySwiftInserter swiftInserter = new HistorySwiftInserter(segment);
+        swiftInserter.insertData(rowList);
 
-            assertEquals(segment.getRowCount(), 668);
-            for (int i = 0; i < 668; i++) {
-                assertTrue(segment.getAllShowIndex().contains(i));
-            }
+        assertEquals(segment.getRowCount(), 668);
+        for (int i = 0; i < 668; i++) {
+            assertTrue(segment.getAllShowIndex().contains(i));
+        }
 
-            putMetaAndSegment(dataSource, 0, location, Types.StoreType.FINE_IO);
+        putMetaAndSegment(dataSource, 0, location, Types.StoreType.FINE_IO);
 
-            for (String field : dataSource.getMetadata().getFieldNames()) {
-                ColumnIndexer<?> indexer = new ColumnIndexer(dataSource, new ColumnKey(field), Collections.singletonList(segment));
-                indexer.work();
-            }
+        for (String field : dataSource.getMetadata().getFieldNames()) {
+            ColumnIndexer<?> indexer = new ColumnIndexer(dataSource, new ColumnKey(field), Collections.singletonList(segment));
+            indexer.work();
+        }
 
-            //增量删除
-            DataSource deleteDataSource = new QueryDBSource("select 合同ID from DEMO_CONTRACT where 合同类型 = '购买合同'", "HisSwiftDeleterTest");
-            SwiftSourceTransfer deleteTransfer = SwiftSourceTransferFactory.createSourceTransfer(deleteDataSource);
-            SwiftResultSet deleteResultSet = deleteTransfer.createResultSet();
-            List<Row> deleteRowList = new ArrayList<Row>();
-            while (deleteResultSet.next()) {
-                Row row = deleteResultSet.getRowData();
-                deleteRowList.add(row);
-            }
-            HistorySwiftDeleter swiftDeleter = new HistorySwiftDeleter(segment);
-            swiftDeleter.deleteData(deleteRowList);
-            //row count 不变
-            assertEquals(segment.getRowCount(), 668);
-            int showCount = 0;
+        //增量删除
+        DataSource deleteDataSource = new QueryDBSource("select 合同ID from DEMO_CONTRACT where 合同类型 = '购买合同'", "HisSwiftDeleterTest");
+        SwiftSourceTransfer deleteTransfer = SwiftSourceTransferFactory.createSourceTransfer(deleteDataSource);
+        SwiftResultSet deleteResultSet = deleteTransfer.createResultSet();
+        List<Row> deleteRowList = new ArrayList<Row>();
+        while (deleteResultSet.next()) {
+            Row row = deleteResultSet.getRowData();
+            deleteRowList.add(row);
+        }
+        HistorySwiftDeleter swiftDeleter = new HistorySwiftDeleter(segment);
+        swiftDeleter.deleteData(deleteRowList);
+        //row count 不变
+        assertEquals(segment.getRowCount(), 668);
+        int showCount = 0;
 
-            for (int i = 0; i < 668; i++) {
-                try {
-                    if (segment.getAllShowIndex().contains(i)) {
-                        showCount++;
-                    }
-                } catch (Exception e) {
+        for (int i = 0; i < 668; i++) {
+            try {
+                if (segment.getAllShowIndex().contains(i)) {
+                    showCount++;
                 }
+            } catch (Exception e) {
             }
-            //allshowindex改变
-            assertEquals(segment.getRowCount() - showCount, deleteRowList.size());
+        }
+        //allshowindex改变
+        assertEquals(segment.getRowCount() - showCount, deleteRowList.size());
     }
 
     @Test
     public void testHisDeleteWithResultSet() throws Exception {
-            DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "HisSwiftDeleterTest");
+        DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "HisSwiftDeleterTest");
 
-            SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
-            SwiftResultSet resultSet = transfer.createResultSet();
+        SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
+        SwiftResultSet resultSet = transfer.createResultSet();
 
-            String cubePath = System.getProperty("user.dir") + "/cubes/" + dataSource.getSourceKey().getId() + "/seg1";
-            IResourceLocation location = new ResourceLocation(cubePath);
+        String cubePath = System.getProperty("user.dir") + "/cubes/" + dataSource.getSourceKey().getId() + "/seg1";
+        FileUtil.delete(cubePath);
+        IResourceLocation location = new ResourceLocation(cubePath);
 
-            Segment segment = new HistorySegmentImpl(location, dataSource.getMetadata());
-            List<Row> rowList = new ArrayList<Row>();
+        Segment segment = new HistorySegmentImpl(location, dataSource.getMetadata());
+        List<Row> rowList = new ArrayList<Row>();
 
-            while (resultSet.next()) {
-                Row row = resultSet.getRowData();
-                rowList.add(row);
-            }
-            HistorySwiftInserter swiftInserter = new HistorySwiftInserter(segment);
-            swiftInserter.insertData(rowList);
+        while (resultSet.next()) {
+            Row row = resultSet.getRowData();
+            rowList.add(row);
+        }
+        HistorySwiftInserter swiftInserter = new HistorySwiftInserter(segment);
+        swiftInserter.insertData(rowList);
 
-            assertEquals(segment.getRowCount(), 668);
-            for (int i = 0; i < 668; i++) {
-                assertTrue(segment.getAllShowIndex().contains(i));
-            }
+        assertEquals(segment.getRowCount(), 668);
+        for (int i = 0; i < 668; i++) {
+            assertTrue(segment.getAllShowIndex().contains(i));
+        }
 
-            putMetaAndSegment(dataSource, 0, location, Types.StoreType.FINE_IO);
+        putMetaAndSegment(dataSource, 0, location, Types.StoreType.FINE_IO);
 
-            for (String field : dataSource.getMetadata().getFieldNames()) {
-                ColumnIndexer<?> indexer = new ColumnIndexer(dataSource, new ColumnKey(field), Collections.singletonList(segment));
-                indexer.work();
-            }
+        for (String field : dataSource.getMetadata().getFieldNames()) {
+            ColumnIndexer<?> indexer = new ColumnIndexer(dataSource, new ColumnKey(field), Collections.singletonList(segment));
+            indexer.work();
+        }
 
-            //增量删除
-            DataSource deleteDataSource = new QueryDBSource("select 合同ID from DEMO_CONTRACT where 合同类型 = '购买合同'", "HisSwiftDeleterTest");
-            SwiftSourceTransfer deleteTransfer = SwiftSourceTransferFactory.createSourceTransfer(deleteDataSource);
-            SwiftResultSet deleteResultSet = deleteTransfer.createResultSet();
+        //增量删除
+        DataSource deleteDataSource = new QueryDBSource("select 合同ID from DEMO_CONTRACT where 合同类型 = '购买合同'", "HisSwiftDeleterTest");
+        SwiftSourceTransfer deleteTransfer = SwiftSourceTransferFactory.createSourceTransfer(deleteDataSource);
+        SwiftResultSet deleteResultSet = deleteTransfer.createResultSet();
 //            List<Row> deleteRowList = new ArrayList<Row>();
 //            while (deleteResultSet.next()) {
 //                Row row = deleteResultSet.getRowData();
 //                deleteRowList.add(row);
 //            }
-            HistorySwiftDeleter swiftDeleter = new HistorySwiftDeleter(segment);
-            swiftDeleter.deleteData(deleteResultSet);
-            //row count 不变
-            assertEquals(segment.getRowCount(), 668);
-            int showCount = 0;
+        HistorySwiftDeleter swiftDeleter = new HistorySwiftDeleter(segment);
+        swiftDeleter.deleteData(deleteResultSet);
+        //row count 不变
+        assertEquals(segment.getRowCount(), 668);
+        int showCount = 0;
 
-            for (int i = 0; i < 668; i++) {
-                try {
-                    if (segment.getAllShowIndex().contains(i)) {
-                        showCount++;
-                    }
-                } catch (Exception e) {
+        for (int i = 0; i < 668; i++) {
+            try {
+                if (segment.getAllShowIndex().contains(i)) {
+                    showCount++;
                 }
+            } catch (Exception e) {
             }
-            //allshowindex改变
-            assertEquals(segment.getRowCount() - showCount, 482);
+        }
+        //allshowindex改变
+        assertEquals(segment.getRowCount() - showCount, 482);
     }
 }

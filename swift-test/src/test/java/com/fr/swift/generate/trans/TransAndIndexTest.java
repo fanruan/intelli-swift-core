@@ -54,7 +54,7 @@ public class TransAndIndexTest extends BaseConfigTest {
      *
      * @throws Exception
      */
-    @Test
+    @Test(timeout = 1000 * 60 * 10)
     public void testTransport() throws Exception {
         DataSource dataSource = new QueryDBSource("select * from DEMO_CAPITAL_RETURN", "allTest");
 

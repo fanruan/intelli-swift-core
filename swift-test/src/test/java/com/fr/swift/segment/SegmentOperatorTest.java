@@ -8,24 +8,34 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.core.Core;
-import junit.framework.TestCase;
+import com.fr.swift.test.Preparer;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.File;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author yee
  * @date 2018/1/9
  */
-public class SegmentOperatorTest extends TestCase {
+public class SegmentOperatorTest {
     private SourceKey intKey;
     private SourceKey longKey;
     private SourceKey doubleKey;
     private SourceKey stringKey;
     private SourceKey dateKey;
 
-    @Override
-    protected void setUp() throws Exception {
-//        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir")));
+
+    @BeforeClass
+    public static void boot() throws Exception {
+        Preparer.prepareCubeBuild();
+    }
+
+    @Before
+    public void setUp() throws Exception {
         File file = new File(System.getProperty("user.dir"), "resources");
         file.deleteOnExit();
         intKey = new SourceKey("int_table");
@@ -68,26 +78,31 @@ public class SegmentOperatorTest extends TestCase {
         assertTrue(success);
     }
 
+    @Test
     public void testIntTransport() {
         SwiftResultSet set = new IntResultSet();
         transport(intKey, set);
     }
 
+    @Test
     public void testLongTransport() {
         SwiftResultSet set = new LongResultSet();
         transport(longKey, set);
     }
 
+    @Test
     public void testDoubleTransport() {
         SwiftResultSet set = new DoubleResultSet();
         transport(doubleKey, set);
     }
 
+    @Test
     public void testStringTransport() {
         SwiftResultSet set = new StringResultSet();
         transport(stringKey, set);
     }
 
+    @Test
     public void testDateTransport() {
         SwiftResultSet set = new DateResultSet();
         transport(dateKey, set);

@@ -59,7 +59,7 @@ public class SegmentRecoveryTest {
                 dataSource.getMetadata().getSwiftSchema().dir,
                 dataSource.getSourceKey().getId());
         ResourceDiscovery.getInstance().removeCubeResource(tablePath);
-        SwiftContext.getInstance().getBean(SegmentRecovery.class).recoverAll();
+        SwiftSegmentRecovery.getInstance().recoverAll();
 
         String cubePath = tablePath + "/seg0";
         IResourceLocation location = new ResourceLocation(cubePath, StoreType.MEMORY);
