@@ -31,8 +31,12 @@ public final class Strings {
      * @return new replaced string
      */
     public static String trimSeparator(String s, String oldSep, String newSep) {
-        String regex = String.format("(%s)+", Matcher.quoteReplacement(oldSep));
-        return s.replaceAll(regex, Matcher.quoteReplacement(newSep));
+        String quoteOldSep = Matcher.quoteReplacement(oldSep);
+        String onlyHasNewSep = s.replaceAll("(" + quoteOldSep + ")+", Matcher.quoteReplacement(newSep));
+        if (onlyHasNewSep.contains(newSep + newSep)) {
+            return trimSeparator(onlyHasNewSep, newSep);
+        }
+        return onlyHasNewSep;
     }
 
 }

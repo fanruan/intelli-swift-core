@@ -27,6 +27,7 @@ import com.fr.swift.source.alloter.SwiftSourceAlloterFactory;
 import com.fr.swift.source.alloter.line.LineAllotRule;
 import com.fr.swift.source.alloter.line.LineRowInfo;
 import com.fr.swift.util.Crasher;
+import com.fr.swift.util.Strings;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -108,9 +109,10 @@ public class RealtimeMerger implements Merger {
     public void release() {
         persistMeta();
         persistSegment();
-        ResourceDiscovery.getInstance().removeCubeResource(String.format("%s/%s/%s",
+        String basePath = String.format("%s/%s/%s",
                 SwiftCubePathConfig.getInstance().getPath(),
-                metaData.getSwiftSchema().dir, sourceKey.getId()));
+                metaData.getSwiftSchema().dir, sourceKey.getId());
+        ResourceDiscovery.getInstance().removeCubeResource(Strings.trimSeparator(basePath, "\\", "/"));
     }
 
     protected void persistMeta() {
@@ -125,7 +127,7 @@ public class RealtimeMerger implements Merger {
     }
 
     protected void persistSegment() {
-        SwiftContext.getInstance().getBean(SwiftSegmentService.class).addSegments(configSegment);
+        SwiftContext.getInstance().getBean(SwiftSegmentService.class).updateSegments(sourceKey.getId(), configSegment);
     }
 
 }

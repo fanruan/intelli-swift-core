@@ -10,6 +10,7 @@ import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -73,6 +74,13 @@ public class LogOperatorProxy implements LogOperator {
     public void initTables(List<Class> list) throws Exception {
         synchronized (LogOperatorProxy.class) {
             logOperator.initTables(list);
+        }
+    }
+
+    @Override
+    public void clearLogBefore(Date date) throws Exception {
+        synchronized (LogOperatorProxy.class) {
+            logOperator.clearLogBefore(date);
         }
     }
 

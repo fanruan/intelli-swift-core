@@ -1,5 +1,6 @@
 package com.fr.swift.source.alloter;
 
+import com.fr.swift.config.TestConfDb;
 import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.context.SwiftContext;
@@ -16,11 +17,14 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.source.alloter.line.LineAllotRule;
 import com.fr.swift.source.alloter.line.LineRowInfo;
 import com.fr.swift.source.core.Core;
+import com.fr.swift.test.Preparer;
 import com.fr.swift.test.TestIo;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.sql.Types;
@@ -36,8 +40,16 @@ public class LineSegmentAlloterTest extends TestIo {
     SwiftResultSet resultSet;
     int count;
 
+    @BeforeClass
+    public static void boot() {
+        Preparer.prepareContext();
+    }
+
+
     @Before
     public void setUp() throws Exception {
+        TestConfDb.setConfDb();
+
         List<Row> datas = new ArrayList<>();
         count = (int) (Math.random() * 1000000);
         System.err.println(count);
@@ -115,7 +127,7 @@ public class LineSegmentAlloterTest extends TestIo {
                 segment = new HistorySegmentImpl(location, resultSet.getMetaData());
                 column = segment.getColumn(new ColumnKey("long")).getDetailColumn();
             }
-            Assert.assertEquals(column.getLong(i % 100000), (long) i);
+            Assert.assertEquals(column.getLong(i % ((LineAllotRule) alloter.getAllotRule()).getStep()), (long) i);
         }
     }
 }

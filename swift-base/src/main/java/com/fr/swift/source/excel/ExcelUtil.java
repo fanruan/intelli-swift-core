@@ -19,18 +19,17 @@ import java.util.List;
 public class ExcelUtil {
     /**
      * 暂时这么处理，继承的ExcelDataModelPlus没法拿到mergeCell
-     * @param inputStream
+     *
      * @param filePath
      */
-    public static void checkHead(InputStream inputStream, String filePath)  {
+    public static void checkHead(String filePath) {
         try {
-            if (null == inputStream) {
-                if (filePath.startsWith("http") || filePath.startsWith("HTTP")) {
-                    URL url = new URL(filePath);
-                    inputStream = url.openStream();
-                } else {
-                    inputStream = new FileInputStream(filePath);
-                }
+            InputStream inputStream;
+            if (filePath.startsWith("http") || filePath.startsWith("HTTP")) {
+                URL url = new URL(filePath);
+                inputStream = url.openStream();
+            } else {
+                inputStream = new FileInputStream(filePath);
             }
             Workbook workBook = WorkbookFactory.create(inputStream);
             Sheet sheet = workBook.getSheetAt(0);
@@ -40,14 +39,14 @@ public class ExcelUtil {
                     CellRangeAddress range = sheet.getMergedRegion(i);
                     int firstRow = range.getFirstRow();
                     int lastRow = range.getLastRow();
-                    if(0 == firstRow || 0 == lastRow){
+                    if (0 == firstRow || 0 == lastRow) {
                         throw new ExcelTableHeaderException();
                     }
                 }
             }
         } catch (ExcelTableHeaderException e) {
             throw e;
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new ExcelFileTypeException(e);
         }
     }

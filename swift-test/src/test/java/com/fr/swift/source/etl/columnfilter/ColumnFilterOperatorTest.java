@@ -10,6 +10,7 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.BaseCreateSegmentTest;
+import edu.emory.mathcs.backport.java.util.Arrays;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
@@ -42,7 +43,7 @@ public class ColumnFilterOperatorTest extends TestCase {
         List<Segment[]> list = new ArrayList<Segment[]>();
         list.add(segment);
         ColumnFilterTransferOperator operator = new ColumnFilterTransferOperator(filterInfo);
-        SwiftResultSet rs = operator.createResultSet(metaData, null, list);
+        SwiftResultSet rs = operator.createResultSet(metaData, Arrays.asList(new SwiftMetaData[]{metaData}), list);
         int rowCount = 0;
         while (rs.next()) {
             Row row = rs.getRowData();

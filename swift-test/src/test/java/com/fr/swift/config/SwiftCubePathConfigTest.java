@@ -1,8 +1,10 @@
 package com.fr.swift.config;
 
-import com.fr.annotation.Test;
 import com.fr.swift.generate.BaseTest;
 import com.fr.swift.test.Preparer;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * This class created on 2018/5/7

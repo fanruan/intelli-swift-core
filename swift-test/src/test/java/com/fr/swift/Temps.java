@@ -12,7 +12,7 @@ import java.util.Comparator;
  * 主要是避免底层接口更改，导致多处代码修改
  * 写一个临时类，把修改点缩小到一个类
  * 也避免重复代码，很多时候只需要调用到部分方法，其他方法没用到
- *
+ * <p>
  * 正式开发还是不要用，不然堆栈看不懂
  */
 public final class Temps {
@@ -49,7 +49,7 @@ public final class Temps {
 
         @Override
         public T getValueByRow(int row) {
-            throw new UnsupportedOperationException();
+            return getValue(getIndexByRow(row));
         }
 
         @Override
