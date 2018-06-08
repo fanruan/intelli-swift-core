@@ -1,6 +1,6 @@
 package com.fr.swift.service.handler.analyse;
 
-import com.fr.swift.service.event.base.AbstractAnalyseEvent;
+import com.fr.swift.event.base.AbstractAnalyseEvent;
 import com.fr.swift.service.handler.base.Handler;
 import com.fr.third.springframework.stereotype.Service;
 

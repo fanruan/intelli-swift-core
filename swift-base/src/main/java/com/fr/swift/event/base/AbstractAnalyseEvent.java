@@ -1,18 +1,18 @@
-package com.fr.swift.service.event.base;
+package com.fr.swift.event.base;
 
 /**
  * @author yee
  * @date 2018/6/8
  */
-public abstract class AbstractIndexingEvent implements SwiftEvent {
+public abstract class AbstractAnalyseEvent implements SwiftEvent {
     @Override
     public EventType type() {
-        return EventType.INDEXING;
+        return EventType.ANALYSE;
     }
 
     public abstract Event subEvent();
 
     public enum Event implements SubEvent {
-
+        ANALYSE
     }
 }

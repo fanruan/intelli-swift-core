@@ -1,4 +1,4 @@
-package com.fr.swift.service.event.base;
+package com.fr.swift.event.base;
 
 /**
  * @author yee

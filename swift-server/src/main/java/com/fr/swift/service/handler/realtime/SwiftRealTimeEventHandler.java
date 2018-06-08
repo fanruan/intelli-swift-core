@@ -1,6 +1,6 @@
 package com.fr.swift.service.handler.realtime;
 
-import com.fr.swift.service.event.base.AbstractRealTimeEvent;
+import com.fr.swift.event.base.AbstractRealTimeEvent;
 import com.fr.swift.service.handler.base.Handler;
 import com.fr.third.springframework.stereotype.Service;
 

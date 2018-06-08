@@ -1,6 +1,6 @@
 package com.fr.swift.service.handler.history;
 
-import com.fr.swift.service.event.base.AbstractHistoryEvent;
+import com.fr.swift.event.base.AbstractHistoryEvent;
 import com.fr.swift.service.handler.base.Handler;
 import com.fr.third.springframework.stereotype.Service;
 

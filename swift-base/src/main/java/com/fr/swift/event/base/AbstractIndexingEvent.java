@@ -1,13 +1,13 @@
-package com.fr.swift.service.event.base;
+package com.fr.swift.event.base;
 
 /**
  * @author yee
  * @date 2018/6/8
  */
-public abstract class AbstractHistoryEvent implements SwiftEvent {
+public abstract class AbstractIndexingEvent implements SwiftEvent {
     @Override
     public EventType type() {
-        return EventType.HISTORY;
+        return EventType.INDEXING;
     }
 
     public abstract Event subEvent();

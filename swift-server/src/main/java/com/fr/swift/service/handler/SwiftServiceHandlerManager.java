@@ -1,11 +1,11 @@
 package com.fr.swift.service.handler;
 
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.service.event.base.AbstractAnalyseEvent;
-import com.fr.swift.service.event.base.AbstractHistoryEvent;
-import com.fr.swift.service.event.base.AbstractIndexingEvent;
-import com.fr.swift.service.event.base.AbstractRealTimeEvent;
-import com.fr.swift.service.event.base.SwiftEvent;
+import com.fr.swift.event.base.AbstractAnalyseEvent;
+import com.fr.swift.event.base.AbstractHistoryEvent;
+import com.fr.swift.event.base.AbstractIndexingEvent;
+import com.fr.swift.event.base.AbstractRealTimeEvent;
+import com.fr.swift.event.base.SwiftEvent;
 import com.fr.swift.service.handler.analyse.SwiftAnalyseEventHandler;
 import com.fr.swift.service.handler.base.Handler;
 import com.fr.swift.service.handler.history.SwiftHistoryEventHandler;
