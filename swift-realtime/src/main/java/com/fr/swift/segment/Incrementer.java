@@ -1,7 +1,7 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.config.bean.SegmentKeyBean;
-import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.config.service.SwiftSegmentServiceProvider;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types.StoreType;
@@ -76,8 +76,8 @@ public class Incrementer {
     private void persistSegment(Segment seg, int order) {
         IResourceLocation location = seg.getLocation();
         SegmentKey segKey = new SegmentKeyBean(dataSource.getSourceKey().getId(), location.getUri(), order, location.getStoreType());
-        if (!SwiftContext.getInstance().getBean(SwiftSegmentService.class).containsSegment(segKey)) {
-            SwiftContext.getInstance().getBean(SwiftSegmentService.class).addSegments(Collections.singletonList(segKey));
+        if (!SwiftSegmentServiceProvider.getProvider().containsSegment(segKey)) {
+            SwiftSegmentServiceProvider.getProvider().addSegments(Collections.singletonList(segKey));
         }
     }
 

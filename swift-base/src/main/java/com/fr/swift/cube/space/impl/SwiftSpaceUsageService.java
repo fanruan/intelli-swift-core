@@ -2,7 +2,7 @@ package com.fr.swift.cube.space.impl;
 
 import com.fr.swift.config.SwiftCubePathConfig;
 import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.config.service.SwiftSegmentServiceProvider;
 import com.fr.swift.cube.space.SpaceUsageDetector;
 import com.fr.swift.cube.space.SpaceUsageService;
 import com.fr.swift.db.impl.SwiftDatabase.Schema;
@@ -20,7 +20,7 @@ import java.util.List;
 public class SwiftSpaceUsageService implements SpaceUsageService {
     private SpaceUsageDetector detector = new LocalSpaceUsageDetector();
 
-    private SwiftSegmentService confSvc = SwiftContext.getInstance().getBean(SwiftSegmentService.class);
+    private SwiftSegmentService confSvc = SwiftSegmentServiceProvider.getProvider();
 
     @Override
     public long getTableUsedSpace(SourceKey table) throws Exception {
