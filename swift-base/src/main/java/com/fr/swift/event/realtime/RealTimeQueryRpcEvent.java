@@ -23,6 +23,6 @@ public class RealTimeQueryRpcEvent extends AbstractRealTimeRpcEvent<QueryInfo> {
 
     @Override
     public QueryInfo getContent() {
-        return null;
+        return queryInfo;
     }
 }

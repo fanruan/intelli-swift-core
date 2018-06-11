@@ -62,9 +62,6 @@ public class SwiftRealTimeEventHandler implements Handler<AbstractRealTimeRpcEve
                     LOGGER.error(e.getMessage(), e);
                 }
                 return (S) result;
-            case INSERT:
-                // TODO insert传resultSet？
-                return null;
             case RECOVER:
                 final Map<String, List<SegmentKey>> map = clusterSegmentService.getClusterSegments();
                 for (final RealtimeService service : services) {
