@@ -4,10 +4,11 @@ import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.dao.SwiftServiceInfoDao;
 import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 import com.fr.swift.config.service.SwiftServiceInfoService;
-import com.fr.swift.config.transaction.SwiftServiceInfoTransactionWorker;
+import com.fr.swift.config.transaction.AbstractTransactionWorker;
 import com.fr.swift.config.transaction.SwiftTransactionManager;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.sql.SQLException;
@@ -26,18 +27,25 @@ class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftServiceInfoServiceImpl.class);
 
+    @Autowired
+    private SwiftTransactionManager transactionManager;
+    @Autowired
+    private SwiftServiceInfoDao swiftServiceInfoDao;
+
     public SwiftServiceInfoServiceImpl() {
     }
 
     @Override
     public boolean saveOrUpdateServiceInfo(final SwiftServiceInfoBean serviceInfoBean) {
         try {
-            return (Boolean) SwiftTransactionManager.doTransactionIfNeed(new SwiftServiceInfoTransactionWorker() {
+            return (Boolean) transactionManager.doTransactionIfNeed(new AbstractTransactionWorker() {
                 @Override
-                public Object work(SwiftServiceInfoDao dao) throws SQLException {
-                    dao.saveOrUpdate(serviceInfoBean.convert());
+                public Object work() throws SQLException {
+                    swiftServiceInfoDao.saveOrUpdate(serviceInfoBean.convert());
                     return true;
                 }
+
+
             });
         } catch (Exception e) {
             LOGGER.error("Add or update ServiceInfo error!", e);
@@ -48,12 +56,14 @@ class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
     @Override
     public boolean removeServiceInfo(final SwiftServiceInfoBean serviceInfoBean) {
         try {
-            return (Boolean) SwiftTransactionManager.doTransactionIfNeed(new SwiftServiceInfoTransactionWorker() {
+            return (Boolean) transactionManager.doTransactionIfNeed(new AbstractTransactionWorker() {
                 @Override
-                public Object work(SwiftServiceInfoDao dao) throws SQLException {
-                    dao.deleteById(serviceInfoBean.convert().getId());
+                public Object work() throws SQLException {
+                    swiftServiceInfoDao.deleteById(serviceInfoBean.convert().getId());
                     return true;
                 }
+
+
             });
         } catch (Exception e) {
             LOGGER.error("remove ServiceInfo error!", e);
@@ -64,10 +74,15 @@ class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
     @Override
     public SwiftServiceInfoBean getServiceInfo(final SwiftServiceInfoBean serviceInfoBean) {
         try {
-            return (SwiftServiceInfoBean) SwiftTransactionManager.doTransactionIfNeed(new SwiftServiceInfoTransactionWorker() {
+            return (SwiftServiceInfoBean) transactionManager.doTransactionIfNeed(new AbstractTransactionWorker() {
                 @Override
-                public Object work(SwiftServiceInfoDao dao) throws SQLException {
-                    return dao.select(serviceInfoBean.convert().getId()).convert();
+                public Object work() throws SQLException {
+                    return swiftServiceInfoDao.select(serviceInfoBean.convert().getId()).convert();
+                }
+
+                @Override
+                public boolean needTransaction() {
+                    return false;
                 }
             });
         } catch (Exception e) {
@@ -80,14 +95,19 @@ class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
     public List<SwiftServiceInfoBean> getAllServiceInfo() {
 
         try {
-            return (List<SwiftServiceInfoBean>) SwiftTransactionManager.doTransactionIfNeed(new SwiftServiceInfoTransactionWorker() {
+            return (List<SwiftServiceInfoBean>) transactionManager.doTransactionIfNeed(new AbstractTransactionWorker() {
                 @Override
-                public Object work(SwiftServiceInfoDao dao) {
+                public Object work() {
                     List<SwiftServiceInfoBean> beanList = new ArrayList<SwiftServiceInfoBean>();
-                    for (SwiftServiceInfoEntity entity : dao.find()) {
+                    for (SwiftServiceInfoEntity entity : swiftServiceInfoDao.find()) {
                         beanList.add(entity.convert());
                     }
                     return beanList;
+                }
+
+                @Override
+                public boolean needTransaction() {
+                    return false;
                 }
             });
         } catch (Exception e) {
@@ -100,14 +120,19 @@ class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
     public List<SwiftServiceInfoBean> getServiceInfoByService(final String service) {
 
         try {
-            return (List<SwiftServiceInfoBean>) SwiftTransactionManager.doTransactionIfNeed(new SwiftServiceInfoTransactionWorker() {
+            return (List<SwiftServiceInfoBean>) transactionManager.doTransactionIfNeed(new AbstractTransactionWorker() {
                 @Override
-                public Object work(SwiftServiceInfoDao dao) {
+                public Object work() {
                     List<SwiftServiceInfoBean> beanList = new ArrayList<SwiftServiceInfoBean>();
-                    for (SwiftServiceInfoEntity entity : dao.getServiceInfoByService(service)) {
+                    for (SwiftServiceInfoEntity entity : swiftServiceInfoDao.getServiceInfoByService(service)) {
                         beanList.add(entity.convert());
                     }
                     return beanList;
+                }
+
+                @Override
+                public boolean needTransaction() {
+                    return false;
                 }
             });
         } catch (Exception e) {

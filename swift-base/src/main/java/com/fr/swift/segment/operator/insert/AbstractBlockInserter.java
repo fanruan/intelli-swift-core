@@ -1,9 +1,9 @@
 package com.fr.swift.segment.operator.insert;
 
 import com.fr.swift.bitmap.BitMaps;
-import com.fr.swift.config.SwiftCubePathConfig;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.config.service.SwiftSegmentServiceProvider;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
@@ -57,7 +57,7 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
     private SwiftSourceAlloter alloter;
     private SegmentIndexCache segmentIndexCache;
     private int startSegIndex;
-    private SwiftSegmentService segmentService = SwiftContext.getInstance().getBean(SwiftSegmentService.class);
+    private SwiftSegmentService segmentService = SwiftSegmentServiceProvider.getProvider();
 
     public AbstractBlockInserter(SourceKey sourceKey, String cubeSourceKey, SwiftMetaData swiftMetaData) {
         this(sourceKey, cubeSourceKey, swiftMetaData, swiftMetaData.getFieldNames());
@@ -164,8 +164,8 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
      * @throws Exception
      */
     protected Segment createSegment(int order, Types.StoreType storeType) {
-        String cubePath = String.format("%s/%s/%s/seg%d",
-                SwiftCubePathConfig.getInstance().getPath(),
+        String cubePath = String.format("%s/%s/seg%d",
+//                SwiftCubePathConfig.getInstance().getPath(),
                 swiftMetaData.getSwiftSchema().dir,
                 cubeSourceKey, order);
         IResourceLocation location = new ResourceLocation(cubePath, storeType);

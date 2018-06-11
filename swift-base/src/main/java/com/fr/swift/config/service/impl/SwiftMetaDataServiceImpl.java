@@ -1,14 +1,15 @@
 package com.fr.swift.config.service.impl;
 
 import com.fr.swift.config.bean.SwiftMetaDataBean;
-import com.fr.swift.config.dao.SwiftMetaDataDAO;
+import com.fr.swift.config.dao.SwiftMetaDataDao;
 import com.fr.swift.config.service.SwiftMetaDataService;
-import com.fr.swift.config.transaction.SwiftMetaDataTransactionWorker;
+import com.fr.swift.config.transaction.AbstractTransactionWorker;
 import com.fr.swift.config.transaction.SwiftTransactionManager;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.sql.SQLException;
@@ -24,6 +25,12 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Service("swiftMetaDataService")
 public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
+
+    @Autowired
+    private SwiftTransactionManager transactionManager;
+    @Autowired
+    private SwiftMetaDataDao swiftMetaDataDao;
+
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftMetaDataServiceImpl.class);
     private ConcurrentHashMap<String, SwiftMetaData> metaDataCache = new ConcurrentHashMap<String, SwiftMetaData>();
 
@@ -32,13 +39,15 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
         try {
             final SwiftMetaDataBean bean = (SwiftMetaDataBean) metaData;
             bean.setId(sourceKey);
-            return (Boolean) SwiftTransactionManager.doTransactionIfNeed(new SwiftMetaDataTransactionWorker() {
+            return (Boolean) transactionManager.doTransactionIfNeed(new AbstractTransactionWorker() {
                 @Override
-                public Object work(SwiftMetaDataDAO dao) throws SQLException {
-                    dao.addOrUpdateSwiftMetaData(bean);
+                public Object work() throws SQLException {
+                    swiftMetaDataDao.addOrUpdateSwiftMetaData(bean);
                     metaDataCache.put(sourceKey, bean);
                     return true;
                 }
+
+
             });
         } catch (Exception e) {
             LOGGER.error("Add or update metadata error!", e);
@@ -49,19 +58,21 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     @Override
     public boolean addMetaDatas(final Map<String, SwiftMetaData> metaDatas) {
         try {
-            return (Boolean) SwiftTransactionManager.doTransactionIfNeed(new SwiftMetaDataTransactionWorker() {
+            return (Boolean) transactionManager.doTransactionIfNeed(new AbstractTransactionWorker() {
                 @Override
-                public Object work(SwiftMetaDataDAO dao) throws SQLException {
+                public Object work() throws SQLException {
                     Iterator<Map.Entry<String, SwiftMetaData>> iterator = metaDatas.entrySet().iterator();
                     while (iterator.hasNext()) {
                         Map.Entry<String, SwiftMetaData> entry = iterator.next();
                         SwiftMetaDataBean bean = (SwiftMetaDataBean) entry.getValue();
                         bean.setId(entry.getKey());
-                        dao.addOrUpdateSwiftMetaData(bean);
+                        swiftMetaDataDao.addOrUpdateSwiftMetaData(bean);
                         metaDataCache.put(entry.getKey(), bean);
                     }
                     return true;
                 }
+
+
             });
         } catch (Exception e) {
             LOGGER.error("Add metadata error!", e);
@@ -72,15 +83,17 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     @Override
     public boolean removeMetaDatas(final String... sourceKeys) {
         try {
-            return (Boolean) SwiftTransactionManager.doTransactionIfNeed(new SwiftMetaDataTransactionWorker() {
+            return (Boolean) transactionManager.doTransactionIfNeed(new AbstractTransactionWorker() {
 
                 @Override
-                public Object work(SwiftMetaDataDAO dao) throws SQLException {
+                public Object work() throws SQLException {
                     for (String sourceKey : sourceKeys) {
-                        dao.deleteSwiftMetaDataBean(sourceKey);
+                        swiftMetaDataDao.deleteSwiftMetaDataBean(sourceKey);
                     }
                     return true;
                 }
+
+
             });
 
         } catch (Exception e) {
@@ -97,17 +110,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     @Override
     public Map<String, SwiftMetaData> getAllMetaData() {
         try {
-            List<SwiftMetaDataBean> beans = (List<SwiftMetaDataBean>) SwiftTransactionManager.doTransactionIfNeed(new SwiftMetaDataTransactionWorker() {
-                @Override
-                public Object work(SwiftMetaDataDAO dao) {
-                    return dao.findAll();
-                }
-
-                @Override
-                public boolean needTransaction() {
-                    return false;
-                }
-            });
+            List<SwiftMetaDataBean> beans = swiftMetaDataDao.findAll();
             Map<String, SwiftMetaData> result = new HashMap<String, SwiftMetaData>();
             for (SwiftMetaDataBean bean : beans) {
                 result.put(bean.getId(), bean);
@@ -124,19 +127,9 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
         SwiftMetaData metaData = metaDataCache.get(sourceKey);
         if (null == metaData) {
             try {
-                return (SwiftMetaDataBean) SwiftTransactionManager.doTransactionIfNeed(new SwiftMetaDataTransactionWorker() {
-                    @Override
-                    public Object work(SwiftMetaDataDAO dao) throws SQLException {
-                        SwiftMetaDataBean metaData = dao.findBySourceKey(sourceKey);
-                        metaDataCache.put(sourceKey, metaData);
-                        return metaData;
-                    }
-
-                    @Override
-                    public boolean needTransaction() {
-                        return false;
-                    }
-                });
+                metaData = swiftMetaDataDao.findBySourceKey(sourceKey);
+                metaDataCache.put(sourceKey, metaData);
+                return metaData;
             } catch (Exception e) {
                 LOGGER.error("Select metadata error!", e);
                 return null;
@@ -149,18 +142,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     @Override
     public boolean containsMeta(final SourceKey sourceKey) {
         try {
-            return (Boolean) SwiftTransactionManager.doTransactionIfNeed(new SwiftMetaDataTransactionWorker() {
-                @Override
-                public Object work(SwiftMetaDataDAO dao) throws SQLException {
-                    SwiftMetaDataBean metaData = dao.findBySourceKey(sourceKey.getId());
-                    return null != metaData;
-                }
-
-                @Override
-                public boolean needTransaction() {
-                    return false;
-                }
-            });
+            return null != swiftMetaDataDao.findBySourceKey(sourceKey.getId());
         } catch (Exception e) {
             return false;
         }

@@ -8,7 +8,7 @@ import java.util.List;
  * @author yee
  * @date 2018/5/25
  */
-public interface SwiftConfigDAO<T> {
+public interface SwiftConfigDao<T> {
     /**
      * 添加或更新方法
      *
