@@ -6,6 +6,7 @@ import com.fr.swift.cube.io.IResourceDiscovery;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types.DataType;
 import com.fr.swift.cube.io.Types.IoType;
+import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.input.BitMapReader;
 import com.fr.swift.cube.io.input.IntReader;
 import com.fr.swift.cube.io.location.IResourceLocation;
@@ -218,5 +219,10 @@ public abstract class BaseSegment implements Segment {
 
     private Column createRelationColumn(ColumnKey key) {
         return new RelationColumn(key).buildRelationColumn(this);
+    }
+
+    @Override
+    public boolean isHistory() {
+        return getLocation().getStoreType() != StoreType.MEMORY;
     }
 }
