@@ -1,22 +1,14 @@
 package com.fr.swift.event.realtime;
 
 import com.fr.swift.event.base.AbstractRealTimeRpcEvent;
-import com.fr.swift.source.SourceKey;
-
-import java.util.List;
 
 /**
  * @author yee
  * @date 2018/6/8
  */
-public class RealTimeMergeRpcEvent extends AbstractRealTimeRpcEvent<List<SourceKey>> {
+public class RealTimeMergeRpcEvent extends AbstractRealTimeRpcEvent<Void> {
 
-    private List<SourceKey> sourceKeys;
-
-
-    public RealTimeMergeRpcEvent(List<SourceKey> sourceKeys) {
-
-    }
+    private static final long serialVersionUID = 8404690845632795949L;
 
     @Override
     public Event subEvent() {
@@ -24,7 +16,7 @@ public class RealTimeMergeRpcEvent extends AbstractRealTimeRpcEvent<List<SourceK
     }
 
     @Override
-    public List<SourceKey> getContent() {
-        return sourceKeys;
+    public Void getContent() {
+        return null;
     }
 }

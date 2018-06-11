@@ -14,6 +14,6 @@ public abstract class AbstractIndexingRpcEvent<T> implements SwiftRpcEvent<T> {
     public abstract Event subEvent();
 
     public enum Event implements SubEvent {
-
+        INDEX
     }
 }
