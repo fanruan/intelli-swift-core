@@ -47,7 +47,7 @@ public class HistoryDataSyncManager implements Handler<HistoryLoadRpcEvent> {
             String key = keyIterator.next();
             exists.put(key, keys.get(key));
         }
-        Map<String, Set<URI>> result = rule.calculate(keys, exists, needLoadSegment);
+        Map<String, Set<URI>> result = rule.calculate(exists, needLoadSegment);
         keyIterator = result.keySet().iterator();
         while (keyIterator.hasNext()) {
             String key = keyIterator.next();

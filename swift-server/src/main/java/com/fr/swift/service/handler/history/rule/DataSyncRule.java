@@ -15,10 +15,14 @@ import java.util.Set;
 public interface DataSyncRule {
     DataSyncRule DEFAULT = new DataSyncRule() {
         @Override
-        public Map<String, Set<URI>> calculate(Map<String, List<SegmentKey>> all, Map<String, List<SegmentKey>> exists, List<SegmentKey> needLoad) {
+        public Map<String, Set<URI>> calculate(Map<String, List<SegmentKey>> exists, List<SegmentKey> needLoad) {
+
+            Set<String> historyNodes = exists.keySet();
+
+
             return new HashMap<String, Set<URI>>();
         }
     };
 
-    Map<String, Set<URI>> calculate(Map<String, List<SegmentKey>> all, Map<String, List<SegmentKey>> exists, List<SegmentKey> needLoad);
+    Map<String, Set<URI>> calculate(Map<String, List<SegmentKey>> exists, List<SegmentKey> needLoad);
 }
