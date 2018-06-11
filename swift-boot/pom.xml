@@ -67,6 +67,11 @@
             <artifactId>swift-cluster</artifactId>
             <version>5.0-FEATURE-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.finebi</groupId>
+            <artifactId>swift-netty</artifactId>
+            <version>5.0-FEATURE-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 

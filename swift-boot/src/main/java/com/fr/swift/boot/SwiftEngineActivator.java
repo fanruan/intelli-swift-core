@@ -19,10 +19,10 @@ import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.frrpc.ClusterNodeManager;
-import com.fr.swift.frrpc.FRClusterProxyFactory;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.proxy.LocalProxyFactory;
+import com.fr.swift.rpc.proxy.RPCProxyFactory;
 import com.fr.swift.selector.ProxySelector;
 import com.fr.swift.service.register.ClusterSwiftRegister;
 import com.fr.swift.service.register.LocalSwiftRegister;
@@ -46,11 +46,14 @@ public class SwiftEngineActivator extends Activator implements Prepare {
             SwiftContext.init();
 
             new LocalSwiftRegister().serviceRegister();
+            //todo listener移动
             ClusterListenerHandler.addListener(new ClusterEventListener() {
                 @Override
                 public void handleEvent(ClusterEvent clusterEvent) {
                     if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
-                        ProxySelector.getInstance().switchFactory(new FRClusterProxyFactory());
+//                        ProxySelector.getInstance().switchFactory(new FRClusterProxyFactory());
+                        ProxySelector.getInstance().switchFactory(new RPCProxyFactory());
+
                         new LocalSwiftRegister().serviceUnregister();
                         new ClusterSwiftRegister().serviceRegister();
                         SwiftClusterSegmentServiceImpl service = (SwiftClusterSegmentServiceImpl) SwiftContext.getInstance().getBean(SwiftClusterSegmentService.class);

@@ -4,7 +4,7 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rpc.bean.RpcRequest;
 import com.fr.swift.rpc.bean.RpcResponse;
-import com.fr.third.jodd.util.StringUtil;
+import com.fr.swift.rpc.exception.ServiceInvalidException;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -45,13 +45,9 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
 
     private Object handle(RpcRequest request) throws Exception {
         String serviceName = request.getInterfaceName();
-        String serviceVersion = request.getServiceVersion();
-        if (StringUtil.isNotEmpty(serviceVersion)) {
-            serviceName += "-" + serviceVersion;
-        }
         Object serviceBean = handlerMap.get(serviceName);
         if (serviceBean == null) {
-            return null;
+            throw new ServiceInvalidException(serviceName + " is invalid on remote machine!");
         }
         Class<?> serviceClass = serviceBean.getClass();
         String methodName = request.getMethodName();

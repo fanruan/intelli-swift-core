@@ -1,6 +1,10 @@
 package com.fr.swift.service.register;
 
 import com.fr.swift.frrpc.ClusterNodeManager;
+import com.fr.swift.log.SwiftLogger;
+import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.rpc.SwiftRpcService;
+import com.fr.swift.rpc.server.RpcServer;
 import com.fr.swift.service.ClusterSwiftServerService;
 
 /**
@@ -11,18 +15,33 @@ import com.fr.swift.service.ClusterSwiftServerService;
  * @since Advanced FineBI 5.0
  */
 public class ClusterSwiftRegister extends AbstractSwiftRegister {
+    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(RpcServer.class);
+
     @Override
     public void serviceRegister() {
-        if (!ClusterNodeManager.getInstance().isMaster()) {
-            remoteServiceRegister();
-        } else {
+
+//        SwiftRpcService.getInstance().startClientService();
+        SwiftRpcService.getInstance().startServerService();
+
+        if (ClusterNodeManager.getInstance().isMaster()) {
             new ClusterSwiftServerService().start();
             masterLocalServiceRegister();
+        } else {
+            remoteServiceRegister();
         }
     }
 
     @Override
     public void serviceUnregister() {
-
+        try {
+            SwiftRpcService.getInstance().stopClientService();
+        } catch (Exception e) {
+            LOGGER.error(e);
+        }
+        try {
+            SwiftRpcService.getInstance().stopServerService();
+        } catch (Exception e) {
+            LOGGER.error(e);
+        }
     }
 }

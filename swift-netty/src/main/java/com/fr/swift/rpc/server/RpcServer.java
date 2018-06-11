@@ -3,6 +3,7 @@ package com.fr.swift.rpc.server;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rpc.annotation.RpcService;
+import com.fr.swift.rpc.annotation.RpcServiceType;
 import com.fr.swift.rpc.registry.ServiceRegistry;
 import com.fr.third.jodd.util.StringUtil;
 import com.fr.third.org.apache.commons.collections4.MapUtils;
@@ -38,15 +39,18 @@ public class RpcServer {
 
     private ServiceRegistry serviceRegistry;
 
+    private RpcServiceType serviceType;
+
     /**
      * key:服务名
      * value:服务对象
      */
     private Map<String, Object> handlerMap = new HashMap<String, Object>();
 
-    public RpcServer(String serviceAddress, ServiceRegistry serviceRegistry) {
+    public RpcServer(String serviceAddress, ServiceRegistry serviceRegistry, RpcServiceType serviceType) {
         this.serviceAddress = serviceAddress;
         this.serviceRegistry = serviceRegistry;
+        this.serviceType = serviceType;
     }
 
     public void initService(ApplicationContext ctx) throws BeansException {
@@ -56,11 +60,9 @@ public class RpcServer {
             for (Object serviceBean : serviceBeanMap.values()) {
                 RpcService rpcService = serviceBean.getClass().getAnnotation(RpcService.class);
                 String serviceName = rpcService.value().getName();
-                String serviceVersion = rpcService.version();
-                if (StringUtil.isNotEmpty(serviceVersion)) {
-                    serviceName += "-" + serviceVersion;
-                }
+//                if (rpcService.type() == serviceType) {
                 handlerMap.put(serviceName, serviceBean);
+//                }
             }
         }
     }
