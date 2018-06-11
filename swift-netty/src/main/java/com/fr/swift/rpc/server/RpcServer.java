@@ -3,6 +3,7 @@ package com.fr.swift.rpc.server;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rpc.annotation.RpcService;
+import com.fr.swift.rpc.annotation.RpcServiceType;
 import com.fr.swift.rpc.registry.ServiceRegistry;
 import com.fr.third.jodd.util.StringUtil;
 import com.fr.third.org.apache.commons.collections4.MapUtils;
@@ -38,7 +39,7 @@ public class RpcServer {
 
     private ServiceRegistry serviceRegistry;
 
-    private int serviceType;
+    private RpcServiceType serviceType;
 
     /**
      * key:服务名
@@ -46,7 +47,7 @@ public class RpcServer {
      */
     private Map<String, Object> handlerMap = new HashMap<String, Object>();
 
-    public RpcServer(String serviceAddress, ServiceRegistry serviceRegistry, int serviceType) {
+    public RpcServer(String serviceAddress, ServiceRegistry serviceRegistry, RpcServiceType serviceType) {
         this.serviceAddress = serviceAddress;
         this.serviceRegistry = serviceRegistry;
         this.serviceType = serviceType;

@@ -21,7 +21,5 @@ public @interface RpcService {
 
     Class<?> value();
 
-    //0 server端service
-    //1 client端service
-    int type() default 0;
+    RpcServiceType type() default RpcServiceType.SERVER_SERVICE;
 }

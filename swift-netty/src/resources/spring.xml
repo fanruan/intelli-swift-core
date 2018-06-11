@@ -28,7 +28,7 @@
     <bean id="rpcServer" class="com.fr.swift.rpc.server.RpcServer">
         <constructor-arg name="serviceAddress" value="${rpc.server_address}"/>
         <constructor-arg name="serviceRegistry" ref="serviceRegistry"/>
-        <constructor-arg name="serviceType" value="0"/>
+        <constructor-arg name="serviceType" value="SERVER_SERVICE"/>
     </bean>
 
     <!--<bean id="rpcClient" class="com.fr.swift.rpc.server.RpcServer">-->

@@ -31,7 +31,7 @@
         </dependency>
         <dependency>
             <groupId>com.finebi</groupId>
-            <artifactId>swift-commucation</artifactId>
+            <artifactId>swift-communication</artifactId>
             <version>5.0-FEATURE-SNAPSHOT</version>
         </dependency>
         <!-- Netty -->
