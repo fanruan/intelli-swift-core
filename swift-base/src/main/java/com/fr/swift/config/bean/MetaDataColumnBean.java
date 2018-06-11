@@ -2,15 +2,18 @@ package com.fr.swift.config.bean;
 
 import com.fr.swift.source.SwiftMetaDataColumn;
 
+import java.io.Serializable;
+
 /**
  * @Author: Lucifer
  * @Description:
  * @Date: Created in 2018-3-8
  */
-public class MetaDataColumnBean implements SwiftMetaDataColumn {
+public class MetaDataColumnBean implements SwiftMetaDataColumn, Serializable {
 
     private static final int DEFAULT_PRECISION = 255;
     private static final int DEFAULT_SCALE = 15;
+    private static final long serialVersionUID = 5094076095250338803L;
 
     private int type;
     private String name;

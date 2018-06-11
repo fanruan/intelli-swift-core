@@ -9,6 +9,7 @@ import com.fr.swift.query.QueryInfo;
  */
 public class RealTimeQueryRpcEvent extends AbstractRealTimeRpcEvent<QueryInfo> {
 
+    private static final long serialVersionUID = 7874082264391942343L;
     private QueryInfo queryInfo;
 
     public RealTimeQueryRpcEvent(QueryInfo queryInfo) {

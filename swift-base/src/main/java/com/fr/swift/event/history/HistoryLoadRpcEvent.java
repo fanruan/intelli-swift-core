@@ -8,6 +8,9 @@ import com.fr.swift.event.base.AbstractHistoryRpcEvent;
  */
 public class HistoryLoadRpcEvent extends AbstractHistoryRpcEvent {
 
+
+    private static final long serialVersionUID = 5999241318201878252L;
+
     @Override
     public Event subEvent() {
         return Event.LOAD;
