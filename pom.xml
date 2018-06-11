@@ -27,7 +27,8 @@
         <module>fine-engine-swift</module>
         <module>swift-boot</module>
         <module>swift-cluster</module>
-        <module>swift-commucation</module>
+        <module>swift-communication</module>
+        <module>swift-netty</module>
         <module>swift-repository</module>
     </modules>
 

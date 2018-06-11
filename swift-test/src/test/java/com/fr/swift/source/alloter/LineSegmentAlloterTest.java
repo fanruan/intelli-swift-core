@@ -1,5 +1,6 @@
 package com.fr.swift.source.alloter;
 
+import com.fr.swift.config.SwiftCubePathConfig;
 import com.fr.swift.config.TestConfDb;
 import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
@@ -22,7 +23,6 @@ import com.fr.swift.source.alloter.line.LineRowInfo;
 import com.fr.swift.source.core.Core;
 import com.fr.swift.test.Preparer;
 import com.fr.swift.test.TestIo;
-import com.fr.swift.test.TestResource;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -42,8 +42,8 @@ public class LineSegmentAlloterTest extends TestIo {
     int count;
 
     @BeforeClass
-    public static void boot() {
-        Preparer.prepareContext();
+    public static void boot() throws Exception {
+        Preparer.prepareCubeBuild();
     }
 
 
@@ -124,7 +124,11 @@ public class LineSegmentAlloterTest extends TestIo {
             int index = alloter.allot(new LineRowInfo(i)).getOrder();
             if (lastIndex != index || null == segment) {
                 lastIndex = index;
-                ResourceLocation location = new ResourceLocation(TestResource.getRunPath(getClass()) + "/cubes/" + sourceKey.getId() + "/seg" + index);
+                ResourceLocation location = new ResourceLocation(String.format("%s/%s/%s/seg%d",
+                        SwiftCubePathConfig.getInstance().getPath(),
+                        resultSet.getMetaData().getSwiftSchema().dir,
+                        sourceKey.getId(),
+                        index));
                 segment = new HistorySegmentImpl(location, resultSet.getMetaData());
                 column = segment.getColumn(new ColumnKey("long")).getDetailColumn();
             }
