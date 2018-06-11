@@ -1,6 +1,5 @@
 package com.fr.swift.generate.record;
 
-import com.fr.swift.config.SwiftCubePathConfig;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
@@ -62,8 +61,7 @@ public class RealtimeRecorderTest extends BaseTest {
         realtimeRecorder.end();
 
         for (int i = 0; i < 7; i++) {
-            String cubePath = String.format("%s/%s/%s/seg%d",
-                    SwiftCubePathConfig.getInstance().getPath(),
+            String cubePath = String.format("%s/%s/seg%d",
                     Schema.BACKUP_CUBE.dir,
                     dataSource.getSourceKey().getId(), i);
             IResourceLocation location = new ResourceLocation(cubePath, Types.StoreType.FINE_IO);
