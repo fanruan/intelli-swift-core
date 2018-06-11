@@ -1,5 +1,6 @@
 package com.fr.swift.context;
 
+import com.fr.third.springframework.beans.factory.BeanFactory;
 import com.fr.third.springframework.context.ApplicationContext;
 import com.fr.third.springframework.context.annotation.AnnotationConfigApplicationContext;
 import com.fr.third.springframework.context.support.ClassPathXmlApplicationContext;
@@ -21,7 +22,7 @@ public class SwiftContext extends AnnotationConfigApplicationContext {
         rpcContext = new ClassPathXmlApplicationContext("spring.xml");
     }
 
-    public static SwiftContext getInstance() {
+    public static BeanFactory getInstance() {
         return INSTANCE;
     }
 
@@ -31,10 +32,8 @@ public class SwiftContext extends AnnotationConfigApplicationContext {
 
     public static void init() {
         init("com.fr.swift");
-
     }
 
-    volatile
     private boolean refreshed = false;
 
     public static void init(String... packages) {

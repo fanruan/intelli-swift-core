@@ -14,9 +14,4 @@ public class RealTimeSegmentImpl extends BaseSegment implements RealTimeSegment 
     public RealTimeSegmentImpl(IResourceLocation parent, SwiftMetaData meta) {
         super(parent, meta);
     }
-
-    @Override
-    public boolean isHistory() {
-        return false;
-    }
 }
