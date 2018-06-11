@@ -1,11 +1,11 @@
 package com.fr.swift.config;
 
-import com.fr.base.FRContext;
 import com.fr.config.ConfigContext;
 import com.fr.config.DefaultConfiguration;
 import com.fr.config.holder.Conf;
 import com.fr.config.holder.factory.Holders;
 import com.fr.stable.StringUtils;
+import com.fr.swift.context.ContextUtil;
 
 /**
  * This class created on 2018/5/7
@@ -19,7 +19,7 @@ public class SwiftCubePathConfig extends DefaultConfiguration {
 
     private static SwiftCubePathConfig config = null;
 
-    private static final String BASE_CUBE_PATH = String.format("%s/../", FRContext.getCurrentEnv().getPath());
+    private static final String BASE_CUBE_PATH = String.format("%s/../../", ContextUtil.getClassPath());
 
     private Conf<String> confPath = Holders.simple(BASE_CUBE_PATH);
 
