@@ -4,7 +4,6 @@ import com.fr.general.LogOperator;
 import com.fr.swift.adaptor.log.SwiftLogOperator.Sync;
 import com.fr.swift.adaptor.log.SwiftMetaAdaptorTest.A;
 import com.fr.swift.adaptor.log.SwiftMetaAdaptorTest.ConvertType;
-import com.fr.swift.config.TestConfDb;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.impl.SwiftDatabase;
@@ -12,9 +11,9 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.test.Preparer;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -23,8 +22,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
-//import com.fr.swift.test.Preparer;
 
 /**
  * @author anchore
@@ -36,8 +33,7 @@ public class LogOperatorTest {
 
     @BeforeClass
     public static void boot() throws Exception {
-        TestConfDb.setConfDb();
-//        Preparer.prepareCubeBuild();
+        Preparer.prepareCubeBuild();
     }
 
     @Before
@@ -79,10 +75,5 @@ public class LogOperatorTest {
         assertEquals(a.sqlDate.getTime(), seg.getColumn(new ColumnKey("sqlDate")).getDetailColumn().get(0));
         assertEquals((long) a.i, seg.getColumn(new ColumnKey("i")).getDetailColumn().get(0));
         assertEquals(a.b ? 1L : 0L, seg.getColumn(new ColumnKey("b")).getDetailColumn().get(0));
-    }
-
-    @Ignore
-    @Test
-    public void recordInfos() {
     }
 }
