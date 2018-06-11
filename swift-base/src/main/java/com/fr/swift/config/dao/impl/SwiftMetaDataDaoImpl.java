@@ -2,9 +2,10 @@ package com.fr.swift.config.dao.impl;
 
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
-import com.fr.swift.config.dao.BaseDAO;
-import com.fr.swift.config.dao.SwiftMetaDataDAO;
+import com.fr.swift.config.dao.BaseDao;
+import com.fr.swift.config.dao.SwiftMetaDataDao;
 import com.fr.swift.config.entity.SwiftMetaDataEntity;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -15,11 +16,12 @@ import java.util.List;
  * @author yee
  * @date 2018/5/24
  */
-public class SwiftMetaDataDAOImpl extends BaseDAO<SwiftMetaDataEntity> implements SwiftMetaDataDAO {
+@Service
+public class SwiftMetaDataDaoImpl extends BaseDao<SwiftMetaDataEntity> implements SwiftMetaDataDao {
 
     private static final String FIND_BY_NAME_HQL = String.format("from SwiftMetaDataEntity entity where entity.%s = ", SwiftConfigConstants.MetaDataConfig.COLUMN_TABLE_NAME);
 
-    public SwiftMetaDataDAOImpl() {
+    public SwiftMetaDataDaoImpl() {
         super(SwiftMetaDataEntity.class);
     }
 

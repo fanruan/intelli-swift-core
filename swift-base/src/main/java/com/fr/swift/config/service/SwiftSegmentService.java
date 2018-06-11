@@ -1,6 +1,5 @@
 package com.fr.swift.config.service;
 
-import com.fr.swift.cube.io.Types;
 import com.fr.swift.segment.SegmentKey;
 
 import java.util.List;
@@ -27,8 +26,6 @@ public interface SwiftSegmentService {
      */
     boolean removeSegments(String... sourceKey);
 
-    boolean removeByStoreType(Types.StoreType type);
-
     /**
      * @param segments
      * @return
@@ -49,8 +46,6 @@ public interface SwiftSegmentService {
      * @return
      */
     List<SegmentKey> getSegmentByKey(String sourceKey);
-
-    List<SegmentKey> getUnStoreSegments(String sourceKey);
 
     boolean containsSegment(SegmentKey segmentKey);
 }

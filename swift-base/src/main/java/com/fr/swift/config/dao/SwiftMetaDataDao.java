@@ -10,7 +10,7 @@ import java.util.List;
  * @author yee
  * @date 2018/5/25
  */
-public interface SwiftMetaDataDAO extends SwiftConfigDAO<SwiftMetaDataEntity> {
+public interface SwiftMetaDataDao extends SwiftConfigDao<SwiftMetaDataEntity> {
     /**
      * 根据SourceKey查找
      *

@@ -3,6 +3,7 @@ package com.fr.swift.config.dao;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.cube.io.Types;
+import com.fr.swift.segment.SegmentKey;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
  * @author yee
  * @date 2018/5/25
  */
-public interface SwiftSegmentDAO extends SwiftConfigDAO<SwiftSegmentEntity> {
+public interface SwiftSegmentDao extends SwiftConfigDao<SwiftSegmentEntity> {
     /**
      * 保存SegmentKeyBean
      *
@@ -26,9 +27,9 @@ public interface SwiftSegmentDAO extends SwiftConfigDAO<SwiftSegmentEntity> {
      * @param sourceKey
      * @return
      */
-    List<SegmentKeyBean> findBySourceKey(String sourceKey);
+    List<SegmentKey> findBySourceKey(String sourceKey);
 
-    List<SegmentKeyBean> findBeanByStoreType(String sourceKey, Types.StoreType type) throws SQLException;
+    List<SegmentKey> findBeanByStoreType(String sourceKey, Types.StoreType type) throws SQLException;
 
     /**
      * 删除SourceKey下的所有SegmentKey
@@ -52,5 +53,5 @@ public interface SwiftSegmentDAO extends SwiftConfigDAO<SwiftSegmentEntity> {
      *
      * @return
      */
-    List<SegmentKeyBean> findAll();
+    List<SegmentKey> findAll();
 }

@@ -18,4 +18,10 @@ public interface SwiftPathService {
      * @return
      */
     String getSwiftPath();
+
+    void registerPathChangeListener(PathChangeListener listener);
+
+    interface PathChangeListener {
+        void changed(String path);
+    }
 }

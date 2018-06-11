@@ -1,6 +1,5 @@
 package com.fr.swift.cube;
 
-import com.fr.swift.config.SwiftCubePathConfig;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.source.DataSource;
@@ -29,8 +28,8 @@ public class CubeUtil {
     }
 
     public static String getTablePath(DataSource dataSource) {
-        return String.format("%s/%s/%s",
-                SwiftCubePathConfig.getInstance().getPath(),
+        return String.format("%s/%s",
+//                SwiftCubePathConfig.getInstance().getPath(),
                 dataSource.getMetadata().getSwiftSchema().dir,
                 dataSource.getSourceKey().getId());
     }

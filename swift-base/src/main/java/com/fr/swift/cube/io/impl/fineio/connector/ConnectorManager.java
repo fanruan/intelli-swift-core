@@ -9,6 +9,8 @@ import com.fr.plugin.observer.PluginEventType;
 import com.fr.plugin.observer.PluginListenerRegistration;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.plugin.ExtraClassManagerProvider;
+import com.fr.swift.config.service.SwiftPathService;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Crasher;
 
@@ -24,6 +26,8 @@ import com.fr.swift.util.Crasher;
 public class ConnectorManager {
     private volatile static ConnectorManager instance;
     private static Connector connector;
+    private SwiftPathService pathService = SwiftContext.getInstance().getBean(SwiftPathService.class);
+    private String clusterId;
 
     public static ConnectorManager getInstance() {
         if (null != instance) {
@@ -40,6 +44,13 @@ public class ConnectorManager {
 
     private ConnectorManager() {
         listenPlugin();
+        pathService.registerPathChangeListener(new SwiftPathService.PathChangeListener() {
+            @Override
+            public void changed(String path) {
+                connector = null;
+                connector = createConnector(path);
+            }
+        });
     }
 
     private void listenPlugin() {
@@ -59,25 +70,28 @@ public class ConnectorManager {
         if (null != connector) {
             return connector;
         }
+        String path = pathService.getSwiftPath();
+        return createConnector(path);
+    }
+
+    private Connector createConnector(String basePath) {
         synchronized (this) {
             if (null != connector) {
                 return connector;
             }
-//            long cacheTimer = ZipUriConf.getInstance().getCacheTimer();
-//            FineIO.setMemoryCheckSchedule(cacheTimer);
             ExtraClassManagerProvider pluginProvider = StableFactory.getMarkedObject(ExtraClassManagerProvider.XML_TAG, ExtraClassManagerProvider.class);
             if (null == pluginProvider) {
-                connector = ZipConnector.newInstance();
+                connector = ZipConnector.newInstance(basePath);
                 return connector;
             }
             ConnectorProcessor connectorProcessor = pluginProvider.getSingle(ConnectorProcessor.MARK_STRING);
             if (null == connectorProcessor) {
-                connector = ZipConnector.newInstance();
+                connector = ZipConnector.newInstance(basePath);
                 return connector;
             }
             connector = connectorProcessor.createConnector();
             if (null == connector) {
-                connector = ZipConnector.newInstance();
+                connector = ZipConnector.newInstance(basePath);
             }
             return connector;
         }

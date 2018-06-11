@@ -12,6 +12,8 @@ import java.net.URI;
 public interface SegmentKey {
     SourceKey getTable();
 
+    URI getAbsoluteUri();
+
     URI getUri();
 
     int getOrder();

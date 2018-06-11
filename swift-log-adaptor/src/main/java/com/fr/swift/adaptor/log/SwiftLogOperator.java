@@ -120,7 +120,7 @@ public class SwiftLogOperator implements LogOperator {
         public static final int FLUSH_SIZE_THRESHOLD = 10000;
 
         Sync() {
-            scheduler.scheduleAtFixedRate(this, 0, 30, TimeUnit.SECONDS);
+            scheduler.scheduleAtFixedRate(this, 0, 5, TimeUnit.SECONDS);
         }
 
         @Override

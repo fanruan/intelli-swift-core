@@ -23,7 +23,7 @@ public class ResourceLocation implements IResourceLocation {
 
     public ResourceLocation(String path, StoreType storeType) {
         path = Strings.trimSeparator(path, "\\", SEPARATOR);
-        path = SEPARATOR + path;
+//        path = SEPARATOR + path;
         path = Strings.trimSeparator(path, SEPARATOR);
         uri = URI.create(path);
 
