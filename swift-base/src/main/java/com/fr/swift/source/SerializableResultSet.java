@@ -51,6 +51,7 @@ public class SerializableResultSet implements SwiftResultSet, Serializable {
 
     @Override
     public void close() throws SQLException {
-
+        currentRow = -1;
+        rows.clear();
     }
 }
