@@ -9,6 +9,7 @@ import com.fr.swift.stuff.IndexingStuff;
  */
 public class IndexRpcEvent extends AbstractIndexingRpcEvent<IndexingStuff> {
 
+    private static final long serialVersionUID = -3778606145652475091L;
     private IndexingStuff indexingStuff;
 
     public IndexRpcEvent(IndexingStuff indexingStuff) {
