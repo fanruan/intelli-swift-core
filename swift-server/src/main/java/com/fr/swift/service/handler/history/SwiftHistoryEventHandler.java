@@ -1,6 +1,7 @@
 package com.fr.swift.service.handler.history;
 
 import com.fr.swift.event.base.AbstractHistoryRpcEvent;
+import com.fr.swift.event.history.HistoryLoadRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.QueryInfo;
@@ -59,7 +60,7 @@ public class SwiftHistoryEventHandler implements Handler<AbstractHistoryRpcEvent
                 }
                 return (S) result;
             case LOAD:
-                return historyDataSyncManager.handle(services);
+                return historyDataSyncManager.handle((HistoryLoadRpcEvent) event);
         }
         return null;
     }

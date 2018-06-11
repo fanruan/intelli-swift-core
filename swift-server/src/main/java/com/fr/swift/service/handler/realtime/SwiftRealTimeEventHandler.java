@@ -66,7 +66,7 @@ public class SwiftRealTimeEventHandler implements Handler<AbstractRealTimeRpcEve
                 // TODO insert传resultSet？
                 return null;
             case RECOVER:
-                final Map<String, List<SegmentKey>> map = clusterSegmentService.getOwnSegments();
+                final Map<String, List<SegmentKey>> map = clusterSegmentService.getClusterSegments();
                 for (final RealtimeService service : services) {
                     realTimeService.submit(new Runnable() {
                         @Override
@@ -85,7 +85,7 @@ public class SwiftRealTimeEventHandler implements Handler<AbstractRealTimeRpcEve
                 }
                 return null;
             case MERGE:
-                final Map<String, List<SegmentKey>> mergeMap = clusterSegmentService.getOwnSegments();
+                final Map<String, List<SegmentKey>> mergeMap = clusterSegmentService.getClusterSegments();
                 for (final RealtimeService service : services) {
                     realTimeService.submit(new Runnable() {
                         @Override
