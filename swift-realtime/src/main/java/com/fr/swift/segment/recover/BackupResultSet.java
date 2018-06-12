@@ -2,7 +2,7 @@ package com.fr.swift.segment.recover;
 
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
@@ -18,8 +18,7 @@ import java.util.List;
  */
 class BackupResultSet implements SwiftResultSet {
     private SwiftMetaData meta;
-    private List<DictionaryEncodedColumn> dicts = new ArrayList<DictionaryEncodedColumn>();
-
+    private List<DetailColumn> details = new ArrayList<DetailColumn>();
     private int cursor = -1;
     private int rowCount;
 
@@ -31,7 +30,7 @@ class BackupResultSet implements SwiftResultSet {
         meta = seg.getMetaData();
         rowCount = seg.getRowCount();
         for (int i = 1; i <= meta.getColumnCount(); i++) {
-            dicts.add(seg.getColumn(new ColumnKey(meta.getColumnName(i))).getDictionaryEncodedColumn());
+            details.add(seg.getColumn(new ColumnKey(meta.getColumnName(i))).getDetailColumn());
         }
     }
 
@@ -48,16 +47,16 @@ class BackupResultSet implements SwiftResultSet {
     @Override
     public Row getRowData() {
         List<Object> row = new ArrayList<Object>();
-        for (DictionaryEncodedColumn dict : dicts) {
-            row.add(dict.getValueByRow(cursor));
+        for (DetailColumn detail : details) {
+            row.add(detail.get(cursor));
         }
         return new ListBasedRow(row);
     }
 
     @Override
     public void close() {
-        for (DictionaryEncodedColumn dict : dicts) {
-            dict.release();
+        for (DetailColumn detail : details) {
+            detail.release();
         }
     }
 }
