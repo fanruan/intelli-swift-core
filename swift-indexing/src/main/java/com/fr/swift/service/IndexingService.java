@@ -15,5 +15,5 @@ public interface IndexingService extends SwiftService {
      */
     void index(IndexingStuff stuff);
 
-    ServerCurrentStatus serverInfo();
+    ServerCurrentStatus currentStatus();
 }

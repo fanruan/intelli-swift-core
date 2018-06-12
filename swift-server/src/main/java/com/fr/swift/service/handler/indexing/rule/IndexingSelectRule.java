@@ -27,7 +27,7 @@ public interface IndexingSelectRule {
             Iterator<Map.Entry<String, IndexingService>> iterator = indexingServices.entrySet().iterator();
             List<ServerCurrentStatus> serverCurrentStatuses = new ArrayList<ServerCurrentStatus>();
             while (iterator.hasNext()) {
-                serverCurrentStatuses.add(iterator.next().getValue().serverInfo());
+                serverCurrentStatuses.add(iterator.next().getValue().currentStatus());
             }
             Collections.sort(serverCurrentStatuses);
             return indexingServices.get(serverCurrentStatuses.get(0).getClusterId());

@@ -37,7 +37,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     }
 
     @Override
-    public ServerCurrentStatus serverInfo() {
+    public ServerCurrentStatus currentStatus() {
         return new ServerCurrentStatus(getID());
     }
 }
