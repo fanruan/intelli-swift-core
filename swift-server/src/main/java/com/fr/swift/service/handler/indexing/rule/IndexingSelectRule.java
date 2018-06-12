@@ -1,6 +1,6 @@
 package com.fr.swift.service.handler.indexing.rule;
 
-import com.fr.swift.info.ServerInfo;
+import com.fr.swift.info.ServerCurrentStatus;
 import com.fr.swift.service.IndexingService;
 
 import java.util.ArrayList;
@@ -25,12 +25,12 @@ public interface IndexingSelectRule {
         @Override
         public IndexingService select(Map<String, IndexingService> indexingServices) {
             Iterator<Map.Entry<String, IndexingService>> iterator = indexingServices.entrySet().iterator();
-            List<ServerInfo> serverInfos = new ArrayList<ServerInfo>();
+            List<ServerCurrentStatus> serverCurrentStatuses = new ArrayList<ServerCurrentStatus>();
             while (iterator.hasNext()) {
-                serverInfos.add(iterator.next().getValue().serverInfo());
+                serverCurrentStatuses.add(iterator.next().getValue().serverInfo());
             }
-            Collections.sort(serverInfos);
-            return indexingServices.get(serverInfos.get(0).getClusterId());
+            Collections.sort(serverCurrentStatuses);
+            return indexingServices.get(serverCurrentStatuses.get(0).getClusterId());
         }
     };
 
