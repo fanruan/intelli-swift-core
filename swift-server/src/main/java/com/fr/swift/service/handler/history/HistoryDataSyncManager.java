@@ -28,7 +28,7 @@ import java.util.Set;
 public class HistoryDataSyncManager implements Handler<HistoryLoadRpcEvent> {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(HistoryDataSyncManager.class);
-    @Autowired
+    @Autowired(required = false)
     private SwiftClusterSegmentService clusterSegmentService;
     private DataSyncRule rule = DataSyncRule.DEFAULT;
 

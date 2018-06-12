@@ -34,7 +34,7 @@ public class SwiftRealTimeEventHandler implements Handler<AbstractRealTimeRpcEve
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftHistoryEventHandler.class);
     private ExecutorService realTimeService = Executors.newCachedThreadPool(new PoolThreadFactory(getClass()));
 
-    @Autowired
+    @Autowired(required = false)
     private SwiftClusterSegmentService clusterSegmentService;
 
     @Override

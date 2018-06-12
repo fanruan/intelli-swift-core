@@ -26,6 +26,7 @@ public interface DataSyncRule {
 
             int lessCount = historyNodes.size() - 1;
 
+            // 如果历史节点只有1个，数据至少存在一份，否则至少存在节点数-1份
             lessCount = lessCount < 1 ? 1 : lessCount;
 
 
@@ -41,6 +42,7 @@ public interface DataSyncRule {
                     SegmentKey segmentKey = iterator.next();
                     Map<String, AtomicInteger> readyToSort = map.get(s);
                     List<Pair> sort = sort(readyToSort);
+                    // 每个表对应的segment数最少的 lessCount个节点加载一个Segment
                     for (int i = 0; i < lessCount; i++) {
                         String clusterId = sort.get(i).clusterId;
                         map.get(s).get(clusterId).incrementAndGet();
@@ -56,6 +58,13 @@ public interface DataSyncRule {
             return result;
         }
 
+        /**
+         * 算出真正需要load的Segment，并且算出每个历史节点每个表包含的Segment数
+         *
+         * @param exists
+         * @param needLoad
+         * @return
+         */
         private Map<String, Map<String, AtomicInteger>> calculateNeedLoad(Map<String, List<SegmentKey>> exists, Map<String, List<SegmentKey>> needLoad) {
             Set<String> historyNodes = exists.keySet();
             Map<String, Map<String, AtomicInteger>> result = new HashMap<String, Map<String, AtomicInteger>>();
@@ -119,5 +128,11 @@ public interface DataSyncRule {
         }
     };
 
+    /**
+     * 计算每个节点应该load哪些segment
+     * @param exists
+     * @param needLoad
+     * @return
+     */
     Map<String, Set<URI>> calculate(Map<String, List<SegmentKey>> exists, Map<String, List<SegmentKey>> needLoad);
 }
