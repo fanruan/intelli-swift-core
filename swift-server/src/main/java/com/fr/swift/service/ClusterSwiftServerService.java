@@ -63,7 +63,7 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
     @Override
     public void registerService(SwiftService service) {
 
-        SwiftProperty swiftProperty = (SwiftProperty) SwiftContext.getInstance().getRpcContext().getBean("swiftProperty");
+        SwiftProperty swiftProperty = SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class);
 
         if (service.getID() == null) {
             Crasher.crash("Service's clusterId is null! Can't be registered!");

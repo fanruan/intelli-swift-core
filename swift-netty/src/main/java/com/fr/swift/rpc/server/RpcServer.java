@@ -1,5 +1,6 @@
 package com.fr.swift.rpc.server;
 
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rpc.annotation.RpcService;
@@ -8,7 +9,10 @@ import com.fr.swift.rpc.registry.ServiceRegistry;
 import com.fr.third.jodd.util.StringUtil;
 import com.fr.third.org.apache.commons.collections4.MapUtils;
 import com.fr.third.springframework.beans.BeansException;
+import com.fr.third.springframework.beans.factory.annotation.Autowired;
+import com.fr.third.springframework.beans.factory.annotation.Value;
 import com.fr.third.springframework.context.ApplicationContext;
+import com.fr.third.springframework.stereotype.Service;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -32,6 +36,7 @@ import java.util.Map;
  * @description
  * @since Advanced FineBI 5.0
  */
+@Service
 public class RpcServer {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(RpcServer.class);
 
@@ -47,10 +52,18 @@ public class RpcServer {
      */
     private Map<String, Object> handlerMap = new HashMap<String, Object>();
 
-    public RpcServer(String serviceAddress, ServiceRegistry serviceRegistry, RpcServiceType serviceType) {
+    @Autowired
+    public RpcServer(@Value("${rpc.server_address}") String serviceAddress,
+                     ServiceRegistry serviceRegistry,
+                     @Value("SERVER_SERVICE") RpcServiceType serviceType) {
         this.serviceAddress = serviceAddress;
         this.serviceRegistry = serviceRegistry;
         this.serviceType = serviceType;
+    }
+
+    public static void main(String[] args) {
+        SwiftContext.init();
+        SwiftContext.getInstance().getBean("swiftProperty");
     }
 
     public void initService(ApplicationContext ctx) throws BeansException {
@@ -76,7 +89,7 @@ public class RpcServer {
             bootstrap.channel(NioServerSocketChannel.class);
             bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
                 @Override
-                public void initChannel(SocketChannel channel) throws Exception {
+                public void initChannel(SocketChannel channel) {
                     ChannelPipeline pipeline = channel.pipeline();
                     pipeline.addLast(
                             new ObjectDecoder(1024 * 1024, ClassResolvers
