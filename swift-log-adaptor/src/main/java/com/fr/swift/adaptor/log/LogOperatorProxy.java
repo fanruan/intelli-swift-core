@@ -57,6 +57,11 @@ public class LogOperatorProxy implements LogOperator {
     }
 
     @Override
+    public DataList<List<Object>> find(String s) {
+        return null;
+    }
+
+    @Override
     public void recordInfo(Object o) {
         synchronized (LogOperatorProxy.class) {
             logOperator.recordInfo(o);
