@@ -18,6 +18,7 @@ import java.util.List;
  * @Date: Created in 2018-3-8
  */
 public class SwiftMetaDataBean implements SwiftMetaData, Serializable, Convert<SwiftMetaDataEntity> {
+    private static final long serialVersionUID = -6185911493489618460L;
     /**
      * id实际上传的是SourceKey
      * 理论上SourceKey不重复

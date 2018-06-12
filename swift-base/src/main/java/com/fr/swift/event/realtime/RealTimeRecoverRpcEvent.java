@@ -6,14 +6,17 @@ import com.fr.swift.event.base.AbstractRealTimeRpcEvent;
  * @author yee
  * @date 2018/6/8
  */
-public class RealTimeInsertRpcEvent extends AbstractRealTimeRpcEvent {
+public class RealTimeRecoverRpcEvent extends AbstractRealTimeRpcEvent<Void> {
+
+    private static final long serialVersionUID = 8404690845632795949L;
+
     @Override
     public Event subEvent() {
-        return Event.INSERT;
+        return Event.RECOVER;
     }
 
     @Override
-    public Object getContent() {
+    public Void getContent() {
         return null;
     }
 }

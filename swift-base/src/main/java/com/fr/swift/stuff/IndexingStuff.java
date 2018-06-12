@@ -1,5 +1,6 @@
 package com.fr.swift.stuff;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -8,7 +9,7 @@ import java.util.List;
  * @author Lucifer
  * @since Advanced FineBI Analysis 1.0
  */
-public interface IndexingStuff {
+public interface IndexingStuff extends Serializable {
     List<String> getUpdateTableSources();
 
     List<String> getUpdateTableSourceRelations();

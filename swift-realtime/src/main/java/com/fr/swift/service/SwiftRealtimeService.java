@@ -5,7 +5,9 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.QueryInfo;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.segment.Incrementer;
+import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.recover.SwiftSegmentRecovery;
+import com.fr.swift.source.SerializableResultSet;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 
@@ -27,18 +29,19 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     }
 
     @Override
-    public void merge(List<SourceKey> tableKeys) {
+    public void merge(List<SegmentKey> tableKeys) {
         SwiftLoggers.getLogger().info("merge");
     }
 
     @Override
-    public void recover(List<SourceKey> tableKeys) {
+    public void recover(List<SegmentKey> tableKeys) {
         SwiftLoggers.getLogger().info("recover");
     }
 
     @Override
-    public <T extends SwiftResultSet> T query(QueryInfo<T> queryInfo) throws SQLException {
-        return QueryBuilder.buildQuery(queryInfo).getQueryResult();
+    public SerializableResultSet query(QueryInfo queryInfo) throws SQLException {
+        SwiftResultSet resultSet = QueryBuilder.buildQuery(queryInfo).getQueryResult();
+        return new SerializableResultSet(resultSet);
     }
 
     @Override

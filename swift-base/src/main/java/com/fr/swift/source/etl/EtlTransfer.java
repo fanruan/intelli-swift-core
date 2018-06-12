@@ -78,6 +78,7 @@ public class EtlTransfer implements SwiftSourceTransfer {
     }
 
     private class ShiftRow implements Row{
+        private static final long serialVersionUID = -537161590337548026L;
         private Row row;
         private int[] shiftIndex;
 
