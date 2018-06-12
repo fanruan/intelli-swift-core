@@ -44,7 +44,7 @@ public class SwiftClusterService implements ClusterService {
     @Override
     public boolean competeMaster() {
         LOGGER.info("Start to compete master !");
-        SwiftProperty swiftProperty = (SwiftProperty) SwiftContext.getInstance().getRpcContext().getBean("swiftProperty");
+        SwiftProperty swiftProperty = SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class);
         ClusterNode currentNode = ClusterNodeManager.getInstance().getCurrentNode();
         try {
             clusterLock.lock();
