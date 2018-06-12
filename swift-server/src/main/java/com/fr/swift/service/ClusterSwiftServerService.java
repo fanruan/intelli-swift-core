@@ -11,6 +11,7 @@ import com.fr.swift.selector.UrlSelector;
 import com.fr.swift.service.entity.ClusterEntity;
 import com.fr.swift.util.Crasher;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -73,16 +74,17 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
         }
     }
 
+    //接口调用
     public Map<String, ClusterEntity> getClusterEntityByService(ServiceType serviceType) {
         switch (serviceType) {
             case ANALYSE:
-                return analyseServiceMap;
+                return new HashMap<String, ClusterEntity>(analyseServiceMap);
             case HISTORY:
-                return historyServiceMap;
+                return new HashMap<String, ClusterEntity>(historyServiceMap);
             case INDEXING:
-                return indexingServiceMap;
+                return new HashMap<String, ClusterEntity>(indexingServiceMap);
             case REAL_TIME:
-                return realTimeServiceMap;
+                return new HashMap<String, ClusterEntity>(realTimeServiceMap);
             default:
                 return null;
         }
