@@ -28,7 +28,7 @@ import java.util.Set;
 public class HistoryDataSyncManager implements Handler<HistoryLoadRpcEvent> {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(HistoryDataSyncManager.class);
-    @Autowired
+    @Autowired(required = false)
     private SwiftClusterSegmentService clusterSegmentService;
     private DataSyncRule rule = DataSyncRule.DEFAULT;
 
@@ -39,7 +39,7 @@ public class HistoryDataSyncManager implements Handler<HistoryLoadRpcEvent> {
     public <S extends Serializable> S handle(HistoryLoadRpcEvent event) {
         // TODO 获取historyService代理
         Map<String, HistoryService> historyServiceMap = new HashMap<String, HistoryService>();
-        List<SegmentKey> needLoadSegment = event.getContent();
+        Map<String, List<SegmentKey>> needLoadSegment = event.getContent();
         Map<String, List<SegmentKey>> keys = clusterSegmentService.getClusterSegments();
         Iterator<String> keyIterator = historyServiceMap.keySet().iterator();
         Map<String, List<SegmentKey>> exists = new HashMap<String, List<SegmentKey>>();
