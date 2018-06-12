@@ -1,5 +1,6 @@
 package com.fr.swift.service;
 
+import com.fr.swift.info.ServerCurrentStatus;
 import com.fr.swift.stuff.IndexingStuff;
 
 /**
@@ -13,4 +14,6 @@ public interface IndexingService extends SwiftService {
      * @param stuff stuff
      */
     void index(IndexingStuff stuff);
+
+    ServerCurrentStatus currentStatus();
 }

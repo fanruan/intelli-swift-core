@@ -11,6 +11,7 @@ import java.util.List;
  */
 public class HistoryIndexStuffImpl implements HistoryIndexingStuff {
 
+    private static final long serialVersionUID = 6020432061987147639L;
     private List<String> updateTableSources;
     private List<String> updateTableSourceRelations;
     private List<String> updateTableSourceRelationPaths;

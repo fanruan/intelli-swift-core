@@ -36,19 +36,16 @@ public class DecisionRowAdaptor<T> implements Function<Row, T> {
     }
 
     private void init(SwiftMetaData meta) throws Exception {
-        for (Field field : entity.getDeclaredFields()) {
-            if (!field.isAnnotationPresent(Column.class)) {
-                continue;
-            }
+        for (Field field : SwiftMetaAdaptor.getFields(entity)) {
             field.setAccessible(true);
             String columnName = field.getAnnotation(Column.class).name();
             int columnIndex = meta.getColumnIndex(columnName);
-            if (field.isAnnotationPresent(Convert.class)) {
+            if (!field.isAnnotationPresent(Convert.class)) {
+                converters.put(columnIndex, Pair.of(field, DatumConverters.getReverseConverter(field.getType())));
+            } else {
                 AttributeConverter<Object, Object> converter = (AttributeConverter<Object, Object>) field.getAnnotation(Convert.class).converter().newInstance();
                 UnaryOperator<Object> baseConverter = DatumConverters.getReverseConverter(SwiftMetaAdaptor.getClassType(field));
                 converters.put(columnIndex, Pair.of(field, (UnaryOperator<Object>) new ReverseDatumConverter(converter, baseConverter)));
-            } else {
-                converters.put(columnIndex, Pair.of(field, DatumConverters.getReverseConverter(field.getType())));
             }
         }
     }

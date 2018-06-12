@@ -9,6 +9,7 @@ import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.rpc.annotation.RpcService;
 import com.fr.swift.rpc.annotation.RpcServiceType;
+import com.fr.swift.source.SerializableResultSet;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.io.IOException;
@@ -53,8 +54,9 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     }
 
     @Override
-    public <T extends SwiftResultSet> T query(QueryInfo<T> queryInfo) throws SQLException {
-        return QueryBuilder.buildQuery(queryInfo).getQueryResult();
+    public SerializableResultSet query(QueryInfo queryInfo) throws SQLException {
+        SwiftResultSet resultSet = QueryBuilder.buildQuery(queryInfo).getQueryResult();
+        return new SerializableResultSet(resultSet);
     }
 
     private static class SingletonHolder {

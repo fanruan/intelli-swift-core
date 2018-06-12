@@ -61,7 +61,7 @@ public abstract class AbstractSwiftRegister implements SwiftRegister {
         SwiftServiceListenerHandler senderProxy = proxyFactory.getProxy(remoteServiceSender, SwiftServiceListenerHandler.class, url);
 
         SwiftHistoryService historyService = SwiftHistoryService.getInstance();
-        historyService.setId(((SwiftProperty) SwiftContext.getInstance().getRpcContext().getBean("swiftProperty")).getRpcAddress());
+        historyService.setId(SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class).getRpcAddress());
         LOGGER.info("begain to register " + historyService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + "!");
         senderProxy.registerService(historyService);
         LOGGER.info("register " + historyService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + " succeed!");

@@ -1,15 +1,18 @@
 package com.fr.swift.service;
 
+import com.fr.swift.URL;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
+import com.fr.swift.selector.UrlSelector;
+import com.fr.swift.service.entity.ClusterEntity;
 import com.fr.swift.util.Crasher;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by pony on 2017/11/14.
@@ -18,10 +21,17 @@ import java.util.Map;
 public class ClusterSwiftServerService extends AbstractSwiftServerService {
 
     //key: 机器address  value:service对象
-    private Map<String, SwiftIndexingService> indexingServiceMap = new HashMap<String, SwiftIndexingService>();
-    private Map<String, SwiftRealtimeService> realTimeServiceMap = new HashMap<String, SwiftRealtimeService>();
-    private Map<String, HistoryService> historyServiceMap = new HashMap<String, HistoryService>();
-    private Map<String, SwiftAnalyseService> analyseServiceMap = new HashMap<String, SwiftAnalyseService>();
+
+    private Map<String, ClusterEntity> indexingServiceMap = new ConcurrentHashMap<String, ClusterEntity>();
+    private Map<String, ClusterEntity> realTimeServiceMap = new ConcurrentHashMap<String, ClusterEntity>();
+    private Map<String, ClusterEntity> historyServiceMap = new ConcurrentHashMap<String, ClusterEntity>();
+    private Map<String, ClusterEntity> analyseServiceMap = new ConcurrentHashMap<String, ClusterEntity>();
+
+
+//    private Map<String, SwiftIndexingService> indexingServiceMap = new HashMap<String, SwiftIndexingService>();
+//    private Map<String, SwiftRealtimeService> realTimeServiceMap = new HashMap<String, SwiftRealtimeService>();
+//    private Map<String, HistoryService> historyServiceMap = new HashMap<String, HistoryService>();
+//    private Map<String, SwiftAnalyseService> analyseServiceMap = new HashMap<String, SwiftAnalyseService>();
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(ClusterSwiftServerService.class);
 
@@ -35,7 +45,8 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
 
     @Override
     public void registerService(SwiftService service) {
-        SwiftProperty swiftProperty = (SwiftProperty) SwiftContext.getInstance().getRpcContext().getBean("swiftProperty");
+
+        SwiftProperty swiftProperty = SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class);
 
         if (service.getID() == null) {
             Crasher.crash("Service's clusterId is null! Can't be registered!");
@@ -44,23 +55,36 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
         synchronized (this) {
             serviceInfoService.saveOrUpdateServiceInfo(new SwiftServiceInfoBean(
                     service.getServiceType().name(), service.getID(), swiftProperty.getRpcAddress(), false));
+
+            URL url = UrlSelector.getInstance().getFactory().getURL(service.getID());
             switch (service.getServiceType()) {
                 case ANALYSE:
-                    analyseServiceMap.put(service.getID(), (SwiftAnalyseService) service);
+                    analyseServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), SwiftAnalyseService.class));
                     break;
                 case HISTORY:
-                    try {
-                        historyServiceMap.put(service.getID(), (HistoryService) service);
-                    } catch (Exception e) {
-                        historyServiceMap.put(service.getID(), (HistoryService) service);
-                    }
+                    historyServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), HistoryService.class));
                     break;
                 case INDEXING:
-                    indexingServiceMap.put(service.getID(), (SwiftIndexingService) service);
+                    indexingServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), SwiftIndexingService.class));
                     break;
                 case REAL_TIME:
-                    realTimeServiceMap.put(service.getID(), (SwiftRealtimeService) service);
+                    realTimeServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), SwiftRealtimeService.class));
             }
+        }
+    }
+
+    public Map<String, ClusterEntity> getClusterEntityByService(ServiceType serviceType) {
+        switch (serviceType) {
+            case ANALYSE:
+                return analyseServiceMap;
+            case HISTORY:
+                return historyServiceMap;
+            case INDEXING:
+                return indexingServiceMap;
+            case REAL_TIME:
+                return realTimeServiceMap;
+            default:
+                return null;
         }
     }
 

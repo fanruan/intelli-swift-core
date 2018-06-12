@@ -29,7 +29,6 @@ public class CubeUtil {
 
     public static String getTablePath(DataSource dataSource) {
         return String.format("%s/%s",
-//                SwiftCubePathConfig.getInstance().getPath(),
                 dataSource.getMetadata().getSwiftSchema().dir,
                 dataSource.getSourceKey().getId());
     }

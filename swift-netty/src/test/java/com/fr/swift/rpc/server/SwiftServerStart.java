@@ -1,5 +1,6 @@
 package com.fr.swift.rpc.server;
 
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.rpc.SwiftRpcService;
 
 /**
@@ -12,6 +13,7 @@ import com.fr.swift.rpc.SwiftRpcService;
 public class SwiftServerStart {
 
     public static void main(String[] args) throws Exception {
+        SwiftContext.init();
         SwiftRpcService swiftRpcService = SwiftRpcService.getInstance();
         swiftRpcService.startServerService();
     }

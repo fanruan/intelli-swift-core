@@ -11,9 +11,4 @@ public class HistorySegmentImpl extends BaseSegment implements HistorySegment {
     public HistorySegmentImpl(IResourceLocation parent, SwiftMetaData meta) {
         super(parent, meta);
     }
-
-    @Override
-    public boolean isHistory() {
-        return true;
-    }
 }

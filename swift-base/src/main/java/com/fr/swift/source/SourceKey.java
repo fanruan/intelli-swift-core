@@ -2,11 +2,15 @@ package com.fr.swift.source;
 
 import com.fr.swift.util.Util;
 
+import java.io.Serializable;
+
 /**
  * @author pony
  * @date 2017/10/24
  */
-public class SourceKey {
+public class SourceKey implements Serializable {
+
+    private static final long serialVersionUID = 6550450020284609023L;
     private String id;
 
     public SourceKey(String id) {

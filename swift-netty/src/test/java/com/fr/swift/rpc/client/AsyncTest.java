@@ -35,8 +35,9 @@ public class AsyncTest {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 //        Method method = CalculatorService.class.getMethod("add", int.class, int.class, long.class);
         //step3: get invoker method
-        RpcServer rpcServer = (RpcServer) SwiftContext.getInstance().getRpcContext().getBean("rpcServer");
-        rpcServer.initService(SwiftContext.getInstance().getRpcContext());
+        SwiftContext.init();
+        RpcServer rpcServer = SwiftContext.getInstance().getBean(RpcServer.class);
+        rpcServer.initService(SwiftContext.getInstance());
         Method method = rpcServer.getMethodByName("add");
         final long startTime = System.currentTimeMillis();
         //step4: async invoke method

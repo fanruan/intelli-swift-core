@@ -8,6 +8,7 @@ import com.fr.swift.query.QueryInfo;
  * @date 2018/6/8
  */
 public class HistoryQueryRpcEvent extends AbstractHistoryRpcEvent<QueryInfo> {
+    private static final long serialVersionUID = 7058999400618366071L;
     private QueryInfo queryInfo;
 
     public HistoryQueryRpcEvent(QueryInfo queryInfo) {

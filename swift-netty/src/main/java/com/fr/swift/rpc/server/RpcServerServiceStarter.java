@@ -1,7 +1,6 @@
 package com.fr.swift.rpc.server;
 
 import com.fr.swift.rpc.RpcServiceStarter;
-import com.fr.swift.rpc.server.RpcServer;
 import com.fr.third.springframework.context.ApplicationContext;
 
 /**
@@ -23,7 +22,7 @@ public class RpcServerServiceStarter implements RpcServiceStarter {
 
     @Override
     public void start() throws Exception {
-        rpcServer = (RpcServer) context.getBean("rpcServer");
+        rpcServer = context.getBean(RpcServer.class);
         rpcServer.initService(context);
         rpcServer.start();
     }

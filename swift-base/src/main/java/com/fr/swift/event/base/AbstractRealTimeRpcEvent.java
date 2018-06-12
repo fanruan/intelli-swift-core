@@ -14,6 +14,6 @@ public abstract class AbstractRealTimeRpcEvent<T> implements SwiftRpcEvent<T> {
     public abstract Event subEvent();
 
     public enum Event implements SubEvent {
-        QUERY, INSERT, MERGE, RECOVER
+        QUERY, MERGE, RECOVER
     }
 }

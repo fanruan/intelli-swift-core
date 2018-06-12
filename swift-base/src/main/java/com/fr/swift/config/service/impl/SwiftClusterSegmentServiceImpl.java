@@ -155,11 +155,29 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
         try {
             List<SwiftServiceInfoEntity> list = swiftServiceInfoDao.getServiceInfoBySelective(new SwiftServiceInfoBean(SEGMENT, clusterId, null, false));
             for (SwiftServiceInfoEntity entity : list) {
-                SegmentKeyBean bean = swiftSegmentDao.select(entity.getId()).convert();
+                SegmentKeyBean bean = swiftSegmentDao.select(entity.getServiceInfo()).convert();
                 if (!result.containsKey(bean.getSourceKey())) {
                     result.put(bean.getSourceKey(), new ArrayList<SegmentKey>());
                 }
                 result.get(bean.getSourceKey()).add(bean);
+            }
+        } catch (Exception e) {
+            LOGGER.error("Select segments error!", e);
+        }
+        return result;
+    }
+
+    @Override
+    public Map<String, List<SegmentKey>> getClusterSegments() {
+        Map<String, List<SegmentKey>> result = new HashMap<String, List<SegmentKey>>();
+        try {
+            List<SwiftServiceInfoEntity> list = swiftServiceInfoDao.getServiceInfoBySelective(new SwiftServiceInfoBean(SEGMENT, null, null, false));
+            for (SwiftServiceInfoEntity entity : list) {
+                SegmentKeyBean bean = swiftSegmentDao.select(entity.getServiceInfo()).convert();
+                if (!result.containsKey(entity.getClusterId())) {
+                    result.put(entity.getClusterId(), new ArrayList<SegmentKey>());
+                }
+                result.get(entity.getClusterId()).add(bean);
             }
         } catch (Exception e) {
             LOGGER.error("Select segments error!", e);

@@ -1,6 +1,7 @@
 package com.fr.swift.rpc.client;
 
 import com.fr.swift.ProxyFactory;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.rpc.CalculatorService;
 import com.fr.swift.rpc.proxy.RPCProxyFactory;
 import com.fr.swift.rpc.url.RPCDestination;
@@ -17,6 +18,7 @@ import com.fr.swift.selector.ProxySelector;
  */
 public class SyncTest {
     public static void main(String[] args) throws Exception {
+        SwiftContext.init();
         ProxySelector.getInstance().switchFactory(new RPCProxyFactory());
         //step1: get proxyFactory
         ProxyFactory proxyFactory = ProxySelector.getInstance().getFactory();

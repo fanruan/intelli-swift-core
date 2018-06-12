@@ -11,6 +11,7 @@ import java.util.List;
  */
 public class RealTimeIndexStuffImpl implements RealTimeIndexingStuff {
 
+    private static final long serialVersionUID = -4101014331273135113L;
     private List<String> updateTableSources;
     private List<String> updateTableSourceRelations;
     private List<String> updateTableSourceRelationPaths;

@@ -9,6 +9,6 @@ import org.junit.BeforeClass;
 public abstract class TestIo {
     @BeforeClass
     public static void beforeClass() throws Exception {
-        Preparer.prepareFrEnv();
+        Preparer.prepareCubeBuild();
     }
 }

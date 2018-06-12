@@ -53,6 +53,11 @@ public class SwiftClusterLogOperator implements LogOperator {
     }
 
     @Override
+    public DataList<List<Object>> find(String s) {
+        return null;
+    }
+
+    @Override
     public void recordInfo(Object o) {
         ClusterNode masterNode = ClusterNodeManager.getInstance().getMasterNode();
         Invocation invocation = Invocation.create(LogOperatorProxy.class, "recordInfo",
