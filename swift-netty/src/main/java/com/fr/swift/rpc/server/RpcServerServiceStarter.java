@@ -1,4 +1,4 @@
-package com.fr.swift.rpc.starter;
+package com.fr.swift.rpc.server;
 
 import com.fr.swift.rpc.RpcServiceStarter;
 import com.fr.swift.rpc.server.RpcServer;

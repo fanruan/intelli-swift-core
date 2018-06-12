@@ -1,4 +1,4 @@
-package com.fr.swift.rpc.test;
+package com.fr.swift.rpc.server;
 
 import com.fr.swift.rpc.SwiftRpcService;
 
@@ -14,6 +14,5 @@ public class SwiftServerStart {
     public static void main(String[] args) throws Exception {
         SwiftRpcService swiftRpcService = SwiftRpcService.getInstance();
         swiftRpcService.startServerService();
-//        swiftRpcService.startClientService();
     }
 }

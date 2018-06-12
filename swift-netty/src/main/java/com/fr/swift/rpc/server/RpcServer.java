@@ -2,8 +2,8 @@ package com.fr.swift.rpc.server;
 
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.rpc.annotation.RpcMethod;
 import com.fr.swift.rpc.annotation.RpcService;
-import com.fr.swift.rpc.annotation.RpcServiceType;
 import com.fr.swift.rpc.registry.ServiceRegistry;
 import com.fr.third.jodd.util.StringUtil;
 import com.fr.third.org.apache.commons.collections4.MapUtils;
@@ -22,6 +22,7 @@ import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,30 +40,34 @@ public class RpcServer {
 
     private ServiceRegistry serviceRegistry;
 
-    private RpcServiceType serviceType;
-
     /**
      * key:服务名
      * value:服务对象
      */
     private Map<String, Object> handlerMap = new HashMap<String, Object>();
+    private Map<String, Method> methodMap = new HashMap<String, Method>();
 
-    public RpcServer(String serviceAddress, ServiceRegistry serviceRegistry, RpcServiceType serviceType) {
+    public RpcServer(String serviceAddress, ServiceRegistry serviceRegistry) {
         this.serviceAddress = serviceAddress;
         this.serviceRegistry = serviceRegistry;
-        this.serviceType = serviceType;
     }
 
     public void initService(ApplicationContext ctx) throws BeansException {
-        // 扫描service
+        // 扫描service和method
         Map<String, Object> serviceBeanMap = ctx.getBeansWithAnnotation(RpcService.class);
         if (MapUtils.isNotEmpty(serviceBeanMap)) {
             for (Object serviceBean : serviceBeanMap.values()) {
                 RpcService rpcService = serviceBean.getClass().getAnnotation(RpcService.class);
                 String serviceName = rpcService.value().getName();
-//                if (rpcService.type() == serviceType) {
+                LOGGER.info("Load service:" + serviceName);
                 handlerMap.put(serviceName, serviceBean);
-//                }
+                for (Method method : serviceBean.getClass().getMethods()) {
+                    RpcMethod rpcMethod = method.getAnnotation(RpcMethod.class);
+                    if (rpcMethod != null) {
+                        LOGGER.info("Load method:" + method.getName());
+                        methodMap.put(rpcMethod.methodName(), method);
+                    }
+                }
             }
         }
     }
@@ -83,8 +88,6 @@ public class RpcServer {
                                     .weakCachingConcurrentResolver(this.getClass()
                                             .getClassLoader())));
                     pipeline.addLast(new ObjectEncoder());
-//                    pipeline.addLast(new RpcDecoder(RpcRequest.class)); // 解码 RPC 请求
-//                    pipeline.addLast(new RpcEncoder(RpcResponse.class)); // 编码 RPC 响应
                     pipeline.addLast(new RpcServerHandler(handlerMap)); // 处理 RPC 请求
                 }
             });
@@ -99,10 +102,15 @@ public class RpcServer {
                     serviceRegistry.register(interfaceName, serviceAddress);
                 }
             }
+            LOGGER.info("Server started on port :" + port);
             future.channel().closeFuture().sync();
         } finally {
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();
         }
+    }
+
+    public Method getMethodByName(String name) {
+        return methodMap.get(name);
     }
 }

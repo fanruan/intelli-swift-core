@@ -14,10 +14,6 @@
 
     <context:property-placeholder location="classpath:rpc.properties"/>
 
-    <!--<bean id="serviceDiscovery" class="com.fr.swift.rpc.registry.SimpleServiceDiscovery">-->
-    <!--<constructor-arg name="address" value="${rpc.client_address}"/>-->
-    <!--</bean>-->
-
     <bean id="swiftProperty" class="com.fr.swift.property.SwiftProperty">
         <property name="rpcAddress" value="${rpc.server_address}"/>
     </bean>
@@ -28,13 +24,5 @@
     <bean id="rpcServer" class="com.fr.swift.rpc.server.RpcServer">
         <constructor-arg name="serviceAddress" value="${rpc.server_address}"/>
         <constructor-arg name="serviceRegistry" ref="serviceRegistry"/>
-        <constructor-arg name="serviceType" value="SERVER_SERVICE"/>
     </bean>
-
-    <!--<bean id="rpcClient" class="com.fr.swift.rpc.server.RpcServer">-->
-    <!--<constructor-arg name="serviceAddress" value="${rpc.client_address}"/>-->
-    <!--<constructor-arg name="serviceRegistry" ref="serviceRegistry"/>-->
-    <!--<constructor-arg name="serviceType" value="1"/>-->
-    <!--</bean>-->
-
 </beans>

@@ -11,5 +11,5 @@ public interface Selector<T> {
 
     T getFactory();
 
-    void switchFactory(T proxyFactory);
+    void switchFactory(T factory);
 }
