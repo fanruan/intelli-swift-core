@@ -8,8 +8,8 @@ import com.fr.swift.service.handler.indexing.rule.IndexingSelectRule;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author yee
@@ -27,7 +27,7 @@ public class SwiftIndexingEventHandler implements Handler<AbstractIndexingRpcEve
     @Override
     public <S extends Serializable> S handle(AbstractIndexingRpcEvent event) {
         // TODO 获取所有Indexing 节点
-        List<IndexingService> indexingServices = new ArrayList<IndexingService>();
+        Map<String, IndexingService> indexingServices = new HashMap<String, IndexingService>();
         switch (event.subEvent()) {
             case INDEX:
                 rule.select(indexingServices).index(((IndexRpcEvent) event).getContent());

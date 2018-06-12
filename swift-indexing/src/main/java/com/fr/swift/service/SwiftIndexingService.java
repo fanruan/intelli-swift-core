@@ -1,6 +1,7 @@
 package com.fr.swift.service;
 
 import com.fr.swift.exception.SwiftServiceException;
+import com.fr.swift.info.ServerInfo;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.stuff.IndexingStuff;
 
@@ -33,5 +34,10 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     @Override
     public void index(IndexingStuff stuff) {
         SwiftLoggers.getLogger().info("indexing stuff");
+    }
+
+    @Override
+    public ServerInfo serverInfo() {
+        return new ServerInfo(getID());
     }
 }
