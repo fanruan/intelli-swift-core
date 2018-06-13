@@ -109,10 +109,8 @@ public class IncrementImplIntegrationTest extends BaseTest {
                 });
                 count++;
             }
-        } catch (ArrayIndexOutOfBoundsException e) {
-            assertTrue(true);
+        } catch (IndexOutOfBoundsException e) {
         }
-        assertTrue(true);
 
         //最后做增量删除'庆芳'更新
         Increment increment2 = new IncrementImpl(null, "select 记录人 from DEMO_CAPITAL_RETURN where 记录人 ='庆芳'", null, dataSource.getSourceKey(), "local");

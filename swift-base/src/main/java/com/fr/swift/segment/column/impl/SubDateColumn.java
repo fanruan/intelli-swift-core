@@ -4,6 +4,7 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.query.group.GroupType;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
+import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.column.impl.base.LongDictColumn;
@@ -36,9 +37,9 @@ public class SubDateColumn extends BaseColumn<Long> {
     /**
      * 源列，子列的父列
      */
-    private DateColumn origin;
+    private Column origin;
 
-    public SubDateColumn(DateColumn origin, GroupType type) {
+    public SubDateColumn(Column origin, GroupType type) {
         super(origin.getLocation().buildChildLocation(type.toString()));
         this.type = type;
         this.origin = origin;
