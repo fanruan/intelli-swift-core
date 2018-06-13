@@ -8,13 +8,21 @@ import java.util.Arrays;
  * @author anchore
  * @date 2017/11/23
  */
-abstract class BaseObjectMemIo<T> extends BaseMemIo implements ObjectMemIo<T> {
-    T[] mem;
+public class SwiftObjectMemIo<T> extends BaseMemIo implements ObjectMemIo<T> {
+    private Object[] mem;
+
+    public SwiftObjectMemIo() {
+        this(DEFAULT_CAPACITY);
+    }
+
+    public SwiftObjectMemIo(int cap) {
+        mem = new Object[cap];
+    }
 
     @Override
     public T get(long pos) {
         checkPosition(pos);
-        return mem[(int) pos];
+        return (T) mem[(int) pos];
     }
 
     @Override
@@ -24,7 +32,7 @@ abstract class BaseObjectMemIo<T> extends BaseMemIo implements ObjectMemIo<T> {
 
     @Override
     public boolean isReadable() {
-        return mem != null;
+        return mem != null && lastPos > -1;
     }
 
     @Override
