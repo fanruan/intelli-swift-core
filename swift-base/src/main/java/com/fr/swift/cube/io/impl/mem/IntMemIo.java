@@ -14,7 +14,11 @@ public class IntMemIo extends BaseMemIo implements IntReader, IntWriter {
     private int[] mem;
 
     public IntMemIo() {
-        mem = new int[DEFAULT_CAPACITY];
+        this(DEFAULT_CAPACITY);
+    }
+
+    public IntMemIo(int cap) {
+        mem = new int[cap];
     }
 
     @Override
@@ -25,7 +29,7 @@ public class IntMemIo extends BaseMemIo implements IntReader, IntWriter {
 
     @Override
     public boolean isReadable() {
-        return mem != null;
+        return mem != null && lastPos > -1;
     }
 
     @Override

@@ -11,11 +11,14 @@ import java.util.Arrays;
  * @date 2017/11/23
  */
 public class DoubleMemIo extends BaseMemIo implements DoubleReader, DoubleWriter {
-
     private double[] mem;
 
     public DoubleMemIo() {
-        mem = new double[DEFAULT_CAPACITY];
+        this(DEFAULT_CAPACITY);
+    }
+
+    public DoubleMemIo(int cap) {
+        mem = new double[cap];
     }
 
     @Override
@@ -26,7 +29,7 @@ public class DoubleMemIo extends BaseMemIo implements DoubleReader, DoubleWriter
 
     @Override
     public boolean isReadable() {
-        return mem != null;
+        return mem != null && lastPos > -1;
     }
 
     @Override
