@@ -22,8 +22,14 @@ public class RealtimeDoubleColumn extends BaseRealtimeColumn<Double> {
         super.init();
 
         // 防止未初始化
-        c = c == null ? Comparators.<Double>asc() : c;
-        valToRows = valToRows == null ? new TreeMap<Double, MutableBitMap>(c) : valToRows;
-        cutInValues = cutInValues == null ? new TreeSet<Double>(c) : cutInValues;
+        if (c == null) {
+            c = Comparators.asc();
+        }
+        if (valToRows == null) {
+            valToRows = new TreeMap<Double, MutableBitMap>(c);
+        }
+        if (addedValues == null) {
+            addedValues = new TreeSet<Double>(c);
+        }
     }
 }

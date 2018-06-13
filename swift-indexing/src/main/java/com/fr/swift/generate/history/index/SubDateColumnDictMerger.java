@@ -6,7 +6,6 @@ import com.fr.swift.query.group.GroupType;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.segment.column.impl.DateColumn;
 import com.fr.swift.segment.column.impl.SubDateColumn;
 import com.fr.swift.source.DataSource;
 
@@ -30,7 +29,7 @@ public class SubDateColumnDictMerger<Derive> extends BaseColumnDictMerger<Derive
 
     @Override
     protected Column<Derive> getColumn(Segment segment) {
-        return (Column<Derive>) new SubDateColumn(((DateColumn) super.getColumn(segment)), type);
+        return (Column<Derive>) new SubDateColumn(super.getColumn(segment), type);
     }
 
     @Override

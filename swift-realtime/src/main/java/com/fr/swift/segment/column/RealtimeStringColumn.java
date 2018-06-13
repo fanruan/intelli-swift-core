@@ -22,8 +22,14 @@ public class RealtimeStringColumn extends BaseRealtimeColumn<String> {
         super.init();
 
         // 防止未初始化
-        c = c == null ? Comparators.PINYIN_ASC : c;
-        valToRows = valToRows == null ? new TreeMap<String, MutableBitMap>(c) : valToRows;
-        cutInValues = cutInValues == null ? new TreeSet<String>(c) : cutInValues;
+        if (c == null) {
+            c = Comparators.PINYIN_ASC;
+        }
+        if (valToRows == null) {
+            valToRows = new TreeMap<String, MutableBitMap>(c);
+        }
+        if (addedValues == null) {
+            addedValues = new TreeSet<String>(c);
+        }
     }
 }

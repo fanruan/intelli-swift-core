@@ -22,8 +22,14 @@ public class RealtimeLongColumn extends BaseRealtimeColumn<Long> {
         super.init();
 
         // 防止未初始化
-        c = c == null ? Comparators.<Long>asc() : c;
-        valToRows = valToRows == null ? new TreeMap<Long, MutableBitMap>(c) : valToRows;
-        cutInValues = cutInValues == null ? new TreeSet<Long>(c) : cutInValues;
+        if (c == null) {
+            c = Comparators.asc();
+        }
+        if (valToRows == null) {
+            valToRows = new TreeMap<Long, MutableBitMap>(c);
+        }
+        if (addedValues == null) {
+            addedValues = new TreeSet<Long>(c);
+        }
     }
 }

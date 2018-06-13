@@ -48,9 +48,9 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
     private BiMap<V, Integer> valAndIndex = HashBiMap.create();
 
     /**
-     * 插队的值
+     * 新插入的值
      */
-    SortedSet<V> cutInValues;
+    SortedSet<V> addedValues;
 
     BaseRealtimeColumn(IResourceLocation location) {
         super(location);
@@ -58,16 +58,16 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
     }
 
     /**
-     * 有插队的必须刷新
+     * 刷新索引
      */
     private void refreshIfNeed() {
-        if (cutInValues.isEmpty()) {
+        if (addedValues.isEmpty()) {
             return;
         }
 
         int offset = 0, count = 0;
 
-        Iterator<V> cutInValueItr = cutInValues.iterator();
+        Iterator<V> cutInValueItr = addedValues.iterator();
         V currentCutInValue = cutInValueItr.next(), firstCutInValue = currentCutInValue;
 
         Set<Entry<V, MutableBitMap>> tailEntries = valToRows.descendingMap().headMap(firstCutInValue, true).entrySet();
@@ -93,7 +93,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
             }
         }
 
-        cutInValues.clear();
+        addedValues.clear();
     }
 
     private class RealtimeDetailColumn implements DetailColumn<V> {
@@ -110,9 +110,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
             bitmap.add(row);
             valToRows.put(val, bitmap);
 
-            if (c.compare(val, valToRows.lastEntry().getKey()) != 0) {
-                cutInValues.add(val);
-            }
+            addedValues.add(val);
         }
 
         @Override
@@ -150,26 +148,38 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
     private class RealtimeDictColumn implements DictionaryEncodedColumn<V> {
         @Override
         public int size() {
-            return valToRows.size();
+            int size = valToRows.size();
+            return valToRows.containsKey(null) ? size : size + 1;
         }
 
         @Override
         public V getValue(int index) {
+            if (index < 1) {
+                return null;
+            }
+
             refreshIfNeed();
 
+            int realIndex = valToRows.containsKey(null) ? index : index - 1;
+
             BiMap<Integer, V> indexToVal = valAndIndex.inverse();
-            if (indexToVal.containsKey(index)) {
-                return indexToVal.get(index);
+            if (indexToVal.containsKey(realIndex)) {
+                return indexToVal.get(realIndex);
             }
             throw new IndexOutOfBoundsException(String.valueOf(index));
         }
 
         @Override
         public int getIndex(Object value) {
+            if (value == null) {
+                return 0;
+            }
+
             refreshIfNeed();
 
             if (valAndIndex.containsKey(value)) {
-                return valAndIndex.get(value);
+                int index = valAndIndex.get(value);
+                return valToRows.containsKey(null) ? index : index + 1;
             }
             throw new NoSuchElementException(value.toString());
         }
@@ -239,7 +249,8 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
     class RealtimeBitmapColumn implements BitmapIndexedColumn {
         @Override
         public ImmutableBitMap getBitMapIndex(int index) {
-            return valToRows.get(dictColumn.getValue(index));
+            V v = dictColumn.getValue(index);
+            return valToRows.containsKey(v) ? valToRows.get(v) : BitMaps.newRoaringMutable();
         }
 
         @Override
@@ -280,7 +291,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
         c = self.c;
         valToRows = self.valToRows;
         valAndIndex = self.valAndIndex;
-        cutInValues = self.cutInValues;
+        addedValues = self.addedValues;
 
         // 三个视图，映射至内存数据
         detailColumn = new RealtimeDetailColumn();
