@@ -4,8 +4,13 @@ import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.event.history.HistoryLoadRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentLocationInfo;
+import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
+import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.HistoryService;
+import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.handler.base.Handler;
 import com.fr.swift.service.handler.history.rule.DataSyncRule;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +19,7 @@ import com.fr.third.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -47,7 +53,8 @@ public class HistoryDataSyncManager implements Handler<HistoryLoadRpcEvent> {
             String key = keyIterator.next();
             exists.put(key, keys.get(key));
         }
-        Map<String, Set<URI>> result = rule.calculate(exists, needLoadSegment);
+        Map<String, List<SegmentDestination>> destinations = new HashMap<String, List<SegmentDestination>>();
+        Map<String, Set<URI>> result = rule.calculate(exists, needLoadSegment, destinations);
         keyIterator = result.keySet().iterator();
         while (keyIterator.hasNext()) {
             String key = keyIterator.next();
@@ -56,6 +63,10 @@ public class HistoryDataSyncManager implements Handler<HistoryLoadRpcEvent> {
             } catch (IOException e) {
                 LOGGER.error(e.getMessage(), e);
             }
+        }
+        List<AnalyseService> analyseServices = new ArrayList<AnalyseService>();
+        for (AnalyseService analyseService : analyseServices) {
+            analyseService.updateSegmentInfo(new SegmentLocationInfoImpl(ServiceType.HISTORY, destinations), SegmentLocationInfo.UpdateType.ALL);
         }
         return null;
     }

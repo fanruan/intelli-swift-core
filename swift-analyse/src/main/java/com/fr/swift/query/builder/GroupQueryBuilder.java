@@ -7,10 +7,10 @@ import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.info.group.RemoteQueryInfoImpl;
 import com.fr.swift.query.remote.RemoteQueryImpl;
 import com.fr.swift.result.NodeResultSet;
-import com.fr.swift.service.SegmentLocationProvider;
+import com.fr.swift.segment.SegmentDestination;
+import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.source.SourceKey;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +27,8 @@ class GroupQueryBuilder {
      */
     static Query<NodeResultSet> buildQuery(GroupQueryInfo info) {
         SourceKey table = info.getTable();
-        List<URI> uris = SegmentLocationProvider.getInstance().getSegmentLocationURI(table);
+        // TODO 这边先直接写成History
+        List<SegmentDestination> uris = SegmentLocationProvider.getInstance().getHistorySegmentLocation(table);
 //        if (info.isPagingQuery()) {
         if (false) {
             return buildQuery(uris, info, LocalGroupQueryBuilder.PAGING);
@@ -85,10 +86,10 @@ class GroupQueryBuilder {
      * @param builder 本地查询解析
      * @return 获取最后查询结果的Query
      */
-    private static Query<NodeResultSet> buildQuery(List<URI> uris, GroupQueryInfo info, LocalGroupQueryBuilder builder) {
+    private static Query<NodeResultSet> buildQuery(List<SegmentDestination> uris, GroupQueryInfo info, LocalGroupQueryBuilder builder) {
         if (uris.size() == 1) {
             // 如果数据只分布在一个节点上面，那么在该节点上面完成最后一步计算指标计算
-            if (QueryBuilder.isLocalURI(uris.get(0))) {
+            if (!uris.get(0).isRemote()) {
                 return builder.buildPostQuery(builder.buildLocalQuery(info), info);
             } else {
                 // 丢给远程节点
@@ -97,8 +98,8 @@ class GroupQueryBuilder {
             }
         }
         List<Query<NodeResultSet>> queries = new ArrayList<Query<NodeResultSet>>();
-        for (URI uri : uris) {
-            if (QueryBuilder.isLocalURI(uri)) {
+        for (SegmentDestination uri : uris) {
+            if (!uri.isRemote()) {
                 queries.add(builder.buildLocalQuery(info));
             } else {
                 QueryInfo<NodeResultSet> queryInfo = new RemoteQueryInfoImpl<NodeResultSet>(QueryType.LOCAL_PART, info);
