@@ -11,11 +11,14 @@ import java.util.Arrays;
  * @date 2017/11/23
  */
 public class LongMemIo extends BaseMemIo implements LongReader, LongWriter {
-
     private long[] mem;
 
     public LongMemIo() {
-        mem = new long[DEFAULT_CAPACITY];
+        this(DEFAULT_CAPACITY);
+    }
+
+    public LongMemIo(int cap) {
+        mem = new long[cap];
     }
 
     @Override
@@ -26,7 +29,7 @@ public class LongMemIo extends BaseMemIo implements LongReader, LongWriter {
 
     @Override
     public boolean isReadable() {
-        return mem != null;
+        return mem != null && lastPos > -1;
     }
 
     @Override

@@ -18,7 +18,8 @@ public final class Types {
          * 数据类型
          */
         BYTE, INT, LONG, DOUBLE,
-        BYTE_ARRAY, STRING, BITMAP, LONG_ARRAY
+        BYTE_ARRAY, STRING, BITMAP, LONG_ARRAY,
+        REALTIME_COLUMN
     }
 
     public enum WriteType {
