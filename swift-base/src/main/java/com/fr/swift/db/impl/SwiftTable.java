@@ -47,11 +47,7 @@ class SwiftTable implements Table {
     public void insert(SwiftResultSet rowSet) throws SQLException {
         try {
             Inserter inserter = operators.getRealtimeBlockSwiftInserter(this);
-            List<Segment> segments = inserter.insertData(rowSet);
-            for (String field : inserter.getFields()) {
-                operators.getColumnIndexer(this, new ColumnKey(field), segments).buildIndex();
-                operators.getColumnDictMerger(this, new ColumnKey(field), segments).mergeDict();
-            }
+            inserter.insertData(rowSet);
         } catch (Exception e) {
             throw new SQLException(e);
         } finally {
