@@ -44,7 +44,7 @@ public class ClusterListener implements ClusterEventListener {
             new LocalSwiftRegister().serviceUnregister();
             new ClusterSwiftRegister().serviceRegister();
             SwiftClusterSegmentServiceImpl service = (SwiftClusterSegmentServiceImpl) SwiftContext.getInstance().getBean(SwiftClusterSegmentService.class);
-            service.setClusterId(FRClusterNodeManager.getInstance().getCurrentId());
+            service.setClusterId(ClusterSelector.getInstance().getFactory().getCurrentId());
             SwiftSegmentServiceProvider.getProvider().setService(service);
         } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
             try {
