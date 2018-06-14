@@ -2,10 +2,10 @@ package com.fr.swift.query.post;
 
 import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.query.filter.match.NodeFilter;
-import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeMergeResultSet;
-import com.fr.swift.result.NodeMergeResultSetImpl;
+import com.fr.swift.result.ChainedNodeResultSet;
 import com.fr.swift.result.NodeResultSet;
+import com.fr.swift.result.SwiftNode;
+import com.fr.swift.result.SwiftNodeOperator;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -25,10 +25,14 @@ public class HavingFilterQuery extends AbstractPostQuery<NodeResultSet> {
 
     @Override
     public NodeResultSet getQueryResult() throws SQLException {
-        NodeMergeResultSet<GroupNode> mergeResult = (NodeMergeResultSet<GroupNode>) query.getQueryResult();
-        NodeFilter.filter(mergeResult.getNode(), matchFilterList);
-        // 过滤了要重新new一个resetSet，因为在构造函数里面初始化了迭代器
-        return new NodeMergeResultSetImpl((GroupNode) mergeResult.getNode(),
-                mergeResult.getRowGlobalDictionaries(), mergeResult.getAggregators());
+        NodeResultSet<SwiftNode> mergeResult = (NodeResultSet<SwiftNode>) query.getQueryResult();
+        SwiftNodeOperator<SwiftNode> operator = new SwiftNodeOperator<SwiftNode>() {
+            @Override
+            public SwiftNode operate(SwiftNode... node) {
+                NodeFilter.filter(node[0], matchFilterList);
+                return node[0];
+            }
+        };
+        return new ChainedNodeResultSet(operator, mergeResult);
     }
 }

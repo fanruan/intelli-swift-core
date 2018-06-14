@@ -42,7 +42,7 @@ public class SpaceUsageDetectorTest {
         os.close();
 
         String s = Strings.trimSeparator(path, "\\", "/");
-        s = "file:/" + s;
+        s = "file:///" + s;
         uri = URI.create(s);
     }
 

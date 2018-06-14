@@ -51,7 +51,7 @@ public class GroupNodeIteratorTest extends TestIo {
             public boolean matches(SwiftNode node, int targetIndex, MatchConverter converter) {
                 return false;
             }
-        }, new ArrayList<>(), new ExpanderImpl(ExpanderType.ALL_EXPANDER, new HashSet<>()));
+        }, new ArrayList<>(), new ExpanderImpl(ExpanderType.ALL_EXPANDER, new HashSet<>()), null);
         GroupNodeRowMapper rowMapper = new GroupNodeRowMapper(new MetricInfoImpl(cubeData.getMetrics(), cubeData.getAggregators(), cubeData.getAggregators().size()));
         Function2<Integer, GroupByEntry, GroupNode> itemMapper = new Function2<Integer, GroupByEntry, GroupNode>() {
             @Override

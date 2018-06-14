@@ -1,11 +1,11 @@
 package com.fr.swift.query.builder;
 
-import com.fr.swift.query.Query;
-import com.fr.swift.query.QueryInfo;
-import com.fr.swift.query.QueryType;
 import com.fr.swift.query.info.ResultJoinQueryInfo;
 import com.fr.swift.query.post.PostQuery;
 import com.fr.swift.query.post.ResultJoinQuery;
+import com.fr.swift.query.query.Query;
+import com.fr.swift.query.query.QueryInfo;
+import com.fr.swift.query.query.QueryType;
 import com.fr.swift.result.NodeResultSet;
 
 import java.sql.SQLException;

@@ -2,6 +2,7 @@ package com.fr.swift.segment.impl;
 
 import com.fr.stable.StringUtils;
 import com.fr.swift.segment.SegmentDestination;
+import com.fr.swift.service.SwiftService;
 
 import java.net.URI;
 
@@ -14,11 +15,15 @@ public class SegmentDestinationImpl implements SegmentDestination {
     private String clusterId;
     private URI uri;
     private int order;
+    private Class<? extends SwiftService> serviceClass;
+    private String methodName;
 
-    public SegmentDestinationImpl(String clusterId, URI uri, int order) {
+    public SegmentDestinationImpl(String clusterId, URI uri, int order, Class<? extends SwiftService> serviceClass, String methodName) {
         this.clusterId = clusterId;
         this.uri = uri;
         this.order = order;
+        this.serviceClass = serviceClass;
+        this.methodName = methodName;
     }
 
     public SegmentDestinationImpl(URI uri, int order) {
@@ -48,7 +53,17 @@ public class SegmentDestinationImpl implements SegmentDestination {
     }
 
     @Override
-    public String getNode() {
+    public Class<? extends SwiftService> getServiceClass() {
+        return serviceClass;
+    }
+
+    @Override
+    public String getMethodName() {
+        return methodName;
+    }
+
+    @Override
+    public String getAddress() {
         return clusterId;
     }
 

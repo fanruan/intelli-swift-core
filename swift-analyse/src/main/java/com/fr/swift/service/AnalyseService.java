@@ -1,6 +1,6 @@
 package com.fr.swift.service;
 
-import com.fr.swift.query.QueryRunner;
+import com.fr.swift.query.query.QueryRunner;
 import com.fr.swift.segment.SegmentLocationInfo;
 
 import java.io.Serializable;

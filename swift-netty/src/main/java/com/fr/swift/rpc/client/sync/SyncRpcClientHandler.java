@@ -39,7 +39,7 @@ public class SyncRpcClientHandler extends AbstactRpcClientHandler {
     }
 
     @Override
-    public void channelRead0(ChannelHandlerContext ctx, RpcResponse response) throws Exception {
+    public void channelRead0(ChannelHandlerContext ctx, RpcResponse response) {
         this.response = response;
         LOGGER.info("Receive response : " + response.getRequestId());
     }
@@ -52,7 +52,7 @@ public class SyncRpcClientHandler extends AbstactRpcClientHandler {
             bootstrap.channel(NioSocketChannel.class);
             bootstrap.handler(new ChannelInitializer<SocketChannel>() {
                 @Override
-                public void initChannel(SocketChannel channel) throws Exception {
+                public void initChannel(SocketChannel channel) {
                     ChannelPipeline pipeline = channel.pipeline();
                     pipeline.addLast(
                             new ObjectDecoder(1024, ClassResolvers.cacheDisabled(this
@@ -66,7 +66,7 @@ public class SyncRpcClientHandler extends AbstactRpcClientHandler {
             Channel channel = future.channel();
             channel.writeAndFlush(request).sync().addListener(new ChannelFutureListener() {
                 @Override
-                public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                public void operationComplete(ChannelFuture channelFuture) {
                     LOGGER.info("Send request : " + request.getRequestId());
                 }
             });

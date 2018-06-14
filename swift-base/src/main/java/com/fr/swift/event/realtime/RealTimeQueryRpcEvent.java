@@ -1,7 +1,7 @@
 package com.fr.swift.event.realtime;
 
 import com.fr.swift.event.base.AbstractRealTimeRpcEvent;
-import com.fr.swift.query.QueryInfo;
+import com.fr.swift.query.query.QueryInfo;
 
 /**
  * @author yee

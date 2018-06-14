@@ -1,10 +1,10 @@
 package com.fr.swift.service.register;
 
-import com.fr.swift.frrpc.ClusterNodeManager;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rpc.SwiftRpcService;
 import com.fr.swift.rpc.server.RpcServer;
+import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.ClusterSwiftServerService;
 
 /**
@@ -21,8 +21,8 @@ public class ClusterSwiftRegister extends AbstractSwiftRegister {
     public void serviceRegister() {
         SwiftRpcService.getInstance().startServerService();
 
-        if (ClusterNodeManager.getInstance().isMaster()) {
-            new ClusterSwiftServerService().start();
+        if (ClusterSelector.getInstance().getFactory().isMaster()) {
+            ClusterSwiftServerService.getInstance().start();
             masterLocalServiceRegister();
         } else {
             remoteServiceRegister();

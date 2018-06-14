@@ -1,8 +1,8 @@
 package com.fr.swift.query.info.bean.query;
 
-import com.fr.swift.query.QueryType;
 import com.fr.swift.query.info.bean.element.MetricBean;
 import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
+import com.fr.swift.query.query.QueryType;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;

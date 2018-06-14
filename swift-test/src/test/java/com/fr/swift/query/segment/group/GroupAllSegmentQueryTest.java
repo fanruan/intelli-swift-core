@@ -46,7 +46,7 @@ public class GroupAllSegmentQueryTest extends TestCase {
             public boolean matches(SwiftNode node, int targetIndex, MatchConverter converter) {
                 return false;
             }
-        }, new ArrayList<>(), new ExpanderImpl(ExpanderType.ALL_EXPANDER, new HashSet<>()));
+        }, new ArrayList<>(), new ExpanderImpl(ExpanderType.ALL_EXPANDER, new HashSet<>()), null);
         MetricInfo metricInfo = new MetricInfoImpl(cubeData.getMetrics(), cubeData.getAggregators(), cubeData.getMetrics().size());
         resultSet = (NodeMergeResultSet<GroupNode>) new GroupAllSegmentQuery(groupByInfo, metricInfo).getQueryResult();
         // 更新Node#data

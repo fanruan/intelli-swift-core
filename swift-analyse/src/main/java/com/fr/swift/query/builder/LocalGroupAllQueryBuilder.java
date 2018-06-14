@@ -2,7 +2,6 @@ package com.fr.swift.query.builder;
 
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.query.Query;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.detail.DetailFilter;
@@ -19,6 +18,7 @@ import com.fr.swift.query.info.group.post.PostQueryInfo;
 import com.fr.swift.query.post.PostQuery;
 import com.fr.swift.query.post.PrepareMetaDataQuery;
 import com.fr.swift.query.post.UpdateNodeDataQuery;
+import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.ResultQuery;
 import com.fr.swift.query.result.group.GroupResultQuery;
 import com.fr.swift.query.segment.group.GroupAllSegmentQuery;
@@ -58,14 +58,14 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
         List<Query<NodeResultSet>> queries = new ArrayList<Query<NodeResultSet>>();
         List<Metric> metrics = info.getMetrics();
         List<Dimension> dimensions = info.getDimensions();
-        List<Segment> segments = SwiftContext.getInstance().getBean("LocalSegmentProvider", SwiftSegmentManager.class).getSegment(info.getTable());
+        List<Segment> segments = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegment(info.getTable());
         for (Segment segment : segments) {
             List<Column> dimensionColumns = getDimensionSegments(segment, dimensions);
             List<Column> metricColumns = getMetricSegments(segment, metrics);
             List<Aggregator> aggregators = getFilterAggregators(metrics, segment);
             List<Sort> rowIndexSorts = getSegmentIndexSorts(dimensions);
             DetailFilter rowDetailFilter = FilterBuilder.buildDetailFilter(segment, info.getFilterInfo());
-            GroupByInfo rowGroupByInfo = new GroupByInfoImpl(dimensionColumns, rowDetailFilter, rowIndexSorts, new ExpanderImpl(ExpanderType.ALL_EXPANDER, new HashSet<RowIndexKey<String[]>>()));
+            GroupByInfo rowGroupByInfo = new GroupByInfoImpl(dimensionColumns, rowDetailFilter, rowIndexSorts, new ExpanderImpl(ExpanderType.ALL_EXPANDER, new HashSet<RowIndexKey<String[]>>()), null);
             // TODO: 2018/5/30 AggregatorValueContainer用map还是数组的取舍
             // 数组读写存储效率好但是解析麻烦，map占用空间大一点计算解析方便
             MetricInfo metricInfo = new MetricInfoImpl(metricColumns, aggregators, metrics.size());

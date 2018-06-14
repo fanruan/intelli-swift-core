@@ -8,7 +8,7 @@ import com.fr.cluster.rpc.base.Result;
 import com.fr.general.DataList;
 import com.fr.general.LogOperator;
 import com.fr.stable.query.condition.QueryCondition;
-import com.fr.swift.frrpc.ClusterNodeManager;
+import com.fr.swift.frrpc.FRClusterNodeManager;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 
@@ -36,7 +36,7 @@ public class SwiftClusterLogOperator implements LogOperator {
 
     @Override
     public <T> DataList<T> find(Class<T> aClass, QueryCondition queryCondition) {
-        ClusterNode masterNode = ClusterNodeManager.getInstance().getMasterNode();
+        ClusterNode masterNode = FRClusterNodeManager.getInstance().getMasterNode();
         Invocation invocation = Invocation.create(LogOperatorProxy.class, "find",
                 new Class[]{Class.class, QueryCondition.class}, aClass, queryCondition);
         Result result = invoker.invoke(masterNode, invocation);
@@ -45,7 +45,7 @@ public class SwiftClusterLogOperator implements LogOperator {
 
     @Override
     public <T> DataList<T> find(Class<T> aClass, QueryCondition queryCondition, String s) {
-        ClusterNode masterNode = ClusterNodeManager.getInstance().getMasterNode();
+        ClusterNode masterNode = FRClusterNodeManager.getInstance().getMasterNode();
         Invocation invocation = Invocation.create(LogOperatorProxy.class, "find",
                 new Class[]{Class.class, QueryCondition.class, String.class}, aClass, queryCondition, s);
         Result result = invoker.invoke(masterNode, invocation);
@@ -59,7 +59,7 @@ public class SwiftClusterLogOperator implements LogOperator {
 
     @Override
     public void recordInfo(Object o) {
-        ClusterNode masterNode = ClusterNodeManager.getInstance().getMasterNode();
+        ClusterNode masterNode = FRClusterNodeManager.getInstance().getMasterNode();
         Invocation invocation = Invocation.create(LogOperatorProxy.class, "recordInfo",
                 new Class[]{Object.class}, o);
         invoker.invoke(masterNode, invocation);
@@ -67,7 +67,7 @@ public class SwiftClusterLogOperator implements LogOperator {
 
     @Override
     public void recordInfo(List<Object> list) {
-        ClusterNode masterNode = ClusterNodeManager.getInstance().getMasterNode();
+        ClusterNode masterNode = FRClusterNodeManager.getInstance().getMasterNode();
         Invocation invocation = Invocation.create(LogOperatorProxy.class, "recordInfo",
                 new Class[]{List.class}, list);
         invoker.invoke(masterNode, invocation);
@@ -75,7 +75,7 @@ public class SwiftClusterLogOperator implements LogOperator {
 
     @Override
     public void initTables(List<Class> list) {
-        ClusterNode masterNode = ClusterNodeManager.getInstance().getMasterNode();
+        ClusterNode masterNode = FRClusterNodeManager.getInstance().getMasterNode();
         Invocation invocation = Invocation.create(LogOperatorProxy.class, "initTables",
                 new Class[]{List.class}, list);
         invoker.invoke(masterNode, invocation);
@@ -83,7 +83,7 @@ public class SwiftClusterLogOperator implements LogOperator {
 
     @Override
     public void clearLogBefore(Date date) {
-        ClusterNode masterNode = ClusterNodeManager.getInstance().getMasterNode();
+        ClusterNode masterNode = FRClusterNodeManager.getInstance().getMasterNode();
         Invocation invocation = Invocation.create(LogOperatorProxy.class, "clearLogBefore",
                 new Class[]{Date.class}, date);
         invoker.invoke(masterNode, invocation);

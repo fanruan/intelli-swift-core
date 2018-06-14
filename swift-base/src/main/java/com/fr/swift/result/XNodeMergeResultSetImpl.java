@@ -46,13 +46,13 @@ public class XNodeMergeResultSetImpl implements XNodeMergeResultSet {
     }
 
     @Override
-    public List<Aggregator> getAggregators() {
-        return aggregators;
+    public SwiftNode<XLeftNode> getNode() {
+        return leftRoot;
     }
 
     @Override
-    public SwiftNode<XLeftNode> getNode() {
-        return leftRoot;
+    public boolean hasNextPage() {
+        return false;
     }
 
     @Override

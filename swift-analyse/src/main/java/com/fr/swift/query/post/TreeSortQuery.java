@@ -2,10 +2,11 @@ package com.fr.swift.query.post;
 
 import com.fr.swift.query.filter.match.NodeSorter;
 import com.fr.swift.query.sort.Sort;
+import com.fr.swift.result.ChainedNodeResultSet;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeMergeResultSet;
-import com.fr.swift.result.NodeMergeResultSetImpl;
 import com.fr.swift.result.NodeResultSet;
+import com.fr.swift.result.SwiftNode;
+import com.fr.swift.result.SwiftNodeOperator;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -25,9 +26,15 @@ public class TreeSortQuery extends AbstractPostQuery<NodeResultSet> {
 
     @Override
     public NodeResultSet getQueryResult() throws SQLException {
-        NodeMergeResultSet<GroupNode> mergeResult = (NodeMergeResultSet<GroupNode>) query.getQueryResult();
+        final NodeResultSet<GroupNode> mergeResult = (NodeResultSet<GroupNode>) query.getQueryResult();
         NodeSorter.sort(mergeResult.getNode(), sortList);
-        return new NodeMergeResultSetImpl((GroupNode) mergeResult.getNode(),
-                mergeResult.getRowGlobalDictionaries(), mergeResult.getAggregators());
+        SwiftNodeOperator<SwiftNode> operator = new SwiftNodeOperator<SwiftNode>() {
+            @Override
+            public SwiftNode operate(SwiftNode... node) {
+                NodeSorter.sort(node[0], sortList);
+                return node[0];
+            }
+        };
+        return new ChainedNodeResultSet(operator, mergeResult);
     }
 }

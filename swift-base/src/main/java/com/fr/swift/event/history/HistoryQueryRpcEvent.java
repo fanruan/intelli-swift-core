@@ -1,7 +1,7 @@
 package com.fr.swift.event.history;
 
 import com.fr.swift.event.base.AbstractHistoryRpcEvent;
-import com.fr.swift.query.QueryInfo;
+import com.fr.swift.query.query.QueryInfo;
 
 /**
  * @author yee

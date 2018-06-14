@@ -216,7 +216,7 @@ public class TimeSeriesGroupTableAdapter extends SwiftAlgorithmResultAdapter<Hol
             if (!isDesc) {
                 Collections.reverse(resultRootNode.getChildren());
             }
-            return new NodeMergeResultSetImpl(resultRootNode, new ArrayList<Map<Integer, Object>>(), new ArrayList<Aggregator>());
+            return new NodeMergeResultSetImpl(resultRootNode, new ArrayList<Map<Integer, Object>>());
 
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
@@ -261,7 +261,7 @@ public class TimeSeriesGroupTableAdapter extends SwiftAlgorithmResultAdapter<Hol
 //        GroupNodeAggregateUtils.aggregate(NodeType.GROUP, info.getDimensionInfo().getDimensions().length,
 //                resultRootNode, info.getTargetInfo().getResultAggregators());
 
-        NodeMergeResultSetImpl dmTableResult = new NodeMergeResultSetImpl(node, new ArrayList<Map<Integer, Object>>(), new ArrayList<Aggregator>());
+        NodeMergeResultSetImpl dmTableResult = new NodeMergeResultSetImpl(node, new ArrayList<Map<Integer, Object>>());
 //        dmTableResult.setError(err);
         return dmTableResult;
     }

@@ -1,8 +1,8 @@
 package com.fr.swift.query.info;
 
-import com.fr.swift.query.QueryInfo;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
+import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.util.List;

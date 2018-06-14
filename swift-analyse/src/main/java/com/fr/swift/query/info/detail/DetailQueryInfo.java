@@ -2,12 +2,12 @@ package com.fr.swift.query.info.detail;
 
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.query.QueryType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.group.info.cursor.Cursor;
 import com.fr.swift.query.info.AbstractQueryInfo;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.target.DetailTarget;
+import com.fr.swift.query.query.QueryType;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.segment.Segment;
@@ -88,7 +88,7 @@ public class DetailQueryInfo extends AbstractQueryInfo<DetailResultSet> {
 
     protected class DetailSortComparator implements Comparator<Row> {
 
-        private final SwiftSegmentManager localSegmentProvider = SwiftContext.getInstance().getBean("LocalSegmentProvider", SwiftSegmentManager.class);
+        private final SwiftSegmentManager localSegmentProvider = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class);
         private List<Column> columns;
 
         public DetailSortComparator() {
