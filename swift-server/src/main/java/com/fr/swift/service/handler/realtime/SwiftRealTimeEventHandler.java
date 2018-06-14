@@ -1,13 +1,11 @@
 package com.fr.swift.service.handler.realtime;
 
-import com.fr.swift.ProxyFactory;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.event.base.AbstractRealTimeRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rpc.client.AsyncRpcCallback;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.selector.ProxySelector;
 import com.fr.swift.service.ClusterSwiftServerService;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.entity.ClusterEntity;
@@ -17,7 +15,6 @@ import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.io.Serializable;
-import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +34,9 @@ public class SwiftRealTimeEventHandler extends AbstractHandler<AbstractRealTimeR
     @Override
     public <S extends Serializable> S handle(AbstractRealTimeRpcEvent event) {
         Map<String, ClusterEntity> realTimeServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.REAL_TIME);
-        ProxyFactory factory = ProxySelector.getInstance().getFactory();
+        if (null == realTimeServices || realTimeServices.isEmpty()) {
+            throw new RuntimeException("Cannot find realTime service");
+        }
         try {
             switch (event.subEvent()) {
                 case RECOVER:
@@ -50,8 +49,7 @@ public class SwiftRealTimeEventHandler extends AbstractHandler<AbstractRealTimeR
                         final List<SegmentKey> list = map.get(key);
                         if (null != list && !list.isEmpty()) {
                             final long start = System.currentTimeMillis();
-                            Method method = entity.getServiceClass().getMethod("recover", List.class);
-                            runAsyncRpc(key, entity.getServiceClass(), method, list)
+                            runAsyncRpc(key, entity.getServiceClass(), "recover", list)
                                     .addCallback(new AsyncRpcCallback() {
                                         @Override
                                         public void success(Object result) {
@@ -76,8 +74,7 @@ public class SwiftRealTimeEventHandler extends AbstractHandler<AbstractRealTimeR
                         final List<SegmentKey> list = mergeMap.get(key);
                         if (null != list && !list.isEmpty()) {
                             final long start = System.currentTimeMillis();
-                            Method method = entity.getServiceClass().getMethod("merge", List.class);
-                            runAsyncRpc(key, entity.getServiceClass(), method, list)
+                            runAsyncRpc(key, entity.getServiceClass(), "merge", list)
                                     .addCallback(new AsyncRpcCallback() {
                                         @Override
                                         public void success(Object result) {

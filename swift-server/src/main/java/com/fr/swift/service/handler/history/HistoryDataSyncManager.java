@@ -1,6 +1,5 @@
 package com.fr.swift.service.handler.history;
 
-import com.fr.swift.ProxyFactory;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.event.history.HistoryLoadRpcEvent;
 import com.fr.swift.log.SwiftLogger;
@@ -10,7 +9,6 @@ import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
-import com.fr.swift.selector.ProxySelector;
 import com.fr.swift.service.ClusterSwiftServerService;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.entity.ClusterEntity;
@@ -20,7 +18,6 @@ import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.io.Serializable;
-import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -47,7 +44,9 @@ public class HistoryDataSyncManager extends AbstractHandler<HistoryLoadRpcEvent>
 
     public <S extends Serializable> S handle(HistoryLoadRpcEvent event) {
         Map<String, ClusterEntity> services = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.HISTORY);
-        ProxyFactory factory = ProxySelector.getInstance().getFactory();
+        if (null == services || services.isEmpty()) {
+            throw new RuntimeException("Cannot find history service");
+        }
         Map<String, List<SegmentKey>> needLoadSegment = event.getContent();
         Map<String, List<SegmentKey>> keys = clusterSegmentService.getClusterSegments();
         Iterator<String> keyIterator = services.keySet().iterator();
@@ -64,8 +63,7 @@ public class HistoryDataSyncManager extends AbstractHandler<HistoryLoadRpcEvent>
             while (keyIterator.hasNext()) {
                 String key = keyIterator.next();
                 ClusterEntity entity = services.get(key);
-                Method method = entity.getServiceClass().getMethod("load", Set.class);
-                runAsyncRpc(key, entity.getServiceClass(), method, result.get(key))
+                runAsyncRpc(key, entity.getServiceClass(), "load", result.get(key))
                         .addCallback(new AsyncRpcCallback() {
                             @Override
                             public void success(Object result) {
@@ -83,14 +81,16 @@ public class HistoryDataSyncManager extends AbstractHandler<HistoryLoadRpcEvent>
             latch.await();
 
             Map<String, ClusterEntity> analyseServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.ANALYSE);
+            if (null == analyseServices || analyseServices.isEmpty()) {
+                throw new RuntimeException("Cannot find analyse service");
+            }
             Iterator<Map.Entry<String, ClusterEntity>> iterator = analyseServices.entrySet().iterator();
             while (iterator.hasNext()) {
                 final long start = System.currentTimeMillis();
                 Map.Entry<String, ClusterEntity> entity = iterator.next();
                 String address = entity.getKey();
                 Class clazz = entity.getValue().getServiceClass();
-                Method method = clazz.getMethod("updateSegmentInfo", SegmentLocationInfo.class, SegmentLocationInfo.UpdateType.class);
-                runAsyncRpc(address, clazz, method, new SegmentLocationInfoImpl(ServiceType.HISTORY, destinations), SegmentLocationInfo.UpdateType.ALL)
+                runAsyncRpc(address, clazz, "updateSegmentInfo", new SegmentLocationInfoImpl(ServiceType.HISTORY, destinations), SegmentLocationInfo.UpdateType.ALL)
                         .addCallback(new AsyncRpcCallback() {
                             @Override
                             public void success(Object result) {

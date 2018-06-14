@@ -1,5 +1,7 @@
 package com.fr.swift.segment;
 
+import com.fr.swift.service.SwiftService;
+
 import java.io.Serializable;
 import java.net.URI;
 
@@ -10,7 +12,11 @@ import java.net.URI;
 public interface SegmentDestination extends Serializable {
     boolean isRemote();
 
-    String getNode();
+    Class<? extends SwiftService> getServiceClass();
+
+    String getMethodName();
+
+    String getAddress();
 
     int order();
 
