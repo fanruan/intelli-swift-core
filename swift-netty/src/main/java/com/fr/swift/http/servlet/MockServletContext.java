@@ -1,14 +1,14 @@
 package com.fr.swift.http.servlet;
 
 import com.fr.swift.http.dispatcher.MockRequestDispatcher;
+import com.fr.swift.log.SwiftLogger;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.third.springframework.core.io.DefaultResourceLoader;
 import com.fr.third.springframework.core.io.Resource;
 import com.fr.third.springframework.core.io.ResourceLoader;
 import com.fr.third.springframework.util.ClassUtils;
 import com.fr.third.springframework.util.ObjectUtils;
 import com.fr.third.springframework.web.util.WebUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import javax.activation.FileTypeMap;
 import javax.servlet.Filter;
@@ -48,8 +48,7 @@ public class MockServletContext implements ServletContext {
 
     private static final String TEMP_DIR_SYSTEM_PROPERTY = "java.io.tmpdir";
 
-
-    private final Log logger = LogFactory.getLog(getClass());
+    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(MockRequestDispatcher.class);
 
     private final ResourceLoader resourceLoader;
 
@@ -102,6 +101,7 @@ public class MockServletContext implements ServletContext {
     /**
      * Build a full resource location for the given path,
      * prepending the resource base path of this MockServletContext.
+     *
      * @param path the path as specified
      * @return the full resource path
      */
@@ -187,9 +187,8 @@ public class MockServletContext implements ServletContext {
                 resourcePaths.add(resultPath);
             }
             return resourcePaths;
-        }
-        catch (IOException ex) {
-            logger.warn("Couldn't get resource paths for " + resource, ex);
+        } catch (IOException ex) {
+            LOGGER.warn("Couldn't get resource paths for " + resource, ex);
             return null;
         }
     }
@@ -201,12 +200,10 @@ public class MockServletContext implements ServletContext {
         }
         try {
             return resource.getURL();
-        }
-        catch (MalformedURLException ex) {
+        } catch (MalformedURLException ex) {
             throw ex;
-        }
-        catch (IOException ex) {
-            logger.warn("Couldn't get URL for " + resource, ex);
+        } catch (IOException ex) {
+            LOGGER.warn("Couldn't get URL for " + resource, ex);
             return null;
         }
     }
@@ -218,9 +215,8 @@ public class MockServletContext implements ServletContext {
         }
         try {
             return resource.getInputStream();
-        }
-        catch (IOException ex) {
-            logger.warn("Couldn't open InputStream for " + resource, ex);
+        } catch (IOException ex) {
+            LOGGER.warn("Couldn't open InputStream for " + resource, ex);
             return null;
         }
     }
@@ -249,24 +245,23 @@ public class MockServletContext implements ServletContext {
     }
 
     public void log(String message) {
-        logger.info(message);
+        LOGGER.info(message);
     }
 
     public void log(Exception ex, String message) {
-        logger.info(message, ex);
+        LOGGER.info(message, ex);
     }
 
     public void log(String message, Throwable ex) {
-        logger.info(message, ex);
+        LOGGER.info(message, ex);
     }
 
     public String getRealPath(String path) {
         Resource resource = this.resourceLoader.getResource(getResourceLocation(path));
         try {
             return resource.getFile().getAbsolutePath();
-        }
-        catch (IOException ex) {
-            logger.warn("Couldn't determine real path of resource " + resource, ex);
+        } catch (IOException ex) {
+            LOGGER.warn("Couldn't determine real path of resource " + resource, ex);
             return null;
         }
     }
@@ -306,8 +301,7 @@ public class MockServletContext implements ServletContext {
     public void setAttribute(String name, Object value) {
         if (value != null) {
             this.attributes.put(name, value);
-        }
-        else {
+        } else {
             this.attributes.remove(name);
         }
     }
