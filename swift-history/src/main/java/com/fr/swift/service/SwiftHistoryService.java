@@ -7,6 +7,7 @@ import com.fr.swift.query.QueryInfo;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.SwiftRepositoryManager;
+import com.fr.swift.rpc.annotation.RpcMethod;
 import com.fr.swift.rpc.annotation.RpcService;
 import com.fr.swift.rpc.annotation.RpcServiceType;
 import com.fr.swift.source.SerializableResultSet;
@@ -35,6 +36,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     }
 
     @Override
+    @RpcMethod(methodName = "load")
     public void load(Set<URI> remoteUris) throws IOException {
         if (null != remoteUris && !remoteUris.isEmpty()) {
             String path = SwiftCubePathConfig.getInstance().getPath();
@@ -54,6 +56,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     }
 
     @Override
+    @RpcMethod(methodName = "historyQuery")
     public SerializableResultSet query(QueryInfo queryInfo) throws SQLException {
         SwiftResultSet resultSet = QueryBuilder.buildQuery(queryInfo).getQueryResult();
         return new SerializableResultSet(resultSet);
