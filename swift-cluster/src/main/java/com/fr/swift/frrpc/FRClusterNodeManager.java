@@ -3,6 +3,7 @@ package com.fr.swift.frrpc;
 import com.fr.cluster.ClusterBridge;
 import com.fr.cluster.core.ClusterNode;
 import com.fr.general.ComparatorUtils;
+import com.fr.swift.ClusterNodeManager;
 
 /**
  * This class created on 2018/5/10
@@ -11,43 +12,49 @@ import com.fr.general.ComparatorUtils;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class ClusterNodeManager {
+public class FRClusterNodeManager implements ClusterNodeManager<ClusterNode> {
 
     private ClusterNode masterNode;
     private ClusterNode currentNode;
     private boolean isCluster;
 
-    private static final ClusterNodeManager INSTANCE = new ClusterNodeManager();
+    private static final FRClusterNodeManager INSTANCE = new FRClusterNodeManager();
 
-    private ClusterNodeManager() {
+    private FRClusterNodeManager() {
         this.currentNode = ClusterBridge.getView().getCurrent();
         this.isCluster = false;
     }
 
-    public static ClusterNodeManager getInstance() {
+    public static FRClusterNodeManager getInstance() {
         return INSTANCE;
     }
 
+    @Override
     public void setMasterNode(ClusterNode masterNode) {
         this.masterNode = masterNode;
     }
 
+    @Override
     public void setCurrentNode(ClusterNode currentNode) {
         this.currentNode = currentNode;
     }
 
+    @Override
     public ClusterNode getMasterNode() {
         return masterNode;
     }
 
+    @Override
     public ClusterNode getCurrentNode() {
         return currentNode;
     }
 
+    @Override
     public String getCurrentId() {
         return currentNode.getID();
     }
 
+    @Override
     public String getMasterId() {
         if (masterNode == null) {
             return null;
@@ -55,20 +62,23 @@ public class ClusterNodeManager {
         return masterNode.getID();
     }
 
+    @Override
     public boolean isCluster() {
-        synchronized (ClusterNodeManager.class) {
+        synchronized (FRClusterNodeManager.class) {
             return isCluster;
         }
     }
 
+    @Override
     public void setCluster(boolean cluster) {
-        synchronized (ClusterNodeManager.class) {
+        synchronized (FRClusterNodeManager.class) {
             isCluster = cluster;
         }
     }
 
+    @Override
     public boolean isMaster() {
-        synchronized (ClusterNodeManager.class) {
+        synchronized (FRClusterNodeManager.class) {
             if (masterNode == null) {
                 return false;
             }

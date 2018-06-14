@@ -12,6 +12,7 @@ import com.fr.swift.ClusterService;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
+import com.fr.swift.event.ClusterType;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 
@@ -65,7 +66,7 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
         EventDispatcher.listen(ClusterViewEvent.NODE_LEFT, new Listener<ClusterNode>() {
             @Override
             public void on(Event event, ClusterNode clusterNode) {
-                if (ClusterNodeManager.getInstance().getMasterId() == null || ComparatorUtils.equals(ClusterNodeManager.getInstance().getMasterId(), clusterNode.getID())) {
+                if (FRClusterNodeManager.getInstance().getMasterId() == null || ComparatorUtils.equals(FRClusterNodeManager.getInstance().getMasterId(), clusterNode.getID())) {
                     SwiftClusterService.getInstance().competeMaster();
                 }
             }
@@ -83,8 +84,8 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
     @Override
     public void afterJoin() {
         SwiftClusterService.getInstance().competeMaster();
-        ClusterListenerHandler.handlerEvent(new ClusterEvent(ClusterEventType.JOIN_CLUSTER));
-        ClusterNodeManager.getInstance().setCluster(true);
+        ClusterListenerHandler.handlerEvent(new ClusterEvent(ClusterEventType.JOIN_CLUSTER, ClusterType.FR));
+        FRClusterNodeManager.getInstance().setCluster(true);
     }
 
     /**
@@ -92,7 +93,7 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
      */
     @Override
     public void onLeft() {
-        ClusterListenerHandler.handlerEvent(new ClusterEvent(ClusterEventType.LEFT_CLUSTER));
-        ClusterNodeManager.getInstance().setCluster(false);
+        ClusterListenerHandler.handlerEvent(new ClusterEvent(ClusterEventType.LEFT_CLUSTER, ClusterType.FR));
+        FRClusterNodeManager.getInstance().setCluster(false);
     }
 }

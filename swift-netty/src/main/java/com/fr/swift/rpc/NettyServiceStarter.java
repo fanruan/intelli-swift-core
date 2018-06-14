@@ -7,7 +7,7 @@ package com.fr.swift.rpc;
  * @description
  * @since Advanced FineBI 5.0
  */
-public interface RpcServiceStarter {
+public interface NettyServiceStarter {
 
     void start() throws Exception;
 

@@ -1,6 +1,6 @@
 package com.fr.swift.rpc.server;
 
-import com.fr.swift.rpc.RpcServiceStarter;
+import com.fr.swift.rpc.NettyServiceStarter;
 import com.fr.third.springframework.context.ApplicationContext;
 
 /**
@@ -10,7 +10,7 @@ import com.fr.third.springframework.context.ApplicationContext;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class RpcServerServiceStarter implements RpcServiceStarter {
+public class RpcServerServiceStarter implements NettyServiceStarter {
 
     private ApplicationContext context;
 
