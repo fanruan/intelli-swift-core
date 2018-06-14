@@ -10,6 +10,13 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * This class created on 2018/6/14
+ *
+ * @author Lucifer
+ * @description
+ * @since Advanced FineBI 5.0
+ */
 public class EndecryptionInterceptor implements HandlerInterceptor {
 
     @Override

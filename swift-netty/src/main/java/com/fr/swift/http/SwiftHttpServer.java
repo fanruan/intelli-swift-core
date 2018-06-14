@@ -1,6 +1,6 @@
 package com.fr.swift.http;
 
-import com.fr.swift.http.handler.DispatcherServletChannelInitializer;
+import com.fr.swift.http.handler.ServletChannelInitializer;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rpc.NettyServiceStarter;
@@ -46,7 +46,7 @@ public class SwiftHttpServer implements NettyServiceStarter {
             ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(bossGroup, workerGroup);
             bootstrap.channel(NioServerSocketChannel.class);
-            bootstrap.childHandler(new DispatcherServletChannelInitializer());
+            bootstrap.childHandler(new ServletChannelInitializer());
             bootstrap.option(ChannelOption.SO_BACKLOG, 128);
             bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
 

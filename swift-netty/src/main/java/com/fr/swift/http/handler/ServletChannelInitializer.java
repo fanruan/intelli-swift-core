@@ -1,5 +1,6 @@
 package com.fr.swift.http.handler;
 
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.http.dispatcher.SwiftDispatcher;
 import com.fr.swift.http.servlet.MockServletConfig;
 import com.fr.swift.http.servlet.MockServletContext;
@@ -21,17 +22,18 @@ import javax.servlet.ServletException;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class DispatcherServletChannelInitializer extends ChannelInitializer<SocketChannel> {
+public class ServletChannelInitializer extends ChannelInitializer<SocketChannel> {
     private final DispatcherServlet dispatcherServlet;
 
-    public DispatcherServletChannelInitializer() throws ServletException {
+    public ServletChannelInitializer() throws ServletException {
 
         MockServletContext servletContext = new MockServletContext();
         MockServletConfig servletConfig = new MockServletConfig(servletContext);
         XmlWebApplicationContext wac = new XmlWebApplicationContext();
         wac.setServletContext(servletContext);
         wac.setServletConfig(servletConfig);
-        wac.setConfigLocation("classpath:applicationContext.xml");
+        wac.setParent(SwiftContext.getInstance());
+        wac.setConfigLocation("classpath:spring.xml");
         wac.refresh();
 
         this.dispatcherServlet = new SwiftDispatcher(wac);
