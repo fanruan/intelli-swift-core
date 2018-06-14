@@ -2,8 +2,8 @@ package com.fr.swift.service;
 
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.query.QueryInfo;
 import com.fr.swift.query.builder.QueryBuilder;
+import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.rpc.annotation.RpcMethod;
 import com.fr.swift.rpc.annotation.RpcService;
 import com.fr.swift.rpc.annotation.RpcServiceType;

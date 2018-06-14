@@ -2,7 +2,6 @@ package com.fr.swift.query.builder;
 
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.query.Query;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.detail.DetailFilter;
@@ -19,6 +18,7 @@ import com.fr.swift.query.info.group.post.PostQueryInfo;
 import com.fr.swift.query.post.PostQuery;
 import com.fr.swift.query.post.PrepareMetaDataQuery;
 import com.fr.swift.query.post.UpdateNodeDataQuery;
+import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.ResultQuery;
 import com.fr.swift.query.result.group.GroupResultQuery;
 import com.fr.swift.query.segment.group.GroupAllSegmentQuery;

@@ -1,10 +1,10 @@
 package com.fr.swift.query.post;
 
 import com.fr.stable.StringUtils;
-import com.fr.swift.query.Query;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
 import com.fr.swift.query.info.element.dimension.Dimension;
+import com.fr.swift.query.query.Query;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.NodeResultSetImpl;

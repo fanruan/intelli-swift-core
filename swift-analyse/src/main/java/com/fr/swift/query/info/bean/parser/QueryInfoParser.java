@@ -1,7 +1,5 @@
 package com.fr.swift.query.info.bean.parser;
 
-import com.fr.swift.query.QueryInfo;
-import com.fr.swift.query.QueryType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.info.bean.query.DetailQueryBean;
 import com.fr.swift.query.info.bean.query.GroupQueryBean;
@@ -13,6 +11,8 @@ import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.group.GroupQueryInfoImpl;
 import com.fr.swift.query.info.group.ResultJoinQueryInfoImpl;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
+import com.fr.swift.query.query.QueryInfo;
+import com.fr.swift.query.query.QueryType;
 import com.fr.swift.source.SourceKey;
 
 import java.util.ArrayList;

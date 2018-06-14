@@ -1,6 +1,6 @@
 package com.fr.swift.query.info.bean.query;
 
-import com.fr.swift.query.QueryType;
+import com.fr.swift.query.query.QueryType;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 
 /**

@@ -1,7 +1,6 @@
 package com.fr.swift.query.builder;
 
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.query.Query;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.detail.DetailFilter;
@@ -16,6 +15,7 @@ import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.post.group.GroupPostQuery;
+import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.ResultQuery;
 import com.fr.swift.query.segment.group.GroupPagingSegmentQuery;
 import com.fr.swift.query.sort.Sort;

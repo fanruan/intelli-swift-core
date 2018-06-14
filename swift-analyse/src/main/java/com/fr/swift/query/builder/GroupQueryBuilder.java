@@ -1,10 +1,12 @@
 package com.fr.swift.query.builder;
 
-import com.fr.swift.query.Query;
-import com.fr.swift.query.QueryInfo;
-import com.fr.swift.query.QueryType;
 import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.info.group.RemoteQueryInfoImpl;
+import com.fr.swift.query.query.Query;
+import com.fr.swift.query.query.QueryInfo;
+import com.fr.swift.query.query.QueryType;
+import com.fr.swift.query.remote.GroupLocalAllQuery;
+import com.fr.swift.query.remote.GroupLocalPartQuery;
 import com.fr.swift.query.remote.RemoteQueryImpl;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.segment.SegmentDestination;
@@ -43,11 +45,13 @@ class GroupQueryBuilder {
      * @return
      */
     static Query<NodeResultSet> buildLocalPartQuery(GroupQueryInfo info) {
+        Query<NodeResultSet> query;
         if (GroupQueryInfoUtils.isPagingQuery(info)) {
-            return LocalGroupQueryBuilder.PAGING.buildLocalQuery(info);
+            query = LocalGroupQueryBuilder.PAGING.buildLocalQuery(info);
         } else {
-            return LocalGroupQueryBuilder.ALL.buildLocalQuery(info);
+            query = LocalGroupQueryBuilder.ALL.buildLocalQuery(info);
         }
+        return new GroupLocalPartQuery(info.getQueryId(), query);
     }
 
     /**
@@ -57,11 +61,13 @@ class GroupQueryBuilder {
      * @return
      */
     static Query<NodeResultSet> buildLocalAllQuery(GroupQueryInfo info) {
+        Query<NodeResultSet> query;
         if (GroupQueryInfoUtils.isPagingQuery(info)) {
-            return LocalGroupQueryBuilder.PAGING.buildPostQuery(LocalGroupQueryBuilder.PAGING.buildLocalQuery(info), info);
+            query = LocalGroupQueryBuilder.PAGING.buildPostQuery(LocalGroupQueryBuilder.PAGING.buildLocalQuery(info), info);
         } else {
-            return LocalGroupQueryBuilder.ALL.buildPostQuery(LocalGroupQueryBuilder.ALL.buildLocalQuery(info), info);
+            query = LocalGroupQueryBuilder.ALL.buildPostQuery(LocalGroupQueryBuilder.ALL.buildLocalQuery(info), info);
         }
+        return new GroupLocalAllQuery(info.getQueryId(), query);
     }
 
     /**

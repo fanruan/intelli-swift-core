@@ -1,10 +1,16 @@
 package com.fr.swift.result.serialize;
 
+import com.fr.swift.query.query.QueryInfo;
+import com.fr.swift.query.query.QueryRunnerProvider;
+import com.fr.swift.query.query.RemoteQueryInfoManager;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeUtils;
+import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.structure.Pair;
+import com.fr.swift.util.Crasher;
 
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -41,6 +47,17 @@ public class LocalAllNodeResultSet implements NodeResultSet<SwiftNode>, Serializ
         hasNextPage = false;
         if (originHasNextPage) {
             // TODO: 2018/6/14 向远程节点拉取下一页数据
+            Pair<QueryInfo, SegmentDestination> pair = RemoteQueryInfoManager.getInstance().get(queryId);
+            if (pair == null) {
+                Crasher.crash("invalid remote queryInfo!");
+            }
+            try {
+                resultSet = (NodeResultSet<SwiftNode>) QueryRunnerProvider.getInstance().executeRemoteQuery(pair.getKey(), pair.getValue());
+                hasNextPage = true;
+                init();
+            } catch (SQLException e) {
+                Crasher.crash(e);
+            }
         }
         return root;
     }

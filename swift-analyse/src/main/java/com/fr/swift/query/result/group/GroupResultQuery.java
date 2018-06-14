@@ -1,7 +1,7 @@
 package com.fr.swift.query.result.group;
 
-import com.fr.swift.query.Query;
 import com.fr.swift.query.aggregator.Aggregator;
+import com.fr.swift.query.query.Query;
 import com.fr.swift.result.ChainedNodeMergeResultSet;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;

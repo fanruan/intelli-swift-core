@@ -1,6 +1,5 @@
 package com.fr.swift.query.info.group;
 
-import com.fr.swift.query.QueryType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.info.AbstractQueryInfo;
 import com.fr.swift.query.info.element.dimension.Dimension;
@@ -8,6 +7,7 @@ import com.fr.swift.query.info.element.dimension.DimensionInfo;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.element.target.TargetInfo;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
+import com.fr.swift.query.query.QueryType;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.source.SourceKey;
