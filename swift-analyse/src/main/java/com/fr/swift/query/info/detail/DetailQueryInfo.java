@@ -88,7 +88,7 @@ public class DetailQueryInfo extends AbstractQueryInfo<DetailResultSet> {
 
     protected class DetailSortComparator implements Comparator<Row> {
 
-        private final SwiftSegmentManager localSegmentProvider = SwiftContext.getInstance().getBean("LocalSegmentProvider", SwiftSegmentManager.class);
+        private final SwiftSegmentManager localSegmentProvider = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class);
         private List<Column> columns;
 
         public DetailSortComparator() {

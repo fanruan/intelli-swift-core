@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:property-placeholder location="classpath:rpc.properties"/>
+
+    <context:component-scan base-package="com.fr.swift.rpc.service"/>
+    <context:component-scan base-package="com.fr.swift.service.listener"/>
+    <context:component-scan base-package="com.fr.swift.service"/>
+    <context:component-scan base-package="com.fr.swift.config"/>
+
+    <bean id="localSegmentProvider" class="com.fr.swift.manager.LocalSegmentProvider"/>
+    <bean class="com.fr.swift.manager.LocalDataOperatorProvider"/>
+
+    <bean class="com.fr.swift.property.SwiftProperty"/>
+    <bean id="serviceRegistry" class="com.fr.swift.rpc.registry.SimpleServiceRegistry"/>
+    <bean id="serviceDiscovery" class="com.fr.swift.rpc.registry.SimpleServiceDiscovery"/>
+    <bean id="rpcServer" class="com.fr.swift.rpc.server.RpcServer"/>
+
+</beans>
