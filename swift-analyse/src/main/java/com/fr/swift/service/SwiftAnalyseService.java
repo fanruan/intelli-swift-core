@@ -23,7 +23,6 @@ import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.selector.ProxySelector;
-import com.fr.swift.source.SerializableResultSet;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
@@ -65,7 +64,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     }
 
     @Override
-    public SerializableResultSet getRemoteQueryResult(QueryInfo info, SegmentDestination remoteURI) {
+    public <T extends SwiftResultSet> T getRemoteQueryResult(QueryInfo<T> info, SegmentDestination remoteURI) {
         final SwiftResultSet[] resultSet = new SwiftResultSet[1];
         try {
             String address = remoteURI.getAddress();
@@ -93,7 +92,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
         } catch (Exception e) {
             LOGGER.error("Query remote node error! ", e);
         }
-        return (SerializableResultSet) resultSet[0];
+        return (T) resultSet[0];
     }
 
     @Override
