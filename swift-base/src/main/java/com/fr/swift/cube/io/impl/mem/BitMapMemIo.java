@@ -8,8 +8,5 @@ import com.fr.swift.cube.io.output.BitMapWriter;
  * @author anchore
  * @date 2017/11/23
  */
-public class BitMapMemIo extends BaseObjectMemIo<ImmutableBitMap> implements BitMapReader, BitMapWriter {
-    public BitMapMemIo() {
-        mem = new ImmutableBitMap[DEFAULT_CAPACITY];
-    }
+public class BitMapMemIo extends SwiftObjectMemIo<ImmutableBitMap> implements BitMapReader, BitMapWriter {
 }

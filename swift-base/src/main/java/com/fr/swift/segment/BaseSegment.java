@@ -90,7 +90,7 @@ public abstract class BaseSegment implements Segment {
         }
     }
 
-    private static Column<?> newColumn(IResourceLocation location, ClassType classType) {
+    protected Column<?> newColumn(IResourceLocation location, ClassType classType) {
         switch (classType) {
             case INTEGER:
             case LONG:
@@ -102,8 +102,8 @@ public abstract class BaseSegment implements Segment {
             case STRING:
                 return new StringColumn(location);
             default:
+                return Crasher.crash(String.format("cannot new correct column by class type: %s", classType));
         }
-        return Crasher.crash(String.format("cannot new correct column by class type: %s", classType));
     }
 
     private ClassType getClassType(String name) throws SwiftMetaDataException {

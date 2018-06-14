@@ -19,12 +19,10 @@ public class ClusterSwiftRegister extends AbstractSwiftRegister {
 
     @Override
     public void serviceRegister() {
-
-//        SwiftRpcService.getInstance().startClientService();
         SwiftRpcService.getInstance().startServerService();
 
         if (ClusterNodeManager.getInstance().isMaster()) {
-            new ClusterSwiftServerService().start();
+            ClusterSwiftServerService.getInstance().start();
             masterLocalServiceRegister();
         } else {
             remoteServiceRegister();
@@ -33,11 +31,6 @@ public class ClusterSwiftRegister extends AbstractSwiftRegister {
 
     @Override
     public void serviceUnregister() {
-        try {
-            SwiftRpcService.getInstance().stopClientService();
-        } catch (Exception e) {
-            LOGGER.error(e);
-        }
         try {
             SwiftRpcService.getInstance().stopServerService();
         } catch (Exception e) {

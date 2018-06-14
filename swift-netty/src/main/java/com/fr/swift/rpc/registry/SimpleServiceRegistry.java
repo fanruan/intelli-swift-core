@@ -1,5 +1,7 @@
 package com.fr.swift.rpc.registry;
 
+import com.fr.third.springframework.stereotype.Service;
+
 /**
  * This class created on 2018/6/7
  *
@@ -7,6 +9,7 @@ package com.fr.swift.rpc.registry;
  * @description
  * @since Advanced FineBI 5.0
  */
+@Service("serviceRegistry")
 public class SimpleServiceRegistry implements ServiceRegistry {
 
     @Override

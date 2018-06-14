@@ -1,6 +1,5 @@
 package com.fr.swift.segment.column.impl.base;
 
-import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.test.TestIo;
 import org.junit.Assert;
@@ -31,13 +30,14 @@ public abstract class BaseDictColumnTest<T> extends TestIo {
             dictColumn.putValue(i, values[i]);
         }
         dictColumn.putSize(values.length);
-        reset(dictColumn);
+        dictColumn.release();
 
         dictColumn = getDictColumn();
         for (int i = 1; i < values.length; i++) {
             Assert.assertEquals(i, dictColumn.getIndex(values[i]));
             Assert.assertEquals(values[i], dictColumn.getValue(i));
         }
+        dictColumn.release();
     }
 
     @Test
@@ -45,10 +45,11 @@ public abstract class BaseDictColumnTest<T> extends TestIo {
         DictionaryEncodedColumn<T> dictColumn = getDictColumn();
         int size = r.nextInt(1000000000);
         dictColumn.putSize(size);
-        reset(dictColumn);
+        dictColumn.release();
 
         dictColumn = getDictColumn();
         Assert.assertEquals(size, dictColumn.size());
+        dictColumn.release();
     }
 
     @Test
@@ -59,20 +60,12 @@ public abstract class BaseDictColumnTest<T> extends TestIo {
         for (int i = 0; i < indices.length; i++) {
             dictColumn.putIndex(i, indices[i]);
         }
-        reset(dictColumn);
+        dictColumn.release();
 
         dictColumn = getDictColumn();
         for (int i = 0; i < indices.length; i++) {
             Assert.assertEquals(indices[i], dictColumn.getIndexByRow(i));
         }
+        dictColumn.release();
     }
-
-    /**
-     * release之后，discovery还保留着，清一遍，免得影响别的test方法
-     */
-    private static <T> void reset(DictionaryEncodedColumn<T> column) {
-        column.release();
-        ResourceDiscovery.getInstance().clear();
-    }
-
 }

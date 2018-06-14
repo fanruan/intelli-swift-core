@@ -1,13 +1,8 @@
 package com.fr.swift.proxy;
 
 import com.fr.swift.Invoker;
-import com.fr.swift.ProxyFactory;
 import com.fr.swift.URL;
-import com.fr.swift.invoker.InvokerInvocationHandler;
 import com.fr.swift.invoker.SwiftInvoker;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
 
 /**
  * This class created on 2018/5/26

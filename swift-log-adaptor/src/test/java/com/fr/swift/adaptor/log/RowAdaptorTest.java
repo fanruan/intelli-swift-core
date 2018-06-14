@@ -25,7 +25,7 @@ public class RowAdaptorTest {
 
     @Test
     public void applyRowToLog() throws Exception {
-        Row row = new ListBasedRow(Arrays.<Object>asList(10L, 100L, 1000D, -100D, "qwe", System.currentTimeMillis(), System.currentTimeMillis(), 0L, 192L));
+        Row row = new ListBasedRow(Arrays.<Object>asList(10L, 100L, 1000D, -100D, "qwe", 100L, 100L, 0L, 195L));
 
         Function<Row, A> adapter = new DecisionRowAdaptor<A>(A.class, new SwiftMetaDataBean("A",
                 Arrays.<SwiftMetaDataColumn>asList(

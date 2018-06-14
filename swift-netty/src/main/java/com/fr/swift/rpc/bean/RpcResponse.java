@@ -13,7 +13,7 @@ public class RpcResponse implements Serializable {
 
     private static final long serialVersionUID = -2376912555513832143L;
     private String requestId;
-    private Exception exception;
+    private Throwable exception;
     private Object result;
 
     public boolean hasException() {
@@ -32,7 +32,7 @@ public class RpcResponse implements Serializable {
         return exception;
     }
 
-    public void setException(Exception exception) {
+    public void setException(Throwable exception) {
         this.exception = exception;
     }
 
@@ -43,4 +43,9 @@ public class RpcResponse implements Serializable {
     public void setResult(Object result) {
         this.result = result;
     }
+
+    public boolean isError() {
+        return exception != null;
+    }
+
 }

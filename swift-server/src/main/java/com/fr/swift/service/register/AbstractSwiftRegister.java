@@ -10,9 +10,8 @@ import com.fr.swift.frrpc.SwiftClusterService;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
-import com.fr.swift.rpc.url.RPCDestination;
-import com.fr.swift.rpc.url.RPCUrl;
 import com.fr.swift.selector.ProxySelector;
+import com.fr.swift.selector.UrlSelector;
 import com.fr.swift.service.SwiftAnalyseService;
 import com.fr.swift.service.SwiftHistoryService;
 import com.fr.swift.service.SwiftIndexingService;
@@ -56,14 +55,13 @@ public abstract class AbstractSwiftRegister implements SwiftRegister {
 
         RemoteServiceSender remoteServiceSender = RemoteServiceSender.getInstance();
 
-        //fixme url和destination也通过selector来选择，这样构造proxy只需要关注构造的对象和接口。
         List<SwiftServiceInfoBean> swiftServiceInfoBeans = serviceInfoService.getServiceInfoByService(SwiftClusterService.SERVICE);
         SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
-        URL url = new RPCUrl(new RPCDestination(swiftServiceInfoBean.getServiceInfo()));
+        URL url = UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
         SwiftServiceListenerHandler senderProxy = proxyFactory.getProxy(remoteServiceSender, SwiftServiceListenerHandler.class, url);
 
         SwiftHistoryService historyService = SwiftHistoryService.getInstance();
-        historyService.setId(((SwiftProperty) SwiftContext.getInstance().getRpcContext().getBean("swiftProperty")).getRpcAddress());
+        historyService.setId(SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class).getRpcAddress());
         LOGGER.info("begain to register " + historyService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + "!");
         senderProxy.registerService(historyService);
         LOGGER.info("register " + historyService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + " succeed!");

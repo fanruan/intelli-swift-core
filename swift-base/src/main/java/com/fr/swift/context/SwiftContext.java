@@ -1,7 +1,6 @@
 package com.fr.swift.context;
 
 import com.fr.third.springframework.context.ApplicationContext;
-import com.fr.third.springframework.context.annotation.AnnotationConfigApplicationContext;
 import com.fr.third.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
@@ -11,31 +10,8 @@ import com.fr.third.springframework.context.support.ClassPathXmlApplicationConte
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public class SwiftContext extends AnnotationConfigApplicationContext {
-    private static final SwiftContext INSTANCE = new SwiftContext();
-
-    //fixme 临时处理
-    private ApplicationContext rpcContext;
-
-    private SwiftContext() {
-        rpcContext = new ClassPathXmlApplicationContext("spring.xml");
-    }
-
-    public static SwiftContext getInstance() {
-        return INSTANCE;
-    }
-
-    public ApplicationContext getRpcContext() {
-        return rpcContext;
-    }
-
+public class SwiftContext extends ClassPathXmlApplicationContext {
     public static void init() {
-        init("com.fr.swift");
-    }
-
-    private boolean refreshed = false;
-
-    public static void init(String... packages) {
         if (INSTANCE.refreshed) {
             return;
         }
@@ -43,10 +19,21 @@ public class SwiftContext extends AnnotationConfigApplicationContext {
             if (INSTANCE.refreshed) {
                 return;
             }
-            INSTANCE.scan(packages);
+            INSTANCE.setConfigLocation("spring.xml");
             INSTANCE.refresh();
 
             INSTANCE.refreshed = true;
         }
+    }
+
+    private static final SwiftContext INSTANCE = new SwiftContext();
+
+    private boolean refreshed = false;
+
+    private SwiftContext() {
+    }
+
+    public static ApplicationContext getInstance() {
+        return INSTANCE;
     }
 }

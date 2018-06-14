@@ -14,4 +14,14 @@ public interface ProxyFactory {
     <T> Invoker<T> getInvoker(T proxy, Class<T> type, URL url);
 
     <T> T getProxy(T proxy, Class<T> type, URL url);
+
+    /**
+     * @param proxy
+     * @param type
+     * @param url
+     * @param sync  同步异步执行标志
+     * @param <T>
+     * @return
+     */
+    <T> Invoker<T> getInvoker(T proxy, Class<T> type, URL url, boolean sync);
 }

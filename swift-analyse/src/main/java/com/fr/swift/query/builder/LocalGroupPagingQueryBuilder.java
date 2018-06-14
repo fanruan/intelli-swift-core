@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class LocalGroupPagingQueryBuilder extends AbstractLocalGroupQueryBuilder {
 
-    private final SwiftSegmentManager localSegmentProvider = SwiftContext.getInstance().getBean("LocalSegmentProvider", SwiftSegmentManager.class);
+    private final SwiftSegmentManager localSegmentProvider = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class);
 
     @Override
     public Query<NodeResultSet> buildPostQuery(ResultQuery<NodeResultSet> query, GroupQueryInfo info) {
