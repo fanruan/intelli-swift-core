@@ -3,6 +3,7 @@ package com.fr.swift.service.handler.history.rule;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
+import com.fr.swift.service.HistoryService;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public interface DataSyncRule {
                         if (destinations.get(s) == null) {
                             destinations.put(s, new ArrayList<SegmentDestination>());
                         }
-                        destinations.get(s).add(new SegmentDestinationImpl(clusterId, segmentKey.getUri(), segmentKey.getOrder()));
+                        destinations.get(s).add(new SegmentDestinationImpl(clusterId, segmentKey.getUri(), segmentKey.getOrder(), HistoryService.class, "historyQuery"));
                         result.get(clusterId).add(segmentKey.getUri());
                     }
                     iterator.remove();
@@ -94,7 +95,7 @@ public interface DataSyncRule {
                     if (null == destinations.get(sourceKey)) {
                         destinations.put(sourceKey, new ArrayList<SegmentDestination>());
                     }
-                    destinations.get(sourceKey).add(new SegmentDestinationImpl(historyNode, segmentKey.getUri(), segmentKey.getOrder()));
+                    destinations.get(sourceKey).add(new SegmentDestinationImpl(historyNode, segmentKey.getUri(), segmentKey.getOrder(), HistoryService.class, "historyQuery"));
                     result.get(sourceKey).get(historyNode).incrementAndGet();
                     List<SegmentKey> newSegments = needLoad.get(sourceKey);
                     if (null != newSegments && newSegments.contains(segmentKey)) {

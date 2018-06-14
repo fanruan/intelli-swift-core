@@ -32,4 +32,5 @@ public interface QueryRunner {
      * @throws SQLException
      */
     <T extends SwiftResultSet> T getRemoteQueryResult(QueryInfo<T> info, SegmentDestination remoteURI) throws SQLException;
+
 }
