@@ -4,21 +4,27 @@ import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.QueryInfo;
 import com.fr.swift.query.builder.QueryBuilder;
+import com.fr.swift.rpc.annotation.RpcMethod;
+import com.fr.swift.rpc.annotation.RpcService;
+import com.fr.swift.rpc.annotation.RpcServiceType;
 import com.fr.swift.segment.Incrementer;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.recover.SwiftSegmentRecovery;
 import com.fr.swift.source.SerializableResultSet;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.util.concurrent.CommonExecutor;
 
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * @author pony
  * @date 2017/10/10
  */
+@RpcService(type = RpcServiceType.CLIENT_SERVICE, value = RealtimeService.class)
 public class SwiftRealtimeService extends AbstractSwiftService implements RealtimeService, Serializable {
 
     @Override
@@ -29,16 +35,19 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     }
 
     @Override
+    @RpcMethod(methodName = "merge")
     public void merge(List<SegmentKey> tableKeys) {
         SwiftLoggers.getLogger().info("merge");
     }
 
     @Override
+    @RpcMethod(methodName = "recover")
     public void recover(List<SegmentKey> tableKeys) {
         SwiftLoggers.getLogger().info("recover");
     }
 
     @Override
+    @RpcMethod(methodName = "realTimeQuery")
     public SerializableResultSet query(QueryInfo queryInfo) throws SQLException {
         SwiftResultSet resultSet = QueryBuilder.buildQuery(queryInfo).getQueryResult();
         return new SerializableResultSet(resultSet);
@@ -46,24 +55,26 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
     @Override
     public boolean start() throws SwiftServiceException {
-        boolean succ = true;
-        succ &= super.start();
+        super.start();
 
-//        FRProxyCache.registerInstance(RealtimeService.class, this);
+        recover0();
 
-        succ &= recover0();
-        return succ;
+        return true;
     }
 
-    private static boolean recover0() {
-        try {
-            // 恢复所有realtime块
-            SwiftSegmentRecovery.getInstance().recoverAll();
-            return true;
-        } catch (Exception e) {
-//            SwiftLoggers.getLogger().error(e);
-            return false;
-        }
+    private static void recover0() {
+        CommonExecutor.get().submit(new Callable<Boolean>() {
+            @Override
+            public Boolean call() {
+                try {
+                    // 恢复所有realtime块
+                    SwiftSegmentRecovery.getInstance().recoverAll();
+                    return true;
+                } catch (Exception e) {
+                    return false;
+                }
+            }
+        });
     }
 
     @Override

@@ -22,7 +22,7 @@ public class ClusterSwiftRegister extends AbstractSwiftRegister {
         SwiftRpcService.getInstance().startServerService();
 
         if (ClusterSelector.getInstance().getFactory().isMaster()) {
-            new ClusterSwiftServerService().start();
+            ClusterSwiftServerService.getInstance().start();
             masterLocalServiceRegister();
         } else {
             remoteServiceRegister();
