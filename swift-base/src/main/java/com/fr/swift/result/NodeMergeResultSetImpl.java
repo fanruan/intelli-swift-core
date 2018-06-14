@@ -2,8 +2,6 @@ package com.fr.swift.result;
 
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.structure.iterator.Tree2RowIterator;
-import com.fr.swift.util.function.Function;
 
 import java.sql.SQLException;
 import java.util.Iterator;
@@ -18,7 +16,7 @@ public class NodeMergeResultSetImpl<T extends GroupNode> implements NodeMergeRes
     private boolean hasNextPage = true;
     private GroupNode root;
     private List<Map<Integer, Object>> rowGlobalDictionaries;
-    private Iterator<List<SwiftNode>> tree2RowIterator;
+    private Iterator<Row> iterator;
 
     public NodeMergeResultSetImpl(GroupNode root, List<Map<Integer, Object>> rowGlobalDictionaries) {
         this.root = root;
@@ -49,21 +47,15 @@ public class NodeMergeResultSetImpl<T extends GroupNode> implements NodeMergeRes
 
     @Override
     public boolean next() throws SQLException {
-        if (tree2RowIterator == null) {
-            this.tree2RowIterator = new Tree2RowIterator<SwiftNode>(rowGlobalDictionaries.size(), root.getChildren().iterator(), new Function<SwiftNode, Iterator<SwiftNode>>() {
-                @Override
-                public Iterator<SwiftNode> apply(SwiftNode p) {
-                    return p.getChildren().iterator();
-                }
-            });
+        if (iterator == null) {
+            iterator = SwiftNodeUtils.node2RowIterator(root);
         }
-        return tree2RowIterator.hasNext();
+        return iterator.hasNext();
     }
 
     @Override
     public Row getRowData() throws SQLException {
-        List<SwiftNode> row = tree2RowIterator.next();
-        return SwiftNodeUtils.nodes2Row(row);
+        return iterator.next();
     }
 
     @Override

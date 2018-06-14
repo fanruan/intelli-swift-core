@@ -3,7 +3,7 @@ package com.fr.swift.query.post;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
-import com.fr.swift.result.FakeNodeResult;
+import com.fr.swift.result.FakeNodeResultSet;
 import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.SwiftNode;
@@ -59,7 +59,7 @@ public class RowSortQuery extends AbstractPostQuery<NodeResultSet> {
                 }));
             }
         };
-        return new FakeNodeResult(operator, resultSet);
+        return new FakeNodeResultSet(operator, resultSet);
     }
 
     private static void sortRow(final int dimensionSize, List<List<SwiftNode>> rows, final List<Sort> sorts) {

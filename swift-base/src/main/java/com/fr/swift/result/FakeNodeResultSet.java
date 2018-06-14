@@ -10,13 +10,13 @@ import java.util.List;
 /**
  * Created by Lyon on 2018/6/13.
  */
-public class FakeNodeResult implements NodeResultSet<SwiftNode> {
+public class FakeNodeResultSet implements NodeResultSet<SwiftNode> {
 
     private SwiftRowOperator<Row> operator;
     private NodeResultSet source;
     private Iterator<Row> rowIterator;
 
-    public FakeNodeResult(SwiftRowOperator<Row> operator, NodeResultSet source) {
+    public FakeNodeResultSet(SwiftRowOperator<Row> operator, NodeResultSet source) {
         this.operator = operator;
         this.source = source;
     }

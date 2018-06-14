@@ -3,8 +3,12 @@ package com.fr.swift.result;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
+import com.fr.swift.structure.iterator.MapperIterator;
+import com.fr.swift.structure.iterator.Tree2RowIterator;
+import com.fr.swift.util.function.Function;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -20,6 +24,21 @@ public class SwiftNodeUtils {
             tmp = tmp.getChild(0);
         }
         return size;
+    }
+
+    public static Iterator<Row> node2RowIterator(SwiftNode root) {
+        Iterator<List<SwiftNode>> iterator = new Tree2RowIterator<SwiftNode>(SwiftNodeUtils.getDimensionSize(root), root.getChildren().iterator(), new Function<SwiftNode, Iterator<SwiftNode>>() {
+            @Override
+            public Iterator<SwiftNode> apply(SwiftNode p) {
+                return p.getChildren().iterator();
+            }
+        });
+        return new MapperIterator<List<SwiftNode>, Row>(iterator, new Function<List<SwiftNode>, Row>() {
+            @Override
+            public Row apply(List<SwiftNode> p) {
+                return nodes2Row(p);
+            }
+        });
     }
 
     public static Row nodes2Row(List<SwiftNode> row) {

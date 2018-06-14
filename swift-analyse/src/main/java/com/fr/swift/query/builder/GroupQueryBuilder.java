@@ -28,8 +28,7 @@ class GroupQueryBuilder {
     static Query<NodeResultSet> buildQuery(GroupQueryInfo info) {
         SourceKey table = info.getTable();
         List<URI> uris = SegmentLocationProvider.getInstance().getSegmentLocationURI(table);
-//        if (info.isPagingQuery()) {
-        if (false) {
+        if (GroupQueryInfoUtils.isPagingQuery(info)) {
             return buildQuery(uris, info, LocalGroupQueryBuilder.PAGING);
         } else {
             return buildQuery(uris, info, LocalGroupQueryBuilder.ALL);
@@ -43,8 +42,7 @@ class GroupQueryBuilder {
      * @return
      */
     static Query<NodeResultSet> buildLocalPartQuery(GroupQueryInfo info) {
-        // TODO: 2018/6/5 区分是否能分页
-        if (false) {
+        if (GroupQueryInfoUtils.isPagingQuery(info)) {
             return LocalGroupQueryBuilder.PAGING.buildLocalQuery(info);
         } else {
             return LocalGroupQueryBuilder.ALL.buildLocalQuery(info);
@@ -58,8 +56,7 @@ class GroupQueryBuilder {
      * @return
      */
     static Query<NodeResultSet> buildLocalAllQuery(GroupQueryInfo info) {
-        // TODO: 2018/6/5 区分是否能分页
-        if (false) {
+        if (GroupQueryInfoUtils.isPagingQuery(info)) {
             return LocalGroupQueryBuilder.PAGING.buildPostQuery(LocalGroupQueryBuilder.PAGING.buildLocalQuery(info), info);
         } else {
             return LocalGroupQueryBuilder.ALL.buildPostQuery(LocalGroupQueryBuilder.ALL.buildLocalQuery(info), info);

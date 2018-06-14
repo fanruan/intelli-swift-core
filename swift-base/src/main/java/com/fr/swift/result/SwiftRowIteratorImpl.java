@@ -2,11 +2,7 @@ package com.fr.swift.result;
 
 import com.fr.swift.source.Row;
 import com.fr.swift.structure.iterator.IteratorUtils;
-import com.fr.swift.structure.iterator.MapperIterator;
-import com.fr.swift.structure.iterator.Tree2RowIterator;
-import com.fr.swift.util.function.Function;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -27,17 +23,7 @@ public class SwiftRowIteratorImpl implements SwiftRowIterator {
     }
 
     private static List<Row> createList(SwiftNode root) {
-        return IteratorUtils.iterator2List(new MapperIterator<List<SwiftNode>, Row>(new Tree2RowIterator<SwiftNode>(SwiftNodeUtils.getDimensionSize(root), root.getChildren().iterator(), new Function<SwiftNode, Iterator<SwiftNode>>() {
-            @Override
-            public Iterator<SwiftNode> apply(SwiftNode p) {
-                return p.getChildren().iterator();
-            }
-        }), new Function<List<SwiftNode>, Row>() {
-            @Override
-            public Row apply(List<SwiftNode> p) {
-                return SwiftNodeUtils.nodes2Row(p);
-            }
-        }));
+        return IteratorUtils.iterator2List(SwiftNodeUtils.node2RowIterator(root));
     }
 
     /**

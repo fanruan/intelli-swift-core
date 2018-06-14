@@ -35,7 +35,7 @@ public class NodeGroupByUtils {
      *
      * @param groupByInfo
      * @param metricInfo
-     * @param pageSize    Integer.MAX_VALUE为不分页
+     * @param pageSize  Integer.MAX_VALUE为不分页
      * @return
      */
     public static Iterator<NodeMergeResultSet<GroupNode>> groupBy(GroupByInfo groupByInfo, MetricInfo metricInfo, int pageSize) {

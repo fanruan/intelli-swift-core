@@ -2,12 +2,9 @@ package com.fr.swift.result;
 
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.structure.iterator.Tree2RowIterator;
-import com.fr.swift.util.function.Function;
 
 import java.sql.SQLException;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Created by pony on 2018/4/19.
@@ -16,7 +13,7 @@ public class NodeResultSetImpl<T extends SwiftNode> implements NodeResultSet {
 
     private SwiftNode node;
     private SwiftMetaData metaData;
-    private Iterator<List<SwiftNode>> iterator;
+    private Iterator<Row> iterator;
 
     public NodeResultSetImpl(SwiftNode node) {
         this.node = node;
@@ -45,19 +42,14 @@ public class NodeResultSetImpl<T extends SwiftNode> implements NodeResultSet {
     @Override
     public boolean next() throws SQLException {
         if (iterator == null) {
-            this.iterator = new Tree2RowIterator<SwiftNode>(SwiftNodeUtils.getDimensionSize(node), node.getChildren().iterator(), new Function<SwiftNode, Iterator<SwiftNode>>() {
-                @Override
-                public Iterator<SwiftNode> apply(SwiftNode p) {
-                    return p.getChildren().iterator();
-                }
-            });
+            iterator = SwiftNodeUtils.node2RowIterator(node);
         }
         return iterator.hasNext();
     }
 
     @Override
     public Row getRowData() throws SQLException {
-        return SwiftNodeUtils.nodes2Row(iterator.next());
+        return iterator.next();
     }
 
     @Override
