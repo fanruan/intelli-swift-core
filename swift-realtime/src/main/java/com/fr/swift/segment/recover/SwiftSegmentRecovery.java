@@ -10,6 +10,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.RealTimeSegmentImpl;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftDataOperatorProvider;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.operator.Inserter;
@@ -27,19 +28,37 @@ import java.util.List;
 public class SwiftSegmentRecovery implements SegmentRecovery {
     private SwiftDataOperatorProvider operators = SwiftContext.getInstance().getBean(SwiftDataOperatorProvider.class);
 
-    private SwiftSegmentManager manager = SwiftContext.getInstance().getBean(SwiftSegmentManager.class);
+    private SwiftSegmentManager localSegmentProvider = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class);
+
+    @Override
+    public void recoverAll() {
+        List<Table> tables;
+        try {
+            tables = SwiftDatabase.getInstance().getAllTables();
+            for (Table table : tables) {
+                recover(table.getSourceKey());
+            }
+        } catch (SQLException e) {
+            SwiftLoggers.getLogger().error(e);
+        }
+    }
 
     @Override
     public void recover(SourceKey tableKey) {
-        List<Segment> segs = getUnstoredSegments(tableKey);
-        for (Segment seg : segs) {
-            try {
-                Table table = SwiftDatabase.getInstance().getTable(tableKey);
-                Inserter insert = operators.getInserter(table, newRealtimeSegment(seg));
-                insert.insertData(new BackupResultSet(getBackupSegment(seg)));
-            } catch (Exception e) {
-                SwiftLoggers.getLogger().error(e);
+        recover(getUnstoredSegmentKeys(tableKey));
+    }
+
+    @Override
+    public void recover(List<SegmentKey> segmentKeys) {
+        try {
+            for (SegmentKey segKey : segmentKeys) {
+                Table table = SwiftDatabase.getInstance().getTable(segKey.getTable());
+                Segment realtimeSeg = newRealtimeSegment(localSegmentProvider.getSegment(segKey));
+                Inserter insert = operators.getInserter(table, realtimeSeg);
+                insert.insertData(new BackupResultSet(getBackupSegment(realtimeSeg)));
             }
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
         }
     }
 
@@ -53,28 +72,15 @@ public class SwiftSegmentRecovery implements SegmentRecovery {
         return new RealTimeSegmentImpl(realtimeSeg.getLocation(), realtimeSeg.getMetaData());
     }
 
-    private List<Segment> getUnstoredSegments(SourceKey tableKey) {
-        List<Segment> segs = manager.getSegment(tableKey),
-                unstoredSegs = new ArrayList<Segment>();
-        for (Segment seg : segs) {
-            if (seg.getLocation().getStoreType() == StoreType.MEMORY) {
-                unstoredSegs.add(seg);
+    private List<SegmentKey> getUnstoredSegmentKeys(SourceKey tableKey) {
+        List<SegmentKey> segKeys = localSegmentProvider.getSegmentKeys(tableKey);
+        List<SegmentKey> unstoredSegs = new ArrayList<SegmentKey>();
+        for (SegmentKey segKey : segKeys) {
+            if (segKey.getStoreType() == StoreType.MEMORY) {
+                unstoredSegs.add(segKey);
             }
         }
         return unstoredSegs;
-    }
-
-    @Override
-    public void recoverAll() {
-        List<Table> tables;
-        try {
-            tables = SwiftDatabase.getInstance().getAllTables();
-            for (Table table : tables) {
-                recover(table.getSourceKey());
-            }
-        } catch (SQLException e) {
-            SwiftLoggers.getLogger().error(e);
-        }
     }
 
     private static final SegmentRecovery INSTANCE = new SwiftSegmentRecovery();

@@ -10,10 +10,12 @@ import com.fr.swift.segment.recover.SwiftSegmentRecovery;
 import com.fr.swift.source.SerializableResultSet;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.util.concurrent.CommonExecutor;
 
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * @author pony
@@ -46,24 +48,26 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
     @Override
     public boolean start() throws SwiftServiceException {
-        boolean succ = true;
-        succ &= super.start();
+        super.start();
 
-//        FRProxyCache.registerInstance(RealtimeService.class, this);
+        recover0();
 
-        succ &= recover0();
-        return succ;
+        return true;
     }
 
-    private static boolean recover0() {
-        try {
-            // 恢复所有realtime块
-            SwiftSegmentRecovery.getInstance().recoverAll();
-            return true;
-        } catch (Exception e) {
-//            SwiftLoggers.getLogger().error(e);
-            return false;
-        }
+    private static void recover0() {
+        CommonExecutor.get().submit(new Callable<Boolean>() {
+            @Override
+            public Boolean call() {
+                try {
+                    // 恢复所有realtime块
+                    SwiftSegmentRecovery.getInstance().recoverAll();
+                    return true;
+                } catch (Exception e) {
+                    return false;
+                }
+            }
+        });
     }
 
     @Override
