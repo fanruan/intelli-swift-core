@@ -37,6 +37,7 @@ public abstract class BaseDictColumnTest<T> extends TestIo {
             Assert.assertEquals(i, dictColumn.getIndex(values[i]));
             Assert.assertEquals(values[i], dictColumn.getValue(i));
         }
+        dictColumn.release();
     }
 
     @Test
@@ -48,6 +49,7 @@ public abstract class BaseDictColumnTest<T> extends TestIo {
 
         dictColumn = getDictColumn();
         Assert.assertEquals(size, dictColumn.size());
+        dictColumn.release();
     }
 
     @Test
@@ -64,5 +66,6 @@ public abstract class BaseDictColumnTest<T> extends TestIo {
         for (int i = 0; i < indices.length; i++) {
             Assert.assertEquals(indices[i], dictColumn.getIndexByRow(i));
         }
+        dictColumn.release();
     }
 }
