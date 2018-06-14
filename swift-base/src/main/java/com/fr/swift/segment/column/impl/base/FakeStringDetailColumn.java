@@ -35,7 +35,9 @@ public class FakeStringDetailColumn implements DetailColumn<String> {
 
     @Override
     public void put(int row, String val) {
-        // val不判空，由上层判断，并写nullIndex
+        if (val == null) {
+            return;
+        }
         IntList list = map.get(val);
         if (list == null) {
             list = IntListFactory.createIntList();

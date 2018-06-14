@@ -4,7 +4,6 @@ import com.fr.swift.query.group.CustomGroupRule;
 import com.fr.swift.query.group.GroupOperator;
 import com.fr.swift.query.group.GroupRule;
 import com.fr.swift.segment.column.Column;
-import com.fr.swift.segment.column.impl.DateColumn;
 import com.fr.swift.segment.column.impl.SubDateColumn;
 import com.fr.swift.util.Crasher;
 
@@ -47,8 +46,7 @@ class PlainGroupOperator<Base, Derive> implements GroupOperator<Base, Derive> {
             case HOUR:
             case MINUTE:
             case SECOND:
-                DateColumn dateColumn = (DateColumn) column;
-                return (Column<Derive>) new SubDateColumn(dateColumn, rule.getGroupType());
+                return (Column<Derive>) new SubDateColumn(column, rule.getGroupType());
             case NONE:
                 return (Column<Derive>) column;
             default:

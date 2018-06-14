@@ -100,10 +100,8 @@ public class IncreaseFlowControlTest extends BaseTest {
                 });
                 count++;
             }
-        } catch (ArrayIndexOutOfBoundsException e) {
-            assertTrue(true);
+        } catch (IndexOutOfBoundsException e) {
         }
-        assertTrue(true);
     }
 
     @Test

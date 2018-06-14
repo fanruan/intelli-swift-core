@@ -12,7 +12,6 @@ import com.fr.swift.segment.RealTimeSegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftDataOperatorProvider;
 import com.fr.swift.segment.SwiftSegmentManager;
-import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
@@ -37,12 +36,7 @@ public class SwiftSegmentRecovery implements SegmentRecovery {
             try {
                 Table table = SwiftDatabase.getInstance().getTable(tableKey);
                 Inserter insert = operators.getInserter(table, newRealtimeSegment(seg));
-                List<Segment> newSegs = insert.insertData(new BackupResultSet(getBackupSegment(seg)));
-                for (String columnName : insert.getFields()) {
-                    ColumnKey columnKey = new ColumnKey(columnName);
-                    operators.getColumnIndexer(table, columnKey, newSegs).buildIndex();
-                    operators.getColumnDictMerger(table, columnKey, newSegs).mergeDict();
-                }
+                insert.insertData(new BackupResultSet(getBackupSegment(seg)));
             } catch (Exception e) {
                 SwiftLoggers.getLogger().error(e);
             }

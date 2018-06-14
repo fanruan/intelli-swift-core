@@ -1,6 +1,7 @@
 package com.fr.swift.segment.column.impl.base;
 
 import com.fr.swift.cube.io.BuildConf;
+import com.fr.swift.cube.io.IOConstant;
 import com.fr.swift.cube.io.Types.DataType;
 import com.fr.swift.cube.io.Types.IoType;
 import com.fr.swift.cube.io.input.IntReader;
@@ -28,7 +29,7 @@ public class IntDetailColumn extends BaseDetailColumn<Integer> {
     @Override
     public void put(int pos, Integer val) {
         initDetailWriter();
-        detailWriter.put(pos, val);
+        detailWriter.put(pos, val == null ? IOConstant.NULL_INT : val);
     }
 
     @Override

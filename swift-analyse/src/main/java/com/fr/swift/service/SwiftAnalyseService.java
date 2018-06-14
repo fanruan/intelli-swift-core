@@ -2,23 +2,20 @@ package com.fr.swift.service;
 
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.query.QueryInfo;
-import com.fr.swift.query.QueryRunner;
 import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.query.builder.QueryBuilder;
+import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationInfo;
-import com.fr.swift.source.SourceKey;
+import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.source.SwiftResultSet;
 
-import java.io.Serializable;
-import java.net.URI;
 import java.sql.SQLException;
-import java.util.List;
 
 /**
  * Created by pony on 2017/10/12.
  * 分析服务
  */
-public class SwiftAnalyseService extends AbstractSwiftService implements QueryRunner, SegmentLocationManager, Serializable {
+public class SwiftAnalyseService extends AbstractSwiftService implements AnalyseService {
 
     private static final long serialVersionUID = 841582089735823794L;
 
@@ -47,18 +44,15 @@ public class SwiftAnalyseService extends AbstractSwiftService implements QueryRu
     }
 
     @Override
-    public <T extends SwiftResultSet> T getRemoteQueryResult(QueryInfo<T> info, URI remoteURI) {
+    public <T extends SwiftResultSet> T getRemoteQueryResult(QueryInfo<T> info, SegmentDestination remoteURI) {
         // TODO: 2018/5/31 远程调用history或者realTime节点上的服务进行查询
+        String node = remoteURI.getNode();
+
         return null;
     }
 
     @Override
-    public List<URI> getSegmentLocationURI(SourceKey table) {
-        return SegmentLocationProvider.getInstance().getSegmentLocationURI(table);
-    }
-
-    @Override
-    public void updateSegmentInfo(SegmentLocationInfo locationInfo) {
-        SegmentLocationProvider.getInstance().updateSegmentInfo(locationInfo);
+    public void updateSegmentInfo(SegmentLocationInfo locationInfo, SegmentLocationInfo.UpdateType updateType) {
+        SegmentLocationProvider.getInstance().updateSegmentInfo(locationInfo, updateType);
     }
 }
