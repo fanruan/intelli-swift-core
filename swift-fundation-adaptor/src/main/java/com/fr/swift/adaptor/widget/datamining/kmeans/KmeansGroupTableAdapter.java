@@ -53,7 +53,7 @@ public class KmeansGroupTableAdapter extends SwiftAlgorithmResultAdapter<KmeansB
         GroupNode resultRootNode = addFirstDimension(rootNode, kmeans, info);
         GroupNodeAggregateUtils.aggregate(NodeType.GROUP, dimensionInfo.getDimensions().length, resultRootNode, targetInfo.getResultAggregators());
 
-        return new NodeMergeResultSetImpl(resultRootNode, new ArrayList<Map<Integer, Object>>(), new ArrayList<Aggregator>());
+        return new NodeMergeResultSetImpl(resultRootNode, new ArrayList<Map<Integer, Object>>());
 
     }
 
@@ -87,9 +87,8 @@ public class KmeansGroupTableAdapter extends SwiftAlgorithmResultAdapter<KmeansB
      * @param rootNode 分组表根节点
      * @param kmeans   聚类
      * @return 添加后的根节点
-     * @throws Exception
      */
-    private GroupNode addFirstDimension(GroupNode rootNode, KmeansPredict kmeans, GroupQueryInfoImpl info) throws Exception {
+    private GroupNode addFirstDimension(GroupNode rootNode, KmeansPredict kmeans, GroupQueryInfoImpl info) {
         GroupNode resultRootNode = new GroupNode(-1, null);
         Map<Integer, GroupNode> childNodes = new HashMap<Integer, GroupNode>(kmeans.getCluster());
         for (int i = 0; i < rootNode.getChildrenSize(); i++) {

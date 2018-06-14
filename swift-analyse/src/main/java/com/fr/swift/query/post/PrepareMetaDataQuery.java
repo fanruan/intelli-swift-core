@@ -24,6 +24,6 @@ public class PrepareMetaDataQuery extends AbstractPostQuery<NodeResultSet> {
     @Override
     public NodeResultSet getQueryResult() throws SQLException {
         SwiftMetaData metaData = SwiftMetaDataUtils.createMetaData(queryInfo);
-        return new NodeResultSetImpl(queryInfo.getDimensions().size(), query.getQueryResult().getNode(), metaData);
+        return new NodeResultSetImpl(query.getQueryResult().getNode(), metaData);
     }
 }

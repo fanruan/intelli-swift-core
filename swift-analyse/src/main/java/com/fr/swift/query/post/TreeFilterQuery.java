@@ -1,11 +1,14 @@
 package com.fr.swift.query.post;
 
+import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.query.filter.match.NodeFilter;
+import com.fr.swift.result.ChainedNodeResultSet;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeMergeResultSet;
-import com.fr.swift.result.NodeMergeResultSetImpl;
 import com.fr.swift.result.NodeResultSet;
+import com.fr.swift.result.SwiftNode;
+import com.fr.swift.result.SwiftNodeOperator;
+import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.result.node.GroupNodeAggregateUtils;
 import com.fr.swift.result.node.NodeType;
 
@@ -19,6 +22,8 @@ public class TreeFilterQuery extends AbstractPostQuery<NodeResultSet> {
 
     private PostQuery<NodeResultSet> query;
     private List<MatchFilter> matchFilterList;
+    // TODO: 2018/6/13 这个遍要把用于明细的聚合器传过来
+    private List<Aggregator> aggregators;
 
     public TreeFilterQuery(PostQuery<NodeResultSet> query, List<MatchFilter> matchFilterList) {
         this.query = query;
@@ -27,12 +32,17 @@ public class TreeFilterQuery extends AbstractPostQuery<NodeResultSet> {
 
     @Override
     public NodeResultSet getQueryResult() throws SQLException {
-        NodeMergeResultSet<GroupNode> mergeResult = (NodeMergeResultSet<GroupNode>) query.getQueryResult();
-        // 先做节点合计，再做过滤
-        GroupNodeAggregateUtils.aggregateMetric(NodeType.GROUP, mergeResult.getRowGlobalDictionaries().size(),
-                (GroupNode) mergeResult.getNode(), mergeResult.getAggregators());
-        NodeFilter.filter(mergeResult.getNode(), matchFilterList);
-        return new NodeMergeResultSetImpl((GroupNode) mergeResult.getNode(),
-                mergeResult.getRowGlobalDictionaries(), mergeResult.getAggregators());
+        NodeResultSet<SwiftNode> mergeResult = (NodeResultSet<SwiftNode>) query.getQueryResult();
+        SwiftNodeOperator<SwiftNode> operator = new SwiftNodeOperator<SwiftNode>() {
+            @Override
+            public SwiftNode operate(SwiftNode... node) {
+                // 先做节点合计，再做过滤
+                GroupNodeAggregateUtils.aggregateMetric(NodeType.GROUP, SwiftNodeUtils.getDimensionSize(node[0]),
+                        (GroupNode) node[0], aggregators);
+                NodeFilter.filter(node[0], matchFilterList);
+                return node[0];
+            }
+        };
+        return new ChainedNodeResultSet(operator, mergeResult);
     }
 }
