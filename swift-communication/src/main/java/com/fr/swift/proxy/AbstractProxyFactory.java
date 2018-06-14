@@ -33,4 +33,9 @@ public abstract class AbstractProxyFactory implements ProxyFactory {
         T t = (T) getProxy(invoker);
         return t;
     }
+
+    @Override
+    public <T> Invoker<T> getInvoker(T proxy, Class<T> type, URL url, boolean sync) {
+        return null;
+    }
 }

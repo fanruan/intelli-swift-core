@@ -8,10 +8,10 @@ import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.info.group.RemoteQueryInfoImpl;
 import com.fr.swift.query.remote.RemoteQueryImpl;
 import com.fr.swift.result.DetailResultSet;
-import com.fr.swift.service.SegmentLocationProvider;
+import com.fr.swift.segment.SegmentDestination;
+import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.source.SourceKey;
 
-import java.net.URI;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,12 +66,13 @@ class DetailQueryBuilder {
 
     private static Query<DetailResultSet> buildQuery(DetailQueryInfo info, LocalDetailQueryBuilder builder) throws SQLException{
         SourceKey table = info.getTable();
-        List<URI> uris = SegmentLocationProvider.getInstance().getSegmentLocationURI(table);
+        // TODO 这边先直接写成History
+        List<SegmentDestination> uris = SegmentLocationProvider.getInstance().getHistorySegmentLocation(table);
         if (uris == null || uris.isEmpty()){
             throw new SwiftSegmentAbsentException("no such table");
         }
         if (uris.size() == 1) {
-            if (QueryBuilder.isLocalURI(uris.get(0))) {
+            if (!uris.get(0).isRemote()) {
                 return builder.buildLocalQuery(info);
             } else {
                 QueryInfo<DetailResultSet> queryInfo = new RemoteQueryInfoImpl<DetailResultSet>(QueryType.LOCAL_ALL, info);
@@ -79,8 +80,8 @@ class DetailQueryBuilder {
             }
         }
         List<Query<DetailResultSet>> queries = new ArrayList<Query<DetailResultSet>>();
-        for (URI uri : uris){
-            if (QueryBuilder.isLocalURI(uri)){
+        for (SegmentDestination uri : uris) {
+            if (!uri.isRemote()) {
                 queries.add(builder.buildLocalQuery(info));
             } else {
                 QueryInfo<DetailResultSet> queryInfo = new RemoteQueryInfoImpl<DetailResultSet>(QueryType.LOCAL_PART, info);

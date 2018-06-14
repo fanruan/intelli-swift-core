@@ -72,7 +72,10 @@
             <artifactId>swift-netty</artifactId>
             <version>5.0-FEATURE-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.finebi</groupId>
+            <artifactId>swift-communication</artifactId>
+            <version>5.0-FEATURE-SNAPSHOT</version>
+        </dependency>
     </dependencies>
-
-
 </project>
