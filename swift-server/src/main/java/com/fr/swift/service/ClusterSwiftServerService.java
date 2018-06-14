@@ -38,6 +38,17 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
 
     private SwiftServiceInfoService serviceInfoService = SwiftContext.getInstance().getBean(SwiftServiceInfoService.class);
 
+    private ClusterSwiftServerService() {
+    }
+
+    public static ClusterSwiftServerService getInstance() {
+        return SingletonHolder.instance;
+    }
+
+    private static class SingletonHolder {
+        private static ClusterSwiftServerService instance = new ClusterSwiftServerService();
+    }
+
     @Override
     public boolean start() {
         super.start();
