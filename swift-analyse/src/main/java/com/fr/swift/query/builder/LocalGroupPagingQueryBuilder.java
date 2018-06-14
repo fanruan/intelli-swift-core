@@ -1,14 +1,13 @@
 package com.fr.swift.query.builder;
 
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.query.Query;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.group.info.GroupByInfo;
+import com.fr.swift.query.group.info.GroupByInfoImpl;
 import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.query.group.info.MetricInfoImpl;
-import com.fr.swift.query.group.info.PageGroupByInfo;
-import com.fr.swift.query.group.info.PageGroupInfoImpl;
 import com.fr.swift.query.group.info.cursor.AllCursor;
 import com.fr.swift.query.group.info.cursor.ExpanderImpl;
 import com.fr.swift.query.group.info.cursor.ExpanderType;
@@ -16,6 +15,7 @@ import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.post.group.GroupPostQuery;
+import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.ResultQuery;
 import com.fr.swift.query.segment.group.GroupPagingSegmentQuery;
 import com.fr.swift.query.sort.Sort;
@@ -53,7 +53,7 @@ public class LocalGroupPagingQueryBuilder extends AbstractLocalGroupQueryBuilder
             List<Aggregator> aggregators = getAggregators(metrics);
             DetailFilter rowDetailFilters = FilterBuilder.buildDetailFilter(segment, info.getFilterInfo());
             List<Sort> rowSorts = LocalGroupAllQueryBuilder.getSegmentIndexSorts(dimensions);
-            PageGroupByInfo rowGroupByInfo = new PageGroupInfoImpl(dimensionColumns, rowDetailFilters, rowSorts, new ExpanderImpl(ExpanderType.ALL_EXPANDER, new HashSet<RowIndexKey<String[]>>()), new AllCursor());
+            GroupByInfo rowGroupByInfo = new GroupByInfoImpl(dimensionColumns, rowDetailFilters, rowSorts, new ExpanderImpl(ExpanderType.ALL_EXPANDER, new HashSet<RowIndexKey<String[]>>()), new AllCursor());
             MetricInfo metricInfo = new MetricInfoImpl(metricColumns, aggregators, metrics.size());
             queries.add(new GroupPagingSegmentQuery(rowGroupByInfo, metricInfo));
         }

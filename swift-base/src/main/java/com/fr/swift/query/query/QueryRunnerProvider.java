@@ -1,4 +1,4 @@
-package com.fr.swift.query;
+package com.fr.swift.query.query;
 
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.source.SwiftResultSet;

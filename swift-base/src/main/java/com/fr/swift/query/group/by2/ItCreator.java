@@ -34,12 +34,12 @@ public class ItCreator implements IteratorCreator<GroupByEntry> {
         this.dimensions = groupByInfo.getDimensions();
         this.filter = groupByInfo.getDetailFilter().createFilterIndex();
         this.asc = getSorts(groupByInfo.getSorts(), dimensions.size());
-        this.cursor = new int[dimensions.size()];
+        initCursor(groupByInfo.getCursor());
     }
 
-    public ItCreator(GroupByInfo groupByInfo, Cursor cursor) {
-        this(groupByInfo);
-        this.cursor = cursor.createCursorIndex(IteratorUtils.iterator2List(new MapperIterator<Column, DictionaryEncodedColumn>(dimensions.iterator(), new Function<Column, DictionaryEncodedColumn>() {
+    private void initCursor(Cursor cursor) {
+        // TODO: 2018/6/14 要考虑到有过滤条件的情况
+        this.cursor = cursor == null ? new int[dimensions.size()] : cursor.createCursorIndex(IteratorUtils.iterator2List(new MapperIterator<Column, DictionaryEncodedColumn>(dimensions.iterator(), new Function<Column, DictionaryEncodedColumn>() {
             @Override
             public DictionaryEncodedColumn apply(Column p) {
                 return p.getDictionaryEncodedColumn();

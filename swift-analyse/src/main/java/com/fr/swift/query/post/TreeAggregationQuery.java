@@ -26,7 +26,6 @@ public class TreeAggregationQuery extends AbstractPostQuery<NodeResultSet> {
     @Override
     public NodeResultSet getQueryResult() throws SQLException {
         NodeMergeResultSet<GroupNode> mergeResult = (NodeMergeResultSet<GroupNode>) query.getQueryResult();
-        // 先做节点合计，再做过滤
         GroupNodeAggregateUtils.aggregateMetric(NodeType.GROUP, mergeResult.getRowGlobalDictionaries().size(),
                 (GroupNode) mergeResult.getNode(), aggregators);
         return mergeResult;

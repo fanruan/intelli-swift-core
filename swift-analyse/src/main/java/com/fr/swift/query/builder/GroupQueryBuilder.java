@@ -1,10 +1,12 @@
 package com.fr.swift.query.builder;
 
-import com.fr.swift.query.Query;
-import com.fr.swift.query.QueryInfo;
-import com.fr.swift.query.QueryType;
 import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.info.group.RemoteQueryInfoImpl;
+import com.fr.swift.query.query.Query;
+import com.fr.swift.query.query.QueryInfo;
+import com.fr.swift.query.query.QueryType;
+import com.fr.swift.query.remote.GroupLocalAllQuery;
+import com.fr.swift.query.remote.GroupLocalPartQuery;
 import com.fr.swift.query.remote.RemoteQueryImpl;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.segment.SegmentDestination;
@@ -29,8 +31,7 @@ class GroupQueryBuilder {
         SourceKey table = info.getTable();
         // TODO 这边先直接写成History
         List<SegmentDestination> uris = SegmentLocationProvider.getInstance().getHistorySegmentLocation(table);
-//        if (info.isPagingQuery()) {
-        if (false) {
+        if (GroupQueryInfoUtils.isPagingQuery(info)) {
             return buildQuery(uris, info, LocalGroupQueryBuilder.PAGING);
         } else {
             return buildQuery(uris, info, LocalGroupQueryBuilder.ALL);
@@ -44,12 +45,13 @@ class GroupQueryBuilder {
      * @return
      */
     static Query<NodeResultSet> buildLocalPartQuery(GroupQueryInfo info) {
-        // TODO: 2018/6/5 区分是否能分页
-        if (false) {
-            return LocalGroupQueryBuilder.PAGING.buildLocalQuery(info);
+        Query<NodeResultSet> query;
+        if (GroupQueryInfoUtils.isPagingQuery(info)) {
+            query = LocalGroupQueryBuilder.PAGING.buildLocalQuery(info);
         } else {
-            return LocalGroupQueryBuilder.ALL.buildLocalQuery(info);
+            query = LocalGroupQueryBuilder.ALL.buildLocalQuery(info);
         }
+        return new GroupLocalPartQuery(info.getQueryId(), query);
     }
 
     /**
@@ -59,12 +61,13 @@ class GroupQueryBuilder {
      * @return
      */
     static Query<NodeResultSet> buildLocalAllQuery(GroupQueryInfo info) {
-        // TODO: 2018/6/5 区分是否能分页
-        if (false) {
-            return LocalGroupQueryBuilder.PAGING.buildPostQuery(LocalGroupQueryBuilder.PAGING.buildLocalQuery(info), info);
+        Query<NodeResultSet> query;
+        if (GroupQueryInfoUtils.isPagingQuery(info)) {
+            query = LocalGroupQueryBuilder.PAGING.buildPostQuery(LocalGroupQueryBuilder.PAGING.buildLocalQuery(info), info);
         } else {
-            return LocalGroupQueryBuilder.ALL.buildPostQuery(LocalGroupQueryBuilder.ALL.buildLocalQuery(info), info);
+            query = LocalGroupQueryBuilder.ALL.buildPostQuery(LocalGroupQueryBuilder.ALL.buildLocalQuery(info), info);
         }
+        return new GroupLocalAllQuery(info.getQueryId(), query);
     }
 
     /**
@@ -75,8 +78,8 @@ class GroupQueryBuilder {
      * 为了确认结果计算分给哪层的ResultQuery做，以及保证外层ResultQuery不会重复做结果计算
      * 在解析QueryInfo的时候将Query分三类，分别对应三个计算类型
      * SegmentQuery、ResultQuery、PostQuery
-     * 1、外层节点负责结果计算TargetCalQuery(ResultQuery(ResultQuery(SegmentQuery, ...), ...))，这个TargetCalQuery在合并多个节点结果的机器上
-     * 2、子节点负责结果计算TargetCalQuery(FieldCalQuery(SegmentQuery, ...))，这个TargetCalQuery在拥有全部数据的节点上
+     * 1、外层节点负责结果计算PostQuery(ResultQuery(ResultQuery(SegmentQuery, ...), ...))，这个PostQuery在合并多个节点结果的机器上
+     * 2、子节点负责结果计算PostQuery(ResultQuery(SegmentQuery, ...))，这个PostQuery在拥有全部数据的节点上
      *
      * 这边buildQuery的转发至多经过两个节点，RemoteQuery调用buildQuery的时候不会有RemoteQuery了
      * 这就要保证当前analysisService节点拥有所有的SegmentLocation信息

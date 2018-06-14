@@ -1,7 +1,7 @@
 package com.fr.swift.query.builder;
 
-import com.fr.swift.query.Query;
 import com.fr.swift.query.info.group.GroupQueryInfo;
+import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.ResultQuery;
 import com.fr.swift.result.NodeResultSet;
 
