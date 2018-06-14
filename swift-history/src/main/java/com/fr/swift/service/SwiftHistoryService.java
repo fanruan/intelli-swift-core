@@ -58,8 +58,8 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     @Override
     @RpcMethod(methodName = "historyQuery")
     public SerializableResultSet query(QueryInfo queryInfo) throws SQLException {
-        // TODO: 2018/6/14 先到QueryResultSetManager找一下有没有缓存，没有则查询。
-        // 另外分组表的resultSet在构建Query的时候处理好了，直接返回取出来的结果集即可。明细的待处理
+        // TODO: 2018/6/14 先到QueryResultSetManager找一下有没有缓存，没有则构建查询。
+        // 另外分组表的resultSet在构建Query的时候处理好了，直接返回取出来的结果集即可。等明细部分好了一起改一下
         SwiftResultSet resultSet = QueryBuilder.buildQuery(queryInfo).getQueryResult();
         return new SerializableResultSet(resultSet);
     }

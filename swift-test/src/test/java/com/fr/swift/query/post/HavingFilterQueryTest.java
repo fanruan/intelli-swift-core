@@ -67,7 +67,7 @@ public class HavingFilterQueryTest extends TestCase {
     public void test() {
         try {
             NodeResultSet resultSet = query.getQueryResult();
-
+            assertTrue(resultSet.next());
             Row row = resultSet.getRowData();   // ["b", "bb2", 2]
             assertEquals(row.getSize(), 3);
             assertTrue(StringUtils.equals(row.getValue(0).toString(), "b"));
