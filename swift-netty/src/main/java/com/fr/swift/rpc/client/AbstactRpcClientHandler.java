@@ -52,7 +52,7 @@ public abstract class AbstactRpcClientHandler extends SimpleChannelInboundHandle
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         LOGGER.error("RPC client caught exception", cause);
         ctx.close();
     }

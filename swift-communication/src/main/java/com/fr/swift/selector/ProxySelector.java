@@ -26,7 +26,7 @@ public class ProxySelector implements Selector<ProxyFactory> {
     }
 
     @Override
-    public  ProxyFactory getFactory() {
+    public ProxyFactory getFactory() {
         synchronized (ProxySelector.class) {
             return proxyFactory;
         }
