@@ -19,7 +19,7 @@ import java.util.concurrent.ScheduledExecutorService;
 public class SwiftRpcService {
 
     private ApplicationContext context;
-    private RpcServiceStarter serverStarter;
+    private NettyServiceStarter serverStarter;
 
     private ScheduledExecutorService serverServiceExector = Executors.newScheduledThreadPool(1);
 
@@ -45,7 +45,7 @@ public class SwiftRpcService {
                 serverStarter = new RpcServerServiceStarter(context);
             }
         }
-        serverServiceExector.execute(new Runnable() {
+        serverServiceExector.submit(new Runnable() {
             @Override
             public void run() {
                 try {

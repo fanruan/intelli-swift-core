@@ -77,22 +77,22 @@ public abstract class AbstractSwiftRegister implements SwiftRegister {
 //        FRProxyCache.registerInstance(RemoteServiceSender.class, RemoteServiceSender.getInstance());
 //
 //        ProxyFactory proxyFactory = ProxySelector.getInstance().getFactory();
-//        String masterId = ClusterNodeManager.getInstance().getMasterId();
+//        String masterId = FRClusterNodeManager.getInstance().getMasterId();
 //        try {
 //            RemoteServiceSender senderProxy = (RemoteServiceSender) proxyFactory.getProxy((SwiftServiceListenerHandler) FRProxyCache.getInstance(RemoteServiceSender.class),
 //                    SwiftServiceListenerHandler.class, new FRUrl(new FRDestination(masterId)));
 //
-//            String currentId = ClusterNodeManager.getInstance().getCurrentId();
+//            String currentId = FRClusterNodeManager.getInstance().getCurrentId();
 //
-//            senderProxy.registerService(new SwiftRealtimeService(ClusterNodeManager.getInstance().getCurrentId()));
-//            senderProxy.registerService(new SwiftIndexingService(ClusterNodeManager.getInstance().getCurrentId()));
+//            senderProxy.registerService(new SwiftRealtimeService(FRClusterNodeManager.getInstance().getCurrentId()));
+//            senderProxy.registerService(new SwiftIndexingService(FRClusterNodeManager.getInstance().getCurrentId()));
 //
 //            SwiftHistoryService historyService = SwiftHistoryService.getInstance();
 //            FRProxyCache.registerInstance(HistoryService.class, historyService);
 //            historyService.setId(currentId);
 //            senderProxy.registerService(historyService);
 //
-//            senderProxy.registerService(new SwiftAnalyseService(ClusterNodeManager.getInstance().getCurrentId()));
+//            senderProxy.registerService(new SwiftAnalyseService(FRClusterNodeManager.getInstance().getCurrentId()));
 //        } catch (ProxyRegisterException e) {
 //        }
 //    }

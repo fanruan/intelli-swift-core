@@ -11,11 +11,18 @@ public class ClusterEvent implements Event {
 
     private ClusterEventType eventType;
 
-    public ClusterEvent(ClusterEventType eventType) {
+    private ClusterType clusterType;
+
+    public ClusterEvent(ClusterEventType eventType, ClusterType clusterType) {
         this.eventType = eventType;
+        this.clusterType = clusterType;
     }
 
     public ClusterEventType getEventType() {
         return eventType;
+    }
+
+    public ClusterType getClusterType() {
+        return clusterType;
     }
 }
