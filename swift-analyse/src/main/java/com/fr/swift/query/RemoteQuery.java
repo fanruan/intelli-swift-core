@@ -1,5 +1,6 @@
 package com.fr.swift.query;
 
+import com.fr.swift.query.query.Query;
 import com.fr.swift.source.SwiftResultSet;
 
 /**

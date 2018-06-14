@@ -17,7 +17,7 @@ import com.fr.swift.selector.ProxySelector;
  * 同步rpc
  */
 public class SyncTest {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         SwiftContext.init();
         ProxySelector.getInstance().switchFactory(new RPCProxyFactory());
         //step1: get proxyFactory

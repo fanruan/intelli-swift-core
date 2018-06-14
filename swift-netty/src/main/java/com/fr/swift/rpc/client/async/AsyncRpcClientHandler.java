@@ -7,7 +7,6 @@ import com.fr.swift.rpc.bean.RpcResponse;
 import com.fr.swift.rpc.client.AbstactRpcClientHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -22,8 +21,6 @@ import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
@@ -47,7 +44,7 @@ public class AsyncRpcClientHandler extends AbstactRpcClientHandler {
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, RpcResponse response) throws Exception {
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, RpcResponse response) {
         String requestId = response.getRequestId();
         LOGGER.info("Receive response : " + requestId);
         RpcFuture rpcFuture = pendingRPC.get(requestId);
@@ -71,7 +68,7 @@ public class AsyncRpcClientHandler extends AbstactRpcClientHandler {
             bootstrap.channel(NioSocketChannel.class);
             bootstrap.handler(new ChannelInitializer<SocketChannel>() {
                 @Override
-                public void initChannel(SocketChannel channel) throws Exception {
+                public void initChannel(SocketChannel channel) {
                     ChannelPipeline pipeline = channel.pipeline();
                     pipeline.addLast(
                             new ObjectDecoder(1024, ClassResolvers.cacheDisabled(this
@@ -84,7 +81,7 @@ public class AsyncRpcClientHandler extends AbstactRpcClientHandler {
             ChannelFuture channelFuture = bootstrap.connect(remotePeer).sync();
             channelFuture.addListener(new ChannelFutureListener() {
                 @Override
-                public void operationComplete(final ChannelFuture channelFuture) throws Exception {
+                public void operationComplete(final ChannelFuture channelFuture) {
                     if (channelFuture.isSuccess()) {
                         LOGGER.info("Successfully connect to remote server. remote peer = " + remotePeer);
                     }

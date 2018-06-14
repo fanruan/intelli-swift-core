@@ -1,4 +1,4 @@
-package com.fr.swift.query;
+package com.fr.swift.query.query;
 
 /**
  * Created by pony on 2017/12/12.

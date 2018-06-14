@@ -29,6 +29,6 @@ public class RpcServerServiceStarter implements RpcServiceStarter {
 
     // TODO: 2018/6/8 待实现
     @Override
-    public void stop() throws Exception {
+    public void stop() {
     }
 }

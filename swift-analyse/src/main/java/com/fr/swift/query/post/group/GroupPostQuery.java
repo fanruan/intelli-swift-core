@@ -30,6 +30,7 @@ public class GroupPostQuery extends AbstractPostQuery<NodeResultSet> {
 
     private ResultQuery<NodeResultSet> mergeQuery;
     private GroupQueryInfo info;
+    private List<Aggregator> detailAggregators;
 
     public GroupPostQuery(ResultQuery<NodeResultSet> mergeQuery, GroupQueryInfo info) {
         this.mergeQuery = mergeQuery;
@@ -46,7 +47,7 @@ public class GroupPostQuery extends AbstractPostQuery<NodeResultSet> {
 
         // 产品确定结果过滤在明细汇总方式的基础上进行，不用考虑切换汇总方式的情况了
         GroupNodeAggregateUtils.aggregateMetric(NodeType.GROUP, dimensionSize,
-                (GroupNode) mergeResult.getNode(), mergeResult.getAggregators());
+                (GroupNode) mergeResult.getNode(), detailAggregators);
 
         // 维度上的排序
         if (hasDimensionTargetSorts(info.getDimensions())) {

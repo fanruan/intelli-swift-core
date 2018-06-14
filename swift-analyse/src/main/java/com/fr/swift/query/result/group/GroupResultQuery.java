@@ -1,7 +1,8 @@
 package com.fr.swift.query.result.group;
 
-import com.fr.swift.query.Query;
 import com.fr.swift.query.aggregator.Aggregator;
+import com.fr.swift.query.query.Query;
+import com.fr.swift.result.ChainedNodeMergeResultSet;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.NodeMergeResultSetImpl;
@@ -29,19 +30,25 @@ public class GroupResultQuery extends AbstractGroupResultQuery {
 
     @Override
     public NodeResultSet getQueryResult() throws SQLException {
-        List<NodeResultSet> groupByResultSets = new ArrayList<NodeResultSet>();
+        List<NodeMergeResultSet<GroupNode>> resultSets = new ArrayList<NodeMergeResultSet<GroupNode>>();
         for (Query<NodeResultSet> query : queryList) {
-            groupByResultSets.add(query.getQueryResult());
+            resultSets.add((NodeMergeResultSet<GroupNode>) query.getQueryResult());
         }
-        List<Map<Integer, Object>> totalDictionaries = new ArrayList<Map<Integer, Object>>();
-        List<GroupNode> roots = new ArrayList<GroupNode>();
-        for (NodeResultSet resultSet : groupByResultSets) {
-            roots.add((GroupNode) resultSet.getNode());
-            addDictionaries(((NodeMergeResultSet) resultSet).getRowGlobalDictionaries(), totalDictionaries);
-        }
-        GroupNode mergeNode = GroupNodeMergeUtils.merge(roots, nodeComparators(), aggregators);
-        return new NodeMergeResultSetImpl<GroupNode>(mergeNode, totalDictionaries,
-                ((NodeMergeResultSet) groupByResultSets.get(0)).getAggregators());
+        Function<List<NodeMergeResultSet<GroupNode>>, NodeMergeResultSet<GroupNode>> operator = new Function<List<NodeMergeResultSet<GroupNode>>, NodeMergeResultSet<GroupNode>>() {
+            @Override
+            public NodeMergeResultSet<GroupNode> apply(List<NodeMergeResultSet<GroupNode>> groupByResultSets) {
+                List<GroupNode> roots = new ArrayList<GroupNode>();
+                List<Map<Integer, Object>> totalDictionaries = new ArrayList<Map<Integer, Object>>();
+                for (NodeResultSet resultSet : groupByResultSets) {
+                    roots.add((GroupNode) resultSet.getNode());
+                    addDictionaries(((NodeMergeResultSet) resultSet).getRowGlobalDictionaries(), totalDictionaries);
+                }
+                GroupNode mergeNode = GroupNodeMergeUtils.merge(roots, nodeComparators(), aggregators);
+                return new NodeMergeResultSetImpl<GroupNode>(mergeNode, totalDictionaries);
+            }
+        };
+        // TODO: 2018/6/14 这边仅仅是串联起来了，有待分析改进
+        return new ChainedNodeMergeResultSet(resultSets, operator);
     }
 
     static void addDictionaries(List<Map<Integer, Object>> dictionaries,

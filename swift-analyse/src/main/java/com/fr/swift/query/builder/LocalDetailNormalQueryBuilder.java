@@ -1,12 +1,12 @@
 package com.fr.swift.query.builder;
 
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.query.Query;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.info.element.dimension.Dimension;
+import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.detail.NormalDetailResultQuery;
 import com.fr.swift.query.segment.detail.NormalDetailSegmentQuery;
 import com.fr.swift.result.DetailResultSet;

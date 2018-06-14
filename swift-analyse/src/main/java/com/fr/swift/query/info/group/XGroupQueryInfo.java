@@ -1,8 +1,8 @@
 package com.fr.swift.query.info.group;
 
-import com.fr.swift.query.QueryType;
 import com.fr.swift.query.info.element.dimension.DimensionInfo;
 import com.fr.swift.query.info.element.target.TargetInfo;
+import com.fr.swift.query.query.QueryType;
 import com.fr.swift.source.SourceKey;
 
 /**
