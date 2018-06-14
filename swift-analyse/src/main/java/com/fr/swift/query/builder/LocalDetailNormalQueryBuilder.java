@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class LocalDetailNormalQueryBuilder implements LocalDetailQueryBuilder {
 
-    private final SwiftSegmentManager localSegmentProvider = SwiftContext.getInstance().getBean("LocalSegmentProvider", SwiftSegmentManager.class);
+    private final SwiftSegmentManager localSegmentProvider = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class);
 
     protected LocalDetailNormalQueryBuilder() {
     }

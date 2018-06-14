@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by pony on 2017/12/14.
  */
-@Service("LocalSegmentProvider")
+@Service("localSegmentProvider")
 public class LocalSegmentProvider implements SwiftSegmentManager {
 
     private SwiftSegmentManager manager;
