@@ -5,6 +5,8 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.QueryInfo;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.rpc.annotation.RpcMethod;
+import com.fr.swift.rpc.annotation.RpcService;
+import com.fr.swift.rpc.annotation.RpcServiceType;
 import com.fr.swift.segment.Incrementer;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.recover.SwiftSegmentRecovery;
@@ -20,6 +22,7 @@ import java.util.List;
  * @author pony
  * @date 2017/10/10
  */
+@RpcService(type = RpcServiceType.CLIENT_SERVICE, value = RealtimeService.class)
 public class SwiftRealtimeService extends AbstractSwiftService implements RealtimeService, Serializable {
 
     @Override
