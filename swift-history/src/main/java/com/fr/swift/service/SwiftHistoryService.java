@@ -57,7 +57,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
 
     @Override
     @RpcMethod(methodName = "historyQuery")
-    public SerializableResultSet query(QueryInfo queryInfo) throws SQLException {
+    public SerializableResultSet query(QueryInfo queryInfo, int segmentOrder) throws SQLException {
         SwiftResultSet resultSet = QueryBuilder.buildQuery(queryInfo).getQueryResult();
         return new SerializableResultSet(resultSet);
     }
