@@ -5,5 +5,5 @@ package com.fr.swift.file.system;
  * @date 2018/5/28
  */
 public enum SwiftFileSystemType {
-    FR, HDFS, SWIFT, FTP
+    FR, HDFS, FTP
 }
