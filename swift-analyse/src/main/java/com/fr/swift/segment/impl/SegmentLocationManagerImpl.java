@@ -27,7 +27,7 @@ public class SegmentLocationManagerImpl implements SegmentLocationManager {
     public List<SegmentDestination> getSegmentLocationURI(SourceKey table) {
         List<SegmentDestination> destinations = segments.get(table.getId());
         // 暂时先这么处理，，，，
-        if (null == destinations) {
+        if (null == destinations || destinations.isEmpty()) {
             destinations = new ArrayList<SegmentDestination>();
             destinations.add(new SegmentDestinationImpl(URI.create(""), 0));
         }
