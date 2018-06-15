@@ -1,9 +1,10 @@
-package com.fr.swift.config;
+package com.fr.swift.decision.config;
 
 import com.fr.config.ConfigContext;
 import com.fr.config.Configuration;
 import com.fr.config.holder.Conf;
 import com.fr.config.holder.factory.Holders;
+import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.base.impl.SwiftAbstractObjectMapConfig;
 import com.fr.swift.config.bean.RepositoryConfBean;
 import com.fr.swift.file.system.SwiftFileSystemType;

@@ -15,7 +15,6 @@ import java.net.URI;
 public abstract class AbstractRepository implements SwiftRepository {
 
     protected SwiftFileSystemConfig configuration;
-    private SwiftFileSystem fileSystem;
 
     public AbstractRepository(SwiftFileSystemConfig configuration) {
         this.configuration = configuration;
@@ -29,10 +28,10 @@ public abstract class AbstractRepository implements SwiftRepository {
 
     public SwiftFileSystem createFileSystem(URI uri) {
         switch (configuration.getType()) {
-            case SWIFT:
-                return new SwiftFileSystemImpl(configuration, uri);
-            default:
+            case FR:
                 return new DefaultFileSystemImpl(configuration, uri);
+            default:
+                return new SwiftFileSystemImpl(configuration, uri);
         }
     }
 }
