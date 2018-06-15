@@ -1,5 +1,6 @@
-package com.fr.swift.rpc.registry;
+package com.fr.swift.rpc.registry.impl;
 
+import com.fr.swift.rpc.registry.ServiceDiscovery;
 import com.fr.third.springframework.stereotype.Service;
 
 /**

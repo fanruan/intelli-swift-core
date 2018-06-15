@@ -2,10 +2,9 @@ package com.fr.swift.config;
 
 import com.fr.base.FRContext;
 import com.fr.config.ConfigContext;
-import com.fr.config.DefaultConfiguration;
-import com.fr.config.holder.Conf;
 import com.fr.config.holder.factory.Holders;
 import com.fr.stable.StringUtils;
+import com.fr.swift.config.base.impl.SwiftAbstractSimpleConfig;
 
 /**
  * This class created on 2018/5/7
@@ -14,14 +13,14 @@ import com.fr.stable.StringUtils;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class SwiftCubePathConfig extends DefaultConfiguration {
-    private final static String NAMESPACE = "swift_cube_path";
-
+public class SwiftCubePathConfig extends SwiftAbstractSimpleConfig<String> {
     private static SwiftCubePathConfig config = null;
 
     private static final String BASE_CUBE_PATH = String.format("%s/../", FRContext.getCurrentEnv().getPath());
 
-    private Conf<String> confPath = Holders.simple(BASE_CUBE_PATH);
+    public SwiftCubePathConfig() {
+        super(Holders.simple(BASE_CUBE_PATH));
+    }
 
     public static SwiftCubePathConfig getInstance() {
         if (null == config) {
@@ -30,18 +29,18 @@ public class SwiftCubePathConfig extends DefaultConfiguration {
         return config;
     }
 
-    public void setPath(String path) {
-        if (isValidPath(path)) {
-            confPath.set(path);
-        }
-    }
-
     public String getPath() {
-        String path = confPath.get();
+        String path = get();
         if (StringUtils.isEmpty(path)) {
             return BASE_CUBE_PATH;
         }
         return path;
+    }
+
+    public void setPath(String path) {
+        if (isValidPath(path)) {
+            super.addOrUpdate(path);
+        }
     }
 
     public static boolean isValidPath(String path) {
@@ -50,6 +49,6 @@ public class SwiftCubePathConfig extends DefaultConfiguration {
 
     @Override
     public String getNameSpace() {
-        return NAMESPACE;
+        return SwiftConfigConstants.FRConfiguration.CUBE_PATH_NAMESPACE;
     }
 }
