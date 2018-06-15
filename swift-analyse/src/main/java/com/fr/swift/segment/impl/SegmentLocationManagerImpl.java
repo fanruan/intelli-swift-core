@@ -5,7 +5,8 @@ import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationManager;
 import com.fr.swift.source.SourceKey;
 
-import java.util.Collections;
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,8 +26,10 @@ public class SegmentLocationManagerImpl implements SegmentLocationManager {
     @Override
     public List<SegmentDestination> getSegmentLocationURI(SourceKey table) {
         List<SegmentDestination> destinations = segments.get(table.getId());
-        if (null == destinations) {
-            return Collections.emptyList();
+        // 暂时先这么处理，，，，
+        if (null == destinations || destinations.isEmpty()) {
+            destinations = new ArrayList<SegmentDestination>();
+            destinations.add(new SegmentDestinationImpl(URI.create(""), 0));
         }
         return destinations;
     }
