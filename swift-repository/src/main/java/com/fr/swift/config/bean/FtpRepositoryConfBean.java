@@ -2,6 +2,7 @@ package com.fr.swift.config.bean;
 
 import com.fr.config.holder.Conf;
 import com.fr.config.holder.factory.Holders;
+import com.fr.config.utils.UniqueKey;
 import com.fr.security.SecurityToolbox;
 import com.fr.stable.StringUtils;
 import com.fr.swift.config.SwiftConfigConstants;
@@ -11,7 +12,7 @@ import com.fr.swift.file.conf.impl.FtpRepositoryConfigImpl;
  * @author yee
  * @date 2018/6/15
  */
-public class FtpRepositoryConfBean implements RepositoryConfBean<FtpRepositoryConfigImpl> {
+public class FtpRepositoryConfBean extends UniqueKey implements RepositoryConfBean<FtpRepositoryConfigImpl> {
     private Conf<String> protocol = Holders.simple("FTP");
     private Conf<String> host = Holders.simple("");
     private Conf<Integer> port = Holders.simple(21);
