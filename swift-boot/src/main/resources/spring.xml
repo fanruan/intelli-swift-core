@@ -21,8 +21,8 @@
     <bean class="com.fr.swift.manager.LocalDataOperatorProvider"/>
 
     <bean id="swiftProperty" class="com.fr.swift.property.SwiftProperty"/>
-    <bean id="serviceRegistry" class="com.fr.swift.rpc.registry.SimpleServiceRegistry"/>
-    <bean id="serviceDiscovery" class="com.fr.swift.rpc.registry.SimpleServiceDiscovery"/>
+    <bean id="serviceRegistry" class="com.fr.swift.rpc.registry.impl.SimpleServiceRegistry"/>
+    <bean id="serviceDiscovery" class="com.fr.swift.rpc.registry.impl.SimpleServiceDiscovery"/>
     <bean id="rpcServer" class="com.fr.swift.rpc.server.RpcServer"/>
 
 

@@ -10,9 +10,10 @@ public interface SwiftFileSystemConfig {
     SwiftFileSystemType getType();
 
     SwiftFileSystemConfig DEFAULT = new SwiftFileSystemConfig() {
+
         @Override
         public SwiftFileSystemType getType() {
-            return SwiftFileSystemType.DEFAULT;
+            return SwiftFileSystemType.FR;
         }
     };
 }
