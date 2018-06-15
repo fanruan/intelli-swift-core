@@ -29,7 +29,6 @@ public abstract class AbstractRepository implements SwiftRepository {
 
     public SwiftFileSystem createFileSystem(URI uri) {
         switch (configuration.getType()) {
-
             case SWIFT:
                 return new SwiftFileSystemImpl(configuration, uri);
             default:

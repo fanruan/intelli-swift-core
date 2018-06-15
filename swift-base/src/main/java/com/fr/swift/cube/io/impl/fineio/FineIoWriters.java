@@ -43,6 +43,6 @@ public final class FineIoWriters {
                 default:
             }
         }
-        return Crasher.crash(String.format("illegal cube build conf: %s\nlocation: %s", conf, location));
+        return Crasher.crash(String.format("illegal cube build config: %s\nlocation: %s", conf, location));
     }
 }
