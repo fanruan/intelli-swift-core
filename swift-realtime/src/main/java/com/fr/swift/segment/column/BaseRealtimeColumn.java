@@ -16,7 +16,6 @@ import com.fr.third.guava.collect.BiMap;
 import com.fr.third.guava.collect.HashBiMap;
 
 import java.util.Comparator;
-import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.NoSuchElementException;
 
@@ -49,7 +48,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
      */
     private V minAddedValue;
 
-    private int addedCount = 0;
+    private boolean hasAddedValue;
 
     BaseRealtimeColumn(IResourceLocation location) {
         super(location);
@@ -60,34 +59,25 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
      * 刷新索引
      */
     private void refreshIfNeed() {
-        if (addedCount == 0) {
+        if (!hasAddedValue) {
             return;
         }
 
-        int offset = addedCount, count = 0;
+        int newIndex = valToRows.size() - 1;
 
         // 从后往前更新偏移
-        for (Entry<V, MutableBitMap> entry : valToRows.descendingMap().headMap(minAddedValue, true).entrySet()) {
-            V v = entry.getKey();
-
-            // 已存在的值的索引直接加偏移，新加的值直接按size算索引
-            if (valAndIndex.containsKey(v)) {
-                valAndIndex.put(v, valAndIndex.get(v) + offset);
-            } else {
-                valAndIndex.put(v, valToRows.size() - 1 - count);
-                offset--;
-            }
-            count++;
+        NavigableMap<V, MutableBitMap> descendingMap = valToRows.descendingMap();
+        for (V v : descendingMap.headMap(minAddedValue, true).keySet()) {
+            valAndIndex.put(v, newIndex--);
         }
 
         if (valAndIndex.size() < valToRows.size()) {
-            count = 0;
-            for (V v : valToRows.headMap(minAddedValue).keySet()) {
-                valAndIndex.put(v, count++);
+            for (V v : descendingMap.tailMap(minAddedValue, false).keySet()) {
+                valAndIndex.put(v, newIndex--);
             }
         }
 
-        addedCount = 0;
+        hasAddedValue = false;
     }
 
     private class RealtimeDetailColumn implements DetailColumn<V> {
@@ -105,12 +95,17 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
             valToRows.put(val, bitmap);
 
             // 更新新加的最小值
-            if (addedCount == 0) {
-                minAddedValue = val;
-            } else if (c.compare(minAddedValue, val) > 0) {
+            if (hasAddedValue) {
+                if (c.compare(minAddedValue, val) > 0) {
+                    minAddedValue = val;
+                }
+            } else {
                 minAddedValue = val;
             }
-            addedCount++;
+
+            if (!hasAddedValue) {
+                hasAddedValue = true;
+            }
         }
 
         @Override
@@ -139,9 +134,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
 
         @Override
         public void release() {
-            if (detail != null) {
-                detail.release();
-            }
+            detail.release();
         }
     }
 
@@ -211,9 +204,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
 
         @Override
         public void release() {
-            if (valAndIndex != null) {
-                valAndIndex.clear();
-            }
+            valAndIndex.clear();
         }
 
         @Override
@@ -264,9 +255,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
 
         @Override
         public void release() {
-            if (valToRows != null) {
-                valToRows.clear();
-            }
+            valToRows.clear();
         }
 
         @Override
@@ -297,7 +286,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
         valToRows = self.valToRows;
         valAndIndex = self.valAndIndex;
         minAddedValue = self.minAddedValue;
-        addedCount = self.addedCount;
+        hasAddedValue = self.hasAddedValue;
 
         detailColumn = self.detailColumn;
         dictColumn = self.dictColumn;
