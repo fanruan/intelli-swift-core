@@ -16,7 +16,7 @@ import java.util.Random;
 public abstract class BaseRealtimeColumnTest<T> {
     Random r = new Random(hashCode());
     T[] data1, data2;
-    static final int BOUND = 1000;
+    static final int BOUND = 10000;
 
     @Before
     public void setUp() throws Exception {
@@ -30,27 +30,28 @@ public abstract class BaseRealtimeColumnTest<T> {
 
     @Test
     public void test() {
+        Column<T> column = getColumn();
         for (int i = 0; i < data1.length; i++) {
-            getColumn().getDetailColumn().put(i, data1[i]);
+            column.getDetailColumn().put(i, data1[i]);
         }
 
-        DictionaryEncodedColumn<T> dict = getColumn().getDictionaryEncodedColumn();
+        DictionaryEncodedColumn<T> dict = column.getDictionaryEncodedColumn();
         for (int i = 0; i < data1.length; i++) {
             Assert.assertEquals(data1[i], dict.getValue(dict.getIndexByRow(i)));
-            Assert.assertTrue(getColumn().getBitmapIndex().getBitMapIndex(dict.getIndex(data1[i])).contains(i));
+            Assert.assertTrue(column.getBitmapIndex().getBitMapIndex(dict.getIndex(data1[i])).contains(i));
         }
 
         for (int i = 0; i < data2.length; i++) {
-            getColumn().getDetailColumn().put(data2.length + i, data2[i]);
+            column.getDetailColumn().put(data2.length + i, data2[i]);
         }
 
         for (int i = 0; i < data1.length; i++) {
             Assert.assertEquals(data1[i], dict.getValue(dict.getIndexByRow(i)));
-            Assert.assertTrue(getColumn().getBitmapIndex().getBitMapIndex(dict.getIndex(data1[i])).contains(i));
+            Assert.assertTrue(column.getBitmapIndex().getBitMapIndex(dict.getIndex(data1[i])).contains(i));
         }
         for (int i = 0; i < data2.length; i++) {
             Assert.assertEquals(data2[i], dict.getValue(dict.getIndexByRow(data2.length + i)));
-            Assert.assertTrue(getColumn().getBitmapIndex().getBitMapIndex(dict.getIndex(data2[i])).contains(data2.length + i));
+            Assert.assertTrue(column.getBitmapIndex().getBitMapIndex(dict.getIndex(data2[i])).contains(data2.length + i));
         }
 
     }

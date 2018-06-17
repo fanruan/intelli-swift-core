@@ -16,12 +16,9 @@ import com.fr.third.guava.collect.BiMap;
 import com.fr.third.guava.collect.HashBiMap;
 
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.SortedSet;
 
 /**
  * @author anchore
@@ -48,9 +45,11 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
     private BiMap<V, Integer> valAndIndex = HashBiMap.create();
 
     /**
-     * 新插入的值
+     * 新插入的最小值
      */
-    SortedSet<V> addedValues;
+    private V minAddedValue;
+
+    private int addedCount = 0;
 
     BaseRealtimeColumn(IResourceLocation location) {
         super(location);
@@ -61,39 +60,34 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
      * 刷新索引
      */
     private void refreshIfNeed() {
-        if (addedValues.isEmpty()) {
+        if (addedCount == 0) {
             return;
         }
 
-        int offset = 0, count = 0;
+        int offset = addedCount, count = 0;
 
-        Iterator<V> cutInValueItr = addedValues.iterator();
-        V currentCutInValue = cutInValueItr.next(), firstCutInValue = currentCutInValue;
-
-        Set<Entry<V, MutableBitMap>> tailEntries = valToRows.descendingMap().headMap(firstCutInValue, true).entrySet();
-        for (Entry<V, MutableBitMap> entry : tailEntries) {
+        // 从后往前更新偏移
+        for (Entry<V, MutableBitMap> entry : valToRows.descendingMap().headMap(minAddedValue, true).entrySet()) {
             V v = entry.getKey();
 
-            if (c.compare(v, currentCutInValue) == 0) {
-                offset++;
-                currentCutInValue = cutInValueItr.hasNext() ? cutInValueItr.next() : null;
-            }
+            // 已存在的值的索引直接加偏移，新加的值直接按size算索引
             if (valAndIndex.containsKey(v)) {
                 valAndIndex.put(v, valAndIndex.get(v) + offset);
             } else {
                 valAndIndex.put(v, valToRows.size() - 1 - count);
-                count++;
+                offset--;
             }
+            count++;
         }
 
         if (valAndIndex.size() < valToRows.size()) {
             count = 0;
-            for (V v : valToRows.headMap(firstCutInValue).keySet()) {
+            for (V v : valToRows.headMap(minAddedValue).keySet()) {
                 valAndIndex.put(v, count++);
             }
         }
 
-        addedValues.clear();
+        addedCount = 0;
     }
 
     private class RealtimeDetailColumn implements DetailColumn<V> {
@@ -110,7 +104,13 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
             bitmap.add(row);
             valToRows.put(val, bitmap);
 
-            addedValues.add(val);
+            // 更新新加的最小值
+            if (addedCount == 0) {
+                minAddedValue = val;
+            } else if (c.compare(minAddedValue, val) > 0) {
+                minAddedValue = val;
+            }
+            addedCount++;
         }
 
         @Override
@@ -281,6 +281,11 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
     void init() {
         BuildConf readConf = new BuildConf(IoType.READ, DataType.REALTIME_COLUMN);
         if (!DISCOVERY.exists(location, readConf)) {
+            // 三个视图，映射至内存数据
+            detailColumn = new RealtimeDetailColumn();
+            dictColumn = new RealtimeDictColumn();
+            indexColumn = new RealtimeBitmapColumn();
+
             DISCOVERY.<ObjectMemIo<BaseRealtimeColumn<V>>>getWriter(location, new BuildConf(IoType.WRITE, DataType.REALTIME_COLUMN)).put(0, this);
             return;
         }
@@ -291,12 +296,12 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
         c = self.c;
         valToRows = self.valToRows;
         valAndIndex = self.valAndIndex;
-        addedValues = self.addedValues;
+        minAddedValue = self.minAddedValue;
+        addedCount = self.addedCount;
 
-        // 三个视图，映射至内存数据
-        detailColumn = new RealtimeDetailColumn();
-        dictColumn = new RealtimeDictColumn();
-        indexColumn = new RealtimeBitmapColumn();
+        detailColumn = self.detailColumn;
+        dictColumn = self.dictColumn;
+        indexColumn = self.indexColumn;
     }
 
     @Override
