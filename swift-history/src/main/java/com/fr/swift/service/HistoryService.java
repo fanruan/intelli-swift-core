@@ -20,7 +20,7 @@ public interface HistoryService extends SwiftService {
      * @param <T>       数据
      * @return 数据
      */
-    SerializableResultSet query(QueryInfo queryInfo) throws SQLException;
+    SerializableResultSet query(QueryInfo queryInfo, int segmentOrder) throws SQLException;
 
     /**
      * 从共享存储加载

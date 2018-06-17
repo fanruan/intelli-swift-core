@@ -27,7 +27,7 @@ public class SwiftRepositoryManagerTest {
 
     @BeforeClass
     public static void beforeClass() {
-        repository = SwiftRepositoryManager.getManager().getDefaultRepository();
+        repository = SwiftRepositoryManager.getManager().getCurrentRepository();
         ClassLoader classLoader = SwiftRepositoryManagerTest.class.getClassLoader();
         URL url = classLoader.getResource("from");
         rootURI = URI.create(url.getPath() + "/");

@@ -72,7 +72,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
             Class clazz = remoteURI.getServiceClass();
             ProxyFactory factory = ProxySelector.getInstance().getFactory();
             Invoker invoker = factory.getInvoker(null, clazz, new RPCUrl(new RPCDestination(address)), false);
-            Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName(methodName), new Object[]{info}));
+            Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName(methodName), new Object[]{info, remoteURI.order()}));
             RpcFuture future = (RpcFuture) result.getValue();
             final CountDownLatch latch = new CountDownLatch(1);
 

@@ -40,7 +40,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     public void load(Set<URI> remoteUris) throws IOException {
         if (null != remoteUris && !remoteUris.isEmpty()) {
             String path = SwiftCubePathConfig.getInstance().getPath();
-            SwiftRepository repository = SwiftRepositoryManager.getManager().getDefaultRepository();
+            SwiftRepository repository = SwiftRepositoryManager.getManager().getCurrentRepository();
             for (URI remote : remoteUris) {
                 repository.copyFromRemote(remote, URI.create(path + remote.getPath()));
             }
@@ -57,7 +57,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
 
     @Override
     @RpcMethod(methodName = "historyQuery")
-    public SerializableResultSet query(QueryInfo queryInfo) throws SQLException {
+    public SerializableResultSet query(QueryInfo queryInfo, int segmentOrder) throws SQLException {
         // TODO: 2018/6/14 先到QueryResultSetManager找一下有没有缓存，没有则构建查询。
         // 另外分组表的resultSet在构建Query的时候处理好了，直接返回取出来的结果集即可。等明细部分好了一起改一下
         SwiftResultSet resultSet = QueryBuilder.buildQuery(queryInfo).getQueryResult();
