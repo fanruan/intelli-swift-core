@@ -15,13 +15,13 @@ import com.fr.swift.segment.column.impl.BaseColumn;
 import com.fr.third.guava.collect.BiMap;
 import com.fr.third.guava.collect.HashBiMap;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.SortedSet;
 
 /**
  * @author anchore
@@ -50,9 +50,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
     /**
      * 新插入的值
      */
-//    SortedSet<V> addedValues;
-
-    private List<V> minAddedValue = new ArrayList<V>(1);
+    SortedSet<V> addedValues;
 
     BaseRealtimeColumn(IResourceLocation location) {
         super(location);
@@ -63,43 +61,39 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
      * 刷新索引
      */
     private void refreshIfNeed() {
-        if (minAddedValue.isEmpty()) {
+        if (addedValues.isEmpty()) {
             return;
         }
 
         int offset = 0, count = 0;
 
-//        Iterator<V> cutInValueItr = addedValues.iterator();
-        V minValue = minAddedValue.get(0);
+        Iterator<V> cutInValueItr = addedValues.iterator();
+        V currentCutInValue = cutInValueItr.next(), firstCutInValue = currentCutInValue;
 
-        Set<Entry<V, MutableBitMap>> tailEntries = valToRows.descendingMap().headMap(minValue, true).entrySet();
+        Set<Entry<V, MutableBitMap>> tailEntries = valToRows.descendingMap().headMap(firstCutInValue, true).entrySet();
         for (Entry<V, MutableBitMap> entry : tailEntries) {
             V v = entry.getKey();
 
-//            if (c.compare(v, currentCutInValue) == 0) {
-//                offset++;
-//                currentCutInValue = cutInValueItr.hasNext() ? cutInValueItr.next() : null;
-//            }
+            if (c.compare(v, currentCutInValue) == 0) {
+                offset++;
+                currentCutInValue = cutInValueItr.hasNext() ? cutInValueItr.next() : null;
+            }
             if (valAndIndex.containsKey(v)) {
                 valAndIndex.put(v, valAndIndex.get(v) + offset);
             } else {
                 valAndIndex.put(v, valToRows.size() - 1 - count);
                 count++;
-
-                offset++;
             }
         }
 
         if (valAndIndex.size() < valToRows.size()) {
             count = 0;
-            for (V v : valToRows.headMap(minValue).keySet()) {
+            for (V v : valToRows.headMap(firstCutInValue).keySet()) {
                 valAndIndex.put(v, count++);
             }
         }
 
-//        addedValues.clear();
-
-        minAddedValue.clear();
+        addedValues.clear();
     }
 
     private class RealtimeDetailColumn implements DetailColumn<V> {
@@ -116,13 +110,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
             bitmap.add(row);
             valToRows.put(val, bitmap);
 
-//            addedValues.add(val);
-
-            if (minAddedValue.isEmpty()) {
-                minAddedValue.add(val);
-            } else if (c.compare(minAddedValue.get(0), val) > 0) {
-                minAddedValue.set(0, val);
-            }
+            addedValues.add(val);
         }
 
         @Override
@@ -288,7 +276,6 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
         @Override
         public void putNullIndex(ImmutableBitMap bitMap) {
         }
-
     }
 
     void init() {
@@ -304,8 +291,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
         c = self.c;
         valToRows = self.valToRows;
         valAndIndex = self.valAndIndex;
-//        addedValues = self.addedValues;
-        minAddedValue = self.minAddedValue;
+        addedValues = self.addedValues;
 
         // 三个视图，映射至内存数据
         detailColumn = new RealtimeDetailColumn();
