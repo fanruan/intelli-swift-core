@@ -43,7 +43,7 @@ public class SegmentRecoveryTest {
     public void setUp() throws Exception {
         TestConfDb.setConfDb();
         connectionInfo = TestConnectionProvider.createConnection();
-        dataSource = new QueryDBSource("select * from DEMO_CAPITAL_RETURN", "RealtimeRecorderTest");
+        dataSource = new QueryDBSource("select * from DEMO_CAPITAL_RETURN", SegmentRecoveryTest.class.getName());
         operators = SwiftContext.getInstance().getBean(SwiftDataOperatorProvider.class);
     }
 

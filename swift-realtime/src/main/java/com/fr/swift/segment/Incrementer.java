@@ -67,20 +67,6 @@ public class Incrementer {
         }
     }
 
-    private void persistMeta() throws SQLException {
-        if (!SwiftDatabase.getInstance().existsTable(dataSource.getSourceKey())) {
-            SwiftDatabase.getInstance().createTable(dataSource.getSourceKey(), dataSource.getMetadata());
-        }
-    }
-
-    private void persistSegment(Segment seg, int order) {
-        IResourceLocation location = seg.getLocation();
-        SegmentKey segKey = new SegmentKeyBean(dataSource.getSourceKey().getId(), location.getUri(), order, location.getStoreType());
-        if (!SwiftSegmentServiceProvider.getProvider().containsSegment(segKey)) {
-            SwiftSegmentServiceProvider.getProvider().addSegments(Collections.singletonList(segKey));
-        }
-    }
-
     private Segment newRealtimeSegment(SegmentInfo segInfo, int segCount) {
         String segPath = String.format("%s/seg%d", CubeUtil.getTablePath(dataSource), segCount + segInfo.getOrder());
         return new RealTimeSegmentImpl(new ResourceLocation(segPath, StoreType.MEMORY), dataSource.getMetadata());
@@ -93,5 +79,19 @@ public class Incrementer {
             return newRealtimeSegment(alloter.allot(new LineRowInfo(0)), segmentKeys.size());
         }
         return LOCAL_SEGMENT_PROVIDER.getSegment(segmentKeys.get(segmentKeys.size() - 1));
+    }
+
+    private void persistMeta() throws SQLException {
+        if (!SwiftDatabase.getInstance().existsTable(dataSource.getSourceKey())) {
+            SwiftDatabase.getInstance().createTable(dataSource.getSourceKey(), dataSource.getMetadata());
+        }
+    }
+
+    private void persistSegment(Segment seg, int order) {
+        IResourceLocation location = seg.getLocation();
+        SegmentKey segKey = new SegmentKeyBean(dataSource.getSourceKey().getId(), location.getUri(), order, location.getStoreType());
+        if (!SwiftSegmentServiceProvider.getProvider().containsSegment(segKey)) {
+            SwiftSegmentServiceProvider.getProvider().addSegments(Collections.singletonList(segKey));
+        }
     }
 }
