@@ -2,9 +2,7 @@ package com.fr.swift.config.base.impl;
 
 import com.fr.config.DefaultConfiguration;
 import com.fr.config.holder.Conf;
-import com.fr.swift.config.base.FRConfTransactionWorker;
 import com.fr.swift.config.base.SwiftSimpleConfig;
-import com.fr.transaction.Configurations;
 
 /**
  * @author yee
@@ -20,12 +18,12 @@ public abstract class SwiftAbstractSimpleConfig<T> extends DefaultConfiguration 
 
     @Override
     public boolean addOrUpdate(final T obj) {
-        return Configurations.update(new FRConfTransactionWorker(new Class[]{this.getClass()}) {
+        configHolder.set(obj);
+        return true;/*Configurations.update(new FRConfTransactionWorker(new Class[]{this.getClass()}) {
             @Override
             public void run() {
-                configHolder.set(obj);
             }
-        });
+        });*/
     }
 
     @Override
