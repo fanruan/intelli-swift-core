@@ -20,6 +20,7 @@ import com.fr.swift.test.Preparer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -51,6 +52,7 @@ public class SegmentRecoveryTest {
     public void tearDown() {
     }
 
+    @Ignore
     @Test
     public void recover() throws Exception {
         QuerySourceTransfer transfer = new QuerySourceTransfer(connectionInfo, dataSource.getMetadata(), dataSource.getMetadata(), dataSource.getQuery());
