@@ -16,12 +16,8 @@ import com.fr.third.guava.collect.BiMap;
 import com.fr.third.guava.collect.HashBiMap;
 
 import java.util.Comparator;
-import java.util.Iterator;
-import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.SortedSet;
 
 /**
  * @author anchore
@@ -48,9 +44,11 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
     private BiMap<V, Integer> valAndIndex = HashBiMap.create();
 
     /**
-     * 新插入的值
+     * 新插入的最小值
      */
-    SortedSet<V> addedValues;
+    private V minAddedValue;
+
+    private boolean hasAddedValue;
 
     BaseRealtimeColumn(IResourceLocation location) {
         super(location);
@@ -61,39 +59,25 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
      * 刷新索引
      */
     private void refreshIfNeed() {
-        if (addedValues.isEmpty()) {
+        if (!hasAddedValue) {
             return;
         }
 
-        int offset = 0, count = 0;
+        int newIndex = valToRows.size() - 1;
 
-        Iterator<V> cutInValueItr = addedValues.iterator();
-        V currentCutInValue = cutInValueItr.next(), firstCutInValue = currentCutInValue;
-
-        Set<Entry<V, MutableBitMap>> tailEntries = valToRows.descendingMap().headMap(firstCutInValue, true).entrySet();
-        for (Entry<V, MutableBitMap> entry : tailEntries) {
-            V v = entry.getKey();
-
-            if (c.compare(v, currentCutInValue) == 0) {
-                offset++;
-                currentCutInValue = cutInValueItr.hasNext() ? cutInValueItr.next() : null;
-            }
-            if (valAndIndex.containsKey(v)) {
-                valAndIndex.put(v, valAndIndex.get(v) + offset);
-            } else {
-                valAndIndex.put(v, valToRows.size() - 1 - count);
-                count++;
-            }
+        // 从后往前更新偏移
+        NavigableMap<V, MutableBitMap> descendingMap = valToRows.descendingMap();
+        for (V v : descendingMap.headMap(minAddedValue, true).keySet()) {
+            valAndIndex.put(v, newIndex--);
         }
 
         if (valAndIndex.size() < valToRows.size()) {
-            count = 0;
-            for (V v : valToRows.headMap(firstCutInValue).keySet()) {
-                valAndIndex.put(v, count++);
+            for (V v : descendingMap.tailMap(minAddedValue, false).keySet()) {
+                valAndIndex.put(v, newIndex--);
             }
         }
 
-        addedValues.clear();
+        hasAddedValue = false;
     }
 
     private class RealtimeDetailColumn implements DetailColumn<V> {
@@ -110,7 +94,18 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
             bitmap.add(row);
             valToRows.put(val, bitmap);
 
-            addedValues.add(val);
+            // 更新新加的最小值
+            if (hasAddedValue) {
+                if (c.compare(minAddedValue, val) > 0) {
+                    minAddedValue = val;
+                }
+            } else {
+                minAddedValue = val;
+            }
+
+            if (!hasAddedValue) {
+                hasAddedValue = true;
+            }
         }
 
         @Override
@@ -139,9 +134,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
 
         @Override
         public void release() {
-            if (detail != null) {
-                detail.release();
-            }
+            detail.release();
         }
     }
 
@@ -211,9 +204,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
 
         @Override
         public void release() {
-            if (valAndIndex != null) {
-                valAndIndex.clear();
-            }
+            valAndIndex.clear();
         }
 
         @Override
@@ -264,9 +255,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
 
         @Override
         public void release() {
-            if (valToRows != null) {
-                valToRows.clear();
-            }
+            valToRows.clear();
         }
 
         @Override
@@ -281,6 +270,11 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
     void init() {
         BuildConf readConf = new BuildConf(IoType.READ, DataType.REALTIME_COLUMN);
         if (!DISCOVERY.exists(location, readConf)) {
+            // 三个视图，映射至内存数据
+            detailColumn = new RealtimeDetailColumn();
+            dictColumn = new RealtimeDictColumn();
+            indexColumn = new RealtimeBitmapColumn();
+
             DISCOVERY.<ObjectMemIo<BaseRealtimeColumn<V>>>getWriter(location, new BuildConf(IoType.WRITE, DataType.REALTIME_COLUMN)).put(0, this);
             return;
         }
@@ -291,12 +285,12 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
         c = self.c;
         valToRows = self.valToRows;
         valAndIndex = self.valAndIndex;
-        addedValues = self.addedValues;
+        minAddedValue = self.minAddedValue;
+        hasAddedValue = self.hasAddedValue;
 
-        // 三个视图，映射至内存数据
-        detailColumn = new RealtimeDetailColumn();
-        dictColumn = new RealtimeDictColumn();
-        indexColumn = new RealtimeBitmapColumn();
+        detailColumn = self.detailColumn;
+        dictColumn = self.dictColumn;
+        indexColumn = self.indexColumn;
     }
 
     @Override

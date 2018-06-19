@@ -24,6 +24,11 @@ public class MinorSegmentManager implements SwiftSegmentManager {
     }
 
     @Override
+    public boolean existsSegment(SegmentKey segKey) {
+        return false;
+    }
+
+    @Override
     public List<Segment> getSegment(SourceKey tableKey) {
         if (isSegmentsExist(tableKey)) {
             return segments.get(tableKey);

@@ -82,12 +82,16 @@ public class SwiftDatabase implements Database {
     }
 
     public enum Schema {
+        /**
+         * 默认schema
+         */
         CUBE(0, "Cube", "cubes"),
         DECISION_LOG(1, "Decision Log", "log/cubes"),
-        BACKUP_CUBE(2, "Backup Cube", "backup_cubes");
+        BACKUP_CUBE(2, "Backup Cube", "backup_cubes"),
+        MINOR_CUBE(3, "Minor Cube", "minor_cubes");
 
-        public final int id;
-        public final String name;
+        private final int id;
+        private final String name;
         public final String dir;
 
         Schema(int id, String name, String dir) {
@@ -96,9 +100,33 @@ public class SwiftDatabase implements Database {
             this.dir = dir;
         }
 
+        public int getId() {
+            return id;
+        }
+
+        public String getDir() {
+            return dir;
+        }
+
+        public String getName() {
+            return name;
+        }
+
         @Override
         public String toString() {
             return dir;
+        }
+
+        public static class SchemaConverter0 implements AttributeConverter<Schema, String> {
+            @Override
+            public String convertToDatabaseColumn(Schema schema) {
+                return schema.toString();
+            }
+
+            @Override
+            public Schema convertToEntityAttribute(String schema) {
+                return Schema.valueOf(schema);
+            }
         }
 
         public static class SchemaConverter implements AttributeConverter<Schema, Integer> {

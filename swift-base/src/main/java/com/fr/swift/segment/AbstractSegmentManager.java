@@ -13,6 +13,7 @@ import java.util.List;
  */
 public abstract class AbstractSegmentManager implements SwiftSegmentManager {
     protected SwiftSegmentService segmentService = SwiftSegmentServiceProvider.getProvider();
+
     @Override
     public synchronized List<Segment> getSegment(SourceKey tableKey) {
         // 并发地拿，比如多个column indexer同时进行索引， 要同步下
@@ -31,6 +32,11 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
             }
         }
         return segments;
+    }
+
+    @Override
+    public boolean existsSegment(SegmentKey segKey) {
+        return segmentService.containsSegment(segKey);
     }
 
     @Override
