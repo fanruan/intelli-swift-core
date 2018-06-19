@@ -1,6 +1,5 @@
 package com.fr.swift.source.db;
 
-import com.fr.base.FRContext;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
@@ -120,7 +119,7 @@ public abstract class AbstractQueryTransfer implements SwiftSourceTransfer {
             try {
                 return new String(sql.getBytes(database.getNewCharsetName()), database.getOriginalCharsetName());
             } catch (UnsupportedEncodingException e) {
-                FRContext.getLogger().error(e.getMessage(), e);
+                SwiftLoggers.getLogger().error(e);
             }
         }
         return sql;

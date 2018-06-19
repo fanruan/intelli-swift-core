@@ -1,11 +1,11 @@
 package com.fr.swift.decision.config;
 
-import com.fr.base.FRContext;
 import com.fr.config.ConfigContext;
 import com.fr.config.holder.factory.Holders;
 import com.fr.stable.StringUtils;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.base.impl.SwiftAbstractSimpleConfig;
+import com.fr.workspace.WorkContext;
 
 /**
  * @author yee
@@ -13,7 +13,7 @@ import com.fr.swift.config.base.impl.SwiftAbstractSimpleConfig;
  */
 public class SwiftPathConfiguration extends SwiftAbstractSimpleConfig<String> {
 
-    private static final String BASE_CUBE_PATH = String.format("%s/../", FRContext.getCurrentEnv().getPath());
+    private static final String BASE_CUBE_PATH = String.format("%s/../", WorkContext.getCurrent().getPath());
     private static SwiftPathConfiguration config = null;
 
     public SwiftPathConfiguration() {

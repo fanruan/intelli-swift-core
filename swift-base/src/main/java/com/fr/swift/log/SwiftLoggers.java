@@ -1,15 +1,11 @@
 package com.fr.swift.log;
 
-import com.fr.base.Env;
-import com.fr.base.FRContext;
 import com.fr.third.apache.log4j.ConsoleAppender;
 import com.fr.third.apache.log4j.DailyRollingFileAppender;
 import com.fr.third.apache.log4j.Level;
 import com.fr.third.apache.log4j.Logger;
 import com.fr.third.apache.log4j.PatternLayout;
-import com.fr.third.apache.log4j.PropertyConfigurator;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,10 +24,10 @@ public final class SwiftLoggers {
     }
 
     private static void conf() {
-        Env env = FRContext.getCurrentEnv();
+//        Env env = FRContext.getCurrentEnv();
         // 这边单独测试，没运行bi，暂时先用default
 //        if (env == null) {
-            PropertyConfigurator.configure(new ByteArrayInputStream(DEFAULT_PROPS.getBytes()));
+//            PropertyConfigurator.configure(new ByteArrayInputStream(DEFAULT_PROPS.getBytes()));
 //            return;
 //        }
 //        String webInfPath = env.getPath();
