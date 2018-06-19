@@ -14,6 +14,7 @@ import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.entity.ClusterEntity;
 import com.fr.swift.service.handler.base.AbstractHandler;
 import com.fr.swift.service.handler.history.rule.DataSyncRule;
+import com.fr.swift.structure.Pair;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
@@ -34,6 +35,7 @@ import java.util.concurrent.CountDownLatch;
 public class HistoryDataSyncManager extends AbstractHandler<HistoryLoadRpcEvent> {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(HistoryDataSyncManager.class);
+
     @Autowired(required = false)
     private SwiftClusterSegmentService clusterSegmentService;
     private DataSyncRule rule = DataSyncRule.DEFAULT;
@@ -55,7 +57,7 @@ public class HistoryDataSyncManager extends AbstractHandler<HistoryLoadRpcEvent>
             String key = keyIterator.next();
             exists.put(key, keys.get(key));
         }
-        Map<String, List<SegmentDestination>> destinations = new HashMap<String, List<SegmentDestination>>();
+        Map<String, Pair<Integer, List<SegmentDestination>>> destinations = new HashMap<String, Pair<Integer, List<SegmentDestination>>>();
         Map<String, Set<URI>> result = rule.calculate(exists, needLoadSegment, destinations);
         keyIterator = result.keySet().iterator();
         try {
