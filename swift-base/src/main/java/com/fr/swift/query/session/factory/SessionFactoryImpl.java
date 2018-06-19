@@ -1,10 +1,9 @@
-package com.fr.swift.query.session.impl;
+package com.fr.swift.query.session.factory;
 
 import com.fr.stable.StringUtils;
 import com.fr.swift.query.cache.Cache;
 import com.fr.swift.query.session.Session;
 import com.fr.swift.query.session.SessionBuilder;
-import com.fr.swift.query.session.SessionFactory;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.third.springframework.stereotype.Service;
 
@@ -22,7 +21,13 @@ import java.util.concurrent.TimeUnit;
 @Service("swiftQuerySessionFactory")
 public class SessionFactoryImpl implements SessionFactory {
 
-    private static final long DEFAULT_SESSION_TIMEOUT = 10 * 1000L;
+    /**
+     * session超时默认10分钟
+     */
+    private static final long DEFAULT_SESSION_TIMEOUT = 10 * 60 * 1000L;
+    /**
+     * 缓存超时默认是session超时的一半
+     */
     private static final long DEFAULT_CACHE_TIMEOUT = DEFAULT_SESSION_TIMEOUT / 2;
     private Map<String, Cache<Session>> sessionMap = new ConcurrentHashMap<String, Cache<Session>>();
     private Map<String, String> queryMap2Session = new ConcurrentHashMap<String, String>();
@@ -38,6 +43,10 @@ public class SessionFactoryImpl implements SessionFactory {
 
     @Override
     public Session openSession(SessionBuilder sessionBuilder) {
+        String queryId = sessionBuilder.getQueryId();
+        if (StringUtils.isNotEmpty(queryId)) {
+            return openSession(sessionBuilder, queryId);
+        }
         return sessionBuilder.build(cacheTimeout);
     }
 
@@ -57,8 +66,7 @@ public class SessionFactoryImpl implements SessionFactory {
         sessionClean.scheduleAtFixedRate(createSessionCleanTask(), sessionTimeout, sessionTimeout, TimeUnit.MILLISECONDS);
     }
 
-    @Override
-    public Session openSession(SessionBuilder sessionBuilder, String queryId) {
+    private Session openSession(SessionBuilder sessionBuilder, String queryId) {
         String sessionId = queryMap2Session.get(queryId);
         Session session = null;
         if (StringUtils.isEmpty(sessionId)) {

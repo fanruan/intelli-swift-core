@@ -9,7 +9,7 @@ import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.query.session.AbstractSession;
 import com.fr.swift.query.session.Session;
 import com.fr.swift.query.session.SessionBuilder;
-import com.fr.swift.query.session.SessionFactory;
+import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.rpc.annotation.RpcMethod;
@@ -61,7 +61,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
 
     @Override
     @RpcMethod(methodName = "historyQuery")
-    public <T extends SwiftResultSet> T query(QueryInfo<T> queryInfo, int segmentOrder) throws SQLException {
+    public <T extends SwiftResultSet> T query(final QueryInfo<T> queryInfo, int segmentOrder) throws SQLException {
         // TODO: 2018/6/14 先到QueryResultSetManager找一下有没有缓存，没有则构建查询。
         // 另外分组表的resultSet在构建Query的时候处理好了，直接返回取出来的结果集即可。等明细部分好了一起改一下
         SessionFactory factory = SwiftContext.getInstance().getBean(SessionFactory.class);
@@ -75,7 +75,12 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                     }
                 };
             }
-        }, queryInfo.getQueryId()).executeQuery(queryInfo, segmentOrder);
+
+            @Override
+            public String getQueryId() {
+                return queryInfo.getQueryId();
+            }
+        }).executeQuery(queryInfo, segmentOrder);
     }
 
     private static class SingletonHolder {

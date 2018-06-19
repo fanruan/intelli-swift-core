@@ -8,7 +8,7 @@ import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.query.session.AbstractSession;
 import com.fr.swift.query.session.Session;
 import com.fr.swift.query.session.SessionBuilder;
-import com.fr.swift.query.session.SessionFactory;
+import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.rpc.annotation.RpcMethod;
 import com.fr.swift.rpc.annotation.RpcService;
 import com.fr.swift.rpc.annotation.RpcServiceType;
@@ -52,7 +52,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
     @Override
     @RpcMethod(methodName = "realTimeQuery")
-    public <T extends SwiftResultSet> T query(QueryInfo<T> queryInfo, int segmentOrder) throws SQLException {
+    public <T extends SwiftResultSet> T query(final QueryInfo<T> queryInfo, int segmentOrder) throws SQLException {
         SessionFactory sessionFactory = SwiftContext.getInstance().getBean(SessionFactory.class);
         return sessionFactory.openSession(new SessionBuilder() {
             @Override
@@ -64,7 +64,12 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
                     }
                 };
             }
-        }, queryInfo.getQueryId()).executeQuery(queryInfo, segmentOrder);
+
+            @Override
+            public String getQueryId() {
+                return queryInfo.getQueryId();
+            }
+        }).executeQuery(queryInfo, segmentOrder);
     }
 
     @Override
