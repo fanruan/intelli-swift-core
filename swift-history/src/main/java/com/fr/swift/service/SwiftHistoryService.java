@@ -1,16 +1,20 @@
 package com.fr.swift.service;
 
 import com.fr.swift.config.SwiftCubePathConfig;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.query.QueryInfo;
+import com.fr.swift.query.session.AbstractSession;
+import com.fr.swift.query.session.Session;
+import com.fr.swift.query.session.SessionBuilder;
+import com.fr.swift.query.session.SessionFactory;
 import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.rpc.annotation.RpcMethod;
 import com.fr.swift.rpc.annotation.RpcService;
 import com.fr.swift.rpc.annotation.RpcServiceType;
-import com.fr.swift.source.SerializableResultSet;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.io.IOException;
@@ -57,11 +61,21 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
 
     @Override
     @RpcMethod(methodName = "historyQuery")
-    public SerializableResultSet query(QueryInfo queryInfo, int segmentOrder) throws SQLException {
+    public <T extends SwiftResultSet> T query(QueryInfo<T> queryInfo, int segmentOrder) throws SQLException {
         // TODO: 2018/6/14 先到QueryResultSetManager找一下有没有缓存，没有则构建查询。
         // 另外分组表的resultSet在构建Query的时候处理好了，直接返回取出来的结果集即可。等明细部分好了一起改一下
-        SwiftResultSet resultSet = QueryBuilder.buildQuery(queryInfo).getQueryResult();
-        return new SerializableResultSet(resultSet);
+        SessionFactory factory = SwiftContext.getInstance().getBean(SessionFactory.class);
+        return factory.openSession(new SessionBuilder() {
+            @Override
+            public Session build(long cacheTimeout) {
+                return new AbstractSession(cacheTimeout) {
+                    @Override
+                    protected <T extends SwiftResultSet> T query(QueryInfo<T> queryInfo, int segmentOrder) throws SQLException {
+                        return QueryBuilder.buildQuery(queryInfo).getQueryResult();
+                    }
+                };
+            }
+        }, queryInfo.getQueryId()).executeQuery(queryInfo, segmentOrder);
     }
 
     private static class SingletonHolder {

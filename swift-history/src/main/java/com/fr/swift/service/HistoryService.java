@@ -1,7 +1,7 @@
 package com.fr.swift.service;
 
 import com.fr.swift.query.query.QueryInfo;
-import com.fr.swift.source.SerializableResultSet;
+import com.fr.swift.source.SwiftResultSet;
 
 import java.io.IOException;
 import java.net.URI;
@@ -20,7 +20,7 @@ public interface HistoryService extends SwiftService {
      * @param <T>       数据
      * @return 数据
      */
-    SerializableResultSet query(QueryInfo queryInfo, int segmentOrder) throws SQLException;
+    <T extends SwiftResultSet> T query(QueryInfo<T> queryInfo, int segmentOrder) throws SQLException;
 
     /**
      * 从共享存储加载

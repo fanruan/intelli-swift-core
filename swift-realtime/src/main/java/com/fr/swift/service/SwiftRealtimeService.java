@@ -1,16 +1,20 @@
 package com.fr.swift.service;
 
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.query.QueryInfo;
+import com.fr.swift.query.session.AbstractSession;
+import com.fr.swift.query.session.Session;
+import com.fr.swift.query.session.SessionBuilder;
+import com.fr.swift.query.session.SessionFactory;
 import com.fr.swift.rpc.annotation.RpcMethod;
 import com.fr.swift.rpc.annotation.RpcService;
 import com.fr.swift.rpc.annotation.RpcServiceType;
 import com.fr.swift.segment.Incrementer;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.recover.SwiftSegmentRecovery;
-import com.fr.swift.source.SerializableResultSet;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.util.concurrent.CommonExecutor;
@@ -48,9 +52,19 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
     @Override
     @RpcMethod(methodName = "realTimeQuery")
-    public SerializableResultSet query(QueryInfo queryInfo, int segmentOrder) throws SQLException {
-        SwiftResultSet resultSet = QueryBuilder.buildQuery(queryInfo).getQueryResult();
-        return new SerializableResultSet(resultSet);
+    public <T extends SwiftResultSet> T query(QueryInfo<T> queryInfo, int segmentOrder) throws SQLException {
+        SessionFactory sessionFactory = SwiftContext.getInstance().getBean(SessionFactory.class);
+        return sessionFactory.openSession(new SessionBuilder() {
+            @Override
+            public Session build(long cacheTimeout) {
+                return new AbstractSession(cacheTimeout) {
+                    @Override
+                    protected <T extends SwiftResultSet> T query(QueryInfo<T> queryInfo, int segmentOrder) throws SQLException {
+                        return QueryBuilder.buildQuery(queryInfo).getQueryResult();
+                    }
+                };
+            }
+        }, queryInfo.getQueryId()).executeQuery(queryInfo, segmentOrder);
     }
 
     @Override
