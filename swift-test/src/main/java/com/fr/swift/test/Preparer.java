@@ -1,11 +1,9 @@
 package com.fr.swift.test;
 
-import com.fr.base.FRContext;
-import com.fr.core.env.impl.LocalEnvConfig;
-import com.fr.dav.LocalEnv;
 import com.fr.swift.config.TestConfDb;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.source.db.TestConnectionProvider;
+import com.fr.workspace.simple.SimpleWork;
 
 /**
  * @author anchore
@@ -13,7 +11,7 @@ import com.fr.swift.source.db.TestConnectionProvider;
  */
 public class Preparer {
     public static void prepareFrEnv() {
-        FRContext.setCurrentEnv(new LocalEnv(new LocalEnvConfig(System.getProperty("user.dir"))));
+        SimpleWork.checkIn(System.getProperty("user.dir"));
     }
 
     public static void prepareCubeBuild() throws Exception {

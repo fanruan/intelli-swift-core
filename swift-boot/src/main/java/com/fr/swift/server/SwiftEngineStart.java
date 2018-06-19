@@ -1,8 +1,5 @@
 package com.fr.swift.server;
 
-import com.fr.base.FRContext;
-import com.fr.core.env.impl.LocalEnvConfig;
-import com.fr.dav.LocalEnv;
 import com.fr.swift.boot.ClusterListener;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.ProviderTaskManager;
@@ -15,6 +12,7 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.service.register.LocalSwiftRegister;
+import com.fr.workspace.simple.SimpleWork;
 
 /**
  * This class created on 2018/6/12
@@ -29,7 +27,7 @@ public class SwiftEngineStart {
 
     public static void main(String[] args) {
         try {
-            FRContext.setCurrentEnv(new LocalEnv(new LocalEnvConfig()));
+            SimpleWork.checkIn(System.getProperty("user.dir"));
 
             SwiftContext.init();
             SwiftContext.getInstance().getBean(SwiftHttpServer.class).start();
