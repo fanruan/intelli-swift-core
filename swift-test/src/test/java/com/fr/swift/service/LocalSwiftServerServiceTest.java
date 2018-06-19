@@ -3,7 +3,11 @@ package com.fr.swift.service;
 import com.fr.swift.service.listener.EventOrder;
 import com.fr.swift.service.listener.EventType;
 import com.fr.swift.service.listener.SwiftServiceListener;
-import junit.framework.TestCase;
+import com.fr.swift.test.Preparer;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.lang.reflect.Field;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -11,27 +15,33 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Created by pony on 2017/11/14.
  */
-public class LocalSwiftServerServiceTest extends TestCase {
+public class LocalSwiftServerServiceTest {
     private LocalSwiftServerService localSwiftServerService;
 
-    @Override
+    @BeforeClass
+    public static void boot() {
+        Preparer.prepareContext();
+    }
+
+    @Before
     public void setUp() throws Exception {
-        super.setUp();
         localSwiftServerService = new LocalSwiftServerService();
         localSwiftServerService.start();
         new SwiftAnalyseService().start();
     }
 
+    @Test
     public void testRegisterService() throws Exception {
         Class c = LocalSwiftServerService.class;
         Field indexingService = c.getDeclaredField("indexingService");
         indexingService.setAccessible(true);
         Field analyseService = c.getDeclaredField("analyseService");
         analyseService.setAccessible(true);
-        assertNotNull(analyseService.get(localSwiftServerService));
-        assertNull(indexingService.get(localSwiftServerService));
+        Assert.assertNotNull(analyseService.get(localSwiftServerService));
+        Assert.assertNull(indexingService.get(localSwiftServerService));
     }
 
+    @Test
     public void testAddListener() {
         final AtomicInteger value = new AtomicInteger(0);
         localSwiftServerService.addListener(new SwiftServiceListener<Integer>() {
@@ -61,7 +71,7 @@ public class LocalSwiftServerServiceTest extends TestCase {
                 return EventType.REAL_TIME_INDEX_FINISH;
             }
         });
-        assertEquals(value.get(), 0);
+        Assert.assertEquals(value.get(), 0);
         localSwiftServerService.trigger(new SwiftServiceEvent<Integer>() {
             @Override
             public Integer getContent() {
@@ -73,7 +83,7 @@ public class LocalSwiftServerServiceTest extends TestCase {
                 return EventType.INDEXING_FINISH;
             }
         });
-        assertEquals(value.get(), 2);
+        Assert.assertEquals(value.get(), 2);
     }
 
 }
