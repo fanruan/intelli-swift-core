@@ -12,7 +12,6 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
 
-import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.Iterator;
 
@@ -21,7 +20,7 @@ import java.util.Iterator;
  * <p>
  * Created by Lyon on 2018/6/14.
  */
-public class LocalAllNodeResultSet implements NodeResultSet<SwiftNode>, Serializable {
+public class LocalAllNodeResultSet implements NodeResultSet<SwiftNode>, SerializableResultSet {
 
     private static final long serialVersionUID = 7098094791977510417L;
     private transient NodeResultSet<SwiftNode> resultSet;
@@ -29,7 +28,7 @@ public class LocalAllNodeResultSet implements NodeResultSet<SwiftNode>, Serializ
     private SwiftNode root;
     private boolean hasNextPage = true;
     private boolean originHasNextPage;
-    private Iterator<Row> iterator;
+    private transient Iterator<Row> iterator;
 
     public LocalAllNodeResultSet(String queryId, NodeResultSet<SwiftNode> resultSet) {
         this.queryId = queryId;
@@ -64,7 +63,7 @@ public class LocalAllNodeResultSet implements NodeResultSet<SwiftNode>, Serializ
 
     @Override
     public boolean hasNextPage() {
-        return hasNextPage | originHasNextPage;
+        return hasNextPage || originHasNextPage;
     }
 
     @Override

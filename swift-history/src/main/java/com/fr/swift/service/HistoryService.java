@@ -1,7 +1,7 @@
 package com.fr.swift.service;
 
 import com.fr.swift.query.query.QueryInfo;
-import com.fr.swift.source.SerializableResultSet;
+import com.fr.swift.result.serialize.SerializableResultSet;
 
 import java.io.IOException;
 import java.net.URI;

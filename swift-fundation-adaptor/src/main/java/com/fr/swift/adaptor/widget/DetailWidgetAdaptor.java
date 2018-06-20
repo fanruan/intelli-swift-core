@@ -23,7 +23,6 @@ import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
-import com.fr.swift.query.group.info.cursor.AllCursor;
 import com.fr.swift.query.group.info.cursor.Cursor;
 import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.info.element.dimension.DetailDimension;
@@ -97,7 +96,8 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
             }
         }
         FilterInfo filterInfos = getFilterInfo(widget, dimensions);
-        return new DetailQueryInfo(cursor, queryId, dimensions.toArray(new Dimension[0]), target, targets, sortIndex, filterInfos, metaData);
+//        return new DetailQueryInfo(cursor, queryId, dimensions.toArray(new Dimension[0]), target, targets, sortIndex, filterInfos, metaData);
+        return null;
     }
 
     /**
@@ -212,7 +212,8 @@ public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
         for (int i = 0; i < fromColumns.length; i++) {
             sortIndex.add(i);
         }
-        DetailQueryInfo info = new DetailQueryInfo(new AllCursor(), queryId, fromColumns, target, targets, sortIndex, filterInfo, metaData);
+//        DetailQueryInfo info = new DetailQueryInfo(new AllCursor(), queryId, fromColumns, target, targets, sortIndex, filterInfo, metaData);
+        DetailQueryInfo info = null;
         SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(info);
         Set[] results = new HashSet[toColumns.length];
         for (int i = 0; i < results.length; i++) {

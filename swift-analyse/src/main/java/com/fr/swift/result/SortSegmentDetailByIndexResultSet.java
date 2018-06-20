@@ -1,19 +1,15 @@
 package com.fr.swift.result;
 
-import com.fr.base.FRContext;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.traversal.BreakTraversalAction;
 import com.fr.swift.query.filter.detail.DetailFilter;
-import com.fr.swift.query.group.by.GroupBy;
-import com.fr.swift.query.group.by.GroupByEntry;
 import com.fr.swift.query.group.by.GroupByResult;
-import com.fr.swift.query.sort.SortType;
+import com.fr.swift.query.sort.Sort;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.structure.array.IntList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +19,11 @@ import java.util.List;
  * Created by Xiaolei.Liu on 2018/3/6
  */
 
-public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
+public class SortSegmentDetailByIndexResultSet implements DetailResultSet {
+
     private List<Column> columnList;
     private DetailFilter filter;
-    private IntList sortIndex;
-    private List<SortType> sorts;
+    private List<Sort> sorts;
     private GroupByResult[] gbr;
     private ImmutableBitMap[] bitmap;
     private SwiftMetaData metaData;
@@ -43,24 +39,22 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
     private int bitmapCount = 1;
     private ArrayList<ImmutableBitMap> sortedDetail = new ArrayList<ImmutableBitMap>();
 
-    public SortSegmentDetailByIndexResultSet(List<Column> columnList, DetailFilter filter, IntList sortIndex, List<SortType> sorts, SwiftMetaData metaData) {
+    public SortSegmentDetailByIndexResultSet(List<Column> columnList, DetailFilter filter, List<Sort> sorts, SwiftMetaData metaData) {
         this.columnList = columnList;
         this.filter = filter;
-        this.sortIndex = sortIndex;
         this.sorts = sorts;
         this.metaData =metaData;
-        this.gbr = new GroupByResult[sortIndex.size()];
-        this.bitmap = new ImmutableBitMap[sortIndex.size() + 1];
+        this.gbr = new GroupByResult[sorts.size()];
+        this.bitmap = new ImmutableBitMap[sorts.size() + 1];
         bitmap[0] = filter.createFilterIndex();
         init();
     }
 
     private void init() {
-        maxRow = filter.createFilterIndex().getCardinality();
+//        maxRow = filter.createFilterIndex().getCardinality();
         getIndexBitmap(0);
         getSortedData();
     }
-
 
     @Override
     public Row getRowData() {
@@ -90,22 +84,27 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
         return new ListBasedRow(values);
     }
 
+    @Override
+    public void close() {
+
+    }
+
     public void getSortedData() {
-        while (true) {
-            ImmutableBitMap filterBitmap = gbr[sortIndex.size() - 1].next().getTraversal().toBitMap();
-            sortedRows += filterBitmap.getCardinality();
-            sortedDetail.add(filterBitmap);
-            if (sortedRows == maxRow) {
-                break;
-            }
-            //下移index游标,计算下一次循环的索引数组
-            nextCursor(filterBitmap);
-        }
+//        while (true) {
+//            ImmutableBitMap filterBitmap = gbr[sortIndex.size() - 1].next().getTraversal().toBitMap();
+//            sortedRows += filterBitmap.getCardinality();
+//            sortedDetail.add(filterBitmap);
+//            if (sortedRows == maxRow) {
+//                break;
+//            }
+//            //下移index游标,计算下一次循环的索引数组
+//            nextCursor(filterBitmap);
+//        }
     }
 
     public void nextCursor(ImmutableBitMap filterBitmap) {
         int index = 0;
-        for (int i = 0; i < sortIndex.size(); i++) {
+        for (int i = 0; i < sorts.size(); i++) {
             bitmap[i] = bitmap[i].getAndNot(filterBitmap);
             if ((bitmap[i].isEmpty())) {
                 break;
@@ -116,25 +115,25 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
     }
 
     public void getIndexBitmap(int start) {
-        for (int i = start; i < sortIndex.size(); i++) {
-            gbr[i] = GroupBy.createGroupByResult(columnList.get(sortIndex.get(i)), bitmap[i], sorts.get(i) == SortType.ASC);
-            GroupByEntry gbe;
-            try {
-                if (gbr[i].hasNext()) {
-                    gbe = gbr[i].next();
-                    bitmap[i + 1] = gbe.getTraversal().toBitMap();
-                } else {
-                    throw new Exception("At least one column has no data");
-                }
-                bitmap[i + 1] = gbe.getTraversal().toBitMap();
-                gbr[i] = GroupBy.createGroupByResult(columnList.get(sortIndex.get(i)), bitmap[i], sorts.get(i) == SortType.ASC);
-                if (i == sortIndex.size() - 1) {
-                    gbr[i].hasNext();
-                }
-            } catch (Exception e) {
-                FRContext.getLogger().error(e.getMessage());
-            }
-        }
+//        for (int i = start; i < sortIndex.size(); i++) {
+//            gbr[i] = GroupBy.createGroupByResult(columnList.get(sortIndex.get(i)), bitmap[i], sorts.get(i) == SortType.ASC);
+//            GroupByEntry gbe;
+//            try {
+//                if (gbr[i].hasNext()) {
+//                    gbe = gbr[i].next();
+//                    bitmap[i + 1] = gbe.getTraversal().toBitMap();
+//                } else {
+//                    throw new Exception("At least one column has no data");
+//                }
+//                bitmap[i + 1] = gbe.getTraversal().toBitMap();
+//                gbr[i] = GroupBy.createGroupByResult(columnList.get(sortIndex.get(i)), bitmap[i], sorts.get(i) == SortType.ASC);
+//                if (i == sortIndex.size() - 1) {
+//                    gbr[i].hasNext();
+//                }
+//            } catch (Exception e) {
+//                FRContext.getLogger().error(e.getMessage());
+//            }
+//        }
     }
 
     @Override
@@ -142,4 +141,23 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
         return metaData;
     }
 
+    @Override
+    public boolean next() {
+        return false;
+    }
+
+    @Override
+    public List<Row> getPage() {
+        return null;
+    }
+
+    @Override
+    public boolean hasNextPage() {
+        return false;
+    }
+
+    @Override
+    public int getRowCount() {
+        return 0;
+    }
 }

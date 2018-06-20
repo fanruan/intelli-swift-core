@@ -10,8 +10,6 @@ import com.finebi.conf.structure.dashboard.widget.FineWidget;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.linkage.LinkageAdaptor;
 import com.fr.swift.query.filter.info.FilterInfo;
-import com.fr.swift.query.group.info.cursor.AllCursor;
-import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.info.element.dimension.DetailDimension;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.query.QueryInfo;
@@ -74,7 +72,8 @@ public class JumpAdaptor {
                 }
             }
         }
-        QueryInfo queryInfo = new DetailQueryInfo(new AllCursor(), widget.getWidgetId(), dims.toArray(new Dimension[0]), sourceKey, null, null, null, null);
+//        QueryInfo queryInfo = new DetailQueryInfo(new AllCursor(), widget.getWidgetId(), dims.toArray(new Dimension[0]), sourceKey, null, null, null, null);
+        QueryInfo queryInfo = null;
         SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
         Map<String, Object> pairs = new HashMap<String, Object>();
         if (resultSet.next()) {
@@ -101,7 +100,8 @@ public class JumpAdaptor {
             dims[i] = new DetailDimension(i, sourceKey, new ColumnKey(BusinessTableUtils.getFieldNameByFieldId(fieldId)), null, null, null);
             i++;
         }
-        QueryInfo queryInfo = new DetailQueryInfo(new AllCursor(), widget.getWidgetId(), dims, sourceKey, null, null, null, null);
+//        QueryInfo queryInfo = new DetailQueryInfo(new AllCursor(), widget.getWidgetId(), dims, sourceKey, null, null, null, null);
+        QueryInfo queryInfo = null;
         SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
         int cursor = 0;
         Map<String, Object> pairs = new HashMap<String, Object>();

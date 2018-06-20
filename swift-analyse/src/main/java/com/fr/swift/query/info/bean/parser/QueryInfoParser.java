@@ -65,6 +65,6 @@ public class QueryInfoParser {
         SourceKey table = new SourceKey(bean.getTableName());
         FilterInfo filterInfo = FilterInfoParser.parse(bean.getFilterInfoBean());
         List<Dimension> dimensions = DimensionParser.parse(bean.getDimensionBeans(), bean.getSortBeans());
-        return new DetailQueryInfo(queryId, table, filterInfo, dimensions);
+        return new DetailQueryInfo(queryId, table, filterInfo, dimensions, null, null, null);
     }
 }

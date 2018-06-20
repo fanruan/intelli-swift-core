@@ -5,12 +5,22 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.query.QueryInfo;
+import com.fr.swift.query.query.QueryResultSetManager;
+import com.fr.swift.query.query.QueryType;
 import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.SwiftRepositoryManager;
+import com.fr.swift.result.DetailResultSet;
+import com.fr.swift.result.GroupNode;
+import com.fr.swift.result.NodeMergeResultSet;
+import com.fr.swift.result.NodeResultSet;
+import com.fr.swift.result.SwiftNode;
+import com.fr.swift.result.serialize.LocalAllNodeResultSet;
+import com.fr.swift.result.serialize.LocalPartNodeResultSet;
+import com.fr.swift.result.serialize.SerializableDetailResultSet;
+import com.fr.swift.result.serialize.SerializableResultSet;
 import com.fr.swift.rpc.annotation.RpcMethod;
 import com.fr.swift.rpc.annotation.RpcService;
 import com.fr.swift.rpc.annotation.RpcServiceType;
-import com.fr.swift.source.SerializableResultSet;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.io.IOException;
@@ -58,10 +68,20 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     @Override
     @RpcMethod(methodName = "historyQuery")
     public SerializableResultSet query(QueryInfo queryInfo) throws SQLException {
-        // TODO: 2018/6/14 先到QueryResultSetManager找一下有没有缓存，没有则构建查询。
-        // 另外分组表的resultSet在构建Query的时候处理好了，直接返回取出来的结果集即可。等明细部分好了一起改一下
-        SwiftResultSet resultSet = QueryBuilder.buildQuery(queryInfo).getQueryResult();
-        return new SerializableResultSet(resultSet);
+        // 先到QueryResultSetManager找一下有没有缓存，没有则构建查询。
+        SwiftResultSet resultSet = QueryResultSetManager.getInstance().get(queryInfo.getQueryId());
+        if (resultSet == null) {
+            resultSet = QueryBuilder.buildQuery(queryInfo).getQueryResult();
+        }
+        QueryType type = queryInfo.getType();
+        switch (type) {
+            case LOCAL_GROUP_ALL:
+                return new LocalAllNodeResultSet(queryInfo.getQueryId(), (NodeResultSet<SwiftNode>) resultSet);
+            case LOCAL_GROUP_PART:
+                return new LocalPartNodeResultSet(queryInfo.getQueryId(), (NodeMergeResultSet<GroupNode>) resultSet);
+            default:
+                return new SerializableDetailResultSet(queryInfo.getQueryId(), (DetailResultSet) resultSet);
+        }
     }
 
     private static class SingletonHolder {

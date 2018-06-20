@@ -14,9 +14,12 @@ import com.fr.swift.query.group.info.cursor.ExpanderType;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.group.GroupQueryInfo;
-import com.fr.swift.query.post.group.GroupPostQuery;
+import com.fr.swift.query.post.PostQuery;
+import com.fr.swift.query.post.PrepareMetaDataQuery;
+import com.fr.swift.query.post.UpdateNodeDataQuery;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.ResultQuery;
+import com.fr.swift.query.result.group.GroupResultQuery;
 import com.fr.swift.query.segment.group.GroupPagingSegmentQuery;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.NodeResultSet;
@@ -38,7 +41,8 @@ public class LocalGroupPagingQueryBuilder extends AbstractLocalGroupQueryBuilder
 
     @Override
     public Query<NodeResultSet> buildPostQuery(ResultQuery<NodeResultSet> query, GroupQueryInfo info) {
-        return new GroupPostQuery(null, null);
+        PostQuery<NodeResultSet> tmpQuery = new UpdateNodeDataQuery(query);
+        return new PrepareMetaDataQuery(tmpQuery, info);
     }
 
     @Override
@@ -57,13 +61,13 @@ public class LocalGroupPagingQueryBuilder extends AbstractLocalGroupQueryBuilder
             MetricInfo metricInfo = new MetricInfoImpl(metricColumns, aggregators, metrics.size());
             queries.add(new GroupPagingSegmentQuery(rowGroupByInfo, metricInfo));
         }
-//        return new GroupPagingResultQuery(queries, getAggregators(metrics), getTargets(info.getPostCalculationInfo()));
-        return null;
+        return new GroupResultQuery(queries, getAggregators(info.getMetrics()),
+                LocalGroupAllQueryBuilder.getComparatorsForMerge(info.getDimensions()));
     }
 
     @Override
     public ResultQuery<NodeResultSet> buildResultQuery(List<Query<NodeResultSet>> queries, GroupQueryInfo info) {
-//        return new GroupPagingResultQuery(queries, getAggregators(info.getMetrics()), getTargets(info.getPostCalculationInfo()));
-        return null;
+        return new GroupResultQuery(queries, getAggregators(info.getMetrics()),
+                LocalGroupAllQueryBuilder.getComparatorsForMerge(info.getDimensions()));
     }
 }

@@ -96,7 +96,7 @@ class GroupQueryBuilder {
                 return builder.buildPostQuery(builder.buildLocalQuery(info), info);
             } else {
                 // 丢给远程节点
-                QueryInfo<NodeResultSet> queryInfo = new RemoteQueryInfoImpl<NodeResultSet>(QueryType.LOCAL_ALL, info);
+                QueryInfo<NodeResultSet> queryInfo = new RemoteQueryInfoImpl<NodeResultSet>(QueryType.LOCAL_GROUP_ALL, info);
                 return new RemoteQueryImpl<NodeResultSet>(queryInfo, uris.get(0));
             }
         }
@@ -105,7 +105,7 @@ class GroupQueryBuilder {
             if (!uri.isRemote()) {
                 queries.add(builder.buildLocalQuery(info));
             } else {
-                QueryInfo<NodeResultSet> queryInfo = new RemoteQueryInfoImpl<NodeResultSet>(QueryType.LOCAL_PART, info);
+                QueryInfo<NodeResultSet> queryInfo = new RemoteQueryInfoImpl<NodeResultSet>(QueryType.LOCAL_GROUP_PART, info);
                 // TODO: 2018/6/6 这边有个问题，远程节点有多个segment怎么办呢？RemoteQuery只对应一个segment的uri的话，远程节点就不能做合并了
                 queries.add(new RemoteQueryImpl<NodeResultSet>(queryInfo, uri));
             }
