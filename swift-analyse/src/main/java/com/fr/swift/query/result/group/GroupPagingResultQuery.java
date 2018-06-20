@@ -1,13 +1,12 @@
 package com.fr.swift.query.result.group;
 
 import com.fr.swift.query.aggregator.Aggregator;
-import com.fr.swift.query.info.element.target.GroupTarget;
 import com.fr.swift.query.query.Query;
-import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.NodeResultSet;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -15,10 +14,9 @@ import java.util.List;
  */
 public class GroupPagingResultQuery extends AbstractGroupResultQuery {
 
-    private List<Sort> indexSorts;
-
-    public GroupPagingResultQuery(List<Query<NodeResultSet>> queries, List<Aggregator> aggregators, List<GroupTarget> targets) {
-        super(queries, aggregators, null);
+    public GroupPagingResultQuery(List<Query<NodeResultSet>> queries, List<Aggregator> aggregators,
+                                  List<Comparator<Integer>> comparators) {
+        super(queries, aggregators, comparators);
     }
 
     @Override

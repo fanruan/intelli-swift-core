@@ -50,8 +50,6 @@ import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.filter.info.value.SwiftDateInRangeFilterValue;
 import com.fr.swift.query.filter.info.value.SwiftNumberInRangeFilterValue;
-import com.fr.swift.query.group.info.cursor.AllCursor;
-import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.info.element.dimension.DetailDimension;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.query.QueryInfo;
@@ -150,7 +148,8 @@ public class LinkageAdaptor {
                     dims[i] = new DetailDimension(i, sourceKey, new ColumnKey(BusinessTableUtils.getFieldNameByFieldId(fieldId)), null, null, null);
                     i++;
                 }
-                QueryInfo queryInfo = new DetailQueryInfo(new AllCursor(), click.getdId(), dims, sourceKey, null, null, null, null);
+//                QueryInfo queryInfo = new DetailQueryInfo(new AllCursor(), click.getdId(), dims, sourceKey, null, null, null, null);
+                QueryInfo queryInfo = null;
                 SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
                 int cursor = 0;
                 while (resultSet.next()) {

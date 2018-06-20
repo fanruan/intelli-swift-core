@@ -22,19 +22,13 @@ public class NormalDetailResultQuery extends AbstractDetailResultQuery {
         this.metaData = metaData;
     }
 
-    public NormalDetailResultQuery(List<Query<DetailResultSet>> queries, DetailTarget[] targets, SwiftMetaData metaData) {
+    public NormalDetailResultQuery(List<Query<DetailResultSet>> queries, List<DetailTarget> targets, SwiftMetaData metaData) {
         super(queries, targets);
         this.metaData = metaData;
     }
 
     @Override
     public DetailResultSet getQueryResult() throws SQLException {
-        if(queryList.size() == 0) {
-            return DetailResultSet.EMPTY;
-        }
-        if(queryList.size() == 1) {
-            return queryList.get(0).getQueryResult();
-        }
         return new MultiSegmentDetailResultSet(queryList, metaData);
     }
 }

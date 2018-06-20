@@ -7,8 +7,11 @@ import com.fr.swift.bitmap.impl.IdBitMap;
 import com.fr.swift.bitmap.impl.RangeBitmap;
 import com.fr.swift.bitmap.impl.RoaringMutableBitMap;
 import com.fr.swift.bitmap.traversal.TraversalAction;
+import com.fr.swift.structure.array.HeapIntArray;
+import com.fr.swift.structure.array.IntArray;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.iterator.IntListRowTraversal;
+import com.fr.swift.structure.iterator.RowTraversal;
 
 /**
  * @author anchore
@@ -47,4 +50,16 @@ public final class BitMaps {
         return bitmap;
     }
 
+    public static IntArray traversal2Array(RowTraversal traversal) {
+        final IntArray array = new HeapIntArray(traversal.getCardinality());
+        traversal.traversal(new TraversalAction() {
+            private int index = 0;
+
+            @Override
+            public void actionPerformed(int row) {
+                array.put(index++, row);
+            }
+        });
+        return array;
+    }
 }

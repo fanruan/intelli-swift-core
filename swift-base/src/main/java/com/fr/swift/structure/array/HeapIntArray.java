@@ -13,6 +13,10 @@ public class HeapIntArray implements IntArray {
         Arrays.fill(items, defaultValue);
     }
 
+    public HeapIntArray(int capacity) {
+        this.items = new int[capacity];
+    }
+
     @Override
     public void put(int index, int value) {
         items[index] = value;

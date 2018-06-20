@@ -10,8 +10,6 @@ import com.fr.swift.result.SwiftNodeOperator;
 import com.fr.swift.result.node.GroupNodeUtils;
 
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Lyon on 2018/5/31.
@@ -26,14 +24,11 @@ public class UpdateNodeDataQuery extends AbstractPostQuery<NodeResultSet> {
 
     @Override
     public NodeResultSet getQueryResult() throws SQLException {
-        // TODO: 2018/6/13 mergeResultSet要调整一下
-        // 这边区分分页和不分页吗？分页在MergeResultSet里面处理吗？
-        NodeMergeResultSet<GroupNode> mergeResult = (NodeMergeResultSet<GroupNode>) query.getQueryResult();
-        final List<Map<Integer, Object>> dictionary = mergeResult.getRowGlobalDictionaries();
+        final NodeMergeResultSet<GroupNode> mergeResult = (NodeMergeResultSet<GroupNode>) query.getQueryResult();
         SwiftNodeOperator<SwiftNode> operator = new SwiftNodeOperator<SwiftNode>() {
             @Override
             public SwiftNode operate(SwiftNode... node) {
-                GroupNodeUtils.updateNodeData(dictionary.size(), (GroupNode) node[0], dictionary);
+                GroupNodeUtils.updateNodeData(mergeResult.getRowGlobalDictionaries().size(), (GroupNode) node[0], mergeResult.getRowGlobalDictionaries());
                 return node[0];
             }
         };

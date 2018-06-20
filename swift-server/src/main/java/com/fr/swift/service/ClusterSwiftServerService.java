@@ -4,6 +4,7 @@ import com.fr.swift.URL;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
@@ -11,6 +12,7 @@ import com.fr.swift.selector.UrlSelector;
 import com.fr.swift.service.entity.ClusterEntity;
 import com.fr.swift.util.Crasher;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -53,6 +55,11 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
     public boolean start() {
         super.start();
         return true;
+    }
+
+    @Override
+    public Serializable trigger(SwiftRpcEvent event) {
+        return null;
     }
 
     @Override

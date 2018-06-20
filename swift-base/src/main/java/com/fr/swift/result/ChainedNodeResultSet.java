@@ -13,11 +13,17 @@ public class ChainedNodeResultSet implements NodeResultSet<SwiftNode> {
 
     private SwiftNodeOperator<SwiftNode> operator;
     private NodeResultSet source;
+    private SwiftMetaData metaData;
     private Iterator<Row> rowIterator;
 
     public ChainedNodeResultSet(SwiftNodeOperator<SwiftNode> operator, NodeResultSet source) {
         this.operator = operator;
         this.source = source;
+    }
+
+    public ChainedNodeResultSet(SwiftNodeOperator<SwiftNode> operator, NodeResultSet source, SwiftMetaData metaData) {
+        this(operator, source);
+        this.metaData = metaData;
     }
 
     @Override
@@ -37,13 +43,13 @@ public class ChainedNodeResultSet implements NodeResultSet<SwiftNode> {
 
     @Override
     public SwiftMetaData getMetaData() throws SQLException {
-        return null;
+        return metaData;
     }
 
     @Override
     public boolean next() throws SQLException {
         if (rowIterator == null) {
-            rowIterator = new SwiftRowIteratorImpl(this);
+            rowIterator = new SwiftNode2RowIterator(this);
         }
         return rowIterator.hasNext();
     }
