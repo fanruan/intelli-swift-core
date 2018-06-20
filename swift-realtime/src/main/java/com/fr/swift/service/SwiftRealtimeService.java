@@ -1,5 +1,6 @@
 package com.fr.swift.service;
 
+import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.builder.QueryBuilder;
@@ -31,7 +32,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     public void insert(SourceKey tableKey, SwiftResultSet resultSet) throws SQLException {
         SwiftLoggers.getLogger().info("insert");
 
-        new Incrementer(tableKey).increment(resultSet);
+        new Incrementer(SwiftDatabase.getInstance().getTable(tableKey)).increment(resultSet);
     }
 
     @Override

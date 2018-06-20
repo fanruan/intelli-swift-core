@@ -60,10 +60,6 @@ public class SwiftRealtimeInserter extends SwiftInserter {
     }
 
     private static class BackupInserter extends BaseInserter {
-        BackupInserter(Segment segment) {
-            super(segment);
-        }
-
         BackupInserter(Segment segment, List<String> fields) {
             super(segment, fields);
         }

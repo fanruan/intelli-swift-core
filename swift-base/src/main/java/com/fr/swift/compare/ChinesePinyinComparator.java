@@ -43,6 +43,12 @@ class ChinesePinyinComparator implements Comparator<String> {
         if (o1 == o2) {
             return 0;
         }
+        if (o1 == Comparators.MIN_INFINITY || o2 == Comparators.MAX_INFINITY) {
+            return -1;
+        }
+        if (o1 == Comparators.MAX_INFINITY || o2 == Comparators.MIN_INFINITY) {
+            return 1;
+        }
         if (o1 == null) {
             return -1;
         }

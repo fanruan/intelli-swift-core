@@ -6,8 +6,6 @@ import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.util.Crasher;
-import com.fr.third.javax.persistence.AttributeConverter;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -92,7 +90,7 @@ public class SwiftDatabase implements Database {
 
         private final int id;
         private final String name;
-        public final String dir;
+        private final String dir;
 
         Schema(int id, String name, String dir) {
             this.id = id;
@@ -110,40 +108,6 @@ public class SwiftDatabase implements Database {
 
         public String getName() {
             return name;
-        }
-
-        @Override
-        public String toString() {
-            return dir;
-        }
-
-        public static class SchemaConverter0 implements AttributeConverter<Schema, String> {
-            @Override
-            public String convertToDatabaseColumn(Schema schema) {
-                return schema.toString();
-            }
-
-            @Override
-            public Schema convertToEntityAttribute(String schema) {
-                return Schema.valueOf(schema);
-            }
-        }
-
-        public static class SchemaConverter implements AttributeConverter<Schema, Integer> {
-            @Override
-            public Integer convertToDatabaseColumn(Schema schema) {
-                return schema.id;
-            }
-
-            @Override
-            public Schema convertToEntityAttribute(Integer integer) {
-                for (Schema schema : Schema.values()) {
-                    if (schema.id == integer) {
-                        return schema;
-                    }
-                }
-                return Crasher.crash("no type fits: " + integer);
-            }
         }
     }
 }

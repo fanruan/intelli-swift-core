@@ -62,7 +62,7 @@ public class RealtimeRecorderTest extends BaseTest {
 
         for (int i = 0; i < 7; i++) {
             String cubePath = String.format("%s/%s/seg%d",
-                    Schema.BACKUP_CUBE.dir,
+                    Schema.BACKUP_CUBE.getDir(),
                     dataSource.getSourceKey().getId(), i);
             IResourceLocation location = new ResourceLocation(cubePath, Types.StoreType.FINE_IO);
             Segment segment = new HistorySegmentImpl(location, dataSource.getMetadata());

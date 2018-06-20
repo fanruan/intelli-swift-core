@@ -39,7 +39,7 @@ public class IncrementerTest {
 
     @Test
     public void increment() throws SQLException {
-        Incrementer incrementer = new Incrementer(dataSource.getSourceKey());
+        Incrementer incrementer = new Incrementer(dataSource);
         incrementer.increment(transfer.createResultSet());
         incrementer.increment(transfer.createResultSet());
         Segment seg = SwiftContext.getInstance().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey()).get(0);
