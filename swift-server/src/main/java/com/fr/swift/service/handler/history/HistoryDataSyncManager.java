@@ -1,17 +1,18 @@
 package com.fr.swift.service.handler.history;
 
 import com.fr.swift.config.service.SwiftClusterSegmentService;
+import com.fr.swift.event.analyse.SegmentLocationRpcEvent;
 import com.fr.swift.event.history.HistoryLoadRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rpc.client.AsyncRpcCallback;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
 import com.fr.swift.service.ClusterSwiftServerService;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.entity.ClusterEntity;
+import com.fr.swift.service.handler.SwiftServiceHandlerManager;
 import com.fr.swift.service.handler.base.AbstractHandler;
 import com.fr.swift.service.handler.history.rule.DataSyncRule;
 import com.fr.swift.structure.Pair;
@@ -99,7 +100,9 @@ public class HistoryDataSyncManager extends AbstractHandler<HistoryLoadRpcEvent>
                                 Map<String, List<String>> segmentTable = new HashMap<String, List<String>>();
                                 segmentTable.put(key, idList);
                                 clusterSegmentService.updateSegmentTable(segmentTable);
-                                updateDestination(destinations);
+//                                updateDestination(destinations);
+                                SwiftServiceHandlerManager.getManager().
+                                        handle(new SegmentLocationRpcEvent(new SegmentLocationInfoImpl(ServiceType.HISTORY, destinations)));
                             }
 
                             @Override
@@ -113,31 +116,5 @@ public class HistoryDataSyncManager extends AbstractHandler<HistoryLoadRpcEvent>
             LOGGER.error(e.getMessage(), e);
         }
         return null;
-    }
-
-    private void updateDestination(Map<String, Pair<Integer, List<SegmentDestination>>> destinations) {
-        Map<String, ClusterEntity> analyseServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.ANALYSE);
-        if (null == analyseServices || analyseServices.isEmpty()) {
-            throw new RuntimeException("Cannot find analyse service");
-        }
-        Iterator<Map.Entry<String, ClusterEntity>> iterator = analyseServices.entrySet().iterator();
-        while (iterator.hasNext()) {
-            final long start = System.currentTimeMillis();
-            Map.Entry<String, ClusterEntity> entity = iterator.next();
-            String address = entity.getKey();
-            Class clazz = entity.getValue().getServiceClass();
-            runAsyncRpc(address, clazz, "updateSegmentInfo", new SegmentLocationInfoImpl(ServiceType.HISTORY, destinations), SegmentLocationInfo.UpdateType.ALL)
-                    .addCallback(new AsyncRpcCallback() {
-                        @Override
-                        public void success(Object result) {
-                            LOGGER.info(String.format("Update segmentInfo cost: %d ms", System.currentTimeMillis() - start));
-                        }
-
-                        @Override
-                        public void fail(Exception e) {
-                            LOGGER.error(e.getMessage(), e);
-                        }
-                    });
-        }
     }
 }

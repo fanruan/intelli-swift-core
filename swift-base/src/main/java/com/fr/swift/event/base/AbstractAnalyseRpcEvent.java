@@ -14,5 +14,6 @@ public abstract class AbstractAnalyseRpcEvent<T> implements SwiftRpcEvent<T> {
     public abstract Event subEvent();
 
     public enum Event implements SubEvent {
+        SEGMENT_LOCATION
     }
 }
