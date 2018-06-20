@@ -1,5 +1,6 @@
 package com.fr.swift.service;
 
+import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.service.listener.EventType;
 import com.fr.swift.service.listener.SingleTypeListenerContainer;
 import com.fr.swift.service.listener.SwiftServiceListener;
@@ -7,6 +8,7 @@ import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.service.listener.SwiftServiceListenerManager;
 
 import javax.annotation.PostConstruct;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,6 +47,11 @@ public abstract class AbstractSwiftServerService extends AbstractSwiftService im
                 }
             }
         }
+    }
+
+    @Override
+    public Serializable trigger(SwiftRpcEvent event) {
+        return null;
     }
 
     protected void initListener() {
