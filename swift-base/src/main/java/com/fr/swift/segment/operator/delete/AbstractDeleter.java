@@ -1,12 +1,10 @@
 package com.fr.swift.segment.operator.delete;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.swift.segment.operator.Deleter;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
 
@@ -22,7 +20,7 @@ import java.util.Map;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public abstract class AbstractDeleter implements Deleter {
+public abstract class AbstractDeleter implements RowDeleter {
 
     protected Segment segment;
 
@@ -30,7 +28,7 @@ public abstract class AbstractDeleter implements Deleter {
     private Map<String, BitmapIndexedColumn> bitmapIndexedColumnMap;
     private ImmutableBitMap allShowIndex;
 
-    public AbstractDeleter(Segment segment) throws SwiftMetaDataException {
+    public AbstractDeleter(Segment segment) {
         this.segment = segment;
 
         dictionaryEncodedColumnMap = new HashMap<String, DictionaryEncodedColumn>();

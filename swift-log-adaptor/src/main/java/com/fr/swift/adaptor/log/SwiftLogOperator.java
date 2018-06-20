@@ -2,7 +2,9 @@ package com.fr.swift.adaptor.log;
 
 import com.fr.general.DataList;
 import com.fr.general.LogOperator;
+import com.fr.log.message.AbstractMessage;
 import com.fr.stable.query.condition.QueryCondition;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
@@ -10,16 +12,22 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.query.query.QueryRunnerProvider;
+import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.operator.delete.RangeDeleter;
+import com.fr.swift.segment.operator.delete.RealtimeRangeDeleter;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.util.Interval;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -113,8 +121,20 @@ public class SwiftLogOperator implements LogOperator {
     }
 
     @Override
-    public void clearLogBefore(Date date) {
-
+    public void clearLogBefore(Date date) throws SQLException {
+        Map<String, Interval> intervals = new HashMap<String, Interval>(1);
+        intervals.put(AbstractMessage.COLUMN_TIME, Interval.ofInfiniteMin(date.getTime(), true));
+        List<Table> tables = SwiftDatabase.getInstance().getAllTables();
+        SwiftSegmentManager localSegmentProvider = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class);
+        for (Table table : tables) {
+            for (Segment segment : localSegmentProvider.getSegment(table.getSourceKey())) {
+                if (segment.isHistory()) {
+                    new RangeDeleter(segment, intervals).delete();
+                } else {
+                    new RealtimeRangeDeleter(segment, intervals).delete();
+                }
+            }
+        }
     }
 
     class Sync implements Runnable {

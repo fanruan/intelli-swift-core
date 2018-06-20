@@ -34,6 +34,7 @@ public class SegmentRecoveryTest {
 
     private ConnectionInfo connectionInfo;
 
+
     @BeforeClass
     public static void boot() throws Exception {
         Preparer.prepareCubeBuild();
@@ -62,7 +63,7 @@ public class SegmentRecoveryTest {
         inserter.insertData(swiftResultSet);
 
         String tablePath = String.format("%s/%s",
-                dataSource.getMetadata().getSwiftSchema().dir,
+                dataSource.getMetadata().getSwiftSchema().getDir(),
                 dataSource.getSourceKey().getId());
         ResourceDiscovery.getInstance().removeCubeResource(tablePath);
         SwiftSegmentRecovery.getInstance().recoverAll();
@@ -73,5 +74,12 @@ public class SegmentRecoveryTest {
         for (int i = 0; i < segment.getRowCount(); i++) {
             segment.getColumn(new ColumnKey("付款金额")).getDetailColumn().get(i);
         }
+    }
+
+    private Segment newRealtimeSegment() {
+        return new RealTimeSegmentImpl(new ResourceLocation(
+                String.format("%s/%s/seg0",
+                        dataSource.getMetadata().getSwiftSchema().getDir(),
+                        dataSource.getSourceKey().getId()), StoreType.MEMORY), dataSource.getMetadata());
     }
 }
