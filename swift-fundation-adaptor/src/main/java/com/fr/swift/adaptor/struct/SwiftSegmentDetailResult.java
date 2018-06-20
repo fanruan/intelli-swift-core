@@ -6,7 +6,6 @@ import com.fr.swift.compare.Comparators;
 import com.fr.swift.query.filter.detail.impl.AllShowDetailFilter;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.detail.NormalDetailResultQuery;
-import com.fr.swift.query.result.detail.SortDetailResultQuery;
 import com.fr.swift.query.segment.detail.NormalDetailSegmentQuery;
 import com.fr.swift.query.segment.detail.SortDetailSegmentQuery;
 import com.fr.swift.query.sort.SortType;
@@ -70,13 +69,13 @@ public class SwiftSegmentDetailResult implements BIDetailTableResult {
             if (comparator == null) {
                 comparator = new DetailSortComparator(columnList, sortIndex, sorts);
             }
-            queryList.add(new SortDetailSegmentQuery(columnList, new AllShowDetailFilter(segment), sortIndex, sorts, swiftMetaData));
+            queryList.add(new SortDetailSegmentQuery(columnList, new AllShowDetailFilter(segment), null, swiftMetaData));
         }
         Query<DetailResultSet> query = null;
         if (queryList.size() == 1) {
             query = queryList.get(0);
         } else {
-            query = new SortDetailResultQuery(queryList, comparator, swiftMetaData);
+//            query = new SortDetailResultQuery(queryList, comparator, swiftMetaData);
         }
         SwiftResultSet resultSet = ShowResultSet.of(query.getQueryResult(), swiftMetaData);
         dataIterator = new DetailResultIterator(resultSet);

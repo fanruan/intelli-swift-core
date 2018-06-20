@@ -125,7 +125,7 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
         return indexSorts;
     }
 
-    private static List<Comparator<Integer>> getComparatorsForMerge(List<Dimension> dimensions) {
+    static List<Comparator<Integer>> getComparatorsForMerge(List<Dimension> dimensions) {
         List<Comparator<Integer>> comparators = new ArrayList<Comparator<Integer>>(dimensions.size());
         for (Dimension dimension : dimensions) {
             Sort sort = dimension.getSort();

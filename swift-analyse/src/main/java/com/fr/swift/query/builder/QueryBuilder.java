@@ -12,7 +12,6 @@ import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.source.SwiftResultSet;
 
-import java.net.URI;
 import java.sql.SQLException;
 
 /**
@@ -37,9 +36,10 @@ public final class QueryBuilder {
                 return (Query<T>) buildGroupQuery((GroupQueryInfoImpl) info);
             case RESULT_JOIN:
                 return (Query<T>) buildResultJoinQuery((ResultJoinQueryInfo) info);
-            case LOCAL_ALL:
+            case LOCAL_DETAIL:
+            case LOCAL_GROUP_ALL:
                 return buildLocalAllQuery(((RemoteQueryInfo) info).getQueryInfo());
-            case LOCAL_PART:
+            case LOCAL_GROUP_PART:
                 return (Query<T>) buildLocalPartQuery(((RemoteQueryInfo) info).getQueryInfo());
             default:
                 return (Query<T>) buildDetailQuery((DetailQueryInfo) info);
@@ -84,13 +84,7 @@ public final class QueryBuilder {
         if (type == QueryType.GROUP) {
             return (Query<T>) GroupQueryBuilder.buildLocalAllQuery((GroupQueryInfo) info);
         } else {
-            // TODO: 2018/6/6
             return (Query<T>) DetailQueryBuilder.buildLocalAllQuery((DetailQueryInfo) info);
         }
-    }
-
-    static boolean isLocalURI(URI uri) {
-        // TODO: 2018/6/6
-        return true;
     }
 }

@@ -3,36 +3,60 @@ package com.fr.swift.result;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.structure.Pair;
+import com.fr.swift.structure.queue.SortedListMergingUtils;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * Created by Xiaolei.Liu on 2018/1/24
  */
+public class SortMultiSegmentDetailResultSet implements DetailResultSet {
 
-public class SortMultiSegmentDetailResultSet extends DetailResultSet {
     private List<Query<DetailResultSet>> queries;
-    private Comparator comparator;
-    private Row[] unsortedRows;
-    private SwiftResultSet[] rs;
+    private List<Pair<Integer, Comparator>> comparators;
     private SwiftMetaData metaData;
+    private int rowCount;
+    private Iterator<List<Row>> mergerIterator;
+    private Iterator<Row> rowIterator;
 
-    public SortMultiSegmentDetailResultSet(List<Query<DetailResultSet>> queries, Comparator comparator, SwiftMetaData metaData) throws SQLException {
-        this.unsortedRows = new Row[queries.size()];
-        this.rs = new SwiftResultSet[queries.size()];
+    public SortMultiSegmentDetailResultSet(List<Query<DetailResultSet>> queries,
+                                           List<Pair<Integer, Comparator>> comparators, SwiftMetaData metaData) throws SQLException {
         this.queries = queries;
-        this.comparator = comparator;
+        this.comparators = comparators;
         this.metaData = metaData;
         init();
     }
 
+    private void init() throws SQLException {
+        List<DetailResultSet> resultSets = new ArrayList<DetailResultSet>();
+        for (Query query : queries) {
+            rowCount += ((DetailResultSet) query.getQueryResult()).getRowCount();
+            resultSets.add((DetailResultSet) query.getQueryResult());
+        }
+        mergerIterator = new SortedDetailMergerIterator(PAGE_SIZE, createRowComparator(comparators), resultSets);
+    }
 
     @Override
-    public Row getRowData() throws SQLException {
-        return getLatestRowData(unsortedRows[0]);
+    public List<Row> getPage() {
+        if (mergerIterator.hasNext()) {
+            return mergerIterator.next();
+        }
+        return new ArrayList<Row>(0);
+    }
+
+    @Override
+    public boolean hasNextPage() {
+        return mergerIterator.hasNext();
+    }
+
+    @Override
+    public int getRowCount() {
+        return rowCount;
     }
 
     @Override
@@ -40,50 +64,105 @@ public class SortMultiSegmentDetailResultSet extends DetailResultSet {
         return metaData;
     }
 
-    private void init() throws SQLException {
-        int i = 0;
-        for (Query query : queries) {
-            rs[i] = query.getQueryResult();
-            if (rs[i].next()) {
-                unsortedRows[i] = rs[i].getRowData();
-            }
-            maxRow += ((DetailResultSet) query.getQueryResult()).getRowSize();
-            i++;
+    @Override
+    public boolean next() {
+        if (rowIterator == null) {
+            rowIterator = new SwiftRowIteratorImpl(this);
         }
+        return rowIterator.hasNext();
+    }
+
+    @Override
+    public Row getRowData() {
+        return rowIterator.next();
+    }
+
+    @Override
+    public void close() {
 
     }
 
-    /**
-     * 类似纸牌游戏，n块数据时unsortedRows数组大小为n;每次分别从n块排好序的数据中取一行数据放在unsortedRows对应的位置上,
-     * 比较出这n行数据的最大或最小值frontRow，并且从该frontRow所在的块取下一行数据放在unsortedRows对应的位置上（替换掉
-     * 该位置上的值）;数组元素为空表示该数组位置对应的块数据已经被取完。
-     */
-    private Row getLatestRowData(Row frontRow) throws SQLException {
-        int pos = 0;
-        for (int i = 1; i < unsortedRows.length; i++) {
-            while (unsortedRows[i] == null) {
-                if (i >= unsortedRows.length - 1) {
-                    break;
+    private static Comparator<Row> createRowComparator(final List<Pair<Integer, Comparator>> comparators) {
+        return new Comparator<Row>() {
+            @Override
+            public int compare(Row o1, Row o2) {
+                for (Pair<Integer, Comparator> pair : comparators) {
+                    int result = pair.getValue().compare(o1.getValue(pair.getKey()), o2.getValue(pair.getKey()));
+                    if (result != 0) {
+                        return result;
+                    }
                 }
-                i = i + 1;
+                return 0;
             }
-            if (unsortedRows[i] == null) {
-                continue;
-            }
-            if (frontRow == null) {
-                frontRow = unsortedRows[i];
-                pos = i;
-            }
-            if (comparator.compare(frontRow, unsortedRows[i]) > 0) {
-                frontRow = unsortedRows[i];
-                pos = i;
-            }
+        };
+    }
+
+    private static class SortedDetailMergerIterator implements Iterator<List<Row>> {
+
+        private int pageSize;
+        private List<DetailResultSet> resultSets;
+        private Comparator<Row> comparator;
+        private List<Row> remainRows = new ArrayList<Row>(0);
+        private List<Row> next;
+
+        public SortedDetailMergerIterator(int pageSize, Comparator<Row> comparator, List<DetailResultSet> resultSets) {
+            this.pageSize = pageSize;
+            this.comparator = comparator;
+            this.resultSets = resultSets;
+            this.next = getNext();
         }
-        if (rs[pos].next()) {
-            unsortedRows[pos] = rs[pos].getRowData();
-        } else {
-            unsortedRows[pos] = null;
+
+        /**
+         * 假设有个n个resultSet中取出m页数据(m <= n，有的resultSet可能取完了)和remainRows一起进行堆排序，
+         * 从排序结果中取出前pageSize行，剩余行放到remainRows中用于下次合并
+         *
+         * @return
+         */
+        private List<Row> getNext() {
+            List<List<Row>> lists = new ArrayList<List<Row>>();
+            lists.add(remainRows);
+            for (DetailResultSet resultSet : resultSets) {
+                if (resultSet.hasNextPage()) {
+                    lists.add(resultSet.getPage());
+                }
+            }
+            if (!remainRows.isEmpty() && lists.size() == 1) {
+                // resultSets中的数据都取出来了，只要取出remainRows中的数据返回即可
+                return getPage(remainRows.iterator());
+            }
+            Iterator<Row> iterator = SortedListMergingUtils.merge(lists, comparator);
+            return getPage(iterator);
         }
-        return frontRow;
+
+        private List<Row> getPage(Iterator<Row> iterator) {
+            List<Row> ret = new ArrayList<Row>();
+            remainRows = new ArrayList<Row>();
+            int count = pageSize;
+            while (iterator.hasNext()) {
+                if (count-- > 0) {
+                    ret.add(iterator.next());
+                } else {
+                    remainRows.add(iterator.next());
+                }
+            }
+            return ret;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return !next.isEmpty();
+        }
+
+        @Override
+        public List<Row> next() {
+            List<Row> ret = getNext();
+            next = getNext();
+            return ret;
+        }
+
+        @Override
+        public void remove() {
+
+        }
     }
 }

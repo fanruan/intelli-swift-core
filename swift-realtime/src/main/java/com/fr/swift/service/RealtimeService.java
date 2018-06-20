@@ -1,6 +1,7 @@
 package com.fr.swift.service;
 
 import com.fr.swift.query.query.QueryInfo;
+import com.fr.swift.result.serialize.SerializableResultSet;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
