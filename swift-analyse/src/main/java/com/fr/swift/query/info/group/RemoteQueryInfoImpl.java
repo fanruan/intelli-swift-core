@@ -4,6 +4,8 @@ import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.source.SwiftResultSet;
 
+import java.net.URI;
+
 /**
  * Created by Lyon on 2018/6/5.
  */
@@ -31,4 +33,15 @@ public class RemoteQueryInfoImpl<T extends SwiftResultSet> implements RemoteQuer
     public QueryType getType() {
         return remoteQueryType;
     }
+
+    @Override
+    public URI getQuerySegment() {
+        return queryInfo.getQuerySegment();
+    }
+
+    @Override
+    public void setQuerySegment(URI target) {
+        queryInfo.setQuerySegment(target);
+    }
+
 }

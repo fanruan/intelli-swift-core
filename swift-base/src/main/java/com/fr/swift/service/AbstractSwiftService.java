@@ -1,6 +1,8 @@
 package com.fr.swift.service;
 
 import com.fr.swift.exception.SwiftServiceException;
+import com.fr.swift.log.SwiftLogger;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.service.listener.SwiftServiceListenerManager;
 
 import java.io.Serializable;
@@ -11,6 +13,7 @@ import java.io.Serializable;
 public abstract class AbstractSwiftService implements SwiftService, Serializable {
 
     private static final long serialVersionUID = -7878341721352591837L;
+    protected SwiftLogger logger = SwiftLoggers.getLogger(getClass());
     //远程机器id，没有表示本地
     private String id;
 

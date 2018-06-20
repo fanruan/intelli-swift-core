@@ -5,6 +5,7 @@ import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.result.NodeResultSet;
 
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -43,4 +44,15 @@ public class NestedQueryInfoImpl implements NestedQueryInfo<NodeResultSet> {
     public QueryType getType() {
         return QueryType.NEST;
     }
+
+    @Override
+    public URI getQuerySegment() {
+        return queryInfo.getQuerySegment();
+    }
+
+    @Override
+    public void setQuerySegment(URI target) {
+        queryInfo.setQuerySegment(target);
+    }
+
 }

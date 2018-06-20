@@ -3,7 +3,9 @@ package com.fr.swift.segment.impl;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationManager;
+import com.fr.swift.segment.rule.DestSelectRule;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.structure.Pair;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -17,15 +19,22 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SegmentLocationManagerImpl implements SegmentLocationManager {
 
-    private Map<String, List<SegmentDestination>> segments;
+    private Map<String, Pair<Integer, List<SegmentDestination>>> segments;
+    private DestSelectRule rule = DestSelectRule.DEFAULT;
 
     public SegmentLocationManagerImpl() {
-        segments = new ConcurrentHashMap<String, List<SegmentDestination>>();
+        segments = new ConcurrentHashMap<String, Pair<Integer, List<SegmentDestination>>>();
+    }
+
+    public void setRule(DestSelectRule rule) {
+        this.rule = rule;
     }
 
     @Override
     public List<SegmentDestination> getSegmentLocationURI(SourceKey table) {
-        List<SegmentDestination> destinations = segments.get(table.getId());
+        List<SegmentDestination> destinations = segments.get(table.getId()).getValue();
+        int totalCount = segments.get(table.getId()).getKey();
+        destinations = rule.selectDestination(totalCount, destinations);
         // 暂时先这么处理，，，，
         if (null == destinations || destinations.isEmpty()) {
             destinations = new ArrayList<SegmentDestination>();
@@ -38,7 +47,6 @@ public class SegmentLocationManagerImpl implements SegmentLocationManager {
     public void updateSegmentInfo(SegmentLocationInfo segmentInfo, SegmentLocationInfo.UpdateType updateType) {
         if (updateType == SegmentLocationInfo.UpdateType.ALL) {
             segments.clear();
-
         }
         segments.putAll(segmentInfo.getDestinations());
     }

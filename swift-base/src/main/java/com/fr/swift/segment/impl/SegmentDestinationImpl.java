@@ -5,6 +5,8 @@ import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.service.SwiftService;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author yee
@@ -17,6 +19,7 @@ public class SegmentDestinationImpl implements SegmentDestination {
     private int order;
     private Class<? extends SwiftService> serviceClass;
     private String methodName;
+    private List<String> spareNodes;
 
     public SegmentDestinationImpl(String clusterId, URI uri, int order, Class<? extends SwiftService> serviceClass, String methodName) {
         this.clusterId = clusterId;
@@ -24,6 +27,11 @@ public class SegmentDestinationImpl implements SegmentDestination {
         this.order = order;
         this.serviceClass = serviceClass;
         this.methodName = methodName;
+        this.spareNodes = new ArrayList<String>();
+    }
+
+    public SegmentDestinationImpl(SegmentDestination destination) {
+        this(destination.getClusterId(), destination.getUri(), destination.order(), destination.getServiceClass(), destination.getMethodName());
     }
 
     public SegmentDestinationImpl(URI uri, int order) {
@@ -31,6 +39,7 @@ public class SegmentDestinationImpl implements SegmentDestination {
         this.order = order;
     }
 
+    @Override
     public String getClusterId() {
         return clusterId;
     }
@@ -41,6 +50,15 @@ public class SegmentDestinationImpl implements SegmentDestination {
 
     public URI getUri() {
         return uri;
+    }
+
+    @Override
+    public List<String> getSpareNodes() {
+        return spareNodes;
+    }
+
+    public void setSpareNodes(List<String> spareNodes) {
+        this.spareNodes = spareNodes;
     }
 
     public void setUri(URI uri) {
@@ -72,4 +90,30 @@ public class SegmentDestinationImpl implements SegmentDestination {
         return order;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SegmentDestinationImpl that = (SegmentDestinationImpl) o;
+
+        if (order != that.order) return false;
+        if (uri != null ? !uri.equals(that.uri) : that.uri != null) return false;
+        if (serviceClass != null ? !serviceClass.equals(that.serviceClass) : that.serviceClass != null) return false;
+        return methodName != null ? methodName.equals(that.methodName) : that.methodName == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = uri != null ? uri.hashCode() : 0;
+        result = 31 * result + order;
+        result = 31 * result + (serviceClass != null ? serviceClass.hashCode() : 0);
+        result = 31 * result + (methodName != null ? methodName.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public int compareTo(SegmentDestination o) {
+        return order - o.order();
+    }
 }
