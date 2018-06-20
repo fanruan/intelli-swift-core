@@ -67,7 +67,7 @@ class DetailQueryBuilder {
     private static Query<DetailResultSet> buildQuery(DetailQueryInfo info, LocalDetailQueryBuilder builder) throws SQLException{
         SourceKey table = info.getTable();
         // TODO 这边先直接写成History
-        List<SegmentDestination> uris = SegmentLocationProvider.getInstance().getHistorySegmentLocation(table);
+        List<SegmentDestination> uris = SegmentLocationProvider.getInstance().getSegmentLocationURI(table);
         if (uris == null || uris.isEmpty()){
             throw new SwiftSegmentAbsentException("no such table");
         }

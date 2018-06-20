@@ -1,7 +1,10 @@
 package com.fr.swift.service.listener;
 
+import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.service.SwiftService;
 import com.fr.swift.service.SwiftServiceEvent;
+
+import java.io.Serializable;
 
 /**
  * @author pony
@@ -23,6 +26,8 @@ public interface SwiftServiceListenerHandler {
      * @param event
      */
     void trigger(SwiftServiceEvent event);
+
+    Serializable trigger(SwiftRpcEvent event);
 
     /**
      * 注册服务

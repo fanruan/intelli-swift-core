@@ -3,12 +3,14 @@ package com.fr.swift.segment;
 import com.fr.swift.segment.impl.SegmentLocationManagerImpl;
 import com.fr.swift.source.SourceKey;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by pony on 2017/12/13.
  */
-public class SegmentLocationProvider {
+public class SegmentLocationProvider implements SegmentLocationManager {
     private static SegmentLocationProvider ourInstance = new SegmentLocationProvider();
 
     public static SegmentLocationProvider getInstance() {
@@ -19,6 +21,13 @@ public class SegmentLocationProvider {
     private SegmentLocationManager realTimeManager = new SegmentLocationManagerImpl();
 
     private SegmentLocationProvider() {
+    }
+
+    @Override
+    public List<SegmentDestination> getSegmentLocationURI(SourceKey table) {
+        List<SegmentDestination> destinations = new ArrayList<SegmentDestination>(getRealTimeSegmentLocation(table));
+        destinations.addAll(getHistorySegmentLocation(table));
+        return Collections.unmodifiableList(destinations);
     }
 
     /**
@@ -39,12 +48,12 @@ public class SegmentLocationProvider {
         }
     }
 
-    public List<SegmentDestination> getRealTimeSegmentLocation(SourceKey table) {
+    private List<SegmentDestination> getRealTimeSegmentLocation(SourceKey table) {
         // TODO: 2018/5/30
         return realTimeManager.getSegmentLocationURI(table);
     }
 
-    public List<SegmentDestination> getHistorySegmentLocation(SourceKey table) {
+    private List<SegmentDestination> getHistorySegmentLocation(SourceKey table) {
         return historyManager.getSegmentLocationURI(table);
     }
 }

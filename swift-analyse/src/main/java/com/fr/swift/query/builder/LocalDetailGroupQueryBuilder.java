@@ -1,5 +1,6 @@
 package com.fr.swift.query.builder;
 
+import com.fr.general.ComparatorUtils;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
@@ -19,7 +20,9 @@ import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.structure.array.IntList;
 
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -36,6 +39,20 @@ public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
     public Query<DetailResultSet> buildLocalQuery(DetailQueryInfo info) {
         List<Query<DetailResultSet>> queries = new ArrayList<Query<DetailResultSet>>();
         List<Segment> segments = localSegmentProvider.getSegment(info.getTable());
+        List<Segment> targetSegments = new ArrayList<Segment>();
+        URI segmentOrder = info.getQuerySegment();
+        if (segmentOrder != null) {
+            for (Segment segment : segments) {
+                if (ComparatorUtils.equals(segment.getLocation().getUri(), segmentOrder)) {
+                    targetSegments.add(segment);
+                    break;
+                }
+            }
+        }
+        if (targetSegments.isEmpty()) {
+            targetSegments = segments;
+        }
+        targetSegments = Collections.unmodifiableList(targetSegments);
         IntList list = info.getSortIndex();
         List<SortType> sortTypes = new ArrayList<SortType>();
         Dimension[] dimensions = info.getDimensions().toArray(new Dimension[info.getDimensions().size()]);
@@ -45,7 +62,7 @@ public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
                 sortTypes.add(sort.getSortType());
             }
         }
-        for (Segment segment : segments) {
+        for (Segment segment : targetSegments) {
             List<Column> columns = new ArrayList<Column>();
             List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
             filterInfos.add(new SwiftDetailFilterInfo<Object>(null, null, SwiftDetailFilterType.ALL_SHOW));

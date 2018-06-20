@@ -6,6 +6,10 @@ package com.fr.swift.context;
  */
 public class ContextUtil {
     public static String getClassPath() {
-        return ContextUtil.class.getClassLoader().getResource("").getPath();
+        return Thread.currentThread().getContextClassLoader().getResource("").getPath();
+    }
+
+    public static void main(String[] args) {
+        getClassPath();
     }
 }

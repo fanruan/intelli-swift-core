@@ -116,6 +116,28 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SegmentKeyBean keyBean = (SegmentKeyBean) o;
+
+        if (order != keyBean.order) return false;
+        if (sourceKey != null ? !sourceKey.equals(keyBean.sourceKey) : keyBean.sourceKey != null) return false;
+        if (uri != null ? !uri.equals(keyBean.uri) : keyBean.uri != null) return false;
+        return storeType == keyBean.storeType;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = sourceKey != null ? sourceKey.hashCode() : 0;
+        result = 31 * result + (uri != null ? uri.hashCode() : 0);
+        result = 31 * result + order;
+        result = 31 * result + (storeType != null ? storeType.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
         return sourceKey + '@' + storeType + "@" + order;
     }
