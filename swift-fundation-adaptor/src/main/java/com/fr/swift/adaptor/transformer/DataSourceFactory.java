@@ -13,7 +13,6 @@ import com.finebi.conf.internalimp.update.TableUpdateInfo;
 import com.finebi.conf.structure.analysis.operator.FineOperator;
 import com.finebi.conf.structure.bean.table.AbstractFineTable;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
-import com.fr.base.FRContext;
 import com.fr.cache.Attachment;
 import com.fr.cache.AttachmentSource;
 import com.fr.swift.cache.SourceCache;
@@ -37,7 +36,6 @@ import com.fr.swift.source.excel.data.ExcelDataModelCreator;
 import com.fr.swift.source.excel.data.IExcelDataModel;
 import com.fr.swift.source.excel.exception.ExcelException;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,7 +52,7 @@ public class DataSourceFactory {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger();
 
-    public static void transformDataSources(Map<FineBusinessTable, TableUpdateInfo> infoMap, SourceContainerManager updateSourceContainer, Map<String, List<Increment>> incrementMap) throws Exception {
+    public static void transformDataSources(Map<FineBusinessTable, TableUpdateInfo> infoMap, SourceContainerManager updateSourceContainer, Map<String, List<Increment>> incrementMap) {
         for (Map.Entry<FineBusinessTable, TableUpdateInfo> infoEntry : infoMap.entrySet()) {
             DataSource updateDataSource = getDataSourceInCache(infoEntry.getKey());
             if (updateDataSource != null) {
@@ -123,11 +121,10 @@ public class DataSourceFactory {
     /**
      * @param table
      * @return
-     * @throws Exception
      * @description 直接从数据源取，同时刷新cache
      * 只有前端新增和更新表，会走这个方法
      */
-    public static DataSource getDataSourceInSource(FineBusinessTable table) throws Exception {
+    public static DataSource getDataSourceInSource(FineBusinessTable table) {
         try {
             DataSource dataSource = getDataSource(table);
             SourceCache.getCache().putSource2MetaData(dataSource);
@@ -187,8 +184,8 @@ public class DataSourceFactory {
 
     private static DataSource transformExcelDataSource(FineExcelBusinessTable table) throws Exception{
         Attachment baseAttachment = AttachmentSource.getAttachment(table.getBaseAttach().getId());
-        String path = FRContext.getCurrentEnv().getPath() + File.separator + baseAttachment.getPath();
-        IExcelDataModel excelDataModel = ExcelDataModelCreator.createDataModel(path);
+//        String path = FRContext.getCurrentEnv().getPath() + File.separator + baseAttachment.getPath();
+        IExcelDataModel excelDataModel = ExcelDataModelCreator.createDataModel(null);
         String[] columnNames = excelDataModel.onlyGetColumnNames();
         ColumnType[] columnTypes = excelDataModel.onlyGetColumnTypes();
 
@@ -197,8 +194,8 @@ public class DataSourceFactory {
         if (additionAttachments != null && !additionAttachments.isEmpty()) {
             for (FineAttachment additionAttachment : additionAttachments) {
                 Attachment attachment = AttachmentSource.getAttachment(additionAttachment.getId());
-                String additionPath = FRContext.getCurrentEnv().getPath() + File.separator + attachment.getPath();
-                additionPaths.add(additionPath);
+//                String additionPath = FRContext.getCurrentEnv().getPath() + File.separator + attachment.getPath();
+                additionPaths.add(null);
             }
         }
         Map<String, ColumnType> fieldColumnTypes = checkFieldTypes(table.getOperators());
@@ -208,7 +205,7 @@ public class DataSourceFactory {
                 columnTypes[i] = fieldColumnTypes.get(columnNames[i]);
             }
         }
-        ExcelDataSource excelDataSource = new ExcelDataSource(path, columnNames, columnTypes, additionPaths);
+        ExcelDataSource excelDataSource = new ExcelDataSource(null, columnNames, columnTypes, additionPaths);
         return checkETL(excelDataSource, table);
     }
 
