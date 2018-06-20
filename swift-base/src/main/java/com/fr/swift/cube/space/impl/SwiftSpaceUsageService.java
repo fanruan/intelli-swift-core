@@ -46,7 +46,7 @@ public class SwiftSpaceUsageService implements SpaceUsageService {
 
     @Override
     public long getUsedOverall() throws Exception {
-        String path = SwiftCubePathConfig.getInstance().getPath() + "/" + Schema.CUBE.dir;
+        String path = SwiftCubePathConfig.getInstance().getPath() + "/" + Schema.CUBE.getDir();
         URI baseUri = new File(path).toURI();
         return detector.detectUsed(baseUri);
     }

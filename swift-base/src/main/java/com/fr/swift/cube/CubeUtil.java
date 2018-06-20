@@ -29,7 +29,7 @@ public class CubeUtil {
 
     public static String getTablePath(DataSource dataSource) {
         return String.format("%s/%s",
-                dataSource.getMetadata().getSwiftSchema().dir,
+                dataSource.getMetadata().getSwiftSchema().getDir(),
                 dataSource.getSourceKey().getId());
     }
 }
