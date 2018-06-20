@@ -12,13 +12,14 @@ public class RealtimeLongColumnTest extends BaseRealtimeColumnTest<Long> {
 
     @Override
     public void setUp() throws Exception {
+        super.setUp();
         data1 = Stream.generate(() -> {
-            long i = r.nextLong();
+            long i = r.nextInt(BOUND);
             return i < BOUND / 10 ? null : i;
         }).limit(BOUND).toArray(Long[]::new);
 
         data2 = Stream.generate(() -> {
-            long i = r.nextLong();
+            long i = r.nextInt(BOUND);
             return i < BOUND / 10 ? null : i;
         }).limit(BOUND).toArray(Long[]::new);
     }

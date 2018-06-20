@@ -31,7 +31,7 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
     }
 
     @Override
-    public void channelRead0(final ChannelHandlerContext ctx, final RpcRequest request) throws Exception {
+    public void channelRead0(final ChannelHandlerContext ctx, final RpcRequest request) {
         LOGGER.info("Receive request " + request.getRequestId());
         RpcResponse response = new RpcResponse();
         response.setRequestId(request.getRequestId());
@@ -44,7 +44,7 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
         }
         ctx.writeAndFlush(response).addListener(new ChannelFutureListener() {
             @Override
-            public void operationComplete(ChannelFuture channelFuture) throws Exception {
+            public void operationComplete(ChannelFuture channelFuture) {
                 LOGGER.info("Send response for request " + request.getRequestId());
             }
         }).addListener(ChannelFutureListener.CLOSE);

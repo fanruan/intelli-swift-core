@@ -20,6 +20,7 @@ import com.fr.swift.test.Preparer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -43,7 +44,7 @@ public class SegmentRecoveryTest {
     public void setUp() throws Exception {
         TestConfDb.setConfDb();
         connectionInfo = TestConnectionProvider.createConnection();
-        dataSource = new QueryDBSource("select * from DEMO_CAPITAL_RETURN", "RealtimeRecorderTest");
+        dataSource = new QueryDBSource("select * from DEMO_CAPITAL_RETURN", SegmentRecoveryTest.class.getName());
         operators = SwiftContext.getInstance().getBean(SwiftDataOperatorProvider.class);
     }
 
@@ -51,6 +52,7 @@ public class SegmentRecoveryTest {
     public void tearDown() {
     }
 
+    @Ignore
     @Test
     public void recover() throws Exception {
         QuerySourceTransfer transfer = new QuerySourceTransfer(connectionInfo, dataSource.getMetadata(), dataSource.getMetadata(), dataSource.getQuery());

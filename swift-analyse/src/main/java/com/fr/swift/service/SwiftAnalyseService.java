@@ -8,9 +8,9 @@ import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.invocation.SwiftInvocation;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.query.QueryInfo;
-import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.query.builder.QueryBuilder;
+import com.fr.swift.query.query.QueryInfo;
+import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.rpc.annotation.RpcMethod;
 import com.fr.swift.rpc.annotation.RpcService;
 import com.fr.swift.rpc.annotation.RpcServiceType;
@@ -72,7 +72,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
             Class clazz = remoteURI.getServiceClass();
             ProxyFactory factory = ProxySelector.getInstance().getFactory();
             Invoker invoker = factory.getInvoker(null, clazz, new RPCUrl(new RPCDestination(address)), false);
-            Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName(methodName), new Object[]{info}));
+            Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName(methodName), new Object[]{info, remoteURI.order()}));
             RpcFuture future = (RpcFuture) result.getValue();
             final CountDownLatch latch = new CountDownLatch(1);
 

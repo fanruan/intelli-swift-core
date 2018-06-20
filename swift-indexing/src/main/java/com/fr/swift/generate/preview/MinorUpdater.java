@@ -3,6 +3,7 @@ package com.fr.swift.generate.preview;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;
+import com.fr.swift.db.impl.SwiftDatabase.Schema;
 import com.fr.swift.generate.history.index.ColumnDictMerger;
 import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.generate.history.index.SubDateColumnDictMerger;
@@ -46,11 +47,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * 基础表每次
  */
 public class MinorUpdater {
-    /**
-     * minor cube的逻辑位置
-     */
-    public static final String MINOR_CUBES = "/minor_cubes";
-
     /**
      * 预览数据过期时间
      */
@@ -210,7 +206,7 @@ public class MinorUpdater {
 
     private Segment createSegment(DataSource dataSource) {
         String cubeSourceKey = DataSourceUtils.getSwiftSourceKey(dataSource).getId();
-        String path = String.format("%s/%s/seg0", MINOR_CUBES, cubeSourceKey);
+        String path = String.format("%s/%s/seg0", Schema.MINOR_CUBE.getDir(), cubeSourceKey);
         return new RealTimeSegmentImpl(new ResourceLocation(path, Types.StoreType.MEMORY), dataSource.getMetadata());
     }
 

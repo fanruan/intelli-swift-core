@@ -1,7 +1,5 @@
 package com.fr.swift.adaptor.transformer.cal;
 
-import com.fr.swift.query.QueryInfo;
-import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorFactory;
 import com.fr.swift.query.aggregator.AggregatorType;
@@ -22,6 +20,8 @@ import com.fr.swift.query.info.element.target.TargetInfo;
 import com.fr.swift.query.info.element.target.cal.ResultTarget;
 import com.fr.swift.query.info.element.target.cal.TargetInfoImpl;
 import com.fr.swift.query.info.group.GroupQueryInfoImpl;
+import com.fr.swift.query.query.QueryInfo;
+import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;

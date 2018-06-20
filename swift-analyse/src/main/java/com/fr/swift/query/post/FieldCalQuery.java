@@ -1,10 +1,13 @@
 package com.fr.swift.query.post;
 
 import com.fr.swift.query.info.element.target.GroupTarget;
+import com.fr.swift.result.ChainedNodeResultSet;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.NodeResultSet;
+import com.fr.swift.result.SwiftNode;
+import com.fr.swift.result.SwiftNodeOperator;
 import com.fr.swift.result.node.cal.TargetCalculatorUtils;
+import com.fr.swift.util.Crasher;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -24,8 +27,19 @@ public class FieldCalQuery extends AbstractPostQuery<NodeResultSet> {
 
     @Override
     public NodeResultSet getQueryResult() throws SQLException {
-        NodeMergeResultSet<GroupNode> mergeResult = (NodeMergeResultSet<GroupNode>) query.getQueryResult();
-        TargetCalculatorUtils.calculate(((GroupNode) mergeResult.getNode()), mergeResult.getRowGlobalDictionaries(), calInfo);
-        return mergeResult;
+        NodeResultSet<GroupNode> mergeResult = (NodeResultSet<GroupNode>) query.getQueryResult();
+        SwiftNodeOperator<SwiftNode> operator = new SwiftNodeOperator<SwiftNode>() {
+            @Override
+            public SwiftNode operate(SwiftNode... node) {
+                // TODO: 2018/6/13 同比环比依赖的字典去掉了，data已经set进来了，到时适配一下
+                try {
+                    TargetCalculatorUtils.calculate((GroupNode) node[0], null, calInfo);
+                } catch (SQLException e) {
+                    Crasher.crash(e);
+                }
+                return node[0];
+            }
+        };
+        return new ChainedNodeResultSet(operator, mergeResult);
     }
 }

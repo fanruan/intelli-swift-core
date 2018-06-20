@@ -2,8 +2,8 @@ package com.fr.swift.service;
 
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.query.QueryInfo;
 import com.fr.swift.query.builder.QueryBuilder;
+import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.rpc.annotation.RpcMethod;
 import com.fr.swift.rpc.annotation.RpcService;
 import com.fr.swift.rpc.annotation.RpcServiceType;
@@ -48,7 +48,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
     @Override
     @RpcMethod(methodName = "realTimeQuery")
-    public SerializableResultSet query(QueryInfo queryInfo) throws SQLException {
+    public SerializableResultSet query(QueryInfo queryInfo, int segmentOrder) throws SQLException {
         SwiftResultSet resultSet = QueryBuilder.buildQuery(queryInfo).getQueryResult();
         return new SerializableResultSet(resultSet);
     }

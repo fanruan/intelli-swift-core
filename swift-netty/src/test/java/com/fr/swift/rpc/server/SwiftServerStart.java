@@ -12,7 +12,7 @@ import com.fr.swift.rpc.SwiftRpcService;
  */
 public class SwiftServerStart {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         SwiftContext.init();
         SwiftRpcService swiftRpcService = SwiftRpcService.getInstance();
         swiftRpcService.startServerService();

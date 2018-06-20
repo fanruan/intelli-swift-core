@@ -1,11 +1,11 @@
 package com.fr.swift.query.builder;
 
 import com.fr.swift.exception.SwiftSegmentAbsentException;
-import com.fr.swift.query.Query;
-import com.fr.swift.query.QueryInfo;
-import com.fr.swift.query.QueryType;
 import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.info.group.RemoteQueryInfoImpl;
+import com.fr.swift.query.query.Query;
+import com.fr.swift.query.query.QueryInfo;
+import com.fr.swift.query.query.QueryType;
 import com.fr.swift.query.remote.RemoteQueryImpl;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.segment.SegmentDestination;

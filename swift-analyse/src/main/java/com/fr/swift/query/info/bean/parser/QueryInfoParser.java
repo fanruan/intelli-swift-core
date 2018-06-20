@@ -1,7 +1,5 @@
 package com.fr.swift.query.info.bean.parser;
 
-import com.fr.swift.query.QueryInfo;
-import com.fr.swift.query.QueryType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.info.bean.query.DetailQueryBean;
 import com.fr.swift.query.info.bean.query.GroupQueryBean;
@@ -13,6 +11,8 @@ import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.group.GroupQueryInfoImpl;
 import com.fr.swift.query.info.group.ResultJoinQueryInfoImpl;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
+import com.fr.swift.query.query.QueryInfo;
+import com.fr.swift.query.query.QueryType;
 import com.fr.swift.source.SourceKey;
 
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class QueryInfoParser {
         }
     }
 
-    public static QueryInfo parseGroupQueryInfo(GroupQueryBean bean) {
+    private static QueryInfo parseGroupQueryInfo(GroupQueryBean bean) {
         String queryId = bean.getQueryId();
         // TODO: 2018/6/7 table2sourceKey
         SourceKey table = new SourceKey(bean.getTableName());
@@ -46,7 +46,7 @@ public class QueryInfoParser {
         return new GroupQueryInfoImpl(queryId, table, filterInfo, dimensions, metrics, postQueryInfoList);
     }
 
-    public static QueryInfo parseResultJoinQueryInfo(ResultJoinQueryBean bean) {
+    private static QueryInfo parseResultJoinQueryInfo(ResultJoinQueryBean bean) {
         String queryId = bean.getQueryId();
         List<QueryBean> queryBeans = bean.getQueryBeans();
         List<QueryInfo> queryInfoList = new ArrayList<QueryInfo>();
@@ -59,7 +59,7 @@ public class QueryInfoParser {
         return new ResultJoinQueryInfoImpl(queryId, queryInfoList, dimensions, postQueryInfoList);
     }
 
-    public static QueryInfo parseDetailQueryInfo(DetailQueryBean bean) {
+    private static QueryInfo parseDetailQueryInfo(DetailQueryBean bean) {
         String queryId = bean.getQueryId();
         // TODO: 2018/6/7
         SourceKey table = new SourceKey(bean.getTableName());

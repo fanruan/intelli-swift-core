@@ -1,8 +1,8 @@
 package com.fr.swift.result;
 
-import com.fr.base.FRContext;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.traversal.BreakTraversalAction;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.group.by.GroupBy;
 import com.fr.swift.query.group.by.GroupByEntry;
@@ -132,7 +132,7 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
                     gbr[i].hasNext();
                 }
             } catch (Exception e) {
-                FRContext.getLogger().error(e.getMessage());
+                SwiftLoggers.getLogger().error(e);
             }
         }
     }

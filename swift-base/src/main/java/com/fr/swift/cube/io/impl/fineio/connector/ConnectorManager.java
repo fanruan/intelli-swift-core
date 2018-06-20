@@ -9,6 +9,7 @@ import com.fr.plugin.observer.PluginEventType;
 import com.fr.plugin.observer.PluginListenerRegistration;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.plugin.ExtraClassManagerProvider;
+import com.fr.swift.config.SwiftUseZipConfig;
 import com.fr.swift.config.service.SwiftPathService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLoggers;
@@ -27,7 +28,7 @@ public class ConnectorManager {
     private volatile static ConnectorManager instance;
     private static Connector connector;
     private SwiftPathService pathService = SwiftContext.getInstance().getBean(SwiftPathService.class);
-    private String clusterId;
+    private SwiftUseZipConfig zipConfig = SwiftUseZipConfig.getInstance();
 
     public static ConnectorManager getInstance() {
         if (null != instance) {
@@ -80,21 +81,29 @@ public class ConnectorManager {
                 return connector;
             }
             ExtraClassManagerProvider pluginProvider = StableFactory.getMarkedObject(ExtraClassManagerProvider.XML_TAG, ExtraClassManagerProvider.class);
+            boolean useZip = zipConfig.isUseZip();
             if (null == pluginProvider) {
-                connector = ZipConnector.newInstance(basePath);
+                connector = createConnector(basePath, useZip);
                 return connector;
             }
             ConnectorProcessor connectorProcessor = pluginProvider.getSingle(ConnectorProcessor.MARK_STRING);
             if (null == connectorProcessor) {
-                connector = ZipConnector.newInstance(basePath);
+                connector = createConnector(basePath, useZip);
                 return connector;
             }
             connector = connectorProcessor.createConnector();
             if (null == connector) {
-                connector = ZipConnector.newInstance(basePath);
+                connector = createConnector(basePath, useZip);
             }
             return connector;
         }
+    }
+
+    private Connector createConnector(String path, boolean zip) {
+        if (zip) {
+            return ZipConnector.newInstance(path);
+        }
+        return FileConnector.newInstance(path);
     }
 
     protected class ConnectorPluginListener extends PluginEventListener {

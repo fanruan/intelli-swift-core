@@ -9,12 +9,9 @@ import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.ProviderTaskManager;
-import com.fr.swift.event.ClusterEvent;
-import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.service.register.LocalSwiftRegister;
 import com.fr.swift.util.Crasher;
 

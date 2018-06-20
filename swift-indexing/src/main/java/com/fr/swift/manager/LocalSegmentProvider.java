@@ -26,6 +26,11 @@ public class LocalSegmentProvider implements SwiftSegmentManager {
     }
 
     @Override
+    public boolean existsSegment(SegmentKey segKey) {
+        return manager.existsSegment(segKey);
+    }
+
+    @Override
     public List<Segment> getSegment(SourceKey tableKey) {
         return manager.getSegment(tableKey);
     }

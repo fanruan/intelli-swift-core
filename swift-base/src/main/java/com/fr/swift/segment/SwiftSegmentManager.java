@@ -12,6 +12,8 @@ import java.util.List;
 public interface SwiftSegmentManager {
     Segment getSegment(SegmentKey key);
 
+    boolean existsSegment(SegmentKey segKey);
+
     List<Segment> getSegment(SourceKey tableKey);
 
     List<SegmentKey> getSegmentKeys(SourceKey tableKey);

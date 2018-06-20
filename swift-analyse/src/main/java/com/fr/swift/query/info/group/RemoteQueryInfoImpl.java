@@ -1,7 +1,7 @@
 package com.fr.swift.query.info.group;
 
-import com.fr.swift.query.QueryInfo;
-import com.fr.swift.query.QueryType;
+import com.fr.swift.query.query.QueryInfo;
+import com.fr.swift.query.query.QueryType;
 import com.fr.swift.source.SwiftResultSet;
 
 /**

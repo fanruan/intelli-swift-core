@@ -3,10 +3,15 @@ package com.fr.swift.query.post;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
+import com.fr.swift.result.FakeNodeResultSet;
 import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.SwiftNode;
+import com.fr.swift.result.SwiftNodeUtils;
+import com.fr.swift.result.SwiftRowOperator;
+import com.fr.swift.source.Row;
 import com.fr.swift.structure.iterator.IteratorUtils;
+import com.fr.swift.structure.iterator.MapperIterator;
 import com.fr.swift.structure.iterator.Tree2RowIterator;
 import com.fr.swift.util.function.Function;
 
@@ -33,18 +38,28 @@ public class RowSortQuery extends AbstractPostQuery<NodeResultSet> {
     public NodeResultSet getQueryResult() throws SQLException {
         // 这个排序完之后没法构建Node了，维度顺序被打乱不满足构建树的前提条件了
         NodeMergeResultSet resultSet = (NodeMergeResultSet) query.getQueryResult();
-        int dimensionSize = resultSet.getRowGlobalDictionaries().size();
-        Iterator<List<SwiftNode>> rowIt = new Tree2RowIterator<SwiftNode>(dimensionSize,
-                resultSet.getNode().getChildren().iterator(), new Function<SwiftNode, Iterator<SwiftNode>>() {
+        SwiftRowOperator<Row> operator = new SwiftRowOperator<Row>() {
             @Override
-            public Iterator<SwiftNode> apply(SwiftNode p) {
-                return p.getChildren().iterator();
+            public List<Row> operate(SwiftNode... node) {
+                int dimensionSize = SwiftNodeUtils.getDimensionSize(node[0]);
+                Iterator<List<SwiftNode>> rowIt = new Tree2RowIterator<SwiftNode>(dimensionSize,
+                        node[0].getChildren().iterator(), new Function<SwiftNode, Iterator<SwiftNode>>() {
+                    @Override
+                    public Iterator<SwiftNode> apply(SwiftNode p) {
+                        return p.getChildren().iterator();
+                    }
+                });
+                List<List<SwiftNode>> rows = IteratorUtils.iterator2List(rowIt);
+                sortRow(dimensionSize, rows, sortList);
+                return IteratorUtils.iterator2List(new MapperIterator<List<SwiftNode>, Row>(rows.iterator(), new Function<List<SwiftNode>, Row>() {
+                    @Override
+                    public Row apply(List<SwiftNode> p) {
+                        return SwiftNodeUtils.nodes2Row(p);
+                    }
+                }));
             }
-        });
-        List<List<SwiftNode>> rows = IteratorUtils.iterator2List(rowIt);
-        sortRow(dimensionSize, rows, sortList);
-        // TODO: 2018/6/4 这边返回啥好呢？
-        return null;
+        };
+        return new FakeNodeResultSet(operator, resultSet);
     }
 
     private static void sortRow(final int dimensionSize, List<List<SwiftNode>> rows, final List<Sort> sorts) {

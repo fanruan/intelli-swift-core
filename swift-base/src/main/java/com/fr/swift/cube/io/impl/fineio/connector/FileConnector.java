@@ -3,27 +3,40 @@ package com.fr.swift.cube.io.impl.fineio.connector;
 import com.fineio.io.file.FileBlock;
 import com.fineio.storage.AbstractConnector;
 import com.fineio.storage.Connector;
+import com.fr.swift.util.Strings;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 
 /**
  * @author yee
  * 最简单的Connector，直接使用FileInputStream读，使用FileOutputStream写
  */
 public class FileConnector extends AbstractConnector {
-    private FileConnector() {
+
+    private URI parentURI;
+
+    private FileConnector(String path) {
+        initParentPath(path);
     }
 
-    public static Connector newInstance() {
-        return new FileConnector();
+    public static Connector newInstance(String path) {
+        return new FileConnector(path);
     }
 
-    private static File toFile(FileBlock block, boolean mkdirs) {
-        File dir = new File(block.getParentUri().toString());
+    private void initParentPath(String path) {
+        path = Strings.trimSeparator(path, "\\", "/");
+        path = "/" + path + "/";
+        path = Strings.trimSeparator(path, "/");
+        parentURI = URI.create(path);
+    }
+
+    private File toFile(FileBlock block, boolean mkdirs) {
+        File dir = new File(parentURI.resolve(block.getParentUri()).getPath());
         if (mkdirs) {
             dir.mkdirs();
         }
