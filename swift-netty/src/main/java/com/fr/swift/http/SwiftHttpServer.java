@@ -4,6 +4,8 @@ import com.fr.swift.http.handler.ServletChannelInitializer;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rpc.NettyServiceStarter;
+import com.fr.swift.thread.SwiftExecutors;
+import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.third.jodd.util.StringUtil;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.beans.factory.annotation.Value;
@@ -15,8 +17,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ExecutorService;
 
 /**
  * This class created on 2018/6/13
@@ -28,7 +29,7 @@ import java.util.concurrent.ScheduledExecutorService;
 @Service
 public class SwiftHttpServer implements NettyServiceStarter {
 
-    private ScheduledExecutorService serverServiceExector = Executors.newScheduledThreadPool(1);
+    private ExecutorService httpServerExector = SwiftExecutors.newSingleThreadExecutor(new PoolThreadFactory("netty-http-server"));
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftHttpServer.class);
 
@@ -64,7 +65,7 @@ public class SwiftHttpServer implements NettyServiceStarter {
 
     @Override
     public void start() {
-        serverServiceExector.submit(new Runnable() {
+        httpServerExector.submit(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -78,6 +79,6 @@ public class SwiftHttpServer implements NettyServiceStarter {
 
     @Override
     public void stop() {
-        serverServiceExector.shutdownNow();
+        httpServerExector.shutdownNow();
     }
 }

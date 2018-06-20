@@ -44,10 +44,13 @@ public class StuffFetcher implements Runnable {
     @Override
     public void run() {
         try {
-            while (true) {
+            while (!Thread.currentThread().isInterrupted()) {
                 try {
                     IndexStuffProvider provider = StuffProviderQueue.getQueue().take();
                     update(provider);
+                } catch (InterruptedException ite) {
+                    LOGGER.error(ite);
+                    Thread.currentThread().interrupt();
                 } catch (Exception e) {
                     LOGGER.error(e);
                 }
