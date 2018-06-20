@@ -126,7 +126,7 @@ public class LineSegmentAlloterTest extends TestIo {
                 lastIndex = index;
                 ResourceLocation location = new ResourceLocation(String.format("%s/%s/%s/seg%d",
                         SwiftCubePathConfig.getInstance().getPath(),
-                        resultSet.getMetaData().getSwiftSchema().dir,
+                        resultSet.getMetaData().getSwiftSchema().getDir(),
                         sourceKey.getId(),
                         index));
                 segment = new HistorySegmentImpl(location, resultSet.getMetaData());

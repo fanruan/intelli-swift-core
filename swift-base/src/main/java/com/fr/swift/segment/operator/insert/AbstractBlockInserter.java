@@ -165,7 +165,7 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
      */
     protected Segment createSegment(int order, Types.StoreType storeType) {
         String cubePath = String.format("%s/%s/seg%d",
-                swiftMetaData.getSwiftSchema().dir,
+                swiftMetaData.getSwiftSchema().getDir(),
                 cubeSourceKey, order);
         IResourceLocation location = new ResourceLocation(cubePath, storeType);
         configSegment.add(new SegmentKeyBean(sourceKey.getId(), location.getUri(), order, storeType));

@@ -115,7 +115,7 @@ public class RealtimeRecorder implements Recorder {
 
     private Segment createSegment(int index) {
         String cubePath = String.format("%s/%s/seg%d",
-                Schema.BACKUP_CUBE.dir,
+                Schema.BACKUP_CUBE.getDir(),
                 cubeSourceKey, index);
         IResourceLocation location = new ResourceLocation(cubePath, Types.StoreType.FINE_IO);
         return new HistorySegmentImpl(location, swiftMetaData);
