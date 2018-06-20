@@ -151,6 +151,11 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
 
     @Override
     public Map<String, List<SegmentKey>> getOwnSegments() {
+        return getOwnSegments(clusterId);
+    }
+
+    @Override
+    public Map<String, List<SegmentKey>> getOwnSegments(String clusterId) {
         Map<String, List<SegmentKey>> result = new HashMap<String, List<SegmentKey>>();
         try {
             List<SwiftServiceInfoEntity> list = swiftServiceInfoDao.getServiceInfoBySelective(new SwiftServiceInfoBean(SEGMENT, clusterId, null, false));

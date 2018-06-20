@@ -12,5 +12,7 @@ import java.util.Map;
 public interface SwiftClusterSegmentService extends SwiftSegmentService {
     Map<String, List<SegmentKey>> getOwnSegments();
 
+    Map<String, List<SegmentKey>> getOwnSegments(String clusterId);
+
     Map<String, List<SegmentKey>> getClusterSegments();
 }

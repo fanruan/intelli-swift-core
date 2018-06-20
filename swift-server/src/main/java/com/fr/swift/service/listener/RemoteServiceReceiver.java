@@ -1,10 +1,14 @@
 package com.fr.swift.service.listener;
 
+import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.service.SwiftService;
 import com.fr.swift.service.SwiftServiceEvent;
+import com.fr.swift.service.handler.SwiftServiceHandlerManager;
+
+import java.io.Serializable;
 
 /**
  * Created by pony on 2017/11/10.
@@ -30,6 +34,11 @@ public class RemoteServiceReceiver implements SwiftServiceListenerHandler {
 
     @Override
     public void trigger(SwiftServiceEvent event) {
+    }
+
+    @Override
+    public Serializable trigger(SwiftRpcEvent event) {
+        return SwiftServiceHandlerManager.getManager().handle(event);
     }
 
     @Override

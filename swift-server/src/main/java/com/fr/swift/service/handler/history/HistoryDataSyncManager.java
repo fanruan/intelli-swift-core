@@ -20,6 +20,7 @@ import com.fr.third.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -49,13 +50,33 @@ public class HistoryDataSyncManager extends AbstractHandler<HistoryLoadRpcEvent>
         if (null == services || services.isEmpty()) {
             throw new RuntimeException("Cannot find history service");
         }
-        Map<String, List<SegmentKey>> needLoadSegment = event.getContent();
+
+
+        Map<String, List<SegmentKey>> allSegments = clusterSegmentService.getAllSegments();
+
+
+        Map<String, List<SegmentKey>> needLoadSegment = new HashMap<String, List<SegmentKey>>(allSegments);
         Map<String, List<SegmentKey>> keys = clusterSegmentService.getClusterSegments();
         Iterator<String> keyIterator = services.keySet().iterator();
         Map<String, List<SegmentKey>> exists = new HashMap<String, List<SegmentKey>>();
         while (keyIterator.hasNext()) {
             String key = keyIterator.next();
-            exists.put(key, keys.get(key));
+            if (null == exists.get(key)) {
+                exists.put(key, new ArrayList<SegmentKey>());
+            }
+            Map<String, List<SegmentKey>> segments = clusterSegmentService.getOwnSegments(key);
+            Iterator<Map.Entry<String, List<SegmentKey>>> existsIter = segments.entrySet().iterator();
+            while (existsIter.hasNext()) {
+                Map.Entry<String, List<SegmentKey>> entry = existsIter.next();
+                String sourceKey = entry.getKey();
+                for (SegmentKey segmentKey : entry.getValue()) {
+                    if (null != needLoadSegment.get(sourceKey)) {
+                        needLoadSegment.get(sourceKey).remove(segmentKey);
+                    }
+
+                }
+                exists.get(key).addAll(entry.getValue());
+            }
         }
         Map<String, Pair<Integer, List<SegmentDestination>>> destinations = new HashMap<String, Pair<Integer, List<SegmentDestination>>>();
         Map<String, Set<URI>> result = rule.calculate(exists, needLoadSegment, destinations);
