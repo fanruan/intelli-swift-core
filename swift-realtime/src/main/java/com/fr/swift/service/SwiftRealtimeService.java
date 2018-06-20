@@ -1,12 +1,11 @@
 package com.fr.swift.service;
 
-import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.query.QueryInfo;
-import com.fr.swift.query.query.QueryResultSetManager;
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.query.session.AbstractSession;
 import com.fr.swift.query.session.Session;
@@ -74,10 +73,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
                     @Override
                     protected <T extends SwiftResultSet> T query(QueryInfo<T> queryInfo) throws SQLException {
                         // 先到QueryResultSetManager找一下有没有缓存，没有则构建查询。
-                        SwiftResultSet resultSet = QueryResultSetManager.getInstance().get(queryInfo.getQueryId());
-                        if (resultSet == null) {
-                            resultSet = QueryBuilder.buildQuery(queryInfo).getQueryResult();
-                        }
+                        SwiftResultSet resultSet = QueryBuilder.buildQuery(queryInfo).getQueryResult();
                         SerializableResultSet result;
                         QueryType type = queryInfo.getType();
                         switch (type) {
