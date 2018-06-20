@@ -18,6 +18,7 @@ import com.fr.third.springframework.stereotype.Service;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -188,5 +189,30 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
             LOGGER.error("Select segments error!", e);
         }
         return result;
+    }
+
+    @Override
+    public boolean updateSegmentTable(final Map<String, List<String>> segmentTable) {
+        try {
+            return (Boolean) transactionManager.doTransactionIfNeed(new AbstractTransactionWorker() {
+                @Override
+                public Object work() throws SQLException {
+                    Iterator<Map.Entry<String, List<String>>> iterator = segmentTable.entrySet().iterator();
+                    while (iterator.hasNext()) {
+                        Map.Entry<String, List<String>> entry = iterator.next();
+                        String clusterId = entry.getKey();
+                        List<String> segmentKeys = entry.getValue();
+                        for (String segmentKey : segmentKeys) {
+                            SwiftServiceInfoEntity entity = new SwiftServiceInfoBean(SEGMENT, clusterId, segmentKey, false).convert();
+                            swiftServiceInfoDao.saveOrUpdate(entity);
+                        }
+                    }
+                    return true;
+                }
+            });
+        } catch (SQLException e) {
+            LOGGER.error("Update table error!", e);
+            return false;
+        }
     }
 }

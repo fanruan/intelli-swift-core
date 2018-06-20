@@ -6,7 +6,6 @@ import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.service.HistoryService;
 import com.fr.swift.structure.Pair;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,8 +24,8 @@ public interface DataSyncRule {
     DataSyncRule DEFAULT = new DataSyncRule() {
 
         @Override
-        public Map<String, Set<URI>> calculate(Map<String, List<SegmentKey>> exists, Map<String, List<SegmentKey>> needLoad,
-                                               Map<String, Pair<Integer, List<SegmentDestination>>> destinations) {
+        public Map<String, Set<SegmentKey>> calculate(Map<String, List<SegmentKey>> exists, Map<String, List<SegmentKey>> needLoad,
+                                                      Map<String, Pair<Integer, List<SegmentDestination>>> destinations) {
 
             Set<String> historyNodes = exists.keySet();
 
@@ -39,7 +38,7 @@ public interface DataSyncRule {
             Map<String, Map<String, AtomicInteger>> map = calculateNeedLoad(exists, needLoad, destinations);
 
             Set<String> needLoadSource = needLoad.keySet();
-            Map<String, Set<URI>> result = new HashMap<String, Set<URI>>();
+            Map<String, Set<SegmentKey>> result = new HashMap<String, Set<SegmentKey>>();
 
             for (String s : needLoadSource) {
                 List<SegmentKey> needLoadList = needLoad.get(s);
@@ -53,14 +52,14 @@ public interface DataSyncRule {
                         String clusterId = sort.get(i).clusterId;
                         map.get(s).get(clusterId).incrementAndGet();
                         if (result.get(clusterId) == null) {
-                            result.put(clusterId, new HashSet<URI>());
+                            result.put(clusterId, new HashSet<SegmentKey>());
                         }
                         if (destinations.get(s) == null) {
                             destinations.put(s, new Pair<Integer, List<SegmentDestination>>(0, new ArrayList<SegmentDestination>()));
                         }
                         destinations.get(s).getValue().add(new SegmentDestinationImpl(clusterId, segmentKey.getUri(), segmentKey.getOrder(), HistoryService.class, "historyQuery"));
                         destinations.get(s).setKey(destinations.get(s).getKey() + 1);
-                        result.get(clusterId).add(segmentKey.getUri());
+                        result.get(clusterId).add(segmentKey);
                     }
                     iterator.remove();
                 }
@@ -171,6 +170,6 @@ public interface DataSyncRule {
      * @param needLoad
      * @return
      */
-    Map<String, Set<URI>> calculate(Map<String, List<SegmentKey>> exists, Map<String, List<SegmentKey>> needLoad,
-                                    Map<String, Pair<Integer, List<SegmentDestination>>> destinations);
+    Map<String, Set<SegmentKey>> calculate(Map<String, List<SegmentKey>> exists, Map<String, List<SegmentKey>> needLoad,
+                                           Map<String, Pair<Integer, List<SegmentDestination>>> destinations);
 }

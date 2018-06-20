@@ -22,11 +22,11 @@ import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * @author yee
@@ -56,7 +56,6 @@ public class HistoryDataSyncManager extends AbstractHandler<HistoryLoadRpcEvent>
 
 
         Map<String, List<SegmentKey>> needLoadSegment = new HashMap<String, List<SegmentKey>>(allSegments);
-        Map<String, List<SegmentKey>> keys = clusterSegmentService.getClusterSegments();
         Iterator<String> keyIterator = services.keySet().iterator();
         Map<String, List<SegmentKey>> exists = new HashMap<String, List<SegmentKey>>();
         while (keyIterator.hasNext()) {
@@ -78,53 +77,37 @@ public class HistoryDataSyncManager extends AbstractHandler<HistoryLoadRpcEvent>
                 exists.get(key).addAll(entry.getValue());
             }
         }
-        Map<String, Pair<Integer, List<SegmentDestination>>> destinations = new HashMap<String, Pair<Integer, List<SegmentDestination>>>();
-        Map<String, Set<URI>> result = rule.calculate(exists, needLoadSegment, destinations);
+        final Map<String, Pair<Integer, List<SegmentDestination>>> destinations = new HashMap<String, Pair<Integer, List<SegmentDestination>>>();
+        Map<String, Set<SegmentKey>> result = rule.calculate(exists, needLoadSegment, destinations);
         keyIterator = result.keySet().iterator();
         try {
-            final CountDownLatch latch = new CountDownLatch(result.size());
             while (keyIterator.hasNext()) {
-                String key = keyIterator.next();
+                final String key = keyIterator.next();
                 ClusterEntity entity = services.get(key);
-                runAsyncRpc(key, entity.getServiceClass(), "load", result.get(key))
+                Iterator<SegmentKey> valueIterator = result.get(key).iterator();
+                Set<URI> uriSet = new HashSet<URI>();
+                final List<String> idList = new ArrayList<String>();
+                while (valueIterator.hasNext()) {
+                    SegmentKey segmentKey = valueIterator.next();
+                    uriSet.add(segmentKey.getUri());
+                    idList.add(segmentKey.toString());
+                }
+                runAsyncRpc(key, entity.getServiceClass(), "load", uriSet)
                         .addCallback(new AsyncRpcCallback() {
                             @Override
                             public void success(Object result) {
-                                latch.countDown();
+                                Map<String, List<String>> segmentTable = new HashMap<String, List<String>>();
+                                segmentTable.put(key, idList);
+                                clusterSegmentService.updateSegmentTable(segmentTable);
+                                updateDestination(destinations);
                             }
 
                             @Override
                             public void fail(Exception e) {
                                 LOGGER.error("Load failed! ", e);
-                                latch.countDown();
                             }
                         });
 
-            }
-            latch.await();
-
-            Map<String, ClusterEntity> analyseServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.ANALYSE);
-            if (null == analyseServices || analyseServices.isEmpty()) {
-                throw new RuntimeException("Cannot find analyse service");
-            }
-            Iterator<Map.Entry<String, ClusterEntity>> iterator = analyseServices.entrySet().iterator();
-            while (iterator.hasNext()) {
-                final long start = System.currentTimeMillis();
-                Map.Entry<String, ClusterEntity> entity = iterator.next();
-                String address = entity.getKey();
-                Class clazz = entity.getValue().getServiceClass();
-                runAsyncRpc(address, clazz, "updateSegmentInfo", new SegmentLocationInfoImpl(ServiceType.HISTORY, destinations), SegmentLocationInfo.UpdateType.ALL)
-                        .addCallback(new AsyncRpcCallback() {
-                            @Override
-                            public void success(Object result) {
-                                LOGGER.info(String.format("Update segmentInfo cost: %d ms", System.currentTimeMillis() - start));
-                            }
-
-                            @Override
-                            public void fail(Exception e) {
-                                LOGGER.error(e.getMessage(), e);
-                            }
-                        });
             }
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
@@ -132,4 +115,29 @@ public class HistoryDataSyncManager extends AbstractHandler<HistoryLoadRpcEvent>
         return null;
     }
 
+    private void updateDestination(Map<String, Pair<Integer, List<SegmentDestination>>> destinations) {
+        Map<String, ClusterEntity> analyseServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.ANALYSE);
+        if (null == analyseServices || analyseServices.isEmpty()) {
+            throw new RuntimeException("Cannot find analyse service");
+        }
+        Iterator<Map.Entry<String, ClusterEntity>> iterator = analyseServices.entrySet().iterator();
+        while (iterator.hasNext()) {
+            final long start = System.currentTimeMillis();
+            Map.Entry<String, ClusterEntity> entity = iterator.next();
+            String address = entity.getKey();
+            Class clazz = entity.getValue().getServiceClass();
+            runAsyncRpc(address, clazz, "updateSegmentInfo", new SegmentLocationInfoImpl(ServiceType.HISTORY, destinations), SegmentLocationInfo.UpdateType.ALL)
+                    .addCallback(new AsyncRpcCallback() {
+                        @Override
+                        public void success(Object result) {
+                            LOGGER.info(String.format("Update segmentInfo cost: %d ms", System.currentTimeMillis() - start));
+                        }
+
+                        @Override
+                        public void fail(Exception e) {
+                            LOGGER.error(e.getMessage(), e);
+                        }
+                    });
+        }
+    }
 }
