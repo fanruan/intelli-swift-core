@@ -13,6 +13,7 @@ import com.fr.swift.frrpc.SwiftClusterService;
 import com.fr.swift.info.ServerCurrentStatus;
 import com.fr.swift.invocation.SwiftInvocation;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.rpc.annotation.RpcMethod;
 import com.fr.swift.rpc.annotation.RpcService;
 import com.fr.swift.rpc.annotation.RpcServiceType;
@@ -22,8 +23,12 @@ import com.fr.swift.rpc.server.RpcServer;
 import com.fr.swift.selector.ProxySelector;
 import com.fr.swift.selector.UrlSelector;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.stuff.IndexingStuff;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -57,6 +62,20 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     @RpcMethod(methodName = "index")
     public void index(IndexingStuff stuff) {
         SwiftLoggers.getLogger().info("indexing stuff");
+
+        // TODO 更新调用
+
+        // TODO 更新的待上传的Segment uri   Pair<segmentKey.getAbsoluteUri(), segmentKey.getUri()>
+        List<Pair<URI, URI>> ready4Upload = new ArrayList<Pair<URI, URI>>();
+
+        for (Pair<URI, URI> pair : ready4Upload) {
+            try {
+                SwiftRepositoryManager.getManager().getCurrentRepository().copyToRemote(pair.getKey(), pair.getValue());
+            } catch (IOException e) {
+                logger.error("upload error! ", e);
+            }
+        }
+
         URL masterURL = getMasterURL();
         ProxyFactory factory = ProxySelector.getInstance().getFactory();
         Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, masterURL, false);
