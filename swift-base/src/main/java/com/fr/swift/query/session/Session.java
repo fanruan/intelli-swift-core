@@ -20,17 +20,7 @@ public interface Session extends Closeable {
     String getSessionId();
 
     /**
-     * 查询，指定Segment编号
-     * @param queryInfo
-     * @param segmentOrder 为 -1 时查询当前节点的所有Segment
-     * @param <T>
-     * @return
-     * @throws SQLException
-     */
-    <T extends SwiftResultSet> T executeQuery(QueryInfo<T> queryInfo, int segmentOrder) throws SQLException;
-
-    /**
-     * 查询当前节点的所有Segment 相当于executeQuery(queryInfo, -1)
+     * 查询当前节点
      * @param queryInfo
      * @param <T>
      * @return

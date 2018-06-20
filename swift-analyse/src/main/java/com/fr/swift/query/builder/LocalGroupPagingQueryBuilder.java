@@ -1,5 +1,6 @@
 package com.fr.swift.query.builder;
 
+import com.fr.general.ComparatorUtils;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.FilterBuilder;
@@ -25,7 +26,9 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
 
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -47,7 +50,21 @@ public class LocalGroupPagingQueryBuilder extends AbstractLocalGroupQueryBuilder
         List<Metric> metrics = info.getMetrics();
         List<Query<NodeResultSet>> queries = new ArrayList<Query<NodeResultSet>>();
         List<Segment> segments = localSegmentProvider.getSegment(info.getTable());
-        for (Segment segment : segments) {
+        List<Segment> targetSegments = new ArrayList<Segment>();
+        URI segmentOrder = info.getQuerySegment();
+        if (segmentOrder != null) {
+            for (Segment segment : segments) {
+                if (ComparatorUtils.equals(segment.getLocation().getUri(), segmentOrder)) {
+                    targetSegments.add(segment);
+                    break;
+                }
+            }
+        }
+        if (targetSegments.isEmpty()) {
+            targetSegments = segments;
+        }
+        targetSegments = Collections.unmodifiableList(targetSegments);
+        for (Segment segment : targetSegments) {
             List<Column> dimensionColumns = getDimensionSegments(segment, dimensions);
             List<Column> metricColumns = getMetricSegments(segment, metrics);
             List<Aggregator> aggregators = getAggregators(metrics);

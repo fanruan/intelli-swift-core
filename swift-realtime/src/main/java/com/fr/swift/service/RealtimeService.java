@@ -41,5 +41,5 @@ public interface RealtimeService extends SwiftService {
      * @param <T>       数据
      * @return 数据
      */
-    <T extends SwiftResultSet> T query(QueryInfo<T> queryInfo, int segmentOrder) throws Exception;
+    <T extends SwiftResultSet> T query(QueryInfo<T> queryInfo) throws Exception;
 }

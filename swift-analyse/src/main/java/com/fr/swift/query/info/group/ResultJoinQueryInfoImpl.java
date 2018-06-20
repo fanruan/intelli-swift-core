@@ -7,6 +7,7 @@ import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.source.SwiftResultSet;
 
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -51,4 +52,15 @@ public class ResultJoinQueryInfoImpl<T extends SwiftResultSet> implements Result
     public QueryType getType() {
         return QueryType.RESULT_JOIN;
     }
+
+    @Override
+    public URI getQuerySegment() {
+        return null;
+    }
+
+    @Override
+    public void setQuerySegment(URI order) {
+
+    }
+
 }

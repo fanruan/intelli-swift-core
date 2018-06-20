@@ -119,6 +119,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
         String address = remoteURI.getAddress();
         String methodName = remoteURI.getMethodName();
         Class clazz = remoteURI.getServiceClass();
+        info.setQuerySegment(remoteURI.getUri());
         ProxyFactory factory = ProxySelector.getInstance().getFactory();
         Invoker invoker = factory.getInvoker(null, clazz, new RPCUrl(new RPCDestination(address)), false);
         Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName(methodName), new Object[]{info, remoteURI.order()}));

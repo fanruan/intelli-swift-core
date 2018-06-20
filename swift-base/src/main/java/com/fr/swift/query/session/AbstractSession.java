@@ -39,7 +39,7 @@ public abstract class AbstractSession implements Session {
     }
 
     @Override
-    public <T extends SwiftResultSet> T executeQuery(QueryInfo<T> queryInfo, int segmentOrder) throws SQLException {
+    public <T extends SwiftResultSet> T executeQuery(QueryInfo<T> queryInfo) throws SQLException {
         if (isClose()) {
             throw new SessionClosedException(sessionId);
         }
@@ -49,18 +49,13 @@ public abstract class AbstractSession implements Session {
             resultSetCache.update();
             return (T) resultSetCache.get();
         }
-        T resultSet = query(queryInfo, segmentOrder);
+        T resultSet = query(queryInfo);
         Cache<T> cacheObj = new Cache<T>(resultSet);
         cache.put(queryId, cacheObj);
         return resultSet;
     }
 
-    @Override
-    public <T extends SwiftResultSet> T executeQuery(QueryInfo<T> queryInfo) throws SQLException {
-        return executeQuery(queryInfo, -1);
-    }
-
-    protected abstract <T extends SwiftResultSet> T query(QueryInfo<T> queryInfo, int segmentOrder) throws SQLException;
+    protected abstract <T extends SwiftResultSet> T query(QueryInfo<T> queryInfo) throws SQLException;
 
     @Override
     public void close() {

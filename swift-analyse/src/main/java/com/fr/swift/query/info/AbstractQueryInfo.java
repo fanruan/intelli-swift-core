@@ -5,6 +5,7 @@ import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -16,6 +17,7 @@ public abstract class AbstractQueryInfo<T extends SwiftResultSet> implements Sin
     private FilterInfo filterInfo;
     private SourceKey table;
     private List<Dimension> dimensions;
+    private URI queryTarget = null;
 
     public AbstractQueryInfo(String id, SourceKey table, FilterInfo filterInfo, List<Dimension> dimensions) {
         this.id = id;
@@ -62,5 +64,15 @@ public abstract class AbstractQueryInfo<T extends SwiftResultSet> implements Sin
         result = 31 * result + (table != null ? table.hashCode() : 0);
         result = 31 * result + (dimensions != null ? dimensions.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public URI getQuerySegment() {
+        return queryTarget;
+    }
+
+    @Override
+    public void setQuerySegment(URI queryTarget) {
+        this.queryTarget = queryTarget;
     }
 }

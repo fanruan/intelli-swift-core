@@ -52,14 +52,14 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
     @Override
     @RpcMethod(methodName = "realTimeQuery")
-    public <T extends SwiftResultSet> T query(final QueryInfo<T> queryInfo, int segmentOrder) throws SQLException {
+    public <T extends SwiftResultSet> T query(final QueryInfo<T> queryInfo) throws SQLException {
         SessionFactory sessionFactory = SwiftContext.getInstance().getBean(SessionFactory.class);
         return sessionFactory.openSession(new SessionBuilder() {
             @Override
             public Session build(long cacheTimeout) {
                 return new AbstractSession(cacheTimeout) {
                     @Override
-                    protected <T extends SwiftResultSet> T query(QueryInfo<T> queryInfo, int segmentOrder) throws SQLException {
+                    protected <T extends SwiftResultSet> T query(QueryInfo<T> queryInfo) throws SQLException {
                         return QueryBuilder.buildQuery(queryInfo).getQueryResult();
                     }
                 };
@@ -69,7 +69,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
             public String getQueryId() {
                 return queryInfo.getQueryId();
             }
-        }).executeQuery(queryInfo, segmentOrder);
+        }).executeQuery(queryInfo);
     }
 
     @Override
