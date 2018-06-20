@@ -38,6 +38,12 @@ public class Comparators {
                 if (o1 == o2) {
                     return 0;
                 }
+                if (o1 == Comparators.MIN_INFINITY || o2 == Comparators.MAX_INFINITY) {
+                    return -1;
+                }
+                if (o1 == Comparators.MAX_INFINITY || o2 == Comparators.MIN_INFINITY) {
+                    return 1;
+                }
                 if (o1 == null) {
                     return -1;
                 }
@@ -69,6 +75,12 @@ public class Comparators {
                 if (a == b) {
                     return 0;
                 }
+                if (a == Comparators.MIN_INFINITY || b == Comparators.MAX_INFINITY) {
+                    return -1;
+                }
+                if (a == Comparators.MAX_INFINITY || b == Comparators.MIN_INFINITY) {
+                    return 1;
+                }
                 if (a == null) {
                     return -1;
                 }
@@ -99,4 +111,18 @@ public class Comparators {
     public static <T extends Number> Comparator<T> numberDesc() {
         return reverse(Comparators.<T>numberAsc());
     }
+
+    public static final Comparable<?> MIN_INFINITY = new Comparable<Object>() {
+        @Override
+        public int compareTo(Object o) {
+            return -1;
+        }
+    };
+
+    public static final Comparable<?> MAX_INFINITY = new Comparable<Object>() {
+        @Override
+        public int compareTo(Object o) {
+            return 1;
+        }
+    };
 }

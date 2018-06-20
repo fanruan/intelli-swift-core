@@ -483,7 +483,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
     @Override
     public String getUpdatePath() {
-        return SwiftCubePathConfig.getInstance().getPath() + "/" + Schema.CUBE.dir;
+        return SwiftCubePathConfig.getInstance().getPath() + "/" + Schema.CUBE.getDir();
     }
 
     @Override
