@@ -32,8 +32,15 @@ public class SegmentLocationManagerImpl implements SegmentLocationManager {
 
     @Override
     public List<SegmentDestination> getSegmentLocationURI(SourceKey table) {
-        List<SegmentDestination> destinations = segments.get(table.getId()).getValue();
-        int totalCount = segments.get(table.getId()).getKey();
+        Pair<Integer, List<SegmentDestination>> pair = segments.get(table.getId());
+        List<SegmentDestination> destinations = null;
+        int totalCount = 0;
+        if (null == pair) {
+            destinations = new ArrayList<SegmentDestination>();
+        } else {
+            destinations = pair.getValue();
+            totalCount = pair.getKey();
+        }
         destinations = rule.selectDestination(totalCount, destinations);
         // 暂时先这么处理，，，，
         if (null == destinations || destinations.isEmpty()) {
