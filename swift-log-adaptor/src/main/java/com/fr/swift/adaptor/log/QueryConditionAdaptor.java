@@ -36,7 +36,7 @@ import java.util.Set;
  */
 public class QueryConditionAdaptor {
 
-    public static QueryInfo adaptCondition(QueryCondition condition, Table swiftTable) throws SQLException {
+    public static QueryInfo adaptCondition(QueryCondition condition, Table swiftTable, List<String> fieldNames) throws SQLException {
         SwiftMetaData metaData = swiftTable.getMeta();
         SourceKey sourceKey = swiftTable.getSourceKey();
 
@@ -49,15 +49,20 @@ public class QueryConditionAdaptor {
             int columnIndex = metaData.getColumnIndex(sortItem.getColumnName());
             sorts.add(sortItem.isDesc() ? new DescSort(columnIndex) : new AscSort(columnIndex));
         }
-        for (int i = 0; i < metaData.getColumnCount(); i++) {
-            dimensions.add(new DetailDimension(i, sourceKey, new ColumnKey(metaData.getColumnName(i + 1)), null, null, null));
+        for (int i = 0; i < fieldNames.size(); i++) {
+            dimensions.add(new DetailDimension(i, sourceKey, new ColumnKey(fieldNames.get(i)), null, null, null));
         }
         List<DetailTarget> targets = null;
-        List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
-        Restriction restriction = condition.getRestriction();
-        filterInfos.addAll(adaptFilters(restriction));
-        return new DetailQueryInfo(queryId, sourceKey, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND),
+        return new DetailQueryInfo(queryId, sourceKey, restriction2FilterInfo(condition.getRestriction()),
                 dimensions, sorts, targets, metaData);
+    }
+
+    public static QueryInfo adaptCondition(QueryCondition condition, Table swiftTable) throws SQLException {
+        return adaptCondition(condition, swiftTable, swiftTable.getMeta().getFieldNames());
+    }
+
+    static FilterInfo restriction2FilterInfo(Restriction restriction) {
+        return new GeneralFilterInfo(adaptFilters(restriction), GeneralFilterInfo.AND);
     }
 
     private static List<FilterInfo> adaptFilters(Restriction restriction) {

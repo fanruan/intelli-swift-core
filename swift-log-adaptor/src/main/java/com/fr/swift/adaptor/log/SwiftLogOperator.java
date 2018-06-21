@@ -10,8 +10,6 @@ import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.query.query.QueryInfo;
-import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.operator.delete.RangeDeleter;
@@ -54,25 +52,10 @@ public class SwiftLogOperator implements LogOperator {
         try {
             Table table = db.getTable(new SourceKey(SwiftMetaAdaptor.getTableName(entity)));
             DecisionRowAdaptor<T> adaptor = new DecisionRowAdaptor<T>(entity, table.getMeta());
-            QueryInfo queryInfo = QueryConditionAdaptor.adaptCondition(queryCondition, table);
-            SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
-            long start = queryCondition.getSkip();
-            long end = queryCondition.getSkip() + queryCondition.getCount();
-            // TODO: 2018/6/15 这边分页要做个缓存，用class + queryCondition.toString()作为key
-            //是否需要分页
-            boolean isLimit = queryCondition.isCountLimitValid();
             List<T> tList = new ArrayList<T>();
-            long currentCount = 0;
-            while (resultSet.next()) {
-                if (isLimit) {
-                    if (currentCount < start || currentCount >= end) {
-                        continue;
-                    }
-                }
-                Row row = resultSet.getRowData();
-                T t = adaptor.apply(row);
-                tList.add(t);
-                currentCount++;
+            List<Row> rows = LogQueryUtils.detailQuery(entity, queryCondition);
+            for (Row row : rows) {
+                tList.add(adaptor.apply(row));
             }
             dataList.list(tList);
             dataList.setTotalCount(tList.size());
