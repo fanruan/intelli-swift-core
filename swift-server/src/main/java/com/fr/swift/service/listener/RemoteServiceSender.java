@@ -3,6 +3,7 @@ package com.fr.swift.service.listener;
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.rpc.annotation.RpcMethod;
 import com.fr.swift.rpc.annotation.RpcService;
 import com.fr.swift.rpc.annotation.RpcServiceType;
 import com.fr.swift.service.SwiftService;
@@ -39,6 +40,7 @@ public class RemoteServiceSender implements SwiftServiceListenerHandler {
     }
 
     @Override
+    @RpcMethod(methodName = "rpcTrigger")
     public Serializable trigger(SwiftRpcEvent event) {
         return RemoteServiceReceiver.getInstance().trigger(event);
     }
