@@ -1,6 +1,19 @@
 package com.fr.swift.server;
 
+import com.fr.config.BaseDBEnv;
+import com.fr.config.dao.DaoContext;
+import com.fr.config.dao.impl.HibernateClassHelperDao;
+import com.fr.config.dao.impl.HibernateEntityDao;
+import com.fr.config.dao.impl.HibernateXmlEnityDao;
+import com.fr.config.entity.ClassHelper;
+import com.fr.config.entity.Entity;
+import com.fr.config.entity.XmlEntity;
+import com.fr.stable.db.DBContext;
+import com.fr.stable.db.option.DBOption;
 import com.fr.swift.boot.ClusterListener;
+import com.fr.swift.config.entity.SwiftMetaDataEntity;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
+import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.ProviderTaskManager;
 import com.fr.swift.event.ClusterEvent;
@@ -12,6 +25,8 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.service.register.LocalSwiftRegister;
+import com.fr.transaction.Configurations;
+import com.fr.transaction.FineConfigurationHelper;
 import com.fr.workspace.simple.SimpleWork;
 
 /**
@@ -28,7 +43,7 @@ public class SwiftEngineStart {
     public static void main(String[] args) {
         try {
             SimpleWork.checkIn(System.getProperty("user.dir"));
-
+            initConfDB();
             SwiftContext.init();
             SwiftContext.getInstance().getBean(SwiftHttpServer.class).start();
             LOGGER.info("http server starting!");
@@ -43,5 +58,31 @@ public class SwiftEngineStart {
             LOGGER.error(e);
             System.exit(1);
         }
+    }
+
+    private static void initConfDB() throws Exception {
+        DBOption dbOption = new DBOption();
+        dbOption.setUrl("jdbc:mysql://192.168.0.28:3306/config");
+        dbOption.setUsername("lucifer");
+        dbOption.setPassword("lucifer");
+        dbOption.setDriverClass("com.mysql.jdbc.Driver");
+        dbOption.setDialectClass("com.fr.third.org.hibernate.dialect.MySQL5Dialect");
+        dbOption.addRawProperty("hibernate.show_sql", false)
+                .addRawProperty("hibernate.format_sql", true).addRawProperty("hibernate.connection.autocommit", false);
+        DBContext dbProvider = DBContext.create();
+        dbProvider.addEntityClass(Entity.class);
+        dbProvider.addEntityClass(XmlEntity.class);
+        dbProvider.addEntityClass(ClassHelper.class);
+
+        dbProvider.addEntityClass(SwiftMetaDataEntity.class);
+        dbProvider.addEntityClass(SwiftSegmentEntity.class);
+        dbProvider.addEntityClass(SwiftServiceInfoEntity.class);
+
+        dbProvider.init(dbOption);
+        BaseDBEnv.setDBContext(dbProvider);
+        DaoContext.setClassHelperDao(new HibernateClassHelperDao());
+        DaoContext.setXmlEntityDao(new HibernateXmlEnityDao());
+        DaoContext.setEntityDao(new HibernateEntityDao());
+        Configurations.setHelper(new FineConfigurationHelper());
     }
 }
