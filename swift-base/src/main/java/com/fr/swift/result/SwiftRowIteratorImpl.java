@@ -1,29 +1,26 @@
 package com.fr.swift.result;
 
 import com.fr.swift.source.Row;
-import com.fr.swift.structure.iterator.IteratorUtils;
 
 import java.util.List;
 
 /**
- * Created by Lyon on 2018/6/13.
+ * todo 和SwiftNode2RowIterator高度相似，待重构
+ *
+ * Created by Lyon on 2018/6/19.
  */
 public class SwiftRowIteratorImpl implements SwiftRowIterator {
 
-    private NodeResultSet source;
+    private DetailResultSet source;
     private List<Row> rows;
     private List<Row> nextRowList;
     private int cursor = 0;
     private volatile boolean isUpdating = false;
     private final Object lock = new Object();
 
-    public SwiftRowIteratorImpl(NodeResultSet source) {
+    public SwiftRowIteratorImpl(DetailResultSet source) {
         this.source = source;
-        this.rows = createList(source.getNode());
-    }
-
-    private static List<Row> createList(SwiftNode root) {
-        return IteratorUtils.iterator2List(SwiftNodeUtils.node2RowIterator(root));
+        this.rows = source.getPage();
     }
 
     /**
@@ -35,7 +32,7 @@ public class SwiftRowIteratorImpl implements SwiftRowIterator {
             public void run() {
                 synchronized (lock) {
                     isUpdating = true;
-                    nextRowList = createList(source.getNode());
+                    nextRowList = source.getPage();
                     isUpdating = false;
                 }
             }

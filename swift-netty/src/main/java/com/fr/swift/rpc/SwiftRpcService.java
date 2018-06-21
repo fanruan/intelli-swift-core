@@ -4,10 +4,11 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rpc.server.RpcServerServiceStarter;
+import com.fr.swift.thread.SwiftExecutors;
+import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.third.springframework.context.ApplicationContext;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ExecutorService;
 
 /**
  * This class created on 2018/6/8
@@ -21,7 +22,7 @@ public class SwiftRpcService {
     private ApplicationContext context;
     private NettyServiceStarter serverStarter;
 
-    private ScheduledExecutorService serverServiceExector = Executors.newScheduledThreadPool(1);
+    private ExecutorService rpcServerExecutor = SwiftExecutors.newSingleThreadExecutor(new PoolThreadFactory("netty-rpc-server"));
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftRpcService.class);
 
@@ -45,7 +46,7 @@ public class SwiftRpcService {
                 serverStarter = new RpcServerServiceStarter(context);
             }
         }
-        serverServiceExector.submit(new Runnable() {
+        rpcServerExecutor.submit(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -61,6 +62,6 @@ public class SwiftRpcService {
         if (serverStarter != null) {
             serverStarter.stop();
         }
-        serverServiceExector.shutdownNow();
+        rpcServerExecutor.shutdownNow();
     }
 }

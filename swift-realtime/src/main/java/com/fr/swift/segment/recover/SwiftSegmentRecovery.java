@@ -65,7 +65,7 @@ public class SwiftSegmentRecovery implements SegmentRecovery {
     private Segment getBackupSegment(Segment realtimeSeg) {
         SwiftMetaData meta = realtimeSeg.getMetaData();
         String realtimeSegPath = realtimeSeg.getLocation().getPath();
-        return new HistorySegmentImpl(new ResourceLocation(realtimeSegPath.replace(meta.getSwiftSchema().dir, Schema.BACKUP_CUBE.dir), StoreType.FINE_IO), meta);
+        return new HistorySegmentImpl(new ResourceLocation(realtimeSegPath.replace(meta.getSwiftSchema().getDir(), Schema.BACKUP_CUBE.getDir()), StoreType.FINE_IO), meta);
     }
 
     private Segment newRealtimeSegment(Segment realtimeSeg) {

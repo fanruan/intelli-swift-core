@@ -27,12 +27,15 @@ abstract class BaseTaskTomb implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
+        while (!Thread.currentThread().isInterrupted()) {
             try {
                 SchedulerTask self = tasks.take();
                 for (TaskKey next : self.nextAll()) {
                     handle(next, self.key());
                 }
+            } catch (InterruptedException ite) {
+                SwiftLoggers.getLogger().error(ite);
+                Thread.currentThread().interrupt();
             } catch (Exception e) {
                 SwiftLoggers.getLogger().error(e);
             }

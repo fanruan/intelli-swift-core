@@ -2,10 +2,6 @@ package com.fr.swift.config.transaction;
 
 import com.fr.config.BaseDBEnv;
 import com.fr.config.utils.SyncUtils;
-import com.fr.swift.config.dao.SwiftMetaDataDao;
-import com.fr.swift.config.dao.SwiftSegmentDao;
-import com.fr.swift.config.dao.SwiftServiceInfoDao;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 import com.fr.transaction.ConnectionHolder;
 import com.fr.transaction.SyncManager;
@@ -20,12 +16,6 @@ import java.sql.SQLException;
  */
 @Service
 public class SwiftTransactionManager {
-    @Autowired
-    private SwiftMetaDataDao swiftMetaDataDao;
-    @Autowired
-    private SwiftSegmentDao swiftSegmentDao;
-    @Autowired
-    private SwiftServiceInfoDao swiftServiceInfoDao;
 
     public Object doTransactionIfNeed(TransactionWorker worker) throws SQLException {
         if (!SyncManager.isTransactionOpen(BaseDBEnv.getDBContext()) && worker.needTransaction()) {

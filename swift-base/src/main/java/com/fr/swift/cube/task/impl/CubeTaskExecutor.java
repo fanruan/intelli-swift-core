@@ -5,12 +5,12 @@ import com.fr.swift.cube.task.TaskExecutor;
 import com.fr.swift.cube.task.TaskStatusChangeListener;
 import com.fr.swift.cube.task.WorkerTask;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.thread.SwiftExecutors;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SingleThreadFactory;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
 
@@ -41,14 +41,14 @@ public class CubeTaskExecutor implements TaskExecutor {
         Semaphore ticket;
 
         Poller(String name, int threadNum) {
-            exec = Executors.newFixedThreadPool(threadNum, new PoolThreadFactory(name));
+            exec = SwiftExecutors.newFixedThreadPool(threadNum, new PoolThreadFactory(name));
             ticket = new Semaphore(threadNum);
         }
 
         @Override
         public void run() {
-            try {
-                while (true) {
+            while (!Thread.currentThread().isInterrupted()) {
+                try {
                     ticket.acquire();
                     WorkerTask task = tasks.take();
                     if (task.status() == Status.RUNNABLE) {
@@ -57,10 +57,12 @@ public class CubeTaskExecutor implements TaskExecutor {
                     } else {
                         ticket.release();
                     }
+                } catch (InterruptedException e) {
+                    SwiftLoggers.getLogger().error(e);
+                    Thread.currentThread().interrupt();
                 }
-            } catch (InterruptedException e) {
-                SwiftLoggers.getLogger().error(e);
             }
+
         }
 
         TaskStatusChangeListener listener = new TaskStatusChangeListener() {

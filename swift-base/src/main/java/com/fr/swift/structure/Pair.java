@@ -25,6 +25,17 @@ public class Pair<K, V> {
         return new Pair<K, V>(key, val);
     }
 
+    public Pair() {
+    }
+
+    public void setKey(K key) {
+        this.key = key;
+    }
+
+    public void setValue(V value) {
+        this.value = value;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

@@ -22,10 +22,12 @@ import com.fr.swift.rpc.url.RPCUrl;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationProvider;
+import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.selector.ProxySelector;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -64,19 +66,11 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     }
 
     @Override
-    public <T extends SwiftResultSet> T getRemoteQueryResult(QueryInfo<T> info, SegmentDestination remoteURI) {
+    public <T extends SwiftResultSet> T getRemoteQueryResult(final QueryInfo<T> info, final SegmentDestination remoteURI) {
         final SwiftResultSet[] resultSet = new SwiftResultSet[1];
         try {
-            String address = remoteURI.getAddress();
-            String methodName = remoteURI.getMethodName();
-            Class clazz = remoteURI.getServiceClass();
-            ProxyFactory factory = ProxySelector.getInstance().getFactory();
-            Invoker invoker = factory.getInvoker(null, clazz, new RPCUrl(new RPCDestination(address)), false);
-            Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName(methodName), new Object[]{info}));
-            RpcFuture future = (RpcFuture) result.getValue();
             final CountDownLatch latch = new CountDownLatch(1);
-
-            future.addCallback(new AsyncRpcCallback() {
+            queryRemoteNodeNode(info, remoteURI).addCallback(new AsyncRpcCallback() {
                 @Override
                 public void success(Object result) {
                     resultSet[0] = (SwiftResultSet) result;
@@ -85,7 +79,33 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
 
                 @Override
                 public void fail(Exception e) {
-                    latch.countDown();
+                    List<String> spareNodes = remoteURI.getSpareNodes();
+                    try {
+                        for (String spareNode : spareNodes) {
+                            SegmentDestinationImpl spare = new SegmentDestinationImpl(remoteURI);
+                            spare.setClusterId(spareNode);
+                            final CountDownLatch count = new CountDownLatch(1);
+                            queryRemoteNodeNode(info, spare).addCallback(new AsyncRpcCallback() {
+                                @Override
+                                public void success(Object result) {
+                                    resultSet[0] = (SwiftResultSet) result;
+                                    count.countDown();
+                                }
+
+                                @Override
+                                public void fail(Exception e) {
+                                    count.countDown();
+                                }
+                            });
+                            count.await();
+                            if (null != resultSet[0]) {
+                                latch.countDown();
+                                break;
+                            }
+                        }
+                    } catch (Exception e1) {
+                        LOGGER.error("Query remote node error! ", e1);
+                    }
                 }
             });
             latch.await();
@@ -93,6 +113,17 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
             LOGGER.error("Query remote node error! ", e);
         }
         return (T) resultSet[0];
+    }
+
+    private <T extends SwiftResultSet> RpcFuture queryRemoteNodeNode(QueryInfo<T> info, SegmentDestination remoteURI) {
+        String address = remoteURI.getAddress();
+        String methodName = remoteURI.getMethodName();
+        Class clazz = remoteURI.getServiceClass();
+        info.setQuerySegment(remoteURI.getUri());
+        ProxyFactory factory = ProxySelector.getInstance().getFactory();
+        Invoker invoker = factory.getInvoker(null, clazz, new RPCUrl(new RPCDestination(address)), false);
+        Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName(methodName), new Object[]{info, remoteURI.order()}));
+        return (RpcFuture) result.getValue();
     }
 
     @Override

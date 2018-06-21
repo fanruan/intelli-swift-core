@@ -1,7 +1,10 @@
 package com.fr.swift.service;
 
+import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.service.listener.RealTimeIndexingFinishListener;
 import com.fr.swift.stuff.RealTimeIndexingStuff;
+
+import java.io.Serializable;
 
 /**
  * Created by pony on 2017/11/14.
@@ -13,6 +16,11 @@ public class LocalSwiftServerService extends AbstractSwiftServerService {
     private SwiftRealtimeService realTimeService;
     private SwiftHistoryService historyService;
     private SwiftAnalyseService analyseService;
+
+    @Override
+    public Serializable trigger(SwiftRpcEvent event) {
+        return null;
+    }
 
     @Override
     public void registerService(SwiftService service) {

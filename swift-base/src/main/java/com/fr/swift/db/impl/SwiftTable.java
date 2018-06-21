@@ -5,9 +5,7 @@ import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftDataOperatorProvider;
-import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.segment.operator.Deleter;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
@@ -46,7 +44,7 @@ class SwiftTable implements Table {
     @Override
     public void insert(SwiftResultSet rowSet) throws SQLException {
         try {
-            Inserter inserter = operators.getRealtimeBlockSwiftInserter(this);
+            Inserter inserter = operators.getIncrementer(this);
             inserter.insertData(rowSet);
         } catch (Exception e) {
             throw new SQLException(e);
@@ -73,19 +71,19 @@ class SwiftTable implements Table {
     }
 
     @Override
-    public int delete(Where where) throws SQLException {
+    public int delete(Where where) {
         // todo 这里应该是从数据库查出来的结果集
-        SwiftResultSet rowSet = null;
-        try {
-            List<Segment> segments = SwiftContext.getInstance().getBean(SwiftSegmentManager.class).getSegment(key);
-            // fixme 应传入整个segments
-            Deleter deleter = operators.getSwiftDeleter(segments.get(0));
-            deleter.deleteData(rowSet);
-        } catch (Exception e) {
-            throw new SQLException(e);
-        } finally {
-            rowSet.close();
-        }
+//        SwiftResultSet rowSet = null;
+//        try {
+//            List<Segment> segments = SwiftContext.getInstance().getBean(SwiftSegmentManager.class).getSegment(key);
+//            // fixme 应传入整个segments
+//            Deleter deleter = operators.getSwiftDeleter(segments.get(0));
+//            deleter.deleteData(rowSet);
+//        } catch (Exception e) {
+//            throw new SQLException(e);
+//        } finally {
+//            rowSet.close();
+//        }
         return -1;
     }
 

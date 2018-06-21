@@ -2,7 +2,6 @@ package com.fr.swift.adaptor.struct;
 
 import com.finebi.conf.structure.result.BIDetailCell;
 import com.finebi.conf.structure.result.BIDetailTableResult;
-//import com.fr.swift.adaptor.struct.paging.Paging;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.result.DetailResultSet;
@@ -12,6 +11,8 @@ import com.fr.swift.source.SwiftResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+//import com.fr.swift.adaptor.struct.paging.Paging;
 
 /**
  * This class created on 2018-1-2 10:11:05
@@ -45,7 +46,7 @@ public class SwiftDetailTableResult implements BIDetailTableResult {
 
     public void init() {
         startRow = (currentPage - 1) * pageSize;
-        totalRows = Math.min(swiftResultSet instanceof SwiftEmptyResult ? 0 : ((DetailResultSet) swiftResultSet).getRowSize(), totalRows);
+        totalRows = Math.min(swiftResultSet instanceof SwiftEmptyResult ? 0 : ((DetailResultSet) swiftResultSet).getRowCount(), totalRows);
         rowSize = totalRows - startRow >= pageSize ? pageSize : totalRows - startRow;
         endRow = startRow + rowSize;
     }

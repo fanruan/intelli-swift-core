@@ -12,7 +12,6 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
 
-import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +21,7 @@ import java.util.Map;
  * <p>
  * Created by Lyon on 2018/6/14.
  */
-public class LocalPartNodeResultSet implements NodeMergeResultSet<SwiftNode>, Serializable {
+public class LocalPartNodeResultSet implements NodeMergeResultSet<SwiftNode>, SerializableResultSet {
 
     private static final long serialVersionUID = -7163285398162627401L;
     private transient NodeMergeResultSet<GroupNode> resultSet;
@@ -71,7 +70,7 @@ public class LocalPartNodeResultSet implements NodeMergeResultSet<SwiftNode>, Se
 
     @Override
     public boolean hasNextPage() {
-        return hasNextPage | originHasNextPage;
+        return hasNextPage || originHasNextPage;
     }
 
     @Override

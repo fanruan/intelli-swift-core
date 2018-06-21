@@ -42,8 +42,9 @@ public class ChainedNodeMergeResultSet implements NodeMergeResultSet<GroupNode> 
         }
         NodeMergeResultSet<GroupNode> mergeResultSet = operator.apply(resultSets);
         // TODO: 2018/6/14 这个字典合并的只能先调用getNode再取字典map
+        SwiftNode node = mergeResultSet.getNode();
         totalDictionaries = mergeResultSet.getRowGlobalDictionaries();
-        return mergeResultSet.getNode();
+        return node;
     }
 
     @Override

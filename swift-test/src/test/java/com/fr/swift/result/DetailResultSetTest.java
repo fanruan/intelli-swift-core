@@ -1,6 +1,5 @@
 package com.fr.swift.result;
 
-
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
 import com.fr.swift.compare.Comparators;
@@ -9,14 +8,15 @@ import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.segment.detail.NormalDetailSegmentQuery;
 import com.fr.swift.query.segment.detail.SortDetailSegmentQuery;
-import com.fr.swift.query.sort.SortType;
+import com.fr.swift.query.sort.AscSort;
+import com.fr.swift.query.sort.DescSort;
+import com.fr.swift.query.sort.Sort;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.Row;
-import com.fr.swift.structure.array.IntList;
-import com.fr.swift.structure.array.IntListFactory;
+import com.fr.swift.structure.Pair;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
@@ -469,14 +469,18 @@ public class DetailResultSetTest extends TestCase {
         double[] doubleData = {9.5, 40.1, 9.5, 40.1};
         long[] longData = {12, 23, 23, 23};
         String[] strData = {"A", "C", "C", "A"};
-        SegmentDetailResultSet rs = new SegmentDetailResultSet(columnList, filter, null);
-        while (rs.next()) {
-            Row row = rs.getRowData();
-            assertEquals((int) row.getValue(0), intData[i]);
-            assertEquals((long) row.getValue(1), longData[i]);
-            assertEquals(row.getValue(2), doubleData[i]);
-            assertEquals(row.getValue(3), strData[i]);
-            i++;
+        DetailResultSet rs = new SegmentDetailResultSet(columnList, filter, null);
+        try {
+            while (rs.next()) {
+                Row row = rs.getRowData();
+                assertEquals((int) row.getValue(0), intData[i]);
+                assertEquals((long) row.getValue(1), longData[i]);
+                assertEquals(row.getValue(2), doubleData[i]);
+                assertEquals(row.getValue(3), strData[i]);
+                i++;
+            }
+        } catch (Exception e) {
+            assertTrue(false);
         }
     }
 
@@ -507,16 +511,11 @@ public class DetailResultSetTest extends TestCase {
         long[] longData = {23, 23, 23, 12};
         double[] doubleData = {40.1, 40.1, 9.5, 9.5};
         String[] strData = {"C", "A", "C", "A"};
-        IntList sortIndex = IntListFactory.createHeapIntList(3);
-        List<SortType> sorts = new ArrayList<SortType>();
-        sortIndex.add(0);
-        sortIndex.add(3);
-        sortIndex.add(1);
-
-        sorts.add(SortType.DESC);
-        sorts.add(SortType.DESC);
-        sorts.add(SortType.ASC);
-        DetailResultSet rs = new SortSegmentDetailResultSet(columnList, filter, sortIndex, sorts, null);
+        List<Sort> sorts = new ArrayList<>();
+        sorts.add(new DescSort(0));
+        sorts.add(new DescSort(3));
+        sorts.add(new AscSort(1));
+        DetailResultSet rs = new SortSegmentDetailResultSet(columnList, filter, sorts, null);
 
         try {
             while (rs.next()) {
@@ -528,7 +527,7 @@ public class DetailResultSetTest extends TestCase {
                 i++;
             }
         } catch (Exception e) {
-
+            assertTrue(false);
         }
 
     }
@@ -539,41 +538,18 @@ public class DetailResultSetTest extends TestCase {
         double[] doubleData = {40.1, 40.1, 9.5, 9.5};
         long[] longData = {23, 23, 23, 12};
         String[] strData = {"C", "A", "C", "A"};
-        IntList sortIndex = IntListFactory.createHeapIntList(3);
-        List<SortType> sorts = new ArrayList<SortType>();
-        sortIndex.add(0);
-        sortIndex.add(3);
-        sortIndex.add(1);
-        sorts.add(SortType.DESC);
-        sorts.add(SortType.DESC);
-        sorts.add(SortType.ASC);
+        List<Sort> sorts = new ArrayList<>();
+        sorts.add(new DescSort(0));
+        sorts.add(new DescSort(3));
+        sorts.add(new AscSort(1));
         for (int j = 0; j < 3; j++) {
-            queries.add(new SortDetailSegmentQuery(columnList, filter, sortIndex, sorts, null));
+            queries.add(new SortDetailSegmentQuery(columnList, filter, sorts, null));
         }
-        Comparator comparator = new Comparator <Row>() {
-            @Override
-            public int compare(Row o1, Row o2) {
-                for (int i = 0; i < sortIndex.size(); i++) {
-                    int c = 0;
-                    //比较的列先后顺序
-                    int realColumn = sortIndex.get(i);
-                    if (sorts.get(i) == SortType.ASC) {
-                        c = columnList.get(realColumn).getDictionaryEncodedColumn().getComparator().compare(o1.getValue(realColumn), o2.getValue(realColumn));
-                    }
-                    if (sorts.get(i) == SortType.DESC) {
-                        c = Comparators.reverse(columnList.get(realColumn).getDictionaryEncodedColumn().getComparator()).compare(o1.getValue(realColumn), o2.getValue(realColumn));
-                    }
-                    if (c != 0) {
-                        return c;
-                    }
-                }
-                return 0;
-            }
-        };
-        DetailResultSet rs = new SortMultiSegmentDetailResultSet(queries, comparator, null);
-        //测试索引排序，单块数据量大于3000时使用索引排序
-//        DetailResultSet rs = new SortMultiSegmentDetailResultSet(queries, comparator);
-
+        List<Pair<Integer, Comparator>> pairs = new ArrayList<>();
+        pairs.add(Pair.of(0, Comparators.<Integer>asc()));
+        pairs.add(Pair.of(3, Comparators.<String>desc()));
+        pairs.add(Pair.of(1, Comparators.<Double>desc()));
+        DetailResultSet rs = new SortMultiSegmentDetailResultSet(queries, pairs, null);
         try {
             while (rs.next()) {
                 Row row = rs.getRowData();
@@ -586,36 +562,5 @@ public class DetailResultSetTest extends TestCase {
         } catch (Exception e) {
 
         }
-    }
-
-    public void testSortSegmentByIndexGetRowData() {
-        int i = 0;
-        int[] intData = {2, 4, 4, 2};
-        double[] doubleData = {9.5, 40.1, 40.1, 9.5};
-        long[] longData = {23, 23, 23, 12};
-        String[] strData = {"C", "C", "A", "A"};
-        IntList sortIndex = IntListFactory.createHeapIntList(3);
-        List<SortType> sorts = new ArrayList<SortType>();
-
-        sortIndex.add(1);
-        sortIndex.add(0);
-        sorts.add(SortType.DESC);
-        sorts.add(SortType.ASC);
-
-        DetailResultSet rs = new SortSegmentDetailByIndexResultSet(columnList, filter, sortIndex, sorts, null);
-
-        try {
-            while (rs.next()) {
-                Row row = rs.getRowData();
-                assertEquals((int) row.getValue(0), intData[i]);
-                assertEquals((long) row.getValue(1), longData[i]);
-                assertEquals(row.getValue(2), doubleData[i]);
-                assertEquals(row.getValue(3), strData[i]);
-                i++;
-            }
-        } catch (Exception e) {
-
-        }
-
     }
 }

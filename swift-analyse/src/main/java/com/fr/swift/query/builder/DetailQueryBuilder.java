@@ -6,6 +6,7 @@ import com.fr.swift.query.info.group.RemoteQueryInfoImpl;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.query.query.QueryType;
+import com.fr.swift.query.remote.DetailLocalQuery;
 import com.fr.swift.query.remote.RemoteQueryImpl;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.segment.SegmentDestination;
@@ -19,7 +20,6 @@ import java.util.List;
 /**
  * Created by pony on 2017/12/13.
  */
-// TODO: 2018/6/6 明细查询这边的细节有待梳理
 class DetailQueryBuilder {
 
     /**
@@ -36,6 +36,7 @@ class DetailQueryBuilder {
         }
     }
 
+    // TODO: 2018/6/20 目前看起来明细这边没必要区分localAll和localPart
     /**
      * 处理另一个节点转发过来的查询，并且当前节点上包含查询的部分分块数据
      *
@@ -43,11 +44,13 @@ class DetailQueryBuilder {
      * @return
      */
     static Query<DetailResultSet> buildLocalPartQuery(DetailQueryInfo info) {
+        Query<DetailResultSet> query;
         if (info.hasSort()) {
-            return LocalDetailQueryBuilder.GROUP.buildLocalQuery(info);
+            query = LocalDetailQueryBuilder.GROUP.buildLocalQuery(info);
         } else {
-            return LocalDetailQueryBuilder.NORMAL.buildLocalQuery(info);
+            query = LocalDetailQueryBuilder.NORMAL.buildLocalQuery(info);
         }
+        return new DetailLocalQuery(info.getQueryId(), query);
     }
 
     /**
@@ -57,17 +60,19 @@ class DetailQueryBuilder {
      * @return
      */
     static Query<DetailResultSet> buildLocalAllQuery(DetailQueryInfo info) {
+        Query<DetailResultSet> query;
         if (info.hasSort()) {
-            return LocalDetailQueryBuilder.GROUP.buildLocalQuery(info);
+            query = LocalDetailQueryBuilder.GROUP.buildLocalQuery(info);
         } else {
-            return LocalDetailQueryBuilder.NORMAL.buildLocalQuery(info);
+            query = LocalDetailQueryBuilder.NORMAL.buildLocalQuery(info);
         }
+        return new DetailLocalQuery(info.getQueryId(), query);
     }
 
     private static Query<DetailResultSet> buildQuery(DetailQueryInfo info, LocalDetailQueryBuilder builder) throws SQLException{
         SourceKey table = info.getTable();
         // TODO 这边先直接写成History
-        List<SegmentDestination> uris = SegmentLocationProvider.getInstance().getHistorySegmentLocation(table);
+        List<SegmentDestination> uris = SegmentLocationProvider.getInstance().getSegmentLocationURI(table);
         if (uris == null || uris.isEmpty()){
             throw new SwiftSegmentAbsentException("no such table");
         }
@@ -75,7 +80,7 @@ class DetailQueryBuilder {
             if (!uris.get(0).isRemote()) {
                 return builder.buildLocalQuery(info);
             } else {
-                QueryInfo<DetailResultSet> queryInfo = new RemoteQueryInfoImpl<DetailResultSet>(QueryType.LOCAL_ALL, info);
+                QueryInfo<DetailResultSet> queryInfo = new RemoteQueryInfoImpl<DetailResultSet>(QueryType.LOCAL_DETAIL, info);
                 return new RemoteQueryImpl<DetailResultSet>(queryInfo, uris.get(0));
             }
         }
@@ -84,7 +89,7 @@ class DetailQueryBuilder {
             if (!uri.isRemote()) {
                 queries.add(builder.buildLocalQuery(info));
             } else {
-                QueryInfo<DetailResultSet> queryInfo = new RemoteQueryInfoImpl<DetailResultSet>(QueryType.LOCAL_PART, info);
+                QueryInfo<DetailResultSet> queryInfo = new RemoteQueryInfoImpl<DetailResultSet>(QueryType.LOCAL_DETAIL, info);
                 queries.add(new RemoteQueryImpl<DetailResultSet>(queryInfo, uri));
             }
         }

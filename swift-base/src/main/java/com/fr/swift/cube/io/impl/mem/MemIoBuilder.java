@@ -34,6 +34,6 @@ public final class MemIoBuilder {
                 default:
             }
         }
-        return Crasher.crash(String.format("illegal cube build conf: %s", conf));
+        return Crasher.crash(String.format("illegal cube build config: %s", conf));
     }
 }

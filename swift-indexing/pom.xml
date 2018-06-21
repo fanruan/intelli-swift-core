@@ -35,6 +35,11 @@
             <version>5.0-FEATURE-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.finebi</groupId>
+            <artifactId>swift-repository</artifactId>
+            <version>5.0-FEATURE-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 </project>

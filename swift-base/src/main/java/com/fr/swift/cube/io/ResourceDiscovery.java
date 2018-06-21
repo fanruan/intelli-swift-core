@@ -6,6 +6,7 @@ import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.cube.io.output.Writer;
+import com.fr.swift.db.impl.SwiftDatabase.Schema;
 import com.fr.swift.source.SourceKey;
 
 import java.util.Date;
@@ -138,7 +139,7 @@ public class ResourceDiscovery implements IResourceDiscovery {
     private static final Pattern PATTERN = Pattern.compile(".+/.+?(/seg\\d+?)/.+");
 
     private static boolean isMinor(String path) {
-        return path.contains("minor_cubes");
+        return path.contains(Schema.MINOR_CUBE.getDir());
     }
 
     private static String getCubeBasePath(String path) {

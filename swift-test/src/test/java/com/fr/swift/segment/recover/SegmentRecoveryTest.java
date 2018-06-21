@@ -20,6 +20,7 @@ import com.fr.swift.test.Preparer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -33,6 +34,7 @@ public class SegmentRecoveryTest {
 
     private ConnectionInfo connectionInfo;
 
+
     @BeforeClass
     public static void boot() throws Exception {
         Preparer.prepareCubeBuild();
@@ -43,7 +45,7 @@ public class SegmentRecoveryTest {
     public void setUp() throws Exception {
         TestConfDb.setConfDb();
         connectionInfo = TestConnectionProvider.createConnection();
-        dataSource = new QueryDBSource("select * from DEMO_CAPITAL_RETURN", "RealtimeRecorderTest");
+        dataSource = new QueryDBSource("select * from DEMO_CAPITAL_RETURN", SegmentRecoveryTest.class.getName());
         operators = SwiftContext.getInstance().getBean(SwiftDataOperatorProvider.class);
     }
 
@@ -51,6 +53,7 @@ public class SegmentRecoveryTest {
     public void tearDown() {
     }
 
+    @Ignore
     @Test
     public void recover() throws Exception {
         QuerySourceTransfer transfer = new QuerySourceTransfer(connectionInfo, dataSource.getMetadata(), dataSource.getMetadata(), dataSource.getQuery());
@@ -60,7 +63,7 @@ public class SegmentRecoveryTest {
         inserter.insertData(swiftResultSet);
 
         String tablePath = String.format("%s/%s",
-                dataSource.getMetadata().getSwiftSchema().dir,
+                dataSource.getMetadata().getSwiftSchema().getDir(),
                 dataSource.getSourceKey().getId());
         ResourceDiscovery.getInstance().removeCubeResource(tablePath);
         SwiftSegmentRecovery.getInstance().recoverAll();
@@ -71,5 +74,12 @@ public class SegmentRecoveryTest {
         for (int i = 0; i < segment.getRowCount(); i++) {
             segment.getColumn(new ColumnKey("付款金额")).getDetailColumn().get(i);
         }
+    }
+
+    private Segment newRealtimeSegment() {
+        return new RealTimeSegmentImpl(new ResourceLocation(
+                String.format("%s/%s/seg0",
+                        dataSource.getMetadata().getSwiftSchema().getDir(),
+                        dataSource.getSourceKey().getId()), StoreType.MEMORY), dataSource.getMetadata());
     }
 }

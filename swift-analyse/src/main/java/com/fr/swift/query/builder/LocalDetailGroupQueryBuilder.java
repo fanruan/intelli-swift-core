@@ -1,5 +1,6 @@
 package com.fr.swift.query.builder;
 
+import com.fr.general.ComparatorUtils;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
@@ -12,14 +13,16 @@ import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.detail.SortDetailResultQuery;
 import com.fr.swift.query.segment.detail.SortDetailSegmentQuery;
 import com.fr.swift.query.sort.Sort;
-import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
-import com.fr.swift.structure.array.IntList;
+import com.fr.swift.structure.Pair;
 
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -36,16 +39,23 @@ public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
     public Query<DetailResultSet> buildLocalQuery(DetailQueryInfo info) {
         List<Query<DetailResultSet>> queries = new ArrayList<Query<DetailResultSet>>();
         List<Segment> segments = localSegmentProvider.getSegment(info.getTable());
-        IntList list = info.getSortIndex();
-        List<SortType> sortTypes = new ArrayList<SortType>();
-        Dimension[] dimensions = info.getDimensions().toArray(new Dimension[info.getDimensions().size()]);
-        for (int i = 0; i < dimensions.length; i++) {
-            Sort sort = dimensions[i].getSort();
-            if (sort.getSortType() != SortType.NONE) {
-                sortTypes.add(sort.getSortType());
+        List<Segment> targetSegments = new ArrayList<Segment>();
+        URI segmentOrder = info.getQuerySegment();
+        if (segmentOrder != null) {
+            for (Segment segment : segments) {
+                if (ComparatorUtils.equals(segment.getLocation().getUri(), segmentOrder)) {
+                    targetSegments.add(segment);
+                    break;
+                }
             }
         }
-        for (Segment segment : segments) {
+        if (targetSegments.isEmpty()) {
+            targetSegments = segments;
+        }
+        targetSegments = Collections.unmodifiableList(targetSegments);
+        List<Dimension> dimensions = info.getDimensions();
+        List<Pair<Integer, Comparator>> comparators = null;
+        for (Segment segment : targetSegments) {
             List<Column> columns = new ArrayList<Column>();
             List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
             filterInfos.add(new SwiftDetailFilterInfo<Object>(null, null, SwiftDetailFilterType.ALL_SHOW));
@@ -58,13 +68,29 @@ public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
             if (info.getFilterInfo() != null) {
                 filterInfos.add(info.getFilterInfo());
             }
-            queries.add(new SortDetailSegmentQuery(columns, FilterBuilder.buildDetailFilter(segment, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND)), list, sortTypes, info.getMetaData()));
+            List<Sort> sorts = LocalGroupAllQueryBuilder.getSegmentIndexSorts(dimensions);
+            queries.add(new SortDetailSegmentQuery(columns,
+                    FilterBuilder.buildDetailFilter(segment, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND)),
+                    sorts, info.getMetaData()));
+            if (comparators == null) {
+                comparators = getComparators(columns, sorts);
+                info.setComparators(comparators);
+            }
         }
-        return new SortDetailResultQuery(queries, info.getComparator(), info.getMetaData());
+        return new SortDetailResultQuery(queries, comparators, info.getMetaData());
+    }
+
+    private static List<Pair<Integer, Comparator>> getComparators(List<Column> columnList, List<Sort> sorts) {
+        List<Pair<Integer, Comparator>> pairs = new ArrayList<Pair<Integer, Comparator>>();
+        for (Sort sort : sorts) {
+            Comparator comparator = columnList.get(sort.getTargetIndex()).getDictionaryEncodedColumn().getComparator();
+            pairs.add(Pair.of(sort.getTargetIndex(), comparator));
+        }
+        return pairs;
     }
 
     @Override
     public Query<DetailResultSet> buildResultQuery(List<Query<DetailResultSet>> queries, DetailQueryInfo info) {
-        return new SortDetailResultQuery(queries, info.getTargets(), info.getComparator(), info.getMetaData());
+        return new SortDetailResultQuery(queries, info.getTargets(), info.getComparators(), info.getMetaData());
     }
 }

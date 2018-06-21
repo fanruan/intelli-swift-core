@@ -9,7 +9,6 @@ import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.filter.info.value.SwiftNumberInRangeFilterValue;
-import com.fr.swift.query.group.info.cursor.Cursor;
 import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.info.element.dimension.DetailDimension;
 import com.fr.swift.query.info.element.dimension.Dimension;
@@ -17,20 +16,15 @@ import com.fr.swift.query.info.element.target.DetailTarget;
 import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.DescSort;
-import com.fr.swift.query.sort.NoneSort;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.structure.array.IntList;
-import com.fr.swift.structure.array.IntListFactory;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -46,35 +40,24 @@ public class QueryConditionAdaptor {
         SwiftMetaData metaData = swiftTable.getMeta();
         SourceKey sourceKey = swiftTable.getSourceKey();
 
-        Cursor cursor = null;
         String queryId = sourceKey.getId();
-        Dimension[] dimensions = new Dimension[metaData.getColumnCount()];
+        List<Dimension> dimensions = new ArrayList<Dimension>();
 
-        IntList sortIndex = IntListFactory.createHeapIntList();
+        List<Sort> sorts = new ArrayList<Sort>();
         List<SortItem> sortItems = condition.getSortList();
-        Map<String, SortItem> sortMap = new HashMap<String, SortItem>();
         for (SortItem sortItem : sortItems) {
-            sortIndex.add(metaData.getColumnIndex(sortItem.getColumnName()));
-            sortMap.put(sortItem.getColumnName(), sortItem);
+            int columnIndex = metaData.getColumnIndex(sortItem.getColumnName());
+            sorts.add(sortItem.isDesc() ? new DescSort(columnIndex) : new AscSort(columnIndex));
         }
-
-        for (int i = 0; i < dimensions.length; i++) {
-            SortItem sortItem = sortMap.get(metaData.getColumnName(i + 1));
-            Sort sort = new NoneSort();
-            if (sortItem != null) {
-                if (sortItem.isDesc()) {
-                    sort = new DescSort(i);
-                } else {
-                    sort = new AscSort(i);
-                }
-            }
-            dimensions[i] = new DetailDimension(i, sourceKey, new ColumnKey(metaData.getColumnName(i + 1)), null, sort, null);
+        for (int i = 0; i < metaData.getColumnCount(); i++) {
+            dimensions.add(new DetailDimension(i, sourceKey, new ColumnKey(metaData.getColumnName(i + 1)), null, null, null));
         }
-        DetailTarget[] targets = null;
+        List<DetailTarget> targets = null;
         List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
         Restriction restriction = condition.getRestriction();
         filterInfos.addAll(adaptFilters(restriction));
-        return new DetailQueryInfo(cursor, queryId, dimensions, sourceKey, targets, sortIndex, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND), metaData);
+        return new DetailQueryInfo(queryId, sourceKey, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND),
+                dimensions, sorts, targets, metaData);
     }
 
     private static List<FilterInfo> adaptFilters(Restriction restriction) {

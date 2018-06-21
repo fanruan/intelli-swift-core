@@ -30,6 +30,7 @@
         <module>swift-communication</module>
         <module>swift-netty</module>
         <module>swift-repository</module>
+        <module>swift-decision</module>
     </modules>
 
     <properties>
