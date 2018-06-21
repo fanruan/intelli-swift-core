@@ -1,7 +1,18 @@
 package com.fr.swift.http;
 
+import com.fr.swift.Invoker;
+import com.fr.swift.ProxyFactory;
+import com.fr.swift.Result;
+import com.fr.swift.URL;
+import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftMetaDataService;
+import com.fr.swift.config.service.SwiftServiceInfoService;
+import com.fr.swift.context.SwiftContext;
+import com.fr.swift.event.history.HistoryLoadRpcEvent;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.invocation.SwiftInvocation;
+import com.fr.swift.log.SwiftLogger;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
@@ -11,7 +22,13 @@ import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.query.sort.Sort;
+import com.fr.swift.rpc.client.AsyncRpcCallback;
+import com.fr.swift.rpc.client.async.RpcFuture;
+import com.fr.swift.rpc.server.RpcServer;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.selector.ProxySelector;
+import com.fr.swift.selector.UrlSelector;
+import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
@@ -36,6 +53,10 @@ public class QueryController {
 
     @Autowired
     private SwiftMetaDataService metaDataService;
+    //    @Autowired
+    private RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
+
+    private SwiftLogger logger = SwiftLoggers.getLogger(QueryController.class);
 
     @ResponseBody
     @RequestMapping(value = "swift/query/{sourceKey}", method = RequestMethod.GET)
@@ -51,6 +72,35 @@ public class QueryController {
             resultSet.close();
         }
         return rows;
+    }
+
+    @RequestMapping("swift/history/load")
+    public void load() throws Throwable {
+        URL url = getMasterURL();
+        ProxyFactory factory = ProxySelector.getInstance().getFactory();
+        Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, url, false);
+        Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName("rpcTrigger"), new Object[]{new HistoryLoadRpcEvent()}));
+        RpcFuture future = (RpcFuture) result.getValue();
+        if (null == future) {
+            throw result.getException();
+        }
+        future.addCallback(new AsyncRpcCallback() {
+            @Override
+            public void success(Object result) {
+                logger.info("rpcTrigger success! ");
+            }
+
+            @Override
+            public void fail(Exception e) {
+                logger.error("rpcTrigger error! ", e);
+            }
+        });
+    }
+
+    private URL getMasterURL() {
+        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.getInstance().getBean(SwiftServiceInfoService.class).getServiceInfoByService("cluster_master_service");
+        SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
+        return UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
     }
 
     private QueryInfo createQueryInfo(String key) throws SwiftMetaDataException {

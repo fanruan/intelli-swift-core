@@ -112,7 +112,7 @@ public class HistoryDataSyncManager extends AbstractHandler<HistoryLoadRpcEvent>
                         });
 
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             LOGGER.error(e.getMessage(), e);
         }
         return null;

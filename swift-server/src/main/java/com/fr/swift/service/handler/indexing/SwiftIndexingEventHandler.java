@@ -52,7 +52,7 @@ public class SwiftIndexingEventHandler extends AbstractHandler<AbstractIndexingR
                                     LOGGER.error("Indexing error! ", e);
                                 }
                             });
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     LOGGER.error("Indexing error! ", e);
                 }
         }
