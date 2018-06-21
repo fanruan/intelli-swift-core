@@ -46,7 +46,7 @@ public class QueryConditionAdaptor {
         List<Sort> sorts = new ArrayList<Sort>();
         List<SortItem> sortItems = condition.getSortList();
         for (SortItem sortItem : sortItems) {
-            int columnIndex = metaData.getColumnIndex(sortItem.getColumnName());
+            int columnIndex = metaData.getColumnIndex(sortItem.getColumnName()) - 1;
             sorts.add(sortItem.isDesc() ? new DescSort(columnIndex) : new AscSort(columnIndex));
         }
         for (int i = 0; i < fieldNames.size(); i++) {
