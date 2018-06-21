@@ -4,15 +4,14 @@ import com.fr.swift.Invoker;
 import com.fr.swift.ProxyFactory;
 import com.fr.swift.Result;
 import com.fr.swift.URL;
-import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftMetaDataService;
-import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.event.history.HistoryLoadRpcEvent;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.invocation.SwiftInvocation;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
@@ -98,9 +97,8 @@ public class QueryController {
     }
 
     private URL getMasterURL() {
-        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.getInstance().getBean(SwiftServiceInfoService.class).getServiceInfoByService("cluster_master_service");
-        SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
-        return UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
+        String masterAddress = SwiftContext.getInstance().getBean(SwiftProperty.class).getMasterAddress();
+        return UrlSelector.getInstance().getFactory().getURL(masterAddress);
     }
 
     private QueryInfo createQueryInfo(String key) throws SwiftMetaDataException {

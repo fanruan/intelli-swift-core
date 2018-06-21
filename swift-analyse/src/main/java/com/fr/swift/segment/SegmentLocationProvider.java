@@ -1,8 +1,10 @@
 package com.fr.swift.segment;
 
+import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.segment.impl.SegmentLocationManagerImpl;
 import com.fr.swift.source.SourceKey;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +29,8 @@ public class SegmentLocationProvider implements SegmentLocationManager {
     public List<SegmentDestination> getSegmentLocationURI(SourceKey table) {
         List<SegmentDestination> destinations = new ArrayList<SegmentDestination>(getRealTimeSegmentLocation(table));
         destinations.addAll(getHistorySegmentLocation(table));
+        // tmp
+        destinations.add(new SegmentDestinationImpl("192.168.2.1:7000", URI.create(""), 0, null, "historyQuery"));
         return Collections.unmodifiableList(destinations);
     }
 
