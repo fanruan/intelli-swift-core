@@ -76,14 +76,18 @@ class DetailQueryBuilder {
         if (uris == null || uris.isEmpty()){
             throw new SwiftSegmentAbsentException("no such table");
         }
-        if (uris.size() == 1) {
-            if (!uris.get(0).isRemote()) {
-                return builder.buildLocalQuery(info);
-            } else {
-                QueryInfo<DetailResultSet> queryInfo = new RemoteQueryInfoImpl<DetailResultSet>(QueryType.LOCAL_DETAIL, info);
-                return new RemoteQueryImpl<DetailResultSet>(queryInfo, uris.get(0));
-            }
+        if (isAllLocal(uris)) {
+            return builder.buildLocalQuery(info);
         }
+        // TODO: 2018/6/22 全部segment在一个远程节点上
+//        if (uris.size() == 1) {
+//            if (!uris.get(0).isRemote()) {
+//
+//            } else {
+//                QueryInfo<DetailResultSet> queryInfo = new RemoteQueryInfoImpl<DetailResultSet>(QueryType.LOCAL_DETAIL, info);
+//                return new RemoteQueryImpl<DetailResultSet>(queryInfo, uris.get(0));
+//            }
+//        }
         List<Query<DetailResultSet>> queries = new ArrayList<Query<DetailResultSet>>();
         for (SegmentDestination uri : uris) {
             if (!uri.isRemote()) {
@@ -94,5 +98,14 @@ class DetailQueryBuilder {
             }
         }
         return builder.buildResultQuery(queries, info);
+    }
+
+    static boolean isAllLocal(List<SegmentDestination> uris) {
+        for (SegmentDestination uri : uris) {
+            if (uri.isRemote()) {
+                return false;
+            }
+        }
+        return true;
     }
 }

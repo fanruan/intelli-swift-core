@@ -15,7 +15,6 @@ import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.aggregator.WrappedAggregator;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.group.GroupType;
-import com.fr.swift.query.info.element.metric.CounterMetric;
 import com.fr.swift.query.info.element.metric.FormulaMetric;
 import com.fr.swift.query.info.element.metric.GroupMetric;
 import com.fr.swift.query.info.element.metric.Metric;
@@ -182,7 +181,7 @@ public class TargetInfoUtils {
                 String fieldId = getFieldId(target);
                 SourceKey key = new SourceKey(BusinessTableUtils.getSourceIdByTableId(widget.getTableName()));
                 if (type == BIDesignConstants.DESIGN.DIMENSION_TYPE.COUNTER && !isDistinctCounter(target)) {
-                    metrics.add(new CounterMetric(0, key, new ColumnKey(fieldId), filterInfo));
+                    metrics.add(new GroupMetric(0, key, new ColumnKey(fieldId), filterInfo, AggregatorFactory.createAggregator(AggregatorType.COUNT)));
                     return metrics;
                 }
                 AggregatorType aggregatorType = AggregatorAdaptor.adaptorDashBoard(target.getGroup().getType());

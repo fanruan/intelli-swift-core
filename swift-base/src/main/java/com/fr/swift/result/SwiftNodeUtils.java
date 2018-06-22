@@ -27,7 +27,13 @@ public class SwiftNodeUtils {
     }
 
     public static Iterator<Row> node2RowIterator(SwiftNode root) {
-        Iterator<List<SwiftNode>> iterator = new Tree2RowIterator<SwiftNode>(SwiftNodeUtils.getDimensionSize(root), root.getChildren().iterator(), new Function<SwiftNode, Iterator<SwiftNode>>() {
+        if (getDimensionSize(root) == 0) {
+            Row row = new ListBasedRow(aggValue2Object(root.getAggregatorValue()));
+            List<Row> list = new ArrayList<Row>();
+            list.add(row);
+            return list.iterator();
+        }
+        Iterator<List<SwiftNode>> iterator = new Tree2RowIterator<SwiftNode>(getDimensionSize(root), root.getChildren().iterator(), new Function<SwiftNode, Iterator<SwiftNode>>() {
             @Override
             public Iterator<SwiftNode> apply(SwiftNode p) {
                 return p.getChildren().iterator();
@@ -56,10 +62,17 @@ public class SwiftNodeUtils {
             SwiftNode leafNode = row.get(row.size() - 1);
             AggregatorValue[] values = leafNode.getAggregatorValue();
             values = values == null ? new AggregatorValue[0] : values;
-            for (int i = 0; i < values.length; i++) {
-                data.add(values[i] == null ? null : values[i].calculateValue());
-            }
+            data.addAll(aggValue2Object(values));
         }
         return new ListBasedRow(data);
+    }
+
+    private static List<Object> aggValue2Object(AggregatorValue[] values) {
+        List<Object> objects = new ArrayList<Object>();
+        values = values == null ? new AggregatorValue[0] : values;
+        for (int i = 0; i < values.length; i++) {
+            objects.add(values[i] == null ? null : values[i].calculateValue());
+        }
+        return objects;
     }
 }

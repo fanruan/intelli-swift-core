@@ -90,16 +90,20 @@ class GroupQueryBuilder {
      * @return 获取最后查询结果的Query
      */
     private static Query<NodeResultSet> buildQuery(List<SegmentDestination> uris, GroupQueryInfo info, LocalGroupQueryBuilder builder) {
-        if (uris.size() == 1) {
-            // 如果数据只分布在一个节点上面，那么在该节点上面完成最后一步计算指标计算
-            if (!uris.get(0).isRemote()) {
-                return builder.buildPostQuery(builder.buildLocalQuery(info), info);
-            } else {
-                // 丢给远程节点
-                QueryInfo<NodeResultSet> queryInfo = new RemoteQueryInfoImpl<NodeResultSet>(QueryType.LOCAL_GROUP_ALL, info);
-                return new RemoteQueryImpl<NodeResultSet>(queryInfo, uris.get(0));
-            }
+        if (DetailQueryBuilder.isAllLocal(uris)) {
+            return builder.buildPostQuery(builder.buildLocalQuery(info), info);
         }
+        // TODO: 2018/6/22 全部segment在一个远程节点上
+//        if (uris.size() == 1) {
+//            // 如果数据只分布在一个节点上面，那么在该节点上面完成最后一步计算指标计算
+//            if (!uris.get(0).isRemote()) {
+//                return builder.buildPostQuery(builder.buildLocalQuery(info), info);
+//            } else {
+//                // 丢给远程节点
+//                QueryInfo<NodeResultSet> queryInfo = new RemoteQueryInfoImpl<NodeResultSet>(QueryType.LOCAL_GROUP_ALL, info);
+//                return new RemoteQueryImpl<NodeResultSet>(queryInfo, uris.get(0));
+//            }
+//        }
         List<Query<NodeResultSet>> queries = new ArrayList<Query<NodeResultSet>>();
         for (SegmentDestination uri : uris) {
             if (!uri.isRemote()) {
