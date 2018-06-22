@@ -20,13 +20,13 @@ public abstract class AbstractHandler<E extends SwiftRpcEvent> implements Handle
 
     protected RpcServer rpcServer = SwiftContext.getInstance().getBean(RpcServer.class);
 
-    protected RpcFuture runAsyncRpc(String address, Class serviceClass, String method, Object... args) throws Throwable {
+    protected RpcFuture runAsyncRpc(String address, Class serviceClass, String method, Object... args) throws Exception {
         ProxyFactory factory = ProxySelector.getInstance().getFactory();
         Invoker invoker = factory.getInvoker(null, serviceClass, new RPCUrl(new RPCDestination(address)), false);
         Result result = invoker.invoke(new SwiftInvocation(rpcServer.getMethodByName(method), args));
         RpcFuture future = (RpcFuture) result.getValue();
         if (null == future) {
-            throw result.getException();
+            throw new Exception(result.getException());
         }
         return future;
     }

@@ -52,7 +52,7 @@ public class SwiftAnalyseEventHandler extends AbstractHandler<AbstractAnalyseRpc
                                 });
                     }
             }
-        } catch (Throwable e) {
+        } catch (Exception e) {
             LOGGER.error(e);
         }
         return null;

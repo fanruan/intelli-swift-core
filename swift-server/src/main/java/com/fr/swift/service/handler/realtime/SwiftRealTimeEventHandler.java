@@ -90,7 +90,7 @@ public class SwiftRealTimeEventHandler extends AbstractHandler<AbstractRealTimeR
                     }
                     return null;
             }
-        } catch (Throwable e) {
+        } catch (Exception e) {
             LOGGER.error("handle error! ", e);
         }
         return null;

@@ -106,19 +106,19 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
                         if (resultSet[0] == null) {
                             latch.countDown();
                         }
-                    } catch (Throwable e1) {
+                    } catch (Exception e1) {
                         LOGGER.error("Query remote node error! ", e1);
                     }
                 }
             });
             latch.await();
-        } catch (Throwable e) {
+        } catch (Exception e) {
             LOGGER.error("Query remote node error! ", e);
         }
         return (T) resultSet[0];
     }
 
-    private <T extends SwiftResultSet> RpcFuture queryRemoteNodeNode(QueryInfo<T> info, SegmentDestination remoteURI) throws Throwable {
+    private <T extends SwiftResultSet> RpcFuture queryRemoteNodeNode(QueryInfo<T> info, SegmentDestination remoteURI) throws Exception {
         String address = remoteURI.getAddress();
         String methodName = remoteURI.getMethodName();
         Class clazz = remoteURI.getServiceClass();
@@ -128,7 +128,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
         Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName(methodName), new Object[]{info}));
         RpcFuture future = (RpcFuture) result.getValue();
         if (null == future) {
-            throw result.getException();
+            throw new Exception(result.getException());
         }
         return future;
     }
