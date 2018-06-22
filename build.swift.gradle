@@ -185,7 +185,7 @@ task obfuse(dependsOn: 'build') << {
     ant.delete(file: 'yguardlog.xml')
 }
 
-//def ftpPath = "E:/ftp/share/finebi/5.0/feature"
+//def ftpPath = "E:/ftp/share/finebi/5.0/RELEASE"
 
 //上传生成的jar包到ftp上
 // task ftp_uploadjar(dependsOn:obfuse)<<{
