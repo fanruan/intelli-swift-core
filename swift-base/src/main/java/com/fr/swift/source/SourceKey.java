@@ -18,6 +18,13 @@ public class SourceKey implements Serializable {
         this.id = id;
     }
 
+    public SourceKey() {
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getId() {
         return id;
     }

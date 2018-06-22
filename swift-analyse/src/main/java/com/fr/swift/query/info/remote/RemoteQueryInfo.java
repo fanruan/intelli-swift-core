@@ -1,4 +1,4 @@
-package com.fr.swift.query.info.group;
+package com.fr.swift.query.info.remote;
 
 import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.source.SwiftResultSet;

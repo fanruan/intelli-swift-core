@@ -15,4 +15,10 @@ public interface Dimension extends SwiftColumnProvider {
     Sort getSort();
 
     Group getGroup();
+
+    DimensionType getDimensionType();
+
+    enum DimensionType {
+        DETAIL, DETAIL_FORMULA, GROUP, GROUP_FORMULA
+    }
 }

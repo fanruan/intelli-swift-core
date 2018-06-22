@@ -29,6 +29,11 @@ public class DateMinAggregate extends AbstractAggregator<DateAmountAggregateValu
     }
 
     @Override
+    public AggregatorType getAggregatorType() {
+        return AggregatorType.DATE_MIN;
+    }
+
+    @Override
     public void combine(DateAmountAggregateValue value, DateAmountAggregateValue other) {
         value.setValue(Math.min(value.getValue(), other.getValue()));
     }

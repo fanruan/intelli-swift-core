@@ -6,8 +6,8 @@ import com.fr.swift.query.info.bean.element.SortBean;
 import com.fr.swift.query.info.bean.post.CalculatedFieldQueryInfoBean;
 import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
 import com.fr.swift.query.info.bean.post.RowSortQueryInfoBean;
-import com.fr.swift.query.info.bean.query.GroupQueryBean;
-import com.fr.swift.query.info.bean.query.QueryBean;
+import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
+import com.fr.swift.query.info.bean.query.QueryInfoBean;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.element.target.GroupTarget;
@@ -78,7 +78,7 @@ class PostQueryInfoParser {
         List<SortBean> sortBeans = bean.getSortBeans();
         for (SortBean sortBean : sortBeans) {
             // TODO: 2018/6/7 这边复用之前排序的代码，所以targetIndex要算上维度
-            int targetIndex = dimensionSize + fieldIndexMap.get(sortBean.getFieldName());
+            int targetIndex = dimensionSize + fieldIndexMap.get(sortBean.getColumnKey());
             sorts.add(sortBean.getType() == SortType.ASC ? new AscSort(targetIndex) : new DescSort(targetIndex));
         }
         return new RowSortQueryInfo(sorts);
@@ -89,12 +89,12 @@ class PostQueryInfoParser {
      *
      * @param postQueryInfoBeans
      * @param dimensions
-     * @param queryBeans
+     * @param queryInfoBeans
      * @return
      */
     static List<PostQueryInfo> parsePostQueryInfoOfResultJoinQuery(List<PostQueryInfoBean> postQueryInfoBeans,
-                                                                   List<Dimension> dimensions, List<QueryBean> queryBeans) {
-        Map<String, Integer> fieldIndexMap = getFieldIndexMapOfResultJoinQueryInfo(postQueryInfoBeans, queryBeans);
+                                                                   List<Dimension> dimensions, List<QueryInfoBean> queryInfoBeans) {
+        Map<String, Integer> fieldIndexMap = getFieldIndexMapOfResultJoinQueryInfo(postQueryInfoBeans, queryInfoBeans);
         List<PostQueryInfo> postQueryInfoList = new ArrayList<PostQueryInfo>();
         for (PostQueryInfoBean bean : postQueryInfoBeans) {
             postQueryInfoList.add(parse(dimensions.size(), bean, fieldIndexMap));
@@ -103,15 +103,15 @@ class PostQueryInfoParser {
     }
 
     private static Map<String, Integer> getFieldIndexMapOfResultJoinQueryInfo(List<PostQueryInfoBean> postQueryInfoBeans,
-                                                                              List<QueryBean> queryBeans) {
+                                                                              List<QueryInfoBean> queryBeans) {
         Map<String, Integer> fieldIndexMap = new HashMap<String, Integer>();
-        for (QueryBean queryBean : queryBeans) {
+        for (QueryInfoBean queryBean : queryBeans) {
             // TODO: 2018/6/8 这边都是假定groupQuery
-            List<MetricBean> metricBeans = ((GroupQueryBean) queryBean).getMetricBeans();
+            List<MetricBean> metricBeans = ((GroupQueryInfoBean) queryBean).getMetricBeans();
             for (MetricBean metricBean : metricBeans) {
-                fieldIndexMap.put(metricBean.getName(), fieldIndexMap.size());
+                fieldIndexMap.put(metricBean.getSourceKey().getId(), fieldIndexMap.size());
             }
-            List<PostQueryInfoBean> queryInfoBeans = ((GroupQueryBean) queryBean).getPostQueryInfoBeans();
+            List<PostQueryInfoBean> queryInfoBeans = ((GroupQueryInfoBean) queryBean).getPostQueryInfoBeans();
             for (PostQueryInfoBean queryInfoBean : queryInfoBeans) {
                 if (queryInfoBean.getType() != PostQueryType.CAL_FIELD) {
                     continue;

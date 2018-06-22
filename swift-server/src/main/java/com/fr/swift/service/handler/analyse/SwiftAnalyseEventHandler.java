@@ -29,27 +29,31 @@ public class SwiftAnalyseEventHandler extends AbstractHandler<AbstractAnalyseRpc
         if (null == analyseServices || analyseServices.isEmpty()) {
             throw new RuntimeException("Cannot find analyse service");
         }
-        switch (event.subEvent()) {
-            case SEGMENT_LOCATION:
-                Iterator<Map.Entry<String, ClusterEntity>> iterator = analyseServices.entrySet().iterator();
-                while (iterator.hasNext()) {
-                    final long start = System.currentTimeMillis();
-                    Map.Entry<String, ClusterEntity> entity = iterator.next();
-                    String address = entity.getKey();
-                    Class clazz = entity.getValue().getServiceClass();
-                    runAsyncRpc(address, clazz, "updateSegmentInfo", event.getContent(), SegmentLocationInfo.UpdateType.ALL)
-                            .addCallback(new AsyncRpcCallback() {
-                                @Override
-                                public void success(Object result) {
-                                    LOGGER.info(String.format("Update segmentInfo cost: %d ms", System.currentTimeMillis() - start));
-                                }
+        try {
+            switch (event.subEvent()) {
+                case SEGMENT_LOCATION:
+                    Iterator<Map.Entry<String, ClusterEntity>> iterator = analyseServices.entrySet().iterator();
+                    while (iterator.hasNext()) {
+                        final long start = System.currentTimeMillis();
+                        Map.Entry<String, ClusterEntity> entity = iterator.next();
+                        String address = entity.getKey();
+                        Class clazz = entity.getValue().getServiceClass();
+                        runAsyncRpc(address, clazz, "updateSegmentInfo", event.getContent(), SegmentLocationInfo.UpdateType.ALL)
+                                .addCallback(new AsyncRpcCallback() {
+                                    @Override
+                                    public void success(Object result) {
+                                        LOGGER.info(String.format("Update segmentInfo cost: %d ms", System.currentTimeMillis() - start));
+                                    }
 
-                                @Override
-                                public void fail(Exception e) {
-                                    LOGGER.error(e.getMessage(), e);
-                                }
-                            });
-                }
+                                    @Override
+                                    public void fail(Exception e) {
+                                        LOGGER.error(e.getMessage(), e);
+                                    }
+                                });
+                    }
+            }
+        } catch (Exception e) {
+            LOGGER.error(e);
         }
         return null;
     }

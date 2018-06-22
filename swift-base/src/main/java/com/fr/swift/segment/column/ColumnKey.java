@@ -2,16 +2,26 @@ package com.fr.swift.segment.column;
 
 import com.fr.swift.source.RelationSource;
 
+import java.io.Serializable;
+
 /**
  * @author pony
  * @date 2017/10/9
  */
-public class ColumnKey {
-    private final String name;
+public class ColumnKey implements Serializable {
+    private static final long serialVersionUID = -8348275900712099698L;
+    private String name;
 
     private RelationSource relation;
 
     public ColumnKey(String name) {
+        this.name = name;
+    }
+
+    public ColumnKey() {
+    }
+
+    public void setName(String name) {
         this.name = name;
     }
 

@@ -1,18 +1,21 @@
 package com.fr.swift.query.info.bean.parser;
 
 import com.fr.general.ComparatorUtils;
+import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.group.Groups;
 import com.fr.swift.query.group.impl.NoGroupRule;
 import com.fr.swift.query.info.bean.element.DimensionBean;
 import com.fr.swift.query.info.bean.element.SortBean;
+import com.fr.swift.query.info.element.dimension.DetailDimension;
+import com.fr.swift.query.info.element.dimension.DetailFormulaDimension;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.dimension.GroupDimension;
+import com.fr.swift.query.info.element.dimension.GroupFormulaDimension;
 import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.DescSort;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.source.SourceKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,32 +29,65 @@ class DimensionParser {
     static List<Dimension> parse(List<DimensionBean> dimensionBeans, List<SortBean> sortBeans) {
         List<Dimension> dimensions = new ArrayList<Dimension>();
         for (int i = 0; i < dimensionBeans.size(); i++) {
-            String fieldName = dimensionBeans.get(i).getFieldName();
-            SortBean sortBean = getDimensionSort(fieldName, sortBeans);
+            DimensionBean dimensionBean = dimensionBeans.get(i);
+            ColumnKey columnKey = dimensionBean.getColumnKey();
+            SortBean sortBean = getDimensionSort(columnKey, sortBeans);
             Sort sort = null;
             if (sortBean != null) {
                 sort = sortBean.getType() == SortType.ASC ? new AscSort(i) : new DescSort(i);
             }
             // TODO: 2018/6/7 维度分组
-            dimensions.add(new GroupDimension(0, new SourceKey(fieldName), new ColumnKey(fieldName), Groups.newGroup(new NoGroupRule()), sort, null));
+            FilterInfo filterInfo = FilterInfoParser.parse(dimensionBean.getFilterInfoBean());
+            switch (dimensionBean.getDimensionType()) {
+                case DETAIL_FORMULA:
+                    dimensions.add(new DetailFormulaDimension(i, dimensionBean.getSourceKey(), filterInfo, dimensionBean.getFormula()));
+                    break;
+                case GROUP_FORMULA:
+                    dimensions.add(new GroupFormulaDimension(i, dimensionBean.getSourceKey(), Groups.newGroup(new NoGroupRule()), sort, filterInfo, dimensionBean.getFormula()));
+                    break;
+                case GROUP:
+                    dimensions.add(new GroupDimension(i, dimensionBean.getSourceKey(), columnKey, Groups.newGroup(new NoGroupRule()), sort, filterInfo));
+                    break;
+                case DETAIL:
+                    dimensions.add(new DetailDimension(i, dimensionBean.getSourceKey(), columnKey, Groups.newGroup(new NoGroupRule()), sort, filterInfo));
+                    break;
+            }
         }
         return dimensions;
     }
 
-    private static SortBean getDimensionSort(String name, List<SortBean> sortBeans) {
-        for (SortBean sortBean : sortBeans) {
-            if (ComparatorUtils.equals(sortBean.getFieldName(), name)) {
-                return sortBean;
+    private static SortBean getDimensionSort(ColumnKey name, List<SortBean> sortBeans) {
+        if (null != sortBeans && null != name) {
+            for (SortBean sortBean : sortBeans) {
+                if (ComparatorUtils.equals(sortBean.getColumnKey(), name)) {
+                    return sortBean;
+                }
             }
         }
         return null;
     }
 
-    static List<Dimension> parse(List<String> joinedFields) {
+    static List<Dimension> parse(List<DimensionBean> joinedFields) {
         List<Dimension> dimensions = new ArrayList<Dimension>();
-        for (String field : joinedFields) {
-            dimensions.add(new GroupDimension(0, new SourceKey(field), new ColumnKey(field), Groups.newGroup(new NoGroupRule()), null, null));
+        for (int i = 0; i < joinedFields.size(); i++) {
+            DimensionBean dimensionBean = joinedFields.get(i);
+            FilterInfo filterInfo = FilterInfoParser.parse(dimensionBean.getFilterInfoBean());
+            switch (dimensionBean.getDimensionType()) {
+                case DETAIL_FORMULA:
+                    dimensions.add(new DetailFormulaDimension(i, dimensionBean.getSourceKey(), filterInfo, dimensionBean.getFormula()));
+                    break;
+                case GROUP_FORMULA:
+                    dimensions.add(new GroupFormulaDimension(i, dimensionBean.getSourceKey(), Groups.newGroup(new NoGroupRule()), null, filterInfo, dimensionBean.getFormula()));
+                    break;
+                case GROUP:
+                    dimensions.add(new GroupDimension(i, dimensionBean.getSourceKey(), dimensionBean.getColumnKey(), Groups.newGroup(new NoGroupRule()), null, filterInfo));
+                    break;
+                case DETAIL:
+                    dimensions.add(new DetailDimension(i, dimensionBean.getSourceKey(), dimensionBean.getColumnKey(), Groups.newGroup(new NoGroupRule()), null, filterInfo));
+                    break;
+            }
         }
+
         return dimensions;
     }
 }

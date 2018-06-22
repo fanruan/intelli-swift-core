@@ -3,12 +3,13 @@ package com.fr.swift.source;
 
 import com.fr.swift.source.core.CoreService;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by roy on 2017/7/9 .
  */
-public interface RelationSource extends Source, CoreService {
+public interface RelationSource extends Source, Serializable, CoreService {
 
     SourceKey getPrimarySource();
 

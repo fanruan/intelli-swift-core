@@ -17,6 +17,7 @@ import java.util.List;
  * @date 2018/4/3
  */
 public class RelationPathSourceImpl implements SourcePath {
+    private static final long serialVersionUID = 1640228855301769583L;
     private List<RelationSource> relations;
     @CoreField
     private SourceKey primarySource;

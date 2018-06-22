@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by Lyon on 2018/6/7.
  */
-public abstract class AbstractSingleTableQueryBean extends AbstractQueryBean {
+public abstract class AbstractSingleTableQueryInfoBean extends AbstractQueryInfoBean {
 
     @JsonProperty
     private String tableName;

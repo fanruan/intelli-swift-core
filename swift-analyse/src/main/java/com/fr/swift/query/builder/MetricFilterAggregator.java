@@ -2,6 +2,7 @@ package com.fr.swift.query.builder;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.query.aggregator.Aggregator;
+import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.segment.column.Column;
@@ -30,6 +31,11 @@ public class MetricFilterAggregator implements Aggregator {
     @Override
     public AggregatorValue createAggregatorValue(AggregatorValue value) {
         return aggregator.createAggregatorValue(value);
+    }
+
+    @Override
+    public AggregatorType getAggregatorType() {
+        return aggregator.getAggregatorType();
     }
 
     @Override
