@@ -40,6 +40,11 @@ public class DistinctAggregate implements Aggregator<DistinctCountAggregatorValu
     }
 
     @Override
+    public AggregatorType getAggregatorType() {
+        return AggregatorType.DISTINCT;
+    }
+
+    @Override
     public void combine(DistinctCountAggregatorValue value, DistinctCountAggregatorValue other) {
         value.getBitMap().or(other.getBitMap());
     }

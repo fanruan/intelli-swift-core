@@ -1,10 +1,10 @@
 package com.fr.swift.query.info.bean.parser;
 
 import com.fr.swift.query.filter.info.FilterInfo;
-import com.fr.swift.query.info.bean.query.DetailQueryBean;
-import com.fr.swift.query.info.bean.query.GroupQueryBean;
-import com.fr.swift.query.info.bean.query.QueryBean;
-import com.fr.swift.query.info.bean.query.ResultJoinQueryBean;
+import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
+import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
+import com.fr.swift.query.info.bean.query.QueryInfoBean;
+import com.fr.swift.query.info.bean.query.ResultJoinQueryInfoBean;
 import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.metric.Metric;
@@ -23,19 +23,19 @@ import java.util.List;
  */
 public class QueryInfoParser {
 
-    public static QueryInfo parse(QueryBean queryBean) {
-        QueryType type = queryBean.getQueryType();
+    public static QueryInfo parse(QueryInfoBean queryInfoBean) {
+        QueryType type = queryInfoBean.getQueryType();
         switch (type) {
             case GROUP:
-                return parseGroupQueryInfo((GroupQueryBean) queryBean);
+                return parseGroupQueryInfo((GroupQueryInfoBean) queryInfoBean);
             case RESULT_JOIN:
-                return parseResultJoinQueryInfo((ResultJoinQueryBean) queryBean);
+                return parseResultJoinQueryInfo((ResultJoinQueryInfoBean) queryInfoBean);
             default:
-                return parseDetailQueryInfo((DetailQueryBean) queryBean);
+                return parseDetailQueryInfo((DetailQueryInfoBean) queryInfoBean);
         }
     }
 
-    private static QueryInfo parseGroupQueryInfo(GroupQueryBean bean) {
+    private static QueryInfo parseGroupQueryInfo(GroupQueryInfoBean bean) {
         String queryId = bean.getQueryId();
         // TODO: 2018/6/7 table2sourceKey
         SourceKey table = new SourceKey(bean.getTableName());
@@ -46,25 +46,25 @@ public class QueryInfoParser {
         return new GroupQueryInfoImpl(queryId, table, filterInfo, dimensions, metrics, postQueryInfoList);
     }
 
-    private static QueryInfo parseResultJoinQueryInfo(ResultJoinQueryBean bean) {
+    private static QueryInfo parseResultJoinQueryInfo(ResultJoinQueryInfoBean bean) {
         String queryId = bean.getQueryId();
-        List<QueryBean> queryBeans = bean.getQueryBeans();
+        List<QueryInfoBean> queryInfoBeans = bean.getQueryInfoBeans();
         List<QueryInfo> queryInfoList = new ArrayList<QueryInfo>();
-        for (QueryBean queryBean : queryBeans) {
-            queryInfoList.add(parse(queryBean));
+        for (QueryInfoBean queryInfoBean : queryInfoBeans) {
+            queryInfoList.add(parse(queryInfoBean));
         }
         List<Dimension> dimensions = DimensionParser.parse(bean.getJoinedFields());
         List<PostQueryInfo> postQueryInfoList = PostQueryInfoParser.parsePostQueryInfoOfResultJoinQuery(
-                bean.getPostQueryInfoBeans(), dimensions, queryBeans);
+                bean.getPostQueryInfoBeans(), dimensions, queryInfoBeans);
         return new ResultJoinQueryInfoImpl(queryId, queryInfoList, dimensions, postQueryInfoList);
     }
 
-    private static QueryInfo parseDetailQueryInfo(DetailQueryBean bean) {
+    private static QueryInfo parseDetailQueryInfo(DetailQueryInfoBean bean) {
         String queryId = bean.getQueryId();
         // TODO: 2018/6/7
         SourceKey table = new SourceKey(bean.getTableName());
         FilterInfo filterInfo = FilterInfoParser.parse(bean.getFilterInfoBean());
         List<Dimension> dimensions = DimensionParser.parse(bean.getDimensionBeans(), bean.getSortBeans());
-        return new DetailQueryInfo(queryId, table, filterInfo, dimensions, null, null, null);
+        return new DetailQueryInfo(queryId, table, filterInfo, dimensions, null, null, bean.getMetaData());
     }
 }

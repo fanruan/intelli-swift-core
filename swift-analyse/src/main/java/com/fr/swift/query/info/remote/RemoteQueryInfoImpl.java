@@ -1,8 +1,8 @@
 package com.fr.swift.query.info.remote;
 
 import com.fr.swift.query.info.bean.parser.QueryInfoParser;
-import com.fr.swift.query.info.bean.query.QueryBean;
-import com.fr.swift.query.info.bean.query.QueryBeanFactory;
+import com.fr.swift.query.info.bean.query.QueryInfoBean;
+import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.source.SwiftResultSet;
@@ -28,9 +28,9 @@ public class RemoteQueryInfoImpl<T extends SwiftResultSet> implements RemoteQuer
     }
 
     private void makeQueryJson(QueryInfo<T> queryInfo) {
-        QueryBean queryBean = QueryBeanFactory.create(queryInfo);
+        QueryInfoBean queryInfoBean = QueryInfoBeanFactory.create(queryInfo);
         try {
-            queryBeanJson = mapper.writeValueAsString(queryBean);
+            queryBeanJson = mapper.writeValueAsString(queryInfoBean);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -38,7 +38,7 @@ public class RemoteQueryInfoImpl<T extends SwiftResultSet> implements RemoteQuer
 
     private QueryInfo<T> createQueryInfo() {
         try {
-            queryInfo = QueryInfoParser.parse(QueryBeanFactory.create(queryBeanJson));
+            queryInfo = QueryInfoParser.parse(QueryInfoBeanFactory.create(queryBeanJson));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -53,6 +53,11 @@ public class MinAggregate extends AllDataCompare {
     }
 
     @Override
+    public AggregatorType getAggregatorType() {
+        return AggregatorType.MIN;
+    }
+
+    @Override
     public void combine(DoubleAmountAggregatorValue value, DoubleAmountAggregatorValue other) {
         double dValue = Double.isNaN(value.getValue()) ? Double.MAX_VALUE : value.getValue();
         double dOther = Double.isNaN(other.getValue()) ? Double.MAX_VALUE : other.getValue();

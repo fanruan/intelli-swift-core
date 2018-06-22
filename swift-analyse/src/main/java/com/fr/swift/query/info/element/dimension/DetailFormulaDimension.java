@@ -18,6 +18,10 @@ public class DetailFormulaDimension extends DetailDimension {
         this.formula = formula;
     }
 
+    public String getFormula() {
+        return formula;
+    }
+
     @Override
     public Column getColumn(Segment segment) {
         return new DetailFormulaColumn(formula, segment);
@@ -39,5 +43,10 @@ public class DetailFormulaDimension extends DetailDimension {
         int result = super.hashCode();
         result = 31 * result + (formula != null ? formula.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public DimensionType getDimensionType() {
+        return DimensionType.DETAIL_FORMULA;
     }
 }

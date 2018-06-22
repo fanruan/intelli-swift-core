@@ -146,4 +146,9 @@ public class VarianceAggregate extends AbstractAggregator<VarianceAggregatorValu
         varianceAggregatorValue.setVariance(0);
         return varianceAggregatorValue;
     }
+
+    @Override
+    public AggregatorType getAggregatorType() {
+        return AggregatorType.VARIANCE;
+    }
 }

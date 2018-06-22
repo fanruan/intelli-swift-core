@@ -13,4 +13,9 @@ public class DetailDimension extends AbstractDimension {
     public DetailDimension(int index, SourceKey sourceKey, ColumnKey columnKey, Group group, Sort sort, FilterInfo filterInfo) {
         super(index, sourceKey, columnKey, group, sort, filterInfo);
     }
+
+    @Override
+    public DimensionType getDimensionType() {
+        return DimensionType.DETAIL;
+    }
 }

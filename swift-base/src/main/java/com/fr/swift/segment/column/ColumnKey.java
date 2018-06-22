@@ -10,11 +10,18 @@ import java.io.Serializable;
  */
 public class ColumnKey implements Serializable {
     private static final long serialVersionUID = -8348275900712099698L;
-    private final String name;
+    private String name;
 
     private RelationSource relation;
 
     public ColumnKey(String name) {
+        this.name = name;
+    }
+
+    public ColumnKey() {
+    }
+
+    public void setName(String name) {
         this.name = name;
     }
 

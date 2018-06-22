@@ -20,4 +20,10 @@ public interface Metric extends SwiftColumnProvider {
     FilterInfo getFilter();
 
     Aggregator getAggregator();
+
+    MetricType getMetricType();
+
+    enum MetricType {
+        COUNT, GROUP, FORMULA
+    }
 }

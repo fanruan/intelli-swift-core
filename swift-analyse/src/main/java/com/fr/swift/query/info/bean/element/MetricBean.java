@@ -1,6 +1,9 @@
 package com.fr.swift.query.info.bean.element;
 
 import com.fr.swift.query.aggregator.AggregatorType;
+import com.fr.swift.query.info.element.metric.Metric;
+import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.source.SourceKey;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -11,26 +14,30 @@ public class MetricBean {
     @JsonProperty
     private AggregatorType type;
     @JsonProperty
-    private String name;
+    private SourceKey sourceKey;
     @JsonProperty
-    private String fieldName;
+    private ColumnKey columnKey;
     @JsonProperty
     private FilterInfoBean filterInfoBean;
+    @JsonProperty
+    private String formula;
+    @JsonProperty
+    private Metric.MetricType metricType;
 
-    public String getName() {
-        return name;
+    public SourceKey getSourceKey() {
+        return sourceKey;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setSourceKey(SourceKey sourceKey) {
+        this.sourceKey = sourceKey;
     }
 
-    public String getFieldName() {
-        return fieldName;
+    public ColumnKey getColumnKey() {
+        return columnKey;
     }
 
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
+    public void setColumnKey(ColumnKey columnKey) {
+        this.columnKey = columnKey;
     }
 
     public FilterInfoBean getFilterInfoBean() {
@@ -47,5 +54,21 @@ public class MetricBean {
 
     public void setType(AggregatorType type) {
         this.type = type;
+    }
+
+    public String getFormula() {
+        return formula;
+    }
+
+    public void setFormula(String formula) {
+        this.formula = formula;
+    }
+
+    public Metric.MetricType getMetricType() {
+        return metricType;
+    }
+
+    public void setMetricType(Metric.MetricType metricType) {
+        this.metricType = metricType;
     }
 }

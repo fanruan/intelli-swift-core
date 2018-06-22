@@ -1,5 +1,6 @@
 package com.fr.swift.query.info.bean.query;
 
+import com.fr.swift.query.info.bean.element.DimensionBean;
 import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
 import com.fr.swift.query.query.QueryType;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
@@ -9,28 +10,28 @@ import java.util.List;
 /**
  * Created by Lyon on 2018/6/7.
  */
-public class ResultJoinQueryBean extends AbstractQueryBean {
+public class ResultJoinQueryInfoBean extends AbstractQueryInfoBean {
 
     @JsonProperty
-    private List<QueryBean> queryBeans;
+    private List<QueryInfoBean> queryInfoBeans;
     @JsonProperty
-    private List<String> joinedFields;
+    private List<DimensionBean> joinedFields;
     @JsonProperty
     private List<PostQueryInfoBean> postQueryInfoBeans;
 
-    public List<QueryBean> getQueryBeans() {
-        return queryBeans;
+    public List<QueryInfoBean> getQueryInfoBeans() {
+        return queryInfoBeans;
     }
 
-    public void setQueryBeans(List<QueryBean> queryBeans) {
-        this.queryBeans = queryBeans;
+    public void setQueryInfoBeans(List<QueryInfoBean> queryInfoBeans) {
+        this.queryInfoBeans = queryInfoBeans;
     }
 
-    public List<String> getJoinedFields() {
+    public List<DimensionBean> getJoinedFields() {
         return joinedFields;
     }
 
-    public void setJoinedFields(List<String> joinedFields) {
+    public void setJoinedFields(List<DimensionBean> joinedFields) {
         this.joinedFields = joinedFields;
     }
 
