@@ -8,12 +8,20 @@ import com.fr.third.fasterxml.jackson.annotation.JsonTypeInfo;
  * @date 2018/6/22
  */
 @JsonTypeInfo(
-        use = JsonTypeInfo.Id.CLASS,
+        use = JsonTypeInfo.Id.NAME,
+        property = "beanType",
+        defaultImpl = FilterInfoBean.BeanType.class,
         visible = true)
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = DetailFilterInfoBean.class, name = "DetailFilterInfoBean"),
-        @JsonSubTypes.Type(value = GeneralFilterInfoBean.class, name = "GeneralFilterInfoBean"),
-        @JsonSubTypes.Type(value = MatchFilterInfoBean.class, name = "MatchFilterInfoBean")
+        @JsonSubTypes.Type(value = DetailFilterInfoBean.class, name = "DETAIL"),
+        @JsonSubTypes.Type(value = GeneralFilterInfoBean.class, name = "GENERAL"),
+        @JsonSubTypes.Type(value = MatchFilterInfoBean.class, name = "MATCH")
 })
 public interface FilterInfoBean {
+
+    BeanType getBeanType();
+
+    enum BeanType {
+        GENERAL, DETAIL, MATCH
+    }
 }

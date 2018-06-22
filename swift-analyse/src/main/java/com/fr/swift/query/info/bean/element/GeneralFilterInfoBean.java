@@ -6,9 +6,13 @@ import java.util.List;
  * @author yee
  * @date 2018/6/22
  */
-public class GeneralFilterInfoBean implements FilterInfoBean {
+public class GeneralFilterInfoBean extends AbstractFilterInfoBean {
     List<FilterInfoBean> children;
     int type;
+
+    public GeneralFilterInfoBean() {
+        super(BeanType.GENERAL);
+    }
 
     public List<FilterInfoBean> getChildren() {
         return children;

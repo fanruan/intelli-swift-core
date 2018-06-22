@@ -7,13 +7,17 @@ import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
  * Created by Lyon on 2018/6/2.
  */
 // TODO: 2018/6/8
-public class DetailFilterInfoBean implements FilterInfoBean {
+public class DetailFilterInfoBean extends AbstractFilterInfoBean {
 
     @JsonProperty
     private SwiftDetailFilterType type;
 
     @JsonProperty
     private Object filterValue;
+
+    public DetailFilterInfoBean() {
+        super(BeanType.DETAIL);
+    }
 
     public SwiftDetailFilterType getType() {
         return type;
