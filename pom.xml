@@ -21,7 +21,6 @@
         <module>swift-indexing</module>
         <module>swift-realtime</module>
         <module>swift-server</module>
-        <!--<module>swift-fundation-adaptor</module>-->
         <module>swift-log-adaptor</module>
         <module>swift-test</module>
         <module>fine-engine-swift</module>
