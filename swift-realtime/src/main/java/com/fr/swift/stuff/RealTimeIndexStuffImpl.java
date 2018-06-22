@@ -1,5 +1,6 @@
 package com.fr.swift.stuff;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -9,7 +10,7 @@ import java.util.List;
  * @describe 增量更新stuff
  * @since Advanced FineBI Analysis 1.0
  */
-public class RealTimeIndexStuffImpl implements RealTimeIndexingStuff {
+public class RealTimeIndexStuffImpl implements RealTimeIndexingStuff, Serializable {
 
     private static final long serialVersionUID = -4101014331273135113L;
     private List<String> updateTableSources;
@@ -23,17 +24,17 @@ public class RealTimeIndexStuffImpl implements RealTimeIndexingStuff {
     }
 
     @Override
-    public List<String> getUpdateTableSources() {
+    public List<String> getTables() {
         return updateTableSources;
     }
 
     @Override
-    public List<String> getUpdateTableSourceRelations() {
+    public List<String> getRelations() {
         return updateTableSourceRelations;
     }
 
     @Override
-    public List<String> getUpdateTableSourceRelationPaths() {
+    public List<String> getRelationPaths() {
         return updateTableSourceRelationPaths;
     }
 

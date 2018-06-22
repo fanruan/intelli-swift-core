@@ -1,8 +1,7 @@
 package com.fr.swift.result.node;
 
-import com.fr.swift.Temps.TempDictColumn;
-import com.fr.swift.result.node.MergeIndexNode;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.test.Temps.TempDictColumn;
 import junit.framework.TestCase;
 
 /**

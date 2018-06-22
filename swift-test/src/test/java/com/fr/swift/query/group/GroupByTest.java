@@ -1,6 +1,5 @@
 package com.fr.swift.query.group;
 
-import com.fr.swift.Temps.TempDictColumn;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
@@ -13,6 +12,7 @@ import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.test.Temps.TempDictColumn;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;

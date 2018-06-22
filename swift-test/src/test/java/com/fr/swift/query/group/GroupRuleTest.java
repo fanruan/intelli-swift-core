@@ -1,7 +1,6 @@
 package com.fr.swift.query.group;
 
 import com.fr.general.ComparatorUtils;
-import com.fr.swift.Temps.TempDictColumn;
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.query.group.impl.AutoNumGroupRule;
 import com.fr.swift.query.group.impl.AutoNumGroupRule.Partition;
@@ -11,6 +10,7 @@ import com.fr.swift.query.group.impl.CustomNumGroupRule.NumIntervals;
 import com.fr.swift.query.group.impl.CustomStrGroupRule;
 import com.fr.swift.query.group.impl.CustomStrGroupRule.StringGroup;
 import com.fr.swift.structure.array.IntList;
+import com.fr.swift.test.Temps.TempDictColumn;
 import org.junit.Test;
 
 import java.util.Arrays;

@@ -51,7 +51,7 @@
         <dependency>
             <groupId>com.fr.decision</groupId>
             <artifactId>fine-decision</artifactId>
-            <version>10.0-FEATURE-SNAPSHOT</version>
+            <version>10.0-RELEASE-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
