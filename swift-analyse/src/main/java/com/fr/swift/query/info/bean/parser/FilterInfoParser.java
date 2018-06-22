@@ -19,24 +19,26 @@ import java.util.List;
 class FilterInfoParser {
 
     static FilterInfo parse(FilterInfoBean bean) {
-        switch (bean.getBeanType()) {
-            case DETAIL:
-                DetailFilterInfoBean detailFilterInfoBean = (DetailFilterInfoBean) bean;
-                return new SwiftDetailFilterInfo(detailFilterInfoBean.getColumnKey(), detailFilterInfoBean.getFilterValue(), detailFilterInfoBean.getType());
-            case GENERAL:
-                GeneralFilterInfoBean generalFilterInfoBean = (GeneralFilterInfoBean) bean;
-                List<FilterInfoBean> filterInfoBeans = generalFilterInfoBean.getChildren();
-                List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
-                if (null != filterInfoBeans) {
-                    for (FilterInfoBean filterInfoBean : filterInfoBeans) {
-                        filterInfos.add(parse(filterInfoBean));
+        if (null != bean) {
+            switch (bean.getBeanType()) {
+                case DETAIL:
+                    DetailFilterInfoBean detailFilterInfoBean = (DetailFilterInfoBean) bean;
+                    return new SwiftDetailFilterInfo(detailFilterInfoBean.getColumnKey(), detailFilterInfoBean.getFilterValue(), detailFilterInfoBean.getType());
+                case GENERAL:
+                    GeneralFilterInfoBean generalFilterInfoBean = (GeneralFilterInfoBean) bean;
+                    List<FilterInfoBean> filterInfoBeans = generalFilterInfoBean.getChildren();
+                    List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
+                    if (null != filterInfoBeans) {
+                        for (FilterInfoBean filterInfoBean : filterInfoBeans) {
+                            filterInfos.add(parse(filterInfoBean));
+                        }
                     }
-                }
-                return new GeneralFilterInfo(filterInfos, generalFilterInfoBean.getType());
-            case MATCH:
-                MatchFilterInfoBean matchFilterInfoBean = (MatchFilterInfoBean) bean;
-                // TODO convert还没有做
-                return new MatchFilterInfo(parse(matchFilterInfoBean.getFilterInfoBean()), matchFilterInfoBean.getIndex(), new ToStringConverter());
+                    return new GeneralFilterInfo(filterInfos, generalFilterInfoBean.getType());
+                case MATCH:
+                    MatchFilterInfoBean matchFilterInfoBean = (MatchFilterInfoBean) bean;
+                    // TODO convert还没有做
+                    return new MatchFilterInfo(parse(matchFilterInfoBean.getFilterInfoBean()), matchFilterInfoBean.getIndex(), new ToStringConverter());
+            }
         }
         return null;
     }
