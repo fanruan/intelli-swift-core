@@ -155,7 +155,7 @@ public class SortMultiSegmentDetailResultSet implements DetailResultSet {
 
         @Override
         public List<Row> next() {
-            List<Row> ret = getNext();
+            List<Row> ret = next;
             next = getNext();
             return ret;
         }

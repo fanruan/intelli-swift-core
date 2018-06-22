@@ -68,7 +68,7 @@ public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
             if (info.getFilterInfo() != null) {
                 filterInfos.add(info.getFilterInfo());
             }
-            List<Sort> sorts = LocalGroupAllQueryBuilder.getSegmentIndexSorts(dimensions);
+            List<Sort> sorts = info.getSorts();
             queries.add(new SortDetailSegmentQuery(columns,
                     FilterBuilder.buildDetailFilter(segment, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND)),
                     sorts, info.getMetaData()));

@@ -103,6 +103,9 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
                                 break;
                             }
                         }
+                        if (resultSet[0] == null) {
+                            latch.countDown();
+                        }
                     } catch (Exception e1) {
                         LOGGER.error("Query remote node error! ", e1);
                     }
