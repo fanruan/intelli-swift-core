@@ -43,10 +43,10 @@ public class SwiftEngineStart {
     public static void main(String[] args) {
         try {
             SimpleWork.checkIn(System.getProperty("user.dir"));
-            initConfDB();
             SwiftContext.init();
             SwiftContext.getInstance().getBean(SwiftHttpServer.class).start();
             LOGGER.info("http server starting!");
+            initConfDB();
 
             new LocalSwiftRegister().serviceRegister();
             ClusterListenerHandler.addListener(new ClusterListener());
@@ -61,11 +61,12 @@ public class SwiftEngineStart {
     }
 
     private static void initConfDB() throws Exception {
+        SwiftProperty property = SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class);
         DBOption dbOption = new DBOption();
-        dbOption.setUrl("jdbc:mysql://192.168.0.28:3306/config");
-        dbOption.setUsername("lucifer");
-        dbOption.setPassword("lucifer");
-        dbOption.setDriverClass("com.mysql.jdbc.Driver");
+        dbOption.setUrl(property.getConfigDbJdbcUrl());
+        dbOption.setUsername(property.getConfigDbUsername());
+        dbOption.setPassword(property.getConfigDbPasswd());
+        dbOption.setDriverClass(property.getConfigDbDriverClass());
         dbOption.setDialectClass("com.fr.third.org.hibernate.dialect.MySQL5Dialect");
         dbOption.addRawProperty("hibernate.show_sql", false)
                 .addRawProperty("hibernate.format_sql", true).addRawProperty("hibernate.connection.autocommit", false);
