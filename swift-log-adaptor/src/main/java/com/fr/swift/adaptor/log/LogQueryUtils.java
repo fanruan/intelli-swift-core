@@ -66,11 +66,11 @@ public class LogQueryUtils {
             return null;
         }
         if (fieldValues.get(0) instanceof Integer) {
-            Set<Integer> set = new HashSet<Integer>();
+            Set<Double> set = new HashSet<Double>();
             for (Object object : fieldValues) {
-                set.add((Integer) object);
+                set.add(((Integer) object).doubleValue());
             }
-            return new SwiftDetailFilterInfo<Set<Integer>>(new ColumnKey(fieldName), set, SwiftDetailFilterType.NUMBER_CONTAIN);
+            return new SwiftDetailFilterInfo<Set<Double>>(new ColumnKey(fieldName), set, SwiftDetailFilterType.NUMBER_CONTAIN);
         } else {
             Set<String> set = new HashSet<String>();
             for (Object object : fieldValues) {
