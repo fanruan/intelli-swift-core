@@ -57,9 +57,11 @@ class DimensionParser {
     }
 
     private static SortBean getDimensionSort(ColumnKey name, List<SortBean> sortBeans) {
-        for (SortBean sortBean : sortBeans) {
-            if (ComparatorUtils.equals(sortBean.getColumnKey(), name)) {
-                return sortBean;
+        if (null != sortBeans && null != name) {
+            for (SortBean sortBean : sortBeans) {
+                if (ComparatorUtils.equals(sortBean.getColumnKey(), name)) {
+                    return sortBean;
+                }
             }
         }
         return null;

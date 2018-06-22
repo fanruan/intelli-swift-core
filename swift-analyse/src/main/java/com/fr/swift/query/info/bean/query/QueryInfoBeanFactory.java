@@ -62,6 +62,7 @@ public class QueryInfoBeanFactory {
                 groupQueryBean.setQuerySegment(queryInfo.getQuerySegment());
                 groupQueryBean.setMetricBeans(METRIC_BEAN_FACTORY.create(groupMetricList));
                 groupQueryBean.setPostQueryInfoBeans(POST_QUERY_INFO_FACTORY.create(groupQueryInfo.getPostQueryInfoList()));
+                groupQueryBean.setQueryType(queryInfo.getType());
                 return groupQueryBean;
             case RESULT_JOIN:
                 ResultJoinQueryInfoBean resultJoinQueryBean = new ResultJoinQueryInfoBean();
@@ -69,6 +70,8 @@ public class QueryInfoBeanFactory {
                 resultJoinQueryBean.setPostQueryInfoBeans(POST_QUERY_INFO_FACTORY.create(((ResultJoinQueryInfo) queryInfo).getPostQueryInfoList()));
                 resultJoinQueryBean.setQueryInfoBeans(create(((ResultJoinQueryInfo) queryInfo).getQueryInfoList()));
                 resultJoinQueryBean.setJoinedFields(DIMENSION_BEAN_FACTORY.create(((ResultJoinQueryInfo) queryInfo).getJoinedDimensions()));
+                resultJoinQueryBean.setQueryType(queryInfo.getType());
+                resultJoinQueryBean.setQuerySegment(queryInfo.getQuerySegment());
                 return resultJoinQueryBean;
             case DETAIL:
             case LOCAL_DETAIL:
@@ -81,6 +84,7 @@ public class QueryInfoBeanFactory {
                 detailQueryBean.setMetaData(((DetailQueryInfo) queryInfo).getMetaData());
                 detailQueryBean.setComparators(((DetailQueryInfo) queryInfo).getComparators());
                 detailQueryBean.setQuerySegment(queryInfo.getQuerySegment());
+                detailQueryBean.setQueryType(queryInfo.getType());
                 return detailQueryBean;
             case NEST:
         }

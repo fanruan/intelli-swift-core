@@ -18,6 +18,10 @@ import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.info.element.dimension.DetailDimension;
 import com.fr.swift.query.info.element.dimension.Dimension;
+import com.fr.swift.query.info.element.dimension.GroupDimension;
+import com.fr.swift.query.info.element.metric.Metric;
+import com.fr.swift.query.info.group.GroupQueryInfoImpl;
+import com.fr.swift.query.info.group.post.PostQueryInfo;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.query.sort.Sort;
@@ -62,6 +66,22 @@ public class QueryController {
     public List<Row> query(@PathVariable("sourceKey") String sourceKey) throws SQLException {
         List<Row> rows = new ArrayList<Row>();
         QueryInfo queryInfo = createQueryInfo(sourceKey);
+        Query query = QueryBuilder.buildQuery(queryInfo);
+        SwiftResultSet resultSet = query.getQueryResult();
+        if (resultSet != null) {
+            while (resultSet.next()) {
+                rows.add(resultSet.getRowData());
+            }
+            resultSet.close();
+        }
+        return rows;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "swift/group/{sourceKey}", method = RequestMethod.GET)
+    public List<Row> groupQuery(@PathVariable("sourceKey") String sourceKey) throws SQLException {
+        List<Row> rows = new ArrayList<Row>();
+        QueryInfo queryInfo = createGroupQueryInfo(sourceKey);
         Query query = QueryBuilder.buildQuery(queryInfo);
         SwiftResultSet resultSet = query.getQueryResult();
         if (resultSet != null) {
@@ -119,5 +139,23 @@ public class QueryController {
         List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
         return new DetailQueryInfo(queryId, sourceKey, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND),
                 dimensions, sorts, null, metaData);
+    }
+
+    private QueryInfo createGroupQueryInfo(String key) throws SwiftMetaDataException {
+
+        SwiftMetaData metaData = metaDataService.getMetaDataByKey(key);
+        if (null == metaData) {
+            throw new SwiftMetaDataException();
+        }
+        SourceKey sourceKey = new SourceKey(key);
+
+        String queryId = sourceKey.getId();
+        List<Dimension> dimensions = new ArrayList<Dimension>();
+        for (int i = 0; i < metaData.getColumnCount(); i++) {
+            dimensions.add(new GroupDimension(i, sourceKey, new ColumnKey(metaData.getColumnName(i + 1)), null, null, null));
+        }
+        List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
+        return new GroupQueryInfoImpl(queryId, sourceKey, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND),
+                dimensions, new ArrayList<Metric>(), new ArrayList<PostQueryInfo>());
     }
 }

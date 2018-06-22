@@ -38,4 +38,5 @@ public class GroupQueryInfoBean extends AbstractSingleTableQueryInfoBean {
     public void setPostQueryInfoBeans(List<PostQueryInfoBean> postQueryInfoBeans) {
         this.postQueryInfoBeans = postQueryInfoBeans;
     }
+
 }
