@@ -48,6 +48,9 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
         return instance;
     }
 
+    private SwiftLogSearchProvider() {
+    }
+
     @Override
     public String getMarkString() {
         return LogSearchConstants.PROVIDER_MARK;
@@ -104,7 +107,7 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
 
     @Override
     public DataList<Map<String, Object>> groupByColumns(Class<? extends AbstractMessage> logClass, QueryCondition condition, List<MetricBean> metrics, List<String> fieldNames) throws Exception {
-        final List<Row> rows = LogQueryUtils.groupQuery(logClass, condition, fieldNames, new ArrayList<MetricBean>());
+        final List<Row> rows = LogQueryUtils.groupQuery(logClass, condition, fieldNames, metrics);
         final List<String> columnNames = new ArrayList<String>(fieldNames);
         for (MetricBean bean : metrics) {
             columnNames.add(bean.getName());
