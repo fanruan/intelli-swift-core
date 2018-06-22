@@ -29,7 +29,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
     /**
      * row -> value
      */
-    private ObjectMemIo<V> detail = new SwiftObjectMemIo<V>();
+    private ObjectMemIo<V> detail = new SwiftObjectMemIo<V>(1);
 
     Comparator<V> c;
 

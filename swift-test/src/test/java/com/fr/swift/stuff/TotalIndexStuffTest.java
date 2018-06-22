@@ -43,8 +43,8 @@ public class TotalIndexStuffTest extends TestCase {
         assertTrue(manager.getAllTables().size() == 5);
         assertTrue(manager.getAllRelations().size() == 4);
         assertTrue(manager.getAllPaths().size() == 6);
-        assertTrue(manager.getTablesByIds(stuff.getUpdateTableSources()).size() == 3);
-        assertTrue(manager.getRelationsByIds(stuff.getUpdateTableSourceRelations()).size() == 2);
-        assertTrue(manager.getPathsByIds(stuff.getUpdateTableSourceRelationPaths()).size() == 1);
+        assertTrue(manager.getTablesByIds(stuff.getTables()).size() == 3);
+        assertTrue(manager.getRelationsByIds(stuff.getRelations()).size() == 2);
+        assertTrue(manager.getPathsByIds(stuff.getRelationPaths()).size() == 1);
     }
 }
