@@ -9,7 +9,9 @@ import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorFactory;
 import com.fr.swift.query.aggregator.AggregatorType;
+import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.group.Groups;
 import com.fr.swift.query.group.impl.NoGroupRule;
 import com.fr.swift.query.info.element.dimension.Dimension;
@@ -28,7 +30,9 @@ import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Lyon on 2018/6/21.
@@ -48,12 +52,32 @@ public class LogQueryUtils {
         }
         List<Metric> metrics = new ArrayList<Metric>();
         for (int i = 0; i < metricBeans.size(); i++) {
-            metrics.add(new GroupMetric(i, sourceKey, new ColumnKey(metricBeans.get(i).getFiledName()),
-                    null, createMetric(metricBeans.get(i))));
+            MetricBean metricBean = metricBeans.get(i);
+            metrics.add(new GroupMetric(i, sourceKey, new ColumnKey(metricBean.getFiledName()),
+                    createMetricFilterInfo(metricBean.getFiledName(), metricBean.getFiledFilter()), createMetric(metricBeans.get(i))));
         }
         GroupQueryInfo queryInfo = new GroupQueryInfoImpl("", sourceKey, filterInfo, dimensions, metrics, new ArrayList<PostQueryInfo>());
         SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
         return getPage(resultSet, queryCondition);
+    }
+
+    private static FilterInfo createMetricFilterInfo(String fieldName, List<Object> fieldValues) {
+        if (fieldValues == null || fieldValues.isEmpty()) {
+            return null;
+        }
+        if (fieldValues.get(0) instanceof Integer) {
+            Set<Integer> set = new HashSet<Integer>();
+            for (Object object : fieldValues) {
+                set.add((Integer) object);
+            }
+            return new SwiftDetailFilterInfo<Set<Integer>>(new ColumnKey(fieldName), set, SwiftDetailFilterType.NUMBER_CONTAIN);
+        } else {
+            Set<String> set = new HashSet<String>();
+            for (Object object : fieldValues) {
+                set.add((String) object);
+            }
+            return new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(fieldName), set, SwiftDetailFilterType.STRING_IN);
+        }
     }
 
     private static Aggregator createMetric(MetricBean metricBean) {
