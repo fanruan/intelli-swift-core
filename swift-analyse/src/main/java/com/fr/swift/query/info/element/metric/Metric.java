@@ -24,6 +24,6 @@ public interface Metric extends SwiftColumnProvider {
     MetricType getMetricType();
 
     enum MetricType {
-        COUNT, GROUP, FORMULA
+        GROUP, FORMULA
     }
 }

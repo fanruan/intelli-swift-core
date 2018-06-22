@@ -3,7 +3,6 @@ package com.fr.swift.query.info.bean.parser;
 import com.fr.swift.query.aggregator.AggregatorFactory;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.info.bean.element.MetricBean;
-import com.fr.swift.query.info.element.metric.CounterMetric;
 import com.fr.swift.query.info.element.metric.FormulaMetric;
 import com.fr.swift.query.info.element.metric.GroupMetric;
 import com.fr.swift.query.info.element.metric.Metric;
@@ -25,10 +24,6 @@ class MetricParser {
                 case FORMULA:
                     metrics.add(new FormulaMetric(0, bean.getSourceKey(),
                             filterInfo, AggregatorFactory.createAggregator(bean.getType()), bean.getFormula()));
-                    break;
-                case COUNT:
-                    metrics.add(new CounterMetric(0, bean.getSourceKey(),
-                            bean.getColumnKey(), filterInfo));
                     break;
                 case GROUP:
                     metrics.add(new GroupMetric(0, bean.getSourceKey(),
