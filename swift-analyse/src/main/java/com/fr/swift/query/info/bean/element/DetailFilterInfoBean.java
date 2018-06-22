@@ -1,6 +1,7 @@
 package com.fr.swift.query.info.bean.element;
 
 import com.fr.swift.query.filter.SwiftDetailFilterType;
+import com.fr.swift.segment.column.ColumnKey;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -14,6 +15,9 @@ public class DetailFilterInfoBean extends AbstractFilterInfoBean {
 
     @JsonProperty
     private Object filterValue;
+
+    @JsonProperty
+    private ColumnKey columnKey;
 
     public DetailFilterInfoBean() {
         super(BeanType.DETAIL);
@@ -33,5 +37,13 @@ public class DetailFilterInfoBean extends AbstractFilterInfoBean {
 
     public void setFilterValue(Object filterValue) {
         this.filterValue = filterValue;
+    }
+
+    public ColumnKey getColumnKey() {
+        return columnKey;
+    }
+
+    public void setColumnKey(ColumnKey columnKey) {
+        this.columnKey = columnKey;
     }
 }
