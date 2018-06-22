@@ -6,12 +6,12 @@
     <parent>
         <groupId>com.finebi</groupId>
         <artifactId>nuclear-swift</artifactId>
-        <version>5.0-FEATURE-SNAPSHOT</version>
+        <version>5.0-RELEASE-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>swift-boot</artifactId>
-    <version>5.0-FEATURE-SNAPSHOT</version>
+    <version>5.0-RELEASE-SNAPSHOT</version>
     <build>
         <plugins>
             <plugin>
@@ -29,53 +29,53 @@
         <dependency>
             <groupId>com.finebi</groupId>
             <artifactId>swift-server</artifactId>
-            <version>5.0-FEATURE-SNAPSHOT</version>
+            <version>5.0-RELEASE-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.finebi</groupId>
             <artifactId>swift-analyse</artifactId>
-            <version>5.0-FEATURE-SNAPSHOT</version>
+            <version>5.0-RELEASE-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.finebi</groupId>
             <artifactId>swift-history</artifactId>
-            <version>5.0-FEATURE-SNAPSHOT</version>
+            <version>5.0-RELEASE-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.finebi</groupId>
             <artifactId>swift-indexing</artifactId>
-            <version>5.0-FEATURE-SNAPSHOT</version>
+            <version>5.0-RELEASE-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.finebi</groupId>
             <artifactId>swift-realtime</artifactId>
-            <version>5.0-FEATURE-SNAPSHOT</version>
+            <version>5.0-RELEASE-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.finebi</groupId>
             <artifactId>swift-base</artifactId>
-            <version>5.0-FEATURE-SNAPSHOT</version>
+            <version>5.0-RELEASE-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.finebi</groupId>
             <artifactId>swift-cluster</artifactId>
-            <version>5.0-FEATURE-SNAPSHOT</version>
+            <version>5.0-RELEASE-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.finebi</groupId>
             <artifactId>swift-netty</artifactId>
-            <version>5.0-FEATURE-SNAPSHOT</version>
+            <version>5.0-RELEASE-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.finebi</groupId>
             <artifactId>swift-communication</artifactId>
-            <version>5.0-FEATURE-SNAPSHOT</version>
+            <version>5.0-RELEASE-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>

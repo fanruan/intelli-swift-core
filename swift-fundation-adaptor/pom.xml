@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.finebi</groupId>
         <artifactId>nuclear-swift</artifactId>
-        <version>5.0-FEATURE-SNAPSHOT</version>
+        <version>5.0-RELEASE-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -32,7 +32,7 @@
     </build>
 
     <properties>
-        <foundation.version>5.0-FEATURE-SNAPSHOT</foundation.version>
+        <foundation.version>5.0-RELEASE-SNAPSHOT</foundation.version>
     </properties>
 
     <dependencies>
@@ -44,7 +44,7 @@
         <dependency>
             <groupId>com.finebi</groupId>
             <artifactId>foundation-adapter-sdk</artifactId>
-            <version>5.0-FEATURE-SNAPSHOT</version>
+            <version>5.0-RELEASE-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.finebi</groupId>
@@ -54,7 +54,7 @@
         <dependency>
             <groupId>com.finebi</groupId>
             <artifactId>swift-server</artifactId>
-            <version>5.0-FEATURE-SNAPSHOT</version>
+            <version>5.0-RELEASE-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.finebi</groupId>

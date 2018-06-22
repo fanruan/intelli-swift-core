@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.finebi</groupId>
         <artifactId>nuclear-swift</artifactId>
-        <version>5.0-FEATURE-SNAPSHOT</version>
+        <version>5.0-RELEASE-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -27,18 +27,18 @@
         <dependency>
             <groupId>com.finebi</groupId>
             <artifactId>swift-history</artifactId>
-            <version>5.0-FEATURE-SNAPSHOT</version>
+            <version>5.0-RELEASE-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.finebi</groupId>
             <artifactId>swift-realtime</artifactId>
-            <version>5.0-FEATURE-SNAPSHOT</version>
+            <version>5.0-RELEASE-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.finebi</groupId>
             <artifactId>swift-repository</artifactId>
-            <version>5.0-FEATURE-SNAPSHOT</version>
+            <version>5.0-RELEASE-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
