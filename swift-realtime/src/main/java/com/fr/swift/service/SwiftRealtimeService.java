@@ -143,6 +143,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
                     SwiftSegmentRecovery.getInstance().recoverAll();
                     return true;
                 } catch (Exception e) {
+                    SwiftLoggers.getLogger().error(e);
                     return false;
                 }
             }

@@ -1,4 +1,4 @@
-package com.fr.swift;
+package com.fr.swift.test;
 
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 

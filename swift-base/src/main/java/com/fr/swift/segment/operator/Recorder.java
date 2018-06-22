@@ -9,6 +9,7 @@ import com.fr.swift.source.Row;
  * @description
  * @since Advanced FineBI 5.0
  */
+@Deprecated
 public interface Recorder {
 
     void recordData(Row row, int segIndex);
