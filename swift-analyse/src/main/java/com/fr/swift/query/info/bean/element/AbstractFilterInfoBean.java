@@ -15,6 +15,6 @@ public class AbstractFilterInfoBean implements FilterInfoBean {
 
     @Override
     public BeanType getBeanType() {
-        return null;
+        return beanType;
     }
 }
