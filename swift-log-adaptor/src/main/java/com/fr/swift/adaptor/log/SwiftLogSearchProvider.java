@@ -48,6 +48,9 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
         return instance;
     }
 
+    private SwiftLogSearchProvider() {
+    }
+
     @Override
     public String getMarkString() {
         return LogSearchConstants.PROVIDER_MARK;
