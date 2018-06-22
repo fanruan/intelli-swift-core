@@ -18,6 +18,7 @@ import java.util.List;
  * @since Advanced FineBI Analysis 1.0
  */
 public class RelationSourceImpl implements RelationSource {
+    private static final long serialVersionUID = -440451044374432042L;
     @CoreField
     private SourceKey primarySource;
     @CoreField
@@ -34,6 +35,25 @@ public class RelationSourceImpl implements RelationSource {
         this.primarySource = primarySource;
         this.foreignSource = foreignSource;
         this.primaryFields = primaryFields;
+        this.foreignFields = foreignFields;
+    }
+
+    public RelationSourceImpl() {
+    }
+
+    public void setPrimarySource(SourceKey primarySource) {
+        this.primarySource = primarySource;
+    }
+
+    public void setForeignSource(SourceKey foreignSource) {
+        this.foreignSource = foreignSource;
+    }
+
+    public void setPrimaryFields(List<String> primaryFields) {
+        this.primaryFields = primaryFields;
+    }
+
+    public void setForeignFields(List<String> foreignFields) {
         this.foreignFields = foreignFields;
     }
 

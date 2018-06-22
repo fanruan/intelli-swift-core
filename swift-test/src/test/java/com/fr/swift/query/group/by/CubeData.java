@@ -1,6 +1,5 @@
 package com.fr.swift.query.group.by;
 
-import com.fr.swift.Temps.TempDictColumn;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.traversal.TraversalAction;
@@ -16,6 +15,7 @@ import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.iterator.IntListRowTraversal;
 import com.fr.swift.structure.iterator.RowTraversal;
+import com.fr.swift.test.Temps.TempDictColumn;
 import org.easymock.EasyMock;
 
 import java.util.ArrayList;

@@ -24,6 +24,14 @@ public class SwiftProperty {
 
     private boolean isCluster;
 
+    private String configDbDriverClass;
+
+    private String configDbUsername;
+
+    private String configDbPasswd;
+
+    private String configDbJdbcUrl;
+
     @Autowired
     public void setRpcAddress(@Value("${swift.http_server_address}") String rpcAddress) {
         this.rpcAddress = rpcAddress;
@@ -47,6 +55,42 @@ public class SwiftProperty {
     @Autowired
     public void setCluster(@Value("${swift.is_cluster}") String cluster) {
         this.isCluster = Boolean.parseBoolean(cluster);
+    }
+
+    public String getConfigDbDriverClass() {
+        return configDbDriverClass;
+    }
+
+    @Autowired
+    public void setConfigDbDriverClass(@Value("${swift.configDb.driver}") String configDbDriverClass) {
+        this.configDbDriverClass = configDbDriverClass;
+    }
+
+    public String getConfigDbUsername() {
+        return configDbUsername;
+    }
+
+    @Autowired
+    public void setConfigDbUsername(@Value("${swift.configDb.username}") String configDbUsername) {
+        this.configDbUsername = configDbUsername;
+    }
+
+    public String getConfigDbPasswd() {
+        return configDbPasswd;
+    }
+
+    @Autowired
+    public void setConfigDbPasswd(@Value("${swift.configDb.passwd}") String configDbPasswd) {
+        this.configDbPasswd = configDbPasswd;
+    }
+
+    public String getConfigDbJdbcUrl() {
+        return configDbJdbcUrl;
+    }
+
+    @Autowired
+    public void setConfigDbJdbcUrl(@Value("${swift.configDb.url}") String configDbJdbcUrl) {
+        this.configDbJdbcUrl = configDbJdbcUrl;
     }
 
     public String getRpcAddress() {

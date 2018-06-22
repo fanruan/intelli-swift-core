@@ -1,5 +1,6 @@
 package com.fr.swift.stuff;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -9,36 +10,38 @@ import java.util.List;
  * @describe 全量更新stuff
  * @since Advanced FineBI Analysis 1.0
  */
-public class HistoryIndexStuffImpl implements HistoryIndexingStuff {
+public class HistoryIndexStuffImpl implements HistoryIndexingStuff, Serializable {
+    private List<String> tables;
 
-    private static final long serialVersionUID = 6020432061987147639L;
-    private List<String> updateTableSources;
-    private List<String> updateTableSourceRelations;
-    private List<String> updateTableSourceRelationPaths;
+    private List<String> relations;
 
-    public HistoryIndexStuffImpl(List<String> updateTableSources, List<String> updateTableSourceRelations, List<String> updateTableSourceRelationPaths) {
-        this.updateTableSources = updateTableSources;
-        this.updateTableSourceRelations = updateTableSourceRelations;
-        this.updateTableSourceRelationPaths = updateTableSourceRelationPaths;
+    private List<String> relationPaths;
+
+    public HistoryIndexStuffImpl(List<String> tables, List<String> relations, List<String> relationPaths) {
+        this.tables = tables;
+        this.relations = relations;
+        this.relationPaths = relationPaths;
     }
 
     @Override
-    public List<String> getUpdateTableSources() {
-        return updateTableSources;
+    public List<String> getTables() {
+        return tables;
     }
 
     @Override
-    public List<String> getUpdateTableSourceRelations() {
-        return updateTableSourceRelations;
+    public List<String> getRelations() {
+        return relations;
     }
 
     @Override
-    public List<String> getUpdateTableSourceRelationPaths() {
-        return updateTableSourceRelationPaths;
+    public List<String> getRelationPaths() {
+        return relationPaths;
     }
 
     @Override
     public String getUpdateType() {
         return null;
     }
+
+    private static final long serialVersionUID = 6020432061987147639L;
 }

@@ -120,6 +120,11 @@ public class SumAggregate extends AbstractAggregator<DoubleAmountAggregatorValue
     }
 
     @Override
+    public AggregatorType getAggregatorType() {
+        return AggregatorType.SUM;
+    }
+
+    @Override
     public void combine(DoubleAmountAggregatorValue value, DoubleAmountAggregatorValue other) {
         if (!Double.isNaN(other.getValue())){
             if (!Double.isNaN(value.getValue())) {

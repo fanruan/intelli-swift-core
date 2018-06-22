@@ -2,8 +2,8 @@ package com.fr.swift.query.info.bean.parser;
 
 import com.fr.swift.query.aggregator.SumAggregate;
 import com.fr.swift.query.info.ResultJoinQueryInfo;
-import com.fr.swift.query.info.bean.query.QueryBean;
-import com.fr.swift.query.info.bean.query.QueryBeanFactory;
+import com.fr.swift.query.info.bean.query.QueryInfoBean;
+import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.element.target.GroupTarget;
@@ -187,8 +187,8 @@ public class QueryInfoParserTest extends TestCase {
                     "    }\n" +
                     "  ]\n" +
                     "}";
-    private QueryBean groupQueryBean;
-    private QueryBean resultJoinBean;
+    private QueryInfoBean groupQueryInfoBean;
+    private QueryInfoBean resultJoinBean;
 
 
     @Override
@@ -196,16 +196,16 @@ public class QueryInfoParserTest extends TestCase {
         PrintWriter writer = new PrintWriter("groupQuery.json");
         writer.println(groupQuery);
         writer.close();
-        groupQueryBean = QueryBeanFactory.create(new File("groupQuery.json").toURI().toURL());
+        groupQueryInfoBean = QueryInfoBeanFactory.create(new File("groupQuery.json").toURI().toURL());
 
         PrintWriter writer1 = new PrintWriter("resultJoinQuery.json");
         writer1.println(resultJoinQuery);
         writer1.close();
-        resultJoinBean = QueryBeanFactory.create(new File("resultJoinQuery.json").toURI().toURL());
+        resultJoinBean = QueryInfoBeanFactory.create(new File("resultJoinQuery.json").toURI().toURL());
     }
 
     public void testParseGroupQueryInfo() {
-        GroupQueryInfo queryInfo = (GroupQueryInfo) QueryInfoParser.parse(groupQueryBean);
+        GroupQueryInfo queryInfo = (GroupQueryInfo) QueryInfoParser.parse(groupQueryInfoBean);
         assertTrue(queryInfo.getQueryId().equals("queryId0"));
         assertTrue(queryInfo.getTable().getId().equals("用户访问信息表"));
         List<Dimension> dimensionList = queryInfo.getDimensions();

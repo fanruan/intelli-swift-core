@@ -42,6 +42,11 @@ public class StandarDeviationAggregate  implements Aggregator<StandardAggregator
     }
 
     @Override
+    public AggregatorType getAggregatorType() {
+        return AggregatorType.STANDARD_DEVIATION;
+    }
+
+    @Override
     public void combine(StandardAggregatorValue value, StandardAggregatorValue other) {
         Aggregator va = VarianceAggregate.INSTANCE;
         VarianceAggregatorValue vValue = value.getCalVariance();

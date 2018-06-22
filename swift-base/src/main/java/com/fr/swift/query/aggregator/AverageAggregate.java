@@ -36,6 +36,11 @@ public class AverageAggregate extends AbstractAggregator<DoubleAverageAggregator
     }
 
     @Override
+    public AggregatorType getAggregatorType() {
+        return AggregatorType.AVERAGE;
+    }
+
+    @Override
     public void combine(DoubleAverageAggregatorValue value, DoubleAverageAggregatorValue other) {
         double dValue = Double.isNaN(value.getValue()) ? 0 : value.getValue();
         double dOther = Double.isNaN(other.getValue()) ? 0 : other.getValue();

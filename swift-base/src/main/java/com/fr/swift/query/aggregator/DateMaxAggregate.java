@@ -28,6 +28,11 @@ public class DateMaxAggregate extends AbstractAggregator<DateAmountAggregateValu
     }
 
     @Override
+    public AggregatorType getAggregatorType() {
+        return AggregatorType.DATE_MAX;
+    }
+
+    @Override
     public void combine(DateAmountAggregateValue value, DateAmountAggregateValue other) {
         value.setValue(Math.max(value.getValue(), other.getValue()));
     }

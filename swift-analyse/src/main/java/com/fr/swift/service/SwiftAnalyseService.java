@@ -118,15 +118,19 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
         return (T) resultSet[0];
     }
 
-    private <T extends SwiftResultSet> RpcFuture queryRemoteNodeNode(QueryInfo<T> info, SegmentDestination remoteURI) {
+    private <T extends SwiftResultSet> RpcFuture queryRemoteNodeNode(QueryInfo<T> info, SegmentDestination remoteURI) throws Exception {
         String address = remoteURI.getAddress();
         String methodName = remoteURI.getMethodName();
         Class clazz = remoteURI.getServiceClass();
         info.setQuerySegment(remoteURI.getUri());
         ProxyFactory factory = ProxySelector.getInstance().getFactory();
         Invoker invoker = factory.getInvoker(null, clazz, new RPCUrl(new RPCDestination(address)), false);
-        Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName(methodName), new Object[]{info, remoteURI.order()}));
-        return (RpcFuture) result.getValue();
+        Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName(methodName), new Object[]{info}));
+        RpcFuture future = (RpcFuture) result.getValue();
+        if (null == future) {
+            throw new Exception(result.getException());
+        }
+        return future;
     }
 
     @Override

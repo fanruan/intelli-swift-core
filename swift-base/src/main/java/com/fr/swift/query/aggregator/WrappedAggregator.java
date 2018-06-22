@@ -32,6 +32,11 @@ public class WrappedAggregator<T extends AggregatorValue> implements Aggregator<
     }
 
     @Override
+    public AggregatorType getAggregatorType() {
+        return null != changedAgg ? changedAgg.getAggregatorType() : metricAgg.getAggregatorType();
+    }
+
+    @Override
     public void combine(T current, T other) {
         if (changedAgg == null) {
             metricAgg.combine(current, other);

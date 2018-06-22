@@ -4,7 +4,7 @@ import com.fr.swift.query.info.ResultJoinQueryInfo;
 import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.info.group.GroupQueryInfoImpl;
-import com.fr.swift.query.info.group.RemoteQueryInfo;
+import com.fr.swift.query.info.remote.RemoteQueryInfo;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.query.query.QueryType;

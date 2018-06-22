@@ -1,9 +1,9 @@
 package com.fr.swift.result.node;
 
-import com.fr.swift.Temps.TempDictColumn;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.test.Temps.TempDictColumn;
 import junit.framework.TestCase;
 
 /**

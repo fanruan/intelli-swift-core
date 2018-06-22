@@ -1,6 +1,7 @@
 package com.fr.swift.config.bean;
 
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 
@@ -15,11 +16,17 @@ public class MetaDataColumnBean implements SwiftMetaDataColumn, Serializable {
     private static final int DEFAULT_SCALE = 15;
     private static final long serialVersionUID = 5094076095250338803L;
 
+    @JsonProperty
     private int type;
+    @JsonProperty
     private String name;
+    @JsonProperty
     private String remark;
+    @JsonProperty
     private int precision;
+    @JsonProperty
     private int scale;
+    @JsonProperty
     private String columnId;
 
     public MetaDataColumnBean() {

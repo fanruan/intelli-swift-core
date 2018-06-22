@@ -36,7 +36,7 @@ public class RangeDeleter implements ValueDeleter {
 
         putAllShowIndex(toBeDeleted);
 
-        releaseIfNeed(segment);
+        releaseIfNeed();
     }
 
     protected void putAllShowIndex(MutableBitMap toBeDeleted) {
@@ -58,65 +58,9 @@ public class RangeDeleter implements ValueDeleter {
         }
     }
 
-    protected void releaseIfNeed(Segment segment) {
+    protected void releaseIfNeed() {
         if (segment.getLocation().getStoreType() != StoreType.MEMORY) {
             segment.release();
         }
     }
 }
-
-//class ElemFinder<V> {
-//    private SortedArrayView<V> arr;
-//
-//    public ElemFinder(SortedArrayView<V> arr) {
-//        this.arr = arr;
-//    }
-//
-//    public int binarySearch(V v) {
-//        return binarySearch(v, arr.from(), arr.from() + arr.length() - 1);
-//    }
-//
-//    int binarySearchClosest(V v, int from, int to, boolean chooseLower) {
-//
-//        if (from > to) {
-//            if (from >= arr.from()) {
-//                return chooseLower ? from :
-//            }
-//            return -1;
-//        }
-//        int mid = (from + to) / 2;
-//        int cmp = arr.comparator().compare(v, arr.get(mid));
-//        if (cmp == 0) {
-//            return mid;
-//        }
-//        if (cmp < 0) {
-//            return binarySearch(v, from, mid - 1);
-//        }
-//        return binarySearch(v, mid + 1, to);
-//    }
-//
-//    public int binarySearch(V v, int from, int to) {
-//        if (from > to) {
-//            return -1;
-//        }
-//        int mid = (from + to) / 2;
-//        int cmp = arr.comparator().compare(v, arr.get(mid));
-//        if (cmp == 0) {
-//            return mid;
-//        }
-//        if (cmp < 0) {
-//            return binarySearch(v, from, mid - 1);
-//        }
-//        return binarySearch(v, mid + 1, to);
-//    }
-//}
-//
-//interface SortedArrayView<V> {
-//    V get(int index);
-//
-//    int from();
-//
-//    int length();
-//
-//    Comparator<V> comparator();
-//}

@@ -23,4 +23,6 @@ public interface Aggregator<T extends AggregatorValue> extends Combiner<T> {
      * @return
      */
     T createAggregatorValue(AggregatorValue value);
+
+    AggregatorType getAggregatorType();
 }

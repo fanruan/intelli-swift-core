@@ -23,6 +23,11 @@ public class GroupMetric extends AbstractMetric {
     }
 
     @Override
+    public MetricType getMetricType() {
+        return MetricType.GROUP;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

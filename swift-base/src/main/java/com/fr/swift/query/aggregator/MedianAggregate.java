@@ -135,4 +135,9 @@ public class MedianAggregate extends AbstractAggregator<MedianAggregatorValue> {
         medianAggregatorValue.setMedian(value.calculate());
         return medianAggregatorValue;
     }
+
+    @Override
+    public AggregatorType getAggregatorType() {
+        return AggregatorType.MEDIAN;
+    }
 }

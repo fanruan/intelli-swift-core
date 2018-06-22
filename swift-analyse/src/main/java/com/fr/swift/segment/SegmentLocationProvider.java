@@ -27,6 +27,8 @@ public class SegmentLocationProvider implements SegmentLocationManager {
     public List<SegmentDestination> getSegmentLocationURI(SourceKey table) {
         List<SegmentDestination> destinations = new ArrayList<SegmentDestination>(getRealTimeSegmentLocation(table));
         destinations.addAll(getHistorySegmentLocation(table));
+        // 这行是为了模拟远程特意加的，，，，，
+//        destinations.add(new SegmentDestinationImpl("192.168.2.1:7000", URI.create(""), 0, null, "historyQuery"));
         return Collections.unmodifiableList(destinations);
     }
 
