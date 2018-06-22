@@ -14,11 +14,11 @@ import com.fr.third.fasterxml.jackson.annotation.JsonTypeInfo;
         defaultImpl = QueryType.class,
         visible = true)
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = DetailQueryBean.class, name = "DETAIL"),
-        @JsonSubTypes.Type(value = GroupQueryBean.class, name = "GROUP"),
-        @JsonSubTypes.Type(value = ResultJoinQueryBean.class, name = "RESULT_JOIN")
+        @JsonSubTypes.Type(value = DetailQueryInfoBean.class, name = "DETAIL"),
+        @JsonSubTypes.Type(value = GroupQueryInfoBean.class, name = "GROUP"),
+        @JsonSubTypes.Type(value = ResultJoinQueryInfoBean.class, name = "RESULT_JOIN")
 })
-public interface QueryBean {
+public interface QueryInfoBean {
 
     QueryType getQueryType();
 }

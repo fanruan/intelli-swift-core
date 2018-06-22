@@ -1,14 +1,27 @@
 package com.fr.swift.query.info.bean.element;
 
-import com.fr.swift.query.filter.SwiftDetailFilterType;
-import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
+import com.fr.third.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fr.third.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**
- * Created by Lyon on 2018/6/2.
+ * @author yee
+ * @date 2018/6/22
  */
-// TODO: 2018/6/8
-public class FilterInfoBean {
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        property = "beanType",
+        defaultImpl = FilterInfoBean.BeanType.class,
+        visible = true)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = DetailFilterInfoBean.class, name = "DETAIL"),
+        @JsonSubTypes.Type(value = GeneralFilterInfoBean.class, name = "GENERAL"),
+        @JsonSubTypes.Type(value = MatchFilterInfoBean.class, name = "MATCH")
+})
+public interface FilterInfoBean {
 
-    @JsonProperty
-    private SwiftDetailFilterType type;
+    BeanType getBeanType();
+
+    enum BeanType {
+        GENERAL, DETAIL, MATCH
+    }
 }

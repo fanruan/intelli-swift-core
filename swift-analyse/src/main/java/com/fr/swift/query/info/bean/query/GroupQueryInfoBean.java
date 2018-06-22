@@ -12,7 +12,7 @@ import java.util.List;
  * <p>
  * Created by Lyon on 2018/6/2.
  */
-public class GroupQueryBean extends AbstractSingleTableQueryBean {
+public class GroupQueryInfoBean extends AbstractSingleTableQueryInfoBean {
 
     @JsonProperty
     private List<MetricBean> metricBeans;
@@ -38,4 +38,5 @@ public class GroupQueryBean extends AbstractSingleTableQueryBean {
     public void setPostQueryInfoBeans(List<PostQueryInfoBean> postQueryInfoBeans) {
         this.postQueryInfoBeans = postQueryInfoBeans;
     }
+
 }

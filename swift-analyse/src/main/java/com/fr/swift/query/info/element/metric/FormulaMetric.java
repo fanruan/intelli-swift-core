@@ -23,6 +23,15 @@ public class FormulaMetric extends GroupMetric {
         return new FormulaMetricColumn(formula, segment);
     }
 
+    public String getFormula() {
+        return formula;
+    }
+
+    @Override
+    public MetricType getMetricType() {
+        return MetricType.FORMULA;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

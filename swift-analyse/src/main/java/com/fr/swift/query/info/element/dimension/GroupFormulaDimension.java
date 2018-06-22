@@ -19,6 +19,10 @@ public class GroupFormulaDimension extends GroupDimension {
         this.formula = formula;
     }
 
+    public String getFormula() {
+        return formula;
+    }
+
     @Override
     public Column getColumn(Segment segment) {
         return new DetailFormulaColumn(formula, segment);
@@ -40,5 +44,10 @@ public class GroupFormulaDimension extends GroupDimension {
         int result = super.hashCode();
         result = 31 * result + (formula != null ? formula.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public DimensionType getDimensionType() {
+        return DimensionType.GROUP_FORMULA;
     }
 }

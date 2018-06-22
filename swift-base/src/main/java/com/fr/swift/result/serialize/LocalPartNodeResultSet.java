@@ -13,6 +13,7 @@ import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +41,9 @@ public class LocalPartNodeResultSet implements NodeMergeResultSet<SwiftNode>, Se
     private void init() {
         root = resultSet.getNode();
         dictionary = resultSet.getRowGlobalDictionaries();
+        if (null == dictionary) {
+            dictionary = new ArrayList<Map<Integer, Object>>();
+        }
         originHasNextPage = resultSet.hasNextPage();
     }
 

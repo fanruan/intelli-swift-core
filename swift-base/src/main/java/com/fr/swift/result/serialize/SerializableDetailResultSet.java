@@ -26,6 +26,7 @@ public class SerializableDetailResultSet implements DetailResultSet, Serializabl
     private String queryId;
     private SwiftMetaData metaData;
     private List<Row> rows;
+    private int rowCount = -1;
     private boolean hasNextPage = true;
     private boolean originHasNextPage;
     private transient Iterator<Row> rowIterator;
@@ -40,6 +41,7 @@ public class SerializableDetailResultSet implements DetailResultSet, Serializabl
         this.metaData = resultSet.getMetaData();
         this.rows = resultSet.getPage();
         this.originHasNextPage = resultSet.hasNextPage();
+        this.rowCount = resultSet.getRowCount();
     }
 
     @Override
@@ -70,7 +72,14 @@ public class SerializableDetailResultSet implements DetailResultSet, Serializabl
 
     @Override
     public int getRowCount() {
-        return resultSet.getRowCount();
+        if (rowCount == -1 && null != resultSet) {
+            if (null != resultSet) {
+                rowCount = resultSet.getRowCount();
+            } else {
+                rowCount = 0;
+            }
+        }
+        return rowCount;
     }
 
     @Override

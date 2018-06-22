@@ -1,5 +1,8 @@
 package com.fr.swift.query.info.bean.element;
 
+import com.fr.swift.query.info.element.dimension.Dimension;
+import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.source.SourceKey;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -8,27 +11,19 @@ import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 public class DimensionBean {
 
     @JsonProperty
-    private String name;
+    private SourceKey sourceKey;
     @JsonProperty
-    private String fieldName;
+    private ColumnKey columnKey;
     @JsonProperty
     private GroupBean groupBean;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getFieldName() {
-        return fieldName;
-    }
-
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
-    }
+    @JsonProperty
+    private SortBean sortBean;
+    @JsonProperty
+    private FilterInfoBean filterInfoBean;
+    @JsonProperty
+    private String formula;
+    @JsonProperty
+    private Dimension.DimensionType dimensionType;
 
     public GroupBean getGroupBean() {
         return groupBean;
@@ -36,5 +31,53 @@ public class DimensionBean {
 
     public void setGroupBean(GroupBean groupBean) {
         this.groupBean = groupBean;
+    }
+
+    public SortBean getSortBean() {
+        return sortBean;
+    }
+
+    public void setSortBean(SortBean sortBean) {
+        this.sortBean = sortBean;
+    }
+
+    public FilterInfoBean getFilterInfoBean() {
+        return filterInfoBean;
+    }
+
+    public void setFilterInfoBean(FilterInfoBean filterInfoBean) {
+        this.filterInfoBean = filterInfoBean;
+    }
+
+    public String getFormula() {
+        return formula;
+    }
+
+    public void setFormula(String formula) {
+        this.formula = formula;
+    }
+
+    public SourceKey getSourceKey() {
+        return sourceKey;
+    }
+
+    public void setSourceKey(SourceKey sourceKey) {
+        this.sourceKey = sourceKey;
+    }
+
+    public ColumnKey getColumnKey() {
+        return columnKey;
+    }
+
+    public void setColumnKey(ColumnKey columnKey) {
+        this.columnKey = columnKey;
+    }
+
+    public Dimension.DimensionType getDimensionType() {
+        return dimensionType;
+    }
+
+    public void setDimensionType(Dimension.DimensionType dimensionType) {
+        this.dimensionType = dimensionType;
     }
 }

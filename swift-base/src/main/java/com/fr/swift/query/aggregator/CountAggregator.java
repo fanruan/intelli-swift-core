@@ -23,6 +23,11 @@ public class CountAggregator implements Aggregator<DoubleAmountAggregatorValue> 
     }
 
     @Override
+    public AggregatorType getAggregatorType() {
+        return AggregatorType.COUNT;
+    }
+
+    @Override
     public void combine(DoubleAmountAggregatorValue value, DoubleAmountAggregatorValue other) {
         value.setValue(value.getValue() + other.getValue());
     }
