@@ -36,7 +36,7 @@ public class RangeDeleter implements ValueDeleter {
 
         putAllShowIndex(toBeDeleted);
 
-        releaseIfNeed();
+        releaseIfNeed(segment);
     }
 
     protected void putAllShowIndex(MutableBitMap toBeDeleted) {
@@ -58,7 +58,7 @@ public class RangeDeleter implements ValueDeleter {
         }
     }
 
-    protected void releaseIfNeed() {
+    protected void releaseIfNeed(Segment segment) {
         if (segment.getLocation().getStoreType() != StoreType.MEMORY) {
             segment.release();
         }
