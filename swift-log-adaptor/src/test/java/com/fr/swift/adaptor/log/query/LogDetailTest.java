@@ -1,8 +1,8 @@
 package com.fr.swift.adaptor.log.query;
 
-import com.fr.general.DataList;
 import com.fr.stable.query.QueryFactory;
 import com.fr.stable.query.condition.QueryCondition;
+import com.fr.stable.query.data.DataList;
 import com.fr.swift.adaptor.log.LogOperatorProxy;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
