@@ -1,9 +1,9 @@
 package com.fr.swift.adaptor.log;
 
-import com.fr.general.DataList;
 import com.fr.general.LogOperator;
 import com.fr.log.message.AbstractMessage;
 import com.fr.stable.query.condition.QueryCondition;
+import com.fr.stable.query.data.DataList;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
@@ -38,8 +38,6 @@ import java.util.concurrent.TimeUnit;
  * @date 2018/4/26
  */
 public class SwiftLogOperator implements LogOperator {
-    private static final int USE_IMPORT_THRESHOLD = 100000;
-
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftLogOperator.class);
 
     private final Database db = SwiftDatabase.getInstance();
