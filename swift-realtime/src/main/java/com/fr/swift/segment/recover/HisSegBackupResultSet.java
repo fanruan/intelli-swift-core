@@ -18,7 +18,7 @@ import java.util.List;
  * @author anchore
  * @date 2018/6/4
  */
-class BackupResultSet implements SwiftResultSet {
+class HisSegBackupResultSet implements SwiftResultSet {
     private SwiftMetaData meta;
     private List<DetailColumn> details = new ArrayList<DetailColumn>();
     private ImmutableBitMap allShowIndex;
@@ -26,7 +26,7 @@ class BackupResultSet implements SwiftResultSet {
     private int cursor = -1;
     private int rowCount;
 
-    BackupResultSet(Segment seg) throws SQLException {
+    HisSegBackupResultSet(Segment seg) throws SQLException {
         init(seg);
     }
 

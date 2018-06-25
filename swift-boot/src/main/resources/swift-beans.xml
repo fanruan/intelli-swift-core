@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       classpath:/com/fr/third/springframework/beans/factory/xml/spring-beans-4.0.xsd
+       http://www.springframework.org/schema/context
+       classpath:/com/fr/third/springframework/context/config/spring-context-4.0.xsd
+       http://www.springframework.org/schema/mvc
+       classpath:/com/fr/third/springframework/web/servlet/config/spring-mvc-4.0.xsd
+">
+
+    <!--正常注入-->
+    <bean id="localSegmentProvider" class="com.fr.swift.manager.LocalSegmentProvider"/>
+    <bean class="com.fr.swift.manager.LocalDataOperatorProvider"/>
+    <bean id="swiftProperty" class="com.fr.swift.property.SwiftProperty"/>
+    <bean id="serviceRegistry" class="com.fr.swift.rpc.registry.impl.SimpleServiceRegistry"/>
+    <bean id="serviceDiscovery" class="com.fr.swift.rpc.registry.impl.SimpleServiceDiscovery"/>
+    <bean id="rpcServer" class="com.fr.swift.rpc.server.RpcServer"/>
+    <bean id="swiftQuerySessionFactory" class="com.fr.swift.query.session.factory.SessionFactoryImpl"/>
+    <bean id="redisClient" class="com.fr.swift.redis.RedisClient"/>
+
+    <!--配置不同的实现class注入-->
+    <!--<bean id="segmentBackup" class="com.fr.swift.segment.backup.RedisSegmentBackup" scope="prototype"/>-->
+    <!--<bean id="segmentRecovery" class="com.fr.swift.segment.recover.RedisSegmentRecovery"/>-->
+    <bean id="segmentBackup" class="com.fr.swift.segment.backup.FileSegmentBackup" scope="prototype"/>
+    <bean id="segmentRecovery" class="com.fr.swift.segment.recover.SwiftSegmentRecovery"/>
+
+
+</beans>

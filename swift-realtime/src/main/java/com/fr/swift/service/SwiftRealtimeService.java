@@ -30,7 +30,7 @@ import com.fr.swift.rpc.annotation.RpcServiceType;
 import com.fr.swift.rpc.server.RpcServer;
 import com.fr.swift.segment.Incrementer;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.recover.SwiftSegmentRecovery;
+import com.fr.swift.segment.recover.SegmentRecovery;
 import com.fr.swift.selector.UrlSelector;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
@@ -140,7 +140,8 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
             public Boolean call() {
                 try {
                     // 恢复所有realtime块
-                    SwiftSegmentRecovery.getInstance().recoverAll();
+                    SegmentRecovery segmentRecovery = (SegmentRecovery) SwiftContext.getInstance().getBean("segmentRecovery");
+                    segmentRecovery.recoverAll();
                     return true;
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().error(e);

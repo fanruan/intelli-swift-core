@@ -33,7 +33,7 @@ public class ServletChannelInitializer extends ChannelInitializer<SocketChannel>
         wac.setServletContext(servletContext);
         wac.setServletConfig(servletConfig);
         wac.setParent(SwiftContext.getInstance());
-        wac.setConfigLocation("classpath:spring.xml");
+        wac.setConfigLocation("classpath:swift-content.xml");
         wac.refresh();
 
         this.dispatcherServlet = new SwiftDispatcher(wac);

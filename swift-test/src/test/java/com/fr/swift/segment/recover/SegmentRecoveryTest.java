@@ -6,11 +6,11 @@ import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
+import com.fr.swift.segment.Incrementer;
 import com.fr.swift.segment.RealTimeSegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftDataOperatorProvider;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.db.ConnectionInfo;
 import com.fr.swift.source.db.QueryDBSource;
@@ -59,14 +59,15 @@ public class SegmentRecoveryTest {
         QuerySourceTransfer transfer = new QuerySourceTransfer(connectionInfo, dataSource.getMetadata(), dataSource.getMetadata(), dataSource.getQuery());
         SwiftResultSet swiftResultSet = transfer.createResultSet();
 
-        Inserter inserter = operators.getRealtimeBlockSwiftInserter(dataSource);
-        inserter.insertData(swiftResultSet);
+        Incrementer incrementer = new Incrementer(dataSource);
+        incrementer.increment(swiftResultSet);
 
         String tablePath = String.format("%s/%s",
                 dataSource.getMetadata().getSwiftSchema().getDir(),
                 dataSource.getSourceKey().getId());
         ResourceDiscovery.getInstance().removeCubeResource(tablePath);
-        SwiftSegmentRecovery.getInstance().recoverAll();
+        SegmentRecovery segmentRecovery = (SegmentRecovery) SwiftContext.getInstance().getBean("segmentRecovery");
+        segmentRecovery.recoverAll();
 
         String cubePath = tablePath + "/seg0";
         IResourceLocation location = new ResourceLocation(cubePath, StoreType.MEMORY);
