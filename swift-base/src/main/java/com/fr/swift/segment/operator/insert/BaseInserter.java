@@ -36,7 +36,7 @@ public abstract class BaseInserter {
         this(segment, segment.getMetaData().getFieldNames());
     }
 
-    BaseInserter(Segment segment, List<String> fields) {
+    public BaseInserter(Segment segment, List<String> fields) {
         this.fields = fields;
         this.segment = segment;
         init();

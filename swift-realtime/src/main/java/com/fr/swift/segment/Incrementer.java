@@ -49,17 +49,18 @@ public class Incrementer implements Inserter {
 
             int count = LOCAL_SEGMENT_PROVIDER.getSegmentKeys(dataSource.getSourceKey()).size();
 
-            while (resultSet.next()) {
-                boolean newSeg = nextSegment();
-                Inserter inserter = new SwiftRealtimeInserter(currentSeg);
-                int step = ((LineAllotRule) alloter.getAllotRule()).getStep();
-                int limit = CubeUtil.isReadable(currentSeg) ? step - currentSeg.getRowCount() : step;
-                inserter.insertData(new LimitedResultSet(resultSet, limit));
+            //todo 这next第一行就没了
+//            while (resultSet.next()) {
+            boolean newSeg = nextSegment();
+            Inserter inserter = new SwiftRealtimeInserter(currentSeg);
+            int step = ((LineAllotRule) alloter.getAllotRule()).getStep();
+            int limit = CubeUtil.isReadable(currentSeg) ? step - currentSeg.getRowCount() : step;
+            inserter.insertData(new LimitedResultSet(resultSet, limit));
 
-                if (newSeg) {
-                    persistSegment(currentSeg, count++);
-                }
+            if (newSeg) {
+                persistSegment(currentSeg, count++);
             }
+//            }
         } catch (SQLException e) {
             SwiftLoggers.getLogger().error(e);
         } finally {

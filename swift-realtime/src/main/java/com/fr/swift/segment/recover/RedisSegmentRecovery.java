@@ -10,11 +10,13 @@ import com.fr.swift.segment.operator.Inserter;
 import java.util.List;
 
 /**
- * @author anchore
- * @date 2018/5/23
+ * This class created on 2018/6/22
+ *
+ * @author Lucifer
+ * @description
+ * @since Advanced FineBI 5.0
  */
-public class SwiftSegmentRecovery extends AbstractSegmentRecovery {
-
+public class RedisSegmentRecovery extends AbstractSegmentRecovery {
     @Override
     public void recover(List<SegmentKey> segmentKeys) {
         try {
@@ -22,7 +24,7 @@ public class SwiftSegmentRecovery extends AbstractSegmentRecovery {
                 Table table = SwiftDatabase.getInstance().getTable(segKey.getTable());
                 Segment realtimeSeg = newRealtimeSegment(localSegmentProvider.getSegment(segKey));
                 Inserter insert = operators.getInserter(table, realtimeSeg);
-                insert.insertData(new HisSegBackupResultSet(getBackupSegment(realtimeSeg)));
+                insert.insertData(new RedisBackupResultSet(getBackupSegment(realtimeSeg)));
             }
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);

@@ -1,0 +1,128 @@
+package com.fr.swift.backup;
+
+import com.fr.swift.context.SwiftContext;
+import com.fr.swift.cube.io.ResourceDiscovery;
+import com.fr.swift.generate.BaseTest;
+import com.fr.swift.redis.RedisClient;
+import com.fr.swift.segment.Incrementer;
+import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.column.Column;
+import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.segment.recover.RedisSegmentRecovery;
+import com.fr.swift.source.DataSource;
+import com.fr.swift.source.Row;
+import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.source.SwiftSourceTransfer;
+import com.fr.swift.source.SwiftSourceTransferFactory;
+import com.fr.swift.source.db.QueryDBSource;
+import com.fr.third.fasterxml.jackson.core.JsonProcessingException;
+import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+
+/**
+ * This class created on 2018/6/22
+ *
+ * @author Lucifer
+ * @description
+ * @since Advanced FineBI 5.0
+ */
+public class RedisBackupAndRevoceryTest extends BaseTest {
+    private RedisClient redisClient;
+
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        SwiftContext.init();
+        redisClient = (RedisClient) SwiftContext.getInstance().getBean("redisClient");
+    }
+
+    @Test
+    public void testBackup() {
+        try {
+            redisClient.flushDB();
+            DataSource dataSource = new QueryDBSource("select * from DEMO_HR_USER", "RealSwiftInserterTest");
+            SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
+            SwiftResultSet resultSet = transfer.createResultSet();
+            Incrementer incrementer = new Incrementer(dataSource);
+            incrementer.increment(resultSet);
+
+            resultSet = transfer.createResultSet();
+            List<String> jsonList = new ArrayList<String>();
+            while (resultSet.next()) {
+                ObjectMapper objectMapper = new ObjectMapper();
+                String json = null;
+                try {
+                    json = objectMapper.writeValueAsString(resultSet.getRowData());
+                    jsonList.add(json);
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            assertEquals(redisClient.llen("backup_cubes/7bc94acd/seg0"), jsonList.size());
+            List<String> redisList = redisClient.lrange("backup_cubes/7bc94acd/seg0", 0, -1);
+            assertEquals(redisList.size(), jsonList.size());
+            for (int i = 0; i < redisList.size(); i++) {
+                assertEquals(redisList.get(i), jsonList.get(i));
+            }
+        } catch (Exception e) {
+            assertTrue(false);
+        }
+    }
+
+    @Test
+    public void testRevover() {
+        try {
+            redisClient.flushDB();
+            DataSource dataSource = new QueryDBSource("select * from DEMO_HR_USER", "RealSwiftInserterTest");
+            SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
+            SwiftResultSet resultSet = transfer.createResultSet();
+            Incrementer incrementer = new Incrementer(dataSource);
+            incrementer.increment(resultSet);
+            SwiftSegmentManager localSegmentProvider = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class);
+
+            //释放memio，再测恢复
+             ResourceDiscovery.getInstance().removeCubeResource("cubes/" + dataSource.getSourceKey().getId());
+
+            RedisSegmentRecovery redisSegmentRecovery = new RedisSegmentRecovery();
+            redisSegmentRecovery.recover(dataSource.getSourceKey());
+            Segment segment = localSegmentProvider.getSegment(dataSource.getSourceKey()).get(0);
+            assertEquals(segment.getRowCount(), 42);
+            assertTrue(segment.getAllShowIndex().contains(0));
+            assertTrue(segment.getAllShowIndex().contains(41));
+
+            resultSet = transfer.createResultSet();
+
+            List<Object>[] rowList = new ArrayList[segment.getMetaData().getColumnCount()];
+            while (resultSet.next()) {
+                Row row = resultSet.getRowData();
+                for (int i = 0; i < row.getSize(); i++) {
+                    try {
+                        rowList[i].add(row.getValue(i));
+                    } catch (Exception e) {
+                        rowList[i] = new ArrayList<Object>();
+                        rowList[i].add(row.getValue(i));
+                    }
+                }
+            }
+
+            for (int i = 1; i <= segment.getMetaData().getColumnCount(); i++) {
+                String columnName = segment.getMetaData().getColumnName(i);
+                Column column = segment.getColumn(new ColumnKey(columnName));
+                for (int r = 0; r < 42; r++) {
+                    assertEquals(rowList[i-1].get(r), column.getDetailColumn().get(r));
+                }
+            }
+        } catch (Exception e) {
+            assertTrue(false);
+        }
+    }
+}

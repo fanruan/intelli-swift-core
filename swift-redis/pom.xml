@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>com.finebi</groupId>
         <artifactId>nuclear-swift</artifactId>
+        <groupId>com.finebi</groupId>
         <version>5.0-RELEASE-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>swift-realtime</artifactId>
+    <artifactId>swift-redis</artifactId>
     <build>
         <plugins>
             <plugin>
@@ -28,23 +28,6 @@
             <groupId>com.finebi</groupId>
             <artifactId>swift-base</artifactId>
             <version>5.0-RELEASE-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.finebi</groupId>
-            <artifactId>swift-history</artifactId>
-            <version>5.0-RELEASE-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.finebi</groupId>
-            <artifactId>swift-cluster</artifactId>
-            <version>5.0-RELEASE-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.finebi</groupId>
-            <artifactId>swift-redis</artifactId>
-            <version>5.0-RELEASE-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 
