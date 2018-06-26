@@ -1,6 +1,7 @@
 package com.fr.swift.segment.backup;
 
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.redis.RedisClient;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.Row;
@@ -36,7 +37,7 @@ public class RedisSegmentBackup implements SwiftSegmentBackup {
         try {
             json = objectMapper.writeValueAsString(rowData);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            SwiftLoggers.getLogger().error(e);
         }
         redisClient.rpush(segment.getLocation().getPath(), json);
     }
