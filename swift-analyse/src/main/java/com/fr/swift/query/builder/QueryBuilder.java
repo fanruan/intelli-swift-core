@@ -1,11 +1,14 @@
 package com.fr.swift.query.builder;
 
 import com.fr.swift.query.info.ResultJoinQueryInfo;
+import com.fr.swift.query.info.bean.parser.QueryInfoParser;
+import com.fr.swift.query.info.bean.query.QueryInfoBean;
 import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.info.group.GroupQueryInfoImpl;
 import com.fr.swift.query.info.remote.RemoteQueryInfo;
 import com.fr.swift.query.query.Query;
+import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.result.DetailResultSet;
@@ -24,12 +27,14 @@ public final class QueryBuilder {
      * 场景一：非LOCAL_*类型，被查询服务调用，构建过程中依赖查询服务提供的segment分布信息
      * 场景二：LOCAL_*类型，被history或者realTime节点调用，仅构建本地query，不依赖查询服务
      *
-     * @param info
+     * @param bean
      * @param <T>
      * @return
      * @throws SQLException
      */
-    public static <T extends SwiftResultSet> Query<T> buildQuery(QueryInfo<T> info) throws SQLException{
+    public static <T extends SwiftResultSet> Query<T> buildQuery(QueryBean bean) throws SQLException {
+        QueryInfoBean infoBean = (QueryInfoBean) bean;
+        QueryInfo info = QueryInfoParser.parse(infoBean);
         switch (info.getType()) {
             case GROUP:
             case CROSS_GROUP:

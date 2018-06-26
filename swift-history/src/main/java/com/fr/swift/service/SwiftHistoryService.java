@@ -5,7 +5,7 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.builder.QueryBuilder;
-import com.fr.swift.query.query.QueryInfo;
+import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.query.session.AbstractSession;
 import com.fr.swift.query.session.Session;
@@ -72,7 +72,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     @Override
     @SuppressWarnings("Duplicates")
     @RpcMethod(methodName = "historyQuery")
-    public <T extends SwiftResultSet> T query(final QueryInfo<T> queryInfo) throws SQLException {
+    public SwiftResultSet query(final QueryBean queryInfo) throws SQLException {
         // TODO: 2018/6/14 先到QueryResultSetManager找一下有没有缓存，没有则构建查询。
         // 另外分组表的resultSet在构建Query的时候处理好了，直接返回取出来的结果集即可。等明细部分好了一起改一下
         SessionFactory factory = SwiftContext.getInstance().getBean(SessionFactory.class);
@@ -81,11 +81,11 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
             public Session build(long cacheTimeout) {
                 return new AbstractSession(cacheTimeout) {
                     @Override
-                    protected <T extends SwiftResultSet> T query(QueryInfo<T> queryInfo) throws SQLException {
+                    protected SwiftResultSet query(QueryBean queryInfo) throws SQLException {
                         // TODO: 2018/6/20 @yee 先到QueryResultSetManager找一下有没有缓存，没有则构建查询
                         SwiftResultSet resultSet = QueryBuilder.buildQuery(queryInfo).getQueryResult();
                         SerializableResultSet result;
-                        QueryType type = queryInfo.getType();
+                        QueryType type = queryInfo.getQueryType();
                         switch (type) {
                             case LOCAL_GROUP_ALL:
                                 result = new LocalAllNodeResultSet(queryInfo.getQueryId(), (NodeResultSet<SwiftNode>) resultSet);
@@ -96,7 +96,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                             default:
                                 result = new SerializableDetailResultSet(queryInfo.getQueryId(), (DetailResultSet) resultSet);
                         }
-                        return (T) result;
+                        return result;
                     }
                 };
             }
