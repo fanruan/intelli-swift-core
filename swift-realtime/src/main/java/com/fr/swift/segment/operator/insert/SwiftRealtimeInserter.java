@@ -1,10 +1,12 @@
 package com.fr.swift.segment.operator.insert;
 
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.impl.SwiftDatabase.Schema;
 import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.backup.SwiftSegmentBackup;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 
@@ -18,7 +20,7 @@ import java.util.List;
  * @since Advanced FineBI Analysis 1.0
  */
 public class SwiftRealtimeInserter extends SwiftInserter {
-    private BackupInserter backupInserter;
+    private SwiftSegmentBackup swiftBackup;
 
     public SwiftRealtimeInserter(Segment segment) {
         this(segment, segment.getMetaData().getFieldNames());
@@ -26,7 +28,7 @@ public class SwiftRealtimeInserter extends SwiftInserter {
 
     public SwiftRealtimeInserter(Segment segment, List<String> fields) {
         super(segment, fields);
-        backupInserter = new BackupInserter(getBackupSegment(), fields);
+        swiftBackup = (SwiftSegmentBackup) SwiftContext.getInstance().getBean("segmentBackup", getBackupSegment(), fields);
     }
 
     private Segment getBackupSegment() {
@@ -38,30 +40,24 @@ public class SwiftRealtimeInserter extends SwiftInserter {
     @Override
     protected void putRow(int cursor, Row rowData) {
         super.putRow(cursor, rowData);
-        backupInserter.putRow(cursor, rowData);
+        swiftBackup.backupRowData(cursor, rowData);
     }
 
     @Override
     protected void putNullIndex() {
         super.putNullIndex();
-        backupInserter.putNullIndex();
+        swiftBackup.backupNullIndex();
     }
 
     @Override
     protected void putSegmentInfo(int lastCursor, int cursor) {
         super.putSegmentInfo(lastCursor, cursor);
-        backupInserter.putSegmentInfo(lastCursor, cursor);
+        swiftBackup.backupSegmentInfo(lastCursor, cursor);
     }
 
     @Override
     protected void release() {
         super.release();
-        backupInserter.release();
-    }
-
-    private static class BackupInserter extends BaseInserter {
-        BackupInserter(Segment segment, List<String> fields) {
-            super(segment, fields);
-        }
+        swiftBackup.release();
     }
 }

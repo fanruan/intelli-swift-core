@@ -1,8 +1,8 @@
 package com.fr.swift.adaptor.log;
 
-import com.fr.general.DataList;
 import com.fr.general.LogOperator;
 import com.fr.stable.query.condition.QueryCondition;
+import com.fr.stable.query.data.DataList;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventListener;
 import com.fr.swift.event.ClusterEventType;
