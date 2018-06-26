@@ -2,10 +2,12 @@ package com.fr.swift.query.info.bean.factory;
 
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
-import com.fr.swift.query.info.bean.element.DetailFilterInfoBean;
-import com.fr.swift.query.info.bean.element.FilterInfoBean;
-import com.fr.swift.query.info.bean.element.GeneralFilterInfoBean;
-import com.fr.swift.query.info.bean.element.MatchFilterInfoBean;
+import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
+import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
+import com.fr.swift.query.info.bean.element.filter.impl.DetailFilterInfoBean;
+import com.fr.swift.query.info.bean.element.filter.impl.GeneralFilterInfoBean;
+import com.fr.swift.query.info.bean.element.filter.impl.MatchFilterInfoBean;
+import com.fr.swift.segment.column.ColumnKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +18,31 @@ import java.util.List;
  */
 public class FilterInfoBeanFactory implements BeanFactory<List<FilterInfo>, List<FilterInfoBean>> {
 
-    public static final SingleFilterInfoBeanFactory SINGLE_FILTER_INFO_BEAN_FACTORY = new SingleFilterInfoBeanFactory();
+    public static final BeanFactory<FilterInfo, FilterInfoBean> SINGLE_FILTER_INFO_BEAN_FACTORY = new BeanFactory<FilterInfo, FilterInfoBean>() {
+        @Override
+        public FilterInfoBean create(FilterInfo source) {
+            FilterInfoBean result = null;
+            if (source instanceof GeneralFilterInfo) {
+                result = new GeneralFilterInfoBean();
+                ((GeneralFilterInfoBean) result).setChildren(FilterInfoBeanFactory.getInstance().create(((GeneralFilterInfo) source).getChildren()));
+                ((GeneralFilterInfoBean) result).setType(((GeneralFilterInfo) source).getType());
+            } else if (source instanceof DetailFilterInfoBean) {
+                result = new DetailFilterInfoBean();
+                ((DetailFilterInfoBean) result).setType(((SwiftDetailFilterInfo) source).getType());
+                ((DetailFilterInfoBean) result).setFilterValue(((SwiftDetailFilterInfo) source).getFilterValue());
+                ColumnKey columnKey = ((SwiftDetailFilterInfo) source).getColumnKey();
+                if (null != columnKey) {
+                    ((DetailFilterInfoBean) result).setColumn(columnKey.getName());
+                    ((DetailFilterInfoBean) result).setRelation(RelationSourceBeanFactory.SINGLE_RELATION_SOURCE_BEAN_FACTORY.create(columnKey.getRelation()));
+                }
+            } else {
+                // TODO MatchFilterInfo 属性
+                result = new MatchFilterInfoBean();
+            }
+            return result;
+        }
+    };
+
     private static FilterInfoBeanFactory factory;
 
     private FilterInfoBeanFactory() {
@@ -42,25 +68,5 @@ public class FilterInfoBeanFactory implements BeanFactory<List<FilterInfo>, List
             }
         }
         return result;
-    }
-
-    public static class SingleFilterInfoBeanFactory implements BeanFactory<FilterInfo, FilterInfoBean> {
-
-        @Override
-        public FilterInfoBean create(FilterInfo source) {
-            FilterInfoBean result = null;
-            if (source instanceof GeneralFilterInfo) {
-                result = new GeneralFilterInfoBean();
-                ((GeneralFilterInfoBean) result).setChildren(FilterInfoBeanFactory.getInstance().create(((GeneralFilterInfo) source).getChildren()));
-                ((GeneralFilterInfoBean) result).setType(((GeneralFilterInfo) source).getType());
-            } else if (source instanceof DetailFilterInfoBean) {
-                result = new DetailFilterInfoBean();
-                ((DetailFilterInfoBean) result).setType(((DetailFilterInfoBean) source).getType());
-                ((DetailFilterInfoBean) result).setFilterValue(((DetailFilterInfoBean) source).getFilterValue());
-            } else {
-                result = new MatchFilterInfoBean();
-            }
-            return result;
-        }
     }
 }

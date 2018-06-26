@@ -5,10 +5,10 @@ import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.MatchFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.filter.match.ToStringConverter;
-import com.fr.swift.query.info.bean.element.DetailFilterInfoBean;
-import com.fr.swift.query.info.bean.element.FilterInfoBean;
-import com.fr.swift.query.info.bean.element.GeneralFilterInfoBean;
-import com.fr.swift.query.info.bean.element.MatchFilterInfoBean;
+import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
+import com.fr.swift.query.info.bean.element.filter.impl.DetailFilterInfoBean;
+import com.fr.swift.query.info.bean.element.filter.impl.GeneralFilterInfoBean;
+import com.fr.swift.query.info.bean.element.filter.impl.MatchFilterInfoBean;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,26 +1,24 @@
 package com.fr.swift.query.info.bean.element;
 
+import com.fr.swift.query.info.bean.element.relation.IRelationSourceBean;
 import com.fr.swift.query.sort.SortType;
-import com.fr.swift.segment.column.ColumnKey;
+import com.fr.third.fasterxml.jackson.annotation.JsonInclude;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Created by Lyon on 2018/6/2.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SortBean {
 
     @JsonProperty
     private SortType type;
     @JsonProperty
-    private ColumnKey columnKey;
+    private String column;
+    @JsonProperty
+    private IRelationSourceBean relation;
     @JsonProperty
     private int targetIndex;
-
-    public SortBean(SortType type, ColumnKey columnKey, int targetIndex) {
-        this.type = type;
-        this.columnKey = columnKey;
-        this.targetIndex = targetIndex;
-    }
 
     public SortBean() {
     }
@@ -33,19 +31,27 @@ public class SortBean {
         this.type = type;
     }
 
-    public ColumnKey getColumnKey() {
-        return columnKey;
-    }
-
-    public void setColumnKey(ColumnKey columnKey) {
-        this.columnKey = columnKey;
-    }
-
     public int getTargetIndex() {
         return targetIndex;
     }
 
     public void setTargetIndex(int targetIndex) {
         this.targetIndex = targetIndex;
+    }
+
+    public String getColumn() {
+        return column;
+    }
+
+    public void setColumn(String column) {
+        this.column = column;
+    }
+
+    public IRelationSourceBean getRelation() {
+        return relation;
+    }
+
+    public void setRelation(IRelationSourceBean relation) {
+        this.relation = relation;
     }
 }

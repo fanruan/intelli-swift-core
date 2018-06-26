@@ -1,5 +1,10 @@
 package com.fr.swift.query.info.bean.parser;
 
+import com.fr.swift.config.bean.SwiftMetaDataBean;
+import com.fr.swift.config.service.SwiftMetaDataService;
+import com.fr.swift.context.SwiftContext;
+import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
@@ -14,6 +19,8 @@ import com.fr.swift.query.info.group.post.PostQueryInfo;
 import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +72,19 @@ public class QueryInfoParser {
         SourceKey table = new SourceKey(bean.getTableName());
         FilterInfo filterInfo = FilterInfoParser.parse(bean.getFilterInfoBean());
         List<Dimension> dimensions = DimensionParser.parse(bean.getDimensionBeans(), bean.getSortBeans());
-        return new DetailQueryInfo(queryId, table, filterInfo, dimensions, null, null, bean.getMetaData());
+        SwiftMetaData metaData = SwiftContext.getInstance().getBean(SwiftMetaDataService.class).getMetaDataByKey(bean.getTableName());
+        List<SwiftMetaDataColumn> columns = new ArrayList<SwiftMetaDataColumn>();
+        List<String> fieldNames = bean.getColumns();
+        try {
+            for (String fieldName : fieldNames) {
+
+                columns.add(metaData.getColumn(fieldName));
+
+            }
+            return new DetailQueryInfo(queryId, table, filterInfo, dimensions, null, null, new SwiftMetaDataBean(metaData.getTableName(), metaData.getRemark(), metaData.getSchemaName(), columns));
+        } catch (SwiftMetaDataException e) {
+            SwiftLoggers.getLogger(QueryInfoParser.class).error(e);
+        }
+        return new DetailQueryInfo(queryId, table, filterInfo, dimensions, null, null, metaData);
     }
 }

@@ -1,11 +1,8 @@
 package com.fr.swift.query.info.bean.query;
 
 import com.fr.swift.query.query.QueryType;
-import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.structure.Pair;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -14,28 +11,18 @@ import java.util.List;
 public class DetailQueryInfoBean extends AbstractSingleTableQueryInfoBean {
 
     @JsonProperty
-    private SwiftMetaData metaData;
-    @JsonProperty
-    private List<Pair<Integer, Comparator>> comparators;
-
-    public SwiftMetaData getMetaData() {
-        return metaData;
-    }
-
-    public void setMetaData(SwiftMetaData metaData) {
-        this.metaData = metaData;
-    }
-
-    public List<Pair<Integer, Comparator>> getComparators() {
-        return comparators;
-    }
-
-    public void setComparators(List<Pair<Integer, Comparator>> comparators) {
-        this.comparators = comparators;
-    }
+    private List<String> columns;
 
     @Override
     public QueryType getQueryType() {
         return QueryType.DETAIL;
+    }
+
+    public List<String> getColumns() {
+        return columns;
+    }
+
+    public void setColumns(List<String> columns) {
+        this.columns = columns;
     }
 }
