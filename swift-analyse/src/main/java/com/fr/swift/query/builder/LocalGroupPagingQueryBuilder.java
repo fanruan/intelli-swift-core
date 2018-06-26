@@ -71,7 +71,7 @@ public class LocalGroupPagingQueryBuilder extends AbstractLocalGroupQueryBuilder
         for (Segment segment : targetSegments) {
             List<Column> dimensionColumns = getDimensionSegments(segment, dimensions);
             List<Column> metricColumns = getMetricSegments(segment, metrics);
-            List<Aggregator> aggregators = getAggregators(metrics);
+            List<Aggregator> aggregators = LocalGroupAllQueryBuilder.getFilterAggregators(metrics, segment);
             DetailFilter rowDetailFilters = FilterBuilder.buildDetailFilter(segment, info.getFilterInfo());
             List<Sort> rowSorts = LocalGroupAllQueryBuilder.getSegmentIndexSorts(dimensions);
             GroupByInfo rowGroupByInfo = new GroupByInfoImpl(dimensionColumns, rowDetailFilters, rowSorts, new ExpanderImpl(ExpanderType.ALL_EXPANDER, new HashSet<RowIndexKey<String[]>>()), new AllCursor());
