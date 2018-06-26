@@ -6,6 +6,7 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.query.info.bean.element.SortBean;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
@@ -18,6 +19,11 @@ import com.fr.swift.query.info.group.ResultJoinQueryInfoImpl;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
 import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.query.query.QueryType;
+import com.fr.swift.query.sort.AscSort;
+import com.fr.swift.query.sort.DescSort;
+import com.fr.swift.query.sort.NoneSort;
+import com.fr.swift.query.sort.Sort;
+import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
@@ -74,17 +80,35 @@ public class QueryInfoParser {
         List<Dimension> dimensions = DimensionParser.parse(bean.getDimensionBeans(), bean.getSortBeans());
         SwiftMetaData metaData = SwiftContext.getInstance().getBean(SwiftMetaDataService.class).getMetaDataByKey(bean.getTableName());
         List<SwiftMetaDataColumn> columns = new ArrayList<SwiftMetaDataColumn>();
+        List<Sort> sorts = null;
+        List<SortBean> sortBeans = bean.getSortBeans();
+        if (null != sortBeans) {
+            sorts = new ArrayList<Sort>();
+            for (SortBean sortBean : sortBeans) {
+                ColumnKey columnKey = new ColumnKey(sortBean.getColumn());
+                columnKey.setRelation(RelationSourceParser.parse(sortBean.getRelation()));
+                switch (sortBean.getType()) {
+                    case NONE:
+                        sorts.add(new NoneSort());
+                        break;
+                    case DESC:
+                        sorts.add(new DescSort(sortBean.getTargetIndex(), columnKey));
+                        break;
+                    case ASC:
+                        sorts.add(new AscSort(sortBean.getTargetIndex(), columnKey));
+                        break;
+                }
+            }
+        }
         List<String> fieldNames = bean.getColumns();
         try {
             for (String fieldName : fieldNames) {
-
                 columns.add(metaData.getColumn(fieldName));
-
             }
-            return new DetailQueryInfo(queryId, table, filterInfo, dimensions, null, null, new SwiftMetaDataBean(metaData.getTableName(), metaData.getRemark(), metaData.getSchemaName(), columns));
+            return new DetailQueryInfo(queryId, table, filterInfo, dimensions, sorts, null, new SwiftMetaDataBean(metaData.getTableName(), metaData.getRemark(), metaData.getSchemaName(), columns));
         } catch (SwiftMetaDataException e) {
             SwiftLoggers.getLogger(QueryInfoParser.class).error(e);
         }
-        return new DetailQueryInfo(queryId, table, filterInfo, dimensions, null, null, metaData);
+        return new DetailQueryInfo(queryId, table, filterInfo, dimensions, sorts, null, metaData);
     }
 }

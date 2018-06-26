@@ -18,7 +18,9 @@ import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.TestConnectionProvider;
-import junit.framework.TestCase;
+import com.fr.swift.test.Preparer;
+import org.junit.Before;
+import org.junit.BeforeClass;
 
 import java.util.List;
 
@@ -29,11 +31,16 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class LogBaseTest extends TestCase {
+public class LogBaseTest {
 
     static final SwiftLogger LOGGER = SwiftLoggers.getLogger(LogBaseTest.class);
 
-    @Override
+    @BeforeClass
+    public static void beforeClass() throws Exception {
+        Preparer.prepareCubeBuild();
+    }
+
+    @Before
     public void setUp() throws Exception {
         new LocalSwiftServerService().start();
         new SwiftAnalyseService().start();

@@ -1,6 +1,5 @@
 package com.fr.swift.service;
 
-import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.io.IOException;
@@ -19,7 +18,7 @@ public interface HistoryService extends SwiftService {
      * @param queryInfo 查询描述
      * @return 数据
      */
-    SwiftResultSet query(QueryBean queryInfo) throws SQLException;
+    SwiftResultSet query(String queryInfo) throws SQLException;
 
     /**
      * 从共享存储加载

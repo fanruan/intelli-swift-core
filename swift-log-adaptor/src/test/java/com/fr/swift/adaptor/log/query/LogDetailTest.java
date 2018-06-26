@@ -10,6 +10,9 @@ import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.db.QueryDBSource;
+import org.junit.Test;
+
+import static junit.framework.TestCase.assertTrue;
 
 /**
  * This class created on 2018/4/27
@@ -22,6 +25,7 @@ public class LogDetailTest extends LogBaseTest {
 
     private final Database db = SwiftDatabase.getInstance();
 
+    @Test
     public void testFind() {
         try {
             DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "DEMO_CONTRACT");

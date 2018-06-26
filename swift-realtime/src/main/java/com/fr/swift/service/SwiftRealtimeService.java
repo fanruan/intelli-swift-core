@@ -9,6 +9,8 @@ import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.frrpc.SwiftClusterService;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.builder.QueryBuilder;
+import com.fr.swift.query.info.bean.query.QueryInfoBean;
+import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.query.session.AbstractSession;
@@ -91,38 +93,43 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     @Override
     @SuppressWarnings("Duplicates")
     @RpcMethod(methodName = "realTimeQuery")
-    public SwiftResultSet query(final QueryBean queryInfo) throws SQLException {
-        SessionFactory sessionFactory = SwiftContext.getInstance().getBean(SessionFactory.class);
-        return sessionFactory.openSession(new SessionBuilder() {
-            @Override
-            public Session build(long cacheTimeout) {
-                return new AbstractSession(cacheTimeout) {
-                    @Override
-                    protected SwiftResultSet query(QueryBean queryInfo) throws SQLException {
-                        // 先到QueryResultSetManager找一下有没有缓存，没有则构建查询。
-                        SwiftResultSet resultSet = QueryBuilder.buildQuery(queryInfo).getQueryResult();
-                        SerializableResultSet result;
-                        QueryType type = queryInfo.getQueryType();
-                        switch (type) {
-                            case LOCAL_GROUP_ALL:
-                                result = new LocalAllNodeResultSet(queryInfo.getQueryId(), (NodeResultSet<SwiftNode>) resultSet);
-                                break;
-                            case LOCAL_GROUP_PART:
-                                result = new LocalPartNodeResultSet(queryInfo.getQueryId(), (NodeMergeResultSet<GroupNode>) resultSet);
-                                break;
-                            default:
-                                result = new SerializableDetailResultSet(queryInfo.getQueryId(), (DetailResultSet) resultSet);
+    public SwiftResultSet query(final String queryDescription) throws SQLException {
+        try {
+            final QueryInfoBean bean = QueryInfoBeanFactory.create(queryDescription);
+            SessionFactory sessionFactory = SwiftContext.getInstance().getBean(SessionFactory.class);
+            return sessionFactory.openSession(new SessionBuilder() {
+                @Override
+                public Session build(long cacheTimeout) {
+                    return new AbstractSession(cacheTimeout) {
+                        @Override
+                        protected SwiftResultSet query(QueryBean queryInfo) throws SQLException {
+                            // 先到QueryResultSetManager找一下有没有缓存，没有则构建查询。
+                            SwiftResultSet resultSet = QueryBuilder.buildQuery(queryInfo).getQueryResult();
+                            SerializableResultSet result;
+                            QueryType type = queryInfo.getQueryType();
+                            switch (type) {
+                                case LOCAL_GROUP_ALL:
+                                    result = new LocalAllNodeResultSet(queryInfo.getQueryId(), (NodeResultSet<SwiftNode>) resultSet);
+                                    break;
+                                case LOCAL_GROUP_PART:
+                                    result = new LocalPartNodeResultSet(queryInfo.getQueryId(), (NodeMergeResultSet<GroupNode>) resultSet);
+                                    break;
+                                default:
+                                    result = new SerializableDetailResultSet(queryInfo.getQueryId(), (DetailResultSet) resultSet);
+                            }
+                            return result;
                         }
-                        return result;
-                    }
-                };
-            }
+                    };
+                }
 
-            @Override
-            public String getQueryId() {
-                return queryInfo.getQueryId();
-            }
-        }).executeQuery(queryInfo);
+                @Override
+                public String getQueryId() {
+                    return bean.getQueryId();
+                }
+            }).executeQuery(bean);
+        } catch (Exception e) {
+            throw new SQLException(e);
+        }
     }
 
     @Override

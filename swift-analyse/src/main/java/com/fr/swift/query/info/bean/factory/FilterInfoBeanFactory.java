@@ -26,7 +26,7 @@ public class FilterInfoBeanFactory implements BeanFactory<List<FilterInfo>, List
                 result = new GeneralFilterInfoBean();
                 ((GeneralFilterInfoBean) result).setChildren(FilterInfoBeanFactory.getInstance().create(((GeneralFilterInfo) source).getChildren()));
                 ((GeneralFilterInfoBean) result).setType(((GeneralFilterInfo) source).getType());
-            } else if (source instanceof DetailFilterInfoBean) {
+            } else if (source instanceof SwiftDetailFilterInfo) {
                 result = new DetailFilterInfoBean();
                 ((DetailFilterInfoBean) result).setType(((SwiftDetailFilterInfo) source).getType());
                 ((DetailFilterInfoBean) result).setFilterValue(((SwiftDetailFilterInfo) source).getFilterValue());

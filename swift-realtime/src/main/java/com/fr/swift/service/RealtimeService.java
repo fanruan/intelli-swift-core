@@ -1,6 +1,5 @@
 package com.fr.swift.service;
 
-import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
@@ -40,5 +39,5 @@ public interface RealtimeService extends SwiftService {
      * @param queryInfo 查询描述
      * @return 数据
      */
-    SwiftResultSet query(QueryBean queryInfo) throws Exception;
+    SwiftResultSet query(String queryInfo) throws Exception;
 }

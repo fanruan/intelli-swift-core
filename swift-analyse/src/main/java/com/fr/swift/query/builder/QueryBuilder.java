@@ -22,19 +22,24 @@ import java.sql.SQLException;
  */
 public final class QueryBuilder {
 
+
+    public static <T extends SwiftResultSet> Query<T> buildQuery(QueryBean bean) throws SQLException {
+        QueryInfoBean infoBean = (QueryInfoBean) bean;
+        QueryInfo info = QueryInfoParser.parse(infoBean);
+        return buildQuery(info);
+    }
+
     /**
      * 根据queryInfo类型是否为LOCAL_*分两种使用场景：
      * 场景一：非LOCAL_*类型，被查询服务调用，构建过程中依赖查询服务提供的segment分布信息
      * 场景二：LOCAL_*类型，被history或者realTime节点调用，仅构建本地query，不依赖查询服务
      *
-     * @param bean
+     * @param info
      * @param <T>
      * @return
      * @throws SQLException
      */
-    public static <T extends SwiftResultSet> Query<T> buildQuery(QueryBean bean) throws SQLException {
-        QueryInfoBean infoBean = (QueryInfoBean) bean;
-        QueryInfo info = QueryInfoParser.parse(infoBean);
+    public static <T extends SwiftResultSet> Query<T> buildQuery(QueryInfo<T> info) throws SQLException {
         switch (info.getType()) {
             case GROUP:
             case CROSS_GROUP:

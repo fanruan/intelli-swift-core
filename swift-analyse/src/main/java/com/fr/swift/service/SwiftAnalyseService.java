@@ -25,6 +25,7 @@ import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.selector.ProxySelector;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -40,6 +41,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     private static final long serialVersionUID = 841582089735823794L;
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftAnalyseService.class);
     private RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
+    private ObjectMapper mapper = new ObjectMapper();
 
     public SwiftAnalyseService(String id) {
         super(id);
@@ -125,7 +127,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
         info.setQuerySegment(remoteURI.getUri());
         ProxyFactory factory = ProxySelector.getInstance().getFactory();
         Invoker invoker = factory.getInvoker(null, clazz, new RPCUrl(new RPCDestination(address)), false);
-        Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName(methodName), new Object[]{info}));
+        Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName(methodName), new Object[]{mapper.writeValueAsString(info)}));
         RpcFuture future = (RpcFuture) result.getValue();
         if (null == future) {
             throw new Exception(result.getException());

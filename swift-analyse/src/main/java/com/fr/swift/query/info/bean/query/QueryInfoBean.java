@@ -20,6 +20,4 @@ import com.fr.third.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = ResultJoinQueryInfoBean.class, name = "RESULT_JOIN")
 })
 public interface QueryInfoBean extends QueryBean {
-
-    QueryType getQueryType();
 }
