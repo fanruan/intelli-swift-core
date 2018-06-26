@@ -1,10 +1,10 @@
-package com.fr.swift.query.info.bean.element;
+package com.fr.swift.query.info.bean.element.filter;
 
 /**
  * @author yee
  * @date 2018/6/22
  */
-public class AbstractFilterInfoBean implements FilterInfoBean {
+public abstract class AbstractFilterInfoBean implements FilterInfoBean {
 
     protected BeanType beanType;
 

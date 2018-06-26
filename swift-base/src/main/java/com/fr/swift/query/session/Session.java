@@ -1,6 +1,6 @@
 package com.fr.swift.query.session;
 
-import com.fr.swift.query.query.QueryInfo;
+import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.io.Closeable;
@@ -22,11 +22,10 @@ public interface Session extends Closeable {
     /**
      * 查询当前节点
      * @param queryInfo
-     * @param <T>
      * @return
      * @throws SQLException
      */
-    <T extends SwiftResultSet> T executeQuery(QueryInfo<T> queryInfo) throws SQLException;
+    SwiftResultSet executeQuery(QueryBean queryInfo) throws SQLException;
 
     /**
      * 关闭并清理缓存

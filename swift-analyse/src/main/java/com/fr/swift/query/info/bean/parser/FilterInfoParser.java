@@ -5,10 +5,11 @@ import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.MatchFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.filter.match.ToStringConverter;
-import com.fr.swift.query.info.bean.element.DetailFilterInfoBean;
-import com.fr.swift.query.info.bean.element.FilterInfoBean;
-import com.fr.swift.query.info.bean.element.GeneralFilterInfoBean;
-import com.fr.swift.query.info.bean.element.MatchFilterInfoBean;
+import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
+import com.fr.swift.query.info.bean.element.filter.impl.DetailFilterInfoBean;
+import com.fr.swift.query.info.bean.element.filter.impl.GeneralFilterInfoBean;
+import com.fr.swift.query.info.bean.element.filter.impl.MatchFilterInfoBean;
+import com.fr.swift.segment.column.ColumnKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,9 @@ class FilterInfoParser {
             switch (bean.getBeanType()) {
                 case DETAIL:
                     DetailFilterInfoBean detailFilterInfoBean = (DetailFilterInfoBean) bean;
-                    return new SwiftDetailFilterInfo(detailFilterInfoBean.getColumnKey(), detailFilterInfoBean.getFilterValue(), detailFilterInfoBean.getType());
+                    ColumnKey columnKey = new ColumnKey(detailFilterInfoBean.getColumn());
+                    columnKey.setRelation(RelationSourceParser.parse(detailFilterInfoBean.getRelation()));
+                    return new SwiftDetailFilterInfo(columnKey, detailFilterInfoBean.getFilterValue(), detailFilterInfoBean.getType());
                 case GENERAL:
                     GeneralFilterInfoBean generalFilterInfoBean = (GeneralFilterInfoBean) bean;
                     List<FilterInfoBean> filterInfoBeans = generalFilterInfoBean.getChildren();

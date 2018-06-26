@@ -6,6 +6,8 @@ import com.fr.swift.query.info.bean.element.MetricBean;
 import com.fr.swift.query.info.element.metric.FormulaMetric;
 import com.fr.swift.query.info.element.metric.GroupMetric;
 import com.fr.swift.query.info.element.metric.Metric;
+import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.source.SourceKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +24,14 @@ class MetricParser {
             FilterInfo filterInfo = FilterInfoParser.parse(bean.getFilterInfoBean());
             switch (bean.getMetricType()) {
                 case FORMULA:
-                    metrics.add(new FormulaMetric(0, bean.getSourceKey(),
+                    metrics.add(new FormulaMetric(0, new SourceKey(bean.getTable()),
                             filterInfo, AggregatorFactory.createAggregator(bean.getType()), bean.getFormula()));
                     break;
                 case GROUP:
-                    metrics.add(new GroupMetric(0, bean.getSourceKey(),
-                            bean.getColumnKey(), filterInfo, AggregatorFactory.createAggregator(bean.getType())));
+                    ColumnKey columnKey = new ColumnKey(bean.getColumn());
+                    columnKey.setRelation(RelationSourceParser.parse(bean.getRelation()));
+                    metrics.add(new GroupMetric(0, new SourceKey(bean.getTable()),
+                            columnKey, filterInfo, AggregatorFactory.createAggregator(bean.getType())));
                     break;
             }
         }

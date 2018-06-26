@@ -1,19 +1,22 @@
 package com.fr.swift.query.info.bean.element;
 
+import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
+import com.fr.swift.query.info.bean.element.relation.IRelationSourceBean;
 import com.fr.swift.query.info.element.dimension.Dimension;
-import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.source.SourceKey;
+import com.fr.third.fasterxml.jackson.annotation.JsonInclude;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
+
 
 /**
  * Created by Lyon on 2018/6/2.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class DimensionBean {
 
     @JsonProperty
-    private SourceKey sourceKey;
+    private String table;
     @JsonProperty
-    private ColumnKey columnKey;
+    private String column;
     @JsonProperty
     private GroupBean groupBean;
     @JsonProperty
@@ -24,6 +27,8 @@ public class DimensionBean {
     private String formula;
     @JsonProperty
     private Dimension.DimensionType dimensionType;
+    @JsonProperty
+    private IRelationSourceBean relation;
 
     public GroupBean getGroupBean() {
         return groupBean;
@@ -57,24 +62,32 @@ public class DimensionBean {
         this.formula = formula;
     }
 
-    public SourceKey getSourceKey() {
-        return sourceKey;
-    }
-
-    public void setSourceKey(SourceKey sourceKey) {
-        this.sourceKey = sourceKey;
-    }
-
-    public ColumnKey getColumnKey() {
-        return columnKey;
-    }
-
-    public void setColumnKey(ColumnKey columnKey) {
-        this.columnKey = columnKey;
-    }
-
     public Dimension.DimensionType getDimensionType() {
         return dimensionType;
+    }
+
+    public String getTable() {
+        return table;
+    }
+
+    public void setTable(String table) {
+        this.table = table;
+    }
+
+    public String getColumn() {
+        return column;
+    }
+
+    public void setColumn(String column) {
+        this.column = column;
+    }
+
+    public IRelationSourceBean getRelation() {
+        return relation;
+    }
+
+    public void setRelation(IRelationSourceBean relation) {
+        this.relation = relation;
     }
 
     public void setDimensionType(Dimension.DimensionType dimensionType) {

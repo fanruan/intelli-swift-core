@@ -14,12 +14,14 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.aggregator.AggregatorFactory;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.metric.GroupMetric;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.info.group.GroupQueryInfoImpl;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
+import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.Row;
@@ -141,7 +143,8 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
         }
         GroupQueryInfo queryInfo = new GroupQueryInfoImpl("", sourceKey, filterInfo, new ArrayList<Dimension>(),
                 metrics, new ArrayList<PostQueryInfo>(0));
-        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
+        QueryBean queryBean = QueryInfoBeanFactory.create(queryInfo);
+        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
         Row row = null;
         if (resultSet.next()) {
             row = resultSet.getRowData();

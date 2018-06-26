@@ -37,7 +37,7 @@ public interface SwiftFileSystem extends Closeable {
 
     boolean isDirectory();
 
-    InputStream toStream();
+    InputStream toStream() throws SwiftFileException;
 
     URI getResourceURI();
 

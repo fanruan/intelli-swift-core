@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RemoteQueryInfoManager {
 
     private static RemoteQueryInfoManager instance = new RemoteQueryInfoManager();
-    private Map<String, Pair<QueryInfo, SegmentDestination>> manager = new ConcurrentHashMap<String, Pair<QueryInfo, SegmentDestination>>();
+    private Map<String, Pair<QueryBean, SegmentDestination>> manager = new ConcurrentHashMap<String, Pair<QueryBean, SegmentDestination>>();
 
     private RemoteQueryInfoManager() {
     }
@@ -22,11 +22,11 @@ public class RemoteQueryInfoManager {
         return instance;
     }
 
-    public Pair<QueryInfo, SegmentDestination> get(String queryId) {
+    public Pair<QueryBean, SegmentDestination> get(String queryId) {
         return manager.get(queryId);
     }
 
-    public void put(String queryId, Pair<QueryInfo, SegmentDestination> pair) {
+    public void put(String queryId, Pair<QueryBean, SegmentDestination> pair) {
         manager.put(queryId, pair);
     }
 

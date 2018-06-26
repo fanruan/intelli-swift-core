@@ -24,11 +24,11 @@ public class QueryRunnerProvider {
         this.runner = runner;
     }
 
-    public <T extends SwiftResultSet> T executeQuery(QueryInfo<T> info) throws SQLException {
+    public SwiftResultSet executeQuery(QueryBean info) throws SQLException {
         return runner.getQueryResult(info);
     }
 
-    public <T extends SwiftResultSet> T executeRemoteQuery(QueryInfo<T> info, SegmentDestination remoteURI) throws SQLException {
+    public SwiftResultSet executeRemoteQuery(QueryBean info, SegmentDestination remoteURI) throws SQLException {
         return runner.getRemoteQueryResult(info, remoteURI);
     }
 }
