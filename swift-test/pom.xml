@@ -44,6 +44,11 @@
             <artifactId>swift-boot</artifactId>
             <version>5.0-RELEASE-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.finebi</groupId>
+            <artifactId>swift-redis</artifactId>
+            <version>5.0-RELEASE-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 </project>

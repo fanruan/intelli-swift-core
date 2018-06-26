@@ -12,22 +12,13 @@
        classpath:/com/fr/third/springframework/web/servlet/config/spring-mvc-4.0.xsd
 ">
 
-    <context:property-placeholder location="classpath:rpc.properties"/>
+    <!--基本和环境配置-->
+    <context:property-placeholder location="classpath:rpc.properties,classpath:swift.properties"/>
 
     <context:component-scan base-package="com.fr.swift.rpc.service"/>
     <context:component-scan base-package="com.fr.swift.service.listener"/>
     <context:component-scan base-package="com.fr.swift.service"/>
     <context:component-scan base-package="com.fr.swift.config"/>
-
-    <bean id="localSegmentProvider" class="com.fr.swift.manager.LocalSegmentProvider"/>
-    <bean class="com.fr.swift.manager.LocalDataOperatorProvider"/>
-
-    <bean id="swiftProperty" class="com.fr.swift.property.SwiftProperty"/>
-    <bean id="serviceRegistry" class="com.fr.swift.rpc.registry.impl.SimpleServiceRegistry"/>
-    <bean id="serviceDiscovery" class="com.fr.swift.rpc.registry.impl.SimpleServiceDiscovery"/>
-    <bean id="rpcServer" class="com.fr.swift.rpc.server.RpcServer"/>
-    <bean id="swiftQuerySessionFactory" class="com.fr.swift.query.session.factory.SessionFactoryImpl"/>
-
     <context:component-scan base-package="com.fr.swift.http"/>
 
     <mvc:annotation-driven>
@@ -45,4 +36,5 @@
         </mvc:interceptor>
     </mvc:interceptors>
 
+    <import resource="swift-beans.xml"/>
 </beans>
