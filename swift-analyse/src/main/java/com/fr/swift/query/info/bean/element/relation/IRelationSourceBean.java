@@ -7,6 +7,8 @@ import com.fr.swift.source.RelationSourceType;
 import com.fr.third.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fr.third.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import java.util.List;
+
 /**
  * @author yee
  * @date 2018/6/26
@@ -21,4 +23,16 @@ import com.fr.third.fasterxml.jackson.annotation.JsonTypeInfo;
 })
 public interface IRelationSourceBean {
     RelationSourceType getType();
+
+    String getPrimaryTable();
+
+
+    String getForeignTable();
+
+
+    List<String> getPrimaryFields();
+
+
+    List<String> getForeignFields();
+
 }
