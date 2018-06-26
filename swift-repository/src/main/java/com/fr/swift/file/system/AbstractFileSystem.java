@@ -10,11 +10,11 @@ import java.net.URI;
  * @author yee
  * @date 2018/5/28
  */
-public abstract class AbstractFileSystem implements SwiftFileSystem {
-    protected SwiftFileSystemConfig config;
+public abstract class AbstractFileSystem<Config extends SwiftFileSystemConfig> implements SwiftFileSystem {
+    protected Config config;
     private URI uri;
 
-    public AbstractFileSystem(SwiftFileSystemConfig config, URI uri) {
+    public AbstractFileSystem(Config config, URI uri) {
         this.config = config;
         this.uri = uri;
     }
@@ -59,7 +59,7 @@ public abstract class AbstractFileSystem implements SwiftFileSystem {
         return uri;
     }
 
-    public SwiftFileSystemConfig getConfig() {
+    public Config getConfig() {
         return config;
     }
 }

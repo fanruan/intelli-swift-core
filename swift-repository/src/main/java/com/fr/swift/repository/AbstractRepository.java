@@ -3,7 +3,7 @@ package com.fr.swift.repository;
 import com.fr.swift.file.conf.SwiftFileSystemConfig;
 import com.fr.swift.file.system.SwiftFileSystem;
 import com.fr.swift.file.system.impl.DefaultFileSystemImpl;
-import com.fr.swift.file.system.impl.SwiftFileSystemImpl;
+import com.fr.swift.file.system.impl.HdfsFileSystemImpl;
 
 import java.io.IOException;
 import java.net.URI;
@@ -31,7 +31,7 @@ public abstract class AbstractRepository implements SwiftRepository {
             case FR:
                 return new DefaultFileSystemImpl(configuration, uri);
             default:
-                return new SwiftFileSystemImpl(configuration, uri);
+                return new HdfsFileSystemImpl(configuration, uri);
         }
     }
 }
