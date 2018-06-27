@@ -78,7 +78,7 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
     public List<Object> getValueByColumn(Class<? extends AbstractMessage> logClass, QueryCondition condition, String columnName) throws Exception {
         List<String> fieldNames = new ArrayList<String>();
         fieldNames.add(columnName);
-        List<Row> rows = LogQueryUtils.detailQuery(logClass, condition, fieldNames);
+        List<Row> rows = LogQueryUtils.detailQuery(logClass, condition, fieldNames).getList();
         return IteratorUtils.iterator2List(new MapperIterator<Row, Object>(rows.iterator(), new Function<Row, Object>() {
             @Override
             public Object apply(Row p) {
