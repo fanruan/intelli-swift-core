@@ -13,7 +13,7 @@ public interface IndexingService extends SwiftService {
      *
      * @param stuff stuff
      */
-    void index(IndexingStuff stuff);
+    <Stuff extends IndexingStuff> void index(Stuff stuff);
 
     ServerCurrentStatus currentStatus();
 }

@@ -1,17 +1,17 @@
 package com.fr.swift.cube.task.impl;
 
+import com.fr.event.Event;
+import com.fr.event.EventDispatcher;
+import com.fr.event.Listener;
 import com.fr.swift.cube.task.Task.Status;
 import com.fr.swift.cube.task.TaskExecutor;
 import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.cube.task.TaskManager;
 import com.fr.swift.cube.task.WorkerTask;
-import com.fr.swift.exception.SwiftServiceException;
-import com.fr.swift.service.SwiftServiceEvent;
-import com.fr.swift.service.listener.EventOrder;
-import com.fr.swift.service.listener.EventType;
-import com.fr.swift.service.listener.SwiftServiceListener;
-import com.fr.swift.service.listener.SwiftServiceListenerManager;
 import com.fr.swift.util.Crasher;
+
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * @author anchore
@@ -24,7 +24,7 @@ public class CubeTaskManager implements TaskManager {
     @Override
     public void run(WorkerTask task) {
         synchronized (task) {
-            if (task.status().order() > Status.RUNNABLE.order()) {
+            if (task.status().compare(Status.RUNNABLE) > 0) {
                 return;
             }
         }
@@ -50,27 +50,16 @@ public class CubeTaskManager implements TaskManager {
         }
     }
 
-    public void initListener() throws SwiftServiceException {
-        SwiftServiceListenerManager.getInstance().addListener(new SwiftServiceListener<TaskKey>() {
+    public void initListener() {
+        EventDispatcher.listen(TaskEvent.RUN, new Listener<Map<TaskKey, ?>>() {
             @Override
-            public void handle(SwiftServiceEvent<TaskKey> event) {
-                run(from(event.getContent()));
-            }
-
-            @Override
-            public EventType getType() {
-                return EventType.RUN_TASK;
-            }
-
-            @Override
-            public EventOrder getOrder() {
-                return EventOrder.AFTER;
+            public void on(Event event, Map<TaskKey, ?> tasks) {
+                for (Entry<TaskKey, ?> entry : tasks.entrySet()) {
+                    WorkerTask task = WorkerTaskPool.getInstance().generate(entry.getKey(), entry.getValue());
+                    CubeTaskManager.getInstance().run(task);
+                }
             }
         });
-    }
-
-    private static WorkerTask from(TaskKey key) {
-        return WorkerTaskPool.getInstance().get(key);
     }
 
     private static final CubeTaskManager INSTANCE = new CubeTaskManager();

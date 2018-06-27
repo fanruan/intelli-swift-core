@@ -37,6 +37,7 @@ public class LocalSwiftServerService extends AbstractSwiftServerService {
                     break;
                 case REAL_TIME:
                     realTimeService = (SwiftRealtimeService) service;
+                default:
             }
         }
     }
@@ -56,6 +57,7 @@ public class LocalSwiftServerService extends AbstractSwiftServerService {
                     break;
                 case REAL_TIME:
                     realTimeService = null;
+                default:
             }
         }
     }

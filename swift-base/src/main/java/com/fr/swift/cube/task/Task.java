@@ -39,6 +39,10 @@ public interface Task {
             return order;
         }
 
+        public int compare(Status status) {
+            return order - status.order;
+        }
+
         private final int order;
 
         Status(int order) {

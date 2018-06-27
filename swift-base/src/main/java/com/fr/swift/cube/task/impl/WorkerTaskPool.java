@@ -1,17 +1,12 @@
 package com.fr.swift.cube.task.impl;
 
+import com.fr.event.Event;
+import com.fr.event.EventDispatcher;
+import com.fr.event.Listener;
 import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.cube.task.WorkerTask;
-import com.fr.swift.exception.SwiftServiceException;
-import com.fr.swift.service.SwiftServiceEvent;
-import com.fr.swift.service.listener.EventOrder;
-import com.fr.swift.service.listener.EventType;
-import com.fr.swift.service.listener.SwiftServiceListener;
-import com.fr.swift.service.listener.SwiftServiceListenerManager;
-import com.fr.swift.structure.Pair;
-import com.fr.swift.util.function.Function;
+import com.fr.swift.util.function.Function2;
 
-import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -19,48 +14,26 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2017/12/29
  */
 public class WorkerTaskPool extends BaseTaskPool<WorkerTask> {
-    private Function<Pair<TaskKey, Object>, WorkerTask> generator;
+    private Function2<TaskKey, Object, WorkerTask> taskGenerator;
 
-    public void setGenerator(Function<Pair<TaskKey, Object>, WorkerTask> generator) {
-        this.generator = generator;
+    public void setTaskGenerator(Function2<TaskKey, Object, WorkerTask> taskGenerator) {
+        this.taskGenerator = taskGenerator;
     }
 
-    public void initListener() throws SwiftServiceException {
-        SwiftServiceListenerManager.getInstance().addListener(new SwiftServiceListener<Collection<Pair<TaskKey, Object>>>() {
-            @Override
-            public void handle(SwiftServiceEvent<Collection<Pair<TaskKey, Object>>> event) {
-                for (Pair<TaskKey, Object> pair : event.getContent()) {
-                    add(generator.apply(pair));
-                }
-            }
+    public WorkerTask generate(TaskKey taskKey, Object data) {
+        WorkerTask task = taskGenerator.apply(taskKey, data);
+        add(task);
+        return task;
+    }
 
+    public void initListener() {
+        EventDispatcher.listen(TaskEvent.CANCEL, new Listener<TaskKey>() {
             @Override
-            public EventType getType() {
-                return EventType.INIT_TASK;
-            }
-
-            @Override
-            public EventOrder getOrder() {
-                return EventOrder.AFTER;
-            }
-        });
-        SwiftServiceListenerManager.getInstance().addListener(new SwiftServiceListener<TaskKey>() {
-            @Override
-            public void handle(SwiftServiceEvent<TaskKey> event) {
-                WorkerTask workerTask = get(event.getContent());
+            public void on(Event event, TaskKey key) {
+                WorkerTask workerTask = get(key);
                 synchronized (workerTask) {
                     workerTask.onCancel();
                 }
-            }
-
-            @Override
-            public EventType getType() {
-                return EventType.CANCEL_TASK;
-            }
-
-            @Override
-            public EventOrder getOrder() {
-                return EventOrder.AFTER;
             }
         });
     }
