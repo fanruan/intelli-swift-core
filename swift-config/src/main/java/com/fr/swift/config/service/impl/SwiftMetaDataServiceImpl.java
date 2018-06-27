@@ -1,12 +1,27 @@
 package com.fr.swift.config.service.impl;
 
+import com.fr.swift.Invoker;
+import com.fr.swift.ProxyFactory;
+import com.fr.swift.Result;
+import com.fr.swift.URL;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
+import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.dao.SwiftMetaDataDao;
 import com.fr.swift.config.service.SwiftMetaDataService;
+import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.config.transaction.AbstractTransactionWorker;
 import com.fr.swift.config.transaction.SwiftTransactionManager;
+import com.fr.swift.context.SwiftContext;
+import com.fr.swift.event.base.CleanMetaDataCacheEvent;
+import com.fr.swift.invocation.SwiftInvocation;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.rpc.client.AsyncRpcCallback;
+import com.fr.swift.rpc.client.async.RpcFuture;
+import com.fr.swift.rpc.server.RpcServer;
+import com.fr.swift.selector.ProxySelector;
+import com.fr.swift.selector.UrlSelector;
+import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +45,8 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     private SwiftTransactionManager transactionManager;
     @Autowired
     private SwiftMetaDataDao swiftMetaDataDao;
+    @Autowired(required = false)
+    private RpcServer server;
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftMetaDataServiceImpl.class);
     private ConcurrentHashMap<String, SwiftMetaData> metaDataCache = new ConcurrentHashMap<String, SwiftMetaData>();
@@ -91,6 +108,26 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                         swiftMetaDataDao.deleteSwiftMetaDataBean(sourceKey);
                         metaDataCache.remove(sourceKey);
                     }
+                    // 集群情况下才去发rpc
+                    // 现在日志这边没必要
+//                    boolean isCluster = SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class).isCluster();
+                    boolean isCluster = false;
+                    if (null != sourceKeys && isCluster) {
+                        URL masterURL = getMasterURL();
+                        ProxyFactory factory = ProxySelector.getInstance().getFactory();
+                        Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, masterURL, false);
+                        Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName("rpcTrigger"), new Object[]{new CleanMetaDataCacheEvent(sourceKeys)}));
+                        RpcFuture future = (RpcFuture) result.getValue();
+                        future.addCallback(new AsyncRpcCallback() {
+                            @Override
+                            public void success(Object result) {
+                            }
+
+                            @Override
+                            public void fail(Exception e) {
+                            }
+                        });
+                    }
                     return true;
                 }
 
@@ -144,9 +181,34 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     @Override
     public boolean containsMeta(final SourceKey sourceKey) {
         try {
-            return metaDataCache.containsKey(sourceKey.getId()) || null != swiftMetaDataDao.findBySourceKey(sourceKey.getId());
+            if (!metaDataCache.containsKey(sourceKey.getId())) {
+                SwiftMetaData metaData = swiftMetaDataDao.findBySourceKey(sourceKey.getId());
+                if (null != metaData) {
+                    metaDataCache.put(sourceKey.getId(), metaData);
+                    return true;
+                }
+                return false;
+            }
+            return true;
         } catch (Exception e) {
             return false;
         }
+    }
+
+    @Override
+    public void cleanCache(String[] sourceKeys) {
+        synchronized (metaDataCache) {
+            if (null != sourceKeys) {
+                for (String sourceKey : sourceKeys) {
+                    metaDataCache.remove(sourceKey);
+                }
+            }
+        }
+    }
+
+    private URL getMasterURL() {
+        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.getInstance().getBean(SwiftServiceInfoService.class).getServiceInfoByService("cluster_master_service");
+        SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
+        return UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
     }
 }

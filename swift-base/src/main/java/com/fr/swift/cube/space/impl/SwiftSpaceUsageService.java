@@ -1,8 +1,9 @@
 package com.fr.swift.cube.space.impl;
 
-import com.fr.swift.config.SwiftCubePathConfig;
+import com.fr.swift.config.service.SwiftPathService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftSegmentServiceProvider;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.space.SpaceUsageDetector;
 import com.fr.swift.cube.space.SpaceUsageService;
 import com.fr.swift.db.impl.SwiftDatabase.Schema;
@@ -21,6 +22,7 @@ public class SwiftSpaceUsageService implements SpaceUsageService {
     private SpaceUsageDetector detector = new LocalSpaceUsageDetector();
 
     private SwiftSegmentService confSvc = SwiftSegmentServiceProvider.getProvider();
+    private SwiftPathService pathService = SwiftContext.getInstance().getBean(SwiftPathService.class);
 
     @Override
     public long getTableUsedSpace(SourceKey table) throws Exception {
@@ -46,7 +48,7 @@ public class SwiftSpaceUsageService implements SpaceUsageService {
 
     @Override
     public long getUsedOverall() throws Exception {
-        String path = SwiftCubePathConfig.getInstance().getPath() + "/" + Schema.CUBE.getDir();
+        String path = pathService.getSwiftPath() + "/" + Schema.CUBE.getDir();
         URI baseUri = new File(path).toURI();
         return detector.detectUsed(baseUri);
     }
