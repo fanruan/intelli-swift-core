@@ -23,10 +23,10 @@ import java.util.List;
  */
 public class QueryInfoBeanFactory {
 
-    private static final DimensionBeanFactory DIMENSION_BEAN_FACTORY = new DimensionBeanFactory();
-    private static final SortBeanFactory SORT_BEAN_FACTORY = new SortBeanFactory();
-    private static final MetricBeanFactory METRIC_BEAN_FACTORY = new MetricBeanFactory();
-    private static final PostQueryInfoFactory POST_QUERY_INFO_FACTORY = new PostQueryInfoFactory();
+    private static final DimensionBeanFactory DIMENSION_BEAN_FACTORY = DimensionBeanFactory.getInstance();
+    private static final SortBeanFactory SORT_BEAN_FACTORY = SortBeanFactory.getInstance();
+    private static final MetricBeanFactory METRIC_BEAN_FACTORY = MetricBeanFactory.getInstance();
+    private static final PostQueryInfoFactory POST_QUERY_INFO_FACTORY = PostQueryInfoFactory.getInstance();
     private static ObjectMapper MAPPER = new ObjectMapper();
 
     public static QueryInfoBean create(URL url) throws IOException {

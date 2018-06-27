@@ -50,4 +50,15 @@ public class PostQueryInfoFactory implements BeanFactory<List<PostQueryInfo>, Li
         }
         return result;
     }
+
+    private PostQueryInfoFactory() {
+    }
+
+    public static PostQueryInfoFactory getInstance() {
+        return SingletonHolder.factory;
+    }
+
+    private static class SingletonHolder {
+        private static PostQueryInfoFactory factory = new PostQueryInfoFactory();
+    }
 }

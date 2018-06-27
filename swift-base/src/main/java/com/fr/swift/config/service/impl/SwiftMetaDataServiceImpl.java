@@ -89,6 +89,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                 public Object work() throws SQLException {
                     for (String sourceKey : sourceKeys) {
                         swiftMetaDataDao.deleteSwiftMetaDataBean(sourceKey);
+                        metaDataCache.remove(sourceKey);
                     }
                     return true;
                 }
@@ -115,6 +116,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
             for (SwiftMetaDataBean bean : beans) {
                 result.put(bean.getId(), bean);
             }
+            metaDataCache.putAll(result);
             return result;
         } catch (Exception e) {
             LOGGER.error("Select metadata error!", e);
@@ -142,7 +144,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     @Override
     public boolean containsMeta(final SourceKey sourceKey) {
         try {
-            return null != swiftMetaDataDao.findBySourceKey(sourceKey.getId());
+            return metaDataCache.containsKey(sourceKey.getId()) || null != swiftMetaDataDao.findBySourceKey(sourceKey.getId());
         } catch (Exception e) {
             return false;
         }
