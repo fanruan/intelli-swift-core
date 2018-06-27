@@ -87,7 +87,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
         URL masterURL = getMasterURL();
         ProxyFactory factory = ProxySelector.getInstance().getFactory();
         Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, masterURL, false);
-        Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName("rpcTrigger"), new HistoryLoadRpcEvent()));
+        Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName("rpcTrigger"), new Object[]{new HistoryLoadRpcEvent()}));
         RpcFuture future = (RpcFuture) result.getValue();
         future.addCallback(new AsyncRpcCallback() {
             @Override
