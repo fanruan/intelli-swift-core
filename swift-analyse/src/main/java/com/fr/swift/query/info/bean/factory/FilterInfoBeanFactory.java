@@ -21,6 +21,9 @@ public class FilterInfoBeanFactory implements BeanFactory<List<FilterInfo>, List
     public static final BeanFactory<FilterInfo, FilterInfoBean> SINGLE_FILTER_INFO_BEAN_FACTORY = new BeanFactory<FilterInfo, FilterInfoBean>() {
         @Override
         public FilterInfoBean create(FilterInfo source) {
+            if (source == null) {
+                return null;
+            }
             FilterInfoBean result = null;
             if (source instanceof GeneralFilterInfo) {
                 result = new GeneralFilterInfoBean();
