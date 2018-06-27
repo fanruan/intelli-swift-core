@@ -3,6 +3,7 @@ package com.fr.swift.query.info.bean.factory;
 import com.fr.swift.query.info.bean.element.MetricBean;
 import com.fr.swift.query.info.element.metric.FormulaMetric;
 import com.fr.swift.query.info.element.metric.Metric;
+import com.fr.swift.segment.column.ColumnKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,28 @@ import java.util.List;
  */
 public class MetricBeanFactory implements BeanFactory<List<Metric>, List<MetricBean>> {
 
-    public static final SingleMetricBeanFactory SINGLE_METRIC_BEAN_FACTORY = new SingleMetricBeanFactory();
+    public static final BeanFactory<Metric, MetricBean> SINGLE_METRIC_BEAN_FACTORY = new BeanFactory<Metric, MetricBean>() {
+        @Override
+        public MetricBean create(Metric source) {
+            if (null != source) {
+                MetricBean bean = new MetricBean();
+                bean.setFilterInfoBean(FilterInfoBeanFactory.SINGLE_FILTER_INFO_BEAN_FACTORY.create(source.getFilter()));
+                bean.setType(source.getAggregator().getAggregatorType());
+                bean.setMetricType(source.getMetricType());
+                bean.setTable(source.getSourceKey().getId());
+                ColumnKey columnKey = source.getColumnKey();
+                if (null != columnKey) {
+                    bean.setColumn(columnKey.getName());
+                    bean.setRelation(RelationSourceBeanFactory.SINGLE_RELATION_SOURCE_BEAN_FACTORY.create(columnKey.getRelation()));
+                }
+                if (source.getMetricType() == Metric.MetricType.FORMULA) {
+                    bean.setFormula(((FormulaMetric) source).getFormula());
+                }
+                return bean;
+            }
+            return null;
+        }
+    };
 
     @Override
     public List<MetricBean> create(List<Metric> source) {
@@ -24,25 +46,5 @@ public class MetricBeanFactory implements BeanFactory<List<Metric>, List<MetricB
             }
         }
         return result;
-    }
-
-    public static class SingleMetricBeanFactory implements BeanFactory<Metric, MetricBean> {
-
-        @Override
-        public MetricBean create(Metric source) {
-            if (null != source) {
-                MetricBean bean = new MetricBean();
-                bean.setFilterInfoBean(FilterInfoBeanFactory.SINGLE_FILTER_INFO_BEAN_FACTORY.create(source.getFilter()));
-                bean.setType(source.getAggregator().getAggregatorType());
-                bean.setMetricType(source.getMetricType());
-                bean.setSourceKey(source.getSourceKey());
-                bean.setColumnKey(source.getColumnKey());
-                if (source.getMetricType() == Metric.MetricType.FORMULA) {
-                    bean.setFormula(((FormulaMetric) source).getFormula());
-                }
-                return bean;
-            }
-            return null;
-        }
     }
 }

@@ -3,7 +3,7 @@ package com.fr.swift.query.session;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.cache.Cache;
-import com.fr.swift.query.query.QueryInfo;
+import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.session.exception.SessionClosedException;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.core.MD5Utils;
@@ -39,7 +39,7 @@ public abstract class AbstractSession implements Session {
     }
 
     @Override
-    public <T extends SwiftResultSet> T executeQuery(QueryInfo<T> queryInfo) throws SQLException {
+    public SwiftResultSet executeQuery(QueryBean queryInfo) throws SQLException {
         if (isClose()) {
             throw new SessionClosedException(sessionId);
         }
@@ -47,15 +47,15 @@ public abstract class AbstractSession implements Session {
         Cache<? extends SwiftResultSet> resultSetCache = cache.get(queryId);
         if (null != resultSetCache) {
             resultSetCache.update();
-            return (T) resultSetCache.get();
+            return resultSetCache.get();
         }
-        T resultSet = query(queryInfo);
-        Cache<T> cacheObj = new Cache<T>(resultSet);
+        SwiftResultSet resultSet = query(queryInfo);
+        Cache<SwiftResultSet> cacheObj = new Cache<SwiftResultSet>(resultSet);
         cache.put(queryId, cacheObj);
         return resultSet;
     }
 
-    protected abstract <T extends SwiftResultSet> T query(QueryInfo<T> queryInfo) throws SQLException;
+    protected abstract SwiftResultSet query(QueryBean queryInfo) throws SQLException;
 
     @Override
     public void close() {

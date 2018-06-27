@@ -1,6 +1,8 @@
 package com.fr.swift.query.remote;
 
 import com.fr.swift.query.RemoteQuery;
+import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
+import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.query.query.RemoteQueryInfoManager;
@@ -25,7 +27,8 @@ public class RemoteQueryImpl<T extends SwiftResultSet> implements RemoteQuery<T>
 
     @Override
     public T getQueryResult() throws SQLException {
-        RemoteQueryInfoManager.getInstance().put(queryInfo.getQueryId(), Pair.<QueryInfo, SegmentDestination>of(queryInfo, remoteURI));
-        return QueryRunnerProvider.getInstance().executeRemoteQuery(queryInfo, remoteURI);
+        QueryBean bean = QueryInfoBeanFactory.create(queryInfo);
+        RemoteQueryInfoManager.getInstance().put(queryInfo.getQueryId(), Pair.of(bean, remoteURI));
+        return (T) QueryRunnerProvider.getInstance().executeRemoteQuery(bean, remoteURI);
     }
 }

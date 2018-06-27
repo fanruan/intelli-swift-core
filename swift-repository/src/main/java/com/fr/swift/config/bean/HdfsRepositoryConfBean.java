@@ -12,6 +12,7 @@ import com.fr.swift.file.conf.impl.HdfsRepositoryConfigImpl;
  */
 public class HdfsRepositoryConfBean extends UniqueKey implements RepositoryConfBean<HdfsRepositoryConfigImpl> {
 
+    private Conf<String> fsName = Holders.simple("fs.defaultFS");
     private Conf<String> hdfsHost = Holders.simple("127.0.0.1");
     private Conf<String> hdfsPort = Holders.simple("9000");
     
@@ -36,8 +37,16 @@ public class HdfsRepositoryConfBean extends UniqueKey implements RepositoryConfB
         this.hdfsPort.set(hdfsPort);
     }
 
+    public String getFsName() {
+        return fsName.get();
+    }
+
+    public void setFsName(String fsName) {
+        this.fsName.set(fsName);
+    }
+
     @Override
     public HdfsRepositoryConfigImpl convert() {
-        return new HdfsRepositoryConfigImpl(hdfsHost.get(), hdfsPort.get());
+        return new HdfsRepositoryConfigImpl(fsName.get(), hdfsHost.get(), hdfsPort.get());
     }
 }

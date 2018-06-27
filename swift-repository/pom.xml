@@ -11,6 +11,10 @@
 
     <artifactId>swift-repository</artifactId>
 
+    <properties>
+        <hadoop.version>3.1.0</hadoop.version>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -35,12 +39,28 @@
             <artifactId>swift-communication</artifactId>
             <version>5.0-RELEASE-SNAPSHOT</version>
         </dependency>
-        <!--<dependency>-->
-        <!--<groupId>com.finebi</groupId>-->
-        <!--<artifactId>swift-test</artifactId>-->
-        <!--<version>5.0-RELEASE-SNAPSHOT</version>-->
-        <!--<scope>test</scope>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-hdfs</artifactId>
+            <version>${hadoop.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>netty-all</artifactId>
+                    <groupId>io.netty</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-common</artifactId>
+            <version>${hadoop.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>netty-all</artifactId>
+                    <groupId>io.netty</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
 </project>

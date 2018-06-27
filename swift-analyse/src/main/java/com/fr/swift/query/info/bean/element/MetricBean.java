@@ -1,9 +1,9 @@
 package com.fr.swift.query.info.bean.element;
 
 import com.fr.swift.query.aggregator.AggregatorType;
+import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
+import com.fr.swift.query.info.bean.element.relation.IRelationSourceBean;
 import com.fr.swift.query.info.element.metric.Metric;
-import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.source.SourceKey;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -14,9 +14,11 @@ public class MetricBean {
     @JsonProperty
     private AggregatorType type;
     @JsonProperty
-    private SourceKey sourceKey;
+    private String table;
     @JsonProperty
-    private ColumnKey columnKey;
+    private String column;
+    @JsonProperty
+    private IRelationSourceBean relation;
     @JsonProperty
     private FilterInfoBean filterInfoBean;
     @JsonProperty
@@ -24,20 +26,28 @@ public class MetricBean {
     @JsonProperty
     private Metric.MetricType metricType;
 
-    public SourceKey getSourceKey() {
-        return sourceKey;
+    public String getTable() {
+        return table;
     }
 
-    public void setSourceKey(SourceKey sourceKey) {
-        this.sourceKey = sourceKey;
+    public void setTable(String table) {
+        this.table = table;
     }
 
-    public ColumnKey getColumnKey() {
-        return columnKey;
+    public String getColumn() {
+        return column;
     }
 
-    public void setColumnKey(ColumnKey columnKey) {
-        this.columnKey = columnKey;
+    public void setColumn(String column) {
+        this.column = column;
+    }
+
+    public IRelationSourceBean getRelation() {
+        return relation;
+    }
+
+    public void setRelation(IRelationSourceBean relation) {
+        this.relation = relation;
     }
 
     public FilterInfoBean getFilterInfoBean() {

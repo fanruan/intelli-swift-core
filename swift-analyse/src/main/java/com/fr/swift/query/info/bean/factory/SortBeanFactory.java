@@ -2,6 +2,7 @@ package com.fr.swift.query.info.bean.factory;
 
 import com.fr.swift.query.info.bean.element.SortBean;
 import com.fr.swift.query.sort.Sort;
+import com.fr.swift.segment.column.ColumnKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,20 @@ import java.util.List;
  */
 public class SortBeanFactory implements BeanFactory<List<Sort>, List<SortBean>> {
 
-    public static final SingleSortBeanFactory SINGLE_SORT_BEAN_FACTORY = new SingleSortBeanFactory();
+    public static final BeanFactory<Sort, SortBean> SINGLE_SORT_BEAN_FACTORY = new BeanFactory<Sort, SortBean>() {
+        @Override
+        public SortBean create(Sort source) {
+            SortBean bean = new SortBean();
+            bean.setType(source.getSortType());
+            ColumnKey columnKey = source.getColumnKey();
+            if (null != columnKey) {
+                bean.setColumn(columnKey.getName());
+                bean.setRelation(RelationSourceBeanFactory.SINGLE_RELATION_SOURCE_BEAN_FACTORY.create(columnKey.getRelation()));
+            }
+            bean.setTargetIndex(source.getTargetIndex());
+            return bean;
+        }
+    };
 
     @Override
     public List<SortBean> create(List<Sort> source) {
@@ -23,20 +37,5 @@ public class SortBeanFactory implements BeanFactory<List<Sort>, List<SortBean>> 
             }
         }
         return result;
-    }
-
-    public static class SingleSortBeanFactory implements BeanFactory<Sort, SortBean> {
-
-        private SingleSortBeanFactory() {
-        }
-
-        @Override
-        public SortBean create(Sort source) {
-            SortBean bean = new SortBean();
-            bean.setType(source.getSortType());
-            bean.setColumnKey(source.getColumnKey());
-            bean.setTargetIndex(source.getTargetIndex());
-            return bean;
-        }
     }
 }

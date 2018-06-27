@@ -18,21 +18,7 @@ import java.util.List;
  */
 public class PostQueryInfoFactory implements BeanFactory<List<PostQueryInfo>, List<PostQueryInfoBean>> {
 
-    public static final SinglePostQueryInfoFactory SINGLE_POST_QUERY_INFO_FACTORY = new SinglePostQueryInfoFactory();
-
-    @Override
-    public List<PostQueryInfoBean> create(List<PostQueryInfo> source) {
-        List<PostQueryInfoBean> result = new ArrayList<PostQueryInfoBean>();
-        if (null != source) {
-            for (PostQueryInfo postQueryInfo : source) {
-                result.add(SINGLE_POST_QUERY_INFO_FACTORY.create(postQueryInfo));
-            }
-        }
-        return result;
-    }
-
-    public static class SinglePostQueryInfoFactory implements BeanFactory<PostQueryInfo, PostQueryInfoBean> {
-
+    public static final BeanFactory<PostQueryInfo, PostQueryInfoBean> SINGLE_POST_QUERY_INFO_FACTORY = new BeanFactory<PostQueryInfo, PostQueryInfoBean>() {
         // TODO 6/22 具体属性
         @Override
         public PostQueryInfoBean create(PostQueryInfo source) {
@@ -52,5 +38,16 @@ public class PostQueryInfoFactory implements BeanFactory<List<PostQueryInfo>, Li
             }
             return null;
         }
+    };
+
+    @Override
+    public List<PostQueryInfoBean> create(List<PostQueryInfo> source) {
+        List<PostQueryInfoBean> result = new ArrayList<PostQueryInfoBean>();
+        if (null != source) {
+            for (PostQueryInfo postQueryInfo : source) {
+                result.add(SINGLE_POST_QUERY_INFO_FACTORY.create(postQueryInfo));
+            }
+        }
+        return result;
     }
 }

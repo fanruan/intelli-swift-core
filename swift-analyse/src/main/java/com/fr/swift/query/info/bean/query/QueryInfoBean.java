@@ -1,5 +1,6 @@
 package com.fr.swift.query.info.bean.query;
 
+import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryType;
 import com.fr.third.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fr.third.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -18,7 +19,5 @@ import com.fr.third.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = GroupQueryInfoBean.class, name = "GROUP"),
         @JsonSubTypes.Type(value = ResultJoinQueryInfoBean.class, name = "RESULT_JOIN")
 })
-public interface QueryInfoBean {
-
-    QueryType getQueryType();
+public interface QueryInfoBean extends QueryBean {
 }
