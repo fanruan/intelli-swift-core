@@ -2,6 +2,7 @@ package com.fr.swift.service;
 
 import com.fr.swift.URL;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
+import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.impl.SwiftDatabase;
@@ -88,6 +89,12 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     @RpcMethod(methodName = "recover")
     public void recover(List<SegmentKey> tableKeys) {
         SwiftLoggers.getLogger().info("recover");
+    }
+
+    @Override
+    @RpcMethod(methodName = "cleanMetaCache")
+    public void cleanMetaCache(String[] sourceKeys) {
+        SwiftContext.getInstance().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
     }
 
     @Override

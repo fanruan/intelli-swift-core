@@ -42,6 +42,8 @@ public class SwiftServiceHandlerManager implements Handler {
                 return analyseService.handle((AbstractAnalyseRpcEvent) event);
             case INDEXING:
                 return indexingEventHandler.handle((AbstractIndexingRpcEvent) event);
+            case ALL:
+
             default:
                 break;
         }

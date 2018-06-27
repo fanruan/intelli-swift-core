@@ -1,6 +1,7 @@
 package com.fr.swift.service;
 
 import com.fr.swift.config.SwiftCubePathConfig;
+import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -63,6 +64,12 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         } else {
             LOGGER.warn("Receive an empty URI set. Skip loading.");
         }
+    }
+
+    @Override
+    @RpcMethod(methodName = "cleanMetaCache")
+    public void cleanMetaCache(String[] sourceKeys) {
+        SwiftContext.getInstance().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
     }
 
 

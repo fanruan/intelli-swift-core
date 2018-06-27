@@ -5,6 +5,7 @@ import com.fr.swift.ProxyFactory;
 import com.fr.swift.Result;
 import com.fr.swift.URL;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
+import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.event.history.HistoryLoadRpcEvent;
@@ -51,6 +52,12 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     public boolean start() throws SwiftServiceException {
         super.start();
         return true;
+    }
+
+    @Override
+    @RpcMethod(methodName = "cleanMetaCache")
+    public void cleanMetaCache(String[] sourceKeys) {
+        SwiftContext.getInstance().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
     }
 
     @Override
