@@ -18,7 +18,6 @@ import java.util.List;
  */
 public class RelationSourceBeanFactory implements BeanFactory<List<RelationSource>, List<IRelationSourceBean>> {
 
-    private static RelationSourceBeanFactory instance;
     public static final BeanFactory<RelationSource, IRelationSourceBean> SINGLE_RELATION_SOURCE_BEAN_FACTORY = new BeanFactory<RelationSource, IRelationSourceBean>() {
         @Override
         public IRelationSourceBean create(RelationSource source) {
@@ -35,7 +34,7 @@ public class RelationSourceBeanFactory implements BeanFactory<List<RelationSourc
                         pathBean.setRelations(getInstance().create(((RelationPathSourceImpl) source).getRelations()));
                         return pathBean;
                     case RELATION:
-                        RelationSourceBean relationBean = new RelationPathSourceBean();
+                        RelationSourceBean relationBean = new RelationSourceBean();
                         relationBean.setPrimaryTable(source.getPrimarySource().getId());
                         relationBean.setPrimaryFields(source.getPrimaryFields());
                         relationBean.setForeignTable(source.getForeignSource().getId());
@@ -51,14 +50,11 @@ public class RelationSourceBeanFactory implements BeanFactory<List<RelationSourc
     }
 
     private static RelationSourceBeanFactory getInstance() {
-        if (null == instance) {
-            synchronized (RelationSourceBeanFactory.class) {
-                if (null == instance) {
-                    instance = new RelationSourceBeanFactory();
-                }
-            }
-        }
-        return instance;
+        return SingletonHolder.factory;
+    }
+
+    private static class SingletonHolder {
+        private static RelationSourceBeanFactory factory = new RelationSourceBeanFactory();
     }
 
     @Override

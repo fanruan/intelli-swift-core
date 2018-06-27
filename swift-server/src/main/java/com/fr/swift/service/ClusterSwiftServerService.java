@@ -5,6 +5,7 @@ import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
 import com.fr.swift.URL;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
+import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.task.TaskKey;
@@ -60,6 +61,11 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
     public boolean start() {
         super.start();
         return true;
+    }
+
+    @Override
+    public void cleanMetaCache(String[] sourceKeys) {
+        SwiftContext.getInstance().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
     }
 
     @Override

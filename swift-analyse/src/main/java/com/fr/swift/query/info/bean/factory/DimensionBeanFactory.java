@@ -72,4 +72,15 @@ public class DimensionBeanFactory implements BeanFactory<List<Dimension>, List<D
         }
         return result;
     }
+
+    private DimensionBeanFactory() {
+    }
+
+    public static DimensionBeanFactory getInstance() {
+        return SingletonHolder.factory;
+    }
+
+    private static class SingletonHolder {
+        private static final DimensionBeanFactory factory = new DimensionBeanFactory();
+    }
 }

@@ -3,6 +3,7 @@ package com.fr.swift.service;
 import com.fr.swift.Invoker;
 import com.fr.swift.ProxyFactory;
 import com.fr.swift.Result;
+import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.invocation.SwiftInvocation;
@@ -60,6 +61,12 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
         boolean start = super.start();
         QueryRunnerProvider.getInstance().registerRunner(this);
         return start;
+    }
+
+    @Override
+    @RpcMethod(methodName = "cleanMetaCache")
+    public void cleanMetaCache(String[] sourceKeys) {
+        SwiftContext.getInstance().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
     }
 
     @Override

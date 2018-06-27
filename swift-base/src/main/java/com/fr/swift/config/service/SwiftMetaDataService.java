@@ -60,4 +60,6 @@ public interface SwiftMetaDataService {
     SwiftMetaData getMetaDataByKey(String sourceKey);
 
     boolean containsMeta(SourceKey sourceKey);
+
+    void cleanCache(String[] sourceKeys);
 }

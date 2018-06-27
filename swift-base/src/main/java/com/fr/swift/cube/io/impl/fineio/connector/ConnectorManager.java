@@ -9,8 +9,8 @@ import com.fr.plugin.observer.PluginEventType;
 import com.fr.plugin.observer.PluginListenerRegistration;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.plugin.ExtraClassManagerProvider;
-import com.fr.swift.config.SwiftUseZipConfig;
 import com.fr.swift.config.service.SwiftPathService;
+import com.fr.swift.config.service.SwiftZipService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Crasher;
@@ -28,7 +28,7 @@ public class ConnectorManager {
     private volatile static ConnectorManager instance;
     private static Connector connector;
     private SwiftPathService pathService = SwiftContext.getInstance().getBean(SwiftPathService.class);
-    private SwiftUseZipConfig zipConfig = SwiftUseZipConfig.getInstance();
+    private SwiftZipService zipConfig = SwiftContext.getInstance().getBean(SwiftZipService.class);
 
     public static ConnectorManager getInstance() {
         if (null != instance) {
@@ -81,7 +81,7 @@ public class ConnectorManager {
                 return connector;
             }
             ExtraClassManagerProvider pluginProvider = StableFactory.getMarkedObject(ExtraClassManagerProvider.XML_TAG, ExtraClassManagerProvider.class);
-            boolean useZip = zipConfig.isUseZip();
+            boolean useZip = zipConfig.isZip();
             if (null == pluginProvider) {
                 connector = createConnector(basePath, useZip);
                 return connector;

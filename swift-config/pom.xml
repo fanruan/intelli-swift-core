@@ -9,12 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>swift-repository</artifactId>
-
-    <properties>
-        <hadoop.version>3.1.0</hadoop.version>
-    </properties>
-
+    <artifactId>swift-config</artifactId>
     <build>
         <plugins>
             <plugin>
@@ -40,30 +35,8 @@
             <version>5.0-RELEASE-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-hdfs</artifactId>
-            <version>${hadoop.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>netty-all</artifactId>
-                    <groupId>io.netty</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-common</artifactId>
-            <version>${hadoop.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>netty-all</artifactId>
-                    <groupId>io.netty</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>com.finebi</groupId>
-            <artifactId>swift-config</artifactId>
+            <artifactId>swift-netty</artifactId>
             <version>5.0-RELEASE-SNAPSHOT</version>
         </dependency>
     </dependencies>

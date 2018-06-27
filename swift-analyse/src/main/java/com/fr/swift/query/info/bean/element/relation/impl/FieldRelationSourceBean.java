@@ -21,10 +21,6 @@ public class FieldRelationSourceBean extends RelationSourceBean {
         super(RelationSourceType.FIELD_RELATION);
     }
 
-    public FieldRelationSourceBean(RelationSourceType type) {
-        super(type);
-    }
-
     public String getColumnName() {
         return columnName;
     }
