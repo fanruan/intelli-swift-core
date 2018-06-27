@@ -9,7 +9,6 @@ import com.fr.swift.cube.task.impl.Operation;
 import com.fr.swift.cube.task.impl.SchedulerTaskPool;
 import com.fr.swift.cube.task.impl.WorkerTaskImpl;
 import com.fr.swift.cube.task.impl.WorkerTaskPool;
-import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.flow.FlowRuleController;
 import com.fr.swift.generate.history.TableBuilder;
 import com.fr.swift.generate.history.index.FieldPathIndexer;
@@ -23,9 +22,8 @@ import com.fr.swift.relation.utils.RelationPathHelper;
 import com.fr.swift.reliance.SourceNode;
 import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.relation.FieldRelationSource;
-import com.fr.swift.structure.Pair;
 import com.fr.swift.util.concurrent.SingleThreadFactory;
-import com.fr.swift.util.function.Function;
+import com.fr.swift.util.function.Function2;
 
 /**
  * This class created on 2018-1-16 16:51:49
@@ -39,13 +37,8 @@ public class ProviderTaskManager {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(ProviderTaskManager.class);
 
     private ProviderTaskManager() {
-        try {
-            init();
-        } catch (SwiftServiceException e) {
-            SwiftLoggers.getLogger().error(e);
-
-        }
-        initTaskFetchThread();
+        initListener();
+        new SingleThreadFactory(StuffFetcher.class).newThread(new StuffFetcher()).start();
     }
 
     private static class SingletonHolder {
@@ -60,20 +53,18 @@ public class ProviderTaskManager {
         return SingletonHolder.INSTANCE;
     }
 
-    private void init() throws SwiftServiceException {
+    private void initListener() {
         SchedulerTaskPool.getInstance().initListener();
         WorkerTaskPool.getInstance().initListener();
-        WorkerTaskPool.getInstance().setGenerator(new Function<Pair<TaskKey, Object>, WorkerTask>() {
+        WorkerTaskPool.getInstance().setTaskGenerator(new Function2<TaskKey, Object, WorkerTask>() {
             @Override
-            public WorkerTask apply(Pair<TaskKey, Object> pair) {
-                TaskKey taskKey = pair.getKey();
+            public WorkerTask apply(TaskKey taskKey, Object data) {
                 if (taskKey.operation() == Operation.NULL) {
                     return new WorkerTaskImpl(taskKey, BaseWorker.nullWorker());
                 }
 
-                Object o = pair.getValue();
-                if (o instanceof SourceNode) {
-                    SourceNode sourceNode = ((SourceNode) o);
+                if (data instanceof SourceNode) {
+                    SourceNode sourceNode = ((SourceNode) data);
                     WorkerTask wt;
                     if (sourceNode.isIncrement()) {
                         wt = new WorkerTaskImpl(taskKey, new RealtimeTableBuilder(sourceNode.getNode(), sourceNode.getIncrement(), new FlowRuleController()));
@@ -81,8 +72,8 @@ public class ProviderTaskManager {
                         wt = new WorkerTaskImpl(taskKey, new TableBuilder(sourceNode.getNode()));
                     }
                     return wt;
-                } else if (o instanceof RelationSource) {
-                    RelationSource source = (RelationSource) o;
+                } else if (data instanceof RelationSource) {
+                    RelationSource source = (RelationSource) data;
                     WorkerTask wt = null;
                     switch (source.getRelationType()) {
                         case RELATION:
@@ -104,9 +95,5 @@ public class ProviderTaskManager {
             }
         });
         CubeTaskManager.getInstance().initListener();
-    }
-
-    private void initTaskFetchThread() {
-        new SingleThreadFactory("StuffFetcher").newThread(new StuffFetcher()).start();
     }
 }

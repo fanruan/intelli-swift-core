@@ -1,9 +1,14 @@
 package com.fr.swift.service;
 
+import com.fr.event.Event;
+import com.fr.event.EventDispatcher;
+import com.fr.event.Listener;
 import com.fr.swift.URL;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.cube.task.TaskKey;
+import com.fr.swift.cube.task.impl.TaskEvent;
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -64,7 +69,6 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
 
     @Override
     public void registerService(SwiftService service) {
-
         SwiftProperty swiftProperty = SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class);
 
         if (service.getID() == null) {
@@ -88,12 +92,13 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
                     break;
                 case REAL_TIME:
                     realTimeServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), SwiftRealtimeService.class));
+                default:
             }
         }
     }
 
-    //接口调用
     public Map<String, ClusterEntity> getClusterEntityByService(ServiceType serviceType) {
+        // 接口调用
         switch (serviceType) {
             case ANALYSE:
                 return new HashMap<String, ClusterEntity>(analyseServiceMap);
@@ -119,12 +124,17 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
             switch (service.getServiceType()) {
                 case ANALYSE:
                     analyseServiceMap.remove(service.getID());
+                    break;
                 case HISTORY:
                     historyServiceMap.remove(service.getID());
+                    break;
                 case INDEXING:
                     indexingServiceMap.remove(service.getID());
+                    break;
                 case REAL_TIME:
                     realTimeServiceMap.remove(service.getID());
+                    break;
+                default:
             }
         }
     }
@@ -132,6 +142,19 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
     @Override
     protected void initListener() {
         super.initListener();
+        EventDispatcher.listen(TaskEvent.RUN, new Listener<Map<TaskKey, ?>>() {
+            @Override
+            public void on(Event event, Map<TaskKey, ?> taskKeyMap) {
+                // rpc告诉indexing节点执行任务
+                SwiftLoggers.getLogger().info("rpc告诉indexing节点执行任务");
+            }
+        });
+        EventDispatcher.listen(TaskEvent.CANCEL, new Listener<TaskKey>() {
+            @Override
+            public void on(Event event, TaskKey taskKey) {
+                // rpc告诉indexing节点取消任务
+                SwiftLoggers.getLogger().info("rpc告诉indexing节点取消任务");
+            }
+        });
     }
-
 }

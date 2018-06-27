@@ -37,7 +37,7 @@ public class LocalTaskImpl extends BaseTask implements LocalTask {
     @Override
     public void onCancel() {
         synchronized (this) {
-            if (status.order() >= Status.RUNNING.order()) {
+            if (status.compare(Status.RUNNING) >= 0) {
                 return;
             }
         }

@@ -13,7 +13,6 @@ import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.service.register.LocalSwiftRegister;
-import com.fr.swift.util.Crasher;
 
 /**
  * @author anchore
@@ -24,21 +23,20 @@ public class SwiftEngineActivator extends Activator implements Prepare {
 
     @Override
     public void start() {
-        startSwift();
-    }
-
-    private void startSwift() {
         try {
-            SwiftConfigContext.getInstance().init();
-            SwiftContext.init();
-            new LocalSwiftRegister().serviceRegister();
-            ClusterListenerHandler.addListener(new ClusterListener());
-            ProviderTaskManager.start();
+            startSwift();
             SwiftLoggers.getLogger().info("swift engine started");
         } catch (Exception e) {
             SwiftLoggers.getLogger().error("swift engine start failed", e);
-            Crasher.crash(e);
         }
+    }
+
+    private void startSwift() throws Exception {
+        SwiftConfigContext.getInstance().init();
+        SwiftContext.init();
+        new LocalSwiftRegister().serviceRegister();
+        ClusterListenerHandler.addListener(new ClusterListener());
+        ProviderTaskManager.start();
     }
 
     @Override

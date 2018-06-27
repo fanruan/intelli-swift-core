@@ -1,5 +1,8 @@
 package com.fr.swift.service;
 
+import com.fr.event.Event;
+import com.fr.event.EventDispatcher;
+import com.fr.event.Listener;
 import com.fr.swift.Invoker;
 import com.fr.swift.ProxyFactory;
 import com.fr.swift.Result;
@@ -7,6 +10,9 @@ import com.fr.swift.URL;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.cube.task.TaskKey;
+import com.fr.swift.cube.task.TaskResult;
+import com.fr.swift.cube.task.impl.TaskEvent;
 import com.fr.swift.event.history.HistoryLoadRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.frrpc.SwiftClusterService;
@@ -50,6 +56,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     @Override
     public boolean start() throws SwiftServiceException {
         super.start();
+        initListener();
         return true;
     }
 
@@ -64,6 +71,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
         SwiftLoggers.getLogger().info("indexing stuff");
 
         // TODO 更新调用
+        triggerIndexing(stuff);
 
         // TODO 更新的待上传的Segment uri   Pair<segmentKey.getAbsoluteUri(), segmentKey.getUri()>
         List<Pair<URI, URI>> ready4Upload = new ArrayList<Pair<URI, URI>>();
@@ -79,7 +87,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
         URL masterURL = getMasterURL();
         ProxyFactory factory = ProxySelector.getInstance().getFactory();
         Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, masterURL, false);
-        Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName("rpcTrigger"), new Object[]{new HistoryLoadRpcEvent()}));
+        Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName("rpcTrigger"), new HistoryLoadRpcEvent()));
         RpcFuture future = (RpcFuture) result.getValue();
         future.addCallback(new AsyncRpcCallback() {
             @Override
@@ -94,6 +102,12 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
         });
     }
 
+    private void triggerIndexing(IndexingStuff stuff) {
+        EventDispatcher.fire(TaskEvent.RUN, stuff.getTables());
+        EventDispatcher.fire(TaskEvent.RUN, stuff.getRelations());
+        EventDispatcher.fire(TaskEvent.RUN, stuff.getRelationPaths());
+    }
+
     @Override
     public ServerCurrentStatus currentStatus() {
         return new ServerCurrentStatus(getID());
@@ -103,5 +117,15 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
         List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.getInstance().getBean(SwiftServiceInfoService.class).getServiceInfoByService(SwiftClusterService.SERVICE);
         SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
         return UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
+    }
+
+    private void initListener() {
+        EventDispatcher.listen(TaskEvent.DONE, new Listener<Pair<TaskKey, TaskResult>>() {
+            @Override
+            public void on(Event event, Pair<TaskKey, TaskResult> result) {
+                // rpc通知server任务完成
+                SwiftLoggers.getLogger().info("rpc通知server任务完成");
+            }
+        });
     }
 }

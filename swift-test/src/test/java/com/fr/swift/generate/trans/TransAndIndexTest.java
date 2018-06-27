@@ -62,15 +62,13 @@ public class TransAndIndexTest extends BaseConfigTest {
 
         SchedulerTaskPool.getInstance().initListener();
         WorkerTaskPool.getInstance().initListener();
-        WorkerTaskPool.getInstance().setGenerator(pair -> {
-            TaskKey taskKey = pair.getKey();
+        WorkerTaskPool.getInstance().setTaskGenerator((taskKey, taskInfo) -> {
             if (taskKey.operation() == Operation.NULL) {
                 return new WorkerTaskImpl(taskKey, BaseWorker.nullWorker());
             }
 
-            Object o = pair.getValue();
-            if (o instanceof DataSource) {
-                DataSource ds = ((DataSource) o);
+            if (taskInfo instanceof DataSource) {
+                DataSource ds = ((DataSource) taskInfo);
                 return new WorkerTaskImpl(taskKey, new TableBuilder(ds));
             } else {
                 return null;
