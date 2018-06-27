@@ -43,20 +43,15 @@ public class FilterInfoBeanFactory implements BeanFactory<List<FilterInfo>, List
         }
     };
 
-    private static FilterInfoBeanFactory factory;
+    public static FilterInfoBeanFactory getInstance() {
+        return SingletonHolder.factory;
+    }
 
     private FilterInfoBeanFactory() {
     }
 
-    public static FilterInfoBeanFactory getInstance() {
-        if (null == factory) {
-            synchronized (FilterInfoBeanFactory.class) {
-                if (null == factory) {
-                    factory = new FilterInfoBeanFactory();
-                }
-            }
-        }
-        return factory;
+    private static class SingletonHolder {
+        private static FilterInfoBeanFactory factory = new FilterInfoBeanFactory();
     }
 
     @Override

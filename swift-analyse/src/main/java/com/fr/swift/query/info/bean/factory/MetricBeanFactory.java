@@ -47,4 +47,15 @@ public class MetricBeanFactory implements BeanFactory<List<Metric>, List<MetricB
         }
         return result;
     }
+
+    private MetricBeanFactory() {
+    }
+
+    public static MetricBeanFactory getInstance() {
+        return SingletonHolder.factory;
+    }
+
+    private static class SingletonHolder {
+        private static MetricBeanFactory factory = new MetricBeanFactory();
+    }
 }

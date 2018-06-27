@@ -35,7 +35,7 @@ public class RelationSourceBeanFactory implements BeanFactory<List<RelationSourc
                         pathBean.setRelations(getInstance().create(((RelationPathSourceImpl) source).getRelations()));
                         return pathBean;
                     case RELATION:
-                        RelationSourceBean relationBean = new RelationPathSourceBean();
+                        RelationSourceBean relationBean = new RelationSourceBean();
                         relationBean.setPrimaryTable(source.getPrimarySource().getId());
                         relationBean.setPrimaryFields(source.getPrimaryFields());
                         relationBean.setForeignTable(source.getForeignSource().getId());
