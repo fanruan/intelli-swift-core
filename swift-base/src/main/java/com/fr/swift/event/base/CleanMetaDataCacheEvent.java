@@ -14,7 +14,7 @@ public class CleanMetaDataCacheEvent implements SwiftRpcEvent<String[]> {
 
     @Override
     public EventType type() {
-        return EventType.ALL;
+        return EventType.GLOBAL;
     }
 
     @Override
