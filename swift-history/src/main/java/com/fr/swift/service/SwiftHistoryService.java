@@ -8,22 +8,12 @@ import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.query.QueryType;
 import com.fr.swift.query.session.AbstractSession;
 import com.fr.swift.query.session.Session;
 import com.fr.swift.query.session.SessionBuilder;
 import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.SwiftRepositoryManager;
-import com.fr.swift.result.DetailResultSet;
-import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeMergeResultSet;
-import com.fr.swift.result.NodeResultSet;
-import com.fr.swift.result.SwiftNode;
-import com.fr.swift.result.serialize.LocalAllNodeResultSet;
-import com.fr.swift.result.serialize.LocalPartNodeResultSet;
-import com.fr.swift.result.serialize.SerializableDetailResultSet;
-import com.fr.swift.result.serialize.SerializableResultSet;
 import com.fr.swift.rpc.annotation.RpcMethod;
 import com.fr.swift.rpc.annotation.RpcService;
 import com.fr.swift.rpc.annotation.RpcServiceType;
@@ -72,11 +62,8 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     }
 
     @Override
-    @SuppressWarnings("Duplicates")
     @RpcMethod(methodName = "historyQuery")
     public SwiftResultSet query(final String queryDescription) throws SQLException {
-        // TODO: 2018/6/14 先到QueryResultSetManager找一下有没有缓存，没有则构建查询。
-        // 另外分组表的resultSet在构建Query的时候处理好了，直接返回取出来的结果集即可。等明细部分好了一起改一下
         try {
             final QueryInfoBean bean = QueryInfoBeanFactory.create(queryDescription);
             SessionFactory factory = SwiftContext.getInstance().getBean(SessionFactory.class);
@@ -86,21 +73,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                     return new AbstractSession(cacheTimeout) {
                         @Override
                         protected SwiftResultSet query(QueryBean queryInfo) throws SQLException {
-                            // TODO: 2018/6/20 @yee 先到QueryResultSetManager找一下有没有缓存，没有则构建查询
-                            SwiftResultSet resultSet = QueryBuilder.buildQuery(queryInfo).getQueryResult();
-                            SerializableResultSet result;
-                            QueryType type = queryInfo.getQueryType();
-                            switch (type) {
-                                case LOCAL_GROUP_ALL:
-                                    result = new LocalAllNodeResultSet(queryInfo.getQueryId(), (NodeResultSet<SwiftNode>) resultSet);
-                                    break;
-                                case LOCAL_GROUP_PART:
-                                    result = new LocalPartNodeResultSet(queryInfo.getQueryId(), (NodeMergeResultSet<GroupNode>) resultSet);
-                                    break;
-                                default:
-                                    result = new SerializableDetailResultSet(queryInfo.getQueryId(), (DetailResultSet) resultSet);
-                            }
-                            return result;
+                            return QueryBuilder.buildQuery(queryInfo).getQueryResult();
                         }
                     };
                 }

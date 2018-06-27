@@ -1,8 +1,8 @@
 package com.fr.swift.result.serialize;
 
 import com.fr.swift.query.query.QueryBean;
+import com.fr.swift.query.query.QueryBeanManager;
 import com.fr.swift.query.query.QueryRunnerProvider;
-import com.fr.swift.query.query.RemoteQueryInfoManager;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeUtils;
@@ -46,7 +46,7 @@ public class LocalAllNodeResultSet implements NodeResultSet<SwiftNode>, Serializ
         hasNextPage = false;
         if (originHasNextPage) {
             // TODO: 2018/6/14 向远程节点拉取下一页数据
-            Pair<QueryBean, SegmentDestination> pair = RemoteQueryInfoManager.getInstance().get(queryId);
+            Pair<QueryBean, SegmentDestination> pair = QueryBeanManager.getInstance().getPair(queryId);
             if (pair == null) {
                 Crasher.crash("invalid remote queryInfo!");
             }
