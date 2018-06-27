@@ -150,7 +150,7 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
             row = resultSet.getRowData();
         }
         if (row != null && row.getSize() == 1) {
-            return row.getValue(0);
+            return ((Number) row.getValue(0)).intValue();
         }
         return Crasher.crash(new RuntimeException("failed to count/distinctCount table " + logClass.getName()));
     }
