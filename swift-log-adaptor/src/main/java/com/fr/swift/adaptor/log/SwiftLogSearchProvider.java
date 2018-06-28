@@ -29,7 +29,6 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.iterator.IteratorUtils;
 import com.fr.swift.structure.iterator.MapperIterator;
-import com.fr.swift.util.Crasher;
 import com.fr.swift.util.function.Function;
 
 import java.util.ArrayList;
@@ -152,6 +151,7 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
         if (row != null && row.getSize() == 1) {
             return ((Number) row.getValue(0)).intValue();
         }
-        return Crasher.crash(new RuntimeException("failed to count/distinctCount table " + logClass.getName()));
+        //BI-25663 空的返回count0
+        return 0;
     }
 }
