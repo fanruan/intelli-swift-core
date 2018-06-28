@@ -16,6 +16,7 @@ import com.fr.third.guava.collect.BiMap;
 import com.fr.third.guava.collect.HashBiMap;
 
 import java.util.Comparator;
+import java.util.Map;
 import java.util.NavigableMap;
 import java.util.NoSuchElementException;
 
@@ -260,10 +261,29 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
 
         @Override
         public void putBitMapIndex(int index, ImmutableBitMap bitmap) {
+            V v = dictColumn.getValue(index);
+            if (!bitmap.isEmpty()) {
+                valToRows.put(v, (MutableBitMap) bitmap);
+            } else {
+                valToRows.remove(v);
+                //todo 空字典清楚问题
+//                Integer vIndex = valAndIndex.get(v);
+//                BiMap<V, Integer> newValAndIndex = HashBiMap.create();
+//                for (Map.Entry<V, Integer> vIntegerEntry : valAndIndex.entrySet()) {
+//                    if (vIntegerEntry.getValue() < vIndex) {
+//                        newValAndIndex.put(vIntegerEntry.getKey(), vIntegerEntry.getValue());
+//                    } else if (vIntegerEntry.getValue() > vIndex) {
+//                        newValAndIndex.put(vIntegerEntry.getKey(), vIntegerEntry.getValue() - 1);
+//                    }
+//                }
+            }
         }
 
         @Override
         public void putNullIndex(ImmutableBitMap bitMap) {
+            V v = dictColumn.getValue(0);
+            MutableBitMap mutableBitMap = valToRows.containsKey(v) ? valToRows.get(v) : BitMaps.newRoaringMutable();
+            mutableBitMap.and(bitMap);
         }
     }
 

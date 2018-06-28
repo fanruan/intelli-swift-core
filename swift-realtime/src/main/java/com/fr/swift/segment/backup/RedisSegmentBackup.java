@@ -3,10 +3,15 @@ package com.fr.swift.segment.backup;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.redis.RedisClient;
+import com.fr.swift.redis.RedisClientPipline;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.Row;
+import com.fr.swift.transaction.RedisTransactionManager;
+import com.fr.swift.transatcion.TransactionManager;
 import com.fr.third.fasterxml.jackson.core.JsonProcessingException;
 import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
+import com.fr.third.springframework.beans.factory.annotation.Autowired;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -17,17 +22,27 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
+@Service
 public class RedisSegmentBackup implements SwiftSegmentBackup {
 
     private Segment segment;
-    private RedisClient redisClient;
 
-    public RedisSegmentBackup(Segment segment) {
+    private Segment currentSegment;
+
+    protected TransactionManager transactionManager;
+
+    @Autowired
+    protected RedisClient redisClient;
+
+    public RedisSegmentBackup(Segment segment, Segment currentSegment) {
+        this(segment, currentSegment, segment.getMetaData().getFieldNames());
     }
 
-    public RedisSegmentBackup(Segment segment, List<String> fields) {
+    public RedisSegmentBackup(Segment segment, Segment currentSegment, List<String> fields) {
         this.segment = segment;
-        this.redisClient = (RedisClient) SwiftContext.getInstance().getBean("redisClient");
+        transactionManager = (TransactionManager) SwiftContext.getInstance().getBean("transactionManager");
+        transactionManager.setOldAttatch(currentSegment);
+
     }
 
     @Override
@@ -39,7 +54,8 @@ public class RedisSegmentBackup implements SwiftSegmentBackup {
         } catch (JsonProcessingException e) {
             SwiftLoggers.getLogger().error(e);
         }
-        redisClient.rpush(segment.getLocation().getPath(), json);
+        RedisClientPipline pipeline = ((RedisTransactionManager) transactionManager).getRedisPipline();
+        pipeline.rpush(segment.getLocation().getPath(), json);
     }
 
     @Override
@@ -55,5 +71,10 @@ public class RedisSegmentBackup implements SwiftSegmentBackup {
     @Override
     public void release() {
 
+    }
+
+    @Override
+    public TransactionManager getTransactionManager() {
+        return transactionManager;
     }
 }
