@@ -8,6 +8,7 @@ import com.fr.swift.cube.task.TaskKey;
  * @date 2017/12/13
  */
 public class CubeTaskKey implements TaskKey {
+    private static final long serialVersionUID = 2126126448338496452L;
     private final int round;
     private final String name;
     private final Operation operation;

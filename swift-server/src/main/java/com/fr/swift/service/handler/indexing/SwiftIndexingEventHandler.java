@@ -40,6 +40,7 @@ public class SwiftIndexingEventHandler extends AbstractHandler<AbstractIndexingR
                     final long start = System.currentTimeMillis();
                     String address = rule.select(indexingServices);
                     ClusterEntity entity = indexingServices.get(address);
+                    LOGGER.error(address + "      " + entity.getUrl());
                     runAsyncRpc(address, entity.getServiceClass(), "index", event.getContent())
                             .addCallback(new AsyncRpcCallback() {
                                 @Override

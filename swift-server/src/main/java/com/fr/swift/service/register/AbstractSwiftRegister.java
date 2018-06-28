@@ -56,6 +56,7 @@ public abstract class AbstractSwiftRegister implements SwiftRegister {
         RemoteServiceSender remoteServiceSender = RemoteServiceSender.getInstance();
 
         List<SwiftServiceInfoBean> swiftServiceInfoBeans = serviceInfoService.getServiceInfoByService(SwiftClusterService.SERVICE);
+        System.out.println(swiftServiceInfoBeans.isEmpty());
         SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
         URL url = UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
         SwiftServiceListenerHandler senderProxy = proxyFactory.getProxy(remoteServiceSender, SwiftServiceListenerHandler.class, url);
@@ -65,6 +66,11 @@ public abstract class AbstractSwiftRegister implements SwiftRegister {
         LOGGER.info("begain to register " + historyService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + "!");
         senderProxy.registerService(historyService);
         LOGGER.info("register " + historyService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + " succeed!");
+        SwiftIndexingService indexingService = new SwiftIndexingService();
+        LOGGER.info("begain to register " + indexingService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + "!");
+        indexingService.setId(SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class).getRpcAddress());
+        senderProxy.registerService(indexingService);
+        LOGGER.info("register " + indexingService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + " succeed!");
     }
 
     //FR方式暂时不用

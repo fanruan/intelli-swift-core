@@ -51,7 +51,7 @@ import java.util.concurrent.Callable;
 @RpcService(type = RpcServiceType.CLIENT_SERVICE, value = RealtimeService.class)
 public class SwiftRealtimeService extends AbstractSwiftService implements RealtimeService, Serializable {
 
-    private RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
+    private transient RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
 
     @Override
     public void insert(SourceKey tableKey, SwiftResultSet resultSet) throws SQLException {

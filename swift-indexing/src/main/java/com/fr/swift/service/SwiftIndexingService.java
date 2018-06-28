@@ -49,7 +49,7 @@ import java.util.Map;
 @RpcService(type = RpcServiceType.CLIENT_SERVICE, value = IndexingService.class)
 public class SwiftIndexingService extends AbstractSwiftService implements IndexingService {
     private static final long serialVersionUID = -7430843337225891194L;
-    private RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
+    private transient RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
 
     public SwiftIndexingService(String id) {
         super(id);
@@ -84,7 +84,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
         // TODO 更新调用
         triggerIndexing(stuff);
 
-        doAfterIndexing(stuff);
+//        doAfterIndexing(stuff);
     }
 
     private void doAfterIndexing(IndexingStuff stuff) {
