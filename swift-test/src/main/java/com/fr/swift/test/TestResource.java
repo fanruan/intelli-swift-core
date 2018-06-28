@@ -6,9 +6,13 @@ package com.fr.swift.test;
  */
 public class TestResource {
     public static String getRunPath() {
+        return getRunPath(0);
+    }
+
+    public static String getRunPath(int stackOffset) {
         return String.format("%s/test_temp/%s",
                 System.getProperty("user.dir"),
-                getClassSimpleName(Thread.currentThread().getStackTrace()[2].getClassName()));
+                getClassSimpleName(Thread.currentThread().getStackTrace()[stackOffset + 2].getClassName()));
     }
 
     public static String getRunPath(Class<?> c) {

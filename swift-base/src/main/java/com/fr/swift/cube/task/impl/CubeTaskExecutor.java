@@ -5,9 +5,9 @@ import com.fr.swift.cube.task.TaskExecutor;
 import com.fr.swift.cube.task.TaskStatusChangeListener;
 import com.fr.swift.cube.task.WorkerTask;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.thread.SwiftExecutors;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SingleThreadFactory;
+import com.fr.swift.util.concurrent.SwiftExecutors;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;

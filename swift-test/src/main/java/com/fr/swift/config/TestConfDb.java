@@ -18,22 +18,19 @@ import com.fr.swift.util.FileUtil;
 import com.fr.transaction.Configurations;
 import com.fr.transaction.FineConfigurationHelper;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 /**
  * @author anchore
  * @date 2018/4/8
  */
 public class TestConfDb {
-    private static final Path PATH = Paths.get(System.getProperty("user.dir") + "/config");
+    private static final String PATH = System.getProperty("user.dir") + "/config";
 
     public static DBContext setConfDb() throws Exception {
         Preparer.prepareFrEnv();
         FileUtil.delete(PATH + ".mv.db");
         FileUtil.delete(PATH + ".trace.db");
         DBOption dbOption = new DBOption();
-        dbOption.setUrl("jdbc:h2:" + PATH.toString());
+        dbOption.setUrl("jdbc:h2:" + PATH);
         dbOption.setUsername("sa");
         dbOption.setPassword("");
         dbOption.setDriverClass("org.h2.Driver");
