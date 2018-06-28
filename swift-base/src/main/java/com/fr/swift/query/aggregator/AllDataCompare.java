@@ -4,8 +4,6 @@ package com.fr.swift.query.aggregator;
 import com.fr.swift.bitmap.traversal.CalculatorTraversalAction;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
-import com.fr.swift.segment.column.impl.base.DoubleDetailColumn;
-import com.fr.swift.segment.column.impl.base.FormulaDetailColumn;
 import com.fr.swift.segment.column.impl.base.LongDetailColumn;
 import com.fr.swift.structure.iterator.RowTraversal;
 
@@ -29,34 +27,39 @@ public abstract class AllDataCompare extends AbstractAggregator<DoubleAmountAggr
             minOrMaxValue.setValue(NULL_DOUBLE);
             return minOrMaxValue;
         }
-        CalculatorTraversalAction ss;
-        if (getter instanceof LongDetailColumn) {
-            return aggregateLongSum(notNullTraversal, getter);
-        } else if (getter instanceof DoubleDetailColumn || getter instanceof FormulaDetailColumn) {
-            return aggregateDoubleSum(notNullTraversal, getter);
-        } else {
-            ss = new CalculatorTraversalAction() {
-
-                int sum = NULL_INT;
-
-                @Override
-                public double getCalculatorValue() {
-
-                    if (sum == NULL_INT) {
-                        return NULL_DOUBLE;
-                    }
-                    return sum;
-                }
-
-                @Override
-                public void actionPerformed(int row) {
-
-                    int v = getter.getInt(row);
-                    sum = compare(sum, v);
-                }
-            };
+        switch (column.getDictionaryEncodedColumn().getType()) {
+            case LONG:
+                return aggregateLongSum(notNullTraversal, getter);
+            case DOUBLE:
+                return aggregateDoubleSum(notNullTraversal, getter);
+            default:
+                return aggregateIntSum(notNullTraversal, getter);
         }
-        notNullTraversal.traversal(ss);
+    }
+
+    private DoubleAmountAggregatorValue aggregateIntSum(RowTraversal traversal, final DetailColumn getter) {
+        final DoubleAmountAggregatorValue minOrMaxValue = new DoubleAmountAggregatorValue();
+        CalculatorTraversalAction ss = new CalculatorTraversalAction() {
+
+            int sum = NULL_INT;
+
+            @Override
+            public double getCalculatorValue() {
+
+                if (sum == NULL_INT) {
+                    return NULL_DOUBLE;
+                }
+                return sum;
+            }
+
+            @Override
+            public void actionPerformed(int row) {
+
+                int v = getter.getInt(row);
+                sum = compare(sum, v);
+            }
+        };
+        traversal.traversal(ss);
         minOrMaxValue.setValue(ss.getCalculatorValue());
         return minOrMaxValue;
     }

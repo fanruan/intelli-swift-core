@@ -2,11 +2,8 @@ package com.fr.swift.query.aggregator;
 
 
 import com.fr.swift.bitmap.traversal.CalculatorTraversalAction;
-import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
-import com.fr.swift.segment.column.impl.base.DoubleDetailColumn;
-import com.fr.swift.segment.column.impl.base.FormulaDetailColumn;
 import com.fr.swift.segment.column.impl.base.LongDetailColumn;
 import com.fr.swift.structure.iterator.RowTraversal;
 
@@ -33,32 +30,35 @@ public class SumAggregate extends AbstractAggregator<DoubleAmountAggregatorValue
             valueAmount.setValue(NULL_DOUBLE);
             return valueAmount;
         }
-        TraversalAction ss;
-        if (detailColumn instanceof LongDetailColumn) {
-            return aggregateLong(notNullTraversal, detailColumn);
-        } else if (detailColumn instanceof DoubleDetailColumn || detailColumn instanceof FormulaDetailColumn) {
-            return aggregateDouble(notNullTraversal, detailColumn);
-        } else {
-            final DetailColumn idc = detailColumn;
-            if (traversal.isEmpty()) {
-                valueAmount.setValue(NULL_DOUBLE);
-                return valueAmount;
-            }
-            ss = new CalculatorTraversalAction() {
-                @Override
-                public double getCalculatorValue() {
-                    return result;
-                }
-
-                @Override
-                public void actionPerformed(int row) {
-                    result += idc.getInt(row);
-                }
-            };
+        switch (column.getDictionaryEncodedColumn().getType()) {
+            case DOUBLE:
+                return aggregateDouble(notNullTraversal, detailColumn);
+            case LONG:
+                return aggregateLong(notNullTraversal, detailColumn);
+            default:
+                return aggregateInt(notNullTraversal, detailColumn);
         }
-        notNullTraversal.traversal(ss);
-        double value = ((CalculatorTraversalAction) ss).getCalculatorValue();
-        valueAmount.setValue(value);
+    }
+
+    private DoubleAmountAggregatorValue aggregateInt(RowTraversal traversal, final DetailColumn detailColumn) {
+        final DoubleAmountAggregatorValue valueAmount = new DoubleAmountAggregatorValue();
+        if (traversal.isEmpty()) {
+            valueAmount.setValue(NULL_DOUBLE);
+            return valueAmount;
+        }
+        CalculatorTraversalAction ss = new CalculatorTraversalAction() {
+            @Override
+            public double getCalculatorValue() {
+                return result;
+            }
+
+            @Override
+            public void actionPerformed(int row) {
+                result += detailColumn.getInt(row);
+            }
+        };
+        traversal.traversal(ss);
+        valueAmount.setValue(ss.getCalculatorValue());
         return valueAmount;
     }
 
