@@ -9,6 +9,7 @@ import com.fr.swift.Result;
 import com.fr.swift.URL;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftMetaDataService;
+import com.fr.swift.config.service.SwiftSegmentServiceProvider;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.task.TaskKey;
@@ -27,16 +28,19 @@ import com.fr.swift.rpc.annotation.RpcServiceType;
 import com.fr.swift.rpc.client.AsyncRpcCallback;
 import com.fr.swift.rpc.client.async.RpcFuture;
 import com.fr.swift.rpc.server.RpcServer;
+import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.selector.ProxySelector;
 import com.fr.swift.selector.UrlSelector;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
+import com.fr.swift.source.DataSource;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.stuff.IndexingStuff;
 
 import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author pony
@@ -80,17 +84,24 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
         // TODO 更新调用
         triggerIndexing(stuff);
 
-        // TODO 更新的待上传的Segment uri   Pair<segmentKey.getAbsoluteUri(), segmentKey.getUri()>
-        List<Pair<URI, URI>> ready4Upload = new ArrayList<Pair<URI, URI>>();
+        doAfterIndexing(stuff);
+    }
 
-        for (Pair<URI, URI> pair : ready4Upload) {
-            try {
-                SwiftRepositoryManager.getManager().getCurrentRepository().copyToRemote(pair.getKey(), pair.getValue());
-            } catch (IOException e) {
-                logger.error("upload error! ", e);
+    private void doAfterIndexing(IndexingStuff stuff) {
+        Map<TaskKey, DataSource> tables = stuff.getTables();
+        Iterator<Map.Entry<TaskKey, DataSource>> iterator = tables.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<TaskKey, DataSource> entry = iterator.next();
+            SourceKey sourceKey = entry.getValue().getSourceKey();
+            List<SegmentKey> segmentKeys = SwiftSegmentServiceProvider.getProvider().getSegmentByKey(sourceKey.getId());
+            for (SegmentKey segmentKey : segmentKeys) {
+                try {
+                    SwiftRepositoryManager.getManager().getCurrentRepository().copyToRemote(segmentKey.getAbsoluteUri(), segmentKey.getUri());
+                } catch (IOException e) {
+                    logger.error("upload error! ", e);
+                }
             }
         }
-
         URL masterURL = getMasterURL();
         ProxyFactory factory = ProxySelector.getInstance().getFactory();
         Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, masterURL, false);
