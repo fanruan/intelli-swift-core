@@ -68,10 +68,21 @@ public abstract class AbstractSwiftRegister implements SwiftRegister {
         senderProxy.registerService(historyService);
         LOGGER.info("register " + historyService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + " succeed!");
         SwiftIndexingService indexingService = SwiftIndexingService.getInstance();
-        LOGGER.info("begain to register " + indexingService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + "!");
         indexingService.setId(SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class).getRpcAddress());
+        LOGGER.info("begain to register " + indexingService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + "!");
         senderProxy.registerService(indexingService);
         LOGGER.info("register " + indexingService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + " succeed!");
+        SwiftRealtimeService realtimeService = SwiftRealtimeService.getInstance();
+        realtimeService.setId(SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class).getRpcAddress());
+        LOGGER.info("begain to register " + realtimeService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + "!");
+        senderProxy.registerService(realtimeService);
+        LOGGER.info("register " + realtimeService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + " succeed!");
+        SwiftAnalyseService analyseService = SwiftAnalyseService.getInstance();
+        analyseService.setId(SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class).getRpcAddress());
+        LOGGER.info("begain to register " + analyseService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + "!");
+        senderProxy.registerService(analyseService);
+        LOGGER.info("register " + analyseService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + " succeed!");
+
     }
 
     //FR方式暂时不用
