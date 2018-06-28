@@ -19,6 +19,7 @@ import java.util.List;
  * Created by pony on 2017/11/15.
  */
 public class ExcelDataSource extends AbstractOuterDataSource {
+    private static final long serialVersionUID = 3905785037446670738L;
     @CoreField
     private String fullFileName;
 

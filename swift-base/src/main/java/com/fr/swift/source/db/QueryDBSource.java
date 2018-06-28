@@ -7,6 +7,7 @@ import java.util.Map;
 
 public class QueryDBSource extends AbstractDBDataSource {
 
+    private static final long serialVersionUID = 4438891265082511219L;
     @CoreField
     protected String query;
     @CoreField
