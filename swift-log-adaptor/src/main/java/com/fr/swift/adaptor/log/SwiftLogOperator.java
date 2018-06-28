@@ -20,6 +20,7 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.util.Interval;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
+import com.fr.swift.util.concurrent.SwiftExecutors;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -29,7 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -121,7 +121,7 @@ public class SwiftLogOperator implements LogOperator {
     }
 
     class Sync implements Runnable {
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1, new PoolThreadFactory(getClass()));
+        ScheduledExecutorService scheduler = SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory(getClass()));
 
         private Map<Class<?>, List<Object>> dataMap = new ConcurrentHashMap<Class<?>, List<Object>>();
 

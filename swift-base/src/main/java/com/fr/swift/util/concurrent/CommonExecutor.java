@@ -1,7 +1,5 @@
 package com.fr.swift.util.concurrent;
 
-import com.fr.swift.thread.SwiftExecutors;
-
 import java.util.concurrent.ExecutorService;
 
 /**

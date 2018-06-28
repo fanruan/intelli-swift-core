@@ -7,7 +7,6 @@ import com.fr.swift.cube.task.TaskResult;
 import com.fr.swift.log.SwiftLoggers;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -15,9 +14,9 @@ import java.util.List;
  * @date 2017/12/8
  */
 public class SchedulerTaskImpl extends BaseTask implements SchedulerTask {
-    private List<TaskKey> prevTasks = new ArrayList<TaskKey>();
+    protected List<SchedulerTask> prevTasks = new ArrayList<SchedulerTask>();
 
-    private List<TaskKey> nextTasks = new ArrayList<TaskKey>();
+    protected List<SchedulerTask> nextTasks = new ArrayList<SchedulerTask>();
 
     public SchedulerTaskImpl(TaskKey key) {
         super(key);
@@ -55,53 +54,38 @@ public class SchedulerTaskImpl extends BaseTask implements SchedulerTask {
 
         SwiftLoggers.getLogger().info(String.format("%s %s", key, result));
 
-        SchedulerTaskTomb.getTomb().add(this);
-    }
-
-
-    @Override
-    public void addPrev(TaskKey prevKey) {
-        if (key.equals(prevKey)) {
-            return;
-        }
-        if (!prevTasks.contains(prevKey)) {
-            prevTasks.add(prevKey);
-        }
+        TaskTomb.getTomb().add(this);
     }
 
     @Override
     public void addPrev(SchedulerTask prev) {
-        addPrev(prev.key());
-    }
-
-    @Override
-    public void addNext(TaskKey nextKey) {
-        if (key.equals(nextKey)) {
+        if (equals(prev)) {
             return;
         }
-        if (!nextTasks.contains(nextKey)) {
-            nextTasks.add(nextKey);
-            // 简化操作，顺便把前置也加了
-            from(nextKey).addPrev(key);
+        if (!prevTasks.contains(prev)) {
+            prevTasks.add(prev);
         }
     }
 
     @Override
     public void addNext(SchedulerTask next) {
-        addNext(next.key());
+        if (equals(next)) {
+            return;
+        }
+        if (!nextTasks.contains(next)) {
+            nextTasks.add(next);
+            // 简化操作，顺便把前置也加了
+            next.addPrev(this);
+        }
     }
 
     @Override
-    public List<TaskKey> prevAll() {
-        return Collections.unmodifiableList(prevTasks);
+    public List<SchedulerTask> prevAll() {
+        return prevTasks;
     }
 
     @Override
-    public List<TaskKey> nextAll() {
-        return Collections.unmodifiableList(nextTasks);
-    }
-
-    private static SchedulerTask from(TaskKey taskKey) {
-        return SchedulerTaskPool.getInstance().get(taskKey);
+    public List<SchedulerTask> nextAll() {
+        return nextTasks;
     }
 }

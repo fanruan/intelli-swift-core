@@ -1,5 +1,6 @@
 package com.fr.swift.service;
 
+import com.fr.swift.cube.task.impl.SchedulerTaskPool;
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.service.listener.EventType;
 import com.fr.swift.service.listener.SingleTypeListenerContainer;
@@ -58,6 +59,7 @@ public abstract class AbstractSwiftServerService extends AbstractSwiftService im
         for (EventType type : EventType.values()) {
             listenerMap.put(type, new SingleTypeListenerContainer());
         }
+        SchedulerTaskPool.getInstance().initListener();
     }
 
 

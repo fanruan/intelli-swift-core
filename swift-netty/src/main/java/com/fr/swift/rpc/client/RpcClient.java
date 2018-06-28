@@ -2,7 +2,7 @@ package com.fr.swift.rpc.client;
 
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.thread.SwiftExecutors;
+import com.fr.swift.util.concurrent.SwiftExecutors;
 
 import java.util.concurrent.ExecutorService;
 
