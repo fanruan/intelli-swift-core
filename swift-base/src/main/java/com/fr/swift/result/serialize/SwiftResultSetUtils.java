@@ -17,7 +17,6 @@ public class SwiftResultSetUtils {
 
     public static SwiftResultSet convert2Serializable(String queryId, QueryType queryType,
                                                       SwiftResultSet resultSet) throws SQLException {
-        // 先到QueryResultSetManager找一下有没有缓存，没有则构建查询。
         SerializableResultSet result;
         switch (queryType) {
             case LOCAL_GROUP_ALL:
