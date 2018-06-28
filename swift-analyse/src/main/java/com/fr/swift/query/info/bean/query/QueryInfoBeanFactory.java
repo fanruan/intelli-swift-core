@@ -47,6 +47,7 @@ public class QueryInfoBeanFactory {
         return result;
     }
 
+    // TODO: 2018/6/28 bean结构完善之后，queryInfo到queryInfoBean的转换应该不需要了
     public static QueryInfoBean create(QueryInfo queryInfo) {
         switch (queryInfo.getType()) {
             case GROUP:

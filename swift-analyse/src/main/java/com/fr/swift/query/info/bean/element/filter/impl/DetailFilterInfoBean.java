@@ -1,7 +1,7 @@
 package com.fr.swift.query.info.bean.element.filter.impl;
 
 import com.fr.swift.query.filter.SwiftDetailFilterType;
-import com.fr.swift.query.info.bean.element.filter.AbstractFilterInfoBean;
+import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.info.bean.element.relation.IRelationSourceBean;
 import com.fr.third.fasterxml.jackson.annotation.JsonInclude;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
@@ -10,23 +10,16 @@ import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
  * Created by Lyon on 2018/6/2.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class DetailFilterInfoBean extends AbstractFilterInfoBean {
+public abstract class DetailFilterInfoBean<T> implements FilterInfoBean {
 
     @JsonProperty
     private SwiftDetailFilterType type;
-
     @JsonProperty
-    private Object filterValue;
-
+    protected T filterValue;
     @JsonProperty
     private String column;
-
     @JsonProperty
     private IRelationSourceBean relation;
-
-    public DetailFilterInfoBean() {
-        super(BeanType.DETAIL);
-    }
 
     public SwiftDetailFilterType getType() {
         return type;
@@ -36,13 +29,9 @@ public class DetailFilterInfoBean extends AbstractFilterInfoBean {
         this.type = type;
     }
 
-    public Object getFilterValue() {
-        return filterValue;
-    }
+    public abstract T getFilterValue();
 
-    public void setFilterValue(Object filterValue) {
-        this.filterValue = filterValue;
-    }
+    public abstract void setFilterValue(T filterValue);
 
     public String getColumn() {
         return column;

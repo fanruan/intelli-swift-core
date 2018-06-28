@@ -1,40 +1,32 @@
 package com.fr.swift.query.info.bean.element.filter.impl;
 
-import com.fr.swift.query.info.bean.element.filter.AbstractFilterInfoBean;
+import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.third.fasterxml.jackson.annotation.JsonInclude;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.List;
 
 /**
  * @author yee
  * @date 2018/6/22
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class GeneralFilterInfoBean extends AbstractFilterInfoBean {
+public abstract class GeneralFilterInfoBean<T> implements FilterInfoBean {
+
     @JsonProperty
-    private List<FilterInfoBean> children;
+    protected T filterValue;
     @JsonProperty
-    private int type;
+    private SwiftDetailFilterType type;
 
-    public GeneralFilterInfoBean() {
-        super(BeanType.GENERAL);
-    }
+    public abstract T getFilterValue();
 
-    public List<FilterInfoBean> getChildren() {
-        return children;
-    }
+    public abstract void setFilterValue(T filterValue);
 
-    public void setChildren(List<FilterInfoBean> children) {
-        this.children = children;
-    }
-
-    public int getType() {
+    @Override
+    public SwiftDetailFilterType getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(SwiftDetailFilterType type) {
         this.type = type;
     }
 }
