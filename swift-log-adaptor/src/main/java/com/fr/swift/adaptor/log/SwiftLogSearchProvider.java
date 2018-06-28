@@ -149,7 +149,8 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
             row = resultSet.getRowData();
         }
         if (row != null && row.getSize() == 1) {
-            return ((Number) row.getValue(0)).intValue();
+            Number value =  row.getValue(0);
+            return value == null ? 0 : value.intValue();
         }
         //BI-25663 空的返回count0
         return 0;
