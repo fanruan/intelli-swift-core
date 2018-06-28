@@ -2,14 +2,17 @@ package com.fr.swift.http;
 
 import com.fr.data.impl.Connection;
 import com.fr.data.impl.JDBCDatabaseConnection;
+import com.fr.stable.StringUtils;
 import com.fr.swift.Invoker;
 import com.fr.swift.ProxyFactory;
-import com.fr.swift.Result;
 import com.fr.swift.URL;
+import com.fr.swift.config.bean.SwiftServiceInfoBean;
+import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.event.indexing.IndexRpcEvent;
+import com.fr.swift.frrpc.SwiftClusterService;
 import com.fr.swift.invocation.SwiftInvocation;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.rpc.server.RpcServer;
@@ -31,6 +34,7 @@ import com.fr.third.springframework.web.bind.annotation.RequestMethod;
 import com.fr.third.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,9 +50,11 @@ public class HistoryIndexingController {
     @RequestMapping(value = "swift/index/{tableName}", method = RequestMethod.GET)
     public Map query(@PathVariable("tableName") String tableName) {
         final Map result = new HashMap();
+        tableName = StringUtils.isEmpty(tableName) ? "fine_conf_entity" : tableName;
         try {
-            Connection frConnection = new JDBCDatabaseConnection("com.mysql.jdbc.Driver",
-                    "jdbc:mysql://localhost:3306/test_key", "root", "zhy100112");
+            SwiftProperty property = SwiftContext.getInstance().getBean(SwiftProperty.class);
+            Connection frConnection = new JDBCDatabaseConnection(property.getConfigDbDriverClass(),
+                    property.getConfigDbJdbcUrl(), property.getConfigDbUsername(), property.getConfigDbPasswd());
             final SwiftConnectionInfo connectionInfo = new SwiftConnectionInfo(null, frConnection);
             ConnectionManager.getInstance().registerProvider(new IConnectionProvider() {
                 @Override
@@ -64,22 +70,16 @@ public class HistoryIndexingController {
             IndexRpcEvent event = new IndexRpcEvent(stuff);
             ProxyFactory factory = ProxySelector.getInstance().getFactory();
             Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, getMasterURL(), true);
-            Result rpcResult = invoker.invoke(new SwiftInvocation(server.getMethodByName("rpcTrigger"), new Object[]{event}));
-            Object future = rpcResult.getValue();
-            if (null == future) {
-                throw rpcResult.getException();
-            }
+            invoker.invoke(new SwiftInvocation(server.getMethodByName("rpcTrigger"), new Object[]{event}));
         } catch (Throwable e) {
-            e.printStackTrace();
             result.put("error", e.getMessage());
         }
         return result;
     }
 
     private URL getMasterURL() {
-//        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.getInstance().getBean(SwiftServiceInfoService.class).getServiceInfoByService(SwiftClusterService.SERVICE);
-//        SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
-        String masterAddress = SwiftContext.getInstance().getBean(SwiftProperty.class).getMasterAddress();
-        return UrlSelector.getInstance().getFactory().getURL(masterAddress);
+        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.getInstance().getBean(SwiftServiceInfoService.class).getServiceInfoByService(SwiftClusterService.SERVICE);
+        SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
+        return UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
     }
 }

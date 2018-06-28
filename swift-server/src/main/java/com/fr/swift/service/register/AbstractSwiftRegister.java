@@ -40,14 +40,15 @@ public abstract class AbstractSwiftRegister implements SwiftRegister {
     }
 
     protected void localServiceRegister() throws SwiftServiceException {
-        new SwiftAnalyseService().start();
+        SwiftAnalyseService.getInstance().start();
         SwiftHistoryService.getInstance().start();
-        new SwiftIndexingService().start();
-        new SwiftRealtimeService().start();
+        SwiftIndexingService.getInstance().start();
+        SwiftRealtimeService.getInstance().start();
     }
 
     protected void masterLocalServiceRegister() {
-
+        String masterAddress = SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class).getMasterAddress();
+        serviceInfoService.saveOrUpdateServiceInfo(new SwiftServiceInfoBean(SwiftClusterService.SERVICE, masterAddress, masterAddress, true));
     }
 
     protected void remoteServiceRegister() {
@@ -66,7 +67,7 @@ public abstract class AbstractSwiftRegister implements SwiftRegister {
         LOGGER.info("begain to register " + historyService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + "!");
         senderProxy.registerService(historyService);
         LOGGER.info("register " + historyService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + " succeed!");
-        SwiftIndexingService indexingService = new SwiftIndexingService();
+        SwiftIndexingService indexingService = SwiftIndexingService.getInstance();
         LOGGER.info("begain to register " + indexingService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + "!");
         indexingService.setId(SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class).getRpcAddress());
         senderProxy.registerService(indexingService);

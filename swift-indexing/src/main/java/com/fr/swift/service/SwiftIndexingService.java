@@ -3,6 +3,7 @@ package com.fr.swift.service;
 import com.fr.event.Event;
 import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
+import com.fr.stable.StringUtils;
 import com.fr.swift.Invoker;
 import com.fr.swift.ProxyFactory;
 import com.fr.swift.Result;
@@ -21,6 +22,7 @@ import com.fr.swift.frrpc.SwiftClusterService;
 import com.fr.swift.info.ServerCurrentStatus;
 import com.fr.swift.invocation.SwiftInvocation;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.rpc.annotation.RpcMethod;
 import com.fr.swift.rpc.annotation.RpcService;
@@ -51,11 +53,20 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     private static final long serialVersionUID = -7430843337225891194L;
     private transient RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
 
+    private SwiftIndexingService() {
+    }
+
+    public static SwiftIndexingService getInstance() {
+        return SingletonHolder.service;
+    }
+
     public SwiftIndexingService(String id) {
         super(id);
     }
 
-    public SwiftIndexingService() {
+    @Override
+    public String getID() {
+        return StringUtils.isEmpty(super.getID()) ? SwiftContext.getInstance().getBean(SwiftProperty.class).getRpcAddress() : super.getID();
     }
 
     @Override
@@ -129,6 +140,10 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     @Override
     public ServerCurrentStatus currentStatus() {
         return new ServerCurrentStatus(getID());
+    }
+
+    private static class SingletonHolder {
+        private static SwiftIndexingService service = new SwiftIndexingService();
     }
 
     private URL getMasterURL() {

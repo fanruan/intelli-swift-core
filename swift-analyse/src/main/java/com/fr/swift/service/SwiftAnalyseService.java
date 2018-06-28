@@ -48,7 +48,15 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
         super(id);
     }
 
-    public SwiftAnalyseService() {
+    private SwiftAnalyseService() {
+    }
+
+    public static SwiftAnalyseService getInstance() {
+        return SingletonHolder.service;
+    }
+
+    private static class SingletonHolder {
+        private static SwiftAnalyseService service = new SwiftAnalyseService();
     }
 
     @Override

@@ -32,6 +32,9 @@ public interface IndexingSelectRule {
          */
         @Override
         public String select(Map<String, ClusterEntity> indexingServices) throws Exception {
+            if (1 == indexingServices.size()) {
+                return indexingServices.keySet().iterator().next();
+            }
             Iterator<Map.Entry<String, ClusterEntity>> iterator = indexingServices.entrySet().iterator();
             final List<ServerCurrentStatus> serverCurrentStatuses = new ArrayList<ServerCurrentStatus>();
             ProxyFactory factory = ProxySelector.getInstance().getFactory();

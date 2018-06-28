@@ -53,6 +53,15 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
     private transient RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
 
+    private SwiftRealtimeService() {
+    }
+
+    public static SwiftRealtimeService getInstance() {
+        return SingletonHolder.service;
+    }
+
+
+
     @Override
     public void insert(SourceKey tableKey, SwiftResultSet resultSet) throws SQLException {
         SwiftLoggers.getLogger().info("insert");
@@ -176,7 +185,8 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         super(id);
     }
 
-    public SwiftRealtimeService() {
+    private static class SingletonHolder {
+        private static SwiftRealtimeService service = new SwiftRealtimeService();
     }
 
     private URL getMasterURL() {
