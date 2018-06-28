@@ -51,7 +51,16 @@ import java.util.concurrent.Callable;
 @RpcService(type = RpcServiceType.CLIENT_SERVICE, value = RealtimeService.class)
 public class SwiftRealtimeService extends AbstractSwiftService implements RealtimeService, Serializable {
 
-    private RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
+    private transient RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
+
+    private SwiftRealtimeService() {
+    }
+
+    public static SwiftRealtimeService getInstance() {
+        return SingletonHolder.service;
+    }
+
+
 
     @Override
     public void insert(SourceKey tableKey, SwiftResultSet resultSet) throws SQLException {
@@ -176,7 +185,8 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         super(id);
     }
 
-    public SwiftRealtimeService() {
+    private static class SingletonHolder {
+        private static SwiftRealtimeService service = new SwiftRealtimeService();
     }
 
     private URL getMasterURL() {

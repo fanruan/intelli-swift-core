@@ -3,7 +3,6 @@ package com.fr.swift.service;
 import com.fr.swift.config.SwiftCubePathConfig;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
@@ -43,7 +42,7 @@ import java.util.Set;
 public class SwiftHistoryService extends AbstractSwiftService implements HistoryService, Serializable {
 
     private static final long serialVersionUID = -6013675740141588108L;
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftHistoryService.class);
+//    private transient static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftHistoryService.class);
 
     public static SwiftHistoryService getInstance() {
         return SingletonHolder.instance;
@@ -62,7 +61,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                 repository.copyFromRemote(remote, URI.create(path + remote.getPath()));
             }
         } else {
-            LOGGER.warn("Receive an empty URI set. Skip loading.");
+            SwiftLoggers.getLogger(SwiftHistoryService.class).warn("Receive an empty URI set. Skip loading.");
         }
     }
 

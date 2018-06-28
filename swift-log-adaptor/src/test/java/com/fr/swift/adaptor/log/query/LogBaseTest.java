@@ -43,7 +43,7 @@ public class LogBaseTest {
     @Before
     public void setUp() throws Exception {
         new LocalSwiftServerService().start();
-        new SwiftAnalyseService().start();
+        SwiftAnalyseService.getInstance().start();
         TestConnectionProvider.createConnection();
         TestConfDb.setConfDb();
 //        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir")));
