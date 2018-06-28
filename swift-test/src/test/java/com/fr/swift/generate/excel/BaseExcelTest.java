@@ -20,9 +20,9 @@ public abstract class BaseExcelTest extends BaseConfigTest {
 
     protected static final SwiftLogger LOGGER = SwiftLoggers.getLogger(BaseExcelTest.class);
 
-    protected String path1 = ResourceUtils.getFileAbsolutePath("com/fr/swift/resource/excel/test.xlsx");
-    protected String path2 = ResourceUtils.getFileAbsolutePath("com/fr/swift/resource/excel/test1.xlsx");
-    protected String path3 = ResourceUtils.getFileAbsolutePath("com/fr/swift/resource/excel/test2.xlsx");
+    protected String path1 = ResourceUtils.getFileAbsolutePath("excel/test.xlsx");
+    protected String path2 = ResourceUtils.getFileAbsolutePath("excel/test1.xlsx");
+    protected String path3 = ResourceUtils.getFileAbsolutePath("excel/test2.xlsx");
 
     protected ExcelDataSource dataSource;
     protected String[] names = {"A", "B"};

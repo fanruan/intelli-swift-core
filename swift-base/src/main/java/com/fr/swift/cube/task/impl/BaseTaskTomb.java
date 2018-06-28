@@ -2,7 +2,6 @@ package com.fr.swift.cube.task.impl;
 
 import com.fr.swift.cube.task.SchedulerTask;
 import com.fr.swift.cube.task.Task.Status;
-import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.cube.task.TaskResult.Type;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.concurrent.SingleThreadFactory;
@@ -30,8 +29,8 @@ abstract class BaseTaskTomb implements Runnable {
         while (!Thread.currentThread().isInterrupted()) {
             try {
                 SchedulerTask self = tasks.take();
-                for (TaskKey next : self.nextAll()) {
-                    handle(next, self.key());
+                for (SchedulerTask next : self.nextAll()) {
+                    handle(next, self);
                 }
             } catch (InterruptedException ite) {
                 SwiftLoggers.getLogger().error(ite);
@@ -42,16 +41,13 @@ abstract class BaseTaskTomb implements Runnable {
         }
     }
 
-    private void handle(TaskKey selfKey, TaskKey prevDoneOneKey) {
-        SchedulerTask self = from(selfKey);
-        SchedulerTask prevDoneOne = from(prevDoneOneKey);
+    private void handle(SchedulerTask self, SchedulerTask prevDoneOne) {
         // prevDoneOne不成功，便取消全部未执行的任务
         if (prevDoneOne.result().getType() != Type.SUCCEEDED) {
-            for (TaskKey prevKey : self.prevAll()) {
-                if (prevKey.equals(prevDoneOneKey)) {
+            for (SchedulerTask prev : self.prevAll()) {
+                if (prev.equals(prevDoneOne)) {
                     continue;
                 }
-                SchedulerTask prev = from(prevKey);
                 prev.cancel();
             }
             self.cancel();
@@ -60,11 +56,10 @@ abstract class BaseTaskTomb implements Runnable {
 
         // 遍历前置任务，如果全部完成，则启动本任务
         boolean allDone = true;
-        for (TaskKey prevKey : self.prevAll()) {
-            if (prevKey.equals(prevDoneOneKey)) {
+        for (SchedulerTask prev : self.prevAll()) {
+            if (prev.equals(prevDoneOne)) {
                 continue;
             }
-            SchedulerTask prev = from(prevKey);
             if (prev.status() != Status.DONE) {
                 allDone = false;
                 break;
@@ -74,6 +69,4 @@ abstract class BaseTaskTomb implements Runnable {
             self.triggerRun();
         }
     }
-
-    abstract SchedulerTask from(TaskKey key);
 }
