@@ -16,21 +16,19 @@ public interface QueryRunner {
      * 本地查询
      *
      * @param info
-     * @param <T>
      * @return
      * @throws SQLException
      */
-    <T extends SwiftResultSet> T getQueryResult(QueryInfo<T> info) throws SQLException;
+    SwiftResultSet getQueryResult(QueryBean info) throws SQLException;
 
     /**
      * 远程查询
      *
      * @param info
      * @param remoteURI
-     * @param <T>
      * @return
      * @throws SQLException
      */
-    <T extends SwiftResultSet> T getRemoteQueryResult(QueryInfo<T> info, SegmentDestination remoteURI) throws SQLException;
+    SwiftResultSet getRemoteQueryResult(QueryBean info, SegmentDestination remoteURI) throws SQLException;
 
 }

@@ -10,6 +10,7 @@ import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.group.GroupQueryInfoImpl;
 import com.fr.swift.query.query.QueryInfo;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -22,10 +23,10 @@ import java.util.List;
  */
 public class QueryInfoBeanFactory {
 
-    private static final DimensionBeanFactory DIMENSION_BEAN_FACTORY = new DimensionBeanFactory();
-    private static final SortBeanFactory SORT_BEAN_FACTORY = new SortBeanFactory();
-    private static final MetricBeanFactory METRIC_BEAN_FACTORY = new MetricBeanFactory();
-    private static final PostQueryInfoFactory POST_QUERY_INFO_FACTORY = new PostQueryInfoFactory();
+    private static final DimensionBeanFactory DIMENSION_BEAN_FACTORY = DimensionBeanFactory.getInstance();
+    private static final SortBeanFactory SORT_BEAN_FACTORY = SortBeanFactory.getInstance();
+    private static final MetricBeanFactory METRIC_BEAN_FACTORY = MetricBeanFactory.getInstance();
+    private static final PostQueryInfoFactory POST_QUERY_INFO_FACTORY = PostQueryInfoFactory.getInstance();
     private static ObjectMapper MAPPER = new ObjectMapper();
 
     public static QueryInfoBean create(URL url) throws IOException {
@@ -81,8 +82,8 @@ public class QueryInfoBeanFactory {
                 detailQueryBean.setDimensionBeans(DIMENSION_BEAN_FACTORY.create(((DetailQueryInfo) queryInfo).getDimensions()));
                 detailQueryBean.setFilterInfoBean(FilterInfoBeanFactory.SINGLE_FILTER_INFO_BEAN_FACTORY.create(((DetailQueryInfo) queryInfo).getFilterInfo()));
                 detailQueryBean.setSortBeans(SORT_BEAN_FACTORY.create(((DetailQueryInfo) queryInfo).getSorts()));
-                detailQueryBean.setMetaData(((DetailQueryInfo) queryInfo).getMetaData());
-                detailQueryBean.setComparators(((DetailQueryInfo) queryInfo).getComparators());
+                SwiftMetaData metaData = ((DetailQueryInfo) queryInfo).getMetaData();
+                detailQueryBean.setColumns(metaData.getFieldNames());
                 detailQueryBean.setQuerySegment(queryInfo.getQuerySegment());
                 detailQueryBean.setQueryType(queryInfo.getType());
                 return detailQueryBean;

@@ -1,8 +1,8 @@
 package com.fr.swift.query.info.bean.query;
 
 import com.fr.swift.query.info.bean.element.DimensionBean;
-import com.fr.swift.query.info.bean.element.FilterInfoBean;
 import com.fr.swift.query.info.bean.element.SortBean;
+import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;

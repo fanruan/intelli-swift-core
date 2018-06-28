@@ -1,8 +1,9 @@
 package com.fr.swift.rpc.registry.impl;
 
-import com.fr.swift.config.SwiftServiceAddressConfig;
 import com.fr.swift.config.bean.RpcServiceAddress;
+import com.fr.swift.config.service.SwiftServiceAddressService;
 import com.fr.swift.rpc.registry.ServiceRegistry;
+import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
 /**
@@ -11,7 +12,8 @@ import com.fr.third.springframework.stereotype.Service;
  */
 @Service("dbServiceRegistry")
 public class DbServiceRegistry implements ServiceRegistry {
-    private SwiftServiceAddressConfig config = SwiftServiceAddressConfig.getInstance();
+    @Autowired(required = false)
+    private SwiftServiceAddressService config;
 
     @Override
     public void register(String serviceName, String serviceAddress) {

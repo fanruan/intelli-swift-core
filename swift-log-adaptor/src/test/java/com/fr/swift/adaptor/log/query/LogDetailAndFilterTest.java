@@ -9,6 +9,8 @@ import com.fr.swift.adaptor.log.QueryConditionAdaptor;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
+import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.source.DataSource;
@@ -16,9 +18,13 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.db.QueryDBSource;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
 
 /**
  * This class created on 2018/4/27
@@ -31,6 +37,7 @@ public class LogDetailAndFilterTest extends LogBaseTest {
 
     private final Database db = SwiftDatabase.getInstance();
 
+    @Test
     public void testAnd() {
         try {
             DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "DBtestAnd");
@@ -44,9 +51,10 @@ public class LogDetailAndFilterTest extends LogBaseTest {
                     .addRestriction(RestrictionFactory.gte("总金额", 1000000)).addRestriction(RestrictionFactory.lte("总金额", 2000000));
 
             QueryInfo eqQueryInfo = QueryConditionAdaptor.adaptCondition(eqQueryCondition, table);
-            SwiftResultSet eqResultSet = QueryRunnerProvider.getInstance().executeQuery(eqQueryInfo);
-            int index1 = table.getMeta().getColumnIndex("合同类型");
-            int index2 = table.getMeta().getColumnIndex("总金额");
+            QueryBean queryBean = QueryInfoBeanFactory.create(eqQueryInfo);
+            SwiftResultSet eqResultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
+            int index1 = table.getMeta().getColumnIndex("合同类型") - 1;
+            int index2 = table.getMeta().getColumnIndex("总金额") - 1;
 
             while (eqResultSet.next()) {
                 Row row = eqResultSet.getRowData();
@@ -60,6 +68,7 @@ public class LogDetailAndFilterTest extends LogBaseTest {
         }
     }
 
+    @Test
     public void testOr() {
         try {
             DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "DBtestAnd");
@@ -76,8 +85,9 @@ public class LogDetailAndFilterTest extends LogBaseTest {
             QueryCondition eqQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.or(restrictions));
 
             QueryInfo eqQueryInfo = QueryConditionAdaptor.adaptCondition(eqQueryCondition, table);
-            SwiftResultSet eqResultSet = QueryRunnerProvider.getInstance().executeQuery(eqQueryInfo);
-            int index1 = table.getMeta().getColumnIndex("合同类型");
+            QueryBean queryBean = QueryInfoBeanFactory.create(eqQueryInfo);
+            SwiftResultSet eqResultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
+            int index1 = table.getMeta().getColumnIndex("合同类型") - 1;
             int count1 = 0, count2 = 0, count3 = 0;
             while (eqResultSet.next()) {
                 Row row = eqResultSet.getRowData();

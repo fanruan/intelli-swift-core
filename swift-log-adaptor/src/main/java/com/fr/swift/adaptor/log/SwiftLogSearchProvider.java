@@ -14,12 +14,14 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.aggregator.AggregatorFactory;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.metric.GroupMetric;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.info.group.GroupQueryInfoImpl;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
+import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.Row;
@@ -27,7 +29,6 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.iterator.IteratorUtils;
 import com.fr.swift.structure.iterator.MapperIterator;
-import com.fr.swift.util.Crasher;
 import com.fr.swift.util.function.Function;
 
 import java.util.ArrayList;
@@ -76,7 +77,7 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
     public List<Object> getValueByColumn(Class<? extends AbstractMessage> logClass, QueryCondition condition, String columnName) throws Exception {
         List<String> fieldNames = new ArrayList<String>();
         fieldNames.add(columnName);
-        List<Row> rows = LogQueryUtils.detailQuery(logClass, condition, fieldNames);
+        List<Row> rows = LogQueryUtils.detailQuery(logClass, condition, fieldNames).getList();
         return IteratorUtils.iterator2List(new MapperIterator<Row, Object>(rows.iterator(), new Function<Row, Object>() {
             @Override
             public Object apply(Row p) {
@@ -141,14 +142,17 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
         }
         GroupQueryInfo queryInfo = new GroupQueryInfoImpl("", sourceKey, filterInfo, new ArrayList<Dimension>(),
                 metrics, new ArrayList<PostQueryInfo>(0));
-        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
+        QueryBean queryBean = QueryInfoBeanFactory.create(queryInfo);
+        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
         Row row = null;
         if (resultSet.next()) {
             row = resultSet.getRowData();
         }
         if (row != null && row.getSize() == 1) {
-            return row.getValue(0);
+            Number value =  row.getValue(0);
+            return value == null ? 0 : value.intValue();
         }
-        return Crasher.crash(new RuntimeException("failed to count/distinctCount table " + logClass.getName()));
+        //BI-25663 空的返回count0
+        return 0;
     }
 }

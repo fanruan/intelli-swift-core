@@ -9,12 +9,22 @@ import com.fr.swift.file.system.SwiftFileSystemType;
  */
 public class HdfsRepositoryConfigImpl extends AbstractSwiftFileSystemConfig {
 
+    private String fsName;
     private String hdfsHost;
     private String hdfsPort;
 
-    public HdfsRepositoryConfigImpl(String hdfsHost, String hdfsPort) {
+    public HdfsRepositoryConfigImpl(String fsName, String hdfsHost, String hdfsPort) {
+        this.fsName = fsName;
         this.hdfsHost = hdfsHost;
         this.hdfsPort = hdfsPort;
+    }
+
+    public String getFsName() {
+        return fsName;
+    }
+
+    public void setFsName(String fsName) {
+        this.fsName = fsName;
     }
 
     public String getHdfsHost() {

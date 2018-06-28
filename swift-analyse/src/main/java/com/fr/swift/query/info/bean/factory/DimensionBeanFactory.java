@@ -10,6 +10,7 @@ import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.dimension.GroupFormulaDimension;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.SourceKey;
 
 import java.util.ArrayList;
@@ -21,24 +22,7 @@ import java.util.List;
  */
 public class DimensionBeanFactory implements BeanFactory<List<Dimension>, List<DimensionBean>> {
 
-    public static final SingleDimensionBeanFactory SINGLE_DIMENSION_BEAN_FACTORY = new SingleDimensionBeanFactory();
-
-    @Override
-    public List<DimensionBean> create(List<Dimension> dimensionList) {
-        List<DimensionBean> result = new ArrayList<DimensionBean>();
-        if (null != dimensionList) {
-            for (Dimension item : dimensionList) {
-                result.add(SINGLE_DIMENSION_BEAN_FACTORY.create(item));
-            }
-        }
-        return result;
-    }
-
-    public static class SingleDimensionBeanFactory implements BeanFactory<Dimension, DimensionBean> {
-
-        private SingleDimensionBeanFactory() {
-        }
-
+    public static final BeanFactory<Dimension, DimensionBean> SINGLE_DIMENSION_BEAN_FACTORY = new BeanFactory<Dimension, DimensionBean>() {
         @Override
         public DimensionBean create(Dimension source) {
             Group group = source.getGroup();
@@ -52,8 +36,12 @@ public class DimensionBeanFactory implements BeanFactory<List<Dimension>, List<D
             SourceKey sourceKey = dimension.getSourceKey();
             ColumnKey columnKey = dimension.getColumnKey();
             bean.setDimensionType(source.getDimensionType());
-            bean.setSourceKey(sourceKey);
-            bean.setColumnKey(columnKey);
+            bean.setTable(sourceKey.getId());
+            if (null != columnKey) {
+                bean.setColumn(columnKey.getName());
+                RelationSource relationSource = columnKey.getRelation();
+                bean.setRelation(RelationSourceBeanFactory.SINGLE_RELATION_SOURCE_BEAN_FACTORY.create(relationSource));
+            }
             if (null != group) {
                 GroupBean groupBean = new GroupBean();
                 groupBean.setType(group.getGroupType());
@@ -72,5 +60,27 @@ public class DimensionBeanFactory implements BeanFactory<List<Dimension>, List<D
             }
             return bean;
         }
+    };
+
+    @Override
+    public List<DimensionBean> create(List<Dimension> dimensionList) {
+        List<DimensionBean> result = new ArrayList<DimensionBean>();
+        if (null != dimensionList) {
+            for (Dimension item : dimensionList) {
+                result.add(SINGLE_DIMENSION_BEAN_FACTORY.create(item));
+            }
+        }
+        return result;
+    }
+
+    private DimensionBeanFactory() {
+    }
+
+    public static DimensionBeanFactory getInstance() {
+        return SingletonHolder.factory;
+    }
+
+    private static class SingletonHolder {
+        private static final DimensionBeanFactory factory = new DimensionBeanFactory();
     }
 }

@@ -1,5 +1,7 @@
-package com.fr.swift.query.info.bean.element;
+package com.fr.swift.query.info.bean.element.filter.impl;
 
+import com.fr.swift.query.info.bean.element.filter.AbstractFilterInfoBean;
+import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 
 /**

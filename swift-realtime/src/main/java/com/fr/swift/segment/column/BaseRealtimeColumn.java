@@ -18,7 +18,6 @@ import com.fr.third.guava.collect.HashBiMap;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.NavigableMap;
-import java.util.NoSuchElementException;
 
 /**
  * @author anchore
@@ -175,7 +174,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
                 int index = valAndIndex.get(value);
                 return valToRows.containsKey(null) ? index : index + 1;
             }
-            throw new NoSuchElementException(value.toString());
+            return -1;
         }
 
         @Override

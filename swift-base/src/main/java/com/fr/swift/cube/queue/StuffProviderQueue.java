@@ -2,7 +2,6 @@ package com.fr.swift.cube.queue;
 
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.source.manager.IndexStuffProvider;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -20,7 +19,7 @@ public class StuffProviderQueue {
 
     private static int MAX_CAPACITY = 10000;
 
-    private BlockingQueue<IndexStuffProvider> providerQueue = new LinkedBlockingQueue<IndexStuffProvider>(MAX_CAPACITY);
+    private BlockingQueue<ImportStuff> providerQueue = new LinkedBlockingQueue<ImportStuff>(MAX_CAPACITY);
 
     private static class SingletonHolder {
         private static final StuffProviderQueue INSTANCE = new StuffProviderQueue();
@@ -30,19 +29,19 @@ public class StuffProviderQueue {
         return SingletonHolder.INSTANCE;
     }
 
-    public void put(IndexStuffProvider provider) throws InterruptedException {
+    public void put(ImportStuff provider) throws InterruptedException {
         providerQueue.put(provider);
     }
 
-    public IndexStuffProvider poll() {
+    public ImportStuff poll() {
         return providerQueue.poll();
     }
 
-    public IndexStuffProvider take() throws InterruptedException {
+    public ImportStuff take() throws InterruptedException {
         return providerQueue.take();
     }
 
-    public IndexStuffProvider peek() {
+    public ImportStuff peek() {
         return providerQueue.peek();
     }
 

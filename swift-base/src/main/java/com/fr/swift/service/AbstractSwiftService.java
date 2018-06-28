@@ -13,7 +13,7 @@ import java.io.Serializable;
 public abstract class AbstractSwiftService implements SwiftService, Serializable {
 
     private static final long serialVersionUID = -7878341721352591837L;
-    protected SwiftLogger logger = SwiftLoggers.getLogger(getClass());
+    protected transient SwiftLogger logger = SwiftLoggers.getLogger(getClass());
     //远程机器id，没有表示本地
     private String id;
 
@@ -44,4 +44,6 @@ public abstract class AbstractSwiftService implements SwiftService, Serializable
     public void setId(String id) {
         this.id = id;
     }
+
+    public abstract void cleanMetaCache(String[] sourceKeys);
 }

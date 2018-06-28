@@ -51,12 +51,13 @@ public class SwiftLogOperator implements LogOperator {
             Table table = db.getTable(new SourceKey(SwiftMetaAdaptor.getTableName(entity)));
             DecisionRowAdaptor<T> adaptor = new DecisionRowAdaptor<T>(entity, table.getMeta());
             List<T> tList = new ArrayList<T>();
-            List<Row> rows = LogQueryUtils.detailQuery(entity, queryCondition);
+            DataList<Row> rowDataList = LogQueryUtils.detailQuery(entity, queryCondition);
+            List<Row> rows = rowDataList.getList();
             for (Row row : rows) {
                 tList.add(adaptor.apply(row));
             }
             dataList.list(tList);
-            dataList.setTotalCount(tList.size());
+            dataList.setTotalCount(rowDataList.getTotalCount());
         } catch (Exception e) {
             LOGGER.error(e);
         }

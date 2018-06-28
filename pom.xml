@@ -30,6 +30,8 @@
         <module>swift-netty</module>
         <module>swift-repository</module>
         <module>swift-decision</module>
+        <module>swift-redis</module>
+        <module>swift-config</module>
     </modules>
 
     <properties>

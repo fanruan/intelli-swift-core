@@ -1,11 +1,13 @@
 package com.fr.swift.service;
 
 import com.fr.swift.config.SwiftCubePathConfig;
+import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.builder.QueryBuilder;
-import com.fr.swift.query.query.QueryInfo;
+import com.fr.swift.query.info.bean.query.QueryInfoBean;
+import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
+import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.query.session.AbstractSession;
 import com.fr.swift.query.session.Session;
@@ -40,7 +42,7 @@ import java.util.Set;
 public class SwiftHistoryService extends AbstractSwiftService implements HistoryService, Serializable {
 
     private static final long serialVersionUID = -6013675740141588108L;
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftHistoryService.class);
+//    private transient static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftHistoryService.class);
 
     public static SwiftHistoryService getInstance() {
         return SingletonHolder.instance;
@@ -59,8 +61,14 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                 repository.copyFromRemote(remote, URI.create(path + remote.getPath()));
             }
         } else {
-            LOGGER.warn("Receive an empty URI set. Skip loading.");
+            SwiftLoggers.getLogger(SwiftHistoryService.class).warn("Receive an empty URI set. Skip loading.");
         }
+    }
+
+    @Override
+    @RpcMethod(methodName = "cleanMetaCache")
+    public void cleanMetaCache(String[] sourceKeys) {
+        SwiftContext.getInstance().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
     }
 
 
@@ -72,40 +80,45 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     @Override
     @SuppressWarnings("Duplicates")
     @RpcMethod(methodName = "historyQuery")
-    public <T extends SwiftResultSet> T query(final QueryInfo<T> queryInfo) throws SQLException {
+    public SwiftResultSet query(final String queryDescription) throws SQLException {
         // TODO: 2018/6/14 先到QueryResultSetManager找一下有没有缓存，没有则构建查询。
         // 另外分组表的resultSet在构建Query的时候处理好了，直接返回取出来的结果集即可。等明细部分好了一起改一下
-        SessionFactory factory = SwiftContext.getInstance().getBean(SessionFactory.class);
-        return factory.openSession(new SessionBuilder() {
-            @Override
-            public Session build(long cacheTimeout) {
-                return new AbstractSession(cacheTimeout) {
-                    @Override
-                    protected <T extends SwiftResultSet> T query(QueryInfo<T> queryInfo) throws SQLException {
-                        // TODO: 2018/6/20 @yee 先到QueryResultSetManager找一下有没有缓存，没有则构建查询
-                        SwiftResultSet resultSet = QueryBuilder.buildQuery(queryInfo).getQueryResult();
-                        SerializableResultSet result;
-                        QueryType type = queryInfo.getType();
-                        switch (type) {
-                            case LOCAL_GROUP_ALL:
-                                result = new LocalAllNodeResultSet(queryInfo.getQueryId(), (NodeResultSet<SwiftNode>) resultSet);
-                                break;
-                            case LOCAL_GROUP_PART:
-                                result = new LocalPartNodeResultSet(queryInfo.getQueryId(), (NodeMergeResultSet<GroupNode>) resultSet);
-                                break;
-                            default:
-                                result = new SerializableDetailResultSet(queryInfo.getQueryId(), (DetailResultSet) resultSet);
+        try {
+            final QueryInfoBean bean = QueryInfoBeanFactory.create(queryDescription);
+            SessionFactory factory = SwiftContext.getInstance().getBean(SessionFactory.class);
+            return factory.openSession(new SessionBuilder() {
+                @Override
+                public Session build(long cacheTimeout) {
+                    return new AbstractSession(cacheTimeout) {
+                        @Override
+                        protected SwiftResultSet query(QueryBean queryInfo) throws SQLException {
+                            // TODO: 2018/6/20 @yee 先到QueryResultSetManager找一下有没有缓存，没有则构建查询
+                            SwiftResultSet resultSet = QueryBuilder.buildQuery(queryInfo).getQueryResult();
+                            SerializableResultSet result;
+                            QueryType type = queryInfo.getQueryType();
+                            switch (type) {
+                                case LOCAL_GROUP_ALL:
+                                    result = new LocalAllNodeResultSet(queryInfo.getQueryId(), (NodeResultSet<SwiftNode>) resultSet);
+                                    break;
+                                case LOCAL_GROUP_PART:
+                                    result = new LocalPartNodeResultSet(queryInfo.getQueryId(), (NodeMergeResultSet<GroupNode>) resultSet);
+                                    break;
+                                default:
+                                    result = new SerializableDetailResultSet(queryInfo.getQueryId(), (DetailResultSet) resultSet);
+                            }
+                            return result;
                         }
-                        return (T) result;
-                    }
-                };
-            }
+                    };
+                }
 
-            @Override
-            public String getQueryId() {
-                return queryInfo.getQueryId();
-            }
-        }).executeQuery(queryInfo);
+                @Override
+                public String getQueryId() {
+                    return bean.getQueryId();
+                }
+            }).executeQuery(bean);
+        } catch (IOException e) {
+            throw new SQLException(e);
+        }
     }
 
     private static class SingletonHolder {

@@ -11,6 +11,7 @@ import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.excel.data.IExcelDataModel;
 import com.fr.swift.util.Util;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -18,7 +19,8 @@ import java.util.List;
 /**
  * Created by pony on 2017/11/15.
  */
-public class ExcelDataSource extends AbstractOuterDataSource {
+public class ExcelDataSource extends AbstractOuterDataSource implements Serializable {
+    private static final long serialVersionUID = 3905785037446670738L;
     @CoreField
     private String fullFileName;
 

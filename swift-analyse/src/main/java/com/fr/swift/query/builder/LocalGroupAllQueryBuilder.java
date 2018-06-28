@@ -92,7 +92,7 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
         return new GroupResultQuery(queries, getAggregators(metrics), getComparatorsForMerge(dimensions));
     }
 
-    private List<Aggregator> getFilterAggregators(List<Metric> metrics, Segment segment) {
+    static List<Aggregator> getFilterAggregators(List<Metric> metrics, Segment segment) {
         List<Aggregator> aggregators = new ArrayList<Aggregator>();
         for (Metric metric : metrics){
             if (metric.getFilter() != null){

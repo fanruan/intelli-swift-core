@@ -1,5 +1,7 @@
 package com.fr.swift.service;
 
+import com.fr.swift.config.service.SwiftMetaDataService;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.service.listener.RealTimeIndexingFinishListener;
 import com.fr.swift.stuff.RealTimeIndexingStuff;
@@ -37,6 +39,7 @@ public class LocalSwiftServerService extends AbstractSwiftServerService {
                     break;
                 case REAL_TIME:
                     realTimeService = (SwiftRealtimeService) service;
+                default:
             }
         }
     }
@@ -56,6 +59,7 @@ public class LocalSwiftServerService extends AbstractSwiftServerService {
                     break;
                 case REAL_TIME:
                     realTimeService = null;
+                default:
             }
         }
     }
@@ -77,4 +81,8 @@ public class LocalSwiftServerService extends AbstractSwiftServerService {
     }
 
 
+    @Override
+    public void cleanMetaCache(String[] sourceKeys) {
+        SwiftContext.getInstance().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
+    }
 }

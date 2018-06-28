@@ -1,12 +1,13 @@
 package com.fr.swift.adaptor.log.query;
 
-import com.fr.annotation.Test;
 import com.fr.stable.query.QueryFactory;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.swift.adaptor.log.QueryConditionAdaptor;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
+import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.source.DataSource;
@@ -14,9 +15,12 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.db.QueryDBSource;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static junit.framework.TestCase.assertTrue;
 
 /**
  * This class created on 2018/4/27
@@ -42,12 +46,13 @@ public class LogDetailSortTest extends LogBaseTest {
             QueryCondition sortQueryCondition = QueryFactory.create().addSort("总金额");
 
             QueryInfo sortQueryInfo = QueryConditionAdaptor.adaptCondition(sortQueryCondition, table);
-            SwiftResultSet sortResultSet = QueryRunnerProvider.getInstance().executeQuery(sortQueryInfo);
+            QueryBean queryBean = QueryInfoBeanFactory.create(sortQueryInfo);
+            SwiftResultSet sortResultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
             int sortindex = table.getMeta().getColumnIndex("总金额");
             List<Double> dataList = new ArrayList<Double>();
             while (sortResultSet.next()) {
                 Row row = sortResultSet.getRowData();
-                dataList.add(((Long) row.getValue(sortindex)).doubleValue());
+                dataList.add(((Long) row.getValue(sortindex - 1)).doubleValue());
             }
             for (int i = 0; i < dataList.size() - 1; i++) {
                 assertTrue(dataList.get(i) <= dataList.get(i + 1));
@@ -71,12 +76,13 @@ public class LogDetailSortTest extends LogBaseTest {
             QueryCondition sortQueryCondition = QueryFactory.create().addSort("总金额", true);
 
             QueryInfo sortQueryInfo = QueryConditionAdaptor.adaptCondition(sortQueryCondition, table);
-            SwiftResultSet sortResultSet = QueryRunnerProvider.getInstance().executeQuery(sortQueryInfo);
+            QueryBean queryBean = QueryInfoBeanFactory.create(sortQueryInfo);
+            SwiftResultSet sortResultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
             int sortindex = table.getMeta().getColumnIndex("总金额");
             List<Double> dataList = new ArrayList<Double>();
             while (sortResultSet.next()) {
                 Row row = sortResultSet.getRowData();
-                dataList.add(((Long) row.getValue(sortindex)).doubleValue());
+                dataList.add(((Long) row.getValue(sortindex - 1)).doubleValue());
             }
             for (int i = 0; i < dataList.size() - 1; i++) {
                 assertTrue(dataList.get(i) >= dataList.get(i + 1));

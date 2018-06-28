@@ -3,11 +3,14 @@ package com.fr.swift.cube.task.impl;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.task.TaskKey;
 
+import java.io.Serializable;
+
 /**
  * @author anchore
  * @date 2017/12/13
  */
-public class CubeTaskKey implements TaskKey {
+public class CubeTaskKey implements TaskKey, Serializable {
+    private static final long serialVersionUID = 2126126448338496452L;
     private final int round;
     private final String name;
     private final Operation operation;

@@ -3,13 +3,14 @@ package com.fr.swift.service;
 import com.fr.swift.Invoker;
 import com.fr.swift.ProxyFactory;
 import com.fr.swift.Result;
+import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.invocation.SwiftInvocation;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.builder.QueryBuilder;
-import com.fr.swift.query.query.QueryInfo;
+import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.rpc.annotation.RpcMethod;
 import com.fr.swift.rpc.annotation.RpcService;
@@ -25,6 +26,7 @@ import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.selector.ProxySelector;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -38,14 +40,23 @@ import java.util.concurrent.CountDownLatch;
 public class SwiftAnalyseService extends AbstractSwiftService implements AnalyseService {
 
     private static final long serialVersionUID = 841582089735823794L;
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftAnalyseService.class);
-    private RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
+    private transient static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftAnalyseService.class);
+    private transient RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
+    private transient ObjectMapper mapper = new ObjectMapper();
 
     public SwiftAnalyseService(String id) {
         super(id);
     }
 
-    public SwiftAnalyseService() {
+    private SwiftAnalyseService() {
+    }
+
+    public static SwiftAnalyseService getInstance() {
+        return SingletonHolder.service;
+    }
+
+    private static class SingletonHolder {
+        private static SwiftAnalyseService service = new SwiftAnalyseService();
     }
 
     @Override
@@ -61,12 +72,18 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     }
 
     @Override
-    public <T extends SwiftResultSet> T getQueryResult(QueryInfo<T> info) throws SQLException {
+    @RpcMethod(methodName = "cleanMetaCache")
+    public void cleanMetaCache(String[] sourceKeys) {
+        SwiftContext.getInstance().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
+    }
+
+    @Override
+    public SwiftResultSet getQueryResult(QueryBean info) throws SQLException {
         return QueryBuilder.buildQuery(info).getQueryResult();
     }
 
     @Override
-    public <T extends SwiftResultSet> T getRemoteQueryResult(final QueryInfo<T> info, final SegmentDestination remoteURI) {
+    public SwiftResultSet getRemoteQueryResult(final QueryBean info, final SegmentDestination remoteURI) {
         final SwiftResultSet[] resultSet = new SwiftResultSet[1];
         try {
             final CountDownLatch latch = new CountDownLatch(1);
@@ -115,17 +132,17 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
         } catch (Exception e) {
             LOGGER.error("Query remote node error! ", e);
         }
-        return (T) resultSet[0];
+        return resultSet[0];
     }
 
-    private <T extends SwiftResultSet> RpcFuture queryRemoteNodeNode(QueryInfo<T> info, SegmentDestination remoteURI) throws Exception {
+    private RpcFuture queryRemoteNodeNode(QueryBean info, SegmentDestination remoteURI) throws Exception {
         String address = remoteURI.getAddress();
         String methodName = remoteURI.getMethodName();
         Class clazz = remoteURI.getServiceClass();
         info.setQuerySegment(remoteURI.getUri());
         ProxyFactory factory = ProxySelector.getInstance().getFactory();
         Invoker invoker = factory.getInvoker(null, clazz, new RPCUrl(new RPCDestination(address)), false);
-        Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName(methodName), new Object[]{info}));
+        Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName(methodName), new Object[]{mapper.writeValueAsString(info)}));
         RpcFuture future = (RpcFuture) result.getValue();
         if (null == future) {
             throw new Exception(result.getException());
