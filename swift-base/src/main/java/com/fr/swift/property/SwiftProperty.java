@@ -33,7 +33,7 @@ public class SwiftProperty {
     private String configDbJdbcUrl;
 
     @Autowired
-    public void setRpcAddress(@Value("${swift.http_server_address}") String rpcAddress) {
+    public void setRpcAddress(@Value("${rpc.server_address}") String rpcAddress) {
         this.rpcAddress = rpcAddress;
     }
 
@@ -43,7 +43,7 @@ public class SwiftProperty {
     }
 
     @Autowired
-    public void setMasterAddress(@Value("${rpc.server_address}") String masterAddress) {
+    public void setMasterAddress(@Value("${swift.master_address}") String masterAddress) {
         this.masterAddress = masterAddress;
     }
 
