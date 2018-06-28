@@ -63,9 +63,11 @@ public abstract class AbstractSegmentRecovery implements SegmentRecovery {
     private List<SegmentKey> getUnstoredSegmentKeys(SourceKey tableKey) {
         List<SegmentKey> segKeys = localSegmentProvider.getSegmentKeys(tableKey);
         List<SegmentKey> unstoredSegs = new ArrayList<SegmentKey>();
-        for (SegmentKey segKey : segKeys) {
-            if (segKey.getStoreType() == Types.StoreType.MEMORY) {
-                unstoredSegs.add(segKey);
+        if (null != segKeys) {
+            for (SegmentKey segKey : segKeys) {
+                if (segKey.getStoreType() == Types.StoreType.MEMORY) {
+                    unstoredSegs.add(segKey);
+                }
             }
         }
         return unstoredSegs;

@@ -88,16 +88,16 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
             URL url = UrlSelector.getInstance().getFactory().getURL(service.getID());
             switch (service.getServiceType()) {
                 case ANALYSE:
-                    analyseServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), SwiftAnalyseService.class));
+                    analyseServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), AnalyseService.class));
                     break;
                 case HISTORY:
                     historyServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), HistoryService.class));
                     break;
                 case INDEXING:
-                    indexingServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), SwiftIndexingService.class));
+                    indexingServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), IndexingService.class));
                     break;
                 case REAL_TIME:
-                    realTimeServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), SwiftRealtimeService.class));
+                    realTimeServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), RealtimeService.class));
                 default:
             }
         }

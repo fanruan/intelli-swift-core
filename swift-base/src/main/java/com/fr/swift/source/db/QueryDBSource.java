@@ -3,10 +3,12 @@ package com.fr.swift.source.db;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.core.CoreField;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public class QueryDBSource extends AbstractDBDataSource {
+public class QueryDBSource extends AbstractDBDataSource implements Serializable {
 
+    private static final long serialVersionUID = 4438891265082511219L;
     @CoreField
     protected String query;
     @CoreField

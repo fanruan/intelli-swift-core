@@ -3,13 +3,14 @@ package com.fr.swift.source.db;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.core.CoreField;
 
+import java.io.Serializable;
 import java.util.Map;
 
 
 /**
  * Created by pony on 2017/6/15.
  */
-public class TableDBSource extends AbstractDBDataSource {
+public class TableDBSource extends AbstractDBDataSource implements Serializable {
     private static final long serialVersionUID = -337260203343265208L;
 
     @CoreField

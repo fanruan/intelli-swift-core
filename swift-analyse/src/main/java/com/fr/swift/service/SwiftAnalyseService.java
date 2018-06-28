@@ -40,15 +40,23 @@ import java.util.concurrent.CountDownLatch;
 public class SwiftAnalyseService extends AbstractSwiftService implements AnalyseService {
 
     private static final long serialVersionUID = 841582089735823794L;
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftAnalyseService.class);
-    private RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
-    private ObjectMapper mapper = new ObjectMapper();
+    private transient static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftAnalyseService.class);
+    private transient RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
+    private transient ObjectMapper mapper = new ObjectMapper();
 
     public SwiftAnalyseService(String id) {
         super(id);
     }
 
-    public SwiftAnalyseService() {
+    private SwiftAnalyseService() {
+    }
+
+    public static SwiftAnalyseService getInstance() {
+        return SingletonHolder.service;
+    }
+
+    private static class SingletonHolder {
+        private static SwiftAnalyseService service = new SwiftAnalyseService();
     }
 
     @Override
