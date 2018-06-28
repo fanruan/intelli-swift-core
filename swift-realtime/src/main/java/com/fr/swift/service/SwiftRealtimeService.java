@@ -2,6 +2,7 @@ package com.fr.swift.service;
 
 import com.fr.swift.URL;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
+import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.impl.SwiftDatabase;
@@ -12,20 +13,10 @@ import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.query.QueryType;
 import com.fr.swift.query.session.AbstractSession;
 import com.fr.swift.query.session.Session;
 import com.fr.swift.query.session.SessionBuilder;
 import com.fr.swift.query.session.factory.SessionFactory;
-import com.fr.swift.result.DetailResultSet;
-import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeMergeResultSet;
-import com.fr.swift.result.NodeResultSet;
-import com.fr.swift.result.SwiftNode;
-import com.fr.swift.result.serialize.LocalAllNodeResultSet;
-import com.fr.swift.result.serialize.LocalPartNodeResultSet;
-import com.fr.swift.result.serialize.SerializableDetailResultSet;
-import com.fr.swift.result.serialize.SerializableResultSet;
 import com.fr.swift.rpc.annotation.RpcMethod;
 import com.fr.swift.rpc.annotation.RpcService;
 import com.fr.swift.rpc.annotation.RpcServiceType;
@@ -50,7 +41,16 @@ import java.util.concurrent.Callable;
 @RpcService(type = RpcServiceType.CLIENT_SERVICE, value = RealtimeService.class)
 public class SwiftRealtimeService extends AbstractSwiftService implements RealtimeService, Serializable {
 
-    private RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
+    private transient RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
+
+    private SwiftRealtimeService() {
+    }
+
+    public static SwiftRealtimeService getInstance() {
+        return SingletonHolder.service;
+    }
+
+
 
     @Override
     public void insert(SourceKey tableKey, SwiftResultSet resultSet) throws SQLException {
@@ -91,7 +91,12 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     }
 
     @Override
-    @SuppressWarnings("Duplicates")
+    @RpcMethod(methodName = "cleanMetaCache")
+    public void cleanMetaCache(String[] sourceKeys) {
+        SwiftContext.getInstance().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
+    }
+
+    @Override
     @RpcMethod(methodName = "realTimeQuery")
     public SwiftResultSet query(final String queryDescription) throws SQLException {
         try {
@@ -103,21 +108,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
                     return new AbstractSession(cacheTimeout) {
                         @Override
                         protected SwiftResultSet query(QueryBean queryInfo) throws SQLException {
-                            // 先到QueryResultSetManager找一下有没有缓存，没有则构建查询。
-                            SwiftResultSet resultSet = QueryBuilder.buildQuery(queryInfo).getQueryResult();
-                            SerializableResultSet result;
-                            QueryType type = queryInfo.getQueryType();
-                            switch (type) {
-                                case LOCAL_GROUP_ALL:
-                                    result = new LocalAllNodeResultSet(queryInfo.getQueryId(), (NodeResultSet<SwiftNode>) resultSet);
-                                    break;
-                                case LOCAL_GROUP_PART:
-                                    result = new LocalPartNodeResultSet(queryInfo.getQueryId(), (NodeMergeResultSet<GroupNode>) resultSet);
-                                    break;
-                                default:
-                                    result = new SerializableDetailResultSet(queryInfo.getQueryId(), (DetailResultSet) resultSet);
-                            }
-                            return result;
+                            return QueryBuilder.buildQuery(queryInfo).getQueryResult();
                         }
                     };
                 }
@@ -169,7 +160,8 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         super(id);
     }
 
-    public SwiftRealtimeService() {
+    private static class SingletonHolder {
+        private static SwiftRealtimeService service = new SwiftRealtimeService();
     }
 
     private URL getMasterURL() {
