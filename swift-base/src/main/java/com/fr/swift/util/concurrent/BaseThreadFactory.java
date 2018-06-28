@@ -29,7 +29,11 @@ abstract class BaseThreadFactory implements ThreadFactory {
 
     @Override
     public Thread newThread(Runnable r) {
-        Thread t = SwiftExecutors.newThread(group, r, String.format("%s-%d", namePrefix, threadNumber.getAndIncrement()), 0);
+        return newThread(group, r, String.format("%s-%d", namePrefix, threadNumber.getAndIncrement()), 0);
+    }
+
+    static Thread newThread(ThreadGroup group, Runnable target, String name, long stackSize) {
+        Thread t = new Thread(group, target, name, stackSize);
         if (t.isDaemon()) {
             t.setDaemon(false);
         }

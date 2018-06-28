@@ -8,6 +8,7 @@ import com.fr.stable.StringUtils;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
+import com.fr.swift.util.concurrent.SwiftExecutors;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -22,7 +23,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,7 +40,7 @@ public class ExcelCSVReader extends AbstractExcelReader {
     private List<Object[]> tempRowDataList = new ArrayList<Object[]>();
     private BufferedReader reader;
     private boolean end = false;
-    private ExecutorService readThread = Executors.newSingleThreadExecutor();
+    private ExecutorService readThread = SwiftExecutors.newSingleThreadExecutor();
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(ExcelCSVReader.class);
 
     @Override

@@ -10,12 +10,12 @@ import com.fr.swift.rpc.bean.RpcResponse;
 import com.fr.swift.rpc.client.async.AsyncRpcClientHandler;
 import com.fr.swift.rpc.client.async.RpcFuture;
 import com.fr.swift.rpc.client.sync.SyncRpcClientHandler;
+import com.fr.swift.util.concurrent.SwiftExecutors;
 import com.fr.third.jodd.util.StringUtil;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * This class created on 2018/6/7
@@ -28,7 +28,7 @@ public class RPCInvoker<T> implements Invoker<T> {
 
     private static int nThreads = Runtime.getRuntime().availableProcessors() * 2;
 
-    private static ExecutorService handlerPool = Executors.newFixedThreadPool(nThreads);
+    private static ExecutorService handlerPool = SwiftExecutors.newFixedThreadPool(nThreads);
 
     private final T proxy;
 

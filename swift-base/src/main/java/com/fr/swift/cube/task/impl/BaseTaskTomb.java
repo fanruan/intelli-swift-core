@@ -4,7 +4,7 @@ import com.fr.swift.cube.task.SchedulerTask;
 import com.fr.swift.cube.task.Task.Status;
 import com.fr.swift.cube.task.TaskResult.Type;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.util.concurrent.SingleThreadFactory;
+import com.fr.swift.util.concurrent.SwiftExecutors;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -17,7 +17,7 @@ abstract class BaseTaskTomb implements Runnable {
     private BlockingQueue<SchedulerTask> tasks = new LinkedBlockingQueue<SchedulerTask>();
 
     BaseTaskTomb() {
-        new SingleThreadFactory(getClass()).newThread(this).start();
+        SwiftExecutors.newThread(this).start();
     }
 
     public void add(SchedulerTask task) {

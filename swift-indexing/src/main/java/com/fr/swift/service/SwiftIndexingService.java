@@ -15,14 +15,25 @@ import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.cube.task.TaskResult;
+import com.fr.swift.cube.task.WorkerTask;
+import com.fr.swift.cube.task.impl.CubeTaskManager;
+import com.fr.swift.cube.task.impl.Operation;
 import com.fr.swift.cube.task.impl.TaskEvent;
+import com.fr.swift.cube.task.impl.WorkerTaskImpl;
+import com.fr.swift.cube.task.impl.WorkerTaskPool;
 import com.fr.swift.event.history.HistoryLoadRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.frrpc.SwiftClusterService;
+import com.fr.swift.generate.history.TableBuilder;
+import com.fr.swift.generate.history.index.FieldPathIndexer;
+import com.fr.swift.generate.history.index.MultiRelationIndexer;
+import com.fr.swift.generate.history.index.TablePathIndexer;
 import com.fr.swift.info.ServerCurrentStatus;
 import com.fr.swift.invocation.SwiftInvocation;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.property.SwiftProperty;
+import com.fr.swift.relation.utils.RelationPathHelper;
 import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.rpc.annotation.RpcMethod;
 import com.fr.swift.rpc.annotation.RpcService;
@@ -35,9 +46,12 @@ import com.fr.swift.selector.ProxySelector;
 import com.fr.swift.selector.UrlSelector;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.source.DataSource;
+import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.relation.FieldRelationSource;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.stuff.IndexingStuff;
+import com.fr.swift.util.function.Function2;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -160,5 +174,43 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
                 SwiftLoggers.getLogger().info("rpc通知server任务完成");
             }
         });
+
+        WorkerTaskPool.getInstance().initListener();
+        WorkerTaskPool.getInstance().setTaskGenerator(new TaskGenerator());
+
+        CubeTaskManager.getInstance().initListener();
+    }
+
+    private static class TaskGenerator implements Function2<TaskKey, Object, WorkerTask> {
+        @Override
+        public WorkerTask apply(TaskKey taskKey, Object data) {
+            if (taskKey.operation() == Operation.NULL) {
+                return new WorkerTaskImpl(taskKey);
+            }
+
+            WorkerTask wt = null;
+            if (data instanceof DataSource) {
+                wt = new WorkerTaskImpl(taskKey, new TableBuilder(((DataSource) data)));
+                return wt;
+            }
+            if (data instanceof RelationSource) {
+                RelationSource source = (RelationSource) data;
+                switch (source.getRelationType()) {
+                    case RELATION:
+                        wt = new WorkerTaskImpl(taskKey, new MultiRelationIndexer(RelationPathHelper.convert2CubeRelation(source), SwiftContext.getInstance().getBean(LocalSegmentProvider.class)));
+                        break;
+                    case RELATION_PATH:
+                        wt = new WorkerTaskImpl(taskKey, new TablePathIndexer(RelationPathHelper.convert2CubeRelationPath(source), SwiftContext.getInstance().getBean(LocalSegmentProvider.class)));
+                        break;
+                    case FIELD_RELATION:
+                        FieldRelationSource fieldRelationSource = (FieldRelationSource) source;
+                        wt = new WorkerTaskImpl(taskKey, new FieldPathIndexer(RelationPathHelper.convert2CubeRelationPath(fieldRelationSource.getRelationSource()), fieldRelationSource.getColumnKey(), SwiftContext.getInstance().getBean(LocalSegmentProvider.class)));
+                        break;
+                    default:
+                }
+                return wt;
+            }
+            return null;
+        }
     }
 }

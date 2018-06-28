@@ -82,16 +82,18 @@ public class SwiftExecutors {
         return scheduledThreadPool;
     }
 
+    public static Thread newThread(Runnable runnable) {
+        return newThread(runnable, BaseThreadFactory.getSimpleName(runnable.getClass()));
+    }
+
     public static Thread newThread(Runnable runnable, String name) {
-        Thread thread = new Thread(runnable, name);
-        THREADS.put(THREAD_COUNT.getAndIncrement(), thread);
-        return thread;
+        return newThread(null, runnable, name, 0);
     }
 
     public static Thread newThread(ThreadGroup group, Runnable target, String name, long stackSize) {
-        Thread thread = new Thread(group, target, name, stackSize);
-        THREADS.put(THREAD_COUNT.getAndIncrement(), thread);
-        return thread;
+        Thread t = BaseThreadFactory.newThread(group, target, name, stackSize);
+        THREADS.put(THREAD_COUNT.getAndIncrement(), t);
+        return t;
     }
 
     public static void shutdownAll() {
@@ -135,14 +137,6 @@ public class SwiftExecutors {
 
     public static ScheduledExecutorService unconfigurableScheduledExecutorService(ScheduledExecutorService executor) {
         return Executors.unconfigurableScheduledExecutorService(executor);
-    }
-
-    public static ThreadFactory defaultThreadFactory() {
-        return Executors.defaultThreadFactory();
-    }
-
-    public static ThreadFactory privilegedThreadFactory() {
-        return Executors.privilegedThreadFactory();
     }
 
     public static <T> Callable<T> callable(Runnable task, T result) {
