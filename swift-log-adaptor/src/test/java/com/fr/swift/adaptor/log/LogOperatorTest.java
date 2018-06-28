@@ -45,7 +45,7 @@ public class LogOperatorTest {
     public static void boot() throws Exception {
         Preparer.prepareCubeBuild();
         new LocalSwiftServerService().start();
-        new SwiftAnalyseService().start();
+        SwiftAnalyseService.getInstance().start();
     }
 
     @Before

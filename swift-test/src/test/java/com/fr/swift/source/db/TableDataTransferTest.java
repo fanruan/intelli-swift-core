@@ -19,7 +19,7 @@ public class TableDataTransferTest extends TestCase {
 
 
     public void testCreateResultSet() throws Exception{
-        String path = ResourceUtils.getFileAbsolutePath("com/fr/swift/resource/excel/test.xlsx");
+        String path = ResourceUtils.getFileAbsolutePath("excel/test.xlsx");
         String[] names = {"A", "B"};
         ColumnType[] types = {ColumnType.STRING, ColumnType.NUMBER};
         ExcelDataSource source = new ExcelDataSource(path, names, types);
@@ -34,7 +34,7 @@ public class TableDataTransferTest extends TestCase {
     }
 
     public void testCreatePartResultSet() throws Exception{
-        String path = ResourceUtils.getFileAbsolutePath("com/fr/swift/resource/excel/test.xlsx");
+        String path = ResourceUtils.getFileAbsolutePath("excel/test.xlsx");
         String[] names = {"A", "B"};
         ColumnType[] types = {ColumnType.STRING, ColumnType.NUMBER};
         LinkedHashMap<String, ColumnType> fields = new LinkedHashMap<>();

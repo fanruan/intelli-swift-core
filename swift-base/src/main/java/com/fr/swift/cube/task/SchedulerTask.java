@@ -27,15 +27,11 @@ public interface SchedulerTask extends Task {
      */
     void onDone(TaskResult result);
 
-    void addPrev(TaskKey prevKey);
-
     void addPrev(SchedulerTask prev);
-
-    void addNext(TaskKey nextKey);
 
     void addNext(SchedulerTask next);
 
-    List<TaskKey> prevAll();
+    List<SchedulerTask> prevAll();
 
-    List<TaskKey> nextAll();
+    List<SchedulerTask> nextAll();
 }

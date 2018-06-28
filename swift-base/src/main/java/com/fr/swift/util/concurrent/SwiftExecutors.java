@@ -1,8 +1,7 @@
-package com.fr.swift.thread;
+package com.fr.swift.util.concurrent;
 
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.security.PrivilegedAction;
 import java.security.PrivilegedExceptionAction;
@@ -12,7 +11,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -24,91 +22,82 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @since Advanced FineBI 5.0
  */
 public class SwiftExecutors {
-
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftExecutors.class);
 
-    private final static AtomicInteger executorCount = new AtomicInteger(1);
+    private final static AtomicInteger EXECUTOR_COUNT = new AtomicInteger(1);
 
-    private final static AtomicInteger threadCount = new AtomicInteger(1);
+    private final static AtomicInteger THREAD_COUNT = new AtomicInteger(1);
 
-    private final static Map<Integer, ExecutorService> executorServiceMap = new ConcurrentHashMap<Integer, ExecutorService>();
+    private final static Map<Integer, ExecutorService> EXECUTORS = new ConcurrentHashMap<Integer, ExecutorService>();
 
-    private final static Map<Integer, Thread> threadMap = new ConcurrentHashMap<Integer, Thread>();
+    private final static Map<Integer, Thread> THREADS = new ConcurrentHashMap<Integer, Thread>();
 
     public static ExecutorService newFixedThreadPool(int nThreads) {
-        ExecutorService fixedThreadPool = Executors.newFixedThreadPool(nThreads);
-        executorServiceMap.put(executorCount.getAndIncrement(), fixedThreadPool);
-        return fixedThreadPool;
+        return newFixedThreadPool(nThreads, new PoolThreadFactory(SwiftExecutors.class));
     }
 
     public static ExecutorService newFixedThreadPool(int nThreads, ThreadFactory threadFactory) {
         ExecutorService fixedThreadPool = Executors.newFixedThreadPool(nThreads, threadFactory);
-        executorServiceMap.put(executorCount.getAndIncrement(), fixedThreadPool);
+        EXECUTORS.put(EXECUTOR_COUNT.getAndIncrement(), fixedThreadPool);
         return fixedThreadPool;
     }
 
     public static ExecutorService newSingleThreadExecutor() {
-        ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
-        executorServiceMap.put(executorCount.getAndIncrement(), singleThreadExecutor);
-        return singleThreadExecutor;
+        return newSingleThreadExecutor(new PoolThreadFactory(SwiftExecutors.class));
     }
 
     public static ExecutorService newSingleThreadExecutor(ThreadFactory threadFactory) {
         ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor(threadFactory);
-        executorServiceMap.put(executorCount.getAndIncrement(), singleThreadExecutor);
+        EXECUTORS.put(EXECUTOR_COUNT.getAndIncrement(), singleThreadExecutor);
         return singleThreadExecutor;
     }
 
     public static ExecutorService newCachedThreadPool() {
-        ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
-        executorServiceMap.put(executorCount.getAndIncrement(), cachedThreadPool);
-        return cachedThreadPool;
+        return newCachedThreadPool(new PoolThreadFactory(SwiftExecutors.class));
     }
 
     public static ExecutorService newCachedThreadPool(ThreadFactory threadFactory) {
         ExecutorService cachedThreadPool = Executors.newCachedThreadPool(threadFactory);
-        executorServiceMap.put(executorCount.getAndIncrement(), cachedThreadPool);
+        EXECUTORS.put(EXECUTOR_COUNT.getAndIncrement(), cachedThreadPool);
         return cachedThreadPool;
     }
 
     public static ScheduledExecutorService newSingleThreadScheduledExecutor() {
-        ScheduledExecutorService singleThreadScheduledExecutor = Executors.newSingleThreadScheduledExecutor();
-        executorServiceMap.put(executorCount.getAndIncrement(), singleThreadScheduledExecutor);
-        return singleThreadScheduledExecutor;
+        return newSingleThreadScheduledExecutor(new PoolThreadFactory(SwiftExecutors.class));
     }
 
     public static ScheduledExecutorService newSingleThreadScheduledExecutor(ThreadFactory threadFactory) {
         ScheduledExecutorService singleThreadScheduledExecutor = Executors.newSingleThreadScheduledExecutor(threadFactory);
-        executorServiceMap.put(executorCount.getAndIncrement(), singleThreadScheduledExecutor);
+        EXECUTORS.put(EXECUTOR_COUNT.getAndIncrement(), singleThreadScheduledExecutor);
         return singleThreadScheduledExecutor;
     }
 
     public static ScheduledExecutorService newScheduledThreadPool(int corePoolSize) {
-        ScheduledExecutorService scheduledThreadPool = new ScheduledThreadPoolExecutor(corePoolSize);
-        executorServiceMap.put(executorCount.getAndIncrement(), scheduledThreadPool);
-        return scheduledThreadPool;
+        return newScheduledThreadPool(corePoolSize, new PoolThreadFactory(SwiftExecutors.class));
     }
 
     public static ScheduledExecutorService newScheduledThreadPool(int corePoolSize, ThreadFactory threadFactory) {
-        ScheduledExecutorService scheduledThreadPool = new ScheduledThreadPoolExecutor(corePoolSize, threadFactory);
-        executorServiceMap.put(executorCount.getAndIncrement(), scheduledThreadPool);
+        ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(corePoolSize, threadFactory);
+        EXECUTORS.put(EXECUTOR_COUNT.getAndIncrement(), scheduledThreadPool);
         return scheduledThreadPool;
     }
 
+    public static Thread newThread(Runnable runnable) {
+        return newThread(runnable, BaseThreadFactory.getSimpleName(runnable.getClass()));
+    }
+
     public static Thread newThread(Runnable runnable, String name) {
-        Thread thread = new Thread(runnable, name);
-        threadMap.put(threadCount.getAndIncrement(), thread);
-        return thread;
+        return newThread(null, runnable, name, 0);
     }
 
     public static Thread newThread(ThreadGroup group, Runnable target, String name, long stackSize) {
-        Thread thread = new Thread(group, target, name, stackSize);
-        threadMap.put(threadCount.getAndIncrement(), thread);
-        return thread;
+        Thread t = BaseThreadFactory.newThread(group, target, name, stackSize);
+        THREADS.put(THREAD_COUNT.getAndIncrement(), t);
+        return t;
     }
 
     public static void shutdownAll() {
-        for (Map.Entry<Integer, ExecutorService> executorServiceEntry : executorServiceMap.entrySet()) {
+        for (Map.Entry<Integer, ExecutorService> executorServiceEntry : EXECUTORS.entrySet()) {
             try {
                 executorServiceEntry.getValue().shutdown();
             } catch (Exception e) {
@@ -116,7 +105,7 @@ public class SwiftExecutors {
             }
         }
 
-        for (Map.Entry<Integer, Thread> threadEntry : threadMap.entrySet()) {
+        for (Map.Entry<Integer, Thread> threadEntry : THREADS.entrySet()) {
             try {
                 threadEntry.getValue().interrupt();
             } catch (Exception e) {
@@ -126,14 +115,14 @@ public class SwiftExecutors {
     }
 
     public static void shutdownAllNow() {
-        for (Map.Entry<Integer, ExecutorService> executorServiceEntry : executorServiceMap.entrySet()) {
+        for (Map.Entry<Integer, ExecutorService> executorServiceEntry : EXECUTORS.entrySet()) {
             try {
                 executorServiceEntry.getValue().shutdownNow();
             } catch (Exception e) {
                 LOGGER.error(e);
             }
         }
-        for (Map.Entry<Integer, Thread> threadEntry : threadMap.entrySet()) {
+        for (Map.Entry<Integer, Thread> threadEntry : THREADS.entrySet()) {
             try {
                 threadEntry.getValue().interrupt();
             } catch (Exception e) {
@@ -148,14 +137,6 @@ public class SwiftExecutors {
 
     public static ScheduledExecutorService unconfigurableScheduledExecutorService(ScheduledExecutorService executor) {
         return Executors.unconfigurableScheduledExecutorService(executor);
-    }
-
-    public static ThreadFactory defaultThreadFactory() {
-        return Executors.defaultThreadFactory();
-    }
-
-    public static ThreadFactory privilegedThreadFactory() {
-        return Executors.privilegedThreadFactory();
     }
 
     public static <T> Callable<T> callable(Runnable task, T result) {
@@ -182,4 +163,3 @@ public class SwiftExecutors {
         return Executors.privilegedCallableUsingCurrentClassLoader(callable);
     }
 }
-

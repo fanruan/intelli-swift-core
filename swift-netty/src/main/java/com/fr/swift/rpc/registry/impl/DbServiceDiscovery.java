@@ -1,8 +1,9 @@
 package com.fr.swift.rpc.registry.impl;
 
-import com.fr.swift.config.SwiftServiceAddressConfig;
 import com.fr.swift.config.bean.RpcServiceAddress;
+import com.fr.swift.config.service.SwiftServiceAddressService;
 import com.fr.swift.rpc.registry.ServiceDiscovery;
+import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
 /**
@@ -11,11 +12,12 @@ import com.fr.third.springframework.stereotype.Service;
  */
 @Service("dbServiceDiscovery")
 public class DbServiceDiscovery implements ServiceDiscovery {
-    private SwiftServiceAddressConfig config = SwiftServiceAddressConfig.getInstance();
 
+    @Autowired(required = false)
+    private SwiftServiceAddressService config;
     @Override
     public String discover(String serviceName) {
-        RpcServiceAddress address = config.getAddressByServiceName(serviceName);
+        RpcServiceAddress address = config.getAddress(serviceName);
         if (null == address) {
             return address.getFullAddress();
         }

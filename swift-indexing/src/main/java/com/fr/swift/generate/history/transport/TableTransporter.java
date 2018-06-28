@@ -39,7 +39,6 @@ public class TableTransporter extends BaseWorker implements Transporter {
     public void work() {
         try {
             transport();
-            ResourceDiscovery.getInstance().setLastUpdateTime(dataSource.getSourceKey(), System.currentTimeMillis());
             workOver(new TaskResultImpl(Type.SUCCEEDED));
         } catch (Exception e) {
             LOGGER.error("Datasource:" + dataSource.getSourceKey().getId() + " transport failed", e);
@@ -54,6 +53,8 @@ public class TableTransporter extends BaseWorker implements Transporter {
         Inserter inserter = SwiftContext.getInstance().getBean(SwiftDataOperatorProvider.class).getHistoryBlockSwiftInserter(dataSource);
         indexFieldsList = inserter.getFields();
         inserter.insertData(resultSet);
+
+        ResourceDiscovery.getInstance().setLastUpdateTime(dataSource.getSourceKey(), System.currentTimeMillis());
     }
 
     @Override

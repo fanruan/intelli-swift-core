@@ -3,6 +3,7 @@ package com.fr.swift.service;
 import com.fr.swift.Invoker;
 import com.fr.swift.ProxyFactory;
 import com.fr.swift.Result;
+import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.invocation.SwiftInvocation;
@@ -39,15 +40,23 @@ import java.util.concurrent.CountDownLatch;
 public class SwiftAnalyseService extends AbstractSwiftService implements AnalyseService {
 
     private static final long serialVersionUID = 841582089735823794L;
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftAnalyseService.class);
-    private RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
-    private ObjectMapper mapper = new ObjectMapper();
+    private transient static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftAnalyseService.class);
+    private transient RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
+    private transient ObjectMapper mapper = new ObjectMapper();
 
     public SwiftAnalyseService(String id) {
         super(id);
     }
 
-    public SwiftAnalyseService() {
+    private SwiftAnalyseService() {
+    }
+
+    public static SwiftAnalyseService getInstance() {
+        return SingletonHolder.service;
+    }
+
+    private static class SingletonHolder {
+        private static SwiftAnalyseService service = new SwiftAnalyseService();
     }
 
     @Override
@@ -60,6 +69,12 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
         boolean start = super.start();
         QueryRunnerProvider.getInstance().registerRunner(this);
         return start;
+    }
+
+    @Override
+    @RpcMethod(methodName = "cleanMetaCache")
+    public void cleanMetaCache(String[] sourceKeys) {
+        SwiftContext.getInstance().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
     }
 
     @Override

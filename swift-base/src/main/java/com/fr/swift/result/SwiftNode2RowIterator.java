@@ -3,6 +3,7 @@ package com.fr.swift.result;
 import com.fr.swift.source.Row;
 import com.fr.swift.structure.iterator.IteratorUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,7 +24,7 @@ public class SwiftNode2RowIterator implements SwiftRowIterator {
     }
 
     private static List<Row> createList(SwiftNode root) {
-        return IteratorUtils.iterator2List(SwiftNodeUtils.node2RowIterator(root));
+        return root == null ? new ArrayList<Row>(0) : IteratorUtils.iterator2List(SwiftNodeUtils.node2RowIterator(root));
     }
 
     /**

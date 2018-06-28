@@ -38,4 +38,15 @@ public class SortBeanFactory implements BeanFactory<List<Sort>, List<SortBean>> 
         }
         return result;
     }
+
+    private SortBeanFactory() {
+    }
+
+    public static SortBeanFactory getInstance() {
+        return SingletonHolder.factory;
+    }
+
+    private static class SingletonHolder {
+        private static SortBeanFactory factory = new SortBeanFactory();
+    }
 }

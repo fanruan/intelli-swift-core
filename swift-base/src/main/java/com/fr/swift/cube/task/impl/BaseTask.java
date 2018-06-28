@@ -16,6 +16,7 @@ abstract class BaseTask implements Task {
     final TaskKey key;
 
     volatile Status status = Status.WAITING;
+
     private List<TaskStatusChangeListener> listeners = new ArrayList<TaskStatusChangeListener>(1);
 
     volatile TaskResult result;
@@ -86,5 +87,19 @@ abstract class BaseTask implements Task {
     @Override
     public String toString() {
         return String.format("{%s, %s, %s}", key, status, result);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (obj instanceof Task) {
+            return ((Task) obj).key().equals(key);
+        }
+        return false;
     }
 }

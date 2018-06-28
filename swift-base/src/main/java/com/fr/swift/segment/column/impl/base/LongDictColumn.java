@@ -47,11 +47,8 @@ public class LongDictColumn extends BaseDictColumn<Long> {
     }
 
     @Override
-    public Long convertValue(Object value) {
-        if (value == null) {
-            return null;
-        }
-        return value instanceof Number ? ((Number) value).longValue() : Long.valueOf(value.toString());
+    public Type getType() {
+        return Type.LONG;
     }
 
     @Override

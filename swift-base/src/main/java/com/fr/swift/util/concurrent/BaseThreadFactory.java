@@ -1,6 +1,5 @@
 package com.fr.swift.util.concurrent;
 
-import com.fr.swift.thread.SwiftExecutors;
 import com.fr.swift.util.Util;
 
 import java.util.concurrent.ThreadFactory;
@@ -30,8 +29,11 @@ abstract class BaseThreadFactory implements ThreadFactory {
 
     @Override
     public Thread newThread(Runnable r) {
-        Thread t = SwiftExecutors.newThread(group, r, namePrefix + "-" + threadNumber.getAndIncrement(), 0);
-//        Thread t = new Thread(group, r, namePrefix + "-" + threadNumber.getAndIncrement(), 0);
+        return newThread(group, r, String.format("%s-%d", namePrefix, threadNumber.getAndIncrement()), 0);
+    }
+
+    static Thread newThread(ThreadGroup group, Runnable target, String name, long stackSize) {
+        Thread t = new Thread(group, target, name, stackSize);
         if (t.isDaemon()) {
             t.setDaemon(false);
         }

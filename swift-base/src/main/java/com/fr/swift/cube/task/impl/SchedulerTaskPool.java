@@ -1,14 +1,11 @@
 package com.fr.swift.cube.task.impl;
 
+import com.fr.event.Event;
+import com.fr.event.EventDispatcher;
+import com.fr.event.Listener;
 import com.fr.swift.cube.task.SchedulerTask;
 import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.cube.task.TaskResult;
-import com.fr.swift.exception.SwiftServiceException;
-import com.fr.swift.service.SwiftServiceEvent;
-import com.fr.swift.service.listener.EventOrder;
-import com.fr.swift.service.listener.EventType;
-import com.fr.swift.service.listener.SwiftServiceListener;
-import com.fr.swift.service.listener.SwiftServiceListenerManager;
 import com.fr.swift.structure.Pair;
 
 import java.util.HashMap;
@@ -18,22 +15,11 @@ import java.util.HashMap;
  * @date 2017/12/15
  */
 public class SchedulerTaskPool extends BaseTaskPool<SchedulerTask> {
-    public void initListener() throws SwiftServiceException {
-        SwiftServiceListenerManager.getInstance().addListener(new SwiftServiceListener<Pair<TaskKey, TaskResult>>() {
+    public void initListener() {
+        EventDispatcher.listen(TaskEvent.DONE, new Listener<Pair<TaskKey, TaskResult>>() {
             @Override
-            public void handle(SwiftServiceEvent<Pair<TaskKey, TaskResult>> event) {
-                Pair<TaskKey, TaskResult> pair = event.getContent();
-                get(pair.getKey()).onDone(pair.getValue());
-            }
-
-            @Override
-            public EventType getType() {
-                return EventType.DONE_TASK;
-            }
-
-            @Override
-            public EventOrder getOrder() {
-                return EventOrder.AFTER;
+            public void on(Event event, Pair<TaskKey, TaskResult> result) {
+                get(result.getKey()).onDone(result.getValue());
             }
         });
     }

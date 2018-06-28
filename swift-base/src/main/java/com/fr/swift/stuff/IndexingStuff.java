@@ -1,6 +1,11 @@
 package com.fr.swift.stuff;
 
-import java.util.List;
+import com.fr.swift.cube.task.TaskKey;
+import com.fr.swift.source.DataSource;
+import com.fr.swift.source.RelationSource;
+import com.fr.swift.source.SourcePath;
+
+import java.util.Map;
 
 /**
  * This class created on 2017-11-27.
@@ -9,11 +14,9 @@ import java.util.List;
  * @since Advanced FineBI Analysis 1.0
  */
 public interface IndexingStuff {
-    List<String> getTables();
+    Map<TaskKey, DataSource> getTables();
 
-    List<String> getRelations();
+    Map<TaskKey, RelationSource> getRelations();
 
-    List<String> getRelationPaths();
-
-    String getUpdateType();
+    Map<TaskKey, SourcePath> getRelationPaths();
 }

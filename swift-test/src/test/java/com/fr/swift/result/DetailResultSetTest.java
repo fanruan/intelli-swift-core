@@ -116,6 +116,11 @@ public class DetailResultSetTest extends TestCase {
                     }
 
                     @Override
+                    public Type getType() {
+                        return Type.INT;
+                    }
+
+                    @Override
                     public void flush() {
 
                     }
@@ -215,6 +220,11 @@ public class DetailResultSetTest extends TestCase {
                     @Override
                     public Comparator<Long> getComparator() {
                         return Long::compareTo;
+                    }
+
+                    @Override
+                    public Type getType() {
+                        return Type.LONG;
                     }
 
                     @Override
@@ -319,6 +329,11 @@ public class DetailResultSetTest extends TestCase {
                     }
 
                     @Override
+                    public Type getType() {
+                        return Type.DOUBLE;
+                    }
+
+                    @Override
                     public void flush() {
 
                     }
@@ -417,6 +432,11 @@ public class DetailResultSetTest extends TestCase {
                     @Override
                     public Comparator<String> getComparator() {
                         return String::compareTo;
+                    }
+
+                    @Override
+                    public Type getType() {
+                        return Type.STRING;
                     }
 
                     @Override

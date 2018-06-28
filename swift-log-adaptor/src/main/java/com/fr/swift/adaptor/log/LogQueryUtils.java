@@ -4,6 +4,7 @@ import com.fr.decision.log.LogSearchConstants;
 import com.fr.decision.log.MetricBean;
 import com.fr.stable.StringUtils;
 import com.fr.stable.query.condition.QueryCondition;
+import com.fr.stable.query.data.DataList;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.query.aggregator.Aggregator;
@@ -25,6 +26,7 @@ import com.fr.swift.query.info.group.post.PostQueryInfo;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.query.query.QueryRunnerProvider;
+import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
@@ -100,12 +102,15 @@ public class LogQueryUtils {
         return AggregatorFactory.createAggregator(AggregatorType.SUM);
     }
 
-    static List<Row> detailQuery(Class<?> entity, QueryCondition queryCondition, List<String> fieldNames) throws SQLException {
+    static DataList<Row> detailQuery(Class<?> entity, QueryCondition queryCondition, List<String> fieldNames) throws SQLException {
         Table table = SwiftDatabase.getInstance().getTable(new SourceKey(SwiftMetaAdaptor.getTableName(entity)));
         QueryInfo queryInfo = QueryConditionAdaptor.adaptCondition(queryCondition, table, fieldNames);
         QueryBean queryBean = QueryInfoBeanFactory.create(queryInfo);
         SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
-        return getPage(resultSet, queryCondition);
+        DataList<Row> dataList = new DataList<Row>();
+        dataList.setList(getPage(resultSet, queryCondition));
+        dataList.setTotalCount(((DetailResultSet) resultSet).getRowCount());
+        return dataList;
     }
 
     private static List<Row> getPage(SwiftResultSet resultSet, QueryCondition queryCondition) throws SQLException {
@@ -115,15 +120,14 @@ public class LogQueryUtils {
         //是否需要分页
         boolean isLimit = queryCondition.isCountLimitValid();
         List<Row> rows = new ArrayList<Row>();
-        long currentCount = 0;
         if (start >= end || !isLimit) {
             while (resultSet.next()) {
                 rows.add(resultSet.getRowData());
-                currentCount++;
             }
         } else {
+            long currentCount = 0;
             while (resultSet.next() && currentCount < end) {
-                if (isLimit && currentCount < start) {
+                if (currentCount < start) {
                     continue;
                 }
                 rows.add(resultSet.getRowData());
@@ -133,7 +137,7 @@ public class LogQueryUtils {
         return rows;
     }
 
-    static List<Row> detailQuery(Class<?> entity, QueryCondition queryCondition) throws SQLException {
+    static DataList<Row> detailQuery(Class<?> entity, QueryCondition queryCondition) throws SQLException {
         Table table = SwiftDatabase.getInstance().getTable(new SourceKey(SwiftMetaAdaptor.getTableName(entity)));
         return detailQuery(entity, queryCondition, table.getMeta().getFieldNames());
     }

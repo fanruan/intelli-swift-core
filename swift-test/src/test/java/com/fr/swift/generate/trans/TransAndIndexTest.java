@@ -5,7 +5,6 @@ import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.task.SchedulerTask;
 import com.fr.swift.cube.task.Task.Status;
 import com.fr.swift.cube.task.TaskKey;
-import com.fr.swift.cube.task.impl.BaseWorker;
 import com.fr.swift.cube.task.impl.CubeTaskManager;
 import com.fr.swift.cube.task.impl.Operation;
 import com.fr.swift.cube.task.impl.SchedulerTaskImpl;
@@ -62,15 +61,13 @@ public class TransAndIndexTest extends BaseConfigTest {
 
         SchedulerTaskPool.getInstance().initListener();
         WorkerTaskPool.getInstance().initListener();
-        WorkerTaskPool.getInstance().setGenerator(pair -> {
-            TaskKey taskKey = pair.getKey();
+        WorkerTaskPool.getInstance().setTaskGenerator((taskKey, taskInfo) -> {
             if (taskKey.operation() == Operation.NULL) {
-                return new WorkerTaskImpl(taskKey, BaseWorker.nullWorker());
+                return new WorkerTaskImpl(taskKey);
             }
 
-            Object o = pair.getValue();
-            if (o instanceof DataSource) {
-                DataSource ds = ((DataSource) o);
+            if (taskInfo instanceof DataSource) {
+                DataSource ds = ((DataSource) taskInfo);
                 return new WorkerTaskImpl(taskKey, new TableBuilder(ds));
             } else {
                 return null;
