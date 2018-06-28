@@ -54,6 +54,8 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
         init();
     }
 
+    protected abstract DictionaryEncodedColumn.Type getType();
+
     /**
      * 刷新索引
      */
@@ -209,6 +211,11 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
         @Override
         public Comparator<V> getComparator() {
             return c;
+        }
+
+        @Override
+        public Type getType() {
+            return BaseRealtimeColumn.this.getType();
         }
 
         @Override
