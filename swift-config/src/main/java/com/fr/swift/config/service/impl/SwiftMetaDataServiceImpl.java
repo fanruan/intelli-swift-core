@@ -12,7 +12,7 @@ import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.config.transaction.AbstractTransactionWorker;
 import com.fr.swift.config.transaction.SwiftTransactionManager;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.event.base.CleanMetaDataCacheEvent;
+import com.fr.swift.event.global.CleanMetaDataCacheEvent;
 import com.fr.swift.invocation.SwiftInvocation;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;

@@ -38,12 +38,12 @@ public class SwiftProperty {
     }
 
     @Autowired
-    public void setServerAddress(@Value("${swift.master_address}") String serverAddress) {
+    public void setServerAddress(@Value("${rpc.server_address}") String serverAddress) {
         this.serverAddress = serverAddress;
     }
 
     @Autowired
-    public void setMasterAddress(@Value("${rpc.server_address}") String masterAddress) {
+    public void setMasterAddress(@Value("${swift.master_address}") String masterAddress) {
         this.masterAddress = masterAddress;
     }
 

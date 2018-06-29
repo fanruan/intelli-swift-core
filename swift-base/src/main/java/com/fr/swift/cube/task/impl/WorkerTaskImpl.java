@@ -57,6 +57,6 @@ public class WorkerTaskImpl extends BaseTask implements WorkerTask {
     }
 
     private void triggerDoneEvent(final TaskResult result) {
-        EventDispatcher.fire(TaskEvent.DONE, Pair.of(key, result));
+        EventDispatcher.fire(TaskEvent.LOCAL_DONE, Pair.of(key, result));
     }
 }

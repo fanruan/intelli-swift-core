@@ -1,10 +1,13 @@
 package com.fr.swift.structure;
 
+import java.io.Serializable;
+
 /**
  * @author anchore
  * @date 2018/1/2
  */
-public class Pair<K, V> {
+public class Pair<K, V> implements Serializable {
+    private static final long serialVersionUID = 4248136150831910862L;
     private K key;
     private V value;
 
