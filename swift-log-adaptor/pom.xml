@@ -53,11 +53,6 @@
             <artifactId>fine-decision</artifactId>
             <version>10.0-RELEASE-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>com.fr.decision</groupId>
-            <artifactId>fine-decision-report</artifactId>
-            <version>10.0-RELEASE-SNAPSHOT</version>
-        </dependency>
     </dependencies>
 
 </project>
