@@ -2,11 +2,14 @@ package com.fr.swift.cube.task.impl;
 
 import com.fr.swift.cube.task.TaskResult;
 
+import java.io.Serializable;
+
 /**
  * @author anchore
  * @date 2018/5/12
  */
-public class TaskResultImpl implements TaskResult {
+public class TaskResultImpl implements TaskResult, Serializable {
+    private static final long serialVersionUID = -4651463521763875644L;
     private Type type;
     private Exception cause;
 

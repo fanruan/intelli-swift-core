@@ -2,10 +2,10 @@ package com.fr.swift.service.handler;
 
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.event.base.AbstractAnalyseRpcEvent;
+import com.fr.swift.event.base.AbstractGlobalRpcEvent;
 import com.fr.swift.event.base.AbstractHistoryRpcEvent;
 import com.fr.swift.event.base.AbstractIndexingRpcEvent;
 import com.fr.swift.event.base.AbstractRealTimeRpcEvent;
-import com.fr.swift.event.base.CleanMetaDataCacheEvent;
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.service.handler.analyse.SwiftAnalyseEventHandler;
 import com.fr.swift.service.handler.base.Handler;
@@ -46,7 +46,7 @@ public class SwiftServiceHandlerManager implements Handler {
             case INDEXING:
                 return indexingEventHandler.handle((AbstractIndexingRpcEvent) event);
             case GLOBAL:
-                return globalEventHandler.handle((CleanMetaDataCacheEvent) event);
+                return globalEventHandler.handle((AbstractGlobalRpcEvent) event);
             default:
                 break;
         }

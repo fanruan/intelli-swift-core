@@ -1,6 +1,10 @@
 package com.fr.swift.service.handler.global;
 
-import com.fr.swift.event.base.CleanMetaDataCacheEvent;
+import com.fr.event.EventDispatcher;
+import com.fr.swift.cube.task.TaskKey;
+import com.fr.swift.cube.task.TaskResult;
+import com.fr.swift.cube.task.impl.TaskEvent;
+import com.fr.swift.event.base.AbstractGlobalRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rpc.client.AsyncRpcCallback;
@@ -8,6 +12,7 @@ import com.fr.swift.service.ClusterSwiftServerService;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.entity.ClusterEntity;
 import com.fr.swift.service.handler.base.AbstractHandler;
+import com.fr.swift.structure.Pair;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.io.Serializable;
@@ -19,25 +24,33 @@ import java.util.Map;
  * @date 2018/6/27
  */
 @Service
-public class SwiftGlobalEventHandler extends AbstractHandler<CleanMetaDataCacheEvent> {
+public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEvent> {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftGlobalEventHandler.class);
 
     @Override
-    public <S extends Serializable> S handle(CleanMetaDataCacheEvent event) {
-        Map<String, ClusterEntity> analyseMap = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.ANALYSE);
-        Map<String, ClusterEntity> realTimeMap = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.REAL_TIME);
-        Map<String, ClusterEntity> historyMap = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.HISTORY);
-        Map<String, ClusterEntity> indexingMap = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.INDEXING);
-        String[] sourceKeys = event.getContent();
-        try {
-            if (null != sourceKeys) {
-                clean(analyseMap, sourceKeys);
-                clean(realTimeMap, sourceKeys);
-                clean(historyMap, sourceKeys);
-                clean(indexingMap, sourceKeys);
-            }
-        } catch (Exception e) {
-            LOGGER.error(e);
+    public <S extends Serializable> S handle(AbstractGlobalRpcEvent event) {
+        switch (event.subEvent()) {
+            case TASK_DONE:
+                Pair<TaskKey, TaskResult> pair = (Pair<TaskKey, TaskResult>) event.getContent();
+                EventDispatcher.fire(TaskEvent.DONE, pair);
+                break;
+            case CLEAN:
+                Map<String, ClusterEntity> analyseMap = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.ANALYSE);
+                Map<String, ClusterEntity> realTimeMap = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.REAL_TIME);
+                Map<String, ClusterEntity> historyMap = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.HISTORY);
+                Map<String, ClusterEntity> indexingMap = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.INDEXING);
+                String[] sourceKeys = (String[]) event.getContent();
+                try {
+                    if (null != sourceKeys) {
+                        clean(analyseMap, sourceKeys);
+                        clean(realTimeMap, sourceKeys);
+                        clean(historyMap, sourceKeys);
+                        clean(indexingMap, sourceKeys);
+                    }
+                } catch (Exception e) {
+                    LOGGER.error(e);
+                }
+                break;
         }
         return null;
     }
