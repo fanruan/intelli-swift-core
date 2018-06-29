@@ -43,7 +43,7 @@ public class FileTransactionManager extends AbstractTransactionManager {
             this.oldRowCount = 0;
             this.oldAllShowIndex = BitMaps.newAllShowBitMap(0);
             for (String fieldName : hisSegment.getMetaData().getFieldNames()) {
-                oldNullIndexMap.put(fieldName, BitMaps.newAllShowBitMap(0));
+                oldNullIndexMap.put(fieldName, BitMaps.newRoaringMutable());
             }
         }
     }

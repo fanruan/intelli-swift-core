@@ -54,7 +54,7 @@ public abstract class AbstractTransactionManager implements TransactionManager<S
             for (String column : metaData.getFieldNames()) {
                 int size = realSegment.getColumn(new ColumnKey(column)).getDictionaryEncodedColumn().size();
                 for (int i = 0; i < size; i++) {
-                    realSegment.getColumn(new ColumnKey(column)).getBitmapIndex().putBitMapIndex(i, BitMaps.newAllShowBitMap(oldRowCount));
+                    realSegment.getColumn(new ColumnKey(column)).getBitmapIndex().putBitMapIndex(i, BitMaps.newRoaringMutable());
                 }
             }
         } else {
