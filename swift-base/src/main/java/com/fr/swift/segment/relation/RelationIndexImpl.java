@@ -26,7 +26,7 @@ public class RelationIndexImpl implements RelationIndex {
     private static final String NULL_INDEX = "null_index";
     private static final String INDEX = "index";
     private static final String REVERSE = "reverse";
-    private static final String RELATIONS_KEY = "relations";
+    public static final String RELATIONS_KEY = "relations";
     private static final String REVERSE_COUNT = "reverse_count";
 
     private static final IResourceDiscovery DISCOVERY = ResourceDiscovery.getInstance();
