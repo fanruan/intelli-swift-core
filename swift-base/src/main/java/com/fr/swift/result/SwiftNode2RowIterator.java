@@ -24,7 +24,7 @@ public class SwiftNode2RowIterator implements SwiftRowIterator {
     }
 
     private static List<Row> createList(SwiftNode root) {
-        return root == null ? new ArrayList<Row>() : IteratorUtils.iterator2List(SwiftNodeUtils.node2RowIterator(root));
+        return root == null ? new ArrayList<Row>(0) : IteratorUtils.iterator2List(SwiftNodeUtils.node2RowIterator(root));
     }
 
     /**

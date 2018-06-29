@@ -1,6 +1,7 @@
 package com.fr.swift.query.filter.detail.impl.number;
 
 import com.fr.swift.query.filter.detail.impl.AbstractDetailFilter;
+import com.fr.swift.query.filter.detail.impl.util.ValueConvertUtils;
 import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
@@ -29,7 +30,7 @@ public class NumberContainFilter extends AbstractDetailFilter<Number> {
     @Override
     protected RowTraversal getIntIterator(DictionaryEncodedColumn<Number> dict) {
         IntList intList = IntListFactory.createIntList();
-        for (Number number : groups) {
+        for (Object number : ValueConvertUtils.convert(groups, dict.getType())) {
             int index = dict.getIndex(number);
             if (index != -1) {
                 intList.add(index);

@@ -47,6 +47,11 @@ public class IntDictColumn extends BaseDictColumn<Integer> {
     }
 
     @Override
+    public Type getType() {
+        return Type.INT;
+    }
+
+    @Override
     public void putValue(int index, Integer val) {
         initKeyWriter();
         keyWriter.put(index, val);
@@ -71,10 +76,5 @@ public class IntDictColumn extends BaseDictColumn<Integer> {
             keyReader.release();
             keyReader = null;
         }
-    }
-
-    @Override
-    public Integer convertValue(Object value) {
-        return ((Number) value).intValue();
     }
 }

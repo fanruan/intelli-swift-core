@@ -16,6 +16,7 @@ import com.fr.swift.result.row.RowIndexKey;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.structure.array.HeapIntArray;
 import com.fr.swift.structure.array.IntArray;
 import com.fr.swift.structure.iterator.MapperIterator;
 import com.fr.swift.structure.iterator.RowTraversal;
@@ -135,7 +136,7 @@ public class SortSegmentDetailResultSet implements DetailResultSet {
 
         private void init() {
             rowCursor = 0;
-            rows = BitMaps.traversal2Array(iterator.next());
+            rows = iterator.hasNext() ? BitMaps.traversal2Array(iterator.next()) : new HeapIntArray(0);
         }
 
         public boolean hasNext() {

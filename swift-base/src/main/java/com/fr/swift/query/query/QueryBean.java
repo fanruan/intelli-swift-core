@@ -12,5 +12,7 @@ public interface QueryBean extends Serializable {
 
     QueryType getQueryType();
 
+    void setQueryType(QueryType queryType);
+
     void setQuerySegment(URI uri);
 }

@@ -88,6 +88,22 @@ public final class Temps {
         }
 
         @Override
+        public Type getType() {
+            Object object = getValue(1);
+            if (object == null) {
+                return null;
+            } else if (object instanceof Integer) {
+                return Type.INT;
+            } else if (object instanceof Long) {
+                return Type.LONG;
+            } else if (object instanceof Double) {
+                return Type.DOUBLE;
+            } else {
+                return Type.STRING;
+            }
+        }
+
+        @Override
         public void flush() {
             throw new UnsupportedOperationException();
         }

@@ -1,17 +1,16 @@
 package com.fr.swift.query.builder;
 
 import com.fr.swift.query.info.group.GroupQueryInfo;
-import com.fr.swift.query.info.remote.RemoteQueryInfoImpl;
 import com.fr.swift.query.query.Query;
-import com.fr.swift.query.query.QueryInfo;
+import com.fr.swift.query.query.QueryBean;
+import com.fr.swift.query.query.QueryBeanManager;
 import com.fr.swift.query.query.QueryType;
-import com.fr.swift.query.remote.GroupLocalAllQuery;
-import com.fr.swift.query.remote.GroupLocalPartQuery;
 import com.fr.swift.query.remote.RemoteQueryImpl;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.structure.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,13 +44,11 @@ class GroupQueryBuilder {
      * @return
      */
     static Query<NodeResultSet> buildLocalPartQuery(GroupQueryInfo info) {
-        Query<NodeResultSet> query;
         if (GroupQueryInfoUtils.isPagingQuery(info)) {
-            query = LocalGroupQueryBuilder.PAGING.buildLocalQuery(info);
+            return LocalGroupQueryBuilder.PAGING.buildLocalQuery(info);
         } else {
-            query = LocalGroupQueryBuilder.ALL.buildLocalQuery(info);
+            return LocalGroupQueryBuilder.ALL.buildLocalQuery(info);
         }
-        return new GroupLocalPartQuery(info.getQueryId(), query);
     }
 
     /**
@@ -61,13 +58,11 @@ class GroupQueryBuilder {
      * @return
      */
     static Query<NodeResultSet> buildLocalAllQuery(GroupQueryInfo info) {
-        Query<NodeResultSet> query;
         if (GroupQueryInfoUtils.isPagingQuery(info)) {
-            query = LocalGroupQueryBuilder.PAGING.buildPostQuery(LocalGroupQueryBuilder.PAGING.buildLocalQuery(info), info);
+            return LocalGroupQueryBuilder.PAGING.buildPostQuery(LocalGroupQueryBuilder.PAGING.buildLocalQuery(info), info);
         } else {
-            query = LocalGroupQueryBuilder.ALL.buildPostQuery(LocalGroupQueryBuilder.ALL.buildLocalQuery(info), info);
+            return LocalGroupQueryBuilder.ALL.buildPostQuery(LocalGroupQueryBuilder.ALL.buildLocalQuery(info), info);
         }
-        return new GroupLocalAllQuery(info.getQueryId(), query);
     }
 
     /**
@@ -96,12 +91,12 @@ class GroupQueryBuilder {
         // TODO: 2018/6/22 全部segment在一个远程节点上
 //        if (uris.size() == 1) {
 //            // 如果数据只分布在一个节点上面，那么在该节点上面完成最后一步计算指标计算
-//            if (!uris.get(0).isRemote()) {
+//            if (!uris.getPair(0).isRemote()) {
 //                return builder.buildPostQuery(builder.buildLocalQuery(info), info);
 //            } else {
 //                // 丢给远程节点
 //                QueryInfo<NodeResultSet> queryInfo = new RemoteQueryInfoImpl<NodeResultSet>(QueryType.LOCAL_GROUP_ALL, info);
-//                return new RemoteQueryImpl<NodeResultSet>(queryInfo, uris.get(0));
+//                return new RemoteQueryImpl<NodeResultSet>(queryInfo, uris.getPair(0));
 //            }
 //        }
         List<Query<NodeResultSet>> queries = new ArrayList<Query<NodeResultSet>>();
@@ -109,9 +104,11 @@ class GroupQueryBuilder {
             if (!uri.isRemote()) {
                 queries.add(builder.buildLocalQuery(info));
             } else {
-                QueryInfo<NodeResultSet> queryInfo = new RemoteQueryInfoImpl<NodeResultSet>(QueryType.LOCAL_GROUP_PART, info);
-                // TODO: 2018/6/6 这边有个问题，远程节点有多个segment怎么办呢？RemoteQuery只对应一个segment的uri的话，远程节点就不能做合并了
-                queries.add(new RemoteQueryImpl<NodeResultSet>(queryInfo, uri));
+                // TODO: 2018/6/27 同一个远程节点上的多个segment要合并成一个RemoteQuery
+                QueryBean queryBean = QueryBeanManager.getInstance().getQueryBean(info.getQueryId());
+                queryBean.setQueryType(QueryType.LOCAL_GROUP_PART);
+                QueryBeanManager.getInstance().put(info.getQueryId(), Pair.of(queryBean, uri));
+                queries.add(new RemoteQueryImpl<NodeResultSet>(queryBean, uri));
             }
         }
         // 多个节点的ResultQuery合并之后在处理List<PostQueryInfo>

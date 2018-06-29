@@ -5,6 +5,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.cache.Cache;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.session.exception.SessionClosedException;
+import com.fr.swift.result.serialize.SwiftResultSetUtils;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.core.MD5Utils;
 
@@ -47,12 +48,14 @@ public abstract class AbstractSession implements Session {
         Cache<? extends SwiftResultSet> resultSetCache = cache.get(queryId);
         if (null != resultSetCache) {
             resultSetCache.update();
-            return resultSetCache.get();
+            return SwiftResultSetUtils.convert2Serializable(queryId, queryInfo.getQueryType(), resultSetCache.get());
         }
+        // 缓存具有本地上下文状态的resultSet
         SwiftResultSet resultSet = query(queryInfo);
         Cache<SwiftResultSet> cacheObj = new Cache<SwiftResultSet>(resultSet);
         cache.put(queryId, cacheObj);
-        return resultSet;
+        // 取本地resultSet的一个快照，得到可序列化的resultSet
+        return SwiftResultSetUtils.convert2Serializable(queryId, queryInfo.getQueryType(), resultSet);
     }
 
     protected abstract SwiftResultSet query(QueryBean queryInfo) throws SQLException;

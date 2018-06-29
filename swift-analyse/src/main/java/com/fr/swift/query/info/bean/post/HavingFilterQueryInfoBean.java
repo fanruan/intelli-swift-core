@@ -1,6 +1,6 @@
 package com.fr.swift.query.info.bean.post;
 
-import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.post.PostQueryType;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 
@@ -12,13 +12,13 @@ import java.util.Map;
 public class HavingFilterQueryInfoBean extends AbstractPostQueryInfoBean {
 
     @JsonProperty
-    Map<String, FilterInfo> filterInfoMap;
+    Map<String, FilterInfoBean> filterInfoMap;
 
-    public Map<String, FilterInfo> getFilterInfoMap() {
+    public Map<String, FilterInfoBean> getFilterInfoMap() {
         return filterInfoMap;
     }
 
-    public void setFilterInfoMap(Map<String, FilterInfo> filterInfoMap) {
+    public void setFilterInfoMap(Map<String, FilterInfoBean> filterInfoMap) {
         this.filterInfoMap = filterInfoMap;
     }
 
