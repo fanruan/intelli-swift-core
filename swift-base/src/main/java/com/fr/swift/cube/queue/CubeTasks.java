@@ -6,6 +6,7 @@ import com.fr.swift.cube.task.impl.CubeTaskKey;
 import com.fr.swift.cube.task.impl.Operation;
 import com.fr.swift.cube.task.impl.SchedulerTaskImpl;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.query.group.GroupType;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.RelationSource;
 import com.fr.swift.structure.Pair;
@@ -98,44 +99,52 @@ public class CubeTasks {
         return String.format("%s.%s", newTableName(ds), columnName);
     }
 
+    private static String newColumnName(DataSource ds, String columnName, GroupType type) throws SwiftMetaDataException {
+        return String.format("%s.%s.%s", newTableName(ds), columnName, type);
+    }
+
     private static String newRelationName(RelationSource rs) {
         return newId(rs.toString(), rs.getSourceKey().getId());
     }
 
-    public static TaskKey newBuildTableTaskKey(DataSource ds) throws SwiftMetaDataException {
-        return new CubeTaskKey(newTableName(ds), Operation.BUILD_TABLE, ds.getMetadata().getTableName());
-    }
-
-    public static TaskKey newBuildTableTaskKey(DataSource ds, int round) throws SwiftMetaDataException {
+    public static TaskKey newBuildTableTaskKey(int round, DataSource ds) throws SwiftMetaDataException {
         return new CubeTaskKey(round, newTableName(ds), Operation.BUILD_TABLE, ds.getMetadata().getTableName());
     }
 
-    public static TaskKey newTableBuildEndTaskKey(DataSource ds) throws SwiftMetaDataException {
-        return new CubeTaskKey("End of building table " + newTableName(ds), Operation.BUILD_TABLE);
+    public static TaskKey newTableBuildEndTaskKey(int round, DataSource ds) throws SwiftMetaDataException {
+        return new CubeTaskKey(round, "End of building table " + newTableName(ds), Operation.BUILD_TABLE);
     }
 
-    public static TaskKey newTransportTaskKey(DataSource ds) throws SwiftMetaDataException {
-        return new CubeTaskKey(newTableName(ds), Operation.TRANSPORT_TABLE, ds.getMetadata().getTableName());
+    public static TaskKey newTransportTaskKey(int round, DataSource ds) throws SwiftMetaDataException {
+        return new CubeTaskKey(round, newTableName(ds), Operation.TRANSPORT_TABLE, ds.getMetadata().getTableName());
     }
 
-    public static TaskKey newIndexColumnTaskKey(DataSource ds, String columnName) throws SwiftMetaDataException {
-        return new CubeTaskKey(newColumnName(ds, columnName), Operation.INDEX_COLUMN, ds.getMetadata().getTableName() + "." + columnName);
+    public static TaskKey newIndexColumnTaskKey(int round, DataSource ds, String columnName) throws SwiftMetaDataException {
+        return new CubeTaskKey(round, newColumnName(ds, columnName), Operation.INDEX_COLUMN, ds.getMetadata().getTableName() + "." + columnName);
     }
 
-    public static TaskKey newMergeColumnDictTaskKey(DataSource ds, String columnName) throws SwiftMetaDataException {
-        return new CubeTaskKey(newColumnName(ds, columnName), Operation.MERGE_COLUMN_DICT, ds.getMetadata().getTableName() + "." + columnName);
+    public static TaskKey newIndexColumnTaskKey(int round, DataSource ds, String columnName, GroupType type) throws SwiftMetaDataException {
+        return new CubeTaskKey(round, newColumnName(ds, columnName, type), Operation.INDEX_COLUMN, ds.getMetadata().getTableName() + "." + columnName);
     }
 
-    public static TaskKey newIndexRelationTaskKey(RelationSource relation) {
-        return new CubeTaskKey(newRelationName(relation), Operation.INDEX_RELATION);
+    public static TaskKey newMergeColumnDictTaskKey(int round, DataSource ds, String columnName) throws SwiftMetaDataException {
+        return new CubeTaskKey(round, newColumnName(ds, columnName), Operation.MERGE_COLUMN_DICT, ds.getMetadata().getTableName() + "." + columnName);
     }
 
-    public static SchedulerTask newStartTask() {
-        return new SchedulerTaskImpl(new CubeTaskKey("Start of building Cube"));
+    public static TaskKey newMergeColumnDictTaskKey(int round, DataSource ds, String columnName, GroupType type) throws SwiftMetaDataException {
+        return new CubeTaskKey(round, newColumnName(ds, columnName, type), Operation.MERGE_COLUMN_DICT, ds.getMetadata().getTableName() + "." + columnName);
     }
 
-    public static SchedulerTask newEndTask() {
-        return new SchedulerTaskImpl(new CubeTaskKey("End of building Cube"));
+    public static TaskKey newIndexRelationTaskKey(int round, RelationSource relation) {
+        return new CubeTaskKey(round, newRelationName(relation), Operation.INDEX_RELATION);
+    }
+
+    public static SchedulerTask newStartTask(int round) {
+        return new SchedulerTaskImpl(new CubeTaskKey(round, "Start of building Cube"));
+    }
+
+    public static SchedulerTask newEndTask(int round) {
+        return new SchedulerTaskImpl(new CubeTaskKey(round, "End of building Cube"));
     }
 
     public static int nextRound() {

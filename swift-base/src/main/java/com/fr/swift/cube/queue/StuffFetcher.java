@@ -6,24 +6,15 @@ import com.fr.event.Listener;
 import com.fr.swift.cube.task.SchedulerTask;
 import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.cube.task.impl.SchedulerTaskImpl;
-import com.fr.swift.cube.task.impl.SchedulerTaskPool;
 import com.fr.swift.cube.task.impl.TaskEvent;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.reliance.AbstractRelationReliance;
-import com.fr.swift.reliance.IRelationNode;
-import com.fr.swift.reliance.SourceNode;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.RelationSource;
-import com.fr.swift.source.Source;
-import com.fr.swift.source.SourceKey;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * This class created on 2018-1-16 15:57:05
@@ -65,16 +56,16 @@ public class StuffFetcher implements Runnable {
     }
 
     private void consume(ImportStuff stuff) throws SwiftMetaDataException {
-        int currentRound = CubeTasks.nextRound();
+        int round = CubeTasks.nextRound();
 
-        final SchedulerTask start = CubeTasks.newStartTask(),
-                end = CubeTasks.newEndTask();
+        final SchedulerTask start = CubeTasks.newStartTask(round),
+                end = CubeTasks.newEndTask(round);
 
         taskInfos.put(start.key(), null);
         taskInfos.put(end.key(), null);
 
         for (DataSource dataSource : stuff.getTables()) {
-            TaskKey key = CubeTasks.newBuildTableTaskKey(dataSource);
+            TaskKey key = CubeTasks.newBuildTableTaskKey(round, dataSource);
             taskInfos.put(key, dataSource);
 
             SchedulerTask task = new SchedulerTaskImpl(key);
@@ -132,47 +123,47 @@ public class StuffFetcher implements Runnable {
 //
 //    }
 
-    private void calRelationTask(AbstractRelationReliance relationReliance, SchedulerTask end) throws SwiftMetaDataException {
-        Map<SourceKey, IRelationNode> relationNodeMap = relationReliance.getHeadNode();
-        for (Entry<SourceKey, IRelationNode> entry : relationNodeMap.entrySet()) {
-            IRelationNode node = entry.getValue();
-            SchedulerTask relationTask = new SchedulerTaskImpl(CubeTasks.newIndexRelationTaskKey(node.getNode()));
-            List<Source> deps = node.getDepend();
-            for (Source dep : deps) {
-                SchedulerTask task;
-                if (dep instanceof DataSource) {
-                    task = SchedulerTaskPool.getInstance().get(CubeTasks.newBuildTableTaskKey((DataSource) dep));
-                } else {
-                    task = SchedulerTaskPool.getInstance().get(CubeTasks.newIndexRelationTaskKey((RelationSource) dep));
-                }
-                if (null != task) {
-                    task.addNext(relationTask);
-                }
-            }
-            relationTask.addNext(end);
-            taskInfos.put(relationTask.key(), node.getNode());
-        }
-    }
-
-    private void calcBaseNode(SourceNode sourceNode, SchedulerTask prevTask, SchedulerTask endTask, Map<TaskKey, SchedulerTask> taskMap) throws SwiftMetaDataException {
-        TaskKey taskKey = CubeTasks.newBuildTableTaskKey(sourceNode.getNode());
-        SchedulerTask currentTask;
-        if (taskMap.containsKey(taskKey)) {
-            currentTask = taskMap.get(taskKey);
-        } else {
-            currentTask = new SchedulerTaskImpl(taskKey);
-        }
-        taskInfos.put(currentTask.key(), sourceNode);
-        taskMap.put(currentTask.key(), currentTask);
-
-        prevTask.addNext(currentTask);
-        if (sourceNode.hasNext()) {
-            for (SourceNode nextSourceNode : sourceNode.next()) {
-                calcBaseNode(nextSourceNode, currentTask, endTask, taskMap);
-            }
-        } else {
-            currentTask.addNext(endTask);
-        }
-
-    }
+//    private void calRelationTask(AbstractRelationReliance relationReliance, SchedulerTask end) throws SwiftMetaDataException {
+//        Map<SourceKey, IRelationNode> relationNodeMap = relationReliance.getHeadNode();
+//        for (Entry<SourceKey, IRelationNode> entry : relationNodeMap.entrySet()) {
+//            IRelationNode node = entry.getValue();
+//            SchedulerTask relationTask = new SchedulerTaskImpl(CubeTasks.newIndexRelationTaskKey(node.getNode()));
+//            List<Source> deps = node.getDepend();
+//            for (Source dep : deps) {
+//                SchedulerTask task;
+//                if (dep instanceof DataSource) {
+//                    task = SchedulerTaskPool.getInstance().get(CubeTasks.newBuildTableTaskKey((DataSource) dep));
+//                } else {
+//                    task = SchedulerTaskPool.getInstance().get(CubeTasks.newIndexRelationTaskKey((RelationSource) dep));
+//                }
+//                if (null != task) {
+//                    task.addNext(relationTask);
+//                }
+//            }
+//            relationTask.addNext(end);
+//            taskInfos.put(relationTask.key(), node.getNode());
+//        }
+//    }
+//
+//    private void calcBaseNode(SourceNode sourceNode, SchedulerTask prevTask, SchedulerTask endTask, Map<TaskKey, SchedulerTask> taskMap) throws SwiftMetaDataException {
+//        TaskKey taskKey = CubeTasks.newBuildTableTaskKey(sourceNode.getNode());
+//        SchedulerTask currentTask;
+//        if (taskMap.containsKey(taskKey)) {
+//            currentTask = taskMap.get(taskKey);
+//        } else {
+//            currentTask = new SchedulerTaskImpl(taskKey);
+//        }
+//        taskInfos.put(currentTask.key(), sourceNode);
+//        taskMap.put(currentTask.key(), currentTask);
+//
+//        prevTask.addNext(currentTask);
+//        if (sourceNode.hasNext()) {
+//            for (SourceNode nextSourceNode : sourceNode.next()) {
+//                calcBaseNode(nextSourceNode, currentTask, endTask, taskMap);
+//            }
+//        } else {
+//            currentTask.addNext(endTask);
+//        }
+//
+//    }
 }

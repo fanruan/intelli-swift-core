@@ -137,15 +137,17 @@ public class RelationColumn {
         dealRelationNode(segment.getRelation(columnKey, RelationPathHelper.convert2CubeRelationPath(relationSource)), nodes, new FieldRelationSource(columnKey), dep);
 
         if (!nodes.isEmpty()) {
+            int round = CubeTasks.nextRound();
+
             List<Pair<TaskKey, Object>> pairs = new ArrayList<Pair<TaskKey, Object>>();
-            SchedulerTask start = CubeTasks.newStartTask(),
-                    end = CubeTasks.newEndTask();
+            SchedulerTask start = CubeTasks.newStartTask(round),
+                    end = CubeTasks.newEndTask(round);
 
             for (IRelationNode node : nodes) {
-                SchedulerTask relationTask = new SchedulerTaskImpl(CubeTasks.newIndexRelationTaskKey(node.getNode()));
+                SchedulerTask relationTask = new SchedulerTaskImpl(CubeTasks.newIndexRelationTaskKey(round, node.getNode()));
                 List<Source> deps = node.getDepend();
                 for (Source d : deps) {
-                    SchedulerTask task = SchedulerTaskPool.getInstance().get(CubeTasks.newIndexRelationTaskKey((RelationSource) d));
+                    SchedulerTask task = SchedulerTaskPool.getInstance().get(CubeTasks.newIndexRelationTaskKey(round, (RelationSource) d));
                     if (null != task) {
                         task.addNext(relationTask);
                     }
