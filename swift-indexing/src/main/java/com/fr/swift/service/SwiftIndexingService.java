@@ -146,7 +146,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     }
 
     private void initListener() {
-        EventDispatcher.listen(TaskEvent.DONE, new Listener<Pair<TaskKey, TaskResult>>() {
+        EventDispatcher.listen(TaskEvent.LOCAL_DONE, new Listener<Pair<TaskKey, TaskResult>>() {
             @Override
             public void on(Event event, Pair<TaskKey, TaskResult> result) {
                 SwiftLoggers.getLogger().info("rpc通知server任务完成");
