@@ -51,6 +51,7 @@ import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.RelationSourceType;
+import com.fr.swift.source.Source;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.relation.FieldRelationSource;
 import com.fr.swift.structure.Pair;
@@ -119,9 +120,19 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     }
 
     private void appendStuffMap(IndexingStuff stuff) {
-        stuffObject.putAll(stuff.getTables());
-        stuffObject.putAll(stuff.getRelationPaths());
-        stuffObject.putAll(stuff.getRelations());
+        appendStuffMap(stuff.getTables());
+        appendStuffMap(stuff.getRelations());
+        appendStuffMap(stuff.getRelationPaths());
+    }
+
+    private void appendStuffMap(Map<TaskKey, ? extends Source> map) {
+        if (null != map) {
+            for (Map.Entry<TaskKey, ? extends Source> entry : map.entrySet()) {
+                if (null != entry.getValue()) {
+                    stuffObject.put(entry.getKey(), entry.getValue());
+                }
+            }
+        }
     }
 
     private void triggerIndexing(IndexingStuff stuff) {
