@@ -2,9 +2,12 @@ package com.fr.swift.config.dao.impl;
 
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
-import com.fr.swift.config.dao.BaseDao;
+import com.fr.swift.config.dao.BasicDao;
 import com.fr.swift.config.dao.SwiftMetaDataDao;
 import com.fr.swift.config.entity.SwiftMetaDataEntity;
+import com.fr.third.org.hibernate.Session;
+import com.fr.third.org.hibernate.criterion.Conjunction;
+import com.fr.third.org.hibernate.criterion.Restrictions;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.sql.SQLException;
@@ -17,7 +20,7 @@ import java.util.List;
  * @date 2018/5/24
  */
 @Service
-public class SwiftMetaDataDaoImpl extends BaseDao<SwiftMetaDataEntity> implements SwiftMetaDataDao {
+public class SwiftMetaDataDaoImpl extends BasicDao<SwiftMetaDataEntity> implements SwiftMetaDataDao {
 
     private static final String FIND_BY_NAME_HQL = String.format("from SwiftMetaDataEntity entity where entity.%s = ", SwiftConfigConstants.MetaDataConfig.COLUMN_TABLE_NAME);
 
@@ -26,13 +29,13 @@ public class SwiftMetaDataDaoImpl extends BaseDao<SwiftMetaDataEntity> implement
     }
 
     @Override
-    public SwiftMetaDataBean findBySourceKey(String sourceKey) throws SQLException {
-        return select(sourceKey).convert();
+    public SwiftMetaDataBean findBySourceKey(Session session, String sourceKey) throws SQLException {
+        return select(session, sourceKey).convert();
     }
 
     @Override
-    public SwiftMetaDataBean findByTableName(String tableName) {
-        List<SwiftMetaDataEntity> list = find(String.format("%s '%s'", FIND_BY_NAME_HQL, tableName));
+    public SwiftMetaDataBean findByTableName(Session session, String tableName) {
+        List<SwiftMetaDataEntity> list = find(session, Restrictions.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_TABLE_NAME, tableName));
         if (null == list && list.isEmpty()) {
             throw new RuntimeException(String.format("Find meta data error! Table named '%s' not exists!", tableName));
         }
@@ -43,18 +46,18 @@ public class SwiftMetaDataDaoImpl extends BaseDao<SwiftMetaDataEntity> implement
     }
 
     @Override
-    public boolean addOrUpdateSwiftMetaData(SwiftMetaDataBean metaDataBean) throws SQLException {
-        return saveOrUpdate(metaDataBean.convert());
+    public boolean addOrUpdateSwiftMetaData(Session session, SwiftMetaDataBean metaDataBean) throws SQLException {
+        return saveOrUpdate(session, metaDataBean.convert());
     }
 
     @Override
-    public boolean deleteSwiftMetaDataBean(String sourceKey) throws SQLException {
-        return deleteById(sourceKey);
+    public boolean deleteSwiftMetaDataBean(Session session, String sourceKey) throws SQLException {
+        return deleteById(session, sourceKey);
     }
 
     @Override
-    public List<SwiftMetaDataBean> findAll() {
-        List<SwiftMetaDataEntity> all = find();
+    public List<SwiftMetaDataBean> findAll(Session session) {
+        List<SwiftMetaDataEntity> all = find(session, new Conjunction[]{});
         List<SwiftMetaDataBean> result = new ArrayList<SwiftMetaDataBean>();
         for (SwiftMetaDataEntity entity : all) {
             result.add(entity.convert());

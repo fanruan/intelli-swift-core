@@ -6,11 +6,11 @@ import com.fr.swift.Result;
 import com.fr.swift.URL;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
-import com.fr.swift.config.dao.SwiftMetaDataDao;
+import com.fr.swift.config.dao.impl.SwiftMetaDataDaoImpl;
+import com.fr.swift.config.hibernate.HibernateManager;
+import com.fr.swift.config.hibernate.transaction.AbstractTransactionWorker;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftServiceInfoService;
-import com.fr.swift.config.transaction.AbstractTransactionWorker;
-import com.fr.swift.config.transaction.SwiftTransactionManager;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.event.global.CleanMetaDataCacheEvent;
 import com.fr.swift.invocation.SwiftInvocation;
@@ -24,6 +24,7 @@ import com.fr.swift.selector.UrlSelector;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.third.org.hibernate.Session;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
@@ -42,9 +43,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
 
     @Autowired
-    private SwiftTransactionManager transactionManager;
+    private HibernateManager transactionManager;
     @Autowired
-    private SwiftMetaDataDao swiftMetaDataDao;
+    private SwiftMetaDataDaoImpl swiftMetaDataDao;
     @Autowired(required = false)
     private RpcServer server;
 
@@ -56,10 +57,10 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
         try {
             final SwiftMetaDataBean bean = (SwiftMetaDataBean) metaData;
             bean.setId(sourceKey);
-            return (Boolean) transactionManager.doTransactionIfNeed(new AbstractTransactionWorker() {
+            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
                 @Override
-                public Object work() throws SQLException {
-                    swiftMetaDataDao.addOrUpdateSwiftMetaData(bean);
+                public Boolean work(Session session) throws SQLException {
+                    swiftMetaDataDao.addOrUpdateSwiftMetaData(session, bean);
                     metaDataCache.put(sourceKey, bean);
                     return true;
                 }
@@ -75,15 +76,15 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     @Override
     public boolean addMetaDatas(final Map<String, SwiftMetaData> metaDatas) {
         try {
-            return (Boolean) transactionManager.doTransactionIfNeed(new AbstractTransactionWorker() {
+            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
                 @Override
-                public Object work() throws SQLException {
+                public Boolean work(Session session) throws SQLException {
                     Iterator<Map.Entry<String, SwiftMetaData>> iterator = metaDatas.entrySet().iterator();
                     while (iterator.hasNext()) {
                         Map.Entry<String, SwiftMetaData> entry = iterator.next();
                         SwiftMetaDataBean bean = (SwiftMetaDataBean) entry.getValue();
                         bean.setId(entry.getKey());
-                        swiftMetaDataDao.addOrUpdateSwiftMetaData(bean);
+                        swiftMetaDataDao.addOrUpdateSwiftMetaData(session, bean);
                         metaDataCache.put(entry.getKey(), bean);
                     }
                     return true;
@@ -100,12 +101,12 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     @Override
     public boolean removeMetaDatas(final String... sourceKeys) {
         try {
-            return (Boolean) transactionManager.doTransactionIfNeed(new AbstractTransactionWorker() {
+            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
 
                 @Override
-                public Object work() throws SQLException {
+                public Boolean work(Session session) throws SQLException {
                     for (String sourceKey : sourceKeys) {
-                        swiftMetaDataDao.deleteSwiftMetaDataBean(sourceKey);
+                        swiftMetaDataDao.deleteSwiftMetaDataBean(session, sourceKey);
                         metaDataCache.remove(sourceKey);
                     }
                     // 集群情况下才去发rpc
@@ -148,13 +149,24 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     @Override
     public Map<String, SwiftMetaData> getAllMetaData() {
         try {
-            List<SwiftMetaDataBean> beans = swiftMetaDataDao.findAll();
-            Map<String, SwiftMetaData> result = new HashMap<String, SwiftMetaData>();
-            for (SwiftMetaDataBean bean : beans) {
-                result.put(bean.getId(), bean);
-            }
-            metaDataCache.putAll(result);
-            return result;
+            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Map<String, SwiftMetaData>>() {
+                @Override
+                public Map<String, SwiftMetaData> work(Session session) {
+                    List<SwiftMetaDataBean> beans = swiftMetaDataDao.findAll(session);
+                    Map<String, SwiftMetaData> result = new HashMap<String, SwiftMetaData>();
+                    for (SwiftMetaDataBean bean : beans) {
+                        result.put(bean.getId(), bean);
+                    }
+                    metaDataCache.putAll(result);
+                    return result;
+                }
+
+                @Override
+                public boolean needTransaction() {
+                    return false;
+                }
+            });
+
         } catch (Exception e) {
             LOGGER.error("Select metadata error!", e);
             return new HashMap<String, SwiftMetaData>();
@@ -166,9 +178,20 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
         SwiftMetaData metaData = metaDataCache.get(sourceKey);
         if (null == metaData) {
             try {
-                metaData = swiftMetaDataDao.findBySourceKey(sourceKey);
-                metaDataCache.put(sourceKey, metaData);
-                return metaData;
+                return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<SwiftMetaData>() {
+                    @Override
+                    public SwiftMetaData work(Session session) throws SQLException {
+                        SwiftMetaData metaData = swiftMetaDataDao.findBySourceKey(session, sourceKey);
+                        metaDataCache.put(sourceKey, metaData);
+                        return metaData;
+                    }
+
+                    @Override
+                    public boolean needTransaction() {
+                        return false;
+                    }
+                });
+
             } catch (Exception e) {
                 LOGGER.error("Select metadata error!", e);
                 return null;
@@ -182,12 +205,17 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     public boolean containsMeta(final SourceKey sourceKey) {
         try {
             if (!metaDataCache.containsKey(sourceKey.getId())) {
-                SwiftMetaData metaData = swiftMetaDataDao.findBySourceKey(sourceKey.getId());
-                if (null != metaData) {
-                    metaDataCache.put(sourceKey.getId(), metaData);
-                    return true;
-                }
-                return false;
+                return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
+                    @Override
+                    public Boolean work(Session session) throws SQLException {
+                        SwiftMetaData metaData = swiftMetaDataDao.findBySourceKey(session, sourceKey.getId());
+                        if (null != metaData) {
+                            metaDataCache.put(sourceKey.getId(), metaData);
+                            return true;
+                        }
+                        return false;
+                    }
+                });
             }
             return true;
         } catch (Exception e) {

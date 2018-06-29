@@ -1,9 +1,9 @@
 package com.fr.swift.config.dao;
 
 import com.fr.swift.config.bean.SegmentKeyBean;
-import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.third.org.hibernate.Session;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -12,14 +12,14 @@ import java.util.List;
  * @author yee
  * @date 2018/5/25
  */
-public interface SwiftSegmentDao extends SwiftConfigDao<SwiftSegmentEntity> {
+public interface SwiftSegmentDao {
     /**
      * 保存SegmentKeyBean
      *
      * @param bean
      * @return
      */
-    boolean addOrUpdateSwiftSegment(SegmentKeyBean bean) throws SQLException;
+    boolean addOrUpdateSwiftSegment(Session session, SegmentKeyBean bean) throws SQLException;
 
     /**
      * 根据SourceKey查找
@@ -27,9 +27,9 @@ public interface SwiftSegmentDao extends SwiftConfigDao<SwiftSegmentEntity> {
      * @param sourceKey
      * @return
      */
-    List<SegmentKey> findBySourceKey(String sourceKey);
+    List<SegmentKey> findBySourceKey(Session session, String sourceKey);
 
-    List<SegmentKey> findBeanByStoreType(String sourceKey, Types.StoreType type) throws SQLException;
+    List<SegmentKey> findBeanByStoreType(Session session, String sourceKey, Types.StoreType type) throws SQLException;
 
     /**
      * 删除SourceKey下的所有SegmentKey
@@ -37,7 +37,7 @@ public interface SwiftSegmentDao extends SwiftConfigDao<SwiftSegmentEntity> {
      * @param sourceKey
      * @return
      */
-    boolean deleteBySourceKey(String sourceKey) throws SQLException;
+    boolean deleteBySourceKey(Session session, String sourceKey) throws SQLException;
 
     /**
      * 根据保存类型删除
@@ -46,12 +46,12 @@ public interface SwiftSegmentDao extends SwiftConfigDao<SwiftSegmentEntity> {
      * @return
      * @throws SQLException
      */
-    boolean deleteByStoreType(Types.StoreType storeType) throws SQLException;
+    boolean deleteByStoreType(Session session, Types.StoreType storeType) throws SQLException;
 
     /**
      * 返回所有SegmentKey
      *
      * @return
      */
-    List<SegmentKey> findAll();
+    List<SegmentKey> findAll(Session session);
 }
