@@ -6,6 +6,7 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.excel.ExcelDataSource;
 import com.fr.swift.source.excel.ExcelTableData;
+import com.fr.workspace.simple.SimpleWork;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -17,9 +18,20 @@ import java.util.List;
  */
 public class TableDataTransferTest extends TestCase {
 
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        SimpleWork.checkIn(ResourceUtils.class.getClassLoader().getResource("").getPath());
+    }
+
+    @Override
+    public void tearDown() throws Exception {
+        SimpleWork.checkOut();
+    }
 
     public void testCreateResultSet() throws Exception{
-        String path = ResourceUtils.getFileAbsolutePath("excel/test.xlsx");
+        //fr SimpleWorkd的原因，只能写相对路径
+        String path = "excel/test.xlsx";
         String[] names = {"A", "B"};
         ColumnType[] types = {ColumnType.STRING, ColumnType.NUMBER};
         ExcelDataSource source = new ExcelDataSource(path, names, types);
@@ -34,7 +46,7 @@ public class TableDataTransferTest extends TestCase {
     }
 
     public void testCreatePartResultSet() throws Exception{
-        String path = ResourceUtils.getFileAbsolutePath("excel/test.xlsx");
+        String path = "excel/test.xlsx";
         String[] names = {"A", "B"};
         ColumnType[] types = {ColumnType.STRING, ColumnType.NUMBER};
         LinkedHashMap<String, ColumnType> fields = new LinkedHashMap<>();
