@@ -55,14 +55,17 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
 
     protected Transporter transporter;
 
-    private boolean isRealtime = false;
+    private int round;
 
-    public BaseTableBuilder(DataSource dataSource) {
-        this.dataSource = dataSource;
+    private boolean isRealtime;
+
+    public BaseTableBuilder(int round, DataSource dataSource) {
+        this(round, dataSource, false);
     }
 
-    public BaseTableBuilder(DataSource dataSource, boolean isRealtime) {
-        this(dataSource);
+    public BaseTableBuilder(int round, DataSource dataSource, boolean isRealtime) {
+        this.round = round;
+        this.dataSource = dataSource;
         this.isRealtime = isRealtime;
     }
 
@@ -70,10 +73,10 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
         final SwiftMetaData meta = dataSource.getMetadata();
         // transport worker
         final LocalTask transportTask = new LocalTaskImpl(
-                CubeTasks.newTransportTaskKey(dataSource), transporter);
+                CubeTasks.newTransportTaskKey(round, dataSource), transporter);
 
         final LocalTask end = new LocalTaskImpl(
-                CubeTasks.newTableBuildEndTaskKey(dataSource), BaseWorker.nullWorker());
+                CubeTasks.newTableBuildEndTaskKey(round, dataSource));
 
         //监听表取数任务，完成后添加字段索引任务。
         transportTask.addStatusChangeListener(new TaskStatusChangeListener() {
@@ -123,11 +126,11 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
 
                 for (String indexField : transporter.getIndexFieldsList()) {
                     LocalTask indexTask = new LocalTaskImpl(
-                            CubeTasks.newIndexColumnTaskKey(dataSource, indexField),
+                            CubeTasks.newIndexColumnTaskKey(round, dataSource, indexField),
                             new ColumnIndexer(dataSource, new ColumnKey(indexField), indexSegments));
 
                     LocalTask mergeTask = new LocalTaskImpl(
-                            CubeTasks.newMergeColumnDictTaskKey(dataSource, indexField),
+                            CubeTasks.newMergeColumnDictTaskKey(round, dataSource, indexField),
                             new ColumnDictMerger(dataSource, new ColumnKey(indexField), allSegments));
                     // link task
                     transportTask.addNext(indexTask);
@@ -143,11 +146,11 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
                 }
                 for (GroupType groupType : SubDateColumn.TYPES_TO_GENERATE) {
                     LocalTask indexSubColumnTask = new LocalTaskImpl(
-                            CubeTasks.newIndexColumnTaskKey(dataSource, indexField + "." + groupType),
+                            CubeTasks.newIndexColumnTaskKey(round, dataSource, indexField, groupType),
                             new SubDateColumnIndexer(dataSource, new ColumnKey(indexField), groupType, indexSegments));
 
                     LocalTask mergeSubColumnTask = new LocalTaskImpl(
-                            CubeTasks.newMergeColumnDictTaskKey(dataSource, indexField + "." + groupType),
+                            CubeTasks.newMergeColumnDictTaskKey(round, dataSource, indexField, groupType),
                             new SubDateColumnDictMerger(dataSource, new ColumnKey(indexField), groupType, allSegments));
 
                     mergeTask.addNext(indexSubColumnTask);

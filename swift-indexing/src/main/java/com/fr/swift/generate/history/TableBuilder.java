@@ -17,8 +17,8 @@ public class TableBuilder extends BaseTableBuilder {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(TableBuilder.class);
 
-    public TableBuilder(DataSource dataSource) {
-        super(dataSource);
+    public TableBuilder(int round, DataSource dataSource) {
+        super(round, dataSource);
         this.transporter = new TableTransporter(dataSource);
     }
 }

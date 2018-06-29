@@ -1,6 +1,5 @@
 package com.fr.swift.cube.task.impl;
 
-import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.task.TaskKey;
 
 import java.io.Serializable;
@@ -11,37 +10,27 @@ import java.io.Serializable;
  */
 public class CubeTaskKey implements TaskKey, Serializable {
     private static final long serialVersionUID = 2126126448338496452L;
+
     private final int round;
+
     private final String name;
+
     private final Operation operation;
+
     private String info;
 
-    public CubeTaskKey(String name) {
-        this(name, Operation.NULL);
-    }
-
-    public CubeTaskKey(String name, Operation operation) {
-        this(CubeTasks.getCurrentRound(), name, operation);
+    public CubeTaskKey(int round, String name) {
+        this(round, name, Operation.NULL);
     }
 
     public CubeTaskKey(int round, String name, Operation operation) {
-        this.round = round;
-        this.name = name;
-        this.operation = operation;
-    }
-
-    public CubeTaskKey(String name, String info) {
-        this(name);
-        this.info = info;
-    }
-
-    public CubeTaskKey(String name, Operation operation, String info) {
-        this(name, operation);
-        this.info = info;
+        this(round, name, operation, null);
     }
 
     public CubeTaskKey(int round, String name, Operation operation, String info) {
-        this(round, name, operation);
+        this.round = round;
+        this.name = name;
+        this.operation = operation;
         this.info = info;
     }
 

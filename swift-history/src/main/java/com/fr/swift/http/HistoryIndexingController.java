@@ -46,9 +46,9 @@ public class HistoryIndexingController {
         tableName = StringUtils.isEmpty(tableName) ? "fine_conf_entity" : tableName;
         try {
             Map<TaskKey, DataSource> tables = new HashMap<TaskKey, DataSource>();
-            int currentRound = CubeTasks.getCurrentRound();
+            int currentRound = CubeTasks.nextRound();
             DataSource dataSource = new TableDBSource(tableName, "test");
-            tables.put(CubeTasks.newBuildTableTaskKey(dataSource, currentRound), dataSource);
+            tables.put(CubeTasks.newBuildTableTaskKey(currentRound, dataSource), dataSource);
             IndexingStuff stuff = new HistoryIndexingStuff(tables);
             IndexRpcEvent event = new IndexRpcEvent(stuff);
             ProxyFactory factory = ProxySelector.getInstance().getFactory();

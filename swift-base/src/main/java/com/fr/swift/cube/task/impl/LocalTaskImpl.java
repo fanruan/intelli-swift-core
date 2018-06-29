@@ -21,6 +21,10 @@ public class LocalTaskImpl extends BaseTask implements LocalTask {
 
     private Worker worker;
 
+    public LocalTaskImpl(TaskKey key) {
+        this(key, BaseWorker.nullWorker());
+    }
+
     public LocalTaskImpl(TaskKey key, Worker worker) {
         super(key);
         this.worker = worker;

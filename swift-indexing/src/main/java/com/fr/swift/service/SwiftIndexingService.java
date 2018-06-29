@@ -124,9 +124,9 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     }
 
     private void triggerIndexing(IndexingStuff stuff) {
-        EventDispatcher.fire(TaskEvent.RUN, stuff.getTables());
-        EventDispatcher.fire(TaskEvent.RUN, stuff.getRelations());
-        EventDispatcher.fire(TaskEvent.RUN, stuff.getRelationPaths());
+        EventDispatcher.fire(TaskEvent.LOCAL_RUN, stuff.getTables());
+        EventDispatcher.fire(TaskEvent.LOCAL_RUN, stuff.getRelations());
+        EventDispatcher.fire(TaskEvent.LOCAL_RUN, stuff.getRelationPaths());
     }
 
     @Override
@@ -242,7 +242,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
 
             WorkerTask wt = null;
             if (data instanceof DataSource) {
-                wt = new WorkerTaskImpl(taskKey, new TableBuilder(((DataSource) data)));
+                wt = new WorkerTaskImpl(taskKey, new TableBuilder(taskKey.getRound(), (DataSource) data));
                 return wt;
             }
             if (data instanceof RelationSource) {

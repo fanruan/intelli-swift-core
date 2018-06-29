@@ -38,7 +38,7 @@ public class TableBuildTestUtil {
 
 //            if (!(o instanceof ETLSource)) {
             DataSource ds = ((DataSource) taskInfo);
-            return new WorkerTaskImpl(taskKey, new TableBuilder(ds));
+            return new WorkerTaskImpl(taskKey, new TableBuilder(taskKey.getRound(), ds));
 //            } else {
 //                ETLSource etlSource = ((ETLSource) o);
 //                WorkerTask wt = new WorkerTaskImpl(taskKey);
@@ -64,15 +64,17 @@ public class TableBuildTestUtil {
     public static void preparePairList(List<DataSource> dataSources) throws Exception {
         List<Pair<TaskKey, Object>> l = new ArrayList<>();
 
-        SchedulerTask start = new SchedulerTaskImpl(new CubeTaskKey("start all")),
-                end = new SchedulerTaskImpl(new CubeTaskKey("end all"));
+        int round = CubeTasks.nextRound();
+
+        SchedulerTask start = new SchedulerTaskImpl(new CubeTaskKey(round, "start all")),
+                end = new SchedulerTaskImpl(new CubeTaskKey(round, "end all"));
 
         l.add(new Pair<>(start.key(), null));
         l.add(new Pair<>(end.key(), null));
 
         SchedulerTask task = start;
         for (DataSource dataSource : dataSources) {
-            SchedulerTask dataTask = new SchedulerTaskImpl(new CubeTaskKey(dataSource.getMetadata().getTableName(), Operation.BUILD_TABLE));
+            SchedulerTask dataTask = new SchedulerTaskImpl(new CubeTaskKey(round, dataSource.getMetadata().getTableName(), Operation.BUILD_TABLE));
             task.addNext(dataTask);
             task = dataTask;
             l.add(new Pair<>(task.key(), dataSource));

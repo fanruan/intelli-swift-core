@@ -51,7 +51,7 @@ public class CubeTaskManager implements TaskManager {
     }
 
     public void initListener() {
-        EventDispatcher.listen(TaskEvent.RUN, new Listener<Map<TaskKey, ?>>() {
+        EventDispatcher.listen(TaskEvent.LOCAL_RUN, new Listener<Map<TaskKey, ?>>() {
             @Override
             public void on(Event event, Map<TaskKey, ?> tasks) {
                 for (Entry<TaskKey, ?> entry : tasks.entrySet()) {
