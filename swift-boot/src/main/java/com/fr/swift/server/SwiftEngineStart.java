@@ -8,6 +8,8 @@ import com.fr.config.dao.impl.HibernateXmlEnityDao;
 import com.fr.config.entity.ClassHelper;
 import com.fr.config.entity.Entity;
 import com.fr.config.entity.XmlEntity;
+import com.fr.data.impl.Connection;
+import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.stable.db.DBContext;
 import com.fr.stable.db.option.DBOption;
 import com.fr.swift.boot.ClusterListener;
@@ -25,6 +27,10 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.service.register.LocalSwiftRegister;
+import com.fr.swift.source.db.ConnectionInfo;
+import com.fr.swift.source.db.ConnectionManager;
+import com.fr.swift.source.db.IConnectionProvider;
+import com.fr.swift.source.db.SwiftConnectionInfo;
 import com.fr.transaction.Configurations;
 import com.fr.transaction.FineConfigurationHelper;
 import com.fr.workspace.simple.SimpleWork;
@@ -47,7 +53,7 @@ public class SwiftEngineStart {
             SwiftContext.getInstance().getBean(SwiftHttpServer.class).start();
             LOGGER.info("http server starting!");
             initConfDB();
-
+            registerTmpConnectionProvider();
             new LocalSwiftRegister().serviceRegister();
             ClusterListenerHandler.addListener(new ClusterListener());
             ProviderTaskManager.start();
@@ -85,5 +91,18 @@ public class SwiftEngineStart {
         DaoContext.setXmlEntityDao(new HibernateXmlEnityDao());
         DaoContext.setEntityDao(new HibernateEntityDao());
         Configurations.setHelper(new FineConfigurationHelper());
+    }
+
+    private static void registerTmpConnectionProvider() {
+        SwiftProperty property = SwiftContext.getInstance().getBean(SwiftProperty.class);
+        Connection frConnection = new JDBCDatabaseConnection(property.getConfigDbDriverClass(),
+                property.getConfigDbJdbcUrl(), property.getConfigDbUsername(), property.getConfigDbPasswd());
+        final SwiftConnectionInfo connectionInfo = new SwiftConnectionInfo(null, frConnection);
+        ConnectionManager.getInstance().registerProvider(new IConnectionProvider() {
+            @Override
+            public ConnectionInfo getConnection(String connectionName) {
+                return connectionInfo;
+            }
+        });
     }
 }
