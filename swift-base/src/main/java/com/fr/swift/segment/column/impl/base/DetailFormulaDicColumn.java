@@ -124,6 +124,11 @@ public class DetailFormulaDicColumn implements DictionaryEncodedColumn {
     }
 
     @Override
+    public Type getType() {
+        return hostColumn.getType();
+    }
+
+    @Override
     public void flush() {
         Crasher.crash("unsupported");
     }

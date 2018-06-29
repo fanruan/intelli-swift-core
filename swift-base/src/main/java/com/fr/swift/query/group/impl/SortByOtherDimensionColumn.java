@@ -157,6 +157,11 @@ public class SortByOtherDimensionColumn <Base, Derive> implements Column<Derive>
             return originDict.getComparator();
         }
 
+        @Override
+        public Type getType() {
+            return originDict.getType();
+        }
+
 //        @Override
 //        public Object convertValue(Object value) {
 //            return originDict.convertValue(value);

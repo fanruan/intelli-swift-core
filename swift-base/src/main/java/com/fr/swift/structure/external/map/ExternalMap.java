@@ -4,7 +4,7 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.FileUtil;
-import com.fr.swift.util.concurrent.SingleThreadFactory;
+import com.fr.swift.util.concurrent.SimpleThreadFactory;
 
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
@@ -43,7 +43,7 @@ public abstract class ExternalMap<K, V> implements Map<K, V>, Iterable<Map.Entry
      */
     private static final int EXTERNAL_READ_COUNT = 1;
 
-    private static final ThreadFactory THREADS = new SingleThreadFactory("Swift-ExternalMap-WriteFile");
+    private static final ThreadFactory THREADS = new SimpleThreadFactory("Swift-ExternalMap-WriteFile");
 
     public static boolean DEBUG = false;
     public static boolean VERBOSE = false;

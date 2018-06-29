@@ -16,6 +16,11 @@ public class RealtimeStringColumn extends BaseRealtimeColumn<String> {
     }
 
     @Override
+    protected DictionaryEncodedColumn.Type getType() {
+        return DictionaryEncodedColumn.Type.STRING;
+    }
+
+    @Override
     void init() {
         super.init();
 

@@ -1,13 +1,19 @@
 package com.fr.swift.query.filter.info.value;
 
+import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Created by Lyon on 2018/2/27.
  */
 public class SwiftNumberInRangeFilterValue {
 
+    @JsonProperty
     private double min = Double.NEGATIVE_INFINITY;
+    @JsonProperty
     private double max = Double.POSITIVE_INFINITY;
+    @JsonProperty
     private boolean minIncluded = false;
+    @JsonProperty
     private boolean maxIncluded = false;
 
     public double getMin() {

@@ -146,6 +146,11 @@ class CustomGroupColumn<Base, Derive> implements Column<Derive> {
         }
 
         @Override
+        public Type getType() {
+            return originDict.getType();
+        }
+
+        @Override
         public void flush() {
             throw new UnsupportedOperationException();
         }

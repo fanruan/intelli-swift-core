@@ -14,6 +14,10 @@ import com.fr.swift.structure.Pair;
 public class WorkerTaskImpl extends BaseTask implements WorkerTask {
     private Worker worker;
 
+    public WorkerTaskImpl(TaskKey key) {
+        this(key, BaseWorker.nullWorker());
+    }
+
     public WorkerTaskImpl(TaskKey key, Worker worker) {
         super(key);
         this.worker = worker;

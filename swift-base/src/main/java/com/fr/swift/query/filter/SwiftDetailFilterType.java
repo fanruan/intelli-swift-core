@@ -14,7 +14,7 @@ public enum SwiftDetailFilterType {
     STRING_NOT_ENDS_WITH,
     STRING_NOT_STARTS_WITH,
 
-    NUMBER_CONTAIN,
+    NUMBER_IN,
     NUMBER_IN_RANGE,
     NUMBER_NOT_CONTAIN,
     NUMBER_NOT_IN_RANGE,
@@ -31,6 +31,7 @@ public enum SwiftDetailFilterType {
 
     AND,
     OR,
+    NOT,
 
     FORMULA,
 

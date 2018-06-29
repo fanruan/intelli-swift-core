@@ -30,6 +30,7 @@ public class TableDataTransferTest extends TestCase {
     }
 
     public void testCreateResultSet() throws Exception{
+        //fr SimpleWorkd的原因，只能写相对路径
         String path = "com/fr/swift/resource/excel/test.xlsx";
         String[] names = {"A", "B"};
         ColumnType[] types = {ColumnType.STRING, ColumnType.NUMBER};

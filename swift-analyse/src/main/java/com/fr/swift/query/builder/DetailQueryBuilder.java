@@ -2,16 +2,16 @@ package com.fr.swift.query.builder;
 
 import com.fr.swift.exception.SwiftSegmentAbsentException;
 import com.fr.swift.query.info.detail.DetailQueryInfo;
-import com.fr.swift.query.info.remote.RemoteQueryInfoImpl;
 import com.fr.swift.query.query.Query;
-import com.fr.swift.query.query.QueryInfo;
+import com.fr.swift.query.query.QueryBean;
+import com.fr.swift.query.query.QueryBeanManager;
 import com.fr.swift.query.query.QueryType;
-import com.fr.swift.query.remote.DetailLocalQuery;
 import com.fr.swift.query.remote.RemoteQueryImpl;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.structure.Pair;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -44,13 +44,11 @@ class DetailQueryBuilder {
      * @return
      */
     static Query<DetailResultSet> buildLocalPartQuery(DetailQueryInfo info) {
-        Query<DetailResultSet> query;
         if (info.hasSort()) {
-            query = LocalDetailQueryBuilder.GROUP.buildLocalQuery(info);
+            return LocalDetailQueryBuilder.GROUP.buildLocalQuery(info);
         } else {
-            query = LocalDetailQueryBuilder.NORMAL.buildLocalQuery(info);
+            return LocalDetailQueryBuilder.NORMAL.buildLocalQuery(info);
         }
-        return new DetailLocalQuery(info.getQueryId(), query);
     }
 
     /**
@@ -60,13 +58,11 @@ class DetailQueryBuilder {
      * @return
      */
     static Query<DetailResultSet> buildLocalAllQuery(DetailQueryInfo info) {
-        Query<DetailResultSet> query;
         if (info.hasSort()) {
-            query = LocalDetailQueryBuilder.GROUP.buildLocalQuery(info);
+            return LocalDetailQueryBuilder.GROUP.buildLocalQuery(info);
         } else {
-            query = LocalDetailQueryBuilder.NORMAL.buildLocalQuery(info);
+            return LocalDetailQueryBuilder.NORMAL.buildLocalQuery(info);
         }
-        return new DetailLocalQuery(info.getQueryId(), query);
     }
 
     private static Query<DetailResultSet> buildQuery(DetailQueryInfo info, LocalDetailQueryBuilder builder) throws SQLException{
@@ -81,11 +77,11 @@ class DetailQueryBuilder {
         }
         // TODO: 2018/6/22 全部segment在一个远程节点上
 //        if (uris.size() == 1) {
-//            if (!uris.get(0).isRemote()) {
+//            if (!uris.getPair(0).isRemote()) {
 //
 //            } else {
 //                QueryInfo<DetailResultSet> queryInfo = new RemoteQueryInfoImpl<DetailResultSet>(QueryType.LOCAL_DETAIL, info);
-//                return new RemoteQueryImpl<DetailResultSet>(queryInfo, uris.get(0));
+//                return new RemoteQueryImpl<DetailResultSet>(queryInfo, uris.getPair(0));
 //            }
 //        }
         List<Query<DetailResultSet>> queries = new ArrayList<Query<DetailResultSet>>();
@@ -93,8 +89,11 @@ class DetailQueryBuilder {
             if (!uri.isRemote()) {
                 queries.add(builder.buildLocalQuery(info));
             } else {
-                QueryInfo<DetailResultSet> queryInfo = new RemoteQueryInfoImpl<DetailResultSet>(QueryType.LOCAL_DETAIL, info);
-                queries.add(new RemoteQueryImpl<DetailResultSet>(queryInfo, uri));
+                // TODO: 2018/6/27 同一个远程节点上的多个segment要合并成一个RemoteQuery
+                QueryBean queryBean = QueryBeanManager.getInstance().getQueryBean(info.getQueryId());
+                queryBean.setQueryType(QueryType.LOCAL_DETAIL);
+                QueryBeanManager.getInstance().put(info.getQueryId(), Pair.of(queryBean, uri));
+                queries.add(new RemoteQueryImpl<DetailResultSet>(queryBean, uri));
             }
         }
         return builder.buildResultQuery(queries, info);

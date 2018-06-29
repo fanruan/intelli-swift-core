@@ -69,13 +69,13 @@ public class DoubleDictColumn extends BaseDictColumn<Double> {
     }
 
     @Override
-    public void putValue(int index, Double val) {
-        initKeyWriter();
-        keyWriter.put(index, val);
+    public Type getType() {
+        return Type.DOUBLE;
     }
 
     @Override
-    public Double convertValue(Object value) {
-        return ((Number) value).doubleValue();
+    public void putValue(int index, Double val) {
+        initKeyWriter();
+        keyWriter.put(index, val);
     }
 }

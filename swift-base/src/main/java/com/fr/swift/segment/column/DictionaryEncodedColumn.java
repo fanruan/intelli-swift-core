@@ -96,4 +96,15 @@ public interface DictionaryEncodedColumn<T> extends Releasable, Flushable {
      * @return 比较器
      */
     Comparator<T> getComparator();
+
+    /**
+     * 字典分组值类型
+     *
+     * @return
+     */
+    Type getType();
+
+    enum Type {
+        INT, LONG, DOUBLE, STRING
+    }
 }

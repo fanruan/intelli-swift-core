@@ -40,9 +40,12 @@ public class QueryInfoParser {
         QueryType type = queryInfoBean.getQueryType();
         switch (type) {
             case GROUP:
+            case LOCAL_GROUP_PART:
+            case LOCAL_GROUP_ALL:
                 return parseGroupQueryInfo((GroupQueryInfoBean) queryInfoBean);
             case RESULT_JOIN:
                 return parseResultJoinQueryInfo((ResultJoinQueryInfoBean) queryInfoBean);
+            case LOCAL_DETAIL:
             default:
                 return parseDetailQueryInfo((DetailQueryInfoBean) queryInfoBean);
         }

@@ -40,10 +40,15 @@ public class StringDictColumn extends BaseDictColumn<String> {
 
     @Override
     public int getIndex(Object value) {
-        if (value == null || StringUtils.isBlank(convertValue(value))) {
+        if (value == null || StringUtils.isBlank(value.toString())) {
             return 0;
         }
         return super.getIndex(value);
+    }
+
+    @Override
+    public Type getType() {
+        return Type.STRING;
     }
 
     @Override
@@ -53,11 +58,6 @@ public class StringDictColumn extends BaseDictColumn<String> {
         }
         initKeyReader();
         return keyReader.get(index);
-    }
-
-    @Override
-    public String convertValue(Object value) {
-        return value.toString();
     }
 
     @Override

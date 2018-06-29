@@ -16,6 +16,11 @@ public class RealtimeLongColumn extends BaseRealtimeColumn<Long> {
     }
 
     @Override
+    protected DictionaryEncodedColumn.Type getType() {
+        return DictionaryEncodedColumn.Type.LONG;
+    }
+
+    @Override
     void init() {
         super.init();
 

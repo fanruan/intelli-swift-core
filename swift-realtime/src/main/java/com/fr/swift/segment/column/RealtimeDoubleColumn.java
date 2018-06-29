@@ -16,6 +16,11 @@ public class RealtimeDoubleColumn extends BaseRealtimeColumn<Double> {
     }
 
     @Override
+    protected DictionaryEncodedColumn.Type getType() {
+        return DictionaryEncodedColumn.Type.DOUBLE;
+    }
+
+    @Override
     void init() {
         super.init();
 
