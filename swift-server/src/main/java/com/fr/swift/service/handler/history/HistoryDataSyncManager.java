@@ -1,5 +1,6 @@
 package com.fr.swift.service.handler.history;
 
+import com.fr.stable.StringUtils;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.event.analyse.SegmentLocationRpcEvent;
 import com.fr.swift.event.history.HistoryLoadRpcEvent;
@@ -52,9 +53,15 @@ public class HistoryDataSyncManager extends AbstractHandler<HistoryLoadRpcEvent>
             throw new RuntimeException("Cannot find history service");
         }
 
+        String needLoadSourceKey = event.getContent();
 
         Map<String, List<SegmentKey>> allSegments = clusterSegmentService.getAllSegments();
 
+        if (StringUtils.isNotEmpty(needLoadSourceKey)) {
+            List<SegmentKey> keys = allSegments.get(needLoadSourceKey);
+            allSegments.clear();
+            allSegments.put(needLoadSourceKey, keys);
+        }
 
         Map<String, List<SegmentKey>> needLoadSegment = new HashMap<String, List<SegmentKey>>(allSegments);
         Iterator<String> keyIterator = services.keySet().iterator();
