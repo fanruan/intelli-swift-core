@@ -7,27 +7,35 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * todo 初步想法有待分析改进
  * Created by Lyon on 2018/6/14.
  */
-public class RemoteQueryInfoManager {
+public class QueryBeanManager {
 
-    private static RemoteQueryInfoManager instance = new RemoteQueryInfoManager();
+    private static QueryBeanManager instance = new QueryBeanManager();
     private Map<String, Pair<QueryBean, SegmentDestination>> manager = new ConcurrentHashMap<String, Pair<QueryBean, SegmentDestination>>();
 
-    private RemoteQueryInfoManager() {
+    private QueryBeanManager() {
     }
 
-    public static RemoteQueryInfoManager getInstance() {
+    public static QueryBeanManager getInstance() {
         return instance;
     }
 
-    public Pair<QueryBean, SegmentDestination> get(String queryId) {
+    public Pair<QueryBean, SegmentDestination> getPair(String queryId) {
         return manager.get(queryId);
+    }
+
+    public QueryBean getQueryBean(String queryId) {
+        Pair<QueryBean, SegmentDestination> pair = manager.get(queryId);
+        return pair == null ? null : pair.getKey();
     }
 
     public void put(String queryId, Pair<QueryBean, SegmentDestination> pair) {
         manager.put(queryId, pair);
+    }
+
+    public void put(String queryId, QueryBean queryBean) {
+        manager.put(queryId, Pair.<QueryBean, SegmentDestination>of(queryBean, null));
     }
 
     public void release(String queryId) {

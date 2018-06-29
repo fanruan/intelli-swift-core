@@ -3,11 +3,11 @@ package com.fr.swift.query.filter;
 import com.fr.stable.StringUtils;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.filter.detail.impl.AllShowDetailFilter;
-import com.fr.swift.query.filter.detail.impl.NotShowDetailFilter;
 import com.fr.swift.query.filter.detail.impl.FormulaFilter;
 import com.fr.swift.query.filter.detail.impl.GeneralAndFilter;
 import com.fr.swift.query.filter.detail.impl.GeneralOrFilter;
 import com.fr.swift.query.filter.detail.impl.NotNullFilter;
+import com.fr.swift.query.filter.detail.impl.NotShowDetailFilter;
 import com.fr.swift.query.filter.detail.impl.NullFilter;
 import com.fr.swift.query.filter.detail.impl.date.DateInRangeFilter;
 import com.fr.swift.query.filter.detail.impl.date.not.DateNotInRangeFilter;
@@ -77,7 +77,7 @@ public class DetailFilterFactory {
             case STRING_NOT_ENDS_WITH:
                 return new StringNotEndsWithFilter((String) filterInfo.getFilterValue(), rowCount, column);
 
-            case NUMBER_CONTAIN:
+            case NUMBER_IN:
                 return new NumberContainFilter((Set<Double>) filterInfo.getFilterValue(), column);
             case NUMBER_IN_RANGE: {
                 SwiftNumberInRangeFilterValue value = (SwiftNumberInRangeFilterValue) filterInfo.getFilterValue();

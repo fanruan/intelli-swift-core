@@ -75,7 +75,7 @@ public class LogQueryUtils {
             for (Object object : fieldValues) {
                 set.add(((Integer) object).doubleValue());
             }
-            return new SwiftDetailFilterInfo<Set<Double>>(new ColumnKey(fieldName), set, SwiftDetailFilterType.NUMBER_CONTAIN);
+            return new SwiftDetailFilterInfo<Set<Double>>(new ColumnKey(fieldName), set, SwiftDetailFilterType.NUMBER_IN);
         } else {
             Set<String> set = new HashSet<String>();
             for (Object object : fieldValues) {

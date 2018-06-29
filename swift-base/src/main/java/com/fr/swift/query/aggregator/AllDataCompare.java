@@ -4,7 +4,6 @@ package com.fr.swift.query.aggregator;
 import com.fr.swift.bitmap.traversal.CalculatorTraversalAction;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
-import com.fr.swift.segment.column.impl.base.LongDetailColumn;
 import com.fr.swift.structure.iterator.RowTraversal;
 
 import static com.fr.swift.cube.io.IOConstant.NULL_DOUBLE;
@@ -67,7 +66,6 @@ public abstract class AllDataCompare extends AbstractAggregator<DoubleAmountAggr
     private DoubleAmountAggregatorValue aggregateLongSum(RowTraversal traversal, final DetailColumn getter) {
 
         final DoubleAmountAggregatorValue minOrMaxValue = new DoubleAmountAggregatorValue();
-        final LongDetailColumn g = (LongDetailColumn) getter;
         CalculatorTraversalAction ss;
         //bitMap.getAndNot()
         ss = new CalculatorTraversalAction() {
@@ -87,7 +85,7 @@ public abstract class AllDataCompare extends AbstractAggregator<DoubleAmountAggr
             @Override
             public void actionPerformed(int row) {
 
-                long value = g.getLong(row);
+                long value = getter.getLong(row);
                 sum = compare(value, sum);
             }
         };

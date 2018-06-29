@@ -1,8 +1,8 @@
 package com.fr.swift.result.serialize;
 
 import com.fr.swift.query.query.QueryBean;
+import com.fr.swift.query.query.QueryBeanManager;
 import com.fr.swift.query.query.QueryRunnerProvider;
-import com.fr.swift.query.query.RemoteQueryInfoManager;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.result.SwiftRowIteratorImpl;
 import com.fr.swift.segment.SegmentDestination;
@@ -50,7 +50,7 @@ public class SerializableDetailResultSet implements DetailResultSet, Serializabl
         List<Row> ret = rows;
         if (originHasNextPage) {
             // TODO: 2018/6/14 向远程节点拉取下一页数据
-            Pair<QueryBean, SegmentDestination> pair = RemoteQueryInfoManager.getInstance().get(queryId);
+            Pair<QueryBean, SegmentDestination> pair = QueryBeanManager.getInstance().getPair(queryId);
             if (pair == null) {
                 Crasher.crash("invalid remote queryInfo!");
             }

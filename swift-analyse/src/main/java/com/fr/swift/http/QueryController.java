@@ -15,6 +15,7 @@ import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
+import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.info.element.dimension.DetailDimension;
 import com.fr.swift.query.info.element.dimension.Dimension;
@@ -66,7 +67,7 @@ public class QueryController {
     public List<Row> query(@PathVariable("sourceKey") String sourceKey) throws SQLException {
         List<Row> rows = new ArrayList<Row>();
         QueryInfo queryInfo = createQueryInfo(sourceKey);
-        Query query = QueryBuilder.buildQuery(queryInfo);
+        Query query = QueryBuilder.buildQuery(QueryInfoBeanFactory.create(queryInfo));
         SwiftResultSet resultSet = query.getQueryResult();
         if (resultSet != null) {
             while (resultSet.next()) {
@@ -82,7 +83,7 @@ public class QueryController {
     public List<Row> groupQuery(@PathVariable("sourceKey") String sourceKey) throws SQLException {
         List<Row> rows = new ArrayList<Row>();
         QueryInfo queryInfo = createGroupQueryInfo(sourceKey);
-        Query query = QueryBuilder.buildQuery(queryInfo);
+        Query query = QueryBuilder.buildQuery(QueryInfoBeanFactory.create(queryInfo));
         SwiftResultSet resultSet = query.getQueryResult();
         if (resultSet != null) {
             while (resultSet.next()) {
