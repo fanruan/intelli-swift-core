@@ -71,7 +71,7 @@ public class AsyncRpcClientHandler extends AbstactRpcClientHandler {
                 public void initChannel(SocketChannel channel) {
                     ChannelPipeline pipeline = channel.pipeline();
                     pipeline.addLast(
-                            new ObjectDecoder(1024, ClassResolvers.cacheDisabled(this
+                            new ObjectDecoder(10240 * 1024, ClassResolvers.cacheDisabled(this
                                     .getClass().getClassLoader())));
                     pipeline.addLast(new ObjectEncoder());
                     pipeline.addLast(AsyncRpcClientHandler.this);

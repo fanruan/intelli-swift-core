@@ -1,17 +1,22 @@
 package com.fr.swift.service.handler.indexing;
 
+import com.fr.swift.cube.queue.StuffProviderQueue;
+import com.fr.swift.cube.queue.SwiftImportStuff;
 import com.fr.swift.event.base.AbstractIndexingRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.rpc.client.AsyncRpcCallback;
 import com.fr.swift.service.ClusterSwiftServerService;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.entity.ClusterEntity;
 import com.fr.swift.service.handler.base.AbstractHandler;
 import com.fr.swift.service.handler.indexing.rule.IndexingSelectRule;
+import com.fr.swift.source.DataSource;
+import com.fr.swift.stuff.IndexingStuff;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,21 +42,9 @@ public class SwiftIndexingEventHandler extends AbstractHandler<AbstractIndexingR
         switch (event.subEvent()) {
             case INDEX:
                 try {
-                    final long start = System.currentTimeMillis();
-                    String address = rule.select(indexingServices);
-                    ClusterEntity entity = indexingServices.get(address);
-                    runAsyncRpc(address, entity.getServiceClass(), "index", event.getContent())
-                            .addCallback(new AsyncRpcCallback() {
-                                @Override
-                                public void success(Object result) {
-                                    LOGGER.info(String.format("Indexing success! Cost: %d", System.currentTimeMillis() - start));
-                                }
-
-                                @Override
-                                public void fail(Exception e) {
-                                    LOGGER.error("Indexing error! ", e);
-                                }
-                            });
+                    IndexingStuff stuff = (IndexingStuff) event.getContent();
+                    List<DataSource> dataSources = new ArrayList<DataSource>(stuff.getTables().values());
+                    StuffProviderQueue.getQueue().put(new SwiftImportStuff(dataSources));
                 } catch (Exception e) {
                     LOGGER.error("Indexing error! ", e);
                 }

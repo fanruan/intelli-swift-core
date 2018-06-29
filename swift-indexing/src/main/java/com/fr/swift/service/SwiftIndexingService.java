@@ -53,7 +53,6 @@ import com.fr.swift.source.RelationSourceType;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.relation.FieldRelationSource;
 import com.fr.swift.structure.Pair;
-import com.fr.swift.structure.lru.ConcurrentCacheHashMap;
 import com.fr.swift.stuff.IndexingStuff;
 import com.fr.swift.util.Strings;
 import com.fr.swift.util.function.Function2;
@@ -61,9 +60,9 @@ import com.fr.swift.util.function.Function2;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author pony
@@ -74,7 +73,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     private static final long serialVersionUID = -7430843337225891194L;
     private transient RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
 
-    private Map<TaskKey, Object> stuffObject = new ConcurrentCacheHashMap<TaskKey, Object>();
+    private Map<TaskKey, Object> stuffObject = new ConcurrentHashMap<TaskKey, Object>();
 
     private SwiftIndexingService() {
     }
@@ -122,39 +121,6 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
         stuffObject.putAll(stuff.getTables());
         stuffObject.putAll(stuff.getRelationPaths());
         stuffObject.putAll(stuff.getRelations());
-    }
-
-    private void doAfterIndexing(IndexingStuff stuff) {
-        Map<TaskKey, DataSource> tables = stuff.getTables();
-        Iterator<Map.Entry<TaskKey, DataSource>> iterator = tables.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<TaskKey, DataSource> entry = iterator.next();
-            SourceKey sourceKey = entry.getValue().getSourceKey();
-            List<SegmentKey> segmentKeys = SwiftSegmentServiceProvider.getProvider().getSegmentByKey(sourceKey.getId());
-            for (SegmentKey segmentKey : segmentKeys) {
-                try {
-                    SwiftRepositoryManager.getManager().getCurrentRepository().copyToRemote(segmentKey.getAbsoluteUri(), segmentKey.getUri());
-                } catch (IOException e) {
-                    logger.error("upload error! ", e);
-                }
-            }
-        }
-        URL masterURL = getMasterURL();
-        ProxyFactory factory = ProxySelector.getInstance().getFactory();
-        Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, masterURL, false);
-        Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName("rpcTrigger"), new Object[]{new HistoryLoadRpcEvent()}));
-        RpcFuture future = (RpcFuture) result.getValue();
-        future.addCallback(new AsyncRpcCallback() {
-            @Override
-            public void success(Object result) {
-                logger.info("rpcTrigger success! ");
-            }
-
-            @Override
-            public void fail(Exception e) {
-                logger.error("rpcTrigger error! ", e);
-            }
-        });
     }
 
     private void triggerIndexing(IndexingStuff stuff) {

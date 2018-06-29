@@ -1,7 +1,5 @@
 package com.fr.swift.http;
 
-import com.fr.data.impl.Connection;
-import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.stable.StringUtils;
 import com.fr.swift.Invoker;
 import com.fr.swift.ProxyFactory;
@@ -14,16 +12,11 @@ import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.event.indexing.IndexRpcEvent;
 import com.fr.swift.frrpc.SwiftClusterService;
 import com.fr.swift.invocation.SwiftInvocation;
-import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.rpc.server.RpcServer;
 import com.fr.swift.selector.ProxySelector;
 import com.fr.swift.selector.UrlSelector;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.db.ConnectionInfo;
-import com.fr.swift.source.db.ConnectionManager;
-import com.fr.swift.source.db.IConnectionProvider;
-import com.fr.swift.source.db.SwiftConnectionInfo;
 import com.fr.swift.source.db.TableDBSource;
 import com.fr.swift.stuff.HistoryIndexingStuff;
 import com.fr.swift.stuff.IndexingStuff;
@@ -52,16 +45,6 @@ public class HistoryIndexingController {
         final Map result = new HashMap();
         tableName = StringUtils.isEmpty(tableName) ? "fine_conf_entity" : tableName;
         try {
-            SwiftProperty property = SwiftContext.getInstance().getBean(SwiftProperty.class);
-            Connection frConnection = new JDBCDatabaseConnection(property.getConfigDbDriverClass(),
-                    property.getConfigDbJdbcUrl(), property.getConfigDbUsername(), property.getConfigDbPasswd());
-            final SwiftConnectionInfo connectionInfo = new SwiftConnectionInfo(null, frConnection);
-            ConnectionManager.getInstance().registerProvider(new IConnectionProvider() {
-                @Override
-                public ConnectionInfo getConnection(String connectionName) {
-                    return connectionInfo;
-                }
-            });
             Map<TaskKey, DataSource> tables = new HashMap<TaskKey, DataSource>();
             int currentRound = CubeTasks.getCurrentRound();
             DataSource dataSource = new TableDBSource(tableName, "test");

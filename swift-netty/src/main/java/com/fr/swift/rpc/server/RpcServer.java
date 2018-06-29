@@ -98,7 +98,7 @@ public class RpcServer {
                 public void initChannel(SocketChannel channel) {
                     ChannelPipeline pipeline = channel.pipeline();
                     pipeline.addLast(
-                            new ObjectDecoder(1024 * 1024, ClassResolvers
+                            new ObjectDecoder(10240 * 1024, ClassResolvers
                                     .weakCachingConcurrentResolver(this.getClass()
                                             .getClassLoader())));
                     pipeline.addLast(new ObjectEncoder());

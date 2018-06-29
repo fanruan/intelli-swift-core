@@ -3,6 +3,9 @@ package com.fr.swift.service;
 import com.fr.event.Event;
 import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
+import com.fr.swift.Invoker;
+import com.fr.swift.ProxyFactory;
+import com.fr.swift.Result;
 import com.fr.swift.URL;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftMetaDataService;
@@ -11,11 +14,21 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.cube.task.impl.TaskEvent;
 import com.fr.swift.event.base.SwiftRpcEvent;
+import com.fr.swift.invocation.SwiftInvocation;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
+import com.fr.swift.rpc.client.AsyncRpcCallback;
+import com.fr.swift.rpc.client.async.RpcFuture;
+import com.fr.swift.rpc.url.RPCDestination;
+import com.fr.swift.rpc.url.RPCUrl;
+import com.fr.swift.selector.ProxySelector;
 import com.fr.swift.selector.UrlSelector;
 import com.fr.swift.service.entity.ClusterEntity;
+import com.fr.swift.service.handler.indexing.rule.IndexingSelectRule;
+import com.fr.swift.source.DataSource;
+import com.fr.swift.stuff.HistoryIndexingStuff;
+import com.fr.swift.stuff.IndexingStuff;
 import com.fr.swift.util.Crasher;
 
 import java.io.Serializable;
@@ -153,6 +166,35 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
             public void on(Event event, Map<TaskKey, ?> taskKeyMap) {
                 // rpc告诉indexing节点执行任务
                 SwiftLoggers.getLogger().info("rpc告诉indexing节点执行任务");
+                String address = null;
+                try {
+                    address = IndexingSelectRule.DEFAULT.select(indexingServiceMap);
+                    ClusterEntity entity = indexingServiceMap.get(address);
+                    ProxyFactory factory = ProxySelector.getInstance().getFactory();
+                    Invoker invoker = factory.getInvoker(null, entity.getServiceClass(), new RPCUrl(new RPCDestination(address)), false);
+
+                    Result result = invoker.invoke(
+                            new SwiftInvocation(entity.getServiceClass().getDeclaredMethod("index", IndexingStuff.class),
+                                    new Object[]{new HistoryIndexingStuff((Map<TaskKey, DataSource>) taskKeyMap)}));
+                    RpcFuture future = (RpcFuture) result.getValue();
+                    if (null == future) {
+                        throw new Exception(result.getException());
+                    }
+                    future.addCallback(new AsyncRpcCallback() {
+                        @Override
+                        public void success(Object result) {
+//                                    LOGGER.info(String.format("Indexing success! Cost: %d", System.currentTimeMillis() - start));
+                        }
+
+                        @Override
+                        public void fail(Exception e) {
+                            LOGGER.error("Indexing error! ", e);
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
         });
         EventDispatcher.listen(TaskEvent.CANCEL, new Listener<TaskKey>() {
