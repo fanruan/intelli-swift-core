@@ -36,9 +36,9 @@ public abstract class BaseExcelTest extends BaseConfigTest {
     protected static final SwiftLogger LOGGER = SwiftLoggers.getLogger(BaseExcelTest.class);
 
     //fr SimpleWorkd的原因，只能写相对路径
-    protected String path1 = "com/fr/swift/resource/excel/test.xlsx";
-    protected String path2 = "com/fr/swift/resource/excel/test1.xlsx";
-    protected String path3 = "com/fr/swift/resource/excel/test2.xlsx";
+    protected String path1 = "excel/test.xlsx";
+    protected String path2 = "excel/test1.xlsx";
+    protected String path3 = "excel/test2.xlsx";
 
     protected ExcelDataSource dataSource;
     protected String[] names = {"A", "B"};
