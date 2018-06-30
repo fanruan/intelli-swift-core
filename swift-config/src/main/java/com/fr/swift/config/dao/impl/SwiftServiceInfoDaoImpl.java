@@ -40,10 +40,10 @@ public class SwiftServiceInfoDaoImpl extends BasicDao<SwiftServiceInfoEntity> im
             list.add(Restrictions.eq("clusterId", bean.getClusterId()));
         }
         if (StringUtils.isNotEmpty(bean.getService())) {
-            list.add(Restrictions.eq("service", bean.getClusterId()));
+            list.add(Restrictions.eq("service", bean.getService()));
         }
         if (StringUtils.isNotEmpty(bean.getServiceInfo())) {
-            list.add(Restrictions.eq("serviceInfo", bean.getClusterId()));
+            list.add(Restrictions.eq("serviceInfo", bean.getServiceInfo()));
         }
         return find(session, list.toArray(new Criterion[list.size()]));
     }

@@ -75,7 +75,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     private static final long serialVersionUID = -7430843337225891194L;
     private transient RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
 
-    private Map<TaskKey, Object> stuffObject = new ConcurrentHashMap<TaskKey, Object>();
+    private static Map<TaskKey, Object> stuffObject = new ConcurrentHashMap<TaskKey, Object>();
 
     private SwiftIndexingService() {
     }
