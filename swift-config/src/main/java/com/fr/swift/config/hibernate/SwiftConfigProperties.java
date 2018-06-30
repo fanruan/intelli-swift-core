@@ -16,7 +16,7 @@ public class SwiftConfigProperties {
     private DBOption option;
 
     public SwiftConfigProperties() {
-        this.option = new DBOption();
+        this.option = new DBOption().addRawProperty("hibernate.connection.autocommit", false);
     }
 
     public Properties getProperties() {
