@@ -40,14 +40,14 @@ public class HistoryIndexingController {
     private RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
 
     @ResponseBody
-    @RequestMapping(value = "swift/index/{tableName}", method = RequestMethod.GET)
-    public Map query(@PathVariable("tableName") String tableName) {
+    @RequestMapping(value = "swift/index/{connectionName}/{tableName}", method = RequestMethod.GET)
+    public Map query(@PathVariable("connectionName") String connectionName, @PathVariable("tableName") String tableName) {
         final Map result = new HashMap();
         tableName = StringUtils.isEmpty(tableName) ? "fine_conf_entity" : tableName;
         try {
             Map<TaskKey, DataSource> tables = new HashMap<TaskKey, DataSource>();
             int currentRound = CubeTasks.nextRound();
-            DataSource dataSource = new TableDBSource(tableName, "test");
+            DataSource dataSource = new TableDBSource(tableName, connectionName);
             tables.put(CubeTasks.newBuildTableTaskKey(currentRound, dataSource), dataSource);
             IndexingStuff stuff = new HistoryIndexingStuff(tables);
             IndexRpcEvent event = new IndexRpcEvent(stuff);
