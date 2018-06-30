@@ -4,7 +4,6 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.third.org.hibernate.Criteria;
 import com.fr.third.org.hibernate.Session;
-import com.fr.third.org.hibernate.SessionFactory;
 import com.fr.third.org.hibernate.criterion.Criterion;
 
 import java.sql.SQLException;
@@ -15,9 +14,8 @@ import java.util.List;
  * @author yee
  * @date 2018/6/29
  */
-public class BasicDao<T> implements SwiftBasicConfigDao<T> {
+public class BasicDao<T> implements SwiftConfigDao<T> {
     protected final SwiftLogger LOGGER = SwiftLoggers.getLogger(this.getClass());
-    protected SessionFactory factory;
     protected Class<T> entityClass;
 
     public BasicDao(Class<T> entityClass) {

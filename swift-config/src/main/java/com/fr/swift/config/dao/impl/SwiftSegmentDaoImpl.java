@@ -62,9 +62,10 @@ public class SwiftSegmentDaoImpl extends BasicDao<SwiftSegmentEntity> implements
     @Override
     public boolean deleteBySourceKey(Session session, final String sourceKey) throws SQLException {
         try {
-            SwiftSegmentEntity entity = new SwiftSegmentEntity();
-            entity.setSegmentOwner(sourceKey);
-            session.delete(entity);
+            List<SwiftSegmentEntity> entities = find(session, Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, sourceKey));
+            for (SwiftSegmentEntity entity : entities) {
+                session.delete(entity);
+            }
             return true;
         } catch (Exception e) {
             throw new SQLException(e);
@@ -74,9 +75,10 @@ public class SwiftSegmentDaoImpl extends BasicDao<SwiftSegmentEntity> implements
     @Override
     public boolean deleteByStoreType(Session session, final Types.StoreType storeType) throws SQLException {
         try {
-            SwiftSegmentEntity entity = new SwiftSegmentEntity();
-            entity.setStoreType(storeType);
-            session.delete(entity);
+            List<SwiftSegmentEntity> entities = find(session, Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE, storeType));
+            for (SwiftSegmentEntity entity : entities) {
+                session.delete(entity);
+            }
             return true;
         } catch (Exception e) {
             throw new SQLException(e);

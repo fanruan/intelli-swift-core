@@ -6,9 +6,9 @@ import com.fr.swift.Result;
 import com.fr.swift.URL;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
-import com.fr.swift.config.dao.impl.SwiftMetaDataDaoImpl;
-import com.fr.swift.config.hibernate.HibernateManager;
+import com.fr.swift.config.dao.SwiftMetaDataDao;
 import com.fr.swift.config.hibernate.transaction.AbstractTransactionWorker;
+import com.fr.swift.config.hibernate.transaction.HibernateTransactionManager;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
@@ -43,9 +43,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
 
     @Autowired
-    private HibernateManager transactionManager;
+    private HibernateTransactionManager transactionManager;
     @Autowired
-    private SwiftMetaDataDaoImpl swiftMetaDataDao;
+    private SwiftMetaDataDao swiftMetaDataDao;
     @Autowired(required = false)
     private RpcServer server;
 

@@ -1,9 +1,9 @@
 package com.fr.swift.config.service.impl;
 
 import com.fr.swift.config.bean.SegmentKeyBean;
-import com.fr.swift.config.dao.impl.SwiftSegmentDaoImpl;
-import com.fr.swift.config.hibernate.HibernateManager;
+import com.fr.swift.config.dao.SwiftSegmentDao;
 import com.fr.swift.config.hibernate.transaction.AbstractTransactionWorker;
+import com.fr.swift.config.hibernate.transaction.HibernateTransactionManager;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -28,9 +28,9 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftSegmentService.class);
 
     @Autowired
-    private HibernateManager transactionManager;
+    private HibernateTransactionManager transactionManager;
     @Autowired
-    private SwiftSegmentDaoImpl swiftSegmentDao;
+    private SwiftSegmentDao swiftSegmentDao;
 
     @Override
     public boolean addSegments(final List<SegmentKey> segments) {

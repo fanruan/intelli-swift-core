@@ -1,6 +1,7 @@
 package com.fr.swift.config.dao;
 
 import com.fr.swift.config.bean.SegmentKeyBean;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.third.org.hibernate.Session;
@@ -12,7 +13,7 @@ import java.util.List;
  * @author yee
  * @date 2018/5/25
  */
-public interface SwiftSegmentDao {
+public interface SwiftSegmentDao extends SwiftConfigDao<SwiftSegmentEntity> {
     /**
      * 保存SegmentKeyBean
      *

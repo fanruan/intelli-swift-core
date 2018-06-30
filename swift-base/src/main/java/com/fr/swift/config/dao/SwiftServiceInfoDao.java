@@ -14,7 +14,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
-public interface SwiftServiceInfoDao {
+public interface SwiftServiceInfoDao extends SwiftConfigDao<SwiftServiceInfoEntity> {
     List<SwiftServiceInfoEntity> getServiceInfoByService(Session session, String service);
 
     List<SwiftServiceInfoEntity> getServiceInfoBySelective(Session session, SwiftServiceInfoBean bean);

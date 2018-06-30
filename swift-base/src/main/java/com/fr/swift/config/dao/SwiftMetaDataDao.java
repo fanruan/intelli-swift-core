@@ -1,6 +1,7 @@
 package com.fr.swift.config.dao;
 
 import com.fr.swift.config.bean.SwiftMetaDataBean;
+import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.third.org.hibernate.Session;
 
 import java.sql.SQLException;
@@ -10,7 +11,7 @@ import java.util.List;
  * @author yee
  * @date 2018/5/25
  */
-public interface SwiftMetaDataDao {
+public interface SwiftMetaDataDao extends SwiftConfigDao<SwiftMetaDataEntity> {
     /**
      * 根据SourceKey查找
      *

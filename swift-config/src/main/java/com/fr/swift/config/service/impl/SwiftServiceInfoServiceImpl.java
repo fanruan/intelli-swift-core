@@ -1,10 +1,10 @@
 package com.fr.swift.config.service.impl;
 
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
-import com.fr.swift.config.dao.impl.SwiftServiceInfoDaoImpl;
+import com.fr.swift.config.dao.SwiftServiceInfoDao;
 import com.fr.swift.config.entity.SwiftServiceInfoEntity;
-import com.fr.swift.config.hibernate.HibernateManager;
 import com.fr.swift.config.hibernate.transaction.AbstractTransactionWorker;
+import com.fr.swift.config.hibernate.transaction.HibernateTransactionManager;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -29,9 +29,9 @@ class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftServiceInfoServiceImpl.class);
 
     @Autowired
-    private HibernateManager transactionManager;
+    private HibernateTransactionManager transactionManager;
     @Autowired
-    private SwiftServiceInfoDaoImpl swiftServiceInfoDao;
+    private SwiftServiceInfoDao swiftServiceInfoDao;
 
     public SwiftServiceInfoServiceImpl() {
     }

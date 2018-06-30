@@ -51,9 +51,10 @@ public class SwiftServiceInfoDaoImpl extends BasicDao<SwiftServiceInfoEntity> im
     @Override
     public boolean deleteByServiceInfo(Session session, String serviceInfo) throws SQLException {
         try {
-            SwiftServiceInfoEntity entity = new SwiftServiceInfoEntity();
-            entity.setServiceInfo(serviceInfo);
-            session.delete(entity);
+            List<SwiftServiceInfoEntity> entities = find(session, Restrictions.eq("serviceInfo", serviceInfo));
+            for (SwiftServiceInfoEntity entity : entities) {
+                session.delete(entity);
+            }
             return true;
         } catch (Exception e) {
             throw new SQLException(e);
