@@ -10,8 +10,6 @@ import com.fr.config.entity.Entity;
 import com.fr.config.entity.XmlEntity;
 import com.fr.data.impl.Connection;
 import com.fr.data.impl.JDBCDatabaseConnection;
-import com.fr.file.ConnectionConfig;
-import com.fr.general.ComparatorUtils;
 import com.fr.stable.db.DBContext;
 import com.fr.stable.db.option.DBOption;
 import com.fr.swift.boot.ClusterListener;
@@ -103,13 +101,6 @@ public class SwiftEngineStart {
         ConnectionManager.getInstance().registerProvider(new IConnectionProvider() {
             @Override
             public ConnectionInfo getConnection(String connectionName) {
-                if (ComparatorUtils.equals(connectionName, "test")) {
-                    return connectionInfo;
-                }
-                Connection connection = ConnectionConfig.getInstance().getConnection(connectionName);
-                if (null != connection) {
-                    return new SwiftConnectionInfo(connectionName, connection);
-                }
                 return connectionInfo;
             }
         });
