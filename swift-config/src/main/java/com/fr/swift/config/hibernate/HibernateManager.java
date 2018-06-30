@@ -34,14 +34,6 @@ public class HibernateManager {
             properties.setPassword(config.getPassword());
             properties.setUrl(config.getUrl());
             properties.setUsername(config.getUsername());
-        } else {
-            config = new SwiftConfDbBean();
-            config.setDialectClass(properties.getDialectClass());
-            config.setDriverClass(properties.getDriverClass());
-            config.setPassword(properties.getPassword());
-            config.setUrl(properties.getUrl());
-            config.setUsername(properties.getUsername());
-            SwiftConfDBConfig.getInstance().setConfig(config);
         }
         Configuration configuration = new Configuration();
         configuration.addAnnotatedClass(SwiftMetaDataEntity.class);
