@@ -2,12 +2,13 @@ package com.fr.swift.config.service.impl;
 
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.dao.SwiftSegmentDao;
+import com.fr.swift.config.hibernate.transaction.AbstractTransactionWorker;
+import com.fr.swift.config.hibernate.transaction.HibernateTransactionManager;
 import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.config.transaction.AbstractTransactionWorker;
-import com.fr.swift.config.transaction.SwiftTransactionManager;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.third.org.hibernate.Session;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
@@ -27,18 +28,18 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftSegmentService.class);
 
     @Autowired
-    private SwiftTransactionManager transactionManager;
+    private HibernateTransactionManager transactionManager;
     @Autowired
     private SwiftSegmentDao swiftSegmentDao;
 
     @Override
     public boolean addSegments(final List<SegmentKey> segments) {
         try {
-            return (Boolean) transactionManager.doTransactionIfNeed(new AbstractTransactionWorker() {
+            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
                 @Override
-                public Object work() throws SQLException {
+                public Boolean work(Session session) throws SQLException {
                     for (SegmentKey bean : segments) {
-                        swiftSegmentDao.addOrUpdateSwiftSegment((SegmentKeyBean) bean);
+                        swiftSegmentDao.addOrUpdateSwiftSegment(session, (SegmentKeyBean) bean);
                     }
                     return true;
                 }
@@ -54,11 +55,11 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
     @Override
     public boolean removeSegments(final String... sourceKeys) {
         try {
-            return (Boolean) transactionManager.doTransactionIfNeed(new AbstractTransactionWorker() {
+            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
                 @Override
-                public Object work() throws SQLException {
+                public Boolean work(Session session) throws SQLException {
                     for (String sourceKey : sourceKeys) {
-                        swiftSegmentDao.deleteBySourceKey(sourceKey);
+                        swiftSegmentDao.deleteBySourceKey(session, sourceKey);
                     }
                     return true;
                 }
@@ -74,12 +75,12 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
     @Override
     public boolean updateSegments(final String sourceKey, final List<SegmentKey> segments) {
         try {
-            return (Boolean) transactionManager.doTransactionIfNeed(new AbstractTransactionWorker() {
+            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
                 @Override
-                public Object work() throws SQLException {
-                    swiftSegmentDao.deleteBySourceKey(sourceKey);
+                public Boolean work(Session session) throws SQLException {
+                    swiftSegmentDao.deleteBySourceKey(session, sourceKey);
                     for (SegmentKey segment : segments) {
-                        swiftSegmentDao.addOrUpdateSwiftSegment((SegmentKeyBean) segment);
+                        swiftSegmentDao.addOrUpdateSwiftSegment(session, (SegmentKeyBean) segment);
                     }
                     return true;
                 }
@@ -94,26 +95,49 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
 
     @Override
     public Map<String, List<SegmentKey>> getAllSegments() {
-        Map<String, List<SegmentKey>> result = new HashMap<String, List<SegmentKey>>();
+
         try {
-            List<SegmentKey> beans = swiftSegmentDao.findAll();
-            for (SegmentKey bean : beans) {
-                SegmentKeyBean keyBean = (SegmentKeyBean) bean;
-                if (!result.containsKey(keyBean.getSourceKey())) {
-                    result.put(keyBean.getSourceKey(), new ArrayList<SegmentKey>());
+            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Map<String, List<SegmentKey>>>() {
+                @Override
+                public Map<String, List<SegmentKey>> work(Session session) {
+                    Map<String, List<SegmentKey>> result = new HashMap<String, List<SegmentKey>>();
+                    List<SegmentKey> beans = swiftSegmentDao.findAll(session);
+                    for (SegmentKey bean : beans) {
+                        SegmentKeyBean keyBean = (SegmentKeyBean) bean;
+                        if (!result.containsKey(keyBean.getSourceKey())) {
+                            result.put(keyBean.getSourceKey(), new ArrayList<SegmentKey>());
+                        }
+                        result.get(keyBean.getSourceKey()).add(bean);
+                    }
+                    return result;
                 }
-                result.get(keyBean.getSourceKey()).add(bean);
-            }
+
+                @Override
+                public boolean needTransaction() {
+                    return false;
+                }
+            });
+
         } catch (Exception e) {
             LOGGER.error("Select segments error!", e);
         }
-        return result;
+        return Collections.emptyMap();
     }
 
     @Override
     public List<SegmentKey> getSegmentByKey(final String sourceKey) {
         try {
-            return swiftSegmentDao.findBySourceKey(sourceKey);
+            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<List<SegmentKey>>() {
+                @Override
+                public List<SegmentKey> work(Session session) {
+                    return swiftSegmentDao.findBySourceKey(session, sourceKey);
+                }
+
+                @Override
+                public boolean needTransaction() {
+                    return false;
+                }
+            });
         } catch (Exception e) {
             LOGGER.error("Select segments error!", e);
             return Collections.emptyList();
@@ -123,10 +147,10 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
     @Override
     public boolean containsSegment(final SegmentKey segmentKey) {
         try {
-            return (Boolean) transactionManager.doTransactionIfNeed(new AbstractTransactionWorker() {
+            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
                 @Override
-                public Object work() throws SQLException {
-                    return null != swiftSegmentDao.select(((SegmentKeyBean) segmentKey).getId());
+                public Boolean work(Session session) throws SQLException {
+                    return null != swiftSegmentDao.select(session, ((SegmentKeyBean) segmentKey).getId());
                 }
 
                 @Override

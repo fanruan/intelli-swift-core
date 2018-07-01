@@ -74,6 +74,30 @@ public class SwiftServiceInfoEntity implements Convert<SwiftServiceInfoBean> {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SwiftServiceInfoEntity that = (SwiftServiceInfoEntity) o;
+
+        if (isSingleton != that.isSingleton) return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (service != null ? !service.equals(that.service) : that.service != null) return false;
+        if (clusterId != null ? !clusterId.equals(that.clusterId) : that.clusterId != null) return false;
+        return serviceInfo != null ? serviceInfo.equals(that.serviceInfo) : that.serviceInfo == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (service != null ? service.hashCode() : 0);
+        result = 31 * result + (clusterId != null ? clusterId.hashCode() : 0);
+        result = 31 * result + (serviceInfo != null ? serviceInfo.hashCode() : 0);
+        result = 31 * result + (isSingleton ? 1 : 0);
+        return result;
+    }
+
+    @Override
     public SwiftServiceInfoBean convert() {
         SwiftServiceInfoBean bean = new SwiftServiceInfoBean(service, clusterId, serviceInfo, isSingleton);
         return bean;

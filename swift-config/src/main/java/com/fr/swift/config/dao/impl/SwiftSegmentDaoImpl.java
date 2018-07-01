@@ -1,18 +1,16 @@
 package com.fr.swift.config.dao.impl;
 
-import com.fr.config.dao.HibernateTemplate;
 import com.fr.stable.StringUtils;
-import com.fr.stable.db.DBSession;
-import com.fr.store.access.AccessActionCallback;
-import com.fr.store.access.ResourceHolder;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.SegmentKeyBean;
-import com.fr.swift.config.dao.BaseDao;
+import com.fr.swift.config.dao.BasicDao;
 import com.fr.swift.config.dao.SwiftSegmentDao;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.third.org.hibernate.Query;
+import com.fr.third.org.hibernate.Session;
+import com.fr.third.org.hibernate.criterion.Conjunction;
+import com.fr.third.org.hibernate.criterion.Restrictions;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.sql.SQLException;
@@ -26,25 +24,20 @@ import java.util.List;
  * @date 2018/5/24
  */
 @Service
-public class SwiftSegmentDaoImpl extends BaseDao<SwiftSegmentEntity> implements SwiftSegmentDao {
-
-    private static final String FIND_BY_SOURCE_KEY = String.format("from SwiftSegmentEntity entity where entity.%s = ", SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER);
-    private static final String FIND_BY_STORE_TYPE = String.format("from SwiftSegmentEntity entity where entity.%s = ", SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE);
-    private static final String DELETE_BY_SOURCE_KEY = String.format("delete from SwiftSegmentEntity entity where entity.%s = ", SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER);
-    private static final String DELETE_BY_STORE_TYPE = String.format("delete from SwiftSegmentEntity entity where entity.%s = ", SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE);
+public class SwiftSegmentDaoImpl extends BasicDao<SwiftSegmentEntity> implements SwiftSegmentDao {
 
     public SwiftSegmentDaoImpl() {
         super(SwiftSegmentEntity.class);
     }
 
     @Override
-    public boolean addOrUpdateSwiftSegment(SegmentKeyBean bean) throws SQLException {
-        return saveOrUpdate(bean.convert());
+    public boolean addOrUpdateSwiftSegment(Session session, SegmentKeyBean bean) throws SQLException {
+        return saveOrUpdate(session, bean.convert());
     }
 
     @Override
-    public List<SegmentKey> findBySourceKey(String sourceKey) {
-        List<SwiftSegmentEntity> list = find(String.format("%s'%s' order by entity.%s", FIND_BY_SOURCE_KEY, sourceKey, SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_ORDER));
+    public List<SegmentKey> findBySourceKey(Session session, String sourceKey) {
+        List<SwiftSegmentEntity> list = find(session, Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, sourceKey));
         List<SegmentKey> result = new ArrayList<SegmentKey>();
         for (SwiftSegmentEntity entity : list) {
             result.add(entity.convert());
@@ -53,13 +46,48 @@ public class SwiftSegmentDaoImpl extends BaseDao<SwiftSegmentEntity> implements 
     }
 
     @Override
-    public List<SegmentKey> findBeanByStoreType(String sourceKey, Types.StoreType type) throws SQLException {
+    public List<SegmentKey> findBeanByStoreType(Session session, String sourceKey, Types.StoreType type) throws SQLException {
         if (StringUtils.isEmpty(sourceKey) || null == type) {
             throw new SQLException();
         }
-        StringBuilder hqlBuilder = new StringBuilder(String.format("%s'%s'", FIND_BY_STORE_TYPE, type.name()));
-        hqlBuilder.append(String.format(" and entity.%s = '%s'", SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, sourceKey));
-        List<SwiftSegmentEntity> list = find(hqlBuilder.toString());
+        List<SwiftSegmentEntity> list = find(session, Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, sourceKey),
+                Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE, type));
+        List<SegmentKey> result = new ArrayList<SegmentKey>();
+        for (SwiftSegmentEntity entity : list) {
+            result.add(entity.convert());
+        }
+        return result;
+    }
+
+    @Override
+    public boolean deleteBySourceKey(Session session, final String sourceKey) throws SQLException {
+        try {
+            List<SwiftSegmentEntity> entities = find(session, Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, sourceKey));
+            for (SwiftSegmentEntity entity : entities) {
+                session.delete(entity);
+            }
+            return true;
+        } catch (Exception e) {
+            throw new SQLException(e);
+        }
+    }
+
+    @Override
+    public boolean deleteByStoreType(Session session, final Types.StoreType storeType) throws SQLException {
+        try {
+            List<SwiftSegmentEntity> entities = find(session, Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE, storeType));
+            for (SwiftSegmentEntity entity : entities) {
+                session.delete(entity);
+            }
+            return true;
+        } catch (Exception e) {
+            throw new SQLException(e);
+        }
+    }
+
+    @Override
+    public List<SegmentKey> findAll(Session session) {
+        List<SwiftSegmentEntity> list = find(session, new Conjunction[]{});
         List<SegmentKey> result = new ArrayList<SegmentKey>();
         for (SwiftSegmentEntity entity : list) {
             result.add(entity.convert());
@@ -67,59 +95,4 @@ public class SwiftSegmentDaoImpl extends BaseDao<SwiftSegmentEntity> implements 
         return Collections.unmodifiableList(result);
     }
 
-    @Override
-    public boolean deleteBySourceKey(final String sourceKey) throws SQLException {
-        try {
-            return HibernateTemplate.getInstance().doQuery(new AccessActionCallback<Boolean>() {
-                public Boolean doInServer(ResourceHolder holder) {
-                    DBSession session = (DBSession) holder.getResource();
-
-                    try {
-                        Query query = session.createHibernateQuery(String.format("%s'%s'", DELETE_BY_SOURCE_KEY, sourceKey));
-                        query.executeUpdate();
-                    } catch (Exception e) {
-                        LOGGER.error("deleteBySourceKey failed", e);
-                        throw new RuntimeException(e);
-                    }
-
-                    return true;
-                }
-            });
-        } catch (Exception e) {
-            throw new SQLException(e);
-        }
-    }
-
-    @Override
-    public boolean deleteByStoreType(final Types.StoreType storeType) throws SQLException {
-        try {
-            return HibernateTemplate.getInstance().doQuery(new AccessActionCallback<Boolean>() {
-                public Boolean doInServer(ResourceHolder holder) {
-                    DBSession session = (DBSession) holder.getResource();
-
-                    try {
-                        Query query = session.createHibernateQuery(String.format("%s'%s'", DELETE_BY_STORE_TYPE, storeType.name()));
-                        query.executeUpdate();
-                    } catch (Exception e) {
-                        LOGGER.error("deleteById failed", e);
-                        throw new RuntimeException(e);
-                    }
-
-                    return true;
-                }
-            });
-        } catch (Exception e) {
-            throw new SQLException(e);
-        }
-    }
-
-    @Override
-    public List<SegmentKey> findAll() {
-        List<SwiftSegmentEntity> list = find();
-        List<SegmentKey> result = new ArrayList<SegmentKey>();
-        for (SwiftSegmentEntity entity : list) {
-            result.add(entity.convert());
-        }
-        return Collections.unmodifiableList(result);
-    }
 }

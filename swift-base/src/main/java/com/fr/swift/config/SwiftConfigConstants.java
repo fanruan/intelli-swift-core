@@ -29,5 +29,6 @@ public class SwiftConfigConstants {
         public static final String FTP_REPOSITORY_NAMESPACE = "SWIFT_FTP_REPOSITORY";
         public static final String HDFS_REPOSITORY_NAMESPACE = "SWIFT_HDFS_REPOSITORY";
         public static final String REPOSITORY_CONF_NAMESPACE = "SWIFT_REPOSITORY_CONF";
+        public static final String SWIFT_DB_CONF_NAMESPACE = "SWIFT_DB_CONF";
     }
 }

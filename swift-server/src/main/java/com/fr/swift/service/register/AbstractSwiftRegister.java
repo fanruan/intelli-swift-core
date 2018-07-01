@@ -57,7 +57,6 @@ public abstract class AbstractSwiftRegister implements SwiftRegister {
         RemoteServiceSender remoteServiceSender = RemoteServiceSender.getInstance();
 
         List<SwiftServiceInfoBean> swiftServiceInfoBeans = serviceInfoService.getServiceInfoByService(SwiftClusterService.SERVICE);
-        System.out.println(swiftServiceInfoBeans.isEmpty());
         SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
         URL url = UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
         SwiftServiceListenerHandler senderProxy = proxyFactory.getProxy(remoteServiceSender, SwiftServiceListenerHandler.class, url);

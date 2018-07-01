@@ -1,6 +1,9 @@
 package com.fr.swift.config.dao;
 
 
+import com.fr.third.org.hibernate.Session;
+import com.fr.third.org.hibernate.criterion.Criterion;
+
 import java.sql.SQLException;
 import java.util.List;
 
@@ -15,7 +18,7 @@ public interface SwiftConfigDao<T> {
      * @param entity
      * @return
      */
-    boolean saveOrUpdate(T entity) throws SQLException;
+    boolean saveOrUpdate(Session session, T entity) throws SQLException;
 
     /**
      * 根据ID查询
@@ -23,22 +26,15 @@ public interface SwiftConfigDao<T> {
      * @param id
      * @return
      */
-    T select(String id) throws SQLException;
+    T select(Session session, String id) throws SQLException;
 
     /**
      * 自定义hql查询
      *
-     * @param hql hibernate sql
+     * @param criterion hibernate sql
      * @return
      */
-    List<T> find(String hql);
-
-    /**
-     * 查询所有记录
-     *
-     * @return
-     */
-    List<T> find();
+    List<T> find(Session session, Criterion... criterion);
 
     /**
      * 根据ID删除
@@ -46,5 +42,5 @@ public interface SwiftConfigDao<T> {
      * @param id
      * @return
      */
-    boolean deleteById(String id) throws SQLException;
+    boolean deleteById(Session session, String id) throws SQLException;
 }

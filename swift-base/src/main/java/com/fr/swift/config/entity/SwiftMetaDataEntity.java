@@ -104,6 +104,32 @@ public class SwiftMetaDataEntity implements Convert<SwiftMetaDataBean> {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SwiftMetaDataEntity that = (SwiftMetaDataEntity) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (swiftSchema != that.swiftSchema) return false;
+        if (schemaName != null ? !schemaName.equals(that.schemaName) : that.schemaName != null) return false;
+        if (tableName != null ? !tableName.equals(that.tableName) : that.tableName != null) return false;
+        if (remark != null ? !remark.equals(that.remark) : that.remark != null) return false;
+        return fields != null ? fields.equals(that.fields) : that.fields == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (swiftSchema != null ? swiftSchema.hashCode() : 0);
+        result = 31 * result + (schemaName != null ? schemaName.hashCode() : 0);
+        result = 31 * result + (tableName != null ? tableName.hashCode() : 0);
+        result = 31 * result + (remark != null ? remark.hashCode() : 0);
+        result = 31 * result + (fields != null ? fields.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public SwiftMetaDataBean convert() {
         return new SwiftMetaDataBean(this);
     }

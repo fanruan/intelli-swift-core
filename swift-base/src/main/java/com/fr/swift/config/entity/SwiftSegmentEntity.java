@@ -82,6 +82,31 @@ public class SwiftSegmentEntity implements Convert<SegmentKeyBean> {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SwiftSegmentEntity entity = (SwiftSegmentEntity) o;
+
+        if (segmentOrder != entity.segmentOrder) return false;
+        if (id != null ? !id.equals(entity.id) : entity.id != null) return false;
+        if (segmentOwner != null ? !segmentOwner.equals(entity.segmentOwner) : entity.segmentOwner != null)
+            return false;
+        if (segmentUri != null ? !segmentUri.equals(entity.segmentUri) : entity.segmentUri != null) return false;
+        return storeType == entity.storeType;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (segmentOwner != null ? segmentOwner.hashCode() : 0);
+        result = 31 * result + (segmentUri != null ? segmentUri.hashCode() : 0);
+        result = 31 * result + segmentOrder;
+        result = 31 * result + (storeType != null ? storeType.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public SegmentKeyBean convert() {
         return new SegmentKeyBean(segmentOwner, segmentUri, segmentOrder, storeType);
     }
