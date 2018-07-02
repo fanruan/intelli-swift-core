@@ -4,7 +4,7 @@ import com.fr.config.ConfigContext;
 import com.fr.config.holder.factory.Holders;
 import com.fr.stable.StringUtils;
 import com.fr.swift.config.base.impl.SwiftAbstractSimpleConfig;
-import com.fr.workspace.WorkContext;
+import com.fr.swift.context.ContextUtil;
 
 /**
  * This class created on 2018/5/7
@@ -16,7 +16,7 @@ import com.fr.workspace.WorkContext;
 public class SwiftCubePathConfig extends SwiftAbstractSimpleConfig<String> {
     private static SwiftCubePathConfig config = null;
 
-    private static final String BASE_CUBE_PATH = String.format("%s/../", WorkContext.getCurrent().getPath());
+    private static final String BASE_CUBE_PATH = getDefaultPath();
 
     public SwiftCubePathConfig() {
         super(Holders.<String>simple(null));
@@ -41,6 +41,10 @@ public class SwiftCubePathConfig extends SwiftAbstractSimpleConfig<String> {
         if (isValidPath(path)) {
             super.addOrUpdate(path);
         }
+    }
+
+    private static String getDefaultPath() {
+        return String.format("%s/../../../", ContextUtil.getClassPath());
     }
 
     public static boolean isValidPath(String path) {

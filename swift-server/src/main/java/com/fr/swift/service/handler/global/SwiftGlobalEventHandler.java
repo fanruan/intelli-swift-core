@@ -51,6 +51,7 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
                     LOGGER.error(e);
                 }
                 break;
+            default:
         }
         return null;
     }

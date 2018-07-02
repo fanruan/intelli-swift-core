@@ -40,10 +40,10 @@ public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
         List<Query<DetailResultSet>> queries = new ArrayList<Query<DetailResultSet>>();
         List<Segment> segments = localSegmentProvider.getSegment(info.getTable());
         List<Segment> targetSegments = new ArrayList<Segment>();
-        URI segmentOrder = info.getQuerySegment();
-        if (segmentOrder != null) {
+        URI segmentUri = info.getQuerySegment();
+        if (segmentUri != null) {
             for (Segment segment : segments) {
-                if (ComparatorUtils.equals(segment.getLocation().getUri(), segmentOrder)) {
+                if (ComparatorUtils.equals(segment.getLocation().getUri(), segmentUri)) {
                     targetSegments.add(segment);
                     break;
                 }
