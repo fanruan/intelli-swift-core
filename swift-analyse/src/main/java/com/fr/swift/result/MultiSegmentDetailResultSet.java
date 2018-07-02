@@ -32,8 +32,9 @@ public class MultiSegmentDetailResultSet implements DetailResultSet {
     private void init() throws SQLException{
         List<DetailResultSet> resultSets = new ArrayList<DetailResultSet>();
         for (Query query : queries) {
-            rowCount += ((DetailResultSet) query.getQueryResult()).getRowCount();
-            resultSets.add((DetailResultSet) query.getQueryResult());
+            DetailResultSet resultSet = (DetailResultSet) query.getQueryResult();
+            rowCount += resultSet.getRowCount();
+            resultSets.add(resultSet);
         }
         mergeIterator = new DetailMergerIterator(resultSets);
     }

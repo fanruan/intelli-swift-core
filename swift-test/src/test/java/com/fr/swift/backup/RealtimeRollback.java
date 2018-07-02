@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -79,7 +80,21 @@ public class RealtimeRollback extends BaseTest {
             Segment segment = localSegmentProvider.getSegment(dataSource.getSourceKey()).get(0);
 
             assertEquals(redisClient.llen("backup_cubes/7bc94acd/seg0"), 0);
-            assertEquals(segment.getRowCount(), 0);
+            //rowcount和索引都不会回滚
+            assertEquals(segment.getRowCount(), 42);
+            Column column = segment.getColumn(new ColumnKey("USER_NAME"));
+            int size = column.getDictionaryEncodedColumn().size();
+            assertNotSame(size, 0);
+            for (int i = 0; i < size; i++) {
+                try {
+                    ImmutableBitMap indexMap = column.getBitmapIndex().getBitMapIndex(i);
+                    assertTrue(true);
+                } catch (Exception e) {
+                    assertTrue(false);
+                }
+            }
+
+            //allshow回滚。
             assertTrue(!segment.getAllShowIndex().contains(0));
             assertTrue(!segment.getAllShowIndex().contains(41));
         } catch (Exception e) {
@@ -124,9 +139,14 @@ public class RealtimeRollback extends BaseTest {
             incrementer.increment(resultSet);
 
             assertEquals(redisClient.llen("backup_cubes/7bc94acd/seg0"), 42);
-            assertEquals(segment.getRowCount(), 42);
+            //rowcount不回滚
+            assertEquals(segment.getRowCount(), 84);
+            //allshow回滚
             assertTrue(segment.getAllShowIndex().contains(0));
             assertTrue(segment.getAllShowIndex().contains(41));
+            assertTrue(!segment.getAllShowIndex().contains(42));
+            assertTrue(!segment.getAllShowIndex().contains(83));
+
             Map<String, Map<Integer, ImmutableBitMap>> newIndexMap = new HashMap<>();
             for (String columnName : segment.getMetaData().getFieldNames()) {
                 newIndexMap.put(columnName, new HashMap<>());
@@ -136,19 +156,18 @@ public class RealtimeRollback extends BaseTest {
                     newIndexMap.get(columnName).put(i, column.getBitmapIndex().getBitMapIndex(i));
                 }
             }
-            //比较indexMap和newIndexMap，indexMap是回滚前的引用，newIndexMap是回滚后的。
-            //如 oldmap是{1，2，43，44}，newmap则是{1,2}
+            //比较indexMap和newIndexMap，indexMap是回滚前的引用，newIndexMap是回滚后的。回滚前后都一样
+            //如 oldmap是{1，2，43，44}，newmap也是
             for (Map.Entry<String, Map<Integer, ImmutableBitMap>> entry : newIndexMap.entrySet()) {
                 Map<Integer, ImmutableBitMap> oldMap = indexMap.get(entry.getKey());
                 Map<Integer, ImmutableBitMap> newMap = entry.getValue();
                 assertEquals(oldMap.size(), newMap.size());
                 for (Integer key : oldMap.keySet()) {
-                    for (int i = 0; i < 42; i++) {
+                    for (int i = 0; i < 83; i++) {
                         ImmutableBitMap oldBitMap = oldMap.get(key);
                         ImmutableBitMap newBitMap = newMap.get(key);
                         if (newBitMap.contains(i)) {
                             assertTrue(oldBitMap.contains(i));
-                            assertTrue(oldBitMap.contains(i + 42));
                         }
                     }
 
