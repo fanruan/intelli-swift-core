@@ -59,7 +59,7 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfigImp
     protected SwiftFileSystem[] list() throws SwiftFileException {
         FineFTP ftp = acquireClient();
         try {
-            String[] children = FTPUtils.list(ftp, rootURI.resolve(getResourceURI()).getPath(), new Filter<String>() {
+            String[] children = FTPUtils.list(ftp, resolve(rootURI, getResourceURI().getPath()).getPath(), new Filter<String>() {
                 @Override
                 public boolean accept(String s) {
                     return true;
@@ -68,8 +68,7 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfigImp
             if (null != children) {
                 SwiftFileSystem[] childFileSystem = new SwiftFileSystem[children.length];
                 for (int i = 0; i < children.length; i++) {
-                    String path = children[i].substring(children[i].indexOf(rootURI.getPath()));
-                    childFileSystem[i] = new FtpFileSystemImpl(getConfig(), URI.create(path));
+                    childFileSystem[i] = new FtpFileSystemImpl(getConfig(), resolve(getResourceURI(), children[i]));
                 }
                 return childFileSystem;
             }
@@ -86,7 +85,7 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfigImp
     public void write(URI remote, InputStream inputStream) throws SwiftFileException {
         FineFTP ftp = acquireClient();
         try {
-            FTPUtils.write(ftp, rootURI.resolve(remote).getPath(), inputStream);
+            FTPUtils.write(ftp, resolve(rootURI, remote.getPath()).getPath(), inputStream);
         } catch (Exception e) {
             throw new SwiftFileException(e);
         } finally {
@@ -112,7 +111,7 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfigImp
     public boolean remove(URI remote) throws SwiftFileException {
         FineFTP ftp = acquireClient();
         try {
-            return FTPUtils.delete(ftp, rootURI.resolve(remote).getPath());
+            return FTPUtils.delete(ftp, resolve(rootURI, remote.getPath()).getPath());
         } catch (Exception e) {
             throw new SwiftFileException(e);
         } finally {
@@ -124,7 +123,7 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfigImp
     public boolean renameTo(URI src, URI dest) throws SwiftFileException {
         FineFTP ftp = acquireClient();
         try {
-            return FTPUtils.rename(ftp, rootURI.resolve(src).getPath(), rootURI.resolve(dest).getPath());
+            return FTPUtils.rename(ftp, resolve(rootURI, src.getPath()).getPath(), resolve(rootURI, dest.getPath()).getPath());
         } catch (Exception e) {
             throw new SwiftFileException(e);
         } finally {
@@ -141,7 +140,7 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfigImp
     public boolean isExists() {
         FineFTP ftp = acquireClient();
         try {
-            return FTPUtils.exist(ftp, rootURI.resolve(getResourceURI()).getPath());
+            return FTPUtils.exist(ftp, resolve(rootURI, getResourceURI().getPath()).getPath());
         } finally {
             returnClient(ftp);
         }
@@ -151,7 +150,7 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfigImp
     public boolean isDirectory() {
         FineFTP ftp = acquireClient();
         try {
-            return FTPUtils.isDirectory(ftp, rootURI.resolve(getResourceURI()).getPath());
+            return FTPUtils.isDirectory(ftp, resolve(rootURI, getResourceURI().getPath()).getPath());
         } finally {
             returnClient(ftp);
         }
@@ -161,7 +160,7 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfigImp
     public InputStream toStream() throws SwiftFileException {
         FineFTP ftp = acquireClient();
         try {
-            return FTPUtils.read(ftp, rootURI.resolve(getResourceURI()).getPath());
+            return FTPUtils.read(ftp, resolve(rootURI, getResourceURI().getPath()).getPath());
         } catch (Exception e) {
             throw new SwiftFileException(e);
         } finally {
@@ -196,5 +195,13 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfigImp
             clientPool.close();
         }
 
+    }
+
+    private URI resolve(URI uri, String resolve) {
+        String path = uri.getPath();
+        if (path.endsWith("/")) {
+            return uri.resolve(resolve);
+        }
+        return URI.create(path + "/").resolve(resolve);
     }
 }
