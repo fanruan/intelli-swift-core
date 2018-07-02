@@ -22,9 +22,7 @@ public class RPCProxyFactory extends AbstractProxyFactory {
     public <T> T getProxy(Invoker<T> invoker) {
         InvocationHandler invocationHandler = new InvokerInvocationHandler(invoker);
         Class interfaceClass = invoker.getInterface();
-        T t = (T) Proxy.newProxyInstance(interfaceClass.getClassLoader(), new Class<?>[]
-                {interfaceClass}, invocationHandler);
-        return t;
+        return (T) Proxy.newProxyInstance(interfaceClass.getClassLoader(), new Class<?>[]{interfaceClass}, invocationHandler);
     }
 
     @Override
@@ -34,7 +32,6 @@ public class RPCProxyFactory extends AbstractProxyFactory {
 
     @Override
     public <T> Invoker<T> getInvoker(T proxy, Class<T> type, URL url, boolean sync) {
-        Invoker rpcInvoker = new RPCInvoker(proxy, type, url, sync);
-        return rpcInvoker;
+        return (Invoker) new RPCInvoker(proxy, type, url, sync);
     }
 }
