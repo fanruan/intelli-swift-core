@@ -90,7 +90,7 @@ public class RedisBackupAndRevoceryTest extends BaseTest {
             SwiftSegmentManager localSegmentProvider = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class);
 
             //释放memio，再测恢复
-             ResourceDiscovery.getInstance().removeCubeResource("cubes/" + dataSource.getSourceKey().getId());
+            ResourceDiscovery.getInstance().removeCubeResource("cubes/" + dataSource.getSourceKey().getId());
 
             RedisSegmentRecovery redisSegmentRecovery = new RedisSegmentRecovery();
             redisSegmentRecovery.recover(dataSource.getSourceKey());
@@ -118,7 +118,7 @@ public class RedisBackupAndRevoceryTest extends BaseTest {
                 String columnName = segment.getMetaData().getColumnName(i);
                 Column column = segment.getColumn(new ColumnKey(columnName));
                 for (int r = 0; r < 42; r++) {
-                    assertEquals(rowList[i-1].get(r), column.getDetailColumn().get(r));
+                    assertEquals(rowList[i - 1].get(r), column.getDetailColumn().get(r));
                 }
             }
         } catch (Exception e) {

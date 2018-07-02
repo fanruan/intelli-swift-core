@@ -13,7 +13,7 @@ import java.util.List;
  * @author anchore
  * @date 2018/5/23
  */
-public class SwiftSegmentRecovery extends AbstractSegmentRecovery {
+public class FileSegmentRecovery extends AbstractSegmentRecovery {
 
     @Override
     public void recover(List<SegmentKey> segmentKeys) {

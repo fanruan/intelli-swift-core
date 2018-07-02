@@ -1,11 +1,13 @@
 package com.fr.swift.segment.operator.insert;
 
 import com.fr.swift.cube.CubeUtil;
+import com.fr.swift.exception.RealtimeInsertException;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.ListResultSet;
+import com.fr.swift.transatcion.Transactional;
 
 import java.sql.SQLException;
 import java.util.Collections;
@@ -29,29 +31,35 @@ public class SwiftInserter extends BaseInserter implements Inserter {
     }
 
     @Override
-    public List<Segment> insertData(List<Row> rowList) throws SQLException {
+    @Transactional(value = RealtimeInsertException.class)
+    public List<Segment> insertData(List<Row> rowList) throws RealtimeInsertException {
         return insertData(new ListResultSet(segment.getMetaData(), rowList));
     }
 
     @Override
-    public List<Segment> insertData(SwiftResultSet swiftResultSet) throws SQLException {
-        // fixme 要从配置里判断，这里有可能读的recorder备份的数据
-        boolean readable = CubeUtil.isReadable(segment);
-        int lastCursor = readable ? segment.getRowCount() : 0,
-                cursor = lastCursor;
+    @Transactional(value = RealtimeInsertException.class)
+    public List<Segment> insertData(SwiftResultSet swiftResultSet) throws RealtimeInsertException {
+        try {
+            // fixme 要从配置里判断，这里有可能读的recorder备份的数据
+            boolean readable = CubeUtil.isReadable(segment);
+            int lastCursor = readable ? segment.getRowCount() : 0,
+                    cursor = lastCursor;
 
-        while (swiftResultSet.next()) {
-            Row rowData = swiftResultSet.getRowData();
-            putRow(cursor, rowData);
-            cursor++;
+            while (swiftResultSet.next()) {
+                Row rowData = swiftResultSet.getRowData();
+                putRow(cursor, rowData);
+                cursor++;
+            }
+
+            putNullIndex();
+
+            putSegmentInfo(lastCursor, cursor);
+
+            release();
+
+            return Collections.singletonList(segment);
+        } catch (Exception e) {
+            throw new RealtimeInsertException(e);
         }
-
-        putNullIndex();
-
-        putSegmentInfo(lastCursor, cursor);
-
-        release();
-
-        return Collections.singletonList(segment);
     }
 }

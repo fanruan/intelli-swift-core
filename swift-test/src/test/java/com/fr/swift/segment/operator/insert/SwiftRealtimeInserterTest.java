@@ -45,7 +45,7 @@ public class SwiftRealtimeInserterTest {
     }
 
     @Test
-    public void test() throws SQLException {
+    public void test() throws Exception {
         RealTimeSegment realtimeSegment = getRealtimeSegment();
         Inserter inserter = new SwiftRealtimeInserter(realtimeSegment);
         inserter.insertData(transfer.createResultSet());

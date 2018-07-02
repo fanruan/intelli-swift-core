@@ -59,7 +59,7 @@ public class RedisClient {
         } catch (Exception e) {
             LOGGER.error(e);
         } finally {
-            jedis.close();
+            returnJedis(jedis);
         }
     }
 
@@ -82,7 +82,7 @@ public class RedisClient {
             LOGGER.error(e);
             throw new SwiftRedisException(e);
         } finally {
-            jedis.close();
+            returnJedis(jedis);
         }
     }
 
@@ -107,7 +107,7 @@ public class RedisClient {
             LOGGER.error(e);
             throw new SwiftRedisException(e);
         } finally {
-            jedis.close();
+            returnJedis(jedis);
         }
     }
 
@@ -129,7 +129,7 @@ public class RedisClient {
             LOGGER.error(e);
             throw new SwiftRedisException(e);
         } finally {
-            jedis.close();
+            returnJedis(jedis);
         }
     }
 
@@ -144,7 +144,7 @@ public class RedisClient {
         } catch (Exception e) {
             LOGGER.error(e);
         } finally {
-            jedis.close();
+            returnJedis(jedis);
         }
     }
 
@@ -161,7 +161,29 @@ public class RedisClient {
         } catch (Exception e) {
             LOGGER.error(e);
         } finally {
-            jedis.close();
+            returnJedis(jedis);
+        }
+    }
+
+    public Jedis getJedis() {
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            return jedis;
+        } catch (Exception e) {
+            LOGGER.error(e);
+            returnJedis(jedis);
+        }
+        return null;
+    }
+
+    public void returnJedis(Jedis jedis) {
+        try {
+            if (jedis != null) {
+                jedis.close();
+            }
+        } catch (Exception e) {
+            LOGGER.error(e);
         }
     }
 }
