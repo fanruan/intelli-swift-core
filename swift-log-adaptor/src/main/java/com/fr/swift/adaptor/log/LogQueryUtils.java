@@ -127,11 +127,11 @@ public class LogQueryUtils {
         } else {
             long currentCount = 0;
             while (resultSet.next() && currentCount < end) {
-                if (currentCount < start) {
+                if (currentCount++ < start) {
+                    resultSet.getRowData();
                     continue;
                 }
                 rows.add(resultSet.getRowData());
-                currentCount++;
             }
         }
         return rows;
