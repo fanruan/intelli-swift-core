@@ -15,14 +15,15 @@ import java.util.Properties;
 @Service
 public class SwiftConfigProperties {
     private DBOption option;
-    private boolean frStart;
+    private boolean selfStart;
 
     public SwiftConfigProperties() {
         this.option = new DBOption().addRawProperty("hibernate.connection.autocommit", false);
+        this.option = new DBOption().addRawProperty("hibernate.connection.provider_class", "com.fr.third.alibaba.druid.support.hibernate.DruidConnectionProvider");
     }
 
     public Properties getProperties() {
-        return !frStart ? this.option.getProperties() : FineDBProperties.getInstance().get().getProperties();
+        return selfStart ? this.option.getProperties() : FineDBProperties.getInstance().get().getProperties();
     }
 
     public String getDriverClass() {
@@ -70,12 +71,12 @@ public class SwiftConfigProperties {
         this.option.setPassword(password);
     }
 
-    public boolean isFrStart() {
-        return frStart;
+    public boolean isSelfStart() {
+        return selfStart;
     }
 
     @Autowired
-    public void setFrStart(@Value("${swift.frStart}") boolean frStart) {
-        this.frStart = frStart;
+    public void setSelfStart(@Value("${swift.selfStart}") boolean selfStart) {
+        this.selfStart = selfStart;
     }
 }
