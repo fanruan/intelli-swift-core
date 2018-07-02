@@ -1,8 +1,10 @@
 package com.fr.swift.segment.backup;
 
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.operator.insert.BaseInserter;
 import com.fr.swift.source.Row;
+import com.fr.swift.transatcion.TransactionManager;
 
 import java.util.List;
 
@@ -15,8 +17,15 @@ import java.util.List;
  */
 public class FileSegmentBackup extends BaseInserter implements SwiftSegmentBackup {
 
-    public FileSegmentBackup(Segment segment, List<String> fields) {
+    protected TransactionManager transactionManager;
+
+    private Segment currentSegment;
+
+    public FileSegmentBackup(Segment segment, Segment currentSegment, List<String> fields) {
         super(segment, fields);
+        this.currentSegment = currentSegment;
+        transactionManager = (TransactionManager) SwiftContext.getInstance().getBean("transactionManager", segment);
+        transactionManager.setOldAttatch(currentSegment);
     }
 
     @Override
@@ -37,5 +46,10 @@ public class FileSegmentBackup extends BaseInserter implements SwiftSegmentBacku
     @Override
     public void release() {
         super.release();
+    }
+
+    @Override
+    public TransactionManager getTransactionManager() {
+        return transactionManager;
     }
 }

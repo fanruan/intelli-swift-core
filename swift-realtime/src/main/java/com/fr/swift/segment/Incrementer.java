@@ -20,6 +20,7 @@ import com.fr.swift.source.alloter.line.LineAllotRule;
 import com.fr.swift.source.alloter.line.LineRowInfo;
 import com.fr.swift.source.alloter.line.LineSourceAlloter;
 import com.fr.swift.structure.ListResultSet;
+import com.fr.swift.transatcion.TransactionProxyFactory;
 
 import java.sql.SQLException;
 import java.util.Collections;
@@ -52,7 +53,11 @@ public class Incrementer implements Inserter {
             //todo 这next第一行就没了
 //            while (resultSet.next()) {
             boolean newSeg = nextSegment();
-            Inserter inserter = new SwiftRealtimeInserter(currentSeg);
+            //获得事务代理
+            SwiftRealtimeInserter swiftRealtimeInserter = new SwiftRealtimeInserter(currentSeg);
+            TransactionProxyFactory proxyFactory = new TransactionProxyFactory(swiftRealtimeInserter.getSwiftBackup().getTransactionManager());
+            Inserter inserter = (Inserter) proxyFactory.getProxy(swiftRealtimeInserter);
+
             int step = ((LineAllotRule) alloter.getAllotRule()).getStep();
             int limit = CubeUtil.isReadable(currentSeg) ? step - currentSeg.getRowCount() : step;
             inserter.insertData(new LimitedResultSet(resultSet, limit));
@@ -61,7 +66,7 @@ public class Incrementer implements Inserter {
                 persistSegment(currentSeg, count++);
             }
 //            }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         } finally {
             resultSet.close();
