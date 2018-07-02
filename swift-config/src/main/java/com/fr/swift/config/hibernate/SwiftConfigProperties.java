@@ -1,5 +1,6 @@
 package com.fr.swift.config.hibernate;
 
+import com.fr.finedb.FineDBProperties;
 import com.fr.stable.db.option.DBOption;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.beans.factory.annotation.Value;
@@ -14,13 +15,14 @@ import java.util.Properties;
 @Service
 public class SwiftConfigProperties {
     private DBOption option;
+    private boolean frStart;
 
     public SwiftConfigProperties() {
         this.option = new DBOption().addRawProperty("hibernate.connection.autocommit", false);
     }
 
     public Properties getProperties() {
-        return this.option.getProperties();
+        return !frStart ? this.option.getProperties() : FineDBProperties.getInstance().get().getProperties();
     }
 
     public String getDriverClass() {
@@ -66,5 +68,14 @@ public class SwiftConfigProperties {
     @Autowired
     public void setPassword(@Value("${swift.configDb.passwd}") String password) {
         this.option.setPassword(password);
+    }
+
+    public boolean isFrStart() {
+        return frStart;
+    }
+
+    @Autowired
+    public void setFrStart(@Value("${swift.frStart}") boolean frStart) {
+        this.frStart = frStart;
     }
 }
