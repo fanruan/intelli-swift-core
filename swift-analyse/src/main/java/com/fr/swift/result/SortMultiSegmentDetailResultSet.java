@@ -35,8 +35,9 @@ public class SortMultiSegmentDetailResultSet implements DetailResultSet {
     private void init() throws SQLException {
         List<DetailResultSet> resultSets = new ArrayList<DetailResultSet>();
         for (Query query : queries) {
-            rowCount += ((DetailResultSet) query.getQueryResult()).getRowCount();
-            resultSets.add((DetailResultSet) query.getQueryResult());
+            DetailResultSet resultSet = (DetailResultSet) query.getQueryResult();
+            rowCount += resultSet.getRowCount();
+            resultSets.add(resultSet);
         }
         mergerIterator = new SortedDetailMergerIterator(PAGE_SIZE, createRowComparator(comparators), resultSets);
     }
