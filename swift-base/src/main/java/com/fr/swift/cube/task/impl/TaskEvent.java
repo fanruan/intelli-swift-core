@@ -20,6 +20,8 @@ public class TaskEvent<T> implements Event<T> {
 
     public static final Event<TaskKey> CANCEL = new TaskEvent<TaskKey>();
 
+    public static final Event<TaskKey> LOCAL_CANCEL = new TaskEvent<TaskKey>();
+
     public static final Event<Pair<TaskKey, TaskResult>> DONE = new TaskEvent<Pair<TaskKey, TaskResult>>();
 
     public static final Event<Pair<TaskKey, TaskResult>> LOCAL_DONE = new TaskEvent<Pair<TaskKey, TaskResult>>();
