@@ -35,6 +35,7 @@ public class HibernateManager {
             properties.setUrl(config.getUrl());
             properties.setUsername(config.getUsername());
         }
+
         Configuration configuration = new Configuration();
         configuration.addAnnotatedClass(SwiftMetaDataEntity.class);
         configuration.addAnnotatedClass(SwiftSegmentEntity.class);

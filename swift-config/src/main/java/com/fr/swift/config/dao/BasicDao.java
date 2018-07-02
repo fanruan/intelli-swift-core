@@ -35,7 +35,7 @@ public class BasicDao<T> implements SwiftConfigDao<T> {
     @Override
     public T select(Session session, String id) throws SQLException {
         try {
-            return session.load(entityClass, id);
+            return session.get(entityClass, id);
         } catch (Exception e) {
             throw new SQLException(e);
         }
