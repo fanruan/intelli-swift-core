@@ -16,7 +16,6 @@ import com.fr.third.guava.collect.BiMap;
 import com.fr.third.guava.collect.HashBiMap;
 
 import java.util.Comparator;
-import java.util.Map;
 import java.util.NavigableMap;
 
 /**
@@ -71,12 +70,6 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
         NavigableMap<V, MutableBitMap> descendingMap = valToRows.descendingMap();
         for (V v : descendingMap.headMap(minAddedValue, true).keySet()) {
             valAndIndex.put(v, newIndex--);
-        }
-
-        if (valAndIndex.size() < valToRows.size()) {
-            for (V v : descendingMap.tailMap(minAddedValue, false).keySet()) {
-                valAndIndex.put(v, newIndex--);
-            }
         }
 
         hasAddedValue = false;

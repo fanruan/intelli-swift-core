@@ -28,10 +28,9 @@ import java.util.concurrent.ExecutorService;
  */
 @Service
 public class SwiftHttpServer implements NettyServiceStarter {
-
-    private ExecutorService httpServerExector = SwiftExecutors.newSingleThreadExecutor(new PoolThreadFactory("netty-http-server"));
-
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftHttpServer.class);
+
+    private ExecutorService httpServerExecutor = SwiftExecutors.newSingleThreadExecutor(new PoolThreadFactory("netty-http-server"));
 
     private String httpAddress;
 
@@ -65,7 +64,7 @@ public class SwiftHttpServer implements NettyServiceStarter {
 
     @Override
     public void start() {
-        httpServerExector.submit(new Runnable() {
+        httpServerExecutor.submit(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -79,6 +78,6 @@ public class SwiftHttpServer implements NettyServiceStarter {
 
     @Override
     public void stop() {
-        httpServerExector.shutdownNow();
+        httpServerExecutor.shutdownNow();
     }
 }

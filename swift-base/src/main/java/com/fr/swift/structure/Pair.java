@@ -8,7 +8,9 @@ import java.io.Serializable;
  */
 public class Pair<K, V> implements Serializable {
     private static final long serialVersionUID = 4248136150831910862L;
+
     private K key;
+
     private V value;
 
     public K getKey() {
@@ -28,15 +30,16 @@ public class Pair<K, V> implements Serializable {
         return new Pair<K, V>(key, val);
     }
 
-    public Pair() {
-    }
-
-    public void setKey(K key) {
+    public K setKey(K key) {
+        K oldKey = this.key;
         this.key = key;
+        return oldKey;
     }
 
-    public void setValue(V value) {
+    public V setValue(V value) {
+        V oldValue = this.value;
         this.value = value;
+        return oldValue;
     }
 
     @Override
