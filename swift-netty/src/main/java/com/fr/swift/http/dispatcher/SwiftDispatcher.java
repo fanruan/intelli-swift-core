@@ -33,17 +33,17 @@ public class SwiftDispatcher extends DispatcherServlet {
 
     @Override
     protected void doDispatch(HttpServletRequest request,
-                              HttpServletResponse response) throws Exception {
+                              HttpServletResponse response) {
         try {
             Map requestParams = request.getParameterMap();
-            BodyReaderHttpServletRequestWrapper requstWrapper = new BodyReaderHttpServletRequestWrapper(
+            BodyReaderHttpServletRequestWrapper requestWrapper = new BodyReaderHttpServletRequestWrapper(
                     request);
 
             BodyReaderHttpServletResponseWrapper responseWrapper = new BodyReaderHttpServletResponseWrapper(
                     response);
 
             responseWrapper.setHeader("Access-Control-Allow-Origin", "*");
-            super.doDispatch(requstWrapper, responseWrapper);
+            super.doDispatch(requestWrapper, responseWrapper);
             response.getOutputStream().write(responseWrapper.getResponseData());
         } catch (Exception e) {
             e.printStackTrace();

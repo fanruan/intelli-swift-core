@@ -125,10 +125,10 @@ public class SwiftLogOperator implements LogOperator {
 
         private Map<Class<?>, List<Object>> dataMap = new ConcurrentHashMap<Class<?>, List<Object>>();
 
-        public static final int FLUSH_SIZE_THRESHOLD = 10000;
+        static final int FLUSH_SIZE_THRESHOLD = 10000;
 
         Sync() {
-            scheduler.scheduleAtFixedRate(this, 0, 5, TimeUnit.SECONDS);
+            scheduler.scheduleWithFixedDelay(this, 0, 5, TimeUnit.SECONDS);
         }
 
         @Override

@@ -5,7 +5,7 @@ import com.fr.config.holder.factory.Holders;
 import com.fr.stable.StringUtils;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.base.impl.SwiftAbstractSimpleConfig;
-import com.fr.workspace.WorkContext;
+import com.fr.swift.context.ContextUtil;
 
 /**
  * @author yee
@@ -13,7 +13,7 @@ import com.fr.workspace.WorkContext;
  */
 public class SwiftPathConfiguration extends SwiftAbstractSimpleConfig<String> {
 
-    private static final String BASE_CUBE_PATH = String.format("%s/../", WorkContext.getCurrent().getPath());
+    private static final String BASE_CUBE_PATH = getDefaultPath();
     private static SwiftPathConfiguration config = null;
 
     public SwiftPathConfiguration() {
@@ -38,6 +38,11 @@ public class SwiftPathConfiguration extends SwiftAbstractSimpleConfig<String> {
         return StringUtils.isNotEmpty(path) ? path : BASE_CUBE_PATH;
     }
 
+    private static String getDefaultPath() {
+        return String.format("%s/../../../", ContextUtil.getClassPath());
+    }
+
+    @Override
     public String getNameSpace() {
         return SwiftConfigConstants.FRConfiguration.CUBE_PATH_NAMESPACE;
     }
