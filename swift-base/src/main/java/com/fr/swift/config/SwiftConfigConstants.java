@@ -26,8 +26,6 @@ public class SwiftConfigConstants {
         public static final String CUBE_PATH_NAMESPACE = "swift_cube_path";
         public static final String SERVICE_ADDRESS_NAMESPACE = "SWIFT_RPC_SERVICE_CONFIG";
         public static final String ZIP_NAMESPACE = "SWIFT_USE_ZIP";
-        public static final String FTP_REPOSITORY_NAMESPACE = "SWIFT_FTP_REPOSITORY";
-        public static final String HDFS_REPOSITORY_NAMESPACE = "SWIFT_HDFS_REPOSITORY";
         public static final String REPOSITORY_CONF_NAMESPACE = "SWIFT_REPOSITORY_CONF";
         public static final String SWIFT_DB_CONF_NAMESPACE = "SWIFT_DB_CONF";
     }
