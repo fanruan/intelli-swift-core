@@ -6,6 +6,6 @@ package com.fr.swift.context;
  */
 public class ContextUtil {
     public static String getClassPath() {
-        return ContextUtil.class.getClassLoader().getResource("").getPath();
+        return ContextUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
     }
 }
