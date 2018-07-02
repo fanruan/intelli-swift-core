@@ -72,12 +72,6 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
             valAndIndex.put(v, newIndex--);
         }
 
-        if (valAndIndex.size() < valToRows.size()) {
-            for (V v : descendingMap.tailMap(minAddedValue, false).keySet()) {
-                valAndIndex.put(v, newIndex--);
-            }
-        }
-
         hasAddedValue = false;
     }
 
