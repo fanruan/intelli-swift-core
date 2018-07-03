@@ -25,14 +25,15 @@ import java.util.List;
  * @since Advanced FineBI Analysis 1.0
  */
 public class TableTransporter extends BaseWorker implements Transporter {
-    private DataSource dataSource;
-
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(TableTransporter.class);
 
-    private List<String> indexFieldsList;
+    private DataSource dataSource;
+
+    private Inserter inserter;
 
     public TableTransporter(DataSource dataSource) {
         this.dataSource = dataSource;
+        inserter = SwiftContext.getInstance().getBean(SwiftDataOperatorProvider.class).getHistoryBlockSwiftInserter(dataSource);
     }
 
     @Override
@@ -50,8 +51,6 @@ public class TableTransporter extends BaseWorker implements Transporter {
     public void transport() throws Exception {
         SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
         SwiftResultSet resultSet = transfer.createResultSet();
-        Inserter inserter = SwiftContext.getInstance().getBean(SwiftDataOperatorProvider.class).getHistoryBlockSwiftInserter(dataSource);
-        indexFieldsList = inserter.getFields();
         inserter.insertData(resultSet);
 
         ResourceDiscovery.getInstance().setLastUpdateTime(dataSource.getSourceKey(), System.currentTimeMillis());
@@ -59,6 +58,6 @@ public class TableTransporter extends BaseWorker implements Transporter {
 
     @Override
     public List<String> getIndexFieldsList() {
-        return indexFieldsList;
+        return inserter.getFields();
     }
 }
