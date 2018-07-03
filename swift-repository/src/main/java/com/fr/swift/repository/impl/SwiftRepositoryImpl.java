@@ -20,6 +20,9 @@ import java.net.URI;
  * @date 2018/5/28
  */
 public class SwiftRepositoryImpl extends AbstractRepository {
+
+    private static final String TEMP_PATH = System.getProperty("java.io.tmpdir");
+
     public SwiftRepositoryImpl(SwiftFileSystemConfig configuration) {
         super(configuration);
     }
@@ -84,7 +87,7 @@ public class SwiftRepositoryImpl extends AbstractRepository {
     public boolean copyToRemote(URI local, URI remote) throws IOException {
         File file = new File(local.getPath());
         if (file.isDirectory()) {
-            File zipFile = new File(file.getParent(), file.getName() + ".cubes");
+            File zipFile = new File(TEMP_PATH, file.getName() + ".cubes");
             FileOutputStream fos = new FileOutputStream(zipFile);
             ZipUtils.toZip(file.getAbsolutePath(), fos, true);
             fos.close();
@@ -94,11 +97,6 @@ public class SwiftRepositoryImpl extends AbstractRepository {
             }
             fileSystem.mkdirs();
             fileSystem.remove();
-//            File[] files = file.listFiles();
-//            for (File f : files) {
-//                copyToRemote(f.toURI(), resolve(remote, f.getName()));
-//            }
-
             if (copyToRemote(zipFile.toURI(), resolve(URI.create(ResourceIOUtils.getParent(remote.getPath())), zipFile.getName()))) {
                 zipFile.delete();
             }
