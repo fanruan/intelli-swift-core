@@ -3,8 +3,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans
-       classpath:/com/fr/third/springframework/beans/factory/xml/spring-beans-4.0.xsd
-">
+       classpath:/com/fr/third/springframework/beans/factory/xml/spring-beans-4.0.xsd">
 
     <!--正常注入-->
     <bean id="localSegmentProvider" class="com.fr.swift.manager.LocalSegmentProvider"/>

@@ -1,59 +1,48 @@
 package com.fr.swift.log;
 
 
-import com.fr.third.apache.log4j.Level;
-import com.fr.third.apache.log4j.Logger;
+import com.fr.log.FineLoggerFactory;
+
+import java.text.DateFormat;
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * @author anchore
  */
 public class SwiftLogger {
-    private static final String FQCN = SwiftLogger.class.getName();
+    /**
+     * date thread level [class.method] message\n
+     */
+    private static final MessageFormat MSG_FORMAT = new MessageFormat("{0} {1} {2} [{3}.{4}] {5}");
 
-    private final Logger logger;
-
-    SwiftLogger(Logger logger) {
-        this.logger = logger;
-    }
-
-    public String getName() {
-        return logger.getName();
-    }
-
-    public void trace(String msg) {
-        trace(msg, null);
-    }
-
-    public void trace(Throwable throwable) {
-        trace(null, throwable);
-    }
-
-    public void trace(String msg, Throwable throwable) {
-        logger.log(FQCN, Level.TRACE, msg, throwable);
-    }
+    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yy-M-d H:m:s.S");
 
     public void debug(String msg) {
-        debug(msg, null);
-    }
-
-    public void debug(Throwable throwable) {
-        debug(null, throwable);
-    }
-
-    public void debug(String msg, Throwable throwable) {
-        logger.log(FQCN, Level.DEBUG, msg, throwable);
+        Thread thread = Thread.currentThread();
+        StackTraceElement stackTrace = thread.getStackTrace()[2];
+        FineLoggerFactory.getLogger().debug(MSG_FORMAT.format(new Object[]{
+                DATE_FORMAT.format(new Date()),
+                thread.getName(),
+                Level.DEBUG,
+                stackTrace.getClassName(),
+                stackTrace.getMethodName(),
+                msg
+        }));
     }
 
     public void info(String msg) {
-        info(msg, null);
-    }
-
-    public void info(Throwable throwable) {
-        info(null, throwable);
-    }
-
-    public void info(String msg, Throwable throwable) {
-        logger.log(FQCN, Level.INFO, msg, throwable);
+        Thread thread = Thread.currentThread();
+        StackTraceElement stackTrace = thread.getStackTrace()[2];
+        FineLoggerFactory.getLogger().info(MSG_FORMAT.format(new Object[]{
+                DATE_FORMAT.format(new Date()),
+                thread.getName(),
+                Level.INFO,
+                stackTrace.getClassName(),
+                stackTrace.getMethodName(),
+                msg
+        }));
     }
 
     public void warn(String msg) {
@@ -65,7 +54,16 @@ public class SwiftLogger {
     }
 
     public void warn(String msg, Throwable throwable) {
-        logger.log(FQCN, Level.WARN, msg, throwable);
+        Thread thread = Thread.currentThread();
+        StackTraceElement stackTrace = thread.getStackTrace()[2];
+        FineLoggerFactory.getLogger().warn(MSG_FORMAT.format(new Object[]{
+                DATE_FORMAT.format(new Date()),
+                thread.getName(),
+                Level.WARN,
+                stackTrace.getClassName(),
+                stackTrace.getMethodName(),
+                msg
+        }), throwable);
     }
 
     public void error(String msg) {
@@ -77,6 +75,15 @@ public class SwiftLogger {
     }
 
     public void error(String msg, Throwable throwable) {
-        logger.log(FQCN, Level.ERROR, msg, throwable);
+        Thread thread = Thread.currentThread();
+        StackTraceElement stackTrace = thread.getStackTrace()[2];
+        FineLoggerFactory.getLogger().error(MSG_FORMAT.format(new Object[]{
+                DATE_FORMAT.format(new Date()),
+                thread.getName(),
+                Level.ERROR,
+                stackTrace.getClassName(),
+                stackTrace.getMethodName(),
+                msg
+        }), throwable);
     }
 }
