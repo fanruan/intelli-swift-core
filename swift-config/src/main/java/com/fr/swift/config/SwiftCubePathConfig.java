@@ -44,10 +44,15 @@ public class SwiftCubePathConfig extends SwiftAbstractSimpleConfig<String> {
     }
 
     private static String getDefaultPath() {
-        return String.format("%s/../../../", ContextUtil.getClassPath());
+        String classPath = ContextUtil.getClassPath();
+        int idx = classPath.indexOf("WEB-INF");
+        if (idx != -1) {
+            return classPath.substring(0, idx);
+        }
+        return classPath + "/../";
     }
 
-    public static boolean isValidPath(String path) {
+    private static boolean isValidPath(String path) {
         return path != null && !StringUtils.isBlank(path);
     }
 

@@ -36,7 +36,7 @@ public class SwiftMetaDataDaoImpl extends BasicDao<SwiftMetaDataEntity> implemen
     @Override
     public SwiftMetaDataBean findByTableName(Session session, String tableName) {
         List<SwiftMetaDataEntity> list = find(session, Restrictions.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_TABLE_NAME, tableName));
-        if (null == list && list.isEmpty()) {
+        if (null == list || list.isEmpty()) {
             throw new RuntimeException(String.format("Find meta data error! Table named '%s' not exists!", tableName));
         }
         if (list.size() != 1) {

@@ -16,7 +16,6 @@ import javax.servlet.FilterRegistration;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 import javax.servlet.SessionCookieConfig;
 import javax.servlet.SessionTrackingMode;
@@ -245,15 +244,15 @@ public class MockServletContext implements ServletContext {
     }
 
     public void log(String message) {
-        LOGGER.info(message);
+        LOGGER.warn(message);
     }
 
     public void log(Exception ex, String message) {
-        LOGGER.info(message, ex);
+        LOGGER.warn(message, ex);
     }
 
     public void log(String message, Throwable ex) {
-        LOGGER.info(message, ex);
+        LOGGER.warn(message, ex);
     }
 
     public String getRealPath(String path) {
@@ -360,7 +359,7 @@ public class MockServletContext implements ServletContext {
     }
 
     @Override
-    public <T extends Servlet> T createServlet(Class<T> aClass) throws ServletException {
+    public <T extends Servlet> T createServlet(Class<T> aClass) {
         return null;
     }
 
@@ -390,7 +389,7 @@ public class MockServletContext implements ServletContext {
     }
 
     @Override
-    public <T extends Filter> T createFilter(Class<T> aClass) throws ServletException {
+    public <T extends Filter> T createFilter(Class<T> aClass) {
         return null;
     }
 
@@ -440,7 +439,7 @@ public class MockServletContext implements ServletContext {
     }
 
     @Override
-    public <T extends EventListener> T createListener(Class<T> aClass) throws ServletException {
+    public <T extends EventListener> T createListener(Class<T> aClass) {
         return null;
     }
 

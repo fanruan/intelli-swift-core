@@ -4,11 +4,12 @@ import com.fr.swift.config.SwiftConfigConstants.MetaDataConfig;
 import com.fr.swift.config.bean.Convert;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.config.convert.MetaDataColumnListConverter;
-import com.fr.swift.config.convert.SchemaConverter;
 import com.fr.swift.db.impl.SwiftDatabase.Schema;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Entity;
+import com.fr.third.javax.persistence.EnumType;
+import com.fr.third.javax.persistence.Enumerated;
 import com.fr.third.javax.persistence.Id;
 import com.fr.third.javax.persistence.Table;
 
@@ -27,9 +28,7 @@ public class SwiftMetaDataEntity implements Convert<SwiftMetaDataBean> {
     private String id;
 
     @Column(name = MetaDataConfig.COLUMN_SWIFT_SCHEMA)
-    @com.fr.third.javax.persistence.Convert(
-            converter = SchemaConverter.class
-    )
+    @Enumerated(EnumType.STRING)
     private Schema swiftSchema;
 
     @Column(name = MetaDataConfig.COLUMN_SCHEMA)
@@ -105,16 +104,30 @@ public class SwiftMetaDataEntity implements Convert<SwiftMetaDataBean> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SwiftMetaDataEntity that = (SwiftMetaDataEntity) o;
 
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (swiftSchema != that.swiftSchema) return false;
-        if (schemaName != null ? !schemaName.equals(that.schemaName) : that.schemaName != null) return false;
-        if (tableName != null ? !tableName.equals(that.tableName) : that.tableName != null) return false;
-        if (remark != null ? !remark.equals(that.remark) : that.remark != null) return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) {
+            return false;
+        }
+        if (swiftSchema != that.swiftSchema) {
+            return false;
+        }
+        if (schemaName != null ? !schemaName.equals(that.schemaName) : that.schemaName != null) {
+            return false;
+        }
+        if (tableName != null ? !tableName.equals(that.tableName) : that.tableName != null) {
+            return false;
+        }
+        if (remark != null ? !remark.equals(that.remark) : that.remark != null) {
+            return false;
+        }
         return fields != null ? fields.equals(that.fields) : that.fields == null;
     }
 
