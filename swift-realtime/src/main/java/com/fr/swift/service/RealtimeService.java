@@ -26,6 +26,8 @@ public interface RealtimeService extends SwiftService {
      */
     void merge(List<SegmentKey> tableKeys) throws Exception;
 
+    void delete() throws Exception;
+
     /**
      * 恢复增量数据
      *
