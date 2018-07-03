@@ -71,8 +71,13 @@ public class SwiftRepositoryImpl extends AbstractRepository {
                 }
             }
             return local;
+        } else {
+            from = createFileSystem(URI.create(remote.getPath() + ".cubes"));
+            if (from.isExists()) {
+                return copyFromRemote(URI.create(remote.getPath() + ".cubes"), local);
+            }
+            throw new SwiftFileException(String.format("Remote resource '%s' is not exists!", remote.getPath()));
         }
-        throw new SwiftFileException(String.format("Remote resource '%s' is not exists!", remote.getPath()));
     }
 
     @Override
