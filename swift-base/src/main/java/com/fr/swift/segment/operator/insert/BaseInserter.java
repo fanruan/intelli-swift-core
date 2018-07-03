@@ -61,6 +61,7 @@ public abstract class BaseInserter {
                 detail.put(cursor, rowData.getValue(i));
             }
         }
+        segment.putRowCount(cursor + 1);
     }
 
     protected void putNullIndex() {
@@ -76,7 +77,6 @@ public abstract class BaseInserter {
     protected void putSegmentInfo(int lastCursor, int cursor) {
         ImmutableBitMap allShowIndex = CubeUtil.isReadable(segment) ? segment.getAllShowIndex() : BitMaps.newRoaringMutable();
         allShowIndex = allShowIndex.getOr(new RangeBitmap(lastCursor, cursor));
-        segment.putRowCount(cursor);
         segment.putAllShowIndex(allShowIndex);
     }
 
