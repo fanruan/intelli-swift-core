@@ -52,7 +52,7 @@ public class LogQueryUtils {
         for (int i = 0; i < fieldNames.size(); i++) {
             // TODO: 2018/6/21 维度上的排序没适配
             dimensions.add(new GroupDimension(i, sourceKey, new ColumnKey(fieldNames.get(i)),
-                    Groups.newGroup(new NoGroupRule()), null, null));
+                    Groups.newGroup(new NoGroupRule()), null));
         }
         List<Metric> metrics = new ArrayList<Metric>();
         for (int i = 0; i < metricBeans.size(); i++) {

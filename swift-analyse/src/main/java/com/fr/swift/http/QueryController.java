@@ -135,7 +135,7 @@ public class QueryController {
 
         List<Sort> sorts = new ArrayList<Sort>();
         for (int i = 0; i < metaData.getColumnCount(); i++) {
-            dimensions.add(new DetailDimension(i, sourceKey, new ColumnKey(metaData.getColumnName(i + 1)), null, null, null));
+            dimensions.add(new DetailDimension(i, sourceKey, new ColumnKey(metaData.getColumnName(i + 1)), null, null));
         }
         List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
         return new DetailQueryInfo(queryId, sourceKey, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND),
@@ -153,7 +153,7 @@ public class QueryController {
         String queryId = sourceKey.getId();
         List<Dimension> dimensions = new ArrayList<Dimension>();
         for (int i = 0; i < metaData.getColumnCount(); i++) {
-            dimensions.add(new GroupDimension(i, sourceKey, new ColumnKey(metaData.getColumnName(i + 1)), null, null, null));
+            dimensions.add(new GroupDimension(i, sourceKey, new ColumnKey(metaData.getColumnName(i + 1)), null, null));
         }
         List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
         return new GroupQueryInfoImpl(queryId, sourceKey, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND),

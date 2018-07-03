@@ -51,7 +51,7 @@ public class QueryConditionAdaptor {
             sorts.add(sortItem.isDesc() ? new DescSort(columnIndex) : new AscSort(columnIndex));
         }
         for (int i = 0; i < fieldNames.size(); i++) {
-            dimensions.add(new DetailDimension(i, sourceKey, new ColumnKey(fieldNames.get(i)), null, null, null));
+            dimensions.add(new DetailDimension(i, sourceKey, new ColumnKey(fieldNames.get(i)), null, null));
         }
         List<DetailTarget> targets = null;
         return new DetailQueryInfo(queryId, sourceKey, restriction2FilterInfo(condition.getRestriction()),

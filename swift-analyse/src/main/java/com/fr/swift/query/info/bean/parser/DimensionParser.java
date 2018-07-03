@@ -1,7 +1,6 @@
 package com.fr.swift.query.info.bean.parser;
 
 import com.fr.general.ComparatorUtils;
-import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.group.Groups;
 import com.fr.swift.query.group.impl.NoGroupRule;
 import com.fr.swift.query.info.bean.element.DimensionBean;
@@ -39,19 +38,18 @@ class DimensionParser {
                 sort = sortBean.getType() == SortType.ASC ? new AscSort(i) : new DescSort(i);
             }
             // TODO: 2018/6/7 维度分组
-            FilterInfo filterInfo = FilterInfoParser.parse(dimensionBean.getFilterInfoBean());
             switch (dimensionBean.getDimensionType()) {
                 case DETAIL_FORMULA:
-                    dimensions.add(new DetailFormulaDimension(i, new SourceKey(dimensionBean.getTable()), filterInfo, dimensionBean.getFormula()));
+                    dimensions.add(new DetailFormulaDimension(i, new SourceKey(dimensionBean.getTable()), dimensionBean.getFormula()));
                     break;
                 case GROUP_FORMULA:
-                    dimensions.add(new GroupFormulaDimension(i, new SourceKey(dimensionBean.getTable()), Groups.newGroup(new NoGroupRule()), sort, filterInfo, dimensionBean.getFormula()));
+                    dimensions.add(new GroupFormulaDimension(i, new SourceKey(dimensionBean.getTable()), Groups.newGroup(new NoGroupRule()), sort, dimensionBean.getFormula()));
                     break;
                 case GROUP:
-                    dimensions.add(new GroupDimension(i, new SourceKey(dimensionBean.getTable()), columnKey, Groups.newGroup(new NoGroupRule()), sort, filterInfo));
+                    dimensions.add(new GroupDimension(i, new SourceKey(dimensionBean.getTable()), columnKey, Groups.newGroup(new NoGroupRule()), sort));
                     break;
                 case DETAIL:
-                    dimensions.add(new DetailDimension(i, new SourceKey(dimensionBean.getTable()), columnKey, Groups.newGroup(new NoGroupRule()), sort, filterInfo));
+                    dimensions.add(new DetailDimension(i, new SourceKey(dimensionBean.getTable()), columnKey, Groups.newGroup(new NoGroupRule()), sort));
                     break;
             }
         }
@@ -73,21 +71,20 @@ class DimensionParser {
         List<Dimension> dimensions = new ArrayList<Dimension>();
         for (int i = 0; i < joinedFields.size(); i++) {
             DimensionBean dimensionBean = joinedFields.get(i);
-            FilterInfo filterInfo = FilterInfoParser.parse(dimensionBean.getFilterInfoBean());
             ColumnKey columnKey = new ColumnKey(dimensionBean.getColumn());
             columnKey.setRelation(RelationSourceParser.parse(dimensionBean.getRelation()));
             switch (dimensionBean.getDimensionType()) {
                 case DETAIL_FORMULA:
-                    dimensions.add(new DetailFormulaDimension(i, new SourceKey(dimensionBean.getTable()), filterInfo, dimensionBean.getFormula()));
+                    dimensions.add(new DetailFormulaDimension(i, new SourceKey(dimensionBean.getTable()), dimensionBean.getFormula()));
                     break;
                 case GROUP_FORMULA:
-                    dimensions.add(new GroupFormulaDimension(i, new SourceKey(dimensionBean.getTable()), Groups.newGroup(new NoGroupRule()), null, filterInfo, dimensionBean.getFormula()));
+                    dimensions.add(new GroupFormulaDimension(i, new SourceKey(dimensionBean.getTable()), Groups.newGroup(new NoGroupRule()), null, dimensionBean.getFormula()));
                     break;
                 case GROUP:
-                    dimensions.add(new GroupDimension(i, new SourceKey(dimensionBean.getTable()), columnKey, Groups.newGroup(new NoGroupRule()), null, filterInfo));
+                    dimensions.add(new GroupDimension(i, new SourceKey(dimensionBean.getTable()), columnKey, Groups.newGroup(new NoGroupRule()), null));
                     break;
                 case DETAIL:
-                    dimensions.add(new DetailDimension(i, new SourceKey(dimensionBean.getTable()), columnKey, Groups.newGroup(new NoGroupRule()), null, filterInfo));
+                    dimensions.add(new DetailDimension(i, new SourceKey(dimensionBean.getTable()), columnKey, Groups.newGroup(new NoGroupRule()), null));
                     break;
             }
         }

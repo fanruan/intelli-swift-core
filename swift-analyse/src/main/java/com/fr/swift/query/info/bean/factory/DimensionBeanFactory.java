@@ -1,6 +1,5 @@
 package com.fr.swift.query.info.bean.factory;
 
-import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.group.Group;
 import com.fr.swift.query.info.bean.element.DimensionBean;
 import com.fr.swift.query.info.bean.element.GroupBean;
@@ -28,11 +27,7 @@ public class DimensionBeanFactory implements BeanFactory<List<Dimension>, List<D
             Group group = source.getGroup();
             Sort sort = source.getSort();
             AbstractDimension dimension = (AbstractDimension) source;
-            FilterInfo filterInfo = dimension.getFilter();
             DimensionBean bean = new DimensionBean();
-            if (null != filterInfo) {
-                bean.setFilterInfoBean(FilterInfoBeanFactory.SINGLE_FILTER_INFO_BEAN_FACTORY.create(filterInfo));
-            }
             SourceKey sourceKey = dimension.getSourceKey();
             ColumnKey columnKey = dimension.getColumnKey();
             bean.setDimensionType(source.getDimensionType());

@@ -17,11 +17,11 @@ import java.util.List;
  */
 class MetricParser {
 
-    static List<Metric> parse(List<MetricBean> metricBeans) {
+    static List<Metric> parse(SourceKey table, List<MetricBean> metricBeans) {
         List<Metric> metrics = new ArrayList<Metric>();
         for (MetricBean bean : metricBeans) {
             // TODO: 2018/6/7 过滤待适配
-            FilterInfo filterInfo = FilterInfoParser.parse(bean.getFilterInfoBean());
+            FilterInfo filterInfo = FilterInfoParser.parse(table, bean.getFilterInfoBean());
             switch (bean.getMetricType()) {
                 case FORMULA:
                     metrics.add(new FormulaMetric(0, new SourceKey(bean.getTable()),

@@ -10,7 +10,7 @@ import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
  * Created by Lyon on 2018/6/2.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public abstract class DetailFilterInfoBean<T> implements FilterInfoBean {
+public abstract class DetailFilterInfoBean<T> implements FilterInfoBean<T> {
 
     @JsonProperty
     private SwiftDetailFilterType type;
@@ -21,17 +21,15 @@ public abstract class DetailFilterInfoBean<T> implements FilterInfoBean {
     @JsonProperty
     private IRelationSourceBean relation;
 
+    @Override
     public SwiftDetailFilterType getType() {
         return type;
     }
 
+    @Override
     public void setType(SwiftDetailFilterType type) {
         this.type = type;
     }
-
-    public abstract T getFilterValue();
-
-    public abstract void setFilterValue(T filterValue);
 
     public String getColumn() {
         return column;

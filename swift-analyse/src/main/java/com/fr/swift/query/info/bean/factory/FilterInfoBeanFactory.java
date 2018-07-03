@@ -7,7 +7,6 @@ import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.info.bean.element.filter.impl.AndFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.DetailFilterInfoBean;
-import com.fr.swift.query.info.bean.element.filter.impl.GeneralFilterInfoBean;
 import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NumberInRangeFilterBean;
@@ -38,8 +37,8 @@ public class FilterInfoBeanFactory implements BeanFactory<List<FilterInfo>, List
                 } else if (type == GeneralFilterInfo.OR) {
                     result = new OrFilterBean();
                 }
-                ((GeneralFilterInfoBean) result).setFilterValue(FilterInfoBeanFactory.getInstance().create(((GeneralFilterInfo) source).getChildren()));
-                ((GeneralFilterInfoBean) result).setType(type == GeneralFilterInfo.OR ? SwiftDetailFilterType.OR : SwiftDetailFilterType.AND);
+                result.setFilterValue(FilterInfoBeanFactory.getInstance().create(((GeneralFilterInfo) source).getChildren()));
+                result.setType(type == GeneralFilterInfo.OR ? SwiftDetailFilterType.OR : SwiftDetailFilterType.AND);
             } else if (source instanceof SwiftDetailFilterInfo) {
                 switch (((SwiftDetailFilterInfo) source).getType()) {
                     case IN:
@@ -61,8 +60,8 @@ public class FilterInfoBeanFactory implements BeanFactory<List<FilterInfo>, List
                         result = new NFilterBean();
                         break;
                 }
-                ((DetailFilterInfoBean) result).setType(((SwiftDetailFilterInfo) source).getType());
-                ((DetailFilterInfoBean) result).setFilterValue(((SwiftDetailFilterInfo) source).getFilterValue());
+                result.setType(((SwiftDetailFilterInfo) source).getType());
+                result.setFilterValue(((SwiftDetailFilterInfo) source).getFilterValue());
                 ColumnKey columnKey = ((SwiftDetailFilterInfo) source).getColumnKey();
                 if (null != columnKey) {
                     ((DetailFilterInfoBean) result).setColumn(columnKey.getName());

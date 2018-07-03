@@ -55,9 +55,9 @@ public class QueryInfoParser {
         String queryId = bean.getQueryId();
         // TODO: 2018/6/7 table2sourceKey
         SourceKey table = new SourceKey(bean.getTableName());
-        FilterInfo filterInfo = FilterInfoParser.parse(bean.getFilterInfoBean());
+        FilterInfo filterInfo = FilterInfoParser.parse(table, bean.getFilterInfoBean());
         List<Dimension> dimensions = DimensionParser.parse(bean.getDimensionBeans(), bean.getSortBeans());
-        List<Metric> metrics = MetricParser.parse(bean.getMetricBeans());
+        List<Metric> metrics = MetricParser.parse(table, bean.getMetricBeans());
         List<PostQueryInfo> postQueryInfoList = PostQueryInfoParser.parse(bean.getPostQueryInfoBeans(), dimensions, metrics);
         return new GroupQueryInfoImpl(queryId, table, filterInfo, dimensions, metrics, postQueryInfoList);
     }
@@ -79,7 +79,7 @@ public class QueryInfoParser {
         String queryId = bean.getQueryId();
         // TODO: 2018/6/7
         SourceKey table = new SourceKey(bean.getTableName());
-        FilterInfo filterInfo = FilterInfoParser.parse(bean.getFilterInfoBean());
+        FilterInfo filterInfo = FilterInfoParser.parse(table, bean.getFilterInfoBean());
         List<Dimension> dimensions = DimensionParser.parse(bean.getDimensionBeans(), bean.getSortBeans());
         SwiftMetaData metaData = SwiftContext.getInstance().getBean(SwiftMetaDataService.class).getMetaDataByKey(bean.getTableName());
         List<SwiftMetaDataColumn> columns = new ArrayList<SwiftMetaDataColumn>();

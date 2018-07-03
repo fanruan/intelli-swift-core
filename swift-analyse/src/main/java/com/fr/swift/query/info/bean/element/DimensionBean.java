@@ -1,6 +1,5 @@
 package com.fr.swift.query.info.bean.element;
 
-import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.info.bean.element.relation.IRelationSourceBean;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.third.fasterxml.jackson.annotation.JsonInclude;
@@ -22,8 +21,6 @@ public class DimensionBean {
     @JsonProperty
     private SortBean sortBean;
     @JsonProperty
-    private FilterInfoBean filterInfoBean;
-    @JsonProperty
     private String formula;
     @JsonProperty
     private Dimension.DimensionType dimensionType;
@@ -44,14 +41,6 @@ public class DimensionBean {
 
     public void setSortBean(SortBean sortBean) {
         this.sortBean = sortBean;
-    }
-
-    public FilterInfoBean getFilterInfoBean() {
-        return filterInfoBean;
-    }
-
-    public void setFilterInfoBean(FilterInfoBean filterInfoBean) {
-        this.filterInfoBean = filterInfoBean;
     }
 
     public String getFormula() {

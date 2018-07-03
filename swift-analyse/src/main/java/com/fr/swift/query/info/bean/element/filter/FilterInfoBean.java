@@ -35,7 +35,13 @@ import com.fr.third.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = OrFilterBean.class, name = "OR"),
         @JsonSubTypes.Type(value = NotFilterBean.class, name = "NOT")
 })
-public interface FilterInfoBean {
+public interface FilterInfoBean<T> {
 
     SwiftDetailFilterType getType();
+
+    void setType(SwiftDetailFilterType type);
+
+    T getFilterValue();
+
+    void setFilterValue(T filterValue);
 }
