@@ -27,7 +27,7 @@ public class WorkerTaskPool extends BaseTaskPool<WorkerTask> {
     }
 
     public void initListener() {
-        EventDispatcher.listen(TaskEvent.CANCEL, new Listener<TaskKey>() {
+        EventDispatcher.listen(TaskEvent.LOCAL_CANCEL, new Listener<TaskKey>() {
             @Override
             public void on(Event event, TaskKey key) {
                 WorkerTask workerTask = get(key);

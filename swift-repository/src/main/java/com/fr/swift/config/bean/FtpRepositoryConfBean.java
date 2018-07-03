@@ -1,11 +1,11 @@
 package com.fr.swift.config.bean;
 
+import com.fr.config.Identifier;
 import com.fr.config.holder.Conf;
 import com.fr.config.holder.factory.Holders;
 import com.fr.config.utils.UniqueKey;
 import com.fr.security.SecurityToolbox;
 import com.fr.stable.StringUtils;
-import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.file.conf.impl.FtpRepositoryConfigImpl;
 
 /**
@@ -13,18 +13,32 @@ import com.fr.swift.file.conf.impl.FtpRepositoryConfigImpl;
  * @date 2018/6/15
  */
 public class FtpRepositoryConfBean extends UniqueKey implements RepositoryConfBean<FtpRepositoryConfigImpl> {
+    @Identifier("protocol")
     private Conf<String> protocol = Holders.simple("FTP");
+    @Identifier("host")
     private Conf<String> host = Holders.simple("");
+    @Identifier("port")
     private Conf<Integer> port = Holders.simple(21);
+    @Identifier("username")
     private Conf<String> username = Holders.simple("");
+    @Identifier("password")
     private Conf<String> password = Holders.simple("");
+    @Identifier("privateKey")
     private Conf<String> privateKey = Holders.simple("");
+    @Identifier("passPhrase")
     private Conf<String> passPhrase = Holders.simple("");
+    @Identifier("connectTimeout")
     private Conf<Integer> connectTimeout = Holders.simple(10000);
+    @Identifier("charset")
     private Conf<String> charset = Holders.simple("");
+    @Identifier("passive")
     private Conf<Boolean> passive = Holders.simple(true);
+    @Identifier("soTimeout")
     private Conf<Integer> soTimeout = Holders.simple(10000);
+    @Identifier("dataTimeout")
     private Conf<Integer> dataTimeout = Holders.simple(10000);
+    @Identifier("rootPath")
+    private Conf<String> rootPath = Holders.simple("/");
 
     public FtpRepositoryConfBean() {
     }
@@ -126,6 +140,14 @@ public class FtpRepositoryConfBean extends UniqueKey implements RepositoryConfBe
         this.passPhrase.set(passPhrase);
     }
 
+    public String getRootPath() {
+        return rootPath.get();
+    }
+
+    public void setRootPath(String rootPath) {
+        this.rootPath.set(rootPath);
+    }
+
     public Object clone() throws CloneNotSupportedException {
         FtpRepositoryConfBean bean = (FtpRepositoryConfBean) super.clone();
         bean.host = (Conf) this.host.clone();
@@ -137,15 +159,10 @@ public class FtpRepositoryConfBean extends UniqueKey implements RepositoryConfBe
         bean.connectTimeout = (Conf) this.connectTimeout.clone();
         bean.charset = (Conf) this.charset.clone();
         bean.protocol = (Conf) this.protocol.clone();
+        this.rootPath = (Conf<String>) this.rootPath.clone();
         return bean;
     }
 
-    @Override
-    public String getNameSpace() {
-        return SwiftConfigConstants.FRConfiguration.FTP_REPOSITORY_NAMESPACE;
-    }
-
-    @Override
     public FtpRepositoryConfigImpl convert() {
         FtpRepositoryConfigImpl config = new FtpRepositoryConfigImpl();
         config.setCharset(getCharset());
@@ -156,6 +173,8 @@ public class FtpRepositoryConfBean extends UniqueKey implements RepositoryConfBe
         config.setPassPhrase(getPassPhrase());
         config.setConnectTimeout(getConnectTimeout());
         config.setProtocol(getProtocol());
+        config.setPort(getPort());
+        config.setRootPath(getRootPath());
         return config;
     }
 }

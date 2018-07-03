@@ -1,9 +1,11 @@
 package com.fr.swift.repository.impl;
 
+import com.fr.io.utils.ResourceIOUtils;
 import com.fr.swift.file.conf.SwiftFileSystemConfig;
 import com.fr.swift.file.exception.SwiftFileException;
 import com.fr.swift.file.system.SwiftFileSystem;
 import com.fr.swift.repository.AbstractRepository;
+import com.fr.swift.repository.utils.ZipUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,25 +34,34 @@ public class SwiftRepositoryImpl extends AbstractRepository {
         if (from.isExists()) {
             SwiftFileSystem target = from.read();
             if (!target.isDirectory()) {
-                InputStream inputStream = null;
-                FileOutputStream fileOutputStream = null;
-                try {
-                    inputStream = target.toStream();
-                    fileOutputStream = new FileOutputStream(new File(local.getPath()));
-                    byte[] bytes = new byte[1024];
-                    int len = 0;
-                    while ((len = inputStream.read(bytes, 0, bytes.length)) != -1) {
-                        fileOutputStream.write(bytes, 0, len);
+                if (target.getResourceName().endsWith(".cubes")) {
+                    InputStream inputStream = from.toStream();
+                    try {
+                        ZipUtils.unZip(new File(local.getPath()).getParent(), inputStream);
+                    } catch (Exception e) {
+                        throw new SwiftFileException(e);
                     }
-                    fileOutputStream.flush();
-                } catch (Exception e) {
-                    throw new SwiftFileException(e);
-                } finally {
-                    if (null != inputStream) {
-                        inputStream.close();
-                    }
-                    if (null != fileOutputStream) {
-                        fileOutputStream.close();
+                } else {
+                    InputStream inputStream = null;
+                    FileOutputStream fileOutputStream = null;
+                    try {
+                        inputStream = target.toStream();
+                        fileOutputStream = new FileOutputStream(new File(local.getPath()));
+                        byte[] bytes = new byte[1024];
+                        int len = 0;
+                        while ((len = inputStream.read(bytes, 0, bytes.length)) != -1) {
+                            fileOutputStream.write(bytes, 0, len);
+                        }
+                        fileOutputStream.flush();
+                    } catch (Exception e) {
+                        throw new SwiftFileException(e);
+                    } finally {
+                        if (null != inputStream) {
+                            inputStream.close();
+                        }
+                        if (null != fileOutputStream) {
+                            fileOutputStream.close();
+                        }
                     }
                 }
             } else {
@@ -60,22 +71,36 @@ public class SwiftRepositoryImpl extends AbstractRepository {
                 }
             }
             return local;
+        } else {
+            from = createFileSystem(URI.create(remote.getPath() + ".cubes"));
+            if (from.isExists()) {
+                return copyFromRemote(URI.create(remote.getPath() + ".cubes"), local);
+            }
+            throw new SwiftFileException(String.format("Remote resource '%s' is not exists!", remote.getPath()));
         }
-        throw new SwiftFileException(String.format("Remote resource '%s' is not exists!", remote.getPath()));
     }
 
     @Override
     public boolean copyToRemote(URI local, URI remote) throws IOException {
         File file = new File(local.getPath());
         if (file.isDirectory()) {
+            File zipFile = new File(file.getParent(), file.getName() + ".cubes");
+            FileOutputStream fos = new FileOutputStream(zipFile);
+            ZipUtils.toZip(file.getAbsolutePath(), fos, true);
+            fos.close();
             SwiftFileSystem fileSystem = createFileSystem(remote);
             if (fileSystem.isExists()) {
                 fileSystem.remove();
             }
             fileSystem.mkdirs();
-            File[] files = file.listFiles();
-            for (File f : files) {
-                copyToRemote(f.toURI(), resolve(remote, f.getName()));
+            fileSystem.remove();
+//            File[] files = file.listFiles();
+//            for (File f : files) {
+//                copyToRemote(f.toURI(), resolve(remote, f.getName()));
+//            }
+
+            if (copyToRemote(zipFile.toURI(), resolve(URI.create(ResourceIOUtils.getParent(remote.getPath())), zipFile.getName()))) {
+                zipFile.delete();
             }
         } else {
             FileInputStream inputStream = null;

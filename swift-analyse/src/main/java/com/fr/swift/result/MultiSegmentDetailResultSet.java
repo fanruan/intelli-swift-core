@@ -19,7 +19,9 @@ public class MultiSegmentDetailResultSet implements DetailResultSet {
     private int rowCount;
     private List<Query<DetailResultSet>> queries;
     private SwiftMetaData metaData;
-    // mergeIterator和rowIterator看似相同，其实不然，前者可以理解为内部实现(处理翻页缓存等)，后者为外部实现(对应SwiftResult)
+    /**
+     * mergeIterator和rowIterator看似相同，其实不然，前者可以理解为内部实现(处理翻页缓存等)，后者为外部实现(对应SwiftResult)
+     */
     private Iterator<Row> mergeIterator;
     private Iterator<Row> rowIterator;
 
@@ -29,7 +31,7 @@ public class MultiSegmentDetailResultSet implements DetailResultSet {
         init();
     }
 
-    private void init() throws SQLException{
+    private void init() throws SQLException {
         List<DetailResultSet> resultSets = new ArrayList<DetailResultSet>();
         for (Query query : queries) {
             DetailResultSet resultSet = (DetailResultSet) query.getQueryResult();

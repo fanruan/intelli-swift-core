@@ -12,6 +12,9 @@ import com.fr.swift.cube.task.impl.LocalTaskGroup;
 import com.fr.swift.cube.task.impl.LocalTaskImpl;
 import com.fr.swift.cube.task.impl.TaskResultImpl;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.generate.conf.ColumnIndexingConf;
+import com.fr.swift.generate.conf.service.IndexingConfService;
+import com.fr.swift.generate.conf.service.SwiftIndexingConfService;
 import com.fr.swift.generate.history.index.ColumnDictMerger;
 import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.log.SwiftLogger;
@@ -46,6 +49,8 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
 
     private boolean isRealtime;
 
+    private IndexingConfService indexingConfService = SwiftIndexingConfService.get();
+
     private SwiftSegmentManager localSegments = SwiftContext.getInstance().getBean(LocalSegmentProvider.class);
 
     public BaseTableBuilder(int round, DataSource dataSource) {
@@ -67,16 +72,26 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
 
         List<Segment> segments = localSegments.getSegment(dataSource.getSourceKey());
 
-        for (String indexField : transporter.getIndexFieldsList()) {
+        for (String columnName : transporter.getIndexFieldsList()) {
+            ColumnIndexingConf columnConf = indexingConfService.getColumnConf(dataSource.getSourceKey(), columnName);
+
+            if (!columnConf.requireIndex()) {
+                continue;
+            }
+
             LocalTask indexTask = new LocalTaskImpl(
-                    CubeTasks.newIndexColumnTaskKey(round, dataSource, indexField),
-                    new ColumnIndexer(dataSource, new ColumnKey(indexField), segments));
+                    CubeTasks.newIndexColumnTaskKey(round, dataSource, columnName),
+                    new ColumnIndexer(dataSource, new ColumnKey(columnName), segments));
+            transportTask.addNext(indexTask);
+
+            if (!columnConf.requireGlobalDict()) {
+                indexTask.addNext(end);
+                continue;
+            }
 
             LocalTask mergeTask = new LocalTaskImpl(
-                    CubeTasks.newMergeColumnDictTaskKey(round, dataSource, indexField),
-                    new ColumnDictMerger(dataSource, new ColumnKey(indexField), segments));
-
-            transportTask.addNext(indexTask);
+                    CubeTasks.newMergeColumnDictTaskKey(round, dataSource, columnName),
+                    new ColumnDictMerger(dataSource, new ColumnKey(columnName), segments));
             indexTask.addNext(mergeTask);
             mergeTask.addNext(end);
         }
