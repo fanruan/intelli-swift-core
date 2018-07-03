@@ -85,6 +85,11 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     }
 
     @Override
+    public void delete() throws Exception {
+
+    }
+
+    @Override
     @RpcMethod(methodName = "recover")
     public void recover(List<SegmentKey> tableKeys) {
         SwiftLoggers.getLogger().info("recover");

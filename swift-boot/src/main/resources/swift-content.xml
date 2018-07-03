@@ -36,4 +36,5 @@
     </mvc:interceptors>
 
     <import resource="swift-beans.xml"/>
+    <import resource="swift-services.xml"/>
 </beans>

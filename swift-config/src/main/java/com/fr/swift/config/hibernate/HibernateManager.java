@@ -4,6 +4,7 @@ import com.fr.swift.config.SwiftConfDBConfig;
 import com.fr.swift.config.bean.SwiftConfDbBean;
 import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
+import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
 import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 import com.fr.third.org.hibernate.SessionFactory;
 import com.fr.third.org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -40,6 +41,7 @@ public class HibernateManager {
         configuration.addAnnotatedClass(SwiftMetaDataEntity.class);
         configuration.addAnnotatedClass(SwiftSegmentEntity.class);
         configuration.addAnnotatedClass(SwiftServiceInfoEntity.class);
+        configuration.addAnnotatedClass(SwiftSegmentLocationEntity.class);
         configuration.setProperties(properties.getProperties());
         return configuration;
     }
