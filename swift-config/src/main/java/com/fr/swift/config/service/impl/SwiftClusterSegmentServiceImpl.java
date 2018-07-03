@@ -245,6 +245,8 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
                         List<String> segmentKeys = entry.getValue();
                         for (String segmentKey : segmentKeys) {
                             SwiftServiceInfoEntity entity = new SwiftServiceInfoBean(SEGMENT, clusterId, segmentKey, false).convert();
+
+                            entity.setId(entity.getId() + segmentKey.substring(segmentKey.lastIndexOf("@") + 1));
                             swiftServiceInfoDao.saveOrUpdate(session, entity);
                         }
                     }
