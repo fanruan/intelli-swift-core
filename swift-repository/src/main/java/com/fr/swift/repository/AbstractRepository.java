@@ -1,9 +1,11 @@
 package com.fr.swift.repository;
 
 import com.fr.swift.file.conf.SwiftFileSystemConfig;
+import com.fr.swift.file.conf.impl.FtpRepositoryConfigImpl;
 import com.fr.swift.file.conf.impl.HdfsRepositoryConfigImpl;
 import com.fr.swift.file.system.SwiftFileSystem;
 import com.fr.swift.file.system.impl.DefaultFileSystemImpl;
+import com.fr.swift.file.system.impl.FtpFileSystemImpl;
 import com.fr.swift.file.system.impl.HdfsFileSystemImpl;
 
 import java.io.IOException;
@@ -31,6 +33,8 @@ public abstract class AbstractRepository implements SwiftRepository {
         switch (configuration.getType()) {
             case FR:
                 return new DefaultFileSystemImpl(configuration, uri);
+            case FTP:
+                return new FtpFileSystemImpl((FtpRepositoryConfigImpl) configuration, uri);
             default:
                 return new HdfsFileSystemImpl((HdfsRepositoryConfigImpl) configuration, uri);
         }
