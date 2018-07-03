@@ -70,19 +70,11 @@ public class LogQueryUtils {
         if (fieldValues == null || fieldValues.isEmpty()) {
             return null;
         }
-        if (fieldValues.get(0) instanceof Integer) {
-            Set<Double> set = new HashSet<Double>();
-            for (Object object : fieldValues) {
-                set.add(((Integer) object).doubleValue());
-            }
-            return new SwiftDetailFilterInfo<Set<Double>>(new ColumnKey(fieldName), set, SwiftDetailFilterType.NUMBER_IN);
-        } else {
-            Set<String> set = new HashSet<String>();
-            for (Object object : fieldValues) {
-                set.add((String) object);
-            }
-            return new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(fieldName), set, SwiftDetailFilterType.STRING_IN);
+        Set<Object> set = new HashSet<Object>();
+        for (Object object : fieldValues) {
+            set.add(object);
         }
+        return new SwiftDetailFilterInfo<Set<Object>>(new ColumnKey(fieldName), set, SwiftDetailFilterType.IN);
     }
 
     private static Aggregator createMetric(MetricBean metricBean) {

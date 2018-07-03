@@ -7,6 +7,7 @@ import com.fr.swift.db.Table;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
+import com.fr.swift.query.filter.info.NotFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.filter.info.value.SwiftNumberInRangeFilterValue;
 import com.fr.swift.query.info.detail.DetailQueryInfo;
@@ -73,10 +74,10 @@ public class QueryConditionAdaptor {
 
         switch (restriction.getType()) {
             case EQ:
-                filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(columnName), (Set) Collections.singleton(value), SwiftDetailFilterType.STRING_IN));
+                filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(columnName), (Set) Collections.singleton(value), SwiftDetailFilterType.IN));
                 break;
             case NEQ:
-                filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(columnName), (Set) Collections.singleton(value), SwiftDetailFilterType.STRING_NOT_IN));
+                filterInfos.add(new NotFilterInfo(new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(columnName), (Set) Collections.singleton(value), SwiftDetailFilterType.IN)));
                 break;
             case GT:
                 SwiftNumberInRangeFilterValue gtValue = new SwiftNumberInRangeFilterValue();
@@ -101,10 +102,10 @@ public class QueryConditionAdaptor {
                 filterInfos.add(new SwiftDetailFilterInfo<SwiftNumberInRangeFilterValue>(new ColumnKey(columnName), lteValue, SwiftDetailFilterType.NUMBER_IN_RANGE));
                 break;
             case IN:
-                filterInfos.add(new SwiftDetailFilterInfo<Set<Object>>(new ColumnKey(columnName), values, SwiftDetailFilterType.STRING_IN));
+                filterInfos.add(new SwiftDetailFilterInfo<Set<Object>>(new ColumnKey(columnName), values, SwiftDetailFilterType.IN));
                 break;
             case NIN:
-                filterInfos.add(new SwiftDetailFilterInfo<Set<Object>>(new ColumnKey(columnName), values, SwiftDetailFilterType.STRING_NOT_IN));
+                filterInfos.add(new NotFilterInfo(new SwiftDetailFilterInfo<Set<Object>>(new ColumnKey(columnName), values, SwiftDetailFilterType.IN)));
                 break;
             case LIKE:
                 filterInfos.add(new SwiftDetailFilterInfo<String>(new ColumnKey(columnName), (String) value, SwiftDetailFilterType.STRING_LIKE));

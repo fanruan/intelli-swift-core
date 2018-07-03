@@ -34,22 +34,4 @@ public class MatchFilterInfo extends AbstractFilterInfo {
     public MatchFilter createMatchFilter() {
         return new DetailBasedMatchFilter(index, converter, this.createDetailFilter(null));
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        MatchFilterInfo that = (MatchFilterInfo) o;
-
-        if (index != that.index) return false;
-        return filterInfo != null ? filterInfo.equals(that.filterInfo) : that.filterInfo == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = filterInfo != null ? filterInfo.hashCode() : 0;
-        result = 31 * result + index;
-        return result;
-    }
 }

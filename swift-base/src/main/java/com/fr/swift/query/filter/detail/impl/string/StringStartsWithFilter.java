@@ -42,6 +42,6 @@ public class StringStartsWithFilter extends AbstractDetailFilter<String> {
     @Override
     public boolean matches(SwiftNode node, int targetIndex, MatchConverter converter) {
         Object data = node.getData();
-        return data != null && converter.convert(data).startsWith(startsWith);
+        return data != null && data.toString().startsWith(startsWith);
     }
 }

@@ -1,5 +1,7 @@
 package com.fr.swift.query.filter.detail.impl.string;
 
+import com.fr.swift.query.filter.detail.impl.InFilter;
+
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -10,11 +12,11 @@ import java.util.stream.IntStream;
  */
 public class StringInFilterTest extends BaseStringFilterTest {
 
-    protected Set<String> in;
+    protected Set<Object> in;
 
     public StringInFilterTest() {
         init();
-        this.filter = new StringInFilter(in, column);
+        this.filter = new InFilter(in, column);
     }
 
     private void init() {

@@ -5,7 +5,7 @@ import java.util.Set;
 /**
  * Created by Lyon on 2018/6/28.
  */
-public class StringInFilterBean extends DetailFilterInfoBean<Set<String>> {
+public class InFilterBean extends DetailFilterInfoBean<Set<String>> {
     @Override
     public Set<String> getFilterValue() {
         return filterValue;

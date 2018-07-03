@@ -7,7 +7,7 @@ import java.util.Calendar;
 /**
  * Created by pony on 2018/5/22.
  */
-public class MixDateConverter implements MatchConverter {
+public class MixDateConverter implements MatchConverter<String> {
 
     private DateType[] dateTypes;
     private Calendar c = Calendar.getInstance();
