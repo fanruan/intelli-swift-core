@@ -94,17 +94,17 @@ public class HistoryDataSyncManager extends AbstractHandler<HistoryLoadRpcEvent>
                 ClusterEntity entity = services.get(key);
                 Iterator<SegmentKey> valueIterator = result.get(key).iterator();
                 Set<URI> uriSet = new HashSet<URI>();
-                final List<String> idList = new ArrayList<String>();
+                final List<Pair<String, String>> idList = new ArrayList<Pair<String, String>>();
                 while (valueIterator.hasNext()) {
                     SegmentKey segmentKey = valueIterator.next();
                     uriSet.add(segmentKey.getUri());
-                    idList.add(segmentKey.toString());
+                    idList.add(Pair.of(segmentKey.getTable().getId(), segmentKey.toString()));
                 }
                 runAsyncRpc(key, entity.getServiceClass(), "load", uriSet)
                         .addCallback(new AsyncRpcCallback() {
                             @Override
                             public void success(Object result) {
-                                Map<String, List<String>> segmentTable = new HashMap<String, List<String>>();
+                                Map<String, List<Pair<String, String>>> segmentTable = new HashMap<String, List<Pair<String, String>>>();
                                 segmentTable.put(key, idList);
                                 clusterSegmentService.updateSegmentTable(segmentTable);
 //                                updateDestination(destinations);
