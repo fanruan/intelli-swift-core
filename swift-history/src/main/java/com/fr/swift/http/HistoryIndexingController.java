@@ -9,6 +9,7 @@ import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.task.TaskKey;
+import com.fr.swift.event.history.HistoryLoadRpcEvent;
 import com.fr.swift.event.indexing.IndexRpcEvent;
 import com.fr.swift.frrpc.SwiftClusterService;
 import com.fr.swift.invocation.SwiftInvocation;
@@ -71,6 +72,14 @@ public class HistoryIndexingController {
     @RequestMapping(value = "swift/upload", method = RequestMethod.GET)
     public void upload() throws IOException {
         SwiftRepositoryManager.getManager().getCurrentRepository().copyToRemote(URI.create("/Users/yee/merge"), URI.create("/root/merge/"));
+    }
+
+    @RequestMapping(value = "swift/load", method = RequestMethod.GET)
+    public void load() {
+        HistoryLoadRpcEvent event = new HistoryLoadRpcEvent();
+        ProxyFactory factory = ProxySelector.getInstance().getFactory();
+        Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, getMasterURL(), true);
+        invoker.invoke(new SwiftInvocation(server.getMethodByName("rpcTrigger"), new Object[]{event}));
     }
 
     private URL getMasterURL() {
