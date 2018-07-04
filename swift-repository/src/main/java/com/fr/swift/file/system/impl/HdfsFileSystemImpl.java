@@ -63,6 +63,11 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfigI
     }
 
     @Override
+    public SwiftFileSystem parent() {
+        return new HdfsFileSystemImpl(getConfig(), getParentURI());
+    }
+
+    @Override
     public boolean remove(URI remote) {
 //        try {
 //            return getHdfsFileSystem().deleteOnExit(new Path(remote.getPath()));

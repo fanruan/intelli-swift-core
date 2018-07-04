@@ -32,6 +32,9 @@ public abstract class AbstractRepository implements SwiftRepository {
     @Override
     public abstract boolean zipToRemote(URI local, URI remote) throws IOException;
 
+    @Override
+    public abstract boolean delete(URI remote) throws IOException;
+
     public SwiftFileSystem createFileSystem(URI uri) {
         switch (configuration.getType()) {
             case FR:

@@ -1,5 +1,6 @@
 package com.fr.swift.file.system;
 
+import com.fr.io.utils.ResourceIOUtils;
 import com.fr.swift.file.conf.SwiftFileSystemConfig;
 import com.fr.swift.file.exception.SwiftFileException;
 
@@ -57,6 +58,10 @@ public abstract class AbstractFileSystem<Config extends SwiftFileSystemConfig> i
     @Override
     public URI getResourceURI() {
         return uri;
+    }
+
+    protected URI getParentURI() {
+        return URI.create(ResourceIOUtils.getParent(uri.getPath()));
     }
 
     public Config getConfig() {

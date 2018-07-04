@@ -137,12 +137,16 @@ public class SwiftRepositoryImpl extends AbstractRepository {
         if (fileSystem.isExists()) {
             fileSystem.remove();
         }
-        fileSystem.mkdirs();
-        fileSystem.remove();
+        fileSystem.parent().mkdirs();
         if (copyToRemote(zipFile.toURI(), resolve(URI.create(ResourceIOUtils.getParent(remote.getPath())), zipFile.getName()))) {
             zipFile.delete();
         }
         return true;
+    }
+
+    @Override
+    public boolean delete(URI remote) throws IOException {
+        return createFileSystem(remote).remove();
     }
 
     private void calculateUpload(URI root, URI remote, List<Pair<URI, URI>> dirs, List<Pair<URI, URI>> files) {
