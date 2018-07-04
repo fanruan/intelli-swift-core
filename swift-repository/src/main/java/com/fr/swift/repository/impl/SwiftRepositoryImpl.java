@@ -140,7 +140,12 @@ public class SwiftRepositoryImpl extends AbstractRepository {
 
     @Override
     public boolean delete(URI remote) throws IOException {
-        return createFileSystem(remote).remove();
+        SwiftFileSystem system = createFileSystem(remote);
+        try {
+            return system.remove();
+        } finally {
+            system.close();
+        }
     }
 
     private void calculateUpload(URI root, URI remote, List<Pair<URI, URI>> dirs, List<Pair<URI, URI>> files) {
