@@ -38,21 +38,24 @@ public interface DestSelectRule {
                 Map.Entry<SegmentDestination, List<String>> entry = iterator.next();
                 SegmentDestination destination = entry.getKey();
                 List<String> clusterIds = entry.getValue();
-                List<Pair<String, AtomicInteger>> sortList = new ArrayList<Pair<String, AtomicInteger>>();
+                List<Pair<String, Integer>> sortList = new ArrayList<Pair<String, Integer>>();
                 for (String clusterId : clusterIds) {
-                    sortList.add(Pair.of(clusterId, count.get(clusterId)));
+                    if (null == count.get(clusterId)) {
+                        count.put(clusterId, new AtomicInteger(0));
+                    }
+                    sortList.add(Pair.of(clusterId, count.get(clusterId).incrementAndGet()));
                 }
-                Collections.sort(sortList, new Comparator<Pair<String, AtomicInteger>>() {
+                Collections.sort(sortList, new Comparator<Pair<String, Integer>>() {
                     @Override
-                    public int compare(Pair<String, AtomicInteger> o1, Pair<String, AtomicInteger> o2) {
-                        return o1.getValue().get() - o2.getValue().get();
+                    public int compare(Pair<String, Integer> o1, Pair<String, Integer> o2) {
+                        return o1.getValue() - o2.getValue();
                     }
                 });
                 SegmentDestinationImpl targetDestination = new SegmentDestinationImpl(destination);
                 targetDestination.setClusterId(sortList.get(0).getKey());
-                List<Pair<String, AtomicInteger>> sparePair = sortList.size() > 1 ? sortList.subList(1, sortList.size()) : Collections.<Pair<String, AtomicInteger>>emptyList();
+                List<Pair<String, Integer>> sparePair = sortList.size() > 1 ? sortList.subList(1, sortList.size()) : Collections.<Pair<String, Integer>>emptyList();
                 List<String> spareList = new ArrayList<String>();
-                for (Pair<String, AtomicInteger> pair : sparePair) {
+                for (Pair<String, Integer> pair : sparePair) {
                     spareList.add(pair.getKey());
                 }
                 targetDestination.setSpareNodes(spareList);
