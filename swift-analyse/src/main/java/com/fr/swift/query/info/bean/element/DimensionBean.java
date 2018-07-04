@@ -1,6 +1,5 @@
 package com.fr.swift.query.info.bean.element;
 
-import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.info.bean.element.relation.IRelationSourceBean;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.third.fasterxml.jackson.annotation.JsonInclude;
@@ -14,21 +13,35 @@ import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 public class DimensionBean {
 
     @JsonProperty
-    private String table;
+    private String column;  // 原始表中的字段名
     @JsonProperty
-    private String column;
+    private String name;    // 客户端定义的转移名
     @JsonProperty
     private GroupBean groupBean;
     @JsonProperty
     private SortBean sortBean;
-    @JsonProperty
-    private FilterInfoBean filterInfoBean;
     @JsonProperty
     private String formula;
     @JsonProperty
     private Dimension.DimensionType dimensionType;
     @JsonProperty
     private IRelationSourceBean relation;
+
+    public String getColumn() {
+        return column;
+    }
+
+    public void setColumn(String column) {
+        this.column = column;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public GroupBean getGroupBean() {
         return groupBean;
@@ -46,14 +59,6 @@ public class DimensionBean {
         this.sortBean = sortBean;
     }
 
-    public FilterInfoBean getFilterInfoBean() {
-        return filterInfoBean;
-    }
-
-    public void setFilterInfoBean(FilterInfoBean filterInfoBean) {
-        this.filterInfoBean = filterInfoBean;
-    }
-
     public String getFormula() {
         return formula;
     }
@@ -66,20 +71,8 @@ public class DimensionBean {
         return dimensionType;
     }
 
-    public String getTable() {
-        return table;
-    }
-
-    public void setTable(String table) {
-        this.table = table;
-    }
-
-    public String getColumn() {
-        return column;
-    }
-
-    public void setColumn(String column) {
-        this.column = column;
+    public void setDimensionType(Dimension.DimensionType dimensionType) {
+        this.dimensionType = dimensionType;
     }
 
     public IRelationSourceBean getRelation() {
@@ -88,9 +81,5 @@ public class DimensionBean {
 
     public void setRelation(IRelationSourceBean relation) {
         this.relation = relation;
-    }
-
-    public void setDimensionType(Dimension.DimensionType dimensionType) {
-        this.dimensionType = dimensionType;
     }
 }

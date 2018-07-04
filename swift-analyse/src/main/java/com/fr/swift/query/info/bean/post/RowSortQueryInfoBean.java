@@ -14,6 +14,10 @@ public class RowSortQueryInfoBean extends AbstractPostQueryInfoBean {
     @JsonProperty
     private List<SortBean> sortBeans;
 
+    {
+        type = PostQueryType.ROW_SORT;
+    }
+
     public List<SortBean> getSortBeans() {
         return sortBeans;
     }

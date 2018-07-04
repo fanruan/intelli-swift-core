@@ -12,6 +12,7 @@ import com.fr.swift.cube.io.impl.mem.ObjectMemIo;
 import com.fr.swift.cube.io.impl.mem.SwiftObjectMemIo;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.segment.column.impl.BaseColumn;
+import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.third.guava.collect.BiMap;
 import com.fr.third.guava.collect.HashBiMap;
 
@@ -54,7 +55,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
         init();
     }
 
-    protected abstract DictionaryEncodedColumn.Type getType();
+    protected abstract ColumnTypeConstants.ClassType getType();
 
     /**
      * 刷新索引
@@ -208,7 +209,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
         }
 
         @Override
-        public Type getType() {
+        public ColumnTypeConstants.ClassType getType() {
             return BaseRealtimeColumn.this.getType();
         }
 

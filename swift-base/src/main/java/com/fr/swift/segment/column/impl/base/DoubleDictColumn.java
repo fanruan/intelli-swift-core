@@ -6,6 +6,7 @@ import com.fr.swift.cube.io.Types.IoType;
 import com.fr.swift.cube.io.input.DoubleReader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.DoubleWriter;
+import com.fr.swift.source.ColumnTypeConstants;
 
 import java.util.Comparator;
 
@@ -69,8 +70,8 @@ public class DoubleDictColumn extends BaseDictColumn<Double> {
     }
 
     @Override
-    public Type getType() {
-        return Type.DOUBLE;
+    public ColumnTypeConstants.ClassType getType() {
+        return ColumnTypeConstants.ClassType.DOUBLE;
     }
 
     @Override

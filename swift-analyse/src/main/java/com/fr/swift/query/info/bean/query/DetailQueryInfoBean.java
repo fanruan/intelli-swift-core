@@ -13,9 +13,8 @@ public class DetailQueryInfoBean extends AbstractSingleTableQueryInfoBean {
     @JsonProperty
     private List<String> columns;
 
-    @Override
-    public QueryType getQueryType() {
-        return QueryType.DETAIL;
+    {
+        queryType = QueryType.DETAIL;
     }
 
     public List<String> getColumns() {

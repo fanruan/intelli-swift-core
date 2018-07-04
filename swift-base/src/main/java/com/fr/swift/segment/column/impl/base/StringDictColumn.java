@@ -7,6 +7,7 @@ import com.fr.swift.cube.io.Types.IoType;
 import com.fr.swift.cube.io.input.StringReader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.StringWriter;
+import com.fr.swift.source.ColumnTypeConstants;
 
 import java.util.Comparator;
 
@@ -47,8 +48,8 @@ public class StringDictColumn extends BaseDictColumn<String> {
     }
 
     @Override
-    public Type getType() {
-        return Type.STRING;
+    public ColumnTypeConstants.ClassType getType() {
+        return ColumnTypeConstants.ClassType.STRING;
     }
 
     @Override

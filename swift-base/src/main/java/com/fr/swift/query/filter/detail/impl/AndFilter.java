@@ -14,12 +14,12 @@ import java.util.List;
 /**
  * Created by Lyon on 2018/3/16.
  */
-public class GeneralAndFilter implements DetailFilter {
+public class AndFilter implements DetailFilter {
 
     private List<DetailFilter> filters;
     private Segment segment;
 
-    public GeneralAndFilter(List<FilterInfo> filterInfoList, Segment segment) {
+    public AndFilter(List<FilterInfo> filterInfoList, Segment segment) {
         this.segment = segment;
         this.filters = init(filterInfoList);
     }
@@ -31,10 +31,7 @@ public class GeneralAndFilter implements DetailFilter {
             return detailFilters;
         }
         for (FilterInfo filterInfo : filterInfoList) {
-//            filterInfo可能为空
-//            if(filterInfo != null) {
             detailFilters.add(filterInfo.createDetailFilter(segment));
-//            }
         }
         return detailFilters;
     }

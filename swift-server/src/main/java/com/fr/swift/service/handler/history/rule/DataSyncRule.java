@@ -1,5 +1,6 @@
 package com.fr.swift.service.handler.history.rule;
 
+import com.fr.swift.config.service.SwiftSegmentServiceProvider;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
@@ -65,10 +66,10 @@ public interface DataSyncRule {
                                     result.put(clusterId, new HashSet<SegmentKey>());
                                 }
                                 if (destinations.get(s) == null) {
-                                    destinations.put(s, new Pair<Integer, List<SegmentDestination>>(0, new ArrayList<SegmentDestination>()));
+                                    int segmentCount = SwiftSegmentServiceProvider.getProvider().getAllSegments().get(s).size();
+                                    destinations.put(s, new Pair<Integer, List<SegmentDestination>>(segmentCount, new ArrayList<SegmentDestination>()));
                                 }
                                 destinations.get(s).getValue().add(new SegmentDestinationImpl(clusterId, segmentKey.getUri(), segmentKey.getOrder(), HistoryService.class, "historyQuery"));
-                                destinations.get(s).setKey(destinations.get(s).getKey() + 1);
                                 result.get(clusterId).add(segmentKey);
                             }
                         } else {

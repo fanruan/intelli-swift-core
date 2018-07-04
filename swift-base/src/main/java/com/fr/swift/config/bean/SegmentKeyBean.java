@@ -38,6 +38,9 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
         initAbsoluteUri(path);
     }
 
+    public SegmentKeyBean() {
+    }
+
     private void initAbsoluteUri(String path) {
         path = Strings.trimSeparator(path, "\\", "/");
         path = "/" + path + "/";

@@ -8,33 +8,30 @@ import com.fr.stable.query.data.DataList;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.query.QueryConditionAdaptor;
-import com.fr.swift.query.aggregator.Aggregator;
-import com.fr.swift.query.aggregator.AggregatorFactory;
 import com.fr.swift.query.aggregator.AggregatorType;
-import com.fr.swift.query.filter.SwiftDetailFilterType;
-import com.fr.swift.query.filter.info.FilterInfo;
-import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
-import com.fr.swift.query.group.Groups;
-import com.fr.swift.query.group.impl.NoGroupRule;
-import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
+import com.fr.swift.query.group.GroupType;
+import com.fr.swift.query.info.bean.element.DimensionBean;
+import com.fr.swift.query.info.bean.element.GroupBean;
+import com.fr.swift.query.info.bean.element.SortBean;
+import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
+import com.fr.swift.query.info.bean.element.filter.impl.AndFilterBean;
+import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
+import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
+import com.fr.swift.query.info.bean.post.RowSortQueryInfoBean;
+import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.element.dimension.Dimension;
-import com.fr.swift.query.info.element.dimension.GroupDimension;
-import com.fr.swift.query.info.element.metric.GroupMetric;
 import com.fr.swift.query.info.element.metric.Metric;
-import com.fr.swift.query.info.group.GroupQueryInfo;
-import com.fr.swift.query.info.group.GroupQueryInfoImpl;
-import com.fr.swift.query.info.group.post.PostQueryInfo;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.query.query.QueryRunnerProvider;
+import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.DetailResultSet;
-import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -45,68 +42,109 @@ import java.util.Set;
 public class LogQueryUtils {
 
     static List<Row> groupQuery(Class<?> entity, QueryCondition queryCondition, List<String> fieldNames,
-                                List<MetricBean> metricBeans) throws SQLException {
-        Table table = SwiftDatabase.getInstance().getTable(new SourceKey(SwiftMetaAdaptor.getTableName(entity)));
-        FilterInfo filterInfo = QueryConditionAdaptor.restriction2FilterInfo(queryCondition.getRestriction());
-        SourceKey sourceKey = table.getSourceKey();
-        List<Dimension> dimensions = new ArrayList<Dimension>();
+                                List<MetricBean> metricBeans, FilterInfoBean notNullFilter) throws SQLException {
+        GroupQueryInfoBean queryInfoBean = new GroupQueryInfoBean();
+        queryInfoBean.setQueryId(queryCondition.toString());
+        String tableName = SwiftMetaAdaptor.getTableName(entity);
+        queryInfoBean.setTableName(tableName);
+        FilterInfoBean filterInfoBean = QueryConditionAdaptor.restriction2FilterInfo(queryCondition.getRestriction());
+        if (notNullFilter != null) {
+            AndFilterBean and = new AndFilterBean();
+            and.setFilterValue(Arrays.asList(notNullFilter, filterInfoBean));
+            filterInfoBean = and;
+        }
+        queryInfoBean.setFilterInfoBean(filterInfoBean);
+
+
+        List<DimensionBean> dimensions = new ArrayList<DimensionBean>();
         for (int i = 0; i < fieldNames.size(); i++) {
             // TODO: 2018/6/21 维度上的排序没适配
-            dimensions.add(new GroupDimension(i, sourceKey, new ColumnKey(fieldNames.get(i)),
-                    Groups.newGroup(new NoGroupRule()), null, null));
+            DimensionBean bean = new DimensionBean();
+            bean.setColumn(fieldNames.get(i));
+            bean.setDimensionType(Dimension.DimensionType.GROUP);
+            GroupBean groupBean = new GroupBean();
+            groupBean.setType(GroupType.NONE);
+            bean.setGroupBean(groupBean);
+            dimensions.add(bean);
         }
-        List<Metric> metrics = new ArrayList<Metric>();
+        queryInfoBean.setDimensionBeans(dimensions);
+
+        List<com.fr.swift.query.info.bean.element.MetricBean> metrics = new ArrayList<com.fr.swift.query.info.bean.element.MetricBean>();
         for (int i = 0; i < metricBeans.size(); i++) {
             MetricBean metricBean = metricBeans.get(i);
-            metrics.add(new GroupMetric(i, sourceKey, new ColumnKey(metricBean.getFiledName()),
-                    createMetricFilterInfo(metricBean.getFiledName(), metricBean.getFiledFilter()), createMetric(metricBeans.get(i))));
+            com.fr.swift.query.info.bean.element.MetricBean bean = new com.fr.swift.query.info.bean.element.MetricBean();
+            bean.setMetricType(Metric.MetricType.GROUP);
+            bean.setColumn(metricBean.getFiledName());
+            bean.setName(metricBean.getName());
+            bean.setType(getAggType(metricBean));
+            bean.setFilterInfoBean(createMetricFilterInfo(metricBean.getFiledName(), metricBean.getFiledFilter()));
+            metrics.add(bean);
         }
-        GroupQueryInfo queryInfo = new GroupQueryInfoImpl("", sourceKey, filterInfo, dimensions, metrics, new ArrayList<PostQueryInfo>());
-        QueryBean queryBean = QueryInfoBeanFactory.create(queryInfo);
-        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
+        queryInfoBean.setMetricBeans(metrics);
+
+        List<SortBean> sortBeans = new ArrayList<SortBean>();
+        for (MetricBean metricBean : metricBeans) {
+            if (StringUtils.equals(metricBean.getAsc(), LogSearchConstants.SORT_ASC)) {
+                SortBean sortBean = new SortBean();
+                // TODO: 2018/7/4 因为这边是结果排序，所以用字段转义名
+                sortBean.setColumn(metricBean.getName());
+                sortBean.setType(SortType.ASC);
+                sortBeans.add(sortBean);
+            }
+            if (StringUtils.equals(metricBean.getAsc(), LogSearchConstants.SORT_DESC)) {
+                SortBean sortBean = new SortBean();
+                sortBean.setColumn(metricBean.getName());
+                sortBean.setType(SortType.DESC);
+                sortBeans.add(sortBean);
+            }
+        }
+        List<PostQueryInfoBean> postQueryInfoBeans = new ArrayList<PostQueryInfoBean>();
+        RowSortQueryInfoBean sortQueryInfoBean = new RowSortQueryInfoBean();
+        sortQueryInfoBean.setSortBeans(sortBeans);
+        postQueryInfoBeans.add(sortQueryInfoBean);
+        queryInfoBean.setPostQueryInfoBeans(postQueryInfoBeans);
+
+        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfoBean);
         return getPage(resultSet, queryCondition);
     }
 
-    private static FilterInfo createMetricFilterInfo(String fieldName, List<Object> fieldValues) {
+    private static FilterInfoBean createMetricFilterInfo(String fieldName, List<Object> fieldValues) {
         if (fieldValues == null || fieldValues.isEmpty()) {
             return null;
         }
-        if (fieldValues.get(0) instanceof Integer) {
-            Set<Double> set = new HashSet<Double>();
-            for (Object object : fieldValues) {
-                set.add(((Integer) object).doubleValue());
+        Set<String> set = new HashSet<String>();
+        for (Object object : fieldValues) {
+            if (object == null) {
+                continue;
             }
-            return new SwiftDetailFilterInfo<Set<Double>>(new ColumnKey(fieldName), set, SwiftDetailFilterType.NUMBER_IN);
-        } else {
-            Set<String> set = new HashSet<String>();
-            for (Object object : fieldValues) {
-                set.add((String) object);
-            }
-            return new SwiftDetailFilterInfo<Set<String>>(new ColumnKey(fieldName), set, SwiftDetailFilterType.STRING_IN);
+            set.add(object.toString());
         }
+        InFilterBean in = new InFilterBean();
+        in.setColumn(fieldName);
+        in.setFilterValue(set);
+        return in;
     }
 
-    private static Aggregator createMetric(MetricBean metricBean) {
+    private static AggregatorType getAggType(MetricBean metricBean) {
         String type = metricBean.getType();
         if (StringUtils.equals(type, LogSearchConstants.AVERAGE)) {
-            return AggregatorFactory.createAggregator(AggregatorType.AVERAGE);
+            return AggregatorType.AVERAGE;
         }
         if (StringUtils.equals(type, LogSearchConstants.COUNT)) {
-            return AggregatorFactory.createAggregator(AggregatorType.COUNT);
+            return AggregatorType.COUNT;
         }
         if (StringUtils.equals(type, LogSearchConstants.MAX)) {
-            return AggregatorFactory.createAggregator(AggregatorType.MAX);
+            return AggregatorType.MAX;
         }
         if (StringUtils.equals(type, LogSearchConstants.MIN)) {
-            return AggregatorFactory.createAggregator(AggregatorType.MIN);
+            return AggregatorType.MIN;
         }
-        return AggregatorFactory.createAggregator(AggregatorType.SUM);
+        return AggregatorType.SUM;
     }
 
     static DataList<Row> detailQuery(Class<?> entity, QueryCondition queryCondition, List<String> fieldNames) throws SQLException {
         Table table = SwiftDatabase.getInstance().getTable(new SourceKey(SwiftMetaAdaptor.getTableName(entity)));
-        QueryInfo queryInfo = QueryConditionAdaptor.adaptCondition(queryCondition, table, fieldNames);
-        QueryBean queryBean = QueryInfoBeanFactory.create(queryInfo);
+        QueryBean queryBean = QueryConditionAdaptor.adaptCondition(queryCondition, table, fieldNames);
         SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
         DataList<Row> dataList = new DataList<Row>();
         dataList.setList(getPage(resultSet, queryCondition));

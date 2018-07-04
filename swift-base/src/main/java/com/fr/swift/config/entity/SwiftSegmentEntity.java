@@ -3,11 +3,12 @@ package com.fr.swift.config.entity;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.Convert;
 import com.fr.swift.config.bean.SegmentKeyBean;
-import com.fr.swift.config.convert.StoreTypeConverter;
 import com.fr.swift.config.convert.URIConverter;
 import com.fr.swift.cube.io.Types;
 import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Entity;
+import com.fr.third.javax.persistence.EnumType;
+import com.fr.third.javax.persistence.Enumerated;
 import com.fr.third.javax.persistence.Id;
 import com.fr.third.javax.persistence.Table;
 
@@ -36,9 +37,7 @@ public class SwiftSegmentEntity implements Convert<SegmentKeyBean> {
     private int segmentOrder;
 
     @Column(name = SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE)
-    @com.fr.third.javax.persistence.Convert(
-            converter = StoreTypeConverter.class
-    )
+    @Enumerated(EnumType.STRING)
     private Types.StoreType storeType;
 
     public String getSegmentOwner() {
@@ -83,16 +82,27 @@ public class SwiftSegmentEntity implements Convert<SegmentKeyBean> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SwiftSegmentEntity entity = (SwiftSegmentEntity) o;
 
-        if (segmentOrder != entity.segmentOrder) return false;
-        if (id != null ? !id.equals(entity.id) : entity.id != null) return false;
-        if (segmentOwner != null ? !segmentOwner.equals(entity.segmentOwner) : entity.segmentOwner != null)
+        if (segmentOrder != entity.segmentOrder) {
             return false;
-        if (segmentUri != null ? !segmentUri.equals(entity.segmentUri) : entity.segmentUri != null) return false;
+        }
+        if (id != null ? !id.equals(entity.id) : entity.id != null) {
+            return false;
+        }
+        if (segmentOwner != null ? !segmentOwner.equals(entity.segmentOwner) : entity.segmentOwner != null) {
+            return false;
+        }
+        if (segmentUri != null ? !segmentUri.equals(entity.segmentUri) : entity.segmentUri != null) {
+            return false;
+        }
         return storeType == entity.storeType;
     }
 

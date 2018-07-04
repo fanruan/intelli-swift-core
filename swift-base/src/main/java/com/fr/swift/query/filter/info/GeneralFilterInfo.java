@@ -1,8 +1,8 @@
 package com.fr.swift.query.filter.info;
 
 import com.fr.swift.query.filter.detail.DetailFilter;
-import com.fr.swift.query.filter.detail.impl.GeneralAndFilter;
-import com.fr.swift.query.filter.detail.impl.GeneralOrFilter;
+import com.fr.swift.query.filter.detail.impl.AndFilter;
+import com.fr.swift.query.filter.detail.impl.OrFilter;
 import com.fr.swift.query.filter.match.GeneralAndMatchFilter;
 import com.fr.swift.query.filter.match.GeneralOrMatchFilter;
 import com.fr.swift.query.filter.match.MatchFilter;
@@ -51,7 +51,7 @@ public class GeneralFilterInfo extends AbstractFilterInfo {
 
     @Override
     public DetailFilter createDetailFilter(Segment segment) {
-        return type == OR ? new GeneralOrFilter(children, segment) : new GeneralAndFilter(children, segment);
+        return type == OR ? new OrFilter(children, segment) : new AndFilter(children, segment);
     }
 
     @Override
@@ -63,23 +63,5 @@ public class GeneralFilterInfo extends AbstractFilterInfo {
             }
         }
         return type == AND ? new GeneralAndMatchFilter(matchFilters) : new GeneralOrMatchFilter(matchFilters);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        GeneralFilterInfo that = (GeneralFilterInfo) o;
-
-        if (type != that.type) return false;
-        return children != null ? children.equals(that.children) : that.children == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = children != null ? children.hashCode() : 0;
-        result = 31 * result + type;
-        return result;
     }
 }

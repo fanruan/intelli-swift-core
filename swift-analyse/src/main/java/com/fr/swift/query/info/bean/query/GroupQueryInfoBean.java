@@ -5,6 +5,7 @@ import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
 import com.fr.swift.query.query.QueryType;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,12 +16,12 @@ import java.util.List;
 public class GroupQueryInfoBean extends AbstractSingleTableQueryInfoBean {
 
     @JsonProperty
-    private List<MetricBean> metricBeans;
+    private List<MetricBean> metricBeans = new ArrayList<MetricBean>(0);
     @JsonProperty
-    private List<PostQueryInfoBean> postQueryInfoBeans;
+    private List<PostQueryInfoBean> postQueryInfoBeans = new ArrayList<PostQueryInfoBean>(0);
 
-    public QueryType getQueryType() {
-        return queryType;
+    {
+        queryType = QueryType.GROUP;
     }
 
     public List<MetricBean> getMetricBeans() {

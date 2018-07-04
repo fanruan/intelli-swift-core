@@ -85,7 +85,7 @@ public abstract class BaseColumnImplTest<T> implements Column {
 
             @Override
             public int getIndex(Object value) {
-                return ArrayLookupHelper.lookup((T[]) new Object[]{BaseColumnImplTest.this.convertValue(value)}, lookup)[0];
+                return ArrayLookupHelper.lookup((T[]) new Object[]{value}, lookup)[0];
             }
 
             @Override

@@ -54,34 +54,6 @@ public class SwiftDetailFilterInfo<T> extends AbstractDetailFilterInfo {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        SwiftDetailFilterInfo<?> that = (SwiftDetailFilterInfo<?>) o;
-
-        if (filterValue != null ? !filterValue.equals(that.filterValue) : that.filterValue != null) {
-            return false;
-        }
-        if (type != that.type) {
-            return false;
-        }
-        return columnKey != null ? columnKey.equals(that.columnKey) : that.columnKey == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = filterValue != null ? filterValue.hashCode() : 0;
-        result = 31 * result + (type != null ? type.hashCode() : 0);
-        result = 31 * result + (columnKey != null ? columnKey.hashCode() : 0);
-        return result;
-    }
-
-    @Override
     public MatchFilter createMatchFilter() {
         return new DetailBasedMatchFilter(-1, this.createDetailFilter(null));
     }

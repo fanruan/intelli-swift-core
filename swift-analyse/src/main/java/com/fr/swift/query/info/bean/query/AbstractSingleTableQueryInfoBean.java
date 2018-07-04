@@ -5,6 +5,7 @@ import com.fr.swift.query.info.bean.element.SortBean;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,9 +18,9 @@ public abstract class AbstractSingleTableQueryInfoBean extends AbstractQueryInfo
     @JsonProperty
     private FilterInfoBean filterInfoBean;
     @JsonProperty
-    private List<DimensionBean> dimensionBeans;
+    private List<DimensionBean> dimensionBeans = new ArrayList<DimensionBean>(0);
     @JsonProperty
-    private List<SortBean> sortBeans;
+    private List<SortBean> sortBeans = new ArrayList<SortBean>(0);
 
     public String getTableName() {
         return tableName;

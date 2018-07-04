@@ -4,6 +4,7 @@ package com.fr.swift.config.dao;
 import com.fr.third.org.hibernate.Session;
 import com.fr.third.org.hibernate.criterion.Criterion;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public interface SwiftConfigDao<T> {
      * @param id
      * @return
      */
-    T select(Session session, String id) throws SQLException;
+    T select(Session session, Serializable id) throws SQLException;
 
     /**
      * 自定义hql查询
@@ -42,5 +43,5 @@ public interface SwiftConfigDao<T> {
      * @param id
      * @return
      */
-    boolean deleteById(Session session, String id) throws SQLException;
+    boolean deleteById(Session session, Serializable id) throws SQLException;
 }

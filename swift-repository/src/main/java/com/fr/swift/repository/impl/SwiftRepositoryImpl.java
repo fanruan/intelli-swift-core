@@ -6,6 +6,8 @@ import com.fr.swift.file.exception.SwiftFileException;
 import com.fr.swift.file.system.SwiftFileSystem;
 import com.fr.swift.repository.AbstractRepository;
 import com.fr.swift.repository.utils.ZipUtils;
+import com.fr.swift.structure.Pair;
+import com.fr.swift.util.FileUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,12 +16,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author yee
  * @date 2018/5/28
  */
 public class SwiftRepositoryImpl extends AbstractRepository {
+
+    private static final String TEMP_PATH = System.getProperty("java.io.tmpdir");
+
     public SwiftRepositoryImpl(SwiftFileSystemConfig configuration) {
         super(configuration);
     }
@@ -32,6 +39,7 @@ public class SwiftRepositoryImpl extends AbstractRepository {
             directory.mkdirs();
         }
         if (from.isExists()) {
+            FileUtil.delete(new File(local.getPath()));
             SwiftFileSystem target = from.read();
             if (!target.isDirectory()) {
                 if (target.getResourceName().endsWith(".cubes")) {
@@ -82,44 +90,70 @@ public class SwiftRepositoryImpl extends AbstractRepository {
 
     @Override
     public boolean copyToRemote(URI local, URI remote) throws IOException {
-        File file = new File(local.getPath());
-        if (file.isDirectory()) {
-            File zipFile = new File(file.getParent(), file.getName() + ".cubes");
-            FileOutputStream fos = new FileOutputStream(zipFile);
-            ZipUtils.toZip(file.getAbsolutePath(), fos, true);
-            fos.close();
-            SwiftFileSystem fileSystem = createFileSystem(remote);
-            if (fileSystem.isExists()) {
-                fileSystem.remove();
-            }
-            fileSystem.mkdirs();
-            fileSystem.remove();
-//            File[] files = file.listFiles();
-//            for (File f : files) {
-//                copyToRemote(f.toURI(), resolve(remote, f.getName()));
-//            }
 
-            if (copyToRemote(zipFile.toURI(), resolve(URI.create(ResourceIOUtils.getParent(remote.getPath())), zipFile.getName()))) {
-                zipFile.delete();
-            }
-        } else {
-            FileInputStream inputStream = null;
-            try {
-                inputStream = new FileInputStream(file);
-                SwiftFileSystem to = createFileSystem(remote);
-                if (to.isExists()) {
-                    to.remove();
+        List<Pair<URI, URI>> dirs = new ArrayList<Pair<URI, URI>>();
+        List<Pair<URI, URI>> files = new ArrayList<Pair<URI, URI>>();
+
+        calculateUpload(local, remote, dirs, files);
+
+        if (!dirs.isEmpty()) {
+            for (Pair<URI, URI> dir : dirs) {
+                File file = new File(dir.getKey().getPath());
+                File zipFile = new File(TEMP_PATH, file.getName() + ".cubes");
+                FileOutputStream fos = new FileOutputStream(zipFile);
+                ZipUtils.toZip(file.getAbsolutePath(), fos);
+                fos.close();
+                SwiftFileSystem fileSystem = createFileSystem(dir.getValue());
+                if (fileSystem.isExists()) {
+                    fileSystem.remove();
                 }
-                to.write(inputStream);
-            } catch (FileNotFoundException e) {
-                throw new SwiftFileException(e);
-            } finally {
-                if (null != inputStream) {
-                    inputStream.close();
+                fileSystem.mkdirs();
+                fileSystem.remove();
+                if (copyToRemote(zipFile.toURI(), resolve(URI.create(ResourceIOUtils.getParent(dir.getValue().getPath())), zipFile.getName()))) {
+                    zipFile.delete();
                 }
             }
         }
+
+        if (!files.isEmpty()) {
+            for (Pair<URI, URI> uri : files) {
+                File file = new File(uri.getKey().getPath());
+                FileInputStream inputStream = null;
+                try {
+                    inputStream = new FileInputStream(file);
+                    SwiftFileSystem to = createFileSystem(uri.getValue());
+                    if (to.isExists()) {
+                        to.remove();
+                    }
+                    to.write(inputStream);
+                } catch (FileNotFoundException e) {
+                    throw new SwiftFileException(e);
+                } finally {
+                    if (null != inputStream) {
+                        inputStream.close();
+                    }
+                }
+            }
+
+        }
         return true;
+    }
+
+    private void calculateUpload(URI root, URI remote, List<Pair<URI, URI>> dirs, List<Pair<URI, URI>> files) {
+        File rootFile = new File(root.getPath());
+        if (rootFile.isDirectory()) {
+            File[] children = rootFile.listFiles();
+            List<Pair<URI, URI>> tempFiles = new ArrayList<Pair<URI, URI>>();
+            for (File child : children) {
+                if (child.isFile()) {
+                    tempFiles.add(Pair.of(child.toURI(), resolve(remote, child.getName())));
+                } else {
+                    dirs.add(Pair.of(child.toURI(), resolve(remote, child.getName())));
+                }
+            }
+        } else {
+            files.add(Pair.of(root, remote));
+        }
     }
 
     private URI resolve(URI uri, String resolve) {

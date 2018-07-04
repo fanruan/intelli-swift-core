@@ -40,6 +40,6 @@ public class StringLikeFilter extends AbstractDetailFilter<String> {
     @Override
     public boolean matches(SwiftNode node, int targetIndex, MatchConverter converter) {
         Object data = node.getData();
-        return data != null && converter.convert(data).contains(like);
+        return data != null && data.toString().contains(like);
     }
 }

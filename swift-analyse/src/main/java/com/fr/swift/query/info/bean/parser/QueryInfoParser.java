@@ -55,10 +55,10 @@ public class QueryInfoParser {
         String queryId = bean.getQueryId();
         // TODO: 2018/6/7 table2sourceKey
         SourceKey table = new SourceKey(bean.getTableName());
-        FilterInfo filterInfo = FilterInfoParser.parse(bean.getFilterInfoBean());
+        FilterInfo filterInfo = FilterInfoParser.parse(table, bean.getFilterInfoBean());
         List<Dimension> dimensions = DimensionParser.parse(bean.getDimensionBeans(), bean.getSortBeans());
-        List<Metric> metrics = MetricParser.parse(bean.getMetricBeans());
-        List<PostQueryInfo> postQueryInfoList = PostQueryInfoParser.parse(bean.getPostQueryInfoBeans(), dimensions, metrics);
+        List<Metric> metrics = MetricParser.parse(table, bean.getMetricBeans());
+        List<PostQueryInfo> postQueryInfoList = PostQueryInfoParser.parse(bean.getPostQueryInfoBeans(), dimensions, bean.getMetricBeans());
         return new GroupQueryInfoImpl(queryId, table, filterInfo, dimensions, metrics, postQueryInfoList);
     }
 
@@ -79,7 +79,7 @@ public class QueryInfoParser {
         String queryId = bean.getQueryId();
         // TODO: 2018/6/7
         SourceKey table = new SourceKey(bean.getTableName());
-        FilterInfo filterInfo = FilterInfoParser.parse(bean.getFilterInfoBean());
+        FilterInfo filterInfo = FilterInfoParser.parse(table, bean.getFilterInfoBean());
         List<Dimension> dimensions = DimensionParser.parse(bean.getDimensionBeans(), bean.getSortBeans());
         SwiftMetaData metaData = SwiftContext.getInstance().getBean(SwiftMetaDataService.class).getMetaDataByKey(bean.getTableName());
         List<SwiftMetaDataColumn> columns = new ArrayList<SwiftMetaDataColumn>();
@@ -95,10 +95,10 @@ public class QueryInfoParser {
                         sorts.add(new NoneSort());
                         break;
                     case DESC:
-                        sorts.add(new DescSort(sortBean.getTargetIndex(), columnKey));
+                        sorts.add(new DescSort(-1, columnKey));
                         break;
                     case ASC:
-                        sorts.add(new AscSort(sortBean.getTargetIndex(), columnKey));
+                        sorts.add(new AscSort(-1, columnKey));
                         break;
                 }
             }

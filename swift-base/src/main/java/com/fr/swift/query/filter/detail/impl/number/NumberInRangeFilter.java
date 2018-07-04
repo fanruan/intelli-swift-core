@@ -3,7 +3,6 @@ package com.fr.swift.query.filter.detail.impl.number;
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.query.filter.detail.impl.AbstractDetailFilter;
 import com.fr.swift.query.filter.detail.impl.util.LookupFactory;
-import com.fr.swift.query.filter.detail.impl.util.ValueConvertUtils;
 import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
@@ -21,12 +20,12 @@ public class NumberInRangeFilter extends AbstractDetailFilter<Number> {
 
     private final static int START_INDEX = DictionaryEncodedColumn.NOT_NULL_START_INDEX;
 
-    protected final Double min;
-    protected final Double max;
+    protected final Number min;
+    protected final Number max;
     protected final boolean minIncluded;
     protected final boolean maxIncluded;
 
-    public NumberInRangeFilter(Double min, Double max, boolean minIncluded, boolean maxIncluded, Column<Number> column) {
+    public NumberInRangeFilter(Number min, Number max, boolean minIncluded, boolean maxIncluded, Column<Number> column) {
         this.min = min;
         this.max = max;
         this.minIncluded = minIncluded;
@@ -46,8 +45,8 @@ public class NumberInRangeFilter extends AbstractDetailFilter<Number> {
     protected RowTraversal getIntIterator(final DictionaryEncodedColumn<Number> dict) {
         ArrayLookupHelper.Lookup<Number> lookup = LookupFactory.create(dict, Comparators.numberAsc());
         // 获取过滤条件对应的RangeIntList区间
-        int start = min == Double.NEGATIVE_INFINITY ? START_INDEX : getStart(ArrayLookupHelper.binarySearch(lookup, (Number) ValueConvertUtils.convert(min, dict.getType())));
-        int end = max == Double.POSITIVE_INFINITY ? dict.size() - 1 : getEnd(ArrayLookupHelper.binarySearch(lookup, (Number) ValueConvertUtils.convert(max, dict.getType())));
+        int start = min.doubleValue() == Double.NEGATIVE_INFINITY ? START_INDEX : getStart(ArrayLookupHelper.binarySearch(lookup, min));
+        int end = max.doubleValue() == Double.POSITIVE_INFINITY ? dict.size() - 1 : getEnd(ArrayLookupHelper.binarySearch(lookup, max));
         start = start < START_INDEX ? START_INDEX : start;
         if (start >= dict.size() || end < START_INDEX || start > end) {
             return new IntListRowTraversal(IntListFactory.createEmptyIntList());

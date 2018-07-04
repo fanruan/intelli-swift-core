@@ -40,6 +40,6 @@ public class StringEndsWithFilter extends AbstractDetailFilter<String> {
     @Override
     public boolean matches(SwiftNode node, int targetIndex, MatchConverter converter) {
         Object data = node.getData();
-        return data != null && converter.convert(data).endsWith(endsWith);
+        return data != null && data.toString().endsWith(endsWith);
     }
 }

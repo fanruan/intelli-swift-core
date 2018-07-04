@@ -6,15 +6,14 @@ import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.result.SwiftNode;
 
 /**
- * Created by Lyon on 2017/11/27.
+ * Created by Lyon on 2018/7/3.
  */
-public abstract class AbstractNotOperatorFilter implements DetailFilter {
+public class NotFilter implements DetailFilter {
 
     private int rowCount;
-
     private DetailFilter filter;
 
-    public AbstractNotOperatorFilter(int rowCount, DetailFilter filter) {
+    public NotFilter(int rowCount, DetailFilter filter) {
         this.rowCount = rowCount;
         this.filter = filter;
     }
@@ -26,7 +25,6 @@ public abstract class AbstractNotOperatorFilter implements DetailFilter {
 
     @Override
     public boolean matches(SwiftNode node, int targetIndex, MatchConverter converter) {
-        return node.getData() == null ? false : !filter.matches(node, targetIndex, converter);
+        return node.getData() != null && !filter.matches(node, targetIndex, converter);
     }
-
 }

@@ -14,6 +14,10 @@ public class CalculatedFieldQueryInfoBean extends AbstractPostQueryInfoBean {
     @JsonProperty
     private List<CalculatedFieldBean> calculatedFieldBeans;
 
+    {
+        type = PostQueryType.CAL_FIELD;
+    }
+
     public List<CalculatedFieldBean> getCalculatedFieldBeans() {
         return calculatedFieldBeans;
     }

@@ -10,6 +10,7 @@ import com.fr.swift.cube.io.Types;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.third.org.hibernate.Session;
 import com.fr.third.org.hibernate.criterion.Conjunction;
+import com.fr.third.org.hibernate.criterion.Criterion;
 import com.fr.third.org.hibernate.criterion.Restrictions;
 import com.fr.third.springframework.stereotype.Service;
 
@@ -57,6 +58,33 @@ public class SwiftSegmentDaoImpl extends BasicDao<SwiftSegmentEntity> implements
             result.add(entity.convert());
         }
         return result;
+    }
+
+    @Override
+    public List<SegmentKey> selectSelective(Session session, SegmentKey segmentKey) {
+        List<Criterion> criterionList = new ArrayList<Criterion>();
+        try {
+            if (null != segmentKey.getTable()) {
+                criterionList.add(Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, segmentKey.getTable().getId()));
+            }
+            if (null != segmentKey.getUri()) {
+                criterionList.add(Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_URI, segmentKey.getUri()));
+            }
+            if (null != segmentKey.getStoreType()) {
+                criterionList.add(Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE, segmentKey.getStoreType()));
+            }
+            if (null != (Integer) segmentKey.getOrder()) {
+                criterionList.add(Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_ORDER, segmentKey.getOrder()));
+            }
+            List<SwiftSegmentEntity> list = find(session, criterionList.toArray(new Criterion[criterionList.size()]));
+            List<SegmentKey> result = new ArrayList<SegmentKey>();
+            for (SwiftSegmentEntity entity : list) {
+                result.add(entity.convert());
+            }
+            return result;
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
     }
 
     @Override

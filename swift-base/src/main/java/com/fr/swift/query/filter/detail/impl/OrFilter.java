@@ -14,12 +14,12 @@ import java.util.List;
 /**
  * Created by Lyon on 2018/3/16.
  */
-public class GeneralOrFilter implements DetailFilter {
+public class OrFilter implements DetailFilter {
 
     private List<DetailFilter> filters;
     private Segment segment;
 
-    public GeneralOrFilter(List<FilterInfo> filterInfoList, Segment segment) {
+    public OrFilter(List<FilterInfo> filterInfoList, Segment segment) {
         this.segment = segment;
         this.filters = init(filterInfoList);
     }

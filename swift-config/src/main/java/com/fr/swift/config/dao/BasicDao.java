@@ -6,6 +6,7 @@ import com.fr.third.org.hibernate.Criteria;
 import com.fr.third.org.hibernate.Session;
 import com.fr.third.org.hibernate.criterion.Criterion;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
@@ -33,7 +34,7 @@ public class BasicDao<T> implements SwiftConfigDao<T> {
     }
 
     @Override
-    public T select(Session session, String id) throws SQLException {
+    public T select(Session session, Serializable id) throws SQLException {
         try {
             return session.get(entityClass, id);
         } catch (Exception e) {
@@ -60,7 +61,7 @@ public class BasicDao<T> implements SwiftConfigDao<T> {
     }
 
     @Override
-    public boolean deleteById(Session session, String id) throws SQLException {
+    public boolean deleteById(Session session, Serializable id) throws SQLException {
         try {
             T entity = select(session, id);
             if (null != entity) {
