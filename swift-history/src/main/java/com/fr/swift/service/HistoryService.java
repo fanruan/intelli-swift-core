@@ -1,5 +1,6 @@
 package com.fr.swift.service;
 
+import com.fr.swift.db.Where;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.io.IOException;
@@ -27,4 +28,6 @@ public interface HistoryService extends SwiftService {
      * @throws IOException
      */
     void load(Set<URI> remoteUris) throws IOException;
+
+    boolean delete(Where where) throws Exception;
 }

@@ -46,20 +46,44 @@ public interface DataSyncRule {
                 while (iterator.hasNext()) {
                     SegmentKey segmentKey = iterator.next();
                     Map<String, AtomicInteger> readyToSort = map.get(s);
+                    if (null == readyToSort) {
+                        readyToSort = new HashMap<String, AtomicInteger>();
+                        map.put(s, readyToSort);
+                    }
                     List<SegmentPair> sort = sort(readyToSort);
                     // 每个表对应的segment数最少的 lessCount个节点加载一个Segment
                     for (int i = 0; i < lessCount; i++) {
-                        String clusterId = sort.get(i).clusterId;
-                        map.get(s).get(clusterId).incrementAndGet();
-                        if (result.get(clusterId) == null) {
-                            result.put(clusterId, new HashSet<SegmentKey>());
+                        if (sort.isEmpty()) {
+                            Iterator<String> nodeIterator = historyNodes.iterator();
+                            while (nodeIterator.hasNext()) {
+                                String clusterId = nodeIterator.next();
+                                if (null == map.get(s).get(clusterId)) {
+                                    map.get(s).put(clusterId, new AtomicInteger(0));
+                                }
+                                map.get(s).get(clusterId).incrementAndGet();
+                                if (result.get(clusterId) == null) {
+                                    result.put(clusterId, new HashSet<SegmentKey>());
+                                }
+                                if (destinations.get(s) == null) {
+                                    destinations.put(s, new Pair<Integer, List<SegmentDestination>>(0, new ArrayList<SegmentDestination>()));
+                                }
+                                destinations.get(s).getValue().add(new SegmentDestinationImpl(clusterId, segmentKey.getUri(), segmentKey.getOrder(), HistoryService.class, "historyQuery"));
+                                destinations.get(s).setKey(destinations.get(s).getKey() + 1);
+                                result.get(clusterId).add(segmentKey);
+                            }
+                        } else {
+                            String clusterId = sort.get(i).clusterId;
+                            map.get(s).get(clusterId).incrementAndGet();
+                            if (result.get(clusterId) == null) {
+                                result.put(clusterId, new HashSet<SegmentKey>());
+                            }
+                            if (destinations.get(s) == null) {
+                                destinations.put(s, new Pair<Integer, List<SegmentDestination>>(0, new ArrayList<SegmentDestination>()));
+                            }
+                            destinations.get(s).getValue().add(new SegmentDestinationImpl(clusterId, segmentKey.getUri(), segmentKey.getOrder(), HistoryService.class, "historyQuery"));
+                            destinations.get(s).setKey(destinations.get(s).getKey() + 1);
+                            result.get(clusterId).add(segmentKey);
                         }
-                        if (destinations.get(s) == null) {
-                            destinations.put(s, new Pair<Integer, List<SegmentDestination>>(0, new ArrayList<SegmentDestination>()));
-                        }
-                        destinations.get(s).getValue().add(new SegmentDestinationImpl(clusterId, segmentKey.getUri(), segmentKey.getOrder(), HistoryService.class, "historyQuery"));
-                        destinations.get(s).setKey(destinations.get(s).getKey() + 1);
-                        result.get(clusterId).add(segmentKey);
                     }
                     iterator.remove();
                 }
@@ -78,7 +102,7 @@ public interface DataSyncRule {
         private Map<String, Map<String, AtomicInteger>> calculateNeedLoad(Map<String, List<SegmentKey>> exists, Map<String, List<SegmentKey>> needLoad,
                                                                           Map<String, Pair<Integer, List<SegmentDestination>>> destinations) {
             Set<String> historyNodes = exists.keySet();
-            Map<String, Map<String, AtomicInteger>> result = new HashMap<String, Map<String, AtomicInteger>>();
+            final Map<String, Map<String, AtomicInteger>> result = new HashMap<String, Map<String, AtomicInteger>>();
             int lessCount = historyNodes.size() - 1;
             lessCount = lessCount < 1 ? 1 : lessCount;
             Map<SegmentKey, Integer> count = new HashMap<SegmentKey, Integer>();
@@ -103,10 +127,7 @@ public interface DataSyncRule {
                         segCount.put(sourceKey, new ArrayList<SegmentDestination>() {
                             @Override
                             public boolean add(SegmentDestination segmentDestination) {
-                                if (!contains(segmentDestination)) {
-                                    return super.add(segmentDestination);
-                                }
-                                return false;
+                                return !contains(segmentDestination) && super.add(segmentDestination);
                             }
                         });
                     }

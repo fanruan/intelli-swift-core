@@ -3,6 +3,7 @@ package com.fr.swift.service;
 import com.fr.swift.config.SwiftCubePathConfig;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.db.Where;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
@@ -92,6 +93,11 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         } catch (IOException e) {
             throw new SQLException(e);
         }
+    }
+
+    @Override
+    public boolean delete(Where where) throws Exception {
+        return false;
     }
 
     private static class SingletonHolder {

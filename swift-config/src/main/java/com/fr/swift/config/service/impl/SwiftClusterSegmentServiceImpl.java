@@ -1,10 +1,10 @@
 package com.fr.swift.config.service.impl;
 
 import com.fr.swift.config.bean.SegmentKeyBean;
-import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.dao.SwiftSegmentDao;
-import com.fr.swift.config.dao.SwiftServiceInfoDao;
-import com.fr.swift.config.entity.SwiftServiceInfoEntity;
+import com.fr.swift.config.dao.SwiftSegmentLocationDao;
+import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
+import com.fr.swift.config.entity.key.SwiftSegLocationEntityId;
 import com.fr.swift.config.hibernate.transaction.AbstractTransactionWorker;
 import com.fr.swift.config.hibernate.transaction.HibernateTransactionManager;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
@@ -12,6 +12,7 @@ import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.structure.Pair;
 import com.fr.third.org.hibernate.Session;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
@@ -38,7 +39,7 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
     @Autowired
     private SwiftSegmentDao swiftSegmentDao;
     @Autowired
-    private SwiftServiceInfoDao swiftServiceInfoDao;
+    private SwiftSegmentLocationDao segmentLocationDao;
 
     private String clusterId;
 
@@ -68,15 +69,9 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
             return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
                 @Override
                 public Boolean work(Session session) throws SQLException {
-
-                    List<SegmentKey> list = new ArrayList<SegmentKey>();
                     for (String key : sourceKey) {
-                        list.addAll(swiftSegmentDao.findBySourceKey(session, key));
                         swiftSegmentDao.deleteBySourceKey(session, key);
-                    }
-                    for (SegmentKey bean : list) {
-                        SegmentKeyBean keyBean = (SegmentKeyBean) bean;
-                        swiftServiceInfoDao.deleteByServiceInfo(session, keyBean.getId());
+                        segmentLocationDao.deleteBySourceKey(session, key);
                     }
                     return true;
                 }
@@ -91,9 +86,13 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
         for (SegmentKey segment : segments) {
             SegmentKeyBean bean = (SegmentKeyBean) segment;
             swiftSegmentDao.addOrUpdateSwiftSegment(session, bean);
-            SwiftServiceInfoEntity entity = new SwiftServiceInfoBean(SEGMENT, clusterId, bean.getId(), false).convert();
-            entity.setId(entity.getId() + segment.getOrder());
-            swiftServiceInfoDao.saveOrUpdate(session, entity);
+            SwiftSegmentLocationEntity locationEntity = new SwiftSegmentLocationEntity();
+            SwiftSegLocationEntityId id = new SwiftSegLocationEntityId();
+            id.setClusterId(clusterId);
+            id.setSegmentId(bean.getId());
+            locationEntity.setId(id);
+            locationEntity.setSourceKey(segment.getTable().getId());
+            segmentLocationDao.saveOrUpdate(session, locationEntity);
         }
         return true;
 
@@ -105,12 +104,8 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
             return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
                 @Override
                 public Boolean work(Session session) throws SQLException {
-                    List<SegmentKey> list = swiftSegmentDao.findBySourceKey(session, sourceKey);
                     swiftSegmentDao.deleteBySourceKey(session, sourceKey);
-                    for (SegmentKey bean : list) {
-                        SegmentKeyBean keyBean = (SegmentKeyBean) bean;
-                        swiftServiceInfoDao.deleteByServiceInfo(session, keyBean.getId());
-                    }
+                    segmentLocationDao.deleteBySourceKey(session, sourceKey);
                     return addSegmentsWithoutTransaction(session, segments);
                 }
             });
@@ -161,11 +156,11 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
         try {
             return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
                 @Override
-                public Boolean work(Session session) {
-                    List<SwiftServiceInfoEntity> list =
-                            swiftServiceInfoDao.getServiceInfoBySelective(session,
-                                    new SwiftServiceInfoBean(SEGMENT, clusterId, segmentKey.toString(), false));
-                    return !list.isEmpty();
+                public Boolean work(Session session) throws SQLException {
+                    SwiftSegLocationEntityId id = new SwiftSegLocationEntityId();
+                    id.setClusterId(clusterId);
+                    id.setSegmentId(segmentKey.toString());
+                    return null != segmentLocationDao.select(session, id);
                 }
             });
 
@@ -181,16 +176,14 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
 
     @Override
     public Map<String, List<SegmentKey>> getOwnSegments(final String clusterId) {
-
-
         try {
             return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Map<String, List<SegmentKey>>>() {
                 @Override
                 public Map<String, List<SegmentKey>> work(Session session) throws SQLException {
                     Map<String, List<SegmentKey>> result = new HashMap<String, List<SegmentKey>>();
-                    List<SwiftServiceInfoEntity> list = swiftServiceInfoDao.getServiceInfoBySelective(session, new SwiftServiceInfoBean(SEGMENT, clusterId, null, false));
-                    for (SwiftServiceInfoEntity entity : list) {
-                        SegmentKeyBean bean = swiftSegmentDao.select(session, entity.getServiceInfo()).convert();
+                    List<SwiftSegmentLocationEntity> list = segmentLocationDao.findByClusterId(session, clusterId);
+                    for (SwiftSegmentLocationEntity entity : list) {
+                        SegmentKeyBean bean = swiftSegmentDao.select(session, entity.getSegmentId()).convert();
                         if (!result.containsKey(bean.getSourceKey())) {
                             result.put(bean.getSourceKey(), new ArrayList<SegmentKey>());
                         }
@@ -214,9 +207,9 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
                 @Override
                 public Map<String, List<SegmentKey>> work(Session session) throws SQLException {
                     Map<String, List<SegmentKey>> result = new HashMap<String, List<SegmentKey>>();
-                    List<SwiftServiceInfoEntity> list = swiftServiceInfoDao.getServiceInfoBySelective(session, new SwiftServiceInfoBean(SEGMENT, null, null, false));
-                    for (SwiftServiceInfoEntity entity : list) {
-                        SegmentKeyBean bean = swiftSegmentDao.select(session, entity.getServiceInfo()).convert();
+                    List<SwiftSegmentLocationEntity> list = segmentLocationDao.findAll(session);
+                    for (SwiftSegmentLocationEntity entity : list) {
+                        SegmentKeyBean bean = swiftSegmentDao.select(session, entity.getSegmentId()).convert();
                         if (!result.containsKey(entity.getClusterId())) {
                             result.put(entity.getClusterId(), new ArrayList<SegmentKey>());
                         }
@@ -233,19 +226,24 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
     }
 
     @Override
-    public boolean updateSegmentTable(final Map<String, List<String>> segmentTable) {
+    public boolean updateSegmentTable(final Map<String, List<Pair<String, String>>> segmentTable) {
         try {
             return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
                 @Override
                 public Boolean work(Session session) throws SQLException {
-                    Iterator<Map.Entry<String, List<String>>> iterator = segmentTable.entrySet().iterator();
+                    Iterator<Map.Entry<String, List<Pair<String, String>>>> iterator = segmentTable.entrySet().iterator();
                     while (iterator.hasNext()) {
-                        Map.Entry<String, List<String>> entry = iterator.next();
+                        Map.Entry<String, List<Pair<String, String>>> entry = iterator.next();
                         String clusterId = entry.getKey();
-                        List<String> segmentKeys = entry.getValue();
-                        for (String segmentKey : segmentKeys) {
-                            SwiftServiceInfoEntity entity = new SwiftServiceInfoBean(SEGMENT, clusterId, segmentKey, false).convert();
-                            swiftServiceInfoDao.saveOrUpdate(session, entity);
+                        List<Pair<String, String>> segmentKeys = entry.getValue();
+                        for (Pair<String, String> segmentKey : segmentKeys) {
+                            SwiftSegmentLocationEntity locationEntity = new SwiftSegmentLocationEntity();
+                            SwiftSegLocationEntityId id = new SwiftSegLocationEntityId();
+                            id.setClusterId(clusterId);
+                            id.setSegmentId(segmentKey.getValue());
+                            locationEntity.setId(id);
+                            locationEntity.setSourceKey(segmentKey.getKey());
+                            segmentLocationDao.saveOrUpdate(session, locationEntity);
                         }
                     }
                     return true;

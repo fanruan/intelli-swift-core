@@ -9,9 +9,11 @@ import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.task.TaskKey;
+import com.fr.swift.event.history.HistoryLoadRpcEvent;
 import com.fr.swift.event.indexing.IndexRpcEvent;
 import com.fr.swift.frrpc.SwiftClusterService;
 import com.fr.swift.invocation.SwiftInvocation;
+import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.rpc.server.RpcServer;
 import com.fr.swift.selector.ProxySelector;
 import com.fr.swift.selector.UrlSelector;
@@ -26,6 +28,8 @@ import com.fr.third.springframework.web.bind.annotation.RequestMapping;
 import com.fr.third.springframework.web.bind.annotation.RequestMethod;
 import com.fr.third.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.IOException;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +62,24 @@ public class HistoryIndexingController {
             result.put("error", e.getMessage());
         }
         return result;
+    }
+
+    @RequestMapping(value = "swift/download", method = RequestMethod.GET)
+    public void download() throws IOException {
+        SwiftRepositoryManager.getManager().getCurrentRepository().copyFromRemote(URI.create("cubes/36e09331"), URI.create("/Users/yee/test/"));
+    }
+
+    @RequestMapping(value = "swift/upload", method = RequestMethod.GET)
+    public void upload() throws IOException {
+        SwiftRepositoryManager.getManager().getCurrentRepository().copyToRemote(URI.create("/Users/yee/merge"), URI.create("/root/merge/"));
+    }
+
+    @RequestMapping(value = "swift/load", method = RequestMethod.GET)
+    public void load() {
+        HistoryLoadRpcEvent event = new HistoryLoadRpcEvent();
+        ProxyFactory factory = ProxySelector.getInstance().getFactory();
+        Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, getMasterURL(), true);
+        invoker.invoke(new SwiftInvocation(server.getMethodByName("rpcTrigger"), new Object[]{event}));
     }
 
     private URL getMasterURL() {
