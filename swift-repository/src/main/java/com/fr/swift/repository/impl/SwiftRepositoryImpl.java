@@ -98,20 +98,7 @@ public class SwiftRepositoryImpl extends AbstractRepository {
 
         if (!dirs.isEmpty()) {
             for (Pair<URI, URI> dir : dirs) {
-                File file = new File(dir.getKey().getPath());
-                File zipFile = new File(TEMP_PATH, file.getName() + ".cubes");
-                FileOutputStream fos = new FileOutputStream(zipFile);
-                ZipUtils.toZip(file.getAbsolutePath(), fos);
-                fos.close();
-                SwiftFileSystem fileSystem = createFileSystem(dir.getValue());
-                if (fileSystem.isExists()) {
-                    fileSystem.remove();
-                }
-                fileSystem.mkdirs();
-                fileSystem.remove();
-                if (copyToRemote(zipFile.toURI(), resolve(URI.create(ResourceIOUtils.getParent(dir.getValue().getPath())), zipFile.getName()))) {
-                    zipFile.delete();
-                }
+                zipToRemote(dir.getKey(), dir.getValue());
             }
         }
 
@@ -135,6 +122,25 @@ public class SwiftRepositoryImpl extends AbstractRepository {
                 }
             }
 
+        }
+        return true;
+    }
+
+    @Override
+    public boolean zipToRemote(URI local, URI remote) throws IOException {
+        File file = new File(local.getPath());
+        File zipFile = new File(TEMP_PATH, file.getName() + ".cubes");
+        FileOutputStream fos = new FileOutputStream(zipFile);
+        ZipUtils.toZip(file.getAbsolutePath(), fos);
+        fos.close();
+        SwiftFileSystem fileSystem = createFileSystem(remote);
+        if (fileSystem.isExists()) {
+            fileSystem.remove();
+        }
+        fileSystem.mkdirs();
+        fileSystem.remove();
+        if (copyToRemote(zipFile.toURI(), resolve(URI.create(ResourceIOUtils.getParent(remote.getPath())), zipFile.getName()))) {
+            zipFile.delete();
         }
         return true;
     }

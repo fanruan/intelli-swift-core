@@ -11,4 +11,6 @@ public interface SwiftRepository {
     URI copyFromRemote(URI remote, URI local) throws IOException;
 
     boolean copyToRemote(URI local, URI remote) throws IOException;
+
+    boolean zipToRemote(URI local, URI remote) throws IOException;
 }
