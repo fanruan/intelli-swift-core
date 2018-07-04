@@ -14,11 +14,9 @@ public class SortBean {
     @JsonProperty
     private SortType type;
     @JsonProperty
-    private String column;
+    private String column;      // TODO: 2018/7/4 结果排序还是字典排序要区分原始字段名和客户端定义的字段转义名
     @JsonProperty
     private IRelationSourceBean relation;
-    @JsonProperty
-    private int targetIndex;
 
     public SortBean() {
     }
@@ -29,14 +27,6 @@ public class SortBean {
 
     public void setType(SortType type) {
         this.type = type;
-    }
-
-    public int getTargetIndex() {
-        return targetIndex;
-    }
-
-    public void setTargetIndex(int targetIndex) {
-        this.targetIndex = targetIndex;
     }
 
     public String getColumn() {

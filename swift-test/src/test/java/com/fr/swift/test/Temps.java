@@ -1,6 +1,7 @@
 package com.fr.swift.test;
 
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.source.ColumnTypeConstants;
 
 import java.util.Comparator;
 
@@ -88,18 +89,18 @@ public final class Temps {
         }
 
         @Override
-        public Type getType() {
+        public ColumnTypeConstants.ClassType getType() {
             Object object = getValue(1);
             if (object == null) {
                 return null;
             } else if (object instanceof Integer) {
-                return Type.INT;
+                return ColumnTypeConstants.ClassType.INTEGER;
             } else if (object instanceof Long) {
-                return Type.LONG;
+                return ColumnTypeConstants.ClassType.LONG;
             } else if (object instanceof Double) {
-                return Type.DOUBLE;
+                return ColumnTypeConstants.ClassType.DOUBLE;
             } else {
-                return Type.STRING;
+                return ColumnTypeConstants.ClassType.STRING;
             }
         }
 

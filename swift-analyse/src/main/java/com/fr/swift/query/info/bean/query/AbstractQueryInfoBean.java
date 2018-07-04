@@ -17,12 +17,7 @@ public abstract class AbstractQueryInfoBean implements QueryInfoBean {
     @JsonProperty
     protected URI querySegment;
 
-    public abstract QueryType getQueryType();
-
-    public void setQueryType(QueryType queryType) {
-        this.queryType = queryType;
-    }
-
+    @Override
     public String getQueryId() {
         return queryId;
     }
@@ -31,10 +26,21 @@ public abstract class AbstractQueryInfoBean implements QueryInfoBean {
         this.queryId = queryId;
     }
 
+    @Override
+    public QueryType getQueryType() {
+        return queryType;
+    }
+
+    @Override
+    public void setQueryType(QueryType queryType) {
+        this.queryType = queryType;
+    }
+
     public URI getQuerySegment() {
         return querySegment;
     }
 
+    @Override
     public void setQuerySegment(URI querySegment) {
         this.querySegment = querySegment;
     }

@@ -3,6 +3,7 @@ package com.fr.swift.segment.column;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.cube.io.location.IResourceLocation;
+import com.fr.swift.source.ColumnTypeConstants;
 
 import java.util.TreeMap;
 
@@ -16,8 +17,8 @@ public class RealtimeDoubleColumn extends BaseRealtimeColumn<Double> {
     }
 
     @Override
-    protected DictionaryEncodedColumn.Type getType() {
-        return DictionaryEncodedColumn.Type.DOUBLE;
+    protected ColumnTypeConstants.ClassType getType() {
+        return ColumnTypeConstants.ClassType.DOUBLE;
     }
 
     @Override

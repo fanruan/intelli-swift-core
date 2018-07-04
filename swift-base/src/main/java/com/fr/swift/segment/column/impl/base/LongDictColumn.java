@@ -6,6 +6,7 @@ import com.fr.swift.cube.io.Types.IoType;
 import com.fr.swift.cube.io.input.LongReader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.LongWriter;
+import com.fr.swift.source.ColumnTypeConstants;
 
 import java.util.Comparator;
 
@@ -47,8 +48,8 @@ public class LongDictColumn extends BaseDictColumn<Long> {
     }
 
     @Override
-    public Type getType() {
-        return Type.LONG;
+    public ColumnTypeConstants.ClassType getType() {
+        return ColumnTypeConstants.ClassType.LONG;
     }
 
     @Override

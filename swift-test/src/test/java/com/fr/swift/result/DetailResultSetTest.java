@@ -15,6 +15,7 @@ import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.Row;
 import com.fr.swift.structure.Pair;
 import junit.framework.TestCase;
@@ -116,8 +117,8 @@ public class DetailResultSetTest extends TestCase {
                     }
 
                     @Override
-                    public Type getType() {
-                        return Type.INT;
+                    public ColumnTypeConstants.ClassType getType() {
+                        return ColumnTypeConstants.ClassType.INTEGER;
                     }
 
                     @Override
@@ -223,8 +224,8 @@ public class DetailResultSetTest extends TestCase {
                     }
 
                     @Override
-                    public Type getType() {
-                        return Type.LONG;
+                    public ColumnTypeConstants.ClassType getType() {
+                        return ColumnTypeConstants.ClassType.LONG;
                     }
 
                     @Override
@@ -329,8 +330,8 @@ public class DetailResultSetTest extends TestCase {
                     }
 
                     @Override
-                    public Type getType() {
-                        return Type.DOUBLE;
+                    public ColumnTypeConstants.ClassType getType() {
+                        return ColumnTypeConstants.ClassType.DOUBLE;
                     }
 
                     @Override
@@ -435,8 +436,8 @@ public class DetailResultSetTest extends TestCase {
                     }
 
                     @Override
-                    public Type getType() {
-                        return Type.STRING;
+                    public ColumnTypeConstants.ClassType getType() {
+                        return ColumnTypeConstants.ClassType.STRING;
                     }
 
                     @Override

@@ -22,7 +22,6 @@ public class MetricBeanFactory implements BeanFactory<List<Metric>, List<MetricB
                 bean.setFilterInfoBean(FilterInfoBeanFactory.SINGLE_FILTER_INFO_BEAN_FACTORY.create(source.getFilter()));
                 bean.setType(source.getAggregator().getAggregatorType());
                 bean.setMetricType(source.getMetricType());
-                bean.setTable(source.getSourceKey().getId());
                 ColumnKey columnKey = source.getColumnKey();
                 if (null != columnKey) {
                     bean.setColumn(columnKey.getName());

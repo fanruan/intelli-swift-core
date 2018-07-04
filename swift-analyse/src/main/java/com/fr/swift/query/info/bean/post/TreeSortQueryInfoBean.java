@@ -14,6 +14,10 @@ public class TreeSortQueryInfoBean extends AbstractPostQueryInfoBean {
     @JsonProperty
     private Map<String, SortBean> sortMap;
 
+    {
+        type = PostQueryType.TREE_SORT;
+    }
+
     public Map<String, SortBean> getSortMap() {
         return sortMap;
     }

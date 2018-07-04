@@ -1,7 +1,8 @@
 package com.fr.swift.query.filter.detail.impl.number;
 
 import com.fr.swift.query.filter.detail.DetailFilter;
-import com.fr.swift.query.filter.detail.impl.number.not.NumberNotContainFilter;
+import com.fr.swift.query.filter.detail.impl.InFilter;
+import com.fr.swift.query.filter.detail.impl.NotFilter;
 import com.fr.swift.segment.column.Column;
 
 /**
@@ -15,6 +16,6 @@ public class NumberNotContainFilterTest extends NumberContainFilterTest {
 
     @Override
     protected DetailFilter createFilter(Column column) {
-        return new NumberNotContainFilter(details.size(), groups, column);
+        return new NotFilter(details.size(), new InFilter(groups, column));
     }
 }

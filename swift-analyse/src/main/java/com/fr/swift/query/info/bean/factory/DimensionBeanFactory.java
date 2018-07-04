@@ -1,6 +1,5 @@
 package com.fr.swift.query.info.bean.factory;
 
-import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.group.Group;
 import com.fr.swift.query.info.bean.element.DimensionBean;
 import com.fr.swift.query.info.bean.element.GroupBean;
@@ -11,7 +10,6 @@ import com.fr.swift.query.info.element.dimension.GroupFormulaDimension;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.RelationSource;
-import com.fr.swift.source.SourceKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,15 +26,9 @@ public class DimensionBeanFactory implements BeanFactory<List<Dimension>, List<D
             Group group = source.getGroup();
             Sort sort = source.getSort();
             AbstractDimension dimension = (AbstractDimension) source;
-            FilterInfo filterInfo = dimension.getFilter();
             DimensionBean bean = new DimensionBean();
-            if (null != filterInfo) {
-                bean.setFilterInfoBean(FilterInfoBeanFactory.SINGLE_FILTER_INFO_BEAN_FACTORY.create(filterInfo));
-            }
-            SourceKey sourceKey = dimension.getSourceKey();
             ColumnKey columnKey = dimension.getColumnKey();
             bean.setDimensionType(source.getDimensionType());
-            bean.setTable(sourceKey.getId());
             if (null != columnKey) {
                 bean.setColumn(columnKey.getName());
                 RelationSource relationSource = columnKey.getRelation();

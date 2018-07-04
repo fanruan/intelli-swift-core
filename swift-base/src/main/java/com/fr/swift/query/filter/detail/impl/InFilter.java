@@ -1,6 +1,5 @@
-package com.fr.swift.query.filter.detail.impl.string;
+package com.fr.swift.query.filter.detail.impl;
 
-import com.fr.swift.query.filter.detail.impl.AbstractDetailFilter;
 import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
@@ -13,21 +12,21 @@ import com.fr.swift.structure.iterator.RowTraversal;
 import java.util.Set;
 
 /**
- * Created by Lyon on 2017/11/24.
+ * Created by Lyon on 2018/7/2.
  */
-public class StringInFilter extends AbstractDetailFilter<String> {
+public class InFilter extends AbstractDetailFilter<Set<Object>> {
 
-    private Set<String> groups;
+    private Set<Object> groupValues;
 
-    public StringInFilter(Set<String> groups, Column<String> column) {
-        this.groups = groups;
+    public InFilter(Set<Object> groupValues, Column column) {
+        this.groupValues = groupValues;
         this.column = column;
     }
 
     @Override
-    protected RowTraversal getIntIterator(DictionaryEncodedColumn<String> dict) {
+    protected RowTraversal getIntIterator(DictionaryEncodedColumn<Set<Object>> dict) {
         IntList intList = IntListFactory.createIntList();
-        for (String group : groups) {
+        for (Object group : groupValues) {
             int index = dict.getIndex(group);
             if (index != -1) {
                 intList.add(index);
@@ -39,6 +38,6 @@ public class StringInFilter extends AbstractDetailFilter<String> {
     @Override
     public boolean matches(SwiftNode node, int targetIndex, MatchConverter converter) {
         Object data = node.getData();
-        return data != null && (groups.contains(converter.convert(data)));
+        return data != null && (groupValues.contains(data));
     }
 }

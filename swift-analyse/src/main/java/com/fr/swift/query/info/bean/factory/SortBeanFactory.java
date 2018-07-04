@@ -23,7 +23,6 @@ public class SortBeanFactory implements BeanFactory<List<Sort>, List<SortBean>> 
                 bean.setColumn(columnKey.getName());
                 bean.setRelation(RelationSourceBeanFactory.SINGLE_RELATION_SOURCE_BEAN_FACTORY.create(columnKey.getRelation()));
             }
-            bean.setTargetIndex(source.getTargetIndex());
             return bean;
         }
     };

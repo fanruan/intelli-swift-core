@@ -7,6 +7,7 @@ import com.fr.swift.compare.Comparators;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.etl.utils.FormulaUtils;
 import com.fr.swift.util.Crasher;
 
@@ -124,7 +125,7 @@ public class DetailFormulaDicColumn implements DictionaryEncodedColumn {
     }
 
     @Override
-    public Type getType() {
+    public ColumnTypeConstants.ClassType getType() {
         return hostColumn.getType();
     }
 
