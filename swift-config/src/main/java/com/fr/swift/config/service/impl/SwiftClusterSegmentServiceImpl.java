@@ -157,10 +157,13 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
             return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
                 @Override
                 public Boolean work(Session session) throws SQLException {
-                    SwiftSegLocationEntityId id = new SwiftSegLocationEntityId();
-                    id.setClusterId(clusterId);
-                    id.setSegmentId(segmentKey.toString());
-                    return null != segmentLocationDao.select(session, id);
+                    if (null != swiftSegmentDao.select(session, segmentKey.toString())) {
+                        SwiftSegLocationEntityId id = new SwiftSegLocationEntityId();
+                        id.setClusterId(clusterId);
+                        id.setSegmentId(segmentKey.toString());
+                        return null != segmentLocationDao.select(session, id);
+                    }
+                    return false;
                 }
             });
 
