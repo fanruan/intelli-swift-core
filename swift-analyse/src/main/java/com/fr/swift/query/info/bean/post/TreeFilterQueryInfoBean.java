@@ -14,6 +14,10 @@ public class TreeFilterQueryInfoBean extends AbstractPostQueryInfoBean {
     @JsonProperty
     private Map<String, FilterInfoBean> filterInfoMap;
 
+    {
+        type = PostQueryType.TREE_FILTER;
+    }
+
     public Map<String, FilterInfoBean> getFilterInfoMap() {
         return filterInfoMap;
     }

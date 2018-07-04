@@ -14,7 +14,7 @@ public class SortBean {
     @JsonProperty
     private SortType type;
     @JsonProperty
-    private String column;
+    private String column;      // TODO: 2018/7/4 结果排序还是字典排序要区分原始字段名和客户端定义的字段转义名
     @JsonProperty
     private IRelationSourceBean relation;
 

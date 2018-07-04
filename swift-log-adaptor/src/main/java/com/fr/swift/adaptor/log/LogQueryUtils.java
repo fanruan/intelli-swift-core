@@ -11,14 +11,18 @@ import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.group.GroupType;
 import com.fr.swift.query.info.bean.element.DimensionBean;
 import com.fr.swift.query.info.bean.element.GroupBean;
+import com.fr.swift.query.info.bean.element.SortBean;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.info.bean.element.filter.impl.AndFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
+import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
+import com.fr.swift.query.info.bean.post.RowSortQueryInfoBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryRunnerProvider;
+import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
@@ -70,11 +74,34 @@ public class LogQueryUtils {
             com.fr.swift.query.info.bean.element.MetricBean bean = new com.fr.swift.query.info.bean.element.MetricBean();
             bean.setMetricType(Metric.MetricType.GROUP);
             bean.setColumn(metricBean.getFiledName());
+            bean.setName(metricBean.getName());
             bean.setType(getAggType(metricBean));
             bean.setFilterInfoBean(createMetricFilterInfo(metricBean.getFiledName(), metricBean.getFiledFilter()));
             metrics.add(bean);
         }
         queryInfoBean.setMetricBeans(metrics);
+
+        List<SortBean> sortBeans = new ArrayList<SortBean>();
+        for (MetricBean metricBean : metricBeans) {
+            if (StringUtils.equals(metricBean.getAsc(), LogSearchConstants.SORT_ASC)) {
+                SortBean sortBean = new SortBean();
+                // TODO: 2018/7/4 因为这边是结果排序，所以用字段转义名
+                sortBean.setColumn(metricBean.getName());
+                sortBean.setType(SortType.ASC);
+                sortBeans.add(sortBean);
+            }
+            if (StringUtils.equals(metricBean.getAsc(), LogSearchConstants.SORT_DESC)) {
+                SortBean sortBean = new SortBean();
+                sortBean.setColumn(metricBean.getName());
+                sortBean.setType(SortType.DESC);
+                sortBeans.add(sortBean);
+            }
+        }
+        List<PostQueryInfoBean> postQueryInfoBeans = new ArrayList<PostQueryInfoBean>();
+        RowSortQueryInfoBean sortQueryInfoBean = new RowSortQueryInfoBean();
+        sortQueryInfoBean.setSortBeans(sortBeans);
+        postQueryInfoBeans.add(sortQueryInfoBean);
+        queryInfoBean.setPostQueryInfoBeans(postQueryInfoBeans);
 
         SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfoBean);
         return getPage(resultSet, queryCondition);

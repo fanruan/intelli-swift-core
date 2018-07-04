@@ -13,7 +13,9 @@ import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 public class DimensionBean {
 
     @JsonProperty
-    private String column;
+    private String column;  // 原始表中的字段名
+    @JsonProperty
+    private String name;    // 客户端定义的转移名
     @JsonProperty
     private GroupBean groupBean;
     @JsonProperty
@@ -24,6 +26,22 @@ public class DimensionBean {
     private Dimension.DimensionType dimensionType;
     @JsonProperty
     private IRelationSourceBean relation;
+
+    public String getColumn() {
+        return column;
+    }
+
+    public void setColumn(String column) {
+        this.column = column;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public GroupBean getGroupBean() {
         return groupBean;
@@ -53,12 +71,8 @@ public class DimensionBean {
         return dimensionType;
     }
 
-    public String getColumn() {
-        return column;
-    }
-
-    public void setColumn(String column) {
-        this.column = column;
+    public void setDimensionType(Dimension.DimensionType dimensionType) {
+        this.dimensionType = dimensionType;
     }
 
     public IRelationSourceBean getRelation() {
@@ -67,9 +81,5 @@ public class DimensionBean {
 
     public void setRelation(IRelationSourceBean relation) {
         this.relation = relation;
-    }
-
-    public void setDimensionType(Dimension.DimensionType dimensionType) {
-        this.dimensionType = dimensionType;
     }
 }

@@ -26,7 +26,7 @@ public class FakeNodeResultSet implements NodeResultSet<SwiftNode> {
         throw new UnsupportedOperationException();
     }
 
-    public List<Row> getPageDAta() throws SQLException {
+    private List<Row> getPageData() throws SQLException {
         if (source.hasNextPage()) {
             return operator.operate(source.getNode());
         }
@@ -46,7 +46,7 @@ public class FakeNodeResultSet implements NodeResultSet<SwiftNode> {
     @Override
     public boolean next() throws SQLException {
         if (rowIterator == null && hasNextPage()) {
-            rowIterator = getPageDAta().iterator();
+            rowIterator = getPageData().iterator();
         }
         return rowIterator != null && rowIterator.hasNext();
     }

@@ -58,7 +58,7 @@ public class QueryInfoParser {
         FilterInfo filterInfo = FilterInfoParser.parse(table, bean.getFilterInfoBean());
         List<Dimension> dimensions = DimensionParser.parse(bean.getDimensionBeans(), bean.getSortBeans());
         List<Metric> metrics = MetricParser.parse(table, bean.getMetricBeans());
-        List<PostQueryInfo> postQueryInfoList = PostQueryInfoParser.parse(bean.getPostQueryInfoBeans(), dimensions, metrics);
+        List<PostQueryInfo> postQueryInfoList = PostQueryInfoParser.parse(bean.getPostQueryInfoBeans(), dimensions, bean.getMetricBeans());
         return new GroupQueryInfoImpl(queryId, table, filterInfo, dimensions, metrics, postQueryInfoList);
     }
 

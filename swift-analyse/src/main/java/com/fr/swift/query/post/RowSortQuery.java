@@ -4,7 +4,6 @@ import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.FakeNodeResultSet;
-import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeUtils;
@@ -37,7 +36,7 @@ public class RowSortQuery extends AbstractPostQuery<NodeResultSet> {
     @Override
     public NodeResultSet getQueryResult() throws SQLException {
         // 这个排序完之后没法构建Node了，维度顺序被打乱不满足构建树的前提条件了
-        NodeMergeResultSet resultSet = (NodeMergeResultSet) query.getQueryResult();
+        NodeResultSet resultSet = query.getQueryResult();
         SwiftRowOperator<Row> operator = new SwiftRowOperator<Row>() {
             @Override
             public List<Row> operate(SwiftNode... node) {
