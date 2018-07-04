@@ -24,13 +24,13 @@ class MetricParser {
             FilterInfo filterInfo = FilterInfoParser.parse(table, bean.getFilterInfoBean());
             switch (bean.getMetricType()) {
                 case FORMULA:
-                    metrics.add(new FormulaMetric(0, new SourceKey(bean.getTable()),
+                    metrics.add(new FormulaMetric(0,
                             filterInfo, AggregatorFactory.createAggregator(bean.getType()), bean.getFormula()));
                     break;
                 case GROUP:
                     ColumnKey columnKey = new ColumnKey(bean.getColumn());
                     columnKey.setRelation(RelationSourceParser.parse(bean.getRelation()));
-                    metrics.add(new GroupMetric(0, new SourceKey(bean.getTable()),
+                    metrics.add(new GroupMetric(0,
                             columnKey, filterInfo, AggregatorFactory.createAggregator(bean.getType())));
                     break;
             }

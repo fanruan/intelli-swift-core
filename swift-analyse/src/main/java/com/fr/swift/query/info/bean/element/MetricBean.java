@@ -14,8 +14,6 @@ public class MetricBean {
     @JsonProperty
     private AggregatorType type;
     @JsonProperty
-    private String table;
-    @JsonProperty
     private String column;
     @JsonProperty
     private IRelationSourceBean relation;
@@ -25,14 +23,6 @@ public class MetricBean {
     private String formula;
     @JsonProperty
     private Metric.MetricType metricType;
-
-    public String getTable() {
-        return table;
-    }
-
-    public void setTable(String table) {
-        this.table = table;
-    }
 
     public String getColumn() {
         return column;

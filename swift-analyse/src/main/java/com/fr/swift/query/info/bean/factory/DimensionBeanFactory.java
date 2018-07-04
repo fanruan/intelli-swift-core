@@ -10,7 +10,6 @@ import com.fr.swift.query.info.element.dimension.GroupFormulaDimension;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.RelationSource;
-import com.fr.swift.source.SourceKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,10 +27,8 @@ public class DimensionBeanFactory implements BeanFactory<List<Dimension>, List<D
             Sort sort = source.getSort();
             AbstractDimension dimension = (AbstractDimension) source;
             DimensionBean bean = new DimensionBean();
-            SourceKey sourceKey = dimension.getSourceKey();
             ColumnKey columnKey = dimension.getColumnKey();
             bean.setDimensionType(source.getDimensionType());
-            bean.setTable(sourceKey.getId());
             if (null != columnKey) {
                 bean.setColumn(columnKey.getName());
                 RelationSource relationSource = columnKey.getRelation();

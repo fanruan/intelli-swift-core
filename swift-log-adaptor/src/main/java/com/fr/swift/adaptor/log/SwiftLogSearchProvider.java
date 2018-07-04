@@ -129,7 +129,6 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
 
         List<com.fr.swift.query.info.bean.element.MetricBean> metrics = new ArrayList<com.fr.swift.query.info.bean.element.MetricBean>();
         com.fr.swift.query.info.bean.element.MetricBean bean = new com.fr.swift.query.info.bean.element.MetricBean();
-        bean.setTable(tableName);
         bean.setMetricType(Metric.MetricType.GROUP);
         if (StringUtils.isEmpty(columnName)) {
             bean.setType(AggregatorType.COUNT);

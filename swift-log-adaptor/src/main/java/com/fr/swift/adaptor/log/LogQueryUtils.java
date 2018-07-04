@@ -48,7 +48,6 @@ public class LogQueryUtils {
         for (int i = 0; i < fieldNames.size(); i++) {
             // TODO: 2018/6/21 维度上的排序没适配
             DimensionBean bean = new DimensionBean();
-            bean.setTable(tableName);
             bean.setColumn(fieldNames.get(i));
             bean.setDimensionType(Dimension.DimensionType.GROUP);
             GroupBean groupBean = new GroupBean();
@@ -64,7 +63,6 @@ public class LogQueryUtils {
             com.fr.swift.query.info.bean.element.MetricBean bean = new com.fr.swift.query.info.bean.element.MetricBean();
             bean.setMetricType(Metric.MetricType.GROUP);
             bean.setColumn(metricBean.getFiledName());
-            bean.setTable(tableName);
             bean.setType(getAggType(metricBean));
             bean.setFilterInfoBean(createMetricFilterInfo(metricBean.getFiledName(), metricBean.getFiledFilter()));
             metrics.add(bean);

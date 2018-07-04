@@ -13,8 +13,6 @@ import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 public class DimensionBean {
 
     @JsonProperty
-    private String table;
-    @JsonProperty
     private String column;
     @JsonProperty
     private GroupBean groupBean;
@@ -53,14 +51,6 @@ public class DimensionBean {
 
     public Dimension.DimensionType getDimensionType() {
         return dimensionType;
-    }
-
-    public String getTable() {
-        return table;
-    }
-
-    public void setTable(String table) {
-        this.table = table;
     }
 
     public String getColumn() {

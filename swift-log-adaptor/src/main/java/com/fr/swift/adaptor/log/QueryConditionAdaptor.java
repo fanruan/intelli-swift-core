@@ -48,7 +48,6 @@ public class QueryConditionAdaptor {
         for (int i = 0; i < fieldNames.size(); i++) {
             // TODO: 2018/6/21 维度上的排序没适配
             DimensionBean bean = new DimensionBean();
-            bean.setTable(tableName);
             bean.setColumn(fieldNames.get(i));
             bean.setDimensionType(Dimension.DimensionType.DETAIL);
             GroupBean groupBean = new GroupBean();

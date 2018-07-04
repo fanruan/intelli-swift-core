@@ -109,7 +109,7 @@ class PostQueryInfoParser {
             // TODO: 2018/6/8 这边都是假定groupQuery
             List<MetricBean> metricBeans = ((GroupQueryInfoBean) queryBean).getMetricBeans();
             for (MetricBean metricBean : metricBeans) {
-                fieldIndexMap.put(metricBean.getTable(), fieldIndexMap.size());
+                fieldIndexMap.put(metricBean.getColumn(), fieldIndexMap.size());
             }
             List<PostQueryInfoBean> queryInfoBeans = ((GroupQueryInfoBean) queryBean).getPostQueryInfoBeans();
             for (PostQueryInfoBean queryInfoBean : queryInfoBeans) {
