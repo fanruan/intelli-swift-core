@@ -95,10 +95,10 @@ public class QueryInfoParser {
                         sorts.add(new NoneSort());
                         break;
                     case DESC:
-                        sorts.add(new DescSort(sortBean.getTargetIndex(), columnKey));
+                        sorts.add(new DescSort(-1, columnKey));
                         break;
                     case ASC:
-                        sorts.add(new AscSort(sortBean.getTargetIndex(), columnKey));
+                        sorts.add(new AscSort(-1, columnKey));
                         break;
                 }
             }

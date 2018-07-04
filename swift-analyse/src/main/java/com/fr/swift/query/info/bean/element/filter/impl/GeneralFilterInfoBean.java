@@ -15,7 +15,7 @@ abstract class GeneralFilterInfoBean<T> implements FilterInfoBean<T> {
     @JsonProperty
     protected T filterValue;
     @JsonProperty
-    private SwiftDetailFilterType type;
+    protected SwiftDetailFilterType type;
 
     @Override
     public SwiftDetailFilterType getType() {

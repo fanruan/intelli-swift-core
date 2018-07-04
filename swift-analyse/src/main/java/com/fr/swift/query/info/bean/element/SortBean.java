@@ -17,8 +17,6 @@ public class SortBean {
     private String column;
     @JsonProperty
     private IRelationSourceBean relation;
-    @JsonProperty
-    private int targetIndex;
 
     public SortBean() {
     }
@@ -29,14 +27,6 @@ public class SortBean {
 
     public void setType(SortType type) {
         this.type = type;
-    }
-
-    public int getTargetIndex() {
-        return targetIndex;
-    }
-
-    public void setTargetIndex(int targetIndex) {
-        this.targetIndex = targetIndex;
     }
 
     public String getColumn() {

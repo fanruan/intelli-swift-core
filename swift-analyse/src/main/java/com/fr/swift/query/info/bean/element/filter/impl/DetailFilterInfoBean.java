@@ -13,7 +13,7 @@ import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 public abstract class DetailFilterInfoBean<T> implements FilterInfoBean<T> {
 
     @JsonProperty
-    private SwiftDetailFilterType type;
+    protected SwiftDetailFilterType type;
     @JsonProperty
     protected T filterValue;
     @JsonProperty

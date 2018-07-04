@@ -2,9 +2,9 @@ package com.fr.swift.query.info.bean.query;
 
 import com.fr.swift.query.info.bean.element.DimensionBean;
 import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
-import com.fr.swift.query.query.QueryType;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,11 +13,11 @@ import java.util.List;
 public class ResultJoinQueryInfoBean extends AbstractQueryInfoBean {
 
     @JsonProperty
-    private List<QueryInfoBean> queryInfoBeans;
+    private List<QueryInfoBean> queryInfoBeans = new ArrayList<QueryInfoBean>(0);
     @JsonProperty
-    private List<DimensionBean> joinedFields;
+    private List<DimensionBean> joinedFields = new ArrayList<DimensionBean>(0);
     @JsonProperty
-    private List<PostQueryInfoBean> postQueryInfoBeans;
+    private List<PostQueryInfoBean> postQueryInfoBeans = new ArrayList<PostQueryInfoBean>(0);
 
     public List<QueryInfoBean> getQueryInfoBeans() {
         return queryInfoBeans;
@@ -41,10 +41,5 @@ public class ResultJoinQueryInfoBean extends AbstractQueryInfoBean {
 
     public void setPostQueryInfoBeans(List<PostQueryInfoBean> postQueryInfoBeans) {
         this.postQueryInfoBeans = postQueryInfoBeans;
-    }
-
-    @Override
-    public QueryType getQueryType() {
-        return QueryType.RESULT_JOIN;
     }
 }

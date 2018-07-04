@@ -1,11 +1,17 @@
 package com.fr.swift.query.info.bean.element.filter.impl;
 
+import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 
 /**
  * Created by Lyon on 2018/6/28.
  */
 public class NotFilterBean extends GeneralFilterInfoBean<FilterInfoBean> {
+
+    {
+        type = SwiftDetailFilterType.NOT;
+    }
+
     @Override
     public FilterInfoBean getFilterValue() {
         return filterValue;

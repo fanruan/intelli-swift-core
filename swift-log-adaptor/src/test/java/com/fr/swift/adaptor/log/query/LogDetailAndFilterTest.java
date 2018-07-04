@@ -9,9 +9,7 @@ import com.fr.swift.adaptor.log.QueryConditionAdaptor;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
-import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.Row;
@@ -50,8 +48,7 @@ public class LogDetailAndFilterTest extends LogBaseTest {
             QueryCondition eqQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.eq("合同类型", "购买合同"))
                     .addRestriction(RestrictionFactory.gte("总金额", 1000000)).addRestriction(RestrictionFactory.lte("总金额", 2000000));
 
-            QueryInfo eqQueryInfo = QueryConditionAdaptor.adaptCondition(eqQueryCondition, table);
-            QueryBean queryBean = QueryInfoBeanFactory.create(eqQueryInfo);
+            QueryBean queryBean = QueryConditionAdaptor.adaptCondition(eqQueryCondition, table);
             SwiftResultSet eqResultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
             int index1 = table.getMeta().getColumnIndex("合同类型") - 1;
             int index2 = table.getMeta().getColumnIndex("总金额") - 1;
@@ -84,8 +81,7 @@ public class LogDetailAndFilterTest extends LogBaseTest {
             restrictions.add(RestrictionFactory.eq("合同类型", "长期协议"));
             QueryCondition eqQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.or(restrictions));
 
-            QueryInfo eqQueryInfo = QueryConditionAdaptor.adaptCondition(eqQueryCondition, table);
-            QueryBean queryBean = QueryInfoBeanFactory.create(eqQueryInfo);
+            QueryBean queryBean = QueryConditionAdaptor.adaptCondition(eqQueryCondition, table);
             SwiftResultSet eqResultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
             int index1 = table.getMeta().getColumnIndex("合同类型") - 1;
             int count1 = 0, count2 = 0, count3 = 0;

@@ -7,25 +7,14 @@ import com.fr.log.message.AbstractMessage;
 import com.fr.stable.StringUtils;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.data.DataList;
-import com.fr.swift.db.Table;
-import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.query.aggregator.AggregatorFactory;
 import com.fr.swift.query.aggregator.AggregatorType;
-import com.fr.swift.query.filter.info.FilterInfo;
-import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
-import com.fr.swift.query.info.element.dimension.Dimension;
-import com.fr.swift.query.info.element.metric.GroupMetric;
+import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
+import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.element.metric.Metric;
-import com.fr.swift.query.info.group.GroupQueryInfo;
-import com.fr.swift.query.info.group.GroupQueryInfoImpl;
-import com.fr.swift.query.info.group.post.PostQueryInfo;
-import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryRunnerProvider;
-import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.Row;
-import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.iterator.IteratorUtils;
 import com.fr.swift.structure.iterator.MapperIterator;
@@ -131,19 +120,27 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
     }
 
     private static int countQuery(Class<? extends AbstractMessage> logClass, QueryCondition condition, String columnName) throws Exception {
-        FilterInfo filterInfo = QueryConditionAdaptor.restriction2FilterInfo(condition.getRestriction());
-        Table table = SwiftDatabase.getInstance().getTable(new SourceKey(SwiftMetaAdaptor.getTableName(logClass)));
-        SourceKey sourceKey = table.getSourceKey();
-        List<Metric> metrics = new ArrayList<Metric>();
+        GroupQueryInfoBean queryInfoBean = new GroupQueryInfoBean();
+        queryInfoBean.setQueryId(condition.toString());
+        String tableName = SwiftMetaAdaptor.getTableName(logClass);
+        queryInfoBean.setTableName(tableName);
+        FilterInfoBean filterInfoBean = QueryConditionAdaptor.restriction2FilterInfo(condition.getRestriction());
+        queryInfoBean.setFilterInfoBean(filterInfoBean);
+
+        List<com.fr.swift.query.info.bean.element.MetricBean> metrics = new ArrayList<com.fr.swift.query.info.bean.element.MetricBean>();
+        com.fr.swift.query.info.bean.element.MetricBean bean = new com.fr.swift.query.info.bean.element.MetricBean();
+        bean.setTable(tableName);
+        bean.setMetricType(Metric.MetricType.GROUP);
         if (StringUtils.isEmpty(columnName)) {
-            metrics.add(new GroupMetric(0, sourceKey, new ColumnKey(""), null, AggregatorFactory.createAggregator(AggregatorType.COUNT)));
+            bean.setType(AggregatorType.COUNT);
+            bean.setColumn("");
         } else {
-            metrics.add(new GroupMetric(0, sourceKey, new ColumnKey(columnName), null, AggregatorFactory.createAggregator(AggregatorType.DISTINCT)));
+            bean.setType(AggregatorType.DISTINCT);
+            bean.setColumn(columnName);
         }
-        GroupQueryInfo queryInfo = new GroupQueryInfoImpl("", sourceKey, filterInfo, new ArrayList<Dimension>(),
-                metrics, new ArrayList<PostQueryInfo>(0));
-        QueryBean queryBean = QueryInfoBeanFactory.create(queryInfo);
-        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
+        metrics.add(bean);
+        queryInfoBean.setMetricBeans(metrics);
+        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfoBean);
         Row row = null;
         if (resultSet.next()) {
             row = resultSet.getRowData();

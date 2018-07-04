@@ -1,11 +1,18 @@
 package com.fr.swift.query.info.bean.element.filter.impl;
 
+import com.fr.swift.query.filter.SwiftDetailFilterType;
+
 import java.util.Set;
 
 /**
  * Created by Lyon on 2018/6/28.
  */
 public class InFilterBean extends DetailFilterInfoBean<Set<String>> {
+
+    {
+        type = SwiftDetailFilterType.IN;
+    }
+
     @Override
     public Set<String> getFilterValue() {
         return filterValue;
