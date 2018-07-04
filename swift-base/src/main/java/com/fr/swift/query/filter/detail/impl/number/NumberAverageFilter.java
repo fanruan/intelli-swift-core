@@ -41,8 +41,8 @@ public class NumberAverageFilter extends NumberInRangeFilter {
             return false;
         }
         double value = ((Number) data).doubleValue();
-        double minValue = min != Double.NEGATIVE_INFINITY ? cacheMap.get(valueList) : min;
-        double maxValue = max != Double.POSITIVE_INFINITY ? cacheMap.get(valueList) : max;
+        double minValue = min.doubleValue() != Double.NEGATIVE_INFINITY ? cacheMap.get(valueList) : min.doubleValue();
+        double maxValue = max.doubleValue() != Double.POSITIVE_INFINITY ? cacheMap.get(valueList) : max.doubleValue();
         return (minIncluded ? value >= minValue : value > minValue) &&
                 (maxIncluded ? value <= maxValue : value < maxValue);
     }

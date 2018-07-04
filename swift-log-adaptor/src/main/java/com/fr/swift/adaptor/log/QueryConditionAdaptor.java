@@ -5,7 +5,6 @@ import com.fr.stable.query.restriction.Restriction;
 import com.fr.stable.query.sort.SortItem;
 import com.fr.swift.db.Table;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
-import com.fr.swift.query.filter.info.value.SwiftNumberInRangeFilterValue;
 import com.fr.swift.query.group.GroupType;
 import com.fr.swift.query.info.bean.element.DimensionBean;
 import com.fr.swift.query.info.bean.element.GroupBean;
@@ -16,6 +15,7 @@ import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NotFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NumberInRangeFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.OrFilterBean;
+import com.fr.swift.query.info.bean.element.filter.impl.RangeFilterValueBean;
 import com.fr.swift.query.info.bean.element.filter.impl.StringOneValueFilterBean;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
@@ -100,31 +100,31 @@ public class QueryConditionAdaptor {
             case GT:
                 filterInfoBean = new NumberInRangeFilterBean();
                 ((NumberInRangeFilterBean) filterInfoBean).setColumn(columnName);
-                SwiftNumberInRangeFilterValue gtValue = new SwiftNumberInRangeFilterValue();
-                gtValue.setMin((Double.parseDouble(String.valueOf(value))));
+                RangeFilterValueBean gtValue = new RangeFilterValueBean();
+                gtValue.setStart(String.valueOf(value));
                 filterInfoBean.setFilterValue(gtValue);
                 break;
             case GTE:
                 filterInfoBean = new NumberInRangeFilterBean();
                 ((NumberInRangeFilterBean) filterInfoBean).setColumn(columnName);
-                SwiftNumberInRangeFilterValue gteValue = new SwiftNumberInRangeFilterValue();
-                gteValue.setMin((Double.parseDouble(String.valueOf(value))));
-                gteValue.setMinIncluded(true);
+                RangeFilterValueBean gteValue = new RangeFilterValueBean();
+                gteValue.setStart(String.valueOf(value));
+                gteValue.setStartIncluded(true);
                 filterInfoBean.setFilterValue(gteValue);
                 break;
             case LT:
                 filterInfoBean = new NumberInRangeFilterBean();
                 ((NumberInRangeFilterBean) filterInfoBean).setColumn(columnName);
-                SwiftNumberInRangeFilterValue ltValue = new SwiftNumberInRangeFilterValue();
-                ltValue.setMax((Double.parseDouble(String.valueOf(value))));
+                RangeFilterValueBean ltValue = new RangeFilterValueBean();
+                ltValue.setEnd(String.valueOf(value));
                 filterInfoBean.setFilterValue(ltValue);
                 break;
             case LTE:
                 filterInfoBean = new NumberInRangeFilterBean();
                 ((NumberInRangeFilterBean) filterInfoBean).setColumn(columnName);
-                SwiftNumberInRangeFilterValue lteValue = new SwiftNumberInRangeFilterValue();
-                lteValue.setMax((Double.parseDouble(String.valueOf(value))));
-                lteValue.setMaxIncluded(true);
+                RangeFilterValueBean lteValue = new RangeFilterValueBean();
+                lteValue.setEnd(String.valueOf(value));
+                lteValue.setEndIncluded(true);
                 filterInfoBean.setFilterValue(lteValue);
                 break;
             case IN:

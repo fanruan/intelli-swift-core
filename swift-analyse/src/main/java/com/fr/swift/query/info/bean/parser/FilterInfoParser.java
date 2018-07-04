@@ -13,6 +13,8 @@ import com.fr.swift.query.info.bean.element.filter.impl.DetailFilterInfoBean;
 import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NotFilterBean;
+import com.fr.swift.query.info.bean.element.filter.impl.NumberInRangeFilterBean;
+import com.fr.swift.query.info.bean.element.filter.impl.RangeFilterValueBean;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.ColumnTypeUtils;
@@ -69,7 +71,17 @@ class FilterInfoParser {
                 return createDetailFilterInfo((DetailFilterInfoBean) bean, filterValue == null ? "" : filterValue.toString());
             }
             case NUMBER_IN_RANGE: {
-                SwiftNumberInRangeFilterValue filterValue = (SwiftNumberInRangeFilterValue) bean.getFilterValue();
+                RangeFilterValueBean valueBean = (RangeFilterValueBean) bean.getFilterValue();
+                ColumnTypeConstants.ClassType classType = getClassType(table, ((NumberInRangeFilterBean) bean).getColumn());
+                SwiftNumberInRangeFilterValue filterValue = new SwiftNumberInRangeFilterValue();
+                if (valueBean.getStart() != null) {
+                    filterValue.setMin((Number) convert(valueBean.getStart(), classType));
+                }
+                if (valueBean.getEnd() != null) {
+                    filterValue.setMax((Number) convert(valueBean.getEnd(), classType));
+                }
+                filterValue.setMinIncluded(valueBean.isStartIncluded());
+                filterValue.setMaxIncluded(valueBean.isEndIncluded());
                 return createDetailFilterInfo((DetailFilterInfoBean) bean, filterValue);
             }
             default:

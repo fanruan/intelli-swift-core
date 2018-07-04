@@ -2,6 +2,7 @@ package com.fr.swift.segment.column;
 
 import com.fr.swift.cube.io.Flushable;
 import com.fr.swift.cube.io.Releasable;
+import com.fr.swift.source.ColumnTypeConstants;
 
 import java.util.Comparator;
 
@@ -102,9 +103,5 @@ public interface DictionaryEncodedColumn<T> extends Releasable, Flushable {
      *
      * @return
      */
-    Type getType();
-
-    enum Type {
-        INT, LONG, DOUBLE, STRING
-    }
+    ColumnTypeConstants.ClassType getType();
 }
