@@ -5,9 +5,7 @@ import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
-import com.fr.swift.db.impl.SwiftWhere;
 import com.fr.swift.exception.TableNotExistException;
-import com.fr.swift.query.condition.SwiftQueryFactory;
 import com.fr.swift.query.query.IndexQuery;
 import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.segment.Segment;
@@ -104,9 +102,9 @@ public abstract class AbstractDeleter implements RowDeleter {
             throw new TableNotExistException(sourceKey);
         }
         Table table = database.getTable(sourceKey);
-        IndexQuery<ImmutableBitMap> originAllShowIndex = QueryRunnerProvider.getInstance().executeIndexQuery(table, new SwiftWhere(SwiftQueryFactory.create()), segment);
+        ImmutableBitMap originAllShowIndex = segment.getAllShowIndex();
         IndexQuery<ImmutableBitMap> indexAfterFilter = QueryRunnerProvider.getInstance().executeIndexQuery(table, where, segment);
-        ImmutableBitMap allShowIndex = originAllShowIndex.getQueryIndex().getAnd(indexAfterFilter.getQueryIndex());
+        ImmutableBitMap allShowIndex = originAllShowIndex.getAnd(indexAfterFilter.getQueryIndex());
         segment.putAllShowIndex(allShowIndex);
         return true;
     }

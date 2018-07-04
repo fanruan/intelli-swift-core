@@ -6,11 +6,9 @@ import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.query.QueryConditionAdaptor;
 import com.fr.swift.query.builder.QueryIndexBuilder;
-import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.query.IndexQuery;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryIndexRunner;
-import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.segment.Segment;
 
 import java.net.URI;
@@ -28,16 +26,14 @@ public class QueryIndexService implements QueryIndexRunner {
     @Override
     public Map<URI, IndexQuery<ImmutableBitMap>> getBitMap(Table table, Where where) throws Exception {
         QueryCondition queryCondition = where.getQueryCondition();
-        QueryInfo queryInfo = QueryConditionAdaptor.adaptCondition(queryCondition, table);
-        QueryBean queryBean = QueryInfoBeanFactory.create(queryInfo);
+        QueryBean queryBean = QueryConditionAdaptor.adaptCondition(queryCondition, table);
         return QueryIndexBuilder.buildQuery(queryBean);
     }
 
     @Override
     public IndexQuery<ImmutableBitMap> getBitMap(Table table, Where where, Segment segment) throws Exception {
         QueryCondition queryCondition = where.getQueryCondition();
-        QueryInfo queryInfo = QueryConditionAdaptor.adaptCondition(queryCondition, table);
-        QueryBean queryBean = QueryInfoBeanFactory.create(queryInfo);
+        QueryBean queryBean = QueryConditionAdaptor.adaptCondition(queryCondition, table);
         return QueryIndexBuilder.buildQuery(queryBean, segment);
     }
 }
