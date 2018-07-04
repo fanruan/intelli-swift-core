@@ -12,6 +12,7 @@ import com.fr.swift.query.group.GroupType;
 import com.fr.swift.query.info.bean.element.DimensionBean;
 import com.fr.swift.query.info.bean.element.GroupBean;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
+import com.fr.swift.query.info.bean.element.filter.impl.AndFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.element.dimension.Dimension;
@@ -25,6 +26,7 @@ import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,12 +37,17 @@ import java.util.Set;
 public class LogQueryUtils {
 
     static List<Row> groupQuery(Class<?> entity, QueryCondition queryCondition, List<String> fieldNames,
-                                List<MetricBean> metricBeans) throws SQLException {
+                                List<MetricBean> metricBeans, FilterInfoBean notNullFilter) throws SQLException {
         GroupQueryInfoBean queryInfoBean = new GroupQueryInfoBean();
         queryInfoBean.setQueryId(queryCondition.toString());
         String tableName = SwiftMetaAdaptor.getTableName(entity);
         queryInfoBean.setTableName(tableName);
         FilterInfoBean filterInfoBean = QueryConditionAdaptor.restriction2FilterInfo(queryCondition.getRestriction());
+        if (notNullFilter != null) {
+            AndFilterBean and = new AndFilterBean();
+            and.setFilterValue(Arrays.asList(notNullFilter, filterInfoBean));
+            filterInfoBean = and;
+        }
         queryInfoBean.setFilterInfoBean(filterInfoBean);
 
 

@@ -11,6 +11,9 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
+import com.fr.swift.query.info.bean.element.filter.impl.AndFilterBean;
+import com.fr.swift.query.info.bean.element.filter.impl.NotFilterBean;
+import com.fr.swift.query.info.bean.element.filter.impl.NullFilterBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.query.QueryRunnerProvider;
@@ -21,6 +24,7 @@ import com.fr.swift.structure.iterator.MapperIterator;
 import com.fr.swift.util.function.Function;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,18 +52,18 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
 
     @Override
     public int count(Class<? extends AbstractMessage> logClass, QueryCondition condition) throws Exception {
-        return countQuery(logClass, condition, "");
+        return countQuery(logClass, condition, "", null);
     }
 
     @Override
     public int countByColumn(Class<? extends AbstractMessage> logClass, QueryCondition condition, String columnName) throws Exception {
         // TODO: 2018/6/21 这个和count表没什么区别
-        return countQuery(logClass, condition, "");
+        return countQuery(logClass, condition, columnName, createNotNullFilter(columnName));
     }
 
     @Override
     public int distinctByColumn(Class<? extends AbstractMessage> logClass, QueryCondition condition, String columnName) throws Exception {
-        return countQuery(logClass, condition, columnName);
+        return countQuery(logClass, condition, columnName, createNotNullFilter(columnName));
     }
 
     @Override
@@ -79,7 +83,8 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
     public List<Object> getDistinctValueByColumn(Class<? extends AbstractMessage> logClass, QueryCondition condition, String columnName) throws Exception {
         List<String> fieldNames = new ArrayList<String>();
         fieldNames.add(columnName);
-        List<Row> rows = LogQueryUtils.groupQuery(logClass, condition, fieldNames, new ArrayList<MetricBean>());
+        List<Row> rows = LogQueryUtils.groupQuery(logClass, condition, fieldNames,
+                new ArrayList<MetricBean>(), createNotNullFilter(columnName));
         return IteratorUtils.iterator2List(new MapperIterator<Row, Object>(rows.iterator(), new Function<Row, Object>() {
             @Override
             public Object apply(Row p) {
@@ -97,7 +102,7 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
 
     @Override
     public DataList<Map<String, Object>> groupByColumns(Class<? extends AbstractMessage> logClass, QueryCondition condition, List<MetricBean> metrics, List<String> fieldNames) throws Exception {
-        final List<Row> rows = LogQueryUtils.groupQuery(logClass, condition, fieldNames, metrics);
+        final List<Row> rows = LogQueryUtils.groupQuery(logClass, condition, fieldNames, metrics, null);
         final List<String> columnNames = new ArrayList<String>(fieldNames);
         for (MetricBean bean : metrics) {
             columnNames.add(bean.getName());
@@ -119,12 +124,29 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
         return dataList;
     }
 
-    private static int countQuery(Class<? extends AbstractMessage> logClass, QueryCondition condition, String columnName) throws Exception {
+    private static FilterInfoBean createNotNullFilter(String columnName) {
+        if (StringUtils.isEmpty(columnName)) {
+            return null;
+        }
+        NullFilterBean nullFilterBean = new NullFilterBean();
+        nullFilterBean.setColumn(columnName);
+        NotFilterBean notFilterBean = new NotFilterBean();
+        notFilterBean.setFilterValue(nullFilterBean);
+        return notFilterBean;
+    }
+
+    private static int countQuery(Class<? extends AbstractMessage> logClass, QueryCondition condition,
+                                  String columnName, FilterInfoBean notNull) throws Exception {
         GroupQueryInfoBean queryInfoBean = new GroupQueryInfoBean();
         queryInfoBean.setQueryId(condition.toString());
         String tableName = SwiftMetaAdaptor.getTableName(logClass);
         queryInfoBean.setTableName(tableName);
         FilterInfoBean filterInfoBean = QueryConditionAdaptor.restriction2FilterInfo(condition.getRestriction());
+        if (notNull != null) {
+            AndFilterBean and = new AndFilterBean();
+            and.setFilterValue(Arrays.asList(notNull, filterInfoBean));
+            filterInfoBean = and;
+        }
         queryInfoBean.setFilterInfoBean(filterInfoBean);
 
         List<com.fr.swift.query.info.bean.element.MetricBean> metrics = new ArrayList<com.fr.swift.query.info.bean.element.MetricBean>();
