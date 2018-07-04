@@ -7,7 +7,7 @@ import com.fr.swift.source.alloter.AllotRule;
  * @date 2018/6/5
  */
 public class LineAllotRule implements AllotRule {
-    private static final int DEFAULT_STEP = 10000;
+    private static final int DEFAULT_STEP = 10000000;
 
     private int step;
 
