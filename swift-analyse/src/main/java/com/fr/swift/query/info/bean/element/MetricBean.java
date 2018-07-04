@@ -14,9 +14,9 @@ public class MetricBean {
     @JsonProperty
     private AggregatorType type;
     @JsonProperty
-    private String table;
+    private String column;  // 原始表中的字段名
     @JsonProperty
-    private String column;
+    private String name;    // 客户端定义的转移名
     @JsonProperty
     private IRelationSourceBean relation;
     @JsonProperty
@@ -26,12 +26,12 @@ public class MetricBean {
     @JsonProperty
     private Metric.MetricType metricType;
 
-    public String getTable() {
-        return table;
+    public AggregatorType getType() {
+        return type;
     }
 
-    public void setTable(String table) {
-        this.table = table;
+    public void setType(AggregatorType type) {
+        this.type = type;
     }
 
     public String getColumn() {
@@ -40,6 +40,14 @@ public class MetricBean {
 
     public void setColumn(String column) {
         this.column = column;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public IRelationSourceBean getRelation() {
@@ -56,14 +64,6 @@ public class MetricBean {
 
     public void setFilterInfoBean(FilterInfoBean filterInfoBean) {
         this.filterInfoBean = filterInfoBean;
-    }
-
-    public AggregatorType getType() {
-        return type;
-    }
-
-    public void setType(AggregatorType type) {
-        this.type = type;
     }
 
     public String getFormula() {

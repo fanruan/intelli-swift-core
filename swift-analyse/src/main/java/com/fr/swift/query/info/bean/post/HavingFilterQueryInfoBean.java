@@ -14,6 +14,10 @@ public class HavingFilterQueryInfoBean extends AbstractPostQueryInfoBean {
     @JsonProperty
     Map<String, FilterInfoBean> filterInfoMap;
 
+    {
+        type = PostQueryType.HAVING_FILTER;
+    }
+
     public Map<String, FilterInfoBean> getFilterInfoMap() {
         return filterInfoMap;
     }

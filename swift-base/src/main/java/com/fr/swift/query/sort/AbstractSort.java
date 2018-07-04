@@ -10,9 +10,11 @@ abstract class AbstractSort implements Sort {
     private int targetIndex;
 
     private ColumnKey columnKey;
+
     AbstractSort(int targetIndex) {
         this.targetIndex = targetIndex;
     }
+
     AbstractSort(int targetIndex, ColumnKey columnKey) {
         this.targetIndex = targetIndex;
         this.columnKey = columnKey;

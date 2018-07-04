@@ -5,29 +5,22 @@ package com.fr.swift.query.filter;
  */
 public enum SwiftDetailFilterType {
 
-    STRING_IN,
     STRING_LIKE,
     STRING_ENDS_WITH,
     STRING_STARTS_WITH,
-    STRING_NOT_IN,
-    STRING_NOT_LIKE,
-    STRING_NOT_ENDS_WITH,
-    STRING_NOT_STARTS_WITH,
 
-    NUMBER_IN,
     NUMBER_IN_RANGE,
-    NUMBER_NOT_CONTAIN,
-    NUMBER_NOT_IN_RANGE,
     NUMBER_AVERAGE,
 
     DATE_IN_RANGE,
     DATE_NOT_IN_RANGE,
 
+    IN,
+
     BOTTOM_N,
     TOP_N,
 
     NULL,
-    NOT_NULL,
 
     AND,
     OR,

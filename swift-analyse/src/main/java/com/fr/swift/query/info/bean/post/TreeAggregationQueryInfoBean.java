@@ -14,6 +14,10 @@ public class TreeAggregationQueryInfoBean extends AbstractPostQueryInfoBean {
     @JsonProperty
     private Map<String, AggregatorType> aggregatorTypeMap;
 
+    {
+        type = PostQueryType.TREE_AGGREGATION;
+    }
+
     public Map<String, AggregatorType> getAggregatorTypeMap() {
         return aggregatorTypeMap;
     }

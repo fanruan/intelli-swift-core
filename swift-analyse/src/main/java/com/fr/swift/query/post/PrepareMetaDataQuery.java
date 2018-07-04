@@ -4,6 +4,7 @@ import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.post.utils.SwiftMetaDataUtils;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.result.ChainedNodeResultSet;
+import com.fr.swift.result.FakeNodeResultSet;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeOperator;
@@ -27,6 +28,11 @@ public class PrepareMetaDataQuery extends AbstractPostQuery<NodeResultSet> {
     @Override
     public NodeResultSet getQueryResult() throws SQLException {
         SwiftMetaData metaData = SwiftMetaDataUtils.createMetaData(queryInfo);
+        NodeResultSet resultSet = query.getQueryResult();
+        if (resultSet instanceof FakeNodeResultSet) {
+            // TODO: 2018/7/4 行排序破坏树结构的情况下，先直接取出resultSet返回了。这个要和resultSet内部的缓存翻页机制实现一起考虑
+            return resultSet;
+        }
         return new ChainedNodeResultSet(new SwiftNodeOperator<SwiftNode>() {
             @Override
             public SwiftNode operate(SwiftNode... node) {

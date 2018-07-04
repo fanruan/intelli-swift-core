@@ -5,7 +5,6 @@ import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.impl.base.FormulaMetricColumn;
-import com.fr.swift.source.SourceKey;
 
 /**
  * Created by pony on 2018/5/10.
@@ -13,8 +12,8 @@ import com.fr.swift.source.SourceKey;
 public class FormulaMetric extends GroupMetric {
     private String formula;
 
-    public FormulaMetric(int queryIndex, SourceKey sourceKey, FilterInfo filterInfo, Aggregator aggregator, String formula) {
-        super(queryIndex, sourceKey, null, filterInfo, aggregator);
+    public FormulaMetric(int queryIndex, FilterInfo filterInfo, Aggregator aggregator, String formula) {
+        super(queryIndex, null, filterInfo, aggregator);
         this.formula = formula;
     }
 

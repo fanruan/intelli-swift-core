@@ -8,6 +8,7 @@ import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.structure.array.IntList;
 
 import java.util.Comparator;
@@ -146,7 +147,7 @@ class CustomGroupColumn<Base, Derive> implements Column<Derive> {
         }
 
         @Override
-        public Type getType() {
+        public ColumnTypeConstants.ClassType getType() {
             return originDict.getType();
         }
 

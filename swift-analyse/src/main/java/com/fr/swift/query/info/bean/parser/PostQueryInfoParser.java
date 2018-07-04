@@ -9,7 +9,6 @@ import com.fr.swift.query.info.bean.post.RowSortQueryInfoBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
 import com.fr.swift.query.info.element.dimension.Dimension;
-import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.element.target.GroupTarget;
 import com.fr.swift.query.info.group.post.CalculatedFieldQueryInfo;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
@@ -31,7 +30,7 @@ import java.util.Map;
 class PostQueryInfoParser {
 
     static List<PostQueryInfo> parse(List<PostQueryInfoBean> postQueryInfoBeans,
-                                     List<Dimension> dimensions, List<Metric> metrics) {
+                                     List<Dimension> dimensions, List<MetricBean> metrics) {
         Map<String, Integer> fieldIndexMap = getFieldIndexMap(postQueryInfoBeans, metrics);
         List<PostQueryInfo> postQueryInfoList = new ArrayList<PostQueryInfo>();
         for (PostQueryInfoBean bean : postQueryInfoBeans) {
@@ -43,10 +42,10 @@ class PostQueryInfoParser {
     /**
      * 取出所有指标字段的IndexMap，当前计算指标字段的依赖关系只能是后面依赖前面
      */
-    private static Map<String, Integer> getFieldIndexMap(List<PostQueryInfoBean> postQueryInfoBeans, List<Metric> metrics) {
+    private static Map<String, Integer> getFieldIndexMap(List<PostQueryInfoBean> postQueryInfoBeans, List<MetricBean> metrics) {
         Map<String, Integer> fieldIndexMap = new HashMap<String, Integer>();
-        for (Metric metric : metrics) {
-            fieldIndexMap.put(metric.getColumnKey().getName(), fieldIndexMap.size());
+        for (MetricBean metric : metrics) {
+            fieldIndexMap.put(metric.getName(), fieldIndexMap.size());
         }
         for (PostQueryInfoBean postQueryInfoBean : postQueryInfoBeans) {
             if (postQueryInfoBean.getType() != PostQueryType.CAL_FIELD) {
@@ -109,7 +108,7 @@ class PostQueryInfoParser {
             // TODO: 2018/6/8 这边都是假定groupQuery
             List<MetricBean> metricBeans = ((GroupQueryInfoBean) queryBean).getMetricBeans();
             for (MetricBean metricBean : metricBeans) {
-                fieldIndexMap.put(metricBean.getTable(), fieldIndexMap.size());
+                fieldIndexMap.put(metricBean.getName(), fieldIndexMap.size());
             }
             List<PostQueryInfoBean> queryInfoBeans = ((GroupQueryInfoBean) queryBean).getPostQueryInfoBeans();
             for (PostQueryInfoBean queryInfoBean : queryInfoBeans) {
