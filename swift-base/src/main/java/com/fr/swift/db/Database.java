@@ -51,9 +51,8 @@ public interface Database {
      *
      * @param tableKey 表key
      * @return 表
-     * @throws SQLException 异常
      */
-    Table getTable(SourceKey tableKey) throws SQLException;
+    Table getTable(SourceKey tableKey);
 
-    List<Table> getAllTables() throws SQLException;
+    List<Table> getAllTables();
 }

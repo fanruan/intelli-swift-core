@@ -57,6 +57,9 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
 
     @Override
     public SourceKey getTable() {
+        if (sourceKey == null) {
+            return null;
+        }
         return new SourceKey(sourceKey);
     }
 
