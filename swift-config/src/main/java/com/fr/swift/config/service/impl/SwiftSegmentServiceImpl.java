@@ -149,8 +149,9 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
         try {
             return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
                 @Override
-                public Boolean work(Session session) throws SQLException {
-                    return null != swiftSegmentDao.select(session, ((SegmentKeyBean) segmentKey).getId());
+                public Boolean work(Session session) {
+                    List<SegmentKey> list = swiftSegmentDao.selectSelective(session, segmentKey);
+                    return null != list && !list.isEmpty();
                 }
 
                 @Override

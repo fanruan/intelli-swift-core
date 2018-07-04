@@ -65,13 +65,13 @@ public class HistoryIndexingController {
     }
 
     @RequestMapping(value = "swift/download", method = RequestMethod.GET)
-    public void download() throws IOException {
-        SwiftRepositoryManager.getManager().getCurrentRepository().copyFromRemote(URI.create("cubes/36e09331"), URI.create("/Users/yee/test/"));
+    public void download(String remote, String local) throws IOException {
+        SwiftRepositoryManager.getManager().getCurrentRepository().copyFromRemote(URI.create(remote), URI.create(local));
     }
 
     @RequestMapping(value = "swift/upload", method = RequestMethod.GET)
-    public void upload() throws IOException {
-        SwiftRepositoryManager.getManager().getCurrentRepository().copyToRemote(URI.create("/Users/yee/merge"), URI.create("/root/merge/"));
+    public void upload(String src, String dest) throws IOException {
+        SwiftRepositoryManager.getManager().getCurrentRepository().copyToRemote(URI.create(src), URI.create(dest));
     }
 
     @RequestMapping(value = "swift/load", method = RequestMethod.GET)

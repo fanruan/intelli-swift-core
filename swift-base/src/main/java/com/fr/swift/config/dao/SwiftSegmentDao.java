@@ -32,6 +32,8 @@ public interface SwiftSegmentDao extends SwiftConfigDao<SwiftSegmentEntity> {
 
     List<SegmentKey> findBeanByStoreType(Session session, String sourceKey, Types.StoreType type) throws SQLException;
 
+    List<SegmentKey> selectSelective(Session session, SegmentKey segmentKey);
+
     /**
      * 删除SourceKey下的所有SegmentKey
      *
