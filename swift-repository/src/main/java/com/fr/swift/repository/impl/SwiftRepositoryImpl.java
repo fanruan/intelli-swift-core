@@ -1,5 +1,6 @@
 package com.fr.swift.repository.impl;
 
+import com.fr.general.CommonIOUtils;
 import com.fr.io.utils.ResourceIOUtils;
 import com.fr.swift.file.conf.SwiftFileSystemConfig;
 import com.fr.swift.file.exception.SwiftFileException;
@@ -48,6 +49,8 @@ public class SwiftRepositoryImpl extends AbstractRepository {
                         ZipUtils.unZip(new File(local.getPath()).getParent(), inputStream);
                     } catch (Exception e) {
                         throw new SwiftFileException(e);
+                    } finally {
+                        target.close();
                     }
                 } else {
                     InputStream inputStream = null;
@@ -55,21 +58,13 @@ public class SwiftRepositoryImpl extends AbstractRepository {
                     try {
                         inputStream = target.toStream();
                         fileOutputStream = new FileOutputStream(new File(local.getPath()));
-                        byte[] bytes = new byte[1024];
-                        int len = 0;
-                        while ((len = inputStream.read(bytes, 0, bytes.length)) != -1) {
-                            fileOutputStream.write(bytes, 0, len);
-                        }
-                        fileOutputStream.flush();
+                        CommonIOUtils.copyBinaryTo(inputStream, fileOutputStream);
                     } catch (Exception e) {
                         throw new SwiftFileException(e);
                     } finally {
-                        if (null != inputStream) {
-                            inputStream.close();
-                        }
-                        if (null != fileOutputStream) {
-                            fileOutputStream.close();
-                        }
+                        CommonIOUtils.close(inputStream);
+                        CommonIOUtils.close(fileOutputStream);
+                        target.close();
                     }
                 }
             } else {
@@ -106,9 +101,9 @@ public class SwiftRepositoryImpl extends AbstractRepository {
             for (Pair<URI, URI> uri : files) {
                 File file = new File(uri.getKey().getPath());
                 FileInputStream inputStream = null;
+                SwiftFileSystem to = createFileSystem(uri.getValue());
                 try {
                     inputStream = new FileInputStream(file);
-                    SwiftFileSystem to = createFileSystem(uri.getValue());
                     if (to.isExists()) {
                         to.remove();
                     }
@@ -116,9 +111,8 @@ public class SwiftRepositoryImpl extends AbstractRepository {
                 } catch (FileNotFoundException e) {
                     throw new SwiftFileException(e);
                 } finally {
-                    if (null != inputStream) {
-                        inputStream.close();
-                    }
+                    CommonIOUtils.close(inputStream);
+                    to.close();
                 }
             }
 
@@ -132,7 +126,6 @@ public class SwiftRepositoryImpl extends AbstractRepository {
         File zipFile = new File(TEMP_PATH, file.getName() + ".cubes");
         FileOutputStream fos = new FileOutputStream(zipFile);
         ZipUtils.toZip(file.getAbsolutePath(), fos);
-        fos.close();
         SwiftFileSystem fileSystem = createFileSystem(remote);
         if (fileSystem.isExists()) {
             fileSystem.remove();
@@ -141,6 +134,7 @@ public class SwiftRepositoryImpl extends AbstractRepository {
         if (copyToRemote(zipFile.toURI(), resolve(URI.create(ResourceIOUtils.getParent(remote.getPath())), zipFile.getName()))) {
             zipFile.delete();
         }
+        fileSystem.close();
         return true;
     }
 
