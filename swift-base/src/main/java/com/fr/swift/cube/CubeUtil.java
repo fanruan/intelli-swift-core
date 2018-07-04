@@ -12,6 +12,7 @@ public class CubeUtil {
     public static boolean isReadable(Segment seg) {
         try {
             seg.getRowCount();
+            seg.getAllShowIndex();
             return true;
         } catch (Exception e) {
             return false;

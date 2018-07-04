@@ -4,10 +4,10 @@ import com.fr.general.ComparatorUtils;
 import com.fr.stable.query.QueryFactory;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.restriction.RestrictionFactory;
-import com.fr.swift.adaptor.log.QueryConditionAdaptor;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.query.QueryConditionAdaptor;
 import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryInfo;
@@ -56,7 +56,6 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
                 Row row = eqResultSet.getRowData();
                 assertEquals(row.getValue(eqindex), "购买合同");
             }
-
 
         } catch (Exception e) {
             LOGGER.error(e);

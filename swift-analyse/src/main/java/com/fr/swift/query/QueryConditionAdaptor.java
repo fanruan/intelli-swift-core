@@ -1,4 +1,4 @@
-package com.fr.swift.adaptor.log;
+package com.fr.swift.query;
 
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.restriction.Restriction;

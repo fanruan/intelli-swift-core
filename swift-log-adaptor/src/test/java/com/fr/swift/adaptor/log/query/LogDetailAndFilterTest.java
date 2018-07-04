@@ -5,7 +5,7 @@ import com.fr.stable.query.QueryFactory;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.restriction.Restriction;
 import com.fr.stable.query.restriction.RestrictionFactory;
-import com.fr.swift.adaptor.log.QueryConditionAdaptor;
+import com.fr.swift.query.QueryConditionAdaptor;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;

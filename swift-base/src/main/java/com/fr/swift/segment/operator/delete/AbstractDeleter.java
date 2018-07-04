@@ -1,11 +1,21 @@
 package com.fr.swift.segment.operator.delete;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.db.Database;
+import com.fr.swift.db.Table;
+import com.fr.swift.db.Where;
+import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.db.impl.SwiftWhere;
+import com.fr.swift.exception.TableNotExistException;
+import com.fr.swift.query.condition.SwiftQueryFactory;
+import com.fr.swift.query.query.IndexQuery;
+import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.Row;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.util.ArrayList;
@@ -27,6 +37,8 @@ public abstract class AbstractDeleter implements RowDeleter {
     private Map<String, DictionaryEncodedColumn> dictionaryEncodedColumnMap;
     private Map<String, BitmapIndexedColumn> bitmapIndexedColumnMap;
     private ImmutableBitMap allShowIndex;
+
+    private final Database database = SwiftDatabase.getInstance();
 
     public AbstractDeleter(Segment segment) {
         this.segment = segment;
@@ -83,6 +95,19 @@ public abstract class AbstractDeleter implements RowDeleter {
             }
         }
         release();
+        return true;
+    }
+
+    @Override
+    public boolean delete(SourceKey sourceKey, Where where) throws Exception {
+        if (!database.existsTable(sourceKey)) {
+            throw new TableNotExistException(sourceKey);
+        }
+        Table table = database.getTable(sourceKey);
+        IndexQuery<ImmutableBitMap> originAllShowIndex = QueryRunnerProvider.getInstance().executeIndexQuery(table, new SwiftWhere(SwiftQueryFactory.create()), segment);
+        IndexQuery<ImmutableBitMap> indexAfterFilter = QueryRunnerProvider.getInstance().executeIndexQuery(table, where, segment);
+        ImmutableBitMap allShowIndex = originAllShowIndex.getQueryIndex().getAnd(indexAfterFilter.getQueryIndex());
+        segment.putAllShowIndex(allShowIndex);
         return true;
     }
 

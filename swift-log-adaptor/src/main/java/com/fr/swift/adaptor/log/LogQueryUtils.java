@@ -7,6 +7,7 @@ import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.data.DataList;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.query.QueryConditionAdaptor;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorFactory;
 import com.fr.swift.query.aggregator.AggregatorType;
