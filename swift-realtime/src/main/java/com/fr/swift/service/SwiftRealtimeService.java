@@ -48,7 +48,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
     private transient RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
 
-    private SwiftSegmentManager segmentManager = (SwiftSegmentManager) SwiftContext.getInstance().getBean("localSegmentProvider");
+    private transient SwiftSegmentManager segmentManager = (SwiftSegmentManager) SwiftContext.getInstance().getBean("localSegmentProvider");
 
     private SwiftRealtimeService() {
     }
