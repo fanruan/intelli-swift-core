@@ -1,13 +1,12 @@
 package com.fr.swift.log;
 
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.util.function.Function;
 
 /**
  * @author anchore
  */
 public final class SwiftLoggers {
-    private static Function<?, SwiftLogger> loggerFactory = SwiftContext.getInstance().getBean("loggerFactory", Function.class);
+    private static Function<?, SwiftLogger> loggerFactory = new SwiftLog4jLoggers();
 
     /**
      * @deprecated 不用static final SwiftLogger = SwiftLoggers.getLogger();的方式了
@@ -25,5 +24,13 @@ public final class SwiftLoggers {
     @Deprecated
     public static SwiftLogger getLogger(Class cls) {
         return getLogger();
+    }
+
+    public static void setLoggerFactory(Function<?, SwiftLogger> loggerFactory) {
+        SwiftLoggers.loggerFactory = loggerFactory;
+    }
+
+    public static Function<?, SwiftLogger> getLoggerFactory() {
+        return loggerFactory;
     }
 }
