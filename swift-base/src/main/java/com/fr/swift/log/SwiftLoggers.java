@@ -1,13 +1,21 @@
 package com.fr.swift.log;
 
+import com.fr.swift.util.function.Function;
+
 /**
  * @author anchore
  */
 public final class SwiftLoggers {
-    private static final SwiftLogger LOGGER = new SwiftLogger();
+    private static Function<?, SwiftLogger> loggerFactory = new SwiftLog4jLoggers();
 
+    /**
+     * @deprecated 不用static final SwiftLogger = SwiftLoggers.getLogger();的方式了
+     * 推荐直接SwiftLoggers.getLogger().error(e);
+     * 这个@Deprecated只起提醒作用，不是弃用
+     */
+    @Deprecated
     public static SwiftLogger getLogger() {
-        return LOGGER;
+        return loggerFactory.apply(null);
     }
 
     /**
@@ -16,5 +24,13 @@ public final class SwiftLoggers {
     @Deprecated
     public static SwiftLogger getLogger(Class cls) {
         return getLogger();
+    }
+
+    public static void setLoggerFactory(Function<?, SwiftLogger> loggerFactory) {
+        SwiftLoggers.loggerFactory = loggerFactory;
+    }
+
+    public static Function<?, SwiftLogger> getLoggerFactory() {
+        return loggerFactory;
     }
 }

@@ -1,5 +1,6 @@
 package com.fr.swift.query.info.bean.parser;
 
+import com.fr.general.ComparatorUtils;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.context.SwiftContext;
@@ -95,10 +96,10 @@ public class QueryInfoParser {
                         sorts.add(new NoneSort());
                         break;
                     case DESC:
-                        sorts.add(new DescSort(-1, columnKey));
+                        sorts.add(new DescSort(getDimensionIndex(sortBean.getColumn(), dimensions), columnKey));
                         break;
                     case ASC:
-                        sorts.add(new AscSort(-1, columnKey));
+                        sorts.add(new AscSort(getDimensionIndex(sortBean.getColumn(), dimensions), columnKey));
                         break;
                 }
             }
@@ -113,5 +114,14 @@ public class QueryInfoParser {
             SwiftLoggers.getLogger(QueryInfoParser.class).error(e);
         }
         return new DetailQueryInfo(queryId, table, filterInfo, dimensions, sorts, null, metaData);
+    }
+
+    private static int getDimensionIndex(String columnName, List<Dimension> dimensions) {
+        for (int i = 0; i < dimensions.size(); i++) {
+            if (ComparatorUtils.equals(columnName, dimensions.get(i).getColumnKey().getName())) {
+                return i;
+            }
+        }
+        return -1;
     }
 }

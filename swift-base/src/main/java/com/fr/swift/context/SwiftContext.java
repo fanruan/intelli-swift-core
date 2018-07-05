@@ -19,7 +19,7 @@ public class SwiftContext extends ClassPathXmlApplicationContext {
             if (INSTANCE.refreshed) {
                 return;
             }
-            INSTANCE.setConfigLocation("swift-content.xml");
+            INSTANCE.setConfigLocation("swift-context.xml");
             INSTANCE.refresh();
 
             INSTANCE.refreshed = true;

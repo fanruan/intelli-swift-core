@@ -10,7 +10,6 @@ import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.ProviderTaskManager;
 import com.fr.swift.event.ClusterListenerHandler;
-import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.service.register.LocalSwiftRegister;
 
@@ -19,8 +18,6 @@ import com.fr.swift.service.register.LocalSwiftRegister;
  * @date 2018/5/24
  */
 public class SwiftEngineActivator extends Activator implements Prepare {
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftEngineActivator.class);
-
     @Override
     public void start() {
         try {
@@ -32,8 +29,8 @@ public class SwiftEngineActivator extends Activator implements Prepare {
     }
 
     private void startSwift() throws Exception {
-        SwiftConfigContext.getInstance().init();
         SwiftContext.init();
+        SwiftConfigContext.getInstance().init();
         new LocalSwiftRegister().serviceRegister();
         ClusterListenerHandler.addListener(new ClusterListener());
         ProviderTaskManager.start();

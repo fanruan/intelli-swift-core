@@ -73,7 +73,7 @@ public class SwiftSegmentDaoImpl extends BasicDao<SwiftSegmentEntity> implements
             if (null != segmentKey.getStoreType()) {
                 criterionList.add(Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE, segmentKey.getStoreType()));
             }
-            if (null != (Integer) segmentKey.getOrder()) {
+            if (null != segmentKey.getOrder()) {
                 criterionList.add(Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_ORDER, segmentKey.getOrder()));
             }
             List<SwiftSegmentEntity> list = find(session, criterionList.toArray(new Criterion[criterionList.size()]));

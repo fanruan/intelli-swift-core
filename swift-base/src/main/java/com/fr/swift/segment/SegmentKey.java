@@ -16,7 +16,7 @@ public interface SegmentKey {
 
     URI getUri();
 
-    int getOrder();
+    Integer getOrder();
 
     StoreType getStoreType();
 }

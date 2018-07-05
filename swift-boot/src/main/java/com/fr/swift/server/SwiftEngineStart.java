@@ -23,8 +23,8 @@ import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.event.ClusterType;
+import com.fr.swift.generate.conf.SwiftColumnIndexingConf;
 import com.fr.swift.http.SwiftHttpServer;
-import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.service.register.LocalSwiftRegister;
@@ -45,14 +45,12 @@ import com.fr.workspace.simple.SimpleWork;
  */
 public class SwiftEngineStart {
 
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftEngineStart.class);
-
     public static void main(String[] args) {
         try {
             SimpleWork.checkIn(System.getProperty("user.dir"));
             SwiftContext.init();
             SwiftContext.getInstance().getBean(SwiftHttpServer.class).start();
-            LOGGER.info("http server starting!");
+            SwiftLoggers.getLogger().info("http server starting!");
             initConfDB();
             registerTmpConnectionProvider();
             new LocalSwiftRegister().serviceRegister();
@@ -62,7 +60,7 @@ public class SwiftEngineStart {
                 ClusterListenerHandler.handlerEvent(new ClusterEvent(ClusterEventType.JOIN_CLUSTER, ClusterType.CONFIGURE));
             }
         } catch (Throwable e) {
-            LOGGER.error(e);
+            SwiftLoggers.getLogger().error(e);
             System.exit(1);
         }
     }
@@ -86,6 +84,7 @@ public class SwiftEngineStart {
         dbProvider.addEntityClass(SwiftSegmentEntity.class);
         dbProvider.addEntityClass(SwiftServiceInfoEntity.class);
         dbProvider.addEntityClass(SwiftSegmentLocationEntity.class);
+        dbProvider.addEntityClass(SwiftColumnIndexingConf.class);
 
         dbProvider.init(dbOption);
         BaseDBEnv.setDBContext(dbProvider);

@@ -44,7 +44,7 @@ public class HdfsRepositoryConfigImpl extends AbstractSwiftFileSystemConfig {
     }
 
     public String getFullAddress() {
-        return String.format("hdfs://%s:%s", hdfsHost, hdfsPort);
+        return String.format("hdfs://%s:%s/", hdfsHost, hdfsPort);
     }
 
     @Override
