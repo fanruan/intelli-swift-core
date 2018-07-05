@@ -1,6 +1,7 @@
 package com.fr.swift.query.query;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.segment.Segment;
@@ -25,12 +26,13 @@ public class QueryRunnerProvider {
 
     private QueryIndexRunner indexRunner;
 
+
     private QueryRunnerProvider() {
+        indexRunner = (QueryIndexRunner) SwiftContext.getInstance().getBean("queryIndexRunner");
     }
 
-    public void registerRunner(QueryRunner runner, QueryIndexRunner indexRunner) {
+    public void registerRunner(QueryRunner runner) {
         this.runner = runner;
-        this.indexRunner = indexRunner;
     }
 
     public SwiftResultSet executeQuery(QueryBean info) throws SQLException {

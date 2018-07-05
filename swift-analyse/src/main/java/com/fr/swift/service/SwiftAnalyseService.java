@@ -67,7 +67,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     @Override
     public boolean start() throws SwiftServiceException {
         boolean start = super.start();
-        QueryRunnerProvider.getInstance().registerRunner(this, new QueryIndexService());
+        QueryRunnerProvider.getInstance().registerRunner(this);
         return start;
     }
 
