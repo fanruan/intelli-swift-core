@@ -63,6 +63,7 @@ public class QueryConditionAdaptor {
             SortBean bean = new SortBean();
             bean.setColumn(sortItem.getColumnName());
             bean.setType(sortItem.isDesc() ? SortType.DESC : SortType.ASC);
+            sorts.add(bean);
         }
         queryInfoBean.setSortBeans(sorts);
 
