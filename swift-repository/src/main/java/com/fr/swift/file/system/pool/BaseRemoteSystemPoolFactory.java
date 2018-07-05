@@ -16,9 +16,4 @@ public abstract class BaseRemoteSystemPoolFactory<T extends SwiftFileSystem> ext
     public PooledObject<T> wrap(T t) {
         return new DefaultPooledObject<T>(t);
     }
-
-    @Override
-    public void destroyObject(URI key, PooledObject<T> p) throws Exception {
-        p.getObject().close();
-    }
 }
