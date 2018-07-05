@@ -6,6 +6,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.operator.Inserter;
+import com.fr.swift.source.SwiftResultSet;
 
 import java.util.List;
 
@@ -24,7 +25,10 @@ public class RedisSegmentRecovery extends AbstractSegmentRecovery {
                 Table table = SwiftDatabase.getInstance().getTable(segKey.getTable());
                 Segment realtimeSeg = newRealtimeSegment(localSegmentProvider.getSegment(segKey));
                 Inserter insert = operators.getInserter(table, realtimeSeg);
-                insert.insertData(new RedisBackupResultSet(getBackupSegment(realtimeSeg)));
+                SwiftResultSet resultSet = new RedisBackupResultSet(getBackupSegment(realtimeSeg));
+                insert.insertData(resultSet);
+                realtimeSeg.putAllShowIndex(((RedisBackupResultSet) resultSet).getAllShowIndex());
+
             }
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);

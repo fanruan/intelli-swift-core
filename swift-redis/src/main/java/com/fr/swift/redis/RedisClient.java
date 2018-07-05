@@ -133,6 +133,32 @@ public class RedisClient {
         }
     }
 
+    public String set(final String key, final String value) throws SwiftRedisException {
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            return jedis.set(key, value);
+        } catch (Exception e) {
+            LOGGER.error(e);
+            throw new SwiftRedisException(e);
+        } finally {
+            returnJedis(jedis);
+        }
+    }
+
+    public String get(final String key) throws SwiftRedisException {
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            return jedis.get(key);
+        } catch (Exception e) {
+            LOGGER.error(e);
+            throw new SwiftRedisException(e);
+        } finally {
+            returnJedis(jedis);
+        }
+    }
+
     /**
      * 清除DB
      */

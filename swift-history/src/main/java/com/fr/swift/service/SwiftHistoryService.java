@@ -3,9 +3,7 @@ package com.fr.swift.service;
 import com.fr.swift.config.SwiftCubePathConfig;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.db.Database;
 import com.fr.swift.db.Where;
-import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
@@ -22,7 +20,6 @@ import com.fr.swift.rpc.annotation.RpcService;
 import com.fr.swift.rpc.annotation.RpcServiceType;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
-import com.fr.swift.segment.operator.delete.HistorySwiftDeleter;
 import com.fr.swift.segment.operator.delete.RowDeleter;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
@@ -46,9 +43,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         return SingletonHolder.instance;
     }
 
-    private final Database database = SwiftDatabase.getInstance();
-
-    private SwiftSegmentManager segmentManager = (SwiftSegmentManager) SwiftContext.getInstance().getBean("localSegmentProvider");
+    private transient SwiftSegmentManager segmentManager = (SwiftSegmentManager) SwiftContext.getInstance().getBean("localSegmentProvider");
 
     private SwiftHistoryService() {
     }
@@ -112,11 +107,8 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         try {
             List<Segment> segments = segmentManager.getSegment(sourceKey);
             for (Segment segment : segments) {
-                if (segment.isHistory()) {
-                    RowDeleter deleter = new HistorySwiftDeleter(segment);
-                    deleter.delete(sourceKey, where);
-                    ((HistorySwiftDeleter) deleter).release();
-                }
+                RowDeleter rowDeleter = (RowDeleter) SwiftContext.getInstance().getBean("decrementer", segment);
+                rowDeleter.delete(sourceKey, where);
             }
             //todo upload allshowindex;
             return true;

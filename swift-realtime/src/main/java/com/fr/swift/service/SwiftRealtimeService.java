@@ -26,7 +26,6 @@ import com.fr.swift.segment.Incrementer;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
-import com.fr.swift.segment.operator.delete.HistorySwiftDeleter;
 import com.fr.swift.segment.operator.delete.RowDeleter;
 import com.fr.swift.segment.recover.SegmentRecovery;
 import com.fr.swift.selector.UrlSelector;
@@ -48,7 +47,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
     private transient RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
 
-    private SwiftSegmentManager segmentManager = (SwiftSegmentManager) SwiftContext.getInstance().getBean("localSegmentProvider");
+    private transient SwiftSegmentManager segmentManager = (SwiftSegmentManager) SwiftContext.getInstance().getBean("localSegmentProvider");
 
     private SwiftRealtimeService() {
     }
@@ -91,14 +90,13 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     }
 
     @Override
+    @RpcMethod(methodName = "realtimeDelete")
     public boolean delete(SourceKey sourceKey, Where where) throws Exception {
         try {
             List<Segment> segments = segmentManager.getSegment(sourceKey);
             for (Segment segment : segments) {
-                if (!segment.isHistory()) {
-                    RowDeleter deleter = new HistorySwiftDeleter(segment);
-                    deleter.delete(sourceKey, where);
-                }
+                RowDeleter rowDeleter = (RowDeleter) SwiftContext.getInstance().getBean("decrementer", segment);
+                rowDeleter.delete(sourceKey, where);
             }
             return true;
         } catch (Exception e) {

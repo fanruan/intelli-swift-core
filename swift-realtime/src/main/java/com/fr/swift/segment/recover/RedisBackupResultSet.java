@@ -1,5 +1,7 @@
 package com.fr.swift.segment.recover;
 
+import com.fr.swift.bitmap.BitMaps;
+import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.redis.RedisClient;
 import com.fr.swift.segment.Segment;
@@ -7,6 +9,8 @@ import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.structure.array.IntList;
+import com.fr.swift.structure.array.IntListFactory;
 import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -23,9 +27,11 @@ import java.util.List;
 public class RedisBackupResultSet implements SwiftResultSet {
 
     private SwiftMetaData meta;
-    private long cursor = -1;
+    private int cursor = -1;
     private long rowCount;
     private Segment segment;
+    private ImmutableBitMap allShowIndex;
+    private static final String REDIS_ALLSHOWINDEX_KEY = "/redis_allshowindex";
 
     private RedisClient redisClient;
 
@@ -34,6 +40,17 @@ public class RedisBackupResultSet implements SwiftResultSet {
         this.segment = segment;
         this.redisClient = (RedisClient) SwiftContext.getInstance().getBean("redisClient");
         this.rowCount = redisClient.llen(this.segment.getLocation().getPath());
+        String indexStr = redisClient.get(this.segment.getLocation().getPath() + REDIS_ALLSHOWINDEX_KEY);
+        if (indexStr == null) {
+            allShowIndex = BitMaps.newAllShowBitMap((int) rowCount);
+        } else {
+            IntList intList = IntListFactory.createIntList((int) rowCount);
+            String[] indexArrays = indexStr.split(",");
+            for (String index : indexArrays) {
+                intList.add(Integer.valueOf(index));
+            }
+            allShowIndex = BitMaps.newImmutableBitMap(intList);
+        }
     }
 
     @Override
@@ -64,6 +81,10 @@ public class RedisBackupResultSet implements SwiftResultSet {
         } catch (IOException e) {
             throw new SQLException("Jackson readValue " + dataJson + " error!", e);
         }
+    }
+
+    public ImmutableBitMap getAllShowIndex() {
+        return allShowIndex;
     }
 
     @Override
