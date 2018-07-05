@@ -193,13 +193,10 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfigImp
     @Override
     public void close() throws SwiftFileException {
         try {
-            clientPool.clear();
+            clientPool.close();
         } catch (Exception e) {
             throw new SwiftFileException(e);
-        } finally {
-            clientPool.close();
         }
-
     }
 
     private URI resolve(URI uri, String resolve) {
