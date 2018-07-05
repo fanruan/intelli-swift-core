@@ -13,8 +13,6 @@ import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.event.ClusterType;
-import com.fr.swift.log.SwiftLogger;
-import com.fr.swift.log.SwiftLoggers;
 
 /**
  * This class created on 2018/5/14
@@ -24,9 +22,6 @@ import com.fr.swift.log.SwiftLoggers;
  * @since Advanced FineBI 5.0
  */
 public class SwiftClusterTicket extends ClusterTicketAdaptor {
-
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftClusterTicket.class);
-
     private static final SwiftClusterTicket INSTANCE = new SwiftClusterTicket();
 
     private ClusterService clusterServiceProxy = null;
