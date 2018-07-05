@@ -7,8 +7,6 @@ import com.fr.log.message.AbstractMessage;
 import com.fr.stable.StringUtils;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.data.DataList;
-import com.fr.swift.log.SwiftLogger;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.QueryConditionAdaptor;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
@@ -34,9 +32,6 @@ import java.util.Map;
  * Created by Lyon on 2018/6/21.
  */
 public class SwiftLogSearchProvider implements LogSearchProvider {
-
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftLogSearchProvider.class);
-
     private static LogSearchProvider instance = new SwiftLogSearchProvider();
 
     public static LogSearchProvider getInstance() {
