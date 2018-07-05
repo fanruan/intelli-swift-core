@@ -19,6 +19,8 @@ public interface SwiftFileSystem extends Closeable {
 
     SwiftFileSystem read() throws SwiftFileException;
 
+    SwiftFileSystem parent();
+
     boolean remove(URI remote) throws SwiftFileException;
 
     boolean remove() throws SwiftFileException;

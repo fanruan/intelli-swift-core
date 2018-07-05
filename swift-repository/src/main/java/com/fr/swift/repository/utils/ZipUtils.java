@@ -1,5 +1,6 @@
 package com.fr.swift.repository.utils;
 
+import com.fr.general.CommonIOUtils;
 import com.fr.swift.log.SwiftLoggers;
 
 import java.io.BufferedInputStream;
@@ -7,7 +8,6 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.zip.ZipEntry;
@@ -19,8 +19,6 @@ import java.util.zip.ZipOutputStream;
  * @date 2018/7/2
  */
 public class ZipUtils {
-    private static final int BUFFER_SIZE = 2 * 1024;
-
     /**
      * 压缩成ZIP 方法1
      *
@@ -42,15 +40,8 @@ public class ZipUtils {
         } catch (Exception e) {
             throw new RuntimeException("zip error", e);
         } finally {
-            if (zos != null) {
-                try {
-                    zos.close();
-                } catch (IOException e) {
-                    throw new RuntimeException("zip error", e);
-                }
-            }
+            CommonIOUtils.close(zos);
         }
-
     }
 
     public static void unZip(String parent, InputStream inputStream) throws Exception {
@@ -60,38 +51,29 @@ public class ZipUtils {
         while ((entry = zis.getNextEntry()) != null && !entry.isDirectory()) {
             File fout = new File(parent, entry.getName());
             if (!fout.exists()) {
-                (new File(fout.getParent())).mkdirs();
+                fout.getParentFile().mkdirs();
             }
 
             BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(fout));
-
-            int b = -1;
-            byte[] buffer = new byte[1024];
-            while ((b = zis.read(buffer)) != -1) {
-                bos.write(buffer, 0, b);
-            }
-            bos.close();
+            CommonIOUtils.copyBinaryTo(zis, bos);
+            CommonIOUtils.close(bos);
         }
 
-        zis.close();
+        CommonIOUtils.close(zis);
         long end = System.currentTimeMillis();
         SwiftLoggers.getLogger().info("解压完成，耗时：" + (end - start) + " ms");
     }
 
     private static void compress(File sourceFile, ZipOutputStream zos, String name) throws Exception {
-        byte[] buf = new byte[BUFFER_SIZE];
         if (sourceFile.isFile()) {
             // 向zip输出流中添加一个zip实体，构造器中name为zip实体的文件的名字
             zos.putNextEntry(new ZipEntry(name));
             // copy文件到zip输出流中
-            int len;
             FileInputStream in = new FileInputStream(sourceFile);
-            while ((len = in.read(buf)) != -1) {
-                zos.write(buf, 0, len);
-            }
+            CommonIOUtils.copyBinaryTo(in, zos);
             // Complete the entry
             zos.closeEntry();
-            in.close();
+            CommonIOUtils.close(in);
         } else {
             File[] listFiles = sourceFile.listFiles();
             if (listFiles == null || listFiles.length == 0) {

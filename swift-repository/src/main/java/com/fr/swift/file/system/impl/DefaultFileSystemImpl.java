@@ -54,6 +54,11 @@ public class DefaultFileSystemImpl extends AbstractFileSystem {
     }
 
     @Override
+    public SwiftFileSystem parent() {
+        return new DefaultFileSystemImpl(getConfig(), getParentURI());
+    }
+
+    @Override
     public boolean remove(URI remote) throws SwiftFileException {
         if (ComparatorUtils.equals(remote, getResourceURI())) {
             if (isExists()) {

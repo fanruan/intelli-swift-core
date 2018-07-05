@@ -108,6 +108,11 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfigImp
     }
 
     @Override
+    public SwiftFileSystem parent() {
+        return new FtpFileSystemImpl(getConfig(), getResourceURI());
+    }
+
+    @Override
     public boolean remove(URI remote) throws SwiftFileException {
         FineFTP ftp = acquireClient();
         try {

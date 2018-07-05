@@ -1,5 +1,7 @@
 package com.fr.swift.file.system.impl;
 
+import com.fr.general.ComparatorUtils;
+import com.fr.io.utils.ResourceIOUtils;
 import com.fr.swift.file.conf.impl.HdfsRepositoryConfigImpl;
 import com.fr.swift.file.exception.SwiftFileException;
 import com.fr.swift.file.system.AbstractFileSystem;
@@ -26,50 +28,61 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfigI
     }
 
     @Override
-    public void write(URI remote, InputStream inputStream) {
-
+    public void write(URI remote, InputStream is) {
+//        try {
+//            fileSystem.delete(new Path(remote.getPath()), true);
+//            OutputStream os = fileSystem.create(new Path(remote.getPath()), true);
+//            IOUtils.copyBytes(is, os, 2048, true);
+//        } catch (IOException e) {
+//            throw new SwiftFileException(e);
+//        }
     }
 
 //    private FileSystem getHdfsFileSystem(URI uri) {
 //        if (null == fileSystem) {
 //            uri = uri == null ? getResourceURI() : uri;
 //            Configuration conf = new Configuration();
-//            conf.set(config.getFsName(), URI.create(config.getFullAddress()).resolve(uri).getPath());
+//            conf.set(config.getFsName(), config.getFullAddress());
 //            try {
-//                return FileSystem.get(conf);
+//                return FileSystem.get(URI.create(config.getFullAddress() + uri.getPath()), conf);
 //            } catch (IOException e) {
 //                return Crasher.crash("Can not switch to hdfs! ", e);
 //            }
 //        }
 //        return fileSystem;
 //    }
-
+//
 //    private FileSystem getHdfsFileSystem() {
 //        return getHdfsFileSystem(getResourceURI());
 //    }
 
     @Override
     public SwiftFileSystem read(URI remote) throws SwiftFileException {
-//        SwiftFileSystem fileSystem;
-//        if (ComparatorUtils.equals(remote, getResourceURI())) {
-//            fileSystem = this;
-//        } else {
-//            fileSystem = new HdfsFileSystemImpl(getConfig(), remote);
-//        }
-//        if (fileSystem.isExists()) {
-//            return fileSystem;
-//        }
+        SwiftFileSystem fileSystem;
+        if (ComparatorUtils.equals(remote, getResourceURI())) {
+            fileSystem = this;
+        } else {
+            fileSystem = new HdfsFileSystemImpl(getConfig(), remote);
+        }
+        if (fileSystem.isExists()) {
+            return fileSystem;
+        }
         throw new SwiftFileException(String.format("File path '%s' not exists!", remote.getPath()));
+    }
+
+    @Override
+    public SwiftFileSystem parent() {
+        return new HdfsFileSystemImpl(getConfig(), getParentURI());
     }
 
     @Override
     public boolean remove(URI remote) {
 //        try {
-//            return getHdfsFileSystem().deleteOnExit(new Path(remote.getPath()));
+//            return getHdfsFileSystem().delete(new Path(remote.getPath()), true);
 //        } catch (IOException e) {
 //            throw new SwiftFileException(e);
 //        }
-        return true;
+        return false;
     }
 
     @Override
@@ -79,7 +92,7 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfigI
 //        } catch (IOException e) {
 //            throw new SwiftFileException(e);
 //        }
-        return true;
+        return false;
     }
 
     @Override
@@ -98,13 +111,7 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfigI
 //                } else if (fileStatus.isFile()) {
 //                    FSDataOutputStream dos = getHdfsFileSystem().create(new Path(dest));
 //                    FSDataInputStream dis = getHdfsFileSystem().open(new Path(src.getPath()));
-//                    int len = 0;
-//                    byte[] bytes = new byte[1024];
-//                    while ((len = dis.read(bytes, 0, 1024)) != -1) {
-//                        dos.write(bytes, 0, len);
-//                    }
-//                    dis.close();
-//                    dos.close();
+//                    IOUtils.copyBytes(dis, dos, 2048, true);
 //                }
 //                return true;
 //            } else {
@@ -113,7 +120,7 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfigI
 //        } catch (IOException e) {
 //            throw new SwiftFileException(e);
 //        }
-        return true;
+        return false;
     }
 
     @Override
@@ -123,7 +130,7 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfigI
 //        } catch (IOException e) {
 //            return false;
 //        }
-        return true;
+        return false;
     }
 
     @Override
@@ -149,7 +156,7 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfigI
     @Override
     public String getResourceName() {
 //        return new Path(getResourceURI().getPath()).getName();
-        return "";
+        return ResourceIOUtils.getName(getResourceURI().getPath());
     }
 
     @Override
