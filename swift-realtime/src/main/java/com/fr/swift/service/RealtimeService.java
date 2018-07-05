@@ -1,5 +1,6 @@
 package com.fr.swift.service;
 
+import com.fr.swift.db.Where;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
@@ -26,7 +27,7 @@ public interface RealtimeService extends SwiftService {
      */
     void merge(List<SegmentKey> tableKeys) throws Exception;
 
-    void delete() throws Exception;
+    boolean delete(SourceKey sourceKey, Where where) throws Exception;
 
     /**
      * 恢复增量数据

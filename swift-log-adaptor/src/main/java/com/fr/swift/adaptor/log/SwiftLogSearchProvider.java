@@ -9,6 +9,7 @@ import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.data.DataList;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.QueryConditionAdaptor;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.info.bean.element.filter.impl.AndFilterBean;
@@ -167,7 +168,7 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
             row = resultSet.getRowData();
         }
         if (row != null && row.getSize() == 1) {
-            Number value =  row.getValue(0);
+            Number value = row.getValue(0);
             return value == null ? 0 : value.intValue();
         }
         //BI-25663 空的返回count0
