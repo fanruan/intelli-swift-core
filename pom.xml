@@ -42,8 +42,6 @@
         <weka.version>3.8.2</weka.version>
         <fineio.version>1.0</fineio.version>
         <rengine.version>1.8.1</rengine.version>
-        <log4j.version>1.2.17</log4j.version>
-        <slf4j.version>1.7.21</slf4j.version>
         <output>target</output>
     </properties>
 
@@ -131,11 +129,6 @@
             <artifactId>Rserve</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j.version}</version>
         </dependency>
     </dependencies>
 </project>

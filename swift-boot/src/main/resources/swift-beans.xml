@@ -14,6 +14,7 @@
     <bean id="rpcServer" class="com.fr.swift.rpc.server.RpcServer"/>
     <bean id="swiftQuerySessionFactory" class="com.fr.swift.query.session.factory.SessionFactoryImpl"/>
     <bean id="redisClient" class="com.fr.swift.redis.RedisClient"/>
+    <bean id="loggerFactory" class="com.fr.swift.log.SwiftFrLoggers"/>
 
     <!--配置不同的实现class注入-->
     <!--<bean id="segmentBackup" class="com.fr.swift.segment.backup.RedisSegmentBackup" scope="prototype"/>-->

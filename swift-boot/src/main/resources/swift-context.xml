@@ -14,6 +14,7 @@
     <!--基本和环境配置-->
     <context:property-placeholder location="classpath:rpc.properties,classpath:swift.properties"/>
 
+    <context:annotation-config/>
     <context:component-scan base-package="com.fr.swift.rpc.service"/>
     <context:component-scan base-package="com.fr.swift.service.listener"/>
     <context:component-scan base-package="com.fr.swift.service"/>
@@ -25,8 +26,6 @@
             <bean class="com.fr.startup.web.annotation.MappingJackson2HttpMessageConverter"/>
         </mvc:message-converters>
     </mvc:annotation-driven>
-
-    <context:annotation-config/>
 
     <mvc:interceptors>
         <mvc:interceptor>
