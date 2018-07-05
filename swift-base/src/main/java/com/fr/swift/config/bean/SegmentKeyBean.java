@@ -25,7 +25,7 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
     private String sourceKey;
     private URI absoluteUri;
     private URI uri;
-    private int order;
+    private Integer order;
     private Types.StoreType storeType;
 
     public SegmentKeyBean(String sourceKey, URI uri, int order, Types.StoreType storeType) {
@@ -36,6 +36,9 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
         this.id = toString();
         String path = service.getSwiftPath();
         initAbsoluteUri(path);
+    }
+
+    public SegmentKeyBean() {
     }
 
     private void initAbsoluteUri(String path) {
@@ -54,6 +57,9 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
 
     @Override
     public SourceKey getTable() {
+        if (sourceKey == null) {
+            return null;
+        }
         return new SourceKey(sourceKey);
     }
 
@@ -79,7 +85,7 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
     }
 
     @Override
-    public int getOrder() {
+    public Integer getOrder() {
         return order;
     }
 
@@ -117,22 +123,28 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
-        SegmentKeyBean keyBean = (SegmentKeyBean) o;
+        SegmentKeyBean that = (SegmentKeyBean) o;
 
-        if (order != keyBean.order) return false;
-        if (sourceKey != null ? !sourceKey.equals(keyBean.sourceKey) : keyBean.sourceKey != null) return false;
-        if (uri != null ? !uri.equals(keyBean.uri) : keyBean.uri != null) return false;
-        return storeType == keyBean.storeType;
+        if (sourceKey != null ? !sourceKey.equals(that.sourceKey) : that.sourceKey != null) {
+            return false;
+        }
+        if (order != null ? !order.equals(that.order) : that.order != null) {
+            return false;
+        }
+        return storeType == that.storeType;
     }
 
     @Override
     public int hashCode() {
         int result = sourceKey != null ? sourceKey.hashCode() : 0;
-        result = 31 * result + (uri != null ? uri.hashCode() : 0);
-        result = 31 * result + order;
+        result = 31 * result + (order != null ? order.hashCode() : 0);
         result = 31 * result + (storeType != null ? storeType.hashCode() : 0);
         return result;
     }

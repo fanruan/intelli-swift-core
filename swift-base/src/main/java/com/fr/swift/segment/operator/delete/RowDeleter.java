@@ -1,7 +1,9 @@
 package com.fr.swift.segment.operator.delete;
 
+import com.fr.swift.db.Where;
 import com.fr.swift.segment.operator.Deleter;
 import com.fr.swift.source.Row;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.util.List;
@@ -17,5 +19,5 @@ public interface RowDeleter extends Deleter {
 
     boolean deleteData(SwiftResultSet swiftResultSet) throws Exception;
 
-//    boolean delete(Predicate<Row> predicate);
+    boolean delete(SourceKey sourceKey, Where where) throws Exception;
 }

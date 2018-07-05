@@ -5,7 +5,6 @@ import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.RealTimeSegmentImpl;
 import com.fr.swift.segment.Segment;
@@ -15,7 +14,6 @@ import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,13 +38,9 @@ public abstract class AbstractSegmentRecovery implements SegmentRecovery {
     @Override
     public void recoverAll() {
         List<Table> tables;
-        try {
-            tables = SwiftDatabase.getInstance().getAllTables();
-            for (Table table : tables) {
-                recover(table.getSourceKey());
-            }
-        } catch (SQLException e) {
-            SwiftLoggers.getLogger().error(e);
+        tables = SwiftDatabase.getInstance().getAllTables();
+        for (Table table : tables) {
+            recover(table.getSourceKey());
         }
     }
 

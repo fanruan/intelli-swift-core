@@ -40,7 +40,7 @@
         <easymock.version>3.4</easymock.version>
         <datamining.version>1.1.25</datamining.version>
         <weka.version>3.8.2</weka.version>
-        <fineio.version>1.0</fineio.version>
+        <fineio.version>2.0-RELEASE-SNAPSHOT</fineio.version>
         <rengine.version>1.8.1</rengine.version>
         <log4j.version>1.2.17</log4j.version>
         <slf4j.version>1.7.21</slf4j.version>
