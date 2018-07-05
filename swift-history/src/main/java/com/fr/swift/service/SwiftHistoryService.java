@@ -3,7 +3,9 @@ package com.fr.swift.service;
 import com.fr.swift.config.SwiftCubePathConfig;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.db.Database;
 import com.fr.swift.db.Where;
+import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
@@ -18,12 +20,18 @@ import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.rpc.annotation.RpcMethod;
 import com.fr.swift.rpc.annotation.RpcService;
 import com.fr.swift.rpc.annotation.RpcServiceType;
+import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.operator.delete.HistorySwiftDeleter;
+import com.fr.swift.segment.operator.delete.RowDeleter;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URI;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -33,11 +41,14 @@ import java.util.Set;
 public class SwiftHistoryService extends AbstractSwiftService implements HistoryService, Serializable {
 
     private static final long serialVersionUID = -6013675740141588108L;
-//    private transient static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftHistoryService.class);
 
     public static SwiftHistoryService getInstance() {
         return SingletonHolder.instance;
     }
+
+    private final Database database = SwiftDatabase.getInstance();
+
+    private SwiftSegmentManager segmentManager = (SwiftSegmentManager) SwiftContext.getInstance().getBean("localSegmentProvider");
 
     private SwiftHistoryService() {
     }
@@ -96,8 +107,23 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     }
 
     @Override
-    public boolean delete(Where where) throws Exception {
-        return false;
+    @RpcMethod(methodName = "historyDelete")
+    public boolean delete(SourceKey sourceKey, Where where) throws Exception {
+        try {
+            List<Segment> segments = segmentManager.getSegment(sourceKey);
+            for (Segment segment : segments) {
+                if (segment.isHistory()) {
+                    RowDeleter deleter = new HistorySwiftDeleter(segment);
+                    deleter.delete(sourceKey, where);
+                    ((HistorySwiftDeleter) deleter).release();
+                }
+            }
+            //todo upload allshowindex;
+            return true;
+        } catch (Exception e) {
+            logger.error(e);
+            throw e;
+        }
     }
 
     private static class SingletonHolder {
