@@ -13,7 +13,6 @@ import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.BitMapWriter;
 import com.fr.swift.cube.io.output.IntWriter;
 import com.fr.swift.exception.meta.SwiftMetaDataColumnAbsentException;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.relation.CubeMultiRelation;
 import com.fr.swift.relation.CubeMultiRelationPath;
 import com.fr.swift.segment.column.Column;
@@ -46,7 +45,7 @@ public abstract class BaseSegment implements Segment {
     private static final String ALL_SHOW_INDEX = "all_show_index";
 
     protected SwiftMetaData meta;
-    protected IResourceLocation parent;
+    protected IResourceLocation location;
 
     private IntWriter rowCountWriter;
     private IntReader rowCountReader;
@@ -56,13 +55,12 @@ public abstract class BaseSegment implements Segment {
 
     private final Map<ColumnKey, Column<?>> columns = new ConcurrentHashMap<ColumnKey, Column<?>>();
 
-    public BaseSegment(IResourceLocation parent, SwiftMetaData meta) {
-        this.parent = parent;
+    public BaseSegment(IResourceLocation location, SwiftMetaData meta) {
+        this.location = location;
         this.meta = meta;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <T> Column<T> getColumn(ColumnKey key) {
         try {
             String name = key.getName();
@@ -75,8 +73,8 @@ public abstract class BaseSegment implements Segment {
                 if (columns.containsKey(key)) {
                     return (Column<T>) columns.get(key);
                 }
-                IResourceLocation child = parent.buildChildLocation(columnId);
-                Column<?> column = newColumn(child, getClassType(name));
+                IResourceLocation child = location.buildChildLocation(columnId);
+                Column<?> column = newColumn(child, ColumnTypeUtils.getClassType(meta.getColumn(name)));
                 columns.put(key, column);
                 return (Column<T>) column;
             }
@@ -106,10 +104,6 @@ public abstract class BaseSegment implements Segment {
         }
     }
 
-    private ClassType getClassType(String name) throws SwiftMetaDataException {
-        return ColumnTypeUtils.getClassType(meta.getColumn(name));
-    }
-
     @Override
     public RelationIndex getRelation(CubeMultiRelation relation) {
         SourceKey primarySourceKey = relation.getPrimaryTable();
@@ -130,8 +124,13 @@ public abstract class BaseSegment implements Segment {
     }
 
     @Override
+    public SwiftMetaData getMetaData() {
+        return meta;
+    }
+
+    @Override
     public IResourceLocation getLocation() {
-        return parent;
+        return location;
     }
 
     @Override
@@ -153,11 +152,6 @@ public abstract class BaseSegment implements Segment {
     }
 
     @Override
-    public SwiftMetaData getMetaData() {
-        return meta;
-    }
-
-    @Override
     public ImmutableBitMap getAllShowIndex() {
         initBitMapReader();
         return bitMapReader.get(0);
@@ -165,25 +159,25 @@ public abstract class BaseSegment implements Segment {
 
     private void initRowCountWriter() {
         if (rowCountWriter == null) {
-            rowCountWriter = DISCOVERY.getWriter(parent.buildChildLocation(ROW_COUNT), new BuildConf(IoType.WRITE, DataType.INT));
+            rowCountWriter = DISCOVERY.getWriter(location.buildChildLocation(ROW_COUNT), new BuildConf(IoType.WRITE, DataType.INT));
         }
     }
 
     private void initRowCountReader() {
         if (rowCountReader == null) {
-            rowCountReader = DISCOVERY.getReader(parent.buildChildLocation(ROW_COUNT), new BuildConf(IoType.READ, DataType.INT));
+            rowCountReader = DISCOVERY.getReader(location.buildChildLocation(ROW_COUNT), new BuildConf(IoType.READ, DataType.INT));
         }
     }
 
     private void initBitMapWriter() {
         if (bitMapWriter == null) {
-            bitMapWriter = DISCOVERY.getWriter(parent.buildChildLocation(ALL_SHOW_INDEX), new BuildConf(IoType.WRITE, DataType.BITMAP));
+            bitMapWriter = DISCOVERY.getWriter(location.buildChildLocation(ALL_SHOW_INDEX), new BuildConf(IoType.WRITE, DataType.BITMAP));
         }
     }
 
     private void initBitMapReader() {
         if (bitMapReader == null) {
-            bitMapReader = DISCOVERY.getReader(parent.buildChildLocation(ALL_SHOW_INDEX), new BuildConf(IoType.READ, DataType.BITMAP));
+            bitMapReader = DISCOVERY.getReader(location.buildChildLocation(ALL_SHOW_INDEX), new BuildConf(IoType.READ, DataType.BITMAP));
         }
     }
 
@@ -223,6 +217,6 @@ public abstract class BaseSegment implements Segment {
 
     @Override
     public boolean isHistory() {
-        return getLocation().getStoreType() != StoreType.MEMORY;
+        return location.getStoreType() != StoreType.MEMORY;
     }
 }

@@ -6,6 +6,7 @@ import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.util.Crasher;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -31,9 +32,9 @@ public class SwiftDatabase implements Database {
     }
 
     @Override
-    public synchronized Table getTable(SourceKey tableKey) throws SQLException {
+    public synchronized Table getTable(SourceKey tableKey) {
         if (!existsTable(tableKey)) {
-            throw new SQLException("table " + tableKey + " not exists");
+            return Crasher.crash("table " + tableKey + " not exists");
         }
         SwiftMetaData meta = confSvc.getMetaDataByKey(tableKey.getId());
         return new SwiftTable(tableKey, meta);
