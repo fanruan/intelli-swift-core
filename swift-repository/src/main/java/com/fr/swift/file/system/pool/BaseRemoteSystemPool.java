@@ -25,6 +25,10 @@ public class BaseRemoteSystemPool<T extends SwiftFileSystem> extends GenericKeye
 
     @Override
     public void returnObject(URI key, T obj) {
-        super.returnObject(key, obj);
+        try {
+            super.returnObject(key, obj);
+        } catch (IllegalStateException ignore) {
+//            SwiftLoggers.getLogger().warn(e.getMessage());
+        }
     }
 }

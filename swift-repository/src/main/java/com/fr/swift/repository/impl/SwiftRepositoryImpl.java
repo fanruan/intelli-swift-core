@@ -41,22 +41,21 @@ public class SwiftRepositoryImpl extends AbstractRepository {
         }
         if (from.isExists()) {
             FileUtil.delete(new File(local.getPath()));
-            SwiftFileSystem target = from.read();
-            if (!target.isDirectory()) {
-                if (target.getResourceName().endsWith(".cubes")) {
+            if (!from.isDirectory()) {
+                if (from.getResourceName().endsWith(".cubes")) {
                     InputStream inputStream = from.toStream();
                     try {
                         ZipUtils.unZip(new File(local.getPath()).getParent(), inputStream);
                     } catch (Exception e) {
                         throw new SwiftFileException(e);
                     } finally {
-                        closeFileSystem(target);
+                        closeFileSystem(from);
                     }
                 } else {
                     InputStream inputStream = null;
                     FileOutputStream fileOutputStream = null;
                     try {
-                        inputStream = target.toStream();
+                        inputStream = from.toStream();
                         fileOutputStream = new FileOutputStream(new File(local.getPath()));
                         CommonIOUtils.copyBinaryTo(inputStream, fileOutputStream);
                     } catch (Exception e) {
@@ -64,7 +63,7 @@ public class SwiftRepositoryImpl extends AbstractRepository {
                     } finally {
                         CommonIOUtils.close(inputStream);
                         CommonIOUtils.close(fileOutputStream);
-                        closeFileSystem(target);
+                        closeFileSystem(from);
                     }
                 }
             } else {
@@ -74,7 +73,6 @@ public class SwiftRepositoryImpl extends AbstractRepository {
                     closeFileSystem(fileSystem);
                 }
             }
-            closeFileSystem(from);
             return local;
         } else {
             from = createFileSystem(URI.create(remote.getPath() + ".cubes"));

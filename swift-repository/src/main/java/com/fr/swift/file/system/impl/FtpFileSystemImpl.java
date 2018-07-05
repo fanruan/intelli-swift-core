@@ -106,7 +106,7 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfigImp
 
     @Override
     public SwiftFileSystem parent() {
-        return systemPool.borrowObject(getResourceURI());
+        return systemPool.borrowObject(getParentURI());
     }
 
     @Override
