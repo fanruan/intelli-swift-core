@@ -5,14 +5,11 @@ import com.fr.swift.file.conf.impl.HdfsRepositoryConfigImpl;
 import com.fr.swift.file.exception.SwiftFileException;
 import com.fr.swift.file.system.AbstractFileSystem;
 import com.fr.swift.file.system.SwiftFileSystem;
+import com.fr.swift.file.system.pool.BaseRemoteSystemPool;
+import com.fr.swift.file.system.pool.RemotePoolCreator;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.third.org.apache.commons.pool2.BaseKeyedPooledObjectFactory;
 import com.fr.third.org.apache.commons.pool2.KeyedObjectPool;
-import com.fr.third.org.apache.commons.pool2.PooledObject;
-import com.fr.third.org.apache.commons.pool2.impl.DefaultPooledObject;
-import com.fr.third.org.apache.commons.pool2.impl.GenericKeyedObjectPool;
-import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileStatus;
@@ -34,27 +31,12 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfigI
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(HdfsFileSystemImpl.class);
 
     private KeyedObjectPool<URI, FileSystem> keyedObjectPool;
+    private BaseRemoteSystemPool<HdfsFileSystemImpl> systemPool;
 
-    public HdfsFileSystemImpl(final HdfsRepositoryConfigImpl config, URI uri) {
+    public HdfsFileSystemImpl(final HdfsRepositoryConfigImpl config, URI uri, KeyedObjectPool keyedObjectPool) {
         super(config, uri);
-        final Configuration conf = new Configuration();
-        conf.set(config.getFsName(), config.getFullAddress());
-        keyedObjectPool = new GenericKeyedObjectPool<URI, FileSystem>(new BaseKeyedPooledObjectFactory<URI, FileSystem>() {
-            @Override
-            public FileSystem create(URI uri) throws Exception {
-                return FileSystem.get(URI.create(config.getFullAddress() + uri.getPath()), conf);
-            }
-
-            @Override
-            public PooledObject<FileSystem> wrap(FileSystem fileSystem) {
-                return new DefaultPooledObject<FileSystem>(fileSystem);
-            }
-
-            @Override
-            public void destroyObject(URI key, PooledObject<FileSystem> p) throws Exception {
-                p.getObject().close();
-            }
-        });
+        this.keyedObjectPool = keyedObjectPool;
+        this.systemPool = (BaseRemoteSystemPool<HdfsFileSystemImpl>) RemotePoolCreator.creator().getPool(config);
     }
 
     @Override
@@ -97,7 +79,7 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfigI
         if (ComparatorUtils.equals(remote, getResourceURI())) {
             fileSystem = this;
         } else {
-            fileSystem = new HdfsFileSystemImpl(getConfig(), remote);
+            fileSystem = systemPool.borrowObject(remote);
         }
         if (fileSystem.isExists()) {
             return fileSystem;
@@ -107,7 +89,8 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfigI
 
     @Override
     public SwiftFileSystem parent() {
-        return new HdfsFileSystemImpl(getConfig(), getParentURI());
+        return systemPool.borrowObject(getParentURI());
+
     }
 
     @Override
@@ -146,7 +129,7 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfigI
                 boolean mkdir = fileSystem.mkdirs(new Path(dest.getPath()));
                 if (mkdir) {
                     for (FileStatus child : children) {
-                        new HdfsFileSystemImpl(getConfig(), child.getPath().toUri()).copy(dest.resolve(child.getPath().getName()));
+                        systemPool.borrowObject(child.getPath().toUri()).copy(dest.resolve(child.getPath().getName()));
                     }
                 }
             } else if (fileStatus.isFile()) {
@@ -242,8 +225,12 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfigI
     }
 
     @Override
-    public void close() {
-        keyedObjectPool.close();
+    public void close() throws SwiftFileException {
+        try {
+            keyedObjectPool.clear();
+        } catch (Exception e) {
+            throw new SwiftFileException(e);
+        }
     }
 
     @Override
@@ -254,7 +241,7 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfigI
             FileStatus[] statuses = fileSystem.listStatus(new Path(getResourceURI().getPath()));
             SwiftFileSystem[] fileSystems = new SwiftFileSystem[statuses.length];
             for (int i = 0; i < statuses.length; i++) {
-                fileSystems[i] = new HdfsFileSystemImpl(getConfig(), statuses[i].getPath().toUri());
+                fileSystems[i] = systemPool.borrowObject(statuses[i].getPath().toUri());
             }
             return fileSystems;
         } catch (IOException e) {
