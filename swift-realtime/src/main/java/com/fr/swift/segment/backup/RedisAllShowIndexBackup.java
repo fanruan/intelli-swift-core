@@ -1,10 +1,9 @@
 package com.fr.swift.segment.backup;
 
-import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.redis.RedisClient;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.structure.array.IntArray;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -28,12 +27,14 @@ public class RedisAllShowIndexBackup implements AllShowIndexBackup {
     }
 
     @Override
-    public void backupAllShowIndex(ImmutableBitMap allShowIndex) {
-        IntArray intArray = BitMaps.traversal2Array(allShowIndex);
-        StringBuilder indexStr = new StringBuilder();
-        for (int i = 0; i < intArray.size(); i++) {
-            indexStr.append(intArray.get(i)).append(",");
-        }
+    public void backupAllShowIndex(final ImmutableBitMap allShowIndex) {
+        final StringBuilder indexStr = new StringBuilder();
+        allShowIndex.traversal(new TraversalAction() {
+            @Override
+            public void actionPerformed(int row) {
+                indexStr.append(row).append(",");
+            }
+        });
         redisClient.set(segment.getLocation().getPath() + REDIS_ALLSHOWINDEX_KEY, indexStr.toString());
     }
 }

@@ -9,8 +9,8 @@ import com.fr.swift.segment.operator.delete.RowDeleter;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.util.Crasher;
 
-import javax.mail.MethodNotSupportedException;
 import java.util.List;
 
 /**
@@ -32,12 +32,14 @@ public class Decrementer implements RowDeleter {
 
     @Override
     public boolean deleteData(List<Row> rowList) throws Exception {
-        throw new MethodNotSupportedException("method not supported");
+        Crasher.crash("method not supported");
+        return false;
     }
 
     @Override
     public boolean deleteData(SwiftResultSet swiftResultSet) throws Exception {
-        throw new MethodNotSupportedException("method not supported");
+        Crasher.crash("method not supported");
+        return false;
     }
 
     @Override
