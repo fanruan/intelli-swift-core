@@ -1,7 +1,6 @@
 package com.fr.swift.config.entity;
 
 import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.config.SwiftConfigConstants.SegmentConfig;
 import com.fr.swift.config.bean.Convert;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.convert.URIConverter;
@@ -27,9 +26,6 @@ public class SwiftSegmentEntity implements Convert<SegmentKeyBean> {
 
     @Column(name = SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER)
     private String segmentOwner;
-
-    @Column(name = SegmentConfig.USABLE)
-    private Boolean usable;
 
     @Column(name = SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_URI, length = SwiftConfigConstants.LONG_TEXT_LENGTH)
     @com.fr.third.javax.persistence.Convert(

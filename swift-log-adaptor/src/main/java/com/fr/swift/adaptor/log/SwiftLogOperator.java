@@ -2,7 +2,6 @@ package com.fr.swift.adaptor.log;
 
 import com.fr.general.LogOperator;
 import com.fr.log.message.AbstractMessage;
-import com.fr.stable.query.QueryFactory;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.data.DataList;
 import com.fr.stable.query.restriction.RestrictionFactory;
@@ -13,6 +12,7 @@ import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.db.impl.SwiftWhere;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.condition.SwiftQueryFactory;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.operator.delete.RowDeleter;
@@ -105,7 +105,7 @@ public class SwiftLogOperator implements LogOperator {
 
     @Override
     public void clearLogBefore(Date date) throws Exception {
-        QueryCondition condition = QueryFactory.create().addRestriction(RestrictionFactory.lt(AbstractMessage.COLUMN_TIME, date.getTime()));
+        QueryCondition condition = SwiftQueryFactory.create().addRestriction(RestrictionFactory.lt(AbstractMessage.COLUMN_TIME, date.getTime()));
         List<Table> tables = SwiftDatabase.getInstance().getAllTables();
         SwiftSegmentManager localSegmentProvider = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class);
         for (Table table : tables) {

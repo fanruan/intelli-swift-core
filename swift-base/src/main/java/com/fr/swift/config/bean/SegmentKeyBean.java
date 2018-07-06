@@ -23,7 +23,6 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
      */
     private String id;
     private String sourceKey;
-    private boolean usable;
     private URI absoluteUri;
     private URI uri;
     private Integer order;
@@ -62,15 +61,6 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
             return null;
         }
         return new SourceKey(sourceKey);
-    }
-
-    @Override
-    public boolean isUsable() {
-        return usable;
-    }
-
-    public void setUsable(boolean usable) {
-        this.usable = usable;
     }
 
     @Override
