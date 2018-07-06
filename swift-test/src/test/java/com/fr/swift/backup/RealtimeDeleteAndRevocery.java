@@ -1,6 +1,5 @@
 package com.fr.swift.backup;
 
-import com.fr.stable.query.QueryFactory;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.restriction.RestrictionFactory;
 import com.fr.swift.context.SwiftContext;
@@ -8,6 +7,7 @@ import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftWhere;
 import com.fr.swift.generate.BaseTest;
+import com.fr.swift.query.condition.SwiftQueryFactory;
 import com.fr.swift.redis.RedisClient;
 import com.fr.swift.segment.Decrementer;
 import com.fr.swift.segment.Incrementer;
@@ -62,7 +62,7 @@ public class RealtimeDeleteAndRevocery extends BaseTest {
             incrementer.increment(resultSet);
             Segment segment = swiftSegmentManager.getSegment(dataSource.getSourceKey()).get(0);
 
-            QueryCondition eqQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.eq("合同类型", "购买合同"));
+            QueryCondition eqQueryCondition = SwiftQueryFactory.create().addRestriction(RestrictionFactory.eq("合同类型", "购买合同"));
             Where where = new SwiftWhere(eqQueryCondition);
 
             Decrementer decrementer = new Decrementer(segment);
@@ -104,7 +104,7 @@ public class RealtimeDeleteAndRevocery extends BaseTest {
             incrementer.increment(resultSet);
             Segment segment = swiftSegmentManager.getSegment(dataSource.getSourceKey()).get(0);
 
-            QueryCondition eqQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.eq("合同类型", "购买合同"));
+            QueryCondition eqQueryCondition = SwiftQueryFactory.create().addRestriction(RestrictionFactory.eq("合同类型", "购买合同"));
             Where where = new SwiftWhere(eqQueryCondition);
 
             Decrementer decrementer = new Decrementer(segment);
