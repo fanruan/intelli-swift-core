@@ -6,8 +6,6 @@ import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.exception.TableNotExistException;
-import com.fr.swift.query.query.IndexQuery;
-import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.ColumnKey;
@@ -103,8 +101,9 @@ public abstract class AbstractDeleter implements RowDeleter {
         }
         Table table = database.getTable(sourceKey);
         ImmutableBitMap originAllShowIndex = segment.getAllShowIndex();
-        IndexQuery<ImmutableBitMap> indexAfterFilter = QueryRunnerProvider.getInstance().executeIndexQuery(table, where, segment);
-        ImmutableBitMap allShowIndex = originAllShowIndex.getAnd(indexAfterFilter.getQueryIndex());
+        ImmutableBitMap indexAfterFilter = where.createWhereIndex(table, segment);
+
+        ImmutableBitMap allShowIndex = originAllShowIndex.getAnd(indexAfterFilter);
         segment.putAllShowIndex(allShowIndex);
         return allShowIndex;
     }
