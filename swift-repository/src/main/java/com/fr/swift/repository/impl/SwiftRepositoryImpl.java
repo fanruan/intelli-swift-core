@@ -41,22 +41,21 @@ public class SwiftRepositoryImpl extends AbstractRepository {
         }
         if (from.isExists()) {
             FileUtil.delete(new File(local.getPath()));
-            SwiftFileSystem target = from.read();
-            if (!target.isDirectory()) {
-                if (target.getResourceName().endsWith(".cubes")) {
+            if (!from.isDirectory()) {
+                if (from.getResourceName().endsWith(".cubes")) {
                     InputStream inputStream = from.toStream();
                     try {
                         ZipUtils.unZip(new File(local.getPath()).getParent(), inputStream);
                     } catch (Exception e) {
                         throw new SwiftFileException(e);
                     } finally {
-                        target.close();
+                        closeFileSystem(from);
                     }
                 } else {
                     InputStream inputStream = null;
                     FileOutputStream fileOutputStream = null;
                     try {
-                        inputStream = target.toStream();
+                        inputStream = from.toStream();
                         fileOutputStream = new FileOutputStream(new File(local.getPath()));
                         CommonIOUtils.copyBinaryTo(inputStream, fileOutputStream);
                     } catch (Exception e) {
@@ -64,13 +63,14 @@ public class SwiftRepositoryImpl extends AbstractRepository {
                     } finally {
                         CommonIOUtils.close(inputStream);
                         CommonIOUtils.close(fileOutputStream);
-                        target.close();
+                        closeFileSystem(from);
                     }
                 }
             } else {
                 SwiftFileSystem[] systems = from.listFiles();
                 for (SwiftFileSystem fileSystem : systems) {
                     copyFromRemote(fileSystem.getResourceURI(), resolve(local, fileSystem.getResourceName()));
+                    closeFileSystem(fileSystem);
                 }
             }
             return local;
@@ -79,6 +79,7 @@ public class SwiftRepositoryImpl extends AbstractRepository {
             if (from.isExists()) {
                 return copyFromRemote(URI.create(remote.getPath() + ".cubes"), local);
             }
+            closeFileSystem(from);
             throw new SwiftFileException(String.format("Remote resource '%s' is not exists!", remote.getPath()));
         }
     }
@@ -112,7 +113,7 @@ public class SwiftRepositoryImpl extends AbstractRepository {
                     throw new SwiftFileException(e);
                 } finally {
                     CommonIOUtils.close(inputStream);
-                    to.close();
+                    closeFileSystem(to);
                 }
             }
 
@@ -130,11 +131,13 @@ public class SwiftRepositoryImpl extends AbstractRepository {
         if (fileSystem.isExists()) {
             fileSystem.remove();
         }
-        fileSystem.parent().mkdirs();
+        SwiftFileSystem parent = fileSystem.parent();
+        parent.mkdirs();
+        closeFileSystem(parent);
         if (copyToRemote(zipFile.toURI(), resolve(URI.create(ResourceIOUtils.getParent(remote.getPath())), zipFile.getName()))) {
             zipFile.delete();
         }
-        fileSystem.close();
+        closeFileSystem(fileSystem);
         return true;
     }
 
@@ -144,7 +147,7 @@ public class SwiftRepositoryImpl extends AbstractRepository {
         try {
             return system.remove();
         } finally {
-            system.close();
+            closeFileSystem(system);
         }
     }
 

@@ -1,17 +1,16 @@
 package com.fr.swift.log;
 
+import com.fr.third.apache.log4j.Level;
 import com.fr.third.apache.log4j.Logger;
-import com.fr.third.apache.log4j.Priority;
 
 /**
  * @author anchore
  * @date 2018/7/4
  */
 class SwiftLog4jLogger extends BaseSwiftLogger implements SwiftLogger {
-    private Logger logger;
-    String FQCN = "";
-    private boolean traceCapable;
+    private static final String FQCN = SwiftLog4jLogger.class.getName();
 
+    private Logger logger;
 
     SwiftLog4jLogger(Logger logger) {
         this.logger = logger;
@@ -30,35 +29,35 @@ class SwiftLog4jLogger extends BaseSwiftLogger implements SwiftLogger {
     @Override
     public void trace(String s) {
         if (isTraceEnabled()) {
-            logger.trace(s);
+            logger.log(FQCN, Level.TRACE, s, null);
         }
     }
 
     @Override
     public void trace(String s, Object o) {
         if (isTraceEnabled()) {
-            logger.trace(format(s, o));
+            logger.log(FQCN, Level.TRACE, format(s, o), null);
         }
     }
 
     @Override
     public void trace(String s, Object o, Object o1) {
         if (isTraceEnabled()) {
-            logger.trace(format(s, o, o1));
+            logger.log(FQCN, Level.TRACE, format(s, o, o1), null);
         }
     }
 
     @Override
     public void trace(String s, Object... objects) {
         if (isTraceEnabled()) {
-            logger.trace(format(s, objects));
+            logger.log(FQCN, Level.TRACE, format(s, objects), null);
         }
     }
 
     @Override
     public void trace(String s, Throwable throwable) {
         if (isTraceEnabled()) {
-            logger.trace(s, throwable);
+            logger.log(FQCN, Level.TRACE, s, throwable);
         }
     }
 
@@ -70,35 +69,35 @@ class SwiftLog4jLogger extends BaseSwiftLogger implements SwiftLogger {
     @Override
     public void debug(String s) {
         if (isDebugEnabled()) {
-            logger.debug(s);
+            logger.log(FQCN, Level.DEBUG, s, null);
         }
     }
 
     @Override
     public void debug(String s, Object o) {
         if (isDebugEnabled()) {
-            logger.debug(format(s, o));
+            logger.log(FQCN, Level.DEBUG, format(s, o), null);
         }
     }
 
     @Override
     public void debug(String s, Object o, Object o1) {
         if (isDebugEnabled()) {
-            logger.debug(format(s, o, o1));
+            logger.log(FQCN, Level.DEBUG, format(s, o, o1), null);
         }
     }
 
     @Override
     public void debug(String s, Object... objects) {
         if (isDebugEnabled()) {
-            logger.debug(format(s, objects));
+            logger.log(FQCN, Level.DEBUG, format(s, objects), null);
         }
     }
 
     @Override
     public void debug(String s, Throwable throwable) {
         if (isDebugEnabled()) {
-            logger.debug(s, throwable);
+            logger.log(FQCN, Level.DEBUG, s, throwable);
         }
     }
 
@@ -110,115 +109,129 @@ class SwiftLog4jLogger extends BaseSwiftLogger implements SwiftLogger {
     @Override
     public void info(String s) {
         if (isInfoEnabled()) {
-            logger.info(s);
+            logger.log(FQCN, Level.INFO, s, null);
         }
     }
 
     @Override
     public void info(String s, Object o) {
         if (isInfoEnabled()) {
-            logger.info(format(s, o));
+            logger.log(FQCN, Level.INFO, format(s, o), null);
         }
     }
 
     @Override
     public void info(String s, Object o, Object o1) {
         if (isInfoEnabled()) {
-            logger.info(format(s, o, o1));
+            logger.log(FQCN, Level.INFO, format(s, o, o1), null);
         }
     }
 
     @Override
     public void info(String s, Object... objects) {
         if (isInfoEnabled()) {
-            logger.info(format(s, objects));
+            logger.log(FQCN, Level.INFO, format(s, objects), null);
         }
     }
 
     @Override
     public void info(String s, Throwable throwable) {
         if (isInfoEnabled()) {
-            logger.info(s, throwable);
+            logger.log(FQCN, Level.INFO, s, throwable);
         }
     }
 
     @Override
     public boolean isWarnEnabled() {
-        return logger.isEnabledFor(Priority.WARN);
+        return logger.isEnabledFor(Level.WARN);
     }
 
     @Override
     public void warn(String s) {
         if (isWarnEnabled()) {
-            logger.warn(s);
+            logger.log(FQCN, Level.WARN, s, null);
         }
     }
 
     @Override
     public void warn(String s, Object o) {
         if (isWarnEnabled()) {
-            logger.warn(format(s, o));
+            logger.log(FQCN, Level.WARN, format(s, o), null);
         }
     }
 
     @Override
     public void warn(String s, Object o, Object o1) {
         if (isWarnEnabled()) {
-            logger.warn(format(s, o, o1));
+            logger.log(FQCN, Level.WARN, format(s, o, o1), null);
         }
     }
 
     @Override
     public void warn(String s, Object... objects) {
         if (isWarnEnabled()) {
-            logger.warn(format(s, objects));
+            logger.log(FQCN, Level.WARN, format(s, objects), null);
         }
     }
 
     @Override
     public void warn(String s, Throwable throwable) {
         if (isWarnEnabled()) {
-            logger.warn(s, throwable);
+            logger.log(FQCN, Level.WARN, s, throwable);
+        }
+    }
+
+    @Override
+    public void warn(Throwable t) {
+        if (isWarnEnabled()) {
+            logger.log(FQCN, Level.WARN, null, t);
         }
     }
 
     @Override
     public boolean isErrorEnabled() {
-        return logger.isEnabledFor(Priority.ERROR);
+        return logger.isEnabledFor(Level.ERROR);
     }
 
     @Override
     public void error(String s) {
         if (isErrorEnabled()) {
-            logger.error(s);
+            logger.log(FQCN, Level.ERROR, s, null);
         }
     }
 
     @Override
     public void error(String s, Object o) {
         if (isErrorEnabled()) {
-            logger.error(format(s, o));
+            logger.log(FQCN, Level.ERROR, format(s, o), null);
         }
     }
 
     @Override
     public void error(String s, Object o, Object o1) {
         if (isErrorEnabled()) {
-            logger.error(format(s, o, o1));
+            logger.log(FQCN, Level.ERROR, format(s, o, o1), null);
         }
     }
 
     @Override
     public void error(String s, Object... objects) {
         if (isErrorEnabled()) {
-            logger.error(format(s, objects));
+            logger.log(FQCN, Level.ERROR, format(s, objects), null);
         }
     }
 
     @Override
     public void error(String s, Throwable throwable) {
         if (isErrorEnabled()) {
-            logger.error(s, throwable);
+            logger.log(FQCN, Level.ERROR, s, throwable);
+        }
+    }
+
+    @Override
+    public void error(Throwable t) {
+        if (isErrorEnabled()) {
+            logger.log(FQCN, Level.ERROR, null, t);
         }
     }
 

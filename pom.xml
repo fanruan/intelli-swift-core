@@ -10,8 +10,8 @@
         <!--<version>5.0-RELEASE-SNAPSHOT</version>-->
         <!--<relativePath>../nuclear-settings/nuclear-swift-project/pom.xml</relativePath>-->
     <!--</parent>-->
-    <groupId>com.finebi</groupId>
-    <artifactId>nuclear-swift</artifactId>
+    <groupId>com.fr.intelligence</groupId>
+    <artifactId>com.fr.swift</artifactId>
     <packaging>pom</packaging>
     <version>5.0-RELEASE-SNAPSHOT</version>
     <modules>

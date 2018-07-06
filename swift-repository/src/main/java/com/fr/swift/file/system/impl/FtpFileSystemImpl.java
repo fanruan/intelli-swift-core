@@ -2,10 +2,6 @@ package com.fr.swift.file.system.impl;
 
 import com.fr.ftp.FTPUtils;
 import com.fr.ftp.client.FineFTP;
-import com.fr.ftp.config.FTPConfig;
-import com.fr.ftp.pool.FineFTPClientFactory;
-import com.fr.ftp.pool.FineFTPPoolConfig;
-import com.fr.ftp.pool.GenericFineFTPPool;
 import com.fr.general.ComparatorUtils;
 import com.fr.io.utils.ResourceIOUtils;
 import com.fr.stable.Filter;
@@ -13,6 +9,8 @@ import com.fr.swift.file.conf.impl.FtpRepositoryConfigImpl;
 import com.fr.swift.file.exception.SwiftFileException;
 import com.fr.swift.file.system.AbstractFileSystem;
 import com.fr.swift.file.system.SwiftFileSystem;
+import com.fr.swift.file.system.pool.BaseRemoteSystemPool;
+import com.fr.swift.file.system.pool.RemotePoolCreator;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Strings;
 import com.fr.third.org.apache.commons.pool2.ObjectPool;
@@ -26,15 +24,14 @@ import java.net.URI;
  */
 public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfigImpl> {
 
-    private FTPConfig ftpConfig;
     private ObjectPool<FineFTP> clientPool;
+    private BaseRemoteSystemPool<FtpFileSystemImpl> systemPool;
     private URI rootURI;
 
-    public FtpFileSystemImpl(FtpRepositoryConfigImpl config, URI uri) {
+    public FtpFileSystemImpl(FtpRepositoryConfigImpl config, URI uri, ObjectPool<FineFTP> clientPool) {
         super(config, uri);
-        ftpConfig = config.toFtpConfig();
-        FineFTPClientFactory factory = new FineFTPClientFactory(ftpConfig);
-        clientPool = new GenericFineFTPPool(factory, FineFTPPoolConfig.getPoolConfig());
+        this.systemPool = (BaseRemoteSystemPool<FtpFileSystemImpl>) RemotePoolCreator.creator().getPool(config);
+        this.clientPool = clientPool;
         rootURI = URI.create(Strings.trimSeparator(config.getRootPath() + "/", "/"));
     }
 
@@ -68,7 +65,7 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfigImp
             if (null != children) {
                 SwiftFileSystem[] childFileSystem = new SwiftFileSystem[children.length];
                 for (int i = 0; i < children.length; i++) {
-                    childFileSystem[i] = new FtpFileSystemImpl(getConfig(), resolve(getResourceURI(), children[i]));
+                    childFileSystem[i] = systemPool.borrowObject(resolve(getResourceURI(), children[i]));
                 }
                 return childFileSystem;
             }
@@ -99,7 +96,7 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfigImp
         if (ComparatorUtils.equals(remote, getResourceURI())) {
             fileSystem = this;
         } else {
-            fileSystem = new FtpFileSystemImpl(getConfig(), remote);
+            fileSystem = systemPool.borrowObject(remote);
         }
         if (fileSystem.isExists()) {
             return fileSystem;
@@ -109,7 +106,7 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfigImp
 
     @Override
     public SwiftFileSystem parent() {
-        return new FtpFileSystemImpl(getConfig(), getResourceURI());
+        return systemPool.borrowObject(getParentURI());
     }
 
     @Override
@@ -196,10 +193,7 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfigImp
             clientPool.clear();
         } catch (Exception e) {
             throw new SwiftFileException(e);
-        } finally {
-            clientPool.close();
         }
-
     }
 
     private URI resolve(URI uri, String resolve) {

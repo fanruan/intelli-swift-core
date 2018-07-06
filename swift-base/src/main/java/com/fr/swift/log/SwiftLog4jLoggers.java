@@ -3,6 +3,7 @@ package com.fr.swift.log;
 import com.fr.swift.util.function.Function;
 import com.fr.third.apache.log4j.ConsoleAppender;
 import com.fr.third.apache.log4j.DailyRollingFileAppender;
+import com.fr.third.apache.log4j.Level;
 import com.fr.third.apache.log4j.Logger;
 import com.fr.third.apache.log4j.PatternLayout;
 
@@ -17,7 +18,9 @@ public class SwiftLog4jLoggers implements Function<Void, SwiftLogger> {
 
     private static SwiftLogger newLogger() {
         Logger logger = Logger.getLogger(SwiftLog4jLogger.class);
-        PatternLayout layout = new PatternLayout("%d{yy-M-d H:m:s.S} %t %p [%C.%M] %m%n");
+        logger.setLevel(Level.INFO);
+        logger.setAdditivity(false);
+        PatternLayout layout = new PatternLayout("%d{yy-M-d H:m:s.S} %t %p [%C{1}.%M] %m%n");
         logger.addAppender(new ConsoleAppender(layout, "swift_console"));
         try {
             DailyRollingFileAppender appender = new DailyRollingFileAppender(layout, "logs/swift.log", "'.'yy-M-d");

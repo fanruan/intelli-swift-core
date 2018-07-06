@@ -6,7 +6,7 @@ import com.fr.swift.Result;
 import com.fr.swift.URL;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.event.history.HistoryLoadRpcEvent;
+import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.invocation.SwiftInvocation;
 import com.fr.swift.log.SwiftLogger;
@@ -99,7 +99,7 @@ public class QueryController {
         URL url = getMasterURL();
         ProxyFactory factory = ProxySelector.getInstance().getFactory();
         Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, url, false);
-        Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName("rpcTrigger"), new Object[]{new HistoryLoadRpcEvent()}));
+        Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName("rpcTrigger"), new Object[]{new HistoryLoadSegmentRpcEvent()}));
         RpcFuture future = (RpcFuture) result.getValue();
         if (null == future) {
             throw result.getException();
