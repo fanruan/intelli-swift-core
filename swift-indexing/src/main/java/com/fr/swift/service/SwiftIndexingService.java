@@ -22,8 +22,8 @@ import com.fr.swift.cube.task.impl.TaskEvent;
 import com.fr.swift.cube.task.impl.WorkerTaskImpl;
 import com.fr.swift.cube.task.impl.WorkerTaskPool;
 import com.fr.swift.event.global.TaskDoneRpcEvent;
-import com.fr.swift.event.history.HistoryLoadRelationRpcEvent;
-import com.fr.swift.event.history.HistoryLoadRpcEvent;
+import com.fr.swift.event.history.HistoryCommonLoadRpcEvent;
+import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.frrpc.SwiftClusterService;
 import com.fr.swift.generate.history.TableBuilder;
@@ -179,7 +179,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
                                     }
                                 }
 
-                                runRpc(new HistoryLoadRpcEvent(sourceKey.getId()))
+                                runRpc(new HistoryLoadSegmentRpcEvent(sourceKey.getId()))
                                         .addCallback(new AsyncRpcCallback() {
                                             @Override
                                             public void success(Object result) {
@@ -222,7 +222,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
                                     }
                                 }
 
-                                runRpc(new HistoryLoadRelationRpcEvent(Pair.of(sourceKey.getId(), needUpload)))
+                                runRpc(new HistoryCommonLoadRpcEvent(Pair.of(sourceKey.getId(), needUpload)))
                                         .addCallback(new AsyncRpcCallback() {
                                             @Override
                                             public void success(Object result) {

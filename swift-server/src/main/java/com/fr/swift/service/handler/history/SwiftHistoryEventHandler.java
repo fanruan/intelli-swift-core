@@ -2,7 +2,7 @@ package com.fr.swift.service.handler.history;
 
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.event.base.AbstractHistoryRpcEvent;
-import com.fr.swift.event.history.HistoryLoadRpcEvent;
+import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rpc.client.AsyncRpcCallback;
@@ -40,9 +40,9 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
     public <S extends Serializable> S handle(AbstractHistoryRpcEvent event) {
         try {
             switch (event.subEvent()) {
-                case LOAD:
-                    return historyDataSyncManager.handle((HistoryLoadRpcEvent) event);
-                case LOAD_RELATION:
+                case LOAD_SEGMENT:
+                    return historyDataSyncManager.handle((HistoryLoadSegmentRpcEvent) event);
+                case COMMON_LOAD:
                     Map<String, ClusterEntity> services = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.HISTORY);
                     if (null == services || services.isEmpty()) {
                         throw new RuntimeException("Cannot find history service");
@@ -74,6 +74,7 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
                                     });
                         }
                     }
+                    return null;
             }
         } catch (Exception e) {
             LOGGER.error(e);
