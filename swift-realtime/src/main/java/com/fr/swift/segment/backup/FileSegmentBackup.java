@@ -31,6 +31,8 @@ public class FileSegmentBackup extends BaseInserter implements SwiftSegmentBacku
     @Override
     public void backupRowData(int cursor, Row rowData) {
         putRow(cursor, rowData);
+        segment.putRowCount(cursor + 1);
+        segment.release();
     }
 
     @Override

@@ -9,6 +9,7 @@ public class SwiftConfigConstants {
 
     public static class SegmentConfig {
         public static final String COLUMN_SEGMENT_OWNER = "segmentOwner";
+        public static final String USABLE = "usable";
         public static final String COLUMN_SEGMENT_ORDER = "segmentOrder";
         public static final String COLUMN_STORE_TYPE = "storeType";
         public static final String COLUMN_SEGMENT_URI = "segmentUri";

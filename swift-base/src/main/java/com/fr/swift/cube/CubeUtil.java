@@ -32,9 +32,10 @@ public class CubeUtil {
         }
     }
 
-    private static boolean isSegConfExists(URI segUri) {
+    private static boolean isSegUsable(URI segUri) {
         SegmentKeyBean segKey = new SegmentKeyBean();
         segKey.setUri(segUri);
+        segKey.setUsable(true);
         return SwiftSegmentServiceProvider.getProvider().containsSegment(segKey);
     }
 
