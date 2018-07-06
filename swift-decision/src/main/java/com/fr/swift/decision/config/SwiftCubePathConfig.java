@@ -47,9 +47,9 @@ public class SwiftCubePathConfig extends SwiftAbstractSimpleConfig<String> {
     public String get() {
         String path = super.get();
         if (StringUtils.isEmpty(path)) {
-            return BASE_CUBE_PATH;
+            path = SwiftContext.getInstance().getBean(SwiftPathService.class).getSwiftPath();
         }
-        return path;
+        return StringUtils.isEmpty(path) ? BASE_CUBE_PATH : path;
     }
 
     @Override
