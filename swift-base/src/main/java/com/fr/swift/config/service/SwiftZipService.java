@@ -7,5 +7,5 @@ package com.fr.swift.config.service;
 public interface SwiftZipService {
     boolean isZip();
 
-    void setZip(boolean isZip);
+    boolean setZip(boolean isZip);
 }

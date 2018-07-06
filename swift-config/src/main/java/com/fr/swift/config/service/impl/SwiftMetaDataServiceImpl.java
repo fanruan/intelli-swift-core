@@ -7,6 +7,7 @@ import com.fr.swift.URL;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.dao.SwiftMetaDataDao;
+import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.config.hibernate.transaction.AbstractTransactionWorker;
 import com.fr.swift.config.hibernate.transaction.HibernateTransactionManager;
 import com.fr.swift.config.service.SwiftMetaDataService;
@@ -14,7 +15,6 @@ import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.event.global.CleanMetaDataCacheEvent;
 import com.fr.swift.invocation.SwiftInvocation;
-import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rpc.client.AsyncRpcCallback;
 import com.fr.swift.rpc.client.async.RpcFuture;
@@ -25,10 +25,13 @@ import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.third.org.hibernate.Session;
+import com.fr.third.org.hibernate.criterion.Criterion;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -49,7 +52,6 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     @Autowired(required = false)
     private RpcServer server;
 
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftMetaDataServiceImpl.class);
     private ConcurrentHashMap<String, SwiftMetaData> metaDataCache = new ConcurrentHashMap<String, SwiftMetaData>();
 
     @Override
@@ -68,7 +70,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
 
             });
         } catch (Exception e) {
-            LOGGER.error("Add or update metadata error!", e);
+            SwiftLoggers.getLogger().error("Add or update metadata error!", e);
             return false;
         }
     }
@@ -93,7 +95,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
 
             });
         } catch (Exception e) {
-            LOGGER.error("Add metadata error!", e);
+            SwiftLoggers.getLogger().error("Add metadata error!", e);
             return false;
         }
     }
@@ -136,7 +138,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
             });
 
         } catch (Exception e) {
-            LOGGER.error("Remove metadata error!", e);
+            SwiftLoggers.getLogger().error("Remove metadata error!", e);
             return false;
         }
     }
@@ -168,7 +170,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
             });
 
         } catch (Exception e) {
-            LOGGER.error("Select metadata error!", e);
+            SwiftLoggers.getLogger().error("Select metadata error!", e);
             return new HashMap<String, SwiftMetaData>();
         }
     }
@@ -193,7 +195,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                 });
 
             } catch (Exception e) {
-                LOGGER.error("Select metadata error!", e);
+                SwiftLoggers.getLogger().error("Select metadata error!", e);
                 return null;
             }
         }
@@ -238,5 +240,32 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
         List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.getInstance().getBean(SwiftServiceInfoService.class).getServiceInfoByService("cluster_master_service");
         SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
         return UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
+    }
+
+    @Override
+    public List<SwiftMetaData> find(final Criterion... criterion) {
+        try {
+            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<List<SwiftMetaData>>() {
+                @Override
+                public List<SwiftMetaData> work(Session session) {
+                    List<SwiftMetaDataEntity> list = swiftMetaDataDao.find(session, criterion);
+                    List<SwiftMetaData> result = new ArrayList<SwiftMetaData>();
+                    if (null != list) {
+                        for (SwiftMetaDataEntity entity : list) {
+                            result.add(entity.convert());
+                        }
+                    }
+                    return result;
+                }
+
+                @Override
+                public boolean needTransaction() {
+                    return false;
+                }
+            });
+        } catch (SQLException e) {
+            SwiftLoggers.getLogger().error(e);
+            return Collections.emptyList();
+        }
     }
 }

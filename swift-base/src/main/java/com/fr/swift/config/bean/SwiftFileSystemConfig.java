@@ -1,6 +1,4 @@
-package com.fr.swift.file.conf;
-
-import com.fr.swift.file.system.SwiftFileSystemType;
+package com.fr.swift.config.bean;
 
 /**
  * @author yee

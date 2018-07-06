@@ -1,6 +1,6 @@
 package com.fr.swift.rpc.registry.impl;
 
-import com.fr.swift.config.bean.RpcServiceAddress;
+import com.fr.swift.config.bean.RpcServiceAddressBean;
 import com.fr.swift.config.service.SwiftServiceAddressService;
 import com.fr.swift.rpc.registry.ServiceDiscovery;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class DbServiceDiscovery implements ServiceDiscovery {
     private SwiftServiceAddressService config;
     @Override
     public String discover(String serviceName) {
-        RpcServiceAddress address = config.getAddress(serviceName);
+        RpcServiceAddressBean address = config.getAddress(serviceName);
         if (null == address) {
             return address.getFullAddress();
         }

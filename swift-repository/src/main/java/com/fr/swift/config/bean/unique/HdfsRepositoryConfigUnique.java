@@ -1,16 +1,16 @@
-package com.fr.swift.config.bean;
+package com.fr.swift.config.bean.unique;
 
 import com.fr.config.Identifier;
 import com.fr.config.holder.Conf;
 import com.fr.config.holder.factory.Holders;
 import com.fr.config.utils.UniqueKey;
-import com.fr.swift.file.conf.impl.HdfsRepositoryConfigImpl;
+import com.fr.swift.config.bean.HdfsRepositoryConfigBean;
 
 /**
  * @author yee
  * @date 2018/6/15
  */
-public class HdfsRepositoryConfBean extends UniqueKey implements RepositoryConfBean<HdfsRepositoryConfigImpl> {
+public class HdfsRepositoryConfigUnique extends UniqueKey implements RepositoryConfigUnique {
 
     @Identifier("fsName")
     private Conf<String> fsName = Holders.simple("fs.defaultFS");
@@ -43,8 +43,9 @@ public class HdfsRepositoryConfBean extends UniqueKey implements RepositoryConfB
         this.fsName.set(fsName);
     }
 
+    @Override
     public Object clone() throws CloneNotSupportedException {
-        HdfsRepositoryConfBean bean = (HdfsRepositoryConfBean) super.clone();
+        HdfsRepositoryConfigUnique bean = (HdfsRepositoryConfigUnique) super.clone();
         bean.fsName = (Conf) this.fsName.clone();
         bean.hdfsHost = (Conf) this.hdfsHost.clone();
         bean.hdfsPort = (Conf) this.hdfsPort.clone();
@@ -52,7 +53,7 @@ public class HdfsRepositoryConfBean extends UniqueKey implements RepositoryConfB
     }
 
     @Override
-    public HdfsRepositoryConfigImpl convert() {
-        return new HdfsRepositoryConfigImpl(fsName.get(), hdfsHost.get(), hdfsPort.get());
+    public HdfsRepositoryConfigBean convert() {
+        return new HdfsRepositoryConfigBean(fsName.get(), hdfsHost.get(), hdfsPort.get());
     }
 }

@@ -1,8 +1,8 @@
 package com.fr.swift.repository;
 
-import com.fr.swift.config.SwiftRepositoryConfig;
-import com.fr.swift.config.bean.RepositoryConfBean;
-import com.fr.swift.file.conf.SwiftFileSystemConfig;
+import com.fr.swift.config.bean.SwiftFileSystemConfig;
+import com.fr.swift.config.service.SwiftRepositoryConfService;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.repository.impl.SwiftRepositoryImpl;
 
 import java.util.Map;
@@ -17,17 +17,14 @@ public class SwiftRepositoryManager {
 
     private Map<SwiftFileSystemConfig, SwiftRepository> fileSystemMap = new ConcurrentHashMap<SwiftFileSystemConfig, SwiftRepository>();
 
-    private SwiftRepositoryConfig config = SwiftRepositoryConfig.getInstance();
-
     private SwiftRepository defaultRepository = new SwiftRepositoryImpl(SwiftFileSystemConfig.DEFAULT);
 
     private SwiftRepositoryManager() {
     }
 
     public SwiftRepository getCurrentRepository() {
-        RepositoryConfBean<? extends SwiftFileSystemConfig> bean = config.getCurrentRepository();
-        if (null != bean) {
-            SwiftFileSystemConfig config = bean.convert();
+        SwiftFileSystemConfig config = SwiftContext.getInstance().getBean(SwiftRepositoryConfService.class).getCurrentRepository();
+        if (null != config) {
             SwiftRepository repository = fileSystemMap.get(config);
             if (null == repository) {
                 repository = new SwiftRepositoryImpl(config);

@@ -5,7 +5,7 @@ import com.fr.ftp.client.FineFTP;
 import com.fr.general.ComparatorUtils;
 import com.fr.io.utils.ResourceIOUtils;
 import com.fr.stable.Filter;
-import com.fr.swift.file.conf.impl.FtpRepositoryConfigImpl;
+import com.fr.swift.config.bean.FtpRepositoryConfigBean;
 import com.fr.swift.file.exception.SwiftFileException;
 import com.fr.swift.file.system.AbstractFileSystem;
 import com.fr.swift.file.system.SwiftFileSystem;
@@ -22,13 +22,13 @@ import java.net.URI;
  * @author yee
  * @date 2018/6/26
  */
-public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfigImpl> {
+public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfigBean> {
 
     private ObjectPool<FineFTP> clientPool;
     private BaseRemoteSystemPool<FtpFileSystemImpl> systemPool;
     private URI rootURI;
 
-    public FtpFileSystemImpl(FtpRepositoryConfigImpl config, URI uri, ObjectPool<FineFTP> clientPool) {
+    public FtpFileSystemImpl(FtpRepositoryConfigBean config, URI uri, ObjectPool<FineFTP> clientPool) {
         super(config, uri);
         this.systemPool = (BaseRemoteSystemPool<FtpFileSystemImpl>) RemotePoolCreator.creator().getPool(config);
         this.clientPool = clientPool;

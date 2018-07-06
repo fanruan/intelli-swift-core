@@ -48,4 +48,9 @@ public abstract class SwiftAbstractObjectMapConfig<T> extends DefaultConfigurati
             }
         });
     }
+
+    @Override
+    public Map<String, T> get() {
+        return configHolder.get();
+    }
 }

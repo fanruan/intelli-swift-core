@@ -1,7 +1,6 @@
 package com.fr.swift.config.hibernate;
 
-import com.fr.swift.config.SwiftConfDBConfig;
-import com.fr.swift.config.bean.SwiftConfDbBean;
+import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
@@ -28,16 +27,8 @@ public class HibernateManager {
 
     @Bean
     public Configuration getConfiguration() {
-        SwiftConfDbBean config = SwiftConfDBConfig.getInstance().getConfig();
-        if (null != config) {
-            properties.setDialectClass(config.getDialectClass());
-            properties.setDriverClass(config.getDriverClass());
-            properties.setPassword(config.getPassword());
-            properties.setUrl(config.getUrl());
-            properties.setUsername(config.getUsername());
-        }
-
         Configuration configuration = new Configuration();
+        configuration.addAnnotatedClass(SwiftConfigEntity.class);
         configuration.addAnnotatedClass(SwiftMetaDataEntity.class);
         configuration.addAnnotatedClass(SwiftSegmentEntity.class);
         configuration.addAnnotatedClass(SwiftServiceInfoEntity.class);

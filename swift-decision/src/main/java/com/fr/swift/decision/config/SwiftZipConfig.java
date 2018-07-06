@@ -1,9 +1,14 @@
 package com.fr.swift.decision.config;
 
 import com.fr.config.ConfigContext;
+import com.fr.config.Configuration;
 import com.fr.config.holder.factory.Holders;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.base.impl.SwiftAbstractSimpleConfig;
+import com.fr.swift.config.service.SwiftZipService;
+import com.fr.swift.context.SwiftContext;
+import com.fr.transaction.Configurations;
+import com.fr.transaction.Worker;
 
 /**
  * @author yee
@@ -21,6 +26,23 @@ public class SwiftZipConfig extends SwiftAbstractSimpleConfig<Boolean> {
             config = ConfigContext.getConfigInstance(SwiftZipConfig.class);
         }
         return config;
+    }
+
+    @Override
+    public boolean addOrUpdate(final Boolean obj) {
+        Configurations.update(new Worker() {
+            @Override
+            public void run() {
+                SwiftZipConfig.super.addOrUpdate(obj);
+            }
+
+            @Override
+            public Class<? extends Configuration>[] targets() {
+                return new Class[]{SwiftZipConfig.class};
+            }
+        });
+
+        return SwiftContext.getInstance().getBean(SwiftZipService.class).setZip(obj);
     }
 
     public String getNameSpace() {

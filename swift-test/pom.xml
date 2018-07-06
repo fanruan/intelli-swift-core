@@ -49,6 +49,11 @@
             <artifactId>swift-redis</artifactId>
             <version>5.0-RELEASE-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-decision</artifactId>
+            <version>5.0-RELEASE-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 </project>
