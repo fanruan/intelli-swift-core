@@ -33,6 +33,7 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfigImp
     public FtpFileSystemImpl(FtpRepositoryConfigImpl config, URI uri) {
         super(config, uri);
         ftpConfig = config.toFtpConfig();
+        FineFTPPoolConfig.getPoolConfig().setTestOnBorrow(true);
         FineFTPClientFactory factory = new FineFTPClientFactory(ftpConfig);
         clientPool = new GenericFineFTPPool(factory, FineFTPPoolConfig.getPoolConfig());
         rootURI = URI.create(Strings.trimSeparator(config.getRootPath() + "/", "/"));
