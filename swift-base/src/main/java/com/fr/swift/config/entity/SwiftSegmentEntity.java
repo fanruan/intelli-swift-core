@@ -29,7 +29,7 @@ public class SwiftSegmentEntity implements Convert<SegmentKeyBean> {
     private String segmentOwner;
 
     @Column(name = SegmentConfig.USABLE)
-    Boolean usable;
+    private Boolean usable;
 
     @Column(name = SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_URI, length = SwiftConfigConstants.LONG_TEXT_LENGTH)
     @com.fr.third.javax.persistence.Convert(

@@ -24,10 +24,7 @@ import java.util.List;
  */
 @Service
 public class RedisSegmentBackup implements SwiftSegmentBackup {
-
     private Segment segment;
-
-    private Segment currentSegment;
 
     protected TransactionManager transactionManager;
 
@@ -60,17 +57,14 @@ public class RedisSegmentBackup implements SwiftSegmentBackup {
 
     @Override
     public void backupNullIndex() {
-
     }
 
     @Override
     public void backupSegmentInfo(int lastCursor, int cursor) {
-
     }
 
     @Override
     public void release() {
-
     }
 
     @Override
