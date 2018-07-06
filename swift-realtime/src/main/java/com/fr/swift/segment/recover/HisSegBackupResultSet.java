@@ -49,11 +49,7 @@ class HisSegBackupResultSet implements SwiftResultSet {
 
     @Override
     public boolean next() {
-        cursor++;
-        if (cursor < rowCount) {
-            return true;
-        }
-        return false;
+        return ++cursor < rowCount;
     }
 
     @Override

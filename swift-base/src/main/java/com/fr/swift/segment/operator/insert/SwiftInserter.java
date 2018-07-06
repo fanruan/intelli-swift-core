@@ -9,7 +9,6 @@ import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.ListResultSet;
 import com.fr.swift.transatcion.Transactional;
 
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,6 +33,12 @@ public class SwiftInserter extends BaseInserter implements Inserter {
     @Transactional(value = RealtimeInsertException.class)
     public List<Segment> insertData(List<Row> rowList) throws RealtimeInsertException {
         return insertData(new ListResultSet(segment.getMetaData(), rowList));
+    }
+
+    @Override
+    protected void putRow(int cursor, Row rowData) {
+        super.putRow(cursor, rowData);
+        segment.putRowCount(cursor + 1);
     }
 
     @Override
