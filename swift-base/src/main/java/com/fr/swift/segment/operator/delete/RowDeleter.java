@@ -1,5 +1,6 @@
 package com.fr.swift.segment.operator.delete;
 
+import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.db.Where;
 import com.fr.swift.segment.operator.Deleter;
 import com.fr.swift.source.Row;
@@ -19,5 +20,5 @@ public interface RowDeleter extends Deleter {
 
     boolean deleteData(SwiftResultSet swiftResultSet) throws Exception;
 
-    boolean delete(SourceKey sourceKey, Where where) throws Exception;
+    ImmutableBitMap delete(SourceKey sourceKey, Where where) throws Exception;
 }

@@ -20,7 +20,6 @@ import com.fr.swift.rpc.annotation.RpcService;
 import com.fr.swift.rpc.annotation.RpcServiceType;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
-import com.fr.swift.segment.operator.delete.HistorySwiftDeleter;
 import com.fr.swift.segment.operator.delete.RowDeleter;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
@@ -112,11 +111,8 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         try {
             List<Segment> segments = segmentManager.getSegment(sourceKey);
             for (Segment segment : segments) {
-                if (segment.isHistory()) {
-                    RowDeleter deleter = new HistorySwiftDeleter(segment);
-                    deleter.delete(sourceKey, where);
-                    ((HistorySwiftDeleter) deleter).release();
-                }
+                RowDeleter rowDeleter = (RowDeleter) SwiftContext.getInstance().getBean("decrementer", segment);
+                rowDeleter.delete(sourceKey, where);
             }
             //todo upload allshowindex;
             return true;

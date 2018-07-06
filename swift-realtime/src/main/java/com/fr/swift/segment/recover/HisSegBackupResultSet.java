@@ -49,11 +49,11 @@ class HisSegBackupResultSet implements SwiftResultSet {
 
     @Override
     public boolean next() {
-        do {
-            cursor++;
-        } while (cursor < rowCount && !allShowIndex.contains(cursor));
-
-        return cursor < rowCount;
+        cursor++;
+        if (cursor < rowCount) {
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -67,6 +67,10 @@ class HisSegBackupResultSet implements SwiftResultSet {
             }
         }
         return new ListBasedRow(row);
+    }
+
+    public ImmutableBitMap getAllShowIndex() {
+        return allShowIndex;
     }
 
     @Override

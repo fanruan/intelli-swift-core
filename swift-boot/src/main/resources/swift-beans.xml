@@ -15,12 +15,15 @@
     <bean id="swiftQuerySessionFactory" class="com.fr.swift.query.session.factory.SessionFactoryImpl"/>
     <bean id="redisClient" class="com.fr.swift.redis.RedisClient"/>
     <bean id="queryIndexRunner" class="com.fr.swift.service.QueryIndexService"/>
+    <bean id="decrementer" class="com.fr.swift.segment.Decrementer" scope="prototype"/>
 
     <!--配置不同的实现class注入-->
     <!--<bean id="segmentBackup" class="com.fr.swift.segment.backup.RedisSegmentBackup" scope="prototype"/>-->
     <!--<bean id="segmentRecovery" class="com.fr.swift.segment.recover.RedisSegmentRecovery"/>-->
     <!--<bean id="transactionManager" class="com.fr.swift.transaction.RedisTransactionManager" scope="prototype"/>-->
+    <!--<bean id="allShowIndexBackup" class="com.fr.swift.segment.backup.RedisAllShowIndexBackup" scope="prototype"/>-->
     <bean id="segmentBackup" class="com.fr.swift.segment.backup.FileSegmentBackup" scope="prototype"/>
     <bean id="segmentRecovery" class="com.fr.swift.segment.recover.FileSegmentRecovery"/>
     <bean id="transactionManager" class="com.fr.swift.transaction.FileTransactionManager" scope="prototype"/>
+    <bean id="allShowIndexBackup" class="com.fr.swift.segment.backup.FileAllshowIndexBackup" scope="prototype"/>
 </beans>

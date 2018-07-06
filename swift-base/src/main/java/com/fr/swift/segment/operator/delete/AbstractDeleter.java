@@ -36,7 +36,7 @@ public abstract class AbstractDeleter implements RowDeleter {
     private Map<String, BitmapIndexedColumn> bitmapIndexedColumnMap;
     private ImmutableBitMap allShowIndex;
 
-    private final Database database = SwiftDatabase.getInstance();
+    protected final Database database = SwiftDatabase.getInstance();
 
     public AbstractDeleter(Segment segment) {
         this.segment = segment;
@@ -97,7 +97,7 @@ public abstract class AbstractDeleter implements RowDeleter {
     }
 
     @Override
-    public boolean delete(SourceKey sourceKey, Where where) throws Exception {
+    public ImmutableBitMap delete(SourceKey sourceKey, Where where) throws Exception {
         if (!database.existsTable(sourceKey)) {
             throw new TableNotExistException(sourceKey);
         }
@@ -106,7 +106,7 @@ public abstract class AbstractDeleter implements RowDeleter {
         IndexQuery<ImmutableBitMap> indexAfterFilter = QueryRunnerProvider.getInstance().executeIndexQuery(table, where, segment);
         ImmutableBitMap allShowIndex = originAllShowIndex.getAnd(indexAfterFilter.getQueryIndex());
         segment.putAllShowIndex(allShowIndex);
-        return true;
+        return allShowIndex;
     }
 
     public abstract void release();
