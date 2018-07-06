@@ -105,7 +105,7 @@ public class SwiftLogOperator implements LogOperator {
 
     @Override
     public void clearLogBefore(Date date) throws Exception {
-        QueryCondition condition = QueryFactory.create().addRestriction(RestrictionFactory.gt(AbstractMessage.COLUMN_TIME, date.getTime()));
+        QueryCondition condition = QueryFactory.create().addRestriction(RestrictionFactory.lt(AbstractMessage.COLUMN_TIME, date.getTime()));
         List<Table> tables = SwiftDatabase.getInstance().getAllTables();
         SwiftSegmentManager localSegmentProvider = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class);
         for (Table table : tables) {
