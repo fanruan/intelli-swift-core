@@ -3,8 +3,8 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>nuclear-swift</artifactId>
-        <groupId>com.finebi</groupId>
+        <artifactId>com.fr.swift</artifactId>
+        <groupId>com.fr.intelligence</groupId>
         <version>5.0-RELEASE-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -25,7 +25,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.finebi</groupId>
+            <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-base</artifactId>
             <version>5.0-RELEASE-SNAPSHOT</version>
         </dependency>
