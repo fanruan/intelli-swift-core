@@ -6,22 +6,22 @@ import com.fr.swift.event.base.AbstractHistoryRpcEvent;
  * @author yee
  * @date 2018/6/8
  */
-public class HistoryLoadRpcEvent extends AbstractHistoryRpcEvent<String> {
+public class HistoryLoadSegmentRpcEvent extends AbstractHistoryRpcEvent<String> {
 
     private static final long serialVersionUID = 5999241318201878252L;
 
     private String sourceKey;
 
-    public HistoryLoadRpcEvent(String sourceKey) {
+    public HistoryLoadSegmentRpcEvent(String sourceKey) {
         this.sourceKey = sourceKey;
     }
 
-    public HistoryLoadRpcEvent() {
+    public HistoryLoadSegmentRpcEvent() {
     }
 
     @Override
     public Event subEvent() {
-        return Event.LOAD;
+        return Event.LOAD_SEGMENT;
     }
 
     @Override

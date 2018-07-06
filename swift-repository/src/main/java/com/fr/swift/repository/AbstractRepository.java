@@ -1,12 +1,10 @@
 package com.fr.swift.repository;
 
 import com.fr.swift.file.conf.SwiftFileSystemConfig;
-import com.fr.swift.file.conf.impl.FtpRepositoryConfigImpl;
-import com.fr.swift.file.conf.impl.HdfsRepositoryConfigImpl;
+import com.fr.swift.file.exception.SwiftFileException;
 import com.fr.swift.file.system.SwiftFileSystem;
 import com.fr.swift.file.system.impl.DefaultFileSystemImpl;
-import com.fr.swift.file.system.impl.FtpFileSystemImpl;
-import com.fr.swift.file.system.impl.HdfsFileSystemImpl;
+import com.fr.swift.file.system.pool.RemotePoolCreator;
 
 import java.io.IOException;
 import java.net.URI;
@@ -39,10 +37,19 @@ public abstract class AbstractRepository implements SwiftRepository {
         switch (configuration.getType()) {
             case FR:
                 return new DefaultFileSystemImpl(configuration, uri);
-            case FTP:
-                return new FtpFileSystemImpl((FtpRepositoryConfigImpl) configuration, uri);
             default:
-                return new HdfsFileSystemImpl((HdfsRepositoryConfigImpl) configuration, uri);
+                return RemotePoolCreator.creator().getPool(configuration).borrowObject(uri);
+        }
+    }
+
+    public void closeFileSystem(SwiftFileSystem fileSystem) throws SwiftFileException {
+        if (null != fileSystem) {
+            switch (configuration.getType()) {
+                case FR:
+                    fileSystem.close();
+                default:
+                    RemotePoolCreator.creator().getPool(configuration).returnObject(fileSystem.getResourceURI(), fileSystem);
+            }
         }
     }
 }
