@@ -8,6 +8,7 @@ import com.fr.ftp.pool.GenericFineFTPPool;
 import com.fr.swift.file.conf.impl.FtpRepositoryConfigImpl;
 import com.fr.swift.file.system.impl.FtpFileSystemImpl;
 import com.fr.third.org.apache.commons.pool2.ObjectPool;
+import com.fr.third.org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
 import java.net.URI;
 
@@ -27,8 +28,10 @@ class FtpFileSystemPool extends BaseRemoteSystemPool {
 
         public FtpFileSystemPoolFactory(FtpRepositoryConfigImpl config) {
             FTPConfig ftpConfig = config.toFtpConfig();
+            GenericObjectPoolConfig poolConfig = FineFTPPoolConfig.getPoolConfig();
+            poolConfig.setTestOnBorrow(true);
             FineFTPClientFactory factory = new FineFTPClientFactory(ftpConfig);
-            clientPool = new GenericFineFTPPool(factory, FineFTPPoolConfig.getPoolConfig());
+            clientPool = new GenericFineFTPPool(factory, poolConfig);
             this.config = config;
         }
 
