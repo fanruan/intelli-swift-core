@@ -10,18 +10,18 @@ import java.util.List;
  * @author yee
  * @date 2018/6/29
  */
-public class HistoryLoadRelationRpcEvent extends AbstractHistoryRpcEvent<Pair<String, List<URI>>> {
+public class HistoryCommonLoadRpcEvent extends AbstractHistoryRpcEvent<Pair<String, List<URI>>> {
 
     private static final long serialVersionUID = -6256005102486640777L;
     private Pair<String, List<URI>> relation;
 
-    public HistoryLoadRelationRpcEvent(Pair<String, List<URI>> relation) {
+    public HistoryCommonLoadRpcEvent(Pair<String, List<URI>> relation) {
         this.relation = relation;
     }
 
     @Override
     public Event subEvent() {
-        return Event.LOAD_RELATION;
+        return Event.COMMON_LOAD;
     }
 
     @Override
