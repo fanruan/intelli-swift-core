@@ -19,11 +19,7 @@ public abstract class SwiftAbstractSimpleConfig<T> extends DefaultConfiguration 
     @Override
     public boolean addOrUpdate(final T obj) {
         configHolder.set(obj);
-        return true;/*Configurations.update(new FRConfTransactionWorker(new Class[]{this.getClass()}) {
-            @Override
-            public void run() {
-            }
-        });*/
+        return true;
     }
 
     @Override

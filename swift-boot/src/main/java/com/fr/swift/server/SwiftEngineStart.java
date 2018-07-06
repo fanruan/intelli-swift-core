@@ -37,6 +37,7 @@ import com.fr.swift.source.db.IConnectionProvider;
 import com.fr.swift.source.db.SwiftConnectionInfo;
 import com.fr.transaction.Configurations;
 import com.fr.transaction.FineConfigurationHelper;
+import com.fr.workspace.simple.SimpleWork;
 
 /**
  * This class created on 2018/6/12
@@ -49,7 +50,7 @@ public class SwiftEngineStart {
 
     public static void main(String[] args) {
         try {
-//            SimpleWork.checkIn(System.getProperty("user.dir"));
+            SimpleWork.checkIn(System.getProperty("user.dir"));
             SwiftContext.init();
             SwiftContext.getInstance().getBean(SwiftHttpServer.class).start();
             SwiftLoggers.getLogger().info("http server starting!");

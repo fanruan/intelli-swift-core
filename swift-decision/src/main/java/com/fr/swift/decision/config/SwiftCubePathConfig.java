@@ -1,6 +1,7 @@
 package com.fr.swift.decision.config;
 
 import com.fr.config.ConfigContext;
+import com.fr.config.Configuration;
 import com.fr.config.holder.factory.Holders;
 import com.fr.stable.StringUtils;
 import com.fr.swift.config.SwiftConfigConstants;
@@ -8,6 +9,8 @@ import com.fr.swift.config.base.impl.SwiftAbstractSimpleConfig;
 import com.fr.swift.config.service.SwiftPathService;
 import com.fr.swift.context.ContextUtil;
 import com.fr.swift.context.SwiftContext;
+import com.fr.transaction.Configurations;
+import com.fr.transaction.Worker;
 
 /**
  * This class created on 2018/5/7
@@ -33,7 +36,16 @@ public class SwiftCubePathConfig extends SwiftAbstractSimpleConfig<String> {
     }
 
     public String getPath() {
-        String path = get();
+        return get();
+    }
+
+    public void setPath(String path) {
+        addOrUpdate(path);
+    }
+
+    @Override
+    public String get() {
+        String path = super.get();
         if (StringUtils.isEmpty(path)) {
             return BASE_CUBE_PATH;
         }
@@ -41,16 +53,22 @@ public class SwiftCubePathConfig extends SwiftAbstractSimpleConfig<String> {
     }
 
     @Override
-    public boolean addOrUpdate(String path) {
+    public boolean addOrUpdate(final String path) {
         if (isValidPath(path)) {
-            super.addOrUpdate(path);
+            Configurations.update(new Worker() {
+                @Override
+                public void run() {
+                    SwiftCubePathConfig.super.addOrUpdate(path);
+                }
+
+                @Override
+                public Class<? extends Configuration>[] targets() {
+                    return new Class[]{SwiftCubePathConfig.class};
+                }
+            });
             return SwiftContext.getInstance().getBean(SwiftPathService.class).setSwiftPath(path);
         }
         return false;
-    }
-
-    public void setPath(String path) {
-
     }
 
     private static String getDefaultPath() {
