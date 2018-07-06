@@ -66,4 +66,5 @@ public class SwiftServiceAddressServiceImpl implements SwiftServiceAddressServic
     public RpcServiceAddressBean getAddress(String serviceName) {
         return configService.getConfigBean(CONVERT, serviceName);
     }
+
 }

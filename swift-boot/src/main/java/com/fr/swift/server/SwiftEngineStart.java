@@ -19,6 +19,7 @@ import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
 import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 import com.fr.swift.config.hibernate.SwiftConfigProperties;
+import com.fr.swift.config.service.SwiftRepositoryConfService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.ProviderTaskManager;
 import com.fr.swift.event.ClusterEvent;
@@ -61,6 +62,7 @@ public class SwiftEngineStart {
             if (SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class).isCluster()) {
                 ClusterListenerHandler.handlerEvent(new ClusterEvent(ClusterEventType.JOIN_CLUSTER, ClusterType.CONFIGURE));
             }
+            SwiftContext.getInstance().getBean(SwiftRepositoryConfService.class).getCurrentRepository();
         } catch (Throwable e) {
             SwiftLoggers.getLogger().error(e);
             System.exit(1);

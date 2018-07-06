@@ -1,11 +1,14 @@
 package com.fr.swift.config.entity;
 
+import com.fr.stable.StringUtils;
 import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Entity;
 import com.fr.third.javax.persistence.Id;
 import com.fr.third.javax.persistence.Table;
 
 import java.io.Serializable;
+
+import static com.fr.decision.webservice.utils.DecisionServiceConstants.LONG_TEXT_LENGTH;
 
 /**
  * @author yee
@@ -17,7 +20,7 @@ public class SwiftConfigEntity implements Serializable {
     private static final long serialVersionUID = 3522815101688011116L;
     @Id
     private String configKey;
-    @Column
+    @Column(length = LONG_TEXT_LENGTH)
     private String configValue;
 
     public SwiftConfigEntity(String configKey, String configValue) {
@@ -41,6 +44,9 @@ public class SwiftConfigEntity implements Serializable {
     }
 
     public void setConfigValue(String configValue) {
+        if (StringUtils.isEmpty(configValue)) {
+            configValue = "__EMPTY__";
+        }
         this.configValue = configValue;
     }
 

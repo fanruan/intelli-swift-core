@@ -2,12 +2,14 @@ package com.fr.swift.config.service.impl;
 
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.dao.SwiftSegmentDao;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.hibernate.transaction.AbstractTransactionWorker;
 import com.fr.swift.config.hibernate.transaction.HibernateTransactionManager;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.third.org.hibernate.Session;
+import com.fr.third.org.hibernate.criterion.Criterion;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
@@ -160,6 +162,33 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
         } catch (Exception e) {
             SwiftLoggers.getLogger().error("Update segment failed!", e);
             return false;
+        }
+    }
+
+    @Override
+    public List<SegmentKey> find(final Criterion... criterion) {
+        try {
+            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<List<SegmentKey>>() {
+                @Override
+                public List<SegmentKey> work(Session session) {
+                    List<SwiftSegmentEntity> list = swiftSegmentDao.find(session, criterion);
+                    List<SegmentKey> result = new ArrayList<SegmentKey>();
+                    if (null != list) {
+                        for (SwiftSegmentEntity entity : list) {
+                            result.add(entity.convert());
+                        }
+                    }
+                    return result;
+                }
+
+                @Override
+                public boolean needTransaction() {
+                    return false;
+                }
+            });
+        } catch (SQLException e) {
+            SwiftLoggers.getLogger().error(e);
+            return Collections.emptyList();
         }
     }
 }

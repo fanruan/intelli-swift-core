@@ -1,5 +1,6 @@
 package com.fr.swift.config.convert;
 
+import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.FtpRepositoryConfigBean;
@@ -66,7 +67,13 @@ public class SwiftFileSystemConvert implements SwiftConfigService.ConfigConvert<
             for (Field field : fields) {
                 field.setAccessible(true);
                 SwiftConfigEntity entity = dao.select(session, getKey(type.name() + "_" + field.getName()));
-                field.set(configBean, entity.getConfigValue());
+                if (null != entity) {
+                    String value = entity.getConfigValue();
+                    if (ComparatorUtils.equals(value, "__EMPTY__")) {
+                        value = StringUtils.EMPTY;
+                    }
+                    field.set(configBean, value);
+                }
             }
             return configBean;
         } catch (Exception e) {

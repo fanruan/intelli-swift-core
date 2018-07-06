@@ -22,7 +22,7 @@ import static com.fr.decision.webservice.utils.DecisionServiceConstants.LONG_TEX
  * @date 2018/5/24
  */
 @Entity
-@Table(name = "FINE_SWIFT_METADATA")
+@Table(name = "fine_swift_metadata")
 public class SwiftMetaDataEntity implements Convert<SwiftMetaDataBean> {
     @Id
     private String id;

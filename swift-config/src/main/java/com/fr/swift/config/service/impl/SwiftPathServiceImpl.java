@@ -30,7 +30,10 @@ public class SwiftPathServiceImpl implements SwiftPathService {
         public String toBean(SwiftConfigDao<SwiftConfigEntity> dao, Session session, Object... args) throws SQLException {
             SwiftConfigEntity entity = dao.select(session, SwiftConfigConstants.FRConfiguration.CUBE_PATH_NAMESPACE);
             if (null != entity) {
-                return entity.getConfigValue();
+                String path = entity.getConfigValue();
+                if (isValidPath(path)) {
+                    return path;
+                }
             }
             String path = getDefaultPath();
             for (SwiftConfigEntity swiftConfigEntity : toEntity(path)) {
@@ -61,7 +64,7 @@ public class SwiftPathServiceImpl implements SwiftPathService {
     }
 
     private static boolean isValidPath(String path) {
-        return path != null && !StringUtils.isBlank(path);
+        return path != null && !StringUtils.isBlank(path) && !ComparatorUtils.equals(path, "__EMPTY__");
     }
 
     @Override

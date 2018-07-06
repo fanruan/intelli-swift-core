@@ -8,6 +8,7 @@ import com.fr.swift.config.hibernate.transaction.HibernateTransactionManager;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.third.org.hibernate.Session;
+import com.fr.third.org.hibernate.criterion.Criterion;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
@@ -119,6 +120,30 @@ class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
                 public List<SwiftServiceInfoBean> work(Session session) {
                     List<SwiftServiceInfoBean> beanList = new ArrayList<SwiftServiceInfoBean>();
                     for (SwiftServiceInfoEntity entity : swiftServiceInfoDao.getServiceInfoByService(session, service)) {
+                        beanList.add(entity.convert());
+                    }
+                    return beanList;
+                }
+
+                @Override
+                public boolean needTransaction() {
+                    return false;
+                }
+            });
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error("get ServiceInfo by service error!", e);
+            return new ArrayList<SwiftServiceInfoBean>();
+        }
+    }
+
+    @Override
+    public List<SwiftServiceInfoBean> find(final Criterion... criterion) {
+        try {
+            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<List<SwiftServiceInfoBean>>() {
+                @Override
+                public List<SwiftServiceInfoBean> work(Session session) {
+                    List<SwiftServiceInfoBean> beanList = new ArrayList<SwiftServiceInfoBean>();
+                    for (SwiftServiceInfoEntity entity : swiftServiceInfoDao.find(session, criterion)) {
                         beanList.add(entity.convert());
                     }
                     return beanList;
