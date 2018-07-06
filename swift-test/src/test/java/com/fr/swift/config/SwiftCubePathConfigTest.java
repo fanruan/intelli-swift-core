@@ -1,5 +1,6 @@
 package com.fr.swift.config;
 
+import com.fr.swift.decision.config.SwiftCubePathConfig;
 import com.fr.swift.generate.BaseTest;
 import com.fr.swift.test.Preparer;
 import com.fr.swift.test.TestResource;

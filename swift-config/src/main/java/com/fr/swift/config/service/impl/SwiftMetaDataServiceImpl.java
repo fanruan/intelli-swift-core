@@ -14,7 +14,6 @@ import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.event.global.CleanMetaDataCacheEvent;
 import com.fr.swift.invocation.SwiftInvocation;
-import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rpc.client.AsyncRpcCallback;
 import com.fr.swift.rpc.client.async.RpcFuture;
@@ -49,7 +48,6 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     @Autowired(required = false)
     private RpcServer server;
 
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftMetaDataServiceImpl.class);
     private ConcurrentHashMap<String, SwiftMetaData> metaDataCache = new ConcurrentHashMap<String, SwiftMetaData>();
 
     @Override
@@ -68,7 +66,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
 
             });
         } catch (Exception e) {
-            LOGGER.error("Add or update metadata error!", e);
+            SwiftLoggers.getLogger().error("Add or update metadata error!", e);
             return false;
         }
     }
@@ -93,7 +91,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
 
             });
         } catch (Exception e) {
-            LOGGER.error("Add metadata error!", e);
+            SwiftLoggers.getLogger().error("Add metadata error!", e);
             return false;
         }
     }
@@ -136,7 +134,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
             });
 
         } catch (Exception e) {
-            LOGGER.error("Remove metadata error!", e);
+            SwiftLoggers.getLogger().error("Remove metadata error!", e);
             return false;
         }
     }
@@ -168,7 +166,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
             });
 
         } catch (Exception e) {
-            LOGGER.error("Select metadata error!", e);
+            SwiftLoggers.getLogger().error("Select metadata error!", e);
             return new HashMap<String, SwiftMetaData>();
         }
     }
@@ -193,7 +191,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                 });
 
             } catch (Exception e) {
-                LOGGER.error("Select metadata error!", e);
+                SwiftLoggers.getLogger().error("Select metadata error!", e);
                 return null;
             }
         }

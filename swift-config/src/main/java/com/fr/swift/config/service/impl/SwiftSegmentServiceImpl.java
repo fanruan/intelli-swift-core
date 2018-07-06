@@ -5,7 +5,6 @@ import com.fr.swift.config.dao.SwiftSegmentDao;
 import com.fr.swift.config.hibernate.transaction.AbstractTransactionWorker;
 import com.fr.swift.config.hibernate.transaction.HibernateTransactionManager;
 import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.third.org.hibernate.Session;
@@ -25,7 +24,6 @@ import java.util.Map;
  */
 @Service("swiftSegmentService")
 public class SwiftSegmentServiceImpl implements SwiftSegmentService {
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftSegmentService.class);
 
     @Autowired
     private HibernateTransactionManager transactionManager;
@@ -47,7 +45,7 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
 
             });
         } catch (Exception e) {
-            LOGGER.error("Add or update segments error!", e);
+            SwiftLoggers.getLogger().error("Add or update segments error!", e);
             return false;
         }
     }
@@ -67,7 +65,7 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
 
             });
         } catch (Exception e) {
-            LOGGER.error("Remove segments error!", e);
+            SwiftLoggers.getLogger().error("Remove segments error!", e);
             return false;
         }
     }
@@ -88,7 +86,7 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
 
             });
         } catch (Exception e) {
-            LOGGER.error("Update segment failed!", e);
+            SwiftLoggers.getLogger().error("Update segment failed!", e);
             return false;
         }
     }
@@ -119,7 +117,7 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
             });
 
         } catch (Exception e) {
-            LOGGER.error("Select segments error!", e);
+            SwiftLoggers.getLogger().error("Select segments error!", e);
         }
         return Collections.emptyMap();
     }
@@ -139,7 +137,7 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
                 }
             });
         } catch (Exception e) {
-            LOGGER.error("Select segments error!", e);
+            SwiftLoggers.getLogger().error("Select segments error!", e);
             return Collections.emptyList();
         }
     }
@@ -160,7 +158,7 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
                 }
             });
         } catch (Exception e) {
-            LOGGER.error("Update segment failed!", e);
+            SwiftLoggers.getLogger().error("Update segment failed!", e);
             return false;
         }
     }

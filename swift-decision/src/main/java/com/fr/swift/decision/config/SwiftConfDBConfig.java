@@ -1,11 +1,14 @@
-package com.fr.swift.config;
+package com.fr.swift.decision.config;
 
 import com.fr.config.ConfigContext;
 import com.fr.config.Configuration;
 import com.fr.config.DefaultConfiguration;
 import com.fr.config.holder.Conf;
 import com.fr.config.holder.factory.Holders;
-import com.fr.swift.config.bean.SwiftConfDbBean;
+import com.fr.swift.config.SwiftConfigConstants;
+import com.fr.swift.config.bean.unique.SwiftConfDbUnique;
+import com.fr.swift.config.service.SwiftConfDbService;
+import com.fr.swift.context.SwiftContext;
 import com.fr.transaction.Configurations;
 import com.fr.transaction.Worker;
 
@@ -17,7 +20,7 @@ public class SwiftConfDBConfig extends DefaultConfiguration {
 
     private static SwiftConfDBConfig config;
 
-    private Conf<SwiftConfDbBean> configHolder = Holders.obj(null, SwiftConfDbBean.class);
+    private Conf<SwiftConfDbUnique> configHolder = Holders.obj(null, SwiftConfDbUnique.class);
 
     public static SwiftConfDBConfig getInstance() {
         if (null == config) {
@@ -26,11 +29,11 @@ public class SwiftConfDBConfig extends DefaultConfiguration {
         return config;
     }
 
-    public SwiftConfDbBean getConfig() {
+    public SwiftConfDbUnique getConfig() {
         return configHolder.get();
     }
 
-    public void setConfig(final SwiftConfDbBean config) {
+    public void setConfig(final SwiftConfDbUnique config) {
         Configurations.update(new Worker() {
             @Override
             public void run() {
@@ -42,7 +45,7 @@ public class SwiftConfDBConfig extends DefaultConfiguration {
                 return new Class[]{SwiftConfDBConfig.class};
             }
         });
-
+        SwiftContext.getInstance().getBean(SwiftConfDbService.class).saveDbConfig(config.convert());
     }
 
     @Override

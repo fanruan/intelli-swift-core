@@ -2,6 +2,8 @@ package com.fr.swift.config.hibernate;
 
 import com.fr.finedb.FineDBProperties;
 import com.fr.stable.db.option.DBOption;
+import com.fr.swift.config.bean.SwiftConfDbBean;
+import com.fr.swift.config.service.SwiftConfDbService;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.beans.factory.annotation.Value;
 import com.fr.third.springframework.stereotype.Service;
@@ -16,6 +18,8 @@ import java.util.Properties;
 public class SwiftConfigProperties {
     private DBOption option;
     private boolean selfStart;
+    @Autowired(required = false)
+    private SwiftConfDbService confDbService;
 
     public SwiftConfigProperties() {
         this.option = new DBOption().addRawProperty("hibernate.connection.autocommit", false);
@@ -23,7 +27,27 @@ public class SwiftConfigProperties {
     }
 
     public Properties getProperties() {
-        return selfStart ? this.option.getProperties() : FineDBProperties.getInstance().get().getProperties();
+        if (selfStart) {
+            SwiftConfDbBean config = confDbService.getConfig();
+            if (null != config) {
+                setDialectClass(config.getDialectClass());
+                setDriverClass(config.getDriverClass());
+                setPassword(config.getPassword());
+                setUrl(config.getUrl());
+                setUsername(config.getUsername());
+            } else {
+                config = new SwiftConfDbBean();
+                config.setDriverClass(getDialectClass());
+                config.setDriverClass(getDriverClass());
+                config.setPassword(getPassword());
+                config.setUsername(getUsername());
+                config.setUrl(getUrl());
+                confDbService.saveDbConfig(config);
+            }
+        } else {
+            this.option = FineDBProperties.getInstance().get();
+        }
+        return this.option.getProperties();
     }
 
     public String getDriverClass() {

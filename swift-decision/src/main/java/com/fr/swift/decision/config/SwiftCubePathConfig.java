@@ -1,10 +1,13 @@
-package com.fr.swift.config;
+package com.fr.swift.decision.config;
 
 import com.fr.config.ConfigContext;
 import com.fr.config.holder.factory.Holders;
 import com.fr.stable.StringUtils;
+import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.base.impl.SwiftAbstractSimpleConfig;
+import com.fr.swift.config.service.SwiftPathService;
 import com.fr.swift.context.ContextUtil;
+import com.fr.swift.context.SwiftContext;
 
 /**
  * This class created on 2018/5/7
@@ -37,10 +40,17 @@ public class SwiftCubePathConfig extends SwiftAbstractSimpleConfig<String> {
         return path;
     }
 
-    public void setPath(String path) {
+    @Override
+    public boolean addOrUpdate(String path) {
         if (isValidPath(path)) {
             super.addOrUpdate(path);
+            return SwiftContext.getInstance().getBean(SwiftPathService.class).setSwiftPath(path);
         }
+        return false;
+    }
+
+    public void setPath(String path) {
+
     }
 
     private static String getDefaultPath() {

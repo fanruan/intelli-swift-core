@@ -1,7 +1,7 @@
 package com.fr.swift.service;
 
-import com.fr.swift.config.SwiftCubePathConfig;
 import com.fr.swift.config.service.SwiftMetaDataService;
+import com.fr.swift.config.service.SwiftPathService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Where;
 import com.fr.swift.log.SwiftLoggers;
@@ -24,6 +24,7 @@ import com.fr.swift.segment.operator.delete.HistorySwiftDeleter;
 import com.fr.swift.segment.operator.delete.RowDeleter;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -46,6 +47,9 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
 
     private transient SwiftSegmentManager segmentManager = (SwiftSegmentManager) SwiftContext.getInstance().getBean("localSegmentProvider");
 
+    @Autowired
+    private transient SwiftPathService pathService;
+
     private SwiftHistoryService() {
     }
 
@@ -53,7 +57,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     @RpcMethod(methodName = "load")
     public void load(Set<URI> remoteUris) throws IOException {
         if (null != remoteUris && !remoteUris.isEmpty()) {
-            String path = SwiftCubePathConfig.getInstance().getPath();
+            String path = pathService.getSwiftPath();
             SwiftRepository repository = SwiftRepositoryManager.getManager().getCurrentRepository();
             for (URI remote : remoteUris) {
                 repository.copyFromRemote(remote, URI.create(path + remote.getPath()));

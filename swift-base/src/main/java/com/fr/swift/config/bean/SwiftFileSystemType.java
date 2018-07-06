@@ -1,4 +1,4 @@
-package com.fr.swift.file.system;
+package com.fr.swift.config.bean;
 
 /**
  * @author yee

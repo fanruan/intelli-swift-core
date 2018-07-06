@@ -6,7 +6,6 @@ import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 import com.fr.swift.config.hibernate.transaction.AbstractTransactionWorker;
 import com.fr.swift.config.hibernate.transaction.HibernateTransactionManager;
 import com.fr.swift.config.service.SwiftServiceInfoService;
-import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.third.org.hibernate.Session;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +24,6 @@ import java.util.List;
  */
 @Service("swiftServiceInfoService")
 class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
-
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftServiceInfoServiceImpl.class);
 
     @Autowired
     private HibernateTransactionManager transactionManager;
@@ -47,7 +44,7 @@ class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
                 }
             });
         } catch (Exception e) {
-            LOGGER.error("Add or update ServiceInfo error!", e);
+            SwiftLoggers.getLogger().error("Add or update ServiceInfo error!", e);
             return false;
         }
     }
@@ -63,7 +60,7 @@ class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
                 }
             });
         } catch (Exception e) {
-            LOGGER.error("remove ServiceInfo error!", e);
+            SwiftLoggers.getLogger().error("remove ServiceInfo error!", e);
             return false;
         }
     }
@@ -83,7 +80,7 @@ class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
                 }
             });
         } catch (Exception e) {
-            LOGGER.error("get ServiceInfo error!", e);
+            SwiftLoggers.getLogger().error("get ServiceInfo error!", e);
             return null;
         }
     }
@@ -108,7 +105,7 @@ class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
                 }
             });
         } catch (Exception e) {
-            LOGGER.error("get all ServiceInfo error!", e);
+            SwiftLoggers.getLogger().error("get all ServiceInfo error!", e);
             return new ArrayList<SwiftServiceInfoBean>();
         }
     }
@@ -133,7 +130,7 @@ class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
                 }
             });
         } catch (Exception e) {
-            LOGGER.error("get ServiceInfo by service error!", e);
+            SwiftLoggers.getLogger().error("get ServiceInfo by service error!", e);
             return new ArrayList<SwiftServiceInfoBean>();
         }
     }

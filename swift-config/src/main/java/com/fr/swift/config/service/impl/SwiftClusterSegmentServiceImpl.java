@@ -8,8 +8,6 @@ import com.fr.swift.config.entity.key.SwiftSegLocationEntityId;
 import com.fr.swift.config.hibernate.transaction.AbstractTransactionWorker;
 import com.fr.swift.config.hibernate.transaction.HibernateTransactionManager;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
-import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.structure.Pair;
@@ -31,8 +29,6 @@ import java.util.Map;
  */
 @Service("swiftClusterSegmentService")
 public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentService {
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftSegmentService.class);
-    private static final String SEGMENT = "SEGMENT";
 
     @Autowired
     private HibernateTransactionManager transactionManager;
@@ -58,7 +54,7 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
                 }
             });
         } catch (SQLException e) {
-            LOGGER.error("add segment error! ", e);
+            SwiftLoggers.getLogger().error("add segment error! ", e);
         }
         return false;
     }
@@ -77,7 +73,7 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
                 }
             });
         } catch (SQLException e) {
-            LOGGER.error("remove segment error! ", e);
+            SwiftLoggers.getLogger().error("remove segment error! ", e);
         }
         return false;
     }
@@ -110,7 +106,7 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
                 }
             });
         } catch (SQLException e) {
-            LOGGER.error("update segment error! ", e);
+            SwiftLoggers.getLogger().error("update segment error! ", e);
         }
         return false;
     }
@@ -141,7 +137,7 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
             });
 
         } catch (Exception e) {
-            LOGGER.error("Select segments error!", e);
+            SwiftLoggers.getLogger().error("Select segments error!", e);
         }
         return Collections.emptyMap();
     }
@@ -197,7 +193,7 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
             });
 
         } catch (Exception e) {
-            LOGGER.error("Select segments error!", e);
+            SwiftLoggers.getLogger().error("Select segments error!", e);
         }
         return Collections.emptyMap();
     }
@@ -223,7 +219,7 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
             });
 
         } catch (Exception e) {
-            LOGGER.error("Select segments error!", e);
+            SwiftLoggers.getLogger().error("Select segments error!", e);
         }
         return Collections.emptyMap();
     }
@@ -253,7 +249,7 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
                 }
             });
         } catch (SQLException e) {
-            LOGGER.error("Update table error!", e);
+            SwiftLoggers.getLogger().error("Update table error!", e);
             return false;
         }
     }
