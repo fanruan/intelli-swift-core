@@ -23,10 +23,7 @@ public class SwiftConfigProperties {
     }
 
     public Properties getProperties() {
-        if (!selfStart) {
-            this.option = FineDBProperties.getInstance().get();
-        }
-        return this.option.getProperties();
+        return selfStart ? this.option.getProperties() : FineDBProperties.getInstance().get().getProperties();
     }
 
     public String getDriverClass() {
