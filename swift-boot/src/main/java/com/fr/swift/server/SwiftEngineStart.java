@@ -13,24 +13,14 @@ import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.stable.db.DBContext;
 import com.fr.stable.db.option.DBOption;
 import com.fr.swift.boot.ClusterListener;
-import com.fr.swift.config.bean.unique.RepositoryConfigUnique;
-import com.fr.swift.config.bean.unique.RpcServiceAddressUnique;
 import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
 import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 import com.fr.swift.config.hibernate.SwiftConfigProperties;
-import com.fr.swift.config.service.SwiftPathService;
-import com.fr.swift.config.service.SwiftRepositoryConfService;
-import com.fr.swift.config.service.SwiftServiceAddressService;
-import com.fr.swift.config.service.SwiftZipService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.ProviderTaskManager;
-import com.fr.swift.decision.config.SwiftCubePathConfig;
-import com.fr.swift.decision.config.SwiftRepositoryConfig;
-import com.fr.swift.decision.config.SwiftServiceAddressConfig;
-import com.fr.swift.decision.config.SwiftZipConfig;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
@@ -47,9 +37,6 @@ import com.fr.swift.source.db.SwiftConnectionInfo;
 import com.fr.transaction.Configurations;
 import com.fr.transaction.FineConfigurationHelper;
 import com.fr.workspace.simple.SimpleWork;
-
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * This class created on 2018/6/12
@@ -117,23 +104,23 @@ public class SwiftEngineStart {
     }
 
     public static void syncConfiguration() {
-        String path = SwiftCubePathConfig.getInstance().get();
-        SwiftContext.getInstance().getBean(SwiftPathService.class).setSwiftPath(path);
-        boolean zip = SwiftZipConfig.getInstance().get();
-        SwiftContext.getInstance().getBean(SwiftZipService.class).setZip(zip);
-        RepositoryConfigUnique unique = SwiftRepositoryConfig.getInstance().getCurrentRepository();
-        if (null != unique) {
-            SwiftContext.getInstance().getBean(SwiftRepositoryConfService.class).setCurrentRepository(unique.convert());
-        }
-        Map<String, RpcServiceAddressUnique> all = SwiftServiceAddressConfig.getInstance().get();
-        if (!all.isEmpty()) {
-            Iterator<Map.Entry<String, RpcServiceAddressUnique>> iterator = all.entrySet().iterator();
-            SwiftServiceAddressService service = SwiftContext.getInstance().getBean(SwiftServiceAddressService.class);
-            while (iterator.hasNext()) {
-                Map.Entry<String, RpcServiceAddressUnique> entry = iterator.next();
-                service.addOrUpdateAddress(entry.getKey(), entry.getValue().convert());
-            }
-        }
+//        String path = SwiftCubePathConfig.getInstance().get();
+//        SwiftContext.getInstance().getBean(SwiftPathService.class).setSwiftPath(path);
+//        boolean zip = SwiftZipConfig.getInstance().get();
+//        SwiftContext.getInstance().getBean(SwiftZipService.class).setZip(zip);
+//        RepositoryConfigUnique unique = SwiftRepositoryConfig.getInstance().getCurrentRepository();
+//        if (null != unique) {
+//            SwiftContext.getInstance().getBean(SwiftRepositoryConfService.class).setCurrentRepository(unique.convert());
+//        }
+//        Map<String, RpcServiceAddressUnique> all = SwiftServiceAddressConfig.getInstance().get();
+//        if (!all.isEmpty()) {
+//            Iterator<Map.Entry<String, RpcServiceAddressUnique>> iterator = all.entrySet().iterator();
+//            SwiftServiceAddressService service = SwiftContext.getInstance().getBean(SwiftServiceAddressService.class);
+//            while (iterator.hasNext()) {
+//                Map.Entry<String, RpcServiceAddressUnique> entry = iterator.next();
+//                service.addOrUpdateAddress(entry.getKey(), entry.getValue().convert());
+//            }
+//        }
     }
 
     private static void registerTmpConnectionProvider() {
