@@ -86,7 +86,7 @@ public class RangeBitmap extends AbstractBitMap {
     private MutableBitMap toRealBitmap() {
         MutableRoaringBitmap bitmap = new MutableRoaringBitmap();
         bitmap.flip((long) start, (long) end);
-        return RoaringMutableBitMap.newInstance(bitmap);
+        return RoaringMutableBitMap.of(bitmap);
     }
 
     @Override

@@ -14,7 +14,7 @@ public class AllShowBitMapTest extends TestCase {
     private static final int BOUND = 1000000;
 
     MutableBitMap getMutableBitMap() {
-        return RoaringMutableBitMap.newInstance();
+        return RoaringMutableBitMap.of();
     }
 
     int[] prepare(MutableBitMap m) {

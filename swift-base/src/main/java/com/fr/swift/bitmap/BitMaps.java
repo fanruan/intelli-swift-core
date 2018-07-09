@@ -20,7 +20,7 @@ public final class BitMaps {
     public static final ImmutableBitMap EMPTY_IMMUTABLE = new EmptyBitmap();
 
     public static MutableBitMap newRoaringMutable() {
-        return RoaringMutableBitMap.newInstance();
+        return RoaringMutableBitMap.of();
     }
 
     public static MutableBitMap newBitSetMutable() {
@@ -40,7 +40,7 @@ public final class BitMaps {
     }
 
     public static ImmutableBitMap newImmutableBitMap(IntList intList) {
-        final MutableBitMap bitmap = RoaringMutableBitMap.newInstance();
+        final MutableBitMap bitmap = RoaringMutableBitMap.of();
         new IntListRowTraversal(intList).traversal(new TraversalAction() {
             @Override
             public void actionPerformed(int row) {

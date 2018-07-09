@@ -33,7 +33,7 @@ public class ColumnFilterOperatorTest extends TestCase {
         EasyMock.expect(metaData.getColumn(EasyMock.anyInt())).andReturn(metaDataColumn).anyTimes();
         EasyMock.expect(metaDataColumn.getName()).andReturn("column1").anyTimes();
         EasyMock.expect(filterInfo.createDetailFilter(EasyMock.anyObject())).andReturn(detailFilter).anyTimes();
-        MutableBitMap bitMap = RoaringMutableBitMap.newInstance();
+        MutableBitMap bitMap = RoaringMutableBitMap.of();
         bitMap.add(0);
         EasyMock.expect(detailFilter.createFilterIndex()).andReturn(bitMap).anyTimes();
         control.replay();

@@ -53,8 +53,8 @@ public class DistinctAggregateTest extends TestCase {
     public void testCombine() {
         DistinctCountAggregatorValue value = new DistinctCountAggregatorValue();
         DistinctCountAggregatorValue other = new DistinctCountAggregatorValue();
-        MutableBitMap bitMap1 = RoaringMutableBitMap.newInstance();
-        MutableBitMap bitMap2 = RoaringMutableBitMap.newInstance();
+        MutableBitMap bitMap1 = RoaringMutableBitMap.of();
+        MutableBitMap bitMap2 = RoaringMutableBitMap.of();
 
         bitMap1.add(1);
         bitMap1.add(4);
