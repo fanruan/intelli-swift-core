@@ -173,7 +173,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
                             if (null != segmentKeys) {
                                 for (SegmentKey segmentKey : segmentKeys) {
                                     try {
-                                        SwiftRepositoryManager.getManager().getCurrentRepository().copyToRemote(segmentKey.getAbsoluteUri(), segmentKey.getUri());
+                                        SwiftRepositoryManager.getManager().currentRepo().copyToRemote(segmentKey.getAbsoluteUri(), segmentKey.getUri());
                                     } catch (IOException e) {
                                         logger.error("upload error! ", e);
                                     }
@@ -203,7 +203,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
                                         try {
                                             URI src = URI.create(String.format("%s/%s/%s", Strings.trimSeparator(segmentKey.getAbsoluteUri().getPath() + "/", "/"), RelationIndexImpl.RELATIONS_KEY, primary.getId()));
                                             URI dest = URI.create(String.format("%s/%s/%s", Strings.trimSeparator(segmentKey.getUri().getPath() + "/", "/"), RelationIndexImpl.RELATIONS_KEY, primary.getId()));
-                                            SwiftRepositoryManager.getManager().getCurrentRepository().copyToRemote(src, dest);
+                                            SwiftRepositoryManager.getManager().currentRepo().copyToRemote(src, dest);
                                             needUpload.add(dest);
                                         } catch (IOException e) {
                                             logger.error("upload error! ", e);
@@ -214,7 +214,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
                                         try {
                                             URI src = URI.create(String.format("%s/%s%s/%s", Strings.trimSeparator(segmentKey.getAbsoluteUri().getPath() + "/", "/"), "field", RelationIndexImpl.RELATIONS_KEY, primary.getId()));
                                             URI dest = URI.create(String.format("%s/%s/%s/%s", Strings.trimSeparator(segmentKey.getUri().getPath() + "/", "/"), "field", RelationIndexImpl.RELATIONS_KEY, primary.getId()));
-                                            SwiftRepositoryManager.getManager().getCurrentRepository().copyToRemote(src, dest);
+                                            SwiftRepositoryManager.getManager().currentRepo().copyToRemote(src, dest);
                                             needUpload.add(dest);
                                         } catch (IOException e) {
                                             logger.error("upload error! ", e);

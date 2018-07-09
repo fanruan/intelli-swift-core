@@ -47,7 +47,7 @@ public class SwiftServiceAddressServiceImpl implements SwiftServiceAddressServic
         }
 
         private String getKey(Object name, String key) {
-            return String.format("%s_%s_%s", SwiftConfigConstants.FRConfiguration.SERVICE_ADDRESS_NAMESPACE, name, key);
+            return String.format("%s.%s.%s", SwiftConfigConstants.FRConfiguration.SERVICE_ADDRESS_NAMESPACE, name, key);
         }
     };
 
