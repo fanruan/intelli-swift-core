@@ -1,7 +1,6 @@
 package com.fr.swift.bitmap.impl;
 
 import com.fr.swift.bitmap.BitMapType;
-import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.roaringbitmap.buffer.MutableRoaringBitmap;
@@ -15,7 +14,7 @@ import java.nio.ByteBuffer;
 /**
  * @author anchore
  */
-public class RoaringMutableBitMap extends BaseRoaringBitMap implements MutableBitMap {
+public class RoaringMutableBitMap extends RoaringImmutableBitMap implements MutableBitMap {
     private RoaringMutableBitMap(MutableRoaringBitmap bitmap) {
         super(bitmap);
     }
@@ -28,7 +27,7 @@ public class RoaringMutableBitMap extends BaseRoaringBitMap implements MutableBi
         return newInstance(new MutableRoaringBitmap());
     }
 
-    public static MutableBitMap fromByteBuffer(final ByteBuffer bb) {
+    private static MutableBitMap fromByteBuffer(final ByteBuffer bb) {
         MutableRoaringBitmap another = new MutableRoaringBitmap();
         DataInputStream dis = new DataInputStream(new InputStream() {
             @Override
@@ -40,13 +39,13 @@ public class RoaringMutableBitMap extends BaseRoaringBitMap implements MutableBi
             another.deserialize(dis);
             return newInstance(another);
         } catch (IOException e) {
-            SwiftLoggers.getLogger(RoaringMutableBitMap.class).error(e);
+            SwiftLoggers.getLogger().error(e);
             return newInstance();
         } finally {
             try {
                 dis.close();
             } catch (IOException e) {
-                SwiftLoggers.getLogger(RoaringMutableBitMap.class).error(e);
+                SwiftLoggers.getLogger().error(e);
             }
         }
     }
@@ -90,57 +89,12 @@ public class RoaringMutableBitMap extends BaseRoaringBitMap implements MutableBi
     }
 
     @Override
-    public ImmutableBitMap getAnd(ImmutableBitMap index) {
-        if (index instanceof AllShowBitMap) {
-            return clone();
-        }
-
-        MutableRoaringBitmap copy = bitmap.clone();
-        copy.and(extract(index));
-
-        return RoaringImmutableBitMap.newInstance(copy);
-    }
-
-    @Override
-    public ImmutableBitMap getOr(ImmutableBitMap index) {
-        if (index instanceof AllShowBitMap) {
-            return index;
-        }
-
-        MutableRoaringBitmap copy = bitmap.clone();
-        copy.or(extract(index));
-
-        return RoaringImmutableBitMap.newInstance(copy);
-    }
-
-    @Override
-    public ImmutableBitMap getAndNot(ImmutableBitMap index) {
-        if (index instanceof AllShowBitMap) {
-            return BitMaps.EMPTY_IMMUTABLE;
-        }
-
-        MutableRoaringBitmap copy = bitmap.clone();
-        copy.andNot(extract(index));
-
-        return RoaringImmutableBitMap.newInstance(copy);
-    }
-
-    @Override
-    public ImmutableBitMap getNot(int rowCount) {
-        MutableRoaringBitmap copy = bitmap.clone();
-        copy.flip(0L, rowCount);
-
-        return RoaringImmutableBitMap.newInstance(copy);
-    }
-
-    @Override
     public ImmutableBitMap clone() {
-        return newInstance(bitmap.clone());
+        return of(bitmap.clone());
     }
 
     @Override
     public BitMapType getType() {
         return BitMapType.ROARING_MUTABLE;
     }
-
 }

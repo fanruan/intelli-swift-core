@@ -11,7 +11,6 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 
-import java.util.Map;
 import java.util.TreeMap;
 
 import static org.easymock.EasyMock.expect;
@@ -20,7 +19,7 @@ public class MedianAggregateTest extends TestCase {
 
     public void testAggregateOdd() {
         //奇数个数据
-        RowTraversal bitMap = AllShowBitMap.newInstance(3);
+        RowTraversal bitMap = AllShowBitMap.of(3);
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
         DictionaryEncodedColumn dic = control.createMock(DictionaryEncodedColumn.class);
@@ -47,7 +46,7 @@ public class MedianAggregateTest extends TestCase {
 
     public void testAggregateEven() {
         //偶数个数据
-        RowTraversal bitMap = AllShowBitMap.newInstance(4);
+        RowTraversal bitMap = AllShowBitMap.of(4);
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
         DictionaryEncodedColumn dic = control.createMock(DictionaryEncodedColumn.class);

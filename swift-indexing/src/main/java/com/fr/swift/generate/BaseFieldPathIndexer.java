@@ -2,7 +2,7 @@ package com.fr.swift.generate;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
-import com.fr.swift.bitmap.impl.BitMapOrHelper;
+import com.fr.swift.bitmap.impl.FasterAggregation;
 import com.fr.swift.cube.task.TaskResult.Type;
 import com.fr.swift.cube.task.impl.TaskResultImpl;
 import com.fr.swift.relation.CubeMultiRelationPath;
@@ -15,6 +15,7 @@ import com.fr.swift.segment.operator.column.SwiftFieldPathIndexer;
 import com.fr.swift.segment.relation.RelationIndex;
 import com.fr.swift.util.Crasher;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -78,15 +79,15 @@ public abstract class BaseFieldPathIndexer extends BaseTablePathIndexer implemen
             DictionaryEncodedColumn dicColumn = primaryColumn.getDictionaryEncodedColumn();
             int size = dicColumn.size();
             MutableBitMap[] index = new MutableBitMap[size - 1];
-            BitMapOrHelper helper = new BitMapOrHelper();
+            List<ImmutableBitMap> bitmaps = new ArrayList<ImmutableBitMap>();
             for (int i = 1; i < size; i++) {
                 MutableBitMap primaryIndex = (MutableBitMap) primaryColumn.getBitmapIndex().getBitMapIndex(i);
                 primaryIndex.and(allShow);
                 index[i - 1] = getTableLinkedOrGVI(primaryIndex, targetReader, primarySegIndex);
-                helper.add(index[i - 1]);
+                bitmaps.add(index[i - 1]);
             }
             writeTargetIndex(targetWriter, index, primarySegIndex);
-            targetWriter.putNullIndex(0, helper.compute().getNot(targetRowCount));
+            targetWriter.putNullIndex(0, FasterAggregation.or(bitmaps).getNot(targetRowCount));
         } finally {
             releaseIfNeed(primary);
         }

@@ -62,7 +62,7 @@ public class BitSetMutableBitMap extends BaseBitSetBitMap implements MutableBitM
         BitSet copy = (BitSet) bitset.clone();
         copy.and(extract(index));
 
-        return BitSetImmutableBitMap.newInstance(copy);
+        return BitSetImmutableBitMap.of(copy);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class BitSetMutableBitMap extends BaseBitSetBitMap implements MutableBitM
         BitSet copy = (BitSet) bitset.clone();
         copy.or(extract(index));
 
-        return BitSetImmutableBitMap.newInstance(copy);
+        return BitSetImmutableBitMap.of(copy);
     }
 
     @Override
@@ -86,20 +86,20 @@ public class BitSetMutableBitMap extends BaseBitSetBitMap implements MutableBitM
         BitSet copy = (BitSet) bitset.clone();
         copy.andNot(extract(index));
 
-        return BitSetImmutableBitMap.newInstance(copy);
+        return BitSetImmutableBitMap.of(copy);
     }
 
     @Override
-    public ImmutableBitMap getNot(int rowCount) {
+    public ImmutableBitMap getNot(int bound) {
         BitSet copy = (BitSet) bitset.clone();
-        copy.flip(0, rowCount);
+        copy.flip(0, bound);
 
-        return BitSetImmutableBitMap.newInstance(copy);
+        return BitSetImmutableBitMap.of(copy);
     }
 
     @Override
     public ImmutableBitMap clone() {
-        return BitSetImmutableBitMap.newInstance((BitSet) bitset.clone());
+        return BitSetImmutableBitMap.of((BitSet) bitset.clone());
     }
 
     @Override

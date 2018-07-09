@@ -5,7 +5,6 @@ import com.fr.swift.bitmap.impl.AllShowBitMap;
 import com.fr.swift.bitmap.impl.RoaringMutableBitMap;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.swift.segment.column.impl.base.IntDictColumn;
 import com.fr.swift.structure.iterator.RowTraversal;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -19,7 +18,7 @@ public class DistinctAggregateTest extends TestCase {
     public void testAggregate() {
 
         DistinctCountAggregatorValue an;
-        RowTraversal traversal = AllShowBitMap.newInstance(5);
+        RowTraversal traversal = AllShowBitMap.of(5);
         IMocksControl control = EasyMock.createControl();
         Column column = control.createMock(Column.class);
         DictionaryEncodedColumn dic = control.createMock(DictionaryEncodedColumn.class);

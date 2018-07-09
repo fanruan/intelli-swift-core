@@ -11,18 +11,13 @@ public final class AllShowBitMap extends RangeBitmap {
         super(0, rowCount);
     }
 
-    public static ImmutableBitMap newInstance(int rowCount) {
+    public static ImmutableBitMap of(int rowCount) {
         return new AllShowBitMap(rowCount);
     }
 
     @Override
-    public boolean isFull() {
-        return true;
-    }
-
-    @Override
     public ImmutableBitMap clone() {
-        return newInstance(end - 1);
+        return of(end);
     }
 
     @Override
