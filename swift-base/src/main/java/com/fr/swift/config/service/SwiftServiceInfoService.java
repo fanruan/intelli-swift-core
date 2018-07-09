@@ -11,7 +11,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
-public interface SwiftServiceInfoService {
+public interface SwiftServiceInfoService extends ConfigService<SwiftServiceInfoBean> {
 
     boolean saveOrUpdateServiceInfo(SwiftServiceInfoBean serviceInfoBean);
 

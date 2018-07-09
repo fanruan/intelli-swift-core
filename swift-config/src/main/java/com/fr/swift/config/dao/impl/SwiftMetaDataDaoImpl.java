@@ -22,8 +22,6 @@ import java.util.List;
 @Service
 public class SwiftMetaDataDaoImpl extends BasicDao<SwiftMetaDataEntity> implements SwiftMetaDataDao {
 
-    private static final String FIND_BY_NAME_HQL = String.format("from SwiftMetaDataEntity entity where entity.%s = ", SwiftConfigConstants.MetaDataConfig.COLUMN_TABLE_NAME);
-
     public SwiftMetaDataDaoImpl() {
         super(SwiftMetaDataEntity.class);
     }

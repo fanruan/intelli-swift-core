@@ -1,4 +1,4 @@
-package com.fr.swift.config.bean;
+package com.fr.swift.config.bean.unique;
 
 import com.fr.config.Identifier;
 import com.fr.config.holder.Conf;
@@ -6,13 +6,13 @@ import com.fr.config.holder.factory.Holders;
 import com.fr.config.utils.UniqueKey;
 import com.fr.security.SecurityToolbox;
 import com.fr.stable.StringUtils;
-import com.fr.swift.file.conf.impl.FtpRepositoryConfigImpl;
+import com.fr.swift.config.bean.FtpRepositoryConfigBean;
 
 /**
  * @author yee
  * @date 2018/6/15
  */
-public class FtpRepositoryConfBean extends UniqueKey implements RepositoryConfBean<FtpRepositoryConfigImpl> {
+public class FtpRepositoryConfigUnique extends UniqueKey implements RepositoryConfigUnique {
     @Identifier("protocol")
     private Conf<String> protocol = Holders.simple("FTP");
     @Identifier("host")
@@ -40,7 +40,7 @@ public class FtpRepositoryConfBean extends UniqueKey implements RepositoryConfBe
     @Identifier("rootPath")
     private Conf<String> rootPath = Holders.simple("/");
 
-    public FtpRepositoryConfBean() {
+    public FtpRepositoryConfigUnique() {
     }
 
     public boolean isPassive() {
@@ -148,8 +148,9 @@ public class FtpRepositoryConfBean extends UniqueKey implements RepositoryConfBe
         this.rootPath.set(rootPath);
     }
 
+    @Override
     public Object clone() throws CloneNotSupportedException {
-        FtpRepositoryConfBean bean = (FtpRepositoryConfBean) super.clone();
+        FtpRepositoryConfigUnique bean = (FtpRepositoryConfigUnique) super.clone();
         bean.host = (Conf) this.host.clone();
         bean.port = (Conf) this.port.clone();
         bean.username = (Conf) this.username.clone();
@@ -163,18 +164,20 @@ public class FtpRepositoryConfBean extends UniqueKey implements RepositoryConfBe
         return bean;
     }
 
-    public FtpRepositoryConfigImpl convert() {
-        FtpRepositoryConfigImpl config = new FtpRepositoryConfigImpl();
+    @Override
+    public FtpRepositoryConfigBean convert() {
+        FtpRepositoryConfigBean config = new FtpRepositoryConfigBean();
         config.setCharset(getCharset());
         config.setHost(getHost());
         config.setUsername(getUsername());
         config.setPassword(getPassword());
         config.setPrivateKey(getPrivateKey());
         config.setPassPhrase(getPassPhrase());
-        config.setConnectTimeout(getConnectTimeout());
+        config.setConnectTimeout(String.valueOf(getConnectTimeout()));
         config.setProtocol(getProtocol());
-        config.setPort(getPort());
+        config.setPort(String.valueOf(getPort()));
         config.setRootPath(getRootPath());
+        config.setPassive(passive.get().toString());
         return config;
     }
 }

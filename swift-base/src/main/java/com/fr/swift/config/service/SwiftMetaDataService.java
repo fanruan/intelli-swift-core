@@ -9,7 +9,7 @@ import java.util.Map;
  * @author yee
  * @date 2018/6/6
  */
-public interface SwiftMetaDataService {
+public interface SwiftMetaDataService extends ConfigService<SwiftMetaData> {
     /**
      * 增加MetaData
      *

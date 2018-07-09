@@ -1,23 +1,25 @@
-package com.fr.swift.config.bean;
+package com.fr.swift.config.bean.unique;
 
 import com.fr.config.holder.Conf;
 import com.fr.config.holder.factory.Holders;
 import com.fr.config.utils.UniqueKey;
+import com.fr.swift.config.bean.Convert;
+import com.fr.swift.config.bean.RpcServiceAddressBean;
 
 /**
  * @author yee
  * @date 2018/6/15
  */
-public class RpcServiceAddress extends UniqueKey {
+public class RpcServiceAddressUnique extends UniqueKey implements Convert<RpcServiceAddressBean> {
     private Conf<String> address = Holders.simple("127.0.0.1");
     private Conf<String> port = Holders.simple("7000");
 
-    public RpcServiceAddress(String address, String port) {
+    public RpcServiceAddressUnique(String address, String port) {
         setAddress(address);
         setPort(port);
     }
 
-    public RpcServiceAddress(String fullAddress) {
+    public RpcServiceAddressUnique(String fullAddress) {
         String[] split = fullAddress.split(":");
         if (split.length < 2) {
             setAddress(split[0]);
@@ -46,5 +48,10 @@ public class RpcServiceAddress extends UniqueKey {
 
     public String getFullAddress() {
         return String.format("%s:%s", address.get(), port.get());
+    }
+
+    @Override
+    public RpcServiceAddressBean convert() {
+        return new RpcServiceAddressBean(getAddress(), getPort());
     }
 }

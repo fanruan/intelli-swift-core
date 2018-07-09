@@ -82,5 +82,10 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.45</version>
         </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-decision</artifactId>
+            <version>5.0-RELEASE-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

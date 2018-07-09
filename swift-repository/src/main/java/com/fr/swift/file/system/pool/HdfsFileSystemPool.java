@@ -1,6 +1,6 @@
 package com.fr.swift.file.system.pool;
 
-import com.fr.swift.file.conf.impl.HdfsRepositoryConfigImpl;
+import com.fr.swift.config.bean.HdfsRepositoryConfigBean;
 import com.fr.swift.file.system.impl.HdfsFileSystemImpl;
 
 import java.net.URI;
@@ -19,15 +19,15 @@ import java.net.URI;
  */
 class HdfsFileSystemPool extends BaseRemoteSystemPool {
 
-    HdfsFileSystemPool(HdfsRepositoryConfigImpl config) {
+    HdfsFileSystemPool(HdfsRepositoryConfigBean config) {
         super(new HdfsFileSystemPoolFactory(config));
     }
 
     private static class HdfsFileSystemPoolFactory extends BaseRemoteSystemPoolFactory<HdfsFileSystemImpl> {
-        private HdfsRepositoryConfigImpl config;
+        private HdfsRepositoryConfigBean config;
 //        private KeyedObjectPool<URI, FileSystem> clientPool;
 
-        public HdfsFileSystemPoolFactory(final HdfsRepositoryConfigImpl config) {
+        public HdfsFileSystemPoolFactory(final HdfsRepositoryConfigBean config) {
 //            final Configuration conf = new Configuration();
 //            conf.set(config.getFsName(), config.getFullAddress());
 //            clientPool = new GenericKeyedObjectPool<URI, FileSystem>(new BaseKeyedPooledObjectFactory<URI, FileSystem>() {

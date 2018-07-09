@@ -1,22 +1,24 @@
-package com.fr.swift.file.conf.impl;
+package com.fr.swift.config.bean;
 
 import com.fr.swift.file.conf.AbstractSwiftFileSystemConfig;
-import com.fr.swift.file.system.SwiftFileSystemType;
 
 /**
  * @author yee
  * @date 2018/6/15
  */
-public class HdfsRepositoryConfigImpl extends AbstractSwiftFileSystemConfig {
+public class HdfsRepositoryConfigBean extends AbstractSwiftFileSystemConfig {
 
     private String fsName;
     private String hdfsHost;
     private String hdfsPort;
 
-    public HdfsRepositoryConfigImpl(String fsName, String hdfsHost, String hdfsPort) {
+    public HdfsRepositoryConfigBean(String fsName, String hdfsHost, String hdfsPort) {
         this.fsName = fsName;
         this.hdfsHost = hdfsHost;
         this.hdfsPort = hdfsPort;
+    }
+
+    public HdfsRepositoryConfigBean() {
     }
 
     public String getFsName() {
@@ -54,12 +56,18 @@ public class HdfsRepositoryConfigImpl extends AbstractSwiftFileSystemConfig {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
-        HdfsRepositoryConfigImpl that = (HdfsRepositoryConfigImpl) o;
+        HdfsRepositoryConfigBean that = (HdfsRepositoryConfigBean) o;
 
-        if (hdfsHost != null ? !hdfsHost.equals(that.hdfsHost) : that.hdfsHost != null) return false;
+        if (hdfsHost != null ? !hdfsHost.equals(that.hdfsHost) : that.hdfsHost != null) {
+            return false;
+        }
         return hdfsPort != null ? hdfsPort.equals(that.hdfsPort) : that.hdfsPort == null;
     }
 
