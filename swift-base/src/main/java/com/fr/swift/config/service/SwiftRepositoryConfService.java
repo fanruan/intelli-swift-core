@@ -10,4 +10,10 @@ public interface SwiftRepositoryConfService {
     SwiftFileSystemConfig getCurrentRepository();
 
     boolean setCurrentRepository(SwiftFileSystemConfig config);
+
+    void registerListener(ConfChangeListener listener);
+
+    interface ConfChangeListener {
+        void change(SwiftFileSystemConfig change);
+    }
 }

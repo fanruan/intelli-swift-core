@@ -57,7 +57,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     public void load(Set<URI> remoteUris) throws IOException {
         if (null != remoteUris && !remoteUris.isEmpty()) {
             String path = pathService.getSwiftPath();
-            SwiftRepository repository = SwiftRepositoryManager.getManager().getCurrentRepository();
+            SwiftRepository repository = SwiftRepositoryManager.getManager().currentRepo();
             for (URI remote : remoteUris) {
                 repository.copyFromRemote(remote, URI.create(path + remote.getPath()));
             }
