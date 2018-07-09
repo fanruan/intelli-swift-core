@@ -14,7 +14,7 @@ public class RoaringImmutableTest extends TestCase {
     private static final int BOUND = 1000000;
 
     MutableBitMap getMutableBitMap() {
-        return RoaringMutableBitMap.newInstance();
+        return RoaringMutableBitMap.of();
     }
 
     int[] prepare(MutableBitMap m) {
@@ -41,7 +41,7 @@ public class RoaringImmutableTest extends TestCase {
 
         for (int i = 0; i < shorter.length; i++) {
             int result = a[i] & b[i];
-            if (result == 1 ? !and.contains(i) : and.contains(i)) {
+            if ((result == 1) != and.contains(i)) {
                 fail();
             }
         }
@@ -66,13 +66,13 @@ public class RoaringImmutableTest extends TestCase {
 
         for (int i = 0; i < shorter.length; i++) {
             int result = a[i] + b[i];
-            if (result > 0 ? !or.contains(i) : or.contains(i)) {
+            if (result > 0 != or.contains(i)) {
                 fail();
             }
         }
 
         for (int i = shorter.length; i < longer.length; i++) {
-            if (longer[i] == 1 ? !or.contains(i) : or.contains(i)) {
+            if ((longer[i] == 1) != or.contains(i)) {
                 fail();
             }
         }
@@ -91,7 +91,7 @@ public class RoaringImmutableTest extends TestCase {
 
         for (int i = 0; i < shorter.length; i++) {
             int result = a[i] & ~b[i];
-            if (result == 1 ? !andNot.contains(i) : andNot.contains(i)) {
+            if ((result == 1) != andNot.contains(i)) {
                 fail();
             }
         }
@@ -101,7 +101,7 @@ public class RoaringImmutableTest extends TestCase {
                 if (andNot.contains(i)) {
                     fail();
                 }
-            } else if (longer[i] == 1 ? !andNot.contains(i) : andNot.contains(i)) {
+            } else if ((longer[i] == 1) != andNot.contains(i)) {
                 fail();
             }
         }
@@ -113,7 +113,7 @@ public class RoaringImmutableTest extends TestCase {
 
         ImmutableBitMap not = m.getNot(a.length);
         for (int i = 0; i < a.length; i++) {
-            if (a[i] == 1 ? not.contains(i) : !not.contains(i)) {
+            if ((a[i] == 1) == not.contains(i)) {
                 fail();
             }
         }

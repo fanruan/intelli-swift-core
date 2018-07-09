@@ -19,12 +19,12 @@ public class RoaringMutableBitMap extends RoaringImmutableBitMap implements Muta
         super(bitmap);
     }
 
-    static MutableBitMap newInstance(MutableRoaringBitmap bitmap) {
+    static MutableBitMap of(MutableRoaringBitmap bitmap) {
         return new RoaringMutableBitMap(bitmap);
     }
 
-    public static MutableBitMap newInstance() {
-        return newInstance(new MutableRoaringBitmap());
+    public static MutableBitMap of() {
+        return of(new MutableRoaringBitmap());
     }
 
     private static MutableBitMap fromByteBuffer(final ByteBuffer bb) {
@@ -37,10 +37,10 @@ public class RoaringMutableBitMap extends RoaringImmutableBitMap implements Muta
         });
         try {
             another.deserialize(dis);
-            return newInstance(another);
+            return of(another);
         } catch (IOException e) {
             SwiftLoggers.getLogger().error(e);
-            return newInstance();
+            return of();
         } finally {
             try {
                 dis.close();

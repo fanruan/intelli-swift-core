@@ -20,25 +20,25 @@ public final class FasterAggregation {
     }
 
     public static ImmutableBitMap or(RangeBitmap b1, RangeBitmap b2) {
-        if (b1.end >= b2.start) {
-            return RangeBitmap.of(b1.start, b2.end);
+        if (b1.end < b2.start || b2.end < b1.start) {
+            MutableRoaringBitmap b = new MutableRoaringBitmap();
+            b.flip((long) b1.start, b1.end);
+            b.flip((long) b2.start, b2.end);
+            return RoaringImmutableBitMap.of(b);
         }
-        if (b2.end >= b1.start) {
-            return RangeBitmap.of(b2.start, b1.end);
-        }
-        MutableRoaringBitmap b = new MutableRoaringBitmap();
-        b.flip((long) b1.start, b1.end);
-        b.flip((long) b2.start, b2.end);
-        return RoaringImmutableBitMap.of(b);
+
+        int start = b1.start < b2.start ? b1.start : b2.start;
+        int end = b1.end > b2.end ? b1.end : b2.end;
+        return RangeBitmap.of(start, end);
     }
 
     public static ImmutableBitMap and(RangeBitmap b1, RangeBitmap b2) {
-        if (b1.end >= b2.start) {
-            return RangeBitmap.of(b2.start, b1.end);
+        if (b1.end < b2.start || b2.end < b1.start) {
+            return new EmptyBitmap();
         }
-        if (b2.end >= b1.start) {
-            return RangeBitmap.of(b1.start, b2.end);
-        }
-        return new EmptyBitmap();
+
+        int start = b1.start > b2.start ? b1.start : b2.start;
+        int end = b1.end < b2.end ? b1.end : b2.end;
+        return RangeBitmap.of(start, end);
     }
 }

@@ -48,7 +48,7 @@ public class IntListRowTraversal implements RowTraversal {
 
     @Override
     public ImmutableBitMap toBitMap() {
-        MutableBitMap bitMap = RoaringMutableBitMap.newInstance();
+        MutableBitMap bitMap = RoaringMutableBitMap.of();
         for (int i = 0; i < list.size(); i++){
             bitMap.add(list.get(i));
         }
