@@ -30,12 +30,6 @@ public class RangeBitmap extends AbstractBitMap {
         return new RangeBitmap(start, end);
     }
 
-    private MutableBitMap toRealBitmap() {
-        MutableRoaringBitmap bitmap = new MutableRoaringBitmap();
-        bitmap.flip((long) start, (long) end);
-        return RoaringMutableBitMap.newInstance(bitmap);
-    }
-
     @Override
     public ImmutableBitMap getAnd(ImmutableBitMap index) {
         switch (index.getType()) {
@@ -87,6 +81,12 @@ public class RangeBitmap extends AbstractBitMap {
     @Override
     public BitMapType getType() {
         return BitMapType.RANGE;
+    }
+
+    private MutableBitMap toRealBitmap() {
+        MutableRoaringBitmap bitmap = new MutableRoaringBitmap();
+        bitmap.flip((long) start, (long) end);
+        return RoaringMutableBitMap.newInstance(bitmap);
     }
 
     @Override

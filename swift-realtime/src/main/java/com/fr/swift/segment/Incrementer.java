@@ -104,14 +104,13 @@ public class Incrementer implements Inserter {
     }
 
     @Override
-    public List<Segment> insertData(List<Row> rowList) throws SQLException {
-        return insertData(new ListResultSet(dataSource.getMetadata(), rowList));
+    public void insertData(List<Row> rowList) throws SQLException {
+        insertData(new ListResultSet(dataSource.getMetadata(), rowList));
     }
 
     @Override
-    public List<Segment> insertData(SwiftResultSet swiftResultSet) throws SQLException {
+    public void insertData(SwiftResultSet swiftResultSet) throws SQLException {
         increment(swiftResultSet);
-        return Collections.emptyList();
     }
 
     @Override

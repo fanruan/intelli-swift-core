@@ -1,6 +1,5 @@
 package com.fr.swift.bitmap.impl;
 
-import com.fr.swift.bitmap.BitMapType;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.roaringbitmap.buffer.MutableRoaringBitmap;
 
@@ -11,12 +10,6 @@ import com.fr.swift.bitmap.roaringbitmap.buffer.MutableRoaringBitmap;
  * 比FastAggregation还要快
  */
 public final class FasterAggregation {
-    public static ImmutableBitMap and(ImmutableBitMap b1, ImmutableBitMap b2) {
-        BitMapType b1Type = b1.getType();
-        BitMapType b2Type = b2.getType();
-        return null;
-    }
-
     public static ImmutableBitMap or(Iterable<ImmutableBitMap> bitmaps) {
         MutableRoaringBitmap r = new MutableRoaringBitmap();
         for (ImmutableBitMap bitmap : bitmaps) {
