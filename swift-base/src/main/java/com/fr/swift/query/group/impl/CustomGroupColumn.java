@@ -1,7 +1,7 @@
 package com.fr.swift.query.group.impl;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.bitmap.impl.BitMapOrHelper;
+import com.fr.swift.bitmap.impl.FasterAggregation;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.query.group.CustomGroupRule;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
@@ -11,7 +11,9 @@ import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.structure.array.IntList;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * @author anchore
@@ -38,11 +40,11 @@ class CustomGroupColumn<Base, Derive> implements Column<Derive> {
         groupedBitmaps = new ImmutableBitMap[newSize];
         for (int i = 0; i < newSize; i++) {
             IntList newGroup = groupRule.map(i);
-            BitMapOrHelper orHelper = new BitMapOrHelper();
+            List<ImmutableBitMap> bitmaps = new ArrayList<ImmutableBitMap>();
             for (int j = 0; j < newGroup.size(); j++) {
-                orHelper.add(indexColumn.getBitMapIndex(newGroup.get(j)));
+                bitmaps.add(indexColumn.getBitMapIndex(newGroup.get(j)));
             }
-            groupedBitmaps[i] = orHelper.compute();
+            groupedBitmaps[i] = FasterAggregation.or(bitmaps);
         }
     }
 

@@ -32,8 +32,6 @@ public interface DictionaryEncodedColumn<T> extends Releasable, Flushable {
 
     /**
      * 写入全局字典的长度，全局唯一值的个数
-     *
-     * @return 全局字典的长度
      */
     void putGlobalSize(int globalSize);
 

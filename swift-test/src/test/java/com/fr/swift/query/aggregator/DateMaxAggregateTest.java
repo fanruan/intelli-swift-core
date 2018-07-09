@@ -16,7 +16,7 @@ import org.easymock.IMocksControl;
 public class DateMaxAggregateTest extends TestCase {
 
     public void testAggregate() {
-        RowTraversal bitMap = AllShowBitMap.newInstance(2);
+        RowTraversal bitMap = AllShowBitMap.of(2);
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
         DictionaryEncodedColumn dic = control.createMock(DictionaryEncodedColumn.class);

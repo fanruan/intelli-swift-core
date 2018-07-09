@@ -19,5 +19,9 @@ public enum BitMapType {
         this.head = head;
     }
 
-    public final byte head;
+    private byte head;
+
+    public byte getHead() {
+        return head;
+    }
 }

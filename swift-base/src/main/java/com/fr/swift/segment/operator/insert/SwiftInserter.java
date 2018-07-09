@@ -9,7 +9,6 @@ import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.ListResultSet;
 import com.fr.swift.transatcion.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -31,8 +30,8 @@ public class SwiftInserter extends BaseInserter implements Inserter {
 
     @Override
     @Transactional(value = RealtimeInsertException.class)
-    public List<Segment> insertData(List<Row> rowList) throws RealtimeInsertException {
-        return insertData(new ListResultSet(segment.getMetaData(), rowList));
+    public void insertData(List<Row> rowList) throws RealtimeInsertException {
+        insertData(new ListResultSet(segment.getMetaData(), rowList));
     }
 
     @Override
@@ -43,7 +42,7 @@ public class SwiftInserter extends BaseInserter implements Inserter {
 
     @Override
     @Transactional(value = RealtimeInsertException.class)
-    public List<Segment> insertData(SwiftResultSet swiftResultSet) throws RealtimeInsertException {
+    public void insertData(SwiftResultSet swiftResultSet) throws RealtimeInsertException {
         try {
             // fixme 要从配置里判断，这里有可能读的recorder备份的数据
             boolean readable = CubeUtil.isReadable(segment);
@@ -61,8 +60,6 @@ public class SwiftInserter extends BaseInserter implements Inserter {
             putSegmentInfo(lastCursor, cursor);
 
             release();
-
-            return Collections.singletonList(segment);
         } catch (Exception e) {
             throw new RealtimeInsertException(e);
         }

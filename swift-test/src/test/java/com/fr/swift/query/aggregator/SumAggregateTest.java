@@ -23,7 +23,7 @@ public class SumAggregateTest extends TestCase {
 
     public void testAggregateInt() {
 
-        RowTraversal bitMap = AllShowBitMap.newInstance(4);
+        RowTraversal bitMap = AllShowBitMap.of(4);
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
 //        IntDetailColumn mockIntColumn = control.createMock(IntDetailColumn.class);
@@ -45,7 +45,7 @@ public class SumAggregateTest extends TestCase {
 
     public void testAggregateLong() {
 
-        RowTraversal bitMap = AllShowBitMap.newInstance(4);
+        RowTraversal bitMap = AllShowBitMap.of(4);
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
         LongDetailColumn longDetailColumn = new TempLongDetailColumn(new ResourceLocation("liu"));
@@ -66,7 +66,7 @@ public class SumAggregateTest extends TestCase {
 
     public void testAggregateDouble() {
 
-        RowTraversal bitMap = AllShowBitMap.newInstance(4);
+        RowTraversal bitMap = AllShowBitMap.of(4);
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
         DoubleDetailColumn doubleDetailColumn = new TempDoubleDetailColumn(new ResourceLocation("liu"));

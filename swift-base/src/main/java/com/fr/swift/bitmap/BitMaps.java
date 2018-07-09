@@ -1,8 +1,8 @@
 package com.fr.swift.bitmap;
 
 import com.fr.swift.bitmap.impl.AllShowBitMap;
-import com.fr.swift.bitmap.impl.BitSetImmutableBitMap;
 import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
+import com.fr.swift.bitmap.impl.EmptyBitmap;
 import com.fr.swift.bitmap.impl.IdBitMap;
 import com.fr.swift.bitmap.impl.RangeBitmap;
 import com.fr.swift.bitmap.impl.RoaringMutableBitMap;
@@ -17,7 +17,7 @@ import com.fr.swift.structure.iterator.RowTraversal;
  * @author anchore
  */
 public final class BitMaps {
-    public static final ImmutableBitMap EMPTY_IMMUTABLE = BitSetImmutableBitMap.newInstance();
+    public static final ImmutableBitMap EMPTY_IMMUTABLE = new EmptyBitmap();
 
     public static MutableBitMap newRoaringMutable() {
         return RoaringMutableBitMap.newInstance();
@@ -28,7 +28,7 @@ public final class BitMaps {
     }
 
     public static ImmutableBitMap newAllShowBitMap(int rowCount) {
-        return AllShowBitMap.newInstance(rowCount);
+        return AllShowBitMap.of(rowCount);
     }
 
     public static ImmutableBitMap newRangeBitmap(int start, int end) {
@@ -36,7 +36,7 @@ public final class BitMaps {
     }
 
     public static ImmutableBitMap newIdBitMap(int id) {
-        return IdBitMap.newInstance(id);
+        return IdBitMap.of(id);
     }
 
     public static ImmutableBitMap newImmutableBitMap(IntList intList) {

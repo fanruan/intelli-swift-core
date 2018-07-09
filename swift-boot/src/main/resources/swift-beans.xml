@@ -15,6 +15,8 @@
     <bean id="swiftQuerySessionFactory" class="com.fr.swift.query.session.factory.SessionFactoryImpl"/>
     <bean id="redisClient" class="com.fr.swift.redis.RedisClient"/>
     <bean id="queryIndexRunner" class="com.fr.swift.service.QueryIndexService"/>
+
+    <bean id="incrementer" class="com.fr.swift.segment.Incrementer" scope="prototype"/>
     <bean id="decrementer" class="com.fr.swift.segment.Decrementer" scope="prototype"/>
 
     <!--配置不同的实现class注入-->

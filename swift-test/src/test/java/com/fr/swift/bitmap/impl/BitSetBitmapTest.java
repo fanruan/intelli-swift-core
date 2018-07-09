@@ -14,7 +14,7 @@ public class BitSetBitmapTest extends RoaringBitmapTest {
 
     @Override
     ImmutableBitMap getImmutableBitMap() {
-        return BitSetImmutableBitMap.newInstance();
+        return BitSetImmutableBitMap.of();
     }
 
     @Override

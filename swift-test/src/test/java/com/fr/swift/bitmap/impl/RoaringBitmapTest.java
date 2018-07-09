@@ -23,7 +23,7 @@ public class RoaringBitmapTest {
     }
 
     ImmutableBitMap getImmutableBitMap() {
-        return RoaringImmutableBitMap.newInstance();
+        return RoaringImmutableBitMap.of();
     }
 
     private int[] prepare(MutableBitMap m) {

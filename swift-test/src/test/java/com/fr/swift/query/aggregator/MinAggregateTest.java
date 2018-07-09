@@ -12,7 +12,6 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 
-import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 
 public class MinAggregateTest extends TestCase {
@@ -21,7 +20,7 @@ public class MinAggregateTest extends TestCase {
 
 
     public void testAggregateInt() {
-        RowTraversal bitMap = AllShowBitMap.newInstance(4);
+        RowTraversal bitMap = AllShowBitMap.of(4);
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
         IntDetailColumn mockIntColumn = new TempIntDetailColumn(new ResourceLocation("liu"));
@@ -40,7 +39,7 @@ public class MinAggregateTest extends TestCase {
     }
 
     public void testAggregateLongSum() {
-        RowTraversal bitMap = AllShowBitMap.newInstance(4);
+        RowTraversal bitMap = AllShowBitMap.of(4);
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
         LongDetailColumn mockLongColumn = new TempLongDetailColumn(new ResourceLocation("liu"));
@@ -59,7 +58,7 @@ public class MinAggregateTest extends TestCase {
     }
 
     public void testAggregateDoubleSum() {
-        RowTraversal bitMap = AllShowBitMap.newInstance(4);
+        RowTraversal bitMap = AllShowBitMap.of(4);
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
         DoubleDetailColumn mockDoubleColumn = new TempDoubleDetailColumn(new ResourceLocation("liu"));
