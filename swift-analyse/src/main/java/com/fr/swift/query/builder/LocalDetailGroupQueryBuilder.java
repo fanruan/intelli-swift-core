@@ -54,7 +54,7 @@ public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
         }
         targetSegments = Collections.unmodifiableList(targetSegments);
         List<Dimension> dimensions = info.getDimensions();
-        List<Pair<Integer, Comparator>> comparators = null;
+        List<Pair<Sort, Comparator>> comparators = null;
         for (Segment segment : targetSegments) {
             List<Column> columns = new ArrayList<Column>();
             List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
@@ -80,11 +80,11 @@ public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
         return new SortDetailResultQuery(queries, comparators, info.getMetaData());
     }
 
-    private static List<Pair<Integer, Comparator>> getComparators(List<Column> columnList, List<Sort> sorts) {
-        List<Pair<Integer, Comparator>> pairs = new ArrayList<Pair<Integer, Comparator>>();
+    private static List<Pair<Sort, Comparator>> getComparators(List<Column> columnList, List<Sort> sorts) {
+        List<Pair<Sort, Comparator>> pairs = new ArrayList<Pair<Sort, Comparator>>();
         for (Sort sort : sorts) {
             Comparator comparator = columnList.get(sort.getTargetIndex()).getDictionaryEncodedColumn().getComparator();
-            pairs.add(Pair.of(sort.getTargetIndex(), comparator));
+            pairs.add(Pair.of(sort, comparator));
         }
         return pairs;
     }

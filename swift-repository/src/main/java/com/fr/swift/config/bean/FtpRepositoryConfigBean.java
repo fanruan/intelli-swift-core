@@ -1,29 +1,28 @@
-package com.fr.swift.file.conf.impl;
+package com.fr.swift.config.bean;
 
 import com.fr.ftp.config.FTPConfig;
 import com.fr.security.SecurityToolbox;
 import com.fr.stable.StringUtils;
 import com.fr.swift.file.conf.AbstractSwiftFileSystemConfig;
-import com.fr.swift.file.system.SwiftFileSystemType;
 
 /**
  * @author yee
  * @date 2018/6/15
  */
-public class FtpRepositoryConfigImpl extends AbstractSwiftFileSystemConfig {
+public class FtpRepositoryConfigBean extends AbstractSwiftFileSystemConfig {
 
     private String protocol = "FTP";
     private String host = "";
-    private int port = 21;
+    private String port = "21";
     private String username = "";
     private String password = "";
     private String privateKey = "";
     private String passPhrase = "";
-    private int connectTimeout = 10000;
+    private String connectTimeout = "10000";
     private String charset = "";
-    private boolean passive = true;
-    private int soTimeout = 10000;
-    private int dataTimeout = 10000;
+    private String passive = "true";
+    private String soTimeout = "10000";
+    private String dataTimeout = "10000";
     private String rootPath = "/";
 
     public String getProtocol() {
@@ -42,11 +41,11 @@ public class FtpRepositoryConfigImpl extends AbstractSwiftFileSystemConfig {
         this.host = host;
     }
 
-    public int getPort() {
+    public String getPort() {
         return port;
     }
 
-    public void setPort(int port) {
+    public void setPort(String port) {
         this.port = port;
     }
 
@@ -82,11 +81,11 @@ public class FtpRepositoryConfigImpl extends AbstractSwiftFileSystemConfig {
         this.passPhrase = passPhrase;
     }
 
-    public int getConnectTimeout() {
+    public String getConnectTimeout() {
         return connectTimeout;
     }
 
-    public void setConnectTimeout(int connectTimeout) {
+    public void setConnectTimeout(String connectTimeout) {
         this.connectTimeout = connectTimeout;
     }
 
@@ -98,27 +97,27 @@ public class FtpRepositoryConfigImpl extends AbstractSwiftFileSystemConfig {
         this.charset = charset;
     }
 
-    public boolean isPassive() {
+    public String getPassive() {
         return passive;
     }
 
-    public void setPassive(boolean passive) {
+    public void setPassive(String passive) {
         this.passive = passive;
     }
 
-    public int getSoTimeout() {
+    public String getSoTimeout() {
         return soTimeout;
     }
 
-    public void setSoTimeout(int soTimeout) {
+    public void setSoTimeout(String soTimeout) {
         this.soTimeout = soTimeout;
     }
 
-    public int getDataTimeout() {
+    public String getDataTimeout() {
         return dataTimeout;
     }
 
-    public void setDataTimeout(int dataTimeout) {
+    public void setDataTimeout(String dataTimeout) {
         this.dataTimeout = dataTimeout;
     }
 
@@ -137,23 +136,51 @@ public class FtpRepositoryConfigImpl extends AbstractSwiftFileSystemConfig {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
-        FtpRepositoryConfigImpl that = (FtpRepositoryConfigImpl) o;
+        FtpRepositoryConfigBean that = (FtpRepositoryConfigBean) o;
 
-        if (port != that.port) return false;
-        if (connectTimeout != that.connectTimeout) return false;
-        if (passive != that.passive) return false;
-        if (soTimeout != that.soTimeout) return false;
-        if (dataTimeout != that.dataTimeout) return false;
-        if (protocol != null ? !protocol.equals(that.protocol) : that.protocol != null) return false;
-        if (host != null ? !host.equals(that.host) : that.host != null) return false;
-        if (username != null ? !username.equals(that.username) : that.username != null) return false;
-        if (password != null ? !password.equals(that.password) : that.password != null) return false;
-        if (privateKey != null ? !privateKey.equals(that.privateKey) : that.privateKey != null) return false;
-        if (passPhrase != null ? !passPhrase.equals(that.passPhrase) : that.passPhrase != null) return false;
-        if (rootPath != null ? !rootPath.equals(that.rootPath) : that.rootPath != null) return false;
+        if (port != that.port) {
+            return false;
+        }
+        if (connectTimeout != that.connectTimeout) {
+            return false;
+        }
+        if (passive != that.passive) {
+            return false;
+        }
+        if (soTimeout != that.soTimeout) {
+            return false;
+        }
+        if (dataTimeout != that.dataTimeout) {
+            return false;
+        }
+        if (protocol != null ? !protocol.equals(that.protocol) : that.protocol != null) {
+            return false;
+        }
+        if (host != null ? !host.equals(that.host) : that.host != null) {
+            return false;
+        }
+        if (username != null ? !username.equals(that.username) : that.username != null) {
+            return false;
+        }
+        if (password != null ? !password.equals(that.password) : that.password != null) {
+            return false;
+        }
+        if (privateKey != null ? !privateKey.equals(that.privateKey) : that.privateKey != null) {
+            return false;
+        }
+        if (passPhrase != null ? !passPhrase.equals(that.passPhrase) : that.passPhrase != null) {
+            return false;
+        }
+        if (rootPath != null ? !rootPath.equals(that.rootPath) : that.rootPath != null) {
+            return false;
+        }
         return charset != null ? charset.equals(that.charset) : that.charset == null;
     }
 
@@ -161,33 +188,33 @@ public class FtpRepositoryConfigImpl extends AbstractSwiftFileSystemConfig {
     public int hashCode() {
         int result = protocol != null ? protocol.hashCode() : 0;
         result = 31 * result + (host != null ? host.hashCode() : 0);
-        result = 31 * result + port;
+        result = 31 * result + (port != null ? port.hashCode() : 0);
         result = 31 * result + (username != null ? username.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + (privateKey != null ? privateKey.hashCode() : 0);
         result = 31 * result + (passPhrase != null ? passPhrase.hashCode() : 0);
-        result = 31 * result + (rootPath != null ? rootPath.hashCode() : 0);
-        result = 31 * result + connectTimeout;
+        result = 31 * result + (connectTimeout != null ? connectTimeout.hashCode() : 0);
         result = 31 * result + (charset != null ? charset.hashCode() : 0);
-        result = 31 * result + (passive ? 1 : 0);
-        result = 31 * result + soTimeout;
-        result = 31 * result + dataTimeout;
+        result = 31 * result + (passive != null ? passive.hashCode() : 0);
+        result = 31 * result + (soTimeout != null ? soTimeout.hashCode() : 0);
+        result = 31 * result + (dataTimeout != null ? dataTimeout.hashCode() : 0);
+        result = 31 * result + (rootPath != null ? rootPath.hashCode() : 0);
         return result;
     }
 
     public FTPConfig toFtpConfig() {
         FTPConfig ftpConfig = new FTPConfig();
         ftpConfig.setCharset(charset);
-        ftpConfig.setConnectTimeout(connectTimeout);
-        ftpConfig.setDataTimeout(dataTimeout);
+        ftpConfig.setConnectTimeout(Integer.parseInt(connectTimeout));
+        ftpConfig.setDataTimeout(Integer.parseInt(dataTimeout));
         ftpConfig.setHost(host);
-        ftpConfig.setPassive(passive);
+        ftpConfig.setPassive(Boolean.parseBoolean(passive));
         ftpConfig.setPassPhrase(passPhrase);
         ftpConfig.setPassword(getPassword());
-        ftpConfig.setPort(port);
+        ftpConfig.setPort(Integer.parseInt(port));
         ftpConfig.setPrivateKey(privateKey);
         ftpConfig.setProtocol(protocol);
-        ftpConfig.setSoTimeout(soTimeout);
+        ftpConfig.setSoTimeout(Integer.valueOf(soTimeout));
         ftpConfig.setUsername(username);
         return ftpConfig;
     }

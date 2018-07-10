@@ -18,15 +18,15 @@ import java.util.List;
  * @author anchore
  * @date 2018/6/4
  */
-class HisSegBackupResultSet implements SwiftResultSet {
+class SegmentBackupResultSet implements SwiftResultSet {
     private SwiftMetaData meta;
     private List<DetailColumn> details = new ArrayList<DetailColumn>();
     private ImmutableBitMap allShowIndex;
     private List<ImmutableBitMap> nullIndices = new ArrayList<ImmutableBitMap>();
-    private int cursor = -1;
+    private int cursor = 0;
     private int rowCount;
 
-    HisSegBackupResultSet(Segment seg) throws SQLException {
+    SegmentBackupResultSet(Segment seg) throws SQLException {
         init(seg);
     }
 
@@ -49,15 +49,11 @@ class HisSegBackupResultSet implements SwiftResultSet {
 
     @Override
     public boolean next() {
-        cursor++;
-        if (cursor < rowCount) {
-            return true;
-        }
-        return false;
+        return cursor < rowCount;
     }
 
     @Override
-    public Row getRowData() {
+    public Row getNextRow() {
         List<Object> row = new ArrayList<Object>();
         for (int i = 0; i < details.size(); i++) {
             if (nullIndices.get(i).contains(cursor)) {
@@ -66,6 +62,7 @@ class HisSegBackupResultSet implements SwiftResultSet {
                 row.add(details.get(i).get(cursor));
             }
         }
+        cursor++;
         return new ListBasedRow(row);
     }
 

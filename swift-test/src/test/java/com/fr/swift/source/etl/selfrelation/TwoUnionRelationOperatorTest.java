@@ -59,7 +59,7 @@ public class TwoUnionRelationOperatorTest extends TestCase {
         int k = -1;
         while (rs.next()) {
             k++;
-            Row row = rs.getRowData();
+            Row row = rs.getNextRow();
             for (int i = 0; i < 6; i++) {
                 assertEquals(row.getValue(i), str[k][i]);
             }

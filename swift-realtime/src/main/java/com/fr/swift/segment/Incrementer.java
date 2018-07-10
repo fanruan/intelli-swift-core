@@ -13,6 +13,7 @@ import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.insert.SwiftRealtimeInserter;
 import com.fr.swift.segment.operator.utils.SegmentUtils;
 import com.fr.swift.source.DataSource;
+import com.fr.swift.source.LimitedResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.alloter.SegmentInfo;
@@ -53,11 +54,7 @@ public class Incrementer implements Inserter {
     public void increment(SwiftResultSet resultSet) throws SQLException {
         try {
             persistMeta();
-
             int count = LOCAL_SEGMENT_PROVIDER.getSegmentKeys(dataSource.getSourceKey()).size();
-
-            //todo 这next第一行就没了
-//            while (resultSet.next()) {
             do {
                 boolean newSeg = nextSegment();
                 //获得事务代理
@@ -73,7 +70,6 @@ public class Incrementer implements Inserter {
                     persistSegment(currentSeg, count++);
                 }
             } while (alloter.isFull(currentSeg));
-//            }
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         } finally {
@@ -119,14 +115,13 @@ public class Incrementer implements Inserter {
     }
 
     @Override
-    public List<Segment> insertData(List<Row> rowList) throws SQLException {
-        return insertData(new ListResultSet(dataSource.getMetadata(), rowList));
+    public void insertData(List<Row> rowList) throws SQLException {
+        insertData(new ListResultSet(dataSource.getMetadata(), rowList));
     }
 
     @Override
-    public List<Segment> insertData(SwiftResultSet swiftResultSet) throws SQLException {
+    public void insertData(SwiftResultSet swiftResultSet) throws SQLException {
         increment(swiftResultSet);
-        return Collections.emptyList();
     }
 
     @Override

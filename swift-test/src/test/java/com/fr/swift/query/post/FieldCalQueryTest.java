@@ -51,14 +51,14 @@ public class FieldCalQueryTest extends TestCase {
         try {
             NodeResultSet resultSet = query.getQueryResult();
             assertTrue(resultSet.next());
-            Row row = resultSet.getRowData();   // ["b", 1, 2]
+            Row row = resultSet.getNextRow();   // ["b", 1, 2]
             assertEquals(row.getSize(), 3);
             assertTrue(StringUtils.equals(row.getValue(0).toString(), "b"));
             assertEquals(row.getValue(1), 1.);
             assertEquals(row.getValue(2), 2.);
 
             assertTrue(resultSet.next());
-            row = resultSet.getRowData();   // ["c", 2, 2]
+            row = resultSet.getNextRow();   // ["c", 2, 2]
             assertEquals(row.getSize(), 3);
             assertTrue(StringUtils.equals(row.getValue(0).toString(), "c"));
             assertEquals(row.getValue(1), 2.);

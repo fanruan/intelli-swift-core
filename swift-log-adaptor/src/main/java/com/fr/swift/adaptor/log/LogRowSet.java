@@ -40,7 +40,7 @@ public class LogRowSet implements SwiftResultSet {
     }
 
     @Override
-    public Row getRowData() {
+    public Row getNextRow() {
         return converter.apply(rows.get(cursor++));
     }
 

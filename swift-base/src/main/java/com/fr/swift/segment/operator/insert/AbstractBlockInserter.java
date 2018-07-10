@@ -33,7 +33,6 @@ import com.fr.swift.util.Crasher;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -92,19 +91,19 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
     }
 
     @Override
-    public List<Segment> insertData(List<Row> rowList) {
-        return Collections.emptyList();
+    public void insertData(List<Row> rowList) {
+        return;
     }
 
     @Override
-    public List<Segment> insertData(SwiftResultSet swiftResultSet) throws SQLException {
+    public void insertData(SwiftResultSet swiftResultSet) throws SQLException {
         if (!fields.isEmpty()) {
             List<Segment> newSegments = new ArrayList<Segment>();
             try {
                 long count = 0;
                 String allotColumn = fields.get(0);
                 while (swiftResultSet.next()) {
-                    Row rowData = swiftResultSet.getRowData();
+                    Row rowData = swiftResultSet.getNextRow();
                     int size = segments.size();
                     int index = alloter.allot(new LineRowInfo(count)).getOrder() + startSegIndex;
                     if (index >= size) {
@@ -141,7 +140,7 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
             }
             release();
             end();
-            return newSegments;
+            return;
         } else {
             List<Segment> cubeSourceSegments = SwiftContext.getInstance().getBean(SwiftSegmentManager.class).getSegment(new SourceKey(cubeSourceKey));
             for (int i = 0; i < cubeSourceSegments.size(); i++) {
@@ -149,7 +148,7 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
                 createSegment(i, segment.isHistory() ? Types.StoreType.FINE_IO : Types.StoreType.MEMORY);
             }
             release();
-            return Collections.emptyList();
+            return;
         }
     }
 

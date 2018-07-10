@@ -113,7 +113,7 @@ public class SortSegmentDetailResultSet implements DetailResultSet {
     }
 
     @Override
-    public Row getRowData() {
+    public Row getNextRow() {
         return rowIterator.next();
     }
 

@@ -14,7 +14,7 @@ import org.easymock.IMocksControl;
 public class StringCombineAggregateTest extends TestCase {
 
     public void testAggregate() {
-        RowTraversal bitMap = AllShowBitMap.newInstance(4);
+        RowTraversal bitMap = AllShowBitMap.of(4);
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
         DictionaryEncodedColumn dic = control.createMock(DictionaryEncodedColumn.class);

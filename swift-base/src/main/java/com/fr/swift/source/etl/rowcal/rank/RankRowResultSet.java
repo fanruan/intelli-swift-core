@@ -129,7 +129,7 @@ public class RankRowResultSet implements SwiftResultSet {
     }
 
     @Override
-    public Row getRowData() throws SQLException {
+    public Row getNextRow() throws SQLException {
         List list = new ArrayList();
         list.add(valueIterator.next());
         return new ListBasedRow(list);

@@ -16,7 +16,7 @@ public class FormulaIndexColumn implements BitmapIndexedColumn {
     public FormulaIndexColumn(String formula, Segment segment) {
         ColumnTypeConstants.ColumnType type = FormulaUtils.getColumnType(segment.getMetaData(), formula);
         if (type != ColumnTypeConstants.ColumnType.NUMBER){
-            nullIndex = AllShowBitMap.newInstance(segment.getRowCount());
+            nullIndex = AllShowBitMap.of(segment.getRowCount());
         }
     }
 

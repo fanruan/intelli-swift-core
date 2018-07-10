@@ -58,7 +58,7 @@ public class GroupAllSegmentQueryTest extends TestCase {
         Map<RowIndexKey<int[]>, double[]> result = cubeData.getAggregationResult();
         try {
             while (resultSet.next()) {
-                Row row = resultSet.getRowData();
+                Row row = resultSet.getNextRow();
                 RowIndexKey<int[]> key = getKey(row);
                 Assert.assertTrue(result.containsKey(key));
                 double[] values = getValues(row);

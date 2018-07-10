@@ -11,18 +11,13 @@ public final class IdBitMap extends RangeBitmap {
         super(id, id + 1);
     }
 
-    public static ImmutableBitMap newInstance(int id) {
+    public static ImmutableBitMap of(int id) {
         return new IdBitMap(id);
     }
 
     @Override
-    public boolean isFull() {
-        return false;
-    }
-
-    @Override
     public ImmutableBitMap clone() {
-        return newInstance(start);
+        return of(start);
     }
 
     @Override

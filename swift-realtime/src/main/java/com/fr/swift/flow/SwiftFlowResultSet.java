@@ -47,7 +47,7 @@ public class SwiftFlowResultSet implements SwiftResultSet {
     }
 
     @Override
-    public Row getRowData() throws SQLException {
-        return swiftResultSet.getRowData();
+    public Row getNextRow() throws SQLException {
+        return swiftResultSet.getNextRow();
     }
 }

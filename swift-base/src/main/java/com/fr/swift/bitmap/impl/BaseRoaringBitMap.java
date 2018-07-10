@@ -3,7 +3,6 @@ package com.fr.swift.bitmap.impl;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.roaringbitmap.IntConsumer;
 import com.fr.swift.bitmap.roaringbitmap.IntIterator;
-import com.fr.swift.bitmap.roaringbitmap.buffer.ImmutableRoaringBitmap;
 import com.fr.swift.bitmap.roaringbitmap.buffer.MutableRoaringBitmap;
 import com.fr.swift.bitmap.traversal.BreakTraversalAction;
 import com.fr.swift.bitmap.traversal.TraversalAction;
@@ -17,7 +16,6 @@ import java.io.IOException;
  * @author anchore
  */
 public abstract class BaseRoaringBitMap extends AbstractBitMap {
-
     final MutableRoaringBitmap bitmap;
 
     BaseRoaringBitMap(MutableRoaringBitmap bitmap) {
@@ -46,11 +44,6 @@ public abstract class BaseRoaringBitMap extends AbstractBitMap {
     @Override
     public boolean isEmpty() {
         return bitmap.isEmpty();
-    }
-
-    @Override
-    public boolean isFull() {
-        return false;
     }
 
     @Override
@@ -86,29 +79,16 @@ public abstract class BaseRoaringBitMap extends AbstractBitMap {
             bitmap.serialize(new DataOutputStream(baos));
             return baos.toByteArray();
         } catch (IOException e) {
-            SwiftLoggers.getLogger(BaseRoaringBitMap.class).error(e);
+            SwiftLoggers.getLogger().error(e);
             return new byte[0];
         } finally {
             try {
                 baos.close();
             } catch (IOException e) {
-                SwiftLoggers.getLogger(BaseRoaringBitMap.class).error(e);
+                SwiftLoggers.getLogger().error(e);
             }
         }
     }
-
-    @Override
-    protected ImmutableRoaringBitmap getBitMap() {
-        return bitmap;
-    }
-
-    /**
-     * 克隆
-     *
-     * @return 克隆对象
-     */
-    @Override
-    public abstract ImmutableBitMap clone();
 
     @Override
     public String toString() {

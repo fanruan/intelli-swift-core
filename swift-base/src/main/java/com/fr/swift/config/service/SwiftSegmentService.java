@@ -9,7 +9,7 @@ import java.util.Map;
  * @author yee
  * @date 2018/6/6
  */
-public interface SwiftSegmentService {
+public interface SwiftSegmentService extends ConfigService<SegmentKey> {
     /**
      * Segment
      *
@@ -25,6 +25,8 @@ public interface SwiftSegmentService {
      * @return
      */
     boolean removeSegments(String... sourceKey);
+
+    boolean removeSegments(SegmentKey... segmentKeys);
 
     /**
      * @param segments

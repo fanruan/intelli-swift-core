@@ -41,11 +41,11 @@ public class SubDateColumnIndexerTest {
     }
 
     @Before
-    public void before() {
+    public void before() throws Exception {
         segmentProvider = SwiftContext.getInstance().getBean(LocalSegmentProvider.class);
-        new TableTransporter(dataSource).work();
+        new TableTransporter(dataSource).transport();
         List<Segment> segments = segmentProvider.getSegment(dataSource.getSourceKey());
-        new ColumnIndexer(dataSource, new ColumnKey(columnName), segments).work();
+        new ColumnIndexer(dataSource, new ColumnKey(columnName), segments).buildIndex();
     }
 
     @Test

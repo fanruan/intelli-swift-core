@@ -1,8 +1,8 @@
 package com.fr.swift.generate;
 
-import com.fr.swift.config.SwiftCubePathConfig;
 import com.fr.swift.config.TestConfDb;
 import com.fr.swift.db.impl.SwiftDatabase.Schema;
+import com.fr.swift.decision.config.SwiftCubePathConfig;
 import com.fr.swift.util.FileUtil;
 import org.junit.Before;
 

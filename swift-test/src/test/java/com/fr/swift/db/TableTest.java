@@ -17,7 +17,9 @@ import com.fr.swift.test.Preparer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import java.sql.SQLException;
 import java.sql.Types;
@@ -29,6 +31,7 @@ import static org.junit.Assert.assertEquals;
  * @author anchore
  * @date 2018/4/9
  */
+@FixMethodOrder(MethodSorters.JVM)
 public class TableTest {
     private Database db = SwiftDatabase.getInstance();
     private SourceKey sk = new SourceKey(getClass().getSimpleName());
@@ -36,12 +39,12 @@ public class TableTest {
 
     @BeforeClass
     public static void boot() throws Exception {
-        TestConfDb.setConfDb();
         Preparer.prepareCubeBuild();
     }
 
     @Before
     public void setUp() throws Exception {
+        TestConfDb.setConfDb();
         if (db.existsTable(sk)) {
             db.dropTable(sk);
         }
@@ -105,7 +108,7 @@ public class TableTest {
         }
 
         @Override
-        public Row getRowData() {
+        public Row getNextRow() {
             return rows[cursor++];
         }
     }

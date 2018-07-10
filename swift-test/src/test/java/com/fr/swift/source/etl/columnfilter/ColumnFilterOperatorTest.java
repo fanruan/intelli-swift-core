@@ -33,7 +33,7 @@ public class ColumnFilterOperatorTest extends TestCase {
         EasyMock.expect(metaData.getColumn(EasyMock.anyInt())).andReturn(metaDataColumn).anyTimes();
         EasyMock.expect(metaDataColumn.getName()).andReturn("column1").anyTimes();
         EasyMock.expect(filterInfo.createDetailFilter(EasyMock.anyObject())).andReturn(detailFilter).anyTimes();
-        MutableBitMap bitMap = RoaringMutableBitMap.newInstance();
+        MutableBitMap bitMap = RoaringMutableBitMap.of();
         bitMap.add(0);
         EasyMock.expect(detailFilter.createFilterIndex()).andReturn(bitMap).anyTimes();
         control.replay();
@@ -46,7 +46,7 @@ public class ColumnFilterOperatorTest extends TestCase {
         SwiftResultSet rs = operator.createResultSet(metaData, Arrays.asList(new SwiftMetaData[]{metaData}), list);
         int rowCount = 0;
         while (rs.next()) {
-            Row row = rs.getRowData();
+            Row row = rs.getNextRow();
             assertEquals(row.getValue(0), "A");
             rowCount++;
         }

@@ -5,7 +5,7 @@
 
     <parent>
         <groupId>com.fr.intelligence</groupId>
-        <artifactId>com.fr.swift</artifactId>
+        <artifactId>fine-swift</artifactId>
         <version>5.0-RELEASE-SNAPSHOT</version>
     </parent>
 
@@ -81,6 +81,11 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.45</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-decision</artifactId>
+            <version>5.0-RELEASE-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

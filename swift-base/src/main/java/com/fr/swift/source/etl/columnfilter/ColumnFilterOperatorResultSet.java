@@ -99,7 +99,7 @@ public class ColumnFilterOperatorResultSet implements SwiftResultSet {
     }
 
     @Override
-    public Row getRowData() throws SQLException {
+    public Row getNextRow() throws SQLException {
         List<Object> list = new ArrayList<Object>();
         int row = currentSegRowIter.next();
         for (DictionaryEncodedColumn dic : dics) {

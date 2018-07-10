@@ -19,7 +19,7 @@ import java.net.URI;
  * @date 2018/5/24
  */
 @Entity
-@Table(name = "FINE_SWIFT_SEGMENTS")
+@Table(name = "fine_swift_segments")
 public class SwiftSegmentEntity implements Convert<SegmentKeyBean> {
     @Id
     private String id;

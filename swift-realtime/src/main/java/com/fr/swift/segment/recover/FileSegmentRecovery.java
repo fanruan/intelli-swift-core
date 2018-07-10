@@ -6,7 +6,6 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.operator.Inserter;
-import com.fr.swift.source.SwiftResultSet;
 
 import java.util.List;
 
@@ -23,9 +22,9 @@ public class FileSegmentRecovery extends AbstractSegmentRecovery {
                 Table table = SwiftDatabase.getInstance().getTable(segKey.getTable());
                 Segment realtimeSeg = newRealtimeSegment(localSegmentProvider.getSegment(segKey));
                 Inserter insert = operators.getInserter(table, realtimeSeg);
-                SwiftResultSet resultSet = new HisSegBackupResultSet(getBackupSegment(realtimeSeg));
+                SegmentBackupResultSet resultSet = new SegmentBackupResultSet(getBackupSegment(realtimeSeg));
                 insert.insertData(resultSet);
-                realtimeSeg.putAllShowIndex(((HisSegBackupResultSet) resultSet).getAllShowIndex());
+                realtimeSeg.putAllShowIndex(resultSet.getAllShowIndex());
             }
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);

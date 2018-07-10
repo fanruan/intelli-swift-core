@@ -160,7 +160,7 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
         SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfoBean);
         Row row = null;
         if (resultSet.next()) {
-            row = resultSet.getRowData();
+            row = resultSet.getNextRow();
         }
         if (row != null && row.getSize() == 1) {
             Number value = row.getValue(0);

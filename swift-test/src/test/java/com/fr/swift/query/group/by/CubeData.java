@@ -11,6 +11,7 @@ import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.iterator.IntListRowTraversal;
@@ -232,7 +233,12 @@ public class CubeData {
 
                 @Override
                 public DictionaryEncodedColumn getDictionaryEncodedColumn() {
-                    return null;
+                    return new TempDictColumn() {
+                        @Override
+                        public ColumnTypeConstants.ClassType getType() {
+                            return ColumnTypeConstants.ClassType.INTEGER;
+                        }
+                    };
                 }
 
                 @Override

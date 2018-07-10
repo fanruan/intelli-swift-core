@@ -25,12 +25,15 @@ public class JdbcResultSet implements SwiftResultSet {
     private SwiftMetaData metaData;
     private DBDealer[] dealers;
 
-    public JdbcResultSet(ResultSet rs, Statement stmt, Connection conn, SwiftMetaData metaData, DBDealer[] dealers) {
+    private Row current;
+
+    public JdbcResultSet(ResultSet rs, Statement stmt, Connection conn, SwiftMetaData metaData, DBDealer[] dealers) throws SQLException {
         this.rs = rs;
         this.stmt = stmt;
         this.conn = conn;
         this.metaData = metaData;
         this.dealers = dealers;
+        nextRow();
     }
 
     @Override
@@ -42,7 +45,7 @@ public class JdbcResultSet implements SwiftResultSet {
 
     @Override
     public boolean next() throws SQLException {
-        return rs.next();
+        return current != null;
     }
 
     @Override
@@ -51,11 +54,21 @@ public class JdbcResultSet implements SwiftResultSet {
     }
 
     @Override
-    public Row getRowData() throws SQLException {
-        List<Object> list = new ArrayList<Object>();
-        for (DBDealer dealer : dealers) {
-            list.add(dealer.dealWithResultSet(rs));
+    public Row getNextRow() throws SQLException {
+        Row prev = current;
+        nextRow();
+        return prev;
+    }
+
+    private void nextRow() throws SQLException {
+        if (rs.next()) {
+            List<Object> list = new ArrayList<Object>();
+            for (DBDealer dealer : dealers) {
+                list.add(dealer.dealWithResultSet(rs));
+            }
+            current = new ListBasedRow(list);
+        } else {
+            current = null;
         }
-        return new ListBasedRow(list);
     }
 }

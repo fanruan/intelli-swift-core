@@ -11,6 +11,7 @@ public class ColumnTypeConstants {
      * @author frank
      */
     public enum ColumnType {
+        //
         NUMBER, STRING, DATE
     }
 
@@ -20,6 +21,7 @@ public class ColumnTypeConstants {
      * @author frank
      */
     public enum ClassType {
+        //
         INTEGER, LONG, DOUBLE, DATE, STRING
     }
 }

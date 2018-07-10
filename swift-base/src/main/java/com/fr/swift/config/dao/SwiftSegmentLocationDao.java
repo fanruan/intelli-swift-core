@@ -15,5 +15,7 @@ public interface SwiftSegmentLocationDao extends SwiftConfigDao<SwiftSegmentLoca
 
     List<SwiftSegmentLocationEntity> findByClusterId(Session session, String clusterId);
 
+    List<SwiftSegmentLocationEntity> findBySegmentId(Session session, String segmentId);
+
     List<SwiftSegmentLocationEntity> findAll(Session session);
 }

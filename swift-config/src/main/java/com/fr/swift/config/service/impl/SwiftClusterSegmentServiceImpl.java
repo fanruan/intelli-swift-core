@@ -3,17 +3,18 @@ package com.fr.swift.config.service.impl;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.dao.SwiftSegmentDao;
 import com.fr.swift.config.dao.SwiftSegmentLocationDao;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
 import com.fr.swift.config.entity.key.SwiftSegLocationEntityId;
 import com.fr.swift.config.hibernate.transaction.AbstractTransactionWorker;
 import com.fr.swift.config.hibernate.transaction.HibernateTransactionManager;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
-import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.structure.Pair;
 import com.fr.third.org.hibernate.Session;
+import com.fr.third.org.hibernate.criterion.Criterion;
+import com.fr.third.org.hibernate.criterion.Restrictions;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
@@ -31,8 +32,6 @@ import java.util.Map;
  */
 @Service("swiftClusterSegmentService")
 public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentService {
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftSegmentService.class);
-    private static final String SEGMENT = "SEGMENT";
 
     @Autowired
     private HibernateTransactionManager transactionManager;
@@ -58,7 +57,7 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
                 }
             });
         } catch (SQLException e) {
-            LOGGER.error("add segment error! ", e);
+            SwiftLoggers.getLogger().error("add segment error! ", e);
         }
         return false;
     }
@@ -77,9 +76,38 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
                 }
             });
         } catch (SQLException e) {
-            LOGGER.error("remove segment error! ", e);
+            SwiftLoggers.getLogger().error("remove segment error! ", e);
         }
         return false;
+    }
+
+    @Override
+    public boolean removeSegments(final SegmentKey... segmentKeys) {
+        try {
+            if (null == segmentKeys) {
+                return false;
+            }
+            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
+                @Override
+                public Boolean work(Session session) throws SQLException {
+                    try {
+                        for (SegmentKey segmentKey : segmentKeys) {
+                            swiftSegmentDao.deleteById(session, segmentKey.toString());
+                            List<SwiftSegmentLocationEntity> list = segmentLocationDao.findBySegmentId(session, segmentKey.toString());
+                            for (SwiftSegmentLocationEntity locationEntity : list) {
+                                segmentLocationDao.deleteById(session, locationEntity.getId());
+                            }
+                        }
+                    } catch (Exception e) {
+                        throw new SQLException(e);
+                    }
+                    return true;
+                }
+            });
+        } catch (SQLException e) {
+            SwiftLoggers.getLogger().error("remove segment error! ", e);
+            return false;
+        }
     }
 
     private boolean addSegmentsWithoutTransaction(Session session, List<SegmentKey> segments) throws SQLException {
@@ -110,7 +138,7 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
                 }
             });
         } catch (SQLException e) {
-            LOGGER.error("update segment error! ", e);
+            SwiftLoggers.getLogger().error("update segment error! ", e);
         }
         return false;
     }
@@ -141,7 +169,7 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
             });
 
         } catch (Exception e) {
-            LOGGER.error("Select segments error!", e);
+            SwiftLoggers.getLogger().error("Select segments error!", e);
         }
         return Collections.emptyMap();
     }
@@ -197,7 +225,7 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
             });
 
         } catch (Exception e) {
-            LOGGER.error("Select segments error!", e);
+            SwiftLoggers.getLogger().error("Select segments error!", e);
         }
         return Collections.emptyMap();
     }
@@ -223,7 +251,7 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
             });
 
         } catch (Exception e) {
-            LOGGER.error("Select segments error!", e);
+            SwiftLoggers.getLogger().error("Select segments error!", e);
         }
         return Collections.emptyMap();
     }
@@ -253,8 +281,37 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
                 }
             });
         } catch (SQLException e) {
-            LOGGER.error("Update table error!", e);
+            SwiftLoggers.getLogger().error("Update table error!", e);
             return false;
+        }
+    }
+
+    @Override
+    public List<SegmentKey> find(final Criterion... criterion) {
+        try {
+            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<List<SegmentKey>>() {
+                @Override
+                public List<SegmentKey> work(Session session) {
+                    List<SwiftSegmentEntity> keys = swiftSegmentDao.find(session, criterion);
+                    List<SegmentKey> result = new ArrayList<SegmentKey>();
+                    if (null != keys) {
+                        for (SwiftSegmentEntity key : keys) {
+                            if (!segmentLocationDao.find(session, Restrictions.eq("id.clusterId", clusterId),
+                                    Restrictions.eq("id.segmentId", key.convert().toString())).isEmpty()) {
+                                result.add(key.convert());
+                            }
+                        }
+                    }
+                    return result;
+                }
+
+                @Override
+                public boolean needTransaction() {
+                    return false;
+                }
+            });
+        } catch (SQLException e) {
+            return Collections.emptyList();
         }
     }
 }

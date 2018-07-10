@@ -54,7 +54,7 @@ public class OneUnionRelationOperatorTest extends TestCase {
         SwiftResultSet rs = operator.createResultSet(metaData, parents, list);
         int k = 0;
         while (rs.next()) {
-            Row row = rs.getRowData();
+            Row row = rs.getNextRow();
             for (int i = 0; i < 3; i++) {
                 assertEquals(str[k][i], row.getValue(i));
             }

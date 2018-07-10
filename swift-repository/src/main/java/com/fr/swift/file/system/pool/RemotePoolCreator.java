@@ -1,8 +1,8 @@
 package com.fr.swift.file.system.pool;
 
-import com.fr.swift.file.conf.SwiftFileSystemConfig;
-import com.fr.swift.file.conf.impl.FtpRepositoryConfigImpl;
-import com.fr.swift.file.conf.impl.HdfsRepositoryConfigImpl;
+import com.fr.swift.config.bean.FtpRepositoryConfigBean;
+import com.fr.swift.config.bean.HdfsRepositoryConfigBean;
+import com.fr.swift.config.bean.SwiftFileSystemConfig;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,10 +30,10 @@ public class RemotePoolCreator {
         if (null == poolMap.get(config)) {
             switch (config.getType()) {
                 case FTP:
-                    poolMap.put(config, new FtpFileSystemPool((FtpRepositoryConfigImpl) config));
+                    poolMap.put(config, new FtpFileSystemPool((FtpRepositoryConfigBean) config));
                     break;
                 case HDFS:
-                    poolMap.put(config, new HdfsFileSystemPool((HdfsRepositoryConfigImpl) config));
+                    poolMap.put(config, new HdfsFileSystemPool((HdfsRepositoryConfigBean) config));
                     break;
                 case FR:
                     return null;

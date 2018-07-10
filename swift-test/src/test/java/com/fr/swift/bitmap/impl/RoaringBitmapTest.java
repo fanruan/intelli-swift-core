@@ -19,11 +19,11 @@ public class RoaringBitmapTest {
     private static final int BOUND = 1000000;
 
     MutableBitMap getMutableBitMap() {
-        return RoaringMutableBitMap.newInstance();
+        return RoaringMutableBitMap.of();
     }
 
     ImmutableBitMap getImmutableBitMap() {
-        return RoaringImmutableBitMap.newInstance();
+        return RoaringImmutableBitMap.of();
     }
 
     private int[] prepare(MutableBitMap m) {

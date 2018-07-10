@@ -21,6 +21,16 @@ public class IntDetailColumn extends BaseDetailColumn<Integer> {
     }
 
     @Override
+    public long getLong(int pos) {
+        return getInt(pos);
+    }
+
+    @Override
+    public double getDouble(int pos) {
+        return getInt(pos);
+    }
+
+    @Override
     public int getInt(int pos) {
         initDetailReader();
         return detailReader.get(pos);

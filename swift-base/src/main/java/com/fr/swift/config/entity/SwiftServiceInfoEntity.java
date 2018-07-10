@@ -15,7 +15,7 @@ import com.fr.third.javax.persistence.Table;
  * @since Advanced FineBI 5.0
  */
 @Entity
-@Table(name = "FINE_SWIFT_SERVICE_INFO")
+@Table(name = "fine_swift_service_info")
 public class SwiftServiceInfoEntity implements Convert<SwiftServiceInfoBean> {
 
     @Id

@@ -62,7 +62,7 @@ public class ColumnRowTransOperatorTest extends TestCase {
         String[][] str = new String[][]{{"A", "A", null, null, "A"}, {"B", null, "B", null, "B"}, {"C", null, null, "C", "C"}};
         int j = 0;
         while (set.next()) {
-            Row row = set.getRowData();
+            Row row = set.getNextRow();
             for (int i = 0; i < 5; i++) {
                 assertEquals(row.getValue(i), str[j][i]);
             }

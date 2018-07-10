@@ -69,7 +69,7 @@ public abstract class AbstractDeleter implements RowDeleter {
     public boolean deleteData(SwiftResultSet swiftResultSet) throws Exception {
         while (swiftResultSet.next()) {
             List<String> fields = swiftResultSet.getMetaData().getFieldNames();
-            Row row = swiftResultSet.getRowData();
+            Row row = swiftResultSet.getNextRow();
 
             List<ImmutableBitMap> bitMaps = new ArrayList<ImmutableBitMap>();
 

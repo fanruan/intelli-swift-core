@@ -19,7 +19,7 @@ public class AllShowDetailFilterTest extends TestCase {
     public void setUp() {
         IMocksControl control = EasyMock.createControl();
         Segment segment = control.createMock(Segment.class);
-        allShow = RoaringImmutableBitMap.newInstance();
+        allShow = RoaringImmutableBitMap.of();
         filter = new AllShowDetailFilter(segment);
         EasyMock.expect(segment.getAllShowIndex()).andReturn(allShow).anyTimes();
         control.replay();

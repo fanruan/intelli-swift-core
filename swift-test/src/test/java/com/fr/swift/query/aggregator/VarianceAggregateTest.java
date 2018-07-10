@@ -6,6 +6,7 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.column.impl.base.BitMapColumn;
 import com.fr.swift.segment.column.impl.base.IntDetailColumn;
+import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.structure.iterator.RowTraversal;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -18,11 +19,15 @@ public class VarianceAggregateTest extends TestCase {
     private double precision = 0.00000001;
     public void testAggregateInt() {
 
-        RowTraversal bitMap = AllShowBitMap.newInstance(4);
+        RowTraversal bitMap = AllShowBitMap.of(4);
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
         IntDetailColumn detailColumn = new TempIntDetailColumn(new ResourceLocation("liu"));
         BitMapColumn bitMapColumn = control.createMock(BitMapColumn.class);
+
+        DictionaryEncodedColumn dictionaryEncodedColumn = control.createMock(DictionaryEncodedColumn.class);
+        EasyMock.expect(dictionaryEncodedColumn.getType()).andReturn(ColumnTypeConstants.ClassType.INTEGER).anyTimes();
+        EasyMock.expect(mockColumn.getDictionaryEncodedColumn()).andReturn(dictionaryEncodedColumn).anyTimes();
 
         EasyMock.expect(mockColumn.getBitmapIndex()).andReturn(bitMapColumn).anyTimes();
         EasyMock.expect(bitMapColumn.getNullIndex()).andReturn(null).anyTimes();

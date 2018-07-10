@@ -2,6 +2,7 @@ package com.fr.swift.config.service;
 
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.third.org.hibernate.criterion.Criterion;
 
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,11 @@ public class SwiftSegmentServiceProvider implements SwiftSegmentService {
     }
 
     @Override
+    public boolean removeSegments(SegmentKey... segmentKeys) {
+        return service.removeSegments(segmentKeys);
+    }
+
+    @Override
     public boolean updateSegments(String sourceKey, List<SegmentKey> segments) {
         return service.updateSegments(sourceKey, segments);
     }
@@ -54,6 +60,11 @@ public class SwiftSegmentServiceProvider implements SwiftSegmentService {
     @Override
     public boolean containsSegment(SegmentKey segmentKey) {
         return service.containsSegment(segmentKey);
+    }
+
+    @Override
+    public List<SegmentKey> find(Criterion... criterion) {
+        return service.find(criterion);
     }
 
     private static class SingletonHolder {

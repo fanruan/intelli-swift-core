@@ -13,10 +13,12 @@ import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.stable.db.DBContext;
 import com.fr.stable.db.option.DBOption;
 import com.fr.swift.boot.ClusterListener;
+import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
 import com.fr.swift.config.entity.SwiftServiceInfoEntity;
+import com.fr.swift.config.hibernate.SwiftConfigProperties;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.ProviderTaskManager;
 import com.fr.swift.event.ClusterEvent;
@@ -51,6 +53,7 @@ public class SwiftEngineStart {
             SwiftContext.init();
             SwiftContext.getInstance().getBean(SwiftHttpServer.class).start();
             SwiftLoggers.getLogger().info("http server starting!");
+//            FR 的配置可以不需要的，这里把在fr的配置同步到新的
             initConfDB();
             registerTmpConnectionProvider();
             new LocalSwiftRegister().serviceRegister();
@@ -59,6 +62,7 @@ public class SwiftEngineStart {
             if (SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class).isCluster()) {
                 ClusterListenerHandler.handlerEvent(new ClusterEvent(ClusterEventType.JOIN_CLUSTER, ClusterType.CONFIGURE));
             }
+            syncFRConfig();
         } catch (Throwable e) {
             SwiftLoggers.getLogger().error(e);
             System.exit(1);
@@ -66,13 +70,13 @@ public class SwiftEngineStart {
     }
 
     private static void initConfDB() throws Exception {
-        SwiftProperty property = SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class);
+        SwiftConfigProperties property = SwiftContext.getInstance().getBean(SwiftConfigProperties.class);
         DBOption dbOption = new DBOption();
-        dbOption.setUrl(property.getConfigDbJdbcUrl());
-        dbOption.setUsername(property.getConfigDbUsername());
-        dbOption.setPassword(property.getConfigDbPasswd());
-        dbOption.setDriverClass(property.getConfigDbDriverClass());
-        dbOption.setDialectClass("com.fr.third.org.hibernate.dialect.MySQL5Dialect");
+        dbOption.setUrl(property.getUrl());
+        dbOption.setUsername(property.getUsername());
+        dbOption.setPassword(property.getPassword());
+        dbOption.setDriverClass(property.getDriverClass());
+        dbOption.setDialectClass(property.getDialectClass());
         dbOption.addRawProperty("hibernate.show_sql", false)
                 .addRawProperty("hibernate.format_sql", true).addRawProperty("hibernate.connection.autocommit", false);
         DBContext dbProvider = DBContext.create();
@@ -80,6 +84,7 @@ public class SwiftEngineStart {
         dbProvider.addEntityClass(XmlEntity.class);
         dbProvider.addEntityClass(ClassHelper.class);
 
+        dbProvider.addEntityClass(SwiftConfigEntity.class);
         dbProvider.addEntityClass(SwiftMetaDataEntity.class);
         dbProvider.addEntityClass(SwiftSegmentEntity.class);
         dbProvider.addEntityClass(SwiftServiceInfoEntity.class);
@@ -92,6 +97,30 @@ public class SwiftEngineStart {
         DaoContext.setXmlEntityDao(new HibernateXmlEnityDao());
         DaoContext.setEntityDao(new HibernateEntityDao());
         Configurations.setHelper(new FineConfigurationHelper());
+    }
+
+    private static void syncFRConfig() {
+        syncConfiguration();
+    }
+
+    public static void syncConfiguration() {
+//        String path = SwiftCubePathConfig.getInstance().get();
+//        SwiftContext.getInstance().getBean(SwiftPathService.class).setSwiftPath(path);
+//        boolean zip = SwiftZipConfig.getInstance().get();
+//        SwiftContext.getInstance().getBean(SwiftZipService.class).setZip(zip);
+//        RepositoryConfigUnique unique = SwiftRepositoryConfig.getInstance().getCurrentRepository();
+//        if (null != unique) {
+//            SwiftContext.getInstance().getBean(SwiftRepositoryConfService.class).setCurrentRepository(unique.convert());
+//        }
+//        Map<String, RpcServiceAddressUnique> all = SwiftServiceAddressConfig.getInstance().get();
+//        if (!all.isEmpty()) {
+//            Iterator<Map.Entry<String, RpcServiceAddressUnique>> iterator = all.entrySet().iterator();
+//            SwiftServiceAddressService service = SwiftContext.getInstance().getBean(SwiftServiceAddressService.class);
+//            while (iterator.hasNext()) {
+//                Map.Entry<String, RpcServiceAddressUnique> entry = iterator.next();
+//                service.addOrUpdateAddress(entry.getKey(), entry.getValue().convert());
+//            }
+//        }
     }
 
     private static void registerTmpConnectionProvider() {

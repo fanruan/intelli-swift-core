@@ -70,7 +70,7 @@ public class DataModelsResultSet extends AbstractDataModelResultSet {
     }
 
     @Override
-    public Row getRowData() throws SQLException {
+    public Row getNextRow() throws SQLException {
         try {
             List list = new ArrayList();
             for (int i = 0; i < columnIndexes.length; i++) {

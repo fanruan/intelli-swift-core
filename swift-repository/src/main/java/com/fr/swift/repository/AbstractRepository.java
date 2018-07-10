@@ -1,6 +1,6 @@
 package com.fr.swift.repository;
 
-import com.fr.swift.file.conf.SwiftFileSystemConfig;
+import com.fr.swift.config.bean.SwiftFileSystemConfig;
 import com.fr.swift.file.exception.SwiftFileException;
 import com.fr.swift.file.system.SwiftFileSystem;
 import com.fr.swift.file.system.impl.DefaultFileSystemImpl;

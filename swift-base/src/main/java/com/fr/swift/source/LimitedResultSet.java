@@ -1,8 +1,4 @@
-package com.fr.swift.segment;
-
-import com.fr.swift.source.Row;
-import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftResultSet;
+package com.fr.swift.source;
 
 import java.sql.SQLException;
 
@@ -13,16 +9,23 @@ import java.sql.SQLException;
 public class LimitedResultSet implements SwiftResultSet {
     private SwiftResultSet origin;
 
-    private int cursor = -1;
+    private boolean closeOrigin;
+
+    private int cursor = 0;
 
     private int limit;
 
     public LimitedResultSet(SwiftResultSet origin, int limit) {
+        this(origin, limit, true);
+    }
+
+    public LimitedResultSet(SwiftResultSet origin, int limit, boolean closeOrigin) {
         if (limit < 0) {
             throw new IllegalArgumentException();
         }
         this.origin = origin;
         this.limit = limit;
+        this.closeOrigin = closeOrigin;
     }
 
     @Override
@@ -32,15 +35,19 @@ public class LimitedResultSet implements SwiftResultSet {
 
     @Override
     public boolean next() throws SQLException {
-        return ++cursor < limit && origin.next();
+        return cursor < limit && origin.next();
     }
 
     @Override
-    public Row getRowData() throws SQLException {
-        return origin.getRowData();
+    public Row getNextRow() throws SQLException {
+        cursor++;
+        return origin.getNextRow();
     }
 
     @Override
-    public void close() {
+    public void close() throws SQLException {
+        if (closeOrigin) {
+            origin.close();
+        }
     }
 }

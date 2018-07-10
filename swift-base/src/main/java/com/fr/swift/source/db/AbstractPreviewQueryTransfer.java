@@ -7,6 +7,7 @@ import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.ColumnTypeUtils;
+import com.fr.swift.source.LimitedResultSet;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
@@ -74,6 +75,6 @@ public abstract class AbstractPreviewQueryTransfer extends AbstractQueryTransfer
         SwiftMetaData metaData = new SwiftMetaDataBean(StringUtils.EMPTY, columnList);
         SwiftMetaData outerMeta = new SwiftMetaDataBean(StringUtils.EMPTY, outerColumnList);
         DBDealer[] dealers = createDBDealer(needCharSetConvert, originalCharSetName, newCharSetName, metaData, outerMeta);
-        return new JdbcRowLimitResultSet(rs, stmt, conn, metaData, dealers, row);
+        return new LimitedResultSet(new JdbcResultSet(rs, stmt, conn, metaData, dealers), row);
     }
 }
