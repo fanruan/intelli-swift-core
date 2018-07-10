@@ -16,6 +16,8 @@ public interface IResourceLocation extends Cloneable {
 
     String getPath();
 
+    String getAbstractPath();
+
     IResourceLocation buildChildLocation(String child);
 
     IResourceLocation getParent();
