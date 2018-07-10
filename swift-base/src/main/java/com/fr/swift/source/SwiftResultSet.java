@@ -29,7 +29,7 @@ public interface SwiftResultSet {
      * @return row
      * @throws SQLException 异常
      */
-    Row getRowData() throws SQLException;
+    Row getNextRow() throws SQLException;
 
     /**
      * 关闭

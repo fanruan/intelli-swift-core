@@ -46,7 +46,7 @@ public class ColumnFilterOperatorTest extends TestCase {
         SwiftResultSet rs = operator.createResultSet(metaData, Arrays.asList(new SwiftMetaData[]{metaData}), list);
         int rowCount = 0;
         while (rs.next()) {
-            Row row = rs.getRowData();
+            Row row = rs.getNextRow();
             assertEquals(row.getValue(0), "A");
             rowCount++;
         }

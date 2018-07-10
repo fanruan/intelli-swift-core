@@ -12,6 +12,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.insert.SwiftRealtimeInserter;
 import com.fr.swift.source.DataSource;
+import com.fr.swift.source.LimitedResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.alloter.SegmentInfo;
@@ -60,7 +61,7 @@ public class Incrementer implements Inserter {
 
             int step = ((LineAllotRule) alloter.getAllotRule()).getStep();
             int limit = CubeUtil.isReadable(currentSeg) ? step - currentSeg.getRowCount() : step;
-            inserter.insertData(new LimitedResultSet(resultSet, limit));
+            inserter.insertData(new LimitedResultSet(resultSet, limit, false));
 
             if (newSeg) {
                 persistSegment(currentSeg, count++);

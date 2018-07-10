@@ -72,8 +72,8 @@ public class EtlTransfer implements SwiftSourceTransfer {
         }
 
         @Override
-        public Row getRowData() throws SQLException {
-            return new ShiftRow(resultSet.getRowData(), indices);
+        public Row getNextRow() throws SQLException {
+            return new ShiftRow(resultSet.getNextRow(), indices);
         }
     }
 

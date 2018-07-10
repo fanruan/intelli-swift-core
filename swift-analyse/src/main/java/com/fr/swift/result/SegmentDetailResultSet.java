@@ -80,7 +80,7 @@ public class SegmentDetailResultSet implements DetailResultSet {
     }
 
     @Override
-    public Row getRowData() {
+    public Row getNextRow() {
         return iterator.next();
     }
 

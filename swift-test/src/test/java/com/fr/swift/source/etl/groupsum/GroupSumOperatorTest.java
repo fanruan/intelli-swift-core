@@ -28,7 +28,7 @@ public class GroupSumOperatorTest extends TestCase {
         Object[][] value = new Object[][]{{"A", new Double(12.0)}, {"B", new Double(12.0)}, {"C", new Double(18.0)}};
         int index = 0;
         while (rs.next()) {
-            Row row = rs.getRowData();
+            Row row = rs.getNextRow();
             for (int i = 0; i < 2; i++) {
                 assertEquals(row.getValue(i), value[index][i]);
             }

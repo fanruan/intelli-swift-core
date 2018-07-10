@@ -25,7 +25,7 @@ public class TableDataTransferTest extends TestCase {
     }
 
     @Override
-    public void tearDown() throws Exception {
+    public void tearDown() {
         SimpleWork.checkOut();
     }
 
@@ -39,7 +39,7 @@ public class TableDataTransferTest extends TestCase {
         SwiftResultSet resultSet = excelTransfer.createResultSet();
         List<Row> list = new ArrayList<Row>();
         while (resultSet.next()){
-            list.add(resultSet.getRowData());
+            list.add(resultSet.getNextRow());
         }
         resultSet.close();
         assertEquals(list.size(), 3);
@@ -56,7 +56,7 @@ public class TableDataTransferTest extends TestCase {
         SwiftResultSet resultSet = excelTransfer.createResultSet();
         List<Row> list = new ArrayList<Row>();
         while (resultSet.next()){
-            list.add(resultSet.getRowData());
+            list.add(resultSet.getNextRow());
         }
         resultSet.close();
         assertEquals(list.size(), 3);

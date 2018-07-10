@@ -95,7 +95,7 @@ public class GroupNumericResultSet implements SwiftResultSet {
     }
 
     @Override
-    public Row getRowData() throws SQLException {
+    public Row getNextRow() throws SQLException {
         return tempValue.getRow();
     }
 

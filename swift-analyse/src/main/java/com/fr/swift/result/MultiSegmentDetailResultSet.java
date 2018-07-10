@@ -75,7 +75,7 @@ public class MultiSegmentDetailResultSet implements DetailResultSet {
     }
 
     @Override
-    public Row getRowData() {
+    public Row getNextRow() {
         return rowIterator.next();
     }
 
@@ -110,7 +110,7 @@ public class MultiSegmentDetailResultSet implements DetailResultSet {
         @Override
         public Row next() {
             try {
-                return resultSets.get(index).getRowData();
+                return resultSets.get(index).getNextRow();
             } catch (SQLException e) {
                 Crasher.crash(e);
             }

@@ -80,7 +80,7 @@ public class LocalAllNodeResultSet implements NodeResultSet<SwiftNode>, Serializ
     }
 
     @Override
-    public Row getRowData() throws SQLException {
+    public Row getNextRow() throws SQLException {
         return iterator.next();
     }
 

@@ -44,7 +44,7 @@ public class GroupPagingSegmentQuery extends AbstractGroupSegmentQuery {
             }
 
             @Override
-            public Row getRowData() {
+            public Row getNextRow() {
                 return null;
             }
 

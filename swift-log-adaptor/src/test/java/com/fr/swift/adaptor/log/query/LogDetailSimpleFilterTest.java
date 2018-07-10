@@ -51,7 +51,7 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
             SwiftResultSet eqResultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
             int eqindex = table.getMeta().getColumnIndex("合同类型") - 1;
             while (eqResultSet.next()) {
-                Row row = eqResultSet.getRowData();
+                Row row = eqResultSet.getNextRow();
                 assertEquals(row.getValue(eqindex), "购买合同");
             }
 
@@ -76,7 +76,7 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
             SwiftResultSet neqResultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
             int neqindex = table.getMeta().getColumnIndex("合同类型") - 1;
             while (neqResultSet.next()) {
-                Row row = neqResultSet.getRowData();
+                Row row = neqResultSet.getNextRow();
                 assertNotSame(row.getValue(neqindex), "购买合同");
             }
         } catch (Exception e) {
@@ -101,7 +101,7 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
             int gtindex = table.getMeta().getColumnIndex("总金额") - 1;
             int count = 0;
             while (gtResultSet.next()) {
-                Row row = gtResultSet.getRowData();
+                Row row = gtResultSet.getNextRow();
                 assertTrue(((Long) row.getValue(gtindex)).doubleValue() > 1000000d);
                 if (((Long) row.getValue(gtindex)).doubleValue() == 1000000d) {
                     count++;
@@ -131,7 +131,7 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
             int gteindex = table.getMeta().getColumnIndex("总金额") - 1;
             int count = 0;
             while (gteResultSet.next()) {
-                Row row = gteResultSet.getRowData();
+                Row row = gteResultSet.getNextRow();
                 assertTrue(((Long) row.getValue(gteindex)).doubleValue() >= 1000000d);
                 if (((Long) row.getValue(gteindex)).doubleValue() == 1000000d) {
                     count++;
@@ -161,7 +161,7 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
             int ltindex = table.getMeta().getColumnIndex("总金额") - 1;
             int count = 0;
             while (ltResultSet.next()) {
-                Row row = ltResultSet.getRowData();
+                Row row = ltResultSet.getNextRow();
                 assertTrue(((Long) row.getValue(ltindex)).doubleValue() < 1000000d);
                 if (((Long) row.getValue(ltindex)).doubleValue() == 1000000d) {
                     count++;
@@ -191,7 +191,7 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
             int lteindex = table.getMeta().getColumnIndex("总金额") - 1;
             int count = 0;
             while (lteResultSet.next()) {
-                Row row = lteResultSet.getRowData();
+                Row row = lteResultSet.getNextRow();
                 assertTrue(((Long) row.getValue(lteindex)).doubleValue() <= 1000000d);
                 if (((Long) row.getValue(lteindex)).doubleValue() == 1000000d) {
                     count++;
@@ -223,7 +223,7 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
             SwiftResultSet inResultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
             int inindex = table.getMeta().getColumnIndex("合同类型") - 1;
             while (inResultSet.next()) {
-                Row row = inResultSet.getRowData();
+                Row row = inResultSet.getNextRow();
                 assertTrue(ComparatorUtils.equals(row.getValue(inindex), "长期协议")
                         || ComparatorUtils.equals(row.getValue(inindex), "长期协议订单"));
             }
@@ -252,7 +252,7 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
             SwiftResultSet notinResultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
             int notinindex = table.getMeta().getColumnIndex("合同类型") - 1;
             while (notinResultSet.next()) {
-                Row row = notinResultSet.getRowData();
+                Row row = notinResultSet.getNextRow();
                 assertTrue(!ComparatorUtils.equals(row.getValue(notinindex), "长期协议")
                         && !ComparatorUtils.equals(row.getValue(notinindex), "长期协议订单"));
             }
@@ -278,7 +278,7 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
             SwiftResultSet likeResultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
             int likeindex = table.getMeta().getColumnIndex("合同类型") - 1;
             while (likeResultSet.next()) {
-                Row row = likeResultSet.getRowData();
+                Row row = likeResultSet.getNextRow();
                 assertTrue(row.getValue(likeindex).toString().contains("协议"));
             }
 
@@ -303,7 +303,7 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
             SwiftResultSet startwithResultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
             int startwithindex = table.getMeta().getColumnIndex("合同类型") - 1;
             while (startwithResultSet.next()) {
-                Row row = startwithResultSet.getRowData();
+                Row row = startwithResultSet.getNextRow();
                 assertTrue(row.getValue(startwithindex).toString().startsWith("长期"));
             }
 
@@ -328,7 +328,7 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
             SwiftResultSet endwithResultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
             int endwithindex = table.getMeta().getColumnIndex("合同类型") - 1;
             while (endwithResultSet.next()) {
-                Row row = endwithResultSet.getRowData();
+                Row row = endwithResultSet.getNextRow();
                 assertTrue(row.getValue(endwithindex).toString().endsWith("合同"));
             }
 

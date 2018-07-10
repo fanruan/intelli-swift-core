@@ -54,7 +54,7 @@ public class GroupByResultSetImpl implements GroupByResultSet<int[]> {
     }
 
     @Override
-    public Row getRowData() throws SQLException {
+    public Row getNextRow() throws SQLException {
         return null;
     }
 }

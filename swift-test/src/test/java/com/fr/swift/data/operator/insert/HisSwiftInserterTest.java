@@ -49,7 +49,7 @@ public class HisSwiftInserterTest extends BaseTest {
         List<Row> rowList = new ArrayList<Row>();
 
         while (resultSet.next()) {
-            Row row = resultSet.getRowData();
+            Row row = resultSet.getNextRow();
             rowList.add(row);
         }
 
@@ -77,7 +77,7 @@ public class HisSwiftInserterTest extends BaseTest {
 
         List<Row> rowList = new ArrayList<Row>();
         while (resultSet.next()) {
-            Row row = resultSet.getRowData();
+            Row row = resultSet.getNextRow();
             rowList.add(row);
         }
 

@@ -76,7 +76,7 @@ public class XGroupByResultSetImpl implements XGroupByResultSet<int[]> {
     }
 
     @Override
-    public Row getRowData() throws SQLException {
+    public Row getNextRow() throws SQLException {
         return null;
     }
 }

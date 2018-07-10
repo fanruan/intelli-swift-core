@@ -161,16 +161,16 @@ public class LogQueryUtils {
         List<Row> rows = new ArrayList<Row>();
         if (start >= end || !isLimit) {
             while (resultSet.next()) {
-                rows.add(resultSet.getRowData());
+                rows.add(resultSet.getNextRow());
             }
         } else {
             long currentCount = 0;
             while (resultSet.next() && currentCount < end) {
                 if (currentCount++ < start) {
-                    resultSet.getRowData();
+                    resultSet.getNextRow();
                     continue;
                 }
-                rows.add(resultSet.getRowData());
+                rows.add(resultSet.getNextRow());
             }
         }
         return rows;

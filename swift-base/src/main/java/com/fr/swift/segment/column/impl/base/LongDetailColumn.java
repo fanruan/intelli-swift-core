@@ -21,6 +21,11 @@ public class LongDetailColumn extends BaseDetailColumn<Long> {
     }
 
     @Override
+    public double getDouble(int pos) {
+        return getLong(pos);
+    }
+
+    @Override
     public long getLong(int pos) {
         initDetailReader();
         return detailReader.get(pos);

@@ -70,7 +70,7 @@ class MergerResultSet implements SwiftResultSet {
     }
 
     @Override
-    public Row getRowData() {
+    public Row getNextRow() {
         return rowList.get(currentCount++);
     }
 

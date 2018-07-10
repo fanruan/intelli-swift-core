@@ -8,6 +8,7 @@ public interface AllotRule {
     Type getType();
 
     enum Type {
+        //
         LINE, HASH
     }
 }

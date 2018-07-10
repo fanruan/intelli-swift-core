@@ -75,7 +75,7 @@ public class UnionOperatorTest extends TestCase {
                     {"1", null, "1"}};
             int k = 0;
             while (rs.next()) {
-                Row row = rs.getRowData();
+                Row row = rs.getNextRow();
                 for (int i = 0; i < 3; i++) {
                     assertEquals(str[k][i], row.getValue(i));
                 }

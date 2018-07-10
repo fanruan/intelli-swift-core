@@ -102,7 +102,7 @@ public class UnionOperatorResultSet implements SwiftResultSet {
     }
 
     @Override
-    public Row getRowData() {
+    public Row getNextRow() {
         List list = new ArrayList();
         int row = iterator.next();
         for (int i = 0; i < currentColumns.length; i++){

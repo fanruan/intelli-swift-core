@@ -27,7 +27,7 @@ import java.util.List;
 public class RedisBackupResultSet implements SwiftResultSet {
 
     private SwiftMetaData meta;
-    private int cursor = -1;
+    private int cursor = 0;
     private long rowCount;
     private Segment segment;
     private ImmutableBitMap allShowIndex;
@@ -36,6 +36,10 @@ public class RedisBackupResultSet implements SwiftResultSet {
     private RedisClient redisClient;
 
     public RedisBackupResultSet(Segment segment) {
+        init(segment);
+    }
+
+    private void init(Segment segment) {
         this.meta = segment.getMetaData();
         this.segment = segment;
         this.redisClient = (RedisClient) SwiftContext.getInstance().getBean("redisClient");
@@ -54,30 +58,26 @@ public class RedisBackupResultSet implements SwiftResultSet {
     }
 
     @Override
-    public SwiftMetaData getMetaData() throws SQLException {
+    public SwiftMetaData getMetaData() {
         return meta;
     }
 
     @Override
-    public boolean next() throws SQLException {
-        cursor++;
-        if (cursor < rowCount) {
-            return true;
-        }
-        return false;
+    public boolean next() {
+        return cursor < rowCount;
     }
 
     @Override
-    public Row getRowData() throws SQLException {
+    public Row getNextRow() throws SQLException {
         List<String> dataList = redisClient.lrange(this.segment.getLocation().getPath(), cursor, cursor + 1);
         if (dataList == null || dataList.isEmpty()) {
             throw new SQLException("Redis lrange data from " + this.segment.getLocation().getPath() + " error! (cursor =" + cursor + ")");
         }
+        cursor++;
         String dataJson = dataList.get(0);
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            Row row = objectMapper.readValue(dataJson, ListBasedRow.class);
-            return row;
+            return objectMapper.readValue(dataJson, ListBasedRow.class);
         } catch (IOException e) {
             throw new SQLException("Jackson readValue " + dataJson + " error!", e);
         }
@@ -88,6 +88,6 @@ public class RedisBackupResultSet implements SwiftResultSet {
     }
 
     @Override
-    public void close() throws SQLException {
+    public void close() {
     }
 }

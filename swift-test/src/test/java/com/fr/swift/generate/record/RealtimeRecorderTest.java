@@ -54,7 +54,7 @@ public class RealtimeRecorderTest extends BaseTest {
         SwiftResultSet swiftResultSet = transfer.createResultSet();
         int rowCount = 0;
         while (swiftResultSet.next()) {
-            Row row = swiftResultSet.getRowData();
+            Row row = swiftResultSet.getNextRow();
             realtimeRecorder.recordData(row, rowCount / 100);
             rowCount++;
         }

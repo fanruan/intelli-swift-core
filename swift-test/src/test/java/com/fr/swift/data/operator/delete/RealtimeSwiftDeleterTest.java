@@ -49,7 +49,7 @@ public class RealtimeSwiftDeleterTest extends BaseTest {
         List<Row> rowList = new ArrayList<Row>();
 
         while (resultSet.next()) {
-            Row row = resultSet.getRowData();
+            Row row = resultSet.getNextRow();
             rowList.add(row);
         }
         SwiftRealtimeInserter swiftInserter = new SwiftRealtimeInserter(segment);
@@ -73,7 +73,7 @@ public class RealtimeSwiftDeleterTest extends BaseTest {
         SwiftResultSet deleteResultSet = deleteTransfer.createResultSet();
         List<Row> deleteRowList = new ArrayList<Row>();
         while (deleteResultSet.next()) {
-            Row row = deleteResultSet.getRowData();
+            Row row = deleteResultSet.getNextRow();
             deleteRowList.add(row);
         }
         RealtimeSwiftDeleter swiftDeleter = new RealtimeSwiftDeleter(segment);
@@ -107,7 +107,7 @@ public class RealtimeSwiftDeleterTest extends BaseTest {
         List<Row> rowList = new ArrayList<Row>();
 
         while (resultSet.next()) {
-            Row row = resultSet.getRowData();
+            Row row = resultSet.getNextRow();
             rowList.add(row);
         }
         SwiftRealtimeInserter swiftInserter = new SwiftRealtimeInserter(segment);
