@@ -1,6 +1,6 @@
 package com.fr.swift.adaptor.log;
 
-import com.fr.general.LogOperator;
+import com.fr.intelli.record.scene.impl.BaseAccumulator;
 import com.fr.log.message.AbstractMessage;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.data.DataList;
@@ -23,7 +23,6 @@ import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -37,7 +36,7 @@ import java.util.concurrent.TimeUnit;
  * @author anchore
  * @date 2018/4/26
  */
-public class SwiftLogOperator implements LogOperator {
+public class SwiftLogOperator extends BaseAccumulator {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftLogOperator.class);
 
     private final Database db = SwiftDatabase.getInstance();
@@ -65,17 +64,12 @@ public class SwiftLogOperator implements LogOperator {
     }
 
     @Override
-    public <T> DataList<T> find(Class<T> entity, QueryCondition queryCondition, String s) {
-        return find(entity, queryCondition);
-    }
-
-    @Override
     public DataList<List<Object>> find(String s) {
         return null;
     }
 
     @Override
-    public void recordInfo(Object o) {
+    public void submit(Object o) {
         if (o == null) {
             return;
         }
@@ -83,7 +77,7 @@ public class SwiftLogOperator implements LogOperator {
     }
 
     @Override
-    public void recordInfo(List<Object> list) {
+    public void submit(List<Object> list) {
         if (list == null || list.isEmpty()) {
             return;
         }
@@ -91,7 +85,7 @@ public class SwiftLogOperator implements LogOperator {
     }
 
     @Override
-    public void initTables(List<Class> list) throws SQLException {
+    public void pretreatment(List<Class> list) throws Exception {
         for (Class table : list) {
             SwiftMetaData meta = SwiftMetaAdaptor.adapt(table);
             SourceKey tableKey = new SourceKey(meta.getTableName());
