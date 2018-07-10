@@ -164,6 +164,6 @@ public abstract class BaseColumnDictMerger<T> extends BaseWorker implements Swif
 
         SwiftMetaDataColumn columnMeta = meta.getColumn(key.getName());
         ClassType classType = ColumnTypeUtils.getClassType(columnMeta);
-        return IntPairsExtMaps.newExternalMap(classType, c, path.getPath());
+        return IntPairsExtMaps.newExternalMap(classType, c, path.getAbsolutePath());
     }
 }
