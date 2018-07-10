@@ -1,0 +1,56 @@
+{
+  "queryId": "1530692187390",
+  "queryType": "DETAIL",
+  "querySegment": null,
+  "tableName": "fine_record_execute",
+  "filterInfoBean": {
+    "type": "NUMBER_IN_RANGE",
+    "filterValue": {
+      "start": "1530547200000",
+      "end": "1530719999000",
+      "startIncluded": true,
+      "endIncluded": false
+    },
+    "column": "time"
+  },
+  "dimensionBeans": [
+    {
+      "column": "time",
+      "name": "time",
+      "groupBean": {
+        "type": "NONE"
+      },
+      "dimensionType": "DETAIL"
+    },
+    {
+      "column": "username",
+      "name": "username",
+      "groupBean": {
+        "type": "NONE"
+      },
+      "dimensionType": "DETAIL"
+    },
+    {
+      "column": "sql",
+      "name": "sql",
+      "groupBean": {
+        "type": "NONE"
+      },
+      "dimensionType": "DETAIL"
+    },
+    {
+      "column": "memory",
+      "name": "memory",
+      "groupBean": {
+        "type": "NONE"
+      },
+      "dimensionType": "DETAIL"
+    }
+  ],
+  "sortBeans": [
+    {
+      "type": "DESC",
+      "column": "memory"
+    }
+  ]
+}
