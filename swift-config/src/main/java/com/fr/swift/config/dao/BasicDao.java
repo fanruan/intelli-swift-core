@@ -5,6 +5,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.third.org.hibernate.Criteria;
 import com.fr.third.org.hibernate.Session;
 import com.fr.third.org.hibernate.criterion.Criterion;
+import com.fr.third.org.hibernate.criterion.Order;
 
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -43,10 +44,14 @@ public class BasicDao<T> implements SwiftConfigDao<T> {
     }
 
     @Override
-    public List<T> find(Session session, Criterion... criterions) {
+    public List<T> find(Session session, Order[] order, Criterion... criterions) {
         try {
             Criteria criteria = session.createCriteria(entityClass);
-
+            if (null != order) {
+                for (Order order1 : order) {
+                    criteria.addOrder(order1);
+                }
+            }
             if (null != criteria) {
                 for (Criterion criterion : criterions) {
                     if (null != criteria) {
@@ -58,6 +63,11 @@ public class BasicDao<T> implements SwiftConfigDao<T> {
         } catch (Exception e) {
             return Collections.emptyList();
         }
+    }
+
+    @Override
+    public List<T> find(Session session, Criterion... criteria) {
+        return find(session, null, criteria);
     }
 
     @Override
