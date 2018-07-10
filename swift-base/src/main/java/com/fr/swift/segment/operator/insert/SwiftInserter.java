@@ -50,7 +50,7 @@ public class SwiftInserter extends BaseInserter implements Inserter {
                     cursor = lastCursor;
 
             while (swiftResultSet.next()) {
-                Row rowData = swiftResultSet.getRowData();
+                Row rowData = swiftResultSet.getNextRow();
                 putRow(cursor, rowData);
                 cursor++;
             }

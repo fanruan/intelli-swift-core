@@ -31,7 +31,7 @@ public class RankRowOperatorTest extends TestCase {
         String[] str = new String[]{"1.0", "1.0", "3.0", "5.0", "1.0", "3.0", "1.0", "1.0", "1.0", "3.0", "5.0", "1.0", "3.0", "1.0"};
         int index = 0;
         while (rs.next()) {
-            Row row = rs.getRowData();
+            Row row = rs.getNextRow();
             for (int i = 0; i < 1; i++) {
                 assertEquals(Double.valueOf(row.getValue(i).toString()).toString(), str[index++]);
             }

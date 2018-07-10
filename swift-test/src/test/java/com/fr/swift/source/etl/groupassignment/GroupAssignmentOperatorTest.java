@@ -47,7 +47,7 @@ public class GroupAssignmentOperatorTest extends TestCase {
         String[] str = new String[]{"XO", "OO", "other", "OO", "other", "OO", "XO", "other", "OO",
                 "XO", "OO", "other", "OO", "other", "OO", "XO", "other", "OO"};
         while (rs.next()) {
-            Row row = rs.getRowData();
+            Row row = rs.getNextRow();
             for (int i = 0; i < 1; i++) {
                 assertEquals(row.getValue(i), str[index]);
             }

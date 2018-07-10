@@ -17,7 +17,7 @@ public interface SwiftSourceTransfer {
         }
 
         @Override
-        public Row getRowData() {
+        public Row getNextRow() {
             return null;
         }
 

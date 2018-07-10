@@ -75,7 +75,7 @@ public class ColumnRowTransOperatorResultSet implements SwiftResultSet {
     }
 
     @Override
-    public Row getRowData() throws SQLException {
+    public Row getNextRow() throws SQLException {
         final List list = new ArrayList(Arrays.asList(new Object[getMetaData().getColumnCount()]));
         KeyValue<RowIndexKey<Object[]>, List<RowTraversal[]>> kv = valueIter.next();
         Object[] groupName = kv.getKey().getKey();

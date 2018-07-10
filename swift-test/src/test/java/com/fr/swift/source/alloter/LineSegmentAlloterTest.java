@@ -82,7 +82,7 @@ public class LineSegmentAlloterTest extends TestIo {
             }
 
             @Override
-            public Row getRowData() {
+            public Row getNextRow() {
                 return datas.get(position++);
             }
         };

@@ -5,10 +5,10 @@ import com.fr.stable.query.QueryFactory;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.restriction.Restriction;
 import com.fr.stable.query.restriction.RestrictionFactory;
-import com.fr.swift.query.QueryConditionAdaptor;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.query.QueryConditionAdaptor;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.source.DataSource;
@@ -54,7 +54,7 @@ public class LogDetailAndFilterTest extends LogBaseTest {
             int index2 = table.getMeta().getColumnIndex("总金额") - 1;
 
             while (eqResultSet.next()) {
-                Row row = eqResultSet.getRowData();
+                Row row = eqResultSet.getNextRow();
                 assertEquals(row.getValue(index1), "购买合同");
                 assertTrue(((Long) row.getValue(index2)).doubleValue() >= 1000000 && ((Long) row.getValue(index2)).doubleValue() <= 2000000);
 
@@ -86,7 +86,7 @@ public class LogDetailAndFilterTest extends LogBaseTest {
             int index1 = table.getMeta().getColumnIndex("合同类型") - 1;
             int count1 = 0, count2 = 0, count3 = 0;
             while (eqResultSet.next()) {
-                Row row = eqResultSet.getRowData();
+                Row row = eqResultSet.getNextRow();
                 if (ComparatorUtils.equals(row.getValue(index1), "购买合同")) {
                     count1++;
                 }

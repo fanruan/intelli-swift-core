@@ -2,10 +2,10 @@ package com.fr.swift.adaptor.log.query;
 
 import com.fr.stable.query.QueryFactory;
 import com.fr.stable.query.condition.QueryCondition;
-import com.fr.swift.query.QueryConditionAdaptor;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.query.QueryConditionAdaptor;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
 import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.source.DataSource;
@@ -48,7 +48,7 @@ public class LogDetailSortTest extends LogBaseTest {
             int sortindex = table.getMeta().getColumnIndex("总金额");
             List<Double> dataList = new ArrayList<Double>();
             while (sortResultSet.next()) {
-                Row row = sortResultSet.getRowData();
+                Row row = sortResultSet.getNextRow();
                 dataList.add(((Long) row.getValue(sortindex - 1)).doubleValue());
             }
             for (int i = 0; i < dataList.size() - 1; i++) {
@@ -77,7 +77,7 @@ public class LogDetailSortTest extends LogBaseTest {
             int sortindex = table.getMeta().getColumnIndex("总金额");
             List<Double> dataList = new ArrayList<Double>();
             while (sortResultSet.next()) {
-                Row row = sortResultSet.getRowData();
+                Row row = sortResultSet.getNextRow();
                 dataList.add(((Long) row.getValue(sortindex - 1)).doubleValue());
             }
             for (int i = 0; i < dataList.size() - 1; i++) {

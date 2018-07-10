@@ -93,7 +93,7 @@ public class ColumnFormulaOperatorResultSet implements SwiftResultSet {
     }
 
     @Override
-    public Row getRowData() {
+    public Row getNextRow() {
         return tempValue.getRow();
     }
 

@@ -96,7 +96,7 @@ public class SerializableDetailResultSet implements DetailResultSet, Serializabl
     }
 
     @Override
-    public Row getRowData() throws SQLException {
+    public Row getNextRow() throws SQLException {
         return rowIterator.next();
     }
 

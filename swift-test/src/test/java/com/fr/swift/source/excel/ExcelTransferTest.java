@@ -29,7 +29,7 @@ public class ExcelTransferTest extends TestCase {
         SwiftResultSet resultSet = excelTransfer.createResultSet();
         List<Row> list = new ArrayList<Row>();
         while (resultSet.next()) {
-            list.add(resultSet.getRowData());
+            list.add(resultSet.getNextRow());
         }
         resultSet.close();
         assertEquals(list.size(), 20000);
@@ -41,9 +41,9 @@ public class ExcelTransferTest extends TestCase {
         partResultSet.next();
         //如果第二个位置取到值了，就错了
         try {
-            Object ob = partResultSet.getRowData().getValue(0);
+            Object ob = partResultSet.getNextRow().getValue(0);
             assertEquals(ob.getClass(), String.class);
-            partResultSet.getRowData().getValue(1);
+            partResultSet.getNextRow().getValue(1);
             assert false;
         } catch (IndexOutOfBoundsException e) {
             assert true;

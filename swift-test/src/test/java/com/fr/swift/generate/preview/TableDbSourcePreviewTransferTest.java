@@ -24,7 +24,7 @@ public class TableDbSourcePreviewTransferTest extends TestCase {
         SwiftResultSet resultSet = transfer.createResultSet();
         int index = 0;
         while (resultSet.next()) {
-            resultSet.getRowData();
+            resultSet.getNextRow();
             index++;
         }
         SwiftMetaData metaData = resultSet.getMetaData();
@@ -50,7 +50,7 @@ public class TableDbSourcePreviewTransferTest extends TestCase {
         SwiftResultSet resultSet = transfer.createResultSet();
         int index = 0;
         while (resultSet.next()) {
-            assertEquals(resultSet.getRowData().getValue(0).getClass(), String.class);
+            assertEquals(resultSet.getNextRow().getValue(0).getClass(), String.class);
             index++;
         }
         SwiftMetaData metaData = resultSet.getMetaData();

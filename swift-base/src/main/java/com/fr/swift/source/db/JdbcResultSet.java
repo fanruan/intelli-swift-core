@@ -54,7 +54,7 @@ public class JdbcResultSet implements SwiftResultSet {
     }
 
     @Override
-    public Row getRowData() throws SQLException {
+    public Row getNextRow() throws SQLException {
         Row prev = current;
         nextRow();
         return prev;

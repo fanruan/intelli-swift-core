@@ -68,7 +68,7 @@ public class ChainedNodeMergeResultSet implements NodeMergeResultSet<GroupNode> 
     }
 
     @Override
-    public Row getRowData() throws SQLException {
+    public Row getNextRow() throws SQLException {
         return null;
     }
 

@@ -52,7 +52,7 @@ public class FakeNodeResultSet implements NodeResultSet<SwiftNode> {
     }
 
     @Override
-    public Row getRowData() throws SQLException {
+    public Row getNextRow() throws SQLException {
         return rowIterator.next();
     }
 

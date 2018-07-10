@@ -77,7 +77,7 @@ public class SortMultiSegmentDetailResultSet implements DetailResultSet {
     }
 
     @Override
-    public Row getRowData() {
+    public Row getNextRow() {
         return rowIterator.next();
     }
 

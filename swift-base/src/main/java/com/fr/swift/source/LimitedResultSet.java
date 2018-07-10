@@ -39,9 +39,9 @@ public class LimitedResultSet implements SwiftResultSet {
     }
 
     @Override
-    public Row getRowData() throws SQLException {
+    public Row getNextRow() throws SQLException {
         cursor++;
-        return origin.getRowData();
+        return origin.getNextRow();
     }
 
     @Override

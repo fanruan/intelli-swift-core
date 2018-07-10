@@ -34,7 +34,7 @@ public class ListResultSet implements SwiftResultSet {
     }
 
     @Override
-    public Row getRowData() throws SQLException {
+    public Row getNextRow() throws SQLException {
         return rows.get(cursor++);
     }
 

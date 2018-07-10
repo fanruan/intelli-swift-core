@@ -31,7 +31,7 @@ public class AccumulateRowOperatorTest extends TestCase {
                 "10.0", "15.0", "31.0", "48.0", "11.0", "23.0", "18.0"};
         int index = 0;
         while (rs.next()) {
-            Row row = rs.getRowData();
+            Row row = rs.getNextRow();
             for (int i = 0; i < 1; i++) {
                 assertEquals(str[index++], row.getValue(i) + "");
             }

@@ -48,7 +48,7 @@ public class NodeResultSetImpl<T extends SwiftNode> implements NodeResultSet {
     }
 
     @Override
-    public Row getRowData() throws SQLException {
+    public Row getNextRow() throws SQLException {
         return iterator.next();
     }
 

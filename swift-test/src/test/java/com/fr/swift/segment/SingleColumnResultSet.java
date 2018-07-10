@@ -3,7 +3,6 @@ package com.fr.swift.segment;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,19 +19,19 @@ public abstract class SingleColumnResultSet implements SwiftResultSet {
     }
 
     @Override
-    public void close() throws SQLException {
+    public void close() {
 
     }
 
     protected abstract void initData();
 
     @Override
-    public boolean next() throws SQLException {
+    public boolean next() {
         return position < datas.size();
     }
 
     @Override
-    public Row getRowData() throws SQLException {
+    public Row getNextRow() {
         return datas.get(position++);
     }
 }

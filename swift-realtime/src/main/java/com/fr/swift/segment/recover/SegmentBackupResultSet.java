@@ -53,7 +53,7 @@ class SegmentBackupResultSet implements SwiftResultSet {
     }
 
     @Override
-    public Row getRowData() {
+    public Row getNextRow() {
         List<Object> row = new ArrayList<Object>();
         for (int i = 0; i < details.size(); i++) {
             if (nullIndices.get(i).contains(cursor)) {

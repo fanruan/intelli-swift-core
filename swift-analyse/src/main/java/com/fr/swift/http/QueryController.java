@@ -71,7 +71,7 @@ public class QueryController {
         SwiftResultSet resultSet = query.getQueryResult();
         if (resultSet != null) {
             while (resultSet.next()) {
-                rows.add(resultSet.getRowData());
+                rows.add(resultSet.getNextRow());
             }
             resultSet.close();
         }
@@ -87,7 +87,7 @@ public class QueryController {
         SwiftResultSet resultSet = query.getQueryResult();
         if (resultSet != null) {
             while (resultSet.next()) {
-                rows.add(resultSet.getRowData());
+                rows.add(resultSet.getNextRow());
             }
             resultSet.close();
         }

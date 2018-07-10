@@ -6,8 +6,8 @@ import com.fr.swift.source.DataSource;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.etl.BaseCreateSegmentTest;
 import com.fr.swift.source.etl.BaseCreateSegment2Test;
+import com.fr.swift.source.etl.BaseCreateSegmentTest;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
@@ -94,7 +94,7 @@ public class JoinOperatorTest extends TestCase {
         try {
             int index = 0;
             while (rs.next()) {
-                Row row = rs.getRowData();
+                Row row = rs.getNextRow();
                 for (int i = 0; i < 4; i++) {
                     assertEquals(row.getValue(i), str[index][i]);
                 }
@@ -114,7 +114,7 @@ public class JoinOperatorTest extends TestCase {
         try {
             int index = 0;
             while (rs.next()) {
-                Row row = rs.getRowData();
+                Row row = rs.getNextRow();
                 for (int i = 0; i < 4; i++) {
                     assertEquals(row.getValue(i), str[index][i]);
                 }
@@ -133,7 +133,7 @@ public class JoinOperatorTest extends TestCase {
         try {
             int index = 0;
             while (rs.next()) {
-                Row row = rs.getRowData();
+                Row row = rs.getNextRow();
                 for (int i = 0; i < 4; i++) {
                     assertEquals(row.getValue(i), str[index][i]);
                 }
@@ -150,7 +150,7 @@ public class JoinOperatorTest extends TestCase {
         try {
             int index = 0;
             while (rs.next()) {
-                Row row = rs.getRowData();
+                Row row = rs.getNextRow();
                 for (int i = 0; i < 4; i++) {
                     assertEquals(row.getValue(i), str[index][i]);
                 }

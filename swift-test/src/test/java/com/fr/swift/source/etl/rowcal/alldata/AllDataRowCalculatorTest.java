@@ -38,7 +38,7 @@ public class AllDataRowCalculatorTest extends TestIo {
             AllDataTransferOperator operator = new AllDataTransferOperator(summaryType[k], column3, dimension);
             SwiftResultSet rs = operator.createResultSet(null, null, list);
             while (rs.next()) {
-                Row row = rs.getRowData();
+                Row row = rs.getNextRow();
                 for (int i = 0; i < 1; i++) {
                     Assert.assertEquals(row.getValue(i).toString(), str[index++]);
                 }

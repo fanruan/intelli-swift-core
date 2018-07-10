@@ -493,7 +493,7 @@ public class DetailResultSetTest extends TestCase {
         DetailResultSet rs = new SegmentDetailResultSet(columnList, filter, null);
         try {
             while (rs.next()) {
-                Row row = rs.getRowData();
+                Row row = rs.getNextRow();
                 assertEquals((int) row.getValue(0), intData[i]);
                 assertEquals((long) row.getValue(1), longData[i]);
                 assertEquals(row.getValue(2), doubleData[i]);
@@ -517,7 +517,7 @@ public class DetailResultSetTest extends TestCase {
         }
         MultiSegmentDetailResultSet mrs = new MultiSegmentDetailResultSet(queries, null);
         while (mrs.next()) {
-            Row row = mrs.getRowData();
+            Row row = mrs.getNextRow();
             assertEquals((int) row.getValue(0), intData[i]);
             assertEquals((long) row.getValue(1), longData[i]);
             assertEquals(row.getValue(2), doubleData[i]);
@@ -544,7 +544,7 @@ public class DetailResultSetTest extends TestCase {
 //      [4, 23, 40.1, A]    [2, 23, 9.5, C]
         try {
             while (rs.next()) {
-                Row row = rs.getRowData();
+                Row row = rs.getNextRow();
                 assertEquals((int) row.getValue(0), intData[i]);
                 assertEquals((long) row.getValue(1), longData[i]);
                 assertEquals(row.getValue(2), doubleData[i]);
@@ -577,7 +577,7 @@ public class DetailResultSetTest extends TestCase {
         DetailResultSet rs = new SortMultiSegmentDetailResultSet(queries, pairs, null);
         try {
             while (rs.next()) {
-                Row row = rs.getRowData();
+                Row row = rs.getNextRow();
                 assertEquals((int) row.getValue(0), intData[i / 3]);
                 assertEquals((long) row.getValue(1), longData[i / 3]);
                 assertEquals(row.getValue(2), doubleData[i / 3]);

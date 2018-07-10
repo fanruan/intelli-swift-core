@@ -24,7 +24,7 @@ public class QuerySourcePreviewTransferTest extends TestCase {
         SwiftResultSet resultSet = transfer.createResultSet();
         int index = 0;
         while (resultSet.next()) {
-            resultSet.getRowData();
+            resultSet.getNextRow();
             index++;
         }
         SwiftMetaData metaData = resultSet.getMetaData();
@@ -44,7 +44,7 @@ public class QuerySourcePreviewTransferTest extends TestCase {
         SwiftResultSet resultSet = transfer.createResultSet();
         int index = 0;
         while (resultSet.next()) {
-            Object ob = resultSet.getRowData().getValue(0);
+            Object ob = resultSet.getNextRow().getValue(0);
             assert (ob == null || ob.getClass() == Double.class);
             index++;
         }

@@ -1,6 +1,7 @@
 package com.fr.swift.source.alloter.line;
 
 import com.fr.swift.source.alloter.AllotRule;
+import com.fr.third.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author anchore
@@ -24,6 +25,7 @@ public class LineAllotRule implements AllotRule {
     }
 
     @Override
+    @JsonIgnore
     public Type getType() {
         return Type.LINE;
     }

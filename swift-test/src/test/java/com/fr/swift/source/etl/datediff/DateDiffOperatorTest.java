@@ -38,7 +38,7 @@ public class DateDiffOperatorTest extends TestCase {
         DateDiffTransferOperator operator = new DateDiffTransferOperator(column1, column2, GroupType.YEAR);
         SwiftResultSet rs = operator.createResultSet(metaData, null, list);
         while (rs.next()) {
-            Row row = rs.getRowData();
+            Row row = rs.getNextRow();
             for (int i = 0; i < 1; i++) {
                 assertEquals(row.getValue(i) + "", "0");
             }

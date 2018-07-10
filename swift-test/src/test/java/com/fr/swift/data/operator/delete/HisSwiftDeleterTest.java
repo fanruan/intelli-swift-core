@@ -53,7 +53,7 @@ public class HisSwiftDeleterTest extends BaseTest {
         List<Row> rowList = new ArrayList<Row>();
 
         while (resultSet.next()) {
-            Row row = resultSet.getRowData();
+            Row row = resultSet.getNextRow();
             rowList.add(row);
         }
         HistorySwiftInserter swiftInserter = new HistorySwiftInserter(segment);
@@ -77,7 +77,7 @@ public class HisSwiftDeleterTest extends BaseTest {
         SwiftResultSet deleteResultSet = deleteTransfer.createResultSet();
         List<Row> deleteRowList = new ArrayList<Row>();
         while (deleteResultSet.next()) {
-            Row row = deleteResultSet.getRowData();
+            Row row = deleteResultSet.getNextRow();
             deleteRowList.add(row);
         }
         HistorySwiftDeleter swiftDeleter = new HistorySwiftDeleter(segment);
@@ -113,7 +113,7 @@ public class HisSwiftDeleterTest extends BaseTest {
         List<Row> rowList = new ArrayList<Row>();
 
         while (resultSet.next()) {
-            Row row = resultSet.getRowData();
+            Row row = resultSet.getNextRow();
             rowList.add(row);
         }
         HistorySwiftInserter swiftInserter = new HistorySwiftInserter(segment);

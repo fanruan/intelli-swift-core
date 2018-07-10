@@ -68,7 +68,7 @@ public class RedisBackupResultSet implements SwiftResultSet {
     }
 
     @Override
-    public Row getRowData() throws SQLException {
+    public Row getNextRow() throws SQLException {
         List<String> dataList = redisClient.lrange(this.segment.getLocation().getPath(), cursor, cursor + 1);
         if (dataList == null || dataList.isEmpty()) {
             throw new SQLException("Redis lrange data from " + this.segment.getLocation().getPath() + " error! (cursor =" + cursor + ")");

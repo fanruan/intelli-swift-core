@@ -60,7 +60,7 @@ public class RedisBackupAndRevoceryTest extends BaseTest {
                 ObjectMapper objectMapper = new ObjectMapper();
                 String json = null;
                 try {
-                    json = objectMapper.writeValueAsString(resultSet.getRowData());
+                    json = objectMapper.writeValueAsString(resultSet.getNextRow());
                     jsonList.add(json);
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
@@ -103,7 +103,7 @@ public class RedisBackupAndRevoceryTest extends BaseTest {
 
             List<Object>[] rowList = new ArrayList[segment.getMetaData().getColumnCount()];
             while (resultSet.next()) {
-                Row row = resultSet.getRowData();
+                Row row = resultSet.getNextRow();
                 for (int i = 0; i < row.getSize(); i++) {
                     try {
                         rowList[i].add(row.getValue(i));

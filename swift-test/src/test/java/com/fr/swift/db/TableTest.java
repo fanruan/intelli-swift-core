@@ -108,7 +108,7 @@ public class TableTest {
         }
 
         @Override
-        public Row getRowData() {
+        public Row getNextRow() {
             return rows[cursor++];
         }
     }

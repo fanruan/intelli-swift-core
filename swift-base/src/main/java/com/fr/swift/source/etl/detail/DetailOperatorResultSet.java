@@ -76,7 +76,7 @@ public class DetailOperatorResultSet implements SwiftResultSet {
     }
 
     @Override
-    public Row getRowData() {
+    public Row getNextRow() {
         List list = new ArrayList();
         for (RelationColumn column : columns) {
             Object v = null;
