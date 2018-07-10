@@ -41,6 +41,11 @@ public class SwiftSegmentLocationDaoImpl extends BasicDao<SwiftSegmentLocationEn
     }
 
     @Override
+    public List<SwiftSegmentLocationEntity> findBySegmentId(Session session, String segmentId) {
+        return find(session, Restrictions.eq("id.segmentId", segmentId));
+    }
+
+    @Override
     public List<SwiftSegmentLocationEntity> findAll(Session session) {
         return find(session);
     }

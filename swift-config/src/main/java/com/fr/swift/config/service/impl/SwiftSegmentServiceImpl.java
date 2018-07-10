@@ -73,6 +73,33 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
     }
 
     @Override
+    public boolean removeSegments(final SegmentKey... segmentKeys) {
+        try {
+            if (null == segmentKeys) {
+                return false;
+            }
+            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
+                @Override
+                public Boolean work(Session session) throws SQLException {
+                    try {
+                        for (SegmentKey segmentKey : segmentKeys) {
+                            session.delete(segmentKey);
+                        }
+                    } catch (Exception e) {
+                        throw new SQLException(e);
+                    }
+                    return true;
+                }
+
+
+            });
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error("Remove segments error!", e);
+            return false;
+        }
+    }
+
+    @Override
     public boolean updateSegments(final String sourceKey, final List<SegmentKey> segments) {
         try {
             return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {

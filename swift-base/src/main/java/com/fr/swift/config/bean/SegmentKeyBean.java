@@ -1,5 +1,6 @@
 package com.fr.swift.config.bean;
 
+import com.fr.stable.StringUtils;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.service.SwiftPathService;
 import com.fr.swift.context.SwiftContext;
@@ -103,6 +104,9 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
     }
 
     public String getId() {
+        if (StringUtils.isEmpty(id)) {
+            id = toString();
+        }
         return id;
     }
 
