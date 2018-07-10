@@ -33,7 +33,7 @@ public class BitMapFineIoWriter extends BaseFineIoWriter implements BitMapWriter
     public void put(long pos, ImmutableBitMap val) {
         byte[] combine = null;
         if (val != null) {
-            byte head = val.getType().head;
+            byte head = val.getType().getHead();
             byte[] bytes = val.toBytes();
             combine = new byte[bytes.length + 1];
             combine[0] = head;

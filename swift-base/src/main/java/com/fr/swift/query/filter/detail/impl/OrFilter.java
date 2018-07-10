@@ -1,7 +1,7 @@
 package com.fr.swift.query.filter.detail.impl;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.bitmap.impl.BitMapOrHelper;
+import com.fr.swift.bitmap.impl.FasterAggregation;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.match.MatchConverter;
@@ -38,11 +38,11 @@ public class OrFilter implements DetailFilter {
 
     @Override
     public ImmutableBitMap createFilterIndex() {
-        final BitMapOrHelper bitMapOrHelper = new BitMapOrHelper();
+        final List<ImmutableBitMap> bitMapOrHelper = new ArrayList<ImmutableBitMap>();
         for (DetailFilter filter : filters) {
             bitMapOrHelper.add(filter.createFilterIndex());
         }
-        return bitMapOrHelper.compute();
+        return FasterAggregation.or(bitMapOrHelper);
     }
 
     @Override

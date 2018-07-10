@@ -4,7 +4,6 @@ import com.fineio.base.Bits;
 import com.fr.swift.bitmap.BitMapType;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
-import com.fr.swift.bitmap.roaringbitmap.buffer.ImmutableRoaringBitmap;
 import com.fr.swift.bitmap.roaringbitmap.buffer.MutableRoaringBitmap;
 import com.fr.swift.bitmap.traversal.BreakTraversalAction;
 import com.fr.swift.bitmap.traversal.TraversalAction;
@@ -14,6 +13,9 @@ import com.fr.swift.bitmap.traversal.TraversalAction;
  * @date 2018/6/4
  */
 public class RangeBitmap extends AbstractBitMap {
+    /**
+     * 前闭后开
+     */
     final int start, end;
 
     public RangeBitmap(int start, int end) {
@@ -24,31 +26,28 @@ public class RangeBitmap extends AbstractBitMap {
         this.end = end;
     }
 
-    @Override
-    protected ImmutableRoaringBitmap getBitMap() {
-        MutableRoaringBitmap bitmap = new MutableRoaringBitmap();
-        bitmap.flip((long) start, (long) end);
-        return bitmap;
-    }
-
-    private MutableBitMap toRealBitmap() {
-        MutableRoaringBitmap bitmap = new MutableRoaringBitmap();
-        bitmap.flip((long) start, (long) end);
-        return RoaringMutableBitMap.newInstance(bitmap);
+    public static ImmutableBitMap of(int start, int end) {
+        return new RangeBitmap(start, end);
     }
 
     @Override
     public ImmutableBitMap getAnd(ImmutableBitMap index) {
-        MutableBitMap bitmap = toRealBitmap();
-        bitmap.and(index);
-        return bitmap;
+        switch (index.getType()) {
+            case RANGE:
+                return FasterAggregation.and(this, ((RangeBitmap) index));
+            default:
+                return toRealBitmap().getAnd(index);
+        }
     }
 
     @Override
     public ImmutableBitMap getOr(ImmutableBitMap index) {
-        MutableBitMap bitmap = toRealBitmap();
-        bitmap.or(index);
-        return bitmap;
+        switch (index.getType()) {
+            case RANGE:
+                return FasterAggregation.or(this, ((RangeBitmap) index));
+            default:
+                return toRealBitmap().getOr(index);
+        }
     }
 
     @Override
@@ -59,10 +58,14 @@ public class RangeBitmap extends AbstractBitMap {
     }
 
     @Override
-    public ImmutableBitMap getNot(int rowCount) {
-        MutableBitMap bitmap = toRealBitmap();
-        bitmap.not(rowCount);
-        return bitmap;
+    public ImmutableBitMap getNot(int bound) {
+        if (bound <= end) {
+            return of(0, start);
+        }
+        MutableRoaringBitmap b = new MutableRoaringBitmap();
+        b.flip(0L, start);
+        b.flip((long) end, bound);
+        return RoaringImmutableBitMap.of(b);
     }
 
     @Override
@@ -72,12 +75,18 @@ public class RangeBitmap extends AbstractBitMap {
 
     @Override
     public ImmutableBitMap clone() {
-        return new RangeBitmap(start, end);
+        return of(start, end);
     }
 
     @Override
     public BitMapType getType() {
         return BitMapType.RANGE;
+    }
+
+    private MutableBitMap toRealBitmap() {
+        MutableRoaringBitmap bitmap = new MutableRoaringBitmap();
+        bitmap.flip((long) start, (long) end);
+        return RoaringMutableBitMap.of(bitmap);
     }
 
     @Override
@@ -112,11 +121,6 @@ public class RangeBitmap extends AbstractBitMap {
     @Override
     public int getCardinality() {
         return end - start;
-    }
-
-    @Override
-    public boolean isFull() {
-        return false;
     }
 
     @Override

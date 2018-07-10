@@ -5,6 +5,7 @@ import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftDataOperatorProvider;
+import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.SourceKey;
@@ -44,7 +45,7 @@ class SwiftTable implements Table {
     @Override
     public void insert(SwiftResultSet rowSet) throws SQLException {
         try {
-            Inserter inserter = operators.getIncrementer(this);
+            Inserter inserter = (Inserter) SwiftContext.getInstance().getBean("incrementer", this);
             inserter.insertData(rowSet);
         } catch (Exception e) {
             throw new SQLException(e);
@@ -58,7 +59,8 @@ class SwiftTable implements Table {
         try {
             // 调流程
             Inserter inserter = operators.getHistoryBlockSwiftInserter(this);
-            List<Segment> segments = inserter.insertData(rowSet);
+            inserter.insertData(rowSet);
+            List<Segment> segments = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegment(key);
             for (String field : inserter.getFields()) {
                 operators.getColumnIndexer(this, new ColumnKey(field), segments).buildIndex();
                 operators.getColumnDictMerger(this, new ColumnKey(field), segments).mergeDict();

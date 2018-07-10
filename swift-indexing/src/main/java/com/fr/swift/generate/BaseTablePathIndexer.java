@@ -4,7 +4,7 @@ package com.fr.swift.generate;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
-import com.fr.swift.bitmap.impl.BitMapOrHelper;
+import com.fr.swift.bitmap.impl.FasterAggregation;
 import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.cube.nio.NIOConstant;
@@ -139,15 +139,15 @@ public abstract class BaseTablePathIndexer extends BaseWorker implements SwiftTa
 
         try {
             LongArray reverse = LongListFactory.createLongArray(reverseSize, NIOConstant.LONG.NULL_VALUE);
-            BitMapOrHelper helper = new BitMapOrHelper();
+            List<ImmutableBitMap> bitmaps = new ArrayList<ImmutableBitMap>();
             for (int i = 0; i < totalPos; i++) {
                 ImmutableBitMap preTableIndex = preTableRelationIndex.getIndex(primaryIndex, i + 1);
                 ImmutableBitMap resultIndex = getTableLinkedOrGVI(preTableIndex, lastRelationReader, primaryIndex);
-                helper.add(resultIndex);
+                bitmaps.add(resultIndex);
                 targetTableRelationIndex.putIndex(primaryIndex, i + 1, resultIndex);
                 initReverse(reverse, i, resultIndex, primaryIndex);
             }
-            targetTableRelationIndex.putNullIndex(primaryIndex, helper.compute().getNot(reverse.size()));
+            targetTableRelationIndex.putNullIndex(primaryIndex, FasterAggregation.or(bitmaps).getNot(reverse.size()));
             return buildReverseIndex(targetTableRelationIndex, reverse, reversePos);
         } catch (Exception e) {
             return Crasher.crash(e);

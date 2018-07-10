@@ -20,7 +20,7 @@ public class AverageAggregateTest extends TestIo {
 
     @Test
     public void testAggregateInt() {
-        RowTraversal bitMap = AllShowBitMap.newInstance(4);
+        RowTraversal bitMap = AllShowBitMap.of(4);
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
         IntDetailColumn mockIntColumn = new TempIntDetailColumn(new ResourceLocation("liu"));
@@ -45,7 +45,7 @@ public class AverageAggregateTest extends TestIo {
 
     @Test
     public void testAggregateLong() {
-        RowTraversal bitMap = AllShowBitMap.newInstance(4);
+        RowTraversal bitMap = AllShowBitMap.of(4);
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
         LongDetailColumn mockLongColumn = new TempLongDetailColumn(new ResourceLocation("liu"));
@@ -70,7 +70,7 @@ public class AverageAggregateTest extends TestIo {
 
     @Test
     public void testAggregateDouble() {
-        RowTraversal bitMap = AllShowBitMap.newInstance(4);
+        RowTraversal bitMap = AllShowBitMap.of(4);
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
         DoubleDetailColumn mockDoubleColumn = new TempDoubleDetailColumn(new ResourceLocation("liu"));

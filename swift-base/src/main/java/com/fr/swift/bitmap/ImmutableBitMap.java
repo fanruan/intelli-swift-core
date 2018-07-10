@@ -15,7 +15,7 @@ public interface ImmutableBitMap extends RowTraversal, BytesGetter {
 
     ImmutableBitMap getAndNot(ImmutableBitMap index);
 
-    ImmutableBitMap getNot(int rowCount);
+    ImmutableBitMap getNot(int bound);
 
     /**
      * 是否包含index

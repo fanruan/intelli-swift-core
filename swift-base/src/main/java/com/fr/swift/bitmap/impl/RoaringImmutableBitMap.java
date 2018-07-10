@@ -15,19 +15,19 @@ import java.nio.ByteBuffer;
  * @author anchore
  */
 public class RoaringImmutableBitMap extends BaseRoaringBitMap {
-    private RoaringImmutableBitMap(MutableRoaringBitmap bitmap) {
+    RoaringImmutableBitMap(MutableRoaringBitmap bitmap) {
         super(bitmap);
     }
 
-    static ImmutableBitMap newInstance(MutableRoaringBitmap bitmap) {
+    static ImmutableBitMap of(MutableRoaringBitmap bitmap) {
         return new RoaringImmutableBitMap(bitmap);
     }
 
-    public static ImmutableBitMap newInstance() {
-        return newInstance(new MutableRoaringBitmap());
+    public static ImmutableBitMap of() {
+        return of(new MutableRoaringBitmap());
     }
 
-    public static ImmutableBitMap fromByteBuffer(final ByteBuffer bb) {
+    private static ImmutableBitMap fromByteBuffer(final ByteBuffer bb) {
         MutableRoaringBitmap another = new MutableRoaringBitmap();
         DataInputStream dis = new DataInputStream(new InputStream() {
             @Override
@@ -37,74 +37,74 @@ public class RoaringImmutableBitMap extends BaseRoaringBitMap {
         });
         try {
             another.deserialize(dis);
-            return newInstance(another);
+            return of(another);
         } catch (IOException e) {
-            SwiftLoggers.getLogger(RoaringMutableBitMap.class).error(e);
+            SwiftLoggers.getLogger().error(e);
             return BitMaps.EMPTY_IMMUTABLE;
         } finally {
             try {
                 dis.close();
             } catch (IOException e) {
-                SwiftLoggers.getLogger(RoaringMutableBitMap.class).error(e);
+                SwiftLoggers.getLogger().error(e);
             }
         }
     }
 
-    public static ImmutableBitMap fromBytes(byte[] bytes) {
+    static ImmutableBitMap fromBytes(byte[] bytes) {
         return fromBytes(bytes, 0, bytes.length);
     }
 
-    public static ImmutableBitMap fromBytes(byte[] bytes, int offset, int length) {
+    private static ImmutableBitMap fromBytes(byte[] bytes, int offset, int length) {
         return fromByteBuffer(ByteBuffer.wrap(bytes, offset, length));
     }
 
     @Override
     public ImmutableBitMap getAnd(ImmutableBitMap index) {
-        if (index instanceof AllShowBitMap) {
+        if (index.getType() == BitMapType.ALL_SHOW) {
             return this;
         }
 
         MutableRoaringBitmap copy = bitmap.clone();
         copy.and(extract(index));
 
-        return newInstance(copy);
+        return of(copy);
     }
 
     @Override
     public ImmutableBitMap getOr(ImmutableBitMap index) {
-        if (index instanceof AllShowBitMap) {
+        if (index.getType() == BitMapType.ALL_SHOW) {
             return index;
         }
 
         MutableRoaringBitmap copy = bitmap.clone();
         copy.or(extract(index));
 
-        return newInstance(copy);
+        return of(copy);
     }
 
     @Override
     public ImmutableBitMap getAndNot(ImmutableBitMap index) {
-        if (index instanceof AllShowBitMap) {
+        if (index.getType() == BitMapType.ALL_SHOW) {
             return BitMaps.EMPTY_IMMUTABLE;
         }
 
         MutableRoaringBitmap copy = bitmap.clone();
         copy.andNot(extract(index));
 
-        return newInstance(copy);
+        return of(copy);
     }
 
     @Override
-    public ImmutableBitMap getNot(int rowCount) {
+    public ImmutableBitMap getNot(int bound) {
         MutableRoaringBitmap copy = bitmap.clone();
-        copy.flip(0L, rowCount);
+        copy.flip(0L, bound);
 
-        return newInstance(copy);
+        return of(copy);
     }
 
     @Override
     public ImmutableBitMap clone() {
-        return newInstance(bitmap);
+        return of(bitmap);
     }
 
     @Override

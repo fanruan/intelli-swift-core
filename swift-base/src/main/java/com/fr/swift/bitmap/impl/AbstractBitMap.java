@@ -1,25 +1,28 @@
 package com.fr.swift.bitmap.impl;
 
+import com.fr.swift.bitmap.BitMapType;
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.bitmap.roaringbitmap.buffer.ImmutableRoaringBitmap;
 
 /**
- * Created by Lyon on 2017/11/29.
+ * @author Lyon
+ * @date 2017/11/29
  */
 public abstract class AbstractBitMap implements ImmutableBitMap {
-
-    protected abstract ImmutableRoaringBitmap getBitMap();
-
-    @Override
-    public abstract ImmutableBitMap clone();
-
     @Override
     public ImmutableBitMap toBitMap() {
         return this;
     }
 
     @Override
+    public boolean isFull() {
+        return getType() == BitMapType.ALL_SHOW;
+    }
+
+    @Override
     public boolean isEmpty() {
         return getCardinality() == 0;
     }
+
+    @Override
+    public abstract ImmutableBitMap clone();
 }

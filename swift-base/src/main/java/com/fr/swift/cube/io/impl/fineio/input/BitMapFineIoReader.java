@@ -33,10 +33,10 @@ public class BitMapFineIoReader extends BaseFineIoReader implements BitMapReader
     private static ImmutableBitMap getByHead(byte[] bytes) {
         byte head = bytes[0];
         // mutable，immutable底层都是同一结构，暂时先统一生成mutable
-        if (head == BitMapType.ROARING_IMMUTABLE.head || head == BitMapType.ROARING_MUTABLE.head) {
+        if (head == BitMapType.ROARING_IMMUTABLE.getHead() || head == BitMapType.ROARING_MUTABLE.getHead()) {
             return RoaringMutableBitMap.fromBytes(bytes, 1, bytes.length - 1);
         }
-        if (head == BitMapType.RANGE.head || head == BitMapType.ALL_SHOW.head || head == BitMapType.ID.head) {
+        if (head == BitMapType.RANGE.getHead() || head == BitMapType.ALL_SHOW.getHead() || head == BitMapType.ID.getHead()) {
             return RangeBitmap.fromBytes(bytes, 1);
         }
         return Crasher.crash("not a valid head or this bitmap doesn't support, head: " + head);

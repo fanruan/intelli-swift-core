@@ -3,7 +3,6 @@ package com.fr.swift.query.aggregator;
 import com.fr.swift.bitmap.impl.AllShowBitMap;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.segment.column.Column;
-import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.column.impl.base.BitMapColumn;
 import com.fr.swift.segment.column.impl.base.IntDetailColumn;
 import com.fr.swift.structure.iterator.RowTraversal;
@@ -18,7 +17,7 @@ public class VarianceAggregateTest extends TestCase {
     private double precision = 0.00000001;
     public void testAggregateInt() {
 
-        RowTraversal bitMap = AllShowBitMap.newInstance(4);
+        RowTraversal bitMap = AllShowBitMap.of(4);
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
         IntDetailColumn detailColumn = new TempIntDetailColumn(new ResourceLocation("liu"));

@@ -49,7 +49,7 @@ public class SwiftFileSystemConvert implements SwiftConfigService.ConfigConvert<
     }
 
     private String getKey(String key) {
-        return String.format("%s_%s", SwiftConfigConstants.FRConfiguration.REPOSITORY_CONF_NAMESPACE, key);
+        return String.format("%s.%s", SwiftConfigConstants.FRConfiguration.REPOSITORY_CONF_NAMESPACE, key);
     }
 
     private SwiftFileSystemConfig readConfig(SwiftConfigDao<SwiftConfigEntity> dao, Session session, SwiftFileSystemType type) throws SQLException {
@@ -66,7 +66,7 @@ public class SwiftFileSystemConvert implements SwiftConfigService.ConfigConvert<
             Field[] fields = FtpRepositoryConfigBean.class.getDeclaredFields();
             for (Field field : fields) {
                 field.setAccessible(true);
-                SwiftConfigEntity entity = dao.select(session, getKey(type.name() + "_" + field.getName()));
+                SwiftConfigEntity entity = dao.select(session, getKey(type.name() + "." + field.getName()));
                 if (null != entity) {
                     String value = entity.getConfigValue();
                     if (ComparatorUtils.equals(value, "__EMPTY__")) {
@@ -92,7 +92,7 @@ public class SwiftFileSystemConvert implements SwiftConfigService.ConfigConvert<
                 if (null == obj) {
                     obj = StringUtils.EMPTY;
                 }
-                list.add(new SwiftConfigEntity(getKey(config.getType().name() + "_" + field.getName()), obj.toString()));
+                list.add(new SwiftConfigEntity(getKey(config.getType().name() + "." + field.getName()), obj.toString()));
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

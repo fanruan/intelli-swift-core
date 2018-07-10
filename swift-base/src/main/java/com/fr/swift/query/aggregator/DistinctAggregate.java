@@ -18,7 +18,7 @@ public class DistinctAggregate implements Aggregator<DistinctCountAggregatorValu
     public DistinctCountAggregatorValue aggregate(RowTraversal traversal, final Column column) {
 
         DistinctCountAggregatorValue distinctCount = new DistinctCountAggregatorValue();
-        final MutableBitMap bitMap = RoaringMutableBitMap.newInstance();
+        final MutableBitMap bitMap = RoaringMutableBitMap.of();
         traversal.traversal(new CalculatorTraversalAction() {
             @Override
             public double getCalculatorValue() {

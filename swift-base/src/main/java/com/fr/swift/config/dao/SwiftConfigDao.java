@@ -3,6 +3,7 @@ package com.fr.swift.config.dao;
 
 import com.fr.third.org.hibernate.Session;
 import com.fr.third.org.hibernate.criterion.Criterion;
+import com.fr.third.org.hibernate.criterion.Order;
 
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -35,6 +36,8 @@ public interface SwiftConfigDao<T> {
      * @param criterion hibernate sql
      * @return
      */
+    List<T> find(Session session, Order[] order, Criterion... criterion);
+
     List<T> find(Session session, Criterion... criterion);
 
     /**
