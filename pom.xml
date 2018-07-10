@@ -4,16 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!--<parent>-->
-        <!--<groupId>com.finebi.project</groupId>-->
-        <!--<artifactId>nuclear-swift-project</artifactId>-->
-        <!--<version>5.0-RELEASE-SNAPSHOT</version>-->
-        <!--<relativePath>../nuclear-settings/nuclear-swift-project/pom.xml</relativePath>-->
-    <!--</parent>-->
     <groupId>com.fr.intelligence</groupId>
     <artifactId>com.fr.swift</artifactId>
     <packaging>pom</packaging>
-    <version>5.0-RELEASE-SNAPSHOT</version>
+    <version>10.0-RELEASE-SNAPSHOT</version>
     <modules>
         <module>swift-base</module>
         <module>swift-analyse</module>
