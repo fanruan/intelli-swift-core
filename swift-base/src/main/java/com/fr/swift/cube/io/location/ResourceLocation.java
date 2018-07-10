@@ -49,7 +49,7 @@ public class ResourceLocation implements IResourceLocation {
     }
 
     @Override
-    public String getAbstractPath() {
+    public String getAbsolutePath() {
         String path = basePath + SEPARATOR + getPath();
         return Strings.trimSeparator(path, SEPARATOR);
     }
