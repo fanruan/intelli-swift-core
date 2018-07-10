@@ -11,6 +11,7 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.third.org.hibernate.Session;
 import com.fr.third.org.hibernate.criterion.Conjunction;
 import com.fr.third.org.hibernate.criterion.Criterion;
+import com.fr.third.org.hibernate.criterion.Order;
 import com.fr.third.org.hibernate.criterion.Restrictions;
 import com.fr.third.springframework.stereotype.Service;
 
@@ -38,7 +39,8 @@ public class SwiftSegmentDaoImpl extends BasicDao<SwiftSegmentEntity> implements
 
     @Override
     public List<SegmentKey> findBySourceKey(Session session, String sourceKey) {
-        List<SwiftSegmentEntity> list = find(session, Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, sourceKey));
+        List<SwiftSegmentEntity> list = find(session, new Order[]{Order.asc(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_ORDER)},
+                Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, sourceKey));
         List<SegmentKey> result = new ArrayList<SegmentKey>();
         for (SwiftSegmentEntity entity : list) {
             result.add(entity.convert());
