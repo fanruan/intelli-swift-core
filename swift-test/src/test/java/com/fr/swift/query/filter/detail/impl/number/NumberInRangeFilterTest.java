@@ -18,7 +18,7 @@ import java.util.stream.IntStream;
  */
 public class NumberInRangeFilterTest extends BaseNumberFilterTest {
 
-    static Class[] doubleType = new Class[]{int.class, Double.class, Double.class, boolean.class, boolean.class, Column.class};
+    static Class[] doubleType = new Class[]{int.class, Number.class, Number.class, boolean.class, boolean.class, Column.class};
 
     private Number min;
     private Number max;

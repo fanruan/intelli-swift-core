@@ -38,11 +38,15 @@ public class AndFilter implements DetailFilter {
 
     @Override
     public ImmutableBitMap createFilterIndex() {
-        ImmutableBitMap bitMap = BitMaps.newAllShowBitMap(segment.getRowCount());
+        ImmutableBitMap bitMap = null;
         for (DetailFilter filter : filters) {
+            if (bitMap == null) {
+                bitMap = filter.createFilterIndex();
+                continue;
+            }
             bitMap = bitMap.getAnd(filter.createFilterIndex());
         }
-        return bitMap;
+        return bitMap == null ? BitMaps.newAllShowBitMap(segment.getRowCount()) : bitMap;
     }
 
     @Override

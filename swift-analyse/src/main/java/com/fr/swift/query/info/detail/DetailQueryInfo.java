@@ -25,7 +25,7 @@ public class DetailQueryInfo extends AbstractQueryInfo<DetailResultSet> {
     private List<DetailTarget> targets;
     private SwiftMetaData metaData;
     private List<Sort> sorts;
-    private List<Pair<Integer, Comparator>> comparators;
+    private List<Pair<Sort, Comparator>> comparators;
 
     public DetailQueryInfo(String queryId, SourceKey table, FilterInfo filterInfo, List<Dimension> dimensions,
                            List<Sort> sorts, List<DetailTarget> targets, SwiftMetaData metaData) {
@@ -35,11 +35,11 @@ public class DetailQueryInfo extends AbstractQueryInfo<DetailResultSet> {
         this.metaData = metaData;
     }
 
-    public List<Pair<Integer, Comparator>> getComparators() {
+    public List<Pair<Sort, Comparator>> getComparators() {
         return comparators;
     }
 
-    public void setComparators(List<Pair<Integer, Comparator>> comparators) {
+    public void setComparators(List<Pair<Sort, Comparator>> comparators) {
         this.comparators = comparators;
     }
 
