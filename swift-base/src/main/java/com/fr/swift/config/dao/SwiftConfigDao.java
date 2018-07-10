@@ -38,6 +38,11 @@ public interface SwiftConfigDao<T> {
      */
     List<T> find(Session session, Order[] order, Criterion... criterion);
 
+    /**
+     * @param session
+     * @param criterion
+     * @return
+     */
     List<T> find(Session session, Criterion... criterion);
 
     /**

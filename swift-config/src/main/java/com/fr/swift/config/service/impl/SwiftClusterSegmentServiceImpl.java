@@ -81,6 +81,35 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
         return false;
     }
 
+    @Override
+    public boolean removeSegments(final SegmentKey... segmentKeys) {
+        try {
+            if (null == segmentKeys) {
+                return false;
+            }
+            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
+                @Override
+                public Boolean work(Session session) throws SQLException {
+                    try {
+                        for (SegmentKey segmentKey : segmentKeys) {
+                            swiftSegmentDao.deleteById(session, segmentKey.toString());
+                            List<SwiftSegmentLocationEntity> list = segmentLocationDao.findBySegmentId(session, segmentKey.toString());
+                            for (SwiftSegmentLocationEntity locationEntity : list) {
+                                segmentLocationDao.deleteById(session, locationEntity.getId());
+                            }
+                        }
+                    } catch (Exception e) {
+                        throw new SQLException(e);
+                    }
+                    return true;
+                }
+            });
+        } catch (SQLException e) {
+            SwiftLoggers.getLogger().error("remove segment error! ", e);
+            return false;
+        }
+    }
+
     private boolean addSegmentsWithoutTransaction(Session session, List<SegmentKey> segments) throws SQLException {
         for (SegmentKey segment : segments) {
             SegmentKeyBean bean = (SegmentKeyBean) segment;
