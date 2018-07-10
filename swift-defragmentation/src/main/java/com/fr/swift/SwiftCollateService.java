@@ -161,8 +161,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         return firstSegmentKey.getTable();
     }
 
-    private void persistSegment(SourceKey
-                                        tableKey, List<SegmentKey> oldSegKeys, List<SegmentKey> collateSegKeys, List<SegmentKey> newSegKeys) {
+    private void persistSegment(SourceKey tableKey, List<SegmentKey> oldSegKeys, List<SegmentKey> collateSegKeys, List<SegmentKey> newSegKeys) {
         List<SegmentKey> persistSegKeys = new ArrayList<SegmentKey>();
         persistSegKeys.addAll(newSegKeys);
         persistSegKeys.addAll(oldSegKeys);
