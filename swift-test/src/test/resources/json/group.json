@@ -1,0 +1,66 @@
+{
+  "queryId": "1530692187390",
+  "queryType": "GROUP",
+  "querySegment": null,
+  "tableName": "044b762d",
+  "filterInfoBean": {
+    "type": "AND",
+    "filterValue": []
+  },
+  "dimensionBeans": [
+    {
+      "column": "name",
+      "groupBean": {
+        "type": "NONE"
+      },
+      "dimensionType": "GROUP"
+    }
+  ],
+  "sortBeans": [],
+  "metricBeans": [
+    {
+      "type": "SUM",
+      "column": "value",
+      "name": "value",
+      "relation": null,
+      "filterInfoBean": null,
+      "formula": null,
+      "metricType": "GROUP"
+    }
+  ],
+  "postQueryInfoBeans": []
+}
+
+//        QueryInfoBean queryInfoBean = QueryInfoBeanFactory.create("{\n" +
+//                "  \"queryId\": \"1530692187390\",\n" +
+//                "  \"queryType\": \"GROUP\",\n" +
+//                "  \"querySegment\": null,\n" +
+//                "  \"tableName\": \"044b762d\",\n" +
+//                "  \"filterInfoBean\": {\n" +
+//                "    \"type\": \"AND\",\n" +
+//                "    \"filterValue\": []\n" +
+//                "  },\n" +
+//                "  \"dimensionBeans\": [\n" +
+//                "    {\n" +
+//                "      \"column\": \"name\",\n" +
+//                "      \"groupBean\": {\n" +
+//                "        \"type\": \"NONE\"\n" +
+//                "      },\n" +
+//                "      \"dimensionType\": \"GROUP\"\n" +
+//                "    }\n" +
+//                "  ],\n" +
+//                "  \"sortBeans\": [],\n" +
+//                "  \"metricBeans\": [\n" +
+//                "    {\n" +
+//                "      \"type\": \"SUM\",\n" +
+//                "      \"column\": \"value\",\n" +
+//                "      \"name\": \"value\",\n" +
+//                "      \"relation\": null,\n" +
+//                "      \"filterInfoBean\": null,\n" +
+//                "      \"formula\": null,\n" +
+//                "      \"metricType\": \"GROUP\"\n" +
+//                "    }\n" +
+//                "  ],\n" +
+//                "  \"postQueryInfoBeans\": []\n" +
+//                "}");
+//        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfoBean);

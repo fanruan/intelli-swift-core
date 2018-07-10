@@ -529,15 +529,19 @@ public class DetailResultSetTest extends TestCase {
     public void testSortSegmentGetRowData() {
         int i = 0;
         int[] intData = {4, 4, 2, 2};
-        long[] longData = {23, 23, 23, 12};
+        long[] longData = {23, 23, 12, 23};
         double[] doubleData = {40.1, 40.1, 9.5, 9.5};
-        String[] strData = {"C", "A", "C", "A"};
+        String[] strData = {"C", "A", "A", "C"};
         List<Sort> sorts = new ArrayList<>();
         sorts.add(new DescSort(0));
-        sorts.add(new DescSort(3));
         sorts.add(new AscSort(1));
+        sorts.add(new DescSort(3));
         DetailResultSet rs = new SortSegmentDetailResultSet(columnList, filter, sorts, null);
 
+//      [2, 12, 9.5, A]  => [4, 23, 40.1, C]
+//      [4, 23, 40.1, C]    [4, 23, 40.1, A]
+//      [2, 23, 9.5, C]     [2, 12, 9.5, A]
+//      [4, 23, 40.1, A]    [2, 23, 9.5, C]
         try {
             while (rs.next()) {
                 Row row = rs.getRowData();
@@ -556,24 +560,25 @@ public class DetailResultSetTest extends TestCase {
     public void testSortMultiSegmentGetRowData() throws SQLException {
         int i = 0;
         int[] intData = {4, 4, 2, 2};
+        long[] longData = {23, 23, 12, 23};
         double[] doubleData = {40.1, 40.1, 9.5, 9.5};
-        long[] longData = {23, 23, 23, 12};
-        String[] strData = {"C", "A", "C", "A"};
+        String[] strData = {"C", "A", "A", "C"};
         List<Sort> sorts = new ArrayList<>();
         sorts.add(new DescSort(0));
-        sorts.add(new DescSort(3));
         sorts.add(new AscSort(1));
+        sorts.add(new DescSort(3));
         for (int j = 0; j < 3; j++) {
             queries.add(new SortDetailSegmentQuery(columnList, filter, sorts, null));
         }
-        List<Pair<Integer, Comparator>> pairs = new ArrayList<>();
-        pairs.add(Pair.of(0, Comparators.<Integer>asc()));
-        pairs.add(Pair.of(3, Comparators.<String>desc()));
-        pairs.add(Pair.of(1, Comparators.<Double>desc()));
+        List<Pair<Sort, Comparator>> pairs = new ArrayList<>();
+        pairs.add(Pair.of(new DescSort(0), Comparators.<Integer>asc()));
+        pairs.add(Pair.of(new AscSort(1), Comparators.<String>asc()));
+        pairs.add(Pair.of(new DescSort(3), Comparators.<Double>asc()));
         DetailResultSet rs = new SortMultiSegmentDetailResultSet(queries, pairs, null);
         try {
             while (rs.next()) {
                 Row row = rs.getRowData();
+                System.out.println(row.toString());
                 assertEquals((int) row.getValue(0), intData[i / 3]);
                 assertEquals((long) row.getValue(1), longData[i / 3]);
                 assertEquals(row.getValue(2), doubleData[i / 3]);

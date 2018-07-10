@@ -1,6 +1,8 @@
 package com.fr.swift.result;
 
 import com.fr.swift.query.query.Query;
+import com.fr.swift.query.sort.Sort;
+import com.fr.swift.query.sort.SortType;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.Pair;
@@ -8,6 +10,7 @@ import com.fr.swift.structure.queue.SortedListMergingUtils;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -18,14 +21,14 @@ import java.util.List;
 public class SortMultiSegmentDetailResultSet implements DetailResultSet {
 
     private List<Query<DetailResultSet>> queries;
-    private List<Pair<Integer, Comparator>> comparators;
+    private List<Pair<Sort, Comparator>> comparators;
     private SwiftMetaData metaData;
     private int rowCount;
     private Iterator<List<Row>> mergerIterator;
     private Iterator<Row> rowIterator;
 
     public SortMultiSegmentDetailResultSet(List<Query<DetailResultSet>> queries,
-                                           List<Pair<Integer, Comparator>> comparators, SwiftMetaData metaData) throws SQLException {
+                                           List<Pair<Sort, Comparator>> comparators, SwiftMetaData metaData) throws SQLException {
         this.queries = queries;
         this.comparators = comparators;
         this.metaData = metaData;
@@ -83,12 +86,20 @@ public class SortMultiSegmentDetailResultSet implements DetailResultSet {
 
     }
 
-    private static Comparator<Row> createRowComparator(final List<Pair<Integer, Comparator>> comparators) {
+    private static Comparator<Row> createRowComparator(final List<Pair<Sort, Comparator>> comparators) {
+        Collections.sort(comparators, new Comparator<Pair<Sort, Comparator>>() {
+            @Override
+            public int compare(Pair<Sort, Comparator> o1, Pair<Sort, Comparator> o2) {
+                return o1.getKey().getTargetIndex() - o2.getKey().getTargetIndex();
+            }
+        });
         return new Comparator<Row>() {
             @Override
             public int compare(Row o1, Row o2) {
-                for (Pair<Integer, Comparator> pair : comparators) {
-                    int result = pair.getValue().compare(o1.getValue(pair.getKey()), o2.getValue(pair.getKey()));
+                for (Pair<Sort, Comparator> pair : comparators) {
+                    int result = pair.getValue().compare(o1.getValue(pair.getKey().getTargetIndex()), o2.getValue(pair.getKey().getTargetIndex()));
+                    // 从DictionaryColumn中取出来的比较器默认都是升序的
+                    result = pair.getKey().getSortType() == SortType.ASC ? result : -result;
                     if (result != 0) {
                         return result;
                     }
