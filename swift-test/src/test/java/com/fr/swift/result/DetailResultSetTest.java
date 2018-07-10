@@ -578,7 +578,6 @@ public class DetailResultSetTest extends TestCase {
         try {
             while (rs.next()) {
                 Row row = rs.getRowData();
-                System.out.println(row.toString());
                 assertEquals((int) row.getValue(0), intData[i / 3]);
                 assertEquals((long) row.getValue(1), longData[i / 3]);
                 assertEquals(row.getValue(2), doubleData[i / 3]);
