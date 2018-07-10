@@ -11,7 +11,7 @@
         <!--<relativePath>../nuclear-settings/nuclear-swift-project/pom.xml</relativePath>-->
     <!--</parent>-->
     <groupId>com.fr.intelligence</groupId>
-    <artifactId>fine-swift</artifactId>
+    <artifactId>com.fr.swift</artifactId>
     <packaging>pom</packaging>
     <version>5.0-RELEASE-SNAPSHOT</version>
     <modules>
@@ -23,7 +23,6 @@
         <module>swift-server</module>
         <module>swift-log-adaptor</module>
         <module>swift-test</module>
-        <module>fine-engine-swift</module>
         <module>swift-boot</module>
         <module>swift-cluster</module>
         <module>swift-communication</module>
