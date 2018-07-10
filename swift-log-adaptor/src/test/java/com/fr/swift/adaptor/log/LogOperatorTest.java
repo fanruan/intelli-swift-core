@@ -38,7 +38,7 @@ import static org.junit.Assert.assertTrue;
  * @date 2018/4/26
  */
 public class LogOperatorTest {
-    private LogOperator logOperator = LogOperatorProxy.getInstance();
+    private LogOperator logOperator = AccumulatorProxy.getInstance();
     private Database db = SwiftDatabase.getInstance();
 
     @BeforeClass
