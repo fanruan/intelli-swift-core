@@ -5,7 +5,7 @@
 
     <parent>
         <groupId>com.fr.intelligence</groupId>
-        <artifactId>com.fr.swift</artifactId>
+        <artifactId>fine-swift</artifactId>
         <version>5.0-RELEASE-SNAPSHOT</version>
     </parent>
 
