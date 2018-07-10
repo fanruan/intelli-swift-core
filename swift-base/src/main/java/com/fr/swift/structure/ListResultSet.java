@@ -16,7 +16,7 @@ public class ListResultSet implements SwiftResultSet {
 
     private List<Row> rows;
 
-    private int cursor = -1;
+    private int cursor = 0;
 
     public ListResultSet(SwiftMetaData meta, List<Row> rows) {
         this.meta = meta;
@@ -30,12 +30,12 @@ public class ListResultSet implements SwiftResultSet {
 
     @Override
     public boolean next() throws SQLException {
-        return ++cursor < rows.size();
+        return cursor < rows.size();
     }
 
     @Override
     public Row getRowData() throws SQLException {
-        return rows.get(cursor);
+        return rows.get(cursor++);
     }
 
     @Override

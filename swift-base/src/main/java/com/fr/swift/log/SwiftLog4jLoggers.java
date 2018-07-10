@@ -21,11 +21,9 @@ public class SwiftLog4jLoggers implements Function<Void, SwiftLogger> {
         logger.setLevel(Level.INFO);
         logger.setAdditivity(false);
         PatternLayout layout = new PatternLayout("%d{yy-M-d H:m:s.S} %t %p [%C{1}.%M] %m%n");
-        logger.addAppender(new ConsoleAppender(layout, "swift_console"));
+        logger.addAppender(new ConsoleAppender(layout));
         try {
-            DailyRollingFileAppender appender = new DailyRollingFileAppender(layout, "logs/swift.log", "'.'yy-M-d");
-            appender.setName("swift_daily_file");
-            logger.addAppender(appender);
+            logger.addAppender(new DailyRollingFileAppender(layout, "logs/swift.log", "'.'yy-M-d"));
         } catch (IOException ignore) {
         }
         return new SwiftLog4jLogger(logger);

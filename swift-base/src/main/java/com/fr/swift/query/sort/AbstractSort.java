@@ -32,12 +32,18 @@ abstract class AbstractSort implements Sort {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         AbstractSort that = (AbstractSort) o;
 
-        if (targetIndex != that.targetIndex) return false;
+        if (targetIndex != that.targetIndex) {
+            return false;
+        }
         return columnKey != null ? columnKey.equals(that.columnKey) : that.columnKey == null;
     }
 
