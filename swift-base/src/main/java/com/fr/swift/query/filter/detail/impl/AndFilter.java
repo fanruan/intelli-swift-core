@@ -1,5 +1,6 @@
 package com.fr.swift.query.filter.detail.impl;
 
+import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.filter.info.FilterInfo;
@@ -45,7 +46,7 @@ public class AndFilter implements DetailFilter {
             }
             bitMap = bitMap.getAnd(filter.createFilterIndex());
         }
-        return bitMap;
+        return bitMap == null ? BitMaps.newAllShowBitMap(segment.getRowCount()) : bitMap;
     }
 
     @Override
