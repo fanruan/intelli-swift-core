@@ -1,20 +1,20 @@
 package com.fr.swift.generate.etl.formula;
 
 import com.fr.swift.cube.queue.CubeTasks;
-import com.fr.swift.cube.task.SchedulerTask;
-import com.fr.swift.cube.task.TaskKey;
-import com.fr.swift.cube.task.impl.CubeTaskKey;
-import com.fr.swift.cube.task.impl.CubeTaskManager;
-import com.fr.swift.cube.task.impl.Operation;
-import com.fr.swift.cube.task.impl.SchedulerTaskImpl;
-import com.fr.swift.cube.task.impl.SchedulerTaskPool;
-import com.fr.swift.cube.task.impl.WorkerTaskImpl;
-import com.fr.swift.cube.task.impl.WorkerTaskPool;
 import com.fr.swift.generate.history.TableBuilder;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.structure.Pair;
+import com.fr.swift.task.SchedulerTask;
+import com.fr.swift.task.TaskKey;
+import com.fr.swift.task.cube.CubeOperation;
+import com.fr.swift.task.cube.CubeTaskKey;
+import com.fr.swift.task.cube.CubeTaskManager;
+import com.fr.swift.task.impl.SchedulerTaskImpl;
+import com.fr.swift.task.impl.SchedulerTaskPool;
+import com.fr.swift.task.impl.WorkerTaskImpl;
+import com.fr.swift.task.impl.WorkerTaskPool;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ public class TableBuildTestUtil {
         SchedulerTaskPool.getInstance().initListener();
         WorkerTaskPool.getInstance().initListener();
         WorkerTaskPool.getInstance().setTaskGenerator((taskKey, taskInfo) -> {
-            if (taskKey.operation() == Operation.NULL) {
+            if (taskKey.operation() == CubeOperation.NULL) {
                 return new WorkerTaskImpl(taskKey);
             }
 
@@ -74,14 +74,14 @@ public class TableBuildTestUtil {
 
         SchedulerTask task = start;
         for (DataSource dataSource : dataSources) {
-            SchedulerTask dataTask = new SchedulerTaskImpl(new CubeTaskKey(round, dataSource.getMetadata().getTableName(), Operation.BUILD_TABLE));
+            SchedulerTask dataTask = new SchedulerTaskImpl(new CubeTaskKey(round, dataSource.getMetadata().getTableName(), CubeOperation.BUILD_TABLE));
             task.addNext(dataTask);
             task = dataTask;
             l.add(new Pair<>(task.key(), dataSource));
         }
         task.addNext(end);
 
-        CubeTasks.sendTasks(l);
+//        CubeTasks.sendTasks(l);
         start.triggerRun();
     }
 }

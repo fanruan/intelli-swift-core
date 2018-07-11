@@ -6,12 +6,6 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.nio.NIOConstant;
 import com.fr.swift.cube.queue.CubeTasks;
-import com.fr.swift.cube.task.SchedulerTask;
-import com.fr.swift.cube.task.Task;
-import com.fr.swift.cube.task.TaskKey;
-import com.fr.swift.cube.task.TaskStatusChangeListener;
-import com.fr.swift.cube.task.impl.SchedulerTaskImpl;
-import com.fr.swift.cube.task.impl.SchedulerTaskPool;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.relation.utils.RelationPathHelper;
 import com.fr.swift.reliance.IRelationNode;
@@ -29,6 +23,12 @@ import com.fr.swift.source.RelationSourceType;
 import com.fr.swift.source.Source;
 import com.fr.swift.source.relation.FieldRelationSource;
 import com.fr.swift.structure.Pair;
+import com.fr.swift.task.SchedulerTask;
+import com.fr.swift.task.Task;
+import com.fr.swift.task.TaskKey;
+import com.fr.swift.task.TaskStatusChangeListener;
+import com.fr.swift.task.impl.SchedulerTaskImpl;
+import com.fr.swift.task.impl.SchedulerTaskPool;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.Util;
 
@@ -168,7 +168,7 @@ public class RelationColumn {
             pairs.add(Pair.of(start.key(), null));
             pairs.add(Pair.of(end.key(), null));
             try {
-                CubeTasks.sendTasks(pairs);
+//                CubeTasks.sendTasks(pairs); fixme 这边考虑走indexing 传stuff更新吧
                 start.triggerRun();
                 latch.await();
             } catch (Exception e) {

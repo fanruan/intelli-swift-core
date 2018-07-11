@@ -18,7 +18,7 @@ import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.row.RowIndexKey;
 import com.fr.swift.test.TestIo;
-import com.fr.swift.util.function.Function2;
+import com.fr.swift.util.function.BinaryFunction;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +53,7 @@ public class GroupNodeIteratorTest extends TestIo {
             }
         }, new ArrayList<>(), new ExpanderImpl(ExpanderType.ALL_EXPANDER, new HashSet<>()), null);
         GroupNodeRowMapper rowMapper = new GroupNodeRowMapper(new MetricInfoImpl(cubeData.getMetrics(), cubeData.getAggregators(), cubeData.getAggregators().size()));
-        Function2<Integer, GroupByEntry, GroupNode> itemMapper = new Function2<Integer, GroupByEntry, GroupNode>() {
+        BinaryFunction<Integer, GroupByEntry, GroupNode> itemMapper = new BinaryFunction<Integer, GroupByEntry, GroupNode>() {
             @Override
             public GroupNode apply(Integer deep, GroupByEntry groupByEntry) {
                 // 这边先存segment的字典序号吧

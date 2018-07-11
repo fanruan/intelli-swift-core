@@ -1,9 +1,6 @@
 package com.fr.swift.service.handler.global;
 
 import com.fr.event.EventDispatcher;
-import com.fr.swift.cube.task.TaskKey;
-import com.fr.swift.cube.task.TaskResult;
-import com.fr.swift.cube.task.impl.TaskEvent;
 import com.fr.swift.event.base.AbstractGlobalRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -13,6 +10,9 @@ import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.entity.ClusterEntity;
 import com.fr.swift.service.handler.base.AbstractHandler;
 import com.fr.swift.structure.Pair;
+import com.fr.swift.task.TaskKey;
+import com.fr.swift.task.TaskResult;
+import com.fr.swift.task.impl.TaskEvent;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.io.Serializable;

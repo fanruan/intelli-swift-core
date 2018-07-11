@@ -1,12 +1,12 @@
 package com.fr.swift.service;
 
-import com.fr.swift.cube.task.impl.SchedulerTaskPool;
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.service.listener.EventType;
 import com.fr.swift.service.listener.SingleTypeListenerContainer;
 import com.fr.swift.service.listener.SwiftServiceListener;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.service.listener.SwiftServiceListenerManager;
+import com.fr.swift.task.impl.SchedulerTaskPool;
 
 import javax.annotation.PostConstruct;
 import java.io.Serializable;

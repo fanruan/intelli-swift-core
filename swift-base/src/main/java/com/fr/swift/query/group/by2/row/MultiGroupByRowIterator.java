@@ -10,7 +10,7 @@ import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.structure.stack.ArrayLimitedStack;
 import com.fr.swift.structure.stack.LimitedStack;
-import com.fr.swift.util.function.Function2;
+import com.fr.swift.util.function.BinaryFunction;
 
 import java.util.Iterator;
 import java.util.List;
@@ -41,13 +41,13 @@ public class MultiGroupByRowIterator implements Iterator<GroupByEntry[]> {
             }
         });
         GroupByController<GroupByEntry> controller = new ExpandAllController();
-        Function2<Integer, GroupByEntry, GroupByEntry> idFn = new Function2<Integer, GroupByEntry, GroupByEntry>() {
+        BinaryFunction<Integer, GroupByEntry, GroupByEntry> idFn = new BinaryFunction<Integer, GroupByEntry, GroupByEntry>() {
             @Override
             public GroupByEntry apply(Integer integer, GroupByEntry groupByEntry) {
                 return groupByEntry;
             }
         };
-        Function2<GroupByEntry, LimitedStack<GroupByEntry>, GroupByEntry[]> fn2 = new Function2<GroupByEntry, LimitedStack<GroupByEntry>, GroupByEntry[]>() {
+        BinaryFunction<GroupByEntry, LimitedStack<GroupByEntry>, GroupByEntry[]> fn2 = new BinaryFunction<GroupByEntry, LimitedStack<GroupByEntry>, GroupByEntry[]>() {
             @Override
             public GroupByEntry[] apply(GroupByEntry groupByEntry, LimitedStack<GroupByEntry> groupByEntryLimitedStack) {
                 return groupByEntryLimitedStack.toList().toArray(new GroupByEntry[groupByEntryLimitedStack.limit()]);

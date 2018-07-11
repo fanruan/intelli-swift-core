@@ -14,7 +14,7 @@ import com.fr.swift.util.Util;
  */
 public final class MemIoBuilder {
     public static MemIo build(IResourceLocation location, BuildConf conf) {
-        if (Util.in(conf.ioType, Util.toArray(IoType.READ, IoType.WRITE)) &&
+        if (Util.in(conf.ioType, IoType.READ, IoType.WRITE) &&
                 StoreType.MEMORY == location.getStoreType()) {
             switch (conf.dataType) {
                 case INT:

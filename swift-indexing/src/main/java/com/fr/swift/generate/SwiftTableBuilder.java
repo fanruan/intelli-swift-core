@@ -1,6 +1,6 @@
 package com.fr.swift.generate;
 
-import com.fr.swift.cube.task.WorkerTask;
+import com.fr.swift.task.WorkerTask;
 
 /**
  * This class created on 2018/4/18

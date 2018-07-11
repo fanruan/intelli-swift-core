@@ -3,8 +3,6 @@ package com.fr.swift.generate;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.FasterAggregation;
-import com.fr.swift.cube.task.TaskResult.Type;
-import com.fr.swift.cube.task.impl.TaskResultImpl;
 import com.fr.swift.relation.CubeMultiRelationPath;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
@@ -13,6 +11,8 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.operator.column.SwiftFieldPathIndexer;
 import com.fr.swift.segment.relation.RelationIndex;
+import com.fr.swift.task.TaskResult.Type;
+import com.fr.swift.task.impl.TaskResultImpl;
 import com.fr.swift.util.Crasher;
 
 import java.util.ArrayList;

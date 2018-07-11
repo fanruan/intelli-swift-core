@@ -16,7 +16,7 @@ import com.fr.engine.config.constants.DriverType;
 import com.fr.engine.utils.CollectionUtils;
 import com.fr.engine.utils.StringUtils;
 import com.fr.swift.conf.dashboard.store.DashboardConfManager;
-import com.fr.swift.cube.task.TaskResult;
+import com.fr.swift.task.TaskResult;
 
 import java.util.ArrayList;
 import java.util.Collections;

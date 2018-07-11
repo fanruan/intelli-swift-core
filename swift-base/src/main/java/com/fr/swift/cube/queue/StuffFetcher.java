@@ -3,14 +3,14 @@ package com.fr.swift.cube.queue;
 import com.fr.event.Event;
 import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
-import com.fr.swift.cube.task.SchedulerTask;
-import com.fr.swift.cube.task.TaskKey;
-import com.fr.swift.cube.task.impl.SchedulerTaskImpl;
-import com.fr.swift.cube.task.impl.TaskEvent;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.DataSource;
+import com.fr.swift.task.SchedulerTask;
+import com.fr.swift.task.TaskKey;
+import com.fr.swift.task.impl.SchedulerTaskImpl;
+import com.fr.swift.task.impl.TaskEvent;
 
 import java.util.Collections;
 import java.util.HashMap;
