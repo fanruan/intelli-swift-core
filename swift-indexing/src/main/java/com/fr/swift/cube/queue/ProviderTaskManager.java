@@ -1,7 +1,5 @@
 package com.fr.swift.cube.queue;
 
-import com.fr.swift.log.SwiftLogger;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 
 /**
@@ -12,8 +10,6 @@ import com.fr.swift.util.concurrent.SwiftExecutors;
  * @since Advanced FineBI Analysis 1.0
  */
 public class ProviderTaskManager {
-
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(ProviderTaskManager.class);
 
     private ProviderTaskManager() {
         initListener();

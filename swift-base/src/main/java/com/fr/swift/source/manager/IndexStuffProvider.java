@@ -1,6 +1,5 @@
 package com.fr.swift.source.manager;
 
-import com.fr.swift.cube.task.TaskResult;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.provider.IndexStuffMedium;
 import com.fr.swift.reliance.RelationPathReliance;
@@ -9,6 +8,7 @@ import com.fr.swift.reliance.SourceReliance;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.SourcePath;
+import com.fr.swift.task.TaskResult;
 
 import java.util.List;
 

@@ -3,12 +3,12 @@ package com.fr.swift.query.group.by2.node.mapper;
 import com.fr.swift.query.group.by.GroupByEntry;
 import com.fr.swift.result.TopGroupNode;
 import com.fr.swift.structure.stack.LimitedStack;
-import com.fr.swift.util.function.Function2;
+import com.fr.swift.util.function.BiFunction;
 
 /**
  * Created by Lyon on 2018/4/28.
  */
-public class TopGroupNodeRowMapper implements Function2<GroupByEntry, LimitedStack<TopGroupNode>, TopGroupNode[]> {
+public class TopGroupNodeRowMapper implements BiFunction<GroupByEntry, LimitedStack<TopGroupNode>, TopGroupNode[]> {
 
     @Override
     public TopGroupNode[] apply(GroupByEntry groupByEntry, LimitedStack<TopGroupNode> topGroupNodeLimitedStack) {

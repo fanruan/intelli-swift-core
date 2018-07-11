@@ -6,7 +6,7 @@ import java.util.Collection;
  * @author anchore
  */
 public final class Util {
-    public static <T> boolean in(T check, T[] os) {
+    public static boolean in(Object check, Object... os) {
         if (check == null) {
             return false;
         }

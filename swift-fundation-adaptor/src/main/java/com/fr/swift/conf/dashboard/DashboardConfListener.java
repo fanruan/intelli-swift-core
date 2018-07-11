@@ -14,7 +14,7 @@ import com.fr.general.ComparatorUtils;
 import com.fr.swift.conf.dashboard.store.DashboardConfManager;
 import com.fr.swift.conf.updateInfo.TableUpdateInfoConfigService;
 import com.fr.swift.constants.UpdateConstants;
-import com.fr.swift.cube.task.TaskResult;
+import com.fr.swift.task.TaskResult;
 
 import java.util.ArrayList;
 import java.util.Arrays;

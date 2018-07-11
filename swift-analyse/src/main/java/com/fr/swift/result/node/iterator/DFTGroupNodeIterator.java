@@ -3,7 +3,7 @@ package com.fr.swift.result.node.iterator;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.structure.stack.ArrayLimitedStack;
 import com.fr.swift.structure.stack.LimitedStack;
-import com.fr.swift.util.function.Function2;
+import com.fr.swift.util.function.BiFunction;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -21,7 +21,7 @@ public class DFTGroupNodeIterator implements Iterator<GroupNode> {
     private GroupNode root;
     private int[] cursor;
     private LimitedStack<Iterator<GroupNode>> iterators;
-    private Function2<Integer, List<GroupNode>, Iterator<GroupNode>> itGetter;
+    private BiFunction<Integer, List<GroupNode>, Iterator<GroupNode>> itGetter;
     private GroupNode next;
 
     /**
@@ -55,7 +55,7 @@ public class DFTGroupNodeIterator implements Iterator<GroupNode> {
         next = root;
     }
 
-    private Function2<Integer, List<GroupNode>, Iterator<GroupNode>> normalItGetter = new Function2<Integer, List<GroupNode>, Iterator<GroupNode>>() {
+    private BiFunction<Integer, List<GroupNode>, Iterator<GroupNode>> normalItGetter = new BiFunction<Integer, List<GroupNode>, Iterator<GroupNode>>() {
         @Override
         public Iterator<GroupNode> apply(Integer dimensionIndex, List<GroupNode> children) {
             int index = getStartIndex(dimensionIndex);
@@ -63,7 +63,7 @@ public class DFTGroupNodeIterator implements Iterator<GroupNode> {
         }
     };
 
-    private Function2<Integer, List<GroupNode>, Iterator<GroupNode>> reverseItGetter = new Function2<Integer, List<GroupNode>, Iterator<GroupNode>>() {
+    private BiFunction<Integer, List<GroupNode>, Iterator<GroupNode>> reverseItGetter = new BiFunction<Integer, List<GroupNode>, Iterator<GroupNode>>() {
         @Override
         public Iterator<GroupNode> apply(Integer dimensionIndex, List<GroupNode> children) {
             int index = getStartIndex(dimensionIndex);
