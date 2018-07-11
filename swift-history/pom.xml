@@ -14,28 +14,28 @@
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-base</artifactId>
-            <version>10.0-RELEASE-SNAPSHOT</version>
+            <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-repository</artifactId>
-            <version>10.0-RELEASE-SNAPSHOT</version>
+            <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-cluster</artifactId>
-            <version>10.0-RELEASE-SNAPSHOT</version>
+            <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-analyse</artifactId>
-            <version>10.0-RELEASE-SNAPSHOT</version>
+            <version>${swift.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-netty</artifactId>
-            <version>10.0-RELEASE-SNAPSHOT</version>
+            <version>${swift.version}</version>
         </dependency>
     </dependencies>
 
