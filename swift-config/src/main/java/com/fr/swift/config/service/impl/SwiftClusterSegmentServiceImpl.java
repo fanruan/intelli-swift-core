@@ -1,5 +1,6 @@
 package com.fr.swift.config.service.impl;
 
+import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.dao.SwiftSegmentDao;
 import com.fr.swift.config.dao.SwiftSegmentLocationDao;
@@ -9,6 +10,7 @@ import com.fr.swift.config.entity.key.SwiftSegLocationEntityId;
 import com.fr.swift.config.hibernate.transaction.AbstractTransactionWorker;
 import com.fr.swift.config.hibernate.transaction.HibernateTransactionManager;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
+import com.fr.swift.cube.io.Types;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.structure.Pair;
@@ -175,6 +177,36 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
     }
 
     @Override
+    public Map<String, List<SegmentKey>> getAllRealTimeSegments() {
+        try {
+            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Map<String, List<SegmentKey>>>() {
+                @Override
+                public Map<String, List<SegmentKey>> work(Session session) {
+                    List<SwiftSegmentEntity> beans = swiftSegmentDao.find(session, Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE, Types.StoreType.MEMORY));
+                    Map<String, List<SegmentKey>> result = new HashMap<String, List<SegmentKey>>();
+                    for (SwiftSegmentEntity bean : beans) {
+                        SegmentKeyBean keyBean = bean.convert();
+                        if (!result.containsKey(keyBean.getSourceKey())) {
+                            result.put(keyBean.getSourceKey(), new ArrayList<SegmentKey>());
+                        }
+                        result.get(keyBean.getSourceKey()).add(keyBean);
+                    }
+                    return result;
+                }
+
+                @Override
+                public boolean needTransaction() {
+                    return false;
+                }
+            });
+
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error("Select segments error!", e);
+        }
+        return Collections.emptyMap();
+    }
+
+    @Override
     public List<SegmentKey> getSegmentByKey(String sourceKey) {
         return getOwnSegments().get(sourceKey);
     }
@@ -216,6 +248,31 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
                     for (SwiftSegmentLocationEntity entity : list) {
                         SegmentKeyBean bean = swiftSegmentDao.select(session, entity.getSegmentId()).convert();
                         if (!result.containsKey(bean.getSourceKey())) {
+                            result.put(bean.getSourceKey(), new ArrayList<SegmentKey>());
+                        }
+                        result.get(bean.getSourceKey()).add(bean);
+                    }
+                    return result;
+                }
+            });
+
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error("Select segments error!", e);
+        }
+        return Collections.emptyMap();
+    }
+
+    @Override
+    public Map<String, List<SegmentKey>> getOwnRealTimeSegments(final String clusterId) {
+        try {
+            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Map<String, List<SegmentKey>>>() {
+                @Override
+                public Map<String, List<SegmentKey>> work(Session session) throws SQLException {
+                    Map<String, List<SegmentKey>> result = new HashMap<String, List<SegmentKey>>();
+                    List<SwiftSegmentLocationEntity> list = segmentLocationDao.findByClusterId(session, clusterId);
+                    for (SwiftSegmentLocationEntity entity : list) {
+                        SegmentKeyBean bean = swiftSegmentDao.select(session, entity.getSegmentId()).convert();
+                        if (bean.getStoreType() == Types.StoreType.MEMORY && !result.containsKey(bean.getSourceKey())) {
                             result.put(bean.getSourceKey(), new ArrayList<SegmentKey>());
                         }
                         result.get(bean.getSourceKey()).add(bean);
