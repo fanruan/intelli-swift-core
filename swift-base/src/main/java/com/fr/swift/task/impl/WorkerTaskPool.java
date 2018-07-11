@@ -5,7 +5,7 @@ import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
 import com.fr.swift.task.TaskKey;
 import com.fr.swift.task.WorkerTask;
-import com.fr.swift.util.function.BiFunction;
+import com.fr.swift.util.function.BinaryFunction;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,9 +14,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2017/12/29
  */
 public class WorkerTaskPool extends BaseTaskPool<WorkerTask> {
-    private BiFunction<TaskKey, Object, WorkerTask> taskGenerator;
+    private BinaryFunction<TaskKey, Object, WorkerTask> taskGenerator;
 
-    public void setTaskGenerator(BiFunction<TaskKey, Object, WorkerTask> taskGenerator) {
+    public void setTaskGenerator(BinaryFunction<TaskKey, Object, WorkerTask> taskGenerator) {
         this.taskGenerator = taskGenerator;
     }
 

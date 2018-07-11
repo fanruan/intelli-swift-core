@@ -16,7 +16,7 @@ import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.structure.iterator.IteratorUtils;
 import com.fr.swift.structure.iterator.MapperIterator;
 import com.fr.swift.structure.iterator.RowTraversal;
-import com.fr.swift.util.function.BiFunction;
+import com.fr.swift.util.function.BinaryFunction;
 import com.fr.swift.util.function.Function;
 
 import java.util.ArrayList;
@@ -76,7 +76,7 @@ public class NodeGroupByUtils {
                 }
             }));
             GroupNodeRowMapper rowMapper = new GroupNodeRowMapper(metricInfo);
-            BiFunction<Integer, GroupByEntry, GroupNode> itemMapper = new BiFunction<Integer, GroupByEntry, GroupNode>() {
+            BinaryFunction<Integer, GroupByEntry, GroupNode> itemMapper = new BinaryFunction<Integer, GroupByEntry, GroupNode>() {
                 @Override
                 public GroupNode apply(Integer deep, GroupByEntry groupByEntry) {
                     // 这边先存segment的字典序号吧

@@ -2,7 +2,7 @@ package com.fr.swift.query.group.by2;
 
 import com.fr.swift.query.group.by.GroupByEntry;
 import com.fr.swift.structure.stack.LimitedStack;
-import com.fr.swift.util.function.BiFunction;
+import com.fr.swift.util.function.BinaryFunction;
 
 import java.util.Iterator;
 
@@ -20,8 +20,8 @@ public class MultiGroupByV2<T> implements Iterator<T[]> {
     private DFTIterator iterator;
     private LimitedStack<T> itemsStack;
     private GroupByController<T> controller;
-    private BiFunction<Integer, GroupByEntry, T> itemMapper;
-    private BiFunction<GroupByEntry, LimitedStack<T>, T[]> rowMapper;
+    private BinaryFunction<Integer, GroupByEntry, T> itemMapper;
+    private BinaryFunction<GroupByEntry, LimitedStack<T>, T[]> rowMapper;
     private T[] next;
 
     /**
@@ -32,7 +32,7 @@ public class MultiGroupByV2<T> implements Iterator<T[]> {
      * @param rowMapper  行结果处理函数
      */
     public MultiGroupByV2(DFTIterator iterator, LimitedStack<T> itemsStack, GroupByController<T> controller,
-                          BiFunction<Integer, GroupByEntry, T> itemMapper, BiFunction<GroupByEntry, LimitedStack<T>, T[]> rowMapper) {
+                          BinaryFunction<Integer, GroupByEntry, T> itemMapper, BinaryFunction<GroupByEntry, LimitedStack<T>, T[]> rowMapper) {
         this.iterator = iterator;
         this.controller = controller;
         this.itemsStack = itemsStack;

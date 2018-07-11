@@ -19,7 +19,7 @@ import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.structure.iterator.IteratorUtils;
 import com.fr.swift.structure.iterator.MapperIterator;
 import com.fr.swift.structure.stack.LimitedStack;
-import com.fr.swift.util.function.BiFunction;
+import com.fr.swift.util.function.BinaryFunction;
 import com.fr.swift.util.function.Function;
 
 import java.util.Arrays;
@@ -35,13 +35,13 @@ public class GroupNodeIterator<Node extends GroupNode> implements Iterator<Node[
 
     private GroupByInfo groupByInfo;
     private Node root;
-    private BiFunction<Integer, GroupByEntry, Node> itemMapper;
-    private BiFunction<GroupByEntry, LimitedStack<Node>, Node[]> rowMapper;
+    private BinaryFunction<Integer, GroupByEntry, Node> itemMapper;
+    private BinaryFunction<GroupByEntry, LimitedStack<Node>, Node[]> rowMapper;
     private Iterator<Node[]> iterator;
 
     public GroupNodeIterator(GroupByInfo groupByInfo, Node root,
-                             BiFunction<Integer, GroupByEntry, Node> itemMapper,
-                             BiFunction<GroupByEntry, LimitedStack<Node>, Node[]> rowMapper) {
+                             BinaryFunction<Integer, GroupByEntry, Node> itemMapper,
+                             BinaryFunction<GroupByEntry, LimitedStack<Node>, Node[]> rowMapper) {
         this.groupByInfo = groupByInfo;
         this.root = root;
         this.itemMapper = itemMapper;

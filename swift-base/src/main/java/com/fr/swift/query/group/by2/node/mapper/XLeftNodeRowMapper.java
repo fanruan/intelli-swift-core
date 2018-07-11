@@ -9,7 +9,7 @@ import com.fr.swift.result.XLeftNode;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.structure.iterator.RowTraversal;
 import com.fr.swift.structure.stack.LimitedStack;
-import com.fr.swift.util.function.BiFunction;
+import com.fr.swift.util.function.BinaryFunction;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by Lyon on 2018/4/27.
  */
-public class XLeftNodeRowMapper implements BiFunction<GroupByEntry, LimitedStack<XLeftNode>, XLeftNode[]> {
+public class XLeftNodeRowMapper implements BinaryFunction<GroupByEntry, LimitedStack<XLeftNode>, XLeftNode[]> {
 
     private int targetLength;
     private List<Column> metrics;

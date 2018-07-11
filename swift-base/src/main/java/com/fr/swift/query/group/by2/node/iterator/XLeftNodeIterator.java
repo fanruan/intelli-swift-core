@@ -4,7 +4,7 @@ import com.fr.swift.query.group.by.GroupByEntry;
 import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.result.XLeftNode;
 import com.fr.swift.structure.stack.LimitedStack;
-import com.fr.swift.util.function.BiFunction;
+import com.fr.swift.util.function.BinaryFunction;
 
 import java.util.Iterator;
 
@@ -15,11 +15,11 @@ public class XLeftNodeIterator implements Iterator<XLeftNode[]> {
 
     private GroupByInfo rowGroupByInfo;
     private XLeftNode root;
-    private BiFunction<GroupByEntry, LimitedStack<XLeftNode>, XLeftNode[]> rowMapper;
+    private BinaryFunction<GroupByEntry, LimitedStack<XLeftNode>, XLeftNode[]> rowMapper;
     private Iterator<XLeftNode[]> iterator;
 
     public XLeftNodeIterator(GroupByInfo rowGroupByInfo, XLeftNode root,
-                             BiFunction<GroupByEntry, LimitedStack<XLeftNode>, XLeftNode[]> rowMapper) {
+                             BinaryFunction<GroupByEntry, LimitedStack<XLeftNode>, XLeftNode[]> rowMapper) {
         this.rowGroupByInfo = rowGroupByInfo;
         this.root = root;
         this.rowMapper = rowMapper;
@@ -27,7 +27,7 @@ public class XLeftNodeIterator implements Iterator<XLeftNode[]> {
     }
 
     private void init() {
-        BiFunction<Integer, GroupByEntry, XLeftNode> itemMapper = new BiFunction<Integer, GroupByEntry, XLeftNode>() {
+        BinaryFunction<Integer, GroupByEntry, XLeftNode> itemMapper = new BinaryFunction<Integer, GroupByEntry, XLeftNode>() {
             @Override
             public XLeftNode apply(Integer deep, GroupByEntry groupByEntry) {
                 return new XLeftNode((int) deep, groupByEntry.getIndex());

@@ -13,13 +13,13 @@ import com.fr.swift.source.relation.FieldRelationSource;
 import com.fr.swift.task.TaskKey;
 import com.fr.swift.task.WorkerTask;
 import com.fr.swift.task.impl.WorkerTaskImpl;
-import com.fr.swift.util.function.BiFunction;
+import com.fr.swift.util.function.BinaryFunction;
 
 /**
  * @author anchore
  * @date 2018/7/11
  */
-public class CubeTaskGenerator implements BiFunction<TaskKey, Object, WorkerTask> {
+public class CubeTaskGenerator implements BinaryFunction<TaskKey, Object, WorkerTask> {
     @Override
     public WorkerTask apply(TaskKey taskKey, Object data) {
         if (taskKey.operation() == CubeOperation.NULL) {
