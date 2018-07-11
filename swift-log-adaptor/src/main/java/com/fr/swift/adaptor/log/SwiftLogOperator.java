@@ -1,6 +1,7 @@
 package com.fr.swift.adaptor.log;
 
 import com.fr.intelli.record.scene.impl.BaseAccumulator;
+import com.fr.log.FineLoggerFactory;
 import com.fr.log.message.AbstractMessage;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.data.DataList;
@@ -37,7 +38,6 @@ import java.util.concurrent.TimeUnit;
  * @date 2018/4/26
  */
 public class SwiftLogOperator extends BaseAccumulator {
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftLogOperator.class);
 
     private final Database db = SwiftDatabase.getInstance();
 
@@ -58,7 +58,7 @@ public class SwiftLogOperator extends BaseAccumulator {
             dataList.list(tList);
             dataList.setTotalCount(rowDataList.getTotalCount());
         } catch (Exception e) {
-            LOGGER.error(e);
+            FineLoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return dataList;
     }
