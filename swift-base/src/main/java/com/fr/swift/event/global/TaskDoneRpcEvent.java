@@ -1,9 +1,9 @@
 package com.fr.swift.event.global;
 
-import com.fr.swift.cube.task.TaskKey;
-import com.fr.swift.cube.task.TaskResult;
 import com.fr.swift.event.base.AbstractGlobalRpcEvent;
 import com.fr.swift.structure.Pair;
+import com.fr.swift.task.TaskKey;
+import com.fr.swift.task.TaskResult;
 
 /**
  * @author yee

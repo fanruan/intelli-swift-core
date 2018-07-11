@@ -2,15 +2,6 @@ package com.fr.swift.generate;
 
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.CubeTasks;
-import com.fr.swift.cube.task.LocalTask;
-import com.fr.swift.cube.task.Task;
-import com.fr.swift.cube.task.TaskResult.Type;
-import com.fr.swift.cube.task.TaskStatusChangeListener;
-import com.fr.swift.cube.task.WorkerTask;
-import com.fr.swift.cube.task.impl.BaseWorker;
-import com.fr.swift.cube.task.impl.LocalTaskGroup;
-import com.fr.swift.cube.task.impl.LocalTaskImpl;
-import com.fr.swift.cube.task.impl.TaskResultImpl;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.generate.conf.ColumnIndexingConf;
 import com.fr.swift.generate.conf.service.IndexingConfService;
@@ -24,6 +15,15 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.DataSource;
+import com.fr.swift.task.LocalTask;
+import com.fr.swift.task.Task;
+import com.fr.swift.task.TaskResult.Type;
+import com.fr.swift.task.TaskStatusChangeListener;
+import com.fr.swift.task.WorkerTask;
+import com.fr.swift.task.impl.BaseWorker;
+import com.fr.swift.task.impl.LocalTaskGroup;
+import com.fr.swift.task.impl.LocalTaskImpl;
+import com.fr.swift.task.impl.TaskResultImpl;
 
 import java.util.List;
 

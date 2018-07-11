@@ -7,10 +7,10 @@ import com.finebi.conf.internalimp.update.IndexUpdateItem;
 import com.finebi.conf.internalimp.update.RelationProcessInfo;
 import com.finebi.conf.internalimp.update.TranSportInfo;
 import com.finebi.conf.internalimp.update.UpdateStatus;
-import com.fr.swift.cube.task.Task;
-import com.fr.swift.cube.task.TaskKey;
-import com.fr.swift.cube.task.impl.LocalTaskPool;
-import com.fr.swift.cube.task.impl.SchedulerTaskPool;
+import com.fr.swift.task.Task;
+import com.fr.swift.task.TaskKey;
+import com.fr.swift.task.impl.LocalTaskPool;
+import com.fr.swift.task.impl.SchedulerTaskPool;
 import com.fr.swift.provider.IndexStuffMedium;
 
 import java.util.ArrayList;

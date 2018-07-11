@@ -18,7 +18,7 @@ import java.net.URI;
  */
 public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>, SegmentKey {
     private static final long serialVersionUID = 3202594634845509238L;
-    private SwiftPathService service = SwiftContext.getInstance().getBean(SwiftPathService.class);
+    private transient SwiftPathService service = SwiftContext.getInstance().getBean(SwiftPathService.class);
     /**
      * sourceKey@storeType@order
      */

@@ -11,8 +11,6 @@ import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.cube.task.TaskKey;
-import com.fr.swift.cube.task.impl.TaskEvent;
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.invocation.SwiftInvocation;
 import com.fr.swift.log.SwiftLogger;
@@ -29,6 +27,8 @@ import com.fr.swift.service.handler.indexing.rule.IndexingSelectRule;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.stuff.HistoryIndexingStuff;
 import com.fr.swift.stuff.IndexingStuff;
+import com.fr.swift.task.TaskKey;
+import com.fr.swift.task.impl.TaskEvent;
 import com.fr.swift.util.Crasher;
 
 import java.io.Serializable;

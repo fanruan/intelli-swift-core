@@ -1,5 +1,7 @@
 package com.fr.swift.source.alloter;
 
+import com.fr.swift.segment.Segment;
+
 /**
  * @author pony
  * @date 2017/10/24
@@ -15,4 +17,6 @@ public interface SwiftSourceAlloter {
     SegmentInfo allot(RowInfo rowInfo);
 
     AllotRule getAllotRule();
+
+    boolean isFull(Segment segment);
 }

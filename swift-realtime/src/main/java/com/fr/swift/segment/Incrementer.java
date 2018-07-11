@@ -11,6 +11,7 @@ import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.insert.SwiftRealtimeInserter;
+import com.fr.swift.segment.operator.utils.SegmentUtils;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.LimitedResultSet;
 import com.fr.swift.source.Row;
@@ -45,28 +46,30 @@ public class Incrementer implements Inserter {
         alloter = new LineSourceAlloter(dataSource.getSourceKey());
     }
 
+    public Incrementer(DataSource dataSource, SwiftSourceAlloter alloter) {
+        this.dataSource = dataSource;
+        this.alloter = alloter;
+    }
+
     public void increment(SwiftResultSet resultSet) throws SQLException {
         try {
             persistMeta();
-
             int count = LOCAL_SEGMENT_PROVIDER.getSegmentKeys(dataSource.getSourceKey()).size();
+            do {
+                boolean newSeg = nextSegment();
+                //获得事务代理
+                SwiftRealtimeInserter swiftRealtimeInserter = new SwiftRealtimeInserter(currentSeg);
+                TransactionProxyFactory proxyFactory = new TransactionProxyFactory(swiftRealtimeInserter.getSwiftBackup().getTransactionManager());
+                Inserter inserter = (Inserter) proxyFactory.getProxy(swiftRealtimeInserter);
 
-            //todo 这next第一行就没了
-//            while (resultSet.next()) {
-            boolean newSeg = nextSegment();
-            //获得事务代理
-            SwiftRealtimeInserter swiftRealtimeInserter = new SwiftRealtimeInserter(currentSeg);
-            TransactionProxyFactory proxyFactory = new TransactionProxyFactory(swiftRealtimeInserter.getSwiftBackup().getTransactionManager());
-            Inserter inserter = (Inserter) proxyFactory.getProxy(swiftRealtimeInserter);
+                int step = ((LineAllotRule) alloter.getAllotRule()).getStep();
+                int limit = CubeUtil.isReadable(currentSeg) ? step - currentSeg.getRowCount() : step;
+                inserter.insertData(new LimitedResultSet(resultSet, limit));
 
-            int step = ((LineAllotRule) alloter.getAllotRule()).getStep();
-            int limit = CubeUtil.isReadable(currentSeg) ? step - currentSeg.getRowCount() : step;
-            inserter.insertData(new LimitedResultSet(resultSet, limit, false));
-
-            if (newSeg) {
-                persistSegment(currentSeg, count++);
-            }
-//            }
+                if (newSeg) {
+                    persistSegment(currentSeg, count++);
+                }
+            } while (alloter.isFull(currentSeg));
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         } finally {
@@ -81,13 +84,20 @@ public class Incrementer implements Inserter {
 
     private boolean nextSegment() {
         List<SegmentKey> segmentKeys = LOCAL_SEGMENT_PROVIDER.getSegmentKeys(dataSource.getSourceKey());
-        if (segmentKeys.isEmpty() ||
-                segmentKeys.get(segmentKeys.size() - 1).getStoreType() != StoreType.MEMORY) {
-            currentSeg = newRealtimeSegment(alloter.allot(new LineRowInfo(0)), segmentKeys.size());
+
+        SegmentKey maxSegmentKey = SegmentUtils.getMaxSegmentKey(segmentKeys);
+        if (maxSegmentKey == null) {
+            currentSeg = newRealtimeSegment(alloter.allot(new LineRowInfo(0)), 0);
             return true;
         }
-        currentSeg = LOCAL_SEGMENT_PROVIDER.getSegment(segmentKeys.get(segmentKeys.size() - 1));
-        return false;
+        Segment maxSegment = LOCAL_SEGMENT_PROVIDER.getSegment(maxSegmentKey);
+        if (maxSegmentKey.getStoreType() != StoreType.MEMORY || alloter.isFull(maxSegment)) {
+            currentSeg = newRealtimeSegment(alloter.allot(new LineRowInfo(0)), maxSegmentKey.getOrder() + 1);
+            return true;
+        } else {
+            currentSeg = LOCAL_SEGMENT_PROVIDER.getSegment(maxSegmentKey);
+            return false;
+        }
     }
 
     private void persistMeta() throws SQLException {

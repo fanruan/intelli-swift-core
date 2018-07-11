@@ -1,9 +1,9 @@
 package com.fr.swift.stuff;
 
-import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.SourcePath;
+import com.fr.swift.task.TaskKey;
 
 import java.util.Map;
 
