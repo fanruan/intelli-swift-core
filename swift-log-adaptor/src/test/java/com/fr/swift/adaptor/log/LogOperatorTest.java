@@ -1,6 +1,6 @@
 package com.fr.swift.adaptor.log;
 
-import com.fr.general.LogOperator;
+import com.fr.intelli.record.scene.Accumulator;
 import com.fr.log.message.AbstractMessage;
 import com.fr.stable.query.QueryFactory;
 import com.fr.swift.adaptor.log.SwiftLogOperator.Sync;
@@ -38,7 +38,7 @@ import static org.junit.Assert.assertTrue;
  * @date 2018/4/26
  */
 public class LogOperatorTest {
-    private LogOperator logOperator = AccumulatorProxy.getInstance();
+    private Accumulator logOperator = AccumulatorProxy.getInstance();
     private Database db = SwiftDatabase.getInstance();
 
     @BeforeClass
@@ -63,7 +63,7 @@ public class LogOperatorTest {
 
     @Test
     public void initTables() throws Exception {
-        logOperator.initTables(Arrays.asList(A.class, (Class) ConvertType.class));
+        logOperator.pretreatment(Arrays.asList(A.class, (Class) ConvertType.class));
         assertTrue(db.existsTable(new SourceKey("A")));
         assertTrue(db.existsTable(new SourceKey("ConvertType")));
     }
@@ -75,7 +75,7 @@ public class LogOperatorTest {
         for (int i = 0; i < Sync.FLUSH_SIZE_THRESHOLD + 1; i++) {
             as.add(new A());
         }
-        logOperator.recordInfo(as);
+        logOperator.submit(as);
 //        TimeUnit.SECONDS.sleep(40);
         SwiftSegmentManager segmentManager = SwiftContext.getInstance().getBean(SwiftSegmentManager.class);
         List<Segment> segs = segmentManager.getSegment(new SourceKey("A"));
@@ -107,7 +107,7 @@ public class LogOperatorTest {
 
     @Test
     public void clearLogBefore() throws Exception {
-        logOperator.initTables(Collections.<Class>singletonList(DateClass.class));
+        logOperator.pretreatment(Collections.<Class>singletonList(DateClass.class));
         long mid = -1;
 
         List<Object> dates = new ArrayList<Object>();
@@ -117,7 +117,7 @@ public class LogOperatorTest {
             }
             dates.add(new DateClass(i));
         }
-        logOperator.recordInfo(dates);
+        logOperator.submit(dates);
         TimeUnit.SECONDS.sleep(1);
         logOperator.clearLogBefore(new Date(mid));
         TimeUnit.SECONDS.sleep(1);
