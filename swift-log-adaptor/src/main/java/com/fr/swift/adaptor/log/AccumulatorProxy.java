@@ -1,14 +1,15 @@
 package com.fr.swift.adaptor.log;
 
-import com.fr.general.LogOperator;
+import com.fr.intelli.record.AccumulatorException;
+import com.fr.intelli.record.scene.Accumulator;
+import com.fr.intelli.record.scene.impl.BaseAccumulator;
+import com.fr.log.FineLoggerFactory;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.data.DataList;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventListener;
 import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
-import com.fr.swift.log.SwiftLogger;
-import com.fr.swift.log.SwiftLoggers;
 
 import java.util.Date;
 import java.util.List;
@@ -20,14 +21,13 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class LogOperatorProxy implements LogOperator {
+public class AccumulatorProxy extends BaseAccumulator {
 
-    private LogOperator logOperator;
-    private LogOperator singleLogOperator;
-    private LogOperator clusterLogOperator;
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(LogOperatorProxy.class);
+    private Accumulator logOperator;
+    private Accumulator singleLogOperator;
+    private Accumulator clusterLogOperator;
 
-    private LogOperatorProxy() {
+    private AccumulatorProxy() {
         this.singleLogOperator = new SwiftLogOperator();
         this.logOperator = singleLogOperator;
         ClusterListenerHandler.addListener(new ClusterEventListener() {
@@ -43,16 +43,9 @@ public class LogOperatorProxy implements LogOperator {
     }
 
     @Override
-    public <T> DataList<T> find(Class<T> aClass, QueryCondition queryCondition) throws Exception {
-        synchronized (LogOperatorProxy.class) {
+    public <T> DataList<T> find(Class<T> aClass, QueryCondition queryCondition) throws AccumulatorException {
+        synchronized (AccumulatorProxy.class) {
             return logOperator.find(aClass, queryCondition);
-        }
-    }
-
-    @Override
-    public <T> DataList<T> find(Class<T> aClass, QueryCondition queryCondition, String s) throws Exception {
-        synchronized (LogOperatorProxy.class) {
-            return logOperator.find(aClass, queryCondition, s);
         }
     }
 
@@ -62,38 +55,38 @@ public class LogOperatorProxy implements LogOperator {
     }
 
     @Override
-    public void recordInfo(Object o) {
-        synchronized (LogOperatorProxy.class) {
-            logOperator.recordInfo(o);
+    public void submit(Object o) {
+        synchronized (AccumulatorProxy.class) {
+            logOperator.submit(o);
         }
     }
 
     @Override
-    public void recordInfo(List<Object> list) {
-        synchronized (LogOperatorProxy.class) {
-            logOperator.recordInfo(list);
+    public void submit(List<Object> list) {
+        synchronized (AccumulatorProxy.class) {
+            logOperator.submit(list);
         }
     }
 
     @Override
-    public void initTables(List<Class> list) throws Exception {
-        synchronized (LogOperatorProxy.class) {
-            logOperator.initTables(list);
+    public void pretreatment(List<Class> list) throws Exception {
+        synchronized (AccumulatorProxy.class) {
+            logOperator.pretreatment(list);
         }
     }
 
     @Override
     public void clearLogBefore(Date date) throws Exception {
-        synchronized (LogOperatorProxy.class) {
+        synchronized (AccumulatorProxy.class) {
             logOperator.clearLogBefore(date);
         }
     }
 
     public boolean switchSingle() {
-        synchronized (LogOperatorProxy.class) {
+        synchronized (AccumulatorProxy.class) {
             if (logOperator == clusterLogOperator) {
                 logOperator = singleLogOperator;
-                LOGGER.info("LogOperator switch to single successfully!");
+                FineLoggerFactory.getLogger().info("LogOperator switch to single successfully!");
                 return true;
             }
             return false;
@@ -101,22 +94,22 @@ public class LogOperatorProxy implements LogOperator {
     }
 
     public boolean switchCluster() {
-        synchronized (LogOperatorProxy.class) {
+        synchronized (AccumulatorProxy.class) {
             if (logOperator == singleLogOperator) {
                 if (clusterLogOperator == null) {
                     this.clusterLogOperator = new SwiftClusterLogOperator();
                 }
                 logOperator = clusterLogOperator;
-                LOGGER.info("LogOperator switch to cluster successfully!");
+                FineLoggerFactory.getLogger().info("LogOperator switch to cluster successfully!");
                 return true;
             }
             return false;
         }
     }
 
-    private static final LogOperator INSTANCE = new LogOperatorProxy();
+    private static final Accumulator INSTANCE = new AccumulatorProxy();
 
-    public static LogOperator getInstance() {
+    public static Accumulator getInstance() {
         return INSTANCE;
     }
 }
