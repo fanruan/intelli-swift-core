@@ -1,10 +1,10 @@
 package com.fr.log.impl;
 
 import com.fr.cluster.entry.ClusterTicketKey;
-import com.fr.general.LogOperatorFactory;
+import com.fr.intelli.record.AccumulatorFactory;
 import com.fr.module.Activator;
 import com.fr.module.extension.Prepare;
-import com.fr.swift.adaptor.log.LogOperatorProxy;
+import com.fr.swift.adaptor.log.AccumulatorProxy;
 import com.fr.swift.frrpc.SwiftClusterTicket;
 import com.fr.swift.log.SwiftFrLoggers;
 import com.fr.swift.log.SwiftLogger;
@@ -20,14 +20,14 @@ public class LogImplActivator extends Activator implements Prepare {
 
     @Override
     public void start() {
-        LogOperatorFactory.registerLogOperatorProvider(LogOperatorProxy.getInstance());
+        AccumulatorFactory.register(AccumulatorProxy.getInstance());
         previousLoggerFactory = SwiftLoggers.getLoggerFactory();
         SwiftLoggers.setLoggerFactory(new SwiftFrLoggers());
     }
 
     @Override
     public void stop() {
-        LogOperatorFactory.registerLogOperatorProvider(null);
+        AccumulatorFactory.reset();
         SwiftLoggers.setLoggerFactory(previousLoggerFactory);
     }
 
