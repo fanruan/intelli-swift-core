@@ -14,7 +14,8 @@ import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NotFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NumberInRangeFilterBean;
-import com.fr.swift.query.info.bean.element.filter.impl.RangeFilterValueBean;
+import com.fr.swift.query.info.bean.element.filter.impl.value.RangeFilterValueBean;
+import com.fr.swift.query.info.bean.parser.optimize.FilterInfoBeanOptimizer;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.ColumnTypeUtils;
@@ -33,6 +34,8 @@ import java.util.Set;
 class FilterInfoParser {
 
     static FilterInfo parse(SourceKey table, FilterInfoBean bean) {
+        // TODO: 2018/7/11 化简过滤条件，这边的使用策略可以结合具体场景更智能一点
+        bean = FilterInfoBeanOptimizer.optimize(bean);
         if (null == bean) {
             return null;
         }
