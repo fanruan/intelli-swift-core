@@ -1,5 +1,7 @@
 package com.fr.swift.source.alloter.line;
 
+import com.fineio.exception.BufferIndexOutOfBoundsException;
+import com.fr.swift.segment.Segment;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.AllotRule;
 import com.fr.swift.source.alloter.BaseSourceAlloter;
@@ -32,5 +34,14 @@ public class LineSourceAlloter extends BaseSourceAlloter {
     @Override
     public AllotRule getAllotRule() {
         return rule;
+    }
+
+    @Override
+    public boolean isFull(Segment segment) {
+        try {
+            return (segment.getRowCount() >= rule.getStep());
+        } catch (BufferIndexOutOfBoundsException e) {
+            return false;
+        }
     }
 }

@@ -33,4 +33,9 @@ public class NewColumnSourceAlloter implements SwiftSourceAlloter {
     public AllotRule getAllotRule() {
         return null;
     }
+
+    @Override
+    public boolean isFull(Segment segment) {
+        return false;
+    }
 }
