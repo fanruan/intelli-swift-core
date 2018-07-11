@@ -93,7 +93,7 @@ public class JoinOperatorTest extends TestCase {
         JoinOperatorResultSet rs = new JoinOperatorResultSet(joinList, lColumnKey, null, rColumnKey, lSegment, rSegment, false, false);
         try {
             int index = 0;
-            while (rs.next()) {
+            while (rs.hasNext()) {
                 Row row = rs.getNextRow();
                 for (int i = 0; i < 4; i++) {
                     assertEquals(row.getValue(i), str[index][i]);
@@ -113,7 +113,7 @@ public class JoinOperatorTest extends TestCase {
         JoinOperatorResultSet rs = new JoinOperatorResultSet(joinList, lColumnKey, null, rColumnKey, lSegment, rSegment, true, false);
         try {
             int index = 0;
-            while (rs.next()) {
+            while (rs.hasNext()) {
                 Row row = rs.getNextRow();
                 for (int i = 0; i < 4; i++) {
                     assertEquals(row.getValue(i), str[index][i]);
@@ -132,7 +132,7 @@ public class JoinOperatorTest extends TestCase {
         JoinOperatorResultSet rs = new JoinOperatorResultSet(joinList, lColumnKey, null, rColumnKey, lSegment, rSegment, true, true);
         try {
             int index = 0;
-            while (rs.next()) {
+            while (rs.hasNext()) {
                 Row row = rs.getNextRow();
                 for (int i = 0; i < 4; i++) {
                     assertEquals(row.getValue(i), str[index][i]);
@@ -149,7 +149,7 @@ public class JoinOperatorTest extends TestCase {
         JoinOperatorResultSet rs = new JoinOperatorResultSet(joinList, lColumnKey, null, rColumnKey, lSegment, rSegment, false, true);
         try {
             int index = 0;
-            while (rs.next()) {
+            while (rs.hasNext()) {
                 Row row = rs.getNextRow();
                 for (int i = 0; i < 4; i++) {
                     assertEquals(row.getValue(i), str[index][i]);

@@ -39,7 +39,7 @@ public class GroupPagingSegmentQuery extends AbstractGroupSegmentQuery {
             }
 
             @Override
-            public boolean next() {
+            public boolean hasNext() {
                 return false;
             }
 

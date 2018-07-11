@@ -56,7 +56,7 @@ public class RedisBackupAndRevoceryTest extends BaseTest {
 
             resultSet = transfer.createResultSet();
             List<String> jsonList = new ArrayList<String>();
-            while (resultSet.next()) {
+            while (resultSet.hasNext()) {
                 ObjectMapper objectMapper = new ObjectMapper();
                 String json = null;
                 try {
@@ -102,7 +102,7 @@ public class RedisBackupAndRevoceryTest extends BaseTest {
             resultSet = transfer.createResultSet();
 
             List<Object>[] rowList = new ArrayList[segment.getMetaData().getColumnCount()];
-            while (resultSet.next()) {
+            while (resultSet.hasNext()) {
                 Row row = resultSet.getNextRow();
                 for (int i = 0; i < row.getSize(); i++) {
                     try {

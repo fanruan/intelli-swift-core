@@ -492,7 +492,7 @@ public class DetailResultSetTest extends TestCase {
         String[] strData = {"A", "C", "C", "A"};
         DetailResultSet rs = new SegmentDetailResultSet(columnList, filter, null);
         try {
-            while (rs.next()) {
+            while (rs.hasNext()) {
                 Row row = rs.getNextRow();
                 assertEquals((int) row.getValue(0), intData[i]);
                 assertEquals((long) row.getValue(1), longData[i]);
@@ -516,7 +516,7 @@ public class DetailResultSetTest extends TestCase {
             queries.add(new NormalDetailSegmentQuery(columnList, filter, null));
         }
         MultiSegmentDetailResultSet mrs = new MultiSegmentDetailResultSet(queries, null);
-        while (mrs.next()) {
+        while (mrs.hasNext()) {
             Row row = mrs.getNextRow();
             assertEquals((int) row.getValue(0), intData[i]);
             assertEquals((long) row.getValue(1), longData[i]);
@@ -543,7 +543,7 @@ public class DetailResultSetTest extends TestCase {
 //      [2, 23, 9.5, C]     [2, 12, 9.5, A]
 //      [4, 23, 40.1, A]    [2, 23, 9.5, C]
         try {
-            while (rs.next()) {
+            while (rs.hasNext()) {
                 Row row = rs.getNextRow();
                 assertEquals((int) row.getValue(0), intData[i]);
                 assertEquals((long) row.getValue(1), longData[i]);
@@ -576,7 +576,7 @@ public class DetailResultSetTest extends TestCase {
         pairs.add(Pair.of(new DescSort(3), Comparators.<Double>asc()));
         DetailResultSet rs = new SortMultiSegmentDetailResultSet(queries, pairs, null);
         try {
-            while (rs.next()) {
+            while (rs.hasNext()) {
                 Row row = rs.getNextRow();
                 assertEquals((int) row.getValue(0), intData[i / 3]);
                 assertEquals((long) row.getValue(1), longData[i / 3]);

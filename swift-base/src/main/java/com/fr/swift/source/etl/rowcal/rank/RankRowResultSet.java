@@ -119,7 +119,7 @@ public class RankRowResultSet implements SwiftResultSet {
     }
 
     @Override
-    public boolean next() throws SQLException {
+    public boolean hasNext() throws SQLException {
         return valueIterator.hasNext();
     }
 

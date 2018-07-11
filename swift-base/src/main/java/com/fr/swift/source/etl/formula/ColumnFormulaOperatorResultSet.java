@@ -60,7 +60,7 @@ public class ColumnFormulaOperatorResultSet implements SwiftResultSet {
     }
 
     @Override
-    public boolean next() {
+    public boolean hasNext() {
         if (this.segCursor < this.segment.length && this.rowCursor < this.rowCount) {
             rowCount = segment[segCursor].getRowCount();
             Map<String, ColumnKey> columnKeyMap = FormulaUtils.createColumnIndexMap(expression, segment[segCursor]);

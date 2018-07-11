@@ -50,7 +50,7 @@ public class DetailTransferOperatorTest extends TestCase {
         segments.add(sgs);
         SwiftResultSet resultSet = operator.createResultSet(null, null, segments);
         List list = new ArrayList();
-        while (resultSet.next()) {
+        while (resultSet.hasNext()) {
             list.add(resultSet.getNextRow());
         }
         assertEquals(list.size(), 2);

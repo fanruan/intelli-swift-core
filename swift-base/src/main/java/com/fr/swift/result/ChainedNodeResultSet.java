@@ -47,7 +47,7 @@ public class ChainedNodeResultSet implements NodeResultSet<SwiftNode> {
     }
 
     @Override
-    public boolean next() throws SQLException {
+    public boolean hasNext() throws SQLException {
         if (rowIterator == null) {
             rowIterator = new SwiftNode2RowIterator(this);
         }

@@ -22,7 +22,7 @@ public interface SwiftResultSet {
      * @return 是否有下一个
      * @throws SQLException 异常
      */
-    boolean next() throws SQLException;
+    boolean hasNext() throws SQLException;
 
     /**
      * get row

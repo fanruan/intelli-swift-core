@@ -53,7 +53,7 @@ public class RealtimeRecorderTest extends BaseTest {
         QuerySourceTransfer transfer = new QuerySourceTransfer(connectionInfo, dataSource.getMetadata(), dataSource.getMetadata(), dataSource.getQuery());
         SwiftResultSet swiftResultSet = transfer.createResultSet();
         int rowCount = 0;
-        while (swiftResultSet.next()) {
+        while (swiftResultSet.hasNext()) {
             Row row = swiftResultSet.getNextRow();
             realtimeRecorder.recordData(row, rowCount / 100);
             rowCount++;

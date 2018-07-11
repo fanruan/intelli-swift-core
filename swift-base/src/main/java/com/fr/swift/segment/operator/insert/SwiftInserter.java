@@ -49,7 +49,7 @@ public class SwiftInserter extends BaseInserter implements Inserter {
             int lastCursor = readable ? segment.getRowCount() : 0,
                     cursor = lastCursor;
 
-            while (swiftResultSet.next()) {
+            while (swiftResultSet.hasNext()) {
                 Row rowData = swiftResultSet.getNextRow();
                 putRow(cursor, rowData);
                 cursor++;
