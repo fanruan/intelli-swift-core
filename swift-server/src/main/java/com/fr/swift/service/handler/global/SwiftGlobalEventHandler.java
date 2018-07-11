@@ -112,7 +112,7 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
             Map.Entry<String, ClusterEntity> entry = iterator.next();
             for (String table : tables) {
                 if (null == destinations.get(table)) {
-                    destinations.put(table, Pair.<Integer, List<SegmentDestination>>of(allSegments.get(table).size(), new ArrayList<SegmentDestination>()));
+                    destinations.put(table, Pair.<Integer, List<SegmentDestination>>of(-1, new ArrayList<SegmentDestination>()));
                 }
                 destinations.get(table).getValue().add(new SegmentDestinationImpl(entry.getKey(), null, -1, entry.getValue().getServiceClass(), "realTimeQuery"));
             }
