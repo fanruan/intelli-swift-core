@@ -33,6 +33,12 @@
             <artifactId>javax.servlet-api</artifactId>
             <version>3.1.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-base</artifactId>
+            <version>10.0-RELEASE-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
         <!--zookeeper暂时不启用-->
         <!-- ZooKeeper -->
         <!--<dependency>-->
