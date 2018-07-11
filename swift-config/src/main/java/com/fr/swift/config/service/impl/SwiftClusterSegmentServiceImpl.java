@@ -1,6 +1,5 @@
 package com.fr.swift.config.service.impl;
 
-import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.dao.SwiftSegmentDao;
 import com.fr.swift.config.dao.SwiftSegmentLocationDao;
@@ -33,7 +32,7 @@ import java.util.Map;
  * @date 2018/6/7
  */
 @Service("swiftClusterSegmentService")
-public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentService {
+public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService implements SwiftClusterSegmentService {
 
     @Autowired
     private HibernateTransactionManager transactionManager;
@@ -147,63 +146,12 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
 
     @Override
     public Map<String, List<SegmentKey>> getAllSegments() {
-
-        try {
-            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Map<String, List<SegmentKey>>>() {
-                @Override
-                public Map<String, List<SegmentKey>> work(Session session) {
-                    List<SegmentKey> beans = swiftSegmentDao.findAll(session);
-                    Map<String, List<SegmentKey>> result = new HashMap<String, List<SegmentKey>>();
-                    for (SegmentKey bean : beans) {
-                        SegmentKeyBean keyBean = (SegmentKeyBean) bean;
-                        if (!result.containsKey(keyBean.getSourceKey())) {
-                            result.put(keyBean.getSourceKey(), new ArrayList<SegmentKey>());
-                        }
-                        result.get(keyBean.getSourceKey()).add(bean);
-                    }
-                    return result;
-                }
-
-                @Override
-                public boolean needTransaction() {
-                    return false;
-                }
-            });
-
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().error("Select segments error!", e);
-        }
-        return Collections.emptyMap();
+        return getAllSegments(transactionManager, swiftSegmentDao);
     }
 
     @Override
     public Map<String, List<SegmentKey>> getAllRealTimeSegments() {
-        try {
-            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Map<String, List<SegmentKey>>>() {
-                @Override
-                public Map<String, List<SegmentKey>> work(Session session) {
-                    List<SwiftSegmentEntity> beans = swiftSegmentDao.find(session, Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE, Types.StoreType.MEMORY));
-                    Map<String, List<SegmentKey>> result = new HashMap<String, List<SegmentKey>>();
-                    for (SwiftSegmentEntity bean : beans) {
-                        SegmentKeyBean keyBean = bean.convert();
-                        if (!result.containsKey(keyBean.getSourceKey())) {
-                            result.put(keyBean.getSourceKey(), new ArrayList<SegmentKey>());
-                        }
-                        result.get(keyBean.getSourceKey()).add(keyBean);
-                    }
-                    return result;
-                }
-
-                @Override
-                public boolean needTransaction() {
-                    return false;
-                }
-            });
-
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().error("Select segments error!", e);
-        }
-        return Collections.emptyMap();
+        return getAllRealTimeSegments(transactionManager, swiftSegmentDao);
     }
 
     @Override
