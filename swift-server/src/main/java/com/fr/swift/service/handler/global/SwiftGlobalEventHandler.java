@@ -2,6 +2,7 @@ package com.fr.swift.service.handler.global;
 
 import com.fr.event.EventDispatcher;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
+import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.event.analyse.SegmentLocationRpcEvent;
 import com.fr.swift.event.base.AbstractGlobalRpcEvent;
 import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
@@ -9,7 +10,6 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rpc.client.AsyncRpcCallback;
 import com.fr.swift.segment.SegmentDestination;
-import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
@@ -43,6 +43,8 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftGlobalEventHandler.class);
     @Autowired(required = false)
     private SwiftClusterSegmentService segmentService;
+    @Autowired(required = false)
+    private SwiftMetaDataService swiftMetaDataService;
     @Autowired(required = false)
     private HistoryDataSyncManager historyDataSyncManager;
 
@@ -101,11 +103,10 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
         }
         List<String> tables = sources.getValue();
         Iterator<Map.Entry<String, ClusterEntity>> iterator = serviceMap.entrySet().iterator();
-        Map<String, List<SegmentKey>> allSegments = segmentService.getAllRealTimeSegments();
         Map<String, Pair<Integer, List<SegmentDestination>>> destinations = new HashMap<String, Pair<Integer, List<SegmentDestination>>>();
         SegmentLocationInfo.UpdateType type = SegmentLocationInfo.UpdateType.PART;
         if (null == tables || tables.isEmpty()) {
-            tables = new ArrayList<String>(allSegments.keySet());
+            tables = new ArrayList<String>(swiftMetaDataService.getAllMetaData().keySet());
             type = SegmentLocationInfo.UpdateType.ALL;
         }
         while (iterator.hasNext()) {
