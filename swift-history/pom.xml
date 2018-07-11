@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.fr.intelligence</groupId>
         <artifactId>fine-swift</artifactId>
-        <version>5.0-RELEASE-SNAPSHOT</version>
+        <version>10.0-RELEASE-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>swift-history</artifactId>
@@ -14,28 +14,28 @@
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-base</artifactId>
-            <version>5.0-RELEASE-SNAPSHOT</version>
+            <version>10.0-RELEASE-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-repository</artifactId>
-            <version>5.0-RELEASE-SNAPSHOT</version>
+            <version>10.0-RELEASE-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-cluster</artifactId>
-            <version>5.0-RELEASE-SNAPSHOT</version>
+            <version>10.0-RELEASE-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-analyse</artifactId>
-            <version>5.0-RELEASE-SNAPSHOT</version>
+            <version>10.0-RELEASE-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-netty</artifactId>
-            <version>5.0-RELEASE-SNAPSHOT</version>
+            <version>10.0-RELEASE-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
