@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.fr.intelligence</groupId>
         <artifactId>fine-swift</artifactId>
-        <version>5.0-RELEASE-SNAPSHOT</version>
+        <version>10.0-RELEASE-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -27,7 +27,7 @@
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-server</artifactId>
-            <version>5.0-RELEASE-SNAPSHOT</version>
+            <version>10.0-RELEASE-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
@@ -37,27 +37,27 @@
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-base</artifactId>
-            <version>5.0-RELEASE-SNAPSHOT</version>
+            <version>10.0-RELEASE-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-boot</artifactId>
-            <version>5.0-RELEASE-SNAPSHOT</version>
+            <version>10.0-RELEASE-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-redis</artifactId>
-            <version>5.0-RELEASE-SNAPSHOT</version>
+            <version>10.0-RELEASE-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-decision</artifactId>
-            <version>5.0-RELEASE-SNAPSHOT</version>
+            <version>10.0-RELEASE-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-defragmentation</artifactId>
-            <version>5.0-RELEASE-SNAPSHOT</version>
+            <version>10.0-RELEASE-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
