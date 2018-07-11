@@ -41,6 +41,8 @@ public interface SwiftSegmentService extends ConfigService<SegmentKey> {
      */
     Map<String, List<SegmentKey>> getAllSegments();
 
+    Map<String, List<SegmentKey>> getAllRealTimeSegments();
+
     /**
      * 根据SourceKey获取Segment
      *

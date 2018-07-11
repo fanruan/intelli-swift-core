@@ -1,22 +1,37 @@
 package com.fr.swift.service.handler.global;
 
 import com.fr.event.EventDispatcher;
+import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.cube.task.TaskResult;
 import com.fr.swift.cube.task.impl.TaskEvent;
+import com.fr.swift.event.analyse.SegmentLocationRpcEvent;
 import com.fr.swift.event.base.AbstractGlobalRpcEvent;
+import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rpc.client.AsyncRpcCallback;
+import com.fr.swift.segment.SegmentDestination;
+import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentLocationInfo;
+import com.fr.swift.segment.impl.SegmentDestinationImpl;
+import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
 import com.fr.swift.service.ClusterSwiftServerService;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.entity.ClusterEntity;
+import com.fr.swift.service.handler.SwiftServiceHandlerManager;
 import com.fr.swift.service.handler.base.AbstractHandler;
+import com.fr.swift.service.handler.history.HistoryDataSyncManager;
 import com.fr.swift.structure.Pair;
+import com.fr.swift.util.Crasher;
+import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,6 +41,10 @@ import java.util.Map;
 @Service
 public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEvent> {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftGlobalEventHandler.class);
+    @Autowired(required = false)
+    private SwiftClusterSegmentService segmentService;
+    @Autowired(required = false)
+    private HistoryDataSyncManager historyDataSyncManager;
 
     @Override
     public <S extends Serializable> S handle(AbstractGlobalRpcEvent event) {
@@ -51,9 +70,62 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
                     LOGGER.error(e);
                 }
                 break;
+            case PUSH_SEG:
+                Pair<ServiceType, List<String>> sources = (Pair<ServiceType, List<String>>) event.getContent();
+                ServiceType type = sources.getKey();
+                switch (type) {
+                    case REAL_TIME:
+                        calculateRealTimeDestination(sources);
+                        break;
+                    default:
+                        if (null != sources.getValue() && !sources.getValue().isEmpty()) {
+                            for (String s : sources.getValue()) {
+                                historyDataSyncManager.handle(new HistoryLoadSegmentRpcEvent(s));
+                            }
+                        } else {
+                            historyDataSyncManager.handle(new HistoryLoadSegmentRpcEvent());
+                        }
+
+                }
+
+
             default:
         }
         return null;
+    }
+
+    private void calculateRealTimeDestination(Pair<ServiceType, List<String>> sources) {
+        Map<String, ClusterEntity> serviceMap = ClusterSwiftServerService.getInstance().getClusterEntityByService(sources.getKey());
+        if (serviceMap.isEmpty()) {
+            Crasher.crash("Cannot find any " + sources.getKey() + " service");
+        }
+        List<String> tables = sources.getValue();
+        Iterator<Map.Entry<String, ClusterEntity>> iterator = serviceMap.entrySet().iterator();
+        Map<String, List<SegmentKey>> allSegments = segmentService.getAllRealTimeSegments();
+        Map<String, Pair<Integer, List<SegmentDestination>>> destinations = new HashMap<String, Pair<Integer, List<SegmentDestination>>>();
+        SegmentLocationInfo.UpdateType type = SegmentLocationInfo.UpdateType.PART;
+        if (null == tables || tables.isEmpty()) {
+            tables = new ArrayList<String>(allSegments.keySet());
+            type = SegmentLocationInfo.UpdateType.ALL;
+        }
+        while (iterator.hasNext()) {
+            Map.Entry<String, ClusterEntity> entry = iterator.next();
+            Map<String, List<SegmentKey>> segments = segmentService.getOwnRealTimeSegments(entry.getKey());
+
+            for (String table : tables) {
+                List<SegmentKey> segmentKeys = segments.get(table);
+                if (null != segmentKeys) {
+                    if (null == destinations.get(table)) {
+                        destinations.put(table, Pair.<Integer, List<SegmentDestination>>of(allSegments.get(table).size(), new ArrayList<SegmentDestination>()));
+                    }
+                    for (SegmentKey segmentKey : segmentKeys) {
+                        destinations.get(table).getValue().add(new SegmentDestinationImpl(entry.getKey(), segmentKey.getUri(), segmentKey.getOrder(), entry.getValue().getServiceClass(), "realTimeQuery"));
+                    }
+                }
+            }
+        }
+        SwiftServiceHandlerManager.getManager().
+                handle(new SegmentLocationRpcEvent(type, new SegmentLocationInfoImpl(ServiceType.REAL_TIME, destinations)));
     }
 
     private void clean(Map<String, ClusterEntity> map, String[] sourceKeys) throws Exception {

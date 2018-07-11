@@ -9,6 +9,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rpc.client.AsyncRpcCallback;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
 import com.fr.swift.service.ClusterSwiftServerService;
 import com.fr.swift.service.ServiceType;
@@ -109,7 +110,7 @@ public class HistoryDataSyncManager extends AbstractHandler<HistoryLoadSegmentRp
                                 clusterSegmentService.updateSegmentTable(segmentTable);
 //                                updateDestination(destinations);
                                 SwiftServiceHandlerManager.getManager().
-                                        handle(new SegmentLocationRpcEvent(new SegmentLocationInfoImpl(ServiceType.HISTORY, destinations)));
+                                        handle(new SegmentLocationRpcEvent(SegmentLocationInfo.UpdateType.ALL, new SegmentLocationInfoImpl(ServiceType.HISTORY, destinations)));
                             }
 
                             @Override
