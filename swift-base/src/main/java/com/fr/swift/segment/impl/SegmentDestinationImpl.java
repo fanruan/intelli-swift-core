@@ -1,6 +1,9 @@
 package com.fr.swift.segment.impl;
 
+import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
+import com.fr.swift.context.SwiftContext;
+import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.service.SwiftService;
 
@@ -15,6 +18,7 @@ import java.util.List;
 public class SegmentDestinationImpl implements SegmentDestination {
 
     private String clusterId;
+    private String currentNode;
     private URI uri;
     private int order;
     private Class<? extends SwiftService> serviceClass;
@@ -28,6 +32,7 @@ public class SegmentDestinationImpl implements SegmentDestination {
         this.serviceClass = serviceClass;
         this.methodName = methodName;
         this.spareNodes = new ArrayList<String>();
+        this.currentNode = SwiftContext.getInstance().getBean(SwiftProperty.class).getRpcAddress();
     }
 
     public SegmentDestinationImpl(SegmentDestination destination) {
@@ -67,7 +72,7 @@ public class SegmentDestinationImpl implements SegmentDestination {
 
     @Override
     public boolean isRemote() {
-        return !StringUtils.isEmpty(clusterId);
+        return !StringUtils.isEmpty(clusterId) && !ComparatorUtils.equals(currentNode, clusterId);
     }
 
     @Override

@@ -156,7 +156,11 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
 
     @Override
     public List<SegmentKey> getSegmentByKey(String sourceKey) {
-        return getOwnSegments().get(sourceKey);
+        List<SegmentKey> result = getOwnSegments().get(sourceKey);
+        if (null == result) {
+            return Collections.emptyList();
+        }
+        return result;
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.fr.swift.URL;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.frrpc.SwiftClusterService;
 import com.fr.swift.selector.UrlSelector;
 import com.fr.swift.service.RealtimeService;
@@ -40,8 +41,13 @@ public class RealtimeController {
                 throw new Exception("realtime service is not init");
             }
             DataSource dataSource = new TableDBSource(tableName, "test");
+            if (!SwiftDatabase.getInstance().existsTable(dataSource.getSourceKey())) {
+                SwiftDatabase.getInstance().createTable(dataSource.getSourceKey(), dataSource.getMetadata());
+            }
+
             SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
             SwiftResultSet resultSet = transfer.createResultSet();
+            realtimeService.insert(dataSource.getSourceKey(), resultSet);
         } catch (Throwable e) {
             result.put("error", e.getMessage());
         }
