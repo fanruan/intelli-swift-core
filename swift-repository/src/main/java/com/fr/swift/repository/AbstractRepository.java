@@ -47,6 +47,7 @@ public abstract class AbstractRepository implements SwiftRepository {
             switch (configuration.getType()) {
                 case FR:
                     fileSystem.close();
+                    break;
                 default:
                     RemotePoolCreator.creator().getPool(configuration).returnObject(fileSystem.getResourceURI(), fileSystem);
             }
