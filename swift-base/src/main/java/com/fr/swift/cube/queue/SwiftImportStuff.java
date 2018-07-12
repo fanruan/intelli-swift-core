@@ -10,6 +10,7 @@ import java.util.List;
  * @date 2018/6/28
  */
 public class SwiftImportStuff implements ImportStuff, Serializable {
+    private static final long serialVersionUID = -1381899530214626460L;
     private List<DataSource> tables;
 
     public SwiftImportStuff(List<DataSource> tables) {
