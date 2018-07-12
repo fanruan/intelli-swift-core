@@ -15,7 +15,8 @@ import com.fr.third.javax.persistence.Table;
 
 import java.util.List;
 
-import static com.fr.decision.webservice.utils.DecisionServiceConstants.LONG_TEXT_LENGTH;
+import static com.fr.swift.config.SwiftConfigConstants.LONG_TEXT_LENGTH;
+
 
 /**
  * @author yee
