@@ -2,11 +2,13 @@ package com.fr.swift.task.cube;
 
 import com.fr.swift.task.Operation;
 
+import java.io.Serializable;
+
 /**
  * @author anchore
  * @date 2017/12/8
  */
-public class CubeOperation implements Operation {
+public class CubeOperation implements Operation,Serializable {
     public static final Operation
             TRANSPORT_TABLE = new CubeOperation(),
             INDEX_COLUMN = new CubeOperation(),
@@ -16,6 +18,7 @@ public class CubeOperation implements Operation {
             INDEX_COLUMN_PATH = new CubeOperation(),
             NULL = new CubeOperation(),
             BUILD_TABLE = new CubeOperation();
+    private static final long serialVersionUID = 6392033319058066341L;
 
     private CubeOperation() {
     }
