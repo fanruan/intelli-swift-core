@@ -4,13 +4,10 @@ import com.fr.swift.Invoker;
 import com.fr.swift.ProxyFactory;
 import com.fr.swift.Result;
 import com.fr.swift.URL;
-import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftMetaDataService;
-import com.fr.swift.config.service.SwiftSegmentServiceProvider;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.event.global.PushSegLocationRpcEvent;
@@ -44,10 +41,10 @@ import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.util.concurrent.CommonExecutor;
-import com.fr.third.org.hibernate.criterion.Restrictions;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -73,19 +70,16 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     @Override
     public void insert(SourceKey tableKey, SwiftResultSet resultSet) throws SQLException {
         SwiftLoggers.getLogger().info("insert");
+        rpcSegmentLocation(PushSegLocationRpcEvent.fromSourceKey(getServiceType(), Arrays.asList(tableKey.getId())));
 
         new Incrementer(SwiftDatabase.getInstance().getTable(tableKey)).increment(resultSet);
-        List<SegmentKey> keys = SwiftSegmentServiceProvider.getProvider().find(
-                Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, tableKey.getId()),
-                Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE, Types.StoreType.MEMORY));
-        rpcSegmentLocation(keys);
     }
 
     @Override
     @RpcMethod(methodName = "merge")
     public void merge(List<SegmentKey> tableKeys) {
         SwiftLoggers.getLogger().info("merge");
-        rpcSegmentLocation(tableKeys);
+        rpcSegmentLocation(PushSegLocationRpcEvent.fromSegmentKey(getServiceType(), tableKeys));
     }
 
     @Override
@@ -184,11 +178,11 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         private static SwiftRealtimeService service = new SwiftRealtimeService();
     }
 
-    private void rpcSegmentLocation(List<SegmentKey> keys) {
+    private void rpcSegmentLocation(PushSegLocationRpcEvent event) {
         URL masterURL = getMasterURL();
         ProxyFactory factory = ProxySelector.getInstance().getFactory();
         Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, masterURL, false);
-        Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName("rpcTrigger"), new Object[]{PushSegLocationRpcEvent.fromSegmentKey(getServiceType(), keys)}));
+        Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName("rpcTrigger"), new Object[]{event}));
         RpcFuture future = (RpcFuture) result.getValue();
         future.addCallback(new AsyncRpcCallback() {
             @Override
