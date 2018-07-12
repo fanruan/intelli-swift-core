@@ -98,17 +98,17 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
 
     private void calculateRealTimeDestination(Pair<ServiceType, List<String>> sources) {
         Map<String, ClusterEntity> serviceMap = ClusterSwiftServerService.getInstance().getClusterEntityByService(sources.getKey());
+        List<String> tables = sources.getValue();
+        if (null == tables || tables.isEmpty()) {
+            SwiftLoggers.getLogger().warn("source table is empty");
+            return;
+        }
         if (serviceMap.isEmpty()) {
             Crasher.crash("Cannot find any " + sources.getKey() + " service");
         }
-        List<String> tables = sources.getValue();
         Iterator<Map.Entry<String, ClusterEntity>> iterator = serviceMap.entrySet().iterator();
         Map<String, Pair<Integer, List<SegmentDestination>>> destinations = new HashMap<String, Pair<Integer, List<SegmentDestination>>>();
-        SegmentLocationInfo.UpdateType type = SegmentLocationInfo.UpdateType.PART;
-        if (null == tables || tables.isEmpty()) {
-            tables = new ArrayList<String>(swiftMetaDataService.getAllMetaData().keySet());
-            type = SegmentLocationInfo.UpdateType.ALL;
-        }
+
         while (iterator.hasNext()) {
             Map.Entry<String, ClusterEntity> entry = iterator.next();
             for (String table : tables) {
@@ -119,7 +119,8 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
             }
         }
         SwiftServiceHandlerManager.getManager().
-                handle(new SegmentLocationRpcEvent(type, new SegmentLocationInfoImpl(ServiceType.REAL_TIME, destinations)));
+                handle(new SegmentLocationRpcEvent(SegmentLocationInfo.UpdateType.PART,
+                        new SegmentLocationInfoImpl(ServiceType.REAL_TIME, destinations)));
     }
 
     private void clean(Map<String, ClusterEntity> map, String[] sourceKeys) throws Exception {
