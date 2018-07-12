@@ -37,7 +37,7 @@ public class GetFromDateOperatorTest extends TestCase {
         EasyMock.replay(column);
         GetFromDateTransferOperator operator = new GetFromDateTransferOperator(column1, GroupType.YEAR);
         SwiftResultSet rs = operator.createResultSet(metaData, null, list);
-        while (rs.next()) {
+        while (rs.hasNext()) {
             Row row = rs.getNextRow();
             for (int i = 0; i < 1; i++) {
                 assertEquals(row.getValue(i) + "", "1970");

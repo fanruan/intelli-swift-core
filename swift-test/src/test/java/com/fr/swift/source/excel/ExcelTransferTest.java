@@ -28,7 +28,7 @@ public class ExcelTransferTest extends TestCase {
         ExcelTransfer excelTransfer = new ExcelTransfer(paths, source.getMetadata(), source.getOuterMetadata());
         SwiftResultSet resultSet = excelTransfer.createResultSet();
         List<Row> list = new ArrayList<Row>();
-        while (resultSet.next()) {
+        while (resultSet.hasNext()) {
             list.add(resultSet.getNextRow());
         }
         resultSet.close();
@@ -38,7 +38,7 @@ public class ExcelTransferTest extends TestCase {
         ExcelDataSource partSource = new ExcelDataSource(ExcelInfo.getUrl2003(), names, types, fields);
         ExcelTransfer excelPartTransfer = new ExcelTransfer(paths, partSource.getMetadata(), partSource.getOuterMetadata());
         SwiftResultSet partResultSet = excelPartTransfer.createResultSet();
-        partResultSet.next();
+        partResultSet.hasNext();
         //如果第二个位置取到值了，就错了
         try {
             Object ob = partResultSet.getNextRow().getValue(0);

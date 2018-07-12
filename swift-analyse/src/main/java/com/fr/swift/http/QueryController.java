@@ -70,7 +70,7 @@ public class QueryController {
         Query query = QueryBuilder.buildQuery(QueryInfoBeanFactory.create(queryInfo));
         SwiftResultSet resultSet = query.getQueryResult();
         if (resultSet != null) {
-            while (resultSet.next()) {
+            while (resultSet.hasNext()) {
                 rows.add(resultSet.getNextRow());
             }
             resultSet.close();
@@ -86,7 +86,7 @@ public class QueryController {
         Query query = QueryBuilder.buildQuery(QueryInfoBeanFactory.create(queryInfo));
         SwiftResultSet resultSet = query.getQueryResult();
         if (resultSet != null) {
-            while (resultSet.next()) {
+            while (resultSet.hasNext()) {
                 rows.add(resultSet.getNextRow());
             }
             resultSet.close();

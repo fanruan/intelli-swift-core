@@ -46,7 +46,7 @@ public class RealSwiftInserterTest extends BaseTest {
         Segment segment = new RealTimeSegmentImpl(location, dataSource.getMetadata());
 
         List<Row> rowList = new ArrayList<Row>();
-        while (resultSet.next()) {
+        while (resultSet.hasNext()) {
             Row row = resultSet.getNextRow();
             rowList.add(row);
         }
@@ -75,7 +75,7 @@ public class RealSwiftInserterTest extends BaseTest {
         Segment segment = new RealTimeSegmentImpl(location, dataSource.getMetadata());
 
         List<Row> rowList = new ArrayList<Row>();
-        while (resultSet.next()) {
+        while (resultSet.hasNext()) {
             Row row = resultSet.getNextRow();
             rowList.add(row);
         }

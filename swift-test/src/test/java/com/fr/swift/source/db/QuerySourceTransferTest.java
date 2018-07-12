@@ -17,7 +17,7 @@ public class QuerySourceTransferTest extends TestCase {
         QuerySourceTransfer transfer = new QuerySourceTransfer(connectionInfo, source.getMetadata(), source.getOuterMetadata(),  source.getQuery());
         SwiftResultSet resultSet = transfer.createResultSet();
         int index = 0;
-        while (resultSet.next()){
+        while (resultSet.hasNext()) {
             resultSet.getNextRow();
             index++;
         }
@@ -33,7 +33,7 @@ public class QuerySourceTransferTest extends TestCase {
         QuerySourceTransfer transfer = new QuerySourceTransfer(connectionInfo, source.getMetadata(), source.getOuterMetadata(),  source.getQuery());
         SwiftResultSet resultSet = transfer.createResultSet();
         int index = 0;
-        while (resultSet.next()){
+        while (resultSet.hasNext()) {
             Object ob = resultSet.getNextRow().getValue(0);
             assert(ob == null || ob.getClass() == Double.class);
             index++;

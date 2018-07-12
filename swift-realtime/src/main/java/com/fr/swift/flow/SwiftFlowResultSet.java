@@ -34,11 +34,11 @@ public class SwiftFlowResultSet implements SwiftResultSet {
     }
 
     @Override
-    public boolean next() throws SQLException {
+    public boolean hasNext() throws SQLException {
         if (flowRuleController.isEnd()) {
             return false;
         }
-        return swiftResultSet.next();
+        return swiftResultSet.hasNext();
     }
 
     @Override

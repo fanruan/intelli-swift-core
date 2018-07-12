@@ -26,7 +26,7 @@ public abstract class SingleColumnResultSet implements SwiftResultSet {
     protected abstract void initData();
 
     @Override
-    public boolean next() {
+    public boolean hasNext() {
         return position < datas.size();
     }
 

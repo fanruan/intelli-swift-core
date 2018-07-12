@@ -88,7 +88,7 @@ public class SerializableDetailResultSet implements DetailResultSet, Serializabl
     }
 
     @Override
-    public boolean next() throws SQLException {
+    public boolean hasNext() throws SQLException {
         if (rowIterator == null) {
             rowIterator = new SwiftRowIteratorImpl(this);
         }

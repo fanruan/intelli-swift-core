@@ -64,7 +64,7 @@ public class DetailOperatorResultSet implements SwiftResultSet {
     }
 
     @Override
-    public boolean next() {
+    public boolean hasNext() {
         while (++currentRow >= currentTotalRow && moveToNextSegment()) {
         }
         return currentRow < currentTotalRow;

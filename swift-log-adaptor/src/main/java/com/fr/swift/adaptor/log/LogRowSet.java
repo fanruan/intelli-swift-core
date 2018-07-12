@@ -35,7 +35,7 @@ public class LogRowSet implements SwiftResultSet {
     }
 
     @Override
-    public boolean next() {
+    public boolean hasNext() {
         return cursor < rows.size();
     }
 

@@ -63,7 +63,7 @@ public class RedisBackupResultSet implements SwiftResultSet {
     }
 
     @Override
-    public boolean next() {
+    public boolean hasNext() {
         return cursor < rowCount;
     }
 
