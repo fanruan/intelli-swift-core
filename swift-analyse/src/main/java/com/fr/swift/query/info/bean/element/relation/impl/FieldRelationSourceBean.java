@@ -36,4 +36,24 @@ public class FieldRelationSourceBean extends RelationSourceBean {
     public void setColumnRelation(IRelationSourceBean columnRelation) {
         this.columnRelation = columnRelation;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        FieldRelationSourceBean that = (FieldRelationSourceBean) o;
+
+        if (columnName != null ? !columnName.equals(that.columnName) : that.columnName != null) return false;
+        return columnRelation != null ? columnRelation.equals(that.columnRelation) : that.columnRelation == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (columnName != null ? columnName.hashCode() : 0);
+        result = 31 * result + (columnRelation != null ? columnRelation.hashCode() : 0);
+        return result;
+    }
 }

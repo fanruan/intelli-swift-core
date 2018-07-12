@@ -3,6 +3,8 @@ package com.fr.swift.query.info.bean.element.filter.impl;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.info.bean.element.relation.IRelationSourceBean;
+import com.fr.swift.util.qm.bool.BExprType;
+import com.fr.swift.util.qm.bool.BVar;
 import com.fr.third.fasterxml.jackson.annotation.JsonInclude;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 
@@ -10,7 +12,7 @@ import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
  * Created by Lyon on 2018/6/2.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public abstract class DetailFilterInfoBean<T> implements FilterInfoBean<T> {
+public abstract class DetailFilterInfoBean<T> extends BVar implements FilterInfoBean<T> {
 
     @JsonProperty
     protected SwiftDetailFilterType type;
@@ -45,5 +47,32 @@ public abstract class DetailFilterInfoBean<T> implements FilterInfoBean<T> {
 
     public void setRelation(IRelationSourceBean relation) {
         this.relation = relation;
+    }
+
+    @Override
+    public BExprType type() {
+        return BExprType.VAR;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DetailFilterInfoBean<?> that = (DetailFilterInfoBean<?>) o;
+
+        if (type != that.type) return false;
+        if (filterValue != null ? !filterValue.equals(that.filterValue) : that.filterValue != null) return false;
+        if (column != null ? !column.equals(that.column) : that.column != null) return false;
+        return relation != null ? relation.equals(that.relation) : that.relation == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = type != null ? type.hashCode() : 0;
+        result = 31 * result + (filterValue != null ? filterValue.hashCode() : 0);
+        result = 31 * result + (column != null ? column.hashCode() : 0);
+        result = 31 * result + (relation != null ? relation.hashCode() : 0);
+        return result;
     }
 }
