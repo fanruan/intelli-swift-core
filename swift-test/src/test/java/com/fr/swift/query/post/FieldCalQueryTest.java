@@ -50,21 +50,21 @@ public class FieldCalQueryTest extends TestCase {
     public void test() {
         try {
             NodeResultSet resultSet = query.getQueryResult();
-            assertTrue(resultSet.next());
+            assertTrue(resultSet.hasNext());
             Row row = resultSet.getNextRow();   // ["b", 1, 2]
             assertEquals(row.getSize(), 3);
             assertTrue(StringUtils.equals(row.getValue(0).toString(), "b"));
             assertEquals(row.getValue(1), 1.);
             assertEquals(row.getValue(2), 2.);
 
-            assertTrue(resultSet.next());
+            assertTrue(resultSet.hasNext());
             row = resultSet.getNextRow();   // ["c", 2, 2]
             assertEquals(row.getSize(), 3);
             assertTrue(StringUtils.equals(row.getValue(0).toString(), "c"));
             assertEquals(row.getValue(1), 2.);
             assertEquals(row.getValue(2), 2.);
 
-            assertFalse(resultSet.next());
+            assertFalse(resultSet.hasNext());
         } catch (SQLException e) {
             assertTrue(false);
         }

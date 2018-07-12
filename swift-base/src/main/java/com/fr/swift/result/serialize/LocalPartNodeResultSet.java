@@ -83,7 +83,7 @@ public class LocalPartNodeResultSet implements NodeMergeResultSet<SwiftNode>, Se
     }
 
     @Override
-    public boolean next() throws SQLException {
+    public boolean hasNext() throws SQLException {
         return false;
     }
 

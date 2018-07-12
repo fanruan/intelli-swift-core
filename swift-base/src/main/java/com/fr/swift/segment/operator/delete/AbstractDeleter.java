@@ -67,7 +67,7 @@ public abstract class AbstractDeleter implements RowDeleter {
 
     @Override
     public boolean deleteData(SwiftResultSet swiftResultSet) throws Exception {
-        while (swiftResultSet.next()) {
+        while (swiftResultSet.hasNext()) {
             List<String> fields = swiftResultSet.getMetaData().getFieldNames();
             Row row = swiftResultSet.getNextRow();
 

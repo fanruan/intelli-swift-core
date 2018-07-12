@@ -40,7 +40,7 @@ public class NodeResultSetImpl<T extends SwiftNode> implements NodeResultSet {
     }
 
     @Override
-    public boolean next() throws SQLException {
+    public boolean hasNext() throws SQLException {
         if (iterator == null) {
             iterator = SwiftNodeUtils.node2RowIterator(node);
         }

@@ -23,7 +23,7 @@ public class QuerySourcePreviewTransferTest extends TestCase {
         QuerySourcePreviewTransfer transfer = new QuerySourcePreviewTransfer(connectionInfo, 10, source.getQuery());
         SwiftResultSet resultSet = transfer.createResultSet();
         int index = 0;
-        while (resultSet.next()) {
+        while (resultSet.hasNext()) {
             resultSet.getNextRow();
             index++;
         }
@@ -43,7 +43,7 @@ public class QuerySourcePreviewTransferTest extends TestCase {
                 1000, "select * from DEMO_CAPITAL_RETURN");
         SwiftResultSet resultSet = transfer.createResultSet();
         int index = 0;
-        while (resultSet.next()) {
+        while (resultSet.hasNext()) {
             Object ob = resultSet.getNextRow().getValue(0);
             assert (ob == null || ob.getClass() == Double.class);
             index++;

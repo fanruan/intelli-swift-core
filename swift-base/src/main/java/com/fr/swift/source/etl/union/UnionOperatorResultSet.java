@@ -88,7 +88,7 @@ public class UnionOperatorResultSet implements SwiftResultSet {
     }
 
     @Override
-    public boolean next() {
+    public boolean hasNext() {
         while (iterator != null && !iterator.hasNext()){
             move2NextSegment();
         }

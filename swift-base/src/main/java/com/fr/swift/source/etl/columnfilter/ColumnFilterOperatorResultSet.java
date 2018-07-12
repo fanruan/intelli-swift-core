@@ -86,7 +86,7 @@ public class ColumnFilterOperatorResultSet implements SwiftResultSet {
     }
 
     @Override
-    public boolean next() {
+    public boolean hasNext() {
         while (currentSegRowIter != null && !currentSegRowIter.hasNext()) {
             moveNextSegment();
         }

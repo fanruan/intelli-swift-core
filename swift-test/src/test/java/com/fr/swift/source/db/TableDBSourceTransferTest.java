@@ -18,7 +18,7 @@ public class TableDBSourceTransferTest extends TestCase {
         TableDBSourceTransfer transfer = new TableDBSourceTransfer(connectionInfo, source.getMetadata(), source.getOuterMetadata(), source.getDBTableName());
         SwiftResultSet resultSet = transfer.createResultSet();
         int index = 0;
-        while (resultSet.next()){
+        while (resultSet.hasNext()) {
             resultSet.getNextRow();
             index++;
         }
@@ -34,7 +34,7 @@ public class TableDBSourceTransferTest extends TestCase {
         TableDBSourceTransfer transfer = new TableDBSourceTransfer(connectionInfo, source.getMetadata(), source.getOuterMetadata(), source.getDBTableName());
         SwiftResultSet resultSet = transfer.createResultSet();
         int index = 0;
-        while (resultSet.next()){
+        while (resultSet.hasNext()) {
             assertEquals(resultSet.getNextRow().getValue(0).getClass(), String.class);
             index++;
         }
