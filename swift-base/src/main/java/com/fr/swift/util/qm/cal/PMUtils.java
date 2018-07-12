@@ -25,7 +25,6 @@ class PMUtils {
                     continue;
                 }
                 row2Bit.put(row, 1L << row2Bit.size());
-                // TODO: 2018/7/9 这里假设minTerm2RowListMap中涉及的总行数小于64！
                 // 因为变量小于64，目测最后的剩余项也应该小于64，有待分析一下
                 if (row2Bit.size() > 63) {
                     throw new RuntimeException("permitted size of remaining prime implicants exceeded!");
