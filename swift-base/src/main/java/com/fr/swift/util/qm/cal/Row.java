@@ -8,7 +8,7 @@ import java.util.Arrays;
 class Row {
     // 标识当前是否配对过
     private boolean isPairedOf;
-    // 当前行对应的原始最小项，介于0~(2^63 - 1)。至多能处理63个变量
+    // 当前行对应的原始最小项，介于0~((1L << 63) - 1)。至多能处理63个变量
     private long minTerm;
     // 消除的变量对应的位
     private long removedBits = 0;
