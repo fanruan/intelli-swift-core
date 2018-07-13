@@ -1,6 +1,5 @@
 package com.fr.swift.boot;
 
-import com.fineio.FineIO;
 import com.fr.module.Activator;
 import com.fr.module.extension.Prepare;
 import com.fr.stable.db.constant.BaseDBConstant;
@@ -11,7 +10,6 @@ import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.ProviderTaskManager;
 import com.fr.swift.event.ClusterListenerHandler;
-import com.fr.swift.log.FineIOLoggerImpl;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.server.SwiftEngineStart;
 import com.fr.swift.service.register.LocalSwiftRegister;
@@ -37,7 +35,7 @@ public class SwiftEngineActivator extends Activator implements Prepare {
         syncFRConfig();
         new LocalSwiftRegister().serviceRegister();
         ClusterListenerHandler.addListener(new ClusterListener());
-        FineIO.setLogger(new FineIOLoggerImpl());
+//        FineIO.setLogger(new FineIOLoggerImpl());
         ProviderTaskManager.start();
     }
 
