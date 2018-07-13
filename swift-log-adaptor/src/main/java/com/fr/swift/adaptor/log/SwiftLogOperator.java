@@ -1,19 +1,15 @@
 package com.fr.swift.adaptor.log;
 
-import com.fr.intelli.record.scene.impl.BaseAccumulator;
+import com.fr.intelli.record.scene.impl.BaseMetric;
 import com.fr.log.FineLoggerFactory;
-import com.fr.log.message.AbstractMessage;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.data.DataList;
-import com.fr.stable.query.restriction.RestrictionFactory;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.db.impl.SwiftWhere;
-import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.query.condition.SwiftQueryFactory;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.operator.delete.RowDeleter;
@@ -26,7 +22,6 @@ import com.fr.swift.util.concurrent.SwiftExecutors;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,7 +32,7 @@ import java.util.concurrent.TimeUnit;
  * @author anchore
  * @date 2018/4/26
  */
-public class SwiftLogOperator extends BaseAccumulator {
+public class SwiftLogOperator extends BaseMetric {
 
     private final Database db = SwiftDatabase.getInstance();
 
@@ -98,8 +93,7 @@ public class SwiftLogOperator extends BaseAccumulator {
     }
 
     @Override
-    public void clearLogBefore(Date date) throws Exception {
-        QueryCondition condition = SwiftQueryFactory.create().addRestriction(RestrictionFactory.lt(AbstractMessage.COLUMN_TIME, date.getTime()));
+    public void clean(QueryCondition condition) throws Exception {
         List<Table> tables = SwiftDatabase.getInstance().getAllTables();
         SwiftSegmentManager localSegmentProvider = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class);
         for (Table table : tables) {
