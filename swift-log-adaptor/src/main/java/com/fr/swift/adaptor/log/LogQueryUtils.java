@@ -160,12 +160,12 @@ public class LogQueryUtils {
         boolean isLimit = queryCondition.isCountLimitValid();
         List<Row> rows = new ArrayList<Row>();
         if (start >= end || !isLimit) {
-            while (resultSet.next()) {
+            while (resultSet.hasNext()) {
                 rows.add(resultSet.getNextRow());
             }
         } else {
             long currentCount = 0;
-            while (resultSet.next() && currentCount < end) {
+            while (resultSet.hasNext() && currentCount < end) {
                 if (currentCount++ < start) {
                     resultSet.getNextRow();
                     continue;

@@ -9,6 +9,7 @@ import com.fr.swift.service.ClusterSwiftServerService;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.entity.ClusterEntity;
 import com.fr.swift.service.handler.base.AbstractHandler;
+import com.fr.swift.structure.Pair;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.io.Serializable;
@@ -38,7 +39,8 @@ public class SwiftAnalyseEventHandler extends AbstractHandler<AbstractAnalyseRpc
                         Map.Entry<String, ClusterEntity> entity = iterator.next();
                         String address = entity.getKey();
                         Class clazz = entity.getValue().getServiceClass();
-                        runAsyncRpc(address, clazz, "updateSegmentInfo", event.getContent(), SegmentLocationInfo.UpdateType.ALL)
+                        Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo> pair = (Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo>) event.getContent();
+                        runAsyncRpc(address, clazz, "updateSegmentInfo", pair.getValue(), pair.getKey())
                                 .addCallback(new AsyncRpcCallback() {
                                     @Override
                                     public void success(Object result) {

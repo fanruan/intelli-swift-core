@@ -67,7 +67,7 @@ public class MultiSegmentDetailResultSet implements DetailResultSet {
     }
 
     @Override
-    public boolean next() {
+    public boolean hasNext() {
         if (rowIterator == null) {
             rowIterator = new SwiftRowIteratorImpl(this);
         }
@@ -96,7 +96,7 @@ public class MultiSegmentDetailResultSet implements DetailResultSet {
         public boolean hasNext() {
             while (index < resultSets.size()) {
                 try {
-                    if (resultSets.get(index).next()) {
+                    if (resultSets.get(index).hasNext()) {
                         return true;
                     }
                 } catch (SQLException e) {

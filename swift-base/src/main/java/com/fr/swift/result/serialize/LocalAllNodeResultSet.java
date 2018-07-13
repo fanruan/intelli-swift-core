@@ -72,7 +72,7 @@ public class LocalAllNodeResultSet implements NodeResultSet<SwiftNode>, Serializ
     }
 
     @Override
-    public boolean next() throws SQLException {
+    public boolean hasNext() throws SQLException {
         if (iterator == null) {
             iterator = SwiftNodeUtils.node2RowIterator(root);
         }

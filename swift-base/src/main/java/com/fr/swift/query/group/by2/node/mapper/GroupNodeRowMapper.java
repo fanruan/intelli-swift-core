@@ -8,14 +8,14 @@ import com.fr.swift.result.GroupNode;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.structure.iterator.RowTraversal;
 import com.fr.swift.structure.stack.LimitedStack;
-import com.fr.swift.util.function.Function2;
+import com.fr.swift.util.function.BinaryFunction;
 
 import java.util.List;
 
 /**
  * Created by Lyon on 2018/4/27.
  */
-public class GroupNodeRowMapper implements Function2<GroupByEntry, LimitedStack<GroupNode>, GroupNode[]> {
+public class GroupNodeRowMapper implements BinaryFunction<GroupByEntry, LimitedStack<GroupNode>, GroupNode[]> {
 
     private int targetLength;
     private List<Column> metrics;

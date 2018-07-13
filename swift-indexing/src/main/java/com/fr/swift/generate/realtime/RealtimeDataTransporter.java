@@ -1,9 +1,6 @@
 package com.fr.swift.generate.realtime;
 
 import com.fr.swift.cube.io.ResourceDiscovery;
-import com.fr.swift.cube.task.TaskResult.Type;
-import com.fr.swift.cube.task.impl.BaseWorker;
-import com.fr.swift.cube.task.impl.TaskResultImpl;
 import com.fr.swift.flow.FlowRuleController;
 import com.fr.swift.generate.Transporter;
 import com.fr.swift.generate.realtime.increment.DecreaseTransport;
@@ -15,6 +12,9 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.task.TaskResult.Type;
+import com.fr.swift.task.impl.BaseWorker;
+import com.fr.swift.task.impl.TaskResultImpl;
 
 import java.util.ArrayList;
 import java.util.List;

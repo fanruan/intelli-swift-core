@@ -1,6 +1,7 @@
 package com.fr.swift.query.info.bean.element.filter.impl;
 
 import com.fr.swift.query.filter.SwiftDetailFilterType;
+import com.fr.swift.query.info.bean.element.filter.impl.value.RangeFilterValueBean;
 
 /**
  * Created by Lyon on 2018/6/28.

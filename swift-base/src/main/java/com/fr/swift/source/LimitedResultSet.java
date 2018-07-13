@@ -34,8 +34,8 @@ public class LimitedResultSet implements SwiftResultSet {
     }
 
     @Override
-    public boolean next() throws SQLException {
-        return cursor < limit && origin.next();
+    public boolean hasNext() throws SQLException {
+        return cursor < limit && origin.hasNext();
     }
 
     @Override

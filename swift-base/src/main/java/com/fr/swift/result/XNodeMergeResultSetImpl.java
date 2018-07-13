@@ -61,7 +61,7 @@ public class XNodeMergeResultSetImpl implements XNodeMergeResultSet {
     }
 
     @Override
-    public boolean next() throws SQLException {
+    public boolean hasNext() throws SQLException {
         return false;
     }
 

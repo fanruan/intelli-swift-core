@@ -19,7 +19,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
-class MergerResultSet implements SwiftResultSet {
+public class MergerResultSet implements SwiftResultSet {
 
     private List<Segment> segmentList;
     private int alloterCount;
@@ -65,7 +65,7 @@ class MergerResultSet implements SwiftResultSet {
     }
 
     @Override
-    public boolean next() {
+    public boolean hasNext() {
         return (currentCount / alloterCount) <= currentSegment && currentCount < rowList.size();
     }
 

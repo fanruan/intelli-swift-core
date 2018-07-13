@@ -24,6 +24,7 @@ import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.group.GroupQueryInfoImpl;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
 import com.fr.swift.query.query.Query;
+import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.rpc.client.AsyncRpcCallback;
@@ -44,6 +45,7 @@ import com.fr.third.springframework.web.bind.annotation.RequestMapping;
 import com.fr.third.springframework.web.bind.annotation.RequestMethod;
 import com.fr.third.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,13 +66,14 @@ public class QueryController {
 
     @ResponseBody
     @RequestMapping(value = "swift/query/{sourceKey}", method = RequestMethod.GET)
-    public List<Row> query(@PathVariable("sourceKey") String sourceKey) throws SQLException {
+    public List<Row> query(@PathVariable("sourceKey") String jsonString) throws SQLException, IOException {
+        int rowCount = 100;
         List<Row> rows = new ArrayList<Row>();
-        QueryInfo queryInfo = createQueryInfo(sourceKey);
-        Query query = QueryBuilder.buildQuery(QueryInfoBeanFactory.create(queryInfo));
+        QueryBean queryBean = QueryInfoBeanFactory.create(jsonString);
+        Query query = QueryBuilder.buildQuery(queryBean);
         SwiftResultSet resultSet = query.getQueryResult();
         if (resultSet != null) {
-            while (resultSet.next()) {
+            while (resultSet.hasNext() && rowCount-- > 0) {
                 rows.add(resultSet.getNextRow());
             }
             resultSet.close();
@@ -80,13 +83,14 @@ public class QueryController {
 
     @ResponseBody
     @RequestMapping(value = "swift/group/{sourceKey}", method = RequestMethod.GET)
-    public List<Row> groupQuery(@PathVariable("sourceKey") String sourceKey) throws SQLException {
+    public List<Row> groupQuery(@PathVariable("sourceKey") String jsonString) throws SQLException, IOException {
         List<Row> rows = new ArrayList<Row>();
-        QueryInfo queryInfo = createGroupQueryInfo(sourceKey);
-        Query query = QueryBuilder.buildQuery(QueryInfoBeanFactory.create(queryInfo));
+        // swift-test模块的resources目录下有json示例
+        QueryBean queryBean = QueryInfoBeanFactory.create(jsonString);
+        Query query = QueryBuilder.buildQuery(queryBean);
         SwiftResultSet resultSet = query.getQueryResult();
         if (resultSet != null) {
-            while (resultSet.next()) {
+            while (resultSet.hasNext()) {
                 rows.add(resultSet.getNextRow());
             }
             resultSet.close();

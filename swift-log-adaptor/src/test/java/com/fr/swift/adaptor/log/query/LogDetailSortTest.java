@@ -47,7 +47,7 @@ public class LogDetailSortTest extends LogBaseTest {
             SwiftResultSet sortResultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
             int sortindex = table.getMeta().getColumnIndex("总金额");
             List<Double> dataList = new ArrayList<Double>();
-            while (sortResultSet.next()) {
+            while (sortResultSet.hasNext()) {
                 Row row = sortResultSet.getNextRow();
                 dataList.add(((Long) row.getValue(sortindex - 1)).doubleValue());
             }
@@ -76,7 +76,7 @@ public class LogDetailSortTest extends LogBaseTest {
             SwiftResultSet sortResultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
             int sortindex = table.getMeta().getColumnIndex("总金额");
             List<Double> dataList = new ArrayList<Double>();
-            while (sortResultSet.next()) {
+            while (sortResultSet.hasNext()) {
                 Row row = sortResultSet.getNextRow();
                 dataList.add(((Long) row.getValue(sortindex - 1)).doubleValue());
             }

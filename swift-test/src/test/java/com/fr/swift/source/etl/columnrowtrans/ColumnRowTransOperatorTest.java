@@ -61,7 +61,7 @@ public class ColumnRowTransOperatorTest extends TestCase {
         SwiftResultSet set = operator.createResultSet(basicMeta, null, segments);
         String[][] str = new String[][]{{"A", "A", null, null, "A"}, {"B", null, "B", null, "B"}, {"C", null, null, "C", "C"}};
         int j = 0;
-        while (set.next()) {
+        while (set.hasNext()) {
             Row row = set.getNextRow();
             for (int i = 0; i < 5; i++) {
                 assertEquals(row.getValue(i), str[j][i]);

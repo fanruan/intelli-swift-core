@@ -72,7 +72,7 @@ public class SegmentDetailResultSet implements DetailResultSet {
     }
 
     @Override
-    public boolean next() {
+    public boolean hasNext() {
         if (iterator == null) {
             iterator = new SwiftRowIteratorImpl(this);
         }

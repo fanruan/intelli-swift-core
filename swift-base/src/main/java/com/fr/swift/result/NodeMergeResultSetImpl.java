@@ -46,7 +46,7 @@ public class NodeMergeResultSetImpl<T extends GroupNode> implements NodeMergeRes
     }
 
     @Override
-    public boolean next() throws SQLException {
+    public boolean hasNext() throws SQLException {
         if (iterator == null) {
             iterator = SwiftNodeUtils.node2RowIterator(root);
         }

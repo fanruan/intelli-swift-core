@@ -22,7 +22,7 @@ public interface SwiftSourceTransfer {
         }
 
         @Override
-        public boolean next() {
+        public boolean hasNext() {
             return false;
         }
     };

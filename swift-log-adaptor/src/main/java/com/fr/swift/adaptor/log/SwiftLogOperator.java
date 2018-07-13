@@ -1,7 +1,6 @@
 package com.fr.swift.adaptor.log;
 
 import com.fr.intelli.record.scene.impl.BaseMetric;
-import com.fr.log.FineLoggerFactory;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.data.DataList;
 import com.fr.swift.context.SwiftContext;
@@ -20,6 +19,7 @@ import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -53,7 +53,7 @@ public class SwiftLogOperator extends BaseMetric {
             dataList.list(tList);
             dataList.setTotalCount(rowDataList.getTotalCount());
         } catch (Exception e) {
-            FineLoggerFactory.getLogger().error(e.getMessage(), e);
+            SwiftLoggers.getLogger().error(e);
         }
         return dataList;
     }
@@ -82,12 +82,16 @@ public class SwiftLogOperator extends BaseMetric {
     @Override
     public void pretreatment(List<Class> list) throws Exception {
         for (Class table : list) {
-            SwiftMetaData meta = SwiftMetaAdaptor.adapt(table);
-            SourceKey tableKey = new SourceKey(meta.getTableName());
-            synchronized (db) {
-                if (!db.existsTable(tableKey)) {
-                    db.createTable(tableKey, meta);
-                }
+            initTable(table);
+        }
+    }
+
+    private void initTable(Class table) throws SQLException {
+        SwiftMetaData meta = SwiftMetaAdaptor.adapt(table);
+        SourceKey tableKey = new SourceKey(meta.getTableName());
+        synchronized (db) {
+            if (!db.existsTable(tableKey)) {
+                db.createTable(tableKey, meta);
             }
         }
     }
@@ -119,6 +123,7 @@ public class SwiftLogOperator extends BaseMetric {
         public void run() {
             try {
                 for (Class<?> entity : dataMap.keySet()) {
+                    initTable(entity);
                     record(entity);
                 }
             } catch (Exception e) {

@@ -38,13 +38,11 @@ class SwiftFrLogger extends BaseSwiftLogger implements SwiftLogger {
     @Override
     public void debug(String s) {
         FineLoggerFactory.getLogger().debug(s);
-
     }
 
     @Override
     public void debug(String s, Object o) {
         FineLoggerFactory.getLogger().debug(s, o);
-
     }
 
     @Override
@@ -55,37 +53,31 @@ class SwiftFrLogger extends BaseSwiftLogger implements SwiftLogger {
     @Override
     public void debug(String s, Object... objects) {
         FineLoggerFactory.getLogger().debug(s, objects);
-
     }
 
     @Override
     public void debug(String s, Throwable throwable) {
         FineLoggerFactory.getLogger().debug(s, throwable);
-
     }
 
     @Override
     public void info(String s) {
         FineLoggerFactory.getLogger().info(s);
-
     }
 
     @Override
     public void info(String s, Object o) {
         FineLoggerFactory.getLogger().info(s, o);
-
     }
 
     @Override
     public void info(String s, Object o, Object o1) {
         FineLoggerFactory.getLogger().info(s, o, o1);
-
     }
 
     @Override
     public void info(String s, Object... objects) {
         FineLoggerFactory.getLogger().info(s, objects);
-
     }
 
     @Override
@@ -93,11 +85,9 @@ class SwiftFrLogger extends BaseSwiftLogger implements SwiftLogger {
         FineLoggerFactory.getLogger().info(s, throwable);
     }
 
-
     @Override
     public void warn(String s) {
         FineLoggerFactory.getLogger().warn(s);
-
     }
 
     @Override
@@ -122,7 +112,6 @@ class SwiftFrLogger extends BaseSwiftLogger implements SwiftLogger {
 
     @Override
     public void error(String s) {
-
         FineLoggerFactory.getLogger().error(s);
     }
 

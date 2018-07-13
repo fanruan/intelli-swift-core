@@ -66,7 +66,7 @@ public class GroupAssignmentResultSet implements SwiftResultSet {
     }
 
     @Override
-    public boolean next() throws SQLException {
+    public boolean hasNext() throws SQLException {
         if(segCursor < segments.length && rowCursor < rowCount) {
             rowCount = segments[segCursor].getRowCount();
             DictionaryEncodedColumn getter = segments[segCursor].getColumn(columnKey).getDictionaryEncodedColumn();

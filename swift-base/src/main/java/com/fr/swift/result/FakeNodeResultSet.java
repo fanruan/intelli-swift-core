@@ -44,7 +44,7 @@ public class FakeNodeResultSet implements NodeResultSet<SwiftNode> {
     }
 
     @Override
-    public boolean next() throws SQLException {
+    public boolean hasNext() throws SQLException {
         if (rowIterator == null && hasNextPage()) {
             rowIterator = getPageData().iterator();
         }

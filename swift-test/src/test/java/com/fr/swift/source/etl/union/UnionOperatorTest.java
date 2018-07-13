@@ -74,7 +74,7 @@ public class UnionOperatorTest extends TestCase {
                     {"B", "B", null}, {"A", "A", null}, {"C", "C", null}, {"B", "B", null}, {"A", null, "A"}, {"1", null, "1"}, {"E", null, "E"}, {"A", null, "A"},
                     {"1", null, "1"}};
             int k = 0;
-            while (rs.next()) {
+            while (rs.hasNext()) {
                 Row row = rs.getNextRow();
                 for (int i = 0; i < 3; i++) {
                     assertEquals(str[k][i], row.getValue(i));

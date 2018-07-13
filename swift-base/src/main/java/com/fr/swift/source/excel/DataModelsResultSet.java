@@ -44,7 +44,7 @@ public class DataModelsResultSet extends AbstractDataModelResultSet {
     }
 
     @Override
-    public boolean next() throws SQLException {
+    public boolean hasNext() throws SQLException {
         try {
             return moveNext();
         } catch (TableDataException e) {

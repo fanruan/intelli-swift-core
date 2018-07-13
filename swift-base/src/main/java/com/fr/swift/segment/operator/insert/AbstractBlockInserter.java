@@ -102,7 +102,7 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
             try {
                 long count = 0;
                 String allotColumn = fields.get(0);
-                while (swiftResultSet.next()) {
+                while (swiftResultSet.hasNext()) {
                     Row rowData = swiftResultSet.getNextRow();
                     int size = segments.size();
                     int index = alloter.allot(new LineRowInfo(count)).getOrder() + startSegIndex;

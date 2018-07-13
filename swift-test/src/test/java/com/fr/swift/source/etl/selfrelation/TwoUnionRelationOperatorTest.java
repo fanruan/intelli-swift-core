@@ -57,7 +57,7 @@ public class TwoUnionRelationOperatorTest extends TestCase {
         TwoUnionRelationTransferOperator operator = new TwoUnionRelationTransferOperator(columns, idColumnName, showColumns, addNames, parentIdColumnName);
         SwiftResultSet rs = operator.createResultSet(metaData, null, list);
         int k = -1;
-        while (rs.next()) {
+        while (rs.hasNext()) {
             k++;
             Row row = rs.getNextRow();
             for (int i = 0; i < 6; i++) {

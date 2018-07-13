@@ -48,7 +48,7 @@ public class HisSwiftInserterTest extends BaseTest {
         Segment segment = new HistorySegmentImpl(location, dataSource.getMetadata());
         List<Row> rowList = new ArrayList<Row>();
 
-        while (resultSet.next()) {
+        while (resultSet.hasNext()) {
             Row row = resultSet.getNextRow();
             rowList.add(row);
         }
@@ -76,7 +76,7 @@ public class HisSwiftInserterTest extends BaseTest {
         Segment segment = new HistorySegmentImpl(location, dataSource.getMetadata());
 
         List<Row> rowList = new ArrayList<Row>();
-        while (resultSet.next()) {
+        while (resultSet.hasNext()) {
             Row row = resultSet.getNextRow();
             rowList.add(row);
         }

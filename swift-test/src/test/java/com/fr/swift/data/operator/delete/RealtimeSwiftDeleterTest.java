@@ -48,7 +48,7 @@ public class RealtimeSwiftDeleterTest extends BaseTest {
         Segment segment = new RealTimeSegmentImpl(location, dataSource.getMetadata());
         List<Row> rowList = new ArrayList<Row>();
 
-        while (resultSet.next()) {
+        while (resultSet.hasNext()) {
             Row row = resultSet.getNextRow();
             rowList.add(row);
         }
@@ -72,7 +72,7 @@ public class RealtimeSwiftDeleterTest extends BaseTest {
         SwiftSourceTransfer deleteTransfer = SwiftSourceTransferFactory.createSourceTransfer(deleteDataSource);
         SwiftResultSet deleteResultSet = deleteTransfer.createResultSet();
         List<Row> deleteRowList = new ArrayList<Row>();
-        while (deleteResultSet.next()) {
+        while (deleteResultSet.hasNext()) {
             Row row = deleteResultSet.getNextRow();
             deleteRowList.add(row);
         }
@@ -106,7 +106,7 @@ public class RealtimeSwiftDeleterTest extends BaseTest {
         Segment segment = new RealTimeSegmentImpl(location, dataSource.getMetadata());
         List<Row> rowList = new ArrayList<Row>();
 
-        while (resultSet.next()) {
+        while (resultSet.hasNext()) {
             Row row = resultSet.getNextRow();
             rowList.add(row);
         }

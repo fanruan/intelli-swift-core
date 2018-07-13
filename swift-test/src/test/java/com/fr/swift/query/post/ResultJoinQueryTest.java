@@ -74,7 +74,7 @@ public class ResultJoinQueryTest extends TestCase {
         PostQuery<NodeResultSet> query = new ResultJoinQuery(queries, dimensions);
         try {
             NodeResultSet resultSet = query.getQueryResult();
-            assertTrue(resultSet.next());
+            assertTrue(resultSet.hasNext());
             Row row = resultSet.getNextRow(); // ["a", 1, null, 1]
             assertEquals(row.getSize(), 1 + 3);
             assertTrue(StringUtils.equals(row.getValue(0).toString(), "a"));
@@ -82,7 +82,7 @@ public class ResultJoinQueryTest extends TestCase {
             assertEquals(row.getValue(2), null);
             assertEquals(row.getValue(3), 1.);
 
-            assertTrue(resultSet.next());
+            assertTrue(resultSet.hasNext());
             row = resultSet.getNextRow(); // ["b", 1, 1, null]
             assertEquals(row.getSize(), 1 + 3);
             assertTrue(StringUtils.equals(row.getValue(0).toString(), "b"));
@@ -90,7 +90,7 @@ public class ResultJoinQueryTest extends TestCase {
             assertEquals(row.getValue(2), 1.);
             assertEquals(row.getValue(3), null);
 
-            assertTrue(resultSet.next());
+            assertTrue(resultSet.hasNext());
             row = resultSet.getNextRow(); // ["c", null, 1, 1]
             assertEquals(row.getSize(), 1 + 3);
             assertTrue(StringUtils.equals(row.getValue(0).toString(), "c"));

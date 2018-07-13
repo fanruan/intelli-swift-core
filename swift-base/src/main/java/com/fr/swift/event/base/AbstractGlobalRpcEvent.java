@@ -13,6 +13,6 @@ public abstract class AbstractGlobalRpcEvent<T> implements SwiftRpcEvent<T> {
     public abstract Event subEvent();
 
     public enum Event implements SubEvent {
-        CLEAN, TASK_DONE
+        CLEAN, TASK_DONE, PUSH_SEG
     }
 }
