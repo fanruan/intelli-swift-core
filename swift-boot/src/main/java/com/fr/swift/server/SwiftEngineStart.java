@@ -56,6 +56,7 @@ public class SwiftEngineStart {
 //            FR 的配置可以不需要的，这里把在fr的配置同步到新的
             initConfDB();
             registerTmpConnectionProvider();
+//            FineIO.setLogger(new FineIOLoggerImpl());
             new LocalSwiftRegister().serviceRegister();
             ClusterListenerHandler.addListener(new ClusterListener());
             ProviderTaskManager.start();
