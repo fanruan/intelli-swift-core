@@ -7,7 +7,7 @@ import com.fr.swift.log.SwiftLoggers;
  * @date 2018/7/12
  */
 abstract class BaseProgressIterator {
-    private static final long ROW_THRESHOLD = 100, TIME_THRESHOLD = 1000;
+    private static final long ROW_THRESHOLD = 1 << 16, TIME_THRESHOLD = 10000;
 
     private static final String ELEMENT_UNIT = "elements", SOURCE = "source";
 
