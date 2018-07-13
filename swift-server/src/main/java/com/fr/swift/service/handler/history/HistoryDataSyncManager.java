@@ -77,12 +77,12 @@ public class HistoryDataSyncManager extends AbstractHandler<HistoryLoadSegmentRp
             while (existsIter.hasNext()) {
                 Map.Entry<String, List<SegmentKey>> entry = existsIter.next();
                 String sourceKey = entry.getKey();
-                for (SegmentKey segmentKey : entry.getValue()) {
-                    if (null != needLoadSegment.get(sourceKey)) {
-                        needLoadSegment.get(sourceKey).remove(segmentKey);
-                    }
+//                for (SegmentKey segmentKey : entry.getValue()) {
+//                    if (null != needLoadSegment.get(sourceKey)) {
+//                        needLoadSegment.get(sourceKey).remove(segmentKey);
+//                    }
 
-                }
+//                }
                 exists.get(key).addAll(entry.getValue());
             }
         }
