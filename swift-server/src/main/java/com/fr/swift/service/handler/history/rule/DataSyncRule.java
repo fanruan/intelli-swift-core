@@ -154,6 +154,15 @@ public interface DataSyncRule {
                 String key = iterator.next();
                 destinations.get(key).setKey(segCount.get(key).size());
             }
+            Iterator<String> it = result.keySet().iterator();
+            while (it.hasNext()) {
+                String key = it.next();
+                for (String historyNode : historyNodes) {
+                    if (result.get(key).get(historyNode) == null) {
+                        result.get(key).put(historyNode, new AtomicInteger(0));
+                    }
+                }
+            }
             return result;
         }
 
