@@ -42,7 +42,8 @@ public class SortMultiSegmentDetailResultSet implements DetailResultSet {
             rowCount += resultSet.getRowCount();
             resultSets.add(resultSet);
         }
-        mergerIterator = new SortedDetailMergerIterator(PAGE_SIZE, createRowComparator(comparators), resultSets);
+        mergerIterator = resultSets.isEmpty() ? new ArrayList<List<Row>>().iterator()
+                : new SortedDetailMergerIterator(PAGE_SIZE, createRowComparator(comparators), resultSets);
     }
 
     @Override
