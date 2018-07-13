@@ -49,6 +49,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author yee
@@ -69,6 +70,7 @@ public class QueryController {
     public List<Row> query(@PathVariable("sourceKey") String jsonString) throws SQLException, IOException {
         int rowCount = 100;
         List<Row> rows = new ArrayList<Row>();
+        long start = System.currentTimeMillis();
         QueryBean queryBean = QueryInfoBeanFactory.create(jsonString);
         Query query = QueryBuilder.buildQuery(queryBean);
         SwiftResultSet resultSet = query.getQueryResult();
@@ -78,6 +80,7 @@ public class QueryController {
             }
             resultSet.close();
         }
+        logger.info("group query cost: " + TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start) + " seconds!");
         return rows;
     }
 
@@ -87,6 +90,7 @@ public class QueryController {
         List<Row> rows = new ArrayList<Row>();
         // swift-test模块的resources目录下有json示例
         QueryBean queryBean = QueryInfoBeanFactory.create(jsonString);
+        long start = System.currentTimeMillis();
         Query query = QueryBuilder.buildQuery(queryBean);
         SwiftResultSet resultSet = query.getQueryResult();
         if (resultSet != null) {
@@ -95,6 +99,7 @@ public class QueryController {
             }
             resultSet.close();
         }
+        logger.info("group query cost: " + TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start) + " seconds!");
         return rows;
     }
 

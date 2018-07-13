@@ -11,7 +11,6 @@ import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 
 import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
 
 public class DistinctAggregateTest extends TestCase {
 
@@ -23,9 +22,7 @@ public class DistinctAggregateTest extends TestCase {
         Column column = control.createMock(Column.class);
         DictionaryEncodedColumn dic = control.createMock(DictionaryEncodedColumn.class);
 
-        column.getDictionaryEncodedColumn();
-        expectLastCall().andReturn(dic).anyTimes();
-        //   expect(column.getDictionaryEncodedColumn()).andReturn(dic);
+        expect(column.getDictionaryEncodedColumn()).andReturn(dic).anyTimes();
         expect(dic.getGlobalIndexByRow(0)).andReturn(1<<18).anyTimes();
         expect(dic.getGlobalIndexByRow(1)).andReturn(3).anyTimes();
         expect(dic.getGlobalIndexByRow(2)).andReturn(4).anyTimes();
