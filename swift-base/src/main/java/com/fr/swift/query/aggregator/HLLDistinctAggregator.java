@@ -1,7 +1,8 @@
 package com.fr.swift.query.aggregator;
 
-import com.fr.swift.bitmap.traversal.CalculatorTraversalAction;
+import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.segment.column.Column;
+import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.structure.iterator.RowTraversal;
@@ -18,30 +19,59 @@ public class HLLDistinctAggregator implements Aggregator<HLLAggregatorValue> {
 
     @Override
     public HLLAggregatorValue aggregate(RowTraversal traversal, Column column) {
-        final HLLAggregatorValue aggregatorValue = new HLLAggregatorValue();
         final DictionaryEncodedColumn dictionaryEncodedColumn = column.getDictionaryEncodedColumn();
         final ColumnTypeConstants.ClassType type = dictionaryEncodedColumn.getType();
-        traversal.traversal(new CalculatorTraversalAction() {
-            @Override
-            public double getCalculatorValue() {
-                return 0;
-            }
+        switch (type) {
+            case INTEGER:
+                return aggInt(traversal, column.getDetailColumn());
+            case LONG:
+                return aggLong(traversal, column.getDetailColumn());
+            case DOUBLE:
+                return aggDouble(traversal, column.getDetailColumn());
+            default:
+                return aggString(traversal, column.getDetailColumn());
+        }
+    }
 
+    private static HLLAggregatorValue aggString(RowTraversal traversal, final DetailColumn detailColumn) {
+        final HLLAggregatorValue aggregatorValue = new HLLAggregatorValue();
+        traversal.traversal(new TraversalAction() {
             @Override
             public void actionPerformed(int row) {
-                switch (type) {
-                    case INTEGER:
-                        aggregatorValue.offer((Integer) dictionaryEncodedColumn.getValueByRow(row));
-                        break;
-                    case LONG:
-                        aggregatorValue.offer((Long) dictionaryEncodedColumn.getValueByRow(row));
-                        break;
-                    case DOUBLE:
-                        aggregatorValue.offer((Double) dictionaryEncodedColumn.getValueByRow(row));
-                        break;
-                    default:
-                        aggregatorValue.offer((String) dictionaryEncodedColumn.getValueByRow(row));
-                }
+                aggregatorValue.offer((String) detailColumn.get(row));
+            }
+        });
+        return aggregatorValue;
+    }
+
+    private static HLLAggregatorValue aggDouble(RowTraversal traversal, final DetailColumn detailColumn) {
+        final HLLAggregatorValue aggregatorValue = new HLLAggregatorValue();
+        traversal.traversal(new TraversalAction() {
+            @Override
+            public void actionPerformed(int row) {
+                aggregatorValue.offer(detailColumn.getDouble(row));
+            }
+        });
+        return aggregatorValue;
+    }
+
+    private static HLLAggregatorValue aggLong(RowTraversal traversal, final DetailColumn detailColumn) {
+        final HLLAggregatorValue aggregatorValue = new HLLAggregatorValue();
+        traversal.traversal(new TraversalAction() {
+            @Override
+            public void actionPerformed(int row) {
+                aggregatorValue.offer(detailColumn.getLong(row));
+            }
+        });
+        return aggregatorValue;
+    }
+
+    private static HLLAggregatorValue aggInt(RowTraversal traversal, final DetailColumn detailColumn) {
+        final HLLAggregatorValue aggregatorValue = new HLLAggregatorValue();
+        traversal.traversal(new TraversalAction() {
+            @Override
+            public void actionPerformed(int row) {
+                aggregatorValue.offer(detailColumn.getInt(row));
             }
         });
         return aggregatorValue;
