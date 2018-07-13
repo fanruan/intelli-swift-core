@@ -7,6 +7,7 @@ import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.roaringbitmap.buffer.MutableRoaringBitmap;
 import com.fr.swift.bitmap.traversal.BreakTraversalAction;
 import com.fr.swift.bitmap.traversal.TraversalAction;
+import com.fr.swift.util.Assert;
 
 /**
  * @author anchore
@@ -14,14 +15,12 @@ import com.fr.swift.bitmap.traversal.TraversalAction;
  */
 public class RangeBitmap extends AbstractBitMap {
     /**
-     * 前闭后开
+     * [start, end)
      */
     final int start, end;
 
     public RangeBitmap(int start, int end) {
-        if (start > end) {
-            throw new IllegalArgumentException();
-        }
+        Assert.isTrue(start <= end, "start > end, illegal");
         this.start = start;
         this.end = end;
     }
@@ -36,7 +35,7 @@ public class RangeBitmap extends AbstractBitMap {
             case RANGE:
                 return FasterAggregation.and(this, ((RangeBitmap) index));
             default:
-                return toRealBitmap().getAnd(index);
+                return index.getAnd(this);
         }
     }
 
@@ -46,15 +45,20 @@ public class RangeBitmap extends AbstractBitMap {
             case RANGE:
                 return FasterAggregation.or(this, ((RangeBitmap) index));
             default:
-                return toRealBitmap().getOr(index);
+                return index.getOr(this);
         }
     }
 
     @Override
     public ImmutableBitMap getAndNot(ImmutableBitMap index) {
-        MutableBitMap bitmap = toRealBitmap();
-        bitmap.andNot(index);
-        return bitmap;
+        switch (index.getType()) {
+            case RANGE:
+                return FasterAggregation.andNot(this, ((RangeBitmap) index));
+            default:
+                MutableBitMap bitmap = toRealBitmap();
+                bitmap.andNot(index);
+                return bitmap;
+        }
     }
 
     @Override
@@ -97,7 +101,7 @@ public class RangeBitmap extends AbstractBitMap {
         return bytes;
     }
 
-    public static ImmutableBitMap fromBytes(byte[] bytes, int offset) {
+    public static ImmutableBitMap ofBytes(byte[] bytes, int offset) {
         return new RangeBitmap(Bits.getInt(bytes, offset), Bits.getInt(bytes, offset + 4));
     }
 

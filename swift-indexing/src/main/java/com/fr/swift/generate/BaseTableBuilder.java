@@ -21,7 +21,6 @@ import com.fr.swift.task.TaskResult.Type;
 import com.fr.swift.task.TaskStatusChangeListener;
 import com.fr.swift.task.WorkerTask;
 import com.fr.swift.task.impl.BaseWorker;
-import com.fr.swift.task.impl.LocalTaskGroup;
 import com.fr.swift.task.impl.LocalTaskImpl;
 import com.fr.swift.task.impl.TaskResultImpl;
 
@@ -67,7 +66,7 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
         LocalTask transportTask = new LocalTaskImpl(
                 CubeTasks.newTransportTaskKey(round, dataSource), transporter);
 
-        LocalTask end = new LocalTaskImpl(
+        final LocalTask end = new LocalTaskImpl(
                 CubeTasks.newTableBuildEndTaskKey(round, dataSource));
 
         List<Segment> segments = localSegments.getSegment(dataSource.getSourceKey());
@@ -96,16 +95,16 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
             mergeTask.addNext(end);
         }
 
-        taskGroup = new LocalTaskGroup(transportTask, end);
-
-        taskGroup.addStatusChangeListener(new TaskStatusChangeListener() {
+        end.addStatusChangeListener(new TaskStatusChangeListener() {
             @Override
             public void onChange(Task.Status prev, Task.Status now) {
                 if (now == Task.Status.DONE) {
-                    workOver(taskGroup.result());
+                    workOver(end.result());
                 }
             }
         });
+
+        transportTask.triggerRun();
 
         //监听表取数任务，完成后添加字段索引任务。
 //        transportTask.addStatusChangeListener(new TaskStatusChangeListener() {
@@ -198,7 +197,6 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
     @Override
     public void build() throws Exception {
         init();
-        taskGroup.run();
     }
 
     @Override

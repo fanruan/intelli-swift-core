@@ -63,7 +63,7 @@ public class SwiftLogOperator extends BaseAccumulator {
     }
 
     @Override
-    public DataList<List<Object>> find(String s) {
+    public <T> DataList<List<T>> find(String s) {
         return null;
     }
 
