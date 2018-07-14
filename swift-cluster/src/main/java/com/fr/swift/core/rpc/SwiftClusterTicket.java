@@ -1,4 +1,4 @@
-package com.fr.swift.frrpc;
+package com.fr.swift.core.rpc;
 
 import com.fr.cluster.core.ClusterNode;
 import com.fr.cluster.core.event.ClusterViewEvent;

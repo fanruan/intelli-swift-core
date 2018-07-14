@@ -26,7 +26,10 @@ import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.selector.ProxySelector;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
+import com.fr.third.springframework.beans.factory.annotation.Autowired;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -36,6 +39,7 @@ import java.util.concurrent.CountDownLatch;
  * Created by pony on 2017/10/12.
  * 分析服务
  */
+@Service("analyseService")
 @RpcService(value = AnalyseService.class, type = RpcServiceType.CLIENT_SERVICE)
 public class SwiftAnalyseService extends AbstractSwiftService implements AnalyseService {
 
@@ -50,6 +54,9 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
 
     private SwiftAnalyseService() {
     }
+
+    @Autowired
+    private transient ServiceTaskExecutor taskExecutor;
 
     public static SwiftAnalyseService getInstance() {
         return SingletonHolder.service;

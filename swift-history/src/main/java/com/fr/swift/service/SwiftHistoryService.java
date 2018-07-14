@@ -23,7 +23,11 @@ import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.operator.delete.RowDeleter;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.task.service.ServiceTaskExecutor;
+import com.fr.swift.task.service.ServiceTaskType;
+import com.fr.swift.task.service.SwiftServiceCallable;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -35,6 +39,7 @@ import java.util.Set;
 /**
  * Created by pony on 2017/10/10.
  */
+@Service("historyService")
 @RpcService(value = HistoryService.class, type = RpcServiceType.CLIENT_SERVICE)
 public class SwiftHistoryService extends AbstractSwiftService implements HistoryService, Serializable {
 
@@ -45,6 +50,9 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     }
 
     private transient SwiftSegmentManager segmentManager = (SwiftSegmentManager) SwiftContext.getInstance().getBean("localSegmentProvider");
+
+    @Autowired
+    private transient ServiceTaskExecutor taskExecutor;
 
     @Autowired
     private transient SwiftPathService pathService;
@@ -107,19 +115,18 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
 
     @Override
     @RpcMethod(methodName = "historyDelete")
-    public boolean delete(SourceKey sourceKey, Where where) throws Exception {
-        try {
-            List<Segment> segments = segmentManager.getSegment(sourceKey);
-            for (Segment segment : segments) {
-                RowDeleter rowDeleter = (RowDeleter) SwiftContext.getInstance().getBean("decrementer", segment);
-                rowDeleter.delete(sourceKey, where);
+    public boolean delete(final SourceKey sourceKey, final Where where) throws Exception {
+        taskExecutor.submit(new SwiftServiceCallable(sourceKey, ServiceTaskType.DELETE) {
+            @Override
+            public void doJob() throws Exception {
+                List<Segment> segments = segmentManager.getSegment(sourceKey);
+                for (Segment segment : segments) {
+                    RowDeleter rowDeleter = (RowDeleter) SwiftContext.getInstance().getBean("decrementer", segment);
+                    rowDeleter.delete(sourceKey, where);
+                }
             }
-            //todo upload allshowindex;
-            return true;
-        } catch (Exception e) {
-            logger.error(e);
-            throw e;
-        }
+        });
+        return true;
     }
 
     private static class SingletonHolder {

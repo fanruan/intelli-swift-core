@@ -5,7 +5,7 @@ import com.fr.intelli.record.AccumulatorFactory;
 import com.fr.module.Activator;
 import com.fr.module.extension.Prepare;
 import com.fr.swift.adaptor.log.AccumulatorProxy;
-import com.fr.swift.frrpc.SwiftClusterTicket;
+import com.fr.swift.core.rpc.SwiftClusterTicket;
 import com.fr.swift.log.SwiftFrLoggers;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;

@@ -8,7 +8,7 @@ import com.fr.cluster.rpc.base.Result;
 import com.fr.intelli.record.scene.impl.BaseAccumulator;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.data.DataList;
-import com.fr.swift.frrpc.FRClusterNodeManager;
+import com.fr.swift.core.rpc.FRClusterNodeManager;
 
 import java.util.Date;
 import java.util.List;

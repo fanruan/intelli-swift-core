@@ -2,14 +2,13 @@ package com.fr.swift.collate;
 
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.restriction.RestrictionFactory;
-import com.fr.swift.CollateService;
-import com.fr.swift.SwiftCollateService;
 import com.fr.swift.config.service.SwiftSegmentServiceProvider;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftWhere;
 import com.fr.swift.generate.BaseTest;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.condition.SwiftQueryFactory;
 import com.fr.swift.redis.RedisClient;
 import com.fr.swift.segment.Decrementer;
@@ -19,6 +18,7 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.service.SwiftCollateService;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
@@ -26,6 +26,7 @@ import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.alloter.line.LineAllotRule;
 import com.fr.swift.source.alloter.line.LineSourceAlloter;
 import com.fr.swift.source.db.QueryDBSource;
+import com.fr.swift.task.service.SwiftServiceTaskExecutor;
 import junit.framework.TestCase;
 import org.junit.Test;
 
@@ -86,9 +87,10 @@ public class RealtimeCollateTest extends BaseTest {
                 assertTrue(neqCount != 0);
             }
             //合并增量块，直接写history
-            CollateService collaterService = new SwiftCollateService();
+            SwiftCollateService collaterService = new SwiftCollateService();
+            collaterService.setTaskExecutor(new SwiftServiceTaskExecutor("testAutoRealtimeCollate", 1));
             collaterService.autoCollateRealtime(dataSource.getSourceKey());
-
+            Thread.sleep(5000l);
             segments = swiftSegmentManager.getSegment(dataSource.getSourceKey());
             assertTrue(segments.size() == 1);
             //合并后1块历史块，所有数据都是购买合同
@@ -100,6 +102,7 @@ public class RealtimeCollateTest extends BaseTest {
                 }
             }
         } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
             assertTrue(false);
         }
     }
@@ -147,9 +150,11 @@ public class RealtimeCollateTest extends BaseTest {
 
 
             //合并增量块，直接写history
-            CollateService collaterService = new SwiftCollateService();
+            SwiftCollateService collaterService = new SwiftCollateService();
+            collaterService.setTaskExecutor(new SwiftServiceTaskExecutor("testAppointRealtimeCollate", 1));
             collaterService.appointCollateRealtime(collateSegmentKeys);
 
+            Thread.sleep(5000l);
             segments = swiftSegmentManager.getSegment(dataSource.getSourceKey());
             assertTrue(segments.size() == 4);
             //合并后1块历史块,3块增量块，历史块所有数据都是购买合同，增量快allshow是购买合同
