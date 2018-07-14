@@ -143,7 +143,7 @@ public class JoinOperatorResultSet implements SwiftResultSet {
     }
 
     @Override
-    public boolean next() {
+    public boolean hasNext() {
         while (leftRows != null && leftRows.isEmpty()) {
             moveToNextRows();
         }

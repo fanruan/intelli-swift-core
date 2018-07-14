@@ -156,88 +156,11 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     private void initListener() {
         EventDispatcher.listen(TaskEvent.LOCAL_DONE, new Listener<Pair<TaskKey, TaskResult>>() {
             @Override
-            public void on(Event event, Pair<TaskKey, TaskResult> result) {
+            public void on(Event event, final Pair<TaskKey, TaskResult> result) {
                 SwiftLoggers.getLogger().info("rpc通知server任务完成");
-                TaskKey key = result.getKey();
-                Object obj = stuffObject.get(key);
-                try {
-                    runRpc(new TaskDoneRpcEvent(result));
-                    if (null != obj) {
-
-                        if (obj instanceof DataSource) {
-                            SourceKey sourceKey = ((DataSource) obj).getSourceKey();
-                            List<SegmentKey> segmentKeys = SwiftSegmentServiceProvider.getProvider().getSegmentByKey(sourceKey.getId());
-                            if (null != segmentKeys) {
-                                for (SegmentKey segmentKey : segmentKeys) {
-                                    try {
-                                        SwiftRepositoryManager.getManager().currentRepo().copyToRemote(segmentKey.getAbsoluteUri(), segmentKey.getUri());
-                                    } catch (IOException e) {
-                                        logger.error("upload error! ", e);
-                                    }
-                                }
-
-                                runRpc(new HistoryLoadSegmentRpcEvent(sourceKey.getId()))
-                                        .addCallback(new AsyncRpcCallback() {
-                                            @Override
-                                            public void success(Object result) {
-                                                logger.info("rpcTrigger success! ");
-                                            }
-
-                                            @Override
-                                            public void fail(Exception e) {
-                                                logger.error("rpcTrigger error! ", e);
-                                            }
-                                        });
-                            }
-                        } else if (obj instanceof RelationSource) {
-                            SourceKey sourceKey = ((RelationSource) obj).getForeignSource();
-                            SourceKey primary = ((RelationSource) obj).getPrimarySource();
-                            List<URI> needUpload = new ArrayList<URI>();
-                            List<SegmentKey> segmentKeys = SwiftSegmentServiceProvider.getProvider().getSegmentByKey(sourceKey.getId());
-                            if (null != segmentKeys) {
-                                if (((RelationSource) obj).getRelationType() != RelationSourceType.FIELD_RELATION) {
-                                    for (SegmentKey segmentKey : segmentKeys) {
-                                        try {
-                                            URI src = URI.create(String.format("%s/%s/%s", Strings.trimSeparator(segmentKey.getAbsoluteUri().getPath() + "/", "/"), RelationIndexImpl.RELATIONS_KEY, primary.getId()));
-                                            URI dest = URI.create(String.format("%s/%s/%s", Strings.trimSeparator(segmentKey.getUri().getPath() + "/", "/"), RelationIndexImpl.RELATIONS_KEY, primary.getId()));
-                                            SwiftRepositoryManager.getManager().currentRepo().copyToRemote(src, dest);
-                                            needUpload.add(dest);
-                                        } catch (IOException e) {
-                                            logger.error("upload error! ", e);
-                                        }
-                                    }
-                                } else {
-                                    for (SegmentKey segmentKey : segmentKeys) {
-                                        try {
-                                            URI src = URI.create(String.format("%s/%s%s/%s", Strings.trimSeparator(segmentKey.getAbsoluteUri().getPath() + "/", "/"), "field", RelationIndexImpl.RELATIONS_KEY, primary.getId()));
-                                            URI dest = URI.create(String.format("%s/%s/%s/%s", Strings.trimSeparator(segmentKey.getUri().getPath() + "/", "/"), "field", RelationIndexImpl.RELATIONS_KEY, primary.getId()));
-                                            SwiftRepositoryManager.getManager().currentRepo().copyToRemote(src, dest);
-                                            needUpload.add(dest);
-                                        } catch (IOException e) {
-                                            logger.error("upload error! ", e);
-                                        }
-                                    }
-                                }
-
-                                runRpc(new HistoryCommonLoadRpcEvent(Pair.of(sourceKey.getId(), needUpload)))
-                                        .addCallback(new AsyncRpcCallback() {
-                                            @Override
-                                            public void success(Object result) {
-                                                logger.info("rpcTrigger success");
-                                            }
-
-                                            @Override
-                                            public void fail(Exception e) {
-                                                logger.error("rpcTrigger error", e);
-                                            }
-                                        });
-                            }
-                        }
-
-                    }
-                } catch (Exception e) {
-                    logger.error(e);
-                }
+                // TODO 这里是FineIO 修改后的，现在还没有提fineio，先直接用runnable来run吧
+//                JobFinishedManager.getInstance().finish(new UploadRunnable(result));
+                new UploadRunnable(result).run();
             }
         });
 
@@ -259,4 +182,103 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
         throw new Exception(invokeResult.getException());
     }
 
+    private class UploadRunnable implements Runnable {
+        private Pair<TaskKey, TaskResult> result;
+
+        public UploadRunnable(Pair<TaskKey, TaskResult> result) {
+            this.result = result;
+        }
+
+        private void uploadTable(DataSource dataSource) throws Exception {
+            SourceKey sourceKey = dataSource.getSourceKey();
+            List<SegmentKey> segmentKeys = SwiftSegmentServiceProvider.getProvider().getSegmentByKey(sourceKey.getId());
+            if (null != segmentKeys) {
+                for (SegmentKey segmentKey : segmentKeys) {
+                    try {
+                        SwiftRepositoryManager.getManager().currentRepo().copyToRemote(segmentKey.getAbsoluteUri(), segmentKey.getUri());
+                    } catch (IOException e) {
+                        logger.error("upload error! ", e);
+                    }
+                }
+
+                runRpc(new HistoryLoadSegmentRpcEvent(sourceKey.getId()))
+                        .addCallback(new AsyncRpcCallback() {
+                            @Override
+                            public void success(Object result) {
+                                logger.info("rpcTrigger success! ");
+                            }
+
+                            @Override
+                            public void fail(Exception e) {
+                                logger.error("rpcTrigger error! ", e);
+                            }
+                        });
+            }
+        }
+
+        private void uploadRelation(RelationSource relation) throws Exception {
+            SourceKey sourceKey = relation.getForeignSource();
+            SourceKey primary = relation.getPrimarySource();
+            List<URI> needUpload = new ArrayList<URI>();
+            List<SegmentKey> segmentKeys = SwiftSegmentServiceProvider.getProvider().getSegmentByKey(sourceKey.getId());
+            if (null != segmentKeys) {
+                if (relation.getRelationType() != RelationSourceType.FIELD_RELATION) {
+                    for (SegmentKey segmentKey : segmentKeys) {
+                        try {
+                            URI src = URI.create(String.format("%s/%s/%s", Strings.trimSeparator(segmentKey.getAbsoluteUri().getPath() + "/", "/"), RelationIndexImpl.RELATIONS_KEY, primary.getId()));
+                            URI dest = URI.create(String.format("%s/%s/%s", Strings.trimSeparator(segmentKey.getUri().getPath() + "/", "/"), RelationIndexImpl.RELATIONS_KEY, primary.getId()));
+                            SwiftRepositoryManager.getManager().currentRepo().copyToRemote(src, dest);
+                            needUpload.add(dest);
+                        } catch (IOException e) {
+                            logger.error("upload error! ", e);
+                        }
+                    }
+                } else {
+                    for (SegmentKey segmentKey : segmentKeys) {
+                        try {
+                            URI src = URI.create(String.format("%s/%s%s/%s", Strings.trimSeparator(segmentKey.getAbsoluteUri().getPath() + "/", "/"), "field", RelationIndexImpl.RELATIONS_KEY, primary.getId()));
+                            URI dest = URI.create(String.format("%s/%s/%s/%s", Strings.trimSeparator(segmentKey.getUri().getPath() + "/", "/"), "field", RelationIndexImpl.RELATIONS_KEY, primary.getId()));
+                            SwiftRepositoryManager.getManager().currentRepo().copyToRemote(src, dest);
+                            needUpload.add(dest);
+                        } catch (IOException e) {
+                            logger.error("upload error! ", e);
+                        }
+                    }
+                }
+
+                runRpc(new HistoryCommonLoadRpcEvent(Pair.of(sourceKey.getId(), needUpload)))
+                        .addCallback(new AsyncRpcCallback() {
+                            @Override
+                            public void success(Object result) {
+                                logger.info("rpcTrigger success");
+                            }
+
+                            @Override
+                            public void fail(Exception e) {
+                                logger.error("rpcTrigger error", e);
+                            }
+                        });
+            }
+        }
+
+        @Override
+        public void run() {
+            TaskKey key = result.getKey();
+            Object obj = stuffObject.get(key);
+            try {
+                runRpc(new TaskDoneRpcEvent(result));
+                if (null != obj) {
+
+                    if (obj instanceof DataSource) {
+                        uploadTable((DataSource) obj);
+                    } else if (obj instanceof RelationSource) {
+                        uploadRelation((RelationSource) obj);
+                    }
+
+                }
+            } catch (Exception e) {
+                logger.error(e);
+            }
+        }
+    }
 }

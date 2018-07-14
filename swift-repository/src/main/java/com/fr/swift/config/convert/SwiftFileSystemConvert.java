@@ -63,7 +63,7 @@ public class SwiftFileSystemConvert implements SwiftConfigService.ConfigConvert<
                     configBean = new HdfsRepositoryConfigBean();
                     break;
             }
-            Field[] fields = FtpRepositoryConfigBean.class.getDeclaredFields();
+            Field[] fields = configBean.getClass().getDeclaredFields();
             for (Field field : fields) {
                 field.setAccessible(true);
                 SwiftConfigEntity entity = dao.select(session, getKey(type.name() + "." + field.getName()));

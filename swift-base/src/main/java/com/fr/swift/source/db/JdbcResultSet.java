@@ -44,7 +44,7 @@ public class JdbcResultSet implements SwiftResultSet {
     }
 
     @Override
-    public boolean next() throws SQLException {
+    public boolean hasNext() throws SQLException {
         return current != null;
     }
 

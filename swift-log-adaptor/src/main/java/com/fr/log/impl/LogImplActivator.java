@@ -1,10 +1,10 @@
 package com.fr.log.impl;
 
 import com.fr.cluster.entry.ClusterTicketKey;
-import com.fr.intelli.record.AccumulatorFactory;
+import com.fr.intelli.record.MetricRegistry;
 import com.fr.module.Activator;
 import com.fr.module.extension.Prepare;
-import com.fr.swift.adaptor.log.AccumulatorProxy;
+import com.fr.swift.adaptor.log.MetricProxy;
 import com.fr.swift.core.rpc.SwiftClusterTicket;
 import com.fr.swift.log.SwiftFrLoggers;
 import com.fr.swift.log.SwiftLogger;
@@ -20,14 +20,14 @@ public class LogImplActivator extends Activator implements Prepare {
 
     @Override
     public void start() {
-        AccumulatorFactory.register(AccumulatorProxy.getInstance());
+        MetricRegistry.register(MetricProxy.getInstance());
         previousLoggerFactory = SwiftLoggers.getLoggerFactory();
         SwiftLoggers.setLoggerFactory(new SwiftFrLoggers());
     }
 
     @Override
     public void stop() {
-        AccumulatorFactory.reset();
+        MetricRegistry.reset();
         SwiftLoggers.setLoggerFactory(previousLoggerFactory);
     }
 

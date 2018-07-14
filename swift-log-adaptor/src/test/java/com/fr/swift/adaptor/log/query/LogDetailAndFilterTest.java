@@ -53,7 +53,7 @@ public class LogDetailAndFilterTest extends LogBaseTest {
             int index1 = table.getMeta().getColumnIndex("合同类型") - 1;
             int index2 = table.getMeta().getColumnIndex("总金额") - 1;
 
-            while (eqResultSet.next()) {
+            while (eqResultSet.hasNext()) {
                 Row row = eqResultSet.getNextRow();
                 assertEquals(row.getValue(index1), "购买合同");
                 assertTrue(((Long) row.getValue(index2)).doubleValue() >= 1000000 && ((Long) row.getValue(index2)).doubleValue() <= 2000000);
@@ -85,7 +85,7 @@ public class LogDetailAndFilterTest extends LogBaseTest {
             SwiftResultSet eqResultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
             int index1 = table.getMeta().getColumnIndex("合同类型") - 1;
             int count1 = 0, count2 = 0, count3 = 0;
-            while (eqResultSet.next()) {
+            while (eqResultSet.hasNext()) {
                 Row row = eqResultSet.getNextRow();
                 if (ComparatorUtils.equals(row.getValue(index1), "购买合同")) {
                     count1++;

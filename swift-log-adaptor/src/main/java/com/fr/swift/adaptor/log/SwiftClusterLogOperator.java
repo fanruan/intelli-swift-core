@@ -5,12 +5,11 @@ import com.fr.cluster.engine.rpc.base.InvokerManager;
 import com.fr.cluster.rpc.base.Invocation;
 import com.fr.cluster.rpc.base.Invoker;
 import com.fr.cluster.rpc.base.Result;
-import com.fr.intelli.record.scene.impl.BaseAccumulator;
+import com.fr.intelli.record.scene.impl.BaseMetric;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.data.DataList;
 import com.fr.swift.core.rpc.FRClusterNodeManager;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,18 +19,18 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class SwiftClusterLogOperator extends BaseAccumulator {
+public class SwiftClusterLogOperator extends BaseMetric {
 
     private Invoker invoker;
 
     public SwiftClusterLogOperator() {
-        invoker = InvokerManager.getInstance().create(AccumulatorProxy.class);
+        invoker = InvokerManager.getInstance().create(MetricProxy.class);
     }
 
     @Override
     public <T> DataList<T> find(Class<T> aClass, QueryCondition queryCondition) {
         ClusterNode masterNode = FRClusterNodeManager.getInstance().getMasterNode();
-        Invocation invocation = Invocation.create(AccumulatorProxy.class, "find",
+        Invocation invocation = Invocation.create(MetricProxy.class, "find",
                 new Class[]{Class.class, QueryCondition.class}, aClass, queryCondition);
         Result result = invoker.invoke(masterNode, invocation);
         return (DataList) result.get();
@@ -45,7 +44,7 @@ public class SwiftClusterLogOperator extends BaseAccumulator {
     @Override
     public void submit(Object o) {
         ClusterNode masterNode = FRClusterNodeManager.getInstance().getMasterNode();
-        Invocation invocation = Invocation.create(AccumulatorProxy.class, "submit",
+        Invocation invocation = Invocation.create(MetricProxy.class, "submit",
                 new Class[]{Object.class}, o);
         invoker.invoke(masterNode, invocation);
     }
@@ -53,7 +52,7 @@ public class SwiftClusterLogOperator extends BaseAccumulator {
     @Override
     public void submit(List<Object> list) {
         ClusterNode masterNode = FRClusterNodeManager.getInstance().getMasterNode();
-        Invocation invocation = Invocation.create(AccumulatorProxy.class, "submit",
+        Invocation invocation = Invocation.create(MetricProxy.class, "submit",
                 new Class[]{List.class}, list);
         invoker.invoke(masterNode, invocation);
     }
@@ -61,16 +60,16 @@ public class SwiftClusterLogOperator extends BaseAccumulator {
     @Override
     public void pretreatment(List<Class> list) {
         ClusterNode masterNode = FRClusterNodeManager.getInstance().getMasterNode();
-        Invocation invocation = Invocation.create(AccumulatorProxy.class, "pretreatment",
+        Invocation invocation = Invocation.create(MetricProxy.class, "pretreatment",
                 new Class[]{List.class}, list);
         invoker.invoke(masterNode, invocation);
     }
 
     @Override
-    public void clearLogBefore(Date date) {
+    public void clean(QueryCondition condition) {
         ClusterNode masterNode = FRClusterNodeManager.getInstance().getMasterNode();
-        Invocation invocation = Invocation.create(AccumulatorProxy.class, "clearLogBefore",
-                new Class[]{Date.class}, date);
+        Invocation invocation = Invocation.create(MetricProxy.class, "clean",
+                new Class[]{QueryCondition.class}, condition);
         invoker.invoke(masterNode, invocation);
     }
 }

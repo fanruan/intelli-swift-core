@@ -23,7 +23,7 @@ public class TableDbSourcePreviewTransferTest extends TestCase {
         TableDbSourcePreviewTransfer transfer = new TableDbSourcePreviewTransfer(connectionInfo, 10, source.getDBTableName());
         SwiftResultSet resultSet = transfer.createResultSet();
         int index = 0;
-        while (resultSet.next()) {
+        while (resultSet.hasNext()) {
             resultSet.getNextRow();
             index++;
         }
@@ -49,7 +49,7 @@ public class TableDbSourcePreviewTransferTest extends TestCase {
         TableDbSourcePreviewTransfer transfer = new TableDbSourcePreviewTransfer(connectionInfo, fieldClassTypes, source.getMetadata(), 10, source.getDBTableName());
         SwiftResultSet resultSet = transfer.createResultSet();
         int index = 0;
-        while (resultSet.next()) {
+        while (resultSet.hasNext()) {
             assertEquals(resultSet.getNextRow().getValue(0).getClass(), String.class);
             index++;
         }

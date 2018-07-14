@@ -98,7 +98,7 @@ public class TableTest {
         }
 
         @Override
-        public boolean next() {
+        public boolean hasNext() {
             return cursor < rows.length;
         }
 

@@ -27,7 +27,7 @@ public class ColumnFormulaOperatorTest extends TestCase {
             SwiftResultSet rs = operator.createResultSet(null, null, basedSegment);
             Object[] str = new Object[]{"10","2","4","4","4","2","2","10","4","10","2","4","4","4","2","2","10","4"};
             int index = 0;
-            while(rs.next()) {
+            while (rs.hasNext()) {
                 Row row = rs.getNextRow();
                 for(int i = 0; i < 1; i++) {
                     assertEquals(row.getValue(i).toString(), str[index].toString());

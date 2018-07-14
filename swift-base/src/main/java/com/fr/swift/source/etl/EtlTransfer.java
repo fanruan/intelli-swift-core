@@ -62,8 +62,8 @@ public class EtlTransfer implements SwiftSourceTransfer {
         }
 
         @Override
-        public boolean next() throws SQLException {
-            return resultSet.next();
+        public boolean hasNext() throws SQLException {
+            return resultSet.hasNext();
         }
 
         @Override

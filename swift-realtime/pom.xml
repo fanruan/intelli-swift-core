@@ -15,23 +15,23 @@
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-base</artifactId>
-            <version>10.0-RELEASE-SNAPSHOT</version>
+            <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-history</artifactId>
-            <version>10.0-RELEASE-SNAPSHOT</version>
+            <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-cluster</artifactId>
-            <version>10.0-RELEASE-SNAPSHOT</version>
+            <version>${swift.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-redis</artifactId>
-            <version>10.0-RELEASE-SNAPSHOT</version>
+            <version>${swift.version}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

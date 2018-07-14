@@ -1,4 +1,4 @@
-package com.fr.swift.query.info.bean.element.filter.impl;
+package com.fr.swift.query.info.bean.element.filter.impl.value;
 
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 
@@ -46,5 +46,27 @@ public class RangeFilterValueBean {
 
     public void setEndIncluded(boolean endIncluded) {
         this.endIncluded = endIncluded;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        RangeFilterValueBean valueBean = (RangeFilterValueBean) o;
+
+        if (startIncluded != valueBean.startIncluded) return false;
+        if (endIncluded != valueBean.endIncluded) return false;
+        if (start != null ? !start.equals(valueBean.start) : valueBean.start != null) return false;
+        return end != null ? end.equals(valueBean.end) : valueBean.end == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = start != null ? start.hashCode() : 0;
+        result = 31 * result + (end != null ? end.hashCode() : 0);
+        result = 31 * result + (startIncluded ? 1 : 0);
+        result = 31 * result + (endIncluded ? 1 : 0);
+        return result;
     }
 }

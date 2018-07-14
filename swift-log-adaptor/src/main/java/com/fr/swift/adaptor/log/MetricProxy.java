@@ -1,8 +1,8 @@
 package com.fr.swift.adaptor.log;
 
-import com.fr.intelli.record.AccumulatorException;
-import com.fr.intelli.record.scene.Accumulator;
-import com.fr.intelli.record.scene.impl.BaseAccumulator;
+import com.fr.intelli.record.MetricException;
+import com.fr.intelli.record.scene.Metric;
+import com.fr.intelli.record.scene.impl.BaseMetric;
 import com.fr.log.FineLoggerFactory;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.data.DataList;
@@ -21,13 +21,13 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class AccumulatorProxy extends BaseAccumulator {
+public class MetricProxy extends BaseMetric {
 
-    private Accumulator logOperator;
-    private Accumulator singleLogOperator;
-    private Accumulator clusterLogOperator;
+    private Metric logOperator;
+    private Metric singleLogOperator;
+    private Metric clusterLogOperator;
 
-    private AccumulatorProxy() {
+    private MetricProxy() {
         this.singleLogOperator = new SwiftLogOperator();
         this.logOperator = singleLogOperator;
         ClusterListenerHandler.addListener(new ClusterEventListener() {
@@ -43,8 +43,8 @@ public class AccumulatorProxy extends BaseAccumulator {
     }
 
     @Override
-    public <T> DataList<T> find(Class<T> aClass, QueryCondition queryCondition) throws AccumulatorException {
-        synchronized (AccumulatorProxy.class) {
+    public <T> DataList<T> find(Class<T> aClass, QueryCondition queryCondition) throws MetricException {
+        synchronized (MetricProxy.class) {
             return logOperator.find(aClass, queryCondition);
         }
     }
@@ -56,34 +56,34 @@ public class AccumulatorProxy extends BaseAccumulator {
 
     @Override
     public void submit(Object o) {
-        synchronized (AccumulatorProxy.class) {
+        synchronized (MetricProxy.class) {
             logOperator.submit(o);
         }
     }
 
     @Override
     public void submit(List<Object> list) {
-        synchronized (AccumulatorProxy.class) {
+        synchronized (MetricProxy.class) {
             logOperator.submit(list);
         }
     }
 
     @Override
     public void pretreatment(List<Class> list) throws Exception {
-        synchronized (AccumulatorProxy.class) {
+        synchronized (MetricProxy.class) {
             logOperator.pretreatment(list);
         }
     }
 
     @Override
-    public void clearLogBefore(Date date) throws Exception {
-        synchronized (AccumulatorProxy.class) {
-            logOperator.clearLogBefore(date);
+    public void clean(QueryCondition condition) throws Exception {
+        synchronized (MetricProxy.class) {
+            logOperator.clean(condition);
         }
     }
 
     public boolean switchSingle() {
-        synchronized (AccumulatorProxy.class) {
+        synchronized (MetricProxy.class) {
             if (logOperator == clusterLogOperator) {
                 logOperator = singleLogOperator;
                 FineLoggerFactory.getLogger().info("LogOperator switch to single successfully!");
@@ -94,7 +94,7 @@ public class AccumulatorProxy extends BaseAccumulator {
     }
 
     public boolean switchCluster() {
-        synchronized (AccumulatorProxy.class) {
+        synchronized (MetricProxy.class) {
             if (logOperator == singleLogOperator) {
                 if (clusterLogOperator == null) {
                     this.clusterLogOperator = new SwiftClusterLogOperator();
@@ -107,9 +107,9 @@ public class AccumulatorProxy extends BaseAccumulator {
         }
     }
 
-    private static final Accumulator INSTANCE = new AccumulatorProxy();
+    private static final Metric INSTANCE = new MetricProxy();
 
-    public static Accumulator getInstance() {
+    public static Metric getInstance() {
         return INSTANCE;
     }
 }

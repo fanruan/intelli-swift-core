@@ -69,7 +69,7 @@ public class SortMultiSegmentDetailResultSet implements DetailResultSet {
     }
 
     @Override
-    public boolean next() {
+    public boolean hasNext() {
         if (rowIterator == null) {
             rowIterator = new SwiftRowIteratorImpl(this);
         }

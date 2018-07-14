@@ -26,6 +26,9 @@ public class GroupNodeMergeUtils {
         AggregatorValue[] mergeRootValues = mergeRoot.getAggregatorValue();
         for (int i = 1; i < roots.size(); i++) {
             AggregatorValue[] values = roots.get(i).getAggregatorValue();
+            if (values.length == 0) {
+                continue;
+            }
             mergeRootValues = aggregateValues(aggregators, mergeRootValues, values);
         }
         // 从新设置一下值

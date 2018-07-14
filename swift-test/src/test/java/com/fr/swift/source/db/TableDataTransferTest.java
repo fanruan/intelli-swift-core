@@ -38,7 +38,7 @@ public class TableDataTransferTest extends TestCase {
         TableDataTransfer excelTransfer = new TableDataTransfer(new ExcelTableData(path, names, types), source.getMetadata(), source.getOuterMetadata());
         SwiftResultSet resultSet = excelTransfer.createResultSet();
         List<Row> list = new ArrayList<Row>();
-        while (resultSet.next()){
+        while (resultSet.hasNext()) {
             list.add(resultSet.getNextRow());
         }
         resultSet.close();
@@ -55,7 +55,7 @@ public class TableDataTransferTest extends TestCase {
         TableDataTransfer excelTransfer = new TableDataTransfer(new ExcelTableData(path, names, types), source.getMetadata(), source.getOuterMetadata());
         SwiftResultSet resultSet = excelTransfer.createResultSet();
         List<Row> list = new ArrayList<Row>();
-        while (resultSet.next()){
+        while (resultSet.hasNext()) {
             list.add(resultSet.getNextRow());
         }
         resultSet.close();

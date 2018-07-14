@@ -1,8 +1,11 @@
 package com.fr.swift.adaptor.log;
 
-import com.fr.intelli.record.scene.Accumulator;
+import com.fr.intelli.record.scene.Metric;
 import com.fr.log.message.AbstractMessage;
 import com.fr.stable.query.QueryFactory;
+import com.fr.stable.query.condition.QueryCondition;
+import com.fr.stable.query.condition.impl.QueryConditionImpl;
+import com.fr.stable.query.restriction.RestrictionFactory;
 import com.fr.swift.adaptor.log.SwiftLogOperator.Sync;
 import com.fr.swift.adaptor.log.SwiftMetaAdaptorTest.A;
 import com.fr.swift.adaptor.log.SwiftMetaAdaptorTest.ConvertType;
@@ -38,7 +41,7 @@ import static org.junit.Assert.assertTrue;
  * @date 2018/4/26
  */
 public class LogOperatorTest {
-    private Accumulator logOperator = AccumulatorProxy.getInstance();
+    private Metric logOperator = MetricProxy.getInstance();
     private Database db = SwiftDatabase.getInstance();
 
     @BeforeClass
@@ -119,7 +122,9 @@ public class LogOperatorTest {
         }
         logOperator.submit(dates);
         TimeUnit.SECONDS.sleep(1);
-        logOperator.clearLogBefore(new Date(mid));
+
+        QueryCondition condition = new QueryConditionImpl().addRestriction(RestrictionFactory.lt(AbstractMessage.COLUMN_TIME, new Date(mid).getTime()));
+        logOperator.clean(condition);
         TimeUnit.SECONDS.sleep(1);
         List<DateClass> data = logOperator.find(DateClass.class, QueryFactory.create()).getList();
         for (DateClass datum : data) {

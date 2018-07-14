@@ -53,7 +53,7 @@ public class GetFromDateResultSet implements SwiftResultSet {
     }
 
     @Override
-    public boolean next() throws SQLException {
+    public boolean hasNext() throws SQLException {
         if (segCursor < segments.length && rowCursor < rowCount) {
             rowCount = segments[segCursor].getRowCount();
             ColumnKey columnKey = new ColumnKey(field);

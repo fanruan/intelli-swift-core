@@ -74,4 +74,29 @@ public class RelationSourceBean implements IRelationSourceBean {
     public void setForeignFields(List<String> foreignFields) {
         this.foreignFields = foreignFields;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        RelationSourceBean that = (RelationSourceBean) o;
+
+        if (type != that.type) return false;
+        if (primaryTable != null ? !primaryTable.equals(that.primaryTable) : that.primaryTable != null) return false;
+        if (foreignTable != null ? !foreignTable.equals(that.foreignTable) : that.foreignTable != null) return false;
+        if (primaryFields != null ? !primaryFields.equals(that.primaryFields) : that.primaryFields != null)
+            return false;
+        return foreignFields != null ? foreignFields.equals(that.foreignFields) : that.foreignFields == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = type != null ? type.hashCode() : 0;
+        result = 31 * result + (primaryTable != null ? primaryTable.hashCode() : 0);
+        result = 31 * result + (foreignTable != null ? foreignTable.hashCode() : 0);
+        result = 31 * result + (primaryFields != null ? primaryFields.hashCode() : 0);
+        result = 31 * result + (foreignFields != null ? foreignFields.hashCode() : 0);
+        return result;
+    }
 }

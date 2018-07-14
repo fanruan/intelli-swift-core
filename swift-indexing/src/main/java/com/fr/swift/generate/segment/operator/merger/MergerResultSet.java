@@ -65,7 +65,7 @@ public class MergerResultSet implements SwiftResultSet {
     }
 
     @Override
-    public boolean next() {
+    public boolean hasNext() {
         return (currentCount / alloterCount) <= currentSegment && currentCount < rowList.size();
     }
 

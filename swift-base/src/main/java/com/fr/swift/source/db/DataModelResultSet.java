@@ -33,7 +33,7 @@ public class DataModelResultSet extends AbstractDataModelResultSet {
     }
 
     @Override
-    public boolean next() throws SQLException {
+    public boolean hasNext() throws SQLException {
         try {
             return dataModel.hasRow(++index);
         } catch (TableDataException e) {

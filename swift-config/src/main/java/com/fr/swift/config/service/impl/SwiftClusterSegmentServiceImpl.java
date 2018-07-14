@@ -9,6 +9,7 @@ import com.fr.swift.config.entity.key.SwiftSegLocationEntityId;
 import com.fr.swift.config.hibernate.transaction.AbstractTransactionWorker;
 import com.fr.swift.config.hibernate.transaction.HibernateTransactionManager;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
+import com.fr.swift.cube.io.Types;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.structure.Pair;
@@ -31,7 +32,7 @@ import java.util.Map;
  * @date 2018/6/7
  */
 @Service("swiftClusterSegmentService")
-public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentService {
+public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService implements SwiftClusterSegmentService {
 
     @Autowired
     private HibernateTransactionManager transactionManager;
@@ -145,38 +146,21 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
 
     @Override
     public Map<String, List<SegmentKey>> getAllSegments() {
+        return getAllSegments(transactionManager, swiftSegmentDao);
+    }
 
-        try {
-            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Map<String, List<SegmentKey>>>() {
-                @Override
-                public Map<String, List<SegmentKey>> work(Session session) {
-                    List<SegmentKey> beans = swiftSegmentDao.findAll(session);
-                    Map<String, List<SegmentKey>> result = new HashMap<String, List<SegmentKey>>();
-                    for (SegmentKey bean : beans) {
-                        SegmentKeyBean keyBean = (SegmentKeyBean) bean;
-                        if (!result.containsKey(keyBean.getSourceKey())) {
-                            result.put(keyBean.getSourceKey(), new ArrayList<SegmentKey>());
-                        }
-                        result.get(keyBean.getSourceKey()).add(bean);
-                    }
-                    return result;
-                }
-
-                @Override
-                public boolean needTransaction() {
-                    return false;
-                }
-            });
-
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().error("Select segments error!", e);
-        }
-        return Collections.emptyMap();
+    @Override
+    public Map<String, List<SegmentKey>> getAllRealTimeSegments() {
+        return getAllRealTimeSegments(transactionManager, swiftSegmentDao);
     }
 
     @Override
     public List<SegmentKey> getSegmentByKey(String sourceKey) {
-        return getOwnSegments().get(sourceKey);
+        List<SegmentKey> result = getOwnSegments().get(sourceKey);
+        if (null == result) {
+            return Collections.emptyList();
+        }
+        return result;
     }
 
     @Override
@@ -216,6 +200,31 @@ public class SwiftClusterSegmentServiceImpl implements SwiftClusterSegmentServic
                     for (SwiftSegmentLocationEntity entity : list) {
                         SegmentKeyBean bean = swiftSegmentDao.select(session, entity.getSegmentId()).convert();
                         if (!result.containsKey(bean.getSourceKey())) {
+                            result.put(bean.getSourceKey(), new ArrayList<SegmentKey>());
+                        }
+                        result.get(bean.getSourceKey()).add(bean);
+                    }
+                    return result;
+                }
+            });
+
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error("Select segments error!", e);
+        }
+        return Collections.emptyMap();
+    }
+
+    @Override
+    public Map<String, List<SegmentKey>> getOwnRealTimeSegments(final String clusterId) {
+        try {
+            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Map<String, List<SegmentKey>>>() {
+                @Override
+                public Map<String, List<SegmentKey>> work(Session session) throws SQLException {
+                    Map<String, List<SegmentKey>> result = new HashMap<String, List<SegmentKey>>();
+                    List<SwiftSegmentLocationEntity> list = segmentLocationDao.findByClusterId(session, clusterId);
+                    for (SwiftSegmentLocationEntity entity : list) {
+                        SegmentKeyBean bean = swiftSegmentDao.select(session, entity.getSegmentId()).convert();
+                        if (bean.getStoreType() == Types.StoreType.MEMORY && !result.containsKey(bean.getSourceKey())) {
                             result.put(bean.getSourceKey(), new ArrayList<SegmentKey>());
                         }
                         result.get(bean.getSourceKey()).add(bean);

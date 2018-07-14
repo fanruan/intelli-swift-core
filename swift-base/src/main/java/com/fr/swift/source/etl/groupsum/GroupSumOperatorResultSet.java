@@ -60,7 +60,7 @@ public class GroupSumOperatorResultSet implements SwiftResultSet {
     }
 
     @Override
-    public boolean next() throws SQLException {
+    public boolean hasNext() throws SQLException {
         return mergerGroupByValues.hasNext();
     }
 

@@ -29,7 +29,7 @@ public class ListResultSet implements SwiftResultSet {
     }
 
     @Override
-    public boolean next() throws SQLException {
+    public boolean hasNext() throws SQLException {
         return cursor < rows.size();
     }
 
