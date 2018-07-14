@@ -85,23 +85,6 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
                 new Incrementer(SwiftDatabase.getInstance().getTable(tableKey)).increment(resultSet);
             }
         });
-        // TODO 生成realtime的SegmentLocation信息
-//        URL masterURL = getMasterURL();
-//        ProxyFactory factory = ProxySelector.getInstance().getFactory();
-//        Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, masterURL, false);
-//        Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName("rpcTrigger"), new Object[]{new SegmentLocationRpcEvent(new SegmentLocationInfoImpl(ServiceType.REAL_TIME, new HashMap<String, Pair<Integer, List<SegmentDestination>>>()))}));
-//        RpcFuture future = (RpcFuture) result.getValue();
-//        future.addCallback(new AsyncRpcCallback() {
-//            @Override
-//            public void success(Object result) {
-//                logger.info("rpcTrigger success! ");
-//            }
-//
-//            @Override
-//            public void fail(Exception e) {
-//                logger.error("rpcTrigger error! ", e);
-//            }
-//        });
     }
 
 //    @Override
