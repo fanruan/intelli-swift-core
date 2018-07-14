@@ -1,7 +1,6 @@
 package com.fr.swift.task.impl;
 
 import com.fr.event.EventDispatcher;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.task.SchedulerTask;
 import com.fr.swift.task.TaskKey;
 import com.fr.swift.task.TaskResult;
@@ -51,8 +50,6 @@ public class SchedulerTaskImpl extends BaseTask implements SchedulerTask {
 
         this.result = result;
         setStatus(Status.DONE);
-
-        SwiftLoggers.getLogger().info(String.format("%s %s", key, result));
 
         TaskTomb.getTomb().add(this);
     }

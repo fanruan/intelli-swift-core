@@ -1,5 +1,6 @@
 package com.fr.swift.bitmap.impl;
 
+import com.fineio.base.Bits;
 import com.fr.swift.bitmap.BitMapType;
 import com.fr.swift.bitmap.ImmutableBitMap;
 
@@ -13,6 +14,32 @@ public final class AllShowBitMap extends RangeBitmap {
 
     public static ImmutableBitMap of(int rowCount) {
         return new AllShowBitMap(rowCount);
+    }
+
+    @Override
+    public byte[] toBytes() {
+        byte[] bytes = new byte[4];
+        Bits.putInt(bytes, 0, end);
+        return bytes;
+    }
+
+    public static ImmutableBitMap ofBytes(byte[] bytes, int offset) {
+        return of(Bits.getInt(bytes, offset));
+    }
+
+    @Override
+    public ImmutableBitMap getAnd(ImmutableBitMap index) {
+        return index;
+    }
+
+    @Override
+    public ImmutableBitMap getOr(ImmutableBitMap index) {
+        return this;
+    }
+
+    @Override
+    public ImmutableBitMap getAndNot(ImmutableBitMap index) {
+        return index.getNot(end);
     }
 
     @Override

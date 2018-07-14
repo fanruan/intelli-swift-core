@@ -29,7 +29,7 @@ public class RelationIndexHelper {
         int length = index.length;
         MutableBitMap[] target = new MutableBitMap[length];
         for (int i = 0; i < length; i++) {
-            target[i] = RoaringMutableBitMap.fromBytes(index[i]);
+            target[i] = RoaringMutableBitMap.ofBytes(index[i]);
         }
         this.index.add(target);
     }

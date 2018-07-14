@@ -2,6 +2,7 @@ package com.fr.swift.cube.io.impl.fineio.input;
 
 import com.fr.swift.bitmap.BitMapType;
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.bitmap.impl.AllShowBitMap;
 import com.fr.swift.bitmap.impl.RangeBitmap;
 import com.fr.swift.bitmap.impl.RoaringMutableBitMap;
 import com.fr.swift.cube.io.input.BitMapReader;
@@ -34,10 +35,13 @@ public class BitMapFineIoReader extends BaseFineIoReader implements BitMapReader
         byte head = bytes[0];
         // mutable，immutable底层都是同一结构，暂时先统一生成mutable
         if (head == BitMapType.ROARING_IMMUTABLE.getHead() || head == BitMapType.ROARING_MUTABLE.getHead()) {
-            return RoaringMutableBitMap.fromBytes(bytes, 1, bytes.length - 1);
+            return RoaringMutableBitMap.ofBytes(bytes, 1, bytes.length - 1);
         }
-        if (head == BitMapType.RANGE.getHead() || head == BitMapType.ALL_SHOW.getHead() || head == BitMapType.ID.getHead()) {
-            return RangeBitmap.fromBytes(bytes, 1);
+        if (head == BitMapType.ALL_SHOW.getHead()) {
+            return AllShowBitMap.ofBytes(bytes, 1);
+        }
+        if (head == BitMapType.RANGE.getHead() || head == BitMapType.ID.getHead()) {
+            return RangeBitmap.ofBytes(bytes, 1);
         }
         return Crasher.crash("not a valid head or this bitmap doesn't support, head: " + head);
     }

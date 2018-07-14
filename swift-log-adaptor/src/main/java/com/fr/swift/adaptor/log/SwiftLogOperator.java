@@ -59,7 +59,7 @@ public class SwiftLogOperator extends BaseMetric {
     }
 
     @Override
-    public DataList<List<Object>> find(String s) {
+    public <T> DataList<List<T>> find(String s) {
         return null;
     }
 
