@@ -19,7 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Lyon on 2018/6/7.
+ *
+ * @author Lyon
+ * @date 2018/6/7
  */
 public class QueryInfoBeanFactory {
 
@@ -90,7 +92,8 @@ public class QueryInfoBeanFactory {
                 detailQueryBean.setQueryType(queryInfo.getType());
                 return detailQueryBean;
             case NEST:
+            default:
+                return null;
         }
-        return null;
     }
 }

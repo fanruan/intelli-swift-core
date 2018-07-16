@@ -17,7 +17,6 @@ import java.util.List;
 
 import static com.fr.swift.config.SwiftConfigConstants.LONG_TEXT_LENGTH;
 
-
 /**
  * @author yee
  * @date 2018/5/24

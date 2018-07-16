@@ -8,7 +8,7 @@ import org.junit.Assert;
  * @date 2018/7/9
  */
 public class BitmapAssert {
-    public static void assertEquals(ImmutableBitMap b1, ImmutableBitMap b2) {
+    public static void equals(ImmutableBitMap b1, ImmutableBitMap b2) {
         Assert.assertEquals(b1.getCardinality(), b2.getCardinality());
         b1.traversal(i -> {
             if (!b2.contains(i)) {

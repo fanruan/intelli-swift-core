@@ -163,7 +163,6 @@ class MinTermUtils {
 
     private static class Product {
 
-        // TODO: 2018/7/11 size根据变量个数来决定吧，最大size限制为63就好了
         private static final int SIZE = 63;
 
         private int size;

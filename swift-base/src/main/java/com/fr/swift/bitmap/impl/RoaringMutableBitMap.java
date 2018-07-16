@@ -50,21 +50,35 @@ public class RoaringMutableBitMap extends RoaringImmutableBitMap implements Muta
         }
     }
 
-    public static MutableBitMap fromBytes(byte[] bytes) {
-        return fromBytes(bytes, 0, bytes.length);
+    public static MutableBitMap ofBytes(byte[] bytes) {
+        return ofBytes(bytes, 0, bytes.length);
     }
 
-    public static MutableBitMap fromBytes(byte[] bytes, int offset, int length) {
+    public static MutableBitMap ofBytes(byte[] bytes, int offset, int length) {
         return fromByteBuffer(ByteBuffer.wrap(bytes, offset, length));
     }
 
     @Override
     public void or(ImmutableBitMap index) {
+        if (index.isEmpty()) {
+            return;
+        }
+        if (index instanceof RangeBitmap) {
+            bitmap.add((long) ((RangeBitmap) index).start, ((RangeBitmap) index).end);
+            return;
+        }
         bitmap.or(extract(index));
     }
 
     @Override
     public void and(ImmutableBitMap index) {
+        if (index.isEmpty()) {
+            bitmap.clear();
+            return;
+        }
+        if (index.isFull()) {
+            return;
+        }
         bitmap.and(extract(index));
     }
 
@@ -75,6 +89,17 @@ public class RoaringMutableBitMap extends RoaringImmutableBitMap implements Muta
 
     @Override
     public void andNot(ImmutableBitMap index) {
+        if (index.isEmpty()) {
+            return;
+        }
+        if (index.isFull()) {
+            bitmap.clear();
+            return;
+        }
+        if (index instanceof RangeBitmap) {
+            FasterAggregation.andNot(this, ((RangeBitmap) index));
+            return;
+        }
         bitmap.andNot(extract(index));
     }
 

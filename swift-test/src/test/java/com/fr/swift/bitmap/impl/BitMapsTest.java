@@ -1,5 +1,7 @@
-package com.fr.swift.bitmap;
+package com.fr.swift.bitmap.impl;
 
+import com.fr.swift.bitmap.BitMaps;
+import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.structure.array.IntArray;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;

@@ -115,10 +115,10 @@ public class SwiftMergerTest extends BaseTest {
         RealtimeMerger realtimeMerger = new RealtimeMerger(dataSource.getSourceKey(),
                 dataSource.getMetadata(), DataSourceUtils.getSwiftSourceKey(dataSource).getId());
         //合并前是不为空
-        assertEquals(ResourceDiscovery.getInstance().isCubeResourceEmpty(), false);
+        assertFalse(ResourceDiscovery.getInstance().isCubeResourceEmpty());
         realtimeMerger.merge();
         //合并清除为空
-        assertEquals(ResourceDiscovery.getInstance().isCubeResourceEmpty(), true);
+        assertTrue(ResourceDiscovery.getInstance().isCubeResourceEmpty());
 
 
         segmentList = segmentProvider.getSegment(dataSource.getSourceKey());
