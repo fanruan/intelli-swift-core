@@ -54,7 +54,7 @@ public final class ReflectUtils {
     public static String getString(Field field, Object object) throws Exception {
         Object obj = get(field, object);
         if (null != obj) {
-            Class clazz = field.getType();
+            Class clazz = obj.getClass();
             if (ClassUtils.isPrimitiveOrWrapper(clazz) || ClassUtils.isAssignable(String.class, clazz)) {
                 return obj.toString();
             } else {
