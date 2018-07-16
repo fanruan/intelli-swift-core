@@ -8,11 +8,11 @@ import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.core.rpc.SwiftClusterService;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.event.global.PushSegLocationRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
-import com.fr.swift.frrpc.SwiftClusterService;
 import com.fr.swift.invocation.SwiftInvocation;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.builder.QueryBuilder;
@@ -40,7 +40,12 @@ import com.fr.swift.selector.UrlSelector;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.task.service.ServiceTaskExecutor;
+import com.fr.swift.task.service.ServiceTaskType;
+import com.fr.swift.task.service.SwiftServiceCallable;
 import com.fr.swift.util.concurrent.CommonExecutor;
+import com.fr.third.springframework.beans.factory.annotation.Autowired;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -52,6 +57,7 @@ import java.util.concurrent.Callable;
  * @author pony
  * @date 2017/10/10
  */
+@Service("realtimeService")
 @RpcService(type = RpcServiceType.CLIENT_SERVICE, value = RealtimeService.class)
 public class SwiftRealtimeService extends AbstractSwiftService implements RealtimeService, Serializable {
 
@@ -62,40 +68,46 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     private SwiftRealtimeService() {
     }
 
+    @Autowired
+    private transient ServiceTaskExecutor taskExecutor;
+
     public static SwiftRealtimeService getInstance() {
         return SingletonHolder.service;
     }
 
-
     @Override
-    public void insert(SourceKey tableKey, SwiftResultSet resultSet) throws SQLException {
+    public void insert(final SourceKey tableKey, final SwiftResultSet resultSet) throws Exception {
         SwiftLoggers.getLogger().info("insert");
-        rpcSegmentLocation(PushSegLocationRpcEvent.fromSourceKey(getServiceType(), Arrays.asList(tableKey.getId())));
-
-        new Incrementer(SwiftDatabase.getInstance().getTable(tableKey)).increment(resultSet);
+        taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.INSERT) {
+            @Override
+            public void doJob() throws Exception {
+                rpcSegmentLocation(PushSegLocationRpcEvent.fromSourceKey(getServiceType(), Arrays.asList(tableKey.getId())));
+                new Incrementer(SwiftDatabase.getInstance().getTable(tableKey)).increment(resultSet);
+            }
+        });
     }
 
-    @Override
-    @RpcMethod(methodName = "merge")
-    public void merge(List<SegmentKey> tableKeys) {
-        SwiftLoggers.getLogger().info("merge");
-        rpcSegmentLocation(PushSegLocationRpcEvent.fromSegmentKey(getServiceType(), tableKeys));
-    }
+//    @Override
+//    @RpcMethod(methodName = "merge")
+//    public void merge(List<SegmentKey> tableKeys) {
+//        SwiftLoggers.getLogger().info("merge");
+//        rpcSegmentLocation(PushSegLocationRpcEvent.fromSegmentKey(getServiceType(), tableKeys));
+//    }
 
     @Override
     @RpcMethod(methodName = "realtimeDelete")
-    public boolean delete(SourceKey sourceKey, Where where) throws Exception {
-        try {
-            List<Segment> segments = segmentManager.getSegment(sourceKey);
-            for (Segment segment : segments) {
-                RowDeleter rowDeleter = (RowDeleter) SwiftContext.getInstance().getBean("decrementer", segment);
-                rowDeleter.delete(sourceKey, where);
+    public boolean delete(final SourceKey sourceKey, final Where where) throws Exception {
+        taskExecutor.submit(new SwiftServiceCallable(sourceKey, ServiceTaskType.DELETE) {
+            @Override
+            public void doJob() throws Exception {
+                List<Segment> segments = segmentManager.getSegment(sourceKey);
+                for (Segment segment : segments) {
+                    RowDeleter rowDeleter = (RowDeleter) SwiftContext.getInstance().getBean("decrementer", segment);
+                    rowDeleter.delete(sourceKey, where);
+                }
             }
-            return true;
-        } catch (Exception e) {
-            logger.error(e);
-            throw e;
-        }
+        });
+        return true;
     }
 
     @Override

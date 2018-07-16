@@ -1,4 +1,4 @@
-package com.fr.swift.frrpc;
+package com.fr.swift.core.rpc;
 
 import com.fr.swift.Destination;
 import com.fr.swift.URL;

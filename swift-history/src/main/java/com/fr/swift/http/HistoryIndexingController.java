@@ -10,7 +10,7 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
 import com.fr.swift.event.indexing.IndexRpcEvent;
-import com.fr.swift.frrpc.SwiftClusterService;
+import com.fr.swift.core.rpc.SwiftClusterService;
 import com.fr.swift.invocation.SwiftInvocation;
 import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.rpc.server.RpcServer;

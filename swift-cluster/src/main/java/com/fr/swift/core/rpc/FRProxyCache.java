@@ -1,4 +1,4 @@
-package com.fr.swift.frrpc;
+package com.fr.swift.core.rpc;
 
 import com.fr.cluster.engine.ticket.FineClusterToolKit;
 import com.fr.swift.exception.ProxyRegisterException;
