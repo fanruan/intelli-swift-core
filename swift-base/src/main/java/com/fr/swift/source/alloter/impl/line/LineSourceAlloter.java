@@ -1,11 +1,12 @@
-package com.fr.swift.source.alloter.line;
+package com.fr.swift.source.alloter.impl.line;
+
 
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.AllotRule;
-import com.fr.swift.source.alloter.BaseSourceAlloter;
 import com.fr.swift.source.alloter.RowInfo;
 import com.fr.swift.source.alloter.SegmentInfo;
+import com.fr.swift.source.alloter.impl.BaseSourceAlloter;
 import com.fr.swift.source.alloter.impl.SwiftSegmentInfo;
 
 /**

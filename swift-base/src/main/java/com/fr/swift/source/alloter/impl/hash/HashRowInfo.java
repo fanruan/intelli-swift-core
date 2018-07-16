@@ -1,7 +1,7 @@
-package com.fr.swift.source.alloter.hash;
+package com.fr.swift.source.alloter.impl.hash;
 
 import com.fr.swift.source.Row;
-import com.fr.swift.source.alloter.line.LineRowInfo;
+import com.fr.swift.source.alloter.impl.line.LineRowInfo;
 
 /**
  * @author anchore

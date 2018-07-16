@@ -1,11 +1,11 @@
-package com.fr.swift.source.alloter;
+package com.fr.swift.source.alloter.impl;
 
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.alloter.line.LineSourceAlloter;
+import com.fr.swift.source.alloter.SwiftSourceAlloter;
 
 import java.util.List;
 
