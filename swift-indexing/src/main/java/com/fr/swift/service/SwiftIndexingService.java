@@ -1,5 +1,6 @@
 package com.fr.swift.service;
 
+import com.fineio.FineIO;
 import com.fr.event.Event;
 import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
@@ -17,7 +18,7 @@ import com.fr.swift.event.global.TaskDoneRpcEvent;
 import com.fr.swift.event.history.HistoryCommonLoadRpcEvent;
 import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
-import com.fr.swift.frrpc.SwiftClusterService;
+import com.fr.swift.core.rpc.SwiftClusterService;
 import com.fr.swift.info.ServerCurrentStatus;
 import com.fr.swift.invocation.SwiftInvocation;
 import com.fr.swift.log.SwiftLoggers;
@@ -47,7 +48,10 @@ import com.fr.swift.task.cube.CubeTaskGenerator;
 import com.fr.swift.task.cube.CubeTaskManager;
 import com.fr.swift.task.impl.TaskEvent;
 import com.fr.swift.task.impl.WorkerTaskPool;
+import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.util.Strings;
+import com.fr.third.springframework.beans.factory.annotation.Autowired;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URI;
@@ -60,6 +64,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author pony
  * @date 2017/10/10
  */
+@Service("indexingService")
 @RpcService(type = RpcServiceType.CLIENT_SERVICE, value = IndexingService.class)
 public class SwiftIndexingService extends AbstractSwiftService implements IndexingService {
     private static final long serialVersionUID = -7430843337225891194L;
@@ -69,6 +74,9 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
 
     private SwiftIndexingService() {
     }
+
+    @Autowired
+    private transient ServiceTaskExecutor taskExecutor;
 
     public static SwiftIndexingService getInstance() {
         return SingletonHolder.service;
@@ -151,9 +159,12 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
             @Override
             public void on(Event event, final Pair<TaskKey, TaskResult> result) {
                 SwiftLoggers.getLogger().info("rpc通知server任务完成");
-                // TODO 这里是FineIO 修改后的，现在还没有提fineio，先直接用runnable来run吧
-//                JobFinishedManager.getInstance().finish(new UploadRunnable(result));
-                new UploadRunnable(result).run();
+                try {
+                    runRpc(new TaskDoneRpcEvent(result));
+                    FineIO.doWhenFinished(new UploadRunnable(result));
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().error(e);
+                }
             }
         });
 
@@ -259,9 +270,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
             TaskKey key = result.getKey();
             Object obj = stuffObject.get(key);
             try {
-                runRpc(new TaskDoneRpcEvent(result));
                 if (null != obj) {
-
                     if (obj instanceof DataSource) {
                         uploadTable((DataSource) obj);
                     } else if (obj instanceof RelationSource) {

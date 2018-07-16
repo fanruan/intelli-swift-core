@@ -23,7 +23,7 @@ public class SyncTest {
         //step1: get proxyFactory
         ProxyFactory proxyFactory = ProxySelector.getInstance().getFactory();
         //step2: create object proxy
-        CalculatorService calculatorService = proxyFactory.getProxy(null, CalculatorService.class, new RPCUrl(new RPCDestination("127.0.0.1:8000")));
+        CalculatorService calculatorService = proxyFactory.getProxy(null, CalculatorService.class, new RPCUrl(new RPCDestination("192.168.0.28:7000")));
         long startTime = System.currentTimeMillis();
         //step3: invoke method
         int value = calculatorService.add(10, 20, 5000l);

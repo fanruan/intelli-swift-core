@@ -1,4 +1,4 @@
-package com.fr.swift;
+package com.fr.swift.service;
 
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.config.bean.SegmentKeyBean;
@@ -25,8 +25,6 @@ import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.operator.Collater;
 import com.fr.swift.segment.operator.collate.HistoryCollater;
 import com.fr.swift.segment.operator.utils.SegmentUtils;
-import com.fr.swift.service.AbstractSwiftService;
-import com.fr.swift.service.ServiceType;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
@@ -35,6 +33,11 @@ import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.source.alloter.line.LineAllotRule;
 import com.fr.swift.source.alloter.line.LineRowInfo;
 import com.fr.swift.source.alloter.line.LineSourceAlloter;
+import com.fr.swift.task.service.ServiceTaskExecutor;
+import com.fr.swift.task.service.ServiceTaskType;
+import com.fr.swift.task.service.SwiftServiceCallable;
+import com.fr.third.springframework.beans.factory.annotation.Autowired;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +49,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
+@Service("collateService")
 @RpcService(value = CollateService.class, type = RpcServiceType.CLIENT_SERVICE)
 public class SwiftCollateService extends AbstractSwiftService implements CollateService {
 
@@ -53,30 +57,60 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
 
     private transient Database database = SwiftDatabase.getInstance();
 
+    @Autowired
+    private transient ServiceTaskExecutor taskExecutor;
+
+    public void setTaskExecutor(ServiceTaskExecutor taskExecutor) {
+        this.taskExecutor = taskExecutor;
+    }
+
+    private transient ServiceTaskType serviceTaskType = ServiceTaskType.COLLATE;
+
     @Override
     @RpcMethod(methodName = "autoCollateRealtime")
-    public void autoCollateRealtime(SourceKey tableKey) throws Exception {
-        collateSegments(tableKey, Types.StoreType.MEMORY);
+    public void autoCollateRealtime(final SourceKey tableKey) throws Exception {
+        taskExecutor.submit(new SwiftServiceCallable(tableKey, serviceTaskType) {
+            @Override
+            public void doJob() throws Exception {
+                collateSegments(tableKey, Types.StoreType.MEMORY);
+            }
+        });
     }
 
     @Override
     @RpcMethod(methodName = "autoCollateHistory")
-    public void autoCollateHistory(SourceKey tableKey) throws Exception {
-        collateSegments(tableKey, Types.StoreType.FINE_IO);
+    public void autoCollateHistory(final SourceKey tableKey) throws Exception {
+        taskExecutor.submit(new SwiftServiceCallable(tableKey, serviceTaskType) {
+            @Override
+            public void doJob() throws Exception {
+                collateSegments(tableKey, Types.StoreType.FINE_IO);
+            }
+        });
     }
 
     @Override
     @RpcMethod(methodName = "appointCollateRealtime")
-    public void appointCollateRealtime(List<SegmentKey> segmentKeyList) throws Exception {
-        SourceKey tableKey = checkSegmentKeys(segmentKeyList, Types.StoreType.MEMORY);
-        collateSegments(tableKey, Types.StoreType.MEMORY, segmentKeyList);
+    public void appointCollateRealtime(final List<SegmentKey> segmentKeyList) throws Exception {
+        final SourceKey tableKey = checkSegmentKeys(segmentKeyList, Types.StoreType.MEMORY);
+        taskExecutor.submit(new SwiftServiceCallable(tableKey, serviceTaskType) {
+            @Override
+            public void doJob() throws Exception {
+                collateSegments(tableKey, Types.StoreType.MEMORY, segmentKeyList);
+            }
+        });
     }
 
     @Override
     @RpcMethod(methodName = "appointCollateHistory")
-    public void appointCollateHistory(List<SegmentKey> segmentKeyList) throws Exception {
-        SourceKey tableKey = checkSegmentKeys(segmentKeyList, Types.StoreType.FINE_IO);
-        collateSegments(tableKey, Types.StoreType.FINE_IO, segmentKeyList);
+    public void appointCollateHistory(final List<SegmentKey> segmentKeyList) throws Exception {
+        final SourceKey tableKey = checkSegmentKeys(segmentKeyList, Types.StoreType.FINE_IO);
+        taskExecutor.submit(new SwiftServiceCallable(tableKey, serviceTaskType) {
+            @Override
+            public void doJob() throws Exception {
+                collateSegments(tableKey, Types.StoreType.FINE_IO, segmentKeyList);
+            }
+        });
+
     }
 
     @Override

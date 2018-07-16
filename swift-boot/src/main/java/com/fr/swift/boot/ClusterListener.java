@@ -11,7 +11,7 @@ import com.fr.swift.event.ClusterEventListener;
 import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterType;
 import com.fr.swift.exception.SwiftServiceException;
-import com.fr.swift.frrpc.FRClusterNodeManager;
+import com.fr.swift.core.rpc.FRClusterNodeManager;
 import com.fr.swift.proxy.LocalProxyFactory;
 import com.fr.swift.rpc.proxy.RPCProxyFactory;
 import com.fr.swift.rpc.url.RpcUrlFactory;

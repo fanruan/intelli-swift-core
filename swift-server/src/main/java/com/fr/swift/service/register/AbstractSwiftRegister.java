@@ -6,7 +6,7 @@ import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.exception.SwiftServiceException;
-import com.fr.swift.frrpc.SwiftClusterService;
+import com.fr.swift.core.rpc.SwiftClusterService;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;

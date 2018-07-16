@@ -20,13 +20,6 @@ public interface RealtimeService extends SwiftService {
      */
     void insert(SourceKey tableKey, SwiftResultSet resultSet) throws Exception;
 
-    /**
-     * 合并增量块
-     *
-     * @param tableKeys 表
-     */
-    void merge(List<SegmentKey> tableKeys) throws Exception;
-
     boolean delete(SourceKey sourceKey, Where where) throws Exception;
 
     /**
