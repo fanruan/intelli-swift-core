@@ -18,7 +18,7 @@ import com.fr.swift.event.global.TaskDoneRpcEvent;
 import com.fr.swift.event.history.HistoryCommonLoadRpcEvent;
 import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
-import com.fr.swift.frrpc.SwiftClusterService;
+import com.fr.swift.core.rpc.SwiftClusterService;
 import com.fr.swift.info.ServerCurrentStatus;
 import com.fr.swift.invocation.SwiftInvocation;
 import com.fr.swift.log.SwiftLoggers;
@@ -48,7 +48,10 @@ import com.fr.swift.task.cube.CubeTaskGenerator;
 import com.fr.swift.task.cube.CubeTaskManager;
 import com.fr.swift.task.impl.TaskEvent;
 import com.fr.swift.task.impl.WorkerTaskPool;
+import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.util.Strings;
+import com.fr.third.springframework.beans.factory.annotation.Autowired;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URI;
@@ -61,6 +64,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author pony
  * @date 2017/10/10
  */
+@Service("indexingService")
 @RpcService(type = RpcServiceType.CLIENT_SERVICE, value = IndexingService.class)
 public class SwiftIndexingService extends AbstractSwiftService implements IndexingService {
     private static final long serialVersionUID = -7430843337225891194L;
@@ -70,6 +74,9 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
 
     private SwiftIndexingService() {
     }
+
+    @Autowired
+    private transient ServiceTaskExecutor taskExecutor;
 
     public static SwiftIndexingService getInstance() {
         return SingletonHolder.service;

@@ -5,11 +5,13 @@
        http://www.springframework.org/schema/beans
        classpath:/com/fr/third/springframework/beans/factory/xml/spring-beans-4.0.xsd">
 
-    <!--配置需要启动的远程服务-->
-    <bean id="historyService" class="com.fr.swift.service.SwiftHistoryService"/>
-    <bean id="indexingService" class="com.fr.swift.service.SwiftIndexingService"/>
-    <bean id="analyseService" class="com.fr.swift.service.SwiftAnalyseService"/>
-    <bean id="realtimeService" class="com.fr.swift.service.SwiftRealtimeService"/>
+    <!--配置需要启动的远程服务  注解配置-->
+    <!--<bean id="historyService" class="com.fr.swift.service.SwiftHistoryService"/>-->
+    <!--<bean id="indexingService" class="com.fr.swift.service.SwiftIndexingService"/>-->
+    <!--<bean id="analyseService" class="com.fr.swift.service.SwiftAnalyseService"/>-->
+    <!--<bean id="realtimeService" class="com.fr.swift.service.SwiftRealtimeService"/>-->
+    <!--<bean id="collateService" class="com.fr.swift.service.SwiftCollateService"/>-->
+
     <bean id="clusterSwiftRegister" class="com.fr.swift.service.register.ClusterSwiftRegister">
         <property name="swiftServiceList">
             <list>
@@ -17,6 +19,7 @@
                 <ref bean="indexingService"/>
                 <ref bean="analyseService"/>
                 <ref bean="realtimeService"/>
+                <!--<ref bean="collateService"/>-->
             </list>
         </property>
     </bean>

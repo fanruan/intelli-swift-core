@@ -19,6 +19,11 @@
     <bean id="incrementer" class="com.fr.swift.segment.Incrementer" scope="prototype"/>
     <bean id="decrementer" class="com.fr.swift.segment.Decrementer" scope="prototype"/>
 
+    <bean id="serviceTaskExecutor" class="com.fr.swift.task.service.SwiftServiceTaskExecutor">
+        <constructor-arg name="name" value="swiftServiceTaskExecutor"/>
+        <constructor-arg name="threadNum" value="10"/>
+    </bean>
+
     <!--配置不同的实现class注入-->
     <!--<bean id="segmentBackup" class="com.fr.swift.segment.backup.RedisSegmentBackup" scope="prototype"/>-->
     <!--<bean id="segmentRecovery" class="com.fr.swift.segment.recover.RedisSegmentRecovery"/>-->

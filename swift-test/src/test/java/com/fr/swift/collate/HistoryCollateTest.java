@@ -2,8 +2,6 @@ package com.fr.swift.collate;
 
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.restriction.RestrictionFactory;
-import com.fr.swift.CollateService;
-import com.fr.swift.SwiftCollateService;
 import com.fr.swift.config.service.SwiftSegmentServiceProvider;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
@@ -20,11 +18,13 @@ import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.operator.Inserter;
+import com.fr.swift.service.SwiftCollateService;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.QueryDBSource;
+import com.fr.swift.task.service.SwiftServiceTaskExecutor;
 import junit.framework.TestCase;
 import org.junit.Test;
 
@@ -89,9 +89,10 @@ public class HistoryCollateTest extends BaseTest {
                 assertTrue(neqCount != 0);
             }
             //合并历史块，直接写history
-            CollateService collaterService = new SwiftCollateService();
+            SwiftCollateService collaterService = new SwiftCollateService();
+            collaterService.setTaskExecutor(new SwiftServiceTaskExecutor("testAutoHistoryCollate", 1));
             collaterService.autoCollateHistory(dataSource.getSourceKey());
-
+            Thread.sleep(5000l);
             segments = swiftSegmentManager.getSegment(dataSource.getSourceKey());
             assertTrue(segments.size() == 1);
             //合并后1块历史块，所有数据都是购买合同
