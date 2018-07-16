@@ -1,5 +1,6 @@
 package com.fr.swift.server;
 
+import com.fineio.FineIO;
 import com.fr.config.BaseDBEnv;
 import com.fr.config.dao.DaoContext;
 import com.fr.config.dao.impl.HibernateClassHelperDao;
@@ -27,6 +28,7 @@ import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.event.ClusterType;
 import com.fr.swift.generate.conf.SwiftColumnIndexingConf;
 import com.fr.swift.http.SwiftHttpServer;
+import com.fr.swift.log.FineIOLoggerImpl;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.service.register.LocalSwiftRegister;
@@ -56,7 +58,7 @@ public class SwiftEngineStart {
 //            FR 的配置可以不需要的，这里把在fr的配置同步到新的
             initConfDB();
             registerTmpConnectionProvider();
-//            FineIO.setLogger(new FineIOLoggerImpl());
+            FineIO.setLogger(new FineIOLoggerImpl());
             new LocalSwiftRegister().serviceRegister();
             ClusterListenerHandler.addListener(new ClusterListener());
             ProviderTaskManager.start();
