@@ -16,15 +16,11 @@ public enum ServiceTaskType {
         this.type = type;
     }
 
-    public ServiceTaskType getTaskType() {
-        return ServiceTaskType.values()[type];
-    }
-
     public byte getType() {
         return type;
     }
 
     public boolean isEdit() {
-        return getTaskType() != QUERY;
+        return this != QUERY;
     }
 }
