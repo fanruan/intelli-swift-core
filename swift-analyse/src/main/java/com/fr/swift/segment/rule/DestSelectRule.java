@@ -1,7 +1,5 @@
 package com.fr.swift.segment.rule;
 
-import com.fr.swift.log.SwiftLogger;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.structure.Pair;
@@ -21,10 +19,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public interface DestSelectRule {
     DestSelectRule DEFAULT = new DestSelectRule() {
-        private final SwiftLogger LOGGER = SwiftLoggers.getLogger(DestSelectRule.class);
-
         @Override
-        public List<SegmentDestination> selectDestination(int total, List<SegmentDestination> duplicate) {
+        public List<SegmentDestination> selectDestination(List<SegmentDestination> duplicate) {
             List<SegmentDestination> result = new ArrayList<SegmentDestination>() {
                 @Override
                 public boolean add(SegmentDestination segmentDestination) {
@@ -61,9 +57,6 @@ public interface DestSelectRule {
                 targetDestination.setSpareNodes(spareList);
                 result.add(targetDestination);
             }
-            if (result.size() != total) {
-                LOGGER.warn(String.format("Destinations not match. Total %d but got %d", total, result.size()));
-            }
             Collections.sort(result);
             return Collections.unmodifiableList(result);
         }
@@ -86,5 +79,5 @@ public interface DestSelectRule {
 
     };
 
-    List<SegmentDestination> selectDestination(int total, List<SegmentDestination> duplicate);
+    List<SegmentDestination> selectDestination(List<SegmentDestination> duplicate);
 }

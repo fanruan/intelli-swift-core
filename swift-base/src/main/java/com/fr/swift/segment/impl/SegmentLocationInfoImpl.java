@@ -3,7 +3,6 @@ package com.fr.swift.segment.impl;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.service.ServiceType;
-import com.fr.swift.structure.Pair;
 
 import java.util.List;
 import java.util.Map;
@@ -16,15 +15,15 @@ public class SegmentLocationInfoImpl implements SegmentLocationInfo {
     private static final long serialVersionUID = -4569365852706720673L;
 
     private ServiceType serviceType;
-    private Map<String, Pair<Integer, List<SegmentDestination>>> segments;
+    private Map<String, List<SegmentDestination>> segments;
 
-    public SegmentLocationInfoImpl(ServiceType serviceType, Map<String, Pair<Integer, List<SegmentDestination>>> segments) {
+    public SegmentLocationInfoImpl(ServiceType serviceType, Map<String, List<SegmentDestination>> segments) {
         this.serviceType = serviceType;
         this.segments = segments;
     }
 
     @Override
-    public Map<String, Pair<Integer, List<SegmentDestination>>> getDestinations() {
+    public Map<String, List<SegmentDestination>> getDestinations() {
         return segments;
     }
 

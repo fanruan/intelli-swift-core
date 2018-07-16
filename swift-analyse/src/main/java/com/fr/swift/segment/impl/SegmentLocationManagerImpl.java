@@ -5,7 +5,6 @@ import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationManager;
 import com.fr.swift.segment.rule.DestSelectRule;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.structure.Pair;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -19,11 +18,11 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SegmentLocationManagerImpl implements SegmentLocationManager {
 
-    private Map<String, Pair<Integer, List<SegmentDestination>>> segments;
+    private Map<String, List<SegmentDestination>> segments;
     private DestSelectRule rule = DestSelectRule.DEFAULT;
 
     public SegmentLocationManagerImpl() {
-        segments = new ConcurrentHashMap<String, Pair<Integer, List<SegmentDestination>>>();
+        segments = new ConcurrentHashMap<String, List<SegmentDestination>>();
     }
 
     public void setRule(DestSelectRule rule) {
@@ -32,16 +31,11 @@ public class SegmentLocationManagerImpl implements SegmentLocationManager {
 
     @Override
     public List<SegmentDestination> getSegmentLocationURI(SourceKey table) {
-        Pair<Integer, List<SegmentDestination>> pair = segments.get(table.getId());
-        List<SegmentDestination> destinations = null;
-        int totalCount = 0;
-        if (null == pair) {
+        List<SegmentDestination> destinations = segments.get(table.getId());
+        if (null == destinations) {
             destinations = new ArrayList<SegmentDestination>();
-        } else {
-            destinations = pair.getValue();
-            totalCount = pair.getKey();
         }
-        destinations = rule.selectDestination(totalCount, destinations);
+        destinations = rule.selectDestination(destinations);
         // 暂时先这么处理，，，，
         if (null == destinations || destinations.isEmpty()) {
             destinations = new ArrayList<SegmentDestination>();

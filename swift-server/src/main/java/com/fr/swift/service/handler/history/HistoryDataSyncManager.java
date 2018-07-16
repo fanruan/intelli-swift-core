@@ -48,6 +48,7 @@ public class HistoryDataSyncManager extends AbstractHandler<HistoryLoadSegmentRp
         this.rule = rule;
     }
 
+    @Override
     public <S extends Serializable> S handle(HistoryLoadSegmentRpcEvent event) {
         Map<String, ClusterEntity> services = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.HISTORY);
         if (null == services || services.isEmpty()) {
@@ -57,38 +58,17 @@ public class HistoryDataSyncManager extends AbstractHandler<HistoryLoadSegmentRp
         String needLoadSourceKey = event.getContent();
 
         Map<String, List<SegmentKey>> allSegments = clusterSegmentService.getAllSegments();
-
+        Map<String, List<SegmentKey>> needLoadSegments = new HashMap<String, List<SegmentKey>>();
         if (StringUtils.isNotEmpty(needLoadSourceKey)) {
             List<SegmentKey> keys = allSegments.get(needLoadSourceKey);
-            allSegments.clear();
-            allSegments.put(needLoadSourceKey, keys);
+            needLoadSegments.put(needLoadSourceKey, keys);
+        } else {
+            needLoadSegments.putAll(allSegments);
         }
 
-        Map<String, List<SegmentKey>> needLoadSegment = new HashMap<String, List<SegmentKey>>(allSegments);
-        Iterator<String> keyIterator = services.keySet().iterator();
-        Map<String, List<SegmentKey>> exists = new HashMap<String, List<SegmentKey>>();
-        while (keyIterator.hasNext()) {
-            String key = keyIterator.next();
-            if (null == exists.get(key)) {
-                exists.put(key, new ArrayList<SegmentKey>());
-            }
-            Map<String, List<SegmentKey>> segments = clusterSegmentService.getOwnSegments(key);
-            Iterator<Map.Entry<String, List<SegmentKey>>> existsIter = segments.entrySet().iterator();
-            while (existsIter.hasNext()) {
-                Map.Entry<String, List<SegmentKey>> entry = existsIter.next();
-                String sourceKey = entry.getKey();
-//                for (SegmentKey segmentKey : entry.getValue()) {
-//                    if (null != needLoadSegment.get(sourceKey)) {
-//                        needLoadSegment.get(sourceKey).remove(segmentKey);
-//                    }
-
-//                }
-                exists.get(key).addAll(entry.getValue());
-            }
-        }
-        final Map<String, Pair<Integer, List<SegmentDestination>>> destinations = new HashMap<String, Pair<Integer, List<SegmentDestination>>>();
-        Map<String, Set<SegmentKey>> result = rule.calculate(exists, needLoadSegment, destinations);
-        keyIterator = result.keySet().iterator();
+        final Map<String, List<SegmentDestination>> destinations = new HashMap<String, List<SegmentDestination>>();
+        Map<String, Set<SegmentKey>> result = rule.calculate(services.keySet(), needLoadSegments, destinations);
+        Iterator<String> keyIterator = result.keySet().iterator();
         try {
             while (keyIterator.hasNext()) {
                 final String key = keyIterator.next();
@@ -108,7 +88,6 @@ public class HistoryDataSyncManager extends AbstractHandler<HistoryLoadSegmentRp
                                 Map<String, List<Pair<String, String>>> segmentTable = new HashMap<String, List<Pair<String, String>>>();
                                 segmentTable.put(key, idList);
                                 clusterSegmentService.updateSegmentTable(segmentTable);
-//                                updateDestination(destinations);
                                 SwiftServiceHandlerManager.getManager().
                                         handle(new SegmentLocationRpcEvent(SegmentLocationInfo.UpdateType.ALL, new SegmentLocationInfoImpl(ServiceType.HISTORY, destinations)));
                             }
