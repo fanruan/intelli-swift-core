@@ -42,7 +42,7 @@ public class DataSyncRuleTest {
         Preparer.prepareCubeBuild();
         List<Object[]> result = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
-            int nodeCount = (int) (1 + Math.random() * 10);
+            int nodeCount = (int) (1 + Math.random() * 100);
             Set<String> nodeIds = new HashSet<>();
             for (int j = 0; j < nodeCount; j++) {
                 nodeIds.add("cluster_" + j);
@@ -59,9 +59,10 @@ public class DataSyncRuleTest {
 
     @Test
     public void calculate() {
-        System.out.println("NodeSize： " + nodeIds.size() + " SegCount: 100" + needLoad.get("tableA").size());
+        System.out.println("NodeSize： " + nodeIds.size() + " SegCount: " + needLoad.get("tableA").size());
         Map<String, Set<SegmentKey>> target = DataSyncRule.DEFAULT.calculate(nodeIds, needLoad, new HashMap<String, List<SegmentDestination>>());
         Iterator<Set<SegmentKey>> it = target.values().iterator();
+        int total = 0;
         while (it.hasNext()) {
             // 每个节点都有
             int size = it.next().size();
@@ -71,6 +72,8 @@ public class DataSyncRuleTest {
             } else {
                 assertTrue(size < needLoad.get("tableA").size());
             }
+            total += size;
         }
+        assertEquals(total, (nodeIds.size() == 1 ? 1 : nodeIds.size() - 1) * needLoad.get("tableA").size());
     }
 }
