@@ -1,9 +1,11 @@
 package com.fr.swift.segment.impl;
 
+import com.fr.swift.config.bean.SegmentDestSelectRule;
+import com.fr.swift.config.service.SegmentDestSelectRuleService;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationManager;
-import com.fr.swift.segment.rule.DestSelectRule;
 import com.fr.swift.source.SourceKey;
 
 import java.net.URI;
@@ -19,13 +21,14 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SegmentLocationManagerImpl implements SegmentLocationManager {
 
     private Map<String, List<SegmentDestination>> segments;
-    private DestSelectRule rule = DestSelectRule.DEFAULT;
+    private SegmentDestSelectRule rule;
 
     public SegmentLocationManagerImpl() {
         segments = new ConcurrentHashMap<String, List<SegmentDestination>>();
+        rule = SwiftContext.getInstance().getBean(SegmentDestSelectRuleService.class).getCurrentRule();
     }
 
-    public void setRule(DestSelectRule rule) {
+    public void setRule(SegmentDestSelectRule rule) {
         this.rule = rule;
     }
 

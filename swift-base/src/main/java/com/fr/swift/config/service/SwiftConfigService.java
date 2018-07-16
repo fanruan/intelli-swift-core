@@ -17,6 +17,8 @@ public interface SwiftConfigService {
 
     <ConfigBean> boolean updateConfigBean(ConfigConvert<ConfigBean> convert, ConfigBean bean, Object... args);
 
+    <ConfigBean> boolean deleteConfigBean(ConfigConvert<ConfigBean> convert, ConfigBean bean, Object... args);
+
     interface ConfigConvert<Bean> {
         /**
          * 转Bean

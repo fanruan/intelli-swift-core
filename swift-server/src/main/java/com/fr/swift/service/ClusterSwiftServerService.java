@@ -7,7 +7,9 @@ import com.fr.swift.Invoker;
 import com.fr.swift.ProxyFactory;
 import com.fr.swift.Result;
 import com.fr.swift.URL;
+import com.fr.swift.config.bean.IndexingSelectRule;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
+import com.fr.swift.config.service.IndexingSelectRuleService;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
@@ -23,7 +25,6 @@ import com.fr.swift.rpc.url.RPCUrl;
 import com.fr.swift.selector.ProxySelector;
 import com.fr.swift.selector.UrlSelector;
 import com.fr.swift.service.entity.ClusterEntity;
-import com.fr.swift.service.handler.indexing.rule.IndexingSelectRule;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.stuff.HistoryIndexingStuff;
 import com.fr.swift.stuff.IndexingStuff;
@@ -168,7 +169,8 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
                 SwiftLoggers.getLogger().info("rpc告诉indexing节点执行任务");
                 String address = null;
                 try {
-                    address = IndexingSelectRule.DEFAULT.select(indexingServiceMap);
+                    IndexingSelectRule rule = SwiftContext.getInstance().getBean(IndexingSelectRuleService.class).getCurrentRule();
+                    address = rule.select(indexingServiceMap.keySet());
                     ClusterEntity entity = indexingServiceMap.get(address);
                     ProxyFactory factory = ProxySelector.getInstance().getFactory();
                     Invoker invoker = factory.getInvoker(null, entity.getServiceClass(), new RPCUrl(new RPCDestination(address)), false);

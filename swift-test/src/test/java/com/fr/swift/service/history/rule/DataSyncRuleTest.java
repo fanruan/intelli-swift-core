@@ -4,7 +4,7 @@ import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.service.handler.history.rule.DataSyncRule;
+import com.fr.swift.service.handler.history.rule.DefaultDataSyncRule;
 import com.fr.swift.test.Preparer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,7 +60,7 @@ public class DataSyncRuleTest {
     @Test
     public void calculate() {
         System.out.println("NodeSize： " + nodeIds.size() + " SegCount: " + needLoad.get("tableA").size());
-        Map<String, Set<SegmentKey>> target = DataSyncRule.DEFAULT.calculate(nodeIds, needLoad, new HashMap<String, List<SegmentDestination>>());
+        Map<String, Set<SegmentKey>> target = new DefaultDataSyncRule().calculate(nodeIds, needLoad, new HashMap<String, List<SegmentDestination>>());
         Iterator<Set<SegmentKey>> it = target.values().iterator();
         int total = 0;
         while (it.hasNext()) {

@@ -1,6 +1,7 @@
 package com.fr.swift.service.handler.history;
 
 import com.fr.stable.StringUtils;
+import com.fr.swift.config.service.DataSyncRuleService;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.event.analyse.SegmentLocationRpcEvent;
 import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
@@ -16,7 +17,6 @@ import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.entity.ClusterEntity;
 import com.fr.swift.service.handler.SwiftServiceHandlerManager;
 import com.fr.swift.service.handler.base.AbstractHandler;
-import com.fr.swift.service.handler.history.rule.DataSyncRule;
 import com.fr.swift.structure.Pair;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
@@ -42,11 +42,8 @@ public class HistoryDataSyncManager extends AbstractHandler<HistoryLoadSegmentRp
 
     @Autowired(required = false)
     private SwiftClusterSegmentService clusterSegmentService;
-    private DataSyncRule rule = DataSyncRule.DEFAULT;
-
-    public void setRule(DataSyncRule rule) {
-        this.rule = rule;
-    }
+    @Autowired(required = false)
+    private DataSyncRuleService dataSyncRuleService;
 
     @Override
     public <S extends Serializable> S handle(HistoryLoadSegmentRpcEvent event) {
@@ -67,7 +64,7 @@ public class HistoryDataSyncManager extends AbstractHandler<HistoryLoadSegmentRp
         }
 
         final Map<String, List<SegmentDestination>> destinations = new HashMap<String, List<SegmentDestination>>();
-        Map<String, Set<SegmentKey>> result = rule.calculate(services.keySet(), needLoadSegments, destinations);
+        Map<String, Set<SegmentKey>> result = dataSyncRuleService.getCurrentRule().calculate(services.keySet(), needLoadSegments, destinations);
         Iterator<String> keyIterator = result.keySet().iterator();
         try {
             while (keyIterator.hasNext()) {
