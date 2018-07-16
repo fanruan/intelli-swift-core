@@ -1,5 +1,6 @@
 package com.fr.swift.service;
 
+import com.fineio.FineIO;
 import com.fr.event.Event;
 import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
@@ -151,9 +152,12 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
             @Override
             public void on(Event event, final Pair<TaskKey, TaskResult> result) {
                 SwiftLoggers.getLogger().info("rpc通知server任务完成");
-                // TODO 这里是FineIO 修改后的，现在还没有提fineio，先直接用runnable来run吧
-//                JobFinishedManager.getInstance().finish(new UploadRunnable(result));
-                new UploadRunnable(result).run();
+                try {
+                    runRpc(new TaskDoneRpcEvent(result));
+                    FineIO.doWhenFinished(new UploadRunnable(result));
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().error(e);
+                }
             }
         });
 
@@ -259,9 +263,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
             TaskKey key = result.getKey();
             Object obj = stuffObject.get(key);
             try {
-                runRpc(new TaskDoneRpcEvent(result));
                 if (null != obj) {
-
                     if (obj instanceof DataSource) {
                         uploadTable((DataSource) obj);
                     } else if (obj instanceof RelationSource) {
