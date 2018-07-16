@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -28,11 +29,11 @@ import static org.junit.Assert.assertTrue;
 @RunWith(Parameterized.class)
 public class DataSyncRuleTest {
 
-    private Set<String> exists;
+    private Set<String> nodeIds;
     private Map<String, List<SegmentKey>> needLoad;
 
-    public DataSyncRuleTest(Set<String> exists, Map<String, List<SegmentKey>> needLoad) {
-        this.exists = exists;
+    public DataSyncRuleTest(Set<String> nodeIds, Map<String, List<SegmentKey>> needLoad) {
+        this.nodeIds = nodeIds;
         this.needLoad = needLoad;
     }
 
@@ -42,28 +43,34 @@ public class DataSyncRuleTest {
         List<Object[]> result = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
             int nodeCount = (int) (1 + Math.random() * 10);
-            Set<String> exists = new HashSet<>();
+            Set<String> nodeIds = new HashSet<>();
             for (int j = 0; j < nodeCount; j++) {
-                exists.add("cluster_" + j);
+                nodeIds.add("cluster_" + j);
             }
             Map<String, List<SegmentKey>> needLoad = new HashMap<String, List<SegmentKey>>();
             needLoad.put("tableA", new ArrayList<SegmentKey>(100));
             for (int j = 0; j < 100; j++) {
                 needLoad.get("tableA").add(new SegmentKeyBean("tableA", URI.create("uri_" + j), j, Types.StoreType.FINE_IO));
             }
-            result.add(new Object[]{exists, needLoad});
+            result.add(new Object[]{nodeIds, needLoad});
         }
         return result;
     }
 
     @Test
     public void calculate() {
-        Map<String, Set<SegmentKey>> target = DataSyncRule.DEFAULT.calculate(exists, needLoad, new HashMap<String, List<SegmentDestination>>());
+        System.out.println("NodeSize： " + nodeIds.size() + " SegCount: 100" + needLoad.get("tableA").size());
+        Map<String, Set<SegmentKey>> target = DataSyncRule.DEFAULT.calculate(nodeIds, needLoad, new HashMap<String, List<SegmentDestination>>());
         Iterator<Set<SegmentKey>> it = target.values().iterator();
         while (it.hasNext()) {
             // 每个节点都有
             int size = it.next().size();
             assertTrue(size > 0);
+            if (nodeIds.size() == 1) {
+                assertEquals(size, needLoad.get("tableA").size());
+            } else {
+                assertTrue(size < needLoad.get("tableA").size());
+            }
         }
     }
 }
