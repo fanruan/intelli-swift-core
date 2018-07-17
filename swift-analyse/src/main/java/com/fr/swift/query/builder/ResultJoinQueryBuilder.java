@@ -8,7 +8,6 @@ import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.result.NodeResultSet;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +16,7 @@ import java.util.List;
  */
 class ResultJoinQueryBuilder {
 
-    static Query<NodeResultSet> buildQuery(ResultJoinQueryInfo info) throws SQLException {
+    static Query<NodeResultSet> buildQuery(ResultJoinQueryInfo info) throws Exception {
         List<QueryInfo> infoList = info.getQueryInfoList();
         List<Query<NodeResultSet>> queries = new ArrayList<Query<NodeResultSet>>();
         for (QueryInfo queryInfo : infoList) {

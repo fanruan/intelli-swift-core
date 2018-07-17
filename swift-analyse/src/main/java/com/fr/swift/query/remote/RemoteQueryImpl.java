@@ -1,7 +1,6 @@
 package com.fr.swift.query.remote;
 
 import com.fr.swift.query.RemoteQuery;
-import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.source.SwiftResultSet;
@@ -13,16 +12,16 @@ import java.sql.SQLException;
  */
 public class RemoteQueryImpl<T extends SwiftResultSet> implements RemoteQuery<T> {
 
-    private QueryBean bean;
+    private String jsonString;
     private SegmentDestination remoteURI;
 
-    public RemoteQueryImpl(QueryBean bean, SegmentDestination remoteURI) {
-        this.bean = bean;
+    public RemoteQueryImpl(String jsonString, SegmentDestination remoteURI) {
+        this.jsonString = jsonString;
         this.remoteURI = remoteURI;
     }
 
     @Override
     public T getQueryResult() throws SQLException {
-        return (T) QueryRunnerProvider.getInstance().executeRemoteQuery(bean, remoteURI);
+        return (T) QueryRunnerProvider.getInstance().executeRemoteQuery(jsonString, remoteURI);
     }
 }

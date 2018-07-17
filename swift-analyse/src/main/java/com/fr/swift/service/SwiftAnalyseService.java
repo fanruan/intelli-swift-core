@@ -27,11 +27,9 @@ import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.selector.ProxySelector;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.task.service.ServiceTaskExecutor;
-import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
@@ -46,7 +44,6 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     private static final long serialVersionUID = 841582089735823794L;
     private transient static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftAnalyseService.class);
     private transient RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
-    private transient ObjectMapper mapper = new ObjectMapper();
 
     public SwiftAnalyseService(String id) {
         super(id);
@@ -85,16 +82,16 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     }
 
     @Override
-    public SwiftResultSet getQueryResult(QueryBean info) throws SQLException {
+    public SwiftResultSet getQueryResult(QueryBean info) throws Exception {
         return QueryBuilder.buildQuery(info).getQueryResult();
     }
 
     @Override
-    public SwiftResultSet getRemoteQueryResult(final QueryBean info, final SegmentDestination remoteURI) {
+    public SwiftResultSet getRemoteQueryResult(final String jsonString, final SegmentDestination remoteURI) {
         final SwiftResultSet[] resultSet = new SwiftResultSet[1];
         try {
             final CountDownLatch latch = new CountDownLatch(1);
-            queryRemoteNodeNode(info, remoteURI).addCallback(new AsyncRpcCallback() {
+            queryRemoteNodeNode(jsonString, remoteURI).addCallback(new AsyncRpcCallback() {
                 @Override
                 public void success(Object result) {
                     resultSet[0] = (SwiftResultSet) result;
@@ -109,7 +106,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
                             SegmentDestinationImpl spare = new SegmentDestinationImpl(remoteURI);
                             spare.setClusterId(spareNode);
                             final CountDownLatch count = new CountDownLatch(1);
-                            queryRemoteNodeNode(info, spare).addCallback(new AsyncRpcCallback() {
+                            queryRemoteNodeNode(jsonString, spare).addCallback(new AsyncRpcCallback() {
                                 @Override
                                 public void success(Object result) {
                                     resultSet[0] = (SwiftResultSet) result;
@@ -142,14 +139,13 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
         return resultSet[0];
     }
 
-    private RpcFuture queryRemoteNodeNode(QueryBean info, SegmentDestination remoteURI) throws Exception {
+    private RpcFuture queryRemoteNodeNode(String jsonString, SegmentDestination remoteURI) throws Exception {
         String address = remoteURI.getAddress();
         String methodName = remoteURI.getMethodName();
         Class clazz = remoteURI.getServiceClass();
-        info.setQuerySegment(remoteURI.getUri());
         ProxyFactory factory = ProxySelector.getInstance().getFactory();
         Invoker invoker = factory.getInvoker(null, clazz, new RPCUrl(new RPCDestination(address)), false);
-        Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName(methodName), new Object[]{mapper.writeValueAsString(info)}));
+        Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName(methodName), new Object[]{jsonString}));
         RpcFuture future = (RpcFuture) result.getValue();
         if (null == future) {
             throw new Exception(result.getException());

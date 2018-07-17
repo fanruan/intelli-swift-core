@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class QueryBeanManager {
 
     private static QueryBeanManager instance = new QueryBeanManager();
-    private Map<String, Pair<QueryBean, SegmentDestination>> manager = new ConcurrentHashMap<String, Pair<QueryBean, SegmentDestination>>();
+    private Map<String, Object> manager = new ConcurrentHashMap<String, Object>();
 
     private QueryBeanManager() {
     }
@@ -21,21 +21,20 @@ public class QueryBeanManager {
         return instance;
     }
 
-    public Pair<QueryBean, SegmentDestination> getPair(String queryId) {
-        return manager.get(queryId);
+    public Pair<String, SegmentDestination> getPair(String queryId) {
+        return (Pair<String, SegmentDestination>) manager.get(queryId);
     }
 
     public QueryBean getQueryBean(String queryId) {
-        Pair<QueryBean, SegmentDestination> pair = manager.get(queryId);
-        return pair == null ? null : pair.getKey();
-    }
-
-    public void put(String queryId, Pair<QueryBean, SegmentDestination> pair) {
-        manager.put(queryId, pair);
+        return (QueryBean) manager.get(queryId);
     }
 
     public void put(String queryId, QueryBean queryBean) {
-        manager.put(queryId, Pair.<QueryBean, SegmentDestination>of(queryBean, null));
+        manager.put(queryId, queryBean);
+    }
+
+    public void put(String id, Pair<String, SegmentDestination> pair) {
+        manager.put(id, pair);
     }
 
     public void release(String queryId) {

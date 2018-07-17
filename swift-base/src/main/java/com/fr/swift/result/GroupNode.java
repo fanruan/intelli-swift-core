@@ -104,6 +104,10 @@ public class GroupNode<T extends GroupNode<T>> extends AbstractSwiftNode<T> {
         }
     }
 
+    public boolean isGlobalIndexUpdated() {
+        return isGlobalIndexUpdated;
+    }
+
     @Override
     public T getChild(int index) {
         return childMap.get(index);

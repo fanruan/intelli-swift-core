@@ -1,6 +1,5 @@
 package com.fr.swift.result.serialize;
 
-import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryBeanManager;
 import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.result.DetailResultSet;
@@ -22,22 +21,16 @@ import java.util.List;
 public class SerializableDetailResultSet implements DetailResultSet, SerializableResultSet {
     private static final long serialVersionUID = -2306723089258907631L;
 
-    private transient DetailResultSet resultSet;
     private String queryId;
     private SwiftMetaData metaData;
     private List<Row> rows;
-    private int rowCount = -1;
+    private int rowCount;
     private boolean hasNextPage = true;
     private boolean originHasNextPage;
     private transient Iterator<Row> rowIterator;
 
     public SerializableDetailResultSet(String queryId, DetailResultSet resultSet) throws SQLException {
         this.queryId = queryId;
-        this.resultSet = resultSet;
-        init();
-    }
-
-    private void init() throws SQLException {
         this.metaData = resultSet.getMetaData();
         this.rows = resultSet.getPage();
         this.originHasNextPage = resultSet.hasNextPage();
@@ -49,15 +42,15 @@ public class SerializableDetailResultSet implements DetailResultSet, Serializabl
         hasNextPage = false;
         List<Row> ret = rows;
         if (originHasNextPage) {
-            // TODO: 2018/6/14 向远程节点拉取下一页数据
-            Pair<QueryBean, SegmentDestination> pair = QueryBeanManager.getInstance().getPair(queryId);
+            Pair<String, SegmentDestination> pair = QueryBeanManager.getInstance().getPair(queryId);
             if (pair == null) {
                 Crasher.crash("invalid remote queryInfo!");
             }
             try {
-                resultSet = (DetailResultSet) QueryRunnerProvider.getInstance().executeRemoteQuery(pair.getKey(), pair.getValue());
+                SerializableDetailResultSet resultSet = (SerializableDetailResultSet) QueryRunnerProvider.getInstance().executeRemoteQuery(pair.getKey(), pair.getValue());
                 hasNextPage = true;
-                init();
+                this.rows = resultSet.rows;
+                this.originHasNextPage = resultSet.originHasNextPage;
             } catch (SQLException e) {
                 Crasher.crash(e);
             }
@@ -72,13 +65,6 @@ public class SerializableDetailResultSet implements DetailResultSet, Serializabl
 
     @Override
     public int getRowCount() {
-        if (rowCount == -1 && null != resultSet) {
-            if (null != resultSet) {
-                rowCount = resultSet.getRowCount();
-            } else {
-                rowCount = 0;
-            }
-        }
         return rowCount;
     }
 

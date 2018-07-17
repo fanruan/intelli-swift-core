@@ -40,7 +40,7 @@ public abstract class AbstractSession implements Session {
     }
 
     @Override
-    public SwiftResultSet executeQuery(QueryBean queryInfo) throws SQLException {
+    public SwiftResultSet executeQuery(QueryBean queryInfo) throws Exception {
         if (isClose()) {
             throw new SessionClosedException(sessionId);
         }
@@ -58,7 +58,7 @@ public abstract class AbstractSession implements Session {
         return SwiftResultSetUtils.convert2Serializable(queryId, queryInfo.getQueryType(), resultSet);
     }
 
-    protected abstract SwiftResultSet query(QueryBean queryInfo) throws SQLException;
+    protected abstract SwiftResultSet query(QueryBean queryInfo) throws Exception;
 
     @Override
     public void close() {

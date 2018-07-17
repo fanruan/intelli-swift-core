@@ -30,7 +30,7 @@ public final class QueryBuilder {
      * @return
      * @throws SQLException
      */
-    public static <T extends SwiftResultSet> Query<T> buildQuery(QueryBean bean) throws SQLException {
+    public static <T extends SwiftResultSet> Query<T> buildQuery(QueryBean bean) throws Exception {
         // 缓存一下queryBean，省的后面queryBean和queryInfo传来传去
         QueryBeanManager.getInstance().put(bean.getQueryId(), bean);
         QueryInfoBean infoBean = (QueryInfoBean) bean;
@@ -53,7 +53,7 @@ public final class QueryBuilder {
      * @return
      * @throws SQLException
      */
-    static <T extends SwiftResultSet> Query<T> buildQuery(QueryInfo<T> info) throws SQLException {
+    static <T extends SwiftResultSet> Query<T> buildQuery(QueryInfo<T> info) throws Exception {
         switch (info.getType()) {
             case GROUP:
             case CROSS_GROUP:
@@ -82,15 +82,15 @@ public final class QueryBuilder {
         }
     }
 
-    private static Query<NodeResultSet> buildResultJoinQuery(ResultJoinQueryInfo info) throws SQLException {
+    private static Query<NodeResultSet> buildResultJoinQuery(ResultJoinQueryInfo info) throws Exception {
         return ResultJoinQueryBuilder.buildQuery(info);
     }
 
-    private static Query<NodeResultSet> buildGroupQuery(GroupQueryInfo info) {
+    private static Query<NodeResultSet> buildGroupQuery(GroupQueryInfo info) throws Exception {
         return GroupQueryBuilder.buildQuery(info);
     }
 
-    private static Query<DetailResultSet> buildDetailQuery(DetailQueryInfo info) throws SQLException {
+    private static Query<DetailResultSet> buildDetailQuery(DetailQueryInfo info) throws Exception {
         return DetailQueryBuilder.buildQuery(info);
     }
 

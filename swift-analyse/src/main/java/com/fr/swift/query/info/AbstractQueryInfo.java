@@ -7,6 +7,7 @@ import com.fr.swift.source.SwiftResultSet;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author pony
@@ -17,7 +18,7 @@ public abstract class AbstractQueryInfo<T extends SwiftResultSet> implements Sin
     private FilterInfo filterInfo;
     private SourceKey table;
     private List<Dimension> dimensions;
-    private URI queryTarget = null;
+    private Set<URI> queryTarget = null;
 
     public AbstractQueryInfo(String id, SourceKey table, FilterInfo filterInfo, List<Dimension> dimensions) {
         this.id = id;
@@ -67,12 +68,12 @@ public abstract class AbstractQueryInfo<T extends SwiftResultSet> implements Sin
     }
 
     @Override
-    public URI getQuerySegment() {
+    public Set<URI> getQuerySegment() {
         return queryTarget;
     }
 
     @Override
-    public void setQuerySegment(URI queryTarget) {
+    public void setQuerySegment(Set<URI> queryTarget) {
         this.queryTarget = queryTarget;
     }
 }

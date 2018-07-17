@@ -133,7 +133,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
                 public Session build(long cacheTimeout) {
                     return new AbstractSession(cacheTimeout) {
                         @Override
-                        protected SwiftResultSet query(QueryBean queryInfo) throws SQLException {
+                        protected SwiftResultSet query(QueryBean queryInfo) throws Exception {
                             return QueryBuilder.buildQuery(queryInfo).getQueryResult();
                         }
                     };

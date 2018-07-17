@@ -1,6 +1,8 @@
 package com.fr.swift.query.builder;
 
 import com.fr.swift.exception.SwiftSegmentAbsentException;
+import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
+import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.query.QueryBean;
@@ -13,9 +15,13 @@ import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
 
-import java.sql.SQLException;
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by pony on 2017/12/13.
@@ -28,7 +34,7 @@ class DetailQueryBuilder {
      * @param info
      * @return
      */
-    static Query<DetailResultSet> buildQuery(DetailQueryInfo info) throws SQLException {
+    static Query<DetailResultSet> buildQuery(DetailQueryInfo info) throws Exception {
         if (info.hasSort()){
             return buildQuery(info, LocalDetailQueryBuilder.GROUP);
         } else {
@@ -65,9 +71,8 @@ class DetailQueryBuilder {
         }
     }
 
-    private static Query<DetailResultSet> buildQuery(DetailQueryInfo info, LocalDetailQueryBuilder builder) throws SQLException{
+    private static Query<DetailResultSet> buildQuery(DetailQueryInfo info, LocalDetailQueryBuilder builder) throws Exception {
         SourceKey table = info.getTable();
-        // TODO 这边先直接写成History
         List<SegmentDestination> uris = SegmentLocationProvider.getInstance().getSegmentLocationURI(table);
         if (uris == null || uris.isEmpty()){
             throw new SwiftSegmentAbsentException("no such table");
@@ -75,28 +80,48 @@ class DetailQueryBuilder {
         if (isAllLocal(uris)) {
             return builder.buildLocalQuery(info);
         }
-        // TODO: 2018/6/22 全部segment在一个远程节点上
-//        if (uris.size() == 1) {
-//            if (!uris.getPair(0).isRemote()) {
-//
-//            } else {
-//                QueryInfo<DetailResultSet> queryInfo = new RemoteQueryInfoImpl<DetailResultSet>(QueryType.LOCAL_DETAIL, info);
-//                return new RemoteQueryImpl<DetailResultSet>(queryInfo, uris.getPair(0));
-//            }
-//        }
         List<Query<DetailResultSet>> queries = new ArrayList<Query<DetailResultSet>>();
-        for (SegmentDestination uri : uris) {
-            if (!uri.isRemote()) {
-                queries.add(builder.buildLocalQuery(info));
-            } else {
-                // TODO: 2018/6/27 同一个远程节点上的多个segment要合并成一个RemoteQuery
-                QueryBean queryBean = QueryBeanManager.getInstance().getQueryBean(info.getQueryId());
-                queryBean.setQueryType(QueryType.LOCAL_DETAIL);
-                QueryBeanManager.getInstance().put(info.getQueryId(), Pair.of(queryBean, uri));
-                queries.add(new RemoteQueryImpl<DetailResultSet>(queryBean, uri));
-            }
+        Set<URI> localURIs = getLocalSegments(uris);
+        if (!localURIs.isEmpty()) {
+            info.setQuerySegment(localURIs);
+            queries.add(builder.buildLocalQuery(info));
+        }
+        Map<String, List<SegmentDestination>> map = groupSegmentInfoByClusterId(uris);
+        QueryBean queryBean = QueryBeanManager.getInstance().getQueryBean(info.getQueryId());
+        for (Map.Entry<String, List<SegmentDestination>> entry : map.entrySet()) {
+            queryBean.setQueryType(QueryType.LOCAL_DETAIL);
+            SegmentDestination destination = entry.getValue().get(0);
+            String newId = info.getQueryId() + destination.getClusterId();
+            ((DetailQueryInfoBean) queryBean).setQueryId(newId);
+            String jsonString = QueryInfoBeanFactory.queryBean2String(queryBean);
+            queries.add(new RemoteQueryImpl<DetailResultSet>(jsonString, destination));
+            QueryBeanManager.getInstance().put(newId, Pair.of(jsonString, destination));
         }
         return builder.buildResultQuery(queries, info);
+    }
+
+    static Set<URI> getLocalSegments(List<SegmentDestination> uris) {
+        Set<URI> set = new HashSet<URI>();
+        for (SegmentDestination destination : uris) {
+            if (!destination.isRemote() && destination.getUri() != null) {
+                set.add(destination.getUri());
+            }
+        }
+        return set;
+    }
+
+    static Map<String, List<SegmentDestination>> groupSegmentInfoByClusterId(List<SegmentDestination> uris) {
+        Map<String, List<SegmentDestination>> map = new HashMap<String, List<SegmentDestination>>();
+        for (SegmentDestination destination : uris) {
+            if (destination.isRemote()) {
+                String clusterId = destination.getClusterId();
+                if (!map.containsKey(clusterId)) {
+                    map.put(clusterId, new ArrayList<SegmentDestination>());
+                }
+                map.get(clusterId).add(destination);
+            }
+        }
+        return map;
     }
 
     static boolean isAllLocal(List<SegmentDestination> uris) {

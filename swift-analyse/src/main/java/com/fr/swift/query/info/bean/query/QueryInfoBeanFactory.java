@@ -9,8 +9,10 @@ import com.fr.swift.query.info.bean.factory.SortBeanFactory;
 import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.group.GroupQueryInfoImpl;
+import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.third.fasterxml.jackson.core.JsonProcessingException;
 import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -37,6 +39,10 @@ public class QueryInfoBeanFactory {
 
     public static QueryInfoBean create(String jsonString) throws IOException {
         return MAPPER.readValue(jsonString, QueryInfoBean.class);
+    }
+
+    public static String queryBean2String(QueryBean bean) throws JsonProcessingException {
+        return MAPPER.writeValueAsString(bean);
     }
 
     private static List<QueryInfoBean> create(List<QueryInfo> queryInfo) {

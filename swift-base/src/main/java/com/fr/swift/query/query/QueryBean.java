@@ -2,6 +2,7 @@ package com.fr.swift.query.query;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.util.Set;
 
 /**
  * @author yee
@@ -14,5 +15,5 @@ public interface QueryBean extends Serializable {
 
     void setQueryType(QueryType queryType);
 
-    void setQuerySegment(URI uri);
+    void setQuerySegment(Set<URI> uri);
 }

@@ -35,12 +35,12 @@ public class QueryRunnerProvider {
         this.runner = runner;
     }
 
-    public SwiftResultSet executeQuery(QueryBean info) throws SQLException {
+    public SwiftResultSet executeQuery(QueryBean info) throws Exception {
         return runner.getQueryResult(info);
     }
 
-    public SwiftResultSet executeRemoteQuery(QueryBean info, SegmentDestination remoteURI) throws SQLException {
-        return runner.getRemoteQueryResult(info, remoteURI);
+    public SwiftResultSet executeRemoteQuery(String jsonString, SegmentDestination remoteURI) throws SQLException {
+        return runner.getRemoteQueryResult(jsonString, remoteURI);
     }
 
     public Map<URI, IndexQuery<ImmutableBitMap>> executeIndexQuery(Table table, Where where) throws Exception {

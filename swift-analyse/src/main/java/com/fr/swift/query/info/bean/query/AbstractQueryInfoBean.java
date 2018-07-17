@@ -4,6 +4,7 @@ import com.fr.swift.query.query.QueryType;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 
 import java.net.URI;
+import java.util.Set;
 
 /**
  * Created by Lyon on 2018/6/3.
@@ -15,7 +16,7 @@ public abstract class AbstractQueryInfoBean implements QueryInfoBean {
     @JsonProperty
     protected QueryType queryType;
     @JsonProperty
-    protected URI querySegment;
+    protected Set<URI> querySegment;
 
     @Override
     public String getQueryId() {
@@ -36,12 +37,12 @@ public abstract class AbstractQueryInfoBean implements QueryInfoBean {
         this.queryType = queryType;
     }
 
-    public URI getQuerySegment() {
+    public Set<URI> getQuerySegment() {
         return querySegment;
     }
 
     @Override
-    public void setQuerySegment(URI querySegment) {
+    public void setQuerySegment(Set<URI> querySegment) {
         this.querySegment = querySegment;
     }
 }
