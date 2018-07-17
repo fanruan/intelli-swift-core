@@ -1,5 +1,7 @@
 package com.fr.swift.config.convert.swift;
 
+import com.fr.stable.StringUtils;
+import com.fr.swift.config.annotation.ConfigField;
 import com.fr.swift.config.dao.SwiftConfigDao;
 import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.log.SwiftLoggers;
@@ -29,10 +31,11 @@ public abstract class AbstractObjectConfigConvert<T> extends BaseConfigConvert<T
             T rule = clazz.newInstance();
             Field[] fields = clazz.getDeclaredFields();
             for (Field field : fields) {
-                field.setAccessible(true);
-                SwiftConfigEntity tmp = dao.select(session, getKey(field.getName()));
-                if (null != tmp) {
-                    ReflectUtils.set(field, rule, tmp.getConfigValue());
+                if (field.isAnnotationPresent(ConfigField.class)) {
+                    SwiftConfigEntity tmp = dao.select(session, getKey(field.getName()));
+                    if (null != tmp) {
+                        ReflectUtils.set(field, rule, tmp.getConfigValue());
+                    }
                 }
             }
             return rule;
@@ -50,7 +53,14 @@ public abstract class AbstractObjectConfigConvert<T> extends BaseConfigConvert<T
             result.add(entity);
             Field[] fields = dataSyncRule.getClass().getDeclaredFields();
             for (Field field : fields) {
-                result.add(new SwiftConfigEntity(getKey(field.getName()), ReflectUtils.getString(field, dataSyncRule)));
+                if (field.isAnnotationPresent(ConfigField.class)) {
+                    ConfigField configField = field.getAnnotation(ConfigField.class);
+                    String value = ReflectUtils.getString(field, dataSyncRule);
+                    if (StringUtils.isEmpty(value) && configField.ignoreNull()) {
+                        continue;
+                    }
+                    result.add(new SwiftConfigEntity(getKey(field.getName()), ReflectUtils.getString(field, dataSyncRule)));
+                }
             }
             return result;
         } catch (Exception e) {

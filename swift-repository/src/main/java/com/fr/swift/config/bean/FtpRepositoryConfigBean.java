@@ -3,26 +3,39 @@ package com.fr.swift.config.bean;
 import com.fr.ftp.config.FTPConfig;
 import com.fr.security.SecurityToolbox;
 import com.fr.stable.StringUtils;
-import com.fr.swift.file.conf.AbstractSwiftFileSystemConfig;
+import com.fr.swift.config.annotation.ConfigField;
 
 /**
  * @author yee
  * @date 2018/6/15
  */
-public class FtpRepositoryConfigBean extends AbstractSwiftFileSystemConfig {
+public class FtpRepositoryConfigBean implements SwiftFileSystemConfig {
 
+    @ConfigField
     private String protocol = "FTP";
+    @ConfigField
     private String host = "";
+    @ConfigField
     private String port = "21";
+    @ConfigField
     private String username = "";
+    @ConfigField
     private String password = "";
+    @ConfigField
     private String privateKey = "";
+    @ConfigField
     private String passPhrase = "";
+    @ConfigField
     private String connectTimeout = "10000";
-    private String charset = "";
+    @ConfigField
+    private String charset = "UTF-8";
+    @ConfigField
     private String passive = "true";
+    @ConfigField
     private String soTimeout = "10000";
+    @ConfigField
     private String dataTimeout = "10000";
+    @ConfigField
     private String rootPath = "/";
 
     public String getProtocol() {
@@ -169,7 +182,7 @@ public class FtpRepositoryConfigBean extends AbstractSwiftFileSystemConfig {
         if (username != null ? !username.equals(that.username) : that.username != null) {
             return false;
         }
-        if (password != null ? !password.equals(that.password) : that.password != null) {
+        if (password != null ? !getPassword().equals(that.getPassword()) : that.password != null) {
             return false;
         }
         if (privateKey != null ? !privateKey.equals(that.privateKey) : that.privateKey != null) {
@@ -190,7 +203,7 @@ public class FtpRepositoryConfigBean extends AbstractSwiftFileSystemConfig {
         result = 31 * result + (host != null ? host.hashCode() : 0);
         result = 31 * result + (port != null ? port.hashCode() : 0);
         result = 31 * result + (username != null ? username.hashCode() : 0);
-        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + (getPassword() != null ? getPassword().hashCode() : 0);
         result = 31 * result + (privateKey != null ? privateKey.hashCode() : 0);
         result = 31 * result + (passPhrase != null ? passPhrase.hashCode() : 0);
         result = 31 * result + (connectTimeout != null ? connectTimeout.hashCode() : 0);
