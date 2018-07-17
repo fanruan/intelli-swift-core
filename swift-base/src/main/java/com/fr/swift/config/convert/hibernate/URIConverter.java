@@ -1,4 +1,4 @@
-package com.fr.swift.config.convert;
+package com.fr.swift.config.convert.hibernate;
 
 import com.fr.stable.StringUtils;
 import com.fr.swift.util.Crasher;

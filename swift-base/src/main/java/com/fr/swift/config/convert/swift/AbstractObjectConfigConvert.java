@@ -1,8 +1,7 @@
-package com.fr.swift.config.convert;
+package com.fr.swift.config.convert.swift;
 
 import com.fr.swift.config.dao.SwiftConfigDao;
 import com.fr.swift.config.entity.SwiftConfigEntity;
-import com.fr.swift.config.service.SwiftConfigService;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.ReflectUtils;
 import com.fr.third.org.hibernate.Session;
@@ -16,9 +15,7 @@ import java.util.List;
  * @author yee
  * @date 2018/7/16
  */
-public abstract class AbstractConfigConvert<T> implements SwiftConfigService.ConfigConvert<T> {
-
-    protected abstract String getNameSpace();
+public abstract class AbstractObjectConfigConvert<T> extends BaseConfigConvert<T> {
 
     @Override
     public T toBean(SwiftConfigDao<SwiftConfigEntity> dao, Session session, Object... args) throws SQLException {
@@ -60,13 +57,5 @@ public abstract class AbstractConfigConvert<T> implements SwiftConfigService.Con
             SwiftLoggers.getLogger().error(e);
         }
         return null;
-    }
-
-    private String getKey(String... keys) {
-        StringBuffer buffer = new StringBuffer(getNameSpace());
-        for (String key : keys) {
-            buffer.append(".").append(key);
-        }
-        return buffer.toString();
     }
 }

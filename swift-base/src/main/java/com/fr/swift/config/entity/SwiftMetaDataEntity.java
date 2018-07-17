@@ -3,7 +3,7 @@ package com.fr.swift.config.entity;
 import com.fr.swift.config.SwiftConfigConstants.MetaDataConfig;
 import com.fr.swift.config.bean.Convert;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
-import com.fr.swift.config.convert.MetaDataColumnListConverter;
+import com.fr.swift.config.convert.hibernate.MetaDataColumnListConverter;
 import com.fr.swift.db.impl.SwiftDatabase.Schema;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.third.javax.persistence.Column;
