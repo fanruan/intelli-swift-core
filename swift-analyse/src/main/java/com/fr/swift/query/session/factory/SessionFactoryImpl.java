@@ -57,6 +57,9 @@ public class SessionFactoryImpl implements SessionFactory {
 
     @Override
     public Session openSession(String queryId) {
+        if (StringUtils.isEmpty(queryId)) {
+            return new QuerySession(cacheTimeout);
+        }
         String sessionId = queryMap2Session.get(queryId);
         Session session = null;
         if (StringUtils.isEmpty(sessionId)) {
