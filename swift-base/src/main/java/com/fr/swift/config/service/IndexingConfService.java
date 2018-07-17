@@ -1,7 +1,7 @@
-package com.fr.swift.generate.conf.service;
+package com.fr.swift.config.service;
 
-import com.fr.swift.generate.conf.ColumnIndexingConf;
-import com.fr.swift.generate.conf.TableIndexingConf;
+import com.fr.swift.config.indexing.ColumnIndexingConf;
+import com.fr.swift.config.indexing.TableIndexingConf;
 import com.fr.swift.source.SourceKey;
 
 /**
@@ -12,4 +12,8 @@ public interface IndexingConfService {
     TableIndexingConf getTableConf(SourceKey table);
 
     ColumnIndexingConf getColumnConf(SourceKey table, String columnName);
+
+    void setTableConf(TableIndexingConf conf);
+
+    void setColumnConf(ColumnIndexingConf conf);
 }

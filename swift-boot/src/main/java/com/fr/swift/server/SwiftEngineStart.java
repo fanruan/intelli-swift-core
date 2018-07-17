@@ -20,13 +20,14 @@ import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
 import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 import com.fr.swift.config.hibernate.SwiftConfigProperties;
+import com.fr.swift.config.indexing.impl.SwiftColumnIndexingConf;
+import com.fr.swift.config.indexing.impl.SwiftTableIndexingConf;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.ProviderTaskManager;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.event.ClusterType;
-import com.fr.swift.generate.conf.SwiftColumnIndexingConf;
 import com.fr.swift.http.SwiftHttpServer;
 import com.fr.swift.log.FineIOLoggerImpl;
 import com.fr.swift.log.SwiftLoggers;
@@ -92,6 +93,8 @@ public class SwiftEngineStart {
         dbProvider.addEntityClass(SwiftSegmentEntity.class);
         dbProvider.addEntityClass(SwiftServiceInfoEntity.class);
         dbProvider.addEntityClass(SwiftSegmentLocationEntity.class);
+
+        dbProvider.addEntityClass(SwiftTableIndexingConf.class);
         dbProvider.addEntityClass(SwiftColumnIndexingConf.class);
 
         dbProvider.init(dbOption);
