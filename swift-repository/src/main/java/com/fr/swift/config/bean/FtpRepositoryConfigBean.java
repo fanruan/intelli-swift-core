@@ -158,25 +158,13 @@ public class FtpRepositoryConfigBean implements SwiftFileSystemConfig {
 
         FtpRepositoryConfigBean that = (FtpRepositoryConfigBean) o;
 
-        if (port != that.port) {
-            return false;
-        }
-        if (connectTimeout != that.connectTimeout) {
-            return false;
-        }
-        if (passive != that.passive) {
-            return false;
-        }
-        if (soTimeout != that.soTimeout) {
-            return false;
-        }
-        if (dataTimeout != that.dataTimeout) {
-            return false;
-        }
         if (protocol != null ? !protocol.equals(that.protocol) : that.protocol != null) {
             return false;
         }
         if (host != null ? !host.equals(that.host) : that.host != null) {
+            return false;
+        }
+        if (port != null ? !port.equals(that.port) : that.port != null) {
             return false;
         }
         if (username != null ? !username.equals(that.username) : that.username != null) {
@@ -191,10 +179,22 @@ public class FtpRepositoryConfigBean implements SwiftFileSystemConfig {
         if (passPhrase != null ? !passPhrase.equals(that.passPhrase) : that.passPhrase != null) {
             return false;
         }
-        if (rootPath != null ? !rootPath.equals(that.rootPath) : that.rootPath != null) {
+        if (connectTimeout != null ? !connectTimeout.equals(that.connectTimeout) : that.connectTimeout != null) {
             return false;
         }
-        return charset != null ? charset.equals(that.charset) : that.charset == null;
+        if (charset != null ? !charset.equals(that.charset) : that.charset != null) {
+            return false;
+        }
+        if (passive != null ? !passive.equals(that.passive) : that.passive != null) {
+            return false;
+        }
+        if (soTimeout != null ? !soTimeout.equals(that.soTimeout) : that.soTimeout != null) {
+            return false;
+        }
+        if (dataTimeout != null ? !dataTimeout.equals(that.dataTimeout) : that.dataTimeout != null) {
+            return false;
+        }
+        return rootPath != null ? rootPath.equals(that.rootPath) : that.rootPath == null;
     }
 
     @Override
@@ -203,7 +203,7 @@ public class FtpRepositoryConfigBean implements SwiftFileSystemConfig {
         result = 31 * result + (host != null ? host.hashCode() : 0);
         result = 31 * result + (port != null ? port.hashCode() : 0);
         result = 31 * result + (username != null ? username.hashCode() : 0);
-        result = 31 * result + (getPassword() != null ? getPassword().hashCode() : 0);
+        result = 31 * result + (password != null ? getPassword().hashCode() : 0);
         result = 31 * result + (privateKey != null ? privateKey.hashCode() : 0);
         result = 31 * result + (passPhrase != null ? passPhrase.hashCode() : 0);
         result = 31 * result + (connectTimeout != null ? connectTimeout.hashCode() : 0);
