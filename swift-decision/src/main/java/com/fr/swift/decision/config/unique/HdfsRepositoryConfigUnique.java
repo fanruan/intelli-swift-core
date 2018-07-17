@@ -1,4 +1,4 @@
-package com.fr.swift.config.bean.unique;
+package com.fr.swift.decision.config.unique;
 
 import com.fr.config.Identifier;
 import com.fr.config.holder.Conf;

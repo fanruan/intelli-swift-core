@@ -1,10 +1,8 @@
-package com.fr.swift.config.base.impl;
+package com.fr.swift.decision.config.base;
 
 import com.fr.config.DefaultConfiguration;
 import com.fr.config.holder.factory.Holders;
 import com.fr.config.holder.impl.ObjectMapConf;
-import com.fr.swift.config.base.FRConfTransactionWorker;
-import com.fr.swift.config.base.SwiftMapConfig;
 import com.fr.transaction.Configurations;
 
 import java.util.HashMap;

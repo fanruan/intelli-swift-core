@@ -6,7 +6,6 @@ import com.fr.swift.util.ReflectUtils;
 import com.fr.third.org.apache.commons.lang3.ClassUtils;
 import com.fr.third.org.hibernate.Session;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
@@ -31,7 +30,7 @@ public abstract class AbstractSimpleConfigConvert<T> extends BaseConfigConvert<T
             try {
                 String path = entity.getConfigValue();
                 return (T) ReflectUtils.parseObject(tClass, path);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 throw new SQLException(e);
             }
         }

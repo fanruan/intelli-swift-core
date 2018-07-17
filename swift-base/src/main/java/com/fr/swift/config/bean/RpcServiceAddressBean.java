@@ -13,6 +13,14 @@ public class RpcServiceAddressBean {
         this.port = port;
     }
 
+    public RpcServiceAddressBean(String fullAddress) {
+        String[] array = fullAddress.split(":");
+        address = array[0];
+        if (array.length == 2) {
+            port = array[1];
+        }
+    }
+
     public RpcServiceAddressBean() {
     }
 

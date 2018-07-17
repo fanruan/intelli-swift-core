@@ -5,11 +5,11 @@ import com.fr.config.Configuration;
 import com.fr.config.holder.Conf;
 import com.fr.config.holder.factory.Holders;
 import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.config.base.impl.SwiftAbstractObjectMapConfig;
 import com.fr.swift.config.bean.SwiftFileSystemType;
-import com.fr.swift.config.bean.unique.RepositoryConfigUnique;
 import com.fr.swift.config.service.SwiftRepositoryConfService;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.decision.config.base.SwiftAbstractObjectMapConfig;
+import com.fr.swift.decision.config.unique.RepositoryConfigUnique;
 import com.fr.transaction.Configurations;
 import com.fr.transaction.Worker;
 
