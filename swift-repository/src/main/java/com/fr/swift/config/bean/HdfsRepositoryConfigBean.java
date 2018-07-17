@@ -1,16 +1,18 @@
 package com.fr.swift.config.bean;
 
-import com.fr.swift.file.conf.AbstractSwiftFileSystemConfig;
+import com.fr.swift.config.annotation.ConfigField;
 
 /**
  * @author yee
  * @date 2018/6/15
  */
-public class HdfsRepositoryConfigBean extends AbstractSwiftFileSystemConfig {
-
-    private String fsName;
-    private String hdfsHost;
-    private String hdfsPort;
+public class HdfsRepositoryConfigBean implements SwiftFileSystemConfig {
+    @ConfigField
+    private String fsName = "fs.defaultFS";
+    @ConfigField
+    private String hdfsHost = "127.0.0.1";
+    @ConfigField
+    private String hdfsPort = "9000";
 
     public HdfsRepositoryConfigBean(String fsName, String hdfsHost, String hdfsPort) {
         this.fsName = fsName;

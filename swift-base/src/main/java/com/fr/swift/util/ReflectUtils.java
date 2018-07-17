@@ -1,9 +1,10 @@
 package com.fr.swift.util;
 
+import com.fr.stable.StringUtils;
 import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
 import com.fr.third.org.apache.commons.lang3.ClassUtils;
-import com.fr.third.org.apache.commons.lang3.StringUtils;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
 /**
@@ -17,38 +18,71 @@ public final class ReflectUtils {
     public static void set(Field field, Object object, String fieldValue) throws Exception {
         field.setAccessible(true);
         Class clazz = field.getType();
-        if (ClassUtils.isPrimitiveOrWrapper(clazz)) {
-            clazz = ClassUtils.isPrimitiveWrapper(clazz) ? clazz : ClassUtils.primitiveToWrapper(clazz);
+        field.set(object, parseObject(clazz, fieldValue));
+    }
+
+    public static Object parseObject(Class tClass, String fieldValue) throws Exception {
+        if (ClassUtils.isPrimitiveOrWrapper(tClass)) {
+            Class clazz = ClassUtils.isPrimitiveWrapper(tClass) ? tClass : ClassUtils.primitiveToWrapper(tClass);
             if (ClassUtils.isAssignable(clazz, Integer.class)) {
-                field.set(object, Integer.parseInt(fieldValue));
+                return Integer.parseInt(fieldValue);
             }
             if (ClassUtils.isAssignable(clazz, Byte.class)) {
-                field.set(object, Byte.parseByte(fieldValue));
+                return Byte.parseByte(fieldValue);
             }
             if (ClassUtils.isAssignable(clazz, Short.class)) {
-                field.set(object, Short.parseShort(fieldValue));
+                return Short.parseShort(fieldValue);
             }
             if (ClassUtils.isAssignable(clazz, Character.class)) {
-                field.set(object, fieldValue.charAt(0));
+                return fieldValue.charAt(0);
             }
             if (ClassUtils.isAssignable(clazz, Double.class)) {
-                field.set(object, Double.parseDouble(fieldValue));
+                return Double.parseDouble(fieldValue);
             }
             if (ClassUtils.isAssignable(clazz, Float.class)) {
-                field.set(object, Float.parseFloat(fieldValue));
+                return Float.parseFloat(fieldValue);
             }
             if (ClassUtils.isAssignable(clazz, Long.class)) {
-                field.set(object, Long.parseLong(fieldValue));
+                return Long.parseLong(fieldValue);
             }
             if (ClassUtils.isAssignable(clazz, Boolean.class)) {
-                field.set(object, Boolean.parseBoolean(fieldValue));
+                return Boolean.parseBoolean(fieldValue);
             }
-        } else if (ClassUtils.isAssignable(String.class, clazz)) {
-            field.set(object, fieldValue);
+        } else if (ClassUtils.isAssignable(String.class, tClass)) {
+            return fieldValue;
         } else {
-            Object obj = MAPPER.readValue(fieldValue, clazz);
-            field.set(object, obj);
+            Object obj = MAPPER.readValue(fieldValue, tClass);
+            return obj;
         }
+        return null;
+    }
+
+    public static <T> T newInstance(Class<T> clazz, Object... args) throws Exception {
+        return getConstructor(clazz, args).newInstance(args);
+    }
+
+    private static <T> Constructor<T> getConstructor(Class<T> clazz, Object... args) throws NoSuchMethodException {
+        if (null == args || args.length == 0) {
+            return clazz.getDeclaredConstructor();
+        }
+        Constructor<T>[] constructors = (Constructor<T>[]) clazz.getDeclaredConstructors();
+        for (Constructor<T> constructor : constructors) {
+            Class[] classes = constructor.getParameterTypes();
+            if (classes.length == args.length) {
+                boolean marked = true;
+                for (int i = 0; i < classes.length; i++) {
+                    if (null != args[i] && !ClassUtils.isAssignable(classes[i], args[i].getClass())) {
+                        marked = false;
+                        break;
+                    }
+                }
+                if (marked) {
+                    constructor.setAccessible(true);
+                    return constructor;
+                }
+            }
+        }
+        throw new NoSuchMethodException();
     }
 
     public static String getString(Field field, Object object) throws Exception {
@@ -58,7 +92,7 @@ public final class ReflectUtils {
             if (ClassUtils.isPrimitiveOrWrapper(clazz) || ClassUtils.isAssignable(String.class, clazz)) {
                 return obj.toString();
             } else {
-                return MAPPER.writeValueAsString(field.get(object));
+                return MAPPER.writeValueAsString(obj);
             }
         } else {
             return StringUtils.EMPTY;

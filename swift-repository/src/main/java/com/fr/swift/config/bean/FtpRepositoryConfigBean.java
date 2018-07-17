@@ -3,26 +3,39 @@ package com.fr.swift.config.bean;
 import com.fr.ftp.config.FTPConfig;
 import com.fr.security.SecurityToolbox;
 import com.fr.stable.StringUtils;
-import com.fr.swift.file.conf.AbstractSwiftFileSystemConfig;
+import com.fr.swift.config.annotation.ConfigField;
 
 /**
  * @author yee
  * @date 2018/6/15
  */
-public class FtpRepositoryConfigBean extends AbstractSwiftFileSystemConfig {
+public class FtpRepositoryConfigBean implements SwiftFileSystemConfig {
 
+    @ConfigField
     private String protocol = "FTP";
+    @ConfigField
     private String host = "";
+    @ConfigField
     private String port = "21";
+    @ConfigField
     private String username = "";
+    @ConfigField
     private String password = "";
+    @ConfigField
     private String privateKey = "";
+    @ConfigField
     private String passPhrase = "";
+    @ConfigField
     private String connectTimeout = "10000";
-    private String charset = "";
+    @ConfigField
+    private String charset = "UTF-8";
+    @ConfigField
     private String passive = "true";
+    @ConfigField
     private String soTimeout = "10000";
+    @ConfigField
     private String dataTimeout = "10000";
+    @ConfigField
     private String rootPath = "/";
 
     public String getProtocol() {
@@ -145,31 +158,19 @@ public class FtpRepositoryConfigBean extends AbstractSwiftFileSystemConfig {
 
         FtpRepositoryConfigBean that = (FtpRepositoryConfigBean) o;
 
-        if (port != that.port) {
-            return false;
-        }
-        if (connectTimeout != that.connectTimeout) {
-            return false;
-        }
-        if (passive != that.passive) {
-            return false;
-        }
-        if (soTimeout != that.soTimeout) {
-            return false;
-        }
-        if (dataTimeout != that.dataTimeout) {
-            return false;
-        }
         if (protocol != null ? !protocol.equals(that.protocol) : that.protocol != null) {
             return false;
         }
         if (host != null ? !host.equals(that.host) : that.host != null) {
             return false;
         }
+        if (port != null ? !port.equals(that.port) : that.port != null) {
+            return false;
+        }
         if (username != null ? !username.equals(that.username) : that.username != null) {
             return false;
         }
-        if (password != null ? !password.equals(that.password) : that.password != null) {
+        if (password != null ? !getPassword().equals(that.getPassword()) : that.password != null) {
             return false;
         }
         if (privateKey != null ? !privateKey.equals(that.privateKey) : that.privateKey != null) {
@@ -178,10 +179,22 @@ public class FtpRepositoryConfigBean extends AbstractSwiftFileSystemConfig {
         if (passPhrase != null ? !passPhrase.equals(that.passPhrase) : that.passPhrase != null) {
             return false;
         }
-        if (rootPath != null ? !rootPath.equals(that.rootPath) : that.rootPath != null) {
+        if (connectTimeout != null ? !connectTimeout.equals(that.connectTimeout) : that.connectTimeout != null) {
             return false;
         }
-        return charset != null ? charset.equals(that.charset) : that.charset == null;
+        if (charset != null ? !charset.equals(that.charset) : that.charset != null) {
+            return false;
+        }
+        if (passive != null ? !passive.equals(that.passive) : that.passive != null) {
+            return false;
+        }
+        if (soTimeout != null ? !soTimeout.equals(that.soTimeout) : that.soTimeout != null) {
+            return false;
+        }
+        if (dataTimeout != null ? !dataTimeout.equals(that.dataTimeout) : that.dataTimeout != null) {
+            return false;
+        }
+        return rootPath != null ? rootPath.equals(that.rootPath) : that.rootPath == null;
     }
 
     @Override
@@ -190,7 +203,7 @@ public class FtpRepositoryConfigBean extends AbstractSwiftFileSystemConfig {
         result = 31 * result + (host != null ? host.hashCode() : 0);
         result = 31 * result + (port != null ? port.hashCode() : 0);
         result = 31 * result + (username != null ? username.hashCode() : 0);
-        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + (password != null ? getPassword().hashCode() : 0);
         result = 31 * result + (privateKey != null ? privateKey.hashCode() : 0);
         result = 31 * result + (passPhrase != null ? passPhrase.hashCode() : 0);
         result = 31 * result + (connectTimeout != null ? connectTimeout.hashCode() : 0);

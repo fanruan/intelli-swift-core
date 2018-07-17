@@ -5,10 +5,10 @@ import com.fr.config.Configuration;
 import com.fr.config.holder.factory.Holders;
 import com.fr.stable.StringUtils;
 import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.config.base.impl.SwiftAbstractSimpleConfig;
 import com.fr.swift.config.service.SwiftPathService;
 import com.fr.swift.context.ContextUtil;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.decision.config.base.SwiftAbstractSimpleConfig;
 import com.fr.transaction.Configurations;
 import com.fr.transaction.Worker;
 

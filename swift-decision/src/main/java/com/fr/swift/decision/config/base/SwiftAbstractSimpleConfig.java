@@ -1,8 +1,7 @@
-package com.fr.swift.config.base.impl;
+package com.fr.swift.decision.config.base;
 
 import com.fr.config.DefaultConfiguration;
 import com.fr.config.holder.Conf;
-import com.fr.swift.config.base.SwiftSimpleConfig;
 
 /**
  * @author yee

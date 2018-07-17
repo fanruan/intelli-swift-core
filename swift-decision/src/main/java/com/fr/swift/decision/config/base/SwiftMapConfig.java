@@ -1,4 +1,4 @@
-package com.fr.swift.config.base;
+package com.fr.swift.decision.config.base;
 
 import java.util.Map;
 

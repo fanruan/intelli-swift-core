@@ -1,6 +1,7 @@
 package com.fr.swift.config.convert;
 
 import com.fr.swift.config.bean.SegmentDestSelectRule;
+import com.fr.swift.config.convert.swift.AbstractObjectConfigConvert;
 import com.fr.swift.config.dao.SwiftConfigDao;
 import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.log.SwiftLoggers;
@@ -11,7 +12,7 @@ import com.fr.third.org.hibernate.Session;
  * @author yee
  * @date 2018/7/16
  */
-public class SegDestSelectRuleConvert extends AbstractConfigConvert<SegmentDestSelectRule> {
+public class SegDestSelectRuleConvert extends AbstractObjectConfigConvert<SegmentDestSelectRule> {
 
     private static final String NAMESPACE = "SEGMENT_DEST_SELECT_RULE";
 

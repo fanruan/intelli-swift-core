@@ -1,8 +1,9 @@
-package com.fr.swift.config.convert;
+package com.fr.swift.config.convert.swift;
 
+import com.fr.stable.StringUtils;
+import com.fr.swift.config.annotation.ConfigField;
 import com.fr.swift.config.dao.SwiftConfigDao;
 import com.fr.swift.config.entity.SwiftConfigEntity;
-import com.fr.swift.config.service.SwiftConfigService;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.ReflectUtils;
 import com.fr.third.org.hibernate.Session;
@@ -16,9 +17,7 @@ import java.util.List;
  * @author yee
  * @date 2018/7/16
  */
-public abstract class AbstractConfigConvert<T> implements SwiftConfigService.ConfigConvert<T> {
-
-    protected abstract String getNameSpace();
+public abstract class AbstractObjectConfigConvert<T> extends BaseConfigConvert<T> {
 
     @Override
     public T toBean(SwiftConfigDao<SwiftConfigEntity> dao, Session session, Object... args) throws SQLException {
@@ -32,10 +31,11 @@ public abstract class AbstractConfigConvert<T> implements SwiftConfigService.Con
             T rule = clazz.newInstance();
             Field[] fields = clazz.getDeclaredFields();
             for (Field field : fields) {
-                field.setAccessible(true);
-                SwiftConfigEntity tmp = dao.select(session, getKey(field.getName()));
-                if (null != tmp) {
-                    ReflectUtils.set(field, rule, tmp.getConfigValue());
+                if (field.isAnnotationPresent(ConfigField.class)) {
+                    SwiftConfigEntity tmp = dao.select(session, getKey(field.getName()));
+                    if (null != tmp) {
+                        ReflectUtils.set(field, rule, tmp.getConfigValue());
+                    }
                 }
             }
             return rule;
@@ -53,20 +53,19 @@ public abstract class AbstractConfigConvert<T> implements SwiftConfigService.Con
             result.add(entity);
             Field[] fields = dataSyncRule.getClass().getDeclaredFields();
             for (Field field : fields) {
-                result.add(new SwiftConfigEntity(getKey(field.getName()), ReflectUtils.getString(field, dataSyncRule)));
+                if (field.isAnnotationPresent(ConfigField.class)) {
+                    ConfigField configField = field.getAnnotation(ConfigField.class);
+                    String value = ReflectUtils.getString(field, dataSyncRule);
+                    if (StringUtils.isEmpty(value) && configField.ignoreNull()) {
+                        continue;
+                    }
+                    result.add(new SwiftConfigEntity(getKey(field.getName()), ReflectUtils.getString(field, dataSyncRule)));
+                }
             }
             return result;
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         }
         return null;
-    }
-
-    private String getKey(String... keys) {
-        StringBuffer buffer = new StringBuffer(getNameSpace());
-        for (String key : keys) {
-            buffer.append(".").append(key);
-        }
-        return buffer.toString();
     }
 }

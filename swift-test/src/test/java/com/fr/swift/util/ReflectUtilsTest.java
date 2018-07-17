@@ -4,6 +4,7 @@ import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author yee
@@ -41,12 +42,12 @@ public class ReflectUtilsTest {
     public void get() throws Exception {
         TestClass bean = new TestClass();
         ObjectMapper objectMapper = new ObjectMapper();
-        assertEquals(bean.string, ReflectUtils.get(TestClass.class.getDeclaredField("string"), bean));
-        assertEquals(String.valueOf(bean.int1), ReflectUtils.get(TestClass.class.getDeclaredField("int1"), bean));
-        assertEquals(bean.int2.toString(), ReflectUtils.get(TestClass.class.getDeclaredField("int2"), bean));
-        assertEquals(bean.boolen1.toString(), ReflectUtils.get(TestClass.class.getDeclaredField("boolen1"), bean));
-        assertEquals(String.valueOf(bean.boolen2), ReflectUtils.get(TestClass.class.getDeclaredField("boolen2"), bean));
-        assertEquals(objectMapper.writeValueAsString(bean.object), ReflectUtils.get(TestClass.class.getDeclaredField("object"), bean));
+        assertEquals(bean.string, ReflectUtils.getString(TestClass.class.getDeclaredField("string"), bean));
+        assertEquals(String.valueOf(bean.int1), ReflectUtils.getString(TestClass.class.getDeclaredField("int1"), bean));
+        assertEquals(bean.int2.toString(), ReflectUtils.getString(TestClass.class.getDeclaredField("int2"), bean));
+        assertEquals(bean.boolen1.toString(), ReflectUtils.getString(TestClass.class.getDeclaredField("boolen1"), bean));
+        assertEquals(String.valueOf(bean.boolen2), ReflectUtils.getString(TestClass.class.getDeclaredField("boolen2"), bean));
+        assertEquals(objectMapper.writeValueAsString(bean.object), ReflectUtils.getString(TestClass.class.getDeclaredField("object"), bean));
     }
 
     class TestClass {
@@ -65,5 +66,13 @@ public class ReflectUtilsTest {
             object.setDialectClass("dialect");
             object.setUrl("url");
         }
+    }
+
+    @Test
+    public void testNewInstance() throws Exception {
+        TestBean bean = ReflectUtils.newInstance(TestBean.class);
+        assertNotNull(bean);
+        bean = ReflectUtils.newInstance(TestBean.class, "username", "password", "driver", "dialect", null);
+        assertNotNull(bean);
     }
 }
