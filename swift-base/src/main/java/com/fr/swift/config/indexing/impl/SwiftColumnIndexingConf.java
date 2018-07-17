@@ -48,7 +48,7 @@ public class SwiftColumnIndexingConf implements ColumnIndexingConf {
     }
 
     public SwiftColumnIndexingConf(SourceKey tableKey, String columnName, boolean requireIndex, boolean requireGlobalDict) {
-        Crasher.crashIf(!requireIndex && requireGlobalDict, "global dict is not allowed to generate with no index");
+        Crasher.crashIf(!requireIndex && requireGlobalDict, "global dict is not allowed to generate without index");
 
         this.columnId = new ColumnId(tableKey, columnName);
         this.requireIndex = requireIndex;

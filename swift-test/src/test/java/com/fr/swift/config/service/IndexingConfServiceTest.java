@@ -77,8 +77,8 @@ public class IndexingConfServiceTest {
 
         Assert.assertEquals(conf1.getColumn(), conf2.getColumn());
 
-        Assert.assertEquals(conf1.requireIndex(), conf1.requireIndex());
+        Assert.assertEquals(conf1.requireIndex(), conf2.requireIndex());
 
-        Assert.assertEquals(conf1.requireGlobalDict(), conf1.requireGlobalDict());
+        Assert.assertEquals(conf1.requireGlobalDict(), conf2.requireGlobalDict());
     }
 }
