@@ -47,7 +47,7 @@ public abstract class AbstractSimpleConfigConvert<T> extends BaseConfigConvert<T
     }
 
     private void checkClass(Class tClass) {
-        if (!ClassUtils.isPrimitiveOrWrapper(tClass) || !ClassUtils.isAssignable(tClass, String.class)) {
+        if (!ClassUtils.isPrimitiveOrWrapper(tClass) && !ClassUtils.isAssignable(tClass, String.class)) {
             throw new RuntimeException("Object " + tClass + " is not simple");
         }
     }

@@ -9,7 +9,6 @@ import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.service.SwiftConfigService;
 import com.fr.swift.config.service.SwiftPathService;
 import com.fr.swift.context.ContextUtil;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.third.org.hibernate.Session;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
@@ -35,8 +34,7 @@ public class SwiftPathServiceImpl implements SwiftPathService {
                 if (isValidPath(path)) {
                     return path;
                 }
-            } catch (Exception e) {
-                SwiftLoggers.getLogger().error(e.getMessage());
+            } catch (Exception ignore) {
             }
             String path = getDefaultPath();
             for (SwiftConfigEntity swiftConfigEntity : toEntity(path)) {
