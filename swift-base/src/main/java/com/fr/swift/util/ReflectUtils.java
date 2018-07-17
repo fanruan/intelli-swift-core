@@ -4,7 +4,6 @@ import com.fr.stable.StringUtils;
 import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
 import com.fr.third.org.apache.commons.lang3.ClassUtils;
 
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
@@ -22,7 +21,7 @@ public final class ReflectUtils {
         field.set(object, parseObject(clazz, fieldValue));
     }
 
-    public static Object parseObject(Class tClass, String fieldValue) throws IOException {
+    public static Object parseObject(Class tClass, String fieldValue) throws Exception {
         if (ClassUtils.isPrimitiveOrWrapper(tClass)) {
             Class clazz = ClassUtils.isPrimitiveWrapper(tClass) ? tClass : ClassUtils.primitiveToWrapper(tClass);
             if (ClassUtils.isAssignable(clazz, Integer.class)) {
