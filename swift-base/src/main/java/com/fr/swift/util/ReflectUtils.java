@@ -78,6 +78,7 @@ public final class ReflectUtils {
                     }
                 }
                 if (marked) {
+                    constructor.setAccessible(true);
                     return constructor;
                 }
             }
