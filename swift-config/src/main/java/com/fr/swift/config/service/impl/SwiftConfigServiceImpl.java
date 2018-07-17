@@ -63,4 +63,23 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
         }
         return false;
     }
+
+    @Override
+    public <ConfigBean> boolean deleteConfigBean(ConfigConvert<ConfigBean> convert, ConfigBean bean, Object... args) {
+        final List<SwiftConfigEntity> configEntities = convert.toEntity(bean, args);
+        try {
+            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
+                @Override
+                public Boolean work(Session session) throws SQLException {
+                    for (SwiftConfigEntity configEntity : configEntities) {
+                        swiftConfigDao.deleteById(session, configEntity.getConfigKey());
+                    }
+                    return true;
+                }
+            });
+        } catch (SQLException e) {
+            SwiftLoggers.getLogger().error(e);
+        }
+        return false;
+    }
 }

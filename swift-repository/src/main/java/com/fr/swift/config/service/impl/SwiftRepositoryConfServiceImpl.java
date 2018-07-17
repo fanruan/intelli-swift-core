@@ -32,6 +32,7 @@ public class SwiftRepositoryConfServiceImpl implements SwiftRepositoryConfServic
     public boolean setCurrentRepository(SwiftFileSystemConfig config) {
         SwiftFileSystemConfig current = getCurrentRepository();
         if (null == current || !ComparatorUtils.equals(config, current)) {
+            configService.deleteConfigBean(CONVERT, current);
             for (ConfChangeListener changeListener : changeListeners) {
                 changeListener.change(config);
             }
