@@ -1,4 +1,4 @@
-package com.fr.swift.source.alloter.line;
+package com.fr.swift.source.alloter.impl.line;
 
 import com.fr.swift.source.alloter.RowInfo;
 

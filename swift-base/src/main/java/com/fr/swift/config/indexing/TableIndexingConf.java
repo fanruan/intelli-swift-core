@@ -1,4 +1,4 @@
-package com.fr.swift.generate.conf;
+package com.fr.swift.config.indexing;
 
 import com.fr.swift.source.alloter.AllotRule;
 

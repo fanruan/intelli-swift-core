@@ -1,4 +1,4 @@
-package com.fr.swift.source.alloter.hash;
+package com.fr.swift.source.alloter.impl.hash;
 
 /**
  * @author anchore

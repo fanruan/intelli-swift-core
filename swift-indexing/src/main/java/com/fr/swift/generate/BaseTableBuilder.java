@@ -1,10 +1,10 @@
 package com.fr.swift.generate;
 
+import com.fr.swift.config.indexing.ColumnIndexingConf;
+import com.fr.swift.config.service.IndexingConfService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.generate.conf.ColumnIndexingConf;
-import com.fr.swift.generate.conf.service.IndexingConfService;
 import com.fr.swift.generate.conf.service.SwiftIndexingConfService;
 import com.fr.swift.generate.history.index.ColumnDictMerger;
 import com.fr.swift.generate.history.index.ColumnIndexer;

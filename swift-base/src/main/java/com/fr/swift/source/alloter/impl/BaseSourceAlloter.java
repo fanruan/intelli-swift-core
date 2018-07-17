@@ -1,6 +1,7 @@
-package com.fr.swift.source.alloter;
+package com.fr.swift.source.alloter.impl;
 
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.alloter.SwiftSourceAlloter;
 
 /**
  * @author anchore

@@ -1,7 +1,10 @@
-package com.fr.swift.source.alloter;
+package com.fr.swift.source.alloter.impl;
 
 import com.fr.swift.segment.Segment;
-import com.fr.swift.source.alloter.impl.SwiftSegmentInfo;
+import com.fr.swift.source.alloter.AllotRule;
+import com.fr.swift.source.alloter.RowInfo;
+import com.fr.swift.source.alloter.SegmentInfo;
+import com.fr.swift.source.alloter.SwiftSourceAlloter;
 
 import java.util.List;
 

@@ -1,12 +1,12 @@
-package com.fr.swift.generate.conf;
+package com.fr.swift.config.indexing.impl;
 
+import com.fr.swift.config.indexing.ColumnIndexingConf;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.util.Crasher;
 import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Entity;
 import com.fr.third.javax.persistence.Id;
 import com.fr.third.javax.persistence.Table;
-
-import java.io.Serializable;
 
 /**
  * @author anchore
@@ -14,10 +14,9 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "fine_swift_column_index_conf")
-public class SwiftColumnIndexingConf extends BaseIndexingConf implements ColumnIndexingConf, Serializable {
+public class SwiftColumnIndexingConf implements ColumnIndexingConf {
     @Id
-    @Column(name = "columnName")
-    private String column;
+    private ColumnId columnId;
 
     @Column(name = "requireIndex")
     private boolean requireIndex;
@@ -25,21 +24,14 @@ public class SwiftColumnIndexingConf extends BaseIndexingConf implements ColumnI
     @Column(name = "requireGlobalDict")
     private boolean requireGlobalDict;
 
-    public SwiftColumnIndexingConf(SourceKey table, String column, boolean requireIndex, boolean requireGlobalDict) {
-        super(table);
-        this.column = column;
-        this.requireIndex = requireIndex;
-        this.requireGlobalDict = requireGlobalDict;
-    }
-
     @Override
     public SourceKey getTable() {
-        return new SourceKey(tableKey);
+        return columnId.getTableKey();
     }
 
     @Override
     public String getColumn() {
-        return column;
+        return columnId.getColumnName();
     }
 
     @Override
@@ -50,5 +42,16 @@ public class SwiftColumnIndexingConf extends BaseIndexingConf implements ColumnI
     @Override
     public boolean requireGlobalDict() {
         return requireGlobalDict;
+    }
+
+    public SwiftColumnIndexingConf() {
+    }
+
+    public SwiftColumnIndexingConf(SourceKey tableKey, String columnName, boolean requireIndex, boolean requireGlobalDict) {
+        Crasher.crashIf(!requireIndex && requireGlobalDict, "global dict is not allowed to generate without index");
+
+        this.columnId = new ColumnId(tableKey, columnName);
+        this.requireIndex = requireIndex;
+        this.requireGlobalDict = requireGlobalDict;
     }
 }
