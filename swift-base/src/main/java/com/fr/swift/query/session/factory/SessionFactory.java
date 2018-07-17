@@ -1,7 +1,6 @@
 package com.fr.swift.query.session.factory;
 
 import com.fr.swift.query.session.Session;
-import com.fr.swift.query.session.SessionBuilder;
 import com.fr.swift.util.Clearable;
 
 /**
@@ -12,10 +11,10 @@ public interface SessionFactory extends Clearable {
     /**
      * 打开一个session
      *
-     * @param sessionBuilder session创建器
+     * @param queryId queryId
      * @return
      */
-    Session openSession(SessionBuilder sessionBuilder);
+    Session openSession(String queryId);
 
     /**
      * 设置缓存超时时间 默认5分钟

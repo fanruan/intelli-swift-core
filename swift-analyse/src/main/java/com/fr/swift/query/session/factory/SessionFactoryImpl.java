@@ -2,8 +2,8 @@ package com.fr.swift.query.session.factory;
 
 import com.fr.stable.StringUtils;
 import com.fr.swift.query.cache.Cache;
+import com.fr.swift.query.session.QuerySession;
 import com.fr.swift.query.session.Session;
-import com.fr.swift.query.session.SessionBuilder;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 
 import java.util.Iterator;
@@ -40,15 +40,6 @@ public class SessionFactoryImpl implements SessionFactory {
     }
 
     @Override
-    public Session openSession(SessionBuilder sessionBuilder) {
-        String queryId = sessionBuilder.getQueryId();
-        if (StringUtils.isNotEmpty(queryId)) {
-            return openSession(sessionBuilder, queryId);
-        }
-        return sessionBuilder.build(cacheTimeout);
-    }
-
-    @Override
     public void setCacheTimeout(long cacheTimeout) {
         cacheClean.shutdown();
         this.cacheTimeout = cacheTimeout;
@@ -64,21 +55,22 @@ public class SessionFactoryImpl implements SessionFactory {
         sessionClean.scheduleAtFixedRate(createSessionCleanTask(), sessionTimeout, sessionTimeout, TimeUnit.MILLISECONDS);
     }
 
-    private Session openSession(SessionBuilder sessionBuilder, String queryId) {
+    @Override
+    public Session openSession(String queryId) {
         String sessionId = queryMap2Session.get(queryId);
         Session session = null;
         if (StringUtils.isEmpty(sessionId)) {
-            session = createSession(sessionBuilder, queryId);
+            session = createSession(queryId);
         } else {
             Cache<Session> cache = sessionMap.get(sessionId);
             if (null == cache) {
-                session = createSession(sessionBuilder, queryId);
+                session = createSession(queryId);
             } else {
                 session = cache.get();
                 if (!session.isClose()) {
                     cache.update();
                 } else {
-                    session = createSession(sessionBuilder, queryId);
+                    session = createSession(queryId);
                 }
             }
         }
@@ -90,8 +82,8 @@ public class SessionFactoryImpl implements SessionFactory {
 
     }
 
-    private Session createSession(SessionBuilder sessionBuilder, String queryId) {
-        Session session = sessionBuilder.build(cacheTimeout);
+    private Session createSession(String queryId) {
+        Session session = new QuerySession(cacheTimeout);
         String sessionId = session.getSessionId();
         sessionMap.put(sessionId, new Cache<Session>(session));
         queryMap2Session.put(queryId, sessionId);
