@@ -1,6 +1,5 @@
 package com.fr.swift.manager;
 
-import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.generate.history.index.ColumnDictMerger;
 import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.generate.segment.operator.inserter.BlockInserter;
@@ -65,7 +64,7 @@ public class LocalDataOperatorProvider implements SwiftDataOperatorProvider {
     }
 
     @Override
-    public WhereDeleter getRowDeleter(Segment segment) throws SwiftMetaDataException {
+    public WhereDeleter getRowDeleter(Segment segment) {
         if (segment.isHistory()) {
             return new HistorySwiftDeleter(segment);
         } else {
