@@ -1,5 +1,6 @@
 package com.fr.swift.config.entity;
 
+import com.fr.stable.StringUtils;
 import com.fr.swift.config.entity.key.SwiftTablePathKey;
 import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Entity;
@@ -37,7 +38,7 @@ public class SwiftTablePathEntity {
     }
 
     public String getTablePath() {
-        return tablePath;
+        return StringUtils.isEmpty(tablePath) ? StringUtils.EMPTY : tablePath;
     }
 
     public void setTablePath(String tablePath) {

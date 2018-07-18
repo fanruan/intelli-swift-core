@@ -60,6 +60,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static com.fr.swift.task.TaskResult.Type.SUCCEEDED;
+
 /**
  * @author pony
  * @date 2017/10/10
@@ -261,19 +263,22 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
 
         @Override
         public void run() {
-            TaskKey key = result.getKey();
-            Object obj = stuffObject.get(key);
-            try {
-                if (null != obj) {
-                    if (obj instanceof DataSource) {
-                        uploadTable((DataSource) obj);
-                    } else if (obj instanceof RelationSource) {
-                        uploadRelation((RelationSource) obj);
+            if (result.getValue().getType() == SUCCEEDED) {
+                TaskKey key = result.getKey();
+                Object obj = stuffObject.get(key);
+                try {
+                    if (null != obj) {
+                        if (obj instanceof DataSource) {
+                            uploadTable((DataSource) obj);
+                        } else if (obj instanceof RelationSource) {
+                            uploadRelation((RelationSource) obj);
+                        }
+
                     }
 
+                } catch (Exception e) {
+                    logger.error(e);
                 }
-            } catch (Exception e) {
-                logger.error(e);
             }
         }
     }
