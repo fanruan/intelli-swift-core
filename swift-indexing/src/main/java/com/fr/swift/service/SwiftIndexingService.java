@@ -14,11 +14,11 @@ import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentServiceProvider;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.core.rpc.SwiftClusterService;
 import com.fr.swift.event.global.TaskDoneRpcEvent;
 import com.fr.swift.event.history.HistoryCommonLoadRpcEvent;
 import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
-import com.fr.swift.core.rpc.SwiftClusterService;
 import com.fr.swift.info.ServerCurrentStatus;
 import com.fr.swift.invocation.SwiftInvocation;
 import com.fr.swift.log.SwiftLoggers;
@@ -68,7 +68,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @RpcService(type = RpcServiceType.CLIENT_SERVICE, value = IndexingService.class)
 public class SwiftIndexingService extends AbstractSwiftService implements IndexingService {
     private static final long serialVersionUID = -7430843337225891194L;
-    private transient RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
+    private transient RpcServer server = SwiftContext.get().getBean(RpcServer.class);
 
     private static Map<TaskKey, Object> stuffObject = new ConcurrentHashMap<TaskKey, Object>();
 
@@ -88,7 +88,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
 
     @Override
     public String getID() {
-        return StringUtils.isEmpty(super.getID()) ? SwiftContext.getInstance().getBean(SwiftProperty.class).getRpcAddress() : super.getID();
+        return StringUtils.isEmpty(super.getID()) ? SwiftContext.get().getBean(SwiftProperty.class).getRpcAddress() : super.getID();
     }
 
     @Override
@@ -101,7 +101,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     @Override
     @RpcMethod(methodName = "cleanMetaCache")
     public void cleanMetaCache(String[] sourceKeys) {
-        SwiftContext.getInstance().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
+        SwiftContext.get().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
     }
 
     @Override
@@ -149,7 +149,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     }
 
     private URL getMasterURL() {
-        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.getInstance().getBean(SwiftServiceInfoService.class).getServiceInfoByService(SwiftClusterService.SERVICE);
+        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.get().getBean(SwiftServiceInfoService.class).getServiceInfoByService(SwiftClusterService.SERVICE);
         SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
         return UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
     }

@@ -30,7 +30,7 @@ import static org.junit.Assert.assertTrue;
  * @date 2018/3/24
  */
 public class SubDateColumnIndexerTest {
-    private LocalSegmentProvider segmentProvider = SwiftContext.getInstance().getBean(LocalSegmentProvider.class);
+    private LocalSegmentProvider segmentProvider = SwiftContext.get().getBean(LocalSegmentProvider.class);
     private String columnName = "注册时间";
     private DataSource dataSource = new QueryDBSource("select " + columnName + " from DEMO_CONTRACT", getClass().getName());
 
@@ -42,7 +42,7 @@ public class SubDateColumnIndexerTest {
 
     @Before
     public void before() throws Exception {
-        segmentProvider = SwiftContext.getInstance().getBean(LocalSegmentProvider.class);
+        segmentProvider = SwiftContext.get().getBean(LocalSegmentProvider.class);
         new TableTransporter(dataSource).transport();
         List<Segment> segments = segmentProvider.getSegment(dataSource.getSourceKey());
         new ColumnIndexer(dataSource, new ColumnKey(columnName), segments).buildIndex();

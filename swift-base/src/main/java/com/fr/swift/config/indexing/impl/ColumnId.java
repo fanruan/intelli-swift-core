@@ -9,11 +9,11 @@ import com.fr.third.javax.persistence.Embeddable;
  * @date 2018/7/17
  */
 @Embeddable
-class ColumnId extends TableId {
+public class ColumnId extends TableId {
     @Column(name = "columnName")
     private String columnName;
 
-    ColumnId(SourceKey tableKey, String columnName) {
+    public ColumnId(SourceKey tableKey, String columnName) {
         super(tableKey);
         this.columnName = columnName;
     }

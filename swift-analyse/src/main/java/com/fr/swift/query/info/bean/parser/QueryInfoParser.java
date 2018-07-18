@@ -82,7 +82,7 @@ public class QueryInfoParser {
         SourceKey table = new SourceKey(bean.getTableName());
         FilterInfo filterInfo = FilterInfoParser.parse(table, bean.getFilterInfoBean());
         List<Dimension> dimensions = DimensionParser.parse(bean.getDimensionBeans(), bean.getSortBeans());
-        SwiftMetaData metaData = SwiftContext.getInstance().getBean(SwiftMetaDataService.class).getMetaDataByKey(bean.getTableName());
+        SwiftMetaData metaData = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(bean.getTableName());
         List<SwiftMetaDataColumn> columns = new ArrayList<SwiftMetaDataColumn>();
         List<Sort> sorts = null;
         List<SortBean> sortBeans = bean.getSortBeans();

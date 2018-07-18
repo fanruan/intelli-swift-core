@@ -58,7 +58,7 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(ClusterSwiftServerService.class);
 
-    private SwiftServiceInfoService serviceInfoService = SwiftContext.getInstance().getBean(SwiftServiceInfoService.class);
+    private SwiftServiceInfoService serviceInfoService = SwiftContext.get().getBean(SwiftServiceInfoService.class);
 
     private ClusterSwiftServerService() {
     }
@@ -79,7 +79,7 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
 
     @Override
     public void cleanMetaCache(String[] sourceKeys) {
-        SwiftContext.getInstance().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
+        SwiftContext.get().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
 
     @Override
     public void registerService(SwiftService service) {
-        SwiftProperty swiftProperty = SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class);
+        SwiftProperty swiftProperty = SwiftContext.get().getBean("swiftProperty", SwiftProperty.class);
 
         if (service.getID() == null) {
             Crasher.crash("Service's clusterId is null! Can't be registered!");
@@ -169,7 +169,7 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
                 SwiftLoggers.getLogger().info("rpc告诉indexing节点执行任务");
                 String address = null;
                 try {
-                    IndexingSelectRule rule = SwiftContext.getInstance().getBean(IndexingSelectRuleService.class).getCurrentRule();
+                    IndexingSelectRule rule = SwiftContext.get().getBean(IndexingSelectRuleService.class).getCurrentRule();
                     address = rule.select(indexingServiceMap.keySet());
                     ClusterEntity entity = indexingServiceMap.get(address);
                     ProxyFactory factory = ProxySelector.getInstance().getFactory();

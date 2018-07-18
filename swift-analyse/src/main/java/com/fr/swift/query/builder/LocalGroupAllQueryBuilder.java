@@ -59,7 +59,7 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
         List<Query<NodeResultSet>> queries = new ArrayList<Query<NodeResultSet>>();
         List<Metric> metrics = info.getMetrics();
         List<Dimension> dimensions = info.getDimensions();
-        List<Segment> segments = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegment(info.getTable());
+        List<Segment> segments = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegment(info.getTable());
         List<Segment> targetSegments = LocalDetailNormalQueryBuilder.getSegmentsByURIList(info.getQuerySegment(), segments);
         if (targetSegments.isEmpty()) {
             targetSegments = segments;

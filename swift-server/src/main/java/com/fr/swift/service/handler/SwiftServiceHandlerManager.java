@@ -21,11 +21,11 @@ import java.io.Serializable;
  * @date 2018/6/8
  */
 public class SwiftServiceHandlerManager implements Handler {
-    private SwiftHistoryEventHandler historyEventHandler = SwiftContext.getInstance().getBean(SwiftHistoryEventHandler.class);
-    private SwiftAnalyseEventHandler analyseService = SwiftContext.getInstance().getBean(SwiftAnalyseEventHandler.class);
-    private SwiftRealTimeEventHandler realTimeEventHandler = SwiftContext.getInstance().getBean(SwiftRealTimeEventHandler.class);
-    private SwiftIndexingEventHandler indexingEventHandler = SwiftContext.getInstance().getBean(SwiftIndexingEventHandler.class);
-    private SwiftGlobalEventHandler globalEventHandler = SwiftContext.getInstance().getBean(SwiftGlobalEventHandler.class);
+    private SwiftHistoryEventHandler historyEventHandler = SwiftContext.get().getBean(SwiftHistoryEventHandler.class);
+    private SwiftAnalyseEventHandler analyseService = SwiftContext.get().getBean(SwiftAnalyseEventHandler.class);
+    private SwiftRealTimeEventHandler realTimeEventHandler = SwiftContext.get().getBean(SwiftRealTimeEventHandler.class);
+    private SwiftIndexingEventHandler indexingEventHandler = SwiftContext.get().getBean(SwiftIndexingEventHandler.class);
+    private SwiftGlobalEventHandler globalEventHandler = SwiftContext.get().getBean(SwiftGlobalEventHandler.class);
 
     private SwiftServiceHandlerManager() {
     }

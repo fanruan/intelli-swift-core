@@ -33,10 +33,6 @@ public class SwiftContext extends ClassPathXmlApplicationContext {
     private SwiftContext() {
     }
 
-    public static ApplicationContext getInstance() {
-        return INSTANCE;
-    }
-
     public static ApplicationContext get() {
         return INSTANCE;
     }

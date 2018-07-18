@@ -26,7 +26,7 @@ import java.util.concurrent.CountDownLatch;
  */
 public class AsyncTest {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         ProxySelector.getInstance().switchFactory(new RPCProxyFactory());
         //step1: get proxyFactory
         ProxyFactory proxyFactory = ProxySelector.getInstance().getFactory();
@@ -36,8 +36,8 @@ public class AsyncTest {
 //        Method method = CalculatorService.class.getMethod("add", int.class, int.class, long.class);
         //step3: get invoker method
         SwiftContext.init();
-        RpcServer rpcServer = SwiftContext.getInstance().getBean(RpcServer.class);
-        rpcServer.initService(SwiftContext.getInstance());
+        RpcServer rpcServer = SwiftContext.get().getBean(RpcServer.class);
+        rpcServer.initService(SwiftContext.get());
         Method method = rpcServer.getMethodByName("add");
         final long startTime = System.currentTimeMillis();
         //step4: async invoke method

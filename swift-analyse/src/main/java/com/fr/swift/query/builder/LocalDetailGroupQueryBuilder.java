@@ -28,7 +28,7 @@ import java.util.List;
  */
 public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
 
-    private final SwiftSegmentManager localSegmentProvider = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class);
+    private final SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
 
     protected LocalDetailGroupQueryBuilder() {
     }

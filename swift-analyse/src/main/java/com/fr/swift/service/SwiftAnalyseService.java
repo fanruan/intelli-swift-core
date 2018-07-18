@@ -44,7 +44,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
 
     private static final long serialVersionUID = 841582089735823794L;
     private transient static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftAnalyseService.class);
-    private transient RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
+    private transient RpcServer server = SwiftContext.get().getBean(RpcServer.class);
 
     public SwiftAnalyseService(String id) {
         super(id);
@@ -79,7 +79,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     @Override
     @RpcMethod(methodName = "cleanMetaCache")
     public void cleanMetaCache(String[] sourceKeys) {
-        SwiftContext.getInstance().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
+        SwiftContext.get().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
     }
 
     @Override

@@ -26,9 +26,9 @@ import java.util.List;
  */
 public abstract class AbstractSegmentRecovery implements SegmentRecovery {
 
-    protected SwiftSegmentManager localSegmentProvider = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class);
+    protected SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
 
-    protected SwiftDataOperatorProvider operators = SwiftContext.getInstance().getBean(SwiftDataOperatorProvider.class);
+    protected SwiftDataOperatorProvider operators = SwiftContext.get().getBean(SwiftDataOperatorProvider.class);
 
     @Override
     public void recover(SourceKey tableKey) {

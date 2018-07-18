@@ -29,7 +29,7 @@ public class SwiftServiceAddressConfig extends SwiftAbstractObjectMapConfig<RpcS
     @Override
     public boolean addOrUpdate(String key, RpcServiceAddressUnique value) {
         super.addOrUpdate(key, value);
-        return SwiftContext.getInstance().getBean(SwiftServiceAddressService.class).addOrUpdateAddress(key, value.convert());
+        return SwiftContext.get().getBean(SwiftServiceAddressService.class).addOrUpdateAddress(key, value.convert());
     }
 
     @Override

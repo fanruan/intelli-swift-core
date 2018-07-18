@@ -53,7 +53,7 @@ import java.util.List;
 @RpcService(value = CollateService.class, type = RpcServiceType.CLIENT_SERVICE)
 public class SwiftCollateService extends AbstractSwiftService implements CollateService {
 
-    private transient SwiftSegmentManager segmentManager = (SwiftSegmentManager) SwiftContext.getInstance().getBean("localSegmentProvider");
+    private transient SwiftSegmentManager segmentManager = (SwiftSegmentManager) SwiftContext.get().getBean("localSegmentProvider");
 
     private transient Database database = SwiftDatabase.getInstance();
 
@@ -121,7 +121,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
     @Override
     @RpcMethod(methodName = "cleanMetaCache")
     public void cleanMetaCache(String[] sourceKeys) {
-        SwiftContext.getInstance().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
+        SwiftContext.get().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
     }
 
     @Override

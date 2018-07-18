@@ -99,10 +99,10 @@ public class SwiftLogOperator extends BaseMetric {
     @Override
     public void clean(QueryCondition condition) throws Exception {
         List<Table> tables = SwiftDatabase.getInstance().getAllTables();
-        SwiftSegmentManager localSegmentProvider = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class);
+        SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         for (Table table : tables) {
             for (Segment segment : localSegmentProvider.getSegment(table.getSourceKey())) {
-                RowDeleter rowDeleter = (RowDeleter) SwiftContext.getInstance().getBean("decrementer", segment);
+                RowDeleter rowDeleter = (RowDeleter) SwiftContext.get().getBean("decrementer", segment);
                 rowDeleter.delete(table.getSourceKey(), new SwiftWhere(condition));
             }
         }

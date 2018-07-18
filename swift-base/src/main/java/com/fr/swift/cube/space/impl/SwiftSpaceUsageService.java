@@ -22,7 +22,7 @@ public class SwiftSpaceUsageService implements SpaceUsageService {
     private SpaceUsageDetector detector = new LocalSpaceUsageDetector();
 
     private SwiftSegmentService confSvc = SwiftSegmentServiceProvider.getProvider();
-    private SwiftPathService pathService = SwiftContext.getInstance().getBean(SwiftPathService.class);
+    private SwiftPathService pathService = SwiftContext.get().getBean(SwiftPathService.class);
 
     @Override
     public long getTableUsedSpace(SourceKey table) throws Exception {

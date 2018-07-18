@@ -35,7 +35,7 @@ public class TableTransporter extends BaseWorker implements Transporter {
 
     public TableTransporter(DataSource dataSource) {
         this.dataSource = dataSource;
-        inserter = SwiftContext.getInstance().getBean(SwiftDataOperatorProvider.class).getHistoryBlockSwiftInserter(dataSource);
+        inserter = SwiftContext.get().getBean(SwiftDataOperatorProvider.class).getHistoryBlockSwiftInserter(dataSource);
     }
 
     @Override

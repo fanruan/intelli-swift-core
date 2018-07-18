@@ -43,7 +43,7 @@ public class IncreaseTransport implements IncrementTransport {
 
         SwiftFlowResultSet swiftFlowResultSet = new SwiftFlowResultSet(increaseResult, flowRuleController);
 
-        Inserter inserter = SwiftContext.getInstance().getBean(SwiftDataOperatorProvider.class).getRealtimeBlockSwiftInserter(dataSource);
+        Inserter inserter = SwiftContext.get().getBean(SwiftDataOperatorProvider.class).getRealtimeBlockSwiftInserter(dataSource);
         inserter.insertData(swiftFlowResultSet);
     }
 }

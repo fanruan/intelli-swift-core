@@ -28,7 +28,7 @@ public class SwiftRealtimeInserter extends SwiftInserter {
 
     public SwiftRealtimeInserter(Segment segment, List<String> fields) {
         super(segment, fields);
-        swiftBackup = (SwiftSegmentBackup) SwiftContext.getInstance().getBean("segmentBackup", getBackupSegment(), segment, fields);
+        swiftBackup = (SwiftSegmentBackup) SwiftContext.get().getBean("segmentBackup", getBackupSegment(), segment, fields);
     }
 
     private Segment getBackupSegment() {

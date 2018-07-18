@@ -30,7 +30,7 @@ public class ExcelGenerateTest extends BaseExcelTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        segmentProvider = SwiftContext.getInstance().getBean(LocalSegmentProvider.class);
+        segmentProvider = SwiftContext.get().getBean(LocalSegmentProvider.class);
     }
 
     @Test

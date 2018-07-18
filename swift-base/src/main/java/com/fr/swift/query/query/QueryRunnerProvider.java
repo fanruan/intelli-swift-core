@@ -28,7 +28,7 @@ public class QueryRunnerProvider {
 
 
     private QueryRunnerProvider() {
-        indexRunner = (QueryIndexRunner) SwiftContext.getInstance().getBean("queryIndexRunner");
+        indexRunner = (QueryIndexRunner) SwiftContext.get().getBean("queryIndexRunner");
     }
 
     public void registerRunner(QueryRunner runner) {

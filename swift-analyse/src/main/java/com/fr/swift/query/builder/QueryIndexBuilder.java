@@ -66,7 +66,7 @@ public class QueryIndexBuilder {
 
     static class Builder implements LocalDetailIndexQueryBuilder {
 
-        private final SwiftSegmentManager localSegmentProvider = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class);
+        private final SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
 
         @Override
         public Map<URI, IndexQuery<ImmutableBitMap>> buildLocalQuery(DetailQueryInfo info) {

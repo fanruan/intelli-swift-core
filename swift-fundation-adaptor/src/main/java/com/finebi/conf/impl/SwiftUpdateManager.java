@@ -429,7 +429,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     @Override
     public boolean shouldUpdate() {
         List<FineBusinessTable> allBusinessTable = tableManager.getAllTable();
-        LocalSegmentProvider localSegmentProvider = SwiftContext.getInstance().getBean(LocalSegmentProvider.class);
+        LocalSegmentProvider localSegmentProvider = SwiftContext.get().getBean(LocalSegmentProvider.class);
         for (FineBusinessTable fineBusinessTable : allBusinessTable) {
             try {
                 DataSource dataSource = DataSourceFactory.getDataSourceInCache(fineBusinessTable);
