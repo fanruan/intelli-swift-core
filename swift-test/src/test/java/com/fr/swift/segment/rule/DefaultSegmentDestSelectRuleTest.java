@@ -63,8 +63,8 @@ public class DefaultSegmentDestSelectRuleTest {
         List<SegmentDestination> dest = new DefaultSegmentDestSelectRule().selectDestination(selectDestination);
         assertEquals(dest.size(), 100);
         for (int i = 0; i < dest.size() - 1; i++) {
-            assertTrue(dest.get(i).order() < dest.get(i + 1).order());
-            assertTrue(dest.get(i).order() + 1 == dest.get(i + 1).order());
+            assertTrue(dest.get(i).getOrder() < dest.get(i + 1).getOrder());
+            assertTrue(dest.get(i).getOrder() + 1 == dest.get(i + 1).getOrder());
         }
     }
 }

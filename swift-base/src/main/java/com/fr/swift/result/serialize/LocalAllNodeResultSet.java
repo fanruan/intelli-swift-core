@@ -1,15 +1,11 @@
 package com.fr.swift.result.serialize;
 
-import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.query.QueryBeanManager;
 import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeUtils;
-import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
 
 import java.sql.SQLException;
@@ -23,37 +19,27 @@ import java.util.Iterator;
 public class LocalAllNodeResultSet implements NodeResultSet<SwiftNode>, SerializableResultSet {
 
     private static final long serialVersionUID = 7098094791977510417L;
-    private transient NodeResultSet<SwiftNode> resultSet;
-    private String queryId;
+    private String jsonString;
     private SwiftNode root;
     private boolean hasNextPage = true;
     private boolean originHasNextPage;
     private transient Iterator<Row> iterator;
 
-    public LocalAllNodeResultSet(String queryId, NodeResultSet<SwiftNode> resultSet) {
-        this.queryId = queryId;
-        this.resultSet = resultSet;
-        init();
-    }
-
-    private void init() {
-        root = resultSet.getNode();
-        originHasNextPage = resultSet.hasNextPage();
+    public LocalAllNodeResultSet(String jsonString, SwiftNode root, boolean originHasNextPage) {
+        this.jsonString = jsonString;
+        this.root = root;
+        this.originHasNextPage = originHasNextPage;
     }
 
     @Override
     public SwiftNode<SwiftNode> getNode() {
         hasNextPage = false;
         if (originHasNextPage) {
-            // TODO: 2018/6/14 向远程节点拉取下一页数据
-            Pair<QueryBean, SegmentDestination> pair = QueryBeanManager.getInstance().getPair(queryId);
-            if (pair == null) {
-                Crasher.crash("invalid remote queryInfo!");
-            }
             try {
-                resultSet = (NodeResultSet<SwiftNode>) QueryRunnerProvider.getInstance().executeRemoteQuery(pair.getKey(), pair.getValue());
+                LocalAllNodeResultSet resultSet = (LocalAllNodeResultSet) QueryRunnerProvider.getInstance().executeRemoteQuery(jsonString, null);
                 hasNextPage = true;
-                init();
+                this.root = resultSet.root;
+                this.originHasNextPage = resultSet.originHasNextPage;
             } catch (SQLException e) {
                 Crasher.crash(e);
             }

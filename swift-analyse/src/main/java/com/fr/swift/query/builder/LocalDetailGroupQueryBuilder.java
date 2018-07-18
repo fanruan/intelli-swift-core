@@ -1,6 +1,5 @@
 package com.fr.swift.query.builder;
 
-import com.fr.general.ComparatorUtils;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
@@ -19,7 +18,6 @@ import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.structure.Pair;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -39,16 +37,7 @@ public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
     public Query<DetailResultSet> buildLocalQuery(DetailQueryInfo info) {
         List<Query<DetailResultSet>> queries = new ArrayList<Query<DetailResultSet>>();
         List<Segment> segments = localSegmentProvider.getSegment(info.getTable());
-        List<Segment> targetSegments = new ArrayList<Segment>();
-        URI segmentUri = info.getQuerySegment();
-        if (segmentUri != null) {
-            for (Segment segment : segments) {
-                if (ComparatorUtils.equals(segment.getLocation().getUri(), segmentUri)) {
-                    targetSegments.add(segment);
-                    break;
-                }
-            }
-        }
+        List<Segment> targetSegments = LocalDetailNormalQueryBuilder.getSegmentsByURIList(info.getQuerySegment(), segments);
         if (targetSegments.isEmpty()) {
             targetSegments = segments;
         }
@@ -61,9 +50,6 @@ public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
             filterInfos.add(new SwiftDetailFilterInfo<Object>(null, null, SwiftDetailFilterType.ALL_SHOW));
             for (Dimension dimension : dimensions) {
                 columns.add(dimension.getColumn(segment));
-//                if (dimension.getFilter() != null) {
-//                    filterInfos.add(dimension.getFilter());
-//                }
             }
             if (info.getFilterInfo() != null) {
                 filterInfos.add(info.getFilterInfo());

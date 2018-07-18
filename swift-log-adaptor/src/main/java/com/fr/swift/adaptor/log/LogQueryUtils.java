@@ -42,7 +42,7 @@ import java.util.Set;
 public class LogQueryUtils {
 
     static List<Row> groupQuery(Class<?> entity, QueryCondition queryCondition, List<String> fieldNames,
-                                List<MetricBean> metricBeans, FilterInfoBean notNullFilter) throws SQLException {
+                                List<MetricBean> metricBeans, FilterInfoBean notNullFilter) throws Exception {
         GroupQueryInfoBean queryInfoBean = new GroupQueryInfoBean();
         queryInfoBean.setQueryId(queryCondition.toString());
         String tableName = SwiftMetaAdaptor.getTableName(entity);
@@ -142,7 +142,7 @@ public class LogQueryUtils {
         return AggregatorType.SUM;
     }
 
-    static DataList<Row> detailQuery(Class<?> entity, QueryCondition queryCondition, List<String> fieldNames) throws SQLException {
+    static DataList<Row> detailQuery(Class<?> entity, QueryCondition queryCondition, List<String> fieldNames) throws Exception {
         Table table = SwiftDatabase.getInstance().getTable(new SourceKey(SwiftMetaAdaptor.getTableName(entity)));
         QueryBean queryBean = QueryConditionAdaptor.adaptCondition(queryCondition, table, fieldNames);
         SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
@@ -176,7 +176,7 @@ public class LogQueryUtils {
         return rows;
     }
 
-    static DataList<Row> detailQuery(Class<?> entity, QueryCondition queryCondition) throws SQLException {
+    static DataList<Row> detailQuery(Class<?> entity, QueryCondition queryCondition) throws Exception {
         Table table = SwiftDatabase.getInstance().getTable(new SourceKey(SwiftMetaAdaptor.getTableName(entity)));
         return detailQuery(entity, queryCondition, table.getMeta().getFieldNames());
     }

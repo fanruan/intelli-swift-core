@@ -7,6 +7,7 @@ import com.fr.swift.result.NodeResultSet;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 只支持处理返回NodeResultSet的子查询
@@ -46,12 +47,12 @@ public class NestedQueryInfoImpl implements NestedQueryInfo<NodeResultSet> {
     }
 
     @Override
-    public URI getQuerySegment() {
+    public Set<URI> getQuerySegment() {
         return queryInfo.getQuerySegment();
     }
 
     @Override
-    public void setQuerySegment(URI target) {
+    public void setQuerySegment(Set<URI> target) {
         queryInfo.setQuerySegment(target);
     }
 

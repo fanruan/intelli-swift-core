@@ -25,7 +25,7 @@ public interface Session extends Closeable {
      * @return
      * @throws SQLException
      */
-    SwiftResultSet executeQuery(QueryBean queryInfo) throws SQLException;
+    SwiftResultSet executeQuery(QueryBean queryInfo) throws Exception;
 
     /**
      * 关闭并清理缓存
