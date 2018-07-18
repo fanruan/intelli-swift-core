@@ -14,6 +14,14 @@ public class TestBean {
     public TestBean() {
     }
 
+    public TestBean(String username, String password, String driverClass, String dialectClass, String url) {
+        this.username = username;
+        this.password = password;
+        this.driverClass = driverClass;
+        this.dialectClass = dialectClass;
+        this.url = url;
+    }
+
     public String getUsername() {
         return username;
     }

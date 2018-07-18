@@ -3,6 +3,7 @@ package com.fr.swift.config.service.impl;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
 import com.fr.swift.config.SwiftConfigConstants;
+import com.fr.swift.config.convert.swift.AbstractSimpleConfigConvert;
 import com.fr.swift.config.dao.SwiftConfigDao;
 import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.service.SwiftConfigService;
@@ -14,7 +15,6 @@ import com.fr.third.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -25,15 +25,16 @@ import java.util.List;
 public class SwiftPathServiceImpl implements SwiftPathService {
     private List<PathChangeListener> listeners = new ArrayList<PathChangeListener>();
 
-    private final SwiftConfigService.ConfigConvert<String> CONVERT = new SwiftConfigService.ConfigConvert<String>() {
+    private final SwiftConfigService.ConfigConvert<String> CONVERT = new AbstractSimpleConfigConvert<String>(String.class) {
+
         @Override
         public String toBean(SwiftConfigDao<SwiftConfigEntity> dao, Session session, Object... args) throws SQLException {
-            SwiftConfigEntity entity = dao.select(session, SwiftConfigConstants.FRConfiguration.CUBE_PATH_NAMESPACE);
-            if (null != entity) {
-                String path = entity.getConfigValue();
+            try {
+                String path = super.toBean(dao, session, args);
                 if (isValidPath(path)) {
                     return path;
                 }
+            } catch (Exception ignore) {
             }
             String path = getDefaultPath();
             for (SwiftConfigEntity swiftConfigEntity : toEntity(path)) {
@@ -43,11 +44,8 @@ public class SwiftPathServiceImpl implements SwiftPathService {
         }
 
         @Override
-        public List<SwiftConfigEntity> toEntity(String string, Object... args) {
-            SwiftConfigEntity entity = new SwiftConfigEntity();
-            entity.setConfigKey(SwiftConfigConstants.FRConfiguration.CUBE_PATH_NAMESPACE);
-            entity.setConfigValue(string);
-            return Collections.singletonList(entity);
+        protected String getNameSpace() {
+            return SwiftConfigConstants.FRConfiguration.CUBE_PATH_NAMESPACE;
         }
     };
 

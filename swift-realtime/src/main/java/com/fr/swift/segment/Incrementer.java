@@ -18,9 +18,9 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
-import com.fr.swift.source.alloter.line.LineAllotRule;
-import com.fr.swift.source.alloter.line.LineRowInfo;
-import com.fr.swift.source.alloter.line.LineSourceAlloter;
+import com.fr.swift.source.alloter.impl.line.LineAllotRule;
+import com.fr.swift.source.alloter.impl.line.LineRowInfo;
+import com.fr.swift.source.alloter.impl.line.LineSourceAlloter;
 import com.fr.swift.structure.ListResultSet;
 import com.fr.swift.transatcion.TransactionProxyFactory;
 

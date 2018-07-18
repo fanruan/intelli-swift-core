@@ -40,17 +40,17 @@ public class DataSyncRuleTest {
     @Parameterized.Parameters
     public static List<Object[]> randomParams() throws Exception {
         Preparer.prepareCubeBuild();
+        Map<String, List<SegmentKey>> needLoad = new HashMap<String, List<SegmentKey>>();
+        needLoad.put("tableA", new ArrayList<SegmentKey>(100));
+        for (int j = 0; j < 100; j++) {
+            needLoad.get("tableA").add(new SegmentKeyBean("tableA", URI.create("uri_" + j), j, Types.StoreType.FINE_IO));
+        }
         List<Object[]> result = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
             int nodeCount = (int) (1 + Math.random() * 100);
             Set<String> nodeIds = new HashSet<>();
             for (int j = 0; j < nodeCount; j++) {
                 nodeIds.add("cluster_" + j);
-            }
-            Map<String, List<SegmentKey>> needLoad = new HashMap<String, List<SegmentKey>>();
-            needLoad.put("tableA", new ArrayList<SegmentKey>(100));
-            for (int j = 0; j < 100; j++) {
-                needLoad.get("tableA").add(new SegmentKeyBean("tableA", URI.create("uri_" + j), j, Types.StoreType.FINE_IO));
             }
             result.add(new Object[]{nodeIds, needLoad});
         }

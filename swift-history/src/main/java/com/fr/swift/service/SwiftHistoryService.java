@@ -5,13 +5,8 @@ import com.fr.swift.config.service.SwiftPathService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Where;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
-import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.session.AbstractSession;
-import com.fr.swift.query.session.Session;
-import com.fr.swift.query.session.SessionBuilder;
 import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.SwiftRepositoryManager;
@@ -92,22 +87,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         try {
             final QueryInfoBean bean = QueryInfoBeanFactory.create(queryDescription);
             SessionFactory factory = SwiftContext.getInstance().getBean(SessionFactory.class);
-            return factory.openSession(new SessionBuilder() {
-                @Override
-                public Session build(long cacheTimeout) {
-                    return new AbstractSession(cacheTimeout) {
-                        @Override
-                        protected SwiftResultSet query(QueryBean queryInfo) throws Exception {
-                            return QueryBuilder.buildQuery(queryInfo).getQueryResult();
-                        }
-                    };
-                }
-
-                @Override
-                public String getQueryId() {
-                    return bean.getQueryId();
-                }
-            }).executeQuery(bean);
+            return factory.openSession(bean.getQueryId()).executeQuery(bean);
         } catch (IOException e) {
             throw new SQLException(e);
         }

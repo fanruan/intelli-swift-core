@@ -6,9 +6,9 @@
        classpath:/com/fr/third/springframework/beans/factory/xml/spring-beans-4.0.xsd">
 
     <!--配置需要启动的远程服务  注解配置-->
-    <!--<bean id="historyService" class="com.fr.swift.service.SwiftHistoryService"/>-->
+    <bean id="historyService" class="com.fr.swift.service.SwiftHistoryService"/>
     <!--<bean id="indexingService" class="com.fr.swift.service.SwiftIndexingService"/>-->
-    <!--<bean id="analyseService" class="com.fr.swift.service.SwiftAnalyseService"/>-->
+    <bean id="analyseService" class="com.fr.swift.service.SwiftAnalyseService"/>
     <!--<bean id="realtimeService" class="com.fr.swift.service.SwiftRealtimeService"/>-->
     <!--<bean id="collateService" class="com.fr.swift.service.SwiftCollateService"/>-->
 
@@ -16,9 +16,9 @@
         <property name="swiftServiceList">
             <list>
                 <ref bean="historyService"/>
-                <ref bean="indexingService"/>
+                <!--<ref bean="indexingService"/>-->
                 <ref bean="analyseService"/>
-                <ref bean="realtimeService"/>
+                <!--<ref bean="realtimeService"/>-->
                 <!--<ref bean="collateService"/>-->
             </list>
         </property>

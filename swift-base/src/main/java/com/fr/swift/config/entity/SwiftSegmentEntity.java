@@ -3,7 +3,7 @@ package com.fr.swift.config.entity;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.Convert;
 import com.fr.swift.config.bean.SegmentKeyBean;
-import com.fr.swift.config.convert.URIConverter;
+import com.fr.swift.config.convert.hibernate.URIConverter;
 import com.fr.swift.cube.io.Types;
 import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Entity;

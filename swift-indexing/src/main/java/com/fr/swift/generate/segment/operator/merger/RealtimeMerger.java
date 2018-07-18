@@ -22,9 +22,9 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
-import com.fr.swift.source.alloter.SwiftSourceAlloterFactory;
-import com.fr.swift.source.alloter.line.LineAllotRule;
-import com.fr.swift.source.alloter.line.LineRowInfo;
+import com.fr.swift.source.alloter.impl.SwiftSourceAlloterFactory;
+import com.fr.swift.source.alloter.impl.line.LineAllotRule;
+import com.fr.swift.source.alloter.impl.line.LineRowInfo;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.Strings;
 

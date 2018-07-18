@@ -44,4 +44,12 @@ public interface Session extends Closeable {
      * @param force true 无论怎样都清理 false 超时的清理
      */
     void cleanCache(boolean force);
+
+    void cleanStore();
+
+    void putObject(Object key, Object value);
+
+    Object getObject(Object key);
+
+    void removeObject(Object key);
 }
