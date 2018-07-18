@@ -13,7 +13,6 @@ import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.query.IndexQuery;
 import com.fr.swift.query.query.LocalIndexQuery;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.query.QueryBeanManager;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationProvider;
@@ -37,7 +36,6 @@ import java.util.Map;
 public class QueryIndexBuilder {
 
     public static IndexQuery<ImmutableBitMap> buildQuery(QueryBean bean, Segment segment) {
-        QueryBeanManager.getInstance().put(bean.getQueryId(), bean);
         QueryInfoBean infoBean = (QueryInfoBean) bean;
         DetailQueryInfo info = (DetailQueryInfo) QueryInfoParser.parse(infoBean);
 
@@ -47,7 +45,6 @@ public class QueryIndexBuilder {
     }
 
     public static Map<URI, IndexQuery<ImmutableBitMap>> buildQuery(QueryBean bean) throws Exception {
-        QueryBeanManager.getInstance().put(bean.getQueryId(), bean);
         QueryInfoBean infoBean = (QueryInfoBean) bean;
         DetailQueryInfo info = (DetailQueryInfo) QueryInfoParser.parse(infoBean);
 
