@@ -42,7 +42,7 @@ public class RedisBackupResultSet implements SwiftResultSet {
     private void init(Segment segment) {
         this.meta = segment.getMetaData();
         this.segment = segment;
-        this.redisClient = (RedisClient) SwiftContext.getInstance().getBean("redisClient");
+        this.redisClient = (RedisClient) SwiftContext.get().getBean("redisClient");
         this.rowCount = redisClient.llen(this.segment.getLocation().getPath());
         String indexStr = redisClient.get(this.segment.getLocation().getPath() + REDIS_ALLSHOWINDEX_KEY);
         if (indexStr == null) {

@@ -88,20 +88,21 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 //        rpcSegmentLocation(PushSegLocationRpcEvent.fromSegmentKey(getServiceType(), tableKeys));
 //    }
 
-    @Override
-    @RpcMethod(methodName = "realtimeDelete")
-    public boolean delete(final SourceKey sourceKey, final Where where) throws Exception {
-        taskExecutor.submit(new SwiftServiceCallable(sourceKey, ServiceTaskType.DELETE) {
+    private static void recover0() {
+        CommonExecutor.get().submit(new Callable<Boolean>() {
             @Override
-            public void doJob() throws Exception {
-                List<Segment> segments = segmentManager.getSegment(sourceKey);
-                for (Segment segment : segments) {
-                    WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.getInstance().getBean("decrementer", segment);
-                    whereDeleter.delete(sourceKey, where);
+            public Boolean call() {
+                try {
+                    // 恢复所有realtime块
+                    SegmentRecovery segmentRecovery = (SegmentRecovery) SwiftContext.get().getBean("segmentRecovery");
+                    segmentRecovery.recoverAll();
+                    return true;
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().error(e);
+                    return false;
                 }
             }
         });
-        return true;
     }
 
     @Override
@@ -111,21 +112,25 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     }
 
     @Override
-    @RpcMethod(methodName = "cleanMetaCache")
-    public void cleanMetaCache(String[] sourceKeys) {
-        SwiftContext.getInstance().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
+    @RpcMethod(methodName = "realtimeDelete")
+    public boolean delete(final SourceKey sourceKey, final Where where) throws Exception {
+        taskExecutor.submit(new SwiftServiceCallable(sourceKey, ServiceTaskType.DELETE) {
+            @Override
+            public void doJob() throws Exception {
+                List<Segment> segments = segmentManager.getSegment(sourceKey);
+                for (Segment segment : segments) {
+                    WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segment);
+                    whereDeleter.delete(sourceKey, where);
+                }
+            }
+        });
+        return true;
     }
 
     @Override
-    @RpcMethod(methodName = "realTimeQuery")
-    public SwiftResultSet query(final String queryDescription) throws SQLException {
-        try {
-            final QueryInfoBean bean = QueryInfoBeanFactory.create(queryDescription);
-            SessionFactory sessionFactory = SwiftContext.getInstance().getBean(SessionFactory.class);
-            return sessionFactory.openSession(bean.getQueryId()).executeQuery(bean);
-        } catch (Exception e) {
-            throw new SQLException(e);
-        }
+    @RpcMethod(methodName = "cleanMetaCache")
+    public void cleanMetaCache(String[] sourceKeys) {
+        SwiftContext.get().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
     }
 
     @Override
@@ -137,21 +142,16 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         return true;
     }
 
-    private static void recover0() {
-        CommonExecutor.get().submit(new Callable<Boolean>() {
-            @Override
-            public Boolean call() {
-                try {
-                    // 恢复所有realtime块
-                    SegmentRecovery segmentRecovery = (SegmentRecovery) SwiftContext.getInstance().getBean("segmentRecovery");
-                    segmentRecovery.recoverAll();
-                    return true;
-                } catch (Exception e) {
-                    SwiftLoggers.getLogger().error(e);
-                    return false;
-                }
-            }
-        });
+    @Override
+    @RpcMethod(methodName = "realTimeQuery")
+    public SwiftResultSet query(final String queryDescription) throws SQLException {
+        try {
+            final QueryInfoBean bean = QueryInfoBeanFactory.create(queryDescription);
+            SessionFactory sessionFactory = SwiftContext.get().getBean(SessionFactory.class);
+            return sessionFactory.openSession(bean.getQueryId()).executeQuery(bean);
+        } catch (Exception e) {
+            throw new SQLException(e);
+        }
     }
 
     @Override
@@ -189,7 +189,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     }
 
     private URL getMasterURL() {
-        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.getInstance().
+        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.get().
                 getBean(SwiftServiceInfoService.class).getServiceInfoByService(SwiftClusterService.SERVICE);
         SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
         return UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());

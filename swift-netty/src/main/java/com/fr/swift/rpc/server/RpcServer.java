@@ -63,7 +63,7 @@ public class RpcServer {
 
     public static void main(String[] args) {
         SwiftContext.init();
-        SwiftContext.getInstance().getBean("swiftProperty");
+        SwiftContext.get().getBean("swiftProperty");
     }
 
     public void initService(ApplicationContext ctx) throws BeansException {

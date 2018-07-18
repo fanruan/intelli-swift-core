@@ -9,6 +9,8 @@ import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
 import com.fr.swift.config.entity.SwiftServiceInfoEntity;
+import com.fr.swift.config.indexing.impl.SwiftColumnIndexingConf;
+import com.fr.swift.config.indexing.impl.SwiftTableIndexingConf;
 
 /**
  * @author yee
@@ -44,6 +46,8 @@ public class SwiftConfigContext {
             dbContext.addEntityClass(SwiftSegmentEntity.class);
             dbContext.addEntityClass(SwiftSegmentLocationEntity.class);
             dbContext.addEntityClass(SwiftServiceInfoEntity.class);
+            dbContext.addEntityClass(SwiftColumnIndexingConf.class);
+            dbContext.addEntityClass(SwiftTableIndexingConf.class);
             dbContext.init(option);
             BaseDBEnv.setDBContext(dbContext);
             this.initialized = true;

@@ -6,12 +6,12 @@ import com.fr.swift.config.service.SwiftSegmentServiceProvider;
 import com.fr.swift.config.service.impl.SwiftClusterSegmentServiceImpl;
 import com.fr.swift.configure.SwiftClusterNodeManager;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.core.rpc.FRClusterNodeManager;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventListener;
 import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterType;
 import com.fr.swift.exception.SwiftServiceException;
-import com.fr.swift.core.rpc.FRClusterNodeManager;
 import com.fr.swift.proxy.LocalProxyFactory;
 import com.fr.swift.rpc.proxy.RPCProxyFactory;
 import com.fr.swift.rpc.url.RpcUrlFactory;
@@ -42,8 +42,8 @@ public class ClusterListener implements ClusterEventListener {
             }
 
             new LocalSwiftRegister().serviceUnregister();
-            ((ClusterSwiftRegister) SwiftContext.getInstance().getBean("clusterSwiftRegister")).serviceRegister();
-            SwiftClusterSegmentServiceImpl service = (SwiftClusterSegmentServiceImpl) SwiftContext.getInstance().getBean(SwiftClusterSegmentService.class);
+            ((ClusterSwiftRegister) SwiftContext.get().getBean("clusterSwiftRegister")).serviceRegister();
+            SwiftClusterSegmentServiceImpl service = (SwiftClusterSegmentServiceImpl) SwiftContext.get().getBean(SwiftClusterSegmentService.class);
             service.setClusterId(ClusterSelector.getInstance().getFactory().getCurrentId());
             SwiftSegmentServiceProvider.getProvider().setService(service);
         } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
@@ -51,9 +51,9 @@ public class ClusterListener implements ClusterEventListener {
                 ProxySelector.getInstance().switchFactory(new LocalProxyFactory());
                 UrlSelector.getInstance().switchFactory(new LocalUrlFactory());
 
-                ((ClusterSwiftRegister) SwiftContext.getInstance().getBean("clusterSwiftRegister")).serviceUnregister();
+                ((ClusterSwiftRegister) SwiftContext.get().getBean("clusterSwiftRegister")).serviceUnregister();
                 new LocalSwiftRegister().serviceRegister();
-                SwiftSegmentServiceProvider.getProvider().setService(SwiftContext.getInstance().getBean("swiftSegmentService", SwiftSegmentService.class));
+                SwiftSegmentServiceProvider.getProvider().setService(SwiftContext.get().getBean("swiftSegmentService", SwiftSegmentService.class));
             } catch (SwiftServiceException e) {
                 e.printStackTrace();
             }

@@ -39,7 +39,7 @@ import static org.junit.Assert.assertNotEquals;
 public class DeleteTest extends BaseTest {
     private final Database db = SwiftDatabase.getInstance();
 
-    private LocalSegmentProvider localSegmentProvider = (LocalSegmentProvider) SwiftContext.getInstance().getBean("localSegmentProvider");
+    private LocalSegmentProvider localSegmentProvider = (LocalSegmentProvider) SwiftContext.get().getBean("localSegmentProvider");
 
     @Override
     @Before

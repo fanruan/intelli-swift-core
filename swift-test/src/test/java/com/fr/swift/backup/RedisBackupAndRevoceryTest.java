@@ -41,7 +41,7 @@ public class RedisBackupAndRevoceryTest extends BaseTest {
     public void setUp() throws Exception {
         super.setUp();
         SwiftContext.init();
-        redisClient = (RedisClient) SwiftContext.getInstance().getBean("redisClient");
+        redisClient = (RedisClient) SwiftContext.get().getBean("redisClient");
     }
 
     @Test
@@ -87,7 +87,7 @@ public class RedisBackupAndRevoceryTest extends BaseTest {
             SwiftResultSet resultSet = transfer.createResultSet();
             Incrementer incrementer = new Incrementer(dataSource);
             incrementer.increment(resultSet);
-            SwiftSegmentManager localSegmentProvider = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class);
+            SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
 
             //释放memio，再测恢复
             ResourceDiscovery.getInstance().removeCubeResource("cubes/" + dataSource.getSourceKey().getId());

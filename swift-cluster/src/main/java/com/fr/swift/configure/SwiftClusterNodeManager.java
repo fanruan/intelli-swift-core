@@ -24,7 +24,7 @@ public class SwiftClusterNodeManager implements ClusterNodeManager<SwiftClusterN
     private static final SwiftClusterNodeManager INSTANCE = new SwiftClusterNodeManager();
 
     private SwiftClusterNodeManager() {
-        SwiftProperty swiftProperty = SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class);
+        SwiftProperty swiftProperty = SwiftContext.get().getBean("swiftProperty", SwiftProperty.class);
         this.isCluster = swiftProperty.isCluster();
         String masterAddress = swiftProperty.getMasterAddress();
         String serverAddress = swiftProperty.getServerAddress();

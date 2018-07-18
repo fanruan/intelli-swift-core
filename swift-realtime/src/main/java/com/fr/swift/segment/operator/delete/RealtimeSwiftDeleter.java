@@ -25,7 +25,7 @@ public class RealtimeSwiftDeleter extends AbstractDeleter {
 
     public RealtimeSwiftDeleter(Segment segment) {
         super(segment);
-        allShowIndexBackup = (AllShowIndexBackup) SwiftContext.getInstance().getBean("allShowIndexBackup", getBackupSegment());
+        allShowIndexBackup = (AllShowIndexBackup) SwiftContext.get().getBean("allShowIndexBackup", getBackupSegment());
     }
 
     @Override

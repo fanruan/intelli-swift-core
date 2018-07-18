@@ -32,7 +32,7 @@ public class SegmentDestinationImpl implements SegmentDestination {
         this.serviceClass = serviceClass;
         this.methodName = methodName;
         this.spareNodes = new ArrayList<String>();
-        this.currentNode = SwiftContext.getInstance().getBean(SwiftProperty.class).getRpcAddress();
+        this.currentNode = SwiftContext.get().getBean(SwiftProperty.class).getRpcAddress();
     }
 
     public SegmentDestinationImpl(SegmentDestination destination) {

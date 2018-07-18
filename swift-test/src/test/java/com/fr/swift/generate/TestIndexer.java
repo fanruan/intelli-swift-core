@@ -23,7 +23,7 @@ public class TestIndexer {
 
     public static void realtimeIndex(DataSource dataSource) {
 
-        List<Segment> allSegments = SwiftContext.getInstance().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
+        List<Segment> allSegments = SwiftContext.get().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
         List<Segment> indexSegments = new ArrayList<Segment>();
         for (Segment segment : allSegments) {
             if (!segment.isHistory()) {
@@ -40,7 +40,7 @@ public class TestIndexer {
     }
 
     public static void historyIndex(DataSource dataSource, TableTransporter transporter) {
-        List<Segment> segments = SwiftContext.getInstance().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
+        List<Segment> segments = SwiftContext.get().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
         for (String field : transporter.getIndexFieldsList()) {
             ColumnIndexer<?> indexer = new ColumnIndexer(dataSource, new ColumnKey(field), segments);
             indexer.work();

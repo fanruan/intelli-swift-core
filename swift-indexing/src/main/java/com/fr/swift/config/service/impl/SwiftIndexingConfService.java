@@ -1,4 +1,4 @@
-package com.fr.swift.generate.conf.service;
+package com.fr.swift.config.service.impl;
 
 import com.fr.swift.config.dao.BasicDao;
 import com.fr.swift.config.dao.SwiftConfigDao;
@@ -6,37 +6,44 @@ import com.fr.swift.config.hibernate.transaction.AbstractTransactionWorker;
 import com.fr.swift.config.hibernate.transaction.HibernateTransactionManager;
 import com.fr.swift.config.indexing.ColumnIndexingConf;
 import com.fr.swift.config.indexing.TableIndexingConf;
+import com.fr.swift.config.indexing.impl.ColumnId;
+import com.fr.swift.config.indexing.impl.SwiftColumnIndexingConf;
+import com.fr.swift.config.indexing.impl.SwiftTableIndexingConf;
+import com.fr.swift.config.indexing.impl.TableId;
 import com.fr.swift.config.service.IndexingConfService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;
 import com.fr.third.org.hibernate.Session;
-import com.fr.third.org.hibernate.criterion.Restrictions;
+import com.fr.third.springframework.beans.factory.annotation.Autowired;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.sql.SQLException;
-import java.util.List;
 
 /**
  * @author anchore
  * @date 2018/7/2
  */
+@Service
 public class SwiftIndexingConfService implements IndexingConfService {
-    private HibernateTransactionManager tx = SwiftContext.get().getBean(HibernateTransactionManager.class);
+    @Autowired
+    private HibernateTransactionManager tx;
 
-    private SwiftConfigDao<TableIndexingConf> tableConf = new BasicDao<TableIndexingConf>(TableIndexingConf.class);
+    private SwiftConfigDao<SwiftTableIndexingConf> tableConf = new BasicDao<SwiftTableIndexingConf>(SwiftTableIndexingConf.class);
 
-    private SwiftConfigDao<ColumnIndexingConf> columnConf = new BasicDao<ColumnIndexingConf>(ColumnIndexingConf.class);
+    private SwiftConfigDao<SwiftColumnIndexingConf> columnConf = new BasicDao<SwiftColumnIndexingConf>(SwiftColumnIndexingConf.class);
 
     @Override
     public TableIndexingConf getTableConf(final SourceKey table) {
         try {
             return tx.doTransactionIfNeed(new AbstractTransactionWorker<TableIndexingConf>() {
                 @Override
-                public TableIndexingConf work(Session session) {
-                    List<TableIndexingConf> tableConfs = tableConf.find(session,
-                            Restrictions.eq("id.tableKey", table.getId())
-                    );
-                    return tableConfs.isEmpty() ? null : tableConfs.get(0);
+                public TableIndexingConf work(Session session) throws SQLException {
+                    return tableConf.select(session, new TableId(table));
+                }
+
+                @Override
+                public boolean needTransaction() {
+                    return false;
                 }
             });
         } catch (SQLException e) {
@@ -50,12 +57,13 @@ public class SwiftIndexingConfService implements IndexingConfService {
         try {
             return tx.doTransactionIfNeed(new AbstractTransactionWorker<ColumnIndexingConf>() {
                 @Override
-                public ColumnIndexingConf work(Session session) {
-                    List<ColumnIndexingConf> columnConfs = columnConf.find(session,
-                            Restrictions.eq("id.tableKey", table.getId()),
-                            Restrictions.eq("id.columnName", columnName)
-                    );
-                    return columnConfs.isEmpty() ? null : columnConfs.get(0);
+                public ColumnIndexingConf work(Session session) throws SQLException {
+                    return columnConf.select(session, new ColumnId(table, columnName));
+                }
+
+                @Override
+                public boolean needTransaction() {
+                    return false;
                 }
             });
         } catch (SQLException e) {
@@ -70,7 +78,7 @@ public class SwiftIndexingConfService implements IndexingConfService {
             tx.doTransactionIfNeed(new AbstractTransactionWorker() {
                 @Override
                 public Object work(Session session) throws SQLException {
-                    tableConf.saveOrUpdate(session, conf);
+                    tableConf.saveOrUpdate(session, (SwiftTableIndexingConf) conf);
                     return null;
                 }
             });
@@ -85,21 +93,12 @@ public class SwiftIndexingConfService implements IndexingConfService {
             tx.doTransactionIfNeed(new AbstractTransactionWorker() {
                 @Override
                 public Object work(Session session) throws SQLException {
-                    columnConf.saveOrUpdate(session, conf);
+                    columnConf.saveOrUpdate(session, (SwiftColumnIndexingConf) conf);
                     return null;
                 }
             });
         } catch (SQLException e) {
             SwiftLoggers.getLogger().error(e);
         }
-    }
-
-    private static final IndexingConfService INSTANCE = new SwiftIndexingConfService();
-
-    private SwiftIndexingConfService() {
-    }
-
-    public static IndexingConfService get() {
-        return INSTANCE;
     }
 }

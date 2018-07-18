@@ -5,7 +5,7 @@ import com.fr.swift.config.indexing.ColumnIndexingConf;
 import com.fr.swift.config.indexing.TableIndexingConf;
 import com.fr.swift.config.indexing.impl.SwiftColumnIndexingConf;
 import com.fr.swift.config.indexing.impl.SwiftTableIndexingConf;
-import com.fr.swift.generate.conf.service.SwiftIndexingConfService;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.AllotRule;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
@@ -20,13 +20,14 @@ import org.junit.Test;
  * @date 2018/7/16
  */
 public class IndexingConfServiceTest {
-    private final IndexingConfService service = SwiftIndexingConfService.get();
+    private static IndexingConfService service;
 
     @BeforeClass
     public static void boot() throws Exception {
         Preparer.prepareFrEnv();
         TestConfDb.setConfDb(SwiftTableIndexingConf.class, SwiftColumnIndexingConf.class);
         Preparer.prepareContext();
+        service = SwiftContext.get().getBean(IndexingConfService.class);
     }
 
     @After

@@ -25,7 +25,7 @@ public class SegmentLocationManagerImpl implements SegmentLocationManager {
 
     public SegmentLocationManagerImpl() {
         segments = new ConcurrentHashMap<String, List<SegmentDestination>>();
-        rule = SwiftContext.getInstance().getBean(SegmentDestSelectRuleService.class).getCurrentRule();
+        rule = SwiftContext.get().getBean(SegmentDestSelectRuleService.class).getCurrentRule();
     }
 
     public void setRule(SegmentDestSelectRule rule) {

@@ -47,7 +47,7 @@ public class SwiftMergerTest extends BaseTest {
     public void setUp() throws Exception {
         super.setUp();
         dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "SwiftMergerTest");
-        segmentProvider = SwiftContext.getInstance().getBean(LocalSegmentProvider.class);
+        segmentProvider = SwiftContext.get().getBean(LocalSegmentProvider.class);
     }
 
     @Test

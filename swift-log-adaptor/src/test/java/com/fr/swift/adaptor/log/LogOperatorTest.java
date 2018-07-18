@@ -80,7 +80,7 @@ public class LogOperatorTest {
         }
         logOperator.submit(as);
 //        TimeUnit.SECONDS.sleep(40);
-        SwiftSegmentManager segmentManager = SwiftContext.getInstance().getBean(SwiftSegmentManager.class);
+        SwiftSegmentManager segmentManager = SwiftContext.get().getBean(SwiftSegmentManager.class);
         List<Segment> segs = segmentManager.getSegment(new SourceKey("A"));
         Segment seg = segs.get(segs.size() - 1);
         A a = (A) as.get(0);

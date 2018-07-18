@@ -13,15 +13,15 @@ import java.io.Serializable;
  */
 @Embeddable
 @MappedSuperclass
-class TableId implements Serializable {
+public class TableId implements Serializable {
     @Column(name = "tableKey")
     public String tableKey;
 
-    TableId(SourceKey tableKey) {
+    public TableId(SourceKey tableKey) {
         this.tableKey = tableKey.getId();
     }
 
-    TableId() {
+    public TableId() {
     }
 
     public SourceKey getTableKey() {

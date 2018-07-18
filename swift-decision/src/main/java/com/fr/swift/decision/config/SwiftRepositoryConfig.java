@@ -56,7 +56,7 @@ public class SwiftRepositoryConfig extends SwiftAbstractObjectMapConfig<Reposito
     public boolean addOrUpdate(String key, RepositoryConfigUnique bean) {
         if (SwiftFileSystemType.valueOf(key) != SwiftFileSystemType.FR) {
             super.addOrUpdate(key, bean);
-            return SwiftContext.getInstance().getBean(SwiftRepositoryConfService.class).setCurrentRepository(bean.convert());
+            return SwiftContext.get().getBean(SwiftRepositoryConfService.class).setCurrentRepository(bean.convert());
         }
         return true;
     }

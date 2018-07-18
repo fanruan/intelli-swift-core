@@ -46,7 +46,7 @@ public class SegmentRecoveryTest {
         TestConfDb.setConfDb();
         connectionInfo = TestConnectionProvider.createConnection();
         dataSource = new QueryDBSource("select * from DEMO_CAPITAL_RETURN", SegmentRecoveryTest.class.getName());
-        operators = SwiftContext.getInstance().getBean(SwiftDataOperatorProvider.class);
+        operators = SwiftContext.get().getBean(SwiftDataOperatorProvider.class);
     }
 
     @After
@@ -66,7 +66,7 @@ public class SegmentRecoveryTest {
                 dataSource.getMetadata().getSwiftSchema().getDir(),
                 dataSource.getSourceKey().getId());
         ResourceDiscovery.getInstance().removeCubeResource(tablePath);
-        SegmentRecovery segmentRecovery = (SegmentRecovery) SwiftContext.getInstance().getBean("segmentRecovery");
+        SegmentRecovery segmentRecovery = (SegmentRecovery) SwiftContext.get().getBean("segmentRecovery");
         segmentRecovery.recoverAll();
 
         String cubePath = tablePath + "/seg0";

@@ -71,7 +71,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     @Override
     @RpcMethod(methodName = "cleanMetaCache")
     public void cleanMetaCache(String[] sourceKeys) {
-        SwiftContext.getInstance().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
+        SwiftContext.get().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
     }
 
 
@@ -85,7 +85,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     public SwiftResultSet query(final String queryDescription) throws SQLException {
         try {
             final QueryInfoBean bean = QueryInfoBeanFactory.create(queryDescription);
-            SessionFactory factory = SwiftContext.getInstance().getBean(SessionFactory.class);
+            SessionFactory factory = SwiftContext.get().getBean(SessionFactory.class);
             return factory.openSession(bean.getQueryId()).executeQuery(bean);
         } catch (IOException e) {
             throw new SQLException(e);
@@ -100,7 +100,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
             public void doJob() throws Exception {
                 List<Segment> segments = segmentManager.getSegment(sourceKey);
                 for (Segment segment : segments) {
-                    WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.getInstance().getBean("decrementer", segment);
+                    WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segment);
                     whereDeleter.delete(sourceKey, where);
                 }
             }

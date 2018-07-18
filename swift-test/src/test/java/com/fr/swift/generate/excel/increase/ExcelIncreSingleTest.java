@@ -38,7 +38,7 @@ public class ExcelIncreSingleTest extends BaseExcelTest {
         TableTransporter tableTransporter = new TableTransporter(dataSource);
         tableTransporter.transport();
 
-        List<Segment> segments = SwiftContext.getInstance().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
+        List<Segment> segments = SwiftContext.get().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
         TestIndexer.historyIndex(dataSource, tableTransporter);
 
         Segment segment = segments.get(0);
@@ -55,7 +55,7 @@ public class ExcelIncreSingleTest extends BaseExcelTest {
 
         TestIndexer.realtimeIndex(dataSource);
 
-        segments = SwiftContext.getInstance().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
+        segments = SwiftContext.get().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
         assertEquals(segments.size(), 2);
 
         assertEquals(segments.get(0).getRowCount(), 3);

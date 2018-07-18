@@ -42,7 +42,7 @@ public class DecreaseTransport implements IncrementTransport {
         List<Segment> segmentList = new LineSegmentManager().getSegment(dataSource.getSourceKey());
         for (Segment segment : segmentList) {
             SwiftResultSet decreaseResult = decreaseTransfer.createResultSet();
-            WhereDeleter deleter = SwiftContext.getInstance().getBean(SwiftDataOperatorProvider.class).getRowDeleter(segment);
+            WhereDeleter deleter = SwiftContext.get().getBean(SwiftDataOperatorProvider.class).getRowDeleter(segment);
             deleter.deleteData(decreaseResult);
         }
     }
