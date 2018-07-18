@@ -1,14 +1,10 @@
 package com.fr.swift.result.serialize;
 
-import com.fr.swift.query.query.QueryBeanManager;
 import com.fr.swift.query.query.QueryRunnerProvider;
-import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.SwiftNode;
-import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
 
 import java.sql.SQLException;
@@ -23,17 +19,18 @@ import java.util.Map;
 public class LocalPartNodeResultSet implements NodeMergeResultSet<SwiftNode>, SerializableResultSet {
 
     private static final long serialVersionUID = -7163285398162627401L;
-    private String queryId;
+    private String jsonString;
     private SwiftNode root;
     private List<Map<Integer, Object>> dictionary;
     private boolean hasNextPage = true;
     private boolean originHasNextPage;
 
-    public LocalPartNodeResultSet(String queryId, NodeMergeResultSet<GroupNode> resultSet) {
-        this.queryId = queryId;
-        this.root = resultSet.getNode();
-        this.dictionary = resultSet.getRowGlobalDictionaries();
-        this.originHasNextPage = resultSet.hasNextPage();
+    public LocalPartNodeResultSet(String jsonString, SwiftNode root, List<Map<Integer, Object>> dictionary,
+                                  boolean originHasNextPage) {
+        this.jsonString = jsonString;
+        this.root = root;
+        this.dictionary = dictionary;
+        this.originHasNextPage = originHasNextPage;
     }
 
     @Override
@@ -45,13 +42,8 @@ public class LocalPartNodeResultSet implements NodeMergeResultSet<SwiftNode>, Se
     public SwiftNode<SwiftNode> getNode() {
         hasNextPage = false;
         if (originHasNextPage) {
-            // TODO: 2018/6/14 向远程节点拉取下一页数据
-            Pair<String, SegmentDestination> pair = QueryBeanManager.getInstance().getPair(queryId);
-            if (pair == null) {
-                Crasher.crash("invalid remote queryInfo!");
-            }
             try {
-                LocalPartNodeResultSet resultSet = (LocalPartNodeResultSet) QueryRunnerProvider.getInstance().executeRemoteQuery(pair.getKey(), pair.getValue());
+                LocalPartNodeResultSet resultSet = (LocalPartNodeResultSet) QueryRunnerProvider.getInstance().executeRemoteQuery(jsonString, null);
                 hasNextPage = true;
                 this.root = resultSet.root;
                 this.dictionary = resultSet.dictionary;

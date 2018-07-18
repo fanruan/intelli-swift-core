@@ -1,18 +1,16 @@
 package com.fr.swift.query.builder;
 
+import com.fr.swift.query.info.bean.parser.QueryInfoParser;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.query.Query;
-import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.query.QueryBeanManager;
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.query.remote.RemoteQueryImpl;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.structure.Pair;
 import com.fr.third.fasterxml.jackson.core.JsonProcessingException;
 
 import java.net.URI;
@@ -29,17 +27,18 @@ class GroupQueryBuilder {
     /**
      * 给最外层查询节点（查询服务节点）条用并构建query，根据segment分布信息区分本地query和远程query
      *
-     * @param info
+     * @param bean
      * @return
      */
-    static Query<NodeResultSet> buildQuery(GroupQueryInfo info) throws Exception {
+    static Query<NodeResultSet> buildQuery(GroupQueryInfoBean bean) throws Exception {
+        GroupQueryInfo info = (GroupQueryInfo) QueryInfoParser.parse(bean);
         SourceKey table = info.getTable();
         // TODO 这边先直接写成History
         List<SegmentDestination> uris = SegmentLocationProvider.getInstance().getSegmentLocationURI(table);
         if (GroupQueryInfoUtils.isPagingQuery(info)) {
-            return buildQuery(uris, info, LocalGroupQueryBuilder.PAGING);
+            return buildQuery(uris, info, bean, LocalGroupQueryBuilder.PAGING);
         } else {
-            return buildQuery(uris, info, LocalGroupQueryBuilder.ALL);
+            return buildQuery(uris, info, bean, LocalGroupQueryBuilder.ALL);
         }
     }
 
@@ -90,7 +89,8 @@ class GroupQueryBuilder {
      * @param builder 本地查询解析
      * @return 获取最后查询结果的Query
      */
-    private static Query<NodeResultSet> buildQuery(List<SegmentDestination> uris, GroupQueryInfo info, LocalGroupQueryBuilder builder) throws JsonProcessingException {
+    private static Query<NodeResultSet> buildQuery(List<SegmentDestination> uris, GroupQueryInfo info,
+                                                   GroupQueryInfoBean queryBean, LocalGroupQueryBuilder builder) throws JsonProcessingException {
         if (DetailQueryBuilder.isAllLocal(uris)) {
             return builder.buildPostQuery(builder.buildLocalQuery(info), info);
         }
@@ -101,27 +101,22 @@ class GroupQueryBuilder {
             queries.add(builder.buildLocalQuery(info));
         }
         Map<String, List<SegmentDestination>> map = DetailQueryBuilder.groupSegmentInfoByClusterId(uris);
-        QueryBean queryBean = QueryBeanManager.getInstance().getQueryBean(info.getQueryId());
         if (localURIs.isEmpty() && map.size() == 1) {
             // 全部数据在一个远程节点
             queryBean.setQueryType(QueryType.LOCAL_GROUP_ALL);
             Map.Entry<String, List<SegmentDestination>> entry = map.entrySet().iterator().next();
             SegmentDestination destination = entry.getValue().get(0);
-            String newId = info.getQueryId() + destination.getClusterId();
-            ((GroupQueryInfoBean) queryBean).setQueryId(newId);
+            queryBean.setQueryDestination(destination);
             String jsonString = QueryInfoBeanFactory.queryBean2String(queryBean);
-            QueryBeanManager.getInstance().put(newId, Pair.of(jsonString, destination));
             return new RemoteQueryImpl<NodeResultSet>(jsonString, destination);
         }
 
         for (Map.Entry<String, List<SegmentDestination>> entry : map.entrySet()) {
             queryBean.setQueryType(QueryType.LOCAL_GROUP_PART);
             SegmentDestination destination = entry.getValue().get(0);
-            String newId = info.getQueryId() + destination.getClusterId();
-            ((GroupQueryInfoBean) queryBean).setQueryId(newId);
+            queryBean.setQueryDestination(destination);
             String jsonString = QueryInfoBeanFactory.queryBean2String(queryBean);
             queries.add(new RemoteQueryImpl<NodeResultSet>(jsonString, destination));
-            QueryBeanManager.getInstance().put(newId, Pair.of(jsonString, destination));
         }
         // 多个节点的ResultQuery合并之后在处理List<PostQueryInfo>
         return builder.buildPostQuery(builder.buildResultQuery(queries, info), info);

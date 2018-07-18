@@ -25,10 +25,10 @@ public class LocalAllNodeResultSet implements NodeResultSet<SwiftNode>, Serializ
     private boolean originHasNextPage;
     private transient Iterator<Row> iterator;
 
-    public LocalAllNodeResultSet(String queryId, NodeResultSet<SwiftNode> resultSet) {
-        this.jsonString = queryId;
-        this.root = resultSet.getNode();
-        this.originHasNextPage = resultSet.hasNextPage();
+    public LocalAllNodeResultSet(String jsonString, SwiftNode root, boolean originHasNextPage) {
+        this.jsonString = jsonString;
+        this.root = root;
+        this.originHasNextPage = originHasNextPage;
     }
 
     @Override
@@ -36,7 +36,6 @@ public class LocalAllNodeResultSet implements NodeResultSet<SwiftNode>, Serializ
         hasNextPage = false;
         if (originHasNextPage) {
             try {
-                // TODO: 2018/7/17  
                 LocalAllNodeResultSet resultSet = (LocalAllNodeResultSet) QueryRunnerProvider.getInstance().executeRemoteQuery(jsonString, null);
                 hasNextPage = true;
                 this.root = resultSet.root;

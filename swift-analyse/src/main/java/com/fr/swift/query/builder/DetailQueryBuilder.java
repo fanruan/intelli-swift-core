@@ -1,19 +1,17 @@
 package com.fr.swift.query.builder;
 
 import com.fr.swift.exception.SwiftSegmentAbsentException;
+import com.fr.swift.query.info.bean.parser.QueryInfoParser;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.query.Query;
-import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.query.QueryBeanManager;
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.query.remote.RemoteQueryImpl;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.structure.Pair;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -31,18 +29,18 @@ class DetailQueryBuilder {
     /**
      * 给最外层查询节点（查询服务节点）条用并构建query，根据segment分布信息区分本地query和远程query
      *
-     * @param info
+     * @param bean
      * @return
      */
-    static Query<DetailResultSet> buildQuery(DetailQueryInfo info) throws Exception {
+    static Query<DetailResultSet> buildQuery(DetailQueryInfoBean bean) throws Exception {
+        DetailQueryInfo info = (DetailQueryInfo) QueryInfoParser.parse(bean);
         if (info.hasSort()){
-            return buildQuery(info, LocalDetailQueryBuilder.GROUP);
+            return buildQuery(info, bean, LocalDetailQueryBuilder.GROUP);
         } else {
-            return buildQuery(info, LocalDetailQueryBuilder.NORMAL);
+            return buildQuery(info, bean, LocalDetailQueryBuilder.NORMAL);
         }
     }
 
-    // TODO: 2018/6/20 目前看起来明细这边没必要区分localAll和localPart
     /**
      * 处理另一个节点转发过来的查询，并且当前节点上包含查询的部分分块数据
      *
@@ -71,7 +69,8 @@ class DetailQueryBuilder {
         }
     }
 
-    private static Query<DetailResultSet> buildQuery(DetailQueryInfo info, LocalDetailQueryBuilder builder) throws Exception {
+    private static Query<DetailResultSet> buildQuery(DetailQueryInfo info,
+                                                     DetailQueryInfoBean queryBean, LocalDetailQueryBuilder builder) throws Exception {
         SourceKey table = info.getTable();
         List<SegmentDestination> uris = SegmentLocationProvider.getInstance().getSegmentLocationURI(table);
         if (uris == null || uris.isEmpty()){
@@ -87,15 +86,12 @@ class DetailQueryBuilder {
             queries.add(builder.buildLocalQuery(info));
         }
         Map<String, List<SegmentDestination>> map = groupSegmentInfoByClusterId(uris);
-        QueryBean queryBean = QueryBeanManager.getInstance().getQueryBean(info.getQueryId());
         for (Map.Entry<String, List<SegmentDestination>> entry : map.entrySet()) {
             queryBean.setQueryType(QueryType.LOCAL_DETAIL);
             SegmentDestination destination = entry.getValue().get(0);
-            String newId = info.getQueryId() + destination.getClusterId();
-            ((DetailQueryInfoBean) queryBean).setQueryId(newId);
+            queryBean.setQueryDestination(destination);
             String jsonString = QueryInfoBeanFactory.queryBean2String(queryBean);
             queries.add(new RemoteQueryImpl<DetailResultSet>(jsonString, destination));
-            QueryBeanManager.getInstance().put(newId, Pair.of(jsonString, destination));
         }
         return builder.buildResultQuery(queries, info);
     }

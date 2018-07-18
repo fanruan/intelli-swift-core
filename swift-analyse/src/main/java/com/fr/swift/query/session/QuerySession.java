@@ -3,6 +3,7 @@ package com.fr.swift.query.session;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.cache.Cache;
+import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.session.exception.SessionClosedException;
 import com.fr.swift.result.serialize.SwiftResultSetUtils;
@@ -46,18 +47,20 @@ public class QuerySession implements Session {
             throw new SessionClosedException(sessionId);
         }
         String queryId = queryInfo.getQueryId();
+        String jsonString = QueryInfoBeanFactory.queryBean2String(queryInfo);
         Cache<? extends SwiftResultSet> resultSetCache = cache.get(queryId);
         if (null != resultSetCache) {
             resultSetCache.update();
-            return SwiftResultSetUtils.convert2Serializable(queryId, queryInfo.getQueryType(), resultSetCache.get());
+            return SwiftResultSetUtils.convert2Serializable(jsonString, queryInfo.getQueryType(), resultSetCache.get());
         }
         // 缓存具有本地上下文状态的resultSet
         SwiftResultSet resultSet = query(queryInfo);
         Cache<SwiftResultSet> cacheObj = new Cache<SwiftResultSet>(resultSet);
         cache.put(queryId, cacheObj);
         // 取本地resultSet的一个快照，得到可序列化的resultSet
-        return SwiftResultSetUtils.convert2Serializable(queryId, queryInfo.getQueryType(), resultSet);
+        return SwiftResultSetUtils.convert2Serializable(jsonString, queryInfo.getQueryType(), resultSet);
     }
+
     protected SwiftResultSet query(QueryBean queryInfo) throws Exception {
         return QueryBuilder.buildQuery(queryInfo).getQueryResult();
     }

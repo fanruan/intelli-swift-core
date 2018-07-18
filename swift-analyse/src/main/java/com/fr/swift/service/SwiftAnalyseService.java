@@ -10,6 +10,7 @@ import com.fr.swift.invocation.SwiftInvocation;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.builder.QueryBuilder;
+import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.rpc.annotation.RpcMethod;
@@ -140,6 +141,10 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     }
 
     private RpcFuture queryRemoteNodeNode(String jsonString, SegmentDestination remoteURI) throws Exception {
+        if (remoteURI == null) {
+            QueryBean bean = QueryInfoBeanFactory.create(jsonString);
+            remoteURI = bean.getQueryDestination();
+        }
         String address = remoteURI.getAddress();
         String methodName = remoteURI.getMethodName();
         Class clazz = remoteURI.getServiceClass();
