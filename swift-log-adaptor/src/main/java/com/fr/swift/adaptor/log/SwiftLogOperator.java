@@ -102,8 +102,8 @@ public class SwiftLogOperator extends BaseMetric {
         SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         for (Table table : tables) {
             for (Segment segment : localSegmentProvider.getSegment(table.getSourceKey())) {
-                WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segment);
-                whereDeleter.delete(table.getSourceKey(), new SwiftWhere(condition));
+                WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", table.getSourceKey(), segment);
+                whereDeleter.delete(new SwiftWhere(condition));
             }
         }
     }

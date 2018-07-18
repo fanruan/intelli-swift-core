@@ -1,6 +1,5 @@
 package com.fr.swift.provider;
 
-import com.fr.swift.increment.Increment;
 import com.fr.swift.reliance.RelationPathReliance;
 import com.fr.swift.reliance.RelationReliance;
 import com.fr.swift.reliance.SourceReliance;
@@ -12,9 +11,7 @@ import com.fr.swift.source.container.SourceContainerManager;
 import com.fr.swift.source.manager.IndexStuffProvider;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This class created on 2017-11-28.
@@ -26,7 +23,6 @@ import java.util.Map;
 public class IndexStuffInfoProvider implements IndexStuffProvider {
 
     private SourceContainerManager sourceContainer;
-    private Map<String, List<Increment>> incrementMap;
     private SourceReliance sourceReliance;
     private RelationReliance relationReliance;
     private RelationPathReliance relationPathReliance;
@@ -36,15 +32,13 @@ public class IndexStuffInfoProvider implements IndexStuffProvider {
 
     public IndexStuffInfoProvider(SourceContainerManager sourceContainer, IndexStuffMedium indexStuffMedium) {
         this.sourceContainer = sourceContainer;
-        this.incrementMap = new HashMap<String, List<Increment>>();
         this.indexStuffMedium = indexStuffMedium;
         taskResultListeners = new ArrayList<TaskResultListener>();
     }
 
     public IndexStuffInfoProvider(SourceContainerManager sourceContainer,
-                                  Map<String, List<Increment>> incrementMap, SourceReliance sourceReliance, RelationReliance relationReliance, RelationPathReliance relationPathReliance, IndexStuffMedium indexStuffMedium) {
+                                  SourceReliance sourceReliance, RelationReliance relationReliance, RelationPathReliance relationPathReliance, IndexStuffMedium indexStuffMedium) {
         this.sourceContainer = sourceContainer;
-        this.incrementMap = incrementMap;
         this.sourceReliance = sourceReliance;
         this.relationReliance = relationReliance;
         this.relationPathReliance = relationPathReliance;
@@ -100,11 +94,6 @@ public class IndexStuffInfoProvider implements IndexStuffProvider {
     @Override
     public List<SourcePath> getAllPaths() {
         return new ArrayList<SourcePath>(sourceContainer.getPathSourceContainer().getAllSources());
-    }
-
-    @Override
-    public List<Increment> getIncrementBySourceId(String sourceId) {
-        return new ArrayList<Increment>(incrementMap.get(sourceId));
     }
 
     @Override

@@ -5,12 +5,7 @@ import com.fr.swift.db.Where;
 import com.fr.swift.segment.operator.delete.HistorySwiftDeleter;
 import com.fr.swift.segment.operator.delete.RealtimeSwiftDeleter;
 import com.fr.swift.segment.operator.delete.WhereDeleter;
-import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.util.Crasher;
-
-import java.util.List;
 
 /**
  * This class created on 2018/7/4
@@ -20,32 +15,23 @@ import java.util.List;
  * @since Advanced FineBI 5.0
  */
 public class Decrementer implements WhereDeleter {
+    private SourceKey tableKey;
+
     private Segment segment;
 
-    public Decrementer(Segment segment) {
+    public Decrementer(SourceKey tableKey, Segment segment) {
+        this.tableKey = tableKey;
         this.segment = segment;
     }
 
     @Override
-    public boolean deleteData(List<Row> rowList) {
-        Crasher.crash("method not supported");
-        return false;
-    }
-
-    @Override
-    public boolean deleteData(SwiftResultSet swiftResultSet) {
-        Crasher.crash("method not supported");
-        return false;
-    }
-
-    @Override
-    public ImmutableBitMap delete(SourceKey sourceKey, Where where) throws Exception {
+    public ImmutableBitMap delete(Where where) throws Exception {
         WhereDeleter whereDeleter;
         if (segment.isHistory()) {
-            whereDeleter = new HistorySwiftDeleter(segment);
+            whereDeleter = new HistorySwiftDeleter(tableKey, segment);
         } else {
-            whereDeleter = new RealtimeSwiftDeleter(segment);
+            whereDeleter = new RealtimeSwiftDeleter(tableKey, segment);
         }
-        return whereDeleter.delete(sourceKey, where);
+        return whereDeleter.delete(where);
     }
 }

@@ -60,7 +60,7 @@ public class DeleteTest extends BaseTest {
 
         QueryCondition eqQueryCondition = SwiftQueryFactory.create().addRestriction(RestrictionFactory.eq("合同类型", "购买合同"));
         Where where = new SwiftWhere(eqQueryCondition);
-        ((WhereDeleter) SwiftContext.get().getBean("decrementer", segment)).delete(new SourceKey("testEQHis"), where);
+        ((WhereDeleter) SwiftContext.get().getBean("decrementer", new SourceKey("testEQHis"), segment)).delete(where);
 
         Column column = segment.getColumn(new ColumnKey("合同类型"));
         for (int i = 0; i < segment.getRowCount(); i++) {
@@ -82,7 +82,7 @@ public class DeleteTest extends BaseTest {
 
         QueryCondition eqQueryCondition = SwiftQueryFactory.create().addRestriction(RestrictionFactory.eq("合同类型", "购买合同"));
         Where where = new SwiftWhere(eqQueryCondition);
-        ((WhereDeleter) SwiftContext.get().getBean("decrementer", segment)).delete(new SourceKey("testEQReal"), where);
+        ((WhereDeleter) SwiftContext.get().getBean("decrementer", new SourceKey("testEQReal"), segment)).delete(where);
         Column column = segment.getColumn(new ColumnKey("合同类型"));
         for (int i = 0; i < segment.getRowCount(); i++) {
             if (segment.getAllShowIndex().contains(i)) {
@@ -115,7 +115,7 @@ public class DeleteTest extends BaseTest {
 
         QueryCondition eqQueryCondition = SwiftQueryFactory.create().addRestriction(RestrictionFactory.gt("总金额", 100000));
         Where where = new SwiftWhere(eqQueryCondition);
-        ((WhereDeleter) SwiftContext.get().getBean("decrementer", segment)).delete(new SourceKey("testGTReal"), where);
+        ((WhereDeleter) SwiftContext.get().getBean("decrementer", new SourceKey("testGTReal"), segment)).delete(where);
         Column column = segment.getColumn(new ColumnKey("总金额"));
         for (int i = 0; i < segment.getRowCount(); i++) {
             if (segment.getAllShowIndex().contains(i)) {

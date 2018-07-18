@@ -1,22 +1,20 @@
 package com.fr.swift.generate.excel.increase;
 
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.flow.FlowRuleController;
 import com.fr.swift.generate.TestIndexer;
 import com.fr.swift.generate.excel.BaseExcelTest;
 import com.fr.swift.generate.history.transport.TableTransporter;
-import com.fr.swift.generate.realtime.RealtimeDataTransporter;
-import com.fr.swift.increase.IncrementImpl;
-import com.fr.swift.increment.Increment;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.HistorySegment;
 import com.fr.swift.segment.RealTimeSegment;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.segment.operator.Inserter;
+import com.fr.swift.source.DataSource;
+import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.excel.ExcelDataSource;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -45,13 +43,9 @@ public class ExcelIncreSingleTest extends BaseExcelTest {
         assertEquals(segment.getRowCount(), 3);
         assertEquals(segments.size(), 1);
 
-        List<String> list = new ArrayList<>();
-        list.add(path2);
+        DataSource dataSource2 = new ExcelDataSource(path2, names, types);
 
-        Increment increment = new IncrementImpl(dataSource.getColumnNames(), dataSource.getColumnTypes(), list);
-
-        RealtimeDataTransporter transport = new RealtimeDataTransporter(dataSource, increment, new FlowRuleController());
-        transport.work();
+        ((Inserter) SwiftContext.get().getBean("incrementer", dataSource)).insertData(SwiftSourceTransferFactory.createSourceTransfer(dataSource2).createResultSet());
 
         TestIndexer.realtimeIndex(dataSource);
 

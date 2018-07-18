@@ -1,6 +1,5 @@
 package com.fr.swift.reliance;
 
-import com.fr.swift.increment.Increment;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.EtlDataSource;
 import com.fr.swift.source.SourceKey;
@@ -10,7 +9,6 @@ import com.fr.swift.util.SourceNodeUtils;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -79,7 +77,7 @@ public class SourceNodeTest extends TestCase {
         reliances.add(dataSourceA);
 
         SourceReliance sourceReliance = new SourceReliance(origins, reliances);
-        SourceNodeUtils.calculateSourceNode(sourceReliance, new HashMap<String, List<Increment>>());
+        SourceNodeUtils.calculateSourceNode(sourceReliance);
         Map<SourceKey, SourceNode> map = sourceReliance.getHeadNodes();
         assertEquals(map.size(), 1);
         assertTrue(map.containsKey(dataSourceA.getSourceKey()));

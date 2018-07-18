@@ -1,5 +1,7 @@
 package com.fr.swift.source;
 
+import com.fr.swift.util.Assert;
+
 import java.sql.SQLException;
 
 /**
@@ -20,9 +22,7 @@ public class LimitedResultSet implements SwiftResultSet {
     }
 
     public LimitedResultSet(SwiftResultSet origin, int limit, boolean closeOrigin) {
-        if (limit < 0) {
-            throw new IllegalArgumentException();
-        }
+        Assert.isTrue(limit >= 0, "limit must be greater than or equal 0");
         this.origin = origin;
         this.limit = limit;
         this.closeOrigin = closeOrigin;

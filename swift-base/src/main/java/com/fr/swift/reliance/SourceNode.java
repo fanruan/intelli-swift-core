@@ -1,6 +1,5 @@
 package com.fr.swift.reliance;
 
-import com.fr.swift.increment.Increment;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
 
@@ -24,22 +23,10 @@ public class SourceNode {
 
     private boolean hasPrev = false;
 
-    private boolean isIncrement = false;
-
-    private Increment increment;
-
     public SourceNode(DataSource node) {
         this.node = node;
         this.sourceKey = node.getSourceKey();
         this.next = new ArrayList<SourceNode>();
-    }
-
-    public SourceNode(DataSource node, Increment increment) {
-        this(node);
-        this.increment = increment;
-        if (this.increment != null) {
-            this.isIncrement = true;
-        }
     }
 
     public SourceKey getSourceKey() {
@@ -68,13 +55,5 @@ public class SourceNode {
 
     public boolean hasPrev() {
         return hasPrev;
-    }
-
-    public boolean isIncrement() {
-        return isIncrement;
-    }
-
-    public Increment getIncrement() {
-        return increment;
     }
 }

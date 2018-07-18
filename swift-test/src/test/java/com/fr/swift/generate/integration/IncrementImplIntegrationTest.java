@@ -1,16 +1,16 @@
 package com.fr.swift.generate.integration;
 
+import com.fr.stable.query.restriction.RestrictionFactory;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.flow.FlowRuleController;
+import com.fr.swift.db.impl.SwiftWhere;
 import com.fr.swift.generate.BaseTest;
 import com.fr.swift.generate.TestIndexer;
 import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.generate.history.transport.TableTransporter;
-import com.fr.swift.generate.realtime.RealtimeDataTransporter;
-import com.fr.swift.increase.IncrementImpl;
-import com.fr.swift.increment.Increment;
 import com.fr.swift.manager.LocalSegmentProvider;
+import com.fr.swift.query.condition.SwiftQueryFactory;
+import com.fr.swift.segment.Decrementer;
 import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.RealTimeSegmentImpl;
 import com.fr.swift.segment.Segment;
@@ -18,8 +18,11 @@ import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.DataSource;
+import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.QueryDBSource;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -36,6 +39,8 @@ import static org.junit.Assert.assertTrue;
  * @since Advanced FineBI Analysis 1.0
  * 增量更新集成测试
  */
+@Ignore
+@Deprecated
 public class IncrementImplIntegrationTest extends BaseTest {
 
     private LocalSegmentProvider segmentProvider;
@@ -66,10 +71,7 @@ public class IncrementImplIntegrationTest extends BaseTest {
         assertFalse(segmentList.get(0).getAllShowIndex().contains(682));
 
         //再做增量新增'庆芳'更新
-        Increment increment = new IncrementImpl("select 记录人 from DEMO_CAPITAL_RETURN where 记录人 ='庆芳'", null, null, dataSource.getSourceKey(), "local");
-
-        RealtimeDataTransporter transport = new RealtimeDataTransporter(dataSource, increment, new FlowRuleController());
-        transport.work();
+        ((Inserter) SwiftContext.get().getBean("incrementer", dataSource)).insertData(SwiftSourceTransferFactory.createSourceTransfer(new QueryDBSource("select 记录人 from DEMO_CAPITAL_RETURN where 记录人 ='庆芳'", "local")).createResultSet());
         TestIndexer.realtimeIndex(dataSource);
 
         segmentList = segmentProvider.getSegment(dataSource.getSourceKey());
@@ -113,9 +115,7 @@ public class IncrementImplIntegrationTest extends BaseTest {
         }
 
         //最后做增量删除'庆芳'更新
-        Increment increment2 = new IncrementImpl(null, "select 记录人 from DEMO_CAPITAL_RETURN where 记录人 ='庆芳'", null, dataSource.getSourceKey(), "local");
-        RealtimeDataTransporter transport2 = new RealtimeDataTransporter(dataSource, increment2);
-        transport2.work();
+        ((Decrementer) SwiftContext.get().getBean("incrementer", dataSource)).delete(new SwiftWhere(SwiftQueryFactory.create().addRestriction(RestrictionFactory.eq("记录人", "庆芳"))));
 
         segmentList = segmentProvider.getSegment(dataSource.getSourceKey());
         //判断第一块数据不变，但是allshowindex去掉了庆芳的索引

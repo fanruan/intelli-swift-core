@@ -3,11 +3,6 @@ package com.fr.swift.segment.operator.delete;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.db.Where;
 import com.fr.swift.segment.operator.Deleter;
-import com.fr.swift.source.Row;
-import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.SwiftResultSet;
-
-import java.util.List;
 
 /**
  * @author anchore
@@ -16,9 +11,5 @@ import java.util.List;
  * 按明细值删
  */
 public interface WhereDeleter extends Deleter {
-    boolean deleteData(List<Row> rowList) throws Exception;
-
-    boolean deleteData(SwiftResultSet swiftResultSet) throws Exception;
-
-    ImmutableBitMap delete(SourceKey sourceKey, Where where) throws Exception;
+    ImmutableBitMap delete(Where where) throws Exception;
 }
