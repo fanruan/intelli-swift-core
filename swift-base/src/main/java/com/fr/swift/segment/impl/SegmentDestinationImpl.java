@@ -9,7 +9,6 @@ import com.fr.swift.service.SwiftService;
 import com.fr.third.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fr.third.fasterxml.jackson.annotation.JsonInclude;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
-import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -39,21 +38,6 @@ public class SegmentDestinationImpl implements SegmentDestination {
     private String methodName;
     @JsonProperty
     private List<String> spareNodes;
-
-    public static void main(String[] args) throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
-        SegmentDestination destination = new SegmentDestinationImpl();
-        ((SegmentDestinationImpl) destination).setClusterId("master");
-        ((SegmentDestinationImpl) destination).setAddress("master");
-        ((SegmentDestinationImpl) destination).setUri(new URI(""));
-        ((SegmentDestinationImpl) destination).setOrder(2);
-        ((SegmentDestinationImpl) destination).setServiceClass(SwiftService.class);
-        ((SegmentDestinationImpl) destination).setMethodName("queryHistory");
-        ((SegmentDestinationImpl) destination).setSpareNodes(new ArrayList<String>());
-        String str = mapper.writeValueAsString(destination);
-        SegmentDestination destination1 = mapper.readValue(str, SegmentDestination.class);
-        System.out.println(str);
-    }
 
     public SegmentDestinationImpl() {
     }
