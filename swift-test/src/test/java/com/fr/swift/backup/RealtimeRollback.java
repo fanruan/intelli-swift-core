@@ -212,7 +212,8 @@ public class RealtimeRollback extends BaseTest {
             }
 
             IResourceLocation location = currentSeg.getLocation();
-            SegmentKey segKey = new SegmentKeyBean(dataSource.getSourceKey().getId(), location.getUri(), count++, location.getStoreType());
+            SegmentKey segKey = new SegmentKeyBean(dataSource.getSourceKey().getId(),
+                    location.getUri(), count++, location.getStoreType(), currentSeg.getMetaData().getSwiftSchema());
             if (!SwiftSegmentServiceProvider.getProvider().containsSegment(segKey)) {
                 SwiftSegmentServiceProvider.getProvider().addSegments(Collections.singletonList(segKey));
             }

@@ -1,9 +1,13 @@
 package com.fr.swift.segment.operator.insert;
 
+import com.fineio.FineIO;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.config.bean.SegmentKeyBean;
+import com.fr.swift.config.entity.SwiftTablePathEntity;
+import com.fr.swift.config.service.SwiftPathService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftSegmentServiceProvider;
+import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
@@ -29,8 +33,11 @@ import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.source.alloter.impl.SwiftSourceAlloterFactory;
 import com.fr.swift.source.alloter.impl.line.LineRowInfo;
+import com.fr.swift.source.core.MD5Utils;
 import com.fr.swift.util.Crasher;
+import com.fr.swift.util.FileUtil;
 
+import java.net.URI;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +63,10 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
     private SwiftSourceAlloter alloter;
     private SegmentIndexCache segmentIndexCache;
     private int startSegIndex;
+    protected String cubeTmpPath;
     private SwiftSegmentService segmentService = SwiftSegmentServiceProvider.getProvider();
+    private SwiftPathService pathService = SwiftContext.get().getBean(SwiftPathService.class);
+    private SwiftTablePathService tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
 
     public AbstractBlockInserter(SourceKey sourceKey, String cubeSourceKey, SwiftMetaData swiftMetaData) {
         this(sourceKey, cubeSourceKey, swiftMetaData, swiftMetaData.getFieldNames());
@@ -81,11 +91,14 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
         this.segments = segments;
         this.segmentIndexCache = new SegmentIndexCache();
         this.startSegIndex = segments.size();
+        cubeTmpPath = MD5Utils.getMD5String(new String[]{String.valueOf(System.currentTimeMillis())});
+        SwiftTablePathEntity entity = new SwiftTablePathEntity(sourceKey.getId(), cubeTmpPath);
+        tablePathService.saveOrUpdate(entity);
         for (int i = 0; i < segments.size(); i++) {
             if (segments.get(i).isHistory()) {
-                createSegment(i, Types.StoreType.FINE_IO);
+                createSegment(i, Types.StoreType.FINE_IO, cubeTmpPath);
             } else {
-                createSegment(i, Types.StoreType.MEMORY);
+                createSegment(i, Types.StoreType.MEMORY, cubeTmpPath);
             }
         }
     }
@@ -97,6 +110,8 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
 
     @Override
     public void insertData(SwiftResultSet swiftResultSet) throws SQLException {
+
+
         if (!fields.isEmpty()) {
             List<Segment> newSegments = new ArrayList<Segment>();
             try {
@@ -109,7 +124,7 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
                     if (index >= size) {
                         for (int i = size; i <= index; i++) {
                             segmentIndexCache.putSegRow(i, 0);
-                            Segment newSegment = createSegment(i);
+                            Segment newSegment = createSegment(i, cubeTmpPath);
                             segments.add(newSegment);
                             newSegments.add(newSegment);
                         }
@@ -145,14 +160,14 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
             List<Segment> cubeSourceSegments = SwiftContext.get().getBean(SwiftSegmentManager.class).getSegment(new SourceKey(cubeSourceKey));
             for (int i = 0; i < cubeSourceSegments.size(); i++) {
                 Segment segment = cubeSourceSegments.get(i);
-                createSegment(i, segment.isHistory() ? Types.StoreType.FINE_IO : Types.StoreType.MEMORY);
+                createSegment(i, segment.isHistory() ? Types.StoreType.FINE_IO : Types.StoreType.MEMORY, cubeTmpPath);
             }
             release();
             return;
         }
     }
 
-    protected abstract Segment createSegment(int order);
+    protected abstract Segment createSegment(int order, String tmpPath);
 
     /**
      * 创建Segment
@@ -162,12 +177,15 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
      * @return
      * @throws Exception
      */
-    protected Segment createSegment(int order, Types.StoreType storeType) {
-        String cubePath = String.format("%s/%s/seg%d",
+    protected Segment createSegment(int order, Types.StoreType storeType, String tmpPath) {
+        String cubePath = String.format("%s/%/%s/seg%d",
                 swiftMetaData.getSwiftSchema().getDir(),
+                tmpPath,
+                cubeSourceKey, order);
+        String uriPath = String.format("%s/seg%d",
                 cubeSourceKey, order);
         IResourceLocation location = new ResourceLocation(cubePath, storeType);
-        configSegment.add(new SegmentKeyBean(sourceKey.getId(), location.getUri(), order, storeType));
+        configSegment.add(new SegmentKeyBean(sourceKey.getId(), URI.create(uriPath), order, storeType, swiftMetaData.getSwiftSchema()));
         return createNewSegment(location, swiftMetaData);
     }
 
@@ -194,6 +212,25 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
                 }
             }
         }
+        FineIO.doWhenFinished(new Runnable() {
+            @Override
+            public void run() {
+                SwiftTablePathEntity entity = SwiftContext.get().getBean(SwiftTablePathService.class).get(sourceKey.getId());
+                String path = entity.getTablePath();
+                String lastPath = entity.getLastPath();
+                String tmpPath = entity.getTmpDir();
+                entity.setTablePath(tmpPath);
+                entity.setLastPath(path);
+                if (tablePathService.saveOrUpdate(entity)) {
+                    String deletePath = String.format("%s/%s/%s/%s",
+                            pathService.getSwiftPath(),
+                            swiftMetaData.getSwiftSchema().getDir(),
+                            lastPath,
+                            sourceKey.getId());
+                    FileUtil.delete(deletePath);
+                }
+            }
+        });
     }
 
     private void persistMeta() {

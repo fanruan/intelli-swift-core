@@ -58,7 +58,7 @@ public class SwiftClusterService implements ClusterService {
                     FRClusterNodeManager.getInstance().setMasterNode(currentNode);
                     SwiftServiceInfoBean swiftServiceInfoBean = new SwiftServiceInfoBean(SwiftClusterService.SERVICE,
                             currentNode.getID(), swiftProperty.getRpcAddress());
-                    serviceInfoService.saveOrUpdateServiceInfo(swiftServiceInfoBean);
+                    serviceInfoService.saveOrUpdate(swiftServiceInfoBean);
                     LOGGER.info(currentNode.getID() + " compete master succeeded!");
                 } else {
                     LOGGER.info("Master " + masterId + " is alive, " + currentNode.getID() + " sync master node!");
@@ -69,7 +69,7 @@ public class SwiftClusterService implements ClusterService {
                 LOGGER.info("Master is null," + currentNode.getID() + " start to compete master!");
                 SwiftServiceInfoBean swiftServiceInfoBean = new SwiftServiceInfoBean(SwiftClusterService.SERVICE,
                         currentNode.getID(), swiftProperty.getRpcAddress());
-                serviceInfoService.saveOrUpdateServiceInfo(swiftServiceInfoBean);
+                serviceInfoService.saveOrUpdate(swiftServiceInfoBean);
                 FRClusterNodeManager.getInstance().setMasterNode(currentNode);
                 LOGGER.info(currentNode.getID() + " compete master succeeded!");
             }

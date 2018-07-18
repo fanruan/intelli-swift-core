@@ -163,7 +163,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
                 collater.collate(swiftResultSet);
 
                 IResourceLocation location = newSeg.getLocation();
-                SegmentKey newSegKey = new SegmentKeyBean(tableKey.getId(), location.getUri(), newOrder, location.getStoreType());
+                SegmentKey newSegKey = new SegmentKeyBean(tableKey.getId(), location.getUri(), newOrder, location.getStoreType(), newSeg.getMetaData().getSwiftSchema());
                 newSegKeys.add(newSegKey);
                 newOrder++;
                 swiftResultSet.close();

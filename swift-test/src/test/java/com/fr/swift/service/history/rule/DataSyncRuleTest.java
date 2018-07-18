@@ -2,6 +2,7 @@ package com.fr.swift.service.history.rule;
 
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.cube.io.Types;
+import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.service.handler.history.rule.DefaultDataSyncRule;
@@ -43,7 +44,7 @@ public class DataSyncRuleTest {
         Map<String, List<SegmentKey>> needLoad = new HashMap<String, List<SegmentKey>>();
         needLoad.put("tableA", new ArrayList<SegmentKey>(100));
         for (int j = 0; j < 100; j++) {
-            needLoad.get("tableA").add(new SegmentKeyBean("tableA", URI.create("uri_" + j), j, Types.StoreType.FINE_IO));
+            needLoad.get("tableA").add(new SegmentKeyBean("tableA", URI.create("uri_" + j), j, Types.StoreType.FINE_IO, SwiftDatabase.Schema.CUBE));
         }
         List<Object[]> result = new ArrayList<>();
         for (int i = 0; i < 100; i++) {

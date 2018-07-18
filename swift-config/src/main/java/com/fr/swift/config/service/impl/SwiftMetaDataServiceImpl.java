@@ -14,6 +14,7 @@ import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.event.global.CleanMetaDataCacheEvent;
+import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.invocation.SwiftInvocation;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rpc.client.AsyncRpcCallback;
@@ -266,6 +267,15 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
         } catch (SQLException e) {
             SwiftLoggers.getLogger().error(e);
             return Collections.emptyList();
+        }
+    }
+
+    @Override
+    public boolean saveOrUpdate(SwiftMetaData obj) {
+        try {
+            return addMetaData(obj.getTableName(), obj);
+        } catch (SwiftMetaDataException e) {
+            return false;
         }
     }
 }

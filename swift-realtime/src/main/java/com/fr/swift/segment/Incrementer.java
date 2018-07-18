@@ -108,7 +108,7 @@ public class Incrementer implements Inserter {
 
     private void persistSegment(Segment seg, int order) {
         IResourceLocation location = seg.getLocation();
-        SegmentKey segKey = new SegmentKeyBean(dataSource.getSourceKey().getId(), location.getUri(), order, location.getStoreType());
+        SegmentKey segKey = new SegmentKeyBean(dataSource.getSourceKey().getId(), location.getUri(), order, location.getStoreType(), seg.getMetaData().getSwiftSchema());
         if (!SwiftSegmentServiceProvider.getProvider().containsSegment(segKey)) {
             SwiftSegmentServiceProvider.getProvider().addSegments(Collections.singletonList(segKey));
         }

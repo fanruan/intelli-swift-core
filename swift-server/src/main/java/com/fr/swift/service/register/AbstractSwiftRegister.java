@@ -59,7 +59,7 @@ public abstract class AbstractSwiftRegister implements SwiftRegister {
 
     protected void masterLocalServiceRegister() {
         String masterAddress = SwiftContext.get().getBean("swiftProperty", SwiftProperty.class).getMasterAddress();
-        serviceInfoService.saveOrUpdateServiceInfo(new SwiftServiceInfoBean(SwiftClusterService.SERVICE, masterAddress, masterAddress, true));
+        serviceInfoService.saveOrUpdate(new SwiftServiceInfoBean(SwiftClusterService.SERVICE, masterAddress, masterAddress, true));
     }
 
     protected void remoteServiceRegister() {

@@ -7,6 +7,7 @@ import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.Table;
+import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.RealTimeSegmentImpl;
@@ -78,7 +79,7 @@ public class LogBaseTest {
     protected Segment createSegment(int order, Types.StoreType storeType, Table table, List<SegmentKey> configSegment) throws Exception {
         String cubePath = System.getProperty("user.dir") + "/cubes/" + table.getSourceKey().getId() + "/seg" + order;
         IResourceLocation location = new ResourceLocation(cubePath, storeType);
-        SegmentKey segmentKey = new SegmentKeyBean(table.getSourceKey().getId(), location.getUri(), order, storeType);
+        SegmentKey segmentKey = new SegmentKeyBean(table.getSourceKey().getId(), location.getUri(), order, storeType, SwiftDatabase.Schema.CUBE);
         configSegment.add(segmentKey);
         return new RealTimeSegmentImpl(location, table.getMeta());
     }

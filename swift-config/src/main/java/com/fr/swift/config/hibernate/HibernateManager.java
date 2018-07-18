@@ -5,6 +5,7 @@ import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
 import com.fr.swift.config.entity.SwiftServiceInfoEntity;
+import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.config.indexing.impl.SwiftColumnIndexingConf;
 import com.fr.swift.config.indexing.impl.SwiftTableIndexingConf;
 import com.fr.third.org.hibernate.SessionFactory;
@@ -38,6 +39,8 @@ public class HibernateManager {
 
         configuration.addAnnotatedClass(SwiftTableIndexingConf.class);
         configuration.addAnnotatedClass(SwiftColumnIndexingConf.class);
+
+        configuration.addAnnotatedClass(SwiftTablePathEntity.class);
 
         configuration.setProperties(properties.getProperties());
         return configuration;

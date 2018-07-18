@@ -10,12 +10,12 @@ import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
 import com.fr.swift.config.entity.SwiftServiceInfoEntity;
+import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.ProviderTaskManager;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.log.FineIOLoggerImpl;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.server.SwiftEngineStart;
 import com.fr.swift.service.register.LocalSwiftRegister;
 
 /**
@@ -36,7 +36,6 @@ public class SwiftEngineActivator extends Activator implements Prepare {
     private void startSwift() throws Exception {
         SwiftContext.init();
         SwiftConfigContext.getInstance().init();
-        syncFRConfig();
         new LocalSwiftRegister().serviceRegister();
         ClusterListenerHandler.addListener(new ClusterListener());
         FineIO.setLogger(new FineIOLoggerImpl());
@@ -55,10 +54,8 @@ public class SwiftEngineActivator extends Activator implements Prepare {
                 SwiftSegmentEntity.class,
                 SwiftServiceInfoEntity.class,
                 SwiftSegmentLocationEntity.class,
-                SwiftConfigEntity.class);
+                SwiftConfigEntity.class,
+                SwiftTablePathEntity.class);
     }
 
-    private void syncFRConfig() {
-        SwiftEngineStart.syncConfiguration();
-    }
 }
