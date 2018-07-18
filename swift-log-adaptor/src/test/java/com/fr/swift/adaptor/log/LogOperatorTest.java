@@ -15,8 +15,8 @@ import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.LocalSwiftServerService;
-import com.fr.swift.service.SwiftAnalyseService;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.test.Preparer;
 import com.fr.third.javax.persistence.Column;
@@ -48,7 +48,7 @@ public class LogOperatorTest {
     public static void boot() throws Exception {
         Preparer.prepareCubeBuild();
         new LocalSwiftServerService().start();
-        SwiftAnalyseService.getInstance().start();
+        SwiftContext.get().getBean(AnalyseService.class).start();
     }
 
     @Before

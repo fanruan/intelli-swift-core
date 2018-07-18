@@ -68,7 +68,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @RpcService(type = RpcServiceType.CLIENT_SERVICE, value = IndexingService.class)
 public class SwiftIndexingService extends AbstractSwiftService implements IndexingService {
     private static final long serialVersionUID = -7430843337225891194L;
-    private transient RpcServer server = SwiftContext.get().getBean(RpcServer.class);
+
+    @Autowired
+    private transient RpcServer server;
 
     private static Map<TaskKey, Object> stuffObject = new ConcurrentHashMap<TaskKey, Object>();
 
@@ -77,10 +79,6 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
 
     @Autowired
     private transient ServiceTaskExecutor taskExecutor;
-
-    public static SwiftIndexingService getInstance() {
-        return SingletonHolder.service;
-    }
 
     public SwiftIndexingService(String id) {
         super(id);
@@ -142,10 +140,6 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     @Override
     public ServerCurrentStatus currentStatus() {
         return new ServerCurrentStatus(getID());
-    }
-
-    private static class SingletonHolder {
-        private static SwiftIndexingService service = new SwiftIndexingService();
     }
 
     private URL getMasterURL() {
