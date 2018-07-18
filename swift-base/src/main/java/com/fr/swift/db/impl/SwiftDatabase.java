@@ -18,7 +18,7 @@ import java.util.Map.Entry;
  * @date 2018/3/28
  */
 public class SwiftDatabase implements Database {
-    private SwiftMetaDataService confSvc = SwiftContext.getInstance().getBean(SwiftMetaDataService.class);
+    private SwiftMetaDataService confSvc = SwiftContext.get().getBean(SwiftMetaDataService.class);
 
     @Override
     public synchronized Table createTable(SourceKey tableKey, SwiftMetaData meta) throws SQLException {

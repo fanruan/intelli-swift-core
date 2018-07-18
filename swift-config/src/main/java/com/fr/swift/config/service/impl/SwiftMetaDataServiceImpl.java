@@ -113,7 +113,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                     }
                     // 集群情况下才去发rpc
                     // 现在日志这边没必要
-//                    boolean isCluster = SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class).isCluster();
+//                    boolean isCluster = SwiftContext.get().getBean("swiftProperty", SwiftProperty.class).isCluster();
                     boolean isCluster = false;
                     if (null != sourceKeys && isCluster) {
                         URL masterURL = getMasterURL();
@@ -237,7 +237,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     }
 
     private URL getMasterURL() {
-        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.getInstance().getBean(SwiftServiceInfoService.class).getServiceInfoByService("cluster_master_service");
+        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.get().getBean(SwiftServiceInfoService.class).getServiceInfoByService("cluster_master_service");
         SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
         return UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
     }

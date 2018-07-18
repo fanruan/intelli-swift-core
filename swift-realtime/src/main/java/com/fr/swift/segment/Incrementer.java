@@ -33,7 +33,7 @@ import java.util.List;
  * @date 2018/6/5
  */
 public class Incrementer implements Inserter {
-    private static final SwiftSegmentManager LOCAL_SEGMENT_PROVIDER = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class);
+    private static final SwiftSegmentManager LOCAL_SEGMENT_PROVIDER = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
 
     private SwiftSourceAlloter alloter;
 

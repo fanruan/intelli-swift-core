@@ -46,7 +46,7 @@ public class DecreaseTransportTest extends BaseConfigTest {
         RealtimeDataTransporter transport = new RealtimeDataTransporter(dataSource, increment);
         transport.work();
 
-        List<Segment> segments = SwiftContext.getInstance().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
+        List<Segment> segments = SwiftContext.get().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
         Segment segment = segments.get(0);
         assertEquals(segment.getRowCount(), 682);
         ImmutableBitMap bitMap = segment.getAllShowIndex();

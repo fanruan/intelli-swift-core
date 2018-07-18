@@ -38,7 +38,7 @@ public class ExcelIncreaseCoupleTest extends BaseExcelTest {
         TableTransporter tableTransporter = new TableTransporter(dataSource);
         tableTransporter.transport();
 
-        List<Segment> segments = SwiftContext.getInstance().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
+        List<Segment> segments = SwiftContext.get().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
         for (int i = 1; i <= dataSource.getMetadata().getColumnCount(); i++) {
             ColumnIndexer columnIndexer = new ColumnIndexer(dataSource, new ColumnKey(dataSource.getMetadata().getColumnName(i)), segments);
             columnIndexer.work();
@@ -59,7 +59,7 @@ public class ExcelIncreaseCoupleTest extends BaseExcelTest {
 
         TestIndexer.realtimeIndex(dataSource);
 
-        segments = SwiftContext.getInstance().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
+        segments = SwiftContext.get().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
         assertEquals(segments.size(), 2);
 
         assertEquals(segments.get(0).getRowCount(), 3);

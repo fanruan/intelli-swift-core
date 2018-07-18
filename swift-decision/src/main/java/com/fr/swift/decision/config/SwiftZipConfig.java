@@ -42,7 +42,7 @@ public class SwiftZipConfig extends SwiftAbstractSimpleConfig<Boolean> {
             }
         });
 
-        return SwiftContext.getInstance().getBean(SwiftZipService.class).setZip(obj);
+        return SwiftContext.get().getBean(SwiftZipService.class).setZip(obj);
     }
 
     public String getNameSpace() {

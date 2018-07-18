@@ -44,7 +44,7 @@ public class IncrementImplIntegrationTest extends BaseTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        segmentProvider = SwiftContext.getInstance().getBean(LocalSegmentProvider.class);
+        segmentProvider = SwiftContext.get().getBean(LocalSegmentProvider.class);
         dataSource = new QueryDBSource("select 记录人 from DEMO_CAPITAL_RETURN", "local2");
     }
 

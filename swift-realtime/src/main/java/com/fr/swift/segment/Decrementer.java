@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class Decrementer implements RowDeleter {
 
-    private static final SwiftSegmentManager LOCAL_SEGMENT_PROVIDER = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class);
+    private static final SwiftSegmentManager LOCAL_SEGMENT_PROVIDER = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
 
     private Segment segment;
 
@@ -31,13 +31,13 @@ public class Decrementer implements RowDeleter {
     }
 
     @Override
-    public boolean deleteData(List<Row> rowList) throws Exception {
+    public boolean deleteData(List<Row> rowList) {
         Crasher.crash("method not supported");
         return false;
     }
 
     @Override
-    public boolean deleteData(SwiftResultSet swiftResultSet) throws Exception {
+    public boolean deleteData(SwiftResultSet swiftResultSet) {
         Crasher.crash("method not supported");
         return false;
     }

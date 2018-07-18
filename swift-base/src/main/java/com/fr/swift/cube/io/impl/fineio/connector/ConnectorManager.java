@@ -27,8 +27,8 @@ import com.fr.swift.util.Crasher;
 public class ConnectorManager {
     private volatile static ConnectorManager instance;
     private static Connector connector;
-    private SwiftPathService pathService = SwiftContext.getInstance().getBean(SwiftPathService.class);
-    private SwiftZipService zipConfig = SwiftContext.getInstance().getBean(SwiftZipService.class);
+    private SwiftPathService pathService = SwiftContext.get().getBean(SwiftPathService.class);
+    private SwiftZipService zipConfig = SwiftContext.get().getBean(SwiftZipService.class);
 
     public static ConnectorManager getInstance() {
         if (null != instance) {

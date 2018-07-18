@@ -44,7 +44,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         return SingletonHolder.instance;
     }
 
-    private transient SwiftSegmentManager segmentManager = (SwiftSegmentManager) SwiftContext.getInstance().getBean("localSegmentProvider");
+    private transient SwiftSegmentManager segmentManager = (SwiftSegmentManager) SwiftContext.get().getBean("localSegmentProvider");
 
     @Autowired
     private transient ServiceTaskExecutor taskExecutor;
@@ -72,7 +72,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     @Override
     @RpcMethod(methodName = "cleanMetaCache")
     public void cleanMetaCache(String[] sourceKeys) {
-        SwiftContext.getInstance().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
+        SwiftContext.get().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
     }
 
 
@@ -86,7 +86,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     public SwiftResultSet query(final String queryDescription) throws SQLException {
         try {
             final QueryInfoBean bean = QueryInfoBeanFactory.create(queryDescription);
-            SessionFactory factory = SwiftContext.getInstance().getBean(SessionFactory.class);
+            SessionFactory factory = SwiftContext.get().getBean(SessionFactory.class);
             return factory.openSession(bean.getQueryId()).executeQuery(bean);
         } catch (IOException e) {
             throw new SQLException(e);
@@ -101,7 +101,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
             public void doJob() throws Exception {
                 List<Segment> segments = segmentManager.getSegment(sourceKey);
                 for (Segment segment : segments) {
-                    RowDeleter rowDeleter = (RowDeleter) SwiftContext.getInstance().getBean("decrementer", segment);
+                    RowDeleter rowDeleter = (RowDeleter) SwiftContext.get().getBean("decrementer", segment);
                     rowDeleter.delete(sourceKey, where);
                 }
             }

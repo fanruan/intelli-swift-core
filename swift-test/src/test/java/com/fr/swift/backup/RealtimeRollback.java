@@ -59,7 +59,7 @@ public class RealtimeRollback extends BaseTest {
     public void setUp() throws Exception {
         super.setUp();
         SwiftContext.init();
-        redisClient = (RedisClient) SwiftContext.getInstance().getBean("redisClient");
+        redisClient = (RedisClient) SwiftContext.get().getBean("redisClient");
     }
 
 
@@ -76,7 +76,7 @@ public class RealtimeRollback extends BaseTest {
             Incrementer incrementer = new TestIncrementer(dataSource);
             incrementer.increment(resultSet);
 
-            SwiftSegmentManager localSegmentProvider = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class);
+            SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
             Segment segment = localSegmentProvider.getSegment(dataSource.getSourceKey()).get(0);
 
             assertEquals(redisClient.llen("backup_cubes/7bc94acd/seg0"), 0);
@@ -115,7 +115,7 @@ public class RealtimeRollback extends BaseTest {
             Incrementer incrementer = new Incrementer(dataSource);
             incrementer.increment(resultSet);
 
-            SwiftSegmentManager localSegmentProvider = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class);
+            SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
             Segment segment = localSegmentProvider.getSegment(dataSource.getSourceKey()).get(0);
 
             assertEquals(redisClient.llen("backup_cubes/7bc94acd/seg0"), 42);
@@ -181,7 +181,7 @@ public class RealtimeRollback extends BaseTest {
 
 
     class TestIncrementer extends Incrementer {
-        private final SwiftSegmentManager LOCAL_SEGMENT_PROVIDER = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class);
+        private final SwiftSegmentManager LOCAL_SEGMENT_PROVIDER = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         private SwiftSourceAlloter alloter;
         private DataSource dataSource;
         private Segment currentSeg;

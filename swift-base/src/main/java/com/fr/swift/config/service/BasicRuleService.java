@@ -14,7 +14,7 @@ public class BasicRuleService<T> implements IRuleService<T> {
 
     public BasicRuleService(SwiftConfigService.ConfigConvert<T> convert) {
         this.convert = convert;
-        configService = SwiftContext.getInstance().getBean(SwiftConfigService.class);
+        configService = SwiftContext.get().getBean(SwiftConfigService.class);
     }
 
     @Override

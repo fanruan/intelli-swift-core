@@ -71,6 +71,6 @@ public class LocalSwiftServerService extends AbstractSwiftServerService {
 
     @Override
     public void cleanMetaCache(String[] sourceKeys) {
-        SwiftContext.getInstance().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
+        SwiftContext.get().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
     }
 }

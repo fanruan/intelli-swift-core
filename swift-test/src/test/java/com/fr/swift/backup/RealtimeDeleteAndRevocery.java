@@ -48,8 +48,8 @@ public class RealtimeDeleteAndRevocery extends BaseTest {
     public void setUp() throws Exception {
         super.setUp();
         SwiftContext.init();
-        redisClient = (RedisClient) SwiftContext.getInstance().getBean("redisClient");
-        swiftSegmentManager = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class);
+        redisClient = (RedisClient) SwiftContext.get().getBean("redisClient");
+        swiftSegmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
     }
 
     @Test

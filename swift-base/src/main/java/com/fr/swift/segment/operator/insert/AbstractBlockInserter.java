@@ -142,7 +142,7 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
             end();
             return;
         } else {
-            List<Segment> cubeSourceSegments = SwiftContext.getInstance().getBean(SwiftSegmentManager.class).getSegment(new SourceKey(cubeSourceKey));
+            List<Segment> cubeSourceSegments = SwiftContext.get().getBean(SwiftSegmentManager.class).getSegment(new SourceKey(cubeSourceKey));
             for (int i = 0; i < cubeSourceSegments.size(); i++) {
                 Segment segment = cubeSourceSegments.get(i);
                 createSegment(i, segment.isHistory() ? Types.StoreType.FINE_IO : Types.StoreType.MEMORY);

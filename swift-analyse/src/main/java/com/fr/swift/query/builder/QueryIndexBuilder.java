@@ -37,7 +37,7 @@ import java.util.Map;
  */
 public class QueryIndexBuilder {
 
-    public static IndexQuery<ImmutableBitMap> buildQuery(QueryBean bean, Segment segment) throws Exception {
+    public static IndexQuery<ImmutableBitMap> buildQuery(QueryBean bean, Segment segment) {
         QueryBeanManager.getInstance().put(bean.getQueryId(), bean);
         QueryInfoBean infoBean = (QueryInfoBean) bean;
         DetailQueryInfo info = (DetailQueryInfo) QueryInfoParser.parse(infoBean);
@@ -70,7 +70,7 @@ public class QueryIndexBuilder {
 
     static class Builder implements LocalDetailIndexQueryBuilder {
 
-        private final SwiftSegmentManager localSegmentProvider = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class);
+        private final SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
 
         @Override
         public Map<URI, IndexQuery<ImmutableBitMap>> buildLocalQuery(DetailQueryInfo info) {

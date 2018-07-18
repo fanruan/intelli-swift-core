@@ -44,7 +44,7 @@ public class CoupleColumnFormulaTest extends BaseTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        segmentProvider = SwiftContext.getInstance().getBean(LocalSegmentProvider.class);
+        segmentProvider = SwiftContext.get().getBean(LocalSegmentProvider.class);
     }
 
     /**

@@ -7,10 +7,10 @@ import com.fr.swift.URL;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.core.rpc.SwiftClusterService;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
 import com.fr.swift.event.indexing.IndexRpcEvent;
-import com.fr.swift.core.rpc.SwiftClusterService;
 import com.fr.swift.invocation.SwiftInvocation;
 import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.rpc.server.RpcServer;
@@ -41,7 +41,7 @@ import java.util.Map;
 @Controller
 public class HistoryIndexingController {
 
-    private RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
+    private RpcServer server = SwiftContext.get().getBean(RpcServer.class);
 
     @ResponseBody
     @RequestMapping(value = "swift/index/{tableName}", method = RequestMethod.GET)
@@ -83,7 +83,7 @@ public class HistoryIndexingController {
     }
 
     private URL getMasterURL() {
-        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.getInstance().getBean(SwiftServiceInfoService.class).getServiceInfoByService(SwiftClusterService.SERVICE);
+        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.get().getBean(SwiftServiceInfoService.class).getServiceInfoByService(SwiftClusterService.SERVICE);
         SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
         return UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
     }
