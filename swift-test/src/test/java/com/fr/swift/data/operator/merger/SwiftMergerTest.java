@@ -2,16 +2,12 @@ package com.fr.swift.data.operator.merger;
 
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.ResourceDiscovery;
-import com.fr.swift.flow.FlowRuleController;
 import com.fr.swift.generate.BaseTest;
 import com.fr.swift.generate.TestIndexer;
 import com.fr.swift.generate.history.index.ColumnDictMerger;
 import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.generate.history.transport.TableTransporter;
-import com.fr.swift.generate.realtime.RealtimeDataTransporter;
 import com.fr.swift.generate.segment.operator.merger.RealtimeMerger;
-import com.fr.swift.increase.IncrementImpl;
-import com.fr.swift.increment.Increment;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.HistorySegment;
 import com.fr.swift.segment.HistorySegmentImpl;
@@ -19,7 +15,9 @@ import com.fr.swift.segment.RealTimeSegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DetailColumn;
+import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.DataSource;
+import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.util.DataSourceUtils;
 import org.junit.Test;
@@ -65,10 +63,8 @@ public class SwiftMergerTest extends BaseTest {
         assertFalse(segmentList.get(0).getAllShowIndex().contains(668));
 
         //增量更新1
-        Increment increment = new IncrementImpl("select * from DEMO_CONTRACT where 合同类型 ='购买合同'",
-                null, null, dataSource.getSourceKey(), "SwiftMergerTest");
-        RealtimeDataTransporter transport = new RealtimeDataTransporter(dataSource, increment, new FlowRuleController());
-        transport.work();
+        ((Inserter) SwiftContext.get().getBean("incrementer", dataSource)).insertData(SwiftSourceTransferFactory.createSourceTransfer(
+                new QueryDBSource("select * from DEMO_CONTRACT where 合同类型 ='购买合同'", "SwiftMergerTest")).createResultSet());
         TestIndexer.realtimeIndex(dataSource);
 
         segmentList = segmentProvider.getSegment(dataSource.getSourceKey());
@@ -88,10 +84,9 @@ public class SwiftMergerTest extends BaseTest {
         }
 
         //增量更新1
-        Increment increment2 = new IncrementImpl("select * from DEMO_CONTRACT where 合同类型 ='长期协议'",
-                null, null, dataSource.getSourceKey(), "SwiftMergerTest");
-        RealtimeDataTransporter transport2 = new RealtimeDataTransporter(dataSource, increment2, new FlowRuleController());
-        transport2.work();
+        ((Inserter) SwiftContext.get().getBean("incrementer", dataSource)).insertData(
+                SwiftSourceTransferFactory.createSourceTransfer(
+                        new QueryDBSource("select * from DEMO_CONTRACT where 合同类型 ='长期协议'", "SwiftMergerTest")).createResultSet());
         TestIndexer.realtimeIndex(dataSource);
 
         segmentList = segmentProvider.getSegment(dataSource.getSourceKey());

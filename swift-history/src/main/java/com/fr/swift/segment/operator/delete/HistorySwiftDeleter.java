@@ -1,6 +1,7 @@
 package com.fr.swift.segment.operator.delete;
 
 import com.fr.swift.segment.Segment;
+import com.fr.swift.source.SourceKey;
 
 /**
  * This class created on 2018/3/26
@@ -10,9 +11,8 @@ import com.fr.swift.segment.Segment;
  * @since Advanced FineBI Analysis 1.0
  */
 public class HistorySwiftDeleter extends AbstractDeleter {
-
-    public HistorySwiftDeleter(Segment segment) {
-        super(segment);
+    public HistorySwiftDeleter(SourceKey tableKey, Segment segment) {
+        super(tableKey, segment);
     }
 
     @Override

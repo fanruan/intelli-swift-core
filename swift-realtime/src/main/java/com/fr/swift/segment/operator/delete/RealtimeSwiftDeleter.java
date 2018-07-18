@@ -20,17 +20,16 @@ import com.fr.swift.source.SwiftMetaData;
  * @since Advanced FineBI Analysis 1.0
  */
 public class RealtimeSwiftDeleter extends AbstractDeleter {
+    private AllShowIndexBackup allShowIndexBackup;
 
-    public AllShowIndexBackup allShowIndexBackup;
-
-    public RealtimeSwiftDeleter(Segment segment) {
-        super(segment);
+    public RealtimeSwiftDeleter(SourceKey tableKey, Segment segment) {
+        super(tableKey, segment);
         allShowIndexBackup = (AllShowIndexBackup) SwiftContext.get().getBean("allShowIndexBackup", getBackupSegment());
     }
 
     @Override
-    public ImmutableBitMap delete(SourceKey sourceKey, Where where) throws Exception {
-        ImmutableBitMap allShowIndex = super.delete(sourceKey, where);
+    public ImmutableBitMap delete(Where where) throws Exception {
+        ImmutableBitMap allShowIndex = super.delete(where);
         allShowIndexBackup.backupAllShowIndex(allShowIndex);
         return allShowIndex;
     }

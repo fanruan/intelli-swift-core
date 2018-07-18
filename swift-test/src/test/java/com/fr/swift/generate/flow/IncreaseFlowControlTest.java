@@ -7,17 +7,16 @@ import com.fr.swift.flow.FlowRuleController;
 import com.fr.swift.flow.RowNumberControlRule;
 import com.fr.swift.flow.TimeControlRule;
 import com.fr.swift.generate.BaseTest;
-import com.fr.swift.generate.history.index.ColumnIndexer;
-import com.fr.swift.generate.realtime.RealtimeDataTransporter;
-import com.fr.swift.increase.IncrementImpl;
-import com.fr.swift.increment.Increment;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.DataSource;
+import com.fr.swift.source.LimitedResultSet;
+import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.QueryDBSource;
 import org.junit.Test;
 
@@ -50,8 +49,6 @@ public class IncreaseFlowControlTest extends BaseTest {
 
     @Test
     public void testRowControl() throws Exception {
-        Increment increment = new IncrementImpl("select 合同ID from DEMO_CAPITAL_RETURN where 记录人 ='庆芳'", null, null, dataSource.getSourceKey(), "local");
-
         /**
          * 控制增量只取5行
          */
@@ -59,14 +56,16 @@ public class IncreaseFlowControlTest extends BaseTest {
         List<FlowControlRule> list = new ArrayList<FlowControlRule>();
         list.add(flowControlRule);
         FlowRuleController flowRuleController = new FlowRuleController(list);
-        RealtimeDataTransporter transport = new RealtimeDataTransporter(dataSource, increment, flowRuleController);
-        transport.work();
+        ((Inserter) SwiftContext.get().getBean("incrementer", dataSource)).insertData(
+                new LimitedResultSet(
+                        SwiftSourceTransferFactory.createSourceTransfer(
+                                new QueryDBSource("select 合同ID from DEMO_CAPITAL_RETURN where 记录人 ='庆芳'", "local")).createResultSet(), 5));
 
         List<Segment> segments = segmentProvider.getSegment(dataSource.getSourceKey());
-        for (int i = 1; i <= dataSource.getMetadata().getColumnCount(); i++) {
-            ColumnIndexer columnIndexer = new ColumnIndexer(dataSource, new ColumnKey(dataSource.getMetadata().getColumnName(i)), segments);
-            columnIndexer.work();
-        }
+//        for (int i = 1; i <= dataSource.getMetadata().getColumnCount(); i++) {
+//            ColumnIndexer columnIndexer = new ColumnIndexer(dataSource, new ColumnKey(dataSource.getMetadata().getColumnName(i)), segments);
+//            columnIndexer.work();
+//        }
 
         Segment segment = segments.get(0);
 
@@ -105,15 +104,14 @@ public class IncreaseFlowControlTest extends BaseTest {
     }
 
     @Test
-    public void testTimeControl() {
-        Increment increment = new IncrementImpl("select * from DEMO_CAPITAL_RETURN where 记录人 ='庆芳'", null, null, dataSource.getSourceKey(), "local");
-
+    public void testTimeControl() throws Exception {
         FlowControlRule flowControlRule = new TimeControlRule(100);
         List<FlowControlRule> list = new ArrayList<FlowControlRule>();
         list.add(flowControlRule);
         FlowRuleController flowRuleController = new FlowRuleController(list);
-        RealtimeDataTransporter transport = new RealtimeDataTransporter(dataSource, increment, flowRuleController);
-        transport.work();
+        ((Inserter) SwiftContext.get().getBean("incrementer", dataSource)).insertData(new LimitedResultSet(
+                SwiftSourceTransferFactory.createSourceTransfer(
+                        new QueryDBSource("select 合同ID from DEMO_CAPITAL_RETURN where 记录人 ='庆芳'", "local")).createResultSet(), 1));
 
         List<Segment> segments = segmentProvider.getSegment(dataSource.getSourceKey());
         Segment segment = segments.get(0);

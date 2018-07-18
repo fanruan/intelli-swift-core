@@ -1,11 +1,9 @@
 package com.fr.swift.segment;
 
-import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.column.SwiftColumnDictMerger;
 import com.fr.swift.segment.operator.column.SwiftColumnIndexer;
-import com.fr.swift.segment.operator.delete.WhereDeleter;
 import com.fr.swift.source.DataSource;
 
 import java.util.List;
@@ -17,17 +15,11 @@ import java.util.List;
 public interface SwiftDataOperatorProvider {
     Inserter getInserter(DataSource dataSource, Segment seg);
 
-    Inserter getIncrementer(DataSource dataSource);
-
-    Inserter getRealtimeSwiftInserter(Segment segment, DataSource dataSource) throws Exception;
-
     @Deprecated
     Inserter getHistoryBlockSwiftInserter(DataSource dataSource);
 
     @Deprecated
     Inserter getRealtimeBlockSwiftInserter(DataSource dataSource);
-
-    WhereDeleter getRowDeleter(Segment segment) throws SwiftMetaDataException;
 
     SwiftColumnIndexer getColumnIndexer(DataSource ds, ColumnKey columnKey, List<Segment> segments);
 
