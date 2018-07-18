@@ -7,6 +7,7 @@ import java.util.List;
  */
 public class GroupNode<T extends GroupNode<T>> extends AbstractSwiftNode<T> {
 
+    private static final long serialVersionUID = -538699789884622264L;
     protected int deep;
     protected int nodeIndex = 0;
     protected Object data;

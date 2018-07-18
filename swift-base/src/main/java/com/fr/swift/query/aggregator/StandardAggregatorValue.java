@@ -7,6 +7,7 @@ package com.fr.swift.query.aggregator;
 
 
 public class StandardAggregatorValue extends VarianceAggregatorValue {
+    private static final long serialVersionUID = 3145787090081586765L;
     private VarianceAggregatorValue variance;
 
     public void setVariance(VarianceAggregatorValue variance) {

@@ -8,6 +8,7 @@ import java.util.TreeMap;
  */
 
 public class MedianAggregatorValue implements AggregatorValue<Number> {
+    private static final long serialVersionUID = 2208307766852392287L;
     private double median;
     private int count = 0;
     //取值和值的个数作为map保存下来，数据量大且重复值少时会有些问题

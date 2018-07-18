@@ -98,7 +98,7 @@ public final class QueryBuilder {
      */
     private static <T extends SwiftResultSet> Query<T> buildLocalPartQuery(QueryBean bean) {
         QueryInfo info = QueryInfoParser.parse((QueryInfoBean) bean);
-        QueryType type = info.getType();
+        QueryType type = bean.getQueryType();
         if (type == QueryType.LOCAL_GROUP_PART) {
             return (Query<T>) GroupQueryBuilder.buildLocalPartQuery((GroupQueryInfo) info);
         } else {
