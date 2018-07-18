@@ -82,7 +82,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
 
     @Override
     @RpcMethod(methodName = "historyQuery")
-    public SwiftResultSet query(final String queryDescription) throws SQLException {
+    public SwiftResultSet query(final String queryDescription) throws Exception {
         try {
             final QueryInfoBean bean = QueryInfoBeanFactory.create(queryDescription);
             SessionFactory factory = SwiftContext.get().getBean(SessionFactory.class);

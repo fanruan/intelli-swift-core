@@ -9,6 +9,7 @@ import com.fr.swift.source.SwiftResultSet;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Lyon on 2018/5/31.
@@ -54,12 +55,12 @@ public class ResultJoinQueryInfoImpl<T extends SwiftResultSet> implements Result
     }
 
     @Override
-    public URI getQuerySegment() {
+    public Set<URI> getQuerySegment() {
         return null;
     }
 
     @Override
-    public void setQuerySegment(URI order) {
+    public void setQuerySegment(Set<URI> order) {
 
     }
 

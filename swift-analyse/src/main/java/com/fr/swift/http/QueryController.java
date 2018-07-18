@@ -45,8 +45,6 @@ import com.fr.third.springframework.web.bind.annotation.RequestMapping;
 import com.fr.third.springframework.web.bind.annotation.RequestMethod;
 import com.fr.third.springframework.web.bind.annotation.ResponseBody;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -67,8 +65,8 @@ public class QueryController {
 
     @ResponseBody
     @RequestMapping(value = "swift/query/{sourceKey}", method = RequestMethod.GET)
-    public List<Row> query(@PathVariable("sourceKey") String jsonString) throws SQLException, IOException {
-        int rowCount = 100;
+    public List<Row> query(@PathVariable("sourceKey") String jsonString) throws Exception {
+        int rowCount = 200;
         List<Row> rows = new ArrayList<Row>();
         long start = System.currentTimeMillis();
         QueryBean queryBean = QueryInfoBeanFactory.create(jsonString);
@@ -86,7 +84,7 @@ public class QueryController {
 
     @ResponseBody
     @RequestMapping(value = "swift/group/{sourceKey}", method = RequestMethod.GET)
-    public List<Row> groupQuery(@PathVariable("sourceKey") String jsonString) throws SQLException, IOException {
+    public List<Row> groupQuery(@PathVariable("sourceKey") String jsonString) throws Exception {
         List<Row> rows = new ArrayList<Row>();
         // swift-test模块的resources目录下有json示例
         QueryBean queryBean = QueryInfoBeanFactory.create(jsonString);

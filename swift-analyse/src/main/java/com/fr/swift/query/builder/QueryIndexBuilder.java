@@ -1,6 +1,5 @@
 package com.fr.swift.query.builder;
 
-import com.fr.general.ComparatorUtils;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.exception.SwiftSegmentAbsentException;
@@ -14,7 +13,6 @@ import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.query.IndexQuery;
 import com.fr.swift.query.query.LocalIndexQuery;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.query.QueryBeanManager;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationProvider;
@@ -38,7 +36,6 @@ import java.util.Map;
 public class QueryIndexBuilder {
 
     public static IndexQuery<ImmutableBitMap> buildQuery(QueryBean bean, Segment segment) {
-        QueryBeanManager.getInstance().put(bean.getQueryId(), bean);
         QueryInfoBean infoBean = (QueryInfoBean) bean;
         DetailQueryInfo info = (DetailQueryInfo) QueryInfoParser.parse(infoBean);
 
@@ -48,7 +45,6 @@ public class QueryIndexBuilder {
     }
 
     public static Map<URI, IndexQuery<ImmutableBitMap>> buildQuery(QueryBean bean) throws Exception {
-        QueryBeanManager.getInstance().put(bean.getQueryId(), bean);
         QueryInfoBean infoBean = (QueryInfoBean) bean;
         DetailQueryInfo info = (DetailQueryInfo) QueryInfoParser.parse(infoBean);
 
@@ -76,16 +72,7 @@ public class QueryIndexBuilder {
         public Map<URI, IndexQuery<ImmutableBitMap>> buildLocalQuery(DetailQueryInfo info) {
             Map<URI, IndexQuery<ImmutableBitMap>> queries = new HashMap<URI, IndexQuery<ImmutableBitMap>>();
             List<Segment> segments = localSegmentProvider.getSegment(info.getTable());
-            List<Segment> targetSegments = new ArrayList<Segment>();
-            URI segmentOrder = info.getQuerySegment();
-            if (segmentOrder != null) {
-                for (Segment segment : segments) {
-                    if (ComparatorUtils.equals(segment.getLocation().getUri(), segmentOrder)) {
-                        targetSegments.add(segment);
-                        break;
-                    }
-                }
-            }
+            List<Segment> targetSegments = LocalDetailNormalQueryBuilder.getSegmentsByURIList(info.getQuerySegment(), segments);
             if (targetSegments.isEmpty()) {
                 targetSegments = segments;
             }

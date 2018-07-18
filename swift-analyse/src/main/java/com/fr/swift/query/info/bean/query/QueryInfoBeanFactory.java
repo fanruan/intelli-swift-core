@@ -9,8 +9,10 @@ import com.fr.swift.query.info.bean.factory.SortBeanFactory;
 import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.group.GroupQueryInfoImpl;
+import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.third.fasterxml.jackson.core.JsonProcessingException;
 import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -39,6 +41,10 @@ public class QueryInfoBeanFactory {
         return MAPPER.readValue(jsonString, QueryInfoBean.class);
     }
 
+    public static String queryBean2String(QueryBean bean) throws JsonProcessingException {
+        return MAPPER.writeValueAsString(bean);
+    }
+
     private static List<QueryInfoBean> create(List<QueryInfo> queryInfo) {
         List<QueryInfoBean> result = new ArrayList<QueryInfoBean>();
         if (null != queryInfo) {
@@ -64,7 +70,7 @@ public class QueryInfoBeanFactory {
                 groupQueryBean.setQueryId(queryInfo.getQueryId());
                 groupQueryBean.setDimensionBeans(DIMENSION_BEAN_FACTORY.create(groupQueryInfo.getDimensions()));
                 groupQueryBean.setFilterInfoBean(FilterInfoBeanFactory.SINGLE_FILTER_INFO_BEAN_FACTORY.create(groupQueryInfo.getFilterInfo()));
-                groupQueryBean.setQuerySegment(queryInfo.getQuerySegment());
+                groupQueryBean.setQuerySegments(queryInfo.getQuerySegment());
                 groupQueryBean.setMetricBeans(METRIC_BEAN_FACTORY.create(groupMetricList));
                 groupQueryBean.setPostQueryInfoBeans(POST_QUERY_INFO_FACTORY.create(groupQueryInfo.getPostQueryInfoList()));
                 groupQueryBean.setQueryType(queryInfo.getType());
@@ -76,7 +82,7 @@ public class QueryInfoBeanFactory {
                 resultJoinQueryBean.setQueryInfoBeans(create(((ResultJoinQueryInfo) queryInfo).getQueryInfoList()));
                 resultJoinQueryBean.setJoinedFields(DIMENSION_BEAN_FACTORY.create(((ResultJoinQueryInfo) queryInfo).getJoinedDimensions()));
                 resultJoinQueryBean.setQueryType(queryInfo.getType());
-                resultJoinQueryBean.setQuerySegment(queryInfo.getQuerySegment());
+                resultJoinQueryBean.setQuerySegments(queryInfo.getQuerySegment());
                 return resultJoinQueryBean;
             case DETAIL:
             case LOCAL_DETAIL:
@@ -88,7 +94,7 @@ public class QueryInfoBeanFactory {
                 detailQueryBean.setSortBeans(SORT_BEAN_FACTORY.create(((DetailQueryInfo) queryInfo).getSorts()));
                 SwiftMetaData metaData = ((DetailQueryInfo) queryInfo).getMetaData();
                 detailQueryBean.setColumns(metaData.getFieldNames());
-                detailQueryBean.setQuerySegment(queryInfo.getQuerySegment());
+                detailQueryBean.setQuerySegments(queryInfo.getQuerySegment());
                 detailQueryBean.setQueryType(queryInfo.getType());
                 return detailQueryBean;
             case NEST:

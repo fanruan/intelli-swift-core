@@ -1,19 +1,23 @@
 package com.fr.swift.query.builder;
 
+import com.fr.swift.query.info.bean.parser.QueryInfoParser;
+import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
+import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.query.Query;
-import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.query.QueryBeanManager;
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.query.remote.RemoteQueryImpl;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.structure.Pair;
+import com.fr.third.fasterxml.jackson.core.JsonProcessingException;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by pony on 2017/12/14.
@@ -23,17 +27,18 @@ class GroupQueryBuilder {
     /**
      * 给最外层查询节点（查询服务节点）条用并构建query，根据segment分布信息区分本地query和远程query
      *
-     * @param info
+     * @param bean
      * @return
      */
-    static Query<NodeResultSet> buildQuery(GroupQueryInfo info) {
+    static Query<NodeResultSet> buildQuery(GroupQueryInfoBean bean) throws Exception {
+        GroupQueryInfo info = (GroupQueryInfo) QueryInfoParser.parse(bean);
         SourceKey table = info.getTable();
         // TODO 这边先直接写成History
         List<SegmentDestination> uris = SegmentLocationProvider.getInstance().getSegmentLocationURI(table);
         if (GroupQueryInfoUtils.isPagingQuery(info)) {
-            return buildQuery(uris, info, LocalGroupQueryBuilder.PAGING);
+            return buildQuery(uris, info, bean, LocalGroupQueryBuilder.PAGING);
         } else {
-            return buildQuery(uris, info, LocalGroupQueryBuilder.ALL);
+            return buildQuery(uris, info, bean, LocalGroupQueryBuilder.ALL);
         }
     }
 
@@ -84,32 +89,34 @@ class GroupQueryBuilder {
      * @param builder 本地查询解析
      * @return 获取最后查询结果的Query
      */
-    private static Query<NodeResultSet> buildQuery(List<SegmentDestination> uris, GroupQueryInfo info, LocalGroupQueryBuilder builder) {
+    private static Query<NodeResultSet> buildQuery(List<SegmentDestination> uris, GroupQueryInfo info,
+                                                   GroupQueryInfoBean queryBean, LocalGroupQueryBuilder builder) throws JsonProcessingException {
         if (DetailQueryBuilder.isAllLocal(uris)) {
             return builder.buildPostQuery(builder.buildLocalQuery(info), info);
         }
-        // TODO: 2018/6/22 全部segment在一个远程节点上
-//        if (uris.size() == 1) {
-//            // 如果数据只分布在一个节点上面，那么在该节点上面完成最后一步计算指标计算
-//            if (!uris.getPair(0).isRemote()) {
-//                return builder.buildPostQuery(builder.buildLocalQuery(info), info);
-//            } else {
-//                // 丢给远程节点
-//                QueryInfo<NodeResultSet> queryInfo = new RemoteQueryInfoImpl<NodeResultSet>(QueryType.LOCAL_GROUP_ALL, info);
-//                return new RemoteQueryImpl<NodeResultSet>(queryInfo, uris.getPair(0));
-//            }
-//        }
         List<Query<NodeResultSet>> queries = new ArrayList<Query<NodeResultSet>>();
-        for (SegmentDestination uri : uris) {
-            if (!uri.isRemote()) {
-                queries.add(builder.buildLocalQuery(info));
-            } else {
-                // TODO: 2018/6/27 同一个远程节点上的多个segment要合并成一个RemoteQuery
-                QueryBean queryBean = QueryBeanManager.getInstance().getQueryBean(info.getQueryId());
-                queryBean.setQueryType(QueryType.LOCAL_GROUP_PART);
-                QueryBeanManager.getInstance().put(info.getQueryId(), Pair.of(queryBean, uri));
-                queries.add(new RemoteQueryImpl<NodeResultSet>(queryBean, uri));
-            }
+        Set<URI> localURIs = DetailQueryBuilder.getLocalSegments(uris);
+        if (!localURIs.isEmpty()) {
+            info.setQuerySegment(localURIs);
+            queries.add(builder.buildLocalQuery(info));
+        }
+        Map<String, List<SegmentDestination>> map = DetailQueryBuilder.groupSegmentInfoByClusterId(uris);
+        if (localURIs.isEmpty() && map.size() == 1) {
+            // 全部数据在一个远程节点
+            queryBean.setQueryType(QueryType.LOCAL_GROUP_ALL);
+            Map.Entry<String, List<SegmentDestination>> entry = map.entrySet().iterator().next();
+            SegmentDestination destination = entry.getValue().get(0);
+            queryBean.setQueryDestination(destination);
+            String jsonString = QueryInfoBeanFactory.queryBean2String(queryBean);
+            return new RemoteQueryImpl<NodeResultSet>(jsonString, destination);
+        }
+
+        for (Map.Entry<String, List<SegmentDestination>> entry : map.entrySet()) {
+            queryBean.setQueryType(QueryType.LOCAL_GROUP_PART);
+            SegmentDestination destination = entry.getValue().get(0);
+            queryBean.setQueryDestination(destination);
+            String jsonString = QueryInfoBeanFactory.queryBean2String(queryBean);
+            queries.add(new RemoteQueryImpl<NodeResultSet>(jsonString, destination));
         }
         // 多个节点的ResultQuery合并之后在处理List<PostQueryInfo>
         return builder.buildPostQuery(builder.buildResultQuery(queries, info), info);

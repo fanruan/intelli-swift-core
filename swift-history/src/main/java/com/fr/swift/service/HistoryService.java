@@ -6,7 +6,6 @@ import com.fr.swift.source.SwiftResultSet;
 
 import java.io.IOException;
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.Set;
 
 /**
@@ -20,7 +19,7 @@ public interface HistoryService extends SwiftService {
      * @param queryInfo 查询描述
      * @return 数据
      */
-    SwiftResultSet query(String queryInfo) throws SQLException;
+    SwiftResultSet query(String queryInfo) throws Exception;
 
     /**
      * 从共享存储加载
