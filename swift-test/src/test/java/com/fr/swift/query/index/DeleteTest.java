@@ -15,9 +15,8 @@ import com.fr.swift.query.condition.SwiftQueryFactory;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.service.SwiftAnalyseService;
-import com.fr.swift.service.SwiftHistoryService;
-import com.fr.swift.service.SwiftRealtimeService;
+import com.fr.swift.segment.operator.delete.WhereDeleter;
+import com.fr.swift.service.AnalyseService;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
@@ -27,8 +26,8 @@ import com.fr.swift.source.db.QueryDBSource;
 import org.junit.Before;
 import org.junit.Test;
 
-import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertNotEquals;
 
 /**
  * This class created on 2018/4/27
@@ -38,7 +37,6 @@ import static junit.framework.TestCase.assertTrue;
  * @since Advanced FineBI 5.0
  */
 public class DeleteTest extends BaseTest {
-
     private final Database db = SwiftDatabase.getInstance();
 
     private LocalSegmentProvider localSegmentProvider = (LocalSegmentProvider) SwiftContext.get().getBean("localSegmentProvider");
@@ -47,58 +45,49 @@ public class DeleteTest extends BaseTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        SwiftAnalyseService.getInstance().start();
+        SwiftContext.get().getBean(AnalyseService.class).start();
     }
 
     @Test
-    public void testEQHis() {
-        try {
-            DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "testEQHis");
-            if (!db.existsTable(new SourceKey("testEQHis"))) {
-                db.createTable(new SourceKey("testEQHis"), dataSource.getMetadata());
+    public void testEQHis() throws Exception {
+        DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "testEQHis");
+        if (!db.existsTable(new SourceKey("testEQHis"))) {
+            db.createTable(new SourceKey("testEQHis"), dataSource.getMetadata());
+        }
+        Table table = db.getTable(new SourceKey("testEQHis"));
+        transportHisAndIndex(dataSource, table);
+        Segment segment = localSegmentProvider.getSegment(new SourceKey("testEQHis")).get(0);
+
+        QueryCondition eqQueryCondition = SwiftQueryFactory.create().addRestriction(RestrictionFactory.eq("合同类型", "购买合同"));
+        Where where = new SwiftWhere(eqQueryCondition);
+        ((WhereDeleter) SwiftContext.get().getBean("decrementer", segment)).delete(new SourceKey("testEQHis"), where);
+
+        Column column = segment.getColumn(new ColumnKey("合同类型"));
+        for (int i = 0; i < segment.getRowCount(); i++) {
+            if (segment.getAllShowIndex().contains(i)) {
+                assertNotEquals(column.getDetailColumn().get(i), "购买合同");
             }
-            Table table = db.getTable(new SourceKey("testEQHis"));
-            transportHisAndIndex(dataSource, table);
-            QueryCondition eqQueryCondition = SwiftQueryFactory.create().addRestriction(RestrictionFactory.eq("合同类型", "购买合同"));
-            Where where = new SwiftWhere(eqQueryCondition);
-            boolean result = SwiftHistoryService.getInstance().delete(new SourceKey("testEQHis"), where);
-            assertTrue(result);
-            Segment segment = localSegmentProvider.getSegment(new SourceKey("testEQHis")).get(0);
-            Column column = segment.getColumn(new ColumnKey("合同类型"));
-            for (int i = 0; i < segment.getRowCount(); i++) {
-                if (segment.getAllShowIndex().contains(i)) {
-                    assertEquals(column.getDetailColumn().get(i), "购买合同");
-                }
-            }
-        } catch (Exception e) {
-            LOGGER.error(e);
-            assertTrue(false);
         }
     }
 
     @Test
-    public void testEQReal() {
-        try {
-            DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "testEQReal");
-            if (!db.existsTable(new SourceKey("testEQReal"))) {
-                db.createTable(new SourceKey("testEQReal"), dataSource.getMetadata());
+    public void testEQReal() throws Exception {
+        DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "testEQReal");
+        if (!db.existsTable(new SourceKey("testEQReal"))) {
+            db.createTable(new SourceKey("testEQReal"), dataSource.getMetadata());
+        }
+        Table table = db.getTable(new SourceKey("testEQReal"));
+        transportRealAndIndex(dataSource, table);
+        Segment segment = localSegmentProvider.getSegment(new SourceKey("testEQReal")).get(0);
+
+        QueryCondition eqQueryCondition = SwiftQueryFactory.create().addRestriction(RestrictionFactory.eq("合同类型", "购买合同"));
+        Where where = new SwiftWhere(eqQueryCondition);
+        ((WhereDeleter) SwiftContext.get().getBean("decrementer", segment)).delete(new SourceKey("testEQReal"), where);
+        Column column = segment.getColumn(new ColumnKey("合同类型"));
+        for (int i = 0; i < segment.getRowCount(); i++) {
+            if (segment.getAllShowIndex().contains(i)) {
+                assertNotEquals(column.getDetailColumn().get(i), "购买合同");
             }
-            Table table = db.getTable(new SourceKey("testEQReal"));
-            transportRealAndIndex(dataSource, table);
-            QueryCondition eqQueryCondition = SwiftQueryFactory.create().addRestriction(RestrictionFactory.eq("合同类型", "购买合同"));
-            Where where = new SwiftWhere(eqQueryCondition);
-            boolean result = SwiftRealtimeService.getInstance().delete(new SourceKey("testEQReal"), where);
-            assertTrue(result);
-            Segment segment = localSegmentProvider.getSegment(new SourceKey("testEQReal")).get(0);
-            Column column = segment.getColumn(new ColumnKey("合同类型"));
-            for (int i = 0; i < segment.getRowCount(); i++) {
-                if (segment.getAllShowIndex().contains(i)) {
-                    assertEquals(column.getDetailColumn().get(i), "购买合同");
-                }
-            }
-        } catch (Exception e) {
-            LOGGER.error(e);
-            assertTrue(false);
         }
     }
 
@@ -115,54 +104,44 @@ public class DeleteTest extends BaseTest {
     }
 
     @Test
-    public void testGTReal() {
-        try {
-            DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "testEQReal");
-            if (!db.existsTable(new SourceKey("testGTReal"))) {
-                db.createTable(new SourceKey("testGTReal"), dataSource.getMetadata());
+    public void testGTReal() throws Exception {
+        DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "testEQReal");
+        if (!db.existsTable(new SourceKey("testGTReal"))) {
+            db.createTable(new SourceKey("testGTReal"), dataSource.getMetadata());
+        }
+        Table table = db.getTable(new SourceKey("testGTReal"));
+        transportRealAndIndex(dataSource, table);
+        Segment segment = localSegmentProvider.getSegment(new SourceKey("testGTReal")).get(0);
+
+        QueryCondition eqQueryCondition = SwiftQueryFactory.create().addRestriction(RestrictionFactory.gt("总金额", 100000));
+        Where where = new SwiftWhere(eqQueryCondition);
+        ((WhereDeleter) SwiftContext.get().getBean("decrementer", segment)).delete(new SourceKey("testGTReal"), where);
+        Column column = segment.getColumn(new ColumnKey("总金额"));
+        for (int i = 0; i < segment.getRowCount(); i++) {
+            if (segment.getAllShowIndex().contains(i)) {
+                assertTrue((long) column.getDetailColumn().get(i) <= 100000);
             }
-            Table table = db.getTable(new SourceKey("testGTReal"));
-            transportRealAndIndex(dataSource, table);
-            QueryCondition eqQueryCondition = SwiftQueryFactory.create().addRestriction(RestrictionFactory.gt("总金额", 100000));
-            Where where = new SwiftWhere(eqQueryCondition);
-            boolean result = SwiftRealtimeService.getInstance().delete(new SourceKey("testGTReal"), where);
-            assertTrue(result);
-            Segment segment = localSegmentProvider.getSegment(new SourceKey("testGTReal")).get(0);
-            Column column = segment.getColumn(new ColumnKey("总金额"));
-            for (int i = 0; i < segment.getRowCount(); i++) {
-                if (segment.getAllShowIndex().contains(i)) {
-                    assertTrue((long) column.getDetailColumn().get(i) > 100000);
-                }
-            }
-        } catch (Exception e) {
-            LOGGER.error(e);
-            assertTrue(false);
         }
     }
 
     @Test
-    public void testGTRealByWhere() {
-        try {
-            DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "testGTRealByWhere");
-            if (!db.existsTable(new SourceKey("testGTRealByWhere"))) {
-                db.createTable(new SourceKey("testGTRealByWhere"), dataSource.getMetadata());
-            }
-            Table table = db.getTable(new SourceKey("testGTRealByWhere"));
-            transportRealAndIndex(dataSource, table);
-            QueryCondition eqQueryCondition = SwiftQueryFactory.create().addRestriction(RestrictionFactory.gt("总金额", 100000));
-            Where where = new SwiftWhere(eqQueryCondition);
-            Segment segment = localSegmentProvider.getSegment(new SourceKey("testGTRealByWhere")).get(0);
-            ImmutableBitMap indexAfterFilter = where.createWhereIndex(table, segment);
+    public void testGTRealByWhere() throws Exception {
+        DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "testGTRealByWhere");
+        if (!db.existsTable(new SourceKey("testGTRealByWhere"))) {
+            db.createTable(new SourceKey("testGTRealByWhere"), dataSource.getMetadata());
+        }
+        Table table = db.getTable(new SourceKey("testGTRealByWhere"));
+        transportRealAndIndex(dataSource, table);
+        QueryCondition eqQueryCondition = SwiftQueryFactory.create().addRestriction(RestrictionFactory.gt("总金额", 100000));
+        Where where = new SwiftWhere(eqQueryCondition);
+        Segment segment = localSegmentProvider.getSegment(new SourceKey("testGTRealByWhere")).get(0);
+        ImmutableBitMap indexAfterFilter = where.createWhereIndex(table, segment);
 
-            Column column = segment.getColumn(new ColumnKey("总金额"));
-            for (int i = 0; i < segment.getRowCount(); i++) {
-                if (indexAfterFilter.contains(i)) {
-                    assertTrue((long) column.getDetailColumn().get(i) > 100000);
-                }
+        Column column = segment.getColumn(new ColumnKey("总金额"));
+        for (int i = 0; i < segment.getRowCount(); i++) {
+            if (indexAfterFilter.contains(i)) {
+                assertTrue((long) column.getDetailColumn().get(i) > 100000);
             }
-        } catch (Exception e) {
-            LOGGER.error(e);
-            assertTrue(false);
         }
     }
 }

@@ -13,7 +13,7 @@ import com.fr.swift.segment.operator.column.SwiftColumnDictMerger;
 import com.fr.swift.segment.operator.column.SwiftColumnIndexer;
 import com.fr.swift.segment.operator.delete.HistorySwiftDeleter;
 import com.fr.swift.segment.operator.delete.RealtimeSwiftDeleter;
-import com.fr.swift.segment.operator.delete.RowDeleter;
+import com.fr.swift.segment.operator.delete.WhereDeleter;
 import com.fr.swift.segment.operator.insert.RealtimeBlockSwiftInserter;
 import com.fr.swift.segment.operator.insert.SwiftInserter;
 import com.fr.swift.segment.operator.insert.SwiftRealtimeInserter;
@@ -65,7 +65,7 @@ public class LocalDataOperatorProvider implements SwiftDataOperatorProvider {
     }
 
     @Override
-    public RowDeleter getRowDeleter(Segment segment) throws SwiftMetaDataException {
+    public WhereDeleter getRowDeleter(Segment segment) throws SwiftMetaDataException {
         if (segment.isHistory()) {
             return new HistorySwiftDeleter(segment);
         } else {

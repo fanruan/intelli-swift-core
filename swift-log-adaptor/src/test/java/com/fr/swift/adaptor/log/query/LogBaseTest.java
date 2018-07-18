@@ -2,6 +2,7 @@ package com.fr.swift.adaptor.log.query;
 
 import com.fr.swift.config.TestConfDb;
 import com.fr.swift.config.bean.SegmentKeyBean;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
@@ -11,8 +12,8 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.RealTimeSegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.LocalSwiftServerService;
-import com.fr.swift.service.SwiftAnalyseService;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
@@ -43,7 +44,7 @@ public class LogBaseTest {
     @Before
     public void setUp() throws Exception {
         new LocalSwiftServerService().start();
-        SwiftAnalyseService.getInstance().start();
+        SwiftContext.get().getBean(AnalyseService.class).start();
         TestConnectionProvider.createConnection();
         TestConfDb.setConfDb();
 //        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir")));

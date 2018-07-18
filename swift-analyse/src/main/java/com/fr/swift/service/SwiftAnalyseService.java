@@ -35,33 +35,29 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * Created by pony on 2017/10/12.
+ *
+ * @author pony
+ * @date 2017/10/12
  * 分析服务
  */
 @Service("analyseService")
 @RpcService(value = AnalyseService.class, type = RpcServiceType.CLIENT_SERVICE)
 public class SwiftAnalyseService extends AbstractSwiftService implements AnalyseService {
-
     private static final long serialVersionUID = 841582089735823794L;
+
     private transient static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftAnalyseService.class);
-    private transient RpcServer server = SwiftContext.get().getBean(RpcServer.class);
+
+    @Autowired
+    private transient RpcServer server;
+
+    @Autowired
+    private transient ServiceTaskExecutor taskExecutor;
 
     public SwiftAnalyseService(String id) {
         super(id);
     }
 
     private SwiftAnalyseService() {
-    }
-
-    @Autowired
-    private transient ServiceTaskExecutor taskExecutor;
-
-    public static SwiftAnalyseService getInstance() {
-        return SingletonHolder.service;
-    }
-
-    private static class SingletonHolder {
-        private static SwiftAnalyseService service = new SwiftAnalyseService();
     }
 
     @Override

@@ -30,9 +30,9 @@ public class RealtimeSwiftDeleter extends AbstractDeleter {
 
     @Override
     public ImmutableBitMap delete(SourceKey sourceKey, Where where) throws Exception {
-        ImmutableBitMap allshowIndex = super.delete(sourceKey, where);
-        allShowIndexBackup.backupAllShowIndex(allshowIndex);
-        return allshowIndex;
+        ImmutableBitMap allShowIndex = super.delete(sourceKey, where);
+        allShowIndexBackup.backupAllShowIndex(allShowIndex);
+        return allShowIndex;
     }
 
     @Override

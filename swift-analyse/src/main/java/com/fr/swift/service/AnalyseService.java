@@ -9,7 +9,6 @@ import java.io.Serializable;
  * @author yee
  * @date 2018/6/13
  */
-public interface AnalyseService extends QueryRunner, Serializable {
-
+public interface AnalyseService extends QueryRunner, SwiftService, Serializable {
     void updateSegmentInfo(SegmentLocationInfo locationInfo, SegmentLocationInfo.UpdateType updateType);
 }

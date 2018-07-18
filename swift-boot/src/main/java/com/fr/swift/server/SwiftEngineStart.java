@@ -30,6 +30,7 @@ import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.event.ClusterType;
 import com.fr.swift.http.SwiftHttpServer;
 import com.fr.swift.log.FineIOLoggerImpl;
+import com.fr.swift.log.SwiftLog4jLoggers;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.service.register.LocalSwiftRegister;
@@ -52,6 +53,7 @@ public class SwiftEngineStart {
 
     public static void main(String[] args) {
         try {
+            SwiftLoggers.setLoggerFactory(new SwiftLog4jLoggers());
             SimpleWork.checkIn(System.getProperty("user.dir"));
             SwiftContext.init();
             SwiftContext.get().getBean(SwiftHttpServer.class).start();
