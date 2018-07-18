@@ -32,7 +32,7 @@ public class ServletChannelInitializer extends ChannelInitializer<SocketChannel>
         XmlWebApplicationContext wac = new XmlWebApplicationContext();
         wac.setServletContext(servletContext);
         wac.setServletConfig(servletConfig);
-        wac.setParent(SwiftContext.getInstance());
+        wac.setParent(SwiftContext.get());
         wac.setConfigLocation("classpath:swift-context.xml");
         wac.refresh();
 

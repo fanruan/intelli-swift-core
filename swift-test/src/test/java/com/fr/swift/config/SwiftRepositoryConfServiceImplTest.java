@@ -27,10 +27,10 @@ public class SwiftRepositoryConfServiceImplTest {
         configBean.setHost("192.168.0.1");
         configBean.setUsername("root");
         configBean.setPassword("root");
-        SwiftContext.getInstance().getBean(SwiftRepositoryConfService.class).setCurrentRepository(configBean);
-        assertEquals(configBean, SwiftContext.getInstance().getBean(SwiftRepositoryConfService.class).getCurrentRepository());
+        SwiftContext.get().getBean(SwiftRepositoryConfService.class).setCurrentRepository(configBean);
+        assertEquals(configBean, SwiftContext.get().getBean(SwiftRepositoryConfService.class).getCurrentRepository());
         HdfsRepositoryConfigBean hdfs = new HdfsRepositoryConfigBean();
-        SwiftContext.getInstance().getBean(SwiftRepositoryConfService.class).setCurrentRepository(hdfs);
-        assertEquals(hdfs, SwiftContext.getInstance().getBean(SwiftRepositoryConfService.class).getCurrentRepository());
+        SwiftContext.get().getBean(SwiftRepositoryConfService.class).setCurrentRepository(hdfs);
+        assertEquals(hdfs, SwiftContext.get().getBean(SwiftRepositoryConfService.class).getCurrentRepository());
     }
 }

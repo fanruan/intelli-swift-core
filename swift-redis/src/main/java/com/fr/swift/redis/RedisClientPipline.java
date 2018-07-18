@@ -18,7 +18,7 @@ public class RedisClientPipline {
     private RedisClient redisClient;
 
     public RedisClientPipline() {
-        this.redisClient = (RedisClient) SwiftContext.getInstance().getBean("redisClient");
+        this.redisClient = (RedisClient) SwiftContext.get().getBean("redisClient");
         this.jedis = redisClient.getJedis();
         this.pipeline = jedis.pipelined();
     }

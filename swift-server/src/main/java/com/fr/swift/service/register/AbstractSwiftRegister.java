@@ -5,8 +5,8 @@ import com.fr.swift.URL;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.core.rpc.SwiftClusterService;
+import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
@@ -44,7 +44,7 @@ public abstract class AbstractSwiftRegister implements SwiftRegister {
     }
 
     public AbstractSwiftRegister() {
-        serviceInfoService = SwiftContext.getInstance().getBean(SwiftServiceInfoService.class);
+        serviceInfoService = SwiftContext.get().getBean(SwiftServiceInfoService.class);
     }
 
     protected void localServiceRegister() throws SwiftServiceException {
@@ -55,7 +55,7 @@ public abstract class AbstractSwiftRegister implements SwiftRegister {
     }
 
     protected void masterLocalServiceRegister() {
-        String masterAddress = SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class).getMasterAddress();
+        String masterAddress = SwiftContext.get().getBean("swiftProperty", SwiftProperty.class).getMasterAddress();
         serviceInfoService.saveOrUpdateServiceInfo(new SwiftServiceInfoBean(SwiftClusterService.SERVICE, masterAddress, masterAddress, true));
     }
 
@@ -69,7 +69,7 @@ public abstract class AbstractSwiftRegister implements SwiftRegister {
         SwiftServiceListenerHandler senderProxy = proxyFactory.getProxy(remoteServiceSender, SwiftServiceListenerHandler.class, url);
 
         for (SwiftService swiftService : swiftServiceList) {
-            ((AbstractSwiftService) swiftService).setId(SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class).getRpcAddress());
+            ((AbstractSwiftService) swiftService).setId(SwiftContext.get().getBean("swiftProperty", SwiftProperty.class).getRpcAddress());
             LOGGER.info("begain to register " + swiftService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + "!");
             senderProxy.registerService(swiftService);
             LOGGER.info("register " + swiftService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + " succeed!");

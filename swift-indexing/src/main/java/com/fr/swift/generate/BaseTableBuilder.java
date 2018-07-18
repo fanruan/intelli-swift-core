@@ -5,7 +5,6 @@ import com.fr.swift.config.service.IndexingConfService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.generate.conf.service.SwiftIndexingConfService;
 import com.fr.swift.generate.history.index.ColumnDictMerger;
 import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.log.SwiftLogger;
@@ -48,9 +47,9 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
 
     private boolean isRealtime;
 
-    private IndexingConfService indexingConfService = SwiftIndexingConfService.get();
+    private IndexingConfService indexingConfService = SwiftContext.get().getBean(IndexingConfService.class);
 
-    private SwiftSegmentManager localSegments = SwiftContext.getInstance().getBean(LocalSegmentProvider.class);
+    private SwiftSegmentManager localSegments = SwiftContext.get().getBean(LocalSegmentProvider.class);
 
     public BaseTableBuilder(int round, DataSource dataSource) {
         this(round, dataSource, false);
@@ -123,7 +122,7 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
 //                if (transporter.getIndexFieldsList().isEmpty()) {
 //                    transportTask.addNext(end);
 //                }
-//                List<Segment> allSegments = SwiftContext.getInstance().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
+//                List<Segment> allSegments = SwiftContext.get().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
 //                List<Segment> indexSegments = new ArrayList<Segment>();
 //                if (isRealtime) {
 ////                    for (Segment segment : allSegments) {
@@ -141,7 +140,7 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
 //                    if (hisSegCount != allSegments.size()) {
 //                        Merger realtimeMerger = new RealtimeMerger(dataSource.getSourceKey(), dataSource.getMetadata(), DataSourceUtils.getSwiftSourceKey(dataSource).getId());
 //                        realtimeMerger.merge();
-//                        allSegments = SwiftContext.getInstance().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
+//                        allSegments = SwiftContext.get().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
 //                        for (int i = hisSegCount; i < allSegments.size(); i++) {
 //                            indexSegments.add(allSegments.get(i));
 //                        }

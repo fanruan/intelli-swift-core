@@ -27,7 +27,7 @@ public class SwiftSourceAlloterFactory {
         if (ComparatorUtils.equals(sourceKey.getId(), cubeSourceKey)) {
             return new LineSourceAlloter(sourceKey);
         } else {
-            List<Segment> baseSegmentList = SwiftContext.getInstance().getBean(SwiftSegmentManager.class).getSegment(new SourceKey(cubeSourceKey));
+            List<Segment> baseSegmentList = SwiftContext.get().getBean(SwiftSegmentManager.class).getSegment(new SourceKey(cubeSourceKey));
             return new NewColumnSourceAlloter(baseSegmentList);
         }
     }

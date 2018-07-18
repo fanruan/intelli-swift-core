@@ -21,7 +21,7 @@ import java.util.List;
  * @date 2018/3/28
  */
 class SwiftTable implements Table {
-    private SwiftDataOperatorProvider operators = SwiftContext.getInstance().getBean(SwiftDataOperatorProvider.class);
+    private SwiftDataOperatorProvider operators = SwiftContext.get().getBean(SwiftDataOperatorProvider.class);
 
     private SourceKey key;
 
@@ -45,7 +45,7 @@ class SwiftTable implements Table {
     @Override
     public void insert(SwiftResultSet rowSet) throws SQLException {
         try {
-            Inserter inserter = (Inserter) SwiftContext.getInstance().getBean("incrementer", this);
+            Inserter inserter = (Inserter) SwiftContext.get().getBean("incrementer", this);
             inserter.insertData(rowSet);
         } catch (Exception e) {
             throw new SQLException(e);
@@ -60,7 +60,7 @@ class SwiftTable implements Table {
             // 调流程
             Inserter inserter = operators.getHistoryBlockSwiftInserter(this);
             inserter.insertData(rowSet);
-            List<Segment> segments = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegment(key);
+            List<Segment> segments = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegment(key);
             for (String field : inserter.getFields()) {
                 operators.getColumnIndexer(this, new ColumnKey(field), segments).buildIndex();
                 operators.getColumnDictMerger(this, new ColumnKey(field), segments).mergeDict();
@@ -77,7 +77,7 @@ class SwiftTable implements Table {
         // todo 这里应该是从数据库查出来的结果集
 //        SwiftResultSet rowSet = null;
 //        try {
-//            List<Segment> segments = SwiftContext.getInstance().getBean(SwiftSegmentManager.class).getSegment(key);
+//            List<Segment> segments = SwiftContext.get().getBean(SwiftSegmentManager.class).getSegment(key);
 //            // fixme 应传入整个segments
 //            Deleter deleter = operators.getSwiftDeleter(segments.get(0));
 //            deleter.deleteData(rowSet);

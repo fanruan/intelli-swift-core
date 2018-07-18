@@ -54,7 +54,7 @@ public class SwiftEngineStart {
         try {
             SimpleWork.checkIn(System.getProperty("user.dir"));
             SwiftContext.init();
-            SwiftContext.getInstance().getBean(SwiftHttpServer.class).start();
+            SwiftContext.get().getBean(SwiftHttpServer.class).start();
             SwiftLoggers.getLogger().info("http server starting!");
 //            FR 的配置可以不需要的，这里把在fr的配置同步到新的
             initConfDB();
@@ -63,7 +63,7 @@ public class SwiftEngineStart {
             new LocalSwiftRegister().serviceRegister();
             ClusterListenerHandler.addListener(new ClusterListener());
             ProviderTaskManager.start();
-            if (SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class).isCluster()) {
+            if (SwiftContext.get().getBean("swiftProperty", SwiftProperty.class).isCluster()) {
                 ClusterListenerHandler.handlerEvent(new ClusterEvent(ClusterEventType.JOIN_CLUSTER, ClusterType.CONFIGURE));
             }
             syncFRConfig();
@@ -74,7 +74,7 @@ public class SwiftEngineStart {
     }
 
     private static void initConfDB() throws Exception {
-        SwiftConfigProperties property = SwiftContext.getInstance().getBean(SwiftConfigProperties.class);
+        SwiftConfigProperties property = SwiftContext.get().getBean(SwiftConfigProperties.class);
         DBOption dbOption = new DBOption();
         dbOption.setUrl(property.getUrl());
         dbOption.setUsername(property.getUsername());
@@ -111,17 +111,17 @@ public class SwiftEngineStart {
 
     public static void syncConfiguration() {
 //        String path = SwiftCubePathConfig.getInstance().get();
-//        SwiftContext.getInstance().getBean(SwiftPathService.class).setSwiftPath(path);
+//        SwiftContext.get().getBean(SwiftPathService.class).setSwiftPath(path);
 //        boolean zip = SwiftZipConfig.getInstance().get();
-//        SwiftContext.getInstance().getBean(SwiftZipService.class).setZip(zip);
+//        SwiftContext.get().getBean(SwiftZipService.class).setZip(zip);
 //        RepositoryConfigUnique unique = SwiftRepositoryConfig.getInstance().getCurrentRepository();
 //        if (null != unique) {
-//            SwiftContext.getInstance().getBean(SwiftRepositoryConfService.class).setCurrentRepository(unique.convert());
+//            SwiftContext.get().getBean(SwiftRepositoryConfService.class).setCurrentRepository(unique.convert());
 //        }
 //        Map<String, RpcServiceAddressUnique> all = SwiftServiceAddressConfig.getInstance().get();
 //        if (!all.isEmpty()) {
 //            Iterator<Map.Entry<String, RpcServiceAddressUnique>> iterator = all.entrySet().iterator();
-//            SwiftServiceAddressService service = SwiftContext.getInstance().getBean(SwiftServiceAddressService.class);
+//            SwiftServiceAddressService service = SwiftContext.get().getBean(SwiftServiceAddressService.class);
 //            while (iterator.hasNext()) {
 //                Map.Entry<String, RpcServiceAddressUnique> entry = iterator.next();
 //                service.addOrUpdateAddress(entry.getKey(), entry.getValue().convert());
@@ -130,7 +130,7 @@ public class SwiftEngineStart {
     }
 
     private static void registerTmpConnectionProvider() {
-        SwiftProperty property = SwiftContext.getInstance().getBean(SwiftProperty.class);
+        SwiftProperty property = SwiftContext.get().getBean(SwiftProperty.class);
         Connection frConnection = new JDBCDatabaseConnection(property.getConfigDbDriverClass(),
                 property.getConfigDbJdbcUrl(), property.getConfigDbUsername(), property.getConfigDbPasswd());
         final SwiftConnectionInfo connectionInfo = new SwiftConnectionInfo(null, frConnection);

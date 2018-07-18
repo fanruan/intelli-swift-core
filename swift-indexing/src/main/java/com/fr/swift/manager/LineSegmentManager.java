@@ -29,7 +29,7 @@ public class LineSegmentManager extends AbstractSegmentManager {
         Types.StoreType storeType = segmentKey.getStoreType();
         ResourceLocation location = new ResourceLocation(uri.getPath(), storeType);
         SourceKey sourceKey = segmentKey.getTable();
-        SwiftMetaData metaData = SwiftContext.getInstance().getBean(SwiftMetaDataService.class).getMetaDataByKey(sourceKey.getId());
+        SwiftMetaData metaData = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(sourceKey.getId());
         Util.requireNonNull(metaData);
         switch (storeType) {
             case MEMORY:

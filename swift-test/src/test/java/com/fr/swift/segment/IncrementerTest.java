@@ -42,7 +42,7 @@ public class IncrementerTest {
         Incrementer incrementer = new Incrementer(dataSource);
         incrementer.increment(transfer.createResultSet());
         incrementer.increment(transfer.createResultSet());
-        Segment seg = SwiftContext.getInstance().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey()).get(0);
+        Segment seg = SwiftContext.get().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey()).get(0);
 
         int rowCount = seg.getRowCount();
         seg.getAllShowIndex();

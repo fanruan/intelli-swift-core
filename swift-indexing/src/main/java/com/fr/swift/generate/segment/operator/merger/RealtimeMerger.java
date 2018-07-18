@@ -57,7 +57,7 @@ public class RealtimeMerger implements Merger {
         this.alloter = SwiftSourceAlloterFactory.createLineSourceAlloter(sourceKey, cubeSourceKey);
         this.cubeSourceKey = cubeSourceKey;
 
-        List<Segment> segmentList = SwiftContext.getInstance().getBean(SwiftSegmentManager.class).getSegment(sourceKey);
+        List<Segment> segmentList = SwiftContext.get().getBean(SwiftSegmentManager.class).getSegment(sourceKey);
         configSegment = new ArrayList<SegmentKey>();
 
         for (int i = 0; i < segmentList.size(); i++) {

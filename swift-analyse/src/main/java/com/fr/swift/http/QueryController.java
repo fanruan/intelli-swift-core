@@ -61,7 +61,7 @@ public class QueryController {
     @Autowired
     private SwiftMetaDataService metaDataService;
     //    @Autowired
-    private RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
+    private RpcServer server = SwiftContext.get().getBean(RpcServer.class);
 
     private SwiftLogger logger = SwiftLoggers.getLogger(QueryController.class);
 
@@ -127,7 +127,7 @@ public class QueryController {
     }
 
     private URL getMasterURL() {
-        String masterAddress = SwiftContext.getInstance().getBean(SwiftProperty.class).getMasterAddress();
+        String masterAddress = SwiftContext.get().getBean(SwiftProperty.class).getMasterAddress();
         return UrlSelector.getInstance().getFactory().getURL(masterAddress);
     }
 

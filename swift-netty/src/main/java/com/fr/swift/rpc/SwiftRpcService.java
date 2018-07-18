@@ -37,7 +37,7 @@ public class SwiftRpcService {
     }
 
     private void init() {
-        context = SwiftContext.getInstance();
+        context = SwiftContext.get();
     }
 
     public void startServerService() {

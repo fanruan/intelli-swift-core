@@ -37,7 +37,7 @@ public class RedisSegmentBackup implements SwiftSegmentBackup {
 
     public RedisSegmentBackup(Segment segment, Segment currentSegment, List<String> fields) {
         this.segment = segment;
-        transactionManager = (TransactionManager) SwiftContext.getInstance().getBean("transactionManager");
+        transactionManager = (TransactionManager) SwiftContext.get().getBean("transactionManager");
         transactionManager.setOldAttatch(currentSegment);
 
     }
