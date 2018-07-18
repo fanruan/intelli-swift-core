@@ -1,7 +1,6 @@
 package com.fr.swift.provider;
 
 import com.fr.swift.creater.StuffSourceCreater;
-import com.fr.swift.increment.Increment;
 import com.fr.swift.reliance.RelationPathReliance;
 import com.fr.swift.reliance.RelationReliance;
 import com.fr.swift.reliance.SourceReliance;
@@ -105,12 +104,6 @@ public class TotalIndexStuffTestProvider implements IndexStuffProvider {
     public List<SourcePath> getAllPaths() {
         return new ArrayList<SourcePath>(pathMap.values());
     }
-
-    @Override
-    public List<Increment> getIncrementBySourceId(String sourceId) {
-        return null;
-    }
-
     @Override
     public SourceReliance getSourceReliance() {
         return null;

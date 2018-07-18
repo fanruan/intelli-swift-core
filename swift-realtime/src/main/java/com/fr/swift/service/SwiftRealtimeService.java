@@ -119,8 +119,8 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
             public void doJob() throws Exception {
                 List<Segment> segments = segmentManager.getSegment(sourceKey);
                 for (Segment segment : segments) {
-                    WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segment);
-                    whereDeleter.delete(sourceKey, where);
+                    WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", sourceKey, segment);
+                    whereDeleter.delete(where);
                 }
             }
         });

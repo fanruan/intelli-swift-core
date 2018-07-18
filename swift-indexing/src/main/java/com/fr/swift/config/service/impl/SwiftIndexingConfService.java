@@ -13,6 +13,7 @@ import com.fr.swift.config.indexing.impl.TableId;
 import com.fr.swift.config.service.IndexingConfService;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 import com.fr.third.org.hibernate.Session;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
@@ -38,7 +39,8 @@ public class SwiftIndexingConfService implements IndexingConfService {
             return tx.doTransactionIfNeed(new AbstractTransactionWorker<TableIndexingConf>() {
                 @Override
                 public TableIndexingConf work(Session session) throws SQLException {
-                    return tableConf.select(session, new TableId(table));
+                    SwiftTableIndexingConf conf = tableConf.select(session, new TableId(table));
+                    return conf != null ? conf : new SwiftTableIndexingConf(table, new LineAllotRule());
                 }
 
                 @Override
@@ -58,7 +60,8 @@ public class SwiftIndexingConfService implements IndexingConfService {
             return tx.doTransactionIfNeed(new AbstractTransactionWorker<ColumnIndexingConf>() {
                 @Override
                 public ColumnIndexingConf work(Session session) throws SQLException {
-                    return columnConf.select(session, new ColumnId(table, columnName));
+                    SwiftColumnIndexingConf conf = columnConf.select(session, new ColumnId(table, columnName));
+                    return conf != null ? conf : new SwiftColumnIndexingConf(table, columnName, true, true);
                 }
 
                 @Override
