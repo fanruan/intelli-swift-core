@@ -26,8 +26,7 @@ import java.util.Map;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public abstract class AbstractDeleter implements RowDeleter {
-
+public abstract class AbstractDeleter implements WhereDeleter {
     protected Segment segment;
 
     private Map<String, DictionaryEncodedColumn> dictionaryEncodedColumnMap;
@@ -103,8 +102,11 @@ public abstract class AbstractDeleter implements RowDeleter {
         ImmutableBitMap originAllShowIndex = segment.getAllShowIndex();
         ImmutableBitMap indexAfterFilter = where.createWhereIndex(table, segment);
 
-        ImmutableBitMap allShowIndex = originAllShowIndex.getAnd(indexAfterFilter);
+        ImmutableBitMap allShowIndex = originAllShowIndex.getAndNot(indexAfterFilter);
         segment.putAllShowIndex(allShowIndex);
+
+        release();
+
         return allShowIndex;
     }
 

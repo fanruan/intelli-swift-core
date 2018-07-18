@@ -14,11 +14,11 @@ import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentServiceProvider;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.core.rpc.SwiftClusterService;
 import com.fr.swift.event.global.TaskDoneRpcEvent;
 import com.fr.swift.event.history.HistoryCommonLoadRpcEvent;
 import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
-import com.fr.swift.core.rpc.SwiftClusterService;
 import com.fr.swift.info.ServerCurrentStatus;
 import com.fr.swift.invocation.SwiftInvocation;
 import com.fr.swift.log.SwiftLoggers;
@@ -68,7 +68,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @RpcService(type = RpcServiceType.CLIENT_SERVICE, value = IndexingService.class)
 public class SwiftIndexingService extends AbstractSwiftService implements IndexingService {
     private static final long serialVersionUID = -7430843337225891194L;
-    private transient RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
+
+    @Autowired
+    private transient RpcServer server;
 
     private static Map<TaskKey, Object> stuffObject = new ConcurrentHashMap<TaskKey, Object>();
 
@@ -77,10 +79,6 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
 
     @Autowired
     private transient ServiceTaskExecutor taskExecutor;
-
-    public static SwiftIndexingService getInstance() {
-        return SingletonHolder.service;
-    }
 
     public SwiftIndexingService(String id) {
         super(id);
@@ -142,10 +140,6 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     @Override
     public ServerCurrentStatus currentStatus() {
         return new ServerCurrentStatus(getID());
-    }
-
-    private static class SingletonHolder {
-        private static SwiftIndexingService service = new SwiftIndexingService();
     }
 
     private URL getMasterURL() {

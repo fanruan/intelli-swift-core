@@ -28,7 +28,7 @@ import com.fr.swift.segment.Incrementer;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
-import com.fr.swift.segment.operator.delete.RowDeleter;
+import com.fr.swift.segment.operator.delete.WhereDeleter;
 import com.fr.swift.segment.recover.SegmentRecovery;
 import com.fr.swift.selector.ProxySelector;
 import com.fr.swift.selector.UrlSelector;
@@ -40,6 +40,7 @@ import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
 import com.fr.swift.util.concurrent.CommonExecutor;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
+import com.fr.third.springframework.beans.factory.annotation.Qualifier;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.io.Serializable;
@@ -55,19 +56,17 @@ import java.util.concurrent.Callable;
 @Service("realtimeService")
 @RpcService(type = RpcServiceType.CLIENT_SERVICE, value = RealtimeService.class)
 public class SwiftRealtimeService extends AbstractSwiftService implements RealtimeService, Serializable {
+    @Autowired
+    private transient RpcServer server;
 
-    private transient RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
-
-    private transient SwiftSegmentManager segmentManager = (SwiftSegmentManager) SwiftContext.getInstance().getBean("localSegmentProvider");
-
-    private SwiftRealtimeService() {
-    }
+    @Autowired
+    @Qualifier("localSegmentProvider")
+    private transient SwiftSegmentManager segmentManager;
 
     @Autowired
     private transient ServiceTaskExecutor taskExecutor;
 
-    public static SwiftRealtimeService getInstance() {
-        return SingletonHolder.service;
+    private SwiftRealtimeService() {
     }
 
     @Override
@@ -97,8 +96,8 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
             public void doJob() throws Exception {
                 List<Segment> segments = segmentManager.getSegment(sourceKey);
                 for (Segment segment : segments) {
-                    RowDeleter rowDeleter = (RowDeleter) SwiftContext.getInstance().getBean("decrementer", segment);
-                    rowDeleter.delete(sourceKey, where);
+                    WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.getInstance().getBean("decrementer", segment);
+                    whereDeleter.delete(sourceKey, where);
                 }
             }
         });

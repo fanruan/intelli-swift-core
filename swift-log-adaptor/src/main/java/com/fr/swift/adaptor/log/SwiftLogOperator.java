@@ -11,7 +11,7 @@ import com.fr.swift.db.impl.SwiftWhere;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
-import com.fr.swift.segment.operator.delete.RowDeleter;
+import com.fr.swift.segment.operator.delete.WhereDeleter;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
@@ -102,8 +102,8 @@ public class SwiftLogOperator extends BaseMetric {
         SwiftSegmentManager localSegmentProvider = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class);
         for (Table table : tables) {
             for (Segment segment : localSegmentProvider.getSegment(table.getSourceKey())) {
-                RowDeleter rowDeleter = (RowDeleter) SwiftContext.getInstance().getBean("decrementer", segment);
-                rowDeleter.delete(table.getSourceKey(), new SwiftWhere(condition));
+                WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.getInstance().getBean("decrementer", segment);
+                whereDeleter.delete(table.getSourceKey(), new SwiftWhere(condition));
             }
         }
     }

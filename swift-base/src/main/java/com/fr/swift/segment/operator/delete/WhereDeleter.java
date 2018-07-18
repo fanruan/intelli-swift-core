@@ -15,7 +15,7 @@ import java.util.List;
  * <p>
  * 按明细值删
  */
-public interface RowDeleter extends Deleter {
+public interface WhereDeleter extends Deleter {
     boolean deleteData(List<Row> rowList) throws Exception;
 
     boolean deleteData(SwiftResultSet swiftResultSet) throws Exception;

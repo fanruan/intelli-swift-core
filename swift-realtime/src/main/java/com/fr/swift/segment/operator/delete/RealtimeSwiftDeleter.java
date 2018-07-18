@@ -6,7 +6,6 @@ import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.backup.AllShowIndexBackup;
@@ -24,16 +23,16 @@ public class RealtimeSwiftDeleter extends AbstractDeleter {
 
     public AllShowIndexBackup allShowIndexBackup;
 
-    public RealtimeSwiftDeleter(Segment segment) throws SwiftMetaDataException {
+    public RealtimeSwiftDeleter(Segment segment) {
         super(segment);
         allShowIndexBackup = (AllShowIndexBackup) SwiftContext.getInstance().getBean("allShowIndexBackup", getBackupSegment());
     }
 
     @Override
     public ImmutableBitMap delete(SourceKey sourceKey, Where where) throws Exception {
-        ImmutableBitMap allshowIndex = super.delete(sourceKey, where);
-        allShowIndexBackup.backupAllShowIndex(allshowIndex);
-        return allshowIndex;
+        ImmutableBitMap allShowIndex = super.delete(sourceKey, where);
+        allShowIndexBackup.backupAllShowIndex(allShowIndex);
+        return allShowIndex;
     }
 
     @Override
