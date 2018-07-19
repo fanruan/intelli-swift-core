@@ -23,18 +23,18 @@ public class ClusterSwiftRegister extends AbstractSwiftRegister {
         if (ClusterSelector.getInstance().getFactory().isMaster()) {
             ClusterSwiftServerService.getInstance().start();
             masterLocalServiceRegister();
-            SwiftContext.getInstance().getBean("masterManager", ClusterManager.class).startUp();
+            SwiftContext.get().getBean("masterManager", ClusterManager.class).startUp();
         } else {
             remoteServiceRegister();
-            SwiftContext.getInstance().getBean("slaveManager", ClusterManager.class).startUp();
+            SwiftContext.get().getBean("slaveManager", ClusterManager.class).startUp();
         }
     }
 
     @Override
     public void serviceUnregister() {
         try {
-            SwiftContext.getInstance().getBean("masterManager", ClusterManager.class).shutDown();
-            SwiftContext.getInstance().getBean("slaveManager", ClusterManager.class).shutDown();
+            SwiftContext.get().getBean("masterManager", ClusterManager.class).shutDown();
+            SwiftContext.get().getBean("slaveManager", ClusterManager.class).shutDown();
         } catch (Exception e) {
             LOGGER.error(e);
         }

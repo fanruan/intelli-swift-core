@@ -1,5 +1,8 @@
 package com.fr.swift.service;
 
+import com.fr.swift.annotation.RpcMethod;
+import com.fr.swift.annotation.RpcService;
+import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftPathService;
@@ -12,9 +15,6 @@ import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.SwiftRepositoryManager;
-import com.fr.swift.annotation.RpcMethod;
-import com.fr.swift.annotation.RpcService;
-import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.operator.delete.WhereDeleter;

@@ -1,12 +1,9 @@
 package com.fr.swift.rm.collector;
 
 import com.fr.swift.Collect;
-import com.fr.swift.cluster.service.MasterService;
 import com.fr.swift.container.NodeContainer;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.heart.HeartBeatInfo;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.rm.service.SwiftMasterService;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 
 import java.util.Date;
@@ -21,7 +18,7 @@ import java.util.List;
  */
 public class MasterHeatbeatCollect implements Collect {
 
-//    private MasterService masterService = SwiftContext.getInstance().getBean("swiftSlaveService", SwiftMasterService.class);
+//    private MasterService masterService = SwiftContext.get().getBean("swiftSlaveService", SwiftMasterService.class);
 
     private Thread thread;
 

@@ -23,7 +23,7 @@ public class HeartBeatInfo implements Serializable {
     private ServerCurrentStatus serverCurrentStatus;
     private String address;
     private Map<String, Object> attachment;
-    private transient SwiftProperty swiftProperty = SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class);
+    private transient SwiftProperty swiftProperty = SwiftContext.get().getBean("swiftProperty", SwiftProperty.class);
 
     public HeartBeatInfo() {
         serverCurrentStatus = new ServerCurrentStatus(swiftProperty.getServerAddress());

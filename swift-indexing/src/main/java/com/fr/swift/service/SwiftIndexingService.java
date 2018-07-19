@@ -17,7 +17,6 @@ import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
-import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftPathService;
 import com.fr.swift.config.service.SwiftSegmentServiceProvider;
 import com.fr.swift.config.service.SwiftServiceInfoService;

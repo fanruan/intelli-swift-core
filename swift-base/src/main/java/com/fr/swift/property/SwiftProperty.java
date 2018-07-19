@@ -42,13 +42,12 @@ public class SwiftProperty {
         this.masterAddress = masterAddress;
     }
 
-    public void setClusterId(@Value("${swift.clusterId}") String clusterId) {
-        this.clusterId = clusterId;
+    public boolean isCluster() {
+        return isCluster;
     }
 
-    @Autowired
-    public void setHttpAddress(@Value("${swift.http_server_address}") String httpAddress) {
-        this.httpAddress = httpAddress;
+    public String getClusterId() {
+        return clusterId;
     }
 
     @Autowired
@@ -92,23 +91,24 @@ public class SwiftProperty {
         this.configDbJdbcUrl = configDbJdbcUrl;
     }
 
-    public boolean isCluster() {
-        return isCluster;
-    }
-
-    public String getClusterId() {
-        return clusterId;
-    }
-
-    public String getMasterAddress() {
-        return masterAddress;
+    public void setClusterId(@Value("${swift.clusterId}") String clusterId) {
+        this.clusterId = clusterId;
     }
 
     public String getServerAddress() {
         return rpcAddress;
     }
 
+    public String getMasterAddress() {
+        return masterAddress;
+    }
+
     public String getHttpAddress() {
         return httpAddress;
+    }
+
+    @Autowired
+    public void setHttpAddress(@Value("${swift.http_server_address}") String httpAddress) {
+        this.httpAddress = httpAddress;
     }
 }
