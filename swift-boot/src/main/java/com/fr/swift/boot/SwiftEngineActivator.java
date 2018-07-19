@@ -11,7 +11,6 @@ import com.fr.swift.cube.queue.ProviderTaskManager;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.log.FineIOLoggerImpl;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.server.SwiftEngineStart;
 import com.fr.swift.service.register.LocalSwiftRegister;
 
 /**
