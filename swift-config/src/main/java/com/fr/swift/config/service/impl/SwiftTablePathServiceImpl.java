@@ -75,6 +75,7 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
             return tx.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
                 @Override
                 public Boolean work(Session session) throws SQLException {
+                    entity.getId().setClusterId(clusterId);
                     boolean success = swiftTablePathDao.saveOrUpdate(session, entity);
                     if (success) {
                         tablePath.put(entity.getId().getTableKey().getId(), entity.getTablePath());

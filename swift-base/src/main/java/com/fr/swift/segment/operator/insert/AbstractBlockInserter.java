@@ -37,6 +37,7 @@ import com.fr.swift.source.core.MD5Utils;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.FileUtil;
 
+import java.io.File;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -92,7 +93,12 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
         this.segmentIndexCache = new SegmentIndexCache();
         this.startSegIndex = segments.size();
         cubeTmpPath = MD5Utils.getMD5String(new String[]{String.valueOf(System.currentTimeMillis())});
-        SwiftTablePathEntity entity = new SwiftTablePathEntity(sourceKey.getId(), cubeTmpPath);
+        SwiftTablePathEntity entity = tablePathService.get(sourceKey.getId());
+        if (null == entity) {
+            entity = new SwiftTablePathEntity(sourceKey.getId(), cubeTmpPath);
+        } else {
+            entity.setTmpDir(cubeTmpPath);
+        }
         tablePathService.saveOrUpdate(entity);
         for (int i = 0; i < segments.size(); i++) {
             if (segments.get(i).isHistory()) {
@@ -178,7 +184,7 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
      * @throws Exception
      */
     protected Segment createSegment(int order, Types.StoreType storeType, String tmpPath) {
-        String cubePath = String.format("%s/%/%s/seg%d",
+        String cubePath = String.format("%s/%s/%s/seg%d",
                 swiftMetaData.getSwiftSchema().getDir(),
                 tmpPath,
                 cubeSourceKey, order);
@@ -217,7 +223,6 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
             public void run() {
                 SwiftTablePathEntity entity = SwiftContext.get().getBean(SwiftTablePathService.class).get(sourceKey.getId());
                 String path = entity.getTablePath();
-                String lastPath = entity.getLastPath();
                 String tmpPath = entity.getTmpDir();
                 entity.setTablePath(tmpPath);
                 entity.setLastPath(path);
@@ -225,9 +230,10 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
                     String deletePath = String.format("%s/%s/%s/%s",
                             pathService.getSwiftPath(),
                             swiftMetaData.getSwiftSchema().getDir(),
-                            lastPath,
+                            path,
                             sourceKey.getId());
                     FileUtil.delete(deletePath);
+                    new File(deletePath).getParentFile().delete();
                 }
             }
         });
