@@ -49,7 +49,7 @@ public class SwiftRepositoryManagerTest {
     public void test4DownloadDirectory() throws IOException {
         repository.copyFromRemote(targetURI.resolve("upload"), rootURI.resolve("downloads"));
         assertTrue(ResourceIOUtils.exist(rootURI.resolve("downloads").getPath()));
-        assertEquals(ResourceIOUtils.listWithFullPath(rootURI.resolve("downloads").getPath(), new Filter<String>() {
+        assertEquals(ResourceIOUtils.list(rootURI.resolve("downloads").getPath(), new Filter<String>() {
             @Override
             public boolean accept(String s) {
                 return s.endsWith(".txt");
@@ -61,7 +61,7 @@ public class SwiftRepositoryManagerTest {
     public void test3StepUploadDirectory() throws IOException {
         repository.copyToRemote(rootURI, targetURI.resolve("upload"));
         assertTrue(ResourceIOUtils.exist(targetURI.resolve("upload").getPath()));
-        assertEquals(ResourceIOUtils.listWithFullPath(targetURI.resolve("upload").getPath(), new Filter<String>() {
+        assertEquals(ResourceIOUtils.list(targetURI.resolve("upload").getPath(), new Filter<String>() {
             @Override
             public boolean accept(String s) {
                 return s.endsWith(".txt");
