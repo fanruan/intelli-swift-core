@@ -1,10 +1,8 @@
 package com.fr.swift.segment.operator.insert;
 
-import com.fineio.FineIO;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
-import com.fr.swift.config.service.SwiftPathService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftSegmentServiceProvider;
 import com.fr.swift.config.service.SwiftTablePathService;
@@ -63,7 +61,6 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
     private int startSegIndex;
     protected Integer cubeTmpPath = 0;
     private SwiftSegmentService segmentService = SwiftSegmentServiceProvider.getProvider();
-    private SwiftPathService pathService = SwiftContext.get().getBean(SwiftPathService.class);
     private SwiftTablePathService tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
 
     public AbstractBlockInserter(SourceKey sourceKey, String cubeSourceKey, SwiftMetaData swiftMetaData) {
@@ -215,25 +212,6 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
                 }
             }
         }
-        FineIO.doWhenFinished(new Runnable() {
-            @Override
-            public void run() {
-                SwiftTablePathEntity entity = SwiftContext.get().getBean(SwiftTablePathService.class).get(sourceKey.getId());
-                Integer path = entity.getTablePath();
-                Integer tmpPath = entity.getTmpDir();
-                entity.setTablePath(tmpPath);
-                entity.setLastPath(path);
-                if (tablePathService.saveOrUpdate(entity)) {
-//                    String deletePath = String.format("%s/%s/%d/%s",
-//                            pathService.getSwiftPath(),
-//                            swiftMetaData.getSwiftSchema().getDir(),
-//                            path,
-//                            sourceKey.getId());
-//                    FileUtil.delete(deletePath);
-//                    new File(deletePath).getParentFile().delete();
-                }
-            }
-        });
     }
 
     private void persistMeta() {
