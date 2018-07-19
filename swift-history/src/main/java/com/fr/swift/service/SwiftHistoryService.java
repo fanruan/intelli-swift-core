@@ -1,7 +1,9 @@
 package com.fr.swift.service;
 
+import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftPathService;
+import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Where;
 import com.fr.swift.log.SwiftLoggers;
@@ -17,19 +19,23 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.operator.delete.WhereDeleter;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
+import com.fr.swift.util.FileUtil;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.beans.factory.annotation.Qualifier;
 import com.fr.third.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -51,17 +57,54 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     @Autowired
     private transient SwiftPathService pathService;
 
+    @Autowired
+    private transient SwiftMetaDataService metaDataService;
+    @Autowired
+    private transient SwiftTablePathService tablePathService;
+
     private SwiftHistoryService() {
     }
 
     @Override
     @RpcMethod(methodName = "load")
-    public void load(Set<URI> remoteUris) throws IOException {
+    public void load(Map<String, Set<URI>> remoteUris, boolean replace) throws IOException {
+        String path = pathService.getSwiftPath();
+        SwiftRepository repository = SwiftRepositoryManager.getManager().currentRepo();
         if (null != remoteUris && !remoteUris.isEmpty()) {
-            String path = pathService.getSwiftPath();
-            SwiftRepository repository = SwiftRepositoryManager.getManager().currentRepo();
-            for (URI remote : remoteUris) {
-                repository.copyFromRemote(remote, URI.create(path + remote.getPath()));
+            for (String sourceKey : remoteUris.keySet()) {
+                Set<URI> sets = remoteUris.get(sourceKey);
+                if (!sets.isEmpty()) {
+                    SwiftMetaData metaData = metaDataService.getMetaDataByKey(sourceKey);
+                    int tmp = 0;
+                    SwiftTablePathEntity entity = tablePathService.get(sourceKey);
+                    if (null == entity) {
+                        entity = new SwiftTablePathEntity(sourceKey, tmp);
+                        tablePathService.saveOrUpdate(entity);
+                        replace = true;
+                    } else {
+                        tmp = entity.getTablePath();
+                        if (replace) {
+                            tmp += 1;
+                            entity.setTmpDir(tmp);
+                            tablePathService.saveOrUpdate(entity);
+                        }
+                    }
+                    for (URI uri : sets) {
+                        String cubePath = String.format("%s/%s/%d/%s", path, metaData.getSwiftSchema().getDir(), tmp, uri.getPath());
+                        String remotePath = String.format("%s/%s", metaData.getSwiftSchema().getDir(), uri.getPath());
+                        repository.copyFromRemote(URI.create(remotePath), URI.create(cubePath));
+                    }
+                    if (replace) {
+                        entity = tablePathService.get(sourceKey);
+                        int current = entity.getTablePath();
+                        entity.setLastPath(current);
+                        entity.setTablePath(tmp);
+                        tablePathService.saveOrUpdate(entity);
+                        String cubePath = String.format("%s/%s/%d/%s", path, metaData.getSwiftSchema().getDir(), tmp, sourceKey);
+                        FileUtil.delete(cubePath);
+                        new File(cubePath).getParentFile().delete();
+                    }
+                }
             }
         } else {
             SwiftLoggers.getLogger().warn("Receive an empty URI set. Skip loading.");
