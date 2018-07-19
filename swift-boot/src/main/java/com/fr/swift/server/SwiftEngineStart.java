@@ -3,14 +3,12 @@ package com.fr.swift.server;
 import com.fineio.FineIO;
 import com.fr.data.impl.Connection;
 import com.fr.data.impl.JDBCDatabaseConnection;
-import com.fr.swift.boot.ClusterListener;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.ProviderTaskManager;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.event.ClusterType;
-import com.fr.swift.http.SwiftHttpServer;
 import com.fr.swift.log.FineIOLoggerImpl;
 import com.fr.swift.log.SwiftLog4jLoggers;
 import com.fr.swift.log.SwiftLoggers;
@@ -35,10 +33,8 @@ public class SwiftEngineStart {
         try {
             SwiftLoggers.setLoggerFactory(new SwiftLog4jLoggers());
             SimpleWork.checkIn(System.getProperty("user.dir"));
-            ClusterListenerHandler.addListener(new ClusterListener());
+            ClusterListenerHandler.addListener(new SwiftClusterListener());
             SwiftContext.init();
-            SwiftContext.get().getBean(SwiftHttpServer.class).start();
-            SwiftLoggers.getLogger().info("http server starting!");
             registerTmpConnectionProvider();
             FineIO.setLogger(new FineIOLoggerImpl());
             new LocalSwiftRegister().serviceRegister();

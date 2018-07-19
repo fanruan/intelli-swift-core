@@ -1,9 +1,10 @@
 package com.fr.swift.service.register;
 
+import com.fr.swift.cluster.manager.ClusterManager;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.rpc.SwiftRpcService;
-import com.fr.swift.rpc.server.RpcServer;
+import com.fr.swift.netty.rpc.server.RpcServer;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.ClusterSwiftServerService;
 
@@ -11,7 +12,7 @@ import com.fr.swift.service.ClusterSwiftServerService;
  * This class created on 2018/6/4
  *
  * @author Lucifer
- * @description
+ * @description todo 注册和注销service的动作均移动到master和slave的service里去做。service隔离通信层
  * @since Advanced FineBI 5.0
  */
 public class ClusterSwiftRegister extends AbstractSwiftRegister {
@@ -19,20 +20,21 @@ public class ClusterSwiftRegister extends AbstractSwiftRegister {
 
     @Override
     public void serviceRegister() {
-        SwiftRpcService.getInstance().startServerService();
-
         if (ClusterSelector.getInstance().getFactory().isMaster()) {
             ClusterSwiftServerService.getInstance().start();
             masterLocalServiceRegister();
+            SwiftContext.getInstance().getBean("masterManager", ClusterManager.class).startUp();
         } else {
             remoteServiceRegister();
+            SwiftContext.getInstance().getBean("slaveManager", ClusterManager.class).startUp();
         }
     }
 
     @Override
     public void serviceUnregister() {
         try {
-            SwiftRpcService.getInstance().stopServerService();
+            SwiftContext.getInstance().getBean("masterManager", ClusterManager.class).shutDown();
+            SwiftContext.getInstance().getBean("slaveManager", ClusterManager.class).shutDown();
         } catch (Exception e) {
             LOGGER.error(e);
         }

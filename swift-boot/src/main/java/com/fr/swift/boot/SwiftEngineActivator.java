@@ -37,7 +37,7 @@ public class SwiftEngineActivator extends Activator implements Prepare {
         SwiftContext.init();
         SwiftConfigContext.getInstance().init();
         new LocalSwiftRegister().serviceRegister();
-        ClusterListenerHandler.addListener(new ClusterListener());
+        ClusterListenerHandler.addListener(new FRClusterListener());
         FineIO.setLogger(new FineIOLoggerImpl());
         ProviderTaskManager.start();
     }

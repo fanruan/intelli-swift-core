@@ -1,7 +1,5 @@
 package com.fr.swift.service;
 
-import com.fr.swift.config.service.SwiftMetaDataService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.event.base.SwiftRpcEvent;
 
 import java.io.Serializable;
@@ -66,11 +64,5 @@ public class LocalSwiftServerService extends AbstractSwiftServerService {
     @Override
     protected void initListener() {
         super.initListener();
-    }
-
-
-    @Override
-    public void cleanMetaCache(String[] sourceKeys) {
-        SwiftContext.get().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
     }
 }

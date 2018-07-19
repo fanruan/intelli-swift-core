@@ -18,12 +18,12 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-netty</artifactId>
+            <artifactId>swift-cluster</artifactId>
             <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-communication</artifactId>
+            <artifactId>swift-rpc</artifactId>
             <version>${swift.version}</version>
         </dependency>
     </dependencies>

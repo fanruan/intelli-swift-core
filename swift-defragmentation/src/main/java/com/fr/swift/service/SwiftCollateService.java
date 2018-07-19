@@ -1,8 +1,10 @@
 package com.fr.swift.service;
 
 import com.fr.general.ComparatorUtils;
+import com.fr.swift.annotation.RpcMethod;
+import com.fr.swift.annotation.RpcService;
+import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.config.bean.SegmentKeyBean;
-import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentServiceProvider;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
@@ -15,9 +17,6 @@ import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.exception.SegmentKeyException;
 import com.fr.swift.exception.TableNotExistException;
 import com.fr.swift.generate.segment.operator.merger.MergerResultSet;
-import com.fr.swift.rpc.annotation.RpcMethod;
-import com.fr.swift.rpc.annotation.RpcService;
-import com.fr.swift.rpc.annotation.RpcServiceType;
 import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
@@ -117,12 +116,6 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
     @Override
     @RpcMethod(methodName = "persistRealtime")
     public void persistRealtime(SourceKey tableKey, Segment segment) {
-    }
-
-    @Override
-    @RpcMethod(methodName = "cleanMetaCache")
-    public void cleanMetaCache(String[] sourceKeys) {
-        SwiftContext.get().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
     }
 
     @Override

@@ -5,7 +5,7 @@ import com.fr.swift.event.base.AbstractHistoryRpcEvent;
 import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.rpc.client.AsyncRpcCallback;
+import com.fr.swift.netty.rpc.client.AsyncRpcCallback;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.service.ClusterSwiftServerService;
 import com.fr.swift.service.ServiceType;
