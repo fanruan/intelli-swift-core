@@ -24,13 +24,13 @@ import java.util.List;
 public class SwiftMasterService implements MasterService {
 
     @Override
-    public synchronized void collectHeartBeat(HeartBeatInfo heartBeatInfo) throws Exception {
+    public synchronized void collectHeartBeat(HeartBeatInfo heartBeatInfo) {
         SwiftLoggers.getLogger().info("Collect heartbeat:" + heartBeatInfo.toString());
         NodeContainer.getInstance().updateHeartBeatInfo(heartBeatInfo);
     }
 
     @Override
-    public synchronized void syncHeartBeat() throws Exception {
+    public synchronized void syncHeartBeat() {
         SwiftLoggers.getLogger().info("Start to sync heartbeat!");
         List<HeartBeatInfo> heartBeatInfoList = NodeContainer.getInstance().getAllHeartBeatInfos();
         for (HeartBeatInfo heartBeatInfo : heartBeatInfoList) {

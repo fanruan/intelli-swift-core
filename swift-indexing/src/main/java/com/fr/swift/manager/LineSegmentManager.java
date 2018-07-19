@@ -2,6 +2,7 @@ package com.fr.swift.manager;
 
 
 import com.fr.swift.config.service.SwiftMetaDataService;
+import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;
@@ -23,11 +24,19 @@ import java.net.URI;
 public class LineSegmentManager extends AbstractSegmentManager {
 
     @Override
-    public Segment getSegment(SegmentKey segmentKey) {
+    protected Integer getCurrentFolder(SwiftTablePathService service, SourceKey sourceKey) {
+        return service.getTablePath(sourceKey.getId());
+    }
+
+    @Override
+    public Segment getSegment(SegmentKey segmentKey, Integer currentFolder) {
         Util.requireNonNull(segmentKey);
         URI uri = segmentKey.getUri();
+        String cubePath = String.format("%s/%d/%s",
+                segmentKey.getSwiftSchema().getDir(),
+                currentFolder, uri.getPath());
         Types.StoreType storeType = segmentKey.getStoreType();
-        ResourceLocation location = new ResourceLocation(uri.getPath(), storeType);
+        ResourceLocation location = new ResourceLocation(cubePath, storeType);
         SourceKey sourceKey = segmentKey.getTable();
         SwiftMetaData metaData = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(sourceKey.getId());
         Util.requireNonNull(metaData);

@@ -19,8 +19,10 @@
         <module>swift-test</module>
         <module>swift-boot</module>
         <module>swift-cluster</module>
-        <module>swift-communication</module>
-        <module>swift-netty</module>
+        <module>swift-master</module>
+        <module>swift-slave</module>
+        <module>swift-rpc</module>
+        <module>swift-http</module>
         <module>swift-repository</module>
         <module>swift-decision</module>
         <module>swift-redis</module>

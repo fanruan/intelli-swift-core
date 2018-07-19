@@ -83,4 +83,8 @@ public abstract class AbstractSegmentService implements SwiftSegmentService {
         return Collections.emptyMap();
     }
 
+    @Override
+    public boolean saveOrUpdate(SegmentKey obj) {
+        return addSegments(Collections.singletonList(obj));
+    }
 }

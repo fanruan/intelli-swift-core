@@ -35,7 +35,7 @@ public class SwiftHttpService {
     }
 
     private void init() {
-        context = SwiftContext.getInstance();
+        context = SwiftContext.get();
     }
 
     public void startServerService() {

@@ -72,6 +72,11 @@ public class SwiftSegmentServiceProvider implements SwiftSegmentService {
         return service.find(criterion);
     }
 
+    @Override
+    public boolean saveOrUpdate(SegmentKey obj) {
+        return service.saveOrUpdate(obj);
+    }
+
     private static class SingletonHolder {
         private static SwiftSegmentServiceProvider provider = new SwiftSegmentServiceProvider();
     }

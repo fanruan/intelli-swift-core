@@ -100,7 +100,7 @@ public class RealtimeMerger implements Merger {
                 metaData.getSwiftSchema().getDir(),
                 cubeSourceKey, order);
         IResourceLocation location = new ResourceLocation(cubePath);
-        configSegment.add(new SegmentKeyBean(sourceKey.getId(), location.getUri(), order, StoreType.FINE_IO));
+        configSegment.add(new SegmentKeyBean(sourceKey.getId(), location.getUri(), order, StoreType.FINE_IO, metaData.getSwiftSchema()));
         return new HistorySegmentImpl(location, metaData);
     }
 
