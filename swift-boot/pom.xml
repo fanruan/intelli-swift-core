@@ -57,12 +57,12 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-netty</artifactId>
+            <artifactId>swift-rpc</artifactId>
             <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-communication</artifactId>
+            <artifactId>swift-http</artifactId>
             <version>${swift.version}</version>
         </dependency>
         <dependency>
@@ -78,6 +78,16 @@
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-defragmentation</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-master</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-slave</artifactId>
             <version>${swift.version}</version>
         </dependency>
     </dependencies>

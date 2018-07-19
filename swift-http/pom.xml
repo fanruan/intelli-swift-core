@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.fr.intelligence</groupId>
+        <artifactId>fine-swift</artifactId>
+        <version>10.0-RELEASE-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>swift-http</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-base</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
+        <!-- Netty -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.17.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+        <!--zookeeper暂时不启用-->
+        <!-- ZooKeeper -->
+        <!--<dependency>-->
+        <!--<groupId>org.apache.zookeeper</groupId>-->
+        <!--<artifactId>zookeeper</artifactId>-->
+        <!--<version>3.4.12</version>-->
+        <!--</dependency>-->
+        <!-- ZkClient -->
+        <!--<dependency>-->
+        <!--<groupId>com.101tec</groupId>-->
+        <!--<artifactId>zkclient</artifactId>-->
+        <!--<version>0.10</version>-->
+        <!--</dependency>-->
+    </dependencies>
+</project>

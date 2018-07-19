@@ -1,6 +1,11 @@
 package com.fr.swift.context;
 
+import com.fr.third.springframework.beans.factory.support.AbstractBeanDefinition;
+import com.fr.third.springframework.beans.factory.support.BeanDefinitionBuilder;
+import com.fr.third.springframework.beans.factory.support.BeanDefinitionRegistry;
+import com.fr.third.springframework.beans.factory.support.DefaultListableBeanFactory;
 import com.fr.third.springframework.context.ApplicationContext;
+import com.fr.third.springframework.context.ConfigurableApplicationContext;
 import com.fr.third.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
@@ -11,6 +16,21 @@ import com.fr.third.springframework.context.support.ClassPathXmlApplicationConte
  * @since Advanced FineBI Analysis 1.0
  */
 public class SwiftContext extends ClassPathXmlApplicationContext {
+
+    private static final SwiftContext INSTANCE = new SwiftContext();
+
+    private boolean refreshed = false;
+
+    private SwiftContext() {
+    }
+
+    public static SwiftContext getInstance() {
+        return INSTANCE;
+    }
+
+    private static ConfigurableApplicationContext configurableContext;
+    private static BeanDefinitionRegistry beanDefinitionRegistry;
+
     public static void init() {
         if (INSTANCE.refreshed) {
             return;
@@ -19,18 +39,50 @@ public class SwiftContext extends ClassPathXmlApplicationContext {
             if (INSTANCE.refreshed) {
                 return;
             }
+
             INSTANCE.setConfigLocation("swift-context.xml");
             INSTANCE.refresh();
 
             INSTANCE.refreshed = true;
+            configurableContext = INSTANCE;
+            beanDefinitionRegistry = (DefaultListableBeanFactory) configurableContext.getBeanFactory();
         }
     }
 
-    private static final SwiftContext INSTANCE = new SwiftContext();
+    /**
+     * 手动注册bean
+     *
+     * @param beanId
+     * @param className
+     */
+    public static void registerBean(String beanId, String className) {
+        registerBean(beanId, className, null, null);
+    }
 
-    private boolean refreshed = false;
+    /**
+     * 手动注册bean 指定InitMethod和destroyMethod
+     *
+     * @param beanId
+     * @param className
+     * @param initMethodName
+     * @param destroyMethodName
+     */
+    public static void registerBean(String beanId, String className, String initMethodName, String destroyMethodName) {
+        BeanDefinitionBuilder beanDefinitionBuilder =
+                BeanDefinitionBuilder.genericBeanDefinition(className);
+        AbstractBeanDefinition beanDefinition = beanDefinitionBuilder.getBeanDefinition();
+        beanDefinition.setInitMethodName(initMethodName);
+        beanDefinition.setDestroyMethodName(destroyMethodName);
+        beanDefinitionRegistry.registerBeanDefinition(beanId, beanDefinition);
+    }
 
-    private SwiftContext() {
+    /**
+     * 手动注销bean
+     *
+     * @param beanId
+     */
+    public static void unregisterBean(String beanId) {
+        beanDefinitionRegistry.removeBeanDefinition(beanId);
     }
 
     public static ApplicationContext get() {
