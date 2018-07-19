@@ -8,7 +8,7 @@ import com.fr.swift.source.SourceKey;
  * @author yee
  * @date 2018/7/19
  */
-public class TempSegmentManager extends LineSegmentManager {
+public class IndexingSegmentManager extends LineSegmentManager {
     @Override
     protected Integer getCurrentFolder(SwiftTablePathService service, SourceKey sourceKey) {
         SwiftTablePathEntity entity = service.get(sourceKey.getId());

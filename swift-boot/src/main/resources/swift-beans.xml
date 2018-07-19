@@ -7,6 +7,7 @@
 
     <!--正常注入-->
     <bean id="localSegmentProvider" class="com.fr.swift.manager.LocalSegmentProvider"/>
+    <bean id="indexingSegmentManager" class="com.fr.swift.manager.IndexingSegmentManager"/>
     <bean class="com.fr.swift.manager.LocalDataOperatorProvider"/>
     <bean id="swiftProperty" class="com.fr.swift.property.SwiftProperty"/>
     <bean id="serviceRegistry" class="com.fr.swift.rpc.registry.impl.SimpleServiceRegistry"/>

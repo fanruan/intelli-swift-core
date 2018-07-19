@@ -9,7 +9,7 @@ import com.fr.swift.generate.history.index.ColumnDictMerger;
 import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.manager.LocalSegmentProvider;
+import com.fr.swift.manager.IndexingSegmentManager;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.ColumnKey;
@@ -49,7 +49,7 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
 
     private IndexingConfService indexingConfService = SwiftContext.get().getBean(IndexingConfService.class);
 
-    private SwiftSegmentManager localSegments = SwiftContext.get().getBean(LocalSegmentProvider.class);
+    private SwiftSegmentManager localSegments = SwiftContext.get().getBean(IndexingSegmentManager.class);
 
     public BaseTableBuilder(int round, DataSource dataSource) {
         this(round, dataSource, false);
