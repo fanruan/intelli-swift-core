@@ -9,7 +9,7 @@ import com.fr.plugin.observer.PluginEventType;
 import com.fr.plugin.observer.PluginListenerRegistration;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.plugin.ExtraClassManagerProvider;
-import com.fr.swift.config.service.SwiftPathService;
+import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftZipService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLoggers;
@@ -27,7 +27,7 @@ import com.fr.swift.util.Crasher;
 public class ConnectorManager {
     private volatile static ConnectorManager instance;
     private static Connector connector;
-    private SwiftPathService pathService = SwiftContext.get().getBean(SwiftPathService.class);
+    private SwiftCubePathService pathService = SwiftContext.get().getBean(SwiftCubePathService.class);
     private SwiftZipService zipConfig = SwiftContext.get().getBean(SwiftZipService.class);
 
     public static ConnectorManager getInstance() {
@@ -45,7 +45,7 @@ public class ConnectorManager {
 
     private ConnectorManager() {
         listenPlugin();
-        pathService.registerPathChangeListener(new SwiftPathService.PathChangeListener() {
+        pathService.registerPathChangeListener(new SwiftCubePathService.PathChangeListener() {
             @Override
             public void changed(String path) {
                 connector = null;

@@ -2,7 +2,7 @@ package com.fr.swift.config.bean;
 
 import com.fr.stable.StringUtils;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
-import com.fr.swift.config.service.SwiftPathService;
+import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
@@ -20,7 +20,7 @@ import java.net.URI;
  */
 public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>, SegmentKey {
     private static final long serialVersionUID = 3202594634845509238L;
-    private transient SwiftPathService service = SwiftContext.get().getBean(SwiftPathService.class);
+    private transient SwiftCubePathService service = SwiftContext.get().getBean(SwiftCubePathService.class);
     private transient SwiftTablePathService tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
     /**
      * sourceKey@storeType@order

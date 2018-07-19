@@ -1,6 +1,6 @@
 package com.fr.swift.cube.space.impl;
 
-import com.fr.swift.config.service.SwiftPathService;
+import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftSegmentServiceProvider;
 import com.fr.swift.context.SwiftContext;
@@ -22,7 +22,7 @@ public class SwiftSpaceUsageService implements SpaceUsageService {
     private SpaceUsageDetector detector = new LocalSpaceUsageDetector();
 
     private SwiftSegmentService confSvc = SwiftSegmentServiceProvider.getProvider();
-    private SwiftPathService pathService = SwiftContext.get().getBean(SwiftPathService.class);
+    private SwiftCubePathService pathService = SwiftContext.get().getBean(SwiftCubePathService.class);
 
     @Override
     public long getTableUsedSpace(SourceKey table) throws Exception {

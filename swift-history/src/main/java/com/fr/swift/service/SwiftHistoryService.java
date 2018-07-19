@@ -4,8 +4,8 @@ import com.fr.swift.annotation.RpcMethod;
 import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
+import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftMetaDataService;
-import com.fr.swift.config.service.SwiftPathService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Where;
@@ -55,7 +55,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     private transient ServiceTaskExecutor taskExecutor;
 
     @Autowired
-    private transient SwiftPathService pathService;
+    private transient SwiftCubePathService pathService;
 
     @Autowired
     private transient SwiftMetaDataService metaDataService;

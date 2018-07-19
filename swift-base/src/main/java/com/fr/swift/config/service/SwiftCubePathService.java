@@ -4,7 +4,7 @@ package com.fr.swift.config.service;
  * @author yee
  * @date 2018/6/6
  */
-public interface SwiftPathService {
+public interface SwiftCubePathService {
     /**
      * 设置cube更新路径
      *
