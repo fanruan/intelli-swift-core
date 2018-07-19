@@ -1,8 +1,6 @@
 package com.fr.swift.generate.excel;
 
 import com.fr.swift.generate.BaseConfigTest;
-import com.fr.swift.log.SwiftLogger;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.resource.ResourceUtils;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.excel.ExcelDataSource;
@@ -29,11 +27,9 @@ public abstract class BaseExcelTest extends BaseConfigTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         SimpleWork.checkOut();
     }
-
-    protected static final SwiftLogger LOGGER = SwiftLoggers.getLogger(BaseExcelTest.class);
 
     //fr SimpleWorkd的原因，只能写相对路径
     protected String path1 = "excel/test.xlsx";

@@ -42,7 +42,7 @@ public class BlockInserter extends AbstractBlockInserter {
     @Override
     protected Segment createSegment(int order) {
         if (!ComparatorUtils.equals(sourceKey.getId(), cubeSourceKey)) {
-            List<Segment> cubeSourceSegments = SwiftContext.getInstance().getBean(SwiftSegmentManager.class).getSegment(new SourceKey(cubeSourceKey));
+            List<Segment> cubeSourceSegments = SwiftContext.get().getBean(SwiftSegmentManager.class).getSegment(new SourceKey(cubeSourceKey));
             Segment segment = cubeSourceSegments.get(order);
             return createSegment(order, segment.isHistory() ? Types.StoreType.FINE_IO : Types.StoreType.MEMORY);
         }

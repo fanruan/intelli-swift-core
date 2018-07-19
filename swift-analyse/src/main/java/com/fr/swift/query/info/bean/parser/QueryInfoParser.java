@@ -12,6 +12,7 @@ import com.fr.swift.query.info.bean.query.ResultJoinQueryInfoBean;
 import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.metric.Metric;
+import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.info.group.GroupQueryInfoImpl;
 import com.fr.swift.query.info.group.ResultJoinQueryInfoImpl;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
@@ -57,7 +58,9 @@ public class QueryInfoParser {
         List<Dimension> dimensions = DimensionParser.parse(bean.getDimensionBeans(), bean.getSortBeans());
         List<Metric> metrics = MetricParser.parse(table, bean.getMetricBeans());
         List<PostQueryInfo> postQueryInfoList = PostQueryInfoParser.parse(bean.getPostQueryInfoBeans(), dimensions, bean.getMetricBeans());
-        return new GroupQueryInfoImpl(queryId, table, filterInfo, dimensions, metrics, postQueryInfoList);
+        GroupQueryInfo groupQueryInfo = new GroupQueryInfoImpl(queryId, table, filterInfo, dimensions, metrics, postQueryInfoList);
+        groupQueryInfo.setQuerySegment(bean.getQuerySegments());
+        return groupQueryInfo;
     }
 
     private static QueryInfo parseResultJoinQueryInfo(ResultJoinQueryInfoBean bean) {
@@ -79,7 +82,7 @@ public class QueryInfoParser {
         SourceKey table = new SourceKey(bean.getTableName());
         FilterInfo filterInfo = FilterInfoParser.parse(table, bean.getFilterInfoBean());
         List<Dimension> dimensions = DimensionParser.parse(bean.getDimensionBeans(), bean.getSortBeans());
-        SwiftMetaData metaData = SwiftContext.getInstance().getBean(SwiftMetaDataService.class).getMetaDataByKey(bean.getTableName());
+        SwiftMetaData metaData = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(bean.getTableName());
         List<SwiftMetaDataColumn> columns = new ArrayList<SwiftMetaDataColumn>();
         List<Sort> sorts = null;
         List<SortBean> sortBeans = bean.getSortBeans();
@@ -110,7 +113,9 @@ public class QueryInfoParser {
 //        } catch (SwiftMetaDataException e) {
 //            SwiftLoggers.getLogger(QueryInfoParser.class).error(e);
 //        }
-        return new DetailQueryInfo(queryId, table, filterInfo, dimensions, sorts, null, metaData);
+        DetailQueryInfo detailQueryInfo = new DetailQueryInfo(queryId, table, filterInfo, dimensions, sorts, null, metaData);
+        detailQueryInfo.setQuerySegment(bean.getQuerySegments());
+        return detailQueryInfo;
     }
 
     private static int getDimensionIndex(String columnName, List<Dimension> dimensions) {

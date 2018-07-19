@@ -4,13 +4,8 @@ import com.fr.swift.config.service.SwiftPathService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Where;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
-import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.session.AbstractSession;
-import com.fr.swift.query.session.Session;
-import com.fr.swift.query.session.SessionBuilder;
 import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.SwiftRepositoryManager;
@@ -19,13 +14,14 @@ import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
-import com.fr.swift.segment.operator.delete.RowDeleter;
+import com.fr.swift.segment.operator.delete.WhereDeleter;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
+import com.fr.third.springframework.beans.factory.annotation.Qualifier;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -36,19 +32,17 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by pony on 2017/10/10.
+ * @author pony
+ * @date 2017/10/10
  */
 @Service("historyService")
 @RpcService(value = HistoryService.class, type = RpcServiceType.CLIENT_SERVICE)
 public class SwiftHistoryService extends AbstractSwiftService implements HistoryService, Serializable {
-
     private static final long serialVersionUID = -6013675740141588108L;
 
-    public static SwiftHistoryService getInstance() {
-        return SingletonHolder.instance;
-    }
-
-    private transient SwiftSegmentManager segmentManager = (SwiftSegmentManager) SwiftContext.getInstance().getBean("localSegmentProvider");
+    @Autowired
+    @Qualifier("localSegmentProvider")
+    private transient SwiftSegmentManager segmentManager;
 
     @Autowired
     private transient ServiceTaskExecutor taskExecutor;
@@ -69,10 +63,9 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                 repository.copyFromRemote(remote, URI.create(path + remote.getPath()));
             }
         } else {
-            SwiftLoggers.getLogger(SwiftHistoryService.class).warn("Receive an empty URI set. Skip loading.");
+            SwiftLoggers.getLogger().warn("Receive an empty URI set. Skip loading.");
         }
     }
-
 
     @Override
     public ServiceType getServiceType() {
@@ -81,26 +74,11 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
 
     @Override
     @RpcMethod(methodName = "historyQuery")
-    public SwiftResultSet query(final String queryDescription) throws SQLException {
+    public SwiftResultSet query(final String queryDescription) throws Exception {
         try {
             final QueryInfoBean bean = QueryInfoBeanFactory.create(queryDescription);
-            SessionFactory factory = SwiftContext.getInstance().getBean(SessionFactory.class);
-            return factory.openSession(new SessionBuilder() {
-                @Override
-                public Session build(long cacheTimeout) {
-                    return new AbstractSession(cacheTimeout) {
-                        @Override
-                        protected SwiftResultSet query(QueryBean queryInfo) throws SQLException {
-                            return QueryBuilder.buildQuery(queryInfo).getQueryResult();
-                        }
-                    };
-                }
-
-                @Override
-                public String getQueryId() {
-                    return bean.getQueryId();
-                }
-            }).executeQuery(bean);
+            SessionFactory factory = SwiftContext.get().getBean(SessionFactory.class);
+            return factory.openSession(bean.getQueryId()).executeQuery(bean);
         } catch (IOException e) {
             throw new SQLException(e);
         }
@@ -114,15 +92,11 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
             public void doJob() throws Exception {
                 List<Segment> segments = segmentManager.getSegment(sourceKey);
                 for (Segment segment : segments) {
-                    RowDeleter rowDeleter = (RowDeleter) SwiftContext.getInstance().getBean("decrementer", segment);
-                    rowDeleter.delete(sourceKey, where);
+                    WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", sourceKey, segment);
+                    whereDeleter.delete(where);
                 }
             }
         });
         return true;
-    }
-
-    private static class SingletonHolder {
-        private static final SwiftHistoryService instance = new SwiftHistoryService();
     }
 }

@@ -39,6 +39,11 @@
             <artifactId>fine-decision-sdk</artifactId>
             <version>${swift.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>fine-accumulator</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

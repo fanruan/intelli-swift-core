@@ -107,15 +107,15 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
             Crasher.crash("Cannot find any " + sources.getKey() + " service");
         }
         Iterator<Map.Entry<String, ClusterEntity>> iterator = serviceMap.entrySet().iterator();
-        Map<String, Pair<Integer, List<SegmentDestination>>> destinations = new HashMap<String, Pair<Integer, List<SegmentDestination>>>();
+        Map<String, List<SegmentDestination>> destinations = new HashMap<String, List<SegmentDestination>>();
 
         while (iterator.hasNext()) {
             Map.Entry<String, ClusterEntity> entry = iterator.next();
             for (String table : tables) {
                 if (null == destinations.get(table)) {
-                    destinations.put(table, Pair.<Integer, List<SegmentDestination>>of(-1, new ArrayList<SegmentDestination>()));
+                    destinations.put(table, new ArrayList<SegmentDestination>());
                 }
-                destinations.get(table).getValue().add(new SegmentDestinationImpl(entry.getKey(), null, -1, entry.getValue().getServiceClass(), "realTimeQuery"));
+                destinations.get(table).add(new SegmentDestinationImpl(entry.getKey(), null, -1, entry.getValue().getServiceClass(), "realTimeQuery"));
             }
         }
         SwiftServiceHandlerManager.getManager().

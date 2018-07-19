@@ -15,7 +15,7 @@ import java.net.URI;
 public class ResourceLocation implements IResourceLocation {
     private static final String SEPARATOR = "/";
     private static final StoreType DEFAULT_STORE_TYPE = StoreType.FINE_IO;
-    private static String basePath = SwiftContext.getInstance().getBean(SwiftPathService.class).getSwiftPath();
+    private static String basePath = SwiftContext.get().getBean(SwiftPathService.class).getSwiftPath();
 
     private URI uri;
     private StoreType storeType;

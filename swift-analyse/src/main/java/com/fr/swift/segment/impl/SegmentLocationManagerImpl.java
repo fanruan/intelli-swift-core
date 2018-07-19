@@ -1,11 +1,12 @@
 package com.fr.swift.segment.impl;
 
+import com.fr.swift.config.bean.SegmentDestSelectRule;
+import com.fr.swift.config.service.SegmentDestSelectRuleService;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationManager;
-import com.fr.swift.segment.rule.DestSelectRule;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.structure.Pair;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -19,29 +20,25 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SegmentLocationManagerImpl implements SegmentLocationManager {
 
-    private Map<String, Pair<Integer, List<SegmentDestination>>> segments;
-    private DestSelectRule rule = DestSelectRule.DEFAULT;
+    private Map<String, List<SegmentDestination>> segments;
+    private SegmentDestSelectRule rule;
 
     public SegmentLocationManagerImpl() {
-        segments = new ConcurrentHashMap<String, Pair<Integer, List<SegmentDestination>>>();
+        segments = new ConcurrentHashMap<String, List<SegmentDestination>>();
+        rule = SwiftContext.get().getBean(SegmentDestSelectRuleService.class).getCurrentRule();
     }
 
-    public void setRule(DestSelectRule rule) {
+    public void setRule(SegmentDestSelectRule rule) {
         this.rule = rule;
     }
 
     @Override
     public List<SegmentDestination> getSegmentLocationURI(SourceKey table) {
-        Pair<Integer, List<SegmentDestination>> pair = segments.get(table.getId());
-        List<SegmentDestination> destinations = null;
-        int totalCount = 0;
-        if (null == pair) {
+        List<SegmentDestination> destinations = segments.get(table.getId());
+        if (null == destinations) {
             destinations = new ArrayList<SegmentDestination>();
-        } else {
-            destinations = pair.getValue();
-            totalCount = pair.getKey();
         }
-        destinations = rule.selectDestination(totalCount, destinations);
+        destinations = rule.selectDestination(destinations);
         // 暂时先这么处理，，，，
         if (null == destinations || destinations.isEmpty()) {
             destinations = new ArrayList<SegmentDestination>();

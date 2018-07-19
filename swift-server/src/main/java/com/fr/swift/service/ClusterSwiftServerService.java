@@ -7,22 +7,23 @@ import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.Result;
 import com.fr.swift.basics.URL;
+import com.fr.swift.basics.base.SwiftInvocation;
+import com.fr.swift.basics.base.selector.ProxySelector;
+import com.fr.swift.basics.base.selector.UrlSelector;
+import com.fr.swift.config.bean.IndexingSelectRule;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
+import com.fr.swift.config.service.IndexingSelectRuleService;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.event.base.SwiftRpcEvent;
-import com.fr.swift.basics.base.SwiftInvocation;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.netty.rpc.client.AsyncRpcCallback;
 import com.fr.swift.netty.rpc.client.async.RpcFuture;
 import com.fr.swift.netty.rpc.url.RPCDestination;
 import com.fr.swift.netty.rpc.url.RPCUrl;
-import com.fr.swift.basics.base.selector.ProxySelector;
-import com.fr.swift.basics.base.selector.UrlSelector;
+import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.service.entity.ClusterEntity;
-import com.fr.swift.service.handler.indexing.rule.IndexingSelectRule;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.stuff.HistoryIndexingStuff;
 import com.fr.swift.stuff.IndexingStuff;
@@ -56,7 +57,7 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(ClusterSwiftServerService.class);
 
-    private SwiftServiceInfoService serviceInfoService = SwiftContext.getInstance().getBean(SwiftServiceInfoService.class);
+    private SwiftServiceInfoService serviceInfoService = SwiftContext.get().getBean(SwiftServiceInfoService.class);
 
     private ClusterSwiftServerService() {
     }
@@ -82,7 +83,7 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
 
     @Override
     public void registerService(SwiftService service) {
-        SwiftProperty swiftProperty = SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class);
+        SwiftProperty swiftProperty = SwiftContext.get().getBean("swiftProperty", SwiftProperty.class);
 
         if (service.getID() == null) {
             Crasher.crash("Service's clusterId is null! Can't be registered!");
@@ -162,7 +163,8 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
                 SwiftLoggers.getLogger().info("rpc告诉indexing节点执行任务");
                 String address = null;
                 try {
-                    address = IndexingSelectRule.DEFAULT.select(indexingServiceMap);
+                    IndexingSelectRule rule = SwiftContext.get().getBean(IndexingSelectRuleService.class).getCurrentRule();
+                    address = rule.select(indexingServiceMap.keySet());
                     ClusterEntity entity = indexingServiceMap.get(address);
                     ProxyFactory factory = ProxySelector.getInstance().getFactory();
                     Invoker invoker = factory.getInvoker(null, entity.getServiceClass(), new RPCUrl(new RPCDestination(address)), false);

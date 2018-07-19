@@ -4,6 +4,7 @@ import com.fr.third.springframework.beans.factory.support.AbstractBeanDefinition
 import com.fr.third.springframework.beans.factory.support.BeanDefinitionBuilder;
 import com.fr.third.springframework.beans.factory.support.BeanDefinitionRegistry;
 import com.fr.third.springframework.beans.factory.support.DefaultListableBeanFactory;
+import com.fr.third.springframework.context.ApplicationContext;
 import com.fr.third.springframework.context.ConfigurableApplicationContext;
 import com.fr.third.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -82,5 +83,9 @@ public class SwiftContext extends ClassPathXmlApplicationContext {
      */
     public static void unregisterBean(String beanId) {
         beanDefinitionRegistry.removeBeanDefinition(beanId);
+    }
+
+    public static ApplicationContext get() {
+        return INSTANCE;
     }
 }

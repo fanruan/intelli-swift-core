@@ -1,5 +1,7 @@
 package com.fr.swift.task.impl;
 
+import com.fr.stable.StringUtils;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.task.Task;
 import com.fr.swift.task.TaskKey;
 import com.fr.swift.task.TaskResult;
@@ -45,6 +47,8 @@ abstract class BaseTask implements Task {
 
         Status prev = this.status;
         this.status = status;
+
+        SwiftLoggers.getLogger().info("{} {} {}", key, status, result == null ? StringUtils.EMPTY : result);
 
         for (TaskStatusChangeListener listener : listeners) {
             listener.onChange(prev, status);

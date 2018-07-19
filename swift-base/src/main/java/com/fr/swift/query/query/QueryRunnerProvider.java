@@ -28,19 +28,19 @@ public class QueryRunnerProvider {
 
 
     private QueryRunnerProvider() {
-        indexRunner = (QueryIndexRunner) SwiftContext.getInstance().getBean("queryIndexRunner");
+        indexRunner = (QueryIndexRunner) SwiftContext.get().getBean("queryIndexRunner");
     }
 
     public void registerRunner(QueryRunner runner) {
         this.runner = runner;
     }
 
-    public SwiftResultSet executeQuery(QueryBean info) throws SQLException {
+    public SwiftResultSet executeQuery(QueryBean info) throws Exception {
         return runner.getQueryResult(info);
     }
 
-    public SwiftResultSet executeRemoteQuery(QueryBean info, SegmentDestination remoteURI) throws SQLException {
-        return runner.getRemoteQueryResult(info, remoteURI);
+    public SwiftResultSet executeRemoteQuery(String jsonString, SegmentDestination remoteURI) throws SQLException {
+        return runner.getRemoteQueryResult(jsonString, remoteURI);
     }
 
     public Map<URI, IndexQuery<ImmutableBitMap>> executeIndexQuery(Table table, Where where) throws Exception {

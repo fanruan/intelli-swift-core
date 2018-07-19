@@ -26,7 +26,14 @@ public abstract class BaseRoaringBitMap extends AbstractBitMap {
         if (immutableMap instanceof BaseRoaringBitMap) {
             return ((BaseRoaringBitMap) immutableMap).bitmap;
         }
+
         final MutableRoaringBitmap mutableRoaringBitmap = new MutableRoaringBitmap();
+        if (immutableMap instanceof RangeBitmap) {
+            RangeBitmap bitmap = (RangeBitmap) immutableMap;
+            mutableRoaringBitmap.add((long) bitmap.start, bitmap.end);
+            return mutableRoaringBitmap;
+        }
+
         immutableMap.traversal(new TraversalAction() {
             @Override
             public void actionPerformed(int row) {

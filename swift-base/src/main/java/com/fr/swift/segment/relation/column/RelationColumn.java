@@ -82,7 +82,7 @@ public class RelationColumn {
         Util.requireNonNull(columnKey);
         this.relationSource = columnKey.getRelation();
         Util.requireNonNull(relationSource);
-        List<Segment> segments = SwiftContext.getInstance().getBean(SwiftSegmentManager.class).getSegment(relationSource.getPrimarySource());
+        List<Segment> segments = SwiftContext.get().getBean(SwiftSegmentManager.class).getSegment(relationSource.getPrimarySource());
         Util.requireNonEmpty(segments);
         this.segments = new Segment[segments.size()];
         this.segments = segments.toArray(this.segments);

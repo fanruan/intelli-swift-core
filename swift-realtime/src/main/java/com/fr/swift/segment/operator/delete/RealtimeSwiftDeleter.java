@@ -6,7 +6,6 @@ import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.backup.AllShowIndexBackup;
@@ -21,19 +20,18 @@ import com.fr.swift.source.SwiftMetaData;
  * @since Advanced FineBI Analysis 1.0
  */
 public class RealtimeSwiftDeleter extends AbstractDeleter {
+    private AllShowIndexBackup allShowIndexBackup;
 
-    public AllShowIndexBackup allShowIndexBackup;
-
-    public RealtimeSwiftDeleter(Segment segment) throws SwiftMetaDataException {
-        super(segment);
-        allShowIndexBackup = (AllShowIndexBackup) SwiftContext.getInstance().getBean("allShowIndexBackup", getBackupSegment());
+    public RealtimeSwiftDeleter(SourceKey tableKey, Segment segment) {
+        super(tableKey, segment);
+        allShowIndexBackup = (AllShowIndexBackup) SwiftContext.get().getBean("allShowIndexBackup", getBackupSegment());
     }
 
     @Override
-    public ImmutableBitMap delete(SourceKey sourceKey, Where where) throws Exception {
-        ImmutableBitMap allshowIndex = super.delete(sourceKey, where);
-        allShowIndexBackup.backupAllShowIndex(allshowIndex);
-        return allshowIndex;
+    public ImmutableBitMap delete(Where where) throws Exception {
+        ImmutableBitMap allShowIndex = super.delete(where);
+        allShowIndexBackup.backupAllShowIndex(allShowIndex);
+        return allShowIndex;
     }
 
     @Override

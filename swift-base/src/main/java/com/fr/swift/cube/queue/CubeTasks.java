@@ -26,7 +26,7 @@ public class CubeTasks {
         return name.equals(id) ? String.format("%s", id) : String.format("%s@%s", name, id);
     }
 
-    private static String newTableName(DataSource ds) throws SwiftMetaDataException {
+    public static String newTableName(DataSource ds) throws SwiftMetaDataException {
         return newId(ds.getMetadata().getTableName(), ds.getSourceKey().getId());
     }
 

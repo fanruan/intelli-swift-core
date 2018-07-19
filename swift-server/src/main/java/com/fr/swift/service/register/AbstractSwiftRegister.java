@@ -13,10 +13,10 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.service.AbstractSwiftService;
-import com.fr.swift.service.SwiftAnalyseService;
-import com.fr.swift.service.SwiftHistoryService;
-import com.fr.swift.service.SwiftIndexingService;
-import com.fr.swift.service.SwiftRealtimeService;
+import com.fr.swift.service.AnalyseService;
+import com.fr.swift.service.HistoryService;
+import com.fr.swift.service.IndexingService;
+import com.fr.swift.service.RealtimeService;
 import com.fr.swift.service.SwiftRegister;
 import com.fr.swift.service.SwiftService;
 import com.fr.swift.service.listener.RemoteServiceSender;
@@ -44,18 +44,21 @@ public abstract class AbstractSwiftRegister implements SwiftRegister {
     }
 
     public AbstractSwiftRegister() {
-        serviceInfoService = SwiftContext.getInstance().getBean(SwiftServiceInfoService.class);
+        serviceInfoService = SwiftContext.get().getBean(SwiftServiceInfoService.class);
     }
 
     protected void localServiceRegister() throws SwiftServiceException {
-        SwiftAnalyseService.getInstance().start();
-        SwiftHistoryService.getInstance().start();
-        SwiftIndexingService.getInstance().start();
-        SwiftRealtimeService.getInstance().start();
+        SwiftContext.get().getBean(IndexingService.class).start();
+
+        SwiftContext.get().getBean(HistoryService.class).start();
+
+        SwiftContext.get().getBean(RealtimeService.class).start();
+
+        SwiftContext.get().getBean(AnalyseService.class).start();
     }
 
     protected void masterLocalServiceRegister() {
-        String masterAddress = SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class).getMasterAddress();
+        String masterAddress = SwiftContext.get().getBean("swiftProperty", SwiftProperty.class).getMasterAddress();
         serviceInfoService.saveOrUpdateServiceInfo(new SwiftServiceInfoBean(SwiftClusterService.SERVICE, masterAddress, masterAddress, true));
     }
 
@@ -69,7 +72,7 @@ public abstract class AbstractSwiftRegister implements SwiftRegister {
         SwiftServiceListenerHandler senderProxy = proxyFactory.getProxy(remoteServiceSender, SwiftServiceListenerHandler.class, url);
 
         for (SwiftService swiftService : swiftServiceList) {
-            ((AbstractSwiftService) swiftService).setId(SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class).getServerAddress());
+            ((AbstractSwiftService) swiftService).setId(SwiftContext.get().getBean("swiftProperty", SwiftProperty.class).getServerAddress());
             LOGGER.info("begain to register " + swiftService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + "!");
             senderProxy.registerService(swiftService);
             LOGGER.info("register " + swiftService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + " succeed!");

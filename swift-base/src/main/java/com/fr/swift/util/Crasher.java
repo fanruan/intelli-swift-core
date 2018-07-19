@@ -20,6 +20,13 @@ public class Crasher {
         throw new RuntimeException(null, null);
     }
 
+
+    public static void crashIf(boolean exp, String msg) {
+        if (exp) {
+            throw new RuntimeException(msg, null);
+        }
+    }
+
     public static <T> T checkedCrash(String msg, Throwable t) throws Exception {
         throw new Exception(msg, t);
     }

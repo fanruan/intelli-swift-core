@@ -27,9 +27,9 @@ import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
-import com.fr.swift.source.alloter.line.LineAllotRule;
-import com.fr.swift.source.alloter.line.LineRowInfo;
-import com.fr.swift.source.alloter.line.LineSourceAlloter;
+import com.fr.swift.source.alloter.impl.line.LineAllotRule;
+import com.fr.swift.source.alloter.impl.line.LineRowInfo;
+import com.fr.swift.source.alloter.impl.line.LineSourceAlloter;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.transatcion.TransactionProxyFactory;
 import org.junit.Test;
@@ -59,7 +59,7 @@ public class RealtimeRollback extends BaseTest {
     public void setUp() throws Exception {
         super.setUp();
         SwiftContext.init();
-        redisClient = (RedisClient) SwiftContext.getInstance().getBean("redisClient");
+        redisClient = (RedisClient) SwiftContext.get().getBean("redisClient");
     }
 
 
@@ -76,7 +76,7 @@ public class RealtimeRollback extends BaseTest {
             Incrementer incrementer = new TestIncrementer(dataSource);
             incrementer.increment(resultSet);
 
-            SwiftSegmentManager localSegmentProvider = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class);
+            SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
             Segment segment = localSegmentProvider.getSegment(dataSource.getSourceKey()).get(0);
 
             assertEquals(redisClient.llen("backup_cubes/7bc94acd/seg0"), 0);
@@ -115,7 +115,7 @@ public class RealtimeRollback extends BaseTest {
             Incrementer incrementer = new Incrementer(dataSource);
             incrementer.increment(resultSet);
 
-            SwiftSegmentManager localSegmentProvider = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class);
+            SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
             Segment segment = localSegmentProvider.getSegment(dataSource.getSourceKey()).get(0);
 
             assertEquals(redisClient.llen("backup_cubes/7bc94acd/seg0"), 42);
@@ -181,7 +181,7 @@ public class RealtimeRollback extends BaseTest {
 
 
     class TestIncrementer extends Incrementer {
-        private final SwiftSegmentManager LOCAL_SEGMENT_PROVIDER = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class);
+        private final SwiftSegmentManager LOCAL_SEGMENT_PROVIDER = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         private SwiftSourceAlloter alloter;
         private DataSource dataSource;
         private Segment currentSeg;

@@ -4,9 +4,9 @@ import com.fr.config.ConfigContext;
 import com.fr.config.Configuration;
 import com.fr.config.holder.factory.Holders;
 import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.config.base.impl.SwiftAbstractSimpleConfig;
 import com.fr.swift.config.service.SwiftZipService;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.decision.config.base.SwiftAbstractSimpleConfig;
 import com.fr.transaction.Configurations;
 import com.fr.transaction.Worker;
 
@@ -42,7 +42,7 @@ public class SwiftZipConfig extends SwiftAbstractSimpleConfig<Boolean> {
             }
         });
 
-        return SwiftContext.getInstance().getBean(SwiftZipService.class).setZip(obj);
+        return SwiftContext.get().getBean(SwiftZipService.class).setZip(obj);
     }
 
     public String getNameSpace() {

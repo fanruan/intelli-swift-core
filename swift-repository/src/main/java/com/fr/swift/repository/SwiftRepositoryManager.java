@@ -14,7 +14,7 @@ public class SwiftRepositoryManager {
     private SwiftRepositoryConfService service;
 
     private SwiftRepositoryManager() {
-        service = SwiftContext.getInstance().getBean(SwiftRepositoryConfService.class);
+        service = SwiftContext.get().getBean(SwiftRepositoryConfService.class);
         service.registerListener(new SwiftRepositoryConfService.ConfChangeListener() {
             @Override
             public void change(SwiftFileSystemConfig change) {
@@ -32,7 +32,7 @@ public class SwiftRepositoryManager {
     public SwiftRepository currentRepo() {
         if (null == currentRepository) {
             synchronized (SwiftRepositoryManager.class) {
-                SwiftFileSystemConfig config = SwiftContext.getInstance().getBean(SwiftRepositoryConfService.class).getCurrentRepository();
+                SwiftFileSystemConfig config = SwiftContext.get().getBean(SwiftRepositoryConfService.class).getCurrentRepository();
                 if (null != config) {
                     currentRepository = new SwiftRepositoryImpl(config);
                 } else {

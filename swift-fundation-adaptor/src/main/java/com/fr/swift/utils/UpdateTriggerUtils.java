@@ -37,7 +37,7 @@ public class UpdateTriggerUtils {
                 return tableUpdateInfo;
             case UpdateConstants.TableUpdateType.INCREMENT:
                 DataSource incrementDataSource = DataSourceFactory.getDataSourceInCache(fineBusinessTable);
-                if (SwiftContext.getInstance().getBean(LocalSegmentProvider.class).isSegmentsExist(incrementDataSource.getSourceKey())) {
+                if (SwiftContext.get().getBean(LocalSegmentProvider.class).isSegmentsExist(incrementDataSource.getSourceKey())) {
                     return tableUpdateInfo;
                 } else {
                     TableUpdateInfo result = new TableUpdateInfo();
@@ -46,7 +46,7 @@ public class UpdateTriggerUtils {
                 }
             case UpdateConstants.TableUpdateType.NEVER:
                 DataSource neverDataSource = DataSourceFactory.getDataSourceInCache(fineBusinessTable);
-                if (!SwiftContext.getInstance().getBean(LocalSegmentProvider.class).isSegmentsExist(neverDataSource.getSourceKey())) {
+                if (!SwiftContext.get().getBean(LocalSegmentProvider.class).isSegmentsExist(neverDataSource.getSourceKey())) {
                     return tableUpdateInfo;
                 } else {
                     return null;

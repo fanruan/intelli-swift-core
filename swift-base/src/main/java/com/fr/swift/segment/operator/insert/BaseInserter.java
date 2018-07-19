@@ -1,8 +1,10 @@
 package com.fr.swift.segment.operator.insert;
 
+import com.fr.swift.bitmap.BitMapType;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
+import com.fr.swift.bitmap.impl.AllShowBitMap;
 import com.fr.swift.bitmap.impl.RangeBitmap;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types.StoreType;
@@ -74,8 +76,12 @@ public abstract class BaseInserter {
     }
 
     protected void putSegmentInfo(int lastCursor, int cursor) {
-        ImmutableBitMap allShowIndex = CubeUtil.isReadable(segment) ? segment.getAllShowIndex() : BitMaps.newRoaringMutable();
-        allShowIndex = allShowIndex.getOr(new RangeBitmap(lastCursor, cursor));
+        ImmutableBitMap allShowIndex = CubeUtil.isReadable(segment) ? segment.getAllShowIndex() : AllShowBitMap.of(0);
+        if (allShowIndex.getType() == BitMapType.ALL_SHOW) {
+            allShowIndex = AllShowBitMap.of(cursor);
+        } else {
+            allShowIndex = allShowIndex.getOr(new RangeBitmap(lastCursor, cursor));
+        }
         segment.putRowCount(cursor);
         segment.putAllShowIndex(allShowIndex);
     }

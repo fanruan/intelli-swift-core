@@ -20,8 +20,8 @@
     <bean id="decrementer" class="com.fr.swift.segment.Decrementer" scope="prototype"/>
 
     <bean id="serviceTaskExecutor" class="com.fr.swift.task.service.SwiftServiceTaskExecutor">
-        <constructor-arg name="name" value="swiftServiceTaskExecutor"/>
-        <constructor-arg name="threadNum" value="10"/>
+        <constructor-arg index="0" value="swiftServiceTaskExecutor"/>
+        <constructor-arg index="1" value="10"/>
     </bean>
 
     <!--配置不同的实现class注入-->

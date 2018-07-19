@@ -9,7 +9,6 @@ import com.fr.swift.service.ClusterSwiftServerService;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.entity.ClusterEntity;
 import com.fr.swift.service.handler.base.AbstractHandler;
-import com.fr.swift.service.handler.indexing.rule.IndexingSelectRule;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.stuff.IndexingStuff;
 import com.fr.third.springframework.stereotype.Service;
@@ -26,12 +25,7 @@ import java.util.Map;
 @Service
 public class SwiftIndexingEventHandler extends AbstractHandler<AbstractIndexingRpcEvent> {
 
-    private IndexingSelectRule rule = IndexingSelectRule.DEFAULT;
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftIndexingEventHandler.class);
-
-    public void setRule(IndexingSelectRule rule) {
-        this.rule = rule;
-    }
 
     @Override
     public <S extends Serializable> S handle(AbstractIndexingRpcEvent event) {

@@ -44,10 +44,9 @@ import com.fr.third.springframework.web.bind.annotation.RequestMapping;
 import com.fr.third.springframework.web.bind.annotation.RequestMethod;
 import com.fr.third.springframework.web.bind.annotation.ResponseBody;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author yee
@@ -58,15 +57,16 @@ public class QueryController {
 
     private SwiftMetaDataService metaDataService = SwiftContext.getInstance().getBean(SwiftMetaDataService.class);
 
-    private RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
+    private RpcServer server = SwiftContext.get().getBean(RpcServer.class);
 
     private SwiftLogger logger = SwiftLoggers.getLogger(QueryController.class);
 
     @ResponseBody
     @RequestMapping(value = "swift/query/{sourceKey}", method = RequestMethod.GET)
-    public List<Row> query(@PathVariable("sourceKey") String jsonString) throws SQLException, IOException {
-        int rowCount = 100;
+    public List<Row> query(@PathVariable("sourceKey") String jsonString) throws Exception {
+        int rowCount = 200;
         List<Row> rows = new ArrayList<Row>();
+        long start = System.currentTimeMillis();
         QueryBean queryBean = QueryInfoBeanFactory.create(jsonString);
         Query query = QueryBuilder.buildQuery(queryBean);
         SwiftResultSet resultSet = query.getQueryResult();
@@ -76,15 +76,17 @@ public class QueryController {
             }
             resultSet.close();
         }
+        logger.info("group query cost: " + TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start) + " seconds!");
         return rows;
     }
 
     @ResponseBody
     @RequestMapping(value = "swift/group/{sourceKey}", method = RequestMethod.GET)
-    public List<Row> groupQuery(@PathVariable("sourceKey") String jsonString) throws SQLException, IOException {
+    public List<Row> groupQuery(@PathVariable("sourceKey") String jsonString) throws Exception {
         List<Row> rows = new ArrayList<Row>();
         // swift-test模块的resources目录下有json示例
         QueryBean queryBean = QueryInfoBeanFactory.create(jsonString);
+        long start = System.currentTimeMillis();
         Query query = QueryBuilder.buildQuery(queryBean);
         SwiftResultSet resultSet = query.getQueryResult();
         if (resultSet != null) {
@@ -93,6 +95,7 @@ public class QueryController {
             }
             resultSet.close();
         }
+        logger.info("group query cost: " + TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start) + " seconds!");
         return rows;
     }
 
@@ -120,7 +123,7 @@ public class QueryController {
     }
 
     private URL getMasterURL() {
-        String masterAddress = SwiftContext.getInstance().getBean(SwiftProperty.class).getMasterAddress();
+        String masterAddress = SwiftContext.get().getBean(SwiftProperty.class).getMasterAddress();
         return UrlSelector.getInstance().getFactory().getURL(masterAddress);
     }
 

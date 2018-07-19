@@ -1,5 +1,6 @@
 package com.fr.swift.service;
 
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.service.listener.EventOrder;
 import com.fr.swift.service.listener.EventType;
 import com.fr.swift.service.listener.SwiftServiceListener;
@@ -27,7 +28,7 @@ public class LocalSwiftServerServiceTest {
     public void setUp() throws Exception {
         localSwiftServerService = new LocalSwiftServerService();
         localSwiftServerService.start();
-        SwiftAnalyseService.getInstance().start();
+        SwiftContext.get().getBean(AnalyseService.class).start();
     }
 
     @Test

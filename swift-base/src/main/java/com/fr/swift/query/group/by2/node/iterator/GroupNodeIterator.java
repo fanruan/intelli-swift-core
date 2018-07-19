@@ -64,6 +64,7 @@ public class GroupNodeIterator<Node extends GroupNode> implements Iterator<Node[
         iterator = new MultiGroupByV2<Node>(dftIterator, proxyStack, controller, itemMapper, rowMapper);
     }
 
+    // TODO: 2018/7/17 节点展开也不用在底层处理了
     private GroupByController<GroupNode> createController(List<DictionaryEncodedColumn> dictionaries) {
         Expander expander = groupByInfo.getExpander();
         Set<RowIndexKey<int[]>> indexKeys = strKey2IntKey(expander.getStringIndexKeys(), dictionaries);

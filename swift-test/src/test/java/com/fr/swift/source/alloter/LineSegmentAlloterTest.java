@@ -18,8 +18,9 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.source.alloter.line.LineAllotRule;
-import com.fr.swift.source.alloter.line.LineRowInfo;
+import com.fr.swift.source.alloter.impl.SwiftSourceAlloterFactory;
+import com.fr.swift.source.alloter.impl.line.LineAllotRule;
+import com.fr.swift.source.alloter.impl.line.LineRowInfo;
 import com.fr.swift.source.core.Core;
 import com.fr.swift.test.Preparer;
 import com.fr.swift.test.TestIo;
@@ -114,7 +115,7 @@ public class LineSegmentAlloterTest extends TestIo {
             }
         };
 
-        Inserter inserter = SwiftContext.getInstance().getBean(LocalDataOperatorProvider.class).getHistoryBlockSwiftInserter(dataSource);
+        Inserter inserter = SwiftContext.get().getBean(LocalDataOperatorProvider.class).getHistoryBlockSwiftInserter(dataSource);
         inserter.insertData(resultSet);
         SwiftSourceAlloter alloter = SwiftSourceAlloterFactory.createLineSourceAlloter(sourceKey, sourceKey.getId());
         int lastIndex = -1;

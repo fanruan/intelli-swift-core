@@ -16,7 +16,7 @@ public class SwiftSegmentServiceProvider implements SwiftSegmentService {
     private SwiftSegmentService service;
 
     private SwiftSegmentServiceProvider() {
-        this.service = SwiftContext.getInstance().getBean("swiftSegmentService", SwiftSegmentService.class);
+        this.service = SwiftContext.get().getBean("swiftSegmentService", SwiftSegmentService.class);
     }
 
     public static SwiftSegmentServiceProvider getProvider() {

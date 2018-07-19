@@ -1,6 +1,6 @@
 package com.fr.swift.netty.rpc.registry.impl;
 
-import com.fr.swift.config.bean.unique.RpcServiceAddressUnique;
+import com.fr.swift.config.bean.RpcServiceAddressBean;
 import com.fr.swift.config.service.SwiftServiceAddressService;
 import com.fr.swift.netty.rpc.registry.ServiceRegistry;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +17,6 @@ public class DbServiceRegistry implements ServiceRegistry {
 
     @Override
     public void register(String serviceName, String serviceAddress) {
-        config.addOrUpdateAddress(serviceAddress, new RpcServiceAddressUnique(serviceAddress).convert());
+        config.addOrUpdateAddress(serviceAddress, new RpcServiceAddressBean(serviceAddress));
     }
 }

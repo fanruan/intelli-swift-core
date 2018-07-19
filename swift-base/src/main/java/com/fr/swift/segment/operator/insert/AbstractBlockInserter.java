@@ -27,8 +27,8 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
-import com.fr.swift.source.alloter.SwiftSourceAlloterFactory;
-import com.fr.swift.source.alloter.line.LineRowInfo;
+import com.fr.swift.source.alloter.impl.SwiftSourceAlloterFactory;
+import com.fr.swift.source.alloter.impl.line.LineRowInfo;
 import com.fr.swift.util.Crasher;
 
 import java.sql.SQLException;
@@ -142,7 +142,7 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
             end();
             return;
         } else {
-            List<Segment> cubeSourceSegments = SwiftContext.getInstance().getBean(SwiftSegmentManager.class).getSegment(new SourceKey(cubeSourceKey));
+            List<Segment> cubeSourceSegments = SwiftContext.get().getBean(SwiftSegmentManager.class).getSegment(new SourceKey(cubeSourceKey));
             for (int i = 0; i < cubeSourceSegments.size(); i++) {
                 Segment segment = cubeSourceSegments.get(i);
                 createSegment(i, segment.isHistory() ? Types.StoreType.FINE_IO : Types.StoreType.MEMORY);

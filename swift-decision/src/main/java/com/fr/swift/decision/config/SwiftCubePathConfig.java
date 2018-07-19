@@ -5,10 +5,10 @@ import com.fr.config.Configuration;
 import com.fr.config.holder.factory.Holders;
 import com.fr.stable.StringUtils;
 import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.config.base.impl.SwiftAbstractSimpleConfig;
 import com.fr.swift.config.service.SwiftPathService;
 import com.fr.swift.context.ContextUtil;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.decision.config.base.SwiftAbstractSimpleConfig;
 import com.fr.transaction.Configurations;
 import com.fr.transaction.Worker;
 
@@ -47,7 +47,7 @@ public class SwiftCubePathConfig extends SwiftAbstractSimpleConfig<String> {
     public String get() {
         String path = super.get();
         if (StringUtils.isEmpty(path)) {
-            path = SwiftContext.getInstance().getBean(SwiftPathService.class).getSwiftPath();
+            path = SwiftContext.get().getBean(SwiftPathService.class).getSwiftPath();
         }
         return StringUtils.isEmpty(path) ? BASE_CUBE_PATH : path;
     }
@@ -66,7 +66,7 @@ public class SwiftCubePathConfig extends SwiftAbstractSimpleConfig<String> {
                     return new Class[]{SwiftCubePathConfig.class};
                 }
             });
-            return SwiftContext.getInstance().getBean(SwiftPathService.class).setSwiftPath(path);
+            return SwiftContext.get().getBean(SwiftPathService.class).setSwiftPath(path);
         }
         return false;
     }

@@ -1,6 +1,5 @@
 package com.fr.swift.query.builder;
 
-import com.fr.general.ComparatorUtils;
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.query.aggregator.Aggregator;
@@ -31,7 +30,6 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -61,17 +59,8 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
         List<Query<NodeResultSet>> queries = new ArrayList<Query<NodeResultSet>>();
         List<Metric> metrics = info.getMetrics();
         List<Dimension> dimensions = info.getDimensions();
-        List<Segment> segments = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegment(info.getTable());
-        List<Segment> targetSegments = new ArrayList<Segment>();
-        URI segmentOrder = info.getQuerySegment();
-        if (segmentOrder != null) {
-            for (Segment segment : segments) {
-                if (ComparatorUtils.equals(segment.getLocation().getUri(), segmentOrder)) {
-                    targetSegments.add(segment);
-                    break;
-                }
-            }
-        }
+        List<Segment> segments = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegment(info.getTable());
+        List<Segment> targetSegments = LocalDetailNormalQueryBuilder.getSegmentsByURIList(info.getQuerySegment(), segments);
         if (targetSegments.isEmpty()) {
             targetSegments = segments;
         }

@@ -1,7 +1,5 @@
 package com.fr.swift.service;
 
-import com.fr.swift.config.service.SwiftMetaDataService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.event.base.SwiftRpcEvent;
 
 import java.io.Serializable;

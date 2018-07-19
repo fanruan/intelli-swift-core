@@ -136,8 +136,8 @@ public class NodeGroupByUtils {
     static void updateGlobalDictionariesAndGlobalIndex(GroupNode[] row, List<Map<Integer, Object>> globalDictionaries,
                                                        List<DictionaryEncodedColumn> dictionaries) {
         for (int i = 0; i < row.length; i++) {
-            if (row[i] == null) {
-                break;
+            if (row[i].isGlobalIndexUpdated()) {
+                continue;
             }
             int globalIndex = dictionaries.get(i).getGlobalIndexByIndex(row[i].getDictionaryIndex());
             if (globalDictionaries.get(i).containsKey(globalIndex)) {

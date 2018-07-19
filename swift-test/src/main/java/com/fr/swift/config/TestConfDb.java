@@ -26,6 +26,15 @@ public class TestConfDb {
     private static final String PATH = System.getProperty("user.dir") + "/config";
 
     public static DBContext setConfDb() throws Exception {
+        return setConfDb(Entity.class,
+                XmlEntity.class,
+                ClassHelper.class,
+                SwiftMetaDataEntity.class,
+                SwiftSegmentEntity.class,
+                SwiftServiceInfoEntity.class);
+    }
+
+    public static DBContext setConfDb(Class<?>... entities) throws Exception {
         Preparer.prepareFrEnv();
         FileUtil.delete(PATH + ".mv.db");
         FileUtil.delete(PATH + ".trace.db");
@@ -39,13 +48,10 @@ public class TestConfDb {
                 .addRawProperty("hibernate.format_sql", true)
                 .addRawProperty("hibernate.connection.autocommit", true);
         DBContext dbProvider = DBContext.create();
-        dbProvider.addEntityClass(Entity.class);
-        dbProvider.addEntityClass(XmlEntity.class);
-        dbProvider.addEntityClass(ClassHelper.class);
 
-        dbProvider.addEntityClass(SwiftMetaDataEntity.class);
-        dbProvider.addEntityClass(SwiftSegmentEntity.class);
-        dbProvider.addEntityClass(SwiftServiceInfoEntity.class);
+        for (Class<?> entity : entities) {
+            dbProvider.addEntityClass(entity);
+        }
 
         dbProvider.init(dbOption);
         BaseDBEnv.setDBContext(dbProvider);

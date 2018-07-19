@@ -1,5 +1,6 @@
 package com.fr.swift.service;
 
+import com.fineio.FineIO;
 import com.fr.event.Event;
 import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
@@ -66,7 +67,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @RpcService(type = RpcServiceType.CLIENT_SERVICE, value = IndexingService.class)
 public class SwiftIndexingService extends AbstractSwiftService implements IndexingService {
     private static final long serialVersionUID = -7430843337225891194L;
-    private transient RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
+
+    @Autowired
+    private transient RpcServer server;
 
     private static Map<TaskKey, Object> stuffObject = new ConcurrentHashMap<TaskKey, Object>();
 
@@ -76,17 +79,13 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     @Autowired
     private transient ServiceTaskExecutor taskExecutor;
 
-    public static SwiftIndexingService getInstance() {
-        return SingletonHolder.service;
-    }
-
     public SwiftIndexingService(String id) {
         super(id);
     }
 
     @Override
     public String getID() {
-        return StringUtils.isEmpty(super.getID()) ? SwiftContext.getInstance().getBean(SwiftProperty.class).getServerAddress() : super.getID();
+        return StringUtils.isEmpty(super.getID()) ? SwiftContext.get().getBean(SwiftProperty.class).getServerAddress() : super.getID();
     }
 
     @Override
@@ -136,12 +135,8 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
         return new ServerCurrentStatus(getID());
     }
 
-    private static class SingletonHolder {
-        private static SwiftIndexingService service = new SwiftIndexingService();
-    }
-
     private URL getMasterURL() {
-        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.getInstance().getBean(SwiftServiceInfoService.class).getServiceInfoByService(SwiftClusterService.SERVICE);
+        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.get().getBean(SwiftServiceInfoService.class).getServiceInfoByService(SwiftClusterService.SERVICE);
         SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
         return UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
     }
@@ -151,9 +146,12 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
             @Override
             public void on(Event event, final Pair<TaskKey, TaskResult> result) {
                 SwiftLoggers.getLogger().info("rpc通知server任务完成");
-                // TODO 这里是FineIO 修改后的，现在还没有提fineio，先直接用runnable来run吧
-//                JobFinishedManager.getInstance().finish(new UploadRunnable(result));
-                new UploadRunnable(result).run();
+                try {
+                    runRpc(new TaskDoneRpcEvent(result));
+                    FineIO.doWhenFinished(new UploadRunnable(result));
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().error(e);
+                }
             }
         });
 
@@ -259,9 +257,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
             TaskKey key = result.getKey();
             Object obj = stuffObject.get(key);
             try {
-                runRpc(new TaskDoneRpcEvent(result));
                 if (null != obj) {
-
                     if (obj instanceof DataSource) {
                         uploadTable((DataSource) obj);
                     } else if (obj instanceof RelationSource) {

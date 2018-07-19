@@ -55,12 +55,12 @@ public class SwiftDataProvider implements DataProvider {
 
     @Override
     public List<Segment> getRealData(DataSource dataSource) {
-        return SwiftContext.getInstance().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
+        return SwiftContext.get().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
     }
 
     @Override
     public boolean isSwiftAvailable(DataSource dataSource) {
-        return SwiftContext.getInstance().getBean(LocalSegmentProvider.class).isSegmentsExist(dataSource.getSourceKey());
+        return SwiftContext.get().getBean(LocalSegmentProvider.class).isSegmentsExist(dataSource.getSourceKey());
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.fr.swift.query.builder;
 
-import com.fr.general.ComparatorUtils;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.info.FilterInfo;
@@ -19,31 +18,36 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by pony on 2017/12/14.
  */
 public class LocalDetailNormalQueryBuilder implements LocalDetailQueryBuilder {
 
-    private final SwiftSegmentManager localSegmentProvider = SwiftContext.getInstance().getBean("localSegmentProvider", SwiftSegmentManager.class);
+    private final SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
 
     protected LocalDetailNormalQueryBuilder() {
+    }
+
+    static List<Segment> getSegmentsByURIList(Set<URI> uris, List<Segment> segments) {
+        List<Segment> result = new ArrayList<Segment>();
+        if (uris == null || uris.isEmpty()) {
+            return result;
+        }
+        for (Segment segment : segments) {
+            if (uris.contains(segment.getLocation().getUri())) {
+                result.add(segment);
+            }
+        }
+        return result;
     }
 
     @Override
     public Query<DetailResultSet> buildLocalQuery(DetailQueryInfo info) {
         List<Query<DetailResultSet>> queries = new ArrayList<Query<DetailResultSet>>();
         List<Segment> segments = localSegmentProvider.getSegment(info.getTable());
-        List<Segment> targetSegments = new ArrayList<Segment>();
-        URI segmentOrder = info.getQuerySegment();
-        if (segmentOrder != null) {
-            for (Segment segment : segments) {
-                if (ComparatorUtils.equals(segment.getLocation().getUri(), segmentOrder)) {
-                    targetSegments.add(segment);
-                    break;
-                }
-            }
-        }
+        List<Segment> targetSegments = getSegmentsByURIList(info.getQuerySegment(), segments);
         if (targetSegments.isEmpty()) {
             targetSegments = segments;
         }
@@ -54,9 +58,6 @@ public class LocalDetailNormalQueryBuilder implements LocalDetailQueryBuilder {
             List<Column> columns = new ArrayList<Column>();
             for (Dimension dimension : dimensions) {
                 columns.add(dimension.getColumn(segment));
-//                if (dimension.getFilter() != null) {
-//                    filterInfos.add(dimension.getFilter());
-//                }
             }
             if (info.getFilterInfo() != null) {
                 filterInfos.add(info.getFilterInfo());

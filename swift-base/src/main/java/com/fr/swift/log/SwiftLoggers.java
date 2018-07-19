@@ -6,7 +6,7 @@ import com.fr.swift.util.function.Function;
  * @author anchore
  */
 public final class SwiftLoggers {
-    private static Function<?, SwiftLogger> loggerFactory = new SwiftLog4jLoggers();
+    private static Function<?, SwiftLogger> loggerFactory = new SwiftFrLoggers();
 
     /**
      *  不用static final SwiftLogger = SwiftLoggers.getLogger();的方式了

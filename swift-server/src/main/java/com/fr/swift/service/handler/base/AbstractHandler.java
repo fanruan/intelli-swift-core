@@ -18,7 +18,7 @@ import com.fr.swift.basics.base.selector.ProxySelector;
  */
 public abstract class AbstractHandler<E extends SwiftRpcEvent> implements Handler<E> {
 
-    protected RpcServer rpcServer = SwiftContext.getInstance().getBean(RpcServer.class);
+    protected RpcServer rpcServer = SwiftContext.get().getBean(RpcServer.class);
 
     protected RpcFuture runAsyncRpc(String address, Class serviceClass, String method, Object... args) throws Exception {
         ProxyFactory factory = ProxySelector.getInstance().getFactory();

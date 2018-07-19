@@ -1,6 +1,5 @@
 package com.fr.swift.config.service.impl;
 
-import com.fr.general.ComparatorUtils;
 import com.fr.swift.config.bean.SwiftFileSystemConfig;
 import com.fr.swift.config.convert.SwiftFileSystemConvert;
 import com.fr.swift.config.service.SwiftConfigService;
@@ -31,7 +30,8 @@ public class SwiftRepositoryConfServiceImpl implements SwiftRepositoryConfServic
     @Override
     public boolean setCurrentRepository(SwiftFileSystemConfig config) {
         SwiftFileSystemConfig current = getCurrentRepository();
-        if (null == current || !ComparatorUtils.equals(config, current)) {
+        if (!config.equals(current)) {
+            configService.deleteConfigBean(CONVERT, current);
             for (ConfChangeListener changeListener : changeListeners) {
                 changeListener.change(config);
             }

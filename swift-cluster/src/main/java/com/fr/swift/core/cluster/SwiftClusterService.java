@@ -30,7 +30,7 @@ public class SwiftClusterService implements ClusterService {
     private ClusterLock clusterLock = factory.get(SwiftClusterService.class);
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftClusterService.class);
-    private SwiftServiceInfoService serviceInfoService = SwiftContext.getInstance().getBean(SwiftServiceInfoService.class);
+    private SwiftServiceInfoService serviceInfoService = SwiftContext.get().getBean(SwiftServiceInfoService.class);
 
     private SwiftClusterService() {
     }
@@ -44,7 +44,7 @@ public class SwiftClusterService implements ClusterService {
     @Override
     public boolean competeMaster() {
         LOGGER.info("Start to compete master !");
-        SwiftProperty swiftProperty = SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class);
+        SwiftProperty swiftProperty = SwiftContext.get().getBean("swiftProperty", SwiftProperty.class);
         ClusterNode currentNode = FRClusterNodeManager.getInstance().getCurrentNode();
         try {
             clusterLock.lock();

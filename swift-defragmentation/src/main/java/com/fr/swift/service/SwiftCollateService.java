@@ -1,6 +1,9 @@
 package com.fr.swift.service;
 
 import com.fr.general.ComparatorUtils;
+import com.fr.swift.annotation.RpcMethod;
+import com.fr.swift.annotation.RpcService;
+import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.service.SwiftSegmentServiceProvider;
 import com.fr.swift.context.SwiftContext;
@@ -14,9 +17,6 @@ import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.exception.SegmentKeyException;
 import com.fr.swift.exception.TableNotExistException;
 import com.fr.swift.generate.segment.operator.merger.MergerResultSet;
-import com.fr.swift.annotation.RpcMethod;
-import com.fr.swift.annotation.RpcService;
-import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
@@ -29,9 +29,9 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
-import com.fr.swift.source.alloter.line.LineAllotRule;
-import com.fr.swift.source.alloter.line.LineRowInfo;
-import com.fr.swift.source.alloter.line.LineSourceAlloter;
+import com.fr.swift.source.alloter.impl.line.LineAllotRule;
+import com.fr.swift.source.alloter.impl.line.LineRowInfo;
+import com.fr.swift.source.alloter.impl.line.LineSourceAlloter;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
@@ -52,7 +52,7 @@ import java.util.List;
 @RpcService(value = CollateService.class, type = RpcServiceType.CLIENT_SERVICE)
 public class SwiftCollateService extends AbstractSwiftService implements CollateService {
 
-    private transient SwiftSegmentManager segmentManager = (SwiftSegmentManager) SwiftContext.getInstance().getBean("localSegmentProvider");
+    private transient SwiftSegmentManager segmentManager = (SwiftSegmentManager) SwiftContext.get().getBean("localSegmentProvider");
 
     private transient Database database = SwiftDatabase.getInstance();
 

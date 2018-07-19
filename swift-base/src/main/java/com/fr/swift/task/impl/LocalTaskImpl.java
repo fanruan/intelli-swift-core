@@ -1,6 +1,5 @@
 package com.fr.swift.task.impl;
 
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.task.LocalTask;
 import com.fr.swift.task.SchedulerTask;
 import com.fr.swift.task.TaskKey;
@@ -77,8 +76,6 @@ public class LocalTaskImpl extends BaseTask implements LocalTask {
         }
         this.result = result;
         setStatus(Status.DONE);
-
-        SwiftLoggers.getLogger().info(String.format("%s %s", key, result));
 
         TaskTomb.getTomb().add(this);
     }

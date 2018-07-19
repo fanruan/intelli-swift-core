@@ -4,18 +4,18 @@ import com.fr.stable.StringUtils;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.URL;
+import com.fr.swift.basics.base.SwiftInvocation;
+import com.fr.swift.basics.base.selector.ProxySelector;
+import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.core.cluster.SwiftClusterService;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
 import com.fr.swift.event.indexing.IndexRpcEvent;
-import com.fr.swift.core.cluster.SwiftClusterService;
-import com.fr.swift.basics.base.SwiftInvocation;
-import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.netty.rpc.server.RpcServer;
-import com.fr.swift.basics.base.selector.ProxySelector;
-import com.fr.swift.basics.base.selector.UrlSelector;
+import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.db.TableDBSource;
@@ -41,7 +41,7 @@ import java.util.Map;
 @Controller
 public class HistoryIndexingController {
 
-    private RpcServer server = SwiftContext.getInstance().getBean(RpcServer.class);
+    private RpcServer server = SwiftContext.get().getBean(RpcServer.class);
 
     @ResponseBody
     @RequestMapping(value = "swift/index/{tableName}", method = RequestMethod.GET)
@@ -83,7 +83,7 @@ public class HistoryIndexingController {
     }
 
     private URL getMasterURL() {
-        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.getInstance().getBean(SwiftServiceInfoService.class).getServiceInfoByService(SwiftClusterService.SERVICE);
+        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.get().getBean(SwiftServiceInfoService.class).getServiceInfoByService(SwiftClusterService.SERVICE);
         SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
         return UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
     }
