@@ -39,6 +39,7 @@ import com.fr.swift.task.service.SwiftServiceCallable;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -163,7 +164,8 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
                 collater.collate(swiftResultSet);
 
                 IResourceLocation location = newSeg.getLocation();
-                SegmentKey newSegKey = new SegmentKeyBean(tableKey.getId(), location.getUri(), newOrder, location.getStoreType(), newSeg.getMetaData().getSwiftSchema());
+
+                SegmentKey newSegKey = new SegmentKeyBean(tableKey.getId(), URI.create(tableKey.getId() + "/seg" + newOrder), newOrder, location.getStoreType(), newSeg.getMetaData().getSwiftSchema());
                 newSegKeys.add(newSegKey);
                 newOrder++;
                 swiftResultSet.close();

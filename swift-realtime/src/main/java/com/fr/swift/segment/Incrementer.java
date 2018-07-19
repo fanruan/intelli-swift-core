@@ -24,6 +24,7 @@ import com.fr.swift.source.alloter.impl.line.LineSourceAlloter;
 import com.fr.swift.structure.ListResultSet;
 import com.fr.swift.transatcion.TransactionProxyFactory;
 
+import java.net.URI;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
@@ -108,7 +109,8 @@ public class Incrementer implements Inserter {
 
     private void persistSegment(Segment seg, int order) {
         IResourceLocation location = seg.getLocation();
-        SegmentKey segKey = new SegmentKeyBean(dataSource.getSourceKey().getId(), location.getUri(), order, location.getStoreType(), seg.getMetaData().getSwiftSchema());
+        String path = String.format("%s/seg%d", dataSource.getSourceKey().getId(), order);
+        SegmentKey segKey = new SegmentKeyBean(dataSource.getSourceKey().getId(), URI.create(path), order, location.getStoreType(), seg.getMetaData().getSwiftSchema());
         if (!SwiftSegmentServiceProvider.getProvider().containsSegment(segKey)) {
             SwiftSegmentServiceProvider.getProvider().addSegments(Collections.singletonList(segKey));
         }

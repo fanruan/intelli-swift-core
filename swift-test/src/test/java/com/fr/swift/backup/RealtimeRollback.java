@@ -34,6 +34,7 @@ import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.transatcion.TransactionProxyFactory;
 import org.junit.Test;
 
+import java.net.URI;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -212,8 +213,9 @@ public class RealtimeRollback extends BaseTest {
             }
 
             IResourceLocation location = currentSeg.getLocation();
+            String uri = String.format("%s/seg%d", dataSource.getSourceKey().getId(), count++);
             SegmentKey segKey = new SegmentKeyBean(dataSource.getSourceKey().getId(),
-                    location.getUri(), count++, location.getStoreType(), currentSeg.getMetaData().getSwiftSchema());
+                    URI.create(uri), count, location.getStoreType(), currentSeg.getMetaData().getSwiftSchema());
             if (!SwiftSegmentServiceProvider.getProvider().containsSegment(segKey)) {
                 SwiftSegmentServiceProvider.getProvider().addSegments(Collections.singletonList(segKey));
             }

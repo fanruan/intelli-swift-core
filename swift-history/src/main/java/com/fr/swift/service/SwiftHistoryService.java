@@ -100,7 +100,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                         entity.setLastPath(current);
                         entity.setTablePath(tmp);
                         tablePathService.saveOrUpdate(entity);
-                        String cubePath = String.format("%s/%s/%d/%s", path, metaData.getSwiftSchema().getDir(), tmp, sourceKey);
+                        String cubePath = String.format("%s/%s/%d/%s", path, metaData.getSwiftSchema().getDir(), current, sourceKey);
                         FileUtil.delete(cubePath);
                         new File(cubePath).getParentFile().delete();
                     }
