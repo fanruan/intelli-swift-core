@@ -79,9 +79,9 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     @Autowired
     private transient RpcServer server;
     @Autowired
-    private SwiftPathService pathService;
+    private transient SwiftPathService pathService;
     @Autowired
-    private SwiftTablePathService tablePathService;
+    private transient SwiftTablePathService tablePathService;
 
     private static Map<TaskKey, Object> stuffObject = new ConcurrentHashMap<TaskKey, Object>();
 
