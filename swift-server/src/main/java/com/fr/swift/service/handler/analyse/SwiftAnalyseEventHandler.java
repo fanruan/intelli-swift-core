@@ -3,7 +3,7 @@ package com.fr.swift.service.handler.analyse;
 import com.fr.swift.event.base.AbstractAnalyseRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.rpc.client.AsyncRpcCallback;
+import com.fr.swift.netty.rpc.client.AsyncRpcCallback;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.service.ClusterSwiftServerService;
 import com.fr.swift.service.ServiceType;

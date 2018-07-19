@@ -1,6 +1,6 @@
 package com.fr.swift.service.entity;
 
-import com.fr.swift.URL;
+import com.fr.swift.basics.URL;
 import com.fr.swift.service.ServiceType;
 
 /**

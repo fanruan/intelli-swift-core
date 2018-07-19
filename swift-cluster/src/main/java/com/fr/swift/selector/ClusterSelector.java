@@ -1,8 +1,8 @@
 package com.fr.swift.selector;
 
 import com.fr.swift.ClusterNodeManager;
-import com.fr.swift.Selector;
-import com.fr.swift.core.rpc.FRClusterNodeManager;
+import com.fr.swift.basics.Selector;
+import com.fr.swift.core.cluster.FRClusterNodeManager;
 
 /**
  * This class created on 2018/6/13

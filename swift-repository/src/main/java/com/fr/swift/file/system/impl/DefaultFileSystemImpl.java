@@ -22,7 +22,7 @@ public class DefaultFileSystemImpl extends AbstractFileSystem {
 
     @Override
     protected SwiftFileSystem[] list() {
-        String[] list = ResourceIOUtils.listWithFullPath(getResourceURI().getPath());
+        String[] list = ResourceIOUtils.list(getResourceURI().getPath());
         SwiftFileSystem[] result = new SwiftFileSystem[list.length];
         for (int i = 0; i < list.length; i++) {
             result[i] = new DefaultFileSystemImpl(getConfig(), URI.create(list[i]));

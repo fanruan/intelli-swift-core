@@ -3,27 +3,26 @@ package com.fr.swift.service;
 import com.fr.event.Event;
 import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
-import com.fr.swift.Invoker;
-import com.fr.swift.ProxyFactory;
-import com.fr.swift.Result;
-import com.fr.swift.URL;
+import com.fr.swift.basics.Invoker;
+import com.fr.swift.basics.ProxyFactory;
+import com.fr.swift.basics.Result;
+import com.fr.swift.basics.URL;
+import com.fr.swift.basics.base.SwiftInvocation;
+import com.fr.swift.basics.base.selector.ProxySelector;
+import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.config.bean.IndexingSelectRule;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.IndexingSelectRuleService;
-import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.event.base.SwiftRpcEvent;
-import com.fr.swift.invocation.SwiftInvocation;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.netty.rpc.client.AsyncRpcCallback;
+import com.fr.swift.netty.rpc.client.async.RpcFuture;
+import com.fr.swift.netty.rpc.url.RPCDestination;
+import com.fr.swift.netty.rpc.url.RPCUrl;
 import com.fr.swift.property.SwiftProperty;
-import com.fr.swift.rpc.client.AsyncRpcCallback;
-import com.fr.swift.rpc.client.async.RpcFuture;
-import com.fr.swift.rpc.url.RPCDestination;
-import com.fr.swift.rpc.url.RPCUrl;
-import com.fr.swift.selector.ProxySelector;
-import com.fr.swift.selector.UrlSelector;
 import com.fr.swift.service.entity.ClusterEntity;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.stuff.HistoryIndexingStuff;
@@ -78,11 +77,6 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
     }
 
     @Override
-    public void cleanMetaCache(String[] sourceKeys) {
-        SwiftContext.get().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
-    }
-
-    @Override
     public Serializable trigger(SwiftRpcEvent event) {
         return null;
     }
@@ -97,7 +91,7 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
         LOGGER.info(service.getID() + " register service :" + service.getServiceType().name());
         synchronized (this) {
             serviceInfoService.saveOrUpdateServiceInfo(new SwiftServiceInfoBean(
-                    service.getServiceType().name(), service.getID(), swiftProperty.getRpcAddress(), false));
+                    service.getServiceType().name(), service.getID(), swiftProperty.getServerAddress(), false));
 
             URL url = UrlSelector.getInstance().getFactory().getURL(service.getID());
             switch (service.getServiceType()) {
