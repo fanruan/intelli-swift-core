@@ -77,7 +77,9 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
                     entity.getId().setClusterId(clusterId);
                     boolean success = swiftTablePathDao.saveOrUpdate(session, entity);
                     if (success) {
-                        tablePath.put(entity.getId().getTableKey().getId(), entity.getTablePath());
+                        if (null != entity.getTablePath()) {
+                            tablePath.put(entity.getId().getTableKey().getId(), entity.getTablePath());
+                        }
                         return true;
                     }
                     return false;
@@ -120,8 +122,11 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
                         SwiftTablePathEntity entity = swiftTablePathDao.select(session, new SwiftTablePathKey(table, clusterId));
                         if (null != entity) {
                             Integer path = entity.getTablePath();
-                            tablePath.put(table, path);
-                            return path;
+                            if (null != path) {
+                                tablePath.put(table, path);
+                                return path;
+                            }
+                            return 0;
                         }
                         return 0;
                     }

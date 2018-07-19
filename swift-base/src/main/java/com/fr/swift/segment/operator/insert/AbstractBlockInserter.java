@@ -34,9 +34,7 @@ import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.source.alloter.impl.SwiftSourceAlloterFactory;
 import com.fr.swift.source.alloter.impl.line.LineRowInfo;
 import com.fr.swift.util.Crasher;
-import com.fr.swift.util.FileUtil;
 
-import java.io.File;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -95,7 +93,8 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
         if (null == entity) {
             entity = new SwiftTablePathEntity(sourceKey.getId(), 0);
         } else {
-            entity.setTmpDir(entity.getTablePath() + 1);
+            cubeTmpPath = entity.getTablePath() + 1;
+            entity.setTmpDir(cubeTmpPath);
         }
         tablePathService.saveOrUpdate(entity);
         for (int i = 0; i < segments.size(); i++) {
@@ -225,13 +224,13 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
                 entity.setTablePath(tmpPath);
                 entity.setLastPath(path);
                 if (tablePathService.saveOrUpdate(entity)) {
-                    String deletePath = String.format("%s/%s/%d/%s",
-                            pathService.getSwiftPath(),
-                            swiftMetaData.getSwiftSchema().getDir(),
-                            path,
-                            sourceKey.getId());
-                    FileUtil.delete(deletePath);
-                    new File(deletePath).getParentFile().delete();
+//                    String deletePath = String.format("%s/%s/%d/%s",
+//                            pathService.getSwiftPath(),
+//                            swiftMetaData.getSwiftSchema().getDir(),
+//                            path,
+//                            sourceKey.getId());
+//                    FileUtil.delete(deletePath);
+//                    new File(deletePath).getParentFile().delete();
                 }
             }
         });
