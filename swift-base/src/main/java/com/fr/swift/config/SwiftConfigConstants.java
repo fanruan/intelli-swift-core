@@ -1,10 +1,28 @@
 package com.fr.swift.config;
 
+import com.fr.swift.config.entity.SwiftConfigEntity;
+import com.fr.swift.config.entity.SwiftMetaDataEntity;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
+import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
+import com.fr.swift.config.entity.SwiftServiceInfoEntity;
+import com.fr.swift.config.indexing.impl.SwiftColumnIndexingConf;
+import com.fr.swift.config.indexing.impl.SwiftTableIndexingConf;
+
 /**
  * @author yee
  * @date 2018/5/28
  */
 public class SwiftConfigConstants {
+    public static final Class<?>[] ENTITIES = {
+            SwiftMetaDataEntity.class,
+            SwiftSegmentEntity.class,
+            SwiftServiceInfoEntity.class,
+            SwiftSegmentLocationEntity.class,
+            SwiftConfigEntity.class,
+            SwiftTableIndexingConf.class,
+            SwiftColumnIndexingConf.class
+    };
+
     public static final int LONG_TEXT_LENGTH = 65536;
 
     public static class SegmentConfig {

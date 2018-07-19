@@ -129,6 +129,6 @@ public class RangeBitmap extends AbstractBitMap {
 
     @Override
     public String toString() {
-        return String.format("{%d, ..., %d}", start, end);
+        return String.format("{%d, ..., %d}", start, end - 1);
     }
 }
