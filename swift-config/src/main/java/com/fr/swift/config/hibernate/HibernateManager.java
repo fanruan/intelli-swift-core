@@ -1,13 +1,6 @@
 package com.fr.swift.config.hibernate;
 
-import com.fr.swift.config.entity.SwiftConfigEntity;
-import com.fr.swift.config.entity.SwiftMetaDataEntity;
-import com.fr.swift.config.entity.SwiftSegmentEntity;
-import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
-import com.fr.swift.config.entity.SwiftServiceInfoEntity;
-import com.fr.swift.config.entity.SwiftTablePathEntity;
-import com.fr.swift.config.indexing.impl.SwiftColumnIndexingConf;
-import com.fr.swift.config.indexing.impl.SwiftTableIndexingConf;
+import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.third.org.hibernate.SessionFactory;
 import com.fr.third.org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import com.fr.third.org.hibernate.cfg.Configuration;
@@ -31,17 +24,9 @@ public class HibernateManager {
     @Bean
     public Configuration getConfiguration() {
         Configuration configuration = new Configuration();
-        configuration.addAnnotatedClass(SwiftConfigEntity.class);
-        configuration.addAnnotatedClass(SwiftMetaDataEntity.class);
-        configuration.addAnnotatedClass(SwiftSegmentEntity.class);
-        configuration.addAnnotatedClass(SwiftServiceInfoEntity.class);
-        configuration.addAnnotatedClass(SwiftSegmentLocationEntity.class);
-
-        configuration.addAnnotatedClass(SwiftTableIndexingConf.class);
-        configuration.addAnnotatedClass(SwiftColumnIndexingConf.class);
-
-        configuration.addAnnotatedClass(SwiftTablePathEntity.class);
-
+        for (Class<?> entity : SwiftConfigConstants.ENTITIES) {
+            configuration.addAnnotatedClass(entity);
+        }
         configuration.setProperties(properties.getProperties());
         return configuration;
     }
