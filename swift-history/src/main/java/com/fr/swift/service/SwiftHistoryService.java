@@ -1,6 +1,5 @@
 package com.fr.swift.service;
 
-import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftPathService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Where;
@@ -10,9 +9,9 @@ import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.SwiftRepositoryManager;
-import com.fr.swift.rpc.annotation.RpcMethod;
-import com.fr.swift.rpc.annotation.RpcService;
-import com.fr.swift.rpc.annotation.RpcServiceType;
+import com.fr.swift.annotation.RpcMethod;
+import com.fr.swift.annotation.RpcService;
+import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.operator.delete.WhereDeleter;
@@ -67,13 +66,6 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
             SwiftLoggers.getLogger().warn("Receive an empty URI set. Skip loading.");
         }
     }
-
-    @Override
-    @RpcMethod(methodName = "cleanMetaCache")
-    public void cleanMetaCache(String[] sourceKeys) {
-        SwiftContext.get().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
-    }
-
 
     @Override
     public ServiceType getServiceType() {

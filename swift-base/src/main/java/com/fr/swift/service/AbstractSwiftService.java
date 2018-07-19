@@ -44,6 +44,4 @@ public abstract class AbstractSwiftService implements SwiftService, Serializable
     public void setId(String id) {
         this.id = id;
     }
-
-    public abstract void cleanMetaCache(String[] sourceKeys);
 }

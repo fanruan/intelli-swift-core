@@ -8,7 +8,7 @@ import com.fr.cluster.rpc.base.Result;
 import com.fr.intelli.record.scene.impl.BaseMetric;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.data.DataList;
-import com.fr.swift.core.rpc.FRClusterNodeManager;
+import com.fr.swift.core.cluster.FRClusterNodeManager;
 
 import java.util.List;
 

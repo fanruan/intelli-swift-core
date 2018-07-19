@@ -14,15 +14,15 @@ import com.fr.third.springframework.stereotype.Service;
 @Service
 public class SwiftProperty {
 
-    private String serverAddress;
+    private boolean isCluster;
+
+    private String clusterId;
 
     private String masterAddress;
 
     private String rpcAddress;
 
-    private boolean clusterIsConfigure;
-
-    private boolean isCluster;
+    private String httpAddress;
 
     private String configDbDriverClass;
 
@@ -33,13 +33,8 @@ public class SwiftProperty {
     private String configDbJdbcUrl;
 
     @Autowired
-    public void setRpcAddress(@Value("${rpc.server_address}") String rpcAddress) {
+    public void setRpcAddress(@Value("${swift.rpc_server_address}") String rpcAddress) {
         this.rpcAddress = rpcAddress;
-    }
-
-    @Autowired
-    public void setServerAddress(@Value("${rpc.server_address}") String serverAddress) {
-        this.serverAddress = serverAddress;
     }
 
     @Autowired
@@ -47,9 +42,13 @@ public class SwiftProperty {
         this.masterAddress = masterAddress;
     }
 
+    public void setClusterId(@Value("${swift.clusterId}") String clusterId) {
+        this.clusterId = clusterId;
+    }
+
     @Autowired
-    public void setClusterIsConfigure(@Value("${swift.cluster_is_configure}") String clusterWhetherConfigure) {
-        this.clusterIsConfigure = Boolean.parseBoolean(clusterWhetherConfigure);
+    public void setHttpAddress(@Value("${swift.http_server_address}") String httpAddress) {
+        this.httpAddress = httpAddress;
     }
 
     @Autowired
@@ -93,23 +92,23 @@ public class SwiftProperty {
         this.configDbJdbcUrl = configDbJdbcUrl;
     }
 
-    public String getRpcAddress() {
-        return rpcAddress;
+    public boolean isCluster() {
+        return isCluster;
     }
 
-    public String getServerAddress() {
-        return serverAddress;
+    public String getClusterId() {
+        return clusterId;
     }
 
     public String getMasterAddress() {
         return masterAddress;
     }
 
-    public boolean isClusterIsConfigure() {
-        return clusterIsConfigure;
+    public String getServerAddress() {
+        return rpcAddress;
     }
 
-    public boolean isCluster() {
-        return isCluster;
+    public String getHttpAddress() {
+        return httpAddress;
     }
 }

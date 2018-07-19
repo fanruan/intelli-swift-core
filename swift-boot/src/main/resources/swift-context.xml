@@ -2,7 +2,6 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:mvc="http://www.springframework.org/schema/mvc"
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans
        classpath:/com/fr/third/springframework/beans/factory/xml/spring-beans-4.0.xsd
@@ -12,27 +11,15 @@
        classpath:/com/fr/third/springframework/web/servlet/config/spring-mvc-4.0.xsd">
 
     <!--基本和环境配置-->
-    <context:property-placeholder location="classpath:rpc.properties,classpath:swift.properties"/>
+    <context:property-placeholder location="classpath:swift.properties"/>
 
     <context:annotation-config/>
-    <context:component-scan base-package="com.fr.swift.rpc.service"/>
+    <context:component-scan base-package="com.fr.swift.netty.rpc.service"/>
     <context:component-scan base-package="com.fr.swift.service.listener"/>
     <context:component-scan base-package="com.fr.swift.service"/>
     <context:component-scan base-package="com.fr.swift.config"/>
-    <context:component-scan base-package="com.fr.swift.http"/>
-
-    <mvc:annotation-driven>
-        <mvc:message-converters>
-            <bean class="com.fr.startup.web.annotation.MappingJackson2HttpMessageConverter"/>
-        </mvc:message-converters>
-    </mvc:annotation-driven>
-
-    <mvc:interceptors>
-        <mvc:interceptor>
-            <mvc:mapping path="/**"/>
-            <bean class="com.fr.swift.http.servlet.interceptor.EndecryptionInterceptor"/>
-        </mvc:interceptor>
-    </mvc:interceptors>
+    <context:component-scan base-package="com.fr.swift.rm"/>
+    <context:component-scan base-package="com.fr.swift.nm"/>
 
     <import resource="swift-beans.xml"/>
     <import resource="swift-services.xml"/>

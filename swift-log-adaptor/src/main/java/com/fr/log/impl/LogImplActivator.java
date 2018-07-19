@@ -5,7 +5,7 @@ import com.fr.intelli.record.MetricRegistry;
 import com.fr.module.Activator;
 import com.fr.module.extension.Prepare;
 import com.fr.swift.adaptor.log.MetricProxy;
-import com.fr.swift.core.rpc.SwiftClusterTicket;
+import com.fr.swift.core.cluster.SwiftClusterTicket;
 
 /**
  * @author anchore
