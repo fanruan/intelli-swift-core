@@ -13,21 +13,14 @@ import com.fr.data.impl.Connection;
 import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.stable.db.DBContext;
 import com.fr.stable.db.option.DBOption;
-import com.fr.swift.config.entity.SwiftConfigEntity;
-import com.fr.swift.config.entity.SwiftMetaDataEntity;
-import com.fr.swift.config.entity.SwiftSegmentEntity;
-import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
-import com.fr.swift.config.entity.SwiftServiceInfoEntity;
+import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.hibernate.SwiftConfigProperties;
-import com.fr.swift.config.indexing.impl.SwiftColumnIndexingConf;
-import com.fr.swift.config.indexing.impl.SwiftTableIndexingConf;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.ProviderTaskManager;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.event.ClusterType;
-import com.fr.swift.http.SwiftHttpServer;
 import com.fr.swift.log.FineIOLoggerImpl;
 import com.fr.swift.log.SwiftLog4jLoggers;
 import com.fr.swift.log.SwiftLoggers;
@@ -86,14 +79,9 @@ public class SwiftEngineStart {
         dbProvider.addEntityClass(XmlEntity.class);
         dbProvider.addEntityClass(ClassHelper.class);
 
-        dbProvider.addEntityClass(SwiftConfigEntity.class);
-        dbProvider.addEntityClass(SwiftMetaDataEntity.class);
-        dbProvider.addEntityClass(SwiftSegmentEntity.class);
-        dbProvider.addEntityClass(SwiftServiceInfoEntity.class);
-        dbProvider.addEntityClass(SwiftSegmentLocationEntity.class);
-
-        dbProvider.addEntityClass(SwiftTableIndexingConf.class);
-        dbProvider.addEntityClass(SwiftColumnIndexingConf.class);
+        for (Class<?> entity : SwiftConfigConstants.ENTITIES) {
+            dbProvider.addEntityClass(entity);
+        }
 
         dbProvider.init(dbOption);
         BaseDBEnv.setDBContext(dbProvider);
