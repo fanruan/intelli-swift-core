@@ -9,9 +9,9 @@ import com.fr.swift.config.entity.SwiftTablePathEntity;
 public interface SwiftTablePathService extends ConfigService<SwiftTablePathEntity> {
     boolean removePath(String table);
 
-    String getTablePath(String table);
+    Integer getTablePath(String table);
 
-    String getLastPath(String table);
+    Integer getLastPath(String table);
 
     SwiftTablePathEntity get(String table);
 }

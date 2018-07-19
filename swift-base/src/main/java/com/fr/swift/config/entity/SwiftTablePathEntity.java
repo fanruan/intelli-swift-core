@@ -1,6 +1,5 @@
 package com.fr.swift.config.entity;
 
-import com.fr.stable.StringUtils;
 import com.fr.swift.config.entity.key.SwiftTablePathKey;
 import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Entity;
@@ -17,19 +16,19 @@ public class SwiftTablePathEntity {
     @Id
     private SwiftTablePathKey id;
     @Column
-    private String tablePath;
+    private Integer tablePath;
     @Column
-    private String lastPath;
+    private Integer lastPath;
     @Column
-    private String tmpDir;
+    private Integer tmpDir;
 
-    public SwiftTablePathEntity(SwiftTablePathKey id, String tablePath) {
+    public SwiftTablePathEntity(SwiftTablePathKey id, Integer tablePath) {
         this.id = id;
         this.tablePath = tablePath;
         this.tmpDir = tablePath;
     }
 
-    public SwiftTablePathEntity(String table, String tmpDir) {
+    public SwiftTablePathEntity(String table, Integer tmpDir) {
         this.tmpDir = tmpDir;
         this.id = new SwiftTablePathKey(table);
     }
@@ -37,13 +36,6 @@ public class SwiftTablePathEntity {
     public SwiftTablePathEntity() {
     }
 
-    public String getTablePath() {
-        return StringUtils.isEmpty(tablePath) ? StringUtils.EMPTY : tablePath;
-    }
-
-    public void setTablePath(String tablePath) {
-        this.tablePath = tablePath;
-    }
 
     public SwiftTablePathKey getId() {
         return id;
@@ -53,19 +45,27 @@ public class SwiftTablePathEntity {
         this.id = id;
     }
 
-    public String getLastPath() {
+    public Integer getTablePath() {
+        return tablePath;
+    }
+
+    public void setTablePath(Integer tablePath) {
+        this.tablePath = tablePath;
+    }
+
+    public Integer getLastPath() {
         return lastPath;
     }
 
-    public void setLastPath(String lastPath) {
+    public void setLastPath(Integer lastPath) {
         this.lastPath = lastPath;
     }
 
-    public String getTmpDir() {
+    public Integer getTmpDir() {
         return tmpDir;
     }
 
-    public void setTmpDir(String tmpDir) {
+    public void setTmpDir(Integer tmpDir) {
         this.tmpDir = tmpDir;
     }
 

@@ -1,6 +1,5 @@
 package com.fr.swift.config.service.impl;
 
-import com.fr.stable.StringUtils;
 import com.fr.swift.config.dao.BasicDao;
 import com.fr.swift.config.dao.SwiftConfigDao;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
@@ -34,7 +33,7 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
     @Autowired
     private HibernateTransactionManager tx;
     private String clusterId = SwiftTablePathKey.LOCALHOST;
-    private ConcurrentHashMap<String, String> tablePath = new ConcurrentHashMap<String, String>();
+    private ConcurrentHashMap<String, Integer> tablePath = new ConcurrentHashMap<String, Integer>();
 
     public SwiftTablePathServiceImpl() {
         ClusterListenerHandler.addListener(new ClusterEventListener() {
@@ -111,44 +110,44 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
     }
 
     @Override
-    public String getTablePath(final String table) {
+    public Integer getTablePath(final String table) {
         try {
-            String path = tablePath.get(table);
-            if (StringUtils.isEmpty(path)) {
-                path = tx.doTransactionIfNeed(new AbstractTransactionWorker<String>() {
+            Integer path = tablePath.get(table);
+            if (null == path) {
+                path = tx.doTransactionIfNeed(new AbstractTransactionWorker<Integer>() {
                     @Override
-                    public String work(Session session) throws SQLException {
+                    public Integer work(Session session) throws SQLException {
                         SwiftTablePathEntity entity = swiftTablePathDao.select(session, new SwiftTablePathKey(table, clusterId));
                         if (null != entity) {
-                            String path = entity.getTablePath();
+                            Integer path = entity.getTablePath();
                             tablePath.put(table, path);
                             return path;
                         }
-                        return StringUtils.EMPTY;
+                        return 0;
                     }
                 });
             }
             return path;
         } catch (SQLException e) {
-            return StringUtils.EMPTY;
+            return 0;
         }
     }
 
     @Override
-    public String getLastPath(final String table) {
+    public Integer getLastPath(final String table) {
         try {
-            return tx.doTransactionIfNeed(new AbstractTransactionWorker<String>() {
+            return tx.doTransactionIfNeed(new AbstractTransactionWorker<Integer>() {
                 @Override
-                public String work(Session session) throws SQLException {
+                public Integer work(Session session) throws SQLException {
                     SwiftTablePathEntity entity = swiftTablePathDao.select(session, new SwiftTablePathKey(table, clusterId));
                     if (null != entity) {
                         return entity.getLastPath();
                     }
-                    return StringUtils.EMPTY;
+                    return 0;
                 }
             });
         } catch (SQLException e) {
-            return StringUtils.EMPTY;
+            return 0;
         }
     }
 

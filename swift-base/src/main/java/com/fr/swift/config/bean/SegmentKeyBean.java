@@ -41,16 +41,21 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
         this.id = toString();
         this.swiftSchema = schema;
         String path = service.getSwiftPath();
-        initAbsoluteUri(path);
+        Integer current = tablePathService.getTablePath(sourceKey);
+        initAbsoluteUri(path, current);
     }
 
     public SegmentKeyBean() {
     }
 
-    private void initAbsoluteUri(String path) {
+    private void initAbsoluteUri(String path, Integer current) {
         path = Strings.trimSeparator(path, "\\", "/");
-        path = "/" + path + "/";
-        absoluteUri = URI.create(Strings.trimSeparator(path, "/")).resolve(uri);
+        path = String.format("/%s/%s/%d/%s",
+                path,
+                swiftSchema.getDir(),
+                current,
+                uri.getPath());
+        absoluteUri = URI.create(path);
     }
 
     public String getSourceKey() {
@@ -72,7 +77,7 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
     @Override
     public URI getAbsoluteUri() {
         if (null == absoluteUri) {
-            initAbsoluteUri(service.getSwiftPath());
+            initAbsoluteUri(service.getSwiftPath(), tablePathService.getTablePath(sourceKey));
         }
         return absoluteUri;
     }
@@ -110,7 +115,6 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
     }
 
 
-
     public void setStoreType(Types.StoreType storeType) {
         this.storeType = storeType;
     }
@@ -134,6 +138,7 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
         entity.setSegmentOrder(order);
         entity.setStoreType(storeType);
         entity.setSegmentUri(uri);
+        entity.setSwiftSchema(swiftSchema);
         return entity;
     }
 

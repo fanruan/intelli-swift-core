@@ -33,7 +33,6 @@ import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.source.alloter.impl.SwiftSourceAlloterFactory;
 import com.fr.swift.source.alloter.impl.line.LineRowInfo;
-import com.fr.swift.source.core.MD5Utils;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.FileUtil;
 
@@ -64,7 +63,7 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
     private SwiftSourceAlloter alloter;
     private SegmentIndexCache segmentIndexCache;
     private int startSegIndex;
-    protected String cubeTmpPath;
+    protected Integer cubeTmpPath = 0;
     private SwiftSegmentService segmentService = SwiftSegmentServiceProvider.getProvider();
     private SwiftPathService pathService = SwiftContext.get().getBean(SwiftPathService.class);
     private SwiftTablePathService tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
@@ -92,12 +91,11 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
         this.segments = segments;
         this.segmentIndexCache = new SegmentIndexCache();
         this.startSegIndex = segments.size();
-        cubeTmpPath = MD5Utils.getMD5String(new String[]{String.valueOf(System.currentTimeMillis())});
         SwiftTablePathEntity entity = tablePathService.get(sourceKey.getId());
         if (null == entity) {
-            entity = new SwiftTablePathEntity(sourceKey.getId(), cubeTmpPath);
+            entity = new SwiftTablePathEntity(sourceKey.getId(), 0);
         } else {
-            entity.setTmpDir(cubeTmpPath);
+            entity.setTmpDir(entity.getTablePath() + 1);
         }
         tablePathService.saveOrUpdate(entity);
         for (int i = 0; i < segments.size(); i++) {
@@ -173,7 +171,7 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
         }
     }
 
-    protected abstract Segment createSegment(int order, String tmpPath);
+    protected abstract Segment createSegment(int order, Integer tmpPath);
 
     /**
      * 创建Segment
@@ -183,8 +181,8 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
      * @return
      * @throws Exception
      */
-    protected Segment createSegment(int order, Types.StoreType storeType, String tmpPath) {
-        String cubePath = String.format("%s/%s/%s/seg%d",
+    protected Segment createSegment(int order, Types.StoreType storeType, Integer tmpPath) {
+        String cubePath = String.format("%s/%d/%s/seg%d",
                 swiftMetaData.getSwiftSchema().getDir(),
                 tmpPath,
                 cubeSourceKey, order);
@@ -222,12 +220,12 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
             @Override
             public void run() {
                 SwiftTablePathEntity entity = SwiftContext.get().getBean(SwiftTablePathService.class).get(sourceKey.getId());
-                String path = entity.getTablePath();
-                String tmpPath = entity.getTmpDir();
+                Integer path = entity.getTablePath();
+                Integer tmpPath = entity.getTmpDir();
                 entity.setTablePath(tmpPath);
                 entity.setLastPath(path);
                 if (tablePathService.saveOrUpdate(entity)) {
-                    String deletePath = String.format("%s/%s/%s/%s",
+                    String deletePath = String.format("%s/%s/%d/%s",
                             pathService.getSwiftPath(),
                             swiftMetaData.getSwiftSchema().getDir(),
                             path,
