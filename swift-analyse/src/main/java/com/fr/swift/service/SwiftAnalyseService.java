@@ -1,30 +1,29 @@
 package com.fr.swift.service;
 
-import com.fr.swift.Invoker;
-import com.fr.swift.ProxyFactory;
-import com.fr.swift.Result;
-import com.fr.swift.config.service.SwiftMetaDataService;
+import com.fr.swift.basics.Invoker;
+import com.fr.swift.basics.ProxyFactory;
+import com.fr.swift.basics.Result;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.exception.SwiftServiceException;
-import com.fr.swift.invocation.SwiftInvocation;
+import com.fr.swift.basics.base.SwiftInvocation;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryRunnerProvider;
-import com.fr.swift.rpc.annotation.RpcMethod;
-import com.fr.swift.rpc.annotation.RpcService;
-import com.fr.swift.rpc.annotation.RpcServiceType;
-import com.fr.swift.rpc.client.AsyncRpcCallback;
-import com.fr.swift.rpc.client.async.RpcFuture;
-import com.fr.swift.rpc.server.RpcServer;
-import com.fr.swift.rpc.url.RPCDestination;
-import com.fr.swift.rpc.url.RPCUrl;
+import com.fr.swift.annotation.RpcMethod;
+import com.fr.swift.annotation.RpcService;
+import com.fr.swift.annotation.RpcServiceType;
+import com.fr.swift.netty.rpc.client.AsyncRpcCallback;
+import com.fr.swift.netty.rpc.client.async.RpcFuture;
+import com.fr.swift.netty.rpc.server.RpcServer;
+import com.fr.swift.netty.rpc.url.RPCDestination;
+import com.fr.swift.netty.rpc.url.RPCUrl;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
-import com.fr.swift.selector.ProxySelector;
+import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
@@ -76,12 +75,6 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
         boolean start = super.start();
         QueryRunnerProvider.getInstance().registerRunner(this);
         return start;
-    }
-
-    @Override
-    @RpcMethod(methodName = "cleanMetaCache")
-    public void cleanMetaCache(String[] sourceKeys) {
-        SwiftContext.getInstance().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
     }
 
     @Override

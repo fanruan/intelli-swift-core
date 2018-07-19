@@ -1,19 +1,18 @@
 package com.fr.swift.service;
 
-import com.fr.swift.Invoker;
-import com.fr.swift.ProxyFactory;
-import com.fr.swift.Result;
-import com.fr.swift.URL;
+import com.fr.swift.basics.Invoker;
+import com.fr.swift.basics.ProxyFactory;
+import com.fr.swift.basics.Result;
+import com.fr.swift.basics.URL;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
-import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.core.rpc.SwiftClusterService;
+import com.fr.swift.core.cluster.SwiftClusterService;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.event.global.PushSegLocationRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
-import com.fr.swift.invocation.SwiftInvocation;
+import com.fr.swift.basics.base.SwiftInvocation;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
@@ -23,20 +22,20 @@ import com.fr.swift.query.session.AbstractSession;
 import com.fr.swift.query.session.Session;
 import com.fr.swift.query.session.SessionBuilder;
 import com.fr.swift.query.session.factory.SessionFactory;
-import com.fr.swift.rpc.annotation.RpcMethod;
-import com.fr.swift.rpc.annotation.RpcService;
-import com.fr.swift.rpc.annotation.RpcServiceType;
-import com.fr.swift.rpc.client.AsyncRpcCallback;
-import com.fr.swift.rpc.client.async.RpcFuture;
-import com.fr.swift.rpc.server.RpcServer;
+import com.fr.swift.annotation.RpcMethod;
+import com.fr.swift.annotation.RpcService;
+import com.fr.swift.annotation.RpcServiceType;
+import com.fr.swift.netty.rpc.client.AsyncRpcCallback;
+import com.fr.swift.netty.rpc.client.async.RpcFuture;
+import com.fr.swift.netty.rpc.server.RpcServer;
 import com.fr.swift.segment.Incrementer;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.operator.delete.RowDeleter;
 import com.fr.swift.segment.recover.SegmentRecovery;
-import com.fr.swift.selector.ProxySelector;
-import com.fr.swift.selector.UrlSelector;
+import com.fr.swift.basics.base.selector.ProxySelector;
+import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
@@ -114,12 +113,6 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     @RpcMethod(methodName = "recover")
     public void recover(List<SegmentKey> tableKeys) {
         SwiftLoggers.getLogger().info("recover");
-    }
-
-    @Override
-    @RpcMethod(methodName = "cleanMetaCache")
-    public void cleanMetaCache(String[] sourceKeys) {
-        SwiftContext.getInstance().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
     }
 
     @Override

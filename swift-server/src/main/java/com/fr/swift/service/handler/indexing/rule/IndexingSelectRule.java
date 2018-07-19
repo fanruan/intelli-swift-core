@@ -1,13 +1,13 @@
 package com.fr.swift.service.handler.indexing.rule;
 
-import com.fr.swift.Invoker;
-import com.fr.swift.ProxyFactory;
+import com.fr.swift.basics.Invoker;
+import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.info.ServerCurrentStatus;
-import com.fr.swift.invocation.SwiftInvocation;
-import com.fr.swift.result.SwiftResult;
-import com.fr.swift.rpc.url.RPCDestination;
-import com.fr.swift.rpc.url.RPCUrl;
-import com.fr.swift.selector.ProxySelector;
+import com.fr.swift.basics.base.SwiftInvocation;
+import com.fr.swift.basics.base.SwiftResult;
+import com.fr.swift.netty.rpc.url.RPCDestination;
+import com.fr.swift.netty.rpc.url.RPCUrl;
+import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.service.entity.ClusterEntity;
 
 import java.lang.reflect.Method;

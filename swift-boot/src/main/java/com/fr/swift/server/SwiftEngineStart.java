@@ -12,7 +12,6 @@ import com.fr.data.impl.Connection;
 import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.stable.db.DBContext;
 import com.fr.stable.db.option.DBOption;
-import com.fr.swift.boot.ClusterListener;
 import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
@@ -26,7 +25,6 @@ import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.event.ClusterType;
 import com.fr.swift.generate.conf.SwiftColumnIndexingConf;
-import com.fr.swift.http.SwiftHttpServer;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.service.register.LocalSwiftRegister;
@@ -51,14 +49,12 @@ public class SwiftEngineStart {
         try {
             SimpleWork.checkIn(System.getProperty("user.dir"));
             SwiftContext.init();
-            SwiftContext.getInstance().getBean(SwiftHttpServer.class).start();
-            SwiftLoggers.getLogger().info("http server starting!");
 //            FR 的配置可以不需要的，这里把在fr的配置同步到新的
             initConfDB();
             registerTmpConnectionProvider();
 //            FineIO.setLogger(new FineIOLoggerImpl());
             new LocalSwiftRegister().serviceRegister();
-            ClusterListenerHandler.addListener(new ClusterListener());
+            ClusterListenerHandler.addListener(new SwiftClusterListener());
             ProviderTaskManager.start();
             if (SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class).isCluster()) {
                 ClusterListenerHandler.handlerEvent(new ClusterEvent(ClusterEventType.JOIN_CLUSTER, ClusterType.CONFIGURE));

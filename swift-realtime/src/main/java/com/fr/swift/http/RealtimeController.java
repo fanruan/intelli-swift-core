@@ -1,13 +1,13 @@
 package com.fr.swift.http;
 
 import com.fr.stable.StringUtils;
-import com.fr.swift.URL;
+import com.fr.swift.core.cluster.SwiftClusterService;
+import com.fr.swift.basics.URL;
+import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.impl.SwiftDatabase;
-import com.fr.swift.frrpc.SwiftClusterService;
-import com.fr.swift.selector.UrlSelector;
 import com.fr.swift.service.RealtimeService;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftResultSet;

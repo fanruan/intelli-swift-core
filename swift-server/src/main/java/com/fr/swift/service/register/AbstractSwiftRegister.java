@@ -1,17 +1,17 @@
 package com.fr.swift.service.register;
 
-import com.fr.swift.ProxyFactory;
-import com.fr.swift.URL;
+import com.fr.swift.basics.ProxyFactory;
+import com.fr.swift.basics.URL;
+import com.fr.swift.basics.base.selector.ProxySelector;
+import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.core.cluster.SwiftClusterService;
 import com.fr.swift.exception.SwiftServiceException;
-import com.fr.swift.core.rpc.SwiftClusterService;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
-import com.fr.swift.selector.ProxySelector;
-import com.fr.swift.selector.UrlSelector;
 import com.fr.swift.service.AbstractSwiftService;
 import com.fr.swift.service.SwiftAnalyseService;
 import com.fr.swift.service.SwiftHistoryService;
@@ -69,7 +69,7 @@ public abstract class AbstractSwiftRegister implements SwiftRegister {
         SwiftServiceListenerHandler senderProxy = proxyFactory.getProxy(remoteServiceSender, SwiftServiceListenerHandler.class, url);
 
         for (SwiftService swiftService : swiftServiceList) {
-            ((AbstractSwiftService) swiftService).setId(SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class).getRpcAddress());
+            ((AbstractSwiftService) swiftService).setId(SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class).getServerAddress());
             LOGGER.info("begain to register " + swiftService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + "!");
             senderProxy.registerService(swiftService);
             LOGGER.info("register " + swiftService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + " succeed!");
