@@ -2,6 +2,7 @@ package com.fr.swift.result;
 
 import com.fr.swift.util.Clearable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -12,8 +13,9 @@ import java.util.List;
  *
  * @author Daniel
  */
-public class ChildMap<T> implements Clearable,Iterable<T> {
+public class ChildMap<T> implements Clearable, Iterable<T>, Serializable {
 
+    private static final long serialVersionUID = -682636692617824298L;
     private LinkedHashMap<Object, Integer> lmp = new LinkedHashMap<Object, Integer>();
     private ArrayList<T> list = new ArrayList<T>();
 

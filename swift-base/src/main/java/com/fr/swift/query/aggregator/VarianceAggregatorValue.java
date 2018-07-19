@@ -8,6 +8,7 @@ package com.fr.swift.query.aggregator;
 
 public class VarianceAggregatorValue implements AggregatorValue<Number> {
 
+    private static final long serialVersionUID = -1088961855163086997L;
     private double sum;
     private double squareSum;
     private int count;
