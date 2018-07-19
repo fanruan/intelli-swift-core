@@ -218,7 +218,10 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
             if (null != segmentKeys) {
                 for (SegmentKey segmentKey : segmentKeys) {
                     try {
-                        SwiftRepositoryManager.getManager().currentRepo().copyToRemote(segmentKey.getAbsoluteUri(), segmentKey.getUri());
+                        String uploadPath = String.format("%s/%s",
+                                segmentKey.getSwiftSchema().getDir(),
+                                segmentKey.getUri().getPath());
+                        SwiftRepositoryManager.getManager().currentRepo().copyToRemote(segmentKey.getAbsoluteUri(), URI.create(uploadPath));
                     } catch (IOException e) {
                         logger.error("upload error! ", e);
                     }
@@ -248,8 +251,15 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
                 if (relation.getRelationType() != RelationSourceType.FIELD_RELATION) {
                     for (SegmentKey segmentKey : segmentKeys) {
                         try {
-                            URI src = URI.create(String.format("%s/%s/%s", Strings.trimSeparator(segmentKey.getAbsoluteUri().getPath() + "/", "/"), RelationIndexImpl.RELATIONS_KEY, primary.getId()));
-                            URI dest = URI.create(String.format("%s/%s/%s", Strings.trimSeparator(segmentKey.getUri().getPath() + "/", "/"), RelationIndexImpl.RELATIONS_KEY, primary.getId()));
+                            URI src = URI.create(String.format("%s/%s/%s",
+                                    Strings.trimSeparator(segmentKey.getAbsoluteUri().getPath() + "/", "/"),
+                                    RelationIndexImpl.RELATIONS_KEY,
+                                    primary.getId()));
+                            URI dest = URI.create(String.format("%s/%s/%s/%s",
+                                    segmentKey.getSwiftSchema().getDir(),
+                                    Strings.trimSeparator(segmentKey.getUri().getPath() + "/", "/"),
+                                    RelationIndexImpl.RELATIONS_KEY,
+                                    primary.getId()));
                             SwiftRepositoryManager.getManager().currentRepo().copyToRemote(src, dest);
                             needUpload.add(dest);
                         } catch (IOException e) {
@@ -259,8 +269,15 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
                 } else {
                     for (SegmentKey segmentKey : segmentKeys) {
                         try {
-                            URI src = URI.create(String.format("%s/%s%s/%s", Strings.trimSeparator(segmentKey.getAbsoluteUri().getPath() + "/", "/"), "field", RelationIndexImpl.RELATIONS_KEY, primary.getId()));
-                            URI dest = URI.create(String.format("%s/%s/%s/%s", Strings.trimSeparator(segmentKey.getUri().getPath() + "/", "/"), "field", RelationIndexImpl.RELATIONS_KEY, primary.getId()));
+                            URI src = URI.create(String.format("%s/field/%s/%s",
+                                    Strings.trimSeparator(segmentKey.getAbsoluteUri().getPath() + "/", "/"),
+                                    RelationIndexImpl.RELATIONS_KEY,
+                                    primary.getId()));
+                            URI dest = URI.create(String.format("%s/%s/field/%s/%s",
+                                    segmentKey.getSwiftSchema().getDir(),
+                                    Strings.trimSeparator(segmentKey.getUri().getPath() + "/", "/"),
+                                    RelationIndexImpl.RELATIONS_KEY,
+                                    primary.getId()));
                             SwiftRepositoryManager.getManager().currentRepo().copyToRemote(src, dest);
                             needUpload.add(dest);
                         } catch (IOException e) {
