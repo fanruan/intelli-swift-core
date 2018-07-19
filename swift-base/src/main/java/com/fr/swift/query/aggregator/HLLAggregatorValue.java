@@ -10,6 +10,7 @@ import com.fr.swift.util.Crasher;
  */
 public class HLLAggregatorValue implements AggregatorValue {
 
+    private static final long serialVersionUID = 2390681614784335256L;
     private HyperLogLog hyperLogLog;
 
     public HLLAggregatorValue() {

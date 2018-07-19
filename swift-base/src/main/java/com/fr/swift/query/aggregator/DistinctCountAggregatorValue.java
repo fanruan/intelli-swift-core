@@ -9,6 +9,7 @@ import com.fr.swift.bitmap.impl.RoaringMutableBitMap;
 public class DistinctCountAggregatorValue implements AggregatorValue<Double> {
 
 
+    private static final long serialVersionUID = -6054571707233716739L;
     private RoaringMutableBitMap bitMap = (RoaringMutableBitMap) RoaringMutableBitMap.of();
 
 

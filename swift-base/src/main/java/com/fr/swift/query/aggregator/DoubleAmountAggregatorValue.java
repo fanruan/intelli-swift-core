@@ -6,6 +6,7 @@ package com.fr.swift.query.aggregator;
 
 public class DoubleAmountAggregatorValue implements AggregatorValue<Double> {
 
+    private static final long serialVersionUID = -2269511519928083111L;
     private double value;
 
     public DoubleAmountAggregatorValue(double value) {
