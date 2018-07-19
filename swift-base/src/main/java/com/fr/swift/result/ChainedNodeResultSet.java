@@ -30,7 +30,6 @@ public class ChainedNodeResultSet implements NodeResultSet<SwiftNode> {
     public SwiftNode<SwiftNode> getNode() {
         SwiftNode ret = null;
         if (hasNextPage()) {
-            // TODO: 2018/6/13 当前resultSet要不要缓存上一页的结果呢？
             ret = operator.operate(source.getNode());
         }
         return ret;

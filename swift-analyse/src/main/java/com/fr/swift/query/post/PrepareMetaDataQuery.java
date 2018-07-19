@@ -38,6 +38,6 @@ public class PrepareMetaDataQuery extends AbstractPostQuery<NodeResultSet> {
             public SwiftNode operate(SwiftNode... node) {
                 return node[0];
             }
-        }, query.getQueryResult(), metaData);
+        }, resultSet, metaData);
     }
 }
