@@ -1,7 +1,5 @@
 package com.fr.swift.collate;
 
-import com.fr.stable.query.condition.QueryCondition;
-import com.fr.stable.query.restriction.RestrictionFactory;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
@@ -9,7 +7,6 @@ import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftWhere;
 import com.fr.swift.generate.BaseTest;
-import com.fr.swift.query.condition.SwiftQueryFactory;
 import com.fr.swift.redis.RedisClient;
 import com.fr.swift.segment.Decrementer;
 import com.fr.swift.segment.Incrementer;
@@ -68,8 +65,8 @@ public class RealtimeCollateTest extends BaseTest {
         incrementer.increment(resultSet);
 
         List<Segment> segments = swiftSegmentManager.getSegment(dataSource.getSourceKey());
-        QueryCondition eqQueryCondition = SwiftQueryFactory.create().addRestriction(RestrictionFactory.eq("合同类型", "购买合同"));
-        Where where = new SwiftWhere(eqQueryCondition);
+
+        Where where = new SwiftWhere(HistoryCollateTest.createEqualFilter("合同类型", "购买合同"));
         //合并前7块增量块，且只要allshow是购买合同
         assertEquals(7, segments.size());
         for (Segment segment : segments) {
@@ -115,8 +112,8 @@ public class RealtimeCollateTest extends BaseTest {
         incrementer.increment(resultSet);
 
         List<Segment> segments = swiftSegmentManager.getSegment(dataSource.getSourceKey());
-        QueryCondition eqQueryCondition = SwiftQueryFactory.create().addRestriction(RestrictionFactory.eq("合同类型", "购买合同"));
-        Where where = new SwiftWhere(eqQueryCondition);
+
+        Where where = new SwiftWhere(HistoryCollateTest.createEqualFilter("合同类型", "购买合同"));
         //合并前7块增量块，且只要allshow是购买合同
         assertEquals(7, segments.size());
         for (Segment segment : segments) {

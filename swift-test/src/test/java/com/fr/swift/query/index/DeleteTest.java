@@ -1,7 +1,5 @@
 package com.fr.swift.query.index;
 
-import com.fr.stable.query.condition.QueryCondition;
-import com.fr.stable.query.restriction.RestrictionFactory;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Database;
@@ -11,7 +9,10 @@ import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.db.impl.SwiftWhere;
 import com.fr.swift.generate.BaseTest;
 import com.fr.swift.manager.LocalSegmentProvider;
-import com.fr.swift.query.condition.SwiftQueryFactory;
+import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
+import com.fr.swift.query.info.bean.element.filter.impl.NumberInRangeFilterBean;
+import com.fr.swift.query.info.bean.element.filter.impl.value.RangeFilterValueBean;
+import com.fr.swift.query.query.FilterBean;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
@@ -25,6 +26,8 @@ import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.QueryDBSource;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Collections;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertNotEquals;
@@ -48,6 +51,22 @@ public class DeleteTest extends BaseTest {
         SwiftContext.get().getBean(AnalyseService.class).start();
     }
 
+    private static FilterBean createEqualFilter(String fieldName, String value) {
+        InFilterBean bean = new InFilterBean();
+        bean.setColumn(fieldName);
+        bean.setFilterValue(Collections.singleton(value));
+        return bean;
+    }
+
+    private static FilterBean createGTFilter(String fieldName, int value) {
+        NumberInRangeFilterBean filterInfoBean = new NumberInRangeFilterBean();
+        filterInfoBean.setColumn(fieldName);
+        RangeFilterValueBean gtValue = new RangeFilterValueBean();
+        gtValue.setStart(String.valueOf(value));
+        filterInfoBean.setFilterValue(gtValue);
+        return filterInfoBean;
+    }
+
     @Test
     public void testEQHis() throws Exception {
         DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "testEQHis");
@@ -58,8 +77,7 @@ public class DeleteTest extends BaseTest {
         transportHisAndIndex(dataSource, table);
         Segment segment = localSegmentProvider.getSegment(new SourceKey("testEQHis")).get(0);
 
-        QueryCondition eqQueryCondition = SwiftQueryFactory.create().addRestriction(RestrictionFactory.eq("合同类型", "购买合同"));
-        Where where = new SwiftWhere(eqQueryCondition);
+        Where where = new SwiftWhere(createEqualFilter("合同类型", "购买合同"));
         ((WhereDeleter) SwiftContext.get().getBean("decrementer", new SourceKey("testEQHis"), segment)).delete(where);
 
         Column column = segment.getColumn(new ColumnKey("合同类型"));
@@ -80,8 +98,7 @@ public class DeleteTest extends BaseTest {
         transportRealAndIndex(dataSource, table);
         Segment segment = localSegmentProvider.getSegment(new SourceKey("testEQReal")).get(0);
 
-        QueryCondition eqQueryCondition = SwiftQueryFactory.create().addRestriction(RestrictionFactory.eq("合同类型", "购买合同"));
-        Where where = new SwiftWhere(eqQueryCondition);
+        Where where = new SwiftWhere(createEqualFilter("合同类型", "购买合同"));
         ((WhereDeleter) SwiftContext.get().getBean("decrementer", new SourceKey("testEQReal"), segment)).delete(where);
         Column column = segment.getColumn(new ColumnKey("合同类型"));
         for (int i = 0; i < segment.getRowCount(); i++) {
@@ -113,8 +130,7 @@ public class DeleteTest extends BaseTest {
         transportRealAndIndex(dataSource, table);
         Segment segment = localSegmentProvider.getSegment(new SourceKey("testGTReal")).get(0);
 
-        QueryCondition eqQueryCondition = SwiftQueryFactory.create().addRestriction(RestrictionFactory.gt("总金额", 100000));
-        Where where = new SwiftWhere(eqQueryCondition);
+        Where where = new SwiftWhere(createGTFilter("总金额", 100000));
         ((WhereDeleter) SwiftContext.get().getBean("decrementer", new SourceKey("testGTReal"), segment)).delete(where);
         Column column = segment.getColumn(new ColumnKey("总金额"));
         for (int i = 0; i < segment.getRowCount(); i++) {
@@ -132,8 +148,8 @@ public class DeleteTest extends BaseTest {
         }
         Table table = db.getTable(new SourceKey("testGTRealByWhere"));
         transportRealAndIndex(dataSource, table);
-        QueryCondition eqQueryCondition = SwiftQueryFactory.create().addRestriction(RestrictionFactory.gt("总金额", 100000));
-        Where where = new SwiftWhere(eqQueryCondition);
+
+        Where where = new SwiftWhere(createGTFilter("总金额", 100000));
         Segment segment = localSegmentProvider.getSegment(new SourceKey("testGTRealByWhere")).get(0);
         ImmutableBitMap indexAfterFilter = where.createWhereIndex(table, segment);
 

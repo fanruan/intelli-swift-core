@@ -6,7 +6,6 @@ import com.fr.swift.query.sort.SortType;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.Pair;
-import com.fr.swift.structure.queue.SortedListMergingUtils;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -108,74 +107,5 @@ public class SortMultiSegmentDetailResultSet implements DetailResultSet {
                 return 0;
             }
         };
-    }
-
-    private static class SortedDetailMergerIterator implements Iterator<List<Row>> {
-
-        private int pageSize;
-        private List<DetailResultSet> resultSets;
-        private Comparator<Row> comparator;
-        private List<Row> remainRows = new ArrayList<Row>(0);
-        private List<Row> next;
-
-        public SortedDetailMergerIterator(int pageSize, Comparator<Row> comparator, List<DetailResultSet> resultSets) {
-            this.pageSize = pageSize;
-            this.comparator = comparator;
-            this.resultSets = resultSets;
-            this.next = getNext();
-        }
-
-        /**
-         * 假设有个n个resultSet中取出m页数据(m <= n，有的resultSet可能取完了)和remainRows一起进行堆排序，
-         * 从排序结果中取出前pageSize行，剩余行放到remainRows中用于下次合并
-         *
-         * @return
-         */
-        private List<Row> getNext() {
-            List<List<Row>> lists = new ArrayList<List<Row>>();
-            lists.add(remainRows);
-            for (DetailResultSet resultSet : resultSets) {
-                if (resultSet.hasNextPage()) {
-                    lists.add(resultSet.getPage());
-                }
-            }
-            if (!remainRows.isEmpty() && lists.size() == 1) {
-                // resultSets中的数据都取出来了，只要取出remainRows中的数据返回即可
-                return getPage(remainRows.iterator());
-            }
-            Iterator<Row> iterator = SortedListMergingUtils.merge(lists, comparator);
-            return getPage(iterator);
-        }
-
-        private List<Row> getPage(Iterator<Row> iterator) {
-            List<Row> ret = new ArrayList<Row>();
-            remainRows = new ArrayList<Row>();
-            int count = pageSize;
-            while (iterator.hasNext()) {
-                if (count-- > 0) {
-                    ret.add(iterator.next());
-                } else {
-                    remainRows.add(iterator.next());
-                }
-            }
-            return ret;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return !next.isEmpty();
-        }
-
-        @Override
-        public List<Row> next() {
-            List<Row> ret = next;
-            next = getNext();
-            return ret;
-        }
-
-        @Override
-        public void remove() {
-
-        }
     }
 }

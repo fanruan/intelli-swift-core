@@ -27,4 +27,8 @@ public class IteratorUtils {
         }
         return (RETURN[]) arr;
     }
+
+    public static <T> Iterator<T> emptyIterator() {
+        return new ArrayList<T>(0).iterator();
+    }
 }
