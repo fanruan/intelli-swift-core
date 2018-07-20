@@ -2,10 +2,6 @@ package com.fr.swift.server;
 
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.basics.base.selector.UrlSelector;
-import com.fr.swift.config.service.SwiftClusterSegmentService;
-import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.config.service.SwiftSegmentServiceProvider;
-import com.fr.swift.config.service.impl.SwiftClusterSegmentServiceImpl;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventListener;
@@ -41,16 +37,12 @@ public class SwiftClusterListener implements ClusterEventListener {
 
                 new LocalSwiftRegister().serviceUnregister();
                 SwiftContext.get().getBean("clusterSwiftRegister", SwiftRegister.class).serviceRegister();
-                SwiftClusterSegmentServiceImpl service = (SwiftClusterSegmentServiceImpl) SwiftContext.get().getBean(SwiftClusterSegmentService.class);
-                service.setClusterId(ClusterSelector.getInstance().getFactory().getCurrentId());
-                SwiftSegmentServiceProvider.getProvider().setService(service);
             } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
                 ProxySelector.getInstance().switchFactory(new LocalProxyFactory());
                 UrlSelector.getInstance().switchFactory(new LocalUrlFactory());
 
                 ((ClusterSwiftRegister) SwiftContext.get().getBean("clusterSwiftRegister")).serviceUnregister();
                 new LocalSwiftRegister().serviceRegister();
-                SwiftSegmentServiceProvider.getProvider().setService(SwiftContext.get().getBean("swiftSegmentService", SwiftSegmentService.class));
             }
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);

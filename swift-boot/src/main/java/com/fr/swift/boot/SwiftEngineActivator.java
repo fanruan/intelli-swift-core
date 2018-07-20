@@ -29,10 +29,10 @@ public class SwiftEngineActivator extends Activator implements Prepare {
     }
 
     private void startSwift() throws Exception {
+        ClusterListenerHandler.addListener(new FRClusterListener());
         SwiftContext.init();
         SwiftConfigContext.getInstance().init();
         new LocalSwiftRegister().serviceRegister();
-        ClusterListenerHandler.addListener(new FRClusterListener());
         FineIO.setLogger(new FineIOLoggerImpl());
         ProviderTaskManager.start();
     }

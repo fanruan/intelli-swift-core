@@ -1,7 +1,7 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.config.bean.SegmentKeyBean;
-import com.fr.swift.config.service.SwiftSegmentServiceProvider;
+import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types.StoreType;
@@ -111,8 +111,8 @@ public class Incrementer implements Inserter {
         IResourceLocation location = seg.getLocation();
         String path = String.format("%s/seg%d", dataSource.getSourceKey().getId(), order);
         SegmentKey segKey = new SegmentKeyBean(dataSource.getSourceKey().getId(), URI.create(path), order, location.getStoreType(), seg.getMetaData().getSwiftSchema());
-        if (!SwiftSegmentServiceProvider.getProvider().containsSegment(segKey)) {
-            SwiftSegmentServiceProvider.getProvider().addSegments(Collections.singletonList(segKey));
+        if (!SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).containsSegment(segKey)) {
+            SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).addSegments(Collections.singletonList(segKey));
         }
     }
 

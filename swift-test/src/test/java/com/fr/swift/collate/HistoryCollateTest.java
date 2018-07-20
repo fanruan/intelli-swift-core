@@ -2,7 +2,7 @@ package com.fr.swift.collate;
 
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.restriction.RestrictionFactory;
-import com.fr.swift.config.service.SwiftSegmentServiceProvider;
+import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.Where;
@@ -58,7 +58,7 @@ public class HistoryCollateTest extends BaseTest {
     @Test
     public void testAutoHistoryCollate() throws Exception {
         DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "testHistoryCollate");
-        SwiftSegmentServiceProvider.getProvider().removeSegments(dataSource.getSourceKey().getId());
+        SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).removeSegments(dataSource.getSourceKey().getId());
         SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
         SwiftResultSet resultSet = transfer.createResultSet();
         Inserter inserter = new BlockInserter(dataSource.getSourceKey(), dataSource.getSourceKey().getId(), dataSource.getMetadata());

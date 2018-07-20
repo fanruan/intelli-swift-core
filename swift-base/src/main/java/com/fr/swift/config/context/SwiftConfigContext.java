@@ -35,6 +35,9 @@ public class SwiftConfigContext {
             }
             DBOption option = FineDBProperties.getInstance().get();
             DBContext dbContext = BaseDBEnv.getDBContext();
+            if (null == dbContext) {
+                dbContext = DBContext.create();
+            }
             for (Class<?> entity : SwiftConfigConstants.ENTITIES) {
                 dbContext.addEntityClass(entity);
             }

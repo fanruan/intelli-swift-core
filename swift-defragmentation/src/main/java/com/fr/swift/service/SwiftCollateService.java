@@ -5,7 +5,7 @@ import com.fr.swift.annotation.RpcMethod;
 import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.config.bean.SegmentKeyBean;
-import com.fr.swift.config.service.SwiftSegmentServiceProvider;
+import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types;
@@ -195,7 +195,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         persistSegKeys.addAll(newSegKeys);
         persistSegKeys.addAll(oldSegKeys);
         persistSegKeys.removeAll(collateSegKeys);
-        SwiftSegmentServiceProvider.getProvider().updateSegments(tableKey.getId(), persistSegKeys);
+        SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).updateSegments(tableKey.getId(), persistSegKeys);
     }
 
     private Segment newHistorySegment(DataSource dataSource, SegmentInfo segInfo, int segCount) {

@@ -1,7 +1,7 @@
 package com.fr.swift.generate.segment.operator.merger;
 
 import com.fr.swift.config.bean.SegmentKeyBean;
-import com.fr.swift.config.service.SwiftSegmentServiceProvider;
+import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types;
@@ -124,7 +124,7 @@ public class RealtimeMerger implements Merger {
     }
 
     protected void persistSegment() {
-        SwiftSegmentServiceProvider.getProvider().updateSegments(sourceKey.getId(), configSegment);
+        SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).updateSegments(sourceKey.getId(), configSegment);
     }
 
 }

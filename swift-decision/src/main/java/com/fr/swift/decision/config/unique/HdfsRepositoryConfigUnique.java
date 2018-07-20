@@ -4,7 +4,7 @@ import com.fr.config.Identifier;
 import com.fr.config.holder.Conf;
 import com.fr.config.holder.factory.Holders;
 import com.fr.config.utils.UniqueKey;
-import com.fr.swift.config.bean.HdfsRepositoryConfigBean;
+import com.fr.swift.repository.config.HdfsRepositoryConfig;
 
 /**
  * @author yee
@@ -53,7 +53,7 @@ public class HdfsRepositoryConfigUnique extends UniqueKey implements RepositoryC
     }
 
     @Override
-    public HdfsRepositoryConfigBean convert() {
-        return new HdfsRepositoryConfigBean(fsName.get(), hdfsHost.get(), hdfsPort.get());
+    public HdfsRepositoryConfig convert() {
+        return new HdfsRepositoryConfig(fsName.get(), hdfsHost.get(), hdfsPort.get());
     }
 }

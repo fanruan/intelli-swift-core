@@ -1,15 +1,17 @@
-package com.fr.swift.config.bean;
+package com.fr.swift.repository.config;
 
 import com.fr.ftp.config.FTPConfig;
 import com.fr.security.SecurityToolbox;
 import com.fr.stable.StringUtils;
 import com.fr.swift.config.annotation.ConfigField;
+import com.fr.swift.config.bean.SwiftFileSystemConfig;
+import com.fr.swift.config.bean.SwiftFileSystemType;
 
 /**
  * @author yee
  * @date 2018/6/15
  */
-public class FtpRepositoryConfigBean implements SwiftFileSystemConfig {
+public class FtpRepositoryConfig implements SwiftFileSystemConfig {
 
     @ConfigField
     private String protocol = "FTP";
@@ -156,7 +158,7 @@ public class FtpRepositoryConfigBean implements SwiftFileSystemConfig {
             return false;
         }
 
-        FtpRepositoryConfigBean that = (FtpRepositoryConfigBean) o;
+        FtpRepositoryConfig that = (FtpRepositoryConfig) o;
 
         if (protocol != null ? !protocol.equals(that.protocol) : that.protocol != null) {
             return false;

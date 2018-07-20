@@ -2,7 +2,7 @@ package com.fr.swift.config.convert;
 
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.SwiftFileSystemConfig;
-import com.fr.swift.config.convert.swift.AbstractObjectConfigConvert;
+import com.fr.swift.config.convert.base.AbstractObjectConfigConvert;
 import com.fr.swift.config.dao.SwiftConfigDao;
 import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.third.org.hibernate.Session;

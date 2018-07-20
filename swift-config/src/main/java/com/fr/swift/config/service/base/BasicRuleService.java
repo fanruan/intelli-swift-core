@@ -1,5 +1,7 @@
-package com.fr.swift.config.service;
+package com.fr.swift.config.service.base;
 
+import com.fr.swift.config.service.IRuleService;
+import com.fr.swift.config.service.SwiftConfigService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLoggers;
 

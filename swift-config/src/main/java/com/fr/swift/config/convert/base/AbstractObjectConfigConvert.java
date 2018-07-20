@@ -1,4 +1,4 @@
-package com.fr.swift.config.convert.swift;
+package com.fr.swift.config.convert.base;
 
 import com.fr.stable.StringUtils;
 import com.fr.swift.config.annotation.ConfigField;

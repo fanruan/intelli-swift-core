@@ -1,8 +1,15 @@
-package com.fr.swift.config.service;
+package com.fr.swift.config.service.impl;
 
+import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.event.ClusterEvent;
+import com.fr.swift.event.ClusterEventListener;
+import com.fr.swift.event.ClusterEventType;
+import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.selector.ClusterSelector;
 import com.fr.third.org.hibernate.criterion.Criterion;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
@@ -11,20 +18,25 @@ import java.util.Map;
  * @author yee
  * @date 2018/6/7
  */
+@Service("segmentServiceProvider")
 public class SwiftSegmentServiceProvider implements SwiftSegmentService {
 
     private SwiftSegmentService service;
 
-    private SwiftSegmentServiceProvider() {
-        this.service = SwiftContext.get().getBean("swiftSegmentService", SwiftSegmentService.class);
-    }
-
-    public static SwiftSegmentServiceProvider getProvider() {
-        return SingletonHolder.provider;
-    }
-
-    public void setService(SwiftSegmentService service) {
-        this.service = service;
+    public SwiftSegmentServiceProvider() {
+        ClusterListenerHandler.addListener(new ClusterEventListener() {
+            @Override
+            public void handleEvent(ClusterEvent clusterEvent) {
+                if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
+                    String clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
+                    SwiftClusterSegmentServiceImpl clusterService = SwiftContext.get().getBean(SwiftClusterSegmentServiceImpl.class);
+                    clusterService.setClusterId(clusterId);
+                    service = clusterService;
+                } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
+                    service = SwiftContext.get().getBean("swiftSegmentService", SwiftSegmentService.class);
+                }
+            }
+        });
     }
 
     @Override
@@ -54,7 +66,7 @@ public class SwiftSegmentServiceProvider implements SwiftSegmentService {
 
     @Override
     public Map<String, List<SegmentKey>> getAllRealTimeSegments() {
-        return null;
+        return service.getAllRealTimeSegments();
     }
 
     @Override
@@ -75,9 +87,5 @@ public class SwiftSegmentServiceProvider implements SwiftSegmentService {
     @Override
     public boolean saveOrUpdate(SegmentKey obj) {
         return service.saveOrUpdate(obj);
-    }
-
-    private static class SingletonHolder {
-        private static SwiftSegmentServiceProvider provider = new SwiftSegmentServiceProvider();
     }
 }

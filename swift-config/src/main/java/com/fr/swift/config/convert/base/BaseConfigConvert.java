@@ -1,4 +1,4 @@
-package com.fr.swift.config.convert.swift;
+package com.fr.swift.config.convert.base;
 
 import com.fr.swift.config.service.SwiftConfigService;
 
