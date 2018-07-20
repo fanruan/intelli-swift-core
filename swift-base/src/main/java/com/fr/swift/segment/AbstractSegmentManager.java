@@ -1,7 +1,6 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.config.service.SwiftSegmentServiceProvider;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.source.SourceKey;
@@ -14,7 +13,7 @@ import java.util.List;
  * Created by pony on 2017/10/16.
  */
 public abstract class AbstractSegmentManager implements SwiftSegmentManager {
-    protected SwiftSegmentService segmentService = SwiftSegmentServiceProvider.getProvider();
+    protected SwiftSegmentService segmentService = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
     protected SwiftTablePathService tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
 
     @Override

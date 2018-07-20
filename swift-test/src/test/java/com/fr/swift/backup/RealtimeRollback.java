@@ -2,7 +2,7 @@ package com.fr.swift.backup;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.config.bean.SegmentKeyBean;
-import com.fr.swift.config.service.SwiftSegmentServiceProvider;
+import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types;
@@ -216,8 +216,8 @@ public class RealtimeRollback extends BaseTest {
             String uri = String.format("%s/seg%d", dataSource.getSourceKey().getId(), count++);
             SegmentKey segKey = new SegmentKeyBean(dataSource.getSourceKey().getId(),
                     URI.create(uri), count, location.getStoreType(), currentSeg.getMetaData().getSwiftSchema());
-            if (!SwiftSegmentServiceProvider.getProvider().containsSegment(segKey)) {
-                SwiftSegmentServiceProvider.getProvider().addSegments(Collections.singletonList(segKey));
+            if (!SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).containsSegment(segKey)) {
+                SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).addSegments(Collections.singletonList(segKey));
             }
         }
 

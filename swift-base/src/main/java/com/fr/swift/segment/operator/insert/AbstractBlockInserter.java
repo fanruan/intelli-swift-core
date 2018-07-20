@@ -4,7 +4,6 @@ import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.config.service.SwiftSegmentServiceProvider;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
@@ -60,7 +59,7 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
     private SegmentIndexCache segmentIndexCache;
     private int startSegIndex;
     protected Integer cubeTmpPath = 0;
-    private SwiftSegmentService segmentService = SwiftSegmentServiceProvider.getProvider();
+    private SwiftSegmentService segmentService = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
     private SwiftTablePathService tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
 
     public AbstractBlockInserter(SourceKey sourceKey, String cubeSourceKey, SwiftMetaData swiftMetaData) {

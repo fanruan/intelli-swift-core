@@ -2,7 +2,7 @@ package com.fr.swift.cube;
 
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
-import com.fr.swift.config.service.SwiftSegmentServiceProvider;
+import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.segment.Segment;
@@ -38,7 +38,7 @@ public class CubeUtil {
     private static boolean isSegUsable(URI segUri) {
         SegmentKeyBean segKey = new SegmentKeyBean();
         segKey.setUri(segUri);
-        return SwiftSegmentServiceProvider.getProvider().containsSegment(segKey);
+        return SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).containsSegment(segKey);
     }
 
     public static String getTablePath(DataSource dataSource) {

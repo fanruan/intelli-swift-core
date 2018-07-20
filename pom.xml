@@ -28,6 +28,7 @@
         <module>swift-redis</module>
         <module>swift-config</module>
         <module>swift-defragmentation</module>
+        <module>swift-api</module>
     </modules>
 
     <properties>

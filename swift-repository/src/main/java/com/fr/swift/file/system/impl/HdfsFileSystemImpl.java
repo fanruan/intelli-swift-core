@@ -1,15 +1,13 @@
 package com.fr.swift.file.system.impl;
 
 import com.fr.general.ComparatorUtils;
-import com.fr.io.utils.ResourceIOUtils;
-import com.fr.swift.config.bean.HdfsRepositoryConfigBean;
 import com.fr.swift.file.exception.SwiftFileException;
 import com.fr.swift.file.system.AbstractFileSystem;
 import com.fr.swift.file.system.SwiftFileSystem;
 import com.fr.swift.file.system.pool.BaseRemoteSystemPool;
 import com.fr.swift.file.system.pool.RemotePoolCreator;
-import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.repository.config.HdfsRepositoryConfig;
 import com.fr.third.org.apache.commons.pool2.KeyedObjectPool;
 
 import java.io.InputStream;
@@ -28,14 +26,14 @@ import java.net.URI;
  * @author yee
  * @date 2018/5/28
  */
-public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfigBean> {
+public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfig> {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(HdfsFileSystemImpl.class);
 
     //    private KeyedObjectPool<URI, FileSystem> keyedObjectPool;
     private BaseRemoteSystemPool<HdfsFileSystemImpl> systemPool;
 
-    public HdfsFileSystemImpl(final HdfsRepositoryConfigBean config, URI uri, KeyedObjectPool keyedObjectPool) {
+    public HdfsFileSystemImpl(final HdfsRepositoryConfig config, URI uri, KeyedObjectPool keyedObjectPool) {
         super(config, uri);
 //        this.keyedObjectPool = keyedObjectPool;
         this.systemPool = (BaseRemoteSystemPool<HdfsFileSystemImpl>) RemotePoolCreator.creator().getPool(config);
