@@ -7,6 +7,8 @@ import com.fr.swift.query.filter.SwiftDetailFilterType;
  */
 public class NullFilterBean extends DetailFilterInfoBean<Object> {
 
+    private static final long serialVersionUID = -569684451986072800L;
+
     {
         type = SwiftDetailFilterType.NULL;
     }

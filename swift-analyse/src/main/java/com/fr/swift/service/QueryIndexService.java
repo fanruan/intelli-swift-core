@@ -1,11 +1,12 @@
 package com.fr.swift.service;
 
-import com.fr.stable.query.condition.QueryCondition;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
-import com.fr.swift.query.QueryConditionAdaptor;
 import com.fr.swift.query.builder.QueryIndexBuilder;
+import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
+import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
+import com.fr.swift.query.query.FilterBean;
 import com.fr.swift.query.query.IndexQuery;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryIndexRunner;
@@ -25,15 +26,20 @@ public class QueryIndexService implements QueryIndexRunner {
 
     @Override
     public Map<URI, IndexQuery<ImmutableBitMap>> getBitMap(Table table, Where where) throws Exception {
-        QueryCondition queryCondition = where.getQueryCondition();
-        QueryBean queryBean = QueryConditionAdaptor.adaptCondition(queryCondition, table);
-        return QueryIndexBuilder.buildQuery(queryBean);
+        return QueryIndexBuilder.buildQuery(createQueryBean(table, where));
     }
 
     @Override
-    public IndexQuery<ImmutableBitMap> getBitMap(Table table, Where where, Segment segment) throws Exception {
-        QueryCondition queryCondition = where.getQueryCondition();
-        QueryBean queryBean = QueryConditionAdaptor.adaptCondition(queryCondition, table);
-        return QueryIndexBuilder.buildQuery(queryBean, segment);
+    public IndexQuery<ImmutableBitMap> getBitMap(Table table, Where where, Segment segment) {
+        return QueryIndexBuilder.buildQuery(createQueryBean(table, where), segment);
+    }
+
+    private static QueryBean createQueryBean(Table table, Where where) {
+        FilterBean filterBean = where.getFilterBean();
+        DetailQueryInfoBean queryInfoBean = new DetailQueryInfoBean();
+        queryInfoBean.setQueryId("" + System.currentTimeMillis());
+        queryInfoBean.setTableName(table.getSourceKey().getId());
+        queryInfoBean.setFilterInfoBean((FilterInfoBean) filterBean);
+        return queryInfoBean;
     }
 }

@@ -1,9 +1,9 @@
 package com.fr.swift.db.impl;
 
-import com.fr.stable.query.condition.QueryCondition;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
+import com.fr.swift.query.query.FilterBean;
 import com.fr.swift.query.query.IndexQuery;
 import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.segment.Segment;
@@ -23,15 +23,15 @@ import java.util.Map;
 public class SwiftWhere implements Where, Serializable {
 
     private static final long serialVersionUID = 1116521843669790563L;
-    private QueryCondition queryCondition;
+    private FilterBean filterBean;
 
-    public SwiftWhere(QueryCondition queryCondition) {
-        this.queryCondition = queryCondition;
+    public SwiftWhere(FilterBean filterBean) {
+        this.filterBean = filterBean;
     }
 
     @Override
-    public QueryCondition getQueryCondition() {
-        return queryCondition;
+    public FilterBean getFilterBean() {
+        return filterBean;
     }
 
     @Override

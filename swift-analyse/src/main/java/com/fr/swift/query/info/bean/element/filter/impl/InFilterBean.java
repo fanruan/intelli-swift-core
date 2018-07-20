@@ -9,6 +9,8 @@ import java.util.Set;
  */
 public class InFilterBean extends DetailFilterInfoBean<Set<String>> {
 
+    private static final long serialVersionUID = -5714388508922623532L;
+
     {
         type = SwiftDetailFilterType.IN;
     }

@@ -9,7 +9,7 @@ import com.fr.swift.query.info.bean.element.filter.impl.NullFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NumberInRangeFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.OrFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.StringOneValueFilterBean;
-import com.fr.swift.util.qm.bool.BExpr;
+import com.fr.swift.query.query.FilterBean;
 import com.fr.third.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fr.third.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -36,13 +36,5 @@ import com.fr.third.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = OrFilterBean.class, name = "OR"),
         @JsonSubTypes.Type(value = NotFilterBean.class, name = "NOT")
 })
-public interface FilterInfoBean<T> extends BExpr {
-
-    SwiftDetailFilterType getType();
-
-    void setType(SwiftDetailFilterType type);
-
-    T getFilterValue();
-
-    void setFilterValue(T filterValue);
+public interface FilterInfoBean<T> extends FilterBean<T> {
 }
