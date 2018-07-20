@@ -14,7 +14,7 @@ import com.fr.third.javax.persistence.Table;
  * @date 2018/7/2
  */
 @Entity
-@Table(name = "fine_swift_table_index_conf")
+@Table(name = "fine_swift_tab_idx_conf")
 public class SwiftTableIndexingConf implements TableIndexingConf {
     @Id
     private TableId tableId;

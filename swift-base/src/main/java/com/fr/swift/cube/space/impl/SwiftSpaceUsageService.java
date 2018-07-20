@@ -2,7 +2,6 @@ package com.fr.swift.cube.space.impl;
 
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.config.service.SwiftSegmentServiceProvider;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.space.SpaceUsageDetector;
 import com.fr.swift.cube.space.SpaceUsageService;
@@ -21,7 +20,7 @@ import java.util.List;
 public class SwiftSpaceUsageService implements SpaceUsageService {
     private SpaceUsageDetector detector = new LocalSpaceUsageDetector();
 
-    private SwiftSegmentService confSvc = SwiftSegmentServiceProvider.getProvider();
+    private SwiftSegmentService confSvc = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
     private SwiftCubePathService pathService = SwiftContext.get().getBean(SwiftCubePathService.class);
 
     @Override

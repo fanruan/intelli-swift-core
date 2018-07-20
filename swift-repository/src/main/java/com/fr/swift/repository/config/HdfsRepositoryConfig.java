@@ -1,12 +1,14 @@
-package com.fr.swift.config.bean;
+package com.fr.swift.repository.config;
 
 import com.fr.swift.config.annotation.ConfigField;
+import com.fr.swift.config.bean.SwiftFileSystemConfig;
+import com.fr.swift.config.bean.SwiftFileSystemType;
 
 /**
  * @author yee
  * @date 2018/6/15
  */
-public class HdfsRepositoryConfigBean implements SwiftFileSystemConfig {
+public class HdfsRepositoryConfig implements SwiftFileSystemConfig {
     @ConfigField
     private String fsName = "fs.defaultFS";
     @ConfigField
@@ -14,13 +16,13 @@ public class HdfsRepositoryConfigBean implements SwiftFileSystemConfig {
     @ConfigField
     private String hdfsPort = "9000";
 
-    public HdfsRepositoryConfigBean(String fsName, String hdfsHost, String hdfsPort) {
+    public HdfsRepositoryConfig(String fsName, String hdfsHost, String hdfsPort) {
         this.fsName = fsName;
         this.hdfsHost = hdfsHost;
         this.hdfsPort = hdfsPort;
     }
 
-    public HdfsRepositoryConfigBean() {
+    public HdfsRepositoryConfig() {
     }
 
     public String getFsName() {
@@ -65,7 +67,7 @@ public class HdfsRepositoryConfigBean implements SwiftFileSystemConfig {
             return false;
         }
 
-        HdfsRepositoryConfigBean that = (HdfsRepositoryConfigBean) o;
+        HdfsRepositoryConfig that = (HdfsRepositoryConfig) o;
 
         if (hdfsHost != null ? !hdfsHost.equals(that.hdfsHost) : that.hdfsHost != null) {
             return false;

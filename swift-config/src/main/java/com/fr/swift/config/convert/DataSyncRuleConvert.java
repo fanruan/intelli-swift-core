@@ -1,10 +1,10 @@
 package com.fr.swift.config.convert;
 
 import com.fr.swift.config.bean.DataSyncRule;
-import com.fr.swift.config.convert.swift.AbstractObjectConfigConvert;
+import com.fr.swift.config.convert.base.AbstractObjectConfigConvert;
 import com.fr.swift.config.dao.SwiftConfigDao;
 import com.fr.swift.config.entity.SwiftConfigEntity;
-import com.fr.swift.service.handler.history.rule.DefaultDataSyncRule;
+import com.fr.swift.context.SwiftContext;
 import com.fr.third.org.hibernate.Session;
 
 /**
@@ -20,7 +20,7 @@ public class DataSyncRuleConvert extends AbstractObjectConfigConvert<DataSyncRul
         try {
             return super.toBean(dao, session, args);
         } catch (Exception e) {
-            return new DefaultDataSyncRule();
+            return SwiftContext.get().getBean("defaultDataSyncRule", DataSyncRule.class);
         }
     }
 

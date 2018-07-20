@@ -13,7 +13,7 @@ import com.fr.third.javax.persistence.Table;
  * @date 2018/7/2
  */
 @Entity
-@Table(name = "fine_swift_column_index_conf")
+@Table(name = "fine_swift_col_idx_conf")
 public class SwiftColumnIndexingConf implements ColumnIndexingConf {
     @Id
     private ColumnId columnId;

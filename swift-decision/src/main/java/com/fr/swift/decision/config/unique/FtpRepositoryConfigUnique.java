@@ -6,7 +6,7 @@ import com.fr.config.holder.factory.Holders;
 import com.fr.config.utils.UniqueKey;
 import com.fr.security.SecurityToolbox;
 import com.fr.stable.StringUtils;
-import com.fr.swift.config.bean.FtpRepositoryConfigBean;
+import com.fr.swift.repository.config.FtpRepositoryConfig;
 
 /**
  * @author yee
@@ -165,8 +165,8 @@ public class FtpRepositoryConfigUnique extends UniqueKey implements RepositoryCo
     }
 
     @Override
-    public FtpRepositoryConfigBean convert() {
-        FtpRepositoryConfigBean config = new FtpRepositoryConfigBean();
+    public FtpRepositoryConfig convert() {
+        FtpRepositoryConfig config = new FtpRepositoryConfig();
         config.setCharset(getCharset());
         config.setHost(getHost());
         config.setUsername(getUsername());

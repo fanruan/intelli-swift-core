@@ -1,10 +1,10 @@
 package com.fr.swift.config.convert;
 
 import com.fr.swift.config.bean.IndexingSelectRule;
-import com.fr.swift.config.convert.swift.AbstractObjectConfigConvert;
+import com.fr.swift.config.convert.base.AbstractObjectConfigConvert;
 import com.fr.swift.config.dao.SwiftConfigDao;
 import com.fr.swift.config.entity.SwiftConfigEntity;
-import com.fr.swift.service.handler.indexing.rule.DefaultIndexingSelectRule;
+import com.fr.swift.context.SwiftContext;
 import com.fr.third.org.hibernate.Session;
 
 /**
@@ -19,7 +19,7 @@ public class IndexingSelectRuleConvert extends AbstractObjectConfigConvert<Index
         try {
             return super.toBean(dao, session, args);
         } catch (Exception e) {
-            return new DefaultIndexingSelectRule();
+            return SwiftContext.get().getBean("defaultIndexingSelectRule", IndexingSelectRule.class);
         }
     }
 
