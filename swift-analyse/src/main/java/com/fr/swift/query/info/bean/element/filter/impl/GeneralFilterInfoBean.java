@@ -12,6 +12,7 @@ import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 abstract class GeneralFilterInfoBean<T> implements FilterInfoBean<T> {
 
+    private static final long serialVersionUID = -6197559699952128572L;
     @JsonProperty
     protected T filterValue;
     @JsonProperty

@@ -8,6 +8,8 @@ import com.fr.swift.query.info.bean.element.filter.impl.value.RangeFilterValueBe
  */
 public class NumberInRangeFilterBean extends DetailFilterInfoBean<RangeFilterValueBean> {
 
+    private static final long serialVersionUID = 4119767705951357179L;
+
     {
         type = SwiftDetailFilterType.NUMBER_IN_RANGE;
     }

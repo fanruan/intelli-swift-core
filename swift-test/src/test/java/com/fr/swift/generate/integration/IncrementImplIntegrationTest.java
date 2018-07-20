@@ -1,6 +1,5 @@
 package com.fr.swift.generate.integration;
 
-import com.fr.stable.query.restriction.RestrictionFactory;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.impl.SwiftWhere;
@@ -9,7 +8,8 @@ import com.fr.swift.generate.TestIndexer;
 import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.generate.history.transport.TableTransporter;
 import com.fr.swift.manager.LocalSegmentProvider;
-import com.fr.swift.query.condition.SwiftQueryFactory;
+import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
+import com.fr.swift.query.query.FilterBean;
 import com.fr.swift.segment.Decrementer;
 import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.RealTimeSegmentImpl;
@@ -25,6 +25,7 @@ import com.fr.swift.source.db.QueryDBSource;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -51,6 +52,13 @@ public class IncrementImplIntegrationTest extends BaseTest {
         super.setUp();
         segmentProvider = SwiftContext.get().getBean(LocalSegmentProvider.class);
         dataSource = new QueryDBSource("select 记录人 from DEMO_CAPITAL_RETURN", "local2");
+    }
+
+    private static FilterBean createEqualFilter(String fieldName, String value) {
+        InFilterBean bean = new InFilterBean();
+        bean.setColumn(fieldName);
+        bean.setFilterValue(Collections.singleton(value));
+        return bean;
     }
 
     @Test
@@ -115,7 +123,7 @@ public class IncrementImplIntegrationTest extends BaseTest {
         }
 
         //最后做增量删除'庆芳'更新
-        ((Decrementer) SwiftContext.get().getBean("incrementer", dataSource)).delete(new SwiftWhere(SwiftQueryFactory.create().addRestriction(RestrictionFactory.eq("记录人", "庆芳"))));
+        ((Decrementer) SwiftContext.get().getBean("incrementer", dataSource)).delete(new SwiftWhere(createEqualFilter("记录人", "庆芳")));
 
         segmentList = segmentProvider.getSegment(dataSource.getSourceKey());
         //判断第一块数据不变，但是allshowindex去掉了庆芳的索引

@@ -9,6 +9,7 @@ import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.db.impl.SwiftWhere;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.query.FilterBean;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.operator.delete.WhereDeleter;
@@ -100,10 +101,11 @@ public class SwiftLogOperator extends BaseMetric {
     public void clean(QueryCondition condition) throws Exception {
         List<Table> tables = SwiftDatabase.getInstance().getAllTables();
         SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
+        FilterBean filterBean = QueryConditionAdaptor.restriction2FilterInfo(condition.getRestriction());
         for (Table table : tables) {
             for (Segment segment : localSegmentProvider.getSegment(table.getSourceKey())) {
                 WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", table.getSourceKey(), segment);
-                whereDeleter.delete(new SwiftWhere(condition));
+                whereDeleter.delete(new SwiftWhere(filterBean));
             }
         }
     }
