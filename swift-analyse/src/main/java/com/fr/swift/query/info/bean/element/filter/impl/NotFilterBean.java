@@ -11,6 +11,8 @@ import com.fr.swift.util.qm.bool.BUExpr;
  */
 public class NotFilterBean extends GeneralFilterInfoBean<FilterInfoBean> implements BUExpr {
 
+    private static final long serialVersionUID = -1060322652409398537L;
+
     {
         type = SwiftDetailFilterType.NOT;
     }

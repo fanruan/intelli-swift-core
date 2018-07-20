@@ -13,6 +13,8 @@ import java.util.List;
  */
 public class AndFilterBean extends GeneralFilterInfoBean<List<FilterInfoBean>> implements BNExpr {
 
+    private static final long serialVersionUID = 7080214690415176381L;
+
     {
         type = SwiftDetailFilterType.AND;
     }

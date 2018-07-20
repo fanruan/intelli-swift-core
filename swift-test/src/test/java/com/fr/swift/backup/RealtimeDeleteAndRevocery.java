@@ -1,13 +1,12 @@
 package com.fr.swift.backup;
 
-import com.fr.stable.query.condition.QueryCondition;
-import com.fr.stable.query.restriction.RestrictionFactory;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftWhere;
 import com.fr.swift.generate.BaseTest;
-import com.fr.swift.query.condition.SwiftQueryFactory;
+import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
+import com.fr.swift.query.query.FilterBean;
 import com.fr.swift.redis.RedisClient;
 import com.fr.swift.segment.Decrementer;
 import com.fr.swift.segment.Incrementer;
@@ -26,6 +25,7 @@ import com.fr.swift.source.db.QueryDBSource;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -49,6 +49,13 @@ public class RealtimeDeleteAndRevocery extends BaseTest {
         swiftSegmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
     }
 
+    private static FilterBean createEqualFilter(String fieldName, String value) {
+        InFilterBean bean = new InFilterBean();
+        bean.setColumn(fieldName);
+        bean.setFilterValue(Collections.singleton(value));
+        return bean;
+    }
+
     @Test
     public void testFileDeleteAndRecovery() throws Exception {
         DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "testFileDeleteAndRecovery");
@@ -58,8 +65,7 @@ public class RealtimeDeleteAndRevocery extends BaseTest {
         incrementer.increment(resultSet);
         Segment segment = swiftSegmentManager.getSegment(dataSource.getSourceKey()).get(0);
 
-        QueryCondition eqQueryCondition = SwiftQueryFactory.create().addRestriction(RestrictionFactory.eq("合同类型", "购买合同"));
-        Where where = new SwiftWhere(eqQueryCondition);
+        Where where = new SwiftWhere(createEqualFilter("合同类型", "购买合同"));
 
         Decrementer decrementer = new Decrementer(dataSource.getSourceKey(), segment);
         decrementer.delete(where);
@@ -95,8 +101,7 @@ public class RealtimeDeleteAndRevocery extends BaseTest {
         incrementer.increment(resultSet);
         Segment segment = swiftSegmentManager.getSegment(dataSource.getSourceKey()).get(0);
 
-        QueryCondition eqQueryCondition = SwiftQueryFactory.create().addRestriction(RestrictionFactory.eq("合同类型", "购买合同"));
-        Where where = new SwiftWhere(eqQueryCondition);
+        Where where = new SwiftWhere(createEqualFilter("合同类型", "购买合同"));
 
         Decrementer decrementer = new Decrementer(dataSource.getSourceKey(), segment);
         decrementer.delete(where);

@@ -13,6 +13,8 @@ import java.util.List;
  */
 public class OrFilterBean extends GeneralFilterInfoBean<List<FilterInfoBean>> implements BNExpr {
 
+    private static final long serialVersionUID = -5854713752764823833L;
+
     {
         type = SwiftDetailFilterType.OR;
     }

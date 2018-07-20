@@ -1,7 +1,5 @@
 package com.fr.swift.collate;
 
-import com.fr.stable.query.condition.QueryCondition;
-import com.fr.stable.query.restriction.RestrictionFactory;
 import com.fr.swift.config.service.SwiftSegmentServiceProvider;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types.StoreType;
@@ -10,7 +8,8 @@ import com.fr.swift.db.impl.SwiftWhere;
 import com.fr.swift.generate.BaseTest;
 import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.generate.segment.operator.inserter.BlockInserter;
-import com.fr.swift.query.condition.SwiftQueryFactory;
+import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
+import com.fr.swift.query.query.FilterBean;
 import com.fr.swift.redis.RedisClient;
 import com.fr.swift.segment.Decrementer;
 import com.fr.swift.segment.Segment;
@@ -28,6 +27,7 @@ import com.fr.swift.task.service.SwiftServiceTaskExecutor;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
@@ -55,6 +55,13 @@ public class HistoryCollateTest extends BaseTest {
         swiftSegmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
     }
 
+    static FilterBean createEqualFilter(String fieldName, String value) {
+        InFilterBean bean = new InFilterBean();
+        bean.setColumn(fieldName);
+        bean.setFilterValue(Collections.singleton(value));
+        return bean;
+    }
+
     @Test
     public void testAutoHistoryCollate() throws Exception {
         DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "testHistoryCollate");
@@ -70,8 +77,7 @@ public class HistoryCollateTest extends BaseTest {
             columnIndexer.work();
         }
 
-        QueryCondition eqQueryCondition = SwiftQueryFactory.create().addRestriction(RestrictionFactory.eq("合同类型", "购买合同"));
-        Where where = new SwiftWhere(eqQueryCondition);
+        Where where = new SwiftWhere(createEqualFilter("合同类型", "购买合同"));
         //合并前1块历史块，且只要allshow是购买合同
         assertEquals(1, segments.size());
         for (Segment segment : segments) {
