@@ -22,7 +22,7 @@ public class SalveHeartBeatCollect implements Collect {
     private Thread thread;
 
     public SalveHeartBeatCollect() {
-        this.slaveService = SwiftContext.getInstance().getBean("swiftSlaveService", SwiftSlaveService.class);
+        this.slaveService = SwiftContext.get().getBean("swiftSlaveService", SwiftSlaveService.class);
     }
 
     @Override

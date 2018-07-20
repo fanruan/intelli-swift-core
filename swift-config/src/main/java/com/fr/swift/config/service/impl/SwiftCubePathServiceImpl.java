@@ -6,9 +6,15 @@ import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.convert.swift.AbstractSimpleConfigConvert;
 import com.fr.swift.config.dao.SwiftConfigDao;
 import com.fr.swift.config.entity.SwiftConfigEntity;
+import com.fr.swift.config.entity.key.SwiftTablePathKey;
 import com.fr.swift.config.service.SwiftConfigService;
-import com.fr.swift.config.service.SwiftPathService;
+import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.context.ContextUtil;
+import com.fr.swift.event.ClusterEvent;
+import com.fr.swift.event.ClusterEventListener;
+import com.fr.swift.event.ClusterEventType;
+import com.fr.swift.event.ClusterListenerHandler;
+import com.fr.swift.selector.ClusterSelector;
 import com.fr.third.org.hibernate.Session;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
@@ -22,8 +28,22 @@ import java.util.List;
  * @date 2018/6/6
  */
 @Service("swiftPathService")
-public class SwiftPathServiceImpl implements SwiftPathService {
+public class SwiftCubePathServiceImpl implements SwiftCubePathService {
     private List<PathChangeListener> listeners = new ArrayList<PathChangeListener>();
+    private String clusterId = SwiftTablePathKey.LOCALHOST;
+
+    public SwiftCubePathServiceImpl() {
+        ClusterListenerHandler.addListener(new ClusterEventListener() {
+            @Override
+            public void handleEvent(ClusterEvent clusterEvent) {
+                if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
+                    clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
+                } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
+                    clusterId = SwiftTablePathKey.LOCALHOST;
+                }
+            }
+        });
+    }
 
     private final SwiftConfigService.ConfigConvert<String> CONVERT = new AbstractSimpleConfigConvert<String>(String.class) {
 
@@ -92,6 +112,6 @@ public class SwiftPathServiceImpl implements SwiftPathService {
 
     @Override
     public String getSwiftPath() {
-        return configService.getConfigBean(CONVERT);
+        return configService.getConfigBean(CONVERT) + "." + clusterId;
     }
 }

@@ -57,7 +57,7 @@ public class RpcServer {
     @Autowired
     public RpcServer(ServiceRegistry serviceRegistry,
                      @Value("SERVER_SERVICE") RpcServiceType serviceType) {
-        this.serviceAddress = SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class).getServerAddress();
+        this.serviceAddress = SwiftContext.get().getBean("swiftProperty", SwiftProperty.class).getServerAddress();
         this.serviceRegistry = serviceRegistry;
     }
 

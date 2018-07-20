@@ -20,6 +20,8 @@ import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
+import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
+import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.info.element.dimension.DetailDimension;
@@ -55,7 +57,7 @@ import java.util.concurrent.TimeUnit;
 @Controller
 public class QueryController {
 
-    private SwiftMetaDataService metaDataService = SwiftContext.getInstance().getBean(SwiftMetaDataService.class);
+    private SwiftMetaDataService metaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
 
     private RpcServer server = SwiftContext.get().getBean(RpcServer.class);
 
@@ -68,10 +70,11 @@ public class QueryController {
         List<Row> rows = new ArrayList<Row>();
         long start = System.currentTimeMillis();
         QueryBean queryBean = QueryInfoBeanFactory.create(jsonString);
+        ((DetailQueryInfoBean) queryBean).setQueryId("" + System.currentTimeMillis());
         Query query = QueryBuilder.buildQuery(queryBean);
         SwiftResultSet resultSet = query.getQueryResult();
         if (resultSet != null) {
-            while (resultSet.hasNext() && rowCount-- > 0) {
+            while (resultSet.hasNext()) {
                 rows.add(resultSet.getNextRow());
             }
             resultSet.close();
@@ -86,6 +89,7 @@ public class QueryController {
         List<Row> rows = new ArrayList<Row>();
         // swift-test模块的resources目录下有json示例
         QueryBean queryBean = QueryInfoBeanFactory.create(jsonString);
+        ((GroupQueryInfoBean) queryBean).setQueryId("" + System.currentTimeMillis());
         long start = System.currentTimeMillis();
         Query query = QueryBuilder.buildQuery(queryBean);
         SwiftResultSet resultSet = query.getQueryResult();
@@ -95,7 +99,7 @@ public class QueryController {
             }
             resultSet.close();
         }
-        logger.info("group query cost: " + TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start) + " seconds!");
+        logger.info("group query cost: " + TimeUnit.MILLISECONDS.toMillis(System.currentTimeMillis() - start) + " ms!");
         return rows;
     }
 

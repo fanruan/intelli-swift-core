@@ -90,10 +90,22 @@ class DetailQueryBuilder {
             queryBean.setQueryType(QueryType.LOCAL_DETAIL);
             SegmentDestination destination = entry.getValue().get(0);
             queryBean.setQueryDestination(destination);
+            queryBean.setQuerySegments(getQuerySegments(entry.getValue()));
             String jsonString = QueryInfoBeanFactory.queryBean2String(queryBean);
             queries.add(new RemoteQueryImpl<DetailResultSet>(jsonString, destination));
         }
         return builder.buildResultQuery(queries, info);
+    }
+
+    static Set<URI> getQuerySegments(List<SegmentDestination> uris) {
+        Set<URI> set = new HashSet<URI>();
+        for (SegmentDestination destination : uris) {
+            URI uri = destination.getUri();
+            if (uri != null) {
+                set.add(uri);
+            }
+        }
+        return set;
     }
 
     static Set<URI> getLocalSegments(List<SegmentDestination> uris) {

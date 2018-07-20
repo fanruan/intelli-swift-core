@@ -40,8 +40,8 @@ public class RealtimeBlockSwiftInserter extends AbstractBlockInserter {
     }
 
     @Override
-    protected Segment createSegment(int order) {
-        return createSegment(order, Types.StoreType.MEMORY);
+    protected Segment createSegment(int order, Integer tmpPath) {
+        return createSegment(order, Types.StoreType.MEMORY, tmpPath);
     }
 
     @Override

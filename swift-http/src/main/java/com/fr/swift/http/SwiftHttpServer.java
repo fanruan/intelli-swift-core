@@ -24,7 +24,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 public class SwiftHttpServer implements NettyServiceStarter {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftHttpServer.class);
 
-    private SwiftProperty swiftProperty = SwiftContext.getInstance().getBean(SwiftProperty.class);
+    private SwiftProperty swiftProperty = SwiftContext.get().getBean(SwiftProperty.class);
 
     private String httpAddress;
 

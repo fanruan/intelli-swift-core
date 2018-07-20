@@ -1,12 +1,12 @@
 package com.fr.swift.netty.rpc.client;
 
 import com.fr.swift.basics.ProxyFactory;
+import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.netty.rpc.CalculatorService;
 import com.fr.swift.netty.rpc.proxy.RPCProxyFactory;
 import com.fr.swift.netty.rpc.url.RPCDestination;
 import com.fr.swift.netty.rpc.url.RPCUrl;
-import com.fr.swift.basics.base.selector.ProxySelector;
 
 /**
  * This class created on 2018/6/11

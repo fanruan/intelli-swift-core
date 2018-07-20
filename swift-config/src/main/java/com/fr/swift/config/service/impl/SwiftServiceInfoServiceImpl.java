@@ -35,7 +35,7 @@ class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
     }
 
     @Override
-    public boolean saveOrUpdateServiceInfo(final SwiftServiceInfoBean serviceInfoBean) {
+    public boolean saveOrUpdate(final SwiftServiceInfoBean serviceInfoBean) {
         try {
             return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
                 @Override

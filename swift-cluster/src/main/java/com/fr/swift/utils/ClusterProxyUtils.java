@@ -28,7 +28,7 @@ public class ClusterProxyUtils {
      */
     public static <T> T getMasterProxy(Class<T> interfaceClass) throws Exception {
         UrlFactory urlFactory = UrlSelector.getInstance().getFactory();
-        URL url = urlFactory.getURL(SwiftContext.getInstance().getBean("swiftProperty", SwiftProperty.class).getMasterAddress());
+        URL url = urlFactory.getURL(SwiftContext.get().getBean("swiftProperty", SwiftProperty.class).getMasterAddress());
         return getProxy(interfaceClass, url);
     }
 
@@ -52,7 +52,7 @@ public class ClusterProxyUtils {
         if (!interfaceClass.isInterface()) {
             throw new SwiftProxyException("Class " + interfaceClass + " is not interface !!! Can't make dynamic proxy!");
         }
-        T obj = SwiftContext.getInstance().getBean(interfaceClass);
+        T obj = SwiftContext.get().getBean(interfaceClass);
         if (obj == null) {
             if (!interfaceClass.isInterface()) {
                 throw new SwiftProxyException("Class " + interfaceClass + " doesn't has an Implementation !!! Can't make dynamic proxy!");

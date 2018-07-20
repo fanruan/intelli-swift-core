@@ -9,7 +9,7 @@ import com.fr.swift.generate.history.index.ColumnDictMerger;
 import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.manager.LocalSegmentProvider;
+import com.fr.swift.manager.IndexingSegmentManager;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.ColumnKey;
@@ -49,7 +49,7 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
 
     private IndexingConfService indexingConfService = SwiftContext.get().getBean(IndexingConfService.class);
 
-    private SwiftSegmentManager localSegments = SwiftContext.get().getBean(LocalSegmentProvider.class);
+    private SwiftSegmentManager localSegments = SwiftContext.get().getBean(IndexingSegmentManager.class);
 
     public BaseTableBuilder(int round, DataSource dataSource) {
         this(round, dataSource, false);
@@ -104,93 +104,6 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
         });
 
         transportTask.triggerRun();
-
-        //监听表取数任务，完成后添加字段索引任务。
-//        transportTask.addStatusChangeListener(new TaskStatusChangeListener() {
-//            @Override
-//            public void onChange(Task.Status prev, Task.Status now) {
-//                if (now == Task.Status.DONE && transportTask.result().getType() == SUCCEEDED) {
-//                    try {
-//                        initColumnIndexTask();
-//                    } catch (Exception e) {
-//                        LOGGER.error("Table :'" + dataSource.getSourceKey() + "' add field index task failed!", e);
-//                    }
-//                }
-//            }
-//
-//            private void initColumnIndexTask() throws Exception {
-//                if (transporter.getIndexFieldsList().isEmpty()) {
-//                    transportTask.addNext(end);
-//                }
-//                List<Segment> allSegments = SwiftContext.get().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
-//                List<Segment> indexSegments = new ArrayList<Segment>();
-//                if (isRealtime) {
-////                    for (Segment segment : allSegments) {
-////                        if (!segment.isHistory()) {
-////                            indexSegments.add(segment);
-////                        }
-////                    }
-//                    //todo 目前增量更新临时每次都会合并到磁盘。要在考虑下合并的规则和场景
-//                    int hisSegCount = 0;
-//                    for (int i = 0; i < allSegments.size(); i++) {
-//                        if (allSegments.get(i).isHistory()) {
-//                            hisSegCount++;
-//                        }
-//                    }
-//                    if (hisSegCount != allSegments.size()) {
-//                        Merger realtimeMerger = new RealtimeMerger(dataSource.getSourceKey(), dataSource.getMetadata(), DataSourceUtils.getSwiftSourceKey(dataSource).getId());
-//                        realtimeMerger.merge();
-//                        allSegments = SwiftContext.get().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
-//                        for (int i = hisSegCount; i < allSegments.size(); i++) {
-//                            indexSegments.add(allSegments.get(i));
-//                        }
-//                    }
-//                    LOGGER.info("Update type:realtime! Table :'" + dataSource.getMetadata().getTableName() + "' will do realtime tranport!");
-//                } else {
-//                    indexSegments.addAll(allSegments);
-//                    LOGGER.info("Update type:history! Table :'" + dataSource.getMetadata().getTableName() + "' will do history tranport!");
-//                }
-//
-//                for (String indexField : transporter.getIndexFieldsList()) {
-//                    LocalTask indexTask = new LocalTaskImpl(
-//                            CubeTasks.newIndexColumnTaskKey(round, dataSource, indexField),
-//                            new ColumnIndexer(dataSource, new ColumnKey(indexField), indexSegments));
-//
-//                    LocalTask mergeTask = new LocalTaskImpl(
-//                            CubeTasks.newMergeColumnDictTaskKey(round, dataSource, indexField),
-//                            new ColumnDictMerger(dataSource, new ColumnKey(indexField), allSegments));
-//                    // link task
-//                    transportTask.addNext(indexTask);
-//                    indexTask.addNext(mergeTask);
-//                    initSubColumnTaskIfHas(mergeTask, indexField, allSegments, indexSegments);
-//                }
-//            }
-//
-//            private void initSubColumnTaskIfHas(LocalTask mergeTask, String indexField, List<Segment> allSegments, List<Segment> indexSegments) throws SwiftMetaDataException {
-//                if (!hasSubColumn(indexField)) {
-//                    mergeTask.addNext(end);
-//                    return;
-//                }
-//                for (GroupType groupType : SubDateColumn.TYPES_TO_GENERATE) {
-//                    LocalTask indexSubColumnTask = new LocalTaskImpl(
-//                            CubeTasks.newIndexColumnTaskKey(round, dataSource, indexField, groupType),
-//                            new SubDateColumnIndexer(dataSource, new ColumnKey(indexField), groupType, indexSegments));
-//
-//                    LocalTask mergeSubColumnTask = new LocalTaskImpl(
-//                            CubeTasks.newMergeColumnDictTaskKey(round, dataSource, indexField, groupType),
-//                            new SubDateColumnDictMerger(dataSource, new ColumnKey(indexField), groupType, allSegments));
-//
-//                    mergeTask.addNext(indexSubColumnTask);
-//                    indexSubColumnTask.addNext(mergeSubColumnTask);
-//                    mergeSubColumnTask.addNext(end);
-//                }
-//            }
-//
-//            private boolean hasSubColumn(String indexField) throws SwiftMetaDataException {
-//                SwiftMetaDataColumn columnMeta = meta.getColumn(indexField);
-//                return ColumnTypeUtils.getColumnType(columnMeta) == ColumnTypeConstants.ColumnType.DATE;
-//            }
-//        });
     }
 
     @Override
