@@ -35,7 +35,7 @@ public class QueryIndexService implements QueryIndexRunner {
     }
 
     private static QueryBean createQueryBean(Table table, Where where) {
-        FilterBean filterBean = where.getQueryCondition();
+        FilterBean filterBean = where.getFilterBean();
         DetailQueryInfoBean queryInfoBean = new DetailQueryInfoBean();
         queryInfoBean.setQueryId("" + System.currentTimeMillis());
         queryInfoBean.setTableName(table.getSourceKey().getId());

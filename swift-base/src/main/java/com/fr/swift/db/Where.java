@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public interface Where {
 
-    FilterBean getQueryCondition();
+    FilterBean getFilterBean();
 
     ImmutableBitMap createWhereIndex(Table table, Segment segment) throws Exception;
 

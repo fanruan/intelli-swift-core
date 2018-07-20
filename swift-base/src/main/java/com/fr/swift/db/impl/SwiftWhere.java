@@ -30,7 +30,7 @@ public class SwiftWhere implements Where, Serializable {
     }
 
     @Override
-    public FilterBean getQueryCondition() {
+    public FilterBean getFilterBean() {
         return filterBean;
     }
 
