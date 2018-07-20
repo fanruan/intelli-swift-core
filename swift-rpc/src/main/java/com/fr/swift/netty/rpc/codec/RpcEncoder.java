@@ -20,7 +20,7 @@ public class RpcEncoder extends MessageToByteEncoder {
     }
 
     @Override
-    public void encode(ChannelHandlerContext ctx, Object in, ByteBuf out) throws Exception {
+    public void encode(ChannelHandlerContext ctx, Object in, ByteBuf out) {
         if (genericClass.isInstance(in)) {
             byte[] data = SerializationUtil.serialize(in);
             out.writeInt(data.length);

@@ -16,8 +16,11 @@ import com.fr.swift.basics.base.SwiftInvocation;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
+import com.fr.swift.config.entity.SwiftTablePathEntity;
+import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftSegmentServiceProvider;
 import com.fr.swift.config.service.SwiftServiceInfoService;
+import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.core.cluster.SwiftClusterService;
 import com.fr.swift.event.global.TaskDoneRpcEvent;
@@ -48,16 +51,20 @@ import com.fr.swift.task.cube.CubeTaskManager;
 import com.fr.swift.task.impl.TaskEvent;
 import com.fr.swift.task.impl.WorkerTaskPool;
 import com.fr.swift.task.service.ServiceTaskExecutor;
+import com.fr.swift.util.FileUtil;
 import com.fr.swift.util.Strings;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static com.fr.swift.task.TaskResult.Type.SUCCEEDED;
 
 /**
  * @author pony
@@ -70,6 +77,10 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
 
     @Autowired
     private transient RpcServer server;
+    @Autowired
+    private transient SwiftCubePathService pathService;
+    @Autowired
+    private transient SwiftTablePathService tablePathService;
 
     private static Map<TaskKey, Object> stuffObject = new ConcurrentHashMap<TaskKey, Object>();
 
@@ -180,13 +191,30 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
             this.result = result;
         }
 
-        private void uploadTable(DataSource dataSource) throws Exception {
-            SourceKey sourceKey = dataSource.getSourceKey();
+        private void uploadTable(final DataSource dataSource) throws Exception {
+            final SourceKey sourceKey = dataSource.getSourceKey();
+            SwiftTablePathEntity entity = SwiftContext.get().getBean(SwiftTablePathService.class).get(sourceKey.getId());
+            Integer path = entity.getTablePath();
+            Integer tmpPath = entity.getTmpDir();
+            entity.setTablePath(tmpPath);
+            entity.setLastPath(path);
+            if (tablePathService.saveOrUpdate(entity)) {
+                String deletePath = String.format("%s/%s/%d/%s",
+                        pathService.getSwiftPath(),
+                        dataSource.getMetadata().getSwiftSchema().getDir(),
+                        path,
+                        sourceKey.getId());
+                FileUtil.delete(deletePath);
+                new File(deletePath).getParentFile().delete();
+            }
             List<SegmentKey> segmentKeys = SwiftSegmentServiceProvider.getProvider().getSegmentByKey(sourceKey.getId());
             if (null != segmentKeys) {
                 for (SegmentKey segmentKey : segmentKeys) {
                     try {
-                        SwiftRepositoryManager.getManager().currentRepo().copyToRemote(segmentKey.getAbsoluteUri(), segmentKey.getUri());
+                        String uploadPath = String.format("%s/%s",
+                                segmentKey.getSwiftSchema().getDir(),
+                                segmentKey.getUri().getPath());
+                        SwiftRepositoryManager.getManager().currentRepo().copyToRemote(segmentKey.getAbsoluteUri(), URI.create(uploadPath));
                     } catch (IOException e) {
                         logger.error("upload error! ", e);
                     }
@@ -216,8 +244,15 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
                 if (relation.getRelationType() != RelationSourceType.FIELD_RELATION) {
                     for (SegmentKey segmentKey : segmentKeys) {
                         try {
-                            URI src = URI.create(String.format("%s/%s/%s", Strings.trimSeparator(segmentKey.getAbsoluteUri().getPath() + "/", "/"), RelationIndexImpl.RELATIONS_KEY, primary.getId()));
-                            URI dest = URI.create(String.format("%s/%s/%s", Strings.trimSeparator(segmentKey.getUri().getPath() + "/", "/"), RelationIndexImpl.RELATIONS_KEY, primary.getId()));
+                            URI src = URI.create(String.format("%s/%s/%s",
+                                    Strings.trimSeparator(segmentKey.getAbsoluteUri().getPath() + "/", "/"),
+                                    RelationIndexImpl.RELATIONS_KEY,
+                                    primary.getId()));
+                            URI dest = URI.create(String.format("%s/%s/%s/%s",
+                                    segmentKey.getSwiftSchema().getDir(),
+                                    Strings.trimSeparator(segmentKey.getUri().getPath() + "/", "/"),
+                                    RelationIndexImpl.RELATIONS_KEY,
+                                    primary.getId()));
                             SwiftRepositoryManager.getManager().currentRepo().copyToRemote(src, dest);
                             needUpload.add(dest);
                         } catch (IOException e) {
@@ -227,8 +262,15 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
                 } else {
                     for (SegmentKey segmentKey : segmentKeys) {
                         try {
-                            URI src = URI.create(String.format("%s/%s%s/%s", Strings.trimSeparator(segmentKey.getAbsoluteUri().getPath() + "/", "/"), "field", RelationIndexImpl.RELATIONS_KEY, primary.getId()));
-                            URI dest = URI.create(String.format("%s/%s/%s/%s", Strings.trimSeparator(segmentKey.getUri().getPath() + "/", "/"), "field", RelationIndexImpl.RELATIONS_KEY, primary.getId()));
+                            URI src = URI.create(String.format("%s/field/%s/%s",
+                                    Strings.trimSeparator(segmentKey.getAbsoluteUri().getPath() + "/", "/"),
+                                    RelationIndexImpl.RELATIONS_KEY,
+                                    primary.getId()));
+                            URI dest = URI.create(String.format("%s/%s/field/%s/%s",
+                                    segmentKey.getSwiftSchema().getDir(),
+                                    Strings.trimSeparator(segmentKey.getUri().getPath() + "/", "/"),
+                                    RelationIndexImpl.RELATIONS_KEY,
+                                    primary.getId()));
                             SwiftRepositoryManager.getManager().currentRepo().copyToRemote(src, dest);
                             needUpload.add(dest);
                         } catch (IOException e) {
@@ -254,19 +296,22 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
 
         @Override
         public void run() {
-            TaskKey key = result.getKey();
-            Object obj = stuffObject.get(key);
-            try {
-                if (null != obj) {
-                    if (obj instanceof DataSource) {
-                        uploadTable((DataSource) obj);
-                    } else if (obj instanceof RelationSource) {
-                        uploadRelation((RelationSource) obj);
+            if (result.getValue().getType() == SUCCEEDED) {
+                TaskKey key = result.getKey();
+                Object obj = stuffObject.get(key);
+                try {
+                    if (null != obj) {
+                        if (obj instanceof DataSource) {
+                            uploadTable((DataSource) obj);
+                        } else if (obj instanceof RelationSource) {
+                            uploadRelation((RelationSource) obj);
+                        }
+                        stuffObject.remove(key);
                     }
 
+                } catch (Exception e) {
+                    logger.error(e);
                 }
-            } catch (Exception e) {
-                logger.error(e);
             }
         }
     }

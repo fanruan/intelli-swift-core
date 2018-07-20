@@ -4,6 +4,9 @@ import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.Result;
 import com.fr.swift.basics.URL;
+import com.fr.swift.basics.base.SwiftInvocation;
+import com.fr.swift.basics.base.selector.ProxySelector;
+import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.dao.SwiftMetaDataDao;
@@ -14,13 +17,11 @@ import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.event.global.CleanMetaDataCacheEvent;
-import com.fr.swift.basics.base.SwiftInvocation;
+import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.netty.rpc.client.AsyncRpcCallback;
 import com.fr.swift.netty.rpc.client.async.RpcFuture;
 import com.fr.swift.netty.rpc.server.RpcServer;
-import com.fr.swift.basics.base.selector.ProxySelector;
-import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
@@ -266,6 +267,15 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
         } catch (SQLException e) {
             SwiftLoggers.getLogger().error(e);
             return Collections.emptyList();
+        }
+    }
+
+    @Override
+    public boolean saveOrUpdate(SwiftMetaData obj) {
+        try {
+            return addMetaData(obj.getTableName(), obj);
+        } catch (SwiftMetaDataException e) {
+            return false;
         }
     }
 }

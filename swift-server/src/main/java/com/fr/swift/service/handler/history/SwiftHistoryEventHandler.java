@@ -17,6 +17,7 @@ import com.fr.third.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -60,7 +61,9 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
                             }
                         }
                         if (!needLoad.isEmpty()) {
-                            runAsyncRpc(entry.getKey(), entry.getValue().getServiceClass(), "load", needLoad)
+                            Map<String, Set<URI>> load = new HashMap<String, Set<URI>>();
+                            load.put(pair.getKey(), needLoad);
+                            runAsyncRpc(entry.getKey(), entry.getValue().getServiceClass(), "load", load, false)
                                     .addCallback(new AsyncRpcCallback() {
                                         @Override
                                         public void success(Object result) {

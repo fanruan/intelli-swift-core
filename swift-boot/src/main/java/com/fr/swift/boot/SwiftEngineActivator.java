@@ -11,7 +11,6 @@ import com.fr.swift.cube.queue.ProviderTaskManager;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.log.FineIOLoggerImpl;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.server.SwiftEngineStart;
 import com.fr.swift.service.register.LocalSwiftRegister;
 
 /**
@@ -32,7 +31,6 @@ public class SwiftEngineActivator extends Activator implements Prepare {
     private void startSwift() throws Exception {
         SwiftContext.init();
         SwiftConfigContext.getInstance().init();
-        syncFRConfig();
         new LocalSwiftRegister().serviceRegister();
         ClusterListenerHandler.addListener(new FRClusterListener());
         FineIO.setLogger(new FineIOLoggerImpl());
@@ -49,7 +47,4 @@ public class SwiftEngineActivator extends Activator implements Prepare {
         this.addMutable(BaseDBConstant.BASE_ENTITY_KEY, SwiftConfigConstants.ENTITIES);
     }
 
-    private void syncFRConfig() {
-        SwiftEngineStart.syncConfiguration();
-    }
 }

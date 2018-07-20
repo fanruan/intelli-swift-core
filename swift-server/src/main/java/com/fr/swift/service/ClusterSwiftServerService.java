@@ -90,7 +90,7 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
         }
         LOGGER.info(service.getID() + " register service :" + service.getServiceType().name());
         synchronized (this) {
-            serviceInfoService.saveOrUpdateServiceInfo(new SwiftServiceInfoBean(
+            serviceInfoService.saveOrUpdate(new SwiftServiceInfoBean(
                     service.getServiceType().name(), service.getID(), swiftProperty.getServerAddress(), false));
 
             URL url = UrlSelector.getInstance().getFactory().getURL(service.getID());

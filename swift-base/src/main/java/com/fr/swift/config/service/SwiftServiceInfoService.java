@@ -13,8 +13,6 @@ import java.util.List;
  */
 public interface SwiftServiceInfoService extends ConfigService<SwiftServiceInfoBean> {
 
-    boolean saveOrUpdateServiceInfo(SwiftServiceInfoBean serviceInfoBean);
-
     boolean removeServiceInfo(SwiftServiceInfoBean serviceInfoBean);
 
     SwiftServiceInfoBean getServiceInfo(SwiftServiceInfoBean serviceInfoBean);

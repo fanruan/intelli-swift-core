@@ -29,7 +29,7 @@ public class SwiftSlaveService implements SlaveService {
     }
 
     @Override
-    public synchronized void synHeartBeat(Collection<HeartBeatInfo> heartBeatInfos) throws Exception {
+    public synchronized void synHeartBeat(Collection<HeartBeatInfo> heartBeatInfos) {
         NodeContainer.getInstance().removeAllHeartBeatInfos();
         NodeContainer.getInstance().addAll(heartBeatInfos);
     }

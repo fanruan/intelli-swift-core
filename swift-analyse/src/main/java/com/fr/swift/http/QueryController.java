@@ -57,7 +57,7 @@ import java.util.concurrent.TimeUnit;
 @Controller
 public class QueryController {
 
-    private SwiftMetaDataService metaDataService = SwiftContext.getInstance().getBean(SwiftMetaDataService.class);
+    private SwiftMetaDataService metaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
 
     private RpcServer server = SwiftContext.get().getBean(RpcServer.class);
 

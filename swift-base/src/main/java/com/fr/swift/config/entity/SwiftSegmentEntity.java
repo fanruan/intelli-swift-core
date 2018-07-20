@@ -5,6 +5,7 @@ import com.fr.swift.config.bean.Convert;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.convert.hibernate.URIConverter;
 import com.fr.swift.cube.io.Types;
+import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Entity;
 import com.fr.third.javax.persistence.EnumType;
@@ -39,6 +40,9 @@ public class SwiftSegmentEntity implements Convert<SegmentKeyBean> {
     @Column(name = SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE)
     @Enumerated(EnumType.STRING)
     private Types.StoreType storeType;
+    @Column(name = "swiftSchema")
+    @Enumerated(EnumType.STRING)
+    private SwiftDatabase.Schema swiftSchema;
 
     public String getSegmentOwner() {
         return segmentOwner;
@@ -80,6 +84,14 @@ public class SwiftSegmentEntity implements Convert<SegmentKeyBean> {
         this.id = id;
     }
 
+    public SwiftDatabase.Schema getSwiftSchema() {
+        return swiftSchema;
+    }
+
+    public void setSwiftSchema(SwiftDatabase.Schema swiftSchema) {
+        this.swiftSchema = swiftSchema;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -103,7 +115,10 @@ public class SwiftSegmentEntity implements Convert<SegmentKeyBean> {
         if (segmentUri != null ? !segmentUri.equals(entity.segmentUri) : entity.segmentUri != null) {
             return false;
         }
-        return storeType == entity.storeType;
+        if (storeType != entity.storeType) {
+            return false;
+        }
+        return swiftSchema == entity.swiftSchema;
     }
 
     @Override
@@ -113,11 +128,12 @@ public class SwiftSegmentEntity implements Convert<SegmentKeyBean> {
         result = 31 * result + (segmentUri != null ? segmentUri.hashCode() : 0);
         result = 31 * result + segmentOrder;
         result = 31 * result + (storeType != null ? storeType.hashCode() : 0);
+        result = 31 * result + (swiftSchema != null ? swiftSchema.hashCode() : 0);
         return result;
     }
 
     @Override
     public SegmentKeyBean convert() {
-        return new SegmentKeyBean(segmentOwner, segmentUri, segmentOrder, storeType);
+        return new SegmentKeyBean(segmentOwner, segmentUri, segmentOrder, storeType, swiftSchema);
     }
 }

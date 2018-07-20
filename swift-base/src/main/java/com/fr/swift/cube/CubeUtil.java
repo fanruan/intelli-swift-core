@@ -1,7 +1,10 @@
 package com.fr.swift.cube;
 
 import com.fr.swift.config.bean.SegmentKeyBean;
+import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.config.service.SwiftSegmentServiceProvider;
+import com.fr.swift.config.service.SwiftTablePathService;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.source.DataSource;
@@ -39,8 +42,15 @@ public class CubeUtil {
     }
 
     public static String getTablePath(DataSource dataSource) {
-        return String.format("%s/%s",
+        SwiftTablePathEntity entity = SwiftContext.get().getBean(SwiftTablePathService.class).get(dataSource.getSourceKey().getId());
+        if (entity == null) {
+            entity = new SwiftTablePathEntity(dataSource.getSourceKey().getId(), 1);
+            entity.setTablePath(0);
+            SwiftContext.get().getBean(SwiftTablePathService.class).saveOrUpdate(entity);
+        }
+        return String.format("%s/%d/%s",
                 dataSource.getMetadata().getSwiftSchema().getDir(),
+                entity.getTablePath(),
                 dataSource.getSourceKey().getId());
     }
 }

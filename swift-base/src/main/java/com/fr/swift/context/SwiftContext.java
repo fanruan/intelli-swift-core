@@ -18,18 +18,12 @@ import com.fr.third.springframework.context.support.ClassPathXmlApplicationConte
 public class SwiftContext extends ClassPathXmlApplicationContext {
 
     private static final SwiftContext INSTANCE = new SwiftContext();
-
+    private static ConfigurableApplicationContext configurableContext;
+    private static BeanDefinitionRegistry beanDefinitionRegistry;
     private boolean refreshed = false;
 
     private SwiftContext() {
     }
-
-    public static SwiftContext getInstance() {
-        return INSTANCE;
-    }
-
-    private static ConfigurableApplicationContext configurableContext;
-    private static BeanDefinitionRegistry beanDefinitionRegistry;
 
     public static void init() {
         if (INSTANCE.refreshed) {
