@@ -1,6 +1,7 @@
-package com.fr.swift.http;
+package com.fr.swift.api.test;
 
 import com.fr.stable.StringUtils;
+import com.fr.swift.api.SwiftApiConstants;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.URL;
@@ -39,12 +40,13 @@ import java.util.Map;
  * @date 2018/6/28
  */
 @Controller
-public class HistoryIndexingController {
+@RequestMapping(SwiftApiConstants.TEST_ROOT_URL)
+public class TestIndexingController {
 
     private RpcServer server = SwiftContext.get().getBean(RpcServer.class);
 
     @ResponseBody
-    @RequestMapping(value = "swift/index/{tableName}", method = RequestMethod.GET)
+    @RequestMapping(value = "/index/{tableName}", method = RequestMethod.GET)
     public Map query(@PathVariable("tableName") String tableName) {
         final Map result = new HashMap();
         tableName = StringUtils.isEmpty(tableName) ? "fine_conf_entity" : tableName;
@@ -64,17 +66,17 @@ public class HistoryIndexingController {
         return result;
     }
 
-    @RequestMapping(value = "swift/download", method = RequestMethod.GET)
+    @RequestMapping(value = "/download", method = RequestMethod.GET)
     public void download(String remote, String local) throws IOException {
         SwiftRepositoryManager.getManager().currentRepo().copyFromRemote(URI.create(remote), URI.create(local));
     }
 
-    @RequestMapping(value = "swift/upload", method = RequestMethod.GET)
+    @RequestMapping(value = "/upload", method = RequestMethod.GET)
     public void upload(String src, String dest) throws IOException {
         SwiftRepositoryManager.getManager().currentRepo().copyToRemote(URI.create(src), URI.create(dest));
     }
 
-    @RequestMapping(value = "swift/load", method = RequestMethod.GET)
+    @RequestMapping(value = "/load", method = RequestMethod.GET)
     public void load() {
         HistoryLoadSegmentRpcEvent event = new HistoryLoadSegmentRpcEvent();
         ProxyFactory factory = ProxySelector.getInstance().getFactory();
