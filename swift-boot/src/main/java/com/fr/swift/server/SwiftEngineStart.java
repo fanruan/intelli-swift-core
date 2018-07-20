@@ -27,7 +27,6 @@ import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.event.ClusterType;
-import com.fr.swift.http.SwiftHttpServer;
 import com.fr.swift.log.FineIOLoggerImpl;
 import com.fr.swift.log.SwiftLog4jLoggers;
 import com.fr.swift.log.SwiftLoggers;

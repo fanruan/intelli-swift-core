@@ -73,12 +73,12 @@ public class RpcServer {
             for (Object serviceBean : serviceBeanMap.values()) {
                 RpcService rpcService = serviceBean.getClass().getAnnotation(RpcService.class);
                 String serviceName = rpcService.value().getName();
-                LOGGER.info("Load service:" + serviceName);
+                LOGGER.debug("Load service:" + serviceName);
                 handlerMap.put(serviceName, serviceBean);
                 for (Method method : serviceBean.getClass().getMethods()) {
                     RpcMethod rpcMethod = method.getAnnotation(RpcMethod.class);
                     if (rpcMethod != null) {
-                        LOGGER.info("Load method:" + method.getName());
+                        LOGGER.debug("Load method:" + method.getName());
                         methodMap.put(rpcMethod.methodName(), method);
                     }
                 }

@@ -12,11 +12,11 @@
     <!--<bean id="realtimeService" class="com.fr.swift.service.SwiftRealtimeService"/>-->
     <!--<bean id="collateService" class="com.fr.swift.service.SwiftCollateService"/>-->
     <!--rpc服务配置-->
-    <bean id="swiftRpcService" class="com.fr.swift.netty.rpc.SwiftRpcService" init-method="startServerService"
-          destroy-method="stopServerService"/>
+    <!--<bean id="swiftRpcService" class="com.fr.swift.netty.rpc.SwiftRpcService" init-method="startServerService"-->
+          <!--destroy-method="stopServerService"/>-->
     <!--http服务配置-->
-    <bean id="swiftHttpService" class="com.fr.swift.http.SwiftHttpService" init-method="startServerService"
-          destroy-method="stopServerService"/>
+    <!--<bean id="swiftHttpService" class="com.fr.swift.http.SwiftHttpService" init-method="startServerService"-->
+          <!--destroy-method="stopServerService"/>-->
 
     <bean id="clusterSwiftRegister" class="com.fr.swift.service.register.ClusterSwiftRegister">
         <property name="swiftServiceList">
