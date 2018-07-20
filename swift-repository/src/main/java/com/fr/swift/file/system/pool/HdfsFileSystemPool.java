@@ -2,13 +2,6 @@ package com.fr.swift.file.system.pool;
 
 import com.fr.swift.file.system.impl.HdfsFileSystemImpl;
 import com.fr.swift.repository.config.HdfsRepositoryConfig;
-import com.fr.third.org.apache.commons.pool2.BaseKeyedPooledObjectFactory;
-import com.fr.third.org.apache.commons.pool2.KeyedObjectPool;
-import com.fr.third.org.apache.commons.pool2.PooledObject;
-import com.fr.third.org.apache.commons.pool2.impl.DefaultPooledObject;
-import com.fr.third.org.apache.commons.pool2.impl.GenericKeyedObjectPool;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileSystem;
 
 import java.net.URI;
 
@@ -31,10 +24,10 @@ class HdfsFileSystemPool extends BaseRemoteSystemPool {
     }
 
     private static class HdfsFileSystemPoolFactory extends BaseRemoteSystemPoolFactory<HdfsFileSystemImpl> {
-        private HdfsRepositoryConfigBean config;
+        private HdfsRepositoryConfig config;
 //        private KeyedObjectPool<URI, FileSystem> clientPool;
 
-        public HdfsFileSystemPoolFactory(final HdfsRepositoryConfigBean config) {
+        public HdfsFileSystemPoolFactory(final HdfsRepositoryConfig config) {
 //            final Configuration conf = new Configuration();
 //            conf.set(config.getFsName(), config.getFullAddress());
 //            clientPool = new GenericKeyedObjectPool<URI, FileSystem>(new BaseKeyedPooledObjectFactory<URI, FileSystem>() {
