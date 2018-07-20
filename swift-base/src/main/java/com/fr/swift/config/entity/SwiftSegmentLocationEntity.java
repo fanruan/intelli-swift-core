@@ -11,7 +11,7 @@ import com.fr.third.javax.persistence.Table;
  * @date 2018/7/3
  */
 @Entity
-@Table(name = "fine_swift_segment_location")
+@Table(name = "fine_swift_seg_location")
 public class SwiftSegmentLocationEntity {
     @Id
     private SwiftSegLocationEntityId id;
