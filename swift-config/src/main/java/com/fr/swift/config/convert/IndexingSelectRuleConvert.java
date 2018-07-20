@@ -24,6 +24,11 @@ public class IndexingSelectRuleConvert extends AbstractObjectConfigConvert<Index
     }
 
     @Override
+    protected String transferClassName(String className) {
+        return className;
+    }
+
+    @Override
     protected String getNameSpace() {
         return INDEXING_SELECT_RULE;
     }

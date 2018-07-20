@@ -27,6 +27,11 @@ public class SegDestSelectRuleConvert extends AbstractObjectConfigConvert<Segmen
     }
 
     @Override
+    protected String transferClassName(String className) {
+        return className;
+    }
+
+    @Override
     protected String getNameSpace() {
         return NAMESPACE;
     }

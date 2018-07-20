@@ -25,7 +25,7 @@ public abstract class AbstractObjectConfigConvert<T> extends BaseConfigConvert<T
         if (null == entity) {
             throw new SQLException("Cannot find Rule");
         }
-        String className = entity.getConfigValue();
+        String className = transferClassName(entity.getConfigValue());
         try {
             Class<? extends T> clazz = (Class<? extends T>) Class.forName(className);
             T rule = clazz.newInstance();
@@ -68,4 +68,6 @@ public abstract class AbstractObjectConfigConvert<T> extends BaseConfigConvert<T
         }
         return null;
     }
+
+    protected abstract String transferClassName(String className);
 }

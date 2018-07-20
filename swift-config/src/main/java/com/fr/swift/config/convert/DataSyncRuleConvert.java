@@ -25,6 +25,11 @@ public class DataSyncRuleConvert extends AbstractObjectConfigConvert<DataSyncRul
     }
 
     @Override
+    protected String transferClassName(String className) {
+        return className;
+    }
+
+    @Override
     protected String getNameSpace() {
         return DATA_SYNC_RULE_KEY;
     }
