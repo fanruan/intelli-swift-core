@@ -8,4 +8,6 @@ public class IOConstant {
     public static final double NULL_DOUBLE = Double.NaN;
 
     public static final String NULL_STRING = "\0";
+
+    public static final byte[] NULL_BYTES = new byte[0];
 }
