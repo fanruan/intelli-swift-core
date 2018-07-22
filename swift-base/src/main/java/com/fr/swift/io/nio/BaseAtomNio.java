@@ -1,5 +1,6 @@
 package com.fr.swift.io.nio;
 
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.IoUtil;
 
 import java.io.File;
@@ -15,71 +16,59 @@ import java.nio.channels.FileChannel.MapMode;
  * @date 2018/7/20
  */
 abstract class BaseAtomNio extends BaseNio {
-    static final int PAGE_SIZE = 22;
-
     private FileChannel ch;
 
     ByteBuffer buf;
 
-    private boolean mapped = false;
-
-    private final int pageSize;
-
     private int currentPage = -1;
 
-    BaseAtomNio(String basePath) {
-        this(basePath, PAGE_SIZE);
-    }
-
-    BaseAtomNio(String basePath, int pageSize) {
-        super(basePath);
-        this.pageSize = pageSize;
+    BaseAtomNio(NioConf conf) {
+        super(conf);
         init();
     }
 
     private void init() {
-        if (write) {
-            new File(basePath).mkdirs();
+        if (conf.isWrite()) {
+            new File(conf.getPath()).mkdirs();
         }
     }
 
     int getPage(long pos) {
-        return (int) (pos >> (pageSize - getStep()));
+        return (int) (pos >> (conf.getPageSize() - getStep()));
     }
 
     int getOffset(long pos) {
-        return (int) ((pos << getStep()) & ((1 << pageSize) - 1));
+        return (int) ((pos << getStep()) & ((1 << conf.getPageSize()) - 1));
     }
 
     void initBuf(int page) {
         if (currentPage == page) {
             return;
         }
+        releaseBuffer();
         loadBuffer(page);
     }
 
     private void loadBuffer(int page) {
-        releaseBuffer();
-
         try {
-            RandomAccessFile file = new RandomAccessFile(String.format("%s/%d", basePath, page), write ? "rw" : "r");
+            RandomAccessFile file = new RandomAccessFile(String.format("%s/%d", conf.getPath(), page), conf.isWrite() ? "rw" : "r");
             ch = file.getChannel();
 
-            if (mapped) {
-                buf = ch.map(MapMode.READ_WRITE, 0, 1 << pageSize);
+            if (conf.isMapped()) {
+                buf = ch.map(conf.isWrite() ? MapMode.READ_WRITE : MapMode.READ_ONLY, 0, 1 << conf.getPageSize());
             } else {
                 if (buf == null) {
-                    buf = ByteBuffer.allocate(1 << pageSize);
+                    buf = ByteBuffer.allocate(1 << conf.getPageSize());
                 }
                 ch.read(buf);
-                if (write) {
+                if (conf.isWrite()) {
                     ch.position(0);
                 }
             }
 
             currentPage = page;
         } catch (IOException e) {
-            e.printStackTrace();
+            SwiftLoggers.getLogger().error(e);
         }
     }
 
@@ -87,17 +76,17 @@ abstract class BaseAtomNio extends BaseNio {
         if (buf == null) {
             return;
         }
-        if (mapped) {
+        if (conf.isMapped()) {
             IoUtil.release((MappedByteBuffer) buf);
             buf = null;
             return;
         }
-        if (write) {
+        if (conf.isWrite()) {
             buf.flip();
             try {
                 ch.write(buf);
             } catch (IOException e) {
-                e.printStackTrace();
+                SwiftLoggers.getLogger().error(e);
             } finally {
                 IoUtil.close(ch);
             }

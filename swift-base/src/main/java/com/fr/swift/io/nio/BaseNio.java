@@ -7,11 +7,9 @@ import com.fr.swift.io.Io;
  * @date 2018/7/20
  */
 abstract class BaseNio implements Io {
-    String basePath;
+    NioConf conf;
 
-    boolean write = true;
-
-    BaseNio(String basePath) {
-        this.basePath = basePath;
+    BaseNio(NioConf conf) {
+        this.conf = conf;
     }
 }

@@ -7,25 +7,13 @@ import com.fr.swift.io.IntIo;
  * @date 2018/7/21
  */
 public class IntNio extends BaseAtomNio implements IntIo {
-    public IntNio(String basePath) {
-        super(basePath);
-    }
-
-    public IntNio(String basePath, int pageSize) {
-        super(basePath, pageSize);
-    }
-
-    public static IntIo of(String basePath, int pageSize) {
-        return new IntNio(basePath, pageSize);
-    }
-
-    public static IntIo of(String basePath) {
-        return new IntNio(basePath);
+    public IntNio(NioConf conf) {
+        super(conf);
     }
 
     @Override
     int getStep() {
-        return 3;
+        return 2;
     }
 
     @Override

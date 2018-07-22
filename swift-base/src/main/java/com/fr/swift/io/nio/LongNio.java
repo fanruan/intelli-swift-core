@@ -7,20 +7,8 @@ import com.fr.swift.io.LongIo;
  * @date 2018/7/20
  */
 public class LongNio extends BaseAtomNio implements LongIo {
-    public LongNio(String basePath) {
-        super(basePath);
-    }
-
-    public LongNio(String basePath, int pageSize) {
-        super(basePath, pageSize);
-    }
-
-    public static LongIo of(String basePath) {
-        return new LongNio(basePath);
-    }
-
-    public static LongIo of(String basePath, int pageSize) {
-        return new LongNio(basePath, pageSize);
+    public LongNio(NioConf conf) {
+        super(conf);
     }
 
     @Override

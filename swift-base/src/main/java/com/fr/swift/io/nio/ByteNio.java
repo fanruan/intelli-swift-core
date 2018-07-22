@@ -7,21 +7,8 @@ import com.fr.swift.io.ByteIo;
  * @date 2018/7/20
  */
 public class ByteNio extends BaseAtomNio implements ByteIo {
-    public ByteNio(String basePath) {
-        super(basePath);
-    }
-
-    public ByteNio(String basePath, int pageSize) {
-        super(basePath, pageSize);
-    }
-
-
-    public static ByteIo of(String basePath, int pageSize) {
-        return new ByteNio(basePath, pageSize);
-    }
-
-    public static ByteIo of(String basePath) {
-        return new ByteNio(basePath);
+    public ByteNio(NioConf conf) {
+        super(conf);
     }
 
     @Override

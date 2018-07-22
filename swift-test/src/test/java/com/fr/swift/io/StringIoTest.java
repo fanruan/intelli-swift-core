@@ -1,5 +1,6 @@
 package com.fr.swift.io;
 
+import com.fr.swift.io.nio.NioConf;
 import com.fr.swift.io.nio.StringNio;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,14 +21,14 @@ public class StringIoTest extends BaseIoTest {
 
     @Test
     public void test() {
-        SameObjectIo<String> io = new StringNio(path, pageSize);
+        ObjectIo<String> io = new StringNio(new NioConf(path, true, pageSize, false));
         String[] strings = {UUID.randomUUID().toString(), UUID.randomUUID().toString()};
         for (int i = 0; i < strings.length; i++) {
             io.put(i, strings[i]);
         }
         io.release();
 
-        io = new StringNio(path, pageSize);
+        io = new StringNio(new NioConf(path, false, pageSize, false));
         for (int i = 0; i < strings.length; i++) {
             Assert.assertEquals(strings[i], io.get(i));
         }

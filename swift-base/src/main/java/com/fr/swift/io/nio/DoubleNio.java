@@ -7,20 +7,8 @@ import com.fr.swift.io.DoubleIo;
  * @date 2018/7/21
  */
 public class DoubleNio extends BaseAtomNio implements DoubleIo {
-    public DoubleNio(String basePath) {
-        super(basePath);
-    }
-
-    public DoubleNio(String basePath, int pageSize) {
-        super(basePath, pageSize);
-    }
-
-    public static DoubleIo of(String basePath) {
-        return new DoubleNio(basePath);
-    }
-
-    public static DoubleIo of(String basePath, int pageSize) {
-        return new DoubleNio(basePath, pageSize);
+    public DoubleNio(NioConf conf) {
+        super(conf);
     }
 
     @Override

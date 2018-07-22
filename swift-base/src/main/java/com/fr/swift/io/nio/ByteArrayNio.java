@@ -3,33 +3,30 @@ package com.fr.swift.io.nio;
 import com.fr.swift.io.ByteIo;
 import com.fr.swift.io.IntIo;
 import com.fr.swift.io.LongIo;
-import com.fr.swift.io.SameObjectIo;
+import com.fr.swift.io.ObjectIo;
 import com.fr.swift.util.IoUtil;
 
 /**
  * @author anchore
  * @date 2018/7/20
  */
-public class ByteArrayNio extends BaseNio implements SameObjectIo<byte[]> {
+public class ByteArrayNio extends BaseNio implements ObjectIo<byte[]> {
     private LongIo position;
     private IntIo length;
     private ByteIo data;
 
     private long currentPos;
 
-    public ByteArrayNio(String basePath, int pageSize) {
-        super(basePath);
-        init(pageSize);
+    public ByteArrayNio(NioConf conf) {
+        super(conf);
+        init();
     }
 
-    public static SameObjectIo<byte[]> of(String basePath, int pageSize) {
-        return new ByteArrayNio(basePath, pageSize);
-    }
 
-    private void init(int pageSize) {
-        position = LongNio.of(String.format("%s/%s", basePath, "pos"), pageSize);
-        length = IntNio.of(String.format("%s/%s", basePath, "len"), pageSize);
-        data = ByteNio.of(String.format("%s/%s", basePath, "data"), pageSize);
+    private void init() {
+        position = new LongNio(conf.ofAnotherPath(String.format("%s/%s", conf.getPath(), "pos")));
+        length = new IntNio(conf.ofAnotherPath(String.format("%s/%s", conf.getPath(), "len")));
+        data = new ByteNio(conf.ofAnotherPath(String.format("%s/%s", conf.getPath(), "data")));
     }
 
     @Override
