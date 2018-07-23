@@ -63,7 +63,9 @@ public final class ReflectUtils {
 
     private static <T> Constructor<T> getConstructor(Class<T> clazz, Object... args) throws NoSuchMethodException {
         if (null == args || args.length == 0) {
-            return clazz.getDeclaredConstructor();
+            Constructor<T> constructor = clazz.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            return constructor;
         }
         Constructor<T>[] constructors = (Constructor<T>[]) clazz.getDeclaredConstructors();
         for (Constructor<T> constructor : constructors) {
