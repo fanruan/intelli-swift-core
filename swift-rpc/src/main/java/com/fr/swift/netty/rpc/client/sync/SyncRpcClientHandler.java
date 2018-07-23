@@ -41,7 +41,7 @@ public class SyncRpcClientHandler extends AbstactRpcClientHandler {
     @Override
     public void channelRead0(ChannelHandlerContext ctx, RpcResponse response) {
         this.response = response;
-        LOGGER.info("Receive response : " + response.getRequestId());
+        LOGGER.debug("Receive response : " + response.getRequestId());
     }
 
     public RpcResponse send(final RpcRequest request) throws Exception {
@@ -67,7 +67,7 @@ public class SyncRpcClientHandler extends AbstactRpcClientHandler {
             channel.writeAndFlush(request).sync().addListener(new ChannelFutureListener() {
                 @Override
                 public void operationComplete(ChannelFuture channelFuture) {
-                    LOGGER.info("Send request : " + request.getRequestId());
+                    LOGGER.debug("Send request : " + request.getRequestId());
                 }
             });
             channel.closeFuture().sync();

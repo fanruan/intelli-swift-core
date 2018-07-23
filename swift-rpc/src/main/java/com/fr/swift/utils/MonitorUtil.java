@@ -22,6 +22,6 @@ public class MonitorUtil {
 
     public static void finish(String methodName) {
         long finishTime = System.currentTimeMillis();
-        LOGGER.info("method " + methodName + " cost time:" + (finishTime - tl.get()) + "ms");
+        LOGGER.debug("method " + methodName + " cost time:" + (finishTime - tl.get()) + "ms");
     }
 }
