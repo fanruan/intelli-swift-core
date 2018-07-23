@@ -6,6 +6,7 @@ import com.fr.swift.config.dao.SwiftConfigDao;
 import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.ReflectUtils;
+import com.fr.third.org.apache.commons.lang3.ClassUtils;
 import com.fr.third.org.hibernate.Session;
 
 import java.lang.reflect.Field;
@@ -27,8 +28,8 @@ public abstract class AbstractObjectConfigConvert<T> extends BaseConfigConvert<T
         }
         String className = transferClassName(entity.getConfigValue());
         try {
-            Class<? extends T> clazz = (Class<? extends T>) Class.forName(className);
-            T rule = clazz.newInstance();
+            Class<? extends T> clazz = (Class<? extends T>) ClassUtils.getClass(className);
+            T rule = ReflectUtils.newInstance(clazz);
             Field[] fields = clazz.getDeclaredFields();
             for (Field field : fields) {
                 if (field.isAnnotationPresent(ConfigField.class)) {

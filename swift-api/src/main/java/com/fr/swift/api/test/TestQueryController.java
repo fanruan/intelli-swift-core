@@ -1,11 +1,7 @@
 package com.fr.swift.api.test;
 
 import com.fr.swift.api.SwiftApiConstants;
-import com.fr.swift.config.service.SwiftMetaDataService;
-import com.fr.swift.context.SwiftContext;
-import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.netty.rpc.server.RpcServer;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
@@ -32,12 +28,6 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping(SwiftApiConstants.TEST_ROOT_URL)
 public class TestQueryController {
 
-    private SwiftMetaDataService metaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
-
-    private RpcServer server = SwiftContext.get().getBean(RpcServer.class);
-
-    private SwiftLogger logger = SwiftLoggers.getLogger(TestQueryController.class);
-
     @ResponseBody
     @RequestMapping(value = "/query/{sourceKey}", method = RequestMethod.GET)
     public List<Row> query(@PathVariable("sourceKey") String jsonString) throws Exception {
@@ -53,7 +43,7 @@ public class TestQueryController {
             }
             resultSet.close();
         }
-        logger.info("group query cost: " + TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start) + " seconds!");
+        SwiftLoggers.getLogger().info("group query cost: " + TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start) + " seconds!");
         return rows;
     }
 
@@ -73,7 +63,7 @@ public class TestQueryController {
             }
             resultSet.close();
         }
-        logger.info("group query cost: " + TimeUnit.MILLISECONDS.toMillis(System.currentTimeMillis() - start) + " ms!");
+        SwiftLoggers.getLogger().info("group query cost: " + TimeUnit.MILLISECONDS.toMillis(System.currentTimeMillis() - start) + " ms!");
         return rows;
     }
 }
