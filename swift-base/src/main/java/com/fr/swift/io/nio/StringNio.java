@@ -36,7 +36,7 @@ public class StringNio extends BaseNio implements StringWriter, StringReader, Ob
 
     @Override
     public boolean isReadable() {
-        return false;
+        return obj != null && obj.isReadable();
     }
 
     @Override

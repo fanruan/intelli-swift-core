@@ -52,7 +52,7 @@ public class BitmapNio extends BaseNio implements BitMapReader, BitMapWriter, Ob
 
     @Override
     public boolean isReadable() {
-        return false;
+        return obj != null && obj.isReadable();
     }
 
     @Override

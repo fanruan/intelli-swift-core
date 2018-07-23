@@ -27,6 +27,11 @@ public class ByteArrayNio extends BaseNio implements ObjectIo<byte[]> {
         position = new LongNio(conf.ofAnotherPath(String.format("%s/%s", conf.getPath(), "pos")));
         length = new IntNio(conf.ofAnotherPath(String.format("%s/%s", conf.getPath(), "len")));
         data = new ByteNio(conf.ofAnotherPath(String.format("%s/%s", conf.getPath(), "data")));
+        if (conf.isWrite()) {
+            LongIo lastPosition = new LongNio(conf.ofAnotherPath(String.format("%s/%s", conf.getPath(), "last_pos")));
+            currentPos = lastPosition.get(0);
+            lastPosition.release();
+        }
     }
 
     @Override
@@ -42,7 +47,7 @@ public class ByteArrayNio extends BaseNio implements ObjectIo<byte[]> {
 
     @Override
     public long getLastPosition(long pos) {
-        return 0;
+        return -1;
     }
 
     @Override
@@ -60,11 +65,18 @@ public class ByteArrayNio extends BaseNio implements ObjectIo<byte[]> {
 
     @Override
     public boolean isReadable() {
-        return false;
+        return position != null && position.isReadable() &&
+                length != null && length.isReadable() &&
+                data != null && data.isReadable();
     }
 
     @Override
     public void release() {
+        if (conf.isWrite()) {
+            LongIo lastPosition = new LongNio(conf.ofAnotherPath(String.format("%s/%s", conf.getPath(), "last_pos")));
+            lastPosition.put(0, currentPos);
+            lastPosition.release();
+        }
         IoUtil.release(data, position, length);
         data = null;
         position = null;

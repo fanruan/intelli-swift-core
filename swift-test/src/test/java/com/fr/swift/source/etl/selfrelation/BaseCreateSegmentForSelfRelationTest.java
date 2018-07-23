@@ -55,6 +55,11 @@ public class BaseCreateSegmentForSelfRelationTest {
             }
 
             @Override
+            public boolean isReadable() {
+                return false;
+            }
+
+            @Override
             public Column getColumn(ColumnKey key) {
                 if(key.getName().equals("ID")) {
                     return new BaseCreateColumnForSelfRelation1Test().getColumn();

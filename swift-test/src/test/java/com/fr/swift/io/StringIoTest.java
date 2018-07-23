@@ -21,17 +21,24 @@ public class StringIoTest extends BaseIoTest {
 
     @Test
     public void test() {
-        ObjectIo<String> io = new StringNio(new NioConf(path, true, pageSize, false));
         String[] strings = {UUID.randomUUID().toString(), UUID.randomUUID().toString()};
+
+        ObjectIo<String> io = new StringNio(new NioConf(path, true, pageSize, false));
         for (int i = 0; i < strings.length; i++) {
             io.put(i, strings[i]);
         }
+        io.release();
+
+        io = new StringNio(new NioConf(path, true, pageSize, false));
+        String third = UUID.randomUUID().toString();
+        io.put(2, third);
         io.release();
 
         io = new StringNio(new NioConf(path, false, pageSize, false));
         for (int i = 0; i < strings.length; i++) {
             Assert.assertEquals(strings[i], io.get(i));
         }
+        Assert.assertEquals(third, io.get(2));
         io.release();
     }
 }
