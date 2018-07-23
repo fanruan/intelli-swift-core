@@ -4,7 +4,6 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.IoUtil;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -118,9 +117,5 @@ abstract class BaseAtomNio extends BaseNio {
     @Override
     public void release() {
         releaseBuffer();
-    }
-
-    public static void main(String[] args) throws FileNotFoundException {
-        new RandomAccessFile("W:/df", "r").getChannel();
     }
 }
