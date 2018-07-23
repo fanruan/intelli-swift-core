@@ -2,6 +2,7 @@ package com.fr.swift.segment;
 
 import com.fr.swift.source.SourceKey;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -19,4 +20,6 @@ public interface SwiftSegmentManager {
     List<SegmentKey> getSegmentKeys(SourceKey tableKey);
 
     boolean isSegmentsExist(SourceKey tableKey);
+
+    List<Segment> getSegmentsByIds(SourceKey table, Collection<String> segmentIds);
 }

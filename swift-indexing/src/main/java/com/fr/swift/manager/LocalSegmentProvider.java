@@ -6,6 +6,7 @@ import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.source.SourceKey;
 import com.fr.third.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -43,5 +44,10 @@ public class LocalSegmentProvider implements SwiftSegmentManager {
     @Override
     public boolean isSegmentsExist(SourceKey tableKey) {
         return manager.isSegmentsExist(tableKey);
+    }
+
+    @Override
+    public List<Segment> getSegmentsByIds(SourceKey table, Collection<String> segmentIds) {
+        return manager.getSegmentsByIds(table, segmentIds);
     }
 }

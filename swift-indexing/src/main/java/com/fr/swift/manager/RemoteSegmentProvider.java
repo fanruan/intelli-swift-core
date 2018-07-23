@@ -5,6 +5,7 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.source.SourceKey;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -42,6 +43,11 @@ public class RemoteSegmentProvider implements SwiftSegmentManager {
     @Override
     public boolean isSegmentsExist(SourceKey tableKey) {
         return false;
+    }
+
+    @Override
+    public List<Segment> getSegmentsByIds(SourceKey table, Collection<String> segmentIds) {
+        return null;
     }
 
 }

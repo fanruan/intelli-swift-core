@@ -1,11 +1,16 @@
 package com.fr.swift.segment;
 
+import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;
+import com.fr.third.org.hibernate.criterion.Restrictions;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -19,9 +24,13 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
     @Override
     public synchronized List<Segment> getSegment(SourceKey tableKey) {
         // 并发地拿，比如多个column indexer同时进行索引， 要同步下
-        List<Segment> segments = new ArrayList<Segment>();
         List<SegmentKey> keys = getSegmentKeys(tableKey);
         Integer currentFolder = getCurrentFolder(tablePathService, tableKey);
+        return keys2Segments(keys, currentFolder);
+    }
+
+    private List<Segment> keys2Segments(List<SegmentKey> keys, Integer currentFolder) {
+        List<Segment> segments = new ArrayList<Segment>();
         if (null != keys && !keys.isEmpty()) {
             for (SegmentKey key : keys) {
                 try {
@@ -30,11 +39,11 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
                         segments.add(segment);
                     }
                 } catch (Exception e) {
-                    return segments;
+                    SwiftLoggers.getLogger().error(e);
                 }
             }
         }
-        return segments;
+        return Collections.unmodifiableList(segments);
     }
 
     @Override
@@ -61,4 +70,13 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
     protected abstract Integer getCurrentFolder(SwiftTablePathService service, SourceKey sourceKey);
 
     protected abstract Segment getSegment(SegmentKey segmentKey, Integer currentFolder);
+
+    @Override
+    public synchronized List<Segment> getSegmentsByIds(SourceKey table, Collection<String> segmentIds) {
+        List<SegmentKey> keys = segmentService.find(
+                Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, table),
+                Restrictions.in("id", segmentIds));
+        Integer currentFolder = getCurrentFolder(tablePathService, table);
+        return keys2Segments(keys, currentFolder);
+    }
 }

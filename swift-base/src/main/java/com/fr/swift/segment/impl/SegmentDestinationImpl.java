@@ -10,7 +10,6 @@ import com.fr.third.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fr.third.fasterxml.jackson.annotation.JsonInclude;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class SegmentDestinationImpl implements SegmentDestination {
     @JsonProperty
     private String currentNode;
     @JsonProperty
-    private URI uri;
+    private String segmentId;
     @JsonProperty
     private int order;
     @JsonProperty
@@ -42,10 +41,10 @@ public class SegmentDestinationImpl implements SegmentDestination {
     public SegmentDestinationImpl() {
     }
 
-    public SegmentDestinationImpl(String clusterId, URI uri, int order, Class<? extends SwiftService> serviceClass, String methodName) {
+    public SegmentDestinationImpl(String clusterId, String segmentId, int order, Class<? extends SwiftService> serviceClass, String methodName) {
         this.clusterId = clusterId;
         this.address = clusterId;
-        this.uri = uri;
+        this.segmentId = segmentId;
         this.order = order;
         this.serviceClass = serviceClass;
         this.methodName = methodName;
@@ -54,11 +53,11 @@ public class SegmentDestinationImpl implements SegmentDestination {
     }
 
     public SegmentDestinationImpl(SegmentDestination destination) {
-        this(destination.getClusterId(), destination.getUri(), destination.getOrder(), destination.getServiceClass(), destination.getMethodName());
+        this(destination.getClusterId(), destination.getSegmentId(), destination.getOrder(), destination.getServiceClass(), destination.getMethodName());
     }
 
-    public SegmentDestinationImpl(URI uri, int order) {
-        this.uri = uri;
+    public SegmentDestinationImpl(String segmentId, int order) {
+        this.segmentId = segmentId;
         this.order = order;
     }
 
@@ -71,10 +70,6 @@ public class SegmentDestinationImpl implements SegmentDestination {
         this.clusterId = clusterId;
     }
 
-    public URI getUri() {
-        return uri;
-    }
-
     @Override
     public List<String> getSpareNodes() {
         return spareNodes;
@@ -84,8 +79,13 @@ public class SegmentDestinationImpl implements SegmentDestination {
         this.spareNodes = spareNodes;
     }
 
-    public void setUri(URI uri) {
-        this.uri = uri;
+    @Override
+    public String getSegmentId() {
+        return segmentId;
+    }
+
+    public void setSegmentId(String segmentId) {
+        this.segmentId = segmentId;
     }
 
     @Override
@@ -137,30 +137,57 @@ public class SegmentDestinationImpl implements SegmentDestination {
         this.address = address;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        SegmentDestinationImpl that = (SegmentDestinationImpl) o;
-
-        if (order != that.order) return false;
-        if (uri != null ? !uri.equals(that.uri) : that.uri != null) return false;
-        if (serviceClass != null ? !serviceClass.equals(that.serviceClass) : that.serviceClass != null) return false;
-        return methodName != null ? methodName.equals(that.methodName) : that.methodName == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = uri != null ? uri.hashCode() : 0;
-        result = 31 * result + order;
-        result = 31 * result + (serviceClass != null ? serviceClass.hashCode() : 0);
-        result = 31 * result + (methodName != null ? methodName.hashCode() : 0);
-        return result;
-    }
 
     @Override
     public int compareTo(SegmentDestination o) {
         return order - o.getOrder();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        SegmentDestinationImpl that = (SegmentDestinationImpl) o;
+
+        if (order != that.order) {
+            return false;
+        }
+        if (clusterId != null ? !clusterId.equals(that.clusterId) : that.clusterId != null) {
+            return false;
+        }
+        if (address != null ? !address.equals(that.address) : that.address != null) {
+            return false;
+        }
+        if (currentNode != null ? !currentNode.equals(that.currentNode) : that.currentNode != null) {
+            return false;
+        }
+        if (segmentId != null ? !segmentId.equals(that.segmentId) : that.segmentId != null) {
+            return false;
+        }
+        if (serviceClass != null ? !serviceClass.equals(that.serviceClass) : that.serviceClass != null) {
+            return false;
+        }
+        if (methodName != null ? !methodName.equals(that.methodName) : that.methodName != null) {
+            return false;
+        }
+        return spareNodes != null ? spareNodes.equals(that.spareNodes) : that.spareNodes == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = clusterId != null ? clusterId.hashCode() : 0;
+        result = 31 * result + (address != null ? address.hashCode() : 0);
+        result = 31 * result + (currentNode != null ? currentNode.hashCode() : 0);
+        result = 31 * result + (segmentId != null ? segmentId.hashCode() : 0);
+        result = 31 * result + order;
+        result = 31 * result + (serviceClass != null ? serviceClass.hashCode() : 0);
+        result = 31 * result + (methodName != null ? methodName.hashCode() : 0);
+        result = 31 * result + (spareNodes != null ? spareNodes.hashCode() : 0);
+        return result;
     }
 }
