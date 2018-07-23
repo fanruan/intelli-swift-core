@@ -1,11 +1,8 @@
 package com.fr.swift.api.test;
 
 import com.fr.swift.api.SwiftApiConstants;
-import com.fr.swift.config.service.SwiftMetaDataService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.netty.rpc.server.RpcServer;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
@@ -31,10 +28,6 @@ import java.util.concurrent.TimeUnit;
 @Controller
 @RequestMapping(SwiftApiConstants.TEST_ROOT_URL)
 public class TestQueryController {
-
-    private SwiftMetaDataService metaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
-
-    private RpcServer server = SwiftContext.get().getBean(RpcServer.class);
 
     private SwiftLogger logger = SwiftLoggers.getLogger(TestQueryController.class);
 
