@@ -25,7 +25,7 @@
         <constructor-arg index="1" value="10"/>
     </bean>
 
-    <bean id="defaultDataSyncRle" class="com.fr.swift.service.handler.history.rule.DefaultDataSyncRule"/>
+    <bean id="defaultDataSyncRule" class="com.fr.swift.service.handler.history.rule.DefaultDataSyncRule"/>
     <bean id="defaultIndexingSelectRule" class="com.fr.swift.service.handler.indexing.rule.DefaultIndexingSelectRule"/>
     <bean id="defaultSegmentDestSelectRule" class="com.fr.swift.segment.rule.DefaultSegmentDestSelectRule"/>
 

@@ -35,20 +35,20 @@ public abstract class AbstactRpcClientHandler extends SimpleChannelInboundHandle
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
         this.remotePeer = this.channel.remoteAddress();
-        LOGGER.info("Rpc client active!");
+        LOGGER.debug("Rpc client active!");
     }
 
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
         super.channelRegistered(ctx);
         this.channel = ctx.channel();
-        LOGGER.info("Rpc client registered!");
+        LOGGER.debug("Rpc client registered!");
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
-        LOGGER.info("Rpc client inactive!");
+        LOGGER.debug("Rpc client inactive!");
     }
 
     @Override
