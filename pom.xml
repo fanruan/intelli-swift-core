@@ -9,26 +9,26 @@
     <packaging>pom</packaging>
     <version>${swift.version}</version>
     <modules>
-        <module>swift-base</module>
         <module>swift-analyse</module>
-        <module>swift-history</module>
-        <module>swift-indexing</module>
-        <module>swift-realtime</module>
-        <module>swift-server</module>
-        <module>swift-log-adaptor</module>
-        <module>swift-test</module>
+        <module>swift-api</module>
+        <module>swift-base</module>
         <module>swift-boot</module>
         <module>swift-cluster</module>
-        <module>swift-master</module>
-        <module>swift-slave</module>
-        <module>swift-rpc</module>
-        <module>swift-http</module>
-        <module>swift-repository</module>
-        <module>swift-decision</module>
-        <module>swift-redis</module>
         <module>swift-config</module>
+        <module>swift-decision</module>
         <module>swift-defragmentation</module>
-        <module>swift-api</module>
+        <module>swift-history</module>
+        <module>swift-http</module>
+        <module>swift-indexing</module>
+        <module>swift-log-adaptor</module>
+        <module>swift-master</module>
+        <module>swift-realtime</module>
+        <module>swift-redis</module>
+        <module>swift-repository</module>
+        <module>swift-rpc</module>
+        <module>swift-server</module>
+        <module>swift-slave</module>
+        <module>swift-test</module>
     </modules>
 
     <properties>

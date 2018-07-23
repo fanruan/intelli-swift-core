@@ -25,18 +25,18 @@ public class SwiftMasterService implements MasterService {
 
     @Override
     public synchronized void collectHeartBeat(HeartBeatInfo heartBeatInfo) {
-        SwiftLoggers.getLogger().info("Collect heartbeat:" + heartBeatInfo.toString());
+        SwiftLoggers.getLogger().debug("Collect heartbeat:" + heartBeatInfo.toString());
         NodeContainer.getInstance().updateHeartBeatInfo(heartBeatInfo);
     }
 
     @Override
     public synchronized void syncHeartBeat() {
-        SwiftLoggers.getLogger().info("Start to sync heartbeat!");
+        SwiftLoggers.getLogger().debug("Start to sync heartbeat!");
         List<HeartBeatInfo> heartBeatInfoList = NodeContainer.getInstance().getAllHeartBeatInfos();
         for (HeartBeatInfo heartBeatInfo : heartBeatInfoList) {
             try {
                 SlaveService slaveService = ClusterProxyUtils.getSlaveProxy(SlaveService.class, heartBeatInfo);
-                SwiftLoggers.getLogger().info("Sync heartbeat:" + heartBeatInfo);
+                SwiftLoggers.getLogger().debug("Sync heartbeat:" + heartBeatInfo);
                 slaveService.synHeartBeat(heartBeatInfoList);
             } catch (Exception e) {
                 SwiftLoggers.getLogger().error(e);

@@ -27,14 +27,14 @@ public class SalveHeartBeatCollect implements Collect {
 
     @Override
     public void startCollect() {
-        SwiftLoggers.getLogger().info(SlaveHeartBeatRunnable.THREAD_NAME + " start!");
+        SwiftLoggers.getLogger().debug(SlaveHeartBeatRunnable.THREAD_NAME + " start!");
         thread = SwiftExecutors.newThread(new SlaveHeartBeatRunnable(), SlaveHeartBeatRunnable.THREAD_NAME);
         thread.start();
     }
 
     @Override
     public void stopCollect() {
-        SwiftLoggers.getLogger().info(SlaveHeartBeatRunnable.THREAD_NAME + " interrupt!");
+        SwiftLoggers.getLogger().debug(SlaveHeartBeatRunnable.THREAD_NAME + " interrupt!");
         thread.interrupt();
     }
 
