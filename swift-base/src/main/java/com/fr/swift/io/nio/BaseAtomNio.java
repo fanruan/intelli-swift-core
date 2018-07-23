@@ -93,6 +93,7 @@ abstract class BaseAtomNio extends BaseNio {
             }
         }
         buf.clear();
+        currentPage = -1;
     }
 
     void setBufPosition(int offset) {
