@@ -13,8 +13,11 @@ import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author yee
@@ -46,6 +49,34 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
         } catch (SQLException e) {
             SwiftLoggers.getLogger().error(e);
             return false;
+        }
+    }
+
+    @Override
+    public Map<String, List<SwiftSegmentLocationEntity>> findAll() {
+        try {
+            return tx.doTransactionIfNeed(new AbstractTransactionWorker<Map<String, List<SwiftSegmentLocationEntity>>>() {
+                @Override
+                public Map<String, List<SwiftSegmentLocationEntity>> work(Session session) {
+                    Map<String, List<SwiftSegmentLocationEntity>> result = new HashMap<String, List<SwiftSegmentLocationEntity>>();
+                    List<SwiftSegmentLocationEntity> all = segmentLocationDao.findAll(session);
+                    for (SwiftSegmentLocationEntity entity : all) {
+                        String sourceKey = entity.getSourceKey();
+                        if (null == result.get(sourceKey)) {
+                            result.put(sourceKey, new ArrayList<SwiftSegmentLocationEntity>());
+                        }
+                        result.get(sourceKey).add(entity);
+                    }
+                    return result;
+                }
+
+                @Override
+                public boolean needTransaction() {
+                    return false;
+                }
+            });
+        } catch (SQLException e) {
+            return Collections.emptyMap();
         }
     }
 
