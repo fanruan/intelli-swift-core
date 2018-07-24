@@ -3,11 +3,11 @@ package com.fr.swift.query.post;
 import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.post.utils.SwiftMetaDataUtils;
 import com.fr.swift.query.query.Query;
-import com.fr.swift.result.ChainedNodeResultSet;
 import com.fr.swift.result.FakeNodeResultSet;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeOperator;
+import com.fr.swift.result.node.ChainedNodeResultSet;
 import com.fr.swift.source.SwiftMetaData;
 
 import java.sql.SQLException;

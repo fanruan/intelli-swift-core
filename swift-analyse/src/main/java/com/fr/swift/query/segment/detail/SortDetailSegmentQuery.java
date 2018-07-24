@@ -1,11 +1,13 @@
 package com.fr.swift.query.segment.detail;
 
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.result.SortSegmentDetailResultSet;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.structure.Pair;
 
 import java.util.List;
 
@@ -18,7 +20,7 @@ public class SortDetailSegmentQuery extends AbstractDetailSegmentQuery {
     private List<Sort> sorts;
     private SwiftMetaData metaData;
 
-    public SortDetailSegmentQuery(List<Column> columnList, DetailFilter filter, List<Sort> sorts, SwiftMetaData metaData) {
+    public SortDetailSegmentQuery(List<Pair<Column, IndexInfo>> columnList, DetailFilter filter, List<Sort> sorts, SwiftMetaData metaData) {
         super(columnList, filter);
         this.sorts = sorts;
         this.metaData = metaData;

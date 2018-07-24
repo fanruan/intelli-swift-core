@@ -5,6 +5,8 @@ import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.group.info.IndexInfo;
+import com.fr.swift.query.group.info.IndexInfoImpl;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.segment.detail.NormalDetailSegmentQuery;
 import com.fr.swift.query.segment.detail.SortDetailSegmentQuery;
@@ -31,7 +33,7 @@ import java.util.List;
 public class DetailResultSetTest extends TestCase {
 
     private DetailFilter filter;
-    private List<Column> columnList = new ArrayList<Column>();
+    private List<Pair<Column, IndexInfo>> columnList = new ArrayList<>();
     private MutableBitMap bitMap = BitSetMutableBitMap.newInstance();
     private List<Query<DetailResultSet>> queries = new ArrayList<Query<DetailResultSet>>();
     private Column<Integer> intColumn;
@@ -476,10 +478,10 @@ public class DetailResultSetTest extends TestCase {
         bitMap.add(6);
         EasyMock.expect(filter.createFilterIndex()).andReturn(bitMap).anyTimes();
         control.replay();
-        columnList.add(intColumn);
-        columnList.add(longColumn);
-        columnList.add(doubleColumn);
-        columnList.add(stringColumn);
+        columnList.add(Pair.of(intColumn, new IndexInfoImpl(false, false)));
+        columnList.add(Pair.of(longColumn, new IndexInfoImpl(false, false)));
+        columnList.add(Pair.of(doubleColumn, new IndexInfoImpl(false, false)));
+        columnList.add(Pair.of(stringColumn, new IndexInfoImpl(false, false)));
     }
 
 

@@ -2,11 +2,13 @@ package com.fr.swift.result;
 
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.array.IntArray;
 
 import java.util.ArrayList;
@@ -26,8 +28,8 @@ public class SegmentDetailResultSet implements DetailResultSet {
     private SwiftMetaData metaData;
     private Iterator<Row> iterator;
 
-    public SegmentDetailResultSet(List<Column> columnList, DetailFilter filter, SwiftMetaData metaData) {
-        this.columnList = columnList;
+    public SegmentDetailResultSet(List<Pair<Column, IndexInfo>> columnList, DetailFilter filter, SwiftMetaData metaData) {
+        this.columnList = SortSegmentDetailResultSet.getColumnList(columnList);
         this.rows = BitMaps.traversal2Array(filter.createFilterIndex());
         this.metaData = metaData;
     }

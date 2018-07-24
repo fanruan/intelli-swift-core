@@ -9,8 +9,6 @@ import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.query.group.info.GroupByInfoImpl;
 import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.query.group.info.MetricInfoImpl;
-import com.fr.swift.query.group.info.cursor.ExpanderImpl;
-import com.fr.swift.query.group.info.cursor.ExpanderType;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.SwiftNode;
@@ -22,7 +20,6 @@ import org.junit.Assert;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -46,7 +43,7 @@ public class GroupAllSegmentQueryTest extends TestCase {
             public boolean matches(SwiftNode node, int targetIndex, MatchConverter converter) {
                 return false;
             }
-        }, new ArrayList<>(), new ExpanderImpl(ExpanderType.ALL_EXPANDER, new HashSet<>()), null);
+        }, new ArrayList<>(), null);
         MetricInfo metricInfo = new MetricInfoImpl(cubeData.getMetrics(), cubeData.getAggregators(), cubeData.getMetrics().size());
         resultSet = (NodeMergeResultSet<GroupNode>) new GroupAllSegmentQuery(groupByInfo, metricInfo).getQueryResult();
         // 更新Node#data
@@ -82,7 +79,7 @@ public class GroupAllSegmentQueryTest extends TestCase {
         int dimensionSize = cubeData.getDimensions().size();
         int[] key = new int[dimensionSize];
         for (int i = 0; i < dimensionSize; i++) {
-            key[i] = cubeData.getDimensions().get(i).getDictionaryEncodedColumn().getIndex(row.getValue(i));
+            key[i] = cubeData.getDimensions().get(i).getKey().getDictionaryEncodedColumn().getIndex(row.getValue(i));
         }
         return new RowIndexKey<>(key);
     }

@@ -7,21 +7,17 @@ import com.fr.swift.query.group.by2.ItCreator;
 import com.fr.swift.query.group.by2.MultiGroupByV2;
 import com.fr.swift.query.group.by2.node.ProxyNodeCreatorStack;
 import com.fr.swift.query.group.by2.node.expander.NodeAllExpanderController;
-import com.fr.swift.query.group.by2.node.expander.NodeLazyExpanderController;
-import com.fr.swift.query.group.by2.node.expander.NodeNLevelExpanderController;
 import com.fr.swift.query.group.info.GroupByInfo;
-import com.fr.swift.query.group.info.cursor.Expander;
-import com.fr.swift.query.group.info.cursor.ExpanderType;
+import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.row.RowIndexKey;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.swift.structure.iterator.IteratorUtils;
-import com.fr.swift.structure.iterator.MapperIterator;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.stack.LimitedStack;
 import com.fr.swift.util.function.BinaryFunction;
-import com.fr.swift.util.function.Function;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -50,13 +46,11 @@ public class GroupNodeIterator<Node extends GroupNode> implements Iterator<Node[
     }
 
     private void init() {
-        List<Column> dimensions = groupByInfo.getDimensions();
-        final List<DictionaryEncodedColumn> dictionaries = IteratorUtils.iterator2List(new MapperIterator<Column, DictionaryEncodedColumn>(dimensions.iterator(), new Function<Column, DictionaryEncodedColumn>() {
-            @Override
-            public DictionaryEncodedColumn apply(Column p) {
-                return p.getDictionaryEncodedColumn();
-            }
-        }));
+        List<Pair<Column, IndexInfo>> dimensions = groupByInfo.getDimensions();
+        final List<DictionaryEncodedColumn> dictionaries = new ArrayList<DictionaryEncodedColumn>();
+        for (Pair<Column, IndexInfo> pair : dimensions) {
+            dictionaries.add(pair.getKey().getDictionaryEncodedColumn());
+        }
         ProxyNodeCreatorStack<Node> proxyStack = new ProxyNodeCreatorStack<Node>(dimensions.size(), root);
         DFTIterator dftIterator = new DFTIterator(dimensions.size(), new ItCreator(groupByInfo), proxyStack);
         GroupByController controller = createController(dictionaries);
@@ -66,16 +60,7 @@ public class GroupNodeIterator<Node extends GroupNode> implements Iterator<Node[
 
     // TODO: 2018/7/17 节点展开也不用在底层处理了
     private GroupByController<GroupNode> createController(List<DictionaryEncodedColumn> dictionaries) {
-        Expander expander = groupByInfo.getExpander();
-        Set<RowIndexKey<int[]>> indexKeys = strKey2IntKey(expander.getStringIndexKeys(), dictionaries);
-        ExpanderType type = expander.getType();
-        if (type == ExpanderType.LAZY_EXPANDER) {
-            return new NodeLazyExpanderController(indexKeys);
-        } else if (type == ExpanderType.N_LEVEL_EXPANDER) {
-            return new NodeNLevelExpanderController(expander.getNLevel());
-        } else {
-            return new NodeAllExpanderController(indexKeys);
-        }
+        return new NodeAllExpanderController(new HashSet<RowIndexKey<int[]>>());
     }
 
     private static Set<RowIndexKey<int[]>> strKey2IntKey(Set<RowIndexKey<String[]>> strKeys,

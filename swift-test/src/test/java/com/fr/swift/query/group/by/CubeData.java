@@ -6,12 +6,15 @@ import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.SumAggregate;
+import com.fr.swift.query.group.info.IndexInfo;
+import com.fr.swift.query.group.info.IndexInfoImpl;
 import com.fr.swift.result.row.RowIndexKey;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.iterator.IntListRowTraversal;
@@ -68,8 +71,12 @@ public class CubeData {
         return rowCount;
     }
 
-    public List<Column> getDimensions() {
-        return dimensionColumns;
+    public List<Pair<Column, IndexInfo>> getDimensions() {
+        List<Pair<Column, IndexInfo>> pairs = new ArrayList<>();
+        for (Column column : dimensionColumns) {
+            pairs.add(Pair.of(column, new IndexInfoImpl(true, true)));
+        }
+        return pairs;
     }
 
     public List<Column> getMetrics() {

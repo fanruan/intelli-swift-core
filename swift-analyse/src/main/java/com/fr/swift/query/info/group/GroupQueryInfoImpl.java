@@ -3,9 +3,7 @@ package com.fr.swift.query.info.group;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.info.AbstractQueryInfo;
 import com.fr.swift.query.info.element.dimension.Dimension;
-import com.fr.swift.query.info.element.dimension.DimensionInfo;
 import com.fr.swift.query.info.element.metric.Metric;
-import com.fr.swift.query.info.element.target.TargetInfo;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.query.sort.Sort;
@@ -22,11 +20,6 @@ public class GroupQueryInfoImpl extends AbstractQueryInfo<NodeResultSet> impleme
 
     private List<Metric> metrics;
     private List<PostQueryInfo> postQueryInfoList;
-
-    @Deprecated
-    public GroupQueryInfoImpl(String queryId, SourceKey table, DimensionInfo dimensionInfo, TargetInfo targetInfo) {
-        super(queryId, table, null, null);
-    }
 
     public GroupQueryInfoImpl(String queryId, SourceKey table, FilterInfo filterInfo, List<Dimension> dimensions,
                               List<Metric> metrics, List<PostQueryInfo> postQueryInfoList) {

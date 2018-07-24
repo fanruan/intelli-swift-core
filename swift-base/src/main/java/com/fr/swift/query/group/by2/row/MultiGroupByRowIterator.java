@@ -7,13 +7,11 @@ import com.fr.swift.query.group.by2.ItCreator;
 import com.fr.swift.query.group.by2.MultiGroupByV2;
 import com.fr.swift.query.group.by2.PopUpCallback;
 import com.fr.swift.query.group.info.GroupByInfo;
-import com.fr.swift.segment.column.Column;
 import com.fr.swift.structure.stack.ArrayLimitedStack;
 import com.fr.swift.structure.stack.LimitedStack;
 import com.fr.swift.util.function.BinaryFunction;
 
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Created by Lyon on 2018/4/27.
@@ -29,9 +27,9 @@ public class MultiGroupByRowIterator implements Iterator<GroupByEntry[]> {
     }
 
     private void init() {
-        List<Column> dimensions = groupByInfo.getDimensions();
-        final LimitedStack<GroupByEntry> itemsStack = new ArrayLimitedStack<GroupByEntry>(dimensions.size());
-        DFTIterator iterator = new DFTIterator(dimensions.size(), new ItCreator(groupByInfo), new PopUpCallback() {
+        int dimensionSize = groupByInfo.getDimensions().size();
+        final LimitedStack<GroupByEntry> itemsStack = new ArrayLimitedStack<GroupByEntry>(dimensionSize);
+        DFTIterator iterator = new DFTIterator(dimensionSize, new ItCreator(groupByInfo), new PopUpCallback() {
             @Override
             public void popUp() {
                 if (!itemsStack.isEmpty()) {

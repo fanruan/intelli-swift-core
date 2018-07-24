@@ -2,10 +2,10 @@ package com.fr.swift.query.post;
 
 import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.query.filter.match.NodeFilter;
-import com.fr.swift.result.ChainedNodeResultSet;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeOperator;
+import com.fr.swift.result.node.ChainedNodeResultSet;
 
 import java.sql.SQLException;
 import java.util.List;

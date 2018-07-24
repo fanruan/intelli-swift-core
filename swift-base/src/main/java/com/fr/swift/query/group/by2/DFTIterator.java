@@ -29,6 +29,7 @@ public class DFTIterator implements Iterator<GroupByEntry>, PopUpCallback {
         iterators.push(iterator);
     }
 
+    // TODO: 2018/7/24 这边返回GroupByEntry和depth也可以实现无查找构建树。去掉expander并处理结构上封装实现的问题。
     private GroupByEntry getNext() {
         GroupByEntry ret = null;
         while (!iterators.isEmpty()) {

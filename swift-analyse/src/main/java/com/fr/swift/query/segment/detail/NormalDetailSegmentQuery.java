@@ -1,10 +1,12 @@
 package com.fr.swift.query.segment.detail;
 
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.result.SegmentDetailResultSet;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.structure.Pair;
 
 import java.util.List;
 
@@ -15,7 +17,8 @@ import java.util.List;
 public class NormalDetailSegmentQuery extends AbstractDetailSegmentQuery {
 
     private SwiftMetaData metaData;
-    public NormalDetailSegmentQuery(List<Column> columnList, DetailFilter filter, SwiftMetaData metaData) {
+
+    public NormalDetailSegmentQuery(List<Pair<Column, IndexInfo>> columnList, DetailFilter filter, SwiftMetaData metaData) {
         super(columnList, filter);
         this.metaData = metaData;
     }

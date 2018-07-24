@@ -4,8 +4,8 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
+import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.query.info.detail.DetailQueryInfo;
-import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.detail.NormalDetailResultQuery;
 import com.fr.swift.query.segment.detail.NormalDetailSegmentQuery;
@@ -13,6 +13,7 @@ import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
+import com.fr.swift.structure.Pair;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -54,11 +55,7 @@ public class LocalDetailNormalQueryBuilder implements LocalDetailQueryBuilder {
         targetSegments = Collections.unmodifiableList(targetSegments);
         for (Segment segment : targetSegments) {
             List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
-            Dimension[] dimensions = info.getDimensions().toArray(new Dimension[info.getDimensions().size()]);
-            List<Column> columns = new ArrayList<Column>();
-            for (Dimension dimension : dimensions) {
-                columns.add(dimension.getColumn(segment));
-            }
+            List<Pair<Column, IndexInfo>> columns = AbstractLocalGroupQueryBuilder.getDimensionSegments(segment, info.getDimensions());
             if (info.getFilterInfo() != null) {
                 filterInfos.add(info.getFilterInfo());
             }

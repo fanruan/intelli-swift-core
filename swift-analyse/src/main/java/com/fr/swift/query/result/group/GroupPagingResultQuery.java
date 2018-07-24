@@ -2,6 +2,7 @@ package com.fr.swift.query.result.group;
 
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.query.Query;
+import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeResultSet;
 
 import java.sql.SQLException;
@@ -15,7 +16,7 @@ import java.util.List;
 public class GroupPagingResultQuery extends AbstractGroupResultQuery {
 
     public GroupPagingResultQuery(List<Query<NodeResultSet>> queries, List<Aggregator> aggregators,
-                                  List<Comparator<Integer>> comparators) {
+                                  List<Comparator<GroupNode>> comparators) {
         super(queries, aggregators, comparators);
     }
 

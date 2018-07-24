@@ -1,12 +1,12 @@
 package com.fr.swift.query.post;
 
 import com.fr.swift.query.result.ResultQuery;
-import com.fr.swift.result.ChainedNodeResultSet;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeOperator;
+import com.fr.swift.result.node.ChainedNodeResultSet;
 import com.fr.swift.result.node.GroupNodeUtils;
 
 import java.sql.SQLException;

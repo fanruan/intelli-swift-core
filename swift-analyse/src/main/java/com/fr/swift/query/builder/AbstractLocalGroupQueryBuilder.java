@@ -3,12 +3,14 @@ package com.fr.swift.query.builder;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.group.Group;
 import com.fr.swift.query.group.GroupOperator;
+import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.element.target.GroupTarget;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
+import com.fr.swift.structure.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +20,9 @@ import java.util.List;
  * @date 2017/12/18
  */
 public abstract class AbstractLocalGroupQueryBuilder implements LocalGroupQueryBuilder {
-    protected List<Column> getDimensionSegments(Segment segment, List<Dimension> dimensions) {
-        List<Column> dimensionColumns = new ArrayList<Column>();
+
+    static List<Pair<Column, IndexInfo>> getDimensionSegments(Segment segment, List<Dimension> dimensions) {
+        List<Pair<Column, IndexInfo>> dimensionColumns = new ArrayList<Pair<Column, IndexInfo>>();
         for (Dimension dimension : dimensions) {
             List<Column> columnList = new ArrayList<Column>();
             Column column = dimension.getColumn(segment);
@@ -36,7 +39,7 @@ public abstract class AbstractLocalGroupQueryBuilder implements LocalGroupQueryB
             if (operator != null) {
                 column = operator.group(columnList);
             }
-            dimensionColumns.add(column);
+            dimensionColumns.add(Pair.of(column, dimension.getIndexInfo()));
         }
         return dimensionColumns;
     }

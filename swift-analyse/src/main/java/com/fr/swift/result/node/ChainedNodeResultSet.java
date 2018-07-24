@@ -1,9 +1,12 @@
-package com.fr.swift.result;
+package com.fr.swift.result.node;
 
+import com.fr.swift.result.NodeResultSet;
+import com.fr.swift.result.SwiftNode;
+import com.fr.swift.result.SwiftNode2RowIterator;
+import com.fr.swift.result.SwiftNodeOperator;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 
-import java.sql.SQLException;
 import java.util.Iterator;
 
 /**
@@ -41,12 +44,12 @@ public class ChainedNodeResultSet implements NodeResultSet<SwiftNode> {
     }
 
     @Override
-    public SwiftMetaData getMetaData() throws SQLException {
+    public SwiftMetaData getMetaData() {
         return metaData;
     }
 
     @Override
-    public boolean hasNext() throws SQLException {
+    public boolean hasNext() {
         if (rowIterator == null) {
             rowIterator = new SwiftNode2RowIterator(this);
         }
@@ -54,12 +57,12 @@ public class ChainedNodeResultSet implements NodeResultSet<SwiftNode> {
     }
 
     @Override
-    public Row getNextRow() throws SQLException {
+    public Row getNextRow() {
         return rowIterator.next();
     }
 
     @Override
-    public void close() throws SQLException {
+    public void close() {
 
     }
 }

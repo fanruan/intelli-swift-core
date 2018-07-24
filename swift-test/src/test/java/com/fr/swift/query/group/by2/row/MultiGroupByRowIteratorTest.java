@@ -9,8 +9,6 @@ import com.fr.swift.query.group.by.CubeData;
 import com.fr.swift.query.group.by.GroupByEntry;
 import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.query.group.info.GroupByInfoImpl;
-import com.fr.swift.query.group.info.cursor.ExpanderImpl;
-import com.fr.swift.query.group.info.cursor.ExpanderType;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.row.RowIndexKey;
 import com.fr.swift.segment.column.Column;
@@ -20,7 +18,6 @@ import junit.framework.TestCase;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +44,7 @@ public class MultiGroupByRowIteratorTest extends TestCase {
             public boolean matches(SwiftNode node, int targetIndex, MatchConverter converter) {
                 return false;
             }
-        }, new ArrayList<>(), new ExpanderImpl(ExpanderType.ALL_EXPANDER, new HashSet<>()), null);
+        }, new ArrayList<>(), null);
         iterator = new MultiGroupByRowIterator(groupByInfo);
     }
 
