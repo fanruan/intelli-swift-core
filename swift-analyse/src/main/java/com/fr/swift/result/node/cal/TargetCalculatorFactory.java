@@ -6,7 +6,6 @@ import com.fr.swift.query.info.element.target.cal.BrotherGroupTarget;
 import com.fr.swift.query.info.element.target.cal.CalTargetType;
 import com.fr.swift.query.info.element.target.cal.GroupFormulaTarget;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.XLeftNode;
 import com.fr.swift.result.node.iterator.CurrentDimensionIterator;
 import com.fr.swift.result.node.iterator.LeafNodeIterator;
 import com.fr.swift.structure.iterator.MapperIterator;
@@ -28,17 +27,7 @@ public class TargetCalculatorFactory {
         switch (type) {
             case ALL_SUM_OF_ALL:
             case GROUP_SUM_OF_ALL: {
-                Double[] values;
-                if (groupNode instanceof XLeftNode) {
-                    List<AggregatorValue[]> aggregatorValues = ((XLeftNode) groupNode).getValueArrayList();
-                    values = new Double[aggregatorValues.size()];
-                    for (int i = 0; i < aggregatorValues.size(); i++) {
-                        values[i] = aggregatorValues.get(i)[target.paramIndexes()[0]].calculate();
-                    }
-                } else {
-                    // Double value = groupNode.getAggregatorValue()[target.paramIndexes()[0]].calculate();
-                    values = new Double[]{null};
-                }
+                Double[] values = new Double[]{null};
                 return new SumOfAllCalculator(target.paramIndexes()[0], target.resultIndex(), iterator, values);
             }
             case ALL_AVG:
@@ -64,13 +53,13 @@ public class TargetCalculatorFactory {
             case TARGET_PERCENT:
                 return new TargetPercentCalculator(target.paramIndexes()[0], target.resultIndex(), iterator);
             case BROTHER_VALUE:
-                return new BrotherValueTargetCalculator(target.paramIndexes(), target.resultIndex(), groupNode, dic, getFunctionByNodeType(groupNode), ((BrotherGroupTarget) target).getBrotherGroupIndex());
+                return new BrotherValueTargetCalculator(target.paramIndexes(), target.resultIndex(), groupNode, dic, groupNodeMapper(), ((BrotherGroupTarget) target).getBrotherGroupIndex());
             case BROTHER_RATE:
-                return new BrotherRateTargetCalculator(target.paramIndexes(), target.resultIndex(), groupNode, dic, getFunctionByNodeType(groupNode), ((BrotherGroupTarget) target).getBrotherGroupIndex());
+                return new BrotherRateTargetCalculator(target.paramIndexes(), target.resultIndex(), groupNode, dic, groupNodeMapper(), ((BrotherGroupTarget) target).getBrotherGroupIndex());
             case COUSIN_VALUE:
-                return new CousinValueTargetCalculator(target.paramIndexes(), target.resultIndex(), groupNode, dic, getFunctionByNodeType(groupNode), ((BrotherGroupTarget) target).getBrotherGroupIndex());
+                return new CousinValueTargetCalculator(target.paramIndexes(), target.resultIndex(), groupNode, dic, groupNodeMapper(), ((BrotherGroupTarget) target).getBrotherGroupIndex());
             case COUSIN_RATE:
-                return new CousinRateTargetCalculator(target.paramIndexes(), target.resultIndex(), groupNode, dic, getFunctionByNodeType(groupNode), ((BrotherGroupTarget) target).getBrotherGroupIndex());
+                return new CousinRateTargetCalculator(target.paramIndexes(), target.resultIndex(), groupNode, dic, groupNodeMapper(), ((BrotherGroupTarget) target).getBrotherGroupIndex());
             case FORMULA:
                 return new GroupFormulaCalculator(target.paramIndexes(), target.resultIndex(),
                         ((GroupFormulaTarget) target).getFormula(), iterator.next());
@@ -88,10 +77,6 @@ public class TargetCalculatorFactory {
         return null;
     }
 
-    private static Function<GroupNode, List<AggregatorValue[]>> getFunctionByNodeType(GroupNode groupNode) {
-        return groupNode instanceof XLeftNode ? xLeftNodeMapper() : groupNodeMapper();
-    }
-
     private static Iterator<Iterator<List<AggregatorValue[]>>> createIterator(CalTargetType type, GroupNode root) {
         switch (type) {
             case ALL_SUM_OF_ALL:
@@ -103,7 +88,7 @@ public class TargetCalculatorFactory {
             case ALL_RANK_DEC:
             case TARGET_PERCENT:
             case DIMENSION_PERCENT:
-                return new RootIterator(root, getFunctionByNodeType(root));
+                return new RootIterator(root, groupNodeMapper());
             case GROUP_SUM_OF_ALL:
             case GROUP_AVG:
             case GROUP_SUM_OF_ABOVE:
@@ -111,9 +96,9 @@ public class TargetCalculatorFactory {
             case GROUP_MIN:
             case GROUP_RANK_ASC:
             case GROUP_RANK_DEC:
-                return new GroupIterator(root, getFunctionByNodeType(root));
+                return new GroupIterator(root, groupNodeMapper());
         }
-        return new RootIterator(root, getFunctionByNodeType(root));
+        return new RootIterator(root, groupNodeMapper());
     }
 
 
@@ -184,15 +169,6 @@ public class TargetCalculatorFactory {
             @Override
             public List<AggregatorValue[]> apply(final GroupNode p) {
                 return Arrays.<AggregatorValue[]>asList(p.getAggregatorValue());
-            }
-        };
-    }
-
-    private static Function<GroupNode, List<AggregatorValue[]>> xLeftNodeMapper() {
-        return new Function<GroupNode, List<AggregatorValue[]>>() {
-            @Override
-            public List<AggregatorValue[]> apply(final GroupNode p) {
-                return ((XLeftNode) p).getValueArrayList();
             }
         };
     }

@@ -4,13 +4,11 @@ import com.fr.general.ComparatorUtils;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.info.element.target.cal.ResultTarget;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.XLeftNode;
 import com.fr.swift.result.node.iterator.BFTGroupNodeIterator;
 import com.fr.swift.result.node.iterator.DFTGroupNodeIterator;
 import com.fr.swift.structure.iterator.MapperIterator;
 import com.fr.swift.util.function.Function;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -29,38 +27,6 @@ public class GroupNodeUtils {
                 if (p.getDepth() != -1) {
                     p.setData(dictionaries.get(p.getDepth()).get(p.getDictionaryIndex()));
                 }
-                return p;
-            }
-        });
-        while (iterator.hasNext()) {
-            iterator.next();
-        }
-    }
-
-    public static void updateShowTargetsForXLeftNode(int rowDimensionSize, XLeftNode root,
-                                                     final List<ResultTarget> targetsForShowList) {
-        Iterator<GroupNode> iterator = new MapperIterator<GroupNode, GroupNode>(new DFTGroupNodeIterator(rowDimensionSize, root), new Function<GroupNode, GroupNode>() {
-            @Override
-            public GroupNode apply(GroupNode p) {
-                List<AggregatorValue[]> allValues = ((XLeftNode) p).getValueArrayList();
-                if (allValues == null) {
-                    // 非叶子节点可能为空
-                    ((XLeftNode) p).setValueArrayList(new ArrayList<AggregatorValue[]>(0));
-                    return p;
-                }
-                List<AggregatorValue[]> showValues = new ArrayList<AggregatorValue[]>();
-                for (int i = 0; i < allValues.size(); i++) {
-                    showValues.add(new AggregatorValue[targetsForShowList.size()]);
-                }
-                for (int i = 0; i < allValues.size(); i++) {
-                    AggregatorValue[] values = allValues.get(i);
-                    AggregatorValue[] forShowValues = showValues.get(i);
-                    assert forShowValues.length == targetsForShowList.size();
-                    for (int n = 0; n < forShowValues.length; n++) {
-                        forShowValues[n] = values[targetsForShowList.get(n).getResultFetchIndex()];
-                    }
-                }
-                ((XLeftNode) p).setValueArrayList(showValues);
                 return p;
             }
         });
