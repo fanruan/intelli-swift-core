@@ -18,6 +18,7 @@ import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.config.service.SwiftCubePathService;
+import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.config.service.SwiftTablePathService;
@@ -81,6 +82,8 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     private transient SwiftCubePathService pathService;
     @Autowired
     private transient SwiftTablePathService tablePathService;
+    @Autowired
+    private transient SwiftSegmentLocationService locationService;
 
     private static Map<TaskKey, Object> stuffObject = new ConcurrentHashMap<TaskKey, Object>();
 
@@ -198,7 +201,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
             Integer tmpPath = entity.getTmpDir();
             entity.setTablePath(tmpPath);
             entity.setLastPath(path);
-            if (tablePathService.saveOrUpdate(entity)) {
+            if (tablePathService.saveOrUpdate(entity) && locationService.delete(sourceKey.getId(), getID())) {
                 String deletePath = String.format("%s/%s/%d/%s",
                         pathService.getSwiftPath(),
                         dataSource.getMetadata().getSwiftSchema().getDir(),
