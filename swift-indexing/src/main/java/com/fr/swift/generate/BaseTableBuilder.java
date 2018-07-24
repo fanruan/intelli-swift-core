@@ -7,7 +7,6 @@ import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.generate.history.index.ColumnDictMerger;
 import com.fr.swift.generate.history.index.ColumnIndexer;
-import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.manager.IndexingSegmentManager;
 import com.fr.swift.segment.Segment;
@@ -16,9 +15,9 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.task.LocalTask;
 import com.fr.swift.task.Task;
+import com.fr.swift.task.Task.Status;
 import com.fr.swift.task.TaskResult.Type;
 import com.fr.swift.task.TaskStatusChangeListener;
-import com.fr.swift.task.WorkerTask;
 import com.fr.swift.task.impl.BaseWorker;
 import com.fr.swift.task.impl.LocalTaskImpl;
 import com.fr.swift.task.impl.TaskResultImpl;
@@ -35,11 +34,7 @@ import java.util.List;
  * tableTransport -> index -> merge -> subIndex -> subMerge
  */
 public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableBuilder {
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(BaseTableBuilder.class);
-
     protected DataSource dataSource;
-
-    protected WorkerTask taskGroup;
 
     protected Transporter transporter;
 
@@ -62,37 +57,13 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
     }
 
     protected void init() throws SwiftMetaDataException {
-        LocalTask transportTask = new LocalTaskImpl(
+        final LocalTask transportTask = new LocalTaskImpl(
                 CubeTasks.newTransportTaskKey(round, dataSource), transporter);
 
         final LocalTask end = new LocalTaskImpl(
                 CubeTasks.newTableBuildEndTaskKey(round, dataSource));
 
-        List<Segment> segments = localSegments.getSegment(dataSource.getSourceKey());
-
-        for (String columnName : transporter.getIndexFieldsList()) {
-            ColumnIndexingConf columnConf = indexingConfService.getColumnConf(dataSource.getSourceKey(), columnName);
-
-            if (!columnConf.requireIndex()) {
-                continue;
-            }
-
-            LocalTask indexTask = new LocalTaskImpl(
-                    CubeTasks.newIndexColumnTaskKey(round, dataSource, columnName),
-                    new ColumnIndexer(dataSource, new ColumnKey(columnName), segments));
-            transportTask.addNext(indexTask);
-
-            if (!columnConf.requireGlobalDict()) {
-                indexTask.addNext(end);
-                continue;
-            }
-
-            LocalTask mergeTask = new LocalTaskImpl(
-                    CubeTasks.newMergeColumnDictTaskKey(round, dataSource, columnName),
-                    new ColumnDictMerger(dataSource, new ColumnKey(columnName), segments));
-            indexTask.addNext(mergeTask);
-            mergeTask.addNext(end);
-        }
+        afterTransport(transportTask, end);
 
         end.addStatusChangeListener(new TaskStatusChangeListener() {
             @Override
@@ -104,6 +75,51 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
         });
 
         transportTask.triggerRun();
+    }
+
+    private void afterTransport(final LocalTask transportTask, final LocalTask end) {
+        transportTask.addStatusChangeListener(new TaskStatusChangeListener() {
+            @Override
+            public void onChange(Status prev, Status now) {
+                if (now != Status.DONE) {
+                    return;
+                }
+                if (transportTask.result().getType() != Type.SUCCEEDED) {
+                    transportTask.addNext(end);
+                    return;
+                }
+
+                List<Segment> segments = localSegments.getSegment(dataSource.getSourceKey());
+
+                for (String columnName : transporter.getIndexFieldsList()) {
+                    ColumnIndexingConf columnConf = indexingConfService.getColumnConf(dataSource.getSourceKey(), columnName);
+
+                    if (!columnConf.requireIndex()) {
+                        continue;
+                    }
+
+                    try {
+                        LocalTask indexTask = new LocalTaskImpl(
+                                CubeTasks.newIndexColumnTaskKey(round, dataSource, columnName),
+                                new ColumnIndexer(dataSource, new ColumnKey(columnName), segments));
+                        transportTask.addNext(indexTask);
+
+                        if (!columnConf.requireGlobalDict()) {
+                            indexTask.addNext(end);
+                            continue;
+                        }
+                        LocalTask mergeTask = new LocalTaskImpl(
+                                CubeTasks.newMergeColumnDictTaskKey(round, dataSource, columnName),
+                                new ColumnDictMerger(dataSource, new ColumnKey(columnName), segments));
+                        indexTask.addNext(mergeTask);
+                        mergeTask.addNext(end);
+                    } catch (SwiftMetaDataException e) {
+                        SwiftLoggers.getLogger().error(e);
+                    }
+                }
+
+            }
+        });
     }
 
     @Override
