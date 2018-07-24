@@ -201,7 +201,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
             Integer tmpPath = entity.getTmpDir();
             entity.setTablePath(tmpPath);
             entity.setLastPath(path);
-            if (tablePathService.saveOrUpdate(entity) && locationService.delete(sourceKey.getId(), getID())) {
+            if (tablePathService.saveOrUpdate(entity) && locationService.delete(sourceKey.getId(), getID()) && path.compareTo(tmpPath) != 0) {
                 String deletePath = String.format("%s/%s/%d/%s",
                         pathService.getSwiftPath(),
                         dataSource.getMetadata().getSwiftSchema().getDir(),
