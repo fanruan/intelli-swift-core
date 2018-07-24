@@ -137,7 +137,6 @@ public class SegmentDestinationImpl implements SegmentDestination {
         this.address = address;
     }
 
-
     @Override
     public int compareTo(SegmentDestination o) {
         return order - o.getOrder();
@@ -157,37 +156,21 @@ public class SegmentDestinationImpl implements SegmentDestination {
         if (order != that.order) {
             return false;
         }
-        if (clusterId != null ? !clusterId.equals(that.clusterId) : that.clusterId != null) {
-            return false;
-        }
-        if (address != null ? !address.equals(that.address) : that.address != null) {
-            return false;
-        }
-        if (currentNode != null ? !currentNode.equals(that.currentNode) : that.currentNode != null) {
-            return false;
-        }
         if (segmentId != null ? !segmentId.equals(that.segmentId) : that.segmentId != null) {
             return false;
         }
         if (serviceClass != null ? !serviceClass.equals(that.serviceClass) : that.serviceClass != null) {
             return false;
         }
-        if (methodName != null ? !methodName.equals(that.methodName) : that.methodName != null) {
-            return false;
-        }
-        return spareNodes != null ? spareNodes.equals(that.spareNodes) : that.spareNodes == null;
+        return methodName != null ? methodName.equals(that.methodName) : that.methodName == null;
     }
 
     @Override
     public int hashCode() {
-        int result = clusterId != null ? clusterId.hashCode() : 0;
-        result = 31 * result + (address != null ? address.hashCode() : 0);
-        result = 31 * result + (currentNode != null ? currentNode.hashCode() : 0);
-        result = 31 * result + (segmentId != null ? segmentId.hashCode() : 0);
+        int result = segmentId != null ? segmentId.hashCode() : 0;
         result = 31 * result + order;
         result = 31 * result + (serviceClass != null ? serviceClass.hashCode() : 0);
         result = 31 * result + (methodName != null ? methodName.hashCode() : 0);
-        result = 31 * result + (spareNodes != null ? spareNodes.hashCode() : 0);
         return result;
     }
 }
