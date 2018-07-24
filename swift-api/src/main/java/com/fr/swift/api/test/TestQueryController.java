@@ -52,7 +52,7 @@ public class TestQueryController {
     /**
      * postman测试 post请求，requestBody填：
      * {
-     * "table": "表名",
+     * "table": "sourceKey",
      * "columns": ["字段1", "字段2"]
      * }
      *
