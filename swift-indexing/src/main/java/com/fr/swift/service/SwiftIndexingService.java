@@ -202,27 +202,32 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
             entity.setTablePath(tmpPath);
             entity.setLastPath(path);
             List<SegmentKey> segmentKeys = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).getSegmentByKey(sourceKey.getId());
-            if (path.compareTo(tmpPath) != 0 && tablePathService.saveOrUpdate(entity) && locationService.delete(sourceKey.getId(), getID())) {
-                String deletePath = String.format("%s/%s/%d/%s",
-                        pathService.getSwiftPath(),
-                        dataSource.getMetadata().getSwiftSchema().getDir(),
-                        path,
-                        sourceKey.getId());
-                FileUtil.delete(deletePath);
-                new File(deletePath).getParentFile().delete();
-            }
+            String cubePath = pathService.getSwiftPath();
             if (null != segmentKeys) {
                 for (SegmentKey segmentKey : segmentKeys) {
                     try {
                         String uploadPath = String.format("%s/%s",
                                 segmentKey.getSwiftSchema().getDir(),
                                 segmentKey.getUri().getPath());
-                        SwiftRepositoryManager.getManager().currentRepo().copyToRemote(segmentKey.getAbsoluteUri(), URI.create(uploadPath));
+                        URI local = URI.create(String.format("%s/%s/%d/%s",
+                                cubePath,
+                                segmentKey.getSwiftSchema().getDir(),
+                                tmpPath,
+                                segmentKey.getUri().getPath()));
+                        SwiftRepositoryManager.getManager().currentRepo().copyToRemote(local, URI.create(uploadPath));
                     } catch (IOException e) {
                         logger.error("upload error! ", e);
                     }
                 }
-
+                if (path.compareTo(tmpPath) != 0 && tablePathService.saveOrUpdate(entity) && locationService.delete(sourceKey.getId(), getID())) {
+                    String deletePath = String.format("%s/%s/%d/%s",
+                            pathService.getSwiftPath(),
+                            dataSource.getMetadata().getSwiftSchema().getDir(),
+                            path,
+                            sourceKey.getId());
+                    FileUtil.delete(deletePath);
+                    new File(deletePath).getParentFile().delete();
+                }
                 runRpc(new HistoryLoadSegmentRpcEvent(sourceKey.getId()))
                         .addCallback(new AsyncRpcCallback() {
                             @Override

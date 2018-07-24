@@ -74,7 +74,7 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
     @Override
     public synchronized List<Segment> getSegmentsByIds(SourceKey table, Collection<String> segmentIds) {
         List<SegmentKey> keys = segmentService.find(
-                Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, table),
+                Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, table.getId()),
                 Restrictions.in("id", segmentIds));
         Integer currentFolder = getCurrentFolder(tablePathService, table);
         return keys2Segments(keys, currentFolder);
