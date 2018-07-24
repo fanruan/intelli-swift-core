@@ -37,7 +37,7 @@ public final class Types {
         /**
          * 存储类型
          */
-        FINE_IO, MEMORY
+        FINE_IO, MEMORY, NIO
     }
 
 }

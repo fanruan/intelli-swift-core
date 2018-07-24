@@ -24,9 +24,8 @@ public class ClusterProxyUtils {
      * @param interfaceClass
      * @param <T>
      * @return
-     * @throws Exception
      */
-    public static <T> T getMasterProxy(Class<T> interfaceClass) throws Exception {
+    public static <T> T getMasterProxy(Class<T> interfaceClass) throws SwiftProxyException {
         UrlFactory urlFactory = UrlSelector.getInstance().getFactory();
         URL url = urlFactory.getURL(SwiftContext.get().getBean("swiftProperty", SwiftProperty.class).getMasterAddress());
         return getProxy(interfaceClass, url);
@@ -39,15 +38,14 @@ public class ClusterProxyUtils {
      * @param heartBeatInfo
      * @param <T>
      * @return
-     * @throws Exception
      */
-    public static <T> T getSlaveProxy(Class<T> interfaceClass, HeartBeatInfo heartBeatInfo) throws Exception {
+    public static <T> T getSlaveProxy(Class<T> interfaceClass, HeartBeatInfo heartBeatInfo) throws SwiftProxyException {
         UrlFactory urlFactory = UrlSelector.getInstance().getFactory();
         URL url = urlFactory.getURL(heartBeatInfo.getAddress());
         return getProxy(interfaceClass, url);
     }
 
-    private static <T> T getProxy(Class<T> interfaceClass, URL url) throws Exception {
+    private static <T> T getProxy(Class<T> interfaceClass, URL url) throws SwiftProxyException {
         ProxyFactory proxyFactory = ProxySelector.getInstance().getFactory();
         if (!interfaceClass.isInterface()) {
             throw new SwiftProxyException("Class " + interfaceClass + " is not interface !!! Can't make dynamic proxy!");

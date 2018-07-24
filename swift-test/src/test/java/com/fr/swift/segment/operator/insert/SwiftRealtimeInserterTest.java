@@ -23,8 +23,6 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.sql.SQLException;
-
 /**
  * @author anchore
  * @date 2018/6/15
@@ -88,6 +86,6 @@ public class SwiftRealtimeInserterTest {
 
     private RealTimeSegment getRealtimeSegment() {
         return new RealTimeSegmentImpl(new ResourceLocation(
-                String.format("%s/%s/seg0", TestResource.getRunPath(), Schema.CUBE.getDir()), StoreType.MEMORY), dataSource.getMetadata());
+                String.format("%s/%s/seg0", TestResource.getRunPath(getClass()), Schema.CUBE.getDir()), StoreType.MEMORY), dataSource.getMetadata());
     }
 }

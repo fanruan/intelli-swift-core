@@ -53,6 +53,11 @@ public class CreateSegmentForRank {
             }
 
             @Override
+            public boolean isReadable() {
+                return false;
+            }
+
+            @Override
             public Column getColumn(ColumnKey key) {
                 if(key.getName().equals("column1")) {
                     return new BaseCreateColumn1Test().getColumn();
