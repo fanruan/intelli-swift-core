@@ -201,6 +201,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
             Integer tmpPath = entity.getTmpDir();
             entity.setTablePath(tmpPath);
             entity.setLastPath(path);
+            List<SegmentKey> segmentKeys = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).getSegmentByKey(sourceKey.getId());
             if (path.compareTo(tmpPath) != 0 && tablePathService.saveOrUpdate(entity) && locationService.delete(sourceKey.getId(), getID())) {
                 String deletePath = String.format("%s/%s/%d/%s",
                         pathService.getSwiftPath(),
@@ -210,7 +211,6 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
                 FileUtil.delete(deletePath);
                 new File(deletePath).getParentFile().delete();
             }
-            List<SegmentKey> segmentKeys = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).getSegmentByKey(sourceKey.getId());
             if (null != segmentKeys) {
                 for (SegmentKey segmentKey : segmentKeys) {
                     try {
