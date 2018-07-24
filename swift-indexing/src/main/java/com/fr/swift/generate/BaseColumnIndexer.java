@@ -90,7 +90,7 @@ public abstract class BaseColumnIndexer<T> extends BaseWorker implements SwiftCo
      * @param baseColumn 基础列
      */
     protected void releaseIfNeed(Releasable baseColumn, Column column) {
-        if (column.getLocation().getStoreType() == StoreType.FINE_IO) {
+        if (column.getLocation().getStoreType() != StoreType.MEMORY) {
             baseColumn.release();
         }
     }

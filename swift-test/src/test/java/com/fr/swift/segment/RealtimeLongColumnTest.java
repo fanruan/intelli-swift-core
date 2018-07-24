@@ -26,6 +26,6 @@ public class RealtimeLongColumnTest extends BaseRealtimeColumnTest<Long> {
 
     @Override
     Column<Long> getColumn() {
-        return new RealtimeLongColumn(new ResourceLocation(TestResource.getRunPath() + "cubes/seg0/column0", StoreType.MEMORY));
+        return new RealtimeLongColumn(new ResourceLocation(TestResource.getRunPath(getClass()) + "/cubes/seg0/column0", StoreType.MEMORY));
     }
 }

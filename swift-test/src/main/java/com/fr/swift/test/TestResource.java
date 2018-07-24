@@ -5,10 +5,12 @@ package com.fr.swift.test;
  * @date 2018/6/8
  */
 public class TestResource {
+    @Deprecated
     public static String getRunPath() {
         return getRunPath(0);
     }
 
+    @Deprecated
     public static String getRunPath(int stackOffset) {
         return String.format("%s/test_temp/%s",
                 System.getProperty("user.dir"),
