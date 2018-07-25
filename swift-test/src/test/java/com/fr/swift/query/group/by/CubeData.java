@@ -145,8 +145,6 @@ public class CubeData {
                 public DictionaryEncodedColumn getDictionaryEncodedColumn() {
                     return new TempDictColumn() {
 
-                        private Map<Integer, Integer> globalIndexMap = new LinkedHashMap<>();
-
                         @Override
                         public int size() {
                             return dict.get(columnIndex).size();
@@ -154,7 +152,6 @@ public class CubeData {
 
                         @Override
                         public void putGlobalIndex(int index, int globalIndex) {
-                            globalIndexMap.put(index, globalIndex);
                         }
 
                         @Override
@@ -169,12 +166,13 @@ public class CubeData {
 
                         @Override
                         public int getIndexByRow(int row) {
-                            return new ArrayList<>(dict.get(columnIndex).keySet()).indexOf(dimensions[columnIndex][row]);
+                            List<String> dictionary = new ArrayList<>(dict.get(columnIndex).keySet());
+                            return dictionary.indexOf(dimensions[columnIndex][row]);
                         }
 
                         @Override
                         public int getGlobalIndexByIndex(int index) {
-                            return globalIndexMap.get(index) == null ? index : globalIndexMap.get(index);
+                            return index;
                         }
 
                         @Override

@@ -15,23 +15,28 @@ import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.node.GroupNodeUtils;
 import com.fr.swift.result.row.RowIndexKey;
 import com.fr.swift.source.Row;
-import junit.framework.TestCase;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
+import static junit.framework.TestCase.assertTrue;
+
 /**
  * Created by Lyon on 2018/5/31.
  */
-public class GroupAllSegmentQueryTest extends TestCase {
+public class GroupAllSegmentQueryTest {
 
     private GroupByInfo groupByInfo;
     private NodeMergeResultSet<GroupNode> resultSet;
     private CubeData cubeData;
 
+    @Before
     public void setUp() throws Exception {
+
         cubeData = new CubeData();
         groupByInfo = new GroupByInfoImpl(cubeData.getDimensions(), new DetailFilter() {
             @Override
@@ -51,6 +56,7 @@ public class GroupAllSegmentQueryTest extends TestCase {
         GroupNodeUtils.updateNodeData(dimensionSize, ((GroupNode) resultSet.getNode()), resultSet.getRowGlobalDictionaries());
     }
 
+    @Test
     public void test() {
         Map<RowIndexKey<int[]>, double[]> result = cubeData.getAggregationResult();
         try {

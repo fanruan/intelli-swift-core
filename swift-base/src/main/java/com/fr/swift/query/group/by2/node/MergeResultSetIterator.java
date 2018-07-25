@@ -58,6 +58,9 @@ class MergeResultSetIterator implements Iterator<NodeMergeResultSet<GroupNode>> 
 
     private List<Map<Integer, Object>> getGlobalDictionaries(GroupNode root) {
         List<Map<Integer, Object>> dictionaries = new ArrayList<Map<Integer, Object>>(dimensionSize);
+        for (int i = 0; i < dimensionSize; i++) {
+            dictionaries.add(null);
+        }
         List<Pair<Column, IndexInfo>> columns = groupByInfo.getDimensions();
         Iterator<List<SwiftNode>> rowIt = SwiftNodeUtils.node2RowListIterator(root);
         while (rowIt.hasNext()) {
@@ -74,7 +77,7 @@ class MergeResultSetIterator implements Iterator<NodeMergeResultSet<GroupNode>> 
                     if (dictionaries.get(dimensionIndex).containsKey(globalIndex)) {
                         continue;
                     }
-                    Object value = dict.getValueByRow(node.getDictionaryIndex());
+                    Object value = dict.getValue(node.getDictionaryIndex());
                     dictionaries.get(dimensionIndex).put(globalIndex, value);
                     node.setGlobalIndex(globalIndex);
                 }

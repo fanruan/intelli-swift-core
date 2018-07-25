@@ -1,7 +1,6 @@
 {
   "queryId": "1530692187390",
   "queryType": "DETAIL",
-  "querySegment": null,
   "tableName": "fine_record_execute",
   "filterInfoBean": {
     "type": "NUMBER_IN_RANGE",
