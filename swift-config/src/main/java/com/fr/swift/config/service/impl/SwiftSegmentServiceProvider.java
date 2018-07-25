@@ -9,6 +9,8 @@ import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.third.org.hibernate.criterion.Criterion;
+import com.fr.third.springframework.beans.factory.annotation.Autowired;
+import com.fr.third.springframework.beans.factory.annotation.Qualifier;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +22,8 @@ import java.util.Map;
  */
 @Service("segmentServiceProvider")
 public class SwiftSegmentServiceProvider implements SwiftSegmentService {
-
+    @Autowired
+    @Qualifier("swiftSegmentService")
     private SwiftSegmentService service;
 
     public SwiftSegmentServiceProvider() {

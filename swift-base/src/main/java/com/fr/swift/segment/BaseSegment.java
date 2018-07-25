@@ -29,6 +29,7 @@ import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Crasher;
+import com.fr.swift.util.IoUtil;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -179,6 +180,25 @@ public abstract class BaseSegment implements Segment {
         if (bitMapReader == null) {
             bitMapReader = DISCOVERY.getReader(location.buildChildLocation(ALL_SHOW_INDEX), new BuildConf(IoType.READ, DataType.BITMAP));
         }
+    }
+
+    @Override
+    public boolean isReadable() {
+        initRowCountReader();
+        if (!rowCountReader.isReadable()) {
+            return false;
+        }
+        if (isHistory()) {
+            IoUtil.release(rowCountReader);
+        }
+        rowCountReader = null;
+        initBitMapReader();
+        boolean readable = bitMapReader.isReadable();
+        if (isHistory()) {
+            IoUtil.release(bitMapReader);
+        }
+        bitMapReader = null;
+        return readable;
     }
 
     @Override

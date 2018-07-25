@@ -87,7 +87,7 @@ public abstract class BaseInserter {
     }
 
     protected void release() {
-        if (segment.getLocation().getStoreType() == StoreType.FINE_IO) {
+        if (segment.getLocation().getStoreType() != StoreType.MEMORY) {
             for (Column column : columns) {
                 column.getDetailColumn().release();
                 column.getBitmapIndex().release();
