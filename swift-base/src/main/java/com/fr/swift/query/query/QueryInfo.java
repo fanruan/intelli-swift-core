@@ -1,6 +1,5 @@
 package com.fr.swift.query.query;
 
-import java.net.URI;
 import java.util.Set;
 
 /**
@@ -28,7 +27,7 @@ public interface QueryInfo<T> {
      *
      * @return
      */
-    Set<URI> getQuerySegment();
+    Set<String> getQuerySegment();
 
-    void setQuerySegment(Set<URI> target);
+    void setQuerySegment(Set<String> target);
 }

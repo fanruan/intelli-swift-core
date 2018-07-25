@@ -31,7 +31,6 @@ import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -59,13 +58,9 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
         List<Query<NodeResultSet>> queries = new ArrayList<Query<NodeResultSet>>();
         List<Metric> metrics = info.getMetrics();
         List<Dimension> dimensions = info.getDimensions();
-        List<Segment> segments = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegment(info.getTable());
-        List<Segment> targetSegments = LocalDetailNormalQueryBuilder.getSegmentsByURIList(info.getQuerySegment(), segments);
-        if (targetSegments.isEmpty()) {
-            targetSegments = segments;
-        }
-        targetSegments = Collections.unmodifiableList(targetSegments);
-        for (Segment segment : targetSegments) {
+        List<Segment> segments = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class)
+                .getSegmentsByIds(info.getTable(), info.getQuerySegment());
+        for (Segment segment : segments) {
             List<Column> dimensionColumns = getDimensionSegments(segment, dimensions);
             List<Column> metricColumns = getMetricSegments(segment, metrics);
             List<Aggregator> aggregators = getFilterAggregators(metrics, segment);

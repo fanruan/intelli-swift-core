@@ -13,7 +13,6 @@ import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.source.SourceKey;
 import com.fr.third.fasterxml.jackson.core.JsonProcessingException;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -95,7 +94,7 @@ class GroupQueryBuilder {
             return builder.buildPostQuery(builder.buildLocalQuery(info), info);
         }
         List<Query<NodeResultSet>> queries = new ArrayList<Query<NodeResultSet>>();
-        Set<URI> localURIs = DetailQueryBuilder.getLocalSegments(uris);
+        Set<String> localURIs = DetailQueryBuilder.getLocalSegments(uris);
         if (!localURIs.isEmpty()) {
             info.setQuerySegment(localURIs);
             queries.add(builder.buildLocalQuery(info));
