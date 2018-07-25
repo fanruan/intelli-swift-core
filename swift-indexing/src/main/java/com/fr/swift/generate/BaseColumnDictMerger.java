@@ -127,7 +127,7 @@ public abstract class BaseColumnDictMerger<T> extends BaseWorker implements Swif
     }
 
     protected void releaseIfNeed(Releasable baseColumn, Column column) {
-        if (column.getLocation().getStoreType() == StoreType.FINE_IO) {
+        if (column.getLocation().getStoreType() != StoreType.MEMORY) {
             baseColumn.release();
         }
     }
