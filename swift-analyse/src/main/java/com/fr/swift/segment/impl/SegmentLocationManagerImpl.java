@@ -1,5 +1,6 @@
 package com.fr.swift.segment.impl;
 
+import com.fr.stable.StringUtils;
 import com.fr.swift.config.bean.SegmentDestSelectRule;
 import com.fr.swift.config.service.SegmentDestSelectRuleService;
 import com.fr.swift.context.SwiftContext;
@@ -8,7 +9,6 @@ import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationManager;
 import com.fr.swift.source.SourceKey;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +42,7 @@ public class SegmentLocationManagerImpl implements SegmentLocationManager {
         // 暂时先这么处理，，，，
         if (null == destinations || destinations.isEmpty()) {
             destinations = new ArrayList<SegmentDestination>();
-            destinations.add(new SegmentDestinationImpl(URI.create(""), 0));
+            destinations.add(new SegmentDestinationImpl(StringUtils.EMPTY, 0));
         }
         return destinations;
     }

@@ -20,7 +20,6 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.structure.Pair;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -37,15 +36,10 @@ public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
     @Override
     public Query<DetailResultSet> buildLocalQuery(DetailQueryInfo info) {
         List<Query<DetailResultSet>> queries = new ArrayList<Query<DetailResultSet>>();
-        List<Segment> segments = localSegmentProvider.getSegment(info.getTable());
-        List<Segment> targetSegments = LocalDetailNormalQueryBuilder.getSegmentsByURIList(info.getQuerySegment(), segments);
-        if (targetSegments.isEmpty()) {
-            targetSegments = segments;
-        }
-        targetSegments = Collections.unmodifiableList(targetSegments);
+        List<Segment> segments = localSegmentProvider.getSegmentsByIds(info.getTable(), info.getQuerySegment());
         List<Dimension> dimensions = info.getDimensions();
         List<Pair<Sort, Comparator>> comparators = null;
-        for (Segment segment : targetSegments) {
+        for (Segment segment : segments) {
             List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
             filterInfos.add(new SwiftDetailFilterInfo<Object>(null, null, SwiftDetailFilterType.ALL_SHOW));
             List<Pair<Column, IndexInfo>> columns = AbstractLocalGroupQueryBuilder.getDimensionSegments(segment, dimensions);

@@ -3,7 +3,6 @@ package com.fr.swift.query.query;
 import com.fr.swift.segment.SegmentDestination;
 
 import java.io.Serializable;
-import java.net.URI;
 import java.util.Set;
 
 /**
@@ -17,9 +16,9 @@ public interface QueryBean extends Serializable {
 
     void setQueryType(QueryType queryType);
 
-    void setQuerySegments(Set<URI> uri);
+    Set<String> getQuerySegments();
 
-    Set<URI> getQuerySegments();
+    void setQuerySegments(Set<String> uri);
 
     void setQueryDestination(SegmentDestination destination);
 

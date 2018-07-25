@@ -6,6 +6,7 @@ import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.Util;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +45,11 @@ public class MinorSegmentManager implements SwiftSegmentManager {
     @Override
     public boolean isSegmentsExist(SourceKey tableKey) {
         return segments.containsKey(tableKey);
+    }
+
+    @Override
+    public List<Segment> getSegmentsByIds(SourceKey table, Collection<String> segmentIds) {
+        throw new UnsupportedOperationException();
     }
 
     public void putSegment(SourceKey key, List<Segment> seg) {

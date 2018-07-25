@@ -1,5 +1,6 @@
 package com.fr.swift.query.builder;
 
+import com.fr.stable.StringUtils;
 import com.fr.swift.exception.SwiftSegmentAbsentException;
 import com.fr.swift.query.info.bean.parser.QueryInfoParser;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
@@ -13,7 +14,6 @@ import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.source.SourceKey;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -80,7 +80,7 @@ class DetailQueryBuilder {
             return builder.buildLocalQuery(info);
         }
         List<Query<DetailResultSet>> queries = new ArrayList<Query<DetailResultSet>>();
-        Set<URI> localURIs = getLocalSegments(uris);
+        Set<String> localURIs = getLocalSegments(uris);
         if (!localURIs.isEmpty()) {
             info.setQuerySegment(localURIs);
             queries.add(builder.buildLocalQuery(info));
@@ -97,10 +97,10 @@ class DetailQueryBuilder {
         return builder.buildResultQuery(queries, info);
     }
 
-    static Set<URI> getQuerySegments(List<SegmentDestination> uris) {
-        Set<URI> set = new HashSet<URI>();
+    static Set<String> getQuerySegments(List<SegmentDestination> uris) {
+        Set<String> set = new HashSet<String>();
         for (SegmentDestination destination : uris) {
-            URI uri = destination.getUri();
+            String uri = destination.getSegmentId();
             if (uri != null) {
                 set.add(uri);
             }
@@ -108,11 +108,11 @@ class DetailQueryBuilder {
         return set;
     }
 
-    static Set<URI> getLocalSegments(List<SegmentDestination> uris) {
-        Set<URI> set = new HashSet<URI>();
+    static Set<String> getLocalSegments(List<SegmentDestination> uris) {
+        Set<String> set = new HashSet<String>();
         for (SegmentDestination destination : uris) {
-            if (!destination.isRemote() && destination.getUri() != null) {
-                set.add(destination.getUri());
+            if (!destination.isRemote() && !StringUtils.isEmpty(destination.getSegmentId())) {
+                set.add(destination.getSegmentId());
             }
         }
         return set;

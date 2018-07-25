@@ -33,14 +33,28 @@ public class SwiftSegLocationEntityId implements Serializable {
         this.segmentId = segmentId;
     }
 
+    public SwiftSegLocationEntityId(String clusterId, String segmentId) {
+        this.clusterId = clusterId;
+        this.segmentId = segmentId;
+    }
+
+    public SwiftSegLocationEntityId() {
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SwiftSegLocationEntityId that = (SwiftSegLocationEntityId) o;
 
-        if (clusterId != null ? !clusterId.equals(that.clusterId) : that.clusterId != null) return false;
+        if (clusterId != null ? !clusterId.equals(that.clusterId) : that.clusterId != null) {
+            return false;
+        }
         return segmentId != null ? segmentId.equals(that.segmentId) : that.segmentId == null;
     }
 

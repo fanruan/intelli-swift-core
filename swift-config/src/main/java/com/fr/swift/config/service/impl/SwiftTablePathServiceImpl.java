@@ -122,7 +122,7 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
                         SwiftTablePathEntity entity = swiftTablePathDao.select(session, new SwiftTablePathKey(table, clusterId));
                         if (null != entity) {
                             Integer path = entity.getTablePath();
-                            if (null != path) {
+                            if (null != path && path.intValue() > -1) {
                                 tablePath.put(table, path);
                                 return path;
                             }

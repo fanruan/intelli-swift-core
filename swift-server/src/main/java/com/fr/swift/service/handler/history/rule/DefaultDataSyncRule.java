@@ -53,7 +53,7 @@ public class DefaultDataSyncRule implements DataSyncRule {
                     result.get(pair.clusterId).add(segmentKey);
                     readyToSort.get(pair.clusterId).incrementAndGet();
                     destinations.get(sourceKey).add(new SegmentDestinationImpl(pair.clusterId,
-                            segmentKey.getUri(), segmentKey.getOrder(), HistoryService.class, "historyQuery"));
+                            segmentKey.toString(), segmentKey.getOrder(), HistoryService.class, "historyQuery"));
                 }
             }
         }
