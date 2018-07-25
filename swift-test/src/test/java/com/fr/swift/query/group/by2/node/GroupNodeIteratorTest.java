@@ -6,36 +6,34 @@ import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.query.group.by.CubeData;
-import com.fr.swift.query.group.by.GroupByEntry;
-import com.fr.swift.query.group.by2.node.iterator.GroupNodeIterator;
-import com.fr.swift.query.group.by2.node.mapper.GroupNodeRowMapper;
+import com.fr.swift.query.group.by2.DFTIterator;
+import com.fr.swift.query.group.by2.ItCreator;
 import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.query.group.info.GroupByInfoImpl;
 import com.fr.swift.query.group.info.MetricInfoImpl;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.SwiftNode;
+import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.result.row.RowIndexKey;
-import com.fr.swift.test.TestIo;
-import com.fr.swift.util.function.BinaryFunction;
+import junit.framework.TestCase;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Created by Lyon on 2018/5/7.
  */
-public class GroupNodeIteratorTest extends TestIo {
+public class GroupNodeIteratorTest extends TestCase {
 
     private GroupByInfo groupByInfo;
-    private Iterator<GroupNode[]> iterator;
+    private Iterator<GroupNode> iterator;
     private CubeData cubeData;
 
-    @Before
+    @Override
     public void setUp() throws Exception {
         cubeData = new CubeData();
         groupByInfo = new GroupByInfoImpl(cubeData.getDimensions(), new DetailFilter() {
@@ -49,22 +47,20 @@ public class GroupNodeIteratorTest extends TestIo {
                 return false;
             }
         }, new ArrayList<>(), null);
-        GroupNodeRowMapper rowMapper = new GroupNodeRowMapper(new MetricInfoImpl(cubeData.getMetrics(), cubeData.getAggregators(), cubeData.getAggregators().size()));
-        BinaryFunction<Integer, GroupByEntry, GroupNode> itemMapper = new BinaryFunction<Integer, GroupByEntry, GroupNode>() {
-            @Override
-            public GroupNode apply(Integer deep, GroupByEntry groupByEntry) {
-                // 这边先存segment的字典序号吧
-                return new GroupNode((int) deep, groupByEntry.getIndex());
-            }
-        };
-        iterator = new GroupNodeIterator<GroupNode>(groupByInfo, new GroupNode(-1, null), itemMapper, rowMapper);
+        RowMapper rowMapper = new RowMapper(new MetricInfoImpl(cubeData.getMetrics(), cubeData.getAggregators(), cubeData.getAggregators().size()));
+        ItemMapper itemMapper = new ItemMapper(groupByInfo.getDimensions());
+        int dimensionSize = groupByInfo.getDimensions().size();
+        iterator = new GroupNodeIterator(dimensionSize, Integer.MAX_VALUE,
+                new DFTIterator(dimensionSize, new ItCreator(groupByInfo)), itemMapper, rowMapper);
     }
 
-    @Test
     public void test() {
+        assertTrue(iterator.hasNext());
+        Iterator<List<SwiftNode>> rows = SwiftNodeUtils.node2RowListIterator(iterator.next());
+        assertFalse(iterator.hasNext());
         Map<RowIndexKey<int[]>, double[]> result = cubeData.getAggregationResult();
-        while (iterator.hasNext()) {
-            GroupNode[] row = iterator.next();
+        while (rows.hasNext()) {
+            List<SwiftNode> row = rows.next();
             RowIndexKey<int[]> key = getKey(row);
             Assert.assertTrue(result.containsKey(key));
             double[] values = getValues(row);
@@ -72,8 +68,8 @@ public class GroupNodeIteratorTest extends TestIo {
         }
     }
 
-    private double[] getValues(GroupNode[] row) {
-        AggregatorValue[] values = row[row.length - 1].getAggregatorValue();
+    private double[] getValues(List<SwiftNode> row) {
+        AggregatorValue[] values = row.get(row.size() - 1).getAggregatorValue();
         double[] result = new double[values.length];
         for (int i = 0; i < result.length; i++) {
             result[i] = values[i].calculate();
@@ -81,10 +77,10 @@ public class GroupNodeIteratorTest extends TestIo {
         return result;
     }
 
-    private RowIndexKey<int[]> getKey(GroupNode[] row) {
-        int[] key = new int[row.length];
+    private RowIndexKey<int[]> getKey(List<SwiftNode> row) {
+        int[] key = new int[row.size()];
         for (int i = 0; i < key.length; i++) {
-            key[i] = row[i].getDictionaryIndex();
+            key[i] = ((GroupNode) row.get(i)).getDictionaryIndex();
         }
         return new RowIndexKey<>(key);
     }

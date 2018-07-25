@@ -26,6 +26,15 @@ public class SwiftNodeUtils {
         return size;
     }
 
+    public static Iterator<List<SwiftNode>> node2RowListIterator(SwiftNode root) {
+        return new Tree2RowIterator<SwiftNode>(getDimensionSize(root), root.getChildren().iterator(), new Function<SwiftNode, Iterator<SwiftNode>>() {
+            @Override
+            public Iterator<SwiftNode> apply(SwiftNode p) {
+                return p.getChildren().iterator();
+            }
+        });
+    }
+
     public static Iterator<Row> node2RowIterator(SwiftNode root) {
         if (getDimensionSize(root) == 0) {
             Row row = new ListBasedRow(aggValue2Object(root.getAggregatorValue()));
@@ -33,12 +42,7 @@ public class SwiftNodeUtils {
             list.add(row);
             return list.iterator();
         }
-        Iterator<List<SwiftNode>> iterator = new Tree2RowIterator<SwiftNode>(getDimensionSize(root), root.getChildren().iterator(), new Function<SwiftNode, Iterator<SwiftNode>>() {
-            @Override
-            public Iterator<SwiftNode> apply(SwiftNode p) {
-                return p.getChildren().iterator();
-            }
-        });
+        Iterator<List<SwiftNode>> iterator = node2RowListIterator(root);
         return new MapperIterator<List<SwiftNode>, Row>(iterator, new Function<List<SwiftNode>, Row>() {
             @Override
             public Row apply(List<SwiftNode> p) {

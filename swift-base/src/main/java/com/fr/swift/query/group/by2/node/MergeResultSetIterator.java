@@ -1,0 +1,93 @@
+package com.fr.swift.query.group.by2.node;
+
+import com.fr.swift.query.group.by2.DFTIterator;
+import com.fr.swift.query.group.by2.ItCreator;
+import com.fr.swift.query.group.info.GroupByInfo;
+import com.fr.swift.query.group.info.IndexInfo;
+import com.fr.swift.query.group.info.MetricInfo;
+import com.fr.swift.result.GroupNode;
+import com.fr.swift.result.NodeMergeResultSet;
+import com.fr.swift.result.NodeMergeResultSetImpl;
+import com.fr.swift.result.SwiftNode;
+import com.fr.swift.result.SwiftNodeUtils;
+import com.fr.swift.segment.column.Column;
+import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.structure.Pair;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by Lyon on 2018/7/25.
+ */
+class MergeResultSetIterator implements Iterator<NodeMergeResultSet<GroupNode>> {
+
+    private int dimensionSize;
+    private GroupByInfo groupByInfo;
+    Iterator<GroupNode> iterator;
+
+    public MergeResultSetIterator(int pageSize, GroupByInfo groupByInfo, MetricInfo metricInfo) {
+        this.dimensionSize = groupByInfo.getDimensions().size();
+        this.groupByInfo = groupByInfo;
+        this.iterator = new GroupNodeIterator(dimensionSize, pageSize,
+                new DFTIterator(dimensionSize, new ItCreator(groupByInfo)),
+                new ItemMapper(groupByInfo.getDimensions()), new RowMapper(metricInfo));
+    }
+
+    private NodeMergeResultSet<GroupNode> getNext() {
+        GroupNode root = iterator.next();
+        return new NodeMergeResultSetImpl<GroupNode>(root, getGlobalDictionaries(root));
+    }
+
+    @Override
+    public boolean hasNext() {
+        return iterator.hasNext();
+    }
+
+    @Override
+    public NodeMergeResultSet<GroupNode> next() {
+        return getNext();
+    }
+
+    @Override
+    public void remove() {
+    }
+
+    private List<Map<Integer, Object>> getGlobalDictionaries(GroupNode root) {
+        List<Map<Integer, Object>> dictionaries = initDictionaries(dimensionSize);
+        List<Pair<Column, IndexInfo>> columns = groupByInfo.getDimensions();
+        Iterator<List<SwiftNode>> rowIt = SwiftNodeUtils.node2RowListIterator(root);
+        while (rowIt.hasNext()) {
+            List<SwiftNode> row = rowIt.next();
+            for (SwiftNode n : row) {
+                GroupNode node = (GroupNode) n;
+                int dimensionIndex = node.getDepth();
+                if (columns.get(dimensionIndex).getValue().isGlobalIndexed()) {
+                    if (dictionaries.get(dimensionIndex) == null) {
+                        dictionaries.set(dimensionIndex, new HashMap<Integer, Object>());
+                    }
+                    DictionaryEncodedColumn dict = columns.get(dimensionIndex).getKey().getDictionaryEncodedColumn();
+                    int globalIndex = dict.getGlobalIndexByIndex(node.getDictionaryIndex());
+                    if (dictionaries.get(dimensionIndex).containsKey(globalIndex)) {
+                        continue;
+                    }
+                    Object value = dict.getValueByRow(node.getDictionaryIndex());
+                    dictionaries.get(dimensionIndex).put(globalIndex, value);
+                    node.setGlobalIndex(globalIndex);
+                }
+            }
+        }
+        return dictionaries;
+    }
+
+    private static List<Map<Integer, Object>> initDictionaries(int dimensionSize) {
+        List<Map<Integer, Object>> rowGlobalDictionaries = new ArrayList<Map<Integer, Object>>(dimensionSize);
+        for (int i = 0; i < dimensionSize; i++) {
+            rowGlobalDictionaries.add(new HashMap<Integer, Object>());
+        }
+        return rowGlobalDictionaries;
+    }
+}
