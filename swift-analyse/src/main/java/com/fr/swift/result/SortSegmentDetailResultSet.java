@@ -31,17 +31,21 @@ import java.util.List;
  * Created by Xiaolei.Liu on 2018/1/24
  */
 
-public class SortSegmentDetailResultSet implements DetailResultSet {
+public class SortSegmentDetailResultSet extends AbstractDetailResultSet {
 
     private int rowCount;
+    private int fetchSize;
     private List<Pair<Column, IndexInfo>> columnList;
     private SwiftMetaData metaData;
     private RowIterator rowNumberIterator;
     private Iterator<Row> rowIterator;
 
-    public SortSegmentDetailResultSet(List<Pair<Column, IndexInfo>> columnList, DetailFilter filter, List<Sort> sorts, SwiftMetaData metaData) {
+    public SortSegmentDetailResultSet(int fetchSize, List<Pair<Column, IndexInfo>> columnList, DetailFilter filter,
+                                      List<Sort> sorts, SwiftMetaData metaData) {
         // TODO: 2018/6/19 为了计算总行数过滤了两次，待优化
+        super(fetchSize);
         this.rowCount = filter.createFilterIndex().getCardinality();
+        this.fetchSize = fetchSize;
         this.columnList = columnList;
         this.metaData = metaData;
         init(filter, sorts);
@@ -49,7 +53,7 @@ public class SortSegmentDetailResultSet implements DetailResultSet {
 
     private void init(DetailFilter filter, List<Sort> sorts) {
         final List<Pair<Column, IndexInfo>> groupByColumns = getGroupByColumns(sorts);
-        GroupByInfo groupByInfo = new GroupByInfoImpl(groupByColumns, filter, convertSorts(sorts), null);
+        GroupByInfo groupByInfo = new GroupByInfoImpl(fetchSize, groupByColumns, filter, convertSorts(sorts), null);
         Iterator<GroupByEntry[]> it = new MultiGroupByRowIterator(groupByInfo);
         Iterator<RowTraversal> traversalIterator = new MapperIterator<GroupByEntry[], RowTraversal>(it, new Function<GroupByEntry[], RowTraversal>() {
             @Override
@@ -80,7 +84,7 @@ public class SortSegmentDetailResultSet implements DetailResultSet {
     @Override
     public List<Row> getPage() {
         List<Row> rows = new ArrayList<Row>();
-        int count = PAGE_SIZE;
+        int count = fetchSize;
         List<Column> columns = getColumnList(columnList);
         while (rowNumberIterator.hasNext() && count-- > 0) {
             rows.add(SegmentDetailResultSet.readRow(rowNumberIterator.next(), columns));

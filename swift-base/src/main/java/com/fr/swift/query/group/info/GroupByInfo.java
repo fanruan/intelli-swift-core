@@ -13,6 +13,8 @@ import java.util.List;
  */
 public interface GroupByInfo {
 
+    int getFetchSize();
+
     /**
      * groupBy的维度列
      */

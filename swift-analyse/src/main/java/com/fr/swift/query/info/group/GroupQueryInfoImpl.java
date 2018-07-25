@@ -21,9 +21,9 @@ public class GroupQueryInfoImpl extends AbstractQueryInfo<NodeResultSet> impleme
     private List<Metric> metrics;
     private List<PostQueryInfo> postQueryInfoList;
 
-    public GroupQueryInfoImpl(String queryId, SourceKey table, FilterInfo filterInfo, List<Dimension> dimensions,
+    public GroupQueryInfoImpl(String queryId, int fetchSize, SourceKey table, FilterInfo filterInfo, List<Dimension> dimensions,
                               List<Metric> metrics, List<PostQueryInfo> postQueryInfoList) {
-        super(queryId, table, filterInfo, dimensions);
+        super(queryId, fetchSize, table, filterInfo, dimensions);
         this.metrics = metrics;
         this.postQueryInfoList = postQueryInfoList;
     }

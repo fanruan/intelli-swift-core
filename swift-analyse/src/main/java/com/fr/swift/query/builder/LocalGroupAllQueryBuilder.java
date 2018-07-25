@@ -74,7 +74,7 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
             List<Aggregator> aggregators = getFilterAggregators(metrics, segment);
             List<Sort> rowIndexSorts = getSegmentIndexSorts(dimensions);
             DetailFilter rowDetailFilter = FilterBuilder.buildDetailFilter(segment, info.getFilterInfo());
-            GroupByInfo rowGroupByInfo = new GroupByInfoImpl(dimensionColumns, rowDetailFilter, rowIndexSorts, null);
+            GroupByInfo rowGroupByInfo = new GroupByInfoImpl(info.getFetchSize(), dimensionColumns, rowDetailFilter, rowIndexSorts, null);
             // TODO: 2018/5/30 AggregatorValueContainer用map还是数组的取舍
             // 数组读写存储效率好但是解析麻烦，map占用空间大一点计算解析方便
             MetricInfo metricInfo = new MetricInfoImpl(metricColumns, aggregators, metrics.size());

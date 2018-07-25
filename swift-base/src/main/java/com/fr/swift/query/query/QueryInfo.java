@@ -21,6 +21,8 @@ public interface QueryInfo<T> {
      */
     QueryType getType();
 
+    int getFetchSize();
+
     /**
      * 还是把某个SegmentURI放到queryinfo里面
      * 不然不好判断查单个Segment还是所有Segment

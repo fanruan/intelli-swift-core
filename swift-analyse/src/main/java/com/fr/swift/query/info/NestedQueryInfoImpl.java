@@ -46,6 +46,11 @@ public class NestedQueryInfoImpl implements NestedQueryInfo<NodeResultSet> {
     }
 
     @Override
+    public int getFetchSize() {
+        return 0;
+    }
+
+    @Override
     public Set<String> getQuerySegment() {
         return queryInfo.getQuerySegment();
     }

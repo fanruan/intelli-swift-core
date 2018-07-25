@@ -27,9 +27,9 @@ public class DetailQueryInfo extends AbstractQueryInfo<DetailResultSet> {
     private List<Sort> sorts;
     private List<Pair<Sort, Comparator>> comparators;
 
-    public DetailQueryInfo(String queryId, SourceKey table, FilterInfo filterInfo, List<Dimension> dimensions,
+    public DetailQueryInfo(String queryId, int fetchSize, SourceKey table, FilterInfo filterInfo, List<Dimension> dimensions,
                            List<Sort> sorts, List<DetailTarget> targets, SwiftMetaData metaData) {
-        super(queryId, table, filterInfo, dimensions);
+        super(queryId, fetchSize, table, filterInfo, dimensions);
         this.sorts = sorts;
         this.targets = targets;
         this.metaData = metaData;

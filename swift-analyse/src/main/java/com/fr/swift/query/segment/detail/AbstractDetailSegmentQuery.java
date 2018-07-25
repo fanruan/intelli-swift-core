@@ -13,16 +13,13 @@ import java.util.List;
  * Created by pony on 2017/11/24.
  */
 public abstract class AbstractDetailSegmentQuery extends AbstractSegmentQuery<DetailResultSet> {
-    /**
-     * 明细的列
-     */
+
+    protected int fetchSize;
     protected List<Pair<Column, IndexInfo>> columnList;
-    /**
-     * 过滤
-     */
     protected DetailFilter filter;
 
-    public AbstractDetailSegmentQuery(List<Pair<Column, IndexInfo>> columnList, DetailFilter filter) {
+    public AbstractDetailSegmentQuery(int fetchSize, List<Pair<Column, IndexInfo>> columnList, DetailFilter filter) {
+        this.fetchSize = fetchSize;
         this.columnList = columnList;
         this.filter = filter;
     }

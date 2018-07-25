@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Created by Xiaolei.Liu on 2018/1/24
  */
-public class SortMultiSegmentDetailResultSet implements DetailResultSet {
+public class SortMultiSegmentDetailResultSet extends AbstractDetailResultSet {
 
     private List<Query<DetailResultSet>> queries;
     private List<Pair<Sort, Comparator>> comparators;
@@ -26,8 +26,9 @@ public class SortMultiSegmentDetailResultSet implements DetailResultSet {
     private Iterator<List<Row>> mergerIterator;
     private Iterator<Row> rowIterator;
 
-    public SortMultiSegmentDetailResultSet(List<Query<DetailResultSet>> queries,
+    public SortMultiSegmentDetailResultSet(int fetchSize, List<Query<DetailResultSet>> queries,
                                            List<Pair<Sort, Comparator>> comparators, SwiftMetaData metaData) throws SQLException {
+        super(fetchSize);
         this.queries = queries;
         this.comparators = comparators;
         this.metaData = metaData;
@@ -42,7 +43,7 @@ public class SortMultiSegmentDetailResultSet implements DetailResultSet {
             resultSets.add(resultSet);
         }
         mergerIterator = resultSets.isEmpty() ? new ArrayList<List<Row>>().iterator()
-                : new SortedDetailMergerIterator(PAGE_SIZE, createRowComparator(comparators), resultSets);
+                : new SortedDetailMergerIterator(fetchSize, createRowComparator(comparators), resultSets);
     }
 
     @Override

@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by Xiaolei.Liu on 2018/1/18
  */
-public class SegmentDetailResultSet implements DetailResultSet {
+public class SegmentDetailResultSet extends AbstractDetailResultSet {
 
     // 明细行的游标
     private int rowCursor = 0;
@@ -28,7 +28,8 @@ public class SegmentDetailResultSet implements DetailResultSet {
     private SwiftMetaData metaData;
     private Iterator<Row> iterator;
 
-    public SegmentDetailResultSet(List<Pair<Column, IndexInfo>> columnList, DetailFilter filter, SwiftMetaData metaData) {
+    public SegmentDetailResultSet(int fetchSize, List<Pair<Column, IndexInfo>> columnList, DetailFilter filter, SwiftMetaData metaData) {
+        super(fetchSize);
         this.columnList = SortSegmentDetailResultSet.getColumnList(columnList);
         this.rows = BitMaps.traversal2Array(filter.createFilterIndex());
         this.metaData = metaData;
@@ -40,7 +41,7 @@ public class SegmentDetailResultSet implements DetailResultSet {
             return new ArrayList<Row>(0);
         }
         List<Row> page = new ArrayList<Row>();
-        int count = PAGE_SIZE;
+        int count = fetchSize;
         while (rowCursor < rows.size() && count-- > 0) {
             page.add(readRow(rows.get(rowCursor), columnList));
             rowCursor++;

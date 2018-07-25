@@ -100,6 +100,11 @@ public class SortedDetailMergerIteratorTest extends TestCase {
         }
 
         @Override
+        public int getFetchSize() {
+            return pageSize;
+        }
+
+        @Override
         public List<Row> getPage() {
             List<Row> result = new ArrayList<>();
             for (int i = 0; i < pageSize; i++) {

@@ -20,14 +20,14 @@ public class SortDetailSegmentQuery extends AbstractDetailSegmentQuery {
     private List<Sort> sorts;
     private SwiftMetaData metaData;
 
-    public SortDetailSegmentQuery(List<Pair<Column, IndexInfo>> columnList, DetailFilter filter, List<Sort> sorts, SwiftMetaData metaData) {
-        super(columnList, filter);
+    public SortDetailSegmentQuery(int fetchSize, List<Pair<Column, IndexInfo>> columnList, DetailFilter filter, List<Sort> sorts, SwiftMetaData metaData) {
+        super(fetchSize, columnList, filter);
         this.sorts = sorts;
         this.metaData = metaData;
     }
 
     @Override
     public DetailResultSet getQueryResult() {
-        return new SortSegmentDetailResultSet(columnList, filter, sorts, metaData);
+        return new SortSegmentDetailResultSet(fetchSize, columnList, filter, sorts, metaData);
     }
 }

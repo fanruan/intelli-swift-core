@@ -58,7 +58,7 @@ public class QueryInfoParser {
         List<Dimension> dimensions = DimensionParser.parse(table, bean.getDimensionBeans(), bean.getSortBeans());
         List<Metric> metrics = MetricParser.parse(table, bean.getMetricBeans());
         List<PostQueryInfo> postQueryInfoList = PostQueryInfoParser.parse(bean.getPostQueryInfoBeans(), dimensions, bean.getMetricBeans());
-        GroupQueryInfo groupQueryInfo = new GroupQueryInfoImpl(queryId, table, filterInfo, dimensions, metrics, postQueryInfoList);
+        GroupQueryInfo groupQueryInfo = new GroupQueryInfoImpl(queryId, bean.getFetchSize(), table, filterInfo, dimensions, metrics, postQueryInfoList);
         groupQueryInfo.setQuerySegment(bean.getQuerySegments());
         return groupQueryInfo;
     }
@@ -73,7 +73,7 @@ public class QueryInfoParser {
         List<Dimension> dimensions = DimensionParser.parse(bean.getJoinedFields());
         List<PostQueryInfo> postQueryInfoList = PostQueryInfoParser.parsePostQueryInfoOfResultJoinQuery(
                 bean.getPostQueryInfoBeans(), dimensions, queryInfoBeans);
-        return new ResultJoinQueryInfoImpl(queryId, queryInfoList, dimensions, postQueryInfoList);
+        return new ResultJoinQueryInfoImpl(queryId, bean.getFetchSize(), queryInfoList, dimensions, postQueryInfoList);
     }
 
     private static QueryInfo parseDetailQueryInfo(DetailQueryInfoBean bean) {
@@ -112,7 +112,7 @@ public class QueryInfoParser {
 //        } catch (SwiftMetaDataException e) {
 //            SwiftLoggers.getLogger(QueryInfoParser.class).error(e);
 //        }
-        DetailQueryInfo detailQueryInfo = new DetailQueryInfo(queryId, table, filterInfo, dimensions, sorts, null, metaData);
+        DetailQueryInfo detailQueryInfo = new DetailQueryInfo(queryId, bean.getFetchSize(), table, filterInfo, dimensions, sorts, null, metaData);
         detailQueryInfo.setQuerySegment(bean.getQuerySegments());
         return detailQueryInfo;
     }

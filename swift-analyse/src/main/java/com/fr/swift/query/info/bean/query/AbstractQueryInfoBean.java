@@ -18,6 +18,8 @@ public abstract class AbstractQueryInfoBean implements QueryInfoBean {
     @JsonProperty
     protected QueryType queryType;
     @JsonProperty
+    private int fetchSize = 200;
+    @JsonProperty
     protected Set<String> querySegments;
     @JsonProperty
     protected SegmentDestination queryDestination;
@@ -39,6 +41,14 @@ public abstract class AbstractQueryInfoBean implements QueryInfoBean {
     @Override
     public void setQueryType(QueryType queryType) {
         this.queryType = queryType;
+    }
+
+    public int getFetchSize() {
+        return fetchSize;
+    }
+
+    public void setFetchSize(int fetchSize) {
+        this.fetchSize = fetchSize;
     }
 
     @Override

@@ -18,13 +18,13 @@ public class NormalDetailSegmentQuery extends AbstractDetailSegmentQuery {
 
     private SwiftMetaData metaData;
 
-    public NormalDetailSegmentQuery(List<Pair<Column, IndexInfo>> columnList, DetailFilter filter, SwiftMetaData metaData) {
-        super(columnList, filter);
+    public NormalDetailSegmentQuery(int fetchSize, List<Pair<Column, IndexInfo>> columnList, DetailFilter filter, SwiftMetaData metaData) {
+        super(fetchSize, columnList, filter);
         this.metaData = metaData;
     }
 
     @Override
     public DetailResultSet getQueryResult() {
-        return new SegmentDetailResultSet(columnList, filter, metaData);
+        return new SegmentDetailResultSet(fetchSize, columnList, filter, metaData);
     }
 }

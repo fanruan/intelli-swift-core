@@ -21,12 +21,11 @@ public class NodeGroupByUtils {
     /**
      * 聚合单块segment数据，得到node结果集和压缩的字典值
      *
-     * @param groupByInfo
-     * @param metricInfo
-     * @param pageSize  Integer.MAX_VALUE为不分页
+     * @param groupByInfo   维度相关信息
+     * @param metricInfo    指标相关信息
      * @return
      */
-    public static Iterator<NodeMergeResultSet<GroupNode>> groupBy(GroupByInfo groupByInfo, MetricInfo metricInfo, int pageSize) {
+    public static Iterator<NodeMergeResultSet<GroupNode>> groupBy(GroupByInfo groupByInfo, MetricInfo metricInfo) {
         if (groupByInfo.getDimensions().isEmpty()) {
             // 只有指标的情况
             GroupNode root = new GroupNode(-1, null);
@@ -35,7 +34,7 @@ public class NodeGroupByUtils {
             list.add(new NodeMergeResultSetImpl<GroupNode>(root, new ArrayList<Map<Integer, Object>>()));
             return list.iterator();
         }
-        return new MergeResultSetIterator(pageSize, groupByInfo, metricInfo);
+        return new MergeResultSetIterator(groupByInfo.getFetchSize(), groupByInfo, metricInfo);
     }
 
     private static void aggregateRoot(GroupNode root, RowTraversal traversal, MetricInfo metricInfo) {

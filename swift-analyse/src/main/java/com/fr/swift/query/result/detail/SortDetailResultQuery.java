@@ -20,21 +20,21 @@ public class SortDetailResultQuery extends AbstractDetailResultQuery {
     private List<Pair<Sort, Comparator>> comparators;
     private SwiftMetaData metaData;
 
-    public SortDetailResultQuery(List<Query<DetailResultSet>> queries, List<Pair<Sort, Comparator>> comparators, SwiftMetaData metaData) {
-        super(queries);
+    public SortDetailResultQuery(int fetchSize, List<Query<DetailResultSet>> queries, List<Pair<Sort, Comparator>> comparators, SwiftMetaData metaData) {
+        super(fetchSize, queries);
         this.comparators = comparators;
         this.metaData = metaData;
     }
 
-    public SortDetailResultQuery(List<Query<DetailResultSet>> queries, List<DetailTarget> targets,
+    public SortDetailResultQuery(int fetchSize, List<Query<DetailResultSet>> queries, List<DetailTarget> targets,
                                  List<Pair<Sort, Comparator>> comparators, SwiftMetaData metaData) {
-        super(queries, targets);
+        super(fetchSize, queries, targets);
         this.comparators = comparators;
         this.metaData = metaData;
     }
 
     @Override
     public DetailResultSet getQueryResult() throws SQLException {
-        return new SortMultiSegmentDetailResultSet(queryList, comparators, metaData);
+        return new SortMultiSegmentDetailResultSet(fetchSize, queryList, comparators, metaData);
     }
 }

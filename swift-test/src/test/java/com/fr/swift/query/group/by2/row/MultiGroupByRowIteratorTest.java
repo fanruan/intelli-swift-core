@@ -34,7 +34,7 @@ public class MultiGroupByRowIteratorTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         cubeData = new CubeData();
-        groupByInfo = new GroupByInfoImpl(cubeData.getDimensions(), new DetailFilter() {
+        groupByInfo = new GroupByInfoImpl(Integer.MAX_VALUE, cubeData.getDimensions(), new DetailFilter() {
             @Override
             public ImmutableBitMap createFilterIndex() {
                 return BitMaps.newAllShowBitMap(cubeData.getRowCount());

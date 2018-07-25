@@ -47,7 +47,7 @@ public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
                 filterInfos.add(info.getFilterInfo());
             }
             List<Sort> sorts = info.getSorts();
-            queries.add(new SortDetailSegmentQuery(columns,
+            queries.add(new SortDetailSegmentQuery(info.getFetchSize(), columns,
                     FilterBuilder.buildDetailFilter(segment, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND)),
                     sorts, info.getMetaData()));
             if (comparators == null) {
@@ -55,7 +55,7 @@ public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
                 info.setComparators(comparators);
             }
         }
-        return new SortDetailResultQuery(queries, comparators, info.getMetaData());
+        return new SortDetailResultQuery(info.getFetchSize(), queries, comparators, info.getMetaData());
     }
 
     private static List<Pair<Sort, Comparator>> getComparators(List<Pair<Column, IndexInfo>> columnList, List<Sort> sorts) {
@@ -70,6 +70,6 @@ public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
 
     @Override
     public Query<DetailResultSet> buildResultQuery(List<Query<DetailResultSet>> queries, DetailQueryInfo info) {
-        return new SortDetailResultQuery(queries, info.getTargets(), info.getComparators(), info.getMetaData());
+        return new SortDetailResultQuery(info.getFetchSize(), queries, info.getTargets(), info.getComparators(), info.getMetaData());
     }
 }

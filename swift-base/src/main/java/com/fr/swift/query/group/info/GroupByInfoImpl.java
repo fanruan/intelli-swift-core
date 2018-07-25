@@ -13,16 +13,23 @@ import java.util.List;
  */
 public class GroupByInfoImpl implements GroupByInfo {
 
+    private int fetchSize;
     private List<Pair<Column, IndexInfo>> dimensions;
     private DetailFilter detailFilter;
     private List<Sort> sorts;
     private Cursor cursor;
 
-    public GroupByInfoImpl(List<Pair<Column, IndexInfo>> dimensions, DetailFilter detailFilter, List<Sort> sorts, Cursor cursor) {
+    public GroupByInfoImpl(int fetchSize, List<Pair<Column, IndexInfo>> dimensions, DetailFilter detailFilter, List<Sort> sorts, Cursor cursor) {
+        this.fetchSize = fetchSize;
         this.dimensions = dimensions;
         this.detailFilter = detailFilter;
         this.sorts = sorts;
         this.cursor = cursor;
+    }
+
+    @Override
+    public int getFetchSize() {
+        return fetchSize;
     }
 
     @Override
