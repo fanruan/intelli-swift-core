@@ -24,7 +24,7 @@ public class GroupNodeUtils {
             @Override
             public GroupNode apply(GroupNode p) {
                 // 设置节点的data
-                if (p.getDepth() != -1) {
+                if (p.getDepth() != -1 && dictionaries.get(p.getDepth()) != null) {
                     p.setData(dictionaries.get(p.getDepth()).get(p.getDictionaryIndex()));
                 }
                 return p;

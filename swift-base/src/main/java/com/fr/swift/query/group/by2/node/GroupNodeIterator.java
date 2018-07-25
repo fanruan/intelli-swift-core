@@ -13,7 +13,7 @@ import java.util.Iterator;
  * <p>
  * Created by Lyon on 2018/4/20.
  */
-public class GroupNodeIterator implements Iterator<GroupNode> {
+class GroupNodeIterator implements Iterator<GroupNode> {
 
     private int dimensionSize;
     private int pageSize;

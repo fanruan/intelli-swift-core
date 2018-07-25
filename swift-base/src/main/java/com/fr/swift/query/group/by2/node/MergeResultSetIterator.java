@@ -27,9 +27,9 @@ class MergeResultSetIterator implements Iterator<NodeMergeResultSet<GroupNode>> 
 
     private int dimensionSize;
     private GroupByInfo groupByInfo;
-    Iterator<GroupNode> iterator;
+    private Iterator<GroupNode> iterator;
 
-    public MergeResultSetIterator(int pageSize, GroupByInfo groupByInfo, MetricInfo metricInfo) {
+    MergeResultSetIterator(int pageSize, GroupByInfo groupByInfo, MetricInfo metricInfo) {
         this.dimensionSize = groupByInfo.getDimensions().size();
         this.groupByInfo = groupByInfo;
         this.iterator = new GroupNodeIterator(dimensionSize, pageSize,
@@ -57,7 +57,7 @@ class MergeResultSetIterator implements Iterator<NodeMergeResultSet<GroupNode>> 
     }
 
     private List<Map<Integer, Object>> getGlobalDictionaries(GroupNode root) {
-        List<Map<Integer, Object>> dictionaries = initDictionaries(dimensionSize);
+        List<Map<Integer, Object>> dictionaries = new ArrayList<Map<Integer, Object>>(dimensionSize);
         List<Pair<Column, IndexInfo>> columns = groupByInfo.getDimensions();
         Iterator<List<SwiftNode>> rowIt = SwiftNodeUtils.node2RowListIterator(root);
         while (rowIt.hasNext()) {
@@ -81,13 +81,5 @@ class MergeResultSetIterator implements Iterator<NodeMergeResultSet<GroupNode>> 
             }
         }
         return dictionaries;
-    }
-
-    private static List<Map<Integer, Object>> initDictionaries(int dimensionSize) {
-        List<Map<Integer, Object>> rowGlobalDictionaries = new ArrayList<Map<Integer, Object>>(dimensionSize);
-        for (int i = 0; i < dimensionSize; i++) {
-            rowGlobalDictionaries.add(new HashMap<Integer, Object>());
-        }
-        return rowGlobalDictionaries;
     }
 }

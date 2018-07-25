@@ -19,6 +19,7 @@ import java.util.Map;
  */
 public class GroupPagingSegmentQuery extends AbstractGroupSegmentQuery {
 
+    // TODO: 2018/7/25 这个改为fetchSize
     private static final int PAGE_SIZE = 200;
 
     public GroupPagingSegmentQuery(GroupByInfo pageGroupByInfo, MetricInfo metricInfo) {
@@ -27,7 +28,6 @@ public class GroupPagingSegmentQuery extends AbstractGroupSegmentQuery {
 
     @Override
     public NodeResultSet getQueryResult() {
-        // TODO: 2018/6/13 这边为了把resultSet串联起来都用了闭包，有待分析
         final Iterator<NodeMergeResultSet<GroupNode>> iterator = NodeGroupByUtils.groupBy(groupByInfo, metricInfo, PAGE_SIZE);
         return new NodeMergeResultSet() {
 
