@@ -65,7 +65,7 @@ public class SwiftCubePathServiceImpl implements SwiftCubePathService {
 
         @Override
         protected String getNameSpace() {
-            return SwiftConfigConstants.FRConfiguration.CUBE_PATH_NAMESPACE;
+            return SwiftConfigConstants.FRConfiguration.CUBE_PATH_NAMESPACE + "." + clusterId;
         }
     };
 
@@ -112,6 +112,6 @@ public class SwiftCubePathServiceImpl implements SwiftCubePathService {
 
     @Override
     public String getSwiftPath() {
-        return configService.getConfigBean(CONVERT) + "." + clusterId;
+        return configService.getConfigBean(CONVERT);
     }
 }
