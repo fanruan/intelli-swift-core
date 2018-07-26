@@ -73,9 +73,15 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
 
     @Override
     public synchronized List<Segment> getSegmentsByIds(SourceKey table, Collection<String> segmentIds) {
-        List<SegmentKey> keys = segmentService.find(
-                Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, table.getId()),
-                Restrictions.in("id", segmentIds));
+        List<SegmentKey> keys;
+        if (null == segmentIds || segmentIds.isEmpty()) {
+            keys = segmentService.find(
+                    Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, table.getId()));
+        } else {
+            keys = segmentService.find(
+                    Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, table.getId()),
+                    Restrictions.in("id", segmentIds));
+        }
         if (keys.isEmpty()) {
             return getSegment(table);
         }
