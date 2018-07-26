@@ -36,11 +36,11 @@ public class ByteIoTest extends BaseIoTest {
     public void testPutThenGet() {
         IResourceLocation location = new ResourceLocation(basePath + "child");
 
-        ByteWriter bw = (ByteWriter) Writers.build(location, new BuildConf(Types.IoType.WRITE, Types.DataType.BYTE, WriteType.EDIT));
+        ByteWriter bw = (ByteWriter) Writers.build(location, new BuildConf(Types.IoType.WRITE, Types.DataType.BYTE, WriteType.APPEND));
         bw.put(pos, val);
         bw.release();
 
-        bw = (ByteWriter) Writers.build(location, new BuildConf(Types.IoType.WRITE, Types.DataType.BYTE, WriteType.EDIT));
+        bw = (ByteWriter) Writers.build(location, new BuildConf(Types.IoType.WRITE, Types.DataType.BYTE, WriteType.APPEND));
         bw.put(pos + 1, val);
         bw.release();
 

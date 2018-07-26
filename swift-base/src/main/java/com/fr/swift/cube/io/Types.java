@@ -24,13 +24,11 @@ public final class Types {
 
     public enum WriteType {
         /**
-         * 修改
-         */
-        EDIT,
-        /**
          * 覆写
          */
-        OVERWRITE
+        OVERWRITE,
+        // 追加
+        APPEND
     }
 
     public enum StoreType {

@@ -2,7 +2,6 @@ package com.fr.swift.cube.io;
 
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.cube.io.Types.IoType;
 import com.fr.swift.cube.io.impl.fineio.FineIoReaders;
 import com.fr.swift.cube.io.impl.mem.MemIoBuilder;
 import com.fr.swift.cube.io.input.Reader;
@@ -32,7 +31,7 @@ public final class Readers {
             case NIO:
                 return Nios.of(new NioConf(
                         String.format("%s/%s", PATH_SERVICE.getSwiftPath(), location.getPath()),
-                        conf.ioType == IoType.WRITE), conf.dataType);
+                        NioConf.IoType.READ), conf.dataType);
             default:
         }
         return Crasher.crash(String.format("illegal cube build config: %s\nlocation: %s", conf, location));

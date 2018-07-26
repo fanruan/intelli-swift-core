@@ -38,11 +38,11 @@ public class LongIoTest extends BaseIoTest {
     public void testPutThenGet() {
         IResourceLocation location = new ResourceLocation(basePath + "child");
 
-        LongWriter writer = (LongWriter) Writers.build(location, new BuildConf(IoType.WRITE, DataType.LONG, WriteType.EDIT));
+        LongWriter writer = (LongWriter) Writers.build(location, new BuildConf(IoType.WRITE, DataType.LONG, WriteType.APPEND));
         writer.put(pos, val);
         writer.release();
 
-        writer = (LongWriter) Writers.build(location, new BuildConf(IoType.WRITE, DataType.LONG, WriteType.EDIT));
+        writer = (LongWriter) Writers.build(location, new BuildConf(IoType.WRITE, DataType.LONG, WriteType.APPEND));
         writer.put(pos + 1, val);
         writer.release();
 

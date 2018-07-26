@@ -45,11 +45,11 @@ public class StringIoTest extends BaseIoTest {
     public void testPutThenGet() {
         IResourceLocation location = new ResourceLocation(basePath + "child");
 
-        StringWriter writer = (StringWriter) Writers.build(location, new BuildConf(IoType.WRITE, DataType.STRING, WriteType.EDIT));
+        StringWriter writer = (StringWriter) Writers.build(location, new BuildConf(IoType.WRITE, DataType.STRING, WriteType.APPEND));
         writer.put(pos, val);
         writer.release();
 
-        writer = (StringWriter) Writers.build(location, new BuildConf(IoType.WRITE, DataType.STRING, WriteType.EDIT));
+        writer = (StringWriter) Writers.build(location, new BuildConf(IoType.WRITE, DataType.STRING, WriteType.APPEND));
         writer.put(pos + 1, val);
         writer.release();
 
