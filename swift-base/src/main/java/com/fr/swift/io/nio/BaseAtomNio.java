@@ -109,6 +109,10 @@ abstract class BaseAtomNio extends BaseNio {
         if (newPos > buf.position()) {
             buf.position(newPos);
         }
+
+        if (currentStart > offset) {
+            currentStart = offset;
+        }
     }
 
     abstract int getStep();

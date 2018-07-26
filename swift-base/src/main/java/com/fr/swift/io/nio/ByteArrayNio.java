@@ -75,7 +75,8 @@ public class ByteArrayNio extends BaseNio implements ObjectIo<byte[]> {
     @Override
     public void release() {
         if (conf.isWrite()) {
-            LongIo lastPosition = new LongNio(conf.ofAnotherPath(String.format("%s/%s", conf.getPath(), "last_pos")));
+            LongIo lastPosition = new LongNio(new NioConf(
+                    String.format("%s/%s", conf.getPath(), "last_pos"), IoType.OVERWRITE, conf.getPageSize(), conf.isMapped()));
             lastPosition.put(0, currentPos);
             lastPosition.release();
         }
