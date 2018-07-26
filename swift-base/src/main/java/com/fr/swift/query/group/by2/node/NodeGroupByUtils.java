@@ -34,7 +34,7 @@ public class NodeGroupByUtils {
             list.add(new NodeMergeResultSetImpl<GroupNode>(groupByInfo.getFetchSize(), root, new ArrayList<Map<Integer, Object>>()));
             return list.iterator();
         }
-        return new MergeResultSetIterator(groupByInfo.getFetchSize(), groupByInfo, metricInfo);
+        return new NodeMergeResultSetIterator(groupByInfo.getFetchSize(), groupByInfo, metricInfo);
     }
 
     private static void aggregateRoot(GroupNode root, RowTraversal traversal, MetricInfo metricInfo) {

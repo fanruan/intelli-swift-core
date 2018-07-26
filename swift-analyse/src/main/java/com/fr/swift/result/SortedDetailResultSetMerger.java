@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by Lyon on 2018/7/20.
  */
-class SortedDetailMergerIterator implements Iterator<List<Row>> {
+class SortedDetailResultSetMerger implements Iterator<List<Row>> {
 
     private int pageSize;
     private List<DetailResultSet> resultSets;
@@ -20,7 +20,7 @@ class SortedDetailMergerIterator implements Iterator<List<Row>> {
     private List<Row> remainRows = new ArrayList<Row>(0);
     private Row[] lastRowOfPrevPage;
 
-    public SortedDetailMergerIterator(int pageSize, Comparator<Row> comparator, List<DetailResultSet> resultSets) {
+    SortedDetailResultSetMerger(int pageSize, Comparator<Row> comparator, List<DetailResultSet> resultSets) {
         this.pageSize = pageSize;
         this.comparator = comparator;
         this.resultSets = resultSets;

@@ -43,7 +43,7 @@ public class SortMultiSegmentDetailResultSet extends AbstractDetailResultSet {
             resultSets.add(resultSet);
         }
         mergerIterator = resultSets.isEmpty() ? new ArrayList<List<Row>>().iterator()
-                : new SortedDetailMergerIterator(fetchSize, createRowComparator(comparators), resultSets);
+                : new SortedDetailResultSetMerger(fetchSize, createRowComparator(comparators), resultSets);
     }
 
     @Override

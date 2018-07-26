@@ -23,13 +23,13 @@ import java.util.Map;
 /**
  * Created by Lyon on 2018/7/25.
  */
-class MergeResultSetIterator implements Iterator<NodeMergeResultSet<GroupNode>> {
+class NodeMergeResultSetIterator implements Iterator<NodeMergeResultSet<GroupNode>> {
 
     private int dimensionSize;
     private GroupByInfo groupByInfo;
     private Iterator<GroupNode> iterator;
 
-    MergeResultSetIterator(int pageSize, GroupByInfo groupByInfo, MetricInfo metricInfo) {
+    NodeMergeResultSetIterator(int pageSize, GroupByInfo groupByInfo, MetricInfo metricInfo) {
         this.dimensionSize = groupByInfo.getDimensions().size();
         this.groupByInfo = groupByInfo;
         this.iterator = new GroupNodeIterator(dimensionSize, pageSize,

@@ -57,7 +57,6 @@ public class ChainedNodeMergeResultSet implements NodeMergeResultSet<GroupNode> 
         }
         // TODO: 2018/7/26 按需合并
         NodeMergeResultSet<GroupNode> mergeResultSet = operator.apply(resultSets);
-        // TODO: 2018/6/14 这个字典合并的只能先调用getNode再取字典map
         SwiftNode node = mergeResultSet.getNode();
         totalDictionaries = mergeResultSet.getRowGlobalDictionaries();
         return node;
@@ -99,7 +98,7 @@ public class ChainedNodeMergeResultSet implements NodeMergeResultSet<GroupNode> 
         private List<Aggregator> aggregators;
         private List<Comparator<GroupNode>> comparators;
 
-        public MergeOperator(int fetchSize, List<Aggregator> aggregators, List<Comparator<GroupNode>> comparators) {
+        MergeOperator(int fetchSize, List<Aggregator> aggregators, List<Comparator<GroupNode>> comparators) {
             this.fetchSize = fetchSize;
             this.aggregators = aggregators;
             this.comparators = comparators;

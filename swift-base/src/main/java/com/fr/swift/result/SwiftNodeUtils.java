@@ -16,6 +16,17 @@ import java.util.List;
  */
 public class SwiftNodeUtils {
 
+    public static <T extends SwiftNode> List<T> getLastRow(T root) {
+        int dimensionSize = getDimensionSize(root);
+        T prev = root;
+        List<T> row = new ArrayList<T>();
+        for (int i = 0; i < dimensionSize; i++) {
+            T node = (T) prev.getChild(prev.getChildrenSize() - 1);
+            prev = node;
+        }
+        return row;
+    }
+
     public static int getDimensionSize(SwiftNode root) {
         int size = 0;
         SwiftNode tmp = root;
