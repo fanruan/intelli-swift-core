@@ -158,10 +158,6 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         super(id);
     }
 
-    private static class SingletonHolder {
-        private static SwiftRealtimeService service = new SwiftRealtimeService();
-    }
-
     private void rpcSegmentLocation(PushSegLocationRpcEvent event) {
         URL masterURL = getMasterURL();
         ProxyFactory factory = ProxySelector.getInstance().getFactory();

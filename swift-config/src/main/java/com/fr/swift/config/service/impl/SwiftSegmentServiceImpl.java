@@ -71,7 +71,7 @@ public class SwiftSegmentServiceImpl extends AbstractSegmentService {
     }
 
     @Override
-    public boolean removeSegments(final SegmentKey... segmentKeys) {
+    public boolean removeSegments(final List<SegmentKey> segmentKeys) {
         try {
             if (null == segmentKeys) {
                 return false;
@@ -81,7 +81,7 @@ public class SwiftSegmentServiceImpl extends AbstractSegmentService {
                 public Boolean work(Session session) throws SQLException {
                     try {
                         for (SegmentKey segmentKey : segmentKeys) {
-                            session.delete(segmentKey);
+                            session.delete(((SegmentKeyBean) segmentKey).convert());
                         }
                     } catch (Exception e) {
                         throw new SQLException(e);
