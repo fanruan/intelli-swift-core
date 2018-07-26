@@ -5,6 +5,7 @@ import com.fr.swift.segment.SegmentDestination;
 import com.fr.third.fasterxml.jackson.annotation.JsonInclude;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -20,7 +21,7 @@ public abstract class AbstractQueryInfoBean implements QueryInfoBean {
     @JsonProperty
     private int fetchSize = 200;
     @JsonProperty
-    protected Set<String> querySegments;
+    protected Set<String> querySegments = new HashSet<String>();
     @JsonProperty
     protected SegmentDestination queryDestination;
 

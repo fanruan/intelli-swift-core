@@ -1,7 +1,9 @@
 package com.fr.swift.query.info.bean.element.filter;
 
 import com.fr.swift.query.filter.SwiftDetailFilterType;
+import com.fr.swift.query.info.bean.element.filter.impl.AllShowFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.AndFilterBean;
+import com.fr.swift.query.info.bean.element.filter.impl.EmptyFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NotFilterBean;
@@ -34,7 +36,9 @@ import com.fr.third.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = NullFilterBean.class, name = "NULL"),
         @JsonSubTypes.Type(value = AndFilterBean.class, name = "AND"),
         @JsonSubTypes.Type(value = OrFilterBean.class, name = "OR"),
-        @JsonSubTypes.Type(value = NotFilterBean.class, name = "NOT")
+        @JsonSubTypes.Type(value = NotFilterBean.class, name = "NOT"),
+        @JsonSubTypes.Type(value = AllShowFilterBean.class, name = "ALL_SHOW"),
+        @JsonSubTypes.Type(value = EmptyFilterBean.class, name = "EMPTY")
 })
 public interface FilterInfoBean<T> extends FilterBean<T> {
 }
