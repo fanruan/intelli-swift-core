@@ -27,6 +27,7 @@ public class SwiftSegmentServiceProvider implements SwiftSegmentService {
     private SwiftSegmentService service;
 
     public SwiftSegmentServiceProvider() {
+        service = SwiftContext.get().getBean("swiftSegmentService", SwiftSegmentService.class);
         ClusterListenerHandler.addListener(new ClusterEventListener() {
             @Override
             public void handleEvent(ClusterEvent clusterEvent) {
