@@ -12,32 +12,34 @@ import com.fr.swift.query.group.info.MetricInfoImpl;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.SwiftNode;
+import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.result.node.GroupNodeUtils;
 import com.fr.swift.result.row.RowIndexKey;
 import com.fr.swift.source.Row;
+import com.fr.swift.structure.iterator.IteratorUtils;
+import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
-import static junit.framework.TestCase.assertTrue;
-
 /**
- * Created by Lyon on 2018/5/31.
+ * Created by Lyon on 2018/7/26.
  */
-public class GroupAllSegmentQueryTest {
+public class GroupPagingSegmentQueryTest extends TestCase {
 
-    private NodeMergeResultSet<GroupNode> resultSet;
+    private List<Row> rowList;
     private CubeData cubeData;
 
     @Before
     public void setUp() throws Exception {
 
         cubeData = new CubeData();
-        GroupByInfo groupByInfo = new GroupByInfoImpl(Integer.MAX_VALUE, cubeData.getDimensions(), new DetailFilter() {
+        GroupByInfo groupByInfo = new GroupByInfoImpl(20, cubeData.getDimensions(), new DetailFilter() {
             @Override
             public ImmutableBitMap createFilterIndex() {
                 return BitMaps.newAllShowBitMap(cubeData.getRowCount());
@@ -49,17 +51,21 @@ public class GroupAllSegmentQueryTest {
             }
         }, new ArrayList<>(), null);
         MetricInfo metricInfo = new MetricInfoImpl(cubeData.getMetrics(), cubeData.getAggregators(), cubeData.getMetrics().size());
-        resultSet = (NodeMergeResultSet<GroupNode>) new GroupAllSegmentQuery(groupByInfo, metricInfo).getQueryResult();
-        // 更新Node#data
-        GroupNodeUtils.updateNodeData(((GroupNode) resultSet.getNode()), resultSet.getRowGlobalDictionaries());
+        NodeMergeResultSet<GroupNode> resultSet = (NodeMergeResultSet<GroupNode>) new GroupPagingSegmentQuery(groupByInfo, metricInfo).getQueryResult();
+        rowList = new ArrayList<>();
+        while (resultSet.hasNextPage()) {
+            GroupNode node = (GroupNode) resultSet.getNode();
+            GroupNodeUtils.updateNodeData(node, resultSet.getRowGlobalDictionaries());
+            rowList.addAll(IteratorUtils.iterator2List(SwiftNodeUtils.node2RowIterator(node)));
+        }
     }
 
     @Test
     public void test() {
         Map<RowIndexKey<int[]>, double[]> result = cubeData.getAggregationResult();
+        assertEquals(rowList.size(), result.size());
         try {
-            while (resultSet.hasNext()) {
-                Row row = resultSet.getNextRow();
+            for (Row row : rowList) {
                 RowIndexKey<int[]> key = getKey(row);
                 Assert.assertTrue(result.containsKey(key));
                 double[] values = getValues(row);

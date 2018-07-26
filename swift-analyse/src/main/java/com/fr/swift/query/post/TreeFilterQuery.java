@@ -10,7 +10,6 @@ import com.fr.swift.result.SwiftNodeOperator;
 import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.result.node.ChainedNodeResultSet;
 import com.fr.swift.result.node.GroupNodeAggregateUtils;
-import com.fr.swift.result.node.NodeType;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -37,7 +36,7 @@ public class TreeFilterQuery extends AbstractPostQuery<NodeResultSet> {
             @Override
             public SwiftNode operate(SwiftNode... node) {
                 // 先做节点合计，再做过滤
-                GroupNodeAggregateUtils.aggregateMetric(NodeType.GROUP, SwiftNodeUtils.getDimensionSize(node[0]),
+                GroupNodeAggregateUtils.aggregateMetric(SwiftNodeUtils.getDimensionSize(node[0]),
                         (GroupNode) node[0], aggregators);
                 NodeFilter.filter(node[0], matchFilterList);
                 return node[0];

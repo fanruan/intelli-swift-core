@@ -1,5 +1,8 @@
-package com.fr.swift.result;
+package com.fr.swift.result.node;
 
+import com.fr.swift.result.NodeResultSet;
+import com.fr.swift.result.SwiftNode;
+import com.fr.swift.result.SwiftRowOperator;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 
@@ -39,7 +42,7 @@ public class FakeNodeResultSet implements NodeResultSet<SwiftNode> {
     }
 
     @Override
-    public SwiftMetaData getMetaData() throws SQLException {
+    public SwiftMetaData getMetaData() {
         return null;
     }
 
@@ -52,12 +55,12 @@ public class FakeNodeResultSet implements NodeResultSet<SwiftNode> {
     }
 
     @Override
-    public Row getNextRow() throws SQLException {
+    public Row getNextRow() {
         return rowIterator.next();
     }
 
     @Override
-    public void close() throws SQLException {
+    public void close() {
 
     }
 }

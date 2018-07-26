@@ -28,7 +28,7 @@ public class UpdateNodeDataQuery extends AbstractPostQuery<NodeResultSet> {
         SwiftNodeOperator<SwiftNode> operator = new SwiftNodeOperator<SwiftNode>() {
             @Override
             public SwiftNode operate(SwiftNode... node) {
-                GroupNodeUtils.updateNodeData(mergeResult.getRowGlobalDictionaries().size(), (GroupNode) node[0], mergeResult.getRowGlobalDictionaries());
+                GroupNodeUtils.updateNodeData((GroupNode) node[0], mergeResult.getRowGlobalDictionaries());
                 return node[0];
             }
         };

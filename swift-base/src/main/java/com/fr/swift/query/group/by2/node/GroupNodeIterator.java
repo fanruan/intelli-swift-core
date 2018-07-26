@@ -45,7 +45,7 @@ class GroupNodeIterator implements Iterator<GroupNode> {
     private void initCachedNodes(int index) {
         GroupNode[] newCachedNodes = new GroupNode[cachedNodes.length];
         newCachedNodes[0] = new GroupNode(-1, null);
-        for (int i = 1; i < index; i++) {
+        for (int i = 0; i < index; i++) {
             GroupNode child = new GroupNode(i, cachedNodes[i + 1].getDictionaryIndex());
             child.setData(cachedNodes[i + 1].getData());
             newCachedNodes[i + 1] = child;

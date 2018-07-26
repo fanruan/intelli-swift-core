@@ -19,27 +19,25 @@ public class GroupNodeAggregateUtils {
     /**
      * 使用明细Aggregator聚合metric用于过滤
      *
-     * @param type
      * @param dimensionSize
      * @param root
      * @param aggregators
      * @return
      */
-    public static GroupNode aggregateMetric(NodeType type, int dimensionSize, GroupNode root, List<Aggregator> aggregators) {
-        return aggregate(type, dimensionSize, root, aggregators);
+    public static GroupNode aggregateMetric(int dimensionSize, GroupNode root, List<Aggregator> aggregators) {
+        return aggregate(dimensionSize, root, aggregators);
     }
 
     /**
      * 如果要显示汇总值的话，不管是否分页，根节点的汇总（如果是交叉表，包括列向和横向的汇总）都是对全部数据的汇总，
      * 暂时对于根节点汇总都在明细聚合的过程中做好（全部计算的情况下有优化空间）。下面的结果聚合不处理根节点。
      *
-     * @param type
      * @param dimensionSize
      * @param root
      * @param aggregators
      * @return
      */
-    public static GroupNode aggregate(NodeType type, int dimensionSize, GroupNode root,
+    public static GroupNode aggregate(int dimensionSize, GroupNode root,
                                       List<Aggregator> aggregators) {
         // 从第n个维度到第-1个维度(根节点)进行汇总
         for (int depth = dimensionSize - 1; depth >= -1; depth--) {
