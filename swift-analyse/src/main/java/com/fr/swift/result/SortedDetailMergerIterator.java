@@ -83,7 +83,13 @@ class SortedDetailMergerIterator implements Iterator<List<Row>> {
         } else {
             iterator = remainRows.iterator();
         }
-        return getPage(iterator);
+        List<Row> page = getPage(iterator);
+        if (page.size() < pageSize && remainRows.isEmpty() && hasNext()) {
+            // 按照前面的规则更新了，但是不满一页，并且源结果集还有剩余，继续取下一页
+            remainRows = page;
+            return getNext();
+        }
+        return page;
     }
 
     private boolean shouldUpdate(Row remainRow, Row lastRowOfPrevPage) {
