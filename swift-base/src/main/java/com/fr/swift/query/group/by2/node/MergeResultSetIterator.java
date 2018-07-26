@@ -39,7 +39,7 @@ class MergeResultSetIterator implements Iterator<NodeMergeResultSet<GroupNode>> 
 
     private NodeMergeResultSet<GroupNode> getNext() {
         GroupNode root = iterator.next();
-        return new NodeMergeResultSetImpl<GroupNode>(root, getGlobalDictionaries(root));
+        return new NodeMergeResultSetImpl<GroupNode>(groupByInfo.getFetchSize(), root, getGlobalDictionaries(root));
     }
 
     @Override

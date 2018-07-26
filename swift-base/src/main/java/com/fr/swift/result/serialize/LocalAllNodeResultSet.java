@@ -19,16 +19,23 @@ import java.util.Iterator;
 public class LocalAllNodeResultSet implements NodeResultSet<SwiftNode>, SerializableResultSet {
 
     private static final long serialVersionUID = 7098094791977510417L;
+    private int fetchSize;
     private String jsonString;
     private SwiftNode root;
     private boolean hasNextPage = true;
     private boolean originHasNextPage;
     private transient Iterator<Row> iterator;
 
-    public LocalAllNodeResultSet(String jsonString, SwiftNode root, boolean originHasNextPage) {
+    public LocalAllNodeResultSet(int fetchSize, String jsonString, SwiftNode root, boolean originHasNextPage) {
+        this.fetchSize = fetchSize;
         this.jsonString = jsonString;
         this.root = root;
         this.originHasNextPage = originHasNextPage;
+    }
+
+    @Override
+    public int getFetchSize() {
+        return fetchSize;
     }
 
     @Override

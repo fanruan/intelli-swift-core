@@ -59,13 +59,13 @@ public class LocalGroupPagingQueryBuilder extends AbstractLocalGroupQueryBuilder
             MetricInfo metricInfo = new MetricInfoImpl(metricColumns, aggregators, metrics.size());
             queries.add(new GroupPagingSegmentQuery(rowGroupByInfo, metricInfo));
         }
-        return new GroupResultQuery(queries, getAggregators(info.getMetrics()),
+        return new GroupResultQuery(info.getFetchSize(), queries, getAggregators(info.getMetrics()),
                 LocalGroupAllQueryBuilder.getComparatorsForMerging(info.getTable(), info.getDimensions()));
     }
 
     @Override
     public ResultQuery<NodeResultSet> buildResultQuery(List<Query<NodeResultSet>> queries, GroupQueryInfo info) {
-        return new GroupResultQuery(queries, getAggregators(info.getMetrics()),
+        return new GroupResultQuery(info.getFetchSize(), queries, getAggregators(info.getMetrics()),
                 LocalGroupAllQueryBuilder.getComparatorsForMerging(info.getTable(), info.getDimensions()));
     }
 }

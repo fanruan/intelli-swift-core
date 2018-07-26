@@ -51,6 +51,11 @@ public class GroupPagingSegmentQuery extends AbstractGroupSegmentQuery {
             }
 
             @Override
+            public int getFetchSize() {
+                return groupByInfo.getFetchSize();
+            }
+
+            @Override
             public SwiftNode getNode() {
                 NodeMergeResultSet resultSet = iterator.next();
                 dictionary = resultSet.getRowGlobalDictionaries();

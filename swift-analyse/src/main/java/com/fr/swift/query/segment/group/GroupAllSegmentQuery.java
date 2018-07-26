@@ -24,6 +24,6 @@ public class GroupAllSegmentQuery extends AbstractGroupSegmentQuery{
         Iterator<NodeMergeResultSet<GroupNode>> iterator = NodeGroupByUtils.groupBy(groupByInfo, metricInfo);
         NodeMergeResultSet<GroupNode> resultSet = iterator.next();
         // 返回全部结果集
-        return new NodeMergeResultSetImpl((GroupNode) resultSet.getNode(), resultSet.getRowGlobalDictionaries());
+        return new NodeMergeResultSetImpl(groupByInfo.getFetchSize(), (GroupNode) resultSet.getNode(), resultSet.getRowGlobalDictionaries());
     }
 }

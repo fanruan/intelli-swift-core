@@ -31,7 +31,7 @@ public class NodeGroupByUtils {
             GroupNode root = new GroupNode(-1, null);
             aggregateRoot(root, groupByInfo.getDetailFilter().createFilterIndex(), metricInfo);
             List<NodeMergeResultSet<GroupNode>> list = new ArrayList<NodeMergeResultSet<GroupNode>>();
-            list.add(new NodeMergeResultSetImpl<GroupNode>(root, new ArrayList<Map<Integer, Object>>()));
+            list.add(new NodeMergeResultSetImpl<GroupNode>(groupByInfo.getFetchSize(), root, new ArrayList<Map<Integer, Object>>()));
             return list.iterator();
         }
         return new MergeResultSetIterator(groupByInfo.getFetchSize(), groupByInfo, metricInfo);

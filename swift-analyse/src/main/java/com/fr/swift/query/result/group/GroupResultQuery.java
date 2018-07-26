@@ -17,9 +17,9 @@ import java.util.List;
  */
 public class GroupResultQuery extends AbstractGroupResultQuery {
 
-    public GroupResultQuery(List<Query<NodeResultSet>> queries, List<Aggregator> aggregators,
+    public GroupResultQuery(int fetchSize, List<Query<NodeResultSet>> queries, List<Aggregator> aggregators,
                             List<Comparator<GroupNode>> comparators) {
-        super(queries, aggregators, comparators);
+        super(fetchSize, queries, aggregators, comparators);
     }
 
     @Override
@@ -28,6 +28,6 @@ public class GroupResultQuery extends AbstractGroupResultQuery {
         for (Query<NodeResultSet> query : queryList) {
             resultSets.add((NodeMergeResultSet<GroupNode>) query.getQueryResult());
         }
-        return new ChainedNodeMergeResultSet(resultSets, aggregators, comparators);
+        return new ChainedNodeMergeResultSet(fetchSize, resultSets, aggregators, comparators);
     }
 }

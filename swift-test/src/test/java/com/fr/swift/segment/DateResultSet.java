@@ -19,6 +19,11 @@ public class DateResultSet extends SingleColumnResultSet {
     int count;
 
     @Override
+    public int getFetchSize() {
+        return 0;
+    }
+
+    @Override
     public SwiftMetaData getMetaData() {
         return new SwiftMetaDataBean("DATE_TABLE",
                 Arrays.asList(new MetaDataColumnBean("date", Types.BIGINT)));

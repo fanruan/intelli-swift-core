@@ -22,19 +22,26 @@ import java.util.Map;
  */
 public class ChainedNodeMergeResultSet implements NodeMergeResultSet<GroupNode> {
 
+    private int fetchSize;
     private List<NodeMergeResultSet<GroupNode>> sources;
     private Function<List<NodeMergeResultSet<GroupNode>>, NodeMergeResultSet<GroupNode>> operator;
     private List<Map<Integer, Object>> totalDictionaries;
 
-    public ChainedNodeMergeResultSet(List<NodeMergeResultSet<GroupNode>> sources, List<Aggregator> aggregators,
+    public ChainedNodeMergeResultSet(int fetchSize, List<NodeMergeResultSet<GroupNode>> sources, List<Aggregator> aggregators,
                                      List<Comparator<GroupNode>> comparators) {
+        this.fetchSize = fetchSize;
         this.sources = sources;
-        this.operator = new MergeOperator(aggregators, comparators);
+        this.operator = new MergeOperator(fetchSize, aggregators, comparators);
     }
 
     @Override
     public List<Map<Integer, Object>> getRowGlobalDictionaries() {
         return totalDictionaries;
+    }
+
+    @Override
+    public int getFetchSize() {
+        return fetchSize;
     }
 
     @Override
@@ -45,7 +52,7 @@ public class ChainedNodeMergeResultSet implements NodeMergeResultSet<GroupNode> 
         List<NodeMergeResultSet<GroupNode>> resultSets = new ArrayList<NodeMergeResultSet<GroupNode>>();
         for (NodeMergeResultSet<GroupNode> source : sources) {
             if (source.hasNextPage()) {
-                resultSets.add(new NodeMergeResultSetImpl<GroupNode>((GroupNode) source.getNode(), source.getRowGlobalDictionaries()));
+                resultSets.add(new NodeMergeResultSetImpl<GroupNode>(fetchSize, (GroupNode) source.getNode(), source.getRowGlobalDictionaries()));
             }
         }
         // TODO: 2018/7/26 按需合并
@@ -88,10 +95,12 @@ public class ChainedNodeMergeResultSet implements NodeMergeResultSet<GroupNode> 
 
     private static class MergeOperator implements Function<List<NodeMergeResultSet<GroupNode>>, NodeMergeResultSet<GroupNode>> {
 
+        private int fetchSize;
         private List<Aggregator> aggregators;
         private List<Comparator<GroupNode>> comparators;
 
-        public MergeOperator(List<Aggregator> aggregators, List<Comparator<GroupNode>> comparators) {
+        public MergeOperator(int fetchSize, List<Aggregator> aggregators, List<Comparator<GroupNode>> comparators) {
+            this.fetchSize = fetchSize;
             this.aggregators = aggregators;
             this.comparators = comparators;
         }
@@ -105,7 +114,7 @@ public class ChainedNodeMergeResultSet implements NodeMergeResultSet<GroupNode> 
                 addDictionaries(((NodeMergeResultSet) resultSet).getRowGlobalDictionaries(), totalDictionaries);
             }
             GroupNode mergeNode = GroupNodeMergeUtils.merge(roots, comparators, aggregators);
-            return new NodeMergeResultSetImpl<GroupNode>(mergeNode, totalDictionaries);
+            return new NodeMergeResultSetImpl<GroupNode>(fetchSize, mergeNode, totalDictionaries);
         }
 
         private void addDictionaries(List<Map<Integer, Object>> dictionaries,

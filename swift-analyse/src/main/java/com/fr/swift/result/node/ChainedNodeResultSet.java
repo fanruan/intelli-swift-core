@@ -30,6 +30,11 @@ public class ChainedNodeResultSet implements NodeResultSet<SwiftNode> {
     }
 
     @Override
+    public int getFetchSize() {
+        return source.getFetchSize();
+    }
+
+    @Override
     public SwiftNode<SwiftNode> getNode() {
         SwiftNode ret = null;
         if (hasNextPage()) {

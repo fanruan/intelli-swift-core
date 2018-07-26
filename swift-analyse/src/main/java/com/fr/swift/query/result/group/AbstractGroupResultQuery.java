@@ -17,9 +17,9 @@ public abstract class AbstractGroupResultQuery extends AbstractResultQuery<NodeR
     protected List<Aggregator> aggregators;
     protected List<Comparator<GroupNode>> comparators;
 
-    public AbstractGroupResultQuery(List<Query<NodeResultSet>> queries, List<Aggregator> aggregators,
+    public AbstractGroupResultQuery(int fetchSize, List<Query<NodeResultSet>> queries, List<Aggregator> aggregators,
                                     List<Comparator<GroupNode>> comparators) {
-        super(queries);
+        super(fetchSize, queries);
         this.aggregators = aggregators;
         this.comparators = comparators;
     }

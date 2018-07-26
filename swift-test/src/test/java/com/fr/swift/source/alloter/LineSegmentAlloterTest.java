@@ -77,6 +77,11 @@ public class LineSegmentAlloterTest extends TestIo {
             }
 
             @Override
+            public int getFetchSize() {
+                return 0;
+            }
+
+            @Override
             public SwiftMetaData getMetaData() {
                 return new SwiftMetaDataBean("A",
                         Arrays.asList(new MetaDataColumnBean("long", Types.BIGINT)));

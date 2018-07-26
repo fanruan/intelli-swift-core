@@ -12,16 +12,15 @@ import java.util.List;
  */
 public abstract class AbstractDetailResultQuery extends AbstractResultQuery<DetailResultSet>{
 
-    protected int fetchSize;
     protected List<DetailTarget> targets;
 
     public AbstractDetailResultQuery(int fetchSize, List<Query<DetailResultSet>> queries) {
-        super(queries);
+        super(fetchSize, queries);
         this.fetchSize = fetchSize;
     }
 
     public AbstractDetailResultQuery(int fetchSize, List<Query<DetailResultSet>> queries, List<DetailTarget> targets) {
-        super(queries);
+        super(fetchSize, queries);
         this.fetchSize = fetchSize;
         this.targets = targets;
     }

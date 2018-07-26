@@ -74,14 +74,14 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
             List<Aggregator> aggregators = getFilterAggregators(metrics, segment);
             List<Sort> rowIndexSorts = getSegmentIndexSorts(dimensions);
             DetailFilter rowDetailFilter = FilterBuilder.buildDetailFilter(segment, info.getFilterInfo());
-            GroupByInfo rowGroupByInfo = new GroupByInfoImpl(info.getFetchSize(), dimensionColumns, rowDetailFilter, rowIndexSorts, null);
+            GroupByInfo rowGroupByInfo = new GroupByInfoImpl(Integer.MAX_VALUE, dimensionColumns, rowDetailFilter, rowIndexSorts, null);
             // TODO: 2018/5/30 AggregatorValueContainer用map还是数组的取舍
             // 数组读写存储效率好但是解析麻烦，map占用空间大一点计算解析方便
             MetricInfo metricInfo = new MetricInfoImpl(metricColumns, aggregators, metrics.size());
             // TODO: 2018/5/31 segmentQuery也能做部分过滤，比如有全局字段的情况下的前N个过滤
             queries.add(new GroupAllSegmentQuery(rowGroupByInfo, metricInfo));
         }
-        return new GroupResultQuery(queries, getAggregators(metrics), getComparatorsForMerging(info.getTable(), dimensions));
+        return new GroupResultQuery(info.getFetchSize(), queries, getAggregators(metrics), getComparatorsForMerging(info.getTable(), dimensions));
     }
 
     static List<Aggregator> getFilterAggregators(List<Metric> metrics, Segment segment) {
@@ -98,7 +98,7 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
 
     @Override
     public ResultQuery<NodeResultSet> buildResultQuery(List<Query<NodeResultSet>> queries, GroupQueryInfo info) {
-        return new GroupResultQuery(queries, getAggregators(info.getMetrics()), getComparatorsForMerging(info.getTable(), info.getDimensions()));
+        return new GroupResultQuery(info.getFetchSize(), queries, getAggregators(info.getMetrics()), getComparatorsForMerging(info.getTable(), info.getDimensions()));
     }
 
     /**

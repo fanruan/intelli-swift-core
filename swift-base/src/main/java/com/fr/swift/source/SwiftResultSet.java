@@ -8,6 +8,9 @@ import java.sql.SQLException;
  * 为以后适配ResultSet做准备
  */
 public interface SwiftResultSet {
+
+    int getFetchSize();
+
     /**
      * meta
      *

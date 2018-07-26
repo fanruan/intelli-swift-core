@@ -25,6 +25,11 @@ public class FakeNodeResultSet implements NodeResultSet<SwiftNode> {
     }
 
     @Override
+    public int getFetchSize() {
+        return source.getFetchSize();
+    }
+
+    @Override
     public SwiftNode<SwiftNode> getNode() {
         throw new UnsupportedOperationException();
     }

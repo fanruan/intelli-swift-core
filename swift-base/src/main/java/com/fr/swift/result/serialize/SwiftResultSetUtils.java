@@ -19,12 +19,12 @@ public class SwiftResultSetUtils {
         switch (queryType) {
             case LOCAL_GROUP_ALL: {
                 NodeResultSet nodeResultSet = (NodeResultSet) resultSet;
-                result = new LocalAllNodeResultSet(jsonString, nodeResultSet.getNode(), nodeResultSet.hasNextPage());
+                result = new LocalAllNodeResultSet(nodeResultSet.getFetchSize(), jsonString, nodeResultSet.getNode(), nodeResultSet.hasNextPage());
                 break;
             }
             case LOCAL_GROUP_PART: {
                 NodeMergeResultSet mergeResultSet = (NodeMergeResultSet) resultSet;
-                result = new LocalPartNodeResultSet(jsonString, mergeResultSet.getNode(),
+                result = new LocalPartNodeResultSet(mergeResultSet.getFetchSize(), jsonString, mergeResultSet.getNode(),
                         mergeResultSet.getRowGlobalDictionaries(), mergeResultSet.hasNextPage());
                 break;
             }
