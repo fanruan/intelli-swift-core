@@ -6,7 +6,6 @@ import com.fr.swift.query.info.element.target.cal.ResultTarget;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.result.node.iterator.BFTGroupNodeIterator;
-import com.fr.swift.result.node.iterator.DFTGroupNodeIterator;
 import com.fr.swift.structure.iterator.MapperIterator;
 import com.fr.swift.util.function.Function;
 
@@ -21,8 +20,7 @@ public class GroupNodeUtils {
 
     public static void updateNodeData(GroupNode root, final List<Map<Integer, Object>> dictionaries) {
         // 从计算结果中提取要展示的结果集
-        int dimensionSize = SwiftNodeUtils.getDimensionSize(root);
-        Iterator<GroupNode> iterator = new MapperIterator<GroupNode, GroupNode>(new DFTGroupNodeIterator(dimensionSize, root), new Function<GroupNode, GroupNode>() {
+        Iterator<GroupNode> iterator = new MapperIterator<GroupNode, GroupNode>(SwiftNodeUtils.dftNodeIterator(root), new Function<GroupNode, GroupNode>() {
             @Override
             public GroupNode apply(GroupNode p) {
                 // 设置节点的data
@@ -37,8 +35,8 @@ public class GroupNodeUtils {
         }
     }
 
-    public static void updateShowTargetsForGroupNode(int dimensionSize, GroupNode root, final List<ResultTarget> targetsForShowList) {
-        Iterator<GroupNode> iterator = new MapperIterator<GroupNode, GroupNode>(new DFTGroupNodeIterator(dimensionSize, root), new Function<GroupNode, GroupNode>() {
+    public static void updateShowTargetsForGroupNode(GroupNode root, final List<ResultTarget> targetsForShowList) {
+        Iterator<GroupNode> iterator = new MapperIterator<GroupNode, GroupNode>(SwiftNodeUtils.dftNodeIterator(root), new Function<GroupNode, GroupNode>() {
             @Override
             public GroupNode apply(GroupNode p) {
                 AggregatorValue[] showValues = new AggregatorValue[targetsForShowList.size()];

@@ -1,4 +1,4 @@
-package com.fr.swift.result.node;
+package com.fr.swift.result.node.resultset;
 
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.SwiftNode;

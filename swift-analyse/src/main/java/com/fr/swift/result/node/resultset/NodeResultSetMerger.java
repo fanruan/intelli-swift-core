@@ -1,14 +1,16 @@
-package com.fr.swift.result.node;
+package com.fr.swift.result.node.resultset;
 
+import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.NodeMergeResultSetImpl;
+import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeUtils;
-import com.fr.swift.result.node.iterator.DFTGroupNodeIterator;
 import com.fr.swift.util.function.Function;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -19,22 +21,22 @@ import java.util.Map;
 class NodeResultSetMerger implements Iterator<NodeMergeResultSet<GroupNode>> {
 
     private int fetchSize;
+    private boolean[] isGlobalIndexed;
     private List<NodeMergeResultSet<GroupNode>> sources;
     private List<Comparator<GroupNode>> comparators;
     private Function<List<NodeMergeResultSet<GroupNode>>, NodeMergeResultSet<GroupNode>> operator;
-    private int remainRowCount = 0;
     private NodeMergeResultSet<GroupNode> remainResultSet;
     // 用于判断是否从源resultSet中更新数据。remainRowCount >= fetchSize不为空，否则为空
     private List<GroupNode> theRowOfRemainNode;
     private List<List<GroupNode>> lastRowOfPrevPages;
 
-    NodeResultSetMerger(int fetchSize, List<NodeMergeResultSet<GroupNode>> sources,
-                        List<Comparator<GroupNode>> comparators,
-                        Function<List<NodeMergeResultSet<GroupNode>>, NodeMergeResultSet<GroupNode>> operator) {
+    NodeResultSetMerger(int fetchSize, boolean[] isGlobalIndexed, List<NodeMergeResultSet<GroupNode>> sources,
+                        List<Aggregator> aggregators, List<Comparator<GroupNode>> comparators) {
         this.fetchSize = fetchSize;
+        this.isGlobalIndexed = isGlobalIndexed;
         this.sources = sources;
         this.comparators = comparators;
-        this.operator = operator;
+        this.operator = new MergeOperator(fetchSize, aggregators, comparators);
         init();
     }
 
@@ -47,10 +49,15 @@ class NodeResultSetMerger implements Iterator<NodeMergeResultSet<GroupNode>> {
 
     private NodeMergeResultSet<GroupNode> updateAll() {
         List<NodeMergeResultSet<GroupNode>> resultSets = new ArrayList<NodeMergeResultSet<GroupNode>>();
-        for (NodeMergeResultSet<GroupNode> source : sources) {
-            if (source.hasNextPage()) {
-                resultSets.add(new NodeMergeResultSetImpl<GroupNode>(fetchSize, (GroupNode) source.getNode(), source.getRowGlobalDictionaries()));
+        for (int i = 0; i < sources.size(); i++) {
+            if (sources.get(i).hasNextPage()) {
+                GroupNode node = (GroupNode) sources.get(i).getNode();
+                resultSets.add(new NodeMergeResultSetImpl<GroupNode>(fetchSize, node, sources.get(i).getRowGlobalDictionaries()));
+                lastRowOfPrevPages.set(i, SwiftNodeUtils.getLastRow(node));
             }
+        }
+        if (remainResultSet != null) {
+            resultSets.add(remainResultSet);
         }
         NodeMergeResultSet<GroupNode> mergeResultSet = operator.apply(resultSets);
         return getPage(mergeResultSet);
@@ -79,8 +86,13 @@ class NodeResultSetMerger implements Iterator<NodeMergeResultSet<GroupNode>> {
         } else {
             mergeResultSet = remainResultSet;
         }
-        // TODO: 2018/7/26 按照前面的规则更新了，但是不满一页，并且源结果集还有剩余，继续取下一页
-        return getPage(mergeResultSet);
+        NodeMergeResultSet<GroupNode> page = getPage(mergeResultSet);
+        if (SwiftNodeUtils.countRows(page.getNode()) < fetchSize && hasNext()) {
+            // 按照前面的规则更新了，但是不满一页，并且源结果集还有剩余，继续取下一页
+            remainResultSet = page;
+            return getNext();
+        }
+        return page;
     }
 
     private boolean shouldUpdate(List<GroupNode> lastRowOfPage) {
@@ -92,67 +104,57 @@ class NodeResultSetMerger implements Iterator<NodeMergeResultSet<GroupNode>> {
         return false;
     }
 
+    /**
+     * 将合并出来的结果拆分成两份，拆分node和字典
+     *
+     * @param mergeResultSet
+     * @return
+     */
     private NodeMergeResultSet<GroupNode> getPage(NodeMergeResultSet<GroupNode> mergeResultSet) {
-        // TODO: 2018/7/26 从合并结果中取出一页，并把剩余node和字典保存到remainResultSet
-        // TODO: 2018/7/26 复制node
         GroupNode root = (GroupNode) mergeResultSet.getNode();
-        int dimensionSize = SwiftNodeUtils.getDimensionSize(root);
-        Iterator<GroupNode> iterator = new DFTGroupNodeIterator(dimensionSize, root);
-        iterator.next();    // 跳过root
-        GroupNode[] cachedNodes = new GroupNode[dimensionSize];
-        copy(cachedNodes, iterator);
-        GroupNode page = cachedNodes[0];
+        GroupNode[] nodes = SwiftNodeUtils.splitNode(root, 2, fetchSize);
+        GroupNode page = nodes[0];
         GroupNode remainNode = null;
         theRowOfRemainNode = null;
-        if (iterator.hasNext()) {
-            theRowOfRemainNode = SwiftNodeUtils.getLastRow(page);
-            copy(cachedNodes, iterator);
-            remainNode = cachedNodes[0];
+        if (nodes[1] != null) {
+            remainNode = nodes[1];
+            if (SwiftNodeUtils.countRows(remainNode) >= fetchSize) {
+                theRowOfRemainNode = SwiftNodeUtils.getRow(remainNode, fetchSize - 1);
+            }
         }
-        // TODO: 2018/7/26 取出字典
+        List<Map<Integer, Object>> oldDictionary = mergeResultSet.getRowGlobalDictionaries();
+        remainResultSet = null;
         if (remainNode != null) {
-            remainResultSet = new NodeMergeResultSetImpl<GroupNode>(fetchSize, remainNode, null);
+            remainResultSet = new NodeMergeResultSetImpl<GroupNode>(fetchSize, remainNode, getDictionary(remainNode, oldDictionary));
         }
-        return new NodeMergeResultSetImpl<GroupNode>(fetchSize, page, null);
+        return new NodeMergeResultSetImpl<GroupNode>(fetchSize, page, getDictionary(page, oldDictionary));
     }
 
-    private void copy(GroupNode[] cachedNodes, Iterator<GroupNode> iterator) {
-        int rowCount = 0;
-        boolean uninitialized = true;
-        while (iterator.hasNext() && rowCount < fetchSize) {
-            GroupNode node = iterator.next();
-            int depth = node.getDepth();
-            if (uninitialized) {
-                cachedNodes = newCacheNodes(cachedNodes, depth);
-                uninitialized = false;
-            }
-            GroupNode copy = new GroupNode(depth, node.getData());
-            copy.setGlobalIndex(node.getDictionaryIndex());
-            copy.setAggregatorValue(node.getAggregatorValue());
-            cachedNodes[depth].addChild(copy);
-            if (depth < cachedNodes.length - 1) {
-                cachedNodes[depth + 1] = copy;
-            } else {
-                rowCount++;
+    private List<Map<Integer, Object>> getDictionary(GroupNode root, List<Map<Integer, Object>> oldDictionary) {
+        List<Map<Integer, Object>> dictionary = new ArrayList<Map<Integer, Object>>(oldDictionary.size());
+        for (int i = 0; i < oldDictionary.size(); i++) {
+            dictionary.add(null);
+        }
+        Iterator<List<SwiftNode>> rows = SwiftNodeUtils.node2RowListIterator(root);
+        while (rows.hasNext()) {
+            List<SwiftNode> row = rows.next();
+            for (int i = 0; i < row.size(); i++) {
+                GroupNode node = (GroupNode) row.get(i);
+                if (!isGlobalIndexed[i]) {
+                    continue;
+                }
+                if (dictionary.get(i) == null) {
+                    dictionary.set(i, new HashMap<Integer, Object>());
+                }
+                dictionary.get(i).put(node.getDictionaryIndex(), oldDictionary.get(i).get(node.getDictionaryIndex()));
             }
         }
-    }
-
-    private GroupNode[] newCacheNodes(GroupNode[] cachedNodes, int index) {
-        GroupNode[] newCachedNodes = new GroupNode[cachedNodes.length];
-        newCachedNodes[0] = new GroupNode(-1, null);
-        for (int i = 0; i < index; i++) {
-            GroupNode child = new GroupNode(i, cachedNodes[i + 1].getDictionaryIndex());
-            child.setData(cachedNodes[i + 1].getData());
-            newCachedNodes[i + 1] = child;
-            newCachedNodes[i].addChild(child);
-        }
-        return newCachedNodes;
+        return dictionary;
     }
 
     @Override
     public boolean hasNext() {
-        if (remainRowCount > 0) {
+        if (remainResultSet != null) {
             return true;
         }
         for (NodeMergeResultSet resultSet : sources) {

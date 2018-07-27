@@ -7,7 +7,7 @@ import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.result.SwiftRowOperator;
-import com.fr.swift.result.node.FakeNodeResultSet;
+import com.fr.swift.result.node.resultset.FakeNodeResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.structure.iterator.IteratorUtils;
 import com.fr.swift.structure.iterator.MapperIterator;

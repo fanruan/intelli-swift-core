@@ -81,7 +81,8 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
             // TODO: 2018/5/31 segmentQuery也能做部分过滤，比如有全局字段的情况下的前N个过滤
             queries.add(new GroupAllSegmentQuery(rowGroupByInfo, metricInfo));
         }
-        return new GroupResultQuery(info.getFetchSize(), queries, getAggregators(metrics), getComparatorsForMerging(info.getTable(), dimensions));
+        return new GroupResultQuery(info.getFetchSize(), queries, getAggregators(metrics),
+                getComparatorsForMerging(info.getTable(), dimensions), isGlobalIndexed(info.getDimensions()));
     }
 
     static List<Aggregator> getFilterAggregators(List<Metric> metrics, Segment segment) {
@@ -98,7 +99,8 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
 
     @Override
     public ResultQuery<NodeResultSet> buildResultQuery(List<Query<NodeResultSet>> queries, GroupQueryInfo info) {
-        return new GroupResultQuery(info.getFetchSize(), queries, getAggregators(info.getMetrics()), getComparatorsForMerging(info.getTable(), info.getDimensions()));
+        return new GroupResultQuery(info.getFetchSize(), queries, getAggregators(info.getMetrics()),
+                getComparatorsForMerging(info.getTable(), info.getDimensions()), isGlobalIndexed(info.getDimensions()));
     }
 
     /**

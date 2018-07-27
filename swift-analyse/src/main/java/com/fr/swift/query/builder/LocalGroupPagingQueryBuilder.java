@@ -60,12 +60,14 @@ public class LocalGroupPagingQueryBuilder extends AbstractLocalGroupQueryBuilder
             queries.add(new GroupPagingSegmentQuery(rowGroupByInfo, metricInfo));
         }
         return new GroupResultQuery(info.getFetchSize(), queries, getAggregators(info.getMetrics()),
-                LocalGroupAllQueryBuilder.getComparatorsForMerging(info.getTable(), info.getDimensions()));
+                LocalGroupAllQueryBuilder.getComparatorsForMerging(info.getTable(), info.getDimensions()),
+                isGlobalIndexed(info.getDimensions()));
     }
 
     @Override
     public ResultQuery<NodeResultSet> buildResultQuery(List<Query<NodeResultSet>> queries, GroupQueryInfo info) {
         return new GroupResultQuery(info.getFetchSize(), queries, getAggregators(info.getMetrics()),
-                LocalGroupAllQueryBuilder.getComparatorsForMerging(info.getTable(), info.getDimensions()));
+                LocalGroupAllQueryBuilder.getComparatorsForMerging(info.getTable(), info.getDimensions()),
+                isGlobalIndexed(info.getDimensions()));
     }
 }

@@ -25,11 +25,13 @@ import org.easymock.EasyMock;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.stream.IntStream;
 
 /**
@@ -40,7 +42,7 @@ public class CubeData {
     private int dimensionCount = 3;
     private int metricCount = 5;
     private int rowCount = 100;
-    private Random random = new Random(23435);
+    private static Random random = new Random(23435);
     private List<Column> dimensionColumns = new ArrayList<>();
     private List<Column> metricColumns = new ArrayList<>();
     private Map<RowIndexKey<int[]>, RowTraversal> bitMapGroup;
@@ -145,6 +147,8 @@ public class CubeData {
                 public DictionaryEncodedColumn getDictionaryEncodedColumn() {
                     return new TempDictColumn() {
 
+                        private Map<Integer, Integer> globalIndexMap = new HashMap<>();
+
                         @Override
                         public int size() {
                             return dict.get(columnIndex).size();
@@ -152,6 +156,7 @@ public class CubeData {
 
                         @Override
                         public void putGlobalIndex(int index, int globalIndex) {
+                            globalIndexMap.put(index, globalIndex);
                         }
 
                         @Override
@@ -172,7 +177,7 @@ public class CubeData {
 
                         @Override
                         public int getGlobalIndexByIndex(int index) {
-                            return index;
+                            return globalIndexMap.isEmpty() ? index : globalIndexMap.get(index);
                         }
 
                         @Override
@@ -338,6 +343,38 @@ public class CubeData {
         aggregators = new ArrayList<>();
         for (int i = 0; i < metricColumns.size(); i++) {
             aggregators.add(new SumAggregate());
+        }
+    }
+
+    public static void prepareGlobalIndex(CubeData... cubes) {
+        // 前提：所有cubes的维度个数相同
+        int dimensionSize = cubes[0].getDimensions().size();
+        List<TreeSet<String>> dictionaries = new ArrayList<>();
+        for (int i = 0; i < dimensionSize; i++) {
+            dictionaries.add(new TreeSet<>(Comparator.naturalOrder()));
+        }
+        for (CubeData cubeData : cubes) {
+            List<Pair<Column, IndexInfo>> columns = cubeData.getDimensions();
+            for (int i = 0; i < columns.size(); i++) {
+                DictionaryEncodedColumn dict = columns.get(i).getKey().getDictionaryEncodedColumn();
+                for (int j = 0; j < dict.size(); j++) {
+                    dictionaries.get(i).add((String) dict.getValue(j));
+                }
+            }
+        }
+        List<List<String>> lists = new ArrayList<>();
+        for (TreeSet<String> set : dictionaries) {
+            lists.add(new ArrayList<>(set));
+        }
+        for (CubeData cubeData : cubes) {
+            List<Pair<Column, IndexInfo>> columns = cubeData.getDimensions();
+            for (int i = 0; i < columns.size(); i++) {
+                DictionaryEncodedColumn dict = columns.get(i).getKey().getDictionaryEncodedColumn();
+                List<String> globalMap = lists.get(i);
+                for (int j = 0; j < dict.size(); j++) {
+                    dict.putGlobalIndex(j, globalMap.indexOf(dict.getValue(j)));
+                }
+            }
         }
     }
 }

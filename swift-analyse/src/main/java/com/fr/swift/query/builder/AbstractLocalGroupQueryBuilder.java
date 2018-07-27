@@ -21,6 +21,14 @@ import java.util.List;
  */
 public abstract class AbstractLocalGroupQueryBuilder implements LocalGroupQueryBuilder {
 
+    static boolean[] isGlobalIndexed(List<Dimension> dimensions) {
+        boolean[] booleans = new boolean[dimensions.size()];
+        for (int i = 0; i < dimensions.size(); i++) {
+            booleans[i] = dimensions.get(i).getIndexInfo().isGlobalIndexed();
+        }
+        return booleans;
+    }
+
     static List<Pair<Column, IndexInfo>> getDimensionSegments(Segment segment, List<Dimension> dimensions) {
         List<Pair<Column, IndexInfo>> dimensionColumns = new ArrayList<Pair<Column, IndexInfo>>();
         for (Dimension dimension : dimensions) {

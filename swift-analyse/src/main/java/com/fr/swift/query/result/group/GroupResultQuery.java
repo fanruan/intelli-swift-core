@@ -5,7 +5,7 @@ import com.fr.swift.query.query.Query;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.NodeResultSet;
-import com.fr.swift.result.node.ChainedNodeMergeResultSet;
+import com.fr.swift.result.node.resultset.ChainedNodeMergeResultSet;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -17,9 +17,12 @@ import java.util.List;
  */
 public class GroupResultQuery extends AbstractGroupResultQuery {
 
+    private boolean[] isGlobalIndexed;
+
     public GroupResultQuery(int fetchSize, List<Query<NodeResultSet>> queries, List<Aggregator> aggregators,
-                            List<Comparator<GroupNode>> comparators) {
+                            List<Comparator<GroupNode>> comparators, boolean[] isGlobalIndexed) {
         super(fetchSize, queries, aggregators, comparators);
+        this.isGlobalIndexed = isGlobalIndexed;
     }
 
     @Override
@@ -28,6 +31,6 @@ public class GroupResultQuery extends AbstractGroupResultQuery {
         for (Query<NodeResultSet> query : queryList) {
             resultSets.add((NodeMergeResultSet<GroupNode>) query.getQueryResult());
         }
-        return new ChainedNodeMergeResultSet(fetchSize, resultSets, aggregators, comparators);
+        return new ChainedNodeMergeResultSet(fetchSize, isGlobalIndexed, resultSets, aggregators, comparators);
     }
 }
