@@ -94,6 +94,7 @@ public class Incrementer implements Inserter {
         Segment maxSegment = LOCAL_SEGMENT_PROVIDER.getSegment(maxSegmentKey);
         if (maxSegmentKey.getStoreType() != StoreType.MEMORY || alloter.isFull(maxSegment)) {
             currentSeg = newRealtimeSegment(alloter.allot(new LineRowInfo(0)), maxSegmentKey.getOrder() + 1);
+            HistorySegmentPutter.putHistorySegment(maxSegmentKey, maxSegment);
             return true;
         } else {
             currentSeg = LOCAL_SEGMENT_PROVIDER.getSegment(maxSegmentKey);
