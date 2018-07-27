@@ -5,7 +5,7 @@ import com.fr.swift.annotation.RpcMethod;
 import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.config.bean.SegmentKeyBean;
-import com.fr.swift.config.service.SwiftSegmentServiceProvider;
+import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types;
@@ -16,16 +16,23 @@ import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.exception.SegmentKeyException;
 import com.fr.swift.exception.TableNotExistException;
-import com.fr.swift.generate.segment.operator.merger.MergerResultSet;
 import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentResultSet;
+import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.collate.FragmentCollectRule;
+import com.fr.swift.segment.collate.SwiftFragmentCollectRule;
+import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.segment.merge.CoSwiftResultSet;
 import com.fr.swift.segment.operator.Collater;
 import com.fr.swift.segment.operator.collate.HistoryCollater;
-import com.fr.swift.segment.operator.utils.SegmentUtils;
+import com.fr.swift.segment.operator.column.SwiftColumnDictMerger;
+import com.fr.swift.segment.operator.column.SwiftColumnIndexer;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
@@ -35,6 +42,8 @@ import com.fr.swift.source.alloter.impl.line.LineSourceAlloter;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
+import com.fr.swift.util.FileUtil;
+import com.fr.swift.util.concurrent.CommonExecutor;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
@@ -123,12 +132,14 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         return ServiceType.COLLATE;
     }
 
+    private FragmentCollectRule collectRule = new SwiftFragmentCollectRule();
+
     private void collateSegments(SourceKey tableKey, Types.StoreType storeType) throws Exception {
-        collateSegments(tableKey, storeType, new ArrayList<SegmentKey>());
+        List<SegmentKey> segKeys = segmentManager.getSegmentKeys(tableKey);
+        collateSegments(tableKey, storeType, collectRule.collect(segKeys));
     }
 
-    private void collateSegments(SourceKey tableKey, Types.StoreType storeType, List<SegmentKey> collateSegKeys) throws
-            Exception {
+    private void collateSegments(SourceKey tableKey, Types.StoreType storeType, final List<SegmentKey> collateSegKeys) throws Exception {
         List<SegmentKey> segmentKeys = segmentManager.getSegmentKeys(tableKey);
         if (collateSegKeys.isEmpty()) {
             for (SegmentKey segmentKey : segmentKeys) {
@@ -137,34 +148,55 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
                 }
             }
         }
-        if (!collateSegKeys.isEmpty()) {
-            if (!database.existsTable(tableKey)) {
-                throw new TableNotExistException(tableKey);
-            }
-            Table table = database.getTable(tableKey);
-
-            SwiftSourceAlloter alloter = new LineSourceAlloter(table.getSourceKey());
-            SegmentKey maxSegmentKey = SegmentUtils.getMaxSegmentKey(segmentKeys);
-            int alloterCount = ((LineAllotRule) alloter.getAllotRule()).getStep();
-            SwiftResultSet swiftResultSet = new MergerResultSet(getSegmentsByKeys(collateSegKeys), alloterCount, table.getMetadata());
-
-            List<SegmentKey> newSegKeys = new ArrayList<SegmentKey>();
-            Segment newSeg = null;
-            int newOrder = maxSegmentKey.getOrder() + 1;
-            do {
-                newSeg = newHistorySegment(table, alloter.allot(new LineRowInfo(0)), newOrder);
-                Collater collater = new HistoryCollater(newSeg);
-                collater.collate(swiftResultSet);
-
-                IResourceLocation location = newSeg.getLocation();
-
-                SegmentKey newSegKey = new SegmentKeyBean(tableKey.getId(), URI.create(tableKey.getId() + "/seg" + newOrder), newOrder, location.getStoreType(), newSeg.getMetaData().getSwiftSchema());
-                newSegKeys.add(newSegKey);
-                newOrder++;
-                swiftResultSet.close();
-            } while (alloter.isFull(newSeg));
-            persistSegment(tableKey, segmentKeys, collateSegKeys, newSegKeys);
+        if (collateSegKeys.isEmpty()) {
+            return;
         }
+        if (!database.existsTable(tableKey)) {
+            throw new TableNotExistException(tableKey);
+        }
+        Table table = database.getTable(tableKey);
+
+        SwiftSourceAlloter alloter = new LineSourceAlloter(table.getSourceKey());
+        SegmentKey maxSegmentKey = SegmentUtils.getMaxSegmentKey(segmentKeys);
+        int alloterCount = ((LineAllotRule) alloter.getAllotRule()).getStep();
+        SwiftMetaData metadata = table.getMetadata();
+        SwiftResultSet swiftResultSet = newSwiftResultSet(getSegmentsByKeys(collateSegKeys));
+
+        List<SegmentKey> newSegKeys = new ArrayList<SegmentKey>();
+        List<Segment> newSegs = new ArrayList<Segment>();
+        Segment newSeg;
+        int newOrder = maxSegmentKey.getOrder() + 1;
+        do {
+            newSeg = newHistorySegment(table, alloter.allot(new LineRowInfo(0)), newOrder);
+            Collater collater = new HistoryCollater(newSeg);
+            collater.collate(swiftResultSet);
+
+            IResourceLocation location = newSeg.getLocation();
+
+            SegmentKey newSegKey = new SegmentKeyBean(tableKey.getId(), URI.create(tableKey.getId() + "/seg" + newOrder), newOrder, location.getStoreType(), newSeg.getMetaData().getSwiftSchema());
+            newSegKeys.add(newSegKey);
+            newSegs.add(newSeg);
+            newOrder++;
+            swiftResultSet.close();
+        } while (alloter.isFull(newSeg));
+
+        // todo 暂时同步做索引
+        for (int i = 0; i < metadata.getColumnCount(); i++) {
+            ((SwiftColumnIndexer) SwiftContext.get().getBean("columnIndexer", table, new ColumnKey(metadata.getColumnName(i + 1)), newSegs)).buildIndex();
+            ((SwiftColumnDictMerger) SwiftContext.get().getBean("columnDictMerger", table, new ColumnKey(metadata.getColumnName(i + 1)), newSegs)).mergeDict();
+        }
+
+        persistSegment(tableKey, segmentKeys, collateSegKeys, newSegKeys);
+
+        clearCollatedSegment(collateSegKeys);
+    }
+
+    private SwiftResultSet newSwiftResultSet(List<Segment> segs) {
+        List<SwiftResultSet> resultSets = new ArrayList<SwiftResultSet>();
+        for (Segment seg : segs) {
+            resultSets.add(new SegmentResultSet(seg));
+        }
+        return new CoSwiftResultSet(resultSets);
     }
 
     /**
@@ -195,7 +227,9 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         persistSegKeys.addAll(newSegKeys);
         persistSegKeys.addAll(oldSegKeys);
         persistSegKeys.removeAll(collateSegKeys);
-        SwiftSegmentServiceProvider.getProvider().updateSegments(tableKey.getId(), persistSegKeys);
+        SwiftSegmentService segmentService = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
+        segmentService.removeSegments(collateSegKeys);
+        segmentService.updateSegments(tableKey.getId(), persistSegKeys);
     }
 
     private Segment newHistorySegment(DataSource dataSource, SegmentInfo segInfo, int segCount) {
@@ -209,5 +243,16 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
             segments.add(segmentManager.getSegment(segmentKey));
         }
         return segments;
+    }
+
+    private void clearCollatedSegment(final List<SegmentKey> collateSegKeys) {
+        CommonExecutor.get().execute(new Runnable() {
+            @Override
+            public void run() {
+                for (SegmentKey collateSegKey : collateSegKeys) {
+                    FileUtil.delete(collateSegKey.getAbsoluteUri().getPath());
+                }
+            }
+        });
     }
 }
