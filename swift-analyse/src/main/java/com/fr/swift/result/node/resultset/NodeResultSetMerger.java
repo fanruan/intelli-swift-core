@@ -113,7 +113,6 @@ class NodeResultSetMerger implements Iterator<NodeMergeResultSet<GroupNode>> {
     private NodeMergeResultSet<GroupNode> getPage(NodeMergeResultSet<GroupNode> mergeResultSet) {
         GroupNode root = (GroupNode) mergeResultSet.getNode();
         GroupNode[] nodes = SwiftNodeUtils.splitNode(root, 2, fetchSize);
-        GroupNode page = nodes[0];
         GroupNode remainNode = null;
         theRowOfRemainNode = null;
         if (nodes[1] != null) {
@@ -127,10 +126,17 @@ class NodeResultSetMerger implements Iterator<NodeMergeResultSet<GroupNode>> {
         if (remainNode != null) {
             remainResultSet = new NodeMergeResultSetImpl<GroupNode>(fetchSize, remainNode, getDictionary(remainNode, oldDictionary));
         }
+        GroupNode page = nodes[0];
+        if (root.getChildrenSize() == 0) {
+            page = root;
+        }
         return new NodeMergeResultSetImpl<GroupNode>(fetchSize, page, getDictionary(page, oldDictionary));
     }
 
     private List<Map<Integer, Object>> getDictionary(GroupNode root, List<Map<Integer, Object>> oldDictionary) {
+        if (root == null || root.getChildrenSize() == 0) {
+            return new ArrayList<Map<Integer, Object>>(0);
+        }
         List<Map<Integer, Object>> dictionary = new ArrayList<Map<Integer, Object>>(oldDictionary.size());
         for (int i = 0; i < oldDictionary.size(); i++) {
             dictionary.add(null);
