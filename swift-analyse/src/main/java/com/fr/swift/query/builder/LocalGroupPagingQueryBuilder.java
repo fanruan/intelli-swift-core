@@ -6,11 +6,10 @@ import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.query.group.info.GroupByInfoImpl;
+import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.query.group.info.MetricInfoImpl;
 import com.fr.swift.query.group.info.cursor.AllCursor;
-import com.fr.swift.query.group.info.cursor.ExpanderImpl;
-import com.fr.swift.query.group.info.cursor.ExpanderType;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.group.GroupQueryInfo;
@@ -23,13 +22,12 @@ import com.fr.swift.query.result.group.GroupResultQuery;
 import com.fr.swift.query.segment.group.GroupPagingSegmentQuery;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.NodeResultSet;
-import com.fr.swift.result.row.RowIndexKey;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
+import com.fr.swift.structure.Pair;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -52,22 +50,24 @@ public class LocalGroupPagingQueryBuilder extends AbstractLocalGroupQueryBuilder
         List<Query<NodeResultSet>> queries = new ArrayList<Query<NodeResultSet>>();
         List<Segment> segments = localSegmentProvider.getSegmentsByIds(info.getTable(), info.getQuerySegment());
         for (Segment segment : segments) {
-            List<Column> dimensionColumns = getDimensionSegments(segment, dimensions);
+            List<Pair<Column, IndexInfo>> dimensionColumns = getDimensionSegments(segment, dimensions);
             List<Column> metricColumns = getMetricSegments(segment, metrics);
             List<Aggregator> aggregators = LocalGroupAllQueryBuilder.getFilterAggregators(metrics, segment);
             DetailFilter rowDetailFilters = FilterBuilder.buildDetailFilter(segment, info.getFilterInfo());
             List<Sort> rowSorts = LocalGroupAllQueryBuilder.getSegmentIndexSorts(dimensions);
-            GroupByInfo rowGroupByInfo = new GroupByInfoImpl(dimensionColumns, rowDetailFilters, rowSorts, new ExpanderImpl(ExpanderType.ALL_EXPANDER, new HashSet<RowIndexKey<String[]>>()), new AllCursor());
+            GroupByInfo rowGroupByInfo = new GroupByInfoImpl(info.getFetchSize(), dimensionColumns, rowDetailFilters, rowSorts, new AllCursor());
             MetricInfo metricInfo = new MetricInfoImpl(metricColumns, aggregators, metrics.size());
             queries.add(new GroupPagingSegmentQuery(rowGroupByInfo, metricInfo));
         }
-        return new GroupResultQuery(queries, getAggregators(info.getMetrics()),
-                LocalGroupAllQueryBuilder.getComparatorsForMerge(info.getDimensions()));
+        return new GroupResultQuery(info.getFetchSize(), queries, getAggregators(info.getMetrics()),
+                LocalGroupAllQueryBuilder.getComparatorsForMerging(info.getTable(), info.getDimensions()),
+                isGlobalIndexed(info.getDimensions()));
     }
 
     @Override
     public ResultQuery<NodeResultSet> buildResultQuery(List<Query<NodeResultSet>> queries, GroupQueryInfo info) {
-        return new GroupResultQuery(queries, getAggregators(info.getMetrics()),
-                LocalGroupAllQueryBuilder.getComparatorsForMerge(info.getDimensions()));
+        return new GroupResultQuery(info.getFetchSize(), queries, getAggregators(info.getMetrics()),
+                LocalGroupAllQueryBuilder.getComparatorsForMerging(info.getTable(), info.getDimensions()),
+                isGlobalIndexed(info.getDimensions()));
     }
 }

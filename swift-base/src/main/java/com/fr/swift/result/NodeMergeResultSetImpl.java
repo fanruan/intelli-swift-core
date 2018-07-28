@@ -13,12 +13,14 @@ import java.util.Map;
  */
 public class NodeMergeResultSetImpl<T extends GroupNode> implements NodeMergeResultSet<T> {
 
-    private boolean hasNextPage = true;
+    private int fetchSize;
     private GroupNode root;
     private List<Map<Integer, Object>> rowGlobalDictionaries;
     private Iterator<Row> iterator;
+    private boolean hasNextPage = true;
 
-    public NodeMergeResultSetImpl(GroupNode root, List<Map<Integer, Object>> rowGlobalDictionaries) {
+    public NodeMergeResultSetImpl(int fetchSize, GroupNode root, List<Map<Integer, Object>> rowGlobalDictionaries) {
+        this.fetchSize = fetchSize;
         this.root = root;
         this.rowGlobalDictionaries = rowGlobalDictionaries;
     }
@@ -26,6 +28,11 @@ public class NodeMergeResultSetImpl<T extends GroupNode> implements NodeMergeRes
     @Override
     public List<Map<Integer, Object>> getRowGlobalDictionaries() {
         return rowGlobalDictionaries;
+    }
+
+    @Override
+    public int getFetchSize() {
+        return fetchSize;
     }
 
     @Override

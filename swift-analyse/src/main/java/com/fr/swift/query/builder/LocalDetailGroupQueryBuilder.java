@@ -6,6 +6,7 @@ import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
+import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.query.Query;
@@ -39,17 +40,14 @@ public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
         List<Dimension> dimensions = info.getDimensions();
         List<Pair<Sort, Comparator>> comparators = null;
         for (Segment segment : segments) {
-            List<Column> columns = new ArrayList<Column>();
             List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
             filterInfos.add(new SwiftDetailFilterInfo<Object>(null, null, SwiftDetailFilterType.ALL_SHOW));
-            for (Dimension dimension : dimensions) {
-                columns.add(dimension.getColumn(segment));
-            }
+            List<Pair<Column, IndexInfo>> columns = AbstractLocalGroupQueryBuilder.getDimensionSegments(segment, dimensions);
             if (info.getFilterInfo() != null) {
                 filterInfos.add(info.getFilterInfo());
             }
             List<Sort> sorts = info.getSorts();
-            queries.add(new SortDetailSegmentQuery(columns,
+            queries.add(new SortDetailSegmentQuery(info.getFetchSize(), columns,
                     FilterBuilder.buildDetailFilter(segment, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND)),
                     sorts, info.getMetaData()));
             if (comparators == null) {
@@ -57,13 +55,14 @@ public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
                 info.setComparators(comparators);
             }
         }
-        return new SortDetailResultQuery(queries, comparators, info.getMetaData());
+        return new SortDetailResultQuery(info.getFetchSize(), queries, comparators, info.getMetaData());
     }
 
-    private static List<Pair<Sort, Comparator>> getComparators(List<Column> columnList, List<Sort> sorts) {
+    private static List<Pair<Sort, Comparator>> getComparators(List<Pair<Column, IndexInfo>> columnList, List<Sort> sorts) {
         List<Pair<Sort, Comparator>> pairs = new ArrayList<Pair<Sort, Comparator>>();
         for (Sort sort : sorts) {
-            Comparator comparator = columnList.get(sort.getTargetIndex()).getDictionaryEncodedColumn().getComparator();
+            // TODO: 2018/7/24 不一定是索引列
+            Comparator comparator = columnList.get(sort.getTargetIndex()).getKey().getDictionaryEncodedColumn().getComparator();
             pairs.add(Pair.of(sort, comparator));
         }
         return pairs;
@@ -71,6 +70,6 @@ public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
 
     @Override
     public Query<DetailResultSet> buildResultQuery(List<Query<DetailResultSet>> queries, DetailQueryInfo info) {
-        return new SortDetailResultQuery(queries, info.getTargets(), info.getComparators(), info.getMetaData());
+        return new SortDetailResultQuery(info.getFetchSize(), queries, info.getTargets(), info.getComparators(), info.getMetaData());
     }
 }

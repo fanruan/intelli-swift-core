@@ -16,6 +16,8 @@ public class AggregatorFactory {
                 return AverageAggregate.INSTANCE;
             case DISTINCT:
                 return DistinctAggregate.INSTANCE;
+            case HLL_DISTINCT:
+                return HLLDistinctAggregator.INSTANCE;
             case STRING_COMBINE:
                 return StringCombineAggregate.INSTANCE;
             case DATE_MAX:

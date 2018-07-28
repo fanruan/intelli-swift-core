@@ -16,13 +16,15 @@ import java.util.Set;
 public class ResultJoinQueryInfoImpl<T extends SwiftResultSet> implements ResultJoinQueryInfo<T> {
 
     private String queryId;
+    private int fetchSize;
     private List<QueryInfo<T>> queryInfoList;
     private List<Dimension> dimensions;
     private List<PostQueryInfo> postQueryInfoList;
 
-    public ResultJoinQueryInfoImpl(String queryId, List<QueryInfo<T>> queryInfoList,
+    public ResultJoinQueryInfoImpl(String queryId, int fetchSize, List<QueryInfo<T>> queryInfoList,
                                    List<Dimension> dimensions, List<PostQueryInfo> postQueryInfoList) {
         this.queryId = queryId;
+        this.fetchSize = fetchSize;
         this.queryInfoList = queryInfoList;
         this.dimensions = dimensions;
         this.postQueryInfoList = postQueryInfoList;
@@ -51,6 +53,11 @@ public class ResultJoinQueryInfoImpl<T extends SwiftResultSet> implements Result
     @Override
     public QueryType getType() {
         return QueryType.RESULT_JOIN;
+    }
+
+    @Override
+    public int getFetchSize() {
+        return fetchSize;
     }
 
     @Override

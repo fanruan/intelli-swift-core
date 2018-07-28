@@ -6,7 +6,7 @@ import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.result.SwiftNode;
 
-public class NotShowDetailFilter implements DetailFilter {
+public class EmptyDetailFilter implements DetailFilter {
 
     @Override
     public ImmutableBitMap createFilterIndex() {

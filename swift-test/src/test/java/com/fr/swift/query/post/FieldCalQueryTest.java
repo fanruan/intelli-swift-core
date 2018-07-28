@@ -41,7 +41,7 @@ public class FieldCalQueryTest extends TestCase {
         PostQuery<NodeResultSet> postQuery = new PostQuery<NodeResultSet>() {
             @Override
             public NodeResultSet getQueryResult() {
-                return new NodeMergeResultSetImpl(root, maps);
+                return new NodeMergeResultSetImpl(200, root, maps);
             }
         };
         query = new FieldCalQuery(postQuery, targetList);

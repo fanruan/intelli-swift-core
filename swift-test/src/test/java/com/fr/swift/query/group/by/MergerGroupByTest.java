@@ -4,10 +4,13 @@ import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.filter.match.MatchConverter;
+import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
+import com.fr.swift.structure.Pair;
 import junit.framework.TestCase;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -23,8 +26,14 @@ public class MergerGroupByTest extends TestCase {
     public void setUp() {
         CubeData cubeData1 = new CubeData();
         CubeData cubeData2 = new CubeData();
-        List<Column> dimensions1 = cubeData1.getDimensions();
-        List<Column> dimensions2 = cubeData2.getDimensions();
+        List<Column> dimensions1 = new ArrayList<>();
+        for (Pair<Column, IndexInfo> pair : cubeData1.getDimensions()) {
+            dimensions1.add(pair.getKey());
+        }
+        List<Column> dimensions2 = new ArrayList<>();
+        for (Pair<Column, IndexInfo> pair : cubeData2.getDimensions()) {
+            dimensions2.add(pair.getKey());
+        }
         int[] cursor = new int[dimensions1.size()];
         boolean[] asc = new boolean[dimensions1.size()];
         Arrays.fill(asc, true);

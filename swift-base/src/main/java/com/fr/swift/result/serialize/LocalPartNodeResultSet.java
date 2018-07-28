@@ -19,14 +19,16 @@ import java.util.Map;
 public class LocalPartNodeResultSet implements NodeMergeResultSet<SwiftNode>, SerializableResultSet {
 
     private static final long serialVersionUID = -7163285398162627401L;
+    private int fetchSize;
     private String jsonString;
     private SwiftNode root;
     private List<Map<Integer, Object>> dictionary;
     private boolean hasNextPage = true;
     private boolean originHasNextPage;
 
-    public LocalPartNodeResultSet(String jsonString, SwiftNode root, List<Map<Integer, Object>> dictionary,
+    public LocalPartNodeResultSet(int fetchSize, String jsonString, SwiftNode root, List<Map<Integer, Object>> dictionary,
                                   boolean originHasNextPage) {
+        this.fetchSize = fetchSize;
         this.jsonString = jsonString;
         this.root = root;
         this.dictionary = dictionary;
@@ -36,6 +38,11 @@ public class LocalPartNodeResultSet implements NodeMergeResultSet<SwiftNode>, Se
     @Override
     public List<Map<Integer, Object>> getRowGlobalDictionaries() {
         return dictionary;
+    }
+
+    @Override
+    public int getFetchSize() {
+        return fetchSize;
     }
 
     @Override

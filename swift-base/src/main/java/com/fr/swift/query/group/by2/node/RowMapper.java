@@ -1,4 +1,4 @@
-package com.fr.swift.query.group.by2.node.mapper;
+package com.fr.swift.query.group.by2.node;
 
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
@@ -7,7 +7,6 @@ import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.structure.iterator.RowTraversal;
-import com.fr.swift.structure.stack.LimitedStack;
 import com.fr.swift.util.function.BinaryFunction;
 
 import java.util.List;
@@ -15,28 +14,27 @@ import java.util.List;
 /**
  * Created by Lyon on 2018/4/27.
  */
-public class GroupNodeRowMapper implements BinaryFunction<GroupByEntry, LimitedStack<GroupNode>, GroupNode[]> {
+class RowMapper implements BinaryFunction<GroupByEntry, GroupNode, GroupNode> {
 
     private int targetLength;
     private List<Column> metrics;
     private List<Aggregator> aggregators;
 
-    public GroupNodeRowMapper(MetricInfo metricInfo) {
+    public RowMapper(MetricInfo metricInfo) {
         this.targetLength = metricInfo.getTargetLength();
         this.metrics = metricInfo.getMetrics();
         this.aggregators = metricInfo.getAggregators();
     }
 
     @Override
-    public GroupNode[] apply(GroupByEntry groupByEntry, LimitedStack<GroupNode> groupNodeLimitedStack) {
-        GroupNode node = groupNodeLimitedStack.peek();
+    public GroupNode apply(GroupByEntry groupByEntry, GroupNode node) {
         AggregatorValue[] values = aggregateRow(groupByEntry.getTraversal(), targetLength, metrics, aggregators);
         node.setAggregatorValue(values);
-        return groupNodeLimitedStack.toList().toArray(new GroupNode[groupNodeLimitedStack.limit()]);
+        return node;
     }
 
-    public static AggregatorValue[] aggregateRow(RowTraversal traversal, int targetLength,
-                                                 List<Column> metrics, List<Aggregator> aggregators) {
+    static AggregatorValue[] aggregateRow(RowTraversal traversal, int targetLength,
+                                          List<Column> metrics, List<Aggregator> aggregators) {
         AggregatorValue[] values = new AggregatorValue[targetLength];
         for (int i = 0; i < metrics.size(); i++) {
             if (traversal.isEmpty()) {

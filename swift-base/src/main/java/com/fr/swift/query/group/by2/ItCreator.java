@@ -3,16 +3,16 @@ package com.fr.swift.query.group.by2;
 import com.fr.swift.query.group.by.GroupBy;
 import com.fr.swift.query.group.by.GroupByEntry;
 import com.fr.swift.query.group.info.GroupByInfo;
+import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.query.group.info.cursor.Cursor;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.swift.structure.iterator.IteratorUtils;
-import com.fr.swift.structure.iterator.MapperIterator;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.iterator.RowTraversal;
-import com.fr.swift.util.function.Function;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -31,7 +31,7 @@ public class ItCreator implements IteratorCreator<GroupByEntry> {
     private RowTraversal filter;
 
     public ItCreator(GroupByInfo groupByInfo) {
-        this.dimensions = groupByInfo.getDimensions();
+        this.dimensions = getColumns(groupByInfo.getDimensions());
         this.filter = groupByInfo.getDetailFilter().createFilterIndex();
         this.asc = getSorts(groupByInfo.getSorts(), dimensions.size());
         initCursor(groupByInfo.getCursor());
@@ -39,12 +39,11 @@ public class ItCreator implements IteratorCreator<GroupByEntry> {
 
     private void initCursor(Cursor cursor) {
         // TODO: 2018/6/14 要考虑到有过滤条件的情况
-        this.cursor = cursor == null ? new int[dimensions.size()] : cursor.createCursorIndex(IteratorUtils.iterator2List(new MapperIterator<Column, DictionaryEncodedColumn>(dimensions.iterator(), new Function<Column, DictionaryEncodedColumn>() {
-            @Override
-            public DictionaryEncodedColumn apply(Column p) {
-                return p.getDictionaryEncodedColumn();
-            }
-        })));
+        List<DictionaryEncodedColumn> dictionaries = new ArrayList<DictionaryEncodedColumn>();
+        for (Column column : dimensions) {
+            dictionaries.add(column.getDictionaryEncodedColumn());
+        }
+        this.cursor = cursor == null ? new int[dimensions.size()] : cursor.createCursorIndex(dictionaries);
     }
 
     private static boolean[] getSorts(List<Sort> sorts, int dimensionSize) {
@@ -75,5 +74,13 @@ public class ItCreator implements IteratorCreator<GroupByEntry> {
         }
         return GroupBy.createGroupByResult(dimensions.get(stackSize), groupByEntry.getTraversal(),
                 getStartIndex(stackSize), asc[stackSize]);
+    }
+
+    private static List<Column> getColumns(List<Pair<Column, IndexInfo>> pairs) {
+        List<Column> columns = new ArrayList<Column>();
+        for (Pair<Column, IndexInfo> pair : pairs) {
+            columns.add(pair.getKey());
+        }
+        return columns;
     }
 }

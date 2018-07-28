@@ -11,17 +11,20 @@ import java.util.Iterator;
  */
 public class NodeResultSetImpl<T extends SwiftNode> implements NodeResultSet {
 
+    private int fetchSize;
     private SwiftNode node;
     private SwiftMetaData metaData;
     private Iterator<Row> iterator;
 
-    public NodeResultSetImpl(SwiftNode node) {
-        this.node = node;
-    }
-
-    public NodeResultSetImpl(SwiftNode node, SwiftMetaData metaData) {
+    public NodeResultSetImpl(int fetchSize, SwiftNode node, SwiftMetaData metaData) {
+        this.fetchSize = fetchSize;
         this.node = node;
         this.metaData = metaData;
+    }
+
+    @Override
+    public int getFetchSize() {
+        return fetchSize;
     }
 
     @Override

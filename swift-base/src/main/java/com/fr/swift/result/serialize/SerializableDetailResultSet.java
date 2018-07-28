@@ -36,6 +36,11 @@ public class SerializableDetailResultSet implements DetailResultSet, Serializabl
     }
 
     @Override
+    public int getFetchSize() {
+        return 0;
+    }
+
+    @Override
     public List<Row> getPage() {
         hasNextPage = false;
         List<Row> ret = rows;

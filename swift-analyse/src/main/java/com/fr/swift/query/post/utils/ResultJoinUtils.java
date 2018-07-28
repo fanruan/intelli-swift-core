@@ -67,7 +67,7 @@ public class ResultJoinUtils {
                 return Pair.of(p.getKey(), p.getAllValues());
             }
         });
-        return new NodeResultSetImpl(createNode(dimensionSize, rowIt), crateMetaData(resultSets, dimensions));
+        return new NodeResultSetImpl(resultSets.get(0).getFetchSize(), createNode(dimensionSize, rowIt), crateMetaData(resultSets, dimensions));
     }
 
     public static GroupNode createNode(int dimensionSize, Iterator<Pair<List<Object>, AggregatorValue[]>> iterator) {

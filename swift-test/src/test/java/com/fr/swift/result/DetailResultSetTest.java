@@ -5,6 +5,8 @@ import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.group.info.IndexInfo;
+import com.fr.swift.query.group.info.IndexInfoImpl;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.segment.detail.NormalDetailSegmentQuery;
 import com.fr.swift.query.segment.detail.SortDetailSegmentQuery;
@@ -31,7 +33,7 @@ import java.util.List;
 public class DetailResultSetTest extends TestCase {
 
     private DetailFilter filter;
-    private List<Column> columnList = new ArrayList<Column>();
+    private List<Pair<Column, IndexInfo>> columnList = new ArrayList<>();
     private MutableBitMap bitMap = BitSetMutableBitMap.newInstance();
     private List<Query<DetailResultSet>> queries = new ArrayList<Query<DetailResultSet>>();
     private Column<Integer> intColumn;
@@ -476,10 +478,10 @@ public class DetailResultSetTest extends TestCase {
         bitMap.add(6);
         EasyMock.expect(filter.createFilterIndex()).andReturn(bitMap).anyTimes();
         control.replay();
-        columnList.add(intColumn);
-        columnList.add(longColumn);
-        columnList.add(doubleColumn);
-        columnList.add(stringColumn);
+        columnList.add(Pair.of(intColumn, new IndexInfoImpl(false, false)));
+        columnList.add(Pair.of(longColumn, new IndexInfoImpl(false, false)));
+        columnList.add(Pair.of(doubleColumn, new IndexInfoImpl(false, false)));
+        columnList.add(Pair.of(stringColumn, new IndexInfoImpl(false, false)));
     }
 
 
@@ -490,7 +492,7 @@ public class DetailResultSetTest extends TestCase {
         double[] doubleData = {9.5, 40.1, 9.5, 40.1};
         long[] longData = {12, 23, 23, 23};
         String[] strData = {"A", "C", "C", "A"};
-        DetailResultSet rs = new SegmentDetailResultSet(columnList, filter, null);
+        DetailResultSet rs = new SegmentDetailResultSet(Integer.MAX_VALUE, columnList, filter, null);
         try {
             while (rs.hasNext()) {
                 Row row = rs.getNextRow();
@@ -513,9 +515,9 @@ public class DetailResultSetTest extends TestCase {
         String[] strData = {"A", "C", "C", "A"};
 
         for (int j = 0; j < 3; j++) {
-            queries.add(new NormalDetailSegmentQuery(columnList, filter, null));
+            queries.add(new NormalDetailSegmentQuery(Integer.MAX_VALUE, columnList, filter, null));
         }
-        MultiSegmentDetailResultSet mrs = new MultiSegmentDetailResultSet(queries, null);
+        MultiSegmentDetailResultSet mrs = new MultiSegmentDetailResultSet(Integer.MAX_VALUE, queries, null);
         while (mrs.hasNext()) {
             Row row = mrs.getNextRow();
             assertEquals((int) row.getValue(0), intData[i]);
@@ -536,7 +538,7 @@ public class DetailResultSetTest extends TestCase {
         sorts.add(new DescSort(0));
         sorts.add(new AscSort(1));
         sorts.add(new DescSort(3));
-        DetailResultSet rs = new SortSegmentDetailResultSet(columnList, filter, sorts, null);
+        DetailResultSet rs = new SortSegmentDetailResultSet(Integer.MAX_VALUE, columnList, filter, sorts, null);
 
 //      [2, 12, 9.5, A]  => [4, 23, 40.1, C]
 //      [4, 23, 40.1, C]    [4, 23, 40.1, A]
@@ -568,13 +570,13 @@ public class DetailResultSetTest extends TestCase {
         sorts.add(new AscSort(1));
         sorts.add(new DescSort(3));
         for (int j = 0; j < 3; j++) {
-            queries.add(new SortDetailSegmentQuery(columnList, filter, sorts, null));
+            queries.add(new SortDetailSegmentQuery(Integer.MAX_VALUE, columnList, filter, sorts, null));
         }
         List<Pair<Sort, Comparator>> pairs = new ArrayList<>();
         pairs.add(Pair.of(new DescSort(0), Comparators.<Integer>asc()));
         pairs.add(Pair.of(new AscSort(1), Comparators.<String>asc()));
         pairs.add(Pair.of(new DescSort(3), Comparators.<Double>asc()));
-        DetailResultSet rs = new SortMultiSegmentDetailResultSet(queries, pairs, null);
+        DetailResultSet rs = new SortMultiSegmentDetailResultSet(Integer.MAX_VALUE, queries, pairs, null);
         try {
             while (rs.hasNext()) {
                 Row row = rs.getNextRow();
