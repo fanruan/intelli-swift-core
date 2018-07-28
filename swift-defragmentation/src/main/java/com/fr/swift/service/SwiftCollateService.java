@@ -6,9 +6,11 @@ import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.config.service.SwiftSegmentServiceProvider;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types;
+import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.Database;
@@ -36,7 +38,6 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
-import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 import com.fr.swift.source.alloter.impl.line.LineRowInfo;
 import com.fr.swift.source.alloter.impl.line.LineSourceAlloter;
 import com.fr.swift.task.service.ServiceTaskExecutor;
@@ -142,13 +143,9 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
     private void collateSegments(SourceKey tableKey, Types.StoreType storeType, final List<SegmentKey> collateSegKeys) throws Exception {
         List<SegmentKey> segmentKeys = segmentManager.getSegmentKeys(tableKey);
         if (collateSegKeys.isEmpty()) {
-            for (SegmentKey segmentKey : segmentKeys) {
-                if (segmentKey.getStoreType() == storeType) {
-                    collateSegKeys.add(segmentKey);
-                }
-            }
+            return;
         }
-        if (collateSegKeys.isEmpty()) {
+        if (storeType != StoreType.MEMORY && collateSegKeys.size() < 2) {
             return;
         }
         if (!database.existsTable(tableKey)) {
@@ -158,14 +155,13 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
 
         SwiftSourceAlloter alloter = new LineSourceAlloter(table.getSourceKey());
         SegmentKey maxSegmentKey = SegmentUtils.getMaxSegmentKey(segmentKeys);
-        int alloterCount = ((LineAllotRule) alloter.getAllotRule()).getStep();
         SwiftMetaData metadata = table.getMetadata();
         SwiftResultSet swiftResultSet = newSwiftResultSet(getSegmentsByKeys(collateSegKeys));
 
         List<SegmentKey> newSegKeys = new ArrayList<SegmentKey>();
         List<Segment> newSegs = new ArrayList<Segment>();
         Segment newSeg;
-        int newOrder = maxSegmentKey.getOrder() + 1;
+        int newOrder = maxSegmentKey == null ? 0 : maxSegmentKey.getOrder() + 1;
         do {
             newSeg = newHistorySegment(table, alloter.allot(new LineRowInfo(0)), newOrder);
             Collater collater = new HistoryCollater(newSeg);
@@ -227,7 +223,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         persistSegKeys.addAll(newSegKeys);
         persistSegKeys.addAll(oldSegKeys);
         persistSegKeys.removeAll(collateSegKeys);
-        SwiftSegmentService segmentService = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
+        SwiftSegmentService segmentService = SwiftSegmentServiceProvider.getProvider();
         segmentService.removeSegments(collateSegKeys);
         segmentService.updateSegments(tableKey.getId(), persistSegKeys);
     }
@@ -255,4 +251,6 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
             }
         });
     }
+
+    private HistorySegmentPutter historySegmentPutter = new HistorySegmentPutter();
 }

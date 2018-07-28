@@ -18,7 +18,7 @@ public class SwiftFragmentCollectRule implements FragmentCollectRule {
     /**
      * 碎片大小
      */
-    private static final int FRAGMENT_SIZE = LineAllotRule.MEM_STEP;
+    private static final int FRAGMENT_SIZE = LineAllotRule.MEM_STEP * 2 / 3;
 
     private final SwiftSegmentManager localSegments = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
 
