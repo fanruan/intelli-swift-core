@@ -1,7 +1,7 @@
 package com.fr.swift.service;
 
 import com.fr.swift.config.bean.SegmentKeyBean;
-import com.fr.swift.config.service.SwiftSegmentServiceProvider;
+import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types.StoreType;
@@ -67,7 +67,7 @@ public class HistorySegmentPutter implements Runnable {
 
         try {
             // 先占坑
-            SwiftSegmentServiceProvider.getProvider().addSegments(newHisSeg);
+            SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).addSegments(newHisSeg);
             Segment hisSeg = SegmentUtils.newHistorySegment(new ResourceLocation(realtimeSeg.getLocation().getPath(), StoreType.FINE_IO), realtimeSeg.getMetaData());
             new SwiftInserter(hisSeg).insertData(new SegmentResultSet(realtimeSeg));
 
@@ -82,7 +82,7 @@ public class HistorySegmentPutter implements Runnable {
             }
 
             // 写成功，清理realtime和备份
-            SwiftSegmentServiceProvider.getProvider().removeSegments(Collections.singletonList(realtimeSegKey));
+            SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).removeSegments(Collections.singletonList(realtimeSegKey));
             ResourceDiscovery.getInstance().removeIf(new Predicate<String>() {
                 @Override
                 public boolean test(String s) {
@@ -95,7 +95,7 @@ public class HistorySegmentPutter implements Runnable {
         } catch (Exception e) {
             SwiftLoggers.getLogger().warn("{} put into history failed", realtimeSegKey);
             // 失败则清理无用seg
-            SwiftSegmentServiceProvider.getProvider().removeSegments(newHisSeg);
+            SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).removeSegments(newHisSeg);
             FileUtil.delete(realtimeSegKey.getAbsoluteUri().getPath());
         }
     }

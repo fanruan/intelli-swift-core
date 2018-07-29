@@ -6,7 +6,6 @@ import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.config.service.SwiftSegmentServiceProvider;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types;
@@ -223,7 +222,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         persistSegKeys.addAll(newSegKeys);
         persistSegKeys.addAll(oldSegKeys);
         persistSegKeys.removeAll(collateSegKeys);
-        SwiftSegmentService segmentService = SwiftSegmentServiceProvider.getProvider();
+        SwiftSegmentService segmentService = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
         segmentService.removeSegments(collateSegKeys);
         segmentService.updateSegments(tableKey.getId(), persistSegKeys);
     }
