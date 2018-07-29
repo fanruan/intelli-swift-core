@@ -57,11 +57,11 @@ public class BitMapIoTest extends BaseIoTest {
     public void testPutThenGet() {
         IResourceLocation location = new ResourceLocation(basePath + "child");
 
-        BitMapWriter writer = (BitMapWriter) Writers.build(location, new BuildConf(IoType.WRITE, DataType.BITMAP, WriteType.EDIT));
+        BitMapWriter writer = (BitMapWriter) Writers.build(location, new BuildConf(IoType.WRITE, DataType.BITMAP, WriteType.APPEND));
         writer.put(pos, val);
         writer.release();
 
-        writer = (BitMapWriter) Writers.build(location, new BuildConf(IoType.WRITE, DataType.BITMAP, WriteType.EDIT));
+        writer = (BitMapWriter) Writers.build(location, new BuildConf(IoType.WRITE, DataType.BITMAP, WriteType.APPEND));
         writer.put(pos + 1, val);
         writer.release();
 

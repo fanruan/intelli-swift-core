@@ -7,6 +7,7 @@ import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types.DataType;
 import com.fr.swift.cube.io.Types.IoType;
 import com.fr.swift.cube.io.Types.StoreType;
+import com.fr.swift.cube.io.Types.WriteType;
 import com.fr.swift.cube.io.input.BitMapReader;
 import com.fr.swift.cube.io.input.IntReader;
 import com.fr.swift.cube.io.location.IResourceLocation;
@@ -29,6 +30,7 @@ import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Crasher;
+import com.fr.swift.util.IoUtil;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -159,7 +161,7 @@ public abstract class BaseSegment implements Segment {
 
     private void initRowCountWriter() {
         if (rowCountWriter == null) {
-            rowCountWriter = DISCOVERY.getWriter(location.buildChildLocation(ROW_COUNT), new BuildConf(IoType.WRITE, DataType.INT));
+            rowCountWriter = DISCOVERY.getWriter(location.buildChildLocation(ROW_COUNT), new BuildConf(IoType.WRITE, DataType.INT, WriteType.OVERWRITE));
         }
     }
 
@@ -171,7 +173,7 @@ public abstract class BaseSegment implements Segment {
 
     private void initBitMapWriter() {
         if (bitMapWriter == null) {
-            bitMapWriter = DISCOVERY.getWriter(location.buildChildLocation(ALL_SHOW_INDEX), new BuildConf(IoType.WRITE, DataType.BITMAP));
+            bitMapWriter = DISCOVERY.getWriter(location.buildChildLocation(ALL_SHOW_INDEX), new BuildConf(IoType.WRITE, DataType.BITMAP, WriteType.OVERWRITE));
         }
     }
 
@@ -179,6 +181,25 @@ public abstract class BaseSegment implements Segment {
         if (bitMapReader == null) {
             bitMapReader = DISCOVERY.getReader(location.buildChildLocation(ALL_SHOW_INDEX), new BuildConf(IoType.READ, DataType.BITMAP));
         }
+    }
+
+    @Override
+    public boolean isReadable() {
+        initRowCountReader();
+        if (!rowCountReader.isReadable()) {
+            return false;
+        }
+        if (isHistory()) {
+            IoUtil.release(rowCountReader);
+        }
+        rowCountReader = null;
+        initBitMapReader();
+        boolean readable = bitMapReader.isReadable();
+        if (isHistory()) {
+            IoUtil.release(bitMapReader);
+        }
+        bitMapReader = null;
+        return readable;
     }
 
     @Override

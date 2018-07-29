@@ -1,5 +1,6 @@
 package com.fr.swift.cube.io;
 
+import com.fr.swift.cube.io.Types.WriteType;
 import com.fr.swift.cube.io.impl.mem.DoubleMemIo;
 import com.fr.swift.cube.io.input.DoubleReader;
 import com.fr.swift.cube.io.location.IResourceLocation;
@@ -35,11 +36,11 @@ public class DoubleIoTest extends BaseIoTest {
     public void testPutThenGet() {
         IResourceLocation location = new ResourceLocation(basePath + "child");
 
-        DoubleWriter writer = (DoubleWriter) Writers.build(location, new BuildConf(Types.IoType.WRITE, Types.DataType.DOUBLE, Types.WriteType.EDIT));
+        DoubleWriter writer = (DoubleWriter) Writers.build(location, new BuildConf(Types.IoType.WRITE, Types.DataType.DOUBLE, WriteType.APPEND));
         writer.put(pos, val);
         writer.release();
 
-        writer = (DoubleWriter) Writers.build(location, new BuildConf(Types.IoType.WRITE, Types.DataType.DOUBLE, Types.WriteType.EDIT));
+        writer = (DoubleWriter) Writers.build(location, new BuildConf(Types.IoType.WRITE, Types.DataType.DOUBLE, WriteType.APPEND));
         writer.put(pos + 1, val);
         writer.release();
 

@@ -8,10 +8,13 @@ import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.cube.io.output.Writer;
 import com.fr.swift.db.impl.SwiftDatabase.Schema;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.util.function.Predicate;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -163,6 +166,19 @@ public class ResourceDiscovery implements IResourceDiscovery {
     @Override
     public Map<String, MemIo> removeCubeResource(String basePath) {
         return cubeMemios.remove(new ResourceLocation(basePath).getPath());
+    }
+
+    @Override
+    public void removeIf(Predicate<String> predicate) {
+        for (Map<String, MemIo> memIos : cubeMemios.values()) {
+            Iterator<Entry<String, MemIo>> itr = memIos.entrySet().iterator();
+            while (itr.hasNext()) {
+                Entry<String, MemIo> entry = itr.next();
+                if (predicate.test(entry.getKey())) {
+                    itr.remove();
+                }
+            }
+        }
     }
 
     @Override

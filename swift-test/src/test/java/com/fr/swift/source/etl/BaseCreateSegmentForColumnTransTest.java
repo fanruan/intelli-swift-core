@@ -29,6 +29,11 @@ public class BaseCreateSegmentForColumnTransTest {
             }
 
             @Override
+            public boolean isReadable() {
+                return false;
+            }
+
+            @Override
             public SwiftMetaData getMetaData() {
                 return null;
             }

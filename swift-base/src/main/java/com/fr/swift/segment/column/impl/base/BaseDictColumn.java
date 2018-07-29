@@ -5,6 +5,7 @@ import com.fr.swift.cube.io.IResourceDiscovery;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types.DataType;
 import com.fr.swift.cube.io.Types.IoType;
+import com.fr.swift.cube.io.Types.WriteType;
 import com.fr.swift.cube.io.input.IntReader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.IntWriter;
@@ -125,7 +126,7 @@ abstract class BaseDictColumn<T> implements DictionaryEncodedColumn<T> {
             return;
         }
         IResourceLocation sizeLocation = parent.buildChildLocation(SIZE);
-        sizeWriter = DISCOVERY.getWriter(sizeLocation, new BuildConf(IoType.WRITE, DataType.INT));
+        sizeWriter = DISCOVERY.getWriter(sizeLocation, new BuildConf(IoType.WRITE, DataType.INT, WriteType.OVERWRITE));
     }
 
     private void initSizeReader() {
@@ -157,7 +158,7 @@ abstract class BaseDictColumn<T> implements DictionaryEncodedColumn<T> {
             return;
         }
         IResourceLocation globalSizeLocation = parent.buildChildLocation(GLOBAL_SIZE);
-        globalSizeWriter = DISCOVERY.getWriter(globalSizeLocation, new BuildConf(IoType.WRITE, DataType.INT));
+        globalSizeWriter = DISCOVERY.getWriter(globalSizeLocation, new BuildConf(IoType.WRITE, DataType.INT, WriteType.OVERWRITE));
     }
 
     private void initGlobalSizeReader() {

@@ -1,7 +1,6 @@
 package com.fr.swift.cube.io.impl.mem;
 
-import com.fr.swift.cube.io.input.DoubleReader;
-import com.fr.swift.cube.io.output.DoubleWriter;
+import com.fr.swift.io.DoubleIo;
 import com.fr.swift.util.Crasher;
 
 import java.util.Arrays;
@@ -10,7 +9,7 @@ import java.util.Arrays;
  * @author anchore
  * @date 2017/11/23
  */
-public class DoubleMemIo extends BaseMemIo implements DoubleReader, DoubleWriter {
+public class DoubleMemIo extends BaseMemIo implements DoubleIo {
     private double[] mem;
 
     public DoubleMemIo() {

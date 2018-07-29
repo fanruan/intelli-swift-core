@@ -5,11 +5,10 @@ import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
-import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.RealTimeSegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.SwiftDataOperatorProvider;
+import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
@@ -25,10 +24,7 @@ import java.util.List;
  * @since Advanced FineBI 5.0
  */
 public abstract class AbstractSegmentRecovery implements SegmentRecovery {
-
     protected SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
-
-    protected SwiftDataOperatorProvider operators = SwiftContext.get().getBean(SwiftDataOperatorProvider.class);
 
     @Override
     public void recover(SourceKey tableKey) {
@@ -37,9 +33,7 @@ public abstract class AbstractSegmentRecovery implements SegmentRecovery {
 
     @Override
     public void recoverAll() {
-        List<Table> tables;
-        tables = SwiftDatabase.getInstance().getAllTables();
-        for (Table table : tables) {
+        for (Table table : SwiftDatabase.getInstance().getAllTables()) {
             recover(table.getSourceKey());
         }
     }
@@ -47,7 +41,7 @@ public abstract class AbstractSegmentRecovery implements SegmentRecovery {
     protected Segment getBackupSegment(Segment realtimeSeg) {
         SwiftMetaData meta = realtimeSeg.getMetaData();
         String realtimeSegPath = realtimeSeg.getLocation().getPath();
-        return new HistorySegmentImpl(new ResourceLocation(realtimeSegPath.replace(meta.getSwiftSchema().getDir(), SwiftDatabase.Schema.BACKUP_CUBE.getDir()), Types.StoreType.FINE_IO), meta);
+        return SegmentUtils.newHistorySegment(new ResourceLocation(realtimeSegPath.replace(meta.getSwiftSchema().getDir(), SwiftDatabase.Schema.BACKUP_CUBE.getDir()), Types.StoreType.NIO), meta);
     }
 
     protected Segment newRealtimeSegment(Segment realtimeSeg) {

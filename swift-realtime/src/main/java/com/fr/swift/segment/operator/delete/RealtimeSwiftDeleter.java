@@ -6,8 +6,8 @@ import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
-import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.backup.AllShowIndexBackup;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
@@ -19,7 +19,7 @@ import com.fr.swift.source.SwiftMetaData;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public class RealtimeSwiftDeleter extends AbstractDeleter {
+public class RealtimeSwiftDeleter extends SwiftWhereDeleter {
     private AllShowIndexBackup allShowIndexBackup;
 
     public RealtimeSwiftDeleter(SourceKey tableKey, Segment segment) {
@@ -34,13 +34,9 @@ public class RealtimeSwiftDeleter extends AbstractDeleter {
         return allShowIndex;
     }
 
-    @Override
-    public void release() {
-    }
-
     private Segment getBackupSegment() {
         SwiftMetaData meta = segment.getMetaData();
         String segPath = segment.getLocation().getPath();
-        return new HistorySegmentImpl(new ResourceLocation(segPath.replace(meta.getSwiftSchema().getDir(), SwiftDatabase.Schema.BACKUP_CUBE.getDir()), Types.StoreType.FINE_IO), meta);
+        return SegmentUtils.newHistorySegment(new ResourceLocation(segPath.replace(meta.getSwiftSchema().getDir(), SwiftDatabase.Schema.BACKUP_CUBE.getDir()), Types.StoreType.FINE_IO), meta);
     }
 }

@@ -34,7 +34,7 @@ public class TransactionInvocationHandler implements InvocationHandler {
         try {
             transactionManager.start();
             Object result = method.invoke(this.proxy, objects);
-            SwiftLoggers.getLogger().info("Invoke " + method + " successfully ! Do commit!");
+            SwiftLoggers.getLogger().info(String.format("Invoke %s.%s successfully ! Do commit!", method.getDeclaringClass().getSimpleName(), method.getName()));
             transactionManager.commit();
             return result;
         } catch (InvocationTargetException ite) {
@@ -51,11 +51,13 @@ public class TransactionInvocationHandler implements InvocationHandler {
 
     private void rollback(Method method, Transactional transactional, Throwable e) {
         if (transactional.value().isAssignableFrom(e.getClass())) {
-            SwiftLoggers.getLogger().error("Invoke " + method + " failed ! Do rollback!");
+            SwiftLoggers.getLogger().error(
+                    String.format("Invoke %s.%s failed ! Do rollback!", method.getDeclaringClass().getSimpleName(), method.getName()));
             transactionManager.rollback();
             SwiftLoggers.getLogger().error("Rollback finished!");
         } else {
-            SwiftLoggers.getLogger().error("Invoke " + method + " failed but exception is not right! Will not rollback!");
+            SwiftLoggers.getLogger().error(
+                    String.format("Invoke %s.%s failed but exception is not right! Will not rollback!", method.getDeclaringClass().getSimpleName(), method.getName()));
         }
     }
 

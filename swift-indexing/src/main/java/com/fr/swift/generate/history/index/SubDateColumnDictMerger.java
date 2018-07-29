@@ -1,7 +1,7 @@
 package com.fr.swift.generate.history.index;
 
 import com.fr.swift.cube.io.location.IResourceLocation;
-import com.fr.swift.generate.BaseColumnDictMerger;
+import com.fr.swift.generate.ColumnDictMerger;
 import com.fr.swift.query.group.GroupType;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
@@ -19,7 +19,7 @@ import java.util.List;
  * @since Advanced FineBI 5.0
  */
 
-public class SubDateColumnDictMerger<Derive> extends BaseColumnDictMerger<Derive> {
+public class SubDateColumnDictMerger<Derive> extends ColumnDictMerger<Derive> {
     private GroupType type;
 
     public SubDateColumnDictMerger(DataSource dataSource, ColumnKey key, GroupType type, List<Segment> segments) {
