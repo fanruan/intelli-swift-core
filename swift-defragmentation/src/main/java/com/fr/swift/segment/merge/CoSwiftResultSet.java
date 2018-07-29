@@ -23,6 +23,11 @@ public class CoSwiftResultSet implements SwiftResultSet {
     }
 
     @Override
+    public int getFetchSize() {
+        return 0;
+    }
+
+    @Override
     public SwiftMetaData getMetaData() throws SQLException {
         return resultSets.get(0).getMetaData();
     }
