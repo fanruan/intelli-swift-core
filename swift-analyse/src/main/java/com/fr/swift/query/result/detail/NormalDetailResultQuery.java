@@ -17,18 +17,19 @@ import java.util.List;
 public class NormalDetailResultQuery extends AbstractDetailResultQuery {
 
     private SwiftMetaData metaData;
-    public NormalDetailResultQuery(List<Query<DetailResultSet>> queries, SwiftMetaData metaData) {
-        super(queries);
+
+    public NormalDetailResultQuery(int fetchSize, List<Query<DetailResultSet>> queries, SwiftMetaData metaData) {
+        super(fetchSize, queries);
         this.metaData = metaData;
     }
 
-    public NormalDetailResultQuery(List<Query<DetailResultSet>> queries, List<DetailTarget> targets, SwiftMetaData metaData) {
-        super(queries, targets);
+    public NormalDetailResultQuery(int fetchSize, List<Query<DetailResultSet>> queries, List<DetailTarget> targets, SwiftMetaData metaData) {
+        super(fetchSize, queries, targets);
         this.metaData = metaData;
     }
 
     @Override
     public DetailResultSet getQueryResult() throws SQLException {
-        return new MultiSegmentDetailResultSet(queryList, metaData);
+        return new MultiSegmentDetailResultSet(fetchSize, queryList, metaData);
     }
 }

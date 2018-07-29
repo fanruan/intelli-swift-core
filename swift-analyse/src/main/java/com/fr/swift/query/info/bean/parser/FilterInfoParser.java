@@ -13,6 +13,7 @@ import com.fr.swift.query.info.bean.element.filter.impl.DetailFilterInfoBean;
 import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NotFilterBean;
+import com.fr.swift.query.info.bean.element.filter.impl.NullFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NumberInRangeFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.value.RangeFilterValueBean;
 import com.fr.swift.query.info.bean.parser.optimize.FilterInfoBeanOptimizer;
@@ -54,6 +55,13 @@ class FilterInfoParser {
                 FilterInfoBean filterInfoBean = ((NotFilterBean) bean).getFilterValue();
                 FilterInfo filterInfo = parse(table, filterInfoBean);
                 return new NotFilterInfo(filterInfo);
+            case NULL:
+                return new SwiftDetailFilterInfo<Object>(new ColumnKey(((NullFilterBean) bean).getColumn()), null,
+                        SwiftDetailFilterType.NULL);
+            case ALL_SHOW:
+                return new SwiftDetailFilterInfo<Object>(null, null, SwiftDetailFilterType.ALL_SHOW);
+            case EMPTY:
+                return new SwiftDetailFilterInfo<Object>(null, null, SwiftDetailFilterType.EMPTY);
             case IN: {
                 InFilterBean inFilterBean = (InFilterBean) bean;
                 ColumnKey columnKey = new ColumnKey(inFilterBean.getColumn());

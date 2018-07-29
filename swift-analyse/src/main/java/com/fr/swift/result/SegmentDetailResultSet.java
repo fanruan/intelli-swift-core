@@ -2,11 +2,13 @@ package com.fr.swift.result;
 
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.array.IntArray;
 
 import java.util.ArrayList;
@@ -16,7 +18,7 @@ import java.util.List;
 /**
  * Created by Xiaolei.Liu on 2018/1/18
  */
-public class SegmentDetailResultSet implements DetailResultSet {
+public class SegmentDetailResultSet extends AbstractDetailResultSet {
 
     // 明细行的游标
     private int rowCursor = 0;
@@ -26,8 +28,9 @@ public class SegmentDetailResultSet implements DetailResultSet {
     private SwiftMetaData metaData;
     private Iterator<Row> iterator;
 
-    public SegmentDetailResultSet(List<Column> columnList, DetailFilter filter, SwiftMetaData metaData) {
-        this.columnList = columnList;
+    public SegmentDetailResultSet(int fetchSize, List<Pair<Column, IndexInfo>> columnList, DetailFilter filter, SwiftMetaData metaData) {
+        super(fetchSize);
+        this.columnList = SortSegmentDetailResultSet.getColumnList(columnList);
         this.rows = BitMaps.traversal2Array(filter.createFilterIndex());
         this.metaData = metaData;
     }
@@ -38,7 +41,7 @@ public class SegmentDetailResultSet implements DetailResultSet {
             return new ArrayList<Row>(0);
         }
         List<Row> page = new ArrayList<Row>();
-        int count = PAGE_SIZE;
+        int count = fetchSize;
         while (rowCursor < rows.size() && count-- > 0) {
             page.add(readRow(rows.get(rowCursor), columnList));
             rowCursor++;

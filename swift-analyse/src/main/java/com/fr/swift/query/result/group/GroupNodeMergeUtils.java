@@ -17,6 +17,8 @@ import java.util.List;
  */
 public class GroupNodeMergeUtils {
 
+    // TODO: 2018/7/24 是否根据全局字典进行合并只要处理好nodeComparator就好了
+    // TODO: 2018/7/24 同时这边的合并仅处理根节点或者叶子节点的聚合值合并，其他维度节点默认为空
     public static GroupNode merge(List<GroupNode> roots, List<Comparator<GroupNode>> nodeComparators,
                                   List<Aggregator> aggregators) {
 //        if (roots.size() == 1) {

@@ -2,9 +2,9 @@ package com.fr.swift.query.group.info;
 
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.group.info.cursor.Cursor;
-import com.fr.swift.query.group.info.cursor.Expander;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.segment.column.Column;
+import com.fr.swift.structure.Pair;
 
 import java.util.List;
 
@@ -13,23 +13,27 @@ import java.util.List;
  */
 public class GroupByInfoImpl implements GroupByInfo {
 
-    private List<Column> dimensions;
+    private int fetchSize;
+    private List<Pair<Column, IndexInfo>> dimensions;
     private DetailFilter detailFilter;
     private List<Sort> sorts;
-    private Expander expander;
     private Cursor cursor;
 
-    public GroupByInfoImpl(List<Column> dimensions, DetailFilter detailFilter,
-                           List<Sort> sorts, Expander expander, Cursor cursor) {
+    public GroupByInfoImpl(int fetchSize, List<Pair<Column, IndexInfo>> dimensions, DetailFilter detailFilter, List<Sort> sorts, Cursor cursor) {
+        this.fetchSize = fetchSize;
         this.dimensions = dimensions;
         this.detailFilter = detailFilter;
         this.sorts = sorts;
-        this.expander = expander;
         this.cursor = cursor;
     }
 
     @Override
-    public List<Column> getDimensions() {
+    public int getFetchSize() {
+        return fetchSize;
+    }
+
+    @Override
+    public List<Pair<Column, IndexInfo>> getDimensions() {
         return dimensions;
     }
 
@@ -41,11 +45,6 @@ public class GroupByInfoImpl implements GroupByInfo {
     @Override
     public List<Sort> getSorts() {
         return sorts;
-    }
-
-    @Override
-    public Expander getExpander() {
-        return expander;
     }
 
     @Override

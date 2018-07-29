@@ -5,13 +5,16 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.filter.match.MatchConverter;
+import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.result.KeyValue;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.row.RowIndexKey;
 import com.fr.swift.segment.column.Column;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.iterator.RowTraversal;
 import junit.framework.TestCase;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -28,7 +31,10 @@ public class MultiDimensionGroupByTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         CubeData cubeData = new CubeData();
-        dimensions = cubeData.getDimensions();
+        dimensions = new ArrayList<>();
+        for (Pair<Column, IndexInfo> pair : cubeData.getDimensions()) {
+            dimensions.add(pair.getKey());
+        }
         bitMapGroup = cubeData.getBitMapGroup();
         rowCount = cubeData.getRowCount();
     }

@@ -1,6 +1,7 @@
 package com.fr.swift.query.info.element.dimension;
 
 import com.fr.swift.query.group.Group;
+import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.query.sort.Sort;
 
 /**
@@ -15,6 +16,8 @@ public interface Dimension extends SwiftColumnProvider {
     Sort getSort();
 
     Group getGroup();
+
+    IndexInfo getIndexInfo();
 
     DimensionType getDimensionType();
 

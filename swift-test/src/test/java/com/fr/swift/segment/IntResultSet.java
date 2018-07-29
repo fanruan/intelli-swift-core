@@ -19,6 +19,11 @@ public class IntResultSet extends SingleColumnResultSet {
     int count;
 
     @Override
+    public int getFetchSize() {
+        return 0;
+    }
+
+    @Override
     public SwiftMetaData getMetaData() {
         return new SwiftMetaDataBean("INT_TABLE",
                 Arrays.asList(new MetaDataColumnBean("int", Types.INTEGER)));

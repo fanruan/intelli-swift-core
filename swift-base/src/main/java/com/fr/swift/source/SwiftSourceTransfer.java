@@ -12,6 +12,11 @@ public interface SwiftSourceTransfer {
         }
 
         @Override
+        public int getFetchSize() {
+            return 0;
+        }
+
+        @Override
         public SwiftMetaData getMetaData() {
             return null;
         }

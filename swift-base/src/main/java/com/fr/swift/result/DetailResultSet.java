@@ -12,11 +12,6 @@ import java.util.List;
 public interface DetailResultSet extends SwiftResultSet {
 
     /**
-     * buffer的大小
-     */
-    int PAGE_SIZE = 200;
-
-    /**
      * 获取一页数据，类似buffer的作用
      *
      * @return

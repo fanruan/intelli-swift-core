@@ -71,6 +71,11 @@ public class DetailOperatorResultSet implements SwiftResultSet {
     }
 
     @Override
+    public int getFetchSize() {
+        return 0;
+    }
+
+    @Override
     public SwiftMetaData getMetaData() throws SQLException {
         return metaData;
     }

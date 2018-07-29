@@ -19,16 +19,13 @@ import java.util.Map;
  */
 public class GroupPagingSegmentQuery extends AbstractGroupSegmentQuery {
 
-    private static final int PAGE_SIZE = 200;
-
     public GroupPagingSegmentQuery(GroupByInfo pageGroupByInfo, MetricInfo metricInfo) {
         super(pageGroupByInfo, metricInfo);
     }
 
     @Override
     public NodeResultSet getQueryResult() {
-        // TODO: 2018/6/13 这边为了把resultSet串联起来都用了闭包，有待分析
-        final Iterator<NodeMergeResultSet<GroupNode>> iterator = NodeGroupByUtils.groupBy(groupByInfo, metricInfo, PAGE_SIZE);
+        final Iterator<NodeMergeResultSet<GroupNode>> iterator = NodeGroupByUtils.groupBy(groupByInfo, metricInfo);
         return new NodeMergeResultSet() {
 
             private List<Map<Integer, Object>> dictionary;
@@ -51,6 +48,11 @@ public class GroupPagingSegmentQuery extends AbstractGroupSegmentQuery {
             @Override
             public void close() {
 
+            }
+
+            @Override
+            public int getFetchSize() {
+                return groupByInfo.getFetchSize();
             }
 
             @Override

@@ -9,7 +9,6 @@ public interface NodeResultSet<T extends SwiftNode> extends SwiftResultSet {
 
     /**
      * 获取代表一页数据的Node节点
-     * todo 这个接口有问题，应该是表示一页结果集对象，有待分析改进
      *
      * @return
      */

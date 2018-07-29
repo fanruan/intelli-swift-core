@@ -33,4 +33,23 @@ public class ListBasedRow implements Row {
     public String toString() {
         return values.toString();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ListBasedRow row = (ListBasedRow) o;
+
+        return values != null ? values.equals(row.values) : row.values == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return values != null ? values.hashCode() : 0;
+    }
 }

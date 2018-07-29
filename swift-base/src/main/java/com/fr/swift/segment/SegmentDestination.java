@@ -5,7 +5,6 @@ import com.fr.swift.service.SwiftService;
 import com.fr.third.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.io.Serializable;
-import java.net.URI;
 import java.util.List;
 
 /**
@@ -26,7 +25,7 @@ public interface SegmentDestination extends Serializable, Comparable<SegmentDest
 
     String getClusterId();
 
-    URI getUri();
+    String getSegmentId();
 
     List<String> getSpareNodes();
 }

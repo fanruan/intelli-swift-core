@@ -14,7 +14,7 @@ import java.util.List;
  * Created by Xiaolei.Liu on 2018/1/23
  */
 
-public class MultiSegmentDetailResultSet implements DetailResultSet {
+public class MultiSegmentDetailResultSet extends AbstractDetailResultSet {
 
     private int rowCount;
     private List<Query<DetailResultSet>> queries;
@@ -25,7 +25,8 @@ public class MultiSegmentDetailResultSet implements DetailResultSet {
     private Iterator<Row> mergeIterator;
     private Iterator<Row> rowIterator;
 
-    public MultiSegmentDetailResultSet(List<Query<DetailResultSet>> queries, SwiftMetaData metaData) throws SQLException {
+    public MultiSegmentDetailResultSet(int fetchSize, List<Query<DetailResultSet>> queries, SwiftMetaData metaData) throws SQLException {
+        super(fetchSize);
         this.queries = queries;
         this.metaData = metaData;
         init();
@@ -44,7 +45,7 @@ public class MultiSegmentDetailResultSet implements DetailResultSet {
     @Override
     public List<Row> getPage() {
         List<Row> rows = new ArrayList<Row>();
-        int count = PAGE_SIZE;
+        int count = fetchSize;
         while (mergeIterator.hasNext() && count-- > 0) {
             rows.add(mergeIterator.next());
         }

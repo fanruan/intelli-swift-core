@@ -1,8 +1,12 @@
 package com.fr.swift.query.info.bean.parser;
 
 import com.fr.general.ComparatorUtils;
+import com.fr.swift.config.indexing.ColumnIndexingConf;
+import com.fr.swift.config.service.IndexingConfService;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.query.group.Groups;
 import com.fr.swift.query.group.impl.NoGroupRule;
+import com.fr.swift.query.group.info.IndexInfoImpl;
 import com.fr.swift.query.info.bean.element.DimensionBean;
 import com.fr.swift.query.info.bean.element.SortBean;
 import com.fr.swift.query.info.element.dimension.DetailDimension;
@@ -15,6 +19,7 @@ import com.fr.swift.query.sort.DescSort;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.source.SourceKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +30,8 @@ import java.util.List;
 class DimensionParser {
 
     // TODO: 2018/6/7 解析各类bean过程中相关参数的合法性校验以及相关异常处理规范
-    static List<Dimension> parse(List<DimensionBean> dimensionBeans, List<SortBean> sortBeans) {
+    static List<Dimension> parse(SourceKey table, List<DimensionBean> dimensionBeans, List<SortBean> sortBeans) {
+        IndexingConfService service = SwiftContext.get().getBean(IndexingConfService.class);
         List<Dimension> dimensions = new ArrayList<Dimension>();
         for (int i = 0; i < dimensionBeans.size(); i++) {
             DimensionBean dimensionBean = dimensionBeans.get(i);
@@ -36,7 +42,7 @@ class DimensionParser {
             if (sortBean != null) {
                 sort = sortBean.getType() == SortType.ASC ? new AscSort(i) : new DescSort(i);
             }
-            // TODO: 2018/6/7 维度分组
+            ColumnIndexingConf conf = service.getColumnConf(table, dimensionBean.getColumn());
             switch (dimensionBean.getDimensionType()) {
                 case DETAIL_FORMULA:
                     dimensions.add(new DetailFormulaDimension(i, dimensionBean.getFormula()));
@@ -45,10 +51,12 @@ class DimensionParser {
                     dimensions.add(new GroupFormulaDimension(i, Groups.newGroup(new NoGroupRule()), sort, dimensionBean.getFormula()));
                     break;
                 case GROUP:
-                    dimensions.add(new GroupDimension(i, columnKey, Groups.newGroup(new NoGroupRule()), sort));
+                    dimensions.add(new GroupDimension(i, columnKey, Groups.newGroup(new NoGroupRule()), sort,
+                            new IndexInfoImpl(conf.requireIndex(), conf.requireGlobalDict())));
                     break;
                 case DETAIL:
-                    dimensions.add(new DetailDimension(i, columnKey, Groups.newGroup(new NoGroupRule()), sort));
+                    dimensions.add(new DetailDimension(i, columnKey, Groups.newGroup(new NoGroupRule()), sort,
+                            new IndexInfoImpl(conf.requireIndex(), conf.requireGlobalDict())));
                     break;
             }
         }
@@ -80,10 +88,10 @@ class DimensionParser {
                     dimensions.add(new GroupFormulaDimension(i, Groups.newGroup(new NoGroupRule()), null, dimensionBean.getFormula()));
                     break;
                 case GROUP:
-                    dimensions.add(new GroupDimension(i, columnKey, Groups.newGroup(new NoGroupRule()), null));
+                    dimensions.add(new GroupDimension(i, columnKey, Groups.newGroup(new NoGroupRule()), null, new IndexInfoImpl(false, false)));
                     break;
                 case DETAIL:
-                    dimensions.add(new DetailDimension(i, columnKey, Groups.newGroup(new NoGroupRule()), null));
+                    dimensions.add(new DetailDimension(i, columnKey, Groups.newGroup(new NoGroupRule()), null, new IndexInfoImpl(false, false)));
                     break;
             }
         }

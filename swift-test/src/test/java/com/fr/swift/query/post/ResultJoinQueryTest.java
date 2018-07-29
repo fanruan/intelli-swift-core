@@ -55,7 +55,7 @@ public class ResultJoinQueryTest extends TestCase {
             Query<NodeResultSet> query = new PostQuery<NodeResultSet>() {
                 @Override
                 public NodeResultSet getQueryResult() {
-                    return new NodeResultSetImpl(roots.get(index), metaDataList.get(index));
+                    return new NodeResultSetImpl(200, roots.get(index), metaDataList.get(index));
                 }
             };
             queries.add(query);

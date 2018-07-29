@@ -3,9 +3,9 @@ package com.fr.swift.query.filter;
 import com.fr.stable.StringUtils;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.filter.detail.impl.AllShowDetailFilter;
+import com.fr.swift.query.filter.detail.impl.EmptyDetailFilter;
 import com.fr.swift.query.filter.detail.impl.FormulaFilter;
 import com.fr.swift.query.filter.detail.impl.InFilter;
-import com.fr.swift.query.filter.detail.impl.NotShowDetailFilter;
 import com.fr.swift.query.filter.detail.impl.NullFilter;
 import com.fr.swift.query.filter.detail.impl.date.DateInRangeFilter;
 import com.fr.swift.query.filter.detail.impl.nfilter.BottomNFilter;
@@ -69,18 +69,12 @@ public class DetailFilterFactory {
                 return new BottomNFilter((Integer) filterInfo.getFilterValue(), column);
             case NULL:
                 return new NullFilter(column);
-//            case AND:
-//                return new AndFilter((List<FilterInfo>) filterInfo.getFilterValue(), segment);
-//            case OR:
-//                return new OrFilter((List<FilterInfo>) filterInfo.getFilterValue(), segment);
-//            case NOT:
-//                return new NotFilter(rowCount, ((SwiftDetailFilterInfo) filterInfo.getFilterValue()).createDetailFilter(segment));
             case FORMULA:
                 return new FormulaFilter((String) filterInfo.getFilterValue(), segment);
             case KEY_WORDS:
                 return new StringKeyWordFilter((String) filterInfo.getFilterValue(), column);
-            case NOT_SHOW:
-                return new NotShowDetailFilter();
+            case EMPTY:
+                return new EmptyDetailFilter();
             default:
                 return new AllShowDetailFilter(segment);
         }

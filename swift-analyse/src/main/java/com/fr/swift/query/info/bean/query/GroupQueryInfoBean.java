@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * todo 尝试整理结构化查询的属性接口
- * <p>
  * Created by Lyon on 2018/6/2.
  */
 public class GroupQueryInfoBean extends AbstractSingleTableQueryInfoBean {
