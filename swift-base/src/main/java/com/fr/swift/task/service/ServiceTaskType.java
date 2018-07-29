@@ -8,17 +8,8 @@ package com.fr.swift.task.service;
  * @since Advanced FineBI 5.0
  */
 public enum ServiceTaskType {
-    INSERT((byte) 0), DELETE((byte) 1), COLLATE((byte) 2), RECOVERY((byte) 3), QUERY((byte) 4);
-
-    private byte type;
-
-    ServiceTaskType(byte type) {
-        this.type = type;
-    }
-
-    public byte getType() {
-        return type;
-    }
+    //
+    INSERT, DELETE, COLLATE, RECOVERY, QUERY;
 
     public boolean isEdit() {
         return this != QUERY;

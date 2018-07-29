@@ -35,13 +35,10 @@ public class FileUtil {
         if (f.isDirectory()) {
             File[] children = f.listFiles();
 
-            if (children == null) {
-                consumer.accept(f);
-                return;
-            }
-
-            for (File child : children) {
-                walk(child, consumer);
+            if (children != null) {
+                for (File child : children) {
+                    walk(child, consumer);
+                }
             }
         }
 

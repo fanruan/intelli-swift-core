@@ -49,11 +49,11 @@ public class ByteArrayIoTest extends BaseIoTest {
     public void testPutThenGet() {
         IResourceLocation location = new ResourceLocation(basePath + "child");
 
-        ByteArrayWriter writer = (ByteArrayWriter) Writers.build(location, new BuildConf(IoType.WRITE, DataType.BYTE_ARRAY, WriteType.EDIT));
+        ByteArrayWriter writer = (ByteArrayWriter) Writers.build(location, new BuildConf(IoType.WRITE, DataType.BYTE_ARRAY, WriteType.APPEND));
         writer.put(pos, val);
         writer.release();
 
-        writer = (ByteArrayWriter) Writers.build(location, new BuildConf(IoType.WRITE, DataType.BYTE_ARRAY, WriteType.EDIT));
+        writer = (ByteArrayWriter) Writers.build(location, new BuildConf(IoType.WRITE, DataType.BYTE_ARRAY, WriteType.APPEND));
         writer.put(pos + 1, val);
         writer.release();
 

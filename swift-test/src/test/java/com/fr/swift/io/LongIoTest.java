@@ -2,6 +2,7 @@ package com.fr.swift.io;
 
 import com.fr.swift.io.nio.LongNio;
 import com.fr.swift.io.nio.NioConf;
+import com.fr.swift.io.nio.NioConf.IoType;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,22 +20,22 @@ public class LongIoTest extends BaseIoTest {
 
     @Test
     public void test() {
-        LongIo io = new LongNio(new NioConf(path, true, pageSize, false));
+        LongIo io = new LongNio(new NioConf(path, IoType.OVERWRITE, pageSize, false));
         for (int i = 0; i < data.length; i++) {
             io.put(i, data[i]);
         }
         io.release();
-        io = new LongNio(new NioConf(path, false, pageSize, false));
+        io = new LongNio(new NioConf(path, IoType.READ, pageSize, false));
         for (int i = 0; i < data.length; i++) {
             Assert.assertEquals(data[i], io.get(i));
         }
         io.release();
 
-        io = new LongNio(new NioConf(path, true, pageSize, false));
+        io = new LongNio(new NioConf(path, IoType.OVERWRITE, pageSize, false));
         io.put(2, (byte) 5);
         io.put(9, (byte) 4);
         io.release();
-        io = new LongNio(new NioConf(path, false, pageSize, false));
+        io = new LongNio(new NioConf(path, IoType.OVERWRITE, pageSize, false));
         for (int i = 0; i < data.length; i++) {
             if (i == 2) {
                 Assert.assertEquals(5, io.get(i));

@@ -34,16 +34,16 @@ import java.util.TreeMap;
  * @author anchore
  * @date 2018/2/26
  */
-public abstract class BaseColumnDictMerger<T> extends BaseWorker implements SwiftColumnDictMerger {
+public class ColumnDictMerger<T> extends BaseWorker implements SwiftColumnDictMerger {
     private SwiftMetaData meta;
     protected ColumnKey key;
     protected List<Segment> segments;
 
-    public BaseColumnDictMerger(DataSource dataSource, ColumnKey key, List<Segment> segments) {
+    public ColumnDictMerger(DataSource dataSource, ColumnKey key, List<Segment> segments) {
         this(dataSource.getMetadata(), key, segments);
     }
 
-    public BaseColumnDictMerger(SwiftMetaData meta, ColumnKey key, List<Segment> segments) {
+    public ColumnDictMerger(SwiftMetaData meta, ColumnKey key, List<Segment> segments) {
         this.meta = meta;
         this.key = key;
         this.segments = segments;

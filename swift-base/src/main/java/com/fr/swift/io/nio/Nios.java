@@ -28,7 +28,7 @@ public class Nios {
             case LONG_ARRAY:
             default:
                 return Crasher.crash(String.format(
-                        "illegal cube build config: %s as %s at %s", conf.isWrite() ? "write" : "read", dataType, conf.getPath()));
+                        "illegal cube build config: %s as %s at %s", conf.isRead() ? "read" : "write", dataType, conf.getPath()));
         }
     }
 }

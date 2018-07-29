@@ -11,7 +11,7 @@ import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.insert.SwiftRealtimeInserter;
-import com.fr.swift.segment.operator.utils.SegmentUtils;
+import com.fr.swift.service.HistorySegmentPutter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.LimitedResultSet;
 import com.fr.swift.source.Row;
@@ -34,7 +34,7 @@ import java.util.List;
  * @date 2018/6/5
  */
 public class Incrementer implements Inserter {
-    private static final SwiftSegmentManager LOCAL_SEGMENT_PROVIDER = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
+    private static final SwiftSegmentManager LOCAL_SEGMENTS = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
 
     private SwiftSourceAlloter alloter;
 
@@ -43,8 +43,7 @@ public class Incrementer implements Inserter {
     private Segment currentSeg;
 
     public Incrementer(DataSource dataSource) {
-        this.dataSource = dataSource;
-        alloter = new LineSourceAlloter(dataSource.getSourceKey());
+        this(dataSource, new LineSourceAlloter(dataSource.getSourceKey(), new LineAllotRule(LineAllotRule.MEM_STEP)));
     }
 
     public Incrementer(DataSource dataSource, SwiftSourceAlloter alloter) {
@@ -55,27 +54,32 @@ public class Incrementer implements Inserter {
     public void increment(SwiftResultSet resultSet) throws SQLException {
         try {
             persistMeta();
-            int count = LOCAL_SEGMENT_PROVIDER.getSegmentKeys(dataSource.getSourceKey()).size();
-            do {
+
+            while (resultSet.hasNext()) {
                 boolean newSeg = nextSegment();
-                //获得事务代理
-                SwiftRealtimeInserter swiftRealtimeInserter = new SwiftRealtimeInserter(currentSeg);
-                TransactionProxyFactory proxyFactory = new TransactionProxyFactory(swiftRealtimeInserter.getSwiftBackup().getTransactionManager());
-                Inserter inserter = (Inserter) proxyFactory.getProxy(swiftRealtimeInserter);
+                Inserter inserter = getInserter();
 
                 int step = ((LineAllotRule) alloter.getAllotRule()).getStep();
                 int limit = CubeUtil.isReadable(currentSeg) ? step - currentSeg.getRowCount() : step;
-                inserter.insertData(new LimitedResultSet(resultSet, limit));
+                inserter.insertData(new LimitedResultSet(resultSet, limit, false));
 
                 if (newSeg) {
-                    persistSegment(currentSeg, count++);
+                    SegmentKey maxSegmentKey = SegmentUtils.getMaxSegmentKey(LOCAL_SEGMENTS.getSegmentKeys(dataSource.getSourceKey()));
+                    persistSegment(currentSeg, maxSegmentKey == null ? 0 : maxSegmentKey.getOrder() + 1);
                 }
-            } while (alloter.isFull(currentSeg));
+            }
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         } finally {
             resultSet.close();
         }
+    }
+
+    private Inserter getInserter() {
+        //获得事务代理
+        SwiftRealtimeInserter swiftRealtimeInserter = new SwiftRealtimeInserter(currentSeg);
+        TransactionProxyFactory proxyFactory = new TransactionProxyFactory(swiftRealtimeInserter.getSwiftBackup().getTransactionManager());
+        return (Inserter) proxyFactory.getProxy(swiftRealtimeInserter);
     }
 
     private Segment newRealtimeSegment(SegmentInfo segInfo, int segCount) {
@@ -84,21 +88,26 @@ public class Incrementer implements Inserter {
     }
 
     private boolean nextSegment() {
-        List<SegmentKey> segmentKeys = LOCAL_SEGMENT_PROVIDER.getSegmentKeys(dataSource.getSourceKey());
+        List<SegmentKey> segmentKeys = LOCAL_SEGMENTS.getSegmentKeys(dataSource.getSourceKey());
 
         SegmentKey maxSegmentKey = SegmentUtils.getMaxSegmentKey(segmentKeys);
         if (maxSegmentKey == null) {
             currentSeg = newRealtimeSegment(alloter.allot(new LineRowInfo(0)), 0);
             return true;
         }
-        Segment maxSegment = LOCAL_SEGMENT_PROVIDER.getSegment(maxSegmentKey);
-        if (maxSegmentKey.getStoreType() != StoreType.MEMORY || alloter.isFull(maxSegment)) {
+
+        Segment maxSegment = LOCAL_SEGMENTS.getSegment(maxSegmentKey);
+        if (maxSegment.isHistory()) {
             currentSeg = newRealtimeSegment(alloter.allot(new LineRowInfo(0)), maxSegmentKey.getOrder() + 1);
             return true;
-        } else {
-            currentSeg = LOCAL_SEGMENT_PROVIDER.getSegment(maxSegmentKey);
-            return false;
         }
+        if (alloter.isFull(maxSegment)) {
+            currentSeg = newRealtimeSegment(alloter.allot(new LineRowInfo(0)), maxSegmentKey.getOrder() + 1);
+            HistorySegmentPutter.putHistorySegment(maxSegmentKey, maxSegment);
+            return true;
+        }
+        currentSeg = maxSegment;
+        return false;
     }
 
     private void persistMeta() throws SQLException {

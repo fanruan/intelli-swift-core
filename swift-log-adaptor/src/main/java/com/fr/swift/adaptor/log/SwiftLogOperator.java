@@ -13,10 +13,10 @@ import com.fr.swift.query.query.FilterBean;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.operator.delete.WhereDeleter;
+import com.fr.swift.service.RealtimeService;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 
@@ -36,8 +36,6 @@ import java.util.concurrent.TimeUnit;
 public class SwiftLogOperator extends BaseMetric {
 
     private final Database db = SwiftDatabase.getInstance();
-
-    private Sync sync = new Sync();
 
     @Override
     public <T> DataList<T> find(Class<T> entity, QueryCondition queryCondition) {
@@ -110,12 +108,16 @@ public class SwiftLogOperator extends BaseMetric {
         }
     }
 
+    private Sync sync = new Sync();
+
     class Sync implements Runnable {
-        ScheduledExecutorService scheduler = SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory(getClass()));
+        static final int FLUSH_SIZE_THRESHOLD = 10000;
+
+        private ScheduledExecutorService scheduler = SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory(getClass()));
 
         private Map<Class<?>, List<Object>> dataMap = new ConcurrentHashMap<Class<?>, List<Object>>();
 
-        static final int FLUSH_SIZE_THRESHOLD = 10000;
+        private RealtimeService realtimeService = SwiftContext.get().getBean(RealtimeService.class);
 
         Sync() {
             scheduler.scheduleWithFixedDelay(this, 0, 5, TimeUnit.SECONDS);
@@ -134,16 +136,15 @@ public class SwiftLogOperator extends BaseMetric {
         }
 
         synchronized
-        private void record(Class<?> entity) {
-            List<Object> data = dataMap.get(entity);
+        private void record(final Class<?> entity) {
+            final List<Object> data = dataMap.get(entity);
             if (data == null || data.isEmpty()) {
                 return;
             }
 
+            Table table = db.getTable(new SourceKey(SwiftMetaAdaptor.getTableName(entity)));
             try {
-                Table table = db.getTable(new SourceKey(SwiftMetaAdaptor.getTableName(entity)));
-                SwiftResultSet rowSet = new LogRowSet(table.getMeta(), data, entity);
-                table.insert(rowSet);
+                realtimeService.insert(table.getSourceKey(), new LogRowSet(table.getMetadata(), data, entity));
                 dataMap.remove(entity);
             } catch (Exception e) {
                 SwiftLoggers.getLogger().error(e);

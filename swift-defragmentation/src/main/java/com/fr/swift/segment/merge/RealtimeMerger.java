@@ -1,4 +1,4 @@
-package com.fr.swift.generate.segment.operator.merger;
+package com.fr.swift.segment.merge;
 
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.service.SwiftSegmentService;
@@ -11,9 +11,9 @@ import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.Merger;
@@ -101,7 +101,7 @@ public class RealtimeMerger implements Merger {
                 cubeSourceKey, order);
         IResourceLocation location = new ResourceLocation(cubePath);
         configSegment.add(new SegmentKeyBean(sourceKey.getId(), location.getUri(), order, StoreType.FINE_IO, metaData.getSwiftSchema()));
-        return new HistorySegmentImpl(location, metaData);
+        return SegmentUtils.newHistorySegment(location, metaData);
     }
 
     public void release() {

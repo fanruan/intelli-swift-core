@@ -2,7 +2,7 @@ package com.fr.swift.cube.io;
 
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.cube.io.Types.IoType;
+import com.fr.swift.cube.io.Types.WriteType;
 import com.fr.swift.cube.io.impl.fineio.FineIoWriters;
 import com.fr.swift.cube.io.impl.mem.MemIoBuilder;
 import com.fr.swift.cube.io.location.IResourceLocation;
@@ -32,7 +32,7 @@ public final class Writers {
             case NIO:
                 return Nios.of(new NioConf(
                         String.format("%s/%s", PATH_SERVICE.getSwiftPath(), location.getPath()),
-                        conf.ioType == IoType.WRITE), conf.dataType);
+                        conf.writeType == WriteType.APPEND ? NioConf.IoType.APPEND : NioConf.IoType.OVERWRITE), conf.dataType);
             default:
         }
         return Crasher.crash(String.format("illegal cube build config: %s\nlocation: %s", conf, location));

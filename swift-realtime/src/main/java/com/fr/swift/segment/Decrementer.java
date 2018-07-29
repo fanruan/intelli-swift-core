@@ -2,8 +2,8 @@ package com.fr.swift.segment;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.db.Where;
-import com.fr.swift.segment.operator.delete.HistorySwiftDeleter;
 import com.fr.swift.segment.operator.delete.RealtimeSwiftDeleter;
+import com.fr.swift.segment.operator.delete.SwiftWhereDeleter;
 import com.fr.swift.segment.operator.delete.WhereDeleter;
 import com.fr.swift.source.SourceKey;
 
@@ -28,7 +28,7 @@ public class Decrementer implements WhereDeleter {
     public ImmutableBitMap delete(Where where) throws Exception {
         WhereDeleter whereDeleter;
         if (segment.isHistory()) {
-            whereDeleter = new HistorySwiftDeleter(tableKey, segment);
+            whereDeleter = new SwiftWhereDeleter(tableKey, segment);
         } else {
             whereDeleter = new RealtimeSwiftDeleter(tableKey, segment);
         }

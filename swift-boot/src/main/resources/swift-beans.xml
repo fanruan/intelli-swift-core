@@ -17,8 +17,15 @@
     <bean id="redisClient" class="com.fr.swift.redis.RedisClient"/>
     <bean id="queryIndexRunner" class="com.fr.swift.service.QueryIndexService"/>
 
+    <bean id="inserter" class="com.fr.swift.segment.operator.insert.SwiftInserter" scope="prototype"/>
     <bean id="incrementer" class="com.fr.swift.segment.Incrementer" scope="prototype"/>
     <bean id="decrementer" class="com.fr.swift.segment.Decrementer" scope="prototype"/>
+
+    <bean id="columnIndexer" class="com.fr.swift.generate.ColumnIndexer" scope="prototype"/>
+    <bean id="columnDictMerger" class="com.fr.swift.generate.ColumnDictMerger" scope="prototype"/>
+
+    <bean id="realtimeSegment" class="com.fr.swift.segment.RealTimeSegmentImpl" scope="prototype"/>
+    <bean id="historySegment" class="com.fr.swift.segment.HistorySegmentImpl" scope="prototype"/>
 
     <bean id="serviceTaskExecutor" class="com.fr.swift.task.service.SwiftServiceTaskExecutor">
         <constructor-arg index="0" value="swiftServiceTaskExecutor"/>

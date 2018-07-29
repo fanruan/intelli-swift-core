@@ -1,8 +1,6 @@
 package com.fr.swift.generate;
 
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.generate.history.index.ColumnDictMerger;
-import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.generate.history.transport.TableTransporter;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.Segment;

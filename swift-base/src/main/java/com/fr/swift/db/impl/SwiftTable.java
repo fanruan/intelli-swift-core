@@ -8,6 +8,8 @@ import com.fr.swift.segment.SwiftDataOperatorProvider;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.operator.Inserter;
+import com.fr.swift.segment.operator.column.SwiftColumnDictMerger;
+import com.fr.swift.segment.operator.column.SwiftColumnIndexer;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
@@ -62,8 +64,8 @@ class SwiftTable implements Table {
             inserter.insertData(rowSet);
             List<Segment> segments = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegment(key);
             for (String field : inserter.getFields()) {
-                operators.getColumnIndexer(this, new ColumnKey(field), segments).buildIndex();
-                operators.getColumnDictMerger(this, new ColumnKey(field), segments).mergeDict();
+                ((SwiftColumnIndexer) SwiftContext.get().getBean("columnIndexer", this, new ColumnKey(field), segments)).buildIndex();
+                ((SwiftColumnDictMerger) SwiftContext.get().getBean("columnDictMerger", this, new ColumnKey(field), segments)).mergeDict();
             }
         } catch (Exception e) {
             throw new SQLException(e);
