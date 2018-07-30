@@ -5,8 +5,6 @@ import com.fr.swift.config.service.IndexingConfService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.generate.history.index.ColumnDictMerger;
-import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.manager.IndexingSegmentManager;
