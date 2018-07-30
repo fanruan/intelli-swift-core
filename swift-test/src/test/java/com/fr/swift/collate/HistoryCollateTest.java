@@ -6,7 +6,7 @@ import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftWhere;
 import com.fr.swift.generate.BaseTest;
-import com.fr.swift.generate.history.index.ColumnIndexer;
+import com.fr.swift.generate.ColumnIndexer;
 import com.fr.swift.generate.segment.operator.inserter.BlockInserter;
 import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
 import com.fr.swift.query.query.FilterBean;

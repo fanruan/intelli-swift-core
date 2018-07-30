@@ -36,11 +36,11 @@ public class IntIoTest extends BaseIoTest {
     public void testPutThenGet() {
         IResourceLocation location = new ResourceLocation(basePath + "child");
 
-        IntWriter writer = (IntWriter) Writers.build(location, new BuildConf(Types.IoType.WRITE, Types.DataType.INT, WriteType.EDIT));
+        IntWriter writer = (IntWriter) Writers.build(location, new BuildConf(Types.IoType.WRITE, Types.DataType.INT, WriteType.APPEND));
         writer.put(pos, val);
         writer.release();
 
-        writer = (IntWriter) Writers.build(location, new BuildConf(Types.IoType.WRITE, Types.DataType.INT, WriteType.EDIT));
+        writer = (IntWriter) Writers.build(location, new BuildConf(Types.IoType.WRITE, Types.DataType.INT, WriteType.APPEND));
         writer.put(pos + 1, val);
         writer.release();
 

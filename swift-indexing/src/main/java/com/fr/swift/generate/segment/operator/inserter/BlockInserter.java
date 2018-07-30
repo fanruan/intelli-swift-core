@@ -5,7 +5,6 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.segment.HistorySegmentImpl;
-import com.fr.swift.segment.RealTimeSegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.operator.insert.AbstractBlockInserter;
@@ -51,10 +50,6 @@ public class BlockInserter extends AbstractBlockInserter {
 
     @Override
     protected Segment createNewSegment(IResourceLocation location, SwiftMetaData swiftMetaData) {
-        if (location.getStoreType() == Types.StoreType.FINE_IO) {
             return new HistorySegmentImpl(location, swiftMetaData);
-        } else {
-            return new RealTimeSegmentImpl(location, swiftMetaData);
-        }
     }
 }

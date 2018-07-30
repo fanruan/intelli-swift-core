@@ -22,6 +22,8 @@ abstract class BaseAtomNio extends BaseNio {
 
     private int currentPage = -1;
 
+    private int currentStart = -1;
+
     BaseAtomNio(NioConf conf) {
         super(conf);
         init();
@@ -51,18 +53,20 @@ abstract class BaseAtomNio extends BaseNio {
 
     private void loadBuffer(int page) {
         try {
-            RandomAccessFile file = new RandomAccessFile(String.format("%s/%d", conf.getPath(), page), conf.isWrite() ? "rw" : "r");
+            RandomAccessFile file = new RandomAccessFile(String.format("%s/%d", conf.getPath(), page), conf.isRead() ? "r" : "rw");
             ch = file.getChannel();
 
             if (conf.isMapped()) {
-                buf = ch.map(conf.isWrite() ? MapMode.READ_WRITE : MapMode.READ_ONLY, 0, 1 << conf.getPageSize());
+                buf = ch.map(conf.isRead() ? MapMode.READ_ONLY : MapMode.READ_WRITE, 0, 1 << conf.getPageSize());
             } else {
                 if (buf == null) {
                     buf = ByteBuffer.allocate(1 << conf.getPageSize());
                 }
-                ch.read(buf);
-                if (conf.isWrite()) {
-                    ch.position(0);
+                if (conf.isAppend()) {
+                    currentStart = (int) ch.size();
+                } else {
+                    currentStart = 0;
+                    ch.read(buf);
                 }
             }
 
@@ -82,23 +86,32 @@ abstract class BaseAtomNio extends BaseNio {
             return;
         }
         if (conf.isWrite()) {
-            buf.flip();
+            buf.limit(buf.position());
+            buf.position(currentStart);
             try {
-                ch.write(buf);
+                ch.write(buf, currentStart);
             } catch (IOException e) {
                 SwiftLoggers.getLogger().error(e);
             } finally {
                 IoUtil.close(ch);
             }
+        } else {
+            IoUtil.close(ch);
         }
+
         buf.clear();
         currentPage = -1;
+        currentStart = -1;
     }
 
     void setBufPosition(int offset) {
         int newPos = offset + (1 << getStep());
         if (newPos > buf.position()) {
             buf.position(newPos);
+        }
+
+        if (currentStart > offset) {
+            currentStart = offset;
         }
     }
 

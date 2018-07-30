@@ -2,7 +2,6 @@ package com.fr.swift.source;
 
 import com.fr.third.fasterxml.jackson.annotation.JsonIgnore;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ListBasedRow implements Row {
@@ -35,18 +34,14 @@ public class ListBasedRow implements Row {
         return values.toString();
     }
 
-    public List<Object> getValues() {
-        return new ArrayList<Object>(values);
-    }
-
-    public void setValues(List<Object> values) {
-        this.values = values;
-    }
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         ListBasedRow row = (ListBasedRow) o;
 

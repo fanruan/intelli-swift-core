@@ -7,6 +7,7 @@ import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types.DataType;
 import com.fr.swift.cube.io.Types.IoType;
 import com.fr.swift.cube.io.Types.StoreType;
+import com.fr.swift.cube.io.Types.WriteType;
 import com.fr.swift.cube.io.input.BitMapReader;
 import com.fr.swift.cube.io.input.IntReader;
 import com.fr.swift.cube.io.location.IResourceLocation;
@@ -160,7 +161,7 @@ public abstract class BaseSegment implements Segment {
 
     private void initRowCountWriter() {
         if (rowCountWriter == null) {
-            rowCountWriter = DISCOVERY.getWriter(location.buildChildLocation(ROW_COUNT), new BuildConf(IoType.WRITE, DataType.INT));
+            rowCountWriter = DISCOVERY.getWriter(location.buildChildLocation(ROW_COUNT), new BuildConf(IoType.WRITE, DataType.INT, WriteType.OVERWRITE));
         }
     }
 
@@ -172,7 +173,7 @@ public abstract class BaseSegment implements Segment {
 
     private void initBitMapWriter() {
         if (bitMapWriter == null) {
-            bitMapWriter = DISCOVERY.getWriter(location.buildChildLocation(ALL_SHOW_INDEX), new BuildConf(IoType.WRITE, DataType.BITMAP));
+            bitMapWriter = DISCOVERY.getWriter(location.buildChildLocation(ALL_SHOW_INDEX), new BuildConf(IoType.WRITE, DataType.BITMAP, WriteType.OVERWRITE));
         }
     }
 

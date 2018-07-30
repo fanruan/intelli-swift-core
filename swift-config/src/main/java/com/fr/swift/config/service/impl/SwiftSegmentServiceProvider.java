@@ -54,7 +54,7 @@ public class SwiftSegmentServiceProvider implements SwiftSegmentService {
     }
 
     @Override
-    public boolean removeSegments(SegmentKey... segmentKeys) {
+    public boolean removeSegments(List<SegmentKey> segmentKeys) {
         return service.removeSegments(segmentKeys);
     }
 

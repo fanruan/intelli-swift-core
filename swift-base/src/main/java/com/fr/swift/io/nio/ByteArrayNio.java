@@ -4,6 +4,7 @@ import com.fr.swift.io.ByteIo;
 import com.fr.swift.io.IntIo;
 import com.fr.swift.io.LongIo;
 import com.fr.swift.io.ObjectIo;
+import com.fr.swift.io.nio.NioConf.IoType;
 import com.fr.swift.util.IoUtil;
 
 /**
@@ -28,8 +29,9 @@ public class ByteArrayNio extends BaseNio implements ObjectIo<byte[]> {
         length = new IntNio(conf.ofAnotherPath(String.format("%s/%s", conf.getPath(), "len")));
         data = new ByteNio(conf.ofAnotherPath(String.format("%s/%s", conf.getPath(), "data")));
         if (conf.isWrite()) {
-            LongIo lastPosition = new LongNio(conf.ofAnotherPath(String.format("%s/%s", conf.getPath(), "last_pos")));
-            currentPos = lastPosition.get(0);
+            LongIo lastPosition = new LongNio(new NioConf(
+                    String.format("%s/%s", conf.getPath(), "last_pos"), IoType.READ, conf.getPageSize(), conf.isMapped()));
+            currentPos = lastPosition.isReadable() ? lastPosition.get(0) : 0;
             lastPosition.release();
         }
     }
@@ -73,7 +75,8 @@ public class ByteArrayNio extends BaseNio implements ObjectIo<byte[]> {
     @Override
     public void release() {
         if (conf.isWrite()) {
-            LongIo lastPosition = new LongNio(conf.ofAnotherPath(String.format("%s/%s", conf.getPath(), "last_pos")));
+            LongIo lastPosition = new LongNio(new NioConf(
+                    String.format("%s/%s", conf.getPath(), "last_pos"), IoType.OVERWRITE, conf.getPageSize(), conf.isMapped()));
             lastPosition.put(0, currentPos);
             lastPosition.release();
         }
