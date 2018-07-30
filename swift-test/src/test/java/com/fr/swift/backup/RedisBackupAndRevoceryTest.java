@@ -67,8 +67,8 @@ public class RedisBackupAndRevoceryTest extends BaseTest {
                 }
             }
 
-            assertEquals(redisClient.llen("backup_cubes/7bc94acd/seg0"), jsonList.size());
-            List<String> redisList = redisClient.lrange("backup_cubes/7bc94acd/seg0", 0, -1);
+            assertEquals(redisClient.llen(String.format("%s/7bc94acd/seg0", dataSource.getMetadata().getSwiftSchema().getBackupDir())), jsonList.size());
+            List<String> redisList = redisClient.lrange(String.format("%s/7bc94acd/seg0", dataSource.getMetadata().getSwiftSchema().getBackupDir()), 0, -1);
             assertEquals(redisList.size(), jsonList.size());
             for (int i = 0; i < redisList.size(); i++) {
                 assertEquals(redisList.get(i), jsonList.get(i));

@@ -5,6 +5,7 @@ import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.db.impl.SwiftDatabase.Schema;
 import com.fr.swift.segment.RealTimeSegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
@@ -41,7 +42,8 @@ public abstract class AbstractSegmentRecovery implements SegmentRecovery {
     protected Segment getBackupSegment(Segment realtimeSeg) {
         SwiftMetaData meta = realtimeSeg.getMetaData();
         String realtimeSegPath = realtimeSeg.getLocation().getPath();
-        return SegmentUtils.newHistorySegment(new ResourceLocation(realtimeSegPath.replace(meta.getSwiftSchema().getDir(), SwiftDatabase.Schema.BACKUP_CUBE.getDir()), Types.StoreType.NIO), meta);
+        Schema swiftSchema = meta.getSwiftSchema();
+        return SegmentUtils.newHistorySegment(new ResourceLocation(realtimeSegPath.replace(swiftSchema.getDir(), swiftSchema.getBackupDir()), Types.StoreType.NIO), meta);
     }
 
     protected Segment newRealtimeSegment(Segment realtimeSeg) {
