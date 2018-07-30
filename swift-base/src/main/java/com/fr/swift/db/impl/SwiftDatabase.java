@@ -85,9 +85,8 @@ public class SwiftDatabase implements Database {
          * 默认schema
          */
         CUBE(0, "Cube", "cubes"),
-        DECISION_LOG(1, "Decision Log", "log/cubes"),
-        BACKUP_CUBE(2, "Backup Cube", "backup_cubes"),
-        MINOR_CUBE(3, "Minor Cube", "minor_cubes");
+        DECISION_LOG(1, "Decision Log", "logs/cubes"),
+        MINOR_CUBE(2, "Minor Cube", "minor_cubes");
 
         private final int id;
         private final String name;
@@ -105,6 +104,10 @@ public class SwiftDatabase implements Database {
 
         public String getDir() {
             return dir;
+        }
+
+        public String getBackupDir() {
+            return String.format("%s/bak", dir);
         }
 
         public String getName() {

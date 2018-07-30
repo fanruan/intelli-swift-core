@@ -62,8 +62,9 @@ public class HistorySegmentPutter implements Runnable {
 
     public static void putHistorySegment(final SegmentKey realtimeSegKey, Segment realtimeSeg) {
         SourceKey tableKey = realtimeSegKey.getTable();
+        Schema swiftSchema = realtimeSegKey.getSwiftSchema();
         List<SegmentKey> newHisSeg = Collections.<SegmentKey>singletonList(
-                new SegmentKeyBean(tableKey.getId(), realtimeSegKey.getUri(), realtimeSegKey.getOrder(), StoreType.FINE_IO, realtimeSegKey.getSwiftSchema()));
+                new SegmentKeyBean(tableKey.getId(), realtimeSegKey.getUri(), realtimeSegKey.getOrder(), StoreType.FINE_IO, swiftSchema));
 
         try {
             // 先占坑
@@ -89,7 +90,7 @@ public class HistorySegmentPutter implements Runnable {
                     return s.contains(realtimeSegKey.getUri().getPath());
                 }
             });
-            FileUtil.delete(realtimeSegKey.getAbsoluteUri().getPath().replace(realtimeSegKey.getSwiftSchema().getDir(), Schema.BACKUP_CUBE.getDir()));
+            FileUtil.delete(realtimeSegKey.getAbsoluteUri().getPath().replace(swiftSchema.getDir(), swiftSchema.getBackupDir()));
 
             triggerCollate(tableKey);
         } catch (Exception e) {

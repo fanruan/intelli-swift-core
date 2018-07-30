@@ -34,7 +34,8 @@ public class SwiftRealtimeInserter extends SwiftInserter {
     private Segment getBackupSegment() {
         SwiftMetaData meta = segment.getMetaData();
         String segPath = segment.getLocation().getPath();
-        return SegmentUtils.newHistorySegment(new ResourceLocation(segPath.replace(meta.getSwiftSchema().getDir(), Schema.BACKUP_CUBE.getDir()), StoreType.NIO), meta);
+        Schema swiftSchema = meta.getSwiftSchema();
+        return SegmentUtils.newHistorySegment(new ResourceLocation(segPath.replace(swiftSchema.getDir(), swiftSchema.getBackupDir()), StoreType.NIO), meta);
     }
 
     @Override
