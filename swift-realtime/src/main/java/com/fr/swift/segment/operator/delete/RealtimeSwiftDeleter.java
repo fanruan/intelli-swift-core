@@ -5,7 +5,7 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.Where;
-import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.db.impl.SwiftDatabase.Schema;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.backup.AllShowIndexBackup;
@@ -37,6 +37,7 @@ public class RealtimeSwiftDeleter extends SwiftWhereDeleter {
     private Segment getBackupSegment() {
         SwiftMetaData meta = segment.getMetaData();
         String segPath = segment.getLocation().getPath();
-        return SegmentUtils.newHistorySegment(new ResourceLocation(segPath.replace(meta.getSwiftSchema().getDir(), SwiftDatabase.Schema.BACKUP_CUBE.getDir()), Types.StoreType.FINE_IO), meta);
+        Schema swiftSchema = meta.getSwiftSchema();
+        return SegmentUtils.newHistorySegment(new ResourceLocation(segPath.replace(swiftSchema.getDir(), swiftSchema.getBackupDir()), Types.StoreType.FINE_IO), meta);
     }
 }
