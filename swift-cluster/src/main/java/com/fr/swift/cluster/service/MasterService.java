@@ -1,6 +1,9 @@
 package com.fr.swift.cluster.service;
 
 import com.fr.swift.heart.HeartBeatInfo;
+import com.fr.swift.heart.NodeState;
+
+import java.util.Collection;
 
 /**
  * This class created on 2018/7/17
@@ -11,7 +14,26 @@ import com.fr.swift.heart.HeartBeatInfo;
  */
 public interface MasterService {
 
-    void collectHeartBeat(HeartBeatInfo heartBeatInfo) throws Exception;
+    /**
+     * 接收心跳
+     *
+     * @param heartBeatInfo
+     * @throws Exception
+     */
+    void reveiveHeartBeat(HeartBeatInfo heartBeatInfo) throws Exception;
 
-    void syncHeartBeat() throws Exception;
+    /**
+     * 主动推送所有节点状态
+     *
+     * @throws Exception
+     */
+    void pushNodeStates() throws Exception;
+
+    /**
+     * 被动拉取所有节点状态
+     *
+     * @throws Exception
+     */
+    Collection<NodeState> pullNodeStates() throws Exception;
+
 }

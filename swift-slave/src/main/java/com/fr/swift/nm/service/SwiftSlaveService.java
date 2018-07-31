@@ -6,6 +6,8 @@ import com.fr.swift.cluster.service.MasterService;
 import com.fr.swift.cluster.service.SlaveService;
 import com.fr.swift.container.NodeContainer;
 import com.fr.swift.heart.HeartBeatInfo;
+import com.fr.swift.heart.NodeState;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.utils.ClusterProxyUtils;
 import com.fr.third.springframework.stereotype.Service;
 
@@ -23,14 +25,22 @@ import java.util.Collection;
 public class SwiftSlaveService implements SlaveService {
 
     @Override
-    public synchronized void collectHeartBeat(HeartBeatInfo heartBeatInfo) throws Exception {
+    public void sendHeartBeat(HeartBeatInfo heartBeatInfo) throws Exception {
         MasterService masterService = ClusterProxyUtils.getMasterProxy(MasterService.class);
-        masterService.collectHeartBeat(heartBeatInfo);
+        masterService.reveiveHeartBeat(heartBeatInfo);
     }
 
     @Override
-    public synchronized void synHeartBeat(Collection<HeartBeatInfo> heartBeatInfos) {
-        NodeContainer.getInstance().removeAllHeartBeatInfos();
-        NodeContainer.getInstance().addAll(heartBeatInfos);
+    public synchronized void syncNodeStates(Collection<NodeState> collection) {
+        SwiftLoggers.getLogger().debug("sync node states");
+        NodeContainer.removeNodeStates();
+        NodeContainer.addAll(collection);
+    }
+
+    @Override
+    public void syncNodeStates() throws Exception {
+        MasterService masterService = ClusterProxyUtils.getMasterProxy(MasterService.class);
+        Collection<NodeState> collection = masterService.pullNodeStates();
+        syncNodeStates(collection);
     }
 }
