@@ -1,6 +1,7 @@
 package com.fr.swift.cluster.service;
 
 import com.fr.swift.heart.HeartBeatInfo;
+import com.fr.swift.heart.NodeState;
 
 import java.util.Collection;
 
@@ -13,7 +14,26 @@ import java.util.Collection;
  */
 public interface SlaveService {
 
-    void collectHeartBeat(HeartBeatInfo heartBeatInfo) throws Exception;
+    /**
+     * 发送心跳
+     *
+     * @param heartBeatInfo
+     * @throws Exception
+     */
+    void sendHeartBeat(HeartBeatInfo heartBeatInfo) throws Exception;
 
-    void synHeartBeat(Collection<HeartBeatInfo> collection) throws Exception;
+    /**
+     * 被动同步心跳
+     *
+     * @param collection
+     * @throws Exception
+     */
+    void syncNodeStates(Collection<NodeState> collection) throws Exception;
+
+    /**
+     * 主动同步心跳
+     *
+     * @throws Exception
+     */
+    void syncNodeStates() throws Exception;
 }

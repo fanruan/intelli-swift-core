@@ -1,9 +1,13 @@
 package com.fr.swift.rm.collector;
 
 import com.fr.swift.Collect;
+import com.fr.swift.cluster.service.MasterService;
 import com.fr.swift.container.NodeContainer;
-import com.fr.swift.heart.HeartBeatInfo;
+import com.fr.swift.context.SwiftContext;
+import com.fr.swift.heart.NodeState;
+import com.fr.swift.heart.NodeType;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.rm.service.SwiftMasterService;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 
 import java.util.Date;
@@ -18,11 +22,16 @@ import java.util.List;
  */
 public class MasterHeatbeatCollect implements Collect {
 
-//    private MasterService masterService = SwiftContext.get().getBean("swiftSlaveService", SwiftMasterService.class);
+    private MasterService masterService;
 
     private Thread thread;
 
+    private final static long HEART_BEAT_TIME = 10000l;
+    private final static long DELAY_TIME = 30000l;
+    private final static long OFFLINE_TIME = 60000l;
+
     public MasterHeatbeatCollect() {
+        masterService = SwiftContext.get().getBean("swiftMasterService", SwiftMasterService.class);
     }
 
     @Override
@@ -47,22 +56,34 @@ public class MasterHeatbeatCollect implements Collect {
             try {
                 while (true) {
                     try {
-                        List<HeartBeatInfo> allHeartBeatInfo = NodeContainer.getInstance().getAllHeartBeatInfos();
-                        long nowTime = new Date().getTime();
-                        for (HeartBeatInfo heartBeatInfo : allHeartBeatInfo) {
-                            long diffTime = nowTime - heartBeatInfo.getHeartbeatTime().getTime();
-                            if (diffTime > 30000l && diffTime <= 60000l) {
-                                //todo 告警
-                                SwiftLoggers.getLogger().error("warn!!!!!!!!!!!");
-                            } else if (diffTime > 60000l) {
-                                //todo 中断
-                                SwiftLoggers.getLogger().error("error!!!!!!!!!!!");
+                        List<NodeState> allNodeStates = NodeContainer.getAllNodeStates();
+                        boolean need2Sync = false;
+                        for (NodeState nodeState : allNodeStates) {
+                            long nowTime = new Date().getTime();
+                            long diffTime = nowTime - nodeState.getHeartBeatInfo().getHeartbeatTime().getTime();
+                            NodeType originType = nodeState.getNodeType();
+                            NodeType currentType;
+
+                            if (diffTime > DELAY_TIME && diffTime <= OFFLINE_TIME) {
+                                currentType = NodeType.DELAY;
+                            } else if (diffTime > OFFLINE_TIME) {
+                                currentType = NodeType.OFFLINE;
+                            } else {
+                                currentType = NodeType.ONLINE;
                             }
+                            if (originType != currentType) {
+                                SwiftLoggers.getLogger().warn(nodeState.getHeartBeatInfo().getNodeName() + " is " + currentType);
+                                nodeState.setNodeType(currentType);
+                                need2Sync = true;
+                            }
+                        }
+                        if (need2Sync) {
+                            masterService.pushNodeStates();
                         }
                     } catch (Exception e) {
                         SwiftLoggers.getLogger().error(e);
                     }
-                    Thread.sleep(10000l);
+                    Thread.sleep(HEART_BEAT_TIME);
                 }
             } catch (InterruptedException ite) {
                 SwiftLoggers.getLogger().error(ite);

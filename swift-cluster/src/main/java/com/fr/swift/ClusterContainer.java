@@ -37,4 +37,8 @@ public class ClusterContainer<T> {
     protected void removeAll() {
         container.clear();
     }
+
+    protected boolean contains(final String id) {
+        return container.containsKey(id);
+    }
 }
