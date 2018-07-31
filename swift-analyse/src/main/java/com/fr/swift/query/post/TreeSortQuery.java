@@ -2,7 +2,6 @@ package com.fr.swift.query.post;
 
 import com.fr.swift.query.filter.match.NodeSorter;
 import com.fr.swift.query.sort.Sort;
-import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeOperator;
@@ -26,8 +25,8 @@ public class TreeSortQuery extends AbstractPostQuery<NodeResultSet> {
 
     @Override
     public NodeResultSet getQueryResult() throws SQLException {
-        final NodeResultSet<GroupNode> mergeResult = (NodeResultSet<GroupNode>) query.getQueryResult();
-        NodeSorter.sort(mergeResult.getNode(), sortList);
+        final NodeResultSet<SwiftNode> mergeResult = (NodeResultSet<SwiftNode>) query.getQueryResult();
+        NodeSorter.sort(mergeResult.getPage().getKey(), sortList);
         SwiftNodeOperator<SwiftNode> operator = new SwiftNodeOperator<SwiftNode>() {
             @Override
             public SwiftNode operate(SwiftNode... node) {

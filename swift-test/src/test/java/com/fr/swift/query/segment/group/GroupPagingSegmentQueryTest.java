@@ -16,6 +16,7 @@ import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.result.node.GroupNodeUtils;
 import com.fr.swift.result.row.RowIndexKey;
 import com.fr.swift.source.Row;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.iterator.IteratorUtils;
 import junit.framework.TestCase;
 import org.junit.Assert;
@@ -54,8 +55,9 @@ public class GroupPagingSegmentQueryTest extends TestCase {
         NodeMergeResultSet<GroupNode> resultSet = (NodeMergeResultSet<GroupNode>) new GroupPagingSegmentQuery(groupByInfo, metricInfo).getQueryResult();
         rowList = new ArrayList<>();
         while (resultSet.hasNextPage()) {
-            GroupNode node = (GroupNode) resultSet.getNode();
-            GroupNodeUtils.updateNodeData(node, resultSet.getRowGlobalDictionaries());
+            Pair<GroupNode, List<Map<Integer, Object>>> pair = resultSet.getPage();
+            GroupNode node = pair.getKey();
+            GroupNodeUtils.updateNodeData(node, pair.getValue());
             rowList.addAll(IteratorUtils.iterator2List(SwiftNodeUtils.node2RowIterator(node)));
         }
     }

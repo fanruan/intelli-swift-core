@@ -2,6 +2,7 @@ package com.fr.swift.result;
 
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.structure.Pair;
 
 import java.sql.SQLException;
 import java.util.Iterator;
@@ -14,20 +15,15 @@ import java.util.Map;
 public class NodeMergeResultSetImpl<T extends GroupNode> implements NodeMergeResultSet<T> {
 
     private int fetchSize;
-    private GroupNode root;
+    private T root;
     private List<Map<Integer, Object>> rowGlobalDictionaries;
     private Iterator<Row> iterator;
     private boolean hasNextPage = true;
 
-    public NodeMergeResultSetImpl(int fetchSize, GroupNode root, List<Map<Integer, Object>> rowGlobalDictionaries) {
+    public NodeMergeResultSetImpl(int fetchSize, T root, List<Map<Integer, Object>> rowGlobalDictionaries) {
         this.fetchSize = fetchSize;
         this.root = root;
         this.rowGlobalDictionaries = rowGlobalDictionaries;
-    }
-
-    @Override
-    public List<Map<Integer, Object>> getRowGlobalDictionaries() {
-        return rowGlobalDictionaries;
     }
 
     @Override
@@ -36,10 +32,10 @@ public class NodeMergeResultSetImpl<T extends GroupNode> implements NodeMergeRes
     }
 
     @Override
-    public SwiftNode<T> getNode() {
+    public Pair<T, List<Map<Integer, Object>>> getPage() {
         // 只有一页，适配ChainedResultSet
         hasNextPage = false;
-        return root;
+        return Pair.of(root, rowGlobalDictionaries);
     }
 
     @Override

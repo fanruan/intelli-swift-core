@@ -3,9 +3,9 @@ package com.fr.swift.result.node.resultset;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
-import com.fr.swift.result.SwiftNode;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.structure.Pair;
 
 import java.util.Comparator;
 import java.util.Iterator;
@@ -18,7 +18,6 @@ import java.util.Map;
 public class ChainedNodeMergeResultSet implements NodeMergeResultSet<GroupNode> {
 
     private int fetchSize;
-    private List<Map<Integer, Object>> totalDictionaries;
     private Iterator<NodeMergeResultSet<GroupNode>> iterator;
 
     public ChainedNodeMergeResultSet(int fetchSize, boolean[] isGlobalIndexed, List<NodeMergeResultSet<GroupNode>> sources,
@@ -28,24 +27,17 @@ public class ChainedNodeMergeResultSet implements NodeMergeResultSet<GroupNode> 
     }
 
     @Override
-    public List<Map<Integer, Object>> getRowGlobalDictionaries() {
-        return totalDictionaries;
-    }
-
-    @Override
     public int getFetchSize() {
         return fetchSize;
     }
 
     @Override
-    public SwiftNode<GroupNode> getNode() {
-        totalDictionaries = null;
+    public Pair<GroupNode, List<Map<Integer, Object>>> getPage() {
         if (!iterator.hasNext()) {
             return null;
         }
         NodeMergeResultSet resultSet = iterator.next();
-        totalDictionaries = resultSet.getRowGlobalDictionaries();
-        return resultSet.getNode();
+        return resultSet.getPage();
     }
 
     @Override

@@ -20,16 +20,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+
 /**
  * Created by Lyon on 2018/7/25.
  */
-class NodeMergeResultSetIterator implements Iterator<NodeMergeResultSet<GroupNode>> {
+class NodePageIterator implements Iterator<NodeMergeResultSet<GroupNode>> {
 
     private int dimensionSize;
     private GroupByInfo groupByInfo;
     private Iterator<GroupNode> iterator;
 
-    NodeMergeResultSetIterator(int pageSize, GroupByInfo groupByInfo, MetricInfo metricInfo) {
+    NodePageIterator(int pageSize, GroupByInfo groupByInfo, MetricInfo metricInfo) {
         this.dimensionSize = groupByInfo.getDimensions().size();
         this.groupByInfo = groupByInfo;
         this.iterator = new GroupNodeIterator(dimensionSize, pageSize,
