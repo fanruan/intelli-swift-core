@@ -1,5 +1,6 @@
 package com.fr.swift.adaptor.log;
 
+import com.fr.invoke.Reflect;
 import com.fr.swift.adaptor.log.DatumConverters.ReverseDatumConverter;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
@@ -53,7 +54,7 @@ public class DecisionRowAdaptor<T> implements Function<Row, T> {
     @Override
     public T apply(Row row) {
         try {
-            T data = entity.newInstance();
+            T data = Reflect.on(entity).create().get();
             for (Entry<Integer, Pair<Field, UnaryOperator<Object>>> entry : converters.entrySet()) {
                 Pair<Field, UnaryOperator<Object>> pair = entry.getValue();
                 pair.getKey().set(data, pair.getValue().apply(row.getValue(entry.getKey() - 1)));
