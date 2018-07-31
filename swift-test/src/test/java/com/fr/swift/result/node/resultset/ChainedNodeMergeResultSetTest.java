@@ -18,17 +18,12 @@ import com.fr.swift.result.node.GroupNodeUtils;
 import com.fr.swift.result.row.RowIndexKey;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.iterator.IteratorUtils;
 import junit.framework.TestCase;
 import org.junit.Assert;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Lyon on 2018/7/27.
@@ -187,8 +182,9 @@ public class ChainedNodeMergeResultSetTest extends TestCase {
     private static List<Row> getRowList(NodeMergeResultSet mergeResultSet) {
         List<Row> rowList = new ArrayList<>();
         while (mergeResultSet.hasNextPage()) {
-            GroupNode node = (GroupNode) mergeResultSet.getNode();
-            GroupNodeUtils.updateNodeData(node, mergeResultSet.getRowGlobalDictionaries());
+            Pair<GroupNode, List<Map<Integer, Object>>> pair = mergeResultSet.getPage();
+            GroupNode node = pair.getKey();
+            GroupNodeUtils.updateNodeData(node, pair.getValue());
             rowList.addAll(IteratorUtils.iterator2List(SwiftNodeUtils.node2RowIterator(node)));
         }
         return rowList;

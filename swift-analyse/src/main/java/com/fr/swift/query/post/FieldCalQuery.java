@@ -27,7 +27,7 @@ public class FieldCalQuery extends AbstractPostQuery<NodeResultSet> {
 
     @Override
     public NodeResultSet getQueryResult() throws SQLException {
-        NodeResultSet<GroupNode> mergeResult = (NodeResultSet<GroupNode>) query.getQueryResult();
+        NodeResultSet<SwiftNode> mergeResult = (NodeResultSet<SwiftNode>) query.getQueryResult();
         SwiftNodeOperator<SwiftNode> operator = new SwiftNodeOperator<SwiftNode>() {
             @Override
             public SwiftNode operate(SwiftNode... node) {

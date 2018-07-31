@@ -6,13 +6,10 @@ import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.NodeMergeResultSetImpl;
 import com.fr.swift.result.NodeResultSet;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.util.function.Function;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Lyon on 2018/7/27.
@@ -34,8 +31,9 @@ class MergeOperator implements Function<List<NodeMergeResultSet<GroupNode>>, Nod
         List<GroupNode> roots = new ArrayList<GroupNode>();
         List<Map<Integer, Object>> totalDictionaries = new ArrayList<Map<Integer, Object>>();
         for (NodeResultSet resultSet : groupByResultSets) {
-            roots.add((GroupNode) resultSet.getNode());
-            addDictionaries(((NodeMergeResultSet) resultSet).getRowGlobalDictionaries(), totalDictionaries);
+            Pair<GroupNode, List<Map<Integer, Object>>> pair = resultSet.getPage();
+            roots.add(pair.getKey());
+            addDictionaries(pair.getValue(), totalDictionaries);
         }
         GroupNode mergeNode = GroupNodeMergeUtils.merge(roots, comparators, aggregators);
         return new NodeMergeResultSetImpl<GroupNode>(fetchSize, mergeNode, totalDictionaries);

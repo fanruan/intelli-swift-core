@@ -17,11 +17,7 @@ import com.fr.swift.structure.queue.SortedListMergingUtils;
 import com.fr.swift.util.function.Function;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Lyon on 2018/5/31.
@@ -42,7 +38,7 @@ public class ResultJoinUtils {
         final List<Integer> metricLengthList = getMetricLengthList(dimensionSize, resultSets);
         List<Iterator<MergeRow>> iterators = new ArrayList<Iterator<MergeRow>>();
         for (int i = 0; i < resultSets.size(); i++) {
-            final GroupNode root = (GroupNode) resultSets.get(i).getNode();
+            final GroupNode root = (GroupNode) resultSets.get(i).getPage().getKey();
             Iterator<List<GroupNode>> iterator = new Tree2RowIterator<GroupNode>(dimensionSize, root.getChildren().iterator(), new Function<GroupNode, Iterator<GroupNode>>() {
                 @Override
                 public Iterator<GroupNode> apply(GroupNode p) {

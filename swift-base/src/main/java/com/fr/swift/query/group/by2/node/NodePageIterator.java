@@ -5,31 +5,23 @@ import com.fr.swift.query.group.by2.ItCreator;
 import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.query.group.info.MetricInfo;
-import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeMergeResultSet;
-import com.fr.swift.result.NodeMergeResultSetImpl;
-import com.fr.swift.result.SwiftNode;
-import com.fr.swift.result.SwiftNodeUtils;
+import com.fr.swift.result.*;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.structure.Pair;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Lyon on 2018/7/25.
  */
-class NodeMergeResultSetIterator implements Iterator<NodeMergeResultSet<GroupNode>> {
+class NodePageIterator implements Iterator<NodeMergeResultSet<GroupNode>> {
 
     private int dimensionSize;
     private GroupByInfo groupByInfo;
     private Iterator<GroupNode> iterator;
 
-    NodeMergeResultSetIterator(int pageSize, GroupByInfo groupByInfo, MetricInfo metricInfo) {
+    NodePageIterator(int pageSize, GroupByInfo groupByInfo, MetricInfo metricInfo) {
         this.dimensionSize = groupByInfo.getDimensions().size();
         this.groupByInfo = groupByInfo;
         this.iterator = new GroupNodeIterator(dimensionSize, pageSize,
