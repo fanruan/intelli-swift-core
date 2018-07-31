@@ -5,14 +5,7 @@ import com.fr.swift.util.qm.bool.BExprConverter;
 import com.fr.swift.util.qm.bool.BVar;
 import com.fr.swift.util.qm.cal.exception.UnsupportedBooleanVariableNumberException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Quine–McCluskey algorithm实现
@@ -33,6 +26,9 @@ public class QMUtils {
      */
     public static BExpr simplify(BExpr expr, BExprConverter converter) throws Exception {
         Map<BVar, Integer> bVarIntegerMap = MinTermUtils.getBVarMap(expr);
+        if (bVarIntegerMap.isEmpty()) {
+            return BExpr.TRUE;
+        }
         if (bVarIntegerMap.size() > 63) {
             throw new UnsupportedBooleanVariableNumberException("number of boolean variable exceed the limit: 63!");
         }
