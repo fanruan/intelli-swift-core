@@ -33,6 +33,11 @@ public class SegmentResultSet implements SwiftResultSet {
     }
 
     private void init() {
+        if (!seg.isReadable()) {
+            rowCount = 0;
+            return;
+        }
+
         SwiftMetaData meta = seg.getMetaData();
         rowCount = seg.getRowCount();
 
