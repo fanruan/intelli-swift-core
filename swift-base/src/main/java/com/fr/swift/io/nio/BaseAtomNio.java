@@ -122,12 +122,6 @@ abstract class BaseAtomNio extends BaseNio {
     }
 
     @Override
-    public boolean isReadable() {
-        File f = new File(conf.getPath());
-        return f.exists() && f.list() != null;
-    }
-
-    @Override
     public void release() {
         releaseBuffer();
     }
