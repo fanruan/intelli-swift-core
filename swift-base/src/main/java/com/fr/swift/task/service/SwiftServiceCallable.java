@@ -30,8 +30,6 @@ public abstract class SwiftServiceCallable implements ServiceCallable {
         try {
             doJob();
             return true;
-        } catch (Exception e) {
-            throw e;
         } finally {
             finishJob();
         }

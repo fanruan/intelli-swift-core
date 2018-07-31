@@ -38,10 +38,6 @@ public class LineSourceAlloter extends BaseSourceAlloter {
 
     @Override
     public boolean isFull(Segment segment) {
-        try {
-            return (segment.getRowCount() >= rule.getStep());
-        } catch (Exception e) {
-            return false;
-        }
+        return segment.isReadable() && segment.getRowCount() >= rule.getStep();
     }
 }

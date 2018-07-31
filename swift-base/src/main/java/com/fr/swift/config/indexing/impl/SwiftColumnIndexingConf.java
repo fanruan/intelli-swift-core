@@ -2,7 +2,7 @@ package com.fr.swift.config.indexing.impl;
 
 import com.fr.swift.config.indexing.ColumnIndexingConf;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.util.Crasher;
+import com.fr.swift.util.Assert;
 import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Entity;
 import com.fr.third.javax.persistence.Id;
@@ -48,7 +48,7 @@ public class SwiftColumnIndexingConf implements ColumnIndexingConf {
     }
 
     public SwiftColumnIndexingConf(SourceKey tableKey, String columnName, boolean requireIndex, boolean requireGlobalDict) {
-        Crasher.crashIf(!requireIndex && requireGlobalDict, "global dict is not allowed to generate without index");
+        Assert.isFalse(!requireIndex && requireGlobalDict, "global dict is not allowed to generate without index");
 
         this.columnId = new ColumnId(tableKey, columnName);
         this.requireIndex = requireIndex;

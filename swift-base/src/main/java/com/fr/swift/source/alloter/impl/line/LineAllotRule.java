@@ -7,12 +7,12 @@ import com.fr.swift.source.alloter.impl.BaseAllotRule;
  * @date 2018/6/5
  */
 public class LineAllotRule extends BaseAllotRule {
-    private static final int DEFAULT_STEP = 10000000;
+    public static final int STEP = 10000000, MEM_STEP = 100000;
 
     private int step;
 
     public LineAllotRule() {
-        this(DEFAULT_STEP);
+        this(STEP);
     }
 
     public LineAllotRule(int step) {

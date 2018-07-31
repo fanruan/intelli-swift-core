@@ -6,6 +6,7 @@ import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.Writer;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.Clearable;
+import com.fr.swift.util.function.Predicate;
 
 import java.util.Date;
 import java.util.Map;
@@ -36,6 +37,8 @@ public interface IResourceDiscovery extends Clearable {
     boolean isCubeResourceEmpty();
 
     Map<String, MemIo> removeCubeResource(String basePath);
+
+    void removeIf(Predicate<String> predicate);
 
     Date getLastUpdateTime(SourceKey sourceKey);
 

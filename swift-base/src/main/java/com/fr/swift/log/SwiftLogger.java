@@ -14,6 +14,7 @@ public interface SwiftLogger extends Logger {
     Type getType();
 
     enum Type {
+        //
         LOG4J, FR
     }
 }

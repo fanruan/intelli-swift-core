@@ -1,4 +1,4 @@
-package com.fr.swift.generate.segment.operator.merger;
+package com.fr.swift.segment.merge;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.segment.Segment;

@@ -83,7 +83,7 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
     }
 
     @Override
-    public boolean removeSegments(final SegmentKey... segmentKeys) {
+    public boolean removeSegments(final List<SegmentKey> segmentKeys) {
         try {
             if (null == segmentKeys) {
                 return false;

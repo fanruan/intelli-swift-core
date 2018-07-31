@@ -1,6 +1,6 @@
 package com.fr.swift.generate.history.index;
 
-import com.fr.swift.generate.BaseColumnIndexer;
+import com.fr.swift.generate.ColumnIndexer;
 import com.fr.swift.query.group.GroupType;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
@@ -14,7 +14,7 @@ import java.util.List;
  * @author anchore
  * @date 2018/3/23
  */
-public class SubDateColumnIndexer<Derive> extends BaseColumnIndexer<Derive> {
+public class SubDateColumnIndexer<Derive> extends ColumnIndexer<Derive> {
     protected GroupType type;
 
     public SubDateColumnIndexer(DataSource dataSource, ColumnKey key, GroupType type, List<Segment> segments) {

@@ -11,6 +11,7 @@ import java.io.File;
 public class FileUtil {
     /**
      * CommonUtils.deleteFile删文件有问题。。。
+     *
      * @param f 文件或目录
      */
     public static void delete(final File f) {
@@ -34,16 +35,17 @@ public class FileUtil {
         if (f.isDirectory()) {
             File[] children = f.listFiles();
 
-            if (children == null) {
-                consumer.accept(f);
-                return;
-            }
-
-            for (File child : children) {
-                walk(child, consumer);
+            if (children != null) {
+                for (File child : children) {
+                    walk(child, consumer);
+                }
             }
         }
 
         consumer.accept(f);
+    }
+
+    public static boolean exists(String path) {
+        return new File(path).exists();
     }
 }

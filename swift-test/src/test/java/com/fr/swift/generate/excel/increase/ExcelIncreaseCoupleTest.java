@@ -1,9 +1,9 @@
 package com.fr.swift.generate.excel.increase;
 
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.generate.ColumnIndexer;
 import com.fr.swift.generate.TestIndexer;
 import com.fr.swift.generate.excel.BaseExcelTest;
-import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.generate.history.transport.TableTransporter;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.HistorySegment;

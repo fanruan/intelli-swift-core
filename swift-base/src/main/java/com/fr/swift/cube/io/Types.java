@@ -24,20 +24,18 @@ public final class Types {
 
     public enum WriteType {
         /**
-         * 修改
-         */
-        EDIT,
-        /**
          * 覆写
          */
-        OVERWRITE
+        OVERWRITE,
+        // 追加
+        APPEND
     }
 
     public enum StoreType {
         /**
          * 存储类型
          */
-        FINE_IO, MEMORY
+        FINE_IO, MEMORY, NIO
     }
 
 }

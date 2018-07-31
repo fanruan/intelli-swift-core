@@ -57,5 +57,7 @@ public interface Segment extends Releasable, Flushable {
 
     IResourceLocation getLocation();
 
+    boolean isReadable();
+
     boolean isHistory();
 }

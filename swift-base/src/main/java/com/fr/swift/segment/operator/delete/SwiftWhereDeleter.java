@@ -16,19 +16,15 @@ import com.fr.swift.source.SourceKey;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public abstract class AbstractDeleter implements WhereDeleter {
+public class SwiftWhereDeleter implements WhereDeleter {
     private SourceKey tableKey;
 
     protected Segment segment;
 
     protected final Database database = SwiftDatabase.getInstance();
 
-    public AbstractDeleter(SourceKey tableKey, Segment segment) {
+    public SwiftWhereDeleter(SourceKey tableKey, Segment segment) {
         this.tableKey = tableKey;
-        this.segment = segment;
-    }
-
-    public AbstractDeleter(Segment segment) {
         this.segment = segment;
     }
 
@@ -49,5 +45,9 @@ public abstract class AbstractDeleter implements WhereDeleter {
         return allShowIndex;
     }
 
-    public abstract void release();
+    public void release() {
+        if (segment.isHistory()) {
+            segment.release();
+        }
+    }
 }

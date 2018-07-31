@@ -23,8 +23,6 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.sql.SQLException;
-
 /**
  * @author anchore
  * @date 2018/6/15
@@ -83,11 +81,12 @@ public class SwiftRealtimeInserterTest {
     private HistorySegment getBackupSegment(RealTimeSegment realtimeSegment) {
         SwiftMetaData meta = realtimeSegment.getMetaData();
         String segPath = realtimeSegment.getLocation().getPath();
-        return new HistorySegmentImpl(new ResourceLocation(segPath.replace(meta.getSwiftSchema().getDir(), Schema.BACKUP_CUBE.getDir()), StoreType.FINE_IO), meta);
+        Schema swiftSchema = meta.getSwiftSchema();
+        return new HistorySegmentImpl(new ResourceLocation(segPath.replace(swiftSchema.getDir(), swiftSchema.getBackupDir()), StoreType.FINE_IO), meta);
     }
 
     private RealTimeSegment getRealtimeSegment() {
         return new RealTimeSegmentImpl(new ResourceLocation(
-                String.format("%s/%s/seg0", TestResource.getRunPath(), Schema.CUBE.getDir()), StoreType.MEMORY), dataSource.getMetadata());
+                String.format("%s/%s/seg0", TestResource.getRunPath(getClass()), Schema.CUBE.getDir()), StoreType.MEMORY), dataSource.getMetadata());
     }
 }

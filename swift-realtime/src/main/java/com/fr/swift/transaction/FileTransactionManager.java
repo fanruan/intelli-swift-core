@@ -31,7 +31,8 @@ public class FileTransactionManager extends AbstractTransactionManager {
     @Override
     public void start() {
         super.start();
-        try {
+        if (hisSegment.isReadable()) {
+
             this.oldRowCount = hisSegment.getRowCount();
             this.oldAllShowIndex = hisSegment.getAllShowIndex();
             for (String fieldName : hisSegment.getMetaData().getFieldNames()) {
@@ -39,7 +40,7 @@ public class FileTransactionManager extends AbstractTransactionManager {
                 ImmutableBitMap nullIndex = column.getBitmapIndex().getNullIndex();
                 oldNullIndexMap.put(fieldName, nullIndex);
             }
-        } catch (Exception e) {
+        } else {
             this.oldRowCount = 0;
             this.oldAllShowIndex = BitMaps.newAllShowBitMap(0);
             for (String fieldName : hisSegment.getMetaData().getFieldNames()) {

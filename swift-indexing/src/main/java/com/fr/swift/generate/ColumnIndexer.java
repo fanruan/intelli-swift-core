@@ -41,7 +41,7 @@ import static com.fr.swift.segment.column.impl.base.FakeStringDetailColumn.EXTER
  * @author anchore
  * @date 2018/2/26
  */
-public abstract class BaseColumnIndexer<T> extends BaseWorker implements SwiftColumnIndexer {
+public class ColumnIndexer<T> extends BaseWorker implements SwiftColumnIndexer {
     private SwiftMetaData meta;
     private ColumnKey key;
     private List<Segment> segments;
@@ -53,11 +53,11 @@ public abstract class BaseColumnIndexer<T> extends BaseWorker implements SwiftCo
      * @param key
      * @param segments
      */
-    public BaseColumnIndexer(DataSource dataSource, ColumnKey key, List<Segment> segments) {
+    public ColumnIndexer(DataSource dataSource, ColumnKey key, List<Segment> segments) {
         this(dataSource.getMetadata(), key, segments);
     }
 
-    public BaseColumnIndexer(SwiftMetaData meta, ColumnKey key, List<Segment> segments) {
+    public ColumnIndexer(SwiftMetaData meta, ColumnKey key, List<Segment> segments) {
         this.meta = meta;
         this.key = key;
         this.segments = segments;
@@ -90,7 +90,7 @@ public abstract class BaseColumnIndexer<T> extends BaseWorker implements SwiftCo
      * @param baseColumn 基础列
      */
     protected void releaseIfNeed(Releasable baseColumn, Column column) {
-        if (column.getLocation().getStoreType() == StoreType.FINE_IO) {
+        if (column.getLocation().getStoreType() != StoreType.MEMORY) {
             baseColumn.release();
         }
     }
