@@ -23,7 +23,14 @@ import com.fr.swift.structure.iterator.IteratorUtils;
 import junit.framework.TestCase;
 import org.junit.Assert;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 /**
  * Created by Lyon on 2018/7/27.

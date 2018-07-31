@@ -5,7 +5,15 @@ import com.fr.swift.util.qm.bool.BExprConverter;
 import com.fr.swift.util.qm.bool.BVar;
 import com.fr.swift.util.qm.cal.exception.UnsupportedBooleanVariableNumberException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
 
 /**
  * Quine–McCluskey algorithm实现

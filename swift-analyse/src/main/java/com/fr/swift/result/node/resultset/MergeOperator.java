@@ -9,7 +9,11 @@ import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.function.Function;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Lyon on 2018/7/27.

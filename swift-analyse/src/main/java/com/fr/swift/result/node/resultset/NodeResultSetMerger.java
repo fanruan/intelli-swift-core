@@ -1,11 +1,21 @@
 package com.fr.swift.result.node.resultset;
 
 import com.fr.swift.query.aggregator.Aggregator;
-import com.fr.swift.result.*;
+import com.fr.swift.result.GroupNode;
+import com.fr.swift.result.NodeMergeResultSet;
+import com.fr.swift.result.NodeMergeResultSetImpl;
+import com.fr.swift.result.SwiftNode;
+import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.function.Function;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 
 /**
  * Created by Lyon on 2018/7/26.
