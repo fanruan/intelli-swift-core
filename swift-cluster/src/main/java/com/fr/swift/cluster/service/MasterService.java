@@ -20,7 +20,7 @@ public interface MasterService {
      * @param heartBeatInfo
      * @throws Exception
      */
-    void reveiveHeartBeat(HeartBeatInfo heartBeatInfo) throws Exception;
+    void receiveHeartBeat(HeartBeatInfo heartBeatInfo) throws Exception;
 
     /**
      * 主动推送所有节点状态
