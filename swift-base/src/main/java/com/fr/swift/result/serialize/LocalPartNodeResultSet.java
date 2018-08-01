@@ -41,14 +41,17 @@ public class LocalPartNodeResultSet implements NodeMergeResultSet<SwiftNode>, Se
 
     @Override
     public Pair<SwiftNode, List<Map<Integer, Object>>> getPage() {
-        Pair<SwiftNode, List<Map<Integer, Object>>> ret = page;
-        page = null;
-        hasNextPage = false;
+        Pair<SwiftNode, List<Map<Integer, Object>>> ret = null;
+        if (hasNextPage) {
+            hasNextPage = false;
+            ret = page;
+            page = null;
+            return ret;
+        }
         if (originHasNextPage) {
             try {
                 LocalPartNodeResultSet resultSet = (LocalPartNodeResultSet) QueryRunnerProvider.getInstance().executeRemoteQuery(jsonString, null);
-                hasNextPage = true;
-                page = resultSet.getPage();
+                ret = resultSet.getPage();
                 originHasNextPage = resultSet.hasNextPage();
             } catch (SQLException e) {
                 Crasher.crash(e);
