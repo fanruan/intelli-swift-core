@@ -97,9 +97,6 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
                 }
             } else {
                 minAddedValue = val;
-            }
-
-            if (!hasAddedValue) {
                 hasAddedValue = true;
             }
         }
