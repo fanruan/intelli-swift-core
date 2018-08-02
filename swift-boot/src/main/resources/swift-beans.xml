@@ -8,7 +8,6 @@
     <!--正常注入-->
     <bean id="localSegmentProvider" class="com.fr.swift.manager.LocalSegmentProvider"/>
     <bean id="indexingSegmentManager" class="com.fr.swift.manager.IndexingSegmentManager"/>
-    <bean class="com.fr.swift.manager.LocalDataOperatorProvider"/>
     <bean id="swiftProperty" class="com.fr.swift.property.SwiftProperty"/>
     <bean id="serviceRegistry" class="com.fr.swift.netty.rpc.registry.impl.SimpleServiceRegistry"/>
     <bean id="serviceDiscovery" class="com.fr.swift.netty.rpc.registry.impl.SimpleServiceDiscovery"/>
@@ -18,6 +17,7 @@
     <bean id="queryIndexRunner" class="com.fr.swift.service.QueryIndexService"/>
 
     <bean id="inserter" class="com.fr.swift.segment.operator.insert.SwiftInserter" scope="prototype"/>
+    <bean id="historyBlockInserter" class="com.fr.swift.segment.insert.HistoryBlockInserter" scope="prototype"/>
     <bean id="incrementer" class="com.fr.swift.segment.Incrementer" scope="prototype"/>
     <bean id="decrementer" class="com.fr.swift.segment.Decrementer" scope="prototype"/>
 

@@ -40,8 +40,8 @@ public class IncrementerTest {
     @Test
     public void increment() throws SQLException {
         Incrementer incrementer = new Incrementer(dataSource);
-        incrementer.increment(transfer.createResultSet());
-        incrementer.increment(transfer.createResultSet());
+        incrementer.insertData(transfer.createResultSet());
+        incrementer.insertData(transfer.createResultSet());
         Segment seg = SwiftContext.get().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey()).get(0);
 
         int rowCount = seg.getRowCount();
