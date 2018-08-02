@@ -60,7 +60,7 @@ abstract class BaseAtomNio extends BaseNio {
                 buf = ch.map(conf.isRead() ? MapMode.READ_ONLY : MapMode.READ_WRITE, 0, 1 << conf.getPageSize());
             } else {
                 if (buf == null) {
-                    buf = ByteBuffer.allocate(1 << conf.getPageSize());
+                    buf = ByteBuffer.allocateDirect(1 << conf.getPageSize());
                 }
                 if (conf.isAppend()) {
                     currentStart = (int) ch.size();
