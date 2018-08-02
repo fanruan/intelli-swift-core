@@ -84,9 +84,9 @@ public abstract class BaseSegment implements Segment {
             if (key.getRelation() != null) {
                 return createRelationColumn(key);
             }
-            return null;
+            return Crasher.crash(e);
         } catch (Exception e) {
-            return null;
+            return Crasher.crash(e);
         }
     }
 

@@ -1,6 +1,8 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.bitmap.impl.EmptyBitmap;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DetailColumn;
@@ -17,29 +19,40 @@ import java.util.List;
  * @date 2018/7/26
  */
 public class SegmentResultSet implements SwiftResultSet {
-    protected Segment seg;
+    private Segment seg;
 
     private List<DetailColumn> details = new ArrayList<DetailColumn>();
 
     private List<ImmutableBitMap> nullIndices = new ArrayList<ImmutableBitMap>();
+
+    protected ImmutableBitMap allShowIndex;
+
+    private boolean discardDeleted;
 
     private int cursor = 0;
 
     private int rowCount = -1;
 
     public SegmentResultSet(Segment seg) {
+        this(seg, true);
+    }
+
+    public SegmentResultSet(Segment seg, boolean discardDeleted) {
         this.seg = seg;
+        this.discardDeleted = discardDeleted;
         init();
     }
 
     private void init() {
         if (!seg.isReadable()) {
             rowCount = 0;
+            allShowIndex = new EmptyBitmap();
             return;
         }
 
         SwiftMetaData meta = seg.getMetaData();
         rowCount = seg.getRowCount();
+        allShowIndex = seg.getAllShowIndex();
 
         try {
             for (int i = 1; i <= meta.getColumnCount(); i++) {
@@ -47,7 +60,8 @@ public class SegmentResultSet implements SwiftResultSet {
                 details.add(column.getDetailColumn());
                 nullIndices.add(column.getBitmapIndex().getNullIndex());
             }
-        } catch (Exception ignore) {
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
         }
     }
 
@@ -63,6 +77,11 @@ public class SegmentResultSet implements SwiftResultSet {
 
     @Override
     public boolean hasNext() {
+        if (discardDeleted) {
+            while (cursor < rowCount && !allShowIndex.contains(cursor)) {
+                cursor++;
+            }
+        }
         return cursor < rowCount;
     }
 

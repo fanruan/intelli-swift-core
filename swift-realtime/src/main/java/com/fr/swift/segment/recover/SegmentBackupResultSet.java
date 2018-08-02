@@ -1,7 +1,6 @@
 package com.fr.swift.segment.recover;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.bitmap.impl.EmptyBitmap;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentResultSet;
 
@@ -11,10 +10,10 @@ import com.fr.swift.segment.SegmentResultSet;
  */
 class SegmentBackupResultSet extends SegmentResultSet {
     SegmentBackupResultSet(Segment seg) {
-        super(seg);
+        super(seg, false);
     }
 
     public ImmutableBitMap getAllShowIndex() {
-        return seg.isReadable() ? seg.getAllShowIndex() : new EmptyBitmap();
+        return allShowIndex;
     }
 }
