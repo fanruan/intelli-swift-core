@@ -17,17 +17,17 @@ import java.util.Map;
  */
 public class ChainedNodeResultSet implements NodeResultSet<SwiftNode> {
 
-    private SwiftNodeOperator<SwiftNode> operator;
+    private SwiftNodeOperator operator;
     private NodeResultSet<SwiftNode> source;
     private SwiftMetaData metaData;
     private Iterator<Row> rowIterator;
 
-    public ChainedNodeResultSet(SwiftNodeOperator<SwiftNode> operator, NodeResultSet<SwiftNode> source) {
+    public ChainedNodeResultSet(SwiftNodeOperator operator, NodeResultSet<SwiftNode> source) {
         this.operator = operator;
         this.source = source;
     }
 
-    public ChainedNodeResultSet(SwiftNodeOperator<SwiftNode> operator, NodeResultSet source, SwiftMetaData metaData) {
+    public ChainedNodeResultSet(SwiftNodeOperator operator, NodeResultSet source, SwiftMetaData metaData) {
         this(operator, source);
         this.metaData = metaData;
     }
@@ -39,14 +39,12 @@ public class ChainedNodeResultSet implements NodeResultSet<SwiftNode> {
 
     @Override
     public Pair<SwiftNode, List<Map<Integer, Object>>> getPage() {
-        SwiftNode ret = null;
-        List<Map<Integer, Object>> dict = null;
+        Pair<SwiftNode, List<Map<Integer, Object>>> ret = null;
         if (hasNextPage()) {
             Pair<SwiftNode, List<Map<Integer, Object>>> pair = source.getPage();
-            ret = operator.operate(pair.getKey());
-            dict = pair.getValue();
+            ret = operator.apply(pair);
         }
-        return Pair.of(ret, dict);
+        return ret;
     }
 
     @Override

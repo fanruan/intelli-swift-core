@@ -1,17 +1,13 @@
 package com.fr.swift.result;
 
+import com.fr.swift.structure.Pair;
+import com.fr.swift.util.function.Function;
+
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by Lyon on 2018/6/12.
  */
-public interface SwiftNodeOperator<T extends SwiftNode> {
-
-    T operate(T... node);
-
-//    OperatorType getType();
-
-    enum OperatorType {
-        // TODO: 2018/6/12 先简单分为两种
-        ROW,
-        ALL
-    }
+public interface SwiftNodeOperator extends Function<Pair<? extends SwiftNode, List<Map<Integer, Object>>>, Pair<SwiftNode, List<Map<Integer, Object>>>> {
 }
