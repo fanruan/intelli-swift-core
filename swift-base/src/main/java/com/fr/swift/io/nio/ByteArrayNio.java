@@ -30,7 +30,7 @@ public class ByteArrayNio extends BaseNio implements ObjectIo<byte[]> {
         data = new ByteNio(conf.ofAnotherPath(String.format("%s/%s", conf.getPath(), "data")));
         if (conf.isAppend()) {
             LongIo lastPosition = new LongNio(new NioConf(
-                    String.format("%s/%s", conf.getPath(), "last_pos"), IoType.READ, conf.getPageSize(), conf.isMapped()));
+                    String.format("%s/%s", conf.getPath(), "last_pos"), IoType.READ, conf.getPageSize(), conf.getFileSize(), conf.isMapped()));
             currentPos = lastPosition.isReadable() ? lastPosition.get(0) : 0;
             lastPosition.release();
         }
@@ -76,7 +76,7 @@ public class ByteArrayNio extends BaseNio implements ObjectIo<byte[]> {
     public void release() {
         if (conf.isAppend()) {
             LongIo lastPosition = new LongNio(new NioConf(
-                    String.format("%s/%s", conf.getPath(), "last_pos"), IoType.OVERWRITE, conf.getPageSize(), conf.isMapped()));
+                    String.format("%s/%s", conf.getPath(), "last_pos"), IoType.OVERWRITE, conf.getPageSize(), conf.getFileSize(), conf.isMapped()));
             lastPosition.put(0, currentPos);
             lastPosition.release();
         }
