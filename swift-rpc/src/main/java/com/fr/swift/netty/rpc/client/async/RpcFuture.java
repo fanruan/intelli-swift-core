@@ -29,12 +29,12 @@ public class RpcFuture implements Future<Object> {
     private RpcRequest request;
     private RpcResponse response;
     private long startTime;
-    private long responseTimeThreshold = 5000;
+    private long responseTimeThreshold = 5000L;
 
     private List<AsyncRpcCallback> pendingCallbacks = new ArrayList<AsyncRpcCallback>();
     private ReentrantLock lock = new ReentrantLock();
 
-    public RpcFuture(RpcRequest request) {
+    protected RpcFuture(RpcRequest request) {
         this.sync = new Sync();
         this.request = request;
         this.startTime = System.currentTimeMillis();
@@ -85,7 +85,7 @@ public class RpcFuture implements Future<Object> {
         sync.release(1);
         invokeCallbacks();
         long responseTime = System.currentTimeMillis() - startTime;
-        LOGGER.warn("Async request done! Request id = " + reponse.getRequestId() + ". Response Time = " + responseTime + "ms");
+        LOGGER.debug("Async request done! Request id = " + reponse.getRequestId() + ". Response Time = " + responseTime + "ms");
     }
 
     private void invokeCallbacks() {

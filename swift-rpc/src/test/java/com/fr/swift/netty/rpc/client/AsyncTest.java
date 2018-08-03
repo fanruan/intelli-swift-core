@@ -12,6 +12,7 @@ import com.fr.swift.netty.rpc.proxy.RPCProxyFactory;
 import com.fr.swift.netty.rpc.server.RpcServer;
 import com.fr.swift.netty.rpc.url.RPCDestination;
 import com.fr.swift.netty.rpc.url.RPCUrl;
+import com.fr.workspace.simple.SimpleWork;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.CountDownLatch;
@@ -27,11 +28,12 @@ import java.util.concurrent.CountDownLatch;
 public class AsyncTest {
 
     public static void main(String[] args) {
+        SimpleWork.checkIn(System.getProperty("user.dir"));
         ProxySelector.getInstance().switchFactory(new RPCProxyFactory());
         //step1: get proxyFactory
         ProxyFactory proxyFactory = ProxySelector.getInstance().getFactory();
         //step2: create invoker
-        Invoker invoker = proxyFactory.getInvoker(null, CalculatorService.class, new RPCUrl(new RPCDestination("127.0.0.1:8000")), false);
+        Invoker invoker = proxyFactory.getInvoker(null, CalculatorService.class, new RPCUrl(new RPCDestination("192.168.0.28:7000")), false);
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 //        Method method = CalculatorService.class.getMethod("add", int.class, int.class, long.class);
         //step3: get invoker method
