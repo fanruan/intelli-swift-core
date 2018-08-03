@@ -2,9 +2,12 @@ package com.fr.swift.result;
 
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.structure.Pair;
 
 import java.sql.SQLException;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by pony on 2018/4/19.
@@ -28,8 +31,8 @@ public class NodeResultSetImpl<T extends SwiftNode> implements NodeResultSet {
     }
 
     @Override
-    public SwiftNode<T> getNode() {
-        return node;
+    public Pair<SwiftNode, List<Map<Integer, Object>>> getPage() {
+        return Pair.of(node, null);
     }
 
     @Override

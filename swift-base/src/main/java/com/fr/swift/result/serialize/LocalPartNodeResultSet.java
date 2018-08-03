@@ -5,6 +5,7 @@ import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
 
 import java.sql.SQLException;
@@ -21,23 +22,16 @@ public class LocalPartNodeResultSet implements NodeMergeResultSet<SwiftNode>, Se
     private static final long serialVersionUID = -7163285398162627401L;
     private int fetchSize;
     private String jsonString;
-    private SwiftNode root;
-    private List<Map<Integer, Object>> dictionary;
+    private Pair<SwiftNode, List<Map<Integer, Object>>> page;
     private boolean hasNextPage = true;
     private boolean originHasNextPage;
 
-    public LocalPartNodeResultSet(int fetchSize, String jsonString, SwiftNode root, List<Map<Integer, Object>> dictionary,
+    public LocalPartNodeResultSet(int fetchSize, String jsonString, Pair<SwiftNode, List<Map<Integer, Object>>> page,
                                   boolean originHasNextPage) {
         this.fetchSize = fetchSize;
         this.jsonString = jsonString;
-        this.root = root;
-        this.dictionary = dictionary;
+        this.page = page;
         this.originHasNextPage = originHasNextPage;
-    }
-
-    @Override
-    public List<Map<Integer, Object>> getRowGlobalDictionaries() {
-        return dictionary;
     }
 
     @Override
@@ -46,20 +40,24 @@ public class LocalPartNodeResultSet implements NodeMergeResultSet<SwiftNode>, Se
     }
 
     @Override
-    public SwiftNode<SwiftNode> getNode() {
-        hasNextPage = false;
+    public Pair<SwiftNode, List<Map<Integer, Object>>> getPage() {
+        Pair<SwiftNode, List<Map<Integer, Object>>> ret = null;
+        if (hasNextPage) {
+            hasNextPage = false;
+            ret = page;
+            page = null;
+            return ret;
+        }
         if (originHasNextPage) {
             try {
                 LocalPartNodeResultSet resultSet = (LocalPartNodeResultSet) QueryRunnerProvider.getInstance().executeRemoteQuery(jsonString, null);
-                hasNextPage = true;
-                this.root = resultSet.root;
-                this.dictionary = resultSet.dictionary;
-                this.originHasNextPage = resultSet.originHasNextPage;
+                ret = resultSet.getPage();
+                originHasNextPage = resultSet.hasNextPage();
             } catch (SQLException e) {
                 Crasher.crash(e);
             }
         }
-        return root;
+        return ret;
     }
 
     @Override

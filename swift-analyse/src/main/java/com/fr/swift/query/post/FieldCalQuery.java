@@ -7,10 +7,12 @@ import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeOperator;
 import com.fr.swift.result.node.cal.TargetCalculatorUtils;
 import com.fr.swift.result.node.resultset.ChainedNodeResultSet;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Lyon on 2018/5/31.
@@ -27,19 +29,19 @@ public class FieldCalQuery extends AbstractPostQuery<NodeResultSet> {
 
     @Override
     public NodeResultSet getQueryResult() throws SQLException {
-        NodeResultSet<GroupNode> mergeResult = (NodeResultSet<GroupNode>) query.getQueryResult();
-        SwiftNodeOperator<SwiftNode> operator = new SwiftNodeOperator<SwiftNode>() {
+        SwiftNodeOperator operator = new SwiftNodeOperator() {
             @Override
-            public SwiftNode operate(SwiftNode... node) {
+            public Pair<SwiftNode, List<Map<Integer, Object>>> apply(Pair<? extends SwiftNode, List<Map<Integer, Object>>> p) {
                 // TODO: 2018/6/13 同比环比依赖的字典去掉了，data已经set进来了，到时适配一下
                 try {
-                    TargetCalculatorUtils.calculate((GroupNode) node[0], null, calInfo);
+                    TargetCalculatorUtils.calculate((GroupNode) p.getKey(), p.getValue(), calInfo);
                 } catch (SQLException e) {
                     Crasher.crash(e);
                 }
-                return node[0];
+                return Pair.of(p.getKey(), p.getValue());
             }
         };
+        NodeResultSet<SwiftNode> mergeResult = (NodeResultSet<SwiftNode>) query.getQueryResult();
         return new ChainedNodeResultSet(operator, mergeResult);
     }
 }

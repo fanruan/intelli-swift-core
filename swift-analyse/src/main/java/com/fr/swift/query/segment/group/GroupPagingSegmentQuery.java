@@ -6,9 +6,9 @@ import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.NodeResultSet;
-import com.fr.swift.result.SwiftNode;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.structure.Pair;
 
 import java.util.Iterator;
 import java.util.List;
@@ -27,8 +27,6 @@ public class GroupPagingSegmentQuery extends AbstractGroupSegmentQuery {
     public NodeResultSet getQueryResult() {
         final Iterator<NodeMergeResultSet<GroupNode>> iterator = NodeGroupByUtils.groupBy(groupByInfo, metricInfo);
         return new NodeMergeResultSet() {
-
-            private List<Map<Integer, Object>> dictionary;
 
             @Override
             public SwiftMetaData getMetaData() {
@@ -56,20 +54,14 @@ public class GroupPagingSegmentQuery extends AbstractGroupSegmentQuery {
             }
 
             @Override
-            public SwiftNode getNode() {
+            public Pair<GroupNode, List<Map<Integer, Object>>> getPage() {
                 NodeMergeResultSet resultSet = iterator.next();
-                dictionary = resultSet.getRowGlobalDictionaries();
-                return resultSet.getNode();
+                return resultSet.getPage();
             }
 
             @Override
             public boolean hasNextPage() {
                 return iterator.hasNext();
-            }
-
-            @Override
-            public List<Map<Integer, Object>> getRowGlobalDictionaries() {
-                return dictionary;
             }
         };
     }

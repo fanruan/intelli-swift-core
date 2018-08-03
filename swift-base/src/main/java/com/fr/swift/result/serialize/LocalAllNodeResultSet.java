@@ -6,10 +6,13 @@ import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
 
 import java.sql.SQLException;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 对应QueryType.LOCAL_ALL（当前节点包含查询的所有segment，并且当前节点处理的是查询节点转发过来的请求）
@@ -39,19 +42,21 @@ public class LocalAllNodeResultSet implements NodeResultSet<SwiftNode>, Serializ
     }
 
     @Override
-    public SwiftNode<SwiftNode> getNode() {
+    public Pair<SwiftNode, List<Map<Integer, Object>>> getPage() {
         hasNextPage = false;
+        SwiftNode ret = root;
+        root = null;
         if (originHasNextPage) {
             try {
                 LocalAllNodeResultSet resultSet = (LocalAllNodeResultSet) QueryRunnerProvider.getInstance().executeRemoteQuery(jsonString, null);
                 hasNextPage = true;
-                this.root = resultSet.root;
+                this.root = resultSet.getPage().getKey();
                 this.originHasNextPage = resultSet.originHasNextPage;
             } catch (SQLException e) {
                 Crasher.crash(e);
             }
         }
-        return root;
+        return Pair.of(ret, null);
     }
 
     @Override

@@ -15,12 +15,14 @@ import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.node.GroupNodeUtils;
 import com.fr.swift.result.row.RowIndexKey;
 import com.fr.swift.source.Row;
+import com.fr.swift.structure.Pair;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import static junit.framework.TestCase.assertTrue;
@@ -51,7 +53,8 @@ public class GroupAllSegmentQueryTest {
         MetricInfo metricInfo = new MetricInfoImpl(cubeData.getMetrics(), cubeData.getAggregators(), cubeData.getMetrics().size());
         resultSet = (NodeMergeResultSet<GroupNode>) new GroupAllSegmentQuery(groupByInfo, metricInfo).getQueryResult();
         // 更新Node#data
-        GroupNodeUtils.updateNodeData(((GroupNode) resultSet.getNode()), resultSet.getRowGlobalDictionaries());
+        Pair<GroupNode, List<Map<Integer, Object>>> pair = resultSet.getPage();
+        GroupNodeUtils.updateNodeData(pair.getKey(), pair.getValue());
     }
 
     @Test

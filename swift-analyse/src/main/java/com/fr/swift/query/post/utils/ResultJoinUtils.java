@@ -42,7 +42,7 @@ public class ResultJoinUtils {
         final List<Integer> metricLengthList = getMetricLengthList(dimensionSize, resultSets);
         List<Iterator<MergeRow>> iterators = new ArrayList<Iterator<MergeRow>>();
         for (int i = 0; i < resultSets.size(); i++) {
-            final GroupNode root = (GroupNode) resultSets.get(i).getNode();
+            final GroupNode root = (GroupNode) resultSets.get(i).getPage().getKey();
             Iterator<List<GroupNode>> iterator = new Tree2RowIterator<GroupNode>(dimensionSize, root.getChildren().iterator(), new Function<GroupNode, Iterator<GroupNode>>() {
                 @Override
                 public Iterator<GroupNode> apply(GroupNode p) {

@@ -36,10 +36,10 @@ class FilterInfoParser {
 
     static FilterInfo parse(SourceKey table, FilterInfoBean bean) {
         // TODO: 2018/7/11 化简过滤条件，这边的使用策略可以结合具体场景更智能一点
-        bean = FilterInfoBeanOptimizer.optimize(bean);
         if (null == bean) {
-            return null;
+            return new SwiftDetailFilterInfo<Object>(null, null, SwiftDetailFilterType.ALL_SHOW);
         }
+        bean = FilterInfoBeanOptimizer.optimize(bean);
         switch (bean.getType()) {
             case AND:
             case OR:

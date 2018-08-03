@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+
 /**
  * Quine–McCluskey algorithm实现
  * <p>
@@ -33,6 +34,9 @@ public class QMUtils {
      */
     public static BExpr simplify(BExpr expr, BExprConverter converter) throws Exception {
         Map<BVar, Integer> bVarIntegerMap = MinTermUtils.getBVarMap(expr);
+        if (bVarIntegerMap.isEmpty()) {
+            return BExpr.TRUE;
+        }
         if (bVarIntegerMap.size() > 63) {
             throw new UnsupportedBooleanVariableNumberException("number of boolean variable exceed the limit: 63!");
         }
