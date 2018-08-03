@@ -5,7 +5,7 @@ package com.fr.swift.io.nio;
  * @date 2018/7/22
  */
 public class NioConf {
-    private static final int PAGE_SIZE = 22;
+    private static final int PAGE_SIZE = 12;
 
     private final String path;
 

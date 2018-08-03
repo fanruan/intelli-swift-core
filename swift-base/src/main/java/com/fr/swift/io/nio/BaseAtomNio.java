@@ -60,7 +60,7 @@ abstract class BaseAtomNio extends BaseNio {
                 buf = ch.map(conf.isRead() ? MapMode.READ_ONLY : MapMode.READ_WRITE, 0, 1 << conf.getPageSize());
             } else {
                 if (buf == null) {
-                    buf = ByteBuffer.allocate(1 << conf.getPageSize());
+                    buf = ByteBuffer.allocateDirect(1 << conf.getPageSize());
                 }
                 if (conf.isAppend()) {
                     currentStart = (int) ch.size();
@@ -81,11 +81,11 @@ abstract class BaseAtomNio extends BaseNio {
             return;
         }
         if (conf.isMapped()) {
+            // mapped
             IoUtil.release((MappedByteBuffer) buf);
-            buf = null;
-            return;
-        }
-        if (conf.isWrite()) {
+            IoUtil.close(ch);
+        } else if (conf.isWrite()) {
+            // 非mapped写，buf视为内存块
             buf.limit(buf.position());
             buf.position(currentStart);
             try {
@@ -93,9 +93,12 @@ abstract class BaseAtomNio extends BaseNio {
             } catch (IOException e) {
                 SwiftLoggers.getLogger().error(e);
             } finally {
+                IoUtil.release(buf);
                 IoUtil.close(ch);
             }
         } else {
+            // 非mapped读，buf视为内存块
+            IoUtil.release(buf);
             IoUtil.close(ch);
         }
 
