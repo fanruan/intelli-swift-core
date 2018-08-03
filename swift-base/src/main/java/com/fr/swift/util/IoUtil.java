@@ -7,6 +7,7 @@ import sun.nio.ch.DirectBuffer;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 
 /**
@@ -39,6 +40,12 @@ public class IoUtil {
     public static void release(MappedByteBuffer buf) {
         if (buf != null) {
             buf.force();
+            release(buf);
+        }
+    }
+
+    public static void release(ByteBuffer buf) {
+        if (buf != null && buf.isDirect()) {
             Cleaner cleaner = ((DirectBuffer) buf).cleaner();
             cleaner.clean();
             cleaner.clear();

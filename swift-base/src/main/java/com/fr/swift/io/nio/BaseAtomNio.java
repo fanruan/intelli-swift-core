@@ -81,11 +81,11 @@ abstract class BaseAtomNio extends BaseNio {
             return;
         }
         if (conf.isMapped()) {
+            // mapped
             IoUtil.release((MappedByteBuffer) buf);
-            buf = null;
-            return;
-        }
-        if (conf.isWrite()) {
+            IoUtil.close(ch);
+        } else if (conf.isWrite()) {
+            // 非mapped写，buf视为内存块
             buf.limit(buf.position());
             buf.position(currentStart);
             try {
@@ -96,6 +96,8 @@ abstract class BaseAtomNio extends BaseNio {
                 IoUtil.close(ch);
             }
         } else {
+            // 非mapped读，buf视为内存块
+            IoUtil.release(buf);
             IoUtil.close(ch);
         }
 
