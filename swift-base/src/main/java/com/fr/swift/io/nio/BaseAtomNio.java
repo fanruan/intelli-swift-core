@@ -93,6 +93,7 @@ abstract class BaseAtomNio extends BaseNio {
             } catch (IOException e) {
                 SwiftLoggers.getLogger().error(e);
             } finally {
+                IoUtil.release(buf);
                 IoUtil.close(ch);
             }
         } else {
