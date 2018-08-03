@@ -20,22 +20,22 @@ public class ByteIoTest extends BaseIoTest {
 
     @Test
     public void test() {
-        ByteIo io = new ByteNio(new NioConf(path, IoType.OVERWRITE, pageSize, false));
+        ByteIo io = new ByteNio(new NioConf(path, IoType.OVERWRITE, pageSize, pageSize, false));
         for (int i = 0; i < data.length; i++) {
             io.put(i, data[i]);
         }
         io.release();
-        io = new ByteNio(new NioConf(path, IoType.READ, pageSize, false));
+        io = new ByteNio(new NioConf(path, IoType.READ, pageSize, pageSize, false));
         for (int i = 0; i < data.length; i++) {
             Assert.assertEquals(data[i], io.get(i));
         }
         io.release();
 
-        io = new ByteNio(new NioConf(path, IoType.OVERWRITE, pageSize, false));
+        io = new ByteNio(new NioConf(path, IoType.OVERWRITE, pageSize, pageSize, false));
         io.put(2, (byte) 5);
         io.put(9, (byte) 4);
         io.release();
-        io = new ByteNio(new NioConf(path, IoType.OVERWRITE, pageSize, false));
+        io = new ByteNio(new NioConf(path, IoType.OVERWRITE, pageSize, pageSize, false));
         for (int i = 0; i < data.length; i++) {
             if (i == 2) {
                 Assert.assertEquals(5, io.get(i));
