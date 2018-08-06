@@ -47,7 +47,7 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
             public void operationComplete(ChannelFuture channelFuture) {
                 LOGGER.debug("Send response for request " + request.getRequestId());
             }
-        }).addListener(ChannelFutureListener.CLOSE);
+        });
     }
 
     private Object handle(RpcRequest request) throws Exception {
