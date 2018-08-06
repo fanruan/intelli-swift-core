@@ -32,6 +32,8 @@ public class SwiftProperty {
 
     private String configDbJdbcUrl;
 
+    private int rpcMaxObjectSize;
+
     @Autowired
     public void setRpcAddress(@Value("${swift.rpc_server_address}") String rpcAddress) {
         this.rpcAddress = rpcAddress;
@@ -110,5 +112,14 @@ public class SwiftProperty {
     @Autowired
     public void setHttpAddress(@Value("${swift.http_server_address}") String httpAddress) {
         this.httpAddress = httpAddress;
+    }
+
+    public int getRpcMaxObjectSize() {
+        return rpcMaxObjectSize;
+    }
+
+    @Autowired
+    public void setRpcMaxObjectSize(@Value("${swift.rpcMaxObjectSize}") int rpcMaxObjectSize) {
+        this.rpcMaxObjectSize = rpcMaxObjectSize;
     }
 }

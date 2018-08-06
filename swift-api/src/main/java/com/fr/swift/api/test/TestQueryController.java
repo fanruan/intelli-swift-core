@@ -34,13 +34,14 @@ public class TestQueryController {
     @RequestMapping(value = "/query/{sourceKey}", method = RequestMethod.GET)
     public List<Row> query(@PathVariable("sourceKey") String jsonString) throws Exception {
         List<Row> rows = new ArrayList<Row>();
+        int count = 200;
         long start = System.currentTimeMillis();
         QueryBean queryBean = QueryInfoBeanFactory.create(jsonString);
         ((DetailQueryInfoBean) queryBean).setQueryId("" + System.currentTimeMillis());
         Query query = QueryBuilder.buildQuery(queryBean);
         SwiftResultSet resultSet = query.getQueryResult();
         if (resultSet != null) {
-            while (resultSet.hasNext()) {
+            while (resultSet.hasNext() && count-- > 0) {
                 rows.add(resultSet.getNextRow());
             }
             resultSet.close();

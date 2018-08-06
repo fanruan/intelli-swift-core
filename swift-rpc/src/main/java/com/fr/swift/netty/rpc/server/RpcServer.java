@@ -47,6 +47,8 @@ public class RpcServer {
 
     private ServiceRegistry serviceRegistry;
 
+    private SwiftProperty swiftProperty;
+
     /**
      * key:服务名
      * value:服务对象
@@ -57,13 +59,9 @@ public class RpcServer {
     @Autowired
     public RpcServer(ServiceRegistry serviceRegistry,
                      @Value("SERVER_SERVICE") RpcServiceType serviceType) {
-        this.serviceAddress = SwiftContext.get().getBean("swiftProperty", SwiftProperty.class).getServerAddress();
+        swiftProperty = SwiftContext.get().getBean("swiftProperty", SwiftProperty.class);
+        this.serviceAddress = swiftProperty.getServerAddress();
         this.serviceRegistry = serviceRegistry;
-    }
-
-    public static void main(String[] args) {
-        SwiftContext.init();
-        SwiftContext.get().getBean("swiftProperty");
     }
 
     public void initService(ApplicationContext ctx) throws BeansException {
@@ -98,7 +96,7 @@ public class RpcServer {
                 public void initChannel(SocketChannel channel) {
                     ChannelPipeline pipeline = channel.pipeline();
                     pipeline.addLast(
-                            new ObjectDecoder(10240 * 1024, ClassResolvers
+                            new ObjectDecoder(swiftProperty.getRpcMaxObjectSize(), ClassResolvers
                                     .weakCachingConcurrentResolver(this.getClass()
                                             .getClassLoader())));
                     pipeline.addLast(new ObjectEncoder());
