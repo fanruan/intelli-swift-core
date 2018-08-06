@@ -6,11 +6,11 @@ import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.insert.SwiftInserter;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.LimitedResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.QueryDBSource;
+import com.fr.swift.source.resultset.LimitedResultSet;
 import com.fr.swift.test.Preparer;
 import com.fr.swift.test.TestResource;
 import org.junit.After;
@@ -30,7 +30,7 @@ public class SegmentResultSetTest {
     private final DataSource ds = new QueryDBSource("select 合同ID from DEMO_CONTRACT", getClass().getName());
 
     @BeforeClass
-    public static void setUp() throws Exception {
+    public static void setUp() {
         Preparer.prepareCubeBuild();
     }
 
