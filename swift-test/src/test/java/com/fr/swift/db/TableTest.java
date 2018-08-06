@@ -38,7 +38,7 @@ public class TableTest {
     private Table t;
 
     @BeforeClass
-    public static void boot() throws Exception {
+    public static void boot() {
         Preparer.prepareCubeBuild();
     }
 
@@ -66,7 +66,7 @@ public class TableTest {
     }
 
     private void checkResult() {
-        DetailColumn<Object> detailColumn = SwiftContext.get().getBean(SwiftSegmentManager.class).
+        DetailColumn<Object> detailColumn = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).
                 getSegment(sk).get(0).getColumn(new ColumnKey("A")).getDetailColumn();
         assertEquals(2L, detailColumn.get(0));
         assertEquals(3L, detailColumn.get(1));

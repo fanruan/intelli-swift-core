@@ -24,13 +24,13 @@ public class StringIoTest extends BaseIoTest {
     public void test() {
         String[] strings = {UUID.randomUUID().toString(), UUID.randomUUID().toString()};
 
-        ObjectIo<String> io = new StringNio(new NioConf(path, IoType.OVERWRITE, pageSize, false));
+        ObjectIo<String> io = new StringNio(new NioConf(path, IoType.APPEND, pageSize, false));
         for (int i = 0; i < strings.length; i++) {
             io.put(i, strings[i]);
         }
         io.release();
 
-        io = new StringNio(new NioConf(path, IoType.OVERWRITE, pageSize, false));
+        io = new StringNio(new NioConf(path, IoType.APPEND, pageSize, false));
         String third = UUID.randomUUID().toString();
         io.put(2, third);
         io.release();
