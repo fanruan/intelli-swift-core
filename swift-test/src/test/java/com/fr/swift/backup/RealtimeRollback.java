@@ -21,6 +21,7 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.insert.SwiftRealtimeInserter;
 import com.fr.swift.source.DataSource;
+import com.fr.swift.source.LimitedResultSet;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.SwiftSourceTransferFactory;
@@ -30,7 +31,6 @@ import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 import com.fr.swift.source.alloter.impl.line.LineRowInfo;
 import com.fr.swift.source.alloter.impl.line.LineSourceAlloter;
 import com.fr.swift.source.db.QueryDBSource;
-import com.fr.swift.source.resultset.LimitedResultSet;
 import com.fr.swift.transatcion.TransactionProxyFactory;
 import org.junit.Test;
 
@@ -75,7 +75,7 @@ public class RealtimeRollback extends BaseTest {
             SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
             SwiftResultSet resultSet = transfer.createResultSet();
             Incrementer incrementer = new TestIncrementer(dataSource);
-            incrementer.insertData(resultSet);
+            incrementer.increment(resultSet);
 
             SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
             Segment segment = localSegmentProvider.getSegment(dataSource.getSourceKey()).get(0);
@@ -114,7 +114,7 @@ public class RealtimeRollback extends BaseTest {
             SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
             SwiftResultSet resultSet = transfer.createResultSet();
             Incrementer incrementer = new Incrementer(dataSource);
-            incrementer.insertData(resultSet);
+            incrementer.increment(resultSet);
 
             SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
             Segment segment = localSegmentProvider.getSegment(dataSource.getSourceKey()).get(0);
@@ -137,7 +137,7 @@ public class RealtimeRollback extends BaseTest {
             transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
             resultSet = transfer.createResultSet();
             incrementer = new TestIncrementer(dataSource);
-            incrementer.insertData(resultSet);
+            incrementer.increment(resultSet);
 
             assertEquals(redisClient.llen(String.format("%s/7bc94acd/seg0", dataSource.getMetadata().getSwiftSchema().getBackupDir())), 42);
             //rowcount不回滚
@@ -194,7 +194,7 @@ public class RealtimeRollback extends BaseTest {
         }
 
         @Override
-        public void insertData(SwiftResultSet resultSet) throws SQLException {
+        public void increment(SwiftResultSet resultSet) throws SQLException {
             if (!SwiftDatabase.getInstance().existsTable(dataSource.getSourceKey())) {
                 SwiftDatabase.getInstance().createTable(dataSource.getSourceKey(), dataSource.getMetadata());
             }
@@ -221,8 +221,7 @@ public class RealtimeRollback extends BaseTest {
             }
         }
 
-        @Override
-        protected boolean nextSegment() {
+        private boolean nextSegment() {
             List<SegmentKey> segmentKeys = LOCAL_SEGMENT_PROVIDER.getSegmentKeys(dataSource.getSourceKey());
             if (segmentKeys.isEmpty() ||
                     segmentKeys.get(segmentKeys.size() - 1).getStoreType() != Types.StoreType.MEMORY) {
@@ -234,7 +233,7 @@ public class RealtimeRollback extends BaseTest {
         }
 
         private Segment newRealtimeSegment(SegmentInfo segInfo, int segCount) {
-            String segPath = CubeUtil.getSegmentPath(dataSource, segCount + segInfo.getOrder());
+            String segPath = String.format("%s/seg%d", CubeUtil.getTablePath(dataSource), segCount + segInfo.getOrder());
             return new RealTimeSegmentImpl(new ResourceLocation(segPath, Types.StoreType.MEMORY), dataSource.getMetadata());
         }
     }

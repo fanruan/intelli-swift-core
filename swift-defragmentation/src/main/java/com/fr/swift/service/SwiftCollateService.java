@@ -26,6 +26,7 @@ import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.collate.FragmentCollectRule;
 import com.fr.swift.segment.collate.SwiftFragmentCollectRule;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.segment.merge.CoSwiftResultSet;
 import com.fr.swift.segment.operator.Collater;
 import com.fr.swift.segment.operator.collate.HistoryCollater;
 import com.fr.swift.segment.operator.column.SwiftColumnDictMerger;
@@ -38,7 +39,6 @@ import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.source.alloter.impl.line.LineRowInfo;
 import com.fr.swift.source.alloter.impl.line.LineSourceAlloter;
-import com.fr.swift.source.resultset.CoSwiftResultSet;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
@@ -228,7 +228,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
     }
 
     private Segment newHistorySegment(DataSource dataSource, SegmentInfo segInfo, int segCount) {
-        String segPath = CubeUtil.getSegmentPath(dataSource, segCount + segInfo.getOrder());
+        String segPath = String.format("%s/seg%d", CubeUtil.getTablePath(dataSource), segCount + segInfo.getOrder());
         return new HistorySegmentImpl(new ResourceLocation(segPath, Types.StoreType.FINE_IO), dataSource.getMetadata());
     }
 

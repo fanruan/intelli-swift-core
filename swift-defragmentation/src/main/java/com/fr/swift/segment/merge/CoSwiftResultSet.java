@@ -1,4 +1,4 @@
-package com.fr.swift.source.resultset;
+package com.fr.swift.segment.merge;
 
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
@@ -11,8 +11,6 @@ import java.util.List;
 /**
  * @author anchore
  * @date 2018/7/27
- * <p>
- * 将多个result set合成一个
  */
 public class CoSwiftResultSet implements SwiftResultSet {
     private List<SwiftResultSet> resultSets;

@@ -1,8 +1,15 @@
 package com.fr.swift.cube;
 
+import com.fr.swift.config.bean.SegmentKeyBean;
+import com.fr.swift.config.entity.SwiftTablePathEntity;
+import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.config.service.SwiftTablePathService;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.source.DataSource;
+
+import java.net.URI;
 
 /**
  * @author anchore
@@ -22,13 +29,22 @@ public class CubeUtil {
         }
     }
 
-    public static String getTablePath(DataSource dataSource) {
-        return String.format("%s/%s",
-                dataSource.getMetadata().getSwiftSchema().getDir(),
-                dataSource.getSourceKey().getId());
+    private static boolean isSegUsable(URI segUri) {
+        SegmentKeyBean segKey = new SegmentKeyBean();
+        segKey.setUri(segUri);
+        return SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).containsSegment(segKey);
     }
 
-    public static String getSegmentPath(DataSource dataSource, int segOrder) {
-        return String.format("%s/seg%d", getTablePath(dataSource), segOrder);
+    public static String getTablePath(DataSource dataSource) {
+        SwiftTablePathEntity entity = SwiftContext.get().getBean(SwiftTablePathService.class).get(dataSource.getSourceKey().getId());
+        if (entity == null) {
+            entity = new SwiftTablePathEntity(dataSource.getSourceKey().getId(), 1);
+            entity.setTablePath(0);
+            SwiftContext.get().getBean(SwiftTablePathService.class).saveOrUpdate(entity);
+        }
+        return String.format("%s/%d/%s",
+                dataSource.getMetadata().getSwiftSchema().getDir(),
+                entity.getTablePath(),
+                dataSource.getSourceKey().getId());
     }
 }

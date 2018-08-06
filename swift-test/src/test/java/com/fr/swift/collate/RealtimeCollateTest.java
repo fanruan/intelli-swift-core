@@ -62,7 +62,7 @@ public class RealtimeCollateTest extends BaseTest {
         SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
         SwiftResultSet resultSet = transfer.createResultSet();
         Incrementer incrementer = new Incrementer(dataSource, new LineSourceAlloter(dataSource.getSourceKey(), new LineAllotRule(100)));
-        incrementer.insertData(resultSet);
+        incrementer.increment(resultSet);
 
         List<Segment> segments = swiftSegmentManager.getSegment(dataSource.getSourceKey());
 
@@ -109,7 +109,7 @@ public class RealtimeCollateTest extends BaseTest {
         SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
         SwiftResultSet resultSet = transfer.createResultSet();
         Incrementer incrementer = new Incrementer(dataSource, new LineSourceAlloter(dataSource.getSourceKey(), new LineAllotRule(100)));
-        incrementer.insertData(resultSet);
+        incrementer.increment(resultSet);
 
         List<Segment> segments = swiftSegmentManager.getSegment(dataSource.getSourceKey());
 

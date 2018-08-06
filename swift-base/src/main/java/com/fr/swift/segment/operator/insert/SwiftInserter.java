@@ -1,11 +1,13 @@
 package com.fr.swift.segment.operator.insert;
 
 import com.fr.swift.cube.CubeUtil;
+import com.fr.swift.exception.RealtimeInsertException;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.source.resultset.ListResultSet;
+import com.fr.swift.structure.ListResultSet;
+import com.fr.swift.transatcion.Transactional;
 
 import java.util.List;
 
@@ -27,7 +29,8 @@ public class SwiftInserter extends BaseInserter implements Inserter {
     }
 
     @Override
-    public void insertData(List<Row> rowList) throws Exception {
+    @Transactional(value = RealtimeInsertException.class)
+    public void insertData(List<Row> rowList) throws RealtimeInsertException {
         insertData(new ListResultSet(segment.getMetaData(), rowList));
     }
 
@@ -38,21 +41,27 @@ public class SwiftInserter extends BaseInserter implements Inserter {
     }
 
     @Override
-    public void insertData(SwiftResultSet swiftResultSet) throws Exception {
-        boolean readable = CubeUtil.isReadable(segment);
-        int lastCursor = readable ? segment.getRowCount() : 0,
-                cursor = lastCursor;
+    @Transactional(value = RealtimeInsertException.class)
+    public void insertData(SwiftResultSet swiftResultSet) throws RealtimeInsertException {
+        try {
+            // fixme 要从配置里判断，这里有可能读的recorder备份的数据
+            boolean readable = CubeUtil.isReadable(segment);
+            int lastCursor = readable ? segment.getRowCount() : 0,
+                    cursor = lastCursor;
 
-        while (swiftResultSet.hasNext()) {
-            Row rowData = swiftResultSet.getNextRow();
-            putRow(cursor, rowData);
-            cursor++;
+            while (swiftResultSet.hasNext()) {
+                Row rowData = swiftResultSet.getNextRow();
+                putRow(cursor, rowData);
+                cursor++;
+            }
+
+            putNullIndex();
+
+            putSegmentInfo(lastCursor, cursor);
+
+            release();
+        } catch (Exception e) {
+            throw new RealtimeInsertException(e);
         }
-
-        putNullIndex();
-
-        putSegmentInfo(lastCursor, cursor);
-
-        release();
     }
 }

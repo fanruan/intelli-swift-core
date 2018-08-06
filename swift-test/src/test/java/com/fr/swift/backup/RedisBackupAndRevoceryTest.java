@@ -52,7 +52,7 @@ public class RedisBackupAndRevoceryTest extends BaseTest {
             SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
             SwiftResultSet resultSet = transfer.createResultSet();
             Incrementer incrementer = new Incrementer(dataSource);
-            incrementer.insertData(resultSet);
+            incrementer.increment(resultSet);
 
             resultSet = transfer.createResultSet();
             List<String> jsonList = new ArrayList<String>();
@@ -86,7 +86,7 @@ public class RedisBackupAndRevoceryTest extends BaseTest {
             SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
             SwiftResultSet resultSet = transfer.createResultSet();
             Incrementer incrementer = new Incrementer(dataSource);
-            incrementer.insertData(resultSet);
+            incrementer.increment(resultSet);
             SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
 
             //释放memio，再测恢复

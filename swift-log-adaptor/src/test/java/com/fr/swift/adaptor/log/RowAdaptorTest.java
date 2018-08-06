@@ -48,8 +48,7 @@ public class RowAdaptorTest {
         assertEquals(new Date((Long) row.getValue(5)), a.utilDate);
         assertEquals(new java.sql.Date((Long) row.getValue(6)), a.sqlDate);
         assertEquals(((Long) row.getValue(7)) != 0L, a.b);
-        // todo 数值不要解包，1.8下编译报错
-        assertEquals(row.getValue(8), Long.valueOf(a.i));
+        assertEquals(row.getValue(8), (long) a.i);
 
         row = new ListBasedRow(Collections.<Object>singletonList(1D));
         Function<Row, ConvertType> adapter1 = new DecisionRowAdaptor<ConvertType>(ConvertType.class, new SwiftMetaDataBean("ConvertType", Collections.<SwiftMetaDataColumn>singletonList(new MetaDataColumnBean("o", Types.BIGINT))));
@@ -73,21 +72,21 @@ public class RowAdaptorTest {
                         new MetaDataColumnBean("i", Types.BIGINT))));
         Row row = adapter.apply(a);
         assertEquals(9, row.getSize());
-        assertEquals(Long.valueOf(a.s), row.getValue(0));
+        assertEquals(((long) a.s), row.getValue(0));
         assertEquals(a.l, row.getValue(1));
-        assertEquals(Double.valueOf(a.d1), row.getValue(2));
+        assertEquals(a.d1, row.getValue(2));
         assertEquals(a.d2, row.getValue(3));
         assertEquals(a.str, row.getValue(4));
-        assertEquals(Long.valueOf(a.utilDate.getTime()), row.getValue(5));
-        assertEquals(Long.valueOf(a.sqlDate.getTime()), row.getValue(6));
-        assertEquals(Long.valueOf(a.b ? 1L : 0L), row.getValue(7));
-        assertEquals(Long.valueOf(a.i), row.getValue(8));
+        assertEquals(a.utilDate.getTime(), row.getValue(5));
+        assertEquals(a.sqlDate.getTime(), row.getValue(6));
+        assertEquals(a.b ? 1L : 0L, row.getValue(7));
+        assertEquals((long) a.i, row.getValue(8));
 
         ConvertType convertType = new ConvertType();
         convertType.o = new Object();
         Function<ConvertType, Row> adapter1 = new SwiftRowAdaptor<ConvertType>(ConvertType.class, new SwiftMetaDataBean("ConvertType", Collections.<SwiftMetaDataColumn>singletonList(new MetaDataColumnBean("o", Types.BIGINT))));
         row = adapter1.apply(convertType);
         assertEquals(1, row.getSize());
-        assertEquals(Long.valueOf(1L), row.getValue(0));
+        assertEquals(1L, row.getValue(0));
     }
 }

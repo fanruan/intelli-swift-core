@@ -1,8 +1,8 @@
 package com.fr.swift.test;
 
+import com.fr.swift.config.TestConfDb;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.source.db.TestConnectionProvider;
-import com.fr.swift.util.FileUtil;
 import com.fr.workspace.simple.SimpleWork;
 
 /**
@@ -11,21 +11,17 @@ import com.fr.workspace.simple.SimpleWork;
  */
 public class Preparer {
     public static void prepareFrEnv() {
-        SimpleWork.checkIn(TestResource.getTmpDir());
+        SimpleWork.checkIn(System.getProperty("user.dir"));
     }
 
-    public static void prepareCubeBuild() {
+    public static void prepareCubeBuild() throws Exception {
         prepareFrEnv();
         prepareContext();
-        prepareConfDb();
+        TestConfDb.setConfDb();
         TestConnectionProvider.createConnection();
     }
 
     public static void prepareContext() {
         SwiftContext.init();
-    }
-
-    public static void prepareConfDb() {
-        FileUtil.delete(TestResource.getTmpDir() + "/embed");
     }
 }

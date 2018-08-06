@@ -11,6 +11,7 @@
 
     <artifactId>swift-log-adaptor</artifactId>
 
+
     <dependencies>
         <dependency>
             <groupId>com.fr.intelligence</groupId>

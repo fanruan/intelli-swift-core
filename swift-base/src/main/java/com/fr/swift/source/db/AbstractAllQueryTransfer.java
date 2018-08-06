@@ -4,7 +4,6 @@ import com.fr.data.core.db.dialect.Dialect;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.db.dbdealer.DBDealer;
-import com.fr.swift.source.resultset.JdbcResultSet;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

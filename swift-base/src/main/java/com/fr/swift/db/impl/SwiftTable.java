@@ -4,6 +4,7 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SwiftDataOperatorProvider;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.operator.Inserter;
@@ -22,6 +23,8 @@ import java.util.List;
  * @date 2018/3/28
  */
 class SwiftTable implements Table {
+    private SwiftDataOperatorProvider operators = SwiftContext.get().getBean(SwiftDataOperatorProvider.class);
+
     private SourceKey key;
 
     private SwiftMetaData meta;
@@ -57,7 +60,7 @@ class SwiftTable implements Table {
     public void importFrom(SwiftResultSet rowSet) throws SQLException {
         try {
             // 调流程
-            Inserter inserter = (Inserter) SwiftContext.get().getBean("historyBlockInserter", this);
+            Inserter inserter = operators.getHistoryBlockSwiftInserter(this);
             inserter.insertData(rowSet);
             List<Segment> segments = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegment(key);
             for (String field : inserter.getFields()) {

@@ -6,6 +6,7 @@ import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.decision.config.SwiftCubePathConfig;
+import com.fr.swift.manager.LocalDataOperatorProvider;
 import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
@@ -119,7 +120,7 @@ public class LineSegmentAlloterTest extends TestIo {
             }
         };
 
-        Inserter inserter = (Inserter) SwiftContext.get().getBean("historyBlockInserter", dataSource);
+        Inserter inserter = SwiftContext.get().getBean(LocalDataOperatorProvider.class).getHistoryBlockSwiftInserter(dataSource);
         inserter.insertData(resultSet);
         SwiftSourceAlloter alloter = SwiftSourceAlloterFactory.createLineSourceAlloter(sourceKey, sourceKey.getId());
         int lastIndex = -1;

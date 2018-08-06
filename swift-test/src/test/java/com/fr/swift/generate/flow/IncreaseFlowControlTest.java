@@ -15,9 +15,9 @@ import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.DataSource;
+import com.fr.swift.source.LimitedResultSet;
 import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.QueryDBSource;
-import com.fr.swift.source.resultset.LimitedResultSet;
 import org.junit.Test;
 
 import java.util.ArrayList;
