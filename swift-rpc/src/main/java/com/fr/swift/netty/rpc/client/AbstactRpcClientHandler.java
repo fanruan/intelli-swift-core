@@ -2,9 +2,12 @@ package com.fr.swift.netty.rpc.client;
 
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.netty.rpc.bean.RpcRequest;
 import com.fr.swift.netty.rpc.bean.RpcResponse;
+import com.fr.third.jodd.util.StringUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 import java.net.InetSocketAddress;
@@ -17,15 +20,21 @@ import java.net.SocketAddress;
  * @description
  * @since Advanced FineBI 5.0
  */
-public abstract class AbstactRpcClientHandler extends SimpleChannelInboundHandler<RpcResponse> {
+public abstract class AbstactRpcClientHandler<T> extends SimpleChannelInboundHandler<RpcResponse> {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(AbstactRpcClientHandler.class);
+    protected String address;
     protected String host;
     protected int port;
     protected SocketAddress remotePeer;
     protected volatile Channel channel;
+    protected EventLoopGroup group;
 
-    public AbstactRpcClientHandler(String host, int port) {
+    public AbstactRpcClientHandler(String address) {
+        this.address = address;
+        String[] array = StringUtil.split(address, ":");
+        String host = array[0];
+        int port = Integer.parseInt(array[1]);
         this.host = host;
         this.port = port;
         this.remotePeer = new InetSocketAddress(host, port);
@@ -48,6 +57,7 @@ public abstract class AbstactRpcClientHandler extends SimpleChannelInboundHandle
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
+        ctx.close();
         LOGGER.debug("Rpc client inactive!");
     }
 
@@ -55,5 +65,33 @@ public abstract class AbstactRpcClientHandler extends SimpleChannelInboundHandle
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         LOGGER.error("RPC client caught exception", cause);
         ctx.close();
+    }
+
+    public boolean isActive() {
+        return channel != null && channel.isActive();
+    }
+
+    public void closeChannel() {
+        if (channel != null) {
+            channel.close();
+        }
+    }
+
+    public void setGroup(EventLoopGroup group) {
+        this.group = group;
+    }
+
+    public void shutdown() {
+        group.shutdownGracefully();
+    }
+
+    public abstract T send(final RpcRequest request) throws Exception;
+
+    public String getHost() {
+        return host;
+    }
+
+    public int getPort() {
+        return port;
     }
 }

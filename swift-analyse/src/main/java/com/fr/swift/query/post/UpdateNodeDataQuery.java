@@ -27,15 +27,14 @@ public class UpdateNodeDataQuery extends AbstractPostQuery<NodeResultSet> {
 
     @Override
     public NodeResultSet getQueryResult() throws SQLException {
-        final NodeMergeResultSet mergeResult = (NodeMergeResultSet) query.getQueryResult();
-        final Pair<GroupNode, List<Map<Integer, Object>>> pair = mergeResult.getPage();
-        SwiftNodeOperator<SwiftNode> operator = new SwiftNodeOperator<SwiftNode>() {
+        SwiftNodeOperator operator = new SwiftNodeOperator() {
             @Override
-            public SwiftNode operate(SwiftNode... node) {
-                GroupNodeUtils.updateNodeData((GroupNode) node[0], pair.getValue());
-                return node[0];
+            public Pair<SwiftNode, List<Map<Integer, Object>>> apply(Pair<? extends SwiftNode, List<Map<Integer, Object>>> p) {
+                GroupNodeUtils.updateNodeData((GroupNode) p.getKey(), p.getValue());
+                return Pair.of(p.getKey(), p.getValue());
             }
         };
+        NodeMergeResultSet mergeResult = (NodeMergeResultSet) query.getQueryResult();
         return new ChainedNodeResultSet(operator, mergeResult);
     }
 }
