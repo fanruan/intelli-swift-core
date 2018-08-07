@@ -129,6 +129,9 @@ public class ClusterHistoryService extends AbstractSwiftService implements Histo
                     }
                 }
             }
+            if (hist.isEmpty()) {
+                return null;
+            }
             return new SegmentLocationInfoImpl(ServiceType.HISTORY, hist);
         }
         return null;

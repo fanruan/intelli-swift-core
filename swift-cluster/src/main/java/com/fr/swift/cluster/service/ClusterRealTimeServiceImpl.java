@@ -159,6 +159,9 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
                     }
                 }
             }
+            if (hist.isEmpty()) {
+                return null;
+            }
             return new SegmentLocationInfoImpl(ServiceType.REAL_TIME, hist);
         }
         return null;
@@ -179,15 +182,6 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
         Map<String, List<SegmentDestination>> map = new HashMap<String, List<SegmentDestination>>();
         List<SegmentDestination> list = Arrays.asList(createSegmentDestination(sourceKey));
         map.put(sourceKey.getId(), list);
-        return new SegmentLocationInfoImpl(ServiceType.REAL_TIME, map);
-    }
-
-    protected SegmentLocationInfo makeLocationInfo(List<SegmentKey> segmentKeys) {
-        Map<String, List<SegmentDestination>> map = new HashMap<String, List<SegmentDestination>>();
-        for (SegmentKey segmentKey : segmentKeys) {
-            initSegDestinations(map, segmentKey.getTable().getId());
-            map.get(segmentKey.getTable().getId()).add(createSegmentDestination(segmentKey));
-        }
         return new SegmentLocationInfoImpl(ServiceType.REAL_TIME, map);
     }
 }
