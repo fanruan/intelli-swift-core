@@ -77,17 +77,16 @@ public class ClusterIndexingService extends AbstractSwiftService implements Inde
     }
 
     @Override
-    public boolean start() throws SwiftServiceException {
-        super.start();
-        initListener();
-        Reflect.on(indexingService).call("initTaskGenerator");
-        return true;
+    public void setListenerWorker(ListenerWorker listenerWorker) {
+        indexingService.setListenerWorker(listenerWorker);
     }
 
-    public void initListener() {
-        EventDispatcher.listen(TaskEvent.LOCAL_DONE, new Listener<Pair<TaskKey, TaskResult>>() {
+    @Override
+    public boolean start() throws SwiftServiceException {
+        super.start();
+        indexingService.setListenerWorker(new ListenerWorker() {
             @Override
-            public void on(Event event, final Pair<TaskKey, TaskResult> result) {
+            public void work(Pair<TaskKey, TaskResult> result) {
                 SwiftLoggers.getLogger().info("rpc通知server任务完成");
                 try {
                     runRpc(new TaskDoneRpcEvent(result));
@@ -97,6 +96,7 @@ public class ClusterIndexingService extends AbstractSwiftService implements Inde
                 }
             }
         });
+        return true;
     }
 
 //    @Override

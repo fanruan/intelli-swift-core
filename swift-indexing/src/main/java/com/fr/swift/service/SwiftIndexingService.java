@@ -54,6 +54,7 @@ import com.fr.swift.task.impl.TaskEvent;
 import com.fr.swift.task.impl.WorkerTaskPool;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.upload.AbstractUploadRunnable;
+import com.fr.swift.upload.ReadyUploadContainer;
 import com.fr.swift.util.FileUtil;
 import com.fr.swift.util.Strings;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
@@ -86,9 +87,21 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     @Autowired
     private transient SwiftSegmentLocationService locationService;
 
-    private static Map<TaskKey, Object> stuffObject = new ConcurrentHashMap<TaskKey, Object>();
+    private static ListenerWorker worker ;
 
     private SwiftIndexingService() {
+        worker = new ListenerWorker() {
+            @Override
+            public void work(Pair<TaskKey, TaskResult> result) {
+                SwiftLoggers.getLogger().info("rpc通知server任务完成");
+                try {
+                    EventDispatcher.fire(TaskEvent.DONE, result);
+                    FineIO.doWhenFinished(new LocalUploadRunnable(result));
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().error(e);
+                }
+            }
+        };
     }
 
     @Autowired
@@ -96,6 +109,18 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
 
     public SwiftIndexingService(String id) {
         super(id);
+        worker = new ListenerWorker() {
+            @Override
+            public void work(Pair<TaskKey, TaskResult> result) {
+                SwiftLoggers.getLogger().info("rpc通知server任务完成");
+                try {
+                    EventDispatcher.fire(TaskEvent.DONE, result);
+                    FineIO.doWhenFinished(new LocalUploadRunnable(result));
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().error(e);
+                }
+            }
+        };
     }
 
     @Override
@@ -132,7 +157,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
         if (null != map) {
             for (Map.Entry<TaskKey, ? extends Source> entry : map.entrySet()) {
                 if (null != entry.getValue()) {
-                    stuffObject.put(entry.getKey(), entry.getValue());
+                    ReadyUploadContainer.instance().put(entry.getKey(), entry.getValue());
                 }
             }
         }
@@ -156,21 +181,23 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
         return new ServerCurrentStatus(getID());
     }
 
+    @Override
+    public void setListenerWorker(ListenerWorker listenerWorker) {
+        worker = listenerWorker;
+    }
+
     private void initListener() {
         EventDispatcher.listen(TaskEvent.LOCAL_DONE, new Listener<Pair<TaskKey, TaskResult>>() {
             @Override
             public void on(Event event, final Pair<TaskKey, TaskResult> result) {
-                SwiftLoggers.getLogger().info("rpc通知server任务完成");
-                try {
-                    FineIO.doWhenFinished(new LocalUploadRunnable(result));
-                } catch (Exception e) {
-                    SwiftLoggers.getLogger().error(e);
-                }
+                worker.work(result);
             }
         });
 
         initTaskGenerator();
     }
+
+
 
     private class LocalUploadRunnable extends AbstractUploadRunnable {
 
