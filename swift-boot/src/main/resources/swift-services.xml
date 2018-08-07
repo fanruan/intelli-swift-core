@@ -6,30 +6,26 @@
        classpath:/com/fr/third/springframework/beans/factory/xml/spring-beans-4.0.xsd">
 
     <!--配置需要启动的远程服务  注解配置-->
-    <!--<bean id="historyService" class="com.fr.swift.service.SwiftHistoryService"/>-->
-    <!--<bean id="indexingService" class="com.fr.swift.service.SwiftIndexingService"/>-->
-    <!--<bean id="clusterIndexingService" class="com.fr.swift.cluster.service.ClusterIndexingService"/>-->
-    <!--<bean id="analyseService" class="com.fr.swift.service.SwiftAnalyseService"/>-->
-    <!--<bean id="clusterAnalyseService" class="com.fr.swift.cluster.service.ClusterAnalyseServiceImpl"/>-->
-    <!--<bean id="realtimeService" class="com.fr.swift.service.SwiftRealtimeService"/>-->
-    <!--<bean id="clusterRealTimeService" class="com.fr.swift.cluster.service.ClusterRealTimeServiceImpl"/>-->
+    <bean id="clusterHistoryService" class="com.fr.swift.cluster.service.ClusterHistoryService"/>
+    <bean id="clusterIndexingService" class="com.fr.swift.cluster.service.ClusterIndexingService"/>
+    <bean id="clusterAnalyseService" class="com.fr.swift.cluster.service.ClusterAnalyseServiceImpl"/>
+    <bean id="clusterRealTimeService" class="com.fr.swift.cluster.service.ClusterRealTimeServiceImpl"/>
 
     <!--<bean id="collateService" class="com.fr.swift.service.SwiftCollateService"/>-->
     <!--rpc服务配置-->
-    <!--<bean id="swiftRpcService" class="com.fr.swift.netty.rpc.SwiftRpcService" init-method="startServerService"-->
-    <!--destroy-method="stopServerService"/>-->
+    <bean id="swiftRpcService" class="com.fr.swift.netty.rpc.SwiftRpcService" init-method="startServerService"
+          destroy-method="stopServerService"/>
     <!--http服务配置-->
-    <!--<bean id="swiftHttpService" class="com.fr.swift.http.SwiftHttpService" init-method="startServerService"-->
-    <!--destroy-method="stopServerService"/>-->
+    <bean id="swiftHttpService" class="com.fr.swift.http.SwiftHttpService" init-method="startServerService"
+          destroy-method="stopServerService"/>
 
     <bean id="clusterSwiftRegister" class="com.fr.swift.service.register.ClusterSwiftRegister">
         <property name="swiftServiceList">
             <list>
-                <!--<ref bean="historyService"/>-->
-                <!--<ref bean="clusterIndexingService"/>-->
-                <!--<ref bean="analyseService"/>-->
-                <!--<ref bean="realtimeService"/>-->
-                <!--<ref bean="collateService"/>-->
+                <ref bean="clusterAnalyseService"/>
+                <ref bean="clusterIndexingService"/>
+                <ref bean="clusterHistoryService"/>
+                <ref bean="clusterRealTimeService"/>
             </list>
         </property>
     </bean>
