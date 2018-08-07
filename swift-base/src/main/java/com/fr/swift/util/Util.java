@@ -67,4 +67,8 @@ public final class Util {
             throw new IllegalArgumentException();
         }
     }
+
+    public static <T> boolean isEmpty(T[] ts) {
+        return ts == null || ts.length == 0;
+    }
 }

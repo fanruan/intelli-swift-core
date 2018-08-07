@@ -18,6 +18,7 @@ import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.third.fasterxml.jackson.core.JsonProcessingException;
 import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ public class RedisBackupAndRevoceryTest extends BaseTest {
         redisClient = (RedisClient) SwiftContext.get().getBean("redisClient");
     }
 
+    @Ignore
     @Test
     public void testBackup() {
         try {
@@ -52,7 +54,7 @@ public class RedisBackupAndRevoceryTest extends BaseTest {
             SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
             SwiftResultSet resultSet = transfer.createResultSet();
             Incrementer incrementer = new Incrementer(dataSource);
-            incrementer.increment(resultSet);
+            incrementer.insertData(resultSet);
 
             resultSet = transfer.createResultSet();
             List<String> jsonList = new ArrayList<String>();
@@ -78,6 +80,7 @@ public class RedisBackupAndRevoceryTest extends BaseTest {
         }
     }
 
+    @Ignore
     @Test
     public void testRevover() {
         try {
@@ -86,7 +89,7 @@ public class RedisBackupAndRevoceryTest extends BaseTest {
             SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
             SwiftResultSet resultSet = transfer.createResultSet();
             Incrementer incrementer = new Incrementer(dataSource);
-            incrementer.increment(resultSet);
+            incrementer.insertData(resultSet);
             SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
 
             //释放memio，再测恢复

@@ -3,7 +3,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans
-       classpath:/com/fr/third/springframework/beans/factory/xml/spring-beans-4.0.xsd">
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <!--配置需要启动的远程服务  注解配置-->
     <!--<bean id="clusterHistoryService" class="com.fr.swift.cluster.service.ClusterHistoryService"/>-->

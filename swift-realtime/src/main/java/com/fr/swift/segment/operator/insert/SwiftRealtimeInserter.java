@@ -4,11 +4,14 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.impl.SwiftDatabase.Schema;
+import com.fr.swift.exception.RealtimeInsertException;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.backup.SwiftSegmentBackup;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.transatcion.Transactional;
 
 import java.util.List;
 
@@ -54,6 +57,26 @@ public class SwiftRealtimeInserter extends SwiftInserter {
     protected void putSegmentInfo(int lastCursor, int cursor) {
         super.putSegmentInfo(lastCursor, cursor);
         swiftBackup.backupSegmentInfo(lastCursor, cursor);
+    }
+
+    @Override
+    @Transactional(value = RealtimeInsertException.class)
+    public void insertData(List<Row> rowList) throws RealtimeInsertException {
+        try {
+            super.insertData(rowList);
+        } catch (Exception e) {
+            throw new RealtimeInsertException(e);
+        }
+    }
+
+    @Override
+    @Transactional(value = RealtimeInsertException.class)
+    public void insertData(SwiftResultSet swiftResultSet) throws RealtimeInsertException {
+        try {
+            super.insertData(swiftResultSet);
+        } catch (Exception e) {
+            throw new RealtimeInsertException(e);
+        }
     }
 
     @Override

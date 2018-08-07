@@ -46,7 +46,7 @@ public class SwiftTablePathEntity {
     }
 
     public Integer getTablePath() {
-        return null == tablePath ? -1 : tablePath;
+        return tablePath;
     }
 
     public void setTablePath(Integer tablePath) {

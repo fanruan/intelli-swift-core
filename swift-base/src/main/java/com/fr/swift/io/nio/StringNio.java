@@ -5,8 +5,6 @@ import com.fr.swift.cube.io.output.StringWriter;
 import com.fr.swift.io.ObjectIo;
 import com.fr.swift.util.IoUtil;
 
-import java.nio.charset.Charset;
-
 /**
  * @author anchore
  * @date 2018/7/20
@@ -26,7 +24,7 @@ public class StringNio extends BaseNio implements StringWriter, StringReader, Ob
 
     @Override
     public String get(long pos) {
-        return new String(obj.get(pos), Charset.forName("utf8"));
+        return new String(obj.get(pos), StringReader.CHARSET);
     }
 
     @Override
@@ -41,7 +39,7 @@ public class StringNio extends BaseNio implements StringWriter, StringReader, Ob
 
     @Override
     public void put(long pos, String val) {
-        obj.put(pos, val.getBytes(Charset.forName("utf8")));
+        obj.put(pos, val.getBytes(StringWriter.CHARSET));
     }
 
     @Override

@@ -13,4 +13,9 @@ public class EmptyBitmap extends RangeBitmap {
     public byte[] toBytes() {
         return new byte[0];
     }
+
+    @Override
+    public String toString() {
+        return "{}";
+    }
 }
