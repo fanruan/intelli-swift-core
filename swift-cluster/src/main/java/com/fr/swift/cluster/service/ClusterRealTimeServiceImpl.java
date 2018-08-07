@@ -69,7 +69,10 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
     @Override
     public boolean start() throws SwiftServiceException {
         realtimeService.start();
-        rpcSegmentLocation(new PushSegLocationRpcEvent(loadSelfSegmentDestination()));
+        SegmentLocationInfo info = loadSelfSegmentDestination();
+        if (null != info) {
+            rpcSegmentLocation(new PushSegLocationRpcEvent(info));
+        }
         return super.start();
     }
 
