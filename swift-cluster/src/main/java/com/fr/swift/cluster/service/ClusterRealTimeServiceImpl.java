@@ -11,9 +11,11 @@ import com.fr.swift.basics.base.SwiftInvocation;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
+import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.core.cluster.SwiftClusterService;
+import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.event.global.PushSegLocationRpcEvent;
@@ -21,7 +23,12 @@ import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.netty.rpc.client.AsyncRpcCallback;
 import com.fr.swift.netty.rpc.client.async.RpcFuture;
 import com.fr.swift.netty.rpc.server.RpcServer;
+import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentLocationInfo;
+import com.fr.swift.segment.impl.SegmentDestinationImpl;
+import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
+import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.AbstractSwiftService;
 import com.fr.swift.service.RealtimeService;
 import com.fr.swift.service.ServiceType;
@@ -36,8 +43,11 @@ import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.io.Serializable;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author yee
@@ -68,7 +78,7 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
         taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.INSERT) {
             @Override
             public void doJob() throws Exception {
-                rpcSegmentLocation(PushSegLocationRpcEvent.fromSourceKey(getServiceType(), Collections.singletonList(tableKey.getId())));
+                rpcSegmentLocation(new PushSegLocationRpcEvent(makeLocationInfo(tableKey)));
                 SwiftDatabase.getInstance().getTable(tableKey).insert(resultSet);
             }
         });
@@ -90,11 +100,6 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
     @RpcMethod(methodName = "realTimeQuery")
     public SwiftResultSet query(String queryInfo) throws Exception {
         return realtimeService.query(queryInfo);
-    }
-
-    @Override
-    public ServiceType getServiceType() {
-        return realtimeService.getServiceType();
     }
 
     private void rpcSegmentLocation(PushSegLocationRpcEvent event) {
@@ -121,5 +126,64 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
                 getBean(SwiftServiceInfoService.class).getServiceInfoByService(SwiftClusterService.SERVICE);
         SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
         return UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
+    }
+
+    protected SegmentDestination createSegmentDestination(SegmentKey segmentKey) {
+        String clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
+        return new SegmentDestinationImpl(clusterId, segmentKey.toString(), segmentKey.getOrder(), RealtimeService.class, "realTimeQuery");
+    }
+
+    protected SegmentDestination createSegmentDestination(SourceKey segmentKey) {
+        String clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
+        return new SegmentDestinationImpl(clusterId, null, -1, RealtimeService.class, "realTimeQuery");
+    }
+
+    @Override
+    public ServiceType getServiceType() {
+        return ServiceType.REAL_TIME;
+    }
+
+    protected SegmentLocationInfo loadSelfSegmentDestination() {
+        Map<String, List<SegmentKey>> segments = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).getOwnSegments();
+        if (!segments.isEmpty()) {
+            Map<String, List<SegmentDestination>> hist = new HashMap<String, List<SegmentDestination>>();
+            for (Map.Entry<String, List<SegmentKey>> entry : segments.entrySet()) {
+                initSegDestinations(hist, entry.getKey());
+                for (SegmentKey segmentKey : entry.getValue()) {
+                    if (segmentKey.getStoreType() != Types.StoreType.FINE_IO) {
+                        hist.get(entry.getKey()).add(createSegmentDestination(segmentKey));
+                    }
+                }
+            }
+            return new SegmentLocationInfoImpl(ServiceType.REAL_TIME, hist);
+        }
+        return null;
+    }
+
+    private void initSegDestinations(Map<String, List<SegmentDestination>> map, String key) {
+        if (null == map.get(key)) {
+            map.put(key, new ArrayList<SegmentDestination>() {
+                @Override
+                public boolean add(SegmentDestination segmentDestination) {
+                    return contains(segmentDestination) ? false : super.add(segmentDestination);
+                }
+            });
+        }
+    }
+
+    protected SegmentLocationInfo makeLocationInfo(SourceKey sourceKey) {
+        Map<String, List<SegmentDestination>> map = new HashMap<String, List<SegmentDestination>>();
+        List<SegmentDestination> list = Arrays.asList(createSegmentDestination(sourceKey));
+        map.put(sourceKey.getId(), list);
+        return new SegmentLocationInfoImpl(ServiceType.REAL_TIME, map);
+    }
+
+    protected SegmentLocationInfo makeLocationInfo(List<SegmentKey> segmentKeys) {
+        Map<String, List<SegmentDestination>> map = new HashMap<String, List<SegmentDestination>>();
+        for (SegmentKey segmentKey : segmentKeys) {
+            initSegDestinations(map, segmentKey.getTable().getId());
+            map.get(segmentKey.getTable().getId()).add(createSegmentDestination(segmentKey));
+        }
+        return new SegmentLocationInfoImpl(ServiceType.REAL_TIME, map);
     }
 }
