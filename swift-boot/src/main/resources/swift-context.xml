@@ -4,11 +4,11 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans
-       classpath:/com/fr/third/springframework/beans/factory/xml/spring-beans-4.0.xsd
+       http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context
-       classpath:/com/fr/third/springframework/context/config/spring-context-4.0.xsd
+       http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/mvc
-       classpath:/com/fr/third/springframework/web/servlet/config/spring-mvc-4.0.xsd">
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <!--基本和环境配置-->
     <context:property-placeholder location="classpath:swift.properties"/>
