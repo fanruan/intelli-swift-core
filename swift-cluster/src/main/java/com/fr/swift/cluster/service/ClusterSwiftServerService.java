@@ -10,17 +10,13 @@ import com.fr.swift.basics.URL;
 import com.fr.swift.basics.base.SwiftInvocation;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.basics.base.selector.UrlSelector;
+import com.fr.swift.cluster.entity.ClusterEntity;
 import com.fr.swift.config.bean.IndexingSelectRule;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.IndexingSelectRuleService;
 import com.fr.swift.config.service.SwiftServiceInfoService;
-import com.fr.swift.container.NodeContainer;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.event.base.SwiftRpcEvent;
-import com.fr.swift.exception.SwiftServiceException;
-import com.fr.swift.heart.HeartBeatInfo;
-import com.fr.swift.heart.NodeState;
-import com.fr.swift.heart.NodeType;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.netty.rpc.client.AsyncRpcCallback;
@@ -35,7 +31,6 @@ import com.fr.swift.service.IndexingService;
 import com.fr.swift.service.RealtimeService;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.SwiftService;
-import com.fr.swift.cluster.entity.ClusterEntity;
 import com.fr.swift.service.SwiftServiceEvent;
 import com.fr.swift.service.listener.SwiftServiceListener;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
@@ -51,7 +46,6 @@ import com.fr.swift.util.Crasher;
 import javax.annotation.PostConstruct;
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -61,7 +55,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2017/11/14
  * 分布式的server服务，还要负责cube分块的均衡等
  */
-public class ClusterSwiftServerService  extends AbstractSwiftService implements SwiftServiceListenerHandler {
+public class ClusterSwiftServerService extends AbstractSwiftService implements SwiftServiceListenerHandler {
     private static final long serialVersionUID = -611300229622871920L;
 
     //key: 机器address  value:service对象
@@ -71,6 +65,10 @@ public class ClusterSwiftServerService  extends AbstractSwiftService implements 
     private Map<String, ClusterEntity> historyServiceMap = new ConcurrentHashMap<String, ClusterEntity>();
     private Map<String, ClusterEntity> analyseServiceMap = new ConcurrentHashMap<String, ClusterEntity>();
 
+    private Map<String, ClusterEntity> indexingOfflineMap = new ConcurrentHashMap<String, ClusterEntity>();
+    private Map<String, ClusterEntity> realTimeOfflineMap = new ConcurrentHashMap<String, ClusterEntity>();
+    private Map<String, ClusterEntity> historyOfflineMap = new ConcurrentHashMap<String, ClusterEntity>();
+    private Map<String, ClusterEntity> analyseOfflineMap = new ConcurrentHashMap<String, ClusterEntity>();
 
 //    private Map<String, SwiftIndexingService> indexingServiceMap = new HashMap<String, SwiftIndexingService>();
 //    private Map<String, SwiftRealtimeService> realTimeServiceMap = new HashMap<String, SwiftRealtimeService>();
@@ -86,6 +84,27 @@ public class ClusterSwiftServerService  extends AbstractSwiftService implements 
 
     public static ClusterSwiftServerService getInstance() {
         return SingletonHolder.instance;
+    }
+
+    public void offline(String address) {
+        switchStatusPerMap(address, indexingServiceMap, indexingOfflineMap);
+        switchStatusPerMap(address, realTimeServiceMap, realTimeOfflineMap);
+        switchStatusPerMap(address, historyServiceMap, historyOfflineMap);
+        switchStatusPerMap(address, analyseServiceMap, analyseOfflineMap);
+    }
+
+    public void online(String address) {
+        switchStatusPerMap(address, indexingOfflineMap, indexingServiceMap);
+        switchStatusPerMap(address, realTimeOfflineMap, realTimeServiceMap);
+        switchStatusPerMap(address, historyOfflineMap, historyServiceMap);
+        switchStatusPerMap(address, analyseOfflineMap, analyseServiceMap);
+    }
+
+    private void switchStatusPerMap(String address, Map<String, ClusterEntity> online, Map<String, ClusterEntity> offline) {
+        ClusterEntity entity = online.remove(address);
+        if (null != entity) {
+            offline.put(address, entity);
+        }
     }
 
     private static class SingletonHolder {
@@ -154,30 +173,16 @@ public class ClusterSwiftServerService  extends AbstractSwiftService implements 
         // 接口调用
         switch (serviceType) {
             case ANALYSE:
-                return getOnlineClusterEntityService(analyseServiceMap);
+                return new HashMap<String, ClusterEntity>(analyseServiceMap);
             case HISTORY:
-                return getOnlineClusterEntityService(historyServiceMap);
+                return new HashMap<String, ClusterEntity>(historyServiceMap);
             case INDEXING:
-                return getOnlineClusterEntityService(indexingServiceMap);
+                return new HashMap<String, ClusterEntity>(indexingServiceMap);
             case REAL_TIME:
-                return getOnlineClusterEntityService(realTimeServiceMap);
+                return new HashMap<String, ClusterEntity>(realTimeServiceMap);
             default:
                 return null;
         }
-    }
-
-    private Map<String, ClusterEntity> getOnlineClusterEntityService(Map<String, ClusterEntity> map) {
-        List<NodeState> nodeStates = NodeContainer.getAllNodeStates();
-        Map<String, ClusterEntity> result = new HashMap<String, ClusterEntity>();
-        for (NodeState nodeState : nodeStates) {
-            HeartBeatInfo info = nodeState.getHeartBeatInfo();
-            if (map.containsKey(info.getAddress())) {
-                if (nodeState.getNodeType() != NodeType.OFFLINE) {
-                    result.put(info.getAddress(), map.get(info.getAddress()));
-                }
-            }
-        }
-        return result;
     }
 
     @Override

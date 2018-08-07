@@ -50,7 +50,7 @@ public abstract class AbstractSwiftRegister implements SwiftRegister {
     protected void localServiceRegister() throws SwiftServiceException {
         SwiftContext.get().getBean("indexingService", IndexingService.class).start();
 
-        SwiftContext.get().getBean(HistoryService.class).start();
+        SwiftContext.get().getBean("historyService", HistoryService.class).start();
 
         SwiftContext.get().getBean("realtimeService", RealtimeService.class).start();
 

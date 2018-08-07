@@ -1,6 +1,7 @@
 package com.fr.swift.rm.collector;
 
 import com.fr.swift.Collect;
+import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.cluster.service.MasterService;
 import com.fr.swift.container.NodeContainer;
 import com.fr.swift.context.SwiftContext;
@@ -10,7 +11,6 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rm.service.SwiftMasterService;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -68,8 +68,10 @@ public class MasterHeartbeatCollect implements Collect {
                                 currentType = NodeType.DELAY;
                             } else if (diffTime > OFFLINE_TIME) {
                                 currentType = NodeType.OFFLINE;
+                                ClusterSwiftServerService.getInstance().offline(nodeState.getHeartBeatInfo().getAddress());
                             } else {
                                 currentType = NodeType.ONLINE;
+                                ClusterSwiftServerService.getInstance().online(nodeState.getHeartBeatInfo().getAddress());
                             }
                             if (originType != currentType) {
                                 SwiftLoggers.getLogger().warn(nodeState.getHeartBeatInfo().getNodeName() + " is " + currentType);
