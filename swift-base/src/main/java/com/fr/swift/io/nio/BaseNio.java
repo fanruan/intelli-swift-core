@@ -1,6 +1,7 @@
 package com.fr.swift.io.nio;
 
 import com.fr.swift.io.Io;
+import com.fr.swift.util.Util;
 
 import java.io.File;
 
@@ -18,6 +19,6 @@ abstract class BaseNio implements Io {
     @Override
     public boolean isReadable() {
         File f = new File(conf.getPath());
-        return f.exists() && f.list() != null;
+        return f.exists() && !Util.isEmpty(f.list());
     }
 }

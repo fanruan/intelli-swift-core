@@ -1,4 +1,4 @@
-package com.fr.swift.source.db;
+package com.fr.swift.source.resultset;
 
 import com.fr.data.core.db.DBUtils;
 import com.fr.swift.source.ListBasedRow;

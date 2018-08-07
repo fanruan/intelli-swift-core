@@ -4,8 +4,6 @@ import com.fr.swift.cube.io.input.ByteArrayReader;
 import com.fr.swift.cube.io.input.StringReader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 
-import java.io.UnsupportedEncodingException;
-
 /**
  * @author anchore
  */
@@ -30,11 +28,7 @@ public class StringFineIoReader extends BaseFineIoReader implements StringReader
             return tempValue;
         }
         byte[] bytes = bar.get(pos);
-        try {
-            tempValue = new String(bytes, DEFAULT_CHARSET);
-        } catch (UnsupportedEncodingException e) {
-            tempValue = new String(bytes);
-        }
+        tempValue = new String(bytes, CHARSET);
         tempRow = pos;
         return tempValue;
     }

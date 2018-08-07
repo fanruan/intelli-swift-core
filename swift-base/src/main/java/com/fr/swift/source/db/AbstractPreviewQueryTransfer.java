@@ -7,11 +7,12 @@ import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.ColumnTypeUtils;
-import com.fr.swift.source.LimitedResultSet;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.db.dbdealer.DBDealer;
+import com.fr.swift.source.resultset.JdbcResultSet;
+import com.fr.swift.source.resultset.LimitedResultSet;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

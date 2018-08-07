@@ -7,7 +7,6 @@ import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftWhere;
 import com.fr.swift.generate.BaseTest;
 import com.fr.swift.generate.ColumnIndexer;
-import com.fr.swift.generate.segment.operator.inserter.BlockInserter;
 import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
 import com.fr.swift.query.query.FilterBean;
 import com.fr.swift.redis.RedisClient;
@@ -16,6 +15,7 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.segment.insert.HistoryBlockInserter;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.service.SwiftCollateService;
 import com.fr.swift.source.DataSource;
@@ -68,7 +68,7 @@ public class HistoryCollateTest extends BaseTest {
         SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).removeSegments(dataSource.getSourceKey().getId());
         SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
         SwiftResultSet resultSet = transfer.createResultSet();
-        Inserter inserter = new BlockInserter(dataSource.getSourceKey(), dataSource.getSourceKey().getId(), dataSource.getMetadata());
+        Inserter inserter = new HistoryBlockInserter(dataSource);
         inserter.insertData(resultSet);
 
         List<Segment> segments = swiftSegmentManager.getSegment(dataSource.getSourceKey());

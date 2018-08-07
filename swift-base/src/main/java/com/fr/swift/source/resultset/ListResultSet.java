@@ -1,4 +1,4 @@
-package com.fr.swift.structure;
+package com.fr.swift.source.resultset;
 
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;

@@ -5,7 +5,9 @@ package com.fr.swift.io.nio;
  * @date 2018/7/22
  */
 public class NioConf {
-    private static final int PAGE_SIZE = 22;
+    private static final int PAGE_SIZE = 12;
+
+    private static final int FILE_SIZE = 22;
 
     private final String path;
 
@@ -13,21 +15,24 @@ public class NioConf {
 
     private final int pageSize;
 
+    private final int fileSize;
+
     private final boolean mapped;
 
     public NioConf(String path, IoType ioType) {
-        this(path, ioType, PAGE_SIZE, false);
+        this(path, ioType, PAGE_SIZE, FILE_SIZE, false);
     }
 
-    public NioConf(String path, IoType ioType, int pageSize, boolean mapped) {
+    public NioConf(String path, IoType ioType, int pageSize, int fileSize, boolean mapped) {
         this.path = path;
         this.ioType = ioType;
         this.pageSize = pageSize;
+        this.fileSize = fileSize;
         this.mapped = mapped;
     }
 
     public NioConf ofAnotherPath(String path) {
-        return new NioConf(path, ioType, pageSize, mapped);
+        return new NioConf(path, ioType, pageSize, fileSize, mapped);
     }
 
     public String getPath() {
@@ -56,6 +61,10 @@ public class NioConf {
 
     public int getPageSize() {
         return pageSize;
+    }
+
+    public int getFileSize() {
+        return fileSize;
     }
 
     public boolean isMapped() {

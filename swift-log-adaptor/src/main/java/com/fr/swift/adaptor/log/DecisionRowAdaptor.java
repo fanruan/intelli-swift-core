@@ -1,6 +1,5 @@
 package com.fr.swift.adaptor.log;
 
-import com.fr.invoke.Reflect;
 import com.fr.swift.adaptor.log.DatumConverters.ReverseDatumConverter;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
@@ -11,6 +10,7 @@ import com.fr.swift.util.function.UnaryOperator;
 import com.fr.third.javax.persistence.AttributeConverter;
 import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Convert;
+import com.fr.third.org.objenesis.ObjenesisHelper;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -54,7 +54,7 @@ public class DecisionRowAdaptor<T> implements Function<Row, T> {
     @Override
     public T apply(Row row) {
         try {
-            T data = Reflect.on(entity).create().get();
+            T data = ObjenesisHelper.newInstance(entity);
             for (Entry<Integer, Pair<Field, UnaryOperator<Object>>> entry : converters.entrySet()) {
                 Pair<Field, UnaryOperator<Object>> pair = entry.getValue();
                 pair.getKey().set(data, pair.getValue().apply(row.getValue(entry.getKey() - 1)));

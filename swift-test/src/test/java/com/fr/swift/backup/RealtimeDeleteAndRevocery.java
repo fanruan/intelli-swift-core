@@ -23,6 +23,7 @@ import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.QueryDBSource;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -62,7 +63,7 @@ public class RealtimeDeleteAndRevocery extends BaseTest {
         SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
         SwiftResultSet resultSet = transfer.createResultSet();
         Incrementer incrementer = new Incrementer(dataSource);
-        incrementer.increment(resultSet);
+        incrementer.insertData(resultSet);
         Segment segment = swiftSegmentManager.getSegment(dataSource.getSourceKey()).get(0);
 
         Where where = new SwiftWhere(createEqualFilter("合同类型", "购买合同"));
@@ -91,6 +92,7 @@ public class RealtimeDeleteAndRevocery extends BaseTest {
         }
     }
 
+    @Ignore
     @Test
     public void testRedisDeleteAndRecovery() throws Exception {
         redisClient.flushDB();
@@ -98,7 +100,7 @@ public class RealtimeDeleteAndRevocery extends BaseTest {
         SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
         SwiftResultSet resultSet = transfer.createResultSet();
         Incrementer incrementer = new Incrementer(dataSource);
-        incrementer.increment(resultSet);
+        incrementer.insertData(resultSet);
         Segment segment = swiftSegmentManager.getSegment(dataSource.getSourceKey()).get(0);
 
         Where where = new SwiftWhere(createEqualFilter("合同类型", "购买合同"));

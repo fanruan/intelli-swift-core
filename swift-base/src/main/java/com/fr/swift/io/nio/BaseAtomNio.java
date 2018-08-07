@@ -47,26 +47,27 @@ abstract class BaseAtomNio extends BaseNio {
         if (currentPage == page) {
             return;
         }
-        releaseBuffer();
+        releaseBuffer(false);
         loadBuffer(page);
     }
 
     private void loadBuffer(int page) {
         try {
-            RandomAccessFile file = new RandomAccessFile(String.format("%s/%d", conf.getPath(), page), conf.isRead() ? "r" : "rw");
+            RandomAccessFile file = new RandomAccessFile(String.format("%s/%d", conf.getPath(), getFilePage(page)), conf.isRead() ? "r" : "rw");
             ch = file.getChannel();
 
+            int fileOffset = getFileOffset(page);
             if (conf.isMapped()) {
-                buf = ch.map(conf.isRead() ? MapMode.READ_ONLY : MapMode.READ_WRITE, 0, 1 << conf.getPageSize());
+                buf = ch.map(conf.isRead() ? MapMode.READ_ONLY : MapMode.READ_WRITE, fileOffset, 1 << conf.getPageSize());
             } else {
                 if (buf == null) {
-                    buf = ByteBuffer.allocate(1 << conf.getPageSize());
+                    buf = ByteBuffer.allocateDirect(1 << conf.getPageSize());
                 }
                 if (conf.isAppend()) {
-                    currentStart = (int) ch.size();
+                    currentStart = (int) (ch.size() - fileOffset);
                 } else {
                     currentStart = 0;
-                    ch.read(buf);
+                    ch.read(buf, fileOffset);
                 }
             }
 
@@ -76,32 +77,45 @@ abstract class BaseAtomNio extends BaseNio {
         }
     }
 
-    private void releaseBuffer() {
+    private int getFilePage(int page) {
+        return page >> (conf.getFileSize() - conf.getPageSize());
+    }
+
+    private int getFileOffset(int page) {
+        return (page & ((1 << (conf.getFileSize() - conf.getPageSize())) - 1)) << conf.getPageSize();
+    }
+
+    private void releaseBuffer(boolean discardBuf) {
         if (buf == null) {
             return;
         }
         if (conf.isMapped()) {
-            IoUtil.release((MappedByteBuffer) buf);
-            buf = null;
-            return;
-        }
-        if (conf.isWrite()) {
+            // mapped
+            ((MappedByteBuffer) buf).force();
+            IoUtil.close(ch);
+        } else if (conf.isWrite()) {
+            // 非mapped写，buf视为内存块
             buf.limit(buf.position());
             buf.position(currentStart);
             try {
-                ch.write(buf, currentStart);
+                ch.write(buf, currentStart + getFileOffset(currentPage));
             } catch (IOException e) {
                 SwiftLoggers.getLogger().error(e);
             } finally {
                 IoUtil.close(ch);
             }
         } else {
+            // 非mapped读，buf视为内存块
             IoUtil.close(ch);
         }
 
         buf.clear();
         currentPage = -1;
         currentStart = -1;
+        if (discardBuf) {
+            IoUtil.release(buf);
+            buf = null;
+        }
     }
 
     void setBufPosition(int offset) {
@@ -123,6 +137,6 @@ abstract class BaseAtomNio extends BaseNio {
 
     @Override
     public void release() {
-        releaseBuffer();
+        releaseBuffer(true);
     }
 }
