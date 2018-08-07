@@ -38,7 +38,6 @@ import java.util.concurrent.CountDownLatch;
  * 分析服务
  */
 @Service("analyseService")
-@RpcService(value = AnalyseService.class, type = RpcServiceType.CLIENT_SERVICE)
 public class SwiftAnalyseService extends AbstractSwiftService implements AnalyseService {
     private static final long serialVersionUID = 841582089735823794L;
 
@@ -75,78 +74,6 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     }
 
     @Override
-    public SwiftResultSet getRemoteQueryResult(final String jsonString, final SegmentDestination remoteURI) {
-        final SwiftResultSet[] resultSet = new SwiftResultSet[1];
-        try {
-            final CountDownLatch latch = new CountDownLatch(1);
-            queryRemoteNodeNode(jsonString, remoteURI).addCallback(new AsyncRpcCallback() {
-                @Override
-                public void success(Object result) {
-                    resultSet[0] = (SwiftResultSet) result;
-                    latch.countDown();
-                }
-
-                @Override
-                public void fail(Exception e) {
-                    List<String> spareNodes = remoteURI.getSpareNodes();
-                    try {
-                        for (String spareNode : spareNodes) {
-                            SegmentDestinationImpl spare = new SegmentDestinationImpl(remoteURI);
-                            spare.setClusterId(spareNode);
-                            final CountDownLatch count = new CountDownLatch(1);
-                            queryRemoteNodeNode(jsonString, spare).addCallback(new AsyncRpcCallback() {
-                                @Override
-                                public void success(Object result) {
-                                    resultSet[0] = (SwiftResultSet) result;
-                                    count.countDown();
-                                }
-
-                                @Override
-                                public void fail(Exception e) {
-                                    count.countDown();
-                                }
-                            });
-                            count.await();
-                            if (null != resultSet[0]) {
-                                latch.countDown();
-                                break;
-                            }
-                        }
-                        if (resultSet[0] == null) {
-                            latch.countDown();
-                        }
-                    } catch (Exception e1) {
-                        LOGGER.error("Query remote node error! ", e1);
-                    }
-                }
-            });
-            latch.await();
-        } catch (Exception e) {
-            LOGGER.error("Query remote node error! ", e);
-        }
-        return resultSet[0];
-    }
-
-    private RpcFuture queryRemoteNodeNode(String jsonString, SegmentDestination remoteURI) throws Exception {
-        if (remoteURI == null) {
-            QueryBean bean = QueryInfoBeanFactory.create(jsonString);
-            remoteURI = bean.getQueryDestination();
-        }
-        String address = remoteURI.getAddress();
-        String methodName = remoteURI.getMethodName();
-        Class clazz = remoteURI.getServiceClass();
-        ProxyFactory factory = ProxySelector.getInstance().getFactory();
-        Invoker invoker = factory.getInvoker(null, clazz, new RPCUrl(new RPCDestination(address)), false);
-        Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName(methodName), new Object[]{jsonString}));
-        RpcFuture future = (RpcFuture) result.getValue();
-        if (null == future) {
-            throw new Exception(result.getException());
-        }
-        return future;
-    }
-
-    @Override
-    @RpcMethod(methodName = "updateSegmentInfo")
     public void updateSegmentInfo(SegmentLocationInfo locationInfo, SegmentLocationInfo.UpdateType updateType) {
         SegmentLocationProvider.getInstance().updateSegmentInfo(locationInfo, updateType);
     }

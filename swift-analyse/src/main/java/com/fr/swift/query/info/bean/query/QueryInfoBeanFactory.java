@@ -10,6 +10,7 @@ import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.group.GroupQueryInfoImpl;
 import com.fr.swift.query.query.QueryBean;
+import com.fr.swift.query.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.third.fasterxml.jackson.core.JsonProcessingException;
@@ -25,7 +26,7 @@ import java.util.List;
  * @author Lyon
  * @date 2018/6/7
  */
-public class QueryInfoBeanFactory {
+public class QueryInfoBeanFactory implements QueryBeanFactory {
 
     private static final DimensionBeanFactory DIMENSION_BEAN_FACTORY = DimensionBeanFactory.getInstance();
     private static final SortBeanFactory SORT_BEAN_FACTORY = SortBeanFactory.getInstance();
@@ -33,11 +34,13 @@ public class QueryInfoBeanFactory {
     private static final PostQueryInfoFactory POST_QUERY_INFO_FACTORY = PostQueryInfoFactory.getInstance();
     private static ObjectMapper MAPPER = new ObjectMapper();
 
-    public static QueryInfoBean create(URL url) throws IOException {
+    @Override
+    public QueryInfoBean create(URL url) throws IOException {
         return MAPPER.readValue(url, QueryInfoBean.class);
     }
 
-    public static QueryInfoBean create(String jsonString) throws IOException {
+    @Override
+    public QueryInfoBean create(String jsonString) throws IOException {
         return MAPPER.readValue(jsonString, QueryInfoBean.class);
     }
 
@@ -45,6 +48,7 @@ public class QueryInfoBeanFactory {
         return MAPPER.writeValueAsString(bean);
     }
 
+    @Deprecated
     private static List<QueryInfoBean> create(List<QueryInfo> queryInfo) {
         List<QueryInfoBean> result = new ArrayList<QueryInfoBean>();
         if (null != queryInfo) {

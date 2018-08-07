@@ -12,7 +12,9 @@ import com.fr.swift.db.Where;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
+import com.fr.swift.query.query.QueryBeanFactory;
 import com.fr.swift.query.session.factory.SessionFactory;
+import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.manager.SwiftRepositoryManager;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
@@ -60,6 +62,8 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     private transient SwiftMetaDataService metaDataService;
     @Autowired
     private transient SwiftTablePathService tablePathService;
+    @Autowired(required = false)
+    private transient QueryBeanFactory queryBeanFactory;
 
     private SwiftHistoryService() {
     }
@@ -119,7 +123,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     @RpcMethod(methodName = "historyQuery")
     public SwiftResultSet query(final String queryDescription) throws Exception {
         try {
-            final QueryInfoBean bean = QueryInfoBeanFactory.create(queryDescription);
+            final QueryInfoBean bean = queryBeanFactory.create(queryDescription);
             SessionFactory factory = SwiftContext.get().getBean(SessionFactory.class);
             return factory.openSession(bean.getQueryId()).executeQuery(bean);
         } catch (IOException e) {

@@ -43,6 +43,7 @@ import com.fr.third.springframework.beans.factory.annotation.Qualifier;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URI;
 import java.util.List;
 
@@ -50,17 +51,17 @@ import java.util.List;
  * @author yee
  * @date 2018/8/6
  */
-@Service
 @RpcService(type = RpcServiceType.CLIENT_SERVICE, value = IndexingService.class)
-public class ClusterIndexingService extends AbstractSwiftService implements IndexingService {
+public class ClusterIndexingService extends AbstractSwiftService implements IndexingService, Serializable {
 
+    private static final long serialVersionUID = 3153509375653090856L;
     @Autowired
     private transient RpcServer server;
 
     @Autowired(required = false)
     @Qualifier("indexingService")
     private IndexingService indexingService;
-    @Autowired
+    @Autowired(required = false)
     private transient SwiftRepositoryManager repositoryManager;
 
     @Override

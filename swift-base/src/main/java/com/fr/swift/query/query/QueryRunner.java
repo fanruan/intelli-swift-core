@@ -1,6 +1,5 @@
 package com.fr.swift.query.query;
 
-import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
@@ -20,15 +19,5 @@ public interface QueryRunner {
      * @throws SQLException
      */
     SwiftResultSet getQueryResult(QueryBean info) throws Exception;
-
-    /**
-     * 远程查询
-     *
-     * @param jsonString
-     * @param remoteURI
-     * @return
-     * @throws SQLException
-     */
-    SwiftResultSet getRemoteQueryResult(String jsonString, SegmentDestination remoteURI) throws SQLException;
 
 }

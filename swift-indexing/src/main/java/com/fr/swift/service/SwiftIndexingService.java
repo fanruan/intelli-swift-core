@@ -74,7 +74,6 @@ import static com.fr.swift.task.TaskResult.Type.SUCCEEDED;
  * @date 2017/10/10
  */
 @Service("indexingService")
-@RpcService(type = RpcServiceType.CLIENT_SERVICE, value = IndexingService.class)
 public class SwiftIndexingService extends AbstractSwiftService implements IndexingService {
     private static final long serialVersionUID = -7430843337225891194L;
 
@@ -107,7 +106,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     @Override
     public boolean start() throws SwiftServiceException {
         super.start();
-//        initListener();
+        initListener();
         return true;
     }
 
@@ -117,7 +116,6 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     }
 
     @Override
-    @RpcMethod(methodName = "index")
     public void index(IndexingStuff stuff) {
         SwiftLoggers.getLogger().info("indexing stuff");
         appendStuffMap(stuff);
@@ -158,12 +156,6 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
         return new ServerCurrentStatus(getID());
     }
 
-    private URL getMasterURL() {
-        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.get().getBean(SwiftServiceInfoService.class).getServiceInfoByService(SwiftClusterService.SERVICE);
-        SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
-        return UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
-    }
-
     private void initListener() {
         EventDispatcher.listen(TaskEvent.LOCAL_DONE, new Listener<Pair<TaskKey, TaskResult>>() {
             @Override
@@ -177,10 +169,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
             }
         });
 
-        WorkerTaskPool.getInstance().initListener();
-        WorkerTaskPool.getInstance().setTaskGenerator(new CubeTaskGenerator());
-
-        CubeTaskManager.getInstance().initListener();
+        initTaskGenerator();
     }
 
     private class LocalUploadRunnable extends AbstractUploadRunnable {

@@ -24,6 +24,7 @@ import com.fr.swift.netty.rpc.client.async.RpcFuture;
 import com.fr.swift.netty.rpc.server.RpcServer;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
+import com.fr.swift.query.query.QueryBeanFactory;
 import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
@@ -51,7 +52,6 @@ import java.util.concurrent.Callable;
  * @date 2017/10/10
  */
 @Service("realtimeService")
-@RpcService(type = RpcServiceType.CLIENT_SERVICE, value = RealtimeService.class)
 public class SwiftRealtimeService extends AbstractSwiftService implements RealtimeService, Serializable {
     @Autowired
     private transient RpcServer server;
@@ -63,6 +63,9 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     @Autowired
     private transient ServiceTaskExecutor taskExecutor;
 
+    @Autowired(required = false)
+    private transient QueryBeanFactory queryBeanFactory;
+
     private SwiftRealtimeService() {
     }
 
@@ -71,7 +74,6 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.INSERT) {
             @Override
             public void doJob() throws Exception {
-//                rpcSegmentLocation(PushSegLocationRpcEvent.fromSourceKey(getServiceType(), Arrays.asList(tableKey.getId())));
                 SwiftDatabase.getInstance().getTable(tableKey).insert(resultSet);
             }
         });
@@ -102,13 +104,11 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     }
 
     @Override
-    @RpcMethod(methodName = "recover")
     public void recover(List<SegmentKey> tableKeys) {
         SwiftLoggers.getLogger().info("recover");
     }
 
     @Override
-    @RpcMethod(methodName = "realtimeDelete")
     public boolean delete(final SourceKey sourceKey, final Where where) throws Exception {
         taskExecutor.submit(new SwiftServiceCallable(sourceKey, ServiceTaskType.DELETE) {
             @Override
@@ -133,10 +133,9 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     }
 
     @Override
-    @RpcMethod(methodName = "realTimeQuery")
     public SwiftResultSet query(final String queryDescription) throws SQLException {
         try {
-            final QueryInfoBean bean = QueryInfoBeanFactory.create(queryDescription);
+            final QueryInfoBean bean = queryBeanFactory.create(queryDescription);
             SessionFactory sessionFactory = SwiftContext.get().getBean(SessionFactory.class);
             return sessionFactory.openSession(bean.getQueryId()).executeQuery(bean);
         } catch (Exception e) {
@@ -153,31 +152,5 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
     public SwiftRealtimeService(String id) {
         super(id);
-    }
-
-    private void rpcSegmentLocation(PushSegLocationRpcEvent event) {
-        URL masterURL = getMasterURL();
-        ProxyFactory factory = ProxySelector.getInstance().getFactory();
-        Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, masterURL, false);
-        Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName("rpcTrigger"), new Object[]{event}));
-        RpcFuture future = (RpcFuture) result.getValue();
-        future.addCallback(new AsyncRpcCallback() {
-            @Override
-            public void success(Object result) {
-                logger.info("rpcTrigger success! ");
-            }
-
-            @Override
-            public void fail(Exception e) {
-                logger.error("rpcTrigger error! ", e);
-            }
-        });
-    }
-
-    private URL getMasterURL() {
-        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.get().
-                getBean(SwiftServiceInfoService.class).getServiceInfoByService(SwiftClusterService.SERVICE);
-        SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
-        return UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
     }
 }

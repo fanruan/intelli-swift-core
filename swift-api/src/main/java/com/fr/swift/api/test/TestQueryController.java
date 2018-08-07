@@ -36,7 +36,7 @@ public class TestQueryController {
         List<Row> rows = new ArrayList<Row>();
         int count = 200;
         long start = System.currentTimeMillis();
-        QueryBean queryBean = QueryInfoBeanFactory.create(jsonString);
+        QueryBean queryBean = new QueryInfoBeanFactory().create(jsonString);
         ((DetailQueryInfoBean) queryBean).setQueryId("" + System.currentTimeMillis());
         Query query = QueryBuilder.buildQuery(queryBean);
         SwiftResultSet resultSet = query.getQueryResult();
@@ -84,7 +84,7 @@ public class TestQueryController {
     public List<Row> groupQuery(@PathVariable("sourceKey") String jsonString) throws Exception {
         List<Row> rows = new ArrayList<Row>();
         // swift-test模块的resources目录下有json示例
-        QueryBean queryBean = QueryInfoBeanFactory.create(jsonString);
+        QueryBean queryBean = new QueryInfoBeanFactory().create(jsonString);
         ((GroupQueryInfoBean) queryBean).setQueryId("" + System.currentTimeMillis());
         long start = System.currentTimeMillis();
         Query query = QueryBuilder.buildQuery(queryBean);
