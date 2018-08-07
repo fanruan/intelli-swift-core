@@ -14,9 +14,13 @@ import com.fr.swift.config.bean.IndexingSelectRule;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.IndexingSelectRuleService;
 import com.fr.swift.config.service.SwiftServiceInfoService;
+import com.fr.swift.container.NodeContainer;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
+import com.fr.swift.heart.HeartBeatInfo;
+import com.fr.swift.heart.NodeState;
+import com.fr.swift.heart.NodeType;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.netty.rpc.client.AsyncRpcCallback;
@@ -47,6 +51,7 @@ import com.fr.swift.util.Crasher;
 import javax.annotation.PostConstruct;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -149,16 +154,30 @@ public class ClusterSwiftServerService  extends AbstractSwiftService implements 
         // 接口调用
         switch (serviceType) {
             case ANALYSE:
-                return new HashMap<String, ClusterEntity>(analyseServiceMap);
+                return getOnlineClusterEntityService(analyseServiceMap);
             case HISTORY:
-                return new HashMap<String, ClusterEntity>(historyServiceMap);
+                return getOnlineClusterEntityService(historyServiceMap);
             case INDEXING:
-                return new HashMap<String, ClusterEntity>(indexingServiceMap);
+                return getOnlineClusterEntityService(indexingServiceMap);
             case REAL_TIME:
-                return new HashMap<String, ClusterEntity>(realTimeServiceMap);
+                return getOnlineClusterEntityService(realTimeServiceMap);
             default:
                 return null;
         }
+    }
+
+    private Map<String, ClusterEntity> getOnlineClusterEntityService(Map<String, ClusterEntity> map) {
+        List<NodeState> nodeStates = NodeContainer.getAllNodeStates();
+        Map<String, ClusterEntity> result = new HashMap<String, ClusterEntity>();
+        for (NodeState nodeState : nodeStates) {
+            HeartBeatInfo info = nodeState.getHeartBeatInfo();
+            if (map.containsKey(info.getAddress())) {
+                if (nodeState.getNodeType() != NodeType.OFFLINE) {
+                    result.put(info.getAddress(), map.get(info.getAddress()));
+                }
+            }
+        }
+        return result;
     }
 
     @Override

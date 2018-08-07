@@ -2,7 +2,7 @@ package com.fr.swift.rm;
 
 import com.fr.swift.Collect;
 import com.fr.swift.cluster.manager.AbstractClusterManager;
-import com.fr.swift.rm.collector.MasterHeatbeatCollect;
+import com.fr.swift.rm.collector.MasterHeartbeatCollect;
 import com.fr.third.springframework.stereotype.Service;
 
 /**
@@ -15,7 +15,7 @@ import com.fr.third.springframework.stereotype.Service;
 @Service("masterManager")
 public class MasterManager extends AbstractClusterManager {
 
-    private Collect heartBeatCollect = new MasterHeatbeatCollect();
+    private Collect heartBeatCollect = new MasterHeartbeatCollect();
 
     public synchronized void startUp() {
         if (!isRunning) {

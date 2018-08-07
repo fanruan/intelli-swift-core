@@ -20,17 +20,17 @@ import java.util.List;
  * @description 心跳超时检测
  * @since Advanced FineBI 5.0
  */
-public class MasterHeatbeatCollect implements Collect {
+public class MasterHeartbeatCollect implements Collect {
 
     private MasterService masterService;
 
     private Thread thread;
 
-    private final static long HEART_BEAT_TIME = 10000l;
-    private final static long DELAY_TIME = 30000l;
-    private final static long OFFLINE_TIME = 60000l;
+    private final static long HEART_BEAT_TIME = 10000L;
+    private final static long DELAY_TIME = 30000L;
+    private final static long OFFLINE_TIME = 60000L;
 
-    public MasterHeatbeatCollect() {
+    public MasterHeartbeatCollect() {
         masterService = SwiftContext.get().getBean("swiftMasterService", SwiftMasterService.class);
     }
 
@@ -59,7 +59,7 @@ public class MasterHeatbeatCollect implements Collect {
                         List<NodeState> allNodeStates = NodeContainer.getAllNodeStates();
                         boolean need2Sync = false;
                         for (NodeState nodeState : allNodeStates) {
-                            long nowTime = new Date().getTime();
+                            long nowTime = System.currentTimeMillis();
                             long diffTime = nowTime - nodeState.getHeartBeatInfo().getHeartbeatTime().getTime();
                             NodeType originType = nodeState.getNodeType();
                             NodeType currentType;
