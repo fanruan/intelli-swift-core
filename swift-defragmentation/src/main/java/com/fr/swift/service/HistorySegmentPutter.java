@@ -3,6 +3,7 @@ package com.fr.swift.service;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
@@ -19,6 +20,7 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.operator.column.SwiftColumnDictMerger;
 import com.fr.swift.segment.operator.column.SwiftColumnIndexer;
 import com.fr.swift.segment.operator.insert.SwiftInserter;
+import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
@@ -69,7 +71,7 @@ public class HistorySegmentPutter implements Runnable {
         try {
             // 先占坑
             SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).addSegments(newHisSeg);
-            Segment hisSeg = SegmentUtils.newHistorySegment(new ResourceLocation(realtimeSeg.getLocation().getPath(), StoreType.FINE_IO), realtimeSeg.getMetaData());
+            Segment hisSeg = newHistory(realtimeSegKey);
             new SwiftInserter(hisSeg).insertData(new SegmentResultSet(realtimeSeg));
 
             SwiftMetaData metadata = realtimeSeg.getMetaData();
@@ -99,6 +101,12 @@ public class HistorySegmentPutter implements Runnable {
             SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).removeSegments(newHisSeg);
             FileUtil.delete(realtimeSegKey.getAbsoluteUri().getPath());
         }
+    }
+
+    private static Segment newHistory(SegmentKey realtimeSegKey) {
+        DataSource ds = SwiftDatabase.getInstance().getTable(realtimeSegKey.getTable());
+        return SegmentUtils.newHistorySegment(
+                new ResourceLocation(CubeUtil.getHistorySegPath(ds, realtimeSegKey.getOrder())), ds.getMetadata());
     }
 
     private static void triggerCollate(SourceKey tableKey) {

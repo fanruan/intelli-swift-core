@@ -23,6 +23,7 @@ import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.QueryDBSource;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -91,6 +92,7 @@ public class RealtimeDeleteAndRevocery extends BaseTest {
         }
     }
 
+    @Ignore
     @Test
     public void testRedisDeleteAndRecovery() throws Exception {
         redisClient.flushDB();

@@ -18,6 +18,7 @@ import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.third.fasterxml.jackson.core.JsonProcessingException;
 import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ public class RedisBackupAndRevoceryTest extends BaseTest {
         redisClient = (RedisClient) SwiftContext.get().getBean("redisClient");
     }
 
+    @Ignore
     @Test
     public void testBackup() {
         try {
@@ -78,6 +80,7 @@ public class RedisBackupAndRevoceryTest extends BaseTest {
         }
     }
 
+    @Ignore
     @Test
     public void testRevover() {
         try {

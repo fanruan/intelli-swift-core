@@ -4,8 +4,6 @@ import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.ByteArrayWriter;
 import com.fr.swift.cube.io.output.StringWriter;
 
-import java.io.UnsupportedEncodingException;
-
 /**
  * @author anchore
  */
@@ -34,11 +32,7 @@ public class StringFineIoWriter extends BaseFineIoWriter implements StringWriter
     public void put(long pos, String val) {
         byte[] bytes = null;
         if (val != null) {
-            try {
-                bytes = val.getBytes(DEFAULT_CHARSET);
-            } catch (UnsupportedEncodingException e) {
-                bytes = val.getBytes();
-            }
+            bytes = val.getBytes(CHARSET);
         }
         baw.put(pos, bytes);
     }

@@ -89,7 +89,7 @@ public abstract class AbstractBlockInserter implements Inserter, Recorder {
         if (null == entity) {
             entity = new SwiftTablePathEntity(sourceKey.getId(), 0);
         } else {
-            cubeTmpPath = entity.getTablePath() + 1;
+            cubeTmpPath = entity.getTablePath() == null ? 0 : entity.getTablePath() + 1;
             entity.setTmpDir(cubeTmpPath);
         }
         tablePathService.saveOrUpdate(entity);
