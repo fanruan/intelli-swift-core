@@ -1,14 +1,17 @@
-package com.fr.swift.netty.rpc;
+package com.fr.swift.netty.rpc.service;
 
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.netty.NettyServiceStarter;
 import com.fr.swift.netty.rpc.server.RpcServerServiceStarter;
+import com.fr.swift.service.ServerService;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 import com.fr.third.springframework.context.ApplicationContext;
+import com.fr.third.springframework.stereotype.Service;
 
+import javax.annotation.PreDestroy;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -18,7 +21,8 @@ import java.util.concurrent.ExecutorService;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class SwiftRpcService {
+@Service("rpc")
+public class SwiftRpcService implements ServerService {
 
     private ApplicationContext context;
     private NettyServiceStarter serverStarter;
@@ -41,11 +45,15 @@ public class SwiftRpcService {
         context = SwiftContext.get();
     }
 
+    @Override
     public void startServerService() {
         synchronized (this.getClass()) {
             if (serverStarter == null) {
                 serverStarter = new RpcServerServiceStarter(context);
             }
+        }
+        if (rpcServerExecutor.isShutdown()) {
+            rpcServerExecutor = SwiftExecutors.newSingleThreadExecutor(new PoolThreadFactory("netty-rpc-server"));
         }
         rpcServerExecutor.submit(new Runnable() {
             @Override
@@ -60,6 +68,8 @@ public class SwiftRpcService {
         });
     }
 
+    @PreDestroy
+    @Override
     public synchronized void stopServerService() throws Exception {
         SwiftLoggers.getLogger().info("rpc server stopping!");
         if (serverStarter != null) {

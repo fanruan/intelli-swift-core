@@ -1,28 +1,10 @@
 package com.fr.swift.service.register;
 
-import com.fr.swift.basics.ProxyFactory;
-import com.fr.swift.basics.URL;
-import com.fr.swift.basics.base.selector.ProxySelector;
-import com.fr.swift.basics.base.selector.UrlSelector;
-import com.fr.swift.config.bean.SwiftServiceInfoBean;
-import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.core.cluster.SwiftClusterService;
-import com.fr.swift.exception.SwiftServiceException;
-import com.fr.swift.log.SwiftLogger;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
-import com.fr.swift.service.AbstractSwiftService;
-import com.fr.swift.service.AnalyseService;
-import com.fr.swift.service.HistoryService;
-import com.fr.swift.service.IndexingService;
-import com.fr.swift.service.RealtimeService;
 import com.fr.swift.service.SwiftRegister;
-import com.fr.swift.service.SwiftService;
-import com.fr.swift.service.listener.RemoteServiceSender;
-import com.fr.swift.service.listener.SwiftServiceListenerHandler;
-
-import java.util.List;
+import com.fr.third.springframework.beans.factory.annotation.Autowired;
+import com.fr.third.springframework.beans.factory.annotation.Value;
 
 /**
  * This class created on 2018/6/1
@@ -33,52 +15,12 @@ import java.util.List;
  */
 public abstract class AbstractSwiftRegister implements SwiftRegister {
 
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(AbstractSwiftRegister.class);
-
-    private SwiftServiceInfoService serviceInfoService;
-
-    private List<SwiftService> swiftServiceList;
-
-    public void setSwiftServiceList(List<SwiftService> swiftServiceList) {
-        this.swiftServiceList = swiftServiceList;
+    @Autowired
+    public void setSwiftServiceList(@Value("${swift.service.name}") String swiftServiceName) {
+        SwiftProperty swiftProperty = SwiftContext.get().getBean(SwiftProperty.class);
+        String swiftServiceNames[] = swiftServiceName.split(",");
+        swiftProperty.setSwiftServiceList(swiftServiceNames);
     }
-
-    public AbstractSwiftRegister() {
-        serviceInfoService = SwiftContext.get().getBean(SwiftServiceInfoService.class);
-    }
-
-    protected void localServiceRegister() throws SwiftServiceException {
-        SwiftContext.get().getBean(IndexingService.class).start();
-
-        SwiftContext.get().getBean(HistoryService.class).start();
-
-        SwiftContext.get().getBean(RealtimeService.class).start();
-
-        SwiftContext.get().getBean(AnalyseService.class).start();
-    }
-
-    protected void masterLocalServiceRegister() {
-        String masterAddress = SwiftContext.get().getBean("swiftProperty", SwiftProperty.class).getMasterAddress();
-        serviceInfoService.saveOrUpdate(new SwiftServiceInfoBean(SwiftClusterService.SERVICE, masterAddress, masterAddress, true));
-    }
-
-    protected void remoteServiceRegister() {
-        ProxyFactory proxyFactory = ProxySelector.getInstance().getFactory();
-        RemoteServiceSender remoteServiceSender = RemoteServiceSender.getInstance();
-
-        List<SwiftServiceInfoBean> swiftServiceInfoBeans = serviceInfoService.getServiceInfoByService(SwiftClusterService.SERVICE);
-        SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
-        URL url = UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
-        SwiftServiceListenerHandler senderProxy = proxyFactory.getProxy(remoteServiceSender, SwiftServiceListenerHandler.class, url);
-
-        for (SwiftService swiftService : swiftServiceList) {
-            ((AbstractSwiftService) swiftService).setId(SwiftContext.get().getBean("swiftProperty", SwiftProperty.class).getServerAddress());
-            LOGGER.info("begain to register " + swiftService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + "!");
-            senderProxy.registerService(swiftService);
-            LOGGER.info("register " + swiftService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + " succeed!");
-        }
-    }
-
     //FR方式暂时不用
 //    protected void masterLocalServiceRegister() {
 //        //必须注册

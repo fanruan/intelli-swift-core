@@ -1,8 +1,14 @@
 package com.fr.swift.property;
 
+import com.fr.swift.service.ServerService;
+import com.fr.swift.service.SwiftService;
+import com.fr.swift.util.ServiceBeanUtils;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.beans.factory.annotation.Value;
 import com.fr.third.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class created on 2018/6/8
@@ -33,6 +39,32 @@ public class SwiftProperty {
     private String configDbJdbcUrl;
 
     private int rpcMaxObjectSize;
+
+    /**
+     * swift业务相关service
+     */
+    private List<SwiftService> swiftServiceList = new ArrayList<SwiftService>();
+
+    /**
+     * swift中server相关服务
+     */
+    private List<ServerService> serverServiceList = new ArrayList<ServerService>();
+
+    public void setServerServiceList(String serverServiceNames[]) {
+        serverServiceList = ServiceBeanUtils.getServerServiceByNames(serverServiceNames);
+    }
+
+    public void setSwiftServiceList(String swiftServiceNames[]) {
+        swiftServiceList = ServiceBeanUtils.getSwiftServiceByNames(swiftServiceNames);
+    }
+
+    public List<SwiftService> getSwiftServiceList() {
+        return swiftServiceList;
+    }
+
+    public List<ServerService> getServerServiceList() {
+        return serverServiceList;
+    }
 
     @Autowired
     public void setRpcAddress(@Value("${swift.rpc_server_address}") String rpcAddress) {

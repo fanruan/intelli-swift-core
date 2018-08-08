@@ -58,7 +58,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
-@Service("collateService")
+@Service("collate")
 @RpcService(value = CollateService.class, type = RpcServiceType.CLIENT_SERVICE)
 public class SwiftCollateService extends AbstractSwiftService implements CollateService {
 

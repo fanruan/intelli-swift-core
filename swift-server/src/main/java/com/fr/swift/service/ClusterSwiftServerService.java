@@ -48,12 +48,8 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
     private Map<String, ClusterEntity> realTimeServiceMap = new ConcurrentHashMap<String, ClusterEntity>();
     private Map<String, ClusterEntity> historyServiceMap = new ConcurrentHashMap<String, ClusterEntity>();
     private Map<String, ClusterEntity> analyseServiceMap = new ConcurrentHashMap<String, ClusterEntity>();
+    private Map<String, ClusterEntity> collateServiceMap = new ConcurrentHashMap<String, ClusterEntity>();
 
-
-//    private Map<String, SwiftIndexingService> indexingServiceMap = new HashMap<String, SwiftIndexingService>();
-//    private Map<String, SwiftRealtimeService> realTimeServiceMap = new HashMap<String, SwiftRealtimeService>();
-//    private Map<String, HistoryService> historyServiceMap = new HashMap<String, HistoryService>();
-//    private Map<String, SwiftAnalyseService> analyseServiceMap = new HashMap<String, SwiftAnalyseService>();
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(ClusterSwiftServerService.class);
 
@@ -88,7 +84,7 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
         if (service.getID() == null) {
             Crasher.crash("Service's clusterId is null! Can't be registered!");
         }
-        LOGGER.info(service.getID() + " register service :" + service.getServiceType().name());
+        LOGGER.debug(service.getID() + " register service :" + service.getServiceType().name());
         synchronized (this) {
             serviceInfoService.saveOrUpdate(new SwiftServiceInfoBean(
                     service.getServiceType().name(), service.getID(), swiftProperty.getServerAddress(), false));
@@ -106,6 +102,10 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
                     break;
                 case REAL_TIME:
                     realTimeServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), RealtimeService.class));
+                    break;
+                case COLLATE:
+                    collateServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), CollateService.class));
+                    break;
                 default:
             }
         }
@@ -122,6 +122,8 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
                 return new HashMap<String, ClusterEntity>(indexingServiceMap);
             case REAL_TIME:
                 return new HashMap<String, ClusterEntity>(realTimeServiceMap);
+            case COLLATE:
+                return new HashMap<String, ClusterEntity>(collateServiceMap);
             default:
                 return null;
         }
@@ -132,7 +134,7 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
         if (service.getID() == null) {
             Crasher.crash("Service's clusterId is null! Can't be removed!");
         }
-        LOGGER.info(service.getID() + " unregister service :" + service.getServiceType().name());
+        LOGGER.debug(service.getID() + " unregister service :" + service.getServiceType().name());
         synchronized (this) {
             serviceInfoService.removeServiceInfo(new SwiftServiceInfoBean(service.getServiceType().name(), service.getID(), ""));
             switch (service.getServiceType()) {
@@ -147,6 +149,9 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
                     break;
                 case REAL_TIME:
                     realTimeServiceMap.remove(service.getID());
+                    break;
+                case COLLATE:
+                    collateServiceMap.remove(service.getID());
                     break;
                 default:
             }

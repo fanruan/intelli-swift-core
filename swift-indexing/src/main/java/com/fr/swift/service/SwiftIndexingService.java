@@ -4,7 +4,6 @@ import com.fineio.FineIO;
 import com.fr.event.Event;
 import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
-import com.fr.stable.StringUtils;
 import com.fr.swift.annotation.RpcMethod;
 import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.RpcServiceType;
@@ -33,7 +32,6 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.netty.rpc.client.AsyncRpcCallback;
 import com.fr.swift.netty.rpc.client.async.RpcFuture;
 import com.fr.swift.netty.rpc.server.RpcServer;
-import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.relation.RelationIndexImpl;
@@ -71,7 +69,7 @@ import static com.fr.swift.task.TaskResult.Type.SUCCEEDED;
  * @author pony
  * @date 2017/10/10
  */
-@Service("indexingService")
+@Service("indexing")
 @RpcService(type = RpcServiceType.CLIENT_SERVICE, value = IndexingService.class)
 public class SwiftIndexingService extends AbstractSwiftService implements IndexingService {
     private static final long serialVersionUID = -7430843337225891194L;
@@ -95,11 +93,6 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
 
     public SwiftIndexingService(String id) {
         super(id);
-    }
-
-    @Override
-    public String getID() {
-        return StringUtils.isEmpty(super.getID()) ? SwiftContext.get().getBean(SwiftProperty.class).getServerAddress() : super.getID();
     }
 
     @Override

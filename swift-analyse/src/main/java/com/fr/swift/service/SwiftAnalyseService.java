@@ -37,7 +37,7 @@ import java.util.concurrent.CountDownLatch;
  * @date 2017/10/12
  * 分析服务
  */
-@Service("analyseService")
+@Service("analyse")
 @RpcService(value = AnalyseService.class, type = RpcServiceType.CLIENT_SERVICE)
 public class SwiftAnalyseService extends AbstractSwiftService implements AnalyseService {
     private static final long serialVersionUID = 841582089735823794L;

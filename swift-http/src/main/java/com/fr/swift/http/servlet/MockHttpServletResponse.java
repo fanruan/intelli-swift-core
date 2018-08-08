@@ -172,11 +172,6 @@ public class MockHttpServletResponse implements HttpServletResponse {
         doAddHeaderValue(CONTENT_LENGTH_HEADER, contentLength, true);
     }
 
-    @Override
-    public void setContentLengthLong(long l) {
-
-    }
-
     public int getContentLength() {
         return this.contentLength;
     }

@@ -14,6 +14,7 @@ import com.fr.swift.log.SwiftLog4jLoggers;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.service.register.LocalSwiftRegister;
+import com.fr.swift.service.register.SwiftServerRegister;
 import com.fr.swift.source.db.ConnectionInfo;
 import com.fr.swift.source.db.ConnectionManager;
 import com.fr.swift.source.db.IConnectionProvider;
@@ -37,17 +38,22 @@ public class SwiftEngineStart {
             SwiftContext.init();
             registerTmpConnectionProvider();
             FineIO.setLogger(new FineIOLoggerImpl());
-            new LocalSwiftRegister().serviceRegister();
             ProviderTaskManager.start();
+
+            SwiftCommandParser.parseCommand(args);
+
+            SwiftContext.get().getBean(LocalSwiftRegister.class).serviceRegister();
             if (SwiftContext.get().getBean("swiftProperty", SwiftProperty.class).isCluster()) {
                 ClusterListenerHandler.handlerEvent(new ClusterEvent(ClusterEventType.JOIN_CLUSTER, ClusterType.CONFIGURE));
             }
+
+            SwiftContext.get().getBean(SwiftServerRegister.class).serviceRegister();
+
         } catch (Throwable e) {
             SwiftLoggers.getLogger().error(e);
             System.exit(1);
         }
     }
-
 
 
     private static void registerTmpConnectionProvider() {

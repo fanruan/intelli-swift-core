@@ -47,13 +47,13 @@ public class RemoteServiceSender implements SwiftServiceListenerHandler {
 
     @Override
     public void registerService(SwiftService service) {
-        LOGGER.info("RemoteServiceSender registerService");
+        LOGGER.debug("RemoteServiceSender registerService");
         RemoteServiceReceiver.getInstance().registerService(service);
     }
 
     @Override
     public void unRegisterService(SwiftService service) {
-        LOGGER.info("RemoteServiceSender unRegisterService");
+        LOGGER.debug("RemoteServiceSender unRegisterService");
         RemoteServiceReceiver.getInstance().unRegisterService(service);
     }
 }

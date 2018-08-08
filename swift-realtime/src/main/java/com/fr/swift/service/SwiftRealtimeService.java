@@ -50,7 +50,7 @@ import java.util.concurrent.Callable;
  * @author pony
  * @date 2017/10/10
  */
-@Service("realtimeService")
+@Service("realtime")
 @RpcService(type = RpcServiceType.CLIENT_SERVICE, value = RealtimeService.class)
 public class SwiftRealtimeService extends AbstractSwiftService implements RealtimeService, Serializable {
     @Autowired

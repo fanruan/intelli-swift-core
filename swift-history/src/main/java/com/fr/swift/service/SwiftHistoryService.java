@@ -42,7 +42,7 @@ import java.util.Set;
  * @author pony
  * @date 2017/10/10
  */
-@Service("historyService")
+@Service("history")
 @RpcService(value = HistoryService.class, type = RpcServiceType.CLIENT_SERVICE)
 public class SwiftHistoryService extends AbstractSwiftService implements HistoryService, Serializable {
     private static final long serialVersionUID = -6013675740141588108L;

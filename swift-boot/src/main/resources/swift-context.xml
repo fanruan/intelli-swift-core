@@ -9,10 +9,12 @@
        classpath:/com/fr/third/springframework/context/config/spring-context-4.0.xsd">
 
     <!--基本和环境配置-->
-    <context:property-placeholder location="classpath:swift.properties"/>
+    <context:property-placeholder location="classpath:swift.properties,classpath:swift-beans.properties"/>
 
     <context:annotation-config/>
     <context:component-scan base-package="com.fr.swift.netty.rpc.service"/>
+    <context:component-scan base-package="com.fr.swift.http.service"/>
+
     <context:component-scan base-package="com.fr.swift.service.listener"/>
     <context:component-scan base-package="com.fr.swift.service"/>
     <context:component-scan base-package="com.fr.swift.config"/>
@@ -21,5 +23,4 @@
     <context:component-scan base-package="com.fr.swift.nm"/>
 
     <import resource="swift-beans.xml"/>
-    <import resource="swift-services.xml"/>
 </beans>

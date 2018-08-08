@@ -44,7 +44,7 @@ public class RemoteServiceReceiver implements SwiftServiceListenerHandler {
     @Override
     public void registerService(SwiftService service) {
         try {
-            LOGGER.info("RemoteServiceReceiver registerService");
+            LOGGER.debug("RemoteServiceReceiver registerService");
             SwiftServiceListenerManager.getInstance().registerService(service);
         } catch (SwiftServiceException e) {
             LOGGER.error(e);
@@ -54,7 +54,7 @@ public class RemoteServiceReceiver implements SwiftServiceListenerHandler {
     @Override
     public void unRegisterService(SwiftService service) {
         try {
-            LOGGER.info("RemoteServiceReceiver unRegisterService");
+            LOGGER.debug("RemoteServiceReceiver unRegisterService");
             SwiftServiceListenerManager.getInstance().unRegisterService(service);
         } catch (SwiftServiceException e) {
             LOGGER.error(e);
