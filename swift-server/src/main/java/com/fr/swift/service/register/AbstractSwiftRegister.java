@@ -48,13 +48,13 @@ public abstract class AbstractSwiftRegister implements SwiftRegister {
     }
 
     protected void localServiceRegister() throws SwiftServiceException {
-        SwiftContext.get().getBean(IndexingService.class).start();
+        SwiftContext.get().getBean("indexingService", IndexingService.class).start();
 
-        SwiftContext.get().getBean(HistoryService.class).start();
+        SwiftContext.get().getBean("historyService", HistoryService.class).start();
 
-        SwiftContext.get().getBean(RealtimeService.class).start();
+        SwiftContext.get().getBean("realtimeService", RealtimeService.class).start();
 
-        SwiftContext.get().getBean(AnalyseService.class).start();
+        SwiftContext.get().getBean("analyseService", AnalyseService.class).start();
     }
 
     protected void masterLocalServiceRegister() {
@@ -74,6 +74,12 @@ public abstract class AbstractSwiftRegister implements SwiftRegister {
         for (SwiftService swiftService : swiftServiceList) {
             ((AbstractSwiftService) swiftService).setId(SwiftContext.get().getBean("swiftProperty", SwiftProperty.class).getServerAddress());
             LOGGER.info("begain to register " + swiftService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + "!");
+            try {
+                swiftService.start();
+            } catch (SwiftServiceException e) {
+                LOGGER.error("register " + swiftService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + " failed!", e);
+                continue;
+            }
             senderProxy.registerService(swiftService);
             LOGGER.info("register " + swiftService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + " succeed!");
         }

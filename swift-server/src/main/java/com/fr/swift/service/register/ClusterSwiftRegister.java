@@ -6,7 +6,7 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.netty.rpc.server.RpcServer;
 import com.fr.swift.selector.ClusterSelector;
-import com.fr.swift.service.ClusterSwiftServerService;
+import com.fr.swift.cluster.service.ClusterSwiftServerService;
 
 /**
  * This class created on 2018/6/4

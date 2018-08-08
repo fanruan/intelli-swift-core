@@ -1,7 +1,10 @@
 package com.fr.swift.service;
 
 import com.fr.swift.info.ServerCurrentStatus;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.stuff.IndexingStuff;
+import com.fr.swift.task.TaskKey;
+import com.fr.swift.task.TaskResult;
 
 /**
  * @author anchore
@@ -16,4 +19,10 @@ public interface IndexingService extends SwiftService {
     <Stuff extends IndexingStuff> void index(Stuff stuff);
 
     ServerCurrentStatus currentStatus();
+
+    interface ListenerWorker {
+        void work(Pair<TaskKey, TaskResult> result);
+    }
+
+    void setListenerWorker(ListenerWorker listenerWorker);
 }

@@ -15,7 +15,7 @@
     <bean id="swiftQuerySessionFactory" class="com.fr.swift.query.session.factory.SessionFactoryImpl"/>
     <bean id="redisClient" class="com.fr.swift.redis.RedisClient"/>
     <bean id="queryIndexRunner" class="com.fr.swift.service.QueryIndexService"/>
-
+    <bean id="queryBeanFactory" class="com.fr.swift.query.info.bean.query.QueryInfoBeanFactory"/>
     <bean id="inserter" class="com.fr.swift.segment.operator.insert.SwiftInserter" scope="prototype"/>
     <bean id="historyBlockInserter" class="com.fr.swift.segment.insert.HistoryBlockInserter" scope="prototype"/>
     <bean id="incrementer" class="com.fr.swift.segment.Incrementer" scope="prototype"/>
@@ -35,7 +35,7 @@
     <bean id="defaultDataSyncRule" class="com.fr.swift.service.handler.history.rule.DefaultDataSyncRule"/>
     <bean id="defaultIndexingSelectRule" class="com.fr.swift.service.handler.indexing.rule.DefaultIndexingSelectRule"/>
     <bean id="defaultSegmentDestSelectRule" class="com.fr.swift.segment.rule.DefaultSegmentDestSelectRule"/>
-
+    <bean id="swiftRepositoryManager" class="com.fr.swift.repository.manager.SwiftRepositoryManager"/>
     <!--配置不同的实现class注入-->
     <!--<bean id="segmentBackup" class="com.fr.swift.segment.backup.RedisSegmentBackup" scope="prototype"/>-->
     <!--<bean id="segmentRecovery" class="com.fr.swift.segment.recover.RedisSegmentRecovery"/>-->

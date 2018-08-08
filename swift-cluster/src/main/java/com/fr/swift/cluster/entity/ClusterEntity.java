@@ -1,4 +1,4 @@
-package com.fr.swift.service.entity;
+package com.fr.swift.cluster.entity;
 
 import com.fr.swift.basics.URL;
 import com.fr.swift.service.ServiceType;

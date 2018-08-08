@@ -2,6 +2,7 @@ package com.fr.swift.repository;
 
 import com.fr.io.utils.ResourceIOUtils;
 import com.fr.stable.Filter;
+import com.fr.swift.repository.manager.SwiftRepositoryManager;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;

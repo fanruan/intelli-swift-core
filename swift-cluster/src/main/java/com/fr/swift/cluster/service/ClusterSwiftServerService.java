@@ -1,4 +1,4 @@
-package com.fr.swift.service;
+package com.fr.swift.cluster.service;
 
 import com.fr.event.Event;
 import com.fr.event.EventDispatcher;
@@ -10,6 +10,7 @@ import com.fr.swift.basics.URL;
 import com.fr.swift.basics.base.SwiftInvocation;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.basics.base.selector.UrlSelector;
+import com.fr.swift.cluster.entity.ClusterEntity;
 import com.fr.swift.config.bean.IndexingSelectRule;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.IndexingSelectRuleService;
@@ -23,24 +24,39 @@ import com.fr.swift.netty.rpc.client.async.RpcFuture;
 import com.fr.swift.netty.rpc.url.RPCDestination;
 import com.fr.swift.netty.rpc.url.RPCUrl;
 import com.fr.swift.property.SwiftProperty;
-import com.fr.swift.service.entity.ClusterEntity;
+import com.fr.swift.service.AbstractSwiftService;
+import com.fr.swift.service.AnalyseService;
+import com.fr.swift.service.HistoryService;
+import com.fr.swift.service.IndexingService;
+import com.fr.swift.service.RealtimeService;
+import com.fr.swift.service.ServiceType;
+import com.fr.swift.service.SwiftService;
+import com.fr.swift.service.SwiftServiceEvent;
+import com.fr.swift.service.listener.SwiftServiceListener;
+import com.fr.swift.service.listener.SwiftServiceListenerHandler;
+import com.fr.swift.service.listener.SwiftServiceListenerManager;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.stuff.HistoryIndexingStuff;
+import com.fr.swift.stuff.DefaultIndexingStuff;
 import com.fr.swift.stuff.IndexingStuff;
 import com.fr.swift.task.TaskKey;
+import com.fr.swift.task.impl.SchedulerTaskPool;
 import com.fr.swift.task.impl.TaskEvent;
 import com.fr.swift.util.Crasher;
 
+import javax.annotation.PostConstruct;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Created by pony on 2017/11/14.
+ *
+ * @author pony
+ * @date 2017/11/14
  * 分布式的server服务，还要负责cube分块的均衡等
  */
-public class ClusterSwiftServerService extends AbstractSwiftServerService {
+public class ClusterSwiftServerService extends AbstractSwiftService implements SwiftServiceListenerHandler {
+    private static final long serialVersionUID = -611300229622871920L;
 
     //key: 机器address  value:service对象
 
@@ -49,6 +65,10 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
     private Map<String, ClusterEntity> historyServiceMap = new ConcurrentHashMap<String, ClusterEntity>();
     private Map<String, ClusterEntity> analyseServiceMap = new ConcurrentHashMap<String, ClusterEntity>();
 
+    private Map<String, ClusterEntity> indexingOfflineMap = new ConcurrentHashMap<String, ClusterEntity>();
+    private Map<String, ClusterEntity> realTimeOfflineMap = new ConcurrentHashMap<String, ClusterEntity>();
+    private Map<String, ClusterEntity> historyOfflineMap = new ConcurrentHashMap<String, ClusterEntity>();
+    private Map<String, ClusterEntity> analyseOfflineMap = new ConcurrentHashMap<String, ClusterEntity>();
 
 //    private Map<String, SwiftIndexingService> indexingServiceMap = new HashMap<String, SwiftIndexingService>();
 //    private Map<String, SwiftRealtimeService> realTimeServiceMap = new HashMap<String, SwiftRealtimeService>();
@@ -66,14 +86,52 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
         return SingletonHolder.instance;
     }
 
+    public void offline(String address) {
+        switchStatusPerMap(address, indexingServiceMap, indexingOfflineMap);
+        switchStatusPerMap(address, realTimeServiceMap, realTimeOfflineMap);
+        switchStatusPerMap(address, historyServiceMap, historyOfflineMap);
+        switchStatusPerMap(address, analyseServiceMap, analyseOfflineMap);
+    }
+
+    public void online(String address) {
+        switchStatusPerMap(address, indexingOfflineMap, indexingServiceMap);
+        switchStatusPerMap(address, realTimeOfflineMap, realTimeServiceMap);
+        switchStatusPerMap(address, historyOfflineMap, historyServiceMap);
+        switchStatusPerMap(address, analyseOfflineMap, analyseServiceMap);
+    }
+
+    private void switchStatusPerMap(String address, Map<String, ClusterEntity> online, Map<String, ClusterEntity> offline) {
+        ClusterEntity entity = online.remove(address);
+        if (null != entity) {
+            offline.put(address, entity);
+        }
+    }
+
     private static class SingletonHolder {
         private static ClusterSwiftServerService instance = new ClusterSwiftServerService();
     }
 
     @Override
+    @PostConstruct
     public boolean start() {
-        super.start();
+        SwiftServiceListenerManager.getInstance().registerHandler(this);
+        initListener();
         return true;
+    }
+
+    @Override
+    public ServiceType getServiceType() {
+        return ServiceType.SERVER;
+    }
+
+    @Override
+    public void addListener(SwiftServiceListener listener) {
+
+    }
+
+    @Override
+    public void trigger(SwiftServiceEvent event) {
+
     }
 
     @Override
@@ -153,9 +211,8 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
         }
     }
 
-    @Override
     protected void initListener() {
-        super.initListener();
+        SchedulerTaskPool.getInstance().initListener();
         EventDispatcher.listen(TaskEvent.RUN, new Listener<Map<TaskKey, ?>>() {
             @Override
             public void on(Event event, Map<TaskKey, ?> taskKeyMap) {
@@ -171,7 +228,7 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
 
                     Result result = invoker.invoke(
                             new SwiftInvocation(entity.getServiceClass().getDeclaredMethod("index", IndexingStuff.class),
-                                    new Object[]{new HistoryIndexingStuff((Map<TaskKey, DataSource>) taskKeyMap)}));
+                                    new Object[]{new DefaultIndexingStuff((Map<TaskKey, DataSource>) taskKeyMap)}));
                     RpcFuture future = (RpcFuture) result.getValue();
                     if (null == future) {
                         throw new Exception(result.getException());

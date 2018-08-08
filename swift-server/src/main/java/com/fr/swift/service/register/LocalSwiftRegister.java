@@ -20,6 +20,5 @@ public class LocalSwiftRegister extends AbstractSwiftRegister {
 
     @Override
     public void serviceUnregister() {
-
     }
 }

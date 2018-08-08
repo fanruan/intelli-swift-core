@@ -1,7 +1,9 @@
 package com.fr.swift.api.test.bean;
 
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.query.QueryBean;
+import com.fr.swift.query.query.QueryBeanFactory;
 
 import java.io.IOException;
 import java.util.List;
@@ -63,6 +65,6 @@ public class SimpleDetailQueryBean {
         buffer.append("  ],\n" +
                 "  \"sortBeans\": []\n" +
                 "}");
-        return QueryInfoBeanFactory.create(buffer.toString());
+        return SwiftContext.get().getBean(QueryBeanFactory.class).create(buffer.toString());
     }
 }

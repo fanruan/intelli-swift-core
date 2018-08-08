@@ -1,6 +1,5 @@
 package com.fr.swift.service;
 
-import com.fr.swift.annotation.RpcMethod;
 import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
@@ -11,10 +10,10 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Where;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
-import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
+import com.fr.swift.query.query.QueryBeanFactory;
 import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.repository.SwiftRepository;
-import com.fr.swift.repository.SwiftRepositoryManager;
+import com.fr.swift.repository.manager.SwiftRepositoryManager;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.operator.delete.WhereDeleter;
@@ -61,12 +60,18 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     private transient SwiftMetaDataService metaDataService;
     @Autowired
     private transient SwiftTablePathService tablePathService;
+    @Autowired(required = false)
+    private transient QueryBeanFactory queryBeanFactory;
 
     private SwiftHistoryService() {
     }
 
     @Override
-    @RpcMethod(methodName = "load")
+    public ServiceType getServiceType() {
+        return ServiceType.HISTORY;
+    }
+
+    @Override
     public void load(Map<String, Set<URI>> remoteUris, boolean replace) throws IOException {
         String path = pathService.getSwiftPath();
         SwiftRepository repository = SwiftRepositoryManager.getManager().currentRepo();
@@ -112,15 +117,9 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     }
 
     @Override
-    public ServiceType getServiceType() {
-        return ServiceType.HISTORY;
-    }
-
-    @Override
-    @RpcMethod(methodName = "historyQuery")
     public SwiftResultSet query(final String queryDescription) throws Exception {
         try {
-            final QueryInfoBean bean = QueryInfoBeanFactory.create(queryDescription);
+            final QueryInfoBean bean = queryBeanFactory.create(queryDescription);
             SessionFactory factory = SwiftContext.get().getBean(SessionFactory.class);
             return factory.openSession(bean.getQueryId()).executeQuery(bean);
         } catch (IOException e) {
@@ -129,7 +128,6 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     }
 
     @Override
-    @RpcMethod(methodName = "historyDelete")
     public boolean delete(final SourceKey sourceKey, final Where where) throws Exception {
         taskExecutor.submit(new SwiftServiceCallable(sourceKey, ServiceTaskType.DELETE) {
             @Override

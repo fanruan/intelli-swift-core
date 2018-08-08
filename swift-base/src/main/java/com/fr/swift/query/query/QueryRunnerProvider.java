@@ -6,6 +6,7 @@ import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentDestination;
+import com.fr.swift.service.cluster.ClusterAnalyseService;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.net.URI;
@@ -13,7 +14,9 @@ import java.sql.SQLException;
 import java.util.Map;
 
 /**
- * Created by pony on 2017/12/20.
+ *
+ * @author pony
+ * @date 2017/12/20
  */
 public class QueryRunnerProvider {
     private static QueryRunnerProvider ourInstance = new QueryRunnerProvider();
@@ -25,6 +28,8 @@ public class QueryRunnerProvider {
     private QueryRunner runner;
 
     private QueryIndexRunner indexRunner;
+
+    private ClusterAnalyseService clusterAnalyseService;
 
 
     private QueryRunnerProvider() {
@@ -40,7 +45,7 @@ public class QueryRunnerProvider {
     }
 
     public SwiftResultSet executeRemoteQuery(String jsonString, SegmentDestination remoteURI) throws SQLException {
-        return runner.getRemoteQueryResult(jsonString, remoteURI);
+        return getClusterAnalyseService().getRemoteQueryResult(jsonString, remoteURI);
     }
 
     public Map<URI, IndexQuery<ImmutableBitMap>> executeIndexQuery(Table table, Where where) throws Exception {
@@ -49,5 +54,12 @@ public class QueryRunnerProvider {
 
     public IndexQuery<ImmutableBitMap> executeIndexQuery(Table table, Where where, Segment segment) throws Exception {
         return indexRunner.getBitMap(table, where, segment);
+    }
+
+    private ClusterAnalyseService getClusterAnalyseService() {
+        if (null == clusterAnalyseService) {
+            clusterAnalyseService = SwiftContext.get().getBean(ClusterAnalyseService.class);
+        }
+        return clusterAnalyseService;
     }
 }
