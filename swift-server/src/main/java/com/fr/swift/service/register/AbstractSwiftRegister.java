@@ -21,6 +21,7 @@ public abstract class AbstractSwiftRegister implements SwiftRegister {
         String swiftServiceNames[] = swiftServiceName.split(",");
         swiftProperty.setSwiftServiceList(swiftServiceNames);
     }
+
     //FR方式暂时不用
 //    protected void masterLocalServiceRegister() {
 //        //必须注册

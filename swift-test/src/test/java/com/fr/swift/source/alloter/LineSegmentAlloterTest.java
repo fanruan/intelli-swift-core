@@ -4,9 +4,8 @@ import com.fr.swift.config.TestConfDb;
 import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.location.ResourceLocation;
-import com.fr.swift.decision.config.SwiftCubePathConfig;
-import com.fr.swift.manager.LocalDataOperatorProvider;
 import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
@@ -43,7 +42,7 @@ public class LineSegmentAlloterTest extends TestIo {
     int count;
 
     @BeforeClass
-    public static void boot() throws Exception {
+    public static void boot() {
         Preparer.prepareCubeBuild();
     }
 
@@ -120,7 +119,7 @@ public class LineSegmentAlloterTest extends TestIo {
             }
         };
 
-        Inserter inserter = SwiftContext.get().getBean(LocalDataOperatorProvider.class).getHistoryBlockSwiftInserter(dataSource);
+        Inserter inserter = (Inserter) SwiftContext.get().getBean("historyBlockInserter", dataSource);
         inserter.insertData(resultSet);
         SwiftSourceAlloter alloter = SwiftSourceAlloterFactory.createLineSourceAlloter(sourceKey, sourceKey.getId());
         int lastIndex = -1;
@@ -130,11 +129,8 @@ public class LineSegmentAlloterTest extends TestIo {
             int index = alloter.allot(new LineRowInfo(i)).getOrder();
             if (lastIndex != index || null == segment) {
                 lastIndex = index;
-                ResourceLocation location = new ResourceLocation(String.format("%s/%s/%s/seg%d",
-                        SwiftCubePathConfig.getInstance().getPath(),
-                        resultSet.getMetaData().getSwiftSchema().getDir(),
-                        sourceKey.getId(),
-                        index));
+                ResourceLocation location = new ResourceLocation(
+                        CubeUtil.getHistorySegPath(dataSource, CubeUtil.getCurrentDir(dataSource.getSourceKey()), index));
                 segment = new HistorySegmentImpl(location, resultSet.getMetaData());
                 column = segment.getColumn(new ColumnKey("long")).getDetailColumn();
             }

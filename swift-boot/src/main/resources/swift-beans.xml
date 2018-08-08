@@ -3,12 +3,11 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans
-       classpath:/com/fr/third/springframework/beans/factory/xml/spring-beans-4.0.xsd">
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <!--正常注入-->
     <bean id="localSegmentProvider" class="com.fr.swift.manager.LocalSegmentProvider"/>
     <bean id="indexingSegmentManager" class="com.fr.swift.manager.IndexingSegmentManager"/>
-    <bean class="com.fr.swift.manager.LocalDataOperatorProvider"/>
     <bean id="swiftProperty" class="com.fr.swift.property.SwiftProperty"/>
     <bean id="serviceRegistry" class="com.fr.swift.netty.rpc.registry.impl.SimpleServiceRegistry"/>
     <bean id="serviceDiscovery" class="com.fr.swift.netty.rpc.registry.impl.SimpleServiceDiscovery"/>
@@ -16,8 +15,9 @@
     <bean id="swiftQuerySessionFactory" class="com.fr.swift.query.session.factory.SessionFactoryImpl"/>
     <bean id="redisClient" class="com.fr.swift.redis.RedisClient"/>
     <bean id="queryIndexRunner" class="com.fr.swift.service.QueryIndexService"/>
-
+    <bean id="queryBeanFactory" class="com.fr.swift.query.info.bean.query.QueryInfoBeanFactory"/>
     <bean id="inserter" class="com.fr.swift.segment.operator.insert.SwiftInserter" scope="prototype"/>
+    <bean id="historyBlockInserter" class="com.fr.swift.segment.insert.HistoryBlockInserter" scope="prototype"/>
     <bean id="incrementer" class="com.fr.swift.segment.Incrementer" scope="prototype"/>
     <bean id="decrementer" class="com.fr.swift.segment.Decrementer" scope="prototype"/>
 
@@ -35,7 +35,7 @@
     <bean id="defaultDataSyncRule" class="com.fr.swift.service.handler.history.rule.DefaultDataSyncRule"/>
     <bean id="defaultIndexingSelectRule" class="com.fr.swift.service.handler.indexing.rule.DefaultIndexingSelectRule"/>
     <bean id="defaultSegmentDestSelectRule" class="com.fr.swift.segment.rule.DefaultSegmentDestSelectRule"/>
-
+    <bean id="swiftRepositoryManager" class="com.fr.swift.repository.manager.SwiftRepositoryManager"/>
     <!--配置不同的实现class注入-->
     <!--<bean id="segmentBackup" class="com.fr.swift.segment.backup.RedisSegmentBackup" scope="prototype"/>-->
     <!--<bean id="segmentRecovery" class="com.fr.swift.segment.recover.RedisSegmentRecovery"/>-->

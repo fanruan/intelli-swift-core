@@ -5,17 +5,19 @@ import com.fr.swift.event.base.SwiftRpcEvent;
 import java.io.Serializable;
 
 /**
- * Created by pony on 2017/11/14.
+ *
+ * @author pony
+ * @date 2017/11/14
  * 本地swift服务
  */
 public class LocalSwiftServerService extends AbstractSwiftServerService {
 
-    private SwiftIndexingService indexingService;
-    private SwiftRealtimeService realTimeService;
-    private SwiftHistoryService historyService;
-    private SwiftAnalyseService analyseService;
-    private SwiftCollateService collateService;
-
+    private static final long serialVersionUID = 9167111609239393074L;
+    private IndexingService indexingService;
+    private RealtimeService realTimeService;
+    private HistoryService historyService;
+    private AnalyseService analyseService;
+    private CollateService collateService;
 
     @Override
     public Serializable trigger(SwiftRpcEvent event) {
@@ -27,19 +29,19 @@ public class LocalSwiftServerService extends AbstractSwiftServerService {
         synchronized (this) {
             switch (service.getServiceType()) {
                 case ANALYSE:
-                    analyseService = (SwiftAnalyseService) service;
+                    analyseService = (AnalyseService) service;
                     break;
                 case HISTORY:
-                    historyService = (SwiftHistoryService) service;
+                    historyService = (HistoryService) service;
                     break;
                 case INDEXING:
-                    indexingService = (SwiftIndexingService) service;
+                    indexingService = (IndexingService) service;
                     break;
                 case REAL_TIME:
-                    realTimeService = (SwiftRealtimeService) service;
+                    realTimeService = (RealtimeService) service;
                     break;
                 case COLLATE:
-                    collateService = (SwiftCollateService) service;
+                    collateService = (CollateService) service;
                 default:
             }
         }

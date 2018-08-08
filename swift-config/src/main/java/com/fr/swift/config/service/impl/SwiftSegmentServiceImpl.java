@@ -129,6 +129,11 @@ public class SwiftSegmentServiceImpl extends AbstractSegmentService {
     }
 
     @Override
+    public Map<String, List<SegmentKey>> getOwnSegments() {
+        return getAllSegments();
+    }
+
+    @Override
     public List<SegmentKey> getSegmentByKey(final String sourceKey) {
         try {
             return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<List<SegmentKey>>() {

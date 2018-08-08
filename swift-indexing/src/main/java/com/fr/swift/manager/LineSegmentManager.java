@@ -4,8 +4,12 @@ package com.fr.swift.manager;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types;
+import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
+import com.fr.swift.db.Table;
+import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.segment.AbstractSegmentManager;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
@@ -31,9 +35,13 @@ public class LineSegmentManager extends AbstractSegmentManager {
     public Segment getSegment(SegmentKey segmentKey, Integer currentFolder) {
         Util.requireNonNull(segmentKey);
         URI uri = segmentKey.getUri();
-        String cubePath = String.format("%s/%d/%s",
-                segmentKey.getSwiftSchema().getDir(),
-                currentFolder, uri.getPath());
+        String cubePath;
+        Table table = SwiftDatabase.getInstance().getTable(segmentKey.getTable());
+        if (segmentKey.getStoreType() == StoreType.FINE_IO) {
+            cubePath = CubeUtil.getHistorySegPath(table, currentFolder, segmentKey.getOrder());
+        } else {
+            cubePath = CubeUtil.getRealtimeSegPath(table, segmentKey.getOrder());
+        }
         Types.StoreType storeType = segmentKey.getStoreType();
         ResourceLocation location = new ResourceLocation(cubePath, storeType);
         SourceKey sourceKey = segmentKey.getTable();

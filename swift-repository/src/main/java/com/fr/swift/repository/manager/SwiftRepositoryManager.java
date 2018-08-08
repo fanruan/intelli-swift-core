@@ -1,19 +1,20 @@
-package com.fr.swift.repository;
+package com.fr.swift.repository.manager;
 
 import com.fr.swift.config.bean.SwiftFileSystemConfig;
 import com.fr.swift.config.service.SwiftRepositoryConfService;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.impl.SwiftRepositoryImpl;
 
 /**
  * @author yee
  * @date 2018/5/28
  */
-public class SwiftRepositoryManager {
+public class SwiftRepositoryManager implements com.fr.swift.repository.SwiftRepositoryManager {
     private static SwiftRepository currentRepository = null;
     private SwiftRepositoryConfService service;
 
-    private SwiftRepositoryManager() {
+    public SwiftRepositoryManager() {
         service = SwiftContext.get().getBean(SwiftRepositoryConfService.class);
         service.registerListener(new SwiftRepositoryConfService.ConfChangeListener() {
             @Override
@@ -29,6 +30,7 @@ public class SwiftRepositoryManager {
         return SingletonHolder.manager;
     }
 
+    @Override
     public SwiftRepository currentRepo() {
         if (null == currentRepository) {
             synchronized (SwiftRepositoryManager.class) {

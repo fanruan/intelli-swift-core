@@ -1,6 +1,7 @@
 package com.fr.swift.service.register;
 
 import com.fr.swift.cluster.manager.ClusterManager;
+import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
@@ -9,7 +10,6 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.selector.ClusterSelector;
-import com.fr.swift.service.ClusterSwiftServerService;
 import com.fr.swift.service.manager.ServiceManager;
 import com.fr.third.springframework.stereotype.Service;
 

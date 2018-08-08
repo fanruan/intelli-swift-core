@@ -23,7 +23,7 @@ public class QueryInfoParserTest extends TestCase {
         assertTrue(new File(filePath).exists());
         GroupQueryInfoBean queryBean = null;
         try {
-            queryBean = (GroupQueryInfoBean) QueryInfoBeanFactory.create(new File(filePath).toURI().toURL());
+            queryBean = (GroupQueryInfoBean) new QueryInfoBeanFactory().create(new File(filePath).toURI().toURL());
         } catch (IOException e) {
             assertTrue(false);
         }
@@ -41,7 +41,7 @@ public class QueryInfoParserTest extends TestCase {
         assertTrue(new File(filePath).exists());
         DetailQueryInfoBean queryBean = null;
         try {
-            queryBean = (DetailQueryInfoBean) QueryInfoBeanFactory.create(new File(filePath).toURI().toURL());
+            queryBean = (DetailQueryInfoBean) new QueryInfoBeanFactory().create(new File(filePath).toURI().toURL());
         } catch (IOException e) {
             assertTrue(false);
         }

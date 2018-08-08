@@ -10,6 +10,7 @@ public abstract class AbstractGlobalRpcEvent<T> implements SwiftRpcEvent<T> {
         return EventType.GLOBAL;
     }
 
+    @Override
     public abstract Event subEvent();
 
     public enum Event implements SubEvent {
