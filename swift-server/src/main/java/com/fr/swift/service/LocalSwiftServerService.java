@@ -80,7 +80,6 @@ public class LocalSwiftServerService extends AbstractSwiftServerService {
         EventDispatcher.listen(TaskEvent.RUN, new Listener<Map<TaskKey, ?>>() {
             @Override
             public void on(Event event, Map<TaskKey, ?> taskKeyMap) {
-                // rpc告诉indexing节点执行任务
                 if (!SwiftContext.get().getBean("swiftProperty", SwiftProperty.class).isCluster()) {
                     try {
                         indexingService.index(new DefaultIndexingStuff((Map<TaskKey, DataSource>) taskKeyMap));
@@ -94,7 +93,6 @@ public class LocalSwiftServerService extends AbstractSwiftServerService {
         EventDispatcher.listen(TaskEvent.CANCEL, new Listener<TaskKey>() {
             @Override
             public void on(Event event, TaskKey taskKey) {
-                // rpc告诉indexing节点取消任务
                 SwiftLoggers.getLogger().info("Local Task cancel");
             }
         });
