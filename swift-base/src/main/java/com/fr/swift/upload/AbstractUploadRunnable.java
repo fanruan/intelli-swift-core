@@ -63,13 +63,13 @@ public abstract class AbstractUploadRunnable implements UploadRunnable {
         if (null != segmentKeys) {
             for (SegmentKey segmentKey : segmentKeys) {
                 try {
-                    String uploadPath = String.format("%s",
-//                            segmentKey.getSwiftSchema().getDir(),
+                    String uploadPath = String.format("%s/%s",
+                            segmentKey.getSwiftSchema().getDir(),
                             segmentKey.getUri().getPath());
-                    URI local = URI.create(String.format("%s/%s",
+                    URI local = URI.create(String.format("%s/%s/%d/%s",
                             cubePath,
-//                            segmentKey.getSwiftSchema().getDir(),
-//                            tmpPath,
+                            segmentKey.getSwiftSchema().getDir(),
+                            tmpPath,
                             segmentKey.getUri().getPath()));
                     upload(local, URI.create(uploadPath));
                 } catch (Exception e) {
