@@ -1,11 +1,21 @@
 package com.fr.swift.service;
 
+import com.fr.event.Event;
+import com.fr.event.EventDispatcher;
+import com.fr.event.Listener;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.event.base.SwiftRpcEvent;
+import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.property.SwiftProperty;
+import com.fr.swift.source.DataSource;
+import com.fr.swift.stuff.DefaultIndexingStuff;
+import com.fr.swift.task.TaskKey;
+import com.fr.swift.task.impl.TaskEvent;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
- *
  * @author pony
  * @date 2017/11/14
  * 本地swift服务
@@ -67,5 +77,26 @@ public class LocalSwiftServerService extends AbstractSwiftServerService {
     @Override
     protected void initListener() {
         super.initListener();
+        EventDispatcher.listen(TaskEvent.RUN, new Listener<Map<TaskKey, ?>>() {
+            @Override
+            public void on(Event event, Map<TaskKey, ?> taskKeyMap) {
+                // rpc告诉indexing节点执行任务
+                if (!SwiftContext.get().getBean("swiftProperty", SwiftProperty.class).isCluster()) {
+                    try {
+                        indexingService.index(new DefaultIndexingStuff((Map<TaskKey, DataSource>) taskKeyMap));
+                    } catch (Exception e) {
+                        SwiftLoggers.getLogger().error(e);
+                    }
+                }
+
+            }
+        });
+        EventDispatcher.listen(TaskEvent.CANCEL, new Listener<TaskKey>() {
+            @Override
+            public void on(Event event, TaskKey taskKey) {
+                // rpc告诉indexing节点取消任务
+                SwiftLoggers.getLogger().info("Local Task cancel");
+            }
+        });
     }
 }

@@ -42,6 +42,7 @@ public class SwiftEngineStart {
             if (SwiftContext.get().getBean("swiftProperty", SwiftProperty.class).isCluster()) {
                 ClusterListenerHandler.handlerEvent(new ClusterEvent(ClusterEventType.JOIN_CLUSTER, ClusterType.CONFIGURE));
             }
+            SwiftLoggers.getLogger().info("Swift engine start successful");
         } catch (Throwable e) {
             SwiftLoggers.getLogger().error(e);
             System.exit(1);

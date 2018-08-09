@@ -26,6 +26,8 @@ import java.util.List;
  * @date 2018/6/5
  */
 public class Incrementer extends BaseBlockInserter implements Inserter {
+    protected static final SwiftSegmentManager LOCAL_SEGMENTS = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
+
     public Incrementer(DataSource dataSource) {
         super(dataSource);
     }
@@ -69,6 +71,11 @@ public class Incrementer extends BaseBlockInserter implements Inserter {
         }
         currentSeg = maxSegment;
         return false;
+    }
+
+    @Override
+    protected SwiftSegmentManager getSegmentManager() {
+        return LOCAL_SEGMENTS;
     }
 
     @Override

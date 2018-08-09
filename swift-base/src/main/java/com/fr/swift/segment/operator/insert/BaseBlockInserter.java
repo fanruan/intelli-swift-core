@@ -1,10 +1,8 @@
 package com.fr.swift.segment.operator.insert;
 
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.impl.SwiftDatabase;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
@@ -28,8 +26,6 @@ import java.util.List;
  * @date 2018/8/1
  */
 public abstract class BaseBlockInserter implements Inserter {
-    protected static final SwiftSegmentManager LOCAL_SEGMENTS = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
-
     protected SwiftSourceAlloter alloter;
 
     protected DataSource dataSource;
@@ -45,7 +41,7 @@ public abstract class BaseBlockInserter implements Inserter {
         this.alloter = alloter;
     }
 
-    private void insert(SwiftResultSet resultSet) throws SQLException {
+    private void insert(SwiftResultSet resultSet) throws Exception {
         try {
             persistMeta();
 
@@ -58,12 +54,12 @@ public abstract class BaseBlockInserter implements Inserter {
                 inserter.insertData(new LimitedResultSet(resultSet, limit, false));
 
                 if (newSeg) {
-                    SegmentKey maxSegmentKey = SegmentUtils.getMaxSegmentKey(LOCAL_SEGMENTS.getSegmentKeys(dataSource.getSourceKey()));
+                    SegmentKey maxSegmentKey = SegmentUtils.getMaxSegmentKey(getSegmentManager().getSegmentKeys(dataSource.getSourceKey()));
                     persistSegment(currentSeg, maxSegmentKey == null ? 0 : maxSegmentKey.getOrder() + 1);
                 }
             }
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error(e);
+            throw e;
         } finally {
             resultSet.close();
         }
@@ -72,6 +68,8 @@ public abstract class BaseBlockInserter implements Inserter {
     protected abstract Inserter getInserter();
 
     protected abstract boolean nextSegment();
+
+    protected abstract SwiftSegmentManager getSegmentManager();
 
     private void persistMeta() throws SQLException {
         Database db = SwiftDatabase.getInstance();
@@ -84,12 +82,12 @@ public abstract class BaseBlockInserter implements Inserter {
     protected abstract void persistSegment(Segment seg, int order);
 
     @Override
-    public void insertData(List<Row> rowList) throws SQLException {
+    public void insertData(List<Row> rowList) throws Exception {
         insertData(new ListResultSet(dataSource.getMetadata(), rowList));
     }
 
     @Override
-    public void insertData(SwiftResultSet swiftResultSet) throws SQLException {
+    public void insertData(SwiftResultSet swiftResultSet) throws Exception {
         insert(swiftResultSet);
     }
 
