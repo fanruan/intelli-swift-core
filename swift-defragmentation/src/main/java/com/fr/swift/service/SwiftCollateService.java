@@ -124,7 +124,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         return ServiceType.COLLATE;
     }
 
-    private FragmentCollectRule collectRule = new SwiftFragmentCollectRule();
+    private transient FragmentCollectRule collectRule = new SwiftFragmentCollectRule();
 
     private void collateSegments(SourceKey tableKey, Types.StoreType storeType) throws Exception {
         List<SegmentKey> segKeys = segmentManager.getSegmentKeys(tableKey);
@@ -244,5 +244,5 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         });
     }
 
-    private HistorySegmentPutter historySegmentPutter = new HistorySegmentPutter();
+    private transient HistorySegmentPutter historySegmentPutter = new HistorySegmentPutter();
 }
