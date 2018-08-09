@@ -15,8 +15,6 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.sql.SQLException;
-
 /**
  * @author anchore
  * @date 2018/6/5
@@ -38,7 +36,7 @@ public class IncrementerTest {
     }
 
     @Test
-    public void increment() throws SQLException {
+    public void increment() throws Exception {
         Incrementer incrementer = new Incrementer(dataSource);
         incrementer.insertData(transfer.createResultSet());
         incrementer.insertData(transfer.createResultSet());

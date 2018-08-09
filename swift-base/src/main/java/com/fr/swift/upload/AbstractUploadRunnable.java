@@ -54,6 +54,7 @@ public abstract class AbstractUploadRunnable implements UploadRunnable {
         final SourceKey sourceKey = dataSource.getSourceKey();
         SwiftTablePathEntity entity = SwiftContext.get().getBean(SwiftTablePathService.class).get(sourceKey.getId());
         Integer path = entity.getTablePath();
+        path = null == path ? -1 : path;
         Integer tmpPath = entity.getTmpDir();
         entity.setTablePath(tmpPath);
         entity.setLastPath(path);
@@ -71,7 +72,7 @@ public abstract class AbstractUploadRunnable implements UploadRunnable {
                             tmpPath,
                             segmentKey.getUri().getPath()));
                     upload(local, URI.create(uploadPath));
-                } catch (IOException e) {
+                } catch (Exception e) {
                     SwiftLoggers.getLogger().error("upload error! ", e);
                 }
             }

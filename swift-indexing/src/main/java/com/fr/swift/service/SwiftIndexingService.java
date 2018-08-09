@@ -4,17 +4,21 @@ import com.fineio.FineIO;
 import com.fr.event.Event;
 import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
+import com.fr.stable.StringUtils;
 import com.fr.swift.annotation.SwiftService;
+import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftTablePathService;
-import com.fr.swift.event.base.SwiftRpcEvent;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.info.ServerCurrentStatus;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.netty.rpc.server.RpcServer;
-import com.fr.swift.repository.manager.SwiftRepositoryManager;
+import com.fr.swift.property.SwiftProperty;
+import com.fr.swift.source.DataSource;
 import com.fr.swift.source.Source;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.stuff.IndexingStuff;
 import com.fr.swift.task.TaskKey;
@@ -24,14 +28,15 @@ import com.fr.swift.task.cube.CubeTaskManager;
 import com.fr.swift.task.impl.TaskEvent;
 import com.fr.swift.task.impl.WorkerTaskPool;
 import com.fr.swift.task.service.ServiceTaskExecutor;
-import com.fr.swift.upload.AbstractUploadRunnable;
 import com.fr.swift.upload.ReadyUploadContainer;
+import com.fr.swift.util.FileUtil;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.net.URI;
+import java.io.File;
 import java.util.Map;
+
+import static com.fr.swift.task.TaskResult.Type.SUCCEEDED;
 
 /**
  * @author pony
@@ -51,21 +56,9 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     @Autowired
     private transient SwiftSegmentLocationService locationService;
 
-    private static ListenerWorker worker;
+    private static ListenerWorker worker ;
 
     private SwiftIndexingService() {
-        worker = new ListenerWorker() {
-            @Override
-            public void work(Pair<TaskKey, TaskResult> result) {
-                SwiftLoggers.getLogger().info("rpc通知server任务完成");
-                try {
-                    EventDispatcher.fire(TaskEvent.DONE, result);
-                    FineIO.doWhenFinished(new LocalUploadRunnable(result));
-                } catch (Exception e) {
-                    SwiftLoggers.getLogger().error(e);
-                }
-            }
-        };
     }
 
     @Autowired
@@ -73,23 +66,27 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
 
     public SwiftIndexingService(String id) {
         super(id);
-        worker = new ListenerWorker() {
-            @Override
-            public void work(Pair<TaskKey, TaskResult> result) {
-                SwiftLoggers.getLogger().info("rpc通知server任务完成");
-                try {
-                    EventDispatcher.fire(TaskEvent.DONE, result);
-                    FineIO.doWhenFinished(new LocalUploadRunnable(result));
-                } catch (Exception e) {
-                    SwiftLoggers.getLogger().error(e);
-                }
-            }
-        };
+    }
+
+    @Override
+    public String getID() {
+        return StringUtils.isEmpty(super.getID()) ? SwiftContext.get().getBean(SwiftProperty.class).getServerAddress() : super.getID();
     }
 
     @Override
     public boolean start() throws SwiftServiceException {
         super.start();
+        worker = new ListenerWorker() {
+            @Override
+            public void work(Pair<TaskKey, TaskResult> result) {
+                try {
+                    EventDispatcher.fire(TaskEvent.DONE, result);
+                    FineIO.doWhenFinished(new ReplacePathRunnable(result));
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().error(e);
+                }
+            }
+        };
         initListener();
         return true;
     }
@@ -157,19 +154,63 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     }
 
 
-    private class LocalUploadRunnable extends AbstractUploadRunnable {
+//    private class LocalUploadRunnable extends AbstractUploadRunnable {
+//
+//        public LocalUploadRunnable(Pair<TaskKey, TaskResult> result) {
+//            super(result, getID());
+//        }
+//
+//        @Override
+//        protected void upload(URI src, URI dest) throws IOException {
+////            SwiftRepositoryManager.getManager().currentRepo().copyToRemote(src, dest);
+//        }
+//
+//        @Override
+//        public void doAfterUpload(SwiftRpcEvent event) {
+//
+//        }
+//    }
 
-        public LocalUploadRunnable(Pair<TaskKey, TaskResult> result) {
-            super(result, getID());
+    private class ReplacePathRunnable implements Runnable {
+
+        private Pair<TaskKey, TaskResult> result;
+
+        public ReplacePathRunnable(Pair<TaskKey, TaskResult> result) {
+            this.result = result;
         }
 
         @Override
-        protected void upload(URI src, URI dest) throws IOException {
-            SwiftRepositoryManager.getManager().currentRepo().copyToRemote(src, dest);
-        }
+        public void run() {
+            if (result.getValue().getType() == SUCCEEDED) {
+                TaskKey key = result.getKey();
+                Object obj = ReadyUploadContainer.instance().get(key);
+                try {
+                    if (null != obj) {
+                        if (obj instanceof DataSource) {
+                            SourceKey sourceKey = ((DataSource) obj).getSourceKey();
+                            SwiftTablePathEntity entity = SwiftContext.get().getBean(SwiftTablePathService.class).get(sourceKey.getId());
+                            Integer path = entity.getTablePath();
+                            path = null == path ? -1 : path;
+                            Integer tmpPath = entity.getTmpDir();
+                            entity.setTablePath(tmpPath);
+                            entity.setLastPath(path);
+                            if (path.compareTo(tmpPath) != 0 && tablePathService.saveOrUpdate(entity)) {
+                                String deletePath = String.format("%s/%s/%d/%s",
+                                        pathService.getSwiftPath(),
+                                        ((DataSource) obj).getMetadata().getSwiftSchema().getDir(),
+                                        path,
+                                        sourceKey.getId());
+                                FileUtil.delete(deletePath);
+                                new File(deletePath).getParentFile().delete();
+                            }
+                        }
+                        ReadyUploadContainer.instance().remove(key);
+                    }
 
-        @Override
-        public void doAfterUpload(SwiftRpcEvent event) {
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().error(e);
+                }
+            }
 
         }
     }

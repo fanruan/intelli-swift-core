@@ -12,6 +12,7 @@ import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
+import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.insert.BaseBlockInserter;
 import com.fr.swift.segment.operator.insert.SwiftInserter;
@@ -30,6 +31,7 @@ import java.util.List;
  * @date 2018/8/1
  */
 public class HistoryBlockInserter extends BaseBlockInserter {
+    protected static final SwiftSegmentManager LOCAL_SEGMENTS = SwiftContext.get().getBean("indexingSegmentManager", SwiftSegmentManager.class);
     private SwiftTablePathService tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
 
     private int currentDir;
@@ -48,11 +50,12 @@ public class HistoryBlockInserter extends BaseBlockInserter {
         SourceKey sourceKey = dataSource.getSourceKey();
         SwiftTablePathEntity entity = tablePathService.get(sourceKey.getId());
         if (entity == null) {
-            currentDir = 0;
+            entity = new SwiftTablePathEntity(sourceKey.getId(), 0);
         } else {
             currentDir = entity.getTablePath() == null ? 0 : entity.getTablePath() + 1;
+            entity.setTmpDir(currentDir);
         }
-        tablePathService.saveOrUpdate(new SwiftTablePathEntity(sourceKey.getId(), currentDir));
+        tablePathService.saveOrUpdate(entity);
     }
 
     @Override
@@ -85,10 +88,15 @@ public class HistoryBlockInserter extends BaseBlockInserter {
     }
 
     @Override
+    protected SwiftSegmentManager getSegmentManager() {
+        return LOCAL_SEGMENTS;
+    }
+
+    @Override
     protected void persistSegment(Segment seg, int order) {
         IResourceLocation location = seg.getLocation();
         String tableKey = dataSource.getSourceKey().getId();
-        String path = CubeUtil.getHistorySegPath(dataSource, currentDir, order);
+        String path = CubeUtil.getPersistSegPath(dataSource, order);
         SegmentKey segKey = new SegmentKeyBean(tableKey, URI.create(path), order, location.getStoreType(), seg.getMetaData().getSwiftSchema());
         SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).addSegments(Collections.singletonList(segKey));
     }
