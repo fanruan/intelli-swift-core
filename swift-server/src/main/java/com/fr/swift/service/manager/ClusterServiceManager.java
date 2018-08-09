@@ -7,6 +7,7 @@ import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.core.cluster.SwiftClusterService;
+import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
@@ -45,7 +46,7 @@ public class ClusterServiceManager extends AbstractServiceManager<SwiftService> 
     }
 
     @Override
-    public void registerService(List<SwiftService> swiftServiceList) {
+    public void registerService(List<SwiftService> swiftServiceList) throws SwiftServiceException {
         lock.lock();
         try {
             refreshInfo();
@@ -53,6 +54,7 @@ public class ClusterServiceManager extends AbstractServiceManager<SwiftService> 
                 swiftService.setId(swiftProperty.getServerAddress());
                 LOGGER.debug("begain to register " + swiftService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + "!");
                 senderProxy.registerService(swiftService);
+                swiftService.start();
                 LOGGER.debug("register " + swiftService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + " succeed!");
             }
         } finally {
@@ -61,13 +63,14 @@ public class ClusterServiceManager extends AbstractServiceManager<SwiftService> 
     }
 
     @Override
-    public void unregisterService(List<SwiftService> swiftServiceList) {
+    public void unregisterService(List<SwiftService> swiftServiceList) throws SwiftServiceException {
         lock.lock();
         try {
             for (SwiftService swiftService : swiftServiceList) {
                 swiftService.setId(swiftProperty.getServerAddress());
                 LOGGER.debug("begain to unregister " + swiftService.getServiceType() + " from " + swiftServiceInfoBean.getClusterId() + "!");
                 senderProxy.unRegisterService(swiftService);
+                swiftService.shutdown();
                 LOGGER.debug("unregister " + swiftService.getServiceType() + " from " + swiftServiceInfoBean.getClusterId() + " succeed!");
             }
         } finally {
