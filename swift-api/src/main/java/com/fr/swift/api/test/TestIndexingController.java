@@ -13,9 +13,12 @@ import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.core.cluster.SwiftClusterService;
 import com.fr.swift.cube.queue.CubeTasks;
+import com.fr.swift.cube.queue.StuffProviderQueue;
+import com.fr.swift.cube.queue.SwiftImportStuff;
 import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
 import com.fr.swift.event.indexing.IndexRpcEvent;
 import com.fr.swift.netty.rpc.server.RpcServer;
+import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.repository.manager.SwiftRepositoryManager;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.source.DataSource;
@@ -31,6 +34,7 @@ import com.fr.third.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,14 +56,18 @@ public class TestIndexingController {
         tableName = StringUtils.isEmpty(tableName) ? "fine_conf_entity" : tableName;
         try {
             Map<TaskKey, DataSource> tables = new HashMap<TaskKey, DataSource>();
-            int currentRound = CubeTasks.nextRound();
             DataSource dataSource = new TableDBSource(tableName, "test");
-            tables.put(CubeTasks.newBuildTableTaskKey(currentRound, dataSource), dataSource);
-            IndexingStuff stuff = new HistoryIndexingStuff(tables);
-            IndexRpcEvent event = new IndexRpcEvent(stuff);
-            ProxyFactory factory = ProxySelector.getInstance().getFactory();
-            Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, getMasterURL(), true);
-            invoker.invoke(new SwiftInvocation(server.getMethodByName("rpcTrigger"), new Object[]{event}));
+            if (SwiftContext.get().getBean("swiftProperty", SwiftProperty.class).isCluster()) {
+                int currentRound = CubeTasks.nextRound();
+                tables.put(CubeTasks.newBuildTableTaskKey(currentRound, dataSource), dataSource);
+                IndexingStuff stuff = new HistoryIndexingStuff(tables);
+                IndexRpcEvent event = new IndexRpcEvent(stuff);
+                ProxyFactory factory = ProxySelector.getInstance().getFactory();
+                Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, getMasterURL(), true);
+                invoker.invoke(new SwiftInvocation(server.getMethodByName("rpcTrigger"), new Object[]{event}));
+            } else {
+                StuffProviderQueue.getQueue().put(new SwiftImportStuff(Collections.singletonList(dataSource)));
+            }
         } catch (Throwable e) {
             result.put("error", e.getMessage());
         }

@@ -5,9 +5,6 @@ import com.fr.swift.cube.queue.SwiftImportStuff;
 import com.fr.swift.event.base.AbstractIndexingRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.cluster.service.ClusterSwiftServerService;
-import com.fr.swift.service.ServiceType;
-import com.fr.swift.cluster.entity.ClusterEntity;
 import com.fr.swift.service.handler.base.AbstractHandler;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.stuff.IndexingStuff;
@@ -16,7 +13,6 @@ import com.fr.third.springframework.stereotype.Service;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author yee
@@ -29,10 +25,6 @@ public class SwiftIndexingEventHandler extends AbstractHandler<AbstractIndexingR
 
     @Override
     public <S extends Serializable> S handle(AbstractIndexingRpcEvent event) {
-        Map<String, ClusterEntity> indexingServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.INDEXING);
-        if (null == indexingServices || indexingServices.isEmpty()) {
-            throw new RuntimeException("Cannot find any Indexing Service!");
-        }
         switch (event.subEvent()) {
             case INDEX:
                 try {
@@ -42,6 +34,9 @@ public class SwiftIndexingEventHandler extends AbstractHandler<AbstractIndexingR
                 } catch (Exception e) {
                     LOGGER.error("Indexing error! ", e);
                 }
+                break;
+            default:
+                break;
         }
         return null;
     }
