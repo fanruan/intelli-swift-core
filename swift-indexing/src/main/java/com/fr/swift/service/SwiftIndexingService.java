@@ -177,37 +177,67 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
             this.result = result;
         }
 
+        private void runSuccess(TaskKey key, Object obj) {
+            try {
+                if (null != obj) {
+                    if (obj instanceof DataSource) {
+                        SourceKey sourceKey = ((DataSource) obj).getSourceKey();
+                        SwiftTablePathEntity entity = SwiftContext.get().getBean(SwiftTablePathService.class).get(sourceKey.getId());
+                        Integer path = entity.getTablePath();
+                        path = null == path ? -1 : path;
+                        Integer tmpPath = entity.getTmpDir();
+                        entity.setTablePath(tmpPath);
+                        entity.setLastPath(path);
+                        if (path.compareTo(tmpPath) != 0 && tablePathService.saveOrUpdate(entity)) {
+                            String deletePath = String.format("%s/%s/%d/%s",
+                                    pathService.getSwiftPath(),
+                                    ((DataSource) obj).getMetadata().getSwiftSchema().getDir(),
+                                    path,
+                                    sourceKey.getId());
+                            FileUtil.delete(deletePath);
+                            new File(deletePath).getParentFile().delete();
+                        }
+                    }
+                    ReadyUploadContainer.instance().remove(key);
+                }
+
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().error(e);
+            }
+        }
+
+        private void runFailed(TaskKey key, Object obj) {
+            try {
+                if (null != obj) {
+                    if (obj instanceof DataSource) {
+                        SourceKey sourceKey = ((DataSource) obj).getSourceKey();
+                        SwiftTablePathEntity entity = SwiftContext.get().getBean(SwiftTablePathService.class).get(sourceKey.getId());
+                        Integer tmpPath = entity.getTmpDir();
+                        String deletePath = String.format("%s/%s/%d/%s",
+                                pathService.getSwiftPath(),
+                                ((DataSource) obj).getMetadata().getSwiftSchema().getDir(),
+                                tmpPath,
+                                sourceKey.getId());
+                        FileUtil.delete(deletePath);
+                        new File(deletePath).getParentFile().delete();
+                        ReadyUploadContainer.instance().remove(key);
+                    }
+                }
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().error(e);
+            }
+        }
+
         @Override
         public void run() {
             if (result.getValue().getType() == SUCCEEDED) {
                 TaskKey key = result.getKey();
                 Object obj = ReadyUploadContainer.instance().get(key);
-                try {
-                    if (null != obj) {
-                        if (obj instanceof DataSource) {
-                            SourceKey sourceKey = ((DataSource) obj).getSourceKey();
-                            SwiftTablePathEntity entity = SwiftContext.get().getBean(SwiftTablePathService.class).get(sourceKey.getId());
-                            Integer path = entity.getTablePath();
-                            path = null == path ? -1 : path;
-                            Integer tmpPath = entity.getTmpDir();
-                            entity.setTablePath(tmpPath);
-                            entity.setLastPath(path);
-                            if (path.compareTo(tmpPath) != 0 && tablePathService.saveOrUpdate(entity)) {
-                                String deletePath = String.format("%s/%s/%d/%s",
-                                        pathService.getSwiftPath(),
-                                        ((DataSource) obj).getMetadata().getSwiftSchema().getDir(),
-                                        path,
-                                        sourceKey.getId());
-                                FileUtil.delete(deletePath);
-                                new File(deletePath).getParentFile().delete();
-                            }
-                        }
-                        ReadyUploadContainer.instance().remove(key);
-                    }
-
-                } catch (Exception e) {
-                    SwiftLoggers.getLogger().error(e);
-                }
+                runSuccess(key, obj);
+            } else {
+                TaskKey key = result.getKey();
+                Object obj = ReadyUploadContainer.instance().get(key);
+                runFailed(key, obj);
             }
 
         }
