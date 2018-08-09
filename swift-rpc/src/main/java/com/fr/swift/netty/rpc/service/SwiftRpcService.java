@@ -21,7 +21,8 @@ import java.util.concurrent.ExecutorService;
  * @description
  * @since Advanced FineBI 5.0
  */
-@Service("rpc")
+@Service()
+@com.fr.swift.annotation.ServerService(name = "rpc")
 public class SwiftRpcService implements ServerService {
 
     private ApplicationContext context;

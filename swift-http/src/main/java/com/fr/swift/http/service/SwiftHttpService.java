@@ -20,7 +20,8 @@ import java.util.concurrent.ExecutorService;
  * @description
  * @since Advanced FineBI 5.0
  */
-@Service("http")
+@Service()
+@com.fr.swift.annotation.ServerService(name = "http")
 public class SwiftHttpService implements ServerService {
 
     private NettyServiceStarter serverStarter;

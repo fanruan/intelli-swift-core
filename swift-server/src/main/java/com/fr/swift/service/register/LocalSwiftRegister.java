@@ -1,9 +1,9 @@
 package com.fr.swift.service.register;
 
-import com.fr.swift.context.SwiftContext;
-import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.service.LocalSwiftServerService;
-import com.fr.swift.service.manager.ServiceManager;
+import com.fr.swift.service.manager.LocalServiceManager;
+import com.fr.swift.util.ServiceBeanFactory;
+import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
 /**
@@ -16,21 +16,20 @@ import com.fr.third.springframework.stereotype.Service;
 @Service("localSwiftRegister")
 public class LocalSwiftRegister extends AbstractSwiftRegister {
 
+    @Autowired
+    private LocalServiceManager localServiceManager;
+
     private LocalSwiftRegister() {
     }
 
     @Override
     public void serviceRegister() throws Exception {
         new LocalSwiftServerService().start();
-        ServiceManager serviceManager = SwiftContext.get().getBean("localServiceManager", ServiceManager.class);
-        SwiftProperty swiftProperty = SwiftContext.get().getBean(SwiftProperty.class);
-        serviceManager.registerService(swiftProperty.getSwiftServiceList());
+        localServiceManager.registerService(ServiceBeanFactory.getSwiftServiceByNames(swiftProperty.getSwiftServiceNames()));
     }
 
     @Override
     public void serviceUnregister() throws Exception {
-        ServiceManager serviceManager = SwiftContext.get().getBean("localServiceManager", ServiceManager.class);
-        SwiftProperty swiftProperty = SwiftContext.get().getBean(SwiftProperty.class);
-        serviceManager.unregisterService(swiftProperty.getSwiftServiceList());
+        localServiceManager.unregisterService(ServiceBeanFactory.getSwiftServiceByNames(swiftProperty.getSwiftServiceNames()));
     }
 }

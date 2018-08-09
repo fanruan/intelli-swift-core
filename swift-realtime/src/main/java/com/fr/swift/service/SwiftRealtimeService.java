@@ -1,5 +1,6 @@
 package com.fr.swift.service;
 
+import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
@@ -33,7 +34,8 @@ import java.util.concurrent.Callable;
  * @author pony
  * @date 2017/10/10
  */
-@Service("realtime")
+@Service()
+@SwiftService(name = "realtime")
 public class SwiftRealtimeService extends AbstractSwiftService implements RealtimeService, Serializable {
     @Autowired
     private transient RpcServer server;

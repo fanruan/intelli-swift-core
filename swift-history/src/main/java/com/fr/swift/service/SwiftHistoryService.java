@@ -1,7 +1,6 @@
 package com.fr.swift.service;
 
-import com.fr.swift.annotation.RpcService;
-import com.fr.swift.annotation.RpcServiceType;
+import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftMetaDataService;
@@ -41,8 +40,8 @@ import java.util.Set;
  * @author pony
  * @date 2017/10/10
  */
-@Service("history")
-@RpcService(value = HistoryService.class, type = RpcServiceType.CLIENT_SERVICE)
+@Service()
+@SwiftService(name = "history")
 public class SwiftHistoryService extends AbstractSwiftService implements HistoryService, Serializable {
     private static final long serialVersionUID = -6013675740141588108L;
 

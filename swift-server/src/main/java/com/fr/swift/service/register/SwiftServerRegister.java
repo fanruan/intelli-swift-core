@@ -1,11 +1,8 @@
 package com.fr.swift.service.register;
 
-import com.fr.swift.context.SwiftContext;
-import com.fr.swift.property.SwiftProperty;
-import com.fr.swift.service.SwiftRegister;
-import com.fr.swift.service.manager.ServiceManager;
+import com.fr.swift.service.manager.ServerServiceManager;
+import com.fr.swift.util.ServiceBeanFactory;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.beans.factory.annotation.Value;
 import com.fr.third.springframework.stereotype.Service;
 
 /**
@@ -16,26 +13,18 @@ import com.fr.third.springframework.stereotype.Service;
  * @since Advanced FineBI 5.0
  */
 @Service("swiftServerRegister")
-public class SwiftServerRegister implements SwiftRegister {
+public class SwiftServerRegister extends AbstractSwiftRegister {
 
     @Autowired
-    public void setServerServiceList(@Value("${server.service.name}") String serverServiceName) {
-        SwiftProperty swiftProperty = SwiftContext.get().getBean(SwiftProperty.class);
-        String serverServiceNames[] = serverServiceName.split(",");
-        swiftProperty.setServerServiceList(serverServiceNames);
-    }
+    private ServerServiceManager serverServiceManager;
 
     @Override
     public void serviceRegister() throws Exception {
-        ServiceManager serviceManager = SwiftContext.get().getBean("serverServiceManager", ServiceManager.class);
-        SwiftProperty swiftProperty = SwiftContext.get().getBean(SwiftProperty.class);
-        serviceManager.registerService(swiftProperty.getServerServiceList());
+        serverServiceManager.registerService(ServiceBeanFactory.getServerServiceByNames(swiftProperty.getServerServiceNames()));
     }
 
     @Override
     public void serviceUnregister() throws Exception {
-        ServiceManager serviceManager = SwiftContext.get().getBean("serverServiceManager", ServiceManager.class);
-        SwiftProperty swiftProperty = SwiftContext.get().getBean(SwiftProperty.class);
-        serviceManager.unregisterService(swiftProperty.getServerServiceList());
+        serverServiceManager.unregisterService(ServiceBeanFactory.getServerServiceByNames(swiftProperty.getServerServiceNames()));
     }
 }

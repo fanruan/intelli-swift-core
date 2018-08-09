@@ -39,7 +39,6 @@ public class SwiftEngineStart {
             registerTmpConnectionProvider();
             FineIO.setLogger(new FineIOLoggerImpl());
             ProviderTaskManager.start();
-
             SwiftCommandParser.parseCommand(args);
 
             SwiftContext.get().getBean(LocalSwiftRegister.class).serviceRegister();
@@ -54,7 +53,6 @@ public class SwiftEngineStart {
             System.exit(1);
         }
     }
-
 
     private static void registerTmpConnectionProvider() {
         SwiftProperty property = SwiftContext.get().getBean(SwiftProperty.class);

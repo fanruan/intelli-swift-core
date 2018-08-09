@@ -25,7 +25,7 @@ public class LocalServiceManager extends AbstractServiceManager<SwiftService> {
         lock.lock();
         try {
             for (SwiftService swiftService : swiftServiceList) {
-                SwiftLoggers.getLogger().info("Swift service:" + swiftService.getServiceType() + " start!");
+                SwiftLoggers.getLogger().debug("Swift service:" + swiftService.getServiceType() + " start!");
                 swiftService.start();
             }
         } finally {
@@ -38,7 +38,7 @@ public class LocalServiceManager extends AbstractServiceManager<SwiftService> {
         lock.lock();
         try {
             for (SwiftService swiftService : swiftServiceList) {
-                SwiftLoggers.getLogger().info("Swift service:" + swiftService.getServiceType() + " shutdown!");
+                SwiftLoggers.getLogger().debug("Swift service:" + swiftService.getServiceType() + " shutdown!");
                 swiftService.shutdown();
             }
         } finally {

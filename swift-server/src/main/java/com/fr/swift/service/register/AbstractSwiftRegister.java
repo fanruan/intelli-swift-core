@@ -1,10 +1,8 @@
 package com.fr.swift.service.register;
 
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.service.SwiftRegister;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.beans.factory.annotation.Value;
 
 /**
  * This class created on 2018/6/1
@@ -16,11 +14,7 @@ import com.fr.third.springframework.beans.factory.annotation.Value;
 public abstract class AbstractSwiftRegister implements SwiftRegister {
 
     @Autowired
-    public void setSwiftServiceList(@Value("${swift.service.name}") String swiftServiceName) {
-        SwiftProperty swiftProperty = SwiftContext.get().getBean(SwiftProperty.class);
-        String swiftServiceNames[] = swiftServiceName.split(",");
-        swiftProperty.setSwiftServiceList(swiftServiceNames);
-    }
+    protected SwiftProperty swiftProperty;
 
     //FR方式暂时不用
 //    protected void masterLocalServiceRegister() {

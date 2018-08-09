@@ -1,14 +1,12 @@
 package com.fr.swift.property;
 
-import com.fr.swift.service.ServerService;
-import com.fr.swift.service.SwiftService;
-import com.fr.swift.util.ServiceBeanUtils;
+import com.fr.third.org.apache.commons.collections4.CollectionUtils;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.beans.factory.annotation.Value;
 import com.fr.third.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This class created on 2018/6/8
@@ -43,27 +41,43 @@ public class SwiftProperty {
     /**
      * swift业务相关service
      */
-    private List<SwiftService> swiftServiceList = new ArrayList<SwiftService>();
+    private Set<String> swiftServiceNames;
 
     /**
      * swift中server相关服务
      */
-    private List<ServerService> serverServiceList = new ArrayList<ServerService>();
+    private Set<String> serverServiceNames;
 
-    public void setServerServiceList(String serverServiceNames[]) {
-        serverServiceList = ServiceBeanUtils.getServerServiceByNames(serverServiceNames);
+    public Set<String> getSwiftServiceNames() {
+        return new HashSet<String>(swiftServiceNames);
     }
 
-    public void setSwiftServiceList(String swiftServiceNames[]) {
-        swiftServiceList = ServiceBeanUtils.getSwiftServiceByNames(swiftServiceNames);
+    public void setSwiftServiceNames(Set<String> swiftServiceNames) {
+        if (swiftServiceNames != null) {
+            this.swiftServiceNames = swiftServiceNames;
+        }
     }
 
-    public List<SwiftService> getSwiftServiceList() {
-        return swiftServiceList;
+    @Autowired
+    private void setSwiftServiceNames(@Value("${swift.service.name}") String swiftServiceName) {
+        swiftServiceNames = new HashSet<String>();
+        String[] swiftServiceNameArray = swiftServiceName.split(",");
+        CollectionUtils.addAll(swiftServiceNames, swiftServiceNameArray);
     }
 
-    public List<ServerService> getServerServiceList() {
-        return serverServiceList;
+    public Set<String> getServerServiceNames() {
+        return new HashSet<String>(serverServiceNames);
+    }
+
+    public void setServerServiceNames(Set<String> serverServiceNames) {
+        this.serverServiceNames = serverServiceNames;
+    }
+
+    @Autowired
+    private void setServerServiceNames(@Value("${server.service.name}") String serverServiceName) {
+        serverServiceNames = new HashSet<String>();
+        String[] serverServiceNameArray = serverServiceName.split(",");
+        CollectionUtils.addAll(serverServiceNames, serverServiceNameArray);
     }
 
     @Autowired

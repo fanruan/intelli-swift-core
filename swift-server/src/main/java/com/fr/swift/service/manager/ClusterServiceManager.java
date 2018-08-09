@@ -6,7 +6,6 @@ import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.core.cluster.SwiftClusterService;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -14,6 +13,7 @@ import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.service.SwiftService;
 import com.fr.swift.service.listener.RemoteServiceSender;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
+import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,6 +30,12 @@ public class ClusterServiceManager extends AbstractServiceManager<SwiftService> 
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger();
 
+    @Autowired
+    private SwiftProperty swiftProperty;
+
+    @Autowired
+    private SwiftServiceInfoService serviceInfoService;
+
     private SwiftServiceListenerHandler senderProxy;
 
     private SwiftServiceInfoBean swiftServiceInfoBean;
@@ -44,7 +50,7 @@ public class ClusterServiceManager extends AbstractServiceManager<SwiftService> 
         try {
             refreshInfo();
             for (SwiftService swiftService : swiftServiceList) {
-                swiftService.setId(SwiftContext.get().getBean(SwiftProperty.class).getServerAddress());
+                swiftService.setId(swiftProperty.getServerAddress());
                 LOGGER.debug("begain to register " + swiftService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + "!");
                 senderProxy.registerService(swiftService);
                 LOGGER.debug("register " + swiftService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + " succeed!");
@@ -59,7 +65,7 @@ public class ClusterServiceManager extends AbstractServiceManager<SwiftService> 
         lock.lock();
         try {
             for (SwiftService swiftService : swiftServiceList) {
-                swiftService.setId(SwiftContext.get().getBean(SwiftProperty.class).getServerAddress());
+                swiftService.setId(swiftProperty.getServerAddress());
                 LOGGER.debug("begain to unregister " + swiftService.getServiceType() + " from " + swiftServiceInfoBean.getClusterId() + "!");
                 senderProxy.unRegisterService(swiftService);
                 LOGGER.debug("unregister " + swiftService.getServiceType() + " from " + swiftServiceInfoBean.getClusterId() + " succeed!");
@@ -70,7 +76,6 @@ public class ClusterServiceManager extends AbstractServiceManager<SwiftService> 
     }
 
     private void refreshInfo() {
-        SwiftServiceInfoService serviceInfoService = SwiftContext.get().getBean(SwiftServiceInfoService.class);
         ProxyFactory proxyFactory = ProxySelector.getInstance().getFactory();
         RemoteServiceSender remoteServiceSender = RemoteServiceSender.getInstance();
         List<SwiftServiceInfoBean> swiftServiceInfoBeans = serviceInfoService.getServiceInfoByService(SwiftClusterService.SERVICE);

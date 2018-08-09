@@ -4,6 +4,7 @@ import com.fineio.FineIO;
 import com.fr.event.Event;
 import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
+import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftTablePathService;
@@ -36,7 +37,8 @@ import java.util.Map;
  * @author pony
  * @date 2017/10/10
  */
-@Service("indexing")
+@Service()
+@SwiftService(name = "indexing")
 public class SwiftIndexingService extends AbstractSwiftService implements IndexingService {
     private static final long serialVersionUID = -7430843337225891194L;
 

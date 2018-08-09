@@ -7,7 +7,7 @@ import com.fr.swift.service.manager.ClusterServiceManager;
 import com.fr.swift.service.manager.LocalServiceManager;
 import com.fr.swift.service.manager.ServerServiceManager;
 import com.fr.swift.service.manager.ServiceManager;
-import com.fr.swift.util.ServiceBeanUtils;
+import com.fr.swift.util.ServiceBeanFactory;
 import com.fr.third.springframework.stereotype.Controller;
 import com.fr.third.springframework.web.bind.annotation.RequestBody;
 import com.fr.third.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +16,7 @@ import com.fr.third.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
+import java.util.Set;
 
 /**
  * This class created on 2018/8/8
@@ -28,7 +28,6 @@ import java.util.List;
 @Controller()
 public class ServiceController extends BaseController {
 
-    // TODO: 2018/8/8 集群和单机优化
     private ServiceManager swiftLocalServiceManager = SwiftContext.get().getBean(LocalServiceManager.class);
     private ServiceManager swiftClusterServiceManager = SwiftContext.get().getBean(ClusterServiceManager.class);
     private ServiceManager serverServiceManager = SwiftContext.get().getBean(ServerServiceManager.class);
@@ -37,12 +36,12 @@ public class ServiceController extends BaseController {
     @ResponseBody
     @RequestMapping(value = SWIFT_SERVICE_START, method = RequestMethod.POST)
     public void swiftServiceStart(HttpServletResponse response, HttpServletRequest request,
-                                  @RequestBody(required = false) List<String> requestList) throws Exception {
-        if (requestList != null) {
+                                  @RequestBody(required = false) Set<String> services) throws Exception {
+        if (services != null) {
             if (swiftProperty.isCluster()) {
-                swiftClusterServiceManager.registerService(ServiceBeanUtils.getSwiftServiceByNames(requestList.toArray(new String[requestList.size()])));
+                swiftClusterServiceManager.registerService(ServiceBeanFactory.getSwiftServiceByNames(services));
             } else {
-                swiftLocalServiceManager.registerService(ServiceBeanUtils.getSwiftServiceByNames(requestList.toArray(new String[requestList.size()])));
+                swiftLocalServiceManager.registerService(ServiceBeanFactory.getSwiftServiceByNames(services));
             }
         }
     }
@@ -50,12 +49,12 @@ public class ServiceController extends BaseController {
     @ResponseBody
     @RequestMapping(value = SWIFT_SERVICE_STOP, method = RequestMethod.POST)
     public void swiftServiceStop(HttpServletResponse response, HttpServletRequest request,
-                                 @RequestBody(required = false) List<String> requestList) throws Exception {
-        if (requestList != null) {
+                                 @RequestBody(required = false) Set<String> services) throws Exception {
+        if (services != null) {
             if (swiftProperty.isCluster()) {
-                swiftClusterServiceManager.unregisterService(ServiceBeanUtils.getSwiftServiceByNames(requestList.toArray(new String[requestList.size()])));
+                swiftClusterServiceManager.unregisterService(ServiceBeanFactory.getSwiftServiceByNames(services));
             } else {
-                swiftLocalServiceManager.unregisterService(ServiceBeanUtils.getSwiftServiceByNames(requestList.toArray(new String[requestList.size()])));
+                swiftLocalServiceManager.unregisterService(ServiceBeanFactory.getSwiftServiceByNames(services));
             }
         }
     }
@@ -63,18 +62,18 @@ public class ServiceController extends BaseController {
     @ResponseBody
     @RequestMapping(value = SERVER_SERVICE_START, method = RequestMethod.POST)
     public void serverServiceStart(HttpServletResponse response, HttpServletRequest request,
-                                   @RequestBody(required = false) List<String> requestList) throws Exception {
-        if (requestList != null) {
-            serverServiceManager.registerService(ServiceBeanUtils.getServerServiceByNames(requestList.toArray(new String[requestList.size()])));
+                                   @RequestBody(required = false) Set<String> services) throws Exception {
+        if (services != null) {
+            serverServiceManager.registerService(ServiceBeanFactory.getServerServiceByNames(services));
         }
     }
 
     @ResponseBody
     @RequestMapping(value = SERVER_SERVICE_STOP, method = RequestMethod.POST)
     public void serverServiceStop(HttpServletResponse response, HttpServletRequest request,
-                                  @RequestBody(required = false) List<String> requestList) throws Exception {
-        if (requestList != null) {
-            serverServiceManager.unregisterService(ServiceBeanUtils.getServerServiceByNames(requestList.toArray(new String[requestList.size()])));
+                                  @RequestBody(required = false) Set<String> services) throws Exception {
+        if (services != null) {
+            serverServiceManager.unregisterService(ServiceBeanFactory.getServerServiceByNames(services));
         }
     }
 }

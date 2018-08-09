@@ -1,9 +1,7 @@
 package com.fr.swift.service;
 
 import com.fr.general.ComparatorUtils;
-import com.fr.swift.annotation.RpcMethod;
-import com.fr.swift.annotation.RpcService;
-import com.fr.swift.annotation.RpcServiceType;
+import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
@@ -57,8 +55,8 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
-@Service("collate")
-@RpcService(value = CollateService.class, type = RpcServiceType.CLIENT_SERVICE)
+@Service()
+@SwiftService(name = "collate")
 public class SwiftCollateService extends AbstractSwiftService implements CollateService {
 
     private transient SwiftSegmentManager segmentManager = (SwiftSegmentManager) SwiftContext.get().getBean("localSegmentProvider");
@@ -75,7 +73,6 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
     private transient ServiceTaskType serviceTaskType = ServiceTaskType.COLLATE;
 
     @Override
-    @RpcMethod(methodName = "autoCollateRealtime")
     public void autoCollateRealtime(final SourceKey tableKey) throws Exception {
         taskExecutor.submit(new SwiftServiceCallable(tableKey, serviceTaskType) {
             @Override
@@ -86,7 +83,6 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
     }
 
     @Override
-    @RpcMethod(methodName = "autoCollateHistory")
     public void autoCollateHistory(final SourceKey tableKey) throws Exception {
         taskExecutor.submit(new SwiftServiceCallable(tableKey, serviceTaskType) {
             @Override
@@ -97,7 +93,6 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
     }
 
     @Override
-    @RpcMethod(methodName = "appointCollateRealtime")
     public void appointCollateRealtime(final List<SegmentKey> segmentKeyList) throws Exception {
         final SourceKey tableKey = checkSegmentKeys(segmentKeyList, Types.StoreType.MEMORY);
         taskExecutor.submit(new SwiftServiceCallable(tableKey, serviceTaskType) {
@@ -109,7 +104,6 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
     }
 
     @Override
-    @RpcMethod(methodName = "appointCollateHistory")
     public void appointCollateHistory(final List<SegmentKey> segmentKeyList) throws Exception {
         final SourceKey tableKey = checkSegmentKeys(segmentKeyList, Types.StoreType.FINE_IO);
         taskExecutor.submit(new SwiftServiceCallable(tableKey, serviceTaskType) {
@@ -122,7 +116,6 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
     }
 
     @Override
-    @RpcMethod(methodName = "persistRealtime")
     public void persistRealtime(SourceKey tableKey, Segment segment) {
     }
 
