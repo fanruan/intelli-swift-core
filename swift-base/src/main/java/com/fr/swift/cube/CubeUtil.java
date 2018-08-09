@@ -26,6 +26,10 @@ public class CubeUtil {
         }
     }
 
+    public static String getPersistSegPath(DataSource dataSource, int segOrder) {
+        return String.format("%s/seg%d", dataSource.getSourceKey().getId(), segOrder);
+    }
+
     public static String getRealtimeSegPath(DataSource dataSource, int segOrder) {
         return String.format("%s/%s/seg%d",
                 dataSource.getMetadata().getSwiftSchema().getDir(),
