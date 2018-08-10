@@ -1,4 +1,4 @@
-package com.fr.swift.http;
+package com.fr.swift.http.controller;
 
 import com.fr.third.springframework.stereotype.Controller;
 import com.fr.third.springframework.web.bind.annotation.PathVariable;

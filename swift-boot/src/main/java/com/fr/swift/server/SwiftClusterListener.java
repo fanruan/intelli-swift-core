@@ -35,14 +35,14 @@ public class SwiftClusterListener implements ClusterEventListener {
                 UrlSelector.getInstance().switchFactory(new RpcUrlFactory());
                 ClusterSelector.getInstance().switchFactory(SwiftClusterNodeManager.getInstance());
 
-                new LocalSwiftRegister().serviceUnregister();
+                SwiftContext.get().getBean("localSwiftRegister", LocalSwiftRegister.class).serviceUnregister();
                 SwiftContext.get().getBean("clusterSwiftRegister", SwiftRegister.class).serviceRegister();
             } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
                 ProxySelector.getInstance().switchFactory(new LocalProxyFactory());
                 UrlSelector.getInstance().switchFactory(new LocalUrlFactory());
 
-                ((ClusterSwiftRegister) SwiftContext.get().getBean("clusterSwiftRegister")).serviceUnregister();
-                new LocalSwiftRegister().serviceRegister();
+                SwiftContext.get().getBean("clusterSwiftRegister", ClusterSwiftRegister.class).serviceUnregister();
+                SwiftContext.get().getBean("localSwiftRegister", LocalSwiftRegister.class).serviceRegister();
             }
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);

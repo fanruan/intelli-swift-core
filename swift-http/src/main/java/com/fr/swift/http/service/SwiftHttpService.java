@@ -1,12 +1,16 @@
-package com.fr.swift.http;
+package com.fr.swift.http.service;
 
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.http.SwiftHttpServer;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.netty.NettyServiceStarter;
+import com.fr.swift.service.ServerService;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 import com.fr.third.springframework.context.ApplicationContext;
+import com.fr.third.springframework.stereotype.Service;
 
+import javax.annotation.PreDestroy;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -16,7 +20,9 @@ import java.util.concurrent.ExecutorService;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class SwiftHttpService {
+@Service()
+@com.fr.swift.annotation.ServerService(name = "http")
+public class SwiftHttpService implements ServerService {
 
     private NettyServiceStarter serverStarter;
 
@@ -38,12 +44,15 @@ public class SwiftHttpService {
         context = SwiftContext.get();
     }
 
+    @Override
     public void startServerService() {
-
         synchronized (this.getClass()) {
             if (serverStarter == null) {
                 serverStarter = new SwiftHttpServer();
             }
+        }
+        if (httpServerExecutor.isShutdown()) {
+            httpServerExecutor = SwiftExecutors.newSingleThreadExecutor(new PoolThreadFactory("netty-http-server"));
         }
         httpServerExecutor.submit(new Runnable() {
             @Override
@@ -58,6 +67,8 @@ public class SwiftHttpService {
         });
     }
 
+    @PreDestroy
+    @Override
     public synchronized void stopServerService() throws Exception {
         SwiftLoggers.getLogger().info("http server stopping!");
         if (serverStarter != null) {

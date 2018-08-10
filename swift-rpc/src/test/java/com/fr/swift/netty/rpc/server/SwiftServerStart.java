@@ -1,7 +1,7 @@
 package com.fr.swift.netty.rpc.server;
 
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.netty.rpc.SwiftRpcService;
+import com.fr.swift.netty.rpc.service.SwiftRpcService;
 import com.fr.workspace.simple.SimpleWork;
 
 /**
