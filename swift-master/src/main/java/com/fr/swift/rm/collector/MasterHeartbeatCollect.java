@@ -10,6 +10,7 @@ import com.fr.swift.heart.NodeType;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rm.service.SwiftMasterService;
 import com.fr.swift.util.concurrent.SwiftExecutors;
+import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ import java.util.List;
  */
 public class MasterHeartbeatCollect implements Collect {
 
-    private MasterService masterService;
+    private MasterService masterService = SwiftContext.get().getBean(SwiftMasterService.class);
 
     private Thread thread;
 
@@ -31,7 +32,6 @@ public class MasterHeartbeatCollect implements Collect {
     private final static long OFFLINE_TIME = 60000L;
 
     public MasterHeartbeatCollect() {
-        masterService = SwiftContext.get().getBean("swiftMasterService", SwiftMasterService.class);
     }
 
     @Override

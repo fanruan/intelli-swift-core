@@ -1,5 +1,6 @@
 package com.fr.swift.service;
 
+import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.exception.SwiftServiceException;
@@ -29,7 +30,8 @@ import java.util.Map;
  * @date 2017/10/12
  * 分析服务
  */
-@Service("analyseService")
+@Service()
+@SwiftService(name = "analyse")
 public class SwiftAnalyseService extends AbstractSwiftService implements AnalyseService {
     private static final long serialVersionUID = 841582089735823794L;
 
