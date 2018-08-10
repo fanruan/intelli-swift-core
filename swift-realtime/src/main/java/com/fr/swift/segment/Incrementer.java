@@ -26,6 +26,8 @@ import java.util.List;
  * @date 2018/6/5
  */
 public class Incrementer extends BaseBlockInserter implements Inserter {
+    protected static final SwiftSegmentManager LOCAL_SEGMENTS = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
+
     public Incrementer(DataSource dataSource) {
         super(dataSource);
     }
@@ -72,10 +74,15 @@ public class Incrementer extends BaseBlockInserter implements Inserter {
     }
 
     @Override
+    protected SwiftSegmentManager getSegmentManager() {
+        return LOCAL_SEGMENTS;
+    }
+
+    @Override
     protected void persistSegment(Segment seg, int order) {
         IResourceLocation location = seg.getLocation();
         String tableKey = dataSource.getSourceKey().getId();
-        SegmentKey segKey = new SegmentKeyBean(tableKey, URI.create(CubeUtil.getRealtimeSegPath(dataSource, order)), order, location.getStoreType(), seg.getMetaData().getSwiftSchema());
+        SegmentKey segKey = new SegmentKeyBean(tableKey, URI.create(CubeUtil.getPersistSegPath(dataSource, order)), order, location.getStoreType(), seg.getMetaData().getSwiftSchema());
         SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).addSegments(Collections.singletonList(segKey));
     }
 }
