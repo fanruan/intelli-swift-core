@@ -38,4 +38,11 @@ public interface SwiftService {
      */
     String getID();
 
+    /**
+     * 设置id
+     *
+     * @param id
+     */
+    void setId(String id);
+
 }

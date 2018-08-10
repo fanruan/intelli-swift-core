@@ -27,6 +27,7 @@ public class LocalSwiftServerService extends AbstractSwiftServerService {
     private RealtimeService realTimeService;
     private HistoryService historyService;
     private AnalyseService analyseService;
+    private CollateService collateService;
 
     @Override
     public Serializable trigger(SwiftRpcEvent event) {
@@ -48,6 +49,9 @@ public class LocalSwiftServerService extends AbstractSwiftServerService {
                     break;
                 case REAL_TIME:
                     realTimeService = (RealtimeService) service;
+                    break;
+                case COLLATE:
+                    collateService = (CollateService) service;
                 default:
             }
         }
@@ -68,6 +72,8 @@ public class LocalSwiftServerService extends AbstractSwiftServerService {
                     break;
                 case REAL_TIME:
                     realTimeService = null;
+                case COLLATE:
+                    collateService = null;
                 default:
             }
         }
