@@ -39,16 +39,4 @@ public class TargetCalculatorUtils {
         }
         return root;
     }
-
-    public static GroupNode calculateAfterFiltering(GroupNode root, List<Map<Integer, Object>> dic,
-                                                    List<GroupTarget> groupTargets) {
-//        List<GroupTarget> targets = IteratorUtils.iterator2List(new FilteredIterator<GroupTarget>(groupTargets.iterator(), new Filter<GroupTarget>() {
-//            @Override
-//            public boolean accept(GroupTarget target) {
-//                return target.isRepeatCal();
-//            }
-//        }));
-//        return calculate(root, dic, targets);
-        return root;
-    }
 }

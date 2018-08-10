@@ -23,15 +23,15 @@ public class Preparer {
 
     public static void prepareCubeBuild() {
         prepareFrEnv();
-        prepareContext();
         prepareConfDb();
+        prepareContext();
         TestConnectionProvider.createConnection();
     }
 
     public static void prepareCubeBuild(Class<?> test) {
         prepareFrEnv();
-        prepareContext();
         prepareConfDb();
+        prepareContext();
         beforeEachCubeBuild(test);
         TestConnectionProvider.createConnection();
     }
