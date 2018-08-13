@@ -24,7 +24,7 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.test.Preparer;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
@@ -41,16 +41,17 @@ import static org.junit.Assert.assertEquals;
  */
 public class QueryInfoParserTest {
 
-    private final Database db = SwiftDatabase.getInstance();
-    private static IndexingConfService service;
+    private Database db;
+    private IndexingConfService service;
 
-    @BeforeClass
-    public static void boot() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         Preparer.prepareCubeBuild();
+        db = SwiftDatabase.getInstance();
         TestConfDb.setConfDb(SwiftTableIndexingConf.class, SwiftColumnIndexingConf.class);
         service = SwiftContext.get().getBean(IndexingConfService.class);
         SourceKey a = new SourceKey("DEMO_CONTRACT");
-        TableIndexingConf tableConf = new SwiftTableIndexingConf(a, new LineAllotRule(1024));
+        TableIndexingConf tableConf = new SwiftTableIndexingConf(a, new LineAllotRule());
         service.setTableConf(tableConf);
     }
 

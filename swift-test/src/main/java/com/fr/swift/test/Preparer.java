@@ -38,7 +38,6 @@ public class Preparer {
 
 
     public static void beforeEachCubeBuild(Class<?> test) {
-        prepareConfDb();
         String runPath = TestResource.getRunPath(test);
         SwiftContext.get().getBean(SwiftCubePathService.class).setSwiftPath(runPath);
         FileUtil.delete(runPath);
