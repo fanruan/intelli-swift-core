@@ -825,5 +825,60 @@ public class MockHttpServletRequest implements HttpServletRequest {
         this.remoteUser = null;
         this.authType = null;
     }
+
+    @Override
+    public String changeSessionId() {
+        return null;
+    }
+
+    @Override
+    public Collection<Part> getParts() throws IOException, ServletException {
+        return null;
+    }
+
+    @Override
+    public Part getPart(String s) throws IOException, ServletException {
+        return null;
+    }
+
+    @Override
+    public <T extends HttpUpgradeHandler> T upgrade(Class<T> aClass) throws IOException, ServletException {
+        return null;
+    }
+
+    @Override
+    public long getContentLengthLong() {
+        return 0;
+    }
+
+    @Override
+    public AsyncContext startAsync() throws IllegalStateException {
+        return null;
+    }
+
+    @Override
+    public AsyncContext startAsync(ServletRequest servletRequest, ServletResponse servletResponse) throws IllegalStateException {
+        return null;
+    }
+
+    @Override
+    public boolean isAsyncStarted() {
+        return false;
+    }
+
+    @Override
+    public boolean isAsyncSupported() {
+        return false;
+    }
+
+    @Override
+    public AsyncContext getAsyncContext() {
+        return null;
+    }
+
+    @Override
+    public DispatcherType getDispatcherType() {
+        return null;
+    }
 }
 

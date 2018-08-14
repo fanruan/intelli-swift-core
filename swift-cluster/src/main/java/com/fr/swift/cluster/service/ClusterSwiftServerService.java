@@ -3,9 +3,11 @@ package com.fr.swift.cluster.service;
 import com.fr.event.Event;
 import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
+import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.Result;
+import com.fr.swift.basics.RpcFuture;
 import com.fr.swift.basics.URL;
 import com.fr.swift.basics.base.SwiftInvocation;
 import com.fr.swift.basics.base.selector.ProxySelector;
@@ -19,8 +21,6 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.netty.rpc.client.AsyncRpcCallback;
-import com.fr.swift.netty.rpc.client.async.RpcFuture;
 import com.fr.swift.netty.rpc.url.RPCDestination;
 import com.fr.swift.netty.rpc.url.RPCUrl;
 import com.fr.swift.property.SwiftProperty;
@@ -142,7 +142,7 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
         if (service.getID() == null) {
             Crasher.crash("Service's clusterId is null! Can't be registered!");
         }
-        LOGGER.debug(service.getID() + " register service :" + service.getServiceType().name());
+        LOGGER.info(service.getID() + " register service :" + service.getServiceType().name());
         synchronized (this) {
             serviceInfoService.saveOrUpdate(new SwiftServiceInfoBean(
                     service.getServiceType().name(), service.getID(), swiftProperty.getServerAddress(), false));

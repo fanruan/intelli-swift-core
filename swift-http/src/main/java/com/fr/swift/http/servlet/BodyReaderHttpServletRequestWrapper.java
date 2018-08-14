@@ -70,6 +70,24 @@ public class BodyReaderHttpServletRequestWrapper extends
         public int read() throws IOException {
             return inputSteam.read();
         }
+
+        @Override
+        public boolean isFinished() {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        @Override
+        public boolean isReady() {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        @Override
+        public void setReadListener(ReadListener readListener) {
+            // TODO Auto-generated method stub
+
+        }
     }
 
     private byte[] getRequestBodyStream(HttpServletRequest request, int size) throws IOException {

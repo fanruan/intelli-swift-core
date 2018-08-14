@@ -76,5 +76,16 @@ public class BodyReaderHttpServletResponseWrapper extends
         public void write(int b) throws IOException {
             byteOutStream.write(b);
         }
+
+
+        @Override
+        public boolean isReady() {
+            return false;
+        }
+
+
+        @Override
+        public void setWriteListener(WriteListener writeListener) {
+        }
     }
 }

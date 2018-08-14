@@ -1,4 +1,4 @@
-package com.fr.swift.core.cluster;
+package com.fr.swift.boot;
 
 import com.fr.cluster.core.ClusterNode;
 import com.fr.cluster.core.event.ClusterViewEvent;
@@ -8,11 +8,14 @@ import com.fr.event.Event;
 import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
 import com.fr.general.ComparatorUtils;
-import com.fr.swift.ClusterService;
+import com.fr.swift.core.cluster.FRClusterNodeManager;
+import com.fr.swift.core.cluster.SwiftClusterService;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.event.ClusterType;
+import com.fr.swift.service.listener.RemoteServiceSender;
+import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 
 /**
  * This class created on 2018/5/14
@@ -24,7 +27,7 @@ import com.fr.swift.event.ClusterType;
 public class SwiftClusterTicket extends ClusterTicketAdaptor {
     private static final SwiftClusterTicket INSTANCE = new SwiftClusterTicket();
 
-    private ClusterService clusterServiceProxy = null;
+    private SwiftServiceListenerHandler remoteServiceSender = null;
 
     private SwiftClusterTicket() {
     }
@@ -40,23 +43,8 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
 
     @Override
     public void approach(ClusterToolKit clusterToolKit) {
-//        Invoker invoker = clusterToolKit.getInvokerFactory().create(SwiftClusterService.getInstance());
-//        ClusterNode masterNode = ClusterBridge.getView().getNodeById("lucifer-cluster2");
-//
-//        Method method = null;
-//        try {
-//            method = SwiftClusterService.class.getMethod("rpcSend", String.class, Object.class);
-//        } catch (NoSuchMethodException e) {
-//            e.printStackTrace();
-//        }
-//        Invocation invocation = Invocation.create(method, "lucifer", "test" + System.currentTimeMillis());
-//        Result result = invoker.invoke(masterNode, invocation);
-
-        //注册rpc proxy
-//        clusterServiceProxy = clusterToolKit.getRPCProxyFactory().newBuilder(SwiftClusterService.getInstance()).build();
-//        FRProxyCache.registerProxy(ClusterService.class, clusterServiceProxy);
-        //注册单例类型
-//        FRProxyCache.registerInstance(SwiftClusterService.class, SwiftClusterService.getInstance());
+        //注册rpc服务
+        remoteServiceSender = clusterToolKit.getRPCProxyFactory().newBuilder(RemoteServiceSender.getInstance()).build();
 
         EventDispatcher.listen(ClusterViewEvent.NODE_LEFT, new Listener<ClusterNode>() {
             @Override
@@ -70,7 +58,6 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
 
     @Override
     public void catchUpWith(ClusterNode clusterNode) {
-
     }
 
     /**
