@@ -1,4 +1,4 @@
-package com.fr.swift.netty.rpc.client;
+package com.fr.swift.basics;
 
 /**
  * This class created on 2018/6/12

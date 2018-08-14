@@ -7,6 +7,7 @@ import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Where;
+import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
 import com.fr.swift.query.query.QueryBeanFactory;
@@ -23,9 +24,6 @@ import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
 import com.fr.swift.util.FileUtil;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.beans.factory.annotation.Qualifier;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,29 +38,47 @@ import java.util.Set;
  * @author pony
  * @date 2017/10/10
  */
-@Service()
 @SwiftService(name = "history")
 public class SwiftHistoryService extends AbstractSwiftService implements HistoryService, Serializable {
     private static final long serialVersionUID = -6013675740141588108L;
 
-    @Autowired
-    @Qualifier("localSegmentProvider")
     private transient SwiftSegmentManager segmentManager;
 
-    @Autowired
     private transient ServiceTaskExecutor taskExecutor;
 
-    @Autowired
     private transient SwiftCubePathService pathService;
 
-    @Autowired
     private transient SwiftMetaDataService metaDataService;
-    @Autowired
+
     private transient SwiftTablePathService tablePathService;
-    @Autowired(required = false)
+
     private transient QueryBeanFactory queryBeanFactory;
 
     private SwiftHistoryService() {
+    }
+
+    @Override
+    public boolean start() throws SwiftServiceException {
+        super.start();
+        segmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
+        taskExecutor = SwiftContext.get().getBean(ServiceTaskExecutor.class);
+        pathService = SwiftContext.get().getBean(SwiftCubePathService.class);
+        metaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
+        tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
+        queryBeanFactory = SwiftContext.get().getBean(QueryBeanFactory.class);
+        return true;
+    }
+
+    @Override
+    public boolean shutdown() throws SwiftServiceException {
+        super.shutdown();
+        segmentManager = null;
+        taskExecutor = null;
+        pathService = null;
+        metaDataService = null;
+        tablePathService = null;
+        queryBeanFactory = null;
+        return true;
     }
 
     @Override

@@ -42,8 +42,7 @@ public class SwiftClusterService implements ClusterService {
     }
 
     @Override
-    public boolean competeMaster() {
-        LOGGER.info("Start to compete master !");
+    public boolean competeMaster() { LOGGER.info("Start to compete master !");
         SwiftProperty swiftProperty = SwiftContext.get().getBean("swiftProperty", SwiftProperty.class);
         ClusterNode currentNode = FRClusterNodeManager.getInstance().getCurrentNode();
         try {
@@ -57,7 +56,7 @@ public class SwiftClusterService implements ClusterService {
                     LOGGER.info("Master " + masterId + " is dead, " + currentNode.getID() + " start to compete master!");
                     FRClusterNodeManager.getInstance().setMasterNode(currentNode);
                     SwiftServiceInfoBean swiftServiceInfoBean = new SwiftServiceInfoBean(SwiftClusterService.SERVICE,
-                            currentNode.getID(), swiftProperty.getServerAddress());
+                            currentNode.getID(), currentNode.getID());
                     serviceInfoService.saveOrUpdate(swiftServiceInfoBean);
                     LOGGER.info(currentNode.getID() + " compete master succeeded!");
                 } else {
@@ -68,7 +67,7 @@ public class SwiftClusterService implements ClusterService {
             } else {
                 LOGGER.info("Master is null," + currentNode.getID() + " start to compete master!");
                 SwiftServiceInfoBean swiftServiceInfoBean = new SwiftServiceInfoBean(SwiftClusterService.SERVICE,
-                        currentNode.getID(), swiftProperty.getServerAddress());
+                        currentNode.getID(), currentNode.getID());
                 serviceInfoService.saveOrUpdate(swiftServiceInfoBean);
                 FRClusterNodeManager.getInstance().setMasterNode(currentNode);
                 LOGGER.info(currentNode.getID() + " compete master succeeded!");

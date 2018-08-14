@@ -1,6 +1,7 @@
 package com.fr.swift.boot;
 
 import com.fineio.FineIO;
+import com.fr.cluster.entry.ClusterTicketKey;
 import com.fr.module.Activator;
 import com.fr.module.extension.Prepare;
 import com.fr.stable.db.constant.BaseDBConstant;
@@ -32,8 +33,8 @@ public class SwiftEngineActivator extends Activator implements Prepare {
         ClusterListenerHandler.addListener(new FRClusterListener());
         SwiftContext.init();
         SwiftConfigContext.getInstance().init();
-        SwiftContext.get().getBean("localSwiftRegister",LocalSwiftRegister.class).serviceRegister();
         FineIO.setLogger(new FineIOLoggerImpl());
+        SwiftContext.get().getBean(LocalSwiftRegister.class).serviceRegister();
         ProviderTaskManager.start();
     }
 
@@ -44,6 +45,7 @@ public class SwiftEngineActivator extends Activator implements Prepare {
 
     @Override
     public void prepare() {
+        this.addMutable(ClusterTicketKey.KEY, SwiftClusterTicket.getInstance());
         this.addMutable(BaseDBConstant.BASE_ENTITY_KEY, SwiftConfigConstants.ENTITIES);
     }
 
