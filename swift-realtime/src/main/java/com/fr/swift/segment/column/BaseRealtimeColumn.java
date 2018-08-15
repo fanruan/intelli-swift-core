@@ -61,7 +61,6 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
         public void put(int row, V val) {
             detail.put(row, val);
 
-
             if (val == null) {
                 if (nullIndex.isEmpty()) {
                     idToVal.add(null);
@@ -264,11 +263,6 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
     }
 
     private void init() {
-        // 三个视图，映射至内存数据
-        detailColumn = new RealtimeDetailColumn();
-        dictColumn = new RealtimeDictColumn();
-        indexColumn = new RealtimeBitmapColumn();
-
         BuildConf readConf = new BuildConf(IoType.READ, DataType.REALTIME_COLUMN);
         if (!DISCOVERY.exists(location, readConf)) {
             DISCOVERY.<ObjectMemIo<BaseRealtimeColumn<V>>>getWriter(location, new BuildConf(IoType.WRITE, DataType.REALTIME_COLUMN)).put(0, this);
@@ -283,6 +277,10 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
         valToId = self.valToId;
         idToVal = self.idToVal;
         indexAndId = self.indexAndId;
+
+        detailColumn = self.detailColumn;
+        dictColumn = self.dictColumn;
+        indexColumn = self.indexColumn;
 
         synchronized (indexAndId) {
             snapshot();
@@ -308,17 +306,17 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
 
     @Override
     public DetailColumn<V> getDetailColumn() {
-        return detailColumn;
+        return detailColumn != null ? detailColumn : (detailColumn = new RealtimeDetailColumn());
     }
 
     @Override
     public DictionaryEncodedColumn<V> getDictionaryEncodedColumn() {
-        return dictColumn;
+        return dictColumn != null ? dictColumn : (dictColumn = new RealtimeDictColumn());
     }
 
     @Override
     public BitmapIndexedColumn getBitmapIndex() {
-        return indexColumn;
+        return indexColumn != null ? indexColumn : (indexColumn = new RealtimeBitmapColumn());
     }
 
     protected abstract Comparator<V> getComparator();
