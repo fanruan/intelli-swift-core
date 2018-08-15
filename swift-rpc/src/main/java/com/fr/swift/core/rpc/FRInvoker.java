@@ -4,9 +4,11 @@ import com.fr.cluster.ClusterBridge;
 import com.fr.cluster.core.ClusterNode;
 import com.fr.cluster.engine.rpc.base.FineResult;
 import com.fr.cluster.engine.ticket.FineClusterToolKit;
+import com.fr.cluster.rpc.base.InvokeHandler;
 import com.fr.swift.basics.Invocation;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.Result;
+import com.fr.swift.basics.RpcFuture;
 import com.fr.swift.basics.URL;
 import com.fr.swift.basics.base.SwiftResult;
 
@@ -28,6 +30,13 @@ public class FRInvoker<T> implements Invoker<T> {
     private final Class<T> type;
 
     private final URL url;
+
+    private boolean sync = true;
+
+    public FRInvoker(T proxy, Class<T> type, URL url, boolean sync) {
+        this(proxy, type, url);
+        this.sync = sync;
+    }
 
     public FRInvoker(T proxy, Class<T> type, URL url) {
         if (type == null) {
@@ -79,8 +88,24 @@ public class FRInvoker<T> implements Invoker<T> {
         com.fr.cluster.rpc.base.Invocation invocation = com.fr.cluster.rpc.base.Invocation.create(method, arguments);
         if (url.getDestination() != null) {
             ClusterNode clusterNode = ClusterBridge.getView().getNodeById(url.getDestination().getId());
-            com.fr.cluster.rpc.base.Result result = frInvoker.invoke(clusterNode, invocation);
-            return result;
+            if (sync) {
+                com.fr.cluster.rpc.base.Result result = frInvoker.invoke(clusterNode, invocation);
+                return result;
+            } else {
+                final RpcFuture rpcFuture = new FRFuture();
+                InvokeHandler invokeHandler = new InvokeHandler() {
+                    @Override
+                    public void done(ClusterNode clusterNode, com.fr.cluster.rpc.base.Invocation invocation, com.fr.cluster.rpc.base.Result result) {
+                        rpcFuture.done(result);
+                    }
+
+                    @Override
+                    public void finish() {
+                    }
+                };
+                frInvoker.invoke(clusterNode, invocation, invokeHandler);
+                return rpcFuture;
+            }
         } else {
             Map<ClusterNode, com.fr.cluster.rpc.base.Result> resultMap = frInvoker.invokeAll(invocation);
             return resultMap;

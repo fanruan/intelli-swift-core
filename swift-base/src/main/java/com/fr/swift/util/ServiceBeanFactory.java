@@ -21,9 +21,9 @@ import java.util.Set;
  */
 public class ServiceBeanFactory {
 
-    private static Map<String, String> serviceName2BeanName = new HashMap<String, String>();
+    private final static Map<String, String> serviceName2BeanName = new HashMap<String, String>();
 
-    private static Map<String, String> serverName2BeanName = new HashMap<String, String>();
+    private final static Map<String, String> serverName2BeanName = new HashMap<String, String>();
 
     static {
         Map<String, Object> swiftServiceBeans = SwiftContext.get().getBeansWithAnnotation(com.fr.swift.annotation.SwiftService.class);

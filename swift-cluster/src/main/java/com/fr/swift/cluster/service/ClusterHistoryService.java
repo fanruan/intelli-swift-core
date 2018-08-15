@@ -3,8 +3,19 @@ package com.fr.swift.cluster.service;
 import com.fr.swift.annotation.RpcMethod;
 import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.RpcServiceType;
+import com.fr.swift.basics.Invoker;
+import com.fr.swift.basics.ProxyFactory;
+import com.fr.swift.basics.Result;
+import com.fr.swift.basics.RpcFuture;
+import com.fr.swift.basics.URL;
+import com.fr.swift.basics.base.SwiftInvocation;
+import com.fr.swift.basics.base.selector.ProxySelector;
+import com.fr.swift.basics.base.selector.UrlSelector;
+import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.core.cluster.SwiftClusterService;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Where;
 import com.fr.swift.event.global.PushSegLocationRpcEvent;
@@ -20,9 +31,9 @@ import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.AbstractSwiftService;
 import com.fr.swift.service.HistoryService;
 import com.fr.swift.service.ServiceType;
+import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.utils.ClusterCommonUtils;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.beans.factory.annotation.Qualifier;
 import com.fr.third.springframework.stereotype.Service;
@@ -56,9 +67,7 @@ public class ClusterHistoryService extends AbstractSwiftService implements Histo
         SegmentLocationInfo info = loadSelfSegmentDestination();
         if (null != info) {
             try {
-                ClusterCommonUtils.runRpc(ClusterCommonUtils.getMasterURL(),
-                        server.getMethodByName("rpcTrigger"),
-                        new PushSegLocationRpcEvent(info));
+                runRpc(new PushSegLocationRpcEvent(info));
             } catch (Exception e) {
                 SwiftLoggers.getLogger().warn("Cannot sync native segment info to server! ", e);
             }
@@ -83,6 +92,25 @@ public class ClusterHistoryService extends AbstractSwiftService implements Histo
     public boolean delete(SourceKey sourceKey, Where where) throws Exception {
         return historyService.delete(sourceKey, where);
     }
+
+    private URL getMasterURL() {
+        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.get().getBean(SwiftServiceInfoService.class).getServiceInfoByService(SwiftClusterService.SERVICE);
+        SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
+        return UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
+    }
+
+    private RpcFuture runRpc(Object... args) throws Exception {
+        URL masterURL = getMasterURL();
+        ProxyFactory factory = ProxySelector.getInstance().getFactory();
+        Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, masterURL, false);
+        Result invokeResult = invoker.invoke(new SwiftInvocation(server.getMethodByName("rpcTrigger"), args));
+        RpcFuture future = (RpcFuture) invokeResult.getValue();
+        if (null != future) {
+            return future;
+        }
+        throw new Exception(invokeResult.getException());
+    }
+
 
     protected SegmentDestination createSegmentDestination(SegmentKey segmentKey) {
         String clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();

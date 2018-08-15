@@ -9,7 +9,7 @@ import com.fr.swift.event.analyse.SegmentLocationRpcEvent;
 import com.fr.swift.event.base.AbstractGlobalRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.netty.rpc.client.AsyncRpcCallback;
+import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.handler.SwiftServiceHandlerManager;

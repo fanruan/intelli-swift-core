@@ -21,9 +21,6 @@ import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
 import com.fr.swift.util.concurrent.CommonExecutor;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.beans.factory.annotation.Qualifier;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -34,23 +31,46 @@ import java.util.concurrent.Callable;
  * @author pony
  * @date 2017/10/10
  */
-@Service()
 @SwiftService(name = "realtime")
 public class SwiftRealtimeService extends AbstractSwiftService implements RealtimeService, Serializable {
-    @Autowired
+
+    private static final long serialVersionUID = 4719723736240190155L;
+
     private transient RpcServer server;
 
-    @Autowired
-    @Qualifier("localSegmentProvider")
     private transient SwiftSegmentManager segmentManager;
 
-    @Autowired
     private transient ServiceTaskExecutor taskExecutor;
 
-    @Autowired(required = false)
     private transient QueryBeanFactory queryBeanFactory;
 
+    private transient boolean recoverable = true;
+
     private SwiftRealtimeService() {
+    }
+
+    @Override
+    public boolean start() throws SwiftServiceException {
+        super.start();
+        server = SwiftContext.get().getBean(RpcServer.class);
+        segmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
+        taskExecutor = SwiftContext.get().getBean(ServiceTaskExecutor.class);
+        queryBeanFactory = SwiftContext.get().getBean(QueryBeanFactory.class);
+        if (recoverable) {
+            recover0();
+            recoverable = false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean shutdown() throws SwiftServiceException {
+        super.shutdown();
+        server = null;
+        segmentManager = null;
+        taskExecutor = null;
+        queryBeanFactory = null;
+        return true;
     }
 
     @Override
@@ -63,14 +83,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         });
     }
 
-//    @Override
-//    @RpcMethod(methodName = "merge")
-//    public void merge(List<SegmentKey> tableKeys) {
-//        SwiftLoggers.getLogger().info("merge");
-//        rpcSegmentLocation(PushSegLocationRpcEvent.fromSegmentKey(getServiceType(), tableKeys));
-//    }
-
-    private static void recover0() {
+    private void recover0() {
         CommonExecutor.get().submit(new Callable<Boolean>() {
             @Override
             public Boolean call() {
@@ -108,15 +121,6 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     }
 
     @Override
-    public boolean start() throws SwiftServiceException {
-        super.start();
-
-        recover0();
-
-        return true;
-    }
-
-    @Override
     public SwiftResultSet query(final String queryDescription) throws SQLException {
         try {
             final QueryInfoBean bean = queryBeanFactory.create(queryDescription);
@@ -130,11 +134,5 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     @Override
     public ServiceType getServiceType() {
         return ServiceType.REAL_TIME;
-    }
-
-    private static final long serialVersionUID = 4719723736240190155L;
-
-    public SwiftRealtimeService(String id) {
-        super(id);
     }
 }

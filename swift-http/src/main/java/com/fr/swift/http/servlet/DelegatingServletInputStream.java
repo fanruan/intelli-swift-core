@@ -41,4 +41,19 @@ public class DelegatingServletInputStream extends ServletInputStream {
         super.close();
         this.sourceStream.close();
     }
+
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
+
+    @Override
+    public boolean isReady() {
+        return false;
+    }
+
+    @Override
+    public void setReadListener(ReadListener readListener) {
+
+    }
 }
