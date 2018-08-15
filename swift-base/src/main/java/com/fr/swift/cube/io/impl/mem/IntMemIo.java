@@ -1,7 +1,6 @@
 package com.fr.swift.cube.io.impl.mem;
 
-import com.fr.swift.cube.io.input.IntReader;
-import com.fr.swift.cube.io.output.IntWriter;
+import com.fr.swift.io.IntIo;
 import com.fr.swift.util.Crasher;
 
 import java.util.Arrays;
@@ -10,7 +9,7 @@ import java.util.Arrays;
  * @author anchore
  * @date 2017/11/23
  */
-public class IntMemIo extends BaseMemIo implements IntReader, IntWriter {
+public class IntMemIo extends BaseMemIo implements IntIo, Cloneable {
     private int[] mem;
 
     public IntMemIo() {
@@ -58,4 +57,15 @@ public class IntMemIo extends BaseMemIo implements IntReader, IntWriter {
         mem = null;
     }
 
+    @Override
+    public final IntMemIo clone() {
+        IntMemIo cloned;
+        try {
+            cloned = (IntMemIo) super.clone();
+            cloned.mem = Arrays.copyOf(mem, mem.length);
+            return cloned;
+        } catch (CloneNotSupportedException e) {
+            return Crasher.crash(e);
+        }
+    }
 }
