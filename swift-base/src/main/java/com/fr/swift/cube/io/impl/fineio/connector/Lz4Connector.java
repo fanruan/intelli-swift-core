@@ -4,17 +4,14 @@ import com.fineio.io.file.FileBlock;
 import com.fineio.storage.AbstractConnector;
 import com.fr.swift.util.Strings;
 import com.fr.third.org.apache.commons.io.FileUtils;
-import com.fr.third.org.apache.commons.io.IOUtils;
-import net.jpountz.lz4.LZ4FrameInputStream;
-import net.jpountz.lz4.LZ4FrameOutputStream;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+
+//import net.jpountz.lz4.LZ4FrameInputStream;
+//import net.jpountz.lz4.LZ4FrameOutputStream;
 
 /**
  * @author yee
@@ -45,8 +42,9 @@ public class Lz4Connector extends AbstractConnector {
     public InputStream read(FileBlock block) throws IOException {
 //        LZ4FastDecompressor decompressor = LZ4Factory.fastestInstance().fastDecompressor();
 //        LZ4BlockInputStream zis = new LZ4BlockInputStream(is, decompressor);
-        FileInputStream is = new FileInputStream(getPath(block, false));
-        return new LZ4FrameInputStream(is);
+//        FileInputStream is = new FileInputStream(getPath(block, false));
+//        return new LZ4FrameInputStream(is);
+        return null;
     }
 
     @Override
@@ -58,21 +56,21 @@ public class Lz4Connector extends AbstractConnector {
 //        } else {
 //            compressor = LZ4Factory.fastestInstance().highCompressor(compressedLevel);
 //        }
-        FileOutputStream fos = new FileOutputStream(getPath(block, true));
-        BufferedOutputStream bos = new BufferedOutputStream(fos);
+//        FileOutputStream fos = new FileOutputStream(getPath(block, true));
+//        BufferedOutputStream bos = new BufferedOutputStream(fos);
 //        LZ4BlockOutputStream zos = new LZ4BlockOutputStream(bos, BLOCK_SIZE, compressor);
-        LZ4FrameOutputStream zos = new LZ4FrameOutputStream(bos);
-        IOUtils.copy(is, zos);
-        zos.flush();
-        if (is != null) {
-            is.close();
-        }
-        if (null != bos) {
-            bos.close();
-        }
-        if (fos != null) {
-            fos.close();
-        }
+//        LZ4FrameOutputStream zos = new LZ4FrameOutputStream(bos);
+//        IOUtils.copy(is, zos);
+//        zos.flush();
+//        if (is != null) {
+//            is.close();
+//        }
+//        if (null != bos) {
+//            bos.close();
+//        }
+//        if (fos != null) {
+//            fos.close();
+//        }
     }
 
     @Override

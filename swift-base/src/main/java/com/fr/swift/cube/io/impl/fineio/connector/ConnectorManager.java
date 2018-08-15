@@ -101,7 +101,7 @@ public class ConnectorManager {
 
     private Connector createConnector(String path, boolean zip) {
         if (zip) {
-            return Lz4Connector.newInstance(path);
+            return ZipConnector.newInstance(path);
         }
         return FileConnector.newInstance(path);
     }
