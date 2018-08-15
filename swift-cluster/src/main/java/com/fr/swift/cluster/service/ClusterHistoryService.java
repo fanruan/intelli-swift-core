@@ -35,6 +35,7 @@ import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.util.ServiceBeanFactory;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.beans.factory.annotation.Qualifier;
 
@@ -42,6 +43,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,6 +67,9 @@ public class ClusterHistoryService extends AbstractSwiftService implements Histo
     @Override
     public boolean start() throws SwiftServiceException {
         SegmentLocationInfo info = loadSelfSegmentDestination();
+        List<com.fr.swift.service.SwiftService> services = ServiceBeanFactory.getSwiftServiceByNames(Collections.singleton("history"));
+        historyService = (HistoryService) services.get(0);
+        historyService.start();
         if (null != info) {
             try {
                 runRpc(new PushSegLocationRpcEvent(info));

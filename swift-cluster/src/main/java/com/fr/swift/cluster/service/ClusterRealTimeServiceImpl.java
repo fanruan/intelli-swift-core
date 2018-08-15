@@ -40,11 +40,13 @@ import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
+import com.fr.swift.util.ServiceBeanFactory;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,6 +70,8 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
 
     @Override
     public boolean start() throws SwiftServiceException {
+        List<com.fr.swift.service.SwiftService> services = ServiceBeanFactory.getSwiftServiceByNames(Collections.singleton("realtime"));
+        realtimeService = (RealtimeService) services.get(0);
         realtimeService.start();
         SegmentLocationInfo info = loadSelfSegmentDestination();
         if (null != info) {

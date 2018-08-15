@@ -27,8 +27,10 @@ import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.cluster.ClusterAnalyseService;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.util.Assert;
+import com.fr.swift.util.ServiceBeanFactory;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
@@ -102,6 +104,8 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
 
     @Override
     public boolean start() throws SwiftServiceException {
+        List<com.fr.swift.service.SwiftService> services = ServiceBeanFactory.getSwiftServiceByNames(Collections.singleton("analyse"));
+        analyseService = (AnalyseService) services.get(0);
         analyseService.start();
         // 这边为了覆盖掉analyse的注册，所以再调一次注册
         return super.start();

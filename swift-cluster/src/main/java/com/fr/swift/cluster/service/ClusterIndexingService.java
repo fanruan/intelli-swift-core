@@ -59,8 +59,9 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.fr.swift.task.TaskResult.Type.SUCCEEDED;
 
@@ -108,7 +109,9 @@ public class ClusterIndexingService extends AbstractSwiftService implements Inde
     @Override
     public boolean start() throws SwiftServiceException {
         super.start();
-        List<com.fr.swift.service.SwiftService> services = ServiceBeanFactory.getSwiftServiceByNames(Collections.singleton("indexing"));
+        Set<String> serviceNames = new LinkedHashSet<String>();
+        serviceNames.add("indexing");
+        List<com.fr.swift.service.SwiftService> services = ServiceBeanFactory.getSwiftServiceByNames(serviceNames);
         indexingService = (IndexingService) services.get(0);
         indexingService.start();
         indexingService.setListenerWorker(new ListenerWorker() {
