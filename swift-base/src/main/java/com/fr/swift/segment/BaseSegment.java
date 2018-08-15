@@ -187,9 +187,6 @@ public abstract class BaseSegment implements Segment {
     public boolean isReadable() {
         initRowCountReader();
         if (!rowCountReader.isReadable()) {
-//            if (isHistory()) {
-//                IoUtil.release(rowCountReader);
-//            }
             return false;
         }
         if (isHistory()) {

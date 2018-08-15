@@ -58,8 +58,6 @@ public abstract class BaseBlockInserter implements Inserter {
                     persistSegment(currentSeg, maxSegmentKey == null ? 0 : maxSegmentKey.getOrder() + 1);
                 }
             }
-        } catch (Exception e) {
-            throw e;
         } finally {
             resultSet.close();
         }
