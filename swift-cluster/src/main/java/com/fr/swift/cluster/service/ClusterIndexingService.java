@@ -1,6 +1,7 @@
 package com.fr.swift.cluster.service;
 
 import com.fineio.FineIO;
+import com.fr.swift.ClusterNodeService;
 import com.fr.swift.annotation.RpcMethod;
 import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.RpcServiceType;
@@ -16,7 +17,6 @@ import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.core.cluster.SwiftClusterService;
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.event.global.TaskDoneRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
@@ -100,7 +100,7 @@ public class ClusterIndexingService extends AbstractSwiftService implements Inde
 //    }
 
     private URL getMasterURL() {
-        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.get().getBean(SwiftServiceInfoService.class).getServiceInfoByService(SwiftClusterService.SERVICE);
+        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.get().getBean(SwiftServiceInfoService.class).getServiceInfoByService(ClusterNodeService.SERVICE);
         SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
         return UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
     }
