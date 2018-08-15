@@ -9,7 +9,7 @@ import java.util.Arrays;
  * @author anchore
  * @date 2017/11/23
  */
-public class IntMemIo extends BaseMemIo implements IntIo, Cloneable {
+public class IntMemIo extends BaseMemIo implements IntIo {
     private int[] mem;
 
     public IntMemIo() {
@@ -55,17 +55,5 @@ public class IntMemIo extends BaseMemIo implements IntIo, Cloneable {
     @Override
     public void release() {
         mem = null;
-    }
-
-    @Override
-    public final IntMemIo clone() {
-        IntMemIo cloned;
-        try {
-            cloned = (IntMemIo) super.clone();
-            cloned.mem = Arrays.copyOf(mem, mem.length);
-            return cloned;
-        } catch (CloneNotSupportedException e) {
-            return Crasher.crash(e);
-        }
     }
 }

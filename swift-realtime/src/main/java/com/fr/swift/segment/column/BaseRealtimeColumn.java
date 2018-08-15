@@ -44,7 +44,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
     /**
      * index <-> id
      */
-    private IndexAndId indexAndId = new IndexAndId(), indexAndIdSnapshot = new IndexAndId();
+    private IndexAndId indexAndId = new IndexAndId();
 
     /**
      * id -> value
@@ -125,7 +125,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
                 return null;
             }
 
-            int id = indexAndIdSnapshot.getId(index - 1);
+            int id = indexAndId.getId(index - 1);
             return idToVal.get(id);
         }
 
@@ -136,7 +136,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
             }
 
             if (valToId.containsKey(value)) {
-                int index = indexAndIdSnapshot.getIndex(valToId.get(value));
+                int index = indexAndId.getIndex(valToId.get(value));
                 return index + 1;
             }
             return -1;
@@ -172,7 +172,6 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
             idToVal.clear();
             valToId.clear();
             indexAndId.release();
-            indexAndIdSnapshot.release();
         }
 
         @Override
@@ -263,14 +262,20 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
     }
 
     private void init() {
+
         BuildConf readConf = new BuildConf(IoType.READ, DataType.REALTIME_COLUMN);
         if (!DISCOVERY.exists(location, readConf)) {
+            // 三个视图，映射至内存数据
+            detailColumn = new RealtimeDetailColumn();
+            dictColumn = new RealtimeDictColumn();
+            indexColumn = new RealtimeBitmapColumn();
+
             DISCOVERY.<ObjectMemIo<BaseRealtimeColumn<V>>>getWriter(location, new BuildConf(IoType.WRITE, DataType.REALTIME_COLUMN)).put(0, this);
-            return;
         }
 
         ObjectMemIo<BaseRealtimeColumn<V>> selfMemIo = DISCOVERY.getReader(location, readConf);
         BaseRealtimeColumn<V> self = selfMemIo.get(0);
+        self.snapshot();
         // 还原对象
         detail = self.detail;
         valToRows = self.valToRows;
@@ -281,42 +286,37 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
         detailColumn = self.detailColumn;
         dictColumn = self.dictColumn;
         indexColumn = self.indexColumn;
-
-        synchronized (indexAndId) {
-            snapshot();
-        }
     }
 
-    private void snapshot() {
+    private synchronized void snapshot() {
         int lastId = valToId.size() - 1;
         if (lastId < indexAndId.size()) {
-            indexAndIdSnapshot = indexAndId.clone();
             return;
         }
 
         int newIndex = 0;
+        IndexAndId indexAndId = new IndexAndId(lastId + 1);
         for (Integer id : valToId.values()) {
             if (id <= lastId) {
                 indexAndId.putIndexAndId(id, newIndex++);
             }
         }
-
-        indexAndIdSnapshot = indexAndId.clone();
+        this.indexAndId = indexAndId;
     }
 
     @Override
     public DetailColumn<V> getDetailColumn() {
-        return detailColumn != null ? detailColumn : (detailColumn = new RealtimeDetailColumn());
+        return detailColumn;
     }
 
     @Override
     public DictionaryEncodedColumn<V> getDictionaryEncodedColumn() {
-        return dictColumn != null ? dictColumn : (dictColumn = new RealtimeDictColumn());
+        return dictColumn;
     }
 
     @Override
     public BitmapIndexedColumn getBitmapIndex() {
-        return indexColumn != null ? indexColumn : (indexColumn = new RealtimeBitmapColumn());
+        return indexColumn;
     }
 
     protected abstract Comparator<V> getComparator();

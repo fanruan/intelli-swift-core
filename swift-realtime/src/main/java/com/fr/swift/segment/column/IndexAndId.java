@@ -2,18 +2,27 @@ package com.fr.swift.segment.column;
 
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.cube.io.impl.mem.IntMemIo;
-import com.fr.swift.util.Crasher;
 
 /**
  * @author anchore
  * @date 2018/8/15
  */
-class IndexAndId implements Cloneable, Releasable {
-    private IntMemIo indexToId = new IntMemIo();
+class IndexAndId implements Releasable {
+    private IntMemIo indexToId;
 
-    private IntMemIo idToIndex = new IntMemIo();
+    private IntMemIo idToIndex;
 
     private int lastPos = -1;
+
+    IndexAndId() {
+        indexToId = new IntMemIo();
+        idToIndex = new IntMemIo();
+    }
+
+    IndexAndId(int cap) {
+        indexToId = new IntMemIo(cap);
+        idToIndex = new IntMemIo(cap);
+    }
 
     void putIndexAndId(int id, int index) {
         idToIndex.put(id, index);
@@ -35,19 +44,6 @@ class IndexAndId implements Cloneable, Releasable {
 
     int size() {
         return lastPos + 1;
-    }
-
-    @Override
-    protected final IndexAndId clone() {
-        IndexAndId cloned;
-        try {
-            cloned = (IndexAndId) super.clone();
-            cloned.indexToId = indexToId.clone();
-            cloned.idToIndex = idToIndex.clone();
-            return cloned;
-        } catch (CloneNotSupportedException e) {
-            return Crasher.crash(e);
-        }
     }
 
     @Override
