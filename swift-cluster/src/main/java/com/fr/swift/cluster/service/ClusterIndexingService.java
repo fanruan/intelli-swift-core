@@ -4,6 +4,7 @@ import com.fineio.FineIO;
 import com.fr.swift.annotation.RpcMethod;
 import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.RpcServiceType;
+import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.ProxyFactory;
@@ -47,6 +48,7 @@ import com.fr.swift.task.TaskKey;
 import com.fr.swift.task.TaskResult;
 import com.fr.swift.upload.ReadyUploadContainer;
 import com.fr.swift.util.FileUtil;
+import com.fr.swift.util.ServiceBeanFactory;
 import com.fr.swift.util.Strings;
 import com.fr.swift.utils.ClusterCommonUtils;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +59,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.fr.swift.task.TaskResult.Type.SUCCEEDED;
@@ -65,6 +68,7 @@ import static com.fr.swift.task.TaskResult.Type.SUCCEEDED;
  * @author yee
  * @date 2018/8/6
  */
+@SwiftService(name = "clusterIndexing")
 @RpcService(type = RpcServiceType.CLIENT_SERVICE, value = IndexingService.class)
 public class ClusterIndexingService extends AbstractSwiftService implements IndexingService, Serializable {
 
@@ -104,6 +108,9 @@ public class ClusterIndexingService extends AbstractSwiftService implements Inde
     @Override
     public boolean start() throws SwiftServiceException {
         super.start();
+        List<com.fr.swift.service.SwiftService> services = ServiceBeanFactory.getSwiftServiceByNames(Collections.singleton("indexing"));
+        indexingService = (IndexingService) services.get(0);
+        indexingService.start();
         indexingService.setListenerWorker(new ListenerWorker() {
             @Override
             public void work(Pair<TaskKey, TaskResult> result) {

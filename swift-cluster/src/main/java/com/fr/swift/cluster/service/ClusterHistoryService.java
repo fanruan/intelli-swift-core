@@ -3,6 +3,7 @@ package com.fr.swift.cluster.service;
 import com.fr.swift.annotation.RpcMethod;
 import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.RpcServiceType;
+import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.Result;
@@ -36,7 +37,6 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.beans.factory.annotation.Qualifier;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -51,7 +51,7 @@ import java.util.Set;
  * @author yee
  * @date 2018/8/7
  */
-@Service
+@SwiftService(name = "clusterHistory")
 @RpcService(value = HistoryService.class, type = RpcServiceType.CLIENT_SERVICE)
 public class ClusterHistoryService extends AbstractSwiftService implements HistoryService, Serializable {
     private static final long serialVersionUID = -3487010910076432934L;

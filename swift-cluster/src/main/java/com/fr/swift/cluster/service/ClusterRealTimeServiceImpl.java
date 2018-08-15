@@ -3,6 +3,7 @@ package com.fr.swift.cluster.service;
 import com.fr.swift.annotation.RpcMethod;
 import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.RpcServiceType;
+import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.ProxyFactory;
@@ -40,7 +41,6 @@ import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -53,7 +53,7 @@ import java.util.Map;
  * @author yee
  * @date 2018/8/6
  */
-@Service
+@SwiftService(name = "clusterRealTime")
 @RpcService(type = RpcServiceType.CLIENT_SERVICE, value = RealtimeService.class)
 public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements ClusterRealTimeService, Serializable {
     private static final long serialVersionUID = 946204307880678794L;

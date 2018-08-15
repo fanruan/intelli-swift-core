@@ -3,6 +3,7 @@ package com.fr.swift.cluster.service;
 import com.fr.swift.annotation.RpcMethod;
 import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.RpcServiceType;
+import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.ProxyFactory;
@@ -27,7 +28,6 @@ import com.fr.swift.service.cluster.ClusterAnalyseService;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.util.Assert;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -36,7 +36,7 @@ import java.util.concurrent.CountDownLatch;
  * @author yee
  * @date 2018/8/6
  */
-@Service
+@SwiftService(name = "clusterAnalyse")
 @RpcService(value = AnalyseService.class, type = RpcServiceType.CLIENT_SERVICE)
 public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements ClusterAnalyseService {
     private static final long serialVersionUID = 7637989460502966453L;

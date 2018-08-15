@@ -8,6 +8,7 @@ import com.fr.third.springframework.beans.factory.NoSuchBeanDefinitionException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -60,6 +61,28 @@ public class ServiceBeanFactory {
             }
         }
         return swiftServiceList;
+    }
+
+    public static List<SwiftService> getClusterSwiftServiceByNames(Set<String> swiftServiceNames) {
+        // TODO: 2018/8/9 暂时先把collate跟随indexing启动
+        if (swiftServiceNames.contains("indexing")) {
+            swiftServiceNames.add("collate");
+        }
+        Set<String> serviceNames = new HashSet<String>();
+        for (String serviceName : swiftServiceNames) {
+            if (serviceName.equals("indexing")) {
+                serviceNames.add("clusterIndexing");
+            } else if (serviceName.equals("analyse")) {
+                serviceNames.add("clusterAnalyse");
+            } else if (serviceName.equals("history")) {
+                serviceNames.add("clusterHistory");
+            } else if (serviceName.equals("realtime")) {
+                serviceNames.add("clusterRealTime");
+            } else {
+                serviceNames.add(serviceName);
+            }
+        }
+        return getSwiftServiceByNames(serviceNames);
     }
 
     public static List<ServerService> getServerServiceByNames(Set<String> serverServiceNames) {
