@@ -50,7 +50,7 @@ public class ClusterSwiftRegister extends AbstractSwiftRegister {
             masterManager.startUp();
         } else {
             LOGGER.info("=====Cluster slaver!=====");
-            clusterServiceManager.registerService(ServiceBeanFactory.getSwiftServiceByNames(swiftProperty.getSwiftServiceNames()));
+            clusterServiceManager.registerService(ServiceBeanFactory.getClusterSwiftServiceByNames(swiftProperty.getSwiftServiceNames()));
             slaveManager.startUp();
         }
     }
@@ -63,7 +63,7 @@ public class ClusterSwiftRegister extends AbstractSwiftRegister {
             } else {
                 slaveManager.shutDown();
             }
-            clusterServiceManager.unregisterService(ServiceBeanFactory.getSwiftServiceByNames(swiftProperty.getSwiftServiceNames()));
+            clusterServiceManager.unregisterService(ServiceBeanFactory.getClusterSwiftServiceByNames(swiftProperty.getSwiftServiceNames()));
         } catch (Exception e) {
             LOGGER.error(e);
         }
