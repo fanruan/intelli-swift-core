@@ -6,23 +6,12 @@ import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.AsyncRpcCallback;
-import com.fr.swift.basics.Invoker;
-import com.fr.swift.basics.ProxyFactory;
-import com.fr.swift.basics.Result;
-import com.fr.swift.basics.RpcFuture;
-import com.fr.swift.basics.URL;
-import com.fr.swift.basics.base.SwiftInvocation;
-import com.fr.swift.basics.base.selector.ProxySelector;
-import com.fr.swift.basics.base.selector.UrlSelector;
-import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.core.cluster.SwiftClusterService;
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.event.global.TaskDoneRpcEvent;
 import com.fr.swift.event.history.HistoryCommonLoadRpcEvent;
@@ -37,7 +26,6 @@ import com.fr.swift.segment.relation.RelationIndexImpl;
 import com.fr.swift.service.AbstractSwiftService;
 import com.fr.swift.service.IndexingService;
 import com.fr.swift.service.ServiceType;
-import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.RelationSourceType;
@@ -119,7 +107,7 @@ public class ClusterIndexingService extends AbstractSwiftService implements Inde
             public void work(Pair<TaskKey, TaskResult> result) {
                 SwiftLoggers.getLogger().info("rpc通知server任务完成");
                 try {
-                    runRpc(new TaskDoneRpcEvent(result));
+                    ClusterCommonUtils.runRpc(ClusterCommonUtils.getMasterURL(), server.getMethodByName("rpcTrigger"), new TaskDoneRpcEvent(result));
                     FineIO.doWhenFinished(new ClusterUploadRunnable(result, indexingService.getID()));
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().error(e);
@@ -134,24 +122,6 @@ public class ClusterIndexingService extends AbstractSwiftService implements Inde
 //        EventDispatcher.stopListen(listener);
 //        return super.shutdown();
 //    }
-
-    private URL getMasterURL() {
-        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.get().getBean(SwiftServiceInfoService.class).getServiceInfoByService(SwiftClusterService.SERVICE);
-        SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
-        return UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
-    }
-
-    private RpcFuture runRpc(Object... args) throws Exception {
-        URL masterURL = getMasterURL();
-        ProxyFactory factory = ProxySelector.getInstance().getFactory();
-        Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, masterURL, false);
-        Result invokeResult = invoker.invoke(new SwiftInvocation(server.getMethodByName("rpcTrigger"), args));
-        RpcFuture future = (RpcFuture) invokeResult.getValue();
-        if (null != future) {
-            return future;
-        }
-        throw new Exception(invokeResult.getException());
-    }
 
     private class ClusterUploadRunnable implements Runnable {
 
