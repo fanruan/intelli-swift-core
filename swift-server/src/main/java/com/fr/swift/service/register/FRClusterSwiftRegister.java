@@ -33,15 +33,14 @@ public class FRClusterSwiftRegister extends AbstractSwiftRegister {
         if (ClusterSelector.getInstance().getFactory().isMaster()) {
             LOGGER.info("=====Cluster master!=====");
             ClusterSwiftServerService.getInstance().start();
-
         } else {
             LOGGER.info("=====Cluster slaver!=====");
-            clusterServiceManager.registerService(ServiceBeanFactory.getSwiftServiceByNames(swiftProperty.getSwiftServiceNames()));
+            clusterServiceManager.registerService(ServiceBeanFactory.getClusterSwiftServiceByNames(swiftProperty.getSwiftServiceNames()));
         }
     }
 
     @Override
     public void serviceUnregister() throws Exception {
-        clusterServiceManager.unregisterService(ServiceBeanFactory.getSwiftServiceByNames(swiftProperty.getSwiftServiceNames()));
+        clusterServiceManager.unregisterService(ServiceBeanFactory.getClusterSwiftServiceByNames(swiftProperty.getSwiftServiceNames()));
     }
 }

@@ -1,9 +1,9 @@
 package com.fr.swift.service.register;
 
+import com.fr.swift.ClusterNodeService;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
-import com.fr.swift.core.cluster.SwiftClusterService;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.nm.SlaveManager;
@@ -46,11 +46,11 @@ public class ClusterSwiftRegister extends AbstractSwiftRegister {
             LOGGER.info("=====Cluster master!=====");
             ClusterSwiftServerService.getInstance().start();
             String masterAddress = swiftProperty.getMasterAddress();
-            serviceInfoService.saveOrUpdate(new SwiftServiceInfoBean(SwiftClusterService.SERVICE, masterAddress, masterAddress, true));
+            serviceInfoService.saveOrUpdate(new SwiftServiceInfoBean(ClusterNodeService.SERVICE, masterAddress, masterAddress, true));
             masterManager.startUp();
         } else {
             LOGGER.info("=====Cluster slaver!=====");
-            clusterServiceManager.registerService(ServiceBeanFactory.getSwiftServiceByNames(swiftProperty.getSwiftServiceNames()));
+            clusterServiceManager.registerService(ServiceBeanFactory.getClusterSwiftServiceByNames(swiftProperty.getSwiftServiceNames()));
             slaveManager.startUp();
         }
     }
@@ -63,7 +63,7 @@ public class ClusterSwiftRegister extends AbstractSwiftRegister {
             } else {
                 slaveManager.shutDown();
             }
-            clusterServiceManager.unregisterService(ServiceBeanFactory.getSwiftServiceByNames(swiftProperty.getSwiftServiceNames()));
+            clusterServiceManager.unregisterService(ServiceBeanFactory.getClusterSwiftServiceByNames(swiftProperty.getSwiftServiceNames()));
         } catch (Exception e) {
             LOGGER.error(e);
         }
