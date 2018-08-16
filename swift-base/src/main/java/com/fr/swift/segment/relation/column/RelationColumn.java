@@ -217,7 +217,7 @@ public class RelationColumn {
                 }
             }
         }
-        targetDicColumn.putSize(index);
+        targetDicColumn.putter().putSize(index);
         targetDicColumn.release();
         bitmapIndexedColumn.release();
     }
@@ -228,11 +228,11 @@ public class RelationColumn {
             @Override
             public void actionPerformed(int row) {
                 traversal.set(true);
-                dic.putIndex(row, index);
+                dic.putter().putIndex(row, index);
             }
         });
         if (traversal.get()) {
-            dic.putValue(index, dicValue);
+            dic.putter().putValue(index, dicValue);
             indexedColumn.putBitMapIndex(index, bitMap);
             return index + 1;
         }

@@ -37,28 +37,13 @@ public class DetailFormulaDicColumn implements DictionaryEncodedColumn {
     }
 
     @Override
-    public void putSize(int size) {
-        Crasher.crash("unsupported");
-    }
-
-    @Override
     public int size() {
         return hostColumn == null ? 1 : hostColumn.size();
     }
 
     @Override
-    public void putGlobalSize(int globalSize) {
-        Crasher.crash("unsupported");
-    }
-
-    @Override
     public int globalSize() {
         return hostColumn == null ? 1 : hostColumn.globalSize();
-    }
-
-    @Override
-    public void putValue(int index, Object val) {
-        Crasher.crash("unsupported");
     }
 
     @Override
@@ -95,18 +80,8 @@ public class DetailFormulaDicColumn implements DictionaryEncodedColumn {
     }
 
     @Override
-    public void putIndex(int row, int index) {
-        Crasher.crash("unsupported");
-    }
-
-    @Override
     public int getIndexByRow(int row) {
         return hostColumn == null ? 1 : hostColumn.getIndexByRow(row);
-    }
-
-    @Override
-    public void putGlobalIndex(int index, int globalIndex) {
-        Crasher.crash("unsupported");
     }
 
     @Override
@@ -127,6 +102,11 @@ public class DetailFormulaDicColumn implements DictionaryEncodedColumn {
     @Override
     public ColumnTypeConstants.ClassType getType() {
         return hostColumn.getType();
+    }
+
+    @Override
+    public Putter putter() {
+        return null;
     }
 
     @Override

@@ -12,7 +12,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
@@ -161,7 +163,12 @@ public class ZipConnector extends AbstractConnector {
     }
 
     private File getFolderPath(FileBlock block) {
-        return new File(parentURI.resolve(block.getParentUri()).getPath());
+        String path = parentURI.resolve(block.getParentUri()).getPath();
+        try {
+            return new File(URLDecoder.decode(path, "utf8"));
+        } catch (UnsupportedEncodingException e) {
+            return new File(path);
+        }
     }
 
     private File getPath(FileBlock block, boolean mkdir) {

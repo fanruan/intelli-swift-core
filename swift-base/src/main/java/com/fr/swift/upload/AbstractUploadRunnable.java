@@ -6,6 +6,7 @@ import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.event.history.HistoryCommonLoadRpcEvent;
 import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
 import com.fr.swift.log.SwiftLoggers;
@@ -100,10 +101,13 @@ public abstract class AbstractUploadRunnable implements UploadRunnable {
             if (relation.getRelationType() != RelationSourceType.FIELD_RELATION) {
                 for (SegmentKey segmentKey : segmentKeys) {
                     try {
-                        URI src = URI.create(String.format("%s/%s/%s",
-                                Strings.trimSeparator(segmentKey.getAbsoluteUri().getPath() + "/", "/"),
-                                RelationIndexImpl.RELATIONS_KEY,
-                                primary.getId()));
+                        URI src = URI.create(Strings.trimSeparator(
+                                String.format("%s/%s/%s/%s",
+                                        pathService.getSwiftPath(),
+                                        CubeUtil.getSegPath(segmentKey),
+                                        RelationIndexImpl.RELATIONS_KEY,
+                                        primary.getId()
+                                ), "/"));
                         URI dest = URI.create(String.format("%s/%s/%s/%s",
                                 segmentKey.getSwiftSchema().getDir(),
                                 Strings.trimSeparator(segmentKey.getUri().getPath() + "/", "/"),
@@ -118,10 +122,12 @@ public abstract class AbstractUploadRunnable implements UploadRunnable {
             } else {
                 for (SegmentKey segmentKey : segmentKeys) {
                     try {
-                        URI src = URI.create(String.format("%s/field/%s/%s",
-                                Strings.trimSeparator(segmentKey.getAbsoluteUri().getPath() + "/", "/"),
-                                RelationIndexImpl.RELATIONS_KEY,
-                                primary.getId()));
+                        URI src = URI.create(Strings.trimSeparator(
+                                String.format("%s/field/%s/%s",
+                                        CubeUtil.getSegPath(segmentKey),
+                                        RelationIndexImpl.RELATIONS_KEY,
+                                        primary.getId()
+                                ), "/"));
                         URI dest = URI.create(String.format("%s/%s/field/%s/%s",
                                 segmentKey.getSwiftSchema().getDir(),
                                 Strings.trimSeparator(segmentKey.getUri().getPath() + "/", "/"),
