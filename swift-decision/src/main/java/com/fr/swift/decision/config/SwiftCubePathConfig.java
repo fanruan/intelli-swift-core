@@ -22,7 +22,7 @@ import com.fr.transaction.Worker;
 public class SwiftCubePathConfig extends SwiftAbstractSimpleConfig<String> {
     private static SwiftCubePathConfig config = null;
 
-    private static final String BASE_CUBE_PATH = getDefaultPath();
+    private static final String BASE_CUBE_PATH = ContextUtil.getContextPath();
 
     public SwiftCubePathConfig() {
         super(Holders.<String>simple(null));
@@ -69,15 +69,6 @@ public class SwiftCubePathConfig extends SwiftAbstractSimpleConfig<String> {
             return SwiftContext.get().getBean(SwiftCubePathService.class).setSwiftPath(path);
         }
         return false;
-    }
-
-    private static String getDefaultPath() {
-        String classPath = ContextUtil.getClassPath();
-        int idx = classPath.indexOf("WEB-INF");
-        if (idx != -1) {
-            return classPath.substring(0, idx);
-        }
-        return classPath + "/../";
     }
 
     private static boolean isValidPath(String path) {
