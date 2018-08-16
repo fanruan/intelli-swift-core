@@ -1,11 +1,10 @@
 package com.fr.swift.segment.column;
 
-import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.source.ColumnTypeConstants;
 
-import java.util.TreeMap;
+import java.util.Comparator;
 
 /**
  * @author anchore
@@ -22,15 +21,7 @@ public class RealtimeLongColumn extends BaseRealtimeColumn<Long> {
     }
 
     @Override
-    void init() {
-        super.init();
-
-        // 防止未初始化
-        if (c == null) {
-            c = Comparators.asc();
-        }
-        if (valToRows == null) {
-            valToRows = new TreeMap<Long, MutableBitMap>(c);
-        }
+    protected Comparator<Long> getComparator() {
+        return Comparators.asc();
     }
 }
