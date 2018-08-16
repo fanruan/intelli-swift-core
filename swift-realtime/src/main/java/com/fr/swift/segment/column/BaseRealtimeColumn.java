@@ -116,7 +116,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
     private class RealtimeDictColumn implements DictionaryEncodedColumn<V> {
         @Override
         public int size() {
-            return valToRows.size() + 1;
+            return indexAndId.size() + 1;
         }
 
         @Override
@@ -262,7 +262,6 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
     }
 
     private void init() {
-
         BuildConf readConf = new BuildConf(IoType.READ, DataType.REALTIME_COLUMN);
         if (!DISCOVERY.exists(location, readConf)) {
             // 三个视图，映射至内存数据
@@ -294,14 +293,20 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
             return;
         }
 
-        int newIndex = 0;
-        IndexAndId indexAndId = new IndexAndId(lastId + 1);
-        for (Integer id : valToId.values()) {
-            if (id <= lastId) {
-                indexAndId.putIndexAndId(id, newIndex++);
+        synchronized (this) {
+            if (lastId < indexAndId.size()) {
+                return;
             }
+
+            int newIndex = 0;
+            IndexAndId indexAndId = new IndexAndId(lastId + 1);
+            for (Integer id : valToId.values()) {
+                if (id <= lastId) {
+                    indexAndId.putIndexAndId(id, newIndex++);
+                }
+            }
+            this.indexAndId = indexAndId;
         }
-        this.indexAndId = indexAndId;
     }
 
     @Override
