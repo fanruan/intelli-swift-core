@@ -32,7 +32,7 @@
     </modules>
 
     <properties>
-        <fr.version>10.0-RELEASE-SNAPSHOT</fr.version>
+        <fr.version>10.0-FEATURE-SNAPSHOT</fr.version>
         <swift.version>${fr.version}</swift.version>
         <junit.version>4.12</junit.version>
         <easymock.version>3.4</easymock.version>
