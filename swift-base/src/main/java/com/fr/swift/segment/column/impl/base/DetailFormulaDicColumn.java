@@ -106,7 +106,7 @@ public class DetailFormulaDicColumn implements DictionaryEncodedColumn {
 
     @Override
     public Putter putter() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
