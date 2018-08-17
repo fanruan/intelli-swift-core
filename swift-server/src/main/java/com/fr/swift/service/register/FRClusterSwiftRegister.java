@@ -33,7 +33,6 @@ public class FRClusterSwiftRegister extends AbstractSwiftRegister {
         if (ClusterSelector.getInstance().getFactory().isMaster()) {
             LOGGER.info("=====Cluster master!=====");
             ClusterSwiftServerService.getInstance().start();
-
         } else {
             LOGGER.info("=====Cluster slaver!=====");
             clusterServiceManager.registerService(ServiceBeanFactory.getClusterSwiftServiceByNames(swiftProperty.getSwiftServiceNames()));

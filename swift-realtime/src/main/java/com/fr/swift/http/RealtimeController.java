@@ -1,12 +1,12 @@
 package com.fr.swift.http;
 
 import com.fr.stable.StringUtils;
+import com.fr.swift.ClusterNodeService;
 import com.fr.swift.basics.URL;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.core.cluster.SwiftClusterService;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.service.RealtimeService;
 import com.fr.swift.source.DataSource;
@@ -55,7 +55,7 @@ public class RealtimeController {
     }
 
     private URL getMasterURL() {
-        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.get().getBean(SwiftServiceInfoService.class).getServiceInfoByService(SwiftClusterService.SERVICE);
+        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.get().getBean(SwiftServiceInfoService.class).getServiceInfoByService(ClusterNodeService.SERVICE);
         SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
         return UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
     }
