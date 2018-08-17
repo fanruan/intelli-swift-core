@@ -39,4 +39,8 @@ public final class Strings {
         return onlyHasNewSep;
     }
 
+    public static String unifySlash(String s) {
+        return trimSeparator(s, "\\", "/");
+    }
+
 }
