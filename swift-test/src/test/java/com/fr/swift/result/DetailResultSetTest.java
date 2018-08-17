@@ -53,25 +53,13 @@ public class DetailResultSetTest extends TestCase {
                 final int[] index = {0, 0, 2, 1, 0, 1, 2, 0};
                 return new DictionaryEncodedColumn<Integer>() {
                     @Override
-                    public void putSize(int size) {
-                    }
-
-                    @Override
                     public int size() {
                         return keys.size();
                     }
 
                     @Override
-                    public void putGlobalSize(int globalSize) {
-                    }
-
-                    @Override
                     public int globalSize() {
                         return keys.size();
-                    }
-
-                    @Override
-                    public void putValue(int index, Integer val) {
                     }
 
                     @Override
@@ -90,17 +78,8 @@ public class DetailResultSetTest extends TestCase {
                     }
 
                     @Override
-                    public void putIndex(int row, int index) {
-                    }
-
-                    @Override
                     public int getIndexByRow(int row) {
                         return keys.indexOf(intDetail[row]);
-                    }
-
-                    @Override
-                    public void putGlobalIndex(int index, int globalIndex) {
-
                     }
 
                     @Override
@@ -121,6 +100,11 @@ public class DetailResultSetTest extends TestCase {
                     @Override
                     public ColumnTypeConstants.ClassType getType() {
                         return ColumnTypeConstants.ClassType.INTEGER;
+                    }
+
+                    @Override
+                    public Putter<Integer> putter() {
+                        return null;
                     }
 
                     @Override
@@ -160,25 +144,13 @@ public class DetailResultSetTest extends TestCase {
                     int[] index = {0, 1, 2, 1, 2, 1, 2, 0};
 
                     @Override
-                    public void putSize(int size) {
-                    }
-
-                    @Override
                     public int size() {
                         return keys.size();
                     }
 
                     @Override
-                    public void putGlobalSize(int globalSize) {
-                    }
-
-                    @Override
                     public int globalSize() {
                         return keys.size();
-                    }
-
-                    @Override
-                    public void putValue(int index, Long val) {
                     }
 
                     @Override
@@ -197,17 +169,8 @@ public class DetailResultSetTest extends TestCase {
                     }
 
                     @Override
-                    public void putIndex(int row, int index) {
-                    }
-
-                    @Override
                     public int getIndexByRow(int row) {
                         return keys.indexOf(longDetail[row]);
-                    }
-
-                    @Override
-                    public void putGlobalIndex(int index, int globalIndex) {
-
                     }
 
                     @Override
@@ -228,6 +191,11 @@ public class DetailResultSetTest extends TestCase {
                     @Override
                     public ColumnTypeConstants.ClassType getType() {
                         return ColumnTypeConstants.ClassType.LONG;
+                    }
+
+                    @Override
+                    public Putter<Long> putter() {
+                        return null;
                     }
 
                     @Override
@@ -266,25 +234,13 @@ public class DetailResultSetTest extends TestCase {
                     final int[] index = {0, 3, 2, 1, 0, 1, 2, 0};
 
                     @Override
-                    public void putSize(int size) {
-                    }
-
-                    @Override
                     public int size() {
                         return keys.size();
                     }
 
                     @Override
-                    public void putGlobalSize(int globalSize) {
-                    }
-
-                    @Override
                     public int globalSize() {
                         return keys.size();
-                    }
-
-                    @Override
-                    public void putValue(int index, Double val) {
                     }
 
                     @Override
@@ -303,17 +259,8 @@ public class DetailResultSetTest extends TestCase {
                     }
 
                     @Override
-                    public void putIndex(int row, int index) {
-                    }
-
-                    @Override
                     public int getIndexByRow(int row) {
                         return keys.indexOf(doubleDetail[row]);
-                    }
-
-                    @Override
-                    public void putGlobalIndex(int index, int globalIndex) {
-
                     }
 
                     @Override
@@ -334,6 +281,11 @@ public class DetailResultSetTest extends TestCase {
                     @Override
                     public ColumnTypeConstants.ClassType getType() {
                         return ColumnTypeConstants.ClassType.DOUBLE;
+                    }
+
+                    @Override
+                    public Putter<Double> putter() {
+                        return null;
                     }
 
                     @Override
@@ -372,25 +324,13 @@ public class DetailResultSetTest extends TestCase {
                     final int[] index = {0, 1, 2, 1, 2, 1, 0, 2};
 
                     @Override
-                    public void putSize(int size) {
-                    }
-
-                    @Override
                     public int size() {
                         return keys.length;
                     }
 
                     @Override
-                    public void putGlobalSize(int globalSize) {
-                    }
-
-                    @Override
                     public int globalSize() {
                         return keys.length;
-                    }
-
-                    @Override
-                    public void putValue(int index, String val) {
                     }
 
                     @Override
@@ -409,19 +349,9 @@ public class DetailResultSetTest extends TestCase {
                     }
 
                     @Override
-                    public void putIndex(int row, int index) {
-                    }
-
-                    @Override
                     public int getIndexByRow(int row) {
                         return Arrays.asList(keys).indexOf(strDetail[row]);
                     }
-
-                    @Override
-                    public void putGlobalIndex(int index, int globalIndex) {
-
-                    }
-
                     @Override
                     public int getGlobalIndexByIndex(int index) {
                         return 0;
@@ -440,6 +370,11 @@ public class DetailResultSetTest extends TestCase {
                     @Override
                     public ColumnTypeConstants.ClassType getType() {
                         return ColumnTypeConstants.ClassType.STRING;
+                    }
+
+                    @Override
+                    public Putter<String> putter() {
+                        return null;
                     }
 
                     @Override

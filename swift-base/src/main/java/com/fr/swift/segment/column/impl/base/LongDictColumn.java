@@ -15,19 +15,10 @@ import java.util.Comparator;
  * @date 2017/11/11
  */
 public class LongDictColumn extends BaseDictColumn<Long> {
-    private LongWriter keyWriter;
     private LongReader keyReader;
 
     public LongDictColumn(IResourceLocation parent, Comparator<Long> keyComparator) {
         super(parent, keyComparator);
-    }
-
-    private void initKeyWriter() {
-        if (keyWriter != null) {
-            return;
-        }
-        IResourceLocation keyLocation = parent.buildChildLocation(KEY);
-        keyWriter = DISCOVERY.getWriter(keyLocation, new BuildConf(IoType.WRITE, DataType.LONG));
     }
 
     private void initKeyReader() {
@@ -53,30 +44,43 @@ public class LongDictColumn extends BaseDictColumn<Long> {
     }
 
     @Override
-    public void putValue(int index, Long val) {
-        initKeyWriter();
-        keyWriter.put(index, val);
-    }
-
-    @Override
-    public void flush() {
-        super.flush();
-        if (keyWriter != null) {
-            keyWriter.flush();
-        }
-    }
-
-    @Override
     public void release() {
         super.release();
-        if (keyWriter != null) {
-            keyWriter.release();
-            keyWriter = null;
-        }
         if (keyReader != null) {
             keyReader.release();
             keyReader = null;
         }
     }
 
+    @Override
+    public Putter<Long> putter() {
+        return putter != null ? putter : (putter = new LongPutter());
+    }
+
+    class LongPutter extends BasePutter {
+        private LongWriter keyWriter;
+
+        private void initKeyWriter() {
+            if (keyWriter != null) {
+                return;
+            }
+            IResourceLocation keyLocation = parent.buildChildLocation(KEY);
+            keyWriter = DISCOVERY.getWriter(keyLocation, new BuildConf(IoType.WRITE, DataType.LONG));
+        }
+
+        @Override
+        public void putValue(int index, Long val) {
+            initKeyWriter();
+            keyWriter.put(index, val);
+        }
+
+        @Override
+        public void release() {
+            super.release();
+            if (keyWriter != null) {
+                keyWriter.release();
+                keyWriter = null;
+            }
+        }
+    }
 }

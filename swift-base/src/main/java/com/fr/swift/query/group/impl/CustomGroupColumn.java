@@ -72,27 +72,12 @@ class CustomGroupColumn<Base, Derive> implements Column<Derive> {
         DictionaryEncodedColumn<Base> originDict = originColumn.getDictionaryEncodedColumn();
 
         @Override
-        public void putSize(int size) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
         public int size() {
             return groupRule.newSize();
         }
 
         @Override
-        public void putGlobalSize(int globalSize) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
         public int globalSize() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void putValue(int index, Derive val) {
             throw new UnsupportedOperationException();
         }
 
@@ -112,20 +97,10 @@ class CustomGroupColumn<Base, Derive> implements Column<Derive> {
         }
 
         @Override
-        public void putIndex(int row, int index) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
         public int getIndexByRow(int row) {
             int originIndex = originDict.getIndexByRow(row);
             // fixme 一个值可以在多个分组 nb
             return groupRule.reverseMap(originIndex).get(0);
-        }
-
-        @Override
-        public void putGlobalIndex(int index, int globalIndex) {
-            throw new UnsupportedOperationException();
         }
 
         @Override
@@ -151,6 +126,11 @@ class CustomGroupColumn<Base, Derive> implements Column<Derive> {
         @Override
         public ColumnTypeConstants.ClassType getType() {
             return originDict.getType();
+        }
+
+        @Override
+        public Putter<Derive> putter() {
+            return null;
         }
 
         @Override

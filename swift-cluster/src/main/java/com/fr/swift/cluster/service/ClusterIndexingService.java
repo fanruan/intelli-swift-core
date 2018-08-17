@@ -12,6 +12,7 @@ import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.event.global.TaskDoneRpcEvent;
 import com.fr.swift.event.history.HistoryCommonLoadRpcEvent;
@@ -182,13 +183,16 @@ public class ClusterIndexingService extends AbstractSwiftService implements Inde
                 if (relation.getRelationType() != RelationSourceType.FIELD_RELATION) {
                     for (SegmentKey segmentKey : segmentKeys) {
                         try {
-                            URI src = URI.create(String.format("%s/%s/%s",
-                                    Strings.trimSeparator(segmentKey.getAbsoluteUri().getPath() + "/", "/"),
-                                    RelationIndexImpl.RELATIONS_KEY,
-                                    primary.getId()));
+                            URI src = URI.create(Strings.unifySlash(
+                                    String.format("%s/%s/%s/%s",
+                                            pathService.getSwiftPath(),
+                                            CubeUtil.getSegPath(segmentKey),
+                                            RelationIndexImpl.RELATIONS_KEY,
+                                            primary.getId()
+                                    )));
                             URI dest = URI.create(String.format("%s/%s/%s/%s",
                                     segmentKey.getSwiftSchema().getDir(),
-                                    Strings.trimSeparator(segmentKey.getUri().getPath() + "/", "/"),
+                                    Strings.unifySlash(segmentKey.getUri().getPath() + "/"),
                                     RelationIndexImpl.RELATIONS_KEY,
                                     primary.getId()));
                             upload(src, dest);
@@ -200,13 +204,15 @@ public class ClusterIndexingService extends AbstractSwiftService implements Inde
                 } else {
                     for (SegmentKey segmentKey : segmentKeys) {
                         try {
-                            URI src = URI.create(String.format("%s/field/%s/%s",
-                                    Strings.trimSeparator(segmentKey.getAbsoluteUri().getPath() + "/", "/"),
-                                    RelationIndexImpl.RELATIONS_KEY,
-                                    primary.getId()));
+                            URI src = URI.create(Strings.unifySlash(
+                                    String.format("%s/field/%s/%s",
+                                            CubeUtil.getSegPath(segmentKey),
+                                            RelationIndexImpl.RELATIONS_KEY,
+                                            primary.getId()
+                                    )));
                             URI dest = URI.create(String.format("%s/%s/field/%s/%s",
                                     segmentKey.getSwiftSchema().getDir(),
-                                    Strings.trimSeparator(segmentKey.getUri().getPath() + "/", "/"),
+                                    Strings.unifySlash(segmentKey.getUri().getPath() + "/"),
                                     RelationIndexImpl.RELATIONS_KEY,
                                     primary.getId()));
                             upload(src, dest);

@@ -1,8 +1,6 @@
 package com.fr.swift.cube.io.impl.fineio.connector;
 
 import com.fineio.io.file.FileBlock;
-import com.fineio.storage.AbstractConnector;
-import com.fr.swift.util.Strings;
 import com.fr.third.net.jpountz.lz4.LZ4BlockInputStream;
 import com.fr.third.net.jpountz.lz4.LZ4BlockOutputStream;
 import com.fr.third.net.jpountz.lz4.LZ4Compressor;
@@ -17,31 +15,21 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 
 /**
  * @author yee
  * @date 2018/8/9
  */
-public class Lz4Connector extends AbstractConnector {
-        private static final int BLOCK_SIZE = 32 * 1024 * 1024;
-    private URI parentURI;
+public class Lz4Connector extends BaseConnector {
+    private static final int BLOCK_SIZE = 32 * 1024 * 1024;
 
     private Lz4Connector(String path) {
-        initParentPath(path);
+        super(path);
     }
 
     public static Lz4Connector newInstance(String path) {
         return new Lz4Connector(path);
     }
-
-    private void initParentPath(String path) {
-        path = Strings.trimSeparator(path, "\\", "/");
-        path = "/" + path + "/";
-        path = Strings.trimSeparator(path, "/");
-        parentURI = URI.create(path);
-    }
-
 
     @Override
     public InputStream read(FileBlock block) throws IOException {
@@ -92,10 +80,6 @@ public class Lz4Connector extends AbstractConnector {
         } else {
             return false;
         }
-    }
-
-    private File getFolderPath(FileBlock block) {
-        return new File(parentURI.resolve(block.getParentUri()).getPath());
     }
 
     private File getPath(FileBlock block, boolean mkdir) {
