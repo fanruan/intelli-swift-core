@@ -5,18 +5,10 @@
     <parent>
         <groupId>com.fr.intelligence</groupId>
         <artifactId>fine-swift</artifactId>
-        <version>10.0-RELEASE-SNAPSHOT</version>
+        <version>10.0-FEATURE-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>swift-base</artifactId>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.lz4</groupId>
-            <artifactId>lz4-java</artifactId>
-            <version>1.4.1</version>
-        </dependency>
-    </dependencies>
 
 </project>
