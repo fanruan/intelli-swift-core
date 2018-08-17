@@ -12,7 +12,7 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.Source;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.util.Optional;
+import com.fr.third.guava.base.Optional;
 
 /**
  * @author anchore
@@ -37,7 +37,7 @@ public class CubeUtil {
     }
 
     public static String getRealtimeSegPath(DataSource dataSource, int segOrder) {
-        return getSegPath(dataSource.getMetadata().getSwiftSchema(), Optional.<Integer>empty(), dataSource.getSourceKey(), segOrder);
+        return getSegPath(dataSource.getMetadata().getSwiftSchema(), Optional.<Integer>absent(), dataSource.getSourceKey(), segOrder);
     }
 
     public static String getHistorySegPath(DataSource dataSource, int segOrder) {
@@ -51,7 +51,7 @@ public class CubeUtil {
     public static String getSegPath(SegmentKey segKey) {
         SourceKey tableKey = segKey.getTable();
         Optional<Integer> currentDir = segKey.getStoreType() == StoreType.MEMORY ?
-                Optional.<Integer>empty() :
+                Optional.<Integer>absent() :
                 Optional.of(getCurrentDir(tableKey));
         return getSegPath(segKey.getSwiftSchema(), currentDir, tableKey, segKey.getOrder());
     }
