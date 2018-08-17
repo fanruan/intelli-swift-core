@@ -183,16 +183,16 @@ public class ClusterIndexingService extends AbstractSwiftService implements Inde
                 if (relation.getRelationType() != RelationSourceType.FIELD_RELATION) {
                     for (SegmentKey segmentKey : segmentKeys) {
                         try {
-                            URI src = URI.create(Strings.trimSeparator(
+                            URI src = URI.create(Strings.unifySlash(
                                     String.format("%s/%s/%s/%s",
                                             pathService.getSwiftPath(),
                                             CubeUtil.getSegPath(segmentKey),
                                             RelationIndexImpl.RELATIONS_KEY,
                                             primary.getId()
-                                    ), "/"));
+                                    )));
                             URI dest = URI.create(String.format("%s/%s/%s/%s",
                                     segmentKey.getSwiftSchema().getDir(),
-                                    Strings.trimSeparator(segmentKey.getUri().getPath() + "/", "/"),
+                                    Strings.unifySlash(segmentKey.getUri().getPath() + "/"),
                                     RelationIndexImpl.RELATIONS_KEY,
                                     primary.getId()));
                             upload(src, dest);
@@ -204,15 +204,15 @@ public class ClusterIndexingService extends AbstractSwiftService implements Inde
                 } else {
                     for (SegmentKey segmentKey : segmentKeys) {
                         try {
-                            URI src = URI.create(Strings.trimSeparator(
+                            URI src = URI.create(Strings.unifySlash(
                                     String.format("%s/field/%s/%s",
                                             CubeUtil.getSegPath(segmentKey),
                                             RelationIndexImpl.RELATIONS_KEY,
                                             primary.getId()
-                                    ), "/"));
+                                    )));
                             URI dest = URI.create(String.format("%s/%s/field/%s/%s",
                                     segmentKey.getSwiftSchema().getDir(),
-                                    Strings.trimSeparator(segmentKey.getUri().getPath() + "/", "/"),
+                                    Strings.unifySlash(segmentKey.getUri().getPath() + "/"),
                                     RelationIndexImpl.RELATIONS_KEY,
                                     primary.getId()));
                             upload(src, dest);
