@@ -32,7 +32,6 @@ import com.fr.third.springframework.beans.factory.annotation.Qualifier;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -79,7 +78,7 @@ public class ClusterHistoryService extends AbstractSwiftService implements Histo
 
     @Override
     @RpcMethod(methodName = "load")
-    public void load(Map<String, Set<URI>> remoteUris, boolean replace) throws IOException {
+    public void load(Map<String, Set<String>> remoteUris, boolean replace) throws IOException {
         historyService.load(remoteUris, replace);
     }
 

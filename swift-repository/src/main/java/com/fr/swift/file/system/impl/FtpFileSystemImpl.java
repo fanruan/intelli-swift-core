@@ -16,7 +16,6 @@ import com.fr.swift.util.Strings;
 import com.fr.third.org.apache.commons.pool2.ObjectPool;
 
 import java.io.InputStream;
-import java.net.URI;
 
 /**
  * @author yee
@@ -26,13 +25,13 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfig> {
 
     private ObjectPool<FineFTP> clientPool;
     private BaseRemoteSystemPool<FtpFileSystemImpl> systemPool;
-    private URI rootURI;
+    private String rootURI;
 
-    public FtpFileSystemImpl(FtpRepositoryConfig config, URI uri, ObjectPool<FineFTP> clientPool) {
+    public FtpFileSystemImpl(FtpRepositoryConfig config, String uri, ObjectPool<FineFTP> clientPool) {
         super(config, uri);
         this.systemPool = (BaseRemoteSystemPool<FtpFileSystemImpl>) RemotePoolCreator.creator().getPool(config);
         this.clientPool = clientPool;
-        rootURI = URI.create(Strings.trimSeparator(config.getRootPath() + "/", "/"));
+        rootURI = Strings.trimSeparator(config.getRootPath() + "/", "/");
     }
 
     private FineFTP acquireClient() {
@@ -56,7 +55,7 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfig> {
     protected SwiftFileSystem[] list() throws SwiftFileException {
         FineFTP ftp = acquireClient();
         try {
-            String[] children = FTPUtils.list(ftp, resolve(rootURI, getResourceURI().getPath()).getPath(), new Filter<String>() {
+            String[] children = FTPUtils.list(ftp, resolve(rootURI, getResourceURI()), new Filter<String>() {
                 @Override
                 public boolean accept(String s) {
                     return true;
@@ -79,10 +78,10 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfig> {
     }
 
     @Override
-    public void write(URI remote, InputStream inputStream) throws SwiftFileException {
+    public void write(String remote, InputStream inputStream) throws SwiftFileException {
         FineFTP ftp = acquireClient();
         try {
-            FTPUtils.write(ftp, resolve(rootURI, remote.getPath()).getPath(), inputStream);
+            FTPUtils.write(ftp, resolve(rootURI, remote), inputStream);
         } catch (Exception e) {
             throw new SwiftFileException(e);
         } finally {
@@ -91,7 +90,7 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfig> {
     }
 
     @Override
-    public SwiftFileSystem read(URI remote) throws SwiftFileException {
+    public SwiftFileSystem read(String remote) throws SwiftFileException {
         SwiftFileSystem fileSystem;
         if (ComparatorUtils.equals(remote, getResourceURI())) {
             fileSystem = this;
@@ -101,7 +100,7 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfig> {
         if (fileSystem.isExists()) {
             return fileSystem;
         }
-        throw new SwiftFileException(String.format("File path '%s' not exists!", remote.getPath()));
+        throw new SwiftFileException(String.format("File path '%s' not exists!", remote));
     }
 
     @Override
@@ -110,10 +109,10 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfig> {
     }
 
     @Override
-    public boolean remove(URI remote) throws SwiftFileException {
+    public boolean remove(String remote) throws SwiftFileException {
         FineFTP ftp = acquireClient();
         try {
-            return FTPUtils.delete(ftp, resolve(rootURI, remote.getPath()).getPath());
+            return FTPUtils.delete(ftp, resolve(rootURI, remote));
         } catch (Exception e) {
             throw new SwiftFileException(e);
         } finally {
@@ -122,10 +121,10 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfig> {
     }
 
     @Override
-    public boolean renameTo(URI src, URI dest) throws SwiftFileException {
+    public boolean renameTo(String src, String dest) throws SwiftFileException {
         FineFTP ftp = acquireClient();
         try {
-            return FTPUtils.rename(ftp, resolve(rootURI, src.getPath()).getPath(), resolve(rootURI, dest.getPath()).getPath());
+            return FTPUtils.rename(ftp, resolve(rootURI, src), resolve(rootURI, dest));
         } catch (Exception e) {
             throw new SwiftFileException(e);
         } finally {
@@ -134,7 +133,7 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfig> {
     }
 
     @Override
-    public boolean copy(URI src, URI dest) {
+    public boolean copy(String src, String dest) {
         return false;
     }
 
@@ -142,7 +141,7 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfig> {
     public boolean isExists() {
         FineFTP ftp = acquireClient();
         try {
-            return FTPUtils.exist(ftp, resolve(rootURI, getResourceURI().getPath()).getPath());
+            return FTPUtils.exist(ftp, resolve(rootURI, getResourceURI()));
         } finally {
             returnClient(ftp);
         }
@@ -152,7 +151,7 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfig> {
     public boolean isDirectory() {
         FineFTP ftp = acquireClient();
         try {
-            return FTPUtils.isDirectory(ftp, resolve(rootURI, getResourceURI().getPath()).getPath());
+            return FTPUtils.isDirectory(ftp, resolve(rootURI, getResourceURI()));
         } finally {
             returnClient(ftp);
         }
@@ -162,7 +161,7 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfig> {
     public InputStream toStream() throws SwiftFileException {
         FineFTP ftp = acquireClient();
         try {
-            return FTPUtils.read(ftp, resolve(rootURI, getResourceURI().getPath()).getPath());
+            return FTPUtils.read(ftp, resolve(rootURI, getResourceURI()));
         } catch (Exception e) {
             throw new SwiftFileException(e);
         } finally {
@@ -172,14 +171,14 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfig> {
 
     @Override
     public String getResourceName() {
-        return ResourceIOUtils.getName(getResourceURI().getPath());
+        return ResourceIOUtils.getName(getResourceURI());
     }
 
     @Override
     public void mkdirs() {
         FineFTP ftp = acquireClient();
         try {
-            FTPUtils.createDirectory(ftp, resolve(rootURI, getResourceURI().getPath()).getPath());
+            FTPUtils.createDirectory(ftp, resolve(rootURI, getResourceURI()));
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         } finally {
@@ -194,13 +193,5 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfig> {
         } catch (Exception e) {
             throw new SwiftFileException(e);
         }
-    }
-
-    private URI resolve(URI uri, String resolve) {
-        String path = uri.getPath();
-        if (path.endsWith("/")) {
-            return uri.resolve(resolve);
-        }
-        return URI.create(path + "/").resolve(resolve);
     }
 }

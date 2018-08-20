@@ -28,7 +28,6 @@ import com.fr.swift.util.FileUtil;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -87,12 +86,12 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     }
 
     @Override
-    public void load(Map<String, Set<URI>> remoteUris, boolean replace) throws IOException {
+    public void load(Map<String, Set<String>> remoteUris, boolean replace) throws IOException {
         String path = pathService.getSwiftPath();
         SwiftRepository repository = SwiftRepositoryManager.getManager().currentRepo();
         if (null != remoteUris && !remoteUris.isEmpty()) {
             for (String sourceKey : remoteUris.keySet()) {
-                Set<URI> sets = remoteUris.get(sourceKey);
+                Set<String> sets = remoteUris.get(sourceKey);
                 if (!sets.isEmpty()) {
                     SwiftMetaData metaData = metaDataService.getMetaDataByKey(sourceKey);
                     int tmp = 0;
@@ -109,10 +108,10 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                             tablePathService.saveOrUpdate(entity);
                         }
                     }
-                    for (URI uri : sets) {
-                        String cubePath = String.format("%s/%s/%d/%s", path, metaData.getSwiftSchema().getDir(), tmp, uri.getPath());
-                        String remotePath = String.format("%s/%s", metaData.getSwiftSchema().getDir(), uri.getPath());
-                        repository.copyFromRemote(URI.create(remotePath), URI.create(cubePath));
+                    for (String uri : sets) {
+                        String cubePath = String.format("%s/%s/%d/%s", path, metaData.getSwiftSchema().getDir(), tmp, uri);
+                        String remotePath = String.format("%s/%s", metaData.getSwiftSchema().getDir(), uri);
+                        repository.copyFromRemote(remotePath, cubePath);
                     }
                     if (replace) {
                         entity = tablePathService.get(sourceKey);

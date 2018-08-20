@@ -3,9 +3,9 @@ package com.fr.swift.file.system;
 import com.fr.io.utils.ResourceIOUtils;
 import com.fr.swift.config.bean.SwiftFileSystemConfig;
 import com.fr.swift.file.exception.SwiftFileException;
+import com.fr.swift.util.Strings;
 
 import java.io.InputStream;
-import java.net.URI;
 
 /**
  * @author yee
@@ -13,9 +13,9 @@ import java.net.URI;
  */
 public abstract class AbstractFileSystem<Config extends SwiftFileSystemConfig> implements SwiftFileSystem {
     protected Config config;
-    private URI uri;
+    private String uri;
 
-    public AbstractFileSystem(Config config, URI uri) {
+    public AbstractFileSystem(Config config, String uri) {
         this.config = config;
         this.uri = uri;
     }
@@ -23,7 +23,7 @@ public abstract class AbstractFileSystem<Config extends SwiftFileSystemConfig> i
     @Override
     public SwiftFileSystem[] listFiles() throws SwiftFileException {
         if (!isDirectory()) {
-            throw new SwiftFileException(String.format("File path '%s' is not directory!", uri.getPath()));
+            throw new SwiftFileException(String.format("File path '%s' is not directory!", uri));
         }
         return list();
     }
@@ -46,25 +46,29 @@ public abstract class AbstractFileSystem<Config extends SwiftFileSystemConfig> i
     }
 
     @Override
-    public boolean renameTo(URI dest) throws SwiftFileException {
+    public boolean renameTo(String dest) throws SwiftFileException {
         return renameTo(uri, dest);
     }
 
     @Override
-    public boolean copy(URI dest) throws SwiftFileException {
+    public boolean copy(String dest) throws SwiftFileException {
         return copy(uri, dest);
     }
 
     @Override
-    public URI getResourceURI() {
+    public String getResourceURI() {
         return uri;
     }
 
-    protected URI getParentURI() {
-        return URI.create(ResourceIOUtils.getParent(uri.getPath()));
+    protected String getParentURI() {
+        return ResourceIOUtils.getParent(uri);
     }
 
     public Config getConfig() {
         return config;
+    }
+
+    protected String resolve(String uri, String resolve) {
+        return Strings.trimSeparator(uri + "/" + resolve, "/");
     }
 }

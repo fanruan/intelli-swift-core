@@ -33,7 +33,6 @@ import com.fr.third.springframework.web.bind.annotation.RequestMethod;
 import com.fr.third.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -76,12 +75,12 @@ public class TestIndexingController {
 
     @RequestMapping(value = "/download", method = RequestMethod.GET)
     public void download(String remote, String local) throws IOException {
-        SwiftRepositoryManager.getManager().currentRepo().copyFromRemote(URI.create(remote), URI.create(local));
+        SwiftRepositoryManager.getManager().currentRepo().copyFromRemote(remote, local);
     }
 
     @RequestMapping(value = "/upload", method = RequestMethod.GET)
     public void upload(String src, String dest) throws IOException {
-        SwiftRepositoryManager.getManager().currentRepo().copyToRemote(URI.create(src), URI.create(dest));
+        SwiftRepositoryManager.getManager().currentRepo().copyToRemote(src, dest);
     }
 
     @RequestMapping(value = "/load", method = RequestMethod.GET)
