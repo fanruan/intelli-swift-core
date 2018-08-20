@@ -7,9 +7,12 @@ import com.fr.swift.cube.io.Types.DataType;
 import com.fr.swift.cube.io.Types.IoType;
 import com.fr.swift.cube.io.Types.WriteType;
 import com.fr.swift.cube.io.input.IntReader;
+import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.IntWriter;
+import com.fr.swift.cube.io.output.Writer;
 import com.fr.swift.util.ArrayLookupHelper;
+import com.fr.swift.util.IoUtil;
 
 import java.util.Comparator;
 
@@ -17,7 +20,7 @@ import java.util.Comparator;
  * @author anchore
  * @date 2017/11/7
  */
-abstract class BaseDictColumn<T> extends AbstractDictColumn<T> {
+abstract class BaseDictColumn<T, R extends Reader> extends AbstractDictColumn<T> {
     static final String KEY = "dict_key";
 
     private static final String INDEX = "dict_index";
@@ -29,6 +32,8 @@ abstract class BaseDictColumn<T> extends AbstractDictColumn<T> {
     static final IResourceDiscovery DISCOVERY = ResourceDiscovery.getInstance();
 
     IResourceLocation parent;
+
+    R keyReader;
 
     private IntReader sizeReader;
 
@@ -117,25 +122,24 @@ abstract class BaseDictColumn<T> extends AbstractDictColumn<T> {
     }
 
     @Override
+    public boolean isReadable() {
+        initSizeReader();
+        boolean readable = sizeReader.isReadable();
+        IoUtil.release(sizeReader);
+        sizeReader = null;
+        return readable;
+    }
+
+    @Override
     public void release() {
         putter.release();
 
-        if (sizeReader != null) {
-            sizeReader.release();
-            sizeReader = null;
-        }
-        if (indexReader != null) {
-            indexReader.release();
-            indexReader = null;
-        }
-        if (globalSizeReader != null) {
-            globalSizeReader.release();
-            globalSizeReader = null;
-        }
-        if (globalIndexReader != null) {
-            globalIndexReader.release();
-            globalIndexReader = null;
-        }
+        IoUtil.release(keyReader, sizeReader, indexReader, globalSizeReader, globalIndexReader);
+        keyReader = null;
+        sizeReader = null;
+        indexReader = null;
+        globalSizeReader = null;
+        globalIndexReader = null;
     }
 
     private ArrayLookupHelper.Lookup<T> lookup = new ArrayLookupHelper.Lookup<T>() {
@@ -160,7 +164,9 @@ abstract class BaseDictColumn<T> extends AbstractDictColumn<T> {
         }
     };
 
-    abstract class BasePutter implements Putter<T> {
+    abstract class BasePutter<W extends Writer> implements Putter<T> {
+        W keyWriter;
+
         private IntWriter sizeWriter;
 
         private IntWriter indexWriter;
@@ -227,22 +233,12 @@ abstract class BaseDictColumn<T> extends AbstractDictColumn<T> {
 
         @Override
         public void release() {
-            if (sizeWriter != null) {
-                sizeWriter.release();
-                sizeWriter = null;
-            }
-            if (indexWriter != null) {
-                indexWriter.release();
-                indexWriter = null;
-            }
-            if (globalSizeWriter != null) {
-                globalSizeWriter.release();
-                globalSizeWriter = null;
-            }
-            if (globalIndexWriter != null) {
-                globalIndexWriter.release();
-                globalIndexWriter = null;
-            }
+            IoUtil.release(keyWriter, sizeWriter, indexWriter, globalSizeWriter, globalIndexWriter);
+            keyWriter = null;
+            sizeWriter = null;
+            indexWriter = null;
+            globalSizeWriter = null;
+            globalIndexWriter = null;
         }
     }
 }

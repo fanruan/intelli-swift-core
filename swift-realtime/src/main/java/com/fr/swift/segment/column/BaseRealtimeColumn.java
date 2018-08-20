@@ -89,6 +89,11 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
         }
 
         @Override
+        public boolean isReadable() {
+            return detail != null && detail.isReadable();
+        }
+
+        @Override
         public int getInt(int pos) {
             return (Integer) get(pos);
         }
@@ -191,6 +196,11 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
 
         @Override
         public void flush() {
+        }
+
+        @Override
+        public boolean isReadable() {
+            return detail != null && detail.isReadable();
         }
     }
 

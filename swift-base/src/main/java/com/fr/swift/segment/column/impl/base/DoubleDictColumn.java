@@ -14,9 +14,7 @@ import java.util.Comparator;
  * @author anchore
  * @date 2017/11/11
  */
-public class DoubleDictColumn extends BaseDictColumn<Double> {
-    private DoubleReader keyReader;
-
+public class DoubleDictColumn extends BaseDictColumn<Double, DoubleReader> {
     public DoubleDictColumn(IResourceLocation parent, Comparator<Double> keyComparator) {
         super(parent, keyComparator);
     }
@@ -40,15 +38,6 @@ public class DoubleDictColumn extends BaseDictColumn<Double> {
     }
 
     @Override
-    public void release() {
-        super.release();
-        if (keyReader != null) {
-            keyReader.release();
-            keyReader = null;
-        }
-    }
-
-    @Override
     public ColumnTypeConstants.ClassType getType() {
         return ColumnTypeConstants.ClassType.DOUBLE;
     }
@@ -58,9 +47,7 @@ public class DoubleDictColumn extends BaseDictColumn<Double> {
         return putter != null ? putter : (putter = new DoublePutter());
     }
 
-    class DoublePutter extends BasePutter {
-        private DoubleWriter keyWriter;
-
+    class DoublePutter extends BasePutter<DoubleWriter> {
         private void initKeyWriter() {
             if (keyWriter != null) {
                 return;
@@ -73,15 +60,6 @@ public class DoubleDictColumn extends BaseDictColumn<Double> {
         public void putValue(int index, Double val) {
             initKeyWriter();
             keyWriter.put(index, val);
-        }
-
-        @Override
-        public void release() {
-            super.release();
-            if (keyWriter != null) {
-                keyWriter.release();
-                keyWriter = null;
-            }
         }
     }
 }

@@ -50,7 +50,7 @@ public abstract class BaseSegment implements Segment {
     protected IResourceLocation location;
 
     private IntWriter rowCountWriter;
-    private IntReader rowCountReader;
+    IntReader rowCountReader;
 
     private BitMapWriter bitMapWriter;
     private BitMapReader bitMapReader;
@@ -186,13 +186,15 @@ public abstract class BaseSegment implements Segment {
     @Override
     public boolean isReadable() {
         initRowCountReader();
-        if (!rowCountReader.isReadable()) {
-            return false;
-        }
+        boolean rowCountReadable = rowCountReader.isReadable();
         if (isHistory()) {
             IoUtil.release(rowCountReader);
         }
         rowCountReader = null;
+        if (!rowCountReadable) {
+            return false;
+        }
+
         initBitMapReader();
         boolean readable = bitMapReader.isReadable();
         if (isHistory()) {
@@ -214,22 +216,11 @@ public abstract class BaseSegment implements Segment {
 
     @Override
     public void release() {
-        if (rowCountWriter != null) {
-            rowCountWriter.release();
-            rowCountWriter = null;
-        }
-        if (rowCountReader != null) {
-            rowCountReader.release();
-            rowCountReader = null;
-        }
-        if (bitMapWriter != null) {
-            bitMapWriter.release();
-            bitMapWriter = null;
-        }
-        if (bitMapReader != null) {
-            bitMapReader.release();
-            bitMapReader = null;
-        }
+        IoUtil.release(rowCountWriter, rowCountReader, bitMapWriter, bitMapReader);
+        rowCountWriter = null;
+        rowCountReader = null;
+        bitMapWriter = null;
+        bitMapReader = null;
     }
 
     private Column createRelationColumn(ColumnKey key) {

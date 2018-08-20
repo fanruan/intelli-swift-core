@@ -32,8 +32,10 @@ public class IoUtil {
     }
 
     public static void release(Releasable... releasables) {
-        for (Releasable releasable : releasables) {
-            release(releasable);
+        if (releasables != null) {
+            for (Releasable releasable : releasables) {
+                release(releasable);
+            }
         }
     }
 

@@ -14,9 +14,7 @@ import java.util.Comparator;
  * @author anchore
  * @date 2017/11/11
  */
-public class LongDictColumn extends BaseDictColumn<Long> {
-    private LongReader keyReader;
-
+public class LongDictColumn extends BaseDictColumn<Long, LongReader> {
     public LongDictColumn(IResourceLocation parent, Comparator<Long> keyComparator) {
         super(parent, keyComparator);
     }
@@ -44,22 +42,11 @@ public class LongDictColumn extends BaseDictColumn<Long> {
     }
 
     @Override
-    public void release() {
-        super.release();
-        if (keyReader != null) {
-            keyReader.release();
-            keyReader = null;
-        }
-    }
-
-    @Override
     public Putter<Long> putter() {
         return putter != null ? putter : (putter = new LongPutter());
     }
 
-    class LongPutter extends BasePutter {
-        private LongWriter keyWriter;
-
+    class LongPutter extends BasePutter<LongWriter> {
         private void initKeyWriter() {
             if (keyWriter != null) {
                 return;
@@ -72,15 +59,6 @@ public class LongDictColumn extends BaseDictColumn<Long> {
         public void putValue(int index, Long val) {
             initKeyWriter();
             keyWriter.put(index, val);
-        }
-
-        @Override
-        public void release() {
-            super.release();
-            if (keyWriter != null) {
-                keyWriter.release();
-                keyWriter = null;
-            }
         }
     }
 }
