@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>swift-redis</artifactId>
+    <version>${swift.version}</version>
 
     <dependencies>
         <dependency>
