@@ -51,7 +51,7 @@ public class SwiftMetaDataUtils {
 
             @Override
             public String getColumnName(int index) {
-                return columnNames.get(index);
+                return columnNames.get(index - 1);
             }
 
             @Override
