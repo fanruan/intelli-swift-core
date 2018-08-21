@@ -38,6 +38,11 @@ public interface IResourceDiscovery extends Clearable {
 
     Map<String, MemIo> removeCubeResource(String basePath);
 
+    /**
+     * 按条件移除io
+     *
+     * @param predicate 会传入 schema/table/seg/column/...
+     */
     void removeIf(Predicate<String> predicate);
 
     Date getLastUpdateTime(SourceKey sourceKey);

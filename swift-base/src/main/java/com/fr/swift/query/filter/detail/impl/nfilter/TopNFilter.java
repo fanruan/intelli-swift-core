@@ -8,7 +8,7 @@ import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.iterator.IntListRowTraversal;
 import com.fr.swift.structure.iterator.RowTraversal;
-import com.fr.swift.util.Util;
+import com.fr.swift.util.Assert;
 
 /**
  * 取字典排序中最大的N个
@@ -19,7 +19,7 @@ public class TopNFilter extends AbstractNFilter {
     private int topN;
 
     public TopNFilter(int topN, Column column) {
-        Util.requireGreaterThanZero(topN);
+        Assert.isTrue(topN > 0);
         this.topN = topN;
         this.column = column;
     }

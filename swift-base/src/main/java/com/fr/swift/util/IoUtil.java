@@ -42,7 +42,7 @@ public class IoUtil {
     public static void release(MappedByteBuffer buf) {
         if (buf != null) {
             buf.force();
-            release(buf);
+            release((ByteBuffer) buf);
         }
     }
 

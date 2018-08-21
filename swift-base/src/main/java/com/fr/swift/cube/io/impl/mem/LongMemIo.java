@@ -1,7 +1,6 @@
 package com.fr.swift.cube.io.impl.mem;
 
-import com.fr.swift.cube.io.input.LongReader;
-import com.fr.swift.cube.io.output.LongWriter;
+import com.fr.swift.io.LongIo;
 import com.fr.swift.util.Crasher;
 
 import java.util.Arrays;
@@ -10,7 +9,7 @@ import java.util.Arrays;
  * @author anchore
  * @date 2017/11/23
  */
-public class LongMemIo extends BaseMemIo implements LongReader, LongWriter {
+public class LongMemIo extends BaseMemIo implements LongIo {
     private long[] mem;
 
     public LongMemIo() {

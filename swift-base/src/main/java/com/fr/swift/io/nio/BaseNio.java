@@ -23,6 +23,6 @@ abstract class BaseNio implements Io {
             return false;
         }
         String[] children = f.list();
-        return !Util.isEmpty(children) && new File(children[0]).length() > 0;
+        return !Util.isEmpty(children) && new File(f, children[0]).length() > 0;
     }
 }

@@ -39,6 +39,7 @@ import java.util.List;
  * @description 增量更新后realtime segment合并。
  * @since Advanced FineBI Analysis 1.0
  */
+@Deprecated
 public class RealtimeMerger implements Merger {
     protected static final SwiftLogger LOGGER = SwiftLoggers.getLogger(RealtimeMerger.class);
 

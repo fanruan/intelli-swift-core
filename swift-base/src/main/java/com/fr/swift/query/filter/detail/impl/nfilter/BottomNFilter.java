@@ -8,7 +8,7 @@ import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.iterator.IntListRowTraversal;
 import com.fr.swift.structure.iterator.RowTraversal;
-import com.fr.swift.util.Util;
+import com.fr.swift.util.Assert;
 
 /**
  * 取字典排序最小的N个
@@ -19,7 +19,7 @@ public class BottomNFilter extends AbstractNFilter {
     private int bottomN;
 
     public BottomNFilter(int bottomN, Column column) {
-        Util.requireGreaterThanZero(bottomN);
+        Assert.isTrue(bottomN > 0);
         this.bottomN = bottomN;
         this.column = column;
     }

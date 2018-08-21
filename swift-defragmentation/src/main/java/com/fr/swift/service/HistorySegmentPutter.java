@@ -89,7 +89,7 @@ public class HistorySegmentPutter implements Runnable {
             ResourceDiscovery.getInstance().removeIf(new Predicate<String>() {
                 @Override
                 public boolean test(String s) {
-                    return s.contains(realtimeSegKey.getUri().getPath());
+                    return s.contains(CubeUtil.getSegPath(realtimeSegKey));
                 }
             });
             FileUtil.delete(CubeUtil.getAbsoluteSegPath(realtimeSegKey).replace(swiftSchema.getDir(), swiftSchema.getBackupDir()));

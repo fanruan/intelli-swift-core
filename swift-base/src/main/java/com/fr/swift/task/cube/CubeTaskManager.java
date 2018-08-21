@@ -3,7 +3,6 @@ package com.fr.swift.task.cube;
 import com.fr.event.Event;
 import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
-import com.fr.swift.task.Operation;
 import com.fr.swift.task.Task.Status;
 import com.fr.swift.task.TaskExecutor;
 import com.fr.swift.task.TaskKey;
@@ -12,19 +11,9 @@ import com.fr.swift.task.WorkerTask;
 import com.fr.swift.task.impl.TaskEvent;
 import com.fr.swift.task.impl.WorkerTaskPool;
 import com.fr.swift.util.Crasher;
-import com.fr.swift.util.Util;
 
 import java.util.Map;
 import java.util.Map.Entry;
-
-import static com.fr.swift.task.cube.CubeOperation.BUILD_TABLE;
-import static com.fr.swift.task.cube.CubeOperation.INDEX_COLUMN;
-import static com.fr.swift.task.cube.CubeOperation.INDEX_COLUMN_PATH;
-import static com.fr.swift.task.cube.CubeOperation.INDEX_PATH;
-import static com.fr.swift.task.cube.CubeOperation.INDEX_RELATION;
-import static com.fr.swift.task.cube.CubeOperation.MERGE_COLUMN_DICT;
-import static com.fr.swift.task.cube.CubeOperation.NULL;
-import static com.fr.swift.task.cube.CubeOperation.TRANSPORT_TABLE;
 
 /**
  * @author anchore
@@ -43,20 +32,25 @@ public class CubeTaskManager implements TaskManager {
         }
         task.setStatus(Status.RUNNABLE);
 
-        Operation op = task.key().operation();
-        if (Util.in(op, TRANSPORT_TABLE)) {
-            transportExec.add(task);
-            return;
+        CubeOperation op = ((CubeOperation) task.key().operation());
+        switch (op) {
+            case TRANSPORT_TABLE:
+                transportExec.add(task);
+                return;
+            case INDEX_COLUMN:
+            case MERGE_COLUMN_DICT:
+            case INDEX_RELATION:
+            case INDEX_PATH:
+            case INDEX_COLUMN_PATH:
+                indexExec.add(task);
+                return;
+            case BUILD_TABLE:
+            case NULL:
+                task.run();
+                return;
+            default:
+                Crasher.crash(String.format("cannot find right pool to execute %s", task));
         }
-        if (Util.in(op, INDEX_COLUMN, MERGE_COLUMN_DICT, INDEX_RELATION, INDEX_PATH, INDEX_COLUMN_PATH)) {
-            indexExec.add(task);
-            return;
-        }
-        if (Util.in(op, NULL, BUILD_TABLE)) {
-            task.run();
-            return;
-        }
-        Crasher.crash(String.format("cannot find right pool to execute %s", task));
     }
 
     public void initListener() {
