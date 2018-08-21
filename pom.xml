@@ -15,7 +15,7 @@
         <module>swift-boot</module>
         <module>swift-cluster</module>
         <module>swift-config</module>
-        <!--<module>swift-decision</module>-->
+        <module>swift-decision</module>
         <module>swift-defragmentation</module>
         <module>swift-history</module>
         <module>swift-http</module>
@@ -30,7 +30,6 @@
         <module>swift-server</module>
         <module>swift-slave</module>
         <module>swift-test</module>
-        <!--<module>swift-hdfs</module>-->
     </modules>
 
     <properties>
