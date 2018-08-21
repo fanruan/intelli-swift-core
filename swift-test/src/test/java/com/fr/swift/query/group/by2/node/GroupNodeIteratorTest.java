@@ -40,8 +40,6 @@ import java.util.Set;
 public class GroupNodeIteratorTest extends TestCase {
 
     private List<Row> actualRows;
-    private List<Pair<Column, IndexInfo>> dimensions;
-    private List<Column> metrics;
     private Set<Row> expected;
 
     @Before
@@ -51,8 +49,8 @@ public class GroupNodeIteratorTest extends TestCase {
         TestCubeData.prepare(dataSource, GroupNodeIteratorTest.class);
         Segment segment = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class)
                 .getSegment(dataSource.getSourceKey()).get(0);
-        dimensions = TestCubeData.getDimensions(segment, Arrays.asList("合同类型", "合同付款类型"));
-        metrics = TestCubeData.getColumns(segment, Collections.singletonList("购买数量"));
+        List<Pair<Column, IndexInfo>> dimensions = TestCubeData.getDimensions(segment, Arrays.asList("合同类型", "合同付款类型"));
+        List<Column> metrics = TestCubeData.getColumns(segment, Collections.singletonList("购买数量"));
         GroupByInfo groupByInfo = new GroupByInfoImpl(Integer.MAX_VALUE, dimensions, new AllShowDetailFilter(segment),
                 new ArrayList<>(), null);
         MetricInfo metricInfo = new MetricInfoImpl(metrics,
