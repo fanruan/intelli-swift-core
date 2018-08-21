@@ -3,15 +3,16 @@ package com.fr.swift.cluster.service;
 import com.fr.swift.annotation.RpcMethod;
 import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.RpcServiceType;
+import com.fr.swift.annotation.SwiftService;
+import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.Result;
+import com.fr.swift.basics.RpcFuture;
 import com.fr.swift.basics.base.SwiftInvocation;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.netty.rpc.client.AsyncRpcCallback;
-import com.fr.swift.netty.rpc.client.async.RpcFuture;
 import com.fr.swift.netty.rpc.server.RpcServer;
 import com.fr.swift.netty.rpc.url.RPCDestination;
 import com.fr.swift.netty.rpc.url.RPCUrl;
@@ -26,9 +27,10 @@ import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.cluster.ClusterAnalyseService;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.util.Assert;
+import com.fr.swift.util.ServiceBeanFactory;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
@@ -36,7 +38,7 @@ import java.util.concurrent.CountDownLatch;
  * @author yee
  * @date 2018/8/6
  */
-@Service
+@SwiftService(name = "analyse",cluster = true)
 @RpcService(value = AnalyseService.class, type = RpcServiceType.CLIENT_SERVICE)
 public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements ClusterAnalyseService {
     private static final long serialVersionUID = 7637989460502966453L;
@@ -102,6 +104,8 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
 
     @Override
     public boolean start() throws SwiftServiceException {
+        List<com.fr.swift.service.SwiftService> services = ServiceBeanFactory.getSwiftServiceByNames(Collections.singleton("analyse"));
+        analyseService = (AnalyseService) services.get(0);
         analyseService.start();
         // 这边为了覆盖掉analyse的注册，所以再调一次注册
         return super.start();

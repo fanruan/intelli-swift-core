@@ -169,7 +169,7 @@ public class ColumnIndexer<T> extends BaseWorker implements SwiftColumnIndexer {
                 continue;
             }
 
-            dictColumn.putValue(pos, val);
+            dictColumn.putter().putValue(pos, val);
 
             MutableBitMap bitmap = BitMaps.newRoaringMutable();
 
@@ -183,10 +183,10 @@ public class ColumnIndexer<T> extends BaseWorker implements SwiftColumnIndexer {
             pos++;
         }
 
-        dictColumn.putSize(pos);
+        dictColumn.putter().putSize(pos);
 
         for (int row = 0, len = rowToIndex.length; row < len; row++) {
-            dictColumn.putIndex(row, rowToIndex[row]);
+            dictColumn.putter().putIndex(row, rowToIndex[row]);
         }
 
         releaseIfNeed(dictColumn, column);

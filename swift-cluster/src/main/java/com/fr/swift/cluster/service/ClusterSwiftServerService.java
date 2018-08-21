@@ -3,9 +3,11 @@ package com.fr.swift.cluster.service;
 import com.fr.event.Event;
 import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
+import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.Result;
+import com.fr.swift.basics.RpcFuture;
 import com.fr.swift.basics.URL;
 import com.fr.swift.basics.base.SwiftInvocation;
 import com.fr.swift.basics.base.selector.ProxySelector;
@@ -19,8 +21,6 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.netty.rpc.client.AsyncRpcCallback;
-import com.fr.swift.netty.rpc.client.async.RpcFuture;
 import com.fr.swift.netty.rpc.url.RPCDestination;
 import com.fr.swift.netty.rpc.url.RPCUrl;
 import com.fr.swift.property.SwiftProperty;
@@ -47,6 +47,7 @@ import com.fr.swift.util.Crasher;
 import javax.annotation.PostConstruct;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -75,7 +76,39 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
 
     private SwiftServiceInfoService serviceInfoService = SwiftContext.get().getBean(SwiftServiceInfoService.class);
 
+    private SwiftProperty swiftProperty = SwiftContext.get().getBean("swiftProperty", SwiftProperty.class);
+
     private ClusterSwiftServerService() {
+    }
+
+    public void initService() {
+        List<SwiftServiceInfoBean> swiftServiceInfoBeanList = serviceInfoService.getAllServiceInfo();
+        for (SwiftServiceInfoBean swiftServiceInfoBean : swiftServiceInfoBeanList) {
+            ServiceType serviceType = ServiceType.getServiceType(swiftServiceInfoBean.getService());
+            if (serviceType != null) {
+                URL url = UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getClusterId());
+                switch (serviceType) {
+                    case HISTORY:
+                        historyServiceMap.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, HistoryService.class));
+                        break;
+                    case REAL_TIME:
+                        realTimeServiceMap.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, RealtimeService.class));
+                        break;
+                    case ANALYSE:
+                        analyseServiceMap.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, AnalyseService.class));
+                        break;
+                    case INDEXING:
+                        indexingServiceMap.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, IndexingService.class));
+                        break;
+                    case COLLATE:
+                        collateServiceMap.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, CollateService.class));
+                        break;
+                    default:
+                }
+                swiftServiceInfoBean.setServiceInfo(swiftProperty.getServerAddress());
+                serviceInfoService.saveOrUpdate(swiftServiceInfoBean);
+            }
+        }
     }
 
     public static ClusterSwiftServerService getInstance() {
@@ -137,12 +170,11 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
 
     @Override
     public void registerService(SwiftService service) {
-        SwiftProperty swiftProperty = SwiftContext.get().getBean("swiftProperty", SwiftProperty.class);
 
         if (service.getID() == null) {
             Crasher.crash("Service's clusterId is null! Can't be registered!");
         }
-        LOGGER.debug(service.getID() + " register service :" + service.getServiceType().name());
+        LOGGER.info(service.getID() + " register service :" + service.getServiceType().name());
         synchronized (this) {
             serviceInfoService.saveOrUpdate(new SwiftServiceInfoBean(
                     service.getServiceType().name(), service.getID(), swiftProperty.getServerAddress(), false));

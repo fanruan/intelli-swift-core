@@ -16,19 +16,10 @@ import java.util.Comparator;
  * @date 2017/11/7
  */
 public class StringDictColumn extends BaseDictColumn<String> {
-    private StringWriter keyWriter;
     private StringReader keyReader;
 
     public StringDictColumn(IResourceLocation parent, Comparator<String> keyComparator) {
         super(parent, keyComparator);
-    }
-
-    private void initKeyWriter() {
-        if (keyWriter != null) {
-            return;
-        }
-        IResourceLocation keyLocation = parent.buildChildLocation(KEY);
-        keyWriter = DISCOVERY.getWriter(keyLocation, new BuildConf(IoType.WRITE, DataType.STRING));
     }
 
     private void initKeyReader() {
@@ -37,6 +28,15 @@ public class StringDictColumn extends BaseDictColumn<String> {
         }
         IResourceLocation keyLocation = parent.buildChildLocation(KEY);
         keyReader = DISCOVERY.getReader(keyLocation, new BuildConf(IoType.READ, DataType.STRING));
+    }
+
+    @Override
+    public String getValue(int index) {
+        if (index < 1) {
+            return null;
+        }
+        initKeyReader();
+        return keyReader.get(index);
     }
 
     @Override
@@ -53,38 +53,43 @@ public class StringDictColumn extends BaseDictColumn<String> {
     }
 
     @Override
-    public String getValue(int index) {
-        if (index < 1) {
-            return null;
-        }
-        initKeyReader();
-        return keyReader.get(index);
-    }
-
-    @Override
-    public void putValue(int index, String val) {
-        initKeyWriter();
-        keyWriter.put(index, val);
-    }
-
-    @Override
-    public void flush() {
-        super.flush();
-        if (keyWriter != null) {
-            keyWriter.flush();
-        }
-    }
-
-    @Override
     public void release() {
         super.release();
-        if (keyWriter != null) {
-            keyWriter.release();
-            keyWriter = null;
-        }
         if (keyReader != null) {
             keyReader.release();
             keyReader = null;
+        }
+    }
+
+    @Override
+    public Putter<String> putter() {
+        return putter != null ? putter : (putter = new StringPutter());
+    }
+
+    class StringPutter extends BasePutter {
+        private StringWriter keyWriter;
+
+        private void initKeyWriter() {
+            if (keyWriter != null) {
+                return;
+            }
+            IResourceLocation keyLocation = parent.buildChildLocation(KEY);
+            keyWriter = DISCOVERY.getWriter(keyLocation, new BuildConf(IoType.WRITE, DataType.STRING));
+        }
+
+        @Override
+        public void putValue(int index, String val) {
+            initKeyWriter();
+            keyWriter.put(index, val);
+        }
+
+        @Override
+        public void release() {
+            super.release();
+            if (keyWriter != null) {
+                keyWriter.release();
+                keyWriter = null;
+            }
         }
     }
 

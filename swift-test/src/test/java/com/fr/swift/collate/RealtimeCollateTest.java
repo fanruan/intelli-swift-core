@@ -85,7 +85,7 @@ public class RealtimeCollateTest extends BaseTest {
             assertTrue(neqCount != 0);
         }
         //合并增量块，直接写history
-        SwiftCollateService collaterService = new SwiftCollateService();
+        SwiftCollateService collaterService = SwiftContext.get().getBean(SwiftCollateService.class);
         collaterService.setTaskExecutor(new SwiftServiceTaskExecutor("testAutoRealtimeCollate", 1));
         collaterService.autoCollateRealtime(dataSource.getSourceKey());
         Thread.sleep(5000L);
@@ -143,7 +143,7 @@ public class RealtimeCollateTest extends BaseTest {
 
 
         //合并增量块，直接写history
-        SwiftCollateService collaterService = new SwiftCollateService();
+        SwiftCollateService collaterService = SwiftContext.get().getBean(SwiftCollateService.class);
         collaterService.setTaskExecutor(new SwiftServiceTaskExecutor("testAppointRealtimeCollate", 1));
         collaterService.appointCollateRealtime(collateSegmentKeys);
 

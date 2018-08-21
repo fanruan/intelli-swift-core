@@ -36,19 +36,19 @@ public class SwiftRepositoryManagerTest {
 
     @Test
     public void test2StepDownload() throws IOException {
-        repository.copyFromRemote(targetURI.resolve("upload1.txt"), rootURI.resolve("download1.txt"));
+        repository.copyFromRemote(targetURI.resolve("upload1.txt").getPath(), rootURI.resolve("download1.txt").getPath());
         assertTrue(new File(rootURI.resolve("download1.txt").getPath()).exists());
     }
 
     @Test
     public void test1StepUpload() throws IOException {
-        repository.copyToRemote(rootURI.resolve("test_file1.txt"), targetURI.resolve("upload1.txt"));
+        repository.copyToRemote(rootURI.resolve("test_file1.txt").getPath(), targetURI.resolve("upload1.txt").getPath());
         assertTrue(ResourceIOUtils.exist(targetURI.resolve("upload1.txt").getPath()));
     }
 
     @Test
     public void test4DownloadDirectory() throws IOException {
-        repository.copyFromRemote(targetURI.resolve("upload"), rootURI.resolve("downloads"));
+        repository.copyFromRemote(targetURI.resolve("upload").getPath(), rootURI.resolve("downloads").getPath());
         assertTrue(ResourceIOUtils.exist(rootURI.resolve("downloads").getPath()));
         assertEquals(ResourceIOUtils.list(rootURI.resolve("downloads").getPath(), new Filter<String>() {
             @Override
@@ -60,7 +60,7 @@ public class SwiftRepositoryManagerTest {
 
     @Test
     public void test3StepUploadDirectory() throws IOException {
-        repository.copyToRemote(rootURI, targetURI.resolve("upload"));
+        repository.copyToRemote(rootURI.getPath(), targetURI.resolve("upload").getPath());
         assertTrue(ResourceIOUtils.exist(targetURI.resolve("upload").getPath()));
         assertEquals(ResourceIOUtils.list(targetURI.resolve("upload").getPath(), new Filter<String>() {
             @Override

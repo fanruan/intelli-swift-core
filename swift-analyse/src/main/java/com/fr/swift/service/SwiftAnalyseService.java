@@ -2,6 +2,7 @@ package com.fr.swift.service;
 
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.query.builder.QueryBuilder;
@@ -15,9 +16,6 @@ import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.task.service.ServiceTaskExecutor;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.beans.factory.annotation.Qualifier;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,35 +28,44 @@ import java.util.Map;
  * @date 2017/10/12
  * 分析服务
  */
-@Service()
 @SwiftService(name = "analyse")
 public class SwiftAnalyseService extends AbstractSwiftService implements AnalyseService {
     private static final long serialVersionUID = 841582089735823794L;
 
-    @Autowired
     private transient ServiceTaskExecutor taskExecutor;
-    @Autowired
-    @Qualifier("segmentServiceProvider")
+
     private transient SwiftSegmentService segmentProvider;
 
-    public SwiftAnalyseService(String id) {
-        super(id);
-    }
+    private transient boolean loadable = true;
 
     private SwiftAnalyseService() {
     }
 
     @Override
-    public ServiceType getServiceType() {
-        return ServiceType.ANALYSE;
+    public boolean start() throws SwiftServiceException {
+        boolean start = super.start();
+        taskExecutor = SwiftContext.get().getBean(ServiceTaskExecutor.class);
+        segmentProvider = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
+        QueryRunnerProvider.getInstance().registerRunner(this);
+        if (loadable) {
+            loadSelfSegmentDestination();
+            loadable = false;
+        }
+        return start;
     }
 
     @Override
-    public boolean start() throws SwiftServiceException {
-        boolean start = super.start();
-        QueryRunnerProvider.getInstance().registerRunner(this);
-        loadSelfSegmentDestination();
-        return start;
+    public boolean shutdown() throws SwiftServiceException {
+        super.shutdown();
+        taskExecutor = null;
+        segmentProvider = null;
+        QueryRunnerProvider.getInstance().registerRunner(null);
+        return true;
+    }
+
+    @Override
+    public ServiceType getServiceType() {
+        return ServiceType.ANALYSE;
     }
 
     @Override

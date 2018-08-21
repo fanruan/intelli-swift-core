@@ -17,7 +17,7 @@ public class SwiftNode2RowIterator implements SwiftRowIterator {
 
     public SwiftNode2RowIterator(NodeResultSet<SwiftNode> source) {
         this.source = source;
-        this.rows = createList(source.getPage().getKey());
+        this.rows = source.hasNextPage() ? createList(source.getPage().getKey()) : new ArrayList<Row>(0);
     }
 
     private static List<Row> createList(SwiftNode root) {

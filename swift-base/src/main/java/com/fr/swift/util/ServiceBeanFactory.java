@@ -21,16 +21,22 @@ import java.util.Set;
  */
 public class ServiceBeanFactory {
 
-    private static Map<String, String> serviceName2BeanName = new HashMap<String, String>();
+    private final static Map<String, String> serviceName2BeanName = new HashMap<String, String>();
 
-    private static Map<String, String> serverName2BeanName = new HashMap<String, String>();
+    private final static Map<String, String> clusterServiceName2BeanName = new HashMap<String, String>();
+
+    private final static Map<String, String> serverName2BeanName = new HashMap<String, String>();
 
     static {
         Map<String, Object> swiftServiceBeans = SwiftContext.get().getBeansWithAnnotation(com.fr.swift.annotation.SwiftService.class);
         for (Map.Entry<String, Object> entry : swiftServiceBeans.entrySet()) {
             com.fr.swift.annotation.SwiftService annotation =
                     entry.getValue().getClass().getAnnotation(com.fr.swift.annotation.SwiftService.class);
-            serviceName2BeanName.put(annotation.name(), entry.getKey());
+            if (annotation.cluster()) {
+                clusterServiceName2BeanName.put(annotation.name(), entry.getKey());
+            } else {
+                serviceName2BeanName.put(annotation.name(), entry.getKey());
+            }
         }
         Map<String, Object> serverServiceBeans = SwiftContext.get().getBeansWithAnnotation(com.fr.swift.annotation.ServerService.class);
         for (Map.Entry<String, Object> entry : serverServiceBeans.entrySet()) {
@@ -50,6 +56,35 @@ public class ServiceBeanFactory {
             try {
                 if (serviceName2BeanName.containsKey(serviceName)) {
                     SwiftService swiftService = (SwiftService) SwiftContext.get().getBean(serviceName2BeanName.get(serviceName));
+                    if (swiftService == null) {
+                        continue;
+                    }
+                    swiftServiceList.add(swiftService);
+                }
+            } catch (NoSuchBeanDefinitionException e) {
+                continue;
+            }
+        }
+        return swiftServiceList;
+    }
+
+    public static List<SwiftService> getClusterSwiftServiceByNames(Set<String> swiftServiceNames) {
+        // TODO: 2018/8/9 暂时先把collate跟随indexing启动
+        if (swiftServiceNames.contains("indexing")) {
+            swiftServiceNames.add("collate");
+        }
+        List<SwiftService> swiftServiceList = new ArrayList<SwiftService>();
+        for (String serviceName : swiftServiceNames) {
+            try {
+                if (serviceName2BeanName.containsKey(serviceName)) {
+                    SwiftService swiftService = (SwiftService) SwiftContext.get().getBean(serviceName2BeanName.get(serviceName));
+                    if (swiftService == null) {
+                        continue;
+                    }
+                    swiftServiceList.add(swiftService);
+                }
+                if (clusterServiceName2BeanName.containsKey(serviceName)) {
+                    SwiftService swiftService = (SwiftService) SwiftContext.get().getBean(clusterServiceName2BeanName.get(serviceName));
                     if (swiftService == null) {
                         continue;
                     }

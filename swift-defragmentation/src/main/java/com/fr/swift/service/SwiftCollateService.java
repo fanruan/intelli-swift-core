@@ -13,6 +13,7 @@ import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.exception.SegmentKeyException;
+import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.exception.TableNotExistException;
 import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.Segment;
@@ -41,8 +42,6 @@ import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
 import com.fr.swift.util.FileUtil;
 import com.fr.swift.util.concurrent.CommonExecutor;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -55,26 +54,45 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
-@Service()
 @SwiftService(name = "collate")
 public class SwiftCollateService extends AbstractSwiftService implements CollateService {
 
-    private transient SwiftSegmentManager segmentManager = (SwiftSegmentManager) SwiftContext.get().getBean("localSegmentProvider");
+    private static final long serialVersionUID = 7259915342007294244L;
 
-    private transient Database database = SwiftDatabase.getInstance();
+    private transient SwiftSegmentManager segmentManager;
 
-    @Autowired
+    private transient Database database;
+
     private transient ServiceTaskExecutor taskExecutor;
 
     public void setTaskExecutor(ServiceTaskExecutor taskExecutor) {
         this.taskExecutor = taskExecutor;
     }
 
-    private transient ServiceTaskType serviceTaskType = ServiceTaskType.COLLATE;
+    private SwiftCollateService() {
+    }
+
+    @Override
+    public boolean start() throws SwiftServiceException {
+        super.start();
+        segmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
+        database = SwiftDatabase.getInstance();
+        taskExecutor = SwiftContext.get().getBean(ServiceTaskExecutor.class);
+        return true;
+    }
+
+    @Override
+    public boolean shutdown() throws SwiftServiceException {
+        super.shutdown();
+        segmentManager = null;
+        database = null;
+        taskExecutor = null;
+        return true;
+    }
 
     @Override
     public void autoCollateRealtime(final SourceKey tableKey) throws Exception {
-        taskExecutor.submit(new SwiftServiceCallable(tableKey, serviceTaskType) {
+        taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.COLLATE) {
             @Override
             public void doJob() throws Exception {
                 collateSegments(tableKey, Types.StoreType.MEMORY);
@@ -84,7 +102,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
 
     @Override
     public void autoCollateHistory(final SourceKey tableKey) throws Exception {
-        taskExecutor.submit(new SwiftServiceCallable(tableKey, serviceTaskType) {
+        taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.COLLATE) {
             @Override
             public void doJob() throws Exception {
                 collateSegments(tableKey, Types.StoreType.FINE_IO);
@@ -95,7 +113,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
     @Override
     public void appointCollateRealtime(final List<SegmentKey> segmentKeyList) throws Exception {
         final SourceKey tableKey = checkSegmentKeys(segmentKeyList, Types.StoreType.MEMORY);
-        taskExecutor.submit(new SwiftServiceCallable(tableKey, serviceTaskType) {
+        taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.COLLATE) {
             @Override
             public void doJob() throws Exception {
                 collateSegments(tableKey, Types.StoreType.MEMORY, segmentKeyList);
@@ -106,7 +124,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
     @Override
     public void appointCollateHistory(final List<SegmentKey> segmentKeyList) throws Exception {
         final SourceKey tableKey = checkSegmentKeys(segmentKeyList, Types.StoreType.FINE_IO);
-        taskExecutor.submit(new SwiftServiceCallable(tableKey, serviceTaskType) {
+        taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.COLLATE) {
             @Override
             public void doJob() throws Exception {
                 collateSegments(tableKey, Types.StoreType.FINE_IO, segmentKeyList);
@@ -238,7 +256,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
             @Override
             public void run() {
                 for (SegmentKey collateSegKey : collateSegKeys) {
-                    FileUtil.delete(collateSegKey.getAbsoluteUri().getPath());
+                    FileUtil.delete(CubeUtil.getSegPath(collateSegKey));
                 }
             }
         });

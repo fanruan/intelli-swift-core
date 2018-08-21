@@ -117,7 +117,7 @@ public class SwiftLogOperator extends BaseMetric {
 
         private Map<Class<?>, List<Object>> dataMap = new ConcurrentHashMap<Class<?>, List<Object>>();
 
-        private RealtimeService realtimeService = SwiftContext.get().getBean(RealtimeService.class);
+        private RealtimeService realtimeService = SwiftContext.get().getBean("swiftRealtimeService", RealtimeService.class);
 
         Sync() {
             scheduler.scheduleWithFixedDelay(this, 0, 5, TimeUnit.SECONDS);

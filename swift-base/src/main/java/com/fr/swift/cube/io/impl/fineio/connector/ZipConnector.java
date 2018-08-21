@@ -1,8 +1,6 @@
 package com.fr.swift.cube.io.impl.fineio.connector;
 
 import com.fineio.io.file.FileBlock;
-import com.fineio.storage.AbstractConnector;
-import com.fr.swift.util.Strings;
 import com.fr.third.org.apache.commons.io.FileUtils;
 
 import java.io.ByteArrayInputStream;
@@ -12,7 +10,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
@@ -21,25 +18,16 @@ import java.util.zip.Inflater;
  * @date 2018/5/14
  * @description
  */
-public class ZipConnector extends AbstractConnector {
-
-    private URI parentURI;
-
+public class ZipConnector extends BaseConnector {
     private ZipConnector(String path) {
-        initParentPath(path);
+        super(path);
     }
 
     public static ZipConnector newInstance(String path) {
         return new ZipConnector(path);
     }
 
-    private void initParentPath(String path) {
-        path = Strings.trimSeparator(path, "\\", "/");
-        path = "/" + path + "/";
-        path = Strings.trimSeparator(path, "/");
-        parentURI = URI.create(path);
-    }
-
+    @Override
     public InputStream read(FileBlock block) throws IOException {
         FileInputStream fis = new FileInputStream(this.getPath(block, false));
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -58,6 +46,7 @@ public class ZipConnector extends AbstractConnector {
         return new ByteArrayInputStream(data);
     }
 
+    @Override
     public void write(FileBlock block, InputStream is) throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         byte[] bytes = new byte[1024];
@@ -140,15 +129,18 @@ public class ZipConnector extends AbstractConnector {
         return data;
     }
 
+    @Override
     public boolean delete(FileBlock block) {
         return this.getPath(block, false).delete();
     }
 
+    @Override
     public boolean exists(FileBlock block) {
         File file = this.getPath(block, false);
         return file.exists() && file.length() > 0L;
     }
 
+    @Override
     public boolean copy(FileBlock src, FileBlock dest) throws IOException {
         if (this.exists(src) && !this.exists(dest)) {
             File srcFile = this.getPath(src, false);
@@ -158,10 +150,6 @@ public class ZipConnector extends AbstractConnector {
         } else {
             return false;
         }
-    }
-
-    private File getFolderPath(FileBlock block) {
-        return new File(parentURI.resolve(block.getParentUri()).getPath());
     }
 
     private File getPath(FileBlock block, boolean mkdir) {

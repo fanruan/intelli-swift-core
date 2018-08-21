@@ -1,4 +1,4 @@
-package com.fr.swift.core.cluster;
+package com.fr.swift.boot;
 
 import com.fr.cluster.core.ClusterNode;
 import com.fr.cluster.core.event.ClusterViewEvent;
@@ -8,11 +8,17 @@ import com.fr.event.Event;
 import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
 import com.fr.general.ComparatorUtils;
-import com.fr.swift.ClusterService;
+import com.fr.swift.cluster.service.ClusterSwiftServerService;
+import com.fr.swift.core.cluster.FRClusterNodeManager;
+import com.fr.swift.core.cluster.FRClusterNodeService;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.event.ClusterType;
+import com.fr.swift.log.SwiftLogger;
+import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.service.listener.RemoteServiceSender;
+import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 
 /**
  * This class created on 2018/5/14
@@ -22,9 +28,12 @@ import com.fr.swift.event.ClusterType;
  * @since Advanced FineBI 5.0
  */
 public class SwiftClusterTicket extends ClusterTicketAdaptor {
+
     private static final SwiftClusterTicket INSTANCE = new SwiftClusterTicket();
 
-    private ClusterService clusterServiceProxy = null;
+    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger();
+
+    private SwiftServiceListenerHandler remoteServiceSender = null;
 
     private SwiftClusterTicket() {
     }
@@ -40,29 +49,24 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
 
     @Override
     public void approach(ClusterToolKit clusterToolKit) {
-//        Invoker invoker = clusterToolKit.getInvokerFactory().create(SwiftClusterService.getInstance());
-//        ClusterNode masterNode = ClusterBridge.getView().getNodeById("lucifer-cluster2");
-//
-//        Method method = null;
-//        try {
-//            method = SwiftClusterService.class.getMethod("rpcSend", String.class, Object.class);
-//        } catch (NoSuchMethodException e) {
-//            e.printStackTrace();
-//        }
-//        Invocation invocation = Invocation.create(method, "lucifer", "test" + System.currentTimeMillis());
-//        Result result = invoker.invoke(masterNode, invocation);
+        //注册rpc服务
+        remoteServiceSender = clusterToolKit.getRPCProxyFactory().newBuilder(RemoteServiceSender.getInstance()).build();
 
-        //注册rpc proxy
-//        clusterServiceProxy = clusterToolKit.getRPCProxyFactory().newBuilder(SwiftClusterService.getInstance()).build();
-//        FRProxyCache.registerProxy(ClusterService.class, clusterServiceProxy);
-        //注册单例类型
-//        FRProxyCache.registerInstance(SwiftClusterService.class, SwiftClusterService.getInstance());
-
+        EventDispatcher.listen(ClusterViewEvent.NODE_JOINED, new Listener<ClusterNode>() {
+            @Override
+            public void on(Event event, ClusterNode clusterNode) {
+                LOGGER.info(String.format("%s join cluster!Master is %s", clusterNode.getID(), FRClusterNodeManager.getInstance().getMasterId()));
+            }
+        });
         EventDispatcher.listen(ClusterViewEvent.NODE_LEFT, new Listener<ClusterNode>() {
             @Override
             public void on(Event event, ClusterNode clusterNode) {
+                LOGGER.info(String.format("%s left cluster!Master is %s", clusterNode.getID(), FRClusterNodeManager.getInstance().getMasterId()));
                 if (FRClusterNodeManager.getInstance().getMasterId() == null || ComparatorUtils.equals(FRClusterNodeManager.getInstance().getMasterId(), clusterNode.getID())) {
-                    SwiftClusterService.getInstance().competeMaster();
+                    FRClusterNodeService.getInstance().competeMaster(clusterNode);
+                    if (ComparatorUtils.equals(FRClusterNodeManager.getInstance().getMasterId(), FRClusterNodeManager.getInstance().getCurrentId())) {
+                        ClusterSwiftServerService.getInstance().initService();
+                    }
                 }
             }
         });
@@ -70,7 +74,6 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
 
     @Override
     public void catchUpWith(ClusterNode clusterNode) {
-
     }
 
     /**
@@ -78,7 +81,7 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
      */
     @Override
     public void afterJoin() {
-        SwiftClusterService.getInstance().competeMaster();
+        FRClusterNodeService.getInstance().competeMaster();
         ClusterListenerHandler.handlerEvent(new ClusterEvent(ClusterEventType.JOIN_CLUSTER, ClusterType.FR));
         FRClusterNodeManager.getInstance().setCluster(true);
     }

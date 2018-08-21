@@ -56,7 +56,7 @@ public class SwiftCubePathServiceImpl implements SwiftCubePathService {
                 }
             } catch (Exception ignore) {
             }
-            String path = getDefaultPath();
+            String path = ContextUtil.getContextPath();
             for (SwiftConfigEntity swiftConfigEntity : toEntity(path)) {
                 dao.saveOrUpdate(session, swiftConfigEntity);
             }
@@ -71,15 +71,6 @@ public class SwiftCubePathServiceImpl implements SwiftCubePathService {
 
     @Autowired
     private SwiftConfigService configService;
-
-    private static String getDefaultPath() {
-        String classPath = ContextUtil.getClassPath();
-        int idx = classPath.indexOf("WEB-INF");
-        if (idx != -1) {
-            return classPath.substring(0, idx);
-        }
-        return classPath + "/../";
-    }
 
     private static boolean isValidPath(String path) {
         return path != null && !StringUtils.isBlank(path) && !ComparatorUtils.equals(path, "__EMPTY__");

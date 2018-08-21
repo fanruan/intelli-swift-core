@@ -7,6 +7,7 @@ import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Where;
+import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
 import com.fr.swift.query.query.QueryBeanFactory;
@@ -23,14 +24,10 @@ import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
 import com.fr.swift.util.FileUtil;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.beans.factory.annotation.Qualifier;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -40,29 +37,47 @@ import java.util.Set;
  * @author pony
  * @date 2017/10/10
  */
-@Service()
 @SwiftService(name = "history")
 public class SwiftHistoryService extends AbstractSwiftService implements HistoryService, Serializable {
     private static final long serialVersionUID = -6013675740141588108L;
 
-    @Autowired
-    @Qualifier("localSegmentProvider")
     private transient SwiftSegmentManager segmentManager;
 
-    @Autowired
     private transient ServiceTaskExecutor taskExecutor;
 
-    @Autowired
     private transient SwiftCubePathService pathService;
 
-    @Autowired
     private transient SwiftMetaDataService metaDataService;
-    @Autowired
+
     private transient SwiftTablePathService tablePathService;
-    @Autowired(required = false)
+
     private transient QueryBeanFactory queryBeanFactory;
 
     private SwiftHistoryService() {
+    }
+
+    @Override
+    public boolean start() throws SwiftServiceException {
+        super.start();
+        segmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
+        taskExecutor = SwiftContext.get().getBean(ServiceTaskExecutor.class);
+        pathService = SwiftContext.get().getBean(SwiftCubePathService.class);
+        metaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
+        tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
+        queryBeanFactory = SwiftContext.get().getBean(QueryBeanFactory.class);
+        return true;
+    }
+
+    @Override
+    public boolean shutdown() throws SwiftServiceException {
+        super.shutdown();
+        segmentManager = null;
+        taskExecutor = null;
+        pathService = null;
+        metaDataService = null;
+        tablePathService = null;
+        queryBeanFactory = null;
+        return true;
     }
 
     @Override
@@ -71,12 +86,12 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     }
 
     @Override
-    public void load(Map<String, Set<URI>> remoteUris, boolean replace) throws IOException {
+    public void load(Map<String, Set<String>> remoteUris, boolean replace) throws IOException {
         String path = pathService.getSwiftPath();
         SwiftRepository repository = SwiftRepositoryManager.getManager().currentRepo();
         if (null != remoteUris && !remoteUris.isEmpty()) {
             for (String sourceKey : remoteUris.keySet()) {
-                Set<URI> sets = remoteUris.get(sourceKey);
+                Set<String> sets = remoteUris.get(sourceKey);
                 if (!sets.isEmpty()) {
                     SwiftMetaData metaData = metaDataService.getMetaDataByKey(sourceKey);
                     int tmp = 0;
@@ -86,21 +101,29 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                         tablePathService.saveOrUpdate(entity);
                         replace = true;
                     } else {
-                        tmp = entity.getTablePath();
+                        tmp = entity.getTablePath() == null ? -1 : entity.getTablePath();
                         if (replace) {
                             tmp += 1;
                             entity.setTmpDir(tmp);
                             tablePathService.saveOrUpdate(entity);
                         }
                     }
-                    for (URI uri : sets) {
-                        String cubePath = String.format("%s/%s/%d/%s", path, metaData.getSwiftSchema().getDir(), tmp, uri.getPath());
-                        String remotePath = String.format("%s/%s", metaData.getSwiftSchema().getDir(), uri.getPath());
-                        repository.copyFromRemote(URI.create(remotePath), URI.create(cubePath));
+
+                    boolean downloadSuccess = true;
+                    for (String uri : sets) {
+                        String cubePath = String.format("%s/%s/%d/%s", path, metaData.getSwiftSchema().getDir(), tmp, uri);
+                        String remotePath = String.format("%s/%s", metaData.getSwiftSchema().getDir(), uri);
+                        try {
+                            repository.copyFromRemote(remotePath, cubePath);
+                        } catch (Exception e) {
+                            downloadSuccess = false;
+                            SwiftLoggers.getLogger().error("Download " + remotePath + " failed!", e);
+                        }
                     }
-                    if (replace) {
+
+                    if (replace && downloadSuccess) {
                         entity = tablePathService.get(sourceKey);
-                        int current = entity.getTablePath();
+                        int current = entity.getTablePath() == null ? -1 : entity.getTablePath();
                         entity.setLastPath(current);
                         entity.setTablePath(tmp);
                         tablePathService.saveOrUpdate(entity);

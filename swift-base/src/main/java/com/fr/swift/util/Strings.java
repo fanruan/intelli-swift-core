@@ -9,7 +9,6 @@ import java.util.regex.Matcher;
  * @date 17/11/27
  */
 public final class Strings {
-
     public static String trimSeparator(String s, String sep) {
         return trimSeparator(s, sep, sep);
     }
@@ -31,12 +30,21 @@ public final class Strings {
      * @return new replaced string
      */
     public static String trimSeparator(String s, String oldSep, String newSep) {
-        String quoteOldSep = Matcher.quoteReplacement(oldSep);
-        String onlyHasNewSep = s.replaceAll("(" + quoteOldSep + ")+", Matcher.quoteReplacement(newSep));
-        if (onlyHasNewSep.contains(newSep + newSep)) {
-            return trimSeparator(onlyHasNewSep, newSep);
+        if (s.contains(oldSep)) {
+            String quoteOldSep = Matcher.quoteReplacement(oldSep);
+            String onlyHasNewSep = s.replaceAll("(" + quoteOldSep + ")+", Matcher.quoteReplacement(newSep));
+            if (onlyHasNewSep.contains(newSep + newSep)) {
+                return trimSeparator(onlyHasNewSep, newSep);
+            }
+            return onlyHasNewSep;
         }
-        return onlyHasNewSep;
+        if (s.contains(newSep + newSep)) {
+            return trimSeparator(s, newSep);
+        }
+        return s;
     }
 
+    public static String unifySlash(String s) {
+        return trimSeparator(s, "\\", "/");
+    }
 }

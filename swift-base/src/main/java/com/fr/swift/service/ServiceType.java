@@ -14,4 +14,18 @@ public enum ServiceType {
     public byte getType() {
         return type;
     }
+
+    /**
+     * 没有匹配到服务就返回null
+     *
+     * @param name
+     * @return
+     */
+    public static ServiceType getServiceType(String name) {
+        try {
+            return ServiceType.valueOf(name);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
 }

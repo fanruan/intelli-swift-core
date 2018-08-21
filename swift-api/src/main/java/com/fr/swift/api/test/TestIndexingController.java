@@ -1,6 +1,7 @@
 package com.fr.swift.api.test;
 
 import com.fr.stable.StringUtils;
+import com.fr.swift.ClusterNodeService;
 import com.fr.swift.api.SwiftApiConstants;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.ProxyFactory;
@@ -11,7 +12,6 @@ import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.core.cluster.SwiftClusterService;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.queue.StuffProviderQueue;
 import com.fr.swift.cube.queue.SwiftImportStuff;
@@ -33,7 +33,6 @@ import com.fr.third.springframework.web.bind.annotation.RequestMethod;
 import com.fr.third.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -76,12 +75,12 @@ public class TestIndexingController {
 
     @RequestMapping(value = "/download", method = RequestMethod.GET)
     public void download(String remote, String local) throws IOException {
-        SwiftRepositoryManager.getManager().currentRepo().copyFromRemote(URI.create(remote), URI.create(local));
+        SwiftRepositoryManager.getManager().currentRepo().copyFromRemote(remote, local);
     }
 
     @RequestMapping(value = "/upload", method = RequestMethod.GET)
     public void upload(String src, String dest) throws IOException {
-        SwiftRepositoryManager.getManager().currentRepo().copyToRemote(URI.create(src), URI.create(dest));
+        SwiftRepositoryManager.getManager().currentRepo().copyToRemote(src, dest);
     }
 
     @RequestMapping(value = "/load", method = RequestMethod.GET)
@@ -93,7 +92,7 @@ public class TestIndexingController {
     }
 
     private URL getMasterURL() {
-        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.get().getBean(SwiftServiceInfoService.class).getServiceInfoByService(SwiftClusterService.SERVICE);
+        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.get().getBean(SwiftServiceInfoService.class).getServiceInfoByService(ClusterNodeService.SERVICE);
         SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
         return UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
     }

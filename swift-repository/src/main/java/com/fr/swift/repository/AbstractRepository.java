@@ -5,9 +5,9 @@ import com.fr.swift.file.exception.SwiftFileException;
 import com.fr.swift.file.system.SwiftFileSystem;
 import com.fr.swift.file.system.impl.DefaultFileSystemImpl;
 import com.fr.swift.file.system.pool.RemotePoolCreator;
+import com.fr.swift.util.Strings;
 
 import java.io.IOException;
-import java.net.URI;
 
 /**
  * @author yee
@@ -22,18 +22,18 @@ public abstract class AbstractRepository implements SwiftRepository {
     }
 
     @Override
-    public abstract URI copyFromRemote(URI remote, URI local) throws IOException;
+    public abstract String copyFromRemote(String remote, String local) throws IOException;
 
     @Override
-    public abstract boolean copyToRemote(URI local, URI remote) throws IOException;
+    public abstract boolean copyToRemote(String local, String remote) throws IOException;
 
     @Override
-    public abstract boolean zipToRemote(URI local, URI remote) throws IOException;
+    public abstract boolean zipToRemote(String local, String remote) throws IOException;
 
     @Override
-    public abstract boolean delete(URI remote) throws IOException;
+    public abstract boolean delete(String remote) throws IOException;
 
-    public SwiftFileSystem createFileSystem(URI uri) {
+    public SwiftFileSystem createFileSystem(String uri) {
         switch (configuration.getType()) {
             case FR:
                 return new DefaultFileSystemImpl(configuration, uri);
@@ -52,5 +52,9 @@ public abstract class AbstractRepository implements SwiftRepository {
                     RemotePoolCreator.creator().getPool(configuration).returnObject(fileSystem.getResourceURI(), fileSystem);
             }
         }
+    }
+
+    protected String resolve(String uri, String resolve) {
+        return Strings.unifySlash(uri + "/" + resolve);
     }
 }

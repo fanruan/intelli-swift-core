@@ -92,14 +92,14 @@ public class HistorySegmentPutter implements Runnable {
                     return s.contains(realtimeSegKey.getUri().getPath());
                 }
             });
-            FileUtil.delete(realtimeSegKey.getAbsoluteUri().getPath().replace(swiftSchema.getDir(), swiftSchema.getBackupDir()));
+            FileUtil.delete(CubeUtil.getAbsoluteSegPath(realtimeSegKey).replace(swiftSchema.getDir(), swiftSchema.getBackupDir()));
 
             triggerCollate(tableKey);
         } catch (Exception e) {
             SwiftLoggers.getLogger().warn("{} put into history failed", realtimeSegKey);
             // 失败则清理无用seg
             SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).removeSegments(newHisSeg);
-            FileUtil.delete(realtimeSegKey.getAbsoluteUri().getPath());
+            FileUtil.delete(CubeUtil.getAbsoluteSegPath(realtimeSegKey));
         }
     }
 

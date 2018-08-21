@@ -1,0 +1,105 @@
+package com.fr.swift.jdbc.parser;
+
+import com.fr.general.jsqlparser.expression.Expression;
+import com.fr.general.jsqlparser.expression.Function;
+import com.fr.general.jsqlparser.schema.Column;
+import com.fr.general.jsqlparser.statement.select.AllColumns;
+import com.fr.general.jsqlparser.statement.select.AllTableColumns;
+import com.fr.general.jsqlparser.statement.select.SelectExpressionItem;
+import com.fr.swift.db.Table;
+import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
+import com.fr.swift.jdbc.exception.SwiftJDBCTableAbsentException;
+import com.fr.swift.query.aggregator.AggregatorType;
+import com.fr.swift.query.info.bean.element.MetricBean;
+import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
+import com.fr.swift.query.info.element.metric.Metric;
+import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.util.Crasher;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by pony on 2018/8/17.
+ */
+public class GroupQueryBeanVisitor extends AbstractQueryBeanVisitor {
+    protected GroupQueryInfoBean queryBean;
+
+    public GroupQueryBeanVisitor(GroupQueryInfoBean queryBean) {
+        super(queryBean);
+        this.queryBean = queryBean;
+    }
+
+    @Override
+    public void visit(AllColumns allColumns) {
+        Table table = SwiftDatabase.getInstance().getTable(new SourceKey(queryBean.getTableName()));
+        if (table == null){
+            Crasher.crash(new SwiftJDBCTableAbsentException(queryBean.getTableName()));
+        }
+        try {
+            SwiftMetaData metaData = table.getMeta();
+            for (int i = 0; i < metaData.getColumnCount(); i++){
+                addColumn(metaData.getColumnName(i + 1));
+            }
+        } catch (SQLException e) {
+            Crasher.crash(e);
+        }
+    }
+
+    @Override
+    public void visit(AllTableColumns allTableColumns) {
+        Crasher.crash(new SwiftJDBCNotSupportedException());
+    }
+
+    @Override
+    public void visit(SelectExpressionItem selectExpressionItem) {
+        selectExpressionItem.getExpression().accept(this);
+    }
+
+    @Override
+    public void visit(Function function) {
+        List<Expression> expressions = function.getParameters().getExpressions();
+        if (expressions.size() != 1 && !(expressions.get(0) instanceof Column)){
+            Crasher.crash(new SwiftJDBCNotSupportedException());
+        }
+        addColumn(((Column)expressions.get(0)).getColumnName(), getAggType(function.getName()));
+    }
+
+    private static final Map<String, AggregatorType> function2AggType = new HashMap<String, AggregatorType>(){{
+        put("sum", AggregatorType.SUM);
+        put("count", AggregatorType.COUNT);
+        put("min", AggregatorType.MIN);
+        put("max", AggregatorType.MAX);
+        put("avg", AggregatorType.AVERAGE);
+    }};
+
+    private AggregatorType getAggType(String name) {
+        if (function2AggType.containsKey(name)){
+            return function2AggType.get(name);
+        }
+        return AggregatorType.COUNT;
+    }
+
+    @Override
+    protected void addColumn(String columnName) {
+        addColumn(columnName, AggregatorType.COUNT);
+    }
+
+    protected void addColumn(String columnName, AggregatorType type) {
+        List<MetricBean> metrics = queryBean.getMetricBeans();
+        if (metrics == null){
+            metrics = new ArrayList<MetricBean>();
+            queryBean.setMetricBeans(metrics);
+        }
+        MetricBean bean = new MetricBean();
+        bean.setColumn(columnName);
+        bean.setMetricType(Metric.MetricType.GROUP);
+        bean.setType(type);
+        metrics.add(bean);
+    }
+}

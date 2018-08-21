@@ -15,19 +15,10 @@ import java.util.Comparator;
  * @date 2017/11/11
  */
 public class DoubleDictColumn extends BaseDictColumn<Double> {
-    private DoubleWriter keyWriter;
     private DoubleReader keyReader;
 
     public DoubleDictColumn(IResourceLocation parent, Comparator<Double> keyComparator) {
         super(parent, keyComparator);
-    }
-
-    private void initKeyWriter() {
-        if (keyWriter != null) {
-            return;
-        }
-        IResourceLocation keyLocation = parent.buildChildLocation(KEY);
-        keyWriter = DISCOVERY.getWriter(keyLocation, new BuildConf(IoType.WRITE, DataType.DOUBLE));
     }
 
     private void initKeyReader() {
@@ -36,27 +27,6 @@ public class DoubleDictColumn extends BaseDictColumn<Double> {
         }
         IResourceLocation keyLocation = parent.buildChildLocation(KEY);
         keyReader = DISCOVERY.getReader(keyLocation, new BuildConf(IoType.READ, DataType.DOUBLE));
-    }
-
-    @Override
-    public void flush() {
-        super.flush();
-        if (keyWriter != null) {
-            keyWriter.flush();
-        }
-    }
-
-    @Override
-    public void release() {
-        super.release();
-        if (keyWriter != null) {
-            keyWriter.release();
-            keyWriter = null;
-        }
-        if (keyReader != null) {
-            keyReader.release();
-            keyReader = null;
-        }
     }
 
     @Override
@@ -70,13 +40,48 @@ public class DoubleDictColumn extends BaseDictColumn<Double> {
     }
 
     @Override
+    public void release() {
+        super.release();
+        if (keyReader != null) {
+            keyReader.release();
+            keyReader = null;
+        }
+    }
+
+    @Override
     public ColumnTypeConstants.ClassType getType() {
         return ColumnTypeConstants.ClassType.DOUBLE;
     }
 
     @Override
-    public void putValue(int index, Double val) {
-        initKeyWriter();
-        keyWriter.put(index, val);
+    public Putter<Double> putter() {
+        return putter != null ? putter : (putter = new DoublePutter());
+    }
+
+    class DoublePutter extends BasePutter {
+        private DoubleWriter keyWriter;
+
+        private void initKeyWriter() {
+            if (keyWriter != null) {
+                return;
+            }
+            IResourceLocation keyLocation = parent.buildChildLocation(KEY);
+            keyWriter = DISCOVERY.getWriter(keyLocation, new BuildConf(IoType.WRITE, DataType.DOUBLE));
+        }
+
+        @Override
+        public void putValue(int index, Double val) {
+            initKeyWriter();
+            keyWriter.put(index, val);
+        }
+
+        @Override
+        public void release() {
+            super.release();
+            if (keyWriter != null) {
+                keyWriter.release();
+                keyWriter = null;
+            }
+        }
     }
 }

@@ -72,6 +72,7 @@ public class LocalSwiftServerService extends AbstractSwiftServerService {
                     break;
                 case REAL_TIME:
                     realTimeService = null;
+                    break;
                 case COLLATE:
                     collateService = null;
                 default:
