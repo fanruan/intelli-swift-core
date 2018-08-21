@@ -26,7 +26,6 @@ import com.fr.swift.service.register.LocalSwiftRegister;
  */
 public class SwiftClusterListener implements ClusterEventListener {
 
-
     @Override
     public void handleEvent(ClusterEvent clusterEvent) {
         try {

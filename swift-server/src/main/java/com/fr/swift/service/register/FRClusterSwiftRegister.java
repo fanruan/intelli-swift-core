@@ -28,6 +28,9 @@ public class FRClusterSwiftRegister extends AbstractSwiftRegister {
     @Autowired
     private ClusterServiceManager clusterServiceManager;
 
+    private FRClusterSwiftRegister() {
+    }
+
     @Override
     public void serviceRegister() throws Exception {
         if (ClusterSelector.getInstance().getFactory().isMaster()) {
