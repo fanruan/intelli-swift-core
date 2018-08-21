@@ -2,7 +2,8 @@ package com.fr.swift.repository.config;
 
 import com.fr.swift.config.annotation.ConfigField;
 import com.fr.swift.config.bean.SwiftFileSystemConfig;
-import com.fr.swift.config.bean.SwiftFileSystemType;
+import com.fr.swift.file.SwiftFileSystemType;
+import com.fr.swift.file.SwiftRemoteFileSystemType;
 
 /**
  * @author yee
@@ -55,7 +56,7 @@ public class HdfsRepositoryConfig implements SwiftFileSystemConfig {
 
     @Override
     public SwiftFileSystemType getType() {
-        return SwiftFileSystemType.HDFS;
+        return HdfsSystemType.HDFS;
     }
 
     @Override

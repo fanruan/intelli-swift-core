@@ -117,7 +117,8 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                             repository.copyFromRemote(remotePath, cubePath);
                         } catch (Exception e) {
                             downloadSuccess = false;
-                            SwiftLoggers.getLogger().error("Download " + remotePath + " failed!", e);
+                            SwiftLoggers.getLogger().error("Download " + sourceKey + " with error! ", e);
+                            break;
                         }
                     }
 
@@ -130,6 +131,9 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                         String cubePath = String.format("%s/%s/%d/%s", path, metaData.getSwiftSchema().getDir(), current, sourceKey);
                         FileUtil.delete(cubePath);
                         new File(cubePath).getParentFile().delete();
+                    }
+                    if (downloadSuccess) {
+                        SwiftLoggers.getLogger().info("Download " + sourceKey + " successful");
                     }
                 }
             }

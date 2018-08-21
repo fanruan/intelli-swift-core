@@ -14,9 +14,9 @@ import com.fr.third.org.apache.commons.pool2.impl.GenericObjectPoolConfig;
  * @author yee
  * @date 2018/7/5
  */
-class FtpFileSystemPool extends BaseRemoteSystemPool {
+public class FtpFileSystemPool extends BaseRemoteSystemPool<FtpFileSystemImpl> {
 
-    FtpFileSystemPool(FtpRepositoryConfig config) {
+    public FtpFileSystemPool(FtpRepositoryConfig config) {
         super(new FtpFileSystemPoolFactory(config));
     }
 
