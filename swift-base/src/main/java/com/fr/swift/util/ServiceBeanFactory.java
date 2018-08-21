@@ -8,7 +8,6 @@ import com.fr.third.springframework.beans.factory.NoSuchBeanDefinitionException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,6 +23,8 @@ public class ServiceBeanFactory {
 
     private final static Map<String, String> serviceName2BeanName = new HashMap<String, String>();
 
+    private final static Map<String, String> clusterServiceName2BeanName = new HashMap<String, String>();
+
     private final static Map<String, String> serverName2BeanName = new HashMap<String, String>();
 
     static {
@@ -31,7 +32,11 @@ public class ServiceBeanFactory {
         for (Map.Entry<String, Object> entry : swiftServiceBeans.entrySet()) {
             com.fr.swift.annotation.SwiftService annotation =
                     entry.getValue().getClass().getAnnotation(com.fr.swift.annotation.SwiftService.class);
-            serviceName2BeanName.put(annotation.name(), entry.getKey());
+            if (annotation.cluster()) {
+                clusterServiceName2BeanName.put(annotation.name(), entry.getKey());
+            } else {
+                serviceName2BeanName.put(annotation.name(), entry.getKey());
+            }
         }
         Map<String, Object> serverServiceBeans = SwiftContext.get().getBeansWithAnnotation(com.fr.swift.annotation.ServerService.class);
         for (Map.Entry<String, Object> entry : serverServiceBeans.entrySet()) {
@@ -68,21 +73,28 @@ public class ServiceBeanFactory {
         if (swiftServiceNames.contains("indexing")) {
             swiftServiceNames.add("collate");
         }
-        Set<String> serviceNames = new HashSet<String>();
+        List<SwiftService> swiftServiceList = new ArrayList<SwiftService>();
         for (String serviceName : swiftServiceNames) {
-            if (serviceName.equals("indexing")) {
-                serviceNames.add("clusterIndexing");
-            } else if (serviceName.equals("analyse")) {
-                serviceNames.add("clusterAnalyse");
-            } else if (serviceName.equals("history")) {
-                serviceNames.add("clusterHistory");
-            } else if (serviceName.equals("realtime")) {
-                serviceNames.add("clusterRealTime");
-            } else {
-                serviceNames.add(serviceName);
+            try {
+                if (serviceName2BeanName.containsKey(serviceName)) {
+                    SwiftService swiftService = (SwiftService) SwiftContext.get().getBean(serviceName2BeanName.get(serviceName));
+                    if (swiftService == null) {
+                        continue;
+                    }
+                    swiftServiceList.add(swiftService);
+                }
+                if (clusterServiceName2BeanName.containsKey(serviceName)) {
+                    SwiftService swiftService = (SwiftService) SwiftContext.get().getBean(clusterServiceName2BeanName.get(serviceName));
+                    if (swiftService == null) {
+                        continue;
+                    }
+                    swiftServiceList.add(swiftService);
+                }
+            } catch (NoSuchBeanDefinitionException e) {
+                continue;
             }
         }
-        return getSwiftServiceByNames(serviceNames);
+        return swiftServiceList;
     }
 
     public static List<ServerService> getServerServiceByNames(Set<String> serverServiceNames) {

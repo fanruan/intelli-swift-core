@@ -46,7 +46,7 @@ import java.util.Map;
  * @author yee
  * @date 2018/8/6
  */
-@SwiftService(name = "clusterRealTime")
+@SwiftService(name = "realtime", cluster = true)
 @RpcService(type = RpcServiceType.CLIENT_SERVICE, value = RealtimeService.class)
 public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements ClusterRealTimeService, Serializable {
     private static final long serialVersionUID = 946204307880678794L;
