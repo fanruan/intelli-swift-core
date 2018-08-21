@@ -57,7 +57,7 @@ public class ClusterHistoryService extends AbstractSwiftService implements Histo
         historyService.start();
         if (null != info) {
             try {
-                ClusterCommonUtils.callMaster(new PushSegLocationRpcEvent(info));
+                ClusterCommonUtils.asyncCallMaster(new PushSegLocationRpcEvent(info));
             } catch (Exception e) {
                 SwiftLoggers.getLogger().warn("Cannot sync native segment info to server! ", e);
             }

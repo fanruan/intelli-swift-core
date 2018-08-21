@@ -40,7 +40,7 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
                 }
             });
         } catch (SQLException e) {
-            SwiftLoggers.getLogger().error(e);
+            SwiftLoggers.getLogger().debug("Find config bean error. return null.", e);
         }
         return null;
     }

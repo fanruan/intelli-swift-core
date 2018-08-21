@@ -7,6 +7,7 @@ import com.fr.swift.file.exception.SwiftFileException;
 import com.fr.swift.file.system.SwiftFileSystem;
 import com.fr.swift.file.system.impl.DefaultFileSystemImpl;
 import com.fr.swift.file.system.pool.RemoteFactoryCreator;
+import com.fr.swift.repository.config.DefaultRepositoryConfig;
 import com.fr.swift.util.Strings;
 
 import java.io.IOException;
@@ -36,6 +37,9 @@ public abstract class AbstractRepository implements SwiftRepository {
     public abstract boolean delete(String remote) throws IOException;
 
     public SwiftFileSystem createFileSystem(String uri) {
+        if (null == configuration) {
+            configuration = DefaultRepositoryConfig.INSTANCE;
+        }
         SwiftFileSystemType type = configuration.getType();
         if (SwiftRemoteFileSystemType.FR.equals(type)) {
             return new DefaultFileSystemImpl(configuration, uri);

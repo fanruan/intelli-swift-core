@@ -3,7 +3,6 @@ package com.fr.swift.config;
 import com.fr.swift.config.service.SwiftRepositoryConfService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.repository.config.FtpRepositoryConfig;
-import com.fr.swift.repository.config.HdfsRepositoryConfig;
 import com.fr.swift.test.Preparer;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -29,8 +28,5 @@ public class SwiftRepositoryConfServiceImplTest {
         configBean.setPassword("root");
         SwiftContext.get().getBean(SwiftRepositoryConfService.class).setCurrentRepository(configBean);
         assertEquals(configBean, SwiftContext.get().getBean(SwiftRepositoryConfService.class).getCurrentRepository());
-        HdfsRepositoryConfig hdfs = new HdfsRepositoryConfig();
-        SwiftContext.get().getBean(SwiftRepositoryConfService.class).setCurrentRepository(hdfs);
-        assertEquals(hdfs, SwiftContext.get().getBean(SwiftRepositoryConfService.class).getCurrentRepository());
     }
 }

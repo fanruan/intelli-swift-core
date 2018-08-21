@@ -41,7 +41,7 @@ public abstract class AbstractObjectConfigConvert<T> extends BaseConfigConvert<T
             }
             return rule;
         } catch (Exception e) {
-            throw new SQLException("Cannot find Rule");
+            throw new SQLException("Cannot instance " + className, e);
         }
     }
 

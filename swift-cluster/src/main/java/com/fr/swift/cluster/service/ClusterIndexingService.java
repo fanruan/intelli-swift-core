@@ -103,7 +103,7 @@ public class ClusterIndexingService extends AbstractSwiftService implements Inde
             public void work(Pair<TaskKey, TaskResult> result) {
                 SwiftLoggers.getLogger().info("rpc通知server任务完成");
                 try {
-                    ClusterCommonUtils.callMaster(new TaskDoneRpcEvent(result));
+                    ClusterCommonUtils.asyncCallMaster(new TaskDoneRpcEvent(result));
                     FineIO.doWhenFinished(new ClusterUploadRunnable(result, indexingService.getID()));
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().error(e);
@@ -274,7 +274,7 @@ public class ClusterIndexingService extends AbstractSwiftService implements Inde
         }
 
         public void doAfterUpload(SwiftRpcEvent event) throws Exception {
-            ClusterCommonUtils.callMaster(event).addCallback(new AsyncRpcCallback() {
+            ClusterCommonUtils.asyncCallMaster(event).addCallback(new AsyncRpcCallback() {
                 @Override
                 public void success(Object result) {
 
