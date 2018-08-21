@@ -69,6 +69,6 @@ public abstract class AbstractFileSystem<Config extends SwiftFileSystemConfig> i
     }
 
     protected String resolve(String uri, String resolve) {
-        return Strings.trimSeparator(uri + "/" + resolve, "/");
+        return Strings.unifySlash(uri + "/" + resolve);
     }
 }

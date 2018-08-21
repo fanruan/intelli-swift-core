@@ -55,6 +55,6 @@ public abstract class AbstractRepository implements SwiftRepository {
     }
 
     protected String resolve(String uri, String resolve) {
-        return Strings.trimSeparator(uri + "/" + resolve, "/");
+        return Strings.unifySlash(uri + "/" + resolve);
     }
 }
