@@ -21,31 +21,9 @@ public interface DictionaryEncodedColumn<T> extends Releasable, Flushable {
 
     int NULL_INDEX = 0;
 
-    /**
-     * 写入字典的长度，唯一值的个数
-     *
-     * @param size 字典的长度
-     */
-    void putSize(int size);
-
     int size();
 
-    /**
-     * 写入全局字典的长度，全局唯一值的个数
-     */
-    void putGlobalSize(int globalSize);
-
     int globalSize();
-
-    /**
-     * 对应位置写入字典值
-     * 序号 -> 值
-     * 0号始终为null，但不代表一定有null值，这个要看nullIndex
-     *
-     * @param index 字典序号
-     * @param val   值
-     */
-    void putValue(int index, T val);
 
     T getValue(int index);
 
@@ -59,24 +37,7 @@ public interface DictionaryEncodedColumn<T> extends Releasable, Flushable {
      */
     int getIndex(Object value);
 
-    /**
-     * 行号 -> 字典序号
-     *
-     * @param row   行号
-     * @param index 字典序号 0号代表null
-     */
-    void putIndex(int row, int index);
-
     int getIndexByRow(int row);
-
-    /**
-     * 字典序号 -> 全局字典序号
-     * 0号始终为null，但不代表一定有null值，这个要看nullIndex
-     *
-     * @param index       序号
-     * @param globalIndex 全局序号
-     */
-    void putGlobalIndex(int index, int globalIndex);
 
     int getGlobalIndexByIndex(int index);
 
@@ -102,4 +63,47 @@ public interface DictionaryEncodedColumn<T> extends Releasable, Flushable {
      * @return
      */
     ColumnTypeConstants.ClassType getType();
+
+    Putter<T> putter();
+
+    interface Putter<V> extends Releasable {
+        /**
+         * 写入字典的长度，唯一值的个数
+         *
+         * @param size 字典的长度
+         */
+        void putSize(int size);
+
+        /**
+         * 写入全局字典的长度，全局唯一值的个数
+         */
+        void putGlobalSize(int globalSize);
+
+        /**
+         * 对应位置写入字典值
+         * 序号 -> 值
+         * 0号始终为null，但不代表一定有null值，这个要看nullIndex
+         *
+         * @param index 字典序号
+         * @param val   值
+         */
+        void putValue(int index, V val);
+
+        /**
+         * 行号 -> 字典序号
+         *
+         * @param row   行号
+         * @param index 字典序号 0号代表null
+         */
+        void putIndex(int row, int index);
+
+        /**
+         * 字典序号 -> 全局字典序号
+         * 0号始终为null，但不代表一定有null值，这个要看nullIndex
+         *
+         * @param index       序号
+         * @param globalIndex 全局序号
+         */
+        void putGlobalIndex(int index, int globalIndex);
+    }
 }

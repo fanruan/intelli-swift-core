@@ -155,11 +155,6 @@ public class CubeData {
                         }
 
                         @Override
-                        public void putGlobalIndex(int index, int globalIndex) {
-                            globalIndexMap.put(index, globalIndex);
-                        }
-
-                        @Override
                         public Object getValue(int index) {
                             return new ArrayList<>(dict.get(columnIndex).keySet()).get(index);
                         }
@@ -183,6 +178,16 @@ public class CubeData {
                         @Override
                         public Comparator getComparator() {
                             return Comparator.<String>naturalOrder();
+                        }
+
+                        @Override
+                        public Putter putter() {
+                            return new TempPutter() {
+                                @Override
+                                public void putGlobalIndex(int index, int globalIndex) {
+                                    globalIndexMap.put(index, globalIndex);
+                                }
+                            };
                         }
                     };
                 }
@@ -372,7 +377,7 @@ public class CubeData {
                 DictionaryEncodedColumn dict = columns.get(i).getKey().getDictionaryEncodedColumn();
                 List<String> globalMap = lists.get(i);
                 for (int j = 0; j < dict.size(); j++) {
-                    dict.putGlobalIndex(j, globalMap.indexOf(dict.getValue(j)));
+                    dict.putter().putGlobalIndex(j, globalMap.indexOf(dict.getValue(j)));
                 }
             }
         }

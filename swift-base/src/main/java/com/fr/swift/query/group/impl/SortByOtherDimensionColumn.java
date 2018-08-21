@@ -87,27 +87,12 @@ public class SortByOtherDimensionColumn <Base, Derive> implements Column<Derive>
         DictionaryEncodedColumn originDict = originColumn.getDictionaryEncodedColumn();
 
         @Override
-        public void putSize(int size) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
         public int size() {
             return originDict.size();
         }
 
         @Override
-        public void putGlobalSize(int globalSize) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
         public int globalSize() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void putValue(int index, Object val) {
             throw new UnsupportedOperationException();
         }
 
@@ -127,18 +112,8 @@ public class SortByOtherDimensionColumn <Base, Derive> implements Column<Derive>
         }
 
         @Override
-        public void putIndex(int row, int index) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
         public int getIndexByRow(int row) {
             return groupRule.reverseMap(originDict.getIndexByRow(row));
-        }
-
-        @Override
-        public void putGlobalIndex(int index, int globalIndex) {
-            throw new UnsupportedOperationException();
         }
 
         @Override
@@ -163,10 +138,10 @@ public class SortByOtherDimensionColumn <Base, Derive> implements Column<Derive>
             return originDict.getType();
         }
 
-//        @Override
-//        public Object convertValue(Object value) {
-//            return originDict.convertValue(value);
-//        }
+        @Override
+        public Putter putter() {
+            return null;
+        }
 
         @Override
         public void flush() {

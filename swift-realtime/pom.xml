@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.fr.intelligence</groupId>
         <artifactId>fine-swift</artifactId>
-        <version>10.0-RELEASE-SNAPSHOT</version>
+        <version>10.0-FEATURE-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -38,13 +38,13 @@
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-analyse</artifactId>
-            <version>10.0-RELEASE-SNAPSHOT</version>
+            <version>${swift.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-defragmentation</artifactId>
-            <version>10.0-RELEASE-SNAPSHOT</version>
+            <version>${swift.version}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

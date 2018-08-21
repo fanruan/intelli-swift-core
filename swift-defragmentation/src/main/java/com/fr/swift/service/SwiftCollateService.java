@@ -256,7 +256,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
             @Override
             public void run() {
                 for (SegmentKey collateSegKey : collateSegKeys) {
-                    FileUtil.delete(collateSegKey.getAbsoluteUri().getPath());
+                    FileUtil.delete(CubeUtil.getSegPath(collateSegKey));
                 }
             }
         });

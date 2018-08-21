@@ -87,7 +87,7 @@ public class ColumnDictMerger<T> extends BaseWorker implements SwiftColumnDictMe
                 // 拿对应块的字典列
                 DictionaryEncodedColumn<T> dictColumn = dictColumns.get(pair.getKey());
                 // 写入 字典序号 -> 全局序号
-                dictColumn.putGlobalIndex(pair.getValue(), globalIndex);
+                dictColumn.putter().putGlobalIndex(pair.getValue(), globalIndex);
             }
             globalIndex++;
         }
@@ -97,8 +97,8 @@ public class ColumnDictMerger<T> extends BaseWorker implements SwiftColumnDictMe
         }
         for (int i = 0; i < dictColumns.size(); i++) {
             DictionaryEncodedColumn<T> dictColumn = dictColumns.get(i);
-            dictColumn.putGlobalIndex(0, 0);
-            dictColumn.putGlobalSize(globalIndex);
+            dictColumn.putter().putGlobalIndex(0, 0);
+            dictColumn.putter().putGlobalSize(globalIndex);
             releaseIfNeed(dictColumn, columns.get(i));
         }
 

@@ -2,14 +2,10 @@ package com.fr.swift.config.bean;
 
 import com.fr.stable.StringUtils;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
-import com.fr.swift.config.service.SwiftCubePathService;
-import com.fr.swift.config.service.SwiftTablePathService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.util.Strings;
 
 import java.io.Serializable;
 import java.net.URI;
@@ -20,14 +16,11 @@ import java.net.URI;
  */
 public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>, SegmentKey {
     private static final long serialVersionUID = 3202594634845509238L;
-    private transient SwiftCubePathService service = SwiftContext.get().getBean(SwiftCubePathService.class);
-    private transient SwiftTablePathService tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
     /**
      * sourceKey@storeType@order
      */
     private String id;
     private String sourceKey;
-    private URI absoluteUri;
     private URI uri;
     private Integer order;
     private SwiftDatabase.Schema swiftSchema;
@@ -40,20 +33,9 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
         this.storeType = storeType;
         this.id = toString();
         this.swiftSchema = schema;
-        String path = service.getSwiftPath();
-        Integer current = tablePathService.getTablePath(sourceKey);
-        initAbsoluteUri(path, current);
     }
 
     public SegmentKeyBean() {
-    }
-
-    private void initAbsoluteUri(String path, Integer current) {
-        path = Strings.trimSeparator(path, "\\", "/");
-        path = Strings.trimSeparator(String.format("/%s/%s",
-                path,
-                uri.getPath()), "\\", "/");
-        absoluteUri = URI.create(path);
     }
 
     public String getSourceKey() {
@@ -70,18 +52,6 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
             return null;
         }
         return new SourceKey(sourceKey);
-    }
-
-    @Override
-    public URI getAbsoluteUri() {
-        if (null == absoluteUri) {
-            initAbsoluteUri(service.getSwiftPath(), tablePathService.getTablePath(sourceKey));
-        }
-        return absoluteUri;
-    }
-
-    public void setAbsoluteUri(URI absoluteUri) {
-        this.absoluteUri = absoluteUri;
     }
 
     @Override

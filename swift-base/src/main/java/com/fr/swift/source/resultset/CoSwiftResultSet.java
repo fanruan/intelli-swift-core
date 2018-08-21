@@ -36,15 +36,15 @@ public class CoSwiftResultSet implements SwiftResultSet {
 
     @Override
     public boolean hasNext() throws SQLException {
-        if (!resultSets.get(cursor).hasNext()) {
-            do {
-                resultSets.get(cursor).close();
-                cursor++;
-            } while (cursor < resultSets.size() && !resultSets.get(cursor).hasNext());
-
-            return cursor < resultSets.size();
+        if (resultSets.get(cursor).hasNext()) {
+            return true;
         }
-        return true;
+        do {
+            resultSets.get(cursor).close();
+            cursor++;
+        } while (cursor < resultSets.size() && !resultSets.get(cursor).hasNext());
+
+        return cursor < resultSets.size();
     }
 
     @Override

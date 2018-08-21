@@ -9,13 +9,12 @@ import com.fr.swift.cube.io.Types.IoType;
 import com.fr.swift.cube.io.input.BitMapReader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.BitMapWriter;
-import com.fr.swift.segment.column.BitmapIndexedColumn;
 
 /**
  * @author anchore
  * @date 2017/11/9
  */
-public class BitMapColumn implements BitmapIndexedColumn {
+public class BitMapColumn extends BaseBitmapColumn {
     private static final String INDEX = "index";
 
     private static final IResourceDiscovery DISCOVERY = ResourceDiscovery.getInstance();
@@ -50,16 +49,6 @@ public class BitMapColumn implements BitmapIndexedColumn {
     public ImmutableBitMap getBitMapIndex(int index) {
         initIndexReader();
         return indexReader.get(index);
-    }
-
-    @Override
-    public void putNullIndex(ImmutableBitMap bitMap) {
-        putBitMapIndex(0, bitMap);
-    }
-
-    @Override
-    public ImmutableBitMap getNullIndex() {
-        return getBitMapIndex(0);
     }
 
     @Override

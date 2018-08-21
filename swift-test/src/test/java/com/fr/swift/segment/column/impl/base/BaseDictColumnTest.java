@@ -27,9 +27,9 @@ public abstract class BaseDictColumnTest<T> extends TestIo {
     public void testPutValueThenGet() {
         DictionaryEncodedColumn<T> dictColumn = getDictColumn();
         for (int i = 1; i < values.length; i++) {
-            dictColumn.putValue(i, values[i]);
+            dictColumn.putter().putValue(i, values[i]);
         }
-        dictColumn.putSize(values.length);
+        dictColumn.putter().putSize(values.length);
         dictColumn.release();
 
         dictColumn = getDictColumn();
@@ -44,7 +44,7 @@ public abstract class BaseDictColumnTest<T> extends TestIo {
     public void testPutSizeThenGet() {
         DictionaryEncodedColumn<T> dictColumn = getDictColumn();
         int size = r.nextInt(1000000000);
-        dictColumn.putSize(size);
+        dictColumn.putter().putSize(size);
         dictColumn.release();
 
         dictColumn = getDictColumn();
@@ -58,7 +58,7 @@ public abstract class BaseDictColumnTest<T> extends TestIo {
         DictionaryEncodedColumn<T> dictColumn = getDictColumn();
         int[] indices = r.ints(size, 0, size << 1).toArray();
         for (int i = 0; i < indices.length; i++) {
-            dictColumn.putIndex(i, indices[i]);
+            dictColumn.putter().putIndex(i, indices[i]);
         }
         dictColumn.release();
 
