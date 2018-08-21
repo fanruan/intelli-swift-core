@@ -5,7 +5,6 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,7 +27,7 @@ public interface HistoryService extends SwiftService {
      * @param remoteUris
      * @throws IOException
      */
-    void load(Map<String, Set<URI>> remoteUris, boolean replace) throws IOException;
+    void load(Map<String, Set<String>> remoteUris, boolean replace) throws IOException;
 
     boolean delete(SourceKey sourceKey, Where where) throws Exception;
 }

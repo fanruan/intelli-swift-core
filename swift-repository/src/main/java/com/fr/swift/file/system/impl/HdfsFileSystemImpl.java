@@ -1,6 +1,5 @@
 package com.fr.swift.file.system.impl;
 
-import com.fr.general.ComparatorUtils;
 import com.fr.io.utils.ResourceIOUtils;
 import com.fr.swift.file.exception.SwiftFileException;
 import com.fr.swift.file.system.AbstractFileSystem;
@@ -13,7 +12,6 @@ import com.fr.swift.repository.config.HdfsRepositoryConfig;
 import com.fr.third.org.apache.commons.pool2.KeyedObjectPool;
 
 import java.io.InputStream;
-import java.net.URI;
 
 //import org.apache.hadoop.fs.FSDataInputStream;
 //import org.apache.hadoop.fs.FSDataOutputStream;
@@ -32,21 +30,21 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfig>
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(HdfsFileSystemImpl.class);
 
-    //    private KeyedObjectPool<URI, FileSystem> keyedObjectPool;
+    //        private KeyedObjectPool<String, FileSystem> keyedObjectPool;
     private BaseRemoteSystemPool<HdfsFileSystemImpl> systemPool;
 
-    public HdfsFileSystemImpl(final HdfsRepositoryConfig config, URI uri, KeyedObjectPool keyedObjectPool) {
+    public HdfsFileSystemImpl(final HdfsRepositoryConfig config, String uri, KeyedObjectPool keyedObjectPool) {
         super(config, uri);
 //        this.keyedObjectPool = keyedObjectPool;
         this.systemPool = (BaseRemoteSystemPool<HdfsFileSystemImpl>) RemotePoolCreator.creator().getPool(config);
     }
 
     @Override
-    public void write(URI remote, InputStream is) {
+    public void write(String remote, InputStream is) throws SwiftFileException {
 //        FileSystem fileSystem = borrowFileSystem(remote);
 //        try {
-//            fileSystem.delete(new Path(remote.getPath()), true);
-//            OutputStream os = fileSystem.create(new Path(remote.getPath()), true);
+//            fileSystem.delete(new Path(remote), true);
+//            OutputStream os = fileSystem.create(new Path(remote), true);
 //            IOUtils.copyBytes(is, os, 2048, true);
 //        } catch (IOException e) {
 //            throw new SwiftFileException(e);
@@ -55,7 +53,7 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfig>
 //        }
     }
 
-//    private FileSystem borrowFileSystem(URI uri) throws SwiftFileException {
+//    private FileSystem borrowFileSystem(String uri) throws SwiftFileException {
 //        try {
 //            return keyedObjectPool.borrowObject(uri);
 //        } catch (Exception e) {
@@ -66,8 +64,8 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfig>
 //    private FileSystem borrowFileSystem() throws SwiftFileException {
 //        return borrowFileSystem(getResourceURI());
 //    }
-
-//    private void returnFileSystem(URI uri, FileSystem fileSystem) throws SwiftFileException {
+//
+//    private void returnFileSystem(String uri, FileSystem fileSystem) throws SwiftFileException {
 //        try {
 //            keyedObjectPool.returnObject(uri, fileSystem);
 //        } catch (Exception e) {
@@ -76,30 +74,29 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfig>
 //    }
 
     @Override
-    public SwiftFileSystem read(URI remote) throws SwiftFileException {
-        SwiftFileSystem fileSystem;
-        if (ComparatorUtils.equals(remote, getResourceURI())) {
-            fileSystem = this;
-        } else {
-            fileSystem = systemPool.borrowObject(remote);
-        }
-        if (fileSystem.isExists()) {
-            return fileSystem;
-        }
-        throw new SwiftFileException(String.format("File path '%s' not exists!", remote.getPath()));
+    public SwiftFileSystem read(String remote) throws SwiftFileException {
+//        SwiftFileSystem fileSystem;
+//        if (ComparatorUtils.equals(remote, getResourceURI())) {
+//            fileSystem = this;
+//        } else {
+//            fileSystem = systemPool.borrowObject(remote);
+//        }
+//        if (fileSystem.isExists()) {
+//            return fileSystem;
+//        }
+        throw new SwiftFileException(String.format("File path '%s' not exists!", remote));
     }
 
     @Override
     public SwiftFileSystem parent() {
         return systemPool.borrowObject(getParentURI());
-
     }
 
     @Override
-    public boolean remove(URI remote) {
+    public boolean remove(String remote) throws SwiftFileException {
 //        FileSystem fileSystem = borrowFileSystem(remote);
 //        try {
-//            return fileSystem.delete(new Path(remote.getPath()), true);
+//            return fileSystem.delete(new Path(remote), true);
 //        } catch (IOException e) {
 //            throw new SwiftFileException(e);
 //        } finally {
@@ -109,10 +106,10 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfig>
     }
 
     @Override
-    public boolean renameTo(URI src, URI dest) {
+    public boolean renameTo(String src, String dest) throws SwiftFileException {
 //        FileSystem fileSystem = borrowFileSystem(src);
 //        try {
-//            return fileSystem.rename(new Path(src.getPath()), new Path(dest.getPath()));
+//            return fileSystem.rename(new Path(src), new Path(dest));
 //        } catch (IOException e) {
 //            throw new SwiftFileException(e);
 //        } finally {
@@ -122,21 +119,21 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfig>
     }
 
     @Override
-    public boolean copy(URI src, URI dest) {
+    public boolean copy(String src, String dest) throws SwiftFileException {
 //        FileSystem fileSystem = borrowFileSystem(src);
 //        try {
-//            FileStatus fileStatus = fileSystem.getFileStatus(new Path(src.getPath()));
+//            FileStatus fileStatus = fileSystem.getFileStatus(new Path(src));
 //            if (fileStatus.isDirectory()) {
-//                FileStatus[] children = fileSystem.listStatus(new Path(src.getPath()));
-//                boolean mkdir = fileSystem.mkdirs(new Path(dest.getPath()));
+//                FileStatus[] children = fileSystem.listStatus(new Path(src));
+//                boolean mkdir = fileSystem.mkdirs(new Path(dest));
 //                if (mkdir) {
 //                    for (FileStatus child : children) {
-//                        systemPool.borrowObject(child.getPath().toUri()).copy(dest.resolve(child.getPath().getName()));
+//                        systemPool.borrowObject(child.getPath().toUri().getPath()).copy(resolve(dest, child.getPath().getName()));
 //                    }
 //                }
 //            } else if (fileStatus.isFile()) {
 //                FSDataOutputStream dos = fileSystem.create(new Path(dest));
-//                FSDataInputStream dis = fileSystem.open(new Path(src.getPath()));
+//                FSDataInputStream dis = fileSystem.open(new Path(src));
 //                IOUtils.copyBytes(dis, dos, 2048, true);
 //            }
 //            return true;
@@ -153,7 +150,7 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfig>
 //        FileSystem fileSystem = null;
 //        try {
 //            fileSystem = borrowFileSystem();
-//            return fileSystem.exists(new Path(getResourceURI().getPath()));
+//            return fileSystem.exists(new Path(getResourceURI()));
 //        } catch (IOException e) {
 //            return false;
 //        } finally {
@@ -173,7 +170,7 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfig>
 //        FileSystem fileSystem = null;
 //        try {
 //            fileSystem = borrowFileSystem();
-//            return fileSystem.getFileStatus(new Path(getResourceURI().getPath())).isDirectory();
+//            return fileSystem.getFileStatus(new Path(getResourceURI())).isDirectory();
 //        } catch (IOException e) {
 //            return false;
 //        } finally {
@@ -189,10 +186,10 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfig>
     }
 
     @Override
-    public InputStream toStream() {
+    public InputStream toStream() throws SwiftFileException {
 //        FileSystem fileSystem = borrowFileSystem();
 //        try {
-//            return fileSystem.open(new Path(getResourceURI().getPath()));
+//            return fileSystem.open(new Path(getResourceURI()));
 //        } catch (IOException e) {
 //            throw new SwiftFileException(e);
 //        } finally {
@@ -203,8 +200,8 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfig>
 
     @Override
     public String getResourceName() {
-//        return new Path(getResourceURI().getPath()).getName();
-        return ResourceIOUtils.getName(getResourceURI().getPath());
+//        return new Path(getResourceURI()).getName();
+        return ResourceIOUtils.getName(getResourceURI());
     }
 
     @Override
@@ -212,7 +209,7 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfig>
 //        FileSystem fileSystem = null;
 //        try {
 //            fileSystem = borrowFileSystem();
-//            fileSystem.mkdirs(new Path(getResourceURI().getPath()));
+//            fileSystem.mkdirs(new Path(getResourceURI()));
 //        } catch (IOException e) {
 //            LOGGER.error(e);
 //        } finally {
@@ -227,7 +224,7 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfig>
     }
 
     @Override
-    public void close() {
+    public void close() throws SwiftFileException {
 //        try {
 //            keyedObjectPool.clear();
 //        } catch (Exception e) {
@@ -240,10 +237,10 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfig>
 //        FileSystem fileSystem = null;
 //        try {
 //            fileSystem = borrowFileSystem();
-//            FileStatus[] statuses = fileSystem.listStatus(new Path(getResourceURI().getPath()));
+//            FileStatus[] statuses = fileSystem.listStatus(new Path(getResourceURI()));
 //            SwiftFileSystem[] fileSystems = new SwiftFileSystem[statuses.length];
 //            for (int i = 0; i < statuses.length; i++) {
-//                fileSystems[i] = systemPool.borrowObject(statuses[i].getPath().toUri());
+//                fileSystems[i] = systemPool.borrowObject(statuses[i].getPath().toUri().getPath());
 //            }
 //            return fileSystems;
 //        } catch (IOException e) {

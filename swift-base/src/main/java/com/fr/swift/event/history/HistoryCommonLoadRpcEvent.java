@@ -3,19 +3,18 @@ package com.fr.swift.event.history;
 import com.fr.swift.event.base.AbstractHistoryRpcEvent;
 import com.fr.swift.structure.Pair;
 
-import java.net.URI;
 import java.util.List;
 
 /**
  * @author yee
  * @date 2018/6/29
  */
-public class HistoryCommonLoadRpcEvent extends AbstractHistoryRpcEvent<Pair<String, List<URI>>> {
+public class HistoryCommonLoadRpcEvent extends AbstractHistoryRpcEvent<Pair<String, List<String>>> {
 
     private static final long serialVersionUID = -6256005102486640777L;
-    private Pair<String, List<URI>> relation;
+    private Pair<String, List<String>> relation;
 
-    public HistoryCommonLoadRpcEvent(Pair<String, List<URI>> relation) {
+    public HistoryCommonLoadRpcEvent(Pair<String, List<String>> relation) {
         this.relation = relation;
     }
 
@@ -25,7 +24,7 @@ public class HistoryCommonLoadRpcEvent extends AbstractHistoryRpcEvent<Pair<Stri
     }
 
     @Override
-    public Pair<String, List<URI>> getContent() {
+    public Pair<String, List<String>> getContent() {
         return relation;
     }
 }

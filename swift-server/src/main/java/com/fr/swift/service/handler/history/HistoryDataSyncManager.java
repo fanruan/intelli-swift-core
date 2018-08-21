@@ -1,20 +1,20 @@
 package com.fr.swift.service.handler.history;
 
 import com.fr.stable.StringUtils;
+import com.fr.swift.basics.AsyncRpcCallback;
+import com.fr.swift.cluster.entity.ClusterEntity;
+import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.service.DataSyncRuleService;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.event.analyse.SegmentLocationRpcEvent;
 import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
-import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.service.ServiceType;
-import com.fr.swift.cluster.entity.ClusterEntity;
 import com.fr.swift.service.handler.SwiftServiceHandlerManager;
 import com.fr.swift.service.handler.base.AbstractHandler;
 import com.fr.swift.structure.Pair;
@@ -22,7 +22,6 @@ import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.io.Serializable;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -71,14 +70,14 @@ public class HistoryDataSyncManager extends AbstractHandler<HistoryLoadSegmentRp
                 final String key = keyIterator.next();
                 ClusterEntity entity = services.get(key);
                 Iterator<SegmentKey> valueIterator = result.get(key).iterator();
-                Map<String, Set<URI>> uriSet = new HashMap<String, Set<URI>>();
+                Map<String, Set<String>> uriSet = new HashMap<String, Set<String>>();
                 final List<Pair<String, String>> idList = new ArrayList<Pair<String, String>>();
                 while (valueIterator.hasNext()) {
                     SegmentKey segmentKey = valueIterator.next();
                     if (null == uriSet.get(segmentKey.getTable().getId())) {
-                        uriSet.put(segmentKey.getTable().getId(), new HashSet<URI>());
+                        uriSet.put(segmentKey.getTable().getId(), new HashSet<String>());
                     }
-                    uriSet.get(segmentKey.getTable().getId()).add(segmentKey.getUri());
+                    uriSet.get(segmentKey.getTable().getId()).add(segmentKey.getUri().getPath());
                     idList.add(Pair.of(segmentKey.getTable().getId(), segmentKey.toString()));
                 }
                 runAsyncRpc(key, entity.getServiceClass(), "load", uriSet, true)
