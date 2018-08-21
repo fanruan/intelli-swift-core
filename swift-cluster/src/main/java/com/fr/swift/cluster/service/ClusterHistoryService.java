@@ -44,7 +44,7 @@ import java.util.Set;
  * @author yee
  * @date 2018/8/7
  */
-@SwiftService(name = "clusterHistory")
+@SwiftService(name = "history", cluster = true)
 @RpcService(value = HistoryService.class, type = RpcServiceType.CLIENT_SERVICE)
 public class ClusterHistoryService extends AbstractSwiftService implements HistoryService, Serializable {
     private static final long serialVersionUID = -3487010910076432934L;

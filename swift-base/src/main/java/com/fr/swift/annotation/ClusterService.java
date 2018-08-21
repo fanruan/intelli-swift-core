@@ -8,7 +8,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This class created on 2018/8/8
+ * This class created on 2018/8/17
  *
  * @author Lucifer
  * @description
@@ -17,8 +17,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Component
-public @interface SwiftService {
-    String name() default "";
-
-    boolean cluster() default false;
+public @interface ClusterService {
+    String initMethod();
 }
