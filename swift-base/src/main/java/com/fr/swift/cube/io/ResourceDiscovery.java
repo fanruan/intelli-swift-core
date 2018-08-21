@@ -28,14 +28,14 @@ public class ResourceDiscovery implements IResourceDiscovery {
     /**
      * 预览mem io
      * <p>
-     * schema/table/seg -> (table/seg/column/... -> mem io)
+     * schema/table/seg -> (schema/table/seg/column/... -> mem io)
      */
     private final Map<String, Map<String, MemIo>> minorMemIos = new ConcurrentHashMap<String, Map<String, MemIo>>(),
 
     /**
      * 增量realtime mem io
      * <p>
-     * schema/table/seg -> (table/seg/column/... -> mem io)
+     * schema/table/seg -> (schema/table/seg/column/... -> mem io)
      */
     cubeMemIos = new ConcurrentHashMap<String, Map<String, MemIo>>();
 
