@@ -20,7 +20,6 @@ import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.info.ServerCurrentStatus;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.netty.rpc.server.RpcServer;
 import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.relation.RelationIndexImpl;
@@ -62,9 +61,6 @@ import static com.fr.swift.task.TaskResult.Type.SUCCEEDED;
 public class ClusterIndexingService extends AbstractSwiftService implements IndexingService, Serializable {
 
     private static final long serialVersionUID = 3153509375653090856L;
-    @Autowired
-    private transient RpcServer server;
-
     @Autowired(required = false)
     @Qualifier("indexingService")
     private IndexingService indexingService;

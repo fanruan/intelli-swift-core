@@ -14,7 +14,6 @@ import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.event.global.PushSegLocationRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.netty.rpc.server.RpcServer;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
@@ -50,8 +49,6 @@ import java.util.Map;
 @RpcService(type = RpcServiceType.CLIENT_SERVICE, value = RealtimeService.class)
 public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements ClusterRealTimeService, Serializable {
     private static final long serialVersionUID = 946204307880678794L;
-    @Autowired
-    private transient RpcServer server;
 
     @Autowired
     private transient ServiceTaskExecutor taskExecutor;

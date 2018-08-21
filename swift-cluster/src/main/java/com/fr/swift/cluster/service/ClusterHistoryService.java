@@ -11,7 +11,6 @@ import com.fr.swift.db.Where;
 import com.fr.swift.event.global.PushSegLocationRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.netty.rpc.server.RpcServer;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
@@ -49,8 +48,6 @@ public class ClusterHistoryService extends AbstractSwiftService implements Histo
     @Autowired(required = false)
     @Qualifier("historyService")
     private HistoryService historyService;
-    @Autowired
-    private transient RpcServer server;
 
     @Override
     public boolean start() throws SwiftServiceException {
