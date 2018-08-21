@@ -1,6 +1,11 @@
 package com.fr.swift.server;
 
 import com.fineio.FineIO;
+import com.fr.config.activator.ConfigurationActivator;
+import com.fr.config.dao.DaoContext;
+import com.fr.config.dao.impl.LocalClassHelperDao;
+import com.fr.config.dao.impl.LocalEntityDao;
+import com.fr.config.dao.impl.LocalXmlEntityDao;
 import com.fr.data.impl.Connection;
 import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.swift.context.SwiftContext;
@@ -56,6 +61,11 @@ public class SwiftEngineStart {
 
     private static void registerTmpConnectionProvider() {
         SwiftProperty property = SwiftContext.get().getBean(SwiftProperty.class);
+
+        DaoContext.setEntityDao(new LocalEntityDao());
+        DaoContext.setClassHelperDao(new LocalClassHelperDao());
+        DaoContext.setXmlEntityDao(new LocalXmlEntityDao());
+
         Connection frConnection = new JDBCDatabaseConnection(property.getConfigDbDriverClass(),
                 property.getConfigDbJdbcUrl(), property.getConfigDbUsername(), property.getConfigDbPasswd());
         final SwiftConnectionInfo connectionInfo = new SwiftConnectionInfo(null, frConnection);

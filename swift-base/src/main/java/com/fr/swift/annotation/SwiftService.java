@@ -19,4 +19,6 @@ import java.lang.annotation.Target;
 @Component
 public @interface SwiftService {
     String name() default "";
+
+    boolean cluster() default false;
 }
