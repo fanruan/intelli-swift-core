@@ -11,6 +11,7 @@ public abstract class AbstractHistoryRpcEvent<T> implements SwiftRpcEvent<T> {
         return EventType.HISTORY;
     }
 
+    @Override
     public abstract Event subEvent();
 
     public enum Event implements SubEvent {

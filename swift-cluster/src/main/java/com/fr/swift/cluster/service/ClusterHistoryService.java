@@ -4,8 +4,6 @@ import com.fr.swift.annotation.RpcMethod;
 import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.annotation.SwiftService;
-import com.fr.swift.basics.RpcFuture;
-import com.fr.swift.basics.URL;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
@@ -13,7 +11,6 @@ import com.fr.swift.db.Where;
 import com.fr.swift.event.global.PushSegLocationRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.netty.rpc.server.RpcServer;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
@@ -32,7 +29,6 @@ import com.fr.third.springframework.beans.factory.annotation.Qualifier;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -52,8 +48,6 @@ public class ClusterHistoryService extends AbstractSwiftService implements Histo
     @Autowired(required = false)
     @Qualifier("historyService")
     private HistoryService historyService;
-    @Autowired
-    private transient RpcServer server;
 
     @Override
     public boolean start() throws SwiftServiceException {
@@ -63,7 +57,7 @@ public class ClusterHistoryService extends AbstractSwiftService implements Histo
         historyService.start();
         if (null != info) {
             try {
-                runRpc(new PushSegLocationRpcEvent(info));
+                ClusterCommonUtils.callMaster(new PushSegLocationRpcEvent(info));
             } catch (Exception e) {
                 SwiftLoggers.getLogger().warn("Cannot sync native segment info to server! ", e);
             }
@@ -79,7 +73,7 @@ public class ClusterHistoryService extends AbstractSwiftService implements Histo
 
     @Override
     @RpcMethod(methodName = "load")
-    public void load(Map<String, Set<URI>> remoteUris, boolean replace) throws IOException {
+    public void load(Map<String, Set<String>> remoteUris, boolean replace) throws IOException {
         historyService.load(remoteUris, replace);
     }
 
@@ -87,12 +81,6 @@ public class ClusterHistoryService extends AbstractSwiftService implements Histo
     @RpcMethod(methodName = "historyDelete")
     public boolean delete(SourceKey sourceKey, Where where) throws Exception {
         return historyService.delete(sourceKey, where);
-    }
-
-
-    private RpcFuture runRpc(Object... args) throws Exception {
-        URL masterURL = ClusterCommonUtils.getMasterURL();
-        return ClusterCommonUtils.runRpc(masterURL, server.getMethodByName("rpcTrigger"), args);
     }
 
 

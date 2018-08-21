@@ -20,7 +20,6 @@ import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.info.ServerCurrentStatus;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.netty.rpc.server.RpcServer;
 import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.relation.RelationIndexImpl;
@@ -46,7 +45,6 @@ import com.fr.third.springframework.beans.factory.annotation.Qualifier;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -63,9 +61,6 @@ import static com.fr.swift.task.TaskResult.Type.SUCCEEDED;
 public class ClusterIndexingService extends AbstractSwiftService implements IndexingService, Serializable {
 
     private static final long serialVersionUID = 3153509375653090856L;
-    @Autowired
-    private transient RpcServer server;
-
     @Autowired(required = false)
     @Qualifier("indexingService")
     private IndexingService indexingService;
@@ -108,7 +103,7 @@ public class ClusterIndexingService extends AbstractSwiftService implements Inde
             public void work(Pair<TaskKey, TaskResult> result) {
                 SwiftLoggers.getLogger().info("rpc通知server任务完成");
                 try {
-                    ClusterCommonUtils.runRpc(ClusterCommonUtils.getMasterURL(), server.getMethodByName("rpcTrigger"), new TaskDoneRpcEvent(result));
+                    ClusterCommonUtils.callMaster(new TaskDoneRpcEvent(result));
                     FineIO.doWhenFinished(new ClusterUploadRunnable(result, indexingService.getID()));
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().error(e);
@@ -150,12 +145,12 @@ public class ClusterIndexingService extends AbstractSwiftService implements Inde
                         String uploadPath = String.format("%s/%s",
                                 segmentKey.getSwiftSchema().getDir(),
                                 segmentKey.getUri().getPath());
-                        URI local = URI.create(String.format("%s/%s/%d/%s",
+                        String local = String.format("%s/%s/%d/%s",
                                 cubePath,
                                 segmentKey.getSwiftSchema().getDir(),
                                 tmpPath,
-                                segmentKey.getUri().getPath()));
-                        upload(local, URI.create(uploadPath));
+                                segmentKey.getUri().getPath());
+                        upload(local, uploadPath);
                     } catch (Exception e) {
                         SwiftLoggers.getLogger().error("upload error! ", e);
                     }
@@ -177,24 +172,24 @@ public class ClusterIndexingService extends AbstractSwiftService implements Inde
         public void uploadRelation(RelationSource relation) throws Exception {
             SourceKey sourceKey = relation.getForeignSource();
             SourceKey primary = relation.getPrimarySource();
-            List<URI> needUpload = new ArrayList<URI>();
+            List<String> needUpload = new ArrayList<String>();
             List<SegmentKey> segmentKeys = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).getSegmentByKey(sourceKey.getId());
             if (null != segmentKeys) {
                 if (relation.getRelationType() != RelationSourceType.FIELD_RELATION) {
                     for (SegmentKey segmentKey : segmentKeys) {
                         try {
-                            URI src = URI.create(Strings.unifySlash(
+                            String src = Strings.unifySlash(
                                     String.format("%s/%s/%s/%s",
                                             pathService.getSwiftPath(),
                                             CubeUtil.getSegPath(segmentKey),
                                             RelationIndexImpl.RELATIONS_KEY,
                                             primary.getId()
-                                    )));
-                            URI dest = URI.create(String.format("%s/%s/%s/%s",
+                                    ));
+                            String dest = String.format("%s/%s/%s/%s",
                                     segmentKey.getSwiftSchema().getDir(),
                                     Strings.unifySlash(segmentKey.getUri().getPath() + "/"),
                                     RelationIndexImpl.RELATIONS_KEY,
-                                    primary.getId()));
+                                    primary.getId());
                             upload(src, dest);
                             needUpload.add(dest);
                         } catch (IOException e) {
@@ -204,17 +199,17 @@ public class ClusterIndexingService extends AbstractSwiftService implements Inde
                 } else {
                     for (SegmentKey segmentKey : segmentKeys) {
                         try {
-                            URI src = URI.create(Strings.unifySlash(
+                            String src = Strings.unifySlash(
                                     String.format("%s/field/%s/%s",
                                             CubeUtil.getSegPath(segmentKey),
                                             RelationIndexImpl.RELATIONS_KEY,
                                             primary.getId()
-                                    )));
-                            URI dest = URI.create(String.format("%s/%s/field/%s/%s",
+                                    ));
+                            String dest = String.format("%s/%s/field/%s/%s",
                                     segmentKey.getSwiftSchema().getDir(),
                                     Strings.unifySlash(segmentKey.getUri().getPath() + "/"),
                                     RelationIndexImpl.RELATIONS_KEY,
-                                    primary.getId()));
+                                    primary.getId());
                             upload(src, dest);
                             needUpload.add(dest);
                         } catch (IOException e) {
@@ -274,14 +269,12 @@ public class ClusterIndexingService extends AbstractSwiftService implements Inde
 
         }
 
-        protected void upload(URI src, URI dest) throws IOException {
+        protected void upload(String src, String dest) throws IOException {
             repositoryManager.currentRepo().copyToRemote(src, dest);
         }
 
         public void doAfterUpload(SwiftRpcEvent event) throws Exception {
-            ClusterCommonUtils.runRpc(ClusterCommonUtils.getMasterURL(),
-                    server.getMethodByName("rpcTrigger"),
-                    event).addCallback(new AsyncRpcCallback() {
+            ClusterCommonUtils.callMaster(event).addCallback(new AsyncRpcCallback() {
                 @Override
                 public void success(Object result) {
 
