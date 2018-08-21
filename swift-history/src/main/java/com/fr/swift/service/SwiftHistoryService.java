@@ -101,21 +101,29 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                         tablePathService.saveOrUpdate(entity);
                         replace = true;
                     } else {
-                        tmp = entity.getTablePath();
+                        tmp = entity.getTablePath() == null ? -1 : entity.getTablePath();
                         if (replace) {
                             tmp += 1;
                             entity.setTmpDir(tmp);
                             tablePathService.saveOrUpdate(entity);
                         }
                     }
+
+                    boolean downloadSuccess = true;
                     for (String uri : sets) {
                         String cubePath = String.format("%s/%s/%d/%s", path, metaData.getSwiftSchema().getDir(), tmp, uri);
                         String remotePath = String.format("%s/%s", metaData.getSwiftSchema().getDir(), uri);
-                        repository.copyFromRemote(remotePath, cubePath);
+                        try {
+                            repository.copyFromRemote(remotePath, cubePath);
+                        } catch (Exception e) {
+                            downloadSuccess = false;
+                            SwiftLoggers.getLogger().error("Download " + remotePath + " failed!", e);
+                        }
                     }
-                    if (replace) {
+
+                    if (replace && downloadSuccess) {
                         entity = tablePathService.get(sourceKey);
-                        int current = entity.getTablePath();
+                        int current = entity.getTablePath() == null ? -1 : entity.getTablePath();
                         entity.setLastPath(current);
                         entity.setTablePath(tmp);
                         tablePathService.saveOrUpdate(entity);

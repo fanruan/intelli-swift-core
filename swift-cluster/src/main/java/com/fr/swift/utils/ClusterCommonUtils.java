@@ -12,6 +12,7 @@ import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 
 import java.lang.reflect.Method;
@@ -38,5 +39,9 @@ public class ClusterCommonUtils {
             return future;
         }
         throw new Exception(invokeResult.getException());
+    }
+
+    public static RpcFuture callMaster(SwiftRpcEvent event) throws Exception {
+        return runRpc(getMasterURL(), SwiftServiceListenerHandler.class.getMethod("trigger", SwiftRpcEvent.class), event);
     }
 }

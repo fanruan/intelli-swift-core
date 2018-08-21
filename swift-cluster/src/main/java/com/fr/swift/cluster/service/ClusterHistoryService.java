@@ -4,8 +4,6 @@ import com.fr.swift.annotation.RpcMethod;
 import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.annotation.SwiftService;
-import com.fr.swift.basics.RpcFuture;
-import com.fr.swift.basics.URL;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
@@ -62,7 +60,7 @@ public class ClusterHistoryService extends AbstractSwiftService implements Histo
         historyService.start();
         if (null != info) {
             try {
-                runRpc(new PushSegLocationRpcEvent(info));
+                ClusterCommonUtils.callMaster(new PushSegLocationRpcEvent(info));
             } catch (Exception e) {
                 SwiftLoggers.getLogger().warn("Cannot sync native segment info to server! ", e);
             }
@@ -86,12 +84,6 @@ public class ClusterHistoryService extends AbstractSwiftService implements Histo
     @RpcMethod(methodName = "historyDelete")
     public boolean delete(SourceKey sourceKey, Where where) throws Exception {
         return historyService.delete(sourceKey, where);
-    }
-
-
-    private RpcFuture runRpc(Object... args) throws Exception {
-        URL masterURL = ClusterCommonUtils.getMasterURL();
-        return ClusterCommonUtils.runRpc(masterURL, server.getMethodByName("rpcTrigger"), args);
     }
 
 
