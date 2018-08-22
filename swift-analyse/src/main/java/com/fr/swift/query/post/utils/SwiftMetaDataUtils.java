@@ -1,7 +1,7 @@
 package com.fr.swift.query.post.utils;
 
-import com.fr.stable.StringUtils;
 import com.fr.swift.config.bean.MetaDataColumnBean;
+import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.impl.SwiftDatabase;
@@ -18,7 +18,6 @@ import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.meta.SwiftMetaDataImpl;
 
 import java.sql.Types;
 import java.util.ArrayList;
@@ -40,50 +39,41 @@ public class SwiftMetaDataUtils {
         final String tableName = bean.getTableName();
         SwiftMetaData meta = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(bean.getTableName());
         SwiftDatabase.Schema schema = meta.getSwiftSchema();
-        List<String> fieldNames = new ArrayList<String>();
         List<SwiftMetaDataColumn> metaDataColumns = new ArrayList<SwiftMetaDataColumn>();
         List<DimensionBean> dimensionBeans = bean.getDimensionBeans();
         for (DimensionBean dimensionBean : dimensionBeans) {
             String alias = dimensionBean.getName();
             String column = dimensionBean.getColumn();
-            if (alias == null) {
-                fieldNames.add(column);
-            } else {
-                fieldNames.add(alias);
-            }
-            metaDataColumns.add(meta.getColumn(column));
+            SwiftMetaDataColumn metaDataColumn = meta.getColumn(column);
+            String name = alias == null ? column : alias;
+            metaDataColumns.add(new MetaDataColumnBean(name, metaDataColumn.getRemark(), metaDataColumn.getType(),
+                    metaDataColumn.getPrecision(), metaDataColumn.getScale(), metaDataColumn.getColumnId()));
         }
-        return new SwiftMetaDataImpl(tableName, schema, fieldNames, metaDataColumns);
+        return new SwiftMetaDataBean(tableName, tableName, schema.getName(), metaDataColumns);
     }
 
     private static SwiftMetaData createGroupMetaData(GroupQueryInfoBean bean) throws SwiftMetaDataException {
         final String tableName = bean.getTableName();
         SwiftMetaData meta = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(bean.getTableName());
         SwiftDatabase.Schema schema = meta.getSwiftSchema();
-        List<String> fieldNames = new ArrayList<String>();
         List<SwiftMetaDataColumn> metaDataColumns = new ArrayList<SwiftMetaDataColumn>();
         List<DimensionBean> dimensionBeans = bean.getDimensionBeans();
         for (DimensionBean dimensionBean : dimensionBeans) {
             String alias = dimensionBean.getName();
             String column = dimensionBean.getColumn();
-            if (alias == null) {
-                fieldNames.add(column);
-            } else {
-                fieldNames.add(alias);
-            }
-            metaDataColumns.add(meta.getColumn(column));
+            SwiftMetaDataColumn metaDataColumn = meta.getColumn(column);
+            String name = alias == null ? column : alias;
+            metaDataColumns.add(new MetaDataColumnBean(name, metaDataColumn.getRemark(), metaDataColumn.getType(),
+                    metaDataColumn.getPrecision(), metaDataColumn.getScale(), metaDataColumn.getColumnId()));
         }
         List<MetricBean> metricBeans = bean.getMetricBeans();
         for (MetricBean metricBean : metricBeans) {
             String alias = metricBean.getName();
             String column = metricBean.getColumn();
-            if (alias == null) {
-                fieldNames.add(column);
-            } else {
-                fieldNames.add(alias);
-            }
-            metaDataColumns.add(StringUtils.isEmpty(column) ?
-                    new MetaDataColumnBean(null, null, Types.DOUBLE, null) : meta.getColumn(column));
+            SwiftMetaDataColumn metaDataColumn = meta.getColumn(column);
+            String name = alias == null ? column : alias;
+            metaDataColumns.add(new MetaDataColumnBean(name, metaDataColumn.getRemark(), metaDataColumn.getType(),
+                    metaDataColumn.getPrecision(), metaDataColumn.getScale(), metaDataColumn.getColumnId()));
         }
         List<PostQueryInfoBean> postQueryInfoBeans = bean.getPostQueryInfoBeans();
         for (PostQueryInfoBean postQueryInfoBean : postQueryInfoBeans) {
@@ -93,10 +83,9 @@ public class SwiftMetaDataUtils {
             List<CalculatedFieldBean> calculatedFieldBeans = ((CalculatedFieldQueryInfoBean) postQueryInfoBean).getCalculatedFieldBeans();
             for (CalculatedFieldBean calculatedFieldBean : calculatedFieldBeans) {
                 String name = calculatedFieldBean.getName();
-                fieldNames.add(name);
                 metaDataColumns.add(new MetaDataColumnBean(name, null, Types.DOUBLE, null));
             }
         }
-        return new SwiftMetaDataImpl(tableName, schema, fieldNames, metaDataColumns);
+        return new SwiftMetaDataBean(tableName, tableName, schema.getName(), metaDataColumns);
     }
 }
