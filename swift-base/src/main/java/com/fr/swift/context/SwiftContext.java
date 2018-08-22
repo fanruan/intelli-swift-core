@@ -43,10 +43,6 @@ public class SwiftContext extends ClassPathXmlApplicationContext {
         }
     }
 
-
-    public static void getBean(){
-    }
-
     /**
      * 手动注册bean
      *

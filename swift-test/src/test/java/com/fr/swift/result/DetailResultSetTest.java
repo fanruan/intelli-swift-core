@@ -20,6 +20,7 @@ import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.Row;
 import com.fr.swift.structure.Pair;
+import com.fr.swift.test.Temps.TempDictColumn;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
@@ -51,7 +52,7 @@ public class DetailResultSetTest extends TestCase {
                 int[] intDetail = {2, 2, 4, 3, 2, 3, 4, 2};
                 List<Integer> keys = Arrays.asList(2, 3, 4);
                 final int[] index = {0, 0, 2, 1, 0, 1, 2, 0};
-                return new DictionaryEncodedColumn<Integer>() {
+                return new TempDictColumn<Integer>() {
                     @Override
                     public int size() {
                         return keys.size();
@@ -101,21 +102,6 @@ public class DetailResultSetTest extends TestCase {
                     public ColumnTypeConstants.ClassType getType() {
                         return ColumnTypeConstants.ClassType.INTEGER;
                     }
-
-                    @Override
-                    public Putter<Integer> putter() {
-                        return null;
-                    }
-
-                    @Override
-                    public void flush() {
-
-                    }
-
-                    @Override
-                    public void release() {
-
-                    }
                 };
             }
 
@@ -138,7 +124,7 @@ public class DetailResultSetTest extends TestCase {
             @Override
             public DictionaryEncodedColumn<Long> getDictionaryEncodedColumn() {
 
-                return new DictionaryEncodedColumn<Long>() {
+                return new TempDictColumn<Long>() {
                     long[] longDetail = {12, 18, 23, 18, 23, 18, 23, 12};
                     List<Long> keys = Arrays.asList(12L, 18L, 23L);
                     int[] index = {0, 1, 2, 1, 2, 1, 2, 0};
@@ -192,21 +178,6 @@ public class DetailResultSetTest extends TestCase {
                     public ColumnTypeConstants.ClassType getType() {
                         return ColumnTypeConstants.ClassType.LONG;
                     }
-
-                    @Override
-                    public Putter<Long> putter() {
-                        return null;
-                    }
-
-                    @Override
-                    public void flush() {
-
-                    }
-
-                    @Override
-                    public void release() {
-
-                    }
                 };
             }
 
@@ -228,7 +199,7 @@ public class DetailResultSetTest extends TestCase {
         doubleColumn = new Column<Double>() {
             @Override
             public DictionaryEncodedColumn<Double> getDictionaryEncodedColumn() {
-                return new DictionaryEncodedColumn<Double>() {
+                return new TempDictColumn<Double>() {
                     double[] doubleDetail = {9.5, 50.2, 40.1, 12.3, 9.5, 12.3, 40.1, 9.5};
                     List<Double> keys = Arrays.asList(9.5, 12.3, 40.1, 50.2);
                     final int[] index = {0, 3, 2, 1, 0, 1, 2, 0};
@@ -282,21 +253,6 @@ public class DetailResultSetTest extends TestCase {
                     public ColumnTypeConstants.ClassType getType() {
                         return ColumnTypeConstants.ClassType.DOUBLE;
                     }
-
-                    @Override
-                    public Putter<Double> putter() {
-                        return null;
-                    }
-
-                    @Override
-                    public void flush() {
-
-                    }
-
-                    @Override
-                    public void release() {
-
-                    }
                 };
             }
 
@@ -318,7 +274,7 @@ public class DetailResultSetTest extends TestCase {
         stringColumn = new Column<String>() {
             @Override
             public DictionaryEncodedColumn<String> getDictionaryEncodedColumn() {
-                return new DictionaryEncodedColumn<String>() {
+                return new TempDictColumn<String>() {
                     String strDetail[] = {"A", "B", "C", "B", "C", "B", "A", "C"};
                     final String[] keys = {"A", "B", "C"};
                     final int[] index = {0, 1, 2, 1, 2, 1, 0, 2};
@@ -370,21 +326,6 @@ public class DetailResultSetTest extends TestCase {
                     @Override
                     public ColumnTypeConstants.ClassType getType() {
                         return ColumnTypeConstants.ClassType.STRING;
-                    }
-
-                    @Override
-                    public Putter<String> putter() {
-                        return null;
-                    }
-
-                    @Override
-                    public void flush() {
-
-                    }
-
-                    @Override
-                    public void release() {
-
                     }
                 };
             }

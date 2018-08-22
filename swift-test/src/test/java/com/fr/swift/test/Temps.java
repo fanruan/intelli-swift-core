@@ -84,6 +84,11 @@ public final class Temps {
             throw new UnsupportedOperationException();
         }
 
+        @Override
+        public boolean isReadable() {
+            return false;
+        }
+
         public class TempPutter implements Putter<T> {
             @Override
             public void putSize(int size) {

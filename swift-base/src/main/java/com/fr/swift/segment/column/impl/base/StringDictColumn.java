@@ -4,9 +4,9 @@ import com.fr.stable.StringUtils;
 import com.fr.swift.cube.io.BuildConf;
 import com.fr.swift.cube.io.Types.DataType;
 import com.fr.swift.cube.io.Types.IoType;
-import com.fr.swift.cube.io.input.StringReader;
+import com.fr.swift.cube.io.input.ObjectReader;
 import com.fr.swift.cube.io.location.IResourceLocation;
-import com.fr.swift.cube.io.output.StringWriter;
+import com.fr.swift.cube.io.output.ObjectWriter;
 import com.fr.swift.source.ColumnTypeConstants;
 
 import java.util.Comparator;
@@ -15,9 +15,7 @@ import java.util.Comparator;
  * @author anchore
  * @date 2017/11/7
  */
-public class StringDictColumn extends BaseDictColumn<String> {
-    private StringReader keyReader;
-
+public class StringDictColumn extends BaseDictColumn<String, ObjectReader<String>> {
     public StringDictColumn(IResourceLocation parent, Comparator<String> keyComparator) {
         super(parent, keyComparator);
     }
@@ -53,22 +51,11 @@ public class StringDictColumn extends BaseDictColumn<String> {
     }
 
     @Override
-    public void release() {
-        super.release();
-        if (keyReader != null) {
-            keyReader.release();
-            keyReader = null;
-        }
-    }
-
-    @Override
     public Putter<String> putter() {
         return putter != null ? putter : (putter = new StringPutter());
     }
 
-    class StringPutter extends BasePutter {
-        private StringWriter keyWriter;
-
+    class StringPutter extends BasePutter<ObjectWriter<String>> {
         private void initKeyWriter() {
             if (keyWriter != null) {
                 return;
@@ -81,15 +68,6 @@ public class StringDictColumn extends BaseDictColumn<String> {
         public void putValue(int index, String val) {
             initKeyWriter();
             keyWriter.put(index, val);
-        }
-
-        @Override
-        public void release() {
-            super.release();
-            if (keyWriter != null) {
-                keyWriter.release();
-                keyWriter = null;
-            }
         }
     }
 

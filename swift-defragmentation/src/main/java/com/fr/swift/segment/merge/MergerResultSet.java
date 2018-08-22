@@ -19,6 +19,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
+@Deprecated
 public class MergerResultSet implements SwiftResultSet {
 
     private List<Segment> segmentList;

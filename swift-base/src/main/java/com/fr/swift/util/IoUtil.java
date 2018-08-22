@@ -32,15 +32,17 @@ public class IoUtil {
     }
 
     public static void release(Releasable... releasables) {
-        for (Releasable releasable : releasables) {
-            release(releasable);
+        if (releasables != null) {
+            for (Releasable releasable : releasables) {
+                release(releasable);
+            }
         }
     }
 
     public static void release(MappedByteBuffer buf) {
         if (buf != null) {
             buf.force();
-            release(buf);
+            release((ByteBuffer) buf);
         }
     }
 

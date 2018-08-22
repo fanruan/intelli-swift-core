@@ -14,7 +14,7 @@ import java.util.Comparator;
  * @author anchore
  * @date 2017/11/11
  */
-public class IntDictColumn extends BaseDictColumn<Integer> {
+public class IntDictColumn extends BaseDictColumn<Integer, IntReader> {
     private IntReader keyReader;
 
     public IntDictColumn(IResourceLocation parent, Comparator<Integer> keyComparator) {
@@ -44,22 +44,11 @@ public class IntDictColumn extends BaseDictColumn<Integer> {
     }
 
     @Override
-    public void release() {
-        super.release();
-        if (keyReader != null) {
-            keyReader.release();
-            keyReader = null;
-        }
-    }
-
-    @Override
     public Putter<Integer> putter() {
         return putter != null ? putter : (putter = new IntPutter());
     }
 
-    class IntPutter extends BasePutter {
-        private IntWriter keyWriter;
-
+    class IntPutter extends BasePutter<IntWriter> {
         private void initKeyWriter() {
             if (keyWriter != null) {
                 return;
@@ -72,15 +61,6 @@ public class IntDictColumn extends BaseDictColumn<Integer> {
         public void putValue(int index, Integer val) {
             initKeyWriter();
             keyWriter.put(index, val);
-        }
-
-        @Override
-        public void release() {
-            super.release();
-            if (keyWriter != null) {
-                keyWriter.release();
-                keyWriter = null;
-            }
         }
     }
 }

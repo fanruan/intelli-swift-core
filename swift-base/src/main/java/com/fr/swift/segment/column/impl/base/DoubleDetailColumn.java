@@ -12,10 +12,7 @@ import com.fr.swift.cube.io.output.DoubleWriter;
  * @author anchore
  * @date 2017/11/9
  */
-public class DoubleDetailColumn extends BaseDetailColumn<Double> {
-    private DoubleWriter detailWriter;
-    private DoubleReader detailReader;
-
+public class DoubleDetailColumn extends BaseDetailColumn<Double, DoubleWriter, DoubleReader> {
     public DoubleDetailColumn(IResourceLocation parent) {
         super(parent);
     }
@@ -43,28 +40,10 @@ public class DoubleDetailColumn extends BaseDetailColumn<Double> {
         }
     }
 
-    private void initDetailReader() {
+    @Override
+    protected void initDetailReader() {
         if (detailReader == null) {
             detailReader = DISCOVERY.getReader(location, new BuildConf(IoType.READ, DataType.DOUBLE));
-        }
-    }
-
-    @Override
-    public void flush() {
-        if (detailWriter != null) {
-            detailWriter.flush();
-        }
-    }
-
-    @Override
-    public void release() {
-        if (detailWriter != null) {
-            detailWriter.release();
-            detailWriter = null;
-        }
-        if (detailReader != null) {
-            detailReader.release();
-            detailReader = null;
         }
     }
 }

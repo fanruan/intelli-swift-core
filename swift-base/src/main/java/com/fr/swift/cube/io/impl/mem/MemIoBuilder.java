@@ -2,8 +2,6 @@ package com.fr.swift.cube.io.impl.mem;
 
 import com.fr.swift.cube.io.BuildConf;
 import com.fr.swift.cube.io.Types.IoType;
-import com.fr.swift.cube.io.Types.StoreType;
-import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.Util;
@@ -13,10 +11,9 @@ import com.fr.swift.util.Util;
  * @date 2017/11/24
  */
 public final class MemIoBuilder {
-    public static MemIo build(IResourceLocation location, BuildConf conf) {
-        if (Util.in(conf.ioType, IoType.READ, IoType.WRITE) &&
-                StoreType.MEMORY == location.getStoreType()) {
-            switch (conf.dataType) {
+    public static MemIo build(BuildConf conf) {
+        if (Util.in(conf.getIoType(), IoType.READ, IoType.WRITE)) {
+            switch (conf.getDataType()) {
                 case INT:
                     return new IntMemIo();
                 case LONG:

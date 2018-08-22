@@ -2,6 +2,7 @@ package com.fr.swift.cube.io;
 
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.impl.mem.MemIo;
+import com.fr.swift.cube.io.impl.mem.MemIoBuilder;
 import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
@@ -24,63 +25,42 @@ import java.util.regex.Pattern;
  * @date 2017/11/16
  */
 public class ResourceDiscovery implements IResourceDiscovery {
+    /**
+     * 预览mem io
+     * <p>
+     * schema/table/seg -> (schema/table/seg/column/... -> mem io)
+     */
+    private final Map<String, Map<String, MemIo>> minorMemIos = new ConcurrentHashMap<String, Map<String, MemIo>>(),
 
     /**
-     * 预览memio map
-     * key: basePath
-     * field: path
-     * value: memio
+     * 增量realtime mem io
+     * <p>
+     * schema/table/seg -> (schema/table/seg/column/... -> mem io)
      */
-    private final Map<String, Map<String, MemIo>> minorMemios = new ConcurrentHashMap<String, Map<String, MemIo>>();
-
-    /**
-     * 增量realtime memio map
-     * key: basePath
-     * field: path
-     * value: memio
-     */
-    private final Map<String, Map<String, MemIo>> cubeMemios = new ConcurrentHashMap<String, Map<String, MemIo>>();
-
-    private static final ResourceDiscovery INSTANCE = new ResourceDiscovery();
-
-    private Map<SourceKey, Long> lastUpdateTime;
-
-    private ResourceDiscovery() {
-        lastUpdateTime = new ConcurrentHashMap<SourceKey, Long>();
-    }
-
-    public static IResourceDiscovery getInstance() {
-        return INSTANCE;
-    }
+    cubeMemIos = new ConcurrentHashMap<String, Map<String, MemIo>>();
 
     @Override
     public <R extends Reader> R getReader(IResourceLocation location, BuildConf conf) {
         String path = location.getPath();
-        String basePath = getCubeBasePath(path);
-        if (!isMemory(location.getStoreType())) {
+        if (!isMemory(location)) {
             return (R) Readers.build(location, conf);
-        } else {
-            if (isMinor(path)) {
-                return getReader(minorMemios, basePath, path, location, conf);
-            } else {
-                return getReader(cubeMemios, basePath, path, location, conf);
-            }
         }
+        if (isMinor(path)) {
+            return (R) getMemIo(minorMemIos, location, conf);
+        }
+        return (R) getMemIo(cubeMemIos, location, conf);
     }
 
     @Override
     public <W extends Writer> W getWriter(IResourceLocation location, BuildConf conf) {
         String path = location.getPath();
-        String basePath = getCubeBasePath(path);
-        if (!isMemory(location.getStoreType())) {
+        if (!isMemory(location)) {
             return (W) Writers.build(location, conf);
-        } else {
-            if (isMinor(path)) {
-                return getWriter(minorMemios, basePath, path, location, conf);
-            } else {
-                return getWriter(cubeMemios, basePath, path, location, conf);
-            }
         }
+        if (isMinor(path)) {
+            return (W) getMemIo(minorMemIos, location, conf);
+        }
+        return (W) getMemIo(cubeMemIos, location, conf);
     }
 
     @Override
@@ -88,71 +68,56 @@ public class ResourceDiscovery implements IResourceDiscovery {
         return getReader(location, conf).isReadable();
     }
 
-    private <W extends Writer> W getWriter(Map<String, Map<String, MemIo>> paramMemios, String basePath, String path, IResourceLocation location, BuildConf conf) {
-        synchronized (paramMemios) {
-            if (paramMemios.containsKey(basePath)) {
-                Map<String, MemIo> baseMemios = paramMemios.get(basePath);
-                if (!baseMemios.containsKey(path)) {
-                    MemIo reader = (MemIo) Writers.build(location, conf);
-                    baseMemios.put(path, reader);
-                }
-            } else {
-                Map<String, MemIo> baseMemios = new HashMap<String, MemIo>();
-                MemIo reader = (MemIo) Writers.build(location, conf);
-                baseMemios.put(path, reader);
-                paramMemios.put(basePath, baseMemios);
+    private static MemIo getMemIo(Map<String, Map<String, MemIo>> segMemIos, IResourceLocation location, BuildConf conf) {
+        synchronized (segMemIos) {
+            String path = location.getPath();
+            String segPath = getSegPath(path);
+
+            if (!segMemIos.containsKey(segPath)) {
+                Map<String, MemIo> baseMemIos = new HashMap<String, MemIo>();
+                MemIo memIo = MemIoBuilder.build(conf);
+                baseMemIos.put(path, memIo);
+                segMemIos.put(segPath, baseMemIos);
+                return memIo;
             }
-            return (W) paramMemios.get(basePath).get(path);
+
+            Map<String, MemIo> baseMemIos = segMemIos.get(segPath);
+            if (!baseMemIos.containsKey(path)) {
+                MemIo memIo = MemIoBuilder.build(conf);
+                baseMemIos.put(path, memIo);
+                return memIo;
+            }
+
+            return segMemIos.get(segPath).get(path);
         }
     }
 
-    private <R extends Reader> R getReader(Map<String, Map<String, MemIo>> paramMemios, String basePath, String path, IResourceLocation location, BuildConf conf) {
-        synchronized (paramMemios) {
-            if (paramMemios.containsKey(basePath)) {
-                Map<String, MemIo> baseMemios = paramMemios.get(basePath);
-                if (!baseMemios.containsKey(path)) {
-                    MemIo reader = (MemIo) Readers.build(location, conf);
-                    baseMemios.put(path, reader);
-                }
-            } else {
-                Map<String, MemIo> baseMemios = new HashMap<String, MemIo>();
-                MemIo reader = (MemIo) Readers.build(location, conf);
-                baseMemios.put(path, reader);
-                paramMemios.put(basePath, baseMemios);
-            }
-            return (R) paramMemios.get(basePath).get(path);
-        }
-    }
-
-    private static boolean isMemory(StoreType storeType) {
-        return storeType == StoreType.MEMORY;
+    private static boolean isMemory(IResourceLocation location) {
+        return location.getStoreType() == StoreType.MEMORY;
     }
 
     @Override
     public void clear() {
         //todo 增量的memio慎重clear!!!
-        for (Map.Entry<String, Map<String, MemIo>> mapEntry : minorMemios.entrySet()) {
+        for (Map.Entry<String, Map<String, MemIo>> mapEntry : minorMemIos.entrySet()) {
             for (Map.Entry<String, MemIo> entry : mapEntry.getValue().entrySet()) {
                 entry.getValue().release();
             }
         }
-        minorMemios.clear();
+        minorMemIos.clear();
     }
 
-    private static final Pattern PATTERN = Pattern.compile(".+/.+?(/seg\\d+?)/.+");
+    /**
+     * schema/table/seg/column/...
+     */
+    private static final Pattern PATTERN = Pattern.compile(".+/seg\\d+?(/).+");
 
     private static boolean isMinor(String path) {
         return path.contains(Schema.MINOR_CUBE.getDir());
     }
 
-    private static String getCubeBasePath(String path) {
+    private static String getSegPath(String path) {
         //todo 路径需要单独配置，后续需要对此进行改正，现在先简单处理
-        if (isMinor(path)) {
-            Matcher matcher = PATTERN.matcher(path);
-            matcher.find();
-            return path.substring(0, matcher.start(1));
-        }
-
         Matcher matcher = PATTERN.matcher(path);
         matcher.find();
         return path.substring(0, matcher.start(1));
@@ -160,23 +125,24 @@ public class ResourceDiscovery implements IResourceDiscovery {
 
     @Override
     public boolean isCubeResourceEmpty() {
-        return cubeMemios.isEmpty();
+        return cubeMemIos.isEmpty();
     }
 
     @Override
     public Map<String, MemIo> removeCubeResource(String basePath) {
-        return cubeMemios.remove(new ResourceLocation(basePath).getPath());
+        return cubeMemIos.remove(new ResourceLocation(basePath).getPath());
     }
 
     @Override
     public void removeIf(Predicate<String> predicate) {
-        for (Map<String, MemIo> memIos : cubeMemios.values()) {
-            Iterator<Entry<String, MemIo>> itr = memIos.entrySet().iterator();
-            while (itr.hasNext()) {
-                Entry<String, MemIo> entry = itr.next();
-                if (predicate.test(entry.getKey())) {
-                    itr.remove();
+        Iterator<Entry<String, Map<String, MemIo>>> itr = cubeMemIos.entrySet().iterator();
+        while (itr.hasNext()) {
+            Entry<String, Map<String, MemIo>> entry = itr.next();
+            if (predicate.test(entry.getKey())) {
+                for (MemIo memIo : entry.getValue().values()) {
+                    memIo.release();
                 }
+                itr.remove();
             }
         }
     }
@@ -193,5 +159,17 @@ public class ResourceDiscovery implements IResourceDiscovery {
     @Override
     public void setLastUpdateTime(SourceKey sourceKey, long lastUpdateTime) {
         this.lastUpdateTime.put(sourceKey, lastUpdateTime);
+    }
+
+    private static final ResourceDiscovery INSTANCE = new ResourceDiscovery();
+
+    private Map<SourceKey, Long> lastUpdateTime;
+
+    private ResourceDiscovery() {
+        lastUpdateTime = new ConcurrentHashMap<SourceKey, Long>();
+    }
+
+    public static IResourceDiscovery getInstance() {
+        return INSTANCE;
     }
 }

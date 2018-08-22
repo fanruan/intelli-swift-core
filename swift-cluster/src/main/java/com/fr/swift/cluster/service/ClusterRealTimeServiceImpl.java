@@ -100,7 +100,7 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
 
     private void rpcSegmentLocation(PushSegLocationRpcEvent event) {
         try {
-            RpcFuture future = ClusterCommonUtils.callMaster(event);
+            RpcFuture future = ClusterCommonUtils.asyncCallMaster(event);
             future.addCallback(new AsyncRpcCallback() {
                 @Override
                 public void success(Object result) {

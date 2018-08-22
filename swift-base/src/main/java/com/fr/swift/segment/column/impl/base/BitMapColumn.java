@@ -9,6 +9,7 @@ import com.fr.swift.cube.io.Types.IoType;
 import com.fr.swift.cube.io.input.BitMapReader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.BitMapWriter;
+import com.fr.swift.util.IoUtil;
 
 /**
  * @author anchore
@@ -60,13 +61,8 @@ public class BitMapColumn extends BaseBitmapColumn {
 
     @Override
     public void release() {
-        if (indexWriter != null) {
-            indexWriter.release();
-            indexWriter = null;
-        }
-        if (indexReader != null) {
-            indexReader.release();
-            indexReader = null;
-        }
+        IoUtil.release(indexWriter, indexReader);
+        indexWriter = null;
+        indexReader = null;
     }
 }

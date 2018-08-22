@@ -7,8 +7,9 @@ import com.fr.swift.bitmap.impl.RangeBitmap;
 import com.fr.swift.bitmap.impl.RoaringMutableBitMap;
 import com.fr.swift.cube.io.input.BitMapReader;
 import com.fr.swift.cube.io.input.ByteArrayReader;
-import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.util.Crasher;
+
+import java.net.URI;
 
 /**
  * @author anchore
@@ -20,7 +21,7 @@ public class BitMapFineIoReader extends BaseFineIoReader implements BitMapReader
         this.bar = bar;
     }
 
-    public static BitMapReader build(IResourceLocation location) {
+    public static BitMapReader build(URI location) {
         // 底层为byte array reader
         return new BitMapFineIoReader(ByteArrayFineIoReader.build(location));
     }

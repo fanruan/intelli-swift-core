@@ -2,7 +2,6 @@ package com.fr.swift.cube.io.impl.fineio;
 
 import com.fr.swift.cube.io.BuildConf;
 import com.fr.swift.cube.io.Types.IoType;
-import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.impl.fineio.input.BitMapFineIoReader;
 import com.fr.swift.cube.io.impl.fineio.input.ByteArrayFineIoReader;
 import com.fr.swift.cube.io.impl.fineio.input.ByteFineIoReader;
@@ -12,16 +11,17 @@ import com.fr.swift.cube.io.impl.fineio.input.LongArrayFineIoReader;
 import com.fr.swift.cube.io.impl.fineio.input.LongFineIoReader;
 import com.fr.swift.cube.io.impl.fineio.input.StringFineIoReader;
 import com.fr.swift.cube.io.input.Reader;
-import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.util.Crasher;
+
+import java.net.URI;
 
 /**
  * @author anchore
  */
 public final class FineIoReaders {
-    public static Reader build(IResourceLocation location, BuildConf conf) {
-        if (IoType.READ == conf.ioType && StoreType.FINE_IO == location.getStoreType()) {
-            switch (conf.dataType) {
+    public static Reader build(URI location, BuildConf conf) {
+        if (IoType.READ == conf.getIoType()) {
+            switch (conf.getDataType()) {
                 case BYTE:
                     return ByteFineIoReader.build(location);
                 case INT:

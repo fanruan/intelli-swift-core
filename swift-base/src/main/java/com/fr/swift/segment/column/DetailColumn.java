@@ -2,6 +2,7 @@ package com.fr.swift.segment.column;
 
 import com.fr.swift.cube.io.Flushable;
 import com.fr.swift.cube.io.Releasable;
+import com.fr.swift.io.IfReadable;
 
 /**
  * @author pony
@@ -9,7 +10,7 @@ import com.fr.swift.cube.io.Releasable;
  * <p>
  * 获取基础类型的列，用于聚合
  */
-public interface DetailColumn<T> extends Releasable, Flushable {
+public interface DetailColumn<T> extends Releasable, Flushable, IfReadable {
     int getInt(int pos);
 
     long getLong(int pos);

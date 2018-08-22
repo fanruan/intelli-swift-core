@@ -2,12 +2,14 @@ package com.fr.swift.cube.io.impl.fineio.output;
 
 import com.fr.swift.cube.io.impl.fineio.input.LongFineIoReader;
 import com.fr.swift.cube.io.input.LongReader;
-import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.ByteArrayWriter;
 import com.fr.swift.cube.io.output.ByteWriter;
 import com.fr.swift.cube.io.output.IntWriter;
 import com.fr.swift.cube.io.output.LongWriter;
 import com.fr.swift.util.Crasher;
+import com.fr.swift.util.IoUtil;
+
+import java.net.URI;
 
 /**
  * @author anchore
@@ -28,7 +30,7 @@ public class ByteArrayFineIoWriter extends BaseFineIoWriter implements ByteArray
         this.lastPosWriter = lastPosWriter;
     }
 
-    public static ByteArrayWriter build(IResourceLocation location, boolean isOverwrite) {
+    public static ByteArrayWriter build(URI location, boolean isOverwrite) {
         ByteArrayFineIoWriter bafw = getByteArrayFineIoWriter(location, isOverwrite);
         if (!isOverwrite) {
             bafw.curPos = getLastPosition(location);
@@ -36,22 +38,22 @@ public class ByteArrayFineIoWriter extends BaseFineIoWriter implements ByteArray
         return bafw;
     }
 
-    private static ByteArrayFineIoWriter getByteArrayFineIoWriter(IResourceLocation location, boolean isOverwrite) {
+    private static ByteArrayFineIoWriter getByteArrayFineIoWriter(URI location, boolean isOverwrite) {
 
         // 获得内容部分的byte类型Writer
-        IResourceLocation contentLocation = location.buildChildLocation(CONTENT);
+        URI contentLocation = location.resolve(CONTENT);
         ByteWriter contentWriter = ByteFineIoWriter.build(contentLocation, isOverwrite);
 
         // 获得位置部分的long类型Writer
-        IResourceLocation positionLocation = location.buildChildLocation(POSITION);
+        URI positionLocation = location.resolve(POSITION);
         LongWriter positionWriter = LongFineIoWriter.build(positionLocation, isOverwrite);
 
         // 获得长度部分的int类型Writer
-        IResourceLocation lengthLocation = location.buildChildLocation(LENGTH);
+        URI lengthLocation = location.resolve(LENGTH);
         IntWriter lengthWriter = IntFineIoWriter.build(lengthLocation, isOverwrite);
 
         // 获得最后位置部分的long类型Writer
-        IResourceLocation lastPosLocation = location.buildChildLocation(LAST_POSITION);
+        URI lastPosLocation = location.resolve(LAST_POSITION);
         LongWriter lastPosWriter = LongFineIoWriter.build(lastPosLocation, true);
 
         return new ByteArrayFineIoWriter(contentWriter, positionWriter, lengthWriter, lastPosWriter);
@@ -64,9 +66,9 @@ public class ByteArrayFineIoWriter extends BaseFineIoWriter implements ByteArray
      * @param location 位置
      * @return 上次写的位置
      */
-    private static long getLastPosition(IResourceLocation location) {
+    private static long getLastPosition(URI location) {
         try {
-            IResourceLocation lastPosLocation = location.buildChildLocation(LAST_POSITION);
+            URI lastPosLocation = location.resolve(LAST_POSITION);
             LongReader lastPosReader = LongFineIoReader.build(lastPosLocation);
             return lastPosReader.isReadable() ? lastPosReader.get(0) : 0;
         } catch (Exception e) {
@@ -86,12 +88,10 @@ public class ByteArrayFineIoWriter extends BaseFineIoWriter implements ByteArray
 
     @Override
     public void release() {
-        contentWriter.release();
-        positionWriter.release();
-        lengthWriter.release();
+        IoUtil.release(contentWriter, positionWriter, lengthWriter);
 
         lastPosWriter.put(0, curPos);
-        lastPosWriter.release();
+        IoUtil.release(lastPosWriter);
     }
 
     @Override

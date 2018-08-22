@@ -4,7 +4,8 @@ import com.fr.swift.cube.io.input.ByteArrayReader;
 import com.fr.swift.cube.io.input.ByteReader;
 import com.fr.swift.cube.io.input.IntReader;
 import com.fr.swift.cube.io.input.LongReader;
-import com.fr.swift.cube.io.location.IResourceLocation;
+
+import java.net.URI;
 
 /**
  * @author anchore
@@ -21,17 +22,17 @@ public class ByteArrayFineIoReader extends BaseFineIoReader implements ByteArray
         this.lengthReader = lengthReader;
     }
 
-    public static ByteArrayReader build(IResourceLocation location) {
+    public static ByteArrayReader build(URI location) {
         // 获得内容部分的byte类型reader
-        IResourceLocation contentLocation = location.buildChildLocation(CONTENT);
+        URI contentLocation = location.resolve(CONTENT);
         ByteReader contentReader = ByteFineIoReader.build(contentLocation);
 
         // 获得位置部分的long类型reader
-        IResourceLocation positionLocation = location.buildChildLocation(POSITION);
+        URI positionLocation = location.resolve(POSITION);
         LongReader positionReader = LongFineIoReader.build(positionLocation);
 
         // 获得长度部分的int类型reader
-        IResourceLocation lengthLocation = location.buildChildLocation(LENGTH);
+        URI lengthLocation = location.resolve(LENGTH);
         IntReader lengthReader = IntFineIoReader.build(lengthLocation);
 
         return new ByteArrayFineIoReader(contentReader, positionReader, lengthReader);

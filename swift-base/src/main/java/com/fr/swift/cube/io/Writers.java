@@ -26,16 +26,15 @@ public final class Writers {
     public static Writer build(IResourceLocation location, BuildConf conf) {
         switch (location.getStoreType()) {
             case FINE_IO:
-                return FineIoWriters.build(location, conf);
+                return FineIoWriters.build(location.getUri(), conf);
             case MEMORY:
-                return MemIoBuilder.build(location, conf);
+                return MemIoBuilder.build(conf);
             case NIO:
                 return Nios.of(new NioConf(
                         String.format("%s/%s", PATH_SERVICE.getSwiftPath(), location.getPath()),
-                        conf.writeType == WriteType.APPEND ? NioConf.IoType.APPEND : NioConf.IoType.OVERWRITE), conf.dataType);
+                        conf.getWriteType() == WriteType.APPEND ? NioConf.IoType.APPEND : NioConf.IoType.OVERWRITE), conf.getDataType());
             default:
         }
         return Crasher.crash(String.format("illegal cube build config: %s\nlocation: %s", conf, location));
     }
-
 }

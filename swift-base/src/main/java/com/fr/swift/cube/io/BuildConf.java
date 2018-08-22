@@ -14,9 +14,9 @@ public class BuildConf {
      */
     public static final WriteType DEFAULT_WRITE_TYPE = WriteType.APPEND;
 
-    public final IoType ioType;
-    public final DataType dataType;
-    public final WriteType writeType;
+    private final IoType ioType;
+    private final DataType dataType;
+    private final WriteType writeType;
 
     public BuildConf(IoType ioType, DataType dataType) {
         this(ioType, dataType, DEFAULT_WRITE_TYPE);
@@ -26,6 +26,18 @@ public class BuildConf {
         this.ioType = ioType;
         this.dataType = dataType;
         this.writeType = writeType;
+    }
+
+    public IoType getIoType() {
+        return ioType;
+    }
+
+    public DataType getDataType() {
+        return dataType;
+    }
+
+    public WriteType getWriteType() {
+        return writeType;
     }
 
     @Override
