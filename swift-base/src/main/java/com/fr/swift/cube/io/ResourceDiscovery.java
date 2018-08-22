@@ -75,7 +75,7 @@ public class ResourceDiscovery implements IResourceDiscovery {
 
             if (!segMemIos.containsKey(segPath)) {
                 Map<String, MemIo> baseMemIos = new HashMap<String, MemIo>();
-                MemIo memIo = MemIoBuilder.build(location, conf);
+                MemIo memIo = MemIoBuilder.build(conf);
                 baseMemIos.put(path, memIo);
                 segMemIos.put(segPath, baseMemIos);
                 return memIo;
@@ -83,7 +83,7 @@ public class ResourceDiscovery implements IResourceDiscovery {
 
             Map<String, MemIo> baseMemIos = segMemIos.get(segPath);
             if (!baseMemIos.containsKey(path)) {
-                MemIo memIo = MemIoBuilder.build(location, conf);
+                MemIo memIo = MemIoBuilder.build(conf);
                 baseMemIos.put(path, memIo);
                 return memIo;
             }
