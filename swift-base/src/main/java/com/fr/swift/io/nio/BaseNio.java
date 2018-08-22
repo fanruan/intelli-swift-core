@@ -19,6 +19,10 @@ abstract class BaseNio implements Io {
     @Override
     public boolean isReadable() {
         File f = new File(conf.getPath());
-        return f.exists() && !Util.isEmpty(f.list());
+        if (!f.exists()) {
+            return false;
+        }
+        String[] children = f.list();
+        return !Util.isEmpty(children) && new File(f, children[0]).length() > 0;
     }
 }

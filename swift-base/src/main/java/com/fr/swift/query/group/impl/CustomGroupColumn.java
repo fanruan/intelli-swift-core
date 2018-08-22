@@ -142,6 +142,11 @@ class CustomGroupColumn<Base, Derive> implements Column<Derive> {
         public void release() {
             throw new UnsupportedOperationException();
         }
+
+        @Override
+        public boolean isReadable() {
+            return originDict.isReadable();
+        }
     }
 
     private class GroupBitmapColumn implements BitmapIndexedColumn {

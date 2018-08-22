@@ -55,6 +55,11 @@ public class FakeStringDetailColumn implements DetailColumn<String> {
         return dictColumn.getValue(index);
     }
 
+    @Override
+    public boolean isReadable() {
+        return false;
+    }
+
     private void initDictColumn() {
         if (dictColumn == null) {
             dictColumn = hostColumn.getDictionaryEncodedColumn();

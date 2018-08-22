@@ -6,7 +6,6 @@ import com.fineio.io.file.IOFile;
 import com.fineio.storage.Connector;
 import com.fr.swift.cube.io.impl.fineio.connector.ConnectorManager;
 import com.fr.swift.cube.io.input.ByteReader;
-import com.fr.swift.cube.io.location.IResourceLocation;
 
 import java.net.URI;
 
@@ -21,9 +20,9 @@ public class ByteFineIoReader extends BaseFineIoReader implements ByteReader {
         ioFile = FineIO.createIOFile(connector, uri, FineIO.MODEL.READ_BYTE);
     }
 
-    public static ByteReader build(IResourceLocation location) {
+    public static ByteReader build(URI location) {
         return new ByteFineIoReader(
-                location.getUri(),
+                location,
                 ConnectorManager.getInstance().getConnector()
         );
     }

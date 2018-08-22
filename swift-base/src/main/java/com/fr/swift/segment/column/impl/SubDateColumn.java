@@ -92,6 +92,11 @@ public class SubDateColumn extends BaseColumn<Long> {
         }
 
         @Override
+        public boolean isReadable() {
+            return false;
+        }
+
+        @Override
         public void release() {
             baseDict.release();
         }

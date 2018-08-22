@@ -4,18 +4,15 @@ import com.fr.swift.cube.io.BuildConf;
 import com.fr.swift.cube.io.IOConstant;
 import com.fr.swift.cube.io.Types.DataType;
 import com.fr.swift.cube.io.Types.IoType;
-import com.fr.swift.cube.io.input.StringReader;
+import com.fr.swift.cube.io.input.ObjectReader;
 import com.fr.swift.cube.io.location.IResourceLocation;
-import com.fr.swift.cube.io.output.StringWriter;
+import com.fr.swift.cube.io.output.ObjectWriter;
 
 /**
  * @author anchore
  * @date 2018/3/18
  */
-public class StringDetailColumn extends BaseDetailColumn<String> {
-    private StringWriter detailWriter;
-    private StringReader detailReader;
-
+public class StringDetailColumn extends BaseDetailColumn<String, ObjectWriter<String>, ObjectReader<String>> {
     public StringDetailColumn(IResourceLocation parent) {
         super(parent);
     }
@@ -26,7 +23,8 @@ public class StringDetailColumn extends BaseDetailColumn<String> {
         }
     }
 
-    private void initDetailReader() {
+    @Override
+    protected void initDetailReader() {
         if (detailReader == null) {
             detailReader = DISCOVERY.getReader(location, new BuildConf(IoType.READ, DataType.STRING));
         }
@@ -42,24 +40,5 @@ public class StringDetailColumn extends BaseDetailColumn<String> {
     public String get(int pos) {
         initDetailReader();
         return detailReader.get(pos);
-    }
-
-    @Override
-    public void flush() {
-        if (detailWriter != null) {
-            detailWriter.flush();
-        }
-    }
-
-    @Override
-    public void release() {
-        if (detailWriter != null) {
-            detailWriter.release();
-            detailWriter = null;
-        }
-        if (detailReader != null) {
-            detailReader.release();
-            detailReader = null;
-        }
     }
 }

@@ -1,11 +1,11 @@
 package com.fr.swift.cube.io.impl.fineio.output;
 
 import com.fineio.FineIO;
+import com.fineio.FineIO.MODEL;
 import com.fineio.io.ByteBuffer;
 import com.fineio.io.file.IOFile;
 import com.fineio.storage.Connector;
 import com.fr.swift.cube.io.impl.fineio.connector.ConnectorManager;
-import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.ByteWriter;
 
 import java.net.URI;
@@ -18,15 +18,15 @@ public class ByteFineIoWriter extends BaseFineIoWriter implements ByteWriter {
 
     private ByteFineIoWriter(URI uri, Connector connector, boolean isOverwrite) {
         if (isOverwrite) {
-            ioFile = FineIO.createIOFile(connector, uri, FineIO.MODEL.WRITE_BYTE);
+            ioFile = FineIO.createIOFile(connector, uri, MODEL.WRITE_BYTE);
         } else {
-            ioFile = FineIO.createIOFile(connector, uri, FineIO.MODEL.EDIT_BYTE);
+            ioFile = FineIO.createIOFile(connector, uri, MODEL.APPEND_BYTE);
         }
     }
 
-    public static ByteWriter build(IResourceLocation location, boolean isOverwrite) {
+    public static ByteWriter build(URI location, boolean isOverwrite) {
         return new ByteFineIoWriter(
-                location.getUri(),
+                location,
                 ConnectorManager.getInstance().getConnector(),
                 isOverwrite
         );

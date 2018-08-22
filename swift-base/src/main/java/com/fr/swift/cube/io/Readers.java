@@ -25,16 +25,15 @@ public final class Readers {
     public static Reader build(IResourceLocation location, BuildConf conf) {
         switch (location.getStoreType()) {
             case FINE_IO:
-                return FineIoReaders.build(location, conf);
+                return FineIoReaders.build(location.getUri(), conf);
             case MEMORY:
-                return MemIoBuilder.build(location, conf);
+                return MemIoBuilder.build(conf);
             case NIO:
                 return Nios.of(new NioConf(
                         String.format("%s/%s", PATH_SERVICE.getSwiftPath(), location.getPath()),
-                        NioConf.IoType.READ), conf.dataType);
+                        NioConf.IoType.READ), conf.getDataType());
             default:
         }
         return Crasher.crash(String.format("illegal cube build config: %s\nlocation: %s", conf, location));
     }
-
 }

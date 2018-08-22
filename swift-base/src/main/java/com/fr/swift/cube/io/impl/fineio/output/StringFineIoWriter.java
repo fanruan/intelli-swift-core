@@ -1,8 +1,9 @@
 package com.fr.swift.cube.io.impl.fineio.output;
 
-import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.ByteArrayWriter;
 import com.fr.swift.cube.io.output.StringWriter;
+
+import java.net.URI;
 
 /**
  * @author anchore
@@ -14,7 +15,7 @@ public class StringFineIoWriter extends BaseFineIoWriter implements StringWriter
         this.baw = baw;
     }
 
-    public static StringWriter build(IResourceLocation location, boolean isOverwrite) {
+    public static StringWriter build(URI location, boolean isOverwrite) {
         return new StringFineIoWriter(ByteArrayFineIoWriter.build(location, isOverwrite));
     }
 

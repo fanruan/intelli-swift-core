@@ -12,10 +12,7 @@ import com.fr.swift.cube.io.output.LongWriter;
  * @author anchore
  * @date 2017/11/9
  */
-public class LongDetailColumn extends BaseDetailColumn<Long> {
-    private LongWriter detailWriter;
-    private LongReader detailReader;
-
+public class LongDetailColumn extends BaseDetailColumn<Long, LongWriter, LongReader> {
     public LongDetailColumn(IResourceLocation parent) {
         super(parent);
     }
@@ -48,28 +45,10 @@ public class LongDetailColumn extends BaseDetailColumn<Long> {
         }
     }
 
-    private void initDetailReader() {
+    @Override
+    protected void initDetailReader() {
         if (detailReader == null) {
             detailReader = DISCOVERY.getReader(location, new BuildConf(IoType.READ, DataType.LONG));
-        }
-    }
-
-    @Override
-    public void flush() {
-        if (detailWriter != null) {
-            detailWriter.flush();
-        }
-    }
-
-    @Override
-    public void release() {
-        if (detailWriter != null) {
-            detailWriter.release();
-            detailWriter = null;
-        }
-        if (detailReader != null) {
-            detailReader.release();
-            detailReader = null;
         }
     }
 }

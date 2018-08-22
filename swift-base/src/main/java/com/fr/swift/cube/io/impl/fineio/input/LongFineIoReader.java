@@ -6,7 +6,6 @@ import com.fineio.io.file.IOFile;
 import com.fineio.storage.Connector;
 import com.fr.swift.cube.io.impl.fineio.connector.ConnectorManager;
 import com.fr.swift.cube.io.input.LongReader;
-import com.fr.swift.cube.io.location.IResourceLocation;
 
 import java.net.URI;
 
@@ -21,9 +20,9 @@ public class LongFineIoReader extends BaseFineIoReader implements LongReader {
         this.ioFile = FineIO.createIOFile(connector, uri, FineIO.MODEL.READ_LONG);
     }
 
-    public static LongReader build(IResourceLocation location) {
+    public static LongReader build(URI location) {
         return new LongFineIoReader(
-                location.getUri(),
+                location,
                 ConnectorManager.getInstance().getConnector()
         );
 

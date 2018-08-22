@@ -10,7 +10,9 @@ import com.fr.swift.util.Crasher;
 import java.util.Map;
 
 /**
- * Created by pony on 2018/5/11.
+ *
+ * @author pony
+ * @date 2018/5/11
  */
 public class FormulaDetailColumn implements DetailColumn {
     private String formula;
@@ -47,6 +49,11 @@ public class FormulaDetailColumn implements DetailColumn {
     @Override
     public Object get(int pos) {
         return FormulaUtils.getCalculatorValue(c, formula, segment, columnIndexMap, pos);
+    }
+
+    @Override
+    public boolean isReadable() {
+        return true;
     }
 
     @Override

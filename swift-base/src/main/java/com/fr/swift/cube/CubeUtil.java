@@ -8,9 +8,7 @@ import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.impl.SwiftDatabase.Schema;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.column.Column;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.Source;
 import com.fr.swift.source.SourceKey;
 import com.fr.third.guava.base.Optional;
 
@@ -23,17 +21,8 @@ public class CubeUtil {
         return seg.isReadable();
     }
 
-    public static boolean isReadable(Column col) {
-        try {
-            col.getDictionaryEncodedColumn().size();
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public static String getPersistSegPath(Source src, int segOrder) {
-        return String.format("%s/seg%d", src.getSourceKey().getId(), segOrder);
+    public static String getPersistSegPath(SourceKey tableKey, int segOrder) {
+        return String.format("%s/seg%d", tableKey.getId(), segOrder);
     }
 
     public static String getRealtimeSegPath(DataSource dataSource, int segOrder) {

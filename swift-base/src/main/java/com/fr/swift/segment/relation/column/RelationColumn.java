@@ -29,6 +29,7 @@ import com.fr.swift.task.TaskKey;
 import com.fr.swift.task.TaskStatusChangeListener;
 import com.fr.swift.task.impl.SchedulerTaskImpl;
 import com.fr.swift.task.impl.SchedulerTaskPool;
+import com.fr.swift.util.Assert;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.Util;
 
@@ -83,7 +84,7 @@ public class RelationColumn {
         this.relationSource = columnKey.getRelation();
         Util.requireNonNull(relationSource);
         List<Segment> segments = SwiftContext.get().getBean(SwiftSegmentManager.class).getSegment(relationSource.getPrimarySource());
-        Util.requireNonEmpty(segments);
+        Assert.notEmpty(segments);
         this.segments = new Segment[segments.size()];
         this.segments = segments.toArray(this.segments);
         this.columnKey = columnKey;

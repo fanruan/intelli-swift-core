@@ -14,6 +14,7 @@ import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.BitMapWriter;
 import com.fr.swift.cube.io.output.IntWriter;
 import com.fr.swift.exception.meta.SwiftMetaDataColumnAbsentException;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.relation.CubeMultiRelation;
 import com.fr.swift.relation.CubeMultiRelationPath;
 import com.fr.swift.segment.column.Column;
@@ -50,7 +51,7 @@ public abstract class BaseSegment implements Segment {
     protected IResourceLocation location;
 
     private IntWriter rowCountWriter;
-    private IntReader rowCountReader;
+    IntReader rowCountReader;
 
     private BitMapWriter bitMapWriter;
     private BitMapReader bitMapReader;
@@ -84,8 +85,10 @@ public abstract class BaseSegment implements Segment {
             if (key.getRelation() != null) {
                 return createRelationColumn(key);
             }
+            SwiftLoggers.getLogger().error("getColumn failed: {}", e.getMessage());
             return null;
         } catch (Exception e) {
+            SwiftLoggers.getLogger().error("getColumn failed: {}", e.getMessage());
             return null;
         }
     }
@@ -186,13 +189,15 @@ public abstract class BaseSegment implements Segment {
     @Override
     public boolean isReadable() {
         initRowCountReader();
-        if (!rowCountReader.isReadable()) {
-            return false;
-        }
+        boolean rowCountReadable = rowCountReader.isReadable();
         if (isHistory()) {
             IoUtil.release(rowCountReader);
         }
         rowCountReader = null;
+        if (!rowCountReadable) {
+            return false;
+        }
+
         initBitMapReader();
         boolean readable = bitMapReader.isReadable();
         if (isHistory()) {
@@ -214,22 +219,11 @@ public abstract class BaseSegment implements Segment {
 
     @Override
     public void release() {
-        if (rowCountWriter != null) {
-            rowCountWriter.release();
-            rowCountWriter = null;
-        }
-        if (rowCountReader != null) {
-            rowCountReader.release();
-            rowCountReader = null;
-        }
-        if (bitMapWriter != null) {
-            bitMapWriter.release();
-            bitMapWriter = null;
-        }
-        if (bitMapReader != null) {
-            bitMapReader.release();
-            bitMapReader = null;
-        }
+        IoUtil.release(rowCountWriter, rowCountReader, bitMapWriter, bitMapReader);
+        rowCountWriter = null;
+        rowCountReader = null;
+        bitMapWriter = null;
+        bitMapReader = null;
     }
 
     private Column createRelationColumn(ColumnKey key) {

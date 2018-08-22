@@ -1,11 +1,11 @@
 package com.fr.swift.cube.io.impl.fineio.output;
 
 import com.fineio.FineIO;
+import com.fineio.FineIO.MODEL;
 import com.fineio.io.LongBuffer;
 import com.fineio.io.file.IOFile;
 import com.fineio.storage.Connector;
 import com.fr.swift.cube.io.impl.fineio.connector.ConnectorManager;
-import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.LongWriter;
 
 import java.net.URI;
@@ -18,15 +18,15 @@ public class LongFineIoWriter extends BaseFineIoWriter implements LongWriter {
 
     private LongFineIoWriter(URI uri, Connector connector, boolean isOverwrite) {
         if (isOverwrite) {
-            ioFile = FineIO.createIOFile(connector, uri, FineIO.MODEL.WRITE_LONG);
+            ioFile = FineIO.createIOFile(connector, uri, MODEL.WRITE_LONG);
         } else {
-            ioFile = FineIO.createIOFile(connector, uri, FineIO.MODEL.EDIT_LONG);
+            ioFile = FineIO.createIOFile(connector, uri, MODEL.APPEND_LONG);
         }
     }
 
-    public static LongWriter build(IResourceLocation location, boolean isOverwrite) {
+    public static LongWriter build(URI location, boolean isOverwrite) {
         return new LongFineIoWriter(
-                location.getUri(),
+                location,
                 ConnectorManager.getInstance().getConnector(),
                 isOverwrite
         );

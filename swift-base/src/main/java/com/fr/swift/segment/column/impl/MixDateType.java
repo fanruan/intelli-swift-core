@@ -11,6 +11,7 @@ import java.util.Calendar;
  * 截取年，季度（截取后取当季第一个月的第一天）：2017/11/30 12:23:34.456 => 2017/10/01 00:00:00.000
  */
 public enum MixDateType {
+    //
     Y_Q {
         @Override
         public long from(Calendar c) {

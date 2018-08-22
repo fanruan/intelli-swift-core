@@ -1,7 +1,5 @@
 package com.fr.swift.util;
 
-import java.util.Collection;
-
 /**
  * @author anchore
  */
@@ -18,57 +16,32 @@ public final class Util {
         return false;
     }
 
-    public static <T> T[] toArray(T... os) {
-        return os;
-    }
-
-    public static void requireNonNull(Object o, String err) {
-        if (o == null) {
-            throw new NullPointerException(err);
-        }
-    }
-
     public static void requireNonNull(Object o, Object... objs) {
-        requireNonNull(o);
+        Assert.notNull(o);
         requireNonNull(objs);
     }
 
     public static void requireNonNull(Object o) {
-        if (o == null) {
-            throw new NullPointerException();
-        }
+        Assert.notNull(o);
     }
 
     public static void requireNonNull(Object[] objs) {
         for (Object obj : objs) {
-            if (obj == null) {
-                throw new NullPointerException();
-            }
-        }
-    }
-
-    public static <T> void requireNonEmpty(Collection<T> collection) {
-        requireNonNull(collection);
-        if (collection.isEmpty()) {
-            throw new IllegalArgumentException("unexpected empty collection!");
-        }
-    }
-
-    public static void requireNotGreater(Number min, Number max) {
-        requireNonNull(min);
-        requireNonNull(max);
-        if (Double.compare(min.doubleValue(), max.doubleValue()) > 0) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    public static void requireGreaterThanZero(int n) {
-        if (n <= 0) {
-            throw new IllegalArgumentException();
+            Assert.notNull(obj);
         }
     }
 
     public static <T> boolean isEmpty(T[] ts) {
         return ts == null || ts.length == 0;
+    }
+
+    public static boolean equals(Object o1, Object o2) {
+        if (o1 == o2) {
+            return true;
+        }
+        if (o1 == null) {
+            return false;
+        }
+        return o1.equals(o2);
     }
 }

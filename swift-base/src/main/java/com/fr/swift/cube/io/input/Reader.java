@@ -1,15 +1,10 @@
 package com.fr.swift.cube.io.input;
 
 import com.fr.swift.cube.io.Releasable;
+import com.fr.swift.io.IfReadable;
 
 /**
  * @author anchore
  */
-public interface Reader extends Releasable {
-    /**
-     * 是否可读
-     *
-     * @return 是否可读
-     */
-    boolean isReadable();
+public interface Reader extends Releasable, IfReadable {
 }
