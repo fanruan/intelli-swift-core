@@ -9,6 +9,9 @@ import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
+import com.fr.swift.cluster.service.MasterService;
+import com.fr.swift.cluster.service.SlaveService;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.core.cluster.FRClusterNodeManager;
 import com.fr.swift.core.cluster.FRClusterNodeService;
 import com.fr.swift.event.ClusterEvent;
@@ -17,8 +20,13 @@ import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.event.ClusterType;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.nm.SlaveManager;
+import com.fr.swift.nm.service.SwiftSlaveService;
+import com.fr.swift.rm.MasterManager;
+import com.fr.swift.rm.service.SwiftMasterService;
 import com.fr.swift.service.listener.RemoteServiceSender;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
+import com.fr.swift.util.Crasher;
 
 /**
  * This class created on 2018/5/14
@@ -33,7 +41,11 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger();
 
-    private SwiftServiceListenerHandler remoteServiceSender = null;
+    private SwiftServiceListenerHandler remoteServiceSender;
+
+    private MasterManager masterManager;
+
+    private SlaveManager slaveManager;
 
     private SwiftClusterTicket() {
     }
@@ -44,7 +56,8 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
 
     @Override
     public void beforeJoin() {
-
+        masterManager = SwiftContext.get().getBean(MasterManager.class);
+        slaveManager = SwiftContext.get().getBean(SlaveManager.class);
     }
 
     @Override
@@ -56,6 +69,9 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
             @Override
             public void on(Event event, ClusterNode clusterNode) {
                 LOGGER.info(String.format("%s join cluster!Master is %s", clusterNode.getID(), FRClusterNodeManager.getInstance().getMasterId()));
+                if (FRClusterNodeManager.getInstance().isMaster()) {
+                    ClusterSwiftServerService.getInstance().online(clusterNode.getID());
+                }
             }
         });
         EventDispatcher.listen(ClusterViewEvent.NODE_LEFT, new Listener<ClusterNode>() {
@@ -64,9 +80,19 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
                 LOGGER.info(String.format("%s left cluster!Master is %s", clusterNode.getID(), FRClusterNodeManager.getInstance().getMasterId()));
                 if (FRClusterNodeManager.getInstance().getMasterId() == null || ComparatorUtils.equals(FRClusterNodeManager.getInstance().getMasterId(), clusterNode.getID())) {
                     FRClusterNodeService.getInstance().competeMaster(clusterNode);
-                    if (ComparatorUtils.equals(FRClusterNodeManager.getInstance().getMasterId(), FRClusterNodeManager.getInstance().getCurrentId())) {
-                        ClusterSwiftServerService.getInstance().initService();
+                    //只有重新选举master时候，才需要重新部署manager
+                    try {
+                        if (ComparatorUtils.equals(FRClusterNodeManager.getInstance().getMasterId(), FRClusterNodeManager.getInstance().getCurrentId())) {
+                            slaveManager.shutDown();
+                            masterManager.startUp();
+                            ClusterSwiftServerService.getInstance().initService();
+                        }
+                    } catch (Exception e) {
+                        Crasher.crash(e);
                     }
+                }
+                if (FRClusterNodeManager.getInstance().isMaster()) {
+                    ClusterSwiftServerService.getInstance().offline(clusterNode.getID());
                 }
             }
         });

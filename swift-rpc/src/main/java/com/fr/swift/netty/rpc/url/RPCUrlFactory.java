@@ -10,7 +10,7 @@ import com.fr.swift.basics.UrlFactory;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class RpcUrlFactory implements UrlFactory<String> {
+public class RPCUrlFactory implements UrlFactory<String> {
 
     @Override
     public URL getURL(String address) {
