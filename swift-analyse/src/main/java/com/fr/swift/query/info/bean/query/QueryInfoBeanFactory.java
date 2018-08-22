@@ -12,7 +12,6 @@ import com.fr.swift.query.info.group.GroupQueryInfoImpl;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryInfo;
-import com.fr.swift.source.SwiftMetaData;
 import com.fr.third.fasterxml.jackson.core.JsonProcessingException;
 import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
 
@@ -96,8 +95,6 @@ public class QueryInfoBeanFactory implements QueryBeanFactory {
                 detailQueryBean.setDimensionBeans(DIMENSION_BEAN_FACTORY.create(((DetailQueryInfo) queryInfo).getDimensions()));
                 detailQueryBean.setFilterInfoBean(FilterInfoBeanFactory.SINGLE_FILTER_INFO_BEAN_FACTORY.create(((DetailQueryInfo) queryInfo).getFilterInfo()));
                 detailQueryBean.setSortBeans(SORT_BEAN_FACTORY.create(((DetailQueryInfo) queryInfo).getSorts()));
-                SwiftMetaData metaData = ((DetailQueryInfo) queryInfo).getMetaData();
-                detailQueryBean.setColumns(metaData.getFieldNames());
                 detailQueryBean.setQuerySegments(queryInfo.getQuerySegment());
                 detailQueryBean.setQueryType(queryInfo.getType());
                 return detailQueryBean;

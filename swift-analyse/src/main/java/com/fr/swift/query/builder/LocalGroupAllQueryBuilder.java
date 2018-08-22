@@ -15,9 +15,10 @@ import com.fr.swift.query.group.info.MetricInfoImpl;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.group.GroupQueryInfo;
+import com.fr.swift.query.info.group.post.CalculatedFieldQueryInfo;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
 import com.fr.swift.query.post.PostQuery;
-import com.fr.swift.query.post.PrepareMetaDataQuery;
+import com.fr.swift.query.post.PostQueryType;
 import com.fr.swift.query.post.UpdateNodeDataQuery;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.ResultQuery;
@@ -57,9 +58,7 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
     public Query<NodeResultSet> buildPostQuery(ResultQuery<NodeResultSet> query, GroupQueryInfo info) {
         PostQuery<NodeResultSet> tmpQuery = new UpdateNodeDataQuery(query);
         List<PostQueryInfo> postQueryInfoList = info.getPostQueryInfoList();
-        tmpQuery = PostQueryBuilder.buildQuery(tmpQuery, postQueryInfoList);
-        // 最后一层query的结果要包含SwiftMetaData
-        return new PrepareMetaDataQuery(tmpQuery, info);
+        return PostQueryBuilder.buildQuery(tmpQuery, postQueryInfoList);
     }
 
     @Override
@@ -75,11 +74,22 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
             List<Sort> rowIndexSorts = getSegmentIndexSorts(dimensions);
             DetailFilter rowDetailFilter = FilterBuilder.buildDetailFilter(segment, info.getFilterInfo());
             GroupByInfo rowGroupByInfo = new GroupByInfoImpl(Integer.MAX_VALUE, dimensionColumns, rowDetailFilter, rowIndexSorts, null);
-            MetricInfo metricInfo = new MetricInfoImpl(metricColumns, aggregators, metrics.size() + info.getPostQueryInfoList().size());
+            MetricInfo metricInfo = new MetricInfoImpl(metricColumns, aggregators,
+                    metrics.size() + countCalFields(info.getPostQueryInfoList()));
             queries.add(new GroupAllSegmentQuery(rowGroupByInfo, metricInfo));
         }
         return new GroupResultQuery(info.getFetchSize(), queries, getAggregators(metrics),
                 getComparatorsForMerging(info.getTable(), dimensions), isGlobalIndexed(info.getDimensions()));
+    }
+
+    static int countCalFields(List<PostQueryInfo> postQueryInfoList) {
+        int count = 0;
+        for (PostQueryInfo postQueryInfo : postQueryInfoList) {
+            if (postQueryInfo.getType() == PostQueryType.CAL_FIELD) {
+                count += ((CalculatedFieldQueryInfo) postQueryInfo).getCalInfoList().size();
+            }
+        }
+        return count;
     }
 
     static List<Aggregator> getFilterAggregators(List<Metric> metrics, Segment segment) {

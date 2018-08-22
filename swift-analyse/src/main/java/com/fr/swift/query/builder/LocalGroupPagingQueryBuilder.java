@@ -52,7 +52,8 @@ public class LocalGroupPagingQueryBuilder extends AbstractLocalGroupQueryBuilder
             DetailFilter rowDetailFilters = FilterBuilder.buildDetailFilter(segment, info.getFilterInfo());
             List<Sort> rowSorts = LocalGroupAllQueryBuilder.getSegmentIndexSorts(dimensions);
             GroupByInfo rowGroupByInfo = new GroupByInfoImpl(info.getFetchSize(), dimensionColumns, rowDetailFilters, rowSorts, new AllCursor());
-            MetricInfo metricInfo = new MetricInfoImpl(metricColumns, aggregators, metrics.size() + info.getPostQueryInfoList().size());
+            MetricInfo metricInfo = new MetricInfoImpl(metricColumns, aggregators,
+                    metrics.size() + LocalGroupAllQueryBuilder.countCalFields(info.getPostQueryInfoList()));
             queries.add(new GroupPagingSegmentQuery(rowGroupByInfo, metricInfo));
         }
         return new GroupResultQuery(info.getFetchSize(), queries, getAggregators(info.getMetrics()),

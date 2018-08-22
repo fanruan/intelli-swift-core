@@ -21,17 +21,15 @@ public class SortMultiSegmentDetailResultSet extends AbstractDetailResultSet {
 
     private List<Query<DetailResultSet>> queries;
     private List<Pair<Sort, Comparator>> comparators;
-    private SwiftMetaData metaData;
     private int rowCount;
     private Iterator<List<Row>> mergerIterator;
     private Iterator<Row> rowIterator;
 
     public SortMultiSegmentDetailResultSet(int fetchSize, List<Query<DetailResultSet>> queries,
-                                           List<Pair<Sort, Comparator>> comparators, SwiftMetaData metaData) throws SQLException {
+                                           List<Pair<Sort, Comparator>> comparators) throws SQLException {
         super(fetchSize);
         this.queries = queries;
         this.comparators = comparators;
-        this.metaData = metaData;
         init();
     }
 

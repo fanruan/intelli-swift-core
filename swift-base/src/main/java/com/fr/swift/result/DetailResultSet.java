@@ -1,6 +1,7 @@
 package com.fr.swift.result;
 
 import com.fr.swift.source.Row;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.util.List;
@@ -31,4 +32,6 @@ public interface DetailResultSet extends SwiftResultSet {
      * @return
      */
     int getRowCount();
+
+    void setMetaData(SwiftMetaData metaData);
 }

@@ -427,7 +427,7 @@ public class DetailResultSetTest extends TestCase {
         double[] doubleData = {9.5, 40.1, 9.5, 40.1};
         long[] longData = {12, 23, 23, 23};
         String[] strData = {"A", "C", "C", "A"};
-        DetailResultSet rs = new SegmentDetailResultSet(Integer.MAX_VALUE, columnList, filter, null);
+        DetailResultSet rs = new SegmentDetailResultSet(Integer.MAX_VALUE, columnList, filter);
         try {
             while (rs.hasNext()) {
                 Row row = rs.getNextRow();
@@ -450,9 +450,9 @@ public class DetailResultSetTest extends TestCase {
         String[] strData = {"A", "C", "C", "A"};
 
         for (int j = 0; j < 3; j++) {
-            queries.add(new NormalDetailSegmentQuery(Integer.MAX_VALUE, columnList, filter, null));
+            queries.add(new NormalDetailSegmentQuery(Integer.MAX_VALUE, columnList, filter));
         }
-        MultiSegmentDetailResultSet mrs = new MultiSegmentDetailResultSet(Integer.MAX_VALUE, queries, null);
+        MultiSegmentDetailResultSet mrs = new MultiSegmentDetailResultSet(Integer.MAX_VALUE, queries);
         while (mrs.hasNext()) {
             Row row = mrs.getNextRow();
             assertEquals((int) row.getValue(0), intData[i]);
@@ -473,7 +473,7 @@ public class DetailResultSetTest extends TestCase {
         sorts.add(new DescSort(0));
         sorts.add(new AscSort(1));
         sorts.add(new DescSort(3));
-        DetailResultSet rs = new SortSegmentDetailResultSet(Integer.MAX_VALUE, columnList, filter, sorts, null);
+        DetailResultSet rs = new SortSegmentDetailResultSet(Integer.MAX_VALUE, columnList, filter, sorts);
 
 //      [2, 12, 9.5, A]  => [4, 23, 40.1, C]
 //      [4, 23, 40.1, C]    [4, 23, 40.1, A]
@@ -505,13 +505,13 @@ public class DetailResultSetTest extends TestCase {
         sorts.add(new AscSort(1));
         sorts.add(new DescSort(3));
         for (int j = 0; j < 3; j++) {
-            queries.add(new SortDetailSegmentQuery(Integer.MAX_VALUE, columnList, filter, sorts, null));
+            queries.add(new SortDetailSegmentQuery(Integer.MAX_VALUE, columnList, filter, sorts));
         }
         List<Pair<Sort, Comparator>> pairs = new ArrayList<>();
         pairs.add(Pair.of(new DescSort(0), Comparators.<Integer>asc()));
         pairs.add(Pair.of(new AscSort(1), Comparators.<String>asc()));
         pairs.add(Pair.of(new DescSort(3), Comparators.<Double>asc()));
-        DetailResultSet rs = new SortMultiSegmentDetailResultSet(Integer.MAX_VALUE, queries, pairs, null);
+        DetailResultSet rs = new SortMultiSegmentDetailResultSet(Integer.MAX_VALUE, queries, pairs);
         try {
             while (rs.hasNext()) {
                 Row row = rs.getNextRow();
