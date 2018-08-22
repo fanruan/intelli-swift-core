@@ -1,9 +1,10 @@
 package com.fr.swift.cube.io.impl.fineio.output;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.BitMapWriter;
 import com.fr.swift.cube.io.output.ByteArrayWriter;
+
+import java.net.URI;
 
 /**
  * @author anchore
@@ -15,7 +16,7 @@ public class BitMapFineIoWriter extends BaseFineIoWriter implements BitMapWriter
         this.baw = baw;
     }
 
-    public static BitMapWriter build(IResourceLocation location, boolean isOverwrite) {
+    public static BitMapWriter build(URI location, boolean isOverwrite) {
         return new BitMapFineIoWriter(ByteArrayFineIoWriter.build(location, isOverwrite));
     }
 

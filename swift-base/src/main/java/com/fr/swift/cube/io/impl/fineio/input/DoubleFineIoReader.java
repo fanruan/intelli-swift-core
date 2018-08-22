@@ -6,7 +6,6 @@ import com.fineio.io.file.IOFile;
 import com.fineio.storage.Connector;
 import com.fr.swift.cube.io.impl.fineio.connector.ConnectorManager;
 import com.fr.swift.cube.io.input.DoubleReader;
-import com.fr.swift.cube.io.location.IResourceLocation;
 
 import java.net.URI;
 
@@ -21,9 +20,9 @@ public class DoubleFineIoReader extends BaseFineIoReader implements DoubleReader
         this.ioFile = FineIO.createIOFile(connector, uri, FineIO.MODEL.READ_DOUBLE);
     }
 
-    public static DoubleReader build(IResourceLocation location) {
+    public static DoubleReader build(URI location) {
         return new DoubleFineIoReader(
-                location.getUri(),
+                location,
                 ConnectorManager.getInstance().getConnector()
         );
 

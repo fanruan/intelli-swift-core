@@ -1,11 +1,11 @@
 package com.fr.swift.cube.io.impl.fineio.output;
 
 import com.fineio.FineIO;
+import com.fineio.FineIO.MODEL;
 import com.fineio.io.DoubleBuffer;
 import com.fineio.io.file.IOFile;
 import com.fineio.storage.Connector;
 import com.fr.swift.cube.io.impl.fineio.connector.ConnectorManager;
-import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.DoubleWriter;
 
 import java.net.URI;
@@ -18,15 +18,15 @@ public class DoubleFineIoWriter extends BaseFineIoWriter implements DoubleWriter
 
     private DoubleFineIoWriter(URI uri, Connector connector, boolean isOverwrite) {
         if (isOverwrite) {
-            ioFile = FineIO.createIOFile(connector, uri, FineIO.MODEL.WRITE_DOUBLE);
+            ioFile = FineIO.createIOFile(connector, uri, MODEL.WRITE_DOUBLE);
         } else {
-            ioFile = FineIO.createIOFile(connector, uri, FineIO.MODEL.EDIT_DOUBLE);
+            ioFile = FineIO.createIOFile(connector, uri, MODEL.APPEND_DOUBLE);
         }
     }
 
-    public static DoubleWriter build(IResourceLocation location, boolean isOverwrite) {
+    public static DoubleWriter build(URI location, boolean isOverwrite) {
         return new DoubleFineIoWriter(
-                location.getUri(),
+                location,
                 ConnectorManager.getInstance().getConnector(),
                 isOverwrite
         );

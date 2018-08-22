@@ -2,7 +2,8 @@ package com.fr.swift.cube.io.impl.fineio.input;
 
 import com.fr.swift.cube.io.input.ByteArrayReader;
 import com.fr.swift.cube.io.input.StringReader;
-import com.fr.swift.cube.io.location.IResourceLocation;
+
+import java.net.URI;
 
 /**
  * @author anchore
@@ -17,7 +18,7 @@ public class StringFineIoReader extends BaseFineIoReader implements StringReader
         this.bar = bar;
     }
 
-    public static StringReader build(IResourceLocation location) {
+    public static StringReader build(URI location) {
         // 底层为byte array reader
         return new StringFineIoReader(ByteArrayFineIoReader.build(location));
     }
