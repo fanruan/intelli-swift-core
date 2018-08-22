@@ -86,7 +86,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     }
 
     @Override
-    public void load(Map<String, Set<String>> remoteUris, boolean replace) throws IOException {
+    public void load(Map<String, Set<String>> remoteUris, boolean replace) {
         String path = pathService.getSwiftPath();
         SwiftRepository repository = SwiftRepositoryManager.getManager().currentRepo();
         if (null != remoteUris && !remoteUris.isEmpty()) {
