@@ -64,6 +64,7 @@ public abstract class AbstractFileSystem<Config extends SwiftFileSystemConfig> i
         return ResourceIOUtils.getParent(uri);
     }
 
+    @Override
     public Config getConfig() {
         return config;
     }

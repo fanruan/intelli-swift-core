@@ -1,5 +1,6 @@
 package com.fr.swift.file.system;
 
+import com.fr.swift.config.bean.SwiftFileSystemConfig;
 import com.fr.swift.file.exception.SwiftFileException;
 
 import java.io.Closeable;
@@ -48,4 +49,6 @@ public interface SwiftFileSystem extends Closeable {
 
     @Override
     void close() throws SwiftFileException;
+
+    SwiftFileSystemConfig getConfig();
 }

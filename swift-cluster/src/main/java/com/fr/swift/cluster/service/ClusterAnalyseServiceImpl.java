@@ -5,17 +5,10 @@ import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.AsyncRpcCallback;
-import com.fr.swift.basics.Invoker;
-import com.fr.swift.basics.ProxyFactory;
-import com.fr.swift.basics.Result;
 import com.fr.swift.basics.RpcFuture;
-import com.fr.swift.basics.base.SwiftInvocation;
-import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.netty.rpc.server.RpcServer;
-import com.fr.swift.netty.rpc.url.RPCDestination;
-import com.fr.swift.netty.rpc.url.RPCUrl;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryBeanFactory;
 import com.fr.swift.segment.SegmentDestination;
@@ -28,6 +21,7 @@ import com.fr.swift.service.cluster.ClusterAnalyseService;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.util.Assert;
 import com.fr.swift.util.ServiceBeanFactory;
+import com.fr.swift.utils.ClusterCommonUtils;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;
@@ -126,14 +120,7 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
         String address = remoteURI.getAddress();
         String methodName = remoteURI.getMethodName();
         Class clazz = remoteURI.getServiceClass();
-        ProxyFactory factory = ProxySelector.getInstance().getFactory();
-        Invoker invoker = factory.getInvoker(null, clazz, new RPCUrl(new RPCDestination(address)), false);
-        Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName(methodName), new Object[]{jsonString}));
-        RpcFuture future = (RpcFuture) result.getValue();
-        if (null == future) {
-            throw new Exception(result.getException());
-        }
-        return future;
+        return ClusterCommonUtils.runAsyncRpc(address, clazz, server.getMethodByName(methodName), jsonString);
     }
 
     @Override

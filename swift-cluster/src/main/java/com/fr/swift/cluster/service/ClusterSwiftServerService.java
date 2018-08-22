@@ -24,6 +24,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.netty.rpc.url.RPCDestination;
 import com.fr.swift.netty.rpc.url.RPCUrl;
 import com.fr.swift.property.SwiftProperty;
+import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.service.AbstractSwiftService;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.CollateService;
@@ -37,12 +38,14 @@ import com.fr.swift.service.listener.SwiftServiceListener;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.service.listener.SwiftServiceListenerManager;
 import com.fr.swift.source.DataSource;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.stuff.DefaultIndexingStuff;
 import com.fr.swift.stuff.IndexingStuff;
 import com.fr.swift.task.TaskKey;
 import com.fr.swift.task.impl.SchedulerTaskPool;
 import com.fr.swift.task.impl.TaskEvent;
 import com.fr.swift.util.Crasher;
+import com.fr.swift.utils.ClusterCommonUtils;
 
 import javax.annotation.PostConstruct;
 import java.io.Serializable;
@@ -182,7 +185,9 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
             URL url = UrlSelector.getInstance().getFactory().getURL(service.getID());
             switch (service.getServiceType()) {
                 case ANALYSE:
-                    analyseServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), AnalyseService.class));
+                    ClusterEntity entity = new ClusterEntity(url, service.getServiceType(), AnalyseService.class);
+                    analyseServiceMap.put(service.getID(), entity);
+                    triggerAfterAnalyseRegister(Pair.of(service.getID(), entity));
                     break;
                 case HISTORY:
                     historyServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), HistoryService.class));
@@ -198,6 +203,21 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
                     break;
                 default:
             }
+        }
+    }
+
+    private void triggerAfterAnalyseRegister(Pair<String, ClusterEntity> service) {
+        String id = service.getKey();
+        try {
+            Class clazz = service.getValue().getServiceClass();
+            List<Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo>> pairs = SegmentLocationInfoContainer.getContainer().getLocationInfo();
+            for (Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo> pair : pairs) {
+                ClusterCommonUtils.runAsyncRpc(id, clazz,
+                        clazz.getMethod("updateSegmentInfo", SegmentLocationInfo.class, SegmentLocationInfo.UpdateType.class),
+                        pair.getValue(), pair.getKey());
+            }
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
         }
     }
 

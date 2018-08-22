@@ -24,15 +24,20 @@ import java.util.List;
  */
 public class ClusterCommonUtils {
     public static URL getMasterURL() {
-        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.get().getBean(SwiftServiceInfoService.class).getServiceInfoByService(ClusterNodeService.SERVICE);
+        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.get().getBean(SwiftServiceInfoService.class)
+                .getServiceInfoByService(ClusterNodeService.SERVICE);
         SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
         return UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
     }
 
-    public static RpcFuture runRpc(URL target, Method method, Object... args) throws Exception {
-        URL masterURL = target;
+    public static RpcFuture runAsyncRpc(String address, Class clazz, Method method, Object... args) throws Exception {
+        URL url = UrlSelector.getInstance().getFactory().getURL(address);
+        return runAsyncRpc(url, clazz, method, args);
+    }
+
+    public static RpcFuture runAsyncRpc(URL url, Class clazz, Method method, Object... args) throws Exception {
         ProxyFactory factory = ProxySelector.getInstance().getFactory();
-        Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, masterURL, false);
+        Invoker invoker = factory.getInvoker(null, clazz, url, false);
         Result invokeResult = invoker.invoke(new SwiftInvocation(method, args));
         RpcFuture future = (RpcFuture) invokeResult.getValue();
         if (null != future) {
@@ -41,7 +46,7 @@ public class ClusterCommonUtils {
         throw new Exception(invokeResult.getException());
     }
 
-    public static RpcFuture callMaster(SwiftRpcEvent event) throws Exception {
-        return runRpc(getMasterURL(), SwiftServiceListenerHandler.class.getMethod("trigger", SwiftRpcEvent.class), event);
+    public static RpcFuture asyncCallMaster(SwiftRpcEvent event) throws Exception {
+        return runAsyncRpc(getMasterURL(), SwiftServiceListenerHandler.class, SwiftServiceListenerHandler.class.getMethod("trigger", SwiftRpcEvent.class), event);
     }
 }
