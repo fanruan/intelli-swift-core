@@ -4,6 +4,7 @@ import com.fr.swift.config.bean.SwiftFileSystemConfig;
 import com.fr.swift.config.convert.SwiftFileSystemConvert;
 import com.fr.swift.config.service.SwiftConfigService;
 import com.fr.swift.config.service.SwiftRepositoryConfService;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
@@ -29,8 +30,13 @@ public class SwiftRepositoryConfServiceImpl implements SwiftRepositoryConfServic
 
     @Override
     public boolean setCurrentRepository(SwiftFileSystemConfig config) {
-        SwiftFileSystemConfig current = getCurrentRepository();
-        if (!config.equals(current)) {
+        SwiftFileSystemConfig current = null;
+        try {
+            current = getCurrentRepository();
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().warn("Cannot find swift repository config.");
+        }
+        if (null == current || !config.equals(current)) {
             configService.deleteConfigBean(CONVERT, current);
             for (ConfChangeListener changeListener : changeListeners) {
                 changeListener.change(config);

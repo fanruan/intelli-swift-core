@@ -41,17 +41,17 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-decision</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-boot</artifactId>
             <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-redis</artifactId>
-            <version>${swift.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-decision</artifactId>
             <version>${swift.version}</version>
         </dependency>
         <dependency>

@@ -1,10 +1,13 @@
 package com.fr.swift.repository;
 
 import com.fr.swift.config.bean.SwiftFileSystemConfig;
+import com.fr.swift.file.SwiftFileSystemType;
+import com.fr.swift.file.SwiftRemoteFileSystemType;
 import com.fr.swift.file.exception.SwiftFileException;
 import com.fr.swift.file.system.SwiftFileSystem;
 import com.fr.swift.file.system.impl.DefaultFileSystemImpl;
-import com.fr.swift.file.system.pool.RemotePoolCreator;
+import com.fr.swift.file.system.pool.RemoteFactoryCreator;
+import com.fr.swift.repository.config.DefaultRepositoryConfig;
 import com.fr.swift.util.Strings;
 
 import java.io.IOException;
@@ -34,22 +37,24 @@ public abstract class AbstractRepository implements SwiftRepository {
     public abstract boolean delete(String remote) throws IOException;
 
     public SwiftFileSystem createFileSystem(String uri) {
-        switch (configuration.getType()) {
-            case FR:
-                return new DefaultFileSystemImpl(configuration, uri);
-            default:
-                return RemotePoolCreator.creator().getPool(configuration).borrowObject(uri);
+        if (null == configuration) {
+            configuration = DefaultRepositoryConfig.INSTANCE;
+        }
+        SwiftFileSystemType type = configuration.getType();
+        if (SwiftRemoteFileSystemType.FR.equals(type)) {
+            return new DefaultFileSystemImpl(configuration, uri);
+        } else {
+            return RemoteFactoryCreator.creator().getFactory(type).createFileSystem(configuration, uri);
         }
     }
 
     public void closeFileSystem(SwiftFileSystem fileSystem) throws SwiftFileException {
         if (null != fileSystem) {
-            switch (configuration.getType()) {
-                case FR:
-                    fileSystem.close();
-                    break;
-                default:
-                    RemotePoolCreator.creator().getPool(configuration).returnObject(fileSystem.getResourceURI(), fileSystem);
+            SwiftFileSystemType type = configuration.getType();
+            if (SwiftRemoteFileSystemType.FR.equals(type)) {
+                fileSystem.close();
+            } else {
+                RemoteFactoryCreator.creator().getFactory(type).closeFileSystem(fileSystem);
             }
         }
     }
