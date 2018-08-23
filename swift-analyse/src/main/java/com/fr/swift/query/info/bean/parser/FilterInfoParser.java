@@ -130,8 +130,9 @@ class FilterInfoParser {
         switch (type) {
             case INTEGER:
             case LONG:
+                return Long.parseLong(origin.toString());
             case DATE:
-                return DateUtils.string2Date(origin.toString(), true);
+                return DateUtils.string2Date(origin.toString(), true).getTime();
             case DOUBLE:
                 return Double.parseDouble(origin.toString());
             default:

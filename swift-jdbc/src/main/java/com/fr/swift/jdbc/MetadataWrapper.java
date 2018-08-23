@@ -24,32 +24,32 @@ public class MetadataWrapper implements ResultSetMetaData {
     }
 
     @Override
-    public boolean isAutoIncrement(int column) throws SQLException {
+    public boolean isAutoIncrement(int column) {
         return false;
     }
 
     @Override
-    public boolean isCaseSensitive(int column) throws SQLException {
+    public boolean isCaseSensitive(int column) {
         return true;
     }
 
     @Override
-    public boolean isSearchable(int column) throws SQLException {
+    public boolean isSearchable(int column) {
         return false;
     }
 
     @Override
-    public boolean isCurrency(int column) throws SQLException {
+    public boolean isCurrency(int column) {
         return false;
     }
 
     @Override
-    public int isNullable(int column) throws SQLException {
+    public int isNullable(int column) {
         return ResultSetMetaData.columnNullable;
     }
 
     @Override
-    public boolean isSigned(int column) throws SQLException {
+    public boolean isSigned(int column) {
         return false;
     }
 
@@ -65,7 +65,7 @@ public class MetadataWrapper implements ResultSetMetaData {
 
     @Override
     public String getColumnName(int column) throws SQLException {
-        return metaData.getColumnId(column);
+        return metaData.getColumnName(column);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class MetadataWrapper implements ResultSetMetaData {
     }
 
     @Override
-    public String getCatalogName(int column) throws SQLException {
+    public String getCatalogName(int column) {
         return metaData.getSwiftSchema().getName();
     }
 
@@ -116,32 +116,32 @@ public class MetadataWrapper implements ResultSetMetaData {
     }
 
     @Override
-    public boolean isReadOnly(int column) throws SQLException {
+    public boolean isReadOnly(int column) {
         return false;
     }
 
     @Override
-    public boolean isWritable(int column) throws SQLException {
+    public boolean isWritable(int column) {
         return false;
     }
 
     @Override
-    public boolean isDefinitelyWritable(int column) throws SQLException {
+    public boolean isDefinitelyWritable(int column) {
         return false;
     }
 
     @Override
-    public String getColumnClassName(int column) throws SQLException {
+    public String getColumnClassName(int column) {
         return Crasher.crash(new SwiftJDBCNotSupportedException());
     }
 
     @Override
-    public <T> T unwrap(Class<T> iface) throws SQLException {
+    public <T> T unwrap(Class<T> iface) {
         return Crasher.crash(new SwiftJDBCNotSupportedException());
     }
 
     @Override
-    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+    public boolean isWrapperFor(Class<?> iface) {
         return false;
     }
 }

@@ -18,17 +18,15 @@ public class MultiSegmentDetailResultSet extends AbstractDetailResultSet {
 
     private int rowCount;
     private List<Query<DetailResultSet>> queries;
-    private SwiftMetaData metaData;
     /**
      * mergeIterator和rowIterator看似相同，其实不然，前者可以理解为内部实现(处理翻页缓存等)，后者为外部实现(对应SwiftResult)
      */
     private Iterator<Row> mergeIterator;
     private Iterator<Row> rowIterator;
 
-    public MultiSegmentDetailResultSet(int fetchSize, List<Query<DetailResultSet>> queries, SwiftMetaData metaData) throws SQLException {
+    public MultiSegmentDetailResultSet(int fetchSize, List<Query<DetailResultSet>> queries) throws SQLException {
         super(fetchSize);
         this.queries = queries;
-        this.metaData = metaData;
         init();
     }
 

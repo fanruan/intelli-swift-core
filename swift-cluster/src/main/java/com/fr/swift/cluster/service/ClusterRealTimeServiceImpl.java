@@ -157,7 +157,7 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
             map.put(key, new ArrayList<SegmentDestination>() {
                 @Override
                 public boolean add(SegmentDestination segmentDestination) {
-                    return contains(segmentDestination) ? false : super.add(segmentDestination);
+                    return !contains(segmentDestination) && super.add(segmentDestination);
                 }
             });
         }

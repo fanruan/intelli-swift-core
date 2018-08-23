@@ -68,6 +68,10 @@ public class SerializableDetailResultSet implements DetailResultSet, Serializabl
     }
 
     @Override
+    public void setMetaData(SwiftMetaData metaData) {
+    }
+
+    @Override
     public SwiftMetaData getMetaData() throws SQLException {
         return metaData;
     }
