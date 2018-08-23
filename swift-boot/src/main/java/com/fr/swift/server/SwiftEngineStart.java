@@ -1,7 +1,6 @@
 package com.fr.swift.server;
 
 import com.fineio.FineIO;
-import com.fr.config.activator.ConfigurationActivator;
 import com.fr.config.dao.DaoContext;
 import com.fr.config.dao.impl.LocalClassHelperDao;
 import com.fr.config.dao.impl.LocalEntityDao;
@@ -18,8 +17,8 @@ import com.fr.swift.log.FineIOLoggerImpl;
 import com.fr.swift.log.SwiftLog4jLoggers;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
-import com.fr.swift.service.register.LocalSwiftRegister;
-import com.fr.swift.service.register.SwiftServerRegister;
+import com.fr.swift.service.local.ServerManager;
+import com.fr.swift.service.local.ServiceManager;
 import com.fr.swift.source.db.ConnectionInfo;
 import com.fr.swift.source.db.ConnectionManager;
 import com.fr.swift.source.db.IConnectionProvider;
@@ -39,19 +38,19 @@ public class SwiftEngineStart {
         try {
             SwiftLoggers.setLoggerFactory(new SwiftLog4jLoggers());
             SimpleWork.checkIn(System.getProperty("user.dir"));
-            ClusterListenerHandler.addListener(new SwiftClusterListener());
             SwiftContext.init();
+            ClusterListenerHandler.addListener(new SwiftClusterListener());
             registerTmpConnectionProvider();
             FineIO.setLogger(new FineIOLoggerImpl());
             ProviderTaskManager.start();
             SwiftCommandParser.parseCommand(args);
 
-            SwiftContext.get().getBean(LocalSwiftRegister.class).serviceRegister();
+            SwiftContext.get().getBean("localManager", ServiceManager.class).startUp();
             if (SwiftContext.get().getBean("swiftProperty", SwiftProperty.class).isCluster()) {
                 ClusterListenerHandler.handlerEvent(new ClusterEvent(ClusterEventType.JOIN_CLUSTER, ClusterType.CONFIGURE));
             }
+            SwiftContext.get().getBean(ServerManager.class).startUp();
 
-            SwiftContext.get().getBean(SwiftServerRegister.class).serviceRegister();
             SwiftLoggers.getLogger().info("Swift engine start successful");
         } catch (Throwable e) {
             SwiftLoggers.getLogger().error(e);

@@ -12,6 +12,7 @@ import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.property.SwiftProperty;
 
 import java.util.List;
 
@@ -31,7 +32,10 @@ public class FRClusterNodeService implements ClusterNodeService<ClusterNode> {
 
     private SwiftServiceInfoService serviceInfoService = SwiftContext.get().getBean(SwiftServiceInfoService.class);
 
+    private SwiftProperty swiftProperty = SwiftContext.get().getBean(SwiftProperty.class);
+
     private FRClusterNodeService() {
+        swiftProperty.setRpcAddress(FRClusterNodeManager.getInstance().getCurrentId());
     }
 
     private static final ClusterNodeService INSTANCE = new FRClusterNodeService();
@@ -52,6 +56,7 @@ public class FRClusterNodeService implements ClusterNodeService<ClusterNode> {
     @Override
     public boolean competeMaster(ClusterNode leavingNode) {
         ClusterNode currentNode = FRClusterNodeManager.getInstance().getCurrentNode();
+        ClusterNode masterNode = FRClusterNodeManager.getInstance().getMasterNode();
         try {
             clusterLock.lock();
             List<SwiftServiceInfoBean> masterServiceInfoBeanList = serviceInfoService.getServiceInfoByService(ClusterNodeService.SERVICE);
@@ -60,24 +65,28 @@ public class FRClusterNodeService implements ClusterNodeService<ClusterNode> {
                 SwiftServiceInfoBean swiftServiceInfoBean = new SwiftServiceInfoBean(ClusterNodeService.SERVICE,
                         currentNode.getID(), currentNode.getID());
                 serviceInfoService.saveOrUpdate(swiftServiceInfoBean);
-                FRClusterNodeManager.getInstance().setMasterNode(currentNode);
+                masterNode = currentNode;
                 LOGGER.info(String.format("%s compete master succeeded!", currentNode.getID()));
             } else {
                 SwiftServiceInfoBean clusterMasterBean = masterServiceInfoBeanList.get(0);
                 String masterId = clusterMasterBean.getClusterId();
                 if (masterIsDead(masterId, leavingNode)) {
                     LOGGER.info(String.format("Master %s is dead,%s start to compete master!", masterId, currentNode.getID()));
-                    FRClusterNodeManager.getInstance().setMasterNode(currentNode);
+                    masterNode = currentNode;
                     SwiftServiceInfoBean swiftServiceInfoBean = new SwiftServiceInfoBean(ClusterNodeService.SERVICE,
                             currentNode.getID(), currentNode.getID());
                     serviceInfoService.saveOrUpdate(swiftServiceInfoBean);
                     LOGGER.info(String.format("%s compete master succeeded!", currentNode.getID()));
                 } else {
                     LOGGER.info(String.format("Master %s is alive, %s sync master node!", masterId, currentNode.getID()));
-                    FRClusterNodeManager.getInstance().setMasterNode(ClusterBridge.getView().getNodeById(masterId));
+                    masterNode = ClusterBridge.getView().getNodeById(masterId);
                     LOGGER.info(String.format("%s sync master node succeeded!", currentNode.getID()));
                 }
             }
+
+            swiftProperty.setMasterAddress(masterNode.getID());
+            FRClusterNodeManager.getInstance().setMasterNode(masterNode);
+
             LOGGER.info("End to compete master !");
             return true;
         } catch (Exception e) {
