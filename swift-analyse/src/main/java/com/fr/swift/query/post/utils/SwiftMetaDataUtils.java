@@ -1,5 +1,6 @@
 package com.fr.swift.query.post.utils;
 
+import com.fr.stable.StringUtils;
 import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.config.service.SwiftMetaDataService;
@@ -70,7 +71,8 @@ public class SwiftMetaDataUtils {
         for (MetricBean metricBean : metricBeans) {
             String alias = metricBean.getName();
             String column = metricBean.getColumn();
-            SwiftMetaDataColumn metaDataColumn = meta.getColumn(column);
+            SwiftMetaDataColumn metaDataColumn = StringUtils.isEmpty(column) ?
+                    new MetaDataColumnBean(StringUtils.EMPTY, null, Types.DOUBLE, null) : meta.getColumn(column);
             String name = alias == null ? column : alias;
             metaDataColumns.add(new MetaDataColumnBean(name, metaDataColumn.getRemark(), metaDataColumn.getType(),
                     metaDataColumn.getPrecision(), metaDataColumn.getScale(), metaDataColumn.getColumnId()));
