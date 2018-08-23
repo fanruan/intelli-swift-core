@@ -240,6 +240,7 @@ public class FilterInfoBeanVisitor implements ExpressionVisitor, FilterInfoBeanP
         FilterValueBeanVisitor<String> visitor = new FilterValueBeanVisitor<String>((DetailFilterInfoBean) filterInfoBean, new FilterValueSetter<String>() {
             @Override
             public void setValue(String value) {
+                filterValueBean.setStartIncluded(true);
                 filterValueBean.setStart(value);
             }
         });
@@ -306,6 +307,7 @@ public class FilterInfoBeanVisitor implements ExpressionVisitor, FilterInfoBeanP
         FilterValueBeanVisitor<String> visitor = new FilterValueBeanVisitor<String>((DetailFilterInfoBean) filterInfoBean, new FilterValueSetter<String>() {
             @Override
             public void setValue(String value) {
+                filterValueBean.setEndIncluded(true);
                 filterValueBean.setEnd(value);
             }
         });

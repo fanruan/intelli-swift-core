@@ -74,6 +74,9 @@ import com.fr.swift.util.Crasher;
  * Created by pony on 2018/8/20.
  */
 public class FilterValueBeanVisitor<T> implements ExpressionVisitor, ItemsListVisitor {
+
+    // 目前要求写过滤条件的时候要求字段名写在左子表达式
+    private boolean isColumnName = true;
     private DetailFilterInfoBean filterInfoBean;
     private FilterValueSetter<T> setter;
 
@@ -109,12 +112,12 @@ public class FilterValueBeanVisitor<T> implements ExpressionVisitor, ItemsListVi
 
     @Override
     public void visit(DoubleValue doubleValue) {
-        Crasher.crash(new SwiftJDBCNotSupportedException());
+        setter.setValue((T) String.valueOf(doubleValue.getValue()));
     }
 
     @Override
     public void visit(LongValue longValue) {
-        Crasher.crash(new SwiftJDBCNotSupportedException());
+        setter.setValue((T) longValue.getStringValue());
     }
 
     @Override
@@ -229,7 +232,13 @@ public class FilterValueBeanVisitor<T> implements ExpressionVisitor, ItemsListVi
 
     @Override
     public void visit(Column column) {
-        filterInfoBean.setColumn(column.getColumnName());
+        T value = (T) QuoteUtils.trimQuote(column.getColumnName());
+        if (isColumnName) {
+            filterInfoBean.setColumn((String) value);
+            isColumnName = false;
+        } else {
+            setter.setValue(value);
+        }
     }
 
     @Override
