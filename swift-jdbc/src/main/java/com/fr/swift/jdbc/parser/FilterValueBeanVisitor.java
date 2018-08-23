@@ -76,7 +76,7 @@ import com.fr.swift.util.Crasher;
 public class FilterValueBeanVisitor<T> implements ExpressionVisitor, ItemsListVisitor {
 
     // 目前要求写过滤条件的时候要求字段名写在左子表达式
-    private boolean isColumnName = true;
+    private boolean columnName = true;
     private DetailFilterInfoBean filterInfoBean;
     private FilterValueSetter<T> setter;
 
@@ -233,9 +233,9 @@ public class FilterValueBeanVisitor<T> implements ExpressionVisitor, ItemsListVi
     @Override
     public void visit(Column column) {
         T value = (T) QuoteUtils.trimQuote(column.getColumnName());
-        if (isColumnName) {
+        if (columnName) {
             filterInfoBean.setColumn((String) value);
-            isColumnName = false;
+            columnName = false;
         } else {
             setter.setValue(value);
         }
