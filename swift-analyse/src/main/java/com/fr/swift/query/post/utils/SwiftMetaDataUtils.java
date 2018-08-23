@@ -49,7 +49,7 @@ public class SwiftMetaDataUtils {
             metaDataColumns.add(new MetaDataColumnBean(name, metaDataColumn.getRemark(), metaDataColumn.getType(),
                     metaDataColumn.getPrecision(), metaDataColumn.getScale(), metaDataColumn.getColumnId()));
         }
-        return new SwiftMetaDataBean(schema, tableName, metaDataColumns);
+        return new SwiftMetaDataBean(null, schema, schema.getName(), tableName, tableName, metaDataColumns);
     }
 
     private static SwiftMetaData createGroupMetaData(GroupQueryInfoBean bean) throws SwiftMetaDataException {
@@ -86,6 +86,6 @@ public class SwiftMetaDataUtils {
                 metaDataColumns.add(new MetaDataColumnBean(name, null, Types.DOUBLE, null));
             }
         }
-        return new SwiftMetaDataBean(schema, tableName, metaDataColumns);
+        return new SwiftMetaDataBean(null, schema, schema.getName(), tableName, tableName, metaDataColumns);
     }
 }
