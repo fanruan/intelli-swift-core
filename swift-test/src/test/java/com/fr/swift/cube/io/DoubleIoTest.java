@@ -14,7 +14,6 @@ import static org.junit.Assert.assertEquals;
  * @date 2017/11/6
  */
 public class DoubleIoTest extends BaseIoTest {
-    long pos = r.nextInt(BOUND);
     double val = r.nextDouble();
     String basePath = CUBES_PATH + "/double/";
 

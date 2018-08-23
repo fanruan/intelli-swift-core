@@ -16,7 +16,6 @@ import static org.junit.Assert.assertEquals;
  * @date 2017/11/6
  */
 public class LongIoTest extends BaseIoTest {
-    long pos = r.nextInt(BOUND);
     long val = r.nextLong();
     String basePath = CUBES_PATH + "/long/";
 

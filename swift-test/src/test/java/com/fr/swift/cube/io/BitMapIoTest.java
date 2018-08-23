@@ -22,7 +22,6 @@ import static org.junit.Assert.fail;
  * @date 2017/11/6
  */
 public class BitMapIoTest extends BaseIoTest {
-    final long pos = r.nextInt(BOUND);
     final MutableBitMap val = BitMaps.newRoaringMutable();
     final int[] ints = r.ints(BOUND, 0, BOUND).toArray();
     String basePath = CUBES_PATH + "/bitmap/";
@@ -37,7 +36,7 @@ public class BitMapIoTest extends BaseIoTest {
     public void testOverwritePutThenGet() {
         IResourceLocation location = new ResourceLocation(basePath + "child_overwrite");
 
-        BitMapWriter writer = (BitMapWriter) Writers.build(location, new BuildConf(IoType.WRITE, DataType.BITMAP));
+        BitMapWriter writer = (BitMapWriter) Writers.build(location, new BuildConf(IoType.WRITE, DataType.BITMAP, WriteType.OVERWRITE));
         writer.put(pos, val);
         writer.release();
 
@@ -56,7 +55,6 @@ public class BitMapIoTest extends BaseIoTest {
     @Override
     public void testPutThenGet() {
         IResourceLocation location = new ResourceLocation(basePath + "child");
-
         BitMapWriter writer = (BitMapWriter) Writers.build(location, new BuildConf(IoType.WRITE, DataType.BITMAP, WriteType.APPEND));
         writer.put(pos, val);
         writer.release();

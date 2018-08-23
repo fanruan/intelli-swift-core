@@ -16,7 +16,6 @@ import static org.junit.Assert.fail;
  * @date 2017/11/6
  */
 public class ByteArrayIoTest extends BaseIoTest {
-    final long pos = r.nextInt(BOUND);
     final byte[] val = new byte[r.nextInt(BOUND)];
     String basePath = CUBES_PATH + "/bytearray/";
 
@@ -28,7 +27,7 @@ public class ByteArrayIoTest extends BaseIoTest {
     public void testOverwritePutThenGet() {
         IResourceLocation location = new ResourceLocation(basePath + "child_overwrite");
 
-        ByteArrayWriter writer = (ByteArrayWriter) Writers.build(location, new BuildConf(IoType.WRITE, DataType.BYTE_ARRAY));
+        ByteArrayWriter writer = (ByteArrayWriter) Writers.build(location, new BuildConf(IoType.WRITE, DataType.BYTE_ARRAY, WriteType.OVERWRITE));
         writer.put(pos, val);
         writer.release();
 

@@ -1,5 +1,9 @@
 package com.fr.swift.test;
 
+import com.fr.config.dao.DaoContext;
+import com.fr.config.dao.impl.LocalClassHelperDao;
+import com.fr.config.dao.impl.LocalEntityDao;
+import com.fr.config.dao.impl.LocalXmlEntityDao;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLog4jLoggers;
@@ -51,5 +55,9 @@ public class Preparer {
 
     public static void prepareConfDb() {
         FileUtil.delete(TestResource.getTmpDir() + "/embed");
+
+        DaoContext.setEntityDao(new LocalEntityDao());
+        DaoContext.setClassHelperDao(new LocalClassHelperDao());
+        DaoContext.setXmlEntityDao(new LocalXmlEntityDao());
     }
 }

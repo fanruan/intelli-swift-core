@@ -14,7 +14,6 @@ import static org.junit.Assert.assertEquals;
  * @date 2017/11/6
  */
 public class IntIoTest extends BaseIoTest {
-    long pos = r.nextInt(BOUND);
     int val = r.nextInt(BOUND);
     String basePath = CUBES_PATH + "/int/";
 
