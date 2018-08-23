@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  * This class created on 2018/8/17
  *
  * @author Lucifer
- * @description
+ * @description Services for passive discovery and init method,like zk service.
  * @since Advanced FineBI 5.0
  */
 @Target({ElementType.TYPE})
@@ -19,4 +19,6 @@ import java.lang.annotation.Target;
 @Component
 public @interface ClusterService {
     String initMethod();
+
+    String destroyMethod();
 }

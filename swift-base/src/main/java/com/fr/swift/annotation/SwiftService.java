@@ -11,7 +11,8 @@ import java.lang.annotation.Target;
  * This class created on 2018/8/8
  *
  * @author Lucifer
- * @description
+ * @description Swift business service.
+ * such as indexing,history,realtime,analyse,collate
  * @since Advanced FineBI 5.0
  */
 @Target({ElementType.TYPE})
