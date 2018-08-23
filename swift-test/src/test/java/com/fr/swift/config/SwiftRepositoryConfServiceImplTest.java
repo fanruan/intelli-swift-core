@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 public class SwiftRepositoryConfServiceImplTest {
 
     @BeforeClass
-    public static void before() throws Exception {
+    public static void before() {
         Preparer.prepareCubeBuild();
     }
 

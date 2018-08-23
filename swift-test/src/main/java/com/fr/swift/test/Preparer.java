@@ -23,22 +23,21 @@ public class Preparer {
 
     public static void prepareCubeBuild() {
         prepareFrEnv();
-        prepareContext();
         prepareConfDb();
+        prepareContext();
         TestConnectionProvider.createConnection();
     }
 
     public static void prepareCubeBuild(Class<?> test) {
         prepareFrEnv();
-        prepareContext();
         prepareConfDb();
+        prepareContext();
         beforeEachCubeBuild(test);
         TestConnectionProvider.createConnection();
     }
 
 
     public static void beforeEachCubeBuild(Class<?> test) {
-        prepareConfDb();
         String runPath = TestResource.getRunPath(test);
         SwiftContext.get().getBean(SwiftCubePathService.class).setSwiftPath(runPath);
         FileUtil.delete(runPath);

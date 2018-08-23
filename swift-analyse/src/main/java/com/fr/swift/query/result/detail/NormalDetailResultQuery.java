@@ -4,7 +4,6 @@ import com.fr.swift.query.info.element.target.DetailTarget;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.result.MultiSegmentDetailResultSet;
-import com.fr.swift.source.SwiftMetaData;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -16,20 +15,16 @@ import java.util.List;
  */
 public class NormalDetailResultQuery extends AbstractDetailResultQuery {
 
-    private SwiftMetaData metaData;
-
-    public NormalDetailResultQuery(int fetchSize, List<Query<DetailResultSet>> queries, SwiftMetaData metaData) {
+    public NormalDetailResultQuery(int fetchSize, List<Query<DetailResultSet>> queries) {
         super(fetchSize, queries);
-        this.metaData = metaData;
     }
 
-    public NormalDetailResultQuery(int fetchSize, List<Query<DetailResultSet>> queries, List<DetailTarget> targets, SwiftMetaData metaData) {
+    public NormalDetailResultQuery(int fetchSize, List<Query<DetailResultSet>> queries, List<DetailTarget> targets) {
         super(fetchSize, queries, targets);
-        this.metaData = metaData;
     }
 
     @Override
     public DetailResultSet getQueryResult() throws SQLException {
-        return new MultiSegmentDetailResultSet(fetchSize, queryList, metaData);
+        return new MultiSegmentDetailResultSet(fetchSize, queryList);
     }
 }

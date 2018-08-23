@@ -25,7 +25,6 @@ import com.fr.swift.query.sort.Sort;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftMetaDataColumn;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +81,6 @@ public class QueryInfoParser {
         FilterInfo filterInfo = FilterInfoParser.parse(table, bean.getFilterInfoBean());
         List<Dimension> dimensions = DimensionParser.parse(table, bean.getDimensionBeans(), bean.getSortBeans());
         SwiftMetaData metaData = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(bean.getTableName());
-        List<SwiftMetaDataColumn> columns = new ArrayList<SwiftMetaDataColumn>();
         List<Sort> sorts = null;
         List<SortBean> sortBeans = bean.getSortBeans();
         if (null != sortBeans) {
@@ -103,16 +101,7 @@ public class QueryInfoParser {
                 }
             }
         }
-//        List<String> fieldNames = bean.getColumns();
-//        try {
-//            for (String fieldName : fieldNames) {
-//                columns.add(metaData.getColumn(fieldName));
-//            }
-//            return new DetailQueryInfo(queryId, table, filterInfo, dimensions, sorts, null, new SwiftMetaDataBean(metaData.getTableName(), metaData.getRemark(), metaData.getSchemaName(), columns));
-//        } catch (SwiftMetaDataException e) {
-//            SwiftLoggers.getLogger(QueryInfoParser.class).error(e);
-//        }
-        DetailQueryInfo detailQueryInfo = new DetailQueryInfo(queryId, bean.getFetchSize(), table, filterInfo, dimensions, sorts, null, metaData);
+        DetailQueryInfo detailQueryInfo = new DetailQueryInfo(queryId, bean.getFetchSize(), table, filterInfo, dimensions, sorts, null);
         detailQueryInfo.setQuerySegment(bean.getQuerySegments());
         return detailQueryInfo;
     }

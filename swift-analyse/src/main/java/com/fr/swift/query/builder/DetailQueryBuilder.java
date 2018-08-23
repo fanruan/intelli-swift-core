@@ -6,6 +6,7 @@ import com.fr.swift.query.info.bean.parser.QueryInfoParser;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.info.detail.DetailQueryInfo;
+import com.fr.swift.query.post.PrepareMetaDataQuery;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.query.remote.RemoteQueryImpl;
@@ -34,11 +35,13 @@ class DetailQueryBuilder {
      */
     static Query<DetailResultSet> buildQuery(DetailQueryInfoBean bean) throws Exception {
         DetailQueryInfo info = (DetailQueryInfo) QueryInfoParser.parse(bean);
+        Query<DetailResultSet> query;
         if (info.hasSort()){
-            return buildQuery(info, bean, LocalDetailQueryBuilder.GROUP);
+            query = buildQuery(info, bean, LocalDetailQueryBuilder.GROUP);
         } else {
-            return buildQuery(info, bean, LocalDetailQueryBuilder.NORMAL);
+            query = buildQuery(info, bean, LocalDetailQueryBuilder.NORMAL);
         }
+        return new PrepareMetaDataQuery<DetailResultSet>(query, bean);
     }
 
     /**
