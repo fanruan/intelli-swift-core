@@ -1,7 +1,7 @@
 package com.fr.swift.file.system;
 
-import com.fr.swift.config.bean.SwiftFileSystemConfig;
 import com.fr.swift.file.exception.SwiftFileException;
+import com.fr.swift.repository.SwiftFileSystemConfig;
 
 import java.io.Closeable;
 import java.io.InputStream;

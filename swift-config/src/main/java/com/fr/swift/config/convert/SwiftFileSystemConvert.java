@@ -2,8 +2,8 @@ package com.fr.swift.config.convert;
 
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.config.bean.SwiftFileSystemConfig;
 import com.fr.swift.config.convert.base.AbstractObjectConfigConvert;
+import com.fr.swift.repository.SwiftFileSystemConfig;
 
 /**
  * @author yee

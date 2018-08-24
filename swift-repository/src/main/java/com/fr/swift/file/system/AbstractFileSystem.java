@@ -1,8 +1,8 @@
 package com.fr.swift.file.system;
 
 import com.fr.io.utils.ResourceIOUtils;
-import com.fr.swift.config.bean.SwiftFileSystemConfig;
 import com.fr.swift.file.exception.SwiftFileException;
+import com.fr.swift.repository.SwiftFileSystemConfig;
 import com.fr.swift.util.Strings;
 
 import java.io.InputStream;

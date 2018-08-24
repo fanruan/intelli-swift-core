@@ -1,10 +1,10 @@
 package com.fr.swift.config.service.impl;
 
-import com.fr.swift.config.bean.SwiftFileSystemConfig;
 import com.fr.swift.config.convert.SwiftFileSystemConvert;
 import com.fr.swift.config.service.SwiftConfigService;
-import com.fr.swift.config.service.SwiftRepositoryConfService;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.repository.SwiftFileSystemConfig;
+import com.fr.swift.service.SwiftRepositoryConfService;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 

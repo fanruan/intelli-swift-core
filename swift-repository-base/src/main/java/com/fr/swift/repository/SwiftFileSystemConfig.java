@@ -1,4 +1,4 @@
-package com.fr.swift.config.bean;
+package com.fr.swift.repository;
 
 import com.fr.swift.file.SwiftFileSystemType;
 

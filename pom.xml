@@ -35,6 +35,7 @@
         <module>swift-rpc-base</module>
         <module>swift-http-api</module>
         <module>swift-analyse-base</module>
+        <module>swift-repository-base</module>
     </modules>
 
     <properties>

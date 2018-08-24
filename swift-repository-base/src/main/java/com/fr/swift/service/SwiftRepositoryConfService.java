@@ -1,6 +1,7 @@
-package com.fr.swift.config.service;
+package com.fr.swift.service;
 
-import com.fr.swift.config.bean.SwiftFileSystemConfig;
+
+import com.fr.swift.repository.SwiftFileSystemConfig;
 
 /**
  * @author yee
