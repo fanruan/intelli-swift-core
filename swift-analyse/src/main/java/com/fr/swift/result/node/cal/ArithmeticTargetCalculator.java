@@ -2,7 +2,7 @@ package com.fr.swift.result.node.cal;
 
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
-import com.fr.swift.query.info.element.target.cal.CalTargetType;
+import com.fr.swift.query.info.bean.type.cal.CalTargetType;
 
 import java.util.Iterator;
 

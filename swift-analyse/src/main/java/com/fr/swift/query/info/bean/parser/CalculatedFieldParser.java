@@ -1,8 +1,8 @@
 package com.fr.swift.query.info.bean.parser;
 
 import com.fr.swift.query.info.bean.element.CalculatedFieldBean;
+import com.fr.swift.query.info.bean.type.cal.CalTargetType;
 import com.fr.swift.query.info.element.target.GroupTarget;
-import com.fr.swift.query.info.element.target.cal.CalTargetType;
 import com.fr.swift.query.info.element.target.cal.GroupTargetImpl;
 
 import java.util.ArrayList;

@@ -13,7 +13,7 @@ import com.fr.swift.jdbc.exception.SwiftJDBCTableAbsentException;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.info.bean.element.MetricBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
-import com.fr.swift.query.info.element.metric.Metric;
+import com.fr.swift.query.info.bean.type.MetricType;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Crasher;
@@ -99,7 +99,7 @@ public class GroupQueryBeanVisitor extends AbstractQueryBeanVisitor {
         }
         MetricBean bean = new MetricBean();
         bean.setColumn(columnName);
-        bean.setMetricType(Metric.MetricType.GROUP);
+        bean.setMetricType(MetricType.GROUP);
         bean.setType(type);
         metrics.add(bean);
     }

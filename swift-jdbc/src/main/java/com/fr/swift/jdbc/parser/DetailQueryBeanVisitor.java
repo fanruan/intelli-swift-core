@@ -11,7 +11,7 @@ import com.fr.swift.query.group.GroupType;
 import com.fr.swift.query.info.bean.element.DimensionBean;
 import com.fr.swift.query.info.bean.element.GroupBean;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
-import com.fr.swift.query.info.element.dimension.Dimension;
+import com.fr.swift.query.info.bean.type.DimensionType;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Crasher;
@@ -72,7 +72,7 @@ public class DetailQueryBeanVisitor extends AbstractQueryBeanVisitor{
         columnNames.add(columnName);
         DimensionBean bean = new DimensionBean();
         bean.setColumn(columnName);
-        bean.setDimensionType(Dimension.DimensionType.DETAIL);
+        bean.setDimensionType(DimensionType.DETAIL);
         GroupBean groupBean = new GroupBean();
         groupBean.setType(GroupType.NONE);
         bean.setGroupBean(groupBean);

@@ -14,7 +14,7 @@ import com.fr.swift.query.info.bean.post.CalculatedFieldQueryInfoBean;
 import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
-import com.fr.swift.query.post.PostQueryType;
+import com.fr.swift.query.info.bean.type.PostQueryType;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.source.SwiftMetaData;

@@ -4,7 +4,7 @@ import com.fr.swift.query.group.GroupType;
 import com.fr.swift.query.info.bean.element.DimensionBean;
 import com.fr.swift.query.info.bean.element.GroupBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
-import com.fr.swift.query.info.element.dimension.Dimension;
+import com.fr.swift.query.info.bean.type.DimensionType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ public class GroupByDimensionVisitor extends GroupQueryBeanVisitor{
         }
         DimensionBean bean = new DimensionBean();
         bean.setColumn(columnName);
-        bean.setDimensionType(Dimension.DimensionType.GROUP);
+        bean.setDimensionType(DimensionType.GROUP);
         GroupBean groupBean = new GroupBean();
         groupBean.setType(GroupType.NONE);
         bean.setGroupBean(groupBean);
