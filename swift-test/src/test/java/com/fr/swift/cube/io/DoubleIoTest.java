@@ -21,7 +21,7 @@ public class DoubleIoTest extends BaseIoTest {
     public void testOverwritePutThenGet() {
         IResourceLocation location = new ResourceLocation(basePath + "child_overwrite");
 
-        DoubleWriter writer = (DoubleWriter) Writers.build(location, new BuildConf(Types.IoType.WRITE, Types.DataType.DOUBLE));
+        DoubleWriter writer = (DoubleWriter) Writers.build(location, new BuildConf(Types.IoType.WRITE, Types.DataType.DOUBLE, WriteType.OVERWRITE));
         writer.put(pos, val);
         writer.release();
 

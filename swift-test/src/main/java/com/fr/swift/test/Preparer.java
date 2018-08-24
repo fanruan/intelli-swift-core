@@ -10,6 +10,7 @@ import com.fr.swift.log.SwiftLog4jLoggers;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.db.TestConnectionProvider;
 import com.fr.swift.util.FileUtil;
+import com.fr.workspace.WorkContext;
 import com.fr.workspace.simple.SimpleWork;
 
 /**
@@ -36,15 +37,12 @@ public class Preparer {
         prepareFrEnv();
         prepareConfDb();
         prepareContext();
-        beforeEachCubeBuild(test);
-        TestConnectionProvider.createConnection();
-    }
 
-
-    public static void beforeEachCubeBuild(Class<?> test) {
         String runPath = TestResource.getRunPath(test);
-        SwiftContext.get().getBean(SwiftCubePathService.class).setSwiftPath(runPath);
         FileUtil.delete(runPath);
+        SwiftContext.get().getBean(SwiftCubePathService.class).setSwiftPath(runPath);
+
+        TestConnectionProvider.createConnection();
     }
 
     public static void prepareContext() {
@@ -53,7 +51,7 @@ public class Preparer {
     }
 
     public static void prepareConfDb() {
-        FileUtil.delete(TestResource.getTmpDir() + "/embed");
+        FileUtil.delete(WorkContext.getCurrent().getPath() + "/embed");
 
         DaoContext.setEntityDao(new LocalEntityDao());
         DaoContext.setClassHelperDao(new LocalClassHelperDao());

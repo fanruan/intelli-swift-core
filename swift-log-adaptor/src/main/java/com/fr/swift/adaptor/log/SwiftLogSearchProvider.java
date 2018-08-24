@@ -19,6 +19,7 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.iterator.IteratorUtils;
 import com.fr.swift.structure.iterator.MapperIterator;
+import com.fr.swift.util.JpaAdaptor;
 import com.fr.swift.util.function.Function;
 
 import java.util.ArrayList;
@@ -134,7 +135,7 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
                                   String columnName, FilterInfoBean notNull) throws Exception {
         GroupQueryInfoBean queryInfoBean = new GroupQueryInfoBean();
         queryInfoBean.setQueryId(condition.toString());
-        String tableName = SwiftMetaAdaptor.getTableName(logClass);
+        String tableName = JpaAdaptor.getTableName(logClass);
         queryInfoBean.setTableName(tableName);
         FilterInfoBean filterInfoBean = QueryConditionAdaptor.restriction2FilterInfo(condition.getRestriction());
         if (notNull != null) {

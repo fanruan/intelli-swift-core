@@ -38,8 +38,12 @@ public class CubeUtil {
     }
 
     public static String getSegPath(SegmentKey segKey) {
+        return getSegPath(segKey, false);
+    }
+
+    public static String getSegPath(SegmentKey segKey, boolean logicalPath) {
         SourceKey tableKey = segKey.getTable();
-        Optional<Integer> currentDir = segKey.getStoreType() == StoreType.MEMORY ?
+        Optional<Integer> currentDir = logicalPath || segKey.getStoreType() == StoreType.MEMORY ?
                 Optional.<Integer>absent() :
                 Optional.of(getCurrentDir(tableKey));
         return getSegPath(segKey.getSwiftSchema(), currentDir, tableKey, segKey.getOrder());
@@ -51,6 +55,14 @@ public class CubeUtil {
         return currentDir.isPresent() ?
                 String.format("%s/%d/%s/seg%d", schemaDir, currentDir.get(), tableId, segOrder) :
                 String.format("%s/%s/seg%d", schemaDir, tableId, segOrder);
+    }
+
+    public static String getColumnPath(SegmentKey segKey, String columnId) {
+        return String.format("%s/%s", getSegPath(segKey), columnId);
+    }
+
+    public static String getAbsoluteColumnPath(SegmentKey segKey, String columnId) {
+        return String.format("/%s/%s", getAbsoluteSegPath(segKey), columnId);
     }
 
     public static String getAbsoluteSegPath(SegmentKey segKey) {

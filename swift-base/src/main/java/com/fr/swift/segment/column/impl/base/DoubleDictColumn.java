@@ -1,6 +1,7 @@
 package com.fr.swift.segment.column.impl.base;
 
 import com.fr.swift.cube.io.BuildConf;
+import com.fr.swift.cube.io.IOConstant;
 import com.fr.swift.cube.io.Types.DataType;
 import com.fr.swift.cube.io.Types.IoType;
 import com.fr.swift.cube.io.input.DoubleReader;
@@ -59,7 +60,7 @@ public class DoubleDictColumn extends BaseDictColumn<Double, DoubleReader> {
         @Override
         public void putValue(int index, Double val) {
             initKeyWriter();
-            keyWriter.put(index, val);
+            keyWriter.put(index, val == null ? IOConstant.NULL_DOUBLE : val);
         }
     }
 }

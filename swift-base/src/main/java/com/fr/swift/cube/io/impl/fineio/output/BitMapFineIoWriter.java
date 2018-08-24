@@ -9,7 +9,7 @@ import java.net.URI;
 /**
  * @author anchore
  */
-public class BitMapFineIoWriter extends BaseFineIoWriter implements BitMapWriter {
+public class BitMapFineIoWriter implements BitMapWriter {
     private ByteArrayWriter baw;
 
     private BitMapFineIoWriter(ByteArrayWriter baw) {

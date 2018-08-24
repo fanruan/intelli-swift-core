@@ -26,6 +26,7 @@ public abstract class BaseDictColumnTest<T> extends TestIo {
     @Test
     public void testPutValueThenGet() {
         DictionaryEncodedColumn<T> dictColumn = getDictColumn();
+        dictColumn.putter().putValue(0, null);
         for (int i = 1; i < values.length; i++) {
             dictColumn.putter().putValue(i, values[i]);
         }

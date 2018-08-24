@@ -21,7 +21,7 @@ public class IntIoTest extends BaseIoTest {
     public void testOverwritePutThenGet() {
         IResourceLocation location = new ResourceLocation(basePath + "child_overwrite");
 
-        IntWriter writer = (IntWriter) Writers.build(location, new BuildConf(Types.IoType.WRITE, Types.DataType.INT));
+        IntWriter writer = (IntWriter) Writers.build(location, new BuildConf(Types.IoType.WRITE, Types.DataType.INT, WriteType.OVERWRITE));
         writer.put(pos, val);
         writer.release();
 

@@ -14,7 +14,7 @@ import java.net.URI;
 /**
  * @author anchore
  */
-public class ByteArrayFineIoWriter extends BaseFineIoWriter implements ByteArrayWriter {
+public class ByteArrayFineIoWriter implements ByteArrayWriter {
     private ByteWriter contentWriter;
     private LongWriter positionWriter;
     private IntWriter lengthWriter;
@@ -41,19 +41,19 @@ public class ByteArrayFineIoWriter extends BaseFineIoWriter implements ByteArray
     private static ByteArrayFineIoWriter getByteArrayFineIoWriter(URI location, boolean isOverwrite) {
 
         // 获得内容部分的byte类型Writer
-        URI contentLocation = location.resolve(CONTENT);
+        URI contentLocation = URI.create(location.getPath() + "/" + CONTENT);
         ByteWriter contentWriter = ByteFineIoWriter.build(contentLocation, isOverwrite);
 
         // 获得位置部分的long类型Writer
-        URI positionLocation = location.resolve(POSITION);
+        URI positionLocation = URI.create(location.getPath() + "/" + POSITION);
         LongWriter positionWriter = LongFineIoWriter.build(positionLocation, isOverwrite);
 
         // 获得长度部分的int类型Writer
-        URI lengthLocation = location.resolve(LENGTH);
+        URI lengthLocation = URI.create(location.getPath() + "/" + LENGTH);
         IntWriter lengthWriter = IntFineIoWriter.build(lengthLocation, isOverwrite);
 
         // 获得最后位置部分的long类型Writer
-        URI lastPosLocation = location.resolve(LAST_POSITION);
+        URI lastPosLocation = URI.create(location.getPath() + "/" + LAST_POSITION);
         LongWriter lastPosWriter = LongFineIoWriter.build(lastPosLocation, true);
 
         return new ByteArrayFineIoWriter(contentWriter, positionWriter, lengthWriter, lastPosWriter);
@@ -68,7 +68,7 @@ public class ByteArrayFineIoWriter extends BaseFineIoWriter implements ByteArray
      */
     private static long getLastPosition(URI location) {
         try {
-            URI lastPosLocation = location.resolve(LAST_POSITION);
+            URI lastPosLocation = URI.create(location.getPath() + "/" + LAST_POSITION);
             LongReader lastPosReader = LongFineIoReader.build(lastPosLocation);
             return lastPosReader.isReadable() ? lastPosReader.get(0) : 0;
         } catch (Exception e) {

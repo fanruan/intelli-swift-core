@@ -23,7 +23,7 @@ public class LongIoTest extends BaseIoTest {
     public void testOverwritePutThenGet() {
         IResourceLocation location = new ResourceLocation(basePath + "child_overwrite");
 
-        LongWriter writer = (LongWriter) Writers.build(location, new BuildConf(IoType.WRITE, DataType.LONG));
+        LongWriter writer = (LongWriter) Writers.build(location, new BuildConf(IoType.WRITE, DataType.LONG, WriteType.OVERWRITE));
         writer.put(pos, val);
         writer.release();
 

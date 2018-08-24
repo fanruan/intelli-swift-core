@@ -1,7 +1,7 @@
 package com.fr.swift.adaptor.log;
 
-import com.fr.swift.adaptor.log.SwiftMetaAdaptorTest.A;
-import com.fr.swift.adaptor.log.SwiftMetaAdaptorTest.ConvertType;
+import com.fr.swift.adaptor.log.JpaAdaptorTest.A;
+import com.fr.swift.adaptor.log.JpaAdaptorTest.ConvertType;
 import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.source.ListBasedRow;

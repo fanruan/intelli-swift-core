@@ -2,7 +2,6 @@ package com.fr.swift.cube.io.impl.fineio.input;
 
 import com.fineio.FineIO;
 import com.fineio.io.ByteBuffer;
-import com.fineio.io.file.IOFile;
 import com.fineio.storage.Connector;
 import com.fr.swift.cube.io.impl.fineio.connector.ConnectorManager;
 import com.fr.swift.cube.io.input.ByteReader;
@@ -12,10 +11,7 @@ import java.net.URI;
 /**
  * @author anchore
  */
-public class ByteFineIoReader extends BaseFineIoReader implements ByteReader {
-
-    private IOFile<ByteBuffer> ioFile;
-
+public class ByteFineIoReader extends BaseFineIoReader<ByteBuffer> implements ByteReader {
     private ByteFineIoReader(URI uri, Connector connector) {
         ioFile = FineIO.createIOFile(connector, uri, FineIO.MODEL.READ_BYTE);
     }
@@ -30,10 +26,5 @@ public class ByteFineIoReader extends BaseFineIoReader implements ByteReader {
     @Override
     public byte get(long pos) {
         return FineIO.getByte(ioFile, pos);
-    }
-
-    @Override
-    public boolean isReadable() {
-        return ioFile != null && ioFile.exists();
     }
 }

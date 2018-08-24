@@ -19,7 +19,7 @@ public abstract class BaseIoTest {
     long pos = 0;
 
     @BeforeClass
-    public static void boot() throws Exception {
+    public static void boot() {
         Preparer.prepareCubeBuild();
     }
 

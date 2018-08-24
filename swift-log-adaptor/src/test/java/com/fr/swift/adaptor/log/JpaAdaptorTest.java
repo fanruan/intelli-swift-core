@@ -2,6 +2,8 @@ package com.fr.swift.adaptor.log;
 
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.util.Crasher.CrashException;
+import com.fr.swift.util.JpaAdaptor;
 import com.fr.third.javax.persistence.AttributeConverter;
 import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Convert;
@@ -18,11 +20,11 @@ import static org.junit.Assert.assertEquals;
  * @author anchore
  * @date 2018/4/25
  */
-public class SwiftMetaAdaptorTest {
+public class JpaAdaptorTest {
 
     @Test
     public void adapt() throws SwiftMetaDataException {
-        SwiftMetaData meta = SwiftMetaAdaptor.adapt(A.class);
+        SwiftMetaData meta = JpaAdaptor.adapt(A.class);
         assertEquals("A", meta.getTableName());
         assertEquals(9, meta.getColumnCount());
         assertEquals(Types.SMALLINT, meta.getColumn("s").getType());
@@ -67,9 +69,9 @@ public class SwiftMetaAdaptorTest {
         boolean b = true;
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = CrashException.class)
     public void adaptUnsupportedType() {
-        SwiftMetaAdaptor.adapt(UnsupportedType.class);
+        JpaAdaptor.adapt(UnsupportedType.class);
     }
 
     @Table(name = "UnsupportedType")
@@ -80,7 +82,7 @@ public class SwiftMetaAdaptorTest {
 
     @Test
     public void adaptConvertType() throws SwiftMetaDataException {
-        SwiftMetaData meta = SwiftMetaAdaptor.adapt(ConvertType.class);
+        SwiftMetaData meta = JpaAdaptor.adapt(ConvertType.class);
         assertEquals("ConvertType", meta.getTableName());
         assertEquals(1, meta.getColumnCount());
         assertEquals(Types.INTEGER, meta.getColumnType(1));
@@ -88,7 +90,7 @@ public class SwiftMetaAdaptorTest {
 
     @Test(expected = RuntimeException.class)
     public void duplicateColumn() {
-        SwiftMetaAdaptor.adapt(DuplicateColumnEntity.class);
+        JpaAdaptor.adapt(DuplicateColumnEntity.class);
     }
 
     @Table(name = "DuplicateColumnEntity")
@@ -121,7 +123,7 @@ public class SwiftMetaAdaptorTest {
 
     @Test(expected = RuntimeException.class)
     public void adaptWrongConvertType() {
-        SwiftMetaAdaptor.adapt(WrongConvertType.class);
+        JpaAdaptor.adapt(WrongConvertType.class);
     }
 
     @Table(name = "WrongConvertType")

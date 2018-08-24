@@ -1,10 +1,10 @@
 package com.fr.swift.node;
 
-import com.fr.cert.token.lang.Assert;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.ClusterNodeManager;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.property.SwiftProperty;
+import com.fr.swift.util.Assert;
 import com.fr.third.jodd.util.StringUtil;
 
 /**

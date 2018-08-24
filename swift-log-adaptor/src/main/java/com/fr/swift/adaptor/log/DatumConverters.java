@@ -1,5 +1,6 @@
 package com.fr.swift.adaptor.log;
 
+import com.fr.swift.util.JpaAdaptor;
 import com.fr.swift.util.function.UnaryOperator;
 import com.fr.third.javax.persistence.AttributeConverter;
 
@@ -12,7 +13,7 @@ import java.util.Date;
  */
 class DatumConverters {
     static UnaryOperator<Object> getConverter(Class<?> field) {
-        return getConverter(SwiftMetaAdaptor.getStoreSqlType(field));
+        return getConverter(JpaAdaptor.getStoreSqlType(field));
     }
 
     private static UnaryOperator<Object> getConverter(int sqlType) {
@@ -57,7 +58,7 @@ class DatumConverters {
     }
 
     static UnaryOperator<Object> getReverseConverter(final Class<?> field) {
-        switch (SwiftMetaAdaptor.getSqlType(field)) {
+        switch (JpaAdaptor.getSqlType(field)) {
             case Types.BOOLEAN:
                 return new UnaryOperator<Object>() {
                     @Override

@@ -35,7 +35,6 @@ public class SwiftInserter extends BaseInserter implements Inserter {
     @Override
     protected void putRow(int cursor, Row rowData) {
         super.putRow(cursor, rowData);
-        segment.putRowCount(cursor + 1);
     }
 
     /**

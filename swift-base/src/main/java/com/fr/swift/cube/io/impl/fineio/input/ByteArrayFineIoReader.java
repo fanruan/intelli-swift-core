@@ -24,15 +24,15 @@ public class ByteArrayFineIoReader extends BaseFineIoReader implements ByteArray
 
     public static ByteArrayReader build(URI location) {
         // 获得内容部分的byte类型reader
-        URI contentLocation = location.resolve(CONTENT);
+        URI contentLocation = URI.create(location.getPath() + "/" + CONTENT);
         ByteReader contentReader = ByteFineIoReader.build(contentLocation);
 
         // 获得位置部分的long类型reader
-        URI positionLocation = location.resolve(POSITION);
+        URI positionLocation = URI.create(location.getPath() + "/" + POSITION);
         LongReader positionReader = LongFineIoReader.build(positionLocation);
 
         // 获得长度部分的int类型reader
-        URI lengthLocation = location.resolve(LENGTH);
+        URI lengthLocation = URI.create(location.getPath() + "/" + LENGTH);
         IntReader lengthReader = IntFineIoReader.build(lengthLocation);
 
         return new ByteArrayFineIoReader(contentReader, positionReader, lengthReader);

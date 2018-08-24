@@ -45,6 +45,7 @@ public class SwiftRealtimeInserter extends SwiftInserter {
     @Override
     protected void putRow(int cursor, Row rowData) {
         super.putRow(cursor, rowData);
+        segment.putRowCount(cursor + 1);
         swiftBackup.backupRowData(cursor, rowData);
     }
 
