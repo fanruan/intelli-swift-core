@@ -32,6 +32,7 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.IoUtil;
+import com.fr.swift.util.Util;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -85,10 +86,10 @@ public abstract class BaseSegment implements Segment {
             if (key.getRelation() != null) {
                 return createRelationColumn(key);
             }
-            SwiftLoggers.getLogger().error("getColumn failed: {}", e.getMessage());
+            SwiftLoggers.getLogger().error("getColumn failed: {}", Util.getRootCauseMessage(e));
             return null;
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("getColumn failed: {}", e.getMessage());
+            SwiftLoggers.getLogger().error("getColumn failed: {}", Util.getRootCauseMessage(e));
             return null;
         }
     }

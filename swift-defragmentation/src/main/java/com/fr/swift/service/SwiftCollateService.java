@@ -262,5 +262,5 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         });
     }
 
-    private transient HistorySegmentPutter historySegmentPutter = new HistorySegmentPutter();
+    private transient ScheduledRealtimeTransfer scheduledRealtimeTransfer = new ScheduledRealtimeTransfer();
 }

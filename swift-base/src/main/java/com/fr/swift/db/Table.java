@@ -21,15 +21,6 @@ public interface Table extends Source, DataSource {
     SwiftMetaData getMeta() throws SQLException;
 
     /**
-     * 设置meta
-     * todo 考虑下更好的替代接口
-     *
-     * @param meta 新的元数据
-     * @throws SQLException 异常
-     */
-    void setMeta(SwiftMetaData meta) throws SQLException;
-
-    /**
      * 增：插入
      * 加到内存，达到一定量进行合并写入
      *
@@ -74,4 +65,7 @@ public interface Table extends Source, DataSource {
      * @throws SQLException 异常
      */
     SwiftResultSet select(Where where) throws SQLException;
+
+    @Override
+    String toString();
 }

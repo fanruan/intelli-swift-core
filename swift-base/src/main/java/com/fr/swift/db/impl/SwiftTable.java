@@ -37,11 +37,6 @@ class SwiftTable implements Table {
     }
 
     @Override
-    public void setMeta(SwiftMetaData meta) {
-        this.meta = meta;
-    }
-
-    @Override
     public void insert(SwiftResultSet rowSet) throws SQLException {
         try {
             Inserter inserter = (Inserter) SwiftContext.get().getBean("incrementer", this);
@@ -111,5 +106,10 @@ class SwiftTable implements Table {
     @Override
     public Core fetchObjectCore() {
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return getSourceKey().getId();
     }
 }

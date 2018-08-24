@@ -135,14 +135,20 @@ public class ResourceDiscovery implements IResourceDiscovery {
 
     @Override
     public void removeIf(Predicate<String> predicate) {
-        Iterator<Entry<String, Map<String, MemIo>>> itr = cubeMemIos.entrySet().iterator();
-        while (itr.hasNext()) {
+        for (Iterator<Entry<String, Map<String, MemIo>>> itr = cubeMemIos.entrySet().iterator(); itr.hasNext(); ) {
             Entry<String, Map<String, MemIo>> entry = itr.next();
             if (predicate.test(entry.getKey())) {
-                for (MemIo memIo : entry.getValue().values()) {
-                    memIo.release();
-                }
+                // 为内存io，可直接丢给gc
                 itr.remove();
+                continue;
+            }
+
+            for (Iterator<Entry<String, MemIo>> memIoItr = entry.getValue().entrySet().iterator(); memIoItr.hasNext(); ) {
+                Entry<String, MemIo> ioEntry = memIoItr.next();
+                if (predicate.test(ioEntry.getKey())) {
+                    // 为内存io，可直接丢给gc
+                    memIoItr.remove();
+                }
             }
         }
     }

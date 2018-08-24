@@ -16,7 +16,6 @@ import com.fr.third.springframework.context.support.ClassPathXmlApplicationConte
  * @since Advanced FineBI Analysis 1.0
  */
 public class SwiftContext extends ClassPathXmlApplicationContext {
-
     private static final SwiftContext INSTANCE = new SwiftContext();
     private static ConfigurableApplicationContext configurableContext;
     private static BeanDefinitionRegistry beanDefinitionRegistry;
