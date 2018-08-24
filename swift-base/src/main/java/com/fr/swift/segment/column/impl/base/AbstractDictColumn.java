@@ -9,7 +9,7 @@ import com.fr.swift.segment.column.DictionaryEncodedColumn;
 public abstract class AbstractDictColumn<T> implements DictionaryEncodedColumn<T> {
     @Override
     public T getValueByRow(int row) {
-        return getValue(getIndex(row));
+        return getValue(getIndexByRow(row));
     }
 
     @Override

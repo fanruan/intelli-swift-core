@@ -10,7 +10,7 @@ import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.insert.BaseBlockInserter;
 import com.fr.swift.segment.operator.insert.SwiftRealtimeInserter;
-import com.fr.swift.service.HistorySegmentPutter;
+import com.fr.swift.service.ScheduledRealtimeTransfer.RealtimeToHistoryTransfer;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
@@ -66,7 +66,7 @@ public class Incrementer extends BaseBlockInserter implements Inserter {
         }
         if (alloter.isFull(maxSegment)) {
             currentSeg = newRealtimeSegment(alloter.allot(new LineRowInfo(0)), maxSegmentKey.getOrder() + 1);
-            HistorySegmentPutter.putHistorySegment(maxSegmentKey, maxSegment);
+            new RealtimeToHistoryTransfer(maxSegmentKey).transfer();
             return true;
         }
         currentSeg = maxSegment;
