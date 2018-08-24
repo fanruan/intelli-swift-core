@@ -13,7 +13,6 @@ import java.util.List;
  *
  * @author Lucifer
  * @description 指定数据和块insert
- * todo 支持断点输入流式数据，也支持实时导入数据、实时查询数据功能。
  * @since Advanced FineBI Analysis 1.0
  */
 public class SwiftInserter extends BaseInserter implements Inserter {
@@ -30,11 +29,6 @@ public class SwiftInserter extends BaseInserter implements Inserter {
     @Override
     public void insertData(List<Row> rowList) throws Exception {
         insertData(new ListResultSet(segment.getMetaData(), rowList));
-    }
-
-    @Override
-    protected void putRow(int cursor, Row rowData) {
-        super.putRow(cursor, rowData);
     }
 
     /**
