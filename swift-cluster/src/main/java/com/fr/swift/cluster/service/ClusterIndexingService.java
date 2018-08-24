@@ -57,7 +57,7 @@ import static com.fr.swift.task.TaskResult.Type.SUCCEEDED;
  * @date 2018/8/6
  */
 @SwiftService(name = "indexing", cluster = true)
-@RpcService(type = RpcServiceType.CLIENT_SERVICE, value = IndexingService.class)
+@RpcService(type = RpcServiceType.INTERNAL, value = IndexingService.class)
 public class ClusterIndexingService extends AbstractSwiftService implements IndexingService, Serializable {
 
     private static final long serialVersionUID = 3153509375653090856L;

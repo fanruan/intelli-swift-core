@@ -21,5 +21,5 @@ public @interface RpcService {
 
     Class<?> value();
 
-    RpcServiceType type() default RpcServiceType.SERVER_SERVICE;
+    RpcServiceType type() default RpcServiceType.INTERNAL;
 }

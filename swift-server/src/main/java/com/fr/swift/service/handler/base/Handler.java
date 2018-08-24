@@ -9,5 +9,5 @@ import java.io.Serializable;
  * @date 2018/6/8
  */
 public interface Handler<T extends SwiftRpcEvent> {
-    <S extends Serializable> S handle(T event);
+    <S extends Serializable> S handle(T event) throws Exception;
 }

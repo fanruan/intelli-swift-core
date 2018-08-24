@@ -1,6 +1,6 @@
 package com.fr.swift.netty.rpc.pool;
 
-import com.fr.swift.netty.rpc.client.AbstactRpcClientHandler;
+import com.fr.swift.netty.rpc.client.AbstractRpcClientHandler;
 import com.fr.third.org.apache.commons.pool2.KeyedObjectPool;
 import com.fr.third.org.apache.commons.pool2.impl.GenericKeyedObjectPool;
 import com.fr.third.org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig;
@@ -12,7 +12,7 @@ import com.fr.third.org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig;
  * @description
  * @since Advanced FineBI 5.0
  */
-public abstract class AbstractRpcPool implements KeyedObjectPool<String, AbstactRpcClientHandler> {
+public abstract class AbstractRpcPool implements KeyedObjectPool<String, AbstractRpcClientHandler> {
 
     protected GenericKeyedObjectPool keyedObjectPool;
 
@@ -26,18 +26,18 @@ public abstract class AbstractRpcPool implements KeyedObjectPool<String, Abstact
     }
 
     @Override
-    public AbstactRpcClientHandler borrowObject(String key) throws Exception {
-        AbstactRpcClientHandler handler = (AbstactRpcClientHandler) keyedObjectPool.borrowObject(key);
+    public AbstractRpcClientHandler borrowObject(String key) throws Exception {
+        AbstractRpcClientHandler handler = (AbstractRpcClientHandler) keyedObjectPool.borrowObject(key);
         return handler;
     }
 
     @Override
-    public void returnObject(String key, AbstactRpcClientHandler handler) {
+    public void returnObject(String key, AbstractRpcClientHandler handler) {
         keyedObjectPool.returnObject(key, handler);
     }
 
     @Override
-    public void invalidateObject(String key, AbstactRpcClientHandler handler) throws Exception {
+    public void invalidateObject(String key, AbstractRpcClientHandler handler) throws Exception {
         keyedObjectPool.invalidateObject(key, handler);
     }
 

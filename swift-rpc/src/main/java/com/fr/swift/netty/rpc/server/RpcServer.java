@@ -2,7 +2,6 @@ package com.fr.swift.netty.rpc.server;
 
 import com.fr.swift.annotation.RpcMethod;
 import com.fr.swift.annotation.RpcService;
-import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -12,7 +11,6 @@ import com.fr.third.jodd.util.StringUtil;
 import com.fr.third.org.apache.commons.collections4.MapUtils;
 import com.fr.third.springframework.beans.BeansException;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.beans.factory.annotation.Value;
 import com.fr.third.springframework.context.ApplicationContext;
 import com.fr.third.springframework.stereotype.Service;
 import io.netty.bootstrap.ServerBootstrap;
@@ -57,8 +55,7 @@ public class RpcServer {
     private Map<String, Method> methodMap = new HashMap<String, Method>();
 
     @Autowired
-    public RpcServer(ServiceRegistry serviceRegistry,
-                     @Value("SERVER_SERVICE") RpcServiceType serviceType) {
+    public RpcServer(ServiceRegistry serviceRegistry) {
         swiftProperty = SwiftContext.get().getBean("swiftProperty", SwiftProperty.class);
         this.serviceAddress = swiftProperty.getServerAddress();
         this.serviceRegistry = serviceRegistry;

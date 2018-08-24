@@ -9,6 +9,6 @@ package com.fr.swift.annotation;
  */
 public enum RpcServiceType {
     //
-    SERVER_SERVICE, CLIENT_SERVICE
+    INTERNAL, EXTERNAL
 }
 

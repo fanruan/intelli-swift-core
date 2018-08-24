@@ -21,7 +21,7 @@ import java.util.Collection;
  * @since Advanced FineBI 5.0
  */
 @Service("swiftSlaveService")
-@RpcService(value = SlaveService.class, type = RpcServiceType.CLIENT_SERVICE)
+@RpcService(value = SlaveService.class, type = RpcServiceType.INTERNAL)
 public class SwiftSlaveService implements SlaveService {
 
     @Override

@@ -2,9 +2,9 @@ package com.fr.swift.netty.rpc.server;
 
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.netty.rpc.bean.RpcRequest;
-import com.fr.swift.netty.rpc.bean.RpcResponse;
 import com.fr.swift.netty.rpc.exception.ServiceInvalidException;
+import com.fr.swift.rpc.bean.RpcRequest;
+import com.fr.swift.rpc.bean.RpcResponse;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;

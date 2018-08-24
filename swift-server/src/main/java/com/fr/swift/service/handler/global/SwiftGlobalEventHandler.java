@@ -1,6 +1,7 @@
 package com.fr.swift.service.handler.global;
 
 import com.fr.event.EventDispatcher;
+import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.cluster.entity.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
@@ -9,7 +10,6 @@ import com.fr.swift.event.analyse.SegmentLocationRpcEvent;
 import com.fr.swift.event.base.AbstractGlobalRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.handler.SwiftServiceHandlerManager;
@@ -23,7 +23,10 @@ import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,7 +44,7 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
     private HistoryDataSyncManager historyDataSyncManager;
 
     @Override
-    public <S extends Serializable> S handle(AbstractGlobalRpcEvent event) {
+    public <S extends Serializable> S handle(AbstractGlobalRpcEvent event) throws Exception {
         switch (event.subEvent()) {
             case TASK_DONE:
                 Pair<TaskKey, TaskResult> pair = (Pair<TaskKey, TaskResult>) event.getContent();
@@ -69,8 +72,26 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
                 SwiftServiceHandlerManager.getManager().
                         handle(new SegmentLocationRpcEvent(SegmentLocationInfo.UpdateType.PART, info));
                 break;
+            case GET_ANALYSE_REAL_TIME:
+                Map<String, ClusterEntity> realtime = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.REAL_TIME);
+                Map<String, ClusterEntity> analyse = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.ANALYSE);
+                Map<ServiceType, List<String>> result = new HashMap<ServiceType, List<String>>();
+                makeResultMap(realtime, result, ServiceType.REAL_TIME);
+                makeResultMap(analyse, result, ServiceType.ANALYSE);
+                return (S) result;
+            default:
+                break;
         }
         return null;
+    }
+
+    private void makeResultMap(Map<String, ClusterEntity> realtime, Map<ServiceType, List<String>> result, ServiceType type) {
+        for (String id : realtime.keySet()) {
+            if (result.get(type) == null) {
+                result.put(type, new ArrayList<String>());
+            }
+            result.get(type).add(id);
+        }
     }
 
     private void clean(Map<String, ClusterEntity> map, String[] sourceKeys) throws Exception {
