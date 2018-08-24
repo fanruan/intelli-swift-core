@@ -27,6 +27,7 @@ import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.util.JpaAdaptor;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class LogQueryUtils {
                                 List<MetricBean> metricBeans, FilterInfoBean notNullFilter) throws Exception {
         GroupQueryInfoBean queryInfoBean = new GroupQueryInfoBean();
         queryInfoBean.setQueryId(queryCondition.toString());
-        String tableName = SwiftMetaAdaptor.getTableName(entity);
+        String tableName = JpaAdaptor.getTableName(entity);
         queryInfoBean.setTableName(tableName);
         FilterInfoBean filterInfoBean = QueryConditionAdaptor.restriction2FilterInfo(queryCondition.getRestriction());
         if (notNullFilter != null) {
@@ -142,7 +143,7 @@ public class LogQueryUtils {
     }
 
     static DataList<Row> detailQuery(Class<?> entity, QueryCondition queryCondition, List<String> fieldNames) throws Exception {
-        Table table = SwiftDatabase.getInstance().getTable(new SourceKey(SwiftMetaAdaptor.getTableName(entity)));
+        Table table = SwiftDatabase.getInstance().getTable(new SourceKey(JpaAdaptor.getTableName(entity)));
         QueryBean queryBean = QueryConditionAdaptor.adaptCondition(queryCondition, table, fieldNames);
         SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
         DataList<Row> dataList = new DataList<Row>();
@@ -176,7 +177,7 @@ public class LogQueryUtils {
     }
 
     static DataList<Row> detailQuery(Class<?> entity, QueryCondition queryCondition) throws Exception {
-        Table table = SwiftDatabase.getInstance().getTable(new SourceKey(SwiftMetaAdaptor.getTableName(entity)));
+        Table table = SwiftDatabase.getInstance().getTable(new SourceKey(JpaAdaptor.getTableName(entity)));
         return detailQuery(entity, queryCondition, table.getMeta().getFieldNames());
     }
 }

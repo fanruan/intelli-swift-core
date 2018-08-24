@@ -160,7 +160,8 @@ public class ColumnIndexer<T> extends BaseWorker implements SwiftColumnIndexer {
         int[] rowToIndex = new int[rowCount];
 
         // 有效值序号从1开始
-        int pos = 1;
+        int pos = 0;
+        dictColumn.putter().putValue(pos++, null);
         for (Entry<T, IntList> entry : iterable) {
             T val = entry.getKey();
             IntList rows = entry.getValue();

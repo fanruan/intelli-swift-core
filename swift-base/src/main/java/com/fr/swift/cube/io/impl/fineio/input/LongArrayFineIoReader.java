@@ -13,7 +13,7 @@ import java.net.URI;
  * @author yee
  * @date 2018/4/9
  */
-public class LongArrayFineIoReader extends BaseFineIoReader implements LongArrayReader {
+public class LongArrayFineIoReader implements LongArrayReader {
     private LongReader contentReader;
     private LongReader positionReader;
     private IntReader lengthReader;
@@ -26,15 +26,15 @@ public class LongArrayFineIoReader extends BaseFineIoReader implements LongArray
 
     public static LongArrayFineIoReader build(URI location) {
         // 获得内容部分的byte类型reader
-        URI contentLocation = location.resolve(CONTENT);
+        URI contentLocation = URI.create(location.getPath() + "/" + CONTENT);
         LongReader contentReader = LongFineIoReader.build(contentLocation);
 
         // 获得位置部分的long类型reader
-        URI positionLocation = location.resolve(POSITION);
+        URI positionLocation = URI.create(location.getPath() + "/" + POSITION);
         LongReader positionReader = LongFineIoReader.build(positionLocation);
 
         // 获得长度部分的int类型reader
-        URI lengthLocation = location.resolve(LENGTH);
+        URI lengthLocation = URI.create(location.getPath() + "/" + LENGTH);
         IntReader lengthReader = IntFineIoReader.build(lengthLocation);
 
         return new LongArrayFineIoReader(contentReader, positionReader, lengthReader);
@@ -67,5 +67,9 @@ public class LongArrayFineIoReader extends BaseFineIoReader implements LongArray
             longs.put(i, contentReader.get(start + i));
         }
         return longs;
+    }
+
+    @Override
+    public void release() {
     }
 }

@@ -16,7 +16,6 @@ import static org.junit.Assert.assertEquals;
  * @date 2017/11/6
  */
 public class StringIoTest extends BaseIoTest {
-    final long pos = r.nextInt(BOUND);
     final byte[] bytes = new byte[r.nextInt(BOUND)];
     final String val;
     String basePath = CUBES_PATH + "/string/";
@@ -30,7 +29,7 @@ public class StringIoTest extends BaseIoTest {
     public void testOverwritePutThenGet() {
         IResourceLocation location = new ResourceLocation(basePath + "child-overwrite");
 
-        StringWriter writer = (StringWriter) Writers.build(location, new BuildConf(IoType.WRITE, DataType.STRING));
+        StringWriter writer = (StringWriter) Writers.build(location, new BuildConf(IoType.WRITE, DataType.STRING, WriteType.OVERWRITE));
         writer.put(pos, val);
         writer.release();
 

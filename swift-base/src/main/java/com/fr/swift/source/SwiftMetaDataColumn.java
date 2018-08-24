@@ -12,23 +12,21 @@ import com.fr.third.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(MetaDataColumnBean.class)
 )
 public interface SwiftMetaDataColumn {
+    String getName();
+
+    String getRemark();
+
+    String getColumnId();
+
+    int getType();
 
     /**
      * @return 长度
      */
     int getPrecision();
 
-    int getType();
-
-    String getName();
-
-    String getRemark();
-
     /**
      * @return 小数位数
      */
     int getScale();
-
-    String getColumnId();
 }
-

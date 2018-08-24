@@ -7,6 +7,7 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.db.impl.SwiftDatabase.Schema;
 import com.fr.swift.db.impl.SwiftWhere;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.query.FilterBean;
@@ -17,6 +18,8 @@ import com.fr.swift.service.RealtimeService;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.util.JpaAdaptor;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 
@@ -41,7 +44,7 @@ public class SwiftLogOperator extends BaseMetric {
     public <T> DataList<T> find(Class<T> entity, QueryCondition queryCondition) {
         DataList<T> dataList = new DataList<T>();
         try {
-            Table table = db.getTable(new SourceKey(SwiftMetaAdaptor.getTableName(entity)));
+            Table table = db.getTable(new SourceKey(JpaAdaptor.getTableName(entity)));
             DecisionRowAdaptor<T> adaptor = new DecisionRowAdaptor<T>(entity, table.getMeta());
             List<T> tList = new ArrayList<T>();
             DataList<Row> rowDataList = LogQueryUtils.detailQuery(entity, queryCondition);
@@ -86,7 +89,7 @@ public class SwiftLogOperator extends BaseMetric {
     }
 
     private void initTable(Class table) throws SQLException {
-        SwiftMetaData meta = SwiftMetaAdaptor.adapt(table);
+        SwiftMetaData meta = JpaAdaptor.adapt(table, Schema.DECISION_LOG);
         SourceKey tableKey = new SourceKey(meta.getTableName());
         synchronized (db) {
             if (!db.existsTable(tableKey)) {
@@ -142,7 +145,7 @@ public class SwiftLogOperator extends BaseMetric {
                 return;
             }
 
-            Table table = db.getTable(new SourceKey(SwiftMetaAdaptor.getTableName(entity)));
+            Table table = db.getTable(new SourceKey(JpaAdaptor.getTableName(entity)));
             try {
                 realtimeService.insert(table.getSourceKey(), new LogRowSet(table.getMetadata(), data, entity));
                 dataMap.remove(entity);
