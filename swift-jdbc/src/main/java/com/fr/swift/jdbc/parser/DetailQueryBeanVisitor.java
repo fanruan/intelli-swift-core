@@ -58,6 +58,7 @@ public class DetailQueryBeanVisitor extends AbstractQueryBeanVisitor{
     }
 
     protected void addColumn(String columnName){
+        columnName = QuoteUtils.trimQuote(columnName);
         List<String> columnNames = queryBean.getColumns();
         if (columnNames == null){
             columnNames = new ArrayList<String>();

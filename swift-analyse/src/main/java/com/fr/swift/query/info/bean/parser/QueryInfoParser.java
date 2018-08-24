@@ -1,8 +1,6 @@
 package com.fr.swift.query.info.bean.parser;
 
 import com.fr.general.ComparatorUtils;
-import com.fr.swift.config.service.SwiftMetaDataService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.info.bean.element.SortBean;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
@@ -24,7 +22,6 @@ import com.fr.swift.query.sort.NoneSort;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.SwiftMetaData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +48,6 @@ public class QueryInfoParser {
 
     private static QueryInfo parseGroupQueryInfo(GroupQueryInfoBean bean) {
         String queryId = bean.getQueryId();
-        // TODO: 2018/6/7 table2sourceKey
         SourceKey table = new SourceKey(bean.getTableName());
         FilterInfo filterInfo = FilterInfoParser.parse(table, bean.getFilterInfoBean());
         List<Dimension> dimensions = DimensionParser.parse(table, bean.getDimensionBeans(), bean.getSortBeans());
@@ -80,7 +76,6 @@ public class QueryInfoParser {
         SourceKey table = new SourceKey(bean.getTableName());
         FilterInfo filterInfo = FilterInfoParser.parse(table, bean.getFilterInfoBean());
         List<Dimension> dimensions = DimensionParser.parse(table, bean.getDimensionBeans(), bean.getSortBeans());
-        SwiftMetaData metaData = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(bean.getTableName());
         List<Sort> sorts = null;
         List<SortBean> sortBeans = bean.getSortBeans();
         if (null != sortBeans) {

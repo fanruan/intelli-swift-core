@@ -285,7 +285,6 @@ public class FilterInfoBeanVisitor implements ExpressionVisitor, FilterInfoBeanP
     public void visit(MinorThan minorThan) {
         filterInfoBean = new NumberInRangeFilterBean();
         final RangeFilterValueBean filterValueBean = new RangeFilterValueBean();
-        filterValueBean.setEndIncluded(false);
         filterInfoBean.setFilterValue(filterValueBean);
         FilterValueBeanVisitor<String> visitor = new FilterValueBeanVisitor<String>((DetailFilterInfoBean) filterInfoBean, new FilterValueSetter<String>() {
             @Override

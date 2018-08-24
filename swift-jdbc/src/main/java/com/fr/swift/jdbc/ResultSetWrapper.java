@@ -3,6 +3,7 @@ package com.fr.swift.jdbc;
 import com.fr.swift.jdbc.exception.SwiftJDBCColumnAbsentException;
 import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
 import com.fr.swift.source.Row;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.Util;
@@ -27,6 +28,8 @@ import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,12 +43,26 @@ public class ResultSetWrapper implements ResultSet {
     public ResultSetWrapper(SwiftResultSet resultSet) {
         Util.requireNonNull(resultSet);
         this.resultSet = resultSet;
+        try {
+            initLabel2IndexMap();
+        } catch (SQLException e) {
+            Crasher.crash(new SwiftJDBCNotSupportedException());
+        }
     }
 
     public ResultSetWrapper(SwiftResultSet resultSet, Map<String, Integer> label2Index) {
         Util.requireNonNull(resultSet);
         this.resultSet = resultSet;
         this.label2Index = label2Index;
+    }
+
+    private void initLabel2IndexMap() throws SQLException {
+        label2Index = new HashMap<String, Integer>();
+        SwiftMetaData metaData = resultSet.getMetaData();
+        List<String> fieldNames = metaData.getFieldNames();
+        for (String fieldName : fieldNames) {
+            label2Index.put(fieldName, metaData.getColumnIndex(fieldName));
+        }
     }
 
     @Override
