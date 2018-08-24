@@ -14,7 +14,7 @@ import java.net.URI;
 /**
  * @author anchore
  */
-public class BitMapFineIoReader extends BaseFineIoReader implements BitMapReader {
+public class BitMapFineIoReader implements BitMapReader {
     private ByteArrayReader bar;
 
     private BitMapFineIoReader(ByteArrayReader bar) {
@@ -55,5 +55,9 @@ public class BitMapFineIoReader extends BaseFineIoReader implements BitMapReader
     @Override
     public boolean isReadable() {
         return bar.isReadable();
+    }
+
+    @Override
+    public void release() {
     }
 }

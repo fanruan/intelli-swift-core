@@ -15,7 +15,9 @@ import com.fr.swift.zk.SwiftZkClient;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import org.I0Itec.zkclient.IZkChildListener;
 import org.I0Itec.zkclient.IZkDataListener;
+import org.I0Itec.zkclient.IZkStateListener;
 import org.I0Itec.zkclient.exception.ZkNodeExistsException;
+import org.apache.zookeeper.Watcher;
 
 import java.util.List;
 
@@ -26,7 +28,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
-@ClusterService(initMethod = "init")
+@ClusterService(initMethod = "init", destroyMethod = "destroy")
 public class ZkClusterService implements ClusterNodeService {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger();
@@ -58,6 +60,7 @@ public class ZkClusterService implements ClusterNodeService {
         }
         registerNode();
         competeMaster();
+
         IZkDataListener masterListener = new IZkDataListener() {
             @Override
             public void handleDataChange(String dataPath, Object data) throws Exception {
@@ -87,6 +90,11 @@ public class ZkClusterService implements ClusterNodeService {
         };
         swiftZkClient.subscribeDataChanges(MASTER_NODE, masterListener);
         swiftZkClient.subscribeChildChanges(NODE_LIST, nodeLListener);
+    }
+
+    public void destroy() {
+        swiftZkClient.unsubscribeAll();
+        swiftZkClient.close();
     }
 
     @Override

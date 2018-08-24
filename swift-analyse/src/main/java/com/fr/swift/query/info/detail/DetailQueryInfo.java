@@ -8,7 +8,6 @@ import com.fr.swift.query.query.QueryType;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.Pair;
 
 import java.util.Comparator;
@@ -23,16 +22,14 @@ public class DetailQueryInfo extends AbstractQueryInfo<DetailResultSet> {
      * 明细表的指标，目前只支持公式
      */
     private List<DetailTarget> targets;
-    private SwiftMetaData metaData;
     private List<Sort> sorts;
     private List<Pair<Sort, Comparator>> comparators;
 
     public DetailQueryInfo(String queryId, int fetchSize, SourceKey table, FilterInfo filterInfo, List<Dimension> dimensions,
-                           List<Sort> sorts, List<DetailTarget> targets, SwiftMetaData metaData) {
+                           List<Sort> sorts, List<DetailTarget> targets) {
         super(queryId, fetchSize, table, filterInfo, dimensions);
         this.sorts = sorts;
         this.targets = targets;
-        this.metaData = metaData;
     }
 
     public List<Pair<Sort, Comparator>> getComparators() {
@@ -54,10 +51,6 @@ public class DetailQueryInfo extends AbstractQueryInfo<DetailResultSet> {
     @Override
     public QueryType getType() {
         return QueryType.DETAIL;
-    }
-
-    public SwiftMetaData getMetaData() {
-        return metaData;
     }
 
     public boolean hasSort() {

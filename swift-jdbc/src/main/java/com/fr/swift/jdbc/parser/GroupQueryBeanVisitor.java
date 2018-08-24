@@ -87,6 +87,7 @@ public class GroupQueryBeanVisitor extends AbstractQueryBeanVisitor {
 
     @Override
     protected void addColumn(String columnName) {
+        columnName = QuoteUtils.trimQuote(columnName);
         addColumn(columnName, AggregatorType.COUNT);
     }
 

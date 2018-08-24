@@ -74,7 +74,7 @@ public class SelectQueryBeanVisitor implements SelectVisitor,FromItemVisitor,Que
 
     @Override
     public void visit(Table table) {
-        queryBean.setTableName(table.getName());
+        queryBean.setTableName(QuoteUtils.trimQuote(table.getName()));
     }
 
     @Override

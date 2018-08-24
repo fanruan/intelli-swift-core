@@ -8,7 +8,7 @@ import java.net.URI;
 /**
  * @author anchore
  */
-public class StringFineIoWriter extends BaseFineIoWriter implements StringWriter {
+public class StringFineIoWriter implements StringWriter {
     private ByteArrayWriter baw;
 
     private StringFineIoWriter(ByteArrayWriter baw) {

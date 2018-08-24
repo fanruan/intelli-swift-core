@@ -2,6 +2,7 @@ package com.fr.swift.zk;
 
 import org.I0Itec.zkclient.IZkChildListener;
 import org.I0Itec.zkclient.IZkDataListener;
+import org.I0Itec.zkclient.IZkStateListener;
 import org.I0Itec.zkclient.ZkClient;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.ACL;
@@ -48,6 +49,18 @@ public class SwiftZkClient {
         zkClient.unsubscribeChildChanges(path, childListener);
     }
 
+    public void subscribeStateChanges(IZkStateListener listener) {
+        zkClient.subscribeStateChanges(listener);
+    }
+
+    public void unsubscribeStateChanges(IZkStateListener stateListener) {
+        zkClient.unsubscribeStateChanges(stateListener);
+    }
+
+    public void unsubscribeAll() {
+        zkClient.unsubscribeAll();
+    }
+
     public String create(final String path, Object data, final CreateMode mode) {
         return zkClient.create(path, data, mode);
 
@@ -91,5 +104,9 @@ public class SwiftZkClient {
 
     public <T> T readData(String path) {
         return zkClient.readData(path, false);
+    }
+
+    public void close() {
+        zkClient.close();
     }
 }

@@ -1,5 +1,7 @@
 package com.fr.swift.resource;
 
+import com.fr.swift.util.Crasher;
+
 import java.io.File;
 
 /**
@@ -7,9 +9,11 @@ import java.io.File;
  */
 public class ResourceUtils {
     public static String getFileAbsolutePath(String path){
-        String absPath = ResourceUtils.class.getClassLoader().getResource(path).getFile();
-        if (absPath.startsWith(File.separator) || absPath.startsWith("/")){
-            absPath = absPath.substring(1, absPath.length());
+        String absPath = null;
+        try {
+            absPath = new File(ResourceUtils.class.getClassLoader().getResource(path).toURI()).getAbsolutePath();
+        } catch (Exception e) {
+            Crasher.crash(e);
         }
         return absPath;
     }

@@ -1,11 +1,16 @@
 package com.fr.swift.test;
 
+import com.fr.config.dao.DaoContext;
+import com.fr.config.dao.impl.LocalClassHelperDao;
+import com.fr.config.dao.impl.LocalEntityDao;
+import com.fr.config.dao.impl.LocalXmlEntityDao;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLog4jLoggers;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.db.TestConnectionProvider;
 import com.fr.swift.util.FileUtil;
+import com.fr.workspace.WorkContext;
 import com.fr.workspace.simple.SimpleWork;
 
 /**
@@ -23,25 +28,21 @@ public class Preparer {
 
     public static void prepareCubeBuild() {
         prepareFrEnv();
-        prepareContext();
         prepareConfDb();
+        prepareContext();
         TestConnectionProvider.createConnection();
     }
 
     public static void prepareCubeBuild(Class<?> test) {
         prepareFrEnv();
+        prepareConfDb();
         prepareContext();
-        prepareConfDb();
-        beforeEachCubeBuild(test);
-        TestConnectionProvider.createConnection();
-    }
 
-
-    public static void beforeEachCubeBuild(Class<?> test) {
-        prepareConfDb();
         String runPath = TestResource.getRunPath(test);
-        SwiftContext.get().getBean(SwiftCubePathService.class).setSwiftPath(runPath);
         FileUtil.delete(runPath);
+        SwiftContext.get().getBean(SwiftCubePathService.class).setSwiftPath(runPath);
+
+        TestConnectionProvider.createConnection();
     }
 
     public static void prepareContext() {
@@ -50,6 +51,10 @@ public class Preparer {
     }
 
     public static void prepareConfDb() {
-        FileUtil.delete(TestResource.getTmpDir() + "/embed");
+        FileUtil.delete(WorkContext.getCurrent().getPath() + "/embed");
+
+        DaoContext.setEntityDao(new LocalEntityDao());
+        DaoContext.setClassHelperDao(new LocalClassHelperDao());
+        DaoContext.setXmlEntityDao(new LocalXmlEntityDao());
     }
 }

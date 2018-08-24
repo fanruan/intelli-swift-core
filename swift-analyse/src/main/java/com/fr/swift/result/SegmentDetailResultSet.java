@@ -25,14 +25,12 @@ public class SegmentDetailResultSet extends AbstractDetailResultSet {
     // 当前块中过滤后的行号
     private IntArray rows;
     private List<Column> columnList;
-    private SwiftMetaData metaData;
     private Iterator<Row> iterator;
 
-    public SegmentDetailResultSet(int fetchSize, List<Pair<Column, IndexInfo>> columnList, DetailFilter filter, SwiftMetaData metaData) {
+    public SegmentDetailResultSet(int fetchSize, List<Pair<Column, IndexInfo>> columnList, DetailFilter filter) {
         super(fetchSize);
         this.columnList = SortSegmentDetailResultSet.getColumnList(columnList);
         this.rows = BitMaps.traversal2Array(filter.createFilterIndex());
-        this.metaData = metaData;
     }
 
     @Override

@@ -28,7 +28,7 @@ class ItemMapper implements Function<Pair<Integer, GroupByEntry>, GroupNode> {
             return new GroupNode(depth, p.getValue().getIndex());
         } else {
             DictionaryEncodedColumn dict = columns.get(depth).getKey().getDictionaryEncodedColumn();
-            return new GroupNode(depth, dict.getValueByRow(p.getValue().getIndex()));
+            return new GroupNode(depth, dict.getValue(p.getValue().getIndex()));
         }
     }
 }

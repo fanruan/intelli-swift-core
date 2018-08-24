@@ -9,7 +9,6 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.iterator.MapperIterator;
-import com.fr.swift.util.function.Function;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,15 +22,12 @@ public class PostQueryTestUtils {
 
     public static GroupNode createNode(int dimensionSize, Pair<Object[], int[]>[] rows) {
         List<Pair<Object[], int[]>> list = new ArrayList<>(Arrays.asList(rows));
-        Iterator<Pair<List<Object>, AggregatorValue[]>> rowIt = new MapperIterator<Pair<Object[], int[]>, Pair<List<Object>, AggregatorValue[]>>(list.iterator(), new Function<Pair<Object[], int[]>, Pair<List<Object>, AggregatorValue[]>>() {
-            @Override
-            public Pair<List<Object>, AggregatorValue[]> apply(Pair<Object[], int[]> p) {
-                AggregatorValue[] values = new AggregatorValue[p.getValue().length];
-                for (int i = 0; i < values.length; i++) {
-                    values[i] = new DoubleAmountAggregatorValue(p.getValue()[i]);
-                }
-                return Pair.of(Arrays.asList(p.getKey()), values);
+        Iterator<Pair<List<Object>, AggregatorValue[]>> rowIt = new MapperIterator<>(list.iterator(), p -> {
+            AggregatorValue[] values = new AggregatorValue[p.getValue().length];
+            for (int i = 0; i < values.length; i++) {
+                values[i] = new DoubleAmountAggregatorValue(p.getValue()[i]);
             }
+            return Pair.of(Arrays.asList(p.getKey()), values);
         });
         return ResultJoinUtils.createNode(dimensionSize, rowIt);
     }

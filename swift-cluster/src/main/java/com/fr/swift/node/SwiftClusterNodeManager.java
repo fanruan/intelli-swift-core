@@ -4,7 +4,7 @@ import com.fr.general.ComparatorUtils;
 import com.fr.swift.ClusterNodeManager;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.property.SwiftProperty;
-import com.fr.swift.util.Crasher;
+import com.fr.swift.util.Assert;
 import com.fr.third.jodd.util.StringUtil;
 
 /**
@@ -33,10 +33,7 @@ public class SwiftClusterNodeManager implements ClusterNodeManager<SwiftClusterN
             int port = Integer.parseInt(addressArray[1]);
             this.masterNode = new SwiftClusterNodeImpl(masterAddress, masterAddress, ip, port);
         }
-
-        if (serverAddress == null) {
-            Crasher.crash("ServerAddress is null ! Please check!");
-        }
+        Assert.notNull(serverAddress);
         String[] addressArray = StringUtil.split(serverAddress, ":");
         String ip = addressArray[0];
         int port = Integer.parseInt(addressArray[1]);

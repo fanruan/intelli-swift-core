@@ -3,7 +3,9 @@ package com.fr.swift.config.bean;
 import com.fr.stable.StringUtils;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.cube.io.Types;
+import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.db.impl.SwiftDatabase.Schema;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 
@@ -25,6 +27,10 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
     private Integer order;
     private SwiftDatabase.Schema swiftSchema;
     private Types.StoreType storeType;
+
+    public SegmentKeyBean(String sourceKey, Integer order, StoreType storeType, Schema swiftSchema) {
+        this(sourceKey, URI.create(sourceKey + "/seg" + order), order, storeType, swiftSchema);
+    }
 
     public SegmentKeyBean(String sourceKey, URI uri, int order, Types.StoreType storeType, SwiftDatabase.Schema schema) {
         this.sourceKey = sourceKey;

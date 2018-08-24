@@ -1,6 +1,7 @@
 package com.fr.swift.segment.operator.insert;
 
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.impl.SwiftDatabase.Schema;
@@ -44,6 +45,8 @@ public class SwiftRealtimeInserter extends SwiftInserter {
     @Override
     protected void putRow(int cursor, Row rowData) {
         super.putRow(cursor, rowData);
+        // 增量考虑到要可读，每行都写rowCount，allshow
+        putSegmentInfo(lastCursor, cursor + 1);
         swiftBackup.backupRowData(cursor, rowData);
     }
 
@@ -77,6 +80,12 @@ public class SwiftRealtimeInserter extends SwiftInserter {
         } catch (Exception e) {
             throw new RealtimeInsertException(e);
         }
+    }
+
+    @Override
+    void initCursors() {
+        boolean readable = CubeUtil.isReadable(segment);
+        cursor = lastCursor = readable ? segment.getRowCount() : 0;
     }
 
     @Override

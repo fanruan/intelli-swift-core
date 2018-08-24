@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  * This class created on 2018/6/12
  *
  * @author Lucifer
- * @description
+ * @description Allow method in allowed services to call RPC
  * @since Advanced FineBI 5.0
  */
 @Target({ElementType.PARAMETER, ElementType.METHOD})

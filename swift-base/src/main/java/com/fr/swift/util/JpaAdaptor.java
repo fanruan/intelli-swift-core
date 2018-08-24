@@ -1,11 +1,10 @@
-package com.fr.swift.adaptor.log;
+package com.fr.swift.util;
 
 import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.db.impl.SwiftDatabase.Schema;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.util.Crasher;
 import com.fr.third.javax.persistence.AttributeConverter;
 import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Convert;
@@ -24,12 +23,18 @@ import java.util.List;
  * @author anchore
  * @date 2018/4/25
  */
-class SwiftMetaAdaptor {
-    static SwiftMetaData adapt(Class<?> entity) {
+public class JpaAdaptor {
+    public static SwiftMetaData adapt(Class<?> entity) {
+        return adapt(entity, Schema.CUBE);
+    }
+
+    public static SwiftMetaData adapt(Class<?> entity, Schema swiftSchema) {
         List<String> columnNames = new ArrayList<String>();
         List<SwiftMetaDataColumn> columnMetas = new ArrayList<SwiftMetaDataColumn>();
         for (Field field : getFields(entity)) {
             String columnName = field.getAnnotation(Column.class).name();
+
+            Assert.hasText(columnName);
 
             if (columnNames.contains(columnName)) {
                 return Crasher.crash(String.format("column %s already existed", columnName));
@@ -41,29 +46,30 @@ class SwiftMetaAdaptor {
             columnNames.add(columnName);
             columnMetas.add(columnMeta);
         }
-        return new SwiftMetaDataBean(Schema.DECISION_LOG, getTableName(entity), columnMetas);
+        return new SwiftMetaDataBean(swiftSchema, getTableName(entity), columnMetas);
     }
 
-    static List<Field> getFields(Class<?> entity) {
+    public static List<Field> getFields(Class<?> entity) {
         List<Field> fields = new ArrayList<Field>();
         Class<?> superEntity = entity.getSuperclass();
         if (superEntity != null && superEntity.isAnnotationPresent(MappedSuperclass.class)) {
             fields.addAll(getFields(superEntity));
         }
         for (Field field : entity.getDeclaredFields()) {
-            if (!field.isAnnotationPresent(Column.class)) {
-                continue;
+            if (field.isAnnotationPresent(Column.class)) {
+                fields.add(field);
             }
-            fields.add(field);
         }
         return fields;
     }
 
-    static String getTableName(Class<?> entity) {
-        return entity.getAnnotation(Table.class).name();
+    public static String getTableName(Class<?> entity) {
+        String tableName = entity.getAnnotation(Table.class).name();
+        Assert.hasText(tableName);
+        return tableName;
     }
 
-    static Class<?> getClassType(Field field) {
+    public static Class<?> getClassType(Field field) {
         if (!field.isAnnotationPresent(Convert.class)) {
             return field.getType();
         }
@@ -86,7 +92,7 @@ class SwiftMetaAdaptor {
         return Crasher.crash("cannot find the second generic parameter type of AttributeConverter");
     }
 
-    static int getSqlType(Class<?> field) {
+    public static int getSqlType(Class<?> field) {
         if (boolean.class == field || Boolean.class == field) {
             return Types.BOOLEAN;
         }
@@ -120,7 +126,7 @@ class SwiftMetaAdaptor {
         return Crasher.crash(String.format("type unsupported: %s", field));
     }
 
-    static int getStoreSqlType(Class<?> field) {
+    public static int getStoreSqlType(Class<?> field) {
         switch (getSqlType(field)) {
             case Types.BOOLEAN:
             case Types.TINYINT:

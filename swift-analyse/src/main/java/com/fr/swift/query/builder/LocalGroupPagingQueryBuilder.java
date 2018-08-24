@@ -13,9 +13,6 @@ import com.fr.swift.query.group.info.cursor.AllCursor;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.group.GroupQueryInfo;
-import com.fr.swift.query.post.PostQuery;
-import com.fr.swift.query.post.PrepareMetaDataQuery;
-import com.fr.swift.query.post.UpdateNodeDataQuery;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.ResultQuery;
 import com.fr.swift.query.result.group.GroupResultQuery;
@@ -39,8 +36,7 @@ public class LocalGroupPagingQueryBuilder extends AbstractLocalGroupQueryBuilder
 
     @Override
     public Query<NodeResultSet> buildPostQuery(ResultQuery<NodeResultSet> query, GroupQueryInfo info) {
-        PostQuery<NodeResultSet> tmpQuery = new UpdateNodeDataQuery(query);
-        return new PrepareMetaDataQuery(tmpQuery, info);
+        return ALL.buildPostQuery(query, info);
     }
 
     @Override
@@ -56,7 +52,8 @@ public class LocalGroupPagingQueryBuilder extends AbstractLocalGroupQueryBuilder
             DetailFilter rowDetailFilters = FilterBuilder.buildDetailFilter(segment, info.getFilterInfo());
             List<Sort> rowSorts = LocalGroupAllQueryBuilder.getSegmentIndexSorts(dimensions);
             GroupByInfo rowGroupByInfo = new GroupByInfoImpl(info.getFetchSize(), dimensionColumns, rowDetailFilters, rowSorts, new AllCursor());
-            MetricInfo metricInfo = new MetricInfoImpl(metricColumns, aggregators, metrics.size());
+            MetricInfo metricInfo = new MetricInfoImpl(metricColumns, aggregators,
+                    metrics.size() + LocalGroupAllQueryBuilder.countCalFields(info.getPostQueryInfoList()));
             queries.add(new GroupPagingSegmentQuery(rowGroupByInfo, metricInfo));
         }
         return new GroupResultQuery(info.getFetchSize(), queries, getAggregators(info.getMetrics()),
