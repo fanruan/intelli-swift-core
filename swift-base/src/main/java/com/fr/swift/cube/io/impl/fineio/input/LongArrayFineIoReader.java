@@ -13,7 +13,7 @@ import java.net.URI;
  * @author yee
  * @date 2018/4/9
  */
-public class LongArrayFineIoReader extends BaseFineIoReader implements LongArrayReader {
+public class LongArrayFineIoReader implements LongArrayReader {
     private LongReader contentReader;
     private LongReader positionReader;
     private IntReader lengthReader;
@@ -67,5 +67,9 @@ public class LongArrayFineIoReader extends BaseFineIoReader implements LongArray
             longs.put(i, contentReader.get(start + i));
         }
         return longs;
+    }
+
+    @Override
+    public void release() {
     }
 }

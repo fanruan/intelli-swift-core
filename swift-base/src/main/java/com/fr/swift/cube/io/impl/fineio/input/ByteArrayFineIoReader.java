@@ -10,8 +10,7 @@ import java.net.URI;
 /**
  * @author anchore
  */
-public class ByteArrayFineIoReader extends BaseFineIoReader implements ByteArrayReader {
-
+public class ByteArrayFineIoReader implements ByteArrayReader {
     private ByteReader contentReader;
     private LongReader positionReader;
     private IntReader lengthReader;
@@ -67,4 +66,7 @@ public class ByteArrayFineIoReader extends BaseFineIoReader implements ByteArray
         return bytes;
     }
 
+    @Override
+    public void release() {
+    }
 }

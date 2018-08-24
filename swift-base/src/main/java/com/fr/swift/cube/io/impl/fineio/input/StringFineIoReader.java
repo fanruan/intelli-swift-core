@@ -8,8 +8,7 @@ import java.net.URI;
 /**
  * @author anchore
  */
-public class StringFineIoReader extends BaseFineIoReader implements StringReader {
-
+public class StringFineIoReader implements StringReader {
     private ByteArrayReader bar;
     private long tempRow = -1;
     private String tempValue;
@@ -42,5 +41,9 @@ public class StringFineIoReader extends BaseFineIoReader implements StringReader
     @Override
     public boolean isReadable() {
         return bar.isReadable();
+    }
+
+    @Override
+    public void release() {
     }
 }
