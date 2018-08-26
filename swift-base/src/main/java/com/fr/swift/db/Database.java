@@ -15,7 +15,7 @@ public interface Database {
      * 建表
      *
      * @param tableKey key
-     * @param meta 元数据
+     * @param meta     元数据
      * @return 表
      * @throws SQLException 异常
      */
@@ -32,11 +32,11 @@ public interface Database {
     /**
      * 改表
      *
-     * @param tableKey 表key
-     * @param meta     新元数据
+     * @param tableKey    表key
+     * @param alterAction alter操作
      * @throws SQLException 异常 是否成功
      */
-    void alterTable(SourceKey tableKey, SwiftMetaData meta) throws SQLException;
+    void alterTable(SourceKey tableKey, AlterTableAction alterAction) throws SQLException;
 
     /**
      * 是否存在表

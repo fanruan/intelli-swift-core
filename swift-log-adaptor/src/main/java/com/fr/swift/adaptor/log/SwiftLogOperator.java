@@ -6,6 +6,9 @@ import com.fr.stable.query.data.DataList;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
+import com.fr.swift.db.impl.AddColumnAction;
+import com.fr.swift.db.impl.DropColumnAction;
+import com.fr.swift.db.impl.MetadataDiffer;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.db.impl.SwiftDatabase.Schema;
 import com.fr.swift.db.impl.SwiftWhere;
@@ -20,6 +23,8 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.util.JpaAdaptor;
+import com.fr.swift.util.Util;
+import com.fr.swift.util.concurrent.CommonExecutor;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 
@@ -90,11 +95,37 @@ public class SwiftLogOperator extends BaseMetric {
 
     private void initTable(Class table) throws SQLException {
         SwiftMetaData meta = JpaAdaptor.adapt(table, Schema.DECISION_LOG);
-        SourceKey tableKey = new SourceKey(meta.getTableName());
+        final SourceKey tableKey = new SourceKey(meta.getTableName());
         synchronized (db) {
             if (!db.existsTable(tableKey)) {
                 db.createTable(tableKey, meta);
+                return;
             }
+
+            final MetadataDiffer differ = new MetadataDiffer(db.getTable(tableKey).getMetadata(), meta);
+            if (!differ.hasDiff()) {
+                return;
+            }
+
+            CommonExecutor.get().execute(new Runnable() {
+                @Override
+                public void run() {
+                    for (SwiftMetaDataColumn columnMeta : differ.getAdded()) {
+                        try {
+                            SwiftDatabase.getInstance().alterTable(tableKey, new AddColumnAction(columnMeta));
+                        } catch (SQLException e) {
+                            SwiftLoggers.getLogger().warn("add column {} failed: {}", columnMeta, Util.getRootCauseMessage(e));
+                        }
+                    }
+                    for (SwiftMetaDataColumn columnMeta : differ.getDropped()) {
+                        try {
+                            SwiftDatabase.getInstance().alterTable(tableKey, new DropColumnAction(columnMeta));
+                        } catch (SQLException e) {
+                            SwiftLoggers.getLogger().warn("drop column {} failed: {}", columnMeta, Util.getRootCauseMessage(e));
+                        }
+                    }
+                }
+            });
         }
     }
 

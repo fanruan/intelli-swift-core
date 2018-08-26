@@ -28,15 +28,15 @@ public class Preparer {
 
     public static void prepareCubeBuild() {
         prepareFrEnv();
-        prepareConfDb();
         prepareContext();
+        prepareConfDb();
         TestConnectionProvider.createConnection();
     }
 
     public static void prepareCubeBuild(Class<?> test) {
         prepareFrEnv();
-        prepareConfDb();
         prepareContext();
+        prepareConfDb();
 
         String runPath = TestResource.getRunPath(test);
         FileUtil.delete(runPath);
