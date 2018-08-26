@@ -11,6 +11,7 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Crasher;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +21,9 @@ import java.util.Map.Entry;
  * @author anchore
  * @date 2018/3/28
  */
-public class SwiftDatabase implements Database {
+public class SwiftDatabase implements Database, Serializable {
     private static final SwiftMetaDataService CONF_SVC = SwiftContext.get().getBean(SwiftMetaDataService.class);
+    private static final long serialVersionUID = -5696118456229457487L;
 
     @Override
     public synchronized Table createTable(SourceKey tableKey, SwiftMetaData meta) throws SQLException {

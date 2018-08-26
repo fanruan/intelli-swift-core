@@ -23,17 +23,17 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
  * @author yee
  * @date 2018/8/24
  */
-public class CallClient extends SimpleChannelInboundHandler<RpcResponse> {
+public class CallClient extends SimpleChannelInboundHandler<RpcResponse> implements RpcSender {
 
     private RpcResponse response;
-    private static final byte[] LENGTH_PLACEHOLDER = new byte[4];
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, RpcResponse rpcResponse) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, RpcResponse rpcResponse) {
         this.response = rpcResponse;
         ctx.close();
     }
 
+    @Override
     public RpcResponse send(RpcRequest request, String address) throws Exception {
         EventLoopGroup group = new NioEventLoopGroup(1);
         try {

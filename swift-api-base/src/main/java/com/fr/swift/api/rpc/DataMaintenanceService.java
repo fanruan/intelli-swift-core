@@ -1,6 +1,8 @@
 package com.fr.swift.api.rpc;
 
+import com.fr.swift.api.rpc.bean.Column;
 import com.fr.swift.db.Where;
+import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
 
@@ -61,4 +63,14 @@ public interface DataMaintenanceService {
      * @return
      */
     int update(String tableName, SwiftResultSet resultSet, Where where);
+
+    /**
+     * TODO 建表
+     *
+     * @param schema
+     * @param tableName
+     * @param columns
+     * @return
+     */
+    int createTable(SwiftDatabase.Schema schema, String tableName, List<Column> columns);
 }

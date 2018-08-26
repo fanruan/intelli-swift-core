@@ -1,9 +1,14 @@
 package com.fr.swift.source;
 
+import java.io.Serializable;
+
 /**
- * Created by 小灰灰 on 2015/9/7.
+ * @author 小灰灰
+ * @date 2015/9/7
  */
-public class ColumnTypeConstants {
+public class ColumnTypeConstants implements Serializable {
+    private static final long serialVersionUID = -2329388093367371957L;
+
     /**
      * 字段类型
      * 对外展示的类型

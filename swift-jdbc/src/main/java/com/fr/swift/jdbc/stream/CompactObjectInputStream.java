@@ -1,4 +1,4 @@
-package com.fr.swift.api.rpc.stream;
+package com.fr.swift.jdbc.stream;
 
 import java.io.EOFException;
 import java.io.IOException;

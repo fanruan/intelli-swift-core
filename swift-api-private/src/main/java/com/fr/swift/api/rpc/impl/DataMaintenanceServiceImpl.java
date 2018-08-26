@@ -4,9 +4,11 @@ import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.api.rpc.DataMaintenanceService;
 import com.fr.swift.api.rpc.DetectService;
+import com.fr.swift.api.rpc.bean.Column;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Where;
+import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.service.RealtimeService;
 import com.fr.swift.source.Row;
@@ -61,6 +63,11 @@ class DataMaintenanceServiceImpl implements DataMaintenanceService {
 
     @Override
     public int update(String tableName, SwiftResultSet resultSet, Where where) {
+        return 0;
+    }
+
+    @Override
+    public int createTable(SwiftDatabase.Schema schema, String tableName, List<Column> columns) {
         return 0;
     }
 

@@ -1,4 +1,4 @@
-package com.fr.swift.api.rpc.stream;
+package com.fr.swift.jdbc.stream;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -26,10 +26,10 @@ public class CompactObjectOutputStream extends ObjectOutputStream {
     protected void writeClassDescriptor(ObjectStreamClass desc) throws IOException {
         Class<?> clazz = desc.forClass();
         if (!clazz.isPrimitive() && !clazz.isArray() && !clazz.isInterface() && desc.getSerialVersionUID() != 0L) {
-            this.write(1);
+            this.write(TYPE_THIN_DESCRIPTOR);
             this.writeUTF(desc.getName());
         } else {
-            this.write(0);
+            this.write(TYPE_FAT_DESCRIPTOR);
             super.writeClassDescriptor(desc);
         }
 

@@ -2,9 +2,11 @@ package com.fr.swift.api;
 
 import com.fr.swift.api.rpc.DataMaintenanceService;
 import com.fr.swift.api.rpc.SelectService;
+import com.fr.swift.api.rpc.bean.Column;
 import com.fr.swift.api.rpc.holder.InternalServiceAddressHolder;
 import com.fr.swift.api.rpc.invoke.ApiProxyFactory;
 import com.fr.swift.db.Where;
+import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
 
@@ -58,6 +60,13 @@ public class API implements DataMaintenanceService, SelectService {
         String address = holder.nextRealTimeAddress();
         DataMaintenanceService service = ApiProxyFactory.getProxy(DataMaintenanceService.class, address);
         return service.update(tableName, resultSet, where);
+    }
+
+    @Override
+    public int createTable(SwiftDatabase.Schema schema, String tableName, List<Column> columns) {
+        String address = holder.nextRealTimeAddress();
+        DataMaintenanceService service = ApiProxyFactory.getProxy(DataMaintenanceService.class, address);
+        return service.createTable(schema, tableName, columns);
     }
 
     @Override
