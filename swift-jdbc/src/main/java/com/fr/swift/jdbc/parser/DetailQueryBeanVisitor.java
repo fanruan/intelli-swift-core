@@ -5,7 +5,6 @@ import com.fr.general.jsqlparser.statement.select.AllTableColumns;
 import com.fr.general.jsqlparser.statement.select.SelectExpressionItem;
 import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
 import com.fr.swift.jdbc.exception.SwiftJDBCTableAbsentException;
-import com.fr.swift.jdbc.rpc.RpcCaller;
 import com.fr.swift.query.group.GroupType;
 import com.fr.swift.query.info.bean.element.DimensionBean;
 import com.fr.swift.query.info.bean.element.GroupBean;
@@ -23,17 +22,17 @@ import java.util.List;
  */
 public class DetailQueryBeanVisitor extends AbstractQueryBeanVisitor{
     private DetailQueryInfoBean queryBean;
-    private RpcCaller caller;
+    private SwiftMetaDataGetter metaDataGetter;
 
-    public DetailQueryBeanVisitor(DetailQueryInfoBean queryBean, RpcCaller caller) {
+    public DetailQueryBeanVisitor(DetailQueryInfoBean queryBean, SwiftMetaDataGetter getter) {
         super(queryBean);
         this.queryBean = queryBean;
-        this.caller = caller;
+        this.metaDataGetter = getter;
     }
 
     @Override
     public void visit(AllColumns allColumns) {
-        SwiftMetaData metaData = caller.getMetaData(queryBean.getTableName());
+        SwiftMetaData metaData = metaDataGetter.getMetaData();
         if (metaData == null) {
             Crasher.crash(new SwiftJDBCTableAbsentException(queryBean.getTableName()));
         }

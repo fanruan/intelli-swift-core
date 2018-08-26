@@ -1,11 +1,14 @@
 import com.fr.swift.jdbc.Driver;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author yee
@@ -23,11 +26,13 @@ public class JdbcTest {
     }
 
     @Test
+    @Ignore
     public void testQuery() throws SQLException {
         Statement statment = connection.createStatement();
-        ResultSet resultSet = statment.executeQuery("select * from test_table");
+        ResultSet resultSet = statment.executeQuery("select id from test_table");
+        int i = 1;
         while (resultSet.next()) {
-            System.out.println(resultSet.getObject(1));
+            assertEquals(resultSet.getInt(1), i++);
         }
     }
 }

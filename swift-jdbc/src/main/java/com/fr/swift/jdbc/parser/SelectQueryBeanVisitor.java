@@ -15,11 +15,13 @@ import com.fr.general.jsqlparser.statement.select.TableFunction;
 import com.fr.general.jsqlparser.statement.select.ValuesList;
 import com.fr.general.jsqlparser.statement.select.WithItem;
 import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
+import com.fr.swift.jdbc.exception.SwiftJDBCTableAbsentException;
 import com.fr.swift.jdbc.rpc.RpcCaller;
 import com.fr.swift.query.info.bean.query.AbstractSingleTableQueryInfoBean;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.query.QueryBean;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Crasher;
 
 import java.util.List;
@@ -31,6 +33,14 @@ import java.util.UUID;
 public class SelectQueryBeanVisitor implements SelectVisitor,FromItemVisitor,QueryBeanParser {
     private AbstractSingleTableQueryInfoBean queryBean;
     private RpcCaller caller;
+    private SwiftMetaData metaData;
+
+    private SwiftMetaDataGetter metaDataGetter = new SwiftMetaDataGetter() {
+        @Override
+        public SwiftMetaData getMetaData() {
+            return metaData;
+        }
+    };
 
     public SelectQueryBeanVisitor(RpcCaller caller) {
         this.caller = caller;
@@ -43,15 +53,15 @@ public class SelectQueryBeanVisitor implements SelectVisitor,FromItemVisitor,Que
         DimensionMetricVisitor subVisitor;
         if (groupbyColumns == null || groupbyColumns.isEmpty()){
             queryBean = new DetailQueryInfoBean();
-            subVisitor = new DetailQueryBeanVisitor((DetailQueryInfoBean) queryBean, caller);
+            subVisitor = new DetailQueryBeanVisitor((DetailQueryInfoBean) queryBean, metaDataGetter);
         } else {
             queryBean = new GroupQueryInfoBean();
-            subVisitor = new GroupQueryBeanVisitor((GroupQueryInfoBean) queryBean, caller);
+            subVisitor = new GroupQueryBeanVisitor((GroupQueryInfoBean) queryBean, metaDataGetter);
         }
         queryBean.setQueryId(UUID.randomUUID().toString());
         item.accept(this);
         if (groupbyColumns != null){
-            GroupByDimensionVisitor visitor = new GroupByDimensionVisitor((GroupQueryInfoBean) queryBean, caller);
+            GroupByDimensionVisitor visitor = new GroupByDimensionVisitor((GroupQueryInfoBean) queryBean, metaDataGetter);
             for (Expression expression : groupbyColumns){
                 expression.accept(visitor);
             }
@@ -81,7 +91,12 @@ public class SelectQueryBeanVisitor implements SelectVisitor,FromItemVisitor,Que
 
     @Override
     public void visit(Table table) {
-        queryBean.setTableName(QuoteUtils.trimQuote(table.getName()));
+        String tableName = table.getName();
+        metaData = caller.getMetaData(tableName);
+        if (null == metaData) {
+            Crasher.crash(new SwiftJDBCTableAbsentException(tableName));
+        }
+        queryBean.setTableName(QuoteUtils.trimQuote(metaData.getId()));
     }
 
     @Override

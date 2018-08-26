@@ -8,7 +8,6 @@ import com.fr.general.jsqlparser.statement.select.AllTableColumns;
 import com.fr.general.jsqlparser.statement.select.SelectExpressionItem;
 import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
 import com.fr.swift.jdbc.exception.SwiftJDBCTableAbsentException;
-import com.fr.swift.jdbc.rpc.RpcCaller;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.info.bean.element.MetricBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
@@ -34,12 +33,12 @@ public class GroupQueryBeanVisitor extends AbstractQueryBeanVisitor {
         put("max", AggregatorType.MAX);
         put("avg", AggregatorType.AVERAGE);
     }};
-    private RpcCaller caller;
+    private SwiftMetaDataGetter metaDataGetter;
 
-    public GroupQueryBeanVisitor(GroupQueryInfoBean queryBean, RpcCaller caller) {
+    public GroupQueryBeanVisitor(GroupQueryInfoBean queryBean, SwiftMetaDataGetter getter) {
         super(queryBean);
         this.queryBean = queryBean;
-        this.caller = caller;
+        this.metaDataGetter = getter;
     }
 
     @Override
@@ -54,7 +53,7 @@ public class GroupQueryBeanVisitor extends AbstractQueryBeanVisitor {
 
     @Override
     public void visit(AllColumns allColumns) {
-        SwiftMetaData metaData = caller.getMetaData(queryBean.getTableName());
+        SwiftMetaData metaData = metaDataGetter.getMetaData();
         if (null == metaData) {
             Crasher.crash(new SwiftJDBCTableAbsentException(queryBean.getTableName()));
         }

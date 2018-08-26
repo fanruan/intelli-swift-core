@@ -1,6 +1,5 @@
 package com.fr.swift.jdbc.parser;
 
-import com.fr.swift.jdbc.rpc.RpcCaller;
 import com.fr.swift.query.group.GroupType;
 import com.fr.swift.query.info.bean.element.DimensionBean;
 import com.fr.swift.query.info.bean.element.GroupBean;
@@ -14,7 +13,7 @@ import java.util.List;
  * Created by pony on 2018/8/20.
  */
 public class GroupByDimensionVisitor extends GroupQueryBeanVisitor{
-    public GroupByDimensionVisitor(GroupQueryInfoBean queryBean, RpcCaller caller) {
+    public GroupByDimensionVisitor(GroupQueryInfoBean queryBean, SwiftMetaDataGetter caller) {
         super(queryBean, caller);
     }
 
