@@ -103,7 +103,7 @@ public class RPCInvoker<T> implements Invoker<T> {
             if (sync) {
                 handler = getAvailableSyncHandler(serviceAddress);
                 RpcResponse response = (RpcResponse) handler.send(request);
-                SyncRpcPool.getIntance().returnObject(serviceAddress, handler);
+                SyncRpcPool.getInstance().returnObject(serviceAddress, handler);
                 if (response == null) {
                     throw new RuntimeException("response is null");
                 }
@@ -120,7 +120,7 @@ public class RPCInvoker<T> implements Invoker<T> {
         } catch (Throwable e) {
             if (handler != null) {
                 if (handler instanceof SyncRpcClientHandler) {
-                    SyncRpcPool.getIntance().invalidateObject(serviceAddress, handler);
+                    SyncRpcPool.getInstance().invalidateObject(serviceAddress, handler);
                 } else {
                     AsyncRpcPool.getIntance().invalidateObject(serviceAddress, handler);
                 }
@@ -130,11 +130,11 @@ public class RPCInvoker<T> implements Invoker<T> {
     }
 
     private SyncRpcClientHandler getAvailableSyncHandler(String serviceAddress) throws Exception {
-        SyncRpcClientHandler handler = (SyncRpcClientHandler) SyncRpcPool.getIntance().borrowObject(serviceAddress);
+        SyncRpcClientHandler handler = (SyncRpcClientHandler) SyncRpcPool.getInstance().borrowObject(serviceAddress);
         if (!handler.isActive()) {
-            SyncRpcPool.getIntance().returnObject(serviceAddress, handler);
-            SyncRpcPool.getIntance().invalidateObject(serviceAddress, handler);
-            handler = (SyncRpcClientHandler) SyncRpcPool.getIntance().borrowObject(serviceAddress);
+            SyncRpcPool.getInstance().returnObject(serviceAddress, handler);
+            SyncRpcPool.getInstance().invalidateObject(serviceAddress, handler);
+            handler = (SyncRpcClientHandler) SyncRpcPool.getInstance().borrowObject(serviceAddress);
         }
         return handler;
     }

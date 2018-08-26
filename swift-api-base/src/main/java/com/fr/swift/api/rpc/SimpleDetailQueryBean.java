@@ -1,4 +1,4 @@
-package com.fr.swift.api.http.test.bean;
+package com.fr.swift.api.rpc;
 
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.query.query.QueryBean;
@@ -42,11 +42,15 @@ public class SimpleDetailQueryBean {
     }
 
     public QueryBean toQueryBean() throws IOException {
+        return SwiftContext.get().getBean(QueryBeanFactory.class).create(getQueryString());
+    }
+
+    public String getQueryString() {
         StringBuffer buffer = new StringBuffer();
         buffer.append("{\n" +
                 "  \"queryId\": \"").append(UUID.randomUUID()).append("\",\n" +
                 "  \"queryType\": \"DETAIL\",\n" +
-                "  \"querySegment\": null,\n");
+                "  \"querySegments\": null,\n");
         buffer.append("  \"tableName\": \"").append(table).append("\",\n" +
                 "  \"filterInfoBean\": null,\n" +
                 "  \"dimensionBeans\": [\n");
@@ -64,6 +68,6 @@ public class SimpleDetailQueryBean {
         buffer.append("  ],\n" +
                 "  \"sortBeans\": []\n" +
                 "}");
-        return SwiftContext.get().getBean(QueryBeanFactory.class).create(buffer.toString());
+        return buffer.toString();
     }
 }

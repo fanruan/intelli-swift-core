@@ -14,6 +14,10 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
+
 
 /**
  * @author yee
@@ -22,14 +26,16 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 public class CallClient extends SimpleChannelInboundHandler<RpcResponse> {
 
     private RpcResponse response;
+    private static final byte[] LENGTH_PLACEHOLDER = new byte[4];
 
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, RpcResponse rpcResponse) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, RpcResponse rpcResponse) throws Exception {
         this.response = rpcResponse;
+        ctx.close();
     }
 
     public RpcResponse send(RpcRequest request, String address) throws Exception {
-        EventLoopGroup group = new NioEventLoopGroup();
+        EventLoopGroup group = new NioEventLoopGroup(1);
         try {
             // 创建并初始化 Netty 客户端 Bootstrap 对象
             Bootstrap bootstrap = new Bootstrap();
@@ -39,6 +45,10 @@ public class CallClient extends SimpleChannelInboundHandler<RpcResponse> {
                 @Override
                 public void initChannel(SocketChannel channel) throws Exception {
                     ChannelPipeline pipeline = channel.pipeline();
+                    pipeline.addLast(
+                            new ObjectDecoder(1000000000,
+                                    ClassResolvers.cacheDisabled(this.getClass().getClassLoader())));
+                    pipeline.addLast(new ObjectEncoder());
                     pipeline.addLast(CallClient.this); // 处理 RPC 响应
                 }
             });
@@ -61,5 +71,39 @@ public class CallClient extends SimpleChannelInboundHandler<RpcResponse> {
         } finally {
             group.shutdownGracefully();
         }
+
+//        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+//        bos.write(LENGTH_PLACEHOLDER);
+//        ObjectOutputStream oos = new CompactObjectOutputStream(bos);
+//        oos.writeObject(request);
+//        byte[] datas = bos.toByteArray();
+//        int len = datas.length - 4;
+//        datas[0] = (byte) (len >>> 24);
+//        datas[1] = (byte) (len >>> 16);
+//        datas[2] = (byte) (len >>> 8);
+//        datas[3] = (byte) len;
+//        SocketChannel channel = SocketChannel.open();
+//        channel.connect(new InetSocketAddress(host, port));
+//        channel.write(ByteBuffer.wrap(datas));
+//        ByteBuffer buffer = ByteBuffer.allocate(1024);
+//        int length = 0;
+//        ByteArrayOutputStream bos1 = new ByteArrayOutputStream();
+//        while ((length = channel.read(buffer)) > 0) {
+//            buffer.flip();
+//            bos1.write(buffer.array(), 0, length);
+//            buffer.clear();
+//            if (length < 1023) {
+//                break;
+//            }
+//        }
+//        datas = bos1.toByteArray();
+//        byte[] result = Arrays.copyOfRange(datas, 4, datas.length);
+//        ObjectInputStream ois = new CompactObjectInputStream(new ByteArrayInputStream(result), Thread.currentThread().getContextClassLoader());
+//        Object obj = ois.readObject();
+//        if (obj instanceof RpcResponse) {
+//            return (RpcResponse) obj;
+//        }
+//        return null;
+
     }
 }

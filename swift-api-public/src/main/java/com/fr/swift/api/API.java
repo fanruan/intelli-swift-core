@@ -11,22 +11,20 @@ import com.fr.swift.source.SwiftResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author yee
  * @date 2018/8/24
  */
-class API implements DataMaintenanceService, SelectService {
+public class API implements DataMaintenanceService, SelectService {
     protected InternalServiceAddressHolder holder;
 
-    private API() {
-        holder = InternalServiceAddressHolder.getHolder();
+    private API(String address) {
+        holder = InternalServiceAddressHolder.getHolder(address);
     }
 
-    public static API sync() {
-        return new API() {
-        };
+    public static API connect(String address) {
+        return new API(address);
     }
 
     @Override
@@ -56,10 +54,10 @@ class API implements DataMaintenanceService, SelectService {
     }
 
     @Override
-    public int update(String tableName, Map<String, Object> fieldValues, Where where) {
+    public int update(String tableName, SwiftResultSet resultSet, Where where) {
         String address = holder.nextRealTimeAddress();
         DataMaintenanceService service = ApiProxyFactory.getProxy(DataMaintenanceService.class, address);
-        return service.update(tableName, fieldValues, where);
+        return service.update(tableName, resultSet, where);
     }
 
     @Override

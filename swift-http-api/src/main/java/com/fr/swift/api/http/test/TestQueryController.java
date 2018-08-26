@@ -1,7 +1,7 @@
 package com.fr.swift.api.http.test;
 
 import com.fr.swift.api.http.SwiftApiConstants;
-import com.fr.swift.api.http.test.bean.SimpleDetailQueryBean;
+import com.fr.swift.api.rpc.SimpleDetailQueryBean;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;

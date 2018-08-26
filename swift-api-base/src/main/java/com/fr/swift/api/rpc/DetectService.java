@@ -17,7 +17,7 @@ public interface DetectService {
      *
      * @return
      */
-    Map<ServiceType, List<String>> detectiveAnalyseAndRealTime();
+    Map<ServiceType, List<String>> detectiveAnalyseAndRealTime(String defaultAddress);
 
     /**
      * 获取metadata

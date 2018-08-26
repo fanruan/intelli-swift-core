@@ -1,22 +1,16 @@
 package com.fr.swift.api.rpc.holder;
 
-import com.fr.swift.event.global.GetAnalyseAndRealTimeAddrEvent;
-import com.fr.swift.exception.SwiftProxyException;
+import com.fr.swift.api.rpc.DetectService;
+import com.fr.swift.api.rpc.invoke.ApiProxyFactory;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.service.ServiceType;
-import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.util.Assert;
-import com.fr.swift.util.concurrent.PoolThreadFactory;
-import com.fr.swift.util.concurrent.SwiftExecutors;
-import com.fr.swift.utils.ClusterProxyUtils;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author yee
@@ -24,37 +18,30 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class InternalServiceAddressHolder implements ServiceAddressHolder {
 
-    private static InternalServiceAddressHolder holder;
+    private static ConcurrentHashMap<String, InternalServiceAddressHolder> instances = new ConcurrentHashMap<String, InternalServiceAddressHolder>();
     private boolean detected = false;
     private Queue<String> queryServiceAddress;
     private Queue<String> insertServiceAddress;
-    private ScheduledExecutorService reDetectService = SwiftExecutors.newSingleThreadScheduledExecutor(new PoolThreadFactory(InternalServiceAddressHolder.class));
-    private AtomicInteger tryTime = new AtomicInteger(3);
+    private String address;
 
-    private InternalServiceAddressHolder() {
+    private InternalServiceAddressHolder(String address) {
+        this.address = address;
         queryServiceAddress = new ConcurrentLinkedQueue<String>();
         insertServiceAddress = new ConcurrentLinkedQueue<String>();
         detect();
     }
 
-    public static InternalServiceAddressHolder getHolder() {
-        if (null == holder) {
-            synchronized (InternalServiceAddressHolder.class) {
-                if (null == holder) {
-                    holder = new InternalServiceAddressHolder();
-                }
-            }
+    public static InternalServiceAddressHolder getHolder(String address) {
+        if (null == instances.get(address)) {
+            instances.put(address, new InternalServiceAddressHolder(address));
         }
-        return holder;
+        return instances.get(address);
     }
 
     private boolean detect() {
         if (!detected) {
-            if (tryTime.decrementAndGet() < 0) {
-                throw new RuntimeException("Cannot detect service address!");
-            }
             try {
-                Map<ServiceType, List<String>> addresses = (Map<ServiceType, List<String>>) ClusterProxyUtils.getMasterProxy(SwiftServiceListenerHandler.class).trigger(new GetAnalyseAndRealTimeAddrEvent());
+                Map<ServiceType, List<String>> addresses = ApiProxyFactory.getProxy(DetectService.class, address).detectiveAnalyseAndRealTime(address);
                 if (addresses.isEmpty()) {
                     detected = false;
                     SwiftLoggers.getLogger().warn("Cannot find service address. Retry at 10s later.");
@@ -65,17 +52,9 @@ public class InternalServiceAddressHolder implements ServiceAddressHolder {
                     insertServiceAddress.clear();
                     insertServiceAddress.addAll(addresses.get(ServiceType.REAL_TIME));
                 }
-            } catch (SwiftProxyException e) {
-                SwiftLoggers.getLogger().error("Detect service address with an exception. Retry at 10s later.", e);
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().error("Detect service address with an exception.", e);
                 detected = false;
-            }
-            if (!detected) {
-                reDetectService.schedule(new Runnable() {
-                    @Override
-                    public void run() {
-                        detect();
-                    }
-                }, 10, TimeUnit.SECONDS);
             }
         }
         return detected;
@@ -83,17 +62,19 @@ public class InternalServiceAddressHolder implements ServiceAddressHolder {
 
     @Override
     public String nextAnalyseAddress() {
-        String address = queryServiceAddress.poll();
-        Assert.notNull(address);
-        queryServiceAddress.add(address);
-        return address;
+        return getAddress(queryServiceAddress);
     }
 
     @Override
     public String nextRealTimeAddress() {
-        String address = insertServiceAddress.poll();
+        return getAddress(insertServiceAddress);
+    }
+
+    private String getAddress(Queue<String> addresses) {
+        detect();
+        String address = addresses.poll();
         Assert.notNull(address);
-        insertServiceAddress.add(address);
+        addresses.add(address);
         return address;
     }
 
@@ -105,7 +86,6 @@ public class InternalServiceAddressHolder implements ServiceAddressHolder {
     @Override
     public void reDetect() {
         detected = false;
-        tryTime.set(3);
         detect();
     }
 }

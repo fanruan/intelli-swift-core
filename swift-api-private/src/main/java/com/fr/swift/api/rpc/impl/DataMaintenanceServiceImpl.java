@@ -20,7 +20,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author yee
@@ -61,7 +60,7 @@ class DataMaintenanceServiceImpl implements DataMaintenanceService {
     }
 
     @Override
-    public int update(String tableName, Map<String, Object> fieldValues, Where where) {
+    public int update(String tableName, SwiftResultSet resultSet, Where where) {
         return 0;
     }
 

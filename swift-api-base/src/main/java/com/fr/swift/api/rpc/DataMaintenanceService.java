@@ -6,7 +6,6 @@ import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author yee
@@ -57,9 +56,9 @@ public interface DataMaintenanceService {
      * TODO 先占个坑具体再调
      *
      * @param tableName
-     * @param fieldValues
+     * @param resultSet
      * @param where
      * @return
      */
-    int update(String tableName, Map<String, Object> fieldValues, Where where);
+    int update(String tableName, SwiftResultSet resultSet, Where where);
 }

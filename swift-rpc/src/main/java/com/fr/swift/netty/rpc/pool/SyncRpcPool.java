@@ -15,7 +15,7 @@ public class SyncRpcPool extends AbstractRpcPool {
 
     private final static SyncRpcPool INSTANCE = new SyncRpcPool();
 
-    public static SyncRpcPool getIntance() {
+    public static SyncRpcPool getInstance() {
         return INSTANCE;
     }
 
