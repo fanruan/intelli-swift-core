@@ -5,7 +5,7 @@ import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.space.SpaceUsageDetector;
 import com.fr.swift.cube.space.SpaceUsageService;
-import com.fr.swift.db.impl.SwiftDatabase.Schema;
+import com.fr.swift.db.Schema;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 

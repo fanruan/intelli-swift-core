@@ -46,6 +46,17 @@ public class RpcConnector {
         this(address, new NettyObjectEncoder(), new NettyObjectDecoder());
     }
 
+    public RpcConnector(String host, int port) {
+        this(host, port, new NettyObjectEncoder(), new NettyObjectDecoder());
+    }
+
+    public RpcConnector(String host, int port, SerializableEncoder encoder, SerializableDecoder decoder) {
+        this.selector = new RpcSelector(encoder, decoder);
+        this.host = host;
+        this.port = port == -1 ? 7000 : port;
+        rpcExecutors = new ArrayList<RpcExecutor>();
+    }
+
     public RpcConnector(SocketChannel channel, RpcSelector selector) {
         this.channel = channel;
         this.selector = selector;

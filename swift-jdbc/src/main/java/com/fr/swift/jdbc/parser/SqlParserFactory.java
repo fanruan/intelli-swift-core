@@ -22,4 +22,6 @@ public class SqlParserFactory {
         }
         return Crasher.crash(new SwiftJDBCNotSupportedException(sql));
     }
+
+
 }

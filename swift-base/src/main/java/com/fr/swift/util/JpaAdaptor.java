@@ -2,7 +2,7 @@ package com.fr.swift.util;
 
 import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
-import com.fr.swift.db.impl.SwiftDatabase.Schema;
+import com.fr.swift.db.Schema;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.third.javax.persistence.AttributeConverter;

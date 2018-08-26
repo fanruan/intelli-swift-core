@@ -3,6 +3,7 @@ package com.fr.swift.jdbc;
 import com.fr.stable.ArrayUtils;
 import com.fr.stable.StringUtils;
 import com.fr.swift.db.Database;
+import com.fr.swift.db.Schema;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
@@ -29,9 +30,9 @@ import java.util.Map;
  */
 public class SwiftDatabaseMetadata implements DatabaseMetaData {
     private static final Database DB = SwiftDatabase.getInstance();
-    private SwiftDatabase.Schema schema;
+    private Schema schema;
 
-    public SwiftDatabaseMetadata(SwiftDatabase.Schema schema) {
+    public SwiftDatabaseMetadata(Schema schema) {
         this.schema = schema;
     }
 
@@ -639,7 +640,7 @@ public class SwiftDatabaseMetadata implements DatabaseMetaData {
     public ResultSet getTables(String catalog, String schemaPattern, String tableNamePattern, String[] types) throws SQLException {
         List<Row> tables = new ArrayList<Row>();
         if (ArrayUtils.contains(types, "TABLE")){
-            SwiftDatabase.Schema schema = this.schema == null ? SwiftDatabase.Schema.valueOf(schemaPattern) : this.schema;
+            Schema schema = this.schema == null ? Schema.valueOf(schemaPattern) : this.schema;
             for (Table table : DB.getAllTables()) {
                 SwiftMetaData meta = table.getMeta();
                 if (meta.getSwiftSchema() == schema) {
@@ -674,7 +675,7 @@ public class SwiftDatabaseMetadata implements DatabaseMetaData {
 
     @Override
     public ResultSet getColumns(String catalog, String schemaPattern, String tableNamePattern, String columnNamePattern) throws SQLException {
-        SwiftDatabase.Schema schema = this.schema == null ? SwiftDatabase.Schema.valueOf(schemaPattern) : this.schema;
+        Schema schema = this.schema == null ? Schema.valueOf(schemaPattern) : this.schema;
         Table table = DB.getTable(new SourceKey(tableNamePattern));
         List<Row> fields = new ArrayList<Row>();
         SwiftMetaData metaData = table.getMeta();

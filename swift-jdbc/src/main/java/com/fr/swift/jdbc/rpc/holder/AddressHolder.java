@@ -37,9 +37,27 @@ public class AddressHolder implements ServiceAddressHolder {
         detect();
     }
 
+    private AddressHolder(String host, int port) {
+        queryServiceAddress = new ConcurrentLinkedQueue<String>();
+        insertServiceAddress = new ConcurrentLinkedQueue<String>();
+        this.address = host + ":" + port;
+        rootConnector = new RpcConnector(host, port);
+        proxy = new ClientProxy(rootConnector);
+        detect();
+    }
+
     public static AddressHolder getHolder(String address) {
         if (null == instances.get(address)) {
             instances.put(address, new AddressHolder(address));
+        }
+        return instances.get(address);
+    }
+
+    public static AddressHolder getHolder(String host, int port) {
+        port = port == -1 ? 7000 : port;
+        String address = host + ":" + port;
+        if (null == instances.get(address)) {
+            instances.put(address, new AddressHolder(host, port));
         }
         return instances.get(address);
     }

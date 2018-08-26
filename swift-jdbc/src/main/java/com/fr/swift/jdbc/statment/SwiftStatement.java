@@ -1,9 +1,10 @@
-package com.fr.swift.jdbc;
+package com.fr.swift.jdbc.statment;
 
+import com.fr.swift.jdbc.ResultSetWrapper;
 import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
 import com.fr.swift.jdbc.parser.SqlParserFactory;
+import com.fr.swift.jdbc.rpc.RpcCaller;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.util.Crasher;
 
@@ -14,15 +15,23 @@ import java.sql.SQLWarning;
 import java.sql.Statement;
 
 /**
- * Created by pony on 2018/8/17.
+ *
+ * @author pony
+ * @date 2018/8/17
  */
 public class SwiftStatement implements Statement {
+    private RpcCaller caller;
+
+    public SwiftStatement(RpcCaller caller) {
+        this.caller = caller;
+    }
+
     @Override
     public ResultSet executeQuery(String sql) throws SQLException {
         SwiftResultSet resultSet = null;
         try {
             QueryBean queryBean = SqlParserFactory.parsQuery(sql);
-            resultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
+            resultSet = caller.query(queryBean.toString());
         } catch (Exception e) {
             return Crasher.crash(new SwiftJDBCNotSupportedException(sql, e));
         }

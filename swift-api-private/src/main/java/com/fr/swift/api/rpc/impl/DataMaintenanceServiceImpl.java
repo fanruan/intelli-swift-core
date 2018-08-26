@@ -7,8 +7,8 @@ import com.fr.swift.api.rpc.DetectService;
 import com.fr.swift.api.rpc.bean.Column;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.db.Schema;
 import com.fr.swift.db.Where;
-import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.service.RealtimeService;
 import com.fr.swift.source.Row;
@@ -42,8 +42,7 @@ class DataMaintenanceServiceImpl implements DataMaintenanceService {
         return insert(tableName, null, rows);
     }
 
-    @Override
-    public int insert(String tableName, SwiftResultSet resultSet) throws SQLException {
+    private int insert(String tableName, SwiftResultSet resultSet) throws SQLException {
         SwiftMetaDataBean metaData = (SwiftMetaDataBean) SwiftContext.get().getBean(DetectService.class).detectiveMetaData(tableName);
         SourceKey sourceKey = new SourceKey(metaData.getId());
         try {
@@ -67,7 +66,7 @@ class DataMaintenanceServiceImpl implements DataMaintenanceService {
     }
 
     @Override
-    public int createTable(SwiftDatabase.Schema schema, String tableName, List<Column> columns) {
+    public int createTable(Schema schema, String tableName, List<Column> columns) {
         return 0;
     }
 

@@ -3,7 +3,7 @@ package com.fr.swift.db.impl;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types.StoreType;
-import com.fr.swift.db.impl.SwiftDatabase.Schema;
+import com.fr.swift.db.Schema;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;

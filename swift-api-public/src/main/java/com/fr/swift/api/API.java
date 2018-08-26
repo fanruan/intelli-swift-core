@@ -5,8 +5,8 @@ import com.fr.swift.api.rpc.SelectService;
 import com.fr.swift.api.rpc.bean.Column;
 import com.fr.swift.api.rpc.holder.InternalServiceAddressHolder;
 import com.fr.swift.api.rpc.invoke.ApiProxyFactory;
+import com.fr.swift.db.Schema;
 import com.fr.swift.db.Where;
-import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
 
@@ -42,13 +42,6 @@ public class API implements DataMaintenanceService, SelectService {
     }
 
     @Override
-    public int insert(String tableName, SwiftResultSet resultSet) throws SQLException {
-        String address = holder.nextRealTimeAddress();
-        DataMaintenanceService service = ApiProxyFactory.getProxy(DataMaintenanceService.class, address);
-        return service.insert(tableName, resultSet);
-    }
-
-    @Override
     public int delete(String tableName, Where where) {
         String address = holder.nextRealTimeAddress();
         DataMaintenanceService service = ApiProxyFactory.getProxy(DataMaintenanceService.class, address);
@@ -63,7 +56,7 @@ public class API implements DataMaintenanceService, SelectService {
     }
 
     @Override
-    public int createTable(SwiftDatabase.Schema schema, String tableName, List<Column> columns) {
+    public int createTable(Schema schema, String tableName, List<Column> columns) {
         String address = holder.nextRealTimeAddress();
         DataMaintenanceService service = ApiProxyFactory.getProxy(DataMaintenanceService.class, address);
         return service.createTable(schema, tableName, columns);

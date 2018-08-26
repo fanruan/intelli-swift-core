@@ -3,7 +3,7 @@ package com.fr.swift.config.bean;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
 import com.fr.swift.config.entity.SwiftMetaDataEntity;
-import com.fr.swift.db.impl.SwiftDatabase.Schema;
+import com.fr.swift.db.Schema;
 import com.fr.swift.exception.meta.SwiftMetaDataColumnAbsentException;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.SwiftMetaData;

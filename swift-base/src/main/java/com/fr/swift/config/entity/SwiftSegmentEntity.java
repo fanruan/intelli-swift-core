@@ -5,7 +5,7 @@ import com.fr.swift.config.bean.Convert;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.convert.hibernate.URIConverter;
 import com.fr.swift.cube.io.Types;
-import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.db.Schema;
 import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Entity;
 import com.fr.third.javax.persistence.EnumType;
@@ -42,7 +42,7 @@ public class SwiftSegmentEntity implements Convert<SegmentKeyBean> {
     private Types.StoreType storeType;
     @Column(name = "swiftSchema")
     @Enumerated(EnumType.STRING)
-    private SwiftDatabase.Schema swiftSchema;
+    private Schema swiftSchema;
 
     public String getSegmentOwner() {
         return segmentOwner;
@@ -84,11 +84,11 @@ public class SwiftSegmentEntity implements Convert<SegmentKeyBean> {
         this.id = id;
     }
 
-    public SwiftDatabase.Schema getSwiftSchema() {
+    public Schema getSwiftSchema() {
         return swiftSchema;
     }
 
-    public void setSwiftSchema(SwiftDatabase.Schema swiftSchema) {
+    public void setSwiftSchema(Schema swiftSchema) {
         this.swiftSchema = swiftSchema;
     }
 

@@ -3,7 +3,7 @@ package com.fr.swift.generate.preview;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;
-import com.fr.swift.db.impl.SwiftDatabase.Schema;
+import com.fr.swift.db.Schema;
 import com.fr.swift.generate.ColumnDictMerger;
 import com.fr.swift.generate.ColumnIndexer;
 import com.fr.swift.generate.history.index.SubDateColumnDictMerger;

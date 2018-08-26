@@ -4,6 +4,7 @@ import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.Serializable;
@@ -33,16 +34,19 @@ public class APITest implements Serializable {
     }
 
     @Test
+    @Ignore
     public void insert() throws SQLException {
         assertEquals(api.insert("test_table", Arrays.asList("id", "name"), datas), datas.size());
     }
 
     @Test
+    @Ignore
     public void insert1() throws SQLException {
         assertEquals(api.insert("test_table", datas), datas.size());
     }
 
     @Test
+    @Ignore
     public void query() throws SQLException {
 //        aa4f69b2
         SimpleDetailQueryBean bean = new SimpleDetailQueryBean();

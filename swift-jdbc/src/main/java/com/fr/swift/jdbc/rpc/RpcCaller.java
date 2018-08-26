@@ -3,8 +3,8 @@ package com.fr.swift.jdbc.rpc;
 import com.fr.swift.api.rpc.DataMaintenanceService;
 import com.fr.swift.api.rpc.SelectService;
 import com.fr.swift.api.rpc.bean.Column;
+import com.fr.swift.db.Schema;
 import com.fr.swift.db.Where;
-import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.jdbc.rpc.holder.AddressHolder;
 import com.fr.swift.jdbc.rpc.invoke.ClientProxy;
 import com.fr.swift.jdbc.rpc.nio.RpcConnector;
@@ -27,8 +27,16 @@ public class RpcCaller implements DataMaintenanceService, SelectService {
         holder = AddressHolder.getHolder(address);
     }
 
+    private RpcCaller(String host, int port) {
+        holder = AddressHolder.getHolder(host, port);
+    }
+
     public static RpcCaller connect(String address) {
         return new RpcCaller(address);
+    }
+
+    public static RpcCaller connect(String host, int port) {
+        return new RpcCaller(host, port);
     }
 
     @Override
@@ -46,18 +54,6 @@ public class RpcCaller implements DataMaintenanceService, SelectService {
     @Override
     public int insert(String tableName, List<Row> rows) throws SQLException {
         return insert(tableName, Collections.<String>emptyList(), rows);
-    }
-
-    @Override
-    public int insert(String tableName, SwiftResultSet resultSet) throws SQLException {
-        String address = holder.nextRealTimeAddress();
-        ClientProxy proxy = new ClientProxy(new RpcConnector(address));
-        try {
-            proxy.start();
-            return proxy.getProxy(DataMaintenanceService.class).insert(tableName, resultSet);
-        } finally {
-            proxy.stop();
-        }
     }
 
     @Override
@@ -85,7 +81,7 @@ public class RpcCaller implements DataMaintenanceService, SelectService {
     }
 
     @Override
-    public int createTable(SwiftDatabase.Schema schema, String tableName, List<Column> columns) {
+    public int createTable(Schema schema, String tableName, List<Column> columns) {
         String address = holder.nextRealTimeAddress();
         ClientProxy proxy = new ClientProxy(new RpcConnector(address));
         try {

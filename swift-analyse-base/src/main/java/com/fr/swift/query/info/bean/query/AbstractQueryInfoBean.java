@@ -4,6 +4,8 @@ import com.fr.swift.query.query.QueryType;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.third.fasterxml.jackson.annotation.JsonInclude;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
+import com.fr.third.fasterxml.jackson.core.JsonProcessingException;
+import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -70,5 +72,14 @@ public abstract class AbstractQueryInfoBean implements QueryInfoBean {
     @Override
     public void setQueryDestination(SegmentDestination queryDestination) {
         this.queryDestination = queryDestination;
+    }
+
+    @Override
+    public String toString() {
+        try {
+            return new ObjectMapper().writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            return super.toString();
+        }
     }
 }
