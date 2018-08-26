@@ -30,7 +30,7 @@ public class SwiftStatement implements Statement {
     public ResultSet executeQuery(String sql) throws SQLException {
         SwiftResultSet resultSet = null;
         try {
-            QueryBean queryBean = SqlParserFactory.parsQuery(sql);
+            QueryBean queryBean = SqlParserFactory.parsQuery(sql, caller);
             resultSet = caller.query(queryBean.toString());
         } catch (Exception e) {
             return Crasher.crash(new SwiftJDBCNotSupportedException(sql, e));

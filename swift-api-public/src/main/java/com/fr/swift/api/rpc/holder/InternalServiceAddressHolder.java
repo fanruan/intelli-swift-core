@@ -70,6 +70,11 @@ public class InternalServiceAddressHolder implements ServiceAddressHolder {
         return getAddress(insertServiceAddress);
     }
 
+    @Override
+    public String rootAddress() {
+        return address;
+    }
+
     private String getAddress(Queue<String> addresses) {
         detect();
         String address = addresses.poll();

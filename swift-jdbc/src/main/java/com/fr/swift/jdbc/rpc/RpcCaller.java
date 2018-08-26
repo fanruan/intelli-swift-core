@@ -1,6 +1,7 @@
 package com.fr.swift.jdbc.rpc;
 
 import com.fr.swift.api.rpc.DataMaintenanceService;
+import com.fr.swift.api.rpc.DetectService;
 import com.fr.swift.api.rpc.SelectService;
 import com.fr.swift.api.rpc.bean.Column;
 import com.fr.swift.db.Schema;
@@ -8,7 +9,9 @@ import com.fr.swift.db.Where;
 import com.fr.swift.jdbc.rpc.holder.AddressHolder;
 import com.fr.swift.jdbc.rpc.invoke.ClientProxy;
 import com.fr.swift.jdbc.rpc.nio.RpcConnector;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.Row;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
@@ -99,6 +102,20 @@ public class RpcCaller implements DataMaintenanceService, SelectService {
         try {
             proxy.start();
             return proxy.getProxy(SelectService.class).query(queryJson);
+        } finally {
+            proxy.stop();
+        }
+    }
+
+    public SwiftMetaData getMetaData(String tableName) {
+        String address = holder.rootAddress();
+        ClientProxy proxy = new ClientProxy(new RpcConnector(address));
+        try {
+            proxy.start();
+            return proxy.getProxy(DetectService.class).detectiveMetaData(tableName);
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
+            return null;
         } finally {
             proxy.stop();
         }

@@ -26,8 +26,10 @@ public class NettyObjectDecoder extends ObjectDecoder {
         ByteBuffer lengthBuffer = ByteBuffer.allocate(4);
         channel.read(lengthBuffer);
         byte[] lengthByte = lengthBuffer.array();
-        int length = (lengthByte[0] << 24) + (lengthByte[1] << 16)
-                + (lengthByte[2] << 8) + lengthByte[3];
+        int length = lengthByte[0] << 24
+                | (lengthByte[1] & 255) << 16
+                | lengthByte[2] << 8
+                | lengthByte[3] & 255;
         if (length <= 0) {
             throw new NoCodecResponseException();
         }

@@ -199,6 +199,7 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable, Convert<S
         this.swiftSchema = schema;
     }
 
+    @Override
     public String getId() {
         return id;
     }

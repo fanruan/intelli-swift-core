@@ -20,6 +20,7 @@ import com.fr.general.jsqlparser.statement.truncate.Truncate;
 import com.fr.general.jsqlparser.statement.update.Update;
 import com.fr.general.jsqlparser.statement.upsert.Upsert;
 import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
+import com.fr.swift.jdbc.rpc.RpcCaller;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.util.Crasher;
 
@@ -28,6 +29,12 @@ import com.fr.swift.util.Crasher;
  */
 public class QueryBeanVisitor implements StatementVisitor,QueryBeanParser {
     private QueryBean queryBean;
+    private RpcCaller caller;
+
+    public QueryBeanVisitor(RpcCaller caller) {
+        this.caller = caller;
+    }
+
     @Override
     public void visit(Commit commit) {
         Crasher.crash(new SwiftJDBCNotSupportedException());
@@ -110,7 +117,7 @@ public class QueryBeanVisitor implements StatementVisitor,QueryBeanParser {
 
     @Override
     public void visit(Select select) {
-        SelectQueryBeanVisitor visitor = new SelectQueryBeanVisitor();
+        SelectQueryBeanVisitor visitor = new SelectQueryBeanVisitor(caller);
         select.getSelectBody().accept(visitor);
         this.queryBean = visitor.getQueryBean();
     }

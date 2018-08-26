@@ -15,6 +15,7 @@ import com.fr.general.jsqlparser.statement.select.TableFunction;
 import com.fr.general.jsqlparser.statement.select.ValuesList;
 import com.fr.general.jsqlparser.statement.select.WithItem;
 import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
+import com.fr.swift.jdbc.rpc.RpcCaller;
 import com.fr.swift.query.info.bean.query.AbstractSingleTableQueryInfoBean;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
@@ -29,6 +30,12 @@ import java.util.UUID;
  */
 public class SelectQueryBeanVisitor implements SelectVisitor,FromItemVisitor,QueryBeanParser {
     private AbstractSingleTableQueryInfoBean queryBean;
+    private RpcCaller caller;
+
+    public SelectQueryBeanVisitor(RpcCaller caller) {
+        this.caller = caller;
+    }
+
     @Override
     public void visit(PlainSelect plainSelect) {
         FromItem item = plainSelect.getFromItem();
@@ -36,15 +43,15 @@ public class SelectQueryBeanVisitor implements SelectVisitor,FromItemVisitor,Que
         DimensionMetricVisitor subVisitor;
         if (groupbyColumns == null || groupbyColumns.isEmpty()){
             queryBean = new DetailQueryInfoBean();
-            subVisitor = new DetailQueryBeanVisitor((DetailQueryInfoBean) queryBean);
+            subVisitor = new DetailQueryBeanVisitor((DetailQueryInfoBean) queryBean, caller);
         } else {
             queryBean = new GroupQueryInfoBean();
-            subVisitor = new GroupQueryBeanVisitor((GroupQueryInfoBean) queryBean);
+            subVisitor = new GroupQueryBeanVisitor((GroupQueryInfoBean) queryBean, caller);
         }
         queryBean.setQueryId(UUID.randomUUID().toString());
         item.accept(this);
         if (groupbyColumns != null){
-            GroupByDimensionVisitor visitor = new GroupByDimensionVisitor((GroupQueryInfoBean) queryBean);
+            GroupByDimensionVisitor visitor = new GroupByDimensionVisitor((GroupQueryInfoBean) queryBean, caller);
             for (Expression expression : groupbyColumns){
                 expression.accept(visitor);
             }

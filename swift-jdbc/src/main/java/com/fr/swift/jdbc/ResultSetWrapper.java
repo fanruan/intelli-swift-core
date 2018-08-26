@@ -67,7 +67,7 @@ public class ResultSetWrapper implements ResultSet {
 
     @Override
     public boolean next() throws SQLException {
-        if (resultSet.hasNext()){
+        if (resultSet.hasNext()) {
             current = resultSet.getNextRow();
             return true;
         }
@@ -125,14 +125,14 @@ public class ResultSetWrapper implements ResultSet {
         return getNumber(columnIndex).doubleValue();
     }
 
-    private Number getNumber(int columnIndex)throws SQLException{
+    private Number getNumber(int columnIndex) throws SQLException {
         Object ob = current.getValue(columnIndex - 1);
-        if (ob instanceof Number){
+        if (ob instanceof Number) {
             return (Number) ob;
         }
         return ob == null ? new Integer(0) : new BigDecimal(ob.toString());
     }
-    
+
     @Override
     public BigDecimal getBigDecimal(int columnIndex, int scale) throws SQLException {
         return Crasher.crash(new SwiftJDBCNotSupportedException());
@@ -275,7 +275,7 @@ public class ResultSetWrapper implements ResultSet {
 
     @Override
     public Object getObject(int columnIndex) throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+        return current.getValue(columnIndex - 1);
     }
 
     @Override
@@ -285,7 +285,7 @@ public class ResultSetWrapper implements ResultSet {
 
     @Override
     public int findColumn(String columnLabel) throws SQLException {
-        if (label2Index == null || !label2Index.containsKey(columnLabel)){
+        if (label2Index == null || !label2Index.containsKey(columnLabel)) {
             return Crasher.crash(new SwiftJDBCColumnAbsentException(columnLabel));
         }
         return label2Index.get(columnLabel);

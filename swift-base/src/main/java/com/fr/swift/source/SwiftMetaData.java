@@ -72,4 +72,6 @@ public interface SwiftMetaData {
     String getColumnId(String columnName) throws SwiftMetaDataException;
 
     List<String> getFieldNames();
+
+    String getId();
 }

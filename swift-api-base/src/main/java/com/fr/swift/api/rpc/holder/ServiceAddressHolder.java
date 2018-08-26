@@ -9,6 +9,8 @@ public interface ServiceAddressHolder {
 
     String nextRealTimeAddress();
 
+    String rootAddress();
+
     boolean isDetected();
 
     void reDetect();
