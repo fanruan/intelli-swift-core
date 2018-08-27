@@ -83,6 +83,16 @@ public class AddColumnActionTest {
         checkSeg(table);
     }
 
+    @Test
+    public void addPresentedColumn() throws Exception {
+        SourceKey tableKey = new SourceKey(meta.getTableName());
+        com.fr.swift.db.Table table = SwiftDatabase.getInstance().createTable(tableKey, meta);
+        new AddColumnAction(new MetaDataColumnBean("i", Types.VARCHAR)).alter(table);
+
+        table = SwiftDatabase.getInstance().getTable(tableKey);
+        Assert.assertEquals(1, table.getMeta().getColumnCount());
+    }
+
     private Inserter getInserter(com.fr.swift.db.Table table, LineSourceAlloter lineSourceAlloter) {
         return alterHistory ? new HistoryBlockInserter(table, lineSourceAlloter) :
                 new Incrementer(table, lineSourceAlloter);
