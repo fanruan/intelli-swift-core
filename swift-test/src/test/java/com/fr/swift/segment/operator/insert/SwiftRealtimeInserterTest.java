@@ -20,7 +20,7 @@ import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.test.Preparer;
 import com.fr.swift.test.TestResource;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -31,9 +31,9 @@ public class SwiftRealtimeInserterTest {
     private static DataSource dataSource;
     private static SwiftSourceTransfer transfer;
 
-    @BeforeClass
-    public static void setUp() throws Exception {
-        Preparer.prepareCubeBuild();
+    @Before
+    public void setUp() throws Exception {
+        Preparer.prepareCubeBuild(getClass());
         dataSource = new QueryDBSource("select * from DEMO_CAPITAL_RETURN", SwiftRealtimeInserterTest.class.getName());
         transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
 

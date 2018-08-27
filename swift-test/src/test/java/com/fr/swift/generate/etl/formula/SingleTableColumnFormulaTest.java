@@ -14,6 +14,7 @@ import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.etl.ETLOperator;
 import com.fr.swift.source.etl.EtlSource;
 import com.fr.swift.source.etl.formula.ColumnFormulaOperator;
+import com.fr.swift.test.Preparer;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class SingleTableColumnFormulaTest extends BaseTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
+        Preparer.prepareCubeBuild(getClass());
         segmentProvider = SwiftContext.get().getBean(LocalSegmentProvider.class);
     }
 

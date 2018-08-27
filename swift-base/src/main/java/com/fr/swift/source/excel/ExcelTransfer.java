@@ -1,22 +1,23 @@
 package com.fr.swift.source.excel;
 
-import com.fr.general.data.DataModel;
-import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
+import com.fr.swift.source.db.DataModelResultSet;
 import com.fr.swift.source.excel.data.IExcelDataModel;
+import com.fr.swift.source.resultset.CoSwiftResultSet;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by pony on 2017/12/5.
+ *
+ * @author pony
+ * @date 2017/12/5
  */
 public class ExcelTransfer implements SwiftSourceTransfer {
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(ExcelTransfer.class);
-
     private List<String> fileNames;
     private SwiftMetaData metaData;
     private SwiftMetaData outerMetadata;
@@ -29,25 +30,23 @@ public class ExcelTransfer implements SwiftSourceTransfer {
 
     @Override
     public SwiftResultSet createResultSet() {
-        List<DataModel> dataModelList = new ArrayList<DataModel>();
-        LOGGER.info("start extracting data from tabledata");
+        List<SwiftResultSet> resultSets = new ArrayList<SwiftResultSet>();
+        SwiftLoggers.getLogger().info("start extracting data from table data {}", fileNames);
         try {
             for (String fileName : fileNames) {
                 IExcelDataModel tableData = new ExcelTableData(fileName).createDataModel();
-                dataModelList.add(tableData);
+                resultSets.add(new DataModelResultSet(tableData, metaData, outerMetadata));
             }
-            return new DataModelsResultSet(dataModelList, metaData, outerMetadata);
+            return new CoSwiftResultSet(resultSets);
         } catch (Exception e) {
-            if (dataModelList != null) {
+            SwiftLoggers.getLogger().error(e);
+            for (SwiftResultSet resultSet : resultSets) {
                 try {
-                    for (DataModel dataModel : dataModelList) {
-                        dataModel.release();
-                    }
-                } catch (Exception e1) {
-                    LOGGER.error(e1.getMessage(), e1);
+                    resultSet.close();
+                } catch (SQLException e1) {
+                    SwiftLoggers.getLogger().error(e1);
                 }
             }
-            LOGGER.error(e.getMessage(), e);
         }
         return EMPTY;
     }

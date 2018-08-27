@@ -13,6 +13,7 @@ import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.util.FileUtil;
+import com.fr.swift.util.Util;
 import com.fr.swift.util.function.Predicate;
 
 import java.util.ArrayList;
@@ -67,7 +68,7 @@ public class DropColumnAction extends BaseAlterTableAction {
             SwiftMetaData newMeta = new SwiftMetaDataBean(oldMeta.getTableName(), columnMetas);
             CONF_SVC.updateMetaData(table.getSourceKey().getId(), newMeta);
         } catch (SwiftMetaDataException e) {
-            SwiftLoggers.getLogger().warn("alter meta failed, {}: {}", e.getClass().getSimpleName(), e.getMessage());
+            SwiftLoggers.getLogger().warn("alter meta failed, {}", Util.getRootCauseMessage(e));
         }
     }
 }

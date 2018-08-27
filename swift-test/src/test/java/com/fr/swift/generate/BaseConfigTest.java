@@ -9,6 +9,8 @@ import org.junit.Before;
 public abstract class BaseConfigTest {
     @Before
     public void setUp() throws Exception {
+        Preparer.prepareFrEnv();
+        Preparer.prepareContext();
         Preparer.prepareConfDb();
     }
 }

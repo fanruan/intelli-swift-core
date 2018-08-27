@@ -19,7 +19,6 @@ import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.test.Preparer;
 import com.fr.swift.util.function.Function;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.List;
@@ -35,10 +34,10 @@ public class SubDateColumnIndexerTest {
     private String columnName = "注册时间";
     private DataSource dataSource = new QueryDBSource("select " + columnName + " from DEMO_CONTRACT", getClass().getName());
 
-    @BeforeClass
-    public static void beforeClass() {
+    @Before
+    public void beforeClass() {
         new LocalSwiftServerService().start();
-        Preparer.prepareCubeBuild();
+        Preparer.prepareCubeBuild(getClass());
     }
 
     @Before

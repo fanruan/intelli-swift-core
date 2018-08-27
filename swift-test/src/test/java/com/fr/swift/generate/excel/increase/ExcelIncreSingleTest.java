@@ -47,8 +47,6 @@ public class ExcelIncreSingleTest extends BaseExcelTest {
 
         ((Inserter) SwiftContext.get().getBean("incrementer", dataSource)).insertData(SwiftSourceTransferFactory.createSourceTransfer(dataSource2).createResultSet());
 
-        TestIndexer.realtimeIndex(dataSource);
-
         segments = SwiftContext.get().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
         assertEquals(segments.size(), 2);
 

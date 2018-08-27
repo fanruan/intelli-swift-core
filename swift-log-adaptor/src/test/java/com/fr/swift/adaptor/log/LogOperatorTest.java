@@ -23,7 +23,6 @@ import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Table;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -44,9 +43,9 @@ public class LogOperatorTest {
     private Metric logOperator = MetricProxy.getInstance();
     private Database db = SwiftDatabase.getInstance();
 
-    @BeforeClass
-    public static void boot() throws Exception {
-        Preparer.prepareCubeBuild();
+    @Before
+    public void boot() throws Exception {
+        Preparer.prepareCubeBuild(getClass());
         new LocalSwiftServerService().start();
         SwiftContext.get().getBean(AnalyseService.class).start();
     }

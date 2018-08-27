@@ -1,6 +1,5 @@
 package com.fr.swift.source.alloter;
 
-import com.fr.swift.config.TestConfDb;
 import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.context.SwiftContext;
@@ -25,7 +24,6 @@ import com.fr.swift.test.Preparer;
 import com.fr.swift.test.TestIo;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.sql.Types;
@@ -41,15 +39,9 @@ public class LineSegmentAlloterTest extends TestIo {
     SwiftResultSet resultSet;
     int count;
 
-    @BeforeClass
-    public static void boot() {
-        Preparer.prepareCubeBuild();
-    }
-
-
     @Before
     public void setUp() throws Exception {
-        TestConfDb.setConfDb();
+        Preparer.prepareCubeBuild(getClass());
 
         List<Row> datas = new ArrayList<>();
         count = (int) (Math.random() * 1000000);

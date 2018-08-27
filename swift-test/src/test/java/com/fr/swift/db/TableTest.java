@@ -16,8 +16,8 @@ import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.test.Preparer;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
@@ -37,9 +37,9 @@ public class TableTest {
     private SourceKey sk = new SourceKey(getClass().getSimpleName());
     private Table t;
 
-    @BeforeClass
-    public static void boot() {
-        Preparer.prepareCubeBuild();
+    @Before
+    public void boot() {
+        Preparer.prepareCubeBuild(getClass());
     }
 
     @Before
@@ -59,6 +59,7 @@ public class TableTest {
         checkResult();
     }
 
+    @Ignore
     @Test
     public void importFrom() throws SQLException {
         t.importFrom(new RowSet());

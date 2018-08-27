@@ -10,6 +10,8 @@ import com.fr.swift.source.etl.EtlSource;
 import com.fr.swift.source.etl.join.JoinColumn;
 import com.fr.swift.source.etl.join.JoinOperator;
 import com.fr.swift.source.etl.join.JoinType;
+import com.fr.swift.test.Preparer;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -21,6 +23,13 @@ import static org.junit.Assert.assertEquals;
  * @date 2018/2/2
  */
 public class MinorUpdaterTest extends BaseTest {
+    @Override
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+        Preparer.prepareCubeBuild(getClass());
+    }
+
     @Test
     public void testUpdate() throws Exception {
         DataSource demoCustomer = new TableDBSource("DEMO_CAPITAL_RETURN", "allTest");
