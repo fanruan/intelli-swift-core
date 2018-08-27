@@ -3,8 +3,8 @@ package com.fr.swift.jdbc.rpc;
 import com.fr.swift.api.rpc.invoke.RpcSender;
 import com.fr.swift.jdbc.exception.RpcException;
 import com.fr.swift.jdbc.rpc.nio.RpcConnector;
-import com.fr.swift.rpc.bean.RpcRequest;
 import com.fr.swift.rpc.bean.RpcResponse;
+import com.fr.swift.rpc.bean.impl.RpcRequest;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;

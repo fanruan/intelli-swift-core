@@ -7,8 +7,8 @@ import com.fr.swift.jdbc.encoder.SerializableEncoder;
 import com.fr.swift.jdbc.exception.RpcException;
 import com.fr.swift.jdbc.rpc.RpcExecutor;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.rpc.bean.RpcRequest;
 import com.fr.swift.rpc.bean.RpcResponse;
+import com.fr.swift.rpc.bean.impl.RpcRequest;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

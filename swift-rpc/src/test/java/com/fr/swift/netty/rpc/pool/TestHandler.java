@@ -2,7 +2,7 @@ package com.fr.swift.netty.rpc.pool;
 
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.rpc.bean.RpcRequest;
+import com.fr.swift.netty.bean.InternalRpcRequest;
 import com.fr.swift.rpc.bean.RpcResponse;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -16,12 +16,12 @@ import io.netty.channel.SimpleChannelInboundHandler;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class TestHandler extends SimpleChannelInboundHandler<RpcRequest> {
+public class TestHandler extends SimpleChannelInboundHandler<InternalRpcRequest> {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger();
 
     @Override
-    public void channelRead0(final ChannelHandlerContext ctx, final RpcRequest request) {
+    public void channelRead0(final ChannelHandlerContext ctx, final InternalRpcRequest request) {
         LOGGER.debug("Receive request " + request.getRequestId());
         RpcResponse response = new RpcResponse();
         response.setRequestId(request.getRequestId());

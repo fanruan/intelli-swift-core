@@ -1,7 +1,7 @@
 package com.fr.swift.api.rpc.invoke;
 
-import com.fr.swift.rpc.bean.RpcRequest;
 import com.fr.swift.rpc.bean.RpcResponse;
+import com.fr.swift.rpc.bean.impl.RpcRequest;
 
 /**
  * @author yee

@@ -1,7 +1,7 @@
 package com.fr.swift.api.rpc.invoke;
 
-import com.fr.swift.rpc.bean.RpcRequest;
 import com.fr.swift.rpc.bean.RpcResponse;
+import com.fr.swift.rpc.bean.impl.RpcRequest;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -76,39 +76,5 @@ public class CallClient extends SimpleChannelInboundHandler<RpcResponse> impleme
         } finally {
             group.shutdownGracefully();
         }
-
-//        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-//        bos.write(LENGTH_PLACEHOLDER);
-//        ObjectOutputStream oos = new CompactObjectOutputStream(bos);
-//        oos.writeObject(request);
-//        byte[] datas = bos.toByteArray();
-//        int len = datas.length - 4;
-//        datas[0] = (byte) (len >>> 24);
-//        datas[1] = (byte) (len >>> 16);
-//        datas[2] = (byte) (len >>> 8);
-//        datas[3] = (byte) len;
-//        SocketChannel channel = SocketChannel.open();
-//        channel.connect(new InetSocketAddress(host, port));
-//        channel.write(ByteBuffer.wrap(datas));
-//        ByteBuffer buffer = ByteBuffer.allocate(1024);
-//        int length = 0;
-//        ByteArrayOutputStream bos1 = new ByteArrayOutputStream();
-//        while ((length = channel.read(buffer)) > 0) {
-//            buffer.flip();
-//            bos1.write(buffer.array(), 0, length);
-//            buffer.clear();
-//            if (length < 1023) {
-//                break;
-//            }
-//        }
-//        datas = bos1.toByteArray();
-//        byte[] result = Arrays.copyOfRange(datas, 4, datas.length);
-//        ObjectInputStream ois = new CompactObjectInputStream(new ByteArrayInputStream(result), Thread.currentThread().getContextClassLoader());
-//        Object obj = ois.readObject();
-//        if (obj instanceof RpcResponse) {
-//            return (RpcResponse) obj;
-//        }
-//        return null;
-
     }
 }

@@ -1,6 +1,7 @@
 package com.fr.swift.api;
 
 import com.fr.swift.api.rpc.SimpleDetailQueryBean;
+import com.fr.swift.api.rpc.session.impl.SwiftApiSessionFactoryImpl;
 import com.fr.swift.db.Schema;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
@@ -20,14 +21,15 @@ import static org.junit.Assert.assertEquals;
  * @author yee
  * @date 2018/8/24
  */
-public class APITest implements Serializable {
+public class ApiTest implements Serializable {
 
-    public static API api;
+    public static Api api;
     private static List<Row> datas;
+    private static SwiftApiSessionFactoryImpl factory;
 
     @BeforeClass
     public static void setUp() {
-        api = API.connect("192.168.0.7:7000");
+        factory = new SwiftApiSessionFactoryImpl("192.168.0.7:7000");
         datas = new ArrayList<Row>();
         for (int i = 0; i < 100; i++) {
             datas.add(new ListBasedRow(Arrays.<Object>asList(i + 90L, "zorgname_t" + i)));
@@ -36,12 +38,12 @@ public class APITest implements Serializable {
 
     @Test
     public void insert() throws SQLException {
-        assertEquals(api.insert(Schema.CUBE, "test_table", Arrays.asList("id", "name"), datas), datas.size());
+        assertEquals(factory.openSession().insert(Schema.CUBE, "test_table", Arrays.asList("id", "name"), datas), datas.size());
     }
 
     @Test
     public void insert1() throws SQLException {
-        assertEquals(api.insert(Schema.CUBE, "test_table", datas), datas.size());
+        assertEquals(factory.openSession().insert(Schema.CUBE, "test_table", datas), datas.size());
     }
 
     @Test
@@ -50,7 +52,7 @@ public class APITest implements Serializable {
         SimpleDetailQueryBean bean = new SimpleDetailQueryBean();
         bean.setTable("e88238c2");
         bean.setColumns(Arrays.asList("id", "name"));
-        SwiftResultSet resultSet = api.query(bean.getQueryString());
+        SwiftResultSet resultSet = factory.openSession().query(bean.getQueryString());
         while (resultSet.hasNext()) {
             System.out.println(resultSet.getNextRow().getValue(0));
         }

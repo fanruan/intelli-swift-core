@@ -6,12 +6,12 @@ import com.fr.swift.basics.Result;
 import com.fr.swift.basics.RpcFuture;
 import com.fr.swift.basics.URL;
 import com.fr.swift.basics.base.SwiftResult;
+import com.fr.swift.netty.bean.InternalRpcRequest;
 import com.fr.swift.netty.rpc.client.AbstractRpcClientHandler;
 import com.fr.swift.netty.rpc.client.async.AsyncRpcClientHandler;
 import com.fr.swift.netty.rpc.client.sync.SyncRpcClientHandler;
 import com.fr.swift.netty.rpc.pool.AsyncRpcPool;
 import com.fr.swift.netty.rpc.pool.SyncRpcPool;
-import com.fr.swift.rpc.bean.RpcRequest;
 import com.fr.swift.rpc.bean.RpcResponse;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 
@@ -88,7 +88,7 @@ public class RPCInvoker<T> implements Invoker<T> {
 
     protected Object doInvoke(T proxy, String methodName, Class<?>[] parameterTypes, Object[] arguments) throws Throwable {
         String serviceAddress = url.getDestination().getId();
-        RpcRequest request = new RpcRequest();
+        InternalRpcRequest request = new InternalRpcRequest();
         request.setRequestId(UUID.randomUUID().toString());
         request.setInterfaceName(type.getName());
         request.setMethodName(methodName);
@@ -97,7 +97,7 @@ public class RPCInvoker<T> implements Invoker<T> {
         return rpcSend(request, serviceAddress);
     }
 
-    private Object rpcSend(RpcRequest request, String serviceAddress) throws Throwable {
+    private Object rpcSend(InternalRpcRequest request, String serviceAddress) throws Throwable {
         AbstractRpcClientHandler handler = null;
         try {
             if (sync) {

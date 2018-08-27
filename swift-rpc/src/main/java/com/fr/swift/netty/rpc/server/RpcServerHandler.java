@@ -25,9 +25,11 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(RpcServerHandler.class);
 
     private final Map<String, Object> handlerMap;
+    private final Map<String, Object> externalMap;
 
-    public RpcServerHandler(Map<String, Object> handlerMap) {
+    public RpcServerHandler(Map<String, Object> handlerMap, Map<String, Object> externalMap) {
         this.handlerMap = handlerMap;
+        this.externalMap = externalMap;
     }
 
     @Override
@@ -52,7 +54,14 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
 
     private Object handle(RpcRequest request) throws Exception {
         String serviceName = request.getInterfaceName();
-        Object serviceBean = handlerMap.get(serviceName);
+        Object serviceBean = null;
+        switch (request.requestType()) {
+            case EXTERNAL:
+                serviceBean = externalMap.get(serviceName);
+                break;
+            default:
+                serviceBean = handlerMap.get(serviceName);
+        }
         if (serviceBean == null) {
             throw new ServiceInvalidException(serviceName + " is invalid on remote machine!");
         }

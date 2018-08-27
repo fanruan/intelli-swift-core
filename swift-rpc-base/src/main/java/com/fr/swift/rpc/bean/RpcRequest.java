@@ -1,70 +1,28 @@
 package com.fr.swift.rpc.bean;
 
-import java.io.Serializable;
+import com.fr.swift.annotation.RpcServiceType;
 
 /**
- * This class created on 2018/6/6
- *
- * @author Lucifer
- * @description
- * @since Advanced FineBI 5.0
+ * @author yee
+ * @date 2018/8/27
  */
-public class RpcRequest implements Serializable {
+public interface RpcRequest {
+    String getRequestId();
 
-    private static final long serialVersionUID = -4343246390244615885L;
-    private String requestId;
-    private String interfaceName;
-    private String serviceVersion;
-    private String methodName;
-    private Class<?>[] parameterTypes;
-    private Object[] parameters;
 
-    public String getRequestId() {
-        return requestId;
-    }
+    String getInterfaceName();
 
-    public void setRequestId(String requestId) {
-        this.requestId = requestId;
-    }
 
-    public String getInterfaceName() {
-        return interfaceName;
-    }
+    String getServiceVersion();
 
-    public void setInterfaceName(String className) {
-        this.interfaceName = className;
-    }
 
-    public String getServiceVersion() {
-        return serviceVersion;
-    }
+    String getMethodName();
 
-    public void setServiceVersion(String serviceVersion) {
-        this.serviceVersion = serviceVersion;
-    }
 
-    public String getMethodName() {
-        return methodName;
-    }
+    Class<?>[] getParameterTypes();
 
-    public void setMethodName(String methodName) {
-        this.methodName = methodName;
-    }
 
-    public Class<?>[] getParameterTypes() {
-        return parameterTypes;
-    }
+    Object[] getParameters();
 
-    public void setParameterTypes(Class<?>[] parameterTypes) {
-        this.parameterTypes = parameterTypes;
-    }
-
-    public Object[] getParameters() {
-        return parameters;
-    }
-
-    public void setParameters(Object[] parameters) {
-        this.parameters = parameters;
-    }
+    RpcServiceType requestType();
 }
-

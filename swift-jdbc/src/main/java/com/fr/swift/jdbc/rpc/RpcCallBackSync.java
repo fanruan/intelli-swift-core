@@ -1,7 +1,7 @@
 package com.fr.swift.jdbc.rpc;
 
-import com.fr.swift.rpc.bean.RpcRequest;
 import com.fr.swift.rpc.bean.RpcResponse;
+import com.fr.swift.rpc.bean.impl.RpcRequest;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
