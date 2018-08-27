@@ -7,6 +7,7 @@ import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.service.handler.history.rule.DefaultDataSyncRule;
 import com.fr.swift.test.Preparer;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -38,9 +39,13 @@ public class DefaultSegmentDestSelectRuleTest {
         selectDestination = dest.get("tableA");
     }
 
+    @Before
+    public void setUp() throws Exception {
+        Preparer.prepareCubeBuild(getClass());
+    }
+
     @Parameterized.Parameters
-    public static List<Object[]> randomParams() throws Exception {
-        Preparer.prepareCubeBuild();
+    public static List<Object[]> randomParams() {
         List<Object[]> result = new ArrayList<>();
         Map<String, List<SegmentKey>> needLoad = new HashMap<String, List<SegmentKey>>();
         needLoad.put("tableA", new ArrayList<SegmentKey>(100));

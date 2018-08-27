@@ -11,7 +11,11 @@ import java.net.URLDecoder;
  */
 public class ContextUtil {
     public static String getClassPath() {
-        String path = ContextUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        return getClassPath(ContextUtil.class);
+    }
+
+    public static String getClassPath(Class<?> c) {
+        String path = c.getProtectionDomain().getCodeSource().getLocation().getPath();
         try {
             return URLDecoder.decode(path, "utf8");
         } catch (UnsupportedEncodingException e) {

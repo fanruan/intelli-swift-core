@@ -24,6 +24,7 @@ import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 import com.fr.swift.source.alloter.impl.line.LineSourceAlloter;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.task.service.SwiftServiceTaskExecutor;
+import com.fr.swift.test.Preparer;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -50,7 +51,7 @@ public class RealtimeCollateTest extends BaseTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        SwiftContext.init();
+        Preparer.prepareCubeBuild(getClass());
         redisClient = (RedisClient) SwiftContext.get().getBean("redisClient");
         swiftSegmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
     }

@@ -191,7 +191,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
 
         @Override
         public Putter<V> putter() {
-            return null;
+            throw new IllegalStateException("real time dict column needn't put operation");
         }
 
         @Override
@@ -283,7 +283,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
     }
 
     private synchronized void snapshot() {
-        int lastId = valToId.size() - 1;
+        int lastId = idToVal.size() - 1;
         if (lastId < indexAndId.size()) {
             return;
         }

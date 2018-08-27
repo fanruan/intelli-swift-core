@@ -11,6 +11,7 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,7 @@ public class AddColumnAction extends BaseAlterTableAction {
             SwiftMetaData newMeta = new SwiftMetaDataBean(oldMeta.getTableName(), columnMetas);
             CONF_SVC.updateMetaData(table.getSourceKey().getId(), newMeta);
         } catch (SwiftMetaDataException e) {
-            SwiftLoggers.getLogger().warn("alter meta failed, {}: {}", e.getClass().getSimpleName(), e.getMessage());
+            SwiftLoggers.getLogger().warn("alter meta failed, {}: {}", Util.getRootCauseMessage(e));
         }
     }
 

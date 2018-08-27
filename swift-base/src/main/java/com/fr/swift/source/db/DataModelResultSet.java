@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class DataModelResultSet extends AbstractDataModelResultSet {
     private DataModel dataModel;
-    private int index = -1;
+    private int index = 0;
 
     public DataModelResultSet(DataModel dataModel, SwiftMetaData metaData, SwiftMetaData outerMetaData) {
         super(metaData, outerMetaData);
@@ -35,7 +35,7 @@ public class DataModelResultSet extends AbstractDataModelResultSet {
     @Override
     public boolean hasNext() throws SQLException {
         try {
-            return dataModel.hasRow(++index);
+            return dataModel.hasRow(index);
         } catch (TableDataException e) {
             throw new SwiftDataModelException(e);
         }
@@ -58,10 +58,10 @@ public class DataModelResultSet extends AbstractDataModelResultSet {
             for (int i = 0; i < columnIndexes.length; i++) {
                 list.add(getValue(dataModel.getValueAt(index, columnIndexes[i]), columnTypes[i]));
             }
+            index++;
             return new ListBasedRow(list);
         } catch (Exception e) {
             throw new SwiftDataModelException(e);
         }
     }
-
 }

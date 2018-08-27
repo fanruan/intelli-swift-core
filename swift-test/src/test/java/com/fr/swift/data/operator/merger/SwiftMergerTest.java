@@ -19,6 +19,7 @@ import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.QueryDBSource;
+import com.fr.swift.test.Preparer;
 import com.fr.swift.util.DataSourceUtils;
 import org.junit.Test;
 
@@ -44,6 +45,7 @@ public class SwiftMergerTest extends BaseTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
+        Preparer.prepareCubeBuild(getClass());
         dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "SwiftMergerTest");
         segmentProvider = SwiftContext.get().getBean(LocalSegmentProvider.class);
     }
@@ -65,7 +67,6 @@ public class SwiftMergerTest extends BaseTest {
         //增量更新1
         ((Inserter) SwiftContext.get().getBean("incrementer", dataSource)).insertData(SwiftSourceTransferFactory.createSourceTransfer(
                 new QueryDBSource("select * from DEMO_CONTRACT where 合同类型 ='购买合同'", "SwiftMergerTest")).createResultSet());
-        TestIndexer.realtimeIndex(dataSource);
 
         segmentList = segmentProvider.getSegment(dataSource.getSourceKey());
         assertEquals(segmentList.size(), 2);
@@ -87,7 +88,6 @@ public class SwiftMergerTest extends BaseTest {
         ((Inserter) SwiftContext.get().getBean("incrementer", dataSource)).insertData(
                 SwiftSourceTransferFactory.createSourceTransfer(
                         new QueryDBSource("select * from DEMO_CONTRACT where 合同类型 ='长期协议'", "SwiftMergerTest")).createResultSet());
-        TestIndexer.realtimeIndex(dataSource);
 
         segmentList = segmentProvider.getSegment(dataSource.getSourceKey());
         assertEquals(segmentList.size(), 3);

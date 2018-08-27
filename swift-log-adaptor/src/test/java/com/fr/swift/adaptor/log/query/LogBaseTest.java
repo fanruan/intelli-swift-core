@@ -22,7 +22,6 @@ import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.TestConnectionProvider;
 import com.fr.swift.test.Preparer;
 import org.junit.Before;
-import org.junit.BeforeClass;
 
 import java.util.List;
 
@@ -37,9 +36,9 @@ public class LogBaseTest {
 
     static final SwiftLogger LOGGER = SwiftLoggers.getLogger(LogBaseTest.class);
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        Preparer.prepareCubeBuild();
+    @Before
+    public void beforeClass() {
+        Preparer.prepareCubeBuild(getClass());
     }
 
     @Before

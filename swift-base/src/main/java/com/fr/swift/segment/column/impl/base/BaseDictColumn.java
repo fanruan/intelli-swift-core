@@ -132,14 +132,14 @@ abstract class BaseDictColumn<T, R extends Reader> extends AbstractDictColumn<T>
 
     @Override
     public void release() {
-        putter.release();
-
-        IoUtil.release(keyReader, sizeReader, indexReader, globalSizeReader, globalIndexReader);
+        IoUtil.release(keyReader, sizeReader, indexReader, globalSizeReader, globalIndexReader, putter);
         keyReader = null;
         sizeReader = null;
         indexReader = null;
         globalSizeReader = null;
         globalIndexReader = null;
+
+        putter = null;
     }
 
     private ArrayLookupHelper.Lookup<T> lookup = new ArrayLookupHelper.Lookup<T>() {

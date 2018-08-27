@@ -4,7 +4,7 @@ import com.fr.swift.config.service.SwiftRepositoryConfService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.repository.config.FtpRepositoryConfig;
 import com.fr.swift.test.Preparer;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -15,9 +15,9 @@ import static org.junit.Assert.assertEquals;
  */
 public class SwiftRepositoryConfServiceImplTest {
 
-    @BeforeClass
-    public static void before() {
-        Preparer.prepareCubeBuild();
+    @Before
+    public void before() {
+        Preparer.prepareCubeBuild(getClass());
     }
 
     @Test

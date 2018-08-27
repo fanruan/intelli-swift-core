@@ -61,7 +61,7 @@ public class SwiftIndexingConfService implements IndexingConfService {
                 @Override
                 public ColumnIndexingConf work(Session session) throws SQLException {
                     SwiftColumnIndexingConf conf = columnConf.select(session, new ColumnId(table, columnName));
-                    return conf != null ? conf : new SwiftColumnIndexingConf(table, columnName, true, true);
+                    return conf != null ? conf : new SwiftColumnIndexingConf(table, columnName, true, false);
                 }
 
                 @Override

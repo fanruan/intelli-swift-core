@@ -10,7 +10,6 @@ import com.fr.swift.source.core.Core;
 import com.fr.swift.test.Preparer;
 import com.fr.swift.test.TestResource;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
@@ -28,14 +27,9 @@ public class SegmentOperatorTest {
     private SourceKey stringKey;
     private SourceKey dateKey;
 
-
-    @BeforeClass
-    public static void boot() {
-        Preparer.prepareCubeBuild();
-    }
-
     @Before
     public void setUp() throws Exception {
+        Preparer.prepareCubeBuild(getClass());
         File file = new File(TestResource.getRunPath(getClass()), "resources");
         file.deleteOnExit();
         intKey = new SourceKey("int_table");
