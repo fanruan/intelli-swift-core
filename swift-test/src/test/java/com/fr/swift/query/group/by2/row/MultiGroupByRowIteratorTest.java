@@ -44,7 +44,7 @@ public class MultiGroupByRowIteratorTest {
 
     @Before
     public void setUp() throws Exception {
-        Preparer.prepareCubeBuild(MultiGroupByRowIteratorTest.class);
+        Preparer.prepareCubeBuild(getClass());
         DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "test");
         TestCubeData.prepare(dataSource, MultiGroupByRowIteratorTest.class);
         Segment segment = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class)

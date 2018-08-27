@@ -15,7 +15,7 @@ import com.fr.swift.test.Preparer;
 import com.fr.swift.test.TestResource;
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -29,9 +29,9 @@ public class SegmentResultSetTest {
 
     private final DataSource ds = new QueryDBSource("select 合同ID from DEMO_CONTRACT", getClass().getName());
 
-    @BeforeClass
-    public static void setUp() {
-        Preparer.prepareCubeBuild();
+    @Before
+    public void setUp() {
+        Preparer.prepareCubeBuild(getClass());
     }
 
     @After

@@ -17,7 +17,7 @@ import java.util.List;
 public class CoSwiftResultSet implements SwiftResultSet {
     private List<SwiftResultSet> resultSets;
 
-    private int cursor;
+    private int cursor = 0;
 
     public CoSwiftResultSet(List<SwiftResultSet> resultSets) {
         Assert.notEmpty(resultSets);
@@ -36,6 +36,9 @@ public class CoSwiftResultSet implements SwiftResultSet {
 
     @Override
     public boolean hasNext() throws SQLException {
+        if (cursor >= resultSets.size()) {
+            return false;
+        }
         if (resultSets.get(cursor).hasNext()) {
             return true;
         }
@@ -53,6 +56,9 @@ public class CoSwiftResultSet implements SwiftResultSet {
     }
 
     @Override
-    public void close() {
+    public void close() throws SQLException {
+        for (int i = cursor; i < resultSets.size(); i++) {
+            resultSets.get(i).close();
+        }
     }
 }

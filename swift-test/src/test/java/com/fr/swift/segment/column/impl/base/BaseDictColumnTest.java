@@ -8,15 +8,13 @@ import org.junit.Test;
 import java.util.Comparator;
 import java.util.Random;
 
-import static com.fr.swift.cube.io.BaseIoTest.CUBES_PATH;
-
 /**
  * @author anchore
  * @date 2017/11/10
  */
 public abstract class BaseDictColumnTest<T> extends TestIo {
 
-    static final String BASE_PATH = CUBES_PATH;
+    static final String BASE_PATH = "cubes/table/seg0/column";
     Random r = new Random();
     T[] values;
     Comparator<T> c;

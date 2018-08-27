@@ -8,7 +8,6 @@ import com.fr.swift.test.Preparer;
 import com.fr.workspace.simple.SimpleWork;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 
 /**
  * This class created on 2018/3/19
@@ -23,6 +22,7 @@ public abstract class BaseExcelTest extends BaseConfigTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        Preparer.prepareCubeBuild(getClass());
         SimpleWork.checkIn(ResourceUtils.class.getClassLoader().getResource("").getPath());
     }
 
@@ -39,9 +39,4 @@ public abstract class BaseExcelTest extends BaseConfigTest {
     protected ExcelDataSource dataSource;
     protected String[] names = {"A", "B"};
     protected ColumnTypeConstants.ColumnType[] types = {ColumnTypeConstants.ColumnType.STRING, ColumnTypeConstants.ColumnType.NUMBER};
-
-    @BeforeClass
-    public static void boot() throws Exception {
-        Preparer.prepareCubeBuild();
-    }
 }

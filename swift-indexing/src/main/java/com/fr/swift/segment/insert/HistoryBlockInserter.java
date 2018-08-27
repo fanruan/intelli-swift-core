@@ -11,7 +11,6 @@ import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.insert.BaseBlockInserter;
@@ -24,7 +23,6 @@ import com.fr.swift.source.alloter.impl.line.LineRowInfo;
 
 import java.net.URI;
 import java.util.Collections;
-import java.util.List;
 
 /**
  * @author anchore
@@ -34,7 +32,9 @@ public class HistoryBlockInserter extends BaseBlockInserter {
     protected static final SwiftSegmentManager LOCAL_SEGMENTS = SwiftContext.get().getBean("indexingSegmentManager", SwiftSegmentManager.class);
     private SwiftTablePathService tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
 
-    private int currentDir;
+    private int currentDir = 0;
+
+    private int segOrder = 0;
 
     public HistoryBlockInserter(DataSource dataSource) {
         super(dataSource);
@@ -70,21 +70,8 @@ public class HistoryBlockInserter extends BaseBlockInserter {
 
     @Override
     protected boolean nextSegment() {
-        List<SegmentKey> segmentKeys = LOCAL_SEGMENTS.getSegmentKeys(dataSource.getSourceKey());
-
-        SegmentKey maxSegmentKey = SegmentUtils.getMaxSegmentKey(segmentKeys);
-        if (maxSegmentKey == null) {
-            currentSeg = newHistorySegment(alloter.allot(new LineRowInfo(0)), 0);
-            return true;
-        }
-
-        Segment maxSegment = LOCAL_SEGMENTS.getSegment(maxSegmentKey);
-        if (alloter.isFull(maxSegment)) {
-            currentSeg = newHistorySegment(alloter.allot(new LineRowInfo(0)), maxSegmentKey.getOrder() + 1);
-            return true;
-        }
-        currentSeg = maxSegment;
-        return false;
+        currentSeg = newHistorySegment(alloter.allot(new LineRowInfo(0)), segOrder++);
+        return true;
     }
 
     @Override

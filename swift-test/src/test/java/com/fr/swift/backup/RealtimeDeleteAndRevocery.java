@@ -22,6 +22,7 @@ import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.QueryDBSource;
+import com.fr.swift.test.Preparer;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -45,7 +46,7 @@ public class RealtimeDeleteAndRevocery extends BaseTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        SwiftContext.init();
+        Preparer.prepareCubeBuild(getClass());
         redisClient = (RedisClient) SwiftContext.get().getBean("redisClient");
         swiftSegmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
     }
@@ -78,7 +79,7 @@ public class RealtimeDeleteAndRevocery extends BaseTest {
             }
         }
         //清空内存数据，并恢复数据和allshowindex
-        ResourceDiscovery.getInstance().removeCubeResource("cubes/" + dataSource.getSourceKey().getId());
+        ResourceDiscovery.getInstance().removeIf(s -> s.contains("cubes/" + dataSource.getSourceKey().getId()));
         FileSegmentRecovery recovery = new FileSegmentRecovery();
         List<SegmentKey> segKeys = swiftSegmentManager.getSegmentKeys(dataSource.getSourceKey());
         recovery.recover(segKeys);

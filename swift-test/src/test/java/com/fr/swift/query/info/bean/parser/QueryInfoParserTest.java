@@ -46,7 +46,7 @@ public class QueryInfoParserTest {
 
     @Before
     public void setUp() throws Exception {
-        Preparer.prepareCubeBuild();
+        Preparer.prepareCubeBuild(getClass());
         db = SwiftDatabase.getInstance();
         TestConfDb.setConfDb(SwiftTableIndexingConf.class, SwiftColumnIndexingConf.class);
         service = SwiftContext.get().getBean(IndexingConfService.class);
