@@ -27,9 +27,11 @@ public class CallClient extends SimpleChannelInboundHandler<RpcResponse> impleme
 
     private RpcResponse response;
     private String address;
+    private int maxFrameSize;
 
-    public CallClient(String address) {
+    public CallClient(String address, int maxFrameSize) {
         this.address = address;
+        this.maxFrameSize = maxFrameSize;
     }
 
     @Override
@@ -51,7 +53,7 @@ public class CallClient extends SimpleChannelInboundHandler<RpcResponse> impleme
                 public void initChannel(SocketChannel channel) throws Exception {
                     ChannelPipeline pipeline = channel.pipeline();
                     pipeline.addLast(
-                            new ObjectDecoder(1000000000,
+                            new ObjectDecoder(maxFrameSize,
                                     ClassResolvers.cacheDisabled(this.getClass().getClassLoader())));
                     pipeline.addLast(new ObjectEncoder());
                     pipeline.addLast(CallClient.this); // 处理 RPC 响应

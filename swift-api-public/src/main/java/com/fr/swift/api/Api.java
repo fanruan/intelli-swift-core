@@ -19,23 +19,34 @@ import java.util.List;
  */
 public class Api {
     protected String address;
+    public static final int DEFAULT_MAX_FRAME_SIZE = 1000000000;
+    protected int maxFrameSize;
 
-    private Api(String address) {
+    private Api(String address, int maxFrameSize) {
         this.address = address;
+        this.maxFrameSize = maxFrameSize;
+    }
+
+    public static SelectApi connectSelectApi(String address, int maxFrameSize) {
+        return new SelectApi(address, maxFrameSize);
+    }
+
+    public static DataMaintenanceApi connectDataMaintenanceApi(String address, int maxFrameSize) {
+        return new DataMaintenanceApi(address, maxFrameSize);
     }
 
     public static SelectApi connectSelectApi(String address) {
-        return new SelectApi(address);
+        return new SelectApi(address, DEFAULT_MAX_FRAME_SIZE);
     }
 
     public static DataMaintenanceApi connectDataMaintenanceApi(String address) {
-        return new DataMaintenanceApi(address);
+        return new DataMaintenanceApi(address, DEFAULT_MAX_FRAME_SIZE);
     }
 
     public static class SelectApi extends Api implements SelectService {
 
-        private SelectApi(String address) {
-            super(address);
+        private SelectApi(String address, int maxFrameSize) {
+            super(address, maxFrameSize);
         }
 
         @Override
@@ -47,8 +58,8 @@ public class Api {
 
     public static class DataMaintenanceApi extends Api implements DataMaintenanceService {
 
-        private DataMaintenanceApi(String address) {
-            super(address);
+        private DataMaintenanceApi(String address, int maxFrameSize) {
+            super(address, maxFrameSize);
         }
 
         @Override
