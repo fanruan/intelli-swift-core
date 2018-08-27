@@ -5,12 +5,11 @@ import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.data.DataList;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Database;
-import com.fr.swift.db.Schema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.AddColumnAction;
 import com.fr.swift.db.impl.DropColumnAction;
 import com.fr.swift.db.impl.MetadataDiffer;
-import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.db.impl.SwiftWhere;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.query.FilterBean;
@@ -43,7 +42,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class SwiftLogOperator extends BaseMetric {
 
-    private final Database db = SwiftDatabase.getInstance();
+    private final Database db = com.fr.swift.db.impl.SwiftDatabase.getInstance();
 
     @Override
     public <T> DataList<T> find(Class<T> entity, QueryCondition queryCondition) {
@@ -94,7 +93,7 @@ public class SwiftLogOperator extends BaseMetric {
     }
 
     private void initTable(Class table) throws SQLException {
-        SwiftMetaData meta = JpaAdaptor.adapt(table, Schema.DECISION_LOG);
+        SwiftMetaData meta = JpaAdaptor.adapt(table, SwiftDatabase.DECISION_LOG);
         final SourceKey tableKey = new SourceKey(meta.getTableName());
         synchronized (db) {
             if (!db.existsTable(tableKey)) {
@@ -112,14 +111,14 @@ public class SwiftLogOperator extends BaseMetric {
                 public void run() {
                     for (SwiftMetaDataColumn columnMeta : differ.getAdded()) {
                         try {
-                            SwiftDatabase.getInstance().alterTable(tableKey, new AddColumnAction(columnMeta));
+                            com.fr.swift.db.impl.SwiftDatabase.getInstance().alterTable(tableKey, new AddColumnAction(columnMeta));
                         } catch (SQLException e) {
                             SwiftLoggers.getLogger().warn("add column {} failed: {}", columnMeta, Util.getRootCauseMessage(e));
                         }
                     }
                     for (SwiftMetaDataColumn columnMeta : differ.getDropped()) {
                         try {
-                            SwiftDatabase.getInstance().alterTable(tableKey, new DropColumnAction(columnMeta));
+                            com.fr.swift.db.impl.SwiftDatabase.getInstance().alterTable(tableKey, new DropColumnAction(columnMeta));
                         } catch (SQLException e) {
                             SwiftLoggers.getLogger().warn("drop column {} failed: {}", columnMeta, Util.getRootCauseMessage(e));
                         }
@@ -131,7 +130,7 @@ public class SwiftLogOperator extends BaseMetric {
 
     @Override
     public void clean(QueryCondition condition) throws Exception {
-        List<Table> tables = SwiftDatabase.getInstance().getAllTables();
+        List<Table> tables = com.fr.swift.db.impl.SwiftDatabase.getInstance().getAllTables();
         SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         FilterBean filterBean = QueryConditionAdaptor.restriction2FilterInfo(condition.getRestriction());
         for (Table table : tables) {

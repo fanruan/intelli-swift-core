@@ -1,6 +1,6 @@
 package com.fr.swift.jdbc.session.impl;
 
-import com.fr.swift.db.Schema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.jdbc.rpc.RpcCaller;
 import com.fr.swift.jdbc.rpc.holder.AddressHolder;
 import com.fr.swift.jdbc.session.SwiftJdbcSession;
@@ -13,14 +13,14 @@ import com.fr.swift.jdbc.session.SwiftJdbcSessionFactory;
 public class SwiftJdbcSessionFactoryImpl implements SwiftJdbcSessionFactory {
 
     protected AddressHolder holder;
-    private Schema schema;
+    private SwiftDatabase schema;
 
-    public SwiftJdbcSessionFactoryImpl(Schema schema, String address) {
+    public SwiftJdbcSessionFactoryImpl(SwiftDatabase schema, String address) {
         holder = AddressHolder.getHolder(address);
         this.schema = schema;
     }
 
-    public SwiftJdbcSessionFactoryImpl(Schema schema, String host, int port) {
+    public SwiftJdbcSessionFactoryImpl(SwiftDatabase schema, String host, int port) {
         holder = AddressHolder.getHolder(host, port);
         this.schema = schema;
     }

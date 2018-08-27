@@ -1,6 +1,6 @@
 package com.fr.swift.jdbc.session.impl;
 
-import com.fr.swift.db.Schema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.jdbc.rpc.RpcCaller;
 import com.fr.swift.jdbc.session.SwiftJdbcSession;
 import com.fr.swift.jdbc.statement.SwiftStatement;
@@ -17,9 +17,9 @@ public class SwiftJdbcSessionImpl implements SwiftJdbcSession {
 
     private RpcCaller.SelectRpcCaller selectRpcCaller;
     private RpcCaller.MaintenanceRpcCaller maintenanceRpcCaller;
-    private Schema schema;
+    private SwiftDatabase schema;
 
-    SwiftJdbcSessionImpl(Schema schema, RpcCaller.SelectRpcCaller selectRpcCaller, RpcCaller.MaintenanceRpcCaller maintenanceRpcCaller) {
+    SwiftJdbcSessionImpl(SwiftDatabase schema, RpcCaller.SelectRpcCaller selectRpcCaller, RpcCaller.MaintenanceRpcCaller maintenanceRpcCaller) {
         this.selectRpcCaller = selectRpcCaller;
         this.maintenanceRpcCaller = maintenanceRpcCaller;
         this.schema = schema;

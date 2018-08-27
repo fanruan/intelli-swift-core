@@ -2,7 +2,7 @@ package com.fr.swift.util;
 
 import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
-import com.fr.swift.db.Schema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.third.javax.persistence.AttributeConverter;
@@ -25,10 +25,10 @@ import java.util.List;
  */
 public class JpaAdaptor {
     public static SwiftMetaData adapt(Class<?> entity) {
-        return adapt(entity, Schema.CUBE);
+        return adapt(entity, SwiftDatabase.CUBE);
     }
 
-    public static SwiftMetaData adapt(Class<?> entity, Schema swiftSchema) {
+    public static SwiftMetaData adapt(Class<?> entity, SwiftDatabase swiftSchema) {
         List<String> columnNames = new ArrayList<String>();
         List<SwiftMetaDataColumn> columnMetas = new ArrayList<SwiftMetaDataColumn>();
         for (Field field : getFields(entity)) {

@@ -20,7 +20,7 @@ import com.fr.general.jsqlparser.statement.select.Select;
 import com.fr.general.jsqlparser.statement.truncate.Truncate;
 import com.fr.general.jsqlparser.statement.update.Update;
 import com.fr.general.jsqlparser.statement.upsert.Upsert;
-import com.fr.swift.db.Schema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.jdbc.bean.InsertBean;
 import com.fr.swift.jdbc.exception.ColumnNotMatchException;
 import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
@@ -42,9 +42,9 @@ public class QueryBeanVisitor implements StatementVisitor, QueryBeanParser, Inse
     private QueryBean queryBean;
     private InsertBean insertBean;
     private RpcCaller caller;
-    private Schema schema;
+    private SwiftDatabase schema;
 
-    public QueryBeanVisitor(Schema schema, RpcCaller caller) {
+    public QueryBeanVisitor(SwiftDatabase schema, RpcCaller caller) {
         this.caller = caller;
         this.schema = schema;
     }

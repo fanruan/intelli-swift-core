@@ -1,6 +1,6 @@
 package com.fr.swift.api.rpc;
 
-import com.fr.swift.db.Schema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.exception.meta.SwiftMetaDataAbsentException;
 import com.fr.swift.source.SwiftMetaData;
 
@@ -16,7 +16,7 @@ public interface TableService {
      * @param tableName
      * @return
      */
-    SwiftMetaData detectiveMetaData(Schema schema, String tableName) throws SwiftMetaDataAbsentException;
+    SwiftMetaData detectiveMetaData(SwiftDatabase schema, String tableName) throws SwiftMetaDataAbsentException;
 
-    boolean isTableExists(Schema schema, String tableName) throws SwiftMetaDataAbsentException;
+    boolean isTableExists(SwiftDatabase schema, String tableName) throws SwiftMetaDataAbsentException;
 }

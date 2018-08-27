@@ -3,7 +3,7 @@ package com.fr.swift.config.bean;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
 import com.fr.swift.config.entity.SwiftMetaDataEntity;
-import com.fr.swift.db.Schema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.exception.meta.SwiftMetaDataColumnAbsentException;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.SwiftMetaData;
@@ -28,7 +28,7 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable, Convert<S
     @JsonProperty
     private String id;
     @JsonProperty
-    private Schema swiftSchema;
+    private SwiftDatabase swiftSchema;
     @JsonProperty
     private String schemaName;
     @JsonProperty
@@ -44,23 +44,23 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable, Convert<S
         this(tableName, null, null, fieldList);
     }
 
-    public SwiftMetaDataBean(Schema swiftSchema, String tableName, List<SwiftMetaDataColumn> fieldList) {
+    public SwiftMetaDataBean(SwiftDatabase swiftSchema, String tableName, List<SwiftMetaDataColumn> fieldList) {
         this(null, swiftSchema, null, tableName, null, fieldList);
     }
 
     public SwiftMetaDataBean(String tableName, String remark, String schemaName, List<SwiftMetaDataColumn> fields) {
-        this(null, Schema.CUBE, schemaName, tableName, remark, fields);
+        this(null, SwiftDatabase.CUBE, schemaName, tableName, remark, fields);
     }
 
     public SwiftMetaDataBean(String id, String schemaName, String tableName, String remark, List<SwiftMetaDataColumn> fields) {
-        this(id, Schema.CUBE, schemaName, tableName, remark, fields);
+        this(id, SwiftDatabase.CUBE, schemaName, tableName, remark, fields);
     }
 
     public SwiftMetaDataBean(SwiftMetaDataEntity metaEntity) {
         this(metaEntity.getId(), metaEntity.getSwiftSchema(), metaEntity.getSchemaName(), metaEntity.getTableName(), metaEntity.getRemark(), metaEntity.getFields());
     }
 
-    public SwiftMetaDataBean(String id, Schema swiftSchema, String schemaName, String tableName, String remark, List<SwiftMetaDataColumn> fields) {
+    public SwiftMetaDataBean(String id, SwiftDatabase swiftSchema, String schemaName, String tableName, String remark, List<SwiftMetaDataColumn> fields) {
         this.id = id;
         this.swiftSchema = swiftSchema;
         this.schemaName = schemaName;
@@ -74,7 +74,7 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable, Convert<S
     }
 
     @Override
-    public Schema getSwiftSchema() {
+    public SwiftDatabase getSwiftSchema() {
         return swiftSchema;
     }
 
@@ -195,7 +195,7 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable, Convert<S
         this.fields = fields;
     }
 
-    public void setSwiftSchema(Schema schema) {
+    public void setSwiftSchema(SwiftDatabase schema) {
         this.swiftSchema = schema;
     }
 

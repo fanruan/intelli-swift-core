@@ -4,7 +4,7 @@ import com.fr.swift.config.SwiftConfigConstants.MetaDataConfig;
 import com.fr.swift.config.bean.Convert;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.config.convert.hibernate.MetaDataColumnListConverter;
-import com.fr.swift.db.Schema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Entity;
@@ -29,7 +29,7 @@ public class SwiftMetaDataEntity implements Convert<SwiftMetaDataBean> {
 
     @Column(name = MetaDataConfig.COLUMN_SWIFT_SCHEMA)
     @Enumerated(EnumType.STRING)
-    private Schema swiftSchema;
+    private SwiftDatabase swiftSchema;
 
     @Column(name = MetaDataConfig.COLUMN_SCHEMA)
     private String schemaName;
@@ -58,7 +58,7 @@ public class SwiftMetaDataEntity implements Convert<SwiftMetaDataBean> {
     public SwiftMetaDataEntity() {
     }
 
-    public Schema getSwiftSchema() {
+    public SwiftDatabase getSwiftSchema() {
         return swiftSchema;
     }
 

@@ -1,7 +1,7 @@
 package com.fr.swift.jdbc.statement;
 
 import com.fr.general.jsqlparser.JSQLParserException;
-import com.fr.swift.db.Schema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.jdbc.bean.InsertBean;
 import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
 import com.fr.swift.jdbc.parser.SqlParserFactory;
@@ -25,9 +25,9 @@ import java.sql.Statement;
 public class SwiftStatement implements Statement {
     private RpcCaller.SelectRpcCaller caller;
     private RpcCaller.MaintenanceRpcCaller maintenanceRpcCaller;
-    private Schema schema;
+    private SwiftDatabase schema;
 
-    public SwiftStatement(Schema schema, RpcCaller.SelectRpcCaller caller, RpcCaller.MaintenanceRpcCaller maintenanceRpcCaller) {
+    public SwiftStatement(SwiftDatabase schema, RpcCaller.SelectRpcCaller caller, RpcCaller.MaintenanceRpcCaller maintenanceRpcCaller) {
         this.schema = schema;
         this.caller = caller;
         this.maintenanceRpcCaller = maintenanceRpcCaller;

@@ -6,7 +6,7 @@ import com.fr.swift.api.rpc.DataMaintenanceService;
 import com.fr.swift.api.rpc.SelectService;
 import com.fr.swift.api.rpc.bean.Column;
 import com.fr.swift.api.rpc.session.SwiftApiSession;
-import com.fr.swift.db.Schema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Where;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.result.serialize.SerializableDetailResultSet;
@@ -31,32 +31,32 @@ public class SwiftApiSessionImpl implements SwiftApiSession, DataMaintenanceServ
     }
 
     @Override
-    public int insert(Schema schema, String tableName, List<String> fields, List<Row> rows) throws SQLException {
+    public int insert(SwiftDatabase schema, String tableName, List<String> fields, List<Row> rows) throws SQLException {
         return dataMaintenanceApi.insert(schema, tableName, fields, rows);
     }
 
     @Override
-    public int insert(Schema schema, String tableName, List<Row> rows) throws SQLException {
+    public int insert(SwiftDatabase schema, String tableName, List<Row> rows) throws SQLException {
         return dataMaintenanceApi.insert(schema, tableName, rows);
     }
 
     @Override
-    public int insert(Schema schema, String tableName, String queryJson) throws SQLException {
+    public int insert(SwiftDatabase schema, String tableName, String queryJson) throws SQLException {
         return dataMaintenanceApi.insert(schema, tableName, queryJson);
     }
 
     @Override
-    public int delete(Schema schema, String tableName, Where where) {
+    public int delete(SwiftDatabase schema, String tableName, Where where) {
         return dataMaintenanceApi.delete(schema, tableName, where);
     }
 
     @Override
-    public int update(Schema schema, String tableName, SwiftResultSet resultSet, Where where) {
+    public int update(SwiftDatabase schema, String tableName, SwiftResultSet resultSet, Where where) {
         return dataMaintenanceApi.update(schema, tableName, resultSet, where);
     }
 
     @Override
-    public int createTable(Schema schema, String tableName, List<Column> columns) {
+    public int createTable(SwiftDatabase schema, String tableName, List<Column> columns) {
         return dataMaintenanceApi.createTable(schema, tableName, columns);
     }
 

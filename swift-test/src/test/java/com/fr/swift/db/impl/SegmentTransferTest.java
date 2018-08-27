@@ -3,7 +3,7 @@ package com.fr.swift.db.impl;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types.StoreType;
-import com.fr.swift.db.Schema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
@@ -62,18 +62,18 @@ public class SegmentTransferTest {
     public void setUp() throws Exception {
         Preparer.prepareCubeBuild(getClass());
         SourceKey tableKey = new SourceKey(meta.getTableName());
-        if (SwiftDatabase.getInstance().existsTable(tableKey)) {
-            SwiftDatabase.getInstance().dropTable(tableKey);
+        if (com.fr.swift.db.impl.SwiftDatabase.getInstance().existsTable(tableKey)) {
+            com.fr.swift.db.impl.SwiftDatabase.getInstance().dropTable(tableKey);
         }
     }
 
     @Test
     public void transfer() throws Exception {
         SourceKey tableKey = new SourceKey(meta.getTableName());
-        SwiftDatabase.getInstance().createTable(tableKey, meta);
+        com.fr.swift.db.impl.SwiftDatabase.getInstance().createTable(tableKey, meta);
 
-        SegmentKey oldSegKey = new SegmentKeyBean(tableKey.getId(), 0, from, Schema.CUBE),
-                newSegKey = new SegmentKeyBean(tableKey.getId(), 0, to, Schema.CUBE);
+        SegmentKey oldSegKey = new SegmentKeyBean(tableKey.getId(), 0, from, SwiftDatabase.CUBE),
+                newSegKey = new SegmentKeyBean(tableKey.getId(), 0, to, SwiftDatabase.CUBE);
 
         Segment oldSeg = SegmentUtils.newSegment(oldSegKey);
         Inserter inserter = new SwiftInserter(oldSeg);

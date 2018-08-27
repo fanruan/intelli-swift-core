@@ -3,9 +3,8 @@ package com.fr.swift.segment.recover;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;
-import com.fr.swift.db.Schema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Table;
-import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.segment.RealTimeSegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
@@ -34,7 +33,7 @@ public abstract class AbstractSegmentRecovery implements SegmentRecovery {
 
     @Override
     public void recoverAll() {
-        for (Table table : SwiftDatabase.getInstance().getAllTables()) {
+        for (Table table : com.fr.swift.db.impl.SwiftDatabase.getInstance().getAllTables()) {
             recover(table.getSourceKey());
         }
     }
@@ -42,7 +41,7 @@ public abstract class AbstractSegmentRecovery implements SegmentRecovery {
     protected Segment getBackupSegment(Segment realtimeSeg) {
         SwiftMetaData meta = realtimeSeg.getMetaData();
         String realtimeSegPath = realtimeSeg.getLocation().getPath();
-        Schema swiftSchema = meta.getSwiftSchema();
+        SwiftDatabase swiftSchema = meta.getSwiftSchema();
         return SegmentUtils.newHistorySegment(new ResourceLocation(realtimeSegPath.replace(swiftSchema.getDir(), swiftSchema.getBackupDir()), Types.StoreType.NIO), meta);
     }
 

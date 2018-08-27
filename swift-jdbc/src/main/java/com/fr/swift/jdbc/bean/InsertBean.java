@@ -1,6 +1,6 @@
 package com.fr.swift.jdbc.bean;
 
-import com.fr.swift.db.Schema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.source.Row;
 
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class InsertBean {
     private String tableName;
-    private Schema schema;
+    private SwiftDatabase schema;
     private List<String> columnNames;
     private List<Row> datas;
     private String queryJson;
@@ -24,11 +24,11 @@ public class InsertBean {
         this.tableName = tableName;
     }
 
-    public Schema getSchema() {
+    public SwiftDatabase getSchema() {
         return schema;
     }
 
-    public void setSchema(Schema schema) {
+    public void setSchema(SwiftDatabase schema) {
         this.schema = schema;
     }
 

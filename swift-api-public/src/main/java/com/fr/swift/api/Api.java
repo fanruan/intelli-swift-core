@@ -4,7 +4,7 @@ import com.fr.swift.api.rpc.DataMaintenanceService;
 import com.fr.swift.api.rpc.SelectService;
 import com.fr.swift.api.rpc.bean.Column;
 import com.fr.swift.api.rpc.invoke.ApiProxyFactory;
-import com.fr.swift.db.Schema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Where;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
@@ -63,36 +63,36 @@ public class Api {
         }
 
         @Override
-        public int insert(Schema schema, String tableName, List<String> fields, List<Row> rows) throws SQLException {
+        public int insert(SwiftDatabase schema, String tableName, List<String> fields, List<Row> rows) throws SQLException {
             DataMaintenanceService service = ApiProxyFactory.getProxy(DataMaintenanceService.class, address);
             return service.insert(schema, tableName, fields, rows);
         }
 
         @Override
-        public int insert(Schema schema, String tableName, List<Row> rows) throws SQLException {
+        public int insert(SwiftDatabase schema, String tableName, List<Row> rows) throws SQLException {
             return insert(schema, tableName, Collections.<String>emptyList(), rows);
         }
 
         @Override
-        public int insert(Schema schema, String tableName, String queryJson) throws SQLException {
+        public int insert(SwiftDatabase schema, String tableName, String queryJson) throws SQLException {
             DataMaintenanceService service = ApiProxyFactory.getProxy(DataMaintenanceService.class, address);
             return service.insert(schema, tableName, queryJson);
         }
 
         @Override
-        public int delete(Schema schema, String tableName, Where where) {
+        public int delete(SwiftDatabase schema, String tableName, Where where) {
             DataMaintenanceService service = ApiProxyFactory.getProxy(DataMaintenanceService.class, address);
             return service.delete(schema, tableName, where);
         }
 
         @Override
-        public int update(Schema schema, String tableName, SwiftResultSet resultSet, Where where) {
+        public int update(SwiftDatabase schema, String tableName, SwiftResultSet resultSet, Where where) {
             DataMaintenanceService service = ApiProxyFactory.getProxy(DataMaintenanceService.class, address);
             return service.update(schema, tableName, resultSet, where);
         }
 
         @Override
-        public int createTable(Schema schema, String tableName, List<Column> columns) {
+        public int createTable(SwiftDatabase schema, String tableName, List<Column> columns) {
             DataMaintenanceService service = ApiProxyFactory.getProxy(DataMaintenanceService.class, address);
             return service.createTable(schema, tableName, columns);
         }

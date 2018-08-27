@@ -5,7 +5,7 @@ import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.db.Schema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.info.bean.element.CalculatedFieldBean;
 import com.fr.swift.query.info.bean.element.DimensionBean;
@@ -39,7 +39,7 @@ public class SwiftMetaDataUtils {
     private static SwiftMetaData createDetailMetaData(DetailQueryInfoBean bean) throws SwiftMetaDataException {
         final String tableName = bean.getTableName();
         SwiftMetaData meta = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(bean.getTableName());
-        Schema schema = meta.getSwiftSchema();
+        SwiftDatabase schema = meta.getSwiftSchema();
         List<SwiftMetaDataColumn> metaDataColumns = new ArrayList<SwiftMetaDataColumn>();
         List<DimensionBean> dimensionBeans = bean.getDimensionBeans();
         for (DimensionBean dimensionBean : dimensionBeans) {
@@ -56,7 +56,7 @@ public class SwiftMetaDataUtils {
     private static SwiftMetaData createGroupMetaData(GroupQueryInfoBean bean) throws SwiftMetaDataException {
         final String tableName = bean.getTableName();
         SwiftMetaData meta = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(bean.getTableName());
-        Schema schema = meta.getSwiftSchema();
+        SwiftDatabase schema = meta.getSwiftSchema();
         List<SwiftMetaDataColumn> metaDataColumns = new ArrayList<SwiftMetaDataColumn>();
         List<DimensionBean> dimensionBeans = bean.getDimensionBeans();
         for (DimensionBean dimensionBean : dimensionBeans) {

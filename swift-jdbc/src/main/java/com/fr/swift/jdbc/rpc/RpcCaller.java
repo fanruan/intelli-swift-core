@@ -4,7 +4,7 @@ import com.fr.swift.api.rpc.DataMaintenanceService;
 import com.fr.swift.api.rpc.SelectService;
 import com.fr.swift.api.rpc.TableService;
 import com.fr.swift.api.rpc.bean.Column;
-import com.fr.swift.db.Schema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Where;
 import com.fr.swift.jdbc.result.SwiftPaginationResultSet;
 import com.fr.swift.jdbc.rpc.invoke.ClientProxy;
@@ -43,7 +43,7 @@ public class RpcCaller implements TableService {
         return new MaintenanceRpcCaller(host, port);
     }
 
-    private SwiftMetaData getMetaData(Schema schema, String tableName) {
+    private SwiftMetaData getMetaData(SwiftDatabase schema, String tableName) {
         ClientProxy proxy = new ClientProxy(new RpcConnector(address));
         try {
             proxy.start();
@@ -57,12 +57,12 @@ public class RpcCaller implements TableService {
     }
 
     @Override
-    public SwiftMetaData detectiveMetaData(Schema schema, String tableName) {
+    public SwiftMetaData detectiveMetaData(SwiftDatabase schema, String tableName) {
         return getMetaData(schema, tableName);
     }
 
     @Override
-    public boolean isTableExists(Schema schema, String tableName) {
+    public boolean isTableExists(SwiftDatabase schema, String tableName) {
         return null != getMetaData(schema, tableName);
     }
 
@@ -101,7 +101,7 @@ public class RpcCaller implements TableService {
         }
 
         @Override
-        public int insert(Schema schema, String tableName, List<String> fields, List<Row> rows) throws SQLException {
+        public int insert(SwiftDatabase schema, String tableName, List<String> fields, List<Row> rows) throws SQLException {
             ClientProxy proxy = new ClientProxy(new RpcConnector(address));
             try {
                 proxy.start();
@@ -112,12 +112,12 @@ public class RpcCaller implements TableService {
         }
 
         @Override
-        public int insert(Schema schema, String tableName, List<Row> rows) throws SQLException {
+        public int insert(SwiftDatabase schema, String tableName, List<Row> rows) throws SQLException {
             return insert(schema, tableName, Collections.<String>emptyList(), rows);
         }
 
         @Override
-        public int insert(Schema schema, String tableName, String queryJson) throws SQLException {
+        public int insert(SwiftDatabase schema, String tableName, String queryJson) throws SQLException {
             ClientProxy proxy = new ClientProxy(new RpcConnector(address));
             try {
                 proxy.start();
@@ -128,7 +128,7 @@ public class RpcCaller implements TableService {
         }
 
         @Override
-        public int delete(Schema schema, String tableName, Where where) {
+        public int delete(SwiftDatabase schema, String tableName, Where where) {
             ClientProxy proxy = new ClientProxy(new RpcConnector(address));
             try {
                 proxy.start();
@@ -139,7 +139,7 @@ public class RpcCaller implements TableService {
         }
 
         @Override
-        public int update(Schema schema, String tableName, SwiftResultSet resultSet, Where where) {
+        public int update(SwiftDatabase schema, String tableName, SwiftResultSet resultSet, Where where) {
             ClientProxy proxy = new ClientProxy(new RpcConnector(address));
             try {
                 proxy.start();
@@ -150,7 +150,7 @@ public class RpcCaller implements TableService {
         }
 
         @Override
-        public int createTable(Schema schema, String tableName, List<Column> columns) {
+        public int createTable(SwiftDatabase schema, String tableName, List<Column> columns) {
             ClientProxy proxy = new ClientProxy(new RpcConnector(address));
             try {
                 proxy.start();

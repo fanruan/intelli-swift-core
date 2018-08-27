@@ -1,7 +1,7 @@
 package com.fr.swift.api.rpc;
 
 import com.fr.swift.api.rpc.bean.Column;
-import com.fr.swift.db.Schema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Where;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
@@ -23,7 +23,7 @@ public interface DataMaintenanceService {
      * @return
      * @throws SQLException
      */
-    int insert(Schema schema, String tableName, List<String> fields, List<Row> rows) throws SQLException;
+    int insert(SwiftDatabase schema, String tableName, List<String> fields, List<Row> rows) throws SQLException;
 
     /**
      * 插入所有字段
@@ -33,9 +33,9 @@ public interface DataMaintenanceService {
      * @return
      * @throws SQLException
      */
-    int insert(Schema schema, String tableName, List<Row> rows) throws SQLException;
+    int insert(SwiftDatabase schema, String tableName, List<Row> rows) throws SQLException;
 
-    int insert(Schema schema, String tableName, String queryJson) throws SQLException;
+    int insert(SwiftDatabase schema, String tableName, String queryJson) throws SQLException;
 
     /**
      * TODO 先占个坑具体再调
@@ -44,7 +44,7 @@ public interface DataMaintenanceService {
      * @param where
      * @return
      */
-    int delete(Schema schema, String tableName, Where where);
+    int delete(SwiftDatabase schema, String tableName, Where where);
 
     /**
      * TODO 先占个坑具体再调
@@ -54,7 +54,7 @@ public interface DataMaintenanceService {
      * @param where
      * @return
      */
-    int update(Schema schema, String tableName, SwiftResultSet resultSet, Where where);
+    int update(SwiftDatabase schema, String tableName, SwiftResultSet resultSet, Where where);
 
     /**
      * TODO 建表
@@ -64,5 +64,5 @@ public interface DataMaintenanceService {
      * @param columns
      * @return
      */
-    int createTable(Schema schema, String tableName, List<Column> columns);
+    int createTable(SwiftDatabase schema, String tableName, List<Column> columns);
 }

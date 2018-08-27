@@ -4,7 +4,7 @@ import com.fr.stable.StringUtils;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.Types.StoreType;
-import com.fr.swift.db.Schema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 
@@ -24,14 +24,14 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
     private String sourceKey;
     private URI uri;
     private Integer order;
-    private Schema swiftSchema;
+    private SwiftDatabase swiftSchema;
     private Types.StoreType storeType;
 
-    public SegmentKeyBean(String sourceKey, Integer order, StoreType storeType, Schema swiftSchema) {
+    public SegmentKeyBean(String sourceKey, Integer order, StoreType storeType, SwiftDatabase swiftSchema) {
         this(sourceKey, URI.create(sourceKey + "/seg" + order), order, storeType, swiftSchema);
     }
 
-    public SegmentKeyBean(String sourceKey, URI uri, int order, Types.StoreType storeType, Schema schema) {
+    public SegmentKeyBean(String sourceKey, URI uri, int order, Types.StoreType storeType, SwiftDatabase schema) {
         this.sourceKey = sourceKey;
         this.uri = uri;
         this.order = order;
@@ -83,7 +83,7 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
     }
 
     @Override
-    public Schema getSwiftSchema() {
+    public SwiftDatabase getSwiftSchema() {
         return swiftSchema;
     }
 

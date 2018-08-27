@@ -5,7 +5,7 @@ import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.space.SpaceUsageDetector;
 import com.fr.swift.cube.space.SpaceUsageService;
-import com.fr.swift.db.Schema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 
@@ -47,7 +47,7 @@ public class SwiftSpaceUsageService implements SpaceUsageService {
 
     @Override
     public long getUsedOverall() throws Exception {
-        String path = pathService.getSwiftPath() + "/" + Schema.CUBE.getDir();
+        String path = pathService.getSwiftPath() + "/" + SwiftDatabase.CUBE.getDir();
         URI baseUri = new File(path).toURI();
         return detector.detectUsed(baseUri);
     }

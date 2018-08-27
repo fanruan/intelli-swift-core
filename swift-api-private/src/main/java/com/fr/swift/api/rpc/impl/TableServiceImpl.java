@@ -6,7 +6,7 @@ import com.fr.swift.api.rpc.TableService;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.db.Schema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.exception.meta.SwiftMetaDataAbsentException;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.third.org.hibernate.criterion.Restrictions;
@@ -20,7 +20,7 @@ import java.util.List;
 @RpcService(value = TableService.class, type = RpcServiceType.EXTERNAL)
 class TableServiceImpl implements TableService {
     @Override
-    public SwiftMetaData detectiveMetaData(Schema schema, String tableName) throws SwiftMetaDataAbsentException {
+    public SwiftMetaData detectiveMetaData(SwiftDatabase schema, String tableName) throws SwiftMetaDataAbsentException {
         SwiftMetaDataService swiftMetaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
         List<SwiftMetaData> metaDataList = swiftMetaDataService.find(Restrictions.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_TABLE_NAME, tableName),
                 Restrictions.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_SWIFT_SCHEMA, schema));
@@ -31,7 +31,7 @@ class TableServiceImpl implements TableService {
     }
 
     @Override
-    public boolean isTableExists(Schema schema, String tableName) throws SwiftMetaDataAbsentException {
+    public boolean isTableExists(SwiftDatabase schema, String tableName) throws SwiftMetaDataAbsentException {
         return null != detectiveMetaData(schema, tableName);
     }
 }

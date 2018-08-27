@@ -5,7 +5,6 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types.StoreType;
-import com.fr.swift.db.Schema;
 import com.fr.swift.db.Table;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
@@ -76,7 +75,7 @@ public class SegmentTransfer {
         for (int i = 0; i < metadata.getColumnCount(); i++) {
             ColumnKey columnKey = new ColumnKey(metadata.getColumnName(i + 1));
             List<Segment> segs = Collections.singletonList(newSeg);
-            Table table = SwiftDatabase.getInstance().getTable(newSegKey.getTable());
+            Table table = com.fr.swift.db.impl.SwiftDatabase.getInstance().getTable(newSegKey.getTable());
 
             ((SwiftColumnIndexer) SwiftContext.get().getBean("columnIndexer", table, columnKey, segs)).buildIndex();
 
@@ -99,7 +98,7 @@ public class SegmentTransfer {
                 return s.contains(CubeUtil.getSegPath(segKey));
             }
         });
-        Schema swiftSchema = segKey.getSwiftSchema();
+        com.fr.swift.db.SwiftDatabase swiftSchema = segKey.getSwiftSchema();
         FileUtil.delete(absSegPath.replace(swiftSchema.getDir(), swiftSchema.getBackupDir()));
     }
 

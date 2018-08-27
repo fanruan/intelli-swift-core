@@ -4,7 +4,7 @@ package com.fr.swift.db;
  * @author yee
  * @date 2018/8/27
  */
-public enum Schema {
+public enum SwiftDatabase {
     /**
      * 默认schema
      */
@@ -16,7 +16,7 @@ public enum Schema {
     private final String name;
     private final String dir;
 
-    Schema(int id, String name, String dir) {
+    SwiftDatabase(int id, String name, String dir) {
         this.id = id;
         this.name = name;
         this.dir = dir;

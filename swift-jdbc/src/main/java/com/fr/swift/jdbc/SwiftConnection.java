@@ -1,6 +1,6 @@
 package com.fr.swift.jdbc;
 
-import com.fr.swift.db.Schema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
 import com.fr.swift.jdbc.exception.URLEmptyException;
 import com.fr.swift.jdbc.exception.URLFormatException;
@@ -37,7 +37,7 @@ public class SwiftConnection implements java.sql.Connection {
     private static final String EMPTY = "";
     private static final String SEPARATOR = "/";
     //先写死，只能查平台的表
-    private Schema SCHEMA = Schema.DECISION_LOG;
+    private SwiftDatabase SCHEMA = SwiftDatabase.DECISION_LOG;
     private String host;
     private int port;
     private String username;
@@ -64,13 +64,13 @@ public class SwiftConnection implements java.sql.Connection {
                     port = port == -1 ? 7000 : port;
                     String dbName = uri.getPath();
                     if (null == dbName || EMPTY.equals(dbName.trim())) {
-                        SCHEMA = Schema.DECISION_LOG;
+                        SCHEMA = SwiftDatabase.DECISION_LOG;
                     }
                     dbName = dbName.startsWith(SEPARATOR) ? dbName.substring(1) : dbName;
                     try {
-                        SCHEMA = Schema.valueOf(dbName.toUpperCase());
+                        SCHEMA = SwiftDatabase.valueOf(dbName.toUpperCase());
                     } catch (Exception e) {
-                        SCHEMA = Schema.DECISION_LOG;
+                        SCHEMA = SwiftDatabase.DECISION_LOG;
                     }
                     this.username = username;
                     this.password = password;

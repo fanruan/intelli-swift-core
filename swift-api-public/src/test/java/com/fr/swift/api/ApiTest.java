@@ -3,7 +3,7 @@ package com.fr.swift.api;
 import com.fr.swift.api.rpc.SimpleDetailQueryBean;
 import com.fr.swift.api.rpc.invoke.ApiProxyFactory;
 import com.fr.swift.api.rpc.session.impl.SwiftApiSessionFactoryImpl;
-import com.fr.swift.db.Schema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.netty.rpc.exception.ServiceInvalidException;
 import com.fr.swift.service.cluster.ClusterAnalyseService;
 import com.fr.swift.source.ListBasedRow;
@@ -44,12 +44,12 @@ public class ApiTest implements Serializable {
     @Test
     @Ignore
     public void insert() throws SQLException {
-        assertEquals(factory.openSession().insert(Schema.CUBE, "test_table", Arrays.asList("id", "name"), datas), datas.size());
+        assertEquals(factory.openSession().insert(SwiftDatabase.CUBE, "test_table", Arrays.asList("id", "name"), datas), datas.size());
     }
 
     @Test
     public void insert1() throws SQLException {
-        assertEquals(factory.openSession().insert(Schema.CUBE, "test_table", datas), datas.size());
+        assertEquals(factory.openSession().insert(SwiftDatabase.CUBE, "test_table", datas), datas.size());
     }
 
     @Test
