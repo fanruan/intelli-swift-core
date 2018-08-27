@@ -25,7 +25,7 @@ public class ApiProxyFactory {
                 request.setMethodName(method.getName());
                 request.setParameterTypes(method.getParameterTypes());
                 request.setParameters(args);
-                RpcResponse response = new CallClient().send(request, address);
+                RpcResponse response = new CallClient(address).send(request);
                 if (null != response.getException()) {
                     throw response.getException();
                 }

@@ -32,7 +32,7 @@ public class DetailQueryBeanVisitor extends AbstractQueryBeanVisitor{
 
     @Override
     public void visit(AllColumns allColumns) {
-        SwiftMetaData metaData = metaDataGetter.getMetaData();
+        SwiftMetaData metaData = metaDataGetter.get();
         if (metaData == null) {
             Crasher.crash(new SwiftJDBCTableAbsentException(queryBean.getTableName()));
         }

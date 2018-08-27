@@ -232,6 +232,11 @@ public class RpcSelector {
                     doDispatchSelectionKey(selectionKey);
                 }
             }
+            try {
+                selector.close();
+            } catch (IOException e) {
+                SwiftLoggers.getLogger().error(e);
+            }
         }
     }
 }

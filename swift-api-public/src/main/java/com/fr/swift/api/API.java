@@ -30,29 +30,36 @@ public class API implements DataMaintenanceService, SelectService {
     }
 
     @Override
-    public int insert(String tableName, List<String> fields, List<Row> rows) throws SQLException {
+    public int insert(Schema schema, String tableName, List<String> fields, List<Row> rows) throws SQLException {
         String address = holder.nextRealTimeAddress();
         DataMaintenanceService service = ApiProxyFactory.getProxy(DataMaintenanceService.class, address);
-        return service.insert(tableName, fields, rows);
+        return service.insert(schema, tableName, fields, rows);
     }
 
     @Override
-    public int insert(String tableName, List<Row> rows) throws SQLException {
-        return insert(tableName, Collections.<String>emptyList(), rows);
+    public int insert(Schema schema, String tableName, List<Row> rows) throws SQLException {
+        return insert(schema, tableName, Collections.<String>emptyList(), rows);
     }
 
     @Override
-    public int delete(String tableName, Where where) {
+    public int insert(Schema schema, String tableName, String queryJson) throws SQLException {
         String address = holder.nextRealTimeAddress();
         DataMaintenanceService service = ApiProxyFactory.getProxy(DataMaintenanceService.class, address);
-        return service.delete(tableName, where);
+        return service.insert(schema, tableName, queryJson);
     }
 
     @Override
-    public int update(String tableName, SwiftResultSet resultSet, Where where) {
+    public int delete(Schema schema, String tableName, Where where) {
         String address = holder.nextRealTimeAddress();
         DataMaintenanceService service = ApiProxyFactory.getProxy(DataMaintenanceService.class, address);
-        return service.update(tableName, resultSet, where);
+        return service.delete(schema, tableName, where);
+    }
+
+    @Override
+    public int update(Schema schema, String tableName, SwiftResultSet resultSet, Where where) {
+        String address = holder.nextRealTimeAddress();
+        DataMaintenanceService service = ApiProxyFactory.getProxy(DataMaintenanceService.class, address);
+        return service.update(schema, tableName, resultSet, where);
     }
 
     @Override

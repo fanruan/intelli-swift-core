@@ -33,7 +33,6 @@ public class QueryRunnerProvider {
 
 
     private QueryRunnerProvider() {
-        indexRunner = (QueryIndexRunner) SwiftContext.get().getBean("queryIndexRunner");
     }
 
     public void registerRunner(QueryRunner runner) {
@@ -49,11 +48,11 @@ public class QueryRunnerProvider {
     }
 
     public Map<URI, IndexQuery<ImmutableBitMap>> executeIndexQuery(Table table, Where where) throws Exception {
-        return indexRunner.getBitMap(table, where);
+        return getIndexRunner().getBitMap(table, where);
     }
 
     public IndexQuery<ImmutableBitMap> executeIndexQuery(Table table, Where where, Segment segment) throws Exception {
-        return indexRunner.getBitMap(table, where, segment);
+        return getIndexRunner().getBitMap(table, where, segment);
     }
 
     private ClusterAnalyseService getClusterAnalyseService() {
@@ -61,5 +60,12 @@ public class QueryRunnerProvider {
             clusterAnalyseService = SwiftContext.get().getBean(ClusterAnalyseService.class);
         }
         return clusterAnalyseService;
+    }
+
+    private QueryIndexRunner getIndexRunner() {
+        if (null == indexRunner) {
+            indexRunner = (QueryIndexRunner) SwiftContext.get().getBean("queryIndexRunner");
+        }
+        return indexRunner;
     }
 }

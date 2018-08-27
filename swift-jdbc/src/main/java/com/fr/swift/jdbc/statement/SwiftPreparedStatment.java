@@ -1,4 +1,4 @@
-package com.fr.swift.jdbc.statment;
+package com.fr.swift.jdbc.statement;
 
 import java.io.InputStream;
 import java.io.Reader;

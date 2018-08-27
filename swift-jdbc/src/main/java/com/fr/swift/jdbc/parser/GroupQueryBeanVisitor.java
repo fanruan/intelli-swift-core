@@ -53,7 +53,7 @@ public class GroupQueryBeanVisitor extends AbstractQueryBeanVisitor {
 
     @Override
     public void visit(AllColumns allColumns) {
-        SwiftMetaData metaData = metaDataGetter.getMetaData();
+        SwiftMetaData metaData = metaDataGetter.get();
         if (null == metaData) {
             Crasher.crash(new SwiftJDBCTableAbsentException(queryBean.getTableName()));
         }

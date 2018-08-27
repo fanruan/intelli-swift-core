@@ -4,10 +4,8 @@ import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.api.rpc.SelectService;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryBeanFactory;
-import com.fr.swift.result.serialize.SwiftResultSetUtils;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.util.ServiceBeanFactory;
@@ -25,9 +23,7 @@ class SelectServiceImpl implements SelectService {
     public SwiftResultSet query(String queryJson) {
         try {
             QueryBean queryBean = SwiftContext.get().getBean(QueryBeanFactory.class).create(queryJson);
-            SwiftResultSet resultSet = getAnalyseService().getQueryResult(queryBean);
-            QueryBean bean = new QueryInfoBeanFactory().create(queryJson);
-            return SwiftResultSetUtils.convert2Serializable(queryJson, bean.getQueryType(), resultSet);
+            return getAnalyseService().getQueryResult(queryBean);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

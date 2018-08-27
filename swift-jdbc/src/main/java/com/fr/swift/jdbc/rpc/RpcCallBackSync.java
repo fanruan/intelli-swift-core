@@ -14,7 +14,7 @@ import java.util.concurrent.TimeoutException;
  */
 public class RpcCallBackSync implements Future<RpcResponse> {
 
-    private int index;
+    private String rpcId;
 
     /**
      * 请求发送包
@@ -26,8 +26,8 @@ public class RpcCallBackSync implements Future<RpcResponse> {
      */
     private RpcResponse response;
 
-    public RpcCallBackSync(int index, RpcRequest request) {
-        this.index = index;
+    public RpcCallBackSync(String rpcId, RpcRequest request) {
+        this.rpcId = rpcId;
         this.request = request;
     }
 
@@ -47,12 +47,12 @@ public class RpcCallBackSync implements Future<RpcResponse> {
         this.response = response;
     }
 
-    public int getIndex() {
-        return index;
+    public String getRpcId() {
+        return rpcId;
     }
 
-    public void setIndex(int index) {
-        this.index = index;
+    public void setRpcId(String rpcId) {
+        this.rpcId = rpcId;
     }
 
     @Override

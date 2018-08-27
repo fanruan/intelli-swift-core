@@ -1,6 +1,7 @@
 package com.fr.swift.api;
 
 import com.fr.swift.api.rpc.SimpleDetailQueryBean;
+import com.fr.swift.db.Schema;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
@@ -26,21 +27,21 @@ public class APITest implements Serializable {
 
     @BeforeClass
     public static void setUp() {
-        api = API.connect("192.168.0.102:7000");
+        api = API.connect("192.168.0.7:7000");
         datas = new ArrayList<Row>();
         for (int i = 0; i < 100; i++) {
-            datas.add(new ListBasedRow(Arrays.<Object>asList(i + 90, "zorgname_t" + i)));
+            datas.add(new ListBasedRow(Arrays.<Object>asList(i + 90L, "zorgname_t" + i)));
         }
     }
 
     @Test
     public void insert() throws SQLException {
-        assertEquals(api.insert("test_table", Arrays.asList("id", "name"), datas), datas.size());
+        assertEquals(api.insert(Schema.CUBE, "test_table", Arrays.asList("id", "name"), datas), datas.size());
     }
 
     @Test
     public void insert1() throws SQLException {
-        assertEquals(api.insert("test_table", datas), datas.size());
+        assertEquals(api.insert(Schema.CUBE, "test_table", datas), datas.size());
     }
 
     @Test

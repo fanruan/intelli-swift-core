@@ -1,5 +1,6 @@
-package com.fr.swift.jdbc;
+package com.fr.swift.jdbc.result;
 
+import com.fr.swift.jdbc.MetadataWrapper;
 import com.fr.swift.jdbc.exception.SwiftJDBCColumnAbsentException;
 import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
 import com.fr.swift.source.Row;

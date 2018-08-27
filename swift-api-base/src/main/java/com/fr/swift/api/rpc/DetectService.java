@@ -1,8 +1,6 @@
 package com.fr.swift.api.rpc;
 
-import com.fr.swift.exception.meta.SwiftMetaDataAbsentException;
 import com.fr.swift.service.ServiceType;
-import com.fr.swift.source.SwiftMetaData;
 
 import java.util.List;
 import java.util.Map;
@@ -18,12 +16,4 @@ public interface DetectService {
      * @return
      */
     Map<ServiceType, List<String>> detectiveAnalyseAndRealTime(String defaultAddress);
-
-    /**
-     * 获取metadata
-     *
-     * @param tableName
-     * @return
-     */
-    SwiftMetaData detectiveMetaData(String tableName) throws SwiftMetaDataAbsentException;
 }

@@ -14,6 +14,7 @@ import com.fr.general.jsqlparser.statement.select.SubSelect;
 import com.fr.general.jsqlparser.statement.select.TableFunction;
 import com.fr.general.jsqlparser.statement.select.ValuesList;
 import com.fr.general.jsqlparser.statement.select.WithItem;
+import com.fr.swift.db.Schema;
 import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
 import com.fr.swift.jdbc.exception.SwiftJDBCTableAbsentException;
 import com.fr.swift.jdbc.rpc.RpcCaller;
@@ -34,15 +35,17 @@ public class SelectQueryBeanVisitor implements SelectVisitor,FromItemVisitor,Que
     private AbstractSingleTableQueryInfoBean queryBean;
     private RpcCaller caller;
     private SwiftMetaData metaData;
+    private Schema schema;
 
     private SwiftMetaDataGetter metaDataGetter = new SwiftMetaDataGetter() {
         @Override
-        public SwiftMetaData getMetaData() {
+        public SwiftMetaData get() {
             return metaData;
         }
     };
 
-    public SelectQueryBeanVisitor(RpcCaller caller) {
+    public SelectQueryBeanVisitor(Schema schema, RpcCaller caller) {
+        this.schema = schema;
         this.caller = caller;
     }
 
@@ -92,7 +95,7 @@ public class SelectQueryBeanVisitor implements SelectVisitor,FromItemVisitor,Que
     @Override
     public void visit(Table table) {
         String tableName = table.getName();
-        metaData = caller.getMetaData(tableName);
+        metaData = caller.detectiveMetaData(schema, tableName);
         if (null == metaData) {
             Crasher.crash(new SwiftJDBCTableAbsentException(tableName));
         }

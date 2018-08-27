@@ -23,7 +23,7 @@ public interface DataMaintenanceService {
      * @return
      * @throws SQLException
      */
-    int insert(String tableName, List<String> fields, List<Row> rows) throws SQLException;
+    int insert(Schema schema, String tableName, List<String> fields, List<Row> rows) throws SQLException;
 
     /**
      * 插入所有字段
@@ -33,7 +33,9 @@ public interface DataMaintenanceService {
      * @return
      * @throws SQLException
      */
-    int insert(String tableName, List<Row> rows) throws SQLException;
+    int insert(Schema schema, String tableName, List<Row> rows) throws SQLException;
+
+    int insert(Schema schema, String tableName, String queryJson) throws SQLException;
 
     /**
      * TODO 先占个坑具体再调
@@ -42,7 +44,7 @@ public interface DataMaintenanceService {
      * @param where
      * @return
      */
-    int delete(String tableName, Where where);
+    int delete(Schema schema, String tableName, Where where);
 
     /**
      * TODO 先占个坑具体再调
@@ -52,7 +54,7 @@ public interface DataMaintenanceService {
      * @param where
      * @return
      */
-    int update(String tableName, SwiftResultSet resultSet, Where where);
+    int update(Schema schema, String tableName, SwiftResultSet resultSet, Where where);
 
     /**
      * TODO 建表

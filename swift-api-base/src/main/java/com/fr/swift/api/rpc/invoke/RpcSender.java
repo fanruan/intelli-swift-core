@@ -8,5 +8,5 @@ import com.fr.swift.rpc.bean.RpcResponse;
  * @date 2018/8/26
  */
 public interface RpcSender {
-    RpcResponse send(RpcRequest request, String address) throws Exception;
+    RpcResponse send(RpcRequest request) throws Exception;
 }

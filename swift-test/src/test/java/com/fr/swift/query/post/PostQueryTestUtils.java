@@ -113,6 +113,11 @@ public class PostQueryTestUtils {
             public List<String> getFieldNames() {
                 return new ArrayList<>(Arrays.asList(columnNames));
             }
+
+            @Override
+            public String getId() {
+                return null;
+            }
         };
     }
 

@@ -124,6 +124,7 @@ public class RpcConnector {
     public void disConnect() {
         try {
             channel.close();
+            selector.stop();
         } catch (IOException e) {
         }
     }

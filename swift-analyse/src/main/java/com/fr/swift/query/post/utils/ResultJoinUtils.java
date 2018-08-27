@@ -185,6 +185,11 @@ public class ResultJoinUtils {
             public List<String> getFieldNames() {
                 return columnNames;
             }
+
+            @Override
+            public String getId() {
+                return null;
+            }
         };
     }
 

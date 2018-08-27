@@ -6,6 +6,5 @@ import com.fr.swift.source.SwiftMetaData;
  * @author yee
  * @date 2018/8/27
  */
-public interface SwiftMetaDataGetter {
-    SwiftMetaData getMetaData();
+public interface SwiftMetaDataGetter extends Getter<SwiftMetaData> {
 }

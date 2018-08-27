@@ -15,14 +15,22 @@ import static org.junit.Assert.assertEquals;
  * @date 2018/8/27
  */
 public class JdbcTest {
-    private String url = "jdbc:swift://192.168.0.102:7000/CUBE";
+    private String url = "jdbc:swift://192.168.0.7:7000/CUBE";
     private Connection connection;
+    private String insertSQL = "insert into test_table values ";
+    private StringBuffer buffer = new StringBuffer();
 
     @Before
     public void setUp() throws Exception {
 //        Class.forName("com.fr.swift.jdbc.Driver");
         Driver driver = new Driver();
         connection = driver.connect(url, null);
+        buffer.setLength(0);
+        buffer.append(insertSQL);
+        for (int i = 0; i < 100; i++) {
+            buffer.append("(").append(i + 1000).append(", '").append(i + 1000).append("test'),");
+        }
+        buffer.setLength(buffer.length() - 1);
     }
 
     @Test
@@ -32,7 +40,15 @@ public class JdbcTest {
         ResultSet resultSet = statment.executeQuery("select id from test_table");
         int i = 1;
         while (resultSet.next()) {
-            assertEquals(resultSet.getInt(1), i++);
+            System.out.println(resultSet.getInt(1));
         }
+    }
+
+    @Test
+    @Ignore
+    public void insert() throws SQLException {
+        Statement statment = connection.createStatement();
+        int row = statment.executeUpdate(buffer.toString());
+        assertEquals(row, 100);
     }
 }

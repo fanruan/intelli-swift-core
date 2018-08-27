@@ -26,6 +26,11 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
 public class CallClient extends SimpleChannelInboundHandler<RpcResponse> implements RpcSender {
 
     private RpcResponse response;
+    private String address;
+
+    public CallClient(String address) {
+        this.address = address;
+    }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RpcResponse rpcResponse) {
@@ -34,7 +39,7 @@ public class CallClient extends SimpleChannelInboundHandler<RpcResponse> impleme
     }
 
     @Override
-    public RpcResponse send(RpcRequest request, String address) throws Exception {
+    public RpcResponse send(RpcRequest request) throws Exception {
         EventLoopGroup group = new NioEventLoopGroup(1);
         try {
             // 创建并初始化 Netty 客户端 Bootstrap 对象

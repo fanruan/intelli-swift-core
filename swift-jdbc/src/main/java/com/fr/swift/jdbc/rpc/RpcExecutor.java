@@ -36,13 +36,12 @@ public class RpcExecutor implements RpcSender {
     }
 
     @Override
-    public RpcResponse send(RpcRequest request, String address) throws Exception {
-        int index = genIndex();
-        RpcCallBackSync sync = new RpcCallBackSync(index, request);
+    public RpcResponse send(RpcRequest request) throws Exception {
+        RpcCallBackSync sync = new RpcCallBackSync(request.getRequestId(), request);
         rpcCache.put(request.getRequestId(), sync);
         connector.sendRpcObject(request, timeout);
         this.sync.waitForResult(timeout, sync);
-        rpcCache.remove(sync.getIndex());
+        rpcCache.remove(sync.getRpcId());
         RpcResponse response = sync.getResponse();
         if (response == null) {
             throw new RpcException("null rpc response");
@@ -67,7 +66,7 @@ public class RpcExecutor implements RpcSender {
 
     public void onRpcMessage(RpcResponse rpc) {
         RpcCallBackSync sync = rpcCache.get(rpc.getRequestId());
-        if (sync != null && sync.getRequest().getRequestId().equals(rpc.getRequestId())) {
+        if (sync != null && sync.getRpcId().equals(rpc.getRequestId())) {
             this.sync.notifyResult(sync, rpc);
         }
     }

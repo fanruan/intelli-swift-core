@@ -36,7 +36,7 @@ public class ClientProxy implements InvocationHandler {
         request.setParameters(args);
         request.setMethodName(method.getName());
         request.setParameterTypes(method.getParameterTypes());
-        RpcResponse response = remoteExecutor.send(request, null);
+        RpcResponse response = remoteExecutor.send(request);
         return response.getResult();
     }
 
@@ -48,12 +48,14 @@ public class ClientProxy implements InvocationHandler {
     public void start() {
         if (!start.get()) {
             remoteExecutor.start();
+            start.set(true);
         }
     }
 
     public void stop() {
         if (start.get()) {
             remoteExecutor.stop();
+            start.set(false);
         }
     }
 }

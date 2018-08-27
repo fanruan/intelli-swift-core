@@ -4,8 +4,8 @@ import com.fr.swift.db.Schema;
 import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
 import com.fr.swift.jdbc.exception.URLEmptyException;
 import com.fr.swift.jdbc.exception.URLFormatException;
-import com.fr.swift.jdbc.rpc.RpcCaller;
-import com.fr.swift.jdbc.statment.SwiftStatement;
+import com.fr.swift.jdbc.session.SwiftJdbcSessionFactory;
+import com.fr.swift.jdbc.session.impl.SwiftJdbcSessionFactoryImpl;
 import com.fr.swift.util.Crasher;
 
 import java.net.URI;
@@ -40,9 +40,9 @@ public class SwiftConnection implements java.sql.Connection {
     private Schema SCHEMA = Schema.DECISION_LOG;
     private String host;
     private int port;
-    private RpcCaller caller;
     private String username;
     private String password;
+    private SwiftJdbcSessionFactory sessionFactory;
 
     public SwiftConnection(String url) {
         this(url, null);
@@ -74,6 +74,7 @@ public class SwiftConnection implements java.sql.Connection {
                     }
                     this.username = username;
                     this.password = password;
+                    sessionFactory = new SwiftJdbcSessionFactoryImpl(SCHEMA, host, port);
                 } else {
                     throw new URLFormatException(url);
                 }
@@ -85,21 +86,14 @@ public class SwiftConnection implements java.sql.Connection {
         }
     }
 
-    public RpcCaller getCaller() {
-        if (null == caller) {
-            caller = RpcCaller.connect(host, port);
-        }
-        return caller;
-    }
-
     @Override
     public Statement createStatement() throws SQLException {
-        return new SwiftStatement(getCaller());
+        return sessionFactory.openSession().createStatement();
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql) throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+        return sessionFactory.openSession().preparedStatement(sql);
     }
 
     @Override
@@ -188,7 +182,7 @@ public class SwiftConnection implements java.sql.Connection {
 
     @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
-        return new SwiftStatement(getCaller());
+        return sessionFactory.openSession().createStatement();
     }
 
     @Override

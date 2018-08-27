@@ -3,7 +3,8 @@ package com.fr.swift.api.rpc.impl;
 import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.api.rpc.DataMaintenanceService;
-import com.fr.swift.api.rpc.DetectService;
+import com.fr.swift.api.rpc.SelectService;
+import com.fr.swift.api.rpc.TableService;
 import com.fr.swift.api.rpc.bean.Column;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.context.SwiftContext;
@@ -31,19 +32,25 @@ import java.util.List;
 class DataMaintenanceServiceImpl implements DataMaintenanceService {
 
     @Override
-    public int insert(String tableName, List<String> fields, List<Row> rows) throws SQLException {
-        SwiftMetaDataBean metaData = (SwiftMetaDataBean) SwiftContext.get().getBean(DetectService.class).detectiveMetaData(tableName);
-        insert(tableName, new InsertResultSet(metaData, fields, rows));
+    public int insert(Schema schema, String tableName, List<String> fields, List<Row> rows) throws SQLException {
+        SwiftMetaDataBean metaData = (SwiftMetaDataBean) SwiftContext.get().getBean(TableService.class).detectiveMetaData(schema, tableName);
+        insert(schema, tableName, new InsertResultSet(metaData, fields, rows));
         return rows.size();
     }
 
     @Override
-    public int insert(String tableName, List<Row> rows) throws SQLException {
-        return insert(tableName, null, rows);
+    public int insert(Schema schema, String tableName, List<Row> rows) throws SQLException {
+        return insert(schema, tableName, null, rows);
     }
 
-    private int insert(String tableName, SwiftResultSet resultSet) throws SQLException {
-        SwiftMetaDataBean metaData = (SwiftMetaDataBean) SwiftContext.get().getBean(DetectService.class).detectiveMetaData(tableName);
+    @Override
+    public int insert(Schema schema, String tableName, String queryJson) throws SQLException {
+        SwiftResultSet resultSet = SwiftContext.get().getBean(SelectService.class).query(queryJson);
+        return insert(schema, tableName, resultSet);
+    }
+
+    private int insert(Schema schema, String tableName, SwiftResultSet resultSet) throws SQLException {
+        SwiftMetaDataBean metaData = (SwiftMetaDataBean) SwiftContext.get().getBean(TableService.class).detectiveMetaData(schema, tableName);
         SourceKey sourceKey = new SourceKey(metaData.getId());
         try {
             getRealTimeService().insert(sourceKey, resultSet);
@@ -56,12 +63,12 @@ class DataMaintenanceServiceImpl implements DataMaintenanceService {
     }
 
     @Override
-    public int delete(String tableName, Where where) {
+    public int delete(Schema schema, String tableName, Where where) {
         return 0;
     }
 
     @Override
-    public int update(String tableName, SwiftResultSet resultSet, Where where) {
+    public int update(Schema schema, String tableName, SwiftResultSet resultSet, Where where) {
         return 0;
     }
 

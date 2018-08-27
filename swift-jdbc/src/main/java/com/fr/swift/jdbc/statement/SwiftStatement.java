@@ -1,8 +1,11 @@
-package com.fr.swift.jdbc.statment;
+package com.fr.swift.jdbc.statement;
 
-import com.fr.swift.jdbc.ResultSetWrapper;
+import com.fr.general.jsqlparser.JSQLParserException;
+import com.fr.swift.db.Schema;
+import com.fr.swift.jdbc.bean.InsertBean;
 import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
 import com.fr.swift.jdbc.parser.SqlParserFactory;
+import com.fr.swift.jdbc.result.ResultSetWrapper;
 import com.fr.swift.jdbc.rpc.RpcCaller;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.source.SwiftResultSet;
@@ -20,17 +23,21 @@ import java.sql.Statement;
  * @date 2018/8/17
  */
 public class SwiftStatement implements Statement {
-    private RpcCaller caller;
+    private RpcCaller.SelectRpcCaller caller;
+    private RpcCaller.MaintenanceRpcCaller maintenanceRpcCaller;
+    private Schema schema;
 
-    public SwiftStatement(RpcCaller caller) {
+    public SwiftStatement(Schema schema, RpcCaller.SelectRpcCaller caller, RpcCaller.MaintenanceRpcCaller maintenanceRpcCaller) {
+        this.schema = schema;
         this.caller = caller;
+        this.maintenanceRpcCaller = maintenanceRpcCaller;
     }
 
     @Override
     public ResultSet executeQuery(String sql) throws SQLException {
         SwiftResultSet resultSet = null;
         try {
-            QueryBean queryBean = SqlParserFactory.parsQuery(sql, caller);
+            QueryBean queryBean = SqlParserFactory.parsQuery(sql, schema, caller);
             resultSet = caller.query(queryBean.toString());
         } catch (Exception e) {
             return Crasher.crash(new SwiftJDBCNotSupportedException(sql, e));
@@ -40,7 +47,20 @@ public class SwiftStatement implements Statement {
 
     @Override
     public int executeUpdate(String sql) throws SQLException {
-        return 0;
+        try {
+            if (sql.toLowerCase().trim().startsWith("insert")) {
+                InsertBean insertBean = SqlParserFactory.parsInsert(sql, schema, caller);
+                if (null != insertBean.getQueryJson()) {
+                    return maintenanceRpcCaller.insert(schema, insertBean.getTableName(), insertBean.getQueryJson());
+                } else {
+                    return maintenanceRpcCaller.insert(schema, insertBean.getTableName(), insertBean.getColumnNames(), insertBean.getDatas());
+                }
+            } else {
+                return Crasher.crash(new SwiftJDBCNotSupportedException(sql));
+            }
+        } catch (JSQLParserException e) {
+            return Crasher.crash(new SwiftJDBCNotSupportedException(sql, e));
+        }
     }
 
     @Override
