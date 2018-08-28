@@ -9,7 +9,7 @@ import java.util.Map;
  * @author yee
  * @date 2018/8/23
  */
-public interface DetectService {
+public interface DetectService extends ApiService {
     /**
      * 获取Analyse和RealTime地址信息
      *

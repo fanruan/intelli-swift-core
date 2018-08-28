@@ -6,7 +6,9 @@ import com.fr.swift.api.rpc.DataMaintenanceService;
 import com.fr.swift.api.rpc.SelectService;
 import com.fr.swift.api.rpc.TableService;
 import com.fr.swift.api.rpc.bean.Column;
+import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
+import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Where;
@@ -17,12 +19,16 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.source.core.MD5Utils;
+import com.fr.swift.util.Crasher;
 import com.fr.swift.util.ServiceBeanFactory;
+import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author yee
@@ -30,6 +36,10 @@ import java.util.List;
  */
 @RpcService(value = DataMaintenanceService.class, type = RpcServiceType.EXTERNAL)
 class DataMaintenanceServiceImpl implements DataMaintenanceService {
+    @Autowired(required = false)
+    private TableService tableService;
+    @Autowired(required = false)
+    private SwiftMetaDataService metaDataService;
 
     @Override
     public int insert(SwiftDatabase schema, String tableName, List<String> fields, List<Row> rows) throws SQLException {
@@ -74,7 +84,26 @@ class DataMaintenanceServiceImpl implements DataMaintenanceService {
 
     @Override
     public int createTable(SwiftDatabase schema, String tableName, List<Column> columns) {
-        return 0;
+        if (tableService.isTableExists(schema, tableName)) {
+            Crasher.crash("Table " + tableName + " is already exists");
+        }
+        if (columns.isEmpty()) {
+            Crasher.crash("Table " + tableName + " must contain at lease one column.");
+        }
+        SwiftMetaDataBean swiftMetaDataBean = new SwiftMetaDataBean();
+        swiftMetaDataBean.setSwiftDatabase(schema);
+        swiftMetaDataBean.setTableName(tableName);
+        String uniqueKey = MD5Utils.getMD5String(new String[]{UUID.randomUUID().toString(), tableName});
+        swiftMetaDataBean.setId(uniqueKey);
+        List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
+        for (Column column : columns) {
+            columnList.add(new MetaDataColumnBean(column.getColumnName(), column.getColumnType()));
+        }
+        swiftMetaDataBean.setFields(columnList);
+        if (metaDataService.addMetaData(uniqueKey, swiftMetaDataBean)) {
+            return 1;
+        }
+        return -1;
     }
 
     private RealtimeService getRealTimeService() throws SQLException {

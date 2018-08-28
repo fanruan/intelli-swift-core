@@ -13,7 +13,7 @@ import java.util.List;
  * @author yee
  * @date 2018/8/23
  */
-public interface DataMaintenanceService {
+public interface DataMaintenanceService extends ApiService {
     /**
      * 插入指定字段数据
      *

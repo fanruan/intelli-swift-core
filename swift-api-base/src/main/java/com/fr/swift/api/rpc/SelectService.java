@@ -7,7 +7,7 @@ import com.fr.swift.source.SwiftResultSet;
  * @author yee
  * @date 2018/8/23
  */
-public interface SelectService {
+public interface SelectService extends ApiService {
     /**
      * 查询接口
      *

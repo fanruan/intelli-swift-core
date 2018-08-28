@@ -53,8 +53,9 @@ public class Api implements TableService {
     }
 
     @Override
-    public boolean isTableExists(SwiftDatabase schema, String tableName) throws SwiftMetaDataAbsentException {
-        return null != detectiveMetaData(schema, tableName);
+    public boolean isTableExists(SwiftDatabase schema, String tableName) {
+        TableService service = ApiProxyFactory.getProxy(TableService.class, address, maxFrameSize);
+        return service.isTableExists(schema, tableName);
     }
 
     public static class SelectApi extends Api implements SelectService {

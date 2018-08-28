@@ -1,6 +1,5 @@
 package com.fr.swift.api.rpc.bean;
 
-import com.fr.swift.source.ColumnTypeConstants;
 
 import java.io.Serializable;
 
@@ -11,9 +10,16 @@ import java.io.Serializable;
 public class Column implements Serializable {
     private static final long serialVersionUID = 3899734575575468524L;
     private String columnName;
-    private ColumnTypeConstants.ColumnType columnType;
+    private int columnType;
 
-    public Column(String columnName, ColumnTypeConstants.ColumnType columnType) {
+    /**
+     * Column
+     *
+     * @param columnName
+     * @param columnType
+     * @see java.sql.Types
+     */
+    public Column(String columnName, int columnType) {
         this.columnName = columnName;
         this.columnType = columnType;
     }
@@ -26,11 +32,11 @@ public class Column implements Serializable {
         this.columnName = columnName;
     }
 
-    public ColumnTypeConstants.ColumnType getColumnType() {
+    public int getColumnType() {
         return columnType;
     }
 
-    public void setColumnType(ColumnTypeConstants.ColumnType columnType) {
+    public void setColumnType(int columnType) {
         this.columnType = columnType;
     }
 
@@ -45,16 +51,16 @@ public class Column implements Serializable {
 
         Column column = (Column) o;
 
-        if (columnName != null ? !columnName.equals(column.columnName) : column.columnName != null) {
+        if (columnType != column.columnType) {
             return false;
         }
-        return columnType == column.columnType;
+        return columnName != null ? columnName.equals(column.columnName) : column.columnName == null;
     }
 
     @Override
     public int hashCode() {
         int result = columnName != null ? columnName.hashCode() : 0;
-        result = 31 * result + (columnType != null ? columnType.hashCode() : 0);
+        result = 31 * result + columnType;
         return result;
     }
 }

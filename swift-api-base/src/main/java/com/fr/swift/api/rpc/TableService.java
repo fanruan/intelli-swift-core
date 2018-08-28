@@ -8,7 +8,7 @@ import com.fr.swift.source.SwiftMetaData;
  * @author yee
  * @date 2018/8/27
  */
-public interface TableService {
+public interface TableService extends ApiService {
     /**
      * 获取metadata
      *
@@ -27,5 +27,5 @@ public interface TableService {
      * @return
      * @throws SwiftMetaDataAbsentException
      */
-    boolean isTableExists(SwiftDatabase schema, String tableName) throws SwiftMetaDataAbsentException;
+    boolean isTableExists(SwiftDatabase schema, String tableName);
 }

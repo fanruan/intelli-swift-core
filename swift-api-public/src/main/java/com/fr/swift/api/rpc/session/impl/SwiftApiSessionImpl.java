@@ -11,7 +11,6 @@ import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Where;
 import com.fr.swift.exception.meta.SwiftMetaDataAbsentException;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.result.serialize.SerializableDetailResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
@@ -28,7 +27,6 @@ public class SwiftApiSessionImpl implements SwiftApiSession, DataMaintenanceServ
 
     private Api.SelectApi selectApi;
     private Api.DataMaintenanceApi dataMaintenanceApi;
-    private QueryInfoBeanFactory queryInfoBeanFactory = new QueryInfoBeanFactory();
 
     SwiftApiSessionImpl(Api.SelectApi selectApi, Api.DataMaintenanceApi dataMaintenanceApi) {
         this.selectApi = selectApi;
@@ -82,7 +80,7 @@ public class SwiftApiSessionImpl implements SwiftApiSession, DataMaintenanceServ
     }
 
     @Override
-    public boolean isTableExists(SwiftDatabase schema, String tableName) throws SwiftMetaDataAbsentException {
+    public boolean isTableExists(SwiftDatabase schema, String tableName) {
         return selectApi.isTableExists(schema, tableName);
     }
 }

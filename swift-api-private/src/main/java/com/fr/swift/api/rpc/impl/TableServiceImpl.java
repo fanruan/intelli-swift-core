@@ -31,7 +31,11 @@ class TableServiceImpl implements TableService {
     }
 
     @Override
-    public boolean isTableExists(SwiftDatabase schema, String tableName) throws SwiftMetaDataAbsentException {
-        return null != detectiveMetaData(schema, tableName);
+    public boolean isTableExists(SwiftDatabase schema, String tableName) {
+        try {
+            return null != detectiveMetaData(schema, tableName);
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
