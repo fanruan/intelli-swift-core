@@ -4,13 +4,16 @@ import com.fr.swift.api.Api;
 import com.fr.swift.api.result.SwiftApiResultSet;
 import com.fr.swift.api.rpc.DataMaintenanceService;
 import com.fr.swift.api.rpc.SelectService;
+import com.fr.swift.api.rpc.TableService;
 import com.fr.swift.api.rpc.bean.Column;
 import com.fr.swift.api.rpc.session.SwiftApiSession;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Where;
+import com.fr.swift.exception.meta.SwiftMetaDataAbsentException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.result.serialize.SerializableDetailResultSet;
 import com.fr.swift.source.Row;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
@@ -20,7 +23,7 @@ import java.util.List;
  * @author yee
  * @date 2018/8/27
  */
-public class SwiftApiSessionImpl implements SwiftApiSession, DataMaintenanceService, SelectService {
+public class SwiftApiSessionImpl implements SwiftApiSession, DataMaintenanceService, SelectService, TableService {
 
     private Api.SelectApi selectApi;
     private Api.DataMaintenanceApi dataMaintenanceApi;
@@ -69,5 +72,15 @@ public class SwiftApiSessionImpl implements SwiftApiSession, DataMaintenanceServ
             SwiftLoggers.getLogger().error(e);
             return null;
         }
+    }
+
+    @Override
+    public SwiftMetaData detectiveMetaData(SwiftDatabase schema, String tableName) throws SwiftMetaDataAbsentException {
+        return selectApi.detectiveMetaData(schema, tableName);
+    }
+
+    @Override
+    public boolean isTableExists(SwiftDatabase schema, String tableName) throws SwiftMetaDataAbsentException {
+        return selectApi.isTableExists(schema, tableName);
     }
 }
