@@ -27,6 +27,11 @@ public class AddColumnAction extends BaseAlterTableAction {
 
     @Override
     public void alter(Table table) {
+        if (existsColumn(table.getMetadata())) {
+            SwiftLoggers.getLogger().warn("column {} exists in {}, will add nothing", relatedColumnMeta, table);
+            return;
+        }
+
         SwiftLoggers.getLogger().info("add column {} to {}", relatedColumnMeta, table);
 
         List<SegmentKey> segKeys = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegmentKeys(table.getSourceKey());

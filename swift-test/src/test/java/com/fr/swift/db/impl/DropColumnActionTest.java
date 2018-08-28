@@ -78,6 +78,16 @@ public class DropColumnActionTest {
         checkSeg(table);
     }
 
+    @Test
+    public void dropVoidColumn() throws Exception {
+        SourceKey tableKey = new SourceKey(meta.getTableName());
+        com.fr.swift.db.Table table = SwiftDatabase.getInstance().createTable(tableKey, meta);
+        new DropColumnAction(new MetaDataColumnBean("voidColumn", Types.BIT)).alter(table);
+
+        table = SwiftDatabase.getInstance().getTable(tableKey);
+        Assert.assertEquals(2, table.getMeta().getColumnCount());
+    }
+
     private Inserter getInserter(com.fr.swift.db.Table table, LineSourceAlloter lineSourceAlloter) {
         return alterHistory ? new HistoryBlockInserter(table, lineSourceAlloter) :
                 new Incrementer(table, lineSourceAlloter);
