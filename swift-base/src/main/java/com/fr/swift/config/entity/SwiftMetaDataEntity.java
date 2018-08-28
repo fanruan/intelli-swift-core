@@ -48,7 +48,7 @@ public class SwiftMetaDataEntity implements Convert<SwiftMetaDataBean> {
 
     public SwiftMetaDataEntity(SwiftMetaDataBean metaBean) {
         this.id = metaBean.getId();
-        this.swiftSchema = metaBean.getSwiftSchema();
+        this.swiftSchema = metaBean.getSwiftDatabase();
         this.schemaName = metaBean.getSchemaName();
         this.tableName = metaBean.getTableName();
         this.remark = metaBean.getRemark();

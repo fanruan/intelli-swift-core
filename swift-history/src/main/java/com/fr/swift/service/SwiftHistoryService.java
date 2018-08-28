@@ -111,8 +111,8 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
 
                     boolean downloadSuccess = true;
                     for (String uri : sets) {
-                        String cubePath = String.format("%s/%s/%d/%s", path, metaData.getSwiftSchema().getDir(), tmp, uri);
-                        String remotePath = String.format("%s/%s", metaData.getSwiftSchema().getDir(), uri);
+                        String cubePath = String.format("%s/%s/%d/%s", path, metaData.getSwiftDatabase().getDir(), tmp, uri);
+                        String remotePath = String.format("%s/%s", metaData.getSwiftDatabase().getDir(), uri);
                         try {
                             repository.copyFromRemote(remotePath, cubePath);
                         } catch (Exception e) {
@@ -128,7 +128,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                         entity.setLastPath(current);
                         entity.setTablePath(tmp);
                         tablePathService.saveOrUpdate(entity);
-                        String cubePath = String.format("%s/%s/%d/%s", path, metaData.getSwiftSchema().getDir(), current, sourceKey);
+                        String cubePath = String.format("%s/%s/%d/%s", path, metaData.getSwiftDatabase().getDir(), current, sourceKey);
                         FileUtil.delete(cubePath);
                         new File(cubePath).getParentFile().delete();
                     }

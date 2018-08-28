@@ -179,7 +179,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
             IResourceLocation location = newSeg.getLocation();
 
             SegmentKey newSegKey = new SegmentKeyBean(tableKey.getId(),
-                    URI.create(CubeUtil.getHistorySegPath(table, newOrder)), newOrder, location.getStoreType(), newSeg.getMetaData().getSwiftSchema());
+                    URI.create(CubeUtil.getHistorySegPath(table, newOrder)), newOrder, location.getStoreType(), newSeg.getMetaData().getSwiftDatabase());
             newSegKeys.add(newSegKey);
             newSegs.add(newSeg);
             newOrder++;

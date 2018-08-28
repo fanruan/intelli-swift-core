@@ -35,7 +35,7 @@ public class PostQueryTestUtils {
     public static SwiftMetaData createMetaData(String tableName, String[] columnNames) {
         return new SwiftMetaData() {
             @Override
-            public SwiftDatabase getSwiftSchema() {
+            public SwiftDatabase getSwiftDatabase() {
                 return null;
             }
 

@@ -26,7 +26,7 @@ public class CubeUtil {
     }
 
     public static String getRealtimeSegPath(DataSource dataSource, int segOrder) {
-        return getSegPath(dataSource.getMetadata().getSwiftSchema(), Optional.<Integer>absent(), dataSource.getSourceKey(), segOrder);
+        return getSegPath(dataSource.getMetadata().getSwiftDatabase(), Optional.<Integer>absent(), dataSource.getSourceKey(), segOrder);
     }
 
     public static String getHistorySegPath(DataSource dataSource, int segOrder) {
@@ -34,7 +34,7 @@ public class CubeUtil {
     }
 
     public static String getHistorySegPath(DataSource dataSource, int currentDir, int segOrder) {
-        return getSegPath(dataSource.getMetadata().getSwiftSchema(), Optional.of(currentDir), dataSource.getSourceKey(), segOrder);
+        return getSegPath(dataSource.getMetadata().getSwiftDatabase(), Optional.of(currentDir), dataSource.getSourceKey(), segOrder);
     }
 
     public static String getSegPath(SegmentKey segKey) {

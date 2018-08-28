@@ -643,9 +643,9 @@ public class SwiftDatabaseMetadata implements DatabaseMetaData {
             SwiftDatabase schema = this.schema == null ? SwiftDatabase.valueOf(schemaPattern) : this.schema;
             for (Table table : DB.getAllTables()) {
                 SwiftMetaData meta = table.getMeta();
-                if (meta.getSwiftSchema() == schema) {
+                if (meta.getSwiftDatabase() == schema) {
                     List list = new ArrayList();
-                    list.add(meta.getSwiftSchema().getName());
+                    list.add(meta.getSwiftDatabase().getName());
                     //没有schema,实际上是databaseName
                     list.add(null);
                     list.add(meta.getTableName());
@@ -679,7 +679,7 @@ public class SwiftDatabaseMetadata implements DatabaseMetaData {
         Table table = DB.getTable(new SourceKey(tableNamePattern));
         List<Row> fields = new ArrayList<Row>();
         SwiftMetaData metaData = table.getMeta();
-        if (table.getMeta().getSwiftSchema() == schema){
+        if (table.getMeta().getSwiftDatabase() == schema) {
             for (int i = 0;i < metaData.getColumnCount(); i++){
                 SwiftMetaDataColumn column = metaData.getColumn(i+1);
                 List list = new ArrayList();

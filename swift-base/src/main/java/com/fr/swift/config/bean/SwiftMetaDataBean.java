@@ -28,7 +28,7 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable, Convert<S
     @JsonProperty
     private String id;
     @JsonProperty
-    private SwiftDatabase swiftSchema;
+    private SwiftDatabase swiftDatabase;
     @JsonProperty
     private String schemaName;
     @JsonProperty
@@ -44,8 +44,8 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable, Convert<S
         this(tableName, null, null, fieldList);
     }
 
-    public SwiftMetaDataBean(SwiftDatabase swiftSchema, String tableName, List<SwiftMetaDataColumn> fieldList) {
-        this(null, swiftSchema, null, tableName, null, fieldList);
+    public SwiftMetaDataBean(SwiftDatabase swiftDatabase, String tableName, List<SwiftMetaDataColumn> fieldList) {
+        this(null, swiftDatabase, null, tableName, null, fieldList);
     }
 
     public SwiftMetaDataBean(String tableName, String remark, String schemaName, List<SwiftMetaDataColumn> fields) {
@@ -60,9 +60,9 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable, Convert<S
         this(metaEntity.getId(), metaEntity.getSwiftSchema(), metaEntity.getSchemaName(), metaEntity.getTableName(), metaEntity.getRemark(), metaEntity.getFields());
     }
 
-    public SwiftMetaDataBean(String id, SwiftDatabase swiftSchema, String schemaName, String tableName, String remark, List<SwiftMetaDataColumn> fields) {
+    public SwiftMetaDataBean(String id, SwiftDatabase swiftDatabase, String schemaName, String tableName, String remark, List<SwiftMetaDataColumn> fields) {
         this.id = id;
-        this.swiftSchema = swiftSchema;
+        this.swiftDatabase = swiftDatabase;
         this.schemaName = schemaName;
         this.tableName = tableName;
         this.remark = remark;
@@ -74,8 +74,8 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable, Convert<S
     }
 
     @Override
-    public SwiftDatabase getSwiftSchema() {
-        return swiftSchema;
+    public SwiftDatabase getSwiftDatabase() {
+        return swiftDatabase;
     }
 
     @Override
@@ -195,8 +195,8 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable, Convert<S
         this.fields = fields;
     }
 
-    public void setSwiftSchema(SwiftDatabase schema) {
-        this.swiftSchema = schema;
+    public void setSwiftDatabase(SwiftDatabase schema) {
+        this.swiftDatabase = schema;
     }
 
     @Override

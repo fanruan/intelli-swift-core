@@ -84,7 +84,7 @@ public class HistoryBlockInserter extends BaseBlockInserter {
         IResourceLocation location = seg.getLocation();
         String tableKey = dataSource.getSourceKey().getId();
         String path = CubeUtil.getPersistSegPath(dataSource.getSourceKey(), order);
-        SegmentKey segKey = new SegmentKeyBean(tableKey, URI.create(path), order, location.getStoreType(), seg.getMetaData().getSwiftSchema());
+        SegmentKey segKey = new SegmentKeyBean(tableKey, URI.create(path), order, location.getStoreType(), seg.getMetaData().getSwiftDatabase());
         SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).addSegments(Collections.singletonList(segKey));
     }
 }

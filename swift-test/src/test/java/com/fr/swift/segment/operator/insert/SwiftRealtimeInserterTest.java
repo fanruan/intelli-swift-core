@@ -80,7 +80,7 @@ public class SwiftRealtimeInserterTest {
     private HistorySegment getBackupSegment(RealTimeSegment realtimeSegment) {
         SwiftMetaData meta = realtimeSegment.getMetaData();
         String segPath = realtimeSegment.getLocation().getPath();
-        SwiftDatabase swiftSchema = meta.getSwiftSchema();
+        SwiftDatabase swiftSchema = meta.getSwiftDatabase();
         return new HistorySegmentImpl(new ResourceLocation(segPath.replace(swiftSchema.getDir(), swiftSchema.getBackupDir()), StoreType.NIO), meta);
     }
 

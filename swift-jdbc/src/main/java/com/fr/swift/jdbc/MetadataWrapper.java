@@ -90,7 +90,7 @@ public class MetadataWrapper implements ResultSetMetaData {
 
     @Override
     public String getCatalogName(int column) {
-        return metaData.getSwiftSchema().getName();
+        return metaData.getSwiftDatabase().getName();
     }
 
     @Override

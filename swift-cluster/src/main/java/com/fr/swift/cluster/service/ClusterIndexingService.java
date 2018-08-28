@@ -159,7 +159,7 @@ public class ClusterIndexingService extends AbstractSwiftService implements Inde
                         && locationService.delete(sourceKey.getId(), id)) {
                     String deletePath = String.format("%s/%s/%d/%s",
                             pathService.getSwiftPath(),
-                            dataSource.getMetadata().getSwiftSchema().getDir(),
+                            dataSource.getMetadata().getSwiftDatabase().getDir(),
                             path,
                             sourceKey.getId());
                     FileUtil.delete(deletePath);
@@ -255,7 +255,7 @@ public class ClusterIndexingService extends AbstractSwiftService implements Inde
                         Integer tmpPath = entity.getTmpDir();
                         String deletePath = String.format("%s/%s/%d/%s",
                                 pathService.getSwiftPath(),
-                                ((DataSource) obj).getMetadata().getSwiftSchema().getDir(),
+                                ((DataSource) obj).getMetadata().getSwiftDatabase().getDir(),
                                 tmpPath,
                                 sourceKey.getId());
                         FileUtil.delete(deletePath);

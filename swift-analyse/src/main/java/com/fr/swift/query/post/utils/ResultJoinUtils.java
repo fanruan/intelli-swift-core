@@ -107,7 +107,7 @@ public class ResultJoinUtils {
         final List<String> columnNames = getColumnNames(dimensions, resultSets);
         return new SwiftMetaData() {
             @Override
-            public SwiftDatabase getSwiftSchema() {
+            public SwiftDatabase getSwiftDatabase() {
                 return null;
             }
 

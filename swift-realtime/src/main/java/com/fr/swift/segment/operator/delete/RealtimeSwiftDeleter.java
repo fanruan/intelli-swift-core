@@ -37,7 +37,7 @@ public class RealtimeSwiftDeleter extends SwiftWhereDeleter {
     private Segment getBackupSegment() {
         SwiftMetaData meta = segment.getMetaData();
         String segPath = segment.getLocation().getPath();
-        SwiftDatabase swiftSchema = meta.getSwiftSchema();
+        SwiftDatabase swiftSchema = meta.getSwiftDatabase();
         return SegmentUtils.newHistorySegment(new ResourceLocation(segPath.replace(swiftSchema.getDir(), swiftSchema.getBackupDir()), Types.StoreType.FINE_IO), meta);
     }
 }

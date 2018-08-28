@@ -41,7 +41,7 @@ public abstract class AbstractSegmentRecovery implements SegmentRecovery {
     protected Segment getBackupSegment(Segment realtimeSeg) {
         SwiftMetaData meta = realtimeSeg.getMetaData();
         String realtimeSegPath = realtimeSeg.getLocation().getPath();
-        SwiftDatabase swiftSchema = meta.getSwiftSchema();
+        SwiftDatabase swiftSchema = meta.getSwiftDatabase();
         return SegmentUtils.newHistorySegment(new ResourceLocation(realtimeSegPath.replace(swiftSchema.getDir(), swiftSchema.getBackupDir()), Types.StoreType.NIO), meta);
     }
 

@@ -180,7 +180,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
                         if (path.compareTo(tmpPath) != 0 && tablePathService.saveOrUpdate(entity)) {
                             String deletePath = String.format("%s/%s/%d/%s",
                                     pathService.getSwiftPath(),
-                                    ((DataSource) obj).getMetadata().getSwiftSchema().getDir(),
+                                    ((DataSource) obj).getMetadata().getSwiftDatabase().getDir(),
                                     path,
                                     sourceKey.getId());
                             FileUtil.delete(deletePath);
@@ -204,7 +204,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
                         Integer tmpPath = entity.getTmpDir();
                         String deletePath = String.format("%s/%s/%d/%s",
                                 pathService.getSwiftPath(),
-                                ((DataSource) obj).getMetadata().getSwiftSchema().getDir(),
+                                ((DataSource) obj).getMetadata().getSwiftDatabase().getDir(),
                                 tmpPath,
                                 sourceKey.getId());
                         FileUtil.delete(deletePath);

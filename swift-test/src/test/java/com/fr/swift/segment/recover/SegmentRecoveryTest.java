@@ -56,7 +56,7 @@ public class SegmentRecoveryTest {
         incrementer.insertData(swiftResultSet);
 
         String tablePath = String.format("%s/%s",
-                dataSource.getMetadata().getSwiftSchema().getDir(),
+                dataSource.getMetadata().getSwiftDatabase().getDir(),
                 dataSource.getSourceKey().getId());
         ResourceDiscovery.getInstance().removeIf(s -> s.contains(tablePath));
         SegmentRecovery segmentRecovery = (SegmentRecovery) SwiftContext.get().getBean("segmentRecovery");

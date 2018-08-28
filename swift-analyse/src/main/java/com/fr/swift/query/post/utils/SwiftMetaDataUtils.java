@@ -39,7 +39,7 @@ public class SwiftMetaDataUtils {
     private static SwiftMetaData createDetailMetaData(DetailQueryInfoBean bean) throws SwiftMetaDataException {
         final String tableName = bean.getTableName();
         SwiftMetaData meta = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(bean.getTableName());
-        SwiftDatabase schema = meta.getSwiftSchema();
+        SwiftDatabase schema = meta.getSwiftDatabase();
         List<SwiftMetaDataColumn> metaDataColumns = new ArrayList<SwiftMetaDataColumn>();
         List<DimensionBean> dimensionBeans = bean.getDimensionBeans();
         for (DimensionBean dimensionBean : dimensionBeans) {
@@ -56,7 +56,7 @@ public class SwiftMetaDataUtils {
     private static SwiftMetaData createGroupMetaData(GroupQueryInfoBean bean) throws SwiftMetaDataException {
         final String tableName = bean.getTableName();
         SwiftMetaData meta = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(bean.getTableName());
-        SwiftDatabase schema = meta.getSwiftSchema();
+        SwiftDatabase schema = meta.getSwiftDatabase();
         List<SwiftMetaDataColumn> metaDataColumns = new ArrayList<SwiftMetaDataColumn>();
         List<DimensionBean> dimensionBeans = bean.getDimensionBeans();
         for (DimensionBean dimensionBean : dimensionBeans) {
