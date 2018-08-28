@@ -30,7 +30,11 @@ public class DropColumnAction extends BaseAlterTableAction {
 
     @Override
     public void alter(final Table table) {
-        SwiftLoggers.getLogger().info("drop column: {} of {}", relatedColumnMeta, table);
+        if (!existsColumn(table.getMetadata())) {
+            SwiftLoggers.getLogger().warn("column {} is not present in {}, will drop nothing", relatedColumnMeta, table);
+            return;
+        }
+        SwiftLoggers.getLogger().info("drop column {} of {}", relatedColumnMeta, table);
 
         List<SegmentKey> segKeys = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegmentKeys(table.getSourceKey());
         for (final SegmentKey segKey : segKeys) {
