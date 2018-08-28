@@ -2,6 +2,7 @@ package com.fr.swift.netty.rpc.server;
 
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.netty.bean.InternalRpcRequest;
 import com.fr.swift.netty.rpc.exception.ServiceInvalidException;
 import com.fr.swift.rpc.bean.RpcRequest;
 import com.fr.swift.rpc.bean.RpcResponse;
@@ -56,11 +57,17 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
         String serviceName = request.getInterfaceName();
         Object serviceBean = null;
         switch (request.requestType()) {
-            case EXTERNAL:
+            case INTERNAL:
+                if (request instanceof InternalRpcRequest) {
+                    serviceBean = handlerMap.get(serviceName);
+                    break;
+                } else {
+                    throw new ServiceInvalidException(serviceName + " is invalid on remote machine!");
+                }
+            default:
                 serviceBean = externalMap.get(serviceName);
                 break;
-            default:
-                serviceBean = handlerMap.get(serviceName);
+
         }
         if (serviceBean == null) {
             throw new ServiceInvalidException(serviceName + " is invalid on remote machine!");

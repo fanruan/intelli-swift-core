@@ -14,9 +14,18 @@ public interface TableService {
      *
      * @param schema
      * @param tableName
+     * @throws SwiftMetaDataAbsentException
      * @return
      */
     SwiftMetaData detectiveMetaData(SwiftDatabase schema, String tableName) throws SwiftMetaDataAbsentException;
 
+    /**
+     * 表是否存在
+     *
+     * @param schema
+     * @param tableName
+     * @return
+     * @throws SwiftMetaDataAbsentException
+     */
     boolean isTableExists(SwiftDatabase schema, String tableName) throws SwiftMetaDataAbsentException;
 }

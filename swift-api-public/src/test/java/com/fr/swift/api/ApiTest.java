@@ -13,7 +13,6 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.io.Serializable;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -27,7 +26,7 @@ import static org.junit.Assert.assertTrue;
  * @author yee
  * @date 2018/8/24
  */
-public class ApiTest implements Serializable {
+public class ApiTest {
 
     private static List<Row> datas;
     private static SwiftApiSessionFactoryImpl factory;

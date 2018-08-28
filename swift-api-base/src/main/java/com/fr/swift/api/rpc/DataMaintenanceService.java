@@ -17,6 +17,7 @@ public interface DataMaintenanceService {
     /**
      * 插入指定字段数据
      *
+     * @param schema
      * @param tableName
      * @param fields
      * @param rows
@@ -28,6 +29,7 @@ public interface DataMaintenanceService {
     /**
      * 插入所有字段
      *
+     * @param schema
      * @param tableName
      * @param rows
      * @return
@@ -35,11 +37,21 @@ public interface DataMaintenanceService {
      */
     int insert(SwiftDatabase schema, String tableName, List<Row> rows) throws SQLException;
 
+    /**
+     * 将某查询的结果插入表中
+     *
+     * @param schema
+     * @param tableName
+     * @param queryJson
+     * @return
+     * @throws SQLException
+     */
     int insert(SwiftDatabase schema, String tableName, String queryJson) throws SQLException;
 
     /**
-     * TODO 先占个坑具体再调
+     * 删除接口
      *
+     * @param schema
      * @param tableName
      * @param where
      * @return
@@ -47,8 +59,9 @@ public interface DataMaintenanceService {
     int delete(SwiftDatabase schema, String tableName, Where where);
 
     /**
-     * TODO 先占个坑具体再调
+     * 修改数据接口
      *
+     * @param schema
      * @param tableName
      * @param resultSet
      * @param where
@@ -57,7 +70,7 @@ public interface DataMaintenanceService {
     int update(SwiftDatabase schema, String tableName, SwiftResultSet resultSet, Where where);
 
     /**
-     * TODO 建表
+     * 建表接口
      *
      * @param schema
      * @param tableName
