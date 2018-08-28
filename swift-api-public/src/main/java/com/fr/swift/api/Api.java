@@ -64,9 +64,9 @@ public class Api implements TableService {
         }
 
         @Override
-        public SwiftResultSet query(String queryJson) {
+        public SwiftResultSet query(SwiftDatabase database, String queryJson) {
             SelectService service = ApiProxyFactory.getProxy(SelectService.class, address, maxFrameSize);
-            return service.query(queryJson);
+            return service.query(database, queryJson);
         }
     }
 

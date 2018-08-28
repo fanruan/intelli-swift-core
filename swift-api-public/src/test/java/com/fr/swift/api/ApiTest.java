@@ -58,7 +58,7 @@ public class ApiTest {
         SimpleDetailQueryBean bean = new SimpleDetailQueryBean();
         bean.setTable("e88238c2");
         bean.setColumns(Arrays.asList("id", "name"));
-        SwiftResultSet resultSet = factory.openSession().query(bean.getQueryString());
+        SwiftResultSet resultSet = factory.openSession().query(SwiftDatabase.CUBE, bean.getQueryString());
         while (resultSet.hasNext()) {
             System.out.println(resultSet.getNextRow().getValue(0));
         }

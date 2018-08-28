@@ -45,7 +45,7 @@ class DataMaintenanceServiceImpl implements DataMaintenanceService {
 
     @Override
     public int insert(SwiftDatabase schema, String tableName, String queryJson) throws SQLException {
-        SwiftResultSet resultSet = SwiftContext.get().getBean(SelectService.class).query(queryJson);
+        SwiftResultSet resultSet = SwiftContext.get().getBean(SelectService.class).query(schema, queryJson);
         return insert(schema, tableName, resultSet);
     }
 

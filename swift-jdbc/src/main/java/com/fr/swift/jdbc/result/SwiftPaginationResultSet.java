@@ -1,6 +1,7 @@
 package com.fr.swift.jdbc.result;
 
 import com.fr.swift.api.rpc.result.AbstractSwiftResultSet;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.jdbc.rpc.RpcCaller;
 import com.fr.swift.result.serialize.SerializableDetailResultSet;
 
@@ -13,13 +14,13 @@ import java.sql.SQLException;
 public class SwiftPaginationResultSet extends AbstractSwiftResultSet {
     private RpcCaller.SelectRpcCaller caller;
 
-    public SwiftPaginationResultSet(SerializableDetailResultSet resultSet, RpcCaller.SelectRpcCaller caller) throws SQLException {
-        super(resultSet);
+    public SwiftPaginationResultSet(SerializableDetailResultSet resultSet, RpcCaller.SelectRpcCaller caller, SwiftDatabase database) throws SQLException {
+        super(resultSet, database);
         this.caller = caller;
     }
 
     @Override
     protected AbstractSwiftResultSet queryNextPage(String queryJson) {
-        return (SwiftPaginationResultSet) caller.query(getJsonString());
+        return (SwiftPaginationResultSet) caller.query(database, getJsonString());
     }
 }

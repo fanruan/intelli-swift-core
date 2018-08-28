@@ -1,5 +1,6 @@
 package com.fr.swift.api.rpc.result;
 
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.result.serialize.SerializableDetailResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.util.Crasher;
@@ -12,8 +13,11 @@ import java.util.List;
  * @date 2018/8/27
  */
 public abstract class AbstractSwiftResultSet extends SerializableDetailResultSet {
-    public AbstractSwiftResultSet(SerializableDetailResultSet resultSet) throws SQLException {
+    protected SwiftDatabase database;
+
+    public AbstractSwiftResultSet(SerializableDetailResultSet resultSet, SwiftDatabase swiftDatabase) throws SQLException {
         super(resultSet.getJsonString(), resultSet.getMetaData(), resultSet.getRows(), resultSet.isOriginHasNextPage(), resultSet.getRowCount());
+        this.database = swiftDatabase;
     }
 
     @Override

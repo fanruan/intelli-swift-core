@@ -11,6 +11,7 @@ import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Where;
 import com.fr.swift.exception.meta.SwiftMetaDataAbsentException;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.result.serialize.SerializableDetailResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
@@ -27,6 +28,7 @@ public class SwiftApiSessionImpl implements SwiftApiSession, DataMaintenanceServ
 
     private Api.SelectApi selectApi;
     private Api.DataMaintenanceApi dataMaintenanceApi;
+    private QueryInfoBeanFactory queryInfoBeanFactory = new QueryInfoBeanFactory();
 
     SwiftApiSessionImpl(Api.SelectApi selectApi, Api.DataMaintenanceApi dataMaintenanceApi) {
         this.selectApi = selectApi;
@@ -64,11 +66,11 @@ public class SwiftApiSessionImpl implements SwiftApiSession, DataMaintenanceServ
     }
 
     @Override
-    public SwiftResultSet query(String queryJson) {
-        SwiftResultSet result = selectApi.query(queryJson);
+    public SwiftResultSet query(SwiftDatabase database, String queryJson) {
         try {
-            return new SwiftApiResultSet((SerializableDetailResultSet) result, this);
-        } catch (SQLException e) {
+            SwiftResultSet result = selectApi.query(database, queryJson);
+            return new SwiftApiResultSet((SerializableDetailResultSet) result, database, this);
+        } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
             return null;
         }

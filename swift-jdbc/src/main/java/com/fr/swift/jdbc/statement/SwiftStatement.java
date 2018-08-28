@@ -38,7 +38,7 @@ public class SwiftStatement implements Statement {
         SwiftResultSet resultSet = null;
         try {
             QueryBean queryBean = SqlParserFactory.parsQuery(sql, schema, caller);
-            resultSet = caller.query(queryBean.toString());
+            resultSet = caller.query(schema, queryBean.toString());
         } catch (Exception e) {
             return Crasher.crash(new SwiftJDBCNotSupportedException(sql, e));
         }

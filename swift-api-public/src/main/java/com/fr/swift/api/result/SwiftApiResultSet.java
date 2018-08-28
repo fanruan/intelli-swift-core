@@ -2,6 +2,7 @@ package com.fr.swift.api.result;
 
 import com.fr.swift.api.rpc.result.AbstractSwiftResultSet;
 import com.fr.swift.api.rpc.session.impl.SwiftApiSessionImpl;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.result.serialize.SerializableDetailResultSet;
 
 import java.sql.SQLException;
@@ -13,13 +14,13 @@ import java.sql.SQLException;
 public class SwiftApiResultSet extends AbstractSwiftResultSet {
     private SwiftApiSessionImpl session;
 
-    public SwiftApiResultSet(SerializableDetailResultSet resultSet, SwiftApiSessionImpl session) throws SQLException {
-        super(resultSet);
+    public SwiftApiResultSet(SerializableDetailResultSet resultSet, SwiftDatabase database, SwiftApiSessionImpl session) throws SQLException {
+        super(resultSet, database);
         this.session = session;
     }
 
     @Override
     protected AbstractSwiftResultSet queryNextPage(String queryJson) {
-        return (AbstractSwiftResultSet) session.query(queryJson);
+        return (AbstractSwiftResultSet) session.query(database, queryJson);
     }
 }

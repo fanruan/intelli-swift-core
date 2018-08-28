@@ -76,12 +76,12 @@ public class RpcCaller implements TableService {
         }
 
         @Override
-        public SwiftResultSet query(String queryJson) {
+        public SwiftResultSet query(SwiftDatabase database, String queryJson) {
             ClientProxy proxy = new ClientProxy(new RpcConnector(address));
             try {
                 proxy.start();
-                SwiftResultSet resultSet = proxy.getProxy(SelectService.class).query(queryJson);
-                return new SwiftPaginationResultSet((SerializableDetailResultSet) resultSet, this);
+                SwiftResultSet resultSet = proxy.getProxy(SelectService.class).query(database, queryJson);
+                return new SwiftPaginationResultSet((SerializableDetailResultSet) resultSet, this, database);
             } catch (SQLException e) {
                 SwiftLoggers.getLogger().error(e);
                 return null;
