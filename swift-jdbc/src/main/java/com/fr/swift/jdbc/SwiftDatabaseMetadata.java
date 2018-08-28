@@ -3,9 +3,10 @@ package com.fr.swift.jdbc;
 import com.fr.stable.ArrayUtils;
 import com.fr.stable.StringUtils;
 import com.fr.swift.db.Database;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Table;
-import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
+import com.fr.swift.jdbc.result.ResultSetWrapper;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
@@ -28,10 +29,10 @@ import java.util.Map;
  * Created by pony on 2018/8/17.
  */
 public class SwiftDatabaseMetadata implements DatabaseMetaData {
-    private static final Database DB = SwiftDatabase.getInstance();
-    private SwiftDatabase.Schema schema;
+    private static final Database DB = com.fr.swift.db.impl.SwiftDatabase.getInstance();
+    private SwiftDatabase schema;
 
-    public SwiftDatabaseMetadata(SwiftDatabase.Schema schema) {
+    public SwiftDatabaseMetadata(SwiftDatabase schema) {
         this.schema = schema;
     }
 
@@ -639,12 +640,12 @@ public class SwiftDatabaseMetadata implements DatabaseMetaData {
     public ResultSet getTables(String catalog, String schemaPattern, String tableNamePattern, String[] types) throws SQLException {
         List<Row> tables = new ArrayList<Row>();
         if (ArrayUtils.contains(types, "TABLE")){
-            SwiftDatabase.Schema schema = this.schema == null ? SwiftDatabase.Schema.valueOf(schemaPattern) : this.schema;
+            SwiftDatabase schema = this.schema == null ? SwiftDatabase.valueOf(schemaPattern) : this.schema;
             for (Table table : DB.getAllTables()) {
                 SwiftMetaData meta = table.getMeta();
-                if (meta.getSwiftSchema() == schema) {
+                if (meta.getSwiftDatabase() == schema) {
                     List list = new ArrayList();
-                    list.add(meta.getSwiftSchema().getName());
+                    list.add(meta.getSwiftDatabase().getName());
                     //没有schema,实际上是databaseName
                     list.add(null);
                     list.add(meta.getTableName());
@@ -674,11 +675,11 @@ public class SwiftDatabaseMetadata implements DatabaseMetaData {
 
     @Override
     public ResultSet getColumns(String catalog, String schemaPattern, String tableNamePattern, String columnNamePattern) throws SQLException {
-        SwiftDatabase.Schema schema = this.schema == null ? SwiftDatabase.Schema.valueOf(schemaPattern) : this.schema;
+        SwiftDatabase schema = this.schema == null ? SwiftDatabase.valueOf(schemaPattern) : this.schema;
         Table table = DB.getTable(new SourceKey(tableNamePattern));
         List<Row> fields = new ArrayList<Row>();
         SwiftMetaData metaData = table.getMeta();
-        if (table.getMeta().getSwiftSchema() == schema){
+        if (table.getMeta().getSwiftDatabase() == schema) {
             for (int i = 0;i < metaData.getColumnCount(); i++){
                 SwiftMetaDataColumn column = metaData.getColumn(i+1);
                 List list = new ArrayList();

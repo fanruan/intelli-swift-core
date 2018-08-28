@@ -82,7 +82,7 @@ public class RealtimeRollback extends BaseTest {
             SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
             Segment segment = localSegmentProvider.getSegment(dataSource.getSourceKey()).get(0);
 
-            assertEquals(redisClient.llen(String.format("%s/7bc94acd/seg0", dataSource.getMetadata().getSwiftSchema().getBackupDir())), 0);
+            assertEquals(redisClient.llen(String.format("%s/7bc94acd/seg0", dataSource.getMetadata().getSwiftDatabase().getBackupDir())), 0);
             //rowcount和索引都不会回滚
             assertEquals(segment.getRowCount(), 42);
             Column column = segment.getColumn(new ColumnKey("USER_NAME"));
@@ -122,7 +122,7 @@ public class RealtimeRollback extends BaseTest {
             SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
             Segment segment = localSegmentProvider.getSegment(dataSource.getSourceKey()).get(0);
 
-            assertEquals(redisClient.llen(String.format("%s/7bc94acd/seg0", dataSource.getMetadata().getSwiftSchema().getBackupDir())), 42);
+            assertEquals(redisClient.llen(String.format("%s/7bc94acd/seg0", dataSource.getMetadata().getSwiftDatabase().getBackupDir())), 42);
             assertEquals(segment.getRowCount(), 42);
             assertTrue(segment.getAllShowIndex().contains(0));
             assertTrue(segment.getAllShowIndex().contains(41));
@@ -142,7 +142,7 @@ public class RealtimeRollback extends BaseTest {
             incrementer = new TestIncrementer(dataSource);
             incrementer.insertData(resultSet);
 
-            assertEquals(redisClient.llen(String.format("%s/7bc94acd/seg0", dataSource.getMetadata().getSwiftSchema().getBackupDir())), 42);
+            assertEquals(redisClient.llen(String.format("%s/7bc94acd/seg0", dataSource.getMetadata().getSwiftDatabase().getBackupDir())), 42);
             //rowcount不回滚
             assertEquals(segment.getRowCount(), 84);
             //allshow回滚
@@ -218,7 +218,7 @@ public class RealtimeRollback extends BaseTest {
             IResourceLocation location = currentSeg.getLocation();
             String uri = String.format("%s/seg%d", dataSource.getSourceKey().getId(), count++);
             SegmentKey segKey = new SegmentKeyBean(dataSource.getSourceKey().getId(),
-                    URI.create(uri), count, location.getStoreType(), currentSeg.getMetaData().getSwiftSchema());
+                    URI.create(uri), count, location.getStoreType(), currentSeg.getMetaData().getSwiftDatabase());
             if (!SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).containsSegment(segKey)) {
                 SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).addSegments(Collections.singletonList(segKey));
             }

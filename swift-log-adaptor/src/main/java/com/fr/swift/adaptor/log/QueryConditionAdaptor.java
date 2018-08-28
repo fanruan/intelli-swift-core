@@ -19,7 +19,7 @@ import com.fr.swift.query.info.bean.element.filter.impl.StringOneValueFilterBean
 import com.fr.swift.query.info.bean.element.filter.impl.value.RangeFilterValueBean;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
-import com.fr.swift.query.info.element.dimension.Dimension;
+import com.fr.swift.query.info.bean.type.DimensionType;
 import com.fr.swift.query.sort.SortType;
 
 import java.sql.SQLException;
@@ -49,7 +49,7 @@ public class QueryConditionAdaptor {
             // TODO: 2018/6/21 维度上的排序没适配
             DimensionBean bean = new DimensionBean();
             bean.setColumn(fieldNames.get(i));
-            bean.setDimensionType(Dimension.DimensionType.DETAIL);
+            bean.setDimensionType(DimensionType.DETAIL);
             GroupBean groupBean = new GroupBean();
             groupBean.setType(GroupType.NONE);
             bean.setGroupBean(groupBean);

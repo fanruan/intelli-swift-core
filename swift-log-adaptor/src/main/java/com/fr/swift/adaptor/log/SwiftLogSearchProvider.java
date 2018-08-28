@@ -13,7 +13,7 @@ import com.fr.swift.query.info.bean.element.filter.impl.AndFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NotFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NullFilterBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
-import com.fr.swift.query.info.element.metric.Metric;
+import com.fr.swift.query.info.bean.type.MetricType;
 import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
@@ -147,7 +147,7 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
 
         List<com.fr.swift.query.info.bean.element.MetricBean> metrics = new ArrayList<com.fr.swift.query.info.bean.element.MetricBean>();
         com.fr.swift.query.info.bean.element.MetricBean bean = new com.fr.swift.query.info.bean.element.MetricBean();
-        bean.setMetricType(Metric.MetricType.GROUP);
+        bean.setMetricType(MetricType.GROUP);
         if (StringUtils.isEmpty(columnName)) {
             bean.setType(AggregatorType.COUNT);
             bean.setColumn("");

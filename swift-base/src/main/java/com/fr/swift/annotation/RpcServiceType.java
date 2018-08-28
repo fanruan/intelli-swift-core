@@ -8,6 +8,7 @@ package com.fr.swift.annotation;
  * @since Advanced FineBI 5.0
  */
 public enum RpcServiceType {
-    SERVER_SERVICE, CLIENT_SERVICE
+    //
+    INTERNAL, EXTERNAL
 }
 

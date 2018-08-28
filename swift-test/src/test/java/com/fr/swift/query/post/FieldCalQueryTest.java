@@ -1,8 +1,8 @@
 package com.fr.swift.query.post;
 
 import com.fr.stable.StringUtils;
+import com.fr.swift.query.info.bean.type.cal.CalTargetType;
 import com.fr.swift.query.info.element.target.GroupTarget;
-import com.fr.swift.query.info.element.target.cal.CalTargetType;
 import com.fr.swift.query.info.element.target.cal.GroupTargetImpl;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSetImpl;

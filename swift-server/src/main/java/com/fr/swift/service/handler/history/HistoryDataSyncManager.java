@@ -87,8 +87,12 @@ public class HistoryDataSyncManager extends AbstractHandler<HistoryLoadSegmentRp
                                 Map<String, List<Pair<String, String>>> segmentTable = new HashMap<String, List<Pair<String, String>>>();
                                 segmentTable.put(key, idList);
                                 clusterSegmentService.updateSegmentTable(segmentTable);
-                                SwiftServiceHandlerManager.getManager().
-                                        handle(new SegmentLocationRpcEvent(SegmentLocationInfo.UpdateType.ALL, new SegmentLocationInfoImpl(ServiceType.HISTORY, destinations)));
+                                try {
+                                    SwiftServiceHandlerManager.getManager().
+                                            handle(new SegmentLocationRpcEvent(SegmentLocationInfo.UpdateType.ALL, new SegmentLocationInfoImpl(ServiceType.HISTORY, destinations)));
+                                } catch (Exception e) {
+                                    fail(e);
+                                }
                             }
 
                             @Override

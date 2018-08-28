@@ -1,8 +1,8 @@
 package com.fr.swift.config;
 
-import com.fr.swift.config.service.SwiftRepositoryConfService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.repository.config.FtpRepositoryConfig;
+import com.fr.swift.service.SwiftRepositoryConfService;
 import com.fr.swift.test.Preparer;
 import org.junit.Before;
 import org.junit.Test;

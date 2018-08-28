@@ -1,7 +1,7 @@
 package com.fr.swift.query.info.group.post;
 
 import com.fr.swift.query.aggregator.Aggregator;
-import com.fr.swift.query.post.PostQueryType;
+import com.fr.swift.query.info.bean.type.PostQueryType;
 
 import java.util.List;
 

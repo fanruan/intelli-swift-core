@@ -46,7 +46,7 @@ import java.util.Map;
  * @date 2018/8/6
  */
 @SwiftService(name = "realtime", cluster = true)
-@RpcService(type = RpcServiceType.CLIENT_SERVICE, value = RealtimeService.class)
+@RpcService(type = RpcServiceType.INTERNAL, value = RealtimeService.class)
 public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements ClusterRealTimeService, Serializable {
     private static final long serialVersionUID = 946204307880678794L;
 
@@ -69,6 +69,7 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
     }
 
     @Override
+    @RpcMethod(methodName = "realtimneInsert")
     public void insert(final SourceKey tableKey, final SwiftResultSet resultSet) throws Exception {
 
         taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.INSERT) {

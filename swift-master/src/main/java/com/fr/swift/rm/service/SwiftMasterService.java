@@ -23,7 +23,7 @@ import java.util.List;
  * @since Advanced FineBI 5.0
  */
 @Service("swiftMasterService")
-@RpcService(value = MasterService.class, type = RpcServiceType.SERVER_SERVICE)
+@RpcService(value = MasterService.class, type = RpcServiceType.INTERNAL)
 public class SwiftMasterService implements MasterService {
 
     @Override

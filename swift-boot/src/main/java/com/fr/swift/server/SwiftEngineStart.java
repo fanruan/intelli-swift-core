@@ -38,8 +38,8 @@ public class SwiftEngineStart {
         try {
             SwiftLoggers.setLoggerFactory(new SwiftLog4jLoggers());
             SimpleWork.checkIn(System.getProperty("user.dir"));
-            SwiftContext.init();
             ClusterListenerHandler.addListener(new SwiftClusterListener());
+            SwiftContext.init();
             registerTmpConnectionProvider();
             FineIO.setLogger(new FineIOLoggerImpl());
             ProviderTaskManager.start();

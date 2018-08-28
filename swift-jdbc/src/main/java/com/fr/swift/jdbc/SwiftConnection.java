@@ -1,9 +1,14 @@
 package com.fr.swift.jdbc;
 
-import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
+import com.fr.swift.jdbc.exception.URLEmptyException;
+import com.fr.swift.jdbc.exception.URLFormatException;
+import com.fr.swift.jdbc.session.SwiftJdbcSessionFactory;
+import com.fr.swift.jdbc.session.impl.SwiftJdbcSessionFactoryImpl;
 import com.fr.swift.util.Crasher;
 
+import java.net.URI;
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.CallableStatement;
@@ -27,16 +32,68 @@ import java.util.concurrent.Executor;
  * Created by pony on 2018/8/17.
  */
 public class SwiftConnection implements java.sql.Connection {
+    private static final String JDBC_HEAD = "jdbc";
+    private static final String PROTOCOL = "swift";
+    private static final String EMPTY = "";
+    private static final String SEPARATOR = "/";
     //先写死，只能查平台的表
-    private SwiftDatabase.Schema SCHEMA = SwiftDatabase.Schema.DECISION_LOG;
+    private SwiftDatabase SCHEMA = SwiftDatabase.DECISION_LOG;
+    private String host;
+    private int port;
+    private String username;
+    private String password;
+    private SwiftJdbcSessionFactory sessionFactory;
+
+    public SwiftConnection(String url) {
+        this(url, null);
+    }
+
+    public SwiftConnection(String url, String username) {
+        this(url, username, null);
+    }
+
+    public SwiftConnection(String url, String username, String password) {
+        if (null != url) {
+            if (url.toLowerCase().startsWith(JDBC_HEAD)) {
+                url = url.substring(5);
+                URI uri = URI.create(url);
+                String schema = uri.getScheme();
+                if (PROTOCOL.equalsIgnoreCase(schema)) {
+                    host = uri.getHost();
+                    port = uri.getPort();
+                    port = port == -1 ? 7000 : port;
+                    String dbName = uri.getPath();
+                    if (null == dbName || EMPTY.equals(dbName.trim())) {
+                        SCHEMA = SwiftDatabase.DECISION_LOG;
+                    }
+                    dbName = dbName.startsWith(SEPARATOR) ? dbName.substring(1) : dbName;
+                    try {
+                        SCHEMA = SwiftDatabase.valueOf(dbName.toUpperCase());
+                    } catch (Exception e) {
+                        SCHEMA = SwiftDatabase.DECISION_LOG;
+                    }
+                    this.username = username;
+                    this.password = password;
+                    sessionFactory = new SwiftJdbcSessionFactoryImpl(SCHEMA, host, port);
+                } else {
+                    throw new URLFormatException(url);
+                }
+            } else {
+                throw new URLFormatException(url);
+            }
+        } else {
+            throw new URLEmptyException();
+        }
+    }
+
     @Override
     public Statement createStatement() throws SQLException {
-        return new SwiftStatement();
+        return sessionFactory.openSession().createStatement();
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql) throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+        return sessionFactory.openSession().preparedStatement(sql);
     }
 
     @Override
@@ -71,7 +128,6 @@ public class SwiftConnection implements java.sql.Connection {
 
     @Override
     public void close() throws SQLException {
-
     }
 
     @Override
@@ -126,7 +182,7 @@ public class SwiftConnection implements java.sql.Connection {
 
     @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
-        return new SwiftStatement();
+        return sessionFactory.openSession().createStatement();
     }
 
     @Override

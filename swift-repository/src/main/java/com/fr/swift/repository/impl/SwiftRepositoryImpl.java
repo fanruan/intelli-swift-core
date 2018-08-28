@@ -2,10 +2,10 @@ package com.fr.swift.repository.impl;
 
 import com.fr.general.CommonIOUtils;
 import com.fr.io.utils.ResourceIOUtils;
-import com.fr.swift.config.bean.SwiftFileSystemConfig;
 import com.fr.swift.file.exception.SwiftFileException;
 import com.fr.swift.file.system.SwiftFileSystem;
 import com.fr.swift.repository.AbstractRepository;
+import com.fr.swift.repository.SwiftFileSystemConfig;
 import com.fr.swift.repository.utils.ZipUtils;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.FileUtil;

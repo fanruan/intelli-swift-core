@@ -3,9 +3,9 @@ package com.fr.swift.netty.rpc.client.async;
 import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.RpcFuture;
 import com.fr.swift.basics.base.AbstractRpcFuture;
-import com.fr.swift.netty.rpc.bean.RpcRequest;
-import com.fr.swift.netty.rpc.bean.RpcResponse;
 import com.fr.swift.netty.rpc.client.RpcClient;
+import com.fr.swift.rpc.bean.RpcRequest;
+import com.fr.swift.rpc.bean.RpcResponse;
 
 import java.util.concurrent.TimeUnit;
 

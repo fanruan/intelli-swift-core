@@ -11,7 +11,7 @@ import com.fr.swift.netty.rpc.NettyService;
  * @description
  * @since Advanced FineBI 5.0
  */
-@RpcService(value = NettyService.class, type = RpcServiceType.SERVER_SERVICE)
+@RpcService(value = NettyService.class, type = RpcServiceType.INTERNAL)
 public class NettyServiceImpl implements NettyService {
     @Override
     public String print(String name) {

@@ -1,6 +1,6 @@
 package com.fr.swift.query.post;
 
-import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
 import com.fr.swift.query.post.utils.ResultJoinUtils;
@@ -35,7 +35,7 @@ public class PostQueryTestUtils {
     public static SwiftMetaData createMetaData(String tableName, String[] columnNames) {
         return new SwiftMetaData() {
             @Override
-            public SwiftDatabase.Schema getSwiftSchema() {
+            public SwiftDatabase getSwiftDatabase() {
                 return null;
             }
 
@@ -112,6 +112,11 @@ public class PostQueryTestUtils {
             @Override
             public List<String> getFieldNames() {
                 return new ArrayList<>(Arrays.asList(columnNames));
+            }
+
+            @Override
+            public String getId() {
+                return null;
             }
         };
     }

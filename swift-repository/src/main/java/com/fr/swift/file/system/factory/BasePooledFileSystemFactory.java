@@ -1,8 +1,8 @@
 package com.fr.swift.file.system.factory;
 
-import com.fr.swift.config.bean.SwiftFileSystemConfig;
 import com.fr.swift.file.system.SwiftFileSystem;
 import com.fr.swift.file.system.pool.BaseRemoteSystemPool;
+import com.fr.swift.repository.SwiftFileSystemConfig;
 
 import java.util.concurrent.ConcurrentHashMap;
 

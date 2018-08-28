@@ -18,8 +18,8 @@ import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
 import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
 import com.fr.swift.query.info.bean.post.RowSortQueryInfoBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
-import com.fr.swift.query.info.element.dimension.Dimension;
-import com.fr.swift.query.info.element.metric.Metric;
+import com.fr.swift.query.info.bean.type.DimensionType;
+import com.fr.swift.query.info.bean.type.MetricType;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.query.sort.SortType;
@@ -61,7 +61,7 @@ public class LogQueryUtils {
             // TODO: 2018/6/21 维度上的排序没适配
             DimensionBean bean = new DimensionBean();
             bean.setColumn(fieldNames.get(i));
-            bean.setDimensionType(Dimension.DimensionType.GROUP);
+            bean.setDimensionType(DimensionType.GROUP);
             GroupBean groupBean = new GroupBean();
             groupBean.setType(GroupType.NONE);
             bean.setGroupBean(groupBean);
@@ -73,7 +73,7 @@ public class LogQueryUtils {
         for (int i = 0; i < metricBeans.size(); i++) {
             MetricBean metricBean = metricBeans.get(i);
             com.fr.swift.query.info.bean.element.MetricBean bean = new com.fr.swift.query.info.bean.element.MetricBean();
-            bean.setMetricType(Metric.MetricType.GROUP);
+            bean.setMetricType(MetricType.GROUP);
             bean.setColumn(metricBean.getFiledName());
             bean.setName(metricBean.getName());
             bean.setType(getAggType(metricBean));

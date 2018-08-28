@@ -1,12 +1,12 @@
 package com.fr.swift.repository.manager;
 
-import com.fr.swift.config.bean.SwiftFileSystemConfig;
-import com.fr.swift.config.service.SwiftRepositoryConfService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.repository.SwiftFileSystemConfig;
 import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.config.DefaultRepositoryConfig;
 import com.fr.swift.repository.impl.SwiftRepositoryImpl;
+import com.fr.swift.service.SwiftRepositoryConfService;
 
 /**
  * @author yee

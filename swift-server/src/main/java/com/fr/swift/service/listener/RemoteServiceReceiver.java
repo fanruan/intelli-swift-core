@@ -38,7 +38,12 @@ public class RemoteServiceReceiver implements SwiftServiceListenerHandler {
 
     @Override
     public Serializable trigger(SwiftRpcEvent event) {
-        return SwiftServiceHandlerManager.getManager().handle(event);
+        try {
+            return SwiftServiceHandlerManager.getManager().handle(event);
+        } catch (Exception e) {
+            LOGGER.error(e);
+            return null;
+        }
     }
 
     @Override

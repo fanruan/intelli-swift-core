@@ -31,5 +31,7 @@
     <!--共享存储-->
     <context:component-scan base-package="com.fr.swift.file"/>
 
+    <context:component-scan base-package="com.fr.swift.api"/>
+
     <import resource="swift-beans.xml"/>
 </beans>

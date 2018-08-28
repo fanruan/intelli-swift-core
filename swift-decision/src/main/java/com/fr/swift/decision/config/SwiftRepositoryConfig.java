@@ -6,11 +6,11 @@ import com.fr.config.holder.Conf;
 import com.fr.config.holder.factory.Holders;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.config.service.SwiftRepositoryConfService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.decision.config.base.SwiftAbstractObjectMapConfig;
 import com.fr.swift.decision.config.unique.RepositoryConfigUnique;
 import com.fr.swift.file.SwiftRemoteFileSystemType;
+import com.fr.swift.service.SwiftRepositoryConfService;
 import com.fr.transaction.Configurations;
 import com.fr.transaction.Worker;
 

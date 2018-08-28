@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 public class Driver implements java.sql.Driver {
     @Override
     public Connection connect(String url, Properties info) throws SQLException {
-        return new SwiftConnection();
+        return new SwiftConnection(url);
     }
 
     @Override

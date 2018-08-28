@@ -1,6 +1,5 @@
 package com.fr.swift.repository;
 
-import com.fr.swift.config.bean.SwiftFileSystemConfig;
 import com.fr.swift.file.SwiftFileSystemType;
 import com.fr.swift.file.SwiftRemoteFileSystemType;
 import com.fr.swift.file.exception.SwiftFileException;

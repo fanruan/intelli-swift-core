@@ -1,7 +1,7 @@
 package com.fr.swift.source;
 
 import com.fr.swift.config.bean.SwiftMetaDataBean;
-import com.fr.swift.db.impl.SwiftDatabase.Schema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.third.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fr.third.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -19,7 +19,7 @@ import java.util.List;
         @JsonSubTypes.Type(SwiftMetaDataBean.class)
 })
 public interface SwiftMetaData {
-    Schema getSwiftSchema();
+    SwiftDatabase getSwiftDatabase();
 
     String getSchemaName() throws SwiftMetaDataException;
 
@@ -72,4 +72,6 @@ public interface SwiftMetaData {
     String getColumnId(String columnName) throws SwiftMetaDataException;
 
     List<String> getFieldNames();
+
+    String getId();
 }

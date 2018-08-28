@@ -98,10 +98,10 @@ public class RealtimeMerger implements Merger {
 
     protected Segment createSegment(int order) {
         String cubePath = String.format("%s/%s/seg%d",
-                metaData.getSwiftSchema().getDir(),
+                metaData.getSwiftDatabase().getDir(),
                 cubeSourceKey, order);
         IResourceLocation location = new ResourceLocation(cubePath);
-        configSegment.add(new SegmentKeyBean(sourceKey.getId(), location.getUri(), order, StoreType.FINE_IO, metaData.getSwiftSchema()));
+        configSegment.add(new SegmentKeyBean(sourceKey.getId(), location.getUri(), order, StoreType.FINE_IO, metaData.getSwiftDatabase()));
         return SegmentUtils.newHistorySegment(location, metaData);
     }
 
@@ -109,7 +109,7 @@ public class RealtimeMerger implements Merger {
         persistMeta();
         persistSegment();
         String basePath = String.format("%s/%s",
-                metaData.getSwiftSchema().getDir(), sourceKey.getId());
+                metaData.getSwiftDatabase().getDir(), sourceKey.getId());
         ResourceDiscovery.getInstance().removeCubeResource(Strings.trimSeparator(basePath, "\\", "/"));
     }
 

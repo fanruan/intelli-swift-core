@@ -1,6 +1,7 @@
 package com.fr.swift.query.info.element.target.cal;
 
 import com.fr.swift.query.group.GroupType;
+import com.fr.swift.query.info.bean.type.cal.CalTargetType;
 import com.fr.swift.structure.Pair;
 
 import java.util.List;

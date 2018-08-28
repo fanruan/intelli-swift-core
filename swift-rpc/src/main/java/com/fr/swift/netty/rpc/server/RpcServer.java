@@ -12,7 +12,6 @@ import com.fr.third.jodd.util.StringUtil;
 import com.fr.third.org.apache.commons.collections4.MapUtils;
 import com.fr.third.springframework.beans.BeansException;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.beans.factory.annotation.Value;
 import com.fr.third.springframework.context.ApplicationContext;
 import com.fr.third.springframework.stereotype.Service;
 import io.netty.bootstrap.ServerBootstrap;
@@ -54,11 +53,11 @@ public class RpcServer {
      * value:服务对象
      */
     private Map<String, Object> handlerMap = new HashMap<String, Object>();
+    private Map<String, Object> externalMap = new HashMap<String, Object>();
     private Map<String, Method> methodMap = new HashMap<String, Method>();
 
     @Autowired
-    public RpcServer(ServiceRegistry serviceRegistry,
-                     @Value("SERVER_SERVICE") RpcServiceType serviceType) {
+    public RpcServer(ServiceRegistry serviceRegistry) {
         swiftProperty = SwiftContext.get().getBean("swiftProperty", SwiftProperty.class);
         this.serviceAddress = swiftProperty.getServerAddress();
         this.serviceRegistry = serviceRegistry;
@@ -71,8 +70,13 @@ public class RpcServer {
             for (Object serviceBean : serviceBeanMap.values()) {
                 RpcService rpcService = serviceBean.getClass().getAnnotation(RpcService.class);
                 String serviceName = rpcService.value().getName();
+                RpcServiceType rpcServiceType = rpcService.type();
                 LOGGER.debug("Load service:" + serviceName);
-                handlerMap.put(serviceName, serviceBean);
+                if (rpcServiceType == RpcServiceType.EXTERNAL) {
+                    externalMap.put(serviceName, serviceBean);
+                } else {
+                    handlerMap.put(serviceName, serviceBean);
+                }
                 for (Method method : serviceBean.getClass().getMethods()) {
                     RpcMethod rpcMethod = method.getAnnotation(RpcMethod.class);
                     if (rpcMethod != null) {
@@ -100,7 +104,7 @@ public class RpcServer {
                                     .weakCachingConcurrentResolver(this.getClass()
                                             .getClassLoader())));
                     pipeline.addLast(new ObjectEncoder());
-                    pipeline.addLast(new RpcServerHandler(handlerMap)); // 处理 RPC 请求
+                    pipeline.addLast(new RpcServerHandler(handlerMap, externalMap)); // 处理 RPC 请求
                 }
             });
             bootstrap.option(ChannelOption.SO_BACKLOG, 1024);

@@ -57,7 +57,7 @@ import static com.fr.swift.task.TaskResult.Type.SUCCEEDED;
  * @date 2018/8/6
  */
 @SwiftService(name = "indexing", cluster = true)
-@RpcService(type = RpcServiceType.CLIENT_SERVICE, value = IndexingService.class)
+@RpcService(type = RpcServiceType.INTERNAL, value = IndexingService.class)
 public class ClusterIndexingService extends AbstractSwiftService implements IndexingService, Serializable {
 
     private static final long serialVersionUID = 3153509375653090856L;
@@ -159,7 +159,7 @@ public class ClusterIndexingService extends AbstractSwiftService implements Inde
                         && locationService.delete(sourceKey.getId(), id)) {
                     String deletePath = String.format("%s/%s/%d/%s",
                             pathService.getSwiftPath(),
-                            dataSource.getMetadata().getSwiftSchema().getDir(),
+                            dataSource.getMetadata().getSwiftDatabase().getDir(),
                             path,
                             sourceKey.getId());
                     FileUtil.delete(deletePath);
@@ -255,7 +255,7 @@ public class ClusterIndexingService extends AbstractSwiftService implements Inde
                         Integer tmpPath = entity.getTmpDir();
                         String deletePath = String.format("%s/%s/%d/%s",
                                 pathService.getSwiftPath(),
-                                ((DataSource) obj).getMetadata().getSwiftSchema().getDir(),
+                                ((DataSource) obj).getMetadata().getSwiftDatabase().getDir(),
                                 tmpPath,
                                 sourceKey.getId());
                         FileUtil.delete(deletePath);

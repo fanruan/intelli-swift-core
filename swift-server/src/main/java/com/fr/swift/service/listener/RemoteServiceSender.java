@@ -15,7 +15,7 @@ import java.io.Serializable;
  * Created by pony on 2017/11/9.
  * 待实现，向远程的serverService注册本地启动的服务，触发事件
  */
-@RpcService(value = SwiftServiceListenerHandler.class, type = RpcServiceType.SERVER_SERVICE)
+@RpcService(value = SwiftServiceListenerHandler.class, type = RpcServiceType.INTERNAL)
 public class RemoteServiceSender implements SwiftServiceListenerHandler {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(RemoteServiceSender.class);

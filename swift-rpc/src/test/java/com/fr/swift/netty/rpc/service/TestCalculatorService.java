@@ -12,7 +12,7 @@ import com.fr.swift.netty.rpc.CalculatorService;
  * @description
  * @since Advanced FineBI 5.0
  */
-@RpcService(value = CalculatorService.class, type = RpcServiceType.SERVER_SERVICE)
+@RpcService(value = CalculatorService.class, type = RpcServiceType.INTERNAL)
 public class TestCalculatorService implements CalculatorService {
 
     @Override

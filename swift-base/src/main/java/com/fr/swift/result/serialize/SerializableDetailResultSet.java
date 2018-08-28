@@ -18,12 +18,12 @@ import java.util.List;
 public class SerializableDetailResultSet implements DetailResultSet, SerializableResultSet {
     private static final long serialVersionUID = -2306723089258907631L;
 
-    private String jsonString;
-    private SwiftMetaData metaData;
-    private List<Row> rows;
-    private int rowCount;
-    private boolean hasNextPage = true;
-    private boolean originHasNextPage;
+    protected String jsonString;
+    protected SwiftMetaData metaData;
+    protected List<Row> rows;
+    protected int rowCount;
+    protected boolean hasNextPage = true;
+    protected boolean originHasNextPage;
     private transient Iterator<Row> rowIterator;
 
     public SerializableDetailResultSet(String jsonString, SwiftMetaData metaData, List<Row> rows,
@@ -92,5 +92,17 @@ public class SerializableDetailResultSet implements DetailResultSet, Serializabl
     @Override
     public void close() throws SQLException {
 
+    }
+
+    public String getJsonString() {
+        return jsonString;
+    }
+
+    public List<Row> getRows() {
+        return rows;
+    }
+
+    public boolean isOriginHasNextPage() {
+        return originHasNextPage;
     }
 }

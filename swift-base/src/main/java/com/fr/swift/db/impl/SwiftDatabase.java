@@ -11,6 +11,7 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Crasher;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ import java.util.Map.Entry;
  * @author anchore
  * @date 2018/3/28
  */
-public class SwiftDatabase implements Database {
+public class SwiftDatabase implements Database, Serializable {
     private static final SwiftMetaDataService CONF_SVC = SwiftContext.get().getBean(SwiftMetaDataService.class);
 
     @Override
@@ -84,38 +85,4 @@ public class SwiftDatabase implements Database {
         return INSTANCE;
     }
 
-    public enum Schema {
-        /**
-         * 默认schema
-         */
-        CUBE(0, "cube", "cubes"),
-        DECISION_LOG(1, "decision_log", "logs/cubes"),
-        MINOR_CUBE(2, "minor_cube", "minor_cubes");
-
-        private final int id;
-        private final String name;
-        private final String dir;
-
-        Schema(int id, String name, String dir) {
-            this.id = id;
-            this.name = name;
-            this.dir = dir;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public String getDir() {
-            return dir;
-        }
-
-        public String getBackupDir() {
-            return String.format("%s/bak", dir);
-        }
-
-        public String getName() {
-            return name;
-        }
-    }
 }

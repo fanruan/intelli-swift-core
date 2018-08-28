@@ -6,15 +6,12 @@ import com.fr.general.jsqlparser.schema.Column;
 import com.fr.general.jsqlparser.statement.select.AllColumns;
 import com.fr.general.jsqlparser.statement.select.AllTableColumns;
 import com.fr.general.jsqlparser.statement.select.SelectExpressionItem;
-import com.fr.swift.db.Table;
-import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
 import com.fr.swift.jdbc.exception.SwiftJDBCTableAbsentException;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.info.bean.element.MetricBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
-import com.fr.swift.query.info.element.metric.Metric;
-import com.fr.swift.source.SourceKey;
+import com.fr.swift.query.info.bean.type.MetricType;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Crasher;
 
@@ -29,26 +26,19 @@ import java.util.Map;
  */
 public class GroupQueryBeanVisitor extends AbstractQueryBeanVisitor {
     protected GroupQueryInfoBean queryBean;
+    private static final Map<String, AggregatorType> function2AggType = new HashMap<String, AggregatorType>() {{
+        put("sum", AggregatorType.SUM);
+        put("count", AggregatorType.COUNT);
+        put("min", AggregatorType.MIN);
+        put("max", AggregatorType.MAX);
+        put("avg", AggregatorType.AVERAGE);
+    }};
+    private SwiftMetaDataGetter metaDataGetter;
 
-    public GroupQueryBeanVisitor(GroupQueryInfoBean queryBean) {
+    public GroupQueryBeanVisitor(GroupQueryInfoBean queryBean, SwiftMetaDataGetter getter) {
         super(queryBean);
         this.queryBean = queryBean;
-    }
-
-    @Override
-    public void visit(AllColumns allColumns) {
-        Table table = SwiftDatabase.getInstance().getTable(new SourceKey(queryBean.getTableName()));
-        if (table == null){
-            Crasher.crash(new SwiftJDBCTableAbsentException(queryBean.getTableName()));
-        }
-        try {
-            SwiftMetaData metaData = table.getMeta();
-            for (int i = 0; i < metaData.getColumnCount(); i++){
-                addColumn(metaData.getColumnName(i + 1));
-            }
-        } catch (SQLException e) {
-            Crasher.crash(e);
-        }
+        this.metaDataGetter = getter;
     }
 
     @Override
@@ -62,24 +52,32 @@ public class GroupQueryBeanVisitor extends AbstractQueryBeanVisitor {
     }
 
     @Override
-    public void visit(Function function) {
-        List<Expression> expressions = function.getParameters().getExpressions();
-        if (expressions.size() != 1 && !(expressions.get(0) instanceof Column)){
-            Crasher.crash(new SwiftJDBCNotSupportedException());
+    public void visit(AllColumns allColumns) {
+        SwiftMetaData metaData = metaDataGetter.get();
+        if (null == metaData) {
+            Crasher.crash(new SwiftJDBCTableAbsentException(queryBean.getTableName()));
         }
-        addColumn(((Column)expressions.get(0)).getColumnName(), getAggType(function.getName()));
+        queryBean.setTableName(metaData.getId());
+        try {
+            for (int i = 0; i < metaData.getColumnCount(); i++) {
+                addColumn(metaData.getColumnName(i + 1));
+            }
+        } catch (SQLException e) {
+            Crasher.crash(e);
+        }
     }
 
-    private static final Map<String, AggregatorType> function2AggType = new HashMap<String, AggregatorType>(){{
-        put("sum", AggregatorType.SUM);
-        put("count", AggregatorType.COUNT);
-        put("min", AggregatorType.MIN);
-        put("max", AggregatorType.MAX);
-        put("avg", AggregatorType.AVERAGE);
-    }};
+    @Override
+    public void visit(Function function) {
+        List<Expression> expressions = function.getParameters().getExpressions();
+        if (expressions.size() != 1 && !(expressions.get(0) instanceof Column)) {
+            Crasher.crash(new SwiftJDBCNotSupportedException());
+        }
+        addColumn(((Column) expressions.get(0)).getColumnName(), getAggType(function.getName()));
+    }
 
     private AggregatorType getAggType(String name) {
-        if (function2AggType.containsKey(name)){
+        if (function2AggType.containsKey(name)) {
             return function2AggType.get(name);
         }
         return AggregatorType.COUNT;
@@ -93,13 +91,13 @@ public class GroupQueryBeanVisitor extends AbstractQueryBeanVisitor {
 
     protected void addColumn(String columnName, AggregatorType type) {
         List<MetricBean> metrics = queryBean.getMetricBeans();
-        if (metrics == null){
+        if (metrics == null) {
             metrics = new ArrayList<MetricBean>();
             queryBean.setMetricBeans(metrics);
         }
         MetricBean bean = new MetricBean();
         bean.setColumn(columnName);
-        bean.setMetricType(Metric.MetricType.GROUP);
+        bean.setMetricType(MetricType.GROUP);
         bean.setType(type);
         metrics.add(bean);
     }

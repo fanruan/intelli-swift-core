@@ -5,9 +5,9 @@ import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.exception.SwiftServiceException;
-import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryRunnerProvider;
+import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
@@ -36,6 +36,8 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
 
     private transient SwiftSegmentService segmentProvider;
 
+    private transient SessionFactory sessionFactory;
+
     private transient boolean loadable = true;
 
     private SwiftAnalyseService() {
@@ -47,6 +49,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
         taskExecutor = SwiftContext.get().getBean(ServiceTaskExecutor.class);
         segmentProvider = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
         QueryRunnerProvider.getInstance().registerRunner(this);
+        this.sessionFactory = SwiftContext.get().getBean("swiftQuerySessionFactory", SessionFactory.class);
         if (loadable) {
             loadSelfSegmentDestination();
             loadable = false;
@@ -59,6 +62,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
         super.shutdown();
         taskExecutor = null;
         segmentProvider = null;
+        sessionFactory = null;
         QueryRunnerProvider.getInstance().registerRunner(null);
         return true;
     }
@@ -70,7 +74,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
 
     @Override
     public SwiftResultSet getQueryResult(QueryBean info) throws Exception {
-        return QueryBuilder.buildQuery(info).getQueryResult();
+        return sessionFactory.openSession(info.getQueryId()).executeQuery(info);
     }
 
     @Override
