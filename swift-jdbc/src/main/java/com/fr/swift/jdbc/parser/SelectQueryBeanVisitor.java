@@ -95,11 +95,14 @@ public class SelectQueryBeanVisitor implements SelectVisitor,FromItemVisitor,Que
     @Override
     public void visit(Table table) {
         String tableName = table.getName();
-        metaData = caller.detectiveMetaData(schema, tableName);
-        if (null == metaData) {
-            Crasher.crash(new SwiftJDBCTableAbsentException(tableName));
+        if (null != caller) {
+            metaData = caller.detectiveMetaData(schema, tableName);
+            if (null == metaData) {
+                Crasher.crash(new SwiftJDBCTableAbsentException(tableName));
+            }
+            tableName = metaData.getId();
         }
-        queryBean.setTableName(QuoteUtils.trimQuote(metaData.getId()));
+        queryBean.setTableName(QuoteUtils.trimQuote(tableName));
     }
 
     @Override

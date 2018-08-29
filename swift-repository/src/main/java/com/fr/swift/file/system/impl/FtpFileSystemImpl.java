@@ -39,7 +39,7 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfig> {
         try {
             return this.clientPool.borrowObject();
         } catch (Exception e) {
-            throw new RuntimeException("No FineFTP available, Please check configuration or network state!");
+            throw new RuntimeException("No FineFTP available, Please check configuration or network state!", e);
         }
     }
 
