@@ -72,4 +72,20 @@ public abstract class AbstractFileSystem<Config extends SwiftFileSystemConfig> i
     protected String resolve(String uri, String resolve) {
         return Strings.unifySlash(uri + "/" + resolve);
     }
+
+    @Override
+    public long getSize() {
+        try {
+            long size = 0;
+            SwiftFileSystem[] systems = this.listFiles();
+            for (SwiftFileSystem system : systems) {
+                size += system.getSize();
+            }
+            return size;
+        } catch (SwiftFileException e) {
+            return fileSize();
+        }
+    }
+
+    protected abstract long fileSize();
 }
