@@ -7,6 +7,8 @@ import com.fr.log.message.AbstractMessage;
 import com.fr.stable.StringUtils;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.data.DataList;
+import com.fr.swift.context.SwiftContext;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.info.bean.element.filter.impl.AndFilterBean;
@@ -15,6 +17,7 @@ import com.fr.swift.query.info.bean.element.filter.impl.NullFilterBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.type.MetricType;
 import com.fr.swift.query.query.QueryRunnerProvider;
+import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.iterator.IteratorUtils;
@@ -168,5 +171,9 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
         }
         //BI-25663 空的返回count0
         return 0;
+    }
+
+    public long getLogSize() throws Exception {
+        return SwiftContext.get().getBean(SwiftRepositoryManager.class).currentRepo().getSize("../" + SwiftDatabase.DECISION_LOG.getDir());
     }
 }

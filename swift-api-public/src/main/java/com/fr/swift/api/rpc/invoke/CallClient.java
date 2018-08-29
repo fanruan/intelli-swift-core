@@ -18,6 +18,8 @@ import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 
+import java.util.concurrent.CountDownLatch;
+
 
 /**
  * @author yee
@@ -28,6 +30,9 @@ public class CallClient extends SimpleChannelInboundHandler<RpcResponse> impleme
     private RpcResponse response;
     private String address;
     private int maxFrameSize;
+    private Channel channel;
+    private EventLoopGroup group;
+    private CountDownLatch latch;
 
     public CallClient(String address, int maxFrameSize) {
         this.address = address;
@@ -37,46 +42,54 @@ public class CallClient extends SimpleChannelInboundHandler<RpcResponse> impleme
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RpcResponse rpcResponse) {
         this.response = rpcResponse;
-        ctx.close();
+        latch.countDown();
+    }
+
+    public void bind() throws InterruptedException {
+        group = new NioEventLoopGroup(1);
+        // 创建并初始化 Netty 客户端 Bootstrap 对象
+        Bootstrap bootstrap = new Bootstrap();
+        bootstrap.group(group);
+        bootstrap.channel(NioSocketChannel.class);
+        bootstrap.handler(new ChannelInitializer<SocketChannel>() {
+            @Override
+            public void initChannel(SocketChannel channel) throws Exception {
+                ChannelPipeline pipeline = channel.pipeline();
+                pipeline.addLast(
+                        new ObjectDecoder(maxFrameSize,
+                                ClassResolvers.cacheDisabled(this.getClass().getClassLoader())));
+                pipeline.addLast(new ObjectEncoder());
+                pipeline.addLast(CallClient.this); // 处理 RPC 响应
+            }
+        });
+        bootstrap.option(ChannelOption.TCP_NODELAY, true);
+        String[] array = address.split(":");
+        String host = null;
+        int port = 7000;
+        host = array[0];
+        if (array.length > 1) {
+            port = Integer.parseInt(array[1]);
+        }
+        // 连接 RPC 服务器
+        ChannelFuture future = bootstrap.connect(host, port).sync();
+        // 写入 RPC 请求数据并关闭连接
+        channel = future.channel();
+    }
+
+    public void close() {
+        group.shutdownGracefully();
+    }
+
+    public boolean isActive() {
+        return null != channel && channel.isActive();
     }
 
     @Override
     public RpcResponse send(RpcRequest request) throws Exception {
-        EventLoopGroup group = new NioEventLoopGroup(1);
-        try {
-            // 创建并初始化 Netty 客户端 Bootstrap 对象
-            Bootstrap bootstrap = new Bootstrap();
-            bootstrap.group(group);
-            bootstrap.channel(NioSocketChannel.class);
-            bootstrap.handler(new ChannelInitializer<SocketChannel>() {
-                @Override
-                public void initChannel(SocketChannel channel) throws Exception {
-                    ChannelPipeline pipeline = channel.pipeline();
-                    pipeline.addLast(
-                            new ObjectDecoder(maxFrameSize,
-                                    ClassResolvers.cacheDisabled(this.getClass().getClassLoader())));
-                    pipeline.addLast(new ObjectEncoder());
-                    pipeline.addLast(CallClient.this); // 处理 RPC 响应
-                }
-            });
-            bootstrap.option(ChannelOption.TCP_NODELAY, true);
-            String[] array = address.split(":");
-            String host = null;
-            int port = 7000;
-            host = array[0];
-            if (array.length > 1) {
-                port = Integer.parseInt(array[1]);
-            }
-            // 连接 RPC 服务器
-            ChannelFuture future = bootstrap.connect(host, port).sync();
-            // 写入 RPC 请求数据并关闭连接
-            Channel channel = future.channel();
-            channel.writeAndFlush(request).sync();
-            channel.closeFuture().sync();
-            // 返回 RPC 响应对象
-            return response;
-        } finally {
-            group.shutdownGracefully();
-        }
+        latch = new CountDownLatch(1);
+        channel.writeAndFlush(request).sync();
+        latch.await();
+        return response;
+
     }
 }

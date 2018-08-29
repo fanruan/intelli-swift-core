@@ -33,7 +33,7 @@ public class ApiTest {
 
     @BeforeClass
     public static void setUp() {
-        factory = new SwiftApiSessionFactoryImpl("192.168.0.7:7000");
+        factory = new SwiftApiSessionFactoryImpl("127.0.0.1:7000");
         datas = new ArrayList<Row>();
         for (int i = 0; i < 100; i++) {
             datas.add(new ListBasedRow(Arrays.<Object>asList(i + 90L, "zorgname_t" + i)));
@@ -56,8 +56,8 @@ public class ApiTest {
     public void query() throws SQLException {
 //        aa4f69b2
         SimpleDetailQueryBean bean = new SimpleDetailQueryBean();
-        bean.setTable("e88238c2");
-        bean.setColumns(Arrays.asList("id", "name"));
+        bean.setTable("36e09331");
+        bean.setColumns(Arrays.asList("0calday", "zsqty"));
         SwiftResultSet resultSet = factory.openSession().query(SwiftDatabase.CUBE, bean.getQueryString());
         while (resultSet.hasNext()) {
             System.out.println(resultSet.getNextRow().getValue(0));
@@ -68,7 +68,7 @@ public class ApiTest {
     @Test
     @Ignore
     public void testException() {
-        ClusterAnalyseService service = ApiProxyFactory.getProxy(ClusterAnalyseService.class, "192.168.0.7:7000");
+        ClusterAnalyseService service = ApiProxyFactory.getProxy(ClusterAnalyseService.class, "127.0.0.1:7000");
         try {
             SimpleDetailQueryBean bean = new SimpleDetailQueryBean();
             bean.setTable("e88238c2");

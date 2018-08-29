@@ -1,6 +1,7 @@
 package com.fr.swift.api.rpc.invoke;
 
 import com.fr.swift.api.Api;
+import com.fr.swift.api.rpc.pool.CallClientPool;
 import com.fr.swift.rpc.bean.RpcResponse;
 import com.fr.swift.rpc.bean.impl.RpcRequest;
 
@@ -26,11 +27,21 @@ public class ApiProxyFactory {
                 request.setMethodName(method.getName());
                 request.setParameterTypes(method.getParameterTypes());
                 request.setParameters(args);
-                RpcResponse response = new CallClient(address, maxFrameSize).send(request);
-                if (null != response.getException()) {
-                    throw response.getException();
+                CallClient client = CallClientPool.getInstance(maxFrameSize).borrowObject(address);
+                if (!client.isActive()) {
+                    CallClientPool.getInstance(maxFrameSize).returnObject(address, client);
+                    CallClientPool.getInstance(maxFrameSize).invalidateObject(address, client);
+                    client = CallClientPool.getInstance(maxFrameSize).borrowObject(address);
                 }
-                return response.getResult();
+                try {
+                    RpcResponse response = client.send(request);
+                    if (null != response.getException()) {
+                        throw response.getException();
+                    }
+                    return response.getResult();
+                } finally {
+                    CallClientPool.getInstance(maxFrameSize).returnObject(address, client);
+                }
             }
         });
     }

@@ -122,7 +122,7 @@ public class RPCInvoker<T> implements Invoker<T> {
                 if (handler instanceof SyncRpcClientHandler) {
                     SyncRpcPool.getInstance().invalidateObject(serviceAddress, handler);
                 } else {
-                    AsyncRpcPool.getIntance().invalidateObject(serviceAddress, handler);
+                    AsyncRpcPool.getInstance().invalidateObject(serviceAddress, handler);
                 }
             }
             throw e;
@@ -140,11 +140,11 @@ public class RPCInvoker<T> implements Invoker<T> {
     }
 
     private AsyncRpcClientHandler getAvailableAsyncHandler(String serviceAddress) throws Exception {
-        AsyncRpcClientHandler handler = (AsyncRpcClientHandler) AsyncRpcPool.getIntance().borrowObject(serviceAddress);
+        AsyncRpcClientHandler handler = (AsyncRpcClientHandler) AsyncRpcPool.getInstance().borrowObject(serviceAddress);
         if (!handler.isActive()) {
-            AsyncRpcPool.getIntance().returnObject(serviceAddress, handler);
-            AsyncRpcPool.getIntance().invalidateObject(serviceAddress, handler);
-            handler = (AsyncRpcClientHandler) AsyncRpcPool.getIntance().borrowObject(serviceAddress);
+            AsyncRpcPool.getInstance().returnObject(serviceAddress, handler);
+            AsyncRpcPool.getInstance().invalidateObject(serviceAddress, handler);
+            handler = (AsyncRpcClientHandler) AsyncRpcPool.getInstance().borrowObject(serviceAddress);
         }
         return handler;
     }

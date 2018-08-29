@@ -45,7 +45,7 @@ public class AsyncRpcClientHandler extends AbstractRpcClientHandler<RpcFuture> {
             pendingRPC.remove(requestId);
             rpcFuture.done(response);
         }
-        AsyncRpcPool.getIntance().returnObject(address, this);
+        AsyncRpcPool.getInstance().returnObject(address, this);
     }
 
     public void close() {
