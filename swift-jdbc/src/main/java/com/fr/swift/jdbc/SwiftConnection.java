@@ -4,6 +4,7 @@ import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
 import com.fr.swift.jdbc.exception.URLEmptyException;
 import com.fr.swift.jdbc.exception.URLFormatException;
+import com.fr.swift.jdbc.mode.Mode;
 import com.fr.swift.jdbc.session.SwiftJdbcSessionFactory;
 import com.fr.swift.jdbc.session.impl.SwiftJdbcSessionFactoryImpl;
 import com.fr.swift.util.Crasher;
@@ -32,12 +33,10 @@ import java.util.concurrent.Executor;
  * Created by pony on 2018/8/17.
  */
 public class SwiftConnection implements java.sql.Connection {
-    private static final String JDBC_HEAD = "jdbc";
-    private static final String PROTOCOL = "swift";
+    private static final String JDBC_HEAD = "jdbc:swift";
     private static final String EMPTY = "";
     private static final String SEPARATOR = "/";
-    //先写死，只能查平台的表
-    private SwiftDatabase SCHEMA = SwiftDatabase.DECISION_LOG;
+    private SwiftDatabase SCHEMA;
     private String host;
     private int port;
     private String username;
@@ -55,28 +54,34 @@ public class SwiftConnection implements java.sql.Connection {
     public SwiftConnection(String url, String username, String password) {
         if (null != url) {
             if (url.toLowerCase().startsWith(JDBC_HEAD)) {
-                url = url.substring(5);
+                url = url.substring(JDBC_HEAD.length() + 1);
                 URI uri = URI.create(url);
                 String schema = uri.getScheme();
-                if (PROTOCOL.equalsIgnoreCase(schema)) {
+                Mode mode;
+                try {
+                    mode = Mode.fromKey(schema);
+                } catch (Exception e) {
+                    throw new URLFormatException(url);
+                }
+                String dbName = uri.getPath();
+                if (null == dbName || EMPTY.equals(dbName.trim())) {
+                    SCHEMA = SwiftDatabase.DECISION_LOG;
+                }
+                dbName = dbName.startsWith(SEPARATOR) ? dbName.substring(1) : dbName;
+                try {
+                    SCHEMA = SwiftDatabase.valueOf(dbName.toUpperCase());
+                } catch (Exception e) {
+                    SCHEMA = SwiftDatabase.DECISION_LOG;
+                }
+                if (mode == Mode.SERVER) {
                     host = uri.getHost();
                     port = uri.getPort();
                     port = port == -1 ? 7000 : port;
-                    String dbName = uri.getPath();
-                    if (null == dbName || EMPTY.equals(dbName.trim())) {
-                        SCHEMA = SwiftDatabase.DECISION_LOG;
-                    }
-                    dbName = dbName.startsWith(SEPARATOR) ? dbName.substring(1) : dbName;
-                    try {
-                        SCHEMA = SwiftDatabase.valueOf(dbName.toUpperCase());
-                    } catch (Exception e) {
-                        SCHEMA = SwiftDatabase.DECISION_LOG;
-                    }
                     this.username = username;
                     this.password = password;
                     sessionFactory = new SwiftJdbcSessionFactoryImpl(SCHEMA, host, port);
                 } else {
-                    throw new URLFormatException(url);
+                    sessionFactory = new SwiftJdbcSessionFactoryImpl(SCHEMA);
                 }
             } else {
                 throw new URLFormatException(url);

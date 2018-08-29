@@ -3,6 +3,7 @@ package com.fr.swift.jdbc.session.impl;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.jdbc.rpc.RpcCaller;
 import com.fr.swift.jdbc.session.SwiftJdbcSession;
+import com.fr.swift.jdbc.statement.SwiftPreparedStatement;
 import com.fr.swift.jdbc.statement.SwiftStatement;
 
 import java.sql.PreparedStatement;
@@ -13,13 +14,13 @@ import java.sql.Statement;
  * @author yee
  * @date 2018/8/27
  */
-public class SwiftJdbcSessionImpl implements SwiftJdbcSession {
+public class SwiftJdbcServerSessionImpl implements SwiftJdbcSession {
 
     private RpcCaller.SelectRpcCaller selectRpcCaller;
     private RpcCaller.MaintenanceRpcCaller maintenanceRpcCaller;
     private SwiftDatabase schema;
 
-    SwiftJdbcSessionImpl(SwiftDatabase schema, RpcCaller.SelectRpcCaller selectRpcCaller, RpcCaller.MaintenanceRpcCaller maintenanceRpcCaller) {
+    SwiftJdbcServerSessionImpl(SwiftDatabase schema, RpcCaller.SelectRpcCaller selectRpcCaller, RpcCaller.MaintenanceRpcCaller maintenanceRpcCaller) {
         this.selectRpcCaller = selectRpcCaller;
         this.maintenanceRpcCaller = maintenanceRpcCaller;
         this.schema = schema;
@@ -32,6 +33,6 @@ public class SwiftJdbcSessionImpl implements SwiftJdbcSession {
 
     @Override
     public PreparedStatement preparedStatement(String sql) throws SQLException {
-        return null;
+        return new SwiftPreparedStatement(sql, new SwiftStatement(schema, selectRpcCaller, maintenanceRpcCaller));
     }
 }
