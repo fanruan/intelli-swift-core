@@ -1,5 +1,7 @@
 package com.fr.swift.jdbc.bean;
 
+import com.fr.general.ComparatorUtils;
+import com.fr.stable.AssistUtils;
 import com.fr.swift.api.rpc.bean.Column;
 import com.fr.swift.db.SwiftDatabase;
 
@@ -10,9 +12,9 @@ import java.util.List;
  * @date 2018/8/29
  */
 public class CreateTableBean {
-    SwiftDatabase database;
-    String tableName;
-    List<Column> columns;
+    private SwiftDatabase database;
+    private String tableName;
+    private List<Column> columns;
 
     public SwiftDatabase getDatabase() {
         return database;
@@ -39,30 +41,15 @@ public class CreateTableBean {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        CreateTableBean that = (CreateTableBean) o;
-
-        if (database != that.database) {
-            return false;
-        }
-        if (tableName != null ? !tableName.equals(that.tableName) : that.tableName != null) {
-            return false;
-        }
-        return columns != null ? columns.equals(that.columns) : that.columns == null;
+    public boolean equals(Object obj) {
+        return obj instanceof CreateTableBean
+                && AssistUtils.equals(this.database, ((CreateTableBean) obj).database)
+                && AssistUtils.equals(this.tableName, ((CreateTableBean) obj).tableName)
+                && ComparatorUtils.equals(this.columns, ((CreateTableBean) obj).columns);
     }
 
     @Override
     public int hashCode() {
-        int result = database != null ? database.hashCode() : 0;
-        result = 31 * result + (tableName != null ? tableName.hashCode() : 0);
-        result = 31 * result + (columns != null ? columns.hashCode() : 0);
-        return result;
+        return AssistUtils.hashCode(this.database, this.tableName, this.columns);
     }
 }
