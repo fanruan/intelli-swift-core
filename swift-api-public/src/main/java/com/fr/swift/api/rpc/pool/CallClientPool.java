@@ -30,4 +30,10 @@ public class CallClientPool extends GenericKeyedObjectPool<String, CallClient> {
         }
         return instance;
     }
+
+    @Override
+    public void close() {
+        super.close();
+        instance = null;
+    }
 }

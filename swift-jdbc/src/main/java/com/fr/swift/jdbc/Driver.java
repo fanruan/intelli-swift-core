@@ -8,7 +8,9 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 /**
- * Created by pony on 2018/8/17.
+ *
+ * @author pony
+ * @date 2018/8/17
  */
 public class Driver implements java.sql.Driver {
     @Override

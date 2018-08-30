@@ -1,11 +1,13 @@
 package com.fr.swift.jdbc.session.impl;
 
 import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.jdbc.metadata.server.SwiftServerDatabaseMetadata;
 import com.fr.swift.jdbc.rpc.RpcCaller;
 import com.fr.swift.jdbc.session.SwiftJdbcSession;
 import com.fr.swift.jdbc.statement.SwiftPreparedStatement;
 import com.fr.swift.jdbc.statement.SwiftStatement;
 
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -34,5 +36,15 @@ public class SwiftJdbcServerSessionImpl implements SwiftJdbcSession {
     @Override
     public PreparedStatement preparedStatement(String sql) throws SQLException {
         return new SwiftPreparedStatement(sql, new SwiftStatement(schema, selectRpcCaller, maintenanceRpcCaller));
+    }
+
+    @Override
+    public DatabaseMetaData getDatabaseMetaData() {
+        return new SwiftServerDatabaseMetadata(schema, selectRpcCaller);
+    }
+
+    @Override
+    public void close() throws Exception {
+
     }
 }

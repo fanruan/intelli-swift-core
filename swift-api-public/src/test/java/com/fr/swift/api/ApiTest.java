@@ -42,12 +42,12 @@ public class ApiTest {
 
     @Test
     @Ignore
-    public void insert() throws SQLException {
+    public void insert() throws Exception {
         assertEquals(factory.openSession().insert(SwiftDatabase.CUBE, "test_table", Arrays.asList("id", "name"), datas), datas.size());
     }
 
     @Test
-    public void insert1() throws SQLException {
+    public void insert1() throws Exception {
         assertEquals(factory.openSession().insert(SwiftDatabase.CUBE, "test_table", datas), datas.size());
     }
 

@@ -6,11 +6,11 @@ import com.fr.swift.jdbc.bean.CreateTableBean;
  * @author yee
  * @date 2018/8/29
  */
-public abstract class BaseCreateTableInvoke implements SqlInvoke<Integer> {
+public abstract class BaseCreateTableInvoker implements SqlInvoker<Integer> {
 
     protected CreateTableBean bean;
 
-    public BaseCreateTableInvoke(CreateTableBean bean) {
+    public BaseCreateTableInvoker(CreateTableBean bean) {
         this.bean = bean;
     }
 

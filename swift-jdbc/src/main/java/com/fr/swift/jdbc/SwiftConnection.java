@@ -30,7 +30,9 @@ import java.util.Properties;
 import java.util.concurrent.Executor;
 
 /**
- * Created by pony on 2018/8/17.
+ *
+ * @author pony
+ * @date 2018/8/17
  */
 public class SwiftConnection implements java.sql.Connection {
     private static final String JDBC_HEAD = "jdbc:swift";
@@ -42,6 +44,7 @@ public class SwiftConnection implements java.sql.Connection {
     private String username;
     private String password;
     private SwiftJdbcSessionFactory sessionFactory;
+    private boolean close;
 
     public SwiftConnection(String url) {
         this(url, null);
@@ -133,16 +136,22 @@ public class SwiftConnection implements java.sql.Connection {
 
     @Override
     public void close() throws SQLException {
+        try {
+            close = true;
+            sessionFactory.close();
+        } catch (Exception e) {
+            throw new SQLException(e);
+        }
     }
 
     @Override
     public boolean isClosed() throws SQLException {
-        return false;
+        return close;
     }
 
     @Override
     public DatabaseMetaData getMetaData() throws SQLException {
-        return new SwiftDatabaseMetadata(SCHEMA);
+        return sessionFactory.openSession().getDatabaseMetaData();
     }
 
     @Override

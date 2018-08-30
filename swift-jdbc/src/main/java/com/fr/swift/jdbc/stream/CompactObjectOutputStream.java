@@ -12,6 +12,7 @@ import java.io.OutputStream;
 public class CompactObjectOutputStream extends ObjectOutputStream {
     static final int TYPE_FAT_DESCRIPTOR = 0;
     static final int TYPE_THIN_DESCRIPTOR = 1;
+    private final int VERSION = 5;
 
     public CompactObjectOutputStream(OutputStream out) throws IOException {
         super(out);
@@ -19,7 +20,7 @@ public class CompactObjectOutputStream extends ObjectOutputStream {
 
     @Override
     protected void writeStreamHeader() throws IOException {
-        this.writeByte(5);
+        this.writeByte(VERSION);
     }
 
     @Override
