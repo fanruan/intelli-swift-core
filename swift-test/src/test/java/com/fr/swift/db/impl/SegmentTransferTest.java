@@ -72,8 +72,8 @@ public class SegmentTransferTest {
         SourceKey tableKey = new SourceKey(meta.getTableName());
         com.fr.swift.db.impl.SwiftDatabase.getInstance().createTable(tableKey, meta);
 
-        SegmentKey oldSegKey = new SegmentKeyBean(tableKey.getId(), 0, from, SwiftDatabase.CUBE),
-                newSegKey = new SegmentKeyBean(tableKey.getId(), 0, to, SwiftDatabase.CUBE);
+        SegmentKey oldSegKey = new SegmentKeyBean(tableKey, 0, from, SwiftDatabase.CUBE),
+                newSegKey = new SegmentKeyBean(tableKey, 0, to, SwiftDatabase.CUBE);
 
         Segment oldSeg = SegmentUtils.newSegment(oldSegKey);
         Inserter inserter = new SwiftInserter(oldSeg);

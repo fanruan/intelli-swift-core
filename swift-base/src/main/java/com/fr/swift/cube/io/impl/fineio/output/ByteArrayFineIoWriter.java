@@ -89,9 +89,13 @@ public class ByteArrayFineIoWriter implements ByteArrayWriter {
     @Override
     public void release() {
         IoUtil.release(contentWriter, positionWriter, lengthWriter);
+        contentWriter = null;
+        positionWriter = null;
+        lengthWriter = null;
 
         lastPosWriter.put(0, curPos);
         IoUtil.release(lastPosWriter);
+        lastPosWriter = null;
     }
 
     @Override

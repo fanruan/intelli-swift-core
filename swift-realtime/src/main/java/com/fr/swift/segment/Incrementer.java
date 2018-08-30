@@ -1,11 +1,9 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.config.bean.SegmentKeyBean;
-import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types.StoreType;
-import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.insert.BaseBlockInserter;
@@ -17,8 +15,6 @@ import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.source.alloter.impl.line.LineRowInfo;
 import com.fr.swift.transatcion.TransactionProxyFactory;
 
-import java.net.URI;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -26,7 +22,7 @@ import java.util.List;
  * @date 2018/6/5
  */
 public class Incrementer extends BaseBlockInserter implements Inserter {
-    protected static final SwiftSegmentManager LOCAL_SEGMENTS = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
+    private static final SwiftSegmentManager LOCAL_SEGMENTS = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
 
     public Incrementer(DataSource dataSource) {
         super(dataSource);
@@ -38,15 +34,16 @@ public class Incrementer extends BaseBlockInserter implements Inserter {
 
     @Override
     protected Inserter getInserter() {
-        //获得事务代理
+        // 获得事务代理
         SwiftRealtimeInserter swiftRealtimeInserter = new SwiftRealtimeInserter(currentSeg);
         TransactionProxyFactory proxyFactory = new TransactionProxyFactory(swiftRealtimeInserter.getSwiftBackup().getTransactionManager());
         return (Inserter) proxyFactory.getProxy(swiftRealtimeInserter);
     }
 
     private Segment newRealtimeSegment(SegmentInfo segInfo, int segCount) {
-        String segPath = CubeUtil.getRealtimeSegPath(dataSource, segCount + segInfo.getOrder());
-        return new RealTimeSegmentImpl(new ResourceLocation(segPath, StoreType.MEMORY), dataSource.getMetadata());
+        currentSegKey = new SegmentKeyBean(dataSource.getSourceKey(), segCount + segInfo.getOrder(), StoreType.MEMORY, dataSource.getMetadata().getSwiftDatabase());
+        ResourceLocation location = new ResourceLocation(CubeUtil.getRealtimeSegPath(dataSource, currentSegKey.getOrder()), StoreType.MEMORY);
+        return new RealTimeSegmentImpl(location, dataSource.getMetadata());
     }
 
     @Override
@@ -71,18 +68,5 @@ public class Incrementer extends BaseBlockInserter implements Inserter {
         }
         currentSeg = maxSegment;
         return false;
-    }
-
-    @Override
-    protected SwiftSegmentManager getSegmentManager() {
-        return LOCAL_SEGMENTS;
-    }
-
-    @Override
-    protected void persistSegment(Segment seg, int order) {
-        IResourceLocation location = seg.getLocation();
-        String tableKey = dataSource.getSourceKey().getId();
-        SegmentKey segKey = new SegmentKeyBean(tableKey, URI.create(CubeUtil.getPersistSegPath(dataSource.getSourceKey(), order)), order, location.getStoreType(), seg.getMetaData().getSwiftDatabase());
-        SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).addSegments(Collections.singletonList(segKey));
     }
 }
