@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author yee
@@ -30,10 +31,11 @@ public class RpcSelector {
     private LinkedList<Runnable> selectTasks = new LinkedList<Runnable>();
     private ConcurrentHashMap<SocketChannel, RpcConnector> connectorCache;
     private List<RpcConnector> connectors;
-    private boolean started = false;
-    private boolean stop = false;
+    private final SelectionThread thread = new SelectionThread();
+    private AtomicBoolean started = new AtomicBoolean(false);
     private SerializableEncoder encoder;
     private SerializableDecoder decoder;
+    private AtomicBoolean stop = new AtomicBoolean(true);
 
     public RpcSelector(SerializableEncoder encoder, SerializableDecoder decoder) {
         this.encoder = encoder;
@@ -108,14 +110,16 @@ public class RpcSelector {
     }
 
     public void start() {
-        if (!started) {
-            new SelectionThread().start();
-            started = true;
+        if (!started.get()) {
+            stop.set(false);
+            started.set(true);
+            thread.start();
         }
     }
 
     public void stop() {
-        stop = true;
+        stop.set(true);
+        started.set(false);
     }
 
     private boolean doAccept(SelectionKey selectionKey) {
@@ -141,7 +145,7 @@ public class RpcSelector {
         RpcConnector connector = connectorCache.get(client);
         if (connector != null) {
             try {
-                while (!stop) {
+                while (!stop.get()) {
                     try {
                         Object object = decoder.decodeFromChannel(client);
                         this.fireRpcResponse(connector, object);
@@ -213,7 +217,7 @@ public class RpcSelector {
     private class SelectionThread extends Thread {
         @Override
         public void run() {
-            while (!stop) {
+            while (!stop.get()) {
                 if (RpcSelector.this.hasTask()) {
                     RpcSelector.this.runSelectTasks();
                 }
@@ -222,7 +226,7 @@ public class RpcSelector {
                     if (needSend) {
                         selector.selectNow();
                     } else {
-                        selector.select();
+                        selector.select(10000);
                     }
                 } catch (IOException e) {
                     SwiftLoggers.getLogger().error(e);
@@ -238,5 +242,6 @@ public class RpcSelector {
                 SwiftLoggers.getLogger().error(e);
             }
         }
+
     }
 }

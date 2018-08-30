@@ -1,8 +1,9 @@
 package com.fr.swift.jdbc.rpc.invoke;
 
-import com.fr.swift.jdbc.rpc.pool.GenericKeyedObjectPoolConfig;
-import com.fr.swift.jdbc.rpc.pool.KeyedPooledObjectFactory;
-import com.fr.swift.jdbc.rpc.pool.impl.GenericKeyedObjectPool;
+
+import com.fr.third.org.apache.commons.pool2.KeyedPooledObjectFactory;
+import com.fr.third.org.apache.commons.pool2.impl.GenericKeyedObjectPool;
+import com.fr.third.org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig;
 
 /**
  * @author yee

@@ -61,7 +61,13 @@ public class SwiftPreparedStatement implements PreparedStatement {
             throw new SQLException(String.format("Parameter index %d must be set.", values.indexOf(NullValue.INSTANCE) + 1));
         }
         for (Object value : values) {
-            sql.replaceFirst(VALUE_POS_PATTERN.pattern(), value.toString());
+            String valueStr = null;
+            if (value instanceof String) {
+                valueStr = "'" + value + "'";
+            } else {
+                valueStr = value.toString();
+            }
+            sql = sql.replaceFirst(VALUE_POS_PATTERN.pattern(), valueStr);
         }
         return sql;
     }
@@ -78,7 +84,7 @@ public class SwiftPreparedStatement implements PreparedStatement {
 
     @Override
     public void setNull(int parameterIndex, int sqlType) throws SQLException {
-        setObject(parameterIndex, null);
+        setObject(parameterIndex, NullValue.NULL);
     }
 
     @Override
@@ -560,6 +566,11 @@ public class SwiftPreparedStatement implements PreparedStatement {
     }
 
     protected enum NullValue {
-        INSTANCE
+        INSTANCE, NULL;
+
+        @Override
+        public String toString() {
+            return name().toLowerCase();
+        }
     }
 }

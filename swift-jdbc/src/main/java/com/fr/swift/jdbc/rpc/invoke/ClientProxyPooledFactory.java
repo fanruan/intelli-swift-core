@@ -1,9 +1,9 @@
 package com.fr.swift.jdbc.rpc.invoke;
 
 import com.fr.swift.jdbc.rpc.nio.RpcConnector;
-import com.fr.swift.jdbc.rpc.pool.BaseKeyedPooledObjectFactory;
-import com.fr.swift.jdbc.rpc.pool.PooledObject;
-import com.fr.swift.jdbc.rpc.pool.impl.DefaultPooledObject;
+import com.fr.third.org.apache.commons.pool2.BaseKeyedPooledObjectFactory;
+import com.fr.third.org.apache.commons.pool2.PooledObject;
+import com.fr.third.org.apache.commons.pool2.impl.DefaultPooledObject;
 
 /**
  * @author yee

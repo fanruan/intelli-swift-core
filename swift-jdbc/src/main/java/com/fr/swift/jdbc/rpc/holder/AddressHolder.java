@@ -6,7 +6,6 @@ import com.fr.swift.jdbc.rpc.invoke.ClientProxy;
 import com.fr.swift.jdbc.rpc.nio.RpcConnector;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.service.ServiceType;
-import com.fr.swift.util.Assert;
 
 import java.util.List;
 import java.util.Map;
@@ -104,7 +103,9 @@ public class AddressHolder implements ServiceAddressHolder {
     private String getAddress(Queue<String> addresses) {
         detect();
         String address = addresses.poll();
-        Assert.notNull(address);
+        if (null == address) {
+            throw new IllegalArgumentException("There is no address for connection.");
+        }
         addresses.add(address);
         return address;
     }
