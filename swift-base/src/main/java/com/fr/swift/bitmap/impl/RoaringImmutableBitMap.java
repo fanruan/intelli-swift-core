@@ -5,11 +5,11 @@ import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.roaringbitmap.buffer.MutableRoaringBitmap;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.util.IoUtil;
 
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
 
 /**
  * @author anchore
@@ -27,14 +27,13 @@ public class RoaringImmutableBitMap extends BaseRoaringBitMap {
         return of(new MutableRoaringBitmap());
     }
 
-    private static ImmutableBitMap fromByteBuffer(final ByteBuffer bb) {
+    static ImmutableBitMap ofBytes(byte[] bytes) {
+        return ofBytes(bytes, 0, bytes.length);
+    }
+
+    private static ImmutableBitMap ofBytes(byte[] bytes, int offset, int length) {
         MutableRoaringBitmap another = new MutableRoaringBitmap();
-        DataInputStream dis = new DataInputStream(new InputStream() {
-            @Override
-            public int read() {
-                return bb.get() & 0xFF;
-            }
-        });
+        DataInputStream dis = new DataInputStream(new ByteArrayInputStream(bytes, offset, length));
         try {
             another.deserialize(dis);
             return of(another);
@@ -42,20 +41,8 @@ public class RoaringImmutableBitMap extends BaseRoaringBitMap {
             SwiftLoggers.getLogger().error(e);
             return BitMaps.EMPTY_IMMUTABLE;
         } finally {
-            try {
-                dis.close();
-            } catch (IOException e) {
-                SwiftLoggers.getLogger().error(e);
-            }
+            IoUtil.close(dis);
         }
-    }
-
-    static ImmutableBitMap ofBytes(byte[] bytes) {
-        return ofBytes(bytes, 0, bytes.length);
-    }
-
-    private static ImmutableBitMap ofBytes(byte[] bytes, int offset, int length) {
-        return fromByteBuffer(ByteBuffer.wrap(bytes, offset, length));
     }
 
     @Override

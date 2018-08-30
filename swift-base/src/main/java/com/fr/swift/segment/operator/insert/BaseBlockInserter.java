@@ -1,12 +1,12 @@
 package com.fr.swift.segment.operator.insert;
 
+import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.SegmentUtils;
-import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.Row;
@@ -19,6 +19,7 @@ import com.fr.swift.source.resultset.LimitedResultSet;
 import com.fr.swift.source.resultset.ListResultSet;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -29,6 +30,8 @@ public abstract class BaseBlockInserter implements Inserter {
     protected SwiftSourceAlloter alloter;
 
     protected DataSource dataSource;
+
+    protected SegmentKey currentSegKey;
 
     protected Segment currentSeg;
 
@@ -54,8 +57,7 @@ public abstract class BaseBlockInserter implements Inserter {
                 inserter.insertData(new LimitedResultSet(resultSet, limit, false));
 
                 if (newSeg) {
-                    SegmentKey maxSegmentKey = SegmentUtils.getMaxSegmentKey(getSegmentManager().getSegmentKeys(dataSource.getSourceKey()));
-                    persistSegment(currentSeg, maxSegmentKey == null ? 0 : maxSegmentKey.getOrder() + 1);
+                    persistSegment();
                 }
             }
         } finally {
@@ -67,8 +69,6 @@ public abstract class BaseBlockInserter implements Inserter {
 
     protected abstract boolean nextSegment();
 
-    protected abstract SwiftSegmentManager getSegmentManager();
-
     private void persistMeta() throws SQLException {
         Database db = SwiftDatabase.getInstance();
         SourceKey tableKey = dataSource.getSourceKey();
@@ -77,7 +77,9 @@ public abstract class BaseBlockInserter implements Inserter {
         }
     }
 
-    protected abstract void persistSegment(Segment seg, int order);
+    private void persistSegment() {
+        SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).addSegments(Collections.singletonList(currentSegKey));
+    }
 
     @Override
     public void insertData(List<Row> rowList) throws Exception {
