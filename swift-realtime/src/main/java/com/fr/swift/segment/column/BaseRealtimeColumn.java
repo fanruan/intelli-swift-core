@@ -212,10 +212,10 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
     private class RealtimeBitmapColumn implements BitmapIndexedColumn {
         @Override
         public ImmutableBitMap getBitMapIndex(int index) {
-            if (index < 1) {
+            V v = dictColumn.getValue(index);
+            if (v == null) {
                 return nullIndex;
             }
-            V v = dictColumn.getValue(index);
             return valToRows.containsKey(v) ? valToRows.get(v) : BitMaps.newRoaringMutable();
         }
 
@@ -237,12 +237,12 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
         @Override
         public void putBitMapIndex(int index, ImmutableBitMap bitmap) {
             MutableBitMap mBitmap = (MutableBitMap) bitmap;
-            if (index < 1) {
+
+            V v = dictColumn.getValue(index);
+            if (v == null) {
                 nullIndex = mBitmap;
                 return;
             }
-
-            V v = dictColumn.getValue(index);
             if (bitmap.isEmpty()) {
                 valToRows.remove(v);
             } else {
@@ -287,7 +287,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
         indexColumn = self.indexColumn;
     }
 
-    private synchronized void snapshot() {
+    private void snapshot() {
         int lastId = idToVal.size() - 1;
         if (lastId < indexAndId.size()) {
             return;
