@@ -11,16 +11,15 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.config.HdfsRepositoryConfig;
 import com.fr.swift.repository.config.HdfsSystemType;
 import com.fr.third.org.apache.commons.pool2.KeyedObjectPool;
-
-import java.io.InputStream;
-
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IOUtils;
+
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
@@ -240,6 +239,27 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfig>
         } catch (IOException e) {
             LOGGER.error(e);
             return new SwiftFileSystem[0];
+        } finally {
+            if (null != fileSystem) {
+                try {
+                    returnFileSystem(getResourceURI(), fileSystem);
+                } catch (SwiftFileException e) {
+                    LOGGER.error(e);
+                }
+            }
+        }
+    }
+
+    @Override
+    protected long fileSize() {
+        FileSystem fileSystem = null;
+        try {
+            fileSystem = borrowFileSystem();
+            FileStatus status = fileSystem.getFileStatus(new Path(getResourceURI()));
+            return status.getLen();
+        } catch (IOException e) {
+            LOGGER.error(e);
+            return 0;
         } finally {
             if (null != fileSystem) {
                 try {

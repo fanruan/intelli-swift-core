@@ -6,7 +6,6 @@ import com.fr.swift.db.Where;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -22,9 +21,9 @@ public interface DataMaintenanceService extends ApiService {
      * @param fields
      * @param rows
      * @return
-     * @throws SQLException
+     * @throws Exception
      */
-    int insert(SwiftDatabase schema, String tableName, List<String> fields, List<Row> rows) throws SQLException;
+    int insert(SwiftDatabase schema, String tableName, List<String> fields, List<Row> rows) throws Exception;
 
     /**
      * 插入所有字段
@@ -33,9 +32,9 @@ public interface DataMaintenanceService extends ApiService {
      * @param tableName
      * @param rows
      * @return
-     * @throws SQLException
+     * @throws Exception
      */
-    int insert(SwiftDatabase schema, String tableName, List<Row> rows) throws SQLException;
+    int insert(SwiftDatabase schema, String tableName, List<Row> rows) throws Exception;
 
     /**
      * 将某查询的结果插入表中
@@ -44,9 +43,9 @@ public interface DataMaintenanceService extends ApiService {
      * @param tableName
      * @param queryJson
      * @return
-     * @throws SQLException
+     * @throws Exception
      */
-    int insert(SwiftDatabase schema, String tableName, String queryJson) throws SQLException;
+    int insert(SwiftDatabase schema, String tableName, String queryJson) throws Exception;
 
     /**
      * 删除接口
@@ -55,8 +54,9 @@ public interface DataMaintenanceService extends ApiService {
      * @param tableName
      * @param where
      * @return
+     * @throws Exception
      */
-    int delete(SwiftDatabase schema, String tableName, Where where);
+    int delete(SwiftDatabase schema, String tableName, Where where) throws Exception;
 
     /**
      * 修改数据接口
@@ -66,8 +66,9 @@ public interface DataMaintenanceService extends ApiService {
      * @param resultSet
      * @param where
      * @return
+     * @throws Exception
      */
-    int update(SwiftDatabase schema, String tableName, SwiftResultSet resultSet, Where where);
+    int update(SwiftDatabase schema, String tableName, SwiftResultSet resultSet, Where where) throws Exception;
 
     /**
      * 建表接口
@@ -76,6 +77,7 @@ public interface DataMaintenanceService extends ApiService {
      * @param tableName
      * @param columns
      * @return
+     * @throws Exception
      */
-    int createTable(SwiftDatabase schema, String tableName, List<Column> columns);
+    int createTable(SwiftDatabase schema, String tableName, List<Column> columns) throws Exception;
 }

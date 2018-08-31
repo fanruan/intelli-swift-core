@@ -1,10 +1,12 @@
 package com.fr.swift.jdbc.session.impl;
 
 import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.jdbc.metadata.emb.SwiftEmbDatabaseMetadata;
 import com.fr.swift.jdbc.session.SwiftJdbcSession;
 import com.fr.swift.jdbc.statement.SwiftPreparedStatement;
 import com.fr.swift.jdbc.statement.SwiftStatement;
 
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -28,5 +30,15 @@ public class SwiftJdbcEmbSessionImpl implements SwiftJdbcSession {
     @Override
     public PreparedStatement preparedStatement(String sql) throws SQLException {
         return new SwiftPreparedStatement(sql, new SwiftStatement(database));
+    }
+
+    @Override
+    public DatabaseMetaData getDatabaseMetaData() {
+        return new SwiftEmbDatabaseMetadata(database);
+    }
+
+    @Override
+    public void close() throws Exception {
+
     }
 }

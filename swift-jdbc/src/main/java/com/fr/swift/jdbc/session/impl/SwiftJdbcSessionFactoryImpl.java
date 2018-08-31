@@ -5,6 +5,7 @@ import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
 import com.fr.swift.jdbc.mode.Mode;
 import com.fr.swift.jdbc.rpc.RpcCaller;
 import com.fr.swift.jdbc.rpc.holder.AddressHolder;
+import com.fr.swift.jdbc.rpc.invoke.ClientProxyPool;
 import com.fr.swift.jdbc.session.SwiftJdbcSession;
 import com.fr.swift.jdbc.session.SwiftJdbcSessionFactory;
 import com.fr.swift.util.Crasher;
@@ -18,6 +19,7 @@ public class SwiftJdbcSessionFactoryImpl implements SwiftJdbcSessionFactory {
     protected AddressHolder holder;
     private SwiftDatabase schema;
     private Mode mode;
+    private ClientProxyPool proxyPool = ClientProxyPool.getInstance();
 
     public SwiftJdbcSessionFactoryImpl(SwiftDatabase schema, String host, int port) {
         holder = AddressHolder.getHolder(host, port);
@@ -34,11 +36,16 @@ public class SwiftJdbcSessionFactoryImpl implements SwiftJdbcSessionFactory {
     public SwiftJdbcSession openSession() {
         switch (mode) {
             case SERVER:
-                return new SwiftJdbcServerSessionImpl(schema, RpcCaller.connectSelectService(holder.nextAnalyseAddress()), RpcCaller.connectMaintenanceService(holder.nextRealTimeAddress()));
+                return new SwiftJdbcServerSessionImpl(schema, RpcCaller.connectSelectService(holder.nextAnalyseAddress(), proxyPool), RpcCaller.connectMaintenanceService(holder.nextRealTimeAddress(), proxyPool));
             case EMB:
                 return new SwiftJdbcEmbSessionImpl(schema);
             default:
                 return Crasher.crash(new SwiftJDBCNotSupportedException(mode + " is unsupported"));
         }
+    }
+
+    @Override
+    public void close() throws Exception {
+        proxyPool.close();
     }
 }

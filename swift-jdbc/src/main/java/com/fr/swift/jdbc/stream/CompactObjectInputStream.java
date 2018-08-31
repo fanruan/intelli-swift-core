@@ -13,6 +13,7 @@ import java.io.StreamCorruptedException;
  */
 public class CompactObjectInputStream extends ObjectInputStream {
     private final ClassLoader classResolver;
+    private final int VERSION = 5;
 
     public CompactObjectInputStream(InputStream in, ClassLoader classResolver) throws IOException {
         super(in);
@@ -21,8 +22,8 @@ public class CompactObjectInputStream extends ObjectInputStream {
 
     @Override
     protected void readStreamHeader() throws IOException {
-        int version = this.readByte() & 255;
-        if (version != 5) {
+        int version = this.readByte() & 0xFF;
+        if (version != VERSION) {
             throw new StreamCorruptedException("Unsupported version: " + version);
         }
     }

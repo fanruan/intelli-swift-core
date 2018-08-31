@@ -25,7 +25,7 @@ public class ExcelUtil {
     public static void checkHead(String filePath) {
         try {
             InputStream inputStream;
-            if (filePath.startsWith("http") || filePath.startsWith("HTTP")) {
+            if (isRemote(filePath)) {
                 URL url = new URL(filePath);
                 inputStream = url.openStream();
             } else {
@@ -49,5 +49,9 @@ public class ExcelUtil {
         } catch (Exception e) {
             throw new ExcelFileTypeException(e);
         }
+    }
+
+    public static boolean isRemote(String filePath) {
+        return filePath.startsWith("http") || filePath.startsWith("HTTP");
     }
 }

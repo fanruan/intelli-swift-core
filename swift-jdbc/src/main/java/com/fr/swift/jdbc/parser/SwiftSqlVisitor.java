@@ -27,13 +27,13 @@ import com.fr.swift.jdbc.bean.CreateTableBean;
 import com.fr.swift.jdbc.bean.InsertBean;
 import com.fr.swift.jdbc.exception.ColumnNotMatchException;
 import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
-import com.fr.swift.jdbc.invoke.SqlInvoke;
-import com.fr.swift.jdbc.invoke.emb.EmbCreateTableInvoke;
-import com.fr.swift.jdbc.invoke.emb.EmbInsertInvoke;
-import com.fr.swift.jdbc.invoke.emb.EmbSelectInvoke;
-import com.fr.swift.jdbc.invoke.server.ServerCreateTableInvoke;
-import com.fr.swift.jdbc.invoke.server.ServerInsertInvoke;
-import com.fr.swift.jdbc.invoke.server.ServerSelectInvoke;
+import com.fr.swift.jdbc.invoke.SqlInvoker;
+import com.fr.swift.jdbc.invoke.emb.EmbCreateTableInvoker;
+import com.fr.swift.jdbc.invoke.emb.EmbInsertInvoker;
+import com.fr.swift.jdbc.invoke.emb.EmbSelectInvoker;
+import com.fr.swift.jdbc.invoke.server.ServerCreateTableInvoker;
+import com.fr.swift.jdbc.invoke.server.ServerInsertInvoker;
+import com.fr.swift.jdbc.invoke.server.ServerSelectInvoker;
 import com.fr.swift.jdbc.parser.insert.RowListVisitor;
 import com.fr.swift.jdbc.rpc.RpcCaller;
 import com.fr.swift.jdbc.type.JdbcType;
@@ -56,7 +56,7 @@ public class SwiftSqlVisitor implements StatementVisitor, SqlInvokeGetter {
     private InsertBean insertBean;
     private RpcCaller caller;
     private SwiftDatabase schema;
-    private SqlInvoke invoke;
+    private SqlInvoker invoke;
 
     public SwiftSqlVisitor(SwiftDatabase schema, RpcCaller caller) {
         this.caller = caller;
@@ -114,9 +114,9 @@ public class SwiftSqlVisitor implements StatementVisitor, SqlInvokeGetter {
         }
         insertBean.setSchema(schema);
         if (null == caller) {
-            invoke = new EmbInsertInvoke(insertBean);
+            invoke = new EmbInsertInvoker(insertBean);
         } else {
-            invoke = new ServerInsertInvoke(insertBean, (RpcCaller.MaintenanceRpcCaller) caller);
+            invoke = new ServerInsertInvoker(insertBean, (RpcCaller.MaintenanceRpcCaller) caller);
         }
     }
 
@@ -163,9 +163,9 @@ public class SwiftSqlVisitor implements StatementVisitor, SqlInvokeGetter {
         bean.setTableName(tableName);
         bean.setColumns(columns);
         if (caller == null) {
-            invoke = new EmbCreateTableInvoke(bean);
+            invoke = new EmbCreateTableInvoker(bean);
         } else {
-            invoke = new ServerCreateTableInvoke(bean, (RpcCaller.MaintenanceRpcCaller) caller);
+            invoke = new ServerCreateTableInvoker(bean, (RpcCaller.MaintenanceRpcCaller) caller);
         }
     }
 
@@ -210,9 +210,9 @@ public class SwiftSqlVisitor implements StatementVisitor, SqlInvokeGetter {
         select.getSelectBody().accept(visitor);
         this.queryBean = visitor.getQueryBean();
         if (null == caller) {
-            invoke = new EmbSelectInvoke(queryBean);
+            invoke = new EmbSelectInvoker(queryBean);
         } else {
-            invoke = new ServerSelectInvoke(queryBean, schema, (RpcCaller.SelectRpcCaller) caller);
+            invoke = new ServerSelectInvoker(queryBean, schema, (RpcCaller.SelectRpcCaller) caller);
         }
     }
 
@@ -222,7 +222,7 @@ public class SwiftSqlVisitor implements StatementVisitor, SqlInvokeGetter {
     }
 
     @Override
-    public SqlInvoke get() {
+    public SqlInvoker get() {
         return invoke;
     }
 }
