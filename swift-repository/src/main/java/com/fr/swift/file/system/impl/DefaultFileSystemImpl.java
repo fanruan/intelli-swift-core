@@ -1,10 +1,12 @@
 package com.fr.swift.file.system.impl;
 
 import com.fr.general.ComparatorUtils;
+import com.fr.io.repository.FineFileEntry;
 import com.fr.io.utils.ResourceIOUtils;
 import com.fr.swift.file.exception.SwiftFileException;
 import com.fr.swift.file.system.AbstractFileSystem;
 import com.fr.swift.file.system.SwiftFileSystem;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.SwiftFileSystemConfig;
 
 import java.io.InputStream;
@@ -28,6 +30,21 @@ public class DefaultFileSystemImpl extends AbstractFileSystem {
         }
         return result;
     }
+
+    @Override
+    protected long fileSize() {
+        try {
+            FineFileEntry entry = ResourceIOUtils.getEntry(getResourceURI());
+            if (null != entry) {
+                return entry.getSize();
+            }
+            return 0L;
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
+            return 0L;
+        }
+    }
+
 
     @Override
     public void write(String remote, InputStream inputStream) throws SwiftFileException {

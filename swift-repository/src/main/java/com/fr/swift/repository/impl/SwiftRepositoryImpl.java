@@ -150,6 +150,19 @@ public class SwiftRepositoryImpl extends AbstractRepository {
         }
     }
 
+    @Override
+    public long getSize(String path) throws IOException {
+        SwiftFileSystem system = createFileSystem(path);
+        if (system.isExists()) {
+            try {
+                return system.getSize();
+            } finally {
+                closeFileSystem(system);
+            }
+        }
+        return 0;
+    }
+
     private void calculateUpload(String root, String remote, List<Pair<String, String>> dirs, List<Pair<String, String>> files) {
         File rootFile = new File(root);
         if (rootFile.isDirectory()) {

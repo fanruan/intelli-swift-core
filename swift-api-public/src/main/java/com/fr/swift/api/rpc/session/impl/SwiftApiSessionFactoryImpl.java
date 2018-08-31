@@ -2,6 +2,7 @@ package com.fr.swift.api.rpc.session.impl;
 
 import com.fr.swift.api.Api;
 import com.fr.swift.api.rpc.holder.InternalServiceAddressHolder;
+import com.fr.swift.api.rpc.pool.CallClientPool;
 import com.fr.swift.api.rpc.session.SwiftApiSessionFactory;
 
 /**
@@ -26,5 +27,10 @@ public class SwiftApiSessionFactoryImpl implements SwiftApiSessionFactory<SwiftA
     public SwiftApiSessionImpl openSession() {
         return new SwiftApiSessionImpl(Api.connectSelectApi(holder.nextAnalyseAddress(), maxFrameSize),
                 Api.connectDataMaintenanceApi(holder.nextRealTimeAddress(), maxFrameSize));
+    }
+
+    @Override
+    public void close() throws Exception {
+        CallClientPool.getInstance(maxFrameSize).close();
     }
 }

@@ -3,7 +3,7 @@ package com.fr.swift.jdbc.statement;
 import com.fr.general.jsqlparser.JSQLParserException;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
-import com.fr.swift.jdbc.invoke.SqlInvoke;
+import com.fr.swift.jdbc.invoke.SqlInvoker;
 import com.fr.swift.jdbc.parser.SqlParserFactory;
 import com.fr.swift.jdbc.result.EmptyResultSet;
 import com.fr.swift.jdbc.result.ResultSetWrapper;
@@ -37,7 +37,7 @@ public class SwiftStatement extends BaseSwiftStatement {
     public ResultSet executeQuery(String sql) throws SQLException {
         SwiftResultSet resultSet = null;
         try {
-            SqlInvoke invoke = SqlParserFactory.parseSql(sql, database, caller);
+            SqlInvoker invoke = SqlParserFactory.parseSql(sql, database, caller);
             if (null != invoke) {
                 switch (invoke.getType()) {
                     case QUERY:
@@ -58,7 +58,7 @@ public class SwiftStatement extends BaseSwiftStatement {
     @Override
     public int executeUpdate(String sql) throws SQLException {
         try {
-            SqlInvoke invoke = SqlParserFactory.parseSql(sql, database, maintenanceRpcCaller);
+            SqlInvoker invoke = SqlParserFactory.parseSql(sql, database, maintenanceRpcCaller);
             if (null != invoke) {
                 switch (invoke.getType()) {
                     case INSERT:

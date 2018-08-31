@@ -12,7 +12,6 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
@@ -53,6 +52,12 @@ public class Api implements TableService {
     }
 
     @Override
+    public List<String> detectiveAllTableNames(SwiftDatabase schema) {
+        TableService service = ApiProxyFactory.getProxy(TableService.class, address, maxFrameSize);
+        return service.detectiveAllTableNames(schema);
+    }
+
+    @Override
     public boolean isTableExists(SwiftDatabase schema, String tableName) {
         TableService service = ApiProxyFactory.getProxy(TableService.class, address, maxFrameSize);
         return service.isTableExists(schema, tableName);
@@ -65,7 +70,7 @@ public class Api implements TableService {
         }
 
         @Override
-        public SwiftResultSet query(SwiftDatabase database, String queryJson) {
+        public SwiftResultSet query(SwiftDatabase database, String queryJson) throws Exception {
             SelectService service = ApiProxyFactory.getProxy(SelectService.class, address, maxFrameSize);
             return service.query(database, queryJson);
         }
@@ -78,36 +83,36 @@ public class Api implements TableService {
         }
 
         @Override
-        public int insert(SwiftDatabase schema, String tableName, List<String> fields, List<Row> rows) throws SQLException {
+        public int insert(SwiftDatabase schema, String tableName, List<String> fields, List<Row> rows) throws Exception {
             DataMaintenanceService service = ApiProxyFactory.getProxy(DataMaintenanceService.class, address, maxFrameSize);
             return service.insert(schema, tableName, fields, rows);
         }
 
         @Override
-        public int insert(SwiftDatabase schema, String tableName, List<Row> rows) throws SQLException {
+        public int insert(SwiftDatabase schema, String tableName, List<Row> rows) throws Exception {
             return insert(schema, tableName, Collections.<String>emptyList(), rows);
         }
 
         @Override
-        public int insert(SwiftDatabase schema, String tableName, String queryJson) throws SQLException {
+        public int insert(SwiftDatabase schema, String tableName, String queryJson) throws Exception {
             DataMaintenanceService service = ApiProxyFactory.getProxy(DataMaintenanceService.class, address, maxFrameSize);
             return service.insert(schema, tableName, queryJson);
         }
 
         @Override
-        public int delete(SwiftDatabase schema, String tableName, Where where) {
+        public int delete(SwiftDatabase schema, String tableName, Where where) throws Exception {
             DataMaintenanceService service = ApiProxyFactory.getProxy(DataMaintenanceService.class, address, maxFrameSize);
             return service.delete(schema, tableName, where);
         }
 
         @Override
-        public int update(SwiftDatabase schema, String tableName, SwiftResultSet resultSet, Where where) {
+        public int update(SwiftDatabase schema, String tableName, SwiftResultSet resultSet, Where where) throws Exception {
             DataMaintenanceService service = ApiProxyFactory.getProxy(DataMaintenanceService.class, address, maxFrameSize);
             return service.update(schema, tableName, resultSet, where);
         }
 
         @Override
-        public int createTable(SwiftDatabase schema, String tableName, List<Column> columns) {
+        public int createTable(SwiftDatabase schema, String tableName, List<Column> columns) throws Exception {
             DataMaintenanceService service = ApiProxyFactory.getProxy(DataMaintenanceService.class, address, maxFrameSize);
             return service.createTable(schema, tableName, columns);
         }

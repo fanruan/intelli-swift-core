@@ -21,6 +21,10 @@ public class SwiftPaginationResultSet extends AbstractSwiftResultSet {
 
     @Override
     protected AbstractSwiftResultSet queryNextPage(String queryJson) {
-        return (SwiftPaginationResultSet) caller.query(database, getJsonString());
+        try {
+            return (SwiftPaginationResultSet) caller.query(database, getJsonString());
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

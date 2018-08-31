@@ -4,8 +4,12 @@ import com.fr.base.Parameter;
 import com.fr.base.ParameterHelper;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.excel.ExcelUtil;
+import com.fr.swift.util.Crasher;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 /**
  * @author yee
@@ -30,12 +34,17 @@ public class ExcelDataModelCreator {
     }
 
     public static IExcelDataModel createDataModel(String filePath, Parameter[] parameters) {
-        filePath = ParameterHelper.analyze4Templatee(filePath, parameters);
-        if (isCsv(filePath)) {
-            return new CSVDataModel(filePath);
+        InputStream inputStream = null;
+        try {
+            if (ExcelUtil.isRemote(filePath)) {
+                inputStream = new URL(filePath).openStream();
+            } else {
+                inputStream = new FileInputStream(filePath);
+            }
+            return createDataModel(inputStream, filePath, parameters);
+        } catch (IOException e) {
+            return Crasher.crash(e);
         }
-        ExcelUtil.checkHead(filePath);
-        return new ExcelDataModel(filePath);
     }
 
     public static IExcelDataModel createDataModel(String filePath) {
@@ -47,7 +56,17 @@ public class ExcelDataModelCreator {
         if (isCsv(filePath)) {
             return new CSVDataModel(filePath, columnNames, columnTypes);
         }
-        return new ExcelDataModel(filePath, columnNames, columnTypes);
+        InputStream inputStream = null;
+        try {
+            if (ExcelUtil.isRemote(filePath)) {
+                inputStream = new URL(filePath).openStream();
+            } else {
+                inputStream = new FileInputStream(filePath);
+            }
+            return new ExcelDataModel(inputStream, filePath, columnNames, columnTypes);
+        } catch (IOException e) {
+            return Crasher.crash(e);
+        }
     }
 
     public static IExcelDataModel createDataModel(String filePath, String[] columnNames, ColumnTypeConstants.ColumnType[] columnTypes) {
@@ -59,6 +78,7 @@ public class ExcelDataModelCreator {
         if (isCsv(filePath)) {
             return new CSVDataModel(inputStream, filePath, columnNames, columnTypes);
         }
+
         return new ExcelDataModel(inputStream, filePath, columnNames, columnTypes);
     }
 

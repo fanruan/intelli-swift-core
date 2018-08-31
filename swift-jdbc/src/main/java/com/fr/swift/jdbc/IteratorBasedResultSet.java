@@ -9,12 +9,14 @@ import java.sql.SQLException;
 import java.util.Iterator;
 
 /**
- * Created by pony on 2018/8/17.
+ *
+ * @author pony
+ * @date 2018/8/17
  */
-public class IterBasedResultSet implements SwiftResultSet {
+public class IteratorBasedResultSet implements SwiftResultSet {
     private Iterator<Row> iterator;
 
-    public IterBasedResultSet(Iterator<Row> iterator) {
+    public IteratorBasedResultSet(Iterator<Row> iterator) {
         Util.requireNonNull(iterator);
         this.iterator = iterator;
     }

@@ -79,6 +79,19 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfig> {
     }
 
     @Override
+    protected long fileSize() {
+        FineFTP ftp = acquireClient();
+        try {
+            return ftp.getEntry(getResourceURI()).getSize();
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
+            return 0;
+        } finally {
+            returnClient(ftp);
+        }
+    }
+
+    @Override
     public void write(String remote, InputStream inputStream) throws SwiftFileException {
         FineFTP ftp = acquireClient();
         try {
