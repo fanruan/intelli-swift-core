@@ -7,6 +7,7 @@ import com.fr.swift.bitmap.roaringbitmap.buffer.MutableRoaringBitmap;
 import com.fr.swift.bitmap.traversal.BreakTraversalAction;
 import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.util.IoUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -89,11 +90,7 @@ public abstract class BaseRoaringBitMap extends AbstractBitMap {
             SwiftLoggers.getLogger().error(e);
             return new byte[0];
         } finally {
-            try {
-                baos.close();
-            } catch (IOException e) {
-                SwiftLoggers.getLogger().error(e);
-            }
+            IoUtil.close(baos);
         }
     }
 
