@@ -8,7 +8,6 @@ import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 
 import java.util.List;
-import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -18,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class CollateExecutor extends TimerTask {
+public class CollateExecutor implements Runnable {
 
     public CollateExecutor() {
         SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory(getClass())).
