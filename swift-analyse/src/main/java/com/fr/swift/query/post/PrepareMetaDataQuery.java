@@ -29,11 +29,11 @@ public class PrepareMetaDataQuery<T extends SwiftResultSet> extends AbstractPost
     public T getQueryResult() throws SQLException {
         SwiftMetaData metaData = SwiftMetaDataUtils.createMetaData(bean);
         T resultSet = query.getQueryResult();
-        if (bean.getQueryType() == QueryType.GROUP) {
-            return (T) new Node2RowResultSet((NodeResultSet) resultSet, metaData);
-        } else {
+        if (bean.getQueryType() == QueryType.DETAIL || bean.getQueryType() == QueryType.LOCAL_DETAIL) {
             ((DetailResultSet) resultSet).setMetaData(metaData);
             return resultSet;
+        } else {
+            return (T) new Node2RowResultSet((NodeResultSet) resultSet, metaData);
         }
     }
 }
