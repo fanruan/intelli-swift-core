@@ -208,7 +208,6 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
 
         clearCollatedSegment(collateSegKeys);
 
-
         for (final SegmentKey segmentKey : collateSegKeys) {
             ResourceDiscovery.getInstance().removeIf(new Predicate<String>() {
                 @Override
@@ -217,14 +216,6 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
                 }
             });
         }
-
-        List<Segment> segmentCollections = ((SwiftSegmentManager) SwiftContext.get().getBean("localSegmentProvider")).getSegment(tableKey);
-        int count = 0;
-        for (Segment segment : segmentCollections) {
-            count += segment.getRowCount();
-        }
-        SwiftLoggers.getLogger().info("total count:" + count);
-        MonitorUtil.finish("collate");
     }
 
     private SwiftResultSet newCollateResultSet(List<Segment> segs, int alloterCount, SwiftMetaData swiftMetaData) {
