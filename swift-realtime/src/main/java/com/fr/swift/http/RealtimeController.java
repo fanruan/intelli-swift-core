@@ -47,7 +47,7 @@ public class RealtimeController extends BaseController {
      * @throws Exception
      */
     @ResponseBody
-    @RequestMapping(value = REALTIME_INSERT, method = RequestMethod.POST)
+    @RequestMapping(value = REALTIME_DATA, method = RequestMethod.POST)
     public void insert(HttpServletResponse response, HttpServletRequest request,
                        @PathVariable("tableName") String tableName, @RequestBody List<List<Object>> dataList) throws Exception {
         realtimeService.insert(new SourceKey(tableName), new DataListResultSet(dataList, tableName));
