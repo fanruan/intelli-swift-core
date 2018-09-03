@@ -27,8 +27,8 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
     private SwiftDatabase swiftSchema;
     private Types.StoreType storeType;
 
-    public SegmentKeyBean(String sourceKey, Integer order, StoreType storeType, SwiftDatabase swiftSchema) {
-        this(sourceKey, URI.create(sourceKey + "/seg" + order), order, storeType, swiftSchema);
+    public SegmentKeyBean(SourceKey sourceKey, int order, StoreType storeType, SwiftDatabase swiftSchema) {
+        this(sourceKey.getId(), URI.create(sourceKey + "/seg" + order), order, storeType, swiftSchema);
     }
 
     public SegmentKeyBean(String sourceKey, URI uri, int order, Types.StoreType storeType, SwiftDatabase schema) {

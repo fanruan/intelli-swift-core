@@ -9,7 +9,9 @@ import java.sql.SQLException;
 import java.sql.Types;
 
 /**
- * Created by pony on 2018/8/17.
+ *
+ * @author pony
+ * @date 2018/8/17
  */
 public class MetadataWrapper implements ResultSetMetaData {
     private SwiftMetaData metaData;

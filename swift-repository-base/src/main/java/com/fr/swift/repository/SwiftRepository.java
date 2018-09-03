@@ -14,4 +14,6 @@ public interface SwiftRepository {
     boolean zipToRemote(String local, String remote) throws IOException;
 
     boolean delete(String remote) throws IOException;
+
+    long getSize(String path) throws IOException;
 }

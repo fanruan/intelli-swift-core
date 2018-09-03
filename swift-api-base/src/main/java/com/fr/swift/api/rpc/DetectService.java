@@ -11,8 +11,8 @@ import java.util.Map;
  */
 public interface DetectService extends ApiService {
     /**
-     * 获取Analyse和RealTime地址信息
-     *
+     * 获取Analyse和RealTime地址
+     * @param defaultAddress
      * @return
      */
     Map<ServiceType, List<String>> detectiveAnalyseAndRealTime(String defaultAddress);

@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
  * @date 2018/8/27
  */
 public class JdbcTest {
-    private String url = "jdbc:swift://192.168.0.7:7000/CUBE";
+    private String url = "jdbc:swift:server://127.0.0.1:7000/CUBE";
     private Connection connection;
     private String insertSQL = "insert into test_table values ";
     private StringBuffer buffer = new StringBuffer();
@@ -37,10 +37,10 @@ public class JdbcTest {
     @Ignore
     public void testQuery() throws SQLException {
         Statement statment = connection.createStatement();
-        ResultSet resultSet = statment.executeQuery("select id from test_table");
+        ResultSet resultSet = statment.executeQuery("select * from `10w`");
         int i = 1;
         while (resultSet.next()) {
-            System.out.println(resultSet.getInt(1));
+            System.out.println(resultSet.getObject(1));
         }
     }
 

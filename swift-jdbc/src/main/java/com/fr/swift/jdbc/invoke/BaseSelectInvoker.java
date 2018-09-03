@@ -7,11 +7,11 @@ import com.fr.swift.source.SwiftResultSet;
  * @author yee
  * @date 2018/8/29
  */
-public abstract class BaseSelectInvoke implements SqlInvoke<SwiftResultSet> {
+public abstract class BaseSelectInvoker implements SqlInvoker<SwiftResultSet> {
 
     protected QueryBean queryBean;
 
-    public BaseSelectInvoke(QueryBean queryBean) {
+    public BaseSelectInvoker(QueryBean queryBean) {
         this.queryBean = queryBean;
     }
 

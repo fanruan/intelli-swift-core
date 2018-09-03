@@ -16,7 +16,6 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -34,32 +33,32 @@ public class SwiftApiSessionImpl implements SwiftApiSession, DataMaintenanceServ
     }
 
     @Override
-    public int insert(SwiftDatabase schema, String tableName, List<String> fields, List<Row> rows) throws SQLException {
+    public int insert(SwiftDatabase schema, String tableName, List<String> fields, List<Row> rows) throws Exception {
         return dataMaintenanceApi.insert(schema, tableName, fields, rows);
     }
 
     @Override
-    public int insert(SwiftDatabase schema, String tableName, List<Row> rows) throws SQLException {
+    public int insert(SwiftDatabase schema, String tableName, List<Row> rows) throws Exception {
         return dataMaintenanceApi.insert(schema, tableName, rows);
     }
 
     @Override
-    public int insert(SwiftDatabase schema, String tableName, String queryJson) throws SQLException {
+    public int insert(SwiftDatabase schema, String tableName, String queryJson) throws Exception {
         return dataMaintenanceApi.insert(schema, tableName, queryJson);
     }
 
     @Override
-    public int delete(SwiftDatabase schema, String tableName, Where where) {
+    public int delete(SwiftDatabase schema, String tableName, Where where) throws Exception {
         return dataMaintenanceApi.delete(schema, tableName, where);
     }
 
     @Override
-    public int update(SwiftDatabase schema, String tableName, SwiftResultSet resultSet, Where where) {
+    public int update(SwiftDatabase schema, String tableName, SwiftResultSet resultSet, Where where) throws Exception {
         return dataMaintenanceApi.update(schema, tableName, resultSet, where);
     }
 
     @Override
-    public int createTable(SwiftDatabase schema, String tableName, List<Column> columns) {
+    public int createTable(SwiftDatabase schema, String tableName, List<Column> columns) throws Exception {
         return dataMaintenanceApi.createTable(schema, tableName, columns);
     }
 
@@ -80,7 +79,17 @@ public class SwiftApiSessionImpl implements SwiftApiSession, DataMaintenanceServ
     }
 
     @Override
+    public List<String> detectiveAllTableNames(SwiftDatabase schema) {
+        return selectApi.detectiveAllTableNames(schema);
+    }
+
+    @Override
     public boolean isTableExists(SwiftDatabase schema, String tableName) {
         return selectApi.isTableExists(schema, tableName);
+    }
+
+    @Override
+    public void close() throws Exception {
+
     }
 }
