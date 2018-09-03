@@ -46,7 +46,7 @@ public class SwiftRealtimeInserter extends SwiftInserter {
     protected void putRow(int cursor, Row rowData) {
         super.putRow(cursor, rowData);
         // 增量考虑到要可读，每行都写rowCount，allshow
-        putSegmentInfo(lastCursor, cursor + 1);
+        super.putSegmentInfo(lastCursor, cursor + 1);
         swiftBackup.backupRowData(cursor, rowData);
     }
 

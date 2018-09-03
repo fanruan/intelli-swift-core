@@ -21,9 +21,11 @@ import java.util.concurrent.Semaphore;
  */
 public class SwiftServiceTaskExecutor implements ServiceTaskExecutor {
 
-    private final BlockingQueue<ServiceCallable> callableQueue = new LinkedBlockingQueue<ServiceCallable>(1000);
+    private final BlockingQueue<ServiceCallable> callableQueue = new LinkedBlockingQueue<ServiceCallable>(10000);
 
     private final Map<SourceKey, ServiceCallable> runningCallables = new ConcurrentHashMap<SourceKey, ServiceCallable>();
+
+    private final static long SLEEP_TIME = 10L;
 
     private ServiceTaskFetcher fetcher;
 
@@ -57,6 +59,8 @@ public class SwiftServiceTaskExecutor implements ServiceTaskExecutor {
                             if (runningCallables.containsKey(serviceCallable.getKey())) {
                                 //todo 暂时加到队列尾
                                 callableQueue.put(serviceCallable);
+                                //fixme
+                                Thread.sleep(SLEEP_TIME);
                                 semaphore.release();
                                 continue;
                             } else {
