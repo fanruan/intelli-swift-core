@@ -34,7 +34,7 @@ public class ServiceController extends BaseController {
     private SwiftProperty swiftProperty = SwiftContext.get().getBean(SwiftProperty.class);
 
     @ResponseBody
-    @RequestMapping(value = SWIFT_SERVICE_START, method = RequestMethod.POST)
+    @RequestMapping(value = SWIFT_SERVICE, method = RequestMethod.POST)
     public void swiftServiceStart(HttpServletResponse response, HttpServletRequest request,
                                   @RequestBody(required = false) Set<String> services) throws Exception {
         if (services != null) {
@@ -47,7 +47,7 @@ public class ServiceController extends BaseController {
     }
 
     @ResponseBody
-    @RequestMapping(value = SWIFT_SERVICE_STOP, method = RequestMethod.POST)
+    @RequestMapping(value = SWIFT_SERVICE, method = RequestMethod.DELETE)
     public void swiftServiceStop(HttpServletResponse response, HttpServletRequest request,
                                  @RequestBody(required = false) Set<String> services) throws Exception {
         if (services != null) {
@@ -60,7 +60,7 @@ public class ServiceController extends BaseController {
     }
 
     @ResponseBody
-    @RequestMapping(value = SERVER_SERVICE_START, method = RequestMethod.POST)
+    @RequestMapping(value = SERVER_SERVICE, method = RequestMethod.POST)
     public void serverServiceStart(HttpServletResponse response, HttpServletRequest request,
                                    @RequestBody(required = false) Set<String> services) throws Exception {
         if (services != null) {
@@ -69,7 +69,7 @@ public class ServiceController extends BaseController {
     }
 
     @ResponseBody
-    @RequestMapping(value = SERVER_SERVICE_STOP, method = RequestMethod.POST)
+    @RequestMapping(value = SERVER_SERVICE, method = RequestMethod.DELETE)
     public void serverServiceStop(HttpServletResponse response, HttpServletRequest request,
                                   @RequestBody(required = false) Set<String> services) throws Exception {
         if (services != null) {
