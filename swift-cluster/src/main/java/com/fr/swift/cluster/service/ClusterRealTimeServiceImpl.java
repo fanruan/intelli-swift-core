@@ -6,7 +6,7 @@ import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.RpcFuture;
-import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Where;
@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -56,6 +57,8 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
     @Autowired(required = false)
     private RealtimeService realtimeService;
 
+    private transient HashSet<SourceKey> existsTableKey;
+
     @Override
     public boolean start() throws SwiftServiceException {
         List<com.fr.swift.service.SwiftService> services = ServiceBeanFactory.getSwiftServiceByNames(Collections.singleton("realtime"));
@@ -65,6 +68,7 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
         if (null != info) {
             rpcSegmentLocation(new PushSegLocationRpcEvent(info));
         }
+        existsTableKey = new HashSet<SourceKey>();
         return super.start();
     }
 
@@ -75,11 +79,22 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
         taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.INSERT) {
             @Override
             public void doJob() throws Exception {
-                rpcSegmentLocation(new PushSegLocationRpcEvent(makeLocationInfo(tableKey)));
+                if (!existsTableKey.contains(tableKey)) {
+                    existsTableKey.add(tableKey);
+                    rpcSegmentLocation(new PushSegLocationRpcEvent(makeLocationInfo(tableKey)));
+                }
                 SwiftDatabase.getInstance().getTable(tableKey).insert(resultSet);
             }
         });
     }
+
+
+    @Override
+    public String getID() {
+        return ClusterSelector.getInstance().getFactory().getCurrentId();
+    }
+
+
 
     @Override
     @RpcMethod(methodName = "realtimeDelete")
@@ -134,7 +149,9 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
     }
 
     protected SegmentLocationInfo loadSelfSegmentDestination() {
-        Map<String, List<SegmentKey>> segments = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).getOwnSegments();
+        SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
+        clusterSegmentService.setClusterId(getID());
+        Map<String, List<SegmentKey>> segments = clusterSegmentService.getOwnSegments();
         if (!segments.isEmpty()) {
             Map<String, List<SegmentDestination>> hist = new HashMap<String, List<SegmentDestination>>();
             for (Map.Entry<String, List<SegmentKey>> entry : segments.entrySet()) {

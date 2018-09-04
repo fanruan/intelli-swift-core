@@ -2,8 +2,6 @@ package com.fr.swift.segment.impl;
 
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
-import com.fr.swift.context.SwiftContext;
-import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.service.SwiftService;
 import com.fr.third.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -26,7 +24,7 @@ public class SegmentDestinationImpl implements SegmentDestination {
     @JsonProperty
     private String address;
     @JsonProperty
-    private String currentNode;
+    private transient String currentNode;
     @JsonProperty
     private String segmentId;
     @JsonProperty
@@ -44,16 +42,23 @@ public class SegmentDestinationImpl implements SegmentDestination {
     public SegmentDestinationImpl(String clusterId, String segmentId, int order, Class<? extends SwiftService> serviceClass, String methodName) {
         this.clusterId = clusterId;
         this.address = clusterId;
+        this.currentNode = clusterId;
         this.segmentId = segmentId;
         this.order = order;
         this.serviceClass = serviceClass;
         this.methodName = methodName;
         this.spareNodes = new ArrayList<String>();
-        this.currentNode = SwiftContext.get().getBean(SwiftProperty.class).getServerAddress();
     }
 
     public SegmentDestinationImpl(SegmentDestination destination) {
-        this(destination.getClusterId(), destination.getSegmentId(), destination.getOrder(), destination.getServiceClass(), destination.getMethodName());
+        this.clusterId = destination.getClusterId();
+        this.address = destination.getAddress();
+        this.currentNode = destination.getCurrentNode();
+        this.segmentId = destination.getSegmentId();
+        this.order = destination.getOrder();
+        this.serviceClass = destination.getServiceClass();
+        this.methodName = destination.getMethodName();
+        this.spareNodes = destination.getSpareNodes();
     }
 
     public SegmentDestinationImpl(String segmentId, int order) {
