@@ -10,19 +10,23 @@ import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.ProviderTaskManager;
 import com.fr.swift.event.ClusterEvent;
+import com.fr.swift.event.ClusterEventListener;
 import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.event.ClusterType;
+import com.fr.swift.event.global.NodeStartedEvent;
 import com.fr.swift.log.FineIOLoggerImpl;
 import com.fr.swift.log.SwiftLog4jLoggers;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
+import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.local.ServerManager;
 import com.fr.swift.service.local.ServiceManager;
 import com.fr.swift.source.db.ConnectionInfo;
 import com.fr.swift.source.db.ConnectionManager;
 import com.fr.swift.source.db.IConnectionProvider;
 import com.fr.swift.source.db.SwiftConnectionInfo;
+import com.fr.swift.utils.ClusterCommonUtils;
 import com.fr.workspace.simple.SimpleWork;
 
 /**
@@ -40,6 +44,18 @@ public class SwiftEngineStart {
             SimpleWork.checkIn(System.getProperty("user.dir"));
             ClusterListenerHandler.addListener(new SwiftClusterListener());
             SwiftContext.init();
+            ClusterListenerHandler.addListener(new ClusterEventListener() {
+                @Override
+                public void handleEvent(ClusterEvent clusterEvent) {
+                    if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
+                        String currentId = ClusterSelector.getInstance().getFactory().getCurrentId();
+                        try {
+                            ClusterCommonUtils.asyncCallMaster(new NodeStartedEvent(currentId));
+                        } catch (Exception ignore) {
+                        }
+                    }
+                }
+            });
             registerTmpConnectionProvider();
             FineIO.setLogger(new FineIOLoggerImpl());
             ProviderTaskManager.start();

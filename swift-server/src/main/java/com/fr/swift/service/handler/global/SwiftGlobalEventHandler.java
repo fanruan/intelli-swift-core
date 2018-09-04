@@ -4,6 +4,7 @@ import com.fr.event.EventDispatcher;
 import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.cluster.entity.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
+import com.fr.swift.cluster.service.SegmentLocationInfoContainer;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.event.analyse.SegmentLocationRpcEvent;
@@ -19,6 +20,7 @@ import com.fr.swift.structure.Pair;
 import com.fr.swift.task.TaskKey;
 import com.fr.swift.task.TaskResult;
 import com.fr.swift.task.impl.TaskEvent;
+import com.fr.swift.utils.ClusterCommonUtils;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
@@ -79,10 +81,32 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
                 makeResultMap(realtime, result, ServiceType.REAL_TIME);
                 makeResultMap(analyse, result, ServiceType.ANALYSE);
                 return (S) result;
+            case NODE_STARTED:
+                String clusterId = (String) event.getContent();
+                Map<String, ClusterEntity> analyseNodeMap = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.ANALYSE);
+                if (analyseNodeMap.containsKey(clusterId)) {
+                    triggerAfterAnalyseRegister(Pair.of(clusterId, analyseNodeMap.get(clusterId)));
+                }
+                break;
             default:
                 break;
         }
         return null;
+    }
+
+    private void triggerAfterAnalyseRegister(Pair<String, ClusterEntity> service) {
+        String id = service.getKey();
+        try {
+            Class clazz = service.getValue().getServiceClass();
+            List<Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo>> pairs = SegmentLocationInfoContainer.getContainer().getLocationInfo();
+            for (Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo> pair : pairs) {
+                ClusterCommonUtils.runAsyncRpc(id, clazz,
+                        clazz.getMethod("updateSegmentInfo", SegmentLocationInfo.class, SegmentLocationInfo.UpdateType.class),
+                        pair.getValue(), pair.getKey());
+            }
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
+        }
     }
 
     private void makeResultMap(Map<String, ClusterEntity> realtime, Map<ServiceType, List<String>> result, ServiceType type) {
