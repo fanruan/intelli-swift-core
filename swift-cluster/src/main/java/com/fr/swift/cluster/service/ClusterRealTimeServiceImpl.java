@@ -6,7 +6,7 @@ import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.RpcFuture;
-import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Where;
@@ -81,6 +81,14 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
         });
     }
 
+
+    @Override
+    public String getID() {
+        return ClusterSelector.getInstance().getFactory().getCurrentId();
+    }
+
+
+
     @Override
     @RpcMethod(methodName = "realtimeDelete")
     public boolean delete(SourceKey sourceKey, Where where) throws Exception {
@@ -134,7 +142,9 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
     }
 
     protected SegmentLocationInfo loadSelfSegmentDestination() {
-        Map<String, List<SegmentKey>> segments = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).getOwnSegments();
+        SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
+        clusterSegmentService.setClusterId(getID());
+        Map<String, List<SegmentKey>> segments = clusterSegmentService.getOwnSegments();
         if (!segments.isEmpty()) {
             Map<String, List<SegmentDestination>> hist = new HashMap<String, List<SegmentDestination>>();
             for (Map.Entry<String, List<SegmentKey>> entry : segments.entrySet()) {
