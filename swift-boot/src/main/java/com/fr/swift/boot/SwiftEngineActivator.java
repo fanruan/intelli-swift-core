@@ -5,6 +5,7 @@ import com.fr.cluster.entry.ClusterTicketKey;
 import com.fr.module.Activator;
 import com.fr.module.extension.Prepare;
 import com.fr.stable.db.constant.BaseDBConstant;
+import com.fr.swift.common.NodeStartedListener;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.context.SwiftConfigContext;
 import com.fr.swift.context.SwiftContext;
@@ -35,6 +36,7 @@ public class SwiftEngineActivator extends Activator implements Prepare {
         ClusterListenerHandler.addListener(new FRClusterListener());
         SwiftContext.init();
         SwiftConfigContext.getInstance().init();
+        ClusterListenerHandler.addListener(new NodeStartedListener());
         FineIO.setLogger(new FineIOLoggerImpl());
         SwiftContext.get().getBean("localManager", ServiceManager.class).startUp();
         ProviderTaskManager.start();

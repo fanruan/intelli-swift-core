@@ -15,6 +15,7 @@ import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
+import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.AbstractSwiftService;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.ServiceType;
@@ -109,6 +110,12 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
     @Override
     @RpcMethod(methodName = "updateSegmentInfo")
     public void updateSegmentInfo(SegmentLocationInfo locationInfo, SegmentLocationInfo.UpdateType updateType) {
+        String clusterId = getID();
+        for (List<SegmentDestination> value : locationInfo.getDestinations().values()) {
+            for (SegmentDestination segmentDestination : value) {
+                ((SegmentDestinationImpl) segmentDestination).setCurrentNode(clusterId);
+            }
+        }
         analyseService.updateSegmentInfo(locationInfo, updateType);
     }
 
@@ -122,6 +129,12 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
         String methodName = remoteURI.getMethodName();
         Class clazz = remoteURI.getServiceClass();
         return ClusterCommonUtils.runAsyncRpc(address, clazz, server.getMethodByName(methodName), jsonString);
+    }
+
+
+    @Override
+    public String getID() {
+        return ClusterSelector.getInstance().getFactory().getCurrentId();
     }
 
     @Override

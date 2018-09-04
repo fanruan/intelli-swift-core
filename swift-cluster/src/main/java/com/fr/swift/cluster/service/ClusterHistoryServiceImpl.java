@@ -4,7 +4,7 @@ import com.fr.swift.annotation.RpcMethod;
 import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.annotation.SwiftService;
-import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Where;
@@ -92,8 +92,15 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
         return new SegmentDestinationImpl(clusterId, segmentKey.toString(), segmentKey.getOrder(), HistoryService.class, "historyQuery");
     }
 
+    @Override
+    public String getID() {
+        return ClusterSelector.getInstance().getFactory().getCurrentId();
+    }
+
     protected SegmentLocationInfo loadSelfSegmentDestination() {
-        Map<String, List<SegmentKey>> segments = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).getOwnSegments();
+        SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
+        clusterSegmentService.setClusterId(getID());
+        Map<String, List<SegmentKey>> segments = clusterSegmentService.getOwnSegments();
         if (!segments.isEmpty()) {
             Map<String, List<SegmentDestination>> hist = new HashMap<String, List<SegmentDestination>>();
             for (Map.Entry<String, List<SegmentKey>> entry : segments.entrySet()) {

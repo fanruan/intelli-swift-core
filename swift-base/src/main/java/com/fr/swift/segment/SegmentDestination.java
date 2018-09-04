@@ -28,4 +28,6 @@ public interface SegmentDestination extends Serializable, Comparable<SegmentDest
     String getSegmentId();
 
     List<String> getSpareNodes();
+
+    String getCurrentNode();
 }
