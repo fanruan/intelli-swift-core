@@ -93,7 +93,6 @@ public abstract class BaseInserter {
                 column.getDetailColumn().release();
                 column.getBitmapIndex().release();
             }
-
             segment.release();
         }
     }

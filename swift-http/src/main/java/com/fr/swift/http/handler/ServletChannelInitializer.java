@@ -1,8 +1,10 @@
 package com.fr.swift.http.handler;
 
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.http.dispatcher.SwiftDispatcher;
 import com.fr.swift.http.servlet.MockServletConfig;
 import com.fr.swift.http.servlet.MockServletContext;
+import com.fr.swift.property.SwiftProperty;
 import com.fr.third.springframework.web.context.support.XmlWebApplicationContext;
 import com.fr.third.springframework.web.servlet.DispatcherServlet;
 import io.netty.channel.ChannelInitializer;
@@ -23,9 +25,10 @@ import javax.servlet.ServletException;
  */
 public class ServletChannelInitializer extends ChannelInitializer<SocketChannel> {
     private final DispatcherServlet dispatcherServlet;
+    private SwiftProperty swiftProperty;
 
     public ServletChannelInitializer() throws ServletException {
-
+        swiftProperty = SwiftContext.get().getBean("swiftProperty", SwiftProperty.class);
         MockServletContext servletContext = new MockServletContext();
         MockServletConfig servletConfig = new MockServletConfig(servletContext);
         XmlWebApplicationContext wac = new XmlWebApplicationContext();
@@ -40,7 +43,7 @@ public class ServletChannelInitializer extends ChannelInitializer<SocketChannel>
     @Override
     public void initChannel(SocketChannel ch) {
         ch.pipeline().addLast("decoder", new HttpRequestDecoder());
-        ch.pipeline().addLast("aggregator", new HttpObjectAggregator(65536));
+        ch.pipeline().addLast("aggregator", new HttpObjectAggregator(swiftProperty.getRpcMaxObjectSize()));
         ch.pipeline().addLast("encoder", new HttpResponseEncoder());
         ch.pipeline().addLast("chunkedWriter", new ChunkedWriteHandler());
         ch.pipeline().addLast("httpServerHandler", new HttpServerHandler(dispatcherServlet));
