@@ -3,6 +3,8 @@ package com.fr.swift.jdbc;
 import com.fr.stable.StringUtils;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
+import com.fr.swift.jdbc.result.EmptyResultSet;
+import com.fr.swift.jdbc.result.ResultSetWrapper;
 import com.fr.swift.util.Crasher;
 
 import java.sql.Connection;
@@ -635,7 +637,7 @@ public abstract class BaseSwiftDatabaseMetadata implements DatabaseMetaData {
 
     @Override
     public ResultSet getTableTypes() throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+        return new ResultSetWrapper(EmptyResultSet.INSTANCE);
     }
 
     @Override
