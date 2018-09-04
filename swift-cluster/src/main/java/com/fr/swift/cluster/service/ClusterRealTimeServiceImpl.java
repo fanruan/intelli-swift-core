@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -56,6 +57,8 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
     @Autowired(required = false)
     private RealtimeService realtimeService;
 
+    private transient HashSet<SourceKey> existsTableKey;
+
     @Override
     public boolean start() throws SwiftServiceException {
         List<com.fr.swift.service.SwiftService> services = ServiceBeanFactory.getSwiftServiceByNames(Collections.singleton("realtime"));
@@ -65,6 +68,7 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
         if (null != info) {
             rpcSegmentLocation(new PushSegLocationRpcEvent(info));
         }
+        existsTableKey = new HashSet<SourceKey>();
         return super.start();
     }
 
@@ -75,7 +79,10 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
         taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.INSERT) {
             @Override
             public void doJob() throws Exception {
-                rpcSegmentLocation(new PushSegLocationRpcEvent(makeLocationInfo(tableKey)));
+                if (!existsTableKey.contains(tableKey)) {
+                    existsTableKey.add(tableKey);
+                    rpcSegmentLocation(new PushSegLocationRpcEvent(makeLocationInfo(tableKey)));
+                }
                 SwiftDatabase.getInstance().getTable(tableKey).insert(resultSet);
             }
         });
