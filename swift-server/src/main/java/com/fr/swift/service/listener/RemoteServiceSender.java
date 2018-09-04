@@ -20,15 +20,6 @@ public class RemoteServiceSender implements SwiftServiceListenerHandler {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(RemoteServiceSender.class);
 
-    private static final RemoteServiceSender INSTANCE = new RemoteServiceSender();
-
-    private RemoteServiceSender() {
-    }
-
-    public static RemoteServiceSender getInstance() {
-        return INSTANCE;
-    }
-
     @Override
     public void addListener(SwiftServiceListener listener) {
 

@@ -37,7 +37,7 @@ public class SegmentUtils {
     }
 
     public static SegmentKey getMaxSegmentKey(List<SegmentKey> segmentKeys) {
-        if (segmentKeys.isEmpty()) {
+        if (segmentKeys == null || segmentKeys.isEmpty()) {
             return null;
         } else {
             SegmentKey maxSegmentKey = segmentKeys.get(0);

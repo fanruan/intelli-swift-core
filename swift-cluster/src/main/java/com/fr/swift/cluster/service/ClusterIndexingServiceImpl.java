@@ -26,6 +26,7 @@ import com.fr.swift.segment.relation.RelationIndexImpl;
 import com.fr.swift.service.AbstractSwiftService;
 import com.fr.swift.service.IndexingService;
 import com.fr.swift.service.ServiceType;
+import com.fr.swift.service.cluster.ClusterIndexingService;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.RelationSourceType;
@@ -41,6 +42,7 @@ import com.fr.swift.util.Strings;
 import com.fr.swift.utils.ClusterCommonUtils;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.beans.factory.annotation.Qualifier;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,7 +60,8 @@ import static com.fr.swift.task.TaskResult.Type.SUCCEEDED;
  */
 @SwiftService(name = "indexing", cluster = true)
 @RpcService(type = RpcServiceType.INTERNAL, value = IndexingService.class)
-public class ClusterIndexingService extends AbstractSwiftService implements IndexingService, Serializable {
+@Service("clusterIndexingService")
+public class ClusterIndexingServiceImpl extends AbstractSwiftService implements ClusterIndexingService, Serializable {
 
     private static final long serialVersionUID = 3153509375653090856L;
     @Autowired(required = false)

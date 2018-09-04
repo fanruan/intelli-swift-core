@@ -13,6 +13,7 @@ import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryBeanFactory;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationInfo;
+import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.service.AbstractSwiftService;
 import com.fr.swift.service.AnalyseService;
@@ -32,7 +33,7 @@ import java.util.concurrent.CountDownLatch;
  * @author yee
  * @date 2018/8/6
  */
-@SwiftService(name = "analyse",cluster = true)
+@SwiftService(name = "analyse", cluster = true)
 @RpcService(value = AnalyseService.class, type = RpcServiceType.INTERNAL)
 public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements ClusterAnalyseService {
     private static final long serialVersionUID = 7637989460502966453L;

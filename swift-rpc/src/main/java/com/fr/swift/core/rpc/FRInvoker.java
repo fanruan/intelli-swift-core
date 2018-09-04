@@ -2,7 +2,6 @@ package com.fr.swift.core.rpc;
 
 import com.fr.cluster.ClusterBridge;
 import com.fr.cluster.core.ClusterNode;
-import com.fr.cluster.engine.rpc.base.FineResult;
 import com.fr.cluster.engine.ticket.FineClusterToolKit;
 import com.fr.cluster.rpc.base.InvokeHandler;
 import com.fr.swift.basics.Invocation;
@@ -12,7 +11,6 @@ import com.fr.swift.basics.RpcFuture;
 import com.fr.swift.basics.URL;
 import com.fr.swift.basics.base.SwiftResult;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 
@@ -55,14 +53,7 @@ public class FRInvoker<T> implements Invoker<T> {
     @Override
     public Result invoke(Invocation invocation) {
         try {
-            FineResult fineResult = (FineResult) doInvoke(proxy, invocation.getMethodName(), invocation.getParameterTypes(), invocation.getArguments());
-            if (fineResult.getException() == null) {
-                return new SwiftResult(fineResult.get());
-            } else {
-                throw fineResult.getException();
-            }
-        } catch (InvocationTargetException e) {
-            return new SwiftResult(e);
+            return new SwiftResult(doInvoke(proxy, invocation.getMethodName(), invocation.getParameterTypes(), invocation.getArguments()));
         } catch (Throwable e) {
             return new SwiftResult(e);
         }
@@ -90,7 +81,11 @@ public class FRInvoker<T> implements Invoker<T> {
             ClusterNode clusterNode = ClusterBridge.getView().getNodeById(url.getDestination().getId());
             if (sync) {
                 com.fr.cluster.rpc.base.Result result = frInvoker.invoke(clusterNode, invocation);
-                return result;
+                if (result.getException() != null) {
+                    throw result.getException();
+                } else {
+                    return result.get();
+                }
             } else {
                 final RpcFuture rpcFuture = new FRFuture();
                 InvokeHandler invokeHandler = new InvokeHandler() {

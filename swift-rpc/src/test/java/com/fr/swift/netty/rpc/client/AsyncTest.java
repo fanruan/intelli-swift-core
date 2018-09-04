@@ -40,7 +40,6 @@ public class AsyncTest {
         //step3: get invoker method
         SwiftContext.init();
         RpcServer rpcServer = SwiftContext.get().getBean(RpcServer.class);
-        rpcServer.initService(SwiftContext.get());
         Method method = rpcServer.getMethodByName("add");
         final long startTime = System.currentTimeMillis();
         //step4: async invoke method

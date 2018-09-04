@@ -20,12 +20,14 @@ import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.AbstractSwiftService;
 import com.fr.swift.service.HistoryService;
 import com.fr.swift.service.ServiceType;
+import com.fr.swift.service.cluster.ClusterHistoryService;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.util.ServiceBeanFactory;
 import com.fr.swift.utils.ClusterCommonUtils;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.beans.factory.annotation.Qualifier;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -42,7 +44,8 @@ import java.util.Set;
  */
 @SwiftService(name = "history", cluster = true)
 @RpcService(value = HistoryService.class, type = RpcServiceType.INTERNAL)
-public class ClusterHistoryService extends AbstractSwiftService implements HistoryService, Serializable {
+@Service("clusterHistoryService")
+public class ClusterHistoryServiceImpl extends AbstractSwiftService implements ClusterHistoryService, Serializable {
     private static final long serialVersionUID = -3487010910076432934L;
 
     @Autowired(required = false)

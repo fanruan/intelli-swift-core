@@ -1,14 +1,14 @@
 package com.fr.swift.service.handler.realtime;
 
+import com.fr.swift.basics.AsyncRpcCallback;
+import com.fr.swift.cluster.entity.ClusterEntity;
+import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.event.base.AbstractRealTimeRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.service.ServiceType;
-import com.fr.swift.cluster.entity.ClusterEntity;
 import com.fr.swift.service.handler.base.AbstractHandler;
 import com.fr.swift.service.handler.history.SwiftHistoryEventHandler;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;

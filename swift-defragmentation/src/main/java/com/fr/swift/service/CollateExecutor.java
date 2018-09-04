@@ -19,9 +19,12 @@ import java.util.concurrent.TimeUnit;
  */
 public class CollateExecutor implements Runnable {
 
+    private CollateService collateService;
+
     public CollateExecutor() {
         SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory(getClass())).
-                scheduleWithFixedDelay(this, 0, 1, TimeUnit.HOURS);
+                scheduleWithFixedDelay(this, 10000l, 1, TimeUnit.HOURS);
+        collateService = SwiftContext.get().getBean(CollateService.class);
     }
 
     @Override
@@ -34,7 +37,7 @@ public class CollateExecutor implements Runnable {
             List<Table> tables = SwiftDatabase.getInstance().getAllTables();
             for (Table table : tables) {
                 //todo 增加策略，是否需要触发
-                SwiftContext.get().getBean(CollateService.class).autoCollate(table.getSourceKey());
+                collateService.autoCollate(table.getSourceKey());
             }
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);

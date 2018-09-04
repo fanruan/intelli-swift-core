@@ -12,6 +12,8 @@ import com.fr.swift.cube.queue.ProviderTaskManager;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.log.FineIOLoggerImpl;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.service.CollateExecutor;
+import com.fr.swift.service.ScheduledRealtimeTransfer;
 import com.fr.swift.service.local.ServiceManager;
 
 /**
@@ -30,12 +32,15 @@ public class SwiftEngineActivator extends Activator implements Prepare {
     }
 
     private void startSwift() throws Exception {
-        SwiftContext.init();
         ClusterListenerHandler.addListener(new FRClusterListener());
+        SwiftContext.init();
         SwiftConfigContext.getInstance().init();
         FineIO.setLogger(new FineIOLoggerImpl());
         SwiftContext.get().getBean("localManager", ServiceManager.class).startUp();
         ProviderTaskManager.start();
+
+        ScheduledRealtimeTransfer scheduledRealtimeTransfer = new ScheduledRealtimeTransfer();
+        CollateExecutor collateExecutor = new CollateExecutor();
     }
 
     @Override
