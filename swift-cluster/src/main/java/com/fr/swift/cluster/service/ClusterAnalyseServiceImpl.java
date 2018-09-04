@@ -14,7 +14,6 @@ import com.fr.swift.query.query.QueryBeanFactory;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
-import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.AbstractSwiftService;
 import com.fr.swift.service.AnalyseService;
@@ -26,11 +25,8 @@ import com.fr.swift.util.ServiceBeanFactory;
 import com.fr.swift.utils.ClusterCommonUtils;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -106,7 +102,7 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
         List<com.fr.swift.service.SwiftService> services = ServiceBeanFactory.getSwiftServiceByNames(Collections.singleton("analyse"));
         analyseService = (AnalyseService) services.get(0);
         analyseService.start();
-        // 这边为了覆盖掉analyse的注册，所以 再调一次注册
+        // 这边为了覆盖掉analyse的注册，所以再调一次注册
         return super.start();
     }
 
@@ -114,19 +110,12 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
     @RpcMethod(methodName = "updateSegmentInfo")
     public void updateSegmentInfo(SegmentLocationInfo locationInfo, SegmentLocationInfo.UpdateType updateType) {
         String clusterId = getID();
-        Map<String, List<SegmentDestination>> segmentDests = new HashMap<String, List<SegmentDestination>>();
-        for (Map.Entry<String, List<SegmentDestination>> entry : locationInfo.getDestinations().entrySet()) {
-            String key = entry.getKey();
-            List<SegmentDestination> destinations = new ArrayList<SegmentDestination>();
-            for (SegmentDestination segmentDestination : entry.getValue()) {
-                ((SegmentDestinationImpl) segmentDestination).setClusterId(clusterId);
-                destinations.add(segmentDestination);
+        for (List<SegmentDestination> value : locationInfo.getDestinations().values()) {
+            for (SegmentDestination segmentDestination : value) {
+                ((SegmentDestinationImpl) segmentDestination).setCurrentNode(clusterId);
             }
-            segmentDests.put(key, destinations);
         }
-
-        SegmentLocationInfo info = new SegmentLocationInfoImpl(locationInfo.serviceType(), segmentDests);
-        analyseService.updateSegmentInfo(info, updateType);
+        analyseService.updateSegmentInfo(locationInfo, updateType);
     }
 
     private RpcFuture queryRemoteNodeNode(String jsonString, SegmentDestination remoteURI) throws Exception {
