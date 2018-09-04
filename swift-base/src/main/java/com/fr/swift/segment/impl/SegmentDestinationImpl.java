@@ -51,7 +51,14 @@ public class SegmentDestinationImpl implements SegmentDestination {
     }
 
     public SegmentDestinationImpl(SegmentDestination destination) {
-        this(destination.getClusterId(), destination.getSegmentId(), destination.getOrder(), destination.getServiceClass(), destination.getMethodName());
+        this.clusterId = destination.getClusterId();
+        this.address = destination.getAddress();
+        this.currentNode = destination.getCurrentNode();
+        this.segmentId = destination.getSegmentId();
+        this.order = destination.getOrder();
+        this.serviceClass = destination.getServiceClass();
+        this.methodName = destination.getMethodName();
+        this.spareNodes = destination.getSpareNodes();
     }
 
     public SegmentDestinationImpl(String segmentId, int order) {
