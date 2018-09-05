@@ -16,6 +16,7 @@ import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.info.group.GroupQueryInfo;
+import com.fr.swift.query.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.resource.ResourceUtils;
@@ -56,7 +57,11 @@ public class QueryInfoParserTest {
     }
 
     @Test
-    public void testGroupQueryInfoBean() {
+    public void testGroupQueryInfoBean() throws Exception {
+        DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "DEMO_CONTRACT");
+        if (!db.existsTable(new SourceKey("DEMO_CONTRACT"))) {
+            db.createTable(new SourceKey("DEMO_CONTRACT"), dataSource.getMetadata());
+        }
         String path = ResourceUtils.getFileAbsolutePath("json");
         String filePath = path + File.separator + "group.json";
         assertTrue(new File(filePath).exists());
@@ -77,6 +82,8 @@ public class QueryInfoParserTest {
         GroupQueryInfo info = (GroupQueryInfo) QueryInfoParser.parse(queryBean);
         assertEquals(1, info.getDimensions().size());
         assertEquals(1, info.getMetrics().size());
+        String queryString = QueryInfoBeanFactory.queryBean2String(queryBean);
+        queryBean = SwiftContext.get().getBean(QueryBeanFactory.class).create(queryString);
     }
 
     @Test
