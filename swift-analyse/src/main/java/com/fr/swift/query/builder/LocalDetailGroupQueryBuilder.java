@@ -3,7 +3,6 @@ package com.fr.swift.query.builder;
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.impl.SwiftDatabase;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
@@ -26,6 +25,7 @@ import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.structure.Pair;
+import com.fr.swift.util.Crasher;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -93,7 +93,7 @@ public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
         try {
             column = SwiftDatabase.getInstance().getTable(table).getMetadata().getColumn(columnName);
         } catch (SQLException e) {
-            SwiftLoggers.getLogger().error("failed to read metadata of table: " + table.toString());
+            return Crasher.crash("failed to read metadata of table: " + table.toString(), e);
         }
         return ColumnTypeUtils.getClassType(column);
     }
