@@ -17,6 +17,8 @@ import com.fr.general.jsqlparser.statement.select.WithItem;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
 import com.fr.swift.jdbc.exception.SwiftJDBCTableAbsentException;
+import com.fr.swift.jdbc.metadata.emb.EmbMetaDataGetter;
+import com.fr.swift.jdbc.metadata.server.ServerMetaDataGetter;
 import com.fr.swift.jdbc.rpc.RpcCaller;
 import com.fr.swift.query.info.bean.query.AbstractSingleTableQueryInfoBean;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
@@ -96,12 +98,14 @@ public class SelectQueryBeanVisitor implements SelectVisitor,FromItemVisitor,Que
     public void visit(Table table) {
         String tableName = table.getName();
         if (null != caller) {
-            metaData = caller.detectiveMetaData(schema, QuoteUtils.trimQuote(tableName));
-            if (null == metaData) {
-                Crasher.crash(new SwiftJDBCTableAbsentException(tableName));
-            }
-            tableName = metaData.getId();
+            metaData = new ServerMetaDataGetter(schema, tableName, caller).get();
+        } else {
+            metaData = new EmbMetaDataGetter(schema, tableName).get();
         }
+        if (null == metaData) {
+            Crasher.crash(new SwiftJDBCTableAbsentException(tableName));
+        }
+        tableName = metaData.getId();
         queryBean.setTableName(QuoteUtils.trimQuote(tableName));
     }
 
