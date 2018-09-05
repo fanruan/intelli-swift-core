@@ -57,6 +57,7 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
         SegmentLocationInfo info = loadSelfSegmentDestination();
         List<com.fr.swift.service.SwiftService> services = ServiceBeanFactory.getSwiftServiceByNames(Collections.singleton("history"));
         historyService = (HistoryService) services.get(0);
+        historyService.setId(getID());
         historyService.start();
         if (null != info) {
             try {
@@ -89,7 +90,7 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
 
     protected SegmentDestination createSegmentDestination(SegmentKey segmentKey) {
         String clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
-        return new SegmentDestinationImpl(clusterId, segmentKey.toString(), segmentKey.getOrder(), HistoryService.class, "historyQuery");
+        return new SegmentDestinationImpl(clusterId, segmentKey.toString(), segmentKey.getOrder(), ClusterHistoryService.class, "historyQuery");
     }
 
     @Override

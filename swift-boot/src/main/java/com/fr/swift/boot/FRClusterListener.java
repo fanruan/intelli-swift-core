@@ -37,12 +37,22 @@ public class FRClusterListener implements ClusterEventListener {
     private LocalManager localManager;
 
     public FRClusterListener() {
-        masterManager = SwiftContext.get().getBean(MasterManager.class);
-        slaveManager = SwiftContext.get().getBean(SlaveManager.class);
-        localManager = SwiftContext.get().getBean(ServiceManager.class);
+    }
+
+    private void initIfNeed() {
+        if (null == masterManager) {
+            masterManager = SwiftContext.get().getBean(MasterManager.class);
+        }
+        if (null == slaveManager) {
+            slaveManager = SwiftContext.get().getBean(SlaveManager.class);
+        }
+        if (null == localManager) {
+            localManager = SwiftContext.get().getBean(ServiceManager.class);
+        }
     }
 
     public void handleEvent(ClusterEvent clusterEvent) {
+        initIfNeed();
         try {
             if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
                 ProxySelector.getInstance().switchFactory(new FRProxyFactory());

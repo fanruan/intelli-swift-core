@@ -81,8 +81,6 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
 
     @Override
     public void updateSegmentInfo(SegmentLocationInfo locationInfo, SegmentLocationInfo.UpdateType updateType) {
-        SegmentLocationProvider.getInstance().updateSegmentInfo(locationInfo, updateType);
-
     }
 
     private void loadSelfSegmentDestination() {

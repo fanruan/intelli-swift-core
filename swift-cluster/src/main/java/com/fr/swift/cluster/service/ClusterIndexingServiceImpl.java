@@ -100,6 +100,7 @@ public class ClusterIndexingServiceImpl extends AbstractSwiftService implements 
         serviceNames.add("indexing");
         List<com.fr.swift.service.SwiftService> services = ServiceBeanFactory.getSwiftServiceByNames(serviceNames);
         indexingService = (IndexingService) services.get(0);
+        indexingService.setId(getID());
         indexingService.start();
         indexingService.setListenerWorker(new ListenerWorker() {
             @Override

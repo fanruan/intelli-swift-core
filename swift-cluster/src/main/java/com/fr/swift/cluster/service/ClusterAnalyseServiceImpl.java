@@ -102,6 +102,7 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
     public boolean start() throws SwiftServiceException {
         List<com.fr.swift.service.SwiftService> services = ServiceBeanFactory.getSwiftServiceByNames(Collections.singleton("analyse"));
         analyseService = (AnalyseService) services.get(0);
+        analyseService.setId(getID());
         analyseService.start();
         // 这边为了覆盖掉analyse的注册，所以再调一次注册
         return super.start();
@@ -116,7 +117,8 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
                 ((SegmentDestinationImpl) segmentDestination).setCurrentNode(clusterId);
             }
         }
-        analyseService.updateSegmentInfo(locationInfo, updateType);
+//        analyseService.updateSegmentInfo(locationInfo, updateType);
+        SegmentLocationProvider.getInstance().updateSegmentInfo(locationInfo, updateType);
     }
 
     private RpcFuture queryRemoteNodeNode(String jsonString, SegmentDestination remoteURI) throws Exception {
