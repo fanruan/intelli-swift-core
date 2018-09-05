@@ -1,6 +1,8 @@
 package com.fr.swift.config.service;
 
+import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.source.SourceKey;
 
 import java.util.List;
 import java.util.Map;
@@ -54,4 +56,12 @@ public interface SwiftSegmentService extends ConfigService<SegmentKey> {
     List<SegmentKey> getSegmentByKey(String sourceKey);
 
     boolean containsSegment(SegmentKey segmentKey);
+
+    /**
+     * 尝试获取表最大segOrder的key
+     *
+     * @param tableKey
+     * @return
+     */
+    SegmentKey tryAppendSegment(SourceKey tableKey, StoreType storeType);
 }

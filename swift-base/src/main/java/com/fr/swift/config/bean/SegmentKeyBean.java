@@ -1,6 +1,5 @@
 package com.fr.swift.config.bean;
 
-import com.fr.stable.StringUtils;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.Types.StoreType;
@@ -87,32 +86,13 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
         return swiftSchema;
     }
 
-
     public void setStoreType(Types.StoreType storeType) {
         this.storeType = storeType;
     }
 
-    public String getId() {
-        if (StringUtils.isEmpty(id)) {
-            id = toString();
-        }
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
     @Override
     public SwiftSegmentEntity convert() {
-        SwiftSegmentEntity entity = new SwiftSegmentEntity();
-        entity.setId(id);
-        entity.setSegmentOwner(sourceKey);
-        entity.setSegmentOrder(order);
-        entity.setStoreType(storeType);
-        entity.setSegmentUri(uri);
-        entity.setSwiftSchema(swiftSchema);
-        return entity;
+        return new SwiftSegmentEntity(this);
     }
 
     @Override

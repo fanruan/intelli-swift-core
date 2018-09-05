@@ -1,7 +1,5 @@
 package com.fr.swift.config.dao;
 
-import com.fr.swift.log.SwiftLogger;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.third.org.hibernate.Criteria;
 import com.fr.third.org.hibernate.Session;
 import com.fr.third.org.hibernate.criterion.Criterion;
@@ -17,7 +15,6 @@ import java.util.List;
  * @date 2018/6/29
  */
 public class BasicDao<T> implements SwiftConfigDao<T> {
-    protected final SwiftLogger LOGGER = SwiftLoggers.getLogger(this.getClass());
     protected Class<T> entityClass;
 
     public BasicDao(Class<T> entityClass) {
@@ -32,6 +29,11 @@ public class BasicDao<T> implements SwiftConfigDao<T> {
         } catch (Exception e) {
             throw new SQLException(e);
         }
+    }
+
+    @Override
+    public void persist(Session session, T entity) {
+        session.persist(entity);
     }
 
     @Override
