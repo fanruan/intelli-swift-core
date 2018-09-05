@@ -40,9 +40,6 @@ public class SwiftEngineActivator extends Activator implements Prepare {
         FineIO.setLogger(new FineIOLoggerImpl());
         SwiftContext.get().getBean("localManager", ServiceManager.class).startUp();
         ProviderTaskManager.start();
-
-        ScheduledRealtimeTransfer scheduledRealtimeTransfer = new ScheduledRealtimeTransfer();
-        CollateExecutor collateExecutor = new CollateExecutor();
     }
 
     @Override

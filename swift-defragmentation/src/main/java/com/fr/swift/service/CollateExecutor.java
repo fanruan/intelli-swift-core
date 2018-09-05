@@ -6,6 +6,7 @@ import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -17,13 +18,14 @@ import java.util.concurrent.TimeUnit;
  * @description
  * @since Advanced FineBI 5.0
  */
+@Service
 public class CollateExecutor implements Runnable {
 
     private CollateService collateService;
 
-    public CollateExecutor() {
+    private CollateExecutor() {
         SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory(getClass())).
-                scheduleWithFixedDelay(this, 10000l, 1, TimeUnit.HOURS);
+                scheduleWithFixedDelay(this, 0, 1, TimeUnit.HOURS);
         collateService = SwiftContext.get().getBean(CollateService.class);
     }
 
