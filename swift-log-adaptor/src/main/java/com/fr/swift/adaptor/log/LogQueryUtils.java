@@ -4,7 +4,6 @@ import com.fr.decision.log.LogSearchConstants;
 import com.fr.decision.log.MetricBean;
 import com.fr.stable.StringUtils;
 import com.fr.stable.query.condition.QueryCondition;
-import com.fr.stable.query.data.DataList;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.query.aggregator.AggregatorType;
@@ -21,9 +20,7 @@ import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.type.DimensionType;
 import com.fr.swift.query.info.bean.type.MetricType;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.query.sort.SortType;
-import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
@@ -35,6 +32,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Created by Lyon on 2018/6/21.
@@ -44,7 +42,7 @@ public class LogQueryUtils {
     static QueryBean groupQuery(Class<?> entity, QueryCondition queryCondition, List<String> fieldNames,
                                 List<MetricBean> metricBeans, FilterInfoBean notNullFilter) throws Exception {
         GroupQueryInfoBean queryInfoBean = new GroupQueryInfoBean();
-        queryInfoBean.setQueryId(queryCondition.toString());
+        queryInfoBean.setQueryId(UUID.randomUUID().toString());
         String tableName = JpaAdaptor.getTableName(entity);
         queryInfoBean.setTableName(tableName);
         FilterInfoBean filterInfoBean = QueryConditionAdaptor.restriction2FilterInfo(queryCondition.getRestriction());
@@ -105,8 +103,6 @@ public class LogQueryUtils {
         queryInfoBean.setPostQueryInfoBeans(postQueryInfoBeans);
 
         return queryInfoBean;
-//        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfoBean);
-//        return getPage(resultSet, queryCondition);
     }
 
     private static FilterInfoBean createMetricFilterInfo(String fieldName, List<Object> fieldValues) {
@@ -147,12 +143,6 @@ public class LogQueryUtils {
         Table table = SwiftDatabase.getInstance().getTable(new SourceKey(JpaAdaptor.getTableName(entity)));
         QueryBean queryBean = QueryConditionAdaptor.adaptCondition(queryCondition, table, fieldNames);
         return queryBean;
-
-//        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
-//        DataList<Row> dataList = new DataList<Row>();
-//        dataList.setList(getPage(resultSet, queryCondition));
-//        dataList.setTotalCount(((DetailResultSet) resultSet).getRowCount());
-//        return dataList;
     }
 
     static List<Row> getPage(SwiftResultSet resultSet, QueryCondition queryCondition) throws SQLException {
@@ -178,11 +168,6 @@ public class LogQueryUtils {
         }
         return rows;
     }
-
-//    static DataList<Row> detailQuery(Class<?> entity, QueryCondition queryCondition) throws Exception {
-//        Table table = SwiftDatabase.getInstance().getTable(new SourceKey(JpaAdaptor.getTableName(entity)));
-//        return detailQuery(entity, queryCondition, table.getMeta().getFieldNames());
-//    }
 
     static QueryBean getDetailQueryBean(Class<?> entity, QueryCondition queryCondition) throws SQLException {
         Table table = SwiftDatabase.getInstance().getTable(new SourceKey(JpaAdaptor.getTableName(entity)));

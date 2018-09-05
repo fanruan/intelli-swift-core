@@ -12,6 +12,7 @@ import com.fr.swift.query.info.bean.element.filter.impl.NumberInRangeFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.OrFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.StringOneValueFilterBean;
 import com.fr.swift.query.query.FilterBean;
+import com.fr.third.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fr.third.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fr.third.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -40,5 +41,6 @@ import com.fr.third.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = AllShowFilterBean.class, name = "ALL_SHOW"),
         @JsonSubTypes.Type(value = EmptyFilterBean.class, name = "EMPTY")
 })
+@JsonIgnoreProperties(value = {"childrenExpr"})
 public interface FilterInfoBean<T> extends FilterBean<T> {
 }

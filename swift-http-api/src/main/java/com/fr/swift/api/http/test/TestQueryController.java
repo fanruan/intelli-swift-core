@@ -20,6 +20,7 @@ import com.fr.third.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -37,7 +38,7 @@ public class TestQueryController {
         int count = 200;
         long start = System.currentTimeMillis();
         QueryBean queryBean = new QueryInfoBeanFactory().create(jsonString);
-        ((DetailQueryInfoBean) queryBean).setQueryId("" + System.currentTimeMillis());
+        ((DetailQueryInfoBean) queryBean).setQueryId(UUID.randomUUID().toString());
         Query query = QueryBuilder.buildQuery(queryBean);
         SwiftResultSet resultSet = query.getQueryResult();
         if (resultSet != null) {
@@ -85,7 +86,7 @@ public class TestQueryController {
         List<Row> rows = new ArrayList<Row>();
         // swift-test模块的resources目录下有json示例
         QueryBean queryBean = new QueryInfoBeanFactory().create(jsonString);
-        ((GroupQueryInfoBean) queryBean).setQueryId("" + System.currentTimeMillis());
+        ((GroupQueryInfoBean) queryBean).setQueryId(UUID.randomUUID().toString());
         long start = System.currentTimeMillis();
         Query query = QueryBuilder.buildQuery(queryBean);
         SwiftResultSet resultSet = query.getQueryResult();

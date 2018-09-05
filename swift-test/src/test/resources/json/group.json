@@ -2,6 +2,27 @@
   "queryId": "1530692187390",
   "queryType": "GROUP",
   "tableName": "DEMO_CONTRACT",
+  "filterInfoBean": {
+    "type": "AND",
+    "filterValue": [
+      {
+        "type": "NUMBER_IN_RANGE",
+        "filterValue": {
+          "start": "3",
+          "startIncluded": true
+        },
+        "column": "购买数量"
+      },
+      {
+        "type": "NUMBER_IN_RANGE",
+        "filterValue": {
+          "start": "3",
+          "startIncluded": true
+        },
+        "column": "购买数量"
+      }
+    ]
+  },
   "dimensionBeans": [
     {
       "column": "合同类型",
