@@ -37,7 +37,7 @@ public class ClusterCommonUtils {
 
     public static RpcFuture runAsyncRpc(URL url, Class clazz, Method method, Object... args) throws Exception {
         ProxyFactory factory = ProxySelector.getInstance().getFactory();
-        Invoker invoker = factory.getInvoker(null, clazz, url, false);
+        Invoker invoker = factory.getInvoker(SwiftContext.get().getBean(clazz), clazz, url, false);
         Result invokeResult = invoker.invoke(new SwiftInvocation(method, args));
         RpcFuture future = (RpcFuture) invokeResult.getValue();
         if (null != future) {

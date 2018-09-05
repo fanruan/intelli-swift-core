@@ -13,7 +13,9 @@ import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryBeanFactory;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationInfo;
+import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
+import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.AbstractSwiftService;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.ServiceType;
@@ -32,7 +34,7 @@ import java.util.concurrent.CountDownLatch;
  * @author yee
  * @date 2018/8/6
  */
-@SwiftService(name = "analyse",cluster = true)
+@SwiftService(name = "analyse", cluster = true)
 @RpcService(value = AnalyseService.class, type = RpcServiceType.INTERNAL)
 public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements ClusterAnalyseService {
     private static final long serialVersionUID = 7637989460502966453L;
@@ -100,6 +102,7 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
     public boolean start() throws SwiftServiceException {
         List<com.fr.swift.service.SwiftService> services = ServiceBeanFactory.getSwiftServiceByNames(Collections.singleton("analyse"));
         analyseService = (AnalyseService) services.get(0);
+        analyseService.setId(getID());
         analyseService.start();
         // 这边为了覆盖掉analyse的注册，所以再调一次注册
         return super.start();
@@ -108,7 +111,14 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
     @Override
     @RpcMethod(methodName = "updateSegmentInfo")
     public void updateSegmentInfo(SegmentLocationInfo locationInfo, SegmentLocationInfo.UpdateType updateType) {
-        analyseService.updateSegmentInfo(locationInfo, updateType);
+        String clusterId = getID();
+        for (List<SegmentDestination> value : locationInfo.getDestinations().values()) {
+            for (SegmentDestination segmentDestination : value) {
+                ((SegmentDestinationImpl) segmentDestination).setCurrentNode(clusterId);
+            }
+        }
+//        analyseService.updateSegmentInfo(locationInfo, updateType);
+        SegmentLocationProvider.getInstance().updateSegmentInfo(locationInfo, updateType);
     }
 
     private RpcFuture queryRemoteNodeNode(String jsonString, SegmentDestination remoteURI) throws Exception {
@@ -121,6 +131,12 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
         String methodName = remoteURI.getMethodName();
         Class clazz = remoteURI.getServiceClass();
         return ClusterCommonUtils.runAsyncRpc(address, clazz, server.getMethodByName(methodName), jsonString);
+    }
+
+
+    @Override
+    public String getID() {
+        return ClusterSelector.getInstance().getFactory().getCurrentId();
     }
 
     @Override

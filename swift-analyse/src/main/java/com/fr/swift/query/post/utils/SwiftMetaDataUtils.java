@@ -30,10 +30,11 @@ import java.util.List;
 public class SwiftMetaDataUtils {
 
     public static SwiftMetaData createMetaData(QueryBean bean) throws SwiftMetaDataException {
-        if (bean.getQueryType() == QueryType.GROUP) {
-            return createGroupMetaData((GroupQueryInfoBean) bean);
+        QueryType type = bean.getQueryType();
+        if (type == QueryType.DETAIL || type == QueryType.LOCAL_DETAIL) {
+            return createDetailMetaData((DetailQueryInfoBean) bean);
         }
-        return createDetailMetaData((DetailQueryInfoBean) bean);
+        return createGroupMetaData((GroupQueryInfoBean) bean);
     }
 
     private static SwiftMetaData createDetailMetaData(DetailQueryInfoBean bean) throws SwiftMetaDataException {

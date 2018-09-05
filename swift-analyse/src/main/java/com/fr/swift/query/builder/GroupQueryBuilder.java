@@ -108,6 +108,7 @@ class GroupQueryBuilder {
             Map.Entry<String, List<SegmentDestination>> entry = map.entrySet().iterator().next();
             SegmentDestination destination = entry.getValue().get(0);
             queryBean.setQueryDestination(destination);
+            queryBean.setQuerySegments(DetailQueryBuilder.getQuerySegments(entry.getValue()));
             String jsonString = QueryInfoBeanFactory.queryBean2String(queryBean);
             return new RemoteQueryImpl<NodeResultSet>(jsonString, destination);
         }

@@ -11,7 +11,6 @@ import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
-import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
 import com.fr.swift.source.SwiftResultSet;
@@ -79,7 +78,6 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
 
     @Override
     public void updateSegmentInfo(SegmentLocationInfo locationInfo, SegmentLocationInfo.UpdateType updateType) {
-        SegmentLocationProvider.getInstance().updateSegmentInfo(locationInfo, updateType);
     }
 
     private void loadSelfSegmentDestination() {

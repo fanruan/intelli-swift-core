@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * This class created on 2018/4/26
@@ -39,7 +40,7 @@ public class QueryConditionAdaptor {
 
     public static QueryInfoBean adaptCondition(QueryCondition condition, Table swiftTable, List<String> fieldNames) {
         DetailQueryInfoBean queryInfoBean = new DetailQueryInfoBean();
-        queryInfoBean.setQueryId(condition.toString());
+        queryInfoBean.setQueryId(UUID.randomUUID().toString());
         String tableName = swiftTable.getSourceKey().getId();
         queryInfoBean.setTableName(tableName);
         queryInfoBean.setColumns(fieldNames);

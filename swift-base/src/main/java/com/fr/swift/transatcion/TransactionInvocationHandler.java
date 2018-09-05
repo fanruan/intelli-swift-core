@@ -1,6 +1,7 @@
 package com.fr.swift.transatcion;
 
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.util.MonitorUtil;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -27,14 +28,14 @@ public class TransactionInvocationHandler implements InvocationHandler {
         Method originalMethod = this.proxy.getClass().getMethod(method.getName(), method.getParameterTypes());
 
         Transactional transactional = originalMethod.getAnnotation(Transactional.class);
-
+        MonitorUtil.start();
         if (transactional == null) {
             return method.invoke(this.proxy, objects);
         }
         try {
             transactionManager.start();
             Object result = method.invoke(this.proxy, objects);
-            SwiftLoggers.getLogger().info(String.format("Invoke %s.%s successfully ! Do commit!", method.getDeclaringClass().getSimpleName(), method.getName()));
+            SwiftLoggers.getLogger().debug(String.format("Invoke %s.%s successfully ! Do commit!", method.getDeclaringClass().getSimpleName(), method.getName()));
             transactionManager.commit();
             return result;
         } catch (InvocationTargetException ite) {
@@ -46,6 +47,7 @@ public class TransactionInvocationHandler implements InvocationHandler {
             throw e;
         } finally {
             transactionManager.close();
+            MonitorUtil.finish(method.getName());
         }
     }
 

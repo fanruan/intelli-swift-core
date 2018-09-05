@@ -16,7 +16,7 @@ public class SwiftResultSetUtils {
 
     public static SwiftResultSet convert2Serializable(String jsonString, QueryType queryType,
                                                       SwiftResultSet resultSet) throws SQLException {
-        SerializableResultSet result;
+        SwiftResultSet result;
         switch (queryType) {
             case LOCAL_GROUP_ALL: {
                 NodeResultSet<SwiftNode> nodeResultSet = (NodeResultSet<SwiftNode>) resultSet;
@@ -28,11 +28,14 @@ public class SwiftResultSetUtils {
                 result = new LocalPartNodeResultSet(mergeResultSet.getFetchSize(), jsonString, mergeResultSet.getPage(), mergeResultSet.hasNextPage());
                 break;
             }
-            default: {
+            case LOCAL_DETAIL: {
                 DetailResultSet detailResultSet = (DetailResultSet) resultSet;
                 result = new SerializableDetailResultSet(jsonString, detailResultSet.getMetaData(), detailResultSet.getPage(),
                         detailResultSet.hasNextPage(), detailResultSet.getRowCount());
+                break;
             }
+            default:
+                result = resultSet;
         }
         return result;
     }

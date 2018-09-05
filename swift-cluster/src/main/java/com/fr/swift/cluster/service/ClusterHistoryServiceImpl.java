@@ -4,7 +4,7 @@ import com.fr.swift.annotation.RpcMethod;
 import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.annotation.SwiftService;
-import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Where;
@@ -20,12 +20,14 @@ import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.AbstractSwiftService;
 import com.fr.swift.service.HistoryService;
 import com.fr.swift.service.ServiceType;
+import com.fr.swift.service.cluster.ClusterHistoryService;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.util.ServiceBeanFactory;
 import com.fr.swift.utils.ClusterCommonUtils;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.beans.factory.annotation.Qualifier;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -42,7 +44,8 @@ import java.util.Set;
  */
 @SwiftService(name = "history", cluster = true)
 @RpcService(value = HistoryService.class, type = RpcServiceType.INTERNAL)
-public class ClusterHistoryService extends AbstractSwiftService implements HistoryService, Serializable {
+@Service("clusterHistoryService")
+public class ClusterHistoryServiceImpl extends AbstractSwiftService implements ClusterHistoryService, Serializable {
     private static final long serialVersionUID = -3487010910076432934L;
 
     @Autowired(required = false)
@@ -54,6 +57,7 @@ public class ClusterHistoryService extends AbstractSwiftService implements Histo
         SegmentLocationInfo info = loadSelfSegmentDestination();
         List<com.fr.swift.service.SwiftService> services = ServiceBeanFactory.getSwiftServiceByNames(Collections.singleton("history"));
         historyService = (HistoryService) services.get(0);
+        historyService.setId(getID());
         historyService.start();
         if (null != info) {
             try {
@@ -86,11 +90,18 @@ public class ClusterHistoryService extends AbstractSwiftService implements Histo
 
     protected SegmentDestination createSegmentDestination(SegmentKey segmentKey) {
         String clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
-        return new SegmentDestinationImpl(clusterId, segmentKey.toString(), segmentKey.getOrder(), HistoryService.class, "historyQuery");
+        return new SegmentDestinationImpl(clusterId, segmentKey.toString(), segmentKey.getOrder(), ClusterHistoryService.class, "historyQuery");
+    }
+
+    @Override
+    public String getID() {
+        return ClusterSelector.getInstance().getFactory().getCurrentId();
     }
 
     protected SegmentLocationInfo loadSelfSegmentDestination() {
-        Map<String, List<SegmentKey>> segments = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).getOwnSegments();
+        SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
+        clusterSegmentService.setClusterId(getID());
+        Map<String, List<SegmentKey>> segments = clusterSegmentService.getOwnSegments();
         if (!segments.isEmpty()) {
             Map<String, List<SegmentDestination>> hist = new HashMap<String, List<SegmentDestination>>();
             for (Map.Entry<String, List<SegmentKey>> entry : segments.entrySet()) {

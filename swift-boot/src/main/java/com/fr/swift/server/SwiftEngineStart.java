@@ -7,6 +7,7 @@ import com.fr.config.dao.impl.LocalEntityDao;
 import com.fr.config.dao.impl.LocalXmlEntityDao;
 import com.fr.data.impl.Connection;
 import com.fr.data.impl.JDBCDatabaseConnection;
+import com.fr.swift.common.NodeStartedListener;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.ProviderTaskManager;
 import com.fr.swift.event.ClusterEvent;
@@ -40,6 +41,7 @@ public class SwiftEngineStart {
             SimpleWork.checkIn(System.getProperty("user.dir"));
             ClusterListenerHandler.addListener(new SwiftClusterListener());
             SwiftContext.init();
+            ClusterListenerHandler.addListener(new NodeStartedListener());
             registerTmpConnectionProvider();
             FineIO.setLogger(new FineIOLoggerImpl());
             ProviderTaskManager.start();

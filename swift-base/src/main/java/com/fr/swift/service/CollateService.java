@@ -2,7 +2,6 @@ package com.fr.swift.service;
 
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.service.SwiftService;
 import com.fr.swift.source.SourceKey;
 
 import java.util.List;
@@ -33,20 +32,20 @@ public interface CollateService extends SwiftService {
     void autoCollateHistory(SourceKey tableKey) throws Exception;
 
     /**
-     * 指定整理合并增量块
-     *
+     * 指定整理合并块
+     * @param tableKey
      * @param segmentKeyList
      * @throws Exception
      */
-    void appointCollateRealtime(List<SegmentKey> segmentKeyList) throws Exception;
+    void appointCollate(SourceKey tableKey, List<SegmentKey> segmentKeyList) throws Exception;
 
     /**
-     * 指定整理合并历史块
+     * 自动整理合并块
      *
-     * @param segmentKeyList
+     * @param tableKey
      * @throws Exception
      */
-    void appointCollateHistory(List<SegmentKey> segmentKeyList) throws Exception;
+    void autoCollate(SourceKey tableKey) throws Exception;
 
     void persistRealtime(SourceKey tableKey, Segment segment);
 }

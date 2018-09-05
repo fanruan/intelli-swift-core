@@ -24,28 +24,25 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.netty.rpc.url.RPCDestination;
 import com.fr.swift.netty.rpc.url.RPCUrl;
 import com.fr.swift.property.SwiftProperty;
-import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.service.AbstractSwiftService;
-import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.CollateService;
-import com.fr.swift.service.HistoryService;
-import com.fr.swift.service.IndexingService;
-import com.fr.swift.service.RealtimeService;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.SwiftService;
 import com.fr.swift.service.SwiftServiceEvent;
+import com.fr.swift.service.cluster.ClusterAnalyseService;
+import com.fr.swift.service.cluster.ClusterHistoryService;
+import com.fr.swift.service.cluster.ClusterIndexingService;
+import com.fr.swift.service.cluster.ClusterRealTimeService;
 import com.fr.swift.service.listener.SwiftServiceListener;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.service.listener.SwiftServiceListenerManager;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.structure.Pair;
 import com.fr.swift.stuff.DefaultIndexingStuff;
 import com.fr.swift.stuff.IndexingStuff;
 import com.fr.swift.task.TaskKey;
 import com.fr.swift.task.impl.SchedulerTaskPool;
 import com.fr.swift.task.impl.TaskEvent;
 import com.fr.swift.util.Crasher;
-import com.fr.swift.utils.ClusterCommonUtils;
 
 import javax.annotation.PostConstruct;
 import java.io.Serializable;
@@ -92,16 +89,16 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
                 URL url = UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getClusterId());
                 switch (serviceType) {
                     case HISTORY:
-                        historyServiceMap.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, HistoryService.class));
+                        historyServiceMap.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, ClusterHistoryService.class));
                         break;
                     case REAL_TIME:
-                        realTimeServiceMap.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, RealtimeService.class));
+                        realTimeServiceMap.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, ClusterRealTimeService.class));
                         break;
                     case ANALYSE:
-                        analyseServiceMap.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, AnalyseService.class));
+                        analyseServiceMap.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, ClusterAnalyseService.class));
                         break;
                     case INDEXING:
-                        indexingServiceMap.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, IndexingService.class));
+                        indexingServiceMap.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, ClusterIndexingService.class));
                         break;
                     case COLLATE:
                         collateServiceMap.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, CollateService.class));
@@ -185,39 +182,23 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
             URL url = UrlSelector.getInstance().getFactory().getURL(service.getID());
             switch (service.getServiceType()) {
                 case ANALYSE:
-                    ClusterEntity entity = new ClusterEntity(url, service.getServiceType(), AnalyseService.class);
+                    ClusterEntity entity = new ClusterEntity(url, service.getServiceType(), ClusterAnalyseService.class);
                     analyseServiceMap.put(service.getID(), entity);
-                    triggerAfterAnalyseRegister(Pair.of(service.getID(), entity));
                     break;
                 case HISTORY:
-                    historyServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), HistoryService.class));
+                    historyServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), ClusterHistoryService.class));
                     break;
                 case INDEXING:
-                    indexingServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), IndexingService.class));
+                    indexingServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), ClusterIndexingService.class));
                     break;
                 case REAL_TIME:
-                    realTimeServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), RealtimeService.class));
+                    realTimeServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), ClusterRealTimeService.class));
                     break;
                 case COLLATE:
                     collateServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), CollateService.class));
                     break;
                 default:
             }
-        }
-    }
-
-    private void triggerAfterAnalyseRegister(Pair<String, ClusterEntity> service) {
-        String id = service.getKey();
-        try {
-            Class clazz = service.getValue().getServiceClass();
-            List<Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo>> pairs = SegmentLocationInfoContainer.getContainer().getLocationInfo();
-            for (Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo> pair : pairs) {
-                ClusterCommonUtils.runAsyncRpc(id, clazz,
-                        clazz.getMethod("updateSegmentInfo", SegmentLocationInfo.class, SegmentLocationInfo.UpdateType.class),
-                        pair.getValue(), pair.getKey());
-            }
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().error(e);
         }
     }
 
