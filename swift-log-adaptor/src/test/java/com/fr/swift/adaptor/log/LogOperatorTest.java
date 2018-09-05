@@ -8,7 +8,7 @@ import com.fr.stable.query.condition.impl.QueryConditionImpl;
 import com.fr.stable.query.restriction.RestrictionFactory;
 import com.fr.swift.adaptor.log.JpaAdaptorTest.A;
 import com.fr.swift.adaptor.log.JpaAdaptorTest.ConvertType;
-import com.fr.swift.adaptor.log.SwiftLogOperator.Sync;
+import com.fr.swift.adaptor.log.MetricProxy.Sync;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.impl.SwiftDatabase;

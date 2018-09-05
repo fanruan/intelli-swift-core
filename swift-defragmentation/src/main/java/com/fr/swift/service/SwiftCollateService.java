@@ -3,6 +3,7 @@ package com.fr.swift.service;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.config.service.impl.SwiftSegmentServiceProvider;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.ResourceDiscovery;
@@ -14,7 +15,6 @@ import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.exception.TableNotExistException;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
@@ -70,9 +70,8 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
 
     private transient ServiceTaskExecutor taskExecutor;
 
-    private transient ScheduledRealtimeTransfer scheduledRealtimeTransfer = new ScheduledRealtimeTransfer();
+    private transient SwiftSegmentService swiftSegmentService;
 
-    private transient CollateExecutor collateExecutor = new CollateExecutor();
 
     public void setTaskExecutor(ServiceTaskExecutor taskExecutor) {
         this.taskExecutor = taskExecutor;
@@ -87,6 +86,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         segmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         database = SwiftDatabase.getInstance();
         taskExecutor = SwiftContext.get().getBean(ServiceTaskExecutor.class);
+        swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentServiceProvider.class);
         return true;
     }
 
@@ -96,6 +96,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         segmentManager = null;
         database = null;
         taskExecutor = null;
+        swiftSegmentService = null;
         return true;
     }
 
@@ -161,7 +162,6 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
 
     private void collateSegments(SourceKey tableKey, final List<SegmentKey> collateSegKeys) throws Exception {
         MonitorUtil.start();
-        SwiftLoggers.getLogger().info("do collate!!!");
         List<SegmentKey> segmentKeys = segmentManager.getSegmentKeys(tableKey);
         if (collateSegKeys.isEmpty()) {
             return;
@@ -173,7 +173,6 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         Table table = database.getTable(tableKey);
 
         SwiftSourceAlloter alloter = new LineSourceAlloter(table.getSourceKey());
-        SegmentKey maxSegmentKey = SegmentUtils.getMaxSegmentKey(segmentKeys);
         SwiftMetaData metadata = table.getMetadata();
 
         SwiftResultSet swiftResultSet = newCollateResultSet(getSegmentsByKeys(collateSegKeys),
@@ -182,19 +181,21 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         List<SegmentKey> newSegKeys = new ArrayList<SegmentKey>();
         List<Segment> newSegs = new ArrayList<Segment>();
         Segment newSeg;
-        int newOrder = maxSegmentKey == null ? 0 : maxSegmentKey.getOrder() + 1;
         do {
+            //todo 集群下 segkey order不唯一处理
+            List<SegmentKey> allSegKeys = swiftSegmentService.getAllSegments().get(tableKey);
+            int newOrder = SegmentUtils.getMaxSegmentKey(allSegKeys).getOrder() + 1;
+
             newSeg = newHistorySegment(table, alloter.allot(new LineRowInfo(0)), newOrder);
             Collater collater = new HistoryCollater(newSeg);
             collater.collate(swiftResultSet);
 
             IResourceLocation location = newSeg.getLocation();
-
             SegmentKey newSegKey = new SegmentKeyBean(tableKey.getId(),
                     URI.create(CubeUtil.getHistorySegPath(table, newOrder)), newOrder, location.getStoreType(), newSeg.getMetaData().getSwiftDatabase());
+
             newSegKeys.add(newSegKey);
             newSegs.add(newSeg);
-            newOrder++;
             swiftResultSet.close();
         } while (alloter.isFull(newSeg));
 

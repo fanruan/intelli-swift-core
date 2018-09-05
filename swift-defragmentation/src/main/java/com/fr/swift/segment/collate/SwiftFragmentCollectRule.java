@@ -1,5 +1,6 @@
 package com.fr.swift.segment.collate;
 
+import com.fr.general.ComparatorUtils;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
@@ -21,6 +22,11 @@ public class SwiftFragmentCollectRule implements FragmentCollectRule {
      */
     private static final int FRAGMENT_SIZE = LineAllotRule.STEP * 2 / 3;
 
+    /**
+     * 碎片快数
+     */
+    private static final int FRAGMENT_NUMBER = 10;
+
     private final SwiftSegmentManager localSegments = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
 
     @Override
@@ -32,11 +38,13 @@ public class SwiftFragmentCollectRule implements FragmentCollectRule {
                 fragmentKeys.add(segKey);
             }
         }
-        return fragmentKeys;
+        if (ComparatorUtils.equals(fragmentKeys.size(), FRAGMENT_NUMBER)) {
+            return fragmentKeys;
+        }
+        return new ArrayList<SegmentKey>();
     }
 
     /**
-     *
      * @param seg
      * @return
      */

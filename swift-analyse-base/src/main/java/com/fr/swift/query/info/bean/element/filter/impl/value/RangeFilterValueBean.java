@@ -2,11 +2,14 @@ package com.fr.swift.query.info.bean.element.filter.impl.value;
 
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
+
 /**
  * Created by Lyon on 2018/7/4.
  */
-public class RangeFilterValueBean {
+public class RangeFilterValueBean implements Serializable {
 
+    private static final long serialVersionUID = 1839806405052032454L;
     @JsonProperty
     private String start;
     @JsonProperty

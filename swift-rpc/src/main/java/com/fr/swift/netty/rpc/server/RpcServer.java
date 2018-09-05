@@ -12,7 +12,6 @@ import com.fr.third.jodd.util.StringUtil;
 import com.fr.third.org.apache.commons.collections4.MapUtils;
 import com.fr.third.springframework.beans.BeansException;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.context.ApplicationContext;
 import com.fr.third.springframework.stereotype.Service;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -27,6 +26,7 @@ import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 
+import javax.annotation.PostConstruct;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -63,9 +63,10 @@ public class RpcServer {
         this.serviceRegistry = serviceRegistry;
     }
 
-    public void initService(ApplicationContext ctx) throws BeansException {
+    @PostConstruct
+    public void initService() throws BeansException {
         // 扫描service和method
-        Map<String, Object> serviceBeanMap = ctx.getBeansWithAnnotation(RpcService.class);
+        Map<String, Object> serviceBeanMap = SwiftContext.get().getBeansWithAnnotation(RpcService.class);
         if (MapUtils.isNotEmpty(serviceBeanMap)) {
             for (Object serviceBean : serviceBeanMap.values()) {
                 RpcService rpcService = serviceBean.getClass().getAnnotation(RpcService.class);

@@ -63,6 +63,7 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
     public boolean start() throws SwiftServiceException {
         List<com.fr.swift.service.SwiftService> services = ServiceBeanFactory.getSwiftServiceByNames(Collections.singleton("realtime"));
         realtimeService = (RealtimeService) services.get(0);
+        realtimeService.setId(getID());
         realtimeService.start();
         SegmentLocationInfo info = loadSelfSegmentDestination();
         if (null != info) {
@@ -93,7 +94,6 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
     public String getID() {
         return ClusterSelector.getInstance().getFactory().getCurrentId();
     }
-
 
 
     @Override
@@ -135,12 +135,12 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
 
     protected SegmentDestination createSegmentDestination(SegmentKey segmentKey) {
         String clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
-        return new SegmentDestinationImpl(clusterId, segmentKey.toString(), segmentKey.getOrder(), RealtimeService.class, "realTimeQuery");
+        return new SegmentDestinationImpl(clusterId, segmentKey.toString(), segmentKey.getOrder(), ClusterRealTimeService.class, "realTimeQuery");
     }
 
     protected SegmentDestination createSegmentDestination(SourceKey segmentKey) {
         String clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
-        return new SegmentDestinationImpl(clusterId, null, -1, RealtimeService.class, "realTimeQuery");
+        return new SegmentDestinationImpl(clusterId, null, -1, ClusterRealTimeService.class, "realTimeQuery");
     }
 
     @Override

@@ -77,7 +77,7 @@ public abstract class BaseBlockInserter implements Inserter {
         }
     }
 
-    private void persistSegment() {
+    protected void persistSegment() {
         SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).addSegments(Collections.singletonList(currentSegKey));
     }
 

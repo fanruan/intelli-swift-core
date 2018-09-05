@@ -1,7 +1,7 @@
 package com.fr.swift.netty.rpc.server;
 
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.netty.NettyServiceStarter;
-import com.fr.third.springframework.context.ApplicationContext;
 
 /**
  * This class created on 2018/6/8
@@ -12,18 +12,15 @@ import com.fr.third.springframework.context.ApplicationContext;
  */
 public class RpcServerServiceStarter implements NettyServiceStarter {
 
-    private ApplicationContext context;
-
     private RpcServer rpcServer;
 
-    public RpcServerServiceStarter(ApplicationContext context) {
-        this.context = context;
+    public RpcServerServiceStarter() {
     }
 
     @Override
     public void start() throws Exception {
-        rpcServer = context.getBean(RpcServer.class);
-        rpcServer.initService(context);
+        rpcServer = SwiftContext.get().getBean(RpcServer.class);
+//        rpcServer.initService(context);
         rpcServer.start();
     }
 

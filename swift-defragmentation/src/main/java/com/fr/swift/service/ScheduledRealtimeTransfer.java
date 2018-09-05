@@ -16,6 +16,7 @@ import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
 
@@ -23,6 +24,7 @@ import java.util.concurrent.TimeUnit;
  * @author anchore
  * @date 2018/7/27
  */
+@Service
 public class ScheduledRealtimeTransfer implements Runnable {
     private static final int MIN_PUT_THRESHOLD = LineAllotRule.MEM_STEP / 2;
 
@@ -30,8 +32,7 @@ public class ScheduledRealtimeTransfer implements Runnable {
 
     private final ServiceTaskExecutor taskExecutor = SwiftContext.get().getBean(ServiceTaskExecutor.class);
 
-
-    public ScheduledRealtimeTransfer() {
+    private ScheduledRealtimeTransfer() {
         SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory(getClass())).
                 scheduleWithFixedDelay(this, 0, 1, TimeUnit.HOURS);
     }

@@ -7,6 +7,7 @@ import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -80,7 +81,8 @@ public class ClusterServiceManager extends AbstractServiceManager<SwiftService> 
 
     private void refreshInfo() {
         ProxyFactory proxyFactory = ProxySelector.getInstance().getFactory();
-        RemoteServiceSender remoteServiceSender = RemoteServiceSender.getInstance();
+//        RemoteServiceSender remoteServiceSender = RemoteServiceSender.getInstance();
+        RemoteServiceSender remoteServiceSender = SwiftContext.get().getBean(RemoteServiceSender.class);
         List<SwiftServiceInfoBean> swiftServiceInfoBeans = serviceInfoService.getServiceInfoByService(ClusterNodeService.SERVICE);
         swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
         URL url = UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
