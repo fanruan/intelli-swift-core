@@ -1,6 +1,5 @@
 package com.fr.swift.netty.rpc.service;
 
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.netty.NettyServiceStarter;
@@ -8,7 +7,6 @@ import com.fr.swift.netty.rpc.server.RpcServerServiceStarter;
 import com.fr.swift.service.ServerService;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
-import com.fr.third.springframework.context.ApplicationContext;
 import com.fr.third.springframework.stereotype.Service;
 
 import javax.annotation.PreDestroy;
@@ -25,7 +23,6 @@ import java.util.concurrent.ExecutorService;
 @com.fr.swift.annotation.ServerService(name = "rpc")
 public class SwiftRpcService implements ServerService {
 
-    private ApplicationContext context;
     private NettyServiceStarter serverStarter;
 
     private ExecutorService rpcServerExecutor = SwiftExecutors.newSingleThreadExecutor(new PoolThreadFactory("netty-rpc-server"));
@@ -33,7 +30,6 @@ public class SwiftRpcService implements ServerService {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftRpcService.class);
 
     private SwiftRpcService() {
-        init();
     }
 
     public static final SwiftRpcService INSTANCE = new SwiftRpcService();
@@ -42,15 +38,11 @@ public class SwiftRpcService implements ServerService {
         return INSTANCE;
     }
 
-    private void init() {
-        context = SwiftContext.get();
-    }
-
     @Override
     public void startServerService() {
         synchronized (this.getClass()) {
             if (serverStarter == null) {
-                serverStarter = new RpcServerServiceStarter(context);
+                serverStarter = new RpcServerServiceStarter();
             }
         }
         if (rpcServerExecutor.isShutdown()) {

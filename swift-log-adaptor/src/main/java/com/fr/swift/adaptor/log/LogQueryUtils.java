@@ -41,7 +41,7 @@ import java.util.Set;
  */
 public class LogQueryUtils {
 
-    static List<Row> groupQuery(Class<?> entity, QueryCondition queryCondition, List<String> fieldNames,
+    static QueryBean groupQuery(Class<?> entity, QueryCondition queryCondition, List<String> fieldNames,
                                 List<MetricBean> metricBeans, FilterInfoBean notNullFilter) throws Exception {
         GroupQueryInfoBean queryInfoBean = new GroupQueryInfoBean();
         queryInfoBean.setQueryId(queryCondition.toString());
@@ -104,8 +104,9 @@ public class LogQueryUtils {
         postQueryInfoBeans.add(sortQueryInfoBean);
         queryInfoBean.setPostQueryInfoBeans(postQueryInfoBeans);
 
-        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfoBean);
-        return getPage(resultSet, queryCondition);
+        return queryInfoBean;
+//        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfoBean);
+//        return getPage(resultSet, queryCondition);
     }
 
     private static FilterInfoBean createMetricFilterInfo(String fieldName, List<Object> fieldValues) {
@@ -142,17 +143,19 @@ public class LogQueryUtils {
         return AggregatorType.SUM;
     }
 
-    static DataList<Row> detailQuery(Class<?> entity, QueryCondition queryCondition, List<String> fieldNames) throws Exception {
+    static QueryBean detailQuery(Class<?> entity, QueryCondition queryCondition, List<String> fieldNames) throws Exception {
         Table table = SwiftDatabase.getInstance().getTable(new SourceKey(JpaAdaptor.getTableName(entity)));
         QueryBean queryBean = QueryConditionAdaptor.adaptCondition(queryCondition, table, fieldNames);
-        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
-        DataList<Row> dataList = new DataList<Row>();
-        dataList.setList(getPage(resultSet, queryCondition));
-        dataList.setTotalCount(((DetailResultSet) resultSet).getRowCount());
-        return dataList;
+        return queryBean;
+
+//        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
+//        DataList<Row> dataList = new DataList<Row>();
+//        dataList.setList(getPage(resultSet, queryCondition));
+//        dataList.setTotalCount(((DetailResultSet) resultSet).getRowCount());
+//        return dataList;
     }
 
-    private static List<Row> getPage(SwiftResultSet resultSet, QueryCondition queryCondition) throws SQLException {
+    static List<Row> getPage(SwiftResultSet resultSet, QueryCondition queryCondition) throws SQLException {
         long start = queryCondition.getSkip();
         long end = queryCondition.getSkip() + queryCondition.getCount();
         // TODO: 2018/6/15 这边分页要做个缓存，用class + queryCondition.toString()作为key
@@ -176,8 +179,14 @@ public class LogQueryUtils {
         return rows;
     }
 
-    static DataList<Row> detailQuery(Class<?> entity, QueryCondition queryCondition) throws Exception {
+//    static DataList<Row> detailQuery(Class<?> entity, QueryCondition queryCondition) throws Exception {
+//        Table table = SwiftDatabase.getInstance().getTable(new SourceKey(JpaAdaptor.getTableName(entity)));
+//        return detailQuery(entity, queryCondition, table.getMeta().getFieldNames());
+//    }
+
+    static QueryBean getDetailQueryBean(Class<?> entity, QueryCondition queryCondition) throws SQLException {
         Table table = SwiftDatabase.getInstance().getTable(new SourceKey(JpaAdaptor.getTableName(entity)));
-        return detailQuery(entity, queryCondition, table.getMeta().getFieldNames());
+        QueryBean queryBean = QueryConditionAdaptor.adaptCondition(queryCondition, table, table.getMeta().getFieldNames());
+        return queryBean;
     }
 }

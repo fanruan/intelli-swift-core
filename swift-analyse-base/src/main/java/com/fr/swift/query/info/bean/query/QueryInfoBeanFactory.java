@@ -29,5 +29,4 @@ public class QueryInfoBeanFactory implements QueryBeanFactory {
     public QueryInfoBean create(String jsonString) throws IOException {
         return MAPPER.readValue(jsonString, QueryInfoBean.class);
     }
-
 }

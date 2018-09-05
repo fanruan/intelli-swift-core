@@ -35,7 +35,6 @@ public class AsyncPoolTest {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         SwiftContext.init();
         RpcServer rpcServer = SwiftContext.get().getBean(RpcServer.class);
-        rpcServer.initService(SwiftContext.get());
         Method method = rpcServer.getMethodByName("add");
 
         final AtomicInteger count = new AtomicInteger(1);

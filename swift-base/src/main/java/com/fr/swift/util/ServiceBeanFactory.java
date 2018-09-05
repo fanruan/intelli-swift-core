@@ -76,15 +76,8 @@ public class ServiceBeanFactory {
         List<SwiftService> swiftServiceList = new ArrayList<SwiftService>();
         for (String serviceName : swiftServiceNames) {
             try {
-                if (serviceName2BeanName.containsKey(serviceName)) {
-                    SwiftService swiftService = (SwiftService) SwiftContext.get().getBean(serviceName2BeanName.get(serviceName));
-                    if (swiftService == null) {
-                        continue;
-                    }
-                    swiftServiceList.add(swiftService);
-                }
                 if (clusterServiceName2BeanName.containsKey(serviceName)) {
-                    SwiftService swiftService = (SwiftService) SwiftContext.get().getBean(clusterServiceName2BeanName.get(serviceName));
+                    SwiftService swiftService = SwiftContext.get().getBean(clusterServiceName2BeanName.get(serviceName), SwiftService.class);
                     if (swiftService == null) {
                         continue;
                     }
@@ -94,6 +87,9 @@ public class ServiceBeanFactory {
                 continue;
             }
         }
+        if (swiftServiceNames.contains("collate")) {
+            swiftServiceList.add(SwiftContext.get().getBean(serviceName2BeanName.get("collate"), SwiftService.class));
+        }
         return swiftServiceList;
     }
 
@@ -102,7 +98,7 @@ public class ServiceBeanFactory {
         for (String serverName : serverServiceNames) {
             try {
                 if (serverName2BeanName.containsKey(serverName)) {
-                    ServerService serverService = (ServerService) SwiftContext.get().getBean(serverName2BeanName.get(serverName));
+                    ServerService serverService = SwiftContext.get().getBean(serverName2BeanName.get(serverName), ServerService.class);
                     if (serverService == null) {
                         continue;
                     }
