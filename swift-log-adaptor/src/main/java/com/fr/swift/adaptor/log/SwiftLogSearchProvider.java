@@ -37,6 +37,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by Lyon on 2018/6/21.
@@ -89,7 +90,6 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
     public List<Object> getValueByColumn(Class<? extends AbstractMessage> logClass, QueryCondition condition, String columnName) throws Exception {
         List<String> fieldNames = new ArrayList<String>();
         fieldNames.add(columnName);
-//        List<Row> rows = LogQueryUtils.detailQuery(logClass, condition, fieldNames).getList();
         QueryBean queryBean = LogQueryUtils.detailQuery(logClass, condition, fieldNames);
 
         SwiftResultSet resultSet = analyseService.getQueryResult(queryBean);
@@ -109,8 +109,6 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
     public List<Object> getDistinctValueByColumn(Class<? extends AbstractMessage> logClass, QueryCondition condition, String columnName) throws Exception {
         List<String> fieldNames = new ArrayList<String>();
         fieldNames.add(columnName);
-//        List<Row> rows = LogQueryUtils.groupQuery(logClass, condition, fieldNames,
-//                new ArrayList<MetricBean>(), createNotNullFilter(columnName));
         QueryBean queryBean = LogQueryUtils.groupQuery(logClass, condition, fieldNames,
                 new ArrayList<MetricBean>(), createNotNullFilter(columnName));
         SwiftResultSet resultSet = analyseService.getQueryResult(queryBean);
@@ -132,13 +130,9 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
 
     @Override
     public DataList<Map<String, Object>> groupByColumns(Class<? extends AbstractMessage> logClass, QueryCondition condition, List<MetricBean> metrics, List<String> fieldNames) throws Exception {
-//        final List<Row> rows = LogQueryUtils.groupQuery(logClass, condition, fieldNames, metrics, null);
-
-        QueryBean queryBean = LogQueryUtils.groupQuery(logClass, condition, fieldNames,
-                new ArrayList<MetricBean>(), null);
+        QueryBean queryBean = LogQueryUtils.groupQuery(logClass, condition, fieldNames, metrics, null);
         SwiftResultSet resultSet = analyseService.getQueryResult(queryBean);
         List<Row> rows = LogQueryUtils.getPage(resultSet, condition);
-
         final List<String> columnNames = new ArrayList<String>(fieldNames);
         for (MetricBean bean : metrics) {
             columnNames.add(bean.getName());
@@ -154,7 +148,6 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
             }
         }));
         DataList<Map<String, Object>> dataList = new DataList<Map<String, Object>>();
-        // TODO: 2018/6/21 这个totalCount不会是总行数吧？
         dataList.setTotalCount(maps.size());
         dataList.setList(maps);
         return dataList;
@@ -174,7 +167,7 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
     private int countQuery(Class<? extends AbstractMessage> logClass, QueryCondition condition,
                            String columnName, FilterInfoBean notNull) throws Exception {
         GroupQueryInfoBean queryInfoBean = new GroupQueryInfoBean();
-        queryInfoBean.setQueryId(condition.toString());
+        queryInfoBean.setQueryId(UUID.randomUUID().toString());
         String tableName = JpaAdaptor.getTableName(logClass);
         queryInfoBean.setTableName(tableName);
         FilterInfoBean filterInfoBean = QueryConditionAdaptor.restriction2FilterInfo(condition.getRestriction());
