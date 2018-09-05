@@ -60,9 +60,11 @@ public class ResultSetWrapper implements ResultSet {
     private void initLabel2IndexMap() throws SQLException {
         label2Index = new HashMap<String, Integer>();
         SwiftMetaData metaData = resultSet.getMetaData();
-        List<String> fieldNames = metaData.getFieldNames();
-        for (String fieldName : fieldNames) {
-            label2Index.put(fieldName, metaData.getColumnIndex(fieldName));
+        if (null != metaData) {
+            List<String> fieldNames = metaData.getFieldNames();
+            for (String fieldName : fieldNames) {
+                label2Index.put(fieldName, metaData.getColumnIndex(fieldName));
+            }
         }
     }
 
