@@ -6,6 +6,7 @@ import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.RpcFuture;
+import com.fr.swift.event.analyse.RequestSegLocationEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.netty.rpc.server.RpcServer;
@@ -15,12 +16,12 @@ import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
-import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.AbstractSwiftService;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.cluster.ClusterAnalyseService;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Assert;
 import com.fr.swift.util.ServiceBeanFactory;
 import com.fr.swift.utils.ClusterCommonUtils;
@@ -62,7 +63,7 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
                     List<String> spareNodes = remoteURI.getSpareNodes();
                     try {
                         for (String spareNode : spareNodes) {
-                            SegmentDestinationImpl spare = new SegmentDestinationImpl(remoteURI);
+                            SegmentDestination spare = remoteURI.copy();
                             spare.setClusterId(spareNode);
                             final CountDownLatch count = new CountDownLatch(1);
                             queryRemoteNodeNode(jsonString, spare).addCallback(new AsyncRpcCallback() {
@@ -105,7 +106,15 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
         analyseService.setId(getID());
         analyseService.start();
         // 这边为了覆盖掉analyse的注册，所以再调一次注册
-        return super.start();
+        super.start();
+        List<Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo>> result =
+                (List<Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo>>) ClusterCommonUtils.runSyncMaster(new RequestSegLocationEvent(getID()));
+        if (!result.isEmpty()) {
+            for (Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo> pair : result) {
+                updateSegmentInfo(pair.getValue(), pair.getKey());
+            }
+        }
+        return true;
     }
 
     @Override
@@ -131,12 +140,6 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
         String methodName = remoteURI.getMethodName();
         Class clazz = remoteURI.getServiceClass();
         return ClusterCommonUtils.runAsyncRpc(address, clazz, server.getMethodByName(methodName), jsonString);
-    }
-
-
-    @Override
-    public String getID() {
-        return ClusterSelector.getInstance().getFactory().getCurrentId();
     }
 
     @Override

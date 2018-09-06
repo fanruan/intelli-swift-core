@@ -93,11 +93,6 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
         return new SegmentDestinationImpl(clusterId, segmentKey.toString(), segmentKey.getOrder(), ClusterHistoryService.class, "historyQuery");
     }
 
-    @Override
-    public String getID() {
-        return ClusterSelector.getInstance().getFactory().getCurrentId();
-    }
-
     protected SegmentLocationInfo loadSelfSegmentDestination() {
         SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
         clusterSegmentService.setClusterId(getID());

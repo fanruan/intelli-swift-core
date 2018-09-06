@@ -21,6 +21,10 @@ public final class SegmentLocationInfoContainer {
         return SingletonHolder.CONTAINER;
     }
 
+    public void clean() {
+        locationInfo.clear();
+    }
+
     public List<Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo>> getLocationInfo() {
         return locationInfo;
     }

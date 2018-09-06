@@ -30,4 +30,10 @@ public interface SegmentDestination extends Serializable, Comparable<SegmentDest
     List<String> getSpareNodes();
 
     String getCurrentNode();
+
+    void setSpareNodes(List<String> spareNodes);
+
+    void setClusterId(String clusterId);
+
+    SegmentDestination copy();
 }

@@ -2,7 +2,6 @@ package com.fr.swift.segment.rule;
 
 import com.fr.swift.config.bean.SegmentDestSelectRule;
 import com.fr.swift.segment.SegmentDestination;
-import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.structure.Pair;
 
 import java.util.ArrayList;
@@ -47,7 +46,7 @@ public class DefaultSegmentDestSelectRule implements SegmentDestSelectRule {
                     return o1.getValue() - o2.getValue();
                 }
             });
-            SegmentDestinationImpl targetDestination = new SegmentDestinationImpl(destination);
+            SegmentDestination targetDestination = destination.copy();
             targetDestination.setClusterId(sortList.get(0).getKey());
             List<Pair<String, Integer>> sparePair = sortList.size() > 1 ? sortList.subList(1, sortList.size()) : Collections.<Pair<String, Integer>>emptyList();
             List<String> spareList = new ArrayList<String>();

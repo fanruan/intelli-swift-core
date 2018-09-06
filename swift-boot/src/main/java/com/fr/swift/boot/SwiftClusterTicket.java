@@ -13,6 +13,7 @@ import com.fr.swift.cluster.service.ClusterHistoryServiceImpl;
 import com.fr.swift.cluster.service.ClusterIndexingServiceImpl;
 import com.fr.swift.cluster.service.ClusterRealTimeServiceImpl;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
+import com.fr.swift.cluster.service.SegmentLocationInfoContainer;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.core.cluster.FRClusterNodeManager;
 import com.fr.swift.core.cluster.FRClusterNodeService;
@@ -24,13 +25,22 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.nm.SlaveManager;
 import com.fr.swift.rm.MasterManager;
+import com.fr.swift.segment.SegmentDestination;
+import com.fr.swift.segment.SegmentLocationInfo;
+import com.fr.swift.segment.SegmentLocationProvider;
+import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
 import com.fr.swift.service.HistoryService;
 import com.fr.swift.service.IndexingService;
+import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.cluster.ClusterAnalyseService;
 import com.fr.swift.service.cluster.ClusterRealTimeService;
 import com.fr.swift.service.listener.RemoteServiceSender;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class created on 2018/5/14
@@ -97,6 +107,13 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
                     try {
                         if (ComparatorUtils.equals(FRClusterNodeManager.getInstance().getMasterId(), FRClusterNodeManager.getInstance().getCurrentId())) {
                             slaveManager.shutDown();
+                            SegmentLocationInfoContainer.getContainer().clean();
+                            Map<String, List<SegmentDestination>> hist = SegmentLocationProvider.getInstance().getSegmentInfo(ServiceType.HISTORY);
+                            Map<String, List<SegmentDestination>> real = SegmentLocationProvider.getInstance().getSegmentInfo(ServiceType.REAL_TIME);
+                            SegmentLocationInfo histInfo = new SegmentLocationInfoImpl(ServiceType.HISTORY, hist);
+                            SegmentLocationInfo realInfo = new SegmentLocationInfoImpl(ServiceType.REAL_TIME, real);
+                            SegmentLocationInfoContainer.getContainer().add(Pair.of(SegmentLocationInfo.UpdateType.ALL, histInfo));
+                            SegmentLocationInfoContainer.getContainer().add(Pair.of(SegmentLocationInfo.UpdateType.ALL, realInfo));
                             masterManager.startUp();
                             ClusterSwiftServerService.getInstance().initService();
                         }

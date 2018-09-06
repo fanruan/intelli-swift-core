@@ -64,8 +64,8 @@ public class SlaveManager extends AbstractSwiftManager implements ClusterManager
     protected void installService() {
         try {
             clusterServiceManager.registerService(ServiceBeanFactory.getClusterSwiftServiceByNames(swiftProperty.getSwiftServiceNames()));
-            SlaveService slaveService = SwiftContext.get().getBean("swiftSlaveService", SwiftSlaveService.class);
-            slaveService.syncNodeStates();
+//            SlaveService slaveService = SwiftContext.get().getBean("swiftSlaveService", SwiftSlaveService.class);
+//            slaveService.syncNodeStates();
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         }
