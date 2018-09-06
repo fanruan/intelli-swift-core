@@ -1,5 +1,6 @@
 package com.fr.swift.query.group.by;
 
+
 import com.fr.swift.structure.iterator.IntListRowTraversal;
 import com.fr.swift.structure.iterator.RowTraversal;
 

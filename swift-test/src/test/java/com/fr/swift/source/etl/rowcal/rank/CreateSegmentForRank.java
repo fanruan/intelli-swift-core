@@ -4,11 +4,11 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
 import com.fr.swift.cube.io.location.IResourceLocation;
-import com.fr.swift.relation.CubeMultiRelation;
-import com.fr.swift.relation.CubeMultiRelationPath;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.segment.relation.CubeMultiRelation;
+import com.fr.swift.segment.relation.CubeMultiRelationPath;
 import com.fr.swift.segment.relation.RelationIndex;
 import com.fr.swift.source.SwiftMetaData;
 /**

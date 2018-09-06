@@ -3,9 +3,9 @@ package com.fr.swift.generate.history.index;
 
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.generate.BaseTablePathIndexer;
-import com.fr.swift.relation.CubeMultiRelationPath;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.relation.CubeMultiRelationPath;
 import com.fr.swift.source.SourceKey;
 
 import java.util.List;

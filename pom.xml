@@ -37,6 +37,10 @@
         <module>swift-analyse-base</module>
         <module>swift-repository-base</module>
         <module>swift-common</module>
+        <module>swift-base-io</module>
+        <module>swift-base-config</module>
+        <module>swift-base-structure</module>
+        <module>swift-base-bitmap</module>
     </modules>
 
     <properties>

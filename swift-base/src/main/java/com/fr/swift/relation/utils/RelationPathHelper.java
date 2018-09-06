@@ -1,9 +1,9 @@
 package com.fr.swift.relation.utils;
 
-import com.fr.swift.relation.CubeLogicColumnKey;
-import com.fr.swift.relation.CubeMultiRelation;
-import com.fr.swift.relation.CubeMultiRelationPath;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.segment.relation.CubeLogicColumnKey;
+import com.fr.swift.segment.relation.CubeMultiRelation;
+import com.fr.swift.segment.relation.CubeMultiRelationPath;
 import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.RelationSourceType;
 import com.fr.swift.source.SourceKey;
