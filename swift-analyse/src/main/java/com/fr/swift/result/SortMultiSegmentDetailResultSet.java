@@ -37,6 +37,9 @@ public class SortMultiSegmentDetailResultSet extends AbstractDetailResultSet {
         List<DetailResultSet> resultSets = new ArrayList<DetailResultSet>();
         for (Query query : queries) {
             DetailResultSet resultSet = (DetailResultSet) query.getQueryResult();
+            if (resultSet == null) {
+                continue;
+            }
             rowCount += resultSet.getRowCount();
             resultSets.add(resultSet);
         }

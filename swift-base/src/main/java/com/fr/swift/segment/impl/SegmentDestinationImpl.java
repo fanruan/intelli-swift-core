@@ -18,11 +18,11 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(value = {"remote"})
 public class SegmentDestinationImpl implements SegmentDestination {
-
+    private static final long serialVersionUID = 3016733438741210788L;
     @JsonProperty
-    private String clusterId;
+    protected String clusterId;
     @JsonProperty
-    private String address;
+    protected String address;
     @JsonProperty
     private transient String currentNode;
     @JsonProperty
@@ -30,9 +30,9 @@ public class SegmentDestinationImpl implements SegmentDestination {
     @JsonProperty
     private int order;
     @JsonProperty
-    private Class<? extends SwiftService> serviceClass;
+    protected Class<? extends SwiftService> serviceClass;
     @JsonProperty
-    private String methodName;
+    protected String methodName;
     @JsonProperty
     private List<String> spareNodes;
 
@@ -136,6 +136,11 @@ public class SegmentDestinationImpl implements SegmentDestination {
 
     public String getCurrentNode() {
         return currentNode;
+    }
+
+    @Override
+    public SegmentDestination copy() {
+        return new SegmentDestinationImpl(this);
     }
 
     public void setAddress(String address) {

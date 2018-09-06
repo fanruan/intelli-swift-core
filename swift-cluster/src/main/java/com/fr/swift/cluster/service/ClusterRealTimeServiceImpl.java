@@ -17,7 +17,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
-import com.fr.swift.segment.impl.SegmentDestinationImpl;
+import com.fr.swift.segment.impl.RealTimeSegDestImpl;
 import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.AbstractSwiftService;
@@ -89,13 +89,6 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
         });
     }
 
-
-    @Override
-    public String getID() {
-        return ClusterSelector.getInstance().getFactory().getCurrentId();
-    }
-
-
     @Override
     @RpcMethod(methodName = "realtimeDelete")
     public boolean delete(SourceKey sourceKey, Where where) throws Exception {
@@ -135,12 +128,12 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
 
     protected SegmentDestination createSegmentDestination(SegmentKey segmentKey) {
         String clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
-        return new SegmentDestinationImpl(clusterId, segmentKey.toString(), segmentKey.getOrder(), ClusterRealTimeService.class, "realTimeQuery");
+        return new RealTimeSegDestImpl(clusterId, segmentKey.toString(), segmentKey.getOrder(), ClusterRealTimeService.class, "realTimeQuery");
     }
 
     protected SegmentDestination createSegmentDestination(SourceKey segmentKey) {
         String clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
-        return new SegmentDestinationImpl(clusterId, null, -1, ClusterRealTimeService.class, "realTimeQuery");
+        return new RealTimeSegDestImpl(clusterId, String.format("%s@%s@%d", segmentKey.getId(), Types.StoreType.MEMORY.name(), -1), -1, ClusterRealTimeService.class, "realTimeQuery");
     }
 
     @Override
