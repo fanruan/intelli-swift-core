@@ -1,18 +1,19 @@
 package com.fr.swift.config.service.impl;
 
 import com.fr.swift.config.bean.SegmentKeyBean;
-import com.fr.swift.config.dao.SwiftSegmentDao;
 import com.fr.swift.config.dao.SwiftSegmentLocationDao;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
 import com.fr.swift.config.entity.key.SwiftSegLocationEntityId;
 import com.fr.swift.config.hibernate.transaction.AbstractTransactionWorker;
-import com.fr.swift.config.hibernate.transaction.HibernateTransactionManager;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.cube.io.Types;
+import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
+import com.fr.swift.util.Crasher;
 import com.fr.third.org.hibernate.Session;
 import com.fr.third.org.hibernate.criterion.Criterion;
 import com.fr.third.org.hibernate.criterion.Restrictions;
@@ -33,11 +34,6 @@ import java.util.Map;
  */
 @Service("swiftClusterSegmentService")
 public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService implements SwiftClusterSegmentService {
-
-    @Autowired
-    private HibernateTransactionManager transactionManager;
-    @Autowired
-    private SwiftSegmentDao swiftSegmentDao;
     @Autowired
     private SwiftSegmentLocationDao segmentLocationDao;
 
@@ -114,12 +110,12 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
 
     private boolean addSegmentsWithoutTransaction(Session session, List<SegmentKey> segments) throws SQLException {
         for (SegmentKey segment : segments) {
-            SegmentKeyBean bean = (SegmentKeyBean) segment;
-            swiftSegmentDao.addOrUpdateSwiftSegment(session, bean);
+            SwiftSegmentEntity entity = new SwiftSegmentEntity(segment);
+            swiftSegmentDao.addOrUpdateSwiftSegment(session, segment);
             SwiftSegmentLocationEntity locationEntity = new SwiftSegmentLocationEntity();
             SwiftSegLocationEntityId id = new SwiftSegLocationEntityId();
             id.setClusterId(clusterId);
-            id.setSegmentId(bean.getId());
+            id.setSegmentId(entity.getId());
             locationEntity.setId(id);
             locationEntity.setSourceKey(segment.getTable().getId());
             segmentLocationDao.saveOrUpdate(session, locationEntity);
@@ -182,6 +178,28 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
 
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    @Override
+    public SegmentKey tryAppendSegment(final SourceKey tableKey, final StoreType storeType) {
+        try {
+            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<SegmentKey>() {
+                @Override
+                public SegmentKey work(Session session) {
+                    SegmentKey segKey = SwiftClusterSegmentServiceImpl.super.tryAppendSegment(tableKey, storeType);
+                    SwiftSegmentLocationEntity locationEntity = new SwiftSegmentLocationEntity();
+                    SwiftSegLocationEntityId id = new SwiftSegLocationEntityId();
+                    id.setClusterId(clusterId);
+                    id.setSegmentId(new SwiftSegmentEntity(segKey).getId());
+                    locationEntity.setId(id);
+                    locationEntity.setSourceKey(segKey.getTable().getId());
+                    return segKey;
+                }
+            });
+
+        } catch (Exception e) {
+            return Crasher.crash(e);
         }
     }
 

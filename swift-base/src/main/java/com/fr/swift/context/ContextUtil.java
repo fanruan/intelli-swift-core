@@ -2,6 +2,7 @@ package com.fr.swift.context;
 
 import com.fr.workspace.WorkContext;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
@@ -29,6 +30,6 @@ public class ContextUtil {
             return frPath + "/../";
         }
         String classPath = getClassPath();
-        return classPath.endsWith("/") ? classPath + "../" : classPath + "/../../";
+        return new File(classPath).isDirectory() ? classPath + "/../" : classPath + "/../../";
     }
 }

@@ -1,14 +1,21 @@
 package com.fr.swift.segment;
 
+import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
+import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.util.FileUtil;
+import com.fr.swift.util.function.Predicate;
 
+import java.util.Collections;
 import java.util.List;
+
+import static com.fr.swift.db.SwiftDatabase.DECISION_LOG;
 
 /**
  * This class created on 2018/7/10
@@ -34,6 +41,37 @@ public class SegmentUtils {
 
     public static Segment newHistorySegment(IResourceLocation location, SwiftMetaData meta) {
         return (Segment) SwiftContext.get().getBean("historySegment", location, meta);
+    }
+
+    public static void clearSegment(SegmentKey segKey) {
+        if (segKey.getStoreType() == StoreType.MEMORY) {
+            clearRealtimeSegment(segKey);
+        } else {
+            clearHistorySegment(segKey);
+        }
+    }
+
+    private static void clearRealtimeSegment(SegmentKey segKey) {
+        SwiftContext.get().getBean(SwiftSegmentService.class).removeSegments(Collections.singletonList(segKey));
+
+        final String segPath = CubeUtil.getSegPath(segKey);
+
+        ResourceDiscovery.getInstance().removeIf(new Predicate<String>() {
+            @Override
+            public boolean test(String s) {
+                return s.contains(segPath);
+            }
+        });
+
+        FileUtil.delete(CubeUtil.getAbsoluteSegPath(segKey).replace(DECISION_LOG.getDir(), DECISION_LOG.getBackupDir()));
+    }
+
+    private static void clearHistorySegment(SegmentKey segKey) {
+        SwiftContext.get().getBean(SwiftSegmentService.class).removeSegments(Collections.singletonList(segKey));
+
+        FileUtil.delete(CubeUtil.getAbsoluteSegPath(segKey));
+
+        // todo 触发共享存储删seg？
     }
 
     public static SegmentKey getMaxSegmentKey(List<SegmentKey> segmentKeys) {

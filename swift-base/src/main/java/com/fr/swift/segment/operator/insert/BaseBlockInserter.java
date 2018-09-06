@@ -27,6 +27,8 @@ import java.util.List;
  * @date 2018/8/1
  */
 public abstract class BaseBlockInserter implements Inserter {
+    protected static final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
+
     protected SwiftSourceAlloter alloter;
 
     protected DataSource dataSource;
@@ -49,17 +51,16 @@ public abstract class BaseBlockInserter implements Inserter {
             persistMeta();
 
             while (resultSet.hasNext()) {
-                boolean newSeg = nextSegment();
+                nextSegment();
                 Inserter inserter = getInserter();
 
                 int step = ((LineAllotRule) alloter.getAllotRule()).getStep();
                 int limit = CubeUtil.isReadable(currentSeg) ? step - currentSeg.getRowCount() : step;
                 inserter.insertData(new LimitedResultSet(resultSet, limit, false));
-
-                if (newSeg) {
-                    persistSegment();
-                }
             }
+        } catch (Exception e) {
+            clearDirtySeg();
+            throw e;
         } finally {
             resultSet.close();
         }
@@ -77,8 +78,10 @@ public abstract class BaseBlockInserter implements Inserter {
         }
     }
 
-    protected void persistSegment() {
-        SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).addSegments(Collections.singletonList(currentSegKey));
+    private void clearDirtySeg() {
+        if (currentSegKey != null) {
+            SEG_SVC.removeSegments(Collections.singletonList(currentSegKey));
+        }
     }
 
     @Override

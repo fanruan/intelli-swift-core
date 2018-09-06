@@ -12,6 +12,8 @@ import com.fr.swift.segment.operator.column.SwiftColumnIndexer;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.source.alloter.impl.line.LineAllotRule;
+import com.fr.swift.source.alloter.impl.line.LineSourceAlloter;
 import com.fr.swift.source.core.Core;
 
 import java.sql.SQLException;
@@ -39,7 +41,8 @@ class SwiftTable implements Table {
     @Override
     public void insert(SwiftResultSet rowSet) throws SQLException {
         try {
-            Inserter inserter = (Inserter) SwiftContext.get().getBean("incrementer", this);
+            LineSourceAlloter alloter = new LineSourceAlloter(getSourceKey(), new LineAllotRule(LineAllotRule.MEM_STEP));
+            Inserter inserter = (Inserter) SwiftContext.get().getBean("incrementer", this, alloter);
             inserter.insertData(rowSet);
         } catch (Exception e) {
             throw new SQLException(e);

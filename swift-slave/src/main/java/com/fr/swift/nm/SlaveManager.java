@@ -2,11 +2,8 @@ package com.fr.swift.nm;
 
 import com.fr.swift.Collect;
 import com.fr.swift.cluster.manager.ClusterManager;
-import com.fr.swift.cluster.service.SlaveService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.nm.collector.SalveHeartBeatCollect;
-import com.fr.swift.nm.service.SwiftSlaveService;
 import com.fr.swift.node.SwiftClusterNodeManager;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.AbstractSwiftManager;
