@@ -1,50 +1,39 @@
 package com.fr.swift.api.rpc.holder;
 
-import com.fr.swift.api.rpc.DetectService;
-import com.fr.swift.api.rpc.invoke.ApiProxyFactory;
+import com.fr.swift.api.rpc.exception.AddressAbsentException;
+import com.fr.swift.api.rpc.exception.ConnectException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.service.ServiceType;
-import com.fr.swift.util.Assert;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * @author yee
- * @date 2018/8/23
+ * @date 2018/9/6
  */
-public class InternalServiceAddressHolder implements ServiceAddressHolder {
-
-    private static ConcurrentHashMap<String, InternalServiceAddressHolder> instances = new ConcurrentHashMap<String, InternalServiceAddressHolder>();
+public abstract class AbstractServiceAddressHolder implements ServiceAddressHolder {
     private boolean detected = false;
     private Queue<String> queryServiceAddress;
     private Queue<String> insertServiceAddress;
     private String address;
 
-    private InternalServiceAddressHolder(String address) {
+    protected AbstractServiceAddressHolder(String address) {
         this.address = address;
         queryServiceAddress = new ConcurrentLinkedQueue<String>();
         insertServiceAddress = new ConcurrentLinkedQueue<String>();
         detect();
     }
 
-    public static InternalServiceAddressHolder getHolder(String address) {
-        if (null == instances.get(address)) {
-            instances.put(address, new InternalServiceAddressHolder(address));
-        }
-        return instances.get(address);
-    }
-
     private boolean detect() {
         if (!detected) {
             try {
-                Map<ServiceType, List<String>> addresses = ApiProxyFactory.getProxy(DetectService.class, address).detectiveAnalyseAndRealTime(address);
+                Map<ServiceType, List<String>> addresses = detectiveAddress(address);
                 if (addresses.isEmpty()) {
                     detected = false;
-                    SwiftLoggers.getLogger().warn("Cannot find service address. Retry at 10s later.");
+                    SwiftLoggers.getLogger().warn("Cannot find service address.");
                 } else {
                     detected = true;
                     queryServiceAddress.clear();
@@ -53,12 +42,20 @@ public class InternalServiceAddressHolder implements ServiceAddressHolder {
                     insertServiceAddress.addAll(addresses.get(ServiceType.REAL_TIME));
                 }
             } catch (Exception e) {
-                SwiftLoggers.getLogger().error("Detect service address with an exception.", e);
-                detected = false;
+                throw new ConnectException(address, e);
             }
         }
         return detected;
     }
+
+    /**
+     * 获取服务地址
+     *
+     * @param address
+     * @return
+     * @throws Exception
+     */
+    protected abstract Map<ServiceType, List<String>> detectiveAddress(String address) throws Exception;
 
     @Override
     public String nextAnalyseAddress() {
@@ -78,7 +75,9 @@ public class InternalServiceAddressHolder implements ServiceAddressHolder {
     private String getAddress(Queue<String> addresses) {
         detect();
         String address = addresses.poll();
-        Assert.notNull(address);
+        if (null == address) {
+            throw new AddressAbsentException();
+        }
         addresses.add(address);
         return address;
     }

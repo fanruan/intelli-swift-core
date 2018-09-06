@@ -4,7 +4,7 @@ import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
 import com.fr.swift.jdbc.mode.Mode;
 import com.fr.swift.jdbc.rpc.RpcCaller;
-import com.fr.swift.jdbc.rpc.holder.AddressHolder;
+import com.fr.swift.jdbc.rpc.holder.JdbcAddressHolder;
 import com.fr.swift.jdbc.rpc.invoke.ClientProxyPool;
 import com.fr.swift.jdbc.session.SwiftJdbcSession;
 import com.fr.swift.jdbc.session.SwiftJdbcSessionFactory;
@@ -16,13 +16,13 @@ import com.fr.swift.util.Crasher;
  */
 public class SwiftJdbcSessionFactoryImpl implements SwiftJdbcSessionFactory {
 
-    protected AddressHolder holder;
+    protected JdbcAddressHolder holder;
     private SwiftDatabase schema;
     private Mode mode;
     private ClientProxyPool proxyPool = ClientProxyPool.getInstance();
 
     public SwiftJdbcSessionFactoryImpl(SwiftDatabase schema, String host, int port) {
-        holder = AddressHolder.getHolder(host, port);
+        holder = JdbcAddressHolder.getHolder(host, port);
         this.schema = schema;
         this.mode = Mode.SERVER;
     }
@@ -45,7 +45,7 @@ public class SwiftJdbcSessionFactoryImpl implements SwiftJdbcSessionFactory {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         proxyPool.close();
     }
 }

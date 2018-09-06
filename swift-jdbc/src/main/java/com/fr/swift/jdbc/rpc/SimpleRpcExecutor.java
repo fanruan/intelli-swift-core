@@ -1,38 +1,32 @@
 package com.fr.swift.jdbc.rpc;
 
-import com.fr.swift.api.rpc.invoke.RpcSender;
 import com.fr.swift.jdbc.exception.RpcException;
-import com.fr.swift.jdbc.rpc.nio.RpcConnector;
 import com.fr.swift.rpc.bean.RpcResponse;
 import com.fr.swift.rpc.bean.impl.RpcRequest;
 
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author yee
  * @date 2018/8/26
  */
-public class RpcExecutor implements RpcSender {
-    protected int timeout = 10000;
-    private RpcConnector connector;
-    private AtomicInteger index = new AtomicInteger(10000);
+public class SimpleRpcExecutor implements JdbcRpcExecutor {
+    private static final int DEFAULT_TIMEOUT = 10000;
+    protected int timeout;
+    private JdbcRpcConnector connector;
     private RpcSyncObject sync;
     private ConcurrentHashMap<String, RpcCallBackSync> rpcCache = new ConcurrentHashMap<String, RpcCallBackSync>();
 
 
-    public RpcExecutor(RpcConnector connector) {
+    public SimpleRpcExecutor(JdbcRpcConnector connector) {
+        this(connector, DEFAULT_TIMEOUT);
+    }
+
+    public SimpleRpcExecutor(JdbcRpcConnector connector, int timeout) {
+        this.timeout = timeout;
         this.connector = connector;
         this.connector.registerExecutor(this);
         sync = new RpcSyncObject();
-    }
-
-    public RpcConnector getConnector() {
-        return connector;
-    }
-
-    public void setConnector(RpcConnector connector) {
-        this.connector = connector;
     }
 
     @Override
@@ -52,19 +46,23 @@ public class RpcExecutor implements RpcSender {
         return response;
     }
 
+    @Override
     public void start() {
-        connector.connect();
+        connector.start();
     }
 
+    @Override
     public void stop() {
-        connector.disConnect();
+        connector.stop();
     }
 
-    private int genIndex() {
-        return index.incrementAndGet();
+    @Override
+    public void handlerException(Exception e) {
+        connector.handlerException(e);
     }
 
-    public void onRpcMessage(RpcResponse rpc) {
+    @Override
+    public void onRpcResponse(RpcResponse rpc) {
         RpcCallBackSync sync = rpcCache.get(rpc.getRequestId());
         if (sync != null && sync.getRpcId().equals(rpc.getRequestId())) {
             this.sync.notifyResult(sync, rpc);

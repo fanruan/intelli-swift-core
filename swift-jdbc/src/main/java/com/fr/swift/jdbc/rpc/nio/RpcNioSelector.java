@@ -4,7 +4,9 @@ import com.fr.swift.jdbc.decoder.SerializableDecoder;
 import com.fr.swift.jdbc.encoder.SerializableEncoder;
 import com.fr.swift.jdbc.exception.NoCodecResponseException;
 import com.fr.swift.jdbc.exception.RpcException;
+import com.fr.swift.jdbc.rpc.AbstractRpcSelector;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.rpc.bean.RpcResponse;
 import com.fr.swift.rpc.bean.impl.RpcRequest;
 
 import java.io.IOException;
@@ -24,26 +26,26 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author yee
  * @date 2018/8/26
  */
-public class RpcSelector {
+public class RpcNioSelector extends AbstractRpcSelector<RpcNioConnector> {
     private static final int READ_OP = SelectionKey.OP_READ;
     private static final int READ_WRITE_OP = SelectionKey.OP_READ | SelectionKey.OP_WRITE;
     private Selector selector;
     private LinkedList<Runnable> selectTasks = new LinkedList<Runnable>();
-    private ConcurrentHashMap<SocketChannel, RpcConnector> connectorCache;
-    private List<RpcConnector> connectors;
+    private ConcurrentHashMap<SocketChannel, RpcNioConnector> connectorCache;
+    private List<RpcNioConnector> connectors;
     private final SelectionThread thread = new SelectionThread();
     private AtomicBoolean started = new AtomicBoolean(false);
     private SerializableEncoder encoder;
     private SerializableDecoder decoder;
     private AtomicBoolean stop = new AtomicBoolean(true);
 
-    public RpcSelector(SerializableEncoder encoder, SerializableDecoder decoder) {
+    public RpcNioSelector(SerializableEncoder encoder, SerializableDecoder decoder) {
         this.encoder = encoder;
         this.decoder = decoder;
         try {
             selector = Selector.open();
-            connectorCache = new ConcurrentHashMap<SocketChannel, RpcConnector>();
-            connectors = new CopyOnWriteArrayList<RpcConnector>();
+            connectorCache = new ConcurrentHashMap<SocketChannel, RpcNioConnector>();
+            connectors = new CopyOnWriteArrayList<RpcNioConnector>();
         } catch (IOException e) {
             throw new RpcException(e);
         }
@@ -67,16 +69,19 @@ public class RpcSelector {
         }
     }
 
+    @Override
     public void notifySend() {
         selector.wakeup();
     }
 
-    public void register(final RpcConnector connector) {
+    @Override
+    public void register(final RpcNioConnector connector) {
         this.addSelectTask(new Runnable() {
+            @Override
             public void run() {
                 try {
                     SelectionKey selectionKey = connector.getChannel().register(selector, READ_OP);
-                    RpcSelector.this.initNewSocketChannel(connector.getChannel(), connector, selectionKey);
+                    RpcNioSelector.this.initNewSocketChannel(connector.getChannel(), connector, selectionKey);
                 } catch (Exception e) {
                     connector.handlerException(e);
                 }
@@ -103,13 +108,13 @@ public class RpcSelector {
         return result;
     }
 
-    private void initNewSocketChannel(SocketChannel channel, RpcConnector connector, SelectionKey selectionKey) {
-        connector.setSelectionKey(selectionKey);
+    private void initNewSocketChannel(SocketChannel channel, RpcNioConnector connector, SelectionKey selectionKey) {
         connectorCache.put(channel, connector);
         connectors.add(connector);
     }
 
-    public void start() {
+    @Override
+    protected void setUpSelector() {
         if (!started.get()) {
             stop.set(false);
             started.set(true);
@@ -117,7 +122,8 @@ public class RpcSelector {
         }
     }
 
-    public void stop() {
+    @Override
+    protected void shutdownSelector() {
         stop.set(true);
         started.set(false);
     }
@@ -128,9 +134,9 @@ public class RpcSelector {
             SocketChannel client = server.accept();
             if (client != null) {
                 client.configureBlocking(false);
-                RpcConnector connector = new RpcConnector(client, this);
+                RpcNioConnector connector = new RpcNioConnector(client, this);
                 this.register(connector);
-                connector.connect();
+                connector.start();
                 return true;
             }
         } catch (Exception e) {
@@ -142,13 +148,15 @@ public class RpcSelector {
     private boolean doRead(SelectionKey selectionKey) {
         boolean result = false;
         SocketChannel client = (SocketChannel) selectionKey.channel();
-        RpcConnector connector = connectorCache.get(client);
+        RpcNioConnector connector = connectorCache.get(client);
         if (connector != null) {
             try {
                 while (!stop.get()) {
                     try {
                         Object object = decoder.decodeFromChannel(client);
-                        this.fireRpcResponse(connector, object);
+                        if (object instanceof RpcResponse) {
+                            this.fireRpcResponse(connector, (RpcResponse) object);
+                        }
                         result = true;
                         break;
                     } catch (NoCodecResponseException e) {
@@ -165,17 +173,9 @@ public class RpcSelector {
         return result;
     }
 
-    private void fireRpcResponse(RpcConnector connector, Object object) {
-        connector.fireRpcResponse(object);
-    }
-
-    private void fireRpcException(RpcConnector connector, Exception object) {
-        connector.handlerException(object);
-    }
-
     private void handSelectionKeyException(final SelectionKey selectionKey, Exception e) {
         SelectableChannel channel = selectionKey.channel();
-        RpcConnector connector = connectorCache.get(channel);
+        RpcNioConnector connector = connectorCache.get(channel);
         if (connector != null) {
             this.fireRpcException(connector, e);
         }
@@ -184,7 +184,7 @@ public class RpcSelector {
     private boolean doWrite(SelectionKey selectionKey) {
         boolean result = false;
         SocketChannel channel = (SocketChannel) selectionKey.channel();
-        RpcConnector connector = connectorCache.get(channel);
+        RpcNioConnector connector = connectorCache.get(channel);
         if (connector.isNeedToSend()) {
             try {
                 while (connector.isNeedToSend()) {
@@ -204,7 +204,7 @@ public class RpcSelector {
 
     private boolean checkSend() {
         boolean needSend = false;
-        for (RpcConnector connector : connectors) {
+        for (RpcNioConnector connector : connectors) {
             if (connector.isNeedToSend()) {
                 SelectionKey selectionKey = connector.getChannel().keyFor(selector);
                 selectionKey.interestOps(READ_WRITE_OP);
@@ -215,11 +215,16 @@ public class RpcSelector {
     }
 
     private class SelectionThread extends Thread {
+
+        public SelectionThread() {
+            super("swift-nio-rpc-selection-thread");
+        }
+
         @Override
         public void run() {
             while (!stop.get()) {
-                if (RpcSelector.this.hasTask()) {
-                    RpcSelector.this.runSelectTasks();
+                if (RpcNioSelector.this.hasTask()) {
+                    RpcNioSelector.this.runSelectTasks();
                 }
                 boolean needSend = checkSend();
                 try {
