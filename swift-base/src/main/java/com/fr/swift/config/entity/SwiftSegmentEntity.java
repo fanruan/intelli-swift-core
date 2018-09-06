@@ -5,7 +5,10 @@ import com.fr.swift.config.bean.Convert;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.convert.hibernate.URIConverter;
 import com.fr.swift.cube.io.Types;
+import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.source.SourceKey;
 import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Entity;
 import com.fr.third.javax.persistence.EnumType;
@@ -40,9 +43,30 @@ public class SwiftSegmentEntity implements Convert<SegmentKeyBean> {
     @Column(name = SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE)
     @Enumerated(EnumType.STRING)
     private Types.StoreType storeType;
+
     @Column(name = "swiftSchema")
     @Enumerated(EnumType.STRING)
     private SwiftDatabase swiftSchema;
+
+    public SwiftSegmentEntity() {
+    }
+
+    public SwiftSegmentEntity(SegmentKey segKey) {
+        this(segKey.getTable(), segKey.getOrder(), segKey.getStoreType(), segKey.getSwiftSchema());
+    }
+
+    public SwiftSegmentEntity(SourceKey segmentOwner, int segmentOrder, StoreType storeType, SwiftDatabase swiftSchema) {
+        id = getId(segmentOwner, segmentOrder, storeType);
+        this.segmentOwner = segmentOwner.getId();
+        this.segmentUri = URI.create(String.format("%s/seg%d", segmentOwner.getId(), segmentOrder));
+        this.segmentOrder = segmentOrder;
+        this.storeType = storeType;
+        this.swiftSchema = swiftSchema;
+    }
+
+    private static String getId(SourceKey segmentOwner, int segmentOrder, StoreType storeType) {
+        return String.format("%s@%s@%d", segmentOwner.getId(), storeType, segmentOrder);
+    }
 
     public String getSegmentOwner() {
         return segmentOwner;

@@ -23,6 +23,13 @@ public interface SwiftConfigDao<T> {
     boolean saveOrUpdate(Session session, T entity) throws SQLException;
 
     /**
+     * 同hibernate persist
+     *
+     * @param entity entity
+     */
+    void persist(Session session, T entity);
+
+    /**
      * 根据ID查询
      *
      * @param id

@@ -18,6 +18,8 @@ import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.source.alloter.impl.line.LineRowInfo;
 
+import java.util.Collections;
+
 /**
  * @author anchore
  * @date 2018/8/1
@@ -64,7 +66,10 @@ public class HistoryBlockInserter extends BaseBlockInserter {
 
     @Override
     protected boolean nextSegment() {
+        // fixme 分布式 多节点导入也会竞争segOrder
         currentSeg = newHistorySegment(alloter.allot(new LineRowInfo(0)), segOrder++);
+
+        SEG_SVC.addSegments(Collections.singletonList(currentSegKey));
         return true;
     }
 }

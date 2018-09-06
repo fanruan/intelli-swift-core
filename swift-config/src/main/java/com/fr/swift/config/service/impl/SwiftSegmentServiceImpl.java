@@ -1,15 +1,12 @@
 package com.fr.swift.config.service.impl;
 
 import com.fr.swift.config.bean.SegmentKeyBean;
-import com.fr.swift.config.dao.SwiftSegmentDao;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.hibernate.transaction.AbstractTransactionWorker;
-import com.fr.swift.config.hibernate.transaction.HibernateTransactionManager;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.third.org.hibernate.Session;
 import com.fr.third.org.hibernate.criterion.Criterion;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.sql.SQLException;
@@ -24,12 +21,6 @@ import java.util.Map;
  */
 @Service("swiftSegmentService")
 public class SwiftSegmentServiceImpl extends AbstractSegmentService {
-
-    @Autowired
-    private HibernateTransactionManager transactionManager;
-    @Autowired
-    private SwiftSegmentDao swiftSegmentDao;
-
     @Override
     public boolean addSegments(final List<SegmentKey> segments) {
         try {
@@ -37,7 +28,7 @@ public class SwiftSegmentServiceImpl extends AbstractSegmentService {
                 @Override
                 public Boolean work(Session session) throws SQLException {
                     for (SegmentKey bean : segments) {
-                        swiftSegmentDao.addOrUpdateSwiftSegment(session, (SegmentKeyBean) bean);
+                        swiftSegmentDao.addOrUpdateSwiftSegment(session, bean);
                     }
                     return true;
                 }
@@ -105,7 +96,7 @@ public class SwiftSegmentServiceImpl extends AbstractSegmentService {
                 public Boolean work(Session session) throws SQLException {
                     swiftSegmentDao.deleteBySourceKey(session, sourceKey);
                     for (SegmentKey segment : segments) {
-                        swiftSegmentDao.addOrUpdateSwiftSegment(session, (SegmentKeyBean) segment);
+                        swiftSegmentDao.addOrUpdateSwiftSegment(session, segment);
                     }
                     return true;
                 }

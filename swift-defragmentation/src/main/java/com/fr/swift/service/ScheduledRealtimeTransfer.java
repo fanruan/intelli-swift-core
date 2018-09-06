@@ -71,10 +71,5 @@ public class ScheduledRealtimeTransfer implements Runnable {
         private static SegmentKey getHistorySegKey(SegmentKey realtimeSegKey) {
             return new SegmentKeyBean(realtimeSegKey.getTable().getId(), realtimeSegKey.getUri(), realtimeSegKey.getOrder(), StoreType.FINE_IO, realtimeSegKey.getSwiftSchema());
         }
-
-        @Override
-        protected void onSucceed() {
-            super.onSucceed();
-        }
     }
 }

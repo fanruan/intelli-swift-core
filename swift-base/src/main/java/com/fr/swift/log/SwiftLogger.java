@@ -10,11 +10,4 @@ public interface SwiftLogger extends Logger {
     void warn(Throwable t);
 
     void error(Throwable t);
-
-    Type getType();
-
-    enum Type {
-        //
-        LOG4J, FR
-    }
 }

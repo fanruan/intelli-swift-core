@@ -1,6 +1,5 @@
 package com.fr.swift.config.dao;
 
-import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.segment.SegmentKey;
@@ -20,7 +19,7 @@ public interface SwiftSegmentDao extends SwiftConfigDao<SwiftSegmentEntity> {
      * @param bean
      * @return
      */
-    boolean addOrUpdateSwiftSegment(Session session, SegmentKeyBean bean) throws SQLException;
+    boolean addOrUpdateSwiftSegment(Session session, SegmentKey bean) throws SQLException;
 
     /**
      * 根据SourceKey查找

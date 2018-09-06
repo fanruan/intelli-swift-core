@@ -234,9 +234,4 @@ class SwiftLog4jLogger extends BaseSwiftLogger implements SwiftLogger {
             logger.log(FQCN, Level.ERROR, null, t);
         }
     }
-
-    @Override
-    public Type getType() {
-        return Type.LOG4J;
-    }
 }

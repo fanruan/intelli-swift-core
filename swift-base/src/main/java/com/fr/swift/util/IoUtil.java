@@ -25,6 +25,14 @@ public class IoUtil {
         }
     }
 
+    public static void close(Closeable... closeables) {
+        if (closeables != null) {
+            for (Closeable closeable : closeables) {
+                close(closeable);
+            }
+        }
+    }
+
     public static void release(Releasable releasable) {
         if (releasable != null) {
             releasable.release();

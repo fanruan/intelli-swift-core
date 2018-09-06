@@ -134,9 +134,4 @@ class SwiftFrLogger extends BaseSwiftLogger implements SwiftLogger {
     public void error(String s, Throwable throwable) {
         FineLoggerFactory.getLogger().error(s, throwable);
     }
-
-    @Override
-    public Type getType() {
-        return Type.FR;
-    }
 }
