@@ -1,5 +1,7 @@
-package com.fr.swift.config.indexing.impl;
+package com.fr.swift.config.entity;
 
+import com.fr.swift.config.convert.hibernate.AllotRuleConverter;
+import com.fr.swift.config.entity.key.TableId;
 import com.fr.swift.config.indexing.TableIndexingConf;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.AllotRule;
@@ -23,6 +25,14 @@ public class SwiftTableIndexingConf implements TableIndexingConf {
     @Convert(converter = AllotRuleConverter.class)
     private AllotRule allotRule;
 
+    public SwiftTableIndexingConf() {
+    }
+
+    public SwiftTableIndexingConf(SourceKey tableKey, AllotRule allotRule) {
+        this.tableId = new TableId(tableKey);
+        this.allotRule = allotRule;
+    }
+
     @Override
     public SourceKey getTable() {
         return tableId.getTableKey();
@@ -31,13 +41,5 @@ public class SwiftTableIndexingConf implements TableIndexingConf {
     @Override
     public AllotRule getAllotRule() {
         return allotRule;
-    }
-
-    public SwiftTableIndexingConf() {
-    }
-
-    public SwiftTableIndexingConf(SourceKey tableKey, AllotRule allotRule) {
-        this.tableId = new TableId(tableKey);
-        this.allotRule = allotRule;
     }
 }

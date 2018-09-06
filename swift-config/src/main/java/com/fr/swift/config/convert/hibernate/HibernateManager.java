@@ -1,4 +1,4 @@
-package com.fr.swift.config.hibernate;
+package com.fr.swift.config.convert.hibernate;
 
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.third.org.hibernate.SessionFactory;

@@ -1,13 +1,13 @@
 package com.fr.swift.config;
 
+import com.fr.swift.config.entity.SwiftColumnIndexingConf;
 import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
 import com.fr.swift.config.entity.SwiftServiceInfoEntity;
+import com.fr.swift.config.entity.SwiftTableIndexingConf;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
-import com.fr.swift.config.indexing.impl.SwiftColumnIndexingConf;
-import com.fr.swift.config.indexing.impl.SwiftTableIndexingConf;
 
 /**
  * @author yee

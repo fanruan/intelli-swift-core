@@ -1,10 +1,10 @@
 package com.fr.swift.config.service;
 
 import com.fr.swift.config.TestConfDb;
+import com.fr.swift.config.entity.SwiftColumnIndexingConf;
+import com.fr.swift.config.entity.SwiftTableIndexingConf;
 import com.fr.swift.config.indexing.ColumnIndexingConf;
 import com.fr.swift.config.indexing.TableIndexingConf;
-import com.fr.swift.config.indexing.impl.SwiftColumnIndexingConf;
-import com.fr.swift.config.indexing.impl.SwiftTableIndexingConf;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.AllotRule;

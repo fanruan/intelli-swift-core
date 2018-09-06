@@ -1,4 +1,4 @@
-package com.fr.swift.config.hibernate.transaction;
+package com.fr.swift.config.convert.hibernate.transaction;
 
 /**
  * @author yee

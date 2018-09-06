@@ -1,4 +1,4 @@
-package com.fr.swift.config.hibernate;
+package com.fr.swift.config.convert.hibernate;
 
 import com.fr.finedb.FineDBProperties;
 import com.fr.stable.db.option.DBOption;

@@ -1,6 +1,5 @@
 package com.fr.swift.config.entity.key;
 
-import com.fr.swift.config.indexing.impl.TableId;
 import com.fr.swift.source.SourceKey;
 import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Embeddable;

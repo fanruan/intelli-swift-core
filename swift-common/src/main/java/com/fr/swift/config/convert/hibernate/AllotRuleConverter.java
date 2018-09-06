@@ -1,4 +1,4 @@
-package com.fr.swift.config.indexing.impl;
+package com.fr.swift.config.convert.hibernate;
 
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.alloter.AllotRule;

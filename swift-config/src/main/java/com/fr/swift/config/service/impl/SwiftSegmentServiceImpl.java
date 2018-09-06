@@ -1,8 +1,8 @@
 package com.fr.swift.config.service.impl;
 
 import com.fr.swift.config.bean.SegmentKeyBean;
+import com.fr.swift.config.convert.hibernate.transaction.AbstractTransactionWorker;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
-import com.fr.swift.config.hibernate.transaction.AbstractTransactionWorker;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.third.org.hibernate.Session;

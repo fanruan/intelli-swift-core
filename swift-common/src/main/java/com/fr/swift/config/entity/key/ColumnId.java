@@ -1,4 +1,4 @@
-package com.fr.swift.config.indexing.impl;
+package com.fr.swift.config.entity.key;
 
 import com.fr.swift.source.SourceKey;
 import com.fr.third.javax.persistence.Column;
@@ -10,6 +10,7 @@ import com.fr.third.javax.persistence.Embeddable;
  */
 @Embeddable
 public class ColumnId extends TableId {
+    private static final long serialVersionUID = 3086657956586601951L;
     @Column(name = "columnName")
     private String columnName;
 
@@ -24,8 +25,6 @@ public class ColumnId extends TableId {
     public String getColumnName() {
         return columnName;
     }
-
-    private static final long serialVersionUID = 3086657956586601951L;
 
     @Override
     public boolean equals(Object o) {

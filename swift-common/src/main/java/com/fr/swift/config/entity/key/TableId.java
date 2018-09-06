@@ -1,4 +1,4 @@
-package com.fr.swift.config.indexing.impl;
+package com.fr.swift.config.entity.key;
 
 import com.fr.swift.source.SourceKey;
 import com.fr.third.javax.persistence.Column;
@@ -14,6 +14,7 @@ import java.io.Serializable;
 @Embeddable
 @MappedSuperclass
 public class TableId implements Serializable {
+    private static final long serialVersionUID = -1318234923825121266L;
     @Column(name = "tableKey")
     public String tableKey;
 
@@ -27,8 +28,6 @@ public class TableId implements Serializable {
     public SourceKey getTableKey() {
         return new SourceKey(tableKey);
     }
-
-    private static final long serialVersionUID = -1318234923825121266L;
 
     @Override
     public boolean equals(Object o) {

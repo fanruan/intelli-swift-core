@@ -1,5 +1,6 @@
 package com.fr.swift.config.entity;
 
+import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.SwiftConfigConstants.MetaDataConfig;
 import com.fr.swift.config.bean.Convert;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
@@ -14,8 +15,6 @@ import com.fr.third.javax.persistence.Id;
 import com.fr.third.javax.persistence.Table;
 
 import java.util.List;
-
-import static com.fr.swift.config.SwiftConfigConstants.LONG_TEXT_LENGTH;
 
 /**
  * @author yee
@@ -40,7 +39,7 @@ public class SwiftMetaDataEntity implements Convert<SwiftMetaDataBean> {
     @Column(name = MetaDataConfig.COLUMN_REMARK)
     private String remark;
 
-    @Column(name = MetaDataConfig.COLUMN_FIELDS, length = LONG_TEXT_LENGTH)
+    @Column(name = MetaDataConfig.COLUMN_FIELDS, length = SwiftConfigConstants.LONG_TEXT_LENGTH)
     @com.fr.third.javax.persistence.Convert(
             converter = MetaDataColumnListConverter.class
     )

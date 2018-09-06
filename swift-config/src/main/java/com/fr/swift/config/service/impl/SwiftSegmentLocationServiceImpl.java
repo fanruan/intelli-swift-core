@@ -1,9 +1,9 @@
 package com.fr.swift.config.service.impl;
 
+import com.fr.swift.config.convert.hibernate.transaction.AbstractTransactionWorker;
+import com.fr.swift.config.convert.hibernate.transaction.HibernateTransactionManager;
 import com.fr.swift.config.dao.SwiftSegmentLocationDao;
 import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
-import com.fr.swift.config.hibernate.transaction.AbstractTransactionWorker;
-import com.fr.swift.config.hibernate.transaction.HibernateTransactionManager;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.third.org.hibernate.Session;

@@ -1,5 +1,6 @@
-package com.fr.swift.config.indexing.impl;
+package com.fr.swift.config.entity;
 
+import com.fr.swift.config.entity.key.ColumnId;
 import com.fr.swift.config.indexing.ColumnIndexingConf;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.Assert;
@@ -24,6 +25,17 @@ public class SwiftColumnIndexingConf implements ColumnIndexingConf {
     @Column(name = "requireGlobalDict")
     private boolean requireGlobalDict;
 
+    public SwiftColumnIndexingConf() {
+    }
+
+    public SwiftColumnIndexingConf(SourceKey tableKey, String columnName, boolean requireIndex, boolean requireGlobalDict) {
+        Assert.isFalse(!requireIndex && requireGlobalDict, "global dict is not allowed to generate without index");
+
+        this.columnId = new ColumnId(tableKey, columnName);
+        this.requireIndex = requireIndex;
+        this.requireGlobalDict = requireGlobalDict;
+    }
+
     @Override
     public SourceKey getTable() {
         return columnId.getTableKey();
@@ -42,16 +54,5 @@ public class SwiftColumnIndexingConf implements ColumnIndexingConf {
     @Override
     public boolean requireGlobalDict() {
         return requireGlobalDict;
-    }
-
-    public SwiftColumnIndexingConf() {
-    }
-
-    public SwiftColumnIndexingConf(SourceKey tableKey, String columnName, boolean requireIndex, boolean requireGlobalDict) {
-        Assert.isFalse(!requireIndex && requireGlobalDict, "global dict is not allowed to generate without index");
-
-        this.columnId = new ColumnId(tableKey, columnName);
-        this.requireIndex = requireIndex;
-        this.requireGlobalDict = requireGlobalDict;
     }
 }
