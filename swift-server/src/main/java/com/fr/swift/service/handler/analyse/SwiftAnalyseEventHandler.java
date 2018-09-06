@@ -14,6 +14,7 @@ import com.fr.swift.structure.Pair;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -57,6 +58,13 @@ public class SwiftAnalyseEventHandler extends AbstractHandler<AbstractAnalyseRpc
                         }
                     }
                     break;
+                case REQUEST_SEG_LOCATION:
+                    String clusterId = (String) event.getContent();
+                    Map<String, ClusterEntity> analyseNodeMap = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.ANALYSE);
+                    if (analyseNodeMap.containsKey(clusterId)) {
+                        return (S) SegmentLocationInfoContainer.getContainer().getLocationInfo();
+                    }
+                    return (S) Collections.emptyList();
                 default:
                     break;
             }

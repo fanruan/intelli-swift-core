@@ -1,5 +1,6 @@
 package com.fr.swift.utils;
 
+import com.fr.general.ComparatorUtils;
 import com.fr.swift.ClusterNodeService;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.ProxyFactory;
@@ -13,8 +14,11 @@ import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.event.base.SwiftRpcEvent;
+import com.fr.swift.local.LocalProxyFactory;
+import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -35,8 +39,14 @@ public class ClusterCommonUtils {
         return runAsyncRpc(url, clazz, method, args);
     }
 
-    public static RpcFuture runAsyncRpc(URL url, Class clazz, Method method, Object... args) throws Exception {
-        ProxyFactory factory = ProxySelector.getInstance().getFactory();
+    public static <T> RpcFuture runAsyncRpc(URL url, Class<T> clazz, Method method, Object... args) throws Exception {
+        ProxyFactory factory = null;
+        if (ComparatorUtils.equals(ClusterSelector.getInstance().getFactory().getCurrentId(),
+                url.getDestination().getId())) {
+            factory = new LocalProxyFactory();
+        } else {
+            factory = ProxySelector.getInstance().getFactory();
+        }
         Invoker invoker = factory.getInvoker(SwiftContext.get().getBean(clazz), clazz, url, false);
         Result invokeResult = invoker.invoke(new SwiftInvocation(method, args));
         RpcFuture future = (RpcFuture) invokeResult.getValue();
@@ -49,4 +59,20 @@ public class ClusterCommonUtils {
     public static RpcFuture asyncCallMaster(SwiftRpcEvent event) throws Exception {
         return runAsyncRpc(getMasterURL(), SwiftServiceListenerHandler.class, SwiftServiceListenerHandler.class.getMethod("trigger", SwiftRpcEvent.class), event);
     }
+
+    public static Serializable runSyncMaster(SwiftRpcEvent event) {
+        URL url = getMasterURL();
+        ProxyFactory factory = null;
+        if (ComparatorUtils.equals(ClusterSelector.getInstance().getFactory().getCurrentId(),
+                url.getDestination().getId())) {
+            factory = new LocalProxyFactory();
+        } else {
+            factory = ProxySelector.getInstance().getFactory();
+        }
+        SwiftServiceListenerHandler remoteServiceSender = SwiftContext.get().getBean("remoteServiceSender", SwiftServiceListenerHandler.class);
+
+        SwiftServiceListenerHandler proxy = factory.getProxy(remoteServiceSender, SwiftServiceListenerHandler.class, url);
+        return proxy.trigger(event);
+    }
+
 }
