@@ -7,7 +7,6 @@ import com.fr.swift.config.dao.SwiftSegmentDao;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.hibernate.transaction.AbstractTransactionWorker;
 import com.fr.swift.config.hibernate.transaction.HibernateTransactionManager;
-import com.fr.swift.config.hibernate.transaction.HibernateTransactionManager.HibernateWorker;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.Types.StoreType;
@@ -106,12 +105,7 @@ public abstract class AbstractSegmentService implements SwiftSegmentService {
     @Override
     public SegmentKey tryAppendSegment(final SourceKey tableKey, final StoreType storeType) {
         try {
-            return transactionManager.doTransactionIfNeed(new HibernateWorker<SegmentKey>() {
-                @Override
-                public boolean needTransaction() {
-                    return false;
-                }
-
+            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<SegmentKey>(true) {
                 @Override
                 public SegmentKey work(Session session) {
                     List<SwiftSegmentEntity> entities = swiftSegmentDao.find(session,
