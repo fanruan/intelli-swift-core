@@ -1,14 +1,12 @@
 package com.fr.swift.service;
 
 import com.fr.swift.annotation.SwiftService;
-import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.impl.SwiftSegmentServiceProvider;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
-import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types;
-import com.fr.swift.cube.io.location.IResourceLocation;
+import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
@@ -25,29 +23,22 @@ import com.fr.swift.segment.collate.CollateResultSet;
 import com.fr.swift.segment.collate.FragmentCollectRule;
 import com.fr.swift.segment.collate.SwiftFragmentCollectRule;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.segment.operator.Collater;
 import com.fr.swift.segment.operator.collate.HistoryCollater;
 import com.fr.swift.segment.operator.column.SwiftColumnDictMerger;
 import com.fr.swift.segment.operator.column.SwiftColumnIndexer;
-import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
-import com.fr.swift.source.alloter.impl.line.LineRowInfo;
 import com.fr.swift.source.alloter.impl.line.LineSourceAlloter;
 import com.fr.swift.source.resultset.CoSwiftResultSet;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
-import com.fr.swift.util.FileUtil;
 import com.fr.swift.util.MonitorUtil;
 import com.fr.swift.util.concurrent.CommonExecutor;
-import com.fr.swift.util.function.Predicate;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -162,7 +153,6 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
 
     private void collateSegments(SourceKey tableKey, final List<SegmentKey> collateSegKeys) throws Exception {
         MonitorUtil.start();
-        List<SegmentKey> segmentKeys = segmentManager.getSegmentKeys(tableKey);
         if (collateSegKeys.isEmpty()) {
             return;
         }
@@ -178,24 +168,14 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         SwiftResultSet swiftResultSet = newCollateResultSet(getSegmentsByKeys(collateSegKeys),
                 ((LineAllotRule) alloter.getAllotRule()).getStep(), table.getMetadata());
 
-        List<SegmentKey> newSegKeys = new ArrayList<SegmentKey>();
         List<Segment> newSegs = new ArrayList<Segment>();
         Segment newSeg;
         do {
-            //todo 集群下 segkey order不唯一处理
-            List<SegmentKey> allSegKeys = swiftSegmentService.getAllSegments().get(tableKey);
-            int newOrder = SegmentUtils.getMaxSegmentKey(allSegKeys).getOrder() + 1;
+            SegmentKey newSegKey = swiftSegmentService.tryAppendSegment(tableKey, StoreType.FINE_IO);
 
-            newSeg = newHistorySegment(table, alloter.allot(new LineRowInfo(0)), newOrder);
-            Collater collater = new HistoryCollater(newSeg);
-            collater.collate(swiftResultSet);
+            newSeg = newHistorySegment(newSegKey, metadata);
+            new HistoryCollater(newSeg).collate(swiftResultSet);
 
-            IResourceLocation location = newSeg.getLocation();
-            SegmentKey newSegKey = new SegmentKeyBean(tableKey.getId(),
-                    URI.create(CubeUtil.getHistorySegPath(table, newOrder)), newOrder, location.getStoreType(), newSeg.getMetaData().getSwiftDatabase());
-
-            newSegKeys.add(newSegKey);
-            newSegs.add(newSeg);
             swiftResultSet.close();
         } while (alloter.isFull(newSeg));
 
@@ -205,18 +185,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
             ((SwiftColumnDictMerger) SwiftContext.get().getBean("columnDictMerger", table, new ColumnKey(metadata.getColumnName(i + 1)), newSegs)).mergeDict();
         }
 
-        persistSegment(tableKey, segmentKeys, collateSegKeys, newSegKeys);
-
         clearCollatedSegment(collateSegKeys);
-
-        for (final SegmentKey segmentKey : collateSegKeys) {
-            ResourceDiscovery.getInstance().removeIf(new Predicate<String>() {
-                @Override
-                public boolean test(String s) {
-                    return s.contains(CubeUtil.getSegPath(segmentKey));
-                }
-            });
-        }
     }
 
     private SwiftResultSet newCollateResultSet(List<Segment> segs, int alloterCount, SwiftMetaData swiftMetaData) {
@@ -232,9 +201,8 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
      *
      * @param segmentKeys
      * @param storeType
-     * @throws Exception
      */
-    private void checkSegmentKeys(final List<SegmentKey> segmentKeys, Types.StoreType storeType) throws Exception {
+    private void checkSegmentKeys(final List<SegmentKey> segmentKeys, Types.StoreType storeType) {
         Iterator<SegmentKey> iterator = segmentKeys.iterator();
         while (iterator.hasNext()) {
             SegmentKey segmentKey = iterator.next();
@@ -254,9 +222,9 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         segmentService.updateSegments(tableKey.getId(), persistSegKeys);
     }
 
-    private Segment newHistorySegment(DataSource dataSource, SegmentInfo segInfo, int segCount) {
-        String segPath = CubeUtil.getHistorySegPath(dataSource, segCount + segInfo.getOrder());
-        return new HistorySegmentImpl(new ResourceLocation(segPath, Types.StoreType.FINE_IO), dataSource.getMetadata());
+    private Segment newHistorySegment(SegmentKey segKey, SwiftMetaData meta) {
+        String segPath = CubeUtil.getSegPath(segKey);
+        return new HistorySegmentImpl(new ResourceLocation(segPath, Types.StoreType.FINE_IO), meta);
     }
 
     private List<Segment> getSegmentsByKeys(List<SegmentKey> segmentKeys) {
@@ -272,7 +240,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
             @Override
             public void run() {
                 for (SegmentKey collateSegKey : collateSegKeys) {
-                    FileUtil.delete(CubeUtil.getSegPath(collateSegKey));
+                    SegmentUtils.clearSegment(collateSegKey);
                 }
             }
         });
