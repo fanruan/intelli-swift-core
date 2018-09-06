@@ -21,7 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by pony on 2018/8/17.
+ *
+ * @author yee
+ * @date 2018/8/17
  */
 public abstract class BaseSwiftDatabaseMetadata implements DatabaseMetaData {
     protected static final String TABLE = "TABLE";
@@ -895,7 +897,6 @@ public abstract class BaseSwiftDatabaseMetadata implements DatabaseMetaData {
         return Crasher.crash(new SwiftJDBCNotSupportedException());
     }
 
-    @Override
     public ResultSet getPseudoColumns(String catalog, String schemaPattern, String tableNamePattern, String columnNamePattern) throws SQLException {
         return Crasher.crash(new SwiftJDBCNotSupportedException());
     }
