@@ -1,16 +1,16 @@
 package com.fr.swift.api.rpc.session.impl;
 
-import com.fr.swift.api.Api;
 import com.fr.swift.api.result.SwiftApiResultSet;
+import com.fr.swift.api.rpc.Api;
 import com.fr.swift.api.rpc.DataMaintenanceService;
 import com.fr.swift.api.rpc.SelectService;
-import com.fr.swift.api.rpc.TableService;
 import com.fr.swift.api.rpc.bean.Column;
-import com.fr.swift.api.rpc.session.SwiftApiSession;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Where;
 import com.fr.swift.exception.meta.SwiftMetaDataAbsentException;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.info.bean.query.AbstractSingleTableQueryInfoBean;
+import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.result.serialize.SerializableDetailResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
@@ -22,7 +22,7 @@ import java.util.List;
  * @author yee
  * @date 2018/8/27
  */
-public class SwiftApiSessionImpl implements SwiftApiSession, DataMaintenanceService, SelectService, TableService {
+public class SwiftApiSessionImpl implements SwiftPublicApiSession, DataMaintenanceService, SelectService {
 
     private Api.SelectApi selectApi;
     private Api.DataMaintenanceApi dataMaintenanceApi;
@@ -74,22 +74,26 @@ public class SwiftApiSessionImpl implements SwiftApiSession, DataMaintenanceServ
     }
 
     @Override
-    public SwiftMetaData detectiveMetaData(SwiftDatabase schema, String tableName) throws SwiftMetaDataAbsentException {
-        return selectApi.detectiveMetaData(schema, tableName);
-    }
-
-    @Override
-    public List<String> detectiveAllTableNames(SwiftDatabase schema) {
-        return selectApi.detectiveAllTableNames(schema);
-    }
-
-    @Override
-    public boolean isTableExists(SwiftDatabase schema, String tableName) {
-        return selectApi.isTableExists(schema, tableName);
-    }
-
-    @Override
     public void close() throws Exception {
+    }
 
+    @Override
+    public SwiftResultSet query(SwiftDatabase database, QueryBean queryBean) {
+        if (queryBean instanceof AbstractSingleTableQueryInfoBean) {
+            String tableName = findUniqueTableName(database, ((AbstractSingleTableQueryInfoBean) queryBean).getTableName());
+            ((AbstractSingleTableQueryInfoBean) queryBean).setTableName(tableName);
+        }
+        return query(database, queryBean.toString());
+    }
+
+    private String findUniqueTableName(SwiftDatabase database, String tableName) {
+        try {
+            SwiftMetaData metaData = selectApi.detectiveMetaData(database, tableName);
+            if (null != metaData) {
+                return metaData.getId();
+            }
+        } catch (SwiftMetaDataAbsentException ignore) {
+        }
+        return tableName;
     }
 }

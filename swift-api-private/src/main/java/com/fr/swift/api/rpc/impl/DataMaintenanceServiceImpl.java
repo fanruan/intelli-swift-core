@@ -1,7 +1,6 @@
 package com.fr.swift.api.rpc.impl;
 
 import com.fr.swift.annotation.RpcService;
-import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.api.rpc.DataMaintenanceService;
 import com.fr.swift.api.rpc.SelectService;
 import com.fr.swift.api.rpc.TableService;
@@ -34,7 +33,7 @@ import java.util.UUID;
  * @author yee
  * @date 2018/8/23
  */
-@RpcService(value = DataMaintenanceService.class, type = RpcServiceType.EXTERNAL)
+@RpcService(value = DataMaintenanceService.class, type = RpcService.RpcServiceType.EXTERNAL)
 class DataMaintenanceServiceImpl implements DataMaintenanceService {
     @Autowired(required = false)
     private TableService tableService;

@@ -12,7 +12,7 @@ import com.fr.swift.segment.operator.insert.SwiftRealtimeInserter;
 import com.fr.swift.service.ScheduledRealtimeTransfer;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
-import com.fr.swift.transatcion.TransactionProxyFactory;
+import com.fr.swift.transaction.TransactionProxyFactory;
 
 import java.util.List;
 

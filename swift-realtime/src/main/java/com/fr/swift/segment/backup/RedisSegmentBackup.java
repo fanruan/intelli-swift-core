@@ -7,7 +7,7 @@ import com.fr.swift.redis.RedisClientPipline;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.Row;
 import com.fr.swift.transaction.RedisTransactionManager;
-import com.fr.swift.transatcion.TransactionManager;
+import com.fr.swift.transaction.TransactionManager;
 import com.fr.third.fasterxml.jackson.core.JsonProcessingException;
 import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;

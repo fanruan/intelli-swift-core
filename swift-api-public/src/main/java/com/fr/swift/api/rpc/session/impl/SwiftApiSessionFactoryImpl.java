@@ -1,7 +1,7 @@
 package com.fr.swift.api.rpc.session.impl;
 
-import com.fr.swift.api.Api;
-import com.fr.swift.api.rpc.holder.InternalServiceAddressHolder;
+import com.fr.swift.api.rpc.Api;
+import com.fr.swift.api.rpc.ApiServiceAddressHolder;
 import com.fr.swift.api.rpc.pool.CallClientPool;
 import com.fr.swift.api.rpc.session.SwiftApiSessionFactory;
 
@@ -11,11 +11,11 @@ import com.fr.swift.api.rpc.session.SwiftApiSessionFactory;
  */
 public class SwiftApiSessionFactoryImpl implements SwiftApiSessionFactory<SwiftApiSessionImpl> {
 
-    protected InternalServiceAddressHolder holder;
+    protected ApiServiceAddressHolder holder;
     private int maxFrameSize;
 
     public SwiftApiSessionFactoryImpl(String address, int maxFrameSize) {
-        holder = InternalServiceAddressHolder.getHolder(address);
+        holder = ApiServiceAddressHolder.getHolder(address);
         this.maxFrameSize = maxFrameSize;
     }
 
@@ -30,7 +30,7 @@ public class SwiftApiSessionFactoryImpl implements SwiftApiSessionFactory<SwiftA
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         CallClientPool.getInstance(maxFrameSize).close();
     }
 }

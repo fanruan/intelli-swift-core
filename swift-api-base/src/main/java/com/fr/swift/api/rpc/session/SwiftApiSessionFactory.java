@@ -17,5 +17,5 @@ public interface SwiftApiSessionFactory<T extends SwiftApiSession> {
      *
      * @throws Exception
      */
-    void close() throws Exception;
+    void close();
 }

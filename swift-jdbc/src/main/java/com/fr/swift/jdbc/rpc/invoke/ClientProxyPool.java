@@ -19,7 +19,7 @@ public class ClientProxyPool extends GenericKeyedObjectPool<String, ClientProxy>
     }
 
     public static ClientProxyPool newInstance(GenericKeyedObjectPoolConfig config) {
-        return new ClientProxyPool(new ClientProxyPooledFactory(), config);
+        return new ClientProxyPool(new NioClientProxyPooledFactory(), config);
     }
 
     public static ClientProxyPool getInstance() {

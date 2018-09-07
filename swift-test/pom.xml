@@ -36,7 +36,7 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-base</artifactId>
+            <artifactId>swift-core</artifactId>
             <version>${swift.version}</version>
         </dependency>
         <dependency>
@@ -57,6 +57,11 @@
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-defragmentation</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-base-bitmap</artifactId>
             <version>${swift.version}</version>
         </dependency>
     </dependencies>

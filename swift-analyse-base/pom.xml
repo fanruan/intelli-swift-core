@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-base</artifactId>
+            <artifactId>swift-common</artifactId>
             <version>${swift.version}</version>
         </dependency>
     </dependencies>

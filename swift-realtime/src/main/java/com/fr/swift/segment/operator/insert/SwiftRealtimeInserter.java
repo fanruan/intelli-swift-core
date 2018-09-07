@@ -12,7 +12,7 @@ import com.fr.swift.segment.backup.SwiftSegmentBackup;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.transatcion.Transactional;
+import com.fr.swift.transaction.Transactional;
 
 import java.util.List;
 

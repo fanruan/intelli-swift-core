@@ -1,11 +1,11 @@
 package com.fr.swift.config.service.impl;
 
 import com.fr.swift.config.bean.SegmentKeyBean;
+import com.fr.swift.config.convert.hibernate.transaction.AbstractTransactionWorker;
 import com.fr.swift.config.dao.SwiftSegmentLocationDao;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
 import com.fr.swift.config.entity.key.SwiftSegLocationEntityId;
-import com.fr.swift.config.hibernate.transaction.AbstractTransactionWorker;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.Types.StoreType;

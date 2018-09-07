@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-base</artifactId>
+            <artifactId>swift-core</artifactId>
             <version>${swift.version}</version>
         </dependency>
         <dependency>
@@ -46,6 +46,11 @@
             <artifactId>swift-defragmentation</artifactId>
             <version>${swift.version}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-core-common</artifactId>
+            <version>${swift.version}</version>
         </dependency>
     </dependencies>
 

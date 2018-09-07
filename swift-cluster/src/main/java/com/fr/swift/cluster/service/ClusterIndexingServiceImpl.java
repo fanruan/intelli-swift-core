@@ -3,7 +3,6 @@ package com.fr.swift.cluster.service;
 import com.fineio.FineIO;
 import com.fr.swift.annotation.RpcMethod;
 import com.fr.swift.annotation.RpcService;
-import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
@@ -59,7 +58,7 @@ import static com.fr.swift.task.TaskResult.Type.SUCCEEDED;
  * @date 2018/8/6
  */
 @SwiftService(name = "indexing", cluster = true)
-@RpcService(type = RpcServiceType.INTERNAL, value = IndexingService.class)
+@RpcService(type = RpcService.RpcServiceType.INTERNAL, value = IndexingService.class)
 @Service("clusterIndexingService")
 public class ClusterIndexingServiceImpl extends AbstractSwiftService implements ClusterIndexingService, Serializable {
 

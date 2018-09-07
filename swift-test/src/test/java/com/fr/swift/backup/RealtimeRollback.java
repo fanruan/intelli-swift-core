@@ -31,7 +31,7 @@ import com.fr.swift.source.alloter.impl.line.LineRowInfo;
 import com.fr.swift.source.alloter.impl.line.LineSourceAlloter;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.resultset.LimitedResultSet;
-import com.fr.swift.transatcion.TransactionProxyFactory;
+import com.fr.swift.transaction.TransactionProxyFactory;
 import org.junit.Ignore;
 import org.junit.Test;
 

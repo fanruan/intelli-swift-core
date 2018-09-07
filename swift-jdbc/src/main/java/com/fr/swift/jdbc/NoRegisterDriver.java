@@ -12,10 +12,10 @@ import java.util.logging.Logger;
  * @author yee
  * @date 2018/8/30
  */
-public class NoRegisterDriver implements Driver {
+class NoRegisterDriver implements Driver {
     @Override
     public Connection connect(String url, Properties info) throws SQLException {
-        return new SwiftConnection(url);
+        return new SwiftConnection(url, info);
     }
 
     @Override

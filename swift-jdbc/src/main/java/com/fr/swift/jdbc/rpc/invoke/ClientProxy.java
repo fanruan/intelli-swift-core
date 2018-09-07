@@ -1,7 +1,6 @@
 package com.fr.swift.jdbc.rpc.invoke;
 
-import com.fr.swift.jdbc.rpc.RpcExecutor;
-import com.fr.swift.jdbc.rpc.nio.RpcConnector;
+import com.fr.swift.jdbc.rpc.JdbcRpcExecutor;
 import com.fr.swift.rpc.bean.RpcResponse;
 import com.fr.swift.rpc.bean.impl.RpcRequest;
 
@@ -16,16 +15,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @date 2018/8/26
  */
 public class ClientProxy implements InvocationHandler {
-    private RpcExecutor remoteExecutor;
+    private JdbcRpcExecutor remoteExecutor;
     private Class proxyClass;
     private AtomicBoolean start = new AtomicBoolean(false);
 
-    public ClientProxy(RpcExecutor remoteExecutor) {
+    public ClientProxy(JdbcRpcExecutor remoteExecutor) {
         this.remoteExecutor = remoteExecutor;
-    }
-
-    public ClientProxy(RpcConnector connector) {
-        remoteExecutor = new RpcExecutor(connector);
     }
 
     @Override

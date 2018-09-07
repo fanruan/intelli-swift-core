@@ -9,7 +9,6 @@ import com.fr.swift.jdbc.rpc.RpcCaller;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.ResultSet;
@@ -56,16 +55,7 @@ public class SwiftServerDatabaseMetadata extends BaseSwiftDatabaseMetadata {
         SwiftDatabase schema = this.schema == null ? SwiftDatabase.valueOf(schemaPattern) : this.schema;
         SwiftMetaData metaData = caller.detectiveMetaData(schema, tableNamePattern);
         List<Row> fields = new ArrayList<Row>();
-        for (int i = 0; i < metaData.getColumnCount(); i++) {
-            SwiftMetaDataColumn column = metaData.getColumn(i + 1);
-            List list = new ArrayList();
-            list.add(column.getRemark());
-            list.add(column.getName());
-            list.add(column.getType());
-            list.add(column.getPrecision());
-            list.add(column.getScale());
-            fields.add(new ListBasedRow(list));
-        }
+        dealColumns(fields, metaData);
         Map<String, Integer> label2Index = new HashMap<String, Integer>();
         label2Index.put("REMARKS", 1);
         label2Index.put("COLUMN_NAME", 2);

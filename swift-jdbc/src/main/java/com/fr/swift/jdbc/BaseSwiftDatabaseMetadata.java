@@ -2,9 +2,14 @@ package com.fr.swift.jdbc;
 
 import com.fr.stable.StringUtils;
 import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
 import com.fr.swift.jdbc.result.EmptyResultSet;
 import com.fr.swift.jdbc.result.ResultSetWrapper;
+import com.fr.swift.source.ListBasedRow;
+import com.fr.swift.source.Row;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.util.Crasher;
 
 import java.sql.Connection;
@@ -12,13 +17,30 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.RowIdLifetime;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created by pony on 2018/8/17.
+ *
+ * @author yee
+ * @date 2018/8/17
  */
 public abstract class BaseSwiftDatabaseMetadata implements DatabaseMetaData {
     protected static final String TABLE = "TABLE";
     protected SwiftDatabase schema;
+
+    protected void dealColumns(List<Row> fields, SwiftMetaData metaData) throws SwiftMetaDataException {
+        for (int i = 0; i < metaData.getColumnCount(); i++) {
+            SwiftMetaDataColumn column = metaData.getColumn(i + 1);
+            List list = new ArrayList();
+            list.add(column.getRemark());
+            list.add(column.getName());
+            list.add(column.getType());
+            list.add(column.getPrecision());
+            list.add(column.getScale());
+            fields.add(new ListBasedRow(list));
+        }
+    }
 
     public BaseSwiftDatabaseMetadata(SwiftDatabase schema) {
         this.schema = schema;
@@ -875,7 +897,6 @@ public abstract class BaseSwiftDatabaseMetadata implements DatabaseMetaData {
         return Crasher.crash(new SwiftJDBCNotSupportedException());
     }
 
-    @Override
     public ResultSet getPseudoColumns(String catalog, String schemaPattern, String tableNamePattern, String columnNamePattern) throws SQLException {
         return Crasher.crash(new SwiftJDBCNotSupportedException());
     }

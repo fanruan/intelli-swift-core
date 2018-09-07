@@ -2,7 +2,6 @@ package com.fr.swift.netty.rpc.server;
 
 import com.fr.swift.annotation.RpcMethod;
 import com.fr.swift.annotation.RpcService;
-import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -71,9 +70,9 @@ public class RpcServer {
             for (Object serviceBean : serviceBeanMap.values()) {
                 RpcService rpcService = serviceBean.getClass().getAnnotation(RpcService.class);
                 String serviceName = rpcService.value().getName();
-                RpcServiceType rpcServiceType = rpcService.type();
+                RpcService.RpcServiceType rpcServiceType = rpcService.type();
                 LOGGER.debug("Load service:" + serviceName);
-                if (rpcServiceType == RpcServiceType.EXTERNAL) {
+                if (rpcServiceType == RpcService.RpcServiceType.EXTERNAL) {
                     externalMap.put(serviceName, serviceBean);
                 } else {
                     handlerMap.put(serviceName, serviceBean);
