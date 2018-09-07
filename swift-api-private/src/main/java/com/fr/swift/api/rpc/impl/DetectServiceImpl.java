@@ -1,6 +1,7 @@
 package com.fr.swift.api.rpc.impl;
 
 import com.fr.swift.annotation.RpcService;
+import com.fr.swift.annotation.SwiftApi;
 import com.fr.swift.api.rpc.DetectService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.event.global.GetAnalyseAndRealTimeAddrEvent;
@@ -20,8 +21,10 @@ import java.util.Map;
  * @date 2018/8/23
  */
 @RpcService(value = DetectService.class, type = RpcService.RpcServiceType.EXTERNAL)
+@SwiftApi
 class DetectServiceImpl implements DetectService {
     @Override
+    @SwiftApi
     public Map<ServiceType, List<String>> detectiveAnalyseAndRealTime(String defaultAddress) {
         try {
             if (SwiftContext.get().getBean("swiftProperty", SwiftProperty.class).isCluster()) {

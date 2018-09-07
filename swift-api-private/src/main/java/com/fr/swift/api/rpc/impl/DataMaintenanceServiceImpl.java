@@ -1,6 +1,7 @@
 package com.fr.swift.api.rpc.impl;
 
 import com.fr.swift.annotation.RpcService;
+import com.fr.swift.annotation.SwiftApi;
 import com.fr.swift.api.rpc.DataMaintenanceService;
 import com.fr.swift.api.rpc.SelectService;
 import com.fr.swift.api.rpc.TableService;
@@ -30,6 +31,7 @@ import java.util.List;
  * @date 2018/8/23
  */
 @RpcService(value = DataMaintenanceService.class, type = RpcService.RpcServiceType.EXTERNAL)
+@SwiftApi
 class DataMaintenanceServiceImpl implements DataMaintenanceService {
     @Autowired(required = false)
     private TableService tableService;
@@ -37,6 +39,7 @@ class DataMaintenanceServiceImpl implements DataMaintenanceService {
     private SwiftMetaDataService metaDataService;
 
     @Override
+    @SwiftApi
     public int insert(SwiftDatabase schema, String tableName, List<String> fields, List<Row> rows) throws SQLException {
         SwiftMetaDataBean metaData = (SwiftMetaDataBean) tableService.detectiveMetaData(schema, tableName);
         insert(schema, tableName, new InsertResultSet(metaData, fields, rows));
@@ -44,11 +47,13 @@ class DataMaintenanceServiceImpl implements DataMaintenanceService {
     }
 
     @Override
+    @SwiftApi
     public int insert(SwiftDatabase schema, String tableName, List<Row> rows) throws SQLException {
         return insert(schema, tableName, null, rows);
     }
 
     @Override
+    @SwiftApi
     public int insert(SwiftDatabase schema, String tableName, String queryJson) throws Exception {
         SwiftResultSet resultSet = SwiftContext.get().getBean(SelectService.class).query(schema, queryJson);
         return insert(schema, tableName, resultSet);
@@ -68,6 +73,7 @@ class DataMaintenanceServiceImpl implements DataMaintenanceService {
     }
 
     @Override
+    @SwiftApi(enable = false)
     public int delete(SwiftDatabase schema, String tableName, Where where) throws SQLException {
         try {
             SwiftMetaDataBean metaData = (SwiftMetaDataBean) tableService.detectiveMetaData(schema, tableName);
@@ -82,6 +88,7 @@ class DataMaintenanceServiceImpl implements DataMaintenanceService {
     }
 
     @Override
+    @SwiftApi(enable = false)
     public int update(SwiftDatabase schema, String tableName, SwiftResultSet resultSet, Where where) throws SQLException {
 
         try {

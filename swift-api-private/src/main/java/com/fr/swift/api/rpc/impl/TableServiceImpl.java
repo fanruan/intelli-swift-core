@@ -1,6 +1,7 @@
 package com.fr.swift.api.rpc.impl;
 
 import com.fr.swift.annotation.RpcService;
+import com.fr.swift.annotation.SwiftApi;
 import com.fr.swift.api.rpc.TableService;
 import com.fr.swift.api.rpc.bean.Column;
 import com.fr.swift.config.SwiftConfigConstants;
@@ -32,11 +33,13 @@ import java.util.UUID;
  * @date 2018/8/27
  */
 @RpcService(value = TableService.class, type = RpcService.RpcServiceType.EXTERNAL)
+@SwiftApi
 class TableServiceImpl implements TableService {
     @Autowired(required = false)
     SwiftMetaDataService swiftMetaDataService;
 
     @Override
+    @SwiftApi
     public SwiftMetaData detectiveMetaData(SwiftDatabase schema, String tableName) throws SwiftMetaDataAbsentException {
         List<SwiftMetaData> metaDataList = swiftMetaDataService.find(Restrictions.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_TABLE_NAME, tableName),
                 Restrictions.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_SWIFT_SCHEMA, schema));
@@ -47,6 +50,7 @@ class TableServiceImpl implements TableService {
     }
 
     @Override
+    @SwiftApi
     public List<String> detectiveAllTableNames(SwiftDatabase schema) {
         List<SwiftMetaData> metaDataList = swiftMetaDataService.find(Restrictions.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_SWIFT_SCHEMA, schema));
         if (metaDataList.isEmpty()) {
@@ -64,6 +68,7 @@ class TableServiceImpl implements TableService {
     }
 
     @Override
+    @SwiftApi
     public boolean isTableExists(SwiftDatabase schema, String tableName) {
         try {
             return null != detectiveMetaData(schema, tableName);
@@ -73,6 +78,7 @@ class TableServiceImpl implements TableService {
     }
 
     @Override
+    @SwiftApi(enable = false)
     synchronized
     public int createTable(SwiftDatabase schema, String tableName, List<Column> columns) {
         if (isTableExists(schema, tableName)) {
@@ -98,6 +104,7 @@ class TableServiceImpl implements TableService {
     }
 
     @Override
+    @SwiftApi(enable = false)
     public boolean addColumn(SwiftDatabase schema, String tableName, Column column) throws SQLException {
         SwiftMetaData metaData = detectiveMetaData(schema, tableName);
         if (metaData.getFieldNames().contains(column.getColumnName())) {
@@ -110,6 +117,7 @@ class TableServiceImpl implements TableService {
     }
 
     @Override
+    @SwiftApi(enable = false)
     public boolean dropColumn(SwiftDatabase schema, String tableName, String columnName) throws SQLException {
         SwiftMetaData metaData = detectiveMetaData(schema, tableName);
         SwiftMetaDataColumn metaDataColumn = metaData.getColumn(columnName);
