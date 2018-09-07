@@ -19,6 +19,7 @@ import java.util.List;
 public class RelationPathHelper {
     /**
      * RelationSource转换成CubeMultiRelation
+     *
      * @param source 要转换的RelationSource 一般是RelationSourceImpl
      * @return 关联
      */
@@ -45,6 +46,7 @@ public class RelationPathHelper {
 
     /**
      * RelationSource转换成CubeMultiRelationPath
+     *
      * @param source RelationPathSourceImpl
      * @return 路径
      */

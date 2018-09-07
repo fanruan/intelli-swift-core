@@ -12,6 +12,8 @@ import java.util.List;
  */
 public interface IRelationNode<N extends RelationSource, D extends Source> {
     SourceKey getKey();
+
     N getNode();
+
     List<D> getDepend();
 }

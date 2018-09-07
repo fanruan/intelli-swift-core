@@ -20,8 +20,16 @@ import java.util.Map.Entry;
  * @date 2017/12/8
  */
 public class CubeTaskManager implements TaskManager {
+    private static final CubeTaskManager INSTANCE = new CubeTaskManager();
     private TaskExecutor transportExec = new CubeTaskExecutor("Transporter", 4);
     private TaskExecutor indexExec = new CubeTaskExecutor("Indexer", 10);
+
+    private CubeTaskManager() {
+    }
+
+    public static CubeTaskManager getInstance() {
+        return INSTANCE;
+    }
 
     @Override
     public void run(WorkerTask task) {
@@ -63,14 +71,5 @@ public class CubeTaskManager implements TaskManager {
                 }
             }
         });
-    }
-
-    private static final CubeTaskManager INSTANCE = new CubeTaskManager();
-
-    private CubeTaskManager() {
-    }
-
-    public static CubeTaskManager getInstance() {
-        return INSTANCE;
     }
 }

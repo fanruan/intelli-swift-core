@@ -16,13 +16,13 @@ public class LocalTaskPool extends BaseTaskPool<LocalTask> {
 
     private Map<String, IndexStuffMedium> indexStuffMediumMap;
 
-    public static LocalTaskPool getInstance() {
-        return INSTANCE;
-    }
-
     private LocalTaskPool() {
         tasks = new ConcurrentHashMap<TaskKey, LocalTask>();
         indexStuffMediumMap = new ConcurrentHashMap<String, IndexStuffMedium>();
+    }
+
+    public static LocalTaskPool getInstance() {
+        return INSTANCE;
     }
 
     public void putIndexStuffMedium(int round, IndexStuffMedium indexStuffMedium) {

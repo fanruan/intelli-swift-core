@@ -21,12 +21,9 @@ import java.util.concurrent.Semaphore;
  */
 public class SwiftServiceTaskExecutor implements ServiceTaskExecutor {
 
-    private final BlockingQueue<ServiceCallable> callableQueue = new LinkedBlockingQueue<ServiceCallable>(10000);
-
-    private final Map<SourceKey, ServiceCallable> runningCallables = new ConcurrentHashMap<SourceKey, ServiceCallable>();
-
     private final static long SLEEP_TIME = 10L;
-
+    private final BlockingQueue<ServiceCallable> callableQueue = new LinkedBlockingQueue<ServiceCallable>(10000);
+    private final Map<SourceKey, ServiceCallable> runningCallables = new ConcurrentHashMap<SourceKey, ServiceCallable>();
     private ServiceTaskFetcher fetcher;
 
     public SwiftServiceTaskExecutor(String name, int threadNum) {
@@ -40,8 +37,17 @@ public class SwiftServiceTaskExecutor implements ServiceTaskExecutor {
     }
 
     private class ServiceTaskFetcher implements Runnable {
-        private ExecutorService executorService;
         Semaphore semaphore;
+        ServiceTaskListener serviceTaskListener = new ServiceTaskListener() {
+            @Override
+            public void handlerEvent(ServiceCallable serviceCallable) {
+                if (serviceCallable.getType().isEdit()) {
+                    runningCallables.remove(serviceCallable.getKey());
+                }
+                semaphore.release();
+            }
+        };
+        private ExecutorService executorService;
 
         ServiceTaskFetcher(String name, int threadNum) {
             executorService = SwiftExecutors.newFixedThreadPool(threadNum, new PoolThreadFactory(name));
@@ -76,15 +82,5 @@ public class SwiftServiceTaskExecutor implements ServiceTaskExecutor {
                 }
             }
         }
-
-        ServiceTaskListener serviceTaskListener = new ServiceTaskListener() {
-            @Override
-            public void handlerEvent(ServiceCallable serviceCallable) {
-                if (serviceCallable.getType().isEdit()) {
-                    runningCallables.remove(serviceCallable.getKey());
-                }
-                semaphore.release();
-            }
-        };
     }
 }

@@ -35,18 +35,18 @@ public interface Task {
         // 完成
         DONE(3);
 
+        private final int order;
+
+        Status(int order) {
+            this.order = order;
+        }
+
         public int order() {
             return order;
         }
 
         public int compare(Status status) {
             return order - status.order;
-        }
-
-        private final int order;
-
-        Status(int order) {
-            this.order = order;
         }
     }
 }

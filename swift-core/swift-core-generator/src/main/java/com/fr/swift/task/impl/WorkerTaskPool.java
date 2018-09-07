@@ -14,7 +14,16 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2017/12/29
  */
 public class WorkerTaskPool extends BaseTaskPool<WorkerTask> {
+    private static final WorkerTaskPool INSTANCE = new WorkerTaskPool();
     private BinaryFunction<TaskKey, Object, WorkerTask> taskGenerator;
+
+    private WorkerTaskPool() {
+        tasks = new ConcurrentHashMap<TaskKey, WorkerTask>();
+    }
+
+    public static WorkerTaskPool getInstance() {
+        return INSTANCE;
+    }
 
     public void setTaskGenerator(BinaryFunction<TaskKey, Object, WorkerTask> taskGenerator) {
         this.taskGenerator = taskGenerator;
@@ -36,15 +45,5 @@ public class WorkerTaskPool extends BaseTaskPool<WorkerTask> {
                 }
             }
         });
-    }
-
-    private static final WorkerTaskPool INSTANCE = new WorkerTaskPool();
-
-    private WorkerTaskPool() {
-        tasks = new ConcurrentHashMap<TaskKey, WorkerTask>();
-    }
-
-    public static WorkerTaskPool getInstance() {
-        return INSTANCE;
     }
 }

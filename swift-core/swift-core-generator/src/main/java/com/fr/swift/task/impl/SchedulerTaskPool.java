@@ -15,15 +15,6 @@ import java.util.HashMap;
  * @date 2017/12/15
  */
 public class SchedulerTaskPool extends BaseTaskPool<SchedulerTask> {
-    public void initListener() {
-        EventDispatcher.listen(TaskEvent.DONE, new Listener<Pair<TaskKey, TaskResult>>() {
-            @Override
-            public void on(Event event, Pair<TaskKey, TaskResult> result) {
-                get(result.getKey()).onDone(result.getValue());
-            }
-        });
-    }
-
     private static final SchedulerTaskPool INSTANCE = new SchedulerTaskPool();
 
     private SchedulerTaskPool() {
@@ -32,5 +23,14 @@ public class SchedulerTaskPool extends BaseTaskPool<SchedulerTask> {
 
     public static SchedulerTaskPool getInstance() {
         return INSTANCE;
+    }
+
+    public void initListener() {
+        EventDispatcher.listen(TaskEvent.DONE, new Listener<Pair<TaskKey, TaskResult>>() {
+            @Override
+            public void on(Event event, Pair<TaskKey, TaskResult> result) {
+                get(result.getKey()).onDone(result.getValue());
+            }
+        });
     }
 }

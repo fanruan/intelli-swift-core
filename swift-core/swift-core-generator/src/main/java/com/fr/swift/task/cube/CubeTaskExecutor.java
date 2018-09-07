@@ -38,6 +38,14 @@ public class CubeTaskExecutor implements TaskExecutor {
     private class Poller implements Runnable {
         Executor exec;
         Semaphore ticket;
+        TaskStatusChangeListener listener = new TaskStatusChangeListener() {
+            @Override
+            public void onChange(Status prev, Status now) {
+                if (prev == RUNNING && now == DONE) {
+                    ticket.release();
+                }
+            }
+        };
 
         Poller(String name, int threadNum) {
             exec = SwiftExecutors.newFixedThreadPool(threadNum, new PoolThreadFactory(name));
@@ -63,14 +71,5 @@ public class CubeTaskExecutor implements TaskExecutor {
             }
 
         }
-
-        TaskStatusChangeListener listener = new TaskStatusChangeListener() {
-            @Override
-            public void onChange(Status prev, Status now) {
-                if (prev == RUNNING && now == DONE) {
-                    ticket.release();
-                }
-            }
-        };
     }
 }

@@ -12,6 +12,16 @@ import com.fr.swift.task.WorkerTask.Worker;
 public abstract class BaseWorker implements Worker {
     private WorkerTask owner;
 
+    public static Worker nullWorker() {
+        return new BaseWorker() {
+            @Override
+            public void work() {
+                // do nothing
+                workOver(new TaskResultImpl(Type.SUCCEEDED));
+            }
+        };
+    }
+
     @Override
     public final void setOwner(WorkerTask owner) {
         this.owner = owner;
@@ -22,15 +32,5 @@ public abstract class BaseWorker implements Worker {
         if (owner != null) {
             owner.done(result);
         }
-    }
-
-    public static Worker nullWorker() {
-        return new BaseWorker() {
-            @Override
-            public void work() {
-                // do nothing
-                workOver(new TaskResultImpl(Type.SUCCEEDED));
-            }
-        };
     }
 }
