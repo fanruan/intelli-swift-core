@@ -32,7 +32,7 @@ public class FormulaMetricColumn implements Column {
 
     @Override
     public DetailColumn getDetailColumn() {
-        return new FormulaDetailColumn(formula, segment);
+        return new FormulaDetailColumnImpl(formula, segment);
     }
 
     @Override

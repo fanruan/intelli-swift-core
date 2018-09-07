@@ -133,6 +133,7 @@ public class CubeMultiRelationPathImpl implements CubeMultiRelationPath {
         }
     }
 
+    @Override
     public int size() {
         synchronized (container) {
             return container.size();
@@ -150,8 +151,8 @@ public class CubeMultiRelationPathImpl implements CubeMultiRelationPath {
         }
     }
 
-    public void copyFrom(CubeMultiRelationPathImpl path) {
-        container.addAll(path.container);
+    public void copyFrom(CubeMultiRelationPath path) {
+        container.addAll(path.getAllRelations());
     }
 
     @Override

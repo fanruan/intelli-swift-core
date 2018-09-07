@@ -1,4 +1,4 @@
-package com.fr.swift.transatcion;
+package com.fr.swift.transaction;
 
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;

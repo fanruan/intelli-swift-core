@@ -1,6 +1,7 @@
-package com.fr.swift.transatcion;
+package com.fr.swift.transacion;
 
-import com.fr.swift.transaction.AbstractTransactionManager;
+import com.fr.swift.transaction.TransactionManager;
+import com.fr.swift.transaction.TransactionProxyFactory;
 import com.fr.third.springframework.web.bind.annotation.ControllerAdvice;
 import junit.framework.TestCase;
 

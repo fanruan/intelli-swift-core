@@ -21,6 +21,9 @@
     <bean id="incrementer" class="com.fr.swift.segment.Incrementer" scope="prototype"/>
     <bean id="decrementer" class="com.fr.swift.segment.Decrementer" scope="prototype"/>
 
+    <bean id="relationColumnBuilder" class="com.fr.swift.relation.column.RelationColumnBuilderImpl"/>
+    <bean id="swiftInserterBuilder" class="com.fr.swift.segment.operator.insert.impl.SwiftInserterBuilderImpl"/>
+
     <bean id="columnIndexer" class="com.fr.swift.generate.ColumnIndexer" scope="prototype"/>
     <bean id="columnDictMerger" class="com.fr.swift.generate.ColumnDictMerger" scope="prototype"/>
 

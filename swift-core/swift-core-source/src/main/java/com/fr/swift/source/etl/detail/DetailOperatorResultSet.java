@@ -1,10 +1,12 @@
 package com.fr.swift.source.etl.detail;
 
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.relation.utils.RelationPathHelper;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.segment.column.RelationColumn;
+import com.fr.swift.segment.column.RelationColumnBuilder;
 import com.fr.swift.segment.relation.RelationIndex;
-import com.fr.swift.segment.relation.column.RelationColumn;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.RelationSourceType;
@@ -103,6 +105,6 @@ public class DetailOperatorResultSet implements SwiftResultSet {
         } else {
             relationIndex = getBaseSegments()[currentSegmentIndex].getRelation(RelationPathHelper.convert2CubeRelationPath(relationSource));
         }
-        return new RelationColumn(relationIndex, foreignSegments, columnKey);
+        return SwiftContext.get().getBean(RelationColumnBuilder.class).build(relationIndex, foreignSegments, columnKey);
     }
 }

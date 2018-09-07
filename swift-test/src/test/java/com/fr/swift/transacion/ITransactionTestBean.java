@@ -1,4 +1,4 @@
-package com.fr.swift.transatcion;
+package com.fr.swift.transacion;
 
 /**
  * This class created on 2018/6/26

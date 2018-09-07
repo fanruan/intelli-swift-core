@@ -13,9 +13,9 @@ import com.fr.swift.segment.SegmentResultSet;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.operator.Inserter;
+import com.fr.swift.segment.operator.SwiftInserterBuilder;
 import com.fr.swift.segment.operator.column.SwiftColumnDictMerger;
 import com.fr.swift.segment.operator.column.SwiftColumnIndexer;
-import com.fr.swift.segment.operator.insert.SwiftInserter;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.FileUtil;
 import com.fr.swift.util.function.Predicate;
@@ -29,6 +29,7 @@ import java.util.List;
  */
 public class SegmentTransfer {
     private static final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
+    private static final SwiftInserterBuilder INSERTER_BUILDER = SwiftContext.get().getBean(SwiftInserterBuilder.class);
 
     protected SegmentKey oldSegKey, newSegKey;
 
@@ -46,7 +47,7 @@ public class SegmentTransfer {
 
     public void transfer() {
         Segment oldSeg = newSegment(oldSegKey), newSeg = newSegment(newSegKey);
-        Inserter inserter = new SwiftInserter(newSeg);
+        Inserter inserter = INSERTER_BUILDER.build(newSeg);
         try {
             SEG_SVC.addSegments(Collections.singletonList(newSegKey));
 

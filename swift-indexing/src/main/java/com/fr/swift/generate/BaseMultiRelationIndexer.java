@@ -15,9 +15,9 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.operator.column.SwiftMultiRelationIndexer;
-import com.fr.swift.segment.relation.CubeLogicColumnKey;
 import com.fr.swift.segment.relation.CubeMultiRelation;
 import com.fr.swift.segment.relation.RelationIndex;
+import com.fr.swift.segment.relation.impl.CubeLogicColumnKey;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.array.LongArray;
 import com.fr.swift.structure.array.LongListFactory;
@@ -93,8 +93,8 @@ public abstract class BaseMultiRelationIndexer extends BaseWorker implements Swi
      */
     private int[] buildRelationIndex(Segment primary, Segment foreign, RelationIndex relationIndex, int primaryIndex, int currentPos, int reversePos) {
         ImmutableBitMap allShow = primary.getAllShowIndex();
-        CubeLogicColumnKey primaryKey = relation.getPrimaryKey();
-        CubeLogicColumnKey foreignKey = relation.getForeignKey();
+        CubeLogicColumnKey primaryKey = (CubeLogicColumnKey) relation.getPrimaryKey();
+        CubeLogicColumnKey foreignKey = (CubeLogicColumnKey) relation.getForeignKey();
         List<ColumnKey> keys = primaryKey.getKeyFields();
         List<ColumnKey> foreignKeys = foreignKey.getKeyFields();
         RelationIndexHelper holder = new RelationIndexHelper();

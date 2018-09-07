@@ -1,6 +1,7 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.BuildConf;
 import com.fr.swift.cube.io.IResourceDiscovery;
 import com.fr.swift.cube.io.ResourceDiscovery;
@@ -17,6 +18,7 @@ import com.fr.swift.exception.meta.SwiftMetaDataColumnAbsentException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.segment.column.RelationColumnBuilder;
 import com.fr.swift.segment.column.impl.DateColumn;
 import com.fr.swift.segment.column.impl.DoubleColumn;
 import com.fr.swift.segment.column.impl.LongColumn;
@@ -25,7 +27,6 @@ import com.fr.swift.segment.relation.CubeMultiRelation;
 import com.fr.swift.segment.relation.CubeMultiRelationPath;
 import com.fr.swift.segment.relation.RelationIndex;
 import com.fr.swift.segment.relation.RelationIndexImpl;
-import com.fr.swift.segment.relation.column.RelationColumn;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.SourceKey;
@@ -228,7 +229,8 @@ public abstract class BaseSegment implements Segment {
     }
 
     private Column createRelationColumn(ColumnKey key) {
-        return new RelationColumn(key).buildRelationColumn(this);
+        RelationColumnBuilder builder = SwiftContext.get().getBean(RelationColumnBuilder.class);
+        return builder.build(key).buildRelationColumn(this);
     }
 
     @Override

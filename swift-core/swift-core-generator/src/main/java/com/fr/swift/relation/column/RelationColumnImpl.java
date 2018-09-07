@@ -1,4 +1,4 @@
-package com.fr.swift.segment.relation.column;
+package com.fr.swift.relation.column;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.traversal.TraversalAction;
@@ -17,6 +17,7 @@ import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.segment.column.RelationColumn;
 import com.fr.swift.segment.relation.RelationIndex;
 import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.RelationSourceType;
@@ -47,7 +48,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author yee
  * @date 2018/4/3
  */
-public class RelationColumn {
+public class RelationColumnImpl implements RelationColumn {
     private RelationIndex relationIndex;
     private Segment[] segments;
     private ColumnKey columnKey;
@@ -60,7 +61,7 @@ public class RelationColumn {
      * @param segments      主表的所有segment
      * @param columnKey     主表的column
      */
-    public RelationColumn(RelationIndex relationIndex, Segment[] segments, ColumnKey columnKey) {
+    public RelationColumnImpl(RelationIndex relationIndex, Segment[] segments, ColumnKey columnKey) {
         this.relationIndex = relationIndex;
         this.segments = segments;
         this.columnKey = columnKey;
@@ -69,7 +70,7 @@ public class RelationColumn {
         this.relationSource = columnKey.getRelation();
     }
 
-    public RelationColumn(RelationIndex relationIndex, List<Segment> segments, ColumnKey columnKey) {
+    public RelationColumnImpl(RelationIndex relationIndex, List<Segment> segments, ColumnKey columnKey) {
         this.segments = new Segment[segments.size()];
         this.segments = segments.toArray(this.segments);
         this.relationIndex = relationIndex;
@@ -79,7 +80,7 @@ public class RelationColumn {
         this.relationSource = columnKey.getRelation();
     }
 
-    public RelationColumn(ColumnKey columnKey) {
+    public RelationColumnImpl(ColumnKey columnKey) {
         Util.requireNonNull(columnKey);
         this.relationSource = columnKey.getRelation();
         Util.requireNonNull(relationSource);
@@ -97,6 +98,7 @@ public class RelationColumn {
      * @param row
      * @return
      */
+    @Override
     public Object getPrimaryValue(int row) {
         int[] result = getPrimarySegAndRow(row);
         if (null != result) {
@@ -108,6 +110,7 @@ public class RelationColumn {
         return null;
     }
 
+    @Override
     public Column buildRelationColumn(Segment segment) {
         if (null == relationIndex) {
             buildRelation(segment);
@@ -121,7 +124,7 @@ public class RelationColumn {
         try {
             targetDicColumn.size();
         } catch (Exception ignore) {
-            SwiftLoggers.getLogger(RelationColumn.class).error("Column do not exists! start build this column");
+            SwiftLoggers.getLogger(RelationColumnImpl.class).error("Column do not exists! start build this column");
             buildTargetColumn(targetDicColumn, bitmapIndexedColumn);
         }
 
@@ -213,7 +216,7 @@ public class RelationColumn {
                             index = handleDicAndIndex(bitMap, index, targetDicColumn, bitmapIndexedColumn, columns[i].getValue(j));
                         }
                     } catch (Exception ignore) {
-                        SwiftLoggers.getLogger(RelationColumn.class).error(ignore);
+                        SwiftLoggers.getLogger(RelationColumnImpl.class).error(ignore);
                     }
                 }
             }
@@ -250,6 +253,7 @@ public class RelationColumn {
         }
     }
 
+    @Override
     public int[] getPrimarySegAndRow(int row) {
         if (row < reverseCount) {
             long reverse = relationIndex.getReverseIndex(row);
@@ -260,6 +264,7 @@ public class RelationColumn {
         return null;
     }
 
+    @Override
     public void release() {
         if (null != columns) {
             for (DictionaryEncodedColumn column : columns) {

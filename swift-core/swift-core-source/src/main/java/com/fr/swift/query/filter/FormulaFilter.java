@@ -1,4 +1,4 @@
-package com.fr.swift.query.filter.detail.impl;
+package com.fr.swift.query.filter;
 
 import com.fr.script.Calculator;
 import com.fr.swift.bitmap.BitMaps;

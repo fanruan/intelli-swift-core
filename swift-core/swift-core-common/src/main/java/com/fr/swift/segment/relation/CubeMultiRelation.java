@@ -17,4 +17,8 @@ public interface CubeMultiRelation<Field extends ILogicKeyField<SourceKey, Colum
     SourceKey getForeignTable();
 
     String getKey();
+
+    Field getPrimaryKey();
+
+    Field getForeignKey();
 }

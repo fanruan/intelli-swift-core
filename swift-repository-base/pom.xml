@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-core</artifactId>
+            <artifactId>swift-core-generator</artifactId>
             <version>${swift.version}</version>
         </dependency>
     </dependencies>

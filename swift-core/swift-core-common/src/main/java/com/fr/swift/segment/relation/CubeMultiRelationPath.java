@@ -32,4 +32,10 @@ public interface CubeMultiRelationPath {
     String getKey();
 
     void add(CubeMultiRelation convert2CubeRelation);
+
+    int size();
+
+    SourceKey getEndTable();
+
+    void copyFrom(CubeMultiRelationPath relationPath);
 }

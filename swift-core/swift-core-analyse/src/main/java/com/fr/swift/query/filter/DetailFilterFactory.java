@@ -1,10 +1,10 @@
 package com.fr.swift.query.filter;
 
+import com.fr.invoke.Reflect;
 import com.fr.stable.StringUtils;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.filter.detail.impl.AllShowDetailFilter;
 import com.fr.swift.query.filter.detail.impl.EmptyDetailFilter;
-import com.fr.swift.query.filter.detail.impl.FormulaFilter;
 import com.fr.swift.query.filter.detail.impl.InFilter;
 import com.fr.swift.query.filter.detail.impl.NullFilter;
 import com.fr.swift.query.filter.detail.impl.date.DateInRangeFilter;
@@ -70,7 +70,7 @@ public class DetailFilterFactory {
             case NULL:
                 return new NullFilter(column);
             case FORMULA:
-                return new FormulaFilter((String) filterInfo.getFilterValue(), segment);
+                return Reflect.on("com.fr.swift.query.filter.FormulaFilter").create((String) filterInfo.getFilterValue(), segment).get();
             case KEY_WORDS:
                 return new StringKeyWordFilter((String) filterInfo.getFilterValue(), column);
             case EMPTY:

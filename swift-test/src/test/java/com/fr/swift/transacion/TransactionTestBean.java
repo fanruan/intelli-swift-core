@@ -1,4 +1,6 @@
-package com.fr.swift.transatcion;
+package com.fr.swift.transacion;
+
+import com.fr.swift.transaction.Transactional;
 
 /**
  * This class created on 2018/6/26
