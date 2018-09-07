@@ -86,6 +86,48 @@ public class RpcCaller implements TableService {
     }
 
     @Override
+    public int createTable(SwiftDatabase schema, String tableName, List<Column> columns) throws Exception {
+        ClientProxy proxy = null;
+        try {
+            proxy = pool.borrowObject(address);
+            return proxy.getProxy(TableService.class).createTable(schema, tableName, columns);
+        } catch (Exception e) {
+            pool.invalidateObject(address, proxy);
+            throw new SQLException(e);
+        } finally {
+            pool.returnObject(address, proxy);
+        }
+    }
+
+    @Override
+    public boolean addColumn(SwiftDatabase schema, String tableName, Column column) throws Exception {
+        ClientProxy proxy = null;
+        try {
+            proxy = pool.borrowObject(address);
+            return proxy.getProxy(TableService.class).addColumn(schema, tableName, column);
+        } catch (Exception e) {
+            pool.invalidateObject(address, proxy);
+            throw new SQLException(e);
+        } finally {
+            pool.returnObject(address, proxy);
+        }
+    }
+
+    @Override
+    public boolean dropColumn(SwiftDatabase schema, String tableName, String columnName) throws Exception {
+        ClientProxy proxy = null;
+        try {
+            proxy = pool.borrowObject(address);
+            return proxy.getProxy(TableService.class).dropColumn(schema, tableName, columnName);
+        } catch (Exception e) {
+            pool.invalidateObject(address, proxy);
+            throw new SQLException(e);
+        } finally {
+            pool.returnObject(address, proxy);
+        }
+    }
+
+    @Override
     public boolean isTableExists(SwiftDatabase schema, String tableName) {
         return null != detectiveMetaData(schema, tableName);
     }
@@ -180,20 +222,6 @@ public class RpcCaller implements TableService {
             try {
                 proxy = pool.borrowObject(address);
                 return proxy.getProxy(DataMaintenanceService.class).update(schema, tableName, resultSet, where);
-            } catch (Exception e) {
-                pool.invalidateObject(address, proxy);
-                throw new SQLException(e);
-            } finally {
-                pool.returnObject(address, proxy);
-            }
-        }
-
-        @Override
-        public int createTable(SwiftDatabase schema, String tableName, List<Column> columns) throws Exception {
-            ClientProxy proxy = null;
-            try {
-                proxy = pool.borrowObject(address);
-                return proxy.getProxy(DataMaintenanceService.class).createTable(schema, tableName, columns);
             } catch (Exception e) {
                 pool.invalidateObject(address, proxy);
                 throw new SQLException(e);

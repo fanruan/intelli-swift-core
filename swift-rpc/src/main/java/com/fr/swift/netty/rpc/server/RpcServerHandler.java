@@ -1,5 +1,6 @@
 package com.fr.swift.netty.rpc.server;
 
+import com.fr.swift.annotation.SwiftApi;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.netty.bean.InternalRpcRequest;
@@ -55,30 +56,40 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
 
     private Object handle(RpcRequest request) throws Exception {
         String serviceName = request.getInterfaceName();
-        Object serviceBean = null;
         switch (request.requestType()) {
             case INTERNAL:
                 if (request instanceof InternalRpcRequest) {
-                    serviceBean = handlerMap.get(serviceName);
-                    break;
+                    return handle(request, handlerMap.get(serviceName), false);
                 } else {
                     throw new ServiceInvalidException(serviceName + " is invalid on remote machine!");
                 }
             default:
-                serviceBean = externalMap.get(serviceName);
-                break;
+                return handle(request, externalMap.get(serviceName), true);
 
         }
+    }
+
+    private Object handle(RpcRequest request, Object serviceBean, boolean checkApiEnable) throws Exception {
         if (serviceBean == null) {
-            throw new ServiceInvalidException(serviceName + " is invalid on remote machine!");
+            throw new ServiceInvalidException(request.getInterfaceName() + " is invalid on remote machine!");
         }
         Class<?> serviceClass = serviceBean.getClass();
         String methodName = request.getMethodName();
         Class<?>[] parameterTypes = request.getParameterTypes();
         Object[] parameters = request.getParameters();
         Method method = serviceClass.getMethod(methodName, parameterTypes);
+        if (checkApiEnable) {
+            checkApiEnable(methodName, method);
+        }
         method.setAccessible(true);
         return method.invoke(serviceBean, parameters);
+    }
+
+    private void checkApiEnable(String methodName, Method method) throws ServiceInvalidException {
+        SwiftApi api = method.getAnnotation(SwiftApi.class);
+        if (null != api && !api.enable()) {
+            throw new ServiceInvalidException(methodName + " is invalid on remote machine");
+        }
     }
 
     @Override

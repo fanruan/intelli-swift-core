@@ -1,6 +1,7 @@
 package com.fr.swift.api.rpc.impl;
 
 import com.fr.swift.annotation.RpcService;
+import com.fr.swift.annotation.SwiftApi;
 import com.fr.swift.api.rpc.SelectService;
 import com.fr.swift.api.rpc.TableService;
 import com.fr.swift.config.service.SwiftMetaDataService;
@@ -23,6 +24,7 @@ import java.util.List;
  * @date 2018/8/23
  */
 @RpcService(value = SelectService.class, type = RpcService.RpcServiceType.EXTERNAL)
+@SwiftApi
 class SelectServiceImpl implements SelectService {
     @Autowired(required = false)
     private SwiftMetaDataService metaDataService;
@@ -30,6 +32,7 @@ class SelectServiceImpl implements SelectService {
     private TableService tableService;
 
     @Override
+    @SwiftApi
     public SwiftResultSet query(SwiftDatabase database, String queryJson) {
         try {
             QueryBean queryBean = SwiftContext.get().getBean(QueryBeanFactory.class).create(queryJson);
