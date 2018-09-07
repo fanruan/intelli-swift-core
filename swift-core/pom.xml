@@ -17,6 +17,8 @@
         <module>swift-core-source</module>
         <module>swift-core-common</module>
         <module>swift-core-generator</module>
+        <module>swift-core-analyse</module>
+        <module>swift-core-service</module>
     </modules>
 
     <dependencies>

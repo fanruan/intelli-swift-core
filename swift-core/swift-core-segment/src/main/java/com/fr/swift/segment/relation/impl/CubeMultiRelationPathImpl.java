@@ -57,6 +57,7 @@ public class CubeMultiRelationPathImpl implements CubeMultiRelationPath {
         }
     }
 
+    @Override
     public void add(CubeMultiRelation relation) {
         synchronized (container) {
             container.add(relation);
@@ -194,6 +195,7 @@ public class CubeMultiRelationPathImpl implements CubeMultiRelationPath {
         }
     }
 
+    @Override
     public SourceKey getStartTable() {
         return getFirstRelation().getPrimaryTable();
     }
@@ -210,6 +212,7 @@ public class CubeMultiRelationPathImpl implements CubeMultiRelationPath {
         return container.get(0);
     }
 
+    @Override
     public String getKey() {
         List<CubeMultiRelation> relations = getAllRelations();
         int size = relations.size();

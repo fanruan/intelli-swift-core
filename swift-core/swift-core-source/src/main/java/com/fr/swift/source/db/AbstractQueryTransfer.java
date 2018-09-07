@@ -10,8 +10,6 @@ import com.fr.stable.StringUtils;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.retry.RetryLoop;
-import com.fr.swift.retry.RetryNTimes;
 import com.fr.swift.setting.PerformancePlugManager;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.ColumnTypeUtils;
@@ -32,6 +30,8 @@ import com.fr.swift.source.db.dbdealer.StringDealer;
 import com.fr.swift.source.db.dbdealer.StringDealerWithCharSet;
 import com.fr.swift.source.db.dbdealer.TimeDealer;
 import com.fr.swift.source.db.dbdealer.TimestampDealer;
+import com.fr.swift.source.retry.RetryLoop;
+import com.fr.swift.source.retry.RetryNTimes;
 import com.fr.swift.util.Util;
 
 import java.io.UnsupportedEncodingException;

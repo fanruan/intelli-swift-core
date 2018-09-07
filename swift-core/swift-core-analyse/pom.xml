@@ -9,12 +9,12 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>swift-core-source</artifactId>
+    <artifactId>swift-core-analyse</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-core-analyse</artifactId>
+            <artifactId>swift-core-segment</artifactId>
             <version>${swift.version}</version>
         </dependency>
     </dependencies>

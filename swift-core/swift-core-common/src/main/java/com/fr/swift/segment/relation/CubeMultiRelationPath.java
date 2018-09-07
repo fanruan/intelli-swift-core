@@ -30,4 +30,6 @@ public interface CubeMultiRelationPath {
     SourceKey getStartTable();
 
     String getKey();
+
+    void add(CubeMultiRelation convert2CubeRelation);
 }
