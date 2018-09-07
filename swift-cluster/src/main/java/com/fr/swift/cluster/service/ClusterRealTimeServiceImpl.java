@@ -2,7 +2,6 @@ package com.fr.swift.cluster.service;
 
 import com.fr.swift.annotation.RpcMethod;
 import com.fr.swift.annotation.RpcService;
-import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.RpcFuture;
@@ -47,7 +46,7 @@ import java.util.Map;
  * @date 2018/8/6
  */
 @SwiftService(name = "realtime", cluster = true)
-@RpcService(type = RpcServiceType.INTERNAL, value = RealtimeService.class)
+@RpcService(type = RpcService.RpcServiceType.INTERNAL, value = RealtimeService.class)
 public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements ClusterRealTimeService, Serializable {
     private static final long serialVersionUID = 946204307880678794L;
 

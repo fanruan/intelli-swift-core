@@ -2,7 +2,6 @@ package com.fr.swift.cluster.service;
 
 import com.fr.swift.annotation.RpcMethod;
 import com.fr.swift.annotation.RpcService;
-import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.context.SwiftContext;
@@ -43,7 +42,7 @@ import java.util.Set;
  * @date 2018/8/7
  */
 @SwiftService(name = "history", cluster = true)
-@RpcService(value = HistoryService.class, type = RpcServiceType.INTERNAL)
+@RpcService(value = HistoryService.class, type = RpcService.RpcServiceType.INTERNAL)
 @Service("clusterHistoryService")
 public class ClusterHistoryServiceImpl extends AbstractSwiftService implements ClusterHistoryService, Serializable {
     private static final long serialVersionUID = -3487010910076432934L;

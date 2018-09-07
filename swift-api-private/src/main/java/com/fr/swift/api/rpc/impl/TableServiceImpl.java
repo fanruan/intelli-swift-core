@@ -1,7 +1,6 @@
 package com.fr.swift.api.rpc.impl;
 
 import com.fr.swift.annotation.RpcService;
-import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.api.rpc.TableService;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.service.SwiftMetaDataService;
@@ -19,7 +18,7 @@ import java.util.List;
  * @author yee
  * @date 2018/8/27
  */
-@RpcService(value = TableService.class, type = RpcServiceType.EXTERNAL)
+@RpcService(value = TableService.class, type = RpcService.RpcServiceType.EXTERNAL)
 class TableServiceImpl implements TableService {
     @Autowired(required = false)
     SwiftMetaDataService swiftMetaDataService;
