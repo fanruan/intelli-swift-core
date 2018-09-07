@@ -11,7 +11,7 @@
     <modules>
         <module>swift-analyse</module>
         <module>swift-api-public</module>
-        <module>swift-generator</module>
+        <module>swift-core</module>
         <module>swift-boot</module>
         <module>swift-cluster</module>
         <module>swift-config</module>
