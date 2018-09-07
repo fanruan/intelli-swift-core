@@ -4,8 +4,11 @@ import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftMetaDataService;
+import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
+import com.fr.swift.config.service.impl.SwiftSegmentServiceProvider;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Where;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
@@ -15,6 +18,7 @@ import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.manager.SwiftRepositoryManager;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.operator.delete.WhereDeleter;
 import com.fr.swift.source.SourceKey;
@@ -24,14 +28,20 @@ import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
 import com.fr.swift.util.FileUtil;
+import com.fr.swift.util.concurrent.PoolThreadFactory;
+import com.fr.swift.util.concurrent.SwiftExecutors;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 
 /**
  * @author pony
@@ -53,6 +63,11 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
 
     private transient QueryBeanFactory queryBeanFactory;
 
+    private transient SwiftSegmentService segmentService;
+
+    private transient ExecutorService loadDataService;
+
+
     private SwiftHistoryService() {
     }
 
@@ -65,7 +80,45 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         metaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
         tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
         queryBeanFactory = SwiftContext.get().getBean(QueryBeanFactory.class);
+        segmentService = SwiftContext.get().getBean(SwiftSegmentServiceProvider.class);
+        loadDataService = SwiftExecutors.newCachedThreadPool(new PoolThreadFactory(SwiftHistoryService.class));
+        checkSegmentExists();
         return true;
+    }
+
+    private void checkSegmentExists() {
+        SwiftRepository repository = SwiftRepositoryManager.getManager().currentRepo();
+        Map<String, List<SegmentKey>> map = segmentService.getOwnSegments();
+        for (Map.Entry<String, List<SegmentKey>> entry : map.entrySet()) {
+            String table = entry.getKey();
+            List<SegmentKey> value = entry.getValue();
+            List<SegmentKey> notExists = new ArrayList<SegmentKey>();
+            final Map<String, Set<String>> needDownload = new HashMap<String, Set<String>>();
+            for (SegmentKey segmentKey : value) {
+                if (segmentKey.getStoreType() == Types.StoreType.FINE_IO) {
+                    if (!segmentManager.getSegment(segmentKey).isReadable()) {
+                        String remotePath = String.format("%s/%s", segmentKey.getSwiftSchema().getDir(), segmentKey.getUri().getPath());
+                        if (repository.exists(remotePath)) {
+                            if (null == needDownload.get(table)) {
+                                needDownload.put(table, new HashSet<String>());
+                            }
+                            needDownload.get(table).add(remotePath);
+                        } else {
+                            notExists.add(segmentKey);
+                        }
+                    }
+                }
+            }
+            if (!needDownload.isEmpty()) {
+                loadDataService.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        load(needDownload, false);
+                    }
+                });
+            }
+            segmentService.removeSegments(notExists);
+        }
     }
 
     @Override
@@ -77,6 +130,9 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         metaDataService = null;
         tablePathService = null;
         queryBeanFactory = null;
+        loadDataService.shutdown();
+        loadDataService = null;
+        segmentService = null;
         return true;
     }
 

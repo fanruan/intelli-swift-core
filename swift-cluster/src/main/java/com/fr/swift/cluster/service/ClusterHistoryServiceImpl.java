@@ -53,11 +53,11 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
 
     @Override
     public boolean start() throws SwiftServiceException {
-        SegmentLocationInfo info = loadSelfSegmentDestination();
         List<com.fr.swift.service.SwiftService> services = ServiceBeanFactory.getSwiftServiceByNames(Collections.singleton("history"));
         historyService = (HistoryService) services.get(0);
         historyService.setId(getID());
         historyService.start();
+        SegmentLocationInfo info = loadSelfSegmentDestination();
         if (null != info) {
             try {
                 ClusterCommonUtils.asyncCallMaster(new PushSegLocationRpcEvent(info));

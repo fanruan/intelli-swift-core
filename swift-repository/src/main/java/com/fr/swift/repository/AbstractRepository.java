@@ -61,4 +61,19 @@ public abstract class AbstractRepository implements SwiftRepository {
     protected String resolve(String uri, String resolve) {
         return Strings.unifySlash(uri + "/" + resolve);
     }
+
+    @Override
+    public boolean exists(String path) {
+        SwiftFileSystem fileSystem = createFileSystem(path);
+        try {
+            return fileSystem.isExists();
+        } catch (Exception e) {
+            return false;
+        } finally {
+            try {
+                closeFileSystem(fileSystem);
+            } catch (SwiftFileException ignore) {
+            }
+        }
+    }
 }
