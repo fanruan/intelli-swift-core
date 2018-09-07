@@ -18,7 +18,7 @@ import com.fr.swift.exception.meta.SwiftMetaDataColumnAbsentException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.segment.column.RelationColumnBuilder;
+import com.fr.swift.segment.column.RelationColumn;
 import com.fr.swift.segment.column.impl.DateColumn;
 import com.fr.swift.segment.column.impl.DoubleColumn;
 import com.fr.swift.segment.column.impl.LongColumn;
@@ -229,8 +229,7 @@ public abstract class BaseSegment implements Segment {
     }
 
     private Column createRelationColumn(ColumnKey key) {
-        RelationColumnBuilder builder = SwiftContext.get().getBean(RelationColumnBuilder.class);
-        return builder.build(key).buildRelationColumn(this);
+        return ((RelationColumn) SwiftContext.get().getBean("relationColumn", key)).buildRelationColumn(this);
     }
 
     @Override

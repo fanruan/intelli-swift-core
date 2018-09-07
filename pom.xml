@@ -11,10 +11,12 @@
     <modules>
         <module>swift-analyse</module>
         <module>swift-api-public</module>
-        <module>swift-core</module>
+        <module>swift-base</module>
         <module>swift-boot</module>
-        <module>swift-cluster</module>
+        <module>swift-core</module>
+        <module>swift-common</module>
         <module>swift-config</module>
+        <module>swift-cluster</module>
         <module>swift-decision</module>
         <module>swift-defragmentation</module>
         <module>swift-history</module>
@@ -36,8 +38,8 @@
         <module>swift-http-api</module>
         <module>swift-analyse-base</module>
         <module>swift-repository-base</module>
-        <module>swift-common</module>
-        <module>swift-base</module>
+
+
     </modules>
 
     <properties>
