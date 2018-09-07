@@ -1,6 +1,5 @@
 package com.fr.swift.api.rpc;
 
-import com.fr.swift.api.rpc.bean.Column;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Where;
 import com.fr.swift.source.Row;
@@ -70,14 +69,4 @@ public interface DataMaintenanceService extends ApiService {
      */
     int update(SwiftDatabase schema, String tableName, SwiftResultSet resultSet, Where where) throws Exception;
 
-    /**
-     * 建表接口
-     *
-     * @param schema
-     * @param tableName
-     * @param columns
-     * @return
-     * @throws Exception
-     */
-    int createTable(SwiftDatabase schema, String tableName, List<Column> columns) throws Exception;
 }

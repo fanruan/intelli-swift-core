@@ -4,7 +4,6 @@ import com.fr.swift.api.result.SwiftApiResultSet;
 import com.fr.swift.api.rpc.Api;
 import com.fr.swift.api.rpc.DataMaintenanceService;
 import com.fr.swift.api.rpc.SelectService;
-import com.fr.swift.api.rpc.bean.Column;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Where;
 import com.fr.swift.exception.meta.SwiftMetaDataAbsentException;
@@ -55,11 +54,6 @@ public class SwiftApiSessionImpl implements SwiftPublicApiSession, DataMaintenan
     @Override
     public int update(SwiftDatabase schema, String tableName, SwiftResultSet resultSet, Where where) throws Exception {
         return dataMaintenanceApi.update(schema, tableName, resultSet, where);
-    }
-
-    @Override
-    public int createTable(SwiftDatabase schema, String tableName, List<Column> columns) throws Exception {
-        return dataMaintenanceApi.createTable(schema, tableName, columns);
     }
 
     @Override

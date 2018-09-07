@@ -77,6 +77,24 @@ public class Api implements TableService {
         return service.isTableExists(schema, tableName);
     }
 
+    @Override
+    public int createTable(SwiftDatabase schema, String tableName, List<Column> columns) throws Exception {
+        TableService service = getProxy(TableService.class);
+        return service.createTable(schema, tableName, columns);
+    }
+
+    @Override
+    public boolean addColumn(SwiftDatabase schema, String tableName, Column column) throws Exception {
+        TableService service = getProxy(TableService.class);
+        return service.addColumn(schema, tableName, column);
+    }
+
+    @Override
+    public boolean dropColumn(SwiftDatabase schema, String tableName, String columnName) throws Exception {
+        TableService service = getProxy(TableService.class);
+        return service.dropColumn(schema, tableName, columnName);
+    }
+
     protected <T> T getProxy(final Class<T> proxyClass) {
         return (T) Proxy.newProxyInstance(proxyClass.getClassLoader(), new Class[]{proxyClass}, new InvocationHandler() {
             @Override
@@ -165,13 +183,5 @@ public class Api implements TableService {
             DataMaintenanceService service = getProxy(DataMaintenanceService.class);
             return service.update(schema, tableName, resultSet, where);
         }
-
-        @Override
-        public int createTable(SwiftDatabase schema, String tableName, List<Column> columns) throws Exception {
-            DataMaintenanceService service = getProxy(DataMaintenanceService.class);
-            return service.createTable(schema, tableName, columns);
-        }
     }
-
-
 }

@@ -4,12 +4,11 @@ import com.fr.swift.annotation.RpcService;
 import com.fr.swift.api.rpc.DataMaintenanceService;
 import com.fr.swift.api.rpc.SelectService;
 import com.fr.swift.api.rpc.TableService;
-import com.fr.swift.api.rpc.bean.Column;
-import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.service.RealtimeService;
@@ -18,8 +17,6 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.source.core.MD5Utils;
-import com.fr.swift.util.Crasher;
 import com.fr.swift.util.ServiceBeanFactory;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
@@ -27,7 +24,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author yee
@@ -42,7 +38,7 @@ class DataMaintenanceServiceImpl implements DataMaintenanceService {
 
     @Override
     public int insert(SwiftDatabase schema, String tableName, List<String> fields, List<Row> rows) throws SQLException {
-        SwiftMetaDataBean metaData = (SwiftMetaDataBean) SwiftContext.get().getBean(TableService.class).detectiveMetaData(schema, tableName);
+        SwiftMetaDataBean metaData = (SwiftMetaDataBean) tableService.detectiveMetaData(schema, tableName);
         insert(schema, tableName, new InsertResultSet(metaData, fields, rows));
         return rows.size();
     }
@@ -59,7 +55,7 @@ class DataMaintenanceServiceImpl implements DataMaintenanceService {
     }
 
     private int insert(SwiftDatabase schema, String tableName, SwiftResultSet resultSet) throws SQLException {
-        SwiftMetaDataBean metaData = (SwiftMetaDataBean) SwiftContext.get().getBean(TableService.class).detectiveMetaData(schema, tableName);
+        SwiftMetaDataBean metaData = (SwiftMetaDataBean) tableService.detectiveMetaData(schema, tableName);
         SourceKey sourceKey = new SourceKey(metaData.getId());
         try {
             getRealTimeService().insert(sourceKey, resultSet);
@@ -72,37 +68,32 @@ class DataMaintenanceServiceImpl implements DataMaintenanceService {
     }
 
     @Override
-    public int delete(SwiftDatabase schema, String tableName, Where where) {
-        return 0;
+    public int delete(SwiftDatabase schema, String tableName, Where where) throws SQLException {
+        try {
+            SwiftMetaDataBean metaData = (SwiftMetaDataBean) tableService.detectiveMetaData(schema, tableName);
+            if (null == metaData) {
+                return 0;
+            }
+            Table table = com.fr.swift.db.impl.SwiftDatabase.getInstance().getTable(new SourceKey(metaData.getId()));
+            return table.delete(where);
+        } catch (Exception e) {
+            throw new SQLException("Table which named " + tableName + " is not exists", e);
+        }
     }
 
     @Override
-    public int update(SwiftDatabase schema, String tableName, SwiftResultSet resultSet, Where where) {
-        return 0;
-    }
+    public int update(SwiftDatabase schema, String tableName, SwiftResultSet resultSet, Where where) throws SQLException {
 
-    @Override
-    public int createTable(SwiftDatabase schema, String tableName, List<Column> columns) {
-        if (tableService.isTableExists(schema, tableName)) {
-            Crasher.crash("Table " + tableName + " is already exists");
+        try {
+            SwiftMetaDataBean metaData = (SwiftMetaDataBean) tableService.detectiveMetaData(schema, tableName);
+            if (null == metaData) {
+                return 0;
+            }
+            Table table = com.fr.swift.db.impl.SwiftDatabase.getInstance().getTable(new SourceKey(metaData.getId()));
+            return table.update(where, resultSet);
+        } catch (Exception e) {
+            throw new SQLException("Table which named " + tableName + " is not exists", e);
         }
-        if (columns.isEmpty()) {
-            Crasher.crash("Table " + tableName + " must contain at lease one column.");
-        }
-        SwiftMetaDataBean swiftMetaDataBean = new SwiftMetaDataBean();
-        swiftMetaDataBean.setSwiftDatabase(schema);
-        swiftMetaDataBean.setTableName(tableName);
-        String uniqueKey = MD5Utils.getMD5String(new String[]{UUID.randomUUID().toString(), tableName});
-        swiftMetaDataBean.setId(uniqueKey);
-        List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
-        for (Column column : columns) {
-            columnList.add(new MetaDataColumnBean(column.getColumnName(), column.getColumnType()));
-        }
-        swiftMetaDataBean.setFields(columnList);
-        if (metaDataService.addMetaData(uniqueKey, swiftMetaDataBean)) {
-            return 1;
-        }
-        return -1;
     }
 
     private RealtimeService getRealTimeService() throws SQLException {

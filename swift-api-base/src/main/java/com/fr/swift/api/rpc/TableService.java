@@ -1,5 +1,6 @@
 package com.fr.swift.api.rpc;
 
+import com.fr.swift.api.rpc.bean.Column;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.exception.meta.SwiftMetaDataAbsentException;
 import com.fr.swift.source.SwiftMetaData;
@@ -16,8 +17,8 @@ public interface TableService extends ApiService {
      *
      * @param schema
      * @param tableName
-     * @throws SwiftMetaDataAbsentException
      * @return
+     * @throws SwiftMetaDataAbsentException
      */
     SwiftMetaData detectiveMetaData(SwiftDatabase schema, String tableName) throws SwiftMetaDataAbsentException;
 
@@ -38,4 +39,31 @@ public interface TableService extends ApiService {
      * @throws SwiftMetaDataAbsentException
      */
     boolean isTableExists(SwiftDatabase schema, String tableName);
+
+    /**
+     * 建表接口
+     *
+     * @param schema
+     * @param tableName
+     * @param columns
+     * @return
+     * @throws Exception
+     */
+    int createTable(SwiftDatabase schema, String tableName, List<Column> columns) throws Exception;
+
+    /**
+     * 加字段
+     *
+     * @param column
+     * @return
+     */
+    boolean addColumn(SwiftDatabase schema, String tableName, Column column) throws Exception;
+
+    /**
+     * 删字段
+     *
+     * @param columnName
+     * @return
+     */
+    boolean dropColumn(SwiftDatabase schema, String tableName, String columnName) throws Exception;
 }
