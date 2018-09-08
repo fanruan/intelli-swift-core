@@ -177,8 +177,10 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable, Convert<S
     @Override
     public List<String> getFieldNames() {
         List<String> fieldNames = new ArrayList<String>();
-        for (SwiftMetaDataColumn column : fields) {
-            fieldNames.add(column.getName());
+        if (null != fields) {
+            for (SwiftMetaDataColumn column : fields) {
+                fieldNames.add(column.getName());
+            }
         }
         return fieldNames;
     }

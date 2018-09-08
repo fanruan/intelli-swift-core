@@ -1,8 +1,8 @@
-package com.fr.swift.jdbc.invoke.server;
+package com.fr.swift.jdbc.invoke.impl;
 
 import com.fr.swift.jdbc.bean.CreateTableBean;
 import com.fr.swift.jdbc.invoke.BaseCreateTableInvoker;
-import com.fr.swift.jdbc.rpc.RpcCaller;
+import com.fr.swift.jdbc.proxy.invoke.JdbcCaller;
 
 import java.sql.SQLException;
 
@@ -10,10 +10,10 @@ import java.sql.SQLException;
  * @author yee
  * @date 2018/8/29
  */
-public class ServerCreateTableInvoker extends BaseCreateTableInvoker {
-    private RpcCaller.MaintenanceRpcCaller caller;
+public class CreateTableInvokerImpl extends BaseCreateTableInvoker {
+    private JdbcCaller.MaintenanceJdbcCaller caller;
 
-    public ServerCreateTableInvoker(CreateTableBean bean, RpcCaller.MaintenanceRpcCaller caller) {
+    public CreateTableInvokerImpl(CreateTableBean bean, JdbcCaller.MaintenanceJdbcCaller caller) {
         super(bean);
         this.caller = caller;
     }

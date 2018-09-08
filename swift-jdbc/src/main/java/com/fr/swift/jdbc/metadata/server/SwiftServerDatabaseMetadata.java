@@ -4,8 +4,8 @@ import com.fr.stable.ArrayUtils;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.jdbc.BaseSwiftDatabaseMetadata;
 import com.fr.swift.jdbc.IteratorBasedResultSet;
+import com.fr.swift.jdbc.proxy.invoke.JdbcCaller;
 import com.fr.swift.jdbc.result.ResultSetWrapper;
-import com.fr.swift.jdbc.rpc.RpcCaller;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
@@ -23,9 +23,9 @@ import java.util.Map;
  * @date 2018/8/30
  */
 public class SwiftServerDatabaseMetadata extends BaseSwiftDatabaseMetadata {
-    private RpcCaller caller;
+    private JdbcCaller caller;
 
-    public SwiftServerDatabaseMetadata(SwiftDatabase schema, RpcCaller caller) {
+    public SwiftServerDatabaseMetadata(SwiftDatabase schema, JdbcCaller caller) {
         super(schema);
         this.caller = caller;
     }

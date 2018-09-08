@@ -2,8 +2,9 @@ package com.fr.swift.jdbc.rpc.holder;
 
 import com.fr.swift.api.rpc.DetectService;
 import com.fr.swift.api.rpc.holder.AbstractServiceAddressHolder;
-import com.fr.swift.jdbc.rpc.invoke.ClientProxy;
-import com.fr.swift.jdbc.rpc.invoke.ClientProxyPool;
+import com.fr.swift.jdbc.mode.Mode;
+import com.fr.swift.jdbc.proxy.invoke.ClientProxy;
+import com.fr.swift.jdbc.proxy.invoke.ClientProxyPool;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.service.ServiceType;
 
@@ -19,26 +20,30 @@ public class JdbcAddressHolder extends AbstractServiceAddressHolder {
 
     private static ConcurrentHashMap<String, JdbcAddressHolder> instances = new ConcurrentHashMap<String, JdbcAddressHolder>();
 
-    private JdbcAddressHolder(String address) {
+    private Mode mode;
+
+    private JdbcAddressHolder(String address, Mode mode) {
         super(address);
+        this.mode = mode;
+        detect();
     }
 
-    private JdbcAddressHolder(String host, int port) {
-        super(host + ":" + port);
+    private JdbcAddressHolder(String host, int port, Mode mode) {
+        this(host + ":" + port, mode);
     }
 
-    public static JdbcAddressHolder getHolder(String address) {
+    public static JdbcAddressHolder getHolder(String address, Mode mode) {
         if (null == instances.get(address)) {
-            instances.put(address, new JdbcAddressHolder(address));
+            instances.put(address, new JdbcAddressHolder(address, mode));
         }
         return instances.get(address);
     }
 
-    public static JdbcAddressHolder getHolder(String host, int port) {
+    public static JdbcAddressHolder getHolder(String host, int port, Mode mode) {
         port = port == -1 ? 7000 : port;
         String address = host + ":" + port;
         if (null == instances.get(address)) {
-            instances.put(address, new JdbcAddressHolder(host, port));
+            instances.put(address, new JdbcAddressHolder(host, port, mode));
         }
         return instances.get(address);
     }
@@ -47,14 +52,14 @@ public class JdbcAddressHolder extends AbstractServiceAddressHolder {
     protected Map<ServiceType, List<String>> detectiveAddress(String address) throws Exception {
         ClientProxy proxy = null;
         try {
-            proxy = ClientProxyPool.getInstance().borrowObject(address);
+            proxy = ClientProxyPool.getInstance(mode).borrowObject(address);
             return proxy.getProxy(DetectService.class).detectiveAnalyseAndRealTime(address);
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
-            ClientProxyPool.getInstance().invalidateObject(address, proxy);
+            ClientProxyPool.getInstance(mode).invalidateObject(address, proxy);
             throw e;
         } finally {
-            ClientProxyPool.getInstance().returnObject(address, proxy);
+            ClientProxyPool.getInstance(mode).returnObject(address, proxy);
         }
     }
 

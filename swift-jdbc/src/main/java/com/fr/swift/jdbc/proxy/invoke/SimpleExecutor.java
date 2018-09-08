@@ -1,6 +1,8 @@
-package com.fr.swift.jdbc.rpc;
+package com.fr.swift.jdbc.proxy.invoke;
 
 import com.fr.swift.jdbc.exception.RpcException;
+import com.fr.swift.jdbc.proxy.JdbcConnector;
+import com.fr.swift.jdbc.proxy.JdbcExecutor;
 import com.fr.swift.rpc.bean.RpcResponse;
 import com.fr.swift.rpc.bean.impl.RpcRequest;
 
@@ -10,28 +12,28 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author yee
  * @date 2018/8/26
  */
-public class SimpleRpcExecutor implements JdbcRpcExecutor {
+public class SimpleExecutor implements JdbcExecutor {
     private static final int DEFAULT_TIMEOUT = 10000;
     protected int timeout;
-    private JdbcRpcConnector connector;
-    private RpcSyncObject sync;
-    private ConcurrentHashMap<String, RpcCallBackSync> rpcCache = new ConcurrentHashMap<String, RpcCallBackSync>();
+    private JdbcConnector connector;
+    private SyncObject sync;
+    private ConcurrentHashMap<String, CallBackSync> rpcCache = new ConcurrentHashMap<String, CallBackSync>();
 
 
-    public SimpleRpcExecutor(JdbcRpcConnector connector) {
+    public SimpleExecutor(JdbcConnector connector) {
         this(connector, DEFAULT_TIMEOUT);
     }
 
-    public SimpleRpcExecutor(JdbcRpcConnector connector, int timeout) {
+    public SimpleExecutor(JdbcConnector connector, int timeout) {
         this.timeout = timeout;
         this.connector = connector;
         this.connector.registerExecutor(this);
-        sync = new RpcSyncObject();
+        sync = new SyncObject();
     }
 
     @Override
     public RpcResponse send(RpcRequest request) throws Exception {
-        RpcCallBackSync sync = new RpcCallBackSync(request.getRequestId(), request);
+        CallBackSync sync = new CallBackSync(request.getRequestId(), request);
         rpcCache.put(request.getRequestId(), sync);
         connector.sendRpcObject(request, timeout);
         this.sync.waitForResult(timeout, sync);
@@ -63,7 +65,7 @@ public class SimpleRpcExecutor implements JdbcRpcExecutor {
 
     @Override
     public void onRpcResponse(RpcResponse rpc) {
-        RpcCallBackSync sync = rpcCache.get(rpc.getRequestId());
+        CallBackSync sync = rpcCache.get(rpc.getRequestId());
         if (sync != null && sync.getRpcId().equals(rpc.getRequestId())) {
             this.sync.notifyResult(sync, rpc);
         }

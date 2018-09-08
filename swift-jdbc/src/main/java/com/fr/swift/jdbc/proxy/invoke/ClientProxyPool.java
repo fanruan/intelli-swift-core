@@ -1,6 +1,7 @@
-package com.fr.swift.jdbc.rpc.invoke;
+package com.fr.swift.jdbc.proxy.invoke;
 
 
+import com.fr.swift.jdbc.mode.Mode;
 import com.fr.third.org.apache.commons.pool2.KeyedPooledObjectFactory;
 import com.fr.third.org.apache.commons.pool2.impl.GenericKeyedObjectPool;
 import com.fr.third.org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig;
@@ -18,18 +19,18 @@ public class ClientProxyPool extends GenericKeyedObjectPool<String, ClientProxy>
         super(factory, config);
     }
 
-    public static ClientProxyPool newInstance(GenericKeyedObjectPoolConfig config) {
-        return new ClientProxyPool(new NioClientProxyPooledFactory(), config);
+    public static ClientProxyPool newInstance(GenericKeyedObjectPoolConfig config, Mode mode) {
+        return new ClientProxyPool(new ClientProxyPooledFactory(mode), config);
     }
 
-    public static ClientProxyPool getInstance() {
+    public static ClientProxyPool getInstance(Mode mode) {
         if (null == instance) {
             synchronized (ClientProxyPool.class) {
                 if (null == instance) {
                     GenericKeyedObjectPoolConfig config = new GenericKeyedObjectPoolConfig();
                     config.setTimeBetweenEvictionRunsMillis(IDLE_OBJ_EXPIRE_TIME);
                     config.setMinEvictableIdleTimeMillis(IDLE_OBJ_EXPIRE_TIME);
-                    instance = newInstance(config);
+                    instance = newInstance(config, mode);
                 }
             }
         }

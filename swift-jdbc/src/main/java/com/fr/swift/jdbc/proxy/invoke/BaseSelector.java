@@ -1,5 +1,7 @@
-package com.fr.swift.jdbc.rpc;
+package com.fr.swift.jdbc.proxy.invoke;
 
+import com.fr.swift.jdbc.proxy.JdbcConnector;
+import com.fr.swift.jdbc.proxy.JdbcSelector;
 import com.fr.swift.jdbc.thread.JdbcThreadFactory;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rpc.bean.RpcResponse;
@@ -11,10 +13,10 @@ import java.util.concurrent.Executors;
  * @author yee
  * @date 2018/9/6
  */
-public abstract class AbstractRpcSelector<T extends JdbcRpcConnector> implements JdbcRpcSelector<T> {
+public abstract class BaseSelector<T extends JdbcConnector> implements JdbcSelector<T> {
     private ExecutorService singleNotifyThread;
 
-    public AbstractRpcSelector() {
+    public BaseSelector() {
     }
 
     @Override

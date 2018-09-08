@@ -1,4 +1,4 @@
-package com.fr.swift.jdbc.rpc;
+package com.fr.swift.jdbc.proxy.invoke;
 
 import com.fr.swift.jdbc.exception.RpcException;
 import com.fr.swift.rpc.bean.RpcResponse;
@@ -7,8 +7,8 @@ import com.fr.swift.rpc.bean.RpcResponse;
  * @author yee
  * @date 2018/8/26
  */
-public class RpcSyncObject {
-    public void waitForResult(int time, RpcCallBackSync sync) {
+public class SyncObject {
+    public void waitForResult(int time, CallBackSync sync) {
         int timeAll = 0;
         while (!sync.isDone()) {
             try {
@@ -23,7 +23,7 @@ public class RpcSyncObject {
         }
     }
 
-    public void notifyResult(RpcCallBackSync sync, RpcResponse rpc) {
+    public void notifyResult(CallBackSync sync, RpcResponse rpc) {
         if (sync != null) {
             sync.setResponse(rpc);
         }

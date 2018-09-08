@@ -1,4 +1,4 @@
-package com.fr.swift.jdbc.rpc;
+package com.fr.swift.jdbc.proxy.invoke;
 
 import com.fr.swift.rpc.bean.RpcResponse;
 import com.fr.swift.rpc.bean.impl.RpcRequest;
@@ -12,7 +12,7 @@ import java.util.concurrent.TimeoutException;
  * @author yee
  * @date 2018/8/26
  */
-public class RpcCallBackSync implements Future<RpcResponse> {
+public class CallBackSync implements Future<RpcResponse> {
 
     private String rpcId;
 
@@ -26,7 +26,7 @@ public class RpcCallBackSync implements Future<RpcResponse> {
      */
     private RpcResponse response;
 
-    public RpcCallBackSync(String rpcId, RpcRequest request) {
+    public CallBackSync(String rpcId, RpcRequest request) {
         this.rpcId = rpcId;
         this.request = request;
     }

@@ -1,4 +1,4 @@
-package com.fr.swift.jdbc.rpc;
+package com.fr.swift.jdbc.proxy.invoke;
 
 import com.fr.swift.api.rpc.DataMaintenanceService;
 import com.fr.swift.api.rpc.SelectService;
@@ -7,8 +7,6 @@ import com.fr.swift.api.rpc.bean.Column;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Where;
 import com.fr.swift.jdbc.result.SwiftPaginationResultSet;
-import com.fr.swift.jdbc.rpc.invoke.ClientProxy;
-import com.fr.swift.jdbc.rpc.invoke.ClientProxyPool;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.result.serialize.SerializableDetailResultSet;
 import com.fr.swift.source.Row;
@@ -23,25 +21,25 @@ import java.util.List;
  * @author yee
  * @date 2018/8/26
  */
-public class RpcCaller implements TableService {
+public class JdbcCaller implements TableService {
 
     protected String address;
     protected ClientProxyPool pool;
 
-    public static SelectRpcCaller connectSelectService(String address, ClientProxyPool proxy) {
-        return new SelectRpcCaller(address, proxy);
+    public static SelectJdbcCaller connectSelectService(String address, ClientProxyPool proxy) {
+        return new SelectJdbcCaller(address, proxy);
     }
 
-    public static SelectRpcCaller connectSelectService(String host, int port, ClientProxyPool proxy) {
-        return new SelectRpcCaller(host, port, proxy);
+    public static SelectJdbcCaller connectSelectService(String host, int port, ClientProxyPool proxy) {
+        return new SelectJdbcCaller(host, port, proxy);
     }
 
-    public static MaintenanceRpcCaller connectMaintenanceService(String address, ClientProxyPool proxy) {
-        return new MaintenanceRpcCaller(address, proxy);
+    public static MaintenanceJdbcCaller connectMaintenanceService(String address, ClientProxyPool proxy) {
+        return new MaintenanceJdbcCaller(address, proxy);
     }
 
-    public static MaintenanceRpcCaller connectMaintenanceService(String host, int port, ClientProxyPool proxy) {
-        return new MaintenanceRpcCaller(host, port, proxy);
+    public static MaintenanceJdbcCaller connectMaintenanceService(String host, int port, ClientProxyPool proxy) {
+        return new MaintenanceJdbcCaller(host, port, proxy);
     }
 
     private SwiftMetaData getMetaData(SwiftDatabase schema, String tableName) throws Exception {
@@ -132,13 +130,13 @@ public class RpcCaller implements TableService {
         return null != detectiveMetaData(schema, tableName);
     }
 
-    public static class SelectRpcCaller extends RpcCaller implements SelectService, TableService {
-        private SelectRpcCaller(String address, ClientProxyPool proxy) {
+    public static class SelectJdbcCaller extends JdbcCaller implements SelectService, TableService {
+        private SelectJdbcCaller(String address, ClientProxyPool proxy) {
             this.address = address;
             this.pool = proxy;
         }
 
-        private SelectRpcCaller(String host, int port, ClientProxyPool proxy) {
+        private SelectJdbcCaller(String host, int port, ClientProxyPool proxy) {
             this(host + ":" + port, proxy);
         }
 
@@ -148,7 +146,10 @@ public class RpcCaller implements TableService {
             try {
                 proxy = pool.borrowObject(address);
                 SwiftResultSet resultSet = proxy.getProxy(SelectService.class).query(database, queryJson);
-                return new SwiftPaginationResultSet((SerializableDetailResultSet) resultSet, this, database);
+                if (resultSet instanceof SerializableDetailResultSet) {
+                    return new SwiftPaginationResultSet((SerializableDetailResultSet) resultSet, this, database);
+                }
+                return resultSet;
             } catch (Exception e) {
                 SwiftLoggers.getLogger().error(e);
                 pool.invalidateObject(address, proxy);
@@ -159,13 +160,13 @@ public class RpcCaller implements TableService {
         }
     }
 
-    public static class MaintenanceRpcCaller extends RpcCaller implements DataMaintenanceService, TableService {
-        private MaintenanceRpcCaller(String address, ClientProxyPool proxy) {
+    public static class MaintenanceJdbcCaller extends JdbcCaller implements DataMaintenanceService, TableService {
+        private MaintenanceJdbcCaller(String address, ClientProxyPool proxy) {
             this.address = address;
             this.pool = proxy;
         }
 
-        private MaintenanceRpcCaller(String host, int port, ClientProxyPool proxy) {
+        private MaintenanceJdbcCaller(String host, int port, ClientProxyPool proxy) {
             this(host + ":" + port, proxy);
         }
 

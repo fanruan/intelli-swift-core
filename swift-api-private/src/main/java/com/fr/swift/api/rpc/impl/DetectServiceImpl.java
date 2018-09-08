@@ -3,13 +3,10 @@ package com.fr.swift.api.rpc.impl;
 import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.SwiftApi;
 import com.fr.swift.api.rpc.DetectService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.event.global.GetAnalyseAndRealTimeAddrEvent;
-import com.fr.swift.exception.SwiftProxyException;
-import com.fr.swift.property.SwiftProperty;
+import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.ServiceType;
-import com.fr.swift.service.listener.SwiftServiceListenerHandler;
-import com.fr.swift.utils.ClusterProxyUtils;
+import com.fr.swift.utils.ClusterCommonUtils;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,15 +24,15 @@ class DetectServiceImpl implements DetectService {
     @SwiftApi
     public Map<ServiceType, List<String>> detectiveAnalyseAndRealTime(String defaultAddress) {
         try {
-            if (SwiftContext.get().getBean("swiftProperty", SwiftProperty.class).isCluster()) {
-                return (Map<ServiceType, List<String>>) ClusterProxyUtils.getMasterProxy(SwiftServiceListenerHandler.class).trigger(new GetAnalyseAndRealTimeAddrEvent());
+            if (ClusterSelector.getInstance().getFactory().isCluster()) {
+                return (Map<ServiceType, List<String>>) ClusterCommonUtils.runSyncMaster(new GetAnalyseAndRealTimeAddrEvent());
             } else {
                 Map<ServiceType, List<String>> result = new HashMap<ServiceType, List<String>>();
                 result.put(ServiceType.ANALYSE, Collections.singletonList(defaultAddress));
                 result.put(ServiceType.REAL_TIME, Collections.singletonList(defaultAddress));
                 return result;
             }
-        } catch (SwiftProxyException e) {
+        } catch (Exception e) {
             return Collections.emptyMap();
         }
     }

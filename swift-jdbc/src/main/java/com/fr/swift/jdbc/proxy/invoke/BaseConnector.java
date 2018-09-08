@@ -1,6 +1,8 @@
-package com.fr.swift.jdbc.rpc;
+package com.fr.swift.jdbc.proxy.invoke;
 
 import com.fr.swift.jdbc.exception.RpcException;
+import com.fr.swift.jdbc.proxy.JdbcConnector;
+import com.fr.swift.jdbc.proxy.JdbcExecutor;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rpc.bean.RpcResponse;
 import com.fr.swift.rpc.bean.impl.RpcRequest;
@@ -13,39 +15,40 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * @author yee
  * @date 2018/9/6
  */
-public abstract class AbstractRpcConnector implements JdbcRpcConnector {
+public abstract class BaseConnector implements JdbcConnector {
     protected String host = "localhost";
     protected int port = 7000;
     private ConcurrentLinkedQueue<RpcRequest> sendQueueCache = new ConcurrentLinkedQueue<RpcRequest>();
-    private List<JdbcRpcExecutor> rpcExecutors;
+    private List<JdbcExecutor> rpcExecutors;
 
-    public AbstractRpcConnector(String host, int port) {
+    public BaseConnector(String host, int port) {
         this.host = host;
         this.port = port == -1 ? 7000 : port;
-        this.rpcExecutors = new ArrayList<JdbcRpcExecutor>();
+        this.rpcExecutors = new ArrayList<JdbcExecutor>();
     }
 
-    public AbstractRpcConnector(String address) {
+    public BaseConnector(String address) {
         String[] array = address.split(":");
         host = array[0];
         if (array.length > 1) {
             port = Integer.parseInt(array[1]);
         }
-        rpcExecutors = new ArrayList<JdbcRpcExecutor>();
+        rpcExecutors = new ArrayList<JdbcExecutor>();
     }
 
-    public AbstractRpcConnector() {
+    public BaseConnector() {
+        rpcExecutors = new ArrayList<JdbcExecutor>();
     }
 
     @Override
     public void fireRpcResponse(RpcResponse object) {
-        for (JdbcRpcExecutor rpcExecutor : rpcExecutors) {
+        for (JdbcExecutor rpcExecutor : rpcExecutors) {
             rpcExecutor.onRpcResponse(object);
         }
     }
 
     @Override
-    public void registerExecutor(JdbcRpcExecutor executor) {
+    public void registerExecutor(JdbcExecutor executor) {
         rpcExecutors.add(executor);
     }
 
@@ -71,5 +74,13 @@ public abstract class AbstractRpcConnector implements JdbcRpcConnector {
     public void handlerException(Exception e) {
         SwiftLoggers.getLogger().error(e);
         stop();
+    }
+
+    public RpcRequest getRequest() {
+        return sendQueueCache.poll();
+    }
+
+    public boolean isNeedToSend() {
+        return null != sendQueueCache.peek();
     }
 }

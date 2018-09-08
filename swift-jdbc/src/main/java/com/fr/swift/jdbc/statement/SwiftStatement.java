@@ -5,9 +5,9 @@ import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
 import com.fr.swift.jdbc.invoke.SqlInvoker;
 import com.fr.swift.jdbc.parser.SqlParserFactory;
+import com.fr.swift.jdbc.proxy.invoke.JdbcCaller;
 import com.fr.swift.jdbc.result.EmptyResultSet;
 import com.fr.swift.jdbc.result.ResultSetWrapper;
-import com.fr.swift.jdbc.rpc.RpcCaller;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.ResultSet;
@@ -19,11 +19,11 @@ import java.sql.SQLException;
  * @date 2018/8/17
  */
 public class SwiftStatement extends BaseSwiftStatement {
-    private RpcCaller.SelectRpcCaller caller;
-    private RpcCaller.MaintenanceRpcCaller maintenanceRpcCaller;
+    private JdbcCaller.SelectJdbcCaller caller;
+    private JdbcCaller.MaintenanceJdbcCaller maintenanceRpcCaller;
     private SwiftDatabase database;
 
-    public SwiftStatement(SwiftDatabase database, RpcCaller.SelectRpcCaller caller, RpcCaller.MaintenanceRpcCaller maintenanceRpcCaller) {
+    public SwiftStatement(SwiftDatabase database, JdbcCaller.SelectJdbcCaller caller, JdbcCaller.MaintenanceJdbcCaller maintenanceRpcCaller) {
         this.database = database;
         this.caller = caller;
         this.maintenanceRpcCaller = maintenanceRpcCaller;
@@ -37,7 +37,7 @@ public class SwiftStatement extends BaseSwiftStatement {
     public ResultSet executeQuery(String sql) throws SQLException {
         SwiftResultSet resultSet = null;
         try {
-            SqlInvoker invoke = SqlParserFactory.parseSql(sql, database, caller);
+            SqlInvoker invoke = SqlParserFactory.parseSql(sql, database, caller, maintenanceRpcCaller);
             if (null != invoke) {
                 switch (invoke.getType()) {
                     case QUERY:
@@ -58,7 +58,7 @@ public class SwiftStatement extends BaseSwiftStatement {
     @Override
     public int executeUpdate(String sql) throws SQLException {
         try {
-            SqlInvoker invoke = SqlParserFactory.parseSql(sql, database, maintenanceRpcCaller);
+            SqlInvoker invoke = SqlParserFactory.parseSql(sql, database, caller, maintenanceRpcCaller);
             if (null != invoke) {
                 switch (invoke.getType()) {
                     case INSERT:
