@@ -2,14 +2,17 @@ package com.fr.swift.service;
 
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SegmentTransfer;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
@@ -18,6 +21,7 @@ import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 import com.fr.third.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -64,12 +68,26 @@ public class ScheduledRealtimeTransfer implements Runnable {
     }
 
     public static class RealtimeToHistoryTransfer extends SegmentTransfer {
+        private final SwiftRepositoryManager manager = SwiftContext.get().getBean(SwiftRepositoryManager.class);
         public RealtimeToHistoryTransfer(SegmentKey realtimeSegKey) {
             super(realtimeSegKey, getHistorySegKey(realtimeSegKey));
         }
 
         private static SegmentKey getHistorySegKey(SegmentKey realtimeSegKey) {
             return new SegmentKeyBean(realtimeSegKey.getTable().getId(), realtimeSegKey.getUri(), realtimeSegKey.getOrder(), StoreType.FINE_IO, realtimeSegKey.getSwiftSchema());
+        }
+
+        @Override
+        protected void onSucceed() {
+            super.onSucceed();
+            if (ClusterSelector.getInstance().getFactory().isCluster()) {
+                String local = CubeUtil.getAbsoluteSegPath(newSegKey);
+                try {
+                    manager.currentRepo().copyToRemote(local, newSegKey.getUri().getPath());
+                } catch (IOException e) {
+                    SwiftLoggers.getLogger().error(String.format("Cannot upload Segment which path is %s", local), e);
+                }
+            }
         }
     }
 }

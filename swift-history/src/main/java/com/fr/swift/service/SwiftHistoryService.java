@@ -21,6 +21,7 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.operator.delete.WhereDeleter;
+import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
@@ -98,7 +99,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                 if (segmentKey.getStoreType() == Types.StoreType.FINE_IO) {
                     if (!segmentManager.getSegment(segmentKey).isReadable()) {
                         String remotePath = String.format("%s/%s", segmentKey.getSwiftSchema().getDir(), segmentKey.getUri().getPath());
-                        if (repository.exists(remotePath)) {
+                        if (ClusterSelector.getInstance().getFactory().isCluster() && repository.exists(remotePath)) {
                             if (null == needDownload.get(table)) {
                                 needDownload.put(table, new HashSet<String>());
                             }
