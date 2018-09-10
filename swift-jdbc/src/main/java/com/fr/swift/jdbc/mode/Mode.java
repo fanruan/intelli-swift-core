@@ -9,15 +9,20 @@ import com.fr.swift.jdbc.rpc.nio.RpcNioConnector;
  * @date 2018/8/29
  */
 public enum Mode {
-    EMB, SERVER;
-
-    public JdbcConnector createConnector(String address) {
-        if (this == EMB) {
+    EMB {
+        @Override
+        public JdbcConnector createConnector(String address) {
             return new EmbJdbcConnector();
-        } else {
+        }
+    }, SERVER {
+        @Override
+        public JdbcConnector createConnector(String address) {
             return new RpcNioConnector(address);
         }
-    }
+    };
+
+
+    public abstract JdbcConnector createConnector(String address);
     public static Mode fromKey(String mode) {
         return Mode.valueOf(mode.toUpperCase());
     }

@@ -81,7 +81,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
         queryBeanFactory = SwiftContext.get().getBean(QueryBeanFactory.class);
         segmentService = SwiftContext.get().getBean(SwiftSegmentServiceProvider.class);
-        loadDataService = SwiftExecutors.newCachedThreadPool(new PoolThreadFactory(SwiftHistoryService.class));
+        loadDataService = SwiftExecutors.newSingleThreadExecutor(new PoolThreadFactory(SwiftHistoryService.class));
         checkSegmentExists();
         return true;
     }
