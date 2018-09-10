@@ -4,7 +4,7 @@ import com.fr.swift.jdbc.decoder.SerializableDecoder;
 import com.fr.swift.jdbc.encoder.SerializableEncoder;
 import com.fr.swift.jdbc.exception.NoCodecResponseException;
 import com.fr.swift.jdbc.exception.RpcException;
-import com.fr.swift.jdbc.rpc.AbstractRpcSelector;
+import com.fr.swift.jdbc.proxy.invoke.BaseSelector;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rpc.bean.RpcResponse;
 import com.fr.swift.rpc.bean.impl.RpcRequest;
@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author yee
  * @date 2018/8/26
  */
-public class RpcNioSelector extends AbstractRpcSelector<RpcNioConnector> {
+public class RpcNioSelector extends BaseSelector<RpcNioConnector> {
     private static final int READ_OP = SelectionKey.OP_READ;
     private static final int READ_WRITE_OP = SelectionKey.OP_READ | SelectionKey.OP_WRITE;
     private Selector selector;

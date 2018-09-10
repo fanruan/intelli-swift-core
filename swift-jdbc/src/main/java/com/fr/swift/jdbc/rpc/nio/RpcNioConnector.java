@@ -4,8 +4,8 @@ import com.fr.swift.jdbc.decoder.NettyObjectDecoder;
 import com.fr.swift.jdbc.decoder.SerializableDecoder;
 import com.fr.swift.jdbc.encoder.NettyObjectEncoder;
 import com.fr.swift.jdbc.encoder.SerializableEncoder;
-import com.fr.swift.jdbc.rpc.AbstractRpcConnector;
-import com.fr.swift.jdbc.rpc.JdbcRpcSelector;
+import com.fr.swift.jdbc.proxy.JdbcSelector;
+import com.fr.swift.jdbc.proxy.invoke.BaseConnector;
 import com.fr.swift.rpc.bean.impl.RpcRequest;
 
 import java.io.IOException;
@@ -17,10 +17,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * @author yee
  * @date 2018/8/26
  */
-public class RpcNioConnector extends AbstractRpcConnector {
+public class RpcNioConnector extends BaseConnector {
     protected ConcurrentLinkedQueue<RpcRequest> sendQueueCache = new ConcurrentLinkedQueue<RpcRequest>();
     private SocketChannel channel;
-    private JdbcRpcSelector selector;
+    private JdbcSelector selector;
 
 
     public RpcNioConnector(String address, SerializableEncoder encoder, SerializableDecoder decoder) {
@@ -41,21 +41,13 @@ public class RpcNioConnector extends AbstractRpcConnector {
         this.selector = new RpcNioSelector(encoder, decoder);
     }
 
-    public RpcNioConnector(SocketChannel channel, JdbcRpcSelector selector) {
+    public RpcNioConnector(SocketChannel channel, JdbcSelector selector) {
         this.channel = channel;
         this.selector = selector;
     }
 
     public SocketChannel getChannel() {
         return channel;
-    }
-
-    public RpcRequest getRequest() {
-        return sendQueueCache.poll();
-    }
-
-    public boolean isNeedToSend() {
-        return null != sendQueueCache.peek();
     }
 
     @Override

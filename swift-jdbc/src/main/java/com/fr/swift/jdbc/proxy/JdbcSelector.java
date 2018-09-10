@@ -1,4 +1,4 @@
-package com.fr.swift.jdbc.rpc;
+package com.fr.swift.jdbc.proxy;
 
 import com.fr.swift.rpc.bean.RpcResponse;
 
@@ -6,7 +6,7 @@ import com.fr.swift.rpc.bean.RpcResponse;
  * @author yee
  * @date 2018/9/6
  */
-public interface JdbcRpcSelector<T extends JdbcRpcConnector> extends JdbcRpcComponent {
+public interface JdbcSelector<T extends JdbcConnector> extends JdbcComponent {
     void register(T connector);
 
     void notifySend();

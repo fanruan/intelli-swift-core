@@ -17,6 +17,7 @@ public class ApiServiceAddressHolder extends AbstractServiceAddressHolder {
 
     private ApiServiceAddressHolder(String address) {
         super(address);
+        detect();
     }
 
     public static ApiServiceAddressHolder getHolder(String address) {

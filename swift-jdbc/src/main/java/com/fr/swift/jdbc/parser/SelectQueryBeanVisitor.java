@@ -17,9 +17,8 @@ import com.fr.general.jsqlparser.statement.select.WithItem;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
 import com.fr.swift.jdbc.exception.SwiftJDBCTableAbsentException;
-import com.fr.swift.jdbc.metadata.emb.EmbMetaDataGetter;
-import com.fr.swift.jdbc.metadata.server.ServerMetaDataGetter;
-import com.fr.swift.jdbc.rpc.RpcCaller;
+import com.fr.swift.jdbc.metadata.server.TableMetaDataGetter;
+import com.fr.swift.jdbc.proxy.invoke.JdbcCaller;
 import com.fr.swift.query.info.bean.query.AbstractSingleTableQueryInfoBean;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
@@ -33,9 +32,9 @@ import java.util.UUID;
 /**
  * Created by pony on 2018/8/17.
  */
-public class SelectQueryBeanVisitor implements SelectVisitor,FromItemVisitor,QueryBeanParser {
+public class SelectQueryBeanVisitor implements SelectVisitor, FromItemVisitor, QueryBeanParser {
     private AbstractSingleTableQueryInfoBean queryBean;
-    private RpcCaller caller;
+    private JdbcCaller caller;
     private SwiftMetaData metaData;
     private SwiftDatabase schema;
 
@@ -46,7 +45,7 @@ public class SelectQueryBeanVisitor implements SelectVisitor,FromItemVisitor,Que
         }
     };
 
-    public SelectQueryBeanVisitor(SwiftDatabase schema, RpcCaller caller) {
+    public SelectQueryBeanVisitor(SwiftDatabase schema, JdbcCaller caller) {
         this.schema = schema;
         this.caller = caller;
     }
@@ -56,7 +55,7 @@ public class SelectQueryBeanVisitor implements SelectVisitor,FromItemVisitor,Que
         FromItem item = plainSelect.getFromItem();
         List<Expression> groupbyColumns = plainSelect.getGroupByColumnReferences();
         DimensionMetricVisitor subVisitor;
-        if (groupbyColumns == null || groupbyColumns.isEmpty()){
+        if (groupbyColumns == null || groupbyColumns.isEmpty()) {
             queryBean = new DetailQueryInfoBean();
             subVisitor = new DetailQueryBeanVisitor((DetailQueryInfoBean) queryBean, metaDataGetter);
         } else {
@@ -65,16 +64,16 @@ public class SelectQueryBeanVisitor implements SelectVisitor,FromItemVisitor,Que
         }
         queryBean.setQueryId(UUID.randomUUID().toString());
         item.accept(this);
-        if (groupbyColumns != null){
+        if (groupbyColumns != null) {
             GroupByDimensionVisitor visitor = new GroupByDimensionVisitor((GroupQueryInfoBean) queryBean, metaDataGetter);
-            for (Expression expression : groupbyColumns){
+            for (Expression expression : groupbyColumns) {
                 expression.accept(visitor);
             }
         }
-        for (SelectItem selectItem : plainSelect.getSelectItems()){
+        for (SelectItem selectItem : plainSelect.getSelectItems()) {
             selectItem.accept(subVisitor);
         }
-        if (plainSelect.getWhere() != null){
+        if (plainSelect.getWhere() != null) {
             plainSelect.getWhere().accept(subVisitor);
         }
     }
@@ -97,11 +96,7 @@ public class SelectQueryBeanVisitor implements SelectVisitor,FromItemVisitor,Que
     @Override
     public void visit(Table table) {
         String tableName = table.getName();
-        if (null != caller) {
-            metaData = new ServerMetaDataGetter(schema, tableName, caller).get();
-        } else {
-            metaData = new EmbMetaDataGetter(schema, tableName).get();
-        }
+        metaData = new TableMetaDataGetter(schema, tableName, caller).get();
         if (null == metaData) {
             Crasher.crash(new SwiftJDBCTableAbsentException(tableName));
         }

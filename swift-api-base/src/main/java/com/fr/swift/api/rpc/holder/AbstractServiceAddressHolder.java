@@ -24,10 +24,9 @@ public abstract class AbstractServiceAddressHolder implements ServiceAddressHold
         this.address = address;
         queryServiceAddress = new ConcurrentLinkedQueue<String>();
         insertServiceAddress = new ConcurrentLinkedQueue<String>();
-        detect();
     }
 
-    private boolean detect() {
+    protected boolean detect() {
         if (!detected) {
             try {
                 Map<ServiceType, List<String>> addresses = detectiveAddress(address);

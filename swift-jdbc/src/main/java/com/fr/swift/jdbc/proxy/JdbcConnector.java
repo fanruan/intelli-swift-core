@@ -1,4 +1,4 @@
-package com.fr.swift.jdbc.rpc;
+package com.fr.swift.jdbc.proxy;
 
 import com.fr.swift.rpc.bean.RpcResponse;
 import com.fr.swift.rpc.bean.impl.RpcRequest;
@@ -7,7 +7,7 @@ import com.fr.swift.rpc.bean.impl.RpcRequest;
  * @author yee
  * @date 2018/9/6
  */
-public interface JdbcRpcConnector extends JdbcRpcComponent {
+public interface JdbcConnector extends JdbcComponent {
     /**
      * 发送响应
      *
@@ -20,7 +20,7 @@ public interface JdbcRpcConnector extends JdbcRpcComponent {
      *
      * @param executor
      */
-    void registerExecutor(JdbcRpcExecutor executor);
+    void registerExecutor(JdbcExecutor executor);
 
     /**
      * 发送对象

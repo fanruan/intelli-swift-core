@@ -1,5 +1,6 @@
 package com.fr.swift.jdbc.result;
 
+import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
@@ -21,7 +22,7 @@ public enum EmptyResultSet implements SwiftResultSet {
 
     @Override
     public SwiftMetaData getMetaData() throws SQLException {
-        return null;
+        return new SwiftMetaDataBean();
     }
 
     @Override

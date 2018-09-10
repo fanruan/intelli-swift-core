@@ -1,10 +1,10 @@
-package com.fr.swift.jdbc.rpc;
+package com.fr.swift.jdbc.proxy;
 
 /**
  * @author yee
  * @date 2018/9/6
  */
-public interface JdbcRpcComponent {
+public interface JdbcComponent {
     /**
      * 启动
      */

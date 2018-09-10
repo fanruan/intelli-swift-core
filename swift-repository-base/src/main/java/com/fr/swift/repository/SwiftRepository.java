@@ -16,4 +16,6 @@ public interface SwiftRepository {
     boolean delete(String remote) throws IOException;
 
     long getSize(String path) throws IOException;
+
+    boolean exists(String path);
 }

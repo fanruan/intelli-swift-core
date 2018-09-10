@@ -2,7 +2,7 @@ package com.fr.swift.jdbc.result;
 
 import com.fr.swift.api.rpc.result.AbstractSwiftResultSet;
 import com.fr.swift.db.SwiftDatabase;
-import com.fr.swift.jdbc.rpc.RpcCaller;
+import com.fr.swift.jdbc.proxy.invoke.JdbcCaller;
 import com.fr.swift.result.serialize.SerializableDetailResultSet;
 
 import java.sql.SQLException;
@@ -12,9 +12,9 @@ import java.sql.SQLException;
  * @date 2018/8/27
  */
 public class SwiftPaginationResultSet extends AbstractSwiftResultSet {
-    private RpcCaller.SelectRpcCaller caller;
+    private JdbcCaller.SelectJdbcCaller caller;
 
-    public SwiftPaginationResultSet(SerializableDetailResultSet resultSet, RpcCaller.SelectRpcCaller caller, SwiftDatabase database) throws SQLException {
+    public SwiftPaginationResultSet(SerializableDetailResultSet resultSet, JdbcCaller.SelectJdbcCaller caller, SwiftDatabase database) throws SQLException {
         super(resultSet, database);
         this.caller = caller;
     }

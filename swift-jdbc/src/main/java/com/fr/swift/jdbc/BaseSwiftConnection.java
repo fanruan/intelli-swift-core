@@ -210,7 +210,7 @@ public abstract class BaseSwiftConnection implements java.sql.Connection {
 
     @Override
     public void setAutoCommit(boolean autoCommit) throws SQLException {
-        throw new SQLException(new SwiftJDBCNotSupportedException());
+
     }
 
     @Override
@@ -220,7 +220,6 @@ public abstract class BaseSwiftConnection implements java.sql.Connection {
 
     @Override
     public void rollback() throws SQLException {
-        throw new SQLException(new SwiftJDBCNotSupportedException());
     }
 
     @Override
