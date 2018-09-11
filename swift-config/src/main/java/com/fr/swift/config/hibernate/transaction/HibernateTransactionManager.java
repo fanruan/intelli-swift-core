@@ -1,11 +1,11 @@
 package com.fr.swift.config.hibernate.transaction;
 
+import com.fr.swift.config.hibernate.HibernateManager;
 import com.fr.third.org.hibernate.Session;
-import com.fr.third.org.hibernate.SessionFactory;
 import com.fr.third.org.hibernate.Transaction;
+import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.sql.SQLException;
 
 /**
@@ -15,11 +15,11 @@ import java.sql.SQLException;
 @Service
 public class HibernateTransactionManager {
 
-    @Resource(name = "swiftConfigSessionFactory")
-    private SessionFactory sessionFactory;
+    @Autowired
+    private HibernateManager hibernateManager;
 
     public <T> T doTransactionIfNeed(HibernateWorker<T> worker) throws SQLException {
-        Session session = sessionFactory.openSession();
+        Session session = hibernateManager.getFactory().openSession();
         if (worker.needTransaction()) {
             Transaction tx = session.beginTransaction();
             try {
