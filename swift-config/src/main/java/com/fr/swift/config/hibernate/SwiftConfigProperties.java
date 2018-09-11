@@ -1,6 +1,7 @@
 package com.fr.swift.config.hibernate;
 
 import com.fr.finedb.FineDBProperties;
+import com.fr.general.ComparatorUtils;
 import com.fr.stable.db.option.DBOption;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.beans.factory.annotation.Value;
@@ -22,8 +23,20 @@ public class SwiftConfigProperties {
         this.option = new DBOption().addRawProperty("hibernate.connection.provider_class", "com.fr.third.alibaba.druid.support.hibernate.DruidConnectionProvider");
     }
 
+    public Properties reConfiguration() {
+        if (isNeedReConfigure(getOption())) {
+            option = getOption();
+            return getProperties();
+        }
+        return null;
+    }
+
     public Properties getProperties() {
-        return selfStart ? this.option.getProperties() : FineDBProperties.getInstance().get().getProperties();
+        return getOption().getProperties();
+    }
+
+    private DBOption getOption() {
+        return selfStart ? this.option : FineDBProperties.getInstance().get();
     }
 
     public String getDriverClass() {
@@ -78,5 +91,13 @@ public class SwiftConfigProperties {
     @Autowired
     public void setSelfStart(@Value("${swift.selfStart}") boolean selfStart) {
         this.selfStart = selfStart;
+    }
+
+    private boolean isNeedReConfigure(DBOption option) {
+        return !ComparatorUtils.equals(this.option.getDriverClass(), option.getDriverClass())
+                || !ComparatorUtils.equals(this.option.getUrl(), option.getUrl())
+                || !ComparatorUtils.equals(this.option.getDialectClass(), option.getDialectClass())
+                || !ComparatorUtils.equals(this.option.getUsername(), option.getUsername())
+                || !ComparatorUtils.equals(this.option.getPassword(), option.getPassword());
     }
 }
