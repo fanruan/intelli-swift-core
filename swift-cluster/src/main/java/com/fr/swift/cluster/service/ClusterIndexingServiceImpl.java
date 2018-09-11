@@ -4,7 +4,6 @@ import com.fineio.FineIO;
 import com.fr.swift.annotation.RpcMethod;
 import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.SwiftService;
-import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
@@ -143,16 +142,13 @@ public class ClusterIndexingServiceImpl extends AbstractSwiftService implements 
             List<SegmentKey> segmentKeys = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).getSegmentByKey(sourceKey.getId());
             String cubePath = pathService.getSwiftPath();
             if (null != segmentKeys) {
+                repositoryManager.currentRepo().delete(String.format("%s/%s", dataSource.getMetadata().getSwiftDatabase().getDir(), sourceKey.getId()));
                 for (SegmentKey segmentKey : segmentKeys) {
                     try {
                         String uploadPath = String.format("%s/%s",
                                 segmentKey.getSwiftSchema().getDir(),
                                 segmentKey.getUri().getPath());
-                        String local = String.format("%s/%s/%d/%s",
-                                cubePath,
-                                segmentKey.getSwiftSchema().getDir(),
-                                tmpPath,
-                                segmentKey.getUri().getPath());
+                        String local = String.format("%s/%s", cubePath, CubeUtil.getHistorySegPath(dataSource, tmpPath, segmentKey.getOrder()));
                         upload(local, uploadPath);
                     } catch (Exception e) {
                         SwiftLoggers.getLogger().error("upload error! ", e);
@@ -277,17 +273,7 @@ public class ClusterIndexingServiceImpl extends AbstractSwiftService implements 
         }
 
         public void doAfterUpload(SwiftRpcEvent event) throws Exception {
-            ClusterCommonUtils.asyncCallMaster(event).addCallback(new AsyncRpcCallback() {
-                @Override
-                public void success(Object result) {
-
-                }
-
-                @Override
-                public void fail(Exception e) {
-
-                }
-            });
+            ClusterCommonUtils.asyncCallMaster(event);
         }
     }
 

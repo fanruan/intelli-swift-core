@@ -13,7 +13,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2018/8/26
  */
 public class SimpleExecutor implements JdbcExecutor {
-    private static final int DEFAULT_TIMEOUT = 10000;
+    /**
+     * 默认超时30秒
+     */
+    private static final int DEFAULT_TIMEOUT = 30000;
     protected int timeout;
     private JdbcConnector connector;
     private SyncObject sync;

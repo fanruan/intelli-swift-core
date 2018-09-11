@@ -186,7 +186,7 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
         try {
             return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<SegmentKey>() {
                 @Override
-                public SegmentKey work(Session session) {
+                public SegmentKey work(Session session) throws SQLException {
                     SegmentKey segKey = SwiftClusterSegmentServiceImpl.super.tryAppendSegment(tableKey, storeType);
                     SwiftSegmentLocationEntity locationEntity = new SwiftSegmentLocationEntity();
                     SwiftSegLocationEntityId id = new SwiftSegLocationEntityId();
@@ -194,6 +194,7 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
                     id.setSegmentId(new SwiftSegmentEntity(segKey).getId());
                     locationEntity.setId(id);
                     locationEntity.setSourceKey(segKey.getTable().getId());
+                    segmentLocationDao.saveOrUpdate(session, locationEntity);
                     return segKey;
                 }
             });
