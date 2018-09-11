@@ -42,6 +42,7 @@ import com.fr.swift.task.service.SwiftServiceCallable;
 import com.fr.swift.util.MonitorUtil;
 import com.fr.swift.util.concurrent.CommonExecutor;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -264,6 +265,12 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
             public void run() {
                 for (SegmentKey collateSegKey : collateSegKeys) {
                     SegmentUtils.clearSegment(collateSegKey);
+                    String remote = String.format("%s/%s", collateSegKey.getSwiftSchema().getDir(), collateSegKey.getUri().getPath());
+                    try {
+                        repositoryManager.currentRepo().delete(remote);
+                    } catch (IOException e) {
+                        SwiftLoggers.getLogger().error("Collate segment delete error. ", e);
+                    }
                 }
             }
         });
