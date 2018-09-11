@@ -19,6 +19,7 @@ import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.query.FilterBean;
 import com.fr.swift.query.query.QueryBean;
+import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.operator.delete.WhereDeleter;
@@ -26,6 +27,7 @@ import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.RealtimeService;
 import com.fr.swift.service.cluster.ClusterAnalyseService;
 import com.fr.swift.service.cluster.ClusterRealTimeService;
+import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
@@ -88,11 +90,12 @@ public class MetricProxy extends BaseMetric {
 
             QueryBean queryBean = LogQueryUtils.getDetailQueryBean(entity, queryCondition);
             SwiftResultSet resultSet = analyseService.getQueryResult(queryBean);
-            while (resultSet.hasNext()) {
-                tList.add(adaptor.apply(resultSet.getNextRow()));
+            List<Row> page = LogQueryUtils.getPage(resultSet, queryCondition);
+            for (Row row : page) {
+                tList.add(adaptor.apply(row));
             }
             dataList.list(tList);
-            dataList.setTotalCount(tList.size());
+            dataList.setTotalCount(((DetailResultSet) resultSet).getRowCount());
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         }

@@ -148,7 +148,6 @@ public class LogQueryUtils {
     static List<Row> getPage(SwiftResultSet resultSet, QueryCondition queryCondition) throws SQLException {
         long start = queryCondition.getSkip();
         long end = queryCondition.getSkip() + queryCondition.getCount();
-        // TODO: 2018/6/15 这边分页要做个缓存，用class + queryCondition.toString()作为key
         //是否需要分页
         boolean isLimit = queryCondition.isCountLimitValid();
         List<Row> rows = new ArrayList<Row>();
