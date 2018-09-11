@@ -85,7 +85,7 @@ public class LocalInvoker<T> implements Invoker<T> {
             return method.invoke(proxy, arguments);
         } else {
             LocalFuture localFuture = new LocalFuture();
-            com.fr.cluster.rpc.base.Result fineResult = new FineResult();
+            com.fr.rpc.Result fineResult = new FineResult();
 
             try {
                 Method method = proxy.getClass().getMethod(methodName, parameterTypes);
