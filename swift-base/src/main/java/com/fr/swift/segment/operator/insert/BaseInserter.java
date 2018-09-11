@@ -71,7 +71,9 @@ public abstract class BaseInserter {
         for (int i = 0; i < columns.size(); i++) {
             BitmapIndexedColumn bitmapIndex = columns.get(i).getBitmapIndex();
             ImmutableBitMap nullIndex = readable ? bitmapIndex.getNullIndex() : BitMaps.newRoaringMutable();
-            bitmapIndex.putNullIndex(nullIndex.getOr(nullIndices.get(i)));
+            MutableBitMap newNullIndex = nullIndices.get(i);
+            newNullIndex.or(nullIndex);
+            bitmapIndex.putNullIndex(newNullIndex);
         }
     }
 
