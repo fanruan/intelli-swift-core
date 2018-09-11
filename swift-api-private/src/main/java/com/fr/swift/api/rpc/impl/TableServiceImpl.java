@@ -78,7 +78,7 @@ class TableServiceImpl implements TableService {
     }
 
     @Override
-    @SwiftApi(enable = false)
+    @SwiftApi
     synchronized
     public int createTable(SwiftDatabase schema, String tableName, List<Column> columns) {
         if (isTableExists(schema, tableName)) {

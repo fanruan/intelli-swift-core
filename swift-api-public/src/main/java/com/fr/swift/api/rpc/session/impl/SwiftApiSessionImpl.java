@@ -60,7 +60,10 @@ public class SwiftApiSessionImpl implements SwiftPublicApiSession, DataMaintenan
     public SwiftResultSet query(SwiftDatabase database, String queryJson) {
         try {
             SwiftResultSet result = selectApi.query(database, queryJson);
-            return new SwiftApiResultSet((SerializableDetailResultSet) result, database, this);
+            if (result instanceof SerializableDetailResultSet) {
+                return new SwiftApiResultSet((SerializableDetailResultSet) result, database, this);
+            }
+            return result;
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
             return null;
