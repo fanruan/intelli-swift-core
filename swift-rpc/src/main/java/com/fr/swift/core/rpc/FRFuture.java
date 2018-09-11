@@ -1,6 +1,6 @@
 package com.fr.swift.core.rpc;
 
-import com.fr.cluster.rpc.base.Result;
+import com.fr.rpc.Result;
 import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.RpcFuture;
 import com.fr.swift.basics.base.AbstractRpcFuture;
