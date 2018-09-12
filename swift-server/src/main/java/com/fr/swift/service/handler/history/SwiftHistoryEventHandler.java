@@ -45,72 +45,6 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
                     return historyDataSyncManager.handle((HistoryLoadSegmentRpcEvent) event);
                 case COMMON_LOAD:
                     return handleCommonLoad(event);
-//                    Map<String, ClusterEntity> services = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.HISTORY);
-//                    if (null == services || services.isEmpty()) {
-//                        throw new RuntimeException("Cannot find history service");
-//                    }
-//                    Pair<String, List<String>> content = (Pair<String, List<String>>) event.getContent();
-//                    String needLoadSourceKey = content.getKey();
-//                    List<String> segmentKeys = content.getValue();
-//
-//                    Map<String, List<SegmentKey>> allSegments = clusterSegmentService.getAllSegments();
-//                    Map<String, List<SegmentKey>> needLoadSegments = new HashMap<String, List<SegmentKey>>();
-//                    if (StringUtils.isNotEmpty(needLoadSourceKey)) {
-//                        List<SegmentKey> keys = allSegments.get(needLoadSourceKey);
-//                        List<SegmentKey> target = new ArrayList<SegmentKey>();
-//                        for (SegmentKey key : keys) {
-//                            if (segmentKeys.contains(key.toString())) {
-//                                target.add(key);
-//                            }
-//                        }
-//                        needLoadSegments.put(needLoadSourceKey, target);
-//                    } else {
-//                        return null;
-//                    }
-//
-//                    final Map<String, List<SegmentDestination>> destinations = new HashMap<String, List<SegmentDestination>>();
-//                    Map<String, Set<SegmentKey>> result = dataSyncRuleService.getCurrentRule().calculate(services.keySet(), needLoadSegments, destinations);
-//                    Iterator<String> keyIterator = result.keySet().iterator();
-//                    try {
-//                        while (keyIterator.hasNext()) {
-//                            final String key = keyIterator.next();
-//                            ClusterEntity entity = services.get(key);
-//                            Iterator<SegmentKey> valueIterator = result.get(key).iterator();
-//                            Map<String, Set<String>> uriSet = new HashMap<String, Set<String>>();
-//                            final List<Pair<String, String>> idList = new ArrayList<Pair<String, String>>();
-//                            while (valueIterator.hasNext()) {
-//                                SegmentKey segmentKey = valueIterator.next();
-//                                if (null == uriSet.get(segmentKey.getTable().getId())) {
-//                                    uriSet.put(segmentKey.getTable().getId(), new HashSet<String>());
-//                                }
-//                                uriSet.get(segmentKey.getTable().getId()).add(segmentKey.getUri().getPath());
-//                                idList.add(Pair.of(segmentKey.getTable().getId(), segmentKey.toString()));
-//                            }
-//                            runAsyncRpc(key, entity.getServiceClass(), "load", uriSet, true)
-//                                    .addCallback(new AsyncRpcCallback() {
-//                                        @Override
-//                                        public void success(Object result) {
-//                                            Map<String, List<Pair<String, String>>> segmentTable = new HashMap<String, List<Pair<String, String>>>();
-//                                            segmentTable.put(key, idList);
-//                                            clusterSegmentService.updateSegmentTable(segmentTable);
-//                                            try {
-//                                                SwiftServiceHandlerManager.getManager().
-//                                                        handle(new SegmentLocationRpcEvent(SegmentLocationInfo.UpdateType.PART, new SegmentLocationInfoImpl(ServiceType.HISTORY, destinations)));
-//                                            } catch (Exception e) {
-//                                                fail(e);
-//                                            }
-//                                        }
-//
-//                                        @Override
-//                                        public void fail(Exception e) {
-//                                            LOGGER.error("Load failed! ", e);
-//                                        }
-//                                    });
-//                        }
-//                    } catch (Exception e) {
-//                        LOGGER.error(e.getMessage(), e);
-//                    }
-//                    return null;
                 default:
                     return null;
             }
@@ -125,8 +59,9 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
         if (null == services || services.isEmpty()) {
             throw new RuntimeException("Cannot find history service");
         }
-        Pair<String, List<String>> pair = (Pair<String, List<String>>) event.getContent();
+        Pair<String, Map<String, List<String>>> pair = (Pair<String, Map<String, List<String>>>) event.getContent();
         Iterator<Map.Entry<String, ClusterEntity>> iterator = services.entrySet().iterator();
+        Map<String, List<String>> uris = pair.getValue();
         while (iterator.hasNext()) {
             Map.Entry<String, ClusterEntity> entry = iterator.next();
             Map<String, List<SegmentKey>> map = clusterSegmentService.getOwnSegments(entry.getKey());
@@ -134,7 +69,10 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
             Set<String> needLoad = new HashSet<String>();
             if (!list.isEmpty()) {
                 for (SegmentKey segmentKey : list) {
-                    needLoad.add(pair.getValue().get(segmentKey.getOrder()));
+                    String segKey = segmentKey.toString();
+                    if (uris.containsKey(segKey)) {
+                        needLoad.addAll(uris.get(segKey));
+                    }
                 }
             }
             if (!needLoad.isEmpty()) {
