@@ -1,6 +1,6 @@
 package com.fr.swift.local;
 
-import com.fr.cluster.engine.rpc.base.FineResult;
+import com.fr.rpc.FineResult;
 import com.fr.swift.basics.Invocation;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.Result;
