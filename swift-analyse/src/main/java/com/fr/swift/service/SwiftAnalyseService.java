@@ -5,6 +5,8 @@ import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.exception.SwiftServiceException;
+import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.query.session.factory.SessionFactory;
@@ -73,6 +75,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
 
     @Override
     public SwiftResultSet getQueryResult(QueryBean info) throws Exception {
+        SwiftLoggers.getLogger().debug(QueryInfoBeanFactory.queryBean2String(info));
         return sessionFactory.openSession(info.getQueryId()).executeQuery(info);
     }
 
