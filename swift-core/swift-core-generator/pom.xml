@@ -21,6 +21,12 @@
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-core-source</artifactId>
             <version>${swift.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>swift-core-analyse</artifactId>
+                    <groupId>com.fr.intelligence</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 

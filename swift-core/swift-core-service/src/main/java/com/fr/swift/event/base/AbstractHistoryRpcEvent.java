@@ -15,6 +15,6 @@ public abstract class AbstractHistoryRpcEvent<T> implements SwiftRpcEvent<T> {
     public abstract Event subEvent();
 
     public enum Event implements SubEvent {
-        LOAD_SEGMENT, COMMON_LOAD
+        LOAD_SEGMENT, COMMON_LOAD, TRANS_COLLATE_LOAD
     }
 }
