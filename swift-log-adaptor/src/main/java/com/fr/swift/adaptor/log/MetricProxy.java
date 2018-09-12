@@ -187,7 +187,7 @@ public class MetricProxy extends BaseMetric {
         private Map<Class<?>, List<Object>> dataMap = new ConcurrentHashMap<Class<?>, List<Object>>();
 
         Sync() {
-            scheduler.scheduleWithFixedDelay(this, 0, 5, TimeUnit.SECONDS);
+            scheduler.scheduleWithFixedDelay(this, 5, 5, TimeUnit.SECONDS);
         }
 
         @Override

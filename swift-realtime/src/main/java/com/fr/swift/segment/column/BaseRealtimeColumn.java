@@ -13,6 +13,7 @@ import com.fr.swift.cube.io.impl.mem.SwiftObjectMemIo;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.segment.column.impl.BaseColumn;
 import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.third.guava.base.Optional;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -32,29 +33,31 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
     /**
      * row -> value
      */
-    private ObjectMemIo<V> detail = new SwiftObjectMemIo<V>(1);
+    private ObjectMemIo<V> detail;
 
     /**
      * value -> rows
      */
-    private ConcurrentMap<V, MutableBitMap> valToRows = new ConcurrentHashMap<V, MutableBitMap>();
+    private ConcurrentMap<V, MutableBitMap> valToRows;
 
-    private MutableBitMap nullIndex = BitMaps.newRoaringMutable();
+    private MutableBitMap nullIndex;
+
+    private Optional<Integer> nullId;
 
     /**
      * index <-> id
      */
-    private IndexAndId indexAndId = new IndexAndId();
+    private IndexAndId indexAndId;
 
     /**
      * id -> value
      */
-    private List<V> idToVal = new ArrayList<V>();
+    private List<V> idToVal;
 
     /**
      * value -> id
      */
-    private ConcurrentNavigableMap<V, Integer> valToId = new ConcurrentSkipListMap<V, Integer>(getComparator());
+    private ConcurrentNavigableMap<V, Integer> valToId;
 
     private class RealtimeDetailColumn implements DetailColumn<V> {
         @Override
@@ -62,7 +65,8 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
             detail.put(row, val);
 
             if (val == null) {
-                if (nullIndex.isEmpty()) {
+                if (!nullId.isPresent()) {
+                    nullId = Optional.of(idToVal.size());
                     idToVal.add(null);
                 }
                 nullIndex.add(row);
@@ -74,13 +78,13 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
                 return;
             }
 
+            valToId.put(val, nullId.isPresent() ? valToId.size() + 1 : valToId.size());
+
+            idToVal.add(val);
+
             MutableBitMap bitmap = BitMaps.newRoaringMutable();
             bitmap.add(row);
             valToRows.put(val, bitmap);
-
-            valToId.put(val, valToRows.size() - 1);
-
-            idToVal.add(val);
         }
 
         @Override
@@ -121,7 +125,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
     private class RealtimeDictColumn implements DictionaryEncodedColumn<V> {
         @Override
         public int size() {
-            return indexAndId.size() + 1;
+            return nullId.isPresent() ? indexAndId.size() : indexAndId.size() + 1;
         }
 
         @Override
@@ -130,7 +134,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
                 return null;
             }
 
-            int id = indexAndId.getId(index - 1);
+            int id = indexAndId.getId(nullId.isPresent() ? index : index - 1);
             return idToVal.get(id);
         }
 
@@ -142,7 +146,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
 
             if (valToId.containsKey(value)) {
                 int index = indexAndId.getIndex(valToId.get(value));
-                return index + 1;
+                return nullId.isPresent() ? index : index + 1;
             }
             return -1;
         }
@@ -227,6 +231,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
         public void release() {
             valToRows.clear();
             nullIndex = null;
+            nullId = null;
         }
 
         @Override
@@ -259,6 +264,15 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
     private void init() {
         BuildConf readConf = new BuildConf(IoType.READ, DataType.REALTIME_COLUMN);
         if (!DISCOVERY.exists(location, readConf)) {
+            detail = new SwiftObjectMemIo<V>(1);
+            valToRows = new ConcurrentHashMap<V, MutableBitMap>();
+            valToId = new ConcurrentSkipListMap<V, Integer>(getComparator());
+            idToVal = new ArrayList<V>();
+            indexAndId = new IndexAndId();
+
+            nullIndex = BitMaps.newRoaringMutable();
+            nullId = Optional.absent();
+
             // 三个视图，映射至内存数据
             detailColumn = new RealtimeDetailColumn();
             dictColumn = new RealtimeDictColumn();
@@ -277,12 +291,15 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
         idToVal = self.idToVal;
         indexAndId = self.indexAndId;
 
+        nullIndex = self.nullIndex;
+        nullId = self.nullId;
+
         detailColumn = self.detailColumn;
         dictColumn = self.dictColumn;
         indexColumn = self.indexColumn;
     }
 
-    private synchronized void snapshot() {
+    private void snapshot() {
         int lastId = idToVal.size() - 1;
         if (lastId < indexAndId.size()) {
             return;
@@ -295,6 +312,9 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
 
             int newIndex = 0;
             IndexAndId indexAndId = new IndexAndId(lastId + 1);
+            if (nullId.isPresent() && nullId.get() <= lastId) {
+                indexAndId.putIndexAndId(nullId.get(), newIndex++);
+            }
             for (Integer id : valToId.values()) {
                 if (id <= lastId) {
                     indexAndId.putIndexAndId(id, newIndex++);

@@ -17,7 +17,7 @@ import java.util.Random;
 public abstract class BaseRealtimeColumnTest<T> {
     Random r = new Random(hashCode());
     T[] data1, data2;
-    static final int BOUND = 10;
+    static final int BOUND = 1000;
 
     @Before
     public void setUp() throws Exception {
