@@ -5,6 +5,7 @@ import com.fr.swift.cluster.entity.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.event.base.AbstractHistoryRpcEvent;
+import com.fr.swift.event.base.EventResult;
 import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -22,6 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author yee
@@ -44,7 +47,14 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
                 case TRANS_COLLATE_LOAD:
                     return historyDataSyncManager.handle((HistoryLoadSegmentRpcEvent) event);
                 case COMMON_LOAD:
-                    return handleCommonLoad(event);
+                    handleCommonLoad(event, 0);
+                    return (S) EventResult.SUCCESS;
+                case MODIFY_LOAD:
+                    if (handleCommonLoad(event, 1)) {
+                        return (S) EventResult.SUCCESS;
+                    } else {
+                        return (S) EventResult.FAILED;
+                    }
                 default:
                     return null;
             }
@@ -54,7 +64,7 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
         return null;
     }
 
-    private <S extends Serializable> S handleCommonLoad(AbstractHistoryRpcEvent event) throws Exception {
+    private boolean handleCommonLoad(AbstractHistoryRpcEvent event, int wait) throws Exception {
         Map<String, ClusterEntity> services = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.HISTORY);
         if (null == services || services.isEmpty()) {
             throw new RuntimeException("Cannot find history service");
@@ -62,6 +72,8 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
         Pair<String, Map<String, List<String>>> pair = (Pair<String, Map<String, List<String>>>) event.getContent();
         Iterator<Map.Entry<String, ClusterEntity>> iterator = services.entrySet().iterator();
         Map<String, List<String>> uris = pair.getValue();
+        final CountDownLatch latch = wait > 0 ? new CountDownLatch(wait) : null;
+        final AtomicBoolean success = new AtomicBoolean(true);
         while (iterator.hasNext()) {
             Map.Entry<String, ClusterEntity> entry = iterator.next();
             Map<String, List<SegmentKey>> map = clusterSegmentService.getOwnSegments(entry.getKey());
@@ -83,15 +95,25 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
                             @Override
                             public void success(Object result) {
                                 LOGGER.info("load success");
+                                success.set(true);
+                                if (null != latch) {
+                                    latch.countDown();
+                                }
                             }
 
                             @Override
                             public void fail(Exception e) {
                                 LOGGER.error("load error! ", e);
+                                if (null != latch) {
+                                    latch.countDown();
+                                }
                             }
                         });
             }
         }
-        return null;
+        if (null != latch) {
+            latch.await();
+        }
+        return success.get();
     }
 }

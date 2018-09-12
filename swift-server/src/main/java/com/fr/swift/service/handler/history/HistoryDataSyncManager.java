@@ -100,7 +100,6 @@ public class HistoryDataSyncManager extends AbstractHandler<SegmentLoadRpcEvent>
         Map<String, Set<SegmentKey>> result = dataSyncRuleService.getCurrentRule().calculate(services.keySet(), needLoadSegments, destinations);
         Iterator<String> keyIterator = result.keySet().iterator();
         final AtomicBoolean downloadSuccess = new AtomicBoolean(false);
-        wait = wait > 0 ? wait : result.size();
         final CountDownLatch latch = wait > 0 ? new CountDownLatch(wait) : null;
         try {
             while (keyIterator.hasNext()) {
