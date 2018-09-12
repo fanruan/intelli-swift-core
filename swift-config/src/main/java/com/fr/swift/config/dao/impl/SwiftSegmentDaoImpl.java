@@ -2,7 +2,6 @@ package com.fr.swift.config.dao.impl;
 
 import com.fr.stable.StringUtils;
 import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.dao.BasicDao;
 import com.fr.swift.config.dao.SwiftSegmentDao;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
@@ -33,8 +32,8 @@ public class SwiftSegmentDaoImpl extends BasicDao<SwiftSegmentEntity> implements
     }
 
     @Override
-    public boolean addOrUpdateSwiftSegment(Session session, SegmentKeyBean bean) throws SQLException {
-        return saveOrUpdate(session, bean.convert());
+    public boolean addOrUpdateSwiftSegment(Session session, SegmentKey bean) throws SQLException {
+        return saveOrUpdate(session, new SwiftSegmentEntity(bean));
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.fr.swift.query.info.bean.parser;
 
+import com.fr.general.DateUtils;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
@@ -129,8 +130,9 @@ class FilterInfoParser {
         switch (type) {
             case INTEGER:
             case LONG:
-            case DATE:  // TODO: 2018/7/3 date这边如果要支持多种日志format格式要另做解析，暂时默认日期都传毫秒时间戳
                 return Long.parseLong(origin.toString());
+            case DATE:
+                return DateUtils.string2Date(origin.toString(), true).getTime();
             case DOUBLE:
                 return Double.parseDouble(origin.toString());
             default:

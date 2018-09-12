@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class SwiftClusterNodeImpl implements SwiftClusterNode,Serializable {
+public class SwiftClusterNodeImpl implements SwiftClusterNode, Serializable {
     private static final long serialVersionUID = -3201514069990203301L;
     private String id;
     private String name;
@@ -41,5 +41,15 @@ public class SwiftClusterNodeImpl implements SwiftClusterNode,Serializable {
     @Override
     public int getPort() {
         return port;
+    }
+
+    @Override
+    public String toString() {
+        return "SwiftClusterNodeImpl{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", ip='" + ip + '\'' +
+                ", port=" + port +
+                '}';
     }
 }

@@ -36,18 +36,16 @@ public class SortSegmentDetailResultSet extends AbstractDetailResultSet {
     private int rowCount;
     private int fetchSize;
     private List<Pair<Column, IndexInfo>> columnList;
-    private SwiftMetaData metaData;
     private RowIterator rowNumberIterator;
     private Iterator<Row> rowIterator;
 
     public SortSegmentDetailResultSet(int fetchSize, List<Pair<Column, IndexInfo>> columnList, DetailFilter filter,
-                                      List<Sort> sorts, SwiftMetaData metaData) {
+                                      List<Sort> sorts) {
         // TODO: 2018/6/19 为了计算总行数过滤了两次，待优化
         super(fetchSize);
         this.rowCount = filter.createFilterIndex().getCardinality();
         this.fetchSize = fetchSize;
         this.columnList = columnList;
-        this.metaData = metaData;
         init(filter, sorts);
     }
 

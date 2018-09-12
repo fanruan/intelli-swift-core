@@ -10,6 +10,7 @@ import com.fr.swift.segment.SegmentLocationManager;
 import com.fr.swift.source.SourceKey;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,10 +49,26 @@ public class SegmentLocationManagerImpl implements SegmentLocationManager {
     }
 
     @Override
-    public void updateSegmentInfo(SegmentLocationInfo segmentInfo, SegmentLocationInfo.UpdateType updateType) {
+    public synchronized void updateSegmentInfo(SegmentLocationInfo segmentInfo, SegmentLocationInfo.UpdateType updateType) {
         if (updateType == SegmentLocationInfo.UpdateType.ALL) {
             segments.clear();
         }
-        segments.putAll(segmentInfo.getDestinations());
+        Map<String, List<SegmentDestination>> map = segmentInfo.getDestinations();
+        for (Map.Entry<String, List<SegmentDestination>> entry : map.entrySet()) {
+            if (segments.containsKey(entry.getKey())) {
+                for (SegmentDestination segmentDestination : entry.getValue()) {
+                    if (!segments.get(entry.getKey()).contains(segmentDestination)) {
+                        segments.get(entry.getKey()).add(segmentDestination);
+                    }
+                }
+            } else {
+                segments.put(entry.getKey(), new ArrayList<SegmentDestination>(entry.getValue()));
+            }
+        }
+    }
+
+    @Override
+    public Map<String, List<SegmentDestination>> getSegmentInfo() {
+        return new HashMap<String, List<SegmentDestination>>(segments);
     }
 }

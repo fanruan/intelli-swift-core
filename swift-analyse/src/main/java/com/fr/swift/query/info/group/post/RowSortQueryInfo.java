@@ -1,6 +1,6 @@
 package com.fr.swift.query.info.group.post;
 
-import com.fr.swift.query.post.PostQueryType;
+import com.fr.swift.query.info.bean.type.PostQueryType;
 import com.fr.swift.query.sort.Sort;
 
 import java.util.List;

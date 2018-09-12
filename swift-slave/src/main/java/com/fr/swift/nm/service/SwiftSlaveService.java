@@ -1,7 +1,6 @@
 package com.fr.swift.nm.service;
 
 import com.fr.swift.annotation.RpcService;
-import com.fr.swift.annotation.RpcServiceType;
 import com.fr.swift.cluster.service.MasterService;
 import com.fr.swift.cluster.service.SlaveService;
 import com.fr.swift.container.NodeContainer;
@@ -21,7 +20,7 @@ import java.util.Collection;
  * @since Advanced FineBI 5.0
  */
 @Service("swiftSlaveService")
-@RpcService(value = SlaveService.class, type = RpcServiceType.CLIENT_SERVICE)
+@RpcService(value = SlaveService.class, type = RpcService.RpcServiceType.INTERNAL)
 public class SwiftSlaveService implements SlaveService {
 
     @Override

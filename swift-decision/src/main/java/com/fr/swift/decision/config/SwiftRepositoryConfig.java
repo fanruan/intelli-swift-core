@@ -4,12 +4,13 @@ import com.fr.config.ConfigContext;
 import com.fr.config.Configuration;
 import com.fr.config.holder.Conf;
 import com.fr.config.holder.factory.Holders;
+import com.fr.general.ComparatorUtils;
 import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.config.bean.SwiftFileSystemType;
-import com.fr.swift.config.service.SwiftRepositoryConfService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.decision.config.base.SwiftAbstractObjectMapConfig;
 import com.fr.swift.decision.config.unique.RepositoryConfigUnique;
+import com.fr.swift.file.SwiftRemoteFileSystemType;
+import com.fr.swift.service.SwiftRepositoryConfService;
 import com.fr.transaction.Configurations;
 import com.fr.transaction.Worker;
 
@@ -20,7 +21,7 @@ import com.fr.transaction.Worker;
 public class SwiftRepositoryConfig extends SwiftAbstractObjectMapConfig<RepositoryConfigUnique> {
 
     private static SwiftRepositoryConfig config;
-    private Conf<String> type = Holders.simple(SwiftFileSystemType.FR.name());
+    private Conf<String> type = Holders.simple(SwiftRemoteFileSystemType.FR.name());
 
     public SwiftRepositoryConfig() {
         super(RepositoryConfigUnique.class);
@@ -37,7 +38,7 @@ public class SwiftRepositoryConfig extends SwiftAbstractObjectMapConfig<Reposito
         return get(type.get());
     }
 
-    public void setCurrentRepository(final SwiftFileSystemType type, RepositoryConfigUnique bean) {
+    public void setCurrentRepository(final SwiftRemoteFileSystemType type, RepositoryConfigUnique bean) {
         Configurations.update(new Worker() {
             @Override
             public void run() {
@@ -54,7 +55,7 @@ public class SwiftRepositoryConfig extends SwiftAbstractObjectMapConfig<Reposito
 
     @Override
     public boolean addOrUpdate(String key, RepositoryConfigUnique bean) {
-        if (SwiftFileSystemType.valueOf(key) != SwiftFileSystemType.FR) {
+        if (ComparatorUtils.equals(key, SwiftRemoteFileSystemType.FR.name())) {
             super.addOrUpdate(key, bean);
             return SwiftContext.get().getBean(SwiftRepositoryConfService.class).setCurrentRepository(bean.convert());
         }

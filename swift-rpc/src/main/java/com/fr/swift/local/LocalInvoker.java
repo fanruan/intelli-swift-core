@@ -1,12 +1,12 @@
 package com.fr.swift.local;
 
+import com.fr.cluster.engine.rpc.base.FineResult;
 import com.fr.swift.basics.Invocation;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.Result;
 import com.fr.swift.basics.URL;
 import com.fr.swift.basics.base.SwiftResult;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -23,6 +23,13 @@ public class LocalInvoker<T> implements Invoker<T> {
     private final Class<T> type;
 
     private final URL url;
+
+    private boolean sync = true;
+
+    public LocalInvoker(T proxy, Class<T> type, URL url, boolean sync) {
+        this(proxy, type, url);
+        this.sync = sync;
+    }
 
     public LocalInvoker(T proxy, Class<T> type, URL url) {
         if (proxy == null) {
@@ -48,8 +55,6 @@ public class LocalInvoker<T> implements Invoker<T> {
     public Result invoke(Invocation invocation) {
         try {
             return new SwiftResult(doInvoke(proxy, invocation.getMethodName(), invocation.getParameterTypes(), invocation.getArguments()));
-        } catch (InvocationTargetException e) {
-            return new SwiftResult(e);
         } catch (Throwable e) {
             return new SwiftResult(e);
         }
@@ -69,8 +74,28 @@ public class LocalInvoker<T> implements Invoker<T> {
     public void destroy() {
     }
 
+//    protected Object doInvoke(T proxy, String methodName, Class<?>[] parameterTypes, Object[] arguments) throws Throwable {
+//        Method method = proxy.getClass().getMethod(methodName, parameterTypes);
+//        return method.invoke(proxy, arguments);
+//    }
+
     protected Object doInvoke(T proxy, String methodName, Class<?>[] parameterTypes, Object[] arguments) throws Throwable {
-        Method method = proxy.getClass().getMethod(methodName, parameterTypes);
-        return method.invoke(proxy, arguments);
+        if (sync) {
+            Method method = proxy.getClass().getMethod(methodName, parameterTypes);
+            return method.invoke(proxy, arguments);
+        } else {
+            LocalFuture localFuture = new LocalFuture();
+            com.fr.rpc.Result fineResult = new FineResult();
+
+            try {
+                Method method = proxy.getClass().getMethod(methodName, parameterTypes);
+                Object result = method.invoke(proxy, arguments);
+                ((FineResult) fineResult).setResult(result);
+            } catch (Throwable e) {
+                ((FineResult) fineResult).setException(e);
+            }
+            localFuture.done(fineResult);
+            return localFuture;
+        }
     }
 }

@@ -4,8 +4,8 @@ import com.fr.ftp.config.FTPConfig;
 import com.fr.security.SecurityToolbox;
 import com.fr.stable.StringUtils;
 import com.fr.swift.config.annotation.ConfigField;
-import com.fr.swift.config.bean.SwiftFileSystemConfig;
-import com.fr.swift.config.bean.SwiftFileSystemType;
+import com.fr.swift.file.SwiftRemoteFileSystemType;
+import com.fr.swift.repository.SwiftFileSystemConfig;
 
 /**
  * @author yee
@@ -145,8 +145,8 @@ public class FtpRepositoryConfig implements SwiftFileSystemConfig {
     }
 
     @Override
-    public SwiftFileSystemType getType() {
-        return SwiftFileSystemType.FTP;
+    public SwiftRemoteFileSystemType getType() {
+        return SwiftRemoteFileSystemType.FTP;
     }
 
     @Override

@@ -10,15 +10,13 @@ import com.fr.swift.repository.config.FtpRepositoryConfig;
 import com.fr.third.org.apache.commons.pool2.ObjectPool;
 import com.fr.third.org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
-import java.net.URI;
-
 /**
  * @author yee
  * @date 2018/7/5
  */
-class FtpFileSystemPool extends BaseRemoteSystemPool {
+public class FtpFileSystemPool extends BaseRemoteSystemPool<FtpFileSystemImpl> {
 
-    FtpFileSystemPool(FtpRepositoryConfig config) {
+    public FtpFileSystemPool(FtpRepositoryConfig config) {
         super(new FtpFileSystemPoolFactory(config));
     }
 
@@ -36,7 +34,7 @@ class FtpFileSystemPool extends BaseRemoteSystemPool {
         }
 
         @Override
-        public FtpFileSystemImpl create(URI uri) {
+        public FtpFileSystemImpl create(String uri) {
             return new FtpFileSystemImpl(config, uri, clientPool);
         }
     }

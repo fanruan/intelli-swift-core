@@ -28,7 +28,7 @@ public class LocalSwiftServerServiceTest {
     public void setUp() throws Exception {
         localSwiftServerService = new LocalSwiftServerService();
         localSwiftServerService.start();
-        SwiftContext.get().getBean(AnalyseService.class).start();
+        SwiftContext.get().getBean("swiftAnalyseService", AnalyseService.class).start();
     }
 
     @Test

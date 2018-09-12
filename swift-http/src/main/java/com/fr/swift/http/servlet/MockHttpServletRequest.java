@@ -200,6 +200,36 @@ public class MockHttpServletRequest implements HttpServletRequest {
         return this.servletContext;
     }
 
+    @Override
+    public AsyncContext startAsync() throws IllegalStateException {
+        return null;
+    }
+
+    @Override
+    public AsyncContext startAsync(ServletRequest servletRequest, ServletResponse servletResponse) throws IllegalStateException {
+        return null;
+    }
+
+    @Override
+    public boolean isAsyncStarted() {
+        return false;
+    }
+
+    @Override
+    public boolean isAsyncSupported() {
+        return false;
+    }
+
+    @Override
+    public AsyncContext getAsyncContext() {
+        return null;
+    }
+
+    @Override
+    public DispatcherType getDispatcherType() {
+        return null;
+    }
+
     /**
      * Return whether this request is still active (that is, not completed yet).
      */
@@ -272,6 +302,11 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     public int getContentLength() {
         return (this.content != null ? this.content.length : -1);
+    }
+
+    @Override
+    public long getContentLengthLong() {
+        return 0;
     }
 
     public void setContentType(String contentType) {
@@ -784,6 +819,11 @@ public class MockHttpServletRequest implements HttpServletRequest {
         return getSession(true);
     }
 
+    @Override
+    public String changeSessionId() {
+        return null;
+    }
+
     public void setRequestedSessionIdValid(boolean requestedSessionIdValid) {
         this.requestedSessionIdValid = requestedSessionIdValid;
     }
@@ -827,11 +867,6 @@ public class MockHttpServletRequest implements HttpServletRequest {
     }
 
     @Override
-    public String changeSessionId() {
-        return null;
-    }
-
-    @Override
     public Collection<Part> getParts() throws IOException, ServletException {
         return null;
     }
@@ -843,41 +878,6 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     @Override
     public <T extends HttpUpgradeHandler> T upgrade(Class<T> aClass) throws IOException, ServletException {
-        return null;
-    }
-
-    @Override
-    public long getContentLengthLong() {
-        return 0;
-    }
-
-    @Override
-    public AsyncContext startAsync() throws IllegalStateException {
-        return null;
-    }
-
-    @Override
-    public AsyncContext startAsync(ServletRequest servletRequest, ServletResponse servletResponse) throws IllegalStateException {
-        return null;
-    }
-
-    @Override
-    public boolean isAsyncStarted() {
-        return false;
-    }
-
-    @Override
-    public boolean isAsyncSupported() {
-        return false;
-    }
-
-    @Override
-    public AsyncContext getAsyncContext() {
-        return null;
-    }
-
-    @Override
-    public DispatcherType getDispatcherType() {
         return null;
     }
 }

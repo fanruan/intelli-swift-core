@@ -19,7 +19,7 @@ import com.fr.swift.query.info.bean.element.filter.impl.StringOneValueFilterBean
 import com.fr.swift.query.info.bean.element.filter.impl.value.RangeFilterValueBean;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
-import com.fr.swift.query.info.element.dimension.Dimension;
+import com.fr.swift.query.info.bean.type.DimensionType;
 import com.fr.swift.query.sort.SortType;
 
 import java.sql.SQLException;
@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * This class created on 2018/4/26
@@ -39,7 +40,7 @@ public class QueryConditionAdaptor {
 
     public static QueryInfoBean adaptCondition(QueryCondition condition, Table swiftTable, List<String> fieldNames) {
         DetailQueryInfoBean queryInfoBean = new DetailQueryInfoBean();
-        queryInfoBean.setQueryId(condition.toString());
+        queryInfoBean.setQueryId(UUID.randomUUID().toString());
         String tableName = swiftTable.getSourceKey().getId();
         queryInfoBean.setTableName(tableName);
         queryInfoBean.setColumns(fieldNames);
@@ -49,7 +50,7 @@ public class QueryConditionAdaptor {
             // TODO: 2018/6/21 维度上的排序没适配
             DimensionBean bean = new DimensionBean();
             bean.setColumn(fieldNames.get(i));
-            bean.setDimensionType(Dimension.DimensionType.DETAIL);
+            bean.setDimensionType(DimensionType.DETAIL);
             GroupBean groupBean = new GroupBean();
             groupBean.setType(GroupType.NONE);
             bean.setGroupBean(groupBean);

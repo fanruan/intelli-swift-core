@@ -12,9 +12,6 @@ public class ExcelInfo {
     private static String[] columnNames = new String[]{
             "0calday", "zsproduct", "zscustmr", "zssalegp", "zsprice", "0currency", "zsqty", "0unit", "zssales"
     };
-    private static String url2003 = "http://resin.zyee.me:8080/1w.xls";
-    private static String url2007 = "http://resin.zyee.me:8080/1w.xlsx";
-    private static String urlcsv = "http://resin.zyee.me:8080/1w.csv";
 
     private static int[] sqlType = {
             Types.DOUBLE,
@@ -45,15 +42,15 @@ public class ExcelInfo {
     }
 
     public static String getUrl2003() {
-        return url2003;
+        return ExcelInfo.class.getResource("/excel/1w.xls").getPath();
     }
 
     public static String getUrl2007() {
-        return url2007;
+        return ExcelInfo.class.getResource("/excel/1w.xlsx").getPath();
     }
 
     public static String getUrlcsv() {
-        return urlcsv;
+        return ExcelInfo.class.getResource("/excel/1w.csv").getPath();
     }
 
     public static int[] getSqlType() {

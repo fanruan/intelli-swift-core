@@ -18,6 +18,7 @@ import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.third.fasterxml.jackson.core.JsonProcessingException;
 import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ public class RedisBackupAndRevoceryTest extends BaseTest {
         redisClient = (RedisClient) SwiftContext.get().getBean("redisClient");
     }
 
+    @Ignore
     @Test
     public void testBackup() {
         try {
@@ -67,8 +69,8 @@ public class RedisBackupAndRevoceryTest extends BaseTest {
                 }
             }
 
-            assertEquals(redisClient.llen(String.format("%s/7bc94acd/seg0", dataSource.getMetadata().getSwiftSchema().getBackupDir())), jsonList.size());
-            List<String> redisList = redisClient.lrange(String.format("%s/7bc94acd/seg0", dataSource.getMetadata().getSwiftSchema().getBackupDir()), 0, -1);
+            assertEquals(redisClient.llen(String.format("%s/7bc94acd/seg0", dataSource.getMetadata().getSwiftDatabase().getBackupDir())), jsonList.size());
+            List<String> redisList = redisClient.lrange(String.format("%s/7bc94acd/seg0", dataSource.getMetadata().getSwiftDatabase().getBackupDir()), 0, -1);
             assertEquals(redisList.size(), jsonList.size());
             for (int i = 0; i < redisList.size(); i++) {
                 assertEquals(redisList.get(i), jsonList.get(i));
@@ -78,6 +80,7 @@ public class RedisBackupAndRevoceryTest extends BaseTest {
         }
     }
 
+    @Ignore
     @Test
     public void testRevover() {
         try {

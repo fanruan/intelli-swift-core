@@ -2,9 +2,9 @@ package com.fr.swift.netty.rpc.client.sync;
 
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.netty.rpc.bean.RpcRequest;
-import com.fr.swift.netty.rpc.bean.RpcResponse;
-import com.fr.swift.netty.rpc.client.AbstactRpcClientHandler;
+import com.fr.swift.netty.rpc.client.AbstractRpcClientHandler;
+import com.fr.swift.rpc.bean.RpcRequest;
+import com.fr.swift.rpc.bean.RpcResponse;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
@@ -20,7 +20,7 @@ import java.util.concurrent.CountDownLatch;
  * @since Advanced FineBI 5.0
  */
 @ChannelHandler.Sharable
-public class SyncRpcClientHandler extends AbstactRpcClientHandler<RpcResponse> {
+public class SyncRpcClientHandler extends AbstractRpcClientHandler<RpcResponse> {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SyncRpcClientHandler.class);
 

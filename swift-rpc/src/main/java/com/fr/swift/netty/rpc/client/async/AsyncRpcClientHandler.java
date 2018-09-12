@@ -1,11 +1,12 @@
 package com.fr.swift.netty.rpc.client.async;
 
+import com.fr.swift.basics.RpcFuture;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.netty.rpc.bean.RpcRequest;
-import com.fr.swift.netty.rpc.bean.RpcResponse;
-import com.fr.swift.netty.rpc.client.AbstactRpcClientHandler;
+import com.fr.swift.netty.rpc.client.AbstractRpcClientHandler;
 import com.fr.swift.netty.rpc.pool.AsyncRpcPool;
+import com.fr.swift.rpc.bean.RpcRequest;
+import com.fr.swift.rpc.bean.RpcResponse;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -24,7 +25,7 @@ import java.util.concurrent.CountDownLatch;
  * @since Advanced FineBI 5.0
  */
 @ChannelHandler.Sharable
-public class AsyncRpcClientHandler extends AbstactRpcClientHandler<RpcFuture> {
+public class AsyncRpcClientHandler extends AbstractRpcClientHandler<RpcFuture> {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(AsyncRpcClientHandler.class);
 
     public static final String POOL_KEY = "AsyncRpcClientHandler";
@@ -44,7 +45,7 @@ public class AsyncRpcClientHandler extends AbstactRpcClientHandler<RpcFuture> {
             pendingRPC.remove(requestId);
             rpcFuture.done(response);
         }
-        AsyncRpcPool.getIntance().returnObject(address, this);
+        AsyncRpcPool.getInstance().returnObject(address, this);
     }
 
     public void close() {
@@ -52,7 +53,7 @@ public class AsyncRpcClientHandler extends AbstactRpcClientHandler<RpcFuture> {
     }
 
     public RpcFuture send(final RpcRequest request) throws Exception {
-        RpcFuture rpcFuture = new RpcFuture(request);
+        RpcFuture rpcFuture = new SwiftFuture(request);
         pendingRPC.put(request.getRequestId(), rpcFuture);
         final CountDownLatch latch = new CountDownLatch(1);
         channel.writeAndFlush(request).sync().addListener(new ChannelFutureListener() {

@@ -1,0 +1,90 @@
+package com.fr.swift.segment;
+
+import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.context.SwiftContext;
+import com.fr.swift.cube.CubeUtil;
+import com.fr.swift.cube.io.ResourceDiscovery;
+import com.fr.swift.cube.io.Types.StoreType;
+import com.fr.swift.cube.io.location.IResourceLocation;
+import com.fr.swift.cube.io.location.ResourceLocation;
+import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.util.FileUtil;
+import com.fr.swift.util.function.Predicate;
+
+import java.util.Collections;
+import java.util.List;
+
+import static com.fr.swift.db.SwiftDatabase.DECISION_LOG;
+
+/**
+ * This class created on 2018/7/10
+ *
+ * @author Lucifer
+ * @description
+ * @since Advanced FineBI 5.0
+ */
+public class SegmentUtils {
+    public static Segment newSegment(SegmentKey segKey) {
+        SwiftMetaData meta = SwiftDatabase.getInstance().getTable(segKey.getTable()).getMetadata();
+        String segPath = CubeUtil.getSegPath(segKey);
+
+        if (segKey.getStoreType() == StoreType.MEMORY) {
+            return newRealtimeSegment(new ResourceLocation(segPath, segKey.getStoreType()), meta);
+        }
+        return newHistorySegment(new ResourceLocation(segPath, segKey.getStoreType()), meta);
+    }
+
+    public static Segment newRealtimeSegment(IResourceLocation location, SwiftMetaData meta) {
+        return (Segment) SwiftContext.get().getBean("realtimeSegment", location, meta);
+    }
+
+    public static Segment newHistorySegment(IResourceLocation location, SwiftMetaData meta) {
+        return (Segment) SwiftContext.get().getBean("historySegment", location, meta);
+    }
+
+    public static void clearSegment(SegmentKey segKey) {
+        if (segKey.getStoreType() == StoreType.MEMORY) {
+            clearRealtimeSegment(segKey);
+        } else {
+            clearHistorySegment(segKey);
+        }
+    }
+
+    private static void clearRealtimeSegment(SegmentKey segKey) {
+        SwiftContext.get().getBean(SwiftSegmentService.class).removeSegments(Collections.singletonList(segKey));
+
+        final String segPath = CubeUtil.getSegPath(segKey);
+
+        ResourceDiscovery.getInstance().removeIf(new Predicate<String>() {
+            @Override
+            public boolean test(String s) {
+                return s.contains(segPath);
+            }
+        });
+
+        FileUtil.delete(CubeUtil.getAbsoluteSegPath(segKey).replace(DECISION_LOG.getDir(), DECISION_LOG.getBackupDir()));
+    }
+
+    private static void clearHistorySegment(SegmentKey segKey) {
+        SwiftContext.get().getBean(SwiftSegmentService.class).removeSegments(Collections.singletonList(segKey));
+
+        FileUtil.delete(CubeUtil.getAbsoluteSegPath(segKey));
+
+        // todo 触发共享存储删seg？
+    }
+
+    public static SegmentKey getMaxSegmentKey(List<SegmentKey> segmentKeys) {
+        if (segmentKeys == null || segmentKeys.isEmpty()) {
+            return null;
+        } else {
+            SegmentKey maxSegmentKey = segmentKeys.get(0);
+            for (SegmentKey segmentKey : segmentKeys) {
+                if (segmentKey.getOrder() > maxSegmentKey.getOrder()) {
+                    maxSegmentKey = segmentKey;
+                }
+            }
+            return maxSegmentKey;
+        }
+    }
+}

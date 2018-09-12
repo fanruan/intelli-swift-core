@@ -1,9 +1,6 @@
 package com.fr.swift.generate;
 
-import com.fr.swift.config.TestConfDb;
-import com.fr.swift.db.impl.SwiftDatabase.Schema;
-import com.fr.swift.decision.config.SwiftCubePathConfig;
-import com.fr.swift.util.FileUtil;
+import com.fr.swift.test.Preparer;
 import org.junit.Before;
 
 /**
@@ -12,9 +9,8 @@ import org.junit.Before;
 public abstract class BaseConfigTest {
     @Before
     public void setUp() throws Exception {
-        TestConfDb.setConfDb();
-        for (Schema schema : Schema.values()) {
-            FileUtil.delete(SwiftCubePathConfig.getInstance().getPath() + "/" + schema.getDir());
-        }
+        Preparer.prepareFrEnv();
+        Preparer.prepareContext();
+        Preparer.prepareConfDb();
     }
 }

@@ -1,13 +1,14 @@
 package com.fr.swift.netty.rpc.client;
 
+import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.Result;
+import com.fr.swift.basics.RpcFuture;
 import com.fr.swift.basics.base.SwiftInvocation;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.netty.rpc.CalculatorService;
-import com.fr.swift.netty.rpc.client.async.RpcFuture;
 import com.fr.swift.netty.rpc.proxy.RPCProxyFactory;
 import com.fr.swift.netty.rpc.server.RpcServer;
 import com.fr.swift.netty.rpc.url.RPCDestination;
@@ -27,7 +28,7 @@ import java.util.concurrent.CountDownLatch;
  */
 public class AsyncTest {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         SimpleWork.checkIn(System.getProperty("user.dir"));
         ProxySelector.getInstance().switchFactory(new RPCProxyFactory());
         //step1: get proxyFactory
@@ -39,7 +40,6 @@ public class AsyncTest {
         //step3: get invoker method
         SwiftContext.init();
         RpcServer rpcServer = SwiftContext.get().getBean(RpcServer.class);
-        rpcServer.initService(SwiftContext.get());
         Method method = rpcServer.getMethodByName("add");
         final long startTime = System.currentTimeMillis();
         //step4: async invoke method

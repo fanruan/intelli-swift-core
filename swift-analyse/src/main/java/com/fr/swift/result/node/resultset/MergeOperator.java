@@ -51,7 +51,10 @@ class MergeOperator implements Function<List<NodeMergeResultSet<GroupNode>>, Nod
             }
         }
         for (int i = 0; i < dictionaries.size(); i++) {
-            totalDictionaries.get(i).putAll(dictionaries.get(i));
+            Map<Integer, Object> dict = dictionaries.get(i);
+            if (dict != null && !dict.isEmpty()) {
+                totalDictionaries.get(i).putAll(dict);
+            }
         }
     }
 }

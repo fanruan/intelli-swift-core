@@ -4,6 +4,7 @@ import com.fr.swift.query.info.bean.parser.QueryInfoParser;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.info.group.GroupQueryInfo;
+import com.fr.swift.query.post.PrepareMetaDataQuery;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.query.remote.RemoteQueryImpl;
@@ -32,13 +33,14 @@ class GroupQueryBuilder {
     static Query<NodeResultSet> buildQuery(GroupQueryInfoBean bean) throws Exception {
         GroupQueryInfo info = (GroupQueryInfo) QueryInfoParser.parse(bean);
         SourceKey table = info.getTable();
-        // TODO 这边先直接写成History
         List<SegmentDestination> uris = SegmentLocationProvider.getInstance().getSegmentLocationURI(table);
+        Query<NodeResultSet> query;
         if (GroupQueryInfoUtils.isPagingQuery(info)) {
-            return buildQuery(uris, info, bean, LocalGroupQueryBuilder.PAGING);
+            query = buildQuery(uris, info, bean, LocalGroupQueryBuilder.PAGING);
         } else {
-            return buildQuery(uris, info, bean, LocalGroupQueryBuilder.ALL);
+            query = buildQuery(uris, info, bean, LocalGroupQueryBuilder.ALL);
         }
+        return new PrepareMetaDataQuery<NodeResultSet>(query, bean);
     }
 
     /**
@@ -106,6 +108,7 @@ class GroupQueryBuilder {
             Map.Entry<String, List<SegmentDestination>> entry = map.entrySet().iterator().next();
             SegmentDestination destination = entry.getValue().get(0);
             queryBean.setQueryDestination(destination);
+            queryBean.setQuerySegments(DetailQueryBuilder.getQuerySegments(entry.getValue()));
             String jsonString = QueryInfoBeanFactory.queryBean2String(queryBean);
             return new RemoteQueryImpl<NodeResultSet>(jsonString, destination);
         }

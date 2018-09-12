@@ -127,6 +127,10 @@ public class SortedDetailMergerIteratorTest extends TestCase {
         }
 
         @Override
+        public void setMetaData(SwiftMetaData metaData) {
+        }
+
+        @Override
         public SwiftMetaData getMetaData() {
             return null;
         }

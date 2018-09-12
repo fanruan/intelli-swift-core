@@ -30,19 +30,6 @@ public class LocalDetailNormalQueryBuilder implements LocalDetailQueryBuilder {
     protected LocalDetailNormalQueryBuilder() {
     }
 
-//    static List<Segment> getSegmentsByURIList(Set<String> uris, List<Segment> segments) {
-//        List<Segment> result = new ArrayList<Segment>();
-//        if (uris == null || uris.isEmpty()) {
-//            return result;
-//        }
-//        for (Segment segment : segments) {
-//            if (uris.contains(segment.getLocation().getUri())) {
-//                result.add(segment);
-//            }
-//        }
-//        return result;
-//    }
-
     @Override
     public Query<DetailResultSet> buildLocalQuery(DetailQueryInfo info) {
         List<Query<DetailResultSet>> queries = new ArrayList<Query<DetailResultSet>>();
@@ -53,13 +40,14 @@ public class LocalDetailNormalQueryBuilder implements LocalDetailQueryBuilder {
             if (info.getFilterInfo() != null) {
                 filterInfos.add(info.getFilterInfo());
             }
-            queries.add(new NormalDetailSegmentQuery(info.getFetchSize(), columns, FilterBuilder.buildDetailFilter(segment, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND)), info.getMetaData()));
+            queries.add(new NormalDetailSegmentQuery(info.getFetchSize(), columns,
+                    FilterBuilder.buildDetailFilter(segment, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND))));
         }
-        return new NormalDetailResultQuery(info.getFetchSize(), queries, info.getMetaData());
+        return new NormalDetailResultQuery(info.getFetchSize(), queries);
     }
 
     @Override
     public Query<DetailResultSet> buildResultQuery(List<Query<DetailResultSet>> queries, DetailQueryInfo info) {
-        return new NormalDetailResultQuery(info.getFetchSize(), queries, info.getTargets(), info.getMetaData());
+        return new NormalDetailResultQuery(info.getFetchSize(), queries, info.getTargets());
     }
 }

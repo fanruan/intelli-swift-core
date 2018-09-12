@@ -24,6 +24,7 @@ import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 import com.fr.swift.source.alloter.impl.line.LineSourceAlloter;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.task.service.SwiftServiceTaskExecutor;
+import com.fr.swift.test.Preparer;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -50,7 +51,7 @@ public class RealtimeCollateTest extends BaseTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        SwiftContext.init();
+        Preparer.prepareCubeBuild(getClass());
         redisClient = (RedisClient) SwiftContext.get().getBean("redisClient");
         swiftSegmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
     }
@@ -85,7 +86,7 @@ public class RealtimeCollateTest extends BaseTest {
             assertTrue(neqCount != 0);
         }
         //合并增量块，直接写history
-        SwiftCollateService collaterService = new SwiftCollateService();
+        SwiftCollateService collaterService = SwiftContext.get().getBean(SwiftCollateService.class);
         collaterService.setTaskExecutor(new SwiftServiceTaskExecutor("testAutoRealtimeCollate", 1));
         collaterService.autoCollateRealtime(dataSource.getSourceKey());
         Thread.sleep(5000L);
@@ -143,9 +144,9 @@ public class RealtimeCollateTest extends BaseTest {
 
 
         //合并增量块，直接写history
-        SwiftCollateService collaterService = new SwiftCollateService();
+        SwiftCollateService collaterService = SwiftContext.get().getBean(SwiftCollateService.class);
         collaterService.setTaskExecutor(new SwiftServiceTaskExecutor("testAppointRealtimeCollate", 1));
-        collaterService.appointCollateRealtime(collateSegmentKeys);
+        collaterService.appointCollate(dataSource.getSourceKey(),collateSegmentKeys);
 
         Thread.sleep(5000L);
         segments = swiftSegmentManager.getSegment(dataSource.getSourceKey());

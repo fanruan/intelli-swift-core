@@ -2,15 +2,15 @@ package com.fr.swift.core.rpc;
 
 import com.fr.cluster.ClusterBridge;
 import com.fr.cluster.core.ClusterNode;
-import com.fr.cluster.engine.rpc.base.FineResult;
 import com.fr.cluster.engine.ticket.FineClusterToolKit;
+import com.fr.cluster.rpc.base.ClusterInvokeHandler;
 import com.fr.swift.basics.Invocation;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.Result;
+import com.fr.swift.basics.RpcFuture;
 import com.fr.swift.basics.URL;
 import com.fr.swift.basics.base.SwiftResult;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 
@@ -29,6 +29,13 @@ public class FRInvoker<T> implements Invoker<T> {
 
     private final URL url;
 
+    private boolean sync = true;
+
+    public FRInvoker(T proxy, Class<T> type, URL url, boolean sync) {
+        this(proxy, type, url);
+        this.sync = sync;
+    }
+
     public FRInvoker(T proxy, Class<T> type, URL url) {
         if (type == null) {
             throw new IllegalArgumentException("interface == null");
@@ -46,14 +53,7 @@ public class FRInvoker<T> implements Invoker<T> {
     @Override
     public Result invoke(Invocation invocation) {
         try {
-            FineResult fineResult = (FineResult) doInvoke(proxy, invocation.getMethodName(), invocation.getParameterTypes(), invocation.getArguments());
-            if (fineResult.getException() == null) {
-                return new SwiftResult(fineResult.get());
-            } else {
-                throw fineResult.getException();
-            }
-        } catch (InvocationTargetException e) {
-            return new SwiftResult(e);
+            return new SwiftResult(doInvoke(proxy, invocation.getMethodName(), invocation.getParameterTypes(), invocation.getArguments()));
         } catch (Throwable e) {
             return new SwiftResult(e);
         }
@@ -74,15 +74,35 @@ public class FRInvoker<T> implements Invoker<T> {
     }
 
     protected Object doInvoke(T proxy, String methodName, Class<?>[] parameterTypes, Object[] arguments) throws Throwable {
-        com.fr.cluster.rpc.base.Invoker frInvoker = FineClusterToolKit.getInstance().getInvokerFactory().create(proxy);
+        com.fr.cluster.rpc.base.ClusterInvoker frInvoker = FineClusterToolKit.getInstance().getInvokerFactory().create(proxy);
         Method method = proxy.getClass().getMethod(methodName, parameterTypes);
-        com.fr.cluster.rpc.base.Invocation invocation = com.fr.cluster.rpc.base.Invocation.create(method, arguments);
+        com.fr.rpc.Invocation invocation = com.fr.rpc.Invocation.create(method, arguments);
         if (url.getDestination() != null) {
             ClusterNode clusterNode = ClusterBridge.getView().getNodeById(url.getDestination().getId());
-            com.fr.cluster.rpc.base.Result result = frInvoker.invoke(clusterNode, invocation);
-            return result;
+            if (sync) {
+                com.fr.rpc.Result result = frInvoker.invoke(clusterNode, invocation);
+                if (result.getException() != null) {
+                    throw result.getException();
+                } else {
+                    return result.get();
+                }
+            } else {
+                final RpcFuture rpcFuture = new FRFuture();
+                ClusterInvokeHandler invokeHandler = new ClusterInvokeHandler() {
+                    @Override
+                    public void done(ClusterNode clusterNode, com.fr.rpc.Invocation invocation, com.fr.rpc.Result result) {
+                        rpcFuture.done(result);
+                    }
+
+                    @Override
+                    public void finish() {
+                    }
+                };
+                frInvoker.invoke(clusterNode, invocation, invokeHandler);
+                return rpcFuture;
+            }
         } else {
-            Map<ClusterNode, com.fr.cluster.rpc.base.Result> resultMap = frInvoker.invokeAll(invocation);
+            Map<ClusterNode, com.fr.rpc.Result> resultMap = frInvoker.invokeAll(invocation);
             return resultMap;
         }
     }

@@ -2,7 +2,7 @@ package com.fr.swift.netty.rpc.common;
 
 //import com.dyuproject.protostuff.LinkedBuffer;
 //import com.dyuproject.protostuff.ProtostuffIOUtil;
-//import com.dyuproject.protostuff.Schema;
+//import com.dyuproject.protostuff.SwiftDatabase;
 //import com.dyuproject.protostuff.runtime.RuntimeSchema;
 
 import com.fr.third.org.objenesis.Objenesis;
@@ -18,7 +18,7 @@ import com.fr.third.org.objenesis.ObjenesisStd;
  */
 public class SerializationUtil {
 
-//    private static Map<Class<?>, Schema<?>> cachedSchema = new ConcurrentHashMap<Class<?>, Schema<?>>();
+//    private static Map<Class<?>, SwiftDatabase<?>> cachedSchema = new ConcurrentHashMap<Class<?>, SwiftDatabase<?>>();
 
     private static Objenesis objenesis = new ObjenesisStd(true);
 
@@ -32,7 +32,7 @@ public class SerializationUtil {
 //        Class<T> cls = (Class<T>) obj.getClass();
 //        LinkedBuffer buffer = LinkedBuffer.allocate(LinkedBuffer.DEFAULT_BUFFER_SIZE);
 //        try {
-//            Schema<T> schema = getSchema(cls);
+//            SwiftDatabase<T> schema = getSchema(cls);
 //            return ProtostuffIOUtil.toByteArray(obj, schema, buffer);
 //        } catch (Exception e) {
 //            throw new IllegalStateException(e.getMessage(), e);
@@ -48,7 +48,7 @@ public class SerializationUtil {
     public static <T> T deserialize(byte[] data, Class<T> cls) {
 //        try {
 //            T message = objenesis.newInstance(cls);
-//            Schema<T> schema = getSchema(cls);
+//            SwiftDatabase<T> schema = getSchema(cls);
 //            ProtostuffIOUtil.mergeFrom(data, message, schema);
 //            return message;
 //        } catch (Exception e) {
@@ -57,8 +57,8 @@ public class SerializationUtil {
         return null;
     }
 
-//    private static <T> Schema<T> getSchema(Class<T> cls) {
-//        Schema<T> schema = (Schema<T>) cachedSchema.get(cls);
+//    private static <T> SwiftDatabase<T> getSchema(Class<T> cls) {
+//        SwiftDatabase<T> schema = (SwiftDatabase<T>) cachedSchema.get(cls);
 //        if (schema == null) {
 //            schema = RuntimeSchema.createFrom(cls);
 //            cachedSchema.put(cls, schema);

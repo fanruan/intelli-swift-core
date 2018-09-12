@@ -2,11 +2,8 @@ package com.fr.swift.config.convert;
 
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.config.bean.SwiftFileSystemConfig;
 import com.fr.swift.config.convert.base.AbstractObjectConfigConvert;
-import com.fr.swift.config.dao.SwiftConfigDao;
-import com.fr.swift.config.entity.SwiftConfigEntity;
-import com.fr.third.org.hibernate.Session;
+import com.fr.swift.repository.SwiftFileSystemConfig;
 
 /**
  * @author yee
@@ -16,15 +13,6 @@ public class SwiftFileSystemConvert extends AbstractObjectConfigConvert<SwiftFil
 
     private static final String OLD_FTP_CONF = "com.fr.swift.config.bean.FtpRepositoryConfigBean";
     private static final String OLD_HDFS_CONF = "com.fr.swift.config.bean.HdfsRepositoryConfigBean";
-
-    @Override
-    public SwiftFileSystemConfig toBean(SwiftConfigDao<SwiftConfigEntity> dao, Session session, Object... args) {
-        try {
-            return super.toBean(dao, session, args);
-        } catch (Exception e) {
-            return SwiftFileSystemConfig.DEFAULT;
-        }
-    }
 
     @Override
     protected String transferClassName(String className) {

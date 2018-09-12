@@ -25,14 +25,13 @@ public class SegmentDetailResultSet extends AbstractDetailResultSet {
     // 当前块中过滤后的行号
     private IntArray rows;
     private List<Column> columnList;
-    private SwiftMetaData metaData;
     private Iterator<Row> iterator;
 
-    public SegmentDetailResultSet(int fetchSize, List<Pair<Column, IndexInfo>> columnList, DetailFilter filter, SwiftMetaData metaData) {
+    public SegmentDetailResultSet(int fetchSize, List<Pair<Column, IndexInfo>> columnList, DetailFilter filter) {
         super(fetchSize);
         this.columnList = SortSegmentDetailResultSet.getColumnList(columnList);
+        // TODO: 2018/8/30 这个地方new一个大数组造成查询一开始都会卡顿一下，roaring bitmap社区的版本已经加了批次迭代器了，可以考虑更新一下
         this.rows = BitMaps.traversal2Array(filter.createFilterIndex());
-        this.metaData = metaData;
     }
 
     @Override

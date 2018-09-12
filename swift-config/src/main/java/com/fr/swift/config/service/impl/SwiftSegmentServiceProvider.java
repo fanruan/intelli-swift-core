@@ -2,12 +2,14 @@ package com.fr.swift.config.service.impl;
 
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventListener;
 import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.selector.ClusterSelector;
+import com.fr.swift.source.SourceKey;
 import com.fr.third.org.hibernate.criterion.Criterion;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.beans.factory.annotation.Qualifier;
@@ -74,6 +76,11 @@ public class SwiftSegmentServiceProvider implements SwiftSegmentService {
     }
 
     @Override
+    public Map<String, List<SegmentKey>> getOwnSegments() {
+        return service.getOwnSegments();
+    }
+
+    @Override
     public List<SegmentKey> getSegmentByKey(String sourceKey) {
         return service.getSegmentByKey(sourceKey);
     }
@@ -81,6 +88,11 @@ public class SwiftSegmentServiceProvider implements SwiftSegmentService {
     @Override
     public boolean containsSegment(SegmentKey segmentKey) {
         return service.containsSegment(segmentKey);
+    }
+
+    @Override
+    public SegmentKey tryAppendSegment(SourceKey tableKey, StoreType storeType) {
+        return service.tryAppendSegment(tableKey, storeType);
     }
 
     @Override

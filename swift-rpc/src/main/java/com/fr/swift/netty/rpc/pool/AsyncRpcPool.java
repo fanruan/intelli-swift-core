@@ -15,7 +15,7 @@ public class AsyncRpcPool extends AbstractRpcPool {
 
     private final static AsyncRpcPool INSTANCE = new AsyncRpcPool();
 
-    public static AsyncRpcPool getIntance() {
+    public static AsyncRpcPool getInstance() {
         return INSTANCE;
     }
 }

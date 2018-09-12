@@ -3,16 +3,16 @@ package com.fr.swift.netty.rpc.invoke;
 import com.fr.swift.basics.Invocation;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.Result;
+import com.fr.swift.basics.RpcFuture;
 import com.fr.swift.basics.URL;
 import com.fr.swift.basics.base.SwiftResult;
-import com.fr.swift.netty.rpc.bean.RpcRequest;
-import com.fr.swift.netty.rpc.bean.RpcResponse;
-import com.fr.swift.netty.rpc.client.AbstactRpcClientHandler;
+import com.fr.swift.netty.bean.InternalRpcRequest;
+import com.fr.swift.netty.rpc.client.AbstractRpcClientHandler;
 import com.fr.swift.netty.rpc.client.async.AsyncRpcClientHandler;
-import com.fr.swift.netty.rpc.client.async.RpcFuture;
 import com.fr.swift.netty.rpc.client.sync.SyncRpcClientHandler;
 import com.fr.swift.netty.rpc.pool.AsyncRpcPool;
 import com.fr.swift.netty.rpc.pool.SyncRpcPool;
+import com.fr.swift.rpc.bean.RpcResponse;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 
 import java.util.UUID;
@@ -88,7 +88,7 @@ public class RPCInvoker<T> implements Invoker<T> {
 
     protected Object doInvoke(T proxy, String methodName, Class<?>[] parameterTypes, Object[] arguments) throws Throwable {
         String serviceAddress = url.getDestination().getId();
-        RpcRequest request = new RpcRequest();
+        InternalRpcRequest request = new InternalRpcRequest();
         request.setRequestId(UUID.randomUUID().toString());
         request.setInterfaceName(type.getName());
         request.setMethodName(methodName);
@@ -97,13 +97,13 @@ public class RPCInvoker<T> implements Invoker<T> {
         return rpcSend(request, serviceAddress);
     }
 
-    private Object rpcSend(RpcRequest request, String serviceAddress) throws Throwable {
-        AbstactRpcClientHandler handler = null;
+    private Object rpcSend(InternalRpcRequest request, String serviceAddress) throws Throwable {
+        AbstractRpcClientHandler handler = null;
         try {
             if (sync) {
                 handler = getAvailableSyncHandler(serviceAddress);
                 RpcResponse response = (RpcResponse) handler.send(request);
-                SyncRpcPool.getIntance().returnObject(serviceAddress, handler);
+                SyncRpcPool.getInstance().returnObject(serviceAddress, handler);
                 if (response == null) {
                     throw new RuntimeException("response is null");
                 }
@@ -120,9 +120,9 @@ public class RPCInvoker<T> implements Invoker<T> {
         } catch (Throwable e) {
             if (handler != null) {
                 if (handler instanceof SyncRpcClientHandler) {
-                    SyncRpcPool.getIntance().invalidateObject(serviceAddress, handler);
+                    SyncRpcPool.getInstance().invalidateObject(serviceAddress, handler);
                 } else {
-                    AsyncRpcPool.getIntance().invalidateObject(serviceAddress, handler);
+                    AsyncRpcPool.getInstance().invalidateObject(serviceAddress, handler);
                 }
             }
             throw e;
@@ -130,21 +130,21 @@ public class RPCInvoker<T> implements Invoker<T> {
     }
 
     private SyncRpcClientHandler getAvailableSyncHandler(String serviceAddress) throws Exception {
-        SyncRpcClientHandler handler = (SyncRpcClientHandler) SyncRpcPool.getIntance().borrowObject(serviceAddress);
+        SyncRpcClientHandler handler = (SyncRpcClientHandler) SyncRpcPool.getInstance().borrowObject(serviceAddress);
         if (!handler.isActive()) {
-            SyncRpcPool.getIntance().returnObject(serviceAddress, handler);
-            SyncRpcPool.getIntance().invalidateObject(serviceAddress, handler);
-            handler = (SyncRpcClientHandler) SyncRpcPool.getIntance().borrowObject(serviceAddress);
+            SyncRpcPool.getInstance().returnObject(serviceAddress, handler);
+            SyncRpcPool.getInstance().invalidateObject(serviceAddress, handler);
+            handler = (SyncRpcClientHandler) SyncRpcPool.getInstance().borrowObject(serviceAddress);
         }
         return handler;
     }
 
     private AsyncRpcClientHandler getAvailableAsyncHandler(String serviceAddress) throws Exception {
-        AsyncRpcClientHandler handler = (AsyncRpcClientHandler) AsyncRpcPool.getIntance().borrowObject(serviceAddress);
+        AsyncRpcClientHandler handler = (AsyncRpcClientHandler) AsyncRpcPool.getInstance().borrowObject(serviceAddress);
         if (!handler.isActive()) {
-            AsyncRpcPool.getIntance().returnObject(serviceAddress, handler);
-            AsyncRpcPool.getIntance().invalidateObject(serviceAddress, handler);
-            handler = (AsyncRpcClientHandler) AsyncRpcPool.getIntance().borrowObject(serviceAddress);
+            AsyncRpcPool.getInstance().returnObject(serviceAddress, handler);
+            AsyncRpcPool.getInstance().invalidateObject(serviceAddress, handler);
+            handler = (AsyncRpcClientHandler) AsyncRpcPool.getInstance().borrowObject(serviceAddress);
         }
         return handler;
     }

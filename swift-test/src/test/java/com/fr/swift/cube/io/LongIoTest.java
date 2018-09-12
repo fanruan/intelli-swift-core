@@ -16,7 +16,6 @@ import static org.junit.Assert.assertEquals;
  * @date 2017/11/6
  */
 public class LongIoTest extends BaseIoTest {
-    long pos = r.nextInt(BOUND);
     long val = r.nextLong();
     String basePath = CUBES_PATH + "/long/";
 
@@ -24,7 +23,7 @@ public class LongIoTest extends BaseIoTest {
     public void testOverwritePutThenGet() {
         IResourceLocation location = new ResourceLocation(basePath + "child_overwrite");
 
-        LongWriter writer = (LongWriter) Writers.build(location, new BuildConf(IoType.WRITE, DataType.LONG));
+        LongWriter writer = (LongWriter) Writers.build(location, new BuildConf(IoType.WRITE, DataType.LONG, WriteType.OVERWRITE));
         writer.put(pos, val);
         writer.release();
 

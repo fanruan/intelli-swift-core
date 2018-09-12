@@ -2,7 +2,7 @@ package com.fr.swift.netty.rpc.pool;
 
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.netty.rpc.client.AbstactRpcClientHandler;
+import com.fr.swift.netty.rpc.client.AbstractRpcClientHandler;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.third.org.apache.commons.pool2.BaseKeyedPooledObjectFactory;
 import com.fr.third.org.apache.commons.pool2.PooledObject;
@@ -26,12 +26,12 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
  * @description
  * @since Advanced FineBI 5.0
  */
-public abstract class AbstractRpcKeyPoolFactory<T extends AbstactRpcClientHandler> extends BaseKeyedPooledObjectFactory<String, T> {
+public abstract class AbstractRpcKeyPoolFactory<T extends AbstractRpcClientHandler> extends BaseKeyedPooledObjectFactory<String, T> {
 
     private SwiftProperty swiftProperty = SwiftContext.get().getBean("swiftProperty", SwiftProperty.class);
 
 
-    protected ChannelFuture bindBootstrap(final AbstactRpcClientHandler clientHandler) throws InterruptedException {
+    protected ChannelFuture bindBootstrap(final AbstractRpcClientHandler clientHandler) throws InterruptedException {
         EventLoopGroup group = new NioEventLoopGroup(1);
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(group);

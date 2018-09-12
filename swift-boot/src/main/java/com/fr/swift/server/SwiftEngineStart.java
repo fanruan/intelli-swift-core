@@ -1,6 +1,10 @@
 package com.fr.swift.server;
 
 import com.fineio.FineIO;
+import com.fr.config.dao.DaoContext;
+import com.fr.config.dao.impl.LocalClassHelperDao;
+import com.fr.config.dao.impl.LocalEntityDao;
+import com.fr.config.dao.impl.LocalXmlEntityDao;
 import com.fr.data.impl.Connection;
 import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.swift.context.SwiftContext;
@@ -13,7 +17,8 @@ import com.fr.swift.log.FineIOLoggerImpl;
 import com.fr.swift.log.SwiftLog4jLoggers;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
-import com.fr.swift.service.register.LocalSwiftRegister;
+import com.fr.swift.service.local.ServerManager;
+import com.fr.swift.service.local.ServiceManager;
 import com.fr.swift.source.db.ConnectionInfo;
 import com.fr.swift.source.db.ConnectionManager;
 import com.fr.swift.source.db.IConnectionProvider;
@@ -37,21 +42,29 @@ public class SwiftEngineStart {
             SwiftContext.init();
             registerTmpConnectionProvider();
             FineIO.setLogger(new FineIOLoggerImpl());
-            new LocalSwiftRegister().serviceRegister();
             ProviderTaskManager.start();
+            SwiftCommandParser.parseCommand(args);
+
+            SwiftContext.get().getBean("localManager", ServiceManager.class).startUp();
             if (SwiftContext.get().getBean("swiftProperty", SwiftProperty.class).isCluster()) {
                 ClusterListenerHandler.handlerEvent(new ClusterEvent(ClusterEventType.JOIN_CLUSTER, ClusterType.CONFIGURE));
             }
+            SwiftContext.get().getBean(ServerManager.class).startUp();
+
+            SwiftLoggers.getLogger().info("Swift engine start successful");
         } catch (Throwable e) {
             SwiftLoggers.getLogger().error(e);
             System.exit(1);
         }
     }
 
-
-
     private static void registerTmpConnectionProvider() {
         SwiftProperty property = SwiftContext.get().getBean(SwiftProperty.class);
+
+        DaoContext.setEntityDao(new LocalEntityDao());
+        DaoContext.setClassHelperDao(new LocalClassHelperDao());
+        DaoContext.setXmlEntityDao(new LocalXmlEntityDao());
+
         Connection frConnection = new JDBCDatabaseConnection(property.getConfigDbDriverClass(),
                 property.getConfigDbJdbcUrl(), property.getConfigDbUsername(), property.getConfigDbPasswd());
         final SwiftConnectionInfo connectionInfo = new SwiftConnectionInfo(null, frConnection);

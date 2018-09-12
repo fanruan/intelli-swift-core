@@ -105,11 +105,6 @@ public class BaseCreateColumnForSelfRelation6Test {
             }
 
             @Override
-            public void putGlobalSize(int globalSize) {
-
-            }
-
-            @Override
             public Object getValue(int index) {
                 return keys[index];
             }

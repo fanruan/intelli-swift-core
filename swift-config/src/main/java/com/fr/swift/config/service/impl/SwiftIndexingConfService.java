@@ -1,15 +1,15 @@
 package com.fr.swift.config.service.impl;
 
+import com.fr.swift.config.convert.hibernate.transaction.AbstractTransactionWorker;
+import com.fr.swift.config.convert.hibernate.transaction.HibernateTransactionManager;
 import com.fr.swift.config.dao.BasicDao;
 import com.fr.swift.config.dao.SwiftConfigDao;
-import com.fr.swift.config.hibernate.transaction.AbstractTransactionWorker;
-import com.fr.swift.config.hibernate.transaction.HibernateTransactionManager;
+import com.fr.swift.config.entity.SwiftColumnIndexingConf;
+import com.fr.swift.config.entity.SwiftTableIndexingConf;
+import com.fr.swift.config.entity.key.ColumnId;
+import com.fr.swift.config.entity.key.TableId;
 import com.fr.swift.config.indexing.ColumnIndexingConf;
 import com.fr.swift.config.indexing.TableIndexingConf;
-import com.fr.swift.config.indexing.impl.ColumnId;
-import com.fr.swift.config.indexing.impl.SwiftColumnIndexingConf;
-import com.fr.swift.config.indexing.impl.SwiftTableIndexingConf;
-import com.fr.swift.config.indexing.impl.TableId;
 import com.fr.swift.config.service.IndexingConfService;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;
@@ -61,7 +61,7 @@ public class SwiftIndexingConfService implements IndexingConfService {
                 @Override
                 public ColumnIndexingConf work(Session session) throws SQLException {
                     SwiftColumnIndexingConf conf = columnConf.select(session, new ColumnId(table, columnName));
-                    return conf != null ? conf : new SwiftColumnIndexingConf(table, columnName, true, true);
+                    return conf != null ? conf : new SwiftColumnIndexingConf(table, columnName, true, false);
                 }
 
                 @Override

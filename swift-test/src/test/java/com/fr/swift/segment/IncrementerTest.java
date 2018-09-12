@@ -12,10 +12,8 @@ import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.test.Preparer;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
-
-import java.sql.SQLException;
 
 /**
  * @author anchore
@@ -26,9 +24,9 @@ public class IncrementerTest {
 
     private static SwiftSourceTransfer transfer;
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        Preparer.prepareCubeBuild();
+    @Before
+    public void beforeClass() throws Exception {
+        Preparer.prepareCubeBuild(getClass());
         dataSource = new QueryDBSource("select 客户状态 from DEMO_CUSTOMER", IncrementerTest.class.getSimpleName());
         transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
 
@@ -38,7 +36,7 @@ public class IncrementerTest {
     }
 
     @Test
-    public void increment() throws SQLException {
+    public void increment() throws Exception {
         Incrementer incrementer = new Incrementer(dataSource);
         incrementer.insertData(transfer.createResultSet());
         incrementer.insertData(transfer.createResultSet());

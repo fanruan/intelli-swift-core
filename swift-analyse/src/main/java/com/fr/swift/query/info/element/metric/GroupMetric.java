@@ -2,6 +2,7 @@ package com.fr.swift.query.info.element.metric;
 
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.query.info.bean.type.MetricType;
 import com.fr.swift.segment.column.ColumnKey;
 
 /**

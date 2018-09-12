@@ -18,4 +18,8 @@ public class LocalProxyFactory extends AbstractProxyFactory {
         return new LocalInvoker<T>(proxy, type, url);
     }
 
+    @Override
+    public <T> Invoker<T> getInvoker(T proxy, Class<T> type, URL url, boolean sync) {
+        return (Invoker) new LocalInvoker(proxy, type, url, sync);
+    }
 }

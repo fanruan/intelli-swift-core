@@ -3,12 +3,12 @@ package com.fr.swift.netty.rpc.pool;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.Result;
+import com.fr.swift.basics.RpcFuture;
 import com.fr.swift.basics.base.SwiftInvocation;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.netty.rpc.CalculatorService;
-import com.fr.swift.netty.rpc.client.AsyncRpcCallback;
-import com.fr.swift.netty.rpc.client.async.RpcFuture;
+import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.netty.rpc.proxy.RPCProxyFactory;
 import com.fr.swift.netty.rpc.server.RpcServer;
 import com.fr.swift.netty.rpc.url.RPCDestination;
@@ -35,7 +35,6 @@ public class AsyncPoolTest {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         SwiftContext.init();
         RpcServer rpcServer = SwiftContext.get().getBean(RpcServer.class);
-        rpcServer.initService(SwiftContext.get());
         Method method = rpcServer.getMethodByName("add");
 
         final AtomicInteger count = new AtomicInteger(1);

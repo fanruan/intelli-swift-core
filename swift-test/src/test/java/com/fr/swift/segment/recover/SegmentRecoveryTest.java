@@ -18,7 +18,6 @@ import com.fr.swift.source.db.TestConnectionProvider;
 import com.fr.swift.test.Preparer;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -31,9 +30,9 @@ public class SegmentRecoveryTest {
     private ConnectionInfo connectionInfo;
 
 
-    @BeforeClass
-    public static void boot() {
-        Preparer.prepareCubeBuild();
+    @Before
+    public void boot() {
+        Preparer.prepareCubeBuild(getClass());
     }
 
 
@@ -57,9 +56,9 @@ public class SegmentRecoveryTest {
         incrementer.insertData(swiftResultSet);
 
         String tablePath = String.format("%s/%s",
-                dataSource.getMetadata().getSwiftSchema().getDir(),
+                dataSource.getMetadata().getSwiftDatabase().getDir(),
                 dataSource.getSourceKey().getId());
-        ResourceDiscovery.getInstance().removeCubeResource(tablePath);
+        ResourceDiscovery.getInstance().removeIf(s -> s.contains(tablePath));
         SegmentRecovery segmentRecovery = (SegmentRecovery) SwiftContext.get().getBean("segmentRecovery");
         segmentRecovery.recoverAll();
 
@@ -69,12 +68,5 @@ public class SegmentRecoveryTest {
         for (int i = 0; i < segment.getRowCount(); i++) {
             segment.getColumn(new ColumnKey("付款金额")).getDetailColumn().get(i);
         }
-    }
-
-    private Segment newRealtimeSegment() {
-        return new RealTimeSegmentImpl(new ResourceLocation(
-                String.format("%s/%s/seg0",
-                        dataSource.getMetadata().getSwiftSchema().getDir(),
-                        dataSource.getSourceKey().getId()), StoreType.MEMORY), dataSource.getMetadata());
     }
 }
