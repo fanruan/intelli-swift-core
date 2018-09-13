@@ -7,7 +7,7 @@
     <groupId>com.fr.intelligence</groupId>
     <artifactId>fine-swift</artifactId>
     <packaging>pom</packaging>
-    <version>${swift.version}</version>
+    <version>10.0</version>
     <modules>
         <module>swift-analyse</module>
         <module>swift-api-public</module>

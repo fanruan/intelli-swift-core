@@ -9,6 +9,9 @@ import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 import com.fr.swift.config.entity.SwiftTableIndexingConf;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author yee
  * @date 2018/5/28
@@ -24,6 +27,11 @@ public class SwiftConfigConstants {
             SwiftColumnIndexingConf.class,
             SwiftTablePathEntity.class
     };
+
+
+    public static class KeyWords {
+        public static final List<String> COLUMN_KEY_WORDS = Arrays.asList("row_count", "all_show_index");
+    }
 
     public static final int LONG_TEXT_LENGTH = 65536;
 

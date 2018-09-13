@@ -46,12 +46,6 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-core</artifactId>
-            <version>${swift.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-cluster</artifactId>
             <version>${swift.version}</version>
         </dependency>
