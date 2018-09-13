@@ -23,10 +23,6 @@
             <version>${swift.version}</version>
             <exclusions>
                 <exclusion>
-                    <artifactId>swift-rpc</artifactId>
-                    <groupId>com.fr.intelligence</groupId>
-                </exclusion>
-                <exclusion>
                     <artifactId>swift-repository-base</artifactId>
                     <groupId>com.fr.intelligence</groupId>
                 </exclusion>

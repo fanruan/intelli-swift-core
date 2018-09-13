@@ -46,8 +46,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static com.fr.swift.task.TaskResult.Type.SUCCEEDED;
@@ -171,11 +173,15 @@ public class ClusterIndexingServiceImpl extends AbstractSwiftService implements 
         public void uploadRelation(RelationSource relation) throws Exception {
             SourceKey sourceKey = relation.getForeignSource();
             SourceKey primary = relation.getPrimarySource();
-            List<String> needUpload = new ArrayList<String>();
+            Map<String, List<String>> segNeedUpload = new HashMap<String, List<String>>();
             List<SegmentKey> segmentKeys = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).getSegmentByKey(sourceKey.getId());
             if (null != segmentKeys) {
                 if (relation.getRelationType() != RelationSourceType.FIELD_RELATION) {
                     for (SegmentKey segmentKey : segmentKeys) {
+                        String key = segmentKey.toString();
+                        if (null == segNeedUpload.get(key)) {
+                            segNeedUpload.put(key, new ArrayList<String>());
+                        }
                         try {
                             String src = Strings.unifySlash(
                                     String.format("%s/%s/%s/%s",
@@ -190,13 +196,17 @@ public class ClusterIndexingServiceImpl extends AbstractSwiftService implements 
                                     RelationIndexImpl.RELATIONS_KEY,
                                     primary.getId());
                             upload(src, dest);
-                            needUpload.add(dest);
+                            segNeedUpload.get(key).add(dest);
                         } catch (IOException e) {
                             SwiftLoggers.getLogger().error("upload error! ", e);
                         }
                     }
                 } else {
                     for (SegmentKey segmentKey : segmentKeys) {
+                        String key = segmentKey.toString();
+                        if (null == segNeedUpload.get(key)) {
+                            segNeedUpload.put(key, new ArrayList<String>());
+                        }
                         try {
                             String src = Strings.unifySlash(
                                     String.format("%s/field/%s/%s",
@@ -210,13 +220,13 @@ public class ClusterIndexingServiceImpl extends AbstractSwiftService implements 
                                     RelationIndexImpl.RELATIONS_KEY,
                                     primary.getId());
                             upload(src, dest);
-                            needUpload.add(dest);
+                            segNeedUpload.get(key).add(dest);
                         } catch (IOException e) {
                             SwiftLoggers.getLogger().error("upload error! ", e);
                         }
                     }
                 }
-                doAfterUpload(new HistoryCommonLoadRpcEvent(Pair.of(sourceKey.getId(), needUpload)));
+                doAfterUpload(new HistoryCommonLoadRpcEvent(Pair.of(sourceKey.getId(), segNeedUpload)));
             }
         }
 

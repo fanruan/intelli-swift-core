@@ -1,10 +1,12 @@
 package com.fr.swift.event.base;
 
+import com.fr.swift.event.base.AbstractGlobalRpcEvent.Event;
+
 /**
  * @author yee
  * @date 2018/6/29
  */
-public abstract class AbstractGlobalRpcEvent<T> implements SwiftRpcEvent<T> {
+public abstract class AbstractGlobalRpcEvent<T> implements SwiftRpcEvent<T, Event> {
     @Override
     public EventType type() {
         return EventType.GLOBAL;

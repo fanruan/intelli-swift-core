@@ -1,10 +1,13 @@
 package com.fr.swift.event.base;
 
+
+import com.fr.swift.event.base.AbstractHistoryRpcEvent.Event;
+
 /**
  * @author yee
  * @date 2018/6/8
  */
-public abstract class AbstractHistoryRpcEvent<T> implements SwiftRpcEvent<T> {
+public abstract class AbstractHistoryRpcEvent<T> implements SwiftRpcEvent<T, Event> {
 
     @Override
     public EventType type() {

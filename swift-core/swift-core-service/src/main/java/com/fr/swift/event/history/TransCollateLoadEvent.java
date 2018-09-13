@@ -19,7 +19,7 @@ public class TransCollateLoadEvent extends SegmentLoadRpcEvent<Pair<String, List
 
     @Override
     public Event subEvent() {
-        return null;
+        return Event.TRANS_COLLATE_LOAD;
     }
 
     @Override
