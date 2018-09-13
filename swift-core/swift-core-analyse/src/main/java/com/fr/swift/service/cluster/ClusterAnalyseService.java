@@ -1,10 +1,12 @@
 package com.fr.swift.service.cluster;
 
 import com.fr.swift.segment.SegmentDestination;
+import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * @author yee
@@ -20,4 +22,10 @@ public interface ClusterAnalyseService extends AnalyseService {
      * @throws SQLException
      */
     SwiftResultSet getRemoteQueryResult(String jsonString, SegmentDestination remoteURI) throws SQLException;
+
+    void updateSegmentInfo(SegmentLocationInfo locationInfo, SegmentLocationInfo.UpdateType updateType);
+
+    void removeTable(String sourceKey);
+
+    void removeSegments(String sourceKey, List<String> segmentKeys);
 }

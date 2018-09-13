@@ -3,7 +3,11 @@ package com.fr.swift.cluster.service;
 import com.fr.swift.annotation.RpcMethod;
 import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.SwiftService;
+import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
+import com.fr.swift.config.service.SwiftCubePathService;
+import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Where;
@@ -30,6 +34,7 @@ import com.fr.swift.structure.Pair;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
+import com.fr.swift.util.FileUtil;
 import com.fr.swift.util.ServiceBeanFactory;
 import com.fr.swift.utils.ClusterCommonUtils;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +66,8 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
     private transient ServiceTaskExecutor taskExecutor;
     private transient SwiftSegmentManager segmentManager;
     private transient SwiftRepositoryManager repositoryManager;
+    private transient SwiftTablePathService tablePathService;
+    private transient SwiftCubePathService cubePathService;
 
     @Override
     public boolean start() throws SwiftServiceException {
@@ -71,6 +78,8 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
         segmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         taskExecutor = SwiftContext.get().getBean(ServiceTaskExecutor.class);
         repositoryManager = SwiftContext.get().getBean(SwiftRepositoryManager.class);
+        tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
+        cubePathService = SwiftContext.get().getBean(SwiftCubePathService.class);
         SegmentLocationInfo info = loadSelfSegmentDestination();
         if (null != info) {
             try {
@@ -177,6 +186,22 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
             }
         });
         return true;
+    }
+
+    @Override
+    @RpcMethod(methodName = "truncate")
+    public void truncate(String sourceKey) {
+        SwiftTablePathEntity entity = tablePathService.get(sourceKey);
+        int path = 0;
+        if (null != entity) {
+            path = entity.getTablePath() == null ? 0 : entity.getTablePath();
+            tablePathService.removePath(sourceKey);
+        }
+        SwiftSegmentService segmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
+        segmentService.removeSegments(sourceKey);
+
+        String localPath = String.format("%s/%d/%s", cubePathService.getSwiftPath(), path, sourceKey);
+        FileUtil.delete(localPath);
     }
 
     @Override

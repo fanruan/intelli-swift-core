@@ -52,6 +52,24 @@ public interface TableService extends ApiService {
     int createTable(SwiftDatabase schema, String tableName, List<Column> columns) throws Exception;
 
     /**
+     * 删除表接口
+     *
+     * @param schema
+     * @param tableName
+     * @throws Exception
+     */
+    void dropTable(SwiftDatabase schema, String tableName) throws Exception;
+
+    /**
+     * 清空数据
+     *
+     * @param schema
+     * @param tableName
+     * @throws Exception
+     */
+    void truncateTable(SwiftDatabase schema, String tableName) throws Exception;
+
+    /**
      * 加字段
      *
      * @param column

@@ -92,6 +92,26 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
                 Map<String, ClusterEntity> realTimeServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.REAL_TIME);
                 dealDelete(sourceKey, where, realTimeServices, "realtimeDelete");
                 break;
+            case TRUNCATE:
+                String truncateSourceKey = (String) event.getContent();
+                Map<String, ClusterEntity> histories = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.HISTORY);
+                if (null == histories || histories.isEmpty()) {
+                    throw new RuntimeException("Cannot find any services");
+                }
+                for (Map.Entry<String, ClusterEntity> entry : histories.entrySet()) {
+                    String clusterId = entry.getKey();
+                    runAsyncRpc(clusterId, entry.getValue().getServiceClass(), "truncate", truncateSourceKey).addCallback(new AsyncRpcCallback() {
+                        @Override
+                        public void success(Object result) {
+
+                        }
+
+                        @Override
+                        public void fail(Exception e) {
+                            SwiftLoggers.getLogger().error(e);
+                        }
+                    });
+                }
             default:
                 break;
         }
@@ -99,6 +119,9 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
     }
 
     private void dealDelete(SourceKey sourceKey, Where where, Map<String, ClusterEntity> services, String method) throws Exception {
+        if (null == services || services.isEmpty()) {
+            throw new RuntimeException("Cannot find services");
+        }
         List<String> uploadedSegments = new ArrayList<String>();
         for (Map.Entry<String, ClusterEntity> entry : services.entrySet()) {
             String clusterId = entry.getKey();

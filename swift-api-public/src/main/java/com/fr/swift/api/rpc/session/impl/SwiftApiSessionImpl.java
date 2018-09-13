@@ -79,6 +79,14 @@ public class SwiftApiSessionImpl implements SwiftPublicApiSession, DataMaintenan
         return dataMaintenanceApi.createTable(schema, tableName, columns) >= 0;
     }
 
+    public void dropTable(SwiftDatabase schema, String tableName) throws Exception {
+        dataMaintenanceApi.dropTable(schema, tableName);
+    }
+
+    public void truncateTable(SwiftDatabase schema, String tableName) throws Exception {
+        dataMaintenanceApi.truncateTable(schema, tableName);
+    }
+
     @Override
     public SwiftResultSet query(SwiftDatabase database, QueryBean queryBean) {
         if (queryBean instanceof AbstractSingleTableQueryInfoBean) {

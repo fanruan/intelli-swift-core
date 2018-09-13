@@ -15,4 +15,6 @@ import java.util.List;
  */
 public interface ClusterHistoryService extends HistoryService {
     boolean delete(SourceKey sourceKey, Where where, List<String> segKeys) throws Exception;
+
+    void truncate(String sourceKey) throws Exception;
 }
