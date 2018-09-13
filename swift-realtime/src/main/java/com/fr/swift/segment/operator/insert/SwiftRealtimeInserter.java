@@ -6,8 +6,8 @@ import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.exception.RealtimeInsertException;
+import com.fr.swift.segment.BaseSegment;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.backup.SwiftSegmentBackup;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
@@ -39,7 +39,7 @@ public class SwiftRealtimeInserter extends SwiftInserter {
         SwiftMetaData meta = segment.getMetaData();
         String segPath = segment.getLocation().getPath();
         SwiftDatabase swiftSchema = meta.getSwiftDatabase();
-        return SegmentUtils.newHistorySegment(new ResourceLocation(segPath.replace(swiftSchema.getDir(), swiftSchema.getBackupDir()), StoreType.NIO), meta);
+        return new BaseSegment(new ResourceLocation(segPath.replace(swiftSchema.getDir(), swiftSchema.getBackupDir()), StoreType.NIO), meta);
     }
 
     @Override

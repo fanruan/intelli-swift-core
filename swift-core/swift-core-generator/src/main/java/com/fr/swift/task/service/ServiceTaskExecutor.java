@@ -9,6 +9,6 @@ package com.fr.swift.task.service;
  */
 public interface ServiceTaskExecutor {
 
-    void submit(ServiceCallable serviceCallable) throws Exception;
+    void submit(ServiceCallable serviceCallable) throws InterruptedException;
 
 }

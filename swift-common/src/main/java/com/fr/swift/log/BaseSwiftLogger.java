@@ -2,6 +2,7 @@ package com.fr.swift.log;
 
 import com.fr.stable.StringUtils;
 import org.slf4j.Marker;
+import org.slf4j.helpers.FormattingTuple;
 import org.slf4j.helpers.MessageFormatter;
 
 /**
@@ -9,8 +10,8 @@ import org.slf4j.helpers.MessageFormatter;
  * @date 2018/7/4
  */
 abstract class BaseSwiftLogger implements SwiftLogger {
-    static String format(String s, Object... objects) {
-        return MessageFormatter.arrayFormat(s, objects).getMessage();
+    static FormattingTuple format(String s, Object... objects) {
+        return MessageFormatter.arrayFormat(s, objects);
     }
 
     @Override

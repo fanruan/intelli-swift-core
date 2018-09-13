@@ -25,7 +25,7 @@ public class CollateExecutor implements Runnable {
 
     private CollateExecutor() {
         SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory(getClass())).
-                scheduleWithFixedDelay(this, 0, 1, TimeUnit.HOURS);
+                scheduleWithFixedDelay(this, 1, 1, TimeUnit.HOURS);
         collateService = SwiftContext.get().getBean(CollateService.class);
     }
 

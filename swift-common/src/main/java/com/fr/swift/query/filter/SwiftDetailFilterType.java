@@ -1,10 +1,11 @@
 package com.fr.swift.query.filter;
 
 /**
- * Created by Lyon on 2018/2/2.
+ * @author Lyon
+ * @date 2018/2/2
  */
 public enum SwiftDetailFilterType {
-
+    //
     STRING_LIKE,
     STRING_ENDS_WITH,
     STRING_STARTS_WITH,
