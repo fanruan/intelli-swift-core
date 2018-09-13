@@ -6,6 +6,7 @@ import com.fr.swift.service.SwiftServiceEvent;
  * Created by pony on 2017/11/6.
  * 处理监听的类
  */
+@Deprecated
 public interface SwiftServiceListener<T> {
     /**
      * 如何处理事件

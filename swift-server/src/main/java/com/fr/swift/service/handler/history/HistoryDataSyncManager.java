@@ -7,7 +7,8 @@ import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.service.DataSyncRuleService;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.event.analyse.SegmentLocationRpcEvent;
-import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
+import com.fr.swift.event.base.EventResult;
+import com.fr.swift.event.history.SegmentLoadRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentDestination;
@@ -29,13 +30,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author yee
  * @date 2018/6/8
  */
 @Service
-public class HistoryDataSyncManager extends AbstractHandler<HistoryLoadSegmentRpcEvent> {
+public class HistoryDataSyncManager extends AbstractHandler<SegmentLoadRpcEvent> {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(HistoryDataSyncManager.class);
 
@@ -45,26 +48,59 @@ public class HistoryDataSyncManager extends AbstractHandler<HistoryLoadSegmentRp
     private DataSyncRuleService dataSyncRuleService;
 
     @Override
-    public <S extends Serializable> S handle(HistoryLoadSegmentRpcEvent event) {
+    public <S extends Serializable> S handle(SegmentLoadRpcEvent event) {
         Map<String, ClusterEntity> services = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.HISTORY);
         if (null == services || services.isEmpty()) {
             throw new RuntimeException("Cannot find history service");
         }
-
-        String needLoadSourceKey = event.getContent();
-
         Map<String, List<SegmentKey>> allSegments = clusterSegmentService.getAllSegments();
         Map<String, List<SegmentKey>> needLoadSegments = new HashMap<String, List<SegmentKey>>();
-        if (StringUtils.isNotEmpty(needLoadSourceKey)) {
-            List<SegmentKey> keys = allSegments.get(needLoadSourceKey);
-            needLoadSegments.put(needLoadSourceKey, keys);
-        } else {
-            needLoadSegments.putAll(allSegments);
+        switch (event.subEvent()) {
+            case LOAD_SEGMENT:
+                String needLoadSourceKey = (String) event.getContent();
+                if (StringUtils.isNotEmpty(needLoadSourceKey)) {
+                    List<SegmentKey> keys = allSegments.get(needLoadSourceKey);
+                    needLoadSegments.put(needLoadSourceKey, keys);
+                } else {
+                    needLoadSegments.putAll(allSegments);
+                }
+                dealNeedLoadSegments(services, needLoadSegments, SegmentLocationInfo.UpdateType.ALL, 0);
+                break;
+            case TRANS_COLLATE_LOAD:
+                Pair<String, List<String>> content = (Pair<String, List<String>>) event.getContent();
+                String needLoadSource = content.getKey();
+                List<String> segmentKeys = content.getValue();
+                if (StringUtils.isNotEmpty(needLoadSource)) {
+                    List<SegmentKey> keys = allSegments.get(needLoadSource);
+                    List<SegmentKey> target = new ArrayList<SegmentKey>();
+                    for (SegmentKey key : keys) {
+                        if (segmentKeys.contains(key.toString())) {
+                            target.add(key);
+                        }
+                    }
+                    needLoadSegments.put(needLoadSource, target);
+                } else {
+                    return null;
+                }
+                if (dealNeedLoadSegments(services, needLoadSegments, SegmentLocationInfo.UpdateType.PART, 1)) {
+                    return (S) EventResult.SUCCESS;
+                } else {
+                    return (S) EventResult.FAILED;
+                }
+            default:
+                break;
         }
+        return null;
+    }
 
+    private boolean dealNeedLoadSegments(Map<String, ClusterEntity> services,
+                                         Map<String, List<SegmentKey>> needLoadSegments,
+                                         final SegmentLocationInfo.UpdateType updateType, int wait) {
         final Map<String, List<SegmentDestination>> destinations = new HashMap<String, List<SegmentDestination>>();
         Map<String, Set<SegmentKey>> result = dataSyncRuleService.getCurrentRule().calculate(services.keySet(), needLoadSegments, destinations);
         Iterator<String> keyIterator = result.keySet().iterator();
+        final AtomicBoolean downloadSuccess = new AtomicBoolean(false);
+        final CountDownLatch latch = wait > 0 ? new CountDownLatch(wait) : null;
         try {
             while (keyIterator.hasNext()) {
                 final String key = keyIterator.next();
@@ -89,22 +125,34 @@ public class HistoryDataSyncManager extends AbstractHandler<HistoryLoadSegmentRp
                                 clusterSegmentService.updateSegmentTable(segmentTable);
                                 try {
                                     SwiftServiceHandlerManager.getManager().
-                                            handle(new SegmentLocationRpcEvent(SegmentLocationInfo.UpdateType.ALL, new SegmentLocationInfoImpl(ServiceType.HISTORY, destinations)));
+                                            handle(new SegmentLocationRpcEvent(updateType, new SegmentLocationInfoImpl(ServiceType.HISTORY, destinations)));
                                 } catch (Exception e) {
                                     fail(e);
+                                }
+                                downloadSuccess.set(true);
+                                if (null != latch) {
+                                    latch.countDown();
                                 }
                             }
 
                             @Override
                             public void fail(Exception e) {
                                 LOGGER.error("Load failed! ", e);
+                                if (null != latch) {
+                                    latch.countDown();
+                                }
                             }
                         });
-
             }
+            if (null != latch) {
+                latch.await();
+            }
+            return downloadSuccess.get();
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }
-        return null;
+        return false;
     }
+
+
 }

@@ -1,5 +1,6 @@
 package com.fr.swift.segment.impl;
 
+import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
 import com.fr.swift.config.bean.SegmentDestSelectRule;
 import com.fr.swift.config.service.SegmentDestSelectRuleService;
@@ -11,6 +12,7 @@ import com.fr.swift.source.SourceKey;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,6 +36,7 @@ public class SegmentLocationManagerImpl implements SegmentLocationManager {
     }
 
     @Override
+    synchronized
     public List<SegmentDestination> getSegmentLocationURI(SourceKey table) {
         List<SegmentDestination> destinations = segments.get(table.getId());
         if (null == destinations) {
@@ -70,5 +73,28 @@ public class SegmentLocationManagerImpl implements SegmentLocationManager {
     @Override
     public Map<String, List<SegmentDestination>> getSegmentInfo() {
         return new HashMap<String, List<SegmentDestination>>(segments);
+    }
+
+    @Override
+    synchronized
+    public void removeTable(String sourceKey) {
+        segments.remove(sourceKey);
+    }
+
+    @Override
+    synchronized
+    public void removeSegment(String sourceKey, List<String> segmentKeys) {
+        List<SegmentDestination> destinations = segments.get(sourceKey);
+        if (null != destinations) {
+            for (String segmentKey : segmentKeys) {
+                Iterator<SegmentDestination> iterator = destinations.iterator();
+                while (iterator.hasNext()) {
+                    SegmentDestination dest = iterator.next();
+                    if (ComparatorUtils.equals(segmentKey, dest.getSegmentId())) {
+                        iterator.remove();
+                    }
+                }
+            }
+        }
     }
 }

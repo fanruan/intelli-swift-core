@@ -5,6 +5,7 @@ package com.fr.swift.service.listener;
  * @date 2017/11/6
  * 事件类型
  */
+@Deprecated
 public enum EventType {
     REAL_TIME_INDEX_FINISH, REAL_TIME_REMOVE, INDEXING_FINISH,
     INIT_TASK, CANCEL_TASK, RUN_TASK, DONE_TASK

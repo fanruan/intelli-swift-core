@@ -84,6 +84,18 @@ public class Api implements TableService {
     }
 
     @Override
+    public void dropTable(SwiftDatabase schema, String tableName) throws Exception {
+        TableService service = getProxy(TableService.class);
+        service.dropTable(schema, tableName);
+    }
+
+    @Override
+    public void truncateTable(SwiftDatabase schema, String tableName) throws Exception {
+        TableService service = getProxy(TableService.class);
+        service.truncateTable(schema, tableName);
+    }
+
+    @Override
     public boolean addColumn(SwiftDatabase schema, String tableName, Column column) throws Exception {
         TableService service = getProxy(TableService.class);
         return service.addColumn(schema, tableName, column);

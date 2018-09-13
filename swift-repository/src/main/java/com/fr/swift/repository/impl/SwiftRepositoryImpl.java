@@ -126,7 +126,7 @@ public class SwiftRepositoryImpl extends AbstractRepository {
         File zipFile = new File(TEMP_PATH, file.getName() + ".cubes");
         FileOutputStream fos = new FileOutputStream(zipFile);
         ZipUtils.toZip(file.getAbsolutePath(), fos);
-        SwiftFileSystem fileSystem = createFileSystem(remote);
+        SwiftFileSystem fileSystem = createFileSystem(remote + ".cubes");
         if (fileSystem.isExists()) {
             fileSystem.remove();
         }

@@ -7,20 +7,29 @@ import com.fr.swift.api.rpc.bean.Column;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
+import com.fr.swift.config.entity.SwiftTablePathEntity;
+import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftMetaDataService;
+import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.db.AlterTableAction;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.AddColumnAction;
 import com.fr.swift.db.impl.DropColumnAction;
+import com.fr.swift.event.global.TruncateEvent;
 import com.fr.swift.exception.meta.SwiftMetaDataAbsentException;
+import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.core.MD5Utils;
 import com.fr.swift.util.Crasher;
+import com.fr.swift.util.FileUtil;
+import com.fr.swift.utils.ClusterCommonUtils;
 import com.fr.third.org.hibernate.criterion.Restrictions;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
+import com.fr.third.springframework.beans.factory.annotation.Qualifier;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -36,7 +45,14 @@ import java.util.UUID;
 @SwiftApi
 class TableServiceImpl implements TableService {
     @Autowired(required = false)
-    SwiftMetaDataService swiftMetaDataService;
+    private SwiftMetaDataService swiftMetaDataService;
+    @Autowired(required = false)
+    private SwiftCubePathService cubePathService;
+    @Autowired(required = false)
+    private SwiftTablePathService tablePathService;
+    @Autowired(required = false)
+    @Qualifier("segmentServiceProvider")
+    private SwiftSegmentService segmentService;
 
     @Override
     @SwiftApi
@@ -101,6 +117,36 @@ class TableServiceImpl implements TableService {
             return 1;
         }
         return -1;
+    }
+
+    @Override
+    public void dropTable(SwiftDatabase schema, String tableName) throws Exception {
+        SwiftMetaData metaData = detectiveMetaData(schema, tableName);
+        truncateTable(metaData);
+        swiftMetaDataService.removeMetaDatas(metaData.getId());
+    }
+
+    @Override
+    public void truncateTable(SwiftDatabase schema, String tableName) throws Exception {
+        SwiftMetaData metaData = detectiveMetaData(schema, tableName);
+        truncateTable(metaData);
+    }
+
+    private void truncateTable(SwiftMetaData metaData) {
+        String sourceKey = metaData.getId();
+        if (ClusterSelector.getInstance().getFactory().isCluster()) {
+            ClusterCommonUtils.runSyncMaster(new TruncateEvent(sourceKey));
+        } else {
+            SwiftTablePathEntity entity = tablePathService.get(sourceKey);
+            int path = 0;
+            if (null != entity) {
+                path = entity.getTablePath() == null ? 0 : entity.getTablePath();
+                tablePathService.removePath(sourceKey);
+            }
+            segmentService.removeSegments(sourceKey);
+            String localPath = String.format("%s/%d/%s", cubePathService.getSwiftPath(), path, sourceKey);
+            FileUtil.delete(localPath);
+        }
     }
 
     @Override

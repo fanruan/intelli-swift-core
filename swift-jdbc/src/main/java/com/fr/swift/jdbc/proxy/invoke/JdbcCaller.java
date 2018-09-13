@@ -98,6 +98,34 @@ public class JdbcCaller implements TableService {
     }
 
     @Override
+    public void dropTable(SwiftDatabase schema, String tableName) throws Exception {
+        ClientProxy proxy = null;
+        try {
+            proxy = pool.borrowObject(address);
+            proxy.getProxy(TableService.class).dropTable(schema, tableName);
+        } catch (Exception e) {
+            pool.invalidateObject(address, proxy);
+            throw new SQLException(e);
+        } finally {
+            pool.returnObject(address, proxy);
+        }
+    }
+
+    @Override
+    public void truncateTable(SwiftDatabase schema, String tableName) throws Exception {
+        ClientProxy proxy = null;
+        try {
+            proxy = pool.borrowObject(address);
+            proxy.getProxy(TableService.class).truncateTable(schema, tableName);
+        } catch (Exception e) {
+            pool.invalidateObject(address, proxy);
+            throw new SQLException(e);
+        } finally {
+            pool.returnObject(address, proxy);
+        }
+    }
+
+    @Override
     public boolean addColumn(SwiftDatabase schema, String tableName, Column column) throws Exception {
         ClientProxy proxy = null;
         try {

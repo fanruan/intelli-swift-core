@@ -5,6 +5,9 @@ import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.RpcFuture;
+import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.context.SwiftContext;
+import com.fr.swift.cube.io.Types;
 import com.fr.swift.event.analyse.RequestSegLocationEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
@@ -12,9 +15,11 @@ import com.fr.swift.netty.rpc.server.RpcServer;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryBeanFactory;
 import com.fr.swift.segment.SegmentDestination;
+import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
+import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
 import com.fr.swift.service.AbstractSwiftService;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.ServiceType;
@@ -26,8 +31,11 @@ import com.fr.swift.util.ServiceBeanFactory;
 import com.fr.swift.utils.ClusterCommonUtils;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -44,6 +52,8 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
     private transient QueryBeanFactory queryBeanFactory;
     @Autowired(required = false)
     private transient AnalyseService analyseService;
+    private transient boolean loadable = true;
+    private transient SwiftSegmentService segmentProvider;
 
     @Override
     public SwiftResultSet getRemoteQueryResult(final String jsonString, final SegmentDestination remoteURI) {
@@ -104,7 +114,12 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
         analyseService = (AnalyseService) services.get(0);
         analyseService.setId(getID());
         analyseService.start();
+        segmentProvider = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
         // 这边为了覆盖掉analyse的注册，所以再调一次注册
+        if (loadable) {
+            loadSelfSegmentDestination();
+            loadable = false;
+        }
         super.start();
         List<Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo>> result =
                 (List<Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo>>) ClusterCommonUtils.runSyncMaster(new RequestSegLocationEvent(getID()));
@@ -117,6 +132,14 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
     }
 
     @Override
+    public boolean shutdown() throws SwiftServiceException {
+        segmentProvider = null;
+        analyseService = null;
+        loadable = true;
+        return super.shutdown();
+    }
+
+    @Override
     @RpcMethod(methodName = "updateSegmentInfo")
     public void updateSegmentInfo(SegmentLocationInfo locationInfo, SegmentLocationInfo.UpdateType updateType) {
         String clusterId = getID();
@@ -125,9 +148,21 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
                 ((SegmentDestinationImpl) segmentDestination).setCurrentNode(clusterId);
             }
         }
-//        analyseService.updateSegmentInfo(locationInfo, updateType);
         SegmentLocationProvider.getInstance().updateSegmentInfo(locationInfo, updateType);
     }
+
+    @Override
+    @RpcMethod(methodName = "removeTable")
+    public void removeTable(String sourceKey) {
+        SegmentLocationProvider.getInstance().removeTable(sourceKey);
+    }
+
+    @Override
+    @RpcMethod(methodName = "removeSegments")
+    public void removeSegments(String sourceKey, List<String> segmentKeys) {
+        SegmentLocationProvider.getInstance().removeSegment(sourceKey, segmentKeys);
+    }
+
 
     private RpcFuture queryRemoteNodeNode(String jsonString, SegmentDestination remoteURI) throws Exception {
         if (null == remoteURI) {
@@ -149,5 +184,37 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
     @Override
     public SwiftResultSet getQueryResult(QueryBean info) throws Exception {
         return analyseService.getQueryResult(info);
+    }
+
+    private void loadSelfSegmentDestination() {
+        Map<String, List<SegmentKey>> segments = segmentProvider.getOwnSegments();
+        if (!segments.isEmpty()) {
+            Map<String, List<SegmentDestination>> hist = new HashMap<String, List<SegmentDestination>>();
+            Map<String, List<SegmentDestination>> realTime = new HashMap<String, List<SegmentDestination>>();
+            for (Map.Entry<String, List<SegmentKey>> entry : segments.entrySet()) {
+                initSegDestinations(hist, entry.getKey());
+                initSegDestinations(realTime, entry.getKey());
+                for (SegmentKey segmentKey : entry.getValue()) {
+                    if (segmentKey.getStoreType() == Types.StoreType.FINE_IO) {
+                        hist.get(entry.getKey()).add(new SegmentDestinationImpl(segmentKey.toString(), segmentKey.getOrder()));
+                    } else {
+                        realTime.get(entry.getKey()).add(new SegmentDestinationImpl(segmentKey.toString(), segmentKey.getOrder()));
+                    }
+                }
+            }
+            updateSegmentInfo(new SegmentLocationInfoImpl(ServiceType.HISTORY, hist), SegmentLocationInfo.UpdateType.PART);
+            updateSegmentInfo(new SegmentLocationInfoImpl(ServiceType.REAL_TIME, realTime), SegmentLocationInfo.UpdateType.PART);
+        }
+    }
+
+    private void initSegDestinations(Map<String, List<SegmentDestination>> map, String key) {
+        if (null == map.get(key)) {
+            map.put(key, new ArrayList<SegmentDestination>() {
+                @Override
+                public boolean add(SegmentDestination segmentDestination) {
+                    return !contains(segmentDestination) && super.add(segmentDestination);
+                }
+            });
+        }
     }
 }

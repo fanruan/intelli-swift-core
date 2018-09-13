@@ -15,4 +15,8 @@ public interface SegmentLocationManager {
     void updateSegmentInfo(SegmentLocationInfo segmentInfo, SegmentLocationInfo.UpdateType updateType);
 
     Map<String, List<SegmentDestination>> getSegmentInfo();
+
+    void removeTable(String sourceKey);
+
+    void removeSegment(String sourceKey, List<String> segmentKeys);
 }

@@ -27,6 +27,12 @@ public interface SwiftServiceListenerHandler {
      */
     void trigger(SwiftServiceEvent event);
 
+    /**
+     * Rpc
+     *
+     * @param event
+     * @return
+     */
     Serializable trigger(SwiftRpcEvent event);
 
     /**

@@ -6,15 +6,19 @@ import com.fr.swift.cluster.entity.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftMetaDataService;
+import com.fr.swift.cube.io.Types;
+import com.fr.swift.db.Where;
 import com.fr.swift.event.analyse.SegmentLocationRpcEvent;
 import com.fr.swift.event.base.AbstractGlobalRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.handler.SwiftServiceHandlerManager;
 import com.fr.swift.service.handler.base.AbstractHandler;
 import com.fr.swift.service.handler.history.HistoryDataSyncManager;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.task.TaskKey;
 import com.fr.swift.task.TaskResult;
@@ -79,10 +83,61 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
                 makeResultMap(realtime, result, ServiceType.REAL_TIME);
                 makeResultMap(analyse, result, ServiceType.ANALYSE);
                 return (S) result;
+            case DELETE:
+                Pair<SourceKey, Where> content = (Pair<SourceKey, Where>) event.getContent();
+                SourceKey sourceKey = content.getKey();
+                Where where = content.getValue();
+                Map<String, ClusterEntity> historyServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.HISTORY);
+                dealDelete(sourceKey, where, historyServices, "historyDelete");
+                Map<String, ClusterEntity> realTimeServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.REAL_TIME);
+                dealDelete(sourceKey, where, realTimeServices, "realtimeDelete");
+                break;
+            case TRUNCATE:
+                String truncateSourceKey = (String) event.getContent();
+                Map<String, ClusterEntity> histories = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.HISTORY);
+                if (null == histories || histories.isEmpty()) {
+                    throw new RuntimeException("Cannot find any services");
+                }
+                for (Map.Entry<String, ClusterEntity> entry : histories.entrySet()) {
+                    String clusterId = entry.getKey();
+                    runAsyncRpc(clusterId, entry.getValue().getServiceClass(), "truncate", truncateSourceKey).addCallback(new AsyncRpcCallback() {
+                        @Override
+                        public void success(Object result) {
+
+                        }
+
+                        @Override
+                        public void fail(Exception e) {
+                            SwiftLoggers.getLogger().error(e);
+                        }
+                    });
+                }
             default:
                 break;
         }
         return null;
+    }
+
+    private void dealDelete(SourceKey sourceKey, Where where, Map<String, ClusterEntity> services, String method) throws Exception {
+        if (null == services || services.isEmpty()) {
+            throw new RuntimeException("Cannot find services");
+        }
+        List<String> uploadedSegments = new ArrayList<String>();
+        for (Map.Entry<String, ClusterEntity> entry : services.entrySet()) {
+            String clusterId = entry.getKey();
+            List<SegmentKey> segmentKeys = segmentService.getOwnSegments(clusterId).get(sourceKey.getId());
+            List<String> needUploadSegs = new ArrayList<String>();
+            for (SegmentKey segmentKey : segmentKeys) {
+                if (segmentKey.getStoreType() == Types.StoreType.FINE_IO) {
+                    String segKey = segmentKey.toString();
+                    if (!uploadedSegments.contains(segKey)) {
+                        needUploadSegs.add(segKey);
+                        uploadedSegments.add(segKey);
+                    }
+                }
+            }
+            runAsyncRpc(clusterId, entry.getValue().getServiceClass(), method, sourceKey, where, needUploadSegs);
+        }
     }
 
     private void makeResultMap(Map<String, ClusterEntity> realtime, Map<ServiceType, List<String>> result, ServiceType type) {

@@ -4,6 +4,7 @@ import com.fr.swift.api.result.SwiftApiResultSet;
 import com.fr.swift.api.rpc.Api;
 import com.fr.swift.api.rpc.DataMaintenanceService;
 import com.fr.swift.api.rpc.SelectService;
+import com.fr.swift.api.rpc.bean.Column;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Where;
 import com.fr.swift.exception.meta.SwiftMetaDataAbsentException;
@@ -71,7 +72,19 @@ public class SwiftApiSessionImpl implements SwiftPublicApiSession, DataMaintenan
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
+    }
+
+    public boolean createTable(SwiftDatabase schema, String tableName, List<Column> columns) throws Exception {
+        return dataMaintenanceApi.createTable(schema, tableName, columns) >= 0;
+    }
+
+    public void dropTable(SwiftDatabase schema, String tableName) throws Exception {
+        dataMaintenanceApi.dropTable(schema, tableName);
+    }
+
+    public void truncateTable(SwiftDatabase schema, String tableName) throws Exception {
+        dataMaintenanceApi.truncateTable(schema, tableName);
     }
 
     @Override

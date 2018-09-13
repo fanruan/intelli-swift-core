@@ -6,11 +6,11 @@ import java.io.Serializable;
  * @author yee
  * @date 2018/6/8
  */
-public interface SwiftRpcEvent<C> extends Serializable {
+public interface SwiftRpcEvent<C, T extends SubEvent> extends Serializable {
 
     EventType type();
 
-    <T extends SubEvent> T subEvent();
+    T subEvent();
 
     C getContent();
 
@@ -18,6 +18,8 @@ public interface SwiftRpcEvent<C> extends Serializable {
         REAL_TIME, HISTORY, INDEXING, ANALYSE, GLOBAL
     }
 
-    interface SubEvent {
-    }
+
+}
+
+interface SubEvent {
 }

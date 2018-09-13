@@ -8,6 +8,7 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Table;
+import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.AddColumnAction;
 import com.fr.swift.db.impl.DropColumnAction;
 import com.fr.swift.db.impl.MetadataDiffer;
@@ -16,27 +17,29 @@ import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventListener;
 import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
+import com.fr.swift.event.global.DeleteEvent;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.query.FilterBean;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.result.DetailResultSet;
-import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.SwiftSegmentManager;
-import com.fr.swift.segment.operator.delete.WhereDeleter;
+import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.RealtimeService;
 import com.fr.swift.service.cluster.ClusterAnalyseService;
 import com.fr.swift.service.cluster.ClusterRealTimeService;
+import com.fr.swift.service.listener.SwiftServiceListenerManager;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.util.JpaAdaptor;
 import com.fr.swift.util.Util;
 import com.fr.swift.util.concurrent.CommonExecutor;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
+import com.fr.swift.utils.ClusterCommonUtils;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -169,12 +172,15 @@ public class MetricProxy extends BaseMetric {
     @Override
     public void clean(QueryCondition condition) throws Exception {
         List<Table> tables = com.fr.swift.db.impl.SwiftDatabase.getInstance().getAllTables();
-        SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         FilterBean filterBean = QueryConditionAdaptor.restriction2FilterInfo(condition.getRestriction());
         for (Table table : tables) {
-            for (Segment segment : localSegmentProvider.getSegment(table.getSourceKey())) {
-                WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", table.getSourceKey(), segment);
-                whereDeleter.delete(new SwiftWhere(filterBean));
+            if (table.getMeta().getSwiftDatabase() == SwiftDatabase.DECISION_LOG) {
+                DeleteEvent event = new DeleteEvent(Pair.<SourceKey, Where>of(table.getSourceKey(), new SwiftWhere(filterBean)));
+                if (ClusterSelector.getInstance().getFactory().isCluster()) {
+                    ClusterCommonUtils.asyncCallMaster(event);
+                } else {
+                    SwiftServiceListenerManager.getInstance().triggerEvent(event);
+                }
             }
         }
     }

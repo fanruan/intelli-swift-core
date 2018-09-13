@@ -39,6 +39,7 @@ public class SegmentLocationProvider implements SegmentLocationManager {
      *
      * @param locationInfo
      */
+    @Override
     public void updateSegmentInfo(SegmentLocationInfo locationInfo, SegmentLocationInfo.UpdateType updateType) {
         switch (locationInfo.serviceType()) {
             case HISTORY:
@@ -55,6 +56,18 @@ public class SegmentLocationProvider implements SegmentLocationManager {
     @Override
     public Map<String, List<SegmentDestination>> getSegmentInfo() {
         return null;
+    }
+
+    @Override
+    public void removeTable(String sourceKey) {
+        historyManager.removeTable(sourceKey);
+        realTimeManager.removeTable(sourceKey);
+    }
+
+    @Override
+    public void removeSegment(String sourceKey, List<String> segmentKeys) {
+        historyManager.removeSegment(sourceKey, segmentKeys);
+        realTimeManager.removeSegment(sourceKey, segmentKeys);
     }
 
     public Map<String, List<SegmentDestination>> getSegmentInfo(ServiceType serviceType) {
