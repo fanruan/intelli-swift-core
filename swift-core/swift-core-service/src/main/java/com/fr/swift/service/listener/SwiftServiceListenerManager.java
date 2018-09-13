@@ -1,9 +1,9 @@
 package com.fr.swift.service.listener;
 
+import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.exception.SwiftServiceListenerHandlerAbsentException;
 import com.fr.swift.service.SwiftService;
-import com.fr.swift.service.SwiftServiceEvent;
 import com.fr.swift.util.Util;
 
 /**
@@ -64,7 +64,7 @@ public class SwiftServiceListenerManager {
      * @param event
      * @throws SwiftServiceException
      */
-    public void triggerEvent(SwiftServiceEvent event) throws SwiftServiceException {
+    public void triggerEvent(SwiftRpcEvent event) throws SwiftServiceException {
         checkIfHandlerRegistered();
         handler.trigger(event);
     }

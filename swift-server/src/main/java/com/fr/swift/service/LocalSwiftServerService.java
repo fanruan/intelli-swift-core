@@ -4,10 +4,14 @@ import com.fr.event.Event;
 import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.db.Where;
+import com.fr.swift.event.base.AbstractGlobalRpcEvent;
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.source.DataSource;
+import com.fr.swift.source.SourceKey;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.stuff.DefaultIndexingStuff;
 import com.fr.swift.task.TaskKey;
 import com.fr.swift.task.impl.TaskEvent;
@@ -31,6 +35,20 @@ public class LocalSwiftServerService extends AbstractSwiftServerService {
 
     @Override
     public Serializable trigger(SwiftRpcEvent event) {
+        try {
+            if (event.type() == SwiftRpcEvent.EventType.GLOBAL) {
+                switch (((AbstractGlobalRpcEvent) event).subEvent()) {
+                    case DELETE:
+                        Pair<SourceKey, Where> content = (Pair<SourceKey, Where>) event.getContent();
+                        realTimeService.delete(content.getKey(), content.getValue());
+                        historyService.delete(content.getKey(), content.getValue());
+                        return null;
+                    default:
+                }
+            }
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
+        }
         return null;
     }
 

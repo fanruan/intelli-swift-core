@@ -1,5 +1,6 @@
 package com.fr.swift.service;
 
+import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
@@ -7,6 +8,8 @@ import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SegmentTransfer;
 import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.event.base.EventResult;
+import com.fr.swift.event.history.TransCollateLoadEvent;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.segment.Segment;
@@ -14,14 +17,16 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
+import com.fr.swift.utils.ClusterCommonUtils;
 import com.fr.third.springframework.stereotype.Service;
 
-import java.io.IOException;
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -82,9 +87,27 @@ public class ScheduledRealtimeTransfer implements Runnable {
             super.onSucceed();
             if (ClusterSelector.getInstance().getFactory().isCluster()) {
                 String local = CubeUtil.getAbsoluteSegPath(newSegKey);
+                String remote = String.format("%s/%s", newSegKey.getSwiftSchema().getDir(), newSegKey.getUri().getPath());
                 try {
-                    manager.currentRepo().copyToRemote(local, newSegKey.getUri().getPath());
-                } catch (IOException e) {
+                    manager.currentRepo().copyToRemote(local, remote);
+                    ClusterCommonUtils.asyncCallMaster(new TransCollateLoadEvent(Pair.of(newSegKey.getTable().getId(),
+                            Collections.singletonList(newSegKey.toString()))))
+                            .addCallback(new AsyncRpcCallback() {
+                                @Override
+                                public void success(Object result) {
+                                    if (result instanceof EventResult) {
+                                        if (result == EventResult.SUCCESS) {
+                                            // TODO 删配置等等
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void fail(Exception e) {
+
+                                }
+                            });
+                } catch (Exception e) {
                     SwiftLoggers.getLogger().error(String.format("Cannot upload Segment which path is %s", local), e);
                 }
             }
