@@ -1,5 +1,6 @@
 package com.fr.swift.util;
 
+import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.db.SwiftDatabase;
@@ -38,6 +39,10 @@ public class JpaAdaptor {
 
             if (columnNames.contains(columnName)) {
                 return Crasher.crash(String.format("column %s already existed", columnName));
+            }
+
+            if (SwiftConfigConstants.KeyWords.COLUMN_KEY_WORDS.contains(columnName.toLowerCase())) {
+                return Crasher.crash(String.format("%s is a key word", columnName));
             }
 
             SwiftMetaDataColumn columnMeta = new MetaDataColumnBean(

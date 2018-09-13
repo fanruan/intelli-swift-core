@@ -96,7 +96,7 @@ class TableServiceImpl implements TableService {
     @Override
     @SwiftApi
     synchronized
-    public int createTable(SwiftDatabase schema, String tableName, List<Column> columns) {
+    public int createTable(SwiftDatabase schema, String tableName, List<Column> columns) throws SQLException {
         if (isTableExists(schema, tableName)) {
             Crasher.crash("Table " + tableName + " is already exists");
         }
@@ -110,6 +110,10 @@ class TableServiceImpl implements TableService {
         swiftMetaDataBean.setId(uniqueKey);
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
         for (Column column : columns) {
+            String columnName = column.getColumnName();
+            if (SwiftConfigConstants.KeyWords.COLUMN_KEY_WORDS.contains(columnName.toLowerCase())) {
+                throw new SQLException(String.format("%s is a key word! ", columnName));
+            }
             columnList.add(new MetaDataColumnBean(column.getColumnName(), column.getColumnType()));
         }
         swiftMetaDataBean.setFields(columnList);
@@ -120,6 +124,7 @@ class TableServiceImpl implements TableService {
     }
 
     @Override
+    @SwiftApi
     public void dropTable(SwiftDatabase schema, String tableName) throws Exception {
         SwiftMetaData metaData = detectiveMetaData(schema, tableName);
         truncateTable(metaData);
@@ -127,6 +132,7 @@ class TableServiceImpl implements TableService {
     }
 
     @Override
+    @SwiftApi
     public void truncateTable(SwiftDatabase schema, String tableName) throws Exception {
         SwiftMetaData metaData = detectiveMetaData(schema, tableName);
         truncateTable(metaData);

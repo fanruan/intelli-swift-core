@@ -1,5 +1,6 @@
 package com.fr.swift.source;
 
+import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.source.core.Core;
@@ -48,7 +49,7 @@ public abstract class AbstractDataSource implements DataSource {
             Set<String> names = new HashSet<String>();
             for (int i = 0;i < metaData.getColumnCount(); i++){
                 SwiftMetaDataColumn column = metaData.getColumn(i+1);
-                if (names.contains(column.getName())){
+                if (names.contains(column.getName()) || SwiftConfigConstants.KeyWords.COLUMN_KEY_WORDS.contains(column.getName().toLowerCase())) {
                     String newName = createNewName(names, column.getName());
                     column = new MetaDataColumnBean(newName, column.getRemark(), column.getType(), column.getPrecision(), column.getScale(), column.getColumnId());
                 }
