@@ -6,7 +6,7 @@ import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.event.base.AbstractHistoryRpcEvent;
 import com.fr.swift.event.base.EventResult;
-import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
+import com.fr.swift.event.history.SegmentLoadRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
@@ -45,7 +45,7 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
             switch (event.subEvent()) {
                 case LOAD_SEGMENT:
                 case TRANS_COLLATE_LOAD:
-                    return historyDataSyncManager.handle((HistoryLoadSegmentRpcEvent) event);
+                    return historyDataSyncManager.handle((SegmentLoadRpcEvent) event);
                 case COMMON_LOAD:
                     handleCommonLoad(event, 0);
                     return (S) EventResult.SUCCESS;

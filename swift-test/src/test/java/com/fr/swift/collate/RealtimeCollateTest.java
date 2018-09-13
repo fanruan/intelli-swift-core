@@ -65,13 +65,14 @@ public class RealtimeCollateTest extends BaseTest {
         Incrementer incrementer = new Incrementer(dataSource, new LineSourceAlloter(dataSource.getSourceKey(), new LineAllotRule(100)));
         incrementer.insertData(resultSet);
 
-        List<Segment> segments = swiftSegmentManager.getSegment(dataSource.getSourceKey());
+        List<SegmentKey> segKeys = swiftSegmentManager.getSegmentKeys(dataSource.getSourceKey());
 
         Where where = new SwiftWhere(HistoryCollateTest.createEqualFilter("合同类型", "购买合同"));
         //合并前7块增量块，且只要allshow是购买合同
-        assertEquals(7, segments.size());
-        for (Segment segment : segments) {
-            Decrementer decrementer = new Decrementer(dataSource.getSourceKey(), segment);
+        assertEquals(7, segKeys.size());
+        for (SegmentKey segKey : segKeys) {
+            Segment segment = swiftSegmentManager.getSegment(segKey);
+            Decrementer decrementer = new Decrementer(segKey);
             decrementer.delete(where);
             assertSame(segment.getLocation().getStoreType(), StoreType.MEMORY);
             Column column = segment.getColumn(new ColumnKey("合同类型"));
@@ -90,7 +91,7 @@ public class RealtimeCollateTest extends BaseTest {
         collaterService.setTaskExecutor(new SwiftServiceTaskExecutor("testAutoRealtimeCollate", 1));
         collaterService.autoCollateRealtime(dataSource.getSourceKey());
         Thread.sleep(5000L);
-        segments = swiftSegmentManager.getSegment(dataSource.getSourceKey());
+        List<Segment> segments = swiftSegmentManager.getSegment(dataSource.getSourceKey());
         assertEquals(1, segments.size());
         //合并后1块历史块，所有数据都不是购买合同
         for (Segment segment : segments) {
@@ -112,13 +113,14 @@ public class RealtimeCollateTest extends BaseTest {
         Incrementer incrementer = new Incrementer(dataSource, new LineSourceAlloter(dataSource.getSourceKey(), new LineAllotRule(100)));
         incrementer.insertData(resultSet);
 
-        List<Segment> segments = swiftSegmentManager.getSegment(dataSource.getSourceKey());
+        List<SegmentKey> segKeys = swiftSegmentManager.getSegmentKeys(dataSource.getSourceKey());
 
         Where where = new SwiftWhere(HistoryCollateTest.createEqualFilter("合同类型", "购买合同"));
         //合并前7块增量块，且只要allshow是购买合同
-        assertEquals(7, segments.size());
-        for (Segment segment : segments) {
-            Decrementer decrementer = new Decrementer(dataSource.getSourceKey(), segment);
+        assertEquals(7, segKeys.size());
+        for (SegmentKey segKey : segKeys) {
+            Segment segment = swiftSegmentManager.getSegment(segKey);
+            Decrementer decrementer = new Decrementer(segKey);
             decrementer.delete(where);
             assertSame(segment.getLocation().getStoreType(), StoreType.MEMORY);
             Column column = segment.getColumn(new ColumnKey("合同类型"));
@@ -149,7 +151,7 @@ public class RealtimeCollateTest extends BaseTest {
         collaterService.appointCollate(dataSource.getSourceKey(),collateSegmentKeys);
 
         Thread.sleep(5000L);
-        segments = swiftSegmentManager.getSegment(dataSource.getSourceKey());
+        List<Segment> segments = swiftSegmentManager.getSegment(dataSource.getSourceKey());
         assertEquals(4, segments.size());
         //合并后1块历史块,3块增量块，历史块所有数据都不是购买合同，增量快allshow不是购买合同
         int hisCount = 0;

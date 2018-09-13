@@ -1,15 +1,16 @@
 package com.fr.swift.segment;
 
+import com.fr.event.EventDispatcher;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.impl.SwiftSegmentServiceProvider;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
+import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.insert.BaseBlockInserter;
 import com.fr.swift.segment.operator.insert.SwiftRealtimeInserter;
-import com.fr.swift.service.ScheduledRealtimeTransfer;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.transaction.TransactionProxyFactory;
@@ -66,7 +67,7 @@ public class Incrementer extends BaseBlockInserter implements Inserter {
         if (alloter.isFull(maxSegment)) {
             currentSegKey = SEG_SVC.tryAppendSegment(dataSource.getSourceKey(), StoreType.MEMORY);
             currentSeg = newRealtimeSegment(currentSegKey);
-            new ScheduledRealtimeTransfer.RealtimeToHistoryTransfer(maxLocalSegmentKey).transfer();
+            EventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, maxLocalSegmentKey);
             return true;
         }
         currentSeg = maxSegment;

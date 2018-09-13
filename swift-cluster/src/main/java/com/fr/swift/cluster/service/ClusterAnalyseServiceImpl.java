@@ -43,7 +43,7 @@ import java.util.concurrent.CountDownLatch;
  * @date 2018/8/6
  */
 @SwiftService(name = "analyse", cluster = true)
-@RpcService(value = AnalyseService.class, type = RpcService.RpcServiceType.INTERNAL)
+@RpcService(value = ClusterAnalyseService.class, type = RpcService.RpcServiceType.INTERNAL)
 public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements ClusterAnalyseService {
     private static final long serialVersionUID = 7637989460502966453L;
     @Autowired(required = false)

@@ -2,25 +2,14 @@ package com.fr.swift.db.impl;
 
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.cube.CubeUtil;
-import com.fr.swift.cube.io.ResourceDiscovery;
-import com.fr.swift.cube.io.Types.StoreType;
-import com.fr.swift.db.Table;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentResultSet;
 import com.fr.swift.segment.SegmentUtils;
-import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.operator.Inserter;
-import com.fr.swift.segment.operator.column.SwiftColumnDictMerger;
-import com.fr.swift.segment.operator.column.SwiftColumnIndexer;
-import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.util.FileUtil;
-import com.fr.swift.util.function.Predicate;
 
 import java.util.Collections;
-import java.util.List;
 
 /**
  * @author anchore
@@ -51,7 +40,7 @@ public class SegmentTransfer {
 
             inserter.insertData(new SegmentResultSet(oldSeg));
 
-            indexSegmentIfNeed(newSegKey, newSeg);
+            indexSegmentIfNeed(newSeg);
 
             onSucceed();
         } catch (Exception e) {
@@ -64,41 +53,13 @@ public class SegmentTransfer {
         remove(oldSegKey);
     }
 
-    private void indexSegmentIfNeed(SegmentKey newSegKey, Segment newSeg) throws Exception {
-        if (!index || !newSeg.isHistory()) {
-            return;
-        }
-
-        SwiftMetaData metadata = newSeg.getMetaData();
-        // todo 暂时同步做索引
-        for (int i = 0; i < metadata.getColumnCount(); i++) {
-            ColumnKey columnKey = new ColumnKey(metadata.getColumnName(i + 1));
-            List<Segment> segs = Collections.singletonList(newSeg);
-            Table table = com.fr.swift.db.impl.SwiftDatabase.getInstance().getTable(newSegKey.getTable());
-
-            ((SwiftColumnIndexer) SwiftContext.get().getBean("columnIndexer", table, columnKey, segs)).buildIndex();
-
-            ((SwiftColumnDictMerger) SwiftContext.get().getBean("columnDictMerger", table, columnKey, segs)).mergeDict();
-        }
+    private void indexSegmentIfNeed(Segment newSeg) throws Exception {
+        SegmentUtils.indexSegmentIfNeed(Collections.singletonList(newSeg));
     }
 
     private void remove(final SegmentKey segKey) {
         SEG_SVC.removeSegments(Collections.singletonList(segKey));
-        String absSegPath = CubeUtil.getAbsoluteSegPath(segKey);
-
-        if (segKey.getStoreType() != StoreType.MEMORY) {
-            FileUtil.delete(absSegPath);
-            return;
-        }
-
-        ResourceDiscovery.getInstance().removeIf(new Predicate<String>() {
-            @Override
-            public boolean test(String s) {
-                return s.contains(CubeUtil.getSegPath(segKey));
-            }
-        });
-        com.fr.swift.db.SwiftDatabase swiftSchema = segKey.getSwiftSchema();
-        FileUtil.delete(absSegPath.replace(swiftSchema.getDir(), swiftSchema.getBackupDir()));
+        SegmentUtils.clearSegment(segKey);
     }
 
     private Segment newSegment(SegmentKey segKey) {

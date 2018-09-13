@@ -20,14 +20,14 @@ public interface RealtimeService extends SwiftService {
      */
     void insert(SourceKey tableKey, SwiftResultSet resultSet) throws Exception;
 
-    boolean delete(SourceKey sourceKey, Where where) throws Exception;
+    boolean delete(SourceKey tableKey, Where where) throws Exception;
 
     /**
      * 恢复增量数据
      *
-     * @param tableKeys 表
+     * @param segKeys seg key
      */
-    void recover(List<SegmentKey> tableKeys) throws Exception;
+    void recover(List<SegmentKey> segKeys) throws Exception;
 
     /**
      * 查询

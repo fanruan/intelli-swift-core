@@ -1,5 +1,6 @@
 package com.fr.swift.db.impl;
 
+import com.fr.event.EventDispatcher;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.context.SwiftContext;
@@ -9,6 +10,7 @@ import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.util.Util;
@@ -37,11 +39,15 @@ public class AddColumnAction extends BaseAlterTableAction {
         List<SegmentKey> segKeys = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegmentKeys(table.getSourceKey());
         for (SegmentKey segKey : segKeys) {
             if (segKey.getStoreType() == StoreType.MEMORY) {
-                new SegmentTransfer(segKey, getHistorySegKey(segKey)).transfer();
+                fireTransferRealtime(segKey);
             }
         }
 
         alterMeta(table);
+    }
+
+    private static void fireTransferRealtime(SegmentKey realtimeSegKey) {
+        EventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, realtimeSegKey);
     }
 
     private void alterMeta(Table table) {
