@@ -26,10 +26,10 @@ public class SwiftZipServiceImpl implements SwiftZipService {
             try {
                 return super.toBean(dao, session, args);
             } catch (Exception e) {
-                for (SwiftConfigEntity swiftConfigEntity : toEntity(true)) {
+                for (SwiftConfigEntity swiftConfigEntity : toEntity(false)) {
                     dao.saveOrUpdate(session, swiftConfigEntity);
                 }
-                return true;
+                return false;
             }
         }
 

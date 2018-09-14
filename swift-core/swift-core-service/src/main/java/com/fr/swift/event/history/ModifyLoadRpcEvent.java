@@ -10,8 +10,8 @@ import java.util.Map;
  * @date 2018/9/12
  */
 public class ModifyLoadRpcEvent extends CommonLoadRpcEvent {
-    public ModifyLoadRpcEvent(Pair<String, Map<String, List<String>>> content) {
-        super(content);
+    public ModifyLoadRpcEvent(Pair<String, Map<String, List<String>>> content, String sourceClusterId) {
+        super(content, sourceClusterId);
     }
 
     @Override

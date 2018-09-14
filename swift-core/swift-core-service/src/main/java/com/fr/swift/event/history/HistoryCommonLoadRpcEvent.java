@@ -13,8 +13,8 @@ public class HistoryCommonLoadRpcEvent extends CommonLoadRpcEvent {
 
     private static final long serialVersionUID = -6256005102486640777L;
 
-    public HistoryCommonLoadRpcEvent(Pair<String, Map<String, List<String>>> relation) {
-        super(relation);
+    public HistoryCommonLoadRpcEvent(Pair<String, Map<String, List<String>>> relation, String sourceClusterId) {
+        super(relation, sourceClusterId);
     }
 
     @Override

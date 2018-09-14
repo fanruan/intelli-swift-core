@@ -10,7 +10,8 @@ public class HistoryLoadSegmentRpcEvent extends SegmentLoadRpcEvent<String> {
 
     private String sourceKey;
 
-    public HistoryLoadSegmentRpcEvent(String sourceKey) {
+    public HistoryLoadSegmentRpcEvent(String sourceKey, String sourceClusterId) {
+        super(sourceClusterId);
         this.sourceKey = sourceKey;
     }
 
