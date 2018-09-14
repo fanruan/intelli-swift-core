@@ -17,6 +17,10 @@ import com.fr.swift.log.FineIOLoggerImpl;
 import com.fr.swift.log.SwiftLog4jLoggers;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
+import com.fr.swift.service.MaskHistoryListener;
+import com.fr.swift.service.TransferRealtimeListener;
+import com.fr.swift.service.UnloadHistoryListener;
+import com.fr.swift.service.UploadHistoryListener;
 import com.fr.swift.service.local.ServerManager;
 import com.fr.swift.service.local.ServiceManager;
 import com.fr.swift.source.db.ConnectionInfo;
@@ -50,6 +54,12 @@ public class SwiftEngineStart {
                 ClusterListenerHandler.handlerEvent(new ClusterEvent(ClusterEventType.JOIN_CLUSTER, ClusterType.CONFIGURE));
             }
             SwiftContext.get().getBean(ServerManager.class).startUp();
+
+            TransferRealtimeListener.listen();
+            UploadHistoryListener.listen();
+            MaskHistoryListener.listen();
+            UnloadHistoryListener.listen();
+
 
             SwiftLoggers.getLogger().info("Swift engine start successful");
         } catch (Throwable e) {

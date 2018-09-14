@@ -9,7 +9,14 @@ package com.fr.swift.task.service;
  */
 public enum ServiceTaskType {
     //
-    INSERT, DELETE, COLLATE, RECOVERY, PERSIST, QUERY;
+    INSERT,
+    DELETE,
+    COLLATE,
+    RECOVERY,
+    PERSIST,
+    UPLOAD,
+    DOWNLOAD,
+    QUERY;
 
     public boolean isEdit() {
         return this != QUERY;

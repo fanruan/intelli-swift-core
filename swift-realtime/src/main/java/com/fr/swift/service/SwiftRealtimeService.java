@@ -2,6 +2,7 @@ package com.fr.swift.service;
 
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.exception.SwiftServiceException;
@@ -10,22 +11,18 @@ import com.fr.swift.netty.rpc.server.RpcServer;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
 import com.fr.swift.query.query.QueryBeanFactory;
 import com.fr.swift.query.session.factory.SessionFactory;
-import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
-import com.fr.swift.segment.operator.delete.WhereDeleter;
 import com.fr.swift.segment.recover.SegmentRecovery;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
-import com.fr.swift.util.concurrent.CommonExecutor;
 
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 /**
  * @author pony
@@ -84,37 +81,34 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     }
 
     private void recover0() {
-        CommonExecutor.get().submit(new Callable<Boolean>() {
-            @Override
-            public Boolean call() {
-                try {
-                    // 恢复所有realtime块
-                    SegmentRecovery segmentRecovery = (SegmentRecovery) SwiftContext.get().getBean("segmentRecovery");
-                    segmentRecovery.recoverAll();
-                    return true;
-                } catch (Exception e) {
-                    SwiftLoggers.getLogger().error(e);
-                    return false;
-                }
+        for (Table table : SwiftDatabase.getInstance().getAllTables()) {
+            final SourceKey tableKey = table.getSourceKey();
+            try {
+                taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.RECOVERY) {
+                    @Override
+                    public void doJob() {
+                        // 恢复所有realtime块
+                        SegmentRecovery segmentRecovery = (SegmentRecovery) SwiftContext.get().getBean("segmentRecovery");
+                        segmentRecovery.recover(tableKey);
+                    }
+                });
+            } catch (InterruptedException e) {
+                SwiftLoggers.getLogger().warn(e);
             }
-        });
+        }
     }
 
     @Override
-    public void recover(List<SegmentKey> tableKeys) {
+    public void recover(List<SegmentKey> segKeys) {
         SwiftLoggers.getLogger().info("recover");
     }
 
     @Override
-    public boolean delete(final SourceKey sourceKey, final Where where) throws Exception {
-        taskExecutor.submit(new SwiftServiceCallable(sourceKey, ServiceTaskType.DELETE) {
+    public boolean delete(final SourceKey tableKey, final Where where) throws Exception {
+        taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.DELETE) {
             @Override
             public void doJob() throws Exception {
-                List<Segment> segments = segmentManager.getSegment(sourceKey);
-                for (Segment segment : segments) {
-                    WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", sourceKey, segment);
-                    whereDeleter.delete(where);
-                }
+                SwiftDatabase.getInstance().getTable(tableKey).delete(where);
             }
         });
         return true;

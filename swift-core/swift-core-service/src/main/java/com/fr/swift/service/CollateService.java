@@ -1,6 +1,5 @@
 package com.fr.swift.service;
 
-import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 
@@ -47,6 +46,4 @@ public interface CollateService extends SwiftService {
      * @throws Exception
      */
     void autoCollate(SourceKey tableKey) throws Exception;
-
-    void persistRealtime(SourceKey tableKey, Segment segment);
 }

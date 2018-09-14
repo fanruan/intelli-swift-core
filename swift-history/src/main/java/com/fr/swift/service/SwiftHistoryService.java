@@ -10,6 +10,7 @@ import com.fr.swift.config.service.impl.SwiftSegmentServiceProvider;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Where;
+import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
@@ -17,10 +18,8 @@ import com.fr.swift.query.query.QueryBeanFactory;
 import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.manager.SwiftRepositoryManager;
-import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
-import com.fr.swift.segment.operator.delete.WhereDeleter;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
@@ -142,61 +141,75 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     }
 
     @Override
-    public void load(Map<String, Set<String>> remoteUris, boolean replace) {
-        String path = pathService.getSwiftPath();
-        SwiftRepository repository = SwiftRepositoryManager.getManager().currentRepo();
-        if (null != remoteUris && !remoteUris.isEmpty()) {
-            for (String sourceKey : remoteUris.keySet()) {
-                Set<String> sets = remoteUris.get(sourceKey);
-                if (!sets.isEmpty()) {
-                    SwiftMetaData metaData = metaDataService.getMetaDataByKey(sourceKey);
-                    int tmp = 0;
-                    SwiftTablePathEntity entity = tablePathService.get(sourceKey);
-                    if (null == entity) {
-                        entity = new SwiftTablePathEntity(sourceKey, tmp);
-                        tablePathService.saveOrUpdate(entity);
-                        replace = true;
-                    } else {
-                        tmp = entity.getTablePath() == null ? -1 : entity.getTablePath();
-                        if (replace) {
-                            tmp += 1;
-                            entity.setTmpDir(tmp);
-                            tablePathService.saveOrUpdate(entity);
-                        }
-                    }
-
-                    boolean downloadSuccess = true;
-                    for (String uri : sets) {
-                        String cubePath = String.format("%s/%s/%d/%s", path, metaData.getSwiftDatabase().getDir(), tmp, uri);
-                        String remotePath = String.format("%s/%s", metaData.getSwiftDatabase().getDir(), uri);
-                        try {
-                            repository.copyFromRemote(remotePath, cubePath);
-                        } catch (Exception e) {
-                            downloadSuccess = false;
-                            SwiftLoggers.getLogger().error("Download " + sourceKey + " with error! ", e);
-                            break;
-                        }
-                    }
-
-                    if (replace && downloadSuccess) {
-                        entity = tablePathService.get(sourceKey);
-                        int current = entity.getTablePath() == null ? -1 : entity.getTablePath();
-                        entity.setLastPath(current);
-                        entity.setTablePath(tmp);
-                        tablePathService.saveOrUpdate(entity);
-                        String cubePath = String.format("%s/%s/%d/%s", path, metaData.getSwiftDatabase().getDir(), current, sourceKey);
-                        FileUtil.delete(cubePath);
-                        new File(cubePath).getParentFile().delete();
-                    }
-                    if (downloadSuccess) {
-                        SwiftLoggers.getLogger().info("Download " + sourceKey + " successful");
-                    }
-                }
+    public void load(Map<String, Set<String>> remoteUris, final boolean replace) {
+        if (null == remoteUris || remoteUris.isEmpty()) {
+            return;
+        }
+        for (final String sourceKey : remoteUris.keySet()) {
+            final Set<String> uris = remoteUris.get(sourceKey);
+            if (uris.isEmpty()) {
+                return;
             }
-        } else {
-            SwiftLoggers.getLogger().warn("Receive an empty URI set. Skip loading.");
+            try {
+                taskExecutor.submit(new SwiftServiceCallable(new SourceKey(sourceKey), ServiceTaskType.DOWNLOAD) {
+                    @Override
+                    public void doJob() {
+                        download(sourceKey, uris, replace);
+                    }
+                });
+            } catch (InterruptedException e) {
+                SwiftLoggers.getLogger().error("download seg {} of {} failed", uris, sourceKey, e);
+            }
         }
     }
+
+    private void download(String sourceKey, Set<String> sets, boolean replace) {
+        String path = pathService.getSwiftPath();
+        SwiftRepository repository = SwiftRepositoryManager.getManager().currentRepo();
+        SwiftMetaData metaData = metaDataService.getMetaDataByKey(sourceKey);
+        int tmp = 0;
+        SwiftTablePathEntity entity = tablePathService.get(sourceKey);
+        if (null == entity) {
+            entity = new SwiftTablePathEntity(sourceKey, tmp);
+            tablePathService.saveOrUpdate(entity);
+            replace = true;
+        } else {
+            tmp = entity.getTablePath() == null ? -1 : entity.getTablePath();
+            if (replace) {
+                tmp += 1;
+                entity.setTmpDir(tmp);
+                tablePathService.saveOrUpdate(entity);
+            }
+        }
+
+        boolean downloadSuccess = true;
+        for (String uri : sets) {
+            String cubePath = String.format("%s/%s/%d/%s", path, metaData.getSwiftDatabase().getDir(), tmp, uri);
+            String remotePath = String.format("%s/%s", metaData.getSwiftDatabase().getDir(), uri);
+            try {
+                repository.copyFromRemote(remotePath, cubePath);
+            } catch (Exception e) {
+                downloadSuccess = false;
+                SwiftLoggers.getLogger().error("Download " + sourceKey + " with error! ", e);
+                break;
+            }
+        }
+
+        if (replace && downloadSuccess) {
+            entity = tablePathService.get(sourceKey);
+            int current = entity.getTablePath() == null ? -1 : entity.getTablePath();
+            entity.setLastPath(current);
+            entity.setTablePath(tmp);
+            tablePathService.saveOrUpdate(entity);
+            String cubePath = String.format("%s/%s/%d/%s", path, metaData.getSwiftDatabase().getDir(), current, sourceKey);
+            FileUtil.delete(cubePath);
+            new File(cubePath).getParentFile().delete();
+        }
+        if (downloadSuccess) {
+            SwiftLoggers.getLogger().info("Download " + sourceKey + " successful");
+        }
+    }
+
 
     @Override
     public SwiftResultSet query(final String queryDescription) throws Exception {
@@ -210,15 +223,11 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     }
 
     @Override
-    public boolean delete(final SourceKey sourceKey, final Where where) throws Exception {
-        taskExecutor.submit(new SwiftServiceCallable(sourceKey, ServiceTaskType.DELETE) {
+    public boolean delete(final SourceKey tableKey, final Where where) throws Exception {
+        taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.DELETE) {
             @Override
             public void doJob() throws Exception {
-                List<Segment> segments = segmentManager.getSegment(sourceKey);
-                for (Segment segment : segments) {
-                    WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", sourceKey, segment);
-                    whereDeleter.delete(where);
-                }
+                SwiftDatabase.getInstance().getTable(tableKey).delete(where);
             }
         });
         return true;

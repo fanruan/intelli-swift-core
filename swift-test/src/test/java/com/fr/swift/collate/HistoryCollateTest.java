@@ -12,6 +12,7 @@ import com.fr.swift.query.query.FilterBean;
 import com.fr.swift.redis.RedisClient;
 import com.fr.swift.segment.Decrementer;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
@@ -72,17 +73,18 @@ public class HistoryCollateTest extends BaseTest {
         Inserter inserter = new HistoryBlockInserter(dataSource);
         inserter.insertData(resultSet);
 
-        List<Segment> segments = swiftSegmentManager.getSegment(dataSource.getSourceKey());
+        List<SegmentKey> segKeys = swiftSegmentManager.getSegmentKeys(dataSource.getSourceKey());
         for (String fieldName : dataSource.getMetadata().getFieldNames()) {
-            ColumnIndexer columnIndexer = new ColumnIndexer(dataSource, new ColumnKey(fieldName), segments);
+            ColumnIndexer columnIndexer = new ColumnIndexer(dataSource, new ColumnKey(fieldName), segKeys);
             columnIndexer.work();
         }
 
         Where where = new SwiftWhere(createEqualFilter("合同类型", "购买合同"));
         //合并前1块历史块，且只要allshow是购买合同
-        assertEquals(1, segments.size());
-        for (Segment segment : segments) {
-            Decrementer decrementer = new Decrementer(dataSource.getSourceKey(), segment);
+        assertEquals(1, segKeys.size());
+        for (SegmentKey segKey : segKeys) {
+            Segment segment = swiftSegmentManager.getSegment(segKey);
+            Decrementer decrementer = new Decrementer(segKey);
             decrementer.delete(where);
             assertSame(segment.getLocation().getStoreType(), StoreType.FINE_IO);
             Column column = segment.getColumn(new ColumnKey("合同类型"));
@@ -101,10 +103,10 @@ public class HistoryCollateTest extends BaseTest {
         collaterService.setTaskExecutor(new SwiftServiceTaskExecutor("testAutoHistoryCollate", 1));
         collaterService.autoCollateHistory(dataSource.getSourceKey());
         Thread.sleep(5000L);
-        segments = swiftSegmentManager.getSegment(dataSource.getSourceKey());
-        assertEquals(1, segments.size());
+        List<Segment> segs = swiftSegmentManager.getSegment(dataSource.getSourceKey());
+        assertEquals(1, segKeys.size());
         //合并后1块历史块，所有数据都是购买合同
-        for (Segment segment : segments) {
+        for (Segment segment : segs) {
             assertSame(segment.getLocation().getStoreType(), StoreType.FINE_IO);
             Column column = segment.getColumn(new ColumnKey("合同类型"));
             for (int i = 0; i < segment.getRowCount(); i++) {

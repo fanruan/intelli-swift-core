@@ -2,17 +2,12 @@ package com.fr.swift.segment.operator.delete;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.cube.CubeUtil;
-import com.fr.swift.cube.io.Types;
-import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
-import com.fr.swift.segment.BaseSegment;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
-import com.fr.swift.segment.backup.AllShowIndexBackup;
 
 /**
  * This class created on 2018/3/26
@@ -21,17 +16,14 @@ import com.fr.swift.segment.backup.AllShowIndexBackup;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public class RealtimeSwiftDeleter implements WhereDeleter {
+public class SwiftWhereDeleter implements WhereDeleter {
 
     private static final SwiftSegmentManager LOCAL_SEGS = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
 
-    private SegmentKey segKey;
+    private final SegmentKey segKey;
 
-    private AllShowIndexBackup allShowIndexBackup;
-
-    public RealtimeSwiftDeleter(SegmentKey segKey) {
+    public SwiftWhereDeleter(SegmentKey segKey) {
         this.segKey = segKey;
-        allShowIndexBackup = (AllShowIndexBackup) SwiftContext.get().getBean("allShowIndexBackup", getBackupSegment());
     }
 
     @Override
@@ -43,14 +35,12 @@ public class RealtimeSwiftDeleter implements WhereDeleter {
         ImmutableBitMap indexAfterFilter = where.createWhereIndex(table, seg);
         ImmutableBitMap allShowIndex = originAllShowIndex.getAndNot(indexAfterFilter);
 
-        allShowIndexBackup.backupAllShowIndex(allShowIndex);
-        return allShowIndex;
-    }
+        seg.putAllShowIndex(allShowIndex);
 
-    private Segment getBackupSegment() {
-        String backupPath = CubeUtil.getSegPath(segKey).replace(segKey.getSwiftSchema().getDir(), segKey.getSwiftSchema().getBackupDir());
-        return new BaseSegment(
-                new ResourceLocation(backupPath, Types.StoreType.NIO),
-                SwiftDatabase.getInstance().getTable(segKey.getTable()).getMetadata());
+        if (seg.isHistory()) {
+            seg.release();
+        }
+
+        return allShowIndex;
     }
 }

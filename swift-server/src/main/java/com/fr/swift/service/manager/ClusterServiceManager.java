@@ -53,7 +53,7 @@ public class ClusterServiceManager extends AbstractServiceManager<SwiftService> 
             refreshInfo();
             for (SwiftService swiftService : swiftServiceList) {
                 swiftService.setId(swiftProperty.getServerAddress());
-                LOGGER.debug("begain to register " + swiftService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + "!");
+                LOGGER.debug("begin to register " + swiftService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + "!");
                 senderProxy.registerService(swiftService);
                 swiftService.start();
                 LOGGER.debug("register " + swiftService.getServiceType() + " to " + swiftServiceInfoBean.getClusterId() + " succeed!");

@@ -1,6 +1,7 @@
 package com.fr.swift.log;
 
 import com.fr.log.FineLoggerFactory;
+import org.slf4j.helpers.FormattingTuple;
 
 /**
  * @author anchore
@@ -42,17 +43,20 @@ class SwiftFrLogger extends BaseSwiftLogger implements SwiftLogger {
 
     @Override
     public void debug(String s, Object o) {
-        FineLoggerFactory.getLogger().debug(s, o);
+        FormattingTuple tuple = format(s, o);
+        FineLoggerFactory.getLogger().debug(tuple.getMessage(), tuple.getThrowable());
     }
 
     @Override
     public void debug(String s, Object o, Object o1) {
-        FineLoggerFactory.getLogger().debug(s, o, o1);
+        FormattingTuple tuple = format(s, o, o1);
+        FineLoggerFactory.getLogger().debug(tuple.getMessage(), tuple.getThrowable());
     }
 
     @Override
     public void debug(String s, Object... objects) {
-        FineLoggerFactory.getLogger().debug(s, objects);
+        FormattingTuple tuple = format(s, objects);
+        FineLoggerFactory.getLogger().debug(tuple.getMessage(), tuple.getThrowable());
     }
 
     @Override
@@ -67,17 +71,20 @@ class SwiftFrLogger extends BaseSwiftLogger implements SwiftLogger {
 
     @Override
     public void info(String s, Object o) {
-        FineLoggerFactory.getLogger().info(s, o);
+        FormattingTuple tuple = format(s, o);
+        FineLoggerFactory.getLogger().info(tuple.getMessage(), tuple.getThrowable());
     }
 
     @Override
     public void info(String s, Object o, Object o1) {
-        FineLoggerFactory.getLogger().info(s, o, o1);
+        FormattingTuple tuple = format(s, o, o1);
+        FineLoggerFactory.getLogger().info(tuple.getMessage(), tuple.getThrowable());
     }
 
     @Override
     public void info(String s, Object... objects) {
-        FineLoggerFactory.getLogger().info(s, objects);
+        FormattingTuple tuple = format(s, objects);
+        FineLoggerFactory.getLogger().info(tuple.getMessage(), tuple.getThrowable());
     }
 
     @Override
@@ -92,17 +99,20 @@ class SwiftFrLogger extends BaseSwiftLogger implements SwiftLogger {
 
     @Override
     public void warn(String s, Object o) {
-        FineLoggerFactory.getLogger().warn(format(s, o));
+        FormattingTuple tuple = format(s, o);
+        FineLoggerFactory.getLogger().warn(tuple.getMessage(), tuple.getThrowable());
     }
 
     @Override
     public void warn(String s, Object o, Object o1) {
-        FineLoggerFactory.getLogger().warn(format(s, o, o1));
+        FormattingTuple tuple = format(s, o, o1);
+        FineLoggerFactory.getLogger().warn(tuple.getMessage(), tuple.getThrowable());
     }
 
     @Override
     public void warn(String s, Object... objects) {
-        FineLoggerFactory.getLogger().warn(format(s, objects));
+        FormattingTuple tuple = format(s, objects);
+        FineLoggerFactory.getLogger().warn(tuple.getMessage(), tuple.getThrowable());
     }
 
     @Override
@@ -117,17 +127,20 @@ class SwiftFrLogger extends BaseSwiftLogger implements SwiftLogger {
 
     @Override
     public void error(String s, Object o) {
-        FineLoggerFactory.getLogger().error(format(s, o));
+        FormattingTuple tuple = format(s, o);
+        FineLoggerFactory.getLogger().error(tuple.getMessage(), tuple.getThrowable());
     }
 
     @Override
     public void error(String s, Object o, Object o1) {
-        FineLoggerFactory.getLogger().error(format(s, o, o1));
+        FormattingTuple tuple = format(s, o, o1);
+        FineLoggerFactory.getLogger().error(tuple.getMessage(), tuple.getThrowable());
     }
 
     @Override
     public void error(String s, Object... objects) {
-        FineLoggerFactory.getLogger().error(format(s, objects));
+        FormattingTuple tuple = format(s, objects);
+        FineLoggerFactory.getLogger().error(tuple.getMessage(), tuple.getThrowable());
     }
 
     @Override

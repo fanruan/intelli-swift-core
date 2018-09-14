@@ -2,12 +2,14 @@ package com.fr.swift.log;
 
 import com.fr.third.apache.log4j.Level;
 import com.fr.third.apache.log4j.Logger;
+import org.slf4j.helpers.FormattingTuple;
 
 /**
  * @author anchore
  * @date 2018/7/4
  */
 class SwiftLog4jLogger extends BaseSwiftLogger implements SwiftLogger {
+
     private static final String FQCN = SwiftLog4jLogger.class.getName();
 
     private Logger logger;
@@ -36,21 +38,24 @@ class SwiftLog4jLogger extends BaseSwiftLogger implements SwiftLogger {
     @Override
     public void trace(String s, Object o) {
         if (isTraceEnabled()) {
-            logger.log(FQCN, Level.TRACE, format(s, o), null);
+            FormattingTuple tuple = format(s, o);
+            logger.log(FQCN, Level.TRACE, tuple.getMessage(), tuple.getThrowable());
         }
     }
 
     @Override
     public void trace(String s, Object o, Object o1) {
         if (isTraceEnabled()) {
-            logger.log(FQCN, Level.TRACE, format(s, o, o1), null);
+            FormattingTuple tuple = format(s, o, o1);
+            logger.log(FQCN, Level.TRACE, tuple.getMessage(), tuple.getThrowable());
         }
     }
 
     @Override
     public void trace(String s, Object... objects) {
         if (isTraceEnabled()) {
-            logger.log(FQCN, Level.TRACE, format(s, objects), null);
+            FormattingTuple tuple = format(s, objects);
+            logger.log(FQCN, Level.TRACE, tuple.getMessage(), tuple.getThrowable());
         }
     }
 
@@ -76,21 +81,24 @@ class SwiftLog4jLogger extends BaseSwiftLogger implements SwiftLogger {
     @Override
     public void debug(String s, Object o) {
         if (isDebugEnabled()) {
-            logger.log(FQCN, Level.DEBUG, format(s, o), null);
+            FormattingTuple tuple = format(s, o);
+            logger.log(FQCN, Level.DEBUG, tuple.getMessage(), tuple.getThrowable());
         }
     }
 
     @Override
     public void debug(String s, Object o, Object o1) {
         if (isDebugEnabled()) {
-            logger.log(FQCN, Level.DEBUG, format(s, o, o1), null);
+            FormattingTuple tuple = format(s, o, o1);
+            logger.log(FQCN, Level.DEBUG, tuple.getMessage(), tuple.getThrowable());
         }
     }
 
     @Override
     public void debug(String s, Object... objects) {
         if (isDebugEnabled()) {
-            logger.log(FQCN, Level.DEBUG, format(s, objects), null);
+            FormattingTuple tuple = format(s, objects);
+            logger.log(FQCN, Level.DEBUG, tuple.getMessage(), tuple.getThrowable());
         }
     }
 
@@ -116,21 +124,24 @@ class SwiftLog4jLogger extends BaseSwiftLogger implements SwiftLogger {
     @Override
     public void info(String s, Object o) {
         if (isInfoEnabled()) {
-            logger.log(FQCN, Level.INFO, format(s, o), null);
+            FormattingTuple tuple = format(s, o);
+            logger.log(FQCN, Level.INFO, tuple.getMessage(), tuple.getThrowable());
         }
     }
 
     @Override
     public void info(String s, Object o, Object o1) {
         if (isInfoEnabled()) {
-            logger.log(FQCN, Level.INFO, format(s, o, o1), null);
+            FormattingTuple tuple = format(s, o, o1);
+            logger.log(FQCN, Level.INFO, tuple.getMessage(), tuple.getThrowable());
         }
     }
 
     @Override
     public void info(String s, Object... objects) {
         if (isInfoEnabled()) {
-            logger.log(FQCN, Level.INFO, format(s, objects), null);
+            FormattingTuple tuple = format(s, objects);
+            logger.log(FQCN, Level.INFO, tuple.getMessage(), tuple.getThrowable());
         }
     }
 
@@ -156,21 +167,24 @@ class SwiftLog4jLogger extends BaseSwiftLogger implements SwiftLogger {
     @Override
     public void warn(String s, Object o) {
         if (isWarnEnabled()) {
-            logger.log(FQCN, Level.WARN, format(s, o), null);
+            FormattingTuple tuple = format(s, o);
+            logger.log(FQCN, Level.WARN, tuple.getMessage(), tuple.getThrowable());
         }
     }
 
     @Override
     public void warn(String s, Object o, Object o1) {
         if (isWarnEnabled()) {
-            logger.log(FQCN, Level.WARN, format(s, o, o1), null);
+            FormattingTuple tuple = format(s, o, o1);
+            logger.log(FQCN, Level.WARN, tuple.getMessage(), tuple.getThrowable());
         }
     }
 
     @Override
     public void warn(String s, Object... objects) {
         if (isWarnEnabled()) {
-            logger.log(FQCN, Level.WARN, format(s, objects), null);
+            FormattingTuple tuple = format(s, objects);
+            logger.log(FQCN, Level.WARN, tuple.getMessage(), tuple.getThrowable());
         }
     }
 
@@ -178,13 +192,6 @@ class SwiftLog4jLogger extends BaseSwiftLogger implements SwiftLogger {
     public void warn(String s, Throwable throwable) {
         if (isWarnEnabled()) {
             logger.log(FQCN, Level.WARN, s, throwable);
-        }
-    }
-
-    @Override
-    public void warn(Throwable t) {
-        if (isWarnEnabled()) {
-            logger.log(FQCN, Level.WARN, null, t);
         }
     }
 
@@ -203,21 +210,24 @@ class SwiftLog4jLogger extends BaseSwiftLogger implements SwiftLogger {
     @Override
     public void error(String s, Object o) {
         if (isErrorEnabled()) {
-            logger.log(FQCN, Level.ERROR, format(s, o), null);
+            FormattingTuple tuple = format(s, o);
+            logger.log(FQCN, Level.ERROR, tuple.getMessage(), tuple.getThrowable());
         }
     }
 
     @Override
     public void error(String s, Object o, Object o1) {
         if (isErrorEnabled()) {
-            logger.log(FQCN, Level.ERROR, format(s, o, o1), null);
+            FormattingTuple tuple = format(s, o, o1);
+            logger.log(FQCN, Level.WARN, tuple.getMessage(), tuple.getThrowable());
         }
     }
 
     @Override
     public void error(String s, Object... objects) {
         if (isErrorEnabled()) {
-            logger.log(FQCN, Level.ERROR, format(s, objects), null);
+            FormattingTuple tuple = format(s, objects);
+            logger.log(FQCN, Level.WARN, tuple.getMessage(), tuple.getThrowable());
         }
     }
 
@@ -225,13 +235,6 @@ class SwiftLog4jLogger extends BaseSwiftLogger implements SwiftLogger {
     public void error(String s, Throwable throwable) {
         if (isErrorEnabled()) {
             logger.log(FQCN, Level.ERROR, s, throwable);
-        }
-    }
-
-    @Override
-    public void error(Throwable t) {
-        if (isErrorEnabled()) {
-            logger.log(FQCN, Level.ERROR, null, t);
         }
     }
 }

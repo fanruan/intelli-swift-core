@@ -1,13 +1,16 @@
 package com.fr.swift.cluster.service;
 
+import com.fr.event.EventDispatcher;
 import com.fr.swift.annotation.RpcMethod;
 import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.RpcFuture;
+import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
+import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.event.global.PushSegLocationRpcEvent;
@@ -15,10 +18,12 @@ import com.fr.swift.event.history.ModifyLoadRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.SwiftRepositoryManager;
+import com.fr.swift.segment.BaseSegment;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.impl.RealTimeSegDestImpl;
 import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
 import com.fr.swift.segment.operator.delete.WhereDeleter;
@@ -39,7 +44,6 @@ import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -51,7 +55,7 @@ import java.util.Map;
  * @date 2018/8/6
  */
 @SwiftService(name = "realtime", cluster = true)
-@RpcService(type = RpcService.RpcServiceType.INTERNAL, value = RealtimeService.class)
+@RpcService(type = RpcService.RpcServiceType.INTERNAL, value = ClusterRealTimeService.class)
 public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements ClusterRealTimeService, Serializable {
     private static final long serialVersionUID = 946204307880678794L;
 
@@ -107,14 +111,14 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
     }
 
     @Override
-    public boolean delete(SourceKey sourceKey, Where where) throws Exception {
-        return realtimeService.delete(sourceKey, where);
+    public boolean delete(SourceKey tableKey, Where where) throws Exception {
+        return realtimeService.delete(tableKey, where);
     }
 
     @Override
     @RpcMethod(methodName = "recover")
-    public void recover(List<SegmentKey> tableKeys) throws Exception {
-        realtimeService.recover(tableKeys);
+    public void recover(List<SegmentKey> segKeys) throws Exception {
+        realtimeService.recover(segKeys);
     }
 
     @Override
@@ -192,7 +196,7 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
 
     protected SegmentLocationInfo makeLocationInfo(SourceKey sourceKey) {
         Map<String, List<SegmentDestination>> map = new HashMap<String, List<SegmentDestination>>();
-        List<SegmentDestination> list = Arrays.asList(createSegmentDestination(sourceKey));
+        List<SegmentDestination> list = Collections.singletonList(createSegmentDestination(sourceKey));
         map.put(sourceKey.getId(), list);
         return new SegmentLocationInfoImpl(ServiceType.REAL_TIME, map);
     }
@@ -205,20 +209,25 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
             public void doJob() throws Exception {
                 List<SegmentKey> segmentKeys = segmentManager.getSegmentKeys(sourceKey);
                 Map<String, List<String>> notifyMap = new HashMap<String, List<String>>();
-                for (SegmentKey segmentKey : segmentKeys) {
-                    WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", sourceKey, segmentManager.getSegment(segmentKey));
-                    whereDeleter.delete(where);
-                    if (segmentKey.getStoreType() == Types.StoreType.FINE_IO) {
-                        if (needUpload.contains(segmentKey.toString())) {
-                            if (null == notifyMap.get(segmentKey.toString())) {
-                                notifyMap.put(segmentKey.toString(), new ArrayList<String>());
-                            }
-                            // TODO @anchore 传allshow
-                            String local = "";
-                            String remote = "";
-                            repositoryManager.currentRepo().zipToRemote(local, remote);
-                            notifyMap.get(segmentKey.toString()).add(remote);
+                for (SegmentKey segKey : segmentKeys) {
+                    WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", sourceKey, segmentManager.getSegment(segKey));
+                    ImmutableBitMap allShowBitmap = whereDeleter.delete(where);
+                    if (segKey.getStoreType() == StoreType.MEMORY) {
+                        continue;
+                    }
+                    if (needUpload.contains(segKey.toString())) {
+                        if (null == notifyMap.get(segKey.toString())) {
+                            notifyMap.put(segKey.toString(), new ArrayList<String>());
                         }
+                        String remote;
+                        if (allShowBitmap.isEmpty()) {
+                            EventDispatcher.fire(SegmentEvent.UNLOAD_HISTORY, segKey);
+                            remote = String.format("%s/%s", segKey.getSwiftSchema().getDir(), segKey.getUri().getPath());
+                        } else {
+                            EventDispatcher.fire(SegmentEvent.MASK_HISTORY, segKey);
+                            remote = String.format("%s/%s/%s", segKey.getSwiftSchema().getDir(), segKey.getUri().getPath(), BaseSegment.ALL_SHOW_INDEX);
+                        }
+                        notifyMap.get(segKey.toString()).add(remote);
                     }
                 }
                 if (!notifyMap.isEmpty()) {

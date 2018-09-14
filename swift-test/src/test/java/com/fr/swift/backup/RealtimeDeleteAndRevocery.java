@@ -65,11 +65,12 @@ public class RealtimeDeleteAndRevocery extends BaseTest {
         SwiftResultSet resultSet = transfer.createResultSet();
         Incrementer incrementer = new Incrementer(dataSource);
         incrementer.insertData(resultSet);
-        Segment segment = swiftSegmentManager.getSegment(dataSource.getSourceKey()).get(0);
+        SegmentKey segKey = swiftSegmentManager.getSegmentKeys(dataSource.getSourceKey()).get(0);
+        Segment segment = swiftSegmentManager.getSegment(segKey);
 
         Where where = new SwiftWhere(createEqualFilter("合同类型", "购买合同"));
 
-        Decrementer decrementer = new Decrementer(dataSource.getSourceKey(), segment);
+        Decrementer decrementer = new Decrementer(segKey);
         decrementer.delete(where);
         //增量删除后内存数据判断
         Column column = segment.getColumn(new ColumnKey("合同类型"));
@@ -102,11 +103,13 @@ public class RealtimeDeleteAndRevocery extends BaseTest {
         SwiftResultSet resultSet = transfer.createResultSet();
         Incrementer incrementer = new Incrementer(dataSource);
         incrementer.insertData(resultSet);
-        Segment segment = swiftSegmentManager.getSegment(dataSource.getSourceKey()).get(0);
+        SegmentKey segKey = swiftSegmentManager.getSegmentKeys(dataSource.getSourceKey()).get(0);
+        Segment segment = swiftSegmentManager.getSegment(segKey);
+
 
         Where where = new SwiftWhere(createEqualFilter("合同类型", "购买合同"));
 
-        Decrementer decrementer = new Decrementer(dataSource.getSourceKey(), segment);
+        Decrementer decrementer = new Decrementer(segKey);
         decrementer.delete(where);
         //增量删除后内存数据判断
         Column column = segment.getColumn(new ColumnKey("合同类型"));

@@ -32,7 +32,7 @@ public class SwiftServiceTaskExecutor implements ServiceTaskExecutor {
     }
 
     @Override
-    public void submit(ServiceCallable task) throws Exception {
+    public void submit(ServiceCallable task) throws InterruptedException {
         callableQueue.put(task.addListener(fetcher.serviceTaskListener));
     }
 

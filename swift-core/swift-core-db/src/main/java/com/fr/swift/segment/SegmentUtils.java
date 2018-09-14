@@ -1,6 +1,5 @@
 package com.fr.swift.segment;
 
-import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.ResourceDiscovery;
@@ -8,14 +7,15 @@ import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.segment.operator.column.SwiftColumnDictMerger;
+import com.fr.swift.segment.operator.column.SwiftColumnIndexer;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.FileUtil;
 import com.fr.swift.util.function.Predicate;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
-
-import static com.fr.swift.db.SwiftDatabase.DECISION_LOG;
 
 /**
  * This class created on 2018/7/10
@@ -43,6 +43,11 @@ public class SegmentUtils {
         return (Segment) SwiftContext.get().getBean("historySegment", location, meta);
     }
 
+    /**
+     * 只清数据，不清配置
+     *
+     * @param segKey seg key
+     */
     public static void clearSegment(SegmentKey segKey) {
         if (segKey.getStoreType() == StoreType.MEMORY) {
             clearRealtimeSegment(segKey);
@@ -52,8 +57,6 @@ public class SegmentUtils {
     }
 
     private static void clearRealtimeSegment(SegmentKey segKey) {
-        SwiftContext.get().getBean(SwiftSegmentService.class).removeSegments(Collections.singletonList(segKey));
-
         final String segPath = CubeUtil.getSegPath(segKey);
 
         ResourceDiscovery.getInstance().removeIf(new Predicate<String>() {
@@ -63,15 +66,33 @@ public class SegmentUtils {
             }
         });
 
-        FileUtil.delete(CubeUtil.getAbsoluteSegPath(segKey).replace(DECISION_LOG.getDir(), DECISION_LOG.getBackupDir()));
+        FileUtil.delete(CubeUtil.getAbsoluteSegPath(segKey).replace(segKey.getSwiftSchema().getDir(), segKey.getSwiftSchema().getBackupDir()));
     }
 
     private static void clearHistorySegment(SegmentKey segKey) {
-        SwiftContext.get().getBean(SwiftSegmentService.class).removeSegments(Collections.singletonList(segKey));
-
         FileUtil.delete(CubeUtil.getAbsoluteSegPath(segKey));
+    }
 
-        // todo 触发共享存储删seg？
+    public static void indexSegmentIfNeed(List<Segment> segs) throws Exception {
+        List<Segment> hisSegs = new ArrayList<Segment>();
+        for (Segment seg : segs) {
+            if (seg.isHistory()) {
+                hisSegs.add(seg);
+            }
+        }
+
+        if (hisSegs.isEmpty()) {
+            return;
+        }
+
+        SwiftMetaData metadata = hisSegs.get(0).getMetaData();
+        for (int i = 0; i < metadata.getColumnCount(); i++) {
+            ColumnKey columnKey = new ColumnKey(metadata.getColumnName(i + 1));
+
+            ((SwiftColumnIndexer) SwiftContext.get().getBean("columnIndexer", metadata, columnKey, hisSegs)).buildIndex();
+
+            ((SwiftColumnDictMerger) SwiftContext.get().getBean("columnDictMerger", metadata, columnKey, hisSegs)).mergeDict();
+        }
     }
 
     public static SegmentKey getMaxSegmentKey(List<SegmentKey> segmentKeys) {

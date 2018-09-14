@@ -42,12 +42,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author anchore
  * @date 2018/1/17
  */
-public abstract class BaseSegment implements Segment {
+public class BaseSegment implements Segment {
     private static final IResourceDiscovery DISCOVERY = ResourceDiscovery.getInstance();
 
     private static final String ROW_COUNT = "row_count";
 
-    private static final String ALL_SHOW_INDEX = "all_show_index";
+    public static final String ALL_SHOW_INDEX = "all_show_index";
 
     protected SwiftMetaData meta;
     protected IResourceLocation location;
