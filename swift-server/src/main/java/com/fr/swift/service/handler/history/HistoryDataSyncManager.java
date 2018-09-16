@@ -18,12 +18,14 @@ import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.handler.SwiftServiceHandlerManager;
 import com.fr.swift.service.handler.base.AbstractHandler;
+import com.fr.swift.service.handler.history.rule.SegmentPair;
 import com.fr.swift.structure.Pair;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -66,10 +68,21 @@ public class HistoryDataSyncManager extends AbstractHandler<SegmentLoadRpcEvent>
                 dealNeedLoadSegments(services, needLoadSegments, SegmentLocationInfo.UpdateType.ALL, 0);
                 break;
             case TRANS_COLLATE_LOAD:
-                String source = event.getSourceClusterId();
                 Pair<String, List<String>> content = (Pair<String, List<String>>) event.getContent();
                 String needLoadSource = content.getKey();
                 List<String> segmentKeys = content.getValue();
+                List<SegmentPair> list = new ArrayList<SegmentPair>();
+                for (Map.Entry<String, ClusterEntity> entry : services.entrySet()) {
+                    List<SegmentKey> keys = clusterSegmentService.getOwnSegments(entry.getKey()).get(needLoadSource);
+                    if (null != keys) {
+                        list.add(new SegmentPair(entry.getKey(), keys.size()));
+                    } else {
+                        list.add(new SegmentPair(entry.getKey(), 0));
+                    }
+                }
+                Collections.sort(list);
+                Map<String, ClusterEntity> hist = new HashMap<String, ClusterEntity>();
+                hist.put(list.get(0).getClusterId(), services.get(list.get(0).getClusterId()));
                 if (StringUtils.isNotEmpty(needLoadSource)) {
                     List<SegmentKey> keys = allSegments.get(needLoadSource);
                     List<SegmentKey> target = new ArrayList<SegmentKey>();
@@ -82,7 +95,7 @@ public class HistoryDataSyncManager extends AbstractHandler<SegmentLoadRpcEvent>
                 } else {
                     return null;
                 }
-                return (S) dealNeedLoadSegments(services, needLoadSegments, SegmentLocationInfo.UpdateType.PART, 1);
+                return (S) dealNeedLoadSegments(hist, needLoadSegments, SegmentLocationInfo.UpdateType.PART, 1);
             default:
                 break;
         }

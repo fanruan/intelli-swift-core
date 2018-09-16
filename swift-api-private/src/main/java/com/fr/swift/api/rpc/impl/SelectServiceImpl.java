@@ -42,7 +42,8 @@ class SelectServiceImpl implements SelectService {
                 if (null != metaData && metaData.getSwiftDatabase() == database) {
                     return getAnalyseService().getQueryResult(queryBean);
                 }
-                tableService.detectiveMetaData(database, tableName);
+                metaData = tableService.detectiveMetaData(database, tableName);
+                ((AbstractSingleTableQueryInfoBean) queryBean).setTableName(metaData.getId());
                 return getAnalyseService().getQueryResult(queryBean);
             }
             throw new UnsupportedOperationException();

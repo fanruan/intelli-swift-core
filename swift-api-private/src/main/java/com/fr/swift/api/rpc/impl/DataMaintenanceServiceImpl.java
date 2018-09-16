@@ -11,14 +11,19 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
+import com.fr.swift.event.global.DeleteEvent;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.RealtimeService;
+import com.fr.swift.service.listener.SwiftServiceListenerManager;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.util.ServiceBeanFactory;
+import com.fr.swift.utils.ClusterCommonUtils;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
@@ -73,15 +78,20 @@ class DataMaintenanceServiceImpl implements DataMaintenanceService {
     }
 
     @Override
-    @SwiftApi(enable = false)
+    @SwiftApi
     public int delete(SwiftDatabase schema, String tableName, Where where) throws SQLException {
         try {
             SwiftMetaDataBean metaData = (SwiftMetaDataBean) tableService.detectiveMetaData(schema, tableName);
             if (null == metaData) {
                 return 0;
             }
-            Table table = com.fr.swift.db.impl.SwiftDatabase.getInstance().getTable(new SourceKey(metaData.getId()));
-            return table.delete(where);
+            DeleteEvent event = new DeleteEvent(Pair.of(new SourceKey(metaData.getId()), where));
+            if (ClusterSelector.getInstance().getFactory().isCluster()) {
+                ClusterCommonUtils.asyncCallMaster(event);
+            } else {
+                SwiftServiceListenerManager.getInstance().triggerEvent(event);
+            }
+            return 0;
         } catch (Exception e) {
             throw new SQLException("Table which named " + tableName + " is not exists", e);
         }
@@ -144,22 +154,22 @@ class DataMaintenanceServiceImpl implements DataMaintenanceService {
         }
 
         @Override
-        public SwiftMetaData getMetaData() throws SQLException {
+        public SwiftMetaData getMetaData() {
             return insertMetaData;
         }
 
         @Override
-        public boolean hasNext() throws SQLException {
+        public boolean hasNext() {
             return cursor < rows.size();
         }
 
         @Override
-        public Row getNextRow() throws SQLException {
+        public Row getNextRow() {
             return rows.get(cursor++);
         }
 
         @Override
-        public void close() throws SQLException {
+        public void close() {
 
         }
     }
