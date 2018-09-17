@@ -10,13 +10,15 @@ import java.util.List;
  * 处理结果的query
  */
 public abstract class AbstractResultQuery<T extends SwiftResultSet> implements ResultQuery<T> {
+
+    protected int fetchSize;
     /**
      * ResultQuery是由多个query合并来的
      */
     protected List<Query<T>> queryList;
 
-
-    public AbstractResultQuery(List<Query<T>> queryList) {
+    public AbstractResultQuery(int fetchSize, List<Query<T>> queryList) {
+        this.fetchSize = fetchSize;
         this.queryList = queryList;
     }
 

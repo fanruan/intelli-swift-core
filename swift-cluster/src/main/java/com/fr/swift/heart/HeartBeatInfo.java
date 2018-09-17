@@ -26,9 +26,9 @@ public class HeartBeatInfo implements Serializable {
     private transient SwiftProperty swiftProperty = SwiftContext.get().getBean("swiftProperty", SwiftProperty.class);
 
     public HeartBeatInfo() {
-        serverCurrentStatus = new ServerCurrentStatus(swiftProperty.getServerAddress());
+        this.serverCurrentStatus = new ServerCurrentStatus(swiftProperty.getServerAddress());
         this.nodeId = serverCurrentStatus.getClusterId();
-        heartbeatTime = new Date();
+        this.heartbeatTime = new Date();
         this.address = swiftProperty.getServerAddress();
     }
 
@@ -70,6 +70,10 @@ public class HeartBeatInfo implements Serializable {
 
     public void setAttachment(Map<String, Object> attachment) {
         this.attachment = attachment;
+    }
+
+    public String getNodeName() {
+        return "{NodeId:" + nodeId + ",address:" + address + "}";
     }
 
     @Override

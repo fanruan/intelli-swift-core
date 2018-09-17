@@ -8,15 +8,13 @@ import org.junit.Test;
 import java.util.Comparator;
 import java.util.Random;
 
-import static com.fr.swift.cube.io.BaseIoTest.CUBES_PATH;
-
 /**
  * @author anchore
  * @date 2017/11/10
  */
 public abstract class BaseDictColumnTest<T> extends TestIo {
 
-    static final String BASE_PATH = CUBES_PATH;
+    static final String BASE_PATH = "cubes/table/seg0/column";
     Random r = new Random();
     T[] values;
     Comparator<T> c;
@@ -26,10 +24,11 @@ public abstract class BaseDictColumnTest<T> extends TestIo {
     @Test
     public void testPutValueThenGet() {
         DictionaryEncodedColumn<T> dictColumn = getDictColumn();
+        dictColumn.putter().putValue(0, null);
         for (int i = 1; i < values.length; i++) {
-            dictColumn.putValue(i, values[i]);
+            dictColumn.putter().putValue(i, values[i]);
         }
-        dictColumn.putSize(values.length);
+        dictColumn.putter().putSize(values.length);
         dictColumn.release();
 
         dictColumn = getDictColumn();
@@ -44,7 +43,7 @@ public abstract class BaseDictColumnTest<T> extends TestIo {
     public void testPutSizeThenGet() {
         DictionaryEncodedColumn<T> dictColumn = getDictColumn();
         int size = r.nextInt(1000000000);
-        dictColumn.putSize(size);
+        dictColumn.putter().putSize(size);
         dictColumn.release();
 
         dictColumn = getDictColumn();
@@ -58,7 +57,7 @@ public abstract class BaseDictColumnTest<T> extends TestIo {
         DictionaryEncodedColumn<T> dictColumn = getDictColumn();
         int[] indices = r.ints(size, 0, size << 1).toArray();
         for (int i = 0; i < indices.length; i++) {
-            dictColumn.putIndex(i, indices[i]);
+            dictColumn.putter().putIndex(i, indices[i]);
         }
         dictColumn.release();
 

@@ -22,7 +22,9 @@ import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.QueryDBSource;
+import com.fr.swift.test.Preparer;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -44,7 +46,7 @@ public class RealtimeDeleteAndRevocery extends BaseTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        SwiftContext.init();
+        Preparer.prepareCubeBuild(getClass());
         redisClient = (RedisClient) SwiftContext.get().getBean("redisClient");
         swiftSegmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
     }
@@ -62,12 +64,13 @@ public class RealtimeDeleteAndRevocery extends BaseTest {
         SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
         SwiftResultSet resultSet = transfer.createResultSet();
         Incrementer incrementer = new Incrementer(dataSource);
-        incrementer.increment(resultSet);
-        Segment segment = swiftSegmentManager.getSegment(dataSource.getSourceKey()).get(0);
+        incrementer.insertData(resultSet);
+        SegmentKey segKey = swiftSegmentManager.getSegmentKeys(dataSource.getSourceKey()).get(0);
+        Segment segment = swiftSegmentManager.getSegment(segKey);
 
         Where where = new SwiftWhere(createEqualFilter("合同类型", "购买合同"));
 
-        Decrementer decrementer = new Decrementer(dataSource.getSourceKey(), segment);
+        Decrementer decrementer = new Decrementer(segKey);
         decrementer.delete(where);
         //增量删除后内存数据判断
         Column column = segment.getColumn(new ColumnKey("合同类型"));
@@ -77,7 +80,7 @@ public class RealtimeDeleteAndRevocery extends BaseTest {
             }
         }
         //清空内存数据，并恢复数据和allshowindex
-        ResourceDiscovery.getInstance().removeCubeResource("cubes/" + dataSource.getSourceKey().getId());
+        ResourceDiscovery.getInstance().removeIf(s -> s.contains("cubes/" + dataSource.getSourceKey().getId()));
         FileSegmentRecovery recovery = new FileSegmentRecovery();
         List<SegmentKey> segKeys = swiftSegmentManager.getSegmentKeys(dataSource.getSourceKey());
         recovery.recover(segKeys);
@@ -91,6 +94,7 @@ public class RealtimeDeleteAndRevocery extends BaseTest {
         }
     }
 
+    @Ignore
     @Test
     public void testRedisDeleteAndRecovery() throws Exception {
         redisClient.flushDB();
@@ -98,12 +102,14 @@ public class RealtimeDeleteAndRevocery extends BaseTest {
         SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
         SwiftResultSet resultSet = transfer.createResultSet();
         Incrementer incrementer = new Incrementer(dataSource);
-        incrementer.increment(resultSet);
-        Segment segment = swiftSegmentManager.getSegment(dataSource.getSourceKey()).get(0);
+        incrementer.insertData(resultSet);
+        SegmentKey segKey = swiftSegmentManager.getSegmentKeys(dataSource.getSourceKey()).get(0);
+        Segment segment = swiftSegmentManager.getSegment(segKey);
+
 
         Where where = new SwiftWhere(createEqualFilter("合同类型", "购买合同"));
 
-        Decrementer decrementer = new Decrementer(dataSource.getSourceKey(), segment);
+        Decrementer decrementer = new Decrementer(segKey);
         decrementer.delete(where);
         //增量删除后内存数据判断
         Column column = segment.getColumn(new ColumnKey("合同类型"));

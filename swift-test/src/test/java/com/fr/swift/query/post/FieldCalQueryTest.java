@@ -1,8 +1,8 @@
 package com.fr.swift.query.post;
 
 import com.fr.stable.StringUtils;
+import com.fr.swift.query.info.bean.type.cal.CalTargetType;
 import com.fr.swift.query.info.element.target.GroupTarget;
-import com.fr.swift.query.info.element.target.cal.CalTargetType;
 import com.fr.swift.query.info.element.target.cal.GroupTargetImpl;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSetImpl;
@@ -41,7 +41,7 @@ public class FieldCalQueryTest extends TestCase {
         PostQuery<NodeResultSet> postQuery = new PostQuery<NodeResultSet>() {
             @Override
             public NodeResultSet getQueryResult() {
-                return new NodeMergeResultSetImpl(root, maps);
+                return new NodeMergeResultSetImpl(200, root, maps);
             }
         };
         query = new FieldCalQuery(postQuery, targetList);

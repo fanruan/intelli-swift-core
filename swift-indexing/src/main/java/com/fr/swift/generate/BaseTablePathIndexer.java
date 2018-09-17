@@ -11,11 +11,12 @@ import com.fr.swift.cube.nio.NIOConstant;
 import com.fr.swift.generate.history.index.RelationIndexHelper;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.relation.CubeMultiRelationPath;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.operator.column.SwiftTablePathIndexer;
+import com.fr.swift.segment.relation.CubeMultiRelationPath;
 import com.fr.swift.segment.relation.RelationIndex;
+import com.fr.swift.segment.relation.impl.CubeMultiRelationPathImpl;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.array.LongArray;
 import com.fr.swift.structure.array.LongListFactory;
@@ -104,7 +105,7 @@ public abstract class BaseTablePathIndexer extends BaseWorker implements SwiftTa
     }
 
     private CubeMultiRelationPath getPrePath() {
-        CubeMultiRelationPath result = new CubeMultiRelationPath();
+        CubeMultiRelationPath result = new CubeMultiRelationPathImpl();
         result.copyFrom(relationPath);
         result.removeLastRelation();
         return result;

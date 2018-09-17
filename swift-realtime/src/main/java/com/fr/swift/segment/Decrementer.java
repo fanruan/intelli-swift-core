@@ -1,11 +1,11 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.Where;
 import com.fr.swift.segment.operator.delete.RealtimeSwiftDeleter;
 import com.fr.swift.segment.operator.delete.SwiftWhereDeleter;
 import com.fr.swift.segment.operator.delete.WhereDeleter;
-import com.fr.swift.source.SourceKey;
 
 /**
  * This class created on 2018/7/4
@@ -15,22 +15,19 @@ import com.fr.swift.source.SourceKey;
  * @since Advanced FineBI 5.0
  */
 public class Decrementer implements WhereDeleter {
-    private SourceKey tableKey;
+    private SegmentKey segKey;
 
-    private Segment segment;
-
-    public Decrementer(SourceKey tableKey, Segment segment) {
-        this.tableKey = tableKey;
-        this.segment = segment;
+    public Decrementer(SegmentKey segKey) {
+        this.segKey = segKey;
     }
 
     @Override
     public ImmutableBitMap delete(Where where) throws Exception {
         WhereDeleter whereDeleter;
-        if (segment.isHistory()) {
-            whereDeleter = new SwiftWhereDeleter(tableKey, segment);
+        if (segKey.getStoreType() == StoreType.MEMORY) {
+            whereDeleter = new RealtimeSwiftDeleter(segKey);
         } else {
-            whereDeleter = new RealtimeSwiftDeleter(tableKey, segment);
+            whereDeleter = new SwiftWhereDeleter(segKey);
         }
         return whereDeleter.delete(where);
     }

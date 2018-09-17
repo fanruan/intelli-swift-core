@@ -7,6 +7,7 @@ import com.fr.swift.basics.base.SwiftResult;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.config.bean.IndexingSelectRule;
 import com.fr.swift.info.ServerCurrentStatus;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.netty.rpc.url.RPCDestination;
 import com.fr.swift.netty.rpc.url.RPCUrl;
 import com.fr.swift.service.IndexingService;
@@ -37,10 +38,14 @@ public class DefaultIndexingSelectRule implements IndexingSelectRule {
         final List<ServerCurrentStatus> serverCurrentStatuses = new ArrayList<ServerCurrentStatus>();
         ProxyFactory factory = ProxySelector.getInstance().getFactory();
         for (String indexingService : indexingServices) {
-            Invoker invoker = factory.getInvoker(null, IndexingService.class, new RPCUrl(new RPCDestination(indexingService)), true);
-            Method method = IndexingService.class.getMethod("currentStatus");
-            SwiftResult result = (SwiftResult) invoker.invoke(new SwiftInvocation(method, null));
-            serverCurrentStatuses.add((ServerCurrentStatus) result.getValue());
+            try {
+                Invoker invoker = factory.getInvoker(null, IndexingService.class, new RPCUrl(new RPCDestination(indexingService)), true);
+                Method method = IndexingService.class.getMethod("currentStatus");
+                SwiftResult result = (SwiftResult) invoker.invoke(new SwiftInvocation(method, null));
+                serverCurrentStatuses.add((ServerCurrentStatus) result.getValue());
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().warn("Cannot connect to " + indexingService);
+            }
         }
         if (serverCurrentStatuses.isEmpty()) {
             for (String indexingService : indexingServices) {

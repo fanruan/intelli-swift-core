@@ -5,7 +5,7 @@ import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 
-import java.net.URI;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -14,14 +14,17 @@ import java.util.Set;
  * @date 2017/12/15
  */
 public abstract class AbstractQueryInfo<T extends SwiftResultSet> implements SingleTableQueryInfo<T> {
+
     private String id;
+    private int fetchSize;
     private FilterInfo filterInfo;
     private SourceKey table;
     private List<Dimension> dimensions;
-    private Set<URI> queryTarget = null;
+    private Set<String> queryTarget = new HashSet<String>();
 
-    public AbstractQueryInfo(String id, SourceKey table, FilterInfo filterInfo, List<Dimension> dimensions) {
+    public AbstractQueryInfo(String id, int fetchSize, SourceKey table, FilterInfo filterInfo, List<Dimension> dimensions) {
         this.id = id;
+        this.fetchSize = fetchSize;
         this.table = table;
         this.filterInfo = filterInfo;
         this.dimensions = dimensions;
@@ -32,10 +35,17 @@ public abstract class AbstractQueryInfo<T extends SwiftResultSet> implements Sin
         return id;
     }
 
+    @Override
+    public int getFetchSize() {
+        return fetchSize;
+    }
+
+    @Override
     public SourceKey getTable() {
         return table;
     }
 
+    @Override
     public FilterInfo getFilterInfo() {
         return filterInfo;
     }
@@ -47,14 +57,24 @@ public abstract class AbstractQueryInfo<T extends SwiftResultSet> implements Sin
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         AbstractQueryInfo<?> that = (AbstractQueryInfo<?>) o;
 
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (filterInfo != null ? !filterInfo.equals(that.filterInfo) : that.filterInfo != null) return false;
-        if (table != null ? !table.equals(that.table) : that.table != null) return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) {
+            return false;
+        }
+        if (filterInfo != null ? !filterInfo.equals(that.filterInfo) : that.filterInfo != null) {
+            return false;
+        }
+        if (table != null ? !table.equals(that.table) : that.table != null) {
+            return false;
+        }
         return dimensions != null ? dimensions.equals(that.dimensions) : that.dimensions == null;
     }
 
@@ -68,12 +88,12 @@ public abstract class AbstractQueryInfo<T extends SwiftResultSet> implements Sin
     }
 
     @Override
-    public Set<URI> getQuerySegment() {
+    public Set<String> getQuerySegment() {
         return queryTarget;
     }
 
     @Override
-    public void setQuerySegment(Set<URI> queryTarget) {
+    public void setQuerySegment(Set<String> queryTarget) {
         this.queryTarget = queryTarget;
     }
 }

@@ -1,14 +1,14 @@
 package com.fr.swift.test;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 
 /**
  * @author anchore
  * @date 2018/5/8
  */
 public abstract class TestIo {
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        Preparer.prepareCubeBuild();
+    @Before
+    public void before() {
+        Preparer.prepareCubeBuild(getClass());
     }
 }

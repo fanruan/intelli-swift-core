@@ -1,18 +1,54 @@
 package com.fr.swift.adaptor.log;
 
-import com.fr.intelli.record.MetricException;
 import com.fr.intelli.record.scene.Metric;
 import com.fr.intelli.record.scene.impl.BaseMetric;
-import com.fr.log.FineLoggerFactory;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.data.DataList;
+import com.fr.swift.context.SwiftContext;
+import com.fr.swift.db.Database;
+import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.db.Table;
+import com.fr.swift.db.Where;
+import com.fr.swift.db.impl.AddColumnAction;
+import com.fr.swift.db.impl.DropColumnAction;
+import com.fr.swift.db.impl.MetadataDiffer;
+import com.fr.swift.db.impl.SwiftWhere;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventListener;
 import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
+import com.fr.swift.event.global.DeleteEvent;
+import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.query.FilterBean;
+import com.fr.swift.query.query.QueryBean;
+import com.fr.swift.result.DetailResultSet;
+import com.fr.swift.selector.ClusterSelector;
+import com.fr.swift.service.AnalyseService;
+import com.fr.swift.service.RealtimeService;
+import com.fr.swift.service.cluster.ClusterAnalyseService;
+import com.fr.swift.service.cluster.ClusterRealTimeService;
+import com.fr.swift.service.listener.SwiftServiceListenerManager;
+import com.fr.swift.source.Row;
+import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.structure.Pair;
+import com.fr.swift.util.JpaAdaptor;
+import com.fr.swift.util.Util;
+import com.fr.swift.util.concurrent.CommonExecutor;
+import com.fr.swift.util.concurrent.PoolThreadFactory;
+import com.fr.swift.util.concurrent.SwiftExecutors;
+import com.fr.swift.utils.ClusterCommonUtils;
 
-import java.util.Date;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class created on 2018/5/10
@@ -23,87 +59,184 @@ import java.util.List;
  */
 public class MetricProxy extends BaseMetric {
 
-    private Metric logOperator;
-    private Metric singleLogOperator;
-    private Metric clusterLogOperator;
+    private RealtimeService realtimeService;
+    private AnalyseService analyseService;
+    private Sync sync;
 
     private MetricProxy() {
-        this.singleLogOperator = new SwiftLogOperator();
-        this.logOperator = singleLogOperator;
+        realtimeService = SwiftContext.get().getBean("swiftRealtimeService", RealtimeService.class);
+        analyseService = SwiftContext.get().getBean("swiftAnalyseService", AnalyseService.class);
+        sync = new Sync();
         ClusterListenerHandler.addListener(new ClusterEventListener() {
             @Override
             public void handleEvent(ClusterEvent clusterEvent) {
                 if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
-                    switchCluster();
+                    realtimeService = SwiftContext.get().getBean(ClusterRealTimeService.class);
+                    analyseService = SwiftContext.get().getBean(ClusterAnalyseService.class);
                 } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
-                    switchSingle();
+                    realtimeService = SwiftContext.get().getBean("swiftRealtimeService", RealtimeService.class);
+                    analyseService = SwiftContext.get().getBean("swiftAnalyseService", AnalyseService.class);
                 }
             }
         });
     }
 
+    private final Database db = com.fr.swift.db.impl.SwiftDatabase.getInstance();
+
     @Override
-    public <T> DataList<T> find(Class<T> aClass, QueryCondition queryCondition) throws MetricException {
-        synchronized (MetricProxy.class) {
-            return logOperator.find(aClass, queryCondition);
+    public <T> DataList<T> find(Class<T> entity, QueryCondition queryCondition) {
+        DataList<T> dataList = new DataList<T>();
+        try {
+            Table table = db.getTable(new SourceKey(JpaAdaptor.getTableName(entity)));
+            DecisionRowAdaptor<T> adaptor = new DecisionRowAdaptor<T>(entity, table.getMeta());
+            List<T> tList = new ArrayList<T>();
+
+            QueryBean queryBean = LogQueryUtils.getDetailQueryBean(entity, queryCondition);
+            SwiftResultSet resultSet = analyseService.getQueryResult(queryBean);
+            List<Row> page = LogQueryUtils.getPage(resultSet, queryCondition);
+            for (Row row : page) {
+                tList.add(adaptor.apply(row));
+            }
+            dataList.list(tList);
+            dataList.setTotalCount(((DetailResultSet) resultSet).getRowCount());
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
         }
+        return dataList;
     }
 
     @Override
-    public DataList<List<Object>> find(String s) {
+    public <T> DataList<List<T>> find(String s) {
         return null;
     }
 
     @Override
     public void submit(Object o) {
-        synchronized (MetricProxy.class) {
-            logOperator.submit(o);
+        if (o == null) {
+            return;
         }
+        sync.stage(Collections.singletonList(o));
     }
 
     @Override
     public void submit(List<Object> list) {
-        synchronized (MetricProxy.class) {
-            logOperator.submit(list);
+        if (list == null || list.isEmpty()) {
+            return;
         }
+        sync.stage(list);
     }
 
     @Override
     public void pretreatment(List<Class> list) throws Exception {
-        synchronized (MetricProxy.class) {
-            logOperator.pretreatment(list);
+        for (Class table : list) {
+            initTable(table);
+        }
+    }
+
+    private void initTable(Class table) throws SQLException {
+        SwiftMetaData meta = JpaAdaptor.adapt(table, SwiftDatabase.DECISION_LOG);
+        final SourceKey tableKey = new SourceKey(meta.getTableName());
+        synchronized (db) {
+            if (!db.existsTable(tableKey)) {
+                db.createTable(tableKey, meta);
+                return;
+            }
+
+            final MetadataDiffer differ = new MetadataDiffer(db.getTable(tableKey).getMetadata(), meta);
+            if (!differ.hasDiff()) {
+                return;
+            }
+
+            CommonExecutor.get().execute(new Runnable() {
+                @Override
+                public void run() {
+                    for (SwiftMetaDataColumn columnMeta : differ.getAdded()) {
+                        try {
+                            com.fr.swift.db.impl.SwiftDatabase.getInstance().alterTable(tableKey, new AddColumnAction(columnMeta));
+                        } catch (SQLException e) {
+                            SwiftLoggers.getLogger().warn("add column {} failed: {}", columnMeta, Util.getRootCauseMessage(e));
+                        }
+                    }
+                    for (SwiftMetaDataColumn columnMeta : differ.getDropped()) {
+                        try {
+                            com.fr.swift.db.impl.SwiftDatabase.getInstance().alterTable(tableKey, new DropColumnAction(columnMeta));
+                        } catch (SQLException e) {
+                            SwiftLoggers.getLogger().warn("drop column {} failed: {}", columnMeta, Util.getRootCauseMessage(e));
+                        }
+                    }
+                }
+            });
         }
     }
 
     @Override
     public void clean(QueryCondition condition) throws Exception {
-        synchronized (MetricProxy.class) {
-            logOperator.clean(condition);
-        }
-    }
-
-    public boolean switchSingle() {
-        synchronized (MetricProxy.class) {
-            if (logOperator == clusterLogOperator) {
-                logOperator = singleLogOperator;
-                FineLoggerFactory.getLogger().info("LogOperator switch to single successfully!");
-                return true;
-            }
-            return false;
-        }
-    }
-
-    public boolean switchCluster() {
-        synchronized (MetricProxy.class) {
-            if (logOperator == singleLogOperator) {
-                if (clusterLogOperator == null) {
-                    this.clusterLogOperator = new SwiftClusterLogOperator();
+        List<Table> tables = com.fr.swift.db.impl.SwiftDatabase.getInstance().getAllTables();
+        FilterBean filterBean = QueryConditionAdaptor.restriction2FilterInfo(condition.getRestriction());
+        for (Table table : tables) {
+            if (table.getMeta().getSwiftDatabase() == SwiftDatabase.DECISION_LOG) {
+                DeleteEvent event = new DeleteEvent(Pair.<SourceKey, Where>of(table.getSourceKey(), new SwiftWhere(filterBean)));
+                if (ClusterSelector.getInstance().getFactory().isCluster()) {
+                    ClusterCommonUtils.asyncCallMaster(event);
+                } else {
+                    SwiftServiceListenerManager.getInstance().triggerEvent(event);
                 }
-                logOperator = clusterLogOperator;
-                FineLoggerFactory.getLogger().info("LogOperator switch to cluster successfully!");
-                return true;
             }
-            return false;
+        }
+    }
+
+    class Sync implements Runnable {
+        static final int FLUSH_SIZE_THRESHOLD = 10000;
+
+        private ScheduledExecutorService scheduler = SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory(getClass()));
+
+        private Map<Class<?>, List<Object>> dataMap = new ConcurrentHashMap<Class<?>, List<Object>>();
+
+        Sync() {
+            scheduler.scheduleWithFixedDelay(this, 5, 5, TimeUnit.SECONDS);
+        }
+
+        @Override
+        public void run() {
+            try {
+                for (Class<?> entity : dataMap.keySet()) {
+                    initTable(entity);
+                    record(entity);
+                }
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().error(e);
+            }
+        }
+
+        synchronized
+        private void record(final Class<?> entity) {
+            final List<Object> data = dataMap.get(entity);
+            if (data == null || data.isEmpty()) {
+                return;
+            }
+
+            Table table = db.getTable(new SourceKey(JpaAdaptor.getTableName(entity)));
+            try {
+                realtimeService.insert(table.getSourceKey(), new LogRowSet(table.getMetadata(), data, entity));
+                dataMap.remove(entity);
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().error(e);
+            }
+        }
+
+        synchronized
+        private void stage(List<Object> data) {
+            Object first = data.get(0);
+            Class<?> entity = first.getClass();
+            if (!dataMap.containsKey(entity)) {
+                dataMap.put(entity, new ArrayList<Object>());
+            }
+            List<Object> curData = dataMap.get(entity);
+            curData.addAll(data);
+
+            if (curData.size() > FLUSH_SIZE_THRESHOLD) {
+                record(entity);
+            }
         }
     }
 

@@ -9,34 +9,37 @@ import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.query.group.info.GroupByInfoImpl;
 import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.query.group.info.MetricInfoImpl;
-import com.fr.swift.query.group.info.cursor.ExpanderImpl;
-import com.fr.swift.query.group.info.cursor.ExpanderType;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.node.GroupNodeUtils;
 import com.fr.swift.result.row.RowIndexKey;
 import com.fr.swift.source.Row;
-import junit.framework.TestCase;
+import com.fr.swift.structure.Pair;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+
+import static junit.framework.TestCase.assertTrue;
 
 /**
  * Created by Lyon on 2018/5/31.
  */
-public class GroupAllSegmentQueryTest extends TestCase {
+public class GroupAllSegmentQueryTest {
 
-    private GroupByInfo groupByInfo;
     private NodeMergeResultSet<GroupNode> resultSet;
     private CubeData cubeData;
 
+    @Before
     public void setUp() throws Exception {
+
         cubeData = new CubeData();
-        groupByInfo = new GroupByInfoImpl(cubeData.getDimensions(), new DetailFilter() {
+        GroupByInfo groupByInfo = new GroupByInfoImpl(Integer.MAX_VALUE, cubeData.getDimensions(), new DetailFilter() {
             @Override
             public ImmutableBitMap createFilterIndex() {
                 return BitMaps.newAllShowBitMap(cubeData.getRowCount());
@@ -46,14 +49,15 @@ public class GroupAllSegmentQueryTest extends TestCase {
             public boolean matches(SwiftNode node, int targetIndex, MatchConverter converter) {
                 return false;
             }
-        }, new ArrayList<>(), new ExpanderImpl(ExpanderType.ALL_EXPANDER, new HashSet<>()), null);
+        }, new ArrayList<>(), null);
         MetricInfo metricInfo = new MetricInfoImpl(cubeData.getMetrics(), cubeData.getAggregators(), cubeData.getMetrics().size());
         resultSet = (NodeMergeResultSet<GroupNode>) new GroupAllSegmentQuery(groupByInfo, metricInfo).getQueryResult();
         // 更新Node#data
-        int dimensionSize = groupByInfo.getDimensions().size();
-        GroupNodeUtils.updateNodeData(dimensionSize, ((GroupNode) resultSet.getNode()), resultSet.getRowGlobalDictionaries());
+        Pair<GroupNode, List<Map<Integer, Object>>> pair = resultSet.getPage();
+        GroupNodeUtils.updateNodeData(pair.getKey(), pair.getValue());
     }
 
+    @Test
     public void test() {
         Map<RowIndexKey<int[]>, double[]> result = cubeData.getAggregationResult();
         try {
@@ -82,7 +86,7 @@ public class GroupAllSegmentQueryTest extends TestCase {
         int dimensionSize = cubeData.getDimensions().size();
         int[] key = new int[dimensionSize];
         for (int i = 0; i < dimensionSize; i++) {
-            key[i] = cubeData.getDimensions().get(i).getDictionaryEncodedColumn().getIndex(row.getValue(i));
+            key[i] = cubeData.getDimensions().get(i).getKey().getDictionaryEncodedColumn().getIndex(row.getValue(i));
         }
         return new RowIndexKey<>(key);
     }

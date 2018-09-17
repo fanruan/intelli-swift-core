@@ -4,6 +4,7 @@ import com.fr.general.ComparatorUtils;
 import com.fr.swift.ClusterNodeManager;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.property.SwiftProperty;
+import com.fr.swift.util.Assert;
 import com.fr.third.jodd.util.StringUtil;
 
 /**
@@ -16,7 +17,7 @@ import com.fr.third.jodd.util.StringUtil;
 public class SwiftClusterNodeManager implements ClusterNodeManager<SwiftClusterNode> {
 
     private SwiftClusterNode masterNode;
-    private SwiftClusterNode currentNode;
+    private final SwiftClusterNode currentNode;
     private boolean isCluster;
 
     private static final SwiftClusterNodeManager INSTANCE = new SwiftClusterNodeManager();
@@ -32,12 +33,11 @@ public class SwiftClusterNodeManager implements ClusterNodeManager<SwiftClusterN
             int port = Integer.parseInt(addressArray[1]);
             this.masterNode = new SwiftClusterNodeImpl(masterAddress, masterAddress, ip, port);
         }
-        if (serverAddress != null) {
-            String[] addressArray = StringUtil.split(serverAddress, ":");
-            String ip = addressArray[0];
-            int port = Integer.parseInt(addressArray[1]);
-            this.currentNode = new SwiftClusterNodeImpl(serverAddress, serverAddress, ip, port);
-        }
+        Assert.notNull(serverAddress);
+        String[] addressArray = StringUtil.split(serverAddress, ":");
+        String ip = addressArray[0];
+        int port = Integer.parseInt(addressArray[1]);
+        this.currentNode = new SwiftClusterNodeImpl(serverAddress, serverAddress, ip, port);
     }
 
     public static SwiftClusterNodeManager getInstance() {
@@ -47,11 +47,6 @@ public class SwiftClusterNodeManager implements ClusterNodeManager<SwiftClusterN
     @Override
     public void setMasterNode(SwiftClusterNode masterNode) {
         this.masterNode = masterNode;
-    }
-
-    @Override
-    public void setCurrentNode(SwiftClusterNode currentNode) {
-        this.currentNode = currentNode;
     }
 
     @Override

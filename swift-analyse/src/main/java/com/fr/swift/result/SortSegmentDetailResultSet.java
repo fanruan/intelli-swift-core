@@ -6,16 +6,15 @@ import com.fr.swift.query.group.by.GroupByEntry;
 import com.fr.swift.query.group.by2.row.MultiGroupByRowIterator;
 import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.query.group.info.GroupByInfoImpl;
-import com.fr.swift.query.group.info.cursor.ExpanderImpl;
-import com.fr.swift.query.group.info.cursor.ExpanderType;
+import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.DescSort;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
-import com.fr.swift.result.row.RowIndexKey;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.array.HeapIntArray;
 import com.fr.swift.structure.array.IntArray;
 import com.fr.swift.structure.iterator.MapperIterator;
@@ -23,7 +22,6 @@ import com.fr.swift.structure.iterator.RowTraversal;
 import com.fr.swift.util.function.Function;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -33,25 +31,27 @@ import java.util.List;
  * Created by Xiaolei.Liu on 2018/1/24
  */
 
-public class SortSegmentDetailResultSet implements DetailResultSet {
+public class SortSegmentDetailResultSet extends AbstractDetailResultSet {
 
     private int rowCount;
-    private List<Column> columnList;
-    private SwiftMetaData metaData;
+    private int fetchSize;
+    private List<Pair<Column, IndexInfo>> columnList;
     private RowIterator rowNumberIterator;
     private Iterator<Row> rowIterator;
 
-    public SortSegmentDetailResultSet(List<Column> columnList, DetailFilter filter, List<Sort> sorts, SwiftMetaData metaData) {
+    public SortSegmentDetailResultSet(int fetchSize, List<Pair<Column, IndexInfo>> columnList, DetailFilter filter,
+                                      List<Sort> sorts) {
         // TODO: 2018/6/19 为了计算总行数过滤了两次，待优化
+        super(fetchSize);
         this.rowCount = filter.createFilterIndex().getCardinality();
+        this.fetchSize = fetchSize;
         this.columnList = columnList;
-        this.metaData = metaData;
         init(filter, sorts);
     }
 
     private void init(DetailFilter filter, List<Sort> sorts) {
-        final List<Column> groupByColumns = getGroupByColumns(sorts);
-        GroupByInfo groupByInfo = new GroupByInfoImpl(groupByColumns, filter, convertSorts(sorts), new ExpanderImpl(ExpanderType.ALL_EXPANDER, new HashSet<RowIndexKey<String[]>>()), null);
+        final List<Pair<Column, IndexInfo>> groupByColumns = getGroupByColumns(sorts);
+        GroupByInfo groupByInfo = new GroupByInfoImpl(fetchSize, groupByColumns, filter, convertSorts(sorts), null);
         Iterator<GroupByEntry[]> it = new MultiGroupByRowIterator(groupByInfo);
         Iterator<RowTraversal> traversalIterator = new MapperIterator<GroupByEntry[], RowTraversal>(it, new Function<GroupByEntry[], RowTraversal>() {
             @Override
@@ -71,8 +71,8 @@ public class SortSegmentDetailResultSet implements DetailResultSet {
         return sortList;
     }
 
-    private List<Column> getGroupByColumns(List<Sort> sorts) {
-        List<Column> columns = new ArrayList<Column>();
+    private List<Pair<Column, IndexInfo>> getGroupByColumns(List<Sort> sorts) {
+        List<Pair<Column, IndexInfo>> columns = new ArrayList<Pair<Column, IndexInfo>>();
         for (Sort sort : sorts) {
             columns.add(columnList.get(sort.getTargetIndex()));
         }
@@ -82,11 +82,20 @@ public class SortSegmentDetailResultSet implements DetailResultSet {
     @Override
     public List<Row> getPage() {
         List<Row> rows = new ArrayList<Row>();
-        int count = PAGE_SIZE;
+        int count = fetchSize;
+        List<Column> columns = getColumnList(columnList);
         while (rowNumberIterator.hasNext() && count-- > 0) {
-            rows.add(SegmentDetailResultSet.readRow(rowNumberIterator.next(), columnList));
+            rows.add(SegmentDetailResultSet.readRow(rowNumberIterator.next(), columns));
         }
         return rows;
+    }
+
+    static List<Column> getColumnList(List<Pair<Column, IndexInfo>> columnList) {
+        List<Column> columns = new ArrayList<Column>();
+        for (Pair<Column, IndexInfo> pair : columnList) {
+            columns.add(pair.getKey());
+        }
+        return columns;
     }
 
     @Override

@@ -10,8 +10,6 @@ package com.fr.swift;
 public interface ClusterNodeManager<T> {
     void setMasterNode(T masterNode);
 
-    void setCurrentNode(T currentNode);
-
     T getMasterNode();
 
     T getCurrentNode();

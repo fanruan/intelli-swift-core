@@ -35,7 +35,7 @@ public class SwiftServiceHandlerManager implements Handler {
     }
 
     @Override
-    public Serializable handle(SwiftRpcEvent event) {
+    public Serializable handle(SwiftRpcEvent event) throws Exception {
         switch (event.type()) {
             case HISTORY:
                 return historyEventHandler.handle((AbstractHistoryRpcEvent) event);

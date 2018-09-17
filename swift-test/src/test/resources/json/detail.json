@@ -1,46 +1,43 @@
 {
   "queryId": "1530692187390",
   "queryType": "DETAIL",
-  "querySegment": null,
-  "tableName": "fine_record_execute",
+  "tableName": "DEMO_CONTRACT",
   "filterInfoBean": {
     "type": "NUMBER_IN_RANGE",
     "filterValue": {
-      "start": "1530547200000",
-      "end": "1530719999000",
-      "startIncluded": true,
-      "endIncluded": false
+      "start": "3",
+      "startIncluded": true
     },
-    "column": "time"
+    "column": "购买数量"
   },
   "dimensionBeans": [
     {
-      "column": "time",
-      "name": "time",
+      "column": "合同类型",
+      "name": "合同类型",
       "groupBean": {
         "type": "NONE"
       },
       "dimensionType": "DETAIL"
     },
     {
-      "column": "username",
-      "name": "username",
+      "column": "购买数量",
+      "name": "购买数量",
       "groupBean": {
         "type": "NONE"
       },
       "dimensionType": "DETAIL"
     },
     {
-      "column": "sql",
-      "name": "sql",
+      "column": "总金额",
+      "name": "总金额",
       "groupBean": {
         "type": "NONE"
       },
       "dimensionType": "DETAIL"
     },
     {
-      "column": "memory",
-      "name": "memory",
+      "column": "购买的产品",
+      "name": "购买的产品",
       "groupBean": {
         "type": "NONE"
       },
@@ -50,7 +47,7 @@
   "sortBeans": [
     {
       "type": "DESC",
-      "column": "memory"
+      "column": "购买数量"
     }
   ]
 }

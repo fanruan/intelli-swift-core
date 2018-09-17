@@ -2,7 +2,7 @@ package com.fr.swift.decision.config.unique;
 
 
 import com.fr.swift.config.bean.Convert;
-import com.fr.swift.config.bean.SwiftFileSystemConfig;
+import com.fr.swift.repository.SwiftFileSystemConfig;
 
 /**
  * @author yee

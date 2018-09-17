@@ -1,12 +1,11 @@
 package com.fr.swift.generate.history.transport;
 
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.generate.Transporter;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.segment.SwiftDataOperatorProvider;
+import com.fr.swift.segment.insert.HistoryBlockInserter;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftResultSet;
@@ -35,7 +34,7 @@ public class TableTransporter extends BaseWorker implements Transporter {
 
     public TableTransporter(DataSource dataSource) {
         this.dataSource = dataSource;
-        inserter = SwiftContext.get().getBean(SwiftDataOperatorProvider.class).getHistoryBlockSwiftInserter(dataSource);
+        inserter = new HistoryBlockInserter(dataSource);
     }
 
     @Override

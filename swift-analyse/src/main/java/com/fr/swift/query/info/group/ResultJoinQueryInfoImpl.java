@@ -7,7 +7,6 @@ import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.source.SwiftResultSet;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
@@ -17,13 +16,15 @@ import java.util.Set;
 public class ResultJoinQueryInfoImpl<T extends SwiftResultSet> implements ResultJoinQueryInfo<T> {
 
     private String queryId;
+    private int fetchSize;
     private List<QueryInfo<T>> queryInfoList;
     private List<Dimension> dimensions;
     private List<PostQueryInfo> postQueryInfoList;
 
-    public ResultJoinQueryInfoImpl(String queryId, List<QueryInfo<T>> queryInfoList,
+    public ResultJoinQueryInfoImpl(String queryId, int fetchSize, List<QueryInfo<T>> queryInfoList,
                                    List<Dimension> dimensions, List<PostQueryInfo> postQueryInfoList) {
         this.queryId = queryId;
+        this.fetchSize = fetchSize;
         this.queryInfoList = queryInfoList;
         this.dimensions = dimensions;
         this.postQueryInfoList = postQueryInfoList;
@@ -55,12 +56,17 @@ public class ResultJoinQueryInfoImpl<T extends SwiftResultSet> implements Result
     }
 
     @Override
-    public Set<URI> getQuerySegment() {
+    public int getFetchSize() {
+        return fetchSize;
+    }
+
+    @Override
+    public Set<String> getQuerySegment() {
         return null;
     }
 
     @Override
-    public void setQuerySegment(Set<URI> order) {
+    public void setQuerySegment(Set<String> order) {
 
     }
 

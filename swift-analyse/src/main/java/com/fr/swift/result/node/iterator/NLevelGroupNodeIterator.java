@@ -1,6 +1,7 @@
 package com.fr.swift.result.node.iterator;
 
 import com.fr.swift.result.GroupNode;
+import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.structure.iterator.Filter;
 import com.fr.swift.structure.iterator.FilteredIterator;
 
@@ -22,7 +23,7 @@ public class NLevelGroupNodeIterator implements Iterator<GroupNode> {
      * @param root
      */
     public NLevelGroupNodeIterator(final int depth, GroupNode root) {
-        this.iterator = new FilteredIterator<GroupNode>(new DFTGroupNodeIterator(depth + 1, root), new Filter<GroupNode>() {
+        this.iterator = new FilteredIterator<GroupNode>(SwiftNodeUtils.dftNodeIterator(depth + 1, root), new Filter<GroupNode>() {
             @Override
             public boolean accept(GroupNode node) {
                 return node.getDepth() == depth;

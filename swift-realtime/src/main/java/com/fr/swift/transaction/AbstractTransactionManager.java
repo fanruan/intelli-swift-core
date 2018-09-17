@@ -5,7 +5,6 @@ import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.transatcion.TransactionManager;
 import com.fr.third.springframework.stereotype.Service;
 
 /**

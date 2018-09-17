@@ -9,8 +9,6 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>swift-indexing</artifactId>
-    <version>${swift.version}</version>
-
     <dependencies>
         <dependency>
             <groupId>com.fr.intelligence</groupId>

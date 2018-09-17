@@ -1,6 +1,8 @@
 package com.fr.swift.query.info.element.dimension;
 
 import com.fr.swift.query.group.Group;
+import com.fr.swift.query.group.info.IndexInfoImpl;
+import com.fr.swift.query.info.bean.type.DimensionType;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
@@ -13,7 +15,7 @@ public class GroupFormulaDimension extends GroupDimension {
     private String formula;
 
     public GroupFormulaDimension(int index, Group group, Sort sort, String formula) {
-        super(index, null, group, sort);
+        super(index, null, group, sort, new IndexInfoImpl(true, false));
         this.formula = formula;
     }
 
