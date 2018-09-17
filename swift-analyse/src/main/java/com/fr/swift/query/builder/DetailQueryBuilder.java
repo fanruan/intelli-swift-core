@@ -97,6 +97,8 @@ class DetailQueryBuilder {
             String jsonString = QueryInfoBeanFactory.queryBean2String(queryBean);
             queries.add(new RemoteQueryImpl<DetailResultSet>(jsonString, destination));
         }
+        // TODO: 2018/9/17 这边要把queryType设置回去。。先改个阻塞bug，暂时这么处理
+        queryBean.setQueryType(QueryType.DETAIL);
         return builder.buildResultQuery(queries, info);
     }
 

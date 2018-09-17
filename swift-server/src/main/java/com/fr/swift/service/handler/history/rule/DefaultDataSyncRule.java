@@ -47,12 +47,12 @@ public class DefaultDataSyncRule implements DataSyncRule {
             for (SegmentKey segmentKey : segmentKeys) {
                 for (int i = 0; i < lessCount; i++) {
                     SegmentPair pair = sort(readyToSort);
-                    if (null == result.get(pair.clusterId)) {
-                        result.put(pair.clusterId, new HashSet<SegmentKey>());
+                    if (null == result.get(pair.getClusterId())) {
+                        result.put(pair.getClusterId(), new HashSet<SegmentKey>());
                     }
-                    result.get(pair.clusterId).add(segmentKey);
-                    readyToSort.get(pair.clusterId).incrementAndGet();
-                    destinations.get(sourceKey).add(new SegmentDestinationImpl(pair.clusterId,
+                    result.get(pair.getClusterId()).add(segmentKey);
+                    readyToSort.get(pair.getClusterId()).incrementAndGet();
+                    destinations.get(sourceKey).add(new SegmentDestinationImpl(pair.getClusterId(),
                             segmentKey.toString(), segmentKey.getOrder(), HistoryService.class, "historyQuery"));
                 }
             }
@@ -75,19 +75,4 @@ public class DefaultDataSyncRule implements DataSyncRule {
         return keys.get(0);
     }
 
-    class SegmentPair implements Comparable<SegmentPair> {
-
-        private String clusterId;
-        private int count;
-
-        public SegmentPair(String clusterId, int count) {
-            this.clusterId = clusterId;
-            this.count = count;
-        }
-
-        @Override
-        public int compareTo(SegmentPair o) {
-            return count - o.count;
-        }
-    }
 }

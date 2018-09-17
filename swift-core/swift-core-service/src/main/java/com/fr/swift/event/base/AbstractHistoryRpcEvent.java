@@ -9,6 +9,8 @@ import com.fr.swift.event.base.AbstractHistoryRpcEvent.Event;
  */
 public abstract class AbstractHistoryRpcEvent<T> implements SwiftRpcEvent<T, Event> {
 
+    protected String sourceClusterId;
+
     @Override
     public EventType type() {
         return EventType.HISTORY;
@@ -16,6 +18,14 @@ public abstract class AbstractHistoryRpcEvent<T> implements SwiftRpcEvent<T, Eve
 
     @Override
     public abstract Event subEvent();
+
+    public String getSourceClusterId() {
+        return sourceClusterId;
+    }
+
+    public void setSourceClusterId(String sourceClusterId) {
+        this.sourceClusterId = sourceClusterId;
+    }
 
     public enum Event implements SubEvent {
         LOAD_SEGMENT, TRANS_COLLATE_LOAD, COMMON_LOAD, MODIFY_LOAD

@@ -16,8 +16,9 @@ public abstract class CommonLoadRpcEvent extends AbstractHistoryRpcEvent<Pair<St
      */
     private Pair<String, Map<String, List<String>>> content;
 
-    public CommonLoadRpcEvent(Pair<String, Map<String, List<String>>> content) {
+    public CommonLoadRpcEvent(Pair<String, Map<String, List<String>>> content, String sourceClusterId) {
         this.content = content;
+        this.sourceClusterId = sourceClusterId;
     }
 
     @Override

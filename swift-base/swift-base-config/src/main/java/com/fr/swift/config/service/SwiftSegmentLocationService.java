@@ -12,5 +12,7 @@ import java.util.Map;
 public interface SwiftSegmentLocationService extends ConfigService<SwiftSegmentLocationEntity> {
     boolean delete(String table, String clusterId);
 
+    boolean delete(String table, String clusterId, String segKey);
+
     Map<String, List<SwiftSegmentLocationEntity>> findAll();
 }
