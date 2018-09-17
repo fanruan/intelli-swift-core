@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -47,13 +48,15 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
                 case TRANS_COLLATE_LOAD:
                     return historyDataSyncManager.handle((SegmentLoadRpcEvent) event);
                 case COMMON_LOAD:
+                    String source = event.getSourceClusterId();
                     handleCommonLoad(event, 0);
-                    return (S) EventResult.SUCCESS;
+                    return (S) EventResult.success(source);
                 case MODIFY_LOAD:
+                    String sourceId = event.getSourceClusterId();
                     if (handleCommonLoad(event, 1)) {
-                        return (S) EventResult.SUCCESS;
+                        return (S) EventResult.success(sourceId);
                     } else {
-                        return (S) EventResult.FAILED;
+                        return (S) EventResult.failed(sourceId, "load failed");
                     }
                 default:
                     return null;
@@ -112,7 +115,7 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
             }
         }
         if (null != latch) {
-            latch.await();
+            latch.await(30, TimeUnit.SECONDS);
         }
         return success.get();
     }

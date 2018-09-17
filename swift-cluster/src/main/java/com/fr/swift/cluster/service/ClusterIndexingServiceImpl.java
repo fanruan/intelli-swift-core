@@ -166,7 +166,7 @@ public class ClusterIndexingServiceImpl extends AbstractSwiftService implements 
                     FileUtil.delete(deletePath);
                     new File(deletePath).getParentFile().delete();
                 }
-                doAfterUpload(new HistoryLoadSegmentRpcEvent(sourceKey.getId()));
+                doAfterUpload(new HistoryLoadSegmentRpcEvent(sourceKey.getId(), getID()));
             }
         }
 
@@ -226,7 +226,7 @@ public class ClusterIndexingServiceImpl extends AbstractSwiftService implements 
                         }
                     }
                 }
-                doAfterUpload(new HistoryCommonLoadRpcEvent(Pair.of(sourceKey.getId(), segNeedUpload)));
+                doAfterUpload(new HistoryCommonLoadRpcEvent(Pair.of(sourceKey.getId(), segNeedUpload), getID()));
             }
         }
 
