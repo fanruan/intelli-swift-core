@@ -204,7 +204,7 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
         return 0;
     }
 
-    public long getLogSize() throws Exception {
+    public long logTotal() throws Exception {
         return SwiftContext.get().getBean(SwiftRepositoryManager.class).currentRepo().getSize("../" + SwiftDatabase.DECISION_LOG.getDir());
     }
 }
