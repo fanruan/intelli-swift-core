@@ -8,7 +8,9 @@ import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.NodeMergeResultSetImpl;
 import com.fr.swift.result.NodeResultSet;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by pony on 2017/12/18.
@@ -21,9 +23,8 @@ public class GroupAllSegmentQuery extends AbstractGroupSegmentQuery{
 
     @Override
     public NodeResultSet getQueryResult() {
-        Iterator<NodeMergeResultSet<GroupNode>> iterator = NodeGroupByUtils.groupBy(groupByInfo, metricInfo, Integer.MAX_VALUE);
-        NodeMergeResultSet<GroupNode> resultSet = iterator.next();
-        // 返回全部结果集
-        return new NodeMergeResultSetImpl((GroupNode) resultSet.getNode(), resultSet.getRowGlobalDictionaries());
+        Iterator<NodeMergeResultSet<GroupNode>> iterator = NodeGroupByUtils.groupBy(groupByInfo, metricInfo);
+        return iterator.hasNext() ? iterator.next() : new NodeMergeResultSetImpl<GroupNode>(groupByInfo.getFetchSize(),
+                new GroupNode(-1, null), new ArrayList<Map<Integer, Object>>());
     }
 }

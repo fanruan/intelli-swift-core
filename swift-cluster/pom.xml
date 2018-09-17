@@ -9,17 +9,26 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>swift-cluster</artifactId>
-    <version>${swift.version}</version>
 
     <dependencies>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-base</artifactId>
+            <artifactId>swift-rpc</artifactId>
             <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-rpc</artifactId>
+            <artifactId>swift-repository-base</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-analyse</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-core-segment-operator</artifactId>
             <version>${swift.version}</version>
         </dependency>
     </dependencies>

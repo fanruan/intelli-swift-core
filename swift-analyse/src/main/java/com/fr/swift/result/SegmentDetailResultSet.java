@@ -2,11 +2,13 @@ package com.fr.swift.result;
 
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.array.IntArray;
 
 import java.util.ArrayList;
@@ -16,20 +18,20 @@ import java.util.List;
 /**
  * Created by Xiaolei.Liu on 2018/1/18
  */
-public class SegmentDetailResultSet implements DetailResultSet {
+public class SegmentDetailResultSet extends AbstractDetailResultSet {
 
     // 明细行的游标
     private int rowCursor = 0;
     // 当前块中过滤后的行号
     private IntArray rows;
     private List<Column> columnList;
-    private SwiftMetaData metaData;
     private Iterator<Row> iterator;
 
-    public SegmentDetailResultSet(List<Column> columnList, DetailFilter filter, SwiftMetaData metaData) {
-        this.columnList = columnList;
+    public SegmentDetailResultSet(int fetchSize, List<Pair<Column, IndexInfo>> columnList, DetailFilter filter) {
+        super(fetchSize);
+        this.columnList = SortSegmentDetailResultSet.getColumnList(columnList);
+        // TODO: 2018/8/30 这个地方new一个大数组造成查询一开始都会卡顿一下，roaring bitmap社区的版本已经加了批次迭代器了，可以考虑更新一下
         this.rows = BitMaps.traversal2Array(filter.createFilterIndex());
-        this.metaData = metaData;
     }
 
     @Override
@@ -38,7 +40,7 @@ public class SegmentDetailResultSet implements DetailResultSet {
             return new ArrayList<Row>(0);
         }
         List<Row> page = new ArrayList<Row>();
-        int count = PAGE_SIZE;
+        int count = fetchSize;
         while (rowCursor < rows.size() && count-- > 0) {
             page.add(readRow(rows.get(rowCursor), columnList));
             rowCursor++;

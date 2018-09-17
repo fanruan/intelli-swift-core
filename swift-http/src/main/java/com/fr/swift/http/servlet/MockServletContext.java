@@ -16,6 +16,7 @@ import javax.servlet.FilterRegistration;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 import javax.servlet.SessionCookieConfig;
 import javax.servlet.SessionTrackingMode;
@@ -317,32 +318,6 @@ public class MockServletContext implements ServletContext {
         return this.servletContextName;
     }
 
-    public ClassLoader getClassLoader() {
-        return ClassUtils.getDefaultClassLoader();
-    }
-
-    public void declareRoles(String... roleNames) {
-        for (String roleName : roleNames) {
-            this.declaredRoles.add(roleName);
-        }
-    }
-
-    public Set<String> getDeclaredRoles() {
-        return Collections.unmodifiableSet(this.declaredRoles);
-    }
-
-
-    /**
-     * Inner factory class used to just introduce a Java Activation Framework
-     * dependency when actually asked to resolve a MIME type.
-     */
-    private static class MimeTypeResolver {
-
-        public static String getMimeType(String filePath) {
-            return FileTypeMap.getDefaultFileTypeMap().getContentType(filePath);
-        }
-    }
-
     @Override
     public ServletRegistration.Dynamic addServlet(String s, String s1) {
         return null;
@@ -359,7 +334,7 @@ public class MockServletContext implements ServletContext {
     }
 
     @Override
-    public <T extends Servlet> T createServlet(Class<T> aClass) {
+    public <T extends Servlet> T createServlet(Class<T> aClass) throws ServletException {
         return null;
     }
 
@@ -389,7 +364,7 @@ public class MockServletContext implements ServletContext {
     }
 
     @Override
-    public <T extends Filter> T createFilter(Class<T> aClass) {
+    public <T extends Filter> T createFilter(Class<T> aClass) throws ServletException {
         return null;
     }
 
@@ -439,7 +414,7 @@ public class MockServletContext implements ServletContext {
     }
 
     @Override
-    public <T extends EventListener> T createListener(Class<T> aClass) {
+    public <T extends EventListener> T createListener(Class<T> aClass) throws ServletException {
         return null;
     }
 
@@ -448,8 +423,34 @@ public class MockServletContext implements ServletContext {
         return null;
     }
 
+    public ClassLoader getClassLoader() {
+        return ClassUtils.getDefaultClassLoader();
+    }
+
+    public void declareRoles(String... roleNames) {
+        for (String roleName : roleNames) {
+            this.declaredRoles.add(roleName);
+        }
+    }
+
     @Override
     public String getVirtualServerName() {
         return null;
+    }
+
+    public Set<String> getDeclaredRoles() {
+        return Collections.unmodifiableSet(this.declaredRoles);
+    }
+
+
+    /**
+     * Inner factory class used to just introduce a Java Activation Framework
+     * dependency when actually asked to resolve a MIME type.
+     */
+    private static class MimeTypeResolver {
+
+        public static String getMimeType(String filePath) {
+            return FileTypeMap.getDefaultFileTypeMap().getContentType(filePath);
+        }
     }
 }

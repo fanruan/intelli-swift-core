@@ -5,6 +5,7 @@ import com.fr.swift.stuff.RealTimeIndexingStuff;
 /**
  * Created by pony on 2017/11/6.
  */
+@Deprecated
 public abstract class RealTimeIndexingFinishListener extends AbstractSwiftServiceListener<RealTimeIndexingStuff>{
 
     @Override

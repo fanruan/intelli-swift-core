@@ -1,11 +1,13 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.segment.impl.SegmentLocationManagerImpl;
+import com.fr.swift.service.ServiceType;
 import com.fr.swift.source.SourceKey;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by pony on 2017/12/13.
@@ -37,6 +39,7 @@ public class SegmentLocationProvider implements SegmentLocationManager {
      *
      * @param locationInfo
      */
+    @Override
     public void updateSegmentInfo(SegmentLocationInfo locationInfo, SegmentLocationInfo.UpdateType updateType) {
         switch (locationInfo.serviceType()) {
             case HISTORY:
@@ -47,6 +50,34 @@ public class SegmentLocationProvider implements SegmentLocationManager {
                 break;
             default:
                 // do nothing
+        }
+    }
+
+    @Override
+    public Map<String, List<SegmentDestination>> getSegmentInfo() {
+        return null;
+    }
+
+    @Override
+    public void removeTable(String sourceKey) {
+        historyManager.removeTable(sourceKey);
+        realTimeManager.removeTable(sourceKey);
+    }
+
+    @Override
+    public void removeSegment(String sourceKey, List<String> segmentKeys) {
+        historyManager.removeSegment(sourceKey, segmentKeys);
+        realTimeManager.removeSegment(sourceKey, segmentKeys);
+    }
+
+    public Map<String, List<SegmentDestination>> getSegmentInfo(ServiceType serviceType) {
+        switch (serviceType) {
+            case HISTORY:
+                return historyManager.getSegmentInfo();
+            case REAL_TIME:
+                return realTimeManager.getSegmentInfo();
+            default:
+                return Collections.emptyMap();
         }
     }
 

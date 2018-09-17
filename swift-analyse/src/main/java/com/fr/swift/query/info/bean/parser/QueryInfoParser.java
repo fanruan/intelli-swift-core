@@ -1,8 +1,6 @@
 package com.fr.swift.query.info.bean.parser;
 
 import com.fr.general.ComparatorUtils;
-import com.fr.swift.config.service.SwiftMetaDataService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.info.bean.element.SortBean;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
@@ -24,8 +22,6 @@ import com.fr.swift.query.sort.NoneSort;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftMetaDataColumn;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,13 +48,12 @@ public class QueryInfoParser {
 
     private static QueryInfo parseGroupQueryInfo(GroupQueryInfoBean bean) {
         String queryId = bean.getQueryId();
-        // TODO: 2018/6/7 table2sourceKey
         SourceKey table = new SourceKey(bean.getTableName());
         FilterInfo filterInfo = FilterInfoParser.parse(table, bean.getFilterInfoBean());
-        List<Dimension> dimensions = DimensionParser.parse(bean.getDimensionBeans(), bean.getSortBeans());
+        List<Dimension> dimensions = DimensionParser.parse(table, bean.getDimensionBeans(), bean.getSortBeans());
         List<Metric> metrics = MetricParser.parse(table, bean.getMetricBeans());
         List<PostQueryInfo> postQueryInfoList = PostQueryInfoParser.parse(bean.getPostQueryInfoBeans(), dimensions, bean.getMetricBeans());
-        GroupQueryInfo groupQueryInfo = new GroupQueryInfoImpl(queryId, table, filterInfo, dimensions, metrics, postQueryInfoList);
+        GroupQueryInfo groupQueryInfo = new GroupQueryInfoImpl(queryId, bean.getFetchSize(), table, filterInfo, dimensions, metrics, postQueryInfoList);
         groupQueryInfo.setQuerySegment(bean.getQuerySegments());
         return groupQueryInfo;
     }
@@ -73,17 +68,14 @@ public class QueryInfoParser {
         List<Dimension> dimensions = DimensionParser.parse(bean.getJoinedFields());
         List<PostQueryInfo> postQueryInfoList = PostQueryInfoParser.parsePostQueryInfoOfResultJoinQuery(
                 bean.getPostQueryInfoBeans(), dimensions, queryInfoBeans);
-        return new ResultJoinQueryInfoImpl(queryId, queryInfoList, dimensions, postQueryInfoList);
+        return new ResultJoinQueryInfoImpl(queryId, bean.getFetchSize(), queryInfoList, dimensions, postQueryInfoList);
     }
 
     private static QueryInfo parseDetailQueryInfo(DetailQueryInfoBean bean) {
         String queryId = bean.getQueryId();
-        // TODO: 2018/6/7
         SourceKey table = new SourceKey(bean.getTableName());
         FilterInfo filterInfo = FilterInfoParser.parse(table, bean.getFilterInfoBean());
-        List<Dimension> dimensions = DimensionParser.parse(bean.getDimensionBeans(), bean.getSortBeans());
-        SwiftMetaData metaData = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(bean.getTableName());
-        List<SwiftMetaDataColumn> columns = new ArrayList<SwiftMetaDataColumn>();
+        List<Dimension> dimensions = DimensionParser.parse(table, bean.getDimensionBeans(), bean.getSortBeans());
         List<Sort> sorts = null;
         List<SortBean> sortBeans = bean.getSortBeans();
         if (null != sortBeans) {
@@ -104,16 +96,7 @@ public class QueryInfoParser {
                 }
             }
         }
-//        List<String> fieldNames = bean.getColumns();
-//        try {
-//            for (String fieldName : fieldNames) {
-//                columns.add(metaData.getColumn(fieldName));
-//            }
-//            return new DetailQueryInfo(queryId, table, filterInfo, dimensions, sorts, null, new SwiftMetaDataBean(metaData.getTableName(), metaData.getRemark(), metaData.getSchemaName(), columns));
-//        } catch (SwiftMetaDataException e) {
-//            SwiftLoggers.getLogger(QueryInfoParser.class).error(e);
-//        }
-        DetailQueryInfo detailQueryInfo = new DetailQueryInfo(queryId, table, filterInfo, dimensions, sorts, null, metaData);
+        DetailQueryInfo detailQueryInfo = new DetailQueryInfo(queryId, bean.getFetchSize(), table, filterInfo, dimensions, sorts, null);
         detailQueryInfo.setQuerySegment(bean.getQuerySegments());
         return detailQueryInfo;
     }

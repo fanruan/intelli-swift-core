@@ -21,7 +21,6 @@ import com.fr.swift.source.SourceKey;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,13 +70,8 @@ public class QueryIndexBuilder {
         @Override
         public Map<URI, IndexQuery<ImmutableBitMap>> buildLocalQuery(DetailQueryInfo info) {
             Map<URI, IndexQuery<ImmutableBitMap>> queries = new HashMap<URI, IndexQuery<ImmutableBitMap>>();
-            List<Segment> segments = localSegmentProvider.getSegment(info.getTable());
-            List<Segment> targetSegments = LocalDetailNormalQueryBuilder.getSegmentsByURIList(info.getQuerySegment(), segments);
-            if (targetSegments.isEmpty()) {
-                targetSegments = segments;
-            }
-            targetSegments = Collections.unmodifiableList(targetSegments);
-            for (Segment segment : targetSegments) {
+            List<Segment> segments = localSegmentProvider.getSegmentsByIds(info.getTable(), info.getQuerySegment());
+            for (Segment segment : segments) {
                 queries.put(segment.getLocation().getUri(), buildLocalQuery(info, segment));
             }
             return queries;

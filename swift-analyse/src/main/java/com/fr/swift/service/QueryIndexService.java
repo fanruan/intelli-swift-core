@@ -14,6 +14,7 @@ import com.fr.swift.segment.Segment;
 
 import java.net.URI;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * This class created on 2018/7/4
@@ -24,6 +25,15 @@ import java.util.Map;
  */
 public class QueryIndexService implements QueryIndexRunner {
 
+    private static QueryBean createQueryBean(Table table, Where where) {
+        FilterBean filterBean = where.getFilterBean();
+        DetailQueryInfoBean queryInfoBean = new DetailQueryInfoBean();
+        queryInfoBean.setQueryId(UUID.randomUUID().toString());
+        queryInfoBean.setTableName(table.getSourceKey().getId());
+        queryInfoBean.setFilterInfoBean((FilterInfoBean) filterBean);
+        return queryInfoBean;
+    }
+
     @Override
     public Map<URI, IndexQuery<ImmutableBitMap>> getBitMap(Table table, Where where) throws Exception {
         return QueryIndexBuilder.buildQuery(createQueryBean(table, where));
@@ -32,14 +42,5 @@ public class QueryIndexService implements QueryIndexRunner {
     @Override
     public IndexQuery<ImmutableBitMap> getBitMap(Table table, Where where, Segment segment) {
         return QueryIndexBuilder.buildQuery(createQueryBean(table, where), segment);
-    }
-
-    private static QueryBean createQueryBean(Table table, Where where) {
-        FilterBean filterBean = where.getFilterBean();
-        DetailQueryInfoBean queryInfoBean = new DetailQueryInfoBean();
-        queryInfoBean.setQueryId("" + System.currentTimeMillis());
-        queryInfoBean.setTableName(table.getSourceKey().getId());
-        queryInfoBean.setFilterInfoBean((FilterInfoBean) filterBean);
-        return queryInfoBean;
     }
 }

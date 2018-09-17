@@ -19,6 +19,11 @@ public class DoubleResultSet extends SingleColumnResultSet {
     int count;
 
     @Override
+    public int getFetchSize() {
+        return 0;
+    }
+
+    @Override
     public SwiftMetaData getMetaData() {
         return new SwiftMetaDataBean("DOUBLE_TABLE",
                 Arrays.asList(new MetaDataColumnBean("double", Types.DOUBLE)));

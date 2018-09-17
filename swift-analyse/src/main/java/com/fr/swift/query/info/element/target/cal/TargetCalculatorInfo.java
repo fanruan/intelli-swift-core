@@ -1,5 +1,7 @@
 package com.fr.swift.query.info.element.target.cal;
 
+import com.fr.swift.query.info.bean.type.cal.CalTargetType;
+
 /**
  * Created by Lyon on 2018/4/8.
  */

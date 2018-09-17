@@ -1,5 +1,6 @@
 package com.fr.swift.query.info.bean.parser;
 
+import com.fr.general.DateUtils;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
@@ -13,6 +14,7 @@ import com.fr.swift.query.info.bean.element.filter.impl.DetailFilterInfoBean;
 import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NotFilterBean;
+import com.fr.swift.query.info.bean.element.filter.impl.NullFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NumberInRangeFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.value.RangeFilterValueBean;
 import com.fr.swift.query.info.bean.parser.optimize.FilterInfoBeanOptimizer;
@@ -35,10 +37,10 @@ class FilterInfoParser {
 
     static FilterInfo parse(SourceKey table, FilterInfoBean bean) {
         // TODO: 2018/7/11 化简过滤条件，这边的使用策略可以结合具体场景更智能一点
-        bean = FilterInfoBeanOptimizer.optimize(bean);
         if (null == bean) {
-            return null;
+            return new SwiftDetailFilterInfo<Object>(null, null, SwiftDetailFilterType.ALL_SHOW);
         }
+        bean = FilterInfoBeanOptimizer.optimize(bean);
         switch (bean.getType()) {
             case AND:
             case OR:
@@ -54,6 +56,13 @@ class FilterInfoParser {
                 FilterInfoBean filterInfoBean = ((NotFilterBean) bean).getFilterValue();
                 FilterInfo filterInfo = parse(table, filterInfoBean);
                 return new NotFilterInfo(filterInfo);
+            case NULL:
+                return new SwiftDetailFilterInfo<Object>(new ColumnKey(((NullFilterBean) bean).getColumn()), null,
+                        SwiftDetailFilterType.NULL);
+            case ALL_SHOW:
+                return new SwiftDetailFilterInfo<Object>(null, null, SwiftDetailFilterType.ALL_SHOW);
+            case EMPTY:
+                return new SwiftDetailFilterInfo<Object>(null, null, SwiftDetailFilterType.EMPTY);
             case IN: {
                 InFilterBean inFilterBean = (InFilterBean) bean;
                 ColumnKey columnKey = new ColumnKey(inFilterBean.getColumn());
@@ -121,8 +130,9 @@ class FilterInfoParser {
         switch (type) {
             case INTEGER:
             case LONG:
-            case DATE:  // TODO: 2018/7/3 date这边如果要支持多种日志format格式要另做解析，暂时默认日期都传毫秒时间戳
                 return Long.parseLong(origin.toString());
+            case DATE:
+                return DateUtils.string2Date(origin.toString(), true).getTime();
             case DOUBLE:
                 return Double.parseDouble(origin.toString());
             default:

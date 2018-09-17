@@ -1,7 +1,6 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.manager.LocalDataOperatorProvider;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
@@ -11,7 +10,6 @@ import com.fr.swift.source.core.Core;
 import com.fr.swift.test.Preparer;
 import com.fr.swift.test.TestResource;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
@@ -29,14 +27,9 @@ public class SegmentOperatorTest {
     private SourceKey stringKey;
     private SourceKey dateKey;
 
-
-    @BeforeClass
-    public static void boot() throws Exception {
-        Preparer.prepareCubeBuild();
-    }
-
     @Before
     public void setUp() throws Exception {
+        Preparer.prepareCubeBuild(getClass());
         File file = new File(TestResource.getRunPath(getClass()), "resources");
         file.deleteOnExit();
         intKey = new SourceKey("int_table");
@@ -70,7 +63,7 @@ public class SegmentOperatorTest {
                 }
             };
 
-            Inserter inserter = SwiftContext.get().getBean(LocalDataOperatorProvider.class).getHistoryBlockSwiftInserter(dataSource);
+            Inserter inserter = (Inserter) SwiftContext.get().getBean("historyBlockInserter", dataSource);
             inserter.insertData(set);
         } catch (Exception e) {
             success = false;

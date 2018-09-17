@@ -1,5 +1,6 @@
 package com.fr.swift.query.info.element.target.cal;
 
+import com.fr.swift.query.info.bean.type.cal.CalTargetType;
 import com.fr.swift.query.info.element.dimension.AbstractQueryColumn;
 import com.fr.swift.query.info.element.target.GroupTarget;
 

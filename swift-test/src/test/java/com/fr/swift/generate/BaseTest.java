@@ -17,6 +17,7 @@ public abstract class BaseTest extends BaseConfigTest {
     public static void boot() {
         Preparer.prepareFrEnv();
         Preparer.prepareContext();
+        Preparer.prepareConfDb();
         new LocalSwiftServerService().start();
         TestConnectionProvider.createConnection();
     }

@@ -1,5 +1,6 @@
 package com.fr.swift.query.builder;
 
+import com.fr.swift.query.info.bean.type.PostQueryType;
 import com.fr.swift.query.info.group.post.CalculatedFieldQueryInfo;
 import com.fr.swift.query.info.group.post.HavingFilterQueryInfo;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
@@ -10,7 +11,6 @@ import com.fr.swift.query.info.group.post.TreeSortQueryInfo;
 import com.fr.swift.query.post.FieldCalQuery;
 import com.fr.swift.query.post.HavingFilterQuery;
 import com.fr.swift.query.post.PostQuery;
-import com.fr.swift.query.post.PostQueryType;
 import com.fr.swift.query.post.RowSortQuery;
 import com.fr.swift.query.post.TreeAggregationQuery;
 import com.fr.swift.query.post.TreeFilterQuery;

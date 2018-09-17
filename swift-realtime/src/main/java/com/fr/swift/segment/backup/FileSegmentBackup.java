@@ -4,7 +4,7 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.operator.insert.BaseInserter;
 import com.fr.swift.source.Row;
-import com.fr.swift.transatcion.TransactionManager;
+import com.fr.swift.transaction.TransactionManager;
 
 import java.util.List;
 

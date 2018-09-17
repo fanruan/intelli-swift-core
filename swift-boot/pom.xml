@@ -46,13 +46,12 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-base</artifactId>
+            <artifactId>swift-cluster</artifactId>
             <version>${swift.version}</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-cluster</artifactId>
+            <artifactId>swift-api-private</artifactId>
             <version>${swift.version}</version>
         </dependency>
         <dependency>
@@ -66,14 +65,14 @@
             <version>${swift.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-http-api</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
+        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.45</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-decision</artifactId>
-            <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>

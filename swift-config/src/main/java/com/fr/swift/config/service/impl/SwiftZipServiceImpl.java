@@ -1,7 +1,7 @@
 package com.fr.swift.config.service.impl;
 
 import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.config.convert.swift.AbstractSimpleConfigConvert;
+import com.fr.swift.config.convert.base.AbstractSimpleConfigConvert;
 import com.fr.swift.config.dao.SwiftConfigDao;
 import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.service.SwiftConfigService;

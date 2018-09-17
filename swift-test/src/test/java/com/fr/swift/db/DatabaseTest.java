@@ -10,6 +10,7 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.test.Preparer;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -18,9 +19,9 @@ import java.sql.Types;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * @author anchore
@@ -52,12 +53,8 @@ public class DatabaseTest {
         db.createTable(tableKey, meta);
         assertTrue(db.existsTable(tableKey));
 
-        assertEquals(tableKey, db.getTable(tableKey).getSourceKey());
-        assertTrue(equals(meta, db.getTable(tableKey).getMeta()));
-
-        SwiftMetaData changedMeta = new SwiftMetaDataBean("b", columnMetas.subList(1, 3));
-        db.alterTable(tableKey, changedMeta);
-        assertTrue(equals(changedMeta, db.getTable(tableKey).getMeta()));
+        Assert.assertEquals(tableKey, db.getTable(tableKey).getSourceKey());
+        assertEquals(meta, db.getTable(tableKey).getMeta());
 
         // assertEquals(1, db.getAllTables().size());
 
@@ -65,38 +62,41 @@ public class DatabaseTest {
         assertFalse(db.existsTable(tableKey));
     }
 
-    private static boolean equals(SwiftMetaData meta1, SwiftMetaData meta2) throws SwiftMetaDataException {
+    private static void assertEquals(SwiftMetaData meta1, SwiftMetaData meta2) throws SwiftMetaDataException {
         if (meta1 == meta2) {
-            return true;
+            return;
         }
         if (meta1 == null || meta2 == null) {
-            return false;
+            fail();
         }
         if (meta1.getColumnCount() != meta2.getColumnCount()) {
-            return false;
+            fail();
         }
         for (int i = 1; i <= meta1.getColumnCount(); i++) {
             SwiftMetaDataColumn columnMeta1 = meta1.getColumn(i);
             SwiftMetaDataColumn columnMeta2 = meta1.getColumn(i);
-            if (!ComparatorUtils.equals(columnMeta1.getName(), columnMeta2.getName())) {
-                return false;
-            }
-            if (!ComparatorUtils.equals(columnMeta1.getRemark(), columnMeta2.getRemark())) {
-                return false;
-            }
-            if (columnMeta1.getType() != columnMeta2.getType()) {
-                return false;
-            }
-            if (columnMeta1.getPrecision() != columnMeta2.getPrecision()) {
-                return false;
-            }
-            if (columnMeta1.getScale() != columnMeta2.getScale()) {
-                return false;
-            }
-            if (!ComparatorUtils.equals(columnMeta1.getColumnId(), columnMeta2.getColumnId())) {
-                return false;
-            }
+            assertEquals(columnMeta1, columnMeta2);
         }
-        return true;
+    }
+
+    public static void assertEquals(SwiftMetaDataColumn columnMeta1, SwiftMetaDataColumn columnMeta2) {
+        if (!ComparatorUtils.equals(columnMeta1.getName(), columnMeta2.getName())) {
+            fail();
+        }
+        if (!ComparatorUtils.equals(columnMeta1.getRemark(), columnMeta2.getRemark())) {
+            fail();
+        }
+        if (columnMeta1.getType() != columnMeta2.getType()) {
+            fail();
+        }
+        if (columnMeta1.getPrecision() != columnMeta2.getPrecision()) {
+            fail();
+        }
+        if (columnMeta1.getScale() != columnMeta2.getScale()) {
+            fail();
+        }
+        if (!ComparatorUtils.equals(columnMeta1.getColumnId(), columnMeta2.getColumnId())) {
+            fail();
+        }
     }
 }

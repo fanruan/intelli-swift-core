@@ -21,20 +21,22 @@ public class SalveHeartBeatCollect implements Collect {
 
     private Thread thread;
 
+    private final static long HEART_BEAT_TIME = 10000l;
+
     public SalveHeartBeatCollect() {
         this.slaveService = SwiftContext.get().getBean("swiftSlaveService", SwiftSlaveService.class);
     }
 
     @Override
     public void startCollect() {
-        SwiftLoggers.getLogger().info(SlaveHeartBeatRunnable.THREAD_NAME + " start!");
+        SwiftLoggers.getLogger().debug(SlaveHeartBeatRunnable.THREAD_NAME + " start!");
         thread = SwiftExecutors.newThread(new SlaveHeartBeatRunnable(), SlaveHeartBeatRunnable.THREAD_NAME);
         thread.start();
     }
 
     @Override
     public void stopCollect() {
-        SwiftLoggers.getLogger().info(SlaveHeartBeatRunnable.THREAD_NAME + " interrupt!");
+        SwiftLoggers.getLogger().debug(SlaveHeartBeatRunnable.THREAD_NAME + " interrupt!");
         thread.interrupt();
     }
 
@@ -45,17 +47,20 @@ public class SalveHeartBeatCollect implements Collect {
         @Override
         public void run() {
             try {
-                while (true) {
+                while (!Thread.currentThread().isInterrupted()) {
                     try {
                         HeartBeatInfo heartBeatInfo = new HeartBeatInfo();
-                        slaveService.collectHeartBeat(heartBeatInfo);
+                        slaveService.sendHeartBeat(heartBeatInfo);
+                    } catch (InterruptedException ite) {
+                        SwiftLoggers.getLogger().error(ite);
+                        Thread.currentThread().interrupt();
                     } catch (Exception e) {
                         SwiftLoggers.getLogger().error(e);
                     }
-                    Thread.sleep(10000l);
+                    Thread.sleep(HEART_BEAT_TIME);
                 }
-            } catch (InterruptedException ite) {
-                SwiftLoggers.getLogger().error(ite);
+            } catch (InterruptedException itee) {
+                SwiftLoggers.getLogger().error(itee);
             }
         }
     }

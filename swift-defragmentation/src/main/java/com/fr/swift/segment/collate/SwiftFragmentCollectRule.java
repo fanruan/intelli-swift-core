@@ -1,7 +1,9 @@
 package com.fr.swift.segment.collate;
 
+import com.fr.general.ComparatorUtils;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.cube.io.Types;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
@@ -18,7 +20,12 @@ public class SwiftFragmentCollectRule implements FragmentCollectRule {
     /**
      * 碎片大小
      */
-    private static final int FRAGMENT_SIZE = LineAllotRule.MEM_STEP * 2 / 3;
+    private static final int FRAGMENT_SIZE = LineAllotRule.STEP * 2 / 3;
+
+    /**
+     * 碎片快数
+     */
+    private static final int FRAGMENT_NUMBER = 10;
 
     private final SwiftSegmentManager localSegments = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
 
@@ -27,18 +34,33 @@ public class SwiftFragmentCollectRule implements FragmentCollectRule {
         List<SegmentKey> fragmentKeys = new ArrayList<SegmentKey>();
         for (SegmentKey segKey : segKeys) {
             Segment seg = localSegments.getSegment(segKey);
-            if (seg.getRowCount() < FRAGMENT_SIZE) {
-                fragmentKeys.add(segKey);
-                continue;
-            }
-            ImmutableBitMap allShowIndex = seg.getAllShowIndex();
-            if (allShowIndex.isFull()) {
-                continue;
-            }
-            if (allShowIndex.getCardinality() < FRAGMENT_SIZE) {
+            if (isNeed2Collect(seg)) {
                 fragmentKeys.add(segKey);
             }
         }
-        return fragmentKeys;
+        if (ComparatorUtils.equals(fragmentKeys.size(), FRAGMENT_NUMBER)) {
+            return fragmentKeys;
+        }
+        return new ArrayList<SegmentKey>();
+    }
+
+    /**
+     * @param seg
+     * @return
+     */
+    private boolean isNeed2Collect(Segment seg) {
+        if (seg.getLocation().getStoreType() == Types.StoreType.MEMORY) {
+            return true;
+        }
+        if (seg.getRowCount() < FRAGMENT_SIZE) {
+            return true;
+        }
+        ImmutableBitMap allShowIndex = seg.getAllShowIndex();
+        if (!allShowIndex.isFull()) {
+            if (allShowIndex.getCardinality() < FRAGMENT_SIZE) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -24,6 +24,7 @@ import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.QueryDBSource;
+import com.fr.swift.test.Preparer;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -48,7 +49,8 @@ public class DeleteTest extends BaseTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        SwiftContext.get().getBean(AnalyseService.class).start();
+        Preparer.prepareCubeBuild(getClass());
+        SwiftContext.get().getBean("swiftAnalyseService", AnalyseService.class).start();
     }
 
     private static FilterBean createEqualFilter(String fieldName, String value) {

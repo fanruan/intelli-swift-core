@@ -7,6 +7,7 @@ import com.fr.swift.netty.rpc.CalculatorService;
 import com.fr.swift.netty.rpc.proxy.RPCProxyFactory;
 import com.fr.swift.netty.rpc.url.RPCDestination;
 import com.fr.swift.netty.rpc.url.RPCUrl;
+import com.fr.workspace.simple.SimpleWork;
 
 /**
  * This class created on 2018/6/11
@@ -18,6 +19,7 @@ import com.fr.swift.netty.rpc.url.RPCUrl;
  */
 public class SyncTest {
     public static void main(String[] args) {
+        SimpleWork.checkIn(System.getProperty("user.dir"));
         SwiftContext.init();
         ProxySelector.getInstance().switchFactory(new RPCProxyFactory());
         //step1: get proxyFactory
@@ -27,7 +29,7 @@ public class SyncTest {
         long startTime = System.currentTimeMillis();
         //step3: invoke method
         int value = calculatorService.add(10, 20, 5000l);
-        System.out.println(value);
+//        System.out.println(value);
         long endTime = System.currentTimeMillis();
         System.out.println(endTime - startTime);
     }

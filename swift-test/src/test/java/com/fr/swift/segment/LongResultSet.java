@@ -19,6 +19,11 @@ public class LongResultSet extends SingleColumnResultSet {
     int count;
 
     @Override
+    public int getFetchSize() {
+        return 0;
+    }
+
+    @Override
     public SwiftMetaData getMetaData() {
         return new SwiftMetaDataBean("LONG_TABLE",
                 Arrays.asList(new MetaDataColumnBean("long", Types.BIGINT)));

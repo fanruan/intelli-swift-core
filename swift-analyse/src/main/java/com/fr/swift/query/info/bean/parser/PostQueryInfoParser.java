@@ -8,12 +8,12 @@ import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
 import com.fr.swift.query.info.bean.post.RowSortQueryInfoBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
+import com.fr.swift.query.info.bean.type.PostQueryType;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.target.GroupTarget;
 import com.fr.swift.query.info.group.post.CalculatedFieldQueryInfo;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
 import com.fr.swift.query.info.group.post.RowSortQueryInfo;
-import com.fr.swift.query.post.PostQueryType;
 import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.DescSort;
 import com.fr.swift.query.sort.Sort;
@@ -40,7 +40,7 @@ class PostQueryInfoParser {
     }
 
     /**
-     * 取出所有指标字段的IndexMap，当前计算指标字段的依赖关系只能是后面依赖前面
+     * 取出所有指标字段的IndexMap，当前计算指标字段的依赖关系只能是后面依赖前面（客户端写查询信息的时候要注意）
      */
     private static Map<String, Integer> getFieldIndexMap(List<PostQueryInfoBean> postQueryInfoBeans, List<MetricBean> metrics) {
         Map<String, Integer> fieldIndexMap = new HashMap<String, Integer>();

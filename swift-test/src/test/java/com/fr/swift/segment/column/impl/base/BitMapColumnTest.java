@@ -28,7 +28,7 @@ public class BitMapColumnTest extends TestIo {
 
         BitMapColumn bc = new BitMapColumn(new ResourceLocation(BASE_PATH + "/index/child"));
 
-        int pos = r.nextInt(10);
+        int pos = 0;
         bc.putBitMapIndex(pos, m);
         bc.putNullIndex(m);
         bc.release();

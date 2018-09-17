@@ -6,9 +6,9 @@ import com.fr.stable.query.QueryFactory;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.condition.impl.QueryConditionImpl;
 import com.fr.stable.query.restriction.RestrictionFactory;
-import com.fr.swift.adaptor.log.SwiftLogOperator.Sync;
-import com.fr.swift.adaptor.log.SwiftMetaAdaptorTest.A;
-import com.fr.swift.adaptor.log.SwiftMetaAdaptorTest.ConvertType;
+import com.fr.swift.adaptor.log.JpaAdaptorTest.A;
+import com.fr.swift.adaptor.log.JpaAdaptorTest.ConvertType;
+import com.fr.swift.adaptor.log.MetricProxy.Sync;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.impl.SwiftDatabase;
@@ -23,7 +23,6 @@ import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Table;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -44,9 +43,9 @@ public class LogOperatorTest {
     private Metric logOperator = MetricProxy.getInstance();
     private Database db = SwiftDatabase.getInstance();
 
-    @BeforeClass
-    public static void boot() throws Exception {
-        Preparer.prepareCubeBuild();
+    @Before
+    public void boot() throws Exception {
+        Preparer.prepareCubeBuild(getClass());
         new LocalSwiftServerService().start();
         SwiftContext.get().getBean(AnalyseService.class).start();
     }

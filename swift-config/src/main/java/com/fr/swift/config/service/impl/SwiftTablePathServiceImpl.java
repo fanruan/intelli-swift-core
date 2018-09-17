@@ -1,11 +1,11 @@
 package com.fr.swift.config.service.impl;
 
+import com.fr.swift.config.convert.hibernate.transaction.AbstractTransactionWorker;
+import com.fr.swift.config.convert.hibernate.transaction.HibernateTransactionManager;
 import com.fr.swift.config.dao.BasicDao;
 import com.fr.swift.config.dao.SwiftConfigDao;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.config.entity.key.SwiftTablePathKey;
-import com.fr.swift.config.hibernate.transaction.AbstractTransactionWorker;
-import com.fr.swift.config.hibernate.transaction.HibernateTransactionManager;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventListener;
@@ -122,7 +122,7 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
                         SwiftTablePathEntity entity = swiftTablePathDao.select(session, new SwiftTablePathKey(table, clusterId));
                         if (null != entity) {
                             Integer path = entity.getTablePath();
-                            if (null != path) {
+                            if (null != path && path.intValue() > -1) {
                                 tablePath.put(table, path);
                                 return path;
                             }

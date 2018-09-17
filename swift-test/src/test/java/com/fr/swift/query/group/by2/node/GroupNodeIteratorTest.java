@@ -1,94 +1,73 @@
 package com.fr.swift.query.group.by2.node;
 
-import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.query.aggregator.AggregatorValue;
-import com.fr.swift.query.filter.detail.DetailFilter;
-import com.fr.swift.query.filter.match.MatchConverter;
-import com.fr.swift.query.group.by.CubeData;
-import com.fr.swift.query.group.by.GroupByEntry;
-import com.fr.swift.query.group.by2.node.iterator.GroupNodeIterator;
-import com.fr.swift.query.group.by2.node.mapper.GroupNodeRowMapper;
+import com.fr.swift.context.SwiftContext;
+import com.fr.swift.index.TestCubeData;
+import com.fr.swift.query.aggregator.AggregatorFactory;
+import com.fr.swift.query.aggregator.AggregatorType;
+import com.fr.swift.query.filter.detail.impl.AllShowDetailFilter;
 import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.query.group.info.GroupByInfoImpl;
+import com.fr.swift.query.group.info.IndexInfo;
+import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.query.group.info.MetricInfoImpl;
-import com.fr.swift.query.group.info.cursor.ExpanderImpl;
-import com.fr.swift.query.group.info.cursor.ExpanderType;
-import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.SwiftNode;
+import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.result.row.RowIndexKey;
-import com.fr.swift.test.TestIo;
-import com.fr.swift.util.function.BinaryFunction;
-import org.junit.Assert;
+import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.column.Column;
+import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.source.DataSource;
+import com.fr.swift.source.Row;
+import com.fr.swift.source.db.QueryDBSource;
+import com.fr.swift.structure.Pair;
+import com.fr.swift.structure.iterator.IteratorUtils;
+import com.fr.swift.test.Preparer;
+import junit.framework.TestCase;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Lyon on 2018/5/7.
  */
-public class GroupNodeIteratorTest extends TestIo {
+public class GroupNodeIteratorTest extends TestCase {
 
-    private GroupByInfo groupByInfo;
-    private Iterator<GroupNode[]> iterator;
-    private CubeData cubeData;
+    private List<Row> actualRows;
+    private Set<Row> expected;
 
     @Before
     public void setUp() throws Exception {
-        cubeData = new CubeData();
-        groupByInfo = new GroupByInfoImpl(cubeData.getDimensions(), new DetailFilter() {
-            @Override
-            public ImmutableBitMap createFilterIndex() {
-                return BitMaps.newAllShowBitMap(cubeData.getRowCount());
-            }
-
-            @Override
-            public boolean matches(SwiftNode node, int targetIndex, MatchConverter converter) {
-                return false;
-            }
-        }, new ArrayList<>(), new ExpanderImpl(ExpanderType.ALL_EXPANDER, new HashSet<>()), null);
-        GroupNodeRowMapper rowMapper = new GroupNodeRowMapper(new MetricInfoImpl(cubeData.getMetrics(), cubeData.getAggregators(), cubeData.getAggregators().size()));
-        BinaryFunction<Integer, GroupByEntry, GroupNode> itemMapper = new BinaryFunction<Integer, GroupByEntry, GroupNode>() {
-            @Override
-            public GroupNode apply(Integer deep, GroupByEntry groupByEntry) {
-                // 这边先存segment的字典序号吧
-                return new GroupNode((int) deep, groupByEntry.getIndex());
-            }
-        };
-        iterator = new GroupNodeIterator<GroupNode>(groupByInfo, new GroupNode(-1, null), itemMapper, rowMapper);
+        Preparer.prepareCubeBuild(GroupNodeIteratorTest.class);
+        DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "test");
+        TestCubeData.prepare(dataSource, GroupNodeIteratorTest.class);
+        Segment segment = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class)
+                .getSegment(dataSource.getSourceKey()).get(0);
+        List<Pair<Column, IndexInfo>> dimensions = TestCubeData.getDimensions(segment, Arrays.asList("合同类型", "合同付款类型"));
+        List<Column> metrics = TestCubeData.getColumns(segment, Collections.singletonList("购买数量"));
+        GroupByInfo groupByInfo = new GroupByInfoImpl(Integer.MAX_VALUE, dimensions, new AllShowDetailFilter(segment),
+                new ArrayList<>(), null);
+        MetricInfo metricInfo = new MetricInfoImpl(metrics,
+                Collections.singletonList(AggregatorFactory.createAggregator(AggregatorType.SUM)), metrics.size());
+        SwiftNode root = NodeGroupByUtils.groupBy(groupByInfo, metricInfo).next().getPage().getKey();
+        actualRows = IteratorUtils.iterator2List(SwiftNodeUtils.node2RowIterator(root));
+        Map<RowIndexKey<Object[]>, ImmutableBitMap> map = TestCubeData.groupBy(Arrays.asList(
+                segment.getColumn(new ColumnKey("合同类型")).getDetailColumn(),
+                segment.getColumn(new ColumnKey("合同付款类型")).getDetailColumn()),
+                segment.getAllShowIndex());
+        expected = TestCubeData.aggregate(map, metrics, metricInfo.getAggregators());
     }
 
-    @Test
     public void test() {
-        Map<RowIndexKey<int[]>, double[]> result = cubeData.getAggregationResult();
-        while (iterator.hasNext()) {
-            GroupNode[] row = iterator.next();
-            RowIndexKey<int[]> key = getKey(row);
-            Assert.assertTrue(result.containsKey(key));
-            double[] values = getValues(row);
-            Assert.assertTrue(Arrays.equals(values, result.get(key)));
+        assertEquals(expected.size(), actualRows.size());
+        for (Row actual : actualRows) {
+            assertTrue(expected.contains(actual));
         }
-    }
-
-    private double[] getValues(GroupNode[] row) {
-        AggregatorValue[] values = row[row.length - 1].getAggregatorValue();
-        double[] result = new double[values.length];
-        for (int i = 0; i < result.length; i++) {
-            result[i] = values[i].calculate();
-        }
-        return result;
-    }
-
-    private RowIndexKey<int[]> getKey(GroupNode[] row) {
-        int[] key = new int[row.length];
-        for (int i = 0; i < key.length; i++) {
-            key[i] = row[i].getDictionaryIndex();
-        }
-        return new RowIndexKey<>(key);
     }
 }

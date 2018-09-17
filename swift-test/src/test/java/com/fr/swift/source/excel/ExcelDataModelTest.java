@@ -7,9 +7,9 @@ import com.fr.swift.source.excel.data.ExcelDataModelCreator;
 import com.fr.swift.source.excel.data.IExcelDataModel;
 import junit.framework.TestCase;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 
 
 /**
@@ -47,7 +47,7 @@ public class ExcelDataModelTest extends TestCase {
     }
 
     public void testCsvStream() throws TableDataException, IOException {
-        InputStream inputStream = new URL(ExcelInfo.getUrlcsv()).openStream();
+        InputStream inputStream = new FileInputStream(ExcelInfo.getUrlcsv());
         IExcelDataModel dataModel = ExcelDataModelCreator.createDataModel(inputStream, ExcelInfo.getUrlcsv());
         assertTrue(dataModel instanceof CSVDataModel);
         String[] names = dataModel.onlyGetColumnNames();
@@ -69,7 +69,7 @@ public class ExcelDataModelTest extends TestCase {
 
     private void excelStreamTest(String path) throws TableDataException, IOException {
         long start = System.currentTimeMillis();
-        InputStream inputStream = new URL(path).openStream();
+        InputStream inputStream = new FileInputStream(path);
         IExcelDataModel dataModel = ExcelDataModelCreator.createDataModel(inputStream, path);
         assertTrue(dataModel instanceof ExcelDataModel);
         String[] names = dataModel.onlyGetColumnNames();

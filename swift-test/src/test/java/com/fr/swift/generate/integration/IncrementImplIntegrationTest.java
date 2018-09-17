@@ -5,7 +5,6 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.impl.SwiftWhere;
 import com.fr.swift.generate.BaseTest;
 import com.fr.swift.generate.ColumnIndexer;
-import com.fr.swift.generate.TestIndexer;
 import com.fr.swift.generate.history.transport.TableTransporter;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
@@ -80,7 +79,6 @@ public class IncrementImplIntegrationTest extends BaseTest {
 
         //再做增量新增'庆芳'更新
         ((Inserter) SwiftContext.get().getBean("incrementer", dataSource)).insertData(SwiftSourceTransferFactory.createSourceTransfer(new QueryDBSource("select 记录人 from DEMO_CAPITAL_RETURN where 记录人 ='庆芳'", "local")).createResultSet());
-        TestIndexer.realtimeIndex(dataSource);
 
         segmentList = segmentProvider.getSegment(dataSource.getSourceKey());
         assertEquals(segmentList.size(), 2);

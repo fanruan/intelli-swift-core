@@ -10,14 +10,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>swift-realtime</artifactId>
-    <version>${swift.version}</version>
 
     <dependencies>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-base</artifactId>
-            <version>${swift.version}</version>
-        </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-cluster</artifactId>
@@ -39,14 +33,19 @@
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-analyse</artifactId>
-            <version>${branch}-SNAPSHOT</version>
+            <version>${swift.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-defragmentation</artifactId>
-            <version>${branch}-SNAPSHOT</version>
+            <version>${swift.version}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-core-common</artifactId>
+            <version>${swift.version}</version>
         </dependency>
     </dependencies>
 

@@ -93,6 +93,11 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
         }
 
         @Override
+        public boolean isReadable() {
+            return detail != null && detail.isReadable();
+        }
+
+        @Override
         public int getInt(int pos) {
             return (Integer) get(pos);
         }
@@ -189,37 +194,27 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
         }
 
         @Override
+        public Putter<V> putter() {
+            throw new IllegalStateException("real time dict column needn't put operation");
+        }
+
+        @Override
         public void flush() {
         }
 
         @Override
-        public void putSize(int size) {
-        }
-
-        @Override
-        public void putGlobalSize(int globalSize) {
-        }
-
-        @Override
-        public void putValue(int index, V val) {
-        }
-
-        @Override
-        public void putIndex(int row, int index) {
-        }
-
-        @Override
-        public void putGlobalIndex(int index, int globalIndex) {
+        public boolean isReadable() {
+            return detail != null && detail.isReadable();
         }
     }
 
     private class RealtimeBitmapColumn implements BitmapIndexedColumn {
         @Override
         public ImmutableBitMap getBitMapIndex(int index) {
-            V v = dictColumn.getValue(index);
-            if (v == null) {
+            if (index < 1) {
                 return nullIndex;
             }
+            V v = dictColumn.getValue(index);
             return valToRows.containsKey(v) ? valToRows.get(v) : BitMaps.newRoaringMutable();
         }
 
@@ -242,12 +237,12 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
         @Override
         public void putBitMapIndex(int index, ImmutableBitMap bitmap) {
             MutableBitMap mBitmap = (MutableBitMap) bitmap;
-
-            V v = dictColumn.getValue(index);
-            if (v == null) {
+            if (index < 1) {
                 nullIndex = mBitmap;
                 return;
             }
+
+            V v = dictColumn.getValue(index);
             if (bitmap.isEmpty()) {
                 valToRows.remove(v);
             } else {

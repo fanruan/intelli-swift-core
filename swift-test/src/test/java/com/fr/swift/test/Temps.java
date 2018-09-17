@@ -1,6 +1,6 @@
 package com.fr.swift.test;
 
-import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.segment.column.impl.base.AbstractDictColumn;
 import com.fr.swift.source.ColumnTypeConstants;
 
 import java.util.Comparator;
@@ -17,19 +17,9 @@ import java.util.Comparator;
  * 正式开发还是不要用，不然堆栈看不懂
  */
 public final class Temps {
-    public static class TempDictColumn<T> implements DictionaryEncodedColumn<T> {
-        @Override
-        public void putSize(int size) {
-            throw new UnsupportedOperationException();
-        }
-
+    public static class TempDictColumn<T> extends AbstractDictColumn<T> {
         @Override
         public int size() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void putGlobalSize(int globalSize) {
             throw new UnsupportedOperationException();
         }
 
@@ -39,27 +29,12 @@ public final class Temps {
         }
 
         @Override
-        public void putValue(int index, T val) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
         public T getValue(int index) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public T getValueByRow(int row) {
-            return getValue(getIndexByRow(row));
-        }
-
-        @Override
         public int getIndex(Object value) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void putIndex(int row, int index) {
             throw new UnsupportedOperationException();
         }
 
@@ -69,17 +44,7 @@ public final class Temps {
         }
 
         @Override
-        public void putGlobalIndex(int index, int globalIndex) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
         public int getGlobalIndexByIndex(int index) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public int getGlobalIndexByRow(int row) {
             throw new UnsupportedOperationException();
         }
 
@@ -105,6 +70,11 @@ public final class Temps {
         }
 
         @Override
+        public Putter<T> putter() {
+            return null;
+        }
+
+        @Override
         public void flush() {
             throw new UnsupportedOperationException();
         }
@@ -112,6 +82,37 @@ public final class Temps {
         @Override
         public void release() {
             throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isReadable() {
+            return false;
+        }
+
+        public class TempPutter implements Putter<T> {
+            @Override
+            public void putSize(int size) {
+            }
+
+            @Override
+            public void putGlobalSize(int globalSize) {
+            }
+
+            @Override
+            public void putValue(int index, T val) {
+            }
+
+            @Override
+            public void putIndex(int row, int index) {
+            }
+
+            @Override
+            public void putGlobalIndex(int index, int globalIndex) {
+            }
+
+            @Override
+            public void release() {
+            }
         }
     }
 }
