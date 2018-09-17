@@ -35,6 +35,7 @@ class SelectServiceImpl implements SelectService {
     @SwiftApi
     public SwiftResultSet query(SwiftDatabase database, String queryJson) {
         try {
+            // TODO: 2018/9/16 这边应该取出一页返回
             QueryBean queryBean = SwiftContext.get().getBean(QueryBeanFactory.class).create(queryJson);
             if (queryBean instanceof AbstractSingleTableQueryInfoBean) {
                 String tableName = ((AbstractSingleTableQueryInfoBean) queryBean).getTableName();
