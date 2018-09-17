@@ -23,9 +23,9 @@ public class SwiftRepositoryConfServiceImplTest {
     @Test
     public void setCurrentRepository() {
         FtpRepositoryConfig configBean = new FtpRepositoryConfig();
-        configBean.setHost("192.168.0.1");
-        configBean.setUsername("root");
-        configBean.setPassword("root");
+        configBean.setHost("192.168.0.30");
+        configBean.setUsername("hadoop");
+        configBean.setPassword("hadoop");
         SwiftContext.get().getBean(SwiftRepositoryConfService.class).setCurrentRepository(configBean);
         assertEquals(configBean, SwiftContext.get().getBean(SwiftRepositoryConfService.class).getCurrentRepository());
     }

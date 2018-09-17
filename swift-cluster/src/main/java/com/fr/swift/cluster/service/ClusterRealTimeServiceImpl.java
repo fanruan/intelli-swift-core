@@ -210,7 +210,7 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
                 List<SegmentKey> segmentKeys = segmentManager.getSegmentKeys(sourceKey);
                 Map<String, List<String>> notifyMap = new HashMap<String, List<String>>();
                 for (SegmentKey segKey : segmentKeys) {
-                    WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", sourceKey, segmentManager.getSegment(segKey));
+                    WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segKey);
                     ImmutableBitMap allShowBitmap = whereDeleter.delete(where);
                     if (segKey.getStoreType() == StoreType.MEMORY) {
                         continue;
@@ -222,16 +222,16 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
                         String remote;
                         if (allShowBitmap.isEmpty()) {
                             EventDispatcher.fire(SegmentEvent.UNLOAD_HISTORY, segKey);
-                            remote = String.format("%s/%s", segKey.getSwiftSchema().getDir(), segKey.getUri().getPath());
+                            remote = String.format(segKey.getUri().getPath());
                         } else {
                             EventDispatcher.fire(SegmentEvent.MASK_HISTORY, segKey);
-                            remote = String.format("%s/%s/%s", segKey.getSwiftSchema().getDir(), segKey.getUri().getPath(), BaseSegment.ALL_SHOW_INDEX);
+                            remote = String.format("%s/%s", segKey.getUri().getPath(), BaseSegment.ALL_SHOW_INDEX);
                         }
                         notifyMap.get(segKey.toString()).add(remote);
                     }
                 }
                 if (!notifyMap.isEmpty()) {
-                    ClusterCommonUtils.asyncCallMaster(new ModifyLoadRpcEvent(Pair.of(sourceKey.getId(), notifyMap)));
+                    ClusterCommonUtils.asyncCallMaster(new ModifyLoadRpcEvent(Pair.of(sourceKey.getId(), notifyMap), getID()));
                 }
             }
         });

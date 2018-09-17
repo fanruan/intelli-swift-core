@@ -71,6 +71,7 @@ public class SwiftRepositoryImpl extends AbstractRepository {
                     copyFromRemote(fileSystem.getResourceURI(), resolve(local, fileSystem.getResourceName()));
                     closeFileSystem(fileSystem);
                 }
+                closeFileSystem(from);
             }
             return local;
         } else {

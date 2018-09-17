@@ -3,8 +3,10 @@ package com.fr.swift.service;
 import com.fr.event.Event;
 import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
+import com.fr.general.ComparatorUtils;
 import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.config.bean.SegmentKeyBean;
+import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
@@ -37,6 +39,8 @@ public class UploadHistoryListener extends Listener<SegmentKey> {
 
     private static final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
 
+    private static final SwiftSegmentLocationService LOCATION_SERVICE = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
+
     @Override
     public void on(Event event, final SegmentKey segKey) {
         try {
@@ -66,16 +70,22 @@ public class UploadHistoryListener extends Listener<SegmentKey> {
     }
 
     private static void notifyDownload(final SegmentKey segKey) throws Exception {
+        final String currentClusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
         ClusterCommonUtils.asyncCallMaster(
-                new TransCollateLoadEvent(Pair.of(segKey.getTable().getId(), Collections.singletonList(segKey.toString())))
+                new TransCollateLoadEvent(Pair.of(segKey.getTable().getId(), Collections.singletonList(segKey.toString())), currentClusterId)
         ).addCallback(new AsyncRpcCallback() {
             @Override
             public void success(Object result) {
                 if (result instanceof EventResult) {
-                    if (result == EventResult.SUCCESS) {
+                    if (((EventResult) result).isSuccess()) {
+                        String clusterId = ((EventResult) result).getClusterId();
                         // TODO 删配置等等
                         SegmentKey realtimeSegKey = getRealtimeSegKey(segKey);
                         SEG_SVC.removeSegments(Collections.singletonList(realtimeSegKey));
+                        if (!ComparatorUtils.equals(clusterId, currentClusterId)) {
+                            LOCATION_SERVICE.delete(segKey.getTable().getId(), currentClusterId, segKey.toString());
+                        }
+
                         SegmentUtils.clearSegment(realtimeSegKey);
                         SegmentUtils.clearSegment(segKey);
                     }

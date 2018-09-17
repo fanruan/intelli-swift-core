@@ -18,12 +18,14 @@ import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.handler.SwiftServiceHandlerManager;
 import com.fr.swift.service.handler.base.AbstractHandler;
+import com.fr.swift.service.handler.history.rule.SegmentPair;
 import com.fr.swift.structure.Pair;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -31,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author yee
@@ -70,6 +71,18 @@ public class HistoryDataSyncManager extends AbstractHandler<SegmentLoadRpcEvent>
                 Pair<String, List<String>> content = (Pair<String, List<String>>) event.getContent();
                 String needLoadSource = content.getKey();
                 List<String> segmentKeys = content.getValue();
+                List<SegmentPair> list = new ArrayList<SegmentPair>();
+                for (Map.Entry<String, ClusterEntity> entry : services.entrySet()) {
+                    List<SegmentKey> keys = clusterSegmentService.getOwnSegments(entry.getKey()).get(needLoadSource);
+                    if (null != keys) {
+                        list.add(new SegmentPair(entry.getKey(), keys.size()));
+                    } else {
+                        list.add(new SegmentPair(entry.getKey(), 0));
+                    }
+                }
+                Collections.sort(list);
+                Map<String, ClusterEntity> hist = new HashMap<String, ClusterEntity>();
+                hist.put(list.get(0).getClusterId(), services.get(list.get(0).getClusterId()));
                 if (StringUtils.isNotEmpty(needLoadSource)) {
                     List<SegmentKey> keys = allSegments.get(needLoadSource);
                     List<SegmentKey> target = new ArrayList<SegmentKey>();
@@ -82,29 +95,25 @@ public class HistoryDataSyncManager extends AbstractHandler<SegmentLoadRpcEvent>
                 } else {
                     return null;
                 }
-                if (dealNeedLoadSegments(services, needLoadSegments, SegmentLocationInfo.UpdateType.PART, 1)) {
-                    return (S) EventResult.SUCCESS;
-                } else {
-                    return (S) EventResult.FAILED;
-                }
+                return (S) dealNeedLoadSegments(hist, needLoadSegments, SegmentLocationInfo.UpdateType.PART, 1);
             default:
                 break;
         }
         return null;
     }
 
-    private boolean dealNeedLoadSegments(Map<String, ClusterEntity> services,
-                                         Map<String, List<SegmentKey>> needLoadSegments,
-                                         final SegmentLocationInfo.UpdateType updateType, int wait) {
+    private EventResult dealNeedLoadSegments(Map<String, ClusterEntity> services,
+                                             Map<String, List<SegmentKey>> needLoadSegments,
+                                             final SegmentLocationInfo.UpdateType updateType, int wait) {
         final Map<String, List<SegmentDestination>> destinations = new HashMap<String, List<SegmentDestination>>();
         Map<String, Set<SegmentKey>> result = dataSyncRuleService.getCurrentRule().calculate(services.keySet(), needLoadSegments, destinations);
         Iterator<String> keyIterator = result.keySet().iterator();
-        final AtomicBoolean downloadSuccess = new AtomicBoolean(false);
         final CountDownLatch latch = wait > 0 ? new CountDownLatch(wait) : null;
+        final EventResult eventResult = new EventResult();
         try {
             while (keyIterator.hasNext()) {
                 final String key = keyIterator.next();
-                ClusterEntity entity = services.get(key);
+                final ClusterEntity entity = services.get(key);
                 Iterator<SegmentKey> valueIterator = result.get(key).iterator();
                 Map<String, Set<String>> uriSet = new HashMap<String, Set<String>>();
                 final List<Pair<String, String>> idList = new ArrayList<Pair<String, String>>();
@@ -116,7 +125,8 @@ public class HistoryDataSyncManager extends AbstractHandler<SegmentLoadRpcEvent>
                     uriSet.get(segmentKey.getTable().getId()).add(segmentKey.getUri().getPath());
                     idList.add(Pair.of(segmentKey.getTable().getId(), segmentKey.toString()));
                 }
-                runAsyncRpc(key, entity.getServiceClass(), "load", uriSet, true)
+                boolean replace = updateType == SegmentLocationInfo.UpdateType.ALL;
+                runAsyncRpc(key, entity.getServiceClass(), "load", uriSet, replace)
                         .addCallback(new AsyncRpcCallback() {
                             @Override
                             public void success(Object result) {
@@ -129,7 +139,8 @@ public class HistoryDataSyncManager extends AbstractHandler<SegmentLoadRpcEvent>
                                 } catch (Exception e) {
                                     fail(e);
                                 }
-                                downloadSuccess.set(true);
+                                eventResult.setClusterId(key);
+                                eventResult.setSuccess(true);
                                 if (null != latch) {
                                     latch.countDown();
                                 }
@@ -147,11 +158,11 @@ public class HistoryDataSyncManager extends AbstractHandler<SegmentLoadRpcEvent>
             if (null != latch) {
                 latch.await();
             }
-            return downloadSuccess.get();
+            return eventResult;
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }
-        return false;
+        return eventResult;
     }
 
 

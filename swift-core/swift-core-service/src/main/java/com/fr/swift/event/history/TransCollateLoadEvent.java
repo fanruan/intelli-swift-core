@@ -13,7 +13,8 @@ public class TransCollateLoadEvent extends SegmentLoadRpcEvent<Pair<String, List
     private static final long serialVersionUID = -8128616454294243512L;
     private Pair<String, List<String>> segmentKey;
 
-    public TransCollateLoadEvent(Pair<String, List<String>> segmentKey) {
+    public TransCollateLoadEvent(Pair<String, List<String>> segmentKey, String sourceClusterId) {
+        super(sourceClusterId);
         this.segmentKey = segmentKey;
     }
 

@@ -172,7 +172,7 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
                     if (segKey.getStoreType() != Types.StoreType.FINE_IO) {
                         continue;
                     }
-                    WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", sourceKey, segmentManager.getSegment(segKey));
+                    WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segKey);
                     ImmutableBitMap allShowBitmap = whereDeleter.delete(where);
                     if (needUpload.contains(segKey.toString())) {
                         if (null == notifyMap.get(segKey.toString())) {
@@ -181,16 +181,16 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
                         String remote;
                         if (allShowBitmap.isEmpty()) {
                             EventDispatcher.fire(SegmentEvent.UNLOAD_HISTORY, segKey);
-                            remote = String.format("%s/%s", segKey.getSwiftSchema().getDir(), segKey.getUri().getPath());
+                            remote = String.format(segKey.getUri().getPath());
                         } else {
                             EventDispatcher.fire(SegmentEvent.MASK_HISTORY, segKey);
-                            remote = String.format("%s/%s/%s", segKey.getSwiftSchema().getDir(), segKey.getUri().getPath(), BaseSegment.ALL_SHOW_INDEX);
+                            remote = String.format("%s/%s", segKey.getUri().getPath(), BaseSegment.ALL_SHOW_INDEX);
                         }
                         notifyMap.get(segKey.toString()).add(remote);
                     }
                 }
                 if (!notifyMap.isEmpty()) {
-                    ClusterCommonUtils.asyncCallMaster(new ModifyLoadRpcEvent(Pair.of(sourceKey.getId(), notifyMap)));
+                    ClusterCommonUtils.asyncCallMaster(new ModifyLoadRpcEvent(Pair.of(sourceKey.getId(), notifyMap), getID()));
                 }
             }
         });

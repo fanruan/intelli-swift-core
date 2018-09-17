@@ -4,6 +4,7 @@ import com.fr.swift.config.convert.hibernate.transaction.AbstractTransactionWork
 import com.fr.swift.config.convert.hibernate.transaction.HibernateTransactionManager;
 import com.fr.swift.config.dao.SwiftSegmentLocationDao;
 import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
+import com.fr.swift.config.entity.key.SwiftSegLocationEntityId;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.third.org.hibernate.Session;
@@ -44,6 +45,22 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
                         session.delete(locationEntity);
                     }
                     return true;
+                }
+            });
+        } catch (SQLException e) {
+            SwiftLoggers.getLogger().error(e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean delete(final String table, final String clusterId, final String segKey) {
+        try {
+            return tx.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
+                @Override
+                public Boolean work(Session session) throws SQLException {
+                    SwiftSegLocationEntityId id = new SwiftSegLocationEntityId(clusterId, segKey);
+                    return segmentLocationDao.deleteById(session, id);
                 }
             });
         } catch (SQLException e) {

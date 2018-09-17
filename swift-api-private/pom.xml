@@ -41,6 +41,10 @@
                     <artifactId>swift-core-analyse</artifactId>
                     <groupId>com.fr.intelligence</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>swift-core-generator</artifactId>
+                    <groupId>com.fr.intelligence</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
     </dependencies>
