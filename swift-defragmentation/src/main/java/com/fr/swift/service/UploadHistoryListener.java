@@ -30,6 +30,7 @@ import java.util.Collections;
 /**
  * @author anchore
  * @date 2018/9/11
+ * @see SegmentEvent#UPLOAD_HISTORY
  */
 public class UploadHistoryListener extends Listener<SegmentKey> {
 
@@ -39,7 +40,7 @@ public class UploadHistoryListener extends Listener<SegmentKey> {
 
     private static final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
 
-    private static final SwiftSegmentLocationService LOCATION_SERVICE = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
+    private static final SwiftSegmentLocationService LOCATION_SVC = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
 
     @Override
     public void on(Event event, final SegmentKey segKey) {
@@ -79,15 +80,14 @@ public class UploadHistoryListener extends Listener<SegmentKey> {
                 if (result instanceof EventResult) {
                     if (((EventResult) result).isSuccess()) {
                         String clusterId = ((EventResult) result).getClusterId();
-                        // TODO 删配置等等
                         SegmentKey realtimeSegKey = getRealtimeSegKey(segKey);
                         SEG_SVC.removeSegments(Collections.singletonList(realtimeSegKey));
+                        // 删除本机上的history分布
                         if (!ComparatorUtils.equals(clusterId, currentClusterId)) {
-                            LOCATION_SERVICE.delete(segKey.getTable().getId(), currentClusterId, segKey.toString());
+                            LOCATION_SVC.delete(segKey.getTable().getId(), currentClusterId, segKey.toString());
+                            clearSeg(segKey);
                         }
-
-                        SegmentUtils.clearSegment(realtimeSegKey);
-                        SegmentUtils.clearSegment(segKey);
+                        clearSeg(realtimeSegKey);
                     }
                 }
             }
@@ -97,6 +97,19 @@ public class UploadHistoryListener extends Listener<SegmentKey> {
                 SwiftLoggers.getLogger().error(e);
             }
         });
+    }
+
+    private static void clearSeg(final SegmentKey segKey) {
+        try {
+            SVC_EXEC.submit(new SwiftServiceCallable(segKey.getTable(), ServiceTaskType.CLEAR_LOCAL) {
+                @Override
+                public void doJob() {
+                    SegmentUtils.clearSegment(segKey);
+                }
+            });
+        } catch (InterruptedException e) {
+            SwiftLoggers.getLogger().error(e);
+        }
     }
 
     private static SegmentKey getRealtimeSegKey(SegmentKey hisSegKey) {

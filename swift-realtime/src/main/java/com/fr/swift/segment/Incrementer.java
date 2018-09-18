@@ -14,7 +14,9 @@ import com.fr.swift.segment.operator.insert.SwiftRealtimeInserter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.transaction.TransactionProxyFactory;
+import com.fr.third.guava.base.Optional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,27 +52,35 @@ public class Incrementer extends BaseBlockInserter implements Inserter {
     @Override
     protected boolean nextSegment() {
         List<SegmentKey> localSegmentKeys = swiftSegmentService.getOwnSegments().get(dataSource.getSourceKey().getId());
-        SegmentKey maxLocalSegmentKey = SegmentUtils.getMaxSegmentKey(localSegmentKeys);
+        Optional<SegmentKey> maxLocalSegmentKey = SegmentUtils.getMaxSegmentKey(filterRealtime(localSegmentKeys));
 
-        if (maxLocalSegmentKey == null) {
+        if (!maxLocalSegmentKey.isPresent()) {
             currentSegKey = SEG_SVC.tryAppendSegment(dataSource.getSourceKey(), StoreType.MEMORY);
             currentSeg = newRealtimeSegment(currentSegKey);
             return true;
         }
-        Segment maxSegment = LOCAL_SEGMENTS.getSegment(maxLocalSegmentKey);
+        Segment maxSegment = LOCAL_SEGMENTS.getSegment(maxLocalSegmentKey.get());
 
-        if (maxSegment.isHistory()) {
-            currentSegKey = SEG_SVC.tryAppendSegment(dataSource.getSourceKey(), StoreType.MEMORY);
-            currentSeg = newRealtimeSegment(currentSegKey);
-            return true;
-        }
         if (alloter.isFull(maxSegment)) {
             currentSegKey = SEG_SVC.tryAppendSegment(dataSource.getSourceKey(), StoreType.MEMORY);
             currentSeg = newRealtimeSegment(currentSegKey);
-            EventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, maxLocalSegmentKey);
+            EventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, maxLocalSegmentKey.get());
             return true;
         }
         currentSeg = maxSegment;
         return false;
+    }
+
+    private static List<SegmentKey> filterRealtime(List<SegmentKey> segKeys) {
+        if (segKeys == null) {
+            return null;
+        }
+        List<SegmentKey> realtimeSegKeys = new ArrayList<SegmentKey>();
+        for (SegmentKey segKey : segKeys) {
+            if (segKey.getStoreType() == StoreType.MEMORY) {
+                realtimeSegKeys.add(segKey);
+            }
+        }
+        return realtimeSegKeys;
     }
 }

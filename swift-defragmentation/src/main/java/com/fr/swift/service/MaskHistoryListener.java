@@ -1,5 +1,6 @@
 package com.fr.swift.service;
 
+import com.fineio.FineIO;
 import com.fr.event.Event;
 import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
@@ -20,6 +21,7 @@ import java.io.IOException;
 /**
  * @author anchore
  * @date 2018/9/11
+ * @see SegmentEvent#MASK_HISTORY
  */
 public class MaskHistoryListener extends Listener<SegmentKey> {
 
@@ -41,16 +43,21 @@ public class MaskHistoryListener extends Listener<SegmentKey> {
         }
     }
 
-    private static void mask(SegmentKey segKey) {
-        if (ClusterSelector.getInstance().getFactory().isCluster()) {
-            String local = String.format("%s/%s", CubeUtil.getAbsoluteSegPath(segKey), BaseSegment.ALL_SHOW_INDEX);
-            String remote = String.format("%s/%s/%s", segKey.getSwiftSchema().getDir(), segKey.getUri().getPath(), BaseSegment.ALL_SHOW_INDEX);
-            try {
-                REPO.currentRepo().zipToRemote(local, remote);
-            } catch (IOException e) {
-                SwiftLoggers.getLogger().error("mask segment {} failed", segKey, e);
+    private static void mask(final SegmentKey segKey) {
+        FineIO.doWhenFinished(new Runnable() {
+            @Override
+            public void run() {
+                if (ClusterSelector.getInstance().getFactory().isCluster()) {
+                    String local = String.format("%s/%s", CubeUtil.getAbsoluteSegPath(segKey), BaseSegment.ALL_SHOW_INDEX);
+                    String remote = String.format("%s/%s/%s", segKey.getSwiftSchema().getDir(), segKey.getUri().getPath(), BaseSegment.ALL_SHOW_INDEX);
+                    try {
+                        REPO.currentRepo().zipToRemote(local, remote);
+                    } catch (IOException e) {
+                        SwiftLoggers.getLogger().error("mask segment {} failed", segKey, e);
+                    }
+                }
             }
-        }
+        });
     }
 
     public static final MaskHistoryListener INSTANCE = new MaskHistoryListener();

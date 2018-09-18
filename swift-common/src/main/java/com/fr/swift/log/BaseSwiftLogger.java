@@ -72,7 +72,6 @@ abstract class BaseSwiftLogger implements SwiftLogger {
 
     @Override
     public void error(Marker marker, String s, Throwable throwable) {
-
     }
 
     @Override
