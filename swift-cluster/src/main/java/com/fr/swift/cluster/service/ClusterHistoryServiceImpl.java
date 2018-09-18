@@ -12,13 +12,11 @@ import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
-import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.Where;
 import com.fr.swift.event.global.PushSegLocationRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.SwiftRepositoryManager;
-import com.fr.swift.segment.BaseSegment;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
@@ -165,7 +163,6 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
             @Override
             public void doJob() throws Exception {
                 List<SegmentKey> segmentKeys = segmentManager.getSegmentKeys(sourceKey);
-                final Map<String, List<String>> notifyMap = new HashMap<String, List<String>>();
                 for (SegmentKey segKey : segmentKeys) {
                     if (segKey.getStoreType() != Types.StoreType.FINE_IO) {
                         continue;
@@ -173,22 +170,14 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
                     if (!segmentManager.existsSegment(segKey)) {
                         continue;
                     }
-
                     WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segKey);
                     ImmutableBitMap allShowBitmap = whereDeleter.delete(where);
                     if (needUpload.contains(segKey.toString())) {
-                        if (null == notifyMap.get(segKey.toString())) {
-                            notifyMap.put(segKey.toString(), new ArrayList<String>());
-                        }
-                        String remote;
                         if (allShowBitmap.isEmpty()) {
                             EventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, segKey);
-                            remote = segKey.getUri().getPath();
                         } else {
                             EventDispatcher.fire(SegmentEvent.MASK_HISTORY, segKey);
-                            remote = String.format("%s/%s", segKey.getUri().getPath(), BaseSegment.ALL_SHOW_INDEX);
                         }
-                        notifyMap.get(segKey.toString()).add(remote);
                     }
                 }
             }
