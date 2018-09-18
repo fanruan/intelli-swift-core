@@ -14,7 +14,6 @@ import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.event.global.PushSegLocationRpcEvent;
-import com.fr.swift.event.history.ModifyLoadRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.SwiftRepositoryManager;
@@ -34,7 +33,6 @@ import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.cluster.ClusterRealTimeService;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.structure.Pair;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
@@ -210,6 +208,10 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
                 List<SegmentKey> segmentKeys = segmentManager.getSegmentKeys(sourceKey);
                 Map<String, List<String>> notifyMap = new HashMap<String, List<String>>();
                 for (SegmentKey segKey : segmentKeys) {
+                    if (!segmentManager.existsSegment(segKey)) {
+                        continue;
+                    }
+
                     WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segKey);
                     ImmutableBitMap allShowBitmap = whereDeleter.delete(where);
                     if (segKey.getStoreType() == StoreType.MEMORY) {
@@ -229,9 +231,6 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
                         }
                         notifyMap.get(segKey.toString()).add(remote);
                     }
-                }
-                if (!notifyMap.isEmpty()) {
-                    ClusterCommonUtils.asyncCallMaster(new ModifyLoadRpcEvent(Pair.of(sourceKey.getId(), notifyMap), getID()));
                 }
             }
         });
