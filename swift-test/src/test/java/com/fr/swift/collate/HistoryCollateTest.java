@@ -100,7 +100,7 @@ public class HistoryCollateTest extends BaseTest {
         }
         //合并历史块，直接写history
         SwiftCollateService collaterService = SwiftContext.get().getBean(SwiftCollateService.class);
-        collaterService.setTaskExecutor(new SwiftServiceTaskExecutor("testAutoHistoryCollate", 1));
+        collaterService.setTaskExecutor(new SwiftServiceTaskExecutor(1));
         collaterService.autoCollateHistory(dataSource.getSourceKey());
         Thread.sleep(5000L);
         List<Segment> segs = swiftSegmentManager.getSegment(dataSource.getSourceKey());
