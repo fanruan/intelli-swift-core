@@ -10,12 +10,17 @@ import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.query.info.bean.query.AbstractSingleTableQueryInfoBean;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryBeanFactory;
+import com.fr.swift.result.DetailResultSet;
+import com.fr.swift.result.serialize.SerializableDetailResultSet;
 import com.fr.swift.service.AnalyseService;
+import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.util.ServiceBeanFactory;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,17 +44,36 @@ class SelectServiceImpl implements SelectService {
             if (queryBean instanceof AbstractSingleTableQueryInfoBean) {
                 String tableName = ((AbstractSingleTableQueryInfoBean) queryBean).getTableName();
                 SwiftMetaData metaData = metaDataService.getMetaDataByKey(tableName);
+                SwiftResultSet resultSet = null;
                 if (null != metaData && metaData.getSwiftDatabase() == database) {
-                    return getAnalyseService().getQueryResult(queryBean);
+                    resultSet = getAnalyseService().getQueryResult(queryBean);
+                } else {
+                    metaData = tableService.detectiveMetaData(database, tableName);
+                    ((AbstractSingleTableQueryInfoBean) queryBean).setTableName(metaData.getId());
+                    resultSet = getAnalyseService().getQueryResult(queryBean);
                 }
-                metaData = tableService.detectiveMetaData(database, tableName);
-                ((AbstractSingleTableQueryInfoBean) queryBean).setTableName(metaData.getId());
-                return getAnalyseService().getQueryResult(queryBean);
+                return getPageResultSet(queryJson, resultSet);
             }
             throw new UnsupportedOperationException();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    // 不管分组还是明细，api返回的都是行结果
+    private SerializableDetailResultSet getPageResultSet(String jsonString, SwiftResultSet resultSet) throws SQLException {
+        List<Row> rows = new ArrayList<Row>();
+        int fetchSize = resultSet.getFetchSize();
+        int count = 0;
+        while (resultSet.hasNext() && count < fetchSize) {
+            rows.add(resultSet.getNextRow());
+            count++;
+        }
+        int rowCount = count;
+        if (resultSet instanceof DetailResultSet) {
+            rowCount = ((DetailResultSet) resultSet).getRowCount();
+        }
+        return new SerializableDetailResultSet(jsonString, resultSet.getMetaData(), rows, resultSet.hasNext(), rowCount);
     }
 
     private AnalyseService getAnalyseService() {

@@ -121,6 +121,8 @@ class GroupQueryBuilder {
             String jsonString = QueryInfoBeanFactory.queryBean2String(queryBean);
             queries.add(new RemoteQueryImpl<NodeResultSet>(jsonString, destination));
         }
+        // TODO: 2018/9/17 这边要把queryType设置回去。。先改个阻塞bug，暂时这么处理
+        queryBean.setQueryType(QueryType.GROUP);
         // 多个节点的ResultQuery合并之后在处理List<PostQueryInfo>
         return builder.buildPostQuery(builder.buildResultQuery(queries, info), info);
     }
