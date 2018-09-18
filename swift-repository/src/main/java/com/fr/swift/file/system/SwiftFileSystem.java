@@ -53,4 +53,6 @@ public interface SwiftFileSystem extends Closeable {
     SwiftFileSystemConfig getConfig();
 
     long getSize();
+
+    void testConnection() throws Exception;
 }
