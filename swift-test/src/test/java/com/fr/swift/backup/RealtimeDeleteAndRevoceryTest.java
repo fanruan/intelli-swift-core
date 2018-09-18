@@ -35,7 +35,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class RealtimeDeleteAndRevocery extends BaseTest {
+public class RealtimeDeleteAndRevoceryTest extends BaseTest {
 
     private RedisClient redisClient;
 
