@@ -53,7 +53,7 @@ import static org.junit.Assert.assertTrue;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class RealtimeRollback extends BaseTest {
+public class RealtimeRollbackTest extends BaseTest {
 
     private RedisClient redisClient;
 

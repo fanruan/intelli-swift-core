@@ -176,6 +176,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
             newKeys.add(newSegKey);
             newSeg = newHistorySegment(newSegKey, metadata);
             new HistoryCollater(newSeg).collate(swiftResultSet);
+            newSegs.add(newSeg);
             swiftResultSet.close();
         } while (alloter.isFull(newSeg));
 
