@@ -42,7 +42,7 @@ public class RealtimeSwiftDeleter implements WhereDeleter {
         ImmutableBitMap originAllShowIndex = seg.getAllShowIndex();
         ImmutableBitMap indexAfterFilter = where.createWhereIndex(table, seg);
         ImmutableBitMap allShowIndex = originAllShowIndex.getAndNot(indexAfterFilter);
-
+        seg.putAllShowIndex(allShowIndex);
         allShowIndexBackup.backupAllShowIndex(allShowIndex);
         return allShowIndex;
     }

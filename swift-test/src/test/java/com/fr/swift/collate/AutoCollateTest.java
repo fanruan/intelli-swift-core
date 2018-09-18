@@ -5,7 +5,6 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftWhere;
-import com.fr.swift.generate.BaseTest;
 import com.fr.swift.segment.Decrementer;
 import com.fr.swift.segment.Incrementer;
 import com.fr.swift.segment.Segment;
@@ -22,24 +21,24 @@ import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 import com.fr.swift.source.alloter.impl.line.LineSourceAlloter;
 import com.fr.swift.source.db.QueryDBSource;
+import com.fr.swift.task.service.SwiftServiceTaskExecutor;
 import com.fr.swift.test.Preparer;
+import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertSame;
-import static junit.framework.TestCase.assertTrue;
-
 /**
- * This class created on 2018/7/10
+ * This class created on 2018/9/18
  *
  * @author Lucifer
- * @description 增量块合并成历史块。合并时剔除增量删除掉的数据
+ * @description
  * @since Advanced FineBI 5.0
  */
-public class RealtimeCollateTest extends BaseTest {
+public class AutoCollateTest extends TestCase {
+
     private SwiftSegmentManager swiftSegmentManager;
 
     @Override
@@ -51,13 +50,14 @@ public class RealtimeCollateTest extends BaseTest {
     }
 
     @Test
-    public void testAutoRealtimeCollate() throws Exception {
-        DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "testRealtimeCollate");
+    public void testAppointRealtimeCollate() throws Exception {
+        DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "testAppointRealtimeCollate");
         SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).removeSegments(dataSource.getSourceKey().getId());
         SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
         SwiftResultSet resultSet = transfer.createResultSet();
         Incrementer incrementer = new Incrementer(dataSource, new LineSourceAlloter(dataSource.getSourceKey(), new LineAllotRule(100)));
         incrementer.insertData(resultSet);
+
         List<SegmentKey> segKeys = swiftSegmentManager.getSegmentKeys(dataSource.getSourceKey());
 
         Where where = new SwiftWhere(HistoryCollateTest.createEqualFilter("合同类型", "购买合同"));
@@ -79,20 +79,50 @@ public class RealtimeCollateTest extends BaseTest {
             }
             assertTrue(neqCount != 0);
         }
+
+        List<SegmentKey> segmentKeyList = swiftSegmentManager.getSegmentKeys(dataSource.getSourceKey());
+        assertEquals(7, segmentKeyList.size());
+        //取4个进行合并
+        List<SegmentKey> collateSegmentKeys = new ArrayList<SegmentKey>();
+        collateSegmentKeys.add(segmentKeyList.get(0));
+        collateSegmentKeys.add(segmentKeyList.get(1));
+        collateSegmentKeys.add(segmentKeyList.get(2));
+        collateSegmentKeys.add(segmentKeyList.get(3));
+
+
         //合并增量块，直接写history
         SwiftCollateService collaterService = SwiftContext.get().getBean(SwiftCollateService.class);
-        collaterService.autoCollateRealtime(dataSource.getSourceKey());
+        collaterService.setTaskExecutor(new SwiftServiceTaskExecutor("testAppointRealtimeCollate", 1));
+        collaterService.appointCollate(dataSource.getSourceKey(), collateSegmentKeys);
+
         Thread.sleep(5000L);
         List<Segment> segments = swiftSegmentManager.getSegment(dataSource.getSourceKey());
-        assertEquals(1, segments.size());
-        //合并后1块历史块，所有数据都不是购买合同
+        assertEquals(4, segments.size());
+        //合并后1块历史块,3块增量块，历史块所有数据都不是购买合同，增量快allshow不是购买合同
+        int hisCount = 0;
+        int realCount = 0;
         for (Segment segment : segments) {
-            assertSame(segment.getLocation().getStoreType(), Types.StoreType.FINE_IO);
-            Column column = segment.getColumn(new ColumnKey("合同类型"));
-            for (int i = 0; i < segment.getRowCount(); i++) {
-                Assert.assertNotEquals(column.getDetailColumn().get(i), "购买合同");
+            if (segment.getLocation().getStoreType() == Types.StoreType.FINE_IO) {
+                Column column = segment.getColumn(new ColumnKey("合同类型"));
+                for (int i = 0; i < segment.getRowCount(); i++) {
+                    Assert.assertNotEquals(column.getDetailColumn().get(i), "购买合同");
+                }
+                hisCount++;
+            } else {
+                Column column = segment.getColumn(new ColumnKey("合同类型"));
+                int neqCount = 0;
+                for (int i = 0; i < segment.getRowCount(); i++) {
+                    if (segment.getAllShowIndex().contains(i)) {
+                        Assert.assertNotEquals(column.getDetailColumn().get(i), "购买合同");
+                    } else {
+                        neqCount++;
+                    }
+                }
+                assertTrue(neqCount != 0);
+                realCount++;
             }
         }
+        assertEquals(1, hisCount);
+        assertEquals(3, realCount);
     }
-
 }
