@@ -23,6 +23,12 @@ public class SwiftRepositoryManager implements com.fr.swift.repository.SwiftRepo
             public void change(SwiftFileSystemConfig change) {
                 if (null != currentRepository) {
                     currentRepository = new SwiftRepositoryImpl(change);
+                    try {
+                        currentRepository.testConnection();
+                    } catch (Exception e) {
+                        SwiftLoggers.getLogger().warn("Create repository failed. Use default", e);
+                        currentRepository = new SwiftRepositoryImpl(DefaultRepositoryConfig.INSTANCE);
+                    }
                 }
             }
         });
@@ -43,7 +49,13 @@ public class SwiftRepositoryManager implements com.fr.swift.repository.SwiftRepo
                     SwiftLoggers.getLogger().warn("Cannot find repository config. Use default.");
                     config = DefaultRepositoryConfig.INSTANCE;
                 }
-                currentRepository = new SwiftRepositoryImpl(config);
+                try {
+                    currentRepository = new SwiftRepositoryImpl(config);
+                    currentRepository.testConnection();
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().warn("Create repository failed. Use default", e);
+                    currentRepository = new SwiftRepositoryImpl(DefaultRepositoryConfig.INSTANCE);
+                }
             }
         }
         return currentRepository;

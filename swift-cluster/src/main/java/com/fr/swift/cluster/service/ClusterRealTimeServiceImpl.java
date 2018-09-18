@@ -206,14 +206,18 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
             public void doJob() throws Exception {
                 List<SegmentKey> segmentKeys = segmentManager.getSegmentKeys(sourceKey);
                 for (SegmentKey segKey : segmentKeys) {
+                    if (!segmentManager.existsSegment(segKey)) {
+                        continue;
+                    }
                     WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segKey);
                     ImmutableBitMap allShowBitmap = whereDeleter.delete(where);
                     if (segKey.getStoreType() == StoreType.MEMORY) {
                         continue;
                     }
+
                     if (needUpload.contains(segKey.toString())) {
                         if (allShowBitmap.isEmpty()) {
-                            EventDispatcher.fire(SegmentEvent.UNLOAD_HISTORY, segKey);
+                            EventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, segKey);
                         } else {
                             EventDispatcher.fire(SegmentEvent.MASK_HISTORY, segKey);
                         }

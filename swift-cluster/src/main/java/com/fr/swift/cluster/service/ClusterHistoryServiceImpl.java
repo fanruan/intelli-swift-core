@@ -167,11 +167,14 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
                     if (segKey.getStoreType() != Types.StoreType.FINE_IO) {
                         continue;
                     }
+                    if (!segmentManager.existsSegment(segKey)) {
+                        continue;
+                    }
                     WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segKey);
                     ImmutableBitMap allShowBitmap = whereDeleter.delete(where);
                     if (needUpload.contains(segKey.toString())) {
                         if (allShowBitmap.isEmpty()) {
-                            EventDispatcher.fire(SegmentEvent.UNLOAD_HISTORY, segKey);
+                            EventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, segKey);
                         } else {
                             EventDispatcher.fire(SegmentEvent.MASK_HISTORY, segKey);
                         }

@@ -206,7 +206,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
 
         if (replace && downloadSuccess) {
             entity = tablePathService.get(sourceKey);
-            int current = entity.getTablePath() == null ? 0 : entity.getTablePath();
+            int current = entity.getTablePath() == null ? -1 : entity.getTablePath();
             entity.setLastPath(current);
             entity.setTablePath(tmp);
             tablePathService.saveOrUpdate(entity);
@@ -215,7 +215,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
             new File(cubePath).getParentFile().delete();
         }
         if (downloadSuccess) {
-            SwiftLoggers.getLogger().info("Download " + sourceKey + " successful");
+            SwiftLoggers.getLogger().info("Download {} {}successful", sourceKey, sets);
         }
     }
 

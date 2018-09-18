@@ -87,10 +87,16 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
                 Pair<SourceKey, Where> content = (Pair<SourceKey, Where>) event.getContent();
                 SourceKey sourceKey = content.getKey();
                 Where where = content.getValue();
-                Map<String, ClusterEntity> historyServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.HISTORY);
-                dealDelete(sourceKey, where, historyServices, "historyDelete");
                 Map<String, ClusterEntity> realTimeServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.REAL_TIME);
                 dealDelete(sourceKey, where, realTimeServices, "realtimeDelete");
+                Map<String, ClusterEntity> historyServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.HISTORY);
+                Iterator<Map.Entry<String, ClusterEntity>> iterator = historyServices.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    if (realTimeServices.containsKey(iterator.next().getKey())) {
+                        iterator.remove();
+                    }
+                }
+                dealDelete(sourceKey, where, historyServices, "historyDelete");
                 break;
             case TRUNCATE:
                 String truncateSourceKey = (String) event.getContent();
@@ -120,7 +126,8 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
 
     private void dealDelete(SourceKey sourceKey, Where where, Map<String, ClusterEntity> services, String method) throws Exception {
         if (null == services || services.isEmpty()) {
-            throw new RuntimeException("Cannot find services");
+            SwiftLoggers.getLogger().warn("Cannot find services");
+            return;
         }
         List<String> uploadedSegments = new ArrayList<String>();
         for (Map.Entry<String, ClusterEntity> entry : services.entrySet()) {
@@ -130,6 +137,7 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
             for (SegmentKey segmentKey : segmentKeys) {
                 if (segmentKey.getStoreType() == Types.StoreType.FINE_IO) {
                     String segKey = segmentKey.toString();
+                    // 如果不包含就放到需要上传的list
                     if (!uploadedSegments.contains(segKey)) {
                         needUploadSegs.add(segKey);
                         uploadedSegments.add(segKey);
