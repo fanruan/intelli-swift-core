@@ -76,4 +76,14 @@ public abstract class AbstractRepository implements SwiftRepository {
             }
         }
     }
+
+    @Override
+    public void testConnection() throws Exception {
+        SwiftFileSystem fileSystem = createFileSystem("");
+        try {
+            fileSystem.testConnection();
+        } finally {
+            closeFileSystem(fileSystem);
+        }
+    }
 }

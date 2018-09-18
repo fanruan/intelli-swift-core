@@ -40,6 +40,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -112,7 +113,11 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                 loadDataService.submit(new Runnable() {
                     @Override
                     public void run() {
-                        load(needDownload, false);
+                        try {
+                            load(needDownload, false);
+                        } catch (Exception e) {
+                            SwiftLoggers.getLogger().error(e);
+                        }
                     }
                 });
             }
@@ -141,10 +146,11 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     }
 
     @Override
-    public void load(Map<String, Set<String>> remoteUris, final boolean replace) {
+    public void load(Map<String, Set<String>> remoteUris, final boolean replace) throws Exception {
         if (null == remoteUris || remoteUris.isEmpty()) {
             return;
         }
+        final CountDownLatch latch = new CountDownLatch(remoteUris.size());
         for (final String sourceKey : remoteUris.keySet()) {
             final Set<String> uris = remoteUris.get(sourceKey);
             if (uris.isEmpty()) {
@@ -155,12 +161,15 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                     @Override
                     public void doJob() {
                         download(sourceKey, uris, replace);
+                        SwiftLoggers.getLogger().error("{}, {}", sourceKey, uris);
+                        latch.countDown();
                     }
                 });
             } catch (InterruptedException e) {
                 SwiftLoggers.getLogger().error("download seg {} of {} failed", uris, sourceKey, e);
             }
         }
+        latch.await();
     }
 
     private void download(String sourceKey, Set<String> sets, boolean replace) {
@@ -206,7 +215,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
             new File(cubePath).getParentFile().delete();
         }
         if (downloadSuccess) {
-            SwiftLoggers.getLogger().info("Download " + sourceKey + " successful");
+            SwiftLoggers.getLogger().info("Download {} {}successful", sourceKey, sets);
         }
     }
 

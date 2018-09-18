@@ -65,6 +65,7 @@ public class ScheduledRealtimeTransfer implements Runnable {
 
         @Override
         protected void onSucceed() {
+            SwiftLoggers.getLogger().info("{} to {} succeeded", oldSegKey, newSegKey);
             EventDispatcher.fire(SegmentEvent.UPLOAD_HISTORY, newSegKey);
         }
     }

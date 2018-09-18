@@ -125,4 +125,9 @@ public class DefaultFileSystemImpl extends AbstractFileSystem {
 
     }
 
+    @Override
+    public void testConnection() {
+
+    }
+
 }
