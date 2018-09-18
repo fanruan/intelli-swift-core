@@ -1,12 +1,11 @@
 package com.fr.swift.backup;
 
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.creater.FilterCreater;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftWhere;
 import com.fr.swift.generate.BaseTest;
-import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
-import com.fr.swift.query.query.FilterBean;
 import com.fr.swift.redis.RedisClient;
 import com.fr.swift.segment.Decrementer;
 import com.fr.swift.segment.Incrementer;
@@ -27,7 +26,6 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -51,13 +49,6 @@ public class RealtimeDeleteAndRevocery extends BaseTest {
         swiftSegmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
     }
 
-    private static FilterBean createEqualFilter(String fieldName, String value) {
-        InFilterBean bean = new InFilterBean();
-        bean.setColumn(fieldName);
-        bean.setFilterValue(Collections.singleton(value));
-        return bean;
-    }
-
     @Test
     public void testFileDeleteAndRecovery() throws Exception {
         DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "testFileDeleteAndRecovery");
@@ -68,7 +59,7 @@ public class RealtimeDeleteAndRevocery extends BaseTest {
         SegmentKey segKey = swiftSegmentManager.getSegmentKeys(dataSource.getSourceKey()).get(0);
         Segment segment = swiftSegmentManager.getSegment(segKey);
 
-        Where where = new SwiftWhere(createEqualFilter("合同类型", "购买合同"));
+        Where where = new SwiftWhere(FilterCreater.createEqualFilter("合同类型", "购买合同"));
 
         Decrementer decrementer = new Decrementer(segKey);
         decrementer.delete(where);
@@ -107,7 +98,7 @@ public class RealtimeDeleteAndRevocery extends BaseTest {
         Segment segment = swiftSegmentManager.getSegment(segKey);
 
 
-        Where where = new SwiftWhere(createEqualFilter("合同类型", "购买合同"));
+        Where where = new SwiftWhere(FilterCreater.createEqualFilter("合同类型", "购买合同"));
 
         Decrementer decrementer = new Decrementer(segKey);
         decrementer.delete(where);
