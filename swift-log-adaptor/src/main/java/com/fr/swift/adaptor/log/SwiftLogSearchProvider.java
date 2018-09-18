@@ -29,9 +29,11 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.iterator.IteratorUtils;
 import com.fr.swift.structure.iterator.MapperIterator;
+import com.fr.swift.util.Crasher;
 import com.fr.swift.util.JpaAdaptor;
 import com.fr.swift.util.function.Function;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -72,7 +74,11 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
 
     @Override
     public int count(Class<? extends AbstractMessage> logClass, QueryCondition condition) throws Exception {
-        return countQuery(logClass, condition, "", null);
+        List<Field> fields = JpaAdaptor.getFields(logClass);
+        if (fields.isEmpty()) {
+            return Crasher.crash("Unsupported Operation: count without field name!");
+        }
+        return countQuery(logClass, condition, fields.get(0).getName(), null);
     }
 
     @Override
