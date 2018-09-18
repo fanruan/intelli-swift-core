@@ -9,7 +9,7 @@ public final class SwiftLoggers {
     private static Function<?, SwiftLogger> loggerFactory = new SwiftFrLoggers();
 
     /**
-     *  不用static final SwiftLogger = SwiftLoggers.getLogger();的方式了
+     * 不用static final SwiftLogger = SwiftLoggers.getLogger();的方式了
      * 推荐直接SwiftLoggers.getLogger().error(e);
      */
     public static SwiftLogger getLogger() {

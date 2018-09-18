@@ -238,8 +238,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
                     swiftSegmentService.removeSegments(Collections.singletonList(collateSegKey));
                     SegmentUtils.clearSegment(collateSegKey);
                     if (collateSegKey.getStoreType() != StoreType.MEMORY) {
-                        // todo 触发共享存储删seg？
-                        EventDispatcher.fire(SegmentEvent.UNLOAD_HISTORY, collateSegKey);
+                        EventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, collateSegKey);
                     }
                 }
             }

@@ -22,7 +22,7 @@ public class SegmentEvent<V> implements Event<V> {
     /**
      * 删repo的history块
      */
-    public static final Event<SegmentKey> UNLOAD_HISTORY = new SegmentEvent<SegmentKey>();
+    public static final Event<SegmentKey> REMOVE_HISTORY = new SegmentEvent<SegmentKey>();
 
     /**
      * 上传history块的all show到repo

@@ -1,5 +1,6 @@
 package com.fr.swift.log;
 
+import com.fr.stable.StringUtils;
 import com.fr.third.apache.log4j.Level;
 import com.fr.third.apache.log4j.Logger;
 import org.slf4j.helpers.FormattingTuple;
@@ -196,6 +197,13 @@ class SwiftLog4jLogger extends BaseSwiftLogger implements SwiftLogger {
     }
 
     @Override
+    public void warn(Throwable t) {
+        if (isWarnEnabled()) {
+            logger.log(FQCN, Level.WARN, StringUtils.EMPTY, t);
+        }
+    }
+
+    @Override
     public boolean isErrorEnabled() {
         return logger.isEnabledFor(Level.ERROR);
     }
@@ -235,6 +243,13 @@ class SwiftLog4jLogger extends BaseSwiftLogger implements SwiftLogger {
     public void error(String s, Throwable throwable) {
         if (isErrorEnabled()) {
             logger.log(FQCN, Level.ERROR, s, throwable);
+        }
+    }
+
+    @Override
+    public void error(Throwable t) {
+        if (isErrorEnabled()) {
+            logger.log(FQCN, Level.ERROR, StringUtils.EMPTY, t);
         }
     }
 }

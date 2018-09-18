@@ -13,6 +13,7 @@ import com.fr.swift.segment.operator.column.SwiftColumnIndexer;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.FileUtil;
 import com.fr.swift.util.function.Predicate;
+import com.fr.third.guava.base.Optional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,17 +96,16 @@ public class SegmentUtils {
         }
     }
 
-    public static SegmentKey getMaxSegmentKey(List<SegmentKey> segmentKeys) {
+    public static Optional<SegmentKey> getMaxSegmentKey(List<SegmentKey> segmentKeys) {
         if (segmentKeys == null || segmentKeys.isEmpty()) {
-            return null;
-        } else {
-            SegmentKey maxSegmentKey = segmentKeys.get(0);
-            for (SegmentKey segmentKey : segmentKeys) {
-                if (segmentKey.getOrder() > maxSegmentKey.getOrder()) {
-                    maxSegmentKey = segmentKey;
-                }
-            }
-            return maxSegmentKey;
+            return Optional.absent();
         }
+        SegmentKey maxSegmentKey = segmentKeys.get(0);
+        for (SegmentKey segmentKey : segmentKeys) {
+            if (segmentKey.getOrder() > maxSegmentKey.getOrder()) {
+                maxSegmentKey = segmentKey;
+            }
+        }
+        return Optional.of(maxSegmentKey);
     }
 }

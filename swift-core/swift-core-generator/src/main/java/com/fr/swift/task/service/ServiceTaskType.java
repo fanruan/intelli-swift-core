@@ -16,6 +16,7 @@ public enum ServiceTaskType {
     PERSIST,
     UPLOAD,
     DOWNLOAD,
+    CLEAR_LOCAL,
     QUERY;
 
     public boolean isEdit() {

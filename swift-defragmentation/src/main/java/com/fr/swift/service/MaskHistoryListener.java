@@ -21,6 +21,7 @@ import java.io.IOException;
 /**
  * @author anchore
  * @date 2018/9/11
+ * @see SegmentEvent#MASK_HISTORY
  */
 public class MaskHistoryListener extends Listener<SegmentKey> {
 
@@ -57,7 +58,6 @@ public class MaskHistoryListener extends Listener<SegmentKey> {
                 }
             }
         });
-
     }
 
     public static final MaskHistoryListener INSTANCE = new MaskHistoryListener();

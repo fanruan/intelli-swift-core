@@ -18,8 +18,8 @@ import com.fr.swift.log.SwiftLog4jLoggers;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.service.MaskHistoryListener;
+import com.fr.swift.service.RemoveHistoryListener;
 import com.fr.swift.service.TransferRealtimeListener;
-import com.fr.swift.service.UnloadHistoryListener;
 import com.fr.swift.service.UploadHistoryListener;
 import com.fr.swift.service.local.ServerManager;
 import com.fr.swift.service.local.ServiceManager;
@@ -58,7 +58,7 @@ public class SwiftEngineStart {
             TransferRealtimeListener.listen();
             UploadHistoryListener.listen();
             MaskHistoryListener.listen();
-            UnloadHistoryListener.listen();
+            RemoveHistoryListener.listen();
 
 
             SwiftLoggers.getLogger().info("Swift engine start successful");
