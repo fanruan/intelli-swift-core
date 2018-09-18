@@ -81,7 +81,7 @@ public class ConnectorManager {
                 return connector;
             }
             ExtraClassManagerProvider pluginProvider = StableFactory.getMarkedObject(ExtraClassManagerProvider.XML_TAG, ExtraClassManagerProvider.class);
-            boolean useZip = zipConfig.isZip();
+            boolean useZip = false;//zipConfig.isZip();
             if (null == pluginProvider) {
                 connector = createConnector(basePath, useZip);
                 return connector;

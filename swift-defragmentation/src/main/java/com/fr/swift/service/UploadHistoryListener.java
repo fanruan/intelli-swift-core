@@ -1,5 +1,6 @@
 package com.fr.swift.service;
 
+import com.fineio.FineIO;
 import com.fr.event.Event;
 import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
@@ -55,18 +56,24 @@ public class UploadHistoryListener extends Listener<SegmentKey> {
         }
     }
 
-    private static void upload(SegmentKey segKey) {
-        if (ClusterSelector.getInstance().getFactory().isCluster()) {
-            String local = CubeUtil.getAbsoluteSegPath(segKey);
-            String remote = String.format("%s/%s", segKey.getSwiftSchema().getDir(), segKey.getUri().getPath());
-            try {
-                REPO.currentRepo().copyToRemote(local, remote);
+    private static void upload(final SegmentKey segKey) {
+        FineIO.doWhenFinished(new Runnable() {
+            @Override
+            public void run() {
+                if (ClusterSelector.getInstance().getFactory().isCluster()) {
+                    String local = CubeUtil.getAbsoluteSegPath(segKey);
+                    String remote = String.format("%s/%s", segKey.getSwiftSchema().getDir(), segKey.getUri().getPath());
+                    try {
+                        REPO.currentRepo().copyToRemote(local, remote);
 
-                notifyDownload(segKey);
-            } catch (Exception e) {
-                SwiftLoggers.getLogger().error(String.format("Cannot upload Segment which path is %s", local), e);
+                        notifyDownload(segKey);
+                    } catch (Exception e) {
+                        SwiftLoggers.getLogger().error(String.format("Cannot upload Segment which path is %s", local), e);
+                    }
+                }
             }
-        }
+        });
+
     }
 
     private static void notifyDownload(final SegmentKey segKey) throws Exception {
