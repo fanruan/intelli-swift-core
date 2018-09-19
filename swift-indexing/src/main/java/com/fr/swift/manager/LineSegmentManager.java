@@ -50,12 +50,7 @@ public class LineSegmentManager extends AbstractSegmentManager {
         SourceKey sourceKey = segmentKey.getTable();
         SwiftMetaData metaData = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(sourceKey.getId());
         Util.requireNonNull(metaData);
-        switch (storeType) {
-            case MEMORY:
-                return SegmentUtils.newRealtimeSegment(location, metaData);
-            default:
-                return SegmentUtils.newHistorySegment(location, metaData);
-        }
+        return SegmentUtils.newSegment(location, metaData);
     }
 
 }

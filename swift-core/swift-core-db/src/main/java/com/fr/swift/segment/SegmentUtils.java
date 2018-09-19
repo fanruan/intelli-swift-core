@@ -4,7 +4,6 @@ import com.fineio.FineIO;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.ResourceDiscovery;
-import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.impl.SwiftDatabase;
@@ -33,17 +32,16 @@ public class SegmentUtils {
         SwiftMetaData meta = SwiftDatabase.getInstance().getTable(segKey.getTable()).getMetadata();
         String segPath = CubeUtil.getSegPath(segKey);
 
-        if (segKey.getStoreType() == StoreType.MEMORY) {
-            return newRealtimeSegment(new ResourceLocation(segPath, segKey.getStoreType()), meta);
+        if (segKey.getStoreType().isTransient()) {
+            return newSegment(new ResourceLocation(segPath, segKey.getStoreType()), meta);
         }
-        return newHistorySegment(new ResourceLocation(segPath, segKey.getStoreType()), meta);
+        return newSegment(new ResourceLocation(segPath, segKey.getStoreType()), meta);
     }
 
-    public static Segment newRealtimeSegment(IResourceLocation location, SwiftMetaData meta) {
-        return (Segment) SwiftContext.get().getBean("realtimeSegment", location, meta);
-    }
-
-    public static Segment newHistorySegment(IResourceLocation location, SwiftMetaData meta) {
+    public static Segment newSegment(IResourceLocation location, SwiftMetaData meta) {
+        if (location.getStoreType().isTransient()) {
+            return (Segment) SwiftContext.get().getBean("realtimeSegment", location, meta);
+        }
         return (Segment) SwiftContext.get().getBean("historySegment", location, meta);
     }
 
