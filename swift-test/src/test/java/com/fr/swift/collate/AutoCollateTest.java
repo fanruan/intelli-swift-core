@@ -92,7 +92,7 @@ public class AutoCollateTest extends TestCase {
 
         //合并增量块，直接写history
         SwiftCollateService collaterService = SwiftContext.get().getBean(SwiftCollateService.class);
-        collaterService.setTaskExecutor(new SwiftServiceTaskExecutor("testAppointRealtimeCollate", 1));
+        collaterService.setTaskExecutor(new SwiftServiceTaskExecutor(1));
         collaterService.appointCollate(dataSource.getSourceKey(), collateSegmentKeys);
 
         Thread.sleep(5000L);

@@ -27,7 +27,7 @@ public interface HistoryService extends SwiftService {
      * @param remoteUris
      * @throws IOException
      */
-    void load(Map<String, Set<String>> remoteUris, boolean replace) throws IOException;
+    void load(Map<String, Set<String>> remoteUris, boolean replace) throws Exception;
 
     boolean delete(SourceKey sourceKey, Where where) throws Exception;
 }

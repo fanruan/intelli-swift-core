@@ -67,8 +67,8 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
                 @Override
                 public Boolean work(Session session) throws SQLException {
                     for (String key : sourceKey) {
-                        swiftSegmentDao.deleteBySourceKey(session, key);
                         segmentLocationDao.deleteBySourceKey(session, key);
+                        swiftSegmentDao.deleteBySourceKey(session, key);
                     }
                     return true;
                 }
@@ -90,11 +90,11 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
                 public Boolean work(Session session) throws SQLException {
                     try {
                         for (SegmentKey segmentKey : segmentKeys) {
-                            swiftSegmentDao.deleteById(session, segmentKey.toString());
                             List<SwiftSegmentLocationEntity> list = segmentLocationDao.findBySegmentId(session, segmentKey.toString());
                             for (SwiftSegmentLocationEntity locationEntity : list) {
                                 segmentLocationDao.deleteById(session, locationEntity.getId());
                             }
+                            swiftSegmentDao.deleteById(session, segmentKey.toString());
                         }
                     } catch (Exception e) {
                         throw new SQLException(e);
@@ -130,8 +130,8 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
             return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
                 @Override
                 public Boolean work(Session session) throws SQLException {
-                    swiftSegmentDao.deleteBySourceKey(session, sourceKey);
                     segmentLocationDao.deleteBySourceKey(session, sourceKey);
+                    swiftSegmentDao.deleteBySourceKey(session, sourceKey);
                     return addSegmentsWithoutTransaction(session, segments);
                 }
             });

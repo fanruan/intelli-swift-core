@@ -15,6 +15,7 @@ import com.fr.swift.task.service.SwiftServiceCallable;
 /**
  * @author anchore
  * @date 2018/9/11
+ * @see SegmentEvent#TRANSFER_REALTIME
  */
 public class TransferRealtimeListener extends Listener<SegmentKey> {
 

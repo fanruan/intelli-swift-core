@@ -13,10 +13,8 @@ import com.fr.swift.netty.rpc.client.sync.SyncRpcClientHandler;
 import com.fr.swift.netty.rpc.pool.AsyncRpcPool;
 import com.fr.swift.netty.rpc.pool.SyncRpcPool;
 import com.fr.swift.rpc.bean.RpcResponse;
-import com.fr.swift.util.concurrent.SwiftExecutors;
 
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
 
 /**
  * This class created on 2018/6/7
@@ -26,10 +24,6 @@ import java.util.concurrent.ExecutorService;
  * @since Advanced FineBI 5.0
  */
 public class RPCInvoker<T> implements Invoker<T> {
-
-    private static int nThreads = Runtime.getRuntime().availableProcessors() * 2;
-
-    private static ExecutorService handlerPool = SwiftExecutors.newFixedThreadPool(nThreads);
 
     private final T proxy;
 

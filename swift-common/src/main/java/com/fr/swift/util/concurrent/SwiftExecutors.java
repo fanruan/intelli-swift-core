@@ -1,6 +1,5 @@
 package com.fr.swift.util.concurrent;
 
-import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 
 import java.security.PrivilegedAction;
@@ -22,7 +21,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @since Advanced FineBI 5.0
  */
 public class SwiftExecutors {
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftExecutors.class);
 
     private final static AtomicInteger EXECUTOR_COUNT = new AtomicInteger(1);
 
@@ -101,7 +99,7 @@ public class SwiftExecutors {
             try {
                 executorServiceEntry.getValue().shutdown();
             } catch (Exception e) {
-                LOGGER.error(e);
+                SwiftLoggers.getLogger().error(e);
             }
         }
 
@@ -109,7 +107,7 @@ public class SwiftExecutors {
             try {
                 threadEntry.getValue().interrupt();
             } catch (Exception e) {
-                LOGGER.error(e);
+                SwiftLoggers.getLogger().error(e);
             }
         }
     }
@@ -119,14 +117,14 @@ public class SwiftExecutors {
             try {
                 executorServiceEntry.getValue().shutdownNow();
             } catch (Exception e) {
-                LOGGER.error(e);
+                SwiftLoggers.getLogger().error(e);
             }
         }
         for (Map.Entry<Integer, Thread> threadEntry : THREADS.entrySet()) {
             try {
                 threadEntry.getValue().interrupt();
             } catch (Exception e) {
-                LOGGER.error(e);
+                SwiftLoggers.getLogger().error(e);
             }
         }
     }

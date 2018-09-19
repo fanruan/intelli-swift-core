@@ -14,11 +14,9 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Where;
 import com.fr.swift.event.global.PushSegLocationRpcEvent;
-import com.fr.swift.event.history.ModifyLoadRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.SwiftRepositoryManager;
-import com.fr.swift.segment.BaseSegment;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
@@ -34,7 +32,6 @@ import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.cluster.ClusterHistoryService;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.structure.Pair;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
@@ -45,7 +42,6 @@ import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.beans.factory.annotation.Qualifier;
 import com.fr.third.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -112,7 +108,7 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
 
     @Override
     @RpcMethod(methodName = "load")
-    public void load(Map<String, Set<String>> remoteUris, boolean replace) throws IOException {
+    public void load(Map<String, Set<String>> remoteUris, boolean replace) throws Exception {
         historyService.load(remoteUris, replace);
     }
 
@@ -167,30 +163,22 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
             @Override
             public void doJob() throws Exception {
                 List<SegmentKey> segmentKeys = segmentManager.getSegmentKeys(sourceKey);
-                Map<String, List<String>> notifyMap = new HashMap<String, List<String>>();
                 for (SegmentKey segKey : segmentKeys) {
                     if (segKey.getStoreType() != Types.StoreType.FINE_IO) {
+                        continue;
+                    }
+                    if (!segmentManager.existsSegment(segKey)) {
                         continue;
                     }
                     WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segKey);
                     ImmutableBitMap allShowBitmap = whereDeleter.delete(where);
                     if (needUpload.contains(segKey.toString())) {
-                        if (null == notifyMap.get(segKey.toString())) {
-                            notifyMap.put(segKey.toString(), new ArrayList<String>());
-                        }
-                        String remote;
                         if (allShowBitmap.isEmpty()) {
-                            EventDispatcher.fire(SegmentEvent.UNLOAD_HISTORY, segKey);
-                            remote = String.format(segKey.getUri().getPath());
+                            EventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, segKey);
                         } else {
                             EventDispatcher.fire(SegmentEvent.MASK_HISTORY, segKey);
-                            remote = String.format("%s/%s", segKey.getUri().getPath(), BaseSegment.ALL_SHOW_INDEX);
                         }
-                        notifyMap.get(segKey.toString()).add(remote);
                     }
-                }
-                if (!notifyMap.isEmpty()) {
-                    ClusterCommonUtils.asyncCallMaster(new ModifyLoadRpcEvent(Pair.of(sourceKey.getId(), notifyMap), getID()));
                 }
             }
         });
