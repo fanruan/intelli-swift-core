@@ -1,5 +1,6 @@
 package com.fr.swift.query.result.group;
 
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.result.GroupNode;
@@ -29,7 +30,12 @@ public class GroupResultQuery extends AbstractGroupResultQuery {
     public NodeResultSet getQueryResult() throws SQLException {
         List<NodeMergeResultSet<GroupNode>> resultSets = new ArrayList<NodeMergeResultSet<GroupNode>>();
         for (Query<NodeResultSet> query : queryList) {
-            resultSets.add((NodeMergeResultSet<GroupNode>) query.getQueryResult());
+            NodeMergeResultSet<GroupNode> resultSet = (NodeMergeResultSet<GroupNode>) query.getQueryResult();
+            if (resultSet == null) {
+                SwiftLoggers.getLogger().info("failed to get result from query: ", query.toString());
+            } else {
+                resultSets.add(resultSet);
+            }
         }
         return new ChainedNodeMergeResultSet(fetchSize, isGlobalIndexed, resultSets, aggregators, comparators);
     }
