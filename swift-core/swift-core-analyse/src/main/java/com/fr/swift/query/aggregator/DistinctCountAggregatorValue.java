@@ -1,6 +1,7 @@
 package com.fr.swift.query.aggregator;
 
-import com.fr.swift.bitmap.impl.RoaringMutableBitMap;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Xiaolei.liu
@@ -10,31 +11,34 @@ public class DistinctCountAggregatorValue implements AggregatorValue<Double> {
 
 
     private static final long serialVersionUID = -6054571707233716739L;
-    private RoaringMutableBitMap bitMap = (RoaringMutableBitMap) RoaringMutableBitMap.of();
+    private Set set = new HashSet();
 
-    public RoaringMutableBitMap getBitMap() {
-        return bitMap;
+    public Set getBitMap() {
+        return set;
     }
 
-    public void setBitMap(RoaringMutableBitMap bitMap) {
-        this.bitMap = bitMap;
+    public void setBitMap(Set set) {
+        this.set = set;
     }
 
     @Override
     public double calculate() {
-        return bitMap.getCardinality();
+        return set.size();
     }
 
     @Override
     public Double calculateValue() {
-        return Double.valueOf(bitMap.getCardinality());
+        return Double.valueOf(set.size());
     }
 
     @Override
     public Object clone() {
         DistinctCountAggregatorValue value = new DistinctCountAggregatorValue();
-        value.bitMap = (RoaringMutableBitMap) RoaringMutableBitMap.of();
-        value.bitMap.or(this.bitMap);
+        Set copy = new HashSet();
+        for (Object item : set) {
+            copy.add(item);
+        }
+        value.setBitMap(copy);
         return value;
     }
 }

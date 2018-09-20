@@ -1,10 +1,11 @@
 package com.fr.swift.query.aggregator;
 
-import com.fr.swift.bitmap.MutableBitMap;
-import com.fr.swift.bitmap.impl.RoaringMutableBitMap;
 import com.fr.swift.bitmap.traversal.CalculatorTraversalAction;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.structure.iterator.RowTraversal;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Xiaolei.liu
@@ -18,7 +19,7 @@ public class DistinctAggregate implements Aggregator<DistinctCountAggregatorValu
     public DistinctCountAggregatorValue aggregate(RowTraversal traversal, final Column column) {
 
         DistinctCountAggregatorValue distinctCount = new DistinctCountAggregatorValue();
-        final MutableBitMap bitMap = RoaringMutableBitMap.of();
+        final Set set = new HashSet();
         traversal.traversal(new CalculatorTraversalAction() {
             @Override
             public double getCalculatorValue() {
@@ -27,10 +28,10 @@ public class DistinctAggregate implements Aggregator<DistinctCountAggregatorValu
 
             @Override
             public void actionPerformed(int row) {
-                bitMap.add(column.getDictionaryEncodedColumn().getGlobalIndexByRow(row));
+                set.add(column.getDictionaryEncodedColumn().getValueByRow(row));
             }
         });
-        distinctCount.setBitMap((RoaringMutableBitMap) bitMap);
+        distinctCount.setBitMap(set);
         return distinctCount;
     }
 
@@ -46,6 +47,6 @@ public class DistinctAggregate implements Aggregator<DistinctCountAggregatorValu
 
     @Override
     public void combine(DistinctCountAggregatorValue value, DistinctCountAggregatorValue other) {
-        value.getBitMap().or(other.getBitMap());
+        value.getBitMap().addAll(other.getBitMap());
     }
 }

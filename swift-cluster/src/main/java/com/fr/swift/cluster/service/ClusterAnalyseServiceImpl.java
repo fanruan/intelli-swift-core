@@ -57,6 +57,7 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
 
     @Override
     public SwiftResultSet getRemoteQueryResult(final String jsonString, final SegmentDestination remoteURI) {
+        SwiftLoggers.getLogger().debug("query: " + jsonString + "\n" + "node: " + remoteURI.toString());
         final SwiftResultSet[] resultSet = new SwiftResultSet[1];
         try {
             final CountDownLatch latch = new CountDownLatch(1);
