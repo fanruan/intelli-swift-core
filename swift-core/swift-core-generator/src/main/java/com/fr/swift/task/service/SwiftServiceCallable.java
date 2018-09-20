@@ -1,5 +1,6 @@
 package com.fr.swift.task.service;
 
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;
 
 import java.util.ArrayList;
@@ -26,10 +27,13 @@ public abstract class SwiftServiceCallable implements ServiceCallable {
     }
 
     @Override
-    public Object call() throws Exception {
+    public Object call() {
         try {
             doJob();
             return true;
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
+            return false;
         } finally {
             finishJob();
         }
