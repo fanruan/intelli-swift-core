@@ -22,10 +22,16 @@ public class SelectInvokerImpl extends BaseSelectInvoker {
         this.caller = caller;
     }
 
+    public SelectInvokerImpl(String queryJson, SwiftDatabase database, JdbcCaller.SelectJdbcCaller caller) {
+        super(queryJson);
+        this.database = database;
+        this.caller = caller;
+    }
+
     @Override
     public SwiftResultSet invoke() throws SQLException {
         try {
-            return caller.query(database, queryBean.toString());
+            return caller.query(database, queryJson);
         } catch (Exception e) {
             throw new SQLException(e);
         }
