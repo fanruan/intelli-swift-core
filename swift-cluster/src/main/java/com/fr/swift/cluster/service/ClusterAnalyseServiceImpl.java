@@ -97,6 +97,9 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
                             }
                         }
                         if (resultSet[0] == null) {
+                            // 远程查询抛错这边应该知晓
+                            // TODO 远程查询抛错应该怎么处理
+                            SwiftLoggers.getLogger().error("Query remote node error! ", e);
                             latch.countDown();
                         }
                     } catch (Exception e1) {
