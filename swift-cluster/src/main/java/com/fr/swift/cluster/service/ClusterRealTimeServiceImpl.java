@@ -7,6 +7,7 @@ import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.RpcFuture;
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.cluster.listener.NodeStartedListener;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
@@ -75,12 +76,22 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
         realtimeService.start();
         repositoryManager = SwiftContext.get().getBean(SwiftRepositoryManager.class);
         segmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
+        NodeStartedListener.INSTANCE.registerTask(new NodeStartedListener.NodeStartedTask() {
+            @Override
+            public void run() {
+                sendLocalSegmentInfo();
+            }
+        });
+        sendLocalSegmentInfo();
+        existsTableKey = new HashSet<SourceKey>();
+        return super.start();
+    }
+
+    private void sendLocalSegmentInfo() {
         SegmentLocationInfo info = loadSelfSegmentDestination();
         if (null != info) {
             rpcSegmentLocation(new PushSegLocationRpcEvent(info));
         }
-        existsTableKey = new HashSet<SourceKey>();
-        return super.start();
     }
 
     @Override

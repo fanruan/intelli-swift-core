@@ -5,6 +5,7 @@ import com.fr.swift.annotation.RpcMethod;
 import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.cluster.listener.NodeStartedListener;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftCubePathService;
@@ -80,6 +81,16 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
         repositoryManager = SwiftContext.get().getBean(SwiftRepositoryManager.class);
         tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
         cubePathService = SwiftContext.get().getBean(SwiftCubePathService.class);
+        NodeStartedListener.INSTANCE.registerTask(new NodeStartedListener.NodeStartedTask() {
+            @Override
+            public void run() {
+                sendLocalSegmentInfo();
+            }
+        });
+        return super.start();
+    }
+
+    private void sendLocalSegmentInfo() {
         SegmentLocationInfo info = loadSelfSegmentDestination();
         if (null != info) {
             try {
@@ -88,7 +99,6 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
                 SwiftLoggers.getLogger().warn("Cannot sync native segment info to server! ", e);
             }
         }
-        return super.start();
     }
 
     @Override
