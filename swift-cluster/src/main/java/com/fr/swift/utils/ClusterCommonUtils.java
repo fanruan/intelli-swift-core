@@ -41,8 +41,7 @@ public class ClusterCommonUtils {
 
     public static <T> RpcFuture runAsyncRpc(URL url, Class<T> clazz, Method method, Object... args) throws Exception {
         ProxyFactory factory = null;
-        if (!ClusterSelector.getInstance().getFactory().isCluster()
-                || ComparatorUtils.equals(ClusterSelector.getInstance().getFactory().getCurrentId(),
+        if (ComparatorUtils.equals(ClusterSelector.getInstance().getFactory().getCurrentId(),
                 url.getDestination().getId())) {
             factory = new LocalProxyFactory();
         } else {
@@ -64,8 +63,7 @@ public class ClusterCommonUtils {
     public static Serializable runSyncMaster(SwiftRpcEvent event) {
         URL url = getMasterURL();
         ProxyFactory factory = null;
-        if (!ClusterSelector.getInstance().getFactory().isCluster()
-                || ComparatorUtils.equals(ClusterSelector.getInstance().getFactory().getCurrentId(),
+        if (ComparatorUtils.equals(ClusterSelector.getInstance().getFactory().getCurrentId(),
                 url.getDestination().getId())) {
             factory = new LocalProxyFactory();
         } else {

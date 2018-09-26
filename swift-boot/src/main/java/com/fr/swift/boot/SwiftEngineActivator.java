@@ -7,6 +7,7 @@ import com.fr.module.Activator;
 import com.fr.module.extension.Prepare;
 import com.fr.stable.db.constant.BaseDBConstant;
 import com.fr.swift.boot.upgrade.UpgradeTask;
+import com.fr.swift.cluster.listener.NodeStartedListener;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.context.SwiftConfigContext;
 import com.fr.swift.context.SwiftContext;
@@ -41,6 +42,7 @@ public class SwiftEngineActivator extends Activator implements Prepare {
 
         ClusterListenerHandler.addListener(new FRClusterListener());
         SwiftContext.init();
+        ClusterListenerHandler.addListener(NodeStartedListener.INSTANCE);
         SwiftConfigContext.getInstance().init();
         FineIO.setLogger(new FineIOLoggerImpl());
         SwiftContext.get().getBean("localManager", ServiceManager.class).startUp();
