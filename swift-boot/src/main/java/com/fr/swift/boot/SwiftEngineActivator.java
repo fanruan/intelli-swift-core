@@ -2,6 +2,7 @@ package com.fr.swift.boot;
 
 import com.fineio.FineIO;
 import com.fr.cluster.entry.ClusterTicketKey;
+import com.fr.io.base.WebInfResourceFolders;
 import com.fr.module.Activator;
 import com.fr.module.extension.Prepare;
 import com.fr.stable.db.constant.BaseDBConstant;
@@ -11,9 +12,14 @@ import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.context.SwiftConfigContext;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.ProviderTaskManager;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.log.FineIOLoggerImpl;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.service.MaskHistoryListener;
+import com.fr.swift.service.RemoveHistoryListener;
+import com.fr.swift.service.TransferRealtimeListener;
+import com.fr.swift.service.UploadHistoryListener;
 import com.fr.swift.service.local.ServiceManager;
 
 /**
@@ -41,6 +47,19 @@ public class SwiftEngineActivator extends Activator implements Prepare {
         FineIO.setLogger(new FineIOLoggerImpl());
         SwiftContext.get().getBean("localManager", ServiceManager.class).startUp();
         ProviderTaskManager.start();
+
+        TransferRealtimeListener.listen();
+        UploadHistoryListener.listen();
+        MaskHistoryListener.listen();
+        RemoveHistoryListener.listen();
+
+        registerResourceIoPath();
+    }
+
+    private static void registerResourceIoPath() {
+        for (SwiftDatabase schema : SwiftDatabase.values()) {
+            WebInfResourceFolders.add(String.format("%s", schema.getDir()));
+        }
     }
 
     private void upgrade() {
