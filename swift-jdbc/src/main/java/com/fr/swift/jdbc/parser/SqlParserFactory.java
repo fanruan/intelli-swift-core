@@ -19,6 +19,7 @@ import java.io.StringReader;
  */
 public class SqlParserFactory {
     public static SqlInvoker parseSql(String sql, SwiftDatabase schema, JdbcCaller.SelectJdbcCaller caller, JdbcCaller.MaintenanceJdbcCaller maintain) throws JSQLParserException {
+        sql = sql.trim();
         if (isJsonQuery(sql)) {
             return new SelectInvokerImpl(sql.substring(SwiftJdbcConstants.JSON_QUERY_HEAD_LENGTH), schema, caller);
         }
@@ -34,6 +35,6 @@ public class SqlParserFactory {
     }
 
     private static boolean isJsonQuery(String sql) {
-        return sql.trim().toLowerCase().startsWith(SwiftJdbcConstants.KeyWords.JSON_QUERY);
+        return sql.toLowerCase().startsWith(SwiftJdbcConstants.KeyWords.JSON_QUERY);
     }
 }
