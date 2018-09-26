@@ -94,7 +94,7 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
         SegmentLocationInfo info = loadSelfSegmentDestination();
         if (null != info) {
             try {
-                ClusterCommonUtils.asyncCallMaster(new PushSegLocationRpcEvent(info));
+                ClusterCommonUtils.runSyncMaster(new PushSegLocationRpcEvent(info));
             } catch (Exception e) {
                 SwiftLoggers.getLogger().warn("Cannot sync native segment info to server! ", e);
             }
