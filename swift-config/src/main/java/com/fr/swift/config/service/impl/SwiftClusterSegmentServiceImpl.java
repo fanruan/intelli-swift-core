@@ -38,9 +38,10 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
     @Autowired
     private SwiftSegmentLocationDao segmentLocationDao;
 
-    private String clusterId;
+    private String clusterId = "LOCAL";
 
-    public SwiftClusterSegmentServiceImpl() {
+    @Override
+    public void checkOldConfig() {
         try {
             transactionManager.doTransactionIfNeed(new HibernateTransactionManager.HibernateWorker<Void>() {
                 @Override
