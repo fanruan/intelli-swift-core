@@ -15,8 +15,8 @@ import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 import com.fr.swift.source.alloter.impl.line.LineSourceAlloter;
+import com.fr.swift.source.resultset.IterableResultSet;
 import com.fr.swift.source.resultset.LimitedResultSet;
-import com.fr.swift.source.resultset.ListResultSet;
 
 import java.sql.SQLException;
 import java.util.Collections;
@@ -86,7 +86,7 @@ public abstract class BaseBlockInserter implements Inserter {
 
     @Override
     public void insertData(List<Row> rowList) throws Exception {
-        insertData(new ListResultSet(dataSource.getMetadata(), rowList));
+        insertData(new IterableResultSet(rowList, dataSource.getMetadata()));
     }
 
     @Override

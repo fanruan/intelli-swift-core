@@ -4,7 +4,7 @@ import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.resultset.CoSwiftResultSet;
-import com.fr.swift.source.resultset.ListResultSet;
+import com.fr.swift.source.resultset.IterableResultSet;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -39,12 +39,12 @@ public class CoSwiftResultSetTest {
                 new ListBasedRow(Collections.singletonList(4))
         );
         List<SwiftResultSet> resultSets = Arrays.asList(
-                new ListResultSet(null, Collections.emptyList()),
-                new ListResultSet(null, rows.subList(0, 3)),
-                new ListResultSet(null, Collections.emptyList()),
-                new ListResultSet(null, rows.subList(3, 3)),
-                new ListResultSet(null, rows.subList(3, 5)),
-                new ListResultSet(null, Collections.emptyList())
+                new IterableResultSet(Collections.emptyList(), null),
+                new IterableResultSet(rows.subList(0, 3), null),
+                new IterableResultSet(Collections.emptyList(), null),
+                new IterableResultSet(rows.subList(3, 3), null),
+                new IterableResultSet(rows.subList(3, 5), null),
+                new IterableResultSet(Collections.emptyList(), null)
         );
 
         SwiftResultSet resultSet = new CoSwiftResultSet(resultSets);
