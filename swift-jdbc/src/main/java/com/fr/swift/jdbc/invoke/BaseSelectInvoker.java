@@ -9,10 +9,14 @@ import com.fr.swift.source.SwiftResultSet;
  */
 public abstract class BaseSelectInvoker implements SqlInvoker<SwiftResultSet> {
 
-    protected QueryBean queryBean;
+    protected String queryJson;
 
     public BaseSelectInvoker(QueryBean queryBean) {
-        this.queryBean = queryBean;
+        this.queryJson = queryBean.toString();
+    }
+
+    public BaseSelectInvoker(String queryJson) {
+        this.queryJson = queryJson;
     }
 
     @Override
