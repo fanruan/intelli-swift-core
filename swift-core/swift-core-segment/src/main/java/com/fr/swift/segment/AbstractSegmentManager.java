@@ -83,7 +83,7 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
                     Restrictions.in("id", segmentIds));
         }
         if (keys.isEmpty()) {
-            return getSegment(table);
+            return Collections.emptyList();
         }
         Integer currentFolder = getCurrentFolder(tablePathService, table);
         return keys2Segments(keys, currentFolder);
