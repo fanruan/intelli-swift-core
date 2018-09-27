@@ -6,6 +6,7 @@ import com.fr.swift.cluster.entity.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.service.DataSyncRuleService;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
+import com.fr.swift.cube.io.Types;
 import com.fr.swift.event.analyse.SegmentLocationRpcEvent;
 import com.fr.swift.event.base.EventResult;
 import com.fr.swift.event.history.SegmentLoadRpcEvent;
@@ -65,7 +66,7 @@ public class HistoryDataSyncManager extends AbstractHandler<SegmentLoadRpcEvent>
                 } else {
                     needLoadSegments.putAll(allSegments);
                 }
-                dealNeedLoadSegments(services, needLoadSegments, SegmentLocationInfo.UpdateType.ALL, 0);
+                dealNeedLoadSegments(services, filterHistorySegments(needLoadSegments), SegmentLocationInfo.UpdateType.ALL, 0);
                 break;
             case TRANS_COLLATE_LOAD:
                 Pair<String, List<String>> content = (Pair<String, List<String>>) event.getContent();
@@ -165,5 +166,18 @@ public class HistoryDataSyncManager extends AbstractHandler<SegmentLoadRpcEvent>
         return eventResult;
     }
 
-
+    private Map<String, List<SegmentKey>> filterHistorySegments(Map<String, List<SegmentKey>> source) {
+        Map<String, List<SegmentKey>> result = new HashMap<String, List<SegmentKey>>();
+        for (Map.Entry<String, List<SegmentKey>> entry : source.entrySet()) {
+            if (null == result.get(entry.getKey())) {
+                result.put(entry.getKey(), new ArrayList<SegmentKey>());
+            }
+            for (SegmentKey segmentKey : entry.getValue()) {
+                if (segmentKey.getStoreType() != Types.StoreType.MEMORY) {
+                    result.get(entry.getKey()).add(segmentKey);
+                }
+            }
+        }
+        return result;
+    }
 }
