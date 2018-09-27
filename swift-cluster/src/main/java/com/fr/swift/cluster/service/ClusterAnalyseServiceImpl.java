@@ -5,6 +5,8 @@ import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.RpcFuture;
+import com.fr.swift.cluster.listener.NodeStartedListener;
+import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
@@ -95,6 +97,9 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
                             }
                         }
                         if (resultSet[0] == null) {
+                            // 远程查询抛错这边应该知晓
+                            // TODO 远程查询抛错应该怎么处理
+                            SwiftLoggers.getLogger().error("Query remote node error! ", e);
                             latch.countDown();
                         }
                     } catch (Exception e1) {
@@ -117,11 +122,21 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
         analyseService.start();
         segmentProvider = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
         // 这边为了覆盖掉analyse的注册，所以再调一次注册
+        super.start();
+        NodeStartedListener.INSTANCE.registerTask(new NodeStartedListener.NodeStartedTask() {
+            @Override
+            public void run() {
+                loadSegmentLocationInfo();
+            }
+        });
+        return true;
+    }
+
+    private void loadSegmentLocationInfo() {
         if (loadable) {
             loadSelfSegmentDestination();
             loadable = false;
         }
-        super.start();
         List<Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo>> result =
                 (List<Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo>>) ClusterCommonUtils.runSyncMaster(new RequestSegLocationEvent(getID()));
         if (!result.isEmpty()) {
@@ -129,7 +144,6 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
                 updateSegmentInfo(pair.getValue(), pair.getKey());
             }
         }
-        return true;
     }
 
     @Override
@@ -188,7 +202,9 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
     }
 
     private void loadSelfSegmentDestination() {
-        Map<String, List<SegmentKey>> segments = segmentProvider.getOwnSegments();
+        SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
+        clusterSegmentService.setClusterId(getID());
+        Map<String, List<SegmentKey>> segments = clusterSegmentService.getOwnSegments();
         if (!segments.isEmpty()) {
             Map<String, List<SegmentDestination>> hist = new HashMap<String, List<SegmentDestination>>();
             Map<String, List<SegmentDestination>> realTime = new HashMap<String, List<SegmentDestination>>();

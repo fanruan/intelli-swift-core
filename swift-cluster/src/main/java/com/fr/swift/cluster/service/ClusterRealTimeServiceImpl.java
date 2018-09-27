@@ -4,9 +4,8 @@ import com.fr.event.EventDispatcher;
 import com.fr.swift.annotation.RpcMethod;
 import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.SwiftService;
-import com.fr.swift.basics.AsyncRpcCallback;
-import com.fr.swift.basics.RpcFuture;
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.cluster.listener.NodeStartedListener;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
@@ -75,12 +74,21 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
         realtimeService.start();
         repositoryManager = SwiftContext.get().getBean(SwiftRepositoryManager.class);
         segmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
+        NodeStartedListener.INSTANCE.registerTask(new NodeStartedListener.NodeStartedTask() {
+            @Override
+            public void run() {
+                sendLocalSegmentInfo();
+            }
+        });
+        existsTableKey = new HashSet<SourceKey>();
+        return super.start();
+    }
+
+    private void sendLocalSegmentInfo() {
         SegmentLocationInfo info = loadSelfSegmentDestination();
         if (null != info) {
             rpcSegmentLocation(new PushSegLocationRpcEvent(info));
         }
-        existsTableKey = new HashSet<SourceKey>();
-        return super.start();
     }
 
     @Override
@@ -126,18 +134,7 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
 
     private void rpcSegmentLocation(PushSegLocationRpcEvent event) {
         try {
-            RpcFuture future = ClusterCommonUtils.asyncCallMaster(event);
-            future.addCallback(new AsyncRpcCallback() {
-                @Override
-                public void success(Object result) {
-                    logger.info("rpcTrigger success! ");
-                }
-
-                @Override
-                public void fail(Exception e) {
-                    logger.error("rpcTrigger error! ", e);
-                }
-            });
+            ClusterCommonUtils.runSyncMaster(event);
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         }

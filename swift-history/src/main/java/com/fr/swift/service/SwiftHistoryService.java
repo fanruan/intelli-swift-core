@@ -10,7 +10,6 @@ import com.fr.swift.config.service.impl.SwiftSegmentServiceProvider;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Where;
-import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
@@ -20,6 +19,7 @@ import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.manager.SwiftRepositoryManager;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.operator.delete.WhereDeleter;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
@@ -236,7 +236,13 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.DELETE) {
             @Override
             public void doJob() throws Exception {
-                SwiftDatabase.getInstance().getTable(tableKey).delete(where);
+                List<SegmentKey> segments = segmentManager.getSegmentKeys(tableKey);
+                for (SegmentKey segment : segments) {
+                    if (segment.getStoreType() != Types.StoreType.MEMORY) {
+                        WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segment);
+                        whereDeleter.delete(where);
+                    }
+                }
             }
         });
         return true;

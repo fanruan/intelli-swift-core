@@ -41,6 +41,6 @@ import com.fr.third.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = AllShowFilterBean.class, name = "ALL_SHOW"),
         @JsonSubTypes.Type(value = EmptyFilterBean.class, name = "EMPTY")
 })
-@JsonIgnoreProperties(value = {"childrenExpr"})
+@JsonIgnoreProperties(value = {"childrenExpr", "child"})
 public interface FilterInfoBean<T> extends FilterBean<T> {
 }
