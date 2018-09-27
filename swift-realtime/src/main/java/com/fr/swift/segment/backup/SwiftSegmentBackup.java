@@ -1,7 +1,7 @@
 package com.fr.swift.segment.backup;
 
 import com.fr.swift.source.Row;
-import com.fr.swift.transatcion.TransactionManager;
+import com.fr.swift.transaction.TransactionManager;
 
 /**
  * This class created on 2018/6/22

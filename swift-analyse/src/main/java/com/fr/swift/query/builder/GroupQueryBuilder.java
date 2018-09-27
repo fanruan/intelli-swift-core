@@ -4,6 +4,7 @@ import com.fr.swift.query.info.bean.parser.QueryInfoParser;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.info.group.GroupQueryInfo;
+import com.fr.swift.query.post.PrepareMetaDataQuery;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.query.remote.RemoteQueryImpl;
@@ -13,7 +14,6 @@ import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.source.SourceKey;
 import com.fr.third.fasterxml.jackson.core.JsonProcessingException;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -33,13 +33,14 @@ class GroupQueryBuilder {
     static Query<NodeResultSet> buildQuery(GroupQueryInfoBean bean) throws Exception {
         GroupQueryInfo info = (GroupQueryInfo) QueryInfoParser.parse(bean);
         SourceKey table = info.getTable();
-        // TODO 这边先直接写成History
         List<SegmentDestination> uris = SegmentLocationProvider.getInstance().getSegmentLocationURI(table);
+        Query<NodeResultSet> query;
         if (GroupQueryInfoUtils.isPagingQuery(info)) {
-            return buildQuery(uris, info, bean, LocalGroupQueryBuilder.PAGING);
+            query = buildQuery(uris, info, bean, LocalGroupQueryBuilder.PAGING);
         } else {
-            return buildQuery(uris, info, bean, LocalGroupQueryBuilder.ALL);
+            query = buildQuery(uris, info, bean, LocalGroupQueryBuilder.ALL);
         }
+        return new PrepareMetaDataQuery<NodeResultSet>(query, bean);
     }
 
     /**
@@ -95,7 +96,7 @@ class GroupQueryBuilder {
             return builder.buildPostQuery(builder.buildLocalQuery(info), info);
         }
         List<Query<NodeResultSet>> queries = new ArrayList<Query<NodeResultSet>>();
-        Set<URI> localURIs = DetailQueryBuilder.getLocalSegments(uris);
+        Set<String> localURIs = DetailQueryBuilder.getLocalSegments(uris);
         if (!localURIs.isEmpty()) {
             info.setQuerySegment(localURIs);
             queries.add(builder.buildLocalQuery(info));
@@ -107,6 +108,7 @@ class GroupQueryBuilder {
             Map.Entry<String, List<SegmentDestination>> entry = map.entrySet().iterator().next();
             SegmentDestination destination = entry.getValue().get(0);
             queryBean.setQueryDestination(destination);
+            queryBean.setQuerySegments(DetailQueryBuilder.getQuerySegments(entry.getValue()));
             String jsonString = QueryInfoBeanFactory.queryBean2String(queryBean);
             return new RemoteQueryImpl<NodeResultSet>(jsonString, destination);
         }
@@ -119,6 +121,8 @@ class GroupQueryBuilder {
             String jsonString = QueryInfoBeanFactory.queryBean2String(queryBean);
             queries.add(new RemoteQueryImpl<NodeResultSet>(jsonString, destination));
         }
+        // TODO: 2018/9/17 这边要把queryType设置回去。。先改个阻塞bug，暂时这么处理
+        queryBean.setQueryType(QueryType.GROUP);
         // 多个节点的ResultQuery合并之后在处理List<PostQueryInfo>
         return builder.buildPostQuery(builder.buildResultQuery(queries, info), info);
     }

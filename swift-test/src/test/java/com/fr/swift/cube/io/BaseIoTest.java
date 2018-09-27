@@ -2,8 +2,7 @@ package com.fr.swift.cube.io;
 
 
 import com.fr.swift.test.Preparer;
-import com.fr.swift.test.TestResource;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Random;
@@ -15,11 +14,13 @@ import java.util.Random;
 public abstract class BaseIoTest {
     final Random r = new Random();
     static final int BOUND = 100000;
-    public static final String CUBES_PATH = TestResource.getRunPath(BaseIoTest.class) + "/cubes/table/seg0/column";
+    public static final String CUBES_PATH = "cubes/table/seg0/column";
 
-    @BeforeClass
-    public static void boot() throws Exception {
-        Preparer.prepareCubeBuild();
+    long pos = 0;
+
+    @Before
+    public void boot() {
+        Preparer.prepareCubeBuild(getClass());
     }
 
     @Test

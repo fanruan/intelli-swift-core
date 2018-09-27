@@ -114,7 +114,7 @@ public final class QueryBuilder {
      */
     private static <T extends SwiftResultSet> Query<T> buildLocalAllQuery(QueryBean bean) {
         QueryInfo info = QueryInfoParser.parse((QueryInfoBean) bean);
-        QueryType type = info.getType();
+        QueryType type = bean.getQueryType();
         if (type == QueryType.LOCAL_GROUP_ALL) {
             return (Query<T>) GroupQueryBuilder.buildLocalAllQuery((GroupQueryInfo) info);
         } else {

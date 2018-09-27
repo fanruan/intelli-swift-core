@@ -15,7 +15,7 @@ import com.fr.swift.ClusterNodeManager;
 public class FRClusterNodeManager implements ClusterNodeManager<ClusterNode> {
 
     private ClusterNode masterNode;
-    private ClusterNode currentNode;
+    private final ClusterNode currentNode;
     private boolean isCluster;
 
     private static final FRClusterNodeManager INSTANCE = new FRClusterNodeManager();
@@ -32,11 +32,6 @@ public class FRClusterNodeManager implements ClusterNodeManager<ClusterNode> {
     @Override
     public void setMasterNode(ClusterNode masterNode) {
         this.masterNode = masterNode;
-    }
-
-    @Override
-    public void setCurrentNode(ClusterNode currentNode) {
-        this.currentNode = currentNode;
     }
 
     @Override

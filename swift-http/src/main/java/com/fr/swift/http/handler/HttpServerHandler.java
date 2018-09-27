@@ -77,7 +77,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-        LOGGER.info("Http server read complete!");
+        LOGGER.debug("Http server read complete!");
         ctx.flush();
     }
 

@@ -5,6 +5,8 @@ import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.group.info.IndexInfo;
+import com.fr.swift.query.group.info.IndexInfoImpl;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.segment.detail.NormalDetailSegmentQuery;
 import com.fr.swift.query.segment.detail.SortDetailSegmentQuery;
@@ -18,6 +20,7 @@ import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.Row;
 import com.fr.swift.structure.Pair;
+import com.fr.swift.test.Temps.TempDictColumn;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
@@ -31,7 +34,7 @@ import java.util.List;
 public class DetailResultSetTest extends TestCase {
 
     private DetailFilter filter;
-    private List<Column> columnList = new ArrayList<Column>();
+    private List<Pair<Column, IndexInfo>> columnList = new ArrayList<>();
     private MutableBitMap bitMap = BitSetMutableBitMap.newInstance();
     private List<Query<DetailResultSet>> queries = new ArrayList<Query<DetailResultSet>>();
     private Column<Integer> intColumn;
@@ -49,27 +52,15 @@ public class DetailResultSetTest extends TestCase {
                 int[] intDetail = {2, 2, 4, 3, 2, 3, 4, 2};
                 List<Integer> keys = Arrays.asList(2, 3, 4);
                 final int[] index = {0, 0, 2, 1, 0, 1, 2, 0};
-                return new DictionaryEncodedColumn<Integer>() {
-                    @Override
-                    public void putSize(int size) {
-                    }
-
+                return new TempDictColumn<Integer>() {
                     @Override
                     public int size() {
                         return keys.size();
                     }
 
                     @Override
-                    public void putGlobalSize(int globalSize) {
-                    }
-
-                    @Override
                     public int globalSize() {
                         return keys.size();
-                    }
-
-                    @Override
-                    public void putValue(int index, Integer val) {
                     }
 
                     @Override
@@ -88,17 +79,8 @@ public class DetailResultSetTest extends TestCase {
                     }
 
                     @Override
-                    public void putIndex(int row, int index) {
-                    }
-
-                    @Override
                     public int getIndexByRow(int row) {
                         return keys.indexOf(intDetail[row]);
-                    }
-
-                    @Override
-                    public void putGlobalIndex(int index, int globalIndex) {
-
                     }
 
                     @Override
@@ -119,16 +101,6 @@ public class DetailResultSetTest extends TestCase {
                     @Override
                     public ColumnTypeConstants.ClassType getType() {
                         return ColumnTypeConstants.ClassType.INTEGER;
-                    }
-
-                    @Override
-                    public void flush() {
-
-                    }
-
-                    @Override
-                    public void release() {
-
                     }
                 };
             }
@@ -152,14 +124,10 @@ public class DetailResultSetTest extends TestCase {
             @Override
             public DictionaryEncodedColumn<Long> getDictionaryEncodedColumn() {
 
-                return new DictionaryEncodedColumn<Long>() {
+                return new TempDictColumn<Long>() {
                     long[] longDetail = {12, 18, 23, 18, 23, 18, 23, 12};
                     List<Long> keys = Arrays.asList(12L, 18L, 23L);
                     int[] index = {0, 1, 2, 1, 2, 1, 2, 0};
-
-                    @Override
-                    public void putSize(int size) {
-                    }
 
                     @Override
                     public int size() {
@@ -167,16 +135,8 @@ public class DetailResultSetTest extends TestCase {
                     }
 
                     @Override
-                    public void putGlobalSize(int globalSize) {
-                    }
-
-                    @Override
                     public int globalSize() {
                         return keys.size();
-                    }
-
-                    @Override
-                    public void putValue(int index, Long val) {
                     }
 
                     @Override
@@ -195,17 +155,8 @@ public class DetailResultSetTest extends TestCase {
                     }
 
                     @Override
-                    public void putIndex(int row, int index) {
-                    }
-
-                    @Override
                     public int getIndexByRow(int row) {
                         return keys.indexOf(longDetail[row]);
-                    }
-
-                    @Override
-                    public void putGlobalIndex(int index, int globalIndex) {
-
                     }
 
                     @Override
@@ -226,16 +177,6 @@ public class DetailResultSetTest extends TestCase {
                     @Override
                     public ColumnTypeConstants.ClassType getType() {
                         return ColumnTypeConstants.ClassType.LONG;
-                    }
-
-                    @Override
-                    public void flush() {
-
-                    }
-
-                    @Override
-                    public void release() {
-
                     }
                 };
             }
@@ -258,14 +199,10 @@ public class DetailResultSetTest extends TestCase {
         doubleColumn = new Column<Double>() {
             @Override
             public DictionaryEncodedColumn<Double> getDictionaryEncodedColumn() {
-                return new DictionaryEncodedColumn<Double>() {
+                return new TempDictColumn<Double>() {
                     double[] doubleDetail = {9.5, 50.2, 40.1, 12.3, 9.5, 12.3, 40.1, 9.5};
                     List<Double> keys = Arrays.asList(9.5, 12.3, 40.1, 50.2);
                     final int[] index = {0, 3, 2, 1, 0, 1, 2, 0};
-
-                    @Override
-                    public void putSize(int size) {
-                    }
 
                     @Override
                     public int size() {
@@ -273,16 +210,8 @@ public class DetailResultSetTest extends TestCase {
                     }
 
                     @Override
-                    public void putGlobalSize(int globalSize) {
-                    }
-
-                    @Override
                     public int globalSize() {
                         return keys.size();
-                    }
-
-                    @Override
-                    public void putValue(int index, Double val) {
                     }
 
                     @Override
@@ -301,17 +230,8 @@ public class DetailResultSetTest extends TestCase {
                     }
 
                     @Override
-                    public void putIndex(int row, int index) {
-                    }
-
-                    @Override
                     public int getIndexByRow(int row) {
                         return keys.indexOf(doubleDetail[row]);
-                    }
-
-                    @Override
-                    public void putGlobalIndex(int index, int globalIndex) {
-
                     }
 
                     @Override
@@ -332,16 +252,6 @@ public class DetailResultSetTest extends TestCase {
                     @Override
                     public ColumnTypeConstants.ClassType getType() {
                         return ColumnTypeConstants.ClassType.DOUBLE;
-                    }
-
-                    @Override
-                    public void flush() {
-
-                    }
-
-                    @Override
-                    public void release() {
-
                     }
                 };
             }
@@ -364,14 +274,10 @@ public class DetailResultSetTest extends TestCase {
         stringColumn = new Column<String>() {
             @Override
             public DictionaryEncodedColumn<String> getDictionaryEncodedColumn() {
-                return new DictionaryEncodedColumn<String>() {
+                return new TempDictColumn<String>() {
                     String strDetail[] = {"A", "B", "C", "B", "C", "B", "A", "C"};
                     final String[] keys = {"A", "B", "C"};
                     final int[] index = {0, 1, 2, 1, 2, 1, 0, 2};
-
-                    @Override
-                    public void putSize(int size) {
-                    }
 
                     @Override
                     public int size() {
@@ -379,16 +285,8 @@ public class DetailResultSetTest extends TestCase {
                     }
 
                     @Override
-                    public void putGlobalSize(int globalSize) {
-                    }
-
-                    @Override
                     public int globalSize() {
                         return keys.length;
-                    }
-
-                    @Override
-                    public void putValue(int index, String val) {
                     }
 
                     @Override
@@ -407,19 +305,9 @@ public class DetailResultSetTest extends TestCase {
                     }
 
                     @Override
-                    public void putIndex(int row, int index) {
-                    }
-
-                    @Override
                     public int getIndexByRow(int row) {
                         return Arrays.asList(keys).indexOf(strDetail[row]);
                     }
-
-                    @Override
-                    public void putGlobalIndex(int index, int globalIndex) {
-
-                    }
-
                     @Override
                     public int getGlobalIndexByIndex(int index) {
                         return 0;
@@ -438,16 +326,6 @@ public class DetailResultSetTest extends TestCase {
                     @Override
                     public ColumnTypeConstants.ClassType getType() {
                         return ColumnTypeConstants.ClassType.STRING;
-                    }
-
-                    @Override
-                    public void flush() {
-
-                    }
-
-                    @Override
-                    public void release() {
-
                     }
                 };
             }
@@ -476,10 +354,10 @@ public class DetailResultSetTest extends TestCase {
         bitMap.add(6);
         EasyMock.expect(filter.createFilterIndex()).andReturn(bitMap).anyTimes();
         control.replay();
-        columnList.add(intColumn);
-        columnList.add(longColumn);
-        columnList.add(doubleColumn);
-        columnList.add(stringColumn);
+        columnList.add(Pair.of(intColumn, new IndexInfoImpl(false, false)));
+        columnList.add(Pair.of(longColumn, new IndexInfoImpl(false, false)));
+        columnList.add(Pair.of(doubleColumn, new IndexInfoImpl(false, false)));
+        columnList.add(Pair.of(stringColumn, new IndexInfoImpl(false, false)));
     }
 
 
@@ -490,7 +368,7 @@ public class DetailResultSetTest extends TestCase {
         double[] doubleData = {9.5, 40.1, 9.5, 40.1};
         long[] longData = {12, 23, 23, 23};
         String[] strData = {"A", "C", "C", "A"};
-        DetailResultSet rs = new SegmentDetailResultSet(columnList, filter, null);
+        DetailResultSet rs = new SegmentDetailResultSet(Integer.MAX_VALUE, columnList, filter);
         try {
             while (rs.hasNext()) {
                 Row row = rs.getNextRow();
@@ -513,9 +391,9 @@ public class DetailResultSetTest extends TestCase {
         String[] strData = {"A", "C", "C", "A"};
 
         for (int j = 0; j < 3; j++) {
-            queries.add(new NormalDetailSegmentQuery(columnList, filter, null));
+            queries.add(new NormalDetailSegmentQuery(Integer.MAX_VALUE, columnList, filter));
         }
-        MultiSegmentDetailResultSet mrs = new MultiSegmentDetailResultSet(queries, null);
+        MultiSegmentDetailResultSet mrs = new MultiSegmentDetailResultSet(Integer.MAX_VALUE, queries);
         while (mrs.hasNext()) {
             Row row = mrs.getNextRow();
             assertEquals((int) row.getValue(0), intData[i]);
@@ -536,7 +414,7 @@ public class DetailResultSetTest extends TestCase {
         sorts.add(new DescSort(0));
         sorts.add(new AscSort(1));
         sorts.add(new DescSort(3));
-        DetailResultSet rs = new SortSegmentDetailResultSet(columnList, filter, sorts, null);
+        DetailResultSet rs = new SortSegmentDetailResultSet(Integer.MAX_VALUE, columnList, filter, sorts);
 
 //      [2, 12, 9.5, A]  => [4, 23, 40.1, C]
 //      [4, 23, 40.1, C]    [4, 23, 40.1, A]
@@ -568,13 +446,13 @@ public class DetailResultSetTest extends TestCase {
         sorts.add(new AscSort(1));
         sorts.add(new DescSort(3));
         for (int j = 0; j < 3; j++) {
-            queries.add(new SortDetailSegmentQuery(columnList, filter, sorts, null));
+            queries.add(new SortDetailSegmentQuery(Integer.MAX_VALUE, columnList, filter, sorts));
         }
         List<Pair<Sort, Comparator>> pairs = new ArrayList<>();
         pairs.add(Pair.of(new DescSort(0), Comparators.<Integer>asc()));
         pairs.add(Pair.of(new AscSort(1), Comparators.<String>asc()));
         pairs.add(Pair.of(new DescSort(3), Comparators.<Double>asc()));
-        DetailResultSet rs = new SortMultiSegmentDetailResultSet(queries, pairs, null);
+        DetailResultSet rs = new SortMultiSegmentDetailResultSet(Integer.MAX_VALUE, queries, pairs);
         try {
             while (rs.hasNext()) {
                 Row row = rs.getNextRow();

@@ -1,7 +1,6 @@
 package com.fr.swift.netty.rpc.client;
 
-import com.fr.swift.log.SwiftLogger;
-import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 
 import java.util.concurrent.ExecutorService;
@@ -15,9 +14,7 @@ import java.util.concurrent.ExecutorService;
  */
 public class RpcClient {
 
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(RpcClient.class);
-
-    private static ExecutorService executorService = SwiftExecutors.newFixedThreadPool(16);
+    private static ExecutorService executorService = SwiftExecutors.newFixedThreadPool(16, new PoolThreadFactory(RpcClient.class));
 
     public static void submit(Runnable task) {
         executorService.submit(task);

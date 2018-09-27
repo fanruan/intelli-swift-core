@@ -7,25 +7,39 @@ import com.fr.log.message.AbstractMessage;
 import com.fr.stable.StringUtils;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.data.DataList;
+import com.fr.swift.context.SwiftContext;
+import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.event.ClusterEvent;
+import com.fr.swift.event.ClusterEventListener;
+import com.fr.swift.event.ClusterEventType;
+import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.info.bean.element.filter.impl.AndFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NotFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NullFilterBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
-import com.fr.swift.query.info.element.metric.Metric;
-import com.fr.swift.query.query.QueryRunnerProvider;
+import com.fr.swift.query.info.bean.type.MetricType;
+import com.fr.swift.query.query.QueryBean;
+import com.fr.swift.repository.SwiftRepositoryManager;
+import com.fr.swift.result.DetailResultSet;
+import com.fr.swift.service.AnalyseService;
+import com.fr.swift.service.cluster.ClusterAnalyseService;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.iterator.IteratorUtils;
 import com.fr.swift.structure.iterator.MapperIterator;
+import com.fr.swift.util.Crasher;
+import com.fr.swift.util.JpaAdaptor;
 import com.fr.swift.util.function.Function;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by Lyon on 2018/6/21.
@@ -37,7 +51,20 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
         return instance;
     }
 
+    private AnalyseService analyseService;
+
     private SwiftLogSearchProvider() {
+        analyseService = SwiftContext.get().getBean("swiftAnalyseService", AnalyseService.class);
+        ClusterListenerHandler.addListener(new ClusterEventListener() {
+            @Override
+            public void handleEvent(ClusterEvent clusterEvent) {
+                if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
+                    analyseService = SwiftContext.get().getBean(ClusterAnalyseService.class);
+                } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
+                    analyseService = SwiftContext.get().getBean("swiftAnalyseService", AnalyseService.class);
+                }
+            }
+        });
     }
 
     @Override
@@ -47,7 +74,11 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
 
     @Override
     public int count(Class<? extends AbstractMessage> logClass, QueryCondition condition) throws Exception {
-        return countQuery(logClass, condition, "", null);
+        List<Field> fields = JpaAdaptor.getFields(logClass);
+        if (fields.isEmpty()) {
+            return Crasher.crash("Unsupported Operation: count without field name!");
+        }
+        return countQuery(logClass, condition, fields.get(0).getName(), null);
     }
 
     @Override
@@ -65,7 +96,13 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
     public List<Object> getValueByColumn(Class<? extends AbstractMessage> logClass, QueryCondition condition, String columnName) throws Exception {
         List<String> fieldNames = new ArrayList<String>();
         fieldNames.add(columnName);
-        List<Row> rows = LogQueryUtils.detailQuery(logClass, condition, fieldNames).getList();
+        QueryBean queryBean = LogQueryUtils.detailQuery(logClass, condition, fieldNames);
+
+        SwiftResultSet resultSet = analyseService.getQueryResult(queryBean);
+        DataList<Row> dataList = new DataList<Row>();
+        dataList.setList(LogQueryUtils.getPage(resultSet, condition));
+        dataList.setTotalCount(((DetailResultSet) resultSet).getRowCount());
+        List<Row> rows = dataList.getList();
         return IteratorUtils.iterator2List(new MapperIterator<Row, Object>(rows.iterator(), new Function<Row, Object>() {
             @Override
             public Object apply(Row p) {
@@ -78,8 +115,10 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
     public List<Object> getDistinctValueByColumn(Class<? extends AbstractMessage> logClass, QueryCondition condition, String columnName) throws Exception {
         List<String> fieldNames = new ArrayList<String>();
         fieldNames.add(columnName);
-        List<Row> rows = LogQueryUtils.groupQuery(logClass, condition, fieldNames,
+        QueryBean queryBean = LogQueryUtils.groupQuery(logClass, condition, fieldNames,
                 new ArrayList<MetricBean>(), createNotNullFilter(columnName));
+        SwiftResultSet resultSet = analyseService.getQueryResult(queryBean);
+        List<Row> rows = LogQueryUtils.getPage(resultSet, condition);
         return IteratorUtils.iterator2List(new MapperIterator<Row, Object>(rows.iterator(), new Function<Row, Object>() {
             @Override
             public Object apply(Row p) {
@@ -97,7 +136,9 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
 
     @Override
     public DataList<Map<String, Object>> groupByColumns(Class<? extends AbstractMessage> logClass, QueryCondition condition, List<MetricBean> metrics, List<String> fieldNames) throws Exception {
-        final List<Row> rows = LogQueryUtils.groupQuery(logClass, condition, fieldNames, metrics, null);
+        QueryBean queryBean = LogQueryUtils.groupQuery(logClass, condition, fieldNames, metrics, null);
+        SwiftResultSet resultSet = analyseService.getQueryResult(queryBean);
+        List<Row> rows = LogQueryUtils.getPage(resultSet, condition);
         final List<String> columnNames = new ArrayList<String>(fieldNames);
         for (MetricBean bean : metrics) {
             columnNames.add(bean.getName());
@@ -113,13 +154,12 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
             }
         }));
         DataList<Map<String, Object>> dataList = new DataList<Map<String, Object>>();
-        // TODO: 2018/6/21 这个totalCount不会是总行数吧？
         dataList.setTotalCount(maps.size());
         dataList.setList(maps);
         return dataList;
     }
 
-    private static FilterInfoBean createNotNullFilter(String columnName) {
+    private FilterInfoBean createNotNullFilter(String columnName) {
         if (StringUtils.isEmpty(columnName)) {
             return null;
         }
@@ -130,11 +170,11 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
         return notFilterBean;
     }
 
-    private static int countQuery(Class<? extends AbstractMessage> logClass, QueryCondition condition,
-                                  String columnName, FilterInfoBean notNull) throws Exception {
+    private int countQuery(Class<? extends AbstractMessage> logClass, QueryCondition condition,
+                           String columnName, FilterInfoBean notNull) throws Exception {
         GroupQueryInfoBean queryInfoBean = new GroupQueryInfoBean();
-        queryInfoBean.setQueryId(condition.toString());
-        String tableName = SwiftMetaAdaptor.getTableName(logClass);
+        queryInfoBean.setQueryId(UUID.randomUUID().toString());
+        String tableName = JpaAdaptor.getTableName(logClass);
         queryInfoBean.setTableName(tableName);
         FilterInfoBean filterInfoBean = QueryConditionAdaptor.restriction2FilterInfo(condition.getRestriction());
         if (notNull != null) {
@@ -146,7 +186,7 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
 
         List<com.fr.swift.query.info.bean.element.MetricBean> metrics = new ArrayList<com.fr.swift.query.info.bean.element.MetricBean>();
         com.fr.swift.query.info.bean.element.MetricBean bean = new com.fr.swift.query.info.bean.element.MetricBean();
-        bean.setMetricType(Metric.MetricType.GROUP);
+        bean.setMetricType(MetricType.GROUP);
         if (StringUtils.isEmpty(columnName)) {
             bean.setType(AggregatorType.COUNT);
             bean.setColumn("");
@@ -156,7 +196,8 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
         }
         metrics.add(bean);
         queryInfoBean.setMetricBeans(metrics);
-        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfoBean);
+        SwiftResultSet resultSet = analyseService.getQueryResult(queryInfoBean);
+//        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfoBean);
         Row row = null;
         if (resultSet.hasNext()) {
             row = resultSet.getNextRow();
@@ -167,5 +208,9 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
         }
         //BI-25663 空的返回count0
         return 0;
+    }
+
+    public long logTotal() throws Exception {
+        return SwiftContext.get().getBean(SwiftRepositoryManager.class).currentRepo().getSize("../" + SwiftDatabase.DECISION_LOG.getDir());
     }
 }

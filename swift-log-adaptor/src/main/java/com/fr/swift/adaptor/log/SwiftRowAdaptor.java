@@ -6,6 +6,7 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
+import com.fr.swift.util.JpaAdaptor;
 import com.fr.swift.util.function.Function;
 import com.fr.swift.util.function.UnaryOperator;
 import com.fr.third.javax.persistence.AttributeConverter;
@@ -32,7 +33,7 @@ public class SwiftRowAdaptor<T> implements Function<T, Row> {
     private Map<Integer, Pair<Field, UnaryOperator<Object>>> converters = new TreeMap<Integer, Pair<Field, UnaryOperator<Object>>>();
 
     SwiftRowAdaptor(Class<T> entity, SwiftMetaData meta) throws Exception {
-        init(SwiftMetaAdaptor.getFields(entity), meta);
+        init(JpaAdaptor.getFields(entity), meta);
     }
 
     private void init(List<Field> fields, SwiftMetaData meta) throws Exception {
@@ -45,7 +46,7 @@ public class SwiftRowAdaptor<T> implements Function<T, Row> {
             int columnIndex = meta.getColumnIndex(columnName);
             if (field.isAnnotationPresent(Convert.class)) {
                 AttributeConverter<Object, Object> converter = (AttributeConverter<Object, Object>) field.getAnnotation(Convert.class).converter().newInstance();
-                UnaryOperator<Object> baseConverter = DatumConverters.getConverter(SwiftMetaAdaptor.getClassType(field));
+                UnaryOperator<Object> baseConverter = DatumConverters.getConverter(JpaAdaptor.getClassType(field));
                 converters.put(columnIndex, Pair.of(field, (UnaryOperator<Object>) new DatumConverter(converter, baseConverter)));
             } else {
                 converters.put(columnIndex, Pair.of(field, DatumConverters.getConverter(field.getType())));

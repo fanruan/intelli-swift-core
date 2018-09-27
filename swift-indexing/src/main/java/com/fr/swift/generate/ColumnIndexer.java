@@ -7,6 +7,7 @@ import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.external.map.intlist.IntListExternalMapFactory;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
@@ -24,7 +25,6 @@ import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.external.map.ExternalMap;
-import com.fr.swift.structure.external.map.intlist.IntListExternalMapFactory;
 import com.fr.swift.task.TaskResult.Type;
 import com.fr.swift.task.impl.BaseWorker;
 import com.fr.swift.task.impl.TaskResultImpl;
@@ -160,7 +160,8 @@ public class ColumnIndexer<T> extends BaseWorker implements SwiftColumnIndexer {
         int[] rowToIndex = new int[rowCount];
 
         // 有效值序号从1开始
-        int pos = 1;
+        int pos = 0;
+        dictColumn.putter().putValue(pos++, null);
         for (Entry<T, IntList> entry : iterable) {
             T val = entry.getKey();
             IntList rows = entry.getValue();
@@ -169,7 +170,7 @@ public class ColumnIndexer<T> extends BaseWorker implements SwiftColumnIndexer {
                 continue;
             }
 
-            dictColumn.putValue(pos, val);
+            dictColumn.putter().putValue(pos, val);
 
             MutableBitMap bitmap = BitMaps.newRoaringMutable();
 
@@ -183,10 +184,10 @@ public class ColumnIndexer<T> extends BaseWorker implements SwiftColumnIndexer {
             pos++;
         }
 
-        dictColumn.putSize(pos);
+        dictColumn.putter().putSize(pos);
 
         for (int row = 0, len = rowToIndex.length; row < len; row++) {
-            dictColumn.putIndex(row, rowToIndex[row]);
+            dictColumn.putter().putIndex(row, rowToIndex[row]);
         }
 
         releaseIfNeed(dictColumn, column);

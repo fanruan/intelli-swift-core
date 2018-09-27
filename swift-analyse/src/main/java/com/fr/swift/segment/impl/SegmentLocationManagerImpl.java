@@ -1,5 +1,7 @@
 package com.fr.swift.segment.impl;
 
+import com.fr.general.ComparatorUtils;
+import com.fr.stable.StringUtils;
 import com.fr.swift.config.bean.SegmentDestSelectRule;
 import com.fr.swift.config.service.SegmentDestSelectRuleService;
 import com.fr.swift.context.SwiftContext;
@@ -8,8 +10,9 @@ import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationManager;
 import com.fr.swift.source.SourceKey;
 
-import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,6 +36,7 @@ public class SegmentLocationManagerImpl implements SegmentLocationManager {
     }
 
     @Override
+    synchronized
     public List<SegmentDestination> getSegmentLocationURI(SourceKey table) {
         List<SegmentDestination> destinations = segments.get(table.getId());
         if (null == destinations) {
@@ -42,16 +46,55 @@ public class SegmentLocationManagerImpl implements SegmentLocationManager {
         // 暂时先这么处理，，，，
         if (null == destinations || destinations.isEmpty()) {
             destinations = new ArrayList<SegmentDestination>();
-            destinations.add(new SegmentDestinationImpl(URI.create(""), 0));
+            destinations.add(new SegmentDestinationImpl(StringUtils.EMPTY, 0));
         }
         return destinations;
     }
 
     @Override
-    public void updateSegmentInfo(SegmentLocationInfo segmentInfo, SegmentLocationInfo.UpdateType updateType) {
+    public synchronized void updateSegmentInfo(SegmentLocationInfo segmentInfo, SegmentLocationInfo.UpdateType updateType) {
         if (updateType == SegmentLocationInfo.UpdateType.ALL) {
             segments.clear();
         }
-        segments.putAll(segmentInfo.getDestinations());
+        Map<String, List<SegmentDestination>> map = segmentInfo.getDestinations();
+        for (Map.Entry<String, List<SegmentDestination>> entry : map.entrySet()) {
+            if (segments.containsKey(entry.getKey())) {
+                for (SegmentDestination segmentDestination : entry.getValue()) {
+                    if (!segments.get(entry.getKey()).contains(segmentDestination)) {
+                        segments.get(entry.getKey()).add(segmentDestination);
+                    }
+                }
+            } else {
+                segments.put(entry.getKey(), new ArrayList<SegmentDestination>(entry.getValue()));
+            }
+        }
+    }
+
+    @Override
+    public Map<String, List<SegmentDestination>> getSegmentInfo() {
+        return new HashMap<String, List<SegmentDestination>>(segments);
+    }
+
+    @Override
+    synchronized
+    public void removeTable(String sourceKey) {
+        segments.remove(sourceKey);
+    }
+
+    @Override
+    synchronized
+    public void removeSegment(String sourceKey, List<String> segmentKeys) {
+        List<SegmentDestination> destinations = segments.get(sourceKey);
+        if (null != destinations) {
+            for (String segmentKey : segmentKeys) {
+                Iterator<SegmentDestination> iterator = destinations.iterator();
+                while (iterator.hasNext()) {
+                    SegmentDestination dest = iterator.next();
+                    if (ComparatorUtils.equals(segmentKey, dest.getSegmentId())) {
+                        iterator.remove();
+                    }
+                }
+            }
+        }
     }
 }

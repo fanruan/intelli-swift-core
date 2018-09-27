@@ -1,7 +1,7 @@
 package com.fr.swift.basics.base;
 
 import com.fr.swift.basics.Invoker;
-import com.fr.swift.utils.MonitorUtil;
+import com.fr.swift.util.MonitorUtil;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

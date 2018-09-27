@@ -4,7 +4,6 @@ import com.fr.decision.log.LogSearchConstants;
 import com.fr.decision.log.MetricBean;
 import com.fr.stable.StringUtils;
 import com.fr.stable.query.condition.QueryCondition;
-import com.fr.stable.query.data.DataList;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.query.aggregator.AggregatorType;
@@ -18,15 +17,14 @@ import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
 import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
 import com.fr.swift.query.info.bean.post.RowSortQueryInfoBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
-import com.fr.swift.query.info.element.dimension.Dimension;
-import com.fr.swift.query.info.element.metric.Metric;
+import com.fr.swift.query.info.bean.type.DimensionType;
+import com.fr.swift.query.info.bean.type.MetricType;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.query.sort.SortType;
-import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.util.JpaAdaptor;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -34,17 +32,18 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Created by Lyon on 2018/6/21.
  */
 public class LogQueryUtils {
 
-    static List<Row> groupQuery(Class<?> entity, QueryCondition queryCondition, List<String> fieldNames,
+    static QueryBean groupQuery(Class<?> entity, QueryCondition queryCondition, List<String> fieldNames,
                                 List<MetricBean> metricBeans, FilterInfoBean notNullFilter) throws Exception {
         GroupQueryInfoBean queryInfoBean = new GroupQueryInfoBean();
-        queryInfoBean.setQueryId(queryCondition.toString());
-        String tableName = SwiftMetaAdaptor.getTableName(entity);
+        queryInfoBean.setQueryId(UUID.randomUUID().toString());
+        String tableName = JpaAdaptor.getTableName(entity);
         queryInfoBean.setTableName(tableName);
         FilterInfoBean filterInfoBean = QueryConditionAdaptor.restriction2FilterInfo(queryCondition.getRestriction());
         if (notNullFilter != null) {
@@ -60,7 +59,7 @@ public class LogQueryUtils {
             // TODO: 2018/6/21 维度上的排序没适配
             DimensionBean bean = new DimensionBean();
             bean.setColumn(fieldNames.get(i));
-            bean.setDimensionType(Dimension.DimensionType.GROUP);
+            bean.setDimensionType(DimensionType.GROUP);
             GroupBean groupBean = new GroupBean();
             groupBean.setType(GroupType.NONE);
             bean.setGroupBean(groupBean);
@@ -72,7 +71,7 @@ public class LogQueryUtils {
         for (int i = 0; i < metricBeans.size(); i++) {
             MetricBean metricBean = metricBeans.get(i);
             com.fr.swift.query.info.bean.element.MetricBean bean = new com.fr.swift.query.info.bean.element.MetricBean();
-            bean.setMetricType(Metric.MetricType.GROUP);
+            bean.setMetricType(MetricType.GROUP);
             bean.setColumn(metricBean.getFiledName());
             bean.setName(metricBean.getName());
             bean.setType(getAggType(metricBean));
@@ -103,8 +102,7 @@ public class LogQueryUtils {
         postQueryInfoBeans.add(sortQueryInfoBean);
         queryInfoBean.setPostQueryInfoBeans(postQueryInfoBeans);
 
-        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfoBean);
-        return getPage(resultSet, queryCondition);
+        return queryInfoBean;
     }
 
     private static FilterInfoBean createMetricFilterInfo(String fieldName, List<Object> fieldValues) {
@@ -141,20 +139,15 @@ public class LogQueryUtils {
         return AggregatorType.SUM;
     }
 
-    static DataList<Row> detailQuery(Class<?> entity, QueryCondition queryCondition, List<String> fieldNames) throws Exception {
-        Table table = SwiftDatabase.getInstance().getTable(new SourceKey(SwiftMetaAdaptor.getTableName(entity)));
+    static QueryBean detailQuery(Class<?> entity, QueryCondition queryCondition, List<String> fieldNames) throws Exception {
+        Table table = SwiftDatabase.getInstance().getTable(new SourceKey(JpaAdaptor.getTableName(entity)));
         QueryBean queryBean = QueryConditionAdaptor.adaptCondition(queryCondition, table, fieldNames);
-        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
-        DataList<Row> dataList = new DataList<Row>();
-        dataList.setList(getPage(resultSet, queryCondition));
-        dataList.setTotalCount(((DetailResultSet) resultSet).getRowCount());
-        return dataList;
+        return queryBean;
     }
 
-    private static List<Row> getPage(SwiftResultSet resultSet, QueryCondition queryCondition) throws SQLException {
+    static List<Row> getPage(SwiftResultSet resultSet, QueryCondition queryCondition) throws SQLException {
         long start = queryCondition.getSkip();
         long end = queryCondition.getSkip() + queryCondition.getCount();
-        // TODO: 2018/6/15 这边分页要做个缓存，用class + queryCondition.toString()作为key
         //是否需要分页
         boolean isLimit = queryCondition.isCountLimitValid();
         List<Row> rows = new ArrayList<Row>();
@@ -175,8 +168,9 @@ public class LogQueryUtils {
         return rows;
     }
 
-    static DataList<Row> detailQuery(Class<?> entity, QueryCondition queryCondition) throws Exception {
-        Table table = SwiftDatabase.getInstance().getTable(new SourceKey(SwiftMetaAdaptor.getTableName(entity)));
-        return detailQuery(entity, queryCondition, table.getMeta().getFieldNames());
+    static QueryBean getDetailQueryBean(Class<?> entity, QueryCondition queryCondition) throws SQLException {
+        Table table = SwiftDatabase.getInstance().getTable(new SourceKey(JpaAdaptor.getTableName(entity)));
+        QueryBean queryBean = QueryConditionAdaptor.adaptCondition(queryCondition, table, table.getMeta().getFieldNames());
+        return queryBean;
     }
 }

@@ -27,7 +27,7 @@ public class SortedDetailMergerIteratorTest extends TestCase {
                 return Integer.compare(o1.getValue(0), o2.getValue(0));
             }
         };
-        Iterator<List<Row>> iterator = new SortedDetailMergerIterator(2, comparator, resultSets);
+        Iterator<List<Row>> iterator = new SortedDetailResultSetMerger(2, comparator, resultSets);
         // [1, 2, 2, 2, 3, 3, 3, 5, 5, 5, 6, 6]
         // 取每个resultSet进行合并得到[1, 2, 2, 3, 3, 6]，取出第一页[1, 2]
         assertTrue(iterator.hasNext());
@@ -100,6 +100,11 @@ public class SortedDetailMergerIteratorTest extends TestCase {
         }
 
         @Override
+        public int getFetchSize() {
+            return pageSize;
+        }
+
+        @Override
         public List<Row> getPage() {
             List<Row> result = new ArrayList<>();
             for (int i = 0; i < pageSize; i++) {
@@ -119,6 +124,10 @@ public class SortedDetailMergerIteratorTest extends TestCase {
         @Override
         public int getRowCount() {
             return rows.size();
+        }
+
+        @Override
+        public void setMetaData(SwiftMetaData metaData) {
         }
 
         @Override

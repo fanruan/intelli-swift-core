@@ -3,9 +3,7 @@ package com.fr.swift.generate.preview;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;
-import com.fr.swift.db.impl.SwiftDatabase.Schema;
-import com.fr.swift.generate.ColumnDictMerger;
-import com.fr.swift.generate.ColumnIndexer;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.generate.history.index.SubDateColumnDictMerger;
 import com.fr.swift.generate.history.index.SubDateColumnIndexer;
 import com.fr.swift.generate.realtime.index.RealtimeMultiRelationIndexer;
@@ -120,13 +118,6 @@ public class MinorUpdater {
             Inserter inserter = getInserter(dataSource, segment);
             inserter.insertData(swiftResultSet);
 
-            for (String indexField : inserter.getFields()) {
-                ColumnKey columnKey = new ColumnKey(indexField);
-                new ColumnIndexer(dataSource, columnKey, Collections.singletonList(segment)).buildIndex();
-                new ColumnDictMerger(dataSource, columnKey, Collections.singletonList(segment)).mergeDict();
-                indexSubColumnIfNeed(dataSource, columnKey, segment);
-            }
-
             if (!segmentsExpireMap.containsKey(dataSource.getSourceKey())) {
                 segmentsExpireMap.put(dataSource.getSourceKey(), System.currentTimeMillis());
             }
@@ -206,7 +197,7 @@ public class MinorUpdater {
 
     private Segment createSegment(DataSource dataSource) {
         String cubeSourceKey = DataSourceUtils.getSwiftSourceKey(dataSource).getId();
-        String path = String.format("%s/%s/seg0", Schema.MINOR_CUBE.getDir(), cubeSourceKey);
+        String path = String.format("%s/%s/seg0", SwiftDatabase.MINOR_CUBE.getDir(), cubeSourceKey);
         return new RealTimeSegmentImpl(new ResourceLocation(path, Types.StoreType.MEMORY), dataSource.getMetadata());
     }
 

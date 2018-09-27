@@ -2,7 +2,6 @@ package com.fr.swift.generate.excel.increase;
 
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.generate.ColumnIndexer;
-import com.fr.swift.generate.TestIndexer;
 import com.fr.swift.generate.excel.BaseExcelTest;
 import com.fr.swift.generate.history.transport.TableTransporter;
 import com.fr.swift.manager.LocalSegmentProvider;
@@ -51,8 +50,6 @@ public class ExcelIncreaseCoupleTest extends BaseExcelTest {
 
         ((Inserter) SwiftContext.get().getBean("incrementer", dataSource)).insertData(SwiftSourceTransferFactory.createSourceTransfer(dataSource1).createResultSet());
         ((Inserter) SwiftContext.get().getBean("incrementer", dataSource)).insertData(SwiftSourceTransferFactory.createSourceTransfer(dataSource3).createResultSet());
-
-        TestIndexer.realtimeIndex(dataSource);
 
         segments = SwiftContext.get().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
         assertEquals(segments.size(), 2);

@@ -1,17 +1,26 @@
 package com.fr.swift.boot;
 
 import com.fineio.FineIO;
+import com.fr.cluster.entry.ClusterTicketKey;
+import com.fr.io.base.WebInfResourceFolders;
 import com.fr.module.Activator;
 import com.fr.module.extension.Prepare;
 import com.fr.stable.db.constant.BaseDBConstant;
+import com.fr.swift.boot.upgrade.UpgradeTask;
+import com.fr.swift.cluster.listener.NodeStartedListener;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.context.SwiftConfigContext;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.ProviderTaskManager;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.log.FineIOLoggerImpl;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.service.register.LocalSwiftRegister;
+import com.fr.swift.service.MaskHistoryListener;
+import com.fr.swift.service.RemoveHistoryListener;
+import com.fr.swift.service.TransferRealtimeListener;
+import com.fr.swift.service.UploadHistoryListener;
+import com.fr.swift.service.local.ServiceManager;
 
 /**
  * @author anchore
@@ -29,12 +38,32 @@ public class SwiftEngineActivator extends Activator implements Prepare {
     }
 
     private void startSwift() throws Exception {
-        SwiftContext.init();
-        SwiftConfigContext.getInstance().init();
-        new LocalSwiftRegister().serviceRegister();
+        upgrade();
+
         ClusterListenerHandler.addListener(new FRClusterListener());
+        SwiftContext.init();
+        ClusterListenerHandler.addListener(NodeStartedListener.INSTANCE);
+        SwiftConfigContext.getInstance().init();
         FineIO.setLogger(new FineIOLoggerImpl());
+        SwiftContext.get().getBean("localManager", ServiceManager.class).startUp();
         ProviderTaskManager.start();
+
+        TransferRealtimeListener.listen();
+        UploadHistoryListener.listen();
+        MaskHistoryListener.listen();
+        RemoveHistoryListener.listen();
+
+        registerResourceIoPath();
+    }
+
+    private static void registerResourceIoPath() {
+        for (SwiftDatabase schema : SwiftDatabase.values()) {
+            WebInfResourceFolders.add(String.format("%s", schema.getDir()));
+        }
+    }
+
+    private void upgrade() {
+        new UpgradeTask().run();
     }
 
     @Override
@@ -44,6 +73,7 @@ public class SwiftEngineActivator extends Activator implements Prepare {
 
     @Override
     public void prepare() {
+        this.addMutable(ClusterTicketKey.KEY, SwiftClusterTicket.getInstance());
         this.addMutable(BaseDBConstant.BASE_ENTITY_KEY, SwiftConfigConstants.ENTITIES);
     }
 

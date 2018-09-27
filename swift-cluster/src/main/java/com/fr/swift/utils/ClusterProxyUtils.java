@@ -7,7 +7,7 @@ import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.exception.SwiftProxyException;
-import com.fr.swift.heart.HeartBeatInfo;
+import com.fr.swift.heart.NodeState;
 import com.fr.swift.property.SwiftProperty;
 
 /**
@@ -35,13 +35,13 @@ public class ClusterProxyUtils {
      * 获得指定类在心跳节点的代理
      *
      * @param interfaceClass
-     * @param heartBeatInfo
+     * @param nodeState
      * @param <T>
      * @return
      */
-    public static <T> T getSlaveProxy(Class<T> interfaceClass, HeartBeatInfo heartBeatInfo) throws SwiftProxyException {
+    public static <T> T getSlaveProxy(Class<T> interfaceClass, NodeState nodeState) throws Exception {
         UrlFactory urlFactory = UrlSelector.getInstance().getFactory();
-        URL url = urlFactory.getURL(heartBeatInfo.getAddress());
+        URL url = urlFactory.getURL(nodeState.getHeartBeatInfo().getAddress());
         return getProxy(interfaceClass, url);
     }
 

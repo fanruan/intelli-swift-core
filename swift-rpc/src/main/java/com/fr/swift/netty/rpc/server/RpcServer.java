@@ -2,7 +2,7 @@ package com.fr.swift.netty.rpc.server;
 
 import com.fr.swift.annotation.RpcMethod;
 import com.fr.swift.annotation.RpcService;
-import com.fr.swift.annotation.RpcServiceType;
+import com.fr.swift.annotation.SwiftApi;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -12,8 +12,6 @@ import com.fr.third.jodd.util.StringUtil;
 import com.fr.third.org.apache.commons.collections4.MapUtils;
 import com.fr.third.springframework.beans.BeansException;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.beans.factory.annotation.Value;
-import com.fr.third.springframework.context.ApplicationContext;
 import com.fr.third.springframework.stereotype.Service;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -28,6 +26,7 @@ import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 
+import javax.annotation.PostConstruct;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,34 +46,42 @@ public class RpcServer {
 
     private ServiceRegistry serviceRegistry;
 
+    private SwiftProperty swiftProperty;
+
     /**
      * key:服务名
      * value:服务对象
      */
     private Map<String, Object> handlerMap = new HashMap<String, Object>();
+    private Map<String, Object> externalMap = new HashMap<String, Object>();
     private Map<String, Method> methodMap = new HashMap<String, Method>();
 
     @Autowired
-    public RpcServer(ServiceRegistry serviceRegistry,
-                     @Value("SERVER_SERVICE") RpcServiceType serviceType) {
-        this.serviceAddress = SwiftContext.get().getBean("swiftProperty", SwiftProperty.class).getServerAddress();
+    public RpcServer(ServiceRegistry serviceRegistry) {
+        swiftProperty = SwiftContext.get().getBean("swiftProperty", SwiftProperty.class);
+        this.serviceAddress = swiftProperty.getServerAddress();
         this.serviceRegistry = serviceRegistry;
     }
 
-    public static void main(String[] args) {
-        SwiftContext.init();
-        SwiftContext.get().getBean("swiftProperty");
-    }
-
-    public void initService(ApplicationContext ctx) throws BeansException {
+    @PostConstruct
+    public void initService() throws BeansException {
         // 扫描service和method
-        Map<String, Object> serviceBeanMap = ctx.getBeansWithAnnotation(RpcService.class);
+        Map<String, Object> serviceBeanMap = SwiftContext.get().getBeansWithAnnotation(RpcService.class);
         if (MapUtils.isNotEmpty(serviceBeanMap)) {
             for (Object serviceBean : serviceBeanMap.values()) {
                 RpcService rpcService = serviceBean.getClass().getAnnotation(RpcService.class);
                 String serviceName = rpcService.value().getName();
+                RpcService.RpcServiceType rpcServiceType = rpcService.type();
                 LOGGER.debug("Load service:" + serviceName);
-                handlerMap.put(serviceName, serviceBean);
+                if (rpcServiceType == RpcService.RpcServiceType.EXTERNAL) {
+                    SwiftApi swiftApi = serviceBean.getClass().getAnnotation(SwiftApi.class);
+                    if (null != swiftApi && !swiftApi.enable()) {
+                        continue;
+                    }
+                    externalMap.put(serviceName, serviceBean);
+                } else {
+                    handlerMap.put(serviceName, serviceBean);
+                }
                 for (Method method : serviceBean.getClass().getMethods()) {
                     RpcMethod rpcMethod = method.getAnnotation(RpcMethod.class);
                     if (rpcMethod != null) {
@@ -98,11 +105,11 @@ public class RpcServer {
                 public void initChannel(SocketChannel channel) {
                     ChannelPipeline pipeline = channel.pipeline();
                     pipeline.addLast(
-                            new ObjectDecoder(10240 * 1024, ClassResolvers
+                            new ObjectDecoder(swiftProperty.getRpcMaxObjectSize(), ClassResolvers
                                     .weakCachingConcurrentResolver(this.getClass()
                                             .getClassLoader())));
                     pipeline.addLast(new ObjectEncoder());
-                    pipeline.addLast(new RpcServerHandler(handlerMap)); // 处理 RPC 请求
+                    pipeline.addLast(new RpcServerHandler(handlerMap, externalMap)); // 处理 RPC 请求
                 }
             });
             bootstrap.option(ChannelOption.SO_BACKLOG, 1024);

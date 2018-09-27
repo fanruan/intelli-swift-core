@@ -1,7 +1,7 @@
 package com.fr.swift.query.post.utils;
 
 import com.fr.swift.compare.Comparators;
-import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.Combiner;
 import com.fr.swift.query.info.element.dimension.Dimension;
@@ -42,7 +42,7 @@ public class ResultJoinUtils {
         final List<Integer> metricLengthList = getMetricLengthList(dimensionSize, resultSets);
         List<Iterator<MergeRow>> iterators = new ArrayList<Iterator<MergeRow>>();
         for (int i = 0; i < resultSets.size(); i++) {
-            final GroupNode root = (GroupNode) resultSets.get(i).getNode();
+            final GroupNode root = (GroupNode) resultSets.get(i).getPage().getKey();
             Iterator<List<GroupNode>> iterator = new Tree2RowIterator<GroupNode>(dimensionSize, root.getChildren().iterator(), new Function<GroupNode, Iterator<GroupNode>>() {
                 @Override
                 public Iterator<GroupNode> apply(GroupNode p) {
@@ -67,7 +67,7 @@ public class ResultJoinUtils {
                 return Pair.of(p.getKey(), p.getAllValues());
             }
         });
-        return new NodeResultSetImpl(createNode(dimensionSize, rowIt), crateMetaData(resultSets, dimensions));
+        return new NodeResultSetImpl(resultSets.get(0).getFetchSize(), createNode(dimensionSize, rowIt), crateMetaData(resultSets, dimensions));
     }
 
     public static GroupNode createNode(int dimensionSize, Iterator<Pair<List<Object>, AggregatorValue[]>> iterator) {
@@ -107,7 +107,7 @@ public class ResultJoinUtils {
         final List<String> columnNames = getColumnNames(dimensions, resultSets);
         return new SwiftMetaData() {
             @Override
-            public SwiftDatabase.Schema getSwiftSchema() {
+            public SwiftDatabase getSwiftDatabase() {
                 return null;
             }
 
@@ -184,6 +184,11 @@ public class ResultJoinUtils {
             @Override
             public List<String> getFieldNames() {
                 return columnNames;
+            }
+
+            @Override
+            public String getId() {
+                return null;
             }
         };
     }

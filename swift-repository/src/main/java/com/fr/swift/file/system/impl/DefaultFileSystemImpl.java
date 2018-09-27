@@ -2,13 +2,12 @@ package com.fr.swift.file.system.impl;
 
 import com.fr.general.ComparatorUtils;
 import com.fr.io.utils.ResourceIOUtils;
-import com.fr.swift.config.bean.SwiftFileSystemConfig;
 import com.fr.swift.file.exception.SwiftFileException;
 import com.fr.swift.file.system.AbstractFileSystem;
 import com.fr.swift.file.system.SwiftFileSystem;
+import com.fr.swift.repository.SwiftFileSystemConfig;
 
 import java.io.InputStream;
-import java.net.URI;
 
 /**
  * @author yee
@@ -16,31 +15,37 @@ import java.net.URI;
  */
 public class DefaultFileSystemImpl extends AbstractFileSystem {
 
-    public DefaultFileSystemImpl(SwiftFileSystemConfig config, URI uri) {
+    public DefaultFileSystemImpl(SwiftFileSystemConfig config, String uri) {
         super(config, uri);
     }
 
     @Override
     protected SwiftFileSystem[] list() {
-        String[] list = ResourceIOUtils.list(getResourceURI().getPath());
+        String[] list = ResourceIOUtils.list(getResourceURI());
         SwiftFileSystem[] result = new SwiftFileSystem[list.length];
         for (int i = 0; i < list.length; i++) {
-            result[i] = new DefaultFileSystemImpl(getConfig(), URI.create(list[i]));
+            result[i] = new DefaultFileSystemImpl(getConfig(), getResourceURI() + "/" + list[i]);
         }
         return result;
     }
 
     @Override
-    public void write(URI remote, InputStream inputStream) throws SwiftFileException {
+    protected long fileSize() {
+        return ResourceIOUtils.getLength(getResourceURI());
+    }
+
+
+    @Override
+    public void write(String remote, InputStream inputStream) throws SwiftFileException {
         try {
-            ResourceIOUtils.write(remote.getPath(), inputStream);
+            ResourceIOUtils.write(remote, inputStream);
         } catch (Exception e) {
             throw new SwiftFileException(e);
         }
     }
 
     @Override
-    public SwiftFileSystem read(URI remote) throws SwiftFileException {
+    public SwiftFileSystem read(String remote) throws SwiftFileException {
         SwiftFileSystem fileSystem;
         if (ComparatorUtils.equals(remote, getResourceURI())) {
             fileSystem = this;
@@ -50,7 +55,7 @@ public class DefaultFileSystemImpl extends AbstractFileSystem {
         if (fileSystem.isExists()) {
             return fileSystem;
         }
-        throw new SwiftFileException(String.format("File path '%s' not exists!", remote.getPath()));
+        throw new SwiftFileException(String.format("File path '%s' not exists!", remote));
     }
 
     @Override
@@ -59,10 +64,10 @@ public class DefaultFileSystemImpl extends AbstractFileSystem {
     }
 
     @Override
-    public boolean remove(URI remote) throws SwiftFileException {
+    public boolean remove(String remote) throws SwiftFileException {
         if (ComparatorUtils.equals(remote, getResourceURI())) {
             if (isExists()) {
-                return ResourceIOUtils.delete(remote.getPath());
+                return ResourceIOUtils.delete(remote);
             }
         } else {
             SwiftFileSystem system = new DefaultFileSystemImpl(getConfig(), remote);
@@ -74,16 +79,16 @@ public class DefaultFileSystemImpl extends AbstractFileSystem {
     }
 
     @Override
-    public boolean renameTo(URI src, URI dest) throws SwiftFileException {
+    public boolean renameTo(String src, String dest) throws SwiftFileException {
         SwiftFileSystem fileSystem = read(src);
-        return ResourceIOUtils.renameTo(fileSystem.getResourceURI().getPath(), dest.getPath());
+        return ResourceIOUtils.renameTo(fileSystem.getResourceURI(), dest);
     }
 
     @Override
-    public boolean copy(URI src, URI dest) throws SwiftFileException {
+    public boolean copy(String src, String dest) throws SwiftFileException {
         SwiftFileSystem fileSystem = read(src);
         try {
-            ResourceIOUtils.copy(fileSystem.getResourceURI().getPath(), dest.getPath());
+            ResourceIOUtils.copy(fileSystem.getResourceURI(), dest);
             return true;
         } catch (Exception e) {
             throw new SwiftFileException(e);
@@ -92,31 +97,36 @@ public class DefaultFileSystemImpl extends AbstractFileSystem {
 
     @Override
     public boolean isExists() {
-        return ResourceIOUtils.exist(getResourceURI().getPath());
+        return ResourceIOUtils.exist(getResourceURI());
     }
 
     @Override
     public boolean isDirectory() {
-        return ResourceIOUtils.isDirectory(getResourceURI().getPath());
+        return ResourceIOUtils.isDirectory(getResourceURI());
     }
 
     @Override
     public InputStream toStream() {
-        return ResourceIOUtils.read(getResourceURI().getPath());
+        return ResourceIOUtils.read(getResourceURI());
     }
 
     @Override
     public String getResourceName() {
-        return ResourceIOUtils.getName(getResourceURI().getPath());
+        return ResourceIOUtils.getName(getResourceURI());
     }
 
     @Override
     public void mkdirs() {
-        ResourceIOUtils.createDirectory(getResourceURI().getPath());
+        ResourceIOUtils.createDirectory(getResourceURI());
     }
 
     @Override
     public void close() {
+
+    }
+
+    @Override
+    public void testConnection() {
 
     }
 

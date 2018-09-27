@@ -14,6 +14,7 @@ import com.fr.swift.query.info.bean.element.filter.impl.NumberInRangeFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.value.RangeFilterValueBean;
 import com.fr.swift.query.query.FilterBean;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.operator.delete.WhereDeleter;
@@ -24,6 +25,7 @@ import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.QueryDBSource;
+import com.fr.swift.test.Preparer;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -48,7 +50,8 @@ public class DeleteTest extends BaseTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        SwiftContext.get().getBean(AnalyseService.class).start();
+        Preparer.prepareCubeBuild(getClass());
+        SwiftContext.get().getBean("swiftAnalyseService", AnalyseService.class).start();
     }
 
     private static FilterBean createEqualFilter(String fieldName, String value) {
@@ -75,10 +78,12 @@ public class DeleteTest extends BaseTest {
         }
         Table table = db.getTable(new SourceKey("testEQHis"));
         transportHisAndIndex(dataSource, table);
+        SegmentKey segmentKey = localSegmentProvider.getSegmentKeys(new SourceKey("testEQHis")).get(0);
         Segment segment = localSegmentProvider.getSegment(new SourceKey("testEQHis")).get(0);
 
         Where where = new SwiftWhere(createEqualFilter("合同类型", "购买合同"));
-        ((WhereDeleter) SwiftContext.get().getBean("decrementer", new SourceKey("testEQHis"), segment)).delete(where);
+
+        ((WhereDeleter) SwiftContext.get().getBean("decrementer", segmentKey)).delete(where);
 
         Column column = segment.getColumn(new ColumnKey("合同类型"));
         for (int i = 0; i < segment.getRowCount(); i++) {
@@ -96,10 +101,11 @@ public class DeleteTest extends BaseTest {
         }
         Table table = db.getTable(new SourceKey("testEQReal"));
         transportRealAndIndex(dataSource, table);
+        SegmentKey segmentKey = localSegmentProvider.getSegmentKeys(new SourceKey("testEQReal")).get(0);
         Segment segment = localSegmentProvider.getSegment(new SourceKey("testEQReal")).get(0);
 
         Where where = new SwiftWhere(createEqualFilter("合同类型", "购买合同"));
-        ((WhereDeleter) SwiftContext.get().getBean("decrementer", new SourceKey("testEQReal"), segment)).delete(where);
+        ((WhereDeleter) SwiftContext.get().getBean("decrementer", segmentKey)).delete(where);
         Column column = segment.getColumn(new ColumnKey("合同类型"));
         for (int i = 0; i < segment.getRowCount(); i++) {
             if (segment.getAllShowIndex().contains(i)) {
@@ -129,9 +135,10 @@ public class DeleteTest extends BaseTest {
         Table table = db.getTable(new SourceKey("testGTReal"));
         transportRealAndIndex(dataSource, table);
         Segment segment = localSegmentProvider.getSegment(new SourceKey("testGTReal")).get(0);
+        SegmentKey segmentKey = localSegmentProvider.getSegmentKeys(new SourceKey("testGTReal")).get(0);
 
         Where where = new SwiftWhere(createGTFilter("总金额", 100000));
-        ((WhereDeleter) SwiftContext.get().getBean("decrementer", new SourceKey("testGTReal"), segment)).delete(where);
+        ((WhereDeleter) SwiftContext.get().getBean("decrementer", segmentKey)).delete(where);
         Column column = segment.getColumn(new ColumnKey("总金额"));
         for (int i = 0; i < segment.getRowCount(); i++) {
             if (segment.getAllShowIndex().contains(i)) {

@@ -36,7 +36,7 @@ public class ZipUtils {
             File sourceFile = new File(srcDir);
             compress(sourceFile, zos, sourceFile.getName());
             long end = System.currentTimeMillis();
-            SwiftLoggers.getLogger().info("压缩完成，耗时：" + (end - start) + " ms");
+            SwiftLoggers.getLogger().info("Zip {} finished. Cost {} ms", srcDir, (end - start));
         } catch (Exception e) {
             throw new RuntimeException("zip error", e);
         } finally {
@@ -61,7 +61,7 @@ public class ZipUtils {
 
         CommonIOUtils.close(zis);
         long end = System.currentTimeMillis();
-        SwiftLoggers.getLogger().info("解压完成，耗时：" + (end - start) + " ms");
+        SwiftLoggers.getLogger().info("Unzip {} finished. Cost {} ms", parent, (end - start));
     }
 
     private static void compress(File sourceFile, ZipOutputStream zos, String name) throws Exception {

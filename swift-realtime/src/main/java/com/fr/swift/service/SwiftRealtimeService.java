@@ -1,69 +1,75 @@
 package com.fr.swift.service;
 
-import com.fr.swift.annotation.RpcMethod;
-import com.fr.swift.annotation.RpcService;
-import com.fr.swift.annotation.RpcServiceType;
-import com.fr.swift.basics.Invoker;
-import com.fr.swift.basics.ProxyFactory;
-import com.fr.swift.basics.Result;
-import com.fr.swift.basics.URL;
-import com.fr.swift.basics.base.SwiftInvocation;
-import com.fr.swift.basics.base.selector.ProxySelector;
-import com.fr.swift.basics.base.selector.UrlSelector;
-import com.fr.swift.config.bean.SwiftServiceInfoBean;
-import com.fr.swift.config.service.SwiftServiceInfoService;
+import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.core.cluster.SwiftClusterService;
+import com.fr.swift.cube.io.Types;
+import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
-import com.fr.swift.event.global.PushSegLocationRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.netty.rpc.client.AsyncRpcCallback;
-import com.fr.swift.netty.rpc.client.async.RpcFuture;
 import com.fr.swift.netty.rpc.server.RpcServer;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
-import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
+import com.fr.swift.query.query.QueryBeanFactory;
 import com.fr.swift.query.session.factory.SessionFactory;
-import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.operator.delete.WhereDeleter;
 import com.fr.swift.segment.recover.SegmentRecovery;
-import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
-import com.fr.swift.util.concurrent.CommonExecutor;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.beans.factory.annotation.Qualifier;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 /**
  * @author pony
  * @date 2017/10/10
  */
-@Service("realtimeService")
-@RpcService(type = RpcServiceType.CLIENT_SERVICE, value = RealtimeService.class)
+@SwiftService(name = "realtime")
 public class SwiftRealtimeService extends AbstractSwiftService implements RealtimeService, Serializable {
-    @Autowired
+
+    private static final long serialVersionUID = 4719723736240190155L;
+
     private transient RpcServer server;
 
-    @Autowired
-    @Qualifier("localSegmentProvider")
     private transient SwiftSegmentManager segmentManager;
 
-    @Autowired
     private transient ServiceTaskExecutor taskExecutor;
 
+    private transient QueryBeanFactory queryBeanFactory;
+
+    private transient boolean recoverable = true;
+
     private SwiftRealtimeService() {
+    }
+
+    @Override
+    public boolean start() throws SwiftServiceException {
+        super.start();
+        server = SwiftContext.get().getBean(RpcServer.class);
+        segmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
+        taskExecutor = SwiftContext.get().getBean(ServiceTaskExecutor.class);
+        queryBeanFactory = SwiftContext.get().getBean(QueryBeanFactory.class);
+        if (recoverable) {
+            recover0();
+            recoverable = false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean shutdown() throws SwiftServiceException {
+        super.shutdown();
+        server = null;
+        segmentManager = null;
+        taskExecutor = null;
+        queryBeanFactory = null;
+        return true;
     }
 
     @Override
@@ -71,52 +77,45 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.INSERT) {
             @Override
             public void doJob() throws Exception {
-//                rpcSegmentLocation(PushSegLocationRpcEvent.fromSourceKey(getServiceType(), Arrays.asList(tableKey.getId())));
                 SwiftDatabase.getInstance().getTable(tableKey).insert(resultSet);
             }
         });
     }
 
-//    @Override
-//    @RpcMethod(methodName = "merge")
-//    public void merge(List<SegmentKey> tableKeys) {
-//        SwiftLoggers.getLogger().info("merge");
-//        rpcSegmentLocation(PushSegLocationRpcEvent.fromSegmentKey(getServiceType(), tableKeys));
-//    }
-
-    private static void recover0() {
-        CommonExecutor.get().submit(new Callable<Boolean>() {
-            @Override
-            public Boolean call() {
-                try {
-                    // 恢复所有realtime块
-                    SegmentRecovery segmentRecovery = (SegmentRecovery) SwiftContext.get().getBean("segmentRecovery");
-                    segmentRecovery.recoverAll();
-                    return true;
-                } catch (Exception e) {
-                    SwiftLoggers.getLogger().error(e);
-                    return false;
-                }
+    private void recover0() {
+        for (Table table : SwiftDatabase.getInstance().getAllTables()) {
+            final SourceKey tableKey = table.getSourceKey();
+            try {
+                taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.RECOVERY) {
+                    @Override
+                    public void doJob() {
+                        // 恢复所有realtime块
+                        SegmentRecovery segmentRecovery = (SegmentRecovery) SwiftContext.get().getBean("segmentRecovery");
+                        segmentRecovery.recover(tableKey);
+                    }
+                });
+            } catch (InterruptedException e) {
+                SwiftLoggers.getLogger().warn(e);
             }
-        });
+        }
     }
 
     @Override
-    @RpcMethod(methodName = "recover")
-    public void recover(List<SegmentKey> tableKeys) {
+    public void recover(List<SegmentKey> segKeys) {
         SwiftLoggers.getLogger().info("recover");
     }
 
     @Override
-    @RpcMethod(methodName = "realtimeDelete")
-    public boolean delete(final SourceKey sourceKey, final Where where) throws Exception {
-        taskExecutor.submit(new SwiftServiceCallable(sourceKey, ServiceTaskType.DELETE) {
+    public boolean delete(final SourceKey tableKey, final Where where) throws Exception {
+        taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.DELETE) {
             @Override
             public void doJob() throws Exception {
-                List<Segment> segments = segmentManager.getSegment(sourceKey);
-                for (Segment segment : segments) {
-                    WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", sourceKey, segment);
-                    whereDeleter.delete(where);
+                List<SegmentKey> segments = segmentManager.getSegmentKeys(tableKey);
+                for (SegmentKey segment : segments) {
+                    if (segment.getStoreType() == Types.StoreType.MEMORY) {
+                        WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segment);
+                        whereDeleter.delete(where);
+                    }
                 }
             }
         });
@@ -124,19 +123,9 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     }
 
     @Override
-    public boolean start() throws SwiftServiceException {
-        super.start();
-
-        recover0();
-
-        return true;
-    }
-
-    @Override
-    @RpcMethod(methodName = "realTimeQuery")
     public SwiftResultSet query(final String queryDescription) throws SQLException {
         try {
-            final QueryInfoBean bean = QueryInfoBeanFactory.create(queryDescription);
+            final QueryInfoBean bean = queryBeanFactory.create(queryDescription);
             SessionFactory sessionFactory = SwiftContext.get().getBean(SessionFactory.class);
             return sessionFactory.openSession(bean.getQueryId()).executeQuery(bean);
         } catch (Exception e) {
@@ -147,37 +136,5 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     @Override
     public ServiceType getServiceType() {
         return ServiceType.REAL_TIME;
-    }
-
-    private static final long serialVersionUID = 4719723736240190155L;
-
-    public SwiftRealtimeService(String id) {
-        super(id);
-    }
-
-    private void rpcSegmentLocation(PushSegLocationRpcEvent event) {
-        URL masterURL = getMasterURL();
-        ProxyFactory factory = ProxySelector.getInstance().getFactory();
-        Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, masterURL, false);
-        Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName("rpcTrigger"), new Object[]{event}));
-        RpcFuture future = (RpcFuture) result.getValue();
-        future.addCallback(new AsyncRpcCallback() {
-            @Override
-            public void success(Object result) {
-                logger.info("rpcTrigger success! ");
-            }
-
-            @Override
-            public void fail(Exception e) {
-                logger.error("rpcTrigger error! ", e);
-            }
-        });
-    }
-
-    private URL getMasterURL() {
-        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.get().
-                getBean(SwiftServiceInfoService.class).getServiceInfoByService(SwiftClusterService.SERVICE);
-        SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
-        return UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
     }
 }
