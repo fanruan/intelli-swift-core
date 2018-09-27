@@ -2,7 +2,6 @@ package com.fr.swift.result;
 
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.sort.Sort;
-import com.fr.swift.query.sort.SortType;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.Pair;
@@ -100,8 +99,6 @@ public class SortMultiSegmentDetailResultSet extends AbstractDetailResultSet {
             public int compare(Row o1, Row o2) {
                 for (Pair<Sort, Comparator> pair : comparators) {
                     int result = pair.getValue().compare(o1.getValue(pair.getKey().getTargetIndex()), o2.getValue(pair.getKey().getTargetIndex()));
-                    // 从DictionaryColumn中取出来的比较器默认都是升序的
-                    result = pair.getKey().getSortType() == SortType.ASC ? result : -result;
                     if (result != 0) {
                         return result;
                     }
