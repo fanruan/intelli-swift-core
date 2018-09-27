@@ -44,7 +44,7 @@ public class SegmentTransfer {
 
             onSucceed();
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("segment transfer from {} to {} failed: {}", e);
+            SwiftLoggers.getLogger().error("segment transfer from {} to {} failed: {}", oldSegKey, newSegKey, e);
             remove(newSegKey);
         }
     }

@@ -4,7 +4,7 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.source.resultset.ListResultSet;
+import com.fr.swift.source.resultset.IterableResultSet;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ public class SwiftInserter extends BaseInserter implements Inserter {
 
     @Override
     public void insertData(List<Row> rowList) throws Exception {
-        insertData(new ListResultSet(segment.getMetaData(), rowList));
+        insertData(new IterableResultSet(rowList, segment.getMetaData()));
     }
 
     /**

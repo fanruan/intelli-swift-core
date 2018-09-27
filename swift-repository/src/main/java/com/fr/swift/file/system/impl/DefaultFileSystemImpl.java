@@ -5,6 +5,7 @@ import com.fr.io.utils.ResourceIOUtils;
 import com.fr.swift.file.exception.SwiftFileException;
 import com.fr.swift.file.system.AbstractFileSystem;
 import com.fr.swift.file.system.SwiftFileSystem;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.SwiftFileSystemConfig;
 
 import java.io.InputStream;
@@ -38,14 +39,18 @@ public class DefaultFileSystemImpl extends AbstractFileSystem {
     @Override
     public void write(String remote, InputStream inputStream) throws SwiftFileException {
         try {
+            int available = inputStream.available();
             ResourceIOUtils.write(remote, inputStream);
+            SwiftLoggers.getLogger().debug("ResourceIOUtils wrote {} bytes of {}", available, remote);
         } catch (Exception e) {
+            SwiftLoggers.getLogger().debug("ResourceIOUtils wrote failed caused by {}", remote, e);
             throw new SwiftFileException(e);
         }
     }
 
     @Override
     public SwiftFileSystem read(String remote) throws SwiftFileException {
+        SwiftLoggers.getLogger().debug("ResourceIOUtils read from remote {}", remote);
         SwiftFileSystem fileSystem;
         if (ComparatorUtils.equals(remote, getResourceURI())) {
             fileSystem = this;
@@ -67,6 +72,7 @@ public class DefaultFileSystemImpl extends AbstractFileSystem {
     public boolean remove(String remote) throws SwiftFileException {
         if (ComparatorUtils.equals(remote, getResourceURI())) {
             if (isExists()) {
+                SwiftLoggers.getLogger().debug("ResourceIOUtils remove remote {}", remote);
                 return ResourceIOUtils.delete(remote);
             }
         } else {
@@ -80,12 +86,14 @@ public class DefaultFileSystemImpl extends AbstractFileSystem {
 
     @Override
     public boolean renameTo(String src, String dest) throws SwiftFileException {
+        SwiftLoggers.getLogger().debug("ResourceIOUtils rename src {} to dest {}", src, dest);
         SwiftFileSystem fileSystem = read(src);
         return ResourceIOUtils.renameTo(fileSystem.getResourceURI(), dest);
     }
 
     @Override
     public boolean copy(String src, String dest) throws SwiftFileException {
+        SwiftLoggers.getLogger().debug("ResourceIOUtils copy src {} to dest {}", src, dest);
         SwiftFileSystem fileSystem = read(src);
         try {
             ResourceIOUtils.copy(fileSystem.getResourceURI(), dest);
