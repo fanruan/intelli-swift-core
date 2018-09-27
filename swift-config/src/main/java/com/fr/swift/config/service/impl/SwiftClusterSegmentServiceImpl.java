@@ -2,6 +2,7 @@ package com.fr.swift.config.service.impl;
 
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.convert.hibernate.transaction.AbstractTransactionWorker;
+import com.fr.swift.config.convert.hibernate.transaction.HibernateTransactionManager;
 import com.fr.swift.config.dao.SwiftSegmentLocationDao;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
@@ -38,6 +39,35 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
     private SwiftSegmentLocationDao segmentLocationDao;
 
     private String clusterId;
+
+    public SwiftClusterSegmentServiceImpl() {
+        try {
+            transactionManager.doTransactionIfNeed(new HibernateTransactionManager.HibernateWorker<Void>() {
+                @Override
+                public boolean needTransaction() {
+                    return true;
+                }
+
+                @Override
+                public Void work(Session session) throws SQLException {
+                    List<SegmentKey> segmentKeys = swiftSegmentDao.findAll(session);
+                    for (SegmentKey segmentKey : segmentKeys) {
+                        List<SwiftSegmentLocationEntity> info = segmentLocationDao.find(session, Restrictions.eq("id.segmentId", segmentKey.toString()));
+                        if (null == info || info.isEmpty()) {
+                            SwiftSegLocationEntityId id = new SwiftSegLocationEntityId("LOCAL", segmentKey.toString());
+                            SwiftSegmentLocationEntity entity = new SwiftSegmentLocationEntity();
+                            entity.setId(id);
+                            entity.setSourceKey(segmentKey.getTable().getId());
+                            segmentLocationDao.saveOrUpdate(session, entity);
+                        }
+                    }
+                    return null;
+                }
+            });
+        } catch (SQLException e) {
+            SwiftLoggers.getLogger().error("add segment error! ", e);
+        }
+    }
 
     @Override
     public void setClusterId(String clusterId) {
