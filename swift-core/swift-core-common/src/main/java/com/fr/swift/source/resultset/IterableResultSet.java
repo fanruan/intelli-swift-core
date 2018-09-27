@@ -5,22 +5,20 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Iterator;
 
 /**
  * @author anchore
  * @date 2018/6/4
  */
-public class ListResultSet implements SwiftResultSet {
+public class IterableResultSet implements SwiftResultSet {
     private SwiftMetaData meta;
 
-    private List<Row> rows;
+    private Iterator<Row> rows;
 
-    private int cursor = 0;
-
-    public ListResultSet(SwiftMetaData meta, List<Row> rows) {
+    public IterableResultSet(Iterable<Row> rows, SwiftMetaData meta) {
         this.meta = meta;
-        this.rows = rows;
+        this.rows = rows.iterator();
     }
 
     @Override
@@ -35,12 +33,12 @@ public class ListResultSet implements SwiftResultSet {
 
     @Override
     public boolean hasNext() throws SQLException {
-        return cursor < rows.size();
+        return rows.hasNext();
     }
 
     @Override
     public Row getNextRow() throws SQLException {
-        return rows.get(cursor++);
+        return rows.next();
     }
 
     @Override

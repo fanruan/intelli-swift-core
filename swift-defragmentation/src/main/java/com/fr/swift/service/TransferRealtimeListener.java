@@ -31,7 +31,7 @@ public class TransferRealtimeListener extends Listener<SegmentKey> {
                 }
             });
         } catch (InterruptedException e) {
-            SwiftLoggers.getLogger().warn("{}: {} transfer to realtime failed", event, segKey, e);
+            SwiftLoggers.getLogger().warn("{} transfer to realtime failed: {}", segKey, e);
         }
     }
 
