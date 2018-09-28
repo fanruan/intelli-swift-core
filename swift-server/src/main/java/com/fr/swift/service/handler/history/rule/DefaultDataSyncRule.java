@@ -25,7 +25,9 @@ public class DefaultDataSyncRule implements DataSyncRule {
     public Map<String, Set<SegmentKey>> calculate(Set<String> nodeIds, Map<String, List<SegmentKey>> needLoad,
                                                   Map<String, List<SegmentDestination>> destinations) {
 
-        int lessCount = nodeIds.size() - 1;
+        int lessCount = nodeIds.size();
+
+
 
         Map<String, AtomicInteger> readyToSort = new HashMap<String, AtomicInteger>();
 
@@ -33,8 +35,8 @@ public class DefaultDataSyncRule implements DataSyncRule {
             readyToSort.put(nodeId, new AtomicInteger(0));
         }
 
-        // 如果历史节点只有1个，数据至少存在一份，否则至少存在节点数-1份,
-        lessCount = lessCount < 1 ? 1 : lessCount;
+        // 最多存3份，最少存node份
+        lessCount = lessCount > 3 ? 3 : lessCount;
         Map<String, Set<SegmentKey>> result = new HashMap<String, Set<SegmentKey>>();
 
         Set<Map.Entry<String, List<SegmentKey>>> entries = needLoad.entrySet();

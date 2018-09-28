@@ -14,7 +14,6 @@ import com.fr.swift.cluster.service.ClusterIndexingServiceImpl;
 import com.fr.swift.cluster.service.ClusterRealTimeServiceImpl;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.cluster.service.SegmentLocationInfoContainer;
-import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.core.cluster.FRClusterNodeManager;
 import com.fr.swift.core.cluster.FRClusterNodeService;
@@ -22,13 +21,11 @@ import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.event.ClusterType;
-import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.nm.SlaveManager;
 import com.fr.swift.rm.MasterManager;
 import com.fr.swift.segment.SegmentDestination;
-import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
@@ -41,7 +38,6 @@ import com.fr.swift.service.listener.RemoteServiceSender;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
-import com.fr.swift.utils.ClusterCommonUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -125,22 +121,8 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
                         Crasher.crash(e);
                     }
                 }
-                Map<String, List<SegmentKey>> segs = SwiftContext.get().getBean(SwiftClusterSegmentService.class).getOwnSegments(clusterNode.getID());
                 if (FRClusterNodeManager.getInstance().isMaster()) {
                     ClusterSwiftServerService.getInstance().offline(clusterNode.getID());
-
-                    RemoteServiceSender serviceSender = SwiftContext.get().getBean(RemoteServiceSender.class);
-                    if (null != segs) {
-                        for (String s : segs.keySet()) {
-                            serviceSender.trigger(new HistoryLoadSegmentRpcEvent(s, FRClusterNodeManager.getInstance().getCurrentId()));
-                        }
-                    }
-                } else {
-                    if (null != segs) {
-                        for (String s : segs.keySet()) {
-                            ClusterCommonUtils.runSyncMaster(new HistoryLoadSegmentRpcEvent(s, FRClusterNodeManager.getInstance().getCurrentId()));
-                        }
-                    }
                 }
             }
         });
