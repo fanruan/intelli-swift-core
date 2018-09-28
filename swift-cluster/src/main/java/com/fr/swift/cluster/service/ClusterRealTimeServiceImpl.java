@@ -10,6 +10,7 @@ import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.Types.StoreType;
+import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.event.global.PushSegLocationRpcEvent;
@@ -24,6 +25,7 @@ import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.impl.RealTimeSegDestImpl;
 import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
 import com.fr.swift.segment.operator.delete.WhereDeleter;
+import com.fr.swift.segment.recover.SegmentRecovery;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.AbstractSwiftService;
 import com.fr.swift.service.RealtimeService;
@@ -77,11 +79,30 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
         NodeStartedListener.INSTANCE.registerTask(new NodeStartedListener.NodeStartedTask() {
             @Override
             public void run() {
+                recover0();
                 sendLocalSegmentInfo();
             }
         });
         existsTableKey = new HashSet<SourceKey>();
         return super.start();
+    }
+
+    private void recover0() {
+        for (Table table : SwiftDatabase.getInstance().getAllTables()) {
+            final SourceKey tableKey = table.getSourceKey();
+            try {
+                taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.RECOVERY) {
+                    @Override
+                    public void doJob() {
+                        // 恢复所有realtime块
+                        SegmentRecovery segmentRecovery = (SegmentRecovery) SwiftContext.get().getBean("segmentRecovery");
+                        segmentRecovery.recover(tableKey);
+                    }
+                });
+            } catch (InterruptedException e) {
+                SwiftLoggers.getLogger().warn(e);
+            }
+        }
     }
 
     private void sendLocalSegmentInfo() {
