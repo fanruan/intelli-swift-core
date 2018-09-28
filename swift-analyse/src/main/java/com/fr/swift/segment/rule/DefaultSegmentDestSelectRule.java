@@ -2,6 +2,8 @@ package com.fr.swift.segment.rule;
 
 import com.fr.swift.config.bean.SegmentDestSelectRule;
 import com.fr.swift.segment.SegmentDestination;
+import com.fr.swift.segment.impl.SegmentDestinationImpl;
+import com.fr.swift.service.HistoryService;
 import com.fr.swift.structure.Pair;
 
 import java.util.ArrayList;
@@ -74,5 +76,29 @@ public class DefaultSegmentDestSelectRule implements SegmentDestSelectRule {
             result.get(destination).add(destination.getClusterId());
         }
         return result;
+    }
+
+    public static void main(String[] args) {
+        List<SegmentDestination> dest = new ArrayList<SegmentDestination>();
+        SegmentDestination self1 = new SegmentDestinationImpl("", "table@FINE_IO@0", 0, HistoryService.class, "historyQuery");
+        SegmentDestination self2 = new SegmentDestinationImpl("", "table@FINE_IO@1", 1, HistoryService.class, "historyQuery");
+        SegmentDestination self3 = new SegmentDestinationImpl("", "table@FINE_IO@2", 2, HistoryService.class, "historyQuery");
+        SegmentDestination master1 = new SegmentDestinationImpl("master", "table@FINE_IO@0", 0, HistoryService.class, "historyQuery");
+        SegmentDestination master2 = new SegmentDestinationImpl("master", "table@FINE_IO@1", 1, HistoryService.class, "historyQuery");
+        SegmentDestination master3 = new SegmentDestinationImpl("master", "table@FINE_IO@2", 2, HistoryService.class, "historyQuery");
+        dest.add(self1);
+        dest.add(self2);
+        dest.add(self3);
+        dest.add(master1);
+        dest.add(master2);
+        dest.add(master3);
+
+        for (SegmentDestination destination : dest) {
+            SegmentDestinationImpl destination1 = (SegmentDestinationImpl) destination;
+            destination1.setCurrentNode("win");
+        }
+
+        List<SegmentDestination> target = new DefaultSegmentDestSelectRule().selectDestination(dest);
+        System.out.println(target.size());
     }
 }

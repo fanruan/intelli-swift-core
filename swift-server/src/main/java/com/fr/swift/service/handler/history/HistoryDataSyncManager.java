@@ -19,14 +19,12 @@ import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.handler.SwiftServiceHandlerManager;
 import com.fr.swift.service.handler.base.AbstractHandler;
-import com.fr.swift.service.handler.history.rule.SegmentPair;
 import com.fr.swift.structure.Pair;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -60,30 +58,20 @@ public class HistoryDataSyncManager extends AbstractHandler<SegmentLoadRpcEvent>
         switch (event.subEvent()) {
             case LOAD_SEGMENT:
                 String needLoadSourceKey = (String) event.getContent();
+                String sourceClusterId = event.getSourceClusterId();
                 if (StringUtils.isNotEmpty(needLoadSourceKey)) {
                     List<SegmentKey> keys = allSegments.get(needLoadSourceKey);
                     needLoadSegments.put(needLoadSourceKey, keys);
                 } else {
                     needLoadSegments.putAll(allSegments);
                 }
-                dealNeedLoadSegments(services, filterHistorySegments(needLoadSegments), SegmentLocationInfo.UpdateType.ALL, 0);
+                dealNeedLoadSegments(services, filterHistorySegments(needLoadSegments), SegmentLocationInfo.UpdateType.ALL, sourceClusterId, 0);
                 break;
             case TRANS_COLLATE_LOAD:
                 Pair<String, List<String>> content = (Pair<String, List<String>>) event.getContent();
+                String sourceId = event.getSourceClusterId();
                 String needLoadSource = content.getKey();
                 List<String> segmentKeys = content.getValue();
-                List<SegmentPair> list = new ArrayList<SegmentPair>();
-                for (Map.Entry<String, ClusterEntity> entry : services.entrySet()) {
-                    List<SegmentKey> keys = clusterSegmentService.getOwnSegments(entry.getKey()).get(needLoadSource);
-                    if (null != keys) {
-                        list.add(new SegmentPair(entry.getKey(), keys.size()));
-                    } else {
-                        list.add(new SegmentPair(entry.getKey(), 0));
-                    }
-                }
-                Collections.sort(list);
-                Map<String, ClusterEntity> hist = new HashMap<String, ClusterEntity>();
-                hist.put(list.get(0).getClusterId(), services.get(list.get(0).getClusterId()));
                 if (StringUtils.isNotEmpty(needLoadSource)) {
                     List<SegmentKey> keys = allSegments.get(needLoadSource);
                     List<SegmentKey> target = new ArrayList<SegmentKey>();
@@ -96,7 +84,7 @@ public class HistoryDataSyncManager extends AbstractHandler<SegmentLoadRpcEvent>
                 } else {
                     return null;
                 }
-                return (S) dealNeedLoadSegments(hist, needLoadSegments, SegmentLocationInfo.UpdateType.PART, 1);
+                return (S) dealNeedLoadSegments(services, filterHistorySegments(needLoadSegments), SegmentLocationInfo.UpdateType.PART, sourceId, 1);
             default:
                 break;
         }
@@ -105,12 +93,15 @@ public class HistoryDataSyncManager extends AbstractHandler<SegmentLoadRpcEvent>
 
     private EventResult dealNeedLoadSegments(Map<String, ClusterEntity> services,
                                              Map<String, List<SegmentKey>> needLoadSegments,
-                                             final SegmentLocationInfo.UpdateType updateType, int wait) {
+                                             final SegmentLocationInfo.UpdateType updateType, String sourceClusterId, int wait) {
         final Map<String, List<SegmentDestination>> destinations = new HashMap<String, List<SegmentDestination>>();
         Map<String, Set<SegmentKey>> result = dataSyncRuleService.getCurrentRule().calculate(services.keySet(), needLoadSegments, destinations);
         Iterator<String> keyIterator = result.keySet().iterator();
         final CountDownLatch latch = wait > 0 ? new CountDownLatch(wait) : null;
         final EventResult eventResult = new EventResult();
+        if (result.containsKey(sourceClusterId)) {
+            eventResult.setClusterId(sourceClusterId);
+        }
         try {
             while (keyIterator.hasNext()) {
                 final String key = keyIterator.next();
@@ -140,7 +131,9 @@ public class HistoryDataSyncManager extends AbstractHandler<SegmentLoadRpcEvent>
                                 } catch (Exception e) {
                                     fail(e);
                                 }
-                                eventResult.setClusterId(key);
+                                if (StringUtils.isEmpty(eventResult.getClusterId())) {
+                                    eventResult.setClusterId(key);
+                                }
                                 eventResult.setSuccess(true);
                                 if (null != latch) {
                                     latch.countDown();
