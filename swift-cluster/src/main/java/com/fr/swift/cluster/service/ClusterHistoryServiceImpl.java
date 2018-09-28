@@ -17,6 +17,7 @@ import com.fr.swift.db.Where;
 import com.fr.swift.event.global.PushSegLocationRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
@@ -38,6 +39,8 @@ import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
 import com.fr.swift.util.FileUtil;
 import com.fr.swift.util.ServiceBeanFactory;
+import com.fr.swift.util.concurrent.PoolThreadFactory;
+import com.fr.swift.util.concurrent.SwiftExecutors;
 import com.fr.swift.utils.ClusterCommonUtils;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.beans.factory.annotation.Qualifier;
@@ -47,9 +50,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 
 /**
  * @author yee
@@ -69,6 +74,8 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
     private transient SwiftRepositoryManager repositoryManager;
     private transient SwiftTablePathService tablePathService;
     private transient SwiftCubePathService cubePathService;
+    private transient ExecutorService loadDataService;
+
 
     @Override
     public boolean start() throws SwiftServiceException {
@@ -81,13 +88,56 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
         repositoryManager = SwiftContext.get().getBean(SwiftRepositoryManager.class);
         tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
         cubePathService = SwiftContext.get().getBean(SwiftCubePathService.class);
+        loadDataService = SwiftExecutors.newSingleThreadExecutor(new PoolThreadFactory(ClusterHistoryServiceImpl.class));
         NodeStartedListener.INSTANCE.registerTask(new NodeStartedListener.NodeStartedTask() {
             @Override
             public void run() {
+                checkSegmentExists();
                 sendLocalSegmentInfo();
             }
         });
         return super.start();
+    }
+
+    private void checkSegmentExists() {
+        SwiftRepository repository = repositoryManager.currentRepo();
+        SwiftClusterSegmentService segmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
+        segmentService.setClusterId(getID());
+        Map<String, List<SegmentKey>> map = segmentService.getOwnSegments();
+        for (Map.Entry<String, List<SegmentKey>> entry : map.entrySet()) {
+            String table = entry.getKey();
+            List<SegmentKey> value = entry.getValue();
+            List<SegmentKey> notExists = new ArrayList<SegmentKey>();
+            final Map<String, Set<String>> needDownload = new HashMap<String, Set<String>>();
+            for (SegmentKey segmentKey : value) {
+                if (segmentKey.getStoreType() == Types.StoreType.FINE_IO) {
+                    if (!segmentManager.getSegment(segmentKey).isReadable()) {
+                        String remotePath = String.format("%s/%s", segmentKey.getSwiftSchema().getDir(), segmentKey.getUri().getPath());
+                        if (repository.exists(remotePath)) {
+                            if (null == needDownload.get(table)) {
+                                needDownload.put(table, new HashSet<String>());
+                            }
+                            needDownload.get(table).add(remotePath);
+                        } else {
+                            notExists.add(segmentKey);
+                        }
+                    }
+                }
+            }
+            if (!needDownload.isEmpty()) {
+                loadDataService.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            load(needDownload, false);
+                        } catch (Exception e) {
+                            SwiftLoggers.getLogger().error(e);
+                        }
+                    }
+                });
+            }
+            segmentService.removeSegments(notExists);
+        }
     }
 
     private void sendLocalSegmentInfo() {
@@ -107,6 +157,8 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
         segmentManager = null;
         taskExecutor = null;
         repositoryManager = null;
+        loadDataService.shutdown();
+        loadDataService = null;
         return super.shutdown();
     }
 
