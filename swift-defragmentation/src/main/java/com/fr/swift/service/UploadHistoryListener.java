@@ -71,6 +71,10 @@ public class UploadHistoryListener extends Listener<SegmentKey> {
                     } catch (Exception e) {
                         SwiftLoggers.getLogger().error(String.format("Cannot upload Segment which path is %s", local), e);
                     }
+                } else {
+                    SegmentKey realtimeSegKey = getRealtimeSegKey(segKey);
+                    SEG_SVC.removeSegments(Collections.singletonList(realtimeSegKey));
+                    clearSeg(realtimeSegKey);
                 }
             }
         });

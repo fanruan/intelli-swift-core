@@ -1,6 +1,8 @@
 package com.fr.swift.service;
 
+import com.fr.event.EventDispatcher;
 import com.fr.swift.annotation.SwiftService;
+import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftMetaDataService;
@@ -19,6 +21,7 @@ import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.manager.SwiftRepositoryManager;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.operator.delete.WhereDeleter;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
@@ -240,7 +243,10 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                 for (SegmentKey segment : segments) {
                     if (segment.getStoreType() != Types.StoreType.MEMORY) {
                         WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segment);
-                        whereDeleter.delete(where);
+                        ImmutableBitMap allshow = whereDeleter.delete(where);
+                        if (allshow.isEmpty()) {
+                            EventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, segment);
+                        }
                     }
                 }
             }
