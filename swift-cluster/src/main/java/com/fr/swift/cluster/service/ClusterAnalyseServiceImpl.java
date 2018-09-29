@@ -171,14 +171,14 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
 
     @Override
     @RpcMethod(methodName = "removeTable")
-    public void removeTable(String sourceKey) {
-        SegmentLocationProvider.getInstance().removeTable(sourceKey);
+    public void removeTable(String cluster, String sourceKey) {
+        SegmentLocationProvider.getInstance().removeTable(cluster, sourceKey);
     }
 
     @Override
     @RpcMethod(methodName = "removeSegments")
-    public void removeSegments(String sourceKey, List<String> segmentKeys) {
-        SegmentLocationProvider.getInstance().removeSegment(sourceKey, segmentKeys);
+    public void removeSegments(String clusterId, String sourceKey, List<String> segmentKeys) {
+        SegmentLocationProvider.getInstance().removeSegments(clusterId, sourceKey, segmentKeys);
     }
 
 

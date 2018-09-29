@@ -25,7 +25,7 @@ public interface ClusterAnalyseService extends AnalyseService {
 
     void updateSegmentInfo(SegmentLocationInfo locationInfo, SegmentLocationInfo.UpdateType updateType);
 
-    void removeTable(String sourceKey);
+    void removeTable(String cluster, String sourceKey);
 
-    void removeSegments(String sourceKey, List<String> segmentKeys);
+    void removeSegments(String clusterId, String sourceKey, List<String> segmentKeys);
 }

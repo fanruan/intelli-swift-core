@@ -1,5 +1,6 @@
 package com.fr.swift.segment.impl;
 
+import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
 import com.fr.swift.config.bean.SegmentDestSelectRule;
 import com.fr.swift.config.service.SegmentDestSelectRuleService;
@@ -23,13 +24,13 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SegmentLocationManagerImpl implements SegmentLocationManager {
 
-    private Map<String, HashMap<String, SegmentDestination>> remoteSegments;
-    private Map<String, HashMap<String, SegmentDestination>> localSegments;
+    private Map<String, CheckRemoveHashMap> remoteSegments;
+    private Map<String, CheckRemoveHashMap> localSegments;
     private SegmentDestSelectRule rule;
 
     public SegmentLocationManagerImpl() {
-        remoteSegments = new ConcurrentHashMap<String, HashMap<String, SegmentDestination>>();
-        localSegments = new ConcurrentHashMap<String, HashMap<String, SegmentDestination>>();
+        remoteSegments = new ConcurrentHashMap<String, CheckRemoveHashMap>();
+        localSegments = new ConcurrentHashMap<String, CheckRemoveHashMap>();
         rule = SwiftContext.get().getBean(SegmentDestSelectRuleService.class).getCurrentRule();
     }
 
@@ -47,6 +48,7 @@ public class SegmentLocationManagerImpl implements SegmentLocationManager {
         if (remoteSegments.containsKey(table.getId())) {
             destinations.addAll(remoteSegments.get(table.getId()).values());
         }
+        Collections.sort(destinations);
         destinations = rule.selectDestination(destinations);
         // 暂时先这么处理，，，，
         if (null == destinations || destinations.isEmpty()) {
@@ -65,10 +67,10 @@ public class SegmentLocationManagerImpl implements SegmentLocationManager {
         for (Map.Entry<String, List<SegmentDestination>> entry : map.entrySet()) {
             String sourceKey = entry.getKey();
             if (!localSegments.containsKey(sourceKey)) {
-                localSegments.put(sourceKey, new HashMap<String, SegmentDestination>());
+                localSegments.put(sourceKey, new CheckRemoveHashMap());
             }
             if (!remoteSegments.containsKey(sourceKey)) {
-                remoteSegments.put(sourceKey, new HashMap<String, SegmentDestination>());
+                remoteSegments.put(sourceKey, new CheckRemoveHashMap());
             }
 
             List<SegmentDestination> list = new ArrayList<SegmentDestination>(entry.getValue());
@@ -87,7 +89,7 @@ public class SegmentLocationManagerImpl implements SegmentLocationManager {
         }
     }
 
-    private boolean calculateContains(Map<String, HashMap<String, SegmentDestination>> map, String sourceKey, SegmentDestination destination) {
+    private boolean calculateContains(Map<String, CheckRemoveHashMap> map, String sourceKey, SegmentDestination destination) {
         if (!map.get(sourceKey).containsKey(destination.getSegmentId())) {
             map.get(sourceKey).put(destination.getSegmentId(), destination);
             return true;
@@ -103,7 +105,7 @@ public class SegmentLocationManagerImpl implements SegmentLocationManager {
         return target;
     }
 
-    private void map2List(Map<String, List<SegmentDestination>> target, Map<String, HashMap<String, SegmentDestination>> segments) {
+    private void map2List(Map<String, List<SegmentDestination>> target, Map<String, CheckRemoveHashMap> segments) {
         Iterator<String> localIterator = segments.keySet().iterator();
         while (localIterator.hasNext()) {
             String key = localIterator.next();
@@ -127,24 +129,47 @@ public class SegmentLocationManagerImpl implements SegmentLocationManager {
 
     @Override
     synchronized
-    public void removeTable(String sourceKey) {
-        remoteSegments.remove(sourceKey);
+    public void removeTable(String cluster, String sourceKey) {
+        removeSegments(cluster, sourceKey, null, localSegments);
+        removeSegments(cluster, sourceKey, null, remoteSegments);
     }
 
     @Override
     synchronized
-    public void removeSegment(String sourceKey, List<String> segmentKeys) {
-        if (remoteSegments.containsKey(sourceKey)) {
-            for (String segmentKey : segmentKeys) {
-                remoteSegments.get(sourceKey).remove(segmentKey);
-            }
-        }
+    public void removeSegments(final String cluster, String sourceKey, List<String> segmentKeys) {
+        removeSegments(cluster, sourceKey, segmentKeys, remoteSegments);
+        removeSegments(cluster, sourceKey, segmentKeys, localSegments);
+    }
 
-        if (localSegments.containsKey(sourceKey)) {
+    private void removeSegments(final String cluster, String sourceKey, List<String> segmentKeys, Map<String, CheckRemoveHashMap> remoteSegments) {
+        if (remoteSegments.containsKey(sourceKey)) {
+            // 传空删全部
+            if (null == segmentKeys || segmentKeys.isEmpty()) {
+                segmentKeys = new ArrayList<String>(remoteSegments.get(sourceKey).keySet());
+            }
             for (String segmentKey : segmentKeys) {
-                localSegments.get(sourceKey).remove(segmentKey);
+                remoteSegments.get(segmentKey).remove(segmentKey, new CheckRemoveHashMap.Check() {
+                    @Override
+                    public boolean check(SegmentDestination destination) {
+                        if (null != destination) {
+                            return ComparatorUtils.equals(cluster, destination.getClusterId());
+                        }
+                        return false;
+                    }
+                });
             }
         }
     }
 
+    private static class CheckRemoveHashMap extends HashMap<String, SegmentDestination> {
+        public void remove(String key, Check check) {
+            if (check.check(get(key))) {
+                remove(key);
+            }
+        }
+
+        private interface Check {
+            boolean check(SegmentDestination destination);
+        }
+    }
 }
