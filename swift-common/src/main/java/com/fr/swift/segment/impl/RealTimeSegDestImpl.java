@@ -12,6 +12,7 @@ public class RealTimeSegDestImpl extends SegmentDestinationImpl {
     private static final long serialVersionUID = -5969030726680132148L;
 
     public RealTimeSegDestImpl() {
+        super();
     }
 
     public RealTimeSegDestImpl(String clusterId, String segmentId, int order, Class<? extends SwiftService> serviceClass, String methodName) {
