@@ -148,7 +148,7 @@ public class SegmentLocationManagerImpl implements SegmentLocationManager {
                 segmentKeys = new ArrayList<String>(remoteSegments.get(sourceKey).keySet());
             }
             for (String segmentKey : segmentKeys) {
-                remoteSegments.get(segmentKey).remove(segmentKey, new CheckRemoveHashMap.Check() {
+                remoteSegments.get(sourceKey).remove(segmentKey, new CheckRemoveHashMap.Check() {
                     @Override
                     public boolean check(SegmentDestination destination) {
                         if (null != destination) {

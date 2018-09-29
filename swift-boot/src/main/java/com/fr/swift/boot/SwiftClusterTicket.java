@@ -125,9 +125,8 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
 
                 if (FRClusterNodeManager.getInstance().isMaster()) {
                     ClusterSwiftServerService.getInstance().offline(clusterNode.getID());
-                } else {
-                    SegmentLocationProvider.getInstance().removeTable(clusterNode.getID(), null);
                 }
+                SegmentLocationProvider.getInstance().removeTable(clusterNode.getID(), null);
             }
         });
     }
