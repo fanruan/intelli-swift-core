@@ -17,6 +17,7 @@ import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -58,6 +59,8 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
                     } else {
                         return (S) EventResult.failed(sourceId, "load failed");
                     }
+                case CHECK_LOAD:
+                    return (S) checkLoad();
                 default:
                     return null;
             }
@@ -65,6 +68,27 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
             LOGGER.error(e);
         }
         return null;
+    }
+
+
+    private Map<String, Set<String>> checkLoad() {
+        Map<String, ClusterEntity> services = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.HISTORY);
+        if (null == services || services.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        int lessCount = services.size() > 3 ? 3 : services.size();
+        Map<String, Set<String>> result = clusterSegmentService.getNotEnoughSegments(services.keySet(), lessCount);
+        if (!result.isEmpty()) {
+            Iterator<Map.Entry<String, Set<String>>> it = result.entrySet().iterator();
+            while (it.hasNext()) {
+                if (it.next().getValue().isEmpty()) {
+                    it.remove();
+                }
+            }
+        } else {
+            // TODO 2018/09/30 如果为空就算哪台机器比较弱然后加载他的
+        }
+        return result;
     }
 
     private boolean handleCommonLoad(AbstractHistoryRpcEvent event, int wait) throws Exception {

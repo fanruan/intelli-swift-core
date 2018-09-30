@@ -25,9 +25,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author yee
@@ -73,6 +75,37 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
     @Override
     public void setClusterId(String clusterId) {
         this.clusterId = clusterId;
+    }
+
+    @Override
+    public Map<String, Set<String>> getNotEnoughSegments(final Set<String> clusterIds, final int lessCount) {
+        try {
+            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Map<String, Set<String>>>() {
+                @Override
+                public Map<String, Set<String>> work(Session session) {
+                    Map<String, Set<String>> result = new HashMap<String, Set<String>>();
+                    List<SegmentKey> segmentKeys = swiftSegmentDao.findAll(session);
+                    for (SegmentKey segmentKey : segmentKeys) {
+                        String sourceKey = segmentKey.getTable().getId();
+                        if (!result.containsKey(sourceKey)) {
+                            result.put(sourceKey, new HashSet<String>());
+                        }
+                        List<SwiftSegmentLocationEntity> entities = segmentLocationDao.find(
+                                session, Restrictions.in("id.clusterId", clusterIds),
+                                Restrictions.eq("id.segmentId", segmentKey.toString()));
+                        if (entities.size() < lessCount) {
+                            result.get(sourceKey).add(segmentKey.toString());
+                        }
+                    }
+                    return result;
+                }
+
+
+            });
+        } catch (SQLException e) {
+            SwiftLoggers.getLogger().warn("getNotEnoughSegments error, return empty");
+        }
+        return Collections.emptyMap();
     }
 
     @Override
