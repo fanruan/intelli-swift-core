@@ -9,6 +9,10 @@ import com.fr.swift.event.base.AbstractHistoryRpcEvent;
 public class CheckLoadHistoryEvent extends AbstractHistoryRpcEvent<Void> {
     private static final long serialVersionUID = -5945883684374975434L;
 
+    public CheckLoadHistoryEvent(String clusterId) {
+        this.sourceClusterId = clusterId;
+    }
+
     @Override
     public Event subEvent() {
         return Event.CHECK_LOAD;

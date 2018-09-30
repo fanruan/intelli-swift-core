@@ -103,7 +103,7 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
 
     private void checkLoad() {
         try {
-            ClusterCommonUtils.runSyncMaster(new CheckLoadHistoryEvent());
+            ClusterCommonUtils.runSyncMaster(new CheckLoadHistoryEvent(getID()));
         } catch (Exception e) {
             SwiftLoggers.getLogger().warn("Cannot sync native segment info to server! ", e);
         }
