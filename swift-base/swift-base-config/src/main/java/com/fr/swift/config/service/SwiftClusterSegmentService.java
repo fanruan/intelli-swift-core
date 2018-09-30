@@ -24,5 +24,5 @@ public interface SwiftClusterSegmentService extends SwiftSegmentService {
 
     void setClusterId(String clusterId);
 
-    Map<String, Set<String>> getNotEnoughSegments(Set<String> clusterIds, int lessCount);
+    Map<String, List<SegmentKey>> getNotEnoughSegments(Set<String> clusterIds, int lessCount);
 }

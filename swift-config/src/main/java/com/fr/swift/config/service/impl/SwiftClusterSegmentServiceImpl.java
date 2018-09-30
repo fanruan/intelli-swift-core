@@ -25,7 +25,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -78,23 +77,23 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
     }
 
     @Override
-    public Map<String, Set<String>> getNotEnoughSegments(final Set<String> clusterIds, final int lessCount) {
+    public Map<String, List<SegmentKey>> getNotEnoughSegments(final Set<String> clusterIds, final int lessCount) {
         try {
-            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Map<String, Set<String>>>() {
+            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Map<String, List<SegmentKey>>>() {
                 @Override
-                public Map<String, Set<String>> work(Session session) {
-                    Map<String, Set<String>> result = new HashMap<String, Set<String>>();
+                public Map<String, List<SegmentKey>> work(Session session) {
+                    Map<String, List<SegmentKey>> result = new HashMap<String, List<SegmentKey>>();
                     List<SegmentKey> segmentKeys = swiftSegmentDao.findAll(session);
                     for (SegmentKey segmentKey : segmentKeys) {
                         String sourceKey = segmentKey.getTable().getId();
                         if (!result.containsKey(sourceKey)) {
-                            result.put(sourceKey, new HashSet<String>());
+                            result.put(sourceKey, new ArrayList<SegmentKey>());
                         }
                         List<SwiftSegmentLocationEntity> entities = segmentLocationDao.find(
                                 session, Restrictions.in("id.clusterId", clusterIds),
                                 Restrictions.eq("id.segmentId", segmentKey.toString()));
                         if (entities.size() < lessCount) {
-                            result.get(sourceKey).add(segmentKey.toString());
+                            result.get(sourceKey).add(segmentKey);
                         }
                     }
                     return result;

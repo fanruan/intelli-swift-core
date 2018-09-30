@@ -4,6 +4,7 @@ import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.cluster.entity.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
+import com.fr.swift.cube.io.Types;
 import com.fr.swift.event.base.AbstractHistoryRpcEvent;
 import com.fr.swift.event.base.EventResult;
 import com.fr.swift.event.history.SegmentLoadRpcEvent;
@@ -77,12 +78,21 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
             return Collections.emptyMap();
         }
         int lessCount = services.size() > 3 ? 3 : services.size();
-        Map<String, Set<String>> result = clusterSegmentService.getNotEnoughSegments(services.keySet(), lessCount);
-        if (!result.isEmpty()) {
-            Iterator<Map.Entry<String, Set<String>>> it = result.entrySet().iterator();
-            while (it.hasNext()) {
-                if (it.next().getValue().isEmpty()) {
-                    it.remove();
+        Map<String, List<SegmentKey>> segments = clusterSegmentService.getNotEnoughSegments(services.keySet(), lessCount);
+        Map<String, Set<String>> result = new HashMap<String, Set<String>>();
+        if (!segments.isEmpty()) {
+            for (Map.Entry<String, List<SegmentKey>> entry : segments.entrySet()) {
+                String sourceKey = entry.getKey();
+                List<SegmentKey> list = entry.getValue();
+                if (!list.isEmpty()) {
+                    if (!result.containsKey(sourceKey)) {
+                        result.put(sourceKey, new HashSet<String>());
+                    }
+                    for (SegmentKey segmentKey : list) {
+                        if (segmentKey.getStoreType() != Types.StoreType.MEMORY) {
+                            result.get(sourceKey).add(segmentKey.getUri().getPath());
+                        }
+                    }
                 }
             }
         } else {
