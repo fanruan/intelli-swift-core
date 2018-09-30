@@ -66,7 +66,7 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
                 }
             });
         } catch (SQLException e) {
-            SwiftLoggers.getLogger().error("add segment error! ", e);
+            SwiftLoggers.getLogger().warn("add segment error! ", e);
         }
     }
 
@@ -86,7 +86,7 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
                 }
             });
         } catch (SQLException e) {
-            SwiftLoggers.getLogger().error("add segment error! ", e);
+            SwiftLoggers.getLogger().warn("add segment error! ", e);
         }
         return false;
     }
@@ -105,7 +105,7 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
                 }
             });
         } catch (SQLException e) {
-            SwiftLoggers.getLogger().error("remove segment error! ", e);
+            SwiftLoggers.getLogger().warn("remove segment error! ", e);
         }
         return false;
     }
@@ -134,7 +134,7 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
                 }
             });
         } catch (SQLException e) {
-            SwiftLoggers.getLogger().error("remove segment error! ", e);
+            SwiftLoggers.getLogger().warn("remove segment error! ", e);
             return false;
         }
     }
@@ -167,7 +167,7 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
                 }
             });
         } catch (SQLException e) {
-            SwiftLoggers.getLogger().error("update segment error! ", e);
+            SwiftLoggers.getLogger().warn("update segment error! ", e);
         }
         return false;
     }
@@ -260,7 +260,7 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
             });
 
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("Select segments error!", e);
+            SwiftLoggers.getLogger().warn("Select segments error!", e);
         }
         return Collections.emptyMap();
     }
@@ -285,7 +285,7 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
             });
 
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("Select segments error!", e);
+            SwiftLoggers.getLogger().warn("Select segments error!", e);
         }
         return Collections.emptyMap();
     }
@@ -311,7 +311,7 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
             });
 
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("Select segments error!", e);
+            SwiftLoggers.getLogger().warn("Select segments error!", e);
         }
         return Collections.emptyMap();
     }
@@ -341,7 +341,7 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
                 }
             });
         } catch (SQLException e) {
-            SwiftLoggers.getLogger().error("Update table error!", e);
+            SwiftLoggers.getLogger().warn("Update table error!", e);
             return false;
         }
     }

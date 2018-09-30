@@ -71,7 +71,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
 
             });
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("Add or update metadata error!", e);
+            SwiftLoggers.getLogger().warn("Add or update metadata error!", e);
             return false;
         }
     }
@@ -96,7 +96,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
 
             });
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("Add metadata error!", e);
+            SwiftLoggers.getLogger().warn("Add metadata error!", e);
             return false;
         }
     }
@@ -139,7 +139,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
             });
 
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("Remove metadata error!", e);
+            SwiftLoggers.getLogger().warn("Remove metadata error!", e);
             return false;
         }
     }
@@ -171,7 +171,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
             });
 
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("Select metadata error!", e);
+            SwiftLoggers.getLogger().warn("Select metadata error!", e);
             return new HashMap<String, SwiftMetaData>();
         }
     }
@@ -196,7 +196,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                 });
 
             } catch (Exception e) {
-                SwiftLoggers.getLogger().error("Select metadata error!", e);
+                SwiftLoggers.getLogger().warn("Select metadata error!", e);
                 return null;
             }
         }
@@ -265,7 +265,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                 }
             });
         } catch (SQLException e) {
-            SwiftLoggers.getLogger().error(e);
+            SwiftLoggers.getLogger().warn(e);
             return Collections.emptyList();
         }
     }
