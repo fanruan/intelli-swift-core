@@ -3,6 +3,9 @@ package com.fr.swift.adaptor.log;
 import com.fr.decision.log.LogSearchConstants;
 import com.fr.decision.log.LogSearchProvider;
 import com.fr.decision.log.MetricBean;
+import com.fr.io.context.ResourceModuleContext;
+import com.fr.io.repository.FineFileEntry;
+import com.fr.io.utils.ResourceIOUtils;
 import com.fr.log.message.AbstractMessage;
 import com.fr.stable.StringUtils;
 import com.fr.stable.query.condition.QueryCondition;
@@ -21,7 +24,6 @@ import com.fr.swift.query.info.bean.element.filter.impl.NullFilterBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.type.MetricType;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.cluster.ClusterAnalyseService;
@@ -210,7 +212,24 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
         return 0;
     }
 
-    public long logTotal() throws Exception {
-        return SwiftContext.get().getBean(SwiftRepositoryManager.class).currentRepo().getSize("../" + SwiftDatabase.DECISION_LOG.getDir());
+    public static long getSizeOf(String dir) {
+        long size = 0L;
+        FineFileEntry[] entries = ResourceIOUtils.listEntry(dir);
+        for (FineFileEntry entry : entries) {
+            if (entry.isDirectory()) {
+                size += getSizeOf(entry.getPath());
+            } else {
+                size += entry.getSize();
+            }
+        }
+        return size;
+    }
+
+    public long logTotal() {
+        long size = 0;
+        if (ResourceModuleContext.getRealCurrentRepo().isAccurateDiskSize()) {
+            return getSizeOf("../" + SwiftDatabase.DECISION_LOG.getDir());
+        }
+        return size;
     }
 }

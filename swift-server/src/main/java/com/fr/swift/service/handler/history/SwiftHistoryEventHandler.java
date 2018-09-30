@@ -4,28 +4,19 @@ import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.cluster.entity.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
-import com.fr.swift.cube.io.Types;
-import com.fr.swift.event.analyse.SegmentLocationRpcEvent;
 import com.fr.swift.event.base.AbstractHistoryRpcEvent;
 import com.fr.swift.event.base.EventResult;
 import com.fr.swift.event.history.SegmentLoadRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.SegmentLocationInfo;
-import com.fr.swift.segment.impl.SegmentDestinationImpl;
-import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
 import com.fr.swift.service.ServiceType;
-import com.fr.swift.service.cluster.ClusterHistoryService;
-import com.fr.swift.service.handler.SwiftServiceHandlerManager;
 import com.fr.swift.service.handler.base.AbstractHandler;
 import com.fr.swift.structure.Pair;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -80,59 +71,8 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
     }
 
 
-    private void checkLoad(final String clusterId) throws Exception {
-        Map<String, ClusterEntity> services = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.HISTORY);
-        if (null == services || services.isEmpty()) {
-            return;
-        }
-        int lessCount = services.size() > 3 ? 3 : services.size();
-        final Map<String, List<SegmentKey>> segments = clusterSegmentService.getNotEnoughSegments(services.keySet(), lessCount);
-        final Map<String, Set<String>> result = new HashMap<String, Set<String>>();
-        ClusterEntity entity = services.get(clusterId);
-        if (!segments.isEmpty()) {
-            for (Map.Entry<String, List<SegmentKey>> entry : segments.entrySet()) {
-                String sourceKey = entry.getKey();
-                List<SegmentKey> list = entry.getValue();
-                if (!list.isEmpty()) {
-                    if (!result.containsKey(sourceKey)) {
-                        result.put(sourceKey, new HashSet<String>());
-                    }
-                    final List<Pair<String, String>> idList = new ArrayList<Pair<String, String>>();
-                    final Map<String, List<SegmentDestination>> destinations = new HashMap<String, List<SegmentDestination>>();
-                    destinations.put(sourceKey, new ArrayList<SegmentDestination>());
-                    for (SegmentKey segmentKey : list) {
-                        if (segmentKey.getStoreType() != Types.StoreType.MEMORY) {
-                            result.get(sourceKey).add(segmentKey.getUri().getPath());
-                            idList.add(Pair.of(segmentKey.getTable().getId(), segmentKey.toString()));
-                            destinations.get(sourceKey).add(new SegmentDestinationImpl(clusterId, segmentKey.toString(), segmentKey.getOrder(), ClusterHistoryService.class, "historyQuery"));
-                        }
-                    }
-                    runAsyncRpc(clusterId, entity.getServiceClass(), "load", result, false)
-                            .addCallback(new AsyncRpcCallback() {
-                                @Override
-                                public void success(Object o) {
-                                    LOGGER.info("load success");
-                                    Map<String, List<Pair<String, String>>> segmentTable = new HashMap<String, List<Pair<String, String>>>();
-                                    segmentTable.put(clusterId, idList);
-                                    clusterSegmentService.updateSegmentTable(segmentTable);
-                                    try {
-                                        SwiftServiceHandlerManager.getManager().
-                                                handle(new SegmentLocationRpcEvent(SegmentLocationInfo.UpdateType.PART, new SegmentLocationInfoImpl(ServiceType.HISTORY, destinations)));
-                                    } catch (Exception e) {
-                                        fail(e);
-                                    }
-                                }
-
-                                @Override
-                                public void fail(Exception e) {
-                                    LOGGER.error("load error! ", e);
-                                }
-                            });
-                }
-            }
-        } else {
-            // TODO 2018/09/30 如果为空就算哪台机器比较弱然后加载他的
-        }
+    private void checkLoad(final String clusterId) {
+        // TODO 新节点加入处理
     }
 
     private boolean handleCommonLoad(AbstractHistoryRpcEvent event, int wait) throws Exception {

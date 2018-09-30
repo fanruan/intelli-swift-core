@@ -1,6 +1,8 @@
 package com.fr.swift.file.system.impl;
 
 import com.fr.general.ComparatorUtils;
+import com.fr.io.context.ResourceModuleContext;
+import com.fr.io.repository.FineFileEntry;
 import com.fr.io.utils.ResourceIOUtils;
 import com.fr.swift.file.exception.SwiftFileException;
 import com.fr.swift.file.system.AbstractFileSystem;
@@ -138,4 +140,16 @@ public class DefaultFileSystemImpl extends AbstractFileSystem {
 
     }
 
+    @Override
+    public long getSize() {
+        long size = 0;
+        if (ResourceModuleContext.getRealCurrentRepo().isAccurateDiskSize()) {
+            FineFileEntry[] entries = ResourceIOUtils.listEntry(getResourceURI());
+
+            for (FineFileEntry entry : entries) {
+                size += entry.getSize();
+            }
+        }
+        return size;
+    }
 }
