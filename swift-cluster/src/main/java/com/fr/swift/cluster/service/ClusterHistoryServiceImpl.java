@@ -94,8 +94,8 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
             @Override
             public void run() {
                 checkSegmentExists();
-                checkLoad();
                 sendLocalSegmentInfo();
+                checkLoad();
             }
         });
         return super.start();
