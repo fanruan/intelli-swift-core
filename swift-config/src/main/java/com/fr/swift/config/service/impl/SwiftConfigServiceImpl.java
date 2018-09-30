@@ -59,7 +59,7 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
                 }
             });
         } catch (SQLException e) {
-            SwiftLoggers.getLogger().error(e);
+            SwiftLoggers.getLogger().warn(e);
         }
         return false;
     }
@@ -78,7 +78,7 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
                 }
             });
         } catch (SQLException e) {
-            SwiftLoggers.getLogger().error(e);
+            SwiftLoggers.getLogger().warn(e);
         }
         return false;
     }

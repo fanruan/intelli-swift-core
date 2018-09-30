@@ -48,7 +48,7 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
                 }
             });
         } catch (SQLException e) {
-            SwiftLoggers.getLogger().error(e);
+            SwiftLoggers.getLogger().warn(e);
             return false;
         }
     }
@@ -64,7 +64,7 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
                 }
             });
         } catch (SQLException e) {
-            SwiftLoggers.getLogger().error(e);
+            SwiftLoggers.getLogger().warn(e);
             return false;
         }
     }
@@ -126,7 +126,7 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
                 }
             });
         } catch (SQLException e) {
-            SwiftLoggers.getLogger().error(e);
+            SwiftLoggers.getLogger().warn(e);
             return false;
         }
     }

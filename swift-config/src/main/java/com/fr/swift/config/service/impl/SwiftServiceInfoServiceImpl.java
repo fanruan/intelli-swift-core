@@ -45,7 +45,7 @@ class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
                 }
             });
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("Add or update ServiceInfo error!", e);
+            SwiftLoggers.getLogger().warn("Add or update ServiceInfo error!", e);
             return false;
         }
     }
@@ -61,7 +61,7 @@ class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
                 }
             });
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("remove ServiceInfo error!", e);
+            SwiftLoggers.getLogger().warn("remove ServiceInfo error!", e);
             return false;
         }
     }
@@ -81,7 +81,7 @@ class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
                 }
             });
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("get ServiceInfo error!", e);
+            SwiftLoggers.getLogger().warn("get ServiceInfo error!", e);
             return null;
         }
     }
@@ -106,7 +106,7 @@ class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
                 }
             });
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("get all ServiceInfo error!", e);
+            SwiftLoggers.getLogger().warn("get all ServiceInfo error!", e);
             return new ArrayList<SwiftServiceInfoBean>();
         }
     }
@@ -131,7 +131,7 @@ class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
                 }
             });
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("get ServiceInfo by service error!", e);
+            SwiftLoggers.getLogger().warn("get ServiceInfo by service error!", e);
             return new ArrayList<SwiftServiceInfoBean>();
         }
     }
@@ -155,7 +155,7 @@ class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
                 }
             });
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("get ServiceInfo by service error!", e);
+            SwiftLoggers.getLogger().warn("get ServiceInfo by service error!", e);
             return new ArrayList<SwiftServiceInfoBean>();
         }
     }
