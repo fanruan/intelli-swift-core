@@ -5,6 +5,7 @@ import com.fr.swift.structure.Pair;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author yee
@@ -22,4 +23,6 @@ public interface SwiftClusterSegmentService extends SwiftSegmentService {
     void checkOldConfig();
 
     void setClusterId(String clusterId);
+
+    Map<String, List<SegmentKey>> getNotEnoughSegments(Set<String> clusterIds, int lessCount);
 }

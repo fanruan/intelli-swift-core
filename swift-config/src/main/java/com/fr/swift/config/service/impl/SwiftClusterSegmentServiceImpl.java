@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author yee
@@ -73,6 +74,37 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
     @Override
     public void setClusterId(String clusterId) {
         this.clusterId = clusterId;
+    }
+
+    @Override
+    public Map<String, List<SegmentKey>> getNotEnoughSegments(final Set<String> clusterIds, final int lessCount) {
+        try {
+            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Map<String, List<SegmentKey>>>() {
+                @Override
+                public Map<String, List<SegmentKey>> work(Session session) {
+                    Map<String, List<SegmentKey>> result = new HashMap<String, List<SegmentKey>>();
+                    List<SegmentKey> segmentKeys = swiftSegmentDao.findAll(session);
+                    for (SegmentKey segmentKey : segmentKeys) {
+                        String sourceKey = segmentKey.getTable().getId();
+                        if (!result.containsKey(sourceKey)) {
+                            result.put(sourceKey, new ArrayList<SegmentKey>());
+                        }
+                        List<SwiftSegmentLocationEntity> entities = segmentLocationDao.find(
+                                session, Restrictions.in("id.clusterId", clusterIds),
+                                Restrictions.eq("id.segmentId", segmentKey.toString()));
+                        if (entities.size() < lessCount) {
+                            result.get(sourceKey).add(segmentKey);
+                        }
+                    }
+                    return result;
+                }
+
+
+            });
+        } catch (SQLException e) {
+            SwiftLoggers.getLogger().warn("getNotEnoughSegments error, return empty");
+        }
+        return Collections.emptyMap();
     }
 
     @Override

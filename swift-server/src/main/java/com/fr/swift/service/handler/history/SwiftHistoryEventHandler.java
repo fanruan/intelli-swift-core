@@ -58,6 +58,9 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
                     } else {
                         return (S) EventResult.failed(sourceId, "load failed");
                     }
+                case CHECK_LOAD:
+                    checkLoad(event.getSourceClusterId());
+                    break;
                 default:
                     return null;
             }
@@ -65,6 +68,11 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
             LOGGER.error(e);
         }
         return null;
+    }
+
+
+    private void checkLoad(final String clusterId) {
+        // TODO 新节点加入处理
     }
 
     private boolean handleCommonLoad(AbstractHistoryRpcEvent event, int wait) throws Exception {

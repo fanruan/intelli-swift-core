@@ -134,17 +134,19 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
             String clusterId = entry.getKey();
             List<SegmentKey> segmentKeys = segmentService.getOwnSegments(clusterId).get(sourceKey.getId());
             List<String> needUploadSegs = new ArrayList<String>();
-            for (SegmentKey segmentKey : segmentKeys) {
-                if (segmentKey.getStoreType() == Types.StoreType.FINE_IO) {
-                    String segKey = segmentKey.toString();
-                    // 如果不包含就放到需要上传的list
-                    if (!uploadedSegments.contains(segKey)) {
-                        needUploadSegs.add(segKey);
-                        uploadedSegments.add(segKey);
+            if (null != segmentKeys) {
+                for (SegmentKey segmentKey : segmentKeys) {
+                    if (segmentKey.getStoreType() == Types.StoreType.FINE_IO) {
+                        String segKey = segmentKey.toString();
+                        // 如果不包含就放到需要上传的list
+                        if (!uploadedSegments.contains(segKey)) {
+                            needUploadSegs.add(segKey);
+                            uploadedSegments.add(segKey);
+                        }
                     }
                 }
+                runAsyncRpc(clusterId, entry.getValue().getServiceClass(), method, sourceKey, where, needUploadSegs);
             }
-            runAsyncRpc(clusterId, entry.getValue().getServiceClass(), method, sourceKey, where, needUploadSegs);
         }
     }
 
