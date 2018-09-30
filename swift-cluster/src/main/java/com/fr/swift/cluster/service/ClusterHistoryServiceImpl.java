@@ -15,7 +15,7 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Where;
 import com.fr.swift.event.global.PushSegLocationRpcEvent;
-import com.fr.swift.event.history.CheckLoadHistory;
+import com.fr.swift.event.history.CheckLoadHistoryEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.SwiftRepository;
@@ -103,7 +103,7 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
 
     private void checkLoad() {
         try {
-            final Map<String, Set<String>> neeLoad = (Map<String, Set<String>>) ClusterCommonUtils.runSyncMaster(new CheckLoadHistory());
+            final Map<String, Set<String>> neeLoad = (Map<String, Set<String>>) ClusterCommonUtils.runSyncMaster(new CheckLoadHistoryEvent());
             if (null != neeLoad) {
                 loadDataService.submit(new Runnable() {
                     @Override
