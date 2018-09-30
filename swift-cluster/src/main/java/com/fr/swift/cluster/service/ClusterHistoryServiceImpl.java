@@ -94,8 +94,8 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
             @Override
             public void run() {
                 checkSegmentExists();
-                sendLocalSegmentInfo();
                 checkLoad();
+                sendLocalSegmentInfo();
             }
         });
         return super.start();
@@ -103,19 +103,7 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
 
     private void checkLoad() {
         try {
-            final Map<String, Set<String>> neeLoad = (Map<String, Set<String>>) ClusterCommonUtils.runSyncMaster(new CheckLoadHistoryEvent());
-            if (null != neeLoad) {
-                loadDataService.submit(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            load(neeLoad, false);
-                        } catch (Exception e) {
-                            SwiftLoggers.getLogger().error(e);
-                        }
-                    }
-                });
-            }
+            ClusterCommonUtils.runSyncMaster(new CheckLoadHistoryEvent());
         } catch (Exception e) {
             SwiftLoggers.getLogger().warn("Cannot sync native segment info to server! ", e);
         }
