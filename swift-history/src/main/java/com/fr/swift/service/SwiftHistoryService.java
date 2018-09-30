@@ -164,12 +164,12 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                     @Override
                     public void doJob() {
                         download(sourceKey, uris, replace);
-                        SwiftLoggers.getLogger().error("{}, {}", sourceKey, uris);
+                        SwiftLoggers.getLogger().info("{}, {}", sourceKey, uris);
                         latch.countDown();
                     }
                 });
             } catch (InterruptedException e) {
-                SwiftLoggers.getLogger().error("download seg {} of {} failed", uris, sourceKey, e);
+                SwiftLoggers.getLogger().warn("download seg {} of {} failed", uris, sourceKey, e);
             }
         }
         latch.await();
