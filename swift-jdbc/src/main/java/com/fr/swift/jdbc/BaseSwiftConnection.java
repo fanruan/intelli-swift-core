@@ -215,7 +215,7 @@ public abstract class BaseSwiftConnection implements java.sql.Connection {
 
     @Override
     public void commit() throws SQLException {
-        throw new SQLException(new SwiftJDBCNotSupportedException());
+//        throw new SQLException(new SwiftJDBCNotSupportedException());
     }
 
     @Override

@@ -15,6 +15,7 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Where;
 import com.fr.swift.event.global.PushSegLocationRpcEvent;
+import com.fr.swift.event.history.CheckLoadHistoryEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.SwiftRepository;
@@ -94,9 +95,18 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
             public void run() {
                 checkSegmentExists();
                 sendLocalSegmentInfo();
+                checkLoad();
             }
         });
         return super.start();
+    }
+
+    private void checkLoad() {
+        try {
+            ClusterCommonUtils.runSyncMaster(new CheckLoadHistoryEvent(getID()));
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().warn("Cannot sync native segment info to server! ", e);
+        }
     }
 
     private void checkSegmentExists() {

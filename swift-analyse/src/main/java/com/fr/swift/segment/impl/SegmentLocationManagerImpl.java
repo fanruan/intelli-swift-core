@@ -11,6 +11,7 @@ import com.fr.swift.segment.SegmentLocationManager;
 import com.fr.swift.source.SourceKey;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -43,10 +44,10 @@ public class SegmentLocationManagerImpl implements SegmentLocationManager {
     public List<SegmentDestination> getSegmentLocationURI(SourceKey table) {
         List<SegmentDestination> destinations = new ArrayList<SegmentDestination>();
         if (localSegments.containsKey(table.getId())) {
-            destinations.addAll(localSegments.get(table.getId()).values());
+            destinations.addAll(filterNegative(localSegments.get(table.getId()).values()));
         }
         if (remoteSegments.containsKey(table.getId())) {
-            destinations.addAll(remoteSegments.get(table.getId()).values());
+            destinations.addAll(filterNegative(remoteSegments.get(table.getId()).values()));
         }
         Collections.sort(destinations);
         destinations = rule.selectDestination(destinations);
@@ -171,5 +172,20 @@ public class SegmentLocationManagerImpl implements SegmentLocationManager {
         private interface Check {
             boolean check(SegmentDestination destination);
         }
+    }
+
+    private List<SegmentDestination> filterNegative(Collection<SegmentDestination> collection) {
+        List<SegmentDestination> list = new ArrayList<SegmentDestination>(collection);
+        List<SegmentDestination> destinations = new ArrayList<SegmentDestination>();
+        Collections.sort(list);
+        if (list.isEmpty()) {
+            return destinations;
+        }
+        if (list.get(0).getOrder() == -1) {
+            destinations.add(list.get(0));
+        } else {
+            destinations.addAll(list);
+        }
+        return destinations;
     }
 }
