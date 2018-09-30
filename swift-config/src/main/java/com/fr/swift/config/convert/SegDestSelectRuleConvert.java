@@ -21,7 +21,7 @@ public class SegDestSelectRuleConvert extends AbstractObjectConfigConvert<Segmen
         try {
             return super.toBean(dao, session, args);
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error(String.format("find config Rule error with %s, use default rule", e.getMessage()));
+            SwiftLoggers.getLogger().warn(String.format("find config Rule error with %s, use default rule", e.getMessage()));
             return SwiftContext.get().getBean("defaultSegmentDestSelectRule", SegmentDestSelectRule.class);
         }
     }

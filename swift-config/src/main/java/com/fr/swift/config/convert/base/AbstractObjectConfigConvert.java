@@ -65,7 +65,7 @@ public abstract class AbstractObjectConfigConvert<T> extends BaseConfigConvert<T
             }
             return result;
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error(e);
+            SwiftLoggers.getLogger().warn(e);
         }
         return null;
     }

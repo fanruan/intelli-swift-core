@@ -49,7 +49,7 @@ public class SwiftIndexingConfService implements IndexingConfService {
                 }
             });
         } catch (SQLException e) {
-            SwiftLoggers.getLogger().error(e);
+            SwiftLoggers.getLogger().warn(e);
             return null;
         }
     }
@@ -70,7 +70,7 @@ public class SwiftIndexingConfService implements IndexingConfService {
                 }
             });
         } catch (SQLException e) {
-            SwiftLoggers.getLogger().error(e);
+            SwiftLoggers.getLogger().warn(e);
             return null;
         }
     }
@@ -86,7 +86,7 @@ public class SwiftIndexingConfService implements IndexingConfService {
                 }
             });
         } catch (SQLException e) {
-            SwiftLoggers.getLogger().error(e);
+            SwiftLoggers.getLogger().warn(e);
         }
     }
 
@@ -101,7 +101,7 @@ public class SwiftIndexingConfService implements IndexingConfService {
                 }
             });
         } catch (SQLException e) {
-            SwiftLoggers.getLogger().error(e);
+            SwiftLoggers.getLogger().warn(e);
         }
     }
 }

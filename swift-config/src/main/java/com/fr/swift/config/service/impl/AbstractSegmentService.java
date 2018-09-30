@@ -63,7 +63,7 @@ public abstract class AbstractSegmentService implements SwiftSegmentService {
             });
 
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("Select segments error!", e);
+            SwiftLoggers.getLogger().warn("Select segments error!", e);
         }
         return Collections.emptyMap();
     }
@@ -92,7 +92,7 @@ public abstract class AbstractSegmentService implements SwiftSegmentService {
             });
 
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("Select segments error!", e);
+            SwiftLoggers.getLogger().warn("Select segments error!", e);
         }
         return Collections.emptyMap();
     }
