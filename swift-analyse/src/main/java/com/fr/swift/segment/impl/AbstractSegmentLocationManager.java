@@ -21,15 +21,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author yee
- * @date 2018/6/13
+ * @date 2018/10/7
  */
-public class SegmentLocationManagerImpl implements SegmentLocationManager {
-
-    private Map<String, CheckRemoveHashMap> remoteSegments;
-    private Map<String, CheckRemoveHashMap> localSegments;
+public abstract class AbstractSegmentLocationManager implements SegmentLocationManager {
+    protected Map<String, CheckRemoveHashMap> remoteSegments;
+    protected Map<String, CheckRemoveHashMap> localSegments;
     private SegmentDestSelectRule rule;
 
-    public SegmentLocationManagerImpl() {
+    public AbstractSegmentLocationManager() {
         remoteSegments = new ConcurrentHashMap<String, CheckRemoveHashMap>();
         localSegments = new ConcurrentHashMap<String, CheckRemoveHashMap>();
         rule = SwiftContext.get().getBean(SegmentDestSelectRuleService.class).getCurrentRule();
@@ -80,17 +79,15 @@ public class SegmentLocationManagerImpl implements SegmentLocationManager {
                 if (!destination.isRemote()) {
                     calculateContains(localSegments, sourceKey, destination);
                 } else {
-                    if (localSegments.get(sourceKey).containsKey(destination.getSegmentId())) {
-                        localSegments.get(sourceKey).get(destination.getSegmentId()).getSpareNodes().add(destination.getClusterId());
-                    } else if (!calculateContains(remoteSegments, sourceKey, destination)) {
-                        remoteSegments.get(sourceKey).get(destination.getSegmentId()).getSpareNodes().add(destination.getClusterId());
-                    }
+                    calculateRemoteSegment(sourceKey, destination);
                 }
             }
         }
     }
 
-    private boolean calculateContains(Map<String, CheckRemoveHashMap> map, String sourceKey, SegmentDestination destination) {
+    protected abstract void calculateRemoteSegment(String sourceKey, SegmentDestination destination);
+
+    protected boolean calculateContains(Map<String, CheckRemoveHashMap> map, String sourceKey, SegmentDestination destination) {
         if (!map.get(sourceKey).containsKey(destination.getSegmentId())) {
             map.get(sourceKey).put(destination.getSegmentId(), destination);
             return true;
@@ -162,18 +159,6 @@ public class SegmentLocationManagerImpl implements SegmentLocationManager {
         }
     }
 
-    private static class CheckRemoveHashMap extends HashMap<String, SegmentDestination> {
-        public void remove(String key, Check check) {
-            if (check.check(get(key))) {
-                remove(key);
-            }
-        }
-
-        private interface Check {
-            boolean check(SegmentDestination destination);
-        }
-    }
-
     private List<SegmentDestination> filterNegative(Collection<SegmentDestination> collection) {
         List<SegmentDestination> list = new ArrayList<SegmentDestination>(collection);
         List<SegmentDestination> destinations = new ArrayList<SegmentDestination>();
@@ -187,5 +172,17 @@ public class SegmentLocationManagerImpl implements SegmentLocationManager {
             destinations.addAll(list);
         }
         return destinations;
+    }
+
+    static class CheckRemoveHashMap extends HashMap<String, SegmentDestination> {
+        public void remove(String key, Check check) {
+            if (check.check(get(key))) {
+                remove(key);
+            }
+        }
+
+        private interface Check {
+            boolean check(SegmentDestination destination);
+        }
     }
 }

@@ -3,7 +3,8 @@ package com.fr.swift.segment;
 import com.fr.stable.StringUtils;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
-import com.fr.swift.segment.impl.SegmentLocationManagerImpl;
+import com.fr.swift.segment.impl.HistSegLocationManager;
+import com.fr.swift.segment.impl.RealTimeSegLocationManager;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.source.SourceKey;
 
@@ -22,8 +23,8 @@ public class SegmentLocationProvider implements SegmentLocationManager {
         return ourInstance;
     }
 
-    private SegmentLocationManager historyManager = new SegmentLocationManagerImpl();
-    private SegmentLocationManager realTimeManager = new SegmentLocationManagerImpl();
+    private SegmentLocationManager historyManager = new HistSegLocationManager();
+    private SegmentLocationManager realTimeManager = new RealTimeSegLocationManager();
 
     private SegmentLocationProvider() {
     }
