@@ -37,7 +37,12 @@ public class SegmentDestinationImpl implements SegmentDestination {
     private List<String> spareNodes;
 
     public SegmentDestinationImpl() {
-        this.spareNodes = new ArrayList<String>();
+        this.spareNodes = new ArrayList<String>() {
+            @Override
+            public boolean add(String s) {
+                return !contains(s) && super.add(s);
+            }
+        };
     }
 
     public SegmentDestinationImpl(String clusterId, String segmentId, int order, Class<? extends SwiftService> serviceClass, String methodName) {
@@ -48,7 +53,12 @@ public class SegmentDestinationImpl implements SegmentDestination {
         this.order = order;
         this.serviceClass = serviceClass;
         this.methodName = methodName;
-        this.spareNodes = new ArrayList<String>();
+        this.spareNodes = new ArrayList<String>() {
+            @Override
+            public boolean add(String s) {
+                return !contains(s) && super.add(s);
+            }
+        };
     }
 
     public SegmentDestinationImpl(SegmentDestination destination) {
@@ -65,7 +75,12 @@ public class SegmentDestinationImpl implements SegmentDestination {
     public SegmentDestinationImpl(String segmentId, int order) {
         this.segmentId = segmentId;
         this.order = order;
-        this.spareNodes = new ArrayList<String>();
+        this.spareNodes = new ArrayList<String>() {
+            @Override
+            public boolean add(String s) {
+                return !contains(s) && super.add(s);
+            }
+        };
     }
 
     @Override
