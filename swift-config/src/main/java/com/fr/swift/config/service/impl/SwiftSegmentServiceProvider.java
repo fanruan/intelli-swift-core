@@ -1,5 +1,6 @@
 package com.fr.swift.config.service.impl;
 
+import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types.StoreType;
@@ -11,8 +12,6 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.source.SourceKey;
 import com.fr.third.org.hibernate.criterion.Criterion;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.beans.factory.annotation.Qualifier;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,22 +23,21 @@ import java.util.Map;
  */
 @Service("segmentServiceProvider")
 public class SwiftSegmentServiceProvider implements SwiftSegmentService {
-    @Autowired
-    @Qualifier("swiftSegmentService")
-    private SwiftSegmentService service;
+    private SwiftClusterSegmentService service;
 
     public SwiftSegmentServiceProvider() {
-        service = SwiftContext.get().getBean("swiftSegmentService", SwiftSegmentService.class);
+        service = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
+        service.checkOldConfig();
         ClusterListenerHandler.addListener(new ClusterEventListener() {
             @Override
             public void handleEvent(ClusterEvent clusterEvent) {
                 if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
                     String clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
-                    SwiftClusterSegmentServiceImpl clusterService = SwiftContext.get().getBean(SwiftClusterSegmentServiceImpl.class);
-                    clusterService.setClusterId(clusterId);
-                    service = clusterService;
+                    service.setClusterId(clusterId);
+                    service.checkOldConfig();
                 } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
-                    service = SwiftContext.get().getBean("swiftSegmentService", SwiftSegmentService.class);
+                    service.setClusterId("LOCAL");
+                    service.checkOldConfig();
                 }
             }
         });

@@ -43,6 +43,9 @@ public class RemoveHistoryListener extends Listener<SegmentKey> {
             } catch (IOException e) {
                 SwiftLoggers.getLogger().error("unload segment {} failed", segKey, e);
             }
+        } else {
+            SEG_SVC.removeSegments(Collections.singletonList(segKey));
+            clearSeg(segKey);
         }
     }
 

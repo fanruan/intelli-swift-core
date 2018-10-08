@@ -2,6 +2,7 @@ package com.fr.swift.config.service.impl;
 
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.convert.hibernate.transaction.AbstractTransactionWorker;
+import com.fr.swift.config.convert.hibernate.transaction.HibernateTransactionManager;
 import com.fr.swift.config.dao.SwiftSegmentLocationDao;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
@@ -27,6 +28,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author yee
@@ -37,11 +39,72 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
     @Autowired
     private SwiftSegmentLocationDao segmentLocationDao;
 
-    private String clusterId;
+    private String clusterId = "LOCAL";
+
+    @Override
+    public void checkOldConfig() {
+        try {
+            transactionManager.doTransactionIfNeed(new HibernateTransactionManager.HibernateWorker<Void>() {
+                @Override
+                public boolean needTransaction() {
+                    return true;
+                }
+
+                @Override
+                public Void work(Session session) throws SQLException {
+                    List<SegmentKey> segmentKeys = swiftSegmentDao.findAll(session);
+                    for (SegmentKey segmentKey : segmentKeys) {
+                        List<SwiftSegmentLocationEntity> info = segmentLocationDao.find(session, Restrictions.eq("id.segmentId", segmentKey.toString()));
+                        if (null == info || info.isEmpty()) {
+                            SwiftSegLocationEntityId id = new SwiftSegLocationEntityId("LOCAL", segmentKey.toString());
+                            SwiftSegmentLocationEntity entity = new SwiftSegmentLocationEntity();
+                            entity.setId(id);
+                            entity.setSourceKey(segmentKey.getTable().getId());
+                            segmentLocationDao.saveOrUpdate(session, entity);
+                        }
+                    }
+                    return null;
+                }
+            });
+        } catch (SQLException e) {
+            SwiftLoggers.getLogger().warn("add segment error! ", e);
+        }
+    }
 
     @Override
     public void setClusterId(String clusterId) {
         this.clusterId = clusterId;
+    }
+
+    @Override
+    public Map<String, List<SegmentKey>> getNotEnoughSegments(final Set<String> clusterIds, final int lessCount) {
+        try {
+            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Map<String, List<SegmentKey>>>() {
+                @Override
+                public Map<String, List<SegmentKey>> work(Session session) {
+                    Map<String, List<SegmentKey>> result = new HashMap<String, List<SegmentKey>>();
+                    List<SegmentKey> segmentKeys = swiftSegmentDao.findAll(session);
+                    for (SegmentKey segmentKey : segmentKeys) {
+                        String sourceKey = segmentKey.getTable().getId();
+                        if (!result.containsKey(sourceKey)) {
+                            result.put(sourceKey, new ArrayList<SegmentKey>());
+                        }
+                        List<SwiftSegmentLocationEntity> entities = segmentLocationDao.find(
+                                session, Restrictions.in("id.clusterId", clusterIds),
+                                Restrictions.eq("id.segmentId", segmentKey.toString()));
+                        if (entities.size() < lessCount) {
+                            result.get(sourceKey).add(segmentKey);
+                        }
+                    }
+                    return result;
+                }
+
+
+            });
+        } catch (SQLException e) {
+            SwiftLoggers.getLogger().warn("getNotEnoughSegments error, return empty");
+        }
+        return Collections.emptyMap();
     }
 
     @Override
@@ -55,7 +118,7 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
                 }
             });
         } catch (SQLException e) {
-            SwiftLoggers.getLogger().error("add segment error! ", e);
+            SwiftLoggers.getLogger().warn("add segment error! ", e);
         }
         return false;
     }
@@ -74,7 +137,7 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
                 }
             });
         } catch (SQLException e) {
-            SwiftLoggers.getLogger().error("remove segment error! ", e);
+            SwiftLoggers.getLogger().warn("remove segment error! ", e);
         }
         return false;
     }
@@ -103,7 +166,7 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
                 }
             });
         } catch (SQLException e) {
-            SwiftLoggers.getLogger().error("remove segment error! ", e);
+            SwiftLoggers.getLogger().warn("remove segment error! ", e);
             return false;
         }
     }
@@ -136,7 +199,7 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
                 }
             });
         } catch (SQLException e) {
-            SwiftLoggers.getLogger().error("update segment error! ", e);
+            SwiftLoggers.getLogger().warn("update segment error! ", e);
         }
         return false;
     }
@@ -229,7 +292,7 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
             });
 
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("Select segments error!", e);
+            SwiftLoggers.getLogger().warn("Select segments error!", e);
         }
         return Collections.emptyMap();
     }
@@ -254,7 +317,7 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
             });
 
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("Select segments error!", e);
+            SwiftLoggers.getLogger().warn("Select segments error!", e);
         }
         return Collections.emptyMap();
     }
@@ -280,7 +343,7 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
             });
 
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("Select segments error!", e);
+            SwiftLoggers.getLogger().warn("Select segments error!", e);
         }
         return Collections.emptyMap();
     }
@@ -310,7 +373,7 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
                 }
             });
         } catch (SQLException e) {
-            SwiftLoggers.getLogger().error("Update table error!", e);
+            SwiftLoggers.getLogger().warn("Update table error!", e);
             return false;
         }
     }

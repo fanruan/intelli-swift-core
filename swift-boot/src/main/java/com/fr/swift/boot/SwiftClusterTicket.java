@@ -108,6 +108,7 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
                         if (ComparatorUtils.equals(FRClusterNodeManager.getInstance().getMasterId(), FRClusterNodeManager.getInstance().getCurrentId())) {
                             slaveManager.shutDown();
                             SegmentLocationInfoContainer.getContainer().clean();
+                            SegmentLocationProvider.getInstance().removeTable(clusterNode.getID(), null);
                             Map<String, List<SegmentDestination>> hist = SegmentLocationProvider.getInstance().getSegmentInfo(ServiceType.HISTORY);
                             Map<String, List<SegmentDestination>> real = SegmentLocationProvider.getInstance().getSegmentInfo(ServiceType.REAL_TIME);
                             SegmentLocationInfo histInfo = new SegmentLocationInfoImpl(ServiceType.HISTORY, hist);
@@ -121,9 +122,11 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
                         Crasher.crash(e);
                     }
                 }
+
                 if (FRClusterNodeManager.getInstance().isMaster()) {
                     ClusterSwiftServerService.getInstance().offline(clusterNode.getID());
                 }
+                SegmentLocationProvider.getInstance().removeTable(clusterNode.getID(), null);
             }
         });
     }

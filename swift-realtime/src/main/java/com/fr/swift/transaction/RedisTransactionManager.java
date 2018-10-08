@@ -1,6 +1,6 @@
 package com.fr.swift.transaction;
 
-import com.fr.swift.redis.RedisClientPipline;
+import com.fr.swift.redis.RedisClientPipeline;
 
 /**
  * This class created on 2018/6/26
@@ -11,16 +11,16 @@ import com.fr.swift.redis.RedisClientPipline;
  */
 public class RedisTransactionManager extends AbstractTransactionManager {
 
-    private RedisClientPipline redisPipline;
+    private RedisClientPipeline redisPipline;
 
     public RedisTransactionManager() {
-        redisPipline = new RedisClientPipline();
+        redisPipline = new RedisClientPipeline();
     }
 
     @Override
     public void start() {
         super.start();
-        redisPipline.switchMultiPipline();
+        redisPipline.switchMultiPipeline();
     }
 
     @Override
@@ -41,7 +41,7 @@ public class RedisTransactionManager extends AbstractTransactionManager {
         redisPipline.close();
     }
 
-    public RedisClientPipline getRedisPipline() {
+    public RedisClientPipeline getRedisPipline() {
         return redisPipline;
     }
 }

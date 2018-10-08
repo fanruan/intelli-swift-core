@@ -6,6 +6,7 @@ import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;
+import com.fr.third.org.hibernate.criterion.MatchMode;
 import com.fr.third.org.hibernate.criterion.Restrictions;
 
 import java.util.ArrayList;
@@ -78,12 +79,26 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
             keys = segmentService.find(
                     Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, table.getId()));
         } else {
-            keys = segmentService.find(
-                    Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, table.getId()),
-                    Restrictions.in("id", segmentIds));
+            keys = new ArrayList<SegmentKey>();
+            List<String> likeKeys = new ArrayList<String>();
+            for (String segmentId : segmentIds) {
+                if (segmentId.endsWith("-1")) {
+                    String likeKey = segmentId.substring(0, segmentId.length() - 2);
+                    if (!likeKeys.contains(likeKey)) {
+                        keys.addAll(segmentService.find(
+                                Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, table.getId()),
+                                Restrictions.like("id", likeKey, MatchMode.START)));
+                        likeKeys.add(likeKey);
+                    }
+                } else {
+                    keys.addAll(segmentService.find(
+                            Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, table.getId()),
+                            Restrictions.eq("id", segmentId)));
+                }
+            }
         }
         if (keys.isEmpty()) {
-            return getSegment(table);
+            return Collections.emptyList();
         }
         Integer currentFolder = getCurrentFolder(tablePathService, table);
         return keys2Segments(keys, currentFolder);

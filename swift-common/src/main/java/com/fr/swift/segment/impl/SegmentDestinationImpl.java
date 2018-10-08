@@ -26,7 +26,7 @@ public class SegmentDestinationImpl implements SegmentDestination {
     @JsonProperty
     private transient String currentNode;
     @JsonProperty
-    private String segmentId;
+    private String segmentId = StringUtils.EMPTY;
     @JsonProperty
     private int order;
     @JsonProperty
@@ -37,6 +37,12 @@ public class SegmentDestinationImpl implements SegmentDestination {
     private List<String> spareNodes;
 
     public SegmentDestinationImpl() {
+        this.spareNodes = new ArrayList<String>() {
+            @Override
+            public boolean add(String s) {
+                return !contains(s) && super.add(s);
+            }
+        };
     }
 
     public SegmentDestinationImpl(String clusterId, String segmentId, int order, Class<? extends SwiftService> serviceClass, String methodName) {
@@ -47,7 +53,12 @@ public class SegmentDestinationImpl implements SegmentDestination {
         this.order = order;
         this.serviceClass = serviceClass;
         this.methodName = methodName;
-        this.spareNodes = new ArrayList<String>();
+        this.spareNodes = new ArrayList<String>() {
+            @Override
+            public boolean add(String s) {
+                return !contains(s) && super.add(s);
+            }
+        };
     }
 
     public SegmentDestinationImpl(SegmentDestination destination) {
@@ -64,6 +75,12 @@ public class SegmentDestinationImpl implements SegmentDestination {
     public SegmentDestinationImpl(String segmentId, int order) {
         this.segmentId = segmentId;
         this.order = order;
+        this.spareNodes = new ArrayList<String>() {
+            @Override
+            public boolean add(String s) {
+                return !contains(s) && super.add(s);
+            }
+        };
     }
 
     @Override
@@ -149,7 +166,11 @@ public class SegmentDestinationImpl implements SegmentDestination {
 
     @Override
     public int compareTo(SegmentDestination o) {
-        return order - o.getOrder();
+        int result = order - o.getOrder();
+        if (0 == result) {
+            return isRemote() ? result : -1;
+        }
+        return result;
     }
 
     @Override

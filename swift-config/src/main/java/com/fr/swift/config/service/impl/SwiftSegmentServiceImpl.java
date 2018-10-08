@@ -36,7 +36,7 @@ public class SwiftSegmentServiceImpl extends AbstractSegmentService {
 
             });
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("Add or update segments error!", e);
+            SwiftLoggers.getLogger().warn("Add or update segments error!", e);
             return false;
         }
     }
@@ -56,7 +56,7 @@ public class SwiftSegmentServiceImpl extends AbstractSegmentService {
 
             });
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("Remove segments error!", e);
+            SwiftLoggers.getLogger().warn("Remove segments error!", e);
             return false;
         }
     }
@@ -83,7 +83,7 @@ public class SwiftSegmentServiceImpl extends AbstractSegmentService {
 
             });
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("Remove segments error!", e);
+            SwiftLoggers.getLogger().warn("Remove segments error!", e);
             return false;
         }
     }
@@ -104,7 +104,7 @@ public class SwiftSegmentServiceImpl extends AbstractSegmentService {
 
             });
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("Update segment failed!", e);
+            SwiftLoggers.getLogger().warn("Update segment failed!", e);
             return false;
         }
     }
@@ -139,7 +139,7 @@ public class SwiftSegmentServiceImpl extends AbstractSegmentService {
                 }
             });
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("Select segments error!", e);
+            SwiftLoggers.getLogger().warn("Select segments error!", e);
             return Collections.emptyList();
         }
     }
@@ -160,7 +160,7 @@ public class SwiftSegmentServiceImpl extends AbstractSegmentService {
                 }
             });
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("Update segment failed!", e);
+            SwiftLoggers.getLogger().warn("Update segment failed!", e);
             return false;
         }
     }
@@ -187,7 +187,7 @@ public class SwiftSegmentServiceImpl extends AbstractSegmentService {
                 }
             });
         } catch (SQLException e) {
-            SwiftLoggers.getLogger().error(e);
+            SwiftLoggers.getLogger().warn(e);
             return Collections.emptyList();
         }
     }

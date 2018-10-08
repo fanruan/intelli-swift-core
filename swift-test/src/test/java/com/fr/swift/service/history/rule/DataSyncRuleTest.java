@@ -73,13 +73,13 @@ public class DataSyncRuleTest {
             // 每个节点都有
             int size = it.next().size();
             assertTrue(size > 0);
-            if (nodeIds.size() == 1) {
+            if (nodeIds.size() <= 3) {
                 assertEquals(size, needLoad.get("tableA").size());
             } else {
                 assertTrue(size < needLoad.get("tableA").size());
             }
             total += size;
         }
-        assertEquals(total, (nodeIds.size() == 1 ? 1 : nodeIds.size() - 1) * needLoad.get("tableA").size());
+        assertEquals(total, (nodeIds.size() > 3 ? 3 : nodeIds.size()) * needLoad.get("tableA").size());
     }
 }

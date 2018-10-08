@@ -20,12 +20,15 @@ import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationProvider;
+import com.fr.swift.segment.impl.RealTimeSegDestImpl;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
 import com.fr.swift.service.AbstractSwiftService;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.cluster.ClusterAnalyseService;
+import com.fr.swift.service.cluster.ClusterHistoryService;
+import com.fr.swift.service.cluster.ClusterRealTimeService;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Assert;
@@ -59,7 +62,7 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
 
     @Override
     public SwiftResultSet getRemoteQueryResult(final String jsonString, final SegmentDestination remoteURI) {
-        SwiftLoggers.getLogger().debug("query: " + jsonString + "\n" + "node: " + remoteURI.toString());
+//        SwiftLoggers.getLogger().debug("query: " + jsonString + "\n" + "node: " + (null != remoteURI ? remoteURI.toString() : StringUtils.EMPTY));
         final SwiftResultSet[] resultSet = new SwiftResultSet[1];
         try {
             final CountDownLatch latch = new CountDownLatch(1);
@@ -171,14 +174,14 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
 
     @Override
     @RpcMethod(methodName = "removeTable")
-    public void removeTable(String sourceKey) {
-        SegmentLocationProvider.getInstance().removeTable(sourceKey);
+    public void removeTable(String cluster, String sourceKey) {
+        SegmentLocationProvider.getInstance().removeTable(cluster, sourceKey);
     }
 
     @Override
     @RpcMethod(methodName = "removeSegments")
-    public void removeSegments(String sourceKey, List<String> segmentKeys) {
-        SegmentLocationProvider.getInstance().removeSegment(sourceKey, segmentKeys);
+    public void removeSegments(String clusterId, String sourceKey, List<String> segmentKeys) {
+        SegmentLocationProvider.getInstance().removeSegments(clusterId, sourceKey, segmentKeys);
     }
 
 
@@ -216,9 +219,9 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
                 initSegDestinations(realTime, entry.getKey());
                 for (SegmentKey segmentKey : entry.getValue()) {
                     if (segmentKey.getStoreType() == Types.StoreType.FINE_IO) {
-                        hist.get(entry.getKey()).add(new SegmentDestinationImpl(segmentKey.toString(), segmentKey.getOrder()));
+                        hist.get(entry.getKey()).add(new SegmentDestinationImpl(getID(), segmentKey.toString(), segmentKey.getOrder(), ClusterHistoryService.class, "historyQuery"));
                     } else {
-                        realTime.get(entry.getKey()).add(new SegmentDestinationImpl(segmentKey.toString(), segmentKey.getOrder()));
+                        realTime.get(entry.getKey()).add(new RealTimeSegDestImpl(getID(), segmentKey.toString(), segmentKey.getOrder(), ClusterRealTimeService.class, "realTimeQuery"));
                     }
                 }
             }
