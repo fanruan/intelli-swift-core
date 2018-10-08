@@ -13,7 +13,7 @@ import com.fr.swift.cube.io.Types;
 import com.fr.swift.event.analyse.RequestSegLocationEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.netty.rpc.server.RpcServer;
+import com.fr.swift.netty.rpc.server.ServiceMethodRegistry;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryBeanFactory;
 import com.fr.swift.segment.SegmentDestination;
@@ -51,8 +51,6 @@ import java.util.concurrent.CountDownLatch;
 @RpcService(value = ClusterAnalyseService.class, type = RpcService.RpcServiceType.INTERNAL)
 public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements ClusterAnalyseService {
     private static final long serialVersionUID = 7637989460502966453L;
-    @Autowired(required = false)
-    private transient RpcServer server;
     @Autowired(required = false)
     private transient QueryBeanFactory queryBeanFactory;
     @Autowired(required = false)
@@ -191,7 +189,7 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
         String address = remoteURI.getAddress();
         String methodName = remoteURI.getMethodName();
         Class clazz = remoteURI.getServiceClass();
-        return ClusterCommonUtils.runAsyncRpc(address, clazz, server.getMethodByName(methodName), jsonString);
+        return ClusterCommonUtils.runAsyncRpc(address, clazz, ServiceMethodRegistry.INSTANCE.getMethodByName(methodName), jsonString);
     }
 
     @Override

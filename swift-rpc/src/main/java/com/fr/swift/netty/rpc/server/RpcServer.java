@@ -54,7 +54,6 @@ public class RpcServer {
      */
     private Map<String, Object> handlerMap = new HashMap<String, Object>();
     private Map<String, Object> externalMap = new HashMap<String, Object>();
-    private Map<String, Method> methodMap = new HashMap<String, Method>();
 
     @Autowired
     public RpcServer(ServiceRegistry serviceRegistry) {
@@ -86,7 +85,7 @@ public class RpcServer {
                     RpcMethod rpcMethod = method.getAnnotation(RpcMethod.class);
                     if (rpcMethod != null) {
                         LOGGER.debug("Load method:" + method.getName());
-                        methodMap.put(rpcMethod.methodName(), method);
+                        ServiceMethodRegistry.INSTANCE.registerMethod(rpcMethod.methodName(), method);
                     }
                 }
             }
@@ -129,13 +128,5 @@ public class RpcServer {
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();
         }
-    }
-
-    public Method getMethodByName(String name) {
-        return methodMap.get(name);
-    }
-
-    public Map<String, Method> getMethodNames() {
-        return new HashMap<String, Method>(methodMap);
     }
 }
