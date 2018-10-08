@@ -53,9 +53,9 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
                 @Override
                 public Void work(Session session) throws SQLException {
                     List<SegmentKey> segmentKeys = swiftSegmentDao.findAll(session);
-                    for (SegmentKey segmentKey : segmentKeys) {
-                        List<SwiftSegmentLocationEntity> info = segmentLocationDao.find(session, Restrictions.eq("id.segmentId", segmentKey.toString()));
-                        if (null == info || info.isEmpty()) {
+                    List<SwiftSegmentLocationEntity> locations = segmentLocationDao.findAll(session);
+                    if (locations.isEmpty() && !segmentKeys.isEmpty()) {
+                        for (SegmentKey segmentKey : segmentKeys) {
                             SwiftSegLocationEntityId id = new SwiftSegLocationEntityId("LOCAL", segmentKey.toString());
                             SwiftSegmentLocationEntity entity = new SwiftSegmentLocationEntity();
                             entity.setId(id);
