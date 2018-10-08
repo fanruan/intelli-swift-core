@@ -2,6 +2,7 @@ package com.fr.swift.segment.rule;
 
 import com.fr.swift.config.bean.SegmentDestSelectRule;
 import com.fr.swift.segment.SegmentDestination;
+import com.fr.swift.segment.impl.RealTimeSegDestImpl;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,7 +20,14 @@ public class DefaultSegmentDestSelectRule implements SegmentDestSelectRule {
         Map<String, SegmentDestination> destinationMap = new HashMap<String, SegmentDestination>();
         for (SegmentDestination destination : duplicate) {
             if (destinationMap.containsKey(destination.getSegmentId())) {
-                destinationMap.get(destination.getSegmentId()).getSpareNodes().add(destination.getClusterId());
+                if (destination instanceof RealTimeSegDestImpl && destination.isRemote()) {
+                    String key = destination.getSegmentId() + destination.getClusterId();
+                    if (!destinationMap.containsKey(key)) {
+                        destinationMap.put(key, destination);
+                    }
+                } else {
+                    destinationMap.get(destination.getSegmentId()).getSpareNodes().add(destination.getClusterId());
+                }
             } else {
                 destinationMap.put(destination.getSegmentId(), destination);
             }
