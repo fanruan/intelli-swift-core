@@ -1,5 +1,6 @@
 package com.fr.swift.netty.rpc.pool;
 
+import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.Result;
@@ -8,9 +9,8 @@ import com.fr.swift.basics.base.SwiftInvocation;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.netty.rpc.CalculatorService;
-import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.netty.rpc.proxy.RPCProxyFactory;
-import com.fr.swift.netty.rpc.server.RpcServer;
+import com.fr.swift.netty.rpc.server.ServiceMethodRegistry;
 import com.fr.swift.netty.rpc.url.RPCDestination;
 import com.fr.swift.netty.rpc.url.RPCUrl;
 import com.fr.workspace.simple.SimpleWork;
@@ -34,8 +34,8 @@ public class AsyncPoolTest {
         Invoker invoker = proxyFactory.getInvoker(null, CalculatorService.class, new RPCUrl(new RPCDestination("192.168.0.28:7000")), false);
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         SwiftContext.init();
-        RpcServer rpcServer = SwiftContext.get().getBean(RpcServer.class);
-        Method method = rpcServer.getMethodByName("add");
+//        RpcServer rpcServer = SwiftContext.get().getBean(RpcServer.class);
+        Method method = ServiceMethodRegistry.INSTANCE.getMethodByName("add");
 
         final AtomicInteger count = new AtomicInteger(1);
         while (true) {

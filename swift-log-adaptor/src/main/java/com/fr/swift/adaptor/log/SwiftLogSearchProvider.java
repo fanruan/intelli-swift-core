@@ -7,6 +7,7 @@ import com.fr.io.context.ResourceModuleContext;
 import com.fr.io.repository.FineFileEntry;
 import com.fr.io.utils.ResourceIOUtils;
 import com.fr.log.message.AbstractMessage;
+import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.data.DataList;
@@ -217,7 +218,7 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
         FineFileEntry[] entries = ResourceIOUtils.listEntry(dir);
         for (FineFileEntry entry : entries) {
             if (entry.isDirectory()) {
-                size += getSizeOf(entry.getPath());
+                size += getSizeOf(StableUtils.pathJoin(dir, entry.getName()));
             } else {
                 size += entry.getSize();
             }

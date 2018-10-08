@@ -34,10 +34,8 @@ public class SwiftSegmentServiceProvider implements SwiftSegmentService {
                 if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
                     String clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
                     service.setClusterId(clusterId);
-                    service.checkOldConfig();
                 } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
                     service.setClusterId("LOCAL");
-                    service.checkOldConfig();
                 }
             }
         });
