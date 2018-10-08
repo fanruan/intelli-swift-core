@@ -9,8 +9,9 @@ import com.fr.swift.segment.SegmentDestination;
 public class RealTimeSegLocationManager extends AbstractSegmentLocationManager {
     @Override
     protected void calculateRemoteSegment(String sourceKey, SegmentDestination destination) {
-        if (!calculateContains(remoteSegments, sourceKey, destination)) {
-            remoteSegments.get(sourceKey).get(destination.getSegmentId()).getSpareNodes().add(destination.getClusterId());
+        String key = destination.getSegmentId() + destination.getClusterId();
+        if (!remoteSegments.get(sourceKey).containsKey(key)) {
+            remoteSegments.get(sourceKey).put(key, destination);
         }
     }
 }
