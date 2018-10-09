@@ -5,9 +5,12 @@ import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.SwiftNode;
+import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Lyon on 2018/6/27.
@@ -20,7 +23,7 @@ public class SwiftResultSetUtils {
         switch (queryType) {
             case LOCAL_GROUP_ALL: {
                 NodeResultSet<SwiftNode> nodeResultSet = (NodeResultSet<SwiftNode>) resultSet;
-                result = new LocalAllNodeResultSet(nodeResultSet.getFetchSize(), jsonString, nodeResultSet.getPage().getKey(), nodeResultSet.hasNextPage());
+                result = new LocalAllNodeResultSet(nodeResultSet.getFetchSize(), jsonString, getPage(nodeResultSet), nodeResultSet.hasNext());
                 break;
             }
             case LOCAL_GROUP_PART: {
@@ -38,5 +41,14 @@ public class SwiftResultSetUtils {
                 result = resultSet;
         }
         return result;
+    }
+
+    private static List<Row> getPage(NodeResultSet resultSet) throws SQLException {
+        List<Row> rows = new ArrayList<Row>();
+        int fetchSize = resultSet.getFetchSize();
+        for (int i = 0; i < fetchSize && resultSet.hasNext(); i++) {
+            rows.add(resultSet.getNextRow());
+        }
+        return rows;
     }
 }
