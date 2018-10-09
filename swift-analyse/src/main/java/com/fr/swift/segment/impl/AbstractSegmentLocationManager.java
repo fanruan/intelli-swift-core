@@ -173,10 +173,8 @@ public abstract class AbstractSegmentLocationManager implements SegmentLocationM
                 continue;
             }
             if (destination.getOrder() == -1) {
-                if (!negativeSegments.contains(clusterId)) {
-                    destinations.add(destination);
-                    negativeSegments.add(clusterId);
-                }
+                destinations.add(destination);
+                negativeSegments.add(clusterId);
             } else {
                 destinations.add(destination);
             }
