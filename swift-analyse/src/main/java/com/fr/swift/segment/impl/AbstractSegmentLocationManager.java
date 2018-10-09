@@ -168,11 +168,14 @@ public abstract class AbstractSegmentLocationManager implements SegmentLocationM
         }
         List<String> negativeSegments = new ArrayList<String>();
         for (SegmentDestination destination : list) {
+            String clusterId = destination.getClusterId();
+            if (negativeSegments.contains(clusterId)) {
+                continue;
+            }
             if (destination.getOrder() == -1) {
-                String key = destination.getSegmentId() + destination.getClusterId();
-                if (!negativeSegments.contains(key)) {
+                if (!negativeSegments.contains(clusterId)) {
                     destinations.add(destination);
-                    negativeSegments.add(key);
+                    negativeSegments.add(clusterId);
                 }
             } else {
                 destinations.add(destination);
