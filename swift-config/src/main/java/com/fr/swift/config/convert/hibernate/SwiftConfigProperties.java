@@ -20,19 +20,12 @@ public class SwiftConfigProperties {
 
     public SwiftConfigProperties() {
         this.option = new DBOption().addRawProperty("hibernate.connection.autocommit", false);
-        option.addRawProperty("hibernate.connection.provider_class", "com.fr.third.alibaba.druid.support.hibernate.DruidConnectionProvider");
-//        DBCacheRegionProvider cacheRegionProvider = DefaultDBCacheRegion.create("SwiftDB");
-//        option.addRawProperty("hibernate.cache.region.factory_class", cacheRegionProvider.getRegionFactory());
-//        option.addRawProperty("hibernate.cache.use_second_level_cache", true);
+        this.option = new DBOption().addRawProperty("hibernate.connection.provider_class", "com.fr.third.alibaba.druid.support.hibernate.DruidConnectionProvider");
     }
 
     public Properties reConfiguration() {
         if (isNeedReConfigure(getOption())) {
-            option = getOption().addRawProperty("hibernate.connection.autocommit", false);
-            option.addRawProperty("hibernate.connection.provider_class", "com.fr.third.alibaba.druid.support.hibernate.DruidConnectionProvider");
-//            DBCacheRegionProvider cacheRegionProvider = DefaultDBCacheRegion.create("SwiftDB");
-//            option.addRawProperty("hibernate.cache.region.factory_class", cacheRegionProvider.getRegionFactory());
-//            option.addRawProperty("hibernate.cache.use_second_level_cache", true);
+            option = getOption();
             return getProperties();
         }
         return null;
