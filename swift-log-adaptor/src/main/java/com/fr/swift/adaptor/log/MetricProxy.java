@@ -200,7 +200,6 @@ public class MetricProxy extends BaseMetric {
         public void run() {
             try {
                 for (Class<?> entity : dataMap.keySet()) {
-                    initTable(entity);
                     record(entity);
                 }
             } catch (Exception e) {
