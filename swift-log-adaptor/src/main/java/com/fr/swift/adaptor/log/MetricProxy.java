@@ -2,7 +2,6 @@ package com.fr.swift.adaptor.log;
 
 import com.fr.intelli.record.scene.Metric;
 import com.fr.intelli.record.scene.impl.BaseMetric;
-import com.fr.log.message.TemplateSQLMessage;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.data.DataList;
 import com.fr.swift.context.SwiftContext;
@@ -132,7 +131,6 @@ public class MetricProxy extends BaseMetric {
         for (Class table : list) {
             initTable(table);
         }
-        initTable(TemplateSQLMessage.class);
     }
 
     private void initTable(Class table) throws SQLException {
