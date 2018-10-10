@@ -33,7 +33,7 @@ public class SwiftConnection extends BaseSwiftConnection {
     private Properties properties;
     private boolean close;
 
-    public SwiftConnection(String url, Properties properties) {
+    public SwiftConnection(String url, Properties properties) throws SQLException {
         if (null != url) {
             if (url.toLowerCase().startsWith(JDBC_HEAD)) {
                 this.properties = properties;
