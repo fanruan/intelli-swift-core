@@ -62,6 +62,11 @@ public class BaseCreateColumnForSelfRelation1Test {
         bitMaps[7].add(8);
         return new BitmapIndexedColumn() {
             @Override
+            public boolean isReadable() {
+                return false;
+            }
+
+            @Override
             public void flush() {
 
             }

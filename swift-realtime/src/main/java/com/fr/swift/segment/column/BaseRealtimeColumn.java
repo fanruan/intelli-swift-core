@@ -254,6 +254,11 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
         public void putNullIndex(ImmutableBitMap bitMap) {
             putBitMapIndex(0, bitMap);
         }
+
+        @Override
+        public boolean isReadable() {
+            return valToRows != null && nullIndex != null;
+        }
     }
 
     BaseRealtimeColumn(IResourceLocation location) {

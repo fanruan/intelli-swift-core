@@ -1,7 +1,11 @@
 package com.fr.swift.segment.backup;
 
+import com.fr.swift.bitmap.BitMaps;
+import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.operator.insert.BaseInserter;
 import com.fr.swift.source.Row;
 import com.fr.swift.transaction.TransactionManager;
@@ -36,6 +40,17 @@ public class FileSegmentBackup extends BaseInserter implements SwiftSegmentBacku
     @Override
     public void backupNullIndex() {
         putNullIndex();
+    }
+
+    @Override
+    protected void putNullIndex() {
+        for (int i = 0; i < columns.size(); i++) {
+            BitmapIndexedColumn bitmapIndex = columns.get(i).getBitmapIndex();
+            ImmutableBitMap nullIndex = bitmapIndex.isReadable() ? bitmapIndex.getNullIndex() : BitMaps.newRoaringMutable();
+            MutableBitMap newNullIndex = nullIndices.get(i);
+            newNullIndex.or(nullIndex);
+            bitmapIndex.putNullIndex(newNullIndex);
+        }
     }
 
     @Override
