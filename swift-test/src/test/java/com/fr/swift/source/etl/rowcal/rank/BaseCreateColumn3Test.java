@@ -77,6 +77,11 @@ public class BaseCreateColumn3Test {
         bitMaps[6].add(6);
         return new BitmapIndexedColumn() {
             @Override
+            public boolean isReadable() {
+                return false;
+            }
+
+            @Override
             public void flush() {
 
             }

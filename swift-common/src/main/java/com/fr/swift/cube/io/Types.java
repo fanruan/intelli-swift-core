@@ -35,7 +35,15 @@ public final class Types {
         /**
          * 存储类型
          */
-        FINE_IO, MEMORY, NIO
+        FINE_IO, MEMORY, NIO;
+
+        public boolean isPersistent() {
+            return this != MEMORY;
+        }
+
+        public boolean isTransient() {
+            return this == MEMORY;
+        }
     }
 
 }

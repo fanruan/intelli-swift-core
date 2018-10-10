@@ -143,5 +143,10 @@ public class SubDateColumn extends BaseColumn<Long> {
         public void release() {
             deriveBitmapColumn.release();
         }
+
+        @Override
+        public boolean isReadable() {
+            return origin.getBitmapIndex().isReadable();
+        }
     }
 }

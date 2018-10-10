@@ -48,7 +48,9 @@ abstract class BaseDetailColumn<T, W extends Writer, R extends Reader> implement
     public boolean isReadable() {
         initDetailReader();
         boolean readable = detailReader.isReadable();
-        IoUtil.release(detailReader);
+        if (location.getStoreType().isPersistent()) {
+            IoUtil.release(detailReader);
+        }
         detailReader = null;
         return readable;
     }

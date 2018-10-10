@@ -63,13 +63,19 @@ class DatumConverters {
                 return new UnaryOperator<Object>() {
                     @Override
                     public Object apply(Object p) {
-                        return ((Long) p) != 0L;
+                        if (p == null) {
+                            return false;
+                        }
+                        return ((Number) p).longValue() != 0L;
                     }
                 };
             case Types.TINYINT:
                 return new UnaryOperator<Object>() {
                     @Override
                     public Object apply(Object p) {
+                        if (p == null) {
+                            return ((byte) 0);
+                        }
                         return ((Number) p).byteValue();
                     }
                 };
@@ -77,6 +83,9 @@ class DatumConverters {
                 return new UnaryOperator<Object>() {
                     @Override
                     public Object apply(Object p) {
+                        if (p == null) {
+                            return ((short) 0);
+                        }
                         return ((Number) p).shortValue();
                     }
                 };
@@ -84,13 +93,30 @@ class DatumConverters {
                 return new UnaryOperator<Object>() {
                     @Override
                     public Object apply(Object p) {
+                        if (p == null) {
+                            return 0;
+                        }
                         return ((Number) p).intValue();
+                    }
+                };
+
+            case Types.BIGINT:
+                return new UnaryOperator<Object>() {
+                    @Override
+                    public Object apply(Object p) {
+                        if (p == null) {
+                            return 0L;
+                        }
+                        return ((Number) p).longValue();
                     }
                 };
             case Types.FLOAT:
                 return new UnaryOperator<Object>() {
                     @Override
                     public Object apply(Object p) {
+                        if (p == null) {
+                            return 0F;
+                        }
                         return ((Number) p).floatValue();
                     }
                 };
@@ -98,6 +124,9 @@ class DatumConverters {
                 return new UnaryOperator<Object>() {
                     @Override
                     public Object apply(Object p) {
+                        if (p == null) {
+                            return 0D;
+                        }
                         return ((Number) p).doubleValue();
                     }
                 };
@@ -105,6 +134,9 @@ class DatumConverters {
                 return new UnaryOperator<Object>() {
                     @Override
                     public Object apply(Object p) {
+                        if (p == null) {
+                            return '\0';
+                        }
                         return p.toString().charAt(0);
                     }
                 };
@@ -112,6 +144,9 @@ class DatumConverters {
                 return new UnaryOperator<Object>() {
                     @Override
                     public Object apply(Object p) {
+                        if (p == null) {
+                            return null;
+                        }
                         try {
                             return field.getConstructor(long.class).newInstance(((Long) p));
                         } catch (Exception e) {

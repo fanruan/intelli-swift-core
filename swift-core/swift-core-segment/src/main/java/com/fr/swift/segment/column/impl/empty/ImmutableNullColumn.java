@@ -147,6 +147,11 @@ public abstract class ImmutableNullColumn<T> implements Column<T> {
     public BitmapIndexedColumn getBitmapIndex() {
         return new BaseBitmapColumn() {
             @Override
+            public boolean isReadable() {
+                return true;
+            }
+
+            @Override
             public void putBitMapIndex(int index, ImmutableBitMap bitmap) {
                 throw new UnsupportedOperationException();
             }

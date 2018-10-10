@@ -75,6 +75,11 @@ public class BaseCreateColumnForSumTest {
         bitMaps[2].add(7);
         return new BitmapIndexedColumn() {
             @Override
+            public boolean isReadable() {
+                return false;
+            }
+
+            @Override
             public void flush() {
 
             }
