@@ -92,11 +92,15 @@ public class SegmentResultSet implements SwiftResultSet {
             if (nullIndices.get(i).contains(cursor)) {
                 row.add(null);
             } else {
-                row.add(details.get(i).get(cursor));
+                row.add(getDetail(details.get(i), cursor));
             }
         }
         cursor++;
         return new ListBasedRow(row);
+    }
+
+    protected <T> T getDetail(DetailColumn<T> detail, int cursor) {
+        return detail.get(cursor);
     }
 
     @Override

@@ -29,7 +29,7 @@ public abstract class BaseInserter {
 
     protected List<String> fields;
 
-    private Map<Integer, MutableBitMap> nullIndices = new HashMap<Integer, MutableBitMap>();
+    protected Map<Integer, MutableBitMap> nullIndices = new HashMap<Integer, MutableBitMap>();
 
     protected List<Column> columns = new ArrayList<Column>();
 

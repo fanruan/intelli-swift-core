@@ -53,6 +53,17 @@ public class BitMapColumn extends BaseBitmapColumn {
     }
 
     @Override
+    public boolean isReadable() {
+        initIndexReader();
+        boolean readable = indexReader.isReadable();
+        if (indexLocation.getStoreType().isPersistent()) {
+            IoUtil.release(indexReader);
+        }
+        indexReader = null;
+        return readable;
+    }
+
+    @Override
     public void flush() {
         if (indexWriter != null) {
             indexWriter.flush();

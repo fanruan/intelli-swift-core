@@ -1,16 +1,9 @@
 package com.fr.swift.db.impl;
 
-import com.fr.event.EventDispatcher;
-import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
-import com.fr.swift.context.SwiftContext;
-import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.Table;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.SwiftSegmentManager;
-import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.util.Util;
@@ -35,19 +28,7 @@ public class AddColumnAction extends BaseAlterTableAction {
         }
 
         SwiftLoggers.getLogger().info("add column {} to {}", relatedColumnMeta, table);
-
-        List<SegmentKey> segKeys = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegmentKeys(table.getSourceKey());
-        for (SegmentKey segKey : segKeys) {
-            if (segKey.getStoreType() == StoreType.MEMORY) {
-                fireTransferRealtime(segKey);
-            }
-        }
-
         alterMeta(table);
-    }
-
-    private static void fireTransferRealtime(SegmentKey realtimeSegKey) {
-        EventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, realtimeSegKey);
     }
 
     private void alterMeta(Table table) {
@@ -58,14 +39,15 @@ public class AddColumnAction extends BaseAlterTableAction {
                 columnMetas.add(oldMeta.getColumn(i + 1));
             }
             columnMetas.add(relatedColumnMeta);
-            SwiftMetaData newMeta = new SwiftMetaDataBean(oldMeta.getTableName(), columnMetas);
+            SwiftMetaData newMeta = new SwiftMetaDataBean(
+                    oldMeta.getId(),
+                    oldMeta.getSwiftDatabase(),
+                    oldMeta.getSchemaName(),
+                    oldMeta.getTableName(),
+                    oldMeta.getRemark(), columnMetas);
             CONF_SVC.updateMetaData(table.getSourceKey().getId(), newMeta);
         } catch (SwiftMetaDataException e) {
             SwiftLoggers.getLogger().warn("alter meta failed, {}: {}", Util.getRootCauseMessage(e));
         }
-    }
-
-    private static SegmentKey getHistorySegKey(SegmentKey realtimeSegKey) {
-        return new SegmentKeyBean(realtimeSegKey.getTable().getId(), realtimeSegKey.getUri(), realtimeSegKey.getOrder(), StoreType.FINE_IO, realtimeSegKey.getSwiftSchema());
     }
 }

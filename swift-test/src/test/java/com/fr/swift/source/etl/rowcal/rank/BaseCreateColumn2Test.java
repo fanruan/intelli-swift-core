@@ -54,6 +54,11 @@ public class BaseCreateColumn2Test {
         bitMaps[1].add(6);
         return new BitmapIndexedColumn() {
             @Override
+            public boolean isReadable() {
+                return false;
+            }
+
+            @Override
             public void flush() {
 
             }

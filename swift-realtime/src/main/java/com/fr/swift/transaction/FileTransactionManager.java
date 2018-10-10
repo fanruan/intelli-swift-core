@@ -3,6 +3,7 @@ package com.fr.swift.transaction;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 
@@ -37,7 +38,8 @@ public class FileTransactionManager extends AbstractTransactionManager {
             this.oldAllShowIndex = hisSegment.getAllShowIndex();
             for (String fieldName : hisSegment.getMetaData().getFieldNames()) {
                 Column column = hisSegment.getColumn(new ColumnKey(fieldName));
-                ImmutableBitMap nullIndex = column.getBitmapIndex().getNullIndex();
+                BitmapIndexedColumn bitmapIndex = column.getBitmapIndex();
+                ImmutableBitMap nullIndex = bitmapIndex.isReadable() ? bitmapIndex.getNullIndex() : BitMaps.newRangeBitmap(0, oldRowCount);
                 oldNullIndexMap.put(fieldName, nullIndex);
             }
         } else {

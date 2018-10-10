@@ -10,6 +10,7 @@ import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.structure.array.IntList;
+import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -179,6 +180,11 @@ class CustomGroupColumn<Base, Derive> implements Column<Derive> {
         @Override
         public void flush() {
             throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isReadable() {
+            return !Util.isEmpty(groupedBitmaps);
         }
     }
 }

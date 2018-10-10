@@ -125,7 +125,9 @@ abstract class BaseDictColumn<T, R extends Reader> extends AbstractDictColumn<T>
     public boolean isReadable() {
         initSizeReader();
         boolean readable = sizeReader.isReadable();
-        IoUtil.release(sizeReader);
+        if (parent.getStoreType().isPersistent()) {
+            IoUtil.release(sizeReader);
+        }
         sizeReader = null;
         return readable;
     }

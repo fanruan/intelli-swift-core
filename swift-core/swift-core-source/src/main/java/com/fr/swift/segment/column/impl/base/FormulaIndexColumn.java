@@ -13,9 +13,10 @@ import com.fr.swift.util.Crasher;
  */
 public class FormulaIndexColumn implements BitmapIndexedColumn {
     private ImmutableBitMap nullIndex;
+
     public FormulaIndexColumn(String formula, Segment segment) {
         ColumnTypeConstants.ColumnType type = FormulaUtils.getColumnType(segment.getMetaData(), formula);
-        if (type != ColumnTypeConstants.ColumnType.NUMBER){
+        if (type != ColumnTypeConstants.ColumnType.NUMBER) {
             nullIndex = AllShowBitMap.of(segment.getRowCount());
         }
     }
@@ -48,5 +49,10 @@ public class FormulaIndexColumn implements BitmapIndexedColumn {
     @Override
     public void release() {
         Crasher.crash("unsupported");
+    }
+
+    @Override
+    public boolean isReadable() {
+        return nullIndex != null;
     }
 }
