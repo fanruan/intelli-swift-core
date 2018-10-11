@@ -4,6 +4,7 @@ import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.operator.insert.BaseInserter;
@@ -23,11 +24,8 @@ public class FileSegmentBackup extends BaseInserter implements SwiftSegmentBacku
 
     protected TransactionManager transactionManager;
 
-    private Segment currentSegment;
-
     public FileSegmentBackup(Segment segment, Segment currentSegment, List<String> fields) {
         super(segment, fields);
-        this.currentSegment = currentSegment;
         transactionManager = (TransactionManager) SwiftContext.get().getBean("transactionManager", segment);
         transactionManager.setOldAttatch(currentSegment);
     }
@@ -44,9 +42,18 @@ public class FileSegmentBackup extends BaseInserter implements SwiftSegmentBacku
 
     @Override
     protected void putNullIndex() {
+        boolean readable = CubeUtil.isReadable(segment);
+
         for (int i = 0; i < columns.size(); i++) {
             BitmapIndexedColumn bitmapIndex = columns.get(i).getBitmapIndex();
-            ImmutableBitMap nullIndex = bitmapIndex.isReadable() ? bitmapIndex.getNullIndex() : BitMaps.newRoaringMutable();
+            ImmutableBitMap nullIndex;
+            if (bitmapIndex.isReadable()) {
+                nullIndex = bitmapIndex.getNullIndex();
+            } else if (readable) {
+                nullIndex = BitMaps.newRangeBitmap(0, segment.getRowCount());
+            } else {
+                nullIndex = BitMaps.newRoaringMutable();
+            }
             MutableBitMap newNullIndex = nullIndices.get(i);
             newNullIndex.or(nullIndex);
             bitmapIndex.putNullIndex(newNullIndex);
