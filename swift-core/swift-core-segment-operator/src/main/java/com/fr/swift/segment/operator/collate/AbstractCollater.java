@@ -24,6 +24,10 @@ public abstract class AbstractCollater implements Collater {
     @Override
     public void collate(SwiftResultSet swiftResultSet) throws Exception {
         Inserter inserter = new SwiftInserter(segment);
-        inserter.insertData(swiftResultSet);
+        try {
+            inserter.insertData(swiftResultSet);
+        } finally {
+            swiftResultSet.close();
+        }
     }
 }
