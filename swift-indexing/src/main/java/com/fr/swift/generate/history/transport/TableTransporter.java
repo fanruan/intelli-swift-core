@@ -52,7 +52,11 @@ public class TableTransporter extends BaseWorker implements Transporter {
     public void transport() throws Exception {
         SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
         SwiftResultSet resultSet = new ProgressResultSet(CubeTasks.newTableName(dataSource), transfer.createResultSet());
-        inserter.insertData(resultSet);
+        try {
+            inserter.insertData(resultSet);
+        } finally {
+            resultSet.close();
+        }
 
         ResourceDiscovery.getInstance().setLastUpdateTime(dataSource.getSourceKey(), System.currentTimeMillis());
     }

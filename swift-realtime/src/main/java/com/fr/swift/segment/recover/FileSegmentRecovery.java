@@ -24,10 +24,11 @@ public class FileSegmentRecovery extends AbstractSegmentRecovery {
 
     private void recover(SegmentKey segKey) {
         Segment realtimeSeg = null;
+        SegmentBackupResultSet resultSet = null;
         try {
             realtimeSeg = newRealtimeSegment(localSegmentProvider.getSegment(segKey));
             Inserter inserter = new SwiftInserter(realtimeSeg);
-            SegmentBackupResultSet resultSet = new SegmentBackupResultSet(getBackupSegment(realtimeSeg));
+            resultSet = new SegmentBackupResultSet(getBackupSegment(realtimeSeg));
             inserter.insertData(resultSet);
             realtimeSeg.putAllShowIndex(resultSet.getAllShowIndex());
         } catch (Exception e) {
@@ -35,6 +36,10 @@ public class FileSegmentRecovery extends AbstractSegmentRecovery {
             if (realtimeSeg != null) {
                 realtimeSeg.putRowCount(0);
                 realtimeSeg.putAllShowIndex(new EmptyBitmap());
+            }
+        } finally {
+            if (resultSet != null) {
+                resultSet.close();
             }
         }
     }
