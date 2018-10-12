@@ -25,6 +25,11 @@ abstract class BaseSwiftLogger implements SwiftLogger {
     }
 
     @Override
+    public void debug(Throwable t) {
+        debug(StringUtils.EMPTY, t);
+    }
+
+    @Override
     public boolean isTraceEnabled() {
         return false;
     }
