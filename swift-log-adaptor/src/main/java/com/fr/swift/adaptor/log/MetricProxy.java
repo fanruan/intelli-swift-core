@@ -198,12 +198,12 @@ public class MetricProxy extends BaseMetric {
 
         @Override
         public void run() {
-            try {
-                for (Class<?> entity : dataMap.keySet()) {
+            for (Class<?> entity : dataMap.keySet()) {
+                try {
                     record(entity);
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().error(e);
                 }
-            } catch (Exception e) {
-                SwiftLoggers.getLogger().error(e);
             }
         }
 

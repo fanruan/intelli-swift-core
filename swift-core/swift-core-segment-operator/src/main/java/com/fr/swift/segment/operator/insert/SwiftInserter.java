@@ -42,10 +42,14 @@ public class SwiftInserter extends BaseInserter implements Inserter {
     public void insertData(SwiftResultSet swiftResultSet) throws Exception {
         initCursors();
 
-        while (swiftResultSet.hasNext()) {
-            Row rowData = swiftResultSet.getNextRow();
-            putRow(cursor, rowData);
-            cursor++;
+        try {
+            while (swiftResultSet.hasNext()) {
+                Row rowData = swiftResultSet.getNextRow();
+                putRow(cursor, rowData);
+                cursor++;
+            }
+        } finally {
+            swiftResultSet.close();
         }
 
         putNullIndex();

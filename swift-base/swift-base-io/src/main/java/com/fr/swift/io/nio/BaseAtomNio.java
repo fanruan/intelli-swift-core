@@ -16,9 +16,12 @@ import java.nio.channels.FileChannel.MapMode;
  * @date 2018/7/20
  */
 abstract class BaseAtomNio extends BaseNio {
+
     ByteBuffer buf;
+
     private FileChannel ch;
-    private int currentPage = -1;
+
+    private int currentPage = -1, currentFilePage = -1;
 
     private int currentStart = -1;
 
@@ -50,9 +53,13 @@ abstract class BaseAtomNio extends BaseNio {
     }
 
     private void loadBuffer(int page) {
+        int filePage = getFilePage(page);
         try {
-            RandomAccessFile file = new RandomAccessFile(String.format("%s/%d", conf.getPath(), getFilePage(page)), conf.isRead() ? "r" : "rw");
-            ch = file.getChannel();
+            if (currentFilePage != filePage) {
+                IoUtil.close(ch);
+                ch = new RandomAccessFile(String.format("%s/%d", conf.getPath(), filePage), conf.isRead() ? "r" : "rw").getChannel();
+                currentFilePage = filePage;
+            }
 
             int fileOffset = getFileOffset(page);
             if (conf.isMapped()) {
@@ -83,36 +90,35 @@ abstract class BaseAtomNio extends BaseNio {
         return (page & ((1 << (conf.getFileSize() - conf.getPageSize())) - 1)) << conf.getPageSize();
     }
 
-    private void releaseBuffer(boolean discardBuf) {
+    private void releaseBuffer(boolean finalRelease) {
         if (buf == null) {
             return;
         }
-        if (conf.isMapped()) {
-            // mapped
-            ((MappedByteBuffer) buf).force();
-            IoUtil.close(ch);
-        } else if (conf.isWrite()) {
-            // 非mapped写，buf视为内存块
-            buf.limit(buf.position());
-            buf.position(currentStart);
-            try {
-                ch.write(buf, currentStart + getFileOffset(currentPage));
-            } catch (IOException e) {
-                SwiftLoggers.getLogger().error(e);
-            } finally {
-                IoUtil.close(ch);
+
+        if (conf.isWrite()) {
+            if (conf.isMapped()) {
+                // mapped写
+                ((MappedByteBuffer) buf).force();
+            } else {
+                // 非mapped写，buf视为内存块
+                buf.limit(buf.position());
+                buf.position(currentStart);
+                try {
+                    ch.write(buf, currentStart + getFileOffset(currentPage));
+                } catch (IOException e) {
+                    SwiftLoggers.getLogger().error(e);
+                }
             }
-        } else {
-            // 非mapped读，buf视为内存块
-            IoUtil.close(ch);
         }
 
         buf.clear();
         currentPage = -1;
+        currentFilePage = -1;
         currentStart = -1;
-        if (discardBuf) {
+        if (finalRelease) {
             IoUtil.release(buf);
             buf = null;
+            IoUtil.close(ch);
         }
     }
 

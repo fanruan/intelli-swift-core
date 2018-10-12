@@ -112,10 +112,12 @@ public class SegmentResultSet implements SwiftResultSet {
             try {
                 SwiftMetaData meta = seg.getMetaData();
                 for (int i = 0; i < meta.getColumnCount(); i++) {
-                    seg.getColumn(new ColumnKey(meta.getColumnName(i))).getBitmapIndex().release();
+                    seg.getColumn(new ColumnKey(meta.getColumnName(i + 1))).getBitmapIndex().release();
                 }
-            } catch (Exception ignore) {
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().error(e);
             }
+            seg.release();
         }
     }
 }
