@@ -26,10 +26,11 @@ public class RedisSegmentRecovery extends AbstractSegmentRecovery {
 
     private void recover(SegmentKey segKey) {
         Segment realtimeSeg = null;
+        RedisBackupResultSet resultSet = null;
         try {
             realtimeSeg = newRealtimeSegment(localSegmentProvider.getSegment(segKey));
             Inserter inserter = new SwiftInserter(realtimeSeg);
-            RedisBackupResultSet resultSet = new RedisBackupResultSet(getBackupSegment(realtimeSeg));
+            resultSet = new RedisBackupResultSet(getBackupSegment(realtimeSeg));
             inserter.insertData(resultSet);
             realtimeSeg.putAllShowIndex(resultSet.getAllShowIndex());
         } catch (Exception e) {
@@ -38,6 +39,10 @@ public class RedisSegmentRecovery extends AbstractSegmentRecovery {
             if (realtimeSeg != null) {
                 realtimeSeg.putRowCount(0);
                 realtimeSeg.putAllShowIndex(new EmptyBitmap());
+            }
+        } finally {
+            if (resultSet != null) {
+                resultSet.close();
             }
         }
     }
