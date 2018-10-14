@@ -7,6 +7,7 @@ import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.operator.column.SwiftColumnDictMerger;
 import com.fr.swift.segment.operator.column.SwiftColumnIndexer;
@@ -107,5 +108,37 @@ public class SegmentUtils {
             }
         }
         return Optional.of(maxSegmentKey);
+    }
+
+    public static void release(Segment seg) {
+        if (seg != null && seg.isHistory()) {
+            seg.release();
+        }
+    }
+
+    public static void release(Iterable<Segment> segs) {
+        if (segs == null) {
+            return;
+        }
+        for (Segment seg : segs) {
+            release(seg);
+        }
+    }
+
+    public static <T> void release(Column<T> column) {
+        if (column != null && column.getLocation().getStoreType().isPersistent()) {
+            column.getDetailColumn().release();
+            column.getDictionaryEncodedColumn().release();
+            column.getBitmapIndex().release();
+        }
+    }
+
+    public static <T> void releaseColumns(Iterable<Column<T>> columns) {
+        if (columns == null) {
+            return;
+        }
+        for (Column<?> column : columns) {
+            release(column);
+        }
     }
 }
