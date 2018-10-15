@@ -1,7 +1,5 @@
 package com.fr.swift.cube.io;
 
-import com.fr.swift.config.service.SwiftCubePathService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.impl.fineio.FineIoReaders;
 import com.fr.swift.cube.io.impl.mem.MemIoBuilder;
 import com.fr.swift.cube.io.input.Reader;
@@ -14,7 +12,6 @@ import com.fr.swift.util.Crasher;
  * @author anchore
  */
 public final class Readers {
-    private static final SwiftCubePathService PATH_SERVICE = SwiftContext.get().getBean(SwiftCubePathService.class);
 
     /**
      * delegate to FineIoReaders, MemIoBuilder
@@ -29,8 +26,7 @@ public final class Readers {
             case MEMORY:
                 return MemIoBuilder.build(conf);
             case NIO:
-                return Nios.of(new NioConf(
-                        String.format("%s/%s", PATH_SERVICE.getSwiftPath(), location.getPath()),
+                return Nios.of(new NioConf(location.getAbsolutePath(),
                         NioConf.IoType.READ), conf.getDataType());
             default:
         }
