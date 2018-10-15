@@ -1,12 +1,12 @@
 package com.fr.swift.generate;
 
-import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.external.map.intpairs.IntPairsExtMaps;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
@@ -73,8 +73,9 @@ public class ColumnDictMerger<T> extends BaseWorker implements SwiftColumnDictMe
         List<Column<T>> columns = new ArrayList<Column<T>>(segments.size());
         for (int segOrder = 0, size = segments.size(); segOrder < size; segOrder++) {
 
-            DictionaryEncodedColumn<T> dictColumn = getColumn(segments.get(segOrder)).getDictionaryEncodedColumn();
-            columns.add(getColumn(segments.get(segOrder)));
+            Column<T> column = getColumn(segments.get(segOrder));
+            columns.add(column);
+            DictionaryEncodedColumn<T> dictColumn = column.getDictionaryEncodedColumn();
             dictColumns.add(dictColumn);
             extractDictOf(dictColumn, segOrder, map);
         }
@@ -95,12 +96,13 @@ public class ColumnDictMerger<T> extends BaseWorker implements SwiftColumnDictMe
             Crasher.crash("mergeDict error! columns size not  not equal to dictColumns size!");
             return;
         }
-        for (int i = 0; i < dictColumns.size(); i++) {
-            DictionaryEncodedColumn<T> dictColumn = dictColumns.get(i);
+        for (DictionaryEncodedColumn<T> dictColumn : dictColumns) {
             dictColumn.putter().putGlobalIndex(0, 0);
             dictColumn.putter().putGlobalSize(globalIndex);
-            releaseIfNeed(dictColumn, columns.get(i));
         }
+
+        SegmentUtils.release(segments);
+        SegmentUtils.releaseColumns(columns);
 
         // 外排map释放并清除文件
         map.clear();
@@ -123,12 +125,6 @@ public class ColumnDictMerger<T> extends BaseWorker implements SwiftColumnDictMe
                 pairs.add(pair);
                 map.put(val, pairs);
             }
-        }
-    }
-
-    protected void releaseIfNeed(Releasable baseColumn, Column column) {
-        if (column.getLocation().getStoreType() != StoreType.MEMORY) {
-            baseColumn.release();
         }
     }
 

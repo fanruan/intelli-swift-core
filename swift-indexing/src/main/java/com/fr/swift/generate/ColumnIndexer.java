@@ -10,6 +10,7 @@ import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.external.map.intlist.IntListExternalMapFactory;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
@@ -79,6 +80,7 @@ public class ColumnIndexer<T> extends BaseWorker implements SwiftColumnIndexer {
         for (Segment segment : segments) {
             Column<T> column = getColumn(segment);
             buildColumnIndex(column, segment.getRowCount());
+            SegmentUtils.release(segment);
         }
     }
 
@@ -90,11 +92,10 @@ public class ColumnIndexer<T> extends BaseWorker implements SwiftColumnIndexer {
      * @param baseColumn 基础列
      */
     protected void releaseIfNeed(Releasable baseColumn, Column column) {
-        if (column.getLocation().getStoreType() != StoreType.MEMORY) {
+        if (column.getLocation().getStoreType().isPersistent()) {
             baseColumn.release();
         }
     }
-
 
     private void buildColumnIndex(Column<T> column, int rowCount) throws Exception {
         Map<T, IntList> map;
@@ -105,7 +106,7 @@ public class ColumnIndexer<T> extends BaseWorker implements SwiftColumnIndexer {
                 location.getStoreType())) {
             ExternalMap<T, IntList> extMap = newIntListExternalMap(
                     column.getDictionaryEncodedColumn().getComparator(),
-                    location.buildChildLocation(EXTERNAL_STRING).getPath());
+                    location.buildChildLocation(EXTERNAL_STRING).getAbsolutePath());
             extMap.readExternal();
             map = extMap;
         } else {
@@ -190,14 +191,13 @@ public class ColumnIndexer<T> extends BaseWorker implements SwiftColumnIndexer {
             dictColumn.putter().putIndex(row, rowToIndex[row]);
         }
 
-        releaseIfNeed(dictColumn, column);
-        releaseIfNeed(indexColumn, column);
+        SegmentUtils.release(column);
     }
 
     private Map<T, IntList> newIntListSortedMap(Column<T> column) throws SwiftMetaDataException {
         Comparator<T> c = column.getDictionaryEncodedColumn().getComparator();
         return PerformancePlugManager.getInstance().isDiskSort() ?
-                newIntListExternalMap(c, column.getLocation().buildChildLocation("external_index").getPath()) :
+                newIntListExternalMap(c, column.getLocation().buildChildLocation("external_index").getAbsolutePath()) :
                 new TreeMap<T, IntList>(c);
     }
 
