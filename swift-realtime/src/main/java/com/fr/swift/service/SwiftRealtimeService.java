@@ -1,7 +1,10 @@
 package com.fr.swift.service;
 
+import com.fr.event.EventDispatcher;
 import com.fr.swift.annotation.SwiftService;
+import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
@@ -13,6 +16,8 @@ import com.fr.swift.query.query.QueryBeanFactory;
 import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.event.SegmentEvent;
+import com.fr.swift.segment.operator.delete.WhereDeleter;
 import com.fr.swift.segment.recover.SegmentRecovery;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
@@ -108,7 +113,16 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.DELETE) {
             @Override
             public void doJob() throws Exception {
-                SwiftDatabase.getInstance().getTable(tableKey).delete(where);
+                List<SegmentKey> segments = segmentManager.getSegmentKeys(tableKey);
+                for (SegmentKey segment : segments) {
+                    if (segment.getStoreType() == Types.StoreType.MEMORY) {
+                        WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segment);
+                        ImmutableBitMap allshow = whereDeleter.delete(where);
+                        if (allshow.isEmpty()) {
+                            EventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, segment);
+                        }
+                    }
+                }
             }
         });
         return true;

@@ -15,11 +15,11 @@ import com.fr.third.javax.persistence.Table;
 public class SwiftTablePathEntity {
     @Id
     private SwiftTablePathKey id;
-    @Column
+    @Column(name = "tablePath")
     private Integer tablePath;
-    @Column
+    @Column(name = "lastPath")
     private Integer lastPath;
-    @Column
+    @Column(name = "tmpDir")
     private Integer tmpDir;
 
     public SwiftTablePathEntity(SwiftTablePathKey id, Integer tablePath) {

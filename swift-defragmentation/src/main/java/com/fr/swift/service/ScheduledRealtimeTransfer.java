@@ -13,7 +13,6 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
-import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 import com.fr.third.springframework.stereotype.Service;
@@ -30,11 +29,9 @@ public class ScheduledRealtimeTransfer implements Runnable {
 
     private final SwiftSegmentManager localSegments = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
 
-    private final ServiceTaskExecutor taskExecutor = SwiftContext.get().getBean(ServiceTaskExecutor.class);
-
     private ScheduledRealtimeTransfer() {
-        SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory(getClass())).
-                scheduleWithFixedDelay(this, 0, 1, TimeUnit.HOURS);
+        SwiftExecutors.newSingleThreadScheduledExecutor(new PoolThreadFactory(getClass())).
+                scheduleWithFixedDelay(this, 1, 1, TimeUnit.HOURS);
     }
 
     @Override
@@ -46,7 +43,7 @@ public class ScheduledRealtimeTransfer implements Runnable {
                         continue;
                     }
                     Segment realtimeSeg = localSegments.getSegment(segKey);
-                    if (realtimeSeg.isReadable() && realtimeSeg.getAllShowIndex().getCardinality() > MIN_PUT_THRESHOLD) {
+                    if (realtimeSeg.isReadable() && realtimeSeg.getAllShowIndex().getCardinality() >= MIN_PUT_THRESHOLD) {
                         EventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, segKey);
                     }
                 } catch (Exception e) {
@@ -68,6 +65,7 @@ public class ScheduledRealtimeTransfer implements Runnable {
 
         @Override
         protected void onSucceed() {
+            SwiftLoggers.getLogger().info("{} to {} succeeded", oldSegKey, newSegKey);
             EventDispatcher.fire(SegmentEvent.UPLOAD_HISTORY, newSegKey);
         }
     }

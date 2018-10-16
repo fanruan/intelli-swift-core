@@ -24,4 +24,10 @@ public class RemoteQueryImpl<T extends SwiftResultSet> implements RemoteQuery<T>
     public T getQueryResult() throws SQLException {
         return (T) QueryRunnerProvider.getInstance().executeRemoteQuery(jsonString, remoteURI);
     }
+
+    @Override
+    public String toString() {
+        return "node: " + remoteURI.toString() + "\n" +
+                "query: " + jsonString;
+    }
 }

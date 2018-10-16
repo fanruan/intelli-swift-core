@@ -1,6 +1,8 @@
 package com.fr.swift.service;
 
+import com.fr.event.EventDispatcher;
 import com.fr.swift.annotation.SwiftService;
+import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftMetaDataService;
@@ -10,7 +12,6 @@ import com.fr.swift.config.service.impl.SwiftSegmentServiceProvider;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Where;
-import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
@@ -20,6 +21,8 @@ import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.manager.SwiftRepositoryManager;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.event.SegmentEvent;
+import com.fr.swift.segment.operator.delete.WhereDeleter;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
@@ -40,6 +43,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -112,7 +116,11 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                 loadDataService.submit(new Runnable() {
                     @Override
                     public void run() {
-                        load(needDownload, false);
+                        try {
+                            load(needDownload, false);
+                        } catch (Exception e) {
+                            SwiftLoggers.getLogger().error(e);
+                        }
                     }
                 });
             }
@@ -141,10 +149,11 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     }
 
     @Override
-    public void load(Map<String, Set<String>> remoteUris, final boolean replace) {
+    public void load(Map<String, Set<String>> remoteUris, final boolean replace) throws Exception {
         if (null == remoteUris || remoteUris.isEmpty()) {
             return;
         }
+        final CountDownLatch latch = new CountDownLatch(remoteUris.size());
         for (final String sourceKey : remoteUris.keySet()) {
             final Set<String> uris = remoteUris.get(sourceKey);
             if (uris.isEmpty()) {
@@ -155,12 +164,15 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                     @Override
                     public void doJob() {
                         download(sourceKey, uris, replace);
+                        SwiftLoggers.getLogger().info("{}, {}", sourceKey, uris);
+                        latch.countDown();
                     }
                 });
             } catch (InterruptedException e) {
-                SwiftLoggers.getLogger().error("download seg {} of {} failed", uris, sourceKey, e);
+                SwiftLoggers.getLogger().warn("download seg {} of {} failed", uris, sourceKey, e);
             }
         }
+        latch.await();
     }
 
     private void download(String sourceKey, Set<String> sets, boolean replace) {
@@ -206,7 +218,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
             new File(cubePath).getParentFile().delete();
         }
         if (downloadSuccess) {
-            SwiftLoggers.getLogger().info("Download " + sourceKey + " successful");
+            SwiftLoggers.getLogger().info("Download {} {}successful", sourceKey, sets);
         }
     }
 
@@ -227,7 +239,16 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.DELETE) {
             @Override
             public void doJob() throws Exception {
-                SwiftDatabase.getInstance().getTable(tableKey).delete(where);
+                List<SegmentKey> segments = segmentManager.getSegmentKeys(tableKey);
+                for (SegmentKey segment : segments) {
+                    if (segment.getStoreType() != Types.StoreType.MEMORY) {
+                        WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segment);
+                        ImmutableBitMap allshow = whereDeleter.delete(where);
+                        if (allshow.isEmpty()) {
+                            EventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, segment);
+                        }
+                    }
+                }
             }
         });
         return true;

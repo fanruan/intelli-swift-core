@@ -196,6 +196,11 @@ public class CubeData {
                 public BitmapIndexedColumn getBitmapIndex() {
                     return new BitmapIndexedColumn() {
                         @Override
+                        public boolean isReadable() {
+                            return false;
+                        }
+
+                        @Override
                         public void flush() {
 
                         }
@@ -259,6 +264,11 @@ public class CubeData {
                 @Override
                 public BitmapIndexedColumn getBitmapIndex() {
                     return new BitmapIndexedColumn() {
+                        @Override
+                        public boolean isReadable() {
+                            return false;
+                        }
+
                         @Override
                         public void putBitMapIndex(int index, ImmutableBitMap bitmap) {
 

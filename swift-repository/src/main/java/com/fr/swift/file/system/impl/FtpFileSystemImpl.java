@@ -208,4 +208,14 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfig> {
             throw new SwiftFileException(e);
         }
     }
+
+    @Override
+    public void testConnection() throws Exception {
+        FineFTP ftp = acquireClient();
+        try {
+            ftp.login();
+        } finally {
+            returnClient(ftp);
+        }
+    }
 }

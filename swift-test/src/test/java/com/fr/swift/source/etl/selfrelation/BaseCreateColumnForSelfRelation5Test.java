@@ -62,6 +62,11 @@ public class BaseCreateColumnForSelfRelation5Test {
         return new BitmapIndexedColumn() {
 
             @Override
+            public boolean isReadable() {
+                return false;
+            }
+
+            @Override
             public void putBitMapIndex(int index, ImmutableBitMap bitmap) {
 
             }

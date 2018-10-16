@@ -86,7 +86,7 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
                 }
             });
         } catch (SQLException e) {
-            SwiftLoggers.getLogger().error("save or update table path error", e);
+            SwiftLoggers.getLogger().warn("save or update table path error", e);
             return false;
         }
     }
@@ -106,7 +106,7 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
                 }
             });
         } catch (SQLException e) {
-            SwiftLoggers.getLogger().error("remove table path error", e);
+            SwiftLoggers.getLogger().warn("remove table path error", e);
             return false;
         }
     }

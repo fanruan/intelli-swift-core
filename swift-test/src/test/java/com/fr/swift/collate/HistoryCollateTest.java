@@ -3,30 +3,25 @@ package com.fr.swift.collate;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types.StoreType;
-import com.fr.swift.db.Where;
-import com.fr.swift.db.impl.SwiftWhere;
 import com.fr.swift.generate.BaseTest;
 import com.fr.swift.generate.ColumnIndexer;
 import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
 import com.fr.swift.query.query.FilterBean;
-import com.fr.swift.redis.RedisClient;
-import com.fr.swift.segment.Decrementer;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
-import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.insert.HistoryBlockInserter;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.service.SwiftCollateService;
+import com.fr.swift.service.local.ServiceManager;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.SwiftSourceTransferFactory;
+import com.fr.swift.source.alloter.impl.line.LineAllotRule;
+import com.fr.swift.source.alloter.impl.line.LineSourceAlloter;
 import com.fr.swift.source.db.QueryDBSource;
-import com.fr.swift.task.service.SwiftServiceTaskExecutor;
 import com.fr.swift.test.Preparer;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -45,16 +40,14 @@ import static junit.framework.TestCase.assertTrue;
  */
 public class HistoryCollateTest extends BaseTest {
 
-    private RedisClient redisClient;
-
     private SwiftSegmentManager swiftSegmentManager;
 
     @Override
     public void setUp() throws Exception {
         super.setUp();
         Preparer.prepareCubeBuild(getClass());
-        redisClient = (RedisClient) SwiftContext.get().getBean("redisClient");
         swiftSegmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
+        SwiftContext.get().getBean("localManager", ServiceManager.class).startUp();
     }
 
     static FilterBean createEqualFilter(String fieldName, String value) {
@@ -70,48 +63,31 @@ public class HistoryCollateTest extends BaseTest {
         SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).removeSegments(dataSource.getSourceKey().getId());
         SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
         SwiftResultSet resultSet = transfer.createResultSet();
-        Inserter inserter = new HistoryBlockInserter(dataSource);
+        Inserter inserter = new HistoryBlockInserter(dataSource, new LineSourceAlloter(dataSource.getSourceKey(), new LineAllotRule(100)));
         inserter.insertData(resultSet);
 
-        List<SegmentKey> segKeys = swiftSegmentManager.getSegmentKeys(dataSource.getSourceKey());
+        List<Segment> segments = swiftSegmentManager.getSegment(dataSource.getSourceKey());
         for (String fieldName : dataSource.getMetadata().getFieldNames()) {
-            ColumnIndexer columnIndexer = new ColumnIndexer(dataSource, new ColumnKey(fieldName), segKeys);
+            ColumnIndexer columnIndexer = new ColumnIndexer(dataSource, new ColumnKey(fieldName), segments);
             columnIndexer.work();
         }
 
-        Where where = new SwiftWhere(createEqualFilter("合同类型", "购买合同"));
         //合并前1块历史块，且只要allshow是购买合同
-        assertEquals(1, segKeys.size());
-        for (SegmentKey segKey : segKeys) {
-            Segment segment = swiftSegmentManager.getSegment(segKey);
-            Decrementer decrementer = new Decrementer(segKey);
-            decrementer.delete(where);
+        assertEquals(7, segments.size());
+        for (Segment segment : segments) {
             assertSame(segment.getLocation().getStoreType(), StoreType.FINE_IO);
-            Column column = segment.getColumn(new ColumnKey("合同类型"));
-            int neqCount = 0;
-            for (int i = 0; i < segment.getRowCount(); i++) {
-                if (segment.getAllShowIndex().contains(i)) {
-                    Assert.assertNotEquals(column.getDetailColumn().get(i), "购买合同");
-                } else {
-                    neqCount++;
-                }
-            }
-            assertTrue(neqCount != 0);
+            assertTrue(segment.getRowCount() <= 100);
         }
         //合并历史块，直接写history
         SwiftCollateService collaterService = SwiftContext.get().getBean(SwiftCollateService.class);
-        collaterService.setTaskExecutor(new SwiftServiceTaskExecutor("testAutoHistoryCollate", 1));
         collaterService.autoCollateHistory(dataSource.getSourceKey());
         Thread.sleep(5000L);
-        List<Segment> segs = swiftSegmentManager.getSegment(dataSource.getSourceKey());
-        assertEquals(1, segKeys.size());
+        segments = swiftSegmentManager.getSegment(dataSource.getSourceKey());
+        assertEquals(1, segments.size());
         //合并后1块历史块，所有数据都是购买合同
-        for (Segment segment : segs) {
+        for (Segment segment : segments) {
             assertSame(segment.getLocation().getStoreType(), StoreType.FINE_IO);
-            Column column = segment.getColumn(new ColumnKey("合同类型"));
-            for (int i = 0; i < segment.getRowCount(); i++) {
-                Assert.assertNotEquals(column.getDetailColumn().get(i), "购买合同");
-            }
+            assertTrue(segment.getRowCount() == 668);
         }
     }
 

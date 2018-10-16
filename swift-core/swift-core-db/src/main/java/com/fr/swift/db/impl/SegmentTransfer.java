@@ -35,17 +35,23 @@ public class SegmentTransfer {
     public void transfer() {
         Segment oldSeg = newSegment(oldSegKey), newSeg = newSegment(newSegKey);
         Inserter inserter = (Inserter) SwiftContext.get().getBean("inserter", newSeg);
+        SegmentResultSet swiftResultSet = null;
         try {
             SEG_SVC.addSegments(Collections.singletonList(newSegKey));
 
-            inserter.insertData(new SegmentResultSet(oldSeg));
+            swiftResultSet = new SegmentResultSet(oldSeg);
+            inserter.insertData(swiftResultSet);
 
             indexSegmentIfNeed(newSeg);
 
             onSucceed();
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("segment transfer from {} to {} failed: {}", e);
+            SwiftLoggers.getLogger().error("segment transfer from {} to {} failed: {}", oldSegKey, newSegKey, e);
             remove(newSegKey);
+        } finally {
+            if (swiftResultSet != null) {
+                swiftResultSet.close();
+            }
         }
     }
 

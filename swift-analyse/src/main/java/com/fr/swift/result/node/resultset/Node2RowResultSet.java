@@ -47,7 +47,7 @@ public class Node2RowResultSet implements NodeResultSet<SwiftNode> {
 
     @Override
     public boolean hasNext() throws SQLException {
-        return source.hasNext();
+        return null != source && source.hasNext();
     }
 
     @Override

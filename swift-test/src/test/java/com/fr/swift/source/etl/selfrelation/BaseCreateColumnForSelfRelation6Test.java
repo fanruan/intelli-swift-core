@@ -60,6 +60,11 @@ public class BaseCreateColumnForSelfRelation6Test {
         bitMaps[5].add(8);
         return new BitmapIndexedColumn() {
             @Override
+            public boolean isReadable() {
+                return false;
+            }
+
+            @Override
             public void flush() {
 
             }

@@ -3,7 +3,6 @@ package com.fr.swift.result.serialize;
 import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.SwiftNode;
-import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.Pair;
@@ -24,15 +23,15 @@ public class LocalAllNodeResultSet implements NodeResultSet<SwiftNode>, Serializ
     private static final long serialVersionUID = 7098094791977510417L;
     private int fetchSize;
     private String jsonString;
-    private SwiftNode root;
-    private boolean hasNextPage = true;
+    private List<Row> page;
     private boolean originHasNextPage;
     private transient Iterator<Row> iterator;
+    private transient SwiftMetaData metaData;
 
-    public LocalAllNodeResultSet(int fetchSize, String jsonString, SwiftNode root, boolean originHasNextPage) {
+    public LocalAllNodeResultSet(int fetchSize, String jsonString, List<Row> page, boolean originHasNextPage) {
         this.fetchSize = fetchSize;
         this.jsonString = jsonString;
-        this.root = root;
+        this.page = page;
         this.originHasNextPage = originHasNextPage;
     }
 
@@ -43,36 +42,41 @@ public class LocalAllNodeResultSet implements NodeResultSet<SwiftNode>, Serializ
 
     @Override
     public Pair<SwiftNode, List<Map<Integer, Object>>> getPage() {
-        hasNextPage = false;
-        SwiftNode ret = root;
-        root = null;
-        if (originHasNextPage) {
-            try {
-                LocalAllNodeResultSet resultSet = (LocalAllNodeResultSet) QueryRunnerProvider.getInstance().executeRemoteQuery(jsonString, null);
-                hasNextPage = true;
-                this.root = resultSet.getPage().getKey();
-                this.originHasNextPage = resultSet.originHasNextPage;
-            } catch (SQLException e) {
-                Crasher.crash(e);
-            }
-        }
-        return Pair.of(ret, null);
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean hasNextPage() {
-        return hasNextPage || originHasNextPage;
+        throw new UnsupportedOperationException();
+    }
+
+    public void setMetaData(SwiftMetaData metaData) {
+        this.metaData = metaData;
     }
 
     @Override
     public SwiftMetaData getMetaData() throws SQLException {
-        return null;
+        return metaData;
     }
 
     @Override
     public boolean hasNext() throws SQLException {
         if (iterator == null) {
-            iterator = SwiftNodeUtils.node2RowIterator(root);
+            iterator = page.iterator();
+            page = null;
+        }
+        if (iterator.hasNext()) {
+            return true;
+        } else if (originHasNextPage) {
+            try {
+                LocalAllNodeResultSet resultSet = (LocalAllNodeResultSet) QueryRunnerProvider.getInstance().executeRemoteQuery(jsonString, null);
+                if (resultSet != null && resultSet.page != null) {
+                    this.iterator = resultSet.page.iterator();
+                    this.originHasNextPage = resultSet.originHasNextPage;
+                }
+            } catch (SQLException e) {
+                Crasher.crash(e);
+            }
         }
         return iterator.hasNext();
     }

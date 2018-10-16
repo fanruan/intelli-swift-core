@@ -1,6 +1,7 @@
 package com.fr.swift.file.system.impl;
 
 import com.fr.general.ComparatorUtils;
+import com.fr.io.context.ResourceModuleContext;
 import com.fr.io.repository.FineFileEntry;
 import com.fr.io.utils.ResourceIOUtils;
 import com.fr.swift.file.exception.SwiftFileException;
@@ -33,30 +34,25 @@ public class DefaultFileSystemImpl extends AbstractFileSystem {
 
     @Override
     protected long fileSize() {
-        try {
-            FineFileEntry entry = ResourceIOUtils.getEntry(getResourceURI());
-            if (null != entry) {
-                return entry.getSize();
-            }
-            return 0L;
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().error(e);
-            return 0L;
-        }
+        return ResourceIOUtils.getLength(getResourceURI());
     }
 
 
     @Override
     public void write(String remote, InputStream inputStream) throws SwiftFileException {
         try {
+            int available = inputStream.available();
             ResourceIOUtils.write(remote, inputStream);
+            SwiftLoggers.getLogger().debug("ResourceIOUtils wrote {} bytes of {}", available, remote);
         } catch (Exception e) {
+            SwiftLoggers.getLogger().debug("ResourceIOUtils wrote failed caused by {}", remote, e);
             throw new SwiftFileException(e);
         }
     }
 
     @Override
     public SwiftFileSystem read(String remote) throws SwiftFileException {
+        SwiftLoggers.getLogger().debug("ResourceIOUtils read from remote {}", remote);
         SwiftFileSystem fileSystem;
         if (ComparatorUtils.equals(remote, getResourceURI())) {
             fileSystem = this;
@@ -78,6 +74,7 @@ public class DefaultFileSystemImpl extends AbstractFileSystem {
     public boolean remove(String remote) throws SwiftFileException {
         if (ComparatorUtils.equals(remote, getResourceURI())) {
             if (isExists()) {
+                SwiftLoggers.getLogger().debug("ResourceIOUtils remove remote {}", remote);
                 return ResourceIOUtils.delete(remote);
             }
         } else {
@@ -91,12 +88,14 @@ public class DefaultFileSystemImpl extends AbstractFileSystem {
 
     @Override
     public boolean renameTo(String src, String dest) throws SwiftFileException {
+        SwiftLoggers.getLogger().debug("ResourceIOUtils rename src {} to dest {}", src, dest);
         SwiftFileSystem fileSystem = read(src);
         return ResourceIOUtils.renameTo(fileSystem.getResourceURI(), dest);
     }
 
     @Override
     public boolean copy(String src, String dest) throws SwiftFileException {
+        SwiftLoggers.getLogger().debug("ResourceIOUtils copy src {} to dest {}", src, dest);
         SwiftFileSystem fileSystem = read(src);
         try {
             ResourceIOUtils.copy(fileSystem.getResourceURI(), dest);
@@ -136,4 +135,21 @@ public class DefaultFileSystemImpl extends AbstractFileSystem {
 
     }
 
+    @Override
+    public void testConnection() {
+
+    }
+
+    @Override
+    public long getSize() {
+        long size = 0;
+        if (ResourceModuleContext.getRealCurrentRepo().isAccurateDiskSize()) {
+            FineFileEntry[] entries = ResourceIOUtils.listEntry(getResourceURI());
+
+            for (FineFileEntry entry : entries) {
+                size += entry.getSize();
+            }
+        }
+        return size;
+    }
 }

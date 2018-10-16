@@ -92,26 +92,28 @@ public class SegmentResultSet implements SwiftResultSet {
             if (nullIndices.get(i).contains(cursor)) {
                 row.add(null);
             } else {
-                row.add(details.get(i).get(cursor));
+                row.add(getDetail(details.get(i), cursor));
             }
         }
         cursor++;
         return new ListBasedRow(row);
     }
 
+    protected <T> T getDetail(DetailColumn<T> detail, int cursor) {
+        return detail.get(cursor);
+    }
+
     @Override
     public void close() {
-        if (seg.isHistory()) {
-            for (DetailColumn detail : details) {
-                detail.release();
+        SegmentUtils.release(seg);
+        try {
+            SwiftMetaData meta = seg.getMetaData();
+            for (int i = 0; i < meta.getColumnCount(); i++) {
+                Column<?> column = seg.getColumn(new ColumnKey(meta.getColumnName(i + 1)));
+                SegmentUtils.release(column);
             }
-            try {
-                SwiftMetaData meta = seg.getMetaData();
-                for (int i = 0; i < meta.getColumnCount(); i++) {
-                    seg.getColumn(new ColumnKey(meta.getColumnName(i))).getBitmapIndex().release();
-                }
-            } catch (Exception ignore) {
-            }
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
         }
     }
 }

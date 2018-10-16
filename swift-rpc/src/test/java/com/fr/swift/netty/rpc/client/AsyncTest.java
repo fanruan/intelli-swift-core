@@ -10,7 +10,7 @@ import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.netty.rpc.CalculatorService;
 import com.fr.swift.netty.rpc.proxy.RPCProxyFactory;
-import com.fr.swift.netty.rpc.server.RpcServer;
+import com.fr.swift.netty.rpc.server.ServiceMethodRegistry;
 import com.fr.swift.netty.rpc.url.RPCDestination;
 import com.fr.swift.netty.rpc.url.RPCUrl;
 import com.fr.workspace.simple.SimpleWork;
@@ -39,8 +39,8 @@ public class AsyncTest {
 //        Method method = CalculatorService.class.getMethod("add", int.class, int.class, long.class);
         //step3: get invoker method
         SwiftContext.init();
-        RpcServer rpcServer = SwiftContext.get().getBean(RpcServer.class);
-        Method method = rpcServer.getMethodByName("add");
+//        RpcServer rpcServer = SwiftContext.get().getBean(RpcServer.class);
+        Method method = ServiceMethodRegistry.INSTANCE.getMethodByName("add");
         final long startTime = System.currentTimeMillis();
         //step4: async invoke method
         Result result = invoker.invoke(new SwiftInvocation(method, new Object[]{10, 20, 5000l}));

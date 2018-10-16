@@ -5,25 +5,30 @@ import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.RpcFuture;
+import com.fr.swift.cluster.listener.NodeStartedListener;
+import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.event.analyse.RequestSegLocationEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.netty.rpc.server.RpcServer;
+import com.fr.swift.netty.rpc.server.ServiceMethodRegistry;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryBeanFactory;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationProvider;
+import com.fr.swift.segment.impl.RealTimeSegDestImpl;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
 import com.fr.swift.service.AbstractSwiftService;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.cluster.ClusterAnalyseService;
+import com.fr.swift.service.cluster.ClusterHistoryService;
+import com.fr.swift.service.cluster.ClusterRealTimeService;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Assert;
@@ -47,8 +52,6 @@ import java.util.concurrent.CountDownLatch;
 public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements ClusterAnalyseService {
     private static final long serialVersionUID = 7637989460502966453L;
     @Autowired(required = false)
-    private transient RpcServer server;
-    @Autowired(required = false)
     private transient QueryBeanFactory queryBeanFactory;
     @Autowired(required = false)
     private transient AnalyseService analyseService;
@@ -57,6 +60,7 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
 
     @Override
     public SwiftResultSet getRemoteQueryResult(final String jsonString, final SegmentDestination remoteURI) {
+//        SwiftLoggers.getLogger().debug("query: " + jsonString + "\n" + "node: " + (null != remoteURI ? remoteURI.toString() : StringUtils.EMPTY));
         final SwiftResultSet[] resultSet = new SwiftResultSet[1];
         try {
             final CountDownLatch latch = new CountDownLatch(1);
@@ -94,16 +98,22 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
                             }
                         }
                         if (resultSet[0] == null) {
+                            // 远程查询抛错这边应该知晓
+                            // TODO 远程查询抛错应该怎么处理
+                            SwiftLoggers.getLogger().error("Query remote node error! ", e);
+                            SwiftLoggers.getLogger().error("caused by query: {}\n", jsonString);
                             latch.countDown();
                         }
                     } catch (Exception e1) {
                         SwiftLoggers.getLogger().error("Query remote node error! ", e1);
+                        SwiftLoggers.getLogger().error("caused by query: {}\n", jsonString);
                     }
                 }
             });
             latch.await();
         } catch (Exception e) {
             SwiftLoggers.getLogger().error("Query remote node error! ", e);
+            SwiftLoggers.getLogger().error("caused by query: {}\n", jsonString);
         }
         return resultSet[0];
     }
@@ -116,11 +126,21 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
         analyseService.start();
         segmentProvider = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
         // 这边为了覆盖掉analyse的注册，所以再调一次注册
+        super.start();
+        NodeStartedListener.INSTANCE.registerTask(new NodeStartedListener.NodeStartedTask() {
+            @Override
+            public void run() {
+                loadSegmentLocationInfo();
+            }
+        });
+        return true;
+    }
+
+    private void loadSegmentLocationInfo() {
         if (loadable) {
             loadSelfSegmentDestination();
             loadable = false;
         }
-        super.start();
         List<Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo>> result =
                 (List<Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo>>) ClusterCommonUtils.runSyncMaster(new RequestSegLocationEvent(getID()));
         if (!result.isEmpty()) {
@@ -128,7 +148,6 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
                 updateSegmentInfo(pair.getValue(), pair.getKey());
             }
         }
-        return true;
     }
 
     @Override
@@ -153,14 +172,14 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
 
     @Override
     @RpcMethod(methodName = "removeTable")
-    public void removeTable(String sourceKey) {
-        SegmentLocationProvider.getInstance().removeTable(sourceKey);
+    public void removeTable(String cluster, String sourceKey) {
+        SegmentLocationProvider.getInstance().removeTable(cluster, sourceKey);
     }
 
     @Override
     @RpcMethod(methodName = "removeSegments")
-    public void removeSegments(String sourceKey, List<String> segmentKeys) {
-        SegmentLocationProvider.getInstance().removeSegment(sourceKey, segmentKeys);
+    public void removeSegments(String clusterId, String sourceKey, List<String> segmentKeys) {
+        SegmentLocationProvider.getInstance().removeSegments(clusterId, sourceKey, segmentKeys);
     }
 
 
@@ -173,7 +192,7 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
         String address = remoteURI.getAddress();
         String methodName = remoteURI.getMethodName();
         Class clazz = remoteURI.getServiceClass();
-        return ClusterCommonUtils.runAsyncRpc(address, clazz, server.getMethodByName(methodName), jsonString);
+        return ClusterCommonUtils.runAsyncRpc(address, clazz, ServiceMethodRegistry.INSTANCE.getMethodByName(methodName), jsonString);
     }
 
     @Override
@@ -187,7 +206,9 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
     }
 
     private void loadSelfSegmentDestination() {
-        Map<String, List<SegmentKey>> segments = segmentProvider.getOwnSegments();
+        SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
+        clusterSegmentService.setClusterId(getID());
+        Map<String, List<SegmentKey>> segments = clusterSegmentService.getOwnSegments();
         if (!segments.isEmpty()) {
             Map<String, List<SegmentDestination>> hist = new HashMap<String, List<SegmentDestination>>();
             Map<String, List<SegmentDestination>> realTime = new HashMap<String, List<SegmentDestination>>();
@@ -196,9 +217,9 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
                 initSegDestinations(realTime, entry.getKey());
                 for (SegmentKey segmentKey : entry.getValue()) {
                     if (segmentKey.getStoreType() == Types.StoreType.FINE_IO) {
-                        hist.get(entry.getKey()).add(new SegmentDestinationImpl(segmentKey.toString(), segmentKey.getOrder()));
+                        hist.get(entry.getKey()).add(new SegmentDestinationImpl(getID(), segmentKey.toString(), segmentKey.getOrder(), ClusterHistoryService.class, "historyQuery"));
                     } else {
-                        realTime.get(entry.getKey()).add(new SegmentDestinationImpl(segmentKey.toString(), segmentKey.getOrder()));
+                        realTime.get(entry.getKey()).add(new RealTimeSegDestImpl(getID(), segmentKey.toString(), segmentKey.getOrder(), ClusterRealTimeService.class, "realTimeQuery"));
                     }
                 }
             }

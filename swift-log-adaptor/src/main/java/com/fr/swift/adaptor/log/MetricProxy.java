@@ -188,7 +188,7 @@ public class MetricProxy extends BaseMetric {
     class Sync implements Runnable {
         static final int FLUSH_SIZE_THRESHOLD = 10000;
 
-        private ScheduledExecutorService scheduler = SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory(getClass()));
+        private ScheduledExecutorService scheduler = SwiftExecutors.newSingleThreadScheduledExecutor(new PoolThreadFactory(getClass()));
 
         private Map<Class<?>, List<Object>> dataMap = new ConcurrentHashMap<Class<?>, List<Object>>();
 
@@ -198,13 +198,12 @@ public class MetricProxy extends BaseMetric {
 
         @Override
         public void run() {
-            try {
-                for (Class<?> entity : dataMap.keySet()) {
-                    initTable(entity);
+            for (Class<?> entity : dataMap.keySet()) {
+                try {
                     record(entity);
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().error(e);
                 }
-            } catch (Exception e) {
-                SwiftLoggers.getLogger().error(e);
             }
         }
 

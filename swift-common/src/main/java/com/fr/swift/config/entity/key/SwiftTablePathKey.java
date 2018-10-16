@@ -12,7 +12,7 @@ import com.fr.third.javax.persistence.Embeddable;
 public class SwiftTablePathKey extends TableId {
     public static final String LOCALHOST = "LOCAL";
     private static final long serialVersionUID = -7758001996419942390L;
-    @Column
+    @Column(name = "clusterId")
     private String clusterId;
 
     public SwiftTablePathKey(String tableKey, String clusterId) {

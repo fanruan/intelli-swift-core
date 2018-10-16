@@ -63,7 +63,7 @@ public abstract class AbstractSegmentService implements SwiftSegmentService {
             });
 
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("Select segments error!", e);
+            SwiftLoggers.getLogger().warn("Select segments error!", e);
         }
         return Collections.emptyMap();
     }
@@ -92,7 +92,7 @@ public abstract class AbstractSegmentService implements SwiftSegmentService {
             });
 
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("Select segments error!", e);
+            SwiftLoggers.getLogger().warn("Select segments error!", e);
         }
         return Collections.emptyMap();
     }
@@ -124,7 +124,6 @@ public abstract class AbstractSegmentService implements SwiftSegmentService {
                                 SwiftDatabase.getInstance().getTable(tableKey).getMetadata().getSwiftDatabase());
                         try {
                             swiftSegmentDao.persist(session, segKeyEntity);
-                            session.flush();
                             return segKeyEntity.convert();
                         } catch (ConstraintViolationException e) {
                             appendOrder++;

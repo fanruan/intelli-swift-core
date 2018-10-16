@@ -63,8 +63,8 @@ public class DistinctAggregateTest extends TestCase {
         bitMap2.add(7);
         bitMap2.add(10);
 
-        value.setBitMap((RoaringMutableBitMap)bitMap1);
-        other.setBitMap((RoaringMutableBitMap)bitMap2);
+//        value.setBitMap((RoaringMutableBitMap)bitMap1);
+//        other.setBitMap((RoaringMutableBitMap)bitMap2);
 
         double expect = 6.0;
         DistinctAggregate distinctCalculator = (DistinctAggregate)DistinctAggregate.INSTANCE;

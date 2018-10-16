@@ -122,6 +122,11 @@ public abstract class BaseColumnImplTest<T> implements Column {
     public BitmapIndexedColumn getBitmapIndex() {
         return new BitmapIndexedColumn() {
             @Override
+            public boolean isReadable() {
+                return false;
+            }
+
+            @Override
             public void flush() {
 
             }

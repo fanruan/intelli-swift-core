@@ -20,7 +20,7 @@ public class SumAggregate extends AbstractAggregator<DoubleAmountAggregatorValue
     @Override
     public DoubleAmountAggregatorValue aggregate(RowTraversal traversal, Column column) {
         if (traversal.isEmpty()) {
-            return null;
+            return new DoubleAmountAggregatorValue(NULL_DOUBLE);
         }
         final DoubleAmountAggregatorValue valueAmount = new DoubleAmountAggregatorValue();
         final DetailColumn detailColumn = column.getDetailColumn();

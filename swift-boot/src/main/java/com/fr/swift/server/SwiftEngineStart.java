@@ -7,6 +7,7 @@ import com.fr.config.dao.impl.LocalEntityDao;
 import com.fr.config.dao.impl.LocalXmlEntityDao;
 import com.fr.data.impl.Connection;
 import com.fr.data.impl.JDBCDatabaseConnection;
+import com.fr.swift.cluster.listener.NodeStartedListener;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.ProviderTaskManager;
 import com.fr.swift.event.ClusterEvent;
@@ -18,8 +19,8 @@ import com.fr.swift.log.SwiftLog4jLoggers;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.service.MaskHistoryListener;
+import com.fr.swift.service.RemoveHistoryListener;
 import com.fr.swift.service.TransferRealtimeListener;
-import com.fr.swift.service.UnloadHistoryListener;
 import com.fr.swift.service.UploadHistoryListener;
 import com.fr.swift.service.local.ServerManager;
 import com.fr.swift.service.local.ServiceManager;
@@ -44,7 +45,9 @@ public class SwiftEngineStart {
             SimpleWork.checkIn(System.getProperty("user.dir"));
             ClusterListenerHandler.addListener(new SwiftClusterListener());
             SwiftContext.init();
+
             registerTmpConnectionProvider();
+            ClusterListenerHandler.addListener(NodeStartedListener.INSTANCE);
             FineIO.setLogger(new FineIOLoggerImpl());
             ProviderTaskManager.start();
             SwiftCommandParser.parseCommand(args);
@@ -58,7 +61,7 @@ public class SwiftEngineStart {
             TransferRealtimeListener.listen();
             UploadHistoryListener.listen();
             MaskHistoryListener.listen();
-            UnloadHistoryListener.listen();
+            RemoveHistoryListener.listen();
 
 
             SwiftLoggers.getLogger().info("Swift engine start successful");

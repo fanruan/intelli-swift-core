@@ -22,6 +22,7 @@ import com.fr.swift.event.global.CleanMetaDataCacheEvent;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.netty.rpc.server.RpcServer;
+import com.fr.swift.netty.rpc.server.ServiceMethodRegistry;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
@@ -71,7 +72,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
 
             });
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("Add or update metadata error!", e);
+            SwiftLoggers.getLogger().warn("Add or update metadata error!", e);
             return false;
         }
     }
@@ -96,7 +97,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
 
             });
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("Add metadata error!", e);
+            SwiftLoggers.getLogger().warn("Add metadata error!", e);
             return false;
         }
     }
@@ -120,7 +121,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                         URL masterURL = getMasterURL();
                         ProxyFactory factory = ProxySelector.getInstance().getFactory();
                         Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, masterURL, false);
-                        Result result = invoker.invoke(new SwiftInvocation(server.getMethodByName("rpcTrigger"), new Object[]{new CleanMetaDataCacheEvent(sourceKeys)}));
+                        Result result = invoker.invoke(new SwiftInvocation(ServiceMethodRegistry.INSTANCE.getMethodByName("rpcTrigger"), new Object[]{new CleanMetaDataCacheEvent(sourceKeys)}));
                         RpcFuture future = (RpcFuture) result.getValue();
                         future.addCallback(new AsyncRpcCallback() {
                             @Override
@@ -139,7 +140,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
             });
 
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("Remove metadata error!", e);
+            SwiftLoggers.getLogger().warn("Remove metadata error!", e);
             return false;
         }
     }
@@ -171,7 +172,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
             });
 
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("Select metadata error!", e);
+            SwiftLoggers.getLogger().warn("Select metadata error!", e);
             return new HashMap<String, SwiftMetaData>();
         }
     }
@@ -196,7 +197,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                 });
 
             } catch (Exception e) {
-                SwiftLoggers.getLogger().error("Select metadata error!", e);
+                SwiftLoggers.getLogger().warn("Select metadata error!", e);
                 return null;
             }
         }
@@ -265,7 +266,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                 }
             });
         } catch (SQLException e) {
-            SwiftLoggers.getLogger().error(e);
+            SwiftLoggers.getLogger().warn(e);
             return Collections.emptyList();
         }
     }

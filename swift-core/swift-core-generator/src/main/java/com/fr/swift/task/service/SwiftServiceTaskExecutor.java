@@ -26,9 +26,9 @@ public class SwiftServiceTaskExecutor implements ServiceTaskExecutor {
     private final Map<SourceKey, ServiceCallable> runningCallables = new ConcurrentHashMap<SourceKey, ServiceCallable>();
     private ServiceTaskFetcher fetcher;
 
-    public SwiftServiceTaskExecutor(String name, int threadNum) {
-        fetcher = new ServiceTaskFetcher(name, threadNum);
-        SwiftExecutors.newThread(fetcher, name + "-ServiceTaskFetcher").start();
+    public SwiftServiceTaskExecutor(int threadNum) {
+        fetcher = new ServiceTaskFetcher(threadNum);
+        SwiftExecutors.newThread(fetcher).start();
     }
 
     @Override
@@ -49,8 +49,8 @@ public class SwiftServiceTaskExecutor implements ServiceTaskExecutor {
         };
         private ExecutorService executorService;
 
-        ServiceTaskFetcher(String name, int threadNum) {
-            executorService = SwiftExecutors.newFixedThreadPool(threadNum, new PoolThreadFactory(name));
+        ServiceTaskFetcher(int threadNum) {
+            executorService = SwiftExecutors.newFixedThreadPool(threadNum, new PoolThreadFactory(SwiftServiceTaskExecutor.class));
             semaphore = new Semaphore(threadNum);
         }
 

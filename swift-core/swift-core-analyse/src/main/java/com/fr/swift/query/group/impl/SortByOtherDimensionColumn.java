@@ -80,6 +80,11 @@ public class SortByOtherDimensionColumn<Base, Derive> implements Column<Derive> 
         public void release() {
             throw new UnsupportedOperationException();
         }
+
+        @Override
+        public boolean isReadable() {
+            return originColumn.getBitmapIndex().isReadable();
+        }
     }
 
     private class DicColumn implements DictionaryEncodedColumn {

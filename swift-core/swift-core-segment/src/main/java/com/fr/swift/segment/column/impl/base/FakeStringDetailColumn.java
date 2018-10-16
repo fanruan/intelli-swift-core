@@ -76,7 +76,7 @@ public class FakeStringDetailColumn implements DetailColumn<String> {
     private String calExternalLocation() {
         return hostColumn.getLocation()
                 .buildChildLocation(EXTERNAL_STRING)
-                .getPath();
+                .getAbsolutePath();
     }
 
     private ExternalMap<String, IntList> newIntListExternalMap(Comparator<String> c) {

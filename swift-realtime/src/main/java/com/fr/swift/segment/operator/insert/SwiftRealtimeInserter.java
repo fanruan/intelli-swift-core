@@ -14,6 +14,7 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.transaction.Transactional;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -74,11 +75,13 @@ public class SwiftRealtimeInserter extends SwiftInserter {
 
     @Override
     @Transactional(value = RealtimeInsertException.class)
-    public void insertData(SwiftResultSet swiftResultSet) throws RealtimeInsertException {
+    public void insertData(SwiftResultSet swiftResultSet) throws RealtimeInsertException, SQLException {
         try {
             super.insertData(swiftResultSet);
         } catch (Exception e) {
             throw new RealtimeInsertException(e);
+        } finally {
+            swiftResultSet.close();
         }
     }
 
