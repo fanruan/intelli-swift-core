@@ -193,16 +193,3 @@ public class SwiftSegmentServiceImpl extends AbstractSegmentService {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
