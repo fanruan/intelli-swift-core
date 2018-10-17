@@ -53,7 +53,7 @@ public class HavingFilterQueryTest extends TestCase {
         List<MatchFilter> matchFilters = new ArrayList<>();
         matchFilters.add(null);
         // > 1
-        DetailFilter detailFilter = new NumberInRangeFilter(1., Double.POSITIVE_INFINITY, false, true, null);
+        DetailFilter detailFilter = new NumberInRangeFilter(1., Double.POSITIVE_INFINITY, false, true, null, 0);
         matchFilters.add(new MatchFilter() {
             @Override
             public boolean matches(SwiftNode node) {
