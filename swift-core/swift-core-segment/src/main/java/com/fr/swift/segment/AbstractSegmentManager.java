@@ -81,6 +81,7 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
         } else {
             keys = new ArrayList<SegmentKey>();
             List<String> likeKeys = new ArrayList<String>();
+            List<String> notLikeKeys = new ArrayList<String>();
             for (String segmentId : segmentIds) {
                 if (segmentId.endsWith("-1")) {
                     String likeKey = segmentId.substring(0, segmentId.length() - 2);
@@ -91,10 +92,13 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
                         likeKeys.add(likeKey);
                     }
                 } else {
-                    keys.addAll(segmentService.find(
-                            Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, table.getId()),
-                            Restrictions.eq("id", segmentId)));
+                    notLikeKeys.add(segmentId);
                 }
+            }
+            if (!notLikeKeys.isEmpty()) {
+                keys.addAll(segmentService.find(
+                        Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, table.getId()),
+                        Restrictions.in("id", notLikeKeys)));
             }
         }
         if (keys.isEmpty()) {
