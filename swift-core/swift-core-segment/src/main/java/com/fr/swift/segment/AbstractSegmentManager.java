@@ -4,6 +4,8 @@ import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.db.Table;
+import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;
 import com.fr.third.org.hibernate.criterion.MatchMode;
@@ -27,15 +29,16 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
         // 并发地拿，比如多个column indexer同时进行索引， 要同步下
         List<SegmentKey> keys = getSegmentKeys(tableKey);
         Integer currentFolder = getCurrentFolder(tablePathService, tableKey);
-        return keys2Segments(keys, currentFolder);
+        return keys2Segments(tableKey, keys, currentFolder);
     }
 
-    private List<Segment> keys2Segments(List<SegmentKey> keys, Integer currentFolder) {
+    private List<Segment> keys2Segments(SourceKey sourceKey, List<SegmentKey> keys, Integer currentFolder) {
         List<Segment> segments = new ArrayList<Segment>();
+        Table table = SwiftDatabase.getInstance().getTable(sourceKey);
         if (null != keys && !keys.isEmpty()) {
             for (SegmentKey key : keys) {
                 try {
-                    Segment segment = getSegment(key, currentFolder);
+                    Segment segment = getSegment(table, key, currentFolder);
                     if (null != segment) {
                         segments.add(segment);
                     }
@@ -60,7 +63,7 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
     @Override
     public Segment getSegment(SegmentKey key) {
         Integer currentFolder = getCurrentFolder(tablePathService, key.getTable());
-        return getSegment(key, currentFolder);
+        return getSegment(SwiftDatabase.getInstance().getTable(key.getTable()), key, currentFolder);
     }
 
     @Override
@@ -70,7 +73,7 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
 
     protected abstract Integer getCurrentFolder(SwiftTablePathService service, SourceKey sourceKey);
 
-    protected abstract Segment getSegment(SegmentKey segmentKey, Integer currentFolder);
+    protected abstract Segment getSegment(Table table, SegmentKey segmentKey, Integer currentFolder);
 
     @Override
     public synchronized List<Segment> getSegmentsByIds(SourceKey table, Collection<String> segmentIds) {
@@ -81,6 +84,7 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
         } else {
             keys = new ArrayList<SegmentKey>();
             List<String> likeKeys = new ArrayList<String>();
+            List<String> notLikeKeys = new ArrayList<String>();
             for (String segmentId : segmentIds) {
                 if (segmentId.endsWith("-1")) {
                     String likeKey = segmentId.substring(0, segmentId.length() - 2);
@@ -91,16 +95,19 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
                         likeKeys.add(likeKey);
                     }
                 } else {
-                    keys.addAll(segmentService.find(
-                            Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, table.getId()),
-                            Restrictions.eq("id", segmentId)));
+                    notLikeKeys.add(segmentId);
                 }
+            }
+            if (!notLikeKeys.isEmpty()) {
+                keys.addAll(segmentService.find(
+                        Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, table.getId()),
+                        Restrictions.in("id", notLikeKeys)));
             }
         }
         if (keys.isEmpty()) {
             return Collections.emptyList();
         }
         Integer currentFolder = getCurrentFolder(tablePathService, table);
-        return keys2Segments(keys, currentFolder);
+        return keys2Segments(table, keys, currentFolder);
     }
 }
