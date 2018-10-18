@@ -1,6 +1,6 @@
 package com.fr.swift.boot;
 
-import com.fr.swift.boot.upgrade.ModifySwiftSchemaAspect;
+import com.fr.swift.boot.upgrade.SegmentRecoveryAspect;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.generate.ColumnDictMerger;
 import com.fr.swift.generate.ColumnIndexer;
@@ -90,7 +90,7 @@ import java.util.List;
         DefaultSegmentDestSelectRule.class,
         SwiftRepositoryManager.class,
         FileSegmentRecovery.class,
-        ModifySwiftSchemaAspect.class
+        SegmentRecoveryAspect.class
 })
 public class SwiftContextConfiguration {
 
