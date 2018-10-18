@@ -30,6 +30,6 @@ public final class Readers {
                         NioConf.IoType.READ), conf.getDataType());
             default:
         }
-        return Crasher.crash(String.format("illegal cube build config: %s\nlocation: %s", conf, location));
+        return Crasher.crash(String.format("illegal cube build config: %s%nlocation: %s", conf, location));
     }
 }

@@ -20,7 +20,7 @@ import java.util.List;
  * @since Advanced FineBI 5.0
  * todo 使用类型自补充
  */
-@Service
+@Service("redisClient")
 public class RedisClient {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(RedisClient.class);

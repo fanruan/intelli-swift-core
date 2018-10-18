@@ -4,6 +4,7 @@ import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryBeanFactory;
 import com.fr.third.fasterxml.jackson.core.JsonProcessingException;
 import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URL;
@@ -12,6 +13,7 @@ import java.net.URL;
  * @author Lyon
  * @date 2018/6/7
  */
+@Service("queryBeanFactory")
 public class QueryInfoBeanFactory implements QueryBeanFactory {
 
     private static ObjectMapper MAPPER = new ObjectMapper();

@@ -137,7 +137,7 @@ public class SegmentUtils {
         if (columns == null) {
             return;
         }
-        for (Column<?> column : columns) {
+        for (Column<T> column : columns) {
             release(column);
         }
     }

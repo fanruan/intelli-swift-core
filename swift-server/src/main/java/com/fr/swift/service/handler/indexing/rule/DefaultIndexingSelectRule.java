@@ -11,6 +11,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.netty.rpc.url.RPCDestination;
 import com.fr.swift.netty.rpc.url.RPCUrl;
 import com.fr.swift.service.IndexingService;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import java.util.Set;
  * @author yee
  * @date 2018/7/16
  */
+@Service("defaultIndexingSelectRule")
 public class DefaultIndexingSelectRule implements IndexingSelectRule {
     /**
      * 获取所有索引节点当前运行状态
@@ -31,7 +33,7 @@ public class DefaultIndexingSelectRule implements IndexingSelectRule {
      * @return
      */
     @Override
-    public String select(Set<String> indexingServices) throws Exception {
+    public String select(Set<String> indexingServices) {
         if (1 == indexingServices.size()) {
             return indexingServices.iterator().next();
         }

@@ -5,6 +5,7 @@ import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.service.cluster.ClusterHistoryService;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,6 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author yee
  * @date 2018/7/16
  */
+@Service("defaultDataSyncRule")
 public class DefaultDataSyncRule implements DataSyncRule {
     @Override
     public Map<String, Set<SegmentKey>> calculate(Set<String> nodeIds, Map<String, List<SegmentKey>> needLoad,

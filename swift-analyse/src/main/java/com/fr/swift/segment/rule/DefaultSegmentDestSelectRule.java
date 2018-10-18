@@ -3,6 +3,7 @@ package com.fr.swift.segment.rule;
 import com.fr.swift.config.bean.SegmentDestSelectRule;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.impl.RealTimeSegDestImpl;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,6 +15,7 @@ import java.util.Map;
  * @author yee
  * @date 2018/7/16
  */
+@Service("defaultSegmentDestSelectRule")
 public class DefaultSegmentDestSelectRule implements SegmentDestSelectRule {
     @Override
     public List<SegmentDestination> selectDestination(List<SegmentDestination> duplicate) {

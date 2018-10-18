@@ -38,7 +38,7 @@ import java.util.Map;
  * @description
  * @since Advanced FineBI 5.0
  */
-@Service
+@Service("rpcServer")
 public class RpcServer {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(RpcServer.class);
 

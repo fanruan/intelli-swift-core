@@ -7,11 +7,13 @@ import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.config.DefaultRepositoryConfig;
 import com.fr.swift.repository.impl.SwiftRepositoryImpl;
 import com.fr.swift.service.SwiftRepositoryConfService;
+import com.fr.third.springframework.stereotype.Service;
 
 /**
  * @author yee
  * @date 2018/5/28
  */
+@Service("swiftRepositoryManager")
 public class SwiftRepositoryManager implements com.fr.swift.repository.SwiftRepositoryManager {
     private static SwiftRepository currentRepository = null;
     private SwiftRepositoryConfService service;
