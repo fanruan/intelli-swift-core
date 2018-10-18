@@ -4,8 +4,10 @@ import com.fr.swift.bitmap.impl.EmptyBitmap;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.insert.SwiftInserter;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -13,6 +15,7 @@ import java.util.List;
  * @author anchore
  * @date 2018/5/23
  */
+@Service("segmentRecovery")
 public class FileSegmentRecovery extends AbstractSegmentRecovery {
 
     @Override
@@ -32,7 +35,7 @@ public class FileSegmentRecovery extends AbstractSegmentRecovery {
             inserter.insertData(resultSet);
             realtimeSeg.putAllShowIndex(resultSet.getAllShowIndex());
         } catch (Exception e) {
-            SwiftLoggers.getLogger().warn("{} recover failed, caused by {}", segKey, e.getMessage());
+            SwiftLoggers.getLogger().warn("{} recover failed, caused by {}", segKey, e);
             if (realtimeSeg != null) {
                 realtimeSeg.putRowCount(0);
                 realtimeSeg.putAllShowIndex(new EmptyBitmap());
@@ -41,6 +44,7 @@ public class FileSegmentRecovery extends AbstractSegmentRecovery {
             if (resultSet != null) {
                 resultSet.close();
             }
+            SegmentUtils.release(realtimeSeg);
         }
     }
 }

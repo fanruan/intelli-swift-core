@@ -11,6 +11,7 @@ import com.fr.swift.query.query.IndexQuery;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryIndexRunner;
 import com.fr.swift.segment.Segment;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.net.URI;
 import java.util.Map;
@@ -23,6 +24,7 @@ import java.util.UUID;
  * @description
  * @since Advanced FineBI 5.0
  */
+@Service("queryIndexRunner")
 public class QueryIndexService implements QueryIndexRunner {
 
     private static QueryBean createQueryBean(Table table, Where where) {
