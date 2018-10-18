@@ -9,7 +9,6 @@ import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.Table;
-import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.segment.AbstractSegmentManager;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
@@ -17,8 +16,6 @@ import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Util;
-
-import java.net.URI;
 
 /**
  * @author yee
@@ -32,11 +29,9 @@ public class LineSegmentManager extends AbstractSegmentManager {
     }
 
     @Override
-    public Segment getSegment(SegmentKey segmentKey, Integer currentFolder) {
+    public Segment getSegment(Table table, SegmentKey segmentKey, Integer currentFolder) {
         Util.requireNonNull(segmentKey);
-        URI uri = segmentKey.getUri();
         String cubePath;
-        Table table = SwiftDatabase.getInstance().getTable(segmentKey.getTable());
         if (segmentKey.getStoreType() == StoreType.FINE_IO) {
             cubePath = CubeUtil.getHistorySegPath(table, currentFolder, segmentKey.getOrder());
         } else {

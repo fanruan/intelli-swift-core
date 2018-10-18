@@ -281,11 +281,14 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
                     Map<String, List<SegmentKey>> result = new HashMap<String, List<SegmentKey>>();
                     List<SwiftSegmentLocationEntity> list = segmentLocationDao.findByClusterId(session, clusterId);
                     for (SwiftSegmentLocationEntity entity : list) {
-                        SegmentKeyBean bean = swiftSegmentDao.select(session, entity.getSegmentId()).convert();
-                        if (!result.containsKey(bean.getSourceKey())) {
-                            result.put(bean.getSourceKey(), new ArrayList<SegmentKey>());
+                        SwiftSegmentEntity segmentEntity = swiftSegmentDao.select(session, entity.getSegmentId());
+                        if (null != segmentEntity) {
+                            SegmentKeyBean bean = segmentEntity.convert();
+                            if (!result.containsKey(bean.getSourceKey())) {
+                                result.put(bean.getSourceKey(), new ArrayList<SegmentKey>());
+                            }
+                            result.get(bean.getSourceKey()).add(bean);
                         }
-                        result.get(bean.getSourceKey()).add(bean);
                     }
                     return result;
                 }

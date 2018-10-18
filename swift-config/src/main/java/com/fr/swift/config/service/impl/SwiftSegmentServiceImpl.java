@@ -19,6 +19,7 @@ import java.util.Map;
  * @author yee
  * @date 2018/6/6
  */
+@Deprecated
 @Service("swiftSegmentService")
 public class SwiftSegmentServiceImpl extends AbstractSegmentService {
     @Override
