@@ -2,15 +2,11 @@ package com.fr.swift.boot.upgrade;
 
 import com.fr.decision.log.ExecuteMessage;
 import com.fr.decision.log.WriteMessage;
-import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.db.SwiftDatabase;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.util.JpaAdaptor;
 import com.fr.third.aspectj.lang.annotation.Aspect;
 import com.fr.third.aspectj.lang.annotation.Before;
@@ -44,20 +40,10 @@ public class SegmentRecoveryAspect {
     @Before(value = "execution(* com.fr.swift.segment.recover.SegmentRecovery.recover(com.fr.swift.source.SourceKey)) && args(tableKey)")
     public void beforeRecoverTable(SourceKey tableKey) {
         if (tableKeys.contains(tableKey) && metaService.containsMeta(tableKey)) {
-            try {
-                SwiftMetaData meta = metaService.getMetaDataByKey(tableKey.getId());
-                List<SwiftMetaDataColumn> columnMetas = new ArrayList<SwiftMetaDataColumn>(meta.getColumnCount());
-                for (int i = 0; i < meta.getColumnCount(); i++) {
-                    SwiftMetaDataColumn columnMeta = meta.getColumn(i + 1);
-                    columnMetas.add(new MetaDataColumnBean(
-                            columnMeta.getName(), columnMeta.getRemark(),
-                            columnMeta.getType(), columnMeta.getPrecision(),
-                            columnMeta.getScale(), columnMeta.getColumnId()));
-                }
-                SwiftMetaData newMeta = new SwiftMetaDataBean(meta.getId(), SwiftDatabase.DECISION_LOG, meta.getSchemaName(), meta.getTableName(), meta.getRemark(), columnMetas);
-                metaService.updateMetaData(tableKey.getId(), newMeta);
-            } catch (SwiftMetaDataException e) {
-                SwiftLoggers.getLogger().error(e);
+            SwiftMetaData meta = metaService.getMetaDataByKey(tableKey.getId());
+            if (meta.getSwiftDatabase() != SwiftDatabase.DECISION_LOG) {
+                ((SwiftMetaDataBean) meta).setSwiftDatabase(SwiftDatabase.DECISION_LOG);
+                metaService.updateMetaData(tableKey.getId(), meta);
             }
         }
     }

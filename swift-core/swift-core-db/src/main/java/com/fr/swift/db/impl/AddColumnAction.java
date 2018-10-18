@@ -6,7 +6,6 @@ import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +46,7 @@ public class AddColumnAction extends BaseAlterTableAction {
                     oldMeta.getRemark(), columnMetas);
             CONF_SVC.updateMetaData(table.getSourceKey().getId(), newMeta);
         } catch (SwiftMetaDataException e) {
-            SwiftLoggers.getLogger().warn("alter meta failed, {}: {}", Util.getRootCauseMessage(e));
+            SwiftLoggers.getLogger().error("alter meta failed: {}", e);
         }
     }
 }
