@@ -78,7 +78,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
                 return;
             }
 
-            valToId.put(val, nullId.isPresent() ? valToId.size() + 1 : valToId.size());
+            valToId.put(val, idToVal.size());
 
             idToVal.add(val);
 

@@ -6,8 +6,8 @@ import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.AllShowBitMap;
 import com.fr.swift.bitmap.impl.RangeBitmap;
 import com.fr.swift.cube.CubeUtil;
-import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
@@ -31,7 +31,7 @@ public abstract class BaseInserter {
 
     protected Map<Integer, MutableBitMap> nullIndices = new HashMap<Integer, MutableBitMap>();
 
-    protected List<Column> columns = new ArrayList<Column>();
+    protected List<Column<Object>> columns = new ArrayList<Column<Object>>();
 
     BaseInserter(Segment segment) {
         this(segment, segment.getMetaData().getFieldNames());
@@ -88,13 +88,8 @@ public abstract class BaseInserter {
     }
 
     protected void release() {
-        if (segment.getLocation().getStoreType() != StoreType.MEMORY) {
-            for (Column column : columns) {
-                column.getDetailColumn().release();
-                column.getBitmapIndex().release();
-            }
-            segment.release();
-        }
+        SegmentUtils.releaseColumns(columns);
+        SegmentUtils.release(segment);
     }
 
     public List<String> getFields() {
