@@ -77,7 +77,7 @@ public class SwiftSqlVisitor implements StatementVisitor, SqlInvokeGetter {
     @Override
     public void visit(Insert insert) {
         insertBean = new InsertBean();
-        insertBean.setTableName(insert.getTable().getName());
+        insertBean.setTableName(QuoteUtils.trimQuote(insert.getTable().getName()));
         List<Column> columns = insert.getColumns();
         if (null != columns && !columns.isEmpty()) {
             List<String> columnNames = new ArrayList<String>();
