@@ -2,6 +2,7 @@ package com.fr.swift.manager;
 
 import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.config.service.SwiftTablePathService;
+import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.source.SourceKey;
 import com.fr.third.springframework.stereotype.Service;
 
@@ -11,6 +12,10 @@ import com.fr.third.springframework.stereotype.Service;
  */
 @Service("indexingSegmentManager")
 public class IndexingSegmentManager extends LineSegmentManager {
+    public IndexingSegmentManager() {
+        super(SegmentContainer.INDEXING);
+    }
+
     @Override
     protected Integer getCurrentFolder(SwiftTablePathService service, SourceKey sourceKey) {
         SwiftTablePathEntity entity = service.get(sourceKey.getId());

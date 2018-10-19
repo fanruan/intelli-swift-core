@@ -20,6 +20,7 @@ import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationProvider;
+import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.impl.RealTimeSegDestImpl;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
@@ -209,6 +210,7 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
         SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
         clusterSegmentService.setClusterId(getID());
         Map<String, List<SegmentKey>> segments = clusterSegmentService.getOwnSegments();
+        SwiftSegmentManager manager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         if (!segments.isEmpty()) {
             Map<String, List<SegmentDestination>> hist = new HashMap<String, List<SegmentDestination>>();
             Map<String, List<SegmentDestination>> realTime = new HashMap<String, List<SegmentDestination>>();
@@ -216,11 +218,12 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
                 initSegDestinations(hist, entry.getKey());
                 initSegDestinations(realTime, entry.getKey());
                 for (SegmentKey segmentKey : entry.getValue()) {
-                    if (segmentKey.getStoreType() == Types.StoreType.FINE_IO) {
-                        hist.get(entry.getKey()).add(new SegmentDestinationImpl(getID(), segmentKey.toString(), segmentKey.getOrder(), ClusterHistoryService.class, "historyQuery"));
-                    } else {
+                    if (segmentKey.getStoreType() == Types.StoreType.MEMORY) {
                         realTime.get(entry.getKey()).add(new RealTimeSegDestImpl(getID(), segmentKey.toString(), segmentKey.getOrder(), ClusterRealTimeService.class, "realTimeQuery"));
+                    } else {
+                        hist.get(entry.getKey()).add(new SegmentDestinationImpl(getID(), segmentKey.toString(), segmentKey.getOrder(), ClusterHistoryService.class, "historyQuery"));
                     }
+                    manager.getSegment(segmentKey);
                 }
             }
             updateSegmentInfo(new SegmentLocationInfoImpl(ServiceType.HISTORY, hist), SegmentLocationInfo.UpdateType.PART);

@@ -20,6 +20,8 @@ import com.fr.swift.info.ServerCurrentStatus;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.segment.relation.RelationIndexImpl;
 import com.fr.swift.service.AbstractSwiftService;
 import com.fr.swift.service.IndexingService;
@@ -127,10 +129,12 @@ public class ClusterIndexingServiceImpl extends AbstractSwiftService implements 
 
         protected Pair<TaskKey, TaskResult> result;
         private String id;
+        private SwiftSegmentManager manager;
 
         public ClusterUploadRunnable(Pair<TaskKey, TaskResult> result, String id) {
             this.result = result;
             this.id = id;
+            this.manager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         }
 
         public void uploadTable(final DataSource dataSource) throws Exception {
@@ -166,6 +170,9 @@ public class ClusterIndexingServiceImpl extends AbstractSwiftService implements 
                     FileUtil.delete(deletePath);
                     new File(deletePath).getParentFile().delete();
                 }
+                manager.remove(sourceKey);
+                SegmentContainer.INDEXING.remove(sourceKey);
+                manager.getSegment(sourceKey);
                 doAfterUpload(new HistoryLoadSegmentRpcEvent(sourceKey.getId(), getID()));
             }
         }

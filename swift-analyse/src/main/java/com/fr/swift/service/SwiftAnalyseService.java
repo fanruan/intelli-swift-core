@@ -1,6 +1,7 @@
 package com.fr.swift.service;
 
 import com.fr.swift.annotation.SwiftService;
+import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
@@ -8,7 +9,12 @@ import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.query.session.factory.SessionFactory;
+import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.source.SwiftResultSet;
+
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -30,7 +36,22 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
         boolean start = super.start();
         QueryRunnerProvider.getInstance().registerRunner(this);
         this.sessionFactory = SwiftContext.get().getBean("swiftQuerySessionFactory", SessionFactory.class);
+        cacheSegments();
         return start;
+    }
+
+    private void cacheSegments() {
+        SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
+        clusterSegmentService.setClusterId("LOCAL");
+        Map<String, List<SegmentKey>> segments = clusterSegmentService.getOwnSegments();
+        SwiftSegmentManager manager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
+        if (!segments.isEmpty()) {
+            for (Map.Entry<String, List<SegmentKey>> entry : segments.entrySet()) {
+                for (SegmentKey segmentKey : entry.getValue()) {
+                    manager.getSegment(segmentKey);
+                }
+            }
+        }
     }
 
     @Override

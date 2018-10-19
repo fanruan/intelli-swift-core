@@ -7,6 +7,7 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentResultSet;
 import com.fr.swift.segment.SegmentUtils;
+import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.operator.Inserter;
 
 import java.util.Collections;
@@ -57,6 +58,7 @@ public class SegmentTransfer {
 
     protected void onSucceed() {
         remove(oldSegKey);
+        SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegment(newSegKey);
     }
 
     private void indexSegmentIfNeed(Segment newSeg) throws Exception {

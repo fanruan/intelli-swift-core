@@ -9,6 +9,7 @@ import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.segment.operator.column.SwiftColumnDictMerger;
 import com.fr.swift.segment.operator.column.SwiftColumnIndexer;
 import com.fr.swift.source.SwiftMetaData;
@@ -56,6 +57,8 @@ public class SegmentUtils {
         } else {
             clearHistorySegment(segKey);
         }
+        SegmentContainer.NORMAL.remove(segKey);
+
     }
 
     private static void clearRealtimeSegment(SegmentKey segKey) {

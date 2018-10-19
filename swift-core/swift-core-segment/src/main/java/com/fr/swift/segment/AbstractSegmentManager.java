@@ -7,6 +7,7 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.source.SourceKey;
 import com.fr.third.org.hibernate.criterion.MatchMode;
 import com.fr.third.org.hibernate.criterion.Restrictions;
@@ -23,13 +24,22 @@ import java.util.List;
 public abstract class AbstractSegmentManager implements SwiftSegmentManager {
     protected SwiftSegmentService segmentService = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
     protected SwiftTablePathService tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
+    protected SegmentContainer container;
+
+    protected AbstractSegmentManager(SegmentContainer container) {
+        this.container = container;
+    }
 
     @Override
     public synchronized List<Segment> getSegment(SourceKey tableKey) {
         // 并发地拿，比如多个column indexer同时进行索引， 要同步下
-        List<SegmentKey> keys = getSegmentKeys(tableKey);
-        Integer currentFolder = getCurrentFolder(tablePathService, tableKey);
-        return keys2Segments(tableKey, keys, currentFolder);
+        if (container.contains(tableKey)) {
+            return container.getSegments(tableKey);
+        } else {
+            List<SegmentKey> keys = getSegmentKeys(tableKey);
+            Integer currentFolder = getCurrentFolder(tablePathService, tableKey);
+            return keys2Segments(tableKey, keys, currentFolder);
+        }
     }
 
     private List<Segment> keys2Segments(SourceKey sourceKey, List<SegmentKey> keys, Integer currentFolder) {
@@ -40,6 +50,7 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
                 try {
                     Segment segment = getSegment(table, key, currentFolder);
                     if (null != segment) {
+                        container.updateSegment(key, segment);
                         segments.add(segment);
                     }
                 } catch (Exception e) {
@@ -63,7 +74,9 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
     @Override
     public Segment getSegment(SegmentKey key) {
         Integer currentFolder = getCurrentFolder(tablePathService, key.getTable());
-        return getSegment(SwiftDatabase.getInstance().getTable(key.getTable()), key, currentFolder);
+        Segment segment = getSegment(SwiftDatabase.getInstance().getTable(key.getTable()), key, currentFolder);
+        container.updateSegment(key, segment);
+        return segment;
     }
 
     @Override
@@ -78,9 +91,9 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
     @Override
     public synchronized List<Segment> getSegmentsByIds(SourceKey table, Collection<String> segmentIds) {
         List<SegmentKey> keys;
+        List<Segment> segments = new ArrayList<Segment>();
         if (null == segmentIds || segmentIds.isEmpty()) {
-            keys = segmentService.find(
-                    Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, table.getId()));
+            return getSegment(table);
         } else {
             keys = new ArrayList<SegmentKey>();
             List<String> likeKeys = new ArrayList<String>();
@@ -99,15 +112,23 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
                 }
             }
             if (!notLikeKeys.isEmpty()) {
+                List<String> notMatch = new ArrayList<String>();
+                segments.addAll(container.getSegments(notLikeKeys, notMatch));
                 keys.addAll(segmentService.find(
                         Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, table.getId()),
-                        Restrictions.in("id", notLikeKeys)));
+                        Restrictions.in("id", notMatch)));
             }
         }
-        if (keys.isEmpty()) {
-            return Collections.emptyList();
+        if (!keys.isEmpty()) {
+            Integer currentFolder = getCurrentFolder(tablePathService, table);
+            List<Segment> list = keys2Segments(table, keys, currentFolder);
+            segments.addAll(list);
         }
-        Integer currentFolder = getCurrentFolder(tablePathService, table);
-        return keys2Segments(table, keys, currentFolder);
+        return segments;
+    }
+
+    @Override
+    public List<Segment> remove(SourceKey sourceKey) {
+        return container.remove(sourceKey);
     }
 }
