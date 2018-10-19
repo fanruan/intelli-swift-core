@@ -1,5 +1,6 @@
 package com.fr.swift.db.impl;
 
+import com.fineio.FineIO;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLoggers;
@@ -11,6 +12,7 @@ import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.operator.Inserter;
 
 import java.util.Collections;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * @author anchore
@@ -34,7 +36,7 @@ public class SegmentTransfer {
     }
 
     public void transfer() {
-        Segment oldSeg = newSegment(oldSegKey), newSeg = newSegment(newSegKey);
+        final Segment oldSeg = newSegment(oldSegKey), newSeg = newSegment(newSegKey);
         Inserter inserter = (Inserter) SwiftContext.get().getBean("inserter", newSeg);
         SegmentResultSet swiftResultSet = null;
         try {
@@ -42,10 +44,25 @@ public class SegmentTransfer {
 
             swiftResultSet = new SegmentResultSet(oldSeg);
             inserter.insertData(swiftResultSet);
-
-            indexSegmentIfNeed(newSeg);
-
-            onSucceed();
+            final CountDownLatch latch = new CountDownLatch(1);
+            final Exception[] exception = new Exception[1];
+            FineIO.doWhenFinished(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        indexSegmentIfNeed(newSeg);
+                        onSucceed();
+                    } catch (Exception e) {
+                        exception[0] = e;
+                    } finally {
+                        latch.countDown();
+                    }
+                }
+            });
+            latch.await();
+            if (null != exception[0]) {
+                throw exception[0];
+            }
         } catch (Exception e) {
             SwiftLoggers.getLogger().error("segment transfer from {} to {} failed: {}", oldSegKey, newSegKey, e);
             remove(newSegKey);
