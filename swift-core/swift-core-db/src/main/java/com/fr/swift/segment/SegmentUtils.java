@@ -101,8 +101,7 @@ public class SegmentUtils {
                 public void run() {
                     try {
                         ((SwiftColumnDictMerger) SwiftContext.get().getBean("columnDictMerger", metadata, columnKey, hisSegs)).mergeDict();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    } catch (Exception ignore) {
                     }
                 }
             });

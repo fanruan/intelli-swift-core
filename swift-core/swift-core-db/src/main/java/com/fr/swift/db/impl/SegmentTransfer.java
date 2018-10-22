@@ -9,6 +9,7 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentResultSet;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.segment.operator.Inserter;
 
 import java.util.Collections;
@@ -63,6 +64,7 @@ public class SegmentTransfer {
             if (null != exception[0]) {
                 throw exception[0];
             }
+            SegmentContainer.NORMAL.updateSegment(newSegKey, newSeg);
         } catch (Exception e) {
             SwiftLoggers.getLogger().error("segment transfer from {} to {} failed: {}", oldSegKey, newSegKey, e);
             remove(newSegKey);
