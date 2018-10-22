@@ -97,6 +97,7 @@ public enum SegmentContainer {
         List<Segment> result = new ArrayList<Segment>();
         for (SegmentPair pair : list) {
             result.add(pair.getSegment());
+            segmentKeyMapSegment.remove(pair.segmentId);
         }
         return result;
     }
@@ -114,7 +115,7 @@ public enum SegmentContainer {
         }
     }
 
-    public class SegmentPair {
+    public static class SegmentPair {
         private String segmentId;
 
         private Segment segment;
