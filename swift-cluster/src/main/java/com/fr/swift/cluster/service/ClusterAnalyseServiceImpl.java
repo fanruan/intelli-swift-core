@@ -9,7 +9,6 @@ import com.fr.swift.cluster.listener.NodeStartedListener;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.cube.io.Types;
 import com.fr.swift.event.analyse.RequestSegLocationEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
@@ -218,10 +217,10 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
                 initSegDestinations(hist, entry.getKey());
                 initSegDestinations(realTime, entry.getKey());
                 for (SegmentKey segmentKey : entry.getValue()) {
-                    if (segmentKey.getStoreType() == Types.StoreType.MEMORY) {
-                        realTime.get(entry.getKey()).add(new RealTimeSegDestImpl(getID(), segmentKey.toString(), segmentKey.getOrder(), ClusterRealTimeService.class, "realTimeQuery"));
-                    } else {
+                    if (segmentKey.getStoreType().isPersistent()) {
                         hist.get(entry.getKey()).add(new SegmentDestinationImpl(getID(), segmentKey.toString(), segmentKey.getOrder(), ClusterHistoryService.class, "historyQuery"));
+                    } else {
+                        realTime.get(entry.getKey()).add(new RealTimeSegDestImpl(getID(), segmentKey.toString(), segmentKey.getOrder(), ClusterRealTimeService.class, "realTimeQuery"));
                     }
                     manager.getSegment(segmentKey);
                 }
