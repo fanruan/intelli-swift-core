@@ -1,5 +1,6 @@
 package com.fr.swift.segment.container;
 
+import com.fr.general.ComparatorUtils;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
@@ -7,6 +8,7 @@ import com.fr.swift.source.SourceKey;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -88,6 +90,9 @@ public enum SegmentContainer {
 
     public List<Segment> remove(SourceKey sourceKey) {
         List<SegmentPair> list = tableMapSegments.remove(sourceKey);
+        if (null == list) {
+            return Collections.emptyList();
+        }
         List<Segment> result = new ArrayList<Segment>();
         for (SegmentPair pair : list) {
             result.add(pair.getSegment());
@@ -99,26 +104,31 @@ public enum SegmentContainer {
         segmentKeyMapSegment.remove(segmentKey.toString());
         SourceKey table = segmentKey.getTable();
         if (tableMapSegments.containsKey(table)) {
-            tableMapSegments.get(table).remove(segmentKey);
+            Iterator<SegmentPair> iterator = tableMapSegments.get(table).iterator();
+            while (iterator.hasNext()) {
+                if (ComparatorUtils.equals(iterator.next().getSegmentId(), segmentKey.toString())) {
+                    iterator.remove();
+                }
+            }
         }
     }
 
     public class SegmentPair {
-        private String segmengId;
+        private String segmentId;
 
         private Segment segment;
 
-        public SegmentPair(String segmengId, Segment segment) {
-            this.segmengId = segmengId;
+        public SegmentPair(String segmentId, Segment segment) {
+            this.segmentId = segmentId;
             this.segment = segment;
         }
 
-        public String getSegmengId() {
-            return segmengId;
+        public String getSegmentId() {
+            return segmentId;
         }
 
-        public void setSegmengId(String segmengId) {
-            this.segmengId = segmengId;
+        public void setSegmentId(String segmentId) {
+            this.segmentId = segmentId;
         }
 
         public Segment getSegment() {
@@ -136,12 +146,12 @@ public enum SegmentContainer {
 
             SegmentPair that = (SegmentPair) o;
 
-            return segmengId != null ? segmengId.equals(that.segmengId) : that.segmengId == null;
+            return segmentId != null ? segmentId.equals(that.segmentId) : that.segmentId == null;
         }
 
         @Override
         public int hashCode() {
-            return segmengId != null ? segmengId.hashCode() : 0;
+            return segmentId != null ? segmentId.hashCode() : 0;
         }
     }
 }
