@@ -8,6 +8,7 @@ import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.container.SegmentContainer;
@@ -94,9 +95,20 @@ public class SegmentUtils {
         final SwiftMetaData metadata = hisSegs.get(0).getMetaData();
         for (int i = 0; i < metadata.getColumnCount(); i++) {
             final ColumnKey columnKey = new ColumnKey(metadata.getColumnName(i + 1));
-            FineIO.doWhenFinished(new IndexBuilder(((SwiftColumnIndexer) SwiftContext.get().getBean("columnIndexer", metadata, columnKey, hisSegs))));
 
-            FineIO.doWhenFinished(new DictMerger(((SwiftColumnDictMerger) SwiftContext.get().getBean("columnDictMerger", metadata, columnKey, hisSegs))));
+            ((SwiftColumnIndexer) SwiftContext.get().getBean("columnIndexer", metadata, columnKey, hisSegs)).buildIndex();
+
+            FineIO.doWhenFinished(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        ((SwiftColumnDictMerger) SwiftContext.get().getBean("columnDictMerger", metadata, columnKey, hisSegs)).mergeDict();
+                    } catch (Exception e) {
+                        SwiftLoggers.getLogger().error(e);
+                    }
+                }
+            });
+
         }
     }
 
@@ -142,38 +154,6 @@ public class SegmentUtils {
         }
         for (Column<T> column : columns) {
             release(column);
-        }
-    }
-
-    public static class IndexBuilder implements Runnable {
-        private SwiftColumnIndexer indexer;
-
-        public IndexBuilder(SwiftColumnIndexer indexer) {
-            this.indexer = indexer;
-        }
-
-        @Override
-        public void run() {
-            try {
-                indexer.buildIndex();
-            } catch (Exception ignore) {
-            }
-        }
-    }
-
-    public static class DictMerger implements Runnable {
-        private SwiftColumnDictMerger dictMerger;
-
-        public DictMerger(SwiftColumnDictMerger dictMerger) {
-            this.dictMerger = dictMerger;
-        }
-
-        @Override
-        public void run() {
-            try {
-                dictMerger.mergeDict();
-            } catch (Exception ignore) {
-            }
         }
     }
 }
