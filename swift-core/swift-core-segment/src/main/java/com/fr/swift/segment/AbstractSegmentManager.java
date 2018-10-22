@@ -110,15 +110,18 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
                     notLikeKeys.add(segmentId);
                 }
             }
+
             List<SegmentKey> notMatchKeys = new ArrayList<SegmentKey>();
             if (!notLikeKeys.isEmpty()) {
                 List<String> notMatch = new ArrayList<String>();
                 segments.addAll(container.getSegments(notLikeKeys, notMatch));
-                segments.addAll(container.getSegments(keys, notMatchKeys));
-                notMatchKeys.addAll(segmentService.find(
-                        Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, table.getId()),
-                        Restrictions.in("id", notMatch)));
+                if (!notMatch.isEmpty()) {
+                    notMatchKeys.addAll(segmentService.find(
+                            Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, table.getId()),
+                            Restrictions.in("id", notMatch)));
+                }
             }
+            segments.addAll(container.getSegments(keys, notMatchKeys));
             if (!notMatchKeys.isEmpty()) {
                 Integer currentFolder = getCurrentFolder(tablePathService, table);
                 List<Segment> list = keys2Segments(table, notMatchKeys, currentFolder);
