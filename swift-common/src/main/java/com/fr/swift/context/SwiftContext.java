@@ -1,12 +1,13 @@
 package com.fr.swift.context;
 
+import com.fr.swift.util.Crasher;
 import com.fr.third.springframework.beans.factory.support.AbstractBeanDefinition;
 import com.fr.third.springframework.beans.factory.support.BeanDefinitionBuilder;
 import com.fr.third.springframework.beans.factory.support.BeanDefinitionRegistry;
 import com.fr.third.springframework.beans.factory.support.DefaultListableBeanFactory;
 import com.fr.third.springframework.context.ApplicationContext;
 import com.fr.third.springframework.context.ConfigurableApplicationContext;
-import com.fr.third.springframework.context.support.ClassPathXmlApplicationContext;
+import com.fr.third.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
  * This class created on 2018-1-30 16:58:12
@@ -15,7 +16,7 @@ import com.fr.third.springframework.context.support.ClassPathXmlApplicationConte
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public class SwiftContext extends ClassPathXmlApplicationContext {
+public class SwiftContext extends AnnotationConfigApplicationContext {
     private static final SwiftContext INSTANCE = new SwiftContext();
     private static ConfigurableApplicationContext configurableContext;
     private static BeanDefinitionRegistry beanDefinitionRegistry;
@@ -33,8 +34,13 @@ public class SwiftContext extends ClassPathXmlApplicationContext {
                 return;
             }
 
-            INSTANCE.setConfigLocation("swift-context.xml");
-            INSTANCE.refresh();
+            try {
+                INSTANCE.register(Class.forName("com.fr.swift.boot.SwiftContextConfiguration"));
+                INSTANCE.refresh();
+            } catch (ClassNotFoundException e) {
+                Crasher.crash(e);
+                return;
+            }
 
             INSTANCE.refreshed = true;
             configurableContext = INSTANCE;

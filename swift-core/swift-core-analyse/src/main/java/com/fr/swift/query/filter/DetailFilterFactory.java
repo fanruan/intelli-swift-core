@@ -52,12 +52,12 @@ public class DetailFilterFactory {
             case NUMBER_IN_RANGE: {
                 SwiftNumberInRangeFilterValue value = (SwiftNumberInRangeFilterValue) filterInfo.getFilterValue();
                 return new NumberInRangeFilter(value.getMin(), value.getMax(),
-                        value.isMinIncluded(), value.isMaxIncluded(), column);
+                        value.isMinIncluded(), value.isMaxIncluded(), column, segment.getRowCount());
             }
             case NUMBER_AVERAGE: {
                 SwiftNumberInRangeFilterValue value = (SwiftNumberInRangeFilterValue) filterInfo.getFilterValue();
                 return new NumberAverageFilter(new NumberInRangeFilter(value.getMin(), value.getMax(),
-                        value.isMinIncluded(), value.isMaxIncluded(), column));
+                        value.isMinIncluded(), value.isMaxIncluded(), column, segment.getRowCount()));
             }
 
             case DATE_IN_RANGE:
@@ -70,7 +70,7 @@ public class DetailFilterFactory {
             case NULL:
                 return new NullFilter(column);
             case FORMULA:
-                return Reflect.on("com.fr.swift.query.filter.FormulaFilter").create((String) filterInfo.getFilterValue(), segment).get();
+                return Reflect.on("com.fr.swift.query.filter.FormulaFilter").create(filterInfo.getFilterValue(), segment).get();
             case KEY_WORDS:
                 return new StringKeyWordFilter((String) filterInfo.getFilterValue(), column);
             case EMPTY:

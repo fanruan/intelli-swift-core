@@ -15,7 +15,7 @@ import java.util.Set;
  * @description
  * @since Advanced FineBI 5.0
  */
-@Service
+@Service("swiftProperty")
 public class SwiftProperty {
 
     private boolean isCluster;

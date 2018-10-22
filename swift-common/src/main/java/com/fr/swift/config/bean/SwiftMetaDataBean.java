@@ -212,7 +212,7 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable, Convert<S
 
     @Override
     public String toString() {
-        return "{" + tableName + ", " + fields + "}";
+        return String.format("{%s, %s, %s}", swiftDatabase, tableName, fields);
     }
 
     @Override

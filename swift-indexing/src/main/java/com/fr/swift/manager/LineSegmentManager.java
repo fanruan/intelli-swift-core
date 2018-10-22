@@ -9,16 +9,14 @@ import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.Table;
-import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.segment.AbstractSegmentManager;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
+import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Util;
-
-import java.net.URI;
 
 /**
  * @author yee
@@ -26,21 +24,27 @@ import java.net.URI;
  */
 public class LineSegmentManager extends AbstractSegmentManager {
 
+    public LineSegmentManager() {
+        super(SegmentContainer.NORMAL);
+    }
+
+    protected LineSegmentManager(SegmentContainer container) {
+        super(container);
+    }
+
     @Override
     protected Integer getCurrentFolder(SwiftTablePathService service, SourceKey sourceKey) {
         return service.getTablePath(sourceKey.getId());
     }
 
     @Override
-    public Segment getSegment(SegmentKey segmentKey, Integer currentFolder) {
+    protected Segment getSegment(Table table, SegmentKey segmentKey, Integer currentFolder) {
         Util.requireNonNull(segmentKey);
-        URI uri = segmentKey.getUri();
         String cubePath;
-        Table table = SwiftDatabase.getInstance().getTable(segmentKey.getTable());
-        if (segmentKey.getStoreType() == StoreType.FINE_IO) {
-            cubePath = CubeUtil.getHistorySegPath(table, currentFolder, segmentKey.getOrder());
-        } else {
+        if (segmentKey.getStoreType() == StoreType.MEMORY) {
             cubePath = CubeUtil.getRealtimeSegPath(table, segmentKey.getOrder());
+        } else {
+            cubePath = CubeUtil.getHistorySegPath(table, currentFolder, segmentKey.getOrder());
         }
         Types.StoreType storeType = segmentKey.getStoreType();
         ResourceLocation location = new ResourceLocation(cubePath, storeType);
@@ -50,8 +54,6 @@ public class LineSegmentManager extends AbstractSegmentManager {
         switch (storeType) {
             case MEMORY:
                 return SegmentUtils.newRealtimeSegment(location, metaData);
-            case FINE_IO:
-                return SegmentUtils.newHistorySegment(location, metaData);
             default:
                 return SegmentUtils.newHistorySegment(location, metaData);
         }

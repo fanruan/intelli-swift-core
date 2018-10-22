@@ -5,7 +5,8 @@ import com.fr.swift.http.dispatcher.SwiftDispatcher;
 import com.fr.swift.http.servlet.MockServletConfig;
 import com.fr.swift.http.servlet.MockServletContext;
 import com.fr.swift.property.SwiftProperty;
-import com.fr.third.springframework.web.context.support.XmlWebApplicationContext;
+import com.fr.swift.util.Crasher;
+import com.fr.third.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import com.fr.third.springframework.web.servlet.DispatcherServlet;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
@@ -29,15 +30,24 @@ public class ServletChannelInitializer extends ChannelInitializer<SocketChannel>
 
     public ServletChannelInitializer() throws ServletException {
         swiftProperty = SwiftContext.get().getBean("swiftProperty", SwiftProperty.class);
-        MockServletContext servletContext = new MockServletContext();
-        MockServletConfig servletConfig = new MockServletConfig(servletContext);
-        XmlWebApplicationContext wac = new XmlWebApplicationContext();
-        wac.setServletContext(servletContext);
-        wac.setServletConfig(servletConfig);
-        wac.setConfigLocation("classpath:swift-http.xml");
-        wac.refresh();
+        AnnotationConfigWebApplicationContext wac = initWebContext();
         this.dispatcherServlet = new SwiftDispatcher(wac);
         this.dispatcherServlet.init(wac.getServletConfig());
+    }
+
+    private static AnnotationConfigWebApplicationContext initWebContext() {
+        try {
+            MockServletContext servletContext = new MockServletContext();
+            MockServletConfig servletConfig = new MockServletConfig(servletContext);
+            AnnotationConfigWebApplicationContext wac = new AnnotationConfigWebApplicationContext();
+            wac.setServletContext(servletContext);
+            wac.setServletConfig(servletConfig);
+            wac.register(Class.forName("com.fr.swift.boot.SwiftWebContextConfiguration"));
+            wac.refresh();
+            return wac;
+        } catch (ClassNotFoundException e) {
+            return Crasher.crash(e);
+        }
     }
 
     @Override

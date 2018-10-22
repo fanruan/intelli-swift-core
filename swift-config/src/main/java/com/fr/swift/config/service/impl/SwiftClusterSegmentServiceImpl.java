@@ -12,6 +12,7 @@ import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
@@ -132,6 +133,7 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
                     for (String key : sourceKey) {
                         segmentLocationDao.deleteBySourceKey(session, key);
                         swiftSegmentDao.deleteBySourceKey(session, key);
+                        SegmentContainer.NORMAL.remove(new SourceKey(key));
                     }
                     return true;
                 }
@@ -158,6 +160,7 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
                                 segmentLocationDao.deleteById(session, locationEntity.getId());
                             }
                             swiftSegmentDao.deleteById(session, segmentKey.toString());
+                            SegmentContainer.NORMAL.remove(segmentKey);
                         }
                     } catch (Exception e) {
                         throw new SQLException(e);
@@ -281,11 +284,14 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
                     Map<String, List<SegmentKey>> result = new HashMap<String, List<SegmentKey>>();
                     List<SwiftSegmentLocationEntity> list = segmentLocationDao.findByClusterId(session, clusterId);
                     for (SwiftSegmentLocationEntity entity : list) {
-                        SegmentKeyBean bean = swiftSegmentDao.select(session, entity.getSegmentId()).convert();
-                        if (!result.containsKey(bean.getSourceKey())) {
-                            result.put(bean.getSourceKey(), new ArrayList<SegmentKey>());
+                        SwiftSegmentEntity segmentEntity = swiftSegmentDao.select(session, entity.getSegmentId());
+                        if (null != segmentEntity) {
+                            SegmentKeyBean bean = segmentEntity.convert();
+                            if (!result.containsKey(bean.getSourceKey())) {
+                                result.put(bean.getSourceKey(), new ArrayList<SegmentKey>());
+                            }
+                            result.get(bean.getSourceKey()).add(bean);
                         }
-                        result.get(bean.getSourceKey()).add(bean);
                     }
                     return result;
                 }

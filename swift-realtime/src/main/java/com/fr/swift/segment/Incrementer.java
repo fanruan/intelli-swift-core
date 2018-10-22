@@ -7,6 +7,7 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
+import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.insert.BaseBlockInserter;
@@ -57,6 +58,7 @@ public class Incrementer extends BaseBlockInserter implements Inserter {
         if (!maxLocalSegmentKey.isPresent()) {
             currentSegKey = SEG_SVC.tryAppendSegment(dataSource.getSourceKey(), StoreType.MEMORY);
             currentSeg = newRealtimeSegment(currentSegKey);
+            SegmentContainer.NORMAL.updateSegment(currentSegKey, currentSeg);
             return true;
         }
         Segment maxSegment = LOCAL_SEGMENTS.getSegment(maxLocalSegmentKey.get());
@@ -64,6 +66,7 @@ public class Incrementer extends BaseBlockInserter implements Inserter {
         if (alloter.isFull(maxSegment)) {
             currentSegKey = SEG_SVC.tryAppendSegment(dataSource.getSourceKey(), StoreType.MEMORY);
             currentSeg = newRealtimeSegment(currentSegKey);
+            SegmentContainer.NORMAL.updateSegment(currentSegKey, currentSeg);
             EventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, maxLocalSegmentKey.get());
             return true;
         }

@@ -50,4 +50,9 @@ public class LocalSegmentProvider implements SwiftSegmentManager {
     public List<Segment> getSegmentsByIds(SourceKey table, Collection<String> segmentIds) {
         return manager.getSegmentsByIds(table, segmentIds);
     }
+
+    @Override
+    public List<Segment> remove(SourceKey sourceKey) {
+        return manager.remove(sourceKey);
+    }
 }

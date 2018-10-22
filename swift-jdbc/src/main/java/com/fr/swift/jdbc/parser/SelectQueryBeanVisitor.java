@@ -95,7 +95,7 @@ public class SelectQueryBeanVisitor implements SelectVisitor, FromItemVisitor, Q
 
     @Override
     public void visit(Table table) {
-        String tableName = table.getName();
+        String tableName = QuoteUtils.trimQuote(table.getName());
         metaData = new TableMetaDataGetter(schema, tableName, caller).get();
         if (null == metaData) {
             Crasher.crash(new SwiftJDBCTableAbsentException(tableName));
