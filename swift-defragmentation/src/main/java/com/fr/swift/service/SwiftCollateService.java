@@ -226,7 +226,9 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
     }
 
     private static void fireUploadHistory(List<SegmentKey> newKeys) {
+        SwiftSegmentManager manager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         for (SegmentKey newSegKey : newKeys) {
+            manager.getSegment(newSegKey);
             EventDispatcher.fire(SegmentEvent.UPLOAD_HISTORY, newSegKey);
         }
     }

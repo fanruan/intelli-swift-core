@@ -21,6 +21,7 @@ import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.manager.SwiftRepositoryManager;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.operator.delete.WhereDeleter;
 import com.fr.swift.source.SourceKey;
@@ -218,6 +219,10 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
             new File(cubePath).getParentFile().delete();
         }
         if (downloadSuccess) {
+            SourceKey table = new SourceKey(sourceKey);
+            SegmentContainer.NORMAL.remove(table);
+            SegmentContainer.INDEXING.remove(table);
+            SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegment(table);
             SwiftLoggers.getLogger().info("Download {} {}successful", sourceKey, sets);
         }
     }
