@@ -1,6 +1,7 @@
 package com.fr.swift.segment.container;
 
 import com.fr.general.ComparatorUtils;
+import com.fr.stable.AssistUtils;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
@@ -140,18 +141,14 @@ public enum SegmentContainer {
         }
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            SegmentPair that = (SegmentPair) o;
-
-            return segmentId != null ? segmentId.equals(that.segmentId) : that.segmentId == null;
+        public boolean equals(Object obj) {
+            return obj instanceof SegmentPair
+                    && AssistUtils.equals(this.segmentId, ((SegmentPair) obj).segmentId);
         }
 
         @Override
         public int hashCode() {
-            return segmentId != null ? segmentId.hashCode() : 0;
+            return AssistUtils.hashCode(this.segmentId);
         }
     }
 }
