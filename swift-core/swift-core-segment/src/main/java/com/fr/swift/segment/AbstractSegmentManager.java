@@ -90,12 +90,11 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
 
     @Override
     public synchronized List<Segment> getSegmentsByIds(SourceKey table, Collection<String> segmentIds) {
-        List<SegmentKey> keys;
         List<Segment> segments = new ArrayList<Segment>();
         if (null == segmentIds || segmentIds.isEmpty()) {
             return getSegment(table);
         } else {
-            keys = new ArrayList<SegmentKey>();
+            List<SegmentKey> keys = new ArrayList<SegmentKey>();
             List<String> likeKeys = new ArrayList<String>();
             List<String> notLikeKeys = new ArrayList<String>();
             for (String segmentId : segmentIds) {
@@ -111,18 +110,20 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
                     notLikeKeys.add(segmentId);
                 }
             }
+            List<SegmentKey> notMatchKeys = new ArrayList<SegmentKey>();
             if (!notLikeKeys.isEmpty()) {
                 List<String> notMatch = new ArrayList<String>();
                 segments.addAll(container.getSegments(notLikeKeys, notMatch));
-                keys.addAll(segmentService.find(
+                segments.addAll(container.getSegments(keys, notMatchKeys));
+                notMatchKeys.addAll(segmentService.find(
                         Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, table.getId()),
                         Restrictions.in("id", notMatch)));
             }
-        }
-        if (!keys.isEmpty()) {
-            Integer currentFolder = getCurrentFolder(tablePathService, table);
-            List<Segment> list = keys2Segments(table, keys, currentFolder);
-            segments.addAll(list);
+            if (!notMatchKeys.isEmpty()) {
+                Integer currentFolder = getCurrentFolder(tablePathService, table);
+                List<Segment> list = keys2Segments(table, notMatchKeys, currentFolder);
+                segments.addAll(list);
+            }
         }
         return segments;
     }

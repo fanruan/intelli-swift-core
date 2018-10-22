@@ -52,6 +52,19 @@ public enum SegmentContainer {
         return list;
     }
 
+    public List<Segment> getSegments(List<SegmentKey> segmentKeys, List<SegmentKey> notMatch) {
+        List<Segment> list = new ArrayList<Segment>();
+        for (SegmentKey segmentKey : segmentKeys) {
+            Segment segment = segmentKeyMapSegment.get(segmentKey.toString());
+            if (null == segment) {
+                notMatch.add(segmentKey);
+            } else {
+                list.add(segment);
+            }
+        }
+        return list;
+    }
+
     public synchronized void updateSegment(SegmentKey segmentKey, Segment segment) {
         segmentKeyMapSegment.put(segmentKey.toString(), segment);
         SourceKey table = segmentKey.getTable();
