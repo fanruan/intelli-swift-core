@@ -9,6 +9,8 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 /**
  * @author anchore
@@ -54,11 +56,19 @@ public class IoUtil {
         }
     }
 
-    public static void release(ByteBuffer buf) {
+    public static void release(final ByteBuffer buf) {
         if (buf != null && buf.isDirect()) {
-            Cleaner cleaner = ((DirectBuffer) buf).cleaner();
-            cleaner.clean();
-            cleaner.clear();
+            AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                @Override
+                public Void run() {
+                    Cleaner cleaner = ((DirectBuffer) buf).cleaner();
+                    if (cleaner != null) {
+                        cleaner.clean();
+                        cleaner.clear();
+                    }
+                    return null;
+                }
+            });
         }
     }
 }
