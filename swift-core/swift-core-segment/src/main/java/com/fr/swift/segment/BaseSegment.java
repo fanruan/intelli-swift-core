@@ -234,6 +234,6 @@ public class BaseSegment implements Segment {
 
     @Override
     public boolean isHistory() {
-        return location.getStoreType() != StoreType.MEMORY;
+        return location.getStoreType().isPersistent();
     }
 }

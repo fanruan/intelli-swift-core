@@ -53,7 +53,7 @@ public class SegmentUtils {
      * @param segKey seg key
      */
     public static void clearSegment(SegmentKey segKey) {
-        if (segKey.getStoreType() == StoreType.MEMORY) {
+        if (segKey.getStoreType().isTransient()) {
             clearRealtimeSegment(segKey);
         } else {
             clearHistorySegment(segKey);

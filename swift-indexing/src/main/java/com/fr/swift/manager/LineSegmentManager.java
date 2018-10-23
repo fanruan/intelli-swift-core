@@ -6,7 +6,6 @@ import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types;
-import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.Table;
 import com.fr.swift.segment.AbstractSegmentManager;
@@ -41,7 +40,7 @@ public class LineSegmentManager extends AbstractSegmentManager {
     protected Segment getSegment(Table table, SegmentKey segmentKey, Integer currentFolder) {
         Util.requireNonNull(segmentKey);
         String cubePath;
-        if (segmentKey.getStoreType() == StoreType.MEMORY) {
+        if (segmentKey.getStoreType().isTransient()) {
             cubePath = CubeUtil.getRealtimeSegPath(table, segmentKey.getOrder());
         } else {
             cubePath = CubeUtil.getHistorySegPath(table, currentFolder, segmentKey.getOrder());
