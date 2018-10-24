@@ -1,4 +1,4 @@
-package com.fr.swift.task.cube.progress;
+package com.fr.swift.source.resultset.progress;
 
 import com.fr.swift.log.SwiftLoggers;
 

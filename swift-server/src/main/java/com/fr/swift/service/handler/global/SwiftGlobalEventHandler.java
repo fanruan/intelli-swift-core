@@ -136,7 +136,7 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
             List<String> needUploadSegs = new ArrayList<String>();
             if (null != segmentKeys) {
                 for (SegmentKey segmentKey : segmentKeys) {
-                    if (segmentKey.getStoreType() == Types.StoreType.FINE_IO) {
+                    if (segmentKey.getStoreType().isPersistent()) {
                         String segKey = segmentKey.toString();
                         // 如果不包含就放到需要上传的list
                         if (!uploadedSegments.contains(segKey)) {

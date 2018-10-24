@@ -6,6 +6,7 @@ import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.third.guava.base.Optional;
 import com.fr.third.javax.persistence.AttributeConverter;
 import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Convert;
@@ -15,10 +16,14 @@ import com.fr.third.javax.persistence.Table;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author anchore
@@ -33,7 +38,8 @@ public class JpaAdaptor {
         List<String> columnNames = new ArrayList<String>();
         List<SwiftMetaDataColumn> columnMetas = new ArrayList<SwiftMetaDataColumn>();
         for (Field field : getFields(entity)) {
-            String columnName = field.getAnnotation(Column.class).name();
+            Column column = field.getAnnotation(Column.class);
+            String columnName = column.name();
 
             Assert.hasText(columnName);
 
@@ -45,9 +51,14 @@ public class JpaAdaptor {
                 return Crasher.crash(String.format("%s is a key word", columnName));
             }
 
+            Class<?> classType = getClassType(field);
             SwiftMetaDataColumn columnMeta = new MetaDataColumnBean(
                     columnName,
-                    getSqlType(getClassType(field)));
+                    null,
+                    ClassToSql.getSqlType(classType),
+                    ClassToSql.getPrecision(classType, column.precision()),
+                    ClassToSql.getScale(classType, column.scale())
+            );
             columnNames.add(columnName);
             columnMetas.add(columnMeta);
         }
@@ -98,41 +109,12 @@ public class JpaAdaptor {
     }
 
     public static int getSqlType(Class<?> field) {
-        if (boolean.class == field || Boolean.class == field) {
-            return Types.BOOLEAN;
-        }
-        if (byte.class == field || Byte.class == field) {
-            return Types.TINYINT;
-        }
-        if (short.class == field || Short.class == field) {
-            return Types.SMALLINT;
-        }
-        if (int.class == field || Integer.class == field) {
-            return Types.INTEGER;
-        }
-        if (long.class == field || Long.class == field) {
-            return Types.BIGINT;
-        }
-        if (float.class == field || Float.class == field) {
-            return Types.FLOAT;
-        }
-        if (double.class == field || Double.class == field) {
-            return Types.DOUBLE;
-        }
-        if (char.class == field || Character.class == field) {
-            return Types.CHAR;
-        }
-        if (String.class == field) {
-            return Types.VARCHAR;
-        }
-        if (Date.class.isAssignableFrom(field)) {
-            return Types.DATE;
-        }
-        return Crasher.crash(String.format("type unsupported: %s", field));
+        return ClassToSql.getSqlType(field);
     }
 
     public static int getStoreSqlType(Class<?> field) {
-        switch (getSqlType(field)) {
+        switch (ClassToSql.getSqlType(field)) {
+            case Types.BIT:
             case Types.BOOLEAN:
             case Types.TINYINT:
             case Types.SMALLINT:
@@ -149,6 +131,92 @@ public class JpaAdaptor {
                 return Types.DATE;
             default:
                 return Crasher.crash(String.format("type unsupported: %s", field));
+        }
+    }
+}
+
+class ClassToSql {
+
+    private static final Map<Class<?>, SqlMeta> CLASS_TO_SQL = new HashMap<Class<?>, SqlMeta>();
+
+    static {
+        CLASS_TO_SQL.put(Boolean.class, new SqlMeta(Types.BOOLEAN, 1));
+        CLASS_TO_SQL.put(boolean.class, new SqlMeta(Types.BIT, 1));
+        CLASS_TO_SQL.put(byte.class, new SqlMeta(Types.TINYINT, 3));
+        CLASS_TO_SQL.put(Byte.class, new SqlMeta(Types.TINYINT, 3));
+        CLASS_TO_SQL.put(short.class, new SqlMeta(Types.SMALLINT, 5));
+        CLASS_TO_SQL.put(Short.class, new SqlMeta(Types.SMALLINT, 5));
+        CLASS_TO_SQL.put(int.class, new SqlMeta(Types.INTEGER, 10));
+        CLASS_TO_SQL.put(Integer.class, new SqlMeta(Types.INTEGER, 10));
+        CLASS_TO_SQL.put(long.class, new SqlMeta(Types.BIGINT, 19));
+        CLASS_TO_SQL.put(Long.class, new SqlMeta(Types.BIGINT, 19));
+        CLASS_TO_SQL.put(float.class, new SqlMeta(Types.FLOAT, 22, Optional.of(15)));
+        CLASS_TO_SQL.put(Float.class, new SqlMeta(Types.FLOAT, 22, Optional.of(15)));
+        CLASS_TO_SQL.put(double.class, new SqlMeta(Types.DOUBLE, 22, Optional.of(15)));
+        CLASS_TO_SQL.put(Double.class, new SqlMeta(Types.DOUBLE, 22, Optional.of(15)));
+        CLASS_TO_SQL.put(char.class, new SqlMeta(Types.CHAR, 1));
+        CLASS_TO_SQL.put(Character.class, new SqlMeta(Types.CHAR, 1));
+        CLASS_TO_SQL.put(String.class, new SqlMeta(Types.VARCHAR, 255));
+        CLASS_TO_SQL.put(Date.class, new SqlMeta(Types.DATE, 19));
+        CLASS_TO_SQL.put(java.sql.Date.class, new SqlMeta(Types.DATE, 19));
+        CLASS_TO_SQL.put(Time.class, new SqlMeta(Types.TIME, 8));
+        CLASS_TO_SQL.put(Timestamp.class, new SqlMeta(Types.TIMESTAMP, 19));
+    }
+
+    static int getSqlType(Class<?> field) {
+        if (CLASS_TO_SQL.containsKey(field)) {
+            return CLASS_TO_SQL.get(field).getSqlType();
+        }
+        return Crasher.crash(String.format("type unsupported: %s", field));
+    }
+
+    static int getPrecision(Class<?> field, int precision) {
+        if (CLASS_TO_SQL.containsKey(field)) {
+            return precision == 0 ? CLASS_TO_SQL.get(field).getPrecision() : precision;
+        }
+        return Crasher.crash(String.format("type unsupported: %s", field));
+    }
+
+    static int getScale(Class<?> field, int scale) {
+        if (CLASS_TO_SQL.containsKey(field)) {
+            Optional<Integer> dftScale = CLASS_TO_SQL.get(field).getScale();
+            if (dftScale.isPresent() && scale == 0) {
+                return dftScale.get();
+            }
+            return scale;
+        }
+        return Crasher.crash(String.format("type unsupported: %s", field));
+    }
+
+
+    static class SqlMeta {
+
+        int sqlType;
+
+        int precision;
+
+        Optional<Integer> scale;
+
+        SqlMeta(int sqlType, int precision, Optional<Integer> scale) {
+            this.sqlType = sqlType;
+            this.precision = precision;
+            this.scale = scale;
+        }
+
+        SqlMeta(int sqlType, int precision) {
+            this(sqlType, precision, Optional.<Integer>absent());
+        }
+
+        int getSqlType() {
+            return sqlType;
+        }
+
+        int getPrecision() {
+            return precision;
+        }
+
+        Optional<Integer> getScale() {
+            return scale;
         }
     }
 }

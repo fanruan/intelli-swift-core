@@ -49,7 +49,7 @@ public class SwiftFragmentCollectRule implements FragmentCollectRule {
      * @return
      */
     private boolean isNeed2Collect(Segment seg) {
-        if (seg.getLocation().getStoreType() == Types.StoreType.MEMORY) {
+        if (seg.getLocation().getStoreType().isTransient()) {
             return true;
         }
         if (seg.getRowCount() < FRAGMENT_SIZE) {
