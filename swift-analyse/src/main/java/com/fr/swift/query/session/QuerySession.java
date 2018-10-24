@@ -56,7 +56,6 @@ public class QuerySession implements Session {
             return SwiftResultSetUtils.convert2Serializable(jsonString, queryInfo.getQueryType(), resultSetCache.get());
         }
         // 缓存具有本地上下文状态的resultSet
-        // TODO @lyon 这边所有数据都在远程机器的情况要处理
         SwiftResultSet resultSet = query(queryInfo);
         Cache<SwiftResultSet> cacheObj = new Cache<SwiftResultSet>(resultSet);
         cache.put(queryId, cacheObj);

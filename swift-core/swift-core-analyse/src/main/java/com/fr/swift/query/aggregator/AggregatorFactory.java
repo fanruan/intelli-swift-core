@@ -1,5 +1,7 @@
 package com.fr.swift.query.aggregator;
 
+import com.fr.swift.query.aggregator.extension.DistinctDateYMD;
+
 /**
  * Created by pony on 2018/3/26.
  */
@@ -32,6 +34,11 @@ public class AggregatorFactory {
                 return StandarDeviationAggregate.INSTANCE;
             case COUNT:
                 return CountAggregator.INSTANCE;
+
+            // extension
+            case DISTINCT_DATE_YMD:
+                return DistinctDateYMD.INSTANCE;
+
             default:
                 return DummyAggregator.INSTANCE;
         }

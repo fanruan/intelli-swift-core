@@ -55,7 +55,9 @@ public class HLLAggregatorValue implements AggregatorValue {
     @Override
     public Object clone() {
         try {
-            return hyperLogLog.merge(null);
+            AggregatorValue value = new HLLAggregatorValue();
+            ((HLLAggregatorValue) value).hyperLogLog = (HyperLogLog) hyperLogLog.merge(null);
+            return value;
         } catch (CardinalityMergeException e) {
         }
         return null;
