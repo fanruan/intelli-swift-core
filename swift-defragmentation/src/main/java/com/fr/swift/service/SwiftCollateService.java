@@ -240,7 +240,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
                 for (SegmentKey collateSegKey : collateSegKeys) {
                     swiftSegmentService.removeSegments(Collections.singletonList(collateSegKey));
                     SegmentUtils.clearSegment(collateSegKey);
-                    if (collateSegKey.getStoreType() != StoreType.MEMORY) {
+                    if (collateSegKey.getStoreType().isPersistent()) {
                         EventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, collateSegKey);
                     }
                 }
