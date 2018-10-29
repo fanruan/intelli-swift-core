@@ -1,42 +1,30 @@
 package com.fr.swift.cube.io.impl.fineio.connector;
 
 import com.fineio.io.file.FileBlock;
-import com.fineio.storage.AbstractConnector;
 import com.fineio.storage.Connector;
-import com.fr.swift.util.Strings;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 
 /**
  * @author yee
  * 最简单的Connector，直接使用FileInputStream读，使用FileOutputStream写
  */
-public class FileConnector extends AbstractConnector {
-
-    private URI parentURI;
+public class FileConnector extends BaseConnector {
 
     private FileConnector(String path) {
-        initParentPath(path);
+        super(path);
     }
 
     public static Connector newInstance(String path) {
         return new FileConnector(path);
     }
 
-    private void initParentPath(String path) {
-        path = Strings.trimSeparator(path, "\\", "/");
-        path = "/" + path + "/";
-        path = Strings.trimSeparator(path, "/");
-        parentURI = URI.create(path);
-    }
-
     private File toFile(FileBlock block, boolean mkdirs) {
-        File dir = new File(parentURI.resolve(block.getParentUri()).getPath());
+        File dir = new File(parentURI + "/" + block.getParentUri().getPath());
         if (mkdirs) {
             dir.mkdirs();
         }
@@ -72,14 +60,4 @@ public class FileConnector extends AbstractConnector {
         File f = toFile(block, false);
         return f.exists() && f.length() > 0;
     }
-
-    @Override
-    public boolean copy(FileBlock srcBlock, FileBlock destBlock) throws IOException {
-        if (!exists(srcBlock) || exists(destBlock)) {
-            return false;
-        }
-        write(destBlock, read(srcBlock));
-        return true;
-    }
-
 }

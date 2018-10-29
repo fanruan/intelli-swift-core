@@ -47,7 +47,7 @@ public class ScheduledRealtimeTransfer implements Runnable {
                         EventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, segKey);
                     }
                 } catch (Exception e) {
-                    SwiftLoggers.getLogger().error(String.format("Segkey %s persist failed!", segKey.getTable().getId()), e);
+                    SwiftLoggers.getLogger().error("Segkey {} persist failed: {}", segKey.getTable().getId(), e);
                 }
             }
         }
@@ -65,7 +65,6 @@ public class ScheduledRealtimeTransfer implements Runnable {
 
         @Override
         protected void onSucceed() {
-            SwiftLoggers.getLogger().info("{} to {} succeeded", oldSegKey, newSegKey);
             EventDispatcher.fire(SegmentEvent.UPLOAD_HISTORY, newSegKey);
         }
     }
