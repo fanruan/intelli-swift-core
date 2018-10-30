@@ -1,7 +1,7 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.bitmap.impl.EmptyBitmap;
+import com.fr.swift.bitmap.impl.AllShowBitMap;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
@@ -46,7 +46,7 @@ public class SegmentResultSet implements SwiftResultSet {
     private void init() {
         if (!seg.isReadable()) {
             rowCount = 0;
-            allShowIndex = new EmptyBitmap();
+            allShowIndex = AllShowBitMap.of(rowCount);
             return;
         }
 
