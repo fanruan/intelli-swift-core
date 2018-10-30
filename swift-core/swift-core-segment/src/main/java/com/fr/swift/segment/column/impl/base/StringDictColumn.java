@@ -17,11 +17,13 @@ import java.util.Comparator;
  * @date 2017/11/7
  */
 public class StringDictColumn extends BaseDictColumn<String, ObjectReader<String>> {
+
     public StringDictColumn(IResourceLocation parent, Comparator<String> keyComparator) {
         super(parent, keyComparator);
     }
 
-    private void initKeyReader() {
+    @Override
+    void initKeyReader() {
         if (keyReader != null) {
             return;
         }
@@ -57,7 +59,8 @@ public class StringDictColumn extends BaseDictColumn<String, ObjectReader<String
     }
 
     class StringPutter extends BasePutter<ObjectWriter<String>> {
-        private void initKeyWriter() {
+        @Override
+        void initKeyWriter() {
             if (keyWriter != null) {
                 return;
             }
@@ -71,5 +74,4 @@ public class StringDictColumn extends BaseDictColumn<String, ObjectReader<String
             keyWriter.put(index, val == null ? IOConstant.NULL_STRING : val);
         }
     }
-
 }

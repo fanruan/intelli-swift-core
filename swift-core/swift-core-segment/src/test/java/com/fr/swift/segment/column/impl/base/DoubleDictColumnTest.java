@@ -3,19 +3,25 @@ package com.fr.swift.segment.column.impl.base;
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import org.junit.Before;
 
-import java.util.stream.Stream;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * @author anchore
  * @date 2017/11/11
  */
 public class DoubleDictColumnTest extends BaseDictColumnTest<Double> {
-    int size = 100;
 
-    {
+    @Before
+    public void setUp() throws Exception {
         c = Comparators.asc();
-        values = Stream.generate(() -> r.nextDouble()).limit(size).distinct().sorted(c).toArray(Double[]::new);
+        Set<Double> doubles = new TreeSet<Double>(c);
+        while (doubles.size() < size) {
+            doubles.add(r.nextDouble());
+        }
+        values = doubles.toArray(new Double[]{});
     }
 
     @Override

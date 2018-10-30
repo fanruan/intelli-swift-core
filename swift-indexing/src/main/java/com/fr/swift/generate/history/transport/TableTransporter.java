@@ -11,8 +11,8 @@ import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.SwiftSourceTransferFactory;
+import com.fr.swift.source.resultset.progress.ProgressResultSet;
 import com.fr.swift.task.TaskResult.Type;
-import com.fr.swift.task.cube.progress.ProgressResultSet;
 import com.fr.swift.task.impl.BaseWorker;
 import com.fr.swift.task.impl.TaskResultImpl;
 
@@ -51,7 +51,7 @@ public class TableTransporter extends BaseWorker implements Transporter {
     @Override
     public void transport() throws Exception {
         SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
-        SwiftResultSet resultSet = new ProgressResultSet(CubeTasks.newTableName(dataSource), transfer.createResultSet());
+        SwiftResultSet resultSet = new ProgressResultSet(transfer.createResultSet(), CubeTasks.newTableName(dataSource));
         try {
             inserter.insertData(resultSet);
         } finally {

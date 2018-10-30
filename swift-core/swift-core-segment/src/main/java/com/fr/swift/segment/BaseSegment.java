@@ -7,7 +7,6 @@ import com.fr.swift.cube.io.IResourceDiscovery;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types.DataType;
 import com.fr.swift.cube.io.Types.IoType;
-import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.Types.WriteType;
 import com.fr.swift.cube.io.input.BitMapReader;
 import com.fr.swift.cube.io.input.IntReader;
@@ -234,6 +233,6 @@ public class BaseSegment implements Segment {
 
     @Override
     public boolean isHistory() {
-        return location.getStoreType() != StoreType.MEMORY;
+        return location.getStoreType().isPersistent();
     }
 }

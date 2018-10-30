@@ -185,7 +185,7 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
             for (Map.Entry<String, List<SegmentKey>> entry : segments.entrySet()) {
                 initSegDestinations(hist, entry.getKey());
                 for (SegmentKey segmentKey : entry.getValue()) {
-                    if (segmentKey.getStoreType() != Types.StoreType.FINE_IO) {
+                    if (segmentKey.getStoreType().isTransient()) {
                         hist.get(entry.getKey()).add(createSegmentDestination(segmentKey));
                     }
                 }
@@ -229,7 +229,7 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
                     }
                     WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segKey);
                     ImmutableBitMap allShowBitmap = whereDeleter.delete(where);
-                    if (segKey.getStoreType() == StoreType.MEMORY) {
+                    if (segKey.getStoreType().isTransient()) {
                         continue;
                     }
 

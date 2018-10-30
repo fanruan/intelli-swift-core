@@ -115,7 +115,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
             public void doJob() throws Exception {
                 List<SegmentKey> segments = segmentManager.getSegmentKeys(tableKey);
                 for (SegmentKey segment : segments) {
-                    if (segment.getStoreType() == Types.StoreType.MEMORY) {
+                    if (segment.getStoreType().isTransient()) {
                         WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segment);
                         ImmutableBitMap allshow = whereDeleter.delete(where);
                         if (allshow.isEmpty()) {

@@ -1,6 +1,9 @@
 package com.fr.swift.segment.column.impl.base;
 
 import com.fr.swift.cube.io.location.ResourceLocation;
+import org.junit.Test;
+
+import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 
@@ -8,10 +11,15 @@ import static org.junit.Assert.assertEquals;
  * @author anchore
  * @date 2017/11/10
  */
-public class LongDetailColumnTest extends BasePrimitiveDetailColumnTest {
-    @Override
+public class LongDetailColumnTest extends BaseDetailColumnTest {
+
+    @Test
     public void testPutThenGet() {
-        long[] longs = r.longs(size, 0, size << 1).sorted().toArray();
+        long[] longs = new long[size];
+        for (int i = 0; i < longs.length; i++) {
+            longs[i] = r.nextLong();
+        }
+        Arrays.sort(longs);
         LongDetailColumn longDetailColumn = new LongDetailColumn(
                 new ResourceLocation(BASE_PATH + "/detail/child_long"));
         for (int i = 0; i < longs.length; i++) {
@@ -25,5 +33,4 @@ public class LongDetailColumnTest extends BasePrimitiveDetailColumnTest {
             assertEquals(longs[i], longDetailColumn.getLong(i));
         }
     }
-
 }

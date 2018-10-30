@@ -80,7 +80,7 @@ public class Incrementer extends BaseBlockInserter implements Inserter {
         }
         List<SegmentKey> realtimeSegKeys = new ArrayList<SegmentKey>();
         for (SegmentKey segKey : segKeys) {
-            if (segKey.getStoreType() == StoreType.MEMORY) {
+            if (segKey.getStoreType().isTransient()) {
                 realtimeSegKeys.add(segKey);
             }
         }

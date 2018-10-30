@@ -102,7 +102,7 @@ public class AutoCollateTest extends TestCase {
         int hisCount = 0;
         int realCount = 0;
         for (Segment segment : segments) {
-            if (segment.getLocation().getStoreType() == Types.StoreType.FINE_IO) {
+            if (segment.getLocation().getStoreType().isPersistent()) {
                 Column column = segment.getColumn(new ColumnKey("合同类型"));
                 for (int i = 0; i < segment.getRowCount(); i++) {
                     Assert.assertNotEquals(column.getDetailColumn().get(i), "购买合同");

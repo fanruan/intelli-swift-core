@@ -46,15 +46,12 @@
         <swift.version>10.0</swift.version>
         <junit.version>4.12</junit.version>
         <easymock.version>3.4</easymock.version>
-        <datamining.version>1.1.25</datamining.version>
-        <weka.version>3.8.2</weka.version>
         <fineio.version>2.0-RELEASE-SNAPSHOT</fineio.version>
-        <rengine.version>1.8.1</rengine.version>
-        <output>target</output>
     </properties>
 
     <build>
-        <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
+        <outputDirectory>${user.dir}/target/main</outputDirectory>
+        <testOutputDirectory>${user.dir}/target/test</testOutputDirectory>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>

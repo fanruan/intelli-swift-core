@@ -99,7 +99,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
             List<SegmentKey> notExists = new ArrayList<SegmentKey>();
             final Map<String, Set<String>> needDownload = new HashMap<String, Set<String>>();
             for (SegmentKey segmentKey : value) {
-                if (segmentKey.getStoreType() == Types.StoreType.FINE_IO) {
+                if (segmentKey.getStoreType().isPersistent()) {
                     if (!segmentManager.getSegment(segmentKey).isReadable()) {
                         String remotePath = String.format("%s/%s", segmentKey.getSwiftSchema().getDir(), segmentKey.getUri().getPath());
                         if (repository.exists(remotePath)) {
@@ -246,7 +246,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
             public void doJob() throws Exception {
                 List<SegmentKey> segments = segmentManager.getSegmentKeys(tableKey);
                 for (SegmentKey segment : segments) {
-                    if (segment.getStoreType() != Types.StoreType.MEMORY) {
+                    if (segment.getStoreType().isPersistent()) {
                         WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segment);
                         ImmutableBitMap allshow = whereDeleter.delete(where);
                         if (allshow.isEmpty()) {
