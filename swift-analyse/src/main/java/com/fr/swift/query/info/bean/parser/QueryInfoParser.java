@@ -7,6 +7,7 @@ import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
 import com.fr.swift.query.info.bean.query.ResultJoinQueryInfoBean;
+import com.fr.swift.query.info.bean.type.PostQueryType;
 import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.metric.Metric;
@@ -53,9 +54,22 @@ public class QueryInfoParser {
         List<Dimension> dimensions = DimensionParser.parse(table, bean.getDimensionBeans(), bean.getSortBeans());
         List<Metric> metrics = MetricParser.parse(table, bean.getMetricBeans());
         List<PostQueryInfo> postQueryInfoList = PostQueryInfoParser.parse(bean.getPostQueryInfoBeans(), dimensions, bean.getMetricBeans());
+        if (!isPageable(postQueryInfoList)) {
+            // 全部计算
+            bean.setFetchSize(Integer.MAX_VALUE);
+        }
         GroupQueryInfo groupQueryInfo = new GroupQueryInfoImpl(queryId, bean.getFetchSize(), table, filterInfo, dimensions, metrics, postQueryInfoList);
         groupQueryInfo.setQuerySegment(bean.getQuerySegments());
         return groupQueryInfo;
+    }
+
+    private static boolean isPageable(List<PostQueryInfo> infoList) {
+        for (PostQueryInfo info : infoList) {
+            if (info.getType() == PostQueryType.ROW_SORT) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static QueryInfo parseResultJoinQueryInfo(ResultJoinQueryInfoBean bean) {
