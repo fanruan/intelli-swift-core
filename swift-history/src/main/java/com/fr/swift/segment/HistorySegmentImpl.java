@@ -16,7 +16,8 @@ import com.fr.swift.util.IoUtil;
  * @author anchore
  * @date 2017/12/12
  */
-public class HistorySegmentImpl extends BaseSegment implements HistorySegment {
+public class HistorySegmentImpl extends MutableHistorySegment implements HistorySegment {
+
     public HistorySegmentImpl(IResourceLocation parent, SwiftMetaData meta) {
         super(parent, meta);
     }
