@@ -39,7 +39,7 @@ public class ScheduledRealtimeTransfer implements Runnable {
         for (final Table table : SwiftDatabase.getInstance().getAllTables()) {
             for (final SegmentKey segKey : localSegments.getSegmentKeys(table.getSourceKey())) {
                 try {
-                    if (segKey.getStoreType() != StoreType.MEMORY) {
+                    if (segKey.getStoreType().isPersistent()) {
                         continue;
                     }
                     Segment realtimeSeg = localSegments.getSegment(segKey);

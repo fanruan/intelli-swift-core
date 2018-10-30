@@ -166,7 +166,7 @@ public class HistoryDataSyncManager extends AbstractHandler<SegmentLoadRpcEvent>
                 result.put(entry.getKey(), new ArrayList<SegmentKey>());
             }
             for (SegmentKey segmentKey : entry.getValue()) {
-                if (segmentKey.getStoreType() != Types.StoreType.MEMORY) {
+                if (segmentKey.getStoreType().isPersistent()) {
                     result.get(entry.getKey()).add(segmentKey);
                 }
             }

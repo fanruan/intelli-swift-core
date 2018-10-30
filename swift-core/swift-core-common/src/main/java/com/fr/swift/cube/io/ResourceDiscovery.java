@@ -74,7 +74,7 @@ public class ResourceDiscovery implements IResourceDiscovery {
     }
 
     private static boolean isMemory(IResourceLocation location) {
-        return location.getStoreType() == StoreType.MEMORY;
+        return location.getStoreType().isTransient();
     }
 
     private static boolean isMinor(String path) {
