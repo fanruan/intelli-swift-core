@@ -20,7 +20,8 @@ public class DoubleDictColumn extends BaseDictColumn<Double, DoubleReader> {
         super(parent, keyComparator);
     }
 
-    private void initKeyReader() {
+    @Override
+    void initKeyReader() {
         if (keyReader != null) {
             return;
         }
@@ -49,7 +50,8 @@ public class DoubleDictColumn extends BaseDictColumn<Double, DoubleReader> {
     }
 
     class DoublePutter extends BasePutter<DoubleWriter> {
-        private void initKeyWriter() {
+        @Override
+        void initKeyWriter() {
             if (keyWriter != null) {
                 return;
             }

@@ -1,5 +1,6 @@
 package com.fr.swift.adaptor.log;
 
+import com.fr.swift.util.Crasher;
 import com.fr.swift.util.JpaAdaptor;
 import com.fr.swift.util.function.UnaryOperator;
 import com.fr.third.javax.persistence.AttributeConverter;
@@ -53,7 +54,7 @@ class DatumConverters {
                     }
                 };
             default:
-                return null;
+                return Crasher.crash(String.format("no compatible converter for sql type: %d", sqlType));
         }
     }
 
@@ -148,7 +149,7 @@ class DatumConverters {
                             return null;
                         }
                         try {
-                            return field.getConstructor(long.class).newInstance(((Long) p));
+                            return field.getConstructor(long.class).newInstance(((Date) p).getTime());
                         } catch (Exception e) {
                             return null;
                         }

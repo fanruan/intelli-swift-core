@@ -1,9 +1,10 @@
 package com.fr.swift.segment.column.impl.base;
 
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.swift.test.TestIo;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 
 import java.util.Comparator;
 import java.util.Random;
@@ -12,12 +13,18 @@ import java.util.Random;
  * @author anchore
  * @date 2017/11/10
  */
-public abstract class BaseDictColumnTest<T> extends TestIo {
+public abstract class BaseDictColumnTest<T> {
 
     static final String BASE_PATH = "cubes/table/seg0/column";
     Random r = new Random();
     T[] values;
     Comparator<T> c;
+    int size = 100;
+
+    @Rule
+    public TestRule getExternalResource() throws Exception {
+        return (TestRule) Class.forName("com.fr.swift.test.external.BuildCubeResource").newInstance();
+    }
 
     abstract DictionaryEncodedColumn<T> getDictColumn();
 
@@ -55,7 +62,11 @@ public abstract class BaseDictColumnTest<T> extends TestIo {
     public void testPutIndexThenGet() {
         int size = 100000;
         DictionaryEncodedColumn<T> dictColumn = getDictColumn();
-        int[] indices = r.ints(size, 0, size << 1).toArray();
+
+        int[] indices = new int[size];
+        for (int i = 0; i < indices.length; i++) {
+            indices[i] = r.nextInt(indices.length << 1);
+        }
         for (int i = 0; i < indices.length; i++) {
             dictColumn.putter().putIndex(i, indices[i]);
         }
