@@ -1,0 +1,102 @@
+package com.fr.swift.boot.controller.test;
+
+import com.fr.swift.api.rpc.SimpleDetailQueryBean;
+import com.fr.swift.boot.controller.SwiftApiConstants;
+import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.builder.QueryBuilder;
+import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
+import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
+import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
+import com.fr.swift.query.query.Query;
+import com.fr.swift.query.query.QueryBean;
+import com.fr.swift.source.Row;
+import com.fr.swift.source.SwiftResultSet;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * @author yee
+ * @date 2018/6/21
+ */
+@RestController
+@RequestMapping(SwiftApiConstants.TEST_ROOT_URL)
+public class TestQueryController {
+
+    @ResponseBody
+    @RequestMapping(value = "/query/{sourceKey}", method = RequestMethod.GET)
+    public List<Row> query(@PathVariable("sourceKey") String jsonString) throws Exception {
+        List<Row> rows = new ArrayList<Row>();
+        int count = 200;
+        long start = System.currentTimeMillis();
+        QueryBean queryBean = new QueryInfoBeanFactory().create(jsonString);
+        ((DetailQueryInfoBean) queryBean).setQueryId(UUID.randomUUID().toString());
+        Query query = QueryBuilder.buildQuery(queryBean);
+        SwiftResultSet resultSet = query.getQueryResult();
+        if (resultSet != null) {
+            while (resultSet.hasNext() && count-- > 0) {
+                rows.add(resultSet.getNextRow());
+            }
+            resultSet.close();
+        }
+        SwiftLoggers.getLogger().info("group query cost: " + TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start) + " seconds!");
+        return rows;
+    }
+
+    /**
+     * postman测试 post请求，requestBody填：
+     * {
+     * "table": "sourceKey",
+     * "columns": ["字段1", "字段2"]
+     * }
+     *
+     * @param bean
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/simpleQuery", method = RequestMethod.POST)
+    @ResponseBody
+    public List<Row> query(@RequestBody SimpleDetailQueryBean bean) throws Exception {
+        List<Row> rows = new ArrayList<Row>();
+        long start = System.currentTimeMillis();
+        QueryBean queryBean = bean.toQueryBean();
+        Query query = QueryBuilder.buildQuery(queryBean);
+        SwiftResultSet resultSet = query.getQueryResult();
+        if (resultSet != null) {
+            while (resultSet.hasNext()) {
+                rows.add(resultSet.getNextRow());
+            }
+            resultSet.close();
+        }
+        SwiftLoggers.getLogger().info("group query cost: " + TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start) + " seconds!");
+        return rows;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/group/{sourceKey}", method = RequestMethod.GET)
+    public List<Row> groupQuery(@PathVariable("sourceKey") String jsonString) throws Exception {
+        List<Row> rows = new ArrayList<Row>();
+        // swift-test模块的resources目录下有json示例
+        QueryBean queryBean = new QueryInfoBeanFactory().create(jsonString);
+        ((GroupQueryInfoBean) queryBean).setQueryId(UUID.randomUUID().toString());
+        long start = System.currentTimeMillis();
+        Query query = QueryBuilder.buildQuery(queryBean);
+        SwiftResultSet resultSet = query.getQueryResult();
+        if (resultSet != null) {
+            while (resultSet.hasNext()) {
+                rows.add(resultSet.getNextRow());
+            }
+            resultSet.close();
+        }
+        SwiftLoggers.getLogger().info("group query cost: " + TimeUnit.MILLISECONDS.toMillis(System.currentTimeMillis() - start) + " ms!");
+        return rows;
+    }
+}
