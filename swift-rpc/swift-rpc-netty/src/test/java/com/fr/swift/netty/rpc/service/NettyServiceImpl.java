@@ -1,6 +1,6 @@
 package com.fr.swift.netty.rpc.service;
 
-import com.fr.swift.annotation.RpcService;
+import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.netty.rpc.NettyService;
 
 /**
@@ -10,7 +10,7 @@ import com.fr.swift.netty.rpc.NettyService;
  * @description
  * @since Advanced FineBI 5.0
  */
-@RpcService(value = NettyService.class, type = RpcService.RpcServiceType.INTERNAL)
+@ProxyService(value = NettyService.class, type = ProxyService.ServiceType.INTERNAL)
 public class NettyServiceImpl implements NettyService {
     @Override
     public String print(String name) {

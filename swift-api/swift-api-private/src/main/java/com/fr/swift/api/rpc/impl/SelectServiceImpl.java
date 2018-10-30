@@ -1,9 +1,9 @@
 package com.fr.swift.api.rpc.impl;
 
-import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.SwiftApi;
 import com.fr.swift.api.rpc.SelectService;
 import com.fr.swift.api.rpc.TableService;
+import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.SwiftDatabase;
@@ -28,7 +28,7 @@ import java.util.List;
  * @author yee
  * @date 2018/8/23
  */
-@RpcService(value = SelectService.class, type = RpcService.RpcServiceType.EXTERNAL)
+@ProxyService(value = SelectService.class, type = ProxyService.ServiceType.EXTERNAL)
 @SwiftApi
 class SelectServiceImpl implements SelectService {
     @Autowired(required = false)

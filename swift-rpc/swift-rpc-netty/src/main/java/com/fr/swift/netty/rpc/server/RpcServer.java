@@ -1,15 +1,11 @@
 package com.fr.swift.netty.rpc.server;
 
-import com.fr.swift.annotation.RpcMethod;
-import com.fr.swift.annotation.RpcService;
-import com.fr.swift.annotation.SwiftApi;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.netty.rpc.registry.ServiceRegistry;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.third.jodd.util.StringUtil;
-import com.fr.third.org.apache.commons.collections4.MapUtils;
 import com.fr.third.springframework.beans.BeansException;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
@@ -27,7 +23,6 @@ import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 
 import javax.annotation.PostConstruct;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,31 +60,31 @@ public class RpcServer {
     @PostConstruct
     public void initService() throws BeansException {
         // 扫描service和method
-        Map<String, Object> serviceBeanMap = SwiftContext.get().getBeansWithAnnotation(RpcService.class);
-        if (MapUtils.isNotEmpty(serviceBeanMap)) {
-            for (Object serviceBean : serviceBeanMap.values()) {
-                RpcService rpcService = serviceBean.getClass().getAnnotation(RpcService.class);
-                String serviceName = rpcService.value().getName();
-                RpcService.RpcServiceType rpcServiceType = rpcService.type();
-                LOGGER.debug("Load service:" + serviceName);
-                if (rpcServiceType == RpcService.RpcServiceType.EXTERNAL) {
-                    SwiftApi swiftApi = serviceBean.getClass().getAnnotation(SwiftApi.class);
-                    if (null != swiftApi && !swiftApi.enable()) {
-                        continue;
-                    }
-                    externalMap.put(serviceName, serviceBean);
-                } else {
-                    handlerMap.put(serviceName, serviceBean);
-                }
-                for (Method method : serviceBean.getClass().getMethods()) {
-                    RpcMethod rpcMethod = method.getAnnotation(RpcMethod.class);
-                    if (rpcMethod != null) {
-                        LOGGER.debug("Load method:" + method.getName());
-                        ServiceMethodRegistry.INSTANCE.registerMethod(rpcMethod.methodName(), method);
-                    }
-                }
-            }
-        }
+//        Map<String, Object> serviceBeanMap = SwiftContext.get().getBeansWithAnnotation(ProxyService.class);
+//        if (MapUtils.isNotEmpty(serviceBeanMap)) {
+//            for (Object serviceBean : serviceBeanMap.values()) {
+//                RpcService rpcService = serviceBean.getClass().getAnnotation(RpcService.class);
+//                String serviceName = rpcService.value().getName();
+//                RpcService.RpcServiceType rpcServiceType = rpcService.type();
+//                LOGGER.debug("Load service:" + serviceName);
+//                if (rpcServiceType == RpcService.RpcServiceType.EXTERNAL) {
+//                    SwiftApi swiftApi = serviceBean.getClass().getAnnotation(SwiftApi.class);
+//                    if (null != swiftApi && !swiftApi.enable()) {
+//                        continue;
+//                    }
+//                    externalMap.put(serviceName, serviceBean);
+//                } else {
+//                    handlerMap.put(serviceName, serviceBean);
+//                }
+//                for (Method method : serviceBean.getClass().getMethods()) {
+//                    RpcMethod rpcMethod = method.getAnnotation(RpcMethod.class);
+//                    if (rpcMethod != null) {
+//                        LOGGER.debug("Load method:" + method.getName());
+//                        ServiceMethodRegistry.INSTANCE.registerMethod(rpcMethod.methodName(), method);
+//                    }
+//                }
+//            }
+//        }
     }
 
     public void start() throws Exception {

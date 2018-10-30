@@ -1,9 +1,9 @@
 package com.fr.swift.api.rpc.impl;
 
-import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.SwiftApi;
 import com.fr.swift.api.rpc.TableService;
 import com.fr.swift.api.rpc.bean.Column;
+import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.MetaDataColumnBean;
@@ -42,7 +42,7 @@ import java.util.UUID;
  * @author yee
  * @date 2018/8/27
  */
-@RpcService(value = TableService.class, type = RpcService.RpcServiceType.EXTERNAL)
+@ProxyService(value = TableService.class, type = ProxyService.ServiceType.EXTERNAL)
 @SwiftApi
 class TableServiceImpl implements TableService {
     @Autowired(required = false)

@@ -1,8 +1,8 @@
 package com.fr.swift.api.rpc.impl;
 
-import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.SwiftApi;
 import com.fr.swift.api.rpc.DetectService;
+import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.event.global.GetAnalyseAndRealTimeAddrEvent;
 import com.fr.swift.selector.ClusterSelector;
@@ -18,7 +18,7 @@ import java.util.Map;
  * @author yee
  * @date 2018/8/23
  */
-@RpcService(value = DetectService.class, type = RpcService.RpcServiceType.EXTERNAL)
+@ProxyService(value = DetectService.class, type = ProxyService.ServiceType.EXTERNAL)
 @SwiftApi
 class DetectServiceImpl implements DetectService {
     @Override
