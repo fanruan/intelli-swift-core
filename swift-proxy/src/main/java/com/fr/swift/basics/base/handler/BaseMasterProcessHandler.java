@@ -3,6 +3,7 @@ package com.fr.swift.basics.base.handler;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.URL;
 import com.fr.swift.basics.annotation.Target;
+import com.fr.swift.basics.base.ProxyServiceRegistry;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.MasterProcessHandler;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
@@ -33,7 +34,7 @@ public abstract class BaseMasterProcessHandler extends AbstractProcessHandler im
         URL masterUrl = processMasterURL();
         String methodName = method.getName();
         if (null == masterUrl) {
-            Invoker invoker = new LocalInvoker(SwiftContext.get().getBean(proxyClass), proxyClass, null);
+            Invoker invoker = new LocalInvoker(ProxyServiceRegistry.INSTANCE.getService(proxyClass), proxyClass, null);
             return invoke(invoker, proxyClass, method, methodName, parameterTypes, args);
         }
         Invoker invoker = createInvoker(proxyClass, masterUrl);

@@ -10,4 +10,8 @@ public interface ServiceRegistry {
     <Service> Service getInternalService(Class<Service> serviceClass);
 
     <Service> Service getExternalService(Class<Service> serviceClass);
+
+    <Service> Service getService(Class<Service> proxyClass);
+
+    Object getService(String proxyClass);
 }

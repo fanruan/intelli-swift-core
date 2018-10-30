@@ -5,6 +5,7 @@ import com.fr.event.Event;
 import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
 import com.fr.swift.annotation.SwiftService;
+import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.config.bean.ServerCurrentStatus;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
@@ -59,6 +60,7 @@ import static com.fr.swift.task.TaskResult.Type.SUCCEEDED;
  * @date 2017/10/10
  */
 @SwiftService(name = "indexing")
+@ProxyService(IndexingService.class)
 public class SwiftIndexingService extends AbstractSwiftService implements IndexingService {
     private static final long serialVersionUID = -7430843337225891194L;
 
@@ -78,7 +80,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     @Autowired(required = false)
     private transient SwiftRepositoryManager repositoryManager;
 
-    private SwiftIndexingService() {
+    public SwiftIndexingService() {
     }
 
     @Override
@@ -232,7 +234,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
             }
         }
 
-        public void uploadRelation(RelationSource relation) throws Exception {
+        public void uploadRelation(RelationSource relation) {
             SourceKey sourceKey = relation.getForeignSource();
             SourceKey primary = relation.getPrimarySource();
             Map<String, List<String>> segNeedUpload = new HashMap<String, List<String>>();

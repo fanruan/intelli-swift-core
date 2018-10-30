@@ -1,6 +1,7 @@
 package com.fr.swift.netty.rpc.server;
 
 import com.fr.swift.annotation.SwiftApi;
+import com.fr.swift.basics.base.ProxyServiceRegistry;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.netty.bean.InternalRpcRequest;
@@ -26,12 +27,7 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(RpcServerHandler.class);
 
-    private final Map<String, Object> handlerMap;
-    private final Map<String, Object> externalMap;
-
     public RpcServerHandler(Map<String, Object> handlerMap, Map<String, Object> externalMap) {
-        this.handlerMap = handlerMap;
-        this.externalMap = externalMap;
     }
 
     @Override
@@ -59,12 +55,12 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
         switch (request.requestType()) {
             case INTERNAL:
                 if (request instanceof InternalRpcRequest) {
-                    return handle(request, handlerMap.get(serviceName), false);
+                    return handle(request, ProxyServiceRegistry.INSTANCE.getService(serviceName), false);
                 } else {
                     throw new ServiceInvalidException(serviceName + " is invalid on remote machine!");
                 }
             default:
-                return handle(request, externalMap.get(serviceName), true);
+                return handle(request, ProxyServiceRegistry.INSTANCE.getService(serviceName), true);
 
         }
     }

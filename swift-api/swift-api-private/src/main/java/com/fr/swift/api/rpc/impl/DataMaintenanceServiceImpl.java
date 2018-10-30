@@ -5,9 +5,9 @@ import com.fr.swift.api.rpc.DataMaintenanceService;
 import com.fr.swift.api.rpc.SelectService;
 import com.fr.swift.api.rpc.TableService;
 import com.fr.swift.basics.annotation.ProxyService;
+import com.fr.swift.basics.base.ProxyServiceRegistry;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
-import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Table;
@@ -25,7 +25,6 @@ import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.ServiceBeanFactory;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -38,11 +37,8 @@ import java.util.List;
  */
 @ProxyService(value = DataMaintenanceService.class, type = ProxyService.ServiceType.EXTERNAL)
 @SwiftApi
-class DataMaintenanceServiceImpl implements DataMaintenanceService {
-    @Autowired(required = false)
-    private TableService tableService;
-    @Autowired(required = false)
-    private SwiftMetaDataService metaDataService;
+public class DataMaintenanceServiceImpl implements DataMaintenanceService {
+    private TableService tableService = ProxyServiceRegistry.INSTANCE.getExternalService(TableService.class);
 
     @Override
     @SwiftApi

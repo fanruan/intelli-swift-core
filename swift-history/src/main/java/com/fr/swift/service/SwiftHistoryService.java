@@ -2,6 +2,7 @@ package com.fr.swift.service;
 
 import com.fr.event.EventDispatcher;
 import com.fr.swift.annotation.SwiftService;
+import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
@@ -53,6 +54,7 @@ import java.util.concurrent.ExecutorService;
  * @date 2017/10/10
  */
 @SwiftService(name = "history")
+@ProxyService(HistoryService.class)
 public class SwiftHistoryService extends AbstractSwiftService implements HistoryService, Serializable {
     private static final long serialVersionUID = -6013675740141588108L;
 
@@ -75,7 +77,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     private transient SwiftCubePathService cubePathService;
 
 
-    private SwiftHistoryService() {
+    public SwiftHistoryService() {
     }
 
     @Override

@@ -20,7 +20,7 @@ import java.util.Map;
  */
 @ProxyService(value = DetectService.class, type = ProxyService.ServiceType.EXTERNAL)
 @SwiftApi
-class DetectServiceImpl implements DetectService {
+public class DetectServiceImpl implements DetectService {
     @Override
     @SwiftApi
     public Map<ServiceType, List<String>> detectiveAnalyseAndRealTime(String defaultAddress) {

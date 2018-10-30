@@ -13,6 +13,7 @@ import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.AlterTableAction;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Table;
@@ -29,8 +30,6 @@ import com.fr.swift.source.core.MD5Utils;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.FileUtil;
 import com.fr.third.org.hibernate.criterion.Restrictions;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.beans.factory.annotation.Qualifier;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -44,16 +43,11 @@ import java.util.UUID;
  */
 @ProxyService(value = TableService.class, type = ProxyService.ServiceType.EXTERNAL)
 @SwiftApi
-class TableServiceImpl implements TableService {
-    @Autowired(required = false)
-    private SwiftMetaDataService swiftMetaDataService;
-    @Autowired(required = false)
-    private SwiftCubePathService cubePathService;
-    @Autowired(required = false)
-    private SwiftTablePathService tablePathService;
-    @Autowired(required = false)
-    @Qualifier("segmentServiceProvider")
-    private SwiftSegmentService segmentService;
+public class TableServiceImpl implements TableService {
+    private SwiftMetaDataService swiftMetaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
+    private SwiftCubePathService cubePathService = SwiftContext.get().getBean(SwiftCubePathService.class);
+    private SwiftTablePathService tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
+    private SwiftSegmentService segmentService = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
 
     @Override
     @SwiftApi

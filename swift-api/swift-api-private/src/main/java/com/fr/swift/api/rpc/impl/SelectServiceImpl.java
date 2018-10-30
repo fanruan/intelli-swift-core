@@ -4,6 +4,7 @@ import com.fr.swift.annotation.SwiftApi;
 import com.fr.swift.api.rpc.SelectService;
 import com.fr.swift.api.rpc.TableService;
 import com.fr.swift.basics.annotation.ProxyService;
+import com.fr.swift.basics.base.ProxyServiceRegistry;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.SwiftDatabase;
@@ -17,7 +18,6 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.util.ServiceBeanFactory;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -30,11 +30,9 @@ import java.util.List;
  */
 @ProxyService(value = SelectService.class, type = ProxyService.ServiceType.EXTERNAL)
 @SwiftApi
-class SelectServiceImpl implements SelectService {
-    @Autowired(required = false)
-    private SwiftMetaDataService metaDataService;
-    @Autowired(required = false)
-    private TableService tableService;
+public class SelectServiceImpl implements SelectService {
+    private SwiftMetaDataService metaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
+    private TableService tableService = ProxyServiceRegistry.INSTANCE.getExternalService(TableService.class);
 
     @Override
     @SwiftApi

@@ -4,12 +4,12 @@ import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.RpcFuture;
 import com.fr.swift.basics.URL;
 import com.fr.swift.basics.annotation.Target;
+import com.fr.swift.basics.base.ProxyServiceRegistry;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.IndexPHDefiner;
 import com.fr.swift.config.bean.IndexingSelectRule;
 import com.fr.swift.config.bean.ServerCurrentStatus;
 import com.fr.swift.config.service.IndexingSelectRuleService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLoggers;
 
 import java.util.ArrayList;
@@ -51,7 +51,7 @@ public abstract class BaseIndexStatusProcessHandler extends BaseProcessHandler i
                 statusList.add((ServerCurrentStatus) obj);
             }
         }
-        IndexingSelectRule rule = SwiftContext.get().getBean(IndexingSelectRuleService.class).getCurrentRule();
+        IndexingSelectRule rule = ProxyServiceRegistry.INSTANCE.getInternalService(IndexingSelectRuleService.class).getCurrentRule();
         return rule.select(statusList);
     }
 

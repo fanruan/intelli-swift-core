@@ -2,6 +2,7 @@ package com.fr.swift.service;
 
 import com.fr.event.EventDispatcher;
 import com.fr.swift.annotation.SwiftService;
+import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
@@ -34,6 +35,7 @@ import java.util.List;
  * @date 2017/10/10
  */
 @SwiftService(name = "realtime")
+@ProxyService(RealtimeService.class)
 public class SwiftRealtimeService extends AbstractSwiftService implements RealtimeService, Serializable {
 
     private static final long serialVersionUID = 4719723736240190155L;
@@ -48,7 +50,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
     private transient boolean recoverable = true;
 
-    private SwiftRealtimeService() {
+    public SwiftRealtimeService() {
     }
 
     @Override

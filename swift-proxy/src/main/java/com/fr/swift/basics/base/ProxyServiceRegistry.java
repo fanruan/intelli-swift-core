@@ -12,6 +12,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ProxyServiceRegistry implements ServiceRegistry {
 
+    public static final ServiceRegistry INSTANCE = new ProxyServiceRegistry();
+
     private Map<String, Object> handlerMap = new ConcurrentHashMap<String, Object>();
     private Map<String, Object> externalMap = new ConcurrentHashMap<String, Object>();
 
@@ -35,5 +37,31 @@ public class ProxyServiceRegistry implements ServiceRegistry {
     @Override
     public <Service> Service getExternalService(Class<Service> serviceClass) {
         return (Service) externalMap.get(serviceClass.getName());
+    }
+
+    @Override
+    public <Service> Service getService(Class<Service> proxyClass) {
+        Service service = getExternalService(proxyClass);
+        if (null == service) {
+            return getInternalService(proxyClass);
+        }
+        return service;
+    }
+
+    @Override
+    public Object getService(String proxyClass) {
+        Object service = getExternalService(proxyClass);
+        if (null == service) {
+            return getInternalService(proxyClass);
+        }
+        return service;
+    }
+
+    public Object getInternalService(String serviceClass) {
+        return handlerMap.get(serviceClass);
+    }
+
+    public Object getExternalService(String serviceClass) {
+        return externalMap.get(serviceClass);
     }
 }
