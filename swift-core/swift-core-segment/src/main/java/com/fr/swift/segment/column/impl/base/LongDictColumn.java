@@ -16,11 +16,13 @@ import java.util.Comparator;
  * @date 2017/11/11
  */
 public class LongDictColumn extends BaseDictColumn<Long, LongReader> {
+
     public LongDictColumn(IResourceLocation parent, Comparator<Long> keyComparator) {
         super(parent, keyComparator);
     }
 
-    private void initKeyReader() {
+    @Override
+    void initKeyReader() {
         if (keyReader != null) {
             return;
         }
@@ -48,7 +50,8 @@ public class LongDictColumn extends BaseDictColumn<Long, LongReader> {
     }
 
     class LongPutter extends BasePutter<LongWriter> {
-        private void initKeyWriter() {
+        @Override
+        void initKeyWriter() {
             if (keyWriter != null) {
                 return;
             }

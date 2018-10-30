@@ -3,23 +3,28 @@ package com.fr.swift.segment.column.impl.base;
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import org.junit.Before;
 
-import java.util.stream.Stream;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * @author anchore
  * @date 2017/11/10
  */
 public class StringDictColumnTest extends BaseDictColumnTest<String> {
-    int size = 100;
 
-    {
+    @Before
+    public void setUp() throws Exception {
         c = Comparators.asc();
         byte[] bytes = new byte[100];
-        values = Stream.generate(() -> {
+
+        Set<String> strings = new TreeSet<String>(c);
+        while (strings.size() < size) {
             r.nextBytes(bytes);
-            return new String(bytes);
-        }).limit(size).distinct().sorted(c).toArray(String[]::new);
+            strings.add(new String(bytes));
+        }
+        values = strings.toArray(new String[]{});
     }
 
     @Override

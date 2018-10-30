@@ -1,6 +1,9 @@
 package com.fr.swift.segment.column.impl.base;
 
+import com.fr.swift.cube.io.BuildConf;
 import com.fr.swift.cube.io.IOConstant;
+import com.fr.swift.cube.io.Types.DataType;
+import com.fr.swift.cube.io.Types.IoType;
 import com.fr.swift.cube.io.input.LongReader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.LongWriter;
@@ -20,7 +23,17 @@ public class DateDictColumn extends BaseDictColumn<Date, LongReader> {
     }
 
     @Override
+    void initKeyReader() {
+        if (keyReader != null) {
+            return;
+        }
+        IResourceLocation keyLocation = parent.buildChildLocation(KEY);
+        keyReader = DISCOVERY.getReader(keyLocation, new BuildConf(IoType.READ, DataType.LONG));
+    }
+
+    @Override
     public Date getValue(int index) {
+        initKeyReader();
         return new Date(keyReader.get(index));
     }
 
@@ -31,11 +44,23 @@ public class DateDictColumn extends BaseDictColumn<Date, LongReader> {
 
     @Override
     public Putter<Date> putter() {
-        return new BasePutter<LongWriter>() {
-            @Override
-            public void putValue(int index, Date val) {
-                keyWriter.put(index, val == null ? IOConstant.NULL_LONG : val.getTime());
+        return putter != null ? putter : (putter = new DatePutter());
+    }
+
+    class DatePutter extends BasePutter<LongWriter> {
+        @Override
+        void initKeyWriter() {
+            if (keyWriter != null) {
+                return;
             }
-        };
+            IResourceLocation keyLocation = parent.buildChildLocation(KEY);
+            keyWriter = DISCOVERY.getWriter(keyLocation, new BuildConf(IoType.WRITE, DataType.LONG));
+        }
+
+        @Override
+        public void putValue(int index, Date val) {
+            initKeyWriter();
+            keyWriter.put(index, val == null ? IOConstant.NULL_LONG : val.getTime());
+        }
     }
 }
