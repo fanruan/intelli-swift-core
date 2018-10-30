@@ -10,7 +10,6 @@ import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.config.service.impl.SwiftSegmentServiceProvider;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Where;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
@@ -21,6 +20,7 @@ import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.manager.SwiftRepositoryManager;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.operator.delete.WhereDeleter;
 import com.fr.swift.source.SourceKey;
@@ -98,7 +98,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
             List<SegmentKey> notExists = new ArrayList<SegmentKey>();
             final Map<String, Set<String>> needDownload = new HashMap<String, Set<String>>();
             for (SegmentKey segmentKey : value) {
-                if (segmentKey.getStoreType() == Types.StoreType.FINE_IO) {
+                if (segmentKey.getStoreType().isPersistent()) {
                     if (!segmentManager.getSegment(segmentKey).isReadable()) {
                         String remotePath = String.format("%s/%s", segmentKey.getSwiftSchema().getDir(), segmentKey.getUri().getPath());
                         if (repository.exists(remotePath)) {
@@ -218,6 +218,10 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
             new File(cubePath).getParentFile().delete();
         }
         if (downloadSuccess) {
+            SourceKey table = new SourceKey(sourceKey);
+            SegmentContainer.NORMAL.remove(table);
+            SegmentContainer.INDEXING.remove(table);
+            SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegment(table);
             SwiftLoggers.getLogger().info("Download {} {}successful", sourceKey, sets);
         }
     }
@@ -226,7 +230,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     @Override
     public SwiftResultSet query(final String queryDescription) throws Exception {
         try {
-            final QueryInfoBean bean = queryBeanFactory.create(queryDescription);
+            final QueryInfoBean bean = queryBeanFactory.create(queryDescription, false);
             SessionFactory factory = SwiftContext.get().getBean(SessionFactory.class);
             return factory.openSession(bean.getQueryId()).executeQuery(bean);
         } catch (IOException e) {
@@ -241,7 +245,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
             public void doJob() throws Exception {
                 List<SegmentKey> segments = segmentManager.getSegmentKeys(tableKey);
                 for (SegmentKey segment : segments) {
-                    if (segment.getStoreType() != Types.StoreType.MEMORY) {
+                    if (segment.getStoreType().isPersistent()) {
                         WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segment);
                         ImmutableBitMap allshow = whereDeleter.delete(where);
                         if (allshow.isEmpty()) {

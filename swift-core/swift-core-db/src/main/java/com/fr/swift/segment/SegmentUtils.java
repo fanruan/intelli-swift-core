@@ -1,12 +1,13 @@
 package com.fr.swift.segment;
 
+import com.fineio.FineIO;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.ResourceDiscovery;
-import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.operator.column.SwiftColumnDictMerger;
@@ -31,17 +32,16 @@ public class SegmentUtils {
         SwiftMetaData meta = SwiftDatabase.getInstance().getTable(segKey.getTable()).getMetadata();
         String segPath = CubeUtil.getSegPath(segKey);
 
-        if (segKey.getStoreType() == StoreType.MEMORY) {
-            return newRealtimeSegment(new ResourceLocation(segPath, segKey.getStoreType()), meta);
+        if (segKey.getStoreType().isTransient()) {
+            return newSegment(new ResourceLocation(segPath, segKey.getStoreType()), meta);
         }
-        return newHistorySegment(new ResourceLocation(segPath, segKey.getStoreType()), meta);
+        return newSegment(new ResourceLocation(segPath, segKey.getStoreType()), meta);
     }
 
-    public static Segment newRealtimeSegment(IResourceLocation location, SwiftMetaData meta) {
-        return (Segment) SwiftContext.get().getBean("realtimeSegment", location, meta);
-    }
-
-    public static Segment newHistorySegment(IResourceLocation location, SwiftMetaData meta) {
+    public static Segment newSegment(IResourceLocation location, SwiftMetaData meta) {
+        if (location.getStoreType().isTransient()) {
+            return (Segment) SwiftContext.get().getBean("realtimeSegment", location, meta);
+        }
         return (Segment) SwiftContext.get().getBean("historySegment", location, meta);
     }
 
@@ -51,11 +51,12 @@ public class SegmentUtils {
      * @param segKey seg key
      */
     public static void clearSegment(SegmentKey segKey) {
-        if (segKey.getStoreType() == StoreType.MEMORY) {
+        if (segKey.getStoreType().isTransient()) {
             clearRealtimeSegment(segKey);
         } else {
             clearHistorySegment(segKey);
         }
+
     }
 
     private static void clearRealtimeSegment(SegmentKey segKey) {
@@ -76,7 +77,7 @@ public class SegmentUtils {
     }
 
     public static void indexSegmentIfNeed(List<Segment> segs) throws Exception {
-        List<Segment> hisSegs = new ArrayList<Segment>();
+        final List<Segment> hisSegs = new ArrayList<Segment>();
         for (Segment seg : segs) {
             if (seg.isHistory()) {
                 hisSegs.add(seg);
@@ -87,13 +88,23 @@ public class SegmentUtils {
             return;
         }
 
-        SwiftMetaData metadata = hisSegs.get(0).getMetaData();
+        final SwiftMetaData metadata = hisSegs.get(0).getMetaData();
         for (int i = 0; i < metadata.getColumnCount(); i++) {
-            ColumnKey columnKey = new ColumnKey(metadata.getColumnName(i + 1));
+            final ColumnKey columnKey = new ColumnKey(metadata.getColumnName(i + 1));
 
             ((SwiftColumnIndexer) SwiftContext.get().getBean("columnIndexer", metadata, columnKey, hisSegs)).buildIndex();
 
-            ((SwiftColumnDictMerger) SwiftContext.get().getBean("columnDictMerger", metadata, columnKey, hisSegs)).mergeDict();
+            FineIO.doWhenFinished(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        ((SwiftColumnDictMerger) SwiftContext.get().getBean("columnDictMerger", metadata, columnKey, hisSegs)).mergeDict();
+                    } catch (Exception e) {
+                        SwiftLoggers.getLogger().error(e);
+                    }
+                }
+            });
+
         }
     }
 

@@ -226,7 +226,9 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
     }
 
     private static void fireUploadHistory(List<SegmentKey> newKeys) {
+        SwiftSegmentManager manager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         for (SegmentKey newSegKey : newKeys) {
+            manager.getSegment(newSegKey);
             EventDispatcher.fire(SegmentEvent.UPLOAD_HISTORY, newSegKey);
         }
     }
@@ -238,7 +240,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
                 for (SegmentKey collateSegKey : collateSegKeys) {
                     swiftSegmentService.removeSegments(Collections.singletonList(collateSegKey));
                     SegmentUtils.clearSegment(collateSegKey);
-                    if (collateSegKey.getStoreType() != StoreType.MEMORY) {
+                    if (collateSegKey.getStoreType().isPersistent()) {
                         EventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, collateSegKey);
                     }
                 }

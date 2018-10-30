@@ -43,7 +43,7 @@ public class CubeUtil {
 
     public static String getSegPath(SegmentKey segKey, boolean logicalPath) {
         SourceKey tableKey = segKey.getTable();
-        Optional<Integer> currentDir = logicalPath || segKey.getStoreType() == StoreType.MEMORY ?
+        Optional<Integer> currentDir = logicalPath || segKey.getStoreType().isTransient() ?
                 Optional.<Integer>absent() :
                 Optional.of(getCurrentDir(tableKey));
         return getSegPath(segKey.getSwiftSchema(), currentDir, tableKey, segKey.getOrder());

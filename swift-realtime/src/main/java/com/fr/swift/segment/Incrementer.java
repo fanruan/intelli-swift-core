@@ -7,6 +7,8 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
+import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.insert.BaseBlockInserter;
@@ -56,17 +58,26 @@ public class Incrementer extends BaseBlockInserter implements Inserter {
 
         if (!maxLocalSegmentKey.isPresent()) {
             currentSegKey = SEG_SVC.tryAppendSegment(dataSource.getSourceKey(), StoreType.MEMORY);
+
+            SwiftLoggers.getLogger().info("max seg is absent, append new seg {}", currentSegKey);
+
             currentSeg = newRealtimeSegment(currentSegKey);
+            SegmentContainer.NORMAL.updateSegment(currentSegKey, currentSeg);
             return true;
         }
         Segment maxSegment = LOCAL_SEGMENTS.getSegment(maxLocalSegmentKey.get());
 
         if (alloter.isFull(maxSegment)) {
             currentSegKey = SEG_SVC.tryAppendSegment(dataSource.getSourceKey(), StoreType.MEMORY);
+
+            SwiftLoggers.getLogger().info("max seg {} is full, append new seg {}", maxLocalSegmentKey.get(), currentSegKey);
+
             currentSeg = newRealtimeSegment(currentSegKey);
+            SegmentContainer.NORMAL.updateSegment(currentSegKey, currentSeg);
             EventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, maxLocalSegmentKey.get());
             return true;
         }
+        currentSegKey = maxLocalSegmentKey.get();
         currentSeg = maxSegment;
         return false;
     }
@@ -77,7 +88,7 @@ public class Incrementer extends BaseBlockInserter implements Inserter {
         }
         List<SegmentKey> realtimeSegKeys = new ArrayList<SegmentKey>();
         for (SegmentKey segKey : segKeys) {
-            if (segKey.getStoreType() == StoreType.MEMORY) {
+            if (segKey.getStoreType().isTransient()) {
                 realtimeSegKeys.add(segKey);
             }
         }

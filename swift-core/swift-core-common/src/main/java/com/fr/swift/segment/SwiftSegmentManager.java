@@ -22,4 +22,6 @@ public interface SwiftSegmentManager {
     boolean isSegmentsExist(SourceKey tableKey);
 
     List<Segment> getSegmentsByIds(SourceKey table, Collection<String> segmentIds);
+
+    List<Segment> remove(SourceKey sourceKey);
 }

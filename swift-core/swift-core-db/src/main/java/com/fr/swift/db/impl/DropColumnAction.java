@@ -39,7 +39,7 @@ public class DropColumnAction extends BaseAlterTableAction {
         List<SegmentKey> segKeys = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegmentKeys(table.getSourceKey());
         for (final SegmentKey segKey : segKeys) {
             final String columnId = relatedColumnMeta.getColumnId();
-            if (segKey.getStoreType() == StoreType.MEMORY) {
+            if (segKey.getStoreType().isTransient()) {
                 // 删内存
                 ResourceDiscovery.getInstance().removeIf(new Predicate<String>() {
                     @Override

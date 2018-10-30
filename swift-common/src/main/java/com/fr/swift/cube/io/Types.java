@@ -37,10 +37,18 @@ public final class Types {
          */
         FINE_IO, MEMORY, NIO;
 
+        /**
+         * 持久化的
+         * @return 是否为持久化的
+         */
         public boolean isPersistent() {
             return this != MEMORY;
         }
 
+        /**
+         * 未持久化的，如内存化的
+         * @return 是否为未持久化的
+         */
         public boolean isTransient() {
             return this == MEMORY;
         }

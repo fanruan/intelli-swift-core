@@ -14,6 +14,8 @@ import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.info.ServerCurrentStatus;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.netty.rpc.server.RpcServer;
+import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.Source;
 import com.fr.swift.source.SourceKey;
@@ -161,9 +163,11 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     private class ReplacePathRunnable implements Runnable {
 
         private Pair<TaskKey, TaskResult> result;
+        private SwiftSegmentManager manager;
 
         public ReplacePathRunnable(Pair<TaskKey, TaskResult> result) {
             this.result = result;
+            this.manager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         }
 
         private void runSuccess(TaskKey key, Object obj) {
@@ -186,6 +190,9 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
                             FileUtil.delete(deletePath);
                             new File(deletePath).getParentFile().delete();
                         }
+                        SegmentContainer.NORMAL.remove(sourceKey);
+                        SegmentContainer.INDEXING.remove(sourceKey);
+                        manager.getSegment(sourceKey);
                     }
                     ReadyUploadContainer.instance().remove(key);
                 }

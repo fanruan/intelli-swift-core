@@ -24,7 +24,7 @@ public class Decrementer implements WhereDeleter {
     @Override
     public ImmutableBitMap delete(Where where) throws Exception {
         WhereDeleter whereDeleter;
-        if (segKey.getStoreType() == StoreType.MEMORY) {
+        if (segKey.getStoreType().isTransient()) {
             whereDeleter = new RealtimeSwiftDeleter(segKey);
         } else {
             whereDeleter = new SwiftWhereDeleter(segKey);

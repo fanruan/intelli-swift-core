@@ -54,7 +54,7 @@ public class HistoryDecrementerTest extends TestCase {
         assertEquals(swiftSegmentManager.getSegmentKeys(dataSource.getSourceKey()).size(), 1);
         SegmentKey segKey = swiftSegmentManager.getSegmentKeys(dataSource.getSourceKey()).get(0);
         Segment segment = swiftSegmentManager.getSegment(segKey);
-        assertTrue(segment.getLocation().getStoreType() == Types.StoreType.FINE_IO);
+        assertTrue(segment.getLocation().getStoreType().isPersistent());
         int allshowCount = 0;
         for (int i = 0; i < segment.getRowCount(); i++) {
             if (segment.getAllShowIndex().contains(i)) {

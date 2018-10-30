@@ -61,6 +61,7 @@ public class MinorSegmentManager implements SwiftSegmentManager {
         segments.clear();
     }
 
+    @Override
     public List<Segment> remove(SourceKey sourceKey) {
         return segments.remove(sourceKey);
     }

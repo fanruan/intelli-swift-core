@@ -32,6 +32,7 @@ public class DetailFilterFactory {
 
     public static DetailFilter createFilter(Segment segment, SwiftDetailFilterInfo filterInfo) {
         // 通用过滤器没有fieldName
+        int rowCount = segment.getRowCount();
         ColumnKey columnKey = filterInfo.getColumnKey();
         Column column;
         if (null == columnKey || StringUtils.isEmpty(columnKey.getName())) {
@@ -52,12 +53,12 @@ public class DetailFilterFactory {
             case NUMBER_IN_RANGE: {
                 SwiftNumberInRangeFilterValue value = (SwiftNumberInRangeFilterValue) filterInfo.getFilterValue();
                 return new NumberInRangeFilter(value.getMin(), value.getMax(),
-                        value.isMinIncluded(), value.isMaxIncluded(), column, segment.getRowCount());
+                        value.isMinIncluded(), value.isMaxIncluded(), column, rowCount);
             }
             case NUMBER_AVERAGE: {
                 SwiftNumberInRangeFilterValue value = (SwiftNumberInRangeFilterValue) filterInfo.getFilterValue();
                 return new NumberAverageFilter(new NumberInRangeFilter(value.getMin(), value.getMax(),
-                        value.isMinIncluded(), value.isMaxIncluded(), column, segment.getRowCount()));
+                        value.isMinIncluded(), value.isMaxIncluded(), column, rowCount));
             }
 
             case DATE_IN_RANGE:
