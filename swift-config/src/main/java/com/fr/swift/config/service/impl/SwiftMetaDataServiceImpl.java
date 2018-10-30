@@ -1,28 +1,18 @@
 package com.fr.swift.config.service.impl;
 
-import com.fr.swift.basics.AsyncRpcCallback;
-import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.ProxyFactory;
-import com.fr.swift.basics.Result;
-import com.fr.swift.basics.RpcFuture;
-import com.fr.swift.basics.URL;
-import com.fr.swift.basics.base.SwiftInvocation;
 import com.fr.swift.basics.base.selector.ProxySelector;
-import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
-import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.convert.hibernate.transaction.AbstractTransactionWorker;
 import com.fr.swift.config.convert.hibernate.transaction.HibernateTransactionManager;
 import com.fr.swift.config.dao.SwiftMetaDataDao;
 import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.config.service.SwiftMetaDataService;
-import com.fr.swift.config.service.SwiftServiceInfoService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.event.global.CleanMetaDataCacheEvent;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.netty.rpc.server.RpcServer;
-import com.fr.swift.netty.rpc.server.ServiceMethodRegistry;
+import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
@@ -115,23 +105,23 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                     }
                     // 集群情况下才去发rpc
                     // 现在日志这边没必要
-//                    boolean isCluster = SwiftContext.get().getBean("swiftProperty", SwiftProperty.class).isCluster();
-                    boolean isCluster = false;
+                    boolean isCluster = ClusterSelector.getInstance().getFactory().isCluster();
                     if (null != sourceKeys && isCluster) {
-                        URL masterURL = getMasterURL();
                         ProxyFactory factory = ProxySelector.getInstance().getFactory();
-                        Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, masterURL, false);
-                        Result result = invoker.invoke(new SwiftInvocation(ServiceMethodRegistry.INSTANCE.getMethodByName("rpcTrigger"), new Object[]{new CleanMetaDataCacheEvent(sourceKeys)}));
-                        RpcFuture future = (RpcFuture) result.getValue();
-                        future.addCallback(new AsyncRpcCallback() {
-                            @Override
-                            public void success(Object result) {
-                            }
-
-                            @Override
-                            public void fail(Exception e) {
-                            }
-                        });
+                        SwiftServiceListenerHandler handler = factory.getProxy(SwiftServiceListenerHandler.class);
+                        handler.trigger(new CleanMetaDataCacheEvent(sourceKeys));
+//                        Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, masterURL, false);
+//                        Result result = invoker.invoke(new SwiftInvocation(ServiceMethodRegistry.INSTANCE.getMethodByName("rpcTrigger"), new Object[]{new CleanMetaDataCacheEvent(sourceKeys)}));
+//                        RpcFuture future = (RpcFuture) result.getValue();
+//                        future.addCallback(new AsyncRpcCallback() {
+//                            @Override
+//                            public void success(Object result) {
+//                            }
+//
+//                            @Override
+//                            public void fail(Exception e) {
+//                            }
+//                        });
                     }
                     return true;
                 }
@@ -236,12 +226,6 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                 }
             }
         }
-    }
-
-    private URL getMasterURL() {
-        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.get().getBean(SwiftServiceInfoService.class).getServiceInfoByService("cluster_master_service");
-        SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
-        return UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
     }
 
     @Override

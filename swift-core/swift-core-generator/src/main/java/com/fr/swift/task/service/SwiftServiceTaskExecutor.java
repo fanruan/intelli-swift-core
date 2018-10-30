@@ -24,6 +24,7 @@ public class SwiftServiceTaskExecutor implements ServiceTaskExecutor {
     private final static long SLEEP_TIME = 10L;
     private final BlockingQueue<ServiceCallable> callableQueue = new LinkedBlockingQueue<ServiceCallable>(10000);
     private final Map<SourceKey, ServiceCallable> runningCallables = new ConcurrentHashMap<SourceKey, ServiceCallable>();
+    private final Map<ServiceCallable, TaskFuture> futureMap = new ConcurrentHashMap<ServiceCallable, TaskFuture>();
     private ServiceTaskFetcher fetcher;
 
     public SwiftServiceTaskExecutor(int threadNum) {
@@ -32,8 +33,11 @@ public class SwiftServiceTaskExecutor implements ServiceTaskExecutor {
     }
 
     @Override
-    public void submit(ServiceCallable task) throws InterruptedException {
+    public TaskFuture submit(ServiceCallable task) throws InterruptedException {
         callableQueue.put(task.addListener(fetcher.serviceTaskListener));
+        TaskFuture future = new TaskFuture();
+        futureMap.put(task, future);
+        return future;
     }
 
     private class ServiceTaskFetcher implements Runnable {
@@ -43,6 +47,7 @@ public class SwiftServiceTaskExecutor implements ServiceTaskExecutor {
             public void handlerEvent(ServiceCallable serviceCallable) {
                 if (serviceCallable.getType().isEdit()) {
                     runningCallables.remove(serviceCallable.getKey());
+                    futureMap.remove(serviceCallable);
                 }
                 semaphore.release();
             }
@@ -73,7 +78,7 @@ public class SwiftServiceTaskExecutor implements ServiceTaskExecutor {
                                 runningCallables.put(serviceCallable.getKey(), serviceCallable);
                             }
                         }
-                        executorService.submit(serviceCallable);
+                        futureMap.get(serviceCallable).setFuture(executorService.submit(serviceCallable));
                     }
                     //todo future处理
                 } catch (InterruptedException e) {

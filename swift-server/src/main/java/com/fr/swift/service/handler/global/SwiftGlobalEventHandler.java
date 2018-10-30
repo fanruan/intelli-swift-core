@@ -1,19 +1,21 @@
 package com.fr.swift.service.handler.global;
 
 import com.fr.event.EventDispatcher;
-import com.fr.swift.basics.AsyncRpcCallback;
+import com.fr.swift.basics.ProxyFactory;
+import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.cluster.entity.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftMetaDataService;
-import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Where;
 import com.fr.swift.event.analyse.SegmentLocationRpcEvent;
 import com.fr.swift.event.base.AbstractGlobalRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
+import com.fr.swift.service.BaseService;
+import com.fr.swift.service.HistoryService;
+import com.fr.swift.service.RealtimeService;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.handler.SwiftServiceHandlerManager;
 import com.fr.swift.service.handler.base.AbstractHandler;
@@ -29,7 +31,6 @@ import com.fr.third.springframework.stereotype.Service;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -49,23 +50,17 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
 
     @Override
     public <S extends Serializable> S handle(AbstractGlobalRpcEvent event) throws Exception {
+        ProxyFactory factory = ProxySelector.getInstance().getFactory();
         switch (event.subEvent()) {
             case TASK_DONE:
                 Pair<TaskKey, TaskResult> pair = (Pair<TaskKey, TaskResult>) event.getContent();
                 EventDispatcher.fire(TaskEvent.DONE, pair);
                 break;
             case CLEAN:
-                Map<String, ClusterEntity> analyseMap = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.ANALYSE);
-                Map<String, ClusterEntity> realTimeMap = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.REAL_TIME);
-                Map<String, ClusterEntity> historyMap = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.HISTORY);
-                Map<String, ClusterEntity> indexingMap = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.INDEXING);
                 String[] sourceKeys = (String[]) event.getContent();
                 try {
                     if (null != sourceKeys) {
-                        clean(analyseMap, sourceKeys);
-                        clean(realTimeMap, sourceKeys);
-                        clean(historyMap, sourceKeys);
-                        clean(indexingMap, sourceKeys);
+                        factory.getProxy(BaseService.class).cleanMetaCache(sourceKeys);
                     }
                 } catch (Exception e) {
                     LOGGER.error(e);
@@ -87,68 +82,56 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
                 Pair<SourceKey, Where> content = (Pair<SourceKey, Where>) event.getContent();
                 SourceKey sourceKey = content.getKey();
                 Where where = content.getValue();
-                Map<String, ClusterEntity> realTimeServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.REAL_TIME);
-                dealDelete(sourceKey, where, realTimeServices, "realtimeDelete");
-                Map<String, ClusterEntity> historyServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.HISTORY);
-                Iterator<Map.Entry<String, ClusterEntity>> iterator = historyServices.entrySet().iterator();
-                while (iterator.hasNext()) {
-                    if (realTimeServices.containsKey(iterator.next().getKey())) {
-                        iterator.remove();
-                    }
-                }
-                dealDelete(sourceKey, where, historyServices, "historyDelete");
+//                Map<String, ClusterEntity> realTimeServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.REAL_TIME);
+
+                RealtimeService realtimeService = factory.getProxy(RealtimeService.class);
+                realtimeService.delete(sourceKey, where, new ArrayList<String>());
+                HistoryService historyService = factory.getProxy(HistoryService.class);
+                historyService.delete(sourceKey, where, new ArrayList<String>());
+//                dealDelete(sourceKey, where, realTimeServices, "realtimeDelete");
+//                Map<String, ClusterEntity> historyServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.HISTORY);
+//                Iterator<Map.Entry<String, ClusterEntity>> iterator = historyServices.entrySet().iterator();
+//                while (iterator.hasNext()) {
+//                    if (realTimeServices.containsKey(iterator.next().getKey())) {
+//                        iterator.remove();
+//                    }
+//                }
+//                dealDelete(sourceKey, where, historyServices, "historyDelete");
                 break;
             case TRUNCATE:
                 String truncateSourceKey = (String) event.getContent();
-                Map<String, ClusterEntity> histories = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.HISTORY);
-                if (null == histories || histories.isEmpty()) {
-                    throw new RuntimeException("Cannot find any services");
-                }
-                for (Map.Entry<String, ClusterEntity> entry : histories.entrySet()) {
-                    String clusterId = entry.getKey();
-                    runAsyncRpc(clusterId, entry.getValue().getServiceClass(), "truncate", truncateSourceKey).addCallback(new AsyncRpcCallback() {
-                        @Override
-                        public void success(Object result) {
-
-                        }
-
-                        @Override
-                        public void fail(Exception e) {
-                            SwiftLoggers.getLogger().error(e);
-                        }
-                    });
-                }
+                ProxySelector.getInstance().getFactory().getProxy(HistoryService.class).truncate(truncateSourceKey);
             default:
                 break;
         }
         return null;
     }
 
-    private void dealDelete(SourceKey sourceKey, Where where, Map<String, ClusterEntity> services, String method) throws Exception {
-        if (null == services || services.isEmpty()) {
-            SwiftLoggers.getLogger().warn("Cannot find services");
-            return;
-        }
-        List<String> uploadedSegments = new ArrayList<String>();
-        for (Map.Entry<String, ClusterEntity> entry : services.entrySet()) {
-            String clusterId = entry.getKey();
-            List<SegmentKey> segmentKeys = segmentService.getOwnSegments(clusterId).get(sourceKey.getId());
-            List<String> needUploadSegs = new ArrayList<String>();
-            if (null != segmentKeys) {
-                for (SegmentKey segmentKey : segmentKeys) {
-                    if (segmentKey.getStoreType() == Types.StoreType.FINE_IO) {
-                        String segKey = segmentKey.toString();
-                        // 如果不包含就放到需要上传的list
-                        if (!uploadedSegments.contains(segKey)) {
-                            needUploadSegs.add(segKey);
-                            uploadedSegments.add(segKey);
-                        }
-                    }
-                }
-                runAsyncRpc(clusterId, entry.getValue().getServiceClass(), method, sourceKey, where, needUploadSegs);
-            }
-        }
-    }
+//    private void dealDelete(SourceKey sourceKey, Where where, Map<String, ClusterEntity> services, String method) throws Exception {
+//        if (null == services || services.isEmpty()) {
+//            SwiftLoggers.getLogger().warn("Cannot find services");
+//            return;
+//        }
+//        List<String> uploadedSegments = new ArrayList<String>();
+//        for (Map.Entry<String, ClusterEntity> entry : services.entrySet()) {
+//            String clusterId = entry.getKey();
+//            List<SegmentKey> segmentKeys = segmentService.getOwnSegments(clusterId).get(sourceKey.getId());
+//            List<String> needUploadSegs = new ArrayList<String>();
+//            if (null != segmentKeys) {
+//                for (SegmentKey segmentKey : segmentKeys) {
+//                    if (segmentKey.getStoreType() == Types.StoreType.FINE_IO) {
+//                        String segKey = segmentKey.toString();
+//                        // 如果不包含就放到需要上传的list
+//                        if (!uploadedSegments.contains(segKey)) {
+//                            needUploadSegs.add(segKey);
+//                            uploadedSegments.add(segKey);
+//                        }
+//                    }
+//                }
+//                runAsyncRpc(clusterId, entry.getValue().getServiceClass(), method, sourceKey, where, needUploadSegs);
+//            }
+//        }
+//    }
 
     private void makeResultMap(Map<String, ClusterEntity> realtime, Map<ServiceType, List<String>> result, ServiceType type) {
         for (String id : realtime.keySet()) {
@@ -159,22 +142,4 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
         }
     }
 
-    private void clean(Map<String, ClusterEntity> map, String[] sourceKeys) throws Exception {
-        Iterator<Map.Entry<String, ClusterEntity>> iterator = map.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, ClusterEntity> entry = iterator.next();
-            runAsyncRpc(entry.getKey(), entry.getValue().getServiceClass(), "cleanMetaCache", sourceKeys)
-                    .addCallback(new AsyncRpcCallback() {
-                        @Override
-                        public void success(Object result) {
-
-                        }
-
-                        @Override
-                        public void fail(Exception e) {
-
-                        }
-                    });
-        }
-    }
 }

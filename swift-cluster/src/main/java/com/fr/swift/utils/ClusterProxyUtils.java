@@ -5,8 +5,8 @@ import com.fr.swift.basics.URL;
 import com.fr.swift.basics.UrlFactory;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.basics.base.selector.UrlSelector;
+import com.fr.swift.basics.exception.SwiftProxyException;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.exception.SwiftProxyException;
 import com.fr.swift.heart.NodeState;
 import com.fr.swift.property.SwiftProperty;
 
@@ -56,6 +56,6 @@ public class ClusterProxyUtils {
                 throw new SwiftProxyException("Class " + interfaceClass + " doesn't has an Implementation !!! Can't make dynamic proxy!");
             }
         }
-        return proxyFactory.getProxy(obj, interfaceClass, url);
+        return proxyFactory.getProxy(interfaceClass);
     }
 }

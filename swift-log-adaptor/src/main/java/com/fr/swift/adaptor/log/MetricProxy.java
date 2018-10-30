@@ -4,6 +4,7 @@ import com.fr.intelli.record.scene.Metric;
 import com.fr.intelli.record.scene.impl.BaseMetric;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.data.DataList;
+import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.SwiftDatabase;
@@ -27,6 +28,7 @@ import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.RealtimeService;
 import com.fr.swift.service.cluster.ClusterAnalyseService;
 import com.fr.swift.service.cluster.ClusterRealTimeService;
+import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.service.listener.SwiftServiceListenerManager;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
@@ -39,7 +41,6 @@ import com.fr.swift.util.Util;
 import com.fr.swift.util.concurrent.CommonExecutor;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
-import com.fr.swift.utils.ClusterCommonUtils;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -177,7 +178,7 @@ public class MetricProxy extends BaseMetric {
             if (table.getMeta().getSwiftDatabase() == SwiftDatabase.DECISION_LOG) {
                 DeleteEvent event = new DeleteEvent(Pair.<SourceKey, Where>of(table.getSourceKey(), new SwiftWhere(filterBean)));
                 if (ClusterSelector.getInstance().getFactory().isCluster()) {
-                    ClusterCommonUtils.asyncCallMaster(event);
+                    ProxySelector.getInstance().getFactory().getProxy(SwiftServiceListenerHandler.class).trigger(event);
                 } else {
                     SwiftServiceListenerManager.getInstance().triggerEvent(event);
                 }

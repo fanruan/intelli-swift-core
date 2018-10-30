@@ -1,7 +1,7 @@
 package com.fr.swift.heart;
 
+import com.fr.swift.config.bean.ServerCurrentStatus;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.info.ServerCurrentStatus;
 import com.fr.swift.property.SwiftProperty;
 
 import java.io.Serializable;

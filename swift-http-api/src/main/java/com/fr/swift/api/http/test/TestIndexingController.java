@@ -1,16 +1,9 @@
 package com.fr.swift.api.http.test;
 
 import com.fr.stable.StringUtils;
-import com.fr.swift.ClusterNodeService;
 import com.fr.swift.api.http.SwiftApiConstants;
-import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.ProxyFactory;
-import com.fr.swift.basics.URL;
-import com.fr.swift.basics.base.SwiftInvocation;
 import com.fr.swift.basics.base.selector.ProxySelector;
-import com.fr.swift.basics.base.selector.UrlSelector;
-import com.fr.swift.config.bean.SwiftServiceInfoBean;
-import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.queue.StuffProviderQueue;
@@ -18,7 +11,6 @@ import com.fr.swift.cube.queue.SwiftImportStuff;
 import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
 import com.fr.swift.event.indexing.IndexRpcEvent;
 import com.fr.swift.netty.rpc.server.RpcServer;
-import com.fr.swift.netty.rpc.server.ServiceMethodRegistry;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.repository.manager.SwiftRepositoryManager;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
@@ -36,7 +28,6 @@ import com.fr.third.springframework.web.bind.annotation.ResponseBody;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -63,8 +54,7 @@ public class TestIndexingController {
                 IndexingStuff stuff = new HistoryIndexingStuff(tables);
                 IndexRpcEvent event = new IndexRpcEvent(stuff);
                 ProxyFactory factory = ProxySelector.getInstance().getFactory();
-                Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, getMasterURL(), true);
-                invoker.invoke(new SwiftInvocation(ServiceMethodRegistry.INSTANCE.getMethodByName("rpcTrigger"), new Object[]{event}));
+                factory.getProxy(SwiftServiceListenerHandler.class).trigger(event);
             } else {
                 StuffProviderQueue.getQueue().put(new SwiftImportStuff(Collections.singletonList(dataSource)));
             }
@@ -88,13 +78,6 @@ public class TestIndexingController {
     public void load() {
         HistoryLoadSegmentRpcEvent event = new HistoryLoadSegmentRpcEvent();
         ProxyFactory factory = ProxySelector.getInstance().getFactory();
-        Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, getMasterURL(), true);
-        invoker.invoke(new SwiftInvocation(ServiceMethodRegistry.INSTANCE.getMethodByName("rpcTrigger"), new Object[]{event}));
-    }
-
-    private URL getMasterURL() {
-        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.get().getBean(SwiftServiceInfoService.class).getServiceInfoByService(ClusterNodeService.SERVICE);
-        SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
-        return UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
+        factory.getProxy(SwiftServiceListenerHandler.class).trigger(event);
     }
 }

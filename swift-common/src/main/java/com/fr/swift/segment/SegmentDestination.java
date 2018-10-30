@@ -1,7 +1,7 @@
 package com.fr.swift.segment;
 
+import com.fr.swift.query.Queryable;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
-import com.fr.swift.service.SwiftService;
 import com.fr.third.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.io.Serializable;
@@ -15,7 +15,7 @@ import java.util.List;
 public interface SegmentDestination extends Serializable, Comparable<SegmentDestination> {
     boolean isRemote();
 
-    Class<? extends SwiftService> getServiceClass();
+    Class<? extends Queryable> getServiceClass();
 
     String getMethodName();
 

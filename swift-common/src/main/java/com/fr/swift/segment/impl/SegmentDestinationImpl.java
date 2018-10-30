@@ -2,8 +2,8 @@ package com.fr.swift.segment.impl;
 
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
+import com.fr.swift.query.Queryable;
 import com.fr.swift.segment.SegmentDestination;
-import com.fr.swift.service.SwiftService;
 import com.fr.third.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fr.third.fasterxml.jackson.annotation.JsonInclude;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
@@ -30,7 +30,7 @@ public class SegmentDestinationImpl implements SegmentDestination {
     @JsonProperty
     private int order;
     @JsonProperty
-    protected Class<? extends SwiftService> serviceClass;
+    protected Class<? extends Queryable> serviceClass;
     @JsonProperty
     protected String methodName;
     @JsonProperty
@@ -45,7 +45,7 @@ public class SegmentDestinationImpl implements SegmentDestination {
         };
     }
 
-    public SegmentDestinationImpl(String clusterId, String segmentId, int order, Class<? extends SwiftService> serviceClass, String methodName) {
+    public SegmentDestinationImpl(String clusterId, String segmentId, int order, Class<? extends Queryable> serviceClass, String methodName) {
         this.clusterId = clusterId;
         this.address = clusterId;
         this.currentNode = clusterId;
@@ -116,7 +116,7 @@ public class SegmentDestinationImpl implements SegmentDestination {
     }
 
     @Override
-    public Class<? extends SwiftService> getServiceClass() {
+    public Class<? extends Queryable> getServiceClass() {
         return serviceClass;
     }
 
@@ -143,7 +143,7 @@ public class SegmentDestinationImpl implements SegmentDestination {
         this.order = order;
     }
 
-    public void setServiceClass(Class<? extends SwiftService> serviceClass) {
+    public void setServiceClass(Class<? extends Queryable> serviceClass) {
         this.serviceClass = serviceClass;
     }
 

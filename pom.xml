@@ -10,7 +10,6 @@
     <version>10.0</version>
     <modules>
         <module>swift-analyse</module>
-        <module>swift-api-public</module>
         <module>swift-base</module>
         <module>swift-boot</module>
         <module>swift-core</module>
@@ -32,12 +31,12 @@
         <module>swift-server</module>
         <module>swift-slave</module>
         <module>swift-test</module>
-        <module>swift-api-base</module>
-        <module>swift-api-private</module>
         <module>swift-rpc-base</module>
         <module>swift-http-api</module>
         <module>swift-analyse-base</module>
         <module>swift-repository-base</module>
+        <module>swift-proxy</module>
+        <module>swift-api</module>
 
 
     </modules>

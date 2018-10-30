@@ -1,13 +1,12 @@
 package com.fr.swift.service.handler.history;
 
 import com.fr.stable.StringUtils;
-import com.fr.swift.basics.AsyncRpcCallback;
+import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.cluster.entity.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.service.DataSyncRuleService;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.cube.io.Types;
-import com.fr.swift.event.analyse.SegmentLocationRpcEvent;
 import com.fr.swift.event.base.EventResult;
 import com.fr.swift.event.history.SegmentLoadRpcEvent;
 import com.fr.swift.log.SwiftLogger;
@@ -15,9 +14,8 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
-import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
+import com.fr.swift.service.HistoryService;
 import com.fr.swift.service.ServiceType;
-import com.fr.swift.service.handler.SwiftServiceHandlerManager;
 import com.fr.swift.service.handler.base.AbstractHandler;
 import com.fr.swift.structure.Pair;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
@@ -118,36 +116,38 @@ public class HistoryDataSyncManager extends AbstractHandler<SegmentLoadRpcEvent>
                     idList.add(Pair.of(segmentKey.getTable().getId(), segmentKey.toString()));
                 }
                 boolean replace = updateType == SegmentLocationInfo.UpdateType.ALL;
-                runAsyncRpc(key, entity.getServiceClass(), "load", uriSet, replace)
-                        .addCallback(new AsyncRpcCallback() {
-                            @Override
-                            public void success(Object result) {
-                                Map<String, List<Pair<String, String>>> segmentTable = new HashMap<String, List<Pair<String, String>>>();
-                                segmentTable.put(key, idList);
-                                clusterSegmentService.updateSegmentTable(segmentTable);
-                                try {
-                                    SwiftServiceHandlerManager.getManager().
-                                            handle(new SegmentLocationRpcEvent(updateType, new SegmentLocationInfoImpl(ServiceType.HISTORY, destinations)));
-                                } catch (Exception e) {
-                                    fail(e);
-                                }
-                                if (StringUtils.isEmpty(eventResult.getClusterId())) {
-                                    eventResult.setClusterId(key);
-                                }
-                                eventResult.setSuccess(true);
-                                if (null != latch) {
-                                    latch.countDown();
-                                }
-                            }
-
-                            @Override
-                            public void fail(Exception e) {
-                                LOGGER.error("Load failed! ", e);
-                                if (null != latch) {
-                                    latch.countDown();
-                                }
-                            }
-                        });
+                HistoryService service = ProxySelector.getInstance().getFactory().getProxy(HistoryService.class);
+                // TODO load逻辑
+//                runAsyncRpc(key, entity.getServiceClass(), "load", uriSet, replace)
+//                        .addCallback(new AsyncRpcCallback() {
+//                            @Override
+//                            public void success(Object result) {
+//                                Map<String, List<Pair<String, String>>> segmentTable = new HashMap<String, List<Pair<String, String>>>();
+//                                segmentTable.put(key, idList);
+//                                clusterSegmentService.updateSegmentTable(segmentTable);
+//                                try {
+//                                    SwiftServiceHandlerManager.getManager().
+//                                            handle(new SegmentLocationRpcEvent(updateType, new SegmentLocationInfoImpl(ServiceType.HISTORY, destinations)));
+//                                } catch (Exception e) {
+//                                    fail(e);
+//                                }
+//                                if (StringUtils.isEmpty(eventResult.getClusterId())) {
+//                                    eventResult.setClusterId(key);
+//                                }
+//                                eventResult.setSuccess(true);
+//                                if (null != latch) {
+//                                    latch.countDown();
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void fail(Exception e) {
+//                                LOGGER.error("Load failed! ", e);
+//                                if (null != latch) {
+//                                    latch.countDown();
+//                                }
+//                            }
+//                        });
             }
             if (null != latch) {
                 latch.await();

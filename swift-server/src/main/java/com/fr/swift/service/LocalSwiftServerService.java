@@ -17,6 +17,7 @@ import com.fr.swift.task.TaskKey;
 import com.fr.swift.task.impl.TaskEvent;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -40,8 +41,8 @@ public class LocalSwiftServerService extends AbstractSwiftServerService {
                 switch (((AbstractGlobalRpcEvent) event).subEvent()) {
                     case DELETE:
                         Pair<SourceKey, Where> content = (Pair<SourceKey, Where>) event.getContent();
-                        realTimeService.delete(content.getKey(), content.getValue());
-                        historyService.delete(content.getKey(), content.getValue());
+                        realTimeService.delete(content.getKey(), content.getValue(), new ArrayList<String>());
+                        historyService.delete(content.getKey(), content.getValue(), new ArrayList<String>());
                         return null;
                     default:
                 }
