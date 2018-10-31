@@ -14,8 +14,8 @@ import com.fr.swift.segment.operator.column.SwiftColumnDictMerger;
 import com.fr.swift.segment.operator.column.SwiftColumnIndexer;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.FileUtil;
+import com.fr.swift.util.Optional;
 import com.fr.swift.util.function.Predicate;
-import com.fr.third.guava.base.Optional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,7 +110,7 @@ public class SegmentUtils {
 
     public static Optional<SegmentKey> getMaxSegmentKey(List<SegmentKey> segmentKeys) {
         if (segmentKeys == null || segmentKeys.isEmpty()) {
-            return Optional.absent();
+            return Optional.empty();
         }
         SegmentKey maxSegmentKey = segmentKeys.get(0);
         for (SegmentKey segmentKey : segmentKeys) {

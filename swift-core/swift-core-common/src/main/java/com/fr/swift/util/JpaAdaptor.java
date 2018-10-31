@@ -6,7 +6,6 @@ import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.third.guava.base.Optional;
 import com.fr.third.javax.persistence.AttributeConverter;
 import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Convert;
@@ -204,7 +203,7 @@ class ClassToSql {
         }
 
         SqlMeta(int sqlType, int precision) {
-            this(sqlType, precision, Optional.<Integer>absent());
+            this(sqlType, precision, Optional.<Integer>empty());
         }
 
         int getSqlType() {

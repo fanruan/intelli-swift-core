@@ -15,7 +15,7 @@ import com.fr.swift.segment.operator.insert.SwiftRealtimeInserter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.transaction.TransactionProxyFactory;
-import com.fr.third.guava.base.Optional;
+import com.fr.swift.util.Optional;
 
 import java.util.ArrayList;
 import java.util.List;

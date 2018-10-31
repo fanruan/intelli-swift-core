@@ -4,13 +4,12 @@ import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
-import com.fr.third.guava.base.Optional;
+import com.fr.swift.util.Optional;
 
 /**
  * @author anchore
@@ -26,7 +25,7 @@ public class CubeUtil {
     }
 
     public static String getRealtimeSegPath(DataSource dataSource, int segOrder) {
-        return getSegPath(dataSource.getMetadata().getSwiftDatabase(), Optional.<Integer>absent(), dataSource.getSourceKey(), segOrder);
+        return getSegPath(dataSource.getMetadata().getSwiftDatabase(), Optional.<Integer>empty(), dataSource.getSourceKey(), segOrder);
     }
 
     public static String getHistorySegPath(DataSource dataSource, int segOrder) {
@@ -44,7 +43,7 @@ public class CubeUtil {
     public static String getSegPath(SegmentKey segKey, boolean logicalPath) {
         SourceKey tableKey = segKey.getTable();
         Optional<Integer> currentDir = logicalPath || segKey.getStoreType().isTransient() ?
-                Optional.<Integer>absent() :
+                Optional.<Integer>empty() :
                 Optional.of(getCurrentDir(tableKey));
         return getSegPath(segKey.getSwiftSchema(), currentDir, tableKey, segKey.getOrder());
     }
