@@ -132,7 +132,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
                     }
                     WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segKey);
                     ImmutableBitMap allShowBitmap = whereDeleter.delete(where);
-                    if (segKey.getStoreType() == Types.StoreType.MEMORY) {
+                    if (segKey.getStoreType().isTransient()) {
                         continue;
                     }
 

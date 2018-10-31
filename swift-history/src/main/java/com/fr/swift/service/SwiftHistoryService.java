@@ -104,7 +104,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
             List<SegmentKey> notExists = new ArrayList<SegmentKey>();
             final Map<String, Set<String>> needDownload = new HashMap<String, Set<String>>();
             for (SegmentKey segmentKey : value) {
-                if (segmentKey.getStoreType() == Types.StoreType.FINE_IO) {
+                if (segmentKey.getStoreType().isPersistent()) {
                     if (!segmentManager.getSegment(segmentKey).isReadable()) {
                         String remotePath = String.format("%s/%s", segmentKey.getSwiftSchema().getDir(), segmentKey.getUri().getPath());
                         if (repository.exists(remotePath)) {
@@ -251,7 +251,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
             public void doJob() throws Exception {
                 List<SegmentKey> segmentKeys = segmentManager.getSegmentKeys(sourceKey);
                 for (SegmentKey segKey : segmentKeys) {
-                    if (segKey.getStoreType() != Types.StoreType.FINE_IO) {
+                    if (segKey.getStoreType().isTransient()) {
                         continue;
                     }
                     if (!segmentManager.existsSegment(segKey)) {
