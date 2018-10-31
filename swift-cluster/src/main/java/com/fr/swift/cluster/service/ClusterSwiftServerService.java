@@ -3,42 +3,32 @@ package com.fr.swift.cluster.service;
 import com.fr.event.Event;
 import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
-import com.fr.swift.basics.AsyncRpcCallback;
-import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.ProxyFactory;
-import com.fr.swift.basics.Result;
-import com.fr.swift.basics.RpcFuture;
 import com.fr.swift.basics.URL;
-import com.fr.swift.basics.base.SwiftInvocation;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.cluster.entity.ClusterEntity;
-import com.fr.swift.config.bean.IndexingSelectRule;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
-import com.fr.swift.config.service.IndexingSelectRuleService;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.netty.rpc.url.RPCDestination;
-import com.fr.swift.netty.rpc.url.RPCUrl;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.service.AbstractSwiftService;
+import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.CollateService;
+import com.fr.swift.service.HistoryService;
+import com.fr.swift.service.IndexingService;
+import com.fr.swift.service.RealtimeService;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.SwiftService;
 import com.fr.swift.service.SwiftServiceEvent;
-import com.fr.swift.service.cluster.ClusterAnalyseService;
-import com.fr.swift.service.cluster.ClusterHistoryService;
-import com.fr.swift.service.cluster.ClusterIndexingService;
-import com.fr.swift.service.cluster.ClusterRealTimeService;
 import com.fr.swift.service.listener.SwiftServiceListener;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.service.listener.SwiftServiceListenerManager;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.stuff.DefaultIndexingStuff;
-import com.fr.swift.stuff.IndexingStuff;
 import com.fr.swift.task.TaskKey;
 import com.fr.swift.task.impl.SchedulerTaskPool;
 import com.fr.swift.task.impl.TaskEvent;
@@ -89,16 +79,16 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
                 URL url = UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getClusterId());
                 switch (serviceType) {
                     case HISTORY:
-                        historyServiceMap.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, ClusterHistoryService.class));
+                        historyServiceMap.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, HistoryService.class));
                         break;
                     case REAL_TIME:
-                        realTimeServiceMap.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, ClusterRealTimeService.class));
+                        realTimeServiceMap.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, RealtimeService.class));
                         break;
                     case ANALYSE:
-                        analyseServiceMap.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, ClusterAnalyseService.class));
+                        analyseServiceMap.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, AnalyseService.class));
                         break;
                     case INDEXING:
-                        indexingServiceMap.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, ClusterIndexingService.class));
+                        indexingServiceMap.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, IndexingService.class));
                         break;
                     case COLLATE:
                         collateServiceMap.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, CollateService.class));
@@ -182,17 +172,17 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
             URL url = UrlSelector.getInstance().getFactory().getURL(service.getID());
             switch (service.getServiceType()) {
                 case ANALYSE:
-                    ClusterEntity entity = new ClusterEntity(url, service.getServiceType(), ClusterAnalyseService.class);
+                    ClusterEntity entity = new ClusterEntity(url, service.getServiceType(), AnalyseService.class);
                     analyseServiceMap.put(service.getID(), entity);
                     break;
                 case HISTORY:
-                    historyServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), ClusterHistoryService.class));
+                    historyServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), HistoryService.class));
                     break;
                 case INDEXING:
-                    indexingServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), ClusterIndexingService.class));
+                    indexingServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), IndexingService.class));
                     break;
                 case REAL_TIME:
-                    realTimeServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), ClusterRealTimeService.class));
+                    realTimeServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), RealtimeService.class));
                     break;
                 case COLLATE:
                     collateServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), CollateService.class));
@@ -256,32 +246,33 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
             public void on(Event event, Map<TaskKey, ?> taskKeyMap) {
                 // rpc告诉indexing节点执行任务
                 SwiftLoggers.getLogger().info("rpc告诉indexing节点执行任务");
-                String address = null;
+//                String address = null;
                 try {
-                    IndexingSelectRule rule = SwiftContext.get().getBean(IndexingSelectRuleService.class).getCurrentRule();
-                    address = rule.select(indexingServiceMap.keySet());
-                    ClusterEntity entity = indexingServiceMap.get(address);
+//                    IndexingSelectRule rule = SwiftContext.get().getBean(IndexingSelectRuleService.class).getCurrentRule();
+//                    address = rule.select(indexingServiceMap.keySet());
+//                    ClusterEntity entity = indexingServiceMap.get(address);
                     ProxyFactory factory = ProxySelector.getInstance().getFactory();
-                    Invoker invoker = factory.getInvoker(null, entity.getServiceClass(), new RPCUrl(new RPCDestination(address)), false);
-
-                    Result result = invoker.invoke(
-                            new SwiftInvocation(entity.getServiceClass().getDeclaredMethod("index", IndexingStuff.class),
-                                    new Object[]{new DefaultIndexingStuff((Map<TaskKey, DataSource>) taskKeyMap)}));
-                    RpcFuture future = (RpcFuture) result.getValue();
-                    if (null == future) {
-                        throw new Exception(result.getException());
-                    }
-                    future.addCallback(new AsyncRpcCallback() {
-                        @Override
-                        public void success(Object result) {
-//                                    LOGGER.info(String.format("Indexing success! Cost: %d", System.currentTimeMillis() - start));
-                        }
-
-                        @Override
-                        public void fail(Exception e) {
-                            LOGGER.error("Indexing error! ", e);
-                        }
-                    });
+//                    Invoker invoker = factory.getInvoker(null, entity.getServiceClass(), new RPCUrl(new RPCDestination(address)), false);
+                    IndexingService indexingService = factory.getProxy(IndexingService.class);
+                    indexingService.index(new DefaultIndexingStuff((Map<TaskKey, DataSource>) taskKeyMap));
+//                    Result result = invoker.invoke(
+//                            new SwiftInvocation(entity.getServiceClass().getDeclaredMethod("index", IndexingStuff.class),
+//                                    new Object[]{new DefaultIndexingStuff((Map<TaskKey, DataSource>) taskKeyMap)}));
+//                    RpcFuture future = (RpcFuture) result.getValue();
+//                    if (null == future) {
+//                        throw new Exception(result.getException());
+//                    }
+//                    future.addCallback(new AsyncRpcCallback() {
+//                        @Override
+//                        public void success(Object result) {
+////                                    LOGGER.info(String.format("Indexing success! Cost: %d", System.currentTimeMillis() - start));
+//                        }
+//
+//                        @Override
+//                        public void fail(Exception e) {
+//                            LOGGER.error("Indexing error! ", e);
+//                        }
+//                    });
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

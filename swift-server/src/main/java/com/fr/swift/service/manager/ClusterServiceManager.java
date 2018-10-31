@@ -1,19 +1,14 @@
 package com.fr.swift.service.manager;
 
-import com.fr.swift.ClusterNodeService;
 import com.fr.swift.basics.ProxyFactory;
-import com.fr.swift.basics.URL;
 import com.fr.swift.basics.base.selector.ProxySelector;
-import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.service.SwiftService;
-import com.fr.swift.service.listener.RemoteServiceSender;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
@@ -82,10 +77,11 @@ public class ClusterServiceManager extends AbstractServiceManager<SwiftService> 
     private void refreshInfo() {
         ProxyFactory proxyFactory = ProxySelector.getInstance().getFactory();
 //        RemoteServiceSender remoteServiceSender = RemoteServiceSender.getInstance();
-        RemoteServiceSender remoteServiceSender = SwiftContext.get().getBean(RemoteServiceSender.class);
-        List<SwiftServiceInfoBean> swiftServiceInfoBeans = serviceInfoService.getServiceInfoByService(ClusterNodeService.SERVICE);
-        swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
-        URL url = UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
-        senderProxy = proxyFactory.getProxy(remoteServiceSender, SwiftServiceListenerHandler.class, url);
+//        RemoteServiceSender remoteServiceSender = SwiftContext.get().getBean(RemoteServiceSender.class);
+//        List<SwiftServiceInfoBean> swiftServiceInfoBeans = serviceInfoService.getServiceInfoByService(ClusterNodeService.SERVICE);
+//        swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
+//        URL url = UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
+//        senderProxy = proxyFactory.getProxy(remoteServiceSender, SwiftServiceListenerHandler.class, url);
+        senderProxy = proxyFactory.getProxy(SwiftServiceListenerHandler.class);
     }
 }

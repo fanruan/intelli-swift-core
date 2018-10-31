@@ -1,8 +1,8 @@
 package com.fr.swift.segment.impl;
 
 import com.fr.stable.AssistUtils;
+import com.fr.swift.query.Queryable;
 import com.fr.swift.segment.SegmentDestination;
-import com.fr.swift.service.SwiftService;
 
 /**
  * @author yee
@@ -14,7 +14,7 @@ public class RealTimeSegDestImpl extends SegmentDestinationImpl {
     public RealTimeSegDestImpl() {
     }
 
-    public RealTimeSegDestImpl(String clusterId, String segmentId, int order, Class<? extends SwiftService> serviceClass, String methodName) {
+    public RealTimeSegDestImpl(String clusterId, String segmentId, int order, Class<? extends Queryable> serviceClass, String methodName) {
         super(clusterId, segmentId, order, serviceClass, methodName);
     }
 

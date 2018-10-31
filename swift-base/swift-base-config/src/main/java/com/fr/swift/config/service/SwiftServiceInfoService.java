@@ -13,6 +13,8 @@ import java.util.List;
  */
 public interface SwiftServiceInfoService extends ConfigService<SwiftServiceInfoBean> {
 
+    String SERVICE = "cluster_master_service";
+
     boolean removeServiceInfo(SwiftServiceInfoBean serviceInfoBean);
 
     SwiftServiceInfoBean getServiceInfo(SwiftServiceInfoBean serviceInfoBean);

@@ -1,13 +1,11 @@
 package com.fr.swift.service.handler.realtime;
 
-import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.cluster.entity.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.event.base.AbstractRealTimeRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.handler.base.AbstractHandler;
 import com.fr.swift.service.handler.history.SwiftHistoryEventHandler;
@@ -15,8 +13,6 @@ import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.io.Serializable;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,62 +33,38 @@ public class SwiftRealTimeEventHandler extends AbstractHandler<AbstractRealTimeR
         if (null == realTimeServices || realTimeServices.isEmpty()) {
             throw new RuntimeException("Cannot find realTime service");
         }
-        try {
-            switch (event.subEvent()) {
-                case RECOVER:
-                    final Map<String, List<SegmentKey>> map = clusterSegmentService.getClusterSegments();
-                    Iterator<Map.Entry<String, ClusterEntity>> iterator = realTimeServices.entrySet().iterator();
-                    while (iterator.hasNext()) {
-                        Map.Entry<String, ClusterEntity> entityEntry = iterator.next();
-                        final String key = entityEntry.getKey();
-                        ClusterEntity entity = entityEntry.getValue();
-                        final List<SegmentKey> list = map.get(key);
-                        if (null != list && !list.isEmpty()) {
-                            final long start = System.currentTimeMillis();
-                            runAsyncRpc(key, entity.getServiceClass(), "recover", list)
-                                    .addCallback(new AsyncRpcCallback() {
-                                        @Override
-                                        public void success(Object result) {
-                                            LOGGER.info(String.format("clusterId: %s, recover cost: %d ms", key, (System.currentTimeMillis() - start)));
-                                        }
-
-                                        @Override
-                                        public void fail(Exception e) {
-                                            LOGGER.error(String.format("clusterId: %s, recover error!", key), e);
-                                        }
-                                    });
-                        }
-                    }
-                    return null;
-                case MERGE:
-                    final Map<String, List<SegmentKey>> mergeMap = clusterSegmentService.getClusterSegments();
-                    Iterator<Map.Entry<String, ClusterEntity>> mergeIterator = realTimeServices.entrySet().iterator();
-                    while (mergeIterator.hasNext()) {
-                        Map.Entry<String, ClusterEntity> entityEntry = mergeIterator.next();
-                        final String key = entityEntry.getKey();
-                        ClusterEntity entity = entityEntry.getValue();
-                        final List<SegmentKey> list = mergeMap.get(key);
-                        if (null != list && !list.isEmpty()) {
-                            final long start = System.currentTimeMillis();
-                            runAsyncRpc(key, entity.getServiceClass(), "merge", list)
-                                    .addCallback(new AsyncRpcCallback() {
-                                        @Override
-                                        public void success(Object result) {
-                                            LOGGER.info(String.format("clusterId: %s, merge cost: %d ms", key, (System.currentTimeMillis() - start)));
-                                        }
-
-                                        @Override
-                                        public void fail(Exception e) {
-                                            LOGGER.error(String.format("clusterId: %s, merge error!", key), e);
-                                        }
-                                    });
-                        }
-                    }
-                    return null;
-            }
-        } catch (Exception e) {
-            LOGGER.error("handle error! ", e);
-        }
+        // Recover 不在这里做了
+//        try {
+//            switch (event.subEvent()) {
+//                case RECOVER:
+//                    final Map<String, List<SegmentKey>> map = clusterSegmentService.getClusterSegments();
+//                    Iterator<Map.Entry<String, ClusterEntity>> iterator = realTimeServices.entrySet().iterator();
+//                    while (iterator.hasNext()) {
+//                        Map.Entry<String, ClusterEntity> entityEntry = iterator.next();
+//                        final String key = entityEntry.getKey();
+//                        ClusterEntity entity = entityEntry.getValue();
+//                        final List<SegmentKey> list = map.get(key);
+//                        if (null != list && !list.isEmpty()) {
+//                            final long start = System.currentTimeMillis();
+//                            runAsyncRpc(key, entity.getServiceClass(), "recover", list)
+//                                    .addCallback(new AsyncRpcCallback() {
+//                                        @Override
+//                                        public void success(Object result) {
+//                                            LOGGER.info(String.format("clusterId: %s, recover cost: %d ms", key, (System.currentTimeMillis() - start)));
+//                                        }
+//
+//                                        @Override
+//                                        public void fail(Exception e) {
+//                                            LOGGER.error(String.format("clusterId: %s, recover error!", key), e);
+//                                        }
+//                                    });
+//                        }
+//                    }
+//                    return null;
+//            }
+//        } catch (Exception e) {
+//            LOGGER.error("handle error! ", e);
+//        }
         return null;
     }
 }

@@ -2,6 +2,7 @@ package com.fr.swift.service;
 
 import com.fr.event.EventDispatcher;
 import com.fr.swift.annotation.SwiftService;
+import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Table;
@@ -33,6 +34,7 @@ import java.util.List;
  * @date 2017/10/10
  */
 @SwiftService(name = "realtime")
+@ProxyService(RealtimeService.class)
 public class SwiftRealtimeService extends AbstractSwiftService implements RealtimeService, Serializable {
 
     private static final long serialVersionUID = 4719723736240190155L;
@@ -47,7 +49,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
     private transient boolean recoverable = true;
 
-    private SwiftRealtimeService() {
+    public SwiftRealtimeService() {
     }
 
     @Override
@@ -108,26 +110,6 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     }
 
     @Override
-    public boolean delete(final SourceKey tableKey, final Where where) throws Exception {
-        taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.DELETE) {
-            @Override
-            public void doJob() throws Exception {
-                List<SegmentKey> segments = segmentManager.getSegmentKeys(tableKey);
-                for (SegmentKey segment : segments) {
-                    if (segment.getStoreType().isTransient()) {
-                        WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segment);
-                        ImmutableBitMap allshow = whereDeleter.delete(where);
-                        if (allshow.isEmpty()) {
-                            EventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, segment);
-                        }
-                    }
-                }
-            }
-        });
-        return true;
-    }
-
-    @Override
     public SwiftResultSet query(final String queryDescription) throws SQLException {
         try {
             final QueryInfoBean bean = queryBeanFactory.create(queryDescription, false);
@@ -136,6 +118,35 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         } catch (Exception e) {
             throw new SQLException(e);
         }
+    }
+
+    @Override
+    public boolean delete(final SourceKey sourceKey, final Where where, final List<String> needUpload) throws Exception {
+        taskExecutor.submit(new SwiftServiceCallable(sourceKey, ServiceTaskType.DELETE) {
+            @Override
+            public void doJob() throws Exception {
+                List<SegmentKey> segmentKeys = segmentManager.getSegmentKeys(sourceKey);
+                for (SegmentKey segKey : segmentKeys) {
+                    if (!segmentManager.existsSegment(segKey)) {
+                        continue;
+                    }
+                    WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segKey);
+                    ImmutableBitMap allShowBitmap = whereDeleter.delete(where);
+                    if (segKey.getStoreType() == Types.StoreType.MEMORY) {
+                        continue;
+                    }
+
+                    if (needUpload.contains(segKey.toString())) {
+                        if (allShowBitmap.isEmpty()) {
+                            EventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, segKey);
+                        } else {
+                            EventDispatcher.fire(SegmentEvent.MASK_HISTORY, segKey);
+                        }
+                    }
+                }
+            }
+        });
+        return true;
     }
 
     @Override

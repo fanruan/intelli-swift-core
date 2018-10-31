@@ -9,8 +9,18 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>swift-rpc</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>swift-rpc-fr</module>
+        <module>swift-rpc-netty</module>
+    </modules>
 
     <dependencies>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-proxy</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-rpc-base</artifactId>
