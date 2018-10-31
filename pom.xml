@@ -19,7 +19,6 @@
         <module>swift-decision</module>
         <module>swift-defragmentation</module>
         <module>swift-history</module>
-        <module>swift-http</module>
         <module>swift-indexing</module>
         <module>swift-jdbc</module>
         <module>swift-log-adaptor</module>
@@ -32,7 +31,6 @@
         <module>swift-slave</module>
         <module>swift-test</module>
         <module>swift-rpc-base</module>
-        <module>swift-http-api</module>
         <module>swift-analyse-base</module>
         <module>swift-repository-base</module>
         <module>swift-proxy</module>
