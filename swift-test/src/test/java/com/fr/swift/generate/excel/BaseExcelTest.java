@@ -31,10 +31,9 @@ public abstract class BaseExcelTest extends BaseConfigTest {
         SimpleWork.checkOut();
     }
 
-    //fr SimpleWorkd的原因，只能写相对路径
-    protected String path1 = "excel/test.xlsx";
-    protected String path2 = "excel/test1.xlsx";
-    protected String path3 = "excel/test2.xlsx";
+    protected String path1 = ResourceUtils.getFileAbsolutePath("excel/test.xlsx");
+    protected String path2 = ResourceUtils.getFileAbsolutePath("excel/test1.xlsx");
+    protected String path3 = ResourceUtils.getFileAbsolutePath("excel/test2.xlsx");
 
     protected ExcelDataSource dataSource;
     protected String[] names = {"A", "B"};
