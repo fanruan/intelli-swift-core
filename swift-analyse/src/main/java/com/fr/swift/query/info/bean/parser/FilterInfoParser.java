@@ -112,7 +112,7 @@ class FilterInfoParser {
         }
     }
 
-    // 虽然通过query重写的方式能处理查询这块的兼容和优化问题，但是重写过程比较繁琐。最好通过好的api设计及完善的文档来引导用户合理使用api来避免
+    // 虽然通过query重写的方式能处理查询这块的兼容和优化问题，但是重写过程比较繁琐。最好通过好的api设计及完善的文档来引导用户合理使用api
     private static List<FilterInfo> rewriteAndFilter(SourceKey table, List<NumberInRangeFilterBean> betweenFilter) {
         List<FilterInfo> filterInfoList = new ArrayList<FilterInfo>();
         if (betweenFilter.isEmpty()) {
