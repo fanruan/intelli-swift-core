@@ -2,6 +2,7 @@ package com.fr.swift.query.builder;
 
 import com.fr.stable.StringUtils;
 import com.fr.swift.exception.SwiftSegmentAbsentException;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.info.bean.parser.QueryInfoParser;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
@@ -80,6 +81,7 @@ class DetailQueryBuilder {
             throw new SwiftSegmentAbsentException("no such table");
         }
         if (isAllLocal(uris)) {
+            SwiftLoggers.getLogger().debug("All query destinations are local. Destination size {}. First segment is {}", uris.size(), uris.get(0).getSegmentId());
             return builder.buildLocalQuery(info);
         }
         List<Query<DetailResultSet>> queries = new ArrayList<Query<DetailResultSet>>();
@@ -93,6 +95,8 @@ class DetailQueryBuilder {
             queryBean.setQueryType(QueryType.LOCAL_DETAIL);
             SegmentDestination destination = entry.getValue().get(0);
             queryBean.setQueryDestination(destination);
+            SwiftLoggers.getLogger().debug("Build Remote Query. Destination from {} - > {} segment is {}",
+                    destination.getCurrentNode(), destination.getClusterId(), destination.getSegmentId());
             queryBean.setQuerySegments(getQuerySegments(entry.getValue()));
             String jsonString = QueryInfoBeanFactory.queryBean2String(queryBean);
             queries.add(new RemoteQueryImpl<DetailResultSet>(jsonString, destination));
