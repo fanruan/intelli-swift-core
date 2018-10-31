@@ -2,7 +2,6 @@ package com.fr.swift.cube.io.impl.mem;
 
 import com.fr.swift.cube.io.BuildConf;
 import com.fr.swift.cube.io.Types.IoType;
-import com.fr.swift.segment.column.Column;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.Util;
 
@@ -27,7 +26,7 @@ public final class MemIoBuilder {
                 case LONG_ARRAY:
                     return new LongArrayMemIo();
                 case REALTIME_COLUMN:
-                    return new SwiftObjectMemIo<Column>();
+                    return new SwiftObjectMemIo<Object>();
                 default:
             }
         }

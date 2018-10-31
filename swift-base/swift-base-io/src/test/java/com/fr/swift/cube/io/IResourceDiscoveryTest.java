@@ -7,12 +7,14 @@ import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.cube.io.output.Writer;
-import com.fr.swift.test.TestIo;
 import org.junit.After;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,16 +27,26 @@ import static org.junit.Assert.fail;
  * @author anchore
  * @date 2017/11/21
  */
-public class IResourceDiscoveryTest extends TestIo {
+public class IResourceDiscoveryTest {
     private static final IResourceDiscovery DISCOVERY = ResourceDiscovery.getInstance();
     private ExecutorService exec = Executors.newFixedThreadPool(8);
 
+    @Rule
+    public TestRule getExternalResource() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        return (TestRule) Class.forName("com.fr.swift.test.external.BuildCubeResource").newInstance();
+    }
+
     @Test
     public void testGetReader() throws ExecutionException, InterruptedException {
-        List<Future<Reader>> readers = new ArrayList<>();
-        IResourceLocation location = new ResourceLocation(CUBES_PATH + "/int/seg0/c1", StoreType.MEMORY);
+        List<Future<Reader>> readers = new ArrayList<Future<Reader>>();
+        final IResourceLocation location = new ResourceLocation(CUBES_PATH + "/int/seg0/c1", StoreType.MEMORY);
         for (int i = 0; i < 16; i++) {
-            readers.add(exec.submit(() -> DISCOVERY.getReader(location, new BuildConf(IoType.READ, DataType.INT))));
+            readers.add(exec.submit(new Callable<Reader>() {
+                @Override
+                public Reader call() {
+                    return DISCOVERY.getReader(location, new BuildConf(IoType.READ, DataType.INT));
+                }
+            }));
         }
 
         for (int i = 0; i < readers.size() - 1; i++) {
@@ -46,10 +58,15 @@ public class IResourceDiscoveryTest extends TestIo {
 
     @Test
     public void testGetWriter() throws ExecutionException, InterruptedException {
-        List<Future<Writer>> writers = new ArrayList<>();
-        IResourceLocation location = new ResourceLocation(CUBES_PATH + "/int/seg0/c1", StoreType.MEMORY);
+        List<Future<Writer>> writers = new ArrayList<Future<Writer>>();
+        final IResourceLocation location = new ResourceLocation(CUBES_PATH + "/int/seg0/c1", StoreType.MEMORY);
         for (int i = 0; i < 16; i++) {
-            writers.add(exec.submit(() -> DISCOVERY.getWriter(location, new BuildConf(IoType.WRITE, DataType.INT))));
+            writers.add(exec.submit(new Callable<Writer>() {
+                @Override
+                public Writer call() {
+                    return DISCOVERY.getWriter(location, new BuildConf(IoType.WRITE, DataType.INT));
+                }
+            }));
         }
         for (int i = 0; i < writers.size() - 1; i++) {
             if (writers.get(i).get() != writers.get(i + 1).get()) {

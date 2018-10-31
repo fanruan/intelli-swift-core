@@ -11,8 +11,7 @@ import com.fr.swift.cube.io.input.BitMapReader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.cube.io.output.BitMapWriter;
-
-import java.util.stream.IntStream;
+import org.junit.Before;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -23,12 +22,15 @@ import static org.junit.Assert.fail;
  */
 public class BitMapIoTest extends BaseIoTest {
     final MutableBitMap val = BitMaps.newRoaringMutable();
-    final int[] ints = r.ints(BOUND, 0, BOUND).toArray();
+    int[] ints;
     String basePath = CUBES_PATH + "/bitmap/";
 
-    {
-        for (int i : ints) {
-            val.add(i);
+    @Before
+    public void setUp() throws Exception {
+        ints = new int[BOUND];
+        for (int i = 0; i < ints.length; i++) {
+            ints[i] = r.nextInt(BOUND);
+            val.add(ints[i]);
         }
     }
 
@@ -43,11 +45,11 @@ public class BitMapIoTest extends BaseIoTest {
         BitMapReader reader = (BitMapReader) Readers.build(location, new BuildConf(IoType.READ, DataType.BITMAP));
         ImmutableBitMap actual = reader.get(pos);
 
-        IntStream.of(ints).forEach(value -> {
-            if (!actual.contains(value)) {
+        for (int i : ints) {
+            if (!actual.contains(i)) {
                 fail();
             }
-        });
+        }
 
         reader.release();
     }
@@ -67,11 +69,11 @@ public class BitMapIoTest extends BaseIoTest {
         ImmutableBitMap actual = reader.get(pos);
         ImmutableBitMap actual1 = reader.get(pos + 1);
 
-        IntStream.of(ints).forEach(value -> {
-            if (!actual.contains(value) || !actual1.contains(value)) {
+        for (int i : ints) {
+            if (!actual.contains(i) || !actual1.contains(i)) {
                 fail();
             }
-        });
+        }
 
         reader.release();
     }
