@@ -16,13 +16,13 @@ import java.util.Comparator;
  * @date 2017/11/11
  */
 public class IntDictColumn extends BaseDictColumn<Integer, IntReader> {
-    private IntReader keyReader;
 
     public IntDictColumn(IResourceLocation parent, Comparator<Integer> keyComparator) {
         super(parent, keyComparator);
     }
 
-    private void initKeyReader() {
+    @Override
+    void initKeyReader() {
         if (keyReader != null) {
             return;
         }
@@ -50,7 +50,8 @@ public class IntDictColumn extends BaseDictColumn<Integer, IntReader> {
     }
 
     class IntPutter extends BasePutter<IntWriter> {
-        private void initKeyWriter() {
+        @Override
+        void initKeyWriter() {
             if (keyWriter != null) {
                 return;
             }

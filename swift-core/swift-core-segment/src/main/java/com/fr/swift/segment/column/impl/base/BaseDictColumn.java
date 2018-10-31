@@ -121,6 +121,8 @@ abstract class BaseDictColumn<T, R extends Reader> extends AbstractDictColumn<T>
         globalIndexReader = DISCOVERY.getReader(globalIndexLocation, new BuildConf(IoType.READ, DataType.INT));
     }
 
+    abstract void initKeyReader();
+
     @Override
     public boolean isReadable() {
         initSizeReader();
@@ -232,6 +234,8 @@ abstract class BaseDictColumn<T, R extends Reader> extends AbstractDictColumn<T>
             IResourceLocation globalIndexLocation = parent.buildChildLocation(GLOBAL_INDEX);
             globalIndexWriter = DISCOVERY.getWriter(globalIndexLocation, new BuildConf(IoType.WRITE, DataType.INT));
         }
+
+        abstract void initKeyWriter();
 
         @Override
         public void release() {
