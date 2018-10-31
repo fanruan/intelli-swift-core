@@ -234,7 +234,7 @@ public class BaseSegment implements Segment {
         bitMapReader = null;
     }
 
-    private Column createRelationColumn(ColumnKey key) {
+    protected Column createRelationColumn(ColumnKey key) {
         return ((RelationColumn) SwiftContext.get().getBean("relationColumn", key)).buildRelationColumn(this);
     }
 
