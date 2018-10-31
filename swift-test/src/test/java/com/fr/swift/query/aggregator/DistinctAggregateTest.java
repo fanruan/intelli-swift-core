@@ -1,14 +1,15 @@
 package com.fr.swift.query.aggregator;
 
-import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.AllShowBitMap;
-import com.fr.swift.bitmap.impl.RoaringMutableBitMap;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.structure.iterator.RowTraversal;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.easymock.EasyMock.expect;
 
@@ -23,11 +24,11 @@ public class DistinctAggregateTest extends TestCase {
         DictionaryEncodedColumn dic = control.createMock(DictionaryEncodedColumn.class);
 
         expect(column.getDictionaryEncodedColumn()).andReturn(dic).anyTimes();
-        expect(dic.getGlobalIndexByRow(0)).andReturn(1<<18).anyTimes();
-        expect(dic.getGlobalIndexByRow(1)).andReturn(3).anyTimes();
-        expect(dic.getGlobalIndexByRow(2)).andReturn(4).anyTimes();
-        expect(dic.getGlobalIndexByRow(3)).andReturn(7).anyTimes();
-        expect(dic.getGlobalIndexByRow(4)).andReturn(8).anyTimes();
+        expect(dic.getValueByRow(0)).andReturn(1<<18).anyTimes();
+        expect(dic.getValueByRow(1)).andReturn(3).anyTimes();
+        expect(dic.getValueByRow(2)).andReturn(4).anyTimes();
+        expect(dic.getValueByRow(3)).andReturn(7).anyTimes();
+        expect(dic.getValueByRow(4)).andReturn(8).anyTimes();
 
         control.replay();
 
@@ -50,21 +51,21 @@ public class DistinctAggregateTest extends TestCase {
     public void testCombine() {
         DistinctCountAggregatorValue value = new DistinctCountAggregatorValue();
         DistinctCountAggregatorValue other = new DistinctCountAggregatorValue();
-        MutableBitMap bitMap1 = RoaringMutableBitMap.of();
-        MutableBitMap bitMap2 = RoaringMutableBitMap.of();
+        Set set1 = new HashSet<>();
+        Set set2 = new HashSet<>();
 
-        bitMap1.add(1);
-        bitMap1.add(4);
-        bitMap1.add(7);
-        bitMap1.add(9);
+        set1.add(1);
+        set1.add(4);
+        set1.add(7);
+        set1.add(9);
 
-        bitMap2.add(1);
-        bitMap2.add(6);
-        bitMap2.add(7);
-        bitMap2.add(10);
+        set2.add(1);
+        set2.add(6);
+        set2.add(7);
+        set2.add(10);
 
-//        value.setBitMap((RoaringMutableBitMap)bitMap1);
-//        other.setBitMap((RoaringMutableBitMap)bitMap2);
+        value.setBitMap(set1);
+        other.setBitMap(set2);
 
         double expect = 6.0;
         DistinctAggregate distinctCalculator = (DistinctAggregate)DistinctAggregate.INSTANCE;
