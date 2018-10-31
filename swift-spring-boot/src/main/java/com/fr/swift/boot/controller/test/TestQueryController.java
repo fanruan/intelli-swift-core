@@ -4,8 +4,6 @@ import com.fr.swift.api.rpc.SimpleDetailQueryBean;
 import com.fr.swift.boot.controller.SwiftApiConstants;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.builder.QueryBuilder;
-import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
-import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.query.QueryBean;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -37,8 +34,7 @@ public class TestQueryController {
         List<Row> rows = new ArrayList<Row>();
         int count = 200;
         long start = System.currentTimeMillis();
-        QueryBean queryBean = new QueryInfoBeanFactory().create(jsonString);
-        ((DetailQueryInfoBean) queryBean).setQueryId(UUID.randomUUID().toString());
+        QueryBean queryBean = new QueryInfoBeanFactory().create(jsonString, true);
         Query query = QueryBuilder.buildQuery(queryBean);
         SwiftResultSet resultSet = query.getQueryResult();
         if (resultSet != null) {
@@ -85,8 +81,7 @@ public class TestQueryController {
     public List<Row> groupQuery(@PathVariable("sourceKey") String jsonString) throws Exception {
         List<Row> rows = new ArrayList<Row>();
         // swift-test模块的resources目录下有json示例
-        QueryBean queryBean = new QueryInfoBeanFactory().create(jsonString);
-        ((GroupQueryInfoBean) queryBean).setQueryId(UUID.randomUUID().toString());
+        QueryBean queryBean = new QueryInfoBeanFactory().create(jsonString, true);
         long start = System.currentTimeMillis();
         Query query = QueryBuilder.buildQuery(queryBean);
         SwiftResultSet resultSet = query.getQueryResult();

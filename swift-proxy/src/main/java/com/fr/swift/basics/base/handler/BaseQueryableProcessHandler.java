@@ -24,7 +24,7 @@ public abstract class BaseQueryableProcessHandler extends BaseProcessHandler imp
     @Override
     public Object processResult(Method method, Target target, Object... args) throws Throwable {
         String queryJson = (String) args[0];
-        queryBean = SwiftContext.get().getBean(QueryBeanFactory.class).create(queryJson);
+        queryBean = SwiftContext.get().getBean(QueryBeanFactory.class).create(queryJson, false);
         return super.processResult(method, target, args);
     }
 

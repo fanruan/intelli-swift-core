@@ -69,7 +69,7 @@ public class UploadHistoryListener extends Listener<SegmentKey> {
 
                         notifyDownload(segKey);
                     } catch (Exception e) {
-                        SwiftLoggers.getLogger().error(String.format("Cannot upload Segment which path is %s", local), e);
+                        SwiftLoggers.getLogger().error("Cannot upload Segment which path is {}", local, e);
                     }
                 } else {
                     SegmentKey realtimeSegKey = getRealtimeSegKey(segKey);

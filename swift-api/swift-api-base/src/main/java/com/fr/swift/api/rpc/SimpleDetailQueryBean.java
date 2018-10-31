@@ -42,7 +42,7 @@ public class SimpleDetailQueryBean {
     }
 
     public QueryBean toQueryBean() throws IOException {
-        return SwiftContext.get().getBean(QueryBeanFactory.class).create(getQueryString());
+        return SwiftContext.get().getBean(QueryBeanFactory.class).create(getQueryString(), true);
     }
 
     public String getQueryString() {

@@ -5,7 +5,6 @@ import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
@@ -113,7 +112,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     @Override
     public SwiftResultSet query(final String queryDescription) throws SQLException {
         try {
-            final QueryInfoBean bean = queryBeanFactory.create(queryDescription);
+            final QueryInfoBean bean = queryBeanFactory.create(queryDescription, false);
             SessionFactory sessionFactory = SwiftContext.get().getBean(SessionFactory.class);
             return sessionFactory.openSession(bean.getQueryId()).executeQuery(bean);
         } catch (Exception e) {
@@ -133,7 +132,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
                     }
                     WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segKey);
                     ImmutableBitMap allShowBitmap = whereDeleter.delete(where);
-                    if (segKey.getStoreType() == Types.StoreType.MEMORY) {
+                    if (segKey.getStoreType().isTransient()) {
                         continue;
                     }
 
