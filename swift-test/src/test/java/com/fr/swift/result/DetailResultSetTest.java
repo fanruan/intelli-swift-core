@@ -456,10 +456,10 @@ public class DetailResultSetTest extends TestCase {
         try {
             while (rs.hasNext()) {
                 Row row = rs.getNextRow();
-                assertEquals((int) row.getValue(0), intData[i / 3]);
-                assertEquals((long) row.getValue(1), longData[i / 3]);
-                assertEquals(row.getValue(2), doubleData[i / 3]);
-                assertEquals(row.getValue(3), strData[i / 3]);
+                assertEquals((int) row.getValue(0), intData[i]);
+                assertEquals((long) row.getValue(1), longData[i]);
+                assertEquals(row.getValue(2), doubleData[i]);
+                assertEquals(row.getValue(3), strData[i]);
                 i++;
             }
         } catch (Exception e) {

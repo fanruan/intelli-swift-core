@@ -18,7 +18,7 @@ import java.util.stream.IntStream;
  */
 public class NumberInRangeFilterTest extends BaseNumberFilterTest {
 
-    static Class[] doubleType = new Class[]{int.class, Number.class, Number.class, boolean.class, boolean.class, Column.class};
+    static Class[] doubleType = new Class[]{int.class, Number.class, Number.class, boolean.class, boolean.class, Column.class,int.class};
 
     private Number min;
     private Number max;
@@ -164,10 +164,10 @@ public class NumberInRangeFilterTest extends BaseNumberFilterTest {
             Constructor<? extends DetailFilter> c;
             if (isNot) {
                 c = filterClass.getDeclaredConstructor(parameters.toArray(new Class[6]));
-                this.filter = c.newInstance(details.size(), min, max, minIncluded, maxIncluded, column);
+                this.filter = c.newInstance(details.size(), min, max, minIncluded, maxIncluded, column,10000);
             } else {
-                c = filterClass.getDeclaredConstructor(parameters.subList(1, parameters.size()).toArray(new Class[5]));
-                this.filter = c.newInstance(min, max, minIncluded, maxIncluded, column);
+                c = filterClass.getDeclaredConstructor(parameters.subList(1, parameters.size()).toArray(new Class[6]));
+                this.filter = c.newInstance(min, max, minIncluded, maxIncluded, column,10000);
             }
             expectedIndexes = getExpectedIndexes();
         } catch (Exception e) {

@@ -106,14 +106,6 @@ public class SegmentResultSet implements SwiftResultSet {
     @Override
     public void close() {
         SegmentUtils.release(seg);
-        try {
-            SwiftMetaData meta = seg.getMetaData();
-            for (int i = 0; i < meta.getColumnCount(); i++) {
-                Column<?> column = seg.getColumn(new ColumnKey(meta.getColumnName(i + 1)));
-                SegmentUtils.release(column);
-            }
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().error(e);
-        }
+        SegmentUtils.releaseColumns(seg);
     }
 }

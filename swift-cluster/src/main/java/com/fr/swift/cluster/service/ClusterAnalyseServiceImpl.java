@@ -191,6 +191,7 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
         Assert.notNull(remoteURI);
         String address = remoteURI.getAddress();
         String methodName = remoteURI.getMethodName();
+        SwiftLoggers.getLogger().debug("Execute remote query from {} -> {}, segment is {}", remoteURI.getCurrentNode(), address, remoteURI.getSegmentId());
         Class clazz = remoteURI.getServiceClass();
         return ClusterCommonUtils.runAsyncRpc(address, clazz, ServiceMethodRegistry.INSTANCE.getMethodByName(methodName), jsonString);
     }
