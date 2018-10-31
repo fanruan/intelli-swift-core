@@ -27,13 +27,24 @@ public class BuildCubeResource implements TestRule {
                 around(new ConfDbResource()).
                 around(new ConnectionResource()).
                 around(new ExternalResource() {
+
+                    String prevPath;
+
                     @Override
                     protected void before() {
                         Reflect.on(ResourceDiscovery.getInstance()).field("cubeMemIos").call("clear");
 
                         String runPath = TestResource.getRunPath(description.getTestClass());
                         FileUtil.delete(runPath);
-                        SwiftContext.get().getBean(SwiftCubePathService.class).setSwiftPath(runPath);
+
+                        SwiftCubePathService pathService = SwiftContext.get().getBean(SwiftCubePathService.class);
+                        prevPath = pathService.getSwiftPath();
+                        pathService.setSwiftPath(runPath);
+                    }
+
+                    @Override
+                    protected void after() {
+                        SwiftContext.get().getBean(SwiftCubePathService.class).setSwiftPath(prevPath);
                     }
                 }).apply(statement, description);
     }

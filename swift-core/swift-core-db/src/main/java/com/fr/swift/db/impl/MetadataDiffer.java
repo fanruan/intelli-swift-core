@@ -4,9 +4,9 @@ import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.util.Optional;
 import com.fr.swift.util.Util;
 import com.fr.swift.util.function.Consumer;
-import com.fr.third.guava.base.Optional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +74,7 @@ public class MetadataDiffer {
         try {
             return Optional.of(meta.getColumn(columnName));
         } catch (SwiftMetaDataException e) {
-            return Optional.absent();
+            return Optional.empty();
         }
     }
 

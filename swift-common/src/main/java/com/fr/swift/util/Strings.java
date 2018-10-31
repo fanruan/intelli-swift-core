@@ -47,4 +47,28 @@ public final class Strings {
     public static String unifySlash(String s) {
         return trimSeparator(s, "\\", "/");
     }
+
+    public static boolean isEmpty(Object str) {
+        return str == null || "".equals(str);
+    }
+
+    public static boolean hasLength(CharSequence str) {
+        return str != null && str.length() > 0;
+    }
+
+    public static boolean hasText(CharSequence str) {
+        if (!hasLength(str)) {
+            return false;
+        } else {
+            int strLen = str.length();
+
+            for (int i = 0; i < strLen; ++i) {
+                if (!Character.isWhitespace(str.charAt(i))) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
 }

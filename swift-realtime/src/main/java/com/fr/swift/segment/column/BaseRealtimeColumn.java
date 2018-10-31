@@ -13,7 +13,7 @@ import com.fr.swift.cube.io.impl.mem.SwiftObjectMemIo;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.segment.column.impl.BaseColumn;
 import com.fr.swift.source.ColumnTypeConstants;
-import com.fr.third.guava.base.Optional;
+import com.fr.swift.util.Optional;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -276,7 +276,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
             indexAndId = new IndexAndId();
 
             nullIndex = BitMaps.newRoaringMutable();
-            nullId = Optional.absent();
+            nullId = Optional.empty();
 
             // 三个视图，映射至内存数据
             detailColumn = new RealtimeDetailColumn();

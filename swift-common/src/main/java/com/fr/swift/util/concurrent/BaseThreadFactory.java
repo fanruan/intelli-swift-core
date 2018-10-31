@@ -1,7 +1,6 @@
 package com.fr.swift.util.concurrent;
 
 import com.fr.swift.util.Util;
-import com.fr.third.javax.annotation.Nonnull;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -29,7 +28,10 @@ abstract class BaseThreadFactory implements ThreadFactory {
     }
 
     @Override
-    public Thread newThread(@Nonnull Runnable r) {
+    public Thread newThread(Runnable r) {
+        if (r == null) {
+            return null;
+        }
         return newThread(group, r, String.format("%s-%d", namePrefix, threadNumber.getAndIncrement()), 0);
     }
 
