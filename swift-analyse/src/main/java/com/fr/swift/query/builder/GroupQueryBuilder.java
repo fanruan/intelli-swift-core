@@ -1,5 +1,6 @@
 package com.fr.swift.query.builder;
 
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.info.bean.parser.QueryInfoParser;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
@@ -93,6 +94,7 @@ class GroupQueryBuilder {
     private static Query<NodeResultSet> buildQuery(List<SegmentDestination> uris, GroupQueryInfo info,
                                                    GroupQueryInfoBean queryBean, LocalGroupQueryBuilder builder) throws JsonProcessingException {
         if (DetailQueryBuilder.isAllLocal(uris)) {
+            SwiftLoggers.getLogger().debug("All query destinations are local. Destination size {}. First segment is {}", uris.size(), uris.get(0).getSegmentId());
             return builder.buildPostQuery(builder.buildLocalQuery(info), info);
         }
         List<Query<NodeResultSet>> queries = new ArrayList<Query<NodeResultSet>>();
@@ -108,6 +110,8 @@ class GroupQueryBuilder {
             Map.Entry<String, List<SegmentDestination>> entry = map.entrySet().iterator().next();
             SegmentDestination destination = entry.getValue().get(0);
             queryBean.setQueryDestination(destination);
+            SwiftLoggers.getLogger().debug("Build Remote Query. Destination from {} - > {} segment is {}",
+                    destination.getCurrentNode(), destination.getClusterId(), destination.getSegmentId());
             queryBean.setQuerySegments(DetailQueryBuilder.getQuerySegments(entry.getValue()));
             String jsonString = QueryInfoBeanFactory.queryBean2String(queryBean);
             return new RemoteQueryImpl<NodeResultSet>(jsonString, destination);
@@ -117,6 +121,8 @@ class GroupQueryBuilder {
             queryBean.setQueryType(QueryType.LOCAL_GROUP_PART);
             SegmentDestination destination = entry.getValue().get(0);
             queryBean.setQueryDestination(destination);
+            SwiftLoggers.getLogger().debug("Build Remote Query. Destination from {} - > {} segment is {}",
+                    destination.getCurrentNode(), destination.getClusterId(), destination.getSegmentId());
             queryBean.setQuerySegments(DetailQueryBuilder.getQuerySegments(entry.getValue()));
             String jsonString = QueryInfoBeanFactory.queryBean2String(queryBean);
             queries.add(new RemoteQueryImpl<NodeResultSet>(jsonString, destination));
