@@ -8,10 +8,6 @@ import com.fr.event.Event;
 import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
 import com.fr.general.ComparatorUtils;
-import com.fr.swift.cluster.service.ClusterAnalyseServiceImpl;
-import com.fr.swift.cluster.service.ClusterHistoryServiceImpl;
-import com.fr.swift.cluster.service.ClusterIndexingServiceImpl;
-import com.fr.swift.cluster.service.ClusterRealTimeServiceImpl;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.cluster.service.SegmentLocationInfoContainer;
 import com.fr.swift.context.SwiftContext;
@@ -29,11 +25,11 @@ import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
+import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.HistoryService;
 import com.fr.swift.service.IndexingService;
+import com.fr.swift.service.RealtimeService;
 import com.fr.swift.service.ServiceType;
-import com.fr.swift.service.cluster.ClusterAnalyseService;
-import com.fr.swift.service.cluster.ClusterRealTimeService;
 import com.fr.swift.service.listener.RemoteServiceSender;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.structure.Pair;
@@ -57,8 +53,8 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
 
     private SwiftServiceListenerHandler remoteServiceSender;
 
-    private ClusterAnalyseService clusterAnalyseService;
-    private ClusterRealTimeService clusterRealTimeService;
+    private AnalyseService clusterAnalyseService;
+    private RealtimeService clusterRealTimeService;
     private IndexingService clusterIndexingService;
     private HistoryService clusterHistoryService;
 
@@ -83,10 +79,10 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
     public void approach(ClusterToolKit clusterToolKit) {
         //注册rpc服务
         remoteServiceSender = clusterToolKit.getRPCProxyFactory().newBuilder(SwiftContext.get().getBean(RemoteServiceSender.class)).build();
-        clusterAnalyseService = clusterToolKit.getRPCProxyFactory().newBuilder(SwiftContext.get().getBean(ClusterAnalyseServiceImpl.class)).build();
-        clusterRealTimeService = clusterToolKit.getRPCProxyFactory().newBuilder(SwiftContext.get().getBean(ClusterRealTimeServiceImpl.class)).build();
-        clusterIndexingService = clusterToolKit.getRPCProxyFactory().newBuilder(SwiftContext.get().getBean(ClusterIndexingServiceImpl.class)).build();
-        clusterHistoryService = clusterToolKit.getRPCProxyFactory().newBuilder(SwiftContext.get().getBean(ClusterHistoryServiceImpl.class)).build();
+        clusterAnalyseService = clusterToolKit.getRPCProxyFactory().newBuilder(SwiftContext.get().getBean(AnalyseService.class)).build();
+        clusterRealTimeService = clusterToolKit.getRPCProxyFactory().newBuilder(SwiftContext.get().getBean(RealtimeService.class)).build();
+        clusterIndexingService = clusterToolKit.getRPCProxyFactory().newBuilder(SwiftContext.get().getBean(IndexingService.class)).build();
+        clusterHistoryService = clusterToolKit.getRPCProxyFactory().newBuilder(SwiftContext.get().getBean(HistoryService.class)).build();
 
         EventDispatcher.listen(ClusterViewEvent.NODE_JOINED, new Listener<ClusterNode>() {
             @Override

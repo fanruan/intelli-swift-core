@@ -10,13 +10,11 @@ import com.fr.swift.controller.BaseController;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.service.RealtimeService;
-import com.fr.swift.source.DataSource;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.source.db.TableDBSource;
 import com.fr.swift.util.Assert;
 import com.fr.third.springframework.stereotype.Controller;
 import com.fr.third.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +25,6 @@ import com.fr.third.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -79,22 +76,22 @@ public class RealtimeController extends BaseController {
         }
 
         @Override
-        public SwiftMetaData getMetaData() throws SQLException {
+        public SwiftMetaData getMetaData() {
             return table.getMetadata();
         }
 
         @Override
-        public boolean hasNext() throws SQLException {
+        public boolean hasNext() {
             return currentCount < dataList.size();
         }
 
         @Override
-        public Row getNextRow() throws SQLException {
+        public Row getNextRow() {
             return new ListBasedRow(dataList.get(currentCount++));
         }
 
         @Override
-        public void close() throws SQLException {
+        public void close() {
             currentCount = 0;
         }
     }

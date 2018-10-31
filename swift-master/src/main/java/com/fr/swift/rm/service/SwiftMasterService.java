@@ -1,6 +1,6 @@
 package com.fr.swift.rm.service;
 
-import com.fr.swift.annotation.RpcService;
+import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.cluster.service.MasterService;
 import com.fr.swift.cluster.service.SlaveService;
 import com.fr.swift.container.NodeContainer;
@@ -22,7 +22,7 @@ import java.util.List;
  * @since Advanced FineBI 5.0
  */
 @Service("swiftMasterService")
-@RpcService(value = MasterService.class, type = RpcService.RpcServiceType.INTERNAL)
+@ProxyService(value = MasterService.class, type = ProxyService.ServiceType.INTERNAL)
 public class SwiftMasterService implements MasterService {
 
     @Override
@@ -55,7 +55,7 @@ public class SwiftMasterService implements MasterService {
     }
 
     @Override
-    public Collection<NodeState> pullNodeStates() throws Exception {
+    public Collection<NodeState> pullNodeStates() {
         List<NodeState> nodeStateList = NodeContainer.getAllNodeStates();
         return nodeStateList;
     }

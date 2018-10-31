@@ -10,7 +10,6 @@
     <version>10.0</version>
     <modules>
         <module>swift-analyse</module>
-        <module>swift-api-public</module>
         <module>swift-base</module>
         <module>swift-boot</module>
         <module>swift-core</module>
@@ -31,12 +30,11 @@
         <module>swift-server</module>
         <module>swift-slave</module>
         <module>swift-test</module>
-        <module>swift-api-base</module>
-        <module>swift-api-private</module>
         <module>swift-rpc-base</module>
         <module>swift-analyse-base</module>
         <module>swift-repository-base</module>
-        <module>swift-spring-boot</module>
+        <module>swift-proxy</module>
+        <module>swift-api</module>
 
 
     </modules>
@@ -46,12 +44,15 @@
         <swift.version>10.0</swift.version>
         <junit.version>4.12</junit.version>
         <easymock.version>3.4</easymock.version>
+        <datamining.version>1.1.25</datamining.version>
+        <weka.version>3.8.2</weka.version>
         <fineio.version>2.0-RELEASE-SNAPSHOT</fineio.version>
+        <rengine.version>1.8.1</rengine.version>
+        <output>target</output>
     </properties>
 
     <build>
-        <outputDirectory>${user.dir}/target/main</outputDirectory>
-        <testOutputDirectory>${user.dir}/target/test</testOutputDirectory>
+        <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>

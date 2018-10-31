@@ -2,8 +2,10 @@ package com.fr.swift.service;
 
 import com.fr.event.EventDispatcher;
 import com.fr.swift.annotation.SwiftService;
+import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
+import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentService;
@@ -52,6 +54,7 @@ import java.util.concurrent.ExecutorService;
  * @date 2017/10/10
  */
 @SwiftService(name = "history")
+@ProxyService(HistoryService.class)
 public class SwiftHistoryService extends AbstractSwiftService implements HistoryService, Serializable {
     private static final long serialVersionUID = -6013675740141588108L;
 
@@ -71,8 +74,10 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
 
     private transient ExecutorService loadDataService;
 
+    private transient SwiftCubePathService cubePathService;
 
-    private SwiftHistoryService() {
+
+    public SwiftHistoryService() {
     }
 
     @Override
@@ -86,6 +91,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         queryBeanFactory = SwiftContext.get().getBean(QueryBeanFactory.class);
         segmentService = SwiftContext.get().getBean(SwiftSegmentServiceProvider.class);
         loadDataService = SwiftExecutors.newSingleThreadExecutor(new PoolThreadFactory(SwiftHistoryService.class));
+        cubePathService = SwiftContext.get().getBean(SwiftCubePathService.class);
         checkSegmentExists();
         return true;
     }
@@ -99,7 +105,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
             List<SegmentKey> notExists = new ArrayList<SegmentKey>();
             final Map<String, Set<String>> needDownload = new HashMap<String, Set<String>>();
             for (SegmentKey segmentKey : value) {
-                if (segmentKey.getStoreType().isPersistent()) {
+                if (segmentKey.getStoreType() == Types.StoreType.FINE_IO) {
                     if (!segmentManager.getSegment(segmentKey).isReadable()) {
                         String remotePath = String.format("%s/%s", segmentKey.getSwiftSchema().getDir(), segmentKey.getUri().getPath());
                         if (repository.exists(remotePath)) {
@@ -240,22 +246,57 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     }
 
     @Override
-    public boolean delete(final SourceKey tableKey, final Where where) throws Exception {
-        taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.DELETE) {
+    public boolean delete(final SourceKey sourceKey, final Where where, final List<String> needUpload) throws Exception {
+        ServiceTaskExecutor.TaskFuture future = taskExecutor.submit(new SwiftServiceCallable(sourceKey, ServiceTaskType.DELETE) {
             @Override
             public void doJob() throws Exception {
-                List<SegmentKey> segments = segmentManager.getSegmentKeys(tableKey);
-                for (SegmentKey segment : segments) {
-                    if (segment.getStoreType().isPersistent()) {
-                        WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segment);
-                        ImmutableBitMap allshow = whereDeleter.delete(where);
-                        if (allshow.isEmpty()) {
-                            EventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, segment);
+                List<SegmentKey> segmentKeys = segmentManager.getSegmentKeys(sourceKey);
+                for (SegmentKey segKey : segmentKeys) {
+                    if (segKey.getStoreType() != Types.StoreType.FINE_IO) {
+                        continue;
+                    }
+                    if (!segmentManager.existsSegment(segKey)) {
+                        continue;
+                    }
+                    WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segKey);
+                    ImmutableBitMap allShowBitmap = whereDeleter.delete(where);
+                    if (needUpload.contains(segKey.toString())) {
+                        if (allShowBitmap.isEmpty()) {
+                            EventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, segKey);
+                        } else {
+                            EventDispatcher.fire(SegmentEvent.MASK_HISTORY, segKey);
                         }
                     }
                 }
             }
         });
+        future.get();
         return true;
+    }
+
+    @Override
+    public void truncate(String sourceKey) {
+        SwiftTablePathEntity entity = tablePathService.get(sourceKey);
+        int path = 0;
+        if (null != entity) {
+            path = entity.getTablePath() == null ? 0 : entity.getTablePath();
+            tablePathService.removePath(sourceKey);
+        }
+        SwiftSegmentService segmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
+        segmentService.removeSegments(sourceKey);
+
+        String localPath = String.format("%s/%d/%s", cubePathService.getSwiftPath(), path, sourceKey);
+        FileUtil.delete(localPath);
+    }
+
+    @Override
+    public void commonLoad(String sourceKey, Map<String, List<String>> needLoad) throws Exception {
+        Map<String, Set<String>> needLoadPath = new HashMap<String, Set<String>>();
+        Set<String> uris = new HashSet<String>();
+        for (Map.Entry<String, List<String>> entry : needLoad.entrySet()) {
+            uris.addAll(entry.getValue());
+        }
+        needLoadPath.put(sourceKey, uris);
+        load(needLoadPath, false);
     }
 }
