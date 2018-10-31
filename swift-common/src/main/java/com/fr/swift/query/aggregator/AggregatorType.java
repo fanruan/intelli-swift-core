@@ -9,5 +9,8 @@ public enum AggregatorType {
     HLL_DISTINCT,
     STRING_COMBINE,
     DATE_MAX, DATE_MIN, MEDIAN, VARIANCE, STANDARD_DEVIATION,
-    DUMMY
+    DUMMY,
+
+    // extension
+    DISTINCT_DATE_YMD
 }

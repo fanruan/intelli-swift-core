@@ -8,6 +8,7 @@ import com.fr.third.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.UUID;
 
 /**
  * @author Lyon
@@ -28,7 +29,11 @@ public class QueryInfoBeanFactory implements QueryBeanFactory {
     }
 
     @Override
-    public QueryInfoBean create(String jsonString) throws IOException {
-        return MAPPER.readValue(jsonString, QueryInfoBean.class);
+    public QueryInfoBean create(String jsonString, boolean initQueryId) throws IOException {
+        QueryInfoBean bean = MAPPER.readValue(jsonString, QueryInfoBean.class);
+        if (initQueryId) {
+            bean.setQueryId(UUID.randomUUID().toString());
+        }
+        return bean;
     }
 }

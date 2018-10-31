@@ -1,6 +1,6 @@
 package com.fr.swift.segment.recover;
 
-import com.fr.swift.bitmap.impl.EmptyBitmap;
+import com.fr.swift.bitmap.impl.AllShowBitMap;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
@@ -38,7 +38,7 @@ public class RedisSegmentRecovery extends AbstractSegmentRecovery {
             SwiftLoggers.getLogger().warn("{} recover failed, caused by {}", segKey, e.getMessage());
             if (realtimeSeg != null) {
                 realtimeSeg.putRowCount(0);
-                realtimeSeg.putAllShowIndex(new EmptyBitmap());
+                realtimeSeg.putAllShowIndex(AllShowBitMap.of(0));
             }
         } finally {
             if (resultSet != null) {

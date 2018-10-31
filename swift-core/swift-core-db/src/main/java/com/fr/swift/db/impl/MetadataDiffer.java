@@ -65,7 +65,7 @@ public class MetadataDiffer {
             }
             SwiftMetaDataColumn oldColumnMeta = columnMeta.get();
             if (!hasSameType(oldColumnMeta, newColumnMeta)) {
-                SwiftLoggers.getLogger().error("modify column type from {} to {} is not supported", oldColumnMeta, newColumnMeta);
+                SwiftLoggers.getLogger().warn("modify column type from {} to {} is not supported", oldColumnMeta, newColumnMeta);
             }
         }
     }

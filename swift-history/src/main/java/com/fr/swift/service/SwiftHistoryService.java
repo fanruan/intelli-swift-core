@@ -10,7 +10,6 @@ import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.config.service.impl.SwiftSegmentServiceProvider;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Where;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
@@ -231,7 +230,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     @Override
     public SwiftResultSet query(final String queryDescription) throws Exception {
         try {
-            final QueryInfoBean bean = queryBeanFactory.create(queryDescription);
+            final QueryInfoBean bean = queryBeanFactory.create(queryDescription, false);
             SessionFactory factory = SwiftContext.get().getBean(SessionFactory.class);
             return factory.openSession(bean.getQueryId()).executeQuery(bean);
         } catch (IOException e) {
