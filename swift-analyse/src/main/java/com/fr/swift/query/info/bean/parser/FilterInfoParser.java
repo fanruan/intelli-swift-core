@@ -1,6 +1,7 @@
 package com.fr.swift.query.info.bean.parser;
 
 import com.fr.general.DateUtils;
+import com.fr.swift.compare.Comparators;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
@@ -26,8 +27,12 @@ import com.fr.swift.source.SwiftMetaDataColumn;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -46,11 +51,17 @@ class FilterInfoParser {
             case OR:
                 List<FilterInfoBean> filterInfoBeans = (List<FilterInfoBean>) bean.getFilterValue();
                 List<FilterInfo> filterInfoList = new ArrayList<FilterInfo>();
+                List<NumberInRangeFilterBean> betweenFilter = new ArrayList<NumberInRangeFilterBean>();
                 if (null != filterInfoBeans) {
                     for (FilterInfoBean filterInfoBean : filterInfoBeans) {
-                        filterInfoList.add(parse(table, filterInfoBean));
+                        if (bean.getType() == SwiftDetailFilterType.AND && filterInfoBean.getType() == SwiftDetailFilterType.NUMBER_IN_RANGE) {
+                            betweenFilter.add((NumberInRangeFilterBean) filterInfoBean);
+                        } else {
+                            filterInfoList.add(parse(table, filterInfoBean));
+                        }
                     }
                 }
+                filterInfoList.addAll(rewriteAndFilter(table, betweenFilter));
                 return new GeneralFilterInfo(filterInfoList, bean.getType() == SwiftDetailFilterType.OR ? GeneralFilterInfo.OR : GeneralFilterInfo.AND);
             case NOT:
                 FilterInfoBean filterInfoBean = ((NotFilterBean) bean).getFilterValue();
@@ -98,6 +109,95 @@ class FilterInfoParser {
             }
             default:
                 return createDetailFilterInfo((DetailFilterInfoBean) bean, null);
+        }
+    }
+
+    // 虽然通过query重写的方式能处理查询这块的兼容和优化问题，但是重写过程比较繁琐。最好通过好的api设计及完善的文档来引导用户合理使用api来避免
+    private static List<FilterInfo> rewriteAndFilter(SourceKey table, List<NumberInRangeFilterBean> betweenFilter) {
+        List<FilterInfo> filterInfoList = new ArrayList<FilterInfo>();
+        if (betweenFilter.isEmpty()) {
+            return filterInfoList;
+        }
+        // 按字段分组
+        Map<String, List<NumberInRangeFilterBean>> name2beanMap = new HashMap<String, List<NumberInRangeFilterBean>>();
+        for (NumberInRangeFilterBean bean : betweenFilter) {
+            List<NumberInRangeFilterBean> beans = name2beanMap.get(bean.getColumn());
+            if (beans == null) {
+                beans = new ArrayList<NumberInRangeFilterBean>();
+                name2beanMap.put(bean.getColumn(), beans);
+            }
+            beans.add(bean);
+        }
+        for (Map.Entry<String, List<NumberInRangeFilterBean>> entry : name2beanMap.entrySet()) {
+            ColumnTypeConstants.ClassType classType = getClassType(table, entry.getKey());
+            Comparator valueComparator = initComparator(table, entry.getKey());
+            final Comparator<RangeFilterValueBean> beanComparator = new BeanComparator(classType, valueComparator);
+            final Comparator<NumberInRangeFilterBean> comparator = new Comparator<NumberInRangeFilterBean>() {
+                @Override
+                public int compare(NumberInRangeFilterBean o1, NumberInRangeFilterBean o2) {
+                    return beanComparator.compare(o1.getFilterValue(), o2.getFilterValue());
+                }
+            };
+            List<NumberInRangeFilterBean> beans = entry.getValue();
+            // 排序
+            Collections.sort(beans, comparator);
+            // 合并区间
+            List<NumberInRangeFilterBean> mergedBeans = new ArrayList<NumberInRangeFilterBean>();
+            NumberInRangeFilterBean prev = null;
+            for (NumberInRangeFilterBean inter : beans) {
+                if (prev == null || valueComparator.compare(
+                        convertValue(inter.getFilterValue().getStart(), classType, true),
+                        convertValue(prev.getFilterValue().getEnd(), classType, false)) > 0) {
+                    mergedBeans.add(inter);
+                    prev = inter;
+                } else if (valueComparator.compare(inter.getFilterValue().getEnd(), prev.getFilterValue().getEnd()) > 0) {
+                    prev.getFilterValue().setEnd(inter.getFilterValue().getEnd());
+                    prev.getFilterValue().setEndIncluded(inter.getFilterValue().isEndIncluded());
+                }
+            }
+            // 解析重写后的bean
+            for (FilterInfoBean filterInfoBean : mergedBeans) {
+                filterInfoList.add(parse(table, filterInfoBean));
+            }
+        }
+        return filterInfoList;
+    }
+
+    private static Object convertValue(Object origin, ColumnTypeConstants.ClassType classType, boolean start) {
+        switch (classType) {
+            case INTEGER:
+            case LONG:
+                return origin == null ? (start ? Long.MIN_VALUE : Long.MAX_VALUE) : Long.parseLong(origin.toString());
+            case DATE:
+                return origin == null ? (start ? Long.MIN_VALUE : Long.MAX_VALUE) : DateUtils.string2Date(origin.toString(), true).getTime();
+            default:
+                return origin == null ? (start ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY) : Double.parseDouble(origin.toString());
+        }
+    }
+
+    private static Comparator initComparator(SourceKey table, String column) {
+        ColumnTypeConstants.ClassType classType = getClassType(table, column);
+        switch (classType) {
+            case DOUBLE:
+                return Comparators.<Double>asc();
+            default:
+                return Comparators.<Long>asc();
+        }
+    }
+
+    private static class BeanComparator implements Comparator<RangeFilterValueBean> {
+
+        private ColumnTypeConstants.ClassType classType;
+        private Comparator comparator;
+
+        public BeanComparator(ColumnTypeConstants.ClassType classType, Comparator comparator) {
+            this.classType = classType;
+            this.comparator = comparator;
+        }
+
+        @Override
+        public int compare(RangeFilterValueBean o1, RangeFilterValueBean o2) {
+            return comparator.compare(convertValue(o1.getStart(), classType, false), convertValue(o2.getStart(), classType, false));
         }
     }
 
