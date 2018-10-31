@@ -58,6 +58,7 @@ public class BaseSegment implements Segment {
     private BitMapReader bitMapReader;
 
     private final Map<ColumnKey, Column<?>> columns = new ConcurrentHashMap<ColumnKey, Column<?>>();
+    private ImmutableBitMap allShowBitMapCache;
 
     public BaseSegment(IResourceLocation location, SwiftMetaData meta) {
         this.location = location;
@@ -79,8 +80,9 @@ public class BaseSegment implements Segment {
                 }
                 IResourceLocation child = location.buildChildLocation(columnId);
                 Column<?> column = newColumn(child, ColumnTypeUtils.getClassType(meta.getColumn(name)));
-                // FIXME: 2018/10/24 对于realtime column的缓存策略需要调整一下
-//                columns.put(key, column);
+                if (isHistory()) {
+                    columns.put(key, column);
+                }
                 return (Column<T>) column;
             }
         } catch (SwiftMetaDataColumnAbsentException e) {
@@ -159,9 +161,13 @@ public class BaseSegment implements Segment {
     }
 
     @Override
-    public ImmutableBitMap getAllShowIndex() {
+    public synchronized ImmutableBitMap getAllShowIndex() {
+        if (isHistory() && allShowBitMapCache != null) {
+            return allShowBitMapCache;
+        }
         initBitMapReader();
-        return bitMapReader.get(0);
+        allShowBitMapCache = bitMapReader.get(0);
+        return allShowBitMapCache;
     }
 
     private void initRowCountWriter() {
