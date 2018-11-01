@@ -56,8 +56,11 @@ public class GroupNodeMergeUtils {
     }
 
     private static AggregatorValue[] aggregateValues(List<Aggregator> aggregators, AggregatorValue[] current, AggregatorValue[] other) {
+        if (current.length == 0 && other.length == 0) {
+            return new AggregatorValue[0];
+        }
         AggregatorValue[] result = new AggregatorValue[current.length];
-        for (int i = 0; i < current.length; i++) {
+        for (int i = 0; i < aggregators.size(); i++) {
             result[i] = AggregatorValueUtils.combine(current[i], other[i], aggregators.get(i));
         }
         return result;

@@ -159,7 +159,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
 
     private SwiftResultSet queryRemoteNodeNode(String jsonString, SegmentDestination remoteURI) throws Exception {
         if (null == remoteURI) {
-            QueryBean queryBean = queryBeanFactory.create(jsonString);
+            QueryBean queryBean = queryBeanFactory.create(jsonString, false);
             remoteURI = queryBean.getQueryDestination();
         }
         Assert.notNull(remoteURI);

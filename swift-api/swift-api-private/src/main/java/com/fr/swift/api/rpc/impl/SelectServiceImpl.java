@@ -38,7 +38,7 @@ public class SelectServiceImpl implements SelectService {
     @SwiftApi
     public SwiftResultSet query(SwiftDatabase database, String queryJson) {
         try {
-            QueryBean queryBean = SwiftContext.get().getBean(QueryBeanFactory.class).create(queryJson);
+            QueryBean queryBean = SwiftContext.get().getBean(QueryBeanFactory.class).create(queryJson, false);
             if (queryBean instanceof AbstractSingleTableQueryInfoBean) {
                 String tableName = ((AbstractSingleTableQueryInfoBean) queryBean).getTableName();
                 SwiftMetaData metaData = metaDataService.getMetaDataByKey(tableName);

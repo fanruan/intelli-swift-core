@@ -10,7 +10,10 @@ import java.util.Set;
  * @date 2018/6/26
  */
 public interface QueryBean extends Serializable {
+
     String getQueryId();
+
+    void setQueryId(String queryId);
 
     QueryType getQueryType();
 

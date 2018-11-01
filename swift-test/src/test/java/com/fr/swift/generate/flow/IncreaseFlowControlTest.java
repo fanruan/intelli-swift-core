@@ -8,12 +8,12 @@ import com.fr.swift.flow.RowNumberControlRule;
 import com.fr.swift.flow.TimeControlRule;
 import com.fr.swift.generate.BaseTest;
 import com.fr.swift.manager.LocalSegmentProvider;
+import com.fr.swift.segment.Incrementer;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.QueryDBSource;
@@ -56,7 +56,7 @@ public class IncreaseFlowControlTest extends BaseTest {
         List<FlowControlRule> list = new ArrayList<FlowControlRule>();
         list.add(flowControlRule);
         FlowRuleController flowRuleController = new FlowRuleController(list);
-        ((Inserter) SwiftContext.get().getBean("incrementer", dataSource)).insertData(
+        new Incrementer(dataSource).insertData(
                 new LimitedResultSet(
                         SwiftSourceTransferFactory.createSourceTransfer(
                                 new QueryDBSource("select 合同ID from DEMO_CAPITAL_RETURN where 记录人 ='庆芳'", "local")).createResultSet(), 5));
@@ -109,7 +109,7 @@ public class IncreaseFlowControlTest extends BaseTest {
         List<FlowControlRule> list = new ArrayList<FlowControlRule>();
         list.add(flowControlRule);
         FlowRuleController flowRuleController = new FlowRuleController(list);
-        ((Inserter) SwiftContext.get().getBean("incrementer", dataSource)).insertData(new LimitedResultSet(
+        new Incrementer(dataSource).insertData(new LimitedResultSet(
                 SwiftSourceTransferFactory.createSourceTransfer(
                         new QueryDBSource("select 合同ID from DEMO_CAPITAL_RETURN where 记录人 ='庆芳'", "local")).createResultSet(), 1));
 

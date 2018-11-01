@@ -5,11 +5,11 @@ import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.Table;
-import com.fr.swift.db.impl.SegmentTransfer;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentTransfer;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
@@ -47,7 +47,7 @@ public class ScheduledRealtimeTransfer implements Runnable {
                         EventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, segKey);
                     }
                 } catch (Exception e) {
-                    SwiftLoggers.getLogger().error(String.format("Segkey %s persist failed!", segKey.getTable().getId()), e);
+                    SwiftLoggers.getLogger().error("Segkey {} persist failed", segKey.getTable().getId(), e);
                 }
             }
         }
@@ -65,7 +65,6 @@ public class ScheduledRealtimeTransfer implements Runnable {
 
         @Override
         protected void onSucceed() {
-            SwiftLoggers.getLogger().info("{} to {} succeeded", oldSegKey, newSegKey);
             EventDispatcher.fire(SegmentEvent.UPLOAD_HISTORY, newSegKey);
         }
     }

@@ -10,5 +10,12 @@ import java.net.URL;
 public interface QueryBeanFactory {
     <T extends QueryBean> T create(URL url) throws IOException;
 
-    <T extends QueryBean> T create(String json) throws IOException;
+    /**
+     * @param json        字符串
+     * @param initQueryId 是否初始化queryId外。只有新建查询的时候需要初始化queryId
+     * @param <T>
+     * @return
+     * @throws IOException
+     */
+    <T extends QueryBean> T create(String json, boolean initQueryId) throws IOException;
 }
