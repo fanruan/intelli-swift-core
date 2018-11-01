@@ -7,7 +7,6 @@ import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftResultSet;
@@ -16,7 +15,6 @@ import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.test.Preparer;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -33,15 +31,12 @@ public class SwiftInserterTest {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
+        Preparer.prepareCubeBuild(SwiftInserterTest.class);
         dataSource = new QueryDBSource("select 客户状态 from DEMO_CUSTOMER", SwiftInserterTest.class.getSimpleName());
         transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
         cubePath = String.format("cubes/%s/seg0", dataSource.getSourceKey().getId());
     }
 
-    @Before
-    public void setUp() throws Exception {
-        Preparer.prepareCubeBuild(getClass());
-    }
 
     @Test
     public void insertData() throws Exception {
@@ -51,18 +46,9 @@ public class SwiftInserterTest {
         SwiftResultSet resultSet = transfer.createResultSet();
         Inserter inserter = new SwiftInserter(segment);
         inserter.insertData(resultSet);
-
-        resultSet = transfer.createResultSet();
-        inserter = new SwiftInserter(segment);
-        inserter.insertData(resultSet);
-
         int rowCount = segment.getRowCount();
+        Assert.assertEquals(rowCount, 2);
         Column column = segment.getColumn(new ColumnKey("客户状态"));
-        DetailColumn detail = column.getDetailColumn();
-        for (int i = 0; i < rowCount / 2; i++) {
-            Assert.assertEquals(detail.get(i), detail.get(i + rowCount / 2));
-        }
-
         ImmutableBitMap nullIndex = column.getBitmapIndex().getNullIndex();
         nullIndex.traversal(i -> {
             if (i < rowCount / 2 && !nullIndex.contains(i + rowCount / 2)) {

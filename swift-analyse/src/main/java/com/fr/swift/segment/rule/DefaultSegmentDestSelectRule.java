@@ -1,6 +1,7 @@
 package com.fr.swift.segment.rule;
 
 import com.fr.swift.config.bean.SegmentDestSelectRule;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.impl.RealTimeSegDestImpl;
 import com.fr.third.springframework.stereotype.Service;
@@ -32,6 +33,7 @@ public class DefaultSegmentDestSelectRule implements SegmentDestSelectRule {
                 }
             } else {
                 destinationMap.put(destination.getSegmentId(), destination);
+                SwiftLoggers.getLogger().debug("Prepare segment query destination from {} -> {} segment is {}", destination.getCurrentNode(), destination.getClusterId(), destination.getSegmentId());
             }
         }
         List<SegmentDestination> list = new ArrayList<SegmentDestination>(destinationMap.values());

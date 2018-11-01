@@ -3,7 +3,6 @@ package com.fr.swift.generate;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.generate.history.index.SubDateColumnIndexer;
 import com.fr.swift.generate.history.transport.TableTransporter;
-import com.fr.swift.manager.IndexingSegmentManager;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.query.group.GroupType;
 import com.fr.swift.segment.Segment;
@@ -30,23 +29,20 @@ import static org.junit.Assert.assertTrue;
  * @date 2018/3/24
  */
 public class SubDateColumnIndexerTest {
-    private SwiftSegmentManager segmentProvider = SwiftContext.get().getBean(IndexingSegmentManager.class);
+    private SwiftSegmentManager segmentProvider ;
     private String columnName = "注册时间";
     private DataSource dataSource = new QueryDBSource("select " + columnName + " from DEMO_CONTRACT", getClass().getName());
 
     @Before
-    public void beforeClass() {
+    public void beforeClass() throws Exception{
         new LocalSwiftServerService().start();
         Preparer.prepareCubeBuild(getClass());
-    }
-
-    @Before
-    public void before() throws Exception {
         segmentProvider = SwiftContext.get().getBean(LocalSegmentProvider.class);
         new TableTransporter(dataSource).transport();
         List<Segment> segments = segmentProvider.getSegment(dataSource.getSourceKey());
         new ColumnIndexer(dataSource, new ColumnKey(columnName), segments).buildIndex();
     }
+
 
     @Test
     public void testIndexSubDate() {
