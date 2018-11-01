@@ -48,7 +48,7 @@ public abstract class BaseSegment implements Segment {
     IntReader rowCountReader;
 
     private BitMapWriter bitMapWriter;
-    BitMapReader bitMapReader;
+    private BitMapReader bitMapReader;
 
     public BaseSegment(IResourceLocation location, SwiftMetaData meta) {
         this.location = location;
@@ -142,7 +142,7 @@ public abstract class BaseSegment implements Segment {
         }
     }
 
-    void initBitMapReader() {
+    private void initBitMapReader() {
         if (bitMapReader == null) {
             bitMapReader = DISCOVERY.getReader(location.buildChildLocation(ALL_SHOW_INDEX), new BuildConf(IoType.READ, DataType.BITMAP));
         }

@@ -19,7 +19,7 @@ import com.fr.swift.util.IoUtil;
  */
 public class HistorySegmentImpl extends MutableHistorySegment implements HistorySegment {
 
-    private ImmutableBitMap allShowBitMapCache;
+    private volatile ImmutableBitMap allShowBitMapCache;
 
     public HistorySegmentImpl(IResourceLocation parent, SwiftMetaData meta) {
         super(parent, meta);
@@ -39,8 +39,7 @@ public class HistorySegmentImpl extends MutableHistorySegment implements History
         if (isHistory() && allShowBitMapCache != null) {
             return allShowBitMapCache;
         }
-        initBitMapReader();
-        allShowBitMapCache = bitMapReader.get(0);
+        allShowBitMapCache = super.getAllShowIndex();
         return allShowBitMapCache;
     }
 
