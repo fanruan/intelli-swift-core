@@ -1,5 +1,6 @@
 package com.fr.swift.basics.base.handler;
 
+import com.fr.swift.basics.InvokerCreater;
 import com.fr.swift.basics.URL;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.selector.UrlSelector;
@@ -20,6 +21,10 @@ import java.util.List;
 public abstract class BaseQueryableProcessHandler extends BaseProcessHandler implements QueryableProcessHandler {
 
     private QueryBean queryBean;
+
+    public BaseQueryableProcessHandler(InvokerCreater invokerCreater) {
+        super(invokerCreater);
+    }
 
     @Override
     public Object processResult(Method method, Target target, Object... args) throws Throwable {

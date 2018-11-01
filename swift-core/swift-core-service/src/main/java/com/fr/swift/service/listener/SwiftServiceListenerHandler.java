@@ -1,7 +1,5 @@
 package com.fr.swift.service.listener;
 
-import com.fr.swift.basics.annotation.InvokeMethod;
-import com.fr.swift.basics.handler.MasterProcessHandler;
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.service.SwiftService;
 import com.fr.swift.service.SwiftServiceEvent;
@@ -35,7 +33,6 @@ public interface SwiftServiceListenerHandler {
      * @param event
      * @return
      */
-    @InvokeMethod(MasterProcessHandler.class)
     Serializable trigger(SwiftRpcEvent event);
 
     /**

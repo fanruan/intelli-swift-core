@@ -63,8 +63,8 @@ public class TestIndexingController {
                 IndexingStuff stuff = new HistoryIndexingStuff(tables);
                 IndexRpcEvent event = new IndexRpcEvent(stuff);
                 ProxyFactory factory = ProxySelector.getInstance().getFactory();
-                Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, getMasterURL(), true);
-                invoker.invoke(new SwiftInvocation(ServiceMethodRegistry.INSTANCE.getMethodByName("rpcTrigger"), new Object[]{event}));
+//                Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, getMasterURL(), true);
+//                invoker.invoke(new SwiftInvocation(ServiceMethodRegistry.INSTANCE.getMethodByName("rpcTrigger"), new Object[]{event}));
             } else {
                 StuffProviderQueue.getQueue().put(new SwiftImportStuff(Collections.singletonList(dataSource)));
             }
@@ -88,8 +88,8 @@ public class TestIndexingController {
     public void load() {
         HistoryLoadSegmentRpcEvent event = new HistoryLoadSegmentRpcEvent();
         ProxyFactory factory = ProxySelector.getInstance().getFactory();
-        Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, getMasterURL(), true);
-        invoker.invoke(new SwiftInvocation(ServiceMethodRegistry.INSTANCE.getMethodByName("rpcTrigger"), new Object[]{event}));
+//        Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, getMasterURL(), true);
+//        invoker.invoke(new SwiftInvocation(ServiceMethodRegistry.INSTANCE.getMethodByName("rpcTrigger"), new Object[]{event}));
     }
 
     private URL getMasterURL() {

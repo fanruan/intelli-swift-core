@@ -1,7 +1,7 @@
 package com.fr.swift.basics.base;
 
+import com.fr.swift.basics.InvokerCreater;
 import com.fr.swift.basics.InvokerHandler;
-import com.fr.swift.basics.ProcessHandlerRegistry;
 import com.fr.swift.basics.ProxyFactory;
 
 /**
@@ -10,16 +10,12 @@ import com.fr.swift.basics.ProxyFactory;
  */
 public abstract class BaseProxyFactory implements ProxyFactory {
 
-    protected ProcessHandlerRegistry registry;
+    protected InvokerCreater invokerCreater;
 
-    public BaseProxyFactory(ProcessHandlerRegistry registry) {
-        this.registry = registry;
+    public BaseProxyFactory(InvokerCreater invokerCreater) {
+        this.invokerCreater = invokerCreater;
     }
 
     protected abstract InvokerHandler createInvokerHandler();
 
-    @Override
-    public ProcessHandlerRegistry getRegistry() {
-        return registry;
-    }
 }

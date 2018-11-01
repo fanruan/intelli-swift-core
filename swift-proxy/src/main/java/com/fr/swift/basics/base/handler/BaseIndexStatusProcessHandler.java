@@ -1,6 +1,7 @@
 package com.fr.swift.basics.base.handler;
 
 import com.fr.swift.basics.AsyncRpcCallback;
+import com.fr.swift.basics.InvokerCreater;
 import com.fr.swift.basics.RpcFuture;
 import com.fr.swift.basics.URL;
 import com.fr.swift.basics.annotation.Target;
@@ -24,6 +25,11 @@ import java.util.concurrent.CountDownLatch;
  * @date 2018/10/25
  */
 public abstract class BaseIndexStatusProcessHandler extends BaseProcessHandler implements IndexPHDefiner.StatusProcessHandler {
+
+    public BaseIndexStatusProcessHandler(InvokerCreater invokerCreater) {
+        super(invokerCreater);
+    }
+
     @Override
     protected Object mergeResult(List resultList) throws Throwable {
         final List<ServerCurrentStatus> statusList = new ArrayList<ServerCurrentStatus>();

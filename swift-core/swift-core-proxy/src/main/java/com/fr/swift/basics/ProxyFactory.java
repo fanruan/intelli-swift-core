@@ -14,11 +14,4 @@ public interface ProxyFactory {
      * @return
      */
     <T> T getProxy(Class<T> proxy);
-
-    /**
-     * 获取ProcessHandlerRegistry
-     *
-     * @return
-     */
-    ProcessHandlerRegistry getRegistry();
 }

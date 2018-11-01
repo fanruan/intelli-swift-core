@@ -23,8 +23,6 @@ public class ServiceBeanFactory {
 
     private final static Map<String, String> serviceName2BeanName = new HashMap<String, String>();
 
-    private final static Map<String, String> clusterServiceName2BeanName = new HashMap<String, String>();
-
     private final static Map<String, String> serverName2BeanName = new HashMap<String, String>();
 
     static {
@@ -32,11 +30,7 @@ public class ServiceBeanFactory {
         for (Map.Entry<String, Object> entry : swiftServiceBeans.entrySet()) {
             com.fr.swift.annotation.SwiftService annotation =
                     entry.getValue().getClass().getAnnotation(com.fr.swift.annotation.SwiftService.class);
-            if (annotation.cluster()) {
-                clusterServiceName2BeanName.put(annotation.name(), entry.getKey());
-            } else {
-                serviceName2BeanName.put(annotation.name(), entry.getKey());
-            }
+            serviceName2BeanName.put(annotation.name(), entry.getKey());
         }
         Map<String, Object> serverServiceBeans = SwiftContext.get().getBeansWithAnnotation(com.fr.swift.annotation.ServerService.class);
         for (Map.Entry<String, Object> entry : serverServiceBeans.entrySet()) {
@@ -64,31 +58,6 @@ public class ServiceBeanFactory {
             } catch (NoSuchBeanDefinitionException e) {
                 continue;
             }
-        }
-        return swiftServiceList;
-    }
-
-    public static List<SwiftService> getClusterSwiftServiceByNames(Set<String> swiftServiceNames) {
-        // TODO: 2018/8/9 暂时先把collate跟随indexing启动
-        if (swiftServiceNames.contains("indexing")) {
-            swiftServiceNames.add("collate");
-        }
-        List<SwiftService> swiftServiceList = new ArrayList<SwiftService>();
-        for (String serviceName : swiftServiceNames) {
-            try {
-                if (clusterServiceName2BeanName.containsKey(serviceName)) {
-                    SwiftService swiftService = SwiftContext.get().getBean(clusterServiceName2BeanName.get(serviceName), SwiftService.class);
-                    if (swiftService == null) {
-                        continue;
-                    }
-                    swiftServiceList.add(swiftService);
-                }
-            } catch (NoSuchBeanDefinitionException e) {
-                continue;
-            }
-        }
-        if (swiftServiceNames.contains("collate")) {
-            swiftServiceList.add(SwiftContext.get().getBean(serviceName2BeanName.get("collate"), SwiftService.class));
         }
         return swiftServiceList;
     }

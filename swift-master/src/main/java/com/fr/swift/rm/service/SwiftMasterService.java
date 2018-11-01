@@ -43,14 +43,11 @@ public class SwiftMasterService implements MasterService {
     public void pushNodeStates() {
         SwiftLoggers.getLogger().debug("Start to sync node states!");
         List<NodeState> nodeStateList = NodeContainer.getAllNodeStates();
-        for (NodeState nodeState : nodeStateList) {
-            try {
-                SlaveService slaveService = ClusterProxyUtils.getSlaveProxy(SlaveService.class, nodeState);
-                SwiftLoggers.getLogger().debug("Sync node state:" + nodeState);
-                slaveService.syncNodeStates(nodeStateList);
-            } catch (Exception e) {
-                SwiftLoggers.getLogger().error(e);
-            }
+        try {
+            SlaveService slaveService = ClusterProxyUtils.getProxy(SlaveService.class);
+            slaveService.syncNodeStates(nodeStateList);
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
         }
     }
 

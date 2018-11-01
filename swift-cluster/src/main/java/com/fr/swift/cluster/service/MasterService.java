@@ -1,5 +1,7 @@
 package com.fr.swift.cluster.service;
 
+import com.fr.swift.basics.annotation.InvokeMethod;
+import com.fr.swift.basics.base.handler.SwiftMasterProcessHandler;
 import com.fr.swift.heart.HeartBeatInfo;
 import com.fr.swift.heart.NodeState;
 
@@ -20,6 +22,7 @@ public interface MasterService {
      * @param heartBeatInfo
      * @throws Exception
      */
+    @InvokeMethod(SwiftMasterProcessHandler.class)
     void receiveHeartBeat(HeartBeatInfo heartBeatInfo) throws Exception;
 
     /**
@@ -34,6 +37,7 @@ public interface MasterService {
      *
      * @throws Exception
      */
+    @InvokeMethod(SwiftMasterProcessHandler.class)
     Collection<NodeState> pullNodeStates() throws Exception;
 
 }

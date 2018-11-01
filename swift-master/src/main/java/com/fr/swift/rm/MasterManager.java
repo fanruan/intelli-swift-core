@@ -66,7 +66,7 @@ public class MasterManager extends AbstractSwiftManager implements ClusterManage
     @Override
     protected void installService() {
         try {
-            for (SwiftService swiftService : ServiceBeanFactory.getClusterSwiftServiceByNames(swiftProperty.getSwiftServiceNames())) {
+            for (SwiftService swiftService : ServiceBeanFactory.getSwiftServiceByNames(swiftProperty.getSwiftServiceNames())) {
                 swiftService.setId(ClusterSelector.getInstance().getFactory().getCurrentId());
                 swiftService.start();
             }
