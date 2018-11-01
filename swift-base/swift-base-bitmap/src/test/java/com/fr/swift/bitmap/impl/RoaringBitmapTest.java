@@ -2,10 +2,11 @@ package com.fr.swift.bitmap.impl;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
+import com.fr.swift.bitmap.traversal.BreakTraversalAction;
+import com.fr.swift.bitmap.traversal.TraversalAction;
 import org.junit.Test;
 
 import java.util.Random;
-import java.util.stream.IntStream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -39,11 +40,14 @@ public class RoaringBitmapTest {
     @Test
     public void testContains() {
         MutableBitMap m = getMutableBitMap();
-        int[] a = prepare(m);
+        final int[] a = prepare(m);
 
-        m.traversal(row -> {
-            if (a[row] == 0) {
-                fail();
+        m.traversal(new TraversalAction() {
+            @Override
+            public void actionPerformed(int row) {
+                if (a[row] == 0) {
+                    fail();
+                }
             }
         });
 
@@ -78,9 +82,12 @@ public class RoaringBitmapTest {
         MutableBitMap m = getMutableBitMap();
         final int[] a = prepare(m);
 
-        m.traversal(row -> {
-            if (a[row] == 0) {
-                fail();
+        m.traversal(new TraversalAction() {
+            @Override
+            public void actionPerformed(int row) {
+                if (a[row] == 0) {
+                    fail();
+                }
             }
         });
     }
@@ -92,12 +99,15 @@ public class RoaringBitmapTest {
 
         final int breakIndex = r.nextBoolean() ? -1 : a[r.nextInt(BOUND)];
         final int[] rowWrap = new int[]{-1};
-        if (m.breakableTraversal(row -> {
-            if (breakIndex == row) {
-                rowWrap[0] = row;
-                return true;
+        if (m.breakableTraversal(new BreakTraversalAction() {
+            @Override
+            public boolean actionPerformed(int row) {
+                if (breakIndex == row) {
+                    rowWrap[0] = row;
+                    return true;
+                }
+                return false;
             }
-            return false;
         })) {
             assertTrue(rowWrap[0] != -1 && rowWrap[0] == breakIndex);
         } else {
@@ -109,8 +119,11 @@ public class RoaringBitmapTest {
     public void testGetCardinality() {
         MutableBitMap m = getMutableBitMap();
         final int[] a = prepare(m);
-
-        assertEquals((IntStream.of(a).sum()), m.getCardinality());
+        int sum = 0;
+        for (int i : a) {
+            sum += i;
+        }
+        assertEquals(sum, m.getCardinality());
     }
 
     @Test

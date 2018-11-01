@@ -1,6 +1,5 @@
 package com.fr.swift.cube.io;
 
-import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.impl.mem.MemIo;
 import com.fr.swift.cube.io.impl.mem.MemIoBuilder;
 import com.fr.swift.cube.io.input.Reader;

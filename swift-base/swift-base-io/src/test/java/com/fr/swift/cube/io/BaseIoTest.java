@@ -1,9 +1,8 @@
 package com.fr.swift.cube.io;
 
-
-import com.fr.swift.test.Preparer;
-import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 
 import java.util.Random;
 
@@ -18,9 +17,9 @@ public abstract class BaseIoTest {
 
     long pos = 0;
 
-    @Before
-    public void boot() {
-        Preparer.prepareCubeBuild(getClass());
+    @Rule
+    public TestRule getExternalResource() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        return (TestRule) Class.forName("com.fr.swift.test.external.BuildCubeResource").newInstance();
     }
 
     @Test
