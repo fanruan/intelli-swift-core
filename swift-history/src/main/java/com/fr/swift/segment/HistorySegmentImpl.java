@@ -36,7 +36,7 @@ public class HistorySegmentImpl extends MutableHistorySegment implements History
 
     @Override
     public ImmutableBitMap getAllShowIndex() {
-        if (isHistory() && allShowBitMapCache != null) {
+        if (allShowBitMapCache != null) {
             return allShowBitMapCache;
         }
         allShowBitMapCache = super.getAllShowIndex();
