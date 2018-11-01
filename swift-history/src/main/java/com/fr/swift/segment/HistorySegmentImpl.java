@@ -1,5 +1,6 @@
 package com.fr.swift.segment;
 
+import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.impl.DateColumn;
@@ -18,6 +19,8 @@ import com.fr.swift.util.IoUtil;
  */
 public class HistorySegmentImpl extends MutableHistorySegment implements HistorySegment {
 
+    private ImmutableBitMap allShowBitMapCache;
+
     public HistorySegmentImpl(IResourceLocation parent, SwiftMetaData meta) {
         super(parent, meta);
     }
@@ -29,6 +32,16 @@ public class HistorySegmentImpl extends MutableHistorySegment implements History
         }
 
         return newNullableColumn(location, classType);
+    }
+
+    @Override
+    public ImmutableBitMap getAllShowIndex() {
+        if (isHistory() && allShowBitMapCache != null) {
+            return allShowBitMapCache;
+        }
+        initBitMapReader();
+        allShowBitMapCache = bitMapReader.get(0);
+        return allShowBitMapCache;
     }
 
     private Column<?> newNullableColumn(IResourceLocation location, ClassType classType) {

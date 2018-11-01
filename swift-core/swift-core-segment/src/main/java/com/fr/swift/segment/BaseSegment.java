@@ -48,9 +48,7 @@ public abstract class BaseSegment implements Segment {
     IntReader rowCountReader;
 
     private BitMapWriter bitMapWriter;
-    private BitMapReader bitMapReader;
-
-    private ImmutableBitMap allShowBitMapCache;
+    BitMapReader bitMapReader;
 
     public BaseSegment(IResourceLocation location, SwiftMetaData meta) {
         this.location = location;
@@ -121,13 +119,9 @@ public abstract class BaseSegment implements Segment {
     }
 
     @Override
-    public synchronized ImmutableBitMap getAllShowIndex() {
-        if (isHistory() && allShowBitMapCache != null) {
-            return allShowBitMapCache;
-        }
+    public ImmutableBitMap getAllShowIndex() {
         initBitMapReader();
-        allShowBitMapCache = bitMapReader.get(0);
-        return allShowBitMapCache;
+        return bitMapReader.get(0);
     }
 
     private void initRowCountWriter() {
@@ -148,7 +142,7 @@ public abstract class BaseSegment implements Segment {
         }
     }
 
-    private void initBitMapReader() {
+    void initBitMapReader() {
         if (bitMapReader == null) {
             bitMapReader = DISCOVERY.getReader(location.buildChildLocation(ALL_SHOW_INDEX), new BuildConf(IoType.READ, DataType.BITMAP));
         }
@@ -194,7 +188,7 @@ public abstract class BaseSegment implements Segment {
         bitMapReader = null;
     }
 
-    protected Column createRelationColumn(ColumnKey key) {
+    Column createRelationColumn(ColumnKey key) {
         return ((RelationColumn) SwiftContext.get().getBean("relationColumn", key)).buildRelationColumn(this);
     }
 
