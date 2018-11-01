@@ -13,9 +13,16 @@ import org.junit.rules.ExternalResource;
  */
 public class ConnectionResource extends ExternalResource {
 
+    private SwiftConnectionInfo connection;
+
     @Override
     protected void before() {
-        createConnection();
+        connection = createConnection();
+    }
+
+    @Override
+    protected void after() {
+        connection = null;
     }
 
     public static SwiftConnectionInfo createConnection() {

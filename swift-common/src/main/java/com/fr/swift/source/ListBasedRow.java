@@ -3,18 +3,23 @@ package com.fr.swift.source;
 import com.fr.third.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ListBasedRow implements Row {
     private static final long serialVersionUID = -5283575301909309763L;
 
-    private List<Object> values;
+    private List<?> values;
 
     public ListBasedRow() {
     }
 
-    public ListBasedRow(List<Object> values) {
+    public ListBasedRow(List<?> values) {
         this.values = values;
+    }
+
+    public ListBasedRow(Object... values) {
+        this.values = Arrays.asList(values);
     }
 
     @Override
@@ -35,7 +40,7 @@ public class ListBasedRow implements Row {
         return values.toString();
     }
 
-    public List<Object> getValues() {
+    public List<?> getValues() {
         return new ArrayList<Object>(values);
     }
 
