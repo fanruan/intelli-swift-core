@@ -21,7 +21,9 @@ import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.event.ClusterType;
 import com.fr.swift.log.SwiftLog4jLoggers;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.nm.service.SwiftSlaveService;
 import com.fr.swift.property.SwiftProperty;
+import com.fr.swift.rm.service.SwiftMasterService;
 import com.fr.swift.service.MaskHistoryListener;
 import com.fr.swift.service.RemoveHistoryListener;
 import com.fr.swift.service.SwiftAnalyseService;
@@ -108,5 +110,7 @@ public class SwiftEngineStart {
         ProxyServiceRegistry.INSTANCE.registerService(new DetectServiceImpl());
         ProxyServiceRegistry.INSTANCE.registerService(new DataMaintenanceServiceImpl());
         ProxyServiceRegistry.INSTANCE.registerService(new SelectServiceImpl());
+        ProxyServiceRegistry.INSTANCE.registerService(new SwiftMasterService());
+        ProxyServiceRegistry.INSTANCE.registerService(new SwiftSlaveService());
     }
 }

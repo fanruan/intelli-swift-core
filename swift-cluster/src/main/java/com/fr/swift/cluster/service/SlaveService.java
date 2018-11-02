@@ -1,7 +1,9 @@
 package com.fr.swift.cluster.service;
 
+import com.fr.swift.basics.annotation.InvokeMethod;
 import com.fr.swift.heart.HeartBeatInfo;
 import com.fr.swift.heart.NodeState;
+import com.fr.swift.process.handler.NodesProcessHandler;
 
 import java.util.Collection;
 
@@ -28,6 +30,7 @@ public interface SlaveService {
      * @param collection
      * @throws Exception
      */
+    @InvokeMethod(NodesProcessHandler.class)
     void syncNodeStates(Collection<NodeState> collection) throws Exception;
 
     /**

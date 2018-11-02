@@ -1,6 +1,7 @@
 package com.fr.swift.basics.base.handler;
 
 import com.fr.swift.basics.Invoker;
+import com.fr.swift.basics.InvokerCreater;
 import com.fr.swift.basics.URL;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.ProxyServiceRegistry;
@@ -20,7 +21,12 @@ import java.util.List;
  * @author yee
  * @date 2018/10/24
  */
-public abstract class BaseMasterProcessHandler extends AbstractProcessHandler implements MasterProcessHandler {
+public class SwiftMasterProcessHandler extends AbstractProcessHandler implements MasterProcessHandler {
+
+    public SwiftMasterProcessHandler(InvokerCreater invokerCreater) {
+        super(invokerCreater);
+    }
+
     @Override
     public URL processMasterURL() {
         return processUrl(Target.NONE).get(0);
@@ -37,7 +43,7 @@ public abstract class BaseMasterProcessHandler extends AbstractProcessHandler im
             Invoker invoker = new LocalInvoker(ProxyServiceRegistry.INSTANCE.getService(proxyClass), proxyClass, null);
             return invoke(invoker, proxyClass, method, methodName, parameterTypes, args);
         }
-        Invoker invoker = createInvoker(proxyClass, masterUrl);
+        Invoker invoker = this.createInvoker(proxyClass, masterUrl);
         Object object = handleAsyncResult(invoke(invoker, proxyClass, method, methodName, parameterTypes, args));
         MonitorUtil.finish(methodName);
         return object;
@@ -59,5 +65,7 @@ public abstract class BaseMasterProcessHandler extends AbstractProcessHandler im
      * @param url
      * @return
      */
-    protected abstract Invoker createInvoker(Class tClass, URL url);
+    protected Invoker createInvoker(Class tClass, URL url) throws Exception {
+        return invokerCreater.createInvoker(tClass, url);
+    }
 }

@@ -1,6 +1,7 @@
 package com.fr.swift.basics.base.handler;
 
 import com.fr.swift.basics.Invoker;
+import com.fr.swift.basics.InvokerCreater;
 import com.fr.swift.basics.ProcessHandler;
 import com.fr.swift.basics.URL;
 import com.fr.swift.basics.annotation.Target;
@@ -17,6 +18,10 @@ import java.util.List;
  * @date 2018/10/24
  */
 public abstract class BaseProcessHandler extends AbstractProcessHandler implements ProcessHandler {
+
+    public BaseProcessHandler(InvokerCreater invokerCreater) {
+        super(invokerCreater);
+    }
 
     @Override
     public Object processResult(Method method, Target target, Object... args) throws Throwable {

@@ -60,7 +60,7 @@ public class SlaveManager extends AbstractSwiftManager implements ClusterManager
     @Override
     protected void installService() {
         try {
-            clusterServiceManager.registerService(ServiceBeanFactory.getClusterSwiftServiceByNames(swiftProperty.getSwiftServiceNames()));
+            clusterServiceManager.registerService(ServiceBeanFactory.getSwiftServiceByNames(swiftProperty.getSwiftServiceNames()));
 //            SlaveService slaveService = SwiftContext.get().getBean("swiftSlaveService", SwiftSlaveService.class);
 //            slaveService.syncNodeStates();
         } catch (Exception e) {
@@ -71,7 +71,7 @@ public class SlaveManager extends AbstractSwiftManager implements ClusterManager
     @Override
     protected void uninstallService() {
         try {
-            clusterServiceManager.unregisterService(ServiceBeanFactory.getClusterSwiftServiceByNames(swiftProperty.getSwiftServiceNames()));
+            clusterServiceManager.unregisterService(ServiceBeanFactory.getSwiftServiceByNames(swiftProperty.getSwiftServiceNames()));
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         }

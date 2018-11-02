@@ -14,7 +14,7 @@ import java.io.Serializable;
  * Created by pony on 2017/11/10.
  * 待实现，接收远程serverService的注册，触发事件
  */
-public class RemoteServiceReceiver implements SwiftServiceListenerHandler {
+public class RemoteServiceReceiver implements RemoteReceiver {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(RemoteServiceReceiver.class);
 

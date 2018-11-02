@@ -2,6 +2,7 @@ package com.fr.swift.basics.base.handler;
 
 import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.Invoker;
+import com.fr.swift.basics.InvokerCreater;
 import com.fr.swift.basics.ProcessHandler;
 import com.fr.swift.basics.RpcFuture;
 import com.fr.swift.basics.base.SwiftInvocation;
@@ -13,7 +14,14 @@ import java.util.concurrent.CountDownLatch;
  * @author yee
  * @date 2018/10/24
  */
-abstract class AbstractProcessHandler implements ProcessHandler {
+public abstract class AbstractProcessHandler implements ProcessHandler {
+
+    protected InvokerCreater invokerCreater;
+
+    public AbstractProcessHandler(InvokerCreater invokerCreater) {
+        this.invokerCreater = invokerCreater;
+    }
+
     /**
      * @param invoker
      * @param proxyClass

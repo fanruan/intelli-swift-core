@@ -1,5 +1,6 @@
 package com.fr.swift.basics.base.handler;
 
+import com.fr.swift.basics.InvokerCreater;
 import com.fr.swift.basics.URL;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.selector.ProxySelector;
@@ -17,6 +18,11 @@ import java.util.List;
  * @date 2018/10/25
  */
 public abstract class BaseIndexProcessHandler extends BaseProcessHandler implements IndexPHDefiner.IndexProcessHandler {
+
+    public BaseIndexProcessHandler(InvokerCreater invokerCreater) {
+        super(invokerCreater);
+    }
+
     @Override
     protected Object mergeResult(List resultList) throws Throwable {
         Object obj = resultList.get(0);

@@ -25,7 +25,7 @@ public class SwiftSlaveService implements SlaveService {
 
     @Override
     public void sendHeartBeat(HeartBeatInfo heartBeatInfo) throws Exception {
-        MasterService masterService = ClusterProxyUtils.getMasterProxy(MasterService.class);
+        MasterService masterService = ClusterProxyUtils.getProxy(MasterService.class);
         masterService.receiveHeartBeat(heartBeatInfo);
     }
 
@@ -38,7 +38,7 @@ public class SwiftSlaveService implements SlaveService {
 
     @Override
     public void syncNodeStates() throws Exception {
-        MasterService masterService = ClusterProxyUtils.getMasterProxy(MasterService.class);
+        MasterService masterService = ClusterProxyUtils.getProxy(MasterService.class);
         Collection<NodeState> collection = masterService.pullNodeStates();
         syncNodeStates(collection);
     }
