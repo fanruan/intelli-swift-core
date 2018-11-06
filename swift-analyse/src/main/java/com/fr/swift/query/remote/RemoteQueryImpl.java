@@ -1,8 +1,9 @@
 package com.fr.swift.query.remote;
 
+import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.query.RemoteQuery;
-import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.segment.SegmentDestination;
+import com.fr.swift.service.AnalyseService;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
@@ -22,7 +23,8 @@ public class RemoteQueryImpl<T extends SwiftResultSet> implements RemoteQuery<T>
 
     @Override
     public T getQueryResult() throws SQLException {
-        return (T) QueryRunnerProvider.getInstance().executeRemoteQuery(jsonString, remoteURI);
+        AnalyseService service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
+        return (T) service.getRemoteQueryResult(jsonString, remoteURI);
     }
 
     @Override

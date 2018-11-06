@@ -1,8 +1,9 @@
-package com.fr.swift.result.serialize;
+package com.fr.swift.query.result.serialize;
 
-import com.fr.swift.query.query.QueryRunnerProvider;
+import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.result.SwiftRowIteratorImpl;
+import com.fr.swift.service.AnalyseService;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Crasher;
@@ -46,7 +47,8 @@ public class SerializableDetailResultSet implements DetailResultSet, Serializabl
         List<Row> ret = rows;
         if (originHasNextPage) {
             try {
-                SerializableDetailResultSet resultSet = (SerializableDetailResultSet) QueryRunnerProvider.getInstance().executeRemoteQuery(jsonString, null);
+                AnalyseService service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
+                SerializableDetailResultSet resultSet = (SerializableDetailResultSet) service.getRemoteQueryResult(jsonString, null);
                 hasNextPage = true;
                 this.rows = resultSet.rows;
                 this.originHasNextPage = resultSet.originHasNextPage;
