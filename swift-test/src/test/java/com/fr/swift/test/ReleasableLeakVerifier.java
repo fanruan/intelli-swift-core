@@ -61,7 +61,7 @@ public class ReleasableLeakVerifier extends Verifier {
         ByteBuddyAgent.install();
         AgentBuilder agentBuilder = new AgentBuilder.Default()
                 .type(isSubTypeOf(Reader.class)
-                        .and(isSubTypeOf(Writer.class))
+                        .or(isSubTypeOf(Writer.class))
                         .and(not(isSubTypeOf(MemIo.class)))
                         .and(not(isAbstract()))
                         .and(not(isInterface())))
