@@ -26,7 +26,9 @@ import com.fr.third.javax.persistence.Entity;
 import com.fr.third.javax.persistence.Table;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -65,6 +67,11 @@ public class SegmentTransferTest {
         if (com.fr.swift.db.impl.SwiftDatabase.getInstance().existsTable(tableKey)) {
             com.fr.swift.db.impl.SwiftDatabase.getInstance().dropTable(tableKey);
         }
+    }
+
+    @Rule
+    public TestRule getReleasableLeakVerifier() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        return (TestRule) Class.forName("com.fr.swift.test.ReleasableLeakVerifier").newInstance();
     }
 
     @Test
