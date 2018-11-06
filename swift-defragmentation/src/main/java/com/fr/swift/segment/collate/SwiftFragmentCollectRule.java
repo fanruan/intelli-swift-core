@@ -1,9 +1,7 @@
 package com.fr.swift.segment.collate;
 
-import com.fr.general.ComparatorUtils;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.cube.io.Types;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
@@ -38,7 +36,7 @@ public class SwiftFragmentCollectRule implements FragmentCollectRule {
                 fragmentKeys.add(segKey);
             }
         }
-        if (ComparatorUtils.equals(fragmentKeys.size(), FRAGMENT_NUMBER)) {
+        if (fragmentKeys.size() >= FRAGMENT_NUMBER) {
             return fragmentKeys;
         }
         return new ArrayList<SegmentKey>();
@@ -49,7 +47,7 @@ public class SwiftFragmentCollectRule implements FragmentCollectRule {
      * @return
      */
     private boolean isNeed2Collect(Segment seg) {
-        if (seg.getLocation().getStoreType() == Types.StoreType.MEMORY) {
+        if (seg.getLocation().getStoreType().isTransient()) {
             return true;
         }
         if (seg.getRowCount() < FRAGMENT_SIZE) {
@@ -57,9 +55,7 @@ public class SwiftFragmentCollectRule implements FragmentCollectRule {
         }
         ImmutableBitMap allShowIndex = seg.getAllShowIndex();
         if (!allShowIndex.isFull()) {
-            if (allShowIndex.getCardinality() < FRAGMENT_SIZE) {
-                return true;
-            }
+            return allShowIndex.getCardinality() < FRAGMENT_SIZE;
         }
         return false;
     }

@@ -65,8 +65,10 @@ public class SegmentTransfer {
                 throw exception[0];
             }
             SegmentContainer.NORMAL.updateSegment(newSegKey, newSeg);
+
+            SwiftLoggers.getLogger().info("seg transferred from {} to {}", oldSegKey, newSegKey);
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("segment transfer from {} to {} failed: {}", oldSegKey, newSegKey, e);
+            SwiftLoggers.getLogger().error("seg transfer from {} to {} failed", oldSegKey, newSegKey, e);
             remove(newSegKey);
         } finally {
             if (swiftResultSet != null) {
@@ -87,6 +89,7 @@ public class SegmentTransfer {
     private void remove(final SegmentKey segKey) {
         SEG_SVC.removeSegments(Collections.singletonList(segKey));
         SegmentUtils.clearSegment(segKey);
+        SwiftLoggers.getLogger().info("seg {} removed", segKey);
     }
 
     private Segment newSegment(SegmentKey segKey) {

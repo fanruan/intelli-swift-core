@@ -228,7 +228,7 @@ public class RealtimeRollbackTest extends BaseTest {
         protected boolean nextSegment() {
             List<SegmentKey> segmentKeys = LOCAL_SEGMENT_PROVIDER.getSegmentKeys(dataSource.getSourceKey());
             if (segmentKeys.isEmpty() ||
-                    segmentKeys.get(segmentKeys.size() - 1).getStoreType() != Types.StoreType.MEMORY) {
+                    segmentKeys.get(segmentKeys.size() - 1).getStoreType().isPersistent()) {
                 currentSeg = newRealtimeSegment(alloter.allot(new LineRowInfo(0)), segmentKeys.size());
                 return true;
             }

@@ -83,7 +83,7 @@ public class QueryInfoParserTest {
         assertEquals(1, info.getDimensions().size());
         assertEquals(1, info.getMetrics().size());
         String queryString = QueryInfoBeanFactory.queryBean2String(queryBean);
-        queryBean = SwiftContext.get().getBean(QueryBeanFactory.class).create(queryString);
+        queryBean = SwiftContext.get().getBean(QueryBeanFactory.class).create(queryString, true);
     }
 
     @Test

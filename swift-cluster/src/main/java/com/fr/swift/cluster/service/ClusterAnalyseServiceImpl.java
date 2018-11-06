@@ -185,12 +185,13 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
 
     private RpcFuture queryRemoteNodeNode(String jsonString, SegmentDestination remoteURI) throws Exception {
         if (null == remoteURI) {
-            QueryBean queryBean = queryBeanFactory.create(jsonString);
+            QueryBean queryBean = queryBeanFactory.create(jsonString, false);
             remoteURI = queryBean.getQueryDestination();
         }
         Assert.notNull(remoteURI);
         String address = remoteURI.getAddress();
         String methodName = remoteURI.getMethodName();
+        SwiftLoggers.getLogger().debug("Execute remote query from {} -> {}, segment is {}", remoteURI.getCurrentNode(), address, remoteURI.getSegmentId());
         Class clazz = remoteURI.getServiceClass();
         return ClusterCommonUtils.runAsyncRpc(address, clazz, ServiceMethodRegistry.INSTANCE.getMethodByName(methodName), jsonString);
     }

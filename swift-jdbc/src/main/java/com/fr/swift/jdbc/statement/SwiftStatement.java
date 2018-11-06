@@ -1,6 +1,5 @@
 package com.fr.swift.jdbc.statement;
 
-import com.fr.general.jsqlparser.JSQLParserException;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
 import com.fr.swift.jdbc.invoke.SqlInvoker;
@@ -70,7 +69,7 @@ public class SwiftStatement extends BaseSwiftStatement {
                         return -1;
                 }
             }
-        } catch (JSQLParserException e) {
+        } catch (Exception e) {
             throw new SQLException(e);
         }
         throw new SQLException(new SwiftJDBCNotSupportedException(sql));

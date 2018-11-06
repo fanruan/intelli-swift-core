@@ -154,7 +154,7 @@ public class ColumnDictMerger<T> extends BaseWorker implements SwiftColumnDictMe
 
         Comparator<T> c = oneOfSegments.<T>getColumn(key).getDictionaryEncodedColumn().getComparator();
 
-        if (path.getStoreType() == StoreType.MEMORY) {
+        if (path.getStoreType().isTransient()) {
             return new TreeMap<T, List<IntPair>>(c);
         }
 

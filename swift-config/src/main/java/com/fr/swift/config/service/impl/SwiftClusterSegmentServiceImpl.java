@@ -8,7 +8,6 @@ import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
 import com.fr.swift.config.entity.key.SwiftSegLocationEntityId;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
-import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
@@ -296,11 +295,9 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
                     return result;
                 }
             });
-
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().warn("Select segments error!", e);
+        } catch (SQLException e) {
+            return Crasher.crash(e);
         }
-        return Collections.emptyMap();
     }
 
     @Override
@@ -313,7 +310,7 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
                     List<SwiftSegmentLocationEntity> list = segmentLocationDao.findByClusterId(session, clusterId);
                     for (SwiftSegmentLocationEntity entity : list) {
                         SegmentKeyBean bean = swiftSegmentDao.select(session, entity.getSegmentId()).convert();
-                        if (bean.getStoreType() == Types.StoreType.MEMORY && !result.containsKey(bean.getSourceKey())) {
+                        if (bean.getStoreType().isTransient() && !result.containsKey(bean.getSourceKey())) {
                             result.put(bean.getSourceKey(), new ArrayList<SegmentKey>());
                         }
                         result.get(bean.getSourceKey()).add(bean);

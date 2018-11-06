@@ -7,15 +7,12 @@ import com.fr.swift.cube.io.IResourceDiscovery;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types.DataType;
 import com.fr.swift.cube.io.Types.IoType;
-import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.Types.WriteType;
 import com.fr.swift.cube.io.input.BitMapReader;
 import com.fr.swift.cube.io.input.IntReader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.BitMapWriter;
 import com.fr.swift.cube.io.output.IntWriter;
-import com.fr.swift.exception.meta.SwiftMetaDataColumnAbsentException;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.RelationColumn;
@@ -28,21 +25,16 @@ import com.fr.swift.segment.relation.CubeMultiRelationPath;
 import com.fr.swift.segment.relation.RelationIndex;
 import com.fr.swift.segment.relation.RelationIndexImpl;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
-import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.IoUtil;
-import com.fr.swift.util.Util;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author anchore
  * @date 2018/1/17
  */
-public class BaseSegment implements Segment {
+public abstract class BaseSegment implements Segment {
     private static final IResourceDiscovery DISCOVERY = ResourceDiscovery.getInstance();
 
     private static final String ROW_COUNT = "row_count";
@@ -58,41 +50,9 @@ public class BaseSegment implements Segment {
     private BitMapWriter bitMapWriter;
     private BitMapReader bitMapReader;
 
-    private final Map<ColumnKey, Column<?>> columns = new ConcurrentHashMap<ColumnKey, Column<?>>();
-
     public BaseSegment(IResourceLocation location, SwiftMetaData meta) {
         this.location = location;
         this.meta = meta;
-    }
-
-    @Override
-    public <T> Column<T> getColumn(ColumnKey key) {
-        try {
-            String name = key.getName();
-            String columnId = meta.getColumnId(name);
-
-            if (columns.containsKey(key)) {
-                return (Column<T>) columns.get(key);
-            }
-            synchronized (columns) {
-                if (columns.containsKey(key)) {
-                    return (Column<T>) columns.get(key);
-                }
-                IResourceLocation child = location.buildChildLocation(columnId);
-                Column<?> column = newColumn(child, ColumnTypeUtils.getClassType(meta.getColumn(name)));
-                columns.put(key, column);
-                return (Column<T>) column;
-            }
-        } catch (SwiftMetaDataColumnAbsentException e) {
-            if (key.getRelation() != null) {
-                return createRelationColumn(key);
-            }
-            SwiftLoggers.getLogger().error("getColumn failed: {}", Util.getRootCauseMessage(e));
-            return null;
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().error("getColumn failed: {}", Util.getRootCauseMessage(e));
-            return null;
-        }
     }
 
     protected Column<?> newColumn(IResourceLocation location, ClassType classType) {
@@ -228,12 +188,12 @@ public class BaseSegment implements Segment {
         bitMapReader = null;
     }
 
-    private Column createRelationColumn(ColumnKey key) {
+    Column createRelationColumn(ColumnKey key) {
         return ((RelationColumn) SwiftContext.get().getBean("relationColumn", key)).buildRelationColumn(this);
     }
 
     @Override
     public boolean isHistory() {
-        return location.getStoreType() != StoreType.MEMORY;
+        return location.getStoreType().isPersistent();
     }
 }
