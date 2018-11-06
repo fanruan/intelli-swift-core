@@ -18,7 +18,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 import org.junit.runners.MethodSorters;
 
 import java.sql.SQLException;
@@ -33,13 +35,14 @@ import static org.junit.Assert.assertEquals;
  */
 @FixMethodOrder(MethodSorters.JVM)
 public class TableTest {
-    private Database db = SwiftDatabase.getInstance();
+    private Database db;
     private SourceKey sk = new SourceKey(getClass().getSimpleName());
     private Table t;
 
     @Before
     public void boot() {
         Preparer.prepareCubeBuild(getClass());
+        db = SwiftDatabase.getInstance();
     }
 
     @Before
@@ -51,6 +54,11 @@ public class TableTest {
 
         t = db.createTable(sk, new SwiftMetaDataBean(sk.getId(),
                 Collections.singletonList(new MetaDataColumnBean("A", Types.DATE))));
+    }
+
+    @Rule
+    public TestRule getReleasableLeakVerifier() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        return (TestRule) Class.forName("com.fr.swift.test.ReleasableLeakVerifier").newInstance();
     }
 
     @Test
