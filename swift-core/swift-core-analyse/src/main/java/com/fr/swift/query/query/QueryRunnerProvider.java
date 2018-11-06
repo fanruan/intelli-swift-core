@@ -5,7 +5,6 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.source.SwiftResultSet;
 
 import java.net.URI;
 import java.util.Map;
@@ -16,7 +15,6 @@ import java.util.Map;
  */
 public class QueryRunnerProvider {
     private static QueryRunnerProvider ourInstance = new QueryRunnerProvider();
-    private QueryRunner runner;
     private QueryIndexRunner indexRunner;
 
     private QueryRunnerProvider() {
@@ -24,14 +22,6 @@ public class QueryRunnerProvider {
 
     public static QueryRunnerProvider getInstance() {
         return ourInstance;
-    }
-
-    public void registerRunner(QueryRunner runner) {
-        this.runner = runner;
-    }
-
-    public SwiftResultSet executeQuery(QueryBean info) throws Exception {
-        return runner.getQueryResult(info);
     }
 
     public Map<URI, IndexQuery<ImmutableBitMap>> executeIndexQuery(Table table, Where where) throws Exception {

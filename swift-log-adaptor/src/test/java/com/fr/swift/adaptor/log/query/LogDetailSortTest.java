@@ -3,16 +3,18 @@ package com.fr.swift.adaptor.log.query;
 import com.fr.stable.query.QueryFactory;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.swift.adaptor.log.QueryConditionAdaptor;
+import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
-import com.fr.swift.query.query.QueryRunnerProvider;
+import com.fr.swift.service.AnalyseService;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.db.QueryDBSource;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -30,6 +32,13 @@ import static junit.framework.TestCase.assertTrue;
 public class LogDetailSortTest extends LogBaseTest {
 
     private final Database db = SwiftDatabase.getInstance();
+    private AnalyseService service;
+
+    @Override
+    @Before
+    public void setUp() throws Exception {
+        service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
+    }
 
     @Test
     public void testSortedAsc() {
@@ -44,7 +53,7 @@ public class LogDetailSortTest extends LogBaseTest {
             QueryCondition sortQueryCondition = QueryFactory.create().addSort("总金额");
 
             QueryInfoBean queryBean = QueryConditionAdaptor.adaptCondition(sortQueryCondition, table);
-            SwiftResultSet sortResultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
+            SwiftResultSet sortResultSet = service.getQueryResult(queryBean);
             int sortindex = table.getMeta().getColumnIndex("总金额");
             List<Double> dataList = new ArrayList<Double>();
             while (sortResultSet.hasNext()) {
@@ -73,7 +82,7 @@ public class LogDetailSortTest extends LogBaseTest {
             QueryCondition sortQueryCondition = QueryFactory.create().addSort("总金额", true);
 
             QueryInfoBean queryBean = QueryConditionAdaptor.adaptCondition(sortQueryCondition, table);
-            SwiftResultSet sortResultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
+            SwiftResultSet sortResultSet = service.getQueryResult(queryBean);
             int sortindex = table.getMeta().getColumnIndex("总金额");
             List<Double> dataList = new ArrayList<Double>();
             while (sortResultSet.hasNext()) {
