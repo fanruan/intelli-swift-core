@@ -1,8 +1,9 @@
-package com.fr.swift.result.serialize;
+package com.fr.swift.query.result.serialize;
 
-import com.fr.swift.query.query.QueryRunnerProvider;
+import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.SwiftNode;
+import com.fr.swift.service.AnalyseService;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.Pair;
@@ -50,7 +51,8 @@ public class LocalPartNodeResultSet implements NodeMergeResultSet<SwiftNode>, Se
         }
         if (originHasNextPage) {
             try {
-                LocalPartNodeResultSet resultSet = (LocalPartNodeResultSet) QueryRunnerProvider.getInstance().executeRemoteQuery(jsonString, null);
+                AnalyseService service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
+                LocalPartNodeResultSet resultSet = (LocalPartNodeResultSet) service.getRemoteQueryResult(jsonString, null);
                 ret = resultSet.getPage();
                 originHasNextPage = resultSet.hasNextPage();
             } catch (SQLException e) {

@@ -5,7 +5,6 @@ import com.fr.intelli.record.scene.impl.BaseMetric;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.data.DataList;
 import com.fr.swift.basics.base.selector.ProxySelector;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Table;
@@ -14,10 +13,6 @@ import com.fr.swift.db.impl.AddColumnAction;
 import com.fr.swift.db.impl.DropColumnAction;
 import com.fr.swift.db.impl.MetadataDiffer;
 import com.fr.swift.db.impl.SwiftWhere;
-import com.fr.swift.event.ClusterEvent;
-import com.fr.swift.event.ClusterEventListener;
-import com.fr.swift.event.ClusterEventType;
-import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.event.global.DeleteEvent;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.query.FilterBean;
@@ -26,8 +21,6 @@ import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.RealtimeService;
-import com.fr.swift.service.cluster.ClusterAnalyseService;
-import com.fr.swift.service.cluster.ClusterRealTimeService;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.service.listener.SwiftServiceListenerManager;
 import com.fr.swift.source.Row;
@@ -65,8 +58,8 @@ public class MetricProxy extends BaseMetric {
     private Sync sync;
 
     private MetricProxy() {
-        realtimeService = SwiftContext.get().getBean("swiftRealtimeService", RealtimeService.class);
-        analyseService = SwiftContext.get().getBean("swiftAnalyseService", AnalyseService.class);
+        realtimeService = ProxySelector.getInstance().getFactory().getProxy(RealtimeService.class);
+        analyseService = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
         sync = new Sync();
     }
 

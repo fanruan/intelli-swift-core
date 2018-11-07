@@ -5,23 +5,22 @@ import com.fr.swift.api.rpc.SelectService;
 import com.fr.swift.api.rpc.TableService;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.ProxyServiceRegistry;
+import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.query.info.bean.query.AbstractSingleTableQueryInfoBean;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryBeanFactory;
+import com.fr.swift.query.result.serialize.SerializableDetailResultSet;
 import com.fr.swift.result.DetailResultSet;
-import com.fr.swift.result.serialize.SerializableDetailResultSet;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.util.ServiceBeanFactory;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -42,13 +41,14 @@ public class SelectServiceImpl implements SelectService {
             if (queryBean instanceof AbstractSingleTableQueryInfoBean) {
                 String tableName = ((AbstractSingleTableQueryInfoBean) queryBean).getTableName();
                 SwiftMetaData metaData = metaDataService.getMetaDataByKey(tableName);
+                AnalyseService service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
                 SwiftResultSet resultSet = null;
                 if (null != metaData && metaData.getSwiftDatabase() == database) {
-                    resultSet = getAnalyseService().getQueryResult(queryBean);
+                    resultSet = service.getQueryResult(queryBean);
                 } else {
                     metaData = tableService.detectiveMetaData(database, tableName);
                     ((AbstractSingleTableQueryInfoBean) queryBean).setTableName(metaData.getId());
-                    resultSet = getAnalyseService().getQueryResult(queryBean);
+                    resultSet = service.getQueryResult(queryBean);
                 }
                 return getPageResultSet(queryJson, resultSet);
             }
@@ -72,13 +72,5 @@ public class SelectServiceImpl implements SelectService {
             rowCount = ((DetailResultSet) resultSet).getRowCount();
         }
         return new SerializableDetailResultSet(jsonString, resultSet.getMetaData(), rows, resultSet.hasNext(), rowCount);
-    }
-
-    private AnalyseService getAnalyseService() {
-        List<com.fr.swift.service.SwiftService> services = ServiceBeanFactory.getSwiftServiceByNames(Collections.singleton("analyse"));
-        if (services.isEmpty()) {
-            throw new RuntimeException("Can not find any RealTime service!");
-        }
-        return (AnalyseService) services.get(0);
     }
 }

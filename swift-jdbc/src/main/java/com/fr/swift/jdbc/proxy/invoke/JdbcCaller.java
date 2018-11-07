@@ -8,7 +8,7 @@ import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Where;
 import com.fr.swift.jdbc.result.SwiftPaginationResultSet;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.result.serialize.SerializableDetailResultSet;
+import com.fr.swift.query.result.serialize.SerializableDetailResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;

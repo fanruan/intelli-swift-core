@@ -11,7 +11,7 @@ import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.data.DataList;
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
@@ -52,7 +52,7 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
     private AnalyseService analyseService;
 
     private SwiftLogSearchProvider() {
-        analyseService = SwiftContext.get().getBean("swiftAnalyseService", AnalyseService.class);
+        analyseService = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
     }
 
     @Override
@@ -185,7 +185,6 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
         metrics.add(bean);
         queryInfoBean.setMetricBeans(metrics);
         SwiftResultSet resultSet = analyseService.getQueryResult(queryInfoBean);
-//        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfoBean);
         Row row = null;
         if (resultSet.hasNext()) {
             row = resultSet.getNextRow();
