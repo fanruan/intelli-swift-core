@@ -4,6 +4,7 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
+import com.fr.swift.exception.SegmentAbsentException;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.column.Column;
@@ -33,12 +34,17 @@ public class SwiftInserterTest {
     private String cubePath;
 
     @Rule
-    public static TestRule getExternalResource() throws Exception {
+    public TestRule getExternalResource() throws Exception {
         return (TestRule) Class.forName("com.fr.swift.test.external.BuildCubeResource").newInstance();
     }
 
+    @Rule
+    public TestRule getReleasableLeakVerifier() throws Exception {
+        return (TestRule) Class.forName("com.fr.swift.test.ReleasableLeakVerifier").newInstance();
+    }
+
     @Before
-    public void beforeClass() {
+    public void beforeClass() throws SegmentAbsentException {
         dataSource = new QueryDBSource("select 客户状态 from DEMO_CUSTOMER", SwiftInserterTest.class.getSimpleName());
         transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
         cubePath = String.format("cubes/%s/seg0", dataSource.getSourceKey().getId());

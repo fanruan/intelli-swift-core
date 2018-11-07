@@ -12,6 +12,8 @@ import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
 
+import java.util.concurrent.Callable;
+
 /**
  * @author anchore
  * @date 2018/9/11
@@ -24,12 +26,13 @@ public class TransferRealtimeListener extends Listener<SegmentKey> {
     @Override
     public void on(Event event, final SegmentKey segKey) {
         try {
-            TASK_EXEC.submit(new SwiftServiceCallable(segKey.getTable(), ServiceTaskType.PERSIST) {
+            TASK_EXEC.submit(new SwiftServiceCallable(segKey.getTable(), ServiceTaskType.PERSIST, new Callable<Void>() {
                 @Override
-                public void doJob() {
+                public Void call() {
                     new RealtimeToHistoryTransfer(segKey).transfer();
+                    return null;
                 }
-            });
+            }));
         } catch (InterruptedException e) {
             SwiftLoggers.getLogger().warn("{} transfer to realtime failed: {}", segKey, e);
         }

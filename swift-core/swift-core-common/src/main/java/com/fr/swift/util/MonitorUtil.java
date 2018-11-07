@@ -1,6 +1,5 @@
 package com.fr.swift.util;
 
-import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 
 /**
@@ -12,9 +11,6 @@ import com.fr.swift.log.SwiftLoggers;
  */
 public class MonitorUtil {
 
-
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(MonitorUtil.class);
-
     private static ThreadLocal<Long> tl = new ThreadLocal<Long>();
 
     public static void start() {
@@ -23,6 +19,7 @@ public class MonitorUtil {
 
     public static void finish(String methodName) {
         long finishTime = System.currentTimeMillis();
-        LOGGER.debug(String.format("Invoke %s cost time:%s ms", methodName, finishTime - tl.get()));
+        SwiftLoggers.getLogger().debug("Invoke {} costs {} ms", methodName, finishTime - tl.get());
+        tl.remove();
     }
 }

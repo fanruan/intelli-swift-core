@@ -4,10 +4,16 @@ import com.fr.swift.adaptor.log.JpaAdaptorTest.A;
 import com.fr.swift.adaptor.log.JpaAdaptorTest.ConvertType;
 import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.util.JpaAdaptor;
 import com.fr.swift.util.function.Function;
+import com.fr.third.javax.persistence.Column;
+import com.fr.third.javax.persistence.Table;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.sql.Types;
@@ -89,5 +95,20 @@ public class RowAdaptorTest {
         row = adapter1.apply(convertType);
         assertEquals(1, row.getSize());
         assertEquals(Long.valueOf(1L), row.getValue(0));
+    }
+
+    @Test
+    public void testBug() throws Exception {
+        // DEC-5138 【10冒烟】【系统管理】短信-运行监控查不到数据
+        @Table(name = "a")
+        class A {
+            @Column(name = "b")
+            boolean b;
+        }
+
+        SwiftMetaData metaData = JpaAdaptor.adapt(A.class, SwiftDatabase.DECISION_LOG);
+        DecisionRowAdaptor<A> adaptor = new DecisionRowAdaptor<A>(A.class, metaData);
+        A a = adaptor.apply(new ListBasedRow(Collections.<Object>singletonList(1L)));
+        Assert.assertTrue(a.b);
     }
 }

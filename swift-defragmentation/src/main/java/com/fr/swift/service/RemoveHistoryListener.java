@@ -17,6 +17,7 @@ import com.fr.swift.task.service.SwiftServiceCallable;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.concurrent.Callable;
 
 /**
  * @author anchore
@@ -51,12 +52,13 @@ public class RemoveHistoryListener extends Listener<SegmentKey> {
 
     private void clearSeg(final SegmentKey segKey) {
         try {
-            SVC_EXEC.submit(new SwiftServiceCallable(segKey.getTable(), ServiceTaskType.CLEAR_LOCAL) {
+            SVC_EXEC.submit(new SwiftServiceCallable(segKey.getTable(), ServiceTaskType.CLEAR_LOCAL, new Callable<Void>() {
                 @Override
-                public void doJob() {
+                public Void call() {
                     SegmentUtils.clearSegment(segKey);
+                    return null;
                 }
-            });
+            }));
         } catch (InterruptedException e) {
             SwiftLoggers.getLogger().error(e);
         }
