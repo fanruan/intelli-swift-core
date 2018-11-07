@@ -30,7 +30,7 @@ public abstract class BaseProcessHandler extends AbstractProcessHandler implemen
         Class<?>[] parameterTypes = method.getParameterTypes();
         List<URL> urls = processUrl(target);
         String methodName = method.getName();
-        List result = new ArrayList();
+        List<Object> result = new ArrayList<Object>();
         if (null == urls || urls.isEmpty()) {
             Invoker invoker = new LocalInvoker(ProxyServiceRegistry.INSTANCE.getService(proxyClass), proxyClass, null);
             return invoke(invoker, proxyClass, method, methodName, parameterTypes, args);

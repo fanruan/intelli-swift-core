@@ -47,7 +47,7 @@ public class LocalInvoker<T> implements Invoker<T> {
     }
 
     @Override
-    public Class getInterface() {
+    public Class<T> getInterface() {
         return type;
     }
 
