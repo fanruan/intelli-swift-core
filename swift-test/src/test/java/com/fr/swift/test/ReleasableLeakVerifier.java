@@ -4,20 +4,20 @@ import com.fr.swift.cube.io.impl.mem.MemIo;
 import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.cube.io.output.Writer;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.third.net.bytebuddy.agent.ByteBuddyAgent;
-import com.fr.third.net.bytebuddy.agent.builder.AgentBuilder;
-import com.fr.third.net.bytebuddy.implementation.MethodDelegation;
-import com.fr.third.net.bytebuddy.implementation.SuperMethodCall;
-import com.fr.third.net.bytebuddy.implementation.bind.annotation.SuperCall;
-import com.fr.third.net.bytebuddy.matcher.ElementMatchers;
+import net.bytebuddy.agent.ByteBuddyAgent;
+import net.bytebuddy.agent.builder.AgentBuilder;
+import net.bytebuddy.implementation.MethodDelegation;
+import net.bytebuddy.implementation.SuperMethodCall;
+import net.bytebuddy.implementation.bind.annotation.SuperCall;
+import net.bytebuddy.matcher.ElementMatchers;
 import org.junit.rules.Verifier;
 
 import java.util.concurrent.Callable;
 
-import static com.fr.third.net.bytebuddy.matcher.ElementMatchers.isAbstract;
-import static com.fr.third.net.bytebuddy.matcher.ElementMatchers.isInterface;
-import static com.fr.third.net.bytebuddy.matcher.ElementMatchers.isSubTypeOf;
-import static com.fr.third.net.bytebuddy.matcher.ElementMatchers.not;
+import static net.bytebuddy.matcher.ElementMatchers.isAbstract;
+import static net.bytebuddy.matcher.ElementMatchers.isInterface;
+import static net.bytebuddy.matcher.ElementMatchers.isSubTypeOf;
+import static net.bytebuddy.matcher.ElementMatchers.not;
 
 /**
  * @author anchore

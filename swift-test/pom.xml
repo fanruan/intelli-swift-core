@@ -10,6 +10,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>swift-test</artifactId>
+
+    <properties>
+        <byte-buddy.version>1.8.12</byte-buddy.version>
+    </properties>
     <build>
         <plugins>
             <plugin>
@@ -28,11 +32,6 @@
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-server</artifactId>
             <version>${swift.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>1.4.193</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
@@ -74,6 +73,19 @@
             <scope>test</scope>
             <classifier>tests</classifier>
             <type>test-jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <version>${byte-buddy.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy-agent</artifactId>
+            <version>${byte-buddy.version}</version>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
