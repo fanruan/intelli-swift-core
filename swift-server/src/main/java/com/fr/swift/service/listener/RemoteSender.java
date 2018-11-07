@@ -1,7 +1,7 @@
 package com.fr.swift.service.listener;
 
 import com.fr.swift.basics.annotation.InvokeMethod;
-import com.fr.swift.basics.base.handler.SwiftMasterProcessHandler;
+import com.fr.swift.basics.handler.MasterProcessHandler;
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.service.SwiftService;
 import com.fr.swift.service.SwiftServiceEvent;
@@ -24,14 +24,14 @@ public interface RemoteSender extends SwiftServiceListenerHandler {
     void trigger(SwiftServiceEvent event);
 
     @Override
-    @InvokeMethod(SwiftMasterProcessHandler.class)
+    @InvokeMethod(MasterProcessHandler.class)
     Serializable trigger(SwiftRpcEvent event);
 
     @Override
-    @InvokeMethod(SwiftMasterProcessHandler.class)
+    @InvokeMethod(MasterProcessHandler.class)
     void registerService(SwiftService service);
 
     @Override
-    @InvokeMethod(SwiftMasterProcessHandler.class)
+    @InvokeMethod(MasterProcessHandler.class)
     void unRegisterService(SwiftService service);
 }

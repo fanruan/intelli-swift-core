@@ -36,7 +36,7 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
     private ConcurrentHashMap<String, Integer> tablePath = new ConcurrentHashMap<String, Integer>();
 
     public SwiftTablePathServiceImpl() {
-        ClusterListenerHandler.addListener(new ClusterEventListener() {
+        ClusterListenerHandler.addInitialListener(new ClusterEventListener() {
             @Override
             public void handleEvent(ClusterEvent clusterEvent) {
                 tablePath.clear();

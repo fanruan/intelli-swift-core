@@ -13,7 +13,9 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class ClusterListenerHandler {
 
-    private List<ClusterEventListener> clusterEventListeners;
+    private List<ClusterEventListener> initialEventListeners;
+
+    private List<ClusterEventListener> extraEventListeners;
 
     private static ReentrantLock lock = new ReentrantLock();
 
@@ -24,24 +26,55 @@ public class ClusterListenerHandler {
     }
 
     private ClusterListenerHandler() {
-        this.clusterEventListeners = new ArrayList<ClusterEventListener>();
+        this.initialEventListeners = new ArrayList<ClusterEventListener>();
+        this.extraEventListeners = new ArrayList<ClusterEventListener>();
     }
 
     public static void handlerEvent(ClusterEvent clusterEvent) {
         lock.lock();
         try {
-            for (ClusterEventListener clusterEventListener : getInstance().clusterEventListeners) {
-                clusterEventListener.handleEvent(clusterEvent);
+            for (ClusterEventListener initialEventListener : INSTANCE.initialEventListeners) {
+                initialEventListener.handleEvent(clusterEvent);
+            }
+            for (ClusterEventListener extraEventListener : INSTANCE.extraEventListeners) {
+                extraEventListener.handleEvent(clusterEvent);
             }
         } finally {
             lock.unlock();
         }
     }
 
-    public static void addListener(ClusterEventListener clusterEventListener) {
+    public static void addInitialListener(ClusterEventListener clusterEventListener) {
         lock.lock();
         try {
-            getInstance().clusterEventListeners.add(clusterEventListener);
+            INSTANCE.initialEventListeners.add(clusterEventListener);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public static void addExtraListener(ClusterEventListener clusterEventListener) {
+        lock.lock();
+        try {
+            INSTANCE.extraEventListeners.add(clusterEventListener);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public static void removeInitialListener(ClusterEventListener clusterEventListener) {
+        lock.lock();
+        try {
+            INSTANCE.initialEventListeners.remove(clusterEventListener);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public static void removeExtraListener(ClusterEventListener clusterEventListener) {
+        lock.lock();
+        try {
+            INSTANCE.extraEventListeners.remove(clusterEventListener);
         } finally {
             lock.unlock();
         }

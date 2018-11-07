@@ -68,18 +68,6 @@ public class MetricProxy extends BaseMetric {
         realtimeService = SwiftContext.get().getBean("swiftRealtimeService", RealtimeService.class);
         analyseService = SwiftContext.get().getBean("swiftAnalyseService", AnalyseService.class);
         sync = new Sync();
-        ClusterListenerHandler.addListener(new ClusterEventListener() {
-            @Override
-            public void handleEvent(ClusterEvent clusterEvent) {
-                if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
-                    realtimeService = SwiftContext.get().getBean(ClusterRealTimeService.class);
-                    analyseService = SwiftContext.get().getBean(ClusterAnalyseService.class);
-                } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
-                    realtimeService = SwiftContext.get().getBean("swiftRealtimeService", RealtimeService.class);
-                    analyseService = SwiftContext.get().getBean("swiftAnalyseService", AnalyseService.class);
-                }
-            }
-        });
     }
 
     private final Database db = com.fr.swift.db.impl.SwiftDatabase.getInstance();
