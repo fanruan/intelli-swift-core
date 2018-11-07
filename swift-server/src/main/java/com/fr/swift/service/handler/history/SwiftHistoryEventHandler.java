@@ -52,6 +52,7 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
 //                    }
                 case COMMON_LOAD:
                 case MODIFY_LOAD:
+                    //需要load的seg
                     Pair<String, Map<String, List<String>>> pair = (Pair<String, Map<String, List<String>>>) event.getContent();
                     HistoryService service = factory.getProxy(HistoryService.class);
                     try {

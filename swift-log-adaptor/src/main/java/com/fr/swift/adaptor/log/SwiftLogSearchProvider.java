@@ -13,10 +13,6 @@ import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.data.DataList;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.SwiftDatabase;
-import com.fr.swift.event.ClusterEvent;
-import com.fr.swift.event.ClusterEventListener;
-import com.fr.swift.event.ClusterEventType;
-import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.info.bean.element.filter.impl.AndFilterBean;
@@ -27,7 +23,6 @@ import com.fr.swift.query.info.bean.type.MetricType;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.service.AnalyseService;
-import com.fr.swift.service.cluster.ClusterAnalyseService;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.iterator.IteratorUtils;
@@ -58,16 +53,6 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
 
     private SwiftLogSearchProvider() {
         analyseService = SwiftContext.get().getBean("swiftAnalyseService", AnalyseService.class);
-        ClusterListenerHandler.addListener(new ClusterEventListener() {
-            @Override
-            public void handleEvent(ClusterEvent clusterEvent) {
-                if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
-                    analyseService = SwiftContext.get().getBean(ClusterAnalyseService.class);
-                } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
-                    analyseService = SwiftContext.get().getBean("swiftAnalyseService", AnalyseService.class);
-                }
-            }
-        });
     }
 
     @Override
