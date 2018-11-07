@@ -6,16 +6,18 @@ import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.restriction.Restriction;
 import com.fr.stable.query.restriction.RestrictionFactory;
 import com.fr.swift.adaptor.log.QueryConditionAdaptor;
+import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.query.QueryRunnerProvider;
+import com.fr.swift.service.AnalyseService;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.db.QueryDBSource;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -34,6 +36,13 @@ import static junit.framework.TestCase.assertTrue;
 public class LogDetailAndFilterTest extends LogBaseTest {
 
     private final Database db = SwiftDatabase.getInstance();
+    private AnalyseService service;
+
+    @Override
+    @Before
+    public void setUp() throws Exception {
+        service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
+    }
 
     @Test
     public void testAnd() {
@@ -49,7 +58,7 @@ public class LogDetailAndFilterTest extends LogBaseTest {
                     .addRestriction(RestrictionFactory.gte("总金额", 1000000)).addRestriction(RestrictionFactory.lte("总金额", 2000000));
 
             QueryBean queryBean = QueryConditionAdaptor.adaptCondition(eqQueryCondition, table);
-            SwiftResultSet eqResultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
+            SwiftResultSet eqResultSet = service.getQueryResult(queryBean);
             int index1 = table.getMeta().getColumnIndex("合同类型") - 1;
             int index2 = table.getMeta().getColumnIndex("总金额") - 1;
 
@@ -82,7 +91,7 @@ public class LogDetailAndFilterTest extends LogBaseTest {
             QueryCondition eqQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.or(restrictions));
 
             QueryBean queryBean = QueryConditionAdaptor.adaptCondition(eqQueryCondition, table);
-            SwiftResultSet eqResultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
+            SwiftResultSet eqResultSet = service.getQueryResult(queryBean);
             int index1 = table.getMeta().getColumnIndex("合同类型") - 1;
             int count1 = 0, count2 = 0, count3 = 0;
             while (eqResultSet.hasNext()) {

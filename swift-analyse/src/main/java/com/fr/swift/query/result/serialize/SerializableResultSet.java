@@ -1,4 +1,4 @@
-package com.fr.swift.result.serialize;
+package com.fr.swift.query.result.serialize;
 
 import com.fr.swift.source.SwiftResultSet;
 

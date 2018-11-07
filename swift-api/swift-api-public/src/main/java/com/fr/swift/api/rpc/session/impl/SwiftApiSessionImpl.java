@@ -11,7 +11,7 @@ import com.fr.swift.exception.meta.SwiftMetaDataAbsentException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.info.bean.query.AbstractSingleTableQueryInfoBean;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.result.serialize.SerializableDetailResultSet;
+import com.fr.swift.query.result.serialize.SerializableDetailResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
