@@ -7,7 +7,7 @@ package com.fr.swift.basics;
  * @description
  * @since Advanced FineBI 5.0
  */
-public interface ProcessHanderRegistry {
+public interface ProcessHandlerRegistry {
     /**
      * 注册ProcessHandler
      *

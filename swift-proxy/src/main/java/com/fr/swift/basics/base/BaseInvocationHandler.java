@@ -26,7 +26,7 @@ public class BaseInvocationHandler implements InvokerHandler {
         if (null != invokeMethod) {
             // TODO: 2018/11/1 类第一次构造，之后加缓存
             Class<? extends ProcessHandler> handlerInterface = invokeMethod.value();
-            Class<? extends ProcessHandler> handlerClass = ProxyProcessHanderRegistry.INSTANCE.getHandler(handlerInterface);
+            Class<? extends ProcessHandler> handlerClass = ProxyProcessHandlerRegistry.INSTANCE.getHandler(handlerInterface);
             Constructor<? extends ProcessHandler> cons = handlerClass.getDeclaredConstructor(InvokerCreater.class);
             ProcessHandler handler = cons.newInstance(invokerCreater);
             return handler.processResult(method, invokeMethod.target(), args);

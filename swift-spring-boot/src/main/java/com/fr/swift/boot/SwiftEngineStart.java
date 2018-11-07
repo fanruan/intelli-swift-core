@@ -11,7 +11,7 @@ import com.fr.swift.api.rpc.impl.DataMaintenanceServiceImpl;
 import com.fr.swift.api.rpc.impl.DetectServiceImpl;
 import com.fr.swift.api.rpc.impl.SelectServiceImpl;
 import com.fr.swift.api.rpc.impl.TableServiceImpl;
-import com.fr.swift.basics.base.ProxyProcessHanderRegistry;
+import com.fr.swift.basics.base.ProxyProcessHandlerRegistry;
 import com.fr.swift.basics.base.ProxyServiceRegistry;
 import com.fr.swift.basics.base.handler.SwiftMasterProcessHandler;
 import com.fr.swift.basics.handler.CommonLoadProcessHandler;
@@ -120,8 +120,8 @@ public class SwiftEngineStart {
         ProxyServiceRegistry.INSTANCE.registerService(new SwiftMasterService());
         ProxyServiceRegistry.INSTANCE.registerService(new SwiftSlaveService());
 
-        ProxyProcessHanderRegistry.INSTANCE.addHandler(MasterProcessHandler.class, SwiftMasterProcessHandler.class);
-        ProxyProcessHanderRegistry.INSTANCE.addHandler(NodesProcessHandler.class, SwiftNodesProcessHandler.class);
-        ProxyProcessHanderRegistry.INSTANCE.addHandler(CommonLoadProcessHandler.class, SwiftCommonLoadProcessHandler.class);
+        ProxyProcessHandlerRegistry.INSTANCE.addHandler(MasterProcessHandler.class, SwiftMasterProcessHandler.class);
+        ProxyProcessHandlerRegistry.INSTANCE.addHandler(NodesProcessHandler.class, SwiftNodesProcessHandler.class);
+        ProxyProcessHandlerRegistry.INSTANCE.addHandler(CommonLoadProcessHandler.class, SwiftCommonLoadProcessHandler.class);
     }
 }
