@@ -13,7 +13,9 @@ import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.test.Preparer;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 
 /**
  * @author anchore
@@ -33,6 +35,11 @@ public class IncrementerTest {
         if (!SwiftDatabase.getInstance().existsTable(dataSource.getSourceKey())) {
             SwiftDatabase.getInstance().createTable(dataSource.getSourceKey(), dataSource.getMetadata());
         }
+    }
+
+    @Rule
+    public TestRule getReleasableLeakVerifier() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        return (TestRule) Class.forName("com.fr.swift.test.ReleasableLeakVerifier").newInstance();
     }
 
     @Test
