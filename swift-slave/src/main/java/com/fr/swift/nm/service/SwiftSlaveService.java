@@ -1,13 +1,13 @@
 package com.fr.swift.nm.service;
 
 import com.fr.swift.basics.annotation.ProxyService;
+import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.cluster.service.MasterService;
 import com.fr.swift.cluster.service.SlaveService;
 import com.fr.swift.container.NodeContainer;
 import com.fr.swift.heart.HeartBeatInfo;
 import com.fr.swift.heart.NodeState;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.utils.ClusterProxyUtils;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -25,7 +25,7 @@ public class SwiftSlaveService implements SlaveService {
 
     @Override
     public void sendHeartBeat(HeartBeatInfo heartBeatInfo) throws Exception {
-        MasterService masterService = ClusterProxyUtils.getProxy(MasterService.class);
+        MasterService masterService = ProxySelector.getInstance().getFactory().getProxy(MasterService.class);
         masterService.receiveHeartBeat(heartBeatInfo);
     }
 
@@ -38,7 +38,7 @@ public class SwiftSlaveService implements SlaveService {
 
     @Override
     public void syncNodeStates() throws Exception {
-        MasterService masterService = ClusterProxyUtils.getProxy(MasterService.class);
+        MasterService masterService = ProxySelector.getInstance().getFactory().getProxy(MasterService.class);
         Collection<NodeState> collection = masterService.pullNodeStates();
         syncNodeStates(collection);
     }

@@ -28,7 +28,7 @@ public class SwiftSegmentServiceProvider implements SwiftSegmentService {
     public SwiftSegmentServiceProvider() {
         service = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
         service.checkOldConfig();
-        ClusterListenerHandler.addListener(new ClusterEventListener() {
+        ClusterListenerHandler.addInitialListener(new ClusterEventListener() {
             @Override
             public void handleEvent(ClusterEvent clusterEvent) {
                 if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
