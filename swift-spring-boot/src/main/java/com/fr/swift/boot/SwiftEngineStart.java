@@ -11,7 +11,11 @@ import com.fr.swift.api.rpc.impl.DataMaintenanceServiceImpl;
 import com.fr.swift.api.rpc.impl.DetectServiceImpl;
 import com.fr.swift.api.rpc.impl.SelectServiceImpl;
 import com.fr.swift.api.rpc.impl.TableServiceImpl;
+import com.fr.swift.basics.base.ProxyProcessHandlerRegistry;
 import com.fr.swift.basics.base.ProxyServiceRegistry;
+import com.fr.swift.basics.base.handler.SwiftMasterProcessHandler;
+import com.fr.swift.basics.handler.CommonLoadProcessHandler;
+import com.fr.swift.basics.handler.MasterProcessHandler;
 import com.fr.swift.cluster.listener.NodeStartedListener;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.ProviderTaskManager;
@@ -22,11 +26,14 @@ import com.fr.swift.event.ClusterType;
 import com.fr.swift.log.SwiftLog4jLoggers;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.nm.service.SwiftSlaveService;
+import com.fr.swift.process.handler.NodesProcessHandler;
+import com.fr.swift.process.handler.SwiftNodesProcessHandler;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.rm.service.SwiftMasterService;
 import com.fr.swift.service.MaskHistoryListener;
 import com.fr.swift.service.RemoveHistoryListener;
 import com.fr.swift.service.SwiftAnalyseService;
+import com.fr.swift.service.SwiftCommonLoadProcessHandler;
 import com.fr.swift.service.SwiftHistoryService;
 import com.fr.swift.service.SwiftIndexingService;
 import com.fr.swift.service.SwiftRealtimeService;
@@ -54,15 +61,15 @@ public class SwiftEngineStart {
         try {
             SwiftLoggers.setLoggerFactory(new SwiftLog4jLoggers());
             SimpleWork.checkIn(System.getProperty("user.dir"));
-            ClusterListenerHandler.addListener(new SwiftClusterListener());
+            ClusterListenerHandler.addInitialListener(new SwiftClusterListener());
             SwiftContext.init();
 
             registerTmpConnectionProvider();
-            ClusterListenerHandler.addListener(NodeStartedListener.INSTANCE);
+            ClusterListenerHandler.addInitialListener(NodeStartedListener.INSTANCE);
             FineIO.setLogger(SwiftLoggers.getLogger());
             ProviderTaskManager.start();
             SwiftCommandParser.parseCommand(args);
-            registerProxyService();
+            registerProxy();
             SwiftContext.get().getBean("localManager", ServiceManager.class).startUp();
             if (SwiftContext.get().getBean("swiftProperty", SwiftProperty.class).isCluster()) {
                 ClusterListenerHandler.handlerEvent(new ClusterEvent(ClusterEventType.JOIN_CLUSTER, ClusterType.CONFIGURE));
@@ -100,7 +107,7 @@ public class SwiftEngineStart {
         });
     }
 
-    private static void registerProxyService() {
+    private static void registerProxy() {
         ProxyServiceRegistry.INSTANCE.registerService(new SwiftHistoryService());
         ProxyServiceRegistry.INSTANCE.registerService(new SwiftIndexingService());
         ProxyServiceRegistry.INSTANCE.registerService(new SwiftRealtimeService());
@@ -112,5 +119,9 @@ public class SwiftEngineStart {
         ProxyServiceRegistry.INSTANCE.registerService(new SelectServiceImpl());
         ProxyServiceRegistry.INSTANCE.registerService(new SwiftMasterService());
         ProxyServiceRegistry.INSTANCE.registerService(new SwiftSlaveService());
+
+        ProxyProcessHandlerRegistry.INSTANCE.addHandler(MasterProcessHandler.class, SwiftMasterProcessHandler.class);
+        ProxyProcessHandlerRegistry.INSTANCE.addHandler(NodesProcessHandler.class, SwiftNodesProcessHandler.class);
+        ProxyProcessHandlerRegistry.INSTANCE.addHandler(CommonLoadProcessHandler.class, SwiftCommonLoadProcessHandler.class);
     }
 }

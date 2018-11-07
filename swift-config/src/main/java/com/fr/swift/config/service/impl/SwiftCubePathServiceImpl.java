@@ -33,7 +33,7 @@ public class SwiftCubePathServiceImpl implements SwiftCubePathService {
     private String clusterId = SwiftTablePathKey.LOCALHOST;
 
     public SwiftCubePathServiceImpl() {
-        ClusterListenerHandler.addListener(new ClusterEventListener() {
+        ClusterListenerHandler.addInitialListener(new ClusterEventListener() {
             @Override
             public void handleEvent(ClusterEvent clusterEvent) {
                 if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {

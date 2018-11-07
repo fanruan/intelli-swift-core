@@ -1,6 +1,7 @@
 package com.fr.swift.rm.service;
 
 import com.fr.swift.basics.annotation.ProxyService;
+import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.cluster.service.MasterService;
 import com.fr.swift.cluster.service.SlaveService;
 import com.fr.swift.container.NodeContainer;
@@ -8,7 +9,6 @@ import com.fr.swift.heart.HeartBeatInfo;
 import com.fr.swift.heart.NodeState;
 import com.fr.swift.heart.NodeType;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.utils.ClusterProxyUtils;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -44,7 +44,7 @@ public class SwiftMasterService implements MasterService {
         SwiftLoggers.getLogger().debug("Start to sync node states!");
         List<NodeState> nodeStateList = NodeContainer.getAllNodeStates();
         try {
-            SlaveService slaveService = ClusterProxyUtils.getProxy(SlaveService.class);
+            SlaveService slaveService = ProxySelector.getInstance().getFactory().getProxy(SlaveService.class);
             slaveService.syncNodeStates(nodeStateList);
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
