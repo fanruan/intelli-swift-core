@@ -40,6 +40,11 @@ public class IncrementerTest {
         }
     }
 
+    @Rule
+    public TestRule getReleasableLeakVerifier() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        return (TestRule) Class.forName("com.fr.swift.test.ReleasableLeakVerifier").newInstance();
+    }
+
     @Test
     public void increment() throws Exception {
         Incrementer incrementer = new Incrementer(dataSource);
