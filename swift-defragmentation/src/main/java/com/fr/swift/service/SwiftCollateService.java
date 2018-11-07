@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * This class created on 2018/7/9
@@ -99,44 +100,48 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
     public void autoCollateRealtime(final SourceKey tableKey) throws Exception {
         final List<SegmentKey> segmentKeys = segmentManager.getSegmentKeys(tableKey);
         checkSegmentKeys(segmentKeys, Types.StoreType.MEMORY);
-        taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.COLLATE) {
+        taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.COLLATE, new Callable<Void>() {
             @Override
-            public void doJob() throws Exception {
+            public Void call() throws Exception {
                 collateSegments(tableKey, segmentKeys);
+                return null;
             }
-        });
+        }));
     }
 
     @Override
     public void autoCollateHistory(final SourceKey tableKey) throws Exception {
         final List<SegmentKey> segmentKeys = segmentManager.getSegmentKeys(tableKey);
         checkSegmentKeys(segmentKeys, Types.StoreType.FINE_IO);
-        taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.COLLATE) {
+        taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.COLLATE, new Callable<Void>() {
             @Override
-            public void doJob() throws Exception {
+            public Void call() throws Exception {
                 collateSegments(tableKey, segmentKeys);
+                return null;
             }
-        });
+        }));
     }
 
     @Override
     public void appointCollate(final SourceKey tableKey, final List<SegmentKey> segmentKeyList) throws Exception {
-        taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.COLLATE) {
+        taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.COLLATE, new Callable<Void>() {
             @Override
-            public void doJob() throws Exception {
+            public Void call() throws Exception {
                 collateSegments(tableKey, segmentKeyList);
+                return null;
             }
-        });
+        }));
     }
 
     @Override
     public void autoCollate(final SourceKey tableKey) throws Exception {
-        taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.COLLATE) {
+        taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.COLLATE, new Callable<Void>() {
             @Override
-            public void doJob() throws Exception {
+            public Void call() throws Exception {
                 collateSegments(tableKey);
+                return null;
             }
-        });
+        }));
     }
 
     @Override

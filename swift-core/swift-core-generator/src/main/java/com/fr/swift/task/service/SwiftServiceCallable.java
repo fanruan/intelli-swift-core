@@ -1,10 +1,11 @@
 package com.fr.swift.task.service;
 
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
 
 /**
  * This class created on 2018/7/13
@@ -13,30 +14,22 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
-public abstract class SwiftServiceCallable implements ServiceCallable {
+public class SwiftServiceCallable extends FutureTask<Void> implements ServiceCallable<Void> {
 
     private SourceKey sourceKey;
     private ServiceTaskType type;
     private List<ServiceTaskListener> serviceTaskListeners;
 
-
-    public SwiftServiceCallable(SourceKey sourceKey, ServiceTaskType type) {
+    public SwiftServiceCallable(SourceKey sourceKey, ServiceTaskType type, Callable<Void> callable) {
+        super(callable);
         this.sourceKey = sourceKey;
         this.type = type;
         this.serviceTaskListeners = new ArrayList<ServiceTaskListener>();
     }
 
     @Override
-    public Object call() {
-        try {
-            doJob();
-            return true;
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().error(e);
-            return false;
-        } finally {
-            finishJob();
-        }
+    protected void done() {
+        finishJob();
     }
 
     @Override
@@ -49,7 +42,7 @@ public abstract class SwiftServiceCallable implements ServiceCallable {
         return type;
     }
 
-    protected void finishJob() {
+    private void finishJob() {
         for (ServiceTaskListener taskListener : serviceTaskListeners) {
             taskListener.handlerEvent(this);
         }

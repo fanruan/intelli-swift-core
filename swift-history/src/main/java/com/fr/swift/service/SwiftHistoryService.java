@@ -61,8 +61,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 /**
  * @author pony
@@ -179,26 +180,29 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         if (null == remoteUris || remoteUris.isEmpty()) {
             return;
         }
-        final CountDownLatch latch = new CountDownLatch(remoteUris.size());
+        List<Future<?>> futures = new ArrayList<Future<?>>(remoteUris.size());
         for (final String sourceKey : remoteUris.keySet()) {
             final Set<String> uris = remoteUris.get(sourceKey);
             if (uris.isEmpty()) {
                 return;
             }
             try {
-                taskExecutor.submit(new SwiftServiceCallable(new SourceKey(sourceKey), ServiceTaskType.DOWNLOAD) {
+                futures.add(taskExecutor.submit(new SwiftServiceCallable(new SourceKey(sourceKey), ServiceTaskType.DOWNLOAD, new Callable<Void>() {
                     @Override
-                    public void doJob() {
+                    public Void call() {
                         download(sourceKey, uris, replace);
                         SwiftLoggers.getLogger().info("{}, {}", sourceKey, uris);
-                        latch.countDown();
+                        return null;
                     }
-                });
+                })));
+
             } catch (InterruptedException e) {
                 SwiftLoggers.getLogger().warn("download seg {} of {} failed", uris, sourceKey, e);
             }
         }
-        latch.await();
+        for (Future<?> future : futures) {
+            future.get();
+        }
     }
 
     private void download(String sourceKey, Set<String> sets, boolean replace) {
@@ -266,9 +270,9 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
 
     @Override
     public boolean delete(final SourceKey sourceKey, final Where where, final List<String> needUpload) throws Exception {
-        ServiceTaskExecutor.TaskFuture future = taskExecutor.submit(new SwiftServiceCallable(sourceKey, ServiceTaskType.DELETE) {
+        Future<?> future = taskExecutor.submit(new SwiftServiceCallable(sourceKey, ServiceTaskType.DELETE, new Callable<Void>() {
             @Override
-            public void doJob() throws Exception {
+            public Void call() throws Exception {
                 List<SegmentKey> segmentKeys = segmentManager.getSegmentKeys(sourceKey);
                 for (SegmentKey segKey : segmentKeys) {
                     if (segKey.getStoreType().isTransient()) {
@@ -287,8 +291,9 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                         }
                     }
                 }
+                return null;
             }
-        });
+        }));
         future.get();
         return true;
     }

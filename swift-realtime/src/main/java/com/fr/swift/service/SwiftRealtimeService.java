@@ -28,6 +28,7 @@ import com.fr.swift.task.service.SwiftServiceCallable;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * @author pony
@@ -78,26 +79,28 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
     @Override
     public void insert(final SourceKey tableKey, final SwiftResultSet resultSet) throws Exception {
-        taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.INSERT) {
+        taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.INSERT, new Callable<Void>() {
             @Override
-            public void doJob() throws Exception {
+            public Void call() throws Exception {
                 SwiftDatabase.getInstance().getTable(tableKey).insert(resultSet);
+                return null;
             }
-        });
+        }));
     }
 
     private void recover0() {
         for (Table table : SwiftDatabase.getInstance().getAllTables()) {
             final SourceKey tableKey = table.getSourceKey();
             try {
-                taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.RECOVERY) {
+                taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.RECOVERY, new Callable<Void>() {
                     @Override
-                    public void doJob() {
+                    public Void call() {
                         // 恢复所有realtime块
                         SegmentRecovery segmentRecovery = (SegmentRecovery) SwiftContext.get().getBean("segmentRecovery");
                         segmentRecovery.recover(tableKey);
+                        return null;
                     }
-                });
+                }));
             } catch (InterruptedException e) {
                 SwiftLoggers.getLogger().warn(e);
             }
@@ -122,9 +125,9 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
     @Override
     public boolean delete(final SourceKey sourceKey, final Where where, final List<String> needUpload) throws Exception {
-        taskExecutor.submit(new SwiftServiceCallable(sourceKey, ServiceTaskType.DELETE) {
+        taskExecutor.submit(new SwiftServiceCallable(sourceKey, ServiceTaskType.DELETE, new Callable<Void>() {
             @Override
-            public void doJob() throws Exception {
+            public Void call() throws Exception {
                 List<SegmentKey> segmentKeys = segmentManager.getSegmentKeys(sourceKey);
                 for (SegmentKey segKey : segmentKeys) {
                     if (!segmentManager.existsSegment(segKey)) {
@@ -144,8 +147,9 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
                         }
                     }
                 }
+                return null;
             }
-        });
+        }));
         return true;
     }
 
