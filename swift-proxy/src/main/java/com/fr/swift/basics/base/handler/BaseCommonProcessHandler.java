@@ -15,7 +15,7 @@ import java.util.Set;
  * @author yee
  * @date 2018/10/29
  */
-public abstract class BaseCommonProcessHandler extends BaseProcessHandler implements CommonProcessHandler {
+public abstract class BaseCommonProcessHandler extends BaseProcessHandler<List<URL>> implements CommonProcessHandler<List<URL>> {
 
     public BaseCommonProcessHandler(InvokerCreater invokerCreater) {
         super(invokerCreater);
@@ -27,7 +27,7 @@ public abstract class BaseCommonProcessHandler extends BaseProcessHandler implem
     }
 
     @Override
-    public List<URL> processUrl(Target target) {
+    public List<URL> processUrl(Target target, Object... args) {
         Set<String> clusterIds = null;
         // TODO 获取clusterId
         switch (target) {

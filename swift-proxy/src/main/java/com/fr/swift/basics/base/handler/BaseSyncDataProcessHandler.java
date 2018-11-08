@@ -1,7 +1,6 @@
 package com.fr.swift.basics.base.handler;
 
 import com.fr.swift.basics.InvokerCreater;
-import com.fr.swift.basics.URL;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.handler.SyncDataProcessHandler;
 
@@ -14,7 +13,7 @@ import java.util.List;
  * @author yee
  * @date 2018/10/30
  */
-public abstract class BaseSyncDataProcessHandler extends BaseProcessHandler implements SyncDataProcessHandler {
+public abstract class BaseSyncDataProcessHandler<T> extends BaseProcessHandler<T> implements SyncDataProcessHandler<T> {
 
     public BaseSyncDataProcessHandler(InvokerCreater invokerCreater) {
         super(invokerCreater);
@@ -31,7 +30,7 @@ public abstract class BaseSyncDataProcessHandler extends BaseProcessHandler impl
     }
 
     @Override
-    public List<URL> processUrl(Target target) {
+    public T processUrl(Target target, Object... args) {
         // TODO 获取history地址
         return null;
     }

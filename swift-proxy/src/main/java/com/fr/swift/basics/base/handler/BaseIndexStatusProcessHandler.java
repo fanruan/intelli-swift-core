@@ -62,7 +62,7 @@ public abstract class BaseIndexStatusProcessHandler extends BaseProcessHandler i
     }
 
     @Override
-    public List<URL> processUrl(Target target) {
+    public List<URL> processUrl(Target target, Object... args) {
         // TODO 获取所有Index节点地址
         Set<String> clusterIds = new HashSet<String>();
         List<URL> urls = new ArrayList<URL>();

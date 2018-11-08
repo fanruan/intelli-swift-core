@@ -6,5 +6,5 @@ import com.fr.swift.basics.ProcessHandler;
  * @author yee
  * @date 2018/10/30
  */
-public interface SyncDataProcessHandler extends ProcessHandler {
+public interface SyncDataProcessHandler<T> extends ProcessHandler<T> {
 }

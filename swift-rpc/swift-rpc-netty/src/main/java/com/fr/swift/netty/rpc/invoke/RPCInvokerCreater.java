@@ -14,14 +14,14 @@ import com.fr.swift.context.SwiftContext;
  */
 public class RPCInvokerCreater implements InvokerCreater {
 
-
     @Override
-    public Invoker createInvoker(Class clazz, URL url, boolean sync) {
-        return new RPCInvoker(SwiftContext.get().getBean(clazz), clazz, url, sync);
+    public Invoker createAsyncInvoker(Class clazz, URL url) {
+        return new RPCInvoker(SwiftContext.get().getBean(clazz), clazz, url, false);
     }
 
     @Override
-    public Invoker createInvoker(Class clazz, URL url) {
+    public Invoker createSyncInvoker(Class clazz, URL url) {
         return new RPCInvoker(SwiftContext.get().getBean(clazz), clazz, url);
     }
+
 }
