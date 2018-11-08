@@ -223,7 +223,7 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
                     if (segmentKey.getStoreType().isPersistent()) {
                         hist.get(entry.getKey()).add(new SegmentDestinationImpl(getID(), segmentKey.toString(), segmentKey.getOrder(), ClusterHistoryService.class, "historyQuery"));
                     } else {
-                        realTime.get(entry.getKey()).add(new RealTimeSegDestImpl(getID(), segmentKey.getTable().getId() + "@MEMORY@-1", -1, ClusterRealTimeService.class, "realTimeQuery"));
+                        realTime.get(entry.getKey()).add(new RealTimeSegDestImpl(getID(), segmentKey.toString(), segmentKey.getOrder(), ClusterRealTimeService.class, "realTimeQuery"));
                     }
                     manager.getSegment(segmentKey);
                 }
