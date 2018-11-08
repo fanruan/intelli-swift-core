@@ -60,6 +60,7 @@ class DatumConverters {
 
     static UnaryOperator<Object> getReverseConverter(final Class<?> field) {
         switch (JpaAdaptor.getSqlType(field)) {
+            case Types.BIT:
             case Types.BOOLEAN:
                 return new UnaryOperator<Object>() {
                     @Override

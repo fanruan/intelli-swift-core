@@ -4,10 +4,10 @@ import com.fr.swift.query.post.utils.SwiftMetaDataUtils;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryType;
+import com.fr.swift.query.result.serialize.LocalAllNodeResultSet;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.node.resultset.Node2RowResultSet;
-import com.fr.swift.result.serialize.LocalAllNodeResultSet;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 

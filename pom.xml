@@ -35,6 +35,7 @@
         <module>swift-repository-base</module>
         <module>swift-proxy</module>
         <module>swift-api</module>
+        <module>swift-spring-boot</module>
 
     </modules>
 

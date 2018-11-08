@@ -13,7 +13,6 @@ import com.fr.swift.query.Queryable;
 import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryBeanFactory;
-import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
@@ -23,8 +22,6 @@ import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.impl.RealTimeSegDestImpl;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
-import com.fr.swift.service.cluster.ClusterHistoryService;
-import com.fr.swift.service.cluster.ClusterRealTimeService;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.Pair;
@@ -58,7 +55,6 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     @Override
     public boolean start() throws SwiftServiceException {
         boolean start = super.start();
-        QueryRunnerProvider.getInstance().registerRunner(this);
         this.sessionFactory = SwiftContext.get().getBean("swiftQuerySessionFactory", SessionFactory.class);
         cacheSegments();
         return start;
@@ -116,9 +112,9 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
                 initSegDestinations(realTime, entry.getKey());
                 for (SegmentKey segmentKey : entry.getValue()) {
                     if (segmentKey.getStoreType().isPersistent()) {
-                        hist.get(entry.getKey()).add(new SegmentDestinationImpl(getID(), segmentKey.toString(), segmentKey.getOrder(), ClusterHistoryService.class, "historyQuery"));
+                        hist.get(entry.getKey()).add(new SegmentDestinationImpl(getID(), segmentKey.toString(), segmentKey.getOrder(), HistoryService.class, "historyQuery"));
                     } else {
-                        realTime.get(entry.getKey()).add(new RealTimeSegDestImpl(getID(), segmentKey.toString(), segmentKey.getOrder(), ClusterRealTimeService.class, "realTimeQuery"));
+                        realTime.get(entry.getKey()).add(new RealTimeSegDestImpl(getID(), segmentKey.toString(), segmentKey.getOrder(), RealtimeService.class, "realTimeQuery"));
                     }
                     manager.getSegment(segmentKey);
                 }
@@ -132,7 +128,6 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     public boolean shutdown() throws SwiftServiceException {
         super.shutdown();
         sessionFactory = null;
-        QueryRunnerProvider.getInstance().registerRunner(null);
         return true;
     }
 

@@ -1,8 +1,9 @@
-package com.fr.swift.result.serialize;
+package com.fr.swift.query.result.serialize;
 
-import com.fr.swift.query.query.QueryRunnerProvider;
+import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.SwiftNode;
+import com.fr.swift.service.AnalyseService;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.Pair;
@@ -69,7 +70,8 @@ public class LocalAllNodeResultSet implements NodeResultSet<SwiftNode>, Serializ
             return true;
         } else if (originHasNextPage) {
             try {
-                LocalAllNodeResultSet resultSet = (LocalAllNodeResultSet) QueryRunnerProvider.getInstance().executeRemoteQuery(jsonString, null);
+                AnalyseService service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
+                LocalAllNodeResultSet resultSet = (LocalAllNodeResultSet) service.getRemoteQueryResult(jsonString, null);
                 if (resultSet != null && resultSet.page != null) {
                     this.iterator = resultSet.page.iterator();
                     this.originHasNextPage = resultSet.originHasNextPage;

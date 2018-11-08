@@ -3,7 +3,7 @@ package com.fr.swift.api.result;
 import com.fr.swift.api.rpc.result.AbstractSwiftResultSet;
 import com.fr.swift.api.rpc.session.impl.SwiftApiSessionImpl;
 import com.fr.swift.db.SwiftDatabase;
-import com.fr.swift.result.serialize.SerializableDetailResultSet;
+import com.fr.swift.query.result.serialize.SerializableDetailResultSet;
 
 import java.sql.SQLException;
 

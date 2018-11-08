@@ -27,7 +27,7 @@ public class SwiftMasterService implements MasterService {
 
     @Override
     public synchronized void receiveHeartBeat(HeartBeatInfo heartBeatInfo) {
-        SwiftLoggers.getLogger().debug("Collect heartbeat:" + heartBeatInfo.toString());
+        SwiftLoggers.getLogger().debug("Collect heartbeat:{}", heartBeatInfo);
         NodeState nodeState = NodeContainer.getNode(heartBeatInfo.getNodeId());
         boolean need2Sync = false;
         if (nodeState == null || nodeState.getNodeType() != NodeType.ONLINE) {

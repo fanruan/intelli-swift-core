@@ -11,7 +11,7 @@ import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.data.DataList;
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
@@ -52,7 +52,7 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
     private AnalyseService analyseService;
 
     private SwiftLogSearchProvider() {
-        analyseService = SwiftContext.get().getBean("swiftAnalyseService", AnalyseService.class);
+        analyseService = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
     }
 
     @Override
@@ -66,18 +66,18 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
         if (fields.isEmpty()) {
             return Crasher.crash("Unsupported Operation: count without field name!");
         }
-        return countQuery(logClass, condition, fields.get(0).getName(), null);
+        return countQuery(logClass, condition, fields.get(0).getName(), null, true);
     }
 
     @Override
     public int countByColumn(Class<? extends AbstractMessage> logClass, QueryCondition condition, String columnName) throws Exception {
         // TODO: 2018/6/21 这个和count表没什么区别
-        return countQuery(logClass, condition, columnName, createNotNullFilter(columnName));
+        return countQuery(logClass, condition, columnName, createNotNullFilter(columnName), true);
     }
 
     @Override
     public int distinctByColumn(Class<? extends AbstractMessage> logClass, QueryCondition condition, String columnName) throws Exception {
-        return countQuery(logClass, condition, columnName, createNotNullFilter(columnName));
+        return countQuery(logClass, condition, columnName, createNotNullFilter(columnName), false);
     }
 
     @Override
@@ -159,7 +159,7 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
     }
 
     private int countQuery(Class<? extends AbstractMessage> logClass, QueryCondition condition,
-                           String columnName, FilterInfoBean notNull) throws Exception {
+                           String columnName, FilterInfoBean notNull, boolean count) throws Exception {
         GroupQueryInfoBean queryInfoBean = new GroupQueryInfoBean();
         queryInfoBean.setQueryId(UUID.randomUUID().toString());
         String tableName = JpaAdaptor.getTableName(logClass);
@@ -175,17 +175,15 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
         List<com.fr.swift.query.info.bean.element.MetricBean> metrics = new ArrayList<com.fr.swift.query.info.bean.element.MetricBean>();
         com.fr.swift.query.info.bean.element.MetricBean bean = new com.fr.swift.query.info.bean.element.MetricBean();
         bean.setMetricType(MetricType.GROUP);
-        if (StringUtils.isEmpty(columnName)) {
+        if (count) {
             bean.setType(AggregatorType.COUNT);
-            bean.setColumn("");
         } else {
             bean.setType(AggregatorType.DISTINCT);
-            bean.setColumn(columnName);
         }
+        bean.setColumn(columnName);
         metrics.add(bean);
         queryInfoBean.setMetricBeans(metrics);
         SwiftResultSet resultSet = analyseService.getQueryResult(queryInfoBean);
-//        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfoBean);
         Row row = null;
         if (resultSet.hasNext()) {
             row = resultSet.getNextRow();

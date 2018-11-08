@@ -67,6 +67,11 @@ public class SegmentTransferTest {
         }
     }
 
+    @Rule
+    public TestRule getReleasableLeakVerifier() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        return (TestRule) Class.forName("com.fr.swift.test.ReleasableLeakVerifier").newInstance();
+    }
+
     @Test
     public void transfer() throws Exception {
         SourceKey tableKey = new SourceKey(meta.getTableName());
