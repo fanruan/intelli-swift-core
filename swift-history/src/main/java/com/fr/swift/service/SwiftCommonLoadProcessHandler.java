@@ -79,6 +79,7 @@ public class SwiftCommonLoadProcessHandler extends AbstractProcessHandler<Map<UR
                     }
                 });
             }
+            latch.await();
             return resultList;
         } finally {
             MonitorUtil.finish(methodName);

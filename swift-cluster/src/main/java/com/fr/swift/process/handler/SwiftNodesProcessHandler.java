@@ -71,6 +71,7 @@ public class SwiftNodesProcessHandler extends AbstractProcessHandler implements 
                     }
                 });
             }
+            latch.await();
             return resultList;
         } finally {
             MonitorUtil.finish(methodName);

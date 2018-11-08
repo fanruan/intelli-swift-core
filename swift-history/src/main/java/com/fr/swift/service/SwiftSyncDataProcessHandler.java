@@ -109,6 +109,7 @@ public class SwiftSyncDataProcessHandler extends BaseSyncDataProcessHandler {
                     }
                 });
             }
+            latch.await();
             return resultList;
         } finally {
             MonitorUtil.finish(methodName);
