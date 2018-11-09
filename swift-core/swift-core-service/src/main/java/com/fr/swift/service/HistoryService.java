@@ -4,10 +4,13 @@ import com.fr.swift.basics.annotation.InvokeMethod;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.handler.CommonLoadProcessHandler;
 import com.fr.swift.basics.handler.CommonProcessHandler;
+import com.fr.swift.basics.handler.DeleteSegmentProcessHandler;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
 import com.fr.swift.basics.handler.SyncDataProcessHandler;
+import com.fr.swift.db.Where;
 import com.fr.swift.query.Queryable;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.io.IOException;
@@ -46,4 +49,8 @@ public interface HistoryService extends SwiftService, Queryable, DeleteService {
 
     @InvokeMethod(value = CommonProcessHandler.class, target = Target.HISTORY)
     void truncate(String sourceKey) throws Exception;
+
+    @Override
+    @InvokeMethod(value = DeleteSegmentProcessHandler.class, target = Target.HISTORY)
+    boolean delete(SourceKey sourceKey, Where where, List<String> segKeys) throws Exception;
 }

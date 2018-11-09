@@ -2,10 +2,7 @@ package com.fr.swift.service;
 
 import com.fr.event.EventDispatcher;
 import com.fr.swift.annotation.SwiftService;
-import com.fr.swift.basics.annotation.InvokeMethod;
 import com.fr.swift.basics.annotation.ProxyService;
-import com.fr.swift.basics.annotation.Target;
-import com.fr.swift.basics.handler.DeleteSegmentProcessHandler;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Table;
@@ -127,7 +124,6 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     }
 
     @Override
-    @InvokeMethod(value = DeleteSegmentProcessHandler.class, target = Target.REAL_TIME)
     public boolean delete(final SourceKey sourceKey, final Where where, final List<String> needUpload) throws Exception {
         taskExecutor.submit(new SwiftServiceCallable(sourceKey, ServiceTaskType.DELETE, new Callable<Void>() {
             @Override

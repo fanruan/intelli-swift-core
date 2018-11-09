@@ -3,7 +3,9 @@ package com.fr.swift.service;
 import com.fr.swift.basics.annotation.InvokeMethod;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.handler.CommonProcessHandler;
+import com.fr.swift.basics.handler.DeleteSegmentProcessHandler;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
+import com.fr.swift.db.Where;
 import com.fr.swift.query.Queryable;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
@@ -42,4 +44,8 @@ public interface RealtimeService extends SwiftService, Queryable, DeleteService 
     @Override
     @InvokeMethod(QueryableProcessHandler.class)
     SwiftResultSet query(String queryInfo) throws Exception;
+
+    @Override
+    @InvokeMethod(value = DeleteSegmentProcessHandler.class, target = Target.REAL_TIME)
+    boolean delete(SourceKey sourceKey, Where where, List<String> segKeys) throws Exception;
 }

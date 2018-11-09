@@ -9,6 +9,7 @@ import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.DeleteSegmentProcessHandler;
 import com.fr.swift.cluster.entity.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
+import com.fr.swift.log.SwiftLoggers;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -31,12 +32,14 @@ public class SwiftDeleteSegmentProcessHandler extends AbstractProcessHandler<Lis
         Class<?> proxyClass = method.getDeclaringClass();
         Class<?>[] proxyMethodParamTypes = method.getParameterTypes();
 
-        List<Object> results = new ArrayList<Object>();
+        boolean totalResult = true;
         for (URL url : processUrl(target, args)) {
             Invoker invoker = invokerCreater.createSyncInvoker(proxyClass, url);
-            results.add(invoke(invoker, proxyClass, method, method.getName(), proxyMethodParamTypes, args));
+            Object result = invoke(invoker, proxyClass, method, method.getName(), proxyMethodParamTypes, args);
+            SwiftLoggers.getLogger().debug("{} returned {}", url, result);
+            totalResult &= ((Boolean) result);
         }
-        return results;
+        return totalResult;
     }
 
     @Override

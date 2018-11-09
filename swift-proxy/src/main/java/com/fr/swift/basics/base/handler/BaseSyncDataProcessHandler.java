@@ -13,7 +13,7 @@ import java.util.List;
  * @author yee
  * @date 2018/10/30
  */
-public abstract class BaseSyncDataProcessHandler<T> extends BaseProcessHandler<T> implements SyncDataProcessHandler<T> {
+public abstract class BaseSyncDataProcessHandler<T> extends BaseProcessHandler<T> implements SyncDataProcessHandler {
 
     public BaseSyncDataProcessHandler(InvokerCreater invokerCreater) {
         super(invokerCreater);

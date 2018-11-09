@@ -15,7 +15,7 @@ import java.util.Set;
  * @author yee
  * @date 2018/10/29
  */
-public abstract class BaseCommonProcessHandler extends BaseProcessHandler<List<URL>> implements CommonProcessHandler<List<URL>> {
+public abstract class BaseCommonProcessHandler extends BaseProcessHandler<List<URL>> implements CommonProcessHandler {
 
     public BaseCommonProcessHandler(InvokerCreater invokerCreater) {
         super(invokerCreater);

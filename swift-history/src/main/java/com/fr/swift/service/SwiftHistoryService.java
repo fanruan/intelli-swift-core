@@ -3,11 +3,8 @@ package com.fr.swift.service;
 import com.fr.event.EventDispatcher;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.ProxyFactory;
-import com.fr.swift.basics.annotation.InvokeMethod;
 import com.fr.swift.basics.annotation.ProxyService;
-import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.selector.ProxySelector;
-import com.fr.swift.basics.handler.DeleteSegmentProcessHandler;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.cluster.listener.NodeStartedListener;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
@@ -285,7 +282,6 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     }
 
     @Override
-    @InvokeMethod(value = DeleteSegmentProcessHandler.class, target = Target.HISTORY)
     public boolean delete(final SourceKey sourceKey, final Where where, final List<String> needUpload) throws Exception {
         Future<?> future = taskExecutor.submit(new SwiftServiceCallable(sourceKey, ServiceTaskType.DELETE, new Callable<Void>() {
             @Override
