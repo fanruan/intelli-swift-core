@@ -31,10 +31,12 @@ import com.fr.swift.process.handler.NodesProcessHandler;
 import com.fr.swift.process.handler.SwiftNodesProcessHandler;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.rm.service.SwiftMasterService;
+import com.fr.swift.service.DeleteSegmentProcessHandler;
 import com.fr.swift.service.MaskHistoryListener;
 import com.fr.swift.service.RemoveHistoryListener;
 import com.fr.swift.service.SwiftAnalyseService;
 import com.fr.swift.service.SwiftCommonLoadProcessHandler;
+import com.fr.swift.service.SwiftDeleteSegmentProcessHandler;
 import com.fr.swift.service.SwiftHistoryService;
 import com.fr.swift.service.SwiftIndexingService;
 import com.fr.swift.service.SwiftRealtimeService;
@@ -128,5 +130,6 @@ public class SwiftEngineStart {
         ProxyProcessHandlerRegistry.INSTANCE.addHandler(NodesProcessHandler.class, SwiftNodesProcessHandler.class);
         ProxyProcessHandlerRegistry.INSTANCE.addHandler(CommonLoadProcessHandler.class, SwiftCommonLoadProcessHandler.class);
         ProxyProcessHandlerRegistry.INSTANCE.addHandler(SyncDataProcessHandler.class, SwiftSyncDataProcessHandler.class);
+        ProxyProcessHandlerRegistry.INSTANCE.addHandler(DeleteSegmentProcessHandler.class, SwiftDeleteSegmentProcessHandler.class);
     }
 }

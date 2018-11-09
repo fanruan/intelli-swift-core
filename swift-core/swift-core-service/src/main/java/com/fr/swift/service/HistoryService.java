@@ -6,10 +6,8 @@ import com.fr.swift.basics.handler.CommonLoadProcessHandler;
 import com.fr.swift.basics.handler.CommonProcessHandler;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
 import com.fr.swift.basics.handler.SyncDataProcessHandler;
-import com.fr.swift.db.Where;
 import com.fr.swift.query.Queryable;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.io.IOException;
@@ -21,7 +19,7 @@ import java.util.Set;
  * @author yee
  * @date 2018/6/5
  */
-public interface HistoryService extends SwiftService, Queryable {
+public interface HistoryService extends SwiftService, Queryable, DeleteService {
     /**
      * 查询
      *
@@ -45,9 +43,6 @@ public interface HistoryService extends SwiftService, Queryable {
 
     @InvokeMethod(value = CommonLoadProcessHandler.class, target = Target.HISTORY)
     void commonLoad(String sourceKey, Map<String, List<String>> needLoad) throws Exception;
-
-    @InvokeMethod(value = CommonProcessHandler.class, target = Target.HISTORY)
-    boolean delete(SourceKey sourceKey, Where where, List<String> segKeys) throws Exception;
 
     @InvokeMethod(value = CommonProcessHandler.class, target = Target.HISTORY)
     void truncate(String sourceKey) throws Exception;
