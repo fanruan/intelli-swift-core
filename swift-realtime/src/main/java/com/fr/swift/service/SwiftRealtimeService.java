@@ -5,6 +5,7 @@ import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.annotation.InvokeMethod;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.annotation.Target;
+import com.fr.swift.basics.handler.DeleteSegmentProcessHandler;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Table;

@@ -7,6 +7,7 @@ import com.fr.swift.basics.annotation.InvokeMethod;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.selector.ProxySelector;
+import com.fr.swift.basics.handler.DeleteSegmentProcessHandler;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.cluster.listener.NodeStartedListener;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
