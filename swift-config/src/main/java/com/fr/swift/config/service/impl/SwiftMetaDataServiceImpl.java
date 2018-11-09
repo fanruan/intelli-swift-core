@@ -13,6 +13,7 @@ import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.netty.rpc.server.RpcServer;
 import com.fr.swift.selector.ClusterSelector;
+import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
@@ -108,7 +109,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                     boolean isCluster = ClusterSelector.getInstance().getFactory().isCluster();
                     if (null != sourceKeys && isCluster) {
                         ProxyFactory factory = ProxySelector.getInstance().getFactory();
-                        SwiftServiceListenerHandler handler = factory.getProxy(SwiftServiceListenerHandler.class);
+                        SwiftServiceListenerHandler handler = factory.getProxy(RemoteSender.class);
                         handler.trigger(new CleanMetaDataCacheEvent(sourceKeys));
 //                        Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, masterURL, false);
 //                        Result result = invoker.invoke(new SwiftInvocation(ServiceMethodRegistry.INSTANCE.getMethodByName("rpcTrigger"), new Object[]{new CleanMetaDataCacheEvent(sourceKeys)}));

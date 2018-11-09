@@ -16,6 +16,7 @@ import com.fr.swift.basics.base.ProxyServiceRegistry;
 import com.fr.swift.basics.base.handler.SwiftMasterProcessHandler;
 import com.fr.swift.basics.handler.CommonLoadProcessHandler;
 import com.fr.swift.basics.handler.MasterProcessHandler;
+import com.fr.swift.basics.handler.SyncDataProcessHandler;
 import com.fr.swift.cluster.listener.NodeStartedListener;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.ProviderTaskManager;
@@ -37,6 +38,7 @@ import com.fr.swift.service.SwiftCommonLoadProcessHandler;
 import com.fr.swift.service.SwiftHistoryService;
 import com.fr.swift.service.SwiftIndexingService;
 import com.fr.swift.service.SwiftRealtimeService;
+import com.fr.swift.service.SwiftSyncDataProcessHandler;
 import com.fr.swift.service.TransferRealtimeListener;
 import com.fr.swift.service.UploadHistoryListener;
 import com.fr.swift.service.listener.RemoteServiceSender;
@@ -108,6 +110,7 @@ public class SwiftEngineStart {
     }
 
     private static void registerProxy() {
+        //rpc远端可接收调用的service
         ProxyServiceRegistry.INSTANCE.registerService(new SwiftHistoryService());
         ProxyServiceRegistry.INSTANCE.registerService(new SwiftIndexingService());
         ProxyServiceRegistry.INSTANCE.registerService(new SwiftRealtimeService());
@@ -120,8 +123,10 @@ public class SwiftEngineStart {
         ProxyServiceRegistry.INSTANCE.registerService(new SwiftMasterService());
         ProxyServiceRegistry.INSTANCE.registerService(new SwiftSlaveService());
 
+        //注解接口绑定的实现类
         ProxyProcessHandlerRegistry.INSTANCE.addHandler(MasterProcessHandler.class, SwiftMasterProcessHandler.class);
         ProxyProcessHandlerRegistry.INSTANCE.addHandler(NodesProcessHandler.class, SwiftNodesProcessHandler.class);
         ProxyProcessHandlerRegistry.INSTANCE.addHandler(CommonLoadProcessHandler.class, SwiftCommonLoadProcessHandler.class);
+        ProxyProcessHandlerRegistry.INSTANCE.addHandler(SyncDataProcessHandler.class, SwiftSyncDataProcessHandler.class);
     }
 }

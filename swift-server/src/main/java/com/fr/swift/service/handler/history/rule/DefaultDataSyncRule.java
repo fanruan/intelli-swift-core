@@ -4,7 +4,7 @@ import com.fr.swift.config.bean.DataSyncRule;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
-import com.fr.swift.service.cluster.ClusterHistoryService;
+import com.fr.swift.service.HistoryService;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,12 +24,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Service("defaultDataSyncRule")
 public class DefaultDataSyncRule implements DataSyncRule {
     @Override
-    public Map<String, Set<SegmentKey>> calculate(Set<String> nodeIds, Map<String, List<SegmentKey>> needLoad,
+    public Map<String, Set<SegmentKey>> calculate(Set<String> nodeIds, Set<SegmentKey> needLoads,
                                                   Map<String, List<SegmentDestination>> destinations) {
 
         int lessCount = nodeIds.size();
-
-
 
         Map<String, AtomicInteger> readyToSort = new HashMap<String, AtomicInteger>();
 
@@ -41,24 +39,21 @@ public class DefaultDataSyncRule implements DataSyncRule {
         lessCount = lessCount > 3 ? 3 : lessCount;
         Map<String, Set<SegmentKey>> result = new HashMap<String, Set<SegmentKey>>();
 
-        Set<Map.Entry<String, List<SegmentKey>>> entries = needLoad.entrySet();
-        for (Map.Entry<String, List<SegmentKey>> entry : entries) {
-            String sourceKey = entry.getKey();
+        for (SegmentKey needLoad : needLoads) {
+            String sourceKey = needLoad.getTable().getId();
             if (null == destinations.get(sourceKey)) {
                 destinations.put(sourceKey, new ArrayList<SegmentDestination>());
             }
-            List<SegmentKey> segmentKeys = entry.getValue();
-            for (SegmentKey segmentKey : segmentKeys) {
-                for (int i = 0; i < lessCount; i++) {
-                    SegmentPair pair = sort(readyToSort);
-                    if (null == result.get(pair.getClusterId())) {
-                        result.put(pair.getClusterId(), new HashSet<SegmentKey>());
-                    }
-                    result.get(pair.getClusterId()).add(segmentKey);
-                    readyToSort.get(pair.getClusterId()).incrementAndGet();
-                    destinations.get(sourceKey).add(new SegmentDestinationImpl(pair.getClusterId(),
-                            segmentKey.toString(), segmentKey.getOrder(), ClusterHistoryService.class, "historyQuery"));
+
+            for (int i = 0; i < lessCount; i++) {
+                SegmentPair pair = sort(readyToSort);
+                if (null == result.get(pair.getClusterId())) {
+                    result.put(pair.getClusterId(), new HashSet<SegmentKey>());
                 }
+                result.get(pair.getClusterId()).add(needLoad);
+                readyToSort.get(pair.getClusterId()).incrementAndGet();
+                destinations.get(sourceKey).add(new SegmentDestinationImpl(pair.getClusterId(),
+                        needLoad.toString(), needLoad.getOrder(), HistoryService.class, "historyQuery"));
             }
         }
 

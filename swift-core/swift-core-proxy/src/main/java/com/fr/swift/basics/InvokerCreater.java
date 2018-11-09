@@ -9,7 +9,7 @@ package com.fr.swift.basics;
  */
 public interface InvokerCreater {
 
-    Invoker createInvoker(Class clazz, URL url, boolean sync);
+    Invoker createAsyncInvoker(Class clazz, URL url);
 
-    Invoker createInvoker(Class clazz, URL url);
+    Invoker createSyncInvoker(Class clazz, URL url);
 }

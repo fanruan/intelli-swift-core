@@ -14,7 +14,7 @@ import java.util.concurrent.CountDownLatch;
  * @author yee
  * @date 2018/10/24
  */
-public abstract class AbstractProcessHandler implements ProcessHandler {
+public abstract class AbstractProcessHandler<T> implements ProcessHandler<T> {
 
     protected InvokerCreater invokerCreater;
 

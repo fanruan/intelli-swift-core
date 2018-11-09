@@ -40,7 +40,7 @@ public abstract class BaseQueryableProcessHandler extends BaseProcessHandler imp
     }
 
     @Override
-    public List<URL> processUrl(Target target) {
+    public List<URL> processUrl(Target target, Object... args) {
         if (null != queryBean) {
             SegmentDestination destination = queryBean.getQueryDestination();
             if (null == destination) {

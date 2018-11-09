@@ -176,6 +176,19 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     }
 
     @Override
+    public void load(Set<SegmentKey> sourceSegKeys, boolean replace) throws Exception {
+        Map<String, Set<String>> needLoadSegments = new HashMap<String, Set<String>>();
+        for (SegmentKey segmentKey : sourceSegKeys) {
+            String sourceKey = segmentKey.getTable().getId();
+            if (!needLoadSegments.containsKey(sourceKey)) {
+                needLoadSegments.put(sourceKey, new HashSet<String>());
+            }
+            needLoadSegments.get(sourceKey).add(segmentKey.getUri().getPath());
+        }
+        load(needLoadSegments, replace);
+    }
+
+    @Override
     public void load(Map<String, Set<String>> remoteUris, final boolean replace) throws Exception {
         if (null == remoteUris || remoteUris.isEmpty()) {
             return;
