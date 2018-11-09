@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Future;
 
 /**
  * @author anchore
@@ -32,12 +33,24 @@ public class SwiftDeleteSegmentProcessHandler extends AbstractProcessHandler<Lis
         Class<?> proxyClass = method.getDeclaringClass();
         Class<?>[] proxyMethodParamTypes = method.getParameterTypes();
 
+        List<Future<?>> futures = new ArrayList<Future<?>>();
+        List<URL> urls = processUrl(target, args);
+        for (URL url : urls) {
+            Invoker invoker = invokerCreater.createAsyncInvoker(proxyClass, url);
+            Future<?> future = (Future<?>) invoke(invoker, proxyClass, method, method.getName(), proxyMethodParamTypes, args);
+            futures.add(future);
+        }
+
         boolean totalResult = true;
-        for (URL url : processUrl(target, args)) {
-            Invoker invoker = invokerCreater.createSyncInvoker(proxyClass, url);
-            Object result = invoke(invoker, proxyClass, method, method.getName(), proxyMethodParamTypes, args);
-            SwiftLoggers.getLogger().debug("{} returned {}", url, result);
-            totalResult &= ((Boolean) result);
+        for (int i = 0; i < futures.size(); i++) {
+            try {
+                boolean result = ((Boolean) futures.get(i).get());
+                SwiftLoggers.getLogger().debug("delete segment on {} returned {}", urls.get(i), result);
+                totalResult &= result;
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().debug(e);
+                totalResult = false;
+            }
         }
         return totalResult;
     }
