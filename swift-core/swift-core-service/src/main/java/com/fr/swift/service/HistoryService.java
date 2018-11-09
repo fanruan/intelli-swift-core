@@ -8,6 +8,7 @@ import com.fr.swift.basics.handler.QueryableProcessHandler;
 import com.fr.swift.basics.handler.SyncDataProcessHandler;
 import com.fr.swift.db.Where;
 import com.fr.swift.query.Queryable;
+import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 
@@ -31,13 +32,15 @@ public interface HistoryService extends SwiftService, Queryable {
     @InvokeMethod(QueryableProcessHandler.class)
     SwiftResultSet query(String queryInfo) throws Exception;
 
+    @InvokeMethod(value = SyncDataProcessHandler.class, target = Target.HISTORY)
+    void load(Set<SegmentKey> sourceSegKeys, boolean replace) throws Exception;
+
     /**
      * 从共享存储加载
      *
      * @param remoteUris
      * @throws IOException
      */
-    @InvokeMethod(value = SyncDataProcessHandler.class, target = Target.HISTORY)
     void load(Map<String, Set<String>> remoteUris, boolean replace) throws Exception;
 
     @InvokeMethod(value = CommonLoadProcessHandler.class, target = Target.HISTORY)

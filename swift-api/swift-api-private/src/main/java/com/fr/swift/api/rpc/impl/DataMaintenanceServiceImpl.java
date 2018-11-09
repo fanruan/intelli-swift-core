@@ -16,7 +16,7 @@ import com.fr.swift.event.global.DeleteEvent;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.RealtimeService;
-import com.fr.swift.service.listener.SwiftServiceListenerHandler;
+import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.service.listener.SwiftServiceListenerManager;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
@@ -84,7 +84,7 @@ public class DataMaintenanceServiceImpl implements DataMaintenanceService {
             }
             DeleteEvent event = new DeleteEvent(Pair.of(new SourceKey(metaData.getId()), where));
             if (ClusterSelector.getInstance().getFactory().isCluster()) {
-                ProxySelector.getInstance().getFactory().getProxy(SwiftServiceListenerHandler.class).trigger(event);
+                ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class).trigger(event);
             } else {
                 SwiftServiceListenerManager.getInstance().triggerEvent(event);
             }

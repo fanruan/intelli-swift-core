@@ -20,7 +20,7 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.selector.ClusterSelector;
-import com.fr.swift.service.listener.SwiftServiceListenerHandler;
+import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
@@ -85,7 +85,7 @@ public class UploadHistoryListener extends Listener<SegmentKey> {
 
     private static void notifyDownload(final SegmentKey segKey) throws Exception {
         final String currentClusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
-        EventResult result = (EventResult) ProxySelector.getInstance().getFactory().getProxy(SwiftServiceListenerHandler.class).trigger(new TransCollateLoadEvent(Pair.of(segKey.getTable().getId(), Collections.singletonList(segKey.toString())), currentClusterId));
+        EventResult result = (EventResult) ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class).trigger(new TransCollateLoadEvent(Pair.of(segKey.getTable().getId(), Collections.singletonList(segKey.toString())), currentClusterId));
         if (result.isSuccess()) {
             String clusterId = result.getClusterId();
             SegmentKey realtimeSegKey = getRealtimeSegKey(segKey);

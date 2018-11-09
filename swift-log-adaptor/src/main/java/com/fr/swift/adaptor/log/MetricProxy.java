@@ -21,7 +21,7 @@ import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.RealtimeService;
-import com.fr.swift.service.listener.SwiftServiceListenerHandler;
+import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.service.listener.SwiftServiceListenerManager;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
@@ -159,7 +159,7 @@ public class MetricProxy extends BaseMetric {
             if (table.getMeta().getSwiftDatabase() == SwiftDatabase.DECISION_LOG) {
                 DeleteEvent event = new DeleteEvent(Pair.<SourceKey, Where>of(table.getSourceKey(), new SwiftWhere(filterBean)));
                 if (ClusterSelector.getInstance().getFactory().isCluster()) {
-                    ProxySelector.getInstance().getFactory().getProxy(SwiftServiceListenerHandler.class).trigger(event);
+                    ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class).trigger(event);
                 } else {
                     SwiftServiceListenerManager.getInstance().triggerEvent(event);
                 }

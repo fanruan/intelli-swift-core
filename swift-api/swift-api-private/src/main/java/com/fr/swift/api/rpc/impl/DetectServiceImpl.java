@@ -7,7 +7,7 @@ import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.event.global.GetAnalyseAndRealTimeAddrEvent;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.ServiceType;
-import com.fr.swift.service.listener.SwiftServiceListenerHandler;
+import com.fr.swift.service.listener.RemoteSender;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,7 +26,7 @@ public class DetectServiceImpl implements DetectService {
     public Map<ServiceType, List<String>> detectiveAnalyseAndRealTime(String defaultAddress) {
         try {
             if (ClusterSelector.getInstance().getFactory().isCluster()) {
-                return (Map<ServiceType, List<String>>) ProxySelector.getInstance().getFactory().getProxy(SwiftServiceListenerHandler.class).trigger(new GetAnalyseAndRealTimeAddrEvent());
+                return (Map<ServiceType, List<String>>) ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class).trigger(new GetAnalyseAndRealTimeAddrEvent());
             } else {
                 Map<ServiceType, List<String>> result = new HashMap<ServiceType, List<String>>();
                 result.put(ServiceType.ANALYSE, Collections.singletonList(defaultAddress));

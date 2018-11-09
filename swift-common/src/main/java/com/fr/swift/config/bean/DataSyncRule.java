@@ -16,9 +16,9 @@ public interface DataSyncRule {
      * 计算每个节点应该load哪些segment
      *
      * @param nodeIds
-     * @param needLoad
+     * @param needLoads
      * @return
      */
-    Map<String, Set<SegmentKey>> calculate(Set<String> nodeIds, Map<String, List<SegmentKey>> needLoad,
+    Map<String, Set<SegmentKey>> calculate(Set<String> nodeIds, Set<SegmentKey> needLoads,
                                            Map<String, List<SegmentDestination>> destinations);
 }

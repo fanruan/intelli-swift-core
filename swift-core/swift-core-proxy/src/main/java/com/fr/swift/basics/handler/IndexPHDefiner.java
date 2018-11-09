@@ -7,10 +7,10 @@ import com.fr.swift.basics.ProcessHandler;
  * @author yee
  * @date 2018/10/25
  */
-public interface IndexPHDefiner {
-    interface IndexProcessHandler extends ProcessHandler {
+public interface IndexPHDefiner<T> {
+    interface IndexProcessHandler<T> extends ProcessHandler<T> {
     }
 
-    interface StatusProcessHandler extends ProcessHandler {
+    interface StatusProcessHandler<T> extends ProcessHandler<T> {
     }
 }

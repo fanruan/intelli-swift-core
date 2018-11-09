@@ -22,7 +22,7 @@ import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.impl.RealTimeSegDestImpl;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
-import com.fr.swift.service.listener.SwiftServiceListenerHandler;
+import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Assert;
@@ -80,7 +80,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
             loadable = false;
         }
         List<Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo>> result =
-                (List<Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo>>) ProxySelector.getInstance().getFactory().getProxy(SwiftServiceListenerHandler.class).trigger(new RequestSegLocationEvent(getID()));
+                (List<Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo>>) ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class).trigger(new RequestSegLocationEvent(getID()));
         if (!result.isEmpty()) {
             for (Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo> pair : result) {
                 updateSegmentInfo(pair.getValue(), pair.getKey());

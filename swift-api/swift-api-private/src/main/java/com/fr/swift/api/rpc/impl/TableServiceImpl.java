@@ -22,7 +22,7 @@ import com.fr.swift.db.impl.DropColumnAction;
 import com.fr.swift.event.global.TruncateEvent;
 import com.fr.swift.exception.meta.SwiftMetaDataAbsentException;
 import com.fr.swift.selector.ClusterSelector;
-import com.fr.swift.service.listener.SwiftServiceListenerHandler;
+import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
@@ -136,7 +136,7 @@ public class TableServiceImpl implements TableService {
     private void truncateTable(SwiftMetaData metaData) {
         String sourceKey = metaData.getId();
         if (ClusterSelector.getInstance().getFactory().isCluster()) {
-            ProxySelector.getInstance().getFactory().getProxy(SwiftServiceListenerHandler.class).trigger(new TruncateEvent(sourceKey));
+            ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class).trigger(new TruncateEvent(sourceKey));
         } else {
             SwiftTablePathEntity entity = tablePathService.get(sourceKey);
             int path = 0;

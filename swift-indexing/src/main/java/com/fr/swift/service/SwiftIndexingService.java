@@ -26,7 +26,7 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.segment.relation.RelationIndexImpl;
-import com.fr.swift.service.listener.SwiftServiceListenerHandler;
+import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.RelationSourceType;
@@ -347,7 +347,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
         }
 
         public void doAfterUpload(SwiftRpcEvent event) {
-            ProxySelector.getInstance().getFactory().getProxy(SwiftServiceListenerHandler.class).trigger(event);
+            ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class).trigger(event);
         }
     }
 }

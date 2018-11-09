@@ -14,58 +14,60 @@ import com.fr.swift.local.LocalInvoker;
 import com.fr.swift.util.MonitorUtil;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.List;
 
 /**
  * @author yee
  * @date 2018/10/24
  */
-public class SwiftMasterProcessHandler extends AbstractProcessHandler implements MasterProcessHandler {
+public class SwiftMasterProcessHandler extends AbstractProcessHandler<URL> implements MasterProcessHandler<URL> {
 
     public SwiftMasterProcessHandler(InvokerCreater invokerCreater) {
         super(invokerCreater);
     }
 
-    @Override
-    public URL processMasterURL() {
-        return processUrl(Target.NONE).get(0);
-    }
-
+    /**
+     * 处理master的远程调用
+     *
+     * @param method
+     * @param target
+     * @param args
+     * @return
+     * @throws Throwable
+     */
     @Override
     public Object processResult(Method method, Target target, Object... args) throws Throwable {
-        MonitorUtil.start();
         Class proxyClass = method.getDeclaringClass();
         Class<?>[] parameterTypes = method.getParameterTypes();
-        URL masterUrl = processMasterURL();
         String methodName = method.getName();
-        if (null == masterUrl) {
-            Invoker invoker = new LocalInvoker(ProxyServiceRegistry.INSTANCE.getService(proxyClass), proxyClass, null);
-            return invoke(invoker, proxyClass, method, methodName, parameterTypes, args);
+        try {
+            MonitorUtil.start();
+            URL masterUrl = processUrl(target, args);
+            if (null == masterUrl) {
+                Invoker invoker = new LocalInvoker(ProxyServiceRegistry.INSTANCE.getService(proxyClass), proxyClass, null);
+                return invoke(invoker, proxyClass, method, methodName, parameterTypes, args);
+            }
+            Invoker invoker = invokerCreater.createSyncInvoker(proxyClass, masterUrl);
+            Object object = invoke(invoker, proxyClass, method, methodName, parameterTypes, args);
+            return object;
+        } finally {
+            MonitorUtil.finish(methodName);
         }
-        Invoker invoker = this.createInvoker(proxyClass, masterUrl);
-        Object object = handleAsyncResult(invoke(invoker, proxyClass, method, methodName, parameterTypes, args));
-        MonitorUtil.finish(methodName);
-        return object;
     }
 
+    /**
+     * 计算master的url
+     *
+     * @param target
+     * @param args
+     * @return
+     */
     @Override
-    public List<URL> processUrl(Target target) {
+    public URL processUrl(Target target, Object... args) {
         List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.get().getBean(SwiftServiceInfoService.class)
                 .getServiceInfoByService(SwiftServiceInfoService.SERVICE);
         SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
         URL url = UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
-        return Arrays.asList(url);
-    }
-
-    /**
-     * 创建Invoker
-     *
-     * @param tClass
-     * @param url
-     * @return
-     */
-    protected Invoker createInvoker(Class tClass, URL url) throws Exception {
-        return invokerCreater.createInvoker(tClass, url);
+        return url;
     }
 }
