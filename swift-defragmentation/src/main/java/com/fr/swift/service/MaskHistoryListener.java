@@ -33,7 +33,7 @@ public class MaskHistoryListener extends Listener<SegmentKey> {
     @Override
     public void on(Event event, final SegmentKey segKey) {
         try {
-            SVC_EXEC.submit(new SwiftServiceCallable(segKey.getTable(), ServiceTaskType.UPLOAD, new Callable<Void>() {
+            SVC_EXEC.submit(new SwiftServiceCallable<Void>(segKey.getTable(), ServiceTaskType.UPLOAD, new Callable<Void>() {
                 @Override
                 public Void call() {
                     mask(segKey);

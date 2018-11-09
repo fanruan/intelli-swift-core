@@ -33,7 +33,7 @@ import java.util.concurrent.CountDownLatch;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class SwiftCommonLoadProcessHandler extends AbstractProcessHandler<Map<URL, Map<String, List<String>>>> implements CommonLoadProcessHandler<Map<URL, Map<String, List<String>>>> {
+public class SwiftCommonLoadProcessHandler extends AbstractProcessHandler<Map<URL, Map<String, List<String>>>> implements CommonLoadProcessHandler {
 
     public SwiftCommonLoadProcessHandler(InvokerCreater invokerCreater) {
         super(invokerCreater);

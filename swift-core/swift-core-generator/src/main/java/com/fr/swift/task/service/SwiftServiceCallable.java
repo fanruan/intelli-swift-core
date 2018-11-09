@@ -14,13 +14,13 @@ import java.util.concurrent.FutureTask;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class SwiftServiceCallable extends FutureTask<Void> implements ServiceCallable<Void> {
+public class SwiftServiceCallable<T> extends FutureTask<T> implements ServiceCallable<T> {
 
     private SourceKey sourceKey;
     private ServiceTaskType type;
     private List<ServiceTaskListener> serviceTaskListeners;
 
-    public SwiftServiceCallable(SourceKey sourceKey, ServiceTaskType type, Callable<Void> callable) {
+    public SwiftServiceCallable(SourceKey sourceKey, ServiceTaskType type, Callable<T> callable) {
         super(callable);
         this.sourceKey = sourceKey;
         this.type = type;

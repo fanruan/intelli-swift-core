@@ -5,6 +5,7 @@ import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.InvokerCreater;
 import com.fr.swift.basics.ProcessHandler;
 import com.fr.swift.basics.RpcFuture;
+import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.SwiftInvocation;
 
 import java.lang.reflect.Method;
@@ -14,13 +15,25 @@ import java.util.concurrent.CountDownLatch;
  * @author yee
  * @date 2018/10/24
  */
-public abstract class AbstractProcessHandler<T> implements ProcessHandler<T> {
+public abstract class AbstractProcessHandler<T> implements ProcessHandler {
+
+    private static final String TO_STRING = "toString";
+    private static final String HASH_CODE = "hashCode";
+    private static final String EQUALS = "equals";
 
     protected InvokerCreater invokerCreater;
 
     public AbstractProcessHandler(InvokerCreater invokerCreater) {
         this.invokerCreater = invokerCreater;
     }
+
+    /**
+     * process target url
+     * 只负责各种形式的url计算。
+     *
+     * @return
+     */
+    protected abstract T processUrl(Target target, Object... args);
 
     /**
      * @param invoker

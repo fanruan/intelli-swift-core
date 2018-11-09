@@ -26,7 +26,7 @@ public class TransferRealtimeListener extends Listener<SegmentKey> {
     @Override
     public void on(Event event, final SegmentKey segKey) {
         try {
-            TASK_EXEC.submit(new SwiftServiceCallable(segKey.getTable(), ServiceTaskType.PERSIST, new Callable<Void>() {
+            TASK_EXEC.submit(new SwiftServiceCallable<Void>(segKey.getTable(), ServiceTaskType.PERSIST, new Callable<Void>() {
                 @Override
                 public Void call() {
                     new RealtimeToHistoryTransfer(segKey).transfer();

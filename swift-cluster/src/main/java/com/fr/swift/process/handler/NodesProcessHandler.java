@@ -9,5 +9,5 @@ import com.fr.swift.basics.ProcessHandler;
  * @description
  * @since Advanced FineBI 5.0
  */
-public interface NodesProcessHandler<T> extends ProcessHandler<T> {
+public interface NodesProcessHandler extends ProcessHandler {
 }
