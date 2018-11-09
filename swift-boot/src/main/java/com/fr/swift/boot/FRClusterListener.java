@@ -60,6 +60,8 @@ public class FRClusterListener implements ClusterEventListener {
                 ClusterSelector.getInstance().switchFactory(FRClusterNodeManager.getInstance());
 
                 localManager.shutDown();
+                slaveManager.shutDown();
+                masterManager.shutDown();
                 if (ClusterSelector.getInstance().getFactory().isMaster()) {
                     LOGGER.info("=====FR cluster master start up!=====");
                     masterManager.startUp();
