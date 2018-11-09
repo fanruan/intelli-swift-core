@@ -29,6 +29,7 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
 /**
  * @author pony
@@ -79,7 +80,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
     @Override
     public void insert(final SourceKey tableKey, final SwiftResultSet resultSet) throws Exception {
-        taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.INSERT, new Callable<Void>() {
+        taskExecutor.submit(new SwiftServiceCallable<Void>(tableKey, ServiceTaskType.INSERT, new Callable<Void>() {
             @Override
             public Void call() throws Exception {
                 SwiftDatabase.getInstance().getTable(tableKey).insert(resultSet);
@@ -92,7 +93,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         for (Table table : SwiftDatabase.getInstance().getAllTables()) {
             final SourceKey tableKey = table.getSourceKey();
             try {
-                taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.RECOVERY, new Callable<Void>() {
+                taskExecutor.submit(new SwiftServiceCallable<Void>(tableKey, ServiceTaskType.RECOVERY, new Callable<Void>() {
                     @Override
                     public Void call() {
                         // 恢复所有realtime块
@@ -125,9 +126,9 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
     @Override
     public boolean delete(final SourceKey sourceKey, final Where where, final List<String> needUpload) throws Exception {
-        taskExecutor.submit(new SwiftServiceCallable(sourceKey, ServiceTaskType.DELETE, new Callable<Void>() {
+        Future<Boolean> future = taskExecutor.submit(new SwiftServiceCallable<Boolean>(sourceKey, ServiceTaskType.DELETE, new Callable<Boolean>() {
             @Override
-            public Void call() throws Exception {
+            public Boolean call() throws Exception {
                 List<SegmentKey> segmentKeys = segmentManager.getSegmentKeys(sourceKey);
                 for (SegmentKey segKey : segmentKeys) {
                     if (!segmentManager.existsSegment(segKey)) {
@@ -147,10 +148,10 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
                         }
                     }
                 }
-                return null;
+                return true;
             }
         }));
-        return true;
+        return future.get();
     }
 
     @Override

@@ -44,9 +44,9 @@ public class SwiftDeleteSegmentProcessHandler extends AbstractProcessHandler<Lis
         boolean totalResult = true;
         for (int i = 0; i < futures.size(); i++) {
             try {
-                boolean result = ((Boolean) futures.get(i).get());
+                Boolean result = (Boolean) futures.get(i).get();
                 SwiftLoggers.getLogger().debug("delete segment on {} returned {}", urls.get(i), result);
-                totalResult &= result;
+                totalResult &= result == null ? false : result;
             } catch (Exception e) {
                 SwiftLoggers.getLogger().debug(e);
                 totalResult = false;

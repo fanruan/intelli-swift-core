@@ -47,7 +47,7 @@ public class UploadHistoryListener extends Listener<SegmentKey> {
     @Override
     public void on(Event event, final SegmentKey segKey) {
         try {
-            SVC_EXEC.submit(new SwiftServiceCallable(segKey.getTable(), ServiceTaskType.UPLOAD, new Callable<Void>() {
+            SVC_EXEC.submit(new SwiftServiceCallable<Void>(segKey.getTable(), ServiceTaskType.UPLOAD, new Callable<Void>() {
                 @Override
                 public Void call() {
                     upload(segKey);
@@ -83,7 +83,7 @@ public class UploadHistoryListener extends Listener<SegmentKey> {
 
     }
 
-    private static void notifyDownload(final SegmentKey segKey) throws Exception {
+    private static void notifyDownload(final SegmentKey segKey) {
         final String currentClusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
         EventResult result = (EventResult) ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class).trigger(new TransCollateLoadEvent(Pair.of(segKey.getTable().getId(), Collections.singletonList(segKey.toString())), currentClusterId));
         if (result.isSuccess()) {
@@ -103,7 +103,7 @@ public class UploadHistoryListener extends Listener<SegmentKey> {
 
     private static void clearSeg(final SegmentKey segKey) {
         try {
-            SVC_EXEC.submit(new SwiftServiceCallable(segKey.getTable(), ServiceTaskType.CLEAR_LOCAL, new Callable<Void>() {
+            SVC_EXEC.submit(new SwiftServiceCallable<Void>(segKey.getTable(), ServiceTaskType.CLEAR_LOCAL, new Callable<Void>() {
                 @Override
                 public Void call() {
                     SegmentUtils.clearSegment(segKey);

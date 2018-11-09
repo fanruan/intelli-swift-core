@@ -200,7 +200,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                 return;
             }
             try {
-                futures.add(taskExecutor.submit(new SwiftServiceCallable(new SourceKey(sourceKey), ServiceTaskType.DOWNLOAD, new Callable<Void>() {
+                futures.add(taskExecutor.submit(new SwiftServiceCallable<Void>(new SourceKey(sourceKey), ServiceTaskType.DOWNLOAD, new Callable<Void>() {
                     @Override
                     public Void call() {
                         download(sourceKey, uris, replace);
@@ -283,9 +283,9 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
 
     @Override
     public boolean delete(final SourceKey sourceKey, final Where where, final List<String> needUpload) throws Exception {
-        Future<?> future = taskExecutor.submit(new SwiftServiceCallable(sourceKey, ServiceTaskType.DELETE, new Callable<Void>() {
+        Future<Boolean> future = taskExecutor.submit(new SwiftServiceCallable<Boolean>(sourceKey, ServiceTaskType.DELETE, new Callable<Boolean>() {
             @Override
-            public Void call() throws Exception {
+            public Boolean call() throws Exception {
                 List<SegmentKey> segmentKeys = segmentManager.getSegmentKeys(sourceKey);
                 for (SegmentKey segKey : segmentKeys) {
                     if (segKey.getStoreType().isTransient()) {
@@ -304,11 +304,10 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                         }
                     }
                 }
-                return null;
+                return true;
             }
         }));
-        future.get();
-        return true;
+        return future.get();
     }
 
     @Override
