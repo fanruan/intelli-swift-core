@@ -25,6 +25,7 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.nm.SlaveManager;
 import com.fr.swift.rm.MasterManager;
+import com.fr.swift.rm.view.NodeJoinedView;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationProvider;
@@ -92,6 +93,7 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
             @Override
             public void on(Event event, ClusterNode clusterNode) {
                 LOGGER.info(String.format("%s join cluster!Master is %s", clusterNode.getID(), FRClusterNodeManager.getInstance().getMasterId()));
+                NodeJoinedView.getInstance().nodeJoin(clusterNode.getID());
                 if (FRClusterNodeManager.getInstance().isMaster()) {
                     ClusterSwiftServerService.getInstance().online(clusterNode.getID());
                 }
@@ -101,6 +103,7 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
             @Override
             public void on(Event event, ClusterNode clusterNode) {
                 LOGGER.info(String.format("%s left cluster!Master is %s", clusterNode.getID(), FRClusterNodeManager.getInstance().getMasterId()));
+                NodeJoinedView.getInstance().nodeLeft(clusterNode.getID());
                 if (FRClusterNodeManager.getInstance().getMasterId() == null || ComparatorUtils.equals(FRClusterNodeManager.getInstance().getMasterId(), clusterNode.getID())) {
                     FRClusterNodeService.getInstance().competeMaster(clusterNode);
                     //只有重新选举master时候，才需要重新部署manager
