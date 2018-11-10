@@ -1,9 +1,9 @@
 package com.fr.swift.config.convert.hibernate;
 
 import com.fr.stable.StringUtils;
+import com.fr.stable.db.entity.converter.BaseConverter;
 import com.fr.swift.util.Crasher;
 import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
-import com.fr.third.javax.persistence.AttributeConverter;
 
 import java.net.URI;
 
@@ -11,7 +11,7 @@ import java.net.URI;
  * @author yee
  * @date 2018/5/24
  */
-public class URIConverter implements AttributeConverter<URI, String> {
+public class URIConverter extends BaseConverter<URI, String> {
     private ObjectMapper mapper = new ObjectMapper();
     @Override
     public String convertToDatabaseColumn(URI uri) {
