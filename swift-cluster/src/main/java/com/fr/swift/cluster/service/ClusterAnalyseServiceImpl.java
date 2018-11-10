@@ -127,18 +127,20 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
         segmentProvider = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
         // 这边为了覆盖掉analyse的注册，所以再调一次注册
         super.start();
+        final SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
+        clusterSegmentService.setClusterId(getID());
         NodeStartedListener.INSTANCE.registerTask(new NodeStartedListener.NodeStartedTask() {
             @Override
             public void run() {
-                loadSegmentLocationInfo();
+                loadSegmentLocationInfo(clusterSegmentService);
             }
         });
         return true;
     }
 
-    private void loadSegmentLocationInfo() {
+    private void loadSegmentLocationInfo(SwiftClusterSegmentService clusterSegmentService) {
         if (loadable) {
-            loadSelfSegmentDestination();
+            loadSelfSegmentDestination(clusterSegmentService);
             loadable = false;
         }
         List<Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo>> result =
@@ -206,9 +208,9 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
         return analyseService.getQueryResult(info);
     }
 
-    private void loadSelfSegmentDestination() {
-        SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
-        clusterSegmentService.setClusterId(getID());
+    private void loadSelfSegmentDestination(SwiftClusterSegmentService clusterSegmentService) {
+//        SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
+//        clusterSegmentService.setClusterId(getID());
         Map<String, List<SegmentKey>> segments = clusterSegmentService.getOwnSegments();
         SwiftSegmentManager manager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         if (!segments.isEmpty()) {

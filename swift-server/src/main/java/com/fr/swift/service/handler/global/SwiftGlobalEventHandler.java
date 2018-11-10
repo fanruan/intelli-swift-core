@@ -1,19 +1,28 @@
 package com.fr.swift.service.handler.global;
 
 import com.fr.event.EventDispatcher;
+import com.fr.general.ComparatorUtils;
+import com.fr.swift.ClusterNodeService;
 import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.cluster.entity.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
+import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftMetaDataService;
-import com.fr.swift.cube.io.Types;
+import com.fr.swift.config.service.SwiftServiceInfoService;
+import com.fr.swift.core.cluster.FRClusterNodeService;
 import com.fr.swift.db.Where;
+import com.fr.swift.event.ClusterEvent;
+import com.fr.swift.event.ClusterEventType;
+import com.fr.swift.event.ClusterListenerHandler;
+import com.fr.swift.event.ClusterType;
 import com.fr.swift.event.analyse.SegmentLocationRpcEvent;
 import com.fr.swift.event.base.AbstractGlobalRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
+import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.handler.SwiftServiceHandlerManager;
 import com.fr.swift.service.handler.base.AbstractHandler;
@@ -23,6 +32,7 @@ import com.fr.swift.structure.Pair;
 import com.fr.swift.task.TaskKey;
 import com.fr.swift.task.TaskResult;
 import com.fr.swift.task.impl.TaskEvent;
+import com.fr.swift.util.Crasher;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
@@ -46,10 +56,24 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
     private SwiftMetaDataService swiftMetaDataService;
     @Autowired(required = false)
     private HistoryDataSyncManager historyDataSyncManager;
+    @Autowired(required = false)
+    private SwiftServiceInfoService serviceInfoService;
 
     @Override
     public <S extends Serializable> S handle(AbstractGlobalRpcEvent event) throws Exception {
         switch (event.subEvent()) {
+            case CHECK_MASTER:
+                List<SwiftServiceInfoBean> masterServiceInfoBeanList = serviceInfoService.getServiceInfoByService(ClusterNodeService.SERVICE);
+                if (masterServiceInfoBeanList.isEmpty()) {
+                    Crasher.crash("Master is null!");
+                }
+                SwiftServiceInfoBean masterBean = masterServiceInfoBeanList.get(0);
+                if (!ComparatorUtils.equals(ClusterSelector.getInstance().getFactory().getMasterId(), masterBean.getClusterId())) {
+                    LOGGER.info("Master is not synchronized!");
+                    FRClusterNodeService.getInstance().competeMaster();
+                    ClusterListenerHandler.handlerEvent(new ClusterEvent(ClusterEventType.JOIN_CLUSTER, ClusterType.FR));
+                }
+                break;
             case TASK_DONE:
                 Pair<TaskKey, TaskResult> pair = (Pair<TaskKey, TaskResult>) event.getContent();
                 EventDispatcher.fire(TaskEvent.DONE, pair);
