@@ -52,7 +52,7 @@ public class RemoveHistoryListener extends Listener<SegmentKey> {
 
     private void clearSeg(final SegmentKey segKey) {
         try {
-            SVC_EXEC.submit(new SwiftServiceCallable(segKey.getTable(), ServiceTaskType.CLEAR_LOCAL, new Callable<Void>() {
+            SVC_EXEC.submit(new SwiftServiceCallable<Void>(segKey.getTable(), ServiceTaskType.CLEAR_LOCAL, new Callable<Void>() {
                 @Override
                 public Void call() {
                     SegmentUtils.clearSegment(segKey);

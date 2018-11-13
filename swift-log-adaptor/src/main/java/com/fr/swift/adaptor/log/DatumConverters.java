@@ -150,7 +150,7 @@ class DatumConverters {
                             return null;
                         }
                         try {
-                            return field.getConstructor(long.class).newInstance(((Date) p).getTime());
+                            return field.getConstructor(long.class).newInstance(((Long) p));
                         } catch (Exception e) {
                             return null;
                         }

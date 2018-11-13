@@ -12,7 +12,7 @@ import java.util.List;
  * @author yee
  * @date 2018/10/24
  */
-public abstract class BaseProcessHandler<T> extends AbstractProcessHandler<T> implements ProcessHandler<T> {
+public abstract class BaseProcessHandler<T> extends AbstractProcessHandler<T> implements ProcessHandler {
 
     public BaseProcessHandler(InvokerCreater invokerCreater) {
         super(invokerCreater);

@@ -20,7 +20,7 @@ import java.util.List;
  * @author yee
  * @date 2018/10/24
  */
-public class SwiftMasterProcessHandler extends AbstractProcessHandler<URL> implements MasterProcessHandler<URL> {
+public class SwiftMasterProcessHandler extends AbstractProcessHandler<URL> implements MasterProcessHandler {
 
     public SwiftMasterProcessHandler(InvokerCreater invokerCreater) {
         super(invokerCreater);

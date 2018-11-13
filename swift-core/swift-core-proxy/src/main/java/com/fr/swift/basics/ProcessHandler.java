@@ -8,10 +8,7 @@ import java.lang.reflect.Method;
  * @author yee
  * @date 2018/10/23
  */
-public interface ProcessHandler<T> {
-    String TO_STRING = "toString";
-    String HASH_CODE = "hashCode";
-    String EQUALS = "equals";
+public interface ProcessHandler {
 
     /**
      * process result
@@ -23,12 +20,4 @@ public interface ProcessHandler<T> {
      * @throws Throwable
      */
     Object processResult(Method method, Target target, Object... args) throws Throwable;
-
-    /**
-     * process target url
-     * 只负责各种形式的url计算。
-     *
-     * @return
-     */
-    T processUrl(Target target, Object... args);
 }

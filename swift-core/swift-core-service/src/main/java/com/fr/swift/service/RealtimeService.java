@@ -3,6 +3,7 @@ package com.fr.swift.service;
 import com.fr.swift.basics.annotation.InvokeMethod;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.handler.CommonProcessHandler;
+import com.fr.swift.basics.handler.DeleteSegmentProcessHandler;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
 import com.fr.swift.db.Where;
 import com.fr.swift.query.Queryable;
@@ -16,7 +17,7 @@ import java.util.List;
  * @author anchore
  * @date 2018/5/28
  */
-public interface RealtimeService extends SwiftService, Queryable {
+public interface RealtimeService extends SwiftService, Queryable, DeleteService {
     /**
      * 增量导入
      *
@@ -44,6 +45,7 @@ public interface RealtimeService extends SwiftService, Queryable {
     @InvokeMethod(QueryableProcessHandler.class)
     SwiftResultSet query(String queryInfo) throws Exception;
 
-    @InvokeMethod(value = CommonProcessHandler.class, target = Target.REAL_TIME)
+    @Override
+    @InvokeMethod(value = DeleteSegmentProcessHandler.class, target = Target.REAL_TIME)
     boolean delete(SourceKey sourceKey, Where where, List<String> segKeys) throws Exception;
 }
