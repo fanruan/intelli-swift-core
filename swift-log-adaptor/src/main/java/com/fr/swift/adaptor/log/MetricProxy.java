@@ -1,5 +1,6 @@
 package com.fr.swift.adaptor.log;
 
+import com.fr.intelli.record.MetricException;
 import com.fr.intelli.record.scene.Metric;
 import com.fr.intelli.record.scene.impl.BaseMetric;
 import com.fr.stable.query.condition.QueryCondition;
@@ -103,6 +104,11 @@ public class MetricProxy extends BaseMetric {
             SwiftLoggers.getLogger().error(e);
         }
         return dataList;
+    }
+
+    @Override
+    public <T> DataList<List<T>> find(String s) throws MetricException {
+        return null;
     }
 
 //    @Override
