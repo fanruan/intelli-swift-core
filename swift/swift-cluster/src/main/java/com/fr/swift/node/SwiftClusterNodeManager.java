@@ -2,7 +2,6 @@ package com.fr.swift.node;
 
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.ClusterNodeManager;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.util.Assert;
 import com.fr.third.jodd.util.StringUtil;
@@ -23,7 +22,7 @@ public class SwiftClusterNodeManager implements ClusterNodeManager<SwiftClusterN
     private static final SwiftClusterNodeManager INSTANCE = new SwiftClusterNodeManager();
 
     private SwiftClusterNodeManager() {
-        SwiftProperty swiftProperty = SwiftContext.get().getBean("swiftProperty", SwiftProperty.class);
+        SwiftProperty swiftProperty = SwiftProperty.getProperty();
         this.isCluster = swiftProperty.isCluster();
         String masterAddress = swiftProperty.getMasterAddress();
         String serverAddress = swiftProperty.getServerAddress();

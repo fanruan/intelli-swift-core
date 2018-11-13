@@ -1,7 +1,6 @@
 package com.fr.swift.service;
 
 import com.fr.swift.property.SwiftProperty;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -15,8 +14,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public abstract class AbstractSwiftManager implements SwiftManager {
 
-    @Autowired
-    protected SwiftProperty swiftProperty;
+    protected SwiftProperty swiftProperty = SwiftProperty.getProperty();
 
     protected volatile boolean running = false;
 

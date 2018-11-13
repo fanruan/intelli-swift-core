@@ -3,7 +3,6 @@ package com.fr.swift.service;
 import com.fr.event.Event;
 import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Where;
 import com.fr.swift.event.base.AbstractGlobalRpcEvent;
 import com.fr.swift.event.base.SwiftRpcEvent;
@@ -106,7 +105,7 @@ public class LocalSwiftServerService extends AbstractSwiftServerService {
         EventDispatcher.listen(TaskEvent.RUN, new Listener<Map<TaskKey, ?>>() {
             @Override
             public void on(Event event, Map<TaskKey, ?> taskKeyMap) {
-                if (!SwiftContext.get().getBean("swiftProperty", SwiftProperty.class).isCluster()) {
+                if (!SwiftProperty.getProperty().isCluster()) {
                     try {
                         indexingService.index(new DefaultIndexingStuff((Map<TaskKey, DataSource>) taskKeyMap));
                     } catch (Exception e) {

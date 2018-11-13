@@ -77,7 +77,6 @@ import java.util.List;
 @Import({
         LocalSegmentProvider.class,
         IndexingSegmentManager.class,
-        SwiftProperty.class,
         SimpleServiceRegistry.class,
         SimpleServiceDiscovery.class,
         RpcServer.class,

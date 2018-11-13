@@ -1,6 +1,5 @@
 package com.fr.swift.boot;
 
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.util.ServiceBeanFactory;
 
@@ -48,12 +47,12 @@ class SwiftCommandParser {
         }
 
         if (commandMap.containsKey(SwiftCommand.START_SWIFT_SERVICE)) {
-            SwiftProperty swiftProperty = SwiftContext.get().getBean(SwiftProperty.class);
+            SwiftProperty swiftProperty = SwiftProperty.getProperty();
             Set<String> serviceSet = commandMap.get(SwiftCommand.START_SWIFT_SERVICE);
             swiftProperty.setSwiftServiceNames(serviceSet);
         }
         if (commandMap.containsKey(SwiftCommand.START_SERVER_SERVICE)) {
-            SwiftProperty swiftProperty = SwiftContext.get().getBean(SwiftProperty.class);
+            SwiftProperty swiftProperty = SwiftProperty.getProperty();
             Set<String> serviceSet = commandMap.get(SwiftCommand.START_SERVER_SERVICE);
             swiftProperty.setServerServiceNames(serviceSet);
         }
