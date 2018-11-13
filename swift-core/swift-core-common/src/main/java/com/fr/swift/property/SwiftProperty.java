@@ -1,11 +1,12 @@
 package com.fr.swift.property;
 
+import com.fr.swift.util.Crasher;
 import com.fr.third.org.apache.commons.collections4.CollectionUtils;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.beans.factory.annotation.Value;
-import com.fr.third.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
 
 /**
@@ -15,8 +16,9 @@ import java.util.Set;
  * @description
  * @since Advanced FineBI 5.0
  */
-@Service("swiftProperty")
 public class SwiftProperty {
+
+    private Properties properties;
 
     private boolean isCluster;
 
@@ -25,8 +27,6 @@ public class SwiftProperty {
     private String masterAddress;
 
     private String rpcAddress;
-
-    private String httpAddress;
 
     private String configDbDriverClass;
 
@@ -48,8 +48,37 @@ public class SwiftProperty {
      */
     private Set<String> serverServiceNames;
 
-    public Set<String> getSwiftServiceNames() {
-        return new HashSet<String>(swiftServiceNames);
+    private SwiftProperty() {
+        initProperties();
+    }
+
+    private static final SwiftProperty INSTANCE = new SwiftProperty();
+
+    public static SwiftProperty getProperty() {
+        return INSTANCE;
+    }
+
+    private void initProperties() {
+        properties = new Properties();
+        InputStream swiftIn = SwiftProperty.class.getClassLoader().getResourceAsStream("swift.properties");
+        InputStream swiftBeansIn = SwiftProperty.class.getClassLoader().getResourceAsStream("swift-beans.properties");
+        try {
+            properties.load(swiftBeansIn);
+            properties.load(swiftIn);
+            initSwiftServiceNames();
+            initServerServiceNames();
+            initRpcMaxObjectSize();
+            initRpcAddress();
+            initCluster();
+            initClusterId();
+            initMasterAddress();
+            initConfigDbDriverClass();
+            initConfigDbUsername();
+            initConfigDbPasswd();
+            initConfigDbJdbcUrl();
+        } catch (IOException e) {
+            Crasher.crash(e);
+        }
     }
 
     public void setSwiftServiceNames(Set<String> swiftServiceNames) {
@@ -58,36 +87,74 @@ public class SwiftProperty {
         }
     }
 
-    @Autowired
-    private void setSwiftServiceNames(@Value("${swift.service.name}") String swiftServiceName) {
+    public void setServerServiceNames(Set<String> serverServiceNames) {
+        this.serverServiceNames = serverServiceNames;
+    }
+
+    private void initSwiftServiceNames() {
+        String swiftServiceName = properties.getProperty("swift.service.name");
         swiftServiceNames = new HashSet<String>();
         String[] swiftServiceNameArray = swiftServiceName.split(",");
         CollectionUtils.addAll(swiftServiceNames, swiftServiceNameArray);
     }
 
-    public Set<String> getServerServiceNames() {
-        return new HashSet<String>(serverServiceNames);
-    }
-
-    public void setServerServiceNames(Set<String> serverServiceNames) {
-        this.serverServiceNames = serverServiceNames;
-    }
-
-    @Autowired
-    private void setServerServiceNames(@Value("${server.service.name}") String serverServiceName) {
+    private void initServerServiceNames() {
+        String serverServiceName = properties.getProperty("server.service.name");
         serverServiceNames = new HashSet<String>();
         String[] serverServiceNameArray = serverServiceName.split(",");
         CollectionUtils.addAll(serverServiceNames, serverServiceNameArray);
     }
 
-    @Autowired
-    public void setRpcAddress(@Value("${swift.rpc_server_address}") String rpcAddress) {
-        this.rpcAddress = rpcAddress;
+    private void initRpcMaxObjectSize() {
+        this.rpcMaxObjectSize = Integer.parseInt(properties.getProperty("swift.rpcMaxObjectSize"));
     }
 
-    @Autowired
-    public void setMasterAddress(@Value("${swift.master_address}") String masterAddress) {
-        this.masterAddress = masterAddress;
+    public void setRpcAddress(String currentId) {
+        this.rpcAddress = currentId;
+    }
+
+    private void initRpcAddress() {
+        this.rpcAddress = properties.getProperty("swift.rpc_server_address");
+    }
+
+    private void initCluster() {
+        this.isCluster = Boolean.parseBoolean(properties.getProperty("swift.is_cluster"));
+    }
+
+    private void initClusterId() {
+        this.clusterId = properties.getProperty("swift.clusterId");
+    }
+
+    public void setMasterAddress(String masterId) {
+        this.masterAddress = masterId;
+    }
+
+    private void initMasterAddress() {
+        this.masterAddress = properties.getProperty("swift.master_address");
+    }
+
+    private void initConfigDbDriverClass() {
+        this.configDbDriverClass = properties.getProperty("swift.configDb.driver");
+    }
+
+    private void initConfigDbUsername() {
+        this.configDbUsername = properties.getProperty("swift.configDb.username");
+    }
+
+    private void initConfigDbPasswd() {
+        this.configDbPasswd = properties.getProperty("swift.configDb.passwd");
+    }
+
+    private void initConfigDbJdbcUrl() {
+        this.configDbJdbcUrl = properties.getProperty("swift.configDb.url");
+    }
+
+    public int getRpcMaxObjectSize() {
+        return rpcMaxObjectSize;
+    }
+
+    public String getServerAddress() {
+        return rpcAddress;
     }
 
     public boolean isCluster() {
@@ -98,74 +165,31 @@ public class SwiftProperty {
         return clusterId;
     }
 
-    @Autowired
-    public void setCluster(@Value("${swift.is_cluster}") String cluster) {
-        this.isCluster = Boolean.parseBoolean(cluster);
+    public String getMasterAddress() {
+        return masterAddress;
     }
 
     public String getConfigDbDriverClass() {
         return configDbDriverClass;
     }
 
-    @Autowired
-    public void setConfigDbDriverClass(@Value("${swift.configDb.driver}") String configDbDriverClass) {
-        this.configDbDriverClass = configDbDriverClass;
-    }
-
     public String getConfigDbUsername() {
         return configDbUsername;
-    }
-
-    @Autowired
-    public void setConfigDbUsername(@Value("${swift.configDb.username}") String configDbUsername) {
-        this.configDbUsername = configDbUsername;
     }
 
     public String getConfigDbPasswd() {
         return configDbPasswd;
     }
 
-    @Autowired
-    public void setConfigDbPasswd(@Value("${swift.configDb.passwd}") String configDbPasswd) {
-        this.configDbPasswd = configDbPasswd;
-    }
-
     public String getConfigDbJdbcUrl() {
         return configDbJdbcUrl;
     }
 
-    @Autowired
-    public void setConfigDbJdbcUrl(@Value("${swift.configDb.url}") String configDbJdbcUrl) {
-        this.configDbJdbcUrl = configDbJdbcUrl;
+    public Set<String> getSwiftServiceNames() {
+        return new HashSet<String>(swiftServiceNames);
     }
 
-    public void setClusterId(@Value("${swift.clusterId}") String clusterId) {
-        this.clusterId = clusterId;
-    }
-
-    public String getServerAddress() {
-        return rpcAddress;
-    }
-
-    public String getMasterAddress() {
-        return masterAddress;
-    }
-
-    public String getHttpAddress() {
-        return httpAddress;
-    }
-
-    @Autowired
-    public void setHttpAddress(@Value("${swift.http_server_address}") String httpAddress) {
-        this.httpAddress = httpAddress;
-    }
-
-    public int getRpcMaxObjectSize() {
-        return rpcMaxObjectSize;
-    }
-
-    @Autowired
-    public void setRpcMaxObjectSize(@Value("${swift.rpcMaxObjectSize}") int rpcMaxObjectSize) {
-        this.rpcMaxObjectSize = rpcMaxObjectSize;
+    public Set<String> getServerServiceNames() {
+        return new HashSet<String>(serverServiceNames);
     }
 }

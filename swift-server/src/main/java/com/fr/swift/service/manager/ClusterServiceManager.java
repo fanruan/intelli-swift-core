@@ -27,8 +27,7 @@ public class ClusterServiceManager extends AbstractServiceManager<SwiftService> 
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger();
 
-    @Autowired
-    private SwiftProperty swiftProperty;
+    private SwiftProperty swiftProperty = SwiftProperty.getProperty();
 
     @Autowired
     private SwiftServiceInfoService serviceInfoService;

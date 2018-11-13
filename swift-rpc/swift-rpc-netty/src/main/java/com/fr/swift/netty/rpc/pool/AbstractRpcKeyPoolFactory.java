@@ -1,6 +1,5 @@
 package com.fr.swift.netty.rpc.pool;
 
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.netty.rpc.client.AbstractRpcClientHandler;
 import com.fr.swift.property.SwiftProperty;
@@ -28,7 +27,7 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
  */
 public abstract class AbstractRpcKeyPoolFactory<T extends AbstractRpcClientHandler> extends BaseKeyedPooledObjectFactory<String, T> {
 
-    private SwiftProperty swiftProperty = SwiftContext.get().getBean("swiftProperty", SwiftProperty.class);
+    private SwiftProperty swiftProperty = SwiftProperty.getProperty();
 
 
     protected ChannelFuture bindBootstrap(final AbstractRpcClientHandler clientHandler) throws InterruptedException {

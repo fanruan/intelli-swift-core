@@ -31,7 +31,7 @@ public class ServiceController extends BaseController {
     private ServiceManager swiftLocalServiceManager = SwiftContext.get().getBean(LocalServiceManager.class);
     private ServiceManager swiftClusterServiceManager = SwiftContext.get().getBean(ClusterServiceManager.class);
     private ServiceManager serverServiceManager = SwiftContext.get().getBean(ServerServiceManager.class);
-    private SwiftProperty swiftProperty = SwiftContext.get().getBean(SwiftProperty.class);
+    private SwiftProperty swiftProperty = SwiftProperty.getProperty();
 
     @ResponseBody
     @RequestMapping(value = SWIFT_SERVICE, method = RequestMethod.POST)
