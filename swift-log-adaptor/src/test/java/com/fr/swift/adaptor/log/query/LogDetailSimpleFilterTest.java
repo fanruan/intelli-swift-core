@@ -5,9 +5,7 @@ import com.fr.stable.query.QueryFactory;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.restriction.RestrictionFactory;
 import com.fr.swift.adaptor.log.QueryConditionAdaptor;
-import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
-import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryRunnerProvider;
@@ -16,6 +14,7 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.db.QueryDBSource;
+import com.fr.swift.test.Preparer;
 import org.junit.Test;
 
 import java.util.HashSet;
@@ -34,7 +33,11 @@ import static junit.framework.TestCase.assertTrue;
  */
 public class LogDetailSimpleFilterTest extends LogBaseTest {
 
-    private final Database db = SwiftDatabase.getInstance();
+    @Override
+    public void setUp() throws Exception {
+        Preparer.prepareCubeBuild(getClass());
+        super.setUp();
+    }
 
     @Test
     public void testEQ() {
@@ -95,15 +98,15 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
             Table table = db.getTable(new SourceKey("testGT"));
             transportAndIndex(dataSource, table);
 
-            QueryCondition gtQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.gt("总金额", 1000000d));
+            QueryCondition gtQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.gt("总金额", 1000000));
             QueryBean queryBean = QueryConditionAdaptor.adaptCondition(gtQueryCondition, table);
             SwiftResultSet gtResultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
             int gtindex = table.getMeta().getColumnIndex("总金额") - 1;
             int count = 0;
             while (gtResultSet.hasNext()) {
                 Row row = gtResultSet.getNextRow();
-                assertTrue(((Long) row.getValue(gtindex)).doubleValue() > 1000000d);
-                if (((Long) row.getValue(gtindex)).doubleValue() == 1000000d) {
+                assertTrue(((Long) row.getValue(gtindex)).doubleValue() > 1000000);
+                if (((Long) row.getValue(gtindex)).doubleValue() == 1000000) {
                     count++;
                 }
             }
@@ -125,15 +128,15 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
             Table table = db.getTable(new SourceKey("testGTE"));
             transportAndIndex(dataSource, table);
 
-            QueryCondition gteQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.gte("总金额", 1000000d));
+            QueryCondition gteQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.gte("总金额", 1000000));
             QueryBean queryBean = QueryConditionAdaptor.adaptCondition(gteQueryCondition, table);
             SwiftResultSet gteResultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
             int gteindex = table.getMeta().getColumnIndex("总金额") - 1;
             int count = 0;
             while (gteResultSet.hasNext()) {
                 Row row = gteResultSet.getNextRow();
-                assertTrue(((Long) row.getValue(gteindex)).doubleValue() >= 1000000d);
-                if (((Long) row.getValue(gteindex)).doubleValue() == 1000000d) {
+                assertTrue(((Long) row.getValue(gteindex)).doubleValue() >= 1000000);
+                if (((Long) row.getValue(gteindex)).doubleValue() == 1000000) {
                     count++;
                 }
             }
@@ -155,15 +158,15 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
             Table table = db.getTable(new SourceKey("testLT"));
             transportAndIndex(dataSource, table);
 
-            QueryCondition ltQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.lt("总金额", 1000000d));
+            QueryCondition ltQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.lt("总金额", 1000000));
             QueryInfoBean queryBean = QueryConditionAdaptor.adaptCondition(ltQueryCondition, table);
             SwiftResultSet ltResultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
             int ltindex = table.getMeta().getColumnIndex("总金额") - 1;
             int count = 0;
             while (ltResultSet.hasNext()) {
                 Row row = ltResultSet.getNextRow();
-                assertTrue(((Long) row.getValue(ltindex)).doubleValue() < 1000000d);
-                if (((Long) row.getValue(ltindex)).doubleValue() == 1000000d) {
+                assertTrue(((Long) row.getValue(ltindex)).doubleValue() < 1000000);
+                if (((Long) row.getValue(ltindex)).doubleValue() == 1000000) {
                     count++;
                 }
             }
@@ -185,15 +188,15 @@ public class LogDetailSimpleFilterTest extends LogBaseTest {
             Table table = db.getTable(new SourceKey("testLTE"));
             transportAndIndex(dataSource, table);
 
-            QueryCondition lteQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.lte("总金额", 1000000d));
+            QueryCondition lteQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.lte("总金额", 1000000));
             QueryInfoBean queryBean = QueryConditionAdaptor.adaptCondition(lteQueryCondition, table);
             SwiftResultSet lteResultSet = QueryRunnerProvider.getInstance().executeQuery(queryBean);
             int lteindex = table.getMeta().getColumnIndex("总金额") - 1;
             int count = 0;
             while (lteResultSet.hasNext()) {
                 Row row = lteResultSet.getNextRow();
-                assertTrue(((Long) row.getValue(lteindex)).doubleValue() <= 1000000d);
-                if (((Long) row.getValue(lteindex)).doubleValue() == 1000000d) {
+                assertTrue(((Long) row.getValue(lteindex)).doubleValue() <= 1000000);
+                if (((Long) row.getValue(lteindex)).doubleValue() == 1000000) {
                     count++;
                 }
             }
