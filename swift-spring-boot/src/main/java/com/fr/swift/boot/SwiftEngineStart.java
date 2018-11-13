@@ -73,7 +73,7 @@ public class SwiftEngineStart {
             SwiftCommandParser.parseCommand(args);
             registerProxy();
             SwiftContext.get().getBean("localManager", ServiceManager.class).startUp();
-            if (SwiftContext.get().getBean("swiftProperty", SwiftProperty.class).isCluster()) {
+            if (SwiftProperty.getProperty().isCluster()) {
                 ClusterListenerHandler.handlerEvent(new ClusterEvent(ClusterEventType.JOIN_CLUSTER, ClusterType.CONFIGURE));
             }
             SwiftContext.get().getBean(ServerManager.class).startUp();
@@ -92,7 +92,7 @@ public class SwiftEngineStart {
     }
 
     private static void registerTmpConnectionProvider() {
-        SwiftProperty property = SwiftContext.get().getBean(SwiftProperty.class);
+        SwiftProperty property = SwiftProperty.getProperty();
 
         DaoContext.setEntityDao(new LocalEntityDao());
         DaoContext.setClassHelperDao(new LocalClassHelperDao());

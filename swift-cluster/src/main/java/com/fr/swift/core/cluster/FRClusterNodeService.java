@@ -32,7 +32,7 @@ public class FRClusterNodeService implements ClusterNodeService<ClusterNode> {
 
     private SwiftServiceInfoService serviceInfoService = SwiftContext.get().getBean(SwiftServiceInfoService.class);
 
-    private SwiftProperty swiftProperty = SwiftContext.get().getBean(SwiftProperty.class);
+    private SwiftProperty swiftProperty = SwiftProperty.getProperty();
 
     private FRClusterNodeService() {
         swiftProperty.setRpcAddress(FRClusterNodeManager.getInstance().getCurrentId());

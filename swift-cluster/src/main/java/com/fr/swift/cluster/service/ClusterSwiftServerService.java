@@ -66,7 +66,7 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
 
     private SwiftServiceInfoService serviceInfoService = SwiftContext.get().getBean(SwiftServiceInfoService.class);
 
-    private SwiftProperty swiftProperty = SwiftContext.get().getBean("swiftProperty", SwiftProperty.class);
+    private SwiftProperty swiftProperty = SwiftProperty.getProperty();
 
     private ClusterSwiftServerService() {
     }

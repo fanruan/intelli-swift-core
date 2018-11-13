@@ -2,10 +2,8 @@ package com.fr.swift.boot.controller.test;
 
 import com.fr.stable.StringUtils;
 import com.fr.swift.ClusterNodeService;
-import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.URL;
-import com.fr.swift.basics.base.SwiftInvocation;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.boot.controller.SwiftApiConstants;
@@ -18,10 +16,8 @@ import com.fr.swift.cube.queue.SwiftImportStuff;
 import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
 import com.fr.swift.event.indexing.IndexRpcEvent;
 import com.fr.swift.netty.rpc.server.RpcServer;
-import com.fr.swift.netty.rpc.server.ServiceMethodRegistry;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.repository.manager.SwiftRepositoryManager;
-import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.db.TableDBSource;
 import com.fr.swift.stuff.HistoryIndexingStuff;
@@ -57,7 +53,7 @@ public class TestIndexingController {
         try {
             Map<TaskKey, DataSource> tables = new HashMap<TaskKey, DataSource>();
             DataSource dataSource = new TableDBSource(tableName, "test");
-            if (SwiftContext.get().getBean("swiftProperty", SwiftProperty.class).isCluster()) {
+            if (SwiftProperty.getProperty().isCluster()) {
                 int currentRound = CubeTasks.nextRound();
                 tables.put(CubeTasks.newBuildTableTaskKey(currentRound, dataSource), dataSource);
                 IndexingStuff stuff = new HistoryIndexingStuff(tables);

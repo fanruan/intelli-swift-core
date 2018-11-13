@@ -1,6 +1,5 @@
 package com.fr.swift.netty.rpc.server;
 
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.netty.rpc.registry.ServiceRegistry;
@@ -52,7 +51,7 @@ public class RpcServer {
 
     @Autowired
     public RpcServer(ServiceRegistry serviceRegistry) {
-        swiftProperty = SwiftContext.get().getBean("swiftProperty", SwiftProperty.class);
+        swiftProperty = SwiftProperty.getProperty();
         this.serviceAddress = swiftProperty.getServerAddress();
         this.serviceRegistry = serviceRegistry;
     }
