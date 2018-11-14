@@ -13,10 +13,14 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ProxyServiceRegistry implements ServiceRegistry {
 
-    public static final ServiceRegistry INSTANCE = new ProxyServiceRegistry();
+    private static final ServiceRegistry INSTANCE = new ProxyServiceRegistry();
 
     private Map<String, Object> handlerMap = new ConcurrentHashMap<String, Object>();
     private Map<String, Object> externalMap = new ConcurrentHashMap<String, Object>();
+
+    public static ServiceRegistry get() {
+        return INSTANCE;
+    }
 
     @Override
     public void registerService(Object service) {

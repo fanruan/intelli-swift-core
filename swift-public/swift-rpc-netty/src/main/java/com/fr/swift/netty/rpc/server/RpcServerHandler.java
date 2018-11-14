@@ -55,12 +55,12 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
         switch (request.requestType()) {
             case INTERNAL:
                 if (request instanceof InternalRpcRequest) {
-                    return handle(request, ProxyServiceRegistry.INSTANCE.getService(serviceName), false);
+                    return handle(request, ProxyServiceRegistry.get().getService(serviceName), false);
                 } else {
                     throw new ServiceInvalidException(serviceName + " is invalid on remote machine!");
                 }
             default:
-                return handle(request, ProxyServiceRegistry.INSTANCE.getService(serviceName), true);
+                return handle(request, ProxyServiceRegistry.get().getService(serviceName), true);
 
         }
     }

@@ -31,7 +31,7 @@ import java.util.List;
 @SwiftApi
 public class SelectServiceImpl implements SelectService {
     private SwiftMetaDataService metaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
-    private TableService tableService = ProxyServiceRegistry.INSTANCE.getExternalService(TableService.class);
+    private TableService tableService = ProxyServiceRegistry.get().getExternalService(TableService.class);
 
     @Override
     @SwiftApi

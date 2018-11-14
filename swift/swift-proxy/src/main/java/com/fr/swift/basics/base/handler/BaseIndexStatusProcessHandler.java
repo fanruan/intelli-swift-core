@@ -57,7 +57,7 @@ public abstract class BaseIndexStatusProcessHandler extends BaseProcessHandler i
                 statusList.add((ServerCurrentStatus) obj);
             }
         }
-        IndexingSelectRule rule = ProxyServiceRegistry.INSTANCE.getInternalService(IndexingSelectRuleService.class).getCurrentRule();
+        IndexingSelectRule rule = ProxyServiceRegistry.get().getInternalService(IndexingSelectRuleService.class).getCurrentRule();
         return rule.select(statusList);
     }
 
