@@ -16,12 +16,12 @@ public class LocalInvokerCreater implements InvokerCreater {
 
     @Override
     public Invoker createAsyncInvoker(Class clazz, URL url) {
-        return new LocalInvoker(ProxyServiceRegistry.INSTANCE.getService(clazz), clazz, url, false);
+        return new LocalInvoker(ProxyServiceRegistry.get().getService(clazz), clazz, url, false);
     }
 
     @Override
     public Invoker createSyncInvoker(Class clazz, URL url) {
-        return new LocalInvoker(ProxyServiceRegistry.INSTANCE.getService(clazz), clazz, url);
+        return new LocalInvoker(ProxyServiceRegistry.get().getService(clazz), clazz, url);
     }
 
 }

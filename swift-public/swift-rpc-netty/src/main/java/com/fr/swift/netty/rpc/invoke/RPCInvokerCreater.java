@@ -16,12 +16,12 @@ public class RPCInvokerCreater implements InvokerCreater {
 
     @Override
     public Invoker createAsyncInvoker(Class clazz, URL url) {
-        return new RPCInvoker(ProxyServiceRegistry.INSTANCE.getService(clazz), clazz, url, false);
+        return new RPCInvoker(ProxyServiceRegistry.get().getService(clazz), clazz, url, false);
     }
 
     @Override
     public Invoker createSyncInvoker(Class clazz, URL url) {
-        return new RPCInvoker(ProxyServiceRegistry.INSTANCE.getService(clazz), clazz, url);
+        return new RPCInvoker(ProxyServiceRegistry.get().getService(clazz), clazz, url);
     }
 
 }

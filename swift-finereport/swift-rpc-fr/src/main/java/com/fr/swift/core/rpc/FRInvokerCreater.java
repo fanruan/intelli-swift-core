@@ -16,12 +16,12 @@ public class FRInvokerCreater implements InvokerCreater {
 
     @Override
     public Invoker createAsyncInvoker(Class clazz, URL url) {
-        return new FRInvoker(ProxyServiceRegistry.INSTANCE.getService(clazz), clazz, url, false);
+        return new FRInvoker(ProxyServiceRegistry.get().getService(clazz), clazz, url, false);
     }
 
     @Override
     public Invoker createSyncInvoker(Class clazz, URL url) {
-        return new FRInvoker(ProxyServiceRegistry.INSTANCE.getService(clazz), clazz, url);
+        return new FRInvoker(ProxyServiceRegistry.get().getService(clazz), clazz, url);
     }
 
 }
