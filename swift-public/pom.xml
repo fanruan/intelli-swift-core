@@ -19,8 +19,5 @@
         <module>swift-spring-boot</module>
         <module>swift-zookeeper</module>
     </modules>
-    <properties>
-        <fr.version>10.0-FEATURE-SNAPSHOT</fr.version>
-    </properties>
 
 </project>
