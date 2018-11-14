@@ -9,7 +9,6 @@ package com.fr.swift.local;
  */
 public class LocalResult {
 
-
     private Object result;
     private Throwable exception;
 
