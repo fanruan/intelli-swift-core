@@ -53,6 +53,5 @@
             <artifactId>servlet-api</artifactId>
             <version>3.0</version>
         </dependency>
-        <dependency>
     </dependencies>
 </project>
