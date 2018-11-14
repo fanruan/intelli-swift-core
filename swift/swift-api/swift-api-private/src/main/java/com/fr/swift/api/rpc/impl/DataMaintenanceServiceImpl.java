@@ -38,7 +38,7 @@ import java.util.List;
 @ProxyService(value = DataMaintenanceService.class, type = ProxyService.ServiceType.EXTERNAL)
 @SwiftApi
 public class DataMaintenanceServiceImpl implements DataMaintenanceService {
-    private TableService tableService = ProxyServiceRegistry.INSTANCE.getExternalService(TableService.class);
+    private TableService tableService = ProxyServiceRegistry.get().getExternalService(TableService.class);
 
     @Override
     @SwiftApi

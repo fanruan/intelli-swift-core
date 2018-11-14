@@ -16,9 +16,13 @@ import java.util.Map;
  */
 public class ProxyProcessHandlerRegistry implements ProcessHandlerRegistry {
 
+    private static final ProcessHandlerRegistry INSTANCE = new ProxyProcessHandlerRegistry();
+
     private Map<Class<? extends ProcessHandler>, Class<? extends ProcessHandler>> handlerMap = new ConcurrentCacheHashMap<Class<? extends ProcessHandler>, Class<? extends ProcessHandler>>();
 
-    public static final ProcessHandlerRegistry INSTANCE = new ProxyProcessHandlerRegistry();
+    public static ProcessHandlerRegistry get() {
+        return INSTANCE;
+    }
 
     @Override
     public void addHandler(Class<? extends ProcessHandler> iProcessHandler, Class<? extends ProcessHandler> cProcessHandler) {
