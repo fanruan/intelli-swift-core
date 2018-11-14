@@ -16,7 +16,6 @@ import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 
 /**
  * This class created on 2018/5/26
@@ -39,15 +38,17 @@ public class InvokerTest extends TestCase {
 
         PowerMock.mockStatic(ProxyServiceRegistry.class);
         ServiceRegistry serviceRegistry = PowerMock.createMock(ServiceRegistry.class);
-        Whitebox.setInternalState(ProxyServiceRegistry.class, "INSTANCE", serviceRegistry);
-        EasyMock.expect(ProxyServiceRegistry.INSTANCE.getService(TestInvokerInterface.class)).andReturn(new TestInvokerImpl()).anyTimes();
-        EasyMock.replay(ProxyServiceRegistry.INSTANCE);
+        EasyMock.expect(ProxyServiceRegistry.get()).andReturn(serviceRegistry).anyTimes();
+        PowerMock.replay(ProxyServiceRegistry.class);
+        EasyMock.expect(ProxyServiceRegistry.get().getService(TestInvokerInterface.class)).andReturn(new TestInvokerImpl()).anyTimes();
+        EasyMock.replay(ProxyServiceRegistry.get());
 
         PowerMock.mockStatic(ProxyProcessHandlerRegistry.class);
         ProcessHandlerRegistry processHandlerRegistry = PowerMock.createMock(ProcessHandlerRegistry.class);
-        Whitebox.setInternalState(ProxyProcessHandlerRegistry.class, "INSTANCE", processHandlerRegistry);
+        EasyMock.expect(ProxyProcessHandlerRegistry.get()).andReturn(processHandlerRegistry).anyTimes();
+        PowerMock.replay(ProxyProcessHandlerRegistry.class);
         EasyMock.expect(processHandlerRegistry.getHandler(ProcessHandler.class)).andReturn(TestInvokerProcessHandler.class).anyTimes();
-        EasyMock.replay(ProxyProcessHandlerRegistry.INSTANCE);
+        EasyMock.replay(ProxyProcessHandlerRegistry.get());
     }
 
 
