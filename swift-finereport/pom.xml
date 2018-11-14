@@ -53,5 +53,10 @@
             <artifactId>servlet-api</artifactId>
             <version>3.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.fineio</groupId>
+            <artifactId>fineio</artifactId>
+            <version>2.0-RELEASE-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

@@ -22,5 +22,5 @@ public interface ProcessHandlerRegistry {
      * @param iProcessHandler
      * @return
      */
-    Class<? extends ProcessHandler> getHandler(Class<? extends ProcessHandler> iProcessHandler);
+    Class getHandler(Class<? extends ProcessHandler> iProcessHandler);
 }

@@ -1,11 +1,11 @@
 package com.fr.swift.basics.base;
 
-import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.InvokerCreater;
 import com.fr.swift.basics.InvokerHandler;
 import com.fr.swift.basics.ProcessHandler;
 import com.fr.swift.basics.annotation.InvokeMethod;
-import com.fr.swift.local.LocalInvoker;
+import com.fr.swift.basics.annotation.Target;
+import com.fr.swift.local.LocalProcessHandler;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.util.Assert;
 
@@ -30,8 +30,8 @@ public class BaseInvocationHandler implements InvokerHandler {
 
         //单机直接invoke本地，不调用远程
         if (!SwiftProperty.getProperty().isCluster()) {
-            Invoker invoker = new LocalInvoker(ProxyServiceRegistry.INSTANCE.getService(method.getDeclaringClass()), method.getDeclaringClass(), null);
-            return invoker.invoke(new SwiftInvocation(method, args)).recreate();
+            ProcessHandler handler = new LocalProcessHandler(invokerCreater);
+            return handler.processResult(method, Target.NONE, args);
         }
         InvokeMethod invokeMethod = method.getAnnotation(InvokeMethod.class);
         Class<? extends ProcessHandler> handlerInterface = invokeMethod.value();
