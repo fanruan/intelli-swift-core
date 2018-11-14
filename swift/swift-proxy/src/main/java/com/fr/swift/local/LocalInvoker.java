@@ -6,8 +6,10 @@ import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.Result;
 import com.fr.swift.basics.URL;
 import com.fr.swift.basics.base.SwiftResult;
+import com.fr.swift.util.Assert;
 
 import java.lang.reflect.Method;
+import java.text.MessageFormat;
 
 /**
  * This class created on 2018/5/26
@@ -32,15 +34,10 @@ public class LocalInvoker<T> implements Invoker<T> {
     }
 
     public LocalInvoker(T proxy, Class<T> type, URL url) {
-        if (proxy == null) {
-            throw new IllegalArgumentException("proxy == null");
-        }
-        if (type == null) {
-            throw new IllegalArgumentException("interface == null");
-        }
-        if (!type.isInstance(proxy)) {
-            throw new IllegalArgumentException(proxy.getClass().getName() + " not implement interface " + type);
-        }
+        Assert.notNull(proxy, "proxy == null");
+        Assert.notNull(type, "interface == null");
+        Assert.isInstanceOf(type, proxy, MessageFormat.format("{0} not implement interface {1}", proxy.getClass().getName(), type));
+
         this.proxy = proxy;
         this.type = type;
         this.url = url;

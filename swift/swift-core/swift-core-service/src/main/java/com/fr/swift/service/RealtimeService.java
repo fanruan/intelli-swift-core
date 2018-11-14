@@ -4,6 +4,7 @@ import com.fr.swift.basics.annotation.InvokeMethod;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.handler.CommonProcessHandler;
 import com.fr.swift.basics.handler.DeleteSegmentProcessHandler;
+import com.fr.swift.basics.handler.InsertSegmentProcessHandler;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
 import com.fr.swift.db.Where;
 import com.fr.swift.query.Queryable;
@@ -24,7 +25,7 @@ public interface RealtimeService extends SwiftService, Queryable, DeleteService 
      * @param tableKey  表
      * @param resultSet 数据
      */
-    @InvokeMethod(value = CommonProcessHandler.class, target = Target.REAL_TIME)
+    @InvokeMethod(value = InsertSegmentProcessHandler.class, target = Target.REAL_TIME)
     void insert(SourceKey tableKey, SwiftResultSet resultSet) throws Exception;
 
     /**

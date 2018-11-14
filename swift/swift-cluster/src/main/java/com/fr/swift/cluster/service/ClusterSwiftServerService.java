@@ -32,7 +32,7 @@ import com.fr.swift.stuff.DefaultIndexingStuff;
 import com.fr.swift.task.TaskKey;
 import com.fr.swift.task.impl.SchedulerTaskPool;
 import com.fr.swift.task.impl.TaskEvent;
-import com.fr.swift.util.Crasher;
+import com.fr.swift.util.Assert;
 
 import javax.annotation.PostConstruct;
 import java.io.Serializable;
@@ -160,11 +160,9 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
 
     @Override
     public void registerService(SwiftService service) {
+        Assert.notNull(service.getID(), "Service's clusterId is null! Can't be registered!");
 
-        if (service.getID() == null) {
-            Crasher.crash("Service's clusterId is null! Can't be registered!");
-        }
-        LOGGER.info(service.getID() + " register service :" + service.getServiceType().name());
+        LOGGER.info("{} register service :{}", service.getID(), service.getServiceType().name());
         synchronized (this) {
             serviceInfoService.saveOrUpdate(new SwiftServiceInfoBean(
                     service.getServiceType().name(), service.getID(), swiftProperty.getServerAddress(), false));
@@ -212,10 +210,9 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
 
     @Override
     public void unRegisterService(SwiftService service) {
-        if (service.getID() == null) {
-            Crasher.crash("Service's clusterId is null! Can't be removed!");
-        }
-        LOGGER.debug(service.getID() + " unregister service :" + service.getServiceType().name());
+        Assert.notNull(service.getID(), "Service's clusterId is null! Can't be removed!");
+
+        LOGGER.debug("{} unregister service :{}", service.getID(), service.getServiceType().name());
         synchronized (this) {
             serviceInfoService.removeServiceInfo(new SwiftServiceInfoBean(service.getServiceType().name(), service.getID(), ""));
             switch (service.getServiceType()) {

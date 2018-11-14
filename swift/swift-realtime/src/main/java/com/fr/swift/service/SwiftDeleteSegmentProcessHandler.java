@@ -10,6 +10,8 @@ import com.fr.swift.basics.handler.DeleteSegmentProcessHandler;
 import com.fr.swift.cluster.entity.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.selector.ClusterSelector;
+import com.fr.swift.util.Optional;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -22,7 +24,7 @@ import java.util.concurrent.Future;
  * @author anchore
  * @date 2018/11/9
  */
-public class SwiftDeleteSegmentProcessHandler extends AbstractProcessHandler<List<URL>> implements DeleteSegmentProcessHandler {
+public class SwiftDeleteSegmentProcessHandler extends AbstractProcessHandler<Optional<List<URL>>> implements DeleteSegmentProcessHandler {
 
     public SwiftDeleteSegmentProcessHandler(InvokerCreater invokerCreater) {
         super(invokerCreater);
@@ -30,12 +32,24 @@ public class SwiftDeleteSegmentProcessHandler extends AbstractProcessHandler<Lis
 
     @Override
     public Object processResult(Method method, Target target, Object... args) throws Throwable {
+        Optional<List<URL>> optionalUrls = processUrl(target, args);
         Class<?> proxyClass = method.getDeclaringClass();
         Class<?>[] proxyMethodParamTypes = method.getParameterTypes();
 
+        if (!optionalUrls.isPresent()) {
+            // local invoke
+            Invoker invoker = invokerCreater.createSyncInvoker(proxyClass, null);
+            return invoke(invoker, proxyClass, method, method.getName(), proxyMethodParamTypes, args);
+        }
+
+        List<URL> urls = optionalUrls.get();
+        if (urls.isEmpty()) {
+            return true;
+        }
+
         List<Future<?>> futures = new ArrayList<Future<?>>();
-        List<URL> urls = processUrl(target, args);
         for (URL url : urls) {
+            // remote invoke
             Invoker invoker = invokerCreater.createAsyncInvoker(proxyClass, url);
             Future<?> future = (Future<?>) invoke(invoker, proxyClass, method, method.getName(), proxyMethodParamTypes, args);
             futures.add(future);
@@ -56,14 +70,17 @@ public class SwiftDeleteSegmentProcessHandler extends AbstractProcessHandler<Lis
     }
 
     @Override
-    public List<URL> processUrl(Target target, Object... args) {
+    public Optional<List<URL>> processUrl(Target target, Object... args) {
+        if (!ClusterSelector.getInstance().getFactory().isCluster()) {
+            return Optional.empty();
+        }
         switch (target) {
             case HISTORY:
-                return getUrls(ServiceType.HISTORY);
+                return Optional.of(getUrls(ServiceType.HISTORY));
             case REAL_TIME:
-                return getUrls(ServiceType.REAL_TIME);
+                return Optional.of(getUrls(ServiceType.REAL_TIME));
             default:
-                return Collections.emptyList();
+                return Optional.of(Collections.<URL>emptyList());
         }
     }
 
