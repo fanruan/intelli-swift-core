@@ -18,6 +18,7 @@
         <swift.version>2019.1</swift.version>
         <junit.version>4.12</junit.version>
         <easymock.version>3.4</easymock.version>
+        <powermock.version>1.7.4</powermock.version>
     </properties>
 
     <build>
@@ -54,6 +55,18 @@
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
             <version>${easymock.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>${powermock.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-easymock</artifactId>
+            <version>${powermock.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

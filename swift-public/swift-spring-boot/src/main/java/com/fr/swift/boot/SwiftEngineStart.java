@@ -11,6 +11,8 @@ import com.fr.swift.api.rpc.impl.DataMaintenanceServiceImpl;
 import com.fr.swift.api.rpc.impl.DetectServiceImpl;
 import com.fr.swift.api.rpc.impl.SelectServiceImpl;
 import com.fr.swift.api.rpc.impl.TableServiceImpl;
+import com.fr.swift.basics.ProcessHandlerRegistry;
+import com.fr.swift.basics.ServiceRegistry;
 import com.fr.swift.basics.base.ProxyProcessHandlerRegistry;
 import com.fr.swift.basics.base.ProxyServiceRegistry;
 import com.fr.swift.basics.base.handler.SwiftMasterProcessHandler;
@@ -115,24 +117,26 @@ public class SwiftEngineStart {
 
     private static void registerProxy() {
         //rpc远端可接收调用的service
-        ProxyServiceRegistry.INSTANCE.registerService(new SwiftHistoryService());
-        ProxyServiceRegistry.INSTANCE.registerService(new SwiftIndexingService());
-        ProxyServiceRegistry.INSTANCE.registerService(new SwiftRealtimeService());
-        ProxyServiceRegistry.INSTANCE.registerService(new SwiftAnalyseService());
-        ProxyServiceRegistry.INSTANCE.registerService(new RemoteServiceSender());
-        ProxyServiceRegistry.INSTANCE.registerService(new TableServiceImpl());
-        ProxyServiceRegistry.INSTANCE.registerService(new DetectServiceImpl());
-        ProxyServiceRegistry.INSTANCE.registerService(new DataMaintenanceServiceImpl());
-        ProxyServiceRegistry.INSTANCE.registerService(new SelectServiceImpl());
-        ProxyServiceRegistry.INSTANCE.registerService(new SwiftMasterService());
-        ProxyServiceRegistry.INSTANCE.registerService(new SwiftSlaveService());
+        ServiceRegistry serviceRegistry = ProxyServiceRegistry.get();
+        serviceRegistry.registerService(new SwiftHistoryService());
+        serviceRegistry.registerService(new SwiftIndexingService());
+        serviceRegistry.registerService(new SwiftRealtimeService());
+        serviceRegistry.registerService(new SwiftAnalyseService());
+        serviceRegistry.registerService(new RemoteServiceSender());
+        serviceRegistry.registerService(new TableServiceImpl());
+        serviceRegistry.registerService(new DetectServiceImpl());
+        serviceRegistry.registerService(new DataMaintenanceServiceImpl());
+        serviceRegistry.registerService(new SelectServiceImpl());
+        serviceRegistry.registerService(new SwiftMasterService());
+        serviceRegistry.registerService(new SwiftSlaveService());
 
         //注解接口绑定的实现类
-        ProxyProcessHandlerRegistry.INSTANCE.addHandler(MasterProcessHandler.class, SwiftMasterProcessHandler.class);
-        ProxyProcessHandlerRegistry.INSTANCE.addHandler(NodesProcessHandler.class, SwiftNodesProcessHandler.class);
-        ProxyProcessHandlerRegistry.INSTANCE.addHandler(CommonLoadProcessHandler.class, SwiftCommonLoadProcessHandler.class);
-        ProxyProcessHandlerRegistry.INSTANCE.addHandler(SyncDataProcessHandler.class, SwiftSyncDataProcessHandler.class);
-        ProxyProcessHandlerRegistry.INSTANCE.addHandler(DeleteSegmentProcessHandler.class, SwiftDeleteSegmentProcessHandler.class);
-        ProxyProcessHandlerRegistry.INSTANCE.addHandler(InsertSegmentProcessHandler.class, SwiftInsertSegmentProcessHandler.class);
+        ProcessHandlerRegistry processHandlerRegistry = ProxyProcessHandlerRegistry.get();
+        processHandlerRegistry.addHandler(MasterProcessHandler.class, SwiftMasterProcessHandler.class);
+        processHandlerRegistry.addHandler(NodesProcessHandler.class, SwiftNodesProcessHandler.class);
+        processHandlerRegistry.addHandler(CommonLoadProcessHandler.class, SwiftCommonLoadProcessHandler.class);
+        processHandlerRegistry.addHandler(SyncDataProcessHandler.class, SwiftSyncDataProcessHandler.class);
+        processHandlerRegistry.addHandler(DeleteSegmentProcessHandler.class, SwiftDeleteSegmentProcessHandler.class);
+        processHandlerRegistry.addHandler(InsertSegmentProcessHandler.class, SwiftInsertSegmentProcessHandler.class);
     }
 }
