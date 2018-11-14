@@ -3,6 +3,7 @@ package com.fr.swift.basics.base;
 import com.fr.swift.basics.ProcessHandler;
 import com.fr.swift.basics.ProcessHandlerRegistry;
 import com.fr.swift.structure.lru.ConcurrentCacheHashMap;
+import com.fr.swift.util.Assert;
 
 import java.util.Map;
 
@@ -21,6 +22,8 @@ public class ProxyProcessHandlerRegistry implements ProcessHandlerRegistry {
 
     @Override
     public void addHandler(Class<? extends ProcessHandler> iProcessHandler, Class<? extends ProcessHandler> cProcessHandler) {
+        Assert.isAssignable(iProcessHandler, cProcessHandler);
+
         handlerMap.put(iProcessHandler, cProcessHandler);
     }
 

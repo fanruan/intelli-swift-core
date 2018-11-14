@@ -2,6 +2,7 @@ package com.fr.swift.http;
 
 import com.fr.swift.ClusterNodeService;
 import com.fr.swift.basics.URL;
+import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
@@ -34,7 +35,7 @@ import java.util.List;
 @Controller
 public class RealtimeController extends BaseController {
 
-    private RealtimeService realtimeService = SwiftContext.get().getBean("swiftRealtimeService", RealtimeService.class);
+    private RealtimeService realtimeService = ProxySelector.getInstance().getFactory().getProxy(RealtimeService.class);
 
     /**
      * @param response

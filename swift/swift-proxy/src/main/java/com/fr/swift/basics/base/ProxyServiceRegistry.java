@@ -2,6 +2,7 @@ package com.fr.swift.basics.base;
 
 import com.fr.swift.basics.ServiceRegistry;
 import com.fr.swift.basics.annotation.ProxyService;
+import com.fr.swift.util.Assert;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,13 +20,16 @@ public class ProxyServiceRegistry implements ServiceRegistry {
 
     @Override
     public void registerService(Object service) {
-        if (service.getClass().isAnnotationPresent(ProxyService.class)) {
-            ProxyService proxyService = service.getClass().getAnnotation(ProxyService.class);
-            if (proxyService.type().isInternal()) {
-                handlerMap.put(proxyService.value().getName(), service);
-            } else {
-                externalMap.put(proxyService.value().getName(), service);
-            }
+        if (!service.getClass().isAnnotationPresent(ProxyService.class)) {
+            return;
+        }
+        ProxyService proxyService = service.getClass().getAnnotation(ProxyService.class);
+        Class iface = proxyService.value();
+        Assert.isAssignable(iface, service.getClass());
+        if (proxyService.type().isInternal()) {
+            handlerMap.put(iface.getName(), service);
+        } else {
+            externalMap.put(iface.getName(), service);
         }
     }
 
