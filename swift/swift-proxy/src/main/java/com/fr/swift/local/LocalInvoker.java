@@ -1,6 +1,5 @@
 package com.fr.swift.local;
 
-import com.fr.rpc.FineResult;
 import com.fr.swift.basics.Invocation;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.Result;
@@ -71,27 +70,21 @@ public class LocalInvoker<T> implements Invoker<T> {
     public void destroy() {
     }
 
-//    protected Object doInvoke(T proxy, String methodName, Class<?>[] parameterTypes, Object[] arguments) throws Throwable {
-//        Method method = proxy.getClass().getMethod(methodName, parameterTypes);
-//        return method.invoke(proxy, arguments);
-//    }
-
     protected Object doInvoke(T proxy, String methodName, Class<?>[] parameterTypes, Object[] arguments) throws Throwable {
         if (sync) {
             Method method = proxy.getClass().getMethod(methodName, parameterTypes);
             return method.invoke(proxy, arguments);
         } else {
             LocalFuture localFuture = new LocalFuture();
-            com.fr.rpc.Result fineResult = new FineResult();
-
+            LocalResult localResult = new LocalResult();
             try {
                 Method method = proxy.getClass().getMethod(methodName, parameterTypes);
                 Object result = method.invoke(proxy, arguments);
-                ((FineResult) fineResult).setResult(result);
+                localResult.setResult(result);
             } catch (Throwable e) {
-                ((FineResult) fineResult).setException(e);
+                localResult.setException(e);
             }
-            localFuture.done(fineResult);
+            localFuture.done(localResult);
             return localFuture;
         }
     }

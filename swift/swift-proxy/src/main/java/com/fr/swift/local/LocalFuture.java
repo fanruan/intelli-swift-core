@@ -1,7 +1,5 @@
 package com.fr.swift.local;
 
-
-import com.fr.rpc.Result;
 import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.RpcFuture;
 import com.fr.swift.basics.base.AbstractRpcFuture;
@@ -15,8 +13,8 @@ import java.util.concurrent.TimeUnit;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class LocalFuture extends AbstractRpcFuture<Result> {
-    private Result result;
+public class LocalFuture extends AbstractRpcFuture<LocalResult> {
+    private LocalResult result;
 
     protected LocalFuture() {
         super();
@@ -47,7 +45,7 @@ public class LocalFuture extends AbstractRpcFuture<Result> {
     }
 
     @Override
-    public void done(Result result) {
+    public void done(LocalResult result) {
         this.result = result;
         sync.release(1);
         invokeCallbacks();
@@ -82,7 +80,7 @@ public class LocalFuture extends AbstractRpcFuture<Result> {
     }
 
     private void runCallback(final AsyncRpcCallback callback) {
-        final Result result = this.result;
+        final LocalResult result = this.result;
         submit(new Runnable() {
             @Override
             public void run() {

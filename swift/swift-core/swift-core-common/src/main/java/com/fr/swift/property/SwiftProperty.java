@@ -121,6 +121,10 @@ public class SwiftProperty {
         this.isCluster = Boolean.parseBoolean(properties.getProperty("swift.is_cluster"));
     }
 
+    public void setCluster(boolean cluster) {
+        this.isCluster = cluster;
+    }
+
     private void initClusterId() {
         this.clusterId = properties.getProperty("swift.clusterId");
     }
