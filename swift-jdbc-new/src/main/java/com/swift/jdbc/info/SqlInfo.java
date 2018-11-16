@@ -7,4 +7,5 @@ package com.swift.jdbc.info;
 public interface SqlInfo {
     String sql();
 
+    String authCode();
 }
