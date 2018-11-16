@@ -32,11 +32,15 @@ public class ProxyProcessHandlerPool implements ProcessHandlerPool {
     @Override
     public ProcessHandler getProcessHandler(Class<? extends ProcessHandler> aClass, InvokerCreater invokerCreater) throws Exception {
         if (!handlerMap.containsKey(invokerCreater.getType())) {
-            handlerMap.put(invokerCreater.getType(), new HashMap<Class<? extends ProcessHandler>, ProcessHandler>());
+            synchronized (this) {
+                if (!handlerMap.containsKey(invokerCreater.getType())) {
+                    handlerMap.put(invokerCreater.getType(), new HashMap<Class<? extends ProcessHandler>, ProcessHandler>());
+                }
+            }
         }
         Map<Class<? extends ProcessHandler>, ProcessHandler> processHandlerMap = handlerMap.get(invokerCreater.getType());
         if (!processHandlerMap.containsKey(aClass)) {
-            synchronized (ProxyProcessHandlerPool.class) {
+            synchronized (this) {
                 if (!processHandlerMap.containsKey(aClass)) {
                     Constructor<? extends ProcessHandler> cons = aClass.getDeclaredConstructor(InvokerCreater.class);
                     ProcessHandler handler = cons.newInstance(invokerCreater);
