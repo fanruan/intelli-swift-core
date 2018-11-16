@@ -226,6 +226,11 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfig>
     }
 
     @Override
+    public void testConnection() {
+
+    }
+
+    @Override
     protected SwiftFileSystem[] list() {
         FileSystem fileSystem = null;
         try {

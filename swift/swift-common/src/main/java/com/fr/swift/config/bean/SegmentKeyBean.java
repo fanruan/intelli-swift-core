@@ -86,6 +86,11 @@ public class SegmentKeyBean implements Serializable, Convert<SwiftSegmentEntity>
         return swiftSchema;
     }
 
+    @Override
+    public String getId() {
+        return id;
+    }
+
     public void setStoreType(Types.StoreType storeType) {
         this.storeType = storeType;
     }

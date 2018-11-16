@@ -1,18 +1,16 @@
 package com.fr.swift.service.history.rule;
 
-import com.fr.swift.config.bean.SegmentKeyBean;
-import com.fr.swift.cube.io.Types;
-import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.service.handler.history.rule.DefaultDataSyncRule;
-import com.fr.swift.test.Preparer;
+import com.fr.swift.source.SourceKey;
+import org.easymock.EasyMock;
+import org.easymock.IMocksControl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,24 +30,28 @@ import static org.junit.Assert.assertTrue;
 public class DataSyncRuleTest {
 
     private Set<String> nodeIds;
-    private Map<String, List<SegmentKey>> needLoad;
+    private Set<SegmentKey> needLoad;
 
-    public DataSyncRuleTest(Set<String> nodeIds, Map<String, List<SegmentKey>> needLoad) {
+    public DataSyncRuleTest(Set<String> nodeIds, Set<SegmentKey> needLoad) {
         this.nodeIds = nodeIds;
         this.needLoad = needLoad;
     }
 
     @Before
     public void setUp() throws Exception {
-        Preparer.prepareCubeBuild(getClass());
     }
 
     @Parameterized.Parameters
     public static List<Object[]> randomParams() {
-        Map<String, List<SegmentKey>> needLoad = new HashMap<String, List<SegmentKey>>();
-        needLoad.put("tableA", new ArrayList<SegmentKey>(100));
+        Set<SegmentKey> needLoad = new HashSet<>();
         for (int j = 0; j < 100; j++) {
-            needLoad.get("tableA").add(new SegmentKeyBean("tableA", URI.create("uri_" + j), j, Types.StoreType.FINE_IO, SwiftDatabase.CUBE));
+            IMocksControl control = EasyMock.createControl();
+            SegmentKey mockSegmentKey = control.createMock(SegmentKey.class);
+            EasyMock.expect(mockSegmentKey.getId()).andReturn("tableA@FINE_IO@" + j).anyTimes();
+            EasyMock.expect(mockSegmentKey.getTable()).andReturn(new SourceKey("tableA")).anyTimes();
+            EasyMock.expect(mockSegmentKey.getOrder()).andReturn(j).anyTimes();
+            control.replay();
+            needLoad.add(mockSegmentKey);
         }
         List<Object[]> result = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
@@ -65,7 +67,7 @@ public class DataSyncRuleTest {
 
     @Test
     public void calculate() {
-        System.out.println("NodeSize： " + nodeIds.size() + " SegCount: " + needLoad.get("tableA").size());
+        System.out.println("NodeSize： " + nodeIds.size() + " SegCount: " + needLoad.size());
         Map<String, Set<SegmentKey>> target = new DefaultDataSyncRule().calculate(nodeIds, needLoad, new HashMap<String, List<SegmentDestination>>());
         Iterator<Set<SegmentKey>> it = target.values().iterator();
         int total = 0;
@@ -74,12 +76,12 @@ public class DataSyncRuleTest {
             int size = it.next().size();
             assertTrue(size > 0);
             if (nodeIds.size() <= 3) {
-                assertEquals(size, needLoad.get("tableA").size());
+                assertEquals(size, needLoad.size());
             } else {
-                assertTrue(size < needLoad.get("tableA").size());
+                assertTrue(size < needLoad.size());
             }
             total += size;
         }
-        assertEquals(total, (nodeIds.size() > 3 ? 3 : nodeIds.size()) * needLoad.get("tableA").size());
+        assertEquals(total, (nodeIds.size() > 3 ? 3 : nodeIds.size()) * needLoad.size());
     }
 }

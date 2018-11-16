@@ -21,4 +21,6 @@ public interface SegmentKey extends Serializable {
     StoreType getStoreType();
 
     SwiftDatabase getSwiftSchema();
+
+    String getId();
 }
