@@ -1,9 +1,10 @@
 package com.fr.swift.core.rpc;
 
 import com.fr.swift.basics.Invoker;
-import com.fr.swift.basics.InvokerCreater;
+import com.fr.swift.basics.InvokerType;
 import com.fr.swift.basics.URL;
 import com.fr.swift.basics.base.ProxyServiceRegistry;
+import com.fr.swift.local.AbstractInvokerCreater;
 
 /**
  * This class created on 2018/11/1
@@ -12,16 +13,22 @@ import com.fr.swift.basics.base.ProxyServiceRegistry;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class FRInvokerCreater implements InvokerCreater {
+public class FRInvokerCreater extends AbstractInvokerCreater {
 
     @Override
     public Invoker createAsyncInvoker(Class clazz, URL url) {
-        return new FRInvoker(ProxyServiceRegistry.get().getService(clazz), clazz, url, false);
+        Invoker invoker = super.createAsyncInvoker(clazz, url);
+        return invoker != null ? invoker : new FRInvoker(ProxyServiceRegistry.get().getService(clazz), clazz, url, false);
     }
 
     @Override
     public Invoker createSyncInvoker(Class clazz, URL url) {
-        return new FRInvoker(ProxyServiceRegistry.get().getService(clazz), clazz, url);
+        Invoker invoker = super.createSyncInvoker(clazz, url);
+        return invoker != null ? invoker : new FRInvoker(ProxyServiceRegistry.get().getService(clazz), clazz, url);
     }
 
+    @Override
+    public InvokerType getType() {
+        return InvokerType.REMOTE;
+    }
 }

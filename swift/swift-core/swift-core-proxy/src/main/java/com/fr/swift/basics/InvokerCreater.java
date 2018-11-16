@@ -12,4 +12,6 @@ public interface InvokerCreater {
     Invoker createAsyncInvoker(Class clazz, URL url);
 
     Invoker createSyncInvoker(Class clazz, URL url);
+
+    InvokerType getType();
 }
