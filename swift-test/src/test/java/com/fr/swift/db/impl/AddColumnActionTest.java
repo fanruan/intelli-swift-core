@@ -26,6 +26,7 @@ import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Table;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -41,6 +42,7 @@ import java.util.List;
  * @author anchore
  * @date 2018/8/24
  */
+@Ignore
 @RunWith(Parameterized.class)
 public class AddColumnActionTest {
     private final SwiftMetaData meta = JpaAdaptor.adapt(A.class);

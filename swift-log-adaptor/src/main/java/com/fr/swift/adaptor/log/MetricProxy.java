@@ -1,5 +1,6 @@
 package com.fr.swift.adaptor.log;
 
+import com.fr.intelli.record.MetricException;
 import com.fr.intelli.record.scene.Metric;
 import com.fr.intelli.record.scene.impl.BaseMetric;
 import com.fr.stable.query.condition.QueryCondition;
@@ -106,9 +107,22 @@ public class MetricProxy extends BaseMetric {
     }
 
     @Override
-    public <T> DataList<List<T>> find(String s) {
+    public <T> DataList<List<T>> find(String s) throws MetricException {
         return null;
     }
+
+//    @Override
+//    public <T> ResultSet findWithMetaData(Class<T> aClass, QueryCondition queryCondition, List<DataColumn> list) throws MetricException {
+//        QueryBean queryBean = LogQueryUtils.groupQuery(aClass, queryCondition, list);
+//        ResultSet ret = null;
+//        try {
+//            SwiftResultSet resultSet = analyseService.getQueryResult(queryBean);
+//            ret = new ResultSetWrapper(resultSet);
+//        } catch (Exception e) {
+//            SwiftLoggers.getLogger().error(e);
+//        }
+//        return ret;
+//    }
 
     @Override
     public void submit(Object o) {

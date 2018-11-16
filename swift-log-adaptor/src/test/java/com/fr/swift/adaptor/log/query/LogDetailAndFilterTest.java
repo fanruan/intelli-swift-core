@@ -6,9 +6,7 @@ import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.restriction.Restriction;
 import com.fr.stable.query.restriction.RestrictionFactory;
 import com.fr.swift.adaptor.log.QueryConditionAdaptor;
-import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
-import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.source.DataSource;
@@ -16,6 +14,7 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.db.QueryDBSource;
+import com.fr.swift.test.Preparer;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -33,7 +32,11 @@ import static junit.framework.TestCase.assertTrue;
  */
 public class LogDetailAndFilterTest extends LogBaseTest {
 
-    private final Database db = SwiftDatabase.getInstance();
+    @Override
+    public void setUp() throws Exception {
+        Preparer.prepareCubeBuild(getClass());
+        super.setUp();
+    }
 
     @Test
     public void testAnd() {

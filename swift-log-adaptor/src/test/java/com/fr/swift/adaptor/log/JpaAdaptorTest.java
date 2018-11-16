@@ -34,7 +34,7 @@ public class JpaAdaptorTest {
         assertEquals(Types.VARCHAR, meta.getColumn("str").getType());
         assertEquals(Types.DATE, meta.getColumn("sqlDate").getType());
         assertEquals(Types.DATE, meta.getColumn("utilDate").getType());
-        assertEquals(Types.BOOLEAN, meta.getColumn("b").getType());
+        assertEquals(Types.BIT, meta.getColumn("b").getType());
         assertEquals(Types.INTEGER, meta.getColumn("i").getType());
     }
 
@@ -145,4 +145,34 @@ public class JpaAdaptorTest {
         }
     }
 
+    @Test
+    public void testBugfix() throws Exception {
+        // DEC-5271
+        abstract class BaseConv<X, Y> implements AttributeConverter<X, Y> {
+        }
+
+        class Conv extends BaseConv<String, Long> {
+            @Override
+            public Long convertToDatabaseColumn(String s) {
+                return null;
+            }
+
+            @Override
+            public String convertToEntityAttribute(Long aLong) {
+                return null;
+            }
+        }
+
+        @Table(name = "a")
+        class A {
+            @Convert(converter = Conv.class)
+            @Column(name = "s")
+            String s;
+        }
+
+        SwiftMetaData meta = JpaAdaptor.adapt(A.class);
+        assertEquals("a", meta.getTableName());
+        assertEquals(1, meta.getColumnCount());
+        assertEquals(Types.BIGINT, meta.getColumn("s").getType());
+    }
 }

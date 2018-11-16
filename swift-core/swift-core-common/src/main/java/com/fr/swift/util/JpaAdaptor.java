@@ -7,19 +7,19 @@ import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.third.guava.base.Optional;
-import com.fr.third.javax.persistence.AttributeConverter;
 import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Convert;
 import com.fr.third.javax.persistence.MappedSuperclass;
 import com.fr.third.javax.persistence.Table;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.lang.reflect.Method;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -90,22 +90,41 @@ public class JpaAdaptor {
             return field.getType();
         }
 
-        Type[] types = field.getAnnotation(Convert.class).converter().getGenericInterfaces();
-        for (Type type : types) {
-            if (!(type instanceof ParameterizedType)) {
-                continue;
-            }
-            ParameterizedType pt = (ParameterizedType) type;
-            Type rawType = pt.getRawType();
-            if (rawType != AttributeConverter.class) {
-                continue;
-            }
-            Type secondType = pt.getActualTypeArguments()[1];
-            if (secondType instanceof Class) {
-                return (Class<?>) secondType;
+        Class converter = field.getAnnotation(Convert.class).converter();
+        List<Method> methods = new ArrayList<Method>();
+        for (Method method : converter.getDeclaredMethods()) {
+            if (method.getName().contains("convertToDatabaseColumn")) {
+                methods.add(method);
             }
         }
-        return Crasher.crash("cannot find the second generic parameter type of AttributeConverter");
+        Assert.notEmpty(methods);
+
+        if (methods.size() == 1) {
+            return methods.get(0).getReturnType();
+        }
+        Collections.sort(methods, MethodCmp.INSTANCE);
+        return methods.get(methods.size() - 1).getReturnType();
+    }
+
+    enum MethodCmp implements Comparator<Method> {
+        //
+        INSTANCE;
+
+        @Override
+        public int compare(Method o1, Method o2) {
+            int cmp = getInheritDepth(o1.getParameterTypes()[0]) - getInheritDepth(o2.getParameterTypes()[0]);
+            return cmp == 0
+                    ? getInheritDepth(o1.getReturnType()) - getInheritDepth(o2.getReturnType())
+                    : cmp;
+        }
+
+        private static int getInheritDepth(Class<?> klass) {
+            Class<?> superclass = klass.getSuperclass();
+            if (superclass == null) {
+                return 1;
+            }
+            return getInheritDepth(superclass) + 1;
+        }
     }
 
     public static int getSqlType(Class<?> field) {

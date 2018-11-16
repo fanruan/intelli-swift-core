@@ -76,6 +76,12 @@ public class HistorySegmentImpl extends MutableHistorySegment implements History
         }
     }
 
+    @Override
+    public void release() {
+        super.release();
+        allShowBitMapCache = null;
+    }
+
     private int readRowCount() {
         int rowCount = getRowCount();
         IoUtil.release(rowCountReader);
