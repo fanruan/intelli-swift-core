@@ -19,7 +19,7 @@ public class ServiceExecuteRunnable implements Runnable {
     private final String threadName;
 
     public ServiceExecuteRunnable(String threadName, ServiceTaskExecutor serviceTaskExecutor) {
-        serviceBlockingQueue = new SwiftServiceBlockingQueue(10000);
+        serviceBlockingQueue = new SwiftServiceBlockingQueue(1000);
         taskExecutor = serviceTaskExecutor;
         this.threadName = threadName;
     }
