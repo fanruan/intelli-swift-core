@@ -24,11 +24,6 @@ public class SwiftServiceBlockingQueue extends LinkedBlockingQueue<ServiceCallab
     }
 
     @Override
-    public int size() {
-        return super.size();
-    }
-
-    @Override
     public void put(ServiceCallable serviceCallable) throws InterruptedException {
         super.put(serviceCallable);
         synchronized (this) {
