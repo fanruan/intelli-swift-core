@@ -11,6 +11,7 @@ import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.sql.Connection;
 import java.sql.Driver;
+import java.sql.DriverManager;
 import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -106,6 +107,13 @@ public abstract class UnregisteredDriver implements Driver {
 
     public Logger getParentLogger() {
         return Logger.getLogger(SwiftJdbcConstants.EMPTY);
+    }
+
+    protected void register() {
+        try {
+            DriverManager.registerDriver(this);
+        } catch (SQLException ignore) {
+        }
     }
 
     /**

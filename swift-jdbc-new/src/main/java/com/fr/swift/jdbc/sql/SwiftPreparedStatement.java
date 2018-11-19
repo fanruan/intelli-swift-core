@@ -324,8 +324,8 @@ public class SwiftPreparedStatement extends SwiftStatementImpl implements Prepar
 
     @Override
     public void close() {
-        connection.holder.idle(this);
         paramsValues.clear();
+        super.close();
     }
 
     @Override
@@ -540,6 +540,7 @@ public class SwiftPreparedStatement extends SwiftStatementImpl implements Prepar
 
     @Override
     public void reset() {
+        super.reset();
         paramsValues.clear();
     }
 }

@@ -7,7 +7,6 @@ import com.fr.swift.jdbc.sql.UnregisteredDriver;
 
 import java.io.File;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
@@ -54,12 +53,5 @@ public class Driver extends UnregisteredDriver {
         // 结果应该包括用户校验码以及 realtime和analyse服务的地址
         Object result = response.result();
         // TODO holder 保存下authCode以及 realtime和analyse地址
-    }
-
-    private void register() {
-        try {
-            DriverManager.registerDriver(this);
-        } catch (SQLException ignore) {
-        }
     }
 }

@@ -37,8 +37,9 @@ public class SwiftStatementImpl implements SwiftStatement {
     }
 
     @Override
-    public void close() throws SQLException {
+    public void close() {
         connection.holder.idle(this);
+        executor.stop();
     }
 
     @Override
@@ -253,6 +254,6 @@ public class SwiftStatementImpl implements SwiftStatement {
 
     @Override
     public void reset() {
-
+        executor.start();
     }
 }
