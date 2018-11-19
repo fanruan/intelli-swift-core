@@ -1,9 +1,10 @@
 package com.fr.swift.netty.rpc.invoke;
 
 import com.fr.swift.basics.Invoker;
-import com.fr.swift.basics.InvokerCreater;
+import com.fr.swift.basics.InvokerType;
 import com.fr.swift.basics.URL;
 import com.fr.swift.basics.base.ProxyServiceRegistry;
+import com.fr.swift.local.AbstractInvokerCreater;
 
 /**
  * This class created on 2018/11/1
@@ -12,16 +13,22 @@ import com.fr.swift.basics.base.ProxyServiceRegistry;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class RPCInvokerCreater implements InvokerCreater {
+public class RPCInvokerCreater extends AbstractInvokerCreater {
 
     @Override
     public Invoker createAsyncInvoker(Class clazz, URL url) {
-        return new RPCInvoker(ProxyServiceRegistry.get().getService(clazz), clazz, url, false);
+        Invoker invoker = super.createAsyncInvoker(clazz, url);
+        return invoker != null ? invoker : new RPCInvoker(ProxyServiceRegistry.get().getService(clazz), clazz, url, false);
     }
 
     @Override
     public Invoker createSyncInvoker(Class clazz, URL url) {
-        return new RPCInvoker(ProxyServiceRegistry.get().getService(clazz), clazz, url);
+        Invoker invoker = super.createSyncInvoker(clazz, url);
+        return invoker != null ? invoker : new RPCInvoker(ProxyServiceRegistry.get().getService(clazz), clazz, url);
     }
 
+    @Override
+    public InvokerType getType() {
+        return InvokerType.REMOTE;
+    }
 }

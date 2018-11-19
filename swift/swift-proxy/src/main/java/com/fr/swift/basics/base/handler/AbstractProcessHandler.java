@@ -46,6 +46,7 @@ public abstract class AbstractProcessHandler<T> implements ProcessHandler {
      * @throws Throwable
      */
     protected Object invoke(Invoker invoker, Class proxyClass, Method method, String methodName, Class[] parameterTypes, Object... args) throws Throwable {
+
         if (proxyClass == Object.class) {
             return method.invoke(invoker, args);
         }
