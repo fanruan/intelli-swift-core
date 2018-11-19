@@ -3,7 +3,6 @@ package com.fr.swift.jdbc.rpc.invoke;
 import com.fr.swift.jdbc.exception.Exceptions;
 import com.fr.swift.jdbc.rpc.JdbcConnector;
 import com.fr.swift.jdbc.rpc.JdbcExecutor;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rpc.bean.RpcResponse;
 import com.fr.swift.rpc.bean.impl.RpcRequest;
 
@@ -72,7 +71,7 @@ public abstract class BaseConnector implements JdbcConnector {
 
     @Override
     public void handlerException(Exception e) {
-        SwiftLoggers.getLogger().error(e);
+//        SwiftLoggers.getLogger().error(e);
         stop();
     }
 

@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>swift-jdbc</artifactId>
+    <artifactId>swift-jdbc-emb</artifactId>
     <dependencies>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
@@ -30,6 +30,11 @@
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-api-base</artifactId>
             <version>${swift.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-jdbc-new</artifactId>
+            <version>2019.1</version>
         </dependency>
     </dependencies>
 

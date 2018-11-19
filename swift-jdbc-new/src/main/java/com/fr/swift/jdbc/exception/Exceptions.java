@@ -50,4 +50,8 @@ public final class Exceptions {
     public static ConnectionTimeoutException timeout(String msg, Throwable t) {
         return new ConnectionTimeoutException(msg, t);
     }
+
+    public static SQLException environment(Throwable t) {
+        return new EnvironmentException(t);
+    }
 }

@@ -6,7 +6,6 @@ import com.fr.swift.jdbc.rpc.connection.RpcNioConnector;
 import com.fr.swift.jdbc.rpc.invoke.BaseSelector;
 import com.fr.swift.jdbc.rpc.serializable.decoder.SerializableDecoder;
 import com.fr.swift.jdbc.rpc.serializable.encoder.SerializableEncoder;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rpc.bean.RpcResponse;
 import com.fr.swift.rpc.bean.impl.RpcRequest;
 
@@ -235,7 +234,7 @@ public class RpcNioSelector extends BaseSelector<RpcNioConnector> {
                         selector.select(10000);
                     }
                 } catch (IOException e) {
-                    SwiftLoggers.getLogger().error(e);
+//                    SwiftLoggers.getLogger().error(e);
                 }
                 Set<SelectionKey> selectionKeys = selector.selectedKeys();
                 for (SelectionKey selectionKey : selectionKeys) {
@@ -245,7 +244,7 @@ public class RpcNioSelector extends BaseSelector<RpcNioConnector> {
             try {
                 selector.close();
             } catch (IOException e) {
-                SwiftLoggers.getLogger().error(e);
+//                SwiftLoggers.getLogger().error(e);
             }
         }
 

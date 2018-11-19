@@ -7,6 +7,7 @@ import com.fr.swift.jdbc.SwiftJdbcConstants;
 import com.fr.swift.jdbc.exception.Exceptions;
 import com.fr.swift.jdbc.request.RequestService;
 
+import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.sql.Connection;
 import java.sql.Driver;
@@ -43,16 +44,25 @@ public abstract class UnregisteredDriver implements Driver {
         if (null == schema) {
             throw Exceptions.urlFormat(url);
         }
+        Mode mode;
         try {
-            Mode mode = Mode.fromKey(schema);
-            if (Mode.EMB.equals(mode)) {
-                return new EmbSwiftConnection(this, info);
-            } else {
-                return new RemoteConnection(this, info);
-            }
+            mode = Mode.fromKey(schema);
         } catch (Exception e) {
             throw Exceptions.urlFormat(url);
         }
+        if (Mode.EMB.equals(mode)) {
+            try {
+                Class clazz = Class.forName("com.fr.swift.jdbc.sql.EmbSwiftConnection");
+                Constructor constructor = clazz.getDeclaredConstructor(UnregisteredDriver.class, Properties.class);
+                constructor.setAccessible(true);
+                return (Connection) constructor.newInstance(this, info);
+            } catch (Exception e) {
+                throw Exceptions.environment(e);
+            }
+        } else {
+            return new RemoteConnection(this, info);
+        }
+
     }
 
     @Override

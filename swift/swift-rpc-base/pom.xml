@@ -11,12 +11,4 @@
 
     <artifactId>swift-rpc-base</artifactId>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-core-common</artifactId>
-            <version>${swift.version}</version>
-        </dependency>
-    </dependencies>
-
 </project>
