@@ -109,6 +109,7 @@ public abstract class UnregisteredDriver implements Driver {
         return Logger.getLogger(SwiftJdbcConstants.EMPTY);
     }
 
+
     protected void register() {
         try {
             DriverManager.registerDriver(this);

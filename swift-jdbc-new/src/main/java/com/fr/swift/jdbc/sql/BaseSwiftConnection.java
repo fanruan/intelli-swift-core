@@ -365,12 +365,12 @@ public abstract class BaseSwiftConnection implements Connection {
 
         @Override
         public String swiftUser() {
-            return BuildInConnectionProperty.SWIFT_USERNAME.getValue(properties);
+            return BuildInConnectionProperty.USERNAME.getValue(properties);
         }
 
         @Override
         public String swiftPassword() {
-            return BuildInConnectionProperty.SWIFT_PASSWORD.getValue(properties);
+            return BuildInConnectionProperty.PASSWORD.getValue(properties);
         }
 
         @Override

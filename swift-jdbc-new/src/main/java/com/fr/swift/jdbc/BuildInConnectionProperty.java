@@ -9,8 +9,8 @@ import java.util.Properties;
 public enum BuildInConnectionProperty {
     //
     CONNECTION_TIMEOUT("conn_timeout", JdbcProperty.get().getConnectionTimeout()),
-    SWIFT_USERNAME("swift_username", SwiftJdbcConstants.EMPTY),
-    SWIFT_PASSWORD("swift_password", SwiftJdbcConstants.EMPTY),
+    USERNAME("swift_username", SwiftJdbcConstants.EMPTY),
+    PASSWORD("swift_password", SwiftJdbcConstants.EMPTY),
     STATEMENT_MAX_IDLE("sttm_max_idle", JdbcProperty.get().getStatementMaxIdle()),
     PRINCIPAL("principal", null),
     KEYTAB("keytab", null);
@@ -32,6 +32,10 @@ public enum BuildInConnectionProperty {
     }
 
     public String getValue(Properties properties) {
-        return properties.getProperty(this.propertyName, defaultValue.toString());
+        String value = properties.getProperty(this.propertyName, null);
+        if (null == value) {
+            return properties.getProperty(name().toLowerCase(), defaultValue.toString());
+        }
+        return value;
     }
 }
