@@ -10,10 +10,10 @@ import java.util.List;
  * @author yee
  * @date 2018/11/16
  */
-public interface GramarChecker {
+public interface GrammarChecker {
     SqlInfo check(String sql) throws SQLException;
 
-    GramarChecker INSTANCE = new GramarChecker() {
+    GrammarChecker INSTANCE = new GrammarChecker() {
         @Override
         public SqlInfo check(String sql) {
             return null;

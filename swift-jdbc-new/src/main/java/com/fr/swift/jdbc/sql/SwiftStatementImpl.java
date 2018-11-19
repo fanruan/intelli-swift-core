@@ -1,6 +1,6 @@
 package com.fr.swift.jdbc.sql;
 
-import com.fr.swift.jdbc.checker.GramarChecker;
+import com.fr.swift.jdbc.checker.GrammarChecker;
 import com.fr.swift.jdbc.info.SqlInfo;
 import com.fr.swift.jdbc.rpc.JdbcExecutor;
 
@@ -24,14 +24,14 @@ public class SwiftStatementImpl implements SwiftStatement {
 
     @Override
     public ResultSet executeQuery(String sql) throws SQLException {
-        SqlInfo info = GramarChecker.INSTANCE.check(sql);
+        SqlInfo info = GrammarChecker.INSTANCE.check(sql);
         Object result = connection.executeQueryInternal(info, executor);
         return null;
     }
 
     @Override
     public int executeUpdate(String sql) throws SQLException {
-        SqlInfo info = GramarChecker.INSTANCE.check(sql);
+        SqlInfo info = GrammarChecker.INSTANCE.check(sql);
         Object result = connection.executeQueryInternal(info, executor);
         return 0;
     }
