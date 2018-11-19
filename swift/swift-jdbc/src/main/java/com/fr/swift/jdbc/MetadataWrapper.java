@@ -1,9 +1,9 @@
 package com.fr.swift.jdbc;
 
-import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Crasher;
 
+import javax.naming.OperationNotSupportedException;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -134,12 +134,12 @@ public class MetadataWrapper implements ResultSetMetaData {
 
     @Override
     public String getColumnClassName(int column) {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
     public <T> T unwrap(Class<T> iface) {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override

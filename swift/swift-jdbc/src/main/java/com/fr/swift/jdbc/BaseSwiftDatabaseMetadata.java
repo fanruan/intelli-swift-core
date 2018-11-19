@@ -3,7 +3,6 @@ package com.fr.swift.jdbc;
 import com.fr.stable.StringUtils;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.jdbc.exception.SwiftJDBCNotSupportedException;
 import com.fr.swift.jdbc.result.EmptyResultSet;
 import com.fr.swift.jdbc.result.ResultSetWrapper;
 import com.fr.swift.source.ListBasedRow;
@@ -12,11 +11,11 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.util.Crasher;
 
+import javax.naming.OperationNotSupportedException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.RowIdLifetime;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,68 +46,68 @@ public abstract class BaseSwiftDatabaseMetadata implements DatabaseMetaData {
     }
 
     @Override
-    public boolean allProceduresAreCallable() throws SQLException {
+    public boolean allProceduresAreCallable() {
         return false;
     }
 
     @Override
-    public boolean allTablesAreSelectable() throws SQLException {
+    public boolean allTablesAreSelectable() {
         return false;
     }
 
     @Override
-    public String getURL() throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public String getURL() {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public String getUserName() throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public String getUserName() {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public boolean isReadOnly() throws SQLException {
+    public boolean isReadOnly() {
         return false;
     }
 
     @Override
-    public boolean nullsAreSortedHigh() throws SQLException {
+    public boolean nullsAreSortedHigh() {
         return false;
     }
 
     @Override
-    public boolean nullsAreSortedLow() throws SQLException {
+    public boolean nullsAreSortedLow() {
         return false;
     }
 
     @Override
-    public boolean nullsAreSortedAtStart() throws SQLException {
+    public boolean nullsAreSortedAtStart() {
         return false;
     }
 
     @Override
-    public boolean nullsAreSortedAtEnd() throws SQLException {
+    public boolean nullsAreSortedAtEnd() {
         return false;
     }
 
     @Override
-    public String getDatabaseProductName() throws SQLException {
+    public String getDatabaseProductName() {
         return "Swift";
     }
 
     @Override
-    public String getDatabaseProductVersion() throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public String getDatabaseProductVersion() {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public String getDriverName() throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public String getDriverName() {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public String getDriverVersion() throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public String getDriverVersion() {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
@@ -122,796 +121,796 @@ public abstract class BaseSwiftDatabaseMetadata implements DatabaseMetaData {
     }
 
     @Override
-    public boolean usesLocalFiles() throws SQLException {
+    public boolean usesLocalFiles() {
         return false;
     }
 
     @Override
-    public boolean usesLocalFilePerTable() throws SQLException {
+    public boolean usesLocalFilePerTable() {
         return false;
     }
 
     @Override
-    public boolean supportsMixedCaseIdentifiers() throws SQLException {
+    public boolean supportsMixedCaseIdentifiers() {
         return false;
     }
 
     @Override
-    public boolean storesUpperCaseIdentifiers() throws SQLException {
+    public boolean storesUpperCaseIdentifiers() {
         return false;
     }
 
     @Override
-    public boolean storesLowerCaseIdentifiers() throws SQLException {
+    public boolean storesLowerCaseIdentifiers() {
         return false;
     }
 
     @Override
-    public boolean storesMixedCaseIdentifiers() throws SQLException {
+    public boolean storesMixedCaseIdentifiers() {
         return false;
     }
 
     @Override
-    public boolean supportsMixedCaseQuotedIdentifiers() throws SQLException {
+    public boolean supportsMixedCaseQuotedIdentifiers() {
         return false;
     }
 
     @Override
-    public boolean storesUpperCaseQuotedIdentifiers() throws SQLException {
+    public boolean storesUpperCaseQuotedIdentifiers() {
         return false;
     }
 
     @Override
-    public boolean storesLowerCaseQuotedIdentifiers() throws SQLException {
+    public boolean storesLowerCaseQuotedIdentifiers() {
         return false;
     }
 
     @Override
-    public boolean storesMixedCaseQuotedIdentifiers() throws SQLException {
+    public boolean storesMixedCaseQuotedIdentifiers() {
         return false;
     }
 
     @Override
-    public String getIdentifierQuoteString() throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public String getIdentifierQuoteString() {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public String getSQLKeywords() throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public String getSQLKeywords() {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public String getNumericFunctions() throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public String getNumericFunctions() {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public String getStringFunctions() throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public String getStringFunctions() {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public String getSystemFunctions() throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public String getSystemFunctions() {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public String getTimeDateFunctions() throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public String getTimeDateFunctions() {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public String getSearchStringEscape() throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public String getSearchStringEscape() {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public String getExtraNameCharacters() throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public String getExtraNameCharacters() {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public boolean supportsAlterTableWithAddColumn() throws SQLException {
+    public boolean supportsAlterTableWithAddColumn() {
         return false;
     }
 
     @Override
-    public boolean supportsAlterTableWithDropColumn() throws SQLException {
+    public boolean supportsAlterTableWithDropColumn() {
         return false;
     }
 
     @Override
-    public boolean supportsColumnAliasing() throws SQLException {
+    public boolean supportsColumnAliasing() {
         return false;
     }
 
     @Override
-    public boolean nullPlusNonNullIsNull() throws SQLException {
+    public boolean nullPlusNonNullIsNull() {
         return false;
     }
 
     @Override
-    public boolean supportsConvert() throws SQLException {
+    public boolean supportsConvert() {
         return false;
     }
 
     @Override
-    public boolean supportsConvert(int fromType, int toType) throws SQLException {
+    public boolean supportsConvert(int fromType, int toType) {
         return false;
     }
 
     @Override
-    public boolean supportsTableCorrelationNames() throws SQLException {
+    public boolean supportsTableCorrelationNames() {
         return false;
     }
 
     @Override
-    public boolean supportsDifferentTableCorrelationNames() throws SQLException {
+    public boolean supportsDifferentTableCorrelationNames() {
         return false;
     }
 
     @Override
-    public boolean supportsExpressionsInOrderBy() throws SQLException {
+    public boolean supportsExpressionsInOrderBy() {
         return false;
     }
 
     @Override
-    public boolean supportsOrderByUnrelated() throws SQLException {
+    public boolean supportsOrderByUnrelated() {
         return false;
     }
 
     @Override
-    public boolean supportsGroupBy() throws SQLException {
+    public boolean supportsGroupBy() {
         return false;
     }
 
     @Override
-    public boolean supportsGroupByUnrelated() throws SQLException {
+    public boolean supportsGroupByUnrelated() {
         return false;
     }
 
     @Override
-    public boolean supportsGroupByBeyondSelect() throws SQLException {
+    public boolean supportsGroupByBeyondSelect() {
         return false;
     }
 
     @Override
-    public boolean supportsLikeEscapeClause() throws SQLException {
+    public boolean supportsLikeEscapeClause() {
         return false;
     }
 
     @Override
-    public boolean supportsMultipleResultSets() throws SQLException {
+    public boolean supportsMultipleResultSets() {
         return false;
     }
 
     @Override
-    public boolean supportsMultipleTransactions() throws SQLException {
+    public boolean supportsMultipleTransactions() {
         return false;
     }
 
     @Override
-    public boolean supportsNonNullableColumns() throws SQLException {
+    public boolean supportsNonNullableColumns() {
         return false;
     }
 
     @Override
-    public boolean supportsMinimumSQLGrammar() throws SQLException {
+    public boolean supportsMinimumSQLGrammar() {
         return false;
     }
 
     @Override
-    public boolean supportsCoreSQLGrammar() throws SQLException {
+    public boolean supportsCoreSQLGrammar() {
         return false;
     }
 
     @Override
-    public boolean supportsExtendedSQLGrammar() throws SQLException {
+    public boolean supportsExtendedSQLGrammar() {
         return false;
     }
 
     @Override
-    public boolean supportsANSI92EntryLevelSQL() throws SQLException {
+    public boolean supportsANSI92EntryLevelSQL() {
         return false;
     }
 
     @Override
-    public boolean supportsANSI92IntermediateSQL() throws SQLException {
+    public boolean supportsANSI92IntermediateSQL() {
         return false;
     }
 
     @Override
-    public boolean supportsANSI92FullSQL() throws SQLException {
+    public boolean supportsANSI92FullSQL() {
         return false;
     }
 
     @Override
-    public boolean supportsIntegrityEnhancementFacility() throws SQLException {
+    public boolean supportsIntegrityEnhancementFacility() {
         return false;
     }
 
     @Override
-    public boolean supportsOuterJoins() throws SQLException {
+    public boolean supportsOuterJoins() {
         return false;
     }
 
     @Override
-    public boolean supportsFullOuterJoins() throws SQLException {
+    public boolean supportsFullOuterJoins() {
         return false;
     }
 
     @Override
-    public boolean supportsLimitedOuterJoins() throws SQLException {
+    public boolean supportsLimitedOuterJoins() {
         return false;
     }
 
     @Override
-    public String getSchemaTerm() throws SQLException {
+    public String getSchemaTerm() {
         return StringUtils.EMPTY;
     }
 
     @Override
-    public String getProcedureTerm() throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public String getProcedureTerm() {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public String getCatalogTerm() throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public String getCatalogTerm() {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public boolean isCatalogAtStart() throws SQLException {
+    public boolean isCatalogAtStart() {
         return false;
     }
 
     @Override
-    public String getCatalogSeparator() throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public String getCatalogSeparator() {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public boolean supportsSchemasInDataManipulation() throws SQLException {
+    public boolean supportsSchemasInDataManipulation() {
         return false;
     }
 
     @Override
-    public boolean supportsSchemasInProcedureCalls() throws SQLException {
+    public boolean supportsSchemasInProcedureCalls() {
         return false;
     }
 
     @Override
-    public boolean supportsSchemasInTableDefinitions() throws SQLException {
+    public boolean supportsSchemasInTableDefinitions() {
         return false;
     }
 
     @Override
-    public boolean supportsSchemasInIndexDefinitions() throws SQLException {
+    public boolean supportsSchemasInIndexDefinitions() {
         return false;
     }
 
     @Override
-    public boolean supportsSchemasInPrivilegeDefinitions() throws SQLException {
+    public boolean supportsSchemasInPrivilegeDefinitions() {
         return false;
     }
 
     @Override
-    public boolean supportsCatalogsInDataManipulation() throws SQLException {
+    public boolean supportsCatalogsInDataManipulation() {
         return false;
     }
 
     @Override
-    public boolean supportsCatalogsInProcedureCalls() throws SQLException {
+    public boolean supportsCatalogsInProcedureCalls() {
         return false;
     }
 
     @Override
-    public boolean supportsCatalogsInTableDefinitions() throws SQLException {
+    public boolean supportsCatalogsInTableDefinitions() {
         return false;
     }
 
     @Override
-    public boolean supportsCatalogsInIndexDefinitions() throws SQLException {
+    public boolean supportsCatalogsInIndexDefinitions() {
         return false;
     }
 
     @Override
-    public boolean supportsCatalogsInPrivilegeDefinitions() throws SQLException {
+    public boolean supportsCatalogsInPrivilegeDefinitions() {
         return false;
     }
 
     @Override
-    public boolean supportsPositionedDelete() throws SQLException {
+    public boolean supportsPositionedDelete() {
         return false;
     }
 
     @Override
-    public boolean supportsPositionedUpdate() throws SQLException {
+    public boolean supportsPositionedUpdate() {
         return false;
     }
 
     @Override
-    public boolean supportsSelectForUpdate() throws SQLException {
+    public boolean supportsSelectForUpdate() {
         return false;
     }
 
     @Override
-    public boolean supportsStoredProcedures() throws SQLException {
+    public boolean supportsStoredProcedures() {
         return false;
     }
 
     @Override
-    public boolean supportsSubqueriesInComparisons() throws SQLException {
+    public boolean supportsSubqueriesInComparisons() {
         return false;
     }
 
     @Override
-    public boolean supportsSubqueriesInExists() throws SQLException {
+    public boolean supportsSubqueriesInExists() {
         return false;
     }
 
     @Override
-    public boolean supportsSubqueriesInIns() throws SQLException {
+    public boolean supportsSubqueriesInIns() {
         return false;
     }
 
     @Override
-    public boolean supportsSubqueriesInQuantifieds() throws SQLException {
+    public boolean supportsSubqueriesInQuantifieds() {
         return false;
     }
 
     @Override
-    public boolean supportsCorrelatedSubqueries() throws SQLException {
+    public boolean supportsCorrelatedSubqueries() {
         return false;
     }
 
     @Override
-    public boolean supportsUnion() throws SQLException {
+    public boolean supportsUnion() {
         return false;
     }
 
     @Override
-    public boolean supportsUnionAll() throws SQLException {
+    public boolean supportsUnionAll() {
         return false;
     }
 
     @Override
-    public boolean supportsOpenCursorsAcrossCommit() throws SQLException {
+    public boolean supportsOpenCursorsAcrossCommit() {
         return false;
     }
 
     @Override
-    public boolean supportsOpenCursorsAcrossRollback() throws SQLException {
+    public boolean supportsOpenCursorsAcrossRollback() {
         return false;
     }
 
     @Override
-    public boolean supportsOpenStatementsAcrossCommit() throws SQLException {
+    public boolean supportsOpenStatementsAcrossCommit() {
         return false;
     }
 
     @Override
-    public boolean supportsOpenStatementsAcrossRollback() throws SQLException {
+    public boolean supportsOpenStatementsAcrossRollback() {
         return false;
     }
 
     @Override
-    public int getMaxBinaryLiteralLength() throws SQLException {
+    public int getMaxBinaryLiteralLength() {
         return 0;
     }
 
     @Override
-    public int getMaxCharLiteralLength() throws SQLException {
+    public int getMaxCharLiteralLength() {
         return 0;
     }
 
     @Override
-    public int getMaxColumnNameLength() throws SQLException {
+    public int getMaxColumnNameLength() {
         return 0;
     }
 
     @Override
-    public int getMaxColumnsInGroupBy() throws SQLException {
+    public int getMaxColumnsInGroupBy() {
         return 0;
     }
 
     @Override
-    public int getMaxColumnsInIndex() throws SQLException {
+    public int getMaxColumnsInIndex() {
         return 0;
     }
 
     @Override
-    public int getMaxColumnsInOrderBy() throws SQLException {
+    public int getMaxColumnsInOrderBy() {
         return 0;
     }
 
     @Override
-    public int getMaxColumnsInSelect() throws SQLException {
+    public int getMaxColumnsInSelect() {
         return 0;
     }
 
     @Override
-    public int getMaxColumnsInTable() throws SQLException {
+    public int getMaxColumnsInTable() {
         return 0;
     }
 
     @Override
-    public int getMaxConnections() throws SQLException {
+    public int getMaxConnections() {
         return 0;
     }
 
     @Override
-    public int getMaxCursorNameLength() throws SQLException {
+    public int getMaxCursorNameLength() {
         return 0;
     }
 
     @Override
-    public int getMaxIndexLength() throws SQLException {
+    public int getMaxIndexLength() {
         return 0;
     }
 
     @Override
-    public int getMaxSchemaNameLength() throws SQLException {
+    public int getMaxSchemaNameLength() {
         return 0;
     }
 
     @Override
-    public int getMaxProcedureNameLength() throws SQLException {
+    public int getMaxProcedureNameLength() {
         return 0;
     }
 
     @Override
-    public int getMaxCatalogNameLength() throws SQLException {
+    public int getMaxCatalogNameLength() {
         return 0;
     }
 
     @Override
-    public int getMaxRowSize() throws SQLException {
+    public int getMaxRowSize() {
         return 0;
     }
 
     @Override
-    public boolean doesMaxRowSizeIncludeBlobs() throws SQLException {
+    public boolean doesMaxRowSizeIncludeBlobs() {
         return false;
     }
 
     @Override
-    public int getMaxStatementLength() throws SQLException {
+    public int getMaxStatementLength() {
         return 0;
     }
 
     @Override
-    public int getMaxStatements() throws SQLException {
+    public int getMaxStatements() {
         return 0;
     }
 
     @Override
-    public int getMaxTableNameLength() throws SQLException {
+    public int getMaxTableNameLength() {
         return 0;
     }
 
     @Override
-    public int getMaxTablesInSelect() throws SQLException {
+    public int getMaxTablesInSelect() {
         return 0;
     }
 
     @Override
-    public int getMaxUserNameLength() throws SQLException {
+    public int getMaxUserNameLength() {
         return 0;
     }
 
     @Override
-    public int getDefaultTransactionIsolation() throws SQLException {
+    public int getDefaultTransactionIsolation() {
         return 0;
     }
 
     @Override
-    public boolean supportsTransactions() throws SQLException {
+    public boolean supportsTransactions() {
         return false;
     }
 
     @Override
-    public boolean supportsTransactionIsolationLevel(int level) throws SQLException {
+    public boolean supportsTransactionIsolationLevel(int level) {
         return false;
     }
 
     @Override
-    public boolean supportsDataDefinitionAndDataManipulationTransactions() throws SQLException {
+    public boolean supportsDataDefinitionAndDataManipulationTransactions() {
         return false;
     }
 
     @Override
-    public boolean supportsDataManipulationTransactionsOnly() throws SQLException {
+    public boolean supportsDataManipulationTransactionsOnly() {
         return false;
     }
 
     @Override
-    public boolean dataDefinitionCausesTransactionCommit() throws SQLException {
+    public boolean dataDefinitionCausesTransactionCommit() {
         return false;
     }
 
     @Override
-    public boolean dataDefinitionIgnoredInTransactions() throws SQLException {
+    public boolean dataDefinitionIgnoredInTransactions() {
         return false;
     }
 
     @Override
-    public ResultSet getProcedures(String catalog, String schemaPattern, String procedureNamePattern) throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public ResultSet getProcedures(String catalog, String schemaPattern, String procedureNamePattern) {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public ResultSet getProcedureColumns(String catalog, String schemaPattern, String procedureNamePattern, String columnNamePattern) throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public ResultSet getProcedureColumns(String catalog, String schemaPattern, String procedureNamePattern, String columnNamePattern) {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
 
     @Override
-    public ResultSet getSchemas() throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public ResultSet getSchemas() {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public ResultSet getCatalogs() throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public ResultSet getCatalogs() {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public ResultSet getTableTypes() throws SQLException {
+    public ResultSet getTableTypes() {
         return new ResultSetWrapper(EmptyResultSet.INSTANCE);
     }
 
     @Override
-    public ResultSet getColumnPrivileges(String catalog, String schema, String table, String columnNamePattern) throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public ResultSet getColumnPrivileges(String catalog, String schema, String table, String columnNamePattern) {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public ResultSet getTablePrivileges(String catalog, String schemaPattern, String tableNamePattern) throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public ResultSet getTablePrivileges(String catalog, String schemaPattern, String tableNamePattern) {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public ResultSet getBestRowIdentifier(String catalog, String schema, String table, int scope, boolean nullable) throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public ResultSet getBestRowIdentifier(String catalog, String schema, String table, int scope, boolean nullable) {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public ResultSet getVersionColumns(String catalog, String schema, String table) throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public ResultSet getVersionColumns(String catalog, String schema, String table) {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public ResultSet getPrimaryKeys(String catalog, String schema, String table) throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public ResultSet getPrimaryKeys(String catalog, String schema, String table) {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public ResultSet getImportedKeys(String catalog, String schema, String table) throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public ResultSet getImportedKeys(String catalog, String schema, String table) {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public ResultSet getExportedKeys(String catalog, String schema, String table) throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public ResultSet getExportedKeys(String catalog, String schema, String table) {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public ResultSet getCrossReference(String parentCatalog, String parentSchema, String parentTable, String foreignCatalog, String foreignSchema, String foreignTable) throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public ResultSet getCrossReference(String parentCatalog, String parentSchema, String parentTable, String foreignCatalog, String foreignSchema, String foreignTable) {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public ResultSet getTypeInfo() throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public ResultSet getTypeInfo() {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public ResultSet getIndexInfo(String catalog, String schema, String table, boolean unique, boolean approximate) throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public ResultSet getIndexInfo(String catalog, String schema, String table, boolean unique, boolean approximate) {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public boolean supportsResultSetType(int type) throws SQLException {
+    public boolean supportsResultSetType(int type) {
         return false;
     }
 
     @Override
-    public boolean supportsResultSetConcurrency(int type, int concurrency) throws SQLException {
+    public boolean supportsResultSetConcurrency(int type, int concurrency) {
         return false;
     }
 
     @Override
-    public boolean ownUpdatesAreVisible(int type) throws SQLException {
+    public boolean ownUpdatesAreVisible(int type) {
         return false;
     }
 
     @Override
-    public boolean ownDeletesAreVisible(int type) throws SQLException {
+    public boolean ownDeletesAreVisible(int type) {
         return false;
     }
 
     @Override
-    public boolean ownInsertsAreVisible(int type) throws SQLException {
+    public boolean ownInsertsAreVisible(int type) {
         return false;
     }
 
     @Override
-    public boolean othersUpdatesAreVisible(int type) throws SQLException {
+    public boolean othersUpdatesAreVisible(int type) {
         return false;
     }
 
     @Override
-    public boolean othersDeletesAreVisible(int type) throws SQLException {
+    public boolean othersDeletesAreVisible(int type) {
         return false;
     }
 
     @Override
-    public boolean othersInsertsAreVisible(int type) throws SQLException {
+    public boolean othersInsertsAreVisible(int type) {
         return false;
     }
 
     @Override
-    public boolean updatesAreDetected(int type) throws SQLException {
+    public boolean updatesAreDetected(int type) {
         return false;
     }
 
     @Override
-    public boolean deletesAreDetected(int type) throws SQLException {
+    public boolean deletesAreDetected(int type) {
         return false;
     }
 
     @Override
-    public boolean insertsAreDetected(int type) throws SQLException {
+    public boolean insertsAreDetected(int type) {
         return false;
     }
 
     @Override
-    public boolean supportsBatchUpdates() throws SQLException {
+    public boolean supportsBatchUpdates() {
         return false;
     }
 
     @Override
-    public ResultSet getUDTs(String catalog, String schemaPattern, String typeNamePattern, int[] types) throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public ResultSet getUDTs(String catalog, String schemaPattern, String typeNamePattern, int[] types) {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public Connection getConnection() throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public Connection getConnection() {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public boolean supportsSavepoints() throws SQLException {
+    public boolean supportsSavepoints() {
         return false;
     }
 
     @Override
-    public boolean supportsNamedParameters() throws SQLException {
+    public boolean supportsNamedParameters() {
         return false;
     }
 
     @Override
-    public boolean supportsMultipleOpenResults() throws SQLException {
+    public boolean supportsMultipleOpenResults() {
         return false;
     }
 
     @Override
-    public boolean supportsGetGeneratedKeys() throws SQLException {
+    public boolean supportsGetGeneratedKeys() {
         return false;
     }
 
     @Override
-    public ResultSet getSuperTypes(String catalog, String schemaPattern, String typeNamePattern) throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public ResultSet getSuperTypes(String catalog, String schemaPattern, String typeNamePattern) {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public ResultSet getSuperTables(String catalog, String schemaPattern, String tableNamePattern) throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public ResultSet getSuperTables(String catalog, String schemaPattern, String tableNamePattern) {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public ResultSet getAttributes(String catalog, String schemaPattern, String typeNamePattern, String attributeNamePattern) throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public ResultSet getAttributes(String catalog, String schemaPattern, String typeNamePattern, String attributeNamePattern) {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public boolean supportsResultSetHoldability(int holdability) throws SQLException {
+    public boolean supportsResultSetHoldability(int holdability) {
         return false;
     }
 
     @Override
-    public int getResultSetHoldability() throws SQLException {
+    public int getResultSetHoldability() {
         return 0;
     }
 
     @Override
-    public int getDatabaseMajorVersion() throws SQLException {
+    public int getDatabaseMajorVersion() {
         return 0;
     }
 
     @Override
-    public int getDatabaseMinorVersion() throws SQLException {
+    public int getDatabaseMinorVersion() {
         return 0;
     }
 
     @Override
-    public int getJDBCMajorVersion() throws SQLException {
+    public int getJDBCMajorVersion() {
         return 0;
     }
 
     @Override
-    public int getJDBCMinorVersion() throws SQLException {
+    public int getJDBCMinorVersion() {
         return 0;
     }
 
     @Override
-    public int getSQLStateType() throws SQLException {
+    public int getSQLStateType() {
         return 0;
     }
 
     @Override
-    public boolean locatorsUpdateCopy() throws SQLException {
+    public boolean locatorsUpdateCopy() {
         return false;
     }
 
     @Override
-    public boolean supportsStatementPooling() throws SQLException {
+    public boolean supportsStatementPooling() {
         return false;
     }
 
     @Override
-    public RowIdLifetime getRowIdLifetime() throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public RowIdLifetime getRowIdLifetime() {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public ResultSet getSchemas(String catalog, String schemaPattern) throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public ResultSet getSchemas(String catalog, String schemaPattern) {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public boolean supportsStoredFunctionsUsingCallSyntax() throws SQLException {
+    public boolean supportsStoredFunctionsUsingCallSyntax() {
         return false;
     }
 
     @Override
-    public boolean autoCommitFailureClosesAllResultSets() throws SQLException {
+    public boolean autoCommitFailureClosesAllResultSets() {
         return false;
     }
 
     @Override
-    public ResultSet getClientInfoProperties() throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public ResultSet getClientInfoProperties() {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public ResultSet getFunctions(String catalog, String schemaPattern, String functionNamePattern) throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public ResultSet getFunctions(String catalog, String schemaPattern, String functionNamePattern) {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public ResultSet getFunctionColumns(String catalog, String schemaPattern, String functionNamePattern, String columnNamePattern) throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public ResultSet getFunctionColumns(String catalog, String schemaPattern, String functionNamePattern, String columnNamePattern) {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
-    public ResultSet getPseudoColumns(String catalog, String schemaPattern, String tableNamePattern, String columnNamePattern) throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public ResultSet getPseudoColumns(String catalog, String schemaPattern, String tableNamePattern, String columnNamePattern) {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
-    public boolean generatedKeyAlwaysReturned() throws SQLException {
+    public boolean generatedKeyAlwaysReturned() {
         return false;
     }
 
     @Override
-    public <T> T unwrap(Class<T> iface) throws SQLException {
-        return Crasher.crash(new SwiftJDBCNotSupportedException());
+    public <T> T unwrap(Class<T> iface) {
+        return Crasher.crash(new OperationNotSupportedException());
     }
 
     @Override
-    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+    public boolean isWrapperFor(Class<?> iface) {
         return false;
     }
 }
