@@ -12,6 +12,17 @@ public interface JsonRequestBuilder {
      *
      * @param sql
      * @return
+     * {
+     *     requestType: "DETAIL_QUERY",
+     *     table: "table_name",
+     *     database: "database",
+     *     columns: ["column1", "column2"],
+     *     where: "column1 = 100",
+     *     order: [{
+     *         column: "column1",
+     *         asc: true
+     *     }]
+     * }
      */
     String buildSqlRequest(SqlInfo sql);
 
@@ -20,7 +31,12 @@ public interface JsonRequestBuilder {
      *
      * @param user
      * @param password
-     * @return
+     * @return like
+     * {
+     *     requestType: "AUTH",
+     *     swiftUser: "username",
+     *     swiftPassword: "password"
+     * }
      */
     String buildAuthRequest(String user, String password);
 

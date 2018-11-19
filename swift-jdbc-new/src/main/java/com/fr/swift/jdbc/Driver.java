@@ -51,7 +51,9 @@ public class Driver extends UnregisteredDriver {
         if (null != response.exception()) {
             throw response.exception();
         }
+        // 结果应该包括用户校验码以及 realtime和analyse服务的地址
         Object result = response.result();
+        // TODO holder 保存下authCode以及 realtime和analyse地址
     }
 
     private void register() {

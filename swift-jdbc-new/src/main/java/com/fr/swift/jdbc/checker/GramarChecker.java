@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
+ * 检查语法顺便对sql进行预解析
  * @author yee
  * @date 2018/11/16
  */
