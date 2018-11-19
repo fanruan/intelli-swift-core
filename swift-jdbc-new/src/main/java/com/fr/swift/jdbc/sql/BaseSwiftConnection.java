@@ -1,7 +1,7 @@
 package com.fr.swift.jdbc.sql;
 
 import com.fr.swift.jdbc.BuildInConnectionProperty;
-import com.fr.swift.jdbc.Strings;
+import com.fr.swift.jdbc.SwiftJdbcConstants;
 import com.fr.swift.jdbc.exception.Exceptions;
 import com.fr.swift.jdbc.info.SqlInfo;
 import com.fr.swift.jdbc.response.JdbcResponse;
@@ -47,10 +47,10 @@ public abstract class BaseSwiftConnection implements Connection {
     }
 
     public String handleDatabase(String dbName) {
-        if (null == dbName || Strings.EMPTY.equals(dbName.trim())) {
-            return Strings.DEFAULT_DATABASE;
+        if (null == dbName || SwiftJdbcConstants.EMPTY.equals(dbName.trim())) {
+            return SwiftJdbcConstants.DEFAULT_DATABASE;
         }
-        return dbName.startsWith(Strings.SEPARATOR) ? dbName.substring(1).toUpperCase() : dbName.toUpperCase();
+        return dbName.startsWith(SwiftJdbcConstants.SEPARATOR) ? dbName.substring(1).toUpperCase() : dbName.toUpperCase();
     }
 
     public ConnectionConfig getConfig() {
@@ -61,7 +61,7 @@ public abstract class BaseSwiftConnection implements Connection {
     public Statement createStatement() {
         SwiftStatement statement = holder.getIdle();
         if (null == statement) {
-            String address = Strings.EMPTY;
+            String address = SwiftJdbcConstants.EMPTY;
             JdbcExecutor executor = createJdbcExecutor(address);
             statement = new SwiftStatementImpl(this, executor);
         } else {
@@ -75,7 +75,7 @@ public abstract class BaseSwiftConnection implements Connection {
     public PreparedStatement prepareStatement(String sql) {
         SwiftStatement statement = holder.getPreparedIdle(sql);
         if (null == statement) {
-            String address = Strings.EMPTY;
+            String address = SwiftJdbcConstants.EMPTY;
             JdbcExecutor executor = createJdbcExecutor(address);
             statement = new SwiftPreparedStatement(this, sql, executor);
         } else {

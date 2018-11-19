@@ -3,7 +3,7 @@ package com.fr.swift.jdbc.sql;
 import com.fr.swift.jdbc.BuildInConnectionProperty;
 import com.fr.swift.jdbc.JdbcProperty;
 import com.fr.swift.jdbc.Mode;
-import com.fr.swift.jdbc.Strings;
+import com.fr.swift.jdbc.SwiftJdbcConstants;
 import com.fr.swift.jdbc.exception.Exceptions;
 import com.fr.swift.jdbc.request.RequestService;
 
@@ -31,7 +31,7 @@ public abstract class UnregisteredDriver implements Driver {
 
     @Override
     public Connection connect(String url, Properties info) throws SQLException {
-        if (null == url || Strings.EMPTY.equals(url.trim())) {
+        if (null == url || SwiftJdbcConstants.EMPTY.equals(url.trim())) {
             throw Exceptions.urlEmpty();
         }
         String testUrl = url.trim().toLowerCase();
@@ -95,9 +95,12 @@ public abstract class UnregisteredDriver implements Driver {
     }
 
     public Logger getParentLogger() {
-        return Logger.getLogger(Strings.EMPTY);
+        return Logger.getLogger(SwiftJdbcConstants.EMPTY);
     }
 
+    /**
+     * TODO request Service没有初始化
+     */
     public static class Holder {
         private URI connectUri;
         private RequestService requestService;
