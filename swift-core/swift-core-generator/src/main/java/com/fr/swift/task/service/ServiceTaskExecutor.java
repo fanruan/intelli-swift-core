@@ -11,4 +11,8 @@ public interface ServiceTaskExecutor {
 
     void submit(ServiceCallable serviceCallable) throws InterruptedException;
 
+    void registerQueue(String name, ServiceBlockingQueue queue);
+
+    void unRegisterQueue(String name);
+
 }
