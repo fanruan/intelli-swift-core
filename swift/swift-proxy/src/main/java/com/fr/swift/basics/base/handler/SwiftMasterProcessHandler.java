@@ -44,7 +44,7 @@ public class SwiftMasterProcessHandler extends AbstractProcessHandler<URL> imple
             MonitorUtil.start();
             URL masterUrl = processUrl(target, args);
             if (null == masterUrl) {
-                Invoker invoker = new LocalInvoker(ProxyServiceRegistry.get().getService(proxyClass), proxyClass, null);
+                Invoker invoker = new LocalInvoker(ProxyServiceRegistry.get().getService(proxyClass.getName()), proxyClass, null);
                 return invoke(invoker, proxyClass, method, methodName, parameterTypes, args);
             }
             Invoker invoker = invokerCreater.createSyncInvoker(proxyClass, masterUrl);

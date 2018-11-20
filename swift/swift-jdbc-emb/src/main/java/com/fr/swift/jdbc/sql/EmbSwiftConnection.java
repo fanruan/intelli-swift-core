@@ -4,6 +4,7 @@ import com.fr.swift.jdbc.rpc.JdbcExecutor;
 import com.fr.swift.jdbc.rpc.connection.EmbJdbcConnector;
 import com.fr.swift.jdbc.rpc.invoke.SimpleExecutor;
 
+import java.sql.DatabaseMetaData;
 import java.util.Properties;
 
 /**
@@ -25,4 +26,8 @@ public class EmbSwiftConnection extends BaseSwiftConnection {
         return new SimpleExecutor(new EmbJdbcConnector(), connectionTimeout());
     }
 
+    @Override
+    public DatabaseMetaData getMetaData() {
+        return new EmbSwiftDatabaseMetaData(this);
+    }
 }

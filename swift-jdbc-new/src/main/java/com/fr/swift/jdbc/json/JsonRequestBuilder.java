@@ -45,6 +45,16 @@ public interface JsonRequestBuilder {
             return String.format("{\"requestType\": \"AUTH\",\"swiftUser\": \"%s\",\"swiftPassword\": \"%s\",\"requestId\": \"%s\"}", user, password, UUID.randomUUID());
         }
 
+        @Override
+        public String buildTablesRequest(String database) {
+            return String.format("{\"requestType\": \"TABLES\",\"database\": \"%s\",\"requestId\": \"%s\"}", database, UUID.randomUUID());
+        }
+
+        @Override
+        public String buildColumnsRequest(String database, String table) {
+            return String.format("{\"requestType\": \"COLUMNS\",\"database\": \"%s\",\"table\": \"%s\",\"requestId\": \"%s\"}", database, table, UUID.randomUUID());
+        }
+
         private void buildClassFieldJson(StringBuffer buffer, Class clazz, Object o) {
             for (Field field : clazz.getDeclaredFields()) {
                 if (field.isAnnotationPresent(JsonProperty.class)) {
@@ -134,4 +144,8 @@ public interface JsonRequestBuilder {
      * }
      */
     String buildAuthRequest(String user, String password);
+
+    String buildTablesRequest(String database);
+
+    String buildColumnsRequest(String database, String table);
 }

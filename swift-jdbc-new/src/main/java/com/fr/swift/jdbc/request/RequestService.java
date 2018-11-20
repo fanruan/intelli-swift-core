@@ -30,6 +30,8 @@ public interface RequestService {
      */
     <T extends JdbcResponse> T apply(JdbcExecutor sender, SqlInfo sql);
 
+    <T extends JdbcResponse> T apply(JdbcExecutor sender, String requestJson);
+
     /**
      * execute auth with retry
      *
@@ -52,4 +54,6 @@ public interface RequestService {
      * @return
      */
     <T extends JdbcResponse> T applyWithRetry(JdbcExecutor sender, SqlInfo sql, int retryTime);
+
+    <T extends JdbcResponse> T applyWithRetry(JdbcExecutor sender, String requestJson, int retryTime);
 }

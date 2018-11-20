@@ -6,6 +6,7 @@ import com.fr.swift.jdbc.Mode;
 import com.fr.swift.jdbc.SwiftJdbcConstants;
 import com.fr.swift.jdbc.exception.Exceptions;
 import com.fr.swift.jdbc.request.RequestService;
+import com.fr.swift.jdbc.request.impl.RequestServiceImpl;
 
 import java.lang.reflect.Constructor;
 import java.net.URI;
@@ -31,6 +32,9 @@ public abstract class UnregisteredDriver implements Driver {
 
     public UnregisteredDriver() {
         this.holder = new Holder();
+        this.holder.realtimeAddresses = new LinkedBlockingQueue<String>();
+        this.holder.analyseAddresses = new LinkedBlockingQueue<String>();
+        this.holder.requestService = new RequestServiceImpl();
     }
 
     @Override
@@ -43,8 +47,7 @@ public abstract class UnregisteredDriver implements Driver {
             return null;
         }
         holder.connectUri = URI.create(testUrl.substring(getConnectionSchema().length() + 1));
-        holder.realtimeAddresses = new LinkedBlockingQueue<String>();
-        holder.analyseAddresses = new LinkedBlockingQueue<String>();
+        info.put(BuildInConnectionProperty.URL.getPropertyName(), url);
         String schema = holder.connectUri.getScheme();
         if (null == schema) {
             throw Exceptions.urlFormat(url);
@@ -121,9 +124,6 @@ public abstract class UnregisteredDriver implements Driver {
         }
     }
 
-    /**
-     * TODO request Service没有初始化
-     */
     public static class Holder {
         private URI connectUri;
         private RequestService requestService;

@@ -13,7 +13,6 @@ import java.sql.Blob;
 import java.sql.CallableStatement;
 import java.sql.Clob;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.NClob;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -133,11 +132,6 @@ public abstract class BaseSwiftConnection implements Connection {
     @Override
     public boolean isClosed() {
         return false;
-    }
-
-    @Override
-    public DatabaseMetaData getMetaData() {
-        return null;
     }
 
     @Override
@@ -369,6 +363,10 @@ public abstract class BaseSwiftConnection implements Connection {
 
     int connectionTimeout() {
         return Integer.parseInt(BuildInConnectionProperty.CONNECTION_TIMEOUT.getValue(properties));
+    }
+
+    public String getUrl() {
+        return BuildInConnectionProperty.URL.getValue(properties);
     }
 
     class ConnectionConfigImpl implements ConnectionConfig {

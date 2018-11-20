@@ -34,6 +34,7 @@ public interface GrammarChecker {
             if (values.contains(SwiftPreparedStatement.NullValue.INSTANCE)) {
                 throw Exceptions.sql(String.format("Parameter index %d must be set.", values.indexOf(SwiftPreparedStatement.NullValue.INSTANCE) + 1));
             }
+            String tmp = sql.trim();
             for (final Object value : values) {
                 String valueStr = null;
                 if (value instanceof String) {
@@ -43,9 +44,9 @@ public interface GrammarChecker {
                 } else {
                     valueStr = value.toString();
                 }
-                sql = sql.replaceFirst(SwiftPreparedStatement.VALUE_POS_PATTERN.pattern(), valueStr);
+                tmp = tmp.replaceFirst(SwiftPreparedStatement.VALUE_POS_PATTERN.pattern(), valueStr);
             }
-            return sql;
+            return tmp;
         }
     };
 }
