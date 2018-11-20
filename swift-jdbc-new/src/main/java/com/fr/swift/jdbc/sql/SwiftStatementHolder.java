@@ -9,6 +9,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author yee
@@ -35,11 +36,15 @@ public class SwiftStatementHolder {
     synchronized
     public void using(SwiftStatement obj) {
         try {
-            idleSemaphore.acquire(timeout);
+            if (idleSemaphore.tryAcquire(timeout, TimeUnit.MILLISECONDS)) {
+                using.put(obj.getObjId(), obj);
+            } else {
+                throw Exceptions.timeout(String.format("Too many open statement. Limit is %d.", maxIdle));
+            }
         } catch (InterruptedException e) {
             throw Exceptions.timeout(String.format("Too many open statement. Limit is %d.", maxIdle), e);
         }
-        using.put(obj.getObjId(), obj);
+
     }
 
     synchronized

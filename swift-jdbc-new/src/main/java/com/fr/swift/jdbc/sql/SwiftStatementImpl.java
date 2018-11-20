@@ -8,38 +8,43 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
+import java.util.UUID;
 
 /**
  * @author yee
  * @date 2018/11/19
  */
 public class SwiftStatementImpl implements SwiftStatement {
-    protected JdbcExecutor executor;
+    protected JdbcExecutor queryExecutor;
+    protected JdbcExecutor maintainExecutor;
     protected BaseSwiftConnection connection;
 
-    public SwiftStatementImpl(BaseSwiftConnection connection, JdbcExecutor executor) {
-        this.executor = executor;
+    public SwiftStatementImpl(BaseSwiftConnection connection, JdbcExecutor queryExecutor, JdbcExecutor maintainExecutor) {
+        this.queryExecutor = queryExecutor;
+        this.maintainExecutor = maintainExecutor;
         this.connection = connection;
+        reset();
     }
 
     @Override
     public ResultSet executeQuery(String sql) throws SQLException {
         SqlInfo info = GrammarChecker.INSTANCE.check(sql);
-        Object result = connection.executeQueryInternal(info, executor);
+        Object result = connection.executeQueryInternal(info, queryExecutor);
         return null;
     }
 
     @Override
     public int executeUpdate(String sql) throws SQLException {
         SqlInfo info = GrammarChecker.INSTANCE.check(sql);
-        Object result = connection.executeQueryInternal(info, executor);
+        Object result = connection.executeQueryInternal(info, maintainExecutor);
         return 0;
     }
 
     @Override
     public void close() {
         connection.holder.idle(this);
-        executor.stop();
+        queryExecutor.stop();
+        maintainExecutor.stop();
     }
 
     @Override
@@ -164,7 +169,7 @@ public class SwiftStatementImpl implements SwiftStatement {
 
     @Override
     public Connection getConnection() throws SQLException {
-        return null;
+        return connection;
     }
 
     @Override
@@ -249,11 +254,12 @@ public class SwiftStatementImpl implements SwiftStatement {
 
     @Override
     public String getObjId() {
-        return null;
+        return UUID.randomUUID().toString();
     }
 
     @Override
     public void reset() {
-        executor.start();
+        queryExecutor.start();
+        maintainExecutor.start();
     }
 }

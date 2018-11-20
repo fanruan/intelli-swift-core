@@ -19,6 +19,10 @@ public final class Exceptions {
         return new URLFormatException(url);
     }
 
+    public static SQLException sql(String msg) {
+        return new SQLException(msg);
+    }
+
     public static RuntimeException runtime(String msg) {
         return new RuntimeException(msg);
     }
@@ -49,6 +53,10 @@ public final class Exceptions {
 
     public static ConnectionTimeoutException timeout(String msg, Throwable t) {
         return new ConnectionTimeoutException(msg, t);
+    }
+
+    public static ConnectionTimeoutException timeout(String msg) {
+        return new ConnectionTimeoutException(msg);
     }
 
     public static SQLException environment(Throwable t) {

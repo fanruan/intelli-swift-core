@@ -61,9 +61,14 @@ public abstract class BaseSwiftConnection implements Connection {
     public Statement createStatement() {
         SwiftStatement statement = holder.getIdle();
         if (null == statement) {
-            String address = SwiftJdbcConstants.EMPTY;
-            JdbcExecutor executor = createJdbcExecutor(address);
-            statement = new SwiftStatementImpl(this, executor);
+            String queryAddress = driver.holder.nextAnalyse();
+            JdbcExecutor executor = createJdbcExecutor(queryAddress);
+            String maintainAddress = driver.holder.nextRealTime();
+            if (queryAddress.equals(maintainAddress)) {
+                statement = new SwiftStatementImpl(this, executor, executor);
+            } else {
+                statement = new SwiftStatementImpl(this, executor, createJdbcExecutor(maintainAddress));
+            }
         } else {
             statement.reset();
         }
@@ -75,9 +80,14 @@ public abstract class BaseSwiftConnection implements Connection {
     public PreparedStatement prepareStatement(String sql) {
         SwiftStatement statement = holder.getPreparedIdle(sql);
         if (null == statement) {
-            String address = SwiftJdbcConstants.EMPTY;
-            JdbcExecutor executor = createJdbcExecutor(address);
-            statement = new SwiftPreparedStatement(this, sql, executor);
+            String queryAddress = driver.holder.nextAnalyse();
+            JdbcExecutor executor = createJdbcExecutor(queryAddress);
+            String maintainAddress = driver.holder.nextRealTime();
+            if (queryAddress.equals(maintainAddress)) {
+                statement = new SwiftPreparedStatement(this, sql, executor, executor);
+            } else {
+                statement = new SwiftPreparedStatement(this, sql, executor, createJdbcExecutor(maintainAddress));
+            }
         } else {
             statement.reset();
         }

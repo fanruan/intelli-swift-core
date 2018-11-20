@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Logger;
 
 /**
@@ -41,6 +43,8 @@ public abstract class UnregisteredDriver implements Driver {
             return null;
         }
         holder.connectUri = URI.create(testUrl.substring(getConnectionSchema().length() + 1));
+        holder.realtimeAddresses = new LinkedBlockingQueue<String>();
+        holder.analyseAddresses = new LinkedBlockingQueue<String>();
         String schema = holder.connectUri.getScheme();
         if (null == schema) {
             throw Exceptions.urlFormat(url);
@@ -124,6 +128,8 @@ public abstract class UnregisteredDriver implements Driver {
         private URI connectUri;
         private RequestService requestService;
         private String authCode;
+        private Queue<String> realtimeAddresses;
+        private Queue<String> analyseAddresses;
 
         public URI getConnectUri() {
             return connectUri;
@@ -135,6 +141,20 @@ public abstract class UnregisteredDriver implements Driver {
 
         public RequestService getRequestService() {
             return requestService;
+        }
+
+        synchronized
+        public String nextRealTime() {
+            String address = realtimeAddresses.poll();
+            realtimeAddresses.offer(address);
+            return address;
+        }
+
+        synchronized
+        public String nextAnalyse() {
+            String address = analyseAddresses.poll();
+            analyseAddresses.offer(address);
+            return address;
         }
     }
 }

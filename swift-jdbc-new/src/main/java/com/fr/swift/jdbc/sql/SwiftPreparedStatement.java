@@ -1,6 +1,7 @@
 package com.fr.swift.jdbc.sql;
 
 import com.fr.swift.jdbc.checker.GrammarChecker;
+import com.fr.swift.jdbc.exception.Exceptions;
 import com.fr.swift.jdbc.info.SqlInfo;
 import com.fr.swift.jdbc.rpc.JdbcExecutor;
 
@@ -11,7 +12,6 @@ import java.net.URL;
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.Clob;
-import java.sql.Connection;
 import java.sql.Date;
 import java.sql.NClob;
 import java.sql.ParameterMetaData;
@@ -27,99 +27,113 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author yee
  * @date 2018/11/19
  */
 public class SwiftPreparedStatement extends SwiftStatementImpl implements PreparedStatement, SwiftStatement {
+    public static final Pattern VALUE_POS_PATTERN = Pattern.compile("\\?");
     private String sql;
-    private List paramsValues;
+    private List values;
 
-    public SwiftPreparedStatement(BaseSwiftConnection connection, String sql, JdbcExecutor executor) {
-        super(connection, executor);
+    public SwiftPreparedStatement(BaseSwiftConnection connection, String sql, JdbcExecutor query, JdbcExecutor maintain) {
+        super(connection, query, maintain);
         this.sql = sql;
-        this.paramsValues = new ArrayList();
+        this.values = new ArrayList();
+        final Matcher matcher = SwiftPreparedStatement.VALUE_POS_PATTERN.matcher(sql);
+        while (matcher.find()) {
+            this.values.add(NullValue.INSTANCE);
+        }
+    }
+
+    private int checkIndex(final int index) throws SQLException {
+        if (index >= 1 && index <= this.values.size()) {
+            return index - 1;
+        }
+        throw Exceptions.sql(String.format("Position %d is not valid. ", index));
     }
 
     @Override
     public ResultSet executeQuery() throws SQLException {
-        SqlInfo info = GrammarChecker.INSTANCE.check(sql, paramsValues);
-        Object result = connection.executeQueryInternal(info, executor);
+        SqlInfo info = GrammarChecker.INSTANCE.check(sql, values);
+        Object result = connection.executeQueryInternal(info, queryExecutor);
         return null;
     }
 
     @Override
     public int executeUpdate() throws SQLException {
-        SqlInfo info = GrammarChecker.INSTANCE.check(sql, paramsValues);
-        Object result = connection.executeQueryInternal(info, executor);
+        SqlInfo info = GrammarChecker.INSTANCE.check(sql, values);
+        Object result = connection.executeQueryInternal(info, maintainExecutor);
         return 0;
     }
 
     @Override
-    public void setNull(int parameterIndex, int sqlType) {
-
+    public void setNull(final int parameterIndex, final int sqlType) throws SQLException {
+        this.setObject(parameterIndex, NullValue.NULL);
     }
 
     @Override
-    public void setBoolean(int parameterIndex, boolean x) {
-
+    public void setBoolean(final int parameterIndex, final boolean x) throws SQLException {
+        this.setObject(parameterIndex, x);
     }
 
     @Override
-    public void setByte(int parameterIndex, byte x) {
-
+    public void setByte(final int parameterIndex, final byte x) throws SQLException {
+        this.setObject(parameterIndex, x);
     }
 
     @Override
-    public void setShort(int parameterIndex, short x) {
-
+    public void setShort(final int parameterIndex, final short x) throws SQLException {
+        this.setObject(parameterIndex, x);
     }
 
     @Override
-    public void setInt(int parameterIndex, int x) {
-
+    public void setInt(final int parameterIndex, final int x) throws SQLException {
+        this.setObject(parameterIndex, x);
     }
 
     @Override
-    public void setLong(int parameterIndex, long x) {
-
+    public void setLong(final int parameterIndex, final long x) throws SQLException {
+        this.setObject(parameterIndex, x);
     }
 
     @Override
-    public void setFloat(int parameterIndex, float x) {
-
+    public void setFloat(final int parameterIndex, final float x) throws SQLException {
+        this.setObject(parameterIndex, x);
     }
 
     @Override
-    public void setDouble(int parameterIndex, double x) {
-
+    public void setDouble(final int parameterIndex, final double x) throws SQLException {
+        this.setObject(parameterIndex, x);
     }
 
     @Override
-    public void setBigDecimal(int parameterIndex, BigDecimal x) {
-
+    public void setBigDecimal(final int parameterIndex, final BigDecimal x) throws SQLException {
+        this.setObject(parameterIndex, x);
     }
 
     @Override
-    public void setString(int parameterIndex, String x) {
-
+    public void setString(final int parameterIndex, final String x) throws SQLException {
+        this.setObject(parameterIndex, x);
     }
 
     @Override
-    public void setBytes(int parameterIndex, byte[] x) {
-
+    public void setBytes(final int parameterIndex, final byte[] x) throws SQLException {
     }
 
     @Override
-    public void setDate(int parameterIndex, Date x) {
-
+    public void setDate(final int parameterIndex, final Date x) throws SQLException {
+        this.setObject(parameterIndex, x.getTime());
     }
 
     @Override
-    public void setTime(int parameterIndex, Time x) {
-
+    public void setTime(final int parameterIndex, final Time x) throws SQLException {
+        this.setObject(parameterIndex, x.getTime());
     }
 
     @Override
@@ -143,18 +157,18 @@ public class SwiftPreparedStatement extends SwiftStatementImpl implements Prepar
     }
 
     @Override
-    public void clearParameters() {
-
+    public void clearParameters() throws SQLException {
+        Collections.fill(this.values, NullValue.INSTANCE);
     }
 
     @Override
-    public void setObject(int parameterIndex, Object x, int targetSqlType) {
-
+    public void setObject(final int parameterIndex, final Object x, final int targetSqlType) throws SQLException {
+        this.setObject(parameterIndex, x);
     }
 
     @Override
-    public void setObject(int parameterIndex, Object x) {
-
+    public void setObject(final int parameterIndex, final Object x) throws SQLException {
+        this.values.set(this.checkIndex(parameterIndex), x);
     }
 
     @Override
@@ -198,23 +212,23 @@ public class SwiftPreparedStatement extends SwiftStatementImpl implements Prepar
     }
 
     @Override
-    public void setDate(int parameterIndex, Date x, Calendar cal) {
-
+    public void setDate(final int parameterIndex, final Date x, final Calendar cal) throws SQLException {
+        this.setDate(parameterIndex, x);
     }
 
     @Override
-    public void setTime(int parameterIndex, Time x, Calendar cal) {
-
+    public void setTime(final int parameterIndex, final Time x, final Calendar cal) throws SQLException {
+        this.setTime(parameterIndex, x);
     }
 
     @Override
-    public void setTimestamp(int parameterIndex, Timestamp x, Calendar cal) {
-
+    public void setTimestamp(final int parameterIndex, final Timestamp x, final Calendar cal) throws SQLException {
+        this.setTimestamp(parameterIndex, x);
     }
 
     @Override
-    public void setNull(int parameterIndex, int sqlType, String typeName) {
-
+    public void setNull(final int parameterIndex, final int sqlType, final String typeName) throws SQLException {
+        this.setNull(parameterIndex, sqlType);
     }
 
     @Override
@@ -233,8 +247,8 @@ public class SwiftPreparedStatement extends SwiftStatementImpl implements Prepar
     }
 
     @Override
-    public void setNString(int parameterIndex, String value) {
-
+    public void setNString(final int parameterIndex, final String value) throws SQLException {
+        this.setObject(parameterIndex, value);
     }
 
     @Override
@@ -268,8 +282,8 @@ public class SwiftPreparedStatement extends SwiftStatementImpl implements Prepar
     }
 
     @Override
-    public void setObject(int parameterIndex, Object x, int targetSqlType, int scaleOrLength) {
-
+    public void setObject(final int parameterIndex, final Object x, final int targetSqlType, final int scaleOrLength) throws SQLException {
+        this.setObject(parameterIndex, x);
     }
 
     @Override
@@ -324,7 +338,7 @@ public class SwiftPreparedStatement extends SwiftStatementImpl implements Prepar
 
     @Override
     public void close() {
-        paramsValues.clear();
+        values.clear();
         super.close();
     }
 
@@ -424,123 +438,23 @@ public class SwiftPreparedStatement extends SwiftStatementImpl implements Prepar
     }
 
     @Override
-    public int getResultSetConcurrency() {
-        return 0;
-    }
-
-    @Override
-    public int getResultSetType() {
-        return 0;
-    }
-
-    @Override
-    public void addBatch(String sql) {
-
-    }
-
-    @Override
-    public void clearBatch() {
-
-    }
-
-    @Override
-    public int[] executeBatch() {
-        return new int[0];
-    }
-
-    @Override
-    public Connection getConnection() {
-        return null;
-    }
-
-    @Override
-    public boolean getMoreResults(int current) {
-        return false;
-    }
-
-    @Override
-    public ResultSet getGeneratedKeys() {
-        return null;
-    }
-
-    @Override
-    public int executeUpdate(String sql, int autoGeneratedKeys) {
-        return 0;
-    }
-
-    @Override
-    public int executeUpdate(String sql, int[] columnIndexes) {
-        return 0;
-    }
-
-    @Override
-    public int executeUpdate(String sql, String[] columnNames) {
-        return 0;
-    }
-
-    @Override
-    public boolean execute(String sql, int autoGeneratedKeys) {
-        return false;
-    }
-
-    @Override
-    public boolean execute(String sql, int[] columnIndexes) {
-        return false;
-    }
-
-    @Override
-    public boolean execute(String sql, String[] columnNames) {
-        return false;
-    }
-
-    @Override
-    public int getResultSetHoldability() {
-        return 0;
-    }
-
-    @Override
-    public boolean isClosed() {
-        return false;
-    }
-
-    @Override
-    public boolean isPoolable() {
-        return false;
-    }
-
-    @Override
-    public void setPoolable(boolean poolable) {
-
-    }
-
-    @Override
-    public void closeOnCompletion() {
-
-    }
-
-    @Override
-    public boolean isCloseOnCompletion() {
-        return false;
-    }
-
-    @Override
-    public <T> T unwrap(Class<T> iface) {
-        return null;
-    }
-
-    @Override
-    public boolean isWrapperFor(Class<?> iface) {
-        return false;
-    }
-
-    @Override
     public String getObjId() {
-        return null;
+        return sql;
     }
 
     @Override
     public void reset() {
         super.reset();
-        paramsValues.clear();
+        values.clear();
+    }
+
+    public enum NullValue {
+        INSTANCE,
+        NULL;
+
+        @Override
+        public String toString() {
+            return this.name().toLowerCase();
+        }
     }
 }
