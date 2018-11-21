@@ -65,7 +65,7 @@ public class SwiftServiceTaskExecutor implements ServiceTaskExecutor {
                 try {
                     ServiceCallable serviceCallable = callableQueue.take();
                     submitServiceCallable(serviceCallable);
-                } catch (InterruptedException e) {
+                } catch (Throwable e) {
                     SwiftLoggers.getLogger().error(e);
                 }
             }

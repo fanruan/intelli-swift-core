@@ -1,6 +1,5 @@
 package com.fr.swift.adaptor.log;
 
-import com.fr.intelli.record.MetricException;
 import com.fr.intelli.record.scene.Metric;
 import com.fr.intelli.record.scene.impl.BaseMetric;
 import com.fr.stable.query.condition.QueryCondition;
@@ -46,8 +45,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -107,7 +106,7 @@ public class MetricProxy extends BaseMetric {
     }
 
     @Override
-    public <T> DataList<List<T>> find(String s) throws MetricException {
+    public <T> DataList<List<T>> find(String s) {
         return null;
     }
 
@@ -204,7 +203,7 @@ public class MetricProxy extends BaseMetric {
 
         private ScheduledExecutorService scheduler = SwiftExecutors.newSingleThreadScheduledExecutor(new PoolThreadFactory(getClass()));
 
-        private Map<Class<?>, List<Object>> dataMap = new ConcurrentHashMap<Class<?>, List<Object>>();
+        private ConcurrentMap<Class<?>, List<Object>> dataMap = new ConcurrentHashMap<Class<?>, List<Object>>();
 
         Sync() {
             scheduler.scheduleWithFixedDelay(this, 5, 5, TimeUnit.SECONDS);
@@ -221,9 +220,8 @@ public class MetricProxy extends BaseMetric {
             }
         }
 
-        synchronized
-        private void record(final Class<?> entity) {
-            final List<Object> data = dataMap.get(entity);
+        private synchronized void record(Class<?> entity) {
+            List<Object> data = dataMap.remove(entity);
             if (data == null || data.isEmpty()) {
                 return;
             }
@@ -231,14 +229,12 @@ public class MetricProxy extends BaseMetric {
             Table table = db.getTable(new SourceKey(JpaAdaptor.getTableName(entity)));
             try {
                 realtimeService.insert(table.getSourceKey(), new LogRowSet(table.getMetadata(), data, entity));
-                dataMap.remove(entity);
             } catch (Exception e) {
                 SwiftLoggers.getLogger().error(e);
             }
         }
 
-        synchronized
-        private void stage(List<Object> data) {
+        private synchronized void stage(List<Object> data) {
             Object first = data.get(0);
             Class<?> entity = first.getClass();
             if (!dataMap.containsKey(entity)) {
