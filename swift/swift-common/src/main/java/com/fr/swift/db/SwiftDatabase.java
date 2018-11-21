@@ -37,4 +37,8 @@ public enum SwiftDatabase {
     public String getName() {
         return name;
     }
+
+    public static SwiftDatabase fromKey(String key) {
+        return valueOf(key.toUpperCase());
+    }
 }

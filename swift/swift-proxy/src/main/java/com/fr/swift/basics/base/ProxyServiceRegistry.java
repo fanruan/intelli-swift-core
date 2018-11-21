@@ -52,7 +52,17 @@ public class ProxyServiceRegistry implements ServiceRegistry {
     }
 
     @Override
+    public <Service> Service getInternalService(Class<Service> serviceClass) {
+        return (Service) getInternalService(serviceClass.getName());
+    }
+
+    @Override
     public Object getExternalService(String serviceClass) {
         return externalMap.get(serviceClass);
+    }
+
+    @Override
+    public <Service> Service getExternalService(Class<Service> serviceClass) {
+        return (Service) getExternalService(serviceClass.getName());
     }
 }

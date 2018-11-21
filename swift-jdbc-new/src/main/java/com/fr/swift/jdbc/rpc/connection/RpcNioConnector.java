@@ -7,19 +7,16 @@ import com.fr.swift.jdbc.rpc.serializable.decoder.NettyObjectDecoder;
 import com.fr.swift.jdbc.rpc.serializable.decoder.SerializableDecoder;
 import com.fr.swift.jdbc.rpc.serializable.encoder.NettyObjectEncoder;
 import com.fr.swift.jdbc.rpc.serializable.encoder.SerializableEncoder;
-import com.fr.swift.rpc.bean.impl.RpcRequest;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * @author yee
  * @date 2018/8/26
  */
 public class RpcNioConnector extends BaseConnector {
-    protected ConcurrentLinkedQueue<RpcRequest> sendQueueCache = new ConcurrentLinkedQueue<RpcRequest>();
     private SocketChannel channel;
     private JdbcSelector selector;
 

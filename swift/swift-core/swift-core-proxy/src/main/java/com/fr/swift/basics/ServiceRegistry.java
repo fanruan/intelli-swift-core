@@ -9,7 +9,11 @@ public interface ServiceRegistry {
 
     Object getInternalService(String serviceClass);
 
+    <Service> Service getInternalService(Class<Service> serviceClass);
+
     Object getExternalService(String serviceClass);
+
+    <Service> Service getExternalService(Class<Service> serviceClass);
 
     Object getService(String proxyClass);
 }

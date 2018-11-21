@@ -13,7 +13,8 @@ public enum BuildInConnectionProperty {
     PASSWORD("swift_password", SwiftJdbcConstants.EMPTY),
     STATEMENT_MAX_IDLE("sttm_max_idle", JdbcProperty.get().getStatementMaxIdle()),
     PRINCIPAL("principal", null),
-    KEYTAB("keytab", null);
+    KEYTAB("keytab", null),
+    URL("swift_url", null);
 
     private String propertyName;
     private Object defaultValue;

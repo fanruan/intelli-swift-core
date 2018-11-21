@@ -13,7 +13,6 @@ import java.sql.Blob;
 import java.sql.CallableStatement;
 import java.sql.Clob;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.NClob;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -61,9 +60,14 @@ public abstract class BaseSwiftConnection implements Connection {
     public Statement createStatement() {
         SwiftStatement statement = holder.getIdle();
         if (null == statement) {
-            String address = SwiftJdbcConstants.EMPTY;
-            JdbcExecutor executor = createJdbcExecutor(address);
-            statement = new SwiftStatementImpl(this, executor);
+            String queryAddress = driver.holder.nextAnalyse();
+            JdbcExecutor executor = createJdbcExecutor(queryAddress);
+            String maintainAddress = driver.holder.nextRealTime();
+            if (queryAddress.equals(maintainAddress)) {
+                statement = new SwiftStatementImpl(this, executor, executor);
+            } else {
+                statement = new SwiftStatementImpl(this, executor, createJdbcExecutor(maintainAddress));
+            }
         } else {
             statement.reset();
         }
@@ -75,9 +79,14 @@ public abstract class BaseSwiftConnection implements Connection {
     public PreparedStatement prepareStatement(String sql) {
         SwiftStatement statement = holder.getPreparedIdle(sql);
         if (null == statement) {
-            String address = SwiftJdbcConstants.EMPTY;
-            JdbcExecutor executor = createJdbcExecutor(address);
-            statement = new SwiftPreparedStatement(this, sql, executor);
+            String queryAddress = driver.holder.nextAnalyse();
+            JdbcExecutor executor = createJdbcExecutor(queryAddress);
+            String maintainAddress = driver.holder.nextRealTime();
+            if (queryAddress.equals(maintainAddress)) {
+                statement = new SwiftPreparedStatement(this, sql, executor, executor);
+            } else {
+                statement = new SwiftPreparedStatement(this, sql, executor, createJdbcExecutor(maintainAddress));
+            }
         } else {
             statement.reset();
         }
@@ -123,11 +132,6 @@ public abstract class BaseSwiftConnection implements Connection {
     @Override
     public boolean isClosed() {
         return false;
-    }
-
-    @Override
-    public DatabaseMetaData getMetaData() {
-        return null;
     }
 
     @Override
@@ -359,6 +363,10 @@ public abstract class BaseSwiftConnection implements Connection {
 
     int connectionTimeout() {
         return Integer.parseInt(BuildInConnectionProperty.CONNECTION_TIMEOUT.getValue(properties));
+    }
+
+    public String getUrl() {
+        return BuildInConnectionProperty.URL.getValue(properties);
     }
 
     class ConnectionConfigImpl implements ConnectionConfig {
