@@ -45,16 +45,7 @@ public class UploadHistoryListener extends Listener<SegmentKey> {
 
     @Override
     public void on(Event event, final SegmentKey segKey) {
-        try {
-            SVC_EXEC.submit(new SwiftServiceCallable(segKey.getTable(), ServiceTaskType.UPLOAD) {
-                @Override
-                public void doJob() {
-                    upload(segKey);
-                }
-            });
-        } catch (InterruptedException e) {
-            SwiftLoggers.getLogger().error(e);
-        }
+        upload(segKey);
     }
 
     private static void upload(final SegmentKey segKey) {

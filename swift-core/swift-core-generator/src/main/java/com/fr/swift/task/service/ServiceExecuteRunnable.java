@@ -27,11 +27,14 @@ public class ServiceExecuteRunnable implements Runnable {
     @Override
     public void run() {
         taskExecutor.registerQueue(this.threadName, serviceBlockingQueue);
-        while (true) {
+        while (!Thread.interrupted()) {
             try {
                 ServiceCallable serviceCallable = serviceBlockingQueue.take();
                 serviceCallable.call();
-            } catch (Exception e) {
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                SwiftLoggers.getLogger().error(e);
+            } catch (Throwable e) {
                 SwiftLoggers.getLogger().error(e);
             }
         }
