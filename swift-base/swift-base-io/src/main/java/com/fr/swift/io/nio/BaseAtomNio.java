@@ -78,6 +78,8 @@ abstract class BaseAtomNio extends BaseNio {
 
             currentBuf = nthBuf;
         } catch (IOException e) {
+            IoUtil.release(buf);
+            IoUtil.close(ch);
             SwiftLoggers.getLogger().error(e);
         }
     }

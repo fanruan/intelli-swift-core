@@ -1,6 +1,5 @@
 package com.fr.swift.segment;
 
-import com.fineio.FineIO;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.ResourceDiscovery;
@@ -10,7 +9,6 @@ import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.segment.operator.column.SwiftColumnDictMerger;
 import com.fr.swift.segment.operator.column.SwiftColumnIndexer;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.FileUtil;
@@ -91,20 +89,7 @@ public class SegmentUtils {
         final SwiftMetaData metadata = hisSegs.get(0).getMetaData();
         for (int i = 0; i < metadata.getColumnCount(); i++) {
             final ColumnKey columnKey = new ColumnKey(metadata.getColumnName(i + 1));
-
             ((SwiftColumnIndexer) SwiftContext.get().getBean("columnIndexer", metadata, columnKey, hisSegs)).buildIndex();
-
-            FineIO.doWhenFinished(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        ((SwiftColumnDictMerger) SwiftContext.get().getBean("columnDictMerger", metadata, columnKey, hisSegs)).mergeDict();
-                    } catch (Exception e) {
-                        SwiftLoggers.getLogger().error(e);
-                    }
-                }
-            });
-
         }
     }
 
