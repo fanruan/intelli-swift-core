@@ -43,7 +43,6 @@ public class SegmentTransfer {
             FineIO.doWhenFinished(new Callable<Void>() {
                 @Override
                 public Void call() throws Exception {
-                    SwiftLoggers.getLogger().error("enter fineio doWhenFinished");
                     indexSegmentIfNeed(newSeg);
                     onSucceed();
                     return null;
