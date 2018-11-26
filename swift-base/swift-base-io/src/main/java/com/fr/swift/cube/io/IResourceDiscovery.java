@@ -40,4 +40,9 @@ public interface IResourceDiscovery extends Clearable {
      * @param location 位置
      */
     void release(IResourceLocation location);
+
+    /**
+     * 删除所有内存数据
+     */
+    void releaseAll();
 }
