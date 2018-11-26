@@ -7,8 +7,10 @@ import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.cube.io.output.Writer;
+import com.fr.swift.io.IntIo;
 import com.fr.swift.test.TestIo;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -56,6 +58,39 @@ public class IResourceDiscoveryTest extends TestIo {
                 fail();
             }
         }
+    }
+
+    @Test
+    public void testRelease() {
+        String segPath = "logs/cubes/table/seg0";
+        String columnPath = segPath + "/column";
+        ResourceLocation columnLoc = new ResourceLocation(columnPath + "/detail", StoreType.MEMORY);
+        ResourceLocation columnLoc1 = new ResourceLocation(columnPath + "1/detail", StoreType.MEMORY);
+        BuildConf conf = new BuildConf(IoType.WRITE, DataType.INT);
+
+        // test release column
+        ((IntIo) DISCOVERY.getWriter(columnLoc, conf)).put(0, -1);
+        ((IntIo) DISCOVERY.getWriter(columnLoc1, conf)).put(0, -1);
+
+        Assert.assertTrue(DISCOVERY.exists(columnLoc, conf));
+        Assert.assertTrue(DISCOVERY.exists(columnLoc1, conf));
+
+        DISCOVERY.release(new ResourceLocation(columnPath, StoreType.MEMORY));
+        Assert.assertFalse(DISCOVERY.exists(columnLoc, conf));
+        Assert.assertTrue(DISCOVERY.exists(columnLoc1, conf));
+
+        DISCOVERY.release(new ResourceLocation(columnPath + "1", StoreType.MEMORY));
+
+        // test release seg
+        ((IntIo) DISCOVERY.getWriter(columnLoc, conf)).put(0, -1);
+        ((IntIo) DISCOVERY.getWriter(columnLoc1, conf)).put(0, -1);
+
+        Assert.assertTrue(DISCOVERY.exists(columnLoc, conf));
+        Assert.assertTrue(DISCOVERY.exists(columnLoc1, conf));
+
+        DISCOVERY.release(new ResourceLocation(segPath, StoreType.MEMORY));
+        Assert.assertFalse(DISCOVERY.exists(columnLoc, conf));
+        Assert.assertFalse(DISCOVERY.exists(columnLoc1, conf));
     }
 
     @After

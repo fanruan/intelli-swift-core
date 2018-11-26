@@ -4,11 +4,8 @@ import com.fr.swift.cube.io.impl.mem.MemIo;
 import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.Writer;
-import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.Clearable;
-import com.fr.swift.util.function.Predicate;
 
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -34,18 +31,13 @@ public interface IResourceDiscovery extends Clearable {
     @Override
     void clear();
 
-    boolean isCubeResourceEmpty();
-
     Map<String, MemIo> removeCubeResource(String basePath);
 
     /**
-     * 按条件移除io
+     * 目前只能删除seg，或者seg中的某一个column
+     * 现只针对于内存数据
      *
-     * @param predicate 会传入 schema/table/seg/column/...
+     * @param location 位置
      */
-    void removeIf(Predicate<String> predicate);
-
-    Date getLastUpdateTime(SourceKey sourceKey);
-
-    void setLastUpdateTime(SourceKey sourceKey, long lastUpdateTime);
+    void release(IResourceLocation location);
 }

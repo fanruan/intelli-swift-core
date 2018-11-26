@@ -58,7 +58,7 @@ public class SegmentRecoveryTest {
         String tablePath = String.format("%s/%s",
                 dataSource.getMetadata().getSwiftDatabase().getDir(),
                 dataSource.getSourceKey().getId());
-        ResourceDiscovery.getInstance().removeIf(s -> s.contains(tablePath));
+        ResourceDiscovery.getInstance().release(new ResourceLocation(tablePath, StoreType.MEMORY));
         SegmentRecovery segmentRecovery = (SegmentRecovery) SwiftContext.get().getBean("segmentRecovery");
         segmentRecovery.recoverAll();
 

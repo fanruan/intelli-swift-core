@@ -269,21 +269,25 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
     private void init() {
         BuildConf readConf = new BuildConf(IoType.READ, DataType.REALTIME_COLUMN);
         if (!DISCOVERY.exists(location, readConf)) {
-            detail = new SwiftObjectMemIo<V>(1);
-            valToRows = new ConcurrentHashMap<V, MutableBitMap>();
-            valToId = new ConcurrentSkipListMap<V, Integer>(getComparator());
-            idToVal = new ArrayList<V>();
-            indexAndId = new IndexAndId();
+            synchronized (DISCOVERY) {
+                if (!DISCOVERY.exists(location, readConf)) {
+                    detail = new SwiftObjectMemIo<V>(1);
+                    valToRows = new ConcurrentHashMap<V, MutableBitMap>();
+                    valToId = new ConcurrentSkipListMap<V, Integer>(getComparator());
+                    idToVal = new ArrayList<V>();
+                    indexAndId = new IndexAndId();
 
-            nullIndex = BitMaps.newRoaringMutable();
-            nullId = Optional.absent();
+                    nullIndex = BitMaps.newRoaringMutable();
+                    nullId = Optional.absent();
 
-            // 三个视图，映射至内存数据
-            detailColumn = new RealtimeDetailColumn();
-            dictColumn = new RealtimeDictColumn();
-            indexColumn = new RealtimeBitmapColumn();
+                    // 三个视图，映射至内存数据
+                    detailColumn = new RealtimeDetailColumn();
+                    dictColumn = new RealtimeDictColumn();
+                    indexColumn = new RealtimeBitmapColumn();
 
-            DISCOVERY.<ObjectMemIo<BaseRealtimeColumn<V>>>getWriter(location, new BuildConf(IoType.WRITE, DataType.REALTIME_COLUMN)).put(0, this);
+                    DISCOVERY.<ObjectMemIo<BaseRealtimeColumn<V>>>getWriter(location, new BuildConf(IoType.WRITE, DataType.REALTIME_COLUMN)).put(0, this);
+                }
+            }
         }
 
         ObjectMemIo<BaseRealtimeColumn<V>> selfMemIo = DISCOVERY.getReader(location, readConf);
