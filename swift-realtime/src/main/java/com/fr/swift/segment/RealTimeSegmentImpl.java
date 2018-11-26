@@ -13,7 +13,6 @@ import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Crasher;
-import com.fr.swift.util.Util;
 
 /**
  * This class created on 2018-1-9 11:06:45
@@ -40,10 +39,10 @@ public class RealTimeSegmentImpl extends BaseSegment implements RealTimeSegment 
             if (key.getRelation() != null) {
                 return createRelationColumn(key);
             }
-            SwiftLoggers.getLogger().error("getColumn failed: {}", Util.getRootCauseMessage(e));
+            SwiftLoggers.getLogger().error("getColumn failed", e);
             return null;
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("getColumn failed: {}", Util.getRootCauseMessage(e));
+            SwiftLoggers.getLogger().error("getColumn failed", e);
             return null;
         }
     }
