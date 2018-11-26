@@ -9,7 +9,6 @@ import com.fr.swift.cluster.listener.NodeStartedListener;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
-import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
@@ -63,7 +62,7 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
     @Autowired(required = false)
     private RealtimeService realtimeService;
 
-    private transient HashSet<SourceKey> existsTableKey;
+    private transient HashSet<SourceKey> existsTableKey = new HashSet<SourceKey>();
 
     private transient SwiftSegmentManager segmentManager;
     private transient SwiftRepositoryManager repositoryManager;
@@ -83,7 +82,6 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
                 sendLocalSegmentInfo();
             }
         });
-        existsTableKey = new HashSet<SourceKey>();
         return super.start();
     }
 
