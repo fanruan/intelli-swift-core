@@ -23,11 +23,8 @@ import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.task.service.ServiceTaskExecutor;
-import com.fr.swift.task.service.ServiceTaskType;
-import com.fr.swift.task.service.SwiftServiceCallable;
 
 import java.util.Collections;
-import java.util.concurrent.Callable;
 
 /**
  * @author anchore
@@ -75,29 +72,22 @@ public class UploadHistoryListener extends Listener<SegmentKey> {
 
     private static void notifyDownload(final SegmentKey segKey) {
         final String currentClusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
-        ClusterCommonUtils.asyncCallMaster(
-                new TransCollateLoadEvent(Pair.of(segKey.getTable().getId(), Collections.singletonList(segKey.toString())), currentClusterId)
-        ).addCallback(new AsyncRpcCallback() {
-            @Override
-            public void success(Object result) {
-                if (result instanceof EventResult && ((EventResult) result).isSuccess()) {
-                    String clusterId = ((EventResult) result).getClusterId();
-                    SegmentKey realtimeSegKey = getRealtimeSegKey(segKey);
-                    SEG_SVC.removeSegments(Collections.singletonList(realtimeSegKey));
-                    SegmentUtils.clearSegment(realtimeSegKey);
-                    // 删除本机上的history分布
-                    if (!ComparatorUtils.equals(clusterId, currentClusterId)) {
-                        LOCATION_SVC.delete(segKey.getTable().getId(), currentClusterId, segKey.toString());
-                        SegmentUtils.clearSegment(segKey);
-                    }
-                }
-            }
+        EventResult result = (EventResult) ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class).trigger(
+                new TransCollateLoadEvent(Pair.of(segKey.getTable().getId(), Collections.singletonList(segKey.toString())), currentClusterId));
+        if (result.isSuccess()) {
+            String clusterId = result.getClusterId();
+            SegmentKey realtimeSegKey = getRealtimeSegKey(segKey);
+            SEG_SVC.removeSegments(Collections.singletonList(realtimeSegKey));
+            SegmentUtils.clearSegment(realtimeSegKey);
 
-            @Override
-            public void fail(Exception e) {
-                SwiftLoggers.getLogger().error(e);
+            // 删除本机上的history分布
+            if (!ComparatorUtils.equals(clusterId, currentClusterId)) {
+                LOCATION_SVC.delete(segKey.getTable().getId(), currentClusterId, segKey.toString());
+                SegmentUtils.clearSegment(segKey);
             }
-        });
+        } else {
+            SwiftLoggers.getLogger().error(result.getError());
+        }
     }
 
     private static SegmentKey getRealtimeSegKey(SegmentKey hisSegKey) {

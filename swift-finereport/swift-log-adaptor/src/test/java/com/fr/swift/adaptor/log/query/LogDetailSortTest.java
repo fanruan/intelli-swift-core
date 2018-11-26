@@ -6,6 +6,7 @@ import com.fr.swift.adaptor.log.QueryConditionAdaptor;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
+import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.source.DataSource;

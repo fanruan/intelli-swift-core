@@ -30,7 +30,7 @@ public class ServiceExecuteRunnable implements Runnable {
         while (!Thread.interrupted()) {
             try {
                 ServiceCallable serviceCallable = serviceBlockingQueue.take();
-                serviceCallable.call();
+                serviceCallable.run();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 SwiftLoggers.getLogger().error(e);

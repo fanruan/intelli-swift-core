@@ -2,10 +2,7 @@ package com.fr.swift.rm.collector;
 
 import com.fr.cluster.ClusterBridge;
 import com.fr.swift.basics.ProxyFactory;
-import com.fr.swift.basics.URL;
 import com.fr.swift.basics.base.selector.ProxySelector;
-import com.fr.swift.basics.base.selector.UrlSelector;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.event.global.CheckMasterEvent;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rm.view.NodeJoinedView;
@@ -52,13 +49,11 @@ public class MasterSynchronizer {
 
             if (!NodeJoinedView.getInstance().isEmpty()) {
                 ProxyFactory factory = ProxySelector.getInstance().getFactory();
-                SwiftServiceListenerHandler remoteSender = SwiftContext.get().getBean("remoteServiceSender", SwiftServiceListenerHandler.class);
                 Set<String> syncedNodes = new HashSet<String>();
                 for (String node : NodeJoinedView.getInstance().getNodes()) {
                     try {
                         if (ClusterBridge.getView().getNodeById(node) != null) {
-                            URL url = UrlSelector.getInstance().getFactory().getURL(node);
-                            SwiftServiceListenerHandler proxy = factory.getProxy(remoteSender, SwiftServiceListenerHandler.class, url);
+                            SwiftServiceListenerHandler proxy = factory.getProxy(SwiftServiceListenerHandler.class);
                             proxy.trigger(new CheckMasterEvent());
                             syncedNodes.add(node);
                         }

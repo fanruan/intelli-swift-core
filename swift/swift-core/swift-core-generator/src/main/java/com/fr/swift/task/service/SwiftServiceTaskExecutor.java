@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -44,6 +43,7 @@ public class SwiftServiceTaskExecutor implements ServiceTaskExecutor {
     @Override
     public <T> Future<T> submit(ServiceCallable<T> task) throws InterruptedException {
         callableQueue.put(task);
+        return task;
     }
 
     @Override
@@ -54,7 +54,6 @@ public class SwiftServiceTaskExecutor implements ServiceTaskExecutor {
     @Override
     public void unRegisterQueue(String name) {
         serviceBlockingQueueMap.remove(name);
-        return task;
     }
 
     private class ServiceTaskFetcher implements Runnable {

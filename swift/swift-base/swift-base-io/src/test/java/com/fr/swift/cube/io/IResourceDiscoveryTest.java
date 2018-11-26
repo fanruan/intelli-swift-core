@@ -8,7 +8,6 @@ import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.cube.io.output.Writer;
 import com.fr.swift.io.IntIo;
-import com.fr.swift.test.TestIo;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Rule;
