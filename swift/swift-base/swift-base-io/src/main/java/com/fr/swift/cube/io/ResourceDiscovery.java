@@ -7,15 +7,13 @@ import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.cube.io.output.Writer;
 import com.fr.swift.db.SwiftDatabase;
-import com.fr.swift.source.SourceKey;
-import com.fr.swift.util.function.Predicate;
+import com.fr.swift.util.IoUtil;
 
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,52 +22,49 @@ import java.util.regex.Pattern;
  * @date 2017/11/16
  */
 public class ResourceDiscovery implements IResourceDiscovery {
+
     /**
      * schema/table/seg/column/...
      */
     private static final Pattern PATTERN = Pattern.compile(".+/seg\\d+?(/).+");
+
     private static final ResourceDiscovery INSTANCE = new ResourceDiscovery();
+
     /**
      * 预览mem io
      * <p>
-     * schema/table/seg -> (schema/table/seg/column/... -> mem io)
+     * schema/table/seg -> (column/... -> mem io)
      */
-    private final Map<String, Map<String, MemIo>> minorMemIos = new ConcurrentHashMap<String, Map<String, MemIo>>(),
+    private final ConcurrentMap<String, ConcurrentMap<String, MemIo>> minorMemIos = new ConcurrentHashMap<String, ConcurrentMap<String, MemIo>>();
 
     /**
      * 增量realtime mem io
      * <p>
-     * schema/table/seg -> (schema/table/seg/column/... -> mem io)
+     * schema/table/seg -> (column/... -> mem io)
      */
-    cubeMemIos = new ConcurrentHashMap<String, Map<String, MemIo>>();
-    private Map<SourceKey, Long> lastUpdateTime;
+    private final ConcurrentMap<String, ConcurrentMap<String, MemIo>> cubeMemIos = new ConcurrentHashMap<String, ConcurrentMap<String, MemIo>>();
 
-    private ResourceDiscovery() {
-        lastUpdateTime = new ConcurrentHashMap<SourceKey, Long>();
-    }
+    private static MemIo getMemIo(ConcurrentMap<String, ConcurrentMap<String, MemIo>> segMemIos, IResourceLocation location, BuildConf conf) {
+        String path = location.getPath();
+        String segPath = getSegPath(path);
+        String ioPath = path.substring(segPath.length());
 
-    private static MemIo getMemIo(Map<String, Map<String, MemIo>> segMemIos, IResourceLocation location, BuildConf conf) {
-        synchronized (segMemIos) {
-            String path = location.getPath();
-            String segPath = getSegPath(path);
-
-            if (!segMemIos.containsKey(segPath)) {
-                Map<String, MemIo> baseMemIos = new HashMap<String, MemIo>();
-                MemIo memIo = MemIoBuilder.build(conf);
-                baseMemIos.put(path, memIo);
-                segMemIos.put(segPath, baseMemIos);
-                return memIo;
-            }
-
-            Map<String, MemIo> baseMemIos = segMemIos.get(segPath);
-            if (!baseMemIos.containsKey(path)) {
-                MemIo memIo = MemIoBuilder.build(conf);
-                baseMemIos.put(path, memIo);
-                return memIo;
-            }
-
-            return segMemIos.get(segPath).get(path);
+        if (!segMemIos.containsKey(segPath)) {
+            ConcurrentMap<String, MemIo> baseMemIos = new ConcurrentHashMap<String, MemIo>();
+            MemIo memIo = MemIoBuilder.build(conf);
+            baseMemIos.put(ioPath, memIo);
+            segMemIos.put(segPath, baseMemIos);
+            return memIo;
         }
+
+        Map<String, MemIo> baseMemIos = segMemIos.get(segPath);
+        if (!baseMemIos.containsKey(ioPath)) {
+            MemIo memIo = MemIoBuilder.build(conf);
+            baseMemIos.put(ioPath, memIo);
+            return memIo;
+        }
+
+        return segMemIos.get(segPath).get(ioPath);
     }
 
     private static boolean isMemory(IResourceLocation location) {
@@ -98,9 +93,13 @@ public class ResourceDiscovery implements IResourceDiscovery {
             return (R) Readers.build(location, conf);
         }
         if (isMinor(path)) {
-            return (R) getMemIo(minorMemIos, location, conf);
+            synchronized (minorMemIos) {
+                return (R) getMemIo(minorMemIos, location, conf);
+            }
         }
-        return (R) getMemIo(cubeMemIos, location, conf);
+        synchronized (cubeMemIos) {
+            return (R) getMemIo(cubeMemIos, location, conf);
+        }
     }
 
     @Override
@@ -123,7 +122,7 @@ public class ResourceDiscovery implements IResourceDiscovery {
     @Override
     public void clear() {
         //todo 增量的memio慎重clear!!!
-        for (Map.Entry<String, Map<String, MemIo>> mapEntry : minorMemIos.entrySet()) {
+        for (Map.Entry<String, ConcurrentMap<String, MemIo>> mapEntry : minorMemIos.entrySet()) {
             for (Map.Entry<String, MemIo> entry : mapEntry.getValue().entrySet()) {
                 entry.getValue().release();
             }
@@ -132,46 +131,53 @@ public class ResourceDiscovery implements IResourceDiscovery {
     }
 
     @Override
-    public boolean isCubeResourceEmpty() {
-        return cubeMemIos.isEmpty();
-    }
-
-    @Override
     public Map<String, MemIo> removeCubeResource(String basePath) {
         return cubeMemIos.remove(new ResourceLocation(basePath).getPath());
     }
 
     @Override
-    public void removeIf(Predicate<String> predicate) {
-        for (Iterator<Entry<String, Map<String, MemIo>>> itr = cubeMemIos.entrySet().iterator(); itr.hasNext(); ) {
-            Entry<String, Map<String, MemIo>> entry = itr.next();
-            if (predicate.test(entry.getKey())) {
-                // 为内存io，可直接丢给gc
-                itr.remove();
-                continue;
-            }
+    public void release(IResourceLocation location) {
+        if (location.getStoreType().isPersistent()) {
+            return;
+        }
 
-            for (Iterator<Entry<String, MemIo>> memIoItr = entry.getValue().entrySet().iterator(); memIoItr.hasNext(); ) {
-                Entry<String, MemIo> ioEntry = memIoItr.next();
-                if (predicate.test(ioEntry.getKey())) {
-                    // 为内存io，可直接丢给gc
-                    memIoItr.remove();
+        String path = location.getPath();
+        synchronized (cubeMemIos) {
+            for (Iterator<Entry<String, ConcurrentMap<String, MemIo>>> segItr = cubeMemIos.entrySet().iterator(); segItr.hasNext(); ) {
+                Entry<String, ConcurrentMap<String, MemIo>> segEntry = segItr.next();
+                String segPath = segEntry.getKey();
+                if (path.equals(segPath)) {
+                    // 匹配到seg，则整个release
+                    for (MemIo memIo : segEntry.getValue().values()) {
+                        IoUtil.release(memIo);
+                    }
+                    segItr.remove();
+                    continue;
+                }
+
+                for (Iterator<Entry<String, MemIo>> memIoItr = segEntry.getValue().entrySet().iterator(); memIoItr.hasNext(); ) {
+                    Entry<String, MemIo> memIoEntry = memIoItr.next();
+                    String memIoPath = String.format("%s%s/", segPath, memIoEntry.getKey());
+                    // 匹配前缀，一般为release单个column
+                    if (memIoPath.startsWith(path + "/")) {
+                        IoUtil.release(memIoEntry.getValue());
+                        memIoItr.remove();
+                    }
                 }
             }
         }
     }
 
     @Override
-    public Date getLastUpdateTime(SourceKey sourceKey) {
-        if (lastUpdateTime.containsKey(sourceKey)) {
-            return new Date(lastUpdateTime.get(sourceKey));
-        } else {
-            return new Date(0l);
+    public void releaseAll() {
+        synchronized (cubeMemIos) {
+            for (Iterator<ConcurrentMap<String, MemIo>> segItr = cubeMemIos.values().iterator(); segItr.hasNext(); ) {
+                Map<String, MemIo> memIoMap = segItr.next();
+                for (MemIo memIo : memIoMap.values()) {
+                    IoUtil.release(memIo);
+                }
+                segItr.remove();
+            }
         }
-    }
-
-    @Override
-    public void setLastUpdateTime(SourceKey sourceKey, long lastUpdateTime) {
-        this.lastUpdateTime.put(sourceKey, lastUpdateTime);
     }
 }

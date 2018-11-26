@@ -8,7 +8,7 @@ import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.segment.operator.Inserter;
 
 import java.util.Collections;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Callable;
 
 /**
  * @author anchore
@@ -17,18 +17,12 @@ import java.util.concurrent.CountDownLatch;
 public class SegmentTransfer {
     private static final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
 
-    protected SegmentKey oldSegKey, newSegKey;
-
-    private boolean index;
+    private SegmentKey oldSegKey;
+    protected SegmentKey newSegKey;
 
     public SegmentTransfer(SegmentKey oldSegKey, SegmentKey newSegKey) {
-        this(oldSegKey, newSegKey, true);
-    }
-
-    public SegmentTransfer(SegmentKey oldSegKey, SegmentKey newSegKey, boolean index) {
         this.oldSegKey = oldSegKey;
         this.newSegKey = newSegKey;
-        this.index = index;
     }
 
     public void transfer() {
@@ -40,25 +34,15 @@ public class SegmentTransfer {
 
             swiftResultSet = new SegmentResultSet(oldSeg);
             inserter.insertData(swiftResultSet);
-            final CountDownLatch latch = new CountDownLatch(1);
-            final Exception[] exception = new Exception[1];
-            FineIO.doWhenFinished(new Runnable() {
+
+            FineIO.doWhenFinished(new Callable<Void>() {
                 @Override
-                public void run() {
-                    try {
-                        indexSegmentIfNeed(newSeg);
-                        onSucceed();
-                    } catch (Exception e) {
-                        exception[0] = e;
-                    } finally {
-                        latch.countDown();
-                    }
+                public Void call() throws Exception {
+                    indexSegmentIfNeed(newSeg);
+                    onSucceed();
+                    return null;
                 }
-            });
-            latch.await();
-            if (null != exception[0]) {
-                throw exception[0];
-            }
+            }).get();
             SegmentContainer.NORMAL.updateSegment(newSegKey, newSeg);
 
             SwiftLoggers.getLogger().info("seg transferred from {} to {}", oldSegKey, newSegKey);

@@ -25,6 +25,7 @@ import com.fr.swift.query.sort.SortType;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -80,10 +81,24 @@ public class QueryConditionAdaptor {
         return adaptFilters(restriction);
     }
 
+    private static Set<Object> obj2String(Set<Object> objects) {
+        Set values = new HashSet<Object>();
+        for (Object obj : objects) {
+            if (obj == null) {
+                values.add("");
+            } else {
+                values.add(obj.toString());
+            }
+        }
+        return values;
+    }
+
     private static FilterInfoBean adaptFilters(Restriction restriction) {
         String columnName = restriction.getColumnName();
         Object value = restriction.getColumnValue();
+        value = value == null ? "" : value.toString();
         Set<Object> values = (Set<Object>) restriction.getColumnValues();
+        values = values == null ? new HashSet<Object>() : obj2String(values);
         FilterInfoBean filterInfoBean = null;
         switch (restriction.getType()) {
             case EQ:

@@ -12,4 +12,8 @@ import java.util.concurrent.Future;
 public interface ServiceTaskExecutor {
 
     <T> Future<T> submit(ServiceCallable<T> serviceCallable) throws InterruptedException;
+
+    void registerQueue(String name, ServiceBlockingQueue queue);
+
+    void unRegisterQueue(String name);
 }

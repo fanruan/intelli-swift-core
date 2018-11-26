@@ -1,10 +1,10 @@
 package com.fr.swift.config.convert.hibernate;
 
+import com.fr.stable.db.entity.converter.BaseConverter;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.alloter.AllotRule;
 import com.fr.third.fasterxml.jackson.core.JsonProcessingException;
 import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
-import com.fr.third.javax.persistence.AttributeConverter;
 
 import java.io.IOException;
 
@@ -12,7 +12,7 @@ import java.io.IOException;
  * @author anchore
  * @date 2018/7/16
  */
-public class AllotRuleConverter implements AttributeConverter<AllotRule, String> {
+public class AllotRuleConverter extends BaseConverter<AllotRule, String> {
     private ObjectMapper mapper = new ObjectMapper();
 
     @Override
