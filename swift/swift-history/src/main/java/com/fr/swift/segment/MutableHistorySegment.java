@@ -7,7 +7,6 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.util.Util;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -46,10 +45,10 @@ public class MutableHistorySegment extends BaseSegment implements HistorySegment
             if (key.getRelation() != null) {
                 return createRelationColumn(key);
             }
-            SwiftLoggers.getLogger().error("getColumn failed: {}", Util.getRootCauseMessage(e));
+            SwiftLoggers.getLogger().error("getColumn failed", e);
             return null;
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("getColumn failed: {}", Util.getRootCauseMessage(e));
+            SwiftLoggers.getLogger().error("getColumn failed", e);
             return null;
         }
     }

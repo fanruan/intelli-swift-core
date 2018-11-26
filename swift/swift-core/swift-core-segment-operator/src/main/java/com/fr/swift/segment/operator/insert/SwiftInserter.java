@@ -41,17 +41,19 @@ public class SwiftInserter extends BaseInserter implements Inserter {
     @Override
     public void insertData(SwiftResultSet swiftResultSet) throws Exception {
         initCursors();
+        try {
+            while (swiftResultSet.hasNext()) {
+                Row rowData = swiftResultSet.getNextRow();
+                putRow(cursor, rowData);
+                cursor++;
+            }
 
-        while (swiftResultSet.hasNext()) {
-            Row rowData = swiftResultSet.getNextRow();
-            putRow(cursor, rowData);
-            cursor++;
+            putNullIndex();
+
+            putSegmentInfo(lastCursor, cursor);
+        } finally {
+            release();
         }
 
-        putNullIndex();
-
-        putSegmentInfo(lastCursor, cursor);
-
-        release();
     }
 }

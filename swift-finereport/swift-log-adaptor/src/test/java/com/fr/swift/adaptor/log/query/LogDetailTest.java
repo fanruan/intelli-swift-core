@@ -4,12 +4,11 @@ import com.fr.stable.query.QueryFactory;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.data.DataList;
 import com.fr.swift.adaptor.log.MetricProxy;
-import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
-import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.db.QueryDBSource;
+import com.fr.swift.test.Preparer;
 import org.junit.Test;
 
 import static junit.framework.TestCase.assertTrue;
@@ -23,7 +22,11 @@ import static junit.framework.TestCase.assertTrue;
  */
 public class LogDetailTest extends LogBaseTest {
 
-    private final Database db = SwiftDatabase.getInstance();
+    @Override
+    public void setUp() throws Exception {
+        Preparer.prepareCubeBuild(getClass());
+        super.setUp();
+    }
 
     @Test
     public void testFind() {

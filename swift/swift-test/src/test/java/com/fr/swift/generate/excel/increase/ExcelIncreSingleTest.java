@@ -6,6 +6,7 @@ import com.fr.swift.generate.excel.BaseExcelTest;
 import com.fr.swift.generate.history.transport.TableTransporter;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.HistorySegment;
+import com.fr.swift.segment.Incrementer;
 import com.fr.swift.segment.RealTimeSegment;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
@@ -45,7 +46,7 @@ public class ExcelIncreSingleTest extends BaseExcelTest {
 
         DataSource dataSource2 = new ExcelDataSource(path2, names, types);
 
-        ((Inserter) SwiftContext.get().getBean("incrementer", dataSource)).insertData(SwiftSourceTransferFactory.createSourceTransfer(dataSource2).createResultSet());
+        new Incrementer(dataSource).insertData(SwiftSourceTransferFactory.createSourceTransfer(dataSource2).createResultSet());
 
         segments = SwiftContext.get().getBean(LocalSegmentProvider.class).getSegment(dataSource.getSourceKey());
         assertEquals(segments.size(), 2);

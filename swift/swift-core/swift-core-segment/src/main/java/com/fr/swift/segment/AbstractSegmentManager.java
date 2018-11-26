@@ -104,6 +104,7 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
                         keys.addAll(segmentService.find(
                                 Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, table.getId()),
                                 Restrictions.like("id", likeKey, MatchMode.START)));
+                        SwiftLoggers.getLogger().debug("RealTime like segments {}", keys);
                         likeKeys.add(likeKey);
                     }
                 } else {

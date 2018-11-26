@@ -46,17 +46,7 @@ public class UploadHistoryListener extends Listener<SegmentKey> {
 
     @Override
     public void on(Event event, final SegmentKey segKey) {
-        try {
-            SVC_EXEC.submit(new SwiftServiceCallable<Void>(segKey.getTable(), ServiceTaskType.UPLOAD, new Callable<Void>() {
-                @Override
-                public Void call() {
-                    upload(segKey);
-                    return null;
-                }
-            }));
-        } catch (InterruptedException e) {
-            SwiftLoggers.getLogger().error(e);
-        }
+        upload(segKey);
     }
 
     private static void upload(final SegmentKey segKey) {
@@ -76,7 +66,7 @@ public class UploadHistoryListener extends Listener<SegmentKey> {
                 } else {
                     SegmentKey realtimeSegKey = getRealtimeSegKey(segKey);
                     SEG_SVC.removeSegments(Collections.singletonList(realtimeSegKey));
-                    clearSeg(realtimeSegKey);
+                    SegmentUtils.clearSegment(realtimeSegKey);
                 }
             }
         });
@@ -85,34 +75,29 @@ public class UploadHistoryListener extends Listener<SegmentKey> {
 
     private static void notifyDownload(final SegmentKey segKey) {
         final String currentClusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
-        EventResult result = (EventResult) ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class).trigger(new TransCollateLoadEvent(Pair.of(segKey.getTable().getId(), Collections.singletonList(segKey.toString())), currentClusterId));
-        if (result.isSuccess()) {
-            String clusterId = result.getClusterId();
-            SegmentKey realtimeSegKey = getRealtimeSegKey(segKey);
-            SEG_SVC.removeSegments(Collections.singletonList(realtimeSegKey));
-            // 删除本机上的history分布
-            if (!ComparatorUtils.equals(clusterId, currentClusterId)) {
-                LOCATION_SVC.delete(segKey.getTable().getId(), currentClusterId, segKey.toString());
-                clearSeg(segKey);
-            }
-            clearSeg(realtimeSegKey);
-        } else {
-            SwiftLoggers.getLogger().error(result.getError());
-        }
-    }
-
-    private static void clearSeg(final SegmentKey segKey) {
-        try {
-            SVC_EXEC.submit(new SwiftServiceCallable<Void>(segKey.getTable(), ServiceTaskType.CLEAR_LOCAL, new Callable<Void>() {
-                @Override
-                public Void call() {
-                    SegmentUtils.clearSegment(segKey);
-                    return null;
+        ClusterCommonUtils.asyncCallMaster(
+                new TransCollateLoadEvent(Pair.of(segKey.getTable().getId(), Collections.singletonList(segKey.toString())), currentClusterId)
+        ).addCallback(new AsyncRpcCallback() {
+            @Override
+            public void success(Object result) {
+                if (result instanceof EventResult && ((EventResult) result).isSuccess()) {
+                    String clusterId = ((EventResult) result).getClusterId();
+                    SegmentKey realtimeSegKey = getRealtimeSegKey(segKey);
+                    SEG_SVC.removeSegments(Collections.singletonList(realtimeSegKey));
+                    SegmentUtils.clearSegment(realtimeSegKey);
+                    // 删除本机上的history分布
+                    if (!ComparatorUtils.equals(clusterId, currentClusterId)) {
+                        LOCATION_SVC.delete(segKey.getTable().getId(), currentClusterId, segKey.toString());
+                        SegmentUtils.clearSegment(segKey);
+                    }
                 }
-            }));
-        } catch (InterruptedException e) {
-            SwiftLoggers.getLogger().error(e);
-        }
+            }
+
+            @Override
+            public void fail(Exception e) {
+                SwiftLoggers.getLogger().error(e);
+            }
+        });
     }
 
     private static SegmentKey getRealtimeSegKey(SegmentKey hisSegKey) {
