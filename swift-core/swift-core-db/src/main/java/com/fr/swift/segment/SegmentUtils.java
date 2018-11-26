@@ -3,6 +3,7 @@ package com.fr.swift.segment;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.ResourceDiscovery;
+import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.impl.SwiftDatabase;
@@ -12,7 +13,6 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.operator.column.SwiftColumnIndexer;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.FileUtil;
-import com.fr.swift.util.function.Predicate;
 import com.fr.third.guava.base.Optional;
 
 import java.util.ArrayList;
@@ -60,12 +60,7 @@ public class SegmentUtils {
     private static void clearRealtimeSegment(SegmentKey segKey) {
         final String segPath = CubeUtil.getSegPath(segKey);
 
-        ResourceDiscovery.getInstance().removeIf(new Predicate<String>() {
-            @Override
-            public boolean test(String s) {
-                return s.contains(segPath);
-            }
-        });
+        ResourceDiscovery.getInstance().release(new ResourceLocation(segPath, StoreType.MEMORY));
 
         FileUtil.delete(CubeUtil.getAbsoluteSegPath(segKey).replace(segKey.getSwiftSchema().getDir(), segKey.getSwiftSchema().getBackupDir()));
     }
