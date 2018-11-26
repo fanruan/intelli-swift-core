@@ -4,6 +4,7 @@ import com.fr.event.EventDispatcher;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
@@ -45,7 +46,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
     private transient QueryBeanFactory queryBeanFactory;
 
-    private transient boolean recoverable = true;
+    private transient volatile boolean recoverable = true;
 
     private SwiftRealtimeService() {
     }
@@ -67,6 +68,8 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     @Override
     public boolean shutdown() throws SwiftServiceException {
         super.shutdown();
+        ResourceDiscovery.getInstance().releaseAll();
+        recoverable = true;
         server = null;
         segmentManager = null;
         taskExecutor = null;
