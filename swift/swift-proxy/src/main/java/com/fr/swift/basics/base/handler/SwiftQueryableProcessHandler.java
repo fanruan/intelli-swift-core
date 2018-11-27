@@ -79,7 +79,7 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
                             @Override
                             public Object getPage() {
                                 Object ret = resultSet.getPage();
-                                // TODO: 2018/11/27 如何判断远程是否还有下一页？无脑取下一个resultSet判断是否为null？还是通过接口支持？
+                                // TODO: 2018/11/27 如何判断远程是否还有下一页？无脑取下一个resultSet判断是否为空？还是通过接口支持？
                                 if (hasNextPage()) {
                                     Invoker invoker = invokerCreater.createSyncInvoker(proxyClass, pair.getKey());
                                     try {

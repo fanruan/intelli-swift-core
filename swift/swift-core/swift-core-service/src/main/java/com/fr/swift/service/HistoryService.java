@@ -5,7 +5,6 @@ import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.handler.CommonLoadProcessHandler;
 import com.fr.swift.basics.handler.CommonProcessHandler;
 import com.fr.swift.basics.handler.DeleteSegmentProcessHandler;
-import com.fr.swift.basics.handler.QueryableProcessHandler;
 import com.fr.swift.basics.handler.SyncDataProcessHandler;
 import com.fr.swift.db.Where;
 import com.fr.swift.query.Queryable;
@@ -30,7 +29,6 @@ public interface HistoryService extends SwiftService, Queryable, DeleteService {
      * @return 数据
      */
     @Override
-    @InvokeMethod(QueryableProcessHandler.class)
     SwiftResultSet query(String queryInfo) throws Exception;
 
     @InvokeMethod(value = SyncDataProcessHandler.class, target = Target.HISTORY)
