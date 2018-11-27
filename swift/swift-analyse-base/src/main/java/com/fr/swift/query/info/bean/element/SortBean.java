@@ -1,6 +1,5 @@
 package com.fr.swift.query.info.bean.element;
 
-import com.fr.swift.query.info.bean.element.relation.IRelationSourceBean;
 import com.fr.swift.query.sort.SortType;
 import com.fr.third.fasterxml.jackson.annotation.JsonInclude;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
@@ -14,9 +13,7 @@ public class SortBean {
     @JsonProperty
     private SortType type;
     @JsonProperty
-    private String column;      // TODO: 2018/7/4 结果排序还是字典排序要区分原始字段名和客户端定义的字段转义名
-    @JsonProperty
-    private IRelationSourceBean relation;
+    private String name;      // TODO: 2018/7/4 结果排序还是字典排序要区分原始字段名和客户端定义的字段转义名
 
     public SortBean() {
     }
@@ -29,19 +26,11 @@ public class SortBean {
         this.type = type;
     }
 
-    public String getColumn() {
-        return column;
+    public String getName() {
+        return name;
     }
 
-    public void setColumn(String column) {
-        this.column = column;
-    }
-
-    public IRelationSourceBean getRelation() {
-        return relation;
-    }
-
-    public void setRelation(IRelationSourceBean relation) {
-        this.relation = relation;
+    public void setName(String name) {
+        this.name = name;
     }
 }

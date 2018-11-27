@@ -98,17 +98,16 @@ public class QueryInfoParser {
         if (null != sortBeans) {
             sorts = new ArrayList<Sort>();
             for (SortBean sortBean : sortBeans) {
-                ColumnKey columnKey = new ColumnKey(sortBean.getColumn());
-                columnKey.setRelation(RelationSourceParser.parse(sortBean.getRelation()));
+                ColumnKey columnKey = new ColumnKey(sortBean.getName());
                 switch (sortBean.getType()) {
                     case NONE:
                         sorts.add(new NoneSort());
                         break;
                     case DESC:
-                        sorts.add(new DescSort(getDimensionIndex(sortBean.getColumn(), dimensions), columnKey));
+                        sorts.add(new DescSort(getDimensionIndex(sortBean.getName(), dimensions), columnKey));
                         break;
                     case ASC:
-                        sorts.add(new AscSort(getDimensionIndex(sortBean.getColumn(), dimensions), columnKey));
+                        sorts.add(new AscSort(getDimensionIndex(sortBean.getName(), dimensions), columnKey));
                         break;
                 }
             }

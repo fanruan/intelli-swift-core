@@ -18,7 +18,7 @@ public class DimensionBean {
     @JsonProperty
     private SortBean sortBean;
     @JsonProperty
-    private DimensionType dimensionType;
+    private DimensionType type;
 
     public String getColumn() {
         return column;
@@ -44,11 +44,11 @@ public class DimensionBean {
         this.sortBean = sortBean;
     }
 
-    public DimensionType getDimensionType() {
-        return dimensionType;
+    public DimensionType getType() {
+        return type;
     }
 
-    public void setDimensionType(DimensionType dimensionType) {
-        this.dimensionType = dimensionType;
+    public void setType(DimensionType type) {
+        this.type = type;
     }
 }

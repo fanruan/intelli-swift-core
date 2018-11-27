@@ -16,7 +16,6 @@ import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
 import com.fr.swift.query.info.bean.post.RowSortQueryInfoBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.type.DimensionType;
-import com.fr.swift.query.info.bean.type.MetricType;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.source.Row;
@@ -138,7 +137,7 @@ public class LogQueryUtils {
             // TODO: 2018/6/21 维度上的排序没适配
             DimensionBean bean = new DimensionBean();
             bean.setColumn(fieldNames.get(i));
-            bean.setDimensionType(DimensionType.GROUP);
+            bean.setType(DimensionType.GROUP);
             dimensions.add(bean);
         }
         queryInfoBean.setDimensions(dimensions);
@@ -147,11 +146,10 @@ public class LogQueryUtils {
         for (int i = 0; i < metricBeans.size(); i++) {
             MetricBean metricBean = metricBeans.get(i);
             com.fr.swift.query.info.bean.element.MetricBean bean = new com.fr.swift.query.info.bean.element.MetricBean();
-            bean.setMetricType(MetricType.GROUP);
             bean.setColumn(metricBean.getFiledName());
-            bean.setName(metricBean.getName());
+            bean.setAlias(metricBean.getName());
             bean.setType(getAggType(metricBean));
-            bean.setFilterInfoBean(createMetricFilterInfo(metricBean.getFiledName(), metricBean.getFiledFilter()));
+            bean.setFilter(createMetricFilterInfo(metricBean.getFiledName(), metricBean.getFiledFilter()));
             metrics.add(bean);
         }
         queryInfoBean.setMetricBeans(metrics);
@@ -161,13 +159,13 @@ public class LogQueryUtils {
             if (StringUtils.equals(metricBean.getAsc(), LogSearchConstants.SORT_ASC)) {
                 SortBean sortBean = new SortBean();
                 // TODO: 2018/7/4 因为这边是结果排序，所以用字段转义名
-                sortBean.setColumn(metricBean.getName());
+                sortBean.setName(metricBean.getName());
                 sortBean.setType(SortType.ASC);
                 sortBeans.add(sortBean);
             }
             if (StringUtils.equals(metricBean.getAsc(), LogSearchConstants.SORT_DESC)) {
                 SortBean sortBean = new SortBean();
-                sortBean.setColumn(metricBean.getName());
+                sortBean.setName(metricBean.getName());
                 sortBean.setType(SortType.DESC);
                 sortBeans.add(sortBean);
             }

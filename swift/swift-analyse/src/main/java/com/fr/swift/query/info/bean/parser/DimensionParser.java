@@ -40,7 +40,7 @@ class DimensionParser {
                 sort = sortBean.getType() == SortType.ASC ? new AscSort(i) : new DescSort(i);
             }
             ColumnIndexingConf conf = service.getColumnConf(table, dimensionBean.getColumn());
-            switch (dimensionBean.getDimensionType()) {
+            switch (dimensionBean.getType()) {
                 case GROUP:
                     dimensions.add(new GroupDimension(i, columnKey, Groups.newGroup(new NoGroupRule()), sort,
                             new IndexInfoImpl(conf.requireIndex(), conf.requireGlobalDict())));
@@ -57,7 +57,7 @@ class DimensionParser {
     private static SortBean getDimensionSort(String name, List<SortBean> sortBeans) {
         if (null != sortBeans && null != name) {
             for (SortBean sortBean : sortBeans) {
-                if (ComparatorUtils.equals(sortBean.getColumn(), name)) {
+                if (ComparatorUtils.equals(sortBean.getName(), name)) {
                     return sortBean;
                 }
             }
@@ -70,7 +70,7 @@ class DimensionParser {
         for (int i = 0; i < joinedFields.size(); i++) {
             DimensionBean dimensionBean = joinedFields.get(i);
             ColumnKey columnKey = new ColumnKey(dimensionBean.getColumn());
-            switch (dimensionBean.getDimensionType()) {
+            switch (dimensionBean.getType()) {
                 case GROUP:
                     dimensions.add(new GroupDimension(i, columnKey, Groups.newGroup(new NoGroupRule()), null, new IndexInfoImpl(false, false)));
                     break;

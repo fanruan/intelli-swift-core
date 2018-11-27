@@ -70,7 +70,7 @@ public class SwiftMetaDataUtils {
         }
         List<MetricBean> metricBeans = bean.getMetricBeans();
         for (MetricBean metricBean : metricBeans) {
-            String alias = metricBean.getName();
+            String alias = metricBean.getAlias();
             String column = metricBean.getColumn();
             SwiftMetaDataColumn metaDataColumn = StringUtils.isEmpty(column) ?
                     new MetaDataColumnBean(StringUtils.EMPTY, null, Types.DOUBLE, null) : meta.getColumn(column);

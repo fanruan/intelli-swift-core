@@ -77,7 +77,7 @@ public class QueryInfoParserTest {
         List<MetricBean> metricBeans = queryBean.getMetricBeans();
         assertEquals(1, metricBeans.size());
         assertEquals("购买数量", metricBeans.get(0).getColumn());
-        assertEquals("购买数量-转义", metricBeans.get(0).getName());
+        assertEquals("购买数量-转义", metricBeans.get(0).getAlias());
         GroupQueryInfo info = (GroupQueryInfo) QueryInfoParser.parse(queryBean);
         assertEquals(1, info.getDimensions().size());
         assertEquals(1, info.getMetrics().size());
@@ -109,7 +109,7 @@ public class QueryInfoParserTest {
         assertEquals("购买的产品", dimensionBeanList.get(3).getColumn());
         List<SortBean> sortBeans = queryBean.getSorts();
         assertEquals(1, sortBeans.size());
-        assertEquals("购买数量", sortBeans.get(0).getColumn());
+        assertEquals("购买数量", sortBeans.get(0).getName());
         assertEquals(SortType.DESC, sortBeans.get(0).getType());
 
         DetailQueryInfo info = (DetailQueryInfo) QueryInfoParser.parse(queryBean);

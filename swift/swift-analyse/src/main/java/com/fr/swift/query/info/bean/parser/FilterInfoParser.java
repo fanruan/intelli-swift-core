@@ -77,7 +77,6 @@ class FilterInfoParser {
             case IN: {
                 InFilterBean inFilterBean = (InFilterBean) bean;
                 ColumnKey columnKey = new ColumnKey(inFilterBean.getColumn());
-                columnKey.setRelation(RelationSourceParser.parse(inFilterBean.getRelation()));
                 return new SwiftDetailFilterInfo<Set<Object>>(columnKey,
                         parseSet(table, inFilterBean.getColumn(), inFilterBean.getFilterValue()), SwiftDetailFilterType.IN);
             }
@@ -203,7 +202,6 @@ class FilterInfoParser {
 
     private static SwiftDetailFilterInfo createDetailFilterInfo(DetailFilterInfoBean bean, Object filterValue) {
         ColumnKey columnKey = new ColumnKey(bean.getColumn());
-        columnKey.setRelation(RelationSourceParser.parse(bean.getRelation()));
         return new SwiftDetailFilterInfo(columnKey, filterValue, bean.getType());
     }
 

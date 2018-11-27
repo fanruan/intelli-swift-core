@@ -48,7 +48,7 @@ public class QueryConditionAdaptor {
             // TODO: 2018/6/21 维度上的排序没适配
             DimensionBean bean = new DimensionBean();
             bean.setColumn(fieldNames.get(i));
-            bean.setDimensionType(DimensionType.DETAIL);
+            bean.setType(DimensionType.DETAIL);
             dimensions.add(bean);
         }
         queryInfoBean.setDimensions(dimensions);
@@ -57,7 +57,7 @@ public class QueryConditionAdaptor {
         List<SortItem> sortItems = condition.getSortList();
         for (SortItem sortItem : sortItems) {
             SortBean bean = new SortBean();
-            bean.setColumn(sortItem.getColumnName());
+            bean.setName(sortItem.getColumnName());
             bean.setType(sortItem.isDesc() ? SortType.DESC : SortType.ASC);
             sorts.add(bean);
         }

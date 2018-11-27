@@ -45,7 +45,7 @@ class PostQueryInfoParser {
     private static Map<String, Integer> getFieldIndexMap(List<PostQueryInfoBean> postQueryInfoBeans, List<MetricBean> metrics) {
         Map<String, Integer> fieldIndexMap = new HashMap<String, Integer>();
         for (MetricBean metric : metrics) {
-            fieldIndexMap.put(metric.getName(), fieldIndexMap.size());
+            fieldIndexMap.put(metric.getAlias() == null ? metric.getColumn() : metric.getAlias(), fieldIndexMap.size());
         }
         for (PostQueryInfoBean postQueryInfoBean : postQueryInfoBeans) {
             if (postQueryInfoBean.getType() != PostQueryType.CAL_FIELD) {
@@ -77,7 +77,7 @@ class PostQueryInfoParser {
         List<SortBean> sortBeans = bean.getSortBeans();
         for (SortBean sortBean : sortBeans) {
             // TODO: 2018/6/7 这边复用之前排序的代码，所以targetIndex要算上维度
-            int targetIndex = dimensionSize + fieldIndexMap.get(sortBean.getColumn());
+            int targetIndex = dimensionSize + fieldIndexMap.get(sortBean.getName());
             sorts.add(sortBean.getType() == SortType.ASC ? new AscSort(targetIndex) : new DescSort(targetIndex));
         }
         return new RowSortQueryInfo(sorts);
@@ -108,7 +108,7 @@ class PostQueryInfoParser {
             // TODO: 2018/6/8 这边都是假定groupQuery
             List<MetricBean> metricBeans = ((GroupQueryInfoBean) queryBean).getMetricBeans();
             for (MetricBean metricBean : metricBeans) {
-                fieldIndexMap.put(metricBean.getName(), fieldIndexMap.size());
+                fieldIndexMap.put(metricBean.getColumn(), fieldIndexMap.size());
             }
             List<PostQueryInfoBean> queryInfoBeans = ((GroupQueryInfoBean) queryBean).getPostQueryInfoBeans();
             for (PostQueryInfoBean queryInfoBean : queryInfoBeans) {
