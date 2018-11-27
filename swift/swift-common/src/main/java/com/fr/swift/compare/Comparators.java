@@ -2,7 +2,9 @@ package com.fr.swift.compare;
 
 import com.fr.swift.util.Crasher;
 
+import java.text.Collator;
 import java.util.Comparator;
+import java.util.Locale;
 
 /**
  * 比较器工厂
@@ -14,7 +16,7 @@ public class Comparators {
     /**
      * 专治中文String
      */
-    public static final Comparator<String> PINYIN_ASC = new ChinesePinyinComparator();
+    public static final Comparator<String> PINYIN_ASC = new PinyinComparator();
 
     public static final Comparator<String> PINYIN_DESC = reverse(PINYIN_ASC);
 
@@ -37,12 +39,6 @@ public class Comparators {
             public int compare(T o1, T o2) {
                 if (o1 == o2) {
                     return 0;
-                }
-                if (o1 == Comparators.MIN_INFINITY || o2 == Comparators.MAX_INFINITY) {
-                    return -1;
-                }
-                if (o1 == Comparators.MAX_INFINITY || o2 == Comparators.MIN_INFINITY) {
-                    return 1;
                 }
                 if (o1 == null) {
                     return -1;
@@ -75,12 +71,6 @@ public class Comparators {
                 if (a == b) {
                     return 0;
                 }
-                if (a == Comparators.MIN_INFINITY || b == Comparators.MAX_INFINITY) {
-                    return -1;
-                }
-                if (a == Comparators.MAX_INFINITY || b == Comparators.MIN_INFINITY) {
-                    return 1;
-                }
                 if (a == null) {
                     return -1;
                 }
@@ -108,21 +98,26 @@ public class Comparators {
         };
     }
 
-    public static <T extends Number> Comparator<T> numberDesc() {
-        return reverse(Comparators.<T>numberAsc());
+    private static class PinyinComparator implements Comparator<String> {
+
+        private Collator cmp = Collator.getInstance(Locale.CHINA);
+
+        @Override
+        public int compare(String o1, String o2) {
+            if (o1 == o2) {
+                return 0;
+            }
+            if (o1 == null) {
+                return -1;
+            }
+            if (o2 == null) {
+                return 1;
+            }
+            return cmp.compare(o1, o2);
+        }
     }
 
-    public static final Comparable<?> MIN_INFINITY = new Comparable<Object>() {
-        @Override
-        public int compareTo(Object o) {
-            return -1;
-        }
-    };
-
-    public static final Comparable<?> MAX_INFINITY = new Comparable<Object>() {
-        @Override
-        public int compareTo(Object o) {
-            return 1;
-        }
-    };
+    private Comparators() {
+        throw new InstantiationError();
+    }
 }
