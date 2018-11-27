@@ -37,6 +37,88 @@ import java.util.UUID;
  */
 public class LogQueryUtils {
 
+//    static QueryBean groupQuery(Class<?> entity, QueryCondition queryCondition, List<DataColumn> dataColumns) {
+//        GroupQueryInfoBean queryInfoBean = new GroupQueryInfoBean();
+//        queryInfoBean.setQueryId(UUID.randomUUID().toString());
+//        String tableName = JpaAdaptor.getTableName(entity);
+//        queryInfoBean.setTableName(tableName);
+//        FilterInfoBean filterInfoBean = QueryConditionAdaptor.restriction2FilterInfo(queryCondition.getRestriction());
+//        queryInfoBean.setFilterInfoBean(filterInfoBean);
+//
+//        List<SortItem> groupByList = queryCondition.getGroupByList();
+//        groupByList = groupByList == null ? new ArrayList<SortItem>() : groupByList;
+//        List<DimensionBean> dimensions = new ArrayList<DimensionBean>();
+//        for (SortItem item : groupByList) {
+//            DimensionBean bean = new DimensionBean();
+//            bean.setColumn(item.getColumnName());
+//            bean.setDimensionType(DimensionType.GROUP);
+//            GroupBean groupBean = new GroupBean();
+//            groupBean.setType(GroupType.NONE);
+//            bean.setGroupBean(groupBean);
+//            SortBean sortBean = new SortBean();
+//            sortBean.setColumn(item.getColumnName());
+//            sortBean.setType(item.isDesc() ? SortType.DESC : SortType.ASC);
+//            bean.setSortBean(sortBean);
+//            dimensions.add(bean);
+//        }
+//        queryInfoBean.setDimensionBeans(dimensions);
+//
+//        List<com.fr.swift.query.info.bean.element.MetricBean> metrics = new ArrayList<com.fr.swift.query.info.bean.element.MetricBean>();
+//        for (DataColumn metric : dataColumns) {
+//            com.fr.swift.query.info.bean.element.MetricBean bean = new com.fr.swift.query.info.bean.element.MetricBean();
+//            bean.setMetricType(MetricType.GROUP);
+//            bean.setColumn(metric.getName());
+//            bean.setName(metric.getAlias());
+//            bean.setType(convert(metric.getFunc(), metric.getModifier()));
+//            if (metric.getRestriction() != null) {
+//                bean.setFilterInfoBean(QueryConditionAdaptor.restriction2FilterInfo(metric.getRestriction()));
+//            }
+//            metrics.add(bean);
+//        }
+//        queryInfoBean.setMetricBeans(metrics);
+//
+//        List<SortBean> sortBeans = new ArrayList<SortBean>();
+//        for (SortItem item : queryCondition.getSortList()) {
+//            SortBean bean = new SortBean();
+//            bean.setColumn(item.getColumnName());
+//            bean.setType(item.isDesc() ? SortType.DESC : SortType.ASC);
+//            sortBeans.add(bean);
+//        }
+//        if (!sortBeans.isEmpty()) {
+//            List<PostQueryInfoBean> postQueryInfoBeans = new ArrayList<PostQueryInfoBean>();
+//            RowSortQueryInfoBean sortQueryInfoBean = new RowSortQueryInfoBean();
+//            sortQueryInfoBean.setSortBeans(sortBeans);
+//            postQueryInfoBeans.add(sortQueryInfoBean);
+//            queryInfoBean.setPostQueryInfoBeans(postQueryInfoBeans);
+//        }
+//
+//        return queryInfoBean;
+//    }
+
+//    private static AggregatorType convert(ColumnFunc func, String modifier) {
+//        String funcName = func.getName();
+//        if (ComparatorUtils.equals(funcName, SimpleColumnFunc.COUNT.getName())) {
+//            if (ComparatorUtils.equals(modifier, ColumnModifier.DISTINCT)) {
+//                return AggregatorType.DISTINCT;
+//            } else {
+//                return AggregatorType.COUNT;
+//            }
+//        }
+//        if (ComparatorUtils.equals(funcName, SimpleColumnFunc.SUM.getName())) {
+//            return AggregatorType.SUM;
+//        }
+//        if (ComparatorUtils.equals(funcName, SimpleColumnFunc.AVG.getName())) {
+//            return AggregatorType.AVERAGE;
+//        }
+//        if (ComparatorUtils.equals(funcName, SimpleColumnFunc.MIN.getName())) {
+//            return AggregatorType.MIN;
+//        }
+//        if (ComparatorUtils.equals(funcName, SimpleColumnFunc.MAX.getName())) {
+//            return AggregatorType.MAX;
+//        }
+//        return Crasher.crash(new UnsupportedOperationException("Unsupported agg func: " + funcName));
+//    }
+
     static QueryBean groupQuery(Class<?> entity, QueryCondition queryCondition, List<String> fieldNames,
                                 List<MetricBean> metricBeans, FilterInfoBean notNullFilter) throws Exception {
         GroupQueryInfoBean queryInfoBean = new GroupQueryInfoBean();

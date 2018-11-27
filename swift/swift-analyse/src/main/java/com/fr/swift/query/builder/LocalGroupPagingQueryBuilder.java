@@ -1,6 +1,7 @@
 package com.fr.swift.query.builder;
 
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.detail.DetailFilter;
@@ -41,6 +42,7 @@ public class LocalGroupPagingQueryBuilder extends AbstractLocalGroupQueryBuilder
         List<Query<QueryResultSet>> queries = new ArrayList<Query<QueryResultSet>>();
         List<Segment> segments = localSegmentProvider.getSegmentsByIds(info.getTable(), info.getQuerySegment());
         for (Segment segment : segments) {
+            SwiftLoggers.getLogger().debug("Build Group Segment Query {}", segment.getLocation());
             List<Pair<Column, IndexInfo>> dimensionColumns = getDimensionSegments(segment, dimensions);
             List<Column> metricColumns = getMetricSegments(segment, metrics);
             List<Aggregator> aggregators = LocalGroupAllQueryBuilder.getFilterAggregators(metrics, segment);

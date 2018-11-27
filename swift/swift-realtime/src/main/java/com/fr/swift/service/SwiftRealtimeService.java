@@ -5,14 +5,15 @@ import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.netty.rpc.server.RpcServer;
-import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
+import com.fr.swift.query.query.QueryBeanFactory;
 import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
@@ -47,7 +48,9 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
     private transient ServiceTaskExecutor taskExecutor;
 
-    private transient boolean recoverable = true;
+    private transient QueryBeanFactory queryBeanFactory;
+
+    private transient volatile boolean recoverable = true;
 
     public SwiftRealtimeService() {
     }
@@ -58,6 +61,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         server = SwiftContext.get().getBean(RpcServer.class);
         segmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         taskExecutor = SwiftContext.get().getBean(ServiceTaskExecutor.class);
+        queryBeanFactory = SwiftContext.get().getBean(QueryBeanFactory.class);
         if (recoverable) {
             recover0();
             recoverable = false;
@@ -68,9 +72,12 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     @Override
     public boolean shutdown() throws SwiftServiceException {
         super.shutdown();
+        ResourceDiscovery.getInstance().releaseAll();
+        recoverable = true;
         server = null;
         segmentManager = null;
         taskExecutor = null;
+        queryBeanFactory = null;
         return true;
     }
 
@@ -112,7 +119,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     @Override
     public SwiftResultSet query(final String queryDescription) throws SQLException {
         try {
-            final QueryInfoBean bean = QueryBeanFactory.create(queryDescription);
+            final QueryInfoBean bean = queryBeanFactory.create(queryDescription, false);
             SessionFactory sessionFactory = SwiftContext.get().getBean(SessionFactory.class);
             return sessionFactory.openSession(bean.getQueryId()).executeQuery(bean);
         } catch (Exception e) {

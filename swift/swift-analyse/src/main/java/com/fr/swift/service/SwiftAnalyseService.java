@@ -72,9 +72,9 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
         }
     }
 
-    private void loadSegmentLocationInfo() {
+    private void loadSegmentLocationInfo(SwiftClusterSegmentService clusterSegmentService) {
         if (loadable) {
-            loadSelfSegmentDestination();
+            loadSelfSegmentDestination(clusterSegmentService);
             loadable = false;
         }
         List<Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo>> result =
@@ -97,9 +97,9 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
         }
     }
 
-    private void loadSelfSegmentDestination() {
-        SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
-        clusterSegmentService.setClusterId(getID());
+    private void loadSelfSegmentDestination(SwiftClusterSegmentService clusterSegmentService) {
+//        SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
+//        clusterSegmentService.setClusterId(getID());
         Map<String, List<SegmentKey>> segments = clusterSegmentService.getOwnSegments();
         SwiftSegmentManager manager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         if (!segments.isEmpty()) {
