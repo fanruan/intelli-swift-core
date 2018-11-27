@@ -3,6 +3,7 @@ package com.fr.swift.query.post;
 import com.fr.swift.query.info.element.target.GroupTarget;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeResultSet;
+import com.fr.swift.result.QueryResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeOperator;
 import com.fr.swift.result.node.cal.TargetCalculatorUtils;
@@ -17,18 +18,18 @@ import java.util.Map;
 /**
  * Created by Lyon on 2018/5/31.
  */
-public class FieldCalQuery extends AbstractPostQuery<NodeResultSet> {
+public class FieldCalQuery implements PostQuery<QueryResultSet> {
 
-    private PostQuery<NodeResultSet> query;
+    private PostQuery<QueryResultSet> query;
     private List<GroupTarget> calInfo;
 
-    public FieldCalQuery(PostQuery<NodeResultSet> query, List<GroupTarget> calInfo) {
+    public FieldCalQuery(PostQuery<QueryResultSet> query, List<GroupTarget> calInfo) {
         this.query = query;
         this.calInfo = calInfo;
     }
 
     @Override
-    public NodeResultSet getQueryResult() throws SQLException {
+    public QueryResultSet getQueryResult() throws SQLException {
         SwiftNodeOperator operator = new SwiftNodeOperator() {
             @Override
             public Pair<SwiftNode, List<Map<Integer, Object>>> apply(Pair<? extends SwiftNode, List<Map<Integer, Object>>> p) {
@@ -42,6 +43,7 @@ public class FieldCalQuery extends AbstractPostQuery<NodeResultSet> {
             }
         };
         NodeResultSet<SwiftNode> mergeResult = (NodeResultSet<SwiftNode>) query.getQueryResult();
-        return new ChainedNodeResultSet(operator, mergeResult);
+        // TODO: 2018/11/27
+        return (QueryResultSet) new ChainedNodeResultSet(operator, mergeResult);
     }
 }

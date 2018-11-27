@@ -2,7 +2,7 @@ package com.fr.swift.query.info.bean.parser;
 
 import com.fr.swift.generate.BaseTest;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
-import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
+import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.info.element.target.GroupTarget;
 import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.info.group.post.CalculatedFieldQueryInfo;
@@ -26,7 +26,7 @@ public class CalculatedFieldParserTest extends BaseTest {
         assertTrue(new File(filePath).exists());
         GroupQueryInfoBean queryBean = null;
         try {
-            queryBean = (GroupQueryInfoBean) new QueryInfoBeanFactory().create(new File(filePath).toURI().toURL());
+            queryBean = (GroupQueryInfoBean) QueryBeanFactory.create(new File(filePath).toURI().toURL());
         } catch (IOException e) {
             fail();
         }

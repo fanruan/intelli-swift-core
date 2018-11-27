@@ -3,11 +3,10 @@ package com.fr.swift.query.post;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
-import com.fr.swift.result.NodeResultSet;
+import com.fr.swift.result.QueryResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.result.SwiftRowOperator;
-import com.fr.swift.result.node.resultset.FakeNodeResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.structure.iterator.IteratorUtils;
 import com.fr.swift.structure.iterator.MapperIterator;
@@ -23,20 +22,20 @@ import java.util.List;
 /**
  * Created by Lyon on 2018/6/3.
  */
-public class RowSortQuery extends AbstractPostQuery<NodeResultSet> {
+public class RowSortQuery implements PostQuery<QueryResultSet> {
 
-    private PostQuery<NodeResultSet> query;
+    private PostQuery<QueryResultSet> query;
     private List<Sort> sortList;
 
-    public RowSortQuery(PostQuery<NodeResultSet> query, List<Sort> sortList) {
+    public RowSortQuery(PostQuery<QueryResultSet> query, List<Sort> sortList) {
         this.query = query;
         this.sortList = sortList;
     }
 
     @Override
-    public NodeResultSet getQueryResult() throws SQLException {
+    public QueryResultSet getQueryResult() throws SQLException {
         // 这个排序完之后没法构建Node了，维度顺序被打乱不满足构建树的前提条件了
-        NodeResultSet resultSet = query.getQueryResult();
+        QueryResultSet resultSet = query.getQueryResult();
         SwiftRowOperator<Row> operator = new SwiftRowOperator<Row>() {
             @Override
             public List<Row> operate(SwiftNode... node) {
@@ -58,7 +57,9 @@ public class RowSortQuery extends AbstractPostQuery<NodeResultSet> {
                 }));
             }
         };
-        return new FakeNodeResultSet(operator, resultSet);
+//        return new FakeNodeResultSet(operator, resultSet);
+        // TODO: 2018/11/27
+        return null;
     }
 
     private static void sortRow(final int dimensionSize, List<List<SwiftNode>> rows, final List<Sort> sorts) {

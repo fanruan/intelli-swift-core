@@ -7,9 +7,7 @@ import com.fr.stable.query.condition.QueryCondition;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.query.aggregator.AggregatorType;
-import com.fr.swift.query.group.GroupType;
 import com.fr.swift.query.info.bean.element.DimensionBean;
-import com.fr.swift.query.info.bean.element.GroupBean;
 import com.fr.swift.query.info.bean.element.SortBean;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.info.bean.element.filter.impl.AndFilterBean;
@@ -51,8 +49,7 @@ public class LogQueryUtils {
             and.setFilterValue(Arrays.asList(notNullFilter, filterInfoBean));
             filterInfoBean = and;
         }
-        queryInfoBean.setFilterInfoBean(filterInfoBean);
-
+        queryInfoBean.setFilter(filterInfoBean);
 
         List<DimensionBean> dimensions = new ArrayList<DimensionBean>();
         for (int i = 0; i < fieldNames.size(); i++) {
@@ -60,12 +57,9 @@ public class LogQueryUtils {
             DimensionBean bean = new DimensionBean();
             bean.setColumn(fieldNames.get(i));
             bean.setDimensionType(DimensionType.GROUP);
-            GroupBean groupBean = new GroupBean();
-            groupBean.setType(GroupType.NONE);
-            bean.setGroupBean(groupBean);
             dimensions.add(bean);
         }
-        queryInfoBean.setDimensionBeans(dimensions);
+        queryInfoBean.setDimensions(dimensions);
 
         List<com.fr.swift.query.info.bean.element.MetricBean> metrics = new ArrayList<com.fr.swift.query.info.bean.element.MetricBean>();
         for (int i = 0; i < metricBeans.size(); i++) {

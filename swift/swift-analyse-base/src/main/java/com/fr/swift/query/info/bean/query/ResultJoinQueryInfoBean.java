@@ -43,4 +43,9 @@ public class ResultJoinQueryInfoBean extends AbstractQueryInfoBean {
     public void setPostQueryInfoBeans(List<PostQueryInfoBean> postQueryInfoBeans) {
         this.postQueryInfoBeans = postQueryInfoBeans;
     }
+
+    @Override
+    public String getTableName() {
+        return null;
+    }
 }

@@ -2,9 +2,7 @@ package com.fr.swift.query.builder;
 
 import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.query.Query;
-import com.fr.swift.result.DetailResultSet;
-
-import java.util.List;
+import com.fr.swift.result.QueryResultSet;
 
 /**
  * Created by pony on 2017/12/14.
@@ -19,13 +17,5 @@ public interface LocalDetailQueryBuilder {
      * @param info
      * @return
      */
-    Query<DetailResultSet> buildLocalQuery(DetailQueryInfo info);
-
-    /**
-     *
-     * @param queries
-     * @param info
-     * @return
-     */
-    Query<DetailResultSet> buildResultQuery(List<Query<DetailResultSet>> queries, DetailQueryInfo info);
+    <T extends QueryResultSet> Query<T> buildLocalQuery(DetailQueryInfo info);
 }

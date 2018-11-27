@@ -1,7 +1,7 @@
 package com.fr.swift.query.result;
 
 import com.fr.swift.query.query.Query;
-import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.result.QueryResultSet;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import java.util.List;
  * Created by pony on 2017/11/27.
  * 处理结果的query
  */
-public abstract class AbstractResultQuery<T extends SwiftResultSet> implements ResultQuery<T> {
+public abstract class AbstractResultQuery<T extends QueryResultSet> implements ResultQuery<T> {
 
     protected int fetchSize;
     /**

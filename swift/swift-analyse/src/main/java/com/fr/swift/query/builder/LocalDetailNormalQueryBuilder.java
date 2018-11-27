@@ -9,7 +9,7 @@ import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.detail.NormalDetailResultQuery;
 import com.fr.swift.query.segment.detail.NormalDetailSegmentQuery;
-import com.fr.swift.result.DetailResultSet;
+import com.fr.swift.result.QueryResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
@@ -31,8 +31,8 @@ public class LocalDetailNormalQueryBuilder implements LocalDetailQueryBuilder {
     }
 
     @Override
-    public Query<DetailResultSet> buildLocalQuery(DetailQueryInfo info) {
-        List<Query<DetailResultSet>> queries = new ArrayList<Query<DetailResultSet>>();
+    public Query<QueryResultSet> buildLocalQuery(DetailQueryInfo info) {
+        List<Query<QueryResultSet>> queries = new ArrayList<Query<QueryResultSet>>();
         List<Segment> segments = localSegmentProvider.getSegmentsByIds(info.getTable(), info.getQuerySegment());
         for (Segment segment : segments) {
             List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
@@ -44,10 +44,5 @@ public class LocalDetailNormalQueryBuilder implements LocalDetailQueryBuilder {
                     FilterBuilder.buildDetailFilter(segment, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND))));
         }
         return new NormalDetailResultQuery(info.getFetchSize(), queries);
-    }
-
-    @Override
-    public Query<DetailResultSet> buildResultQuery(List<Query<DetailResultSet>> queries, DetailQueryInfo info) {
-        return new NormalDetailResultQuery(info.getFetchSize(), queries, info.getTargets());
     }
 }

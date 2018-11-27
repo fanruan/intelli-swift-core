@@ -16,11 +16,11 @@ public abstract class AbstractSingleTableQueryInfoBean extends AbstractQueryInfo
     @JsonProperty
     private String tableName;
     @JsonProperty
-    private FilterInfoBean filterInfoBean;
+    private FilterInfoBean filter;
     @JsonProperty
-    private List<DimensionBean> dimensionBeans = new ArrayList<DimensionBean>(0);
+    private List<DimensionBean> dimensions = new ArrayList<DimensionBean>(0);
     @JsonProperty
-    private List<SortBean> sortBeans = new ArrayList<SortBean>(0);
+    private List<SortBean> sorts = new ArrayList<SortBean>(0);
 
     public String getTableName() {
         return tableName;
@@ -30,27 +30,27 @@ public abstract class AbstractSingleTableQueryInfoBean extends AbstractQueryInfo
         this.tableName = tableName;
     }
 
-    public FilterInfoBean getFilterInfoBean() {
-        return filterInfoBean;
+    public FilterInfoBean getFilter() {
+        return filter;
     }
 
-    public void setFilterInfoBean(FilterInfoBean filterInfoBean) {
-        this.filterInfoBean = filterInfoBean;
+    public void setFilter(FilterInfoBean filter) {
+        this.filter = filter;
     }
 
-    public List<DimensionBean> getDimensionBeans() {
-        return dimensionBeans;
+    public List<DimensionBean> getDimensions() {
+        return dimensions;
     }
 
-    public void setDimensionBeans(List<DimensionBean> dimensionBeans) {
-        this.dimensionBeans = dimensionBeans;
+    public void setDimensions(List<DimensionBean> dimensions) {
+        this.dimensions = dimensions;
     }
 
-    public List<SortBean> getSortBeans() {
-        return sortBeans;
+    public List<SortBean> getSorts() {
+        return sorts;
     }
 
-    public void setSortBeans(List<SortBean> sortBeans) {
-        this.sortBeans = sortBeans;
+    public void setSorts(List<SortBean> sorts) {
+        this.sorts = sorts;
     }
 }

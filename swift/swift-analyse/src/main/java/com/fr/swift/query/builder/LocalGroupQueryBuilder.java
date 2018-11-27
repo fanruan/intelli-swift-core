@@ -2,17 +2,12 @@ package com.fr.swift.query.builder;
 
 import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.query.Query;
-import com.fr.swift.query.result.ResultQuery;
-import com.fr.swift.result.NodeResultSet;
-
-import java.util.List;
+import com.fr.swift.result.QueryResultSet;
 
 /**
  * Created by pony on 2017/12/15.
  */
 public interface LocalGroupQueryBuilder {
-
-    LocalGroupQueryBuilder SINGLE_URI = new LocalGroupSingleURIQueryBuilder();
 
     LocalGroupQueryBuilder PAGING = new LocalGroupPagingQueryBuilder();
 
@@ -24,25 +19,5 @@ public interface LocalGroupQueryBuilder {
      * @param info 查询信息
      * @return
      */
-    ResultQuery<NodeResultSet> buildLocalQuery(GroupQueryInfo info);
-
-    /**
-     * 构建多个ResultQuery查询Query，处理多个ResultQuery的合并
-     * 每个ResultQuery对应一个swift计算节点上的合并结果(多个SegmentQuery的结果)
-     *
-     * @param queries 一组结果Query
-     * @param info 查询信息
-     * @return
-     */
-    ResultQuery<NodeResultSet> buildResultQuery(List<Query<NodeResultSet>> queries, GroupQueryInfo info);
-
-    /**
-     * 处理查询计算的最后一步计算。在解析查询请求的时候，根据数据在swift计算节点上的分布来确认哪个节点执行这个query
-     * 处理havingFilter和bi功能相关的结果过滤
-     *
-     * @param query 根据查询数据的分布，可能是单节点的ResultQuery，也可能是多节点合并的ResultQuery
-     * @param info  查询信息
-     * @return
-     */
-    Query<NodeResultSet> buildPostQuery(ResultQuery<NodeResultSet> query, GroupQueryInfo info);
+    <T extends QueryResultSet> Query<T> buildLocalQuery(GroupQueryInfo info);
 }

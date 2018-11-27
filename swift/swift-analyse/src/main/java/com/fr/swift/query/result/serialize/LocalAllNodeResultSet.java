@@ -1,13 +1,10 @@
 package com.fr.swift.query.result.serialize;
 
-import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.SwiftNode;
-import com.fr.swift.service.AnalyseService;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.Pair;
-import com.fr.swift.util.Crasher;
 
 import java.sql.SQLException;
 import java.util.Iterator;
@@ -69,16 +66,16 @@ public class LocalAllNodeResultSet implements NodeResultSet<SwiftNode>, Serializ
         if (iterator.hasNext()) {
             return true;
         } else if (originHasNextPage) {
-            try {
-                AnalyseService service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
-                LocalAllNodeResultSet resultSet = (LocalAllNodeResultSet) service.getRemoteQueryResult(jsonString, null);
-                if (resultSet != null && resultSet.page != null) {
-                    this.iterator = resultSet.page.iterator();
-                    this.originHasNextPage = resultSet.originHasNextPage;
-                }
-            } catch (SQLException e) {
-                Crasher.crash(e);
-            }
+//            try {
+//                AnalyseService service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
+//                LocalAllNodeResultSet resultSet = (LocalAllNodeResultSet) service.getRemoteQueryResult(jsonString, null);
+//                if (resultSet != null && resultSet.page != null) {
+//                    this.iterator = resultSet.page.iterator();
+//                    this.originHasNextPage = resultSet.originHasNextPage;
+//                }
+//            } catch (SQLException e) {
+//                Crasher.crash(e);
+//            }
         }
         return iterator.hasNext();
     }

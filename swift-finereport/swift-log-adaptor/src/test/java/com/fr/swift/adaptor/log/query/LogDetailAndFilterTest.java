@@ -10,6 +10,7 @@ import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.source.DataSource;
@@ -58,7 +59,7 @@ public class LogDetailAndFilterTest extends LogBaseTest {
                     .addRestriction(RestrictionFactory.gte("总金额", 1000000)).addRestriction(RestrictionFactory.lte("总金额", 2000000));
 
             QueryBean queryBean = QueryConditionAdaptor.adaptCondition(eqQueryCondition, table);
-            SwiftResultSet eqResultSet = service.getQueryResult(queryBean);
+            SwiftResultSet eqResultSet = service.getQueryResult(QueryBeanFactory.queryBean2String(queryBean));
             int index1 = table.getMeta().getColumnIndex("合同类型") - 1;
             int index2 = table.getMeta().getColumnIndex("总金额") - 1;
 
@@ -91,7 +92,7 @@ public class LogDetailAndFilterTest extends LogBaseTest {
             QueryCondition eqQueryCondition = QueryFactory.create().addRestriction(RestrictionFactory.or(restrictions));
 
             QueryBean queryBean = QueryConditionAdaptor.adaptCondition(eqQueryCondition, table);
-            SwiftResultSet eqResultSet = service.getQueryResult(queryBean);
+            SwiftResultSet eqResultSet = service.getQueryResult(QueryBeanFactory.queryBean2String(queryBean));
             int index1 = table.getMeta().getColumnIndex("合同类型") - 1;
             int count1 = 0, count2 = 0, count3 = 0;
             while (eqResultSet.hasNext()) {

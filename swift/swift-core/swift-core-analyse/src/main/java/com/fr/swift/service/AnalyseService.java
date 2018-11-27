@@ -3,34 +3,28 @@ package com.fr.swift.service;
 import com.fr.swift.basics.annotation.InvokeMethod;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.handler.CommonProcessHandler;
-import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.query.QueryRunner;
-import com.fr.swift.segment.SegmentDestination;
+import com.fr.swift.basics.handler.QueryableProcessHandler;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
  * @author yee
  * @date 2018/6/13
  */
-public interface AnalyseService extends QueryRunner, SwiftService, Serializable {
-    @Override
-    SwiftResultSet getQueryResult(QueryBean info) throws Exception;
+public interface AnalyseService extends SwiftService, Serializable {
 
     /**
-     * 远程查询
+     * 方法调用不区分本地还是远程，转发逻辑在QueryableProcessHandler的实现中处理
      *
-     * @param jsonString
-     * @param remoteURI
+     * @param queryJson 查询字符串
      * @return
-     * @throws SQLException
+     * @throws Exception
      */
-    @InvokeMethod(value = CommonProcessHandler.class, target = Target.ANALYSE)
-    SwiftResultSet getRemoteQueryResult(String jsonString, SegmentDestination remoteURI) throws SQLException;
+    @InvokeMethod(value = QueryableProcessHandler.class, target = Target.ANALYSE)
+    SwiftResultSet getQueryResult(String queryJson) throws Exception;
 
     @InvokeMethod(value = CommonProcessHandler.class, target = Target.ANALYSE)
     void updateSegmentInfo(SegmentLocationInfo locationInfo, SegmentLocationInfo.UpdateType updateType);

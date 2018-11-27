@@ -9,10 +9,8 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.event.analyse.RequestSegLocationEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.query.Queryable;
-import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
+import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.query.QueryBeanFactory;
 import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
@@ -25,7 +23,6 @@ import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.Pair;
-import com.fr.swift.util.Assert;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -56,6 +53,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     public boolean start() throws SwiftServiceException {
         boolean start = super.start();
         this.sessionFactory = SwiftContext.get().getBean("swiftQuerySessionFactory", SessionFactory.class);
+        this.queryBeanFactory = SwiftContext.get().getBean("queryBeanFactory", QueryBeanFactory.class);
         cacheSegments();
         return start;
     }
@@ -137,30 +135,10 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     }
 
     @Override
-    public SwiftResultSet getQueryResult(QueryBean info) throws Exception {
-        SwiftLoggers.getLogger().debug(QueryInfoBeanFactory.queryBean2String(info));
+    public SwiftResultSet getQueryResult(String queryJson) throws Exception {
+        SwiftLoggers.getLogger().debug(queryJson);
+        QueryBean info = queryBeanFactory.create(queryJson);
         return sessionFactory.openSession(info.getQueryId()).executeQuery(info);
-    }
-
-    @Override
-    public SwiftResultSet getRemoteQueryResult(final String jsonString, final SegmentDestination remoteURI) {
-        try {
-            return queryRemoteNodeNode(jsonString, remoteURI);
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().error("Query remote node error! ", e);
-            return null;
-        }
-    }
-
-    private SwiftResultSet queryRemoteNodeNode(String jsonString, SegmentDestination remoteURI) throws Exception {
-        if (null == remoteURI) {
-            QueryBean queryBean = queryBeanFactory.create(jsonString, false);
-            remoteURI = queryBean.getQueryDestination();
-        }
-        Assert.notNull(remoteURI);
-        Class<? extends Queryable> clazz = remoteURI.getServiceClass();
-        Queryable queryable = ProxySelector.getInstance().getFactory().getProxy(clazz);
-        return queryable.query(jsonString);
     }
 
     @Override

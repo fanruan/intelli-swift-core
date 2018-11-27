@@ -5,6 +5,7 @@ import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.query.filter.match.NodeFilter;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeResultSet;
+import com.fr.swift.result.QueryResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeOperator;
 import com.fr.swift.result.SwiftNodeUtils;
@@ -19,20 +20,20 @@ import java.util.Map;
 /**
  * Created by Lyon on 2018/6/3.
  */
-public class TreeFilterQuery extends AbstractPostQuery<NodeResultSet> {
+public class TreeFilterQuery implements PostQuery<QueryResultSet> {
 
-    private PostQuery<NodeResultSet> query;
+    private PostQuery<QueryResultSet> query;
     private List<MatchFilter> matchFilterList;
     // TODO: 2018/6/13 这个遍要把用于明细的聚合器传过来
     private List<Aggregator> aggregators;
 
-    public TreeFilterQuery(PostQuery<NodeResultSet> query, List<MatchFilter> matchFilterList) {
+    public TreeFilterQuery(PostQuery<QueryResultSet> query, List<MatchFilter> matchFilterList) {
         this.query = query;
         this.matchFilterList = matchFilterList;
     }
 
     @Override
-    public NodeResultSet getQueryResult() throws SQLException {
+    public QueryResultSet getQueryResult() throws SQLException {
         SwiftNodeOperator operator = new SwiftNodeOperator() {
             @Override
             public Pair<SwiftNode, List<Map<Integer, Object>>> apply(Pair<? extends SwiftNode, List<Map<Integer, Object>>> p) {
@@ -44,6 +45,7 @@ public class TreeFilterQuery extends AbstractPostQuery<NodeResultSet> {
             }
         };
         NodeResultSet<SwiftNode> mergeResult = (NodeResultSet<SwiftNode>) query.getQueryResult();
-        return new ChainedNodeResultSet(operator, mergeResult);
+        // TODO: 2018/11/27
+        return (QueryResultSet) new ChainedNodeResultSet(operator, mergeResult);
     }
 }

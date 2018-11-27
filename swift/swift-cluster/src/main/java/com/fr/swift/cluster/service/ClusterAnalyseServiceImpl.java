@@ -14,11 +14,11 @@
 //import com.fr.swift.log.SwiftLoggers;
 //import com.fr.swift.netty.rpc.server.ServiceMethodRegistry;
 //import com.fr.swift.query.query.QueryBean;
-//import com.fr.swift.query.query.QueryBeanFactory;
+//import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 //import com.fr.swift.segment.SegmentDestination;
 //import com.fr.swift.segment.SegmentKey;
 //import com.fr.swift.segment.SegmentLocationInfo;
-//import com.fr.swift.segment.SegmentLocationProvider;
+//import SegmentLocationProvider;
 //import com.fr.swift.segment.SwiftSegmentManager;
 //import com.fr.swift.segment.impl.RealTimeSegDestImpl;
 //import com.fr.swift.segment.impl.SegmentDestinationImpl;

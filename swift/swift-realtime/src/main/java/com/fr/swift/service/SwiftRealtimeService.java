@@ -11,8 +11,8 @@ import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.netty.rpc.server.RpcServer;
+import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
-import com.fr.swift.query.query.QueryBeanFactory;
 import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
@@ -47,8 +47,6 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
     private transient ServiceTaskExecutor taskExecutor;
 
-    private transient QueryBeanFactory queryBeanFactory;
-
     private transient boolean recoverable = true;
 
     public SwiftRealtimeService() {
@@ -60,7 +58,6 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         server = SwiftContext.get().getBean(RpcServer.class);
         segmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         taskExecutor = SwiftContext.get().getBean(ServiceTaskExecutor.class);
-        queryBeanFactory = SwiftContext.get().getBean(QueryBeanFactory.class);
         if (recoverable) {
             recover0();
             recoverable = false;
@@ -74,7 +71,6 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         server = null;
         segmentManager = null;
         taskExecutor = null;
-        queryBeanFactory = null;
         return true;
     }
 
@@ -116,7 +112,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     @Override
     public SwiftResultSet query(final String queryDescription) throws SQLException {
         try {
-            final QueryInfoBean bean = queryBeanFactory.create(queryDescription, false);
+            final QueryInfoBean bean = QueryBeanFactory.create(queryDescription);
             SessionFactory sessionFactory = SwiftContext.get().getBean(SessionFactory.class);
             return sessionFactory.openSession(bean.getQueryId()).executeQuery(bean);
         } catch (Exception e) {

@@ -10,8 +10,8 @@ import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.query.info.bean.query.AbstractSingleTableQueryInfoBean;
+import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.query.QueryBeanFactory;
 import com.fr.swift.query.result.serialize.SerializableDetailResultSet;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.service.AnalyseService;
@@ -37,18 +37,18 @@ public class SelectServiceImpl implements SelectService {
     @SwiftApi
     public SwiftResultSet query(SwiftDatabase database, String queryJson) {
         try {
-            QueryBean queryBean = SwiftContext.get().getBean(QueryBeanFactory.class).create(queryJson, false);
+            QueryBean queryBean = QueryBeanFactory.create(queryJson);
             if (queryBean instanceof AbstractSingleTableQueryInfoBean) {
                 String tableName = ((AbstractSingleTableQueryInfoBean) queryBean).getTableName();
                 SwiftMetaData metaData = metaDataService.getMetaDataByKey(tableName);
                 AnalyseService service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
                 SwiftResultSet resultSet = null;
                 if (null != metaData && metaData.getSwiftDatabase() == database) {
-                    resultSet = service.getQueryResult(queryBean);
+                    resultSet = service.getQueryResult(QueryBeanFactory.queryBean2String(queryBean));
                 } else {
                     metaData = tableService.detectiveMetaData(database, tableName);
                     ((AbstractSingleTableQueryInfoBean) queryBean).setTableName(metaData.getId());
-                    resultSet = service.getQueryResult(queryBean);
+                    resultSet = service.getQueryResult(QueryBeanFactory.queryBean2String(queryBean));
                 }
                 return getPageResultSet(queryJson, resultSet);
             }

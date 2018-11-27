@@ -7,6 +7,7 @@ import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.source.DataSource;
@@ -53,7 +54,7 @@ public class LogDetailSortTest extends LogBaseTest {
             QueryCondition sortQueryCondition = QueryFactory.create().addSort("总金额");
 
             QueryInfoBean queryBean = QueryConditionAdaptor.adaptCondition(sortQueryCondition, table);
-            SwiftResultSet sortResultSet = service.getQueryResult(queryBean);
+            SwiftResultSet sortResultSet = service.getQueryResult(QueryBeanFactory.queryBean2String(queryBean));
             int sortindex = table.getMeta().getColumnIndex("总金额");
             List<Double> dataList = new ArrayList<Double>();
             while (sortResultSet.hasNext()) {
@@ -82,7 +83,7 @@ public class LogDetailSortTest extends LogBaseTest {
             QueryCondition sortQueryCondition = QueryFactory.create().addSort("总金额", true);
 
             QueryInfoBean queryBean = QueryConditionAdaptor.adaptCondition(sortQueryCondition, table);
-            SwiftResultSet sortResultSet = service.getQueryResult(queryBean);
+            SwiftResultSet sortResultSet = service.getQueryResult(QueryBeanFactory.queryBean2String(queryBean));
             int sortindex = table.getMeta().getColumnIndex("总金额");
             List<Double> dataList = new ArrayList<Double>();
             while (sortResultSet.hasNext()) {

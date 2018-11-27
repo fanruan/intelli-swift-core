@@ -18,7 +18,7 @@ import com.fr.swift.query.result.ResultQuery;
 import com.fr.swift.query.result.group.GroupResultQuery;
 import com.fr.swift.query.segment.group.GroupPagingSegmentQuery;
 import com.fr.swift.query.sort.Sort;
-import com.fr.swift.result.NodeResultSet;
+import com.fr.swift.result.QueryResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
@@ -35,15 +35,10 @@ public class LocalGroupPagingQueryBuilder extends AbstractLocalGroupQueryBuilder
     private final SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
 
     @Override
-    public Query<NodeResultSet> buildPostQuery(ResultQuery<NodeResultSet> query, GroupQueryInfo info) {
-        return ALL.buildPostQuery(query, info);
-    }
-
-    @Override
-    public ResultQuery<NodeResultSet> buildLocalQuery(GroupQueryInfo info) {
+    public ResultQuery<QueryResultSet> buildLocalQuery(GroupQueryInfo info) {
         List<Dimension> dimensions = info.getDimensions();
         List<Metric> metrics = info.getMetrics();
-        List<Query<NodeResultSet>> queries = new ArrayList<Query<NodeResultSet>>();
+        List<Query<QueryResultSet>> queries = new ArrayList<Query<QueryResultSet>>();
         List<Segment> segments = localSegmentProvider.getSegmentsByIds(info.getTable(), info.getQuerySegment());
         for (Segment segment : segments) {
             List<Pair<Column, IndexInfo>> dimensionColumns = getDimensionSegments(segment, dimensions);
@@ -56,13 +51,6 @@ public class LocalGroupPagingQueryBuilder extends AbstractLocalGroupQueryBuilder
                     metrics.size() + LocalGroupAllQueryBuilder.countCalFields(info.getPostQueryInfoList()));
             queries.add(new GroupPagingSegmentQuery(rowGroupByInfo, metricInfo));
         }
-        return new GroupResultQuery(info.getFetchSize(), queries, getAggregators(info.getMetrics()),
-                LocalGroupAllQueryBuilder.getComparatorsForMerging(info.getTable(), info.getDimensions()),
-                isGlobalIndexed(info.getDimensions()));
-    }
-
-    @Override
-    public ResultQuery<NodeResultSet> buildResultQuery(List<Query<NodeResultSet>> queries, GroupQueryInfo info) {
         return new GroupResultQuery(info.getFetchSize(), queries, getAggregators(info.getMetrics()),
                 LocalGroupAllQueryBuilder.getComparatorsForMerging(info.getTable(), info.getDimensions()),
                 isGlobalIndexed(info.getDimensions()));

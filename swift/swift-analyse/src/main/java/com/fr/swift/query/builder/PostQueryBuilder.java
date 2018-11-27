@@ -15,7 +15,7 @@ import com.fr.swift.query.post.RowSortQuery;
 import com.fr.swift.query.post.TreeAggregationQuery;
 import com.fr.swift.query.post.TreeFilterQuery;
 import com.fr.swift.query.post.TreeSortQuery;
-import com.fr.swift.result.NodeResultSet;
+import com.fr.swift.result.QueryResultSet;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ import java.util.List;
  */
 class PostQueryBuilder {
 
-    static PostQuery<NodeResultSet> buildQuery(PostQuery<NodeResultSet> tmpQuery, List<PostQueryInfo> postQueryInfoList) {
+    static PostQuery<QueryResultSet> buildQuery(PostQuery<QueryResultSet> tmpQuery, List<PostQueryInfo> postQueryInfoList) {
         for (PostQueryInfo postQueryInfo : postQueryInfoList) {
             PostQueryType type = postQueryInfo.getType();
             switch (type) {

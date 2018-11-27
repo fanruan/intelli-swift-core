@@ -15,6 +15,7 @@ import com.fr.swift.db.impl.MetadataDiffer;
 import com.fr.swift.db.impl.SwiftWhere;
 import com.fr.swift.event.global.DeleteEvent;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.FilterBean;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.result.DetailResultSet;
@@ -74,7 +75,7 @@ public class MetricProxy extends BaseMetric {
             List<T> tList = new ArrayList<T>();
 
             QueryBean queryBean = LogQueryUtils.getDetailQueryBean(entity, queryCondition);
-            SwiftResultSet resultSet = analyseService.getQueryResult(queryBean);
+            SwiftResultSet resultSet = analyseService.getQueryResult(QueryBeanFactory.queryBean2String(queryBean));
             List<Row> page = LogQueryUtils.getPage(resultSet, queryCondition);
             for (Row row : page) {
                 tList.add(adaptor.apply(row));

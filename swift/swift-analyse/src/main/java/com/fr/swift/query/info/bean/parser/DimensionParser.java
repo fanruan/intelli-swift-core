@@ -10,10 +10,8 @@ import com.fr.swift.query.group.info.IndexInfoImpl;
 import com.fr.swift.query.info.bean.element.DimensionBean;
 import com.fr.swift.query.info.bean.element.SortBean;
 import com.fr.swift.query.info.element.dimension.DetailDimension;
-import com.fr.swift.query.info.element.dimension.DetailFormulaDimension;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.dimension.GroupDimension;
-import com.fr.swift.query.info.element.dimension.GroupFormulaDimension;
 import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.DescSort;
 import com.fr.swift.query.sort.Sort;
@@ -36,7 +34,6 @@ class DimensionParser {
         for (int i = 0; i < dimensionBeans.size(); i++) {
             DimensionBean dimensionBean = dimensionBeans.get(i);
             ColumnKey columnKey = new ColumnKey(dimensionBean.getColumn());
-            columnKey.setRelation(RelationSourceParser.parse(dimensionBean.getRelation()));
             SortBean sortBean = getDimensionSort(dimensionBean.getColumn(), sortBeans);
             Sort sort = null;
             if (sortBean != null) {
@@ -44,12 +41,6 @@ class DimensionParser {
             }
             ColumnIndexingConf conf = service.getColumnConf(table, dimensionBean.getColumn());
             switch (dimensionBean.getDimensionType()) {
-                case DETAIL_FORMULA:
-                    dimensions.add(new DetailFormulaDimension(i, dimensionBean.getFormula()));
-                    break;
-                case GROUP_FORMULA:
-                    dimensions.add(new GroupFormulaDimension(i, Groups.newGroup(new NoGroupRule()), sort, dimensionBean.getFormula()));
-                    break;
                 case GROUP:
                     dimensions.add(new GroupDimension(i, columnKey, Groups.newGroup(new NoGroupRule()), sort,
                             new IndexInfoImpl(conf.requireIndex(), conf.requireGlobalDict())));
@@ -79,14 +70,7 @@ class DimensionParser {
         for (int i = 0; i < joinedFields.size(); i++) {
             DimensionBean dimensionBean = joinedFields.get(i);
             ColumnKey columnKey = new ColumnKey(dimensionBean.getColumn());
-            columnKey.setRelation(RelationSourceParser.parse(dimensionBean.getRelation()));
             switch (dimensionBean.getDimensionType()) {
-                case DETAIL_FORMULA:
-                    dimensions.add(new DetailFormulaDimension(i, dimensionBean.getFormula()));
-                    break;
-                case GROUP_FORMULA:
-                    dimensions.add(new GroupFormulaDimension(i, Groups.newGroup(new NoGroupRule()), null, dimensionBean.getFormula()));
-                    break;
                 case GROUP:
                     dimensions.add(new GroupDimension(i, columnKey, Groups.newGroup(new NoGroupRule()), null, new IndexInfoImpl(false, false)));
                     break;

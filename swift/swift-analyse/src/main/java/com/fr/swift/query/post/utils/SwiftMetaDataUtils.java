@@ -31,7 +31,7 @@ public class SwiftMetaDataUtils {
 
     public static SwiftMetaData createMetaData(QueryBean bean) throws SwiftMetaDataException {
         QueryType type = bean.getQueryType();
-        if (type == QueryType.DETAIL || type == QueryType.LOCAL_DETAIL) {
+        if (type == QueryType.DETAIL) {
             return createDetailMetaData((DetailQueryInfoBean) bean);
         }
         return createGroupMetaData((GroupQueryInfoBean) bean);
@@ -42,9 +42,9 @@ public class SwiftMetaDataUtils {
         SwiftMetaData meta = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(bean.getTableName());
         SwiftDatabase schema = meta.getSwiftDatabase();
         List<SwiftMetaDataColumn> metaDataColumns = new ArrayList<SwiftMetaDataColumn>();
-        List<DimensionBean> dimensionBeans = bean.getDimensionBeans();
+        List<DimensionBean> dimensionBeans = bean.getDimensions();
         for (DimensionBean dimensionBean : dimensionBeans) {
-            String alias = dimensionBean.getName();
+            String alias = dimensionBean.getAlias();
             String column = dimensionBean.getColumn();
             SwiftMetaDataColumn metaDataColumn = meta.getColumn(column);
             String name = alias == null ? column : alias;
@@ -59,9 +59,9 @@ public class SwiftMetaDataUtils {
         SwiftMetaData meta = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(bean.getTableName());
         SwiftDatabase schema = meta.getSwiftDatabase();
         List<SwiftMetaDataColumn> metaDataColumns = new ArrayList<SwiftMetaDataColumn>();
-        List<DimensionBean> dimensionBeans = bean.getDimensionBeans();
+        List<DimensionBean> dimensionBeans = bean.getDimensions();
         for (DimensionBean dimensionBean : dimensionBeans) {
-            String alias = dimensionBean.getName();
+            String alias = dimensionBean.getAlias();
             String column = dimensionBean.getColumn();
             SwiftMetaDataColumn metaDataColumn = meta.getColumn(column);
             String name = alias == null ? column : alias;
