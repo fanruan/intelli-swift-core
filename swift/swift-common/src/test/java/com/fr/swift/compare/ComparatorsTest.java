@@ -15,7 +15,7 @@ public class ComparatorsTest {
 
     @Test
     public void testPinyinCompare() {
-        Comparator<String> cmp = Comparators.PINYIN_ASC;
+        Comparator<String> cmp = Comparators.STRING_ASC;
         Assert.assertEquals(0, cmp.compare(null, null));
         Assert.assertEquals(1, cmp.compare("开机动画风格dlfg", null));
         Assert.assertEquals(-1, cmp.compare(null, "抠脚大汉"));

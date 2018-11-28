@@ -2,9 +2,7 @@ package com.fr.swift.compare;
 
 import com.fr.swift.util.Crasher;
 
-import java.text.Collator;
 import java.util.Comparator;
-import java.util.Locale;
 
 /**
  * 比较器工厂
@@ -14,11 +12,9 @@ import java.util.Locale;
 public class Comparators {
 
     /**
-     * 专治中文String
+     * todo fr还是用pinyin，开源版本开放spi，由用户自定义排序方式
      */
-    public static final Comparator<String> PINYIN_ASC = new PinyinComparator();
-
-    public static final Comparator<String> PINYIN_DESC = reverse(PINYIN_ASC);
+    public static final Comparator<String> STRING_ASC = Comparators.asc();
 
     /**
      * 升序
@@ -82,7 +78,7 @@ public class Comparators {
                     return Double.compare(a.doubleValue(), b.doubleValue());
                 }
                 if (a instanceof Long || b instanceof Long) {
-                    return (((Long) a.longValue())).compareTo(b.longValue());
+                    return ((Long) a.longValue()).compareTo(b.longValue());
                 }
                 if (a instanceof Integer || b instanceof Integer) {
                     return ((Integer) a.intValue()).compareTo(b.intValue());
@@ -96,25 +92,6 @@ public class Comparators {
                 return Crasher.crash("cannot compare " + a.getClass() + " with " + b.getClass());
             }
         };
-    }
-
-    private static class PinyinComparator implements Comparator<String> {
-
-        private Collator cmp = Collator.getInstance(Locale.CHINA);
-
-        @Override
-        public int compare(String o1, String o2) {
-            if (o1 == o2) {
-                return 0;
-            }
-            if (o1 == null) {
-                return -1;
-            }
-            if (o2 == null) {
-                return 1;
-            }
-            return cmp.compare(o1, o2);
-        }
     }
 
     private Comparators() {
