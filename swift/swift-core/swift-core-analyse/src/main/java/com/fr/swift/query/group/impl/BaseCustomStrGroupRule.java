@@ -34,7 +34,7 @@ abstract class BaseCustomStrGroupRule<Base> extends BaseCustomGroupRule<Base, St
         return sorted ? new Comparator<Entry<Integer, Pair<String, IntList>>>() {
             @Override
             public int compare(Entry<Integer, Pair<String, IntList>> o1, Entry<Integer, Pair<String, IntList>> o2) {
-                return Comparators.PINYIN_ASC.compare(o1.getValue().getKey(), o2.getValue().getKey());
+                return Comparators.STRING_ASC.compare(o1.getValue().getKey(), o2.getValue().getKey());
             }
         } : super.getComparator();
     }

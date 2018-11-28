@@ -69,7 +69,7 @@ public class JoinOperatorResultSet implements SwiftResultSet {
         try {
             for (int i = 0; i < comparators.length; i++) {
                 SwiftMetaDataColumn column = lSegments[0].getMetaData().getColumn(lKey[i].getName());
-                comparators[i] = ColumnTypeUtils.getClassType(column) == ColumnTypeConstants.ClassType.STRING ? Comparators.PINYIN_ASC : Comparators.numberAsc();
+                comparators[i] = ColumnTypeUtils.getClassType(column) == ColumnTypeConstants.ClassType.STRING ? Comparators.STRING_ASC : Comparators.numberAsc();
             }
         } catch (SwiftMetaDataException e) {
             LOGGER.error(e);
